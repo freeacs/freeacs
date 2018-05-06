@@ -1,0 +1,308 @@
+v1.5.44 (2014-11-23)
+- lib: shell v2.3.41 (bugfix on context switching)
+v1.5.43 (2014-11-14)
+- ref: Made "Basic" reporting default.
+- bug: SyslogEntryComparator gave runtime-exceptions - provisioning reports were not run!
+v1.5.42 (2013-06-04)
+- bug: Heartbeat did not work if two heartbeats were defined!
+v1.5.41 (2013-06-03)
+- bug: Heartbeat did not work if two heartbeats were defined!
+v1.5.40 (2013-04-27)
+- lib: dbi v1.74.32 (bugfix on parameter-search (operand-usage and NULL-values)
+v1.5.39 (2013-05-22)
+- bug: NullPointerException can occur in rare circumstances in UnitReport generation, added code to avoid that 
+v1.5.38 (2013-05-11)
+- lib: dbi v1.74.28 (changed period for longest report-period generation)
+- ref: changed default severity-based deletion rules on syslog table (propertyfile)
+v1.5.37 (2013-05-07)
+- lib: dbi v1.74.26 (bugfix on provisioning report generation)
+v1.5.36 (2013-04-29)
+- lib: dbi v1.74.23 (bugfix on jobs)
+v1.5.35 (2013-04-26)
+- lib: dbi v1.74.22 (bugfix on jobs)
+v1.5.34 (2013-04-16)
+- ref: more logging to solve NullPointerException in SyslogMessageMap
+v1.5.33 (2013-04-12)
+- lib: common v1.33.9 (attempt to solve a NullpointerException in SyslogMessageMap)
+- lib: dbi v1.74.20 (script executions do not attempt more exceutions than the number of shell-daemons available pr 100ms) 
+- ref: improved logging in Heartbeat (again), some refactoring into separate methods
+v1.5.32 (2013-04-11)
+- ref: if trigger is release, no trigger processing can happen before evaluation period has passed  
+- lib: dbi v1.74.19 (bugfix concerning read of trigger-releases) 
+- bug: if expression/group of heartbeat was changed the syslog message map was not regenerated from start of heartbeat timeout period - causing massive "missing heartbeat" flood 
+v1.5.31 (2013-04-09)
+- bug: toString()-method in SyslogMessageMap failed due to incorrect input argument to format-method
+v1.5.30 (2013-04-08)
+- lib: shell v2.3.32 (bugfix on concerning script-execution)
+- lib: dbi v1.74.17
+- ref: refactored usage of InsertOrderMap to TimestampMap - will see if there will be less problems with HeartbeatDetection
+v1.5.29 (2013-04-03)
+- bug: HeartbeatDetection made heartbeat-syslog-messages with the offset-timestamp (60 seconds old) - which caused the messages to drop out of the trigger events timeframe
+v1.5.28 (2013-04-02)
+- ref: TriggerRelease will evaluate whole minutes, starting 30 seconds back in time. This will ensure correct view in Web-syslog-pages
+v1.5.27 (2013-03-25)
+- ref: Made HeartbeatDetection and TriggerRelease process on 1 minute old data and backwards (ensure everything is persisted)
+- ref: TriggerReleaseHistory is logged with a 10 seconds bigger timespan (to capture all events)
+- ref: Fixed bugs in HeartbeatDetection
+- lib: common v1.33.3
+v1.5.26 (2013-03-19)
+- lib: shell v2.3.28
+- bug: NullPointerException in ScriptExecutionTask 
+- ref: Better logging of Script-executions
+v1.5.25 (2013-03-17)
+- del: Group reports no longer consider time rolling parameters (removed from Group concept)
+- ref: Daily reports based on syslog data are now computed from hourly reports (consume 1/24 of the memory)
+- ref: Not possible to turn off hourly reports anymore (simplified configuration)
+- lib: dbi v1.74.5
+v1.5.24 (2013-03-15)
+- bug: Added more logging to track an error in InsertOrderMap
+- add: Heartbeat specifies group, but group matching was not done - now added
+- bug: Removal of old SyslogMessageMap-entries were incorrect - none were removed
+- ref: improved main()-method in InsertOrderMap for testing
+- ref: toString() on SyslogMessageMap prints to-from tmstamps in correct order
+- ref: improved startup of server, will build syslog message map incrementally in the heartbeat timeout period
+v1.5.23 (2013-03-08)
+- ref: fixed log name of shell-daemons
+- ref: made log prefixes for ReportGenerator, DeleteOldSyslog, JobRuleEnforcer, ScriptExecutor, DeleteOldScripts, DeleteOldJobs and TriggerReleaser (easy to grep)
+v1.5.22 (2013-03-01)
+- lib: dbi v1.74.0
+- del: removed unnecessary report (TR-reports)
+- ref: changed syslog-logging/removed syslog-server properties 
+- doc: updated doc
+v1.5.21 (2013-02-26)
+- bug: removal of old syslog-messages from heartbeat/active-devices map was completelt wrong
+v1.5.20 (2013-02-25)
+- ref: Updated logging
+- bug: Missing heartbeat detection did not work as intented - tested and works now 
+v1.5.19 (2013-02-21)
+- lib: dbi v1.73.16 (Report fixes)
+- bug: ReportUnit failed if softwareversion were set to '' for one or more units
+v1.5.18 (2013-02-12)
+- ref: Changed some log-settings
+- doc: Updated doc 
+v1.5.17 (2013-02-04)
+- lib: dbi v1.73.12 (improved SQL for group-reports)
+- ref: changed properties to control reports 
+v1.5.16 (2012-12-13)
+- lib: common v1.33.0
+- lib: dbi v1.73.2
+- refactored comments property files
+- small fixes on ant-property files
+v1.5.15 (2012-11-01)
+- bug: UnitReport is now mandatory for hourly reports (forward-ported from 2011R1 v1.1.7.1)
+- ref: UnitReport was too slow with 60K units - splitted into simple SQLs (tested many options), and got it down from ~1h to 20 sec. (forward-ported from 2011R1 v1.1.7.1)
+v1.5.14 (2012-05-29)
+- lib: dbi v1.71.3
+- ref: increased number of connections available to database a lot
+- bug: ScriptExecution exceptions were not properly assigned to correct script execution - introduced "idle"-flag in shell daemon
+v1.5.13 (2012-05-25)
+- ref: improved printout of error-message to script-execution table
+- lib: dbi v1.71.2 (bugfix on delete old script executions)
+- ref: Default old script execution delete limit changed from 24h to 7d
+v1.5.12 (2012-05-23)
+- lib: dbi v1.71.1 (File owner object)
+v1.5.11 (2012-05-18)
+- lib: dbi v1.70.8 (ProvisioningReport refactored)
+- ref: Provisioning Report refactored
+v1.5.10 (2010-05-16)
+- bug: DeleteOldSyslog did not work with SyslogEvent.deleteLimit == null -> NP
+- ref: DeleteOldSyslog optimized to skip some processing if deleteLimit == 0 or null. 
+v1.5.9 (2012-05-15)
+- ref: Cleanup of xaps-core-logs.properties
+- ref: Correct dateFormat in HeartbeatDetection (US-locale)
+- ref: ScriptExecutor now logs commands in Shell to Syslog (if configured)
+- ref: Most jobs will now run as default. Optional to run PingcomOld and TR069 reports (shortened xaps-core.properties)
+- lib: dbi v1.70.7 (ProvisioningReport bugfixes)
+v1.5.8 (2012-05-14)
+- add: Populate ProvisioningReport
+- bug: HeartbeatDetection contained several bugs, seems to work allright now
+- bug: InsertOrderMap was not properly implemented, bugfix to make Heartbeat work as it should
+- ref: Heartbeat logging improved again
+v1.5.7 (2012-05-11)
+- ref: Heartbeat logging changed a lot, more readable
+- bug: Heartbeat messages may also come from server, removed a SQL-criteria of facility < 50
+- add: Added comments to InsertOrderMap
+- ref: HeartbeatDetection prints slightly changed Heartbeat message
+- lib: dbi v1.70.4
+- lib: shell v2.2.18
+- ref: changed log levels in TriggerReleaser
+v1.5.6 (2012-05-10)
+- ref: small change to read new job if it changes
+- ref: changed logging of job-rule detection
+v1.5.5 (2012-05-04)
+- add: logging around startup/shutdown
+- lib: dbi v1.70.1 (minor File API changes)
+v1.5.4 (2012-04-26)
+- lib: dbi v1.69.9 (ScriptExecution change)
+- ref: ScriptExecutorTask now handles missing Unittype/Script 
+v1.5.3 (2012-04-19)
+- lib: dbi v1.69.5 (much API changes)
+v1.5.2 (2012-04-16)
+- ref: ScriptExecutor now uses fusionuser from SCRIPT-file (or ADMIN if fusionuser is missing, also for backward-comp)
+- lib: dbi v1.69.4 (changed of FileType-constants)
+- ref: Removed unused classes and code (due to changes in 1.5.0/1 versions)
+- ref: Moved a few classes to other packages
+- ref: ShellDaemonPool now makes a pool pr fusionuser, log-file-names are changed to reflect this
+v1.5.1 (2012-04-13)
+- ref: small changes in OK-respons
+- bug: drift in Heartbeat, always 65 minutes between each HB-missing (fixed to 60min)
+- imp: logging of Heartbeat is improved
+- bug: if a task crashes, it will be mark "not running" - to enable it to start again
+v1.5.0 (2012-04-09)
+- ref: total refactoring 
+		- started to used Scheduling Framework (newly added to common) to time operations
+		- went back to all logging in xaps-core.log (not divided over 5-6 logs) (cleaned up -logs.properties)
+		- some processes share DBI (save resource)
+		- no drift in operations that should occur every X minute/sec
+		- changed OK-monitoring - only one URL to monitor
+- lib: common v1.32.0
+ 
+v1.4.1 (2012-04-03)
+- lib: added libs to allow shell-daemon to work, now ready to be exported outside Eclipse
+- lib: dbi v1.69.0
+- ref: Changed GoA to "Missing Heartbeat Detection" - fixed a few bugs realted to GoA, will run every 5 minutes in HPD
+- ref: Now sends generated syslog messages to syslog server (do not write directly to table)
+v1.4.0 (2012-03-20)
+- lib: dbi v1.68.3 (generate on absent syslog events)
+- add: HPD now runs a job every 5 minutes to update missing syslog events - as an attempt to smoothen
+out the CPU-load on the server, instead of a high load every hour.
+- ref: moved some classes to a new util-package
+
+v1.3.7 (2012-02-16)
+- lib: dbi v1.67.6 (updated interface)
+v1.3.6 (2012-02-15)
+- lib: dbi v1.67.5 (name changes)
+v1.3.5 (2012-02-14)
+- lib: dbi v1.67.2 (support request-id on script-execution)
+- ref: Will always run scripts, no matter ACTION-type on trigger
+- ref: Not possible to process triggers more often than every one-third of an evaluation period
+v1.3.4 (2012-02-14)
+- lib: dbi v1.67.0
+- add: supports script-daemon (runs trigger-scripts, but may also run syslog-scripts in future)
+- bug: composite trigger did not release properly if basic releases happened with an interval
+- ref: trigger-daemon is refactored a lot, to keep track of involved units (if action is SCRIPT)
+- add: more logging in CoreServlet to show startup of daemons
+v1.3.3 (2012-02-09)
+- lib: dbi v1.66.6
+- ref: active trigger support
+- ref: composite trigger support
+- lib: dbi v1.66.5 (composite/active triggers)
+- ref: logging was improved
+v1.3.2 (2012-02-08)
+- lib: dbi v1.66.4
+- ref: Updated access to User (to get admin)
+v1.3.1 (2012-01-31)
+- lib: removed all xaps-libs (common, dbi, prov, shell), replaced by using Eclipse Deployment Assembly which is detected by WTF (Tomcat)
+v1.3.1 (2012-01-17)
+- imp: added a lot of logging
+- imp: tested with triggers, works for now
+- lib: dbi v1.65.5
+v1.3.0 (2012-01-17)
+- lib: dbi v1.65.4
+- add: TriggerDaemon, will watch TriggerEvents and check if they release a Trigger - send message to Monitor.
+
+Branched out to 2012R1
+
+v1.2.3 (2012R1) (2011-12-15)
+- lib: dbi v1.64.18
+- refactor: removed a db-config i core.properties
+v1.2.3 (2012R1) (2011-12-12)
+- improve: better monitoring of errors in DBI
+- lib: dbi v1.64.16
+v1.2.3 (2012R1) (2011-12-06)
+- updated version numbers
+- updated to dbi v1.64.15
+- bugfix: if group not found in job-report, default size was -1; changed to 0
+- bugfix: time rolling offset was subtracted, but should be added
+- log: added log-statement regarding time parameter updates
+v1.2.2 (2011R1) (2011-10-17)
+- name change from xAPS to Fusion in doc
+v1.2.1a (2011R2) (2011-06-23)
+- updated to dbi v1.64.3 (some small adjustments)
+- removed a test-class
+v1.2.1 (2011R2) (2011-06-11)
+- updated to latest DBI v1.61.15
+- handles group parameters correctly when producing report
+v1.2.0 (2011R2) (2011-04-27)
+- merged with 2011R1-branch (r36048-36740)
+- updated to latest DBI (v1.61.0)
+v1.1.7 (2011R1SP1) (2011-03-16)
+- updated to latest xaps-dbi v1.57.22-15
+v1.1.7 (2011R1SP1) (2011-03-11)
+- fixed a bug in stop-rule (wrong counting of unit jobs)
+- fixed version number in CoreServlet (1.1.7)
+- fixed build.properties to build DBI from 2011R1-branch
+v1.1.7 (2011R1SP1) (2011-02-23)
+- updated to latest xaps-dbi v1.57.22-14
+v1.1.7 (2011R1) (2011-01-12)
+- changed property to "syslog.cleanup" - easier to understand - also possible to turn off syslog deletion
+- fixed a bug in unit report
+v1.1.7 (2010R1) (2010-12-06)
+- updated to latest lib (xaps-dbi v1.57.5)
+- added group time rolling update
+v1.1.6 (2010R1) 2010-11-10
+- updated report-configuration to differentiate between Hardware/HardwareTR, not HardwareSYS/HardwareTR 
+- updated to latest lib (xaps-dbi v1.56.3)
+- added methods to handle 3 new reports (VoipTR, HardwareTR and GatewayTR)
+v1.1.5 (2010R1) 2010-11-03
+- updated to latest lib (xaps-dbi v1.56.1)
+- will allow day-report-generation at server-startup time 
+v1.1.5 (2010R1) 2010-11-02
+- updated to latest lib (xaps-dbi v1.56.0)
+- updated to handle new RecordVoip/RecordHardware object (some fields removed/some added)
+- updated docs
+v1.1.5 (Demo release) 2010-10-19
+- No changes, only bumping
+v1.1.4 (2010R1) 2010-10-13
+- updated to latest lib (xaps-dbi v1.54.15)
+- changed so daily reports only will run between hours 00 and 01
+v1.1.4 (2010R1-RC) 2010-09-24
+- another optimalization on syslog deletion routine. May enable/disable comprehensive deletion
+- updated to latest lib (xaps-dbi v1.54.8)
+- some refactoring of code in HPD
+- fixed a bug in ReportDaemon (caused by adding softwareversion and channel to RecordVoip)
+v1.1.4 (2010R1-RC) 2010-09-15
+- improved logging in syslog deletion
+- removed Provisoning-report (many changes)
+- changed some more naming (JCS->Core)
+- changed propertyfile to allow to specify daily reports
+v1.1.3 (2010R1-RC) 2010-09-15 
+- renamed from JCS to Core; a better naming for this module (xAPS Core Server)
+v1.1.2 (2010R1-RC) 2010-09-15 
+- refactored so that reporting will be executed in it's own daemon
+- many bugfixes on delete syslog
+v1.1.1-beta2 (2010R1-RC) 2010-09-13
+- changed a small setting in a propertyfile
+v1.1.1-beta (2010R1-alpha) 2010-08-22
+- updated to latest xaps-dbi (v1.53.8)
+- huge update on syslog deletion - finally seems to run well
+v1.1.1-alpha3 (2010R1-alpha) 2010-08-05
+- updated to latest xaps-dbi (v1.53.1)
+- upgraded error-reporting to Monitor
+v1.1.1-alpha2 (2010R1-alpha) 2010-06-16
+- updated to latest xaps-dbi (v1.52.9)
+- slight change on syslog delete procedures - increased performance
+v1.1.1-alpha (2010R1) 2010-06-03
+- not tested 100%
+- updated to latest xaps-dbi (v1.50.41)
+- refactored the delete syslog entries - now handles severity/event rules for deletion
+- refactored some syslog queries, they will now be done in xaps-dbi
+- the server can now operate in a staging-server mode, which means special treatment of software-jobs which never run verify stage
+v1.1.0 (2009R2) 2010-01-06
+- uncommented the deletesyslog-function call
+v1.1.0 (2009R2) 2009-11-13
+- updated module.mk to tag from branches/1.1
+- updated lib (xaps-dbi v1.50.11) - serious bug
+v1.1.0 (2009R2) 2009-11-13
+- had to update libs because of Java 5/6 incompatibility
+v1.1.0 (2009R2) 2009-11-13
+- updated build-file (ant) to add source code to war-file
+v1.1.0 (2009R2) 2009-11-13
+- updated version numbers in doc, module.mk and JCSServlet
+- updated doc, exported to PDF
+- updated xaps-jcs.properties in properties folder
+2009-11-03
+- Adapted to Java 6, Eclipse 3.5
+	o) Removed an import statement
+	o) Updated to latest lib (xaps-dbi 1.50.9, owera-common 1.31.18)
+- Fixed a bug in provisioning report insert statements
