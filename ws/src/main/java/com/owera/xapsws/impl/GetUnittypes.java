@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.Unittype;
 
+import com.owera.xapsws.ArrayOfUnittype;
 import com.owera.xapsws.GetUnittypesRequest;
 import com.owera.xapsws.GetUnittypesResponse;
 import com.owera.xapsws.UnittypeList;
@@ -21,7 +22,7 @@ public class GetUnittypes {
 				Unittype unittypeXAPS = xapsWS.getUnittypeFromXAPS(gur.getUnittypeName());
 				com.owera.xapsws.Unittype[] unittypeArray = new com.owera.xapsws.Unittype[1];
 				unittypeArray[0] = ConvertXAPS2WS.convert(unittypeXAPS);
-				UnittypeList unittypeList = new UnittypeList(unittypeArray);
+				UnittypeList unittypeList = new UnittypeList(new ArrayOfUnittype(unittypeArray));
 				return new GetUnittypesResponse(unittypeList);
 			} else { // return all Unittypes allowed
 				Unittype[] unittypeXAPSArr = xapsWS.getXAPS().getUnittypes().getUnittypes();
@@ -32,7 +33,7 @@ public class GetUnittypes {
 				//				List<Unittype> allowedUnittypes = xapsWS.getXAPS().getUnittypes().getUnittypes();
 				//				for (int i = 0; i < allowedUnittypes.size(); i++)
 				//					unittypeArray[i] = ConvertXAPS2WS.convert(allowedUnittypes.get(i));
-				UnittypeList unittypeList = new UnittypeList(unittypeArray);
+				UnittypeList unittypeList = new UnittypeList(new ArrayOfUnittype(unittypeArray));
 				return new GetUnittypesResponse(unittypeList);
 			}
 		} catch (Throwable t) {
