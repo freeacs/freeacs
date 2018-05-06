@@ -55,11 +55,7 @@ import com.owera.xaps.web.app.page.staging.logic.HTTPSManager;
 import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.WebProperties;
 import com.owera.xaps.web.app.util.XAPSLoader;
-import com.owera.xapsws.AddOrChangeUnitRequest;
-import com.owera.xapsws.AddOrChangeUnitResponse;
-import com.owera.xapsws.Login;
-import com.owera.xapsws.ParameterList;
-//import com.owera.xapsws.XAPSWSProxy;
+import com.owera.xapsws.*;
 
 /**
  * The Class StagingActions.
@@ -762,20 +758,22 @@ public abstract class StagingActions extends AbstractWebPage {
 	 * @throws Exception the exception
 	 */
 	public static String MAC2UUID(String MAC) throws Exception {
-//		String fixmac = "";
-//		for (int i = 0; i < 6; i++)
-//			fixmac += MAC.substring(i * 2, i * 2 + 2) + ":";
-//		MAC = fixmac.substring(0, 12 + 5);
-//		MAC = MAC.toLowerCase(); // Note!!!  UUID is generated from lowercase MAC
-//		UUIDGenerator uuidgen = UUIDGenerator.getInstance();
-//		java.security.MessageDigest digest = java.security.MessageDigest.getInstance("SHA-1");
-//		String name = "opp://owera.com/;mac=" + MAC;
-//		UUID uuid = uuidgen.generateNameBasedUUID(new UUID(UUID.NAMESPACE_URL), name, digest);
-//		String uuid_str = uuid.toString();
-//		// Replace with version 5
-//		uuid_str = uuid_str.substring(0, 14) + '5' + uuid_str.substring(15, 36);
-//		return uuid_str;
-		return UUID.randomUUID().toString();
+		String fixmac = "";
+		for (int i = 0; i < 6; i++)
+			fixmac += MAC.substring(i * 2, i * 2 + 2) + ":";
+		MAC = fixmac.substring(0, 12 + 5);
+		MAC = MAC.toLowerCase(); // Note!!!  UUID is generated from lowercase MAC
+		java.security.MessageDigest digest = java.security.MessageDigest.getInstance("SHA-1");
+		String name = "opp://owera.com/;mac=" + MAC;
+		UUID uuid = UUID.nameUUIDFromBytes(name.getBytes());
+		String uuid_str = uuid.toString();
+		// Replace with version 5
+		uuid_str = uuid_str.substring(0, 14) + '5' + uuid_str.substring(15, 36);
+		return uuid_str;
+	}
+
+	public static void main(String[] args) throws Exception {
+		System.out.println(MAC2UUID("00:A0:C9:14:C8:29"));
 	}
 
 	/**
@@ -786,7 +784,7 @@ public abstract class StagingActions extends AbstractWebPage {
 	 * @throws Exception the exception
 	 */
 	private void createShipment(com.owera.xaps.dbi.Profile provider, List<com.owera.xaps.dbi.Unit> units, String user) throws Exception {
-		/*XAPSWSProxy tp = new XAPSWSProxy();
+		XAPSWSProxy tp = new XAPSWSProxy();
 		ProfileParameters pps = provider.getProfileParameters();
 		ProfileParameter urlpp = pps.getByName(SystemParameters.STAGING_PROVIDER_WSURL);
 		ProfileParameter emailpp = pps.getByName(SystemParameters.STAGING_PROVIDER_EMAIL);
@@ -861,7 +859,7 @@ public abstract class StagingActions extends AbstractWebPage {
 				parameterArr[0] = new com.owera.xapsws.Parameter(SystemParameters.SERIAL_NUMBER, serialNumber, null);
 				//				parameterArr[2] = new com.owera.xapsws.Parameter(providerSecret, secret, null);
 				parameterArr[1] = new com.owera.xapsws.Parameter(SystemParameters.SECRET, secret, null);
-				ParameterList parameters = new ParameterList(parameterArr);
+				ParameterList parameters = new ParameterList(new ArrayOfParameter(parameterArr));
 				unit.setParameters(parameters);
 				unit.setUnittype(ut);
 				unit.setProfile(p);
@@ -924,7 +922,7 @@ public abstract class StagingActions extends AbstractWebPage {
 				msg.append(String.format("%1$-40s%2$-15s%3$-45s\n", unit.getUnitId(), serialNumber, secValue));
 			}
 			postMail("xAPS Staging Server has registered a shipment of " + units.size() + " units", msg.toString(), emailaddr);
-		}*/
+		}
 	}
 
 	/**
@@ -1109,9 +1107,6 @@ public abstract class StagingActions extends AbstractWebPage {
 		 * @param email the email
 		 * @param unittype the unittype
 		 * @param profile the profile
-		 * @param serial the serial
-		 * @param protocol the protocol
-		 * @param secret the secret
 		 */
 		public WebServiceParams(String wsurl, String wsuser, String wspass, String email, String unittype, String profile/*, String serial, String protocol, String secret*/) {
 			this.wsurl = wsurl != null ? wsurl : new String();

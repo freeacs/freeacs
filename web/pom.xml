@@ -26,7 +26,7 @@
         </dependency>
         <dependency>
             <groupId>com.github.jarlah</groupId>
-            <artifactId>freeacs-ws</artifactId>
+            <artifactId>freeacs-ws-client</artifactId>
             <version>1.0</version>
         </dependency>
         <dependency>
