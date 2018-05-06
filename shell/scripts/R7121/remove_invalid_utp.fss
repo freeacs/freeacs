@@ -1,0 +1,21 @@
+# Remove invalid Unit Type Parameters
+#
+# This script will remove invalid Unit Type Parameters from a R7121 Unit Type. This can be 
+# necessary (or convenient) to do if the Unit Type is created by means of "Discovery" process
+# in the TR-069 server. In that case, the device will report (as recorded with fw 1.1.6, 4/4-2013)
+# 1800+ Unit Type Parameters, while most of these parameters does not make sense for the device
+# at all.
+
+echo off
+
+if '${_ut}' eq 'NULL'
+  echo "No unittype context found - please change to a R7121 unittype context"
+  return
+fi
+
+delosfile tmp 
+while scripts/R7121/blacklist
+   ut:${_ut}/listparams ${1} >> tmp
+done
+
+ut:${_ut}/delparam < tmp

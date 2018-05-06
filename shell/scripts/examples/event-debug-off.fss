@@ -1,0 +1,4 @@
+setparam System.X_OWERA-COM.Debug 0
+setparam InternetGatewayDevice.X_OWERA-COM.Syslog.Enable 1
+setparam InternetGatewayDevice.X_OWERA-COM.Syslog.Severity 5
+kick

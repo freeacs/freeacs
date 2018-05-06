@@ -1,0 +1,584 @@
+v2.3.41 (2014-11-23)
+- bug: cc-command did not properly obey the unittype/profile context switch, when switching to a unit
+v2.3.40 (2013-07-10)
+- bug: unittypecompletedelete did not delete test-case related data, hence delete could not be completed
+v2.3.39 (2013-05-30)
+- bug: exporttcfile argument validation was incorrect
+- add: validateflags method added to the Unittype menu, to check flags compared to TR-069 datamodel
+- lib: dbi v1.74.33 (to support the above addition) 
+v2.3.38 (2013-05-27)
+- lib: dbi v1.74.32 (bugfix on parameter-search with NULL-values)
+v2.3.37 (2013-05-23)
+- lib: dbi v1.74.31 (group-matching bugfix)
+v2.3.36 (2013-05-02)
+- bug: job status change was never committed to database
+v2.3.35 (2013-04-29)
+- bug: fixed group-listing in UnittypeMenu (heading was wrong)
+- lib: dbi v1.74.23 (bugfix on jobs)
+v2.3.34 (2013-04-26)
+- lib: dbi v1.74.22 (bugfix on jobs)
+v2.3.33 (2013-04-12)
+- bug: Now aborts when using incompatible steps and methods in 'testsetup' command.
+v2.3.32 (2013-04-08)
+- add: Cleaned up syntax & help text for 'testsetup' command.
+- bug: intro: v2.3.30, did not handle variables with parameter-name correctly
+- add: Added filter functionality to 'listtesthistory' command.
+v2.3.31 (2013-04-06)
+- lib: dbi v1.74.15
+- ref: better help for the TR069 test methods and fixes on those methods in general
+- add: new command listtctags added
+v2.3.30 (2013-04-04)
+- ref: change: variable referencing a parameter name must use _ as prefix to evaluate the value of the parameter
+- lib: dbi 1.74.14 
+- ref: avoid printing number-of-entries after echo-commands
+- bug: some NPs related to Test Case commands
+v2.3.29 (2013-04-02)
+- lib: dbi v1.74.12
+- bug: Group-parameter export/import is now handled (using a special listparamforexport command and changes in dbi)
+- bug: the entry-count added in v2.3.26 was printed to file 
+- ref: better logging if wrong command was run in UnittypeMenu
+- bug: substitutions of file-args into the command could not change context  
+v2.3.28 (2013-03-19)
+- add: XAPSShellDaemon supports logPrefix - easier to track multiple shell daemon executions in Core Server
+v2.3.27 (2013-03-18)
+- lib: dbi v1.74.8
+- add: added support for BootRequired flag in UnittypeParameterFlag
+v2.3.26 (2013-03-17)
+- lib: dbi v1.74.6
+- del: removed all time-rolling related stuff from groups
+v2.3.25 (2013-03-15)
+- add: added entry-count at the end of each listing-output
+- bug: a non-defined variable did not return 'NULL' as it should, but returned variable name
+- ref: added help for the 'regular' unit command
+- bug: not possible to return to regular mode without explicit kick
+- ref: list-commands in Unit-context always refresh the Unit
+- bug: did not handle variables in filenames used in file-redirection commands
+v2.3.24 (2013-03-14) 
+- ref: improved help listed when starting up xapsshell.jar (lists how to add fusionuser and fusionpass)
+v2.3.23 (2013-03-13)
+- lib: dbi v1.74.4
+- ref: removed/replaced some unit commands regarding kick/extraction/inspection/read/write
+- ref: simplified code concerning kick
+v2.3.22 (2013-03-08)
+- ref: Fixed help on setuser command
+v2.3.21 (2013-03-01)
+- lib: dbi v1.74.0
+- del: removed some unnecessary stuff due to changes in dbi
+v2.3.20 (2013-02-25)
+- ref: setunittype command which synchronizes from npa/rgw-XML-documents are updated to set boolean enumerations
+- ref: generateenum command directly creates enumerations on unittype parameters
+v2.3.19 (2013-02-20)
+- ref: removed a enabletr069report command - assumption is that this will never be a hit
+- lib: dbi v1.73.15
+- doc: updated to 2013R1
+v2.3.18 (2013-01-24)
+- ref: importscript now handles 2012R1 files-input
+- ref: ParameterParser now handles old group-param definitions (2011R1 most likely)
+- ref: setuser command handles 2012R1 user-input/output
+- ref: importfile handles 2012R1 file-input/output
+v2.3.17 (2013-01-08)
+- add: Also protects fusion-log files from unwanted access (in restricted mode)
+- bug: memory-leak fixed when loading importing a lot of files at the same type (unittypeimport ALL)
+v2.3.16 (2012-12-20)
+- add: Initial support for FILE test method.
+v2.3.15 (2012-12-14)
+- bug: syslog search option could not handle multiple severity
+- ref: fixed typo
+- add: delfailedunits in job help menu
+- bug: -logs.properties logged to fusion-core, changed to shell-core 
+v2.3.14 (2012-12-13)
+- lib: dbi v1.73.2
+- lib: common v1.33.0
+- ref: reworked property files
+- ref: explicitely reset XAPSVersionCheck.
+v2.3.13 (2012-12-06)
+- bug: BufferedReader was not closed properly in FileUtil.getLines()
+v2.3.12 (2012-11-30)
+- lib: dbi v1.72.19
+- lib: mysql-connector v5.1.22
+- lib: removed oracle-connector 
+- ref: fixed svn externals
+v2.3.11 (2012-11-27)
+- bug: Now handles import from older 2012R1-releases
+- ref: Fixed a typo
+v2.3.10 (2012-10-02)
+- bug: Fixed broken formatting in 'listtesthistory' command.
+v2.3.9 (2012-09-12)
+- add: lots of testcases!
+v2.3.8 (2012-07-17)
+- ref: improved help on generatetc (to generate from master-tc)
+- add: command generateenum on UnittypeParameterValues - will generate from Datamodel
+v2.3.7 (2012-07-11)
+- bug: Logging in with command line parameters (fusionuser/fusionpass) now works.
+v2.3.6 (2012-07-09)
+- ref: generatetc now supports test-case id, to make variations over a master test case
+- ref: del/listtesthistory available on Unittype-context
+- ref: del/listtesthistory supports time-range arguments
+- bug: Previous commit broke build.
+v2.3.6 (2012-07-09)
+- ref: Added all TestCase-methods to Unit-Context, easier to use
+v2.3.5 (2012-07-05)
+- lib: dbi v1.72.10 (change some names)
+v2.3.4 (2012-07-03)
+- ref: Improved output to console for batchwise-deletion-command, in case they fail. Possibly also fixed a bug if deleting units from several profiles in one-go 
+v2.3.3 (2012-07-02)
+- del: removed test-code
+- lib: dbi v1.72.7 (changed package name)
+- ref: added method to export a single Test Case (based on id)
+v2.3.2 (2012-06-29)
+- lib: dbi v1.72.6
+- bug: List of TestCases was not correct, added methods to retrieve either complete/uncomplete TestCase in a list
+- ref: Moved delosfile from RootMenu to GenericMenu
+- bug: TestCaseHistory listing was not correct
+- bug: (3 bugs): while-loop did not handle File-protection, missing Unittype or file-name with space a the end
+v2.3.1 (2012-06-28)
+- lib: dbi v1.72.5
+- ref: TR069 Test Framework stuff
+v2.3.0 (2012-06-21)
+- lib: dbi v1.72.4
+- add: TR069 Test Framework, to run TR069 Parameter test with any kind of device. Possible to build Test Cases for input/output
+using GET/SET-PARAMETERVALUES methods, also combining with REBOOT and FACTORY_RESET. 10 new commands are added.
+- add: More scripts added, to be used in various circumstances
+
+v2.2.22 (2012-05-29)
+- add: An idle-flag to know if a shelldaemon is in use or not
+v2.2.21 (2012-05-25)
+- ref: Some cleanup in Help-text from xAPS to Fusion
+- ref: improved Validation error message
+- add: setexecution command added, mostly to be able to test script-execution in Core-server, put possibly also useful to add
+scheduled executions
+- add: added "error" command to signal failed script execution
+- lib: dbi v1.71.2
+- ref: listexecutions also lists requestId
+- ref: setuser now handles transfer from old user-access-list to new one
+v2.2.20 (2012-05-23)
+- ref: modeChange will not allow kick if in session-mode + throws exceptions when used incorrectly => will abort script execution
+- ref: importfile/listfile changed to make room for "owner" field
+- lib: dbi v1.71.1 (support for file-owner) 
+- ref: !<string> now search from newest to oldest commands to find a match
+v2.2.19 (2012-05-15)
+- bug: While-command could not use Fusion-files 
+- add: Possible to change logger i Processor, and debugCommand() method also specifies LogContext -> possible to log to Syslog in Core ScriptExecutor 
+- ref: change help to reflect Fusion-expression (something in between of SQL-syntax and Regexp-syntax)
+v2.2.18 (2012-05-10)
+- bug: a lot of unit help commands were missing 
+- bug: XAPSShellDaemon needed the xaps-shell.properties file to work, rewrote that part to rely on default-settings
+v2.2.17 (2012-05-08)
+- bug: setjob help was corrected
+- bug: setjob command did still require move-to-profile, now removed
+v2.2.16 (2012-05-04)
+- lib: dbi v1.70.1 (Minute change in UnittypeParameterFlag API)
+v2.2.15 (2012-05-01)
+- lib: dbi v1.70.0 (File change)
+- imp: help on File-commands are improved
+- ref: Some refactoring on File-commands
+- ref: Some API-changes (method-names) in Job
+v2.2.14 (2012-04-26)
+- bug: could not import PAUSE command
+- bug: heartbeat set/list commands did not work (extra fields, wrong order)
+- bug: ScriptMaker did not have correct commands/versioncheck to handle triggers/heartbeats
+v2.2.13 (2012-04-25)
+- ref: changed help for syslog event
+- ref: changed some according to changes in v1.69.8 (Heartbeat)
+- lib: dbi v1.69.8
+- ref: removed GROUPSYNC stuff (a combined command)
+- ref: syslog events changed 
+- ref: changed generic command "pause" to "pausescript" (added help instructions)
+v2.2.12 (2012-04-19)
+- ref: many changes around setjob command - not tested
+- lib: dbi v1.69.5 
+v2.2.11 (2012-04-16)
+- imp: listing of vars now possible to used in piped commands
+- imp: XAPSShell in daemon mode is slightly changed to specify fusionuser in order to start a daemon with correct user-access rights
+- ref: Session's mode constants moved to SessionMode-enum
+v2.2.10 (2012-04-13)
+- imp: FileInput to commands will now also retrieve data from Fusion File-store (as first attempt)
+v2.2.9 (2012-04-12)
+- bug: was able to access xapsshell.sh in restricted mode - security violation
+- lib: dbi v1.69.3
+- ref: changed syslog-event commands and trigger commands to support the move of group from trigger to syslog-event
+v2.2.8 (2012-04-03)
+- ref: made help for script-executions/triggers/heartbeat depend upon XAPSVersionCheck
+- ref: changed text for dbinfo and userinfo for more clarity
+- add: Restricted mode login added
+- add: Heartbeat definition commands added, updated commands/help with new fields
+- lib: dbi v1.69
+- bug: syslog search with wildcards did not work properly
+- add: script to change SSID based on MAC/Serialnumber  
+v2.2.7 (2012-03-15)
+- ref: Unit now handles INSPECTION/EXTRACTION
+- bug: return command did not exit properly from while/if closures
+- test: drop throwing IllegalArgumentException upon unknown variable - to make possible testing it afterwards
+- bug: ls did not using Listing to output, not possible to use output in script
+- ref: lots of changes in modeChange-method in UnitMenu, in progress
+- add: Added new scripts which demonstrates usage of an input-file to add sip-users
+v2.2.6 (2012-03-05)
+- add: INSPECTION/EXTRACTION support in Unit-menu
+- ref: renamed 'listunitparams' to 'listparams', changed output slightly (to address session-params)
+- lib: dbi v1.68 (some constants changed to Enum)
+v2.2.5 (2012-02-17)
+- lib: dbi v1.67.6
+v2.2.4 (2012-02-15)
+- lib: dbi v1.67.3
+- add: list scriptexecutions
+v2.2.3 (2012-02-14)
+- lib: dbi v1.67
+- add: listexecutions command in unittype
+v2.2.2 (2012-02-09)
+- add: export/import supports triggers 
+- add: listtriggers support PARENT-FIRST/LAST
+- bug: helptext for syslog was wrong
+- add: testperf scripts updated with syslog events and triggers
+- add: count-command in group, updates group object upon count, but not database
+- bug: some testperf scripts were updated to follow shell 2.0 style 
+- bug: if job status failed, shell did not pick it up correctly
+v2.2.1 (2012-02-07)
+- lib: dbi v1.66.3
+- ref: major change of trigger-feature, updated to latest lib supporting many new fields. Also tested.
+- bug: a user could add/change/delete permissions on other users whom he had no access to 
+v2.2.0 (2012-02-03)
+- lib: dbi v1.66.1 (full permission system implemented)
+- ref: supports login of user, even though admin-login will always be an easy option (this can be useful when running shell through web)
+- ref: change setuser/listusers to support the new admin-flag
+- add: added a 'userinfo' command to display logged in user
+v2.1.5 (2012-01-31)
+- ref: removed Profile from Trigger (list/set) due to changes in dbi v1.65.11
+v2.1.4 (2012-01-31)
+- lib: removed all xaps-libs (common, dbi, prov, shell), replaced by using Eclipse Deployment Assembly which is detected by WTF (Tomcat)
+v2.1.4 (2012-01-31)
+- ref: updated local xaps-shell.properties
+- bug: unittypecompletedelete command failed if unittypename contained space
+- bug: String-split on pipe did not work properly, should be fixed now
+- bug: refactoring of listing methods in v2.1.3 introduced bug when listing without matching arguments
+v2.1.3 (2012-01-18)
+- lib: dbi v1.65.6
+- ref: list-methods can match on many properties in the object listed (removed usage of deprecated method)
+- log: improved logging in ContextContainer
+- ref: removed a comment about 120 sec max in repeat-interval (due to update of dbi)
+- add: added Trigger support in Unittype (add/change/list/delete)
+- bug: listing of values now encapsulates | in quotes
+- bug: split on | to handle multiple commands is improved, | can be encapsulated in quotes to avoid command-split 
+v2.1.2 (2012-01-17)
+- ref: changed an import-statement due to changes in dbi
+- lib: dbi v1.65.5
+v2.1.1 (2012-01-11)
+- lib: dbi v1.65.2
+- imp: help and list for triggers, all commands tested
+v2.1.0 (2012-01-05)
+- lib: dbi v1.65
+- improve: added trigger commands on the unittype context level
+- refactor: Validation.filter class deprecated. Replaced by matches() classes
+
+-- 2012R1 branched out here
+
+v2.0.7 (2012R1) (2011-12-30)
+- updated: property files to production
+v2.0.7 (2012R1) (2011-12-16)
+- updated: version numbers
+- bugfix: help did not display command which partially matched other command name
+- lib: dbi v1.64.18
+- improve: help changed to explain search capabilities
+- bugfix: listing of units in group showed group context (should only show profile context)
+v2.0.6 (2012R1) (2011-12-12)
+- removed old documents
+v2.0.6 (2012R1) (2011-12-08)
+- updated version numbers
+v2.0.6 (2012R1) (NYC)
+- lib: dbi v1.64.16
+- doc: command references, combined commands, version
+- refactor: syslog-command: moved rows option from list- to search-argument
+- refactor: internal property files are updated 
+- refactor: version update
+- refactor: accepts "listvar" as well as "listvars" as command
+- bugfix: if variable specified in program-options, it did not work unless also a script was specified
+- refactor: Name change (xAPS->Fusion), also changed ASCII art
+v2.0.5 (2012R1) (2011-12-06)
+- lib: updated to dbi v1.64.15
+v2.0.5 (2012R1) (2011-11-24)
+- added scripts to support update from 2011R1 to 2012R1
+- bugfix: delcertificate command was not recognized if written out fully 
+- refator: unittypeimport/export/delete command must be written exactly
+- updated xaps-dbi v1.64.13
+v2.0.4 (2011R2) (2011-11-18)
+- some refactoring of ContextContainer, to make possible correct manipulation of contexts
+- Processor.changeContext updates context more correctly
+- updated xaps-dbi v1.64.12
+v2.0.3 (2011R2) (NYC)
+- refactored context classes, parsing of context is more correct now in all cases: cc/call/fileargs/-u<context>
+- fixed cc-command, should handle cc-arg starging with / 
+- added a method on XAPSShellDaemon to support interaction between TR-069 Server and Shell Daemon
+- updated xaps-dbi v1.64.11 
+v2.0.2 (2011R2) (2011-10-19)
+- updated documents
+- added script examples
+- fixed bug in batch-wise unit-parameter update/delete
+- fixed some texts/strings
+v2.0.1 (2011R2) (2011-08-11)
+- fixed Script-constructor-bug (caused variables to be null -> Nullpointer in return)
+- updated to v1.64.9 of xaps-dbi
+- fixed return-bug
+- fixed exit-bug
+- fixed a bug in command-constructor (if command-context ended with slash + space)
+v2.0.0 (2011R2) (2011-08-03) - shell is now considered a language!
+- made opentelnet_alldevices.xss script - to test many script-features
+- refactored a great deal int Processor/Session/Script, all input is run as a part of a script
+- added new classes (Echo, BatchStorage, Variable)
+- added pause command
+- much improved debugging (both using echo and in xaps-shell.log file)
+- var-arg substitutions now allow unit/profile/group/job/unittype parameters to be used
+- "var" can be used instead of "setvar" (improved readability)
+- while/done seems to work, after substantial rework
+- if/else seems to work, after substantial rework
+- better abort-handling of exceptions during scripts
+- added break/continue, seems to work
+- fixed file-args append bug, introduced in v1.8.0
+- better exception-handling when choosing database 
+- ignored scripts/input-lines may now start with whitespace, then followed by hash (#)
+- not tested daemon-mode
+v1.8.0a (2011R2) (2011-07-11)
+- refactored parsing of context, now use map instead of list to store context-elements
+- fixed a bug in handling context from file-args
+- natopen.xss tested and works so far
+v1.8.0 (2011R2) (2011-06-28)
+- shell now handles if-elseif-else-fi (also nested)
+- shell now handles while-done (also nested)
+- shell allows setvar command and if/elseif and while to evaluate a java-script expression (must used lt, le, ge or gt instead of <,<=,>=,>)
+- lots of refactoring, not tested very well. Start to run "call natopen.xss" - observe iteration over a file not working, and some var-subst-problem as well
+v1.7.5b (2011R2) (2011-06-24)
+- setparam on Group now handles group-params with id, but still unknown in a new database (the import-use-case)
+v1.7.5a (2011R2) (2011-06-23)
+- updated help text on "listunits" command
+- fixed ParameterParser to handle parameter-datatype
+- updated to latest version of dbi v1.64.3
+- tested searches on unittype parameter, both gt/ge/lt/le and type conversion: OK!!
+v1.7.5 (2011R2) (2011-06-23)
+- updated to xaps-dbi v1.64.2 (refactored somewhat to allow for mass-changes of unittype parameters)
+- improved a lot of output from commands (now contains names of objects)
+- added a simple method to retrieve information about the current database
+- fixed a bug in the delete-script
+- a lot of refactoring to handle mass-update/delete of unittype parameters, unit parameters and units
+v1.7.4 (2011R2) (2011-06-20)
+- updated to xaps-dbi v1.64.1 (support new group-param operator/type)
+- cc command support several "..", like "cc ../../ut:NPA201E" etc
+- small improvement in setunittype-command, the output-delete-script is now correct
+- sleep did not work with an argument - fixed
+- correct handling of unittypeexport/import/completedelete, also added to help
+- job details now prints repeat-counter/interval information
+- possible to make/change a TELNET-job
+- fixed a typo in ScriptMaker (waiting for 5 sec, not 15 sec)
+- added som spa-programs to internal folder
+v1.7.3d (2011R2) (2011-06-09)
+- refactored setunittype command be much faster 
+- added async-option to kick command + changed some output from the command
+- updated to v1.61.14 of xaps-dbi
+v1.7.3c (2011R2) (2011-05-30)
+- fixed syslog command (row option was not obeyed and date parsing was wrong)
+- fixed sorting (option -o), number sorting with NULL did not work and NULL was moved the last in ascending sort
+v1.7.3b (2011R2) (2011-05-27)
+- command parser now accepts context and command in one string (example: context/command)
+- now possible to append to file using file redirection >>
+- fixed a number of issues in help
+- history is now listed in reverse order
+- fixed a bug in UnitMenu, to allow setparam command to run
+- updated doc
+- updated to v1.61.7 of xaps-dbi
+v1.7.3 (2011R2) (2011-05-25)
+- prints options correctly in help
+- fixed many bugs in GenericMenu (the bugs came after the refactoring in v1.7.2)
+- help for list of commands now works again
+- improved handling of command-history
+- the options to start xapsshell.jar now accepts all kinds of options -> translated into variable key/value pair
+- unrecognized variable name in the call-command options are automatically translated into variable name ${_1}, ${_2}, etc
+v1.7.2 (2011R2) (2011-05-18)
+- refactored highlevel commands into generic commands. Executed the same way as regular commands
+- added syslog command, can now retrieve syslog data quite easily (sorting,searching,listing)
+- added command history, but !1 executes that previous command, not the first command
+- removed a lot of old scripts/files
+- fixed a severe bug when running call command on a non-existent file
+v1.7.1 (2011R2) (2011-05-15)
+- fixed numerical sorting for the -o option
+- added options to the help system (added to all list-commands)
+- moved the cc-command to higher level menu (removed it from all other menus)
+- updated help for all commands (removed lots of context-change command and special list commands)
+- changed all menu-commands, so that all 4 char or more is need to identify command
+v1.7.0 (2011R2) (2011-05-13)
+- complete refactoring of the most complicated parts of the shell
+	command-parsing
+	input-handler
+	command-processor
+	context-handling
+- changed context, both parsing/changing/display/prompt
+- added ordering (-o) to all list commands
+- moved unit-command to highlevel command, available everywhere
+- added many new packages, moved a lot of classes
+- tested all ScriptMaker-script, and it works
+- improved handling of aborted scripts/command (reset of context)
+- changed variable-option for call-command, can now specify var-name
+- NB! Help is not updated, will be in next commit
+- NB! Old scripts are not updated, will be in next commit
+v1.7.0-alfa (2011R2) (NYC)
+- lot of changes - will be described in next commit. This commit is to save data to SVN
+- also possible to pipe high-level commands (like echo and cat) into list-commands
+- changed all listcommands to accept -c and -a to list context/all info (removed many newly added commands)
+- displayable parameter will be shown as NULL for non-existent parameters
+- possible to both delete and list variables
+- not possible to make variable starting with a number (reserved for file argument referencing) 
+- improved variable handling, unresolved variables will be printed as text
+- file references which goes outside boundry, will be handled gracefully (not exiting shell)
+- changed from FROMFILE arguments to using ${<number>} to reference file arguments (dropped some use cases like FROMFILE[n-] and FROMFILE[n-m])
+- improved exception handling of filter error (caused by parsing of a incorrect regexp-pattern}
+v1.6.4 (2011R2) (2011-05-06)
+- added unit-methods in root/profile/unittype menu to quickly switch to unit context (search and context-switch in one command)
+- piping of list-commands available!!
+- if a command fails, the context will be reset to original (not stranded on a context where the command were supposed to be executed)
+v1.6.3 (2011R2) (2011-05-04)
+- improved all list methods (columns are now aligned)
+v1.6.2 (2011R2) (2011-05-03)
+- introduced classes to handle column-output (for list methods)
+- listunitsfull command added to Unittype-, Profile- and Group-Menu
+- listunitscontext command added to Root-, Unittype-, Profile- and Group-Menu
+v1.6.1 (2011R2) (2011-04-27)
+- supports kick and refresh on unit-menu
+- updated to latest xaps-dbi v1.61.0
+- supports group parameters with equal unittype parameter names, 
+- supports use case "search for device where param A differ from X and param A differ from Y"
+- manual merge with 2011R1 branch (r37143)
+v1.6.0 (2011R2) (2011-03-25)
+- updated to latest xaps-dbi v1.60.3 (lots of package renaming)
+
+2011-04-20
+- Manual merge with 2011R1 branch (r37143)
+2011-03-25
+- Merging with 2011R1 branch from 36057 to 36808
+
+v1.5.5 (2011R1SP2) (2011-04-20)
+- fixed an import problem with syslog events, moved it to a later stage in the import-sequence
+v1.5.4 (2011R1SP1) (2011-03-18)
+- changed lower limit for repeating reports to minimum 2 minutes
+- updated to latest xaps-dbi v1.57.22-18
+v1.5.4 (2011R1SP1) (2011-03-17)
+- updated to latest xaps-dbi v1.57.22-16
+v1.5.4 (2011R1SP1) (2011-03-11)
+- fixed a bug in Sync-class, only important to create a whole unittype from file
+- fixed build.properties to build DBI from 2011R1-branch
+v1.5.4 (2011R1SP1) (2011-02-23)
+- updated to latest xaps-dbi v1.57.22-14
+v1.5.4 (2011R1-SP1) (2011-02-07)
+- now correctly exports/imports syslog events
+v1.5.3 (2011R1) 2011-01-19
+- updated to latest lib (v1.57.22 of xaps-dbi)
+v1.5.3 (2011R1) 2011-01-18
+- added status command (read-only) in Job menu (updated help)
+- added hidden commands to support change of job status based on the status read (only used in import) 
+v1.5.3 (2011R1) 2011-01-17
+- removed System.out.println statements from JobComparator
+v1.5.3 (2011R1) 2011-01-17
+- updated property file to production
+v1.5.3 (2011R1) 2011-01-17
+- fixed bug in setjob-command (handles repeat-counter/interval correctly)
+- fixed bug in listcertificates-command (will skip if database does not support it)
+v1.5.3 (2011R1) 2011-01-12
+- updated lib (v1.57.16 of xaps-dbi)
+v1.5.3 (2010R1) 2010-12-13
+- added another method to check when XAPSShell i fully initialized
+v1.5.3 (2010R1) 2010-12-13
+- added a new scripts-folder for public scripts
+- added a delete-script (may replace -delete option)
+- added interface to poll for execution of commands (XAPSShellDaemon)
+v1.5.3 (2010R1) 2010-12-06
+- sleep 5 sec before script deletion of a unittype
+- fixed a couple of bugs in RootMenu (setunittype command) and JobComparator (listing of jobs)
+- some script changes (added spa2102.utp)
+v1.5.3 (2010R1) 2010-11-24
+- added makegroupmonitor command
+- added enabletr069report command
+- removed command setmonitorflags (intro. in v1.5.2)
+- xAPS Shell supports 77 commands all together
+- completely reworked help section, added a new package, added detailed help for all commands
+- now also changes syslog events
+- updated to latest lib (v1.57.4)
+- changed group-commands (list/set) to support time-rolling of groups
+- fixed a bug in setting correct context when called in daemon-mode (intro. v.1.5.2)
+- fixed a design flaw in usage of synchronization (intro. v.1.5.2)
+- now possible to load a script directly from Filestore in xAPS database
+- fixed a bug in getting command-line arguments in daemon-mode (intro. v.1.5.2)
+- some changes in exception handling in daemon mode
+v1.5.2 (2010R1) 2010-11-10
+- added some production certificates to internal directory
+- updated doc to a certain extent 
+- removed StabilityLogger and Migration class
+- added daemon-mode, necessary to run xAPSShell as part of a job or a syslog event
+- refactored XAPSShell to be an object, not a class-instance -> enables several 
+xAPSShell running in threads (Many classes are changed by this change).
+- added variables 
+- fixed listdetails on job to handle software-dependency = NULL (bug since 1.5.0-alpha)
+- updated testperf-script to also include hardware-monitor parameters
+- updated to latest lib (xaps-dbi v1.56.4)
+- changed setjob/listjobs to support the new job feature "repeat-count" and "repeat-interval"
+- added a hidden command in root-menu to set monitoring-flags on all unittypes 
+v1.5.1 (Demo release) 2010-10-19
+- No changes, only bumping
+v1.5.0-beta7 (2010R1) 2010-10-18
+- fix in Context.reset(), should avoid NP in some context
+- small change in RootMenu, caused by change in file structure of scripts
+v1.5.0-beta6 (2010R1) 2010-10-01
+- fixed bug in setuser command (did not handle hashed secrets)
+v1.5.0-beta5 (2010R1) 2010-10-01
+- changed some paths according to shift of script-location
+- fixed bug in permission-export-routinte
+- fixed bug in print-routine (now excludes double quote)
+v1.5.0-beta4 (2010R1-RC1) 2010-09-27
+- fixed setuser/listuser to validate access-list
+- upated to latest lib (xaps-dbi v1.54.12)
+v1.5.0-beta3 (2010R1-RC) 2010-09-13
+- updated to latest xaps-dbi lib
+- can add Staging-system parameters independently 
+- removed some warnings
+v1.5.0-beta2 (2010R1-beta) 2010-08-22
+- fixed a NP-bug in printing admin user
+- fixed delete-script, so it doesn't delete users
+- improved import-script to handle absence of users & permissions
+- fixed bug in import-file command (now handles more than one file-separtor in file-name)
+- updated to latest lib (xaps-dbi v1.53.8), updated two syslog-event get-methods to reflect the lib change
+- updated xapsshell.jar  
+v1.5.0-beta (2010R1-beta) 2010-06-25
+- fixed a bug in scriptmaker - caused all permissions to be deleted if deleting a unittype
+- updated to v1.52.10 of xaps-dbi.jar
+v1.5.0-alpha (2010R1-alpha) 2010-06-09
+- tab-completion, history and backspace added (thanks to JLine & Jarl Andre)
+- job now support optional software dependency
+- certificates is possible to add/change/delete/import/export
+- possible to see group count
+- user/permissions added - but no login to xapsshell
+- syslogevent now has a delete-limit for controlling when a syslog entry may be deleted
+- now supports a command to make a unittype based on an PingCom XML file definition
+- various helper classes to sync between various xAPS databases - not for general public
+- updated to xaps-dbi v1.51.0
+- updated build.xml to produce correct artifacts
+- updated xapsshell.jar
+v1.4.4-branch 2010-02-10
+- added setunittype command which may update according to an XML file
+v1.4.4 (2009R2) 2010-02-07 (#bug 4714)
+- fixed -delete option bug which caused a delete on unittypes with partly the same name
+- fixed read from FROMFILE with empty lines or comments
+- fixed unit changes not reflected without changing context level
+v1.4.4 (2009R2) 2009-12-09
+- updated xapsshell.jar (correct propertyfiles)
+v1.4.4 (2009R2) 2009-12-09
+- updated lib (xaps-dbi v1.50.12) - now handles the Sting database from 2008-Q3.
+- updated xapsshell.jar (correct MANIFEST.MF)
+v1.4.4 (2009R2) 2009-11-19
+- updated xapsshell.jar
+v1.4.4 (2009R2) 2009-11-17
+- updated module.mk to tag from branches/1.4
+- updated lib (xaps-dbi v1.50.11) - serious bug
+v1.4.4 (2009R2) 2009-11-17
+- updated property file
+- built xapsshell.jar
+v1.4.4 (2009R2) 2009-11-17
+- updated build.xml
+- bumped version number
+- updated doc
+- updated scripts
+- tested with an export of ALL from xaps-a and import of ALL into localhost
+- built xapsshell.jar

@@ -1,0 +1,137 @@
+v1.3.23 (2013-07-04)
+- bug: If one kick fails, other would not run
+- bug: ConnectionRequestURL is properly checked before attempts to use it
+v1.3.22 (2013-06-04)
+- ref: Kick may be executed even if TR-111 is not enabled and device behind NAT. Using PublicIP and expecting port forward. Feature is default disabled (by propertyfile)
+v1.3.21 (2013-05-03)
+- bug: ConnectionRequestURL was used in one particular case in UDP-kick
+v1.3.20 (2013-04-26)
+- lib: dbi v1.74.22 (bugfix on jobs)
+v1.3.19 (2013-04-17)
+- ref: Improved messaging of kick-response (used by Web)
+v1.3.18 (2013-04-10)
+- bug: UDP-kick was never run if connectionURL was local - introduced in v1.3.16
+- bug: Inactive STUN client detection recognize STUN-messages and avoid logging if only such messages are present
+- ref: Improved logging
+v1.3.17 (2013-04-09)
+- ref: ActiveDeviceDetection logs inactive stun-clients insofar there is recorded other syslog activity from the device
+- add: ActiveDeviceDetection also logs active stun-clients every minutes (1/60 of the population every minute)  
+- lib: common v1.33.7 (updated TimestampMap to use ConcurrentHashMap)
+v1.3.16 (2013-04-08)
+- ref: JobKickThread reuses the same logic as SingleKickThread 
+- ref: Will try TCP-kick first if ip is public. If TCP-kick fails, UDP-kick will be attempted. 
+v1.3.15 (2013-03-28)
+- lib: common v1.33.4
+- ref: ActiveStunDetection changed to use new class in common (TimestampMap)
+- bug: When STUN-server close down while a request is being processed, an eternal loop was created -> filling disk
+v1.3.14 (2013-03-25)
+- add: ActiveStunDetection added, StabilityLogger changed
+v1.3.13 (2013-03-13)
+- lib: dbi v1.74.4
+- ref: SingleKickThread is simplifed, since ProvisioningState is removed. The thread only has two resp: 1) Kick 2) Return device to REGULAR mode
+v1.3.12 (2013-03-08)
+- ref: small change in logging (state -> mode)
+- ref: improved logging of error in Kick-thread
+v1.3.11 (2013-03-01)
+- ref: try to improve the shutdown-code of sockets (disconnect & close) - should allow hot-deploy
+- lib: dbi v1.74.0
+- del: some small alterations due to changes in dbi
+v1.3.10 (2013-02-25)
+- lib: dbi v1.73.17
+- ref: improved StabilityLogger a lot, also added a lot of counters to the code
+v1.3.9 (2013-02-04)
+- ref: Changed some log settings
+v1.3.8 (2012-12-13)
+- lib: dbi v1.73.2
+- lib: common v1.33.0
+- ref: fixed property files
+v1.3.7 (2012-11-02)
+- bug: NP if ConnectionRequestPassword was null and UDPKick was issued
+v1.3.6 (2012-07-02)
+- lib: dbi v1.72.7
+- ref: Reduced number kick UDP-packages from 9 to 3
+- ref: Changed som log from xAPS to Fusion 
+v1.3.5 (2012-05-18)
+- ref: minute change in logging of SingleKickThread
+v1.3.4 (2012-05-04)
+- add: improved monitoring of errors in startup/runtime
+- ref: added VERSION to OK-servlet (shows up in Monitor) 
+- lib: dbi v1.70.1
+- ref: Kick-job no longer uses the software-field from Job to filter which units to kick
+v1.3.3 (2012-03-15)
+- ref: SingleKickThread has undergone major refactoring to properly support INSPECTION/KICK/EXTRACTION 
+- ref: STUN-server may be disabled (only allowing for ConnectionRequest-stuff)
+- lib: dbi v1.68.2 (some API change for Unit)
+- ref: SingleKickThread has undergone serious refactoring
+v1.3.2 (2012-03-05)
+- lib: dbi v1.68 (some constants changed to Enum)
+v1.3.1 (2012-02-09)
+- lib: dbi v.1.66.6 (updated to support permission system)
+v1.3.0 (2012-01-31)
+- lib: removed all xaps-libs (common, dbi, prov, shell), replaced by using Eclipse Deployment Assembly which is detected by WTF (Tomcat) 
+v1.3.0 (2012-01-18)
+- lib: prov v1.3.7
+- lib: dbi v1.65.6
+- added fixes from v1.2.9 (handle job repeat counter at 0 or more)
+
+-- branched out 2012R1
+
+v1.2.8 (2012R1) (2011-12-27)
+- lib: prov v1.3.6
+- added shutdown-code, to make hot-deploy work - test worked fine on Tomcat, but not on JBoss
+v1.2.7 (2012R1) (2011-12-16)
+- updated: version numbers
+- improve: removed forced GC from StabilityLogger -> used a lot of CPU
+- lib: dbi v1.64.18
+- lib: prov v1.3.5
+v1.2.6 (2012R1) (2011-12-13)
+- lib: dbi v1.64.16
+- lib: prov v1.3.3
+- refactor: changed log configuration
+v1.2.6 (2012R1) (2011-12-06)
+- updated to xaps-dbi v1.64.15
+- updated to xaps-prov v1.3.1
+- updated version numbers
+v1.2.5 (2011R2) (2011-10-20)
+- changed timeout settings in HTTP-kick, the device will have time to respond even under heavy load
+v1.2.4 (2011R2) (2011-06-23)
+- updated to xaps-dbi v1.64.3
+- updated (not tested) kick-jobs according to the logic for telnet-job (should respond quickly to changes in job status)
+v1.2.3 (2011R2) (2011-06-17)
+- JobKickThread now detects if a job stops and can discontinue kick-operations for that particular job 
+v1.2.2 (2011R2) (2011-06-10)
+- separated logs from JobKickThread and SingleKickThread
+- fixed bug in SingleKickThread - concurrentModificationException
+- some minor changes in log text
+v1.2.1 (2011R2) (2011-05-03)
+- Updated HTTPClient library from 3.1 to 4.1.1 (led to changes in code as well)
+- Changed STUN-server response interface/port to primary IP/port (instead of changed IP/port) - seems to work with NPA201E
+- JobKickThread seems to work properly
+- Re-factored the kick threads to avoid double instances of DBI
+- UDPKick-bugs fixed, interop with NPA201E seems to be ok.
+- Updated xaps-dbi v1.61.5
+v1.2.0 (2011R2) (2011-04-24)
+- merged from 2011R1-branch (r36064-37146)
+
+v1.1.0 (2011R1SP2) (2011-04-24)
+- updated to latest xaps-dbi v1.57.22-21
+- added JobKickThread (not tested properly)
+- added properties to support job-kick (not tested properly)
+- renamed KickRunnable to SingleKickThread
+- now supports KICK-mode command (in addition to INSPECTION-mode)
+- tested using kick from xaps shell
+v1.0.0 (2011R1SP1) (2011-02-23)
+- updated to latest xaps-dbi v1.57.22-14
+- removed a Thread.setName() statement
+v1.0.0 (2011R1) 2011-01-21
+- updated xaps-dbi v1.57.22
+v1.0.0 (2010R1) 2010-11-10
+- updated to latest lib (v1.56.4 of xaps-dbi)
+- updated to handle a TR-069 Client
+- added new types of Attributes (BindingChange and ConnectionRequestBinding) 
+v0.9.1 (2010R1) (2010-10-22)
+- added an OK-servlet
+v0.9.0 (2010R1) (2010-10-14)
+- renamed a thread
+v0.9.0 (2010R1-RC) (2010-09-13)
+- removed some warnings according to Java 6

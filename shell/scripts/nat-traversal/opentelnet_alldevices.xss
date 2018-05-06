@@ -1,0 +1,18 @@
+# Turn off echo of commands
+echo off
+
+# We want to open virtual servers from gateway into this port:
+var TARGET_PORT 22
+var GATEWAY_PORT 22
+var DESCRIPTION 'Telnet'
+var PROTOCOL 'TCP'
+
+cc /
+# We can only open up NAT if the device running the NAT is provisioned over TR-069:
+listunittypes | ut:${1}/listparams ConnectionRequestURL -c > tr069-unittypes.u
+# Out of these unittypes, listunits with public IP for ConnectionRequestURL (e.g.: not behind NAT)
+cat tr069-unittypes.u | listunits -c -u ${1} NE http://10.% ${1} NE http://192.168.% ${1} NE NULL ${1} NE N/A > tr069-units-on-public-ip.u
+# Treat each unit in another script - probably open Virtual Server for devices behind this unit 
+call -u scripts/nat-traversal/opentelnet_onedevice.xss -v${1},${TARGET_PORT},${GATEWAY_PORT},${DESCRIPTION},${PROTOCOL} < tr069-units-on-public-ip.u
+# Turn on echo of commands
+echo on

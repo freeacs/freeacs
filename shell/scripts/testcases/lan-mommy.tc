@@ -1,0 +1,61 @@
+# The ID is auto-generated. In the event of importing this test case file back into Fusion, the following rules apply:
+#	Changing the id : By changing it you may accidentally overwrite another test-case or create a new one.
+#	Deleting the id : You will make a new test-case, possibly a duplicate of this test case.
+#ID          3019000
+
+# The METHOD can be either VALUE or ATTRIBUTE. Make sure that the parameter definitions below match the method type
+METHOD      VALUE
+
+# The TAGS is a series of strings used to identify a set of test cases. Each string must be enclosed in square brackets [ ].
+TAGS        [20120717] [CRAFTED] [COMPLEX] [LAN] [READWRITE]
+
+# Set EXPECTERROR to true if the test case is designed to fail.
+EXPECTERROR false
+
+
+# Specify one more SET parameters, to be used in either SetParameterValue or SetParameterAttribute method.
+# If METHOD is ATTRIBUTE, a number between 0 and 2 is expected, and will be used as the notification value
+# If METHOD is VALUE, a value/string is expected, and will be used as the parameter value
+#	Format/syntax : SET <ParameterName> <Value>|0|1|2
+#	Example       : SET InternetGatewayDevice.DeviceInfo.ProvisioningCode HelloWorld
+#	Example       : SET InternetGatewayDevice.DeviceInfo.ProvisioningCode 0
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.AllowedMACAddresses						f0:de:f1:b6:7f:ad
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.DHCPServerEnable							true
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.DNSServers								208.67.222.222
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.DomainName								pingcomtest.org
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPInterface.1.IPInterfaceIPAddress		192.168.175.2
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPInterface.1.IPInterfaceSubnetMask		255.255.255.0
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPRouters									192.168.175.1
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.MaxAddress								192.168.175.200
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.MinAddress								192.168.175.100
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.ReservedAddresses							192.168.175.50
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.SubnetMask								255.255.255.0
+
+
+
+
+
+# Specify one more SET parameters, to be used in either SetParameterValue or SetParameterAttribute method.
+# If METHOD is ATTRIBUTE, a number between 0 and 2 is expected, and will be used as the notification value
+# If METHOD is VALUE, a value/string is expected, and will be used as the parameter value
+#	Format/syntax : SET <ParameterName> <Value>|0|1|2
+#	Example       : SET InternetGatewayDevice.DeviceInfo.ProvisioningCode HelloWorld
+#	Example       : SET InternetGatewayDevice.DeviceInfo.ProvisioningCode 0
+# The value are what we expect from the device if the SET parameters in this test case have already been run.
+# If a FACTORY RESET has been run after the SET method, this value is not used for comparison - check the
+# next section
+# It is also allowed to specify the following special values:
+#	[STRING] - Any value is accepted - also blank/empty string
+#	[EMPTY]  - A blank/emtpy string
+#	[NUMBER] - Any integer is accepted
+GET InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.AllowedMACAddresses                     f0:de:f1:b6:7f:ad
+GET InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.DHCPServerEnable                        true
+GET InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.DNSServers                              208.67.222.222
+GET InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.DomainName                              pingcomtest.org
+GET InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPInterface.1.IPInterfaceIPAddress      192.168.175.2
+GET InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPInterface.1.IPInterfaceSubnetMask     255.255.255.0
+GET InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPRouters                               192.168.175.1
+GET InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.MaxAddress                              192.168.175.200
+GET InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.MinAddress                              192.168.175.100
+GET InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.ReservedAddresses                       192.168.175.50
+GET InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.SubnetMask                              255.255.255.0

@@ -1,0 +1,25 @@
+echo off
+
+# Validation of the input
+if '${_1}' eq ''
+   error "Usage: testsetup.fss -vUNIT_TYPE_NAME"
+fi
+
+# Renaming the input variable to a more readable variable
+var UNITTYPE '${_1}'
+
+# Changing context to this unittype, it will fail if the unittype does not exist
+cc ut:${UNITTYPE}
+
+# Generate Test Cases
+generatetc
+# Delete Duplicate Test Cases
+deltcduplicates
+# Export all Test Cses to a directory
+exporttc ${UNITTYPE}-tr069test NULL NULL NULL
+# List all Test Cases in shell
+listtc NULL NULL NULL
+
+# Some info to the user
+echo You may edit Test Cases in the ${UNITTYPE}-tr069test directory, then import them using the importtcdir/importtcfile commands
+echo When satisfied with the Test Cases, change context to a Unit that you want to test, and proceed with the 'testsetup' command

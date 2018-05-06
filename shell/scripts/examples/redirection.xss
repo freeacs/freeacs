@@ -1,0 +1,11 @@
+# Setup unittype/profile/units/unittype parameters
+call scripts/examples/make.xss
+# List the two units made in make.xss, make sure context is also written to units.u
+ut:Example/listunits -c > units.u
+# Set all "A" parameters to "1" for all units. The -u make sure the setparam
+# first apply the context from units.u. Then the context shift in the command
+# is executed (un:${1}), which retrieves the first argument (which is not context)
+# from the units.u file. Lastly the setparam command is run with argumens A and 1.
+un:${1}/setparam -u A 1 < units.u
+# Set all "B" parameters to "2" for all units
+un:${1}/setparam -u B 2 < units.u

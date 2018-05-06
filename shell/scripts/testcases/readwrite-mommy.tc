@@ -1,0 +1,210 @@
+# The ID is auto-generated. In the event of importing this test case file back into Fusion, the following rules apply:
+#	Changing the id : By changing it you may accidentally overwrite another test-case or create a new one.
+#	Deleting the id : You will make a new test-case, possibly a duplicate of this test case.
+#ID          3019000
+
+# The METHOD can be either VALUE or ATTRIBUTE. Make sure that the parameter definitions below match the method type
+METHOD      VALUE
+
+# The TAGS is a series of strings used to identify a set of test cases. Each string must be enclosed in square brackets [ ].
+TAGS        [20120705-18] [CRAFTED] [COMPLEX] [READWRITE] [EXHAUSTIVE]
+
+# Set EXPECTERROR to true if the test case is designed to fail.
+EXPECTERROR false
+
+
+# Specify one more SET parameters, to be used in either SetParameterValue or SetParameterAttribute method.
+# If METHOD is ATTRIBUTE, a number between 0 and 2 is expected, and will be used as the notification value
+# If METHOD is VALUE, a value/string is expected, and will be used as the parameter value
+#	Format/syntax : SET <ParameterName> <Value>|0|1|2
+#	Example       : SET InternetGatewayDevice.DeviceInfo.ProvisioningCode HelloWorld
+#	Example       : SET InternetGatewayDevice.DeviceInfo.ProvisioningCode 0
+
+SET		InternetGatewayDevice.DeviceInfo.ProvisioningCode													TLCO.GRP2
+SET		InternetGatewayDevice.IPPingDiagnostics.DSCP														0
+SET		InternetGatewayDevice.IPPingDiagnostics.DataBlockSize												512
+SET		InternetGatewayDevice.IPPingDiagnostics.Host														192.168.1.1
+SET		InternetGatewayDevice.IPPingDiagnostics.Interface													InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPInterface.1
+SET		InternetGatewayDevice.IPPingDiagnostics.NumberOfRepetitions											10
+SET		InternetGatewayDevice.IPPingDiagnostics.Timeout														10000
+SET		InternetGatewayDevice.IPPingDiagnostics.DiagnosticsState											Requested
+SET		InternetGatewayDevice.LANConfigSecurity.ConfigPassword												foobar
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.AllowedMACAddresses						f0:de:f1:b6:7f:ad
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.DHCPServerEnable							true
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.DNSServers								208.67.222.222
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.DomainName								pingcomtest.org
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPInterface.1.IPInterfaceIPAddress		192.168.175.2
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPInterface.1.IPInterfaceSubnetMask		255.255.255.0
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPRouters									192.168.175.1
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.MaxAddress								192.168.175.200
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.MinAddress								192.168.175.100
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.ReservedAddresses							192.168.175.50
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.SubnetMask								255.255.255.0   
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.1.AIFSN						2
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.1.AckPolicy					true
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.1.ECWMax						15
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.1.ECWMin						0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.1.TXOP							255
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.2.AIFSN						2
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.2.AckPolicy					true
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.2.ECWMax						15
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.2.ECWMin						0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.2.TXOP							255
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.3.AIFSN						2
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.3.AckPolicy					true
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.3.ECWMax						15
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.3.ECWMin						0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.3.TXOP							255
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.4.AIFSN						2
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.4.AckPolicy					true
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.4.ECWMax						15
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.4.ECWMin						0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.4.TXOP							255
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.BasicAuthenticationMode						None
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.BasicEncryptionModes							None
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.BeaconAdvertisementEnabled					false
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.BeaconType									None
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Channel										1
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.DeviceOperationMode							InfrastructureAccessPoint
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Enable										false
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.IEEE11iAuthenticationMode						PSKAuthentication
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.IEEE11iEncryptionModes						AESEncryption
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.InsecureOOBAccessEnabled						true
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.KeyPassphrase									01234567
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.MACAddressControlEnabled						false
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.MaxBitRate									Auto
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.OperationalDataTransmitRates					1,2,5.5,11
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.RadioEnabled									false
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.RegulatoryDomain								NOI
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.SSID											Hydrogen407018
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.SSIDAdvertisementEnabled						false
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TransmitPower									100
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.WMMEnable										false
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.WPAAuthenticationMode							PSKAuthentication
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.WPAEncryptionModes							AESEncryption
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.UAPSDEnable									true
+SET		InternetGatewayDevice.Layer3Forwarding.DefaultConnectionService										InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1
+SET		InternetGatewayDevice.Layer3Forwarding.ForwardNumberOfEntries										2
+SET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.DestIPAddress									192.168.1.1
+SET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.DestSubnetMask									255.255.255.0
+SET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.Enable											true
+SET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.ForwardingMetric								-1
+SET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.GatewayIPAddress								192.168.1.1
+SET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.Interface										InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1
+SET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.SourceIPAddress									192.168.1.100
+SET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.SourceSubnetMask								255.255.255.0
+SET		InternetGatewayDevice.Time.LocalTimeZoneName														EST5EDT4,116/02:00:00,298/02:00:00
+SET		InternetGatewayDevice.Time.NTPServer1																es.pool.ntp.org
+SET		InternetGatewayDevice.Time.NTPServer2																se.pool.ntp.org
+SET		InternetGatewayDevice.Time.NTPServer3																no.pool.ntp.org
+SET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.AddressingType			DHCP
+SET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DNSServers				208.67.222.222
+#SET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DefaultGateway			192.168.1.1
+SET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.Enable					true
+#SET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.ExternalIPAddress			123.123.123.123
+SET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.MaxMTUSize				1540
+SET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.Name						FlashGordon
+#SET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.SubnetMask				255.255.255.0
+SET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.WarnDisconnectDelay		60
+
+
+
+# Specify one more SET parameters, to be used in either SetParameterValue or SetParameterAttribute method.
+# If METHOD is ATTRIBUTE, a number between 0 and 2 is expected, and will be used as the notification value
+# If METHOD is VALUE, a value/string is expected, and will be used as the parameter value
+#	Format/syntax : SET <ParameterName> <Value>|0|1|2
+#	Example       : SET InternetGatewayDevice.DeviceInfo.ProvisioningCode HelloWorld
+#	Example       : SET InternetGatewayDevice.DeviceInfo.ProvisioningCode 0
+# The value are what we expect from the device if the SET parameters in this test case have already been run.
+# If a FACTORY RESET has been run after the SET method, this value is not used for comparison - check the
+# next section
+# It is also allowed to specify the following special values:
+#	[STRING] - Any value is accepted - also blank/empty string
+#	[EMPTY]  - A blank/emtpy string
+#	[NUMBER] - Any integer is accepted
+GET		InternetGatewayDevice.DeviceInfo.ProvisioningCode													TLCO.GRP2
+GET		InternetGatewayDevice.IPPingDiagnostics.DSCP														0
+GET		InternetGatewayDevice.IPPingDiagnostics.DataBlockSize												512
+GET		InternetGatewayDevice.IPPingDiagnostics.Host														192.168.1.1
+GET		InternetGatewayDevice.IPPingDiagnostics.Interface													InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPInterface.1
+GET		InternetGatewayDevice.IPPingDiagnostics.NumberOfRepetitions											10
+GET		InternetGatewayDevice.IPPingDiagnostics.Timeout														10000
+GET		InternetGatewayDevice.IPPingDiagnostics.DiagnosticsState											Requested
+GET		InternetGatewayDevice.LANConfigSecurity.ConfigPassword												foobar
+GET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.AllowedMACAddresses						f0:de:f1:b6:7f:ad
+GET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.DHCPServerEnable							true
+GET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.DNSServers								208.67.222.222
+GET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.DomainName								pingcomtest.org
+GET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPInterface.1.IPInterfaceIPAddress		192.168.175.2
+GET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPInterface.1.IPInterfaceSubnetMask		255.255.255.0
+GET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPRouters									192.168.175.1
+GET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.MaxAddress								192.168.175.200
+GET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.MinAddress								192.168.175.100
+GET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.ReservedAddresses							192.168.175.50
+GET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.SubnetMask								255.255.255.0   
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.1.AIFSN						2
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.1.AckPolicy					true
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.1.ECWMax						15
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.1.ECWMin						0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.1.TXOP							255
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.2.AIFSN						2
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.2.AckPolicy					true
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.2.ECWMax						15
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.2.ECWMin						0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.2.TXOP							255
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.3.AIFSN						2
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.3.AckPolicy					true
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.3.ECWMax						15
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.3.ECWMin						0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.3.TXOP							255
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.4.AIFSN						2
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.4.AckPolicy					true
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.4.ECWMax						15
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.4.ECWMin						0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.4.TXOP							255
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.BasicAuthenticationMode						None
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.BasicEncryptionModes							None
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.BeaconAdvertisementEnabled					false
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.BeaconType									None
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Channel										1
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.DeviceOperationMode							InfrastructureAccessPoint
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Enable										false
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.IEEE11iAuthenticationMode						PSKAuthentication
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.IEEE11iEncryptionModes						AESEncryption
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.InsecureOOBAccessEnabled						true
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.KeyPassphrase									01234567
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.MACAddressControlEnabled						false
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.MaxBitRate									Auto
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.OperationalDataTransmitRates					1,2,5.5,11
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.RadioEnabled									false
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.RegulatoryDomain								NOI
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.SSID											Hydrogen407018
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.SSIDAdvertisementEnabled						false
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TransmitPower									100
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.WMMEnable										false
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.WPAAuthenticationMode							PSKAuthentication
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.WPAEncryptionModes							AESEncryption
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.UAPSDEnable									true
+GET		InternetGatewayDevice.Layer3Forwarding.DefaultConnectionService										InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1
+GET		InternetGatewayDevice.Layer3Forwarding.ForwardNumberOfEntries										2
+GET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.DestIPAddress									192.168.1.1
+GET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.DestSubnetMask									255.255.255.0
+GET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.Enable											true
+GET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.ForwardingMetric								-1
+GET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.GatewayIPAddress								192.168.1.1
+GET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.Interface										InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1
+GET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.SourceIPAddress									192.168.1.100
+GET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.SourceSubnetMask								255.255.255.0
+GET		InternetGatewayDevice.Time.LocalTimeZoneName														EST5EDT4,116/02:00:00,298/02:00:00
+GET		InternetGatewayDevice.Time.NTPServer1																es.pool.ntp.org
+GET		InternetGatewayDevice.Time.NTPServer2																se.pool.ntp.org
+GET		InternetGatewayDevice.Time.NTPServer3																no.pool.ntp.org
+GET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.AddressingType			DHCP
+GET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DNSServers				208.67.222.222
+#GET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DefaultGateway			192.168.1.1
+GET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.Enable					true
+#GET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.ExternalIPAddress			123.123.123.123
+GET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.MaxMTUSize				1540
+GET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.Name						FlashGordon
+#GET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.SubnetMask				255.255.255.0
+GET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.WarnDisconnectDelay		60

@@ -1,0 +1,8 @@
+ls ${_1} > tmp
+while tmp
+  if '${1}'.indexOf('Error') gt -1
+  	return 'false'
+  fi
+done
+/delosfile tmp
+return 'true'

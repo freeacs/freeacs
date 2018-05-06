@@ -1,0 +1,36 @@
+# Purpose of script
+#
+# Change the 1st SSID so it will be specified as a constant + two last characters of the SerialNumber.
+# The constant will be specified as input to the script.
+# This script must run in a unit-context, and will only change the unit in this context.
+
+# Turn off echoing of all commands
+echo off
+ 
+
+# Check whether input-arguments are specified
+if '${_1}' eq '' or '${_un}' eq 'NULL'
+	echo "Usage: call scripts/changessid/changessid.fss -vYOUR_COMPANY -uut:Unittype/pr:Profile/un:Unit-Id"
+	echo YOUR_COMPANY: A string identifying the SSID to 'belong' to your company
+	echo Unittype: Valid unittype which contains the unit to change
+	echo Profile: Valid profile which contains the unit to change
+	echo Unit-Id: The unit-id which should be change
+	return
+fi
+
+# Check whether input-arguments are specified
+if '${InternetGatewayDevice.DeviceInfo.SerialNumber}' eq 'NULL'
+	echo "The parameter InternetGatewayDevice.DeviceInfo.SerialNumber was not defined for unit ${_un}'
+	return
+fi
+
+# Make some variables for easier reading
+var CONSTANT '${_1}'
+var SN '${InternetGatewayDevice.DeviceInfo.SerialNumber}'
+
+# Take the last two char of serialnumber
+var LAST_TWO '${SN}'.substring('${SN}'.length-2)
+
+# Finally set the parameter
+setparam InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.SSID ${CONSTANT}_${LAST_TWO}
+

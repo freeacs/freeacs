@@ -1,0 +1,75 @@
+# The ID is auto-generated. In the event of importing this test case file back into Fusion, the following rules apply:
+#	Changing the id : By changing it you may accidentally overwrite another test-case or create a new one.
+#	Deleting the id : You will make a new test-case, possibly a duplicate of this test case.
+# ID          301900000
+
+# The METHOD can be either VALUE or ATTRIBUTE. Make sure that the parameter definitions below match the method type
+METHOD      VALUE
+
+# The TAGS is a series of strings used to identify a set of test cases. Each string must be enclosed in square brackets [ ].
+TAGS        [20120705-13] [CRAFTED] [COMPLEX] [LAYER3] [SSID]
+
+# Set EXPECTERROR to true if the test case is designed to fail.
+EXPECTERROR true
+
+
+# Specify one more SET parameters, to be used in either SetParameterValue or SetParameterAttribute method.
+# If METHOD is ATTRIBUTE, a number between 0 and 2 is expected, and will be used as the notification value
+# If METHOD is VALUE, a value/string is expected, and will be used as the parameter value
+#	Format/syntax : SET <ParameterName> <Value>|0|1|2
+#	Example       : SET InternetGatewayDevice.DeviceInfo.ProvisioningCode HelloWorld
+#	Example       : SET InternetGatewayDevice.DeviceInfo.ProvisioningCode 0
+SET         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.SSID                                                               Bork
+
+
+# Specify one more SET parameters, to be used in either SetParameterValue or SetParameterAttribute method.
+# If METHOD is ATTRIBUTE, a number between 0 and 2 is expected, and will be used as the notification value
+# If METHOD is VALUE, a value/string is expected, and will be used as the parameter value
+#	Format/syntax : SET <ParameterName> <Value>|0|1|2
+#	Example       : SET InternetGatewayDevice.DeviceInfo.ProvisioningCode HelloWorld
+#	Example       : SET InternetGatewayDevice.DeviceInfo.ProvisioningCode 0
+# The value are what we expect from the device if the SET parameters in this test case have already been run.
+# If a FACTORY RESET has been run after the SET method, this value is not used for comparison - check the
+# next section
+# It is also allowed to specify the following special values:
+#	[STRING] - Any value is accepted - also blank/empty string
+#	[EMPTY]  - A blank/emtpy string
+#	[NUMBER] - Any integer is accepted
+GET         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.SSID                                                               Bork
+
+
+# Specify one more SET parameters, to be used in either SetParameterValue or SetParameterAttribute method.
+# If METHOD is ATTRIBUTE, a number between 0 and 2 is expected, and will be used as the notification value
+# If METHOD is VALUE, a value/string is expected, and will be used as the parameter value
+#	Format/syntax : SET <ParameterName> <Value>|0|1|2
+#	Example       : SET InternetGatewayDevice.DeviceInfo.ProvisioningCode HelloWorld
+#	Example       : SET InternetGatewayDevice.DeviceInfo.ProvisioningCode 0
+# The value will be used to compare with the results from the device, prior to a FactoryReset method.
+#	[STRING] - Any value is accepted - also blank/empty string
+#	[EMPTY]  - A blank/emtpy string
+#	[NUMBER] - Any integer is accepted
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.BSSID                                                              [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.PossibleChannels                                                   [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Standard                                                           [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Stats.BroadcastPacketsReceived                                     [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Stats.BroadcastPacketsSent                                         [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Stats.DiscardPacketsReceived                                       [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Stats.DiscardPacketsSent                                           [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Stats.ErrorsReceived                                               [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Stats.ErrorsSent                                                   [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Stats.MulticastPacketsReceived                                     [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Stats.MulticastPacketsSent                                         [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Stats.UnicastPacketsReceived                                       [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Stats.UnicastPacketsSent                                           [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Status                                                             [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TotalAssociations                                                  [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TotalBytesReceived                                                 [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TotalBytesSent                                                     [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TotalIntegrityFailures                                             [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TotalPSKFailures                                                   [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TotalPacketsReceived                                               [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TotalPacketsSent                                                   [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TransmitPowerSupported                                             [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.UAPSDSupported                                                     [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.WEPEncryptionLevel                                                 [STRING]
+FAC         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.WMMSupported                                                       [STRING]

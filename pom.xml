@@ -22,6 +22,9 @@
         <module>tr069</module>
         <module>tr069tc</module>
         <module>syslog</module>
+        <module>stun</module>
+        <module>spp</module>
+        <module>shell</module>
         <module>web</module>
     </modules>
 
