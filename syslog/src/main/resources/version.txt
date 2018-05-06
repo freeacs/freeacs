@@ -1,0 +1,196 @@
+v1.4.32 (2015-01-19)
+- lib: dbi v1.74.39 - a bug regarding timestamps sent to syslog from other freeacs modules - they did not change year correctly (2nd attempt)
+v1.4.31 (2015-01-19)
+- lib: dbi v1.74.38 - a bug regarding timestamps sent to syslog from other freeacs modules - they did not change year correctly
+v1.4.30 (2014-12-19)
+- lib: dbi v1.74.37 - a severe bug was fixed (matching of groups in a job)
+v1.4.29 (2013-04-27)
+- lib: v1.74.32 (bugfix on parameter-search (operand-usage and NULL-values and group-parameter matching))
+v1.4.28 (2013-05-24)
+- ref: Do not cache unit-object for more than 15 sec, if the unit-object is "Not found"
+- lib: dbi v1.74.31
+v1.4.27 (2013-05-21)
+- ref: Added special character filtering - no characters outside allowed ASCII region will be allowed in the syslog message
+v1.4.26 (2013-05-10)
+- lib: dbi v1.74.27 (bugfix on syslog-write - repeated errors for ever)
+- ref: No longer writes to failover-file - it has never helped for anything - just caused trouble!!
+v1.4.25 (2013-03-21)
+- lib: dbi v1.74.10
+- ref: When creating new unit in MonitorDevice unittype, populate SerialNumber field, not MAC (obsoleted)
+v1.4.24 (2013-03-17)
+- ref: added a property "MaxMessagesPrMinute". Will discard messages above this limit (and log once every minute).
+v1.4.23 (2013-03-15)
+- ref: improved logging in summary log (shows stored events, trigger events and script executions)
+v1.4.22 (2013-03-07)
+- bug: v1.4.21 didn't trim the content correctly upon parsing of FCV and USER 
+v1.4.21 (2013-03-01)
+- ref: now handles FacilityVersion and User in-message parsing - only available from module-logging (not from device logging - not relevant)
+- lib: dbi v1.74.0
+- doc: updated doc according to changes in dbi
+- ref: updated properties according to changes in dbi
+v1.4.20 (2013-02-26)
+- ref: Added logging to see detection of new syslog events
+v1.4.19 (2013-02-25)
+- ref: Handles a situation where MySQL database is down on startup, will retry every 60 sec until MySQL is available
+v1.4.18 (2013-02-20)
+- ref: All logging and disk-check are now run in Schedule-Tasks (more accurate timing)
+- bug: Duplicate-handling was not working
+- doc: updated to 2013R1
+- ref: FailoverFile-counter checks file upon start
+v1.4.17 (2013-02-18)
+- bug: allow-create for messages from unknown units did not trigger the creation-procedure of unit/profile/unittype
+v1.4.16 (2013-02-04)
+- bug: fixed filename in FailoverFile
+- ref: Changed default to "discard" in "unknown-units" property. Changed comment
+- ref: Removed some unnecessary properties for deviceid
+v1.4.15 (2013-01-30)
+- bug: Small change in OK-monitoring, so all error messages will be shown (if necessary)
+v1.4.14 (2012-12-17)
+- ref: Small fixes in Monitor-servlet
+v1.4.13 (2012-12-13)
+- ref: more changes in SyslogClient, easier to test various variants of messages
+- lib: dbi v1.73.2
+- lib: common v1.33.0
+- ref: property files are improved
+v1.4.12 (2012-10-05) (Forward-port from 1.3.5.2 2012R1)
+- ref: Some change in the SyslogClient to test the improvement
+- lib: dbi v1.72.16
+- ref: use a quicker method to retrieve Unit-information, lowers the CPU-load with 95%! 
+- ref: turned off logging of all messages to file as default
+v1.4.11 (2012-09-06)
+- ref: Removed an unnecessary space in the script execution argument
+v1.4.10 (2012-05-23)
+- ref: turned off SESSION-cache for units, made sure unit-cache is flushed in the event of a script-execution 
+v1.4.9 (2012-05-15)
+- lib dbi v1.70.7 (SyslogEvent changed method to get Regexp-pattern-expression)
+v1.4.8 (2012-05-04)
+- ref: changed monitoring, allow system to be monitored on one single URL
+- lib: dbi v1.70.1
+v1.4.7 (2012-04-26)
+- ref: monitoring now prints version
+- ref: syslog event are treated differently, group are moved from trigger to syslog event
+- lib: dbi v1.69.9
+v1.4.6 (2012-04-19)
+- ref: moved shell-script execution to Core server
+- lib: dbi v1.69.5
+v1.4.5 (2012-04-16)
+- ref: syslog events calling upon script executions are now sent to Core-ScriptExecutor Task, not run locally
+v1.4.4 (2012-03-15)
+- ref: syslog-messages with UNITID is now properly trimmed
+v1.4.3 (2012-03-05)
+- add: possible to specify ip-address in message (using HOSTNAME) to override ip-address of packet
+- add: possible to specify unit-id directly in message (provided a UNITID tag)
+- lib: dbi v1.68 (some constants changed to Enum)
+- ref: renaming a Daemon Thread and log file
+v1.4.2 (2012-02-08)
+- bug: used syslogevent.id instead of syslogevent.eventid
+- ref: retrieval of user changed
+- ref: inactive/composite trigger will be ignored when matching on triggers
+- lib: dbi v1.66.5 
+- bug: STORE syslog events did not save event id  
+- add: Now checks group-match when syslog-event has a trigger
+v1.4.1 (2012-01-31)
+- lib: removed all xaps-libs (common, dbi, prov, shell), replaced by using Eclipse Deployment Assembly which is detected by WTF (Tomcat) 
+- ref: minor refactoring in Syslog
+v1.4.0 (2012-01-17)
+- add: Triggers are processed in syslog event processing, and Trigger Events are made
+- lib: dbi v1.65.4 (supporting Triggers)
+
+- 2012R1 Branched out
+
+v1.3.5 (2012R1) (2011-12-27)
+- improve: Now also populates SW-ver of a facility from System-parameter (not just from DeviceInfo.SoftwareVersion)
+v1.3.4 (2012R1) (2011-12-16)
+- improve: removed forced GC from StabilityLogger, caused high CPU
+- lib: common v1.31.27
+- lib: shell v2.0.7
+- lib: dbi v1.64.18
+- refactor: fixed typo
+v1.3.3 (2012R1) (2011-12-13)
+- lib: dbi v1.64.16
+- lib: shell v2.0.6
+- bugfix: syslog event CALL should handle context-arguments with spaces
+v1.3.3 (2012R1) (2011-11-28)
+- updated to match new context root system in xapsshell (for shell-syslog-events)
+- updated to xaps-dbi v1.64.13
+- updated to xaps-shell v2.0.5
+- updated docs to Fusion
+- updated version numbers
+v1.3.2 (2011R2) (2011-10-20)
+- updated doc to Fusion doc
+- updated propertyfile for release
+- updated some version numbers
+v1.3.1a (2011R2) (2011-06-23)
+- updated to v1.64.3 of xaps-dbi
+v1.3.1 (2011R2) (2011-06-11)
+- updated to v1.61.15 of xaps-dbi
+- now handles the new group-parameters correctly in group-sync
+v1.3.0 (2011R2) (2011-04-27)
+- updated with xapsshell.jar (v1.61.0)
+v1.3.0 (2011R2) (2011-04-27)
+- merged with 2011R1-branch r36068-37092
+- updated to latest DBI (v1.61.0) (many package name changes)
+v1.2.12 (2011R1SP2) (2011-04-13)
+- removed MAC-address extraction from Datagram Packet, did not work
+v1.2.12 (2011R1SP2) (2011-04-12)
+- xAPS Monitoring Feature: Can automatically create unit/profile/unittype if mac is unknown 
+- complete remake of summary-logging, made a new logfile: xaps-syslog-summary.log
+- tries s to extract MAC-address of the Datagram Packet, and use it if possible (better than using IP-address)
+- improved default mac-pattern
+v1.2.11 (2011R1SP2) (2011-04-07)
+- now remember timestamp for failover messages (will be set correctly in database)
+- improved logging
+- now handles failover messages, no message should be lost 
+- updated to latest xaps-dbi v1.57.22-20
+v1.2.10 (2011R1SP1) (2011-03-21)
+- now handles syslog messages without mac (uses IP-address to match xAPS units)
+- updated to latest xaps-dbi v1.57.22-18
+v1.2.10 (2011R1SP1) (2011-03-17)
+- improved GROUPSYNC performance
+v1.2.10 (2011R1SP1) (2011-02-23)
+- updated to latest xaps-dbi v1.57.22-14
+v1.2.10 (2011R1SP1) 2011-02-23
+- removed a Thread.setName() statement
+v1.2.10 (2011R1-SP1)
+- added two debug-entries
+v1.2.9 (2011R1) 2011-01-21
+- updated xaps-dbi v1.57.22
+v1.2.9 (2010R1) 2010-12-06
+- added SyslogTest to simulate syslog messages from Pingcom devices
+- now handles syslog events which synchronize unit param values with group param values
+- now handles syslog events which run a script
+- added XAPSShell-daemon to syslog server
+- tested, seems to work alright
+v1.2.8 (2010R1) 2010-10-20
+- updated with latest lib (v1.54.20 of xaps-dbi)
+v1.2.8 (Demo release) 2010-10-19
+- No changes, only bumping
+v1.2.7 (2010R1) 2010-10-18
+- fixed the memory leak in dbi, updated dbi to v1.54.18
+v1.2.7 (2010R1) 2010-10-15
+- changed stability logger, to track down a memory leak
+v1.2.7 (2010R1-RC) 2010-08-26
+- modified to handle many types of devices. Now specifically modified to also handled SPA2102
+- some changes in property files
+v1.2.6-alfa (2010R1-beta) 2010-08-22
+- updated build.xml
+- updated to latest lib (xaps-dbi v1.53.8)
+- removed some Thread-name: caused strange logging i JBoss
+- now logs the primary key (id) of syslog-event to syslog-table (instead of event-id) -> much faster performance on delete in JCS
+v1.2.5 (2010R1-alpha) 2010-06-14 
+- syslog server logic regarding MAC-address is changed:
+	- now possible to use xAPSUnit to find unit based on MAC
+	- caches mac->unit in a 1 minute session-cache
+- adds facility-version to each syslog message (if that info is available in xAPS)
+- trims all messages before writing to database, will remove an annoying space at the start of every msg
+- updated libs (xaps-dbi 1.52.0)
+v1.2.4 (2009R2) 2009-11-15
+- fixed a deprecated method call
+- updated libs (xaps-dbi 1.50.10, owera-common 1.31.19)
+v1.2.4 (2009R2) 2009-11-15
+- bumped version number
+- updated doc
+2009-11-04
+- now supports redirect of packets to another syslog server
+- changed log properties - removed some debug-statements
+- fixed a bug in monitoring the syslog server

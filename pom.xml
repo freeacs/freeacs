@@ -20,6 +20,8 @@
         <module>ws</module>
         <module>prov</module>
         <module>tr069</module>
+        <module>tr069tc</module>
+        <module>syslog</module>
         <module>web</module>
     </modules>
 
