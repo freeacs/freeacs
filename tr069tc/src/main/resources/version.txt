@@ -1,0 +1,9 @@
+2012-01-30
+- Possible to run simple XML test
+2011-12-16
+- Support 2012R1 in terms of download-request (SOFTWARE instead of file in URL)
+2010-12-06
+- Updated to started with a particular software version
+2010-11-08
+- Updated TR069Client to handle randomvalues for certain parameters
+- Changed/commented out defaultparameters, now each TR069Client keeps their own copy of all parameters --> much higher memory usage if number of clients are high
