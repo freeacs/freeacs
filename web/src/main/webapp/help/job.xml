@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE jHelp SYSTEM "help.dtd">
+<jHelp>
+	<Page Path="/xapsweb/web">
+		<Field ID="filterstring">
+			<Heading>
+				Name filter
+            </Heading>
+			<Help>
+				Will show only those parameters which matches (partly or fully)the filter string
+            </Help>
+		</Field>
+		<Field ID="filterflag">
+			<Heading>
+				Flag filter
+            </Heading>
+			<Help>
+				Will show only those parameters which matches the Unit Type parameter flag. 
+            </Help>
+		</Field>
+		<Field ID="filtertype">
+			<Heading>
+				Type filter
+            </Heading>
+			<Help>
+				Will show parameters based upon if they are configured or not configured. 
+            </Help>
+		</Field>
+		<Field ID="dependency">
+			<Heading>
+				Job dependency
+            </Heading>
+			<Help>
+				The job dependency must run before this job can run. Use this
+				to created chained jobs.
+            </Help>
+		</Field>
+		<Field ID="description">
+			<Heading>
+				Description
+            </Heading>
+			<Help>
+				Decription of the job.
+            </Help>
+		</Field>
+		<Field ID="fileId">
+			<Heading>
+				Software
+            </Heading>
+			<Help>
+				The software can be set to a version - then the job cannot run
+				for a particular
+				device except if the device is running this particular version. 
+            </Help>
+		</Field>
+		<Field ID="type">
+			<Heading>
+				Job Type
+            </Heading>
+			<Help>
+				The job type decide what kind of change you are going to perform.&lt;p&gt;
+				
+				CONFIG - The standard provisioning job, configuring a CPE with new settings.&lt;p&gt;
+
+				KICK - A job which tries to kick the CPEs into action ASAP (contrary to most)
+				other jobs where execution is client-initiated). The settings
+				are regulated in xaps-stun.properties, and default is 1000 milliseconds between each
+				kick - in other words a fairly long interval. It must also be noted that
+				the kick may not be possible, it depends on several factor (check the manual).&lt;p&gt;
+
+				RESET - Performs a Factory Reset on the CPE. The CPE run TR-069 provisioning.&lt;p&gt;
+				
+				RESTART - Perform a Reboot on the CPE.&lt;p&gt; 
+				
+				SHELL - Executes a FreeACS Shell script upon provisioning of CPE. The script will not
+				run before the state of the CPE is loaded into the internal database. When the script
+				is finished, the server returns to the CPE with whatever new settings set in the script.
+				The script will run with the same permissions as the user uploading it to the system.
+				&lt;p&gt;
+				
+				SOFTWARE - The CPE will download this software and try to upgrade. 
+				&lt;p&gt;
+				
+				TELNET - Executes a Telnet Script on the CPE ASAP (server-initiated). The settings for the connections
+				are regulated in xaps-spp.properties, default is 10 simultaneous Telnet-sessions. 
+				To be able to run a Telnet-session a number of Telnet-parameter must be specified on
+				the Units in the Group (IP-address, password, etc) - and the device must be reachable.
+				&lt;p&gt;
+				 
+				TR069_SCRIPT - The CPE (running TR-069 provisioning) may download a proprietary script/config
+				file which will then execute on the CPE. &lt;p&gt; 				
+            </Help>
+		</Field>
+		<Field ID="servicewindow">
+			<Heading>
+				Job Service Window
+            </Heading>
+			<Help>
+				The Service Window can be set to either REGULAR or DISRUPTIVE.&lt;p&gt;
+				The definition of the Service Window is defined in the Profiles or on
+				the Units - a good idea might be to have the same Service Window definitions
+				in all profiles.
+				&lt;p&gt;
+				If you expect the job to perform a change which disrupts
+				the service on the device (reboot or stop a service), then set to DISRUPTIVE, 
+				otherwise set to REGULAR.
+            </Help>
+		</Field>
+		<Field ID="groupId">
+			<Heading>
+				Group
+            </Heading>
+			<Help>
+				The Group on which the job will be executed. Remember that the Units within a Group
+				changes (or may change), so it's not possible for the system to tell when a job is
+				completed.
+            </Help>
+		</Field>
+		<Field ID="name">
+			<Heading>
+				Job Name
+            </Heading>
+			<Help>
+				The name of the job 
+            </Help>
+		</Field>
+		<Field ID="stoprules">
+			<Heading>
+				Stop rules
+            </Heading>
+			<Help>
+				A stop rule defines how to automatically stop the job if certain condition occur. 
+				Such a condition can be that too many job executions have failed. You can specify these
+				conditions fairly flexible. Use the plus-sign next to the input box to get a stop-rules 
+				wizard. You can then specify rules like a10/1000, which says that if 10 out of the last
+				1000 job executions have failed - then stop the job. Another important aspect is that
+				the stop rules can differ between a confirmed failure (the device returns an error message)
+				and an unconfirmed faileure (the device never reponds - may be very serious).
+				You can also stop a job after a certain number of job executions.
+            </Help>
+		</Field>
+		<Field ID="unconfirmedtimeout">
+			<Heading>
+				Unconfirmed Timeout
+            </Heading>
+			<Help>
+				If a device never reponds (which it should always do) after a job is initiated, we need
+				to decide how long to wait (in seconds) until the job execution for this device is declared an "unconfirmed timeout".
+            </Help>
+		</Field>
+		<Field ID="repeatcount">
+			<Heading>
+				Repeat Count
+            </Heading>
+			<Help>
+				Some jobs may be necessary to repeat (example: a monitoring job). Set the repeat count to a positive number.
+				Maximum number is 2000000000.
+            </Help>
+		</Field>
+		<Field ID="repeatinterval">
+			<Heading>
+				Repeat Interval
+            </Heading>
+			<Help>
+				If repeat count is set to a positive number, you should specify an interval in seconds. The default interval will be
+				86400 (one 24h day). This interval will override the periodic inform interval if the interval is shorter
+				than the periodic inform interval.
+            </Help>
+		</Field>
+		<Parameter>
+			<Name>System.X_OWERA-COM.Device.MAC</Name>
+			<Heading>
+				System parameter: MAC
+            </Heading>
+			<Help>
+				The parameter should contain the WAN MAC address of the device.
+				In some cases it will contain the serialnumber instead. The
+				parameter
+				should be populated by the server on the first
+				provisioning.  
+            </Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.Device.PeriodicInterval</Name>
+			<Heading>
+				System parameter: PeriodicInterval
+            </Heading>
+			<Help>
+				The parameter should contain the number of seconds from the
+				last
+				provisioning to the next provisioning. The parameter is populated on
+				every
+				provisioning of the device.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.Device.PublicIPAddress</Name>
+			<Heading>
+				System parameter: PublicIPAddress
+            </Heading>
+			<Help>
+				The parameter should contain the public IP address of the
+				device. The
+				device is not necessarily reachable on this address, since it could
+				be
+				behind a NAT-gateway. 
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.Device.SoftwareVersion</Name>
+			<Heading>
+				System parameter: SoftwareVersion
+            </Heading>
+			<Help>
+				The parameter should contain the software version of the
+				device.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.FirstConnectTms</Name>
+			<Heading>
+				System parameter: FirstConnectTms
+            </Heading>
+			<Help>
+				The parameter contains the timestamp of the first contact
+				between
+				the server and the device. It doesn't necessarily mean that
+				there
+				has been a successful provisioning.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.LastConnectTms</Name>
+			<Heading>
+				System parameter: LastConnectTms
+            </Heading>
+			<Help>
+				The parameter contains the timestamp of the latest contact
+				between
+				the server and the device. It doesn't necessarily mean that
+				there
+				has been a successful provisioning.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.Secret</Name>
+			<Heading>
+				System parameter: Secret
+            </Heading>
+			<Help>
+				The secret which authorizes the provisioning session. 
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.Debug</Name>
+			<Heading>
+				System parameter: Debug 
+            </Heading>
+			<Help>
+				If set to "1" it will cause xAPS to run in debug-mode for this
+				particular unit. Default is "0".
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.DesiredScriptVersion</Name>
+			<Heading>
+				System parameter: DesiredScriptVersion 
+            </Heading>
+			<Help>
+				The desired script version can be set (in conjunction with
+				ScriptURL) to order an upload of a script to the device.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.DesiredSoftwareVersion</Name>
+			<Heading>
+				System parameter: DesiredSoftwareVersion
+            </Heading>
+			<Help>
+				The desired software version can be set (in conjunction with
+				SoftwareURL) to order an upload of a software (firmware) to the
+				device.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.IM.Message</Name>
+			<Heading>
+				System parameter: Message
+            </Heading>
+			<Help>
+				The parameter contains information regarding inspection mode.
+				Internal usage.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.Job.Current</Name>
+			<Heading>
+				System parameter: Job.Current
+            </Heading>
+			<Help>
+				The parameter contains the ongoing job id for this unit.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.Job.Disruptive</Name>
+			<Heading>
+				System parameter: Job.Disruptive
+            </Heading>
+			<Help>
+				If set to "1" the parameter indicates that a job in this job
+				chain is disruptive, hence all sub-sequent jobs must run regardless
+				of servicewindow restrictions. Default is "0". Internal usage.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.Job.History</Name>
+			<Heading>
+				System parameter: Job.History
+            </Heading>
+			<Help>
+				The parameter contains the job history of the unit. The format
+				is (,job-id:repeat-counter:last-run-tms)*. Internal usage.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.ProvisioningMode</Name>
+			<Heading>
+				System parameter: ProvisioningMode
+            </Heading>
+			<Help>
+				The parameter contains the provisioning mode. The default mode
+				is "PERIODIC". "INSPECTION" is used in inspection mode. Internal
+				usage. 
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.ProvisioningState</Name>
+			<Heading>
+				System parameter: ProvisioningState
+            </Heading>
+			<Help>
+				The parameter contains the provisioning state. The default mode
+				is "READY", but in inspection mode other states are used (LOAD,
+				LOADING, STORE, STORING). Internal usage."
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.Restart</Name>
+			<Heading>
+				System parameter: Restart
+            </Heading>
+			<Help>
+				Set to "1" to trigger a restart of the device. As soon as the
+				restart has been provisioned, the parameter is set to "0", which is
+				default. 
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.ScriptURL</Name>
+			<Heading>
+				System parameter: ScriptURL
+            </Heading>
+			<Help>
+				The parameter contains a URL which the device may download a
+				script to perform on the device.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.SecretScheme</Name>
+			<Heading>
+				System parameter: SecretScheme
+            </Heading>
+			<Help>
+				The parameter is only used in TFTP and HTTP provisioning. If
+				set to "ENCRYPTED" the provisioning will be encrypted.
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.ServiceWindow.Disruptive</Name>
+			<Heading>
+				System parameter: Disruptive
+            </Heading>
+			<Help>
+				The parameter defines the regular service window. Default is
+				blank (interpreted as mo-su:0000-2400).
+				The service window format is
+				weekday-weekday:hour-hour, an example are mo-fr:0800-1500. 
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.ServiceWindow.Enable</Name>
+			<Heading>
+				System parameter: Enable
+            </Heading>
+			<Help>
+				If set to "0", service window is not enabled. Default is blank
+				(interpreted as "1"). 
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.ServiceWindow.Frequency</Name>
+			<Heading>
+				System parameter: Frequency
+            </Heading>
+			<Help>
+				The parameter contains the number of provisionings pr week.
+				Default is blank (interpreted as 7).
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.ServiceWindow.Regular</Name>
+			<Heading>
+				System parameter: Regular
+            </Heading>
+			<Help>
+				The parameter defines the regular service window. Default is
+				blank (interpreted as mo-su:0000-2400).
+				The service window format is
+				weekday-weekday:hour-hour, an example are mo-fr:0800-1500. 
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.ServiceWindow.Spread</Name>
+			<Heading>
+				System parameter: Spread
+            </Heading>
+			<Help>
+				The parameter contains a spread-factor (default is blank
+				(interpreted as 50) which tells how many percent
+				the randomization of the spread will be.
+				If set to 0, no spreading of the periodic inform interval will occur.  
+			</Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.SoftwareURL</Name>
+			<Heading>
+				System parameter: SoftwareURL
+            </Heading>
+			<Help>
+				The parameter contains a URL which the device may download a
+				software (firmware) to upgrade/downgrade the device. 
+			</Help>
+		</Parameter>
+	</Page>
+</jHelp>

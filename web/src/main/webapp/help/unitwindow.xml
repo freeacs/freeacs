@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE jHelp SYSTEM "help.dtd">
+<jHelp>
+	<Page Path="/xapsweb/web">
+		<Field ID="frequency">
+			<Heading>
+				Frequency
+            </Heading>
+			<Help>
+				The frequency determines the number of provisionings pr week. Default is 7.
+            </Help>
+		</Field>
+		<Field ID="spread">
+			<Heading>
+				Spread
+            </Heading>
+			<Help>
+				The spread factor determines the random spread of the periodic interval. If left blank the default spread
+				factor is 50, in other words 50% randomization of the periodic interval (both shorter and longer). Set
+				it to 0 to avoid any randomization of the interval.
+            </Help>
+		</Field>
+	</Page>
+</jHelp>

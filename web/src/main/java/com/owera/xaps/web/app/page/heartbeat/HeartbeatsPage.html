@@ -1,0 +1,25 @@
+<h1>Missing Heartbeat Detection</h1>
+Services on the device may log a kind of "Heartbeat" message into syslog. The idea is to be able to detect whenever such a message
+no longer appear on the server. It is important to understand that we're not trying to detect if a service fails, because a service
+is usually capable of logging error messages itself. However, we want to detect if a service is simply dead, an no messages 
+appear at all! 
+<h2>An example</h2>
+<b>Find the expression</b><br>
+One example could be to monitor the occurrence of "SIP registrations". Simply find an expression
+which covers both the "SIP registration OK" and "SIP registration ERROR", since both of these cases reflect a working/active 
+service on the client. Once you have the correct expression (use Syslog Search to test it out), you specify this in the
+expression field.<p> 
+<b>Decide on group</b><br>
+Make sure to specify a group which covers the set of Units where the service is supposed to run. The Group could perhaps
+be all the devices which have the SIP-"Enabled"-parameter set to "1".<p> 
+<b>Timeout</b><br>
+Specify a number of hours as timeout. If no message matching the expression if found within the last timeout-hours, then
+the Heartbeat is deemed missing.
+<h2>Result</h2>
+The result of this is that the server will generate a HEARTBEAT-MISSING message for every Unit where the Heartbeat has stopped. 
+All the messages will contain "HEARTBEAT-MISSING" and the expression used. The system will insert this message every hour 
+for as long as the service is dead.
+<h2>What to do with it?</h2>
+Now that the system produces messages of this kind, you can setup a Syslog Event to trap this Missing Heartbeat! Furthermore, a
+Syslog Event can be used in a Trigger, to generate an alarm. In effect, you can then get alarm, if some or many devices
+loose their services.

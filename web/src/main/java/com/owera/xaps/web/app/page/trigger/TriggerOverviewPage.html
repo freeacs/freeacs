@@ -1,0 +1,26 @@
+<h1>Triggers</h1>
+A Trigger is somewhat similar to a Syslog Event: it specifies an action to happen based on one or more events. The idea is that
+an Operator should be able to specify a Trigger to get information or to act upon one or more events among the devices 
+in the pool.
+
+<h2>Basic Trigger</h2>
+All Triggers build on top of one or more Syslog Events, so you first have to create a Syslog Event. In other words, Triggers act 
+upon messages sent to the system over Syslog. Make sure Trigger type is BASIC.  Then specify an evaluation period between 15 and 120 minutes. The
+evaluation period is the time the system counts the number of Syslog Events, and from which units these events are sent. Next specify
+how many events must occur, and from how many devices they must come, to release the Trigger.
+<p>
+At this point you have specified how to release the trigger, but not what to do. There are several things which can happen:
+<ul>
+<li>Send a notification, either REPORT or ALARM, in which case a notification interval is required (to avoid get swamped in reports/alarms).
+<li>Run a script. This script must be a FreeACS shell script where you can perform all sorts of operations, searches, etc. To make the script
+even more powerful, the system creates a file with those Unit-ids responsible for the release, and make it possible to use this file
+in the script. The filename of this file is retrieved by using ${_1} in the script, and can then be looped over, printed, etc. 
+</ul>
+
+<h2>Composite Trigger</h2>
+When you have multiple Basic Triggers, it can be valuable to combine them, to do things like "If Syslog Event A happens X times and
+Syslog Event B happens Y times, then something should happen". A Composite Trigger can only be release if all it's "child Triggers" is released. 
+The child Triggers could be both Composite and Basic.
+
+
+

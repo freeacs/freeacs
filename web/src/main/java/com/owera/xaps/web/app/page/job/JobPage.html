@@ -1,0 +1,51 @@
+<h1>Job</h1>
+<p>
+	A Job is the action that you want to perform on a Group. It is important to remember
+	that a Job is connected to one Group only. To create a Job, you should select the
+	appropriate Unit Type, Job Type, Service Window and Group to get started. See the 
+	field help for more information.
+</p>
+
+<h2>Dependency</h2>
+	Jobs can have a dependency, which means the Jobs will have to wait for the Job
+	dependency to complete. Because of this you can make structures of Jobs that will run in
+	sequence. This is useful if you need to make a sequence like this: Disable something-Configure-Enable something.
+	Another use case might be Reboot-Configure.
+
+
+<h2>Stop rules</h2>
+	You can also set stop rules for the Job, and this is made easy with a GUI that pops up
+	when you hit the plus sign on the right side of the input field for the stop rules. These
+	settings will help you to define when the Job should stop.
+
+	
+<p>
+	An example to this is 10 Unconfirmed failed Unit Jobs out of 1000. When you hit the Add
+	failure rule it will be converted to u10/1000 in the text field. An unconfirmed failure 
+	is when the device never returns to the server after a change has been issued. This is
+	considered a very dangerous situation - it might indicate that the change cause the device
+	to loose connection. The other type of failure is Confirmed failure which means that
+	the device rejected the change with an error message. The idea is that a Job can
+	stop automatically when a certain condition arises.
+</p>
+
+<h2>Job states</h2>
+	To start the Job, hit the START button. 
+	Note that you cannot change any parameters set if the Job has been started, so make
+	sure you have everything set correct before you start the Job. You can at any time pause
+	the job, and then restart it. 
+
+
+<h2>Repeat Jobs</h2>
+	Certain jobs may be necessary to run more than once. To do so set the repeat-counter to
+	a positive number (number of repeats) and set the repeat interval to a number of seconds.
+	This interval will override (if necessary) the default spread interval decided by
+	the service window. However, the job will still work within the service window.
+
+
+<h2>Job parameters</h2>
+	The job parameters tell the job what the change is all about. Here you specify what actually
+	should be configured on the device. If you choose Job type to be SOFTWARE, then you will 
+	only be allowed to set DesiredSoftwareVersion. Other rules apply for other job types.
+
+

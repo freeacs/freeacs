@@ -1,0 +1,8 @@
+<!ELEMENT Page (Field*,Parameter*)>
+<!ATTLIST Page Path CDATA #REQUIRED>
+<!ELEMENT Field (Heading,Help)>
+<!ATTLIST Field ID CDATA #REQUIRED>
+<!ELEMENT Heading (#PCDATA)>
+<!ELEMENT Help (#PCDATA)>
+<!ELEMENT Parameter (Name,Heading,Help)>
+<!ELEMENT Name (#PCDATA)>

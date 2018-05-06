@@ -1,0 +1,113 @@
+/*  jHelp.css
+    Copyright August 7, 2010 Serexx Ltd.
+    See the jHelp Plugin soource file for licensing information.
+*/
+
+/* items marked REQUIRED must be present in the noted template */
+#jHelp /* REQUIRED in HTML Template - outer jHelp panel DIV */
+{
+    font-family: Arial,verdana,helvetica;
+    font-size: 12px;
+    background-color: Silver;
+    margin: 5px;
+    padding: 5px;
+    border-color: Black;
+    border-width: 4px;
+    cursor: move;
+    position: absolute;
+    right: 20px;
+    top: 100px;
+    width: 500px;
+    z-index: 9999;
+}
+
+#jHelpContent /* REQUIRED in HTML Template content container */
+{
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-left: 5px;
+}
+
+/**********************************************
+ These are part of the Default HTML Template */
+#jHelpHeading /*Form Help heading*/
+{
+    margin-left: 5px;
+    font-weight: bold;
+}
+#jHelpFooter /*contains 'close' link*/
+{
+    margin-left: 5px;
+    font-weight: bold;
+}
+hr.jHelpPanel /* used in Default HTML template */
+{
+    height: 0px;
+    background-color: Gray;
+}
+A.jHelpPanel
+{
+    color: black;
+}
+
+/***************************************
+ Default IconTemplate*/
+.jHelpIcon
+{
+    border: 0px;
+    vertical-align: top;
+}
+
+/***************************************
+ Index Heading Template */
+#jHelpIndexHeading
+{
+    margin-bottom: 5px;
+}
+/***************************************
+Index Items */
+A.jHelpIndexItem
+{
+    color: Red;
+    text-decoration: none;
+}
+A.jHelpIndexItem:hover
+{
+    text-decoration: underline;
+}
+SPAN.jHelpIndexItem
+{
+    margin-bottom: 13px;
+}
+
+/***************************************
+ Sorry Heading Template */
+#jHelpSorryHeading
+{
+    margin-bottom: 5px;
+}
+#jHelpSorry
+{
+    margin-bottom: 5px;
+}
+
+/*************************************************
+Classes associated with each Field Help Text
+*/
+DIV.jHelpItemHeading
+{
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+DIV.jHelpItemText
+{
+    font-size: 12px;
+}
+
+/*******************************************************
+Class Swapped in/out of INPUT element on Field Active */
+.jHelpFieldActive
+{
+    background-color: Tan;
+}
+

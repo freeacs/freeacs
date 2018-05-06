@@ -1,0 +1,9 @@
+<h1>Syslog Event</h1>
+A Syslog Event is a "action" taken by the server in the event of a special syslog message arriving at the Syslog Server. The use cases
+this feature are meant to cover are these:
+<ul>
+<li>Specifying an event id for certain type of messages - makes it easy to search for these messages on the Syslog page
+<li>Making it possible to reduce the number of syslog messages, either by throwing them away or counting and throwing away duplicates.
+<li>Run a script upon a certain message - anything is possible with a script!
+</ul>
+Furthermore, a Syslog Event is a crucial to make a Trigger - all BASIC Triggers must specify a Syslog Event.

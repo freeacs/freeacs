@@ -1,0 +1,50 @@
+<p>The Group enables you to make a selection of units. This selection of units can be
+used very simply, like just counting units within various "segments", but it can
+and must be used to run a Job. The nice thing about groups is that they are very
+flexible, not like profiles which have a static nature.
+
+<b>Add/Change/Delete/Inspect</b>
+<p>In the Group page, you can add/change/delete/inspect a particular Group. In order to
+create a Group, you have to select the Unit Type, enter a Group name, and add a
+description.</p>
+
+<p>It is possible to create a hierarchy in the Group structure, by setting a parent Group. The
+Profile selection will then be inherited from the parent Group, and cannot be changed. If
+a Group has not defined a Profile, the selection is All Profiles, that is all Units within the
+given Unit Type.</p>
+
+<p>The actual seletion of units is made by adding parameters to the group. They act like simple
+search-clauses (parameter1 = 'foo' and parameter2 != 'bar'). Note that each parameter is AND'ed
+together, there is no OR in use here. The search critera from the parents are also AND'ed into
+the search in the same fashion. Combine this with the possiblity to create your own System
+parameters in the Unit Type page and then populate these parameters with information feeded
+from your own CRM/BSS-system, then you will have a truly flexible grouping system, allowing you to
+create any kind of group you need.
+
+<p>A Group cannot be deleted if it is a part of a Job that is currently running. The current
+size field denotes the number of Units that are currently part of the
+Group. It can in some cases take some time to load the Group page due to the
+calculation of this number of Units.</p>
+
+<p>Advanced mode allows you to create a time-rolling group. Such a group changes a specific
+parameter criteria every hour or every day. The criteria is then set to either the current
+hour or the current date. If offset is specified, the hour or date is moved forward in time 
+the number of days specified. The purpose of such a group is only evident when combined with
+a syslog event (see GROUPSYNC syslog event), since units can be "tagged" with the current 
+hour or date, and then "fall" into a certain group. This can in turn be used to both Jobs and
+statistics/monitoring.
+
+<b>Overview</b>
+<p>If the Group has set a parent Group, then it will be displayed In the Group overview in a
+tree structure that looke like parameter hiearchy lists.</p>
+
+<p>You can filter Groups based on their name and Profile. If you have a lot of top level
+Groups and dependent children, you would use this filter to only retrieve a certain set of
+Groups.</p>
+
+<p>You can filter the selection of Units by configuring a set of Group parameters. Adding and
+updating Group parameters is done almost in the same way as we have seen on the Unit
+Type and Profile pages. The only difference here is the Operator column, that defines if
+this is a likeness or an unlikeness filter parameter.</p>
+
+

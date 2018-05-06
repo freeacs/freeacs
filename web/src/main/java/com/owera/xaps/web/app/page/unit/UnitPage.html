@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>Search</title>
+		<link rel="stylesheet" type="text/css" href="UnitPage.css" />
+		<script type="text/javascript" src="UnitPage.js"></script>
+	</head>
+	<body>
+		<p>
+			In the Unit Page, the operator can create/update/delete Unit and Unit parameters. The
+			Unit is actually a representation of a single device, such as a CPE or a mobile
+			phone. To create a Unit, the operator has to select the appropriate Unit Type and Profile,
+			and enter the new Unit Id. It is always possible to move an existing Unit from one Profile
+			to another Profile. If you create a new Unit, then the Unit Id must conform with the protocols
+			Unit Id format. <br/>
+			For TR-069 this is &lt;OUI&gt;-&lt;Product Class&gt;-&lt;Serialnumber&gt;.
+			OUI is a 6-digit number identifying the manufacturer of the device. Product Class is a 
+			string identifying the model of the device. SerialNumber is usually the MAC address of the
+			device. <br/>
+		</p>
+		<p>
+			To delete a particular Unit, find the Unit with the search page. Units cannot be deleted by
+			accident. Whenever the operator click a delete button, the operator will be asked to
+			confirm the delete.
+		</p>
+		
+		<p>
+			If the Administrator want to upgrade the Unit to another Software version, it is
+			possible to do so from the Links section on the Unit page. The Administrator will get
+			a new window where the desired Software version can be selected from a drop down
+			menu, and by clicking upgrade the upgrade process will begin the next time the unit is
+			provisioned. The Administrator can also change the Unit he wants to upgrade, by
+			typing a part of the Unit id, and he will get a list of Units that matches.
+		</p>
+		
+		<p>
+			If the operator want to configure Service Window for the Profile, it is possible to do so
+			from the Links section. After selecting from day [,to day], from and to time and
+			frequency, clicking "Update service window" will set the correct parameters in the
+			Unit. These settings will override Profile service windows. The idea of a Service Window
+			is that you can control when the device will connect to the server. Maybe you only want
+			provisioning to happen during daytime on working days - that can be specified. But
+			it might also be that you will specify a lower load on the system, by changing the frequncy
+			from 7 times pr week (default) to 2 times pr week. <br />
+			Actually there are two Service Windows: One for the regular/standard provisioning, and one
+			for provisioning that disrupts the service. If you specify a firmware upgrade or a scheduled
+			reboot, it is the Disruptive Service Window that decideds when the provisioning will happen, 
+			otherwise it is the Regular Service Window that decides.<br/>
+			Another point worth mentioning about Service Window is "spread". Setting the  
+			frequency to 7 (time pr week), is not to say that the device will connect every 24h. It will 
+			connect *on average* every 24h, but it might vary with many hours either way. This is
+			to ensure that a power outage in a major city will not cause many devices to cause a peak
+			in the load of your system.   
+		</p>
+		
+		<p>
+			In the Unit parameters listing, the operator will get a list containing all the Unit
+			parameters and all the Profile parameters. If a parameter has both a Profile value and a
+			Unit value, the latter takes precedence over the former. There are in general two types
+			of parameters: System parameters and Device parameters. The System parameters name is prefixed
+			"System" and the Device parameters are prefixed "InternetGatewayDevice" or "Device".<br />
+			The Device parameters can be read or written from the device. If a parameter is a
+			Read-Only parameter, it can be retrieved from the device - but never written to the device.
+			A Read-Write parameter can be written to the device, but not read from the device.
+			So by setting values in the Read-Write parameters you decide what to provision to the
+			device. For more information about the flags governing the behaviour of a parameter, read
+			the Unit Type help section. 
+		</p>
+		
+		<p>
+			If the operator needs to configure some SIP parameters, use the filter section to look
+			these up. By default, when no unit parameters are defined, 
+			"Status" is set to "All" which means that both "Unconfigured" and
+			"Configured" unit parameters are displayed at the same time. If
+			some unit parameters are configured, then the status will be set "Configured". If SIP
+			parameters is not set and there are other unit parameters configured, you will not be
+			able to see the SIP parameters unless you change "Status" to "All" or "Unconfigured".
+			There are other filters: Name filter (just type part of the parameter name) and type
+			filter (read-only, system parameter, etc). Use this filter to quickly find the parameters
+			you want to examine/edit.
+		</p>
+		
+		<p>
+			Inspection mode is a possibility only if the unit in question is on public IP (not
+			connected behind a router) and if the protocol in use is TR-069. If that is the case
+			you can connect to it by chaning to Inspection mode. In this mode you can inspect
+			all parameters with the "I" flag set (see Unit Type page). You can also change parameter
+			values on-the-fly and therefore quickly fix any problems that the customer might experience.
+			You can probably achieve the same result on units that doesn't comply to these
+			requirements, but then the customer will need to restart his/her device to get started,
+			possibly also each time you want to perform a change or a new read on the device.
+			All in all, Inspection mode is not very useful at this moment, but future development
+			will make things more convenient.
+		</p>
+	</body>
+</html>

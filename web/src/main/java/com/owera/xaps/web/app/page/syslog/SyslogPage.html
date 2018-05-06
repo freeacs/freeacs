@@ -1,0 +1,40 @@
+<p>In the Syslog page, there is a lot of flexibility in terms of retrieving and filtering Syslog
+messages. The Syslog messages can be retrieved by either entering the Unit name (NB! Write ^YOUR-COMPLETE-UNITID$ to get quick results!),
+selecting Unit Type and/or selecting Profile. There is also the possibility of retrieving logs
+by selecting a severity level. The severity levels available are: Emergency, Alert, Critical,
+Error, Warning, Notice, Info and Debug. These severity levels are in accordance with the
+levels defined in the Syslog standard (RFC 3164). By default when you go to Syslog you
+are given a simple search form. You can extend this form by going into the
+advanced form.</p>
+
+<p>In the advanced version of the Syslog, a lot more fields can be be added to the search
+criteria. In the severity list it is possible to select more than one item by holding down
+CTRL and clicking the desired severity code, and you use the same procedure for
+unchecking the codes. It is possible to search for all fields that the Syslog page displays
+in the results. One of these fields, UserId, is per example particularly interesting because
+you can search for all changes done by a specific operator (e.g. a login to Web).</p>
+
+<p>The results from the query in the Syslog page will return: Time, Severity, Facility,
+EventId, Message, UserId, Hostname, IpAddress, UnitId, Profile and Unit Type. All of
+these will give you a complete picture of what has happened, and what person or system
+that has initiated the change. An explanation for some of them is required.
+Facility describes what kind of system has emitted the Syslog message. If you only need
+to see messages emitted by Web, you can do so by choosing it from the drop down
+menu.</p>
+
+<p>Event Id is describing what type of content the Syslog message reports. If data has been
+written to a CPE or if it has been upgraded, these are event codes that can be searched
+for.</p>
+
+<p>The operator must enter a from date to search in the Syslog. That is because the Syslog
+database is a huge collection and it would take forever to return all of them to the
+browser. Normally the operator will only need a small selection of the Syslog database,
+per example within the last 24 hours. When the operator goes to the Syslog page, the
+from date will automatically be set to yesterday, making it easier for him to find events
+that has occurred lately. To set a date, either use the calendar widget (by clicking the
+calendar icon, the keyboard arrows while the date field has focus) or type it in manually.</p>
+
+<p>The format of the date fields is dd-MM-yyyy and it can easily be customized to fit the
+customers need.</p>
+
+<p>Use the question-mark icons to see how to use control characters of the search.</p>
