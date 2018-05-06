@@ -1,0 +1,28 @@
+# Setup group/job for staging-server. 
+# The group should contain all device within a specified profile. 
+# Two jobs should be created:
+# 1) Upgrade job to 1.2.5 fw
+# 2) Reset job - to make sure all settings are factory reset on 1.2.5 (since factory settings for fw 1.1.6 are in violation i QSG)
+
+echo off
+
+if '${_ut}' eq 'NULL'
+  echo "No unittype context found - please change to a R7121 unittype context"
+  return
+fi
+
+if '${_pr}' eq 'NULL'
+  echo "No profile context found - please change to the R7121 profile context for which customer you want to setup"
+  return
+fi
+
+
+../setgroup  ${_pr} NULL "Devices to be staged to ${_pr}" ${_pr}
+../setjob Upgrade-${_pr} SOFTWARE DISRUPTIVE ${_pr} NULL "Upgrade to 1.2.5" eltek_tab_125 600 NULL NULL NULL
+../setjob Reset-${_pr} RESET DISRUPTIVE ${_pr} Upgrade-${_pr} "Reset to factory default settings" NULL 600 NULL NULL NULL
+jo:Upgrade-${_pr}/start
+jo:Reset-${_pr}/start
+
+echo "Staging setup completed"
+
+

@@ -1,0 +1,13 @@
+METHOD      VALUE
+
+TAGS        [ROOT]
+
+# Set EXPECTERROR to true if the test case is designed to fail.
+EXPECTERROR true
+
+
+# It is also allowed to specify the following special values:
+#	[STRING] - Any value is accepted - also blank/empty string
+#	[EMPTY]  - A blank/emtpy string
+#	[NUMBER] - Any integer is accepted
+GET InternetGatewayDevice. [STRING]

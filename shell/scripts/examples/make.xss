@@ -1,0 +1,15 @@
+# Make a unittype, and a Default-profile is automatically added to the unittype
+setunittype Example TR-069 "Ping Communication" "An example unittype"
+# Change context to Default-profile
+cc ut:Example/pr:Default
+# Make a couple of units
+setunit 000000-Example-1
+setunit 000000-Example-2
+# Make a few unittype parameters
+ut:Example/setparam A RW
+ut:Example/setparam B RW
+ut:Example/setparam C RW
+ut:Example/pr:Default/setparam A AA
+ut:Example/pr:Default/setparam B BB
+
+ 

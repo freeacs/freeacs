@@ -1,0 +1,45 @@
+# Testsuite.fss: runs a specified test suite on a set of units.
+#
+# Usage: call -v<unit-id>,<testsuite-file> testsuite.fss
+# E.g. call -v002194-HydrogenHA-407018,scripts/testsuites/template.ts scripts/tr069test/testsuite.fss
+
+echo off
+
+# If the Test Suite File does not exist, abort.
+call scripts/util/fileexists.fss -v${_2}
+if '${_return}' eq 'false'
+	echo Test Suite (.ts) file ${_2} not found.
+	return
+fi
+
+unit ${_1}
+if '${_un}'.indexOf('${_1}') EQ -1
+	echo Test suite aborted
+	return
+fi
+
+
+
+while ${_2}
+	# It's pretty handy being able to "comment out" TC's sometimes.
+	if '${1}' eq '#'
+		continue
+	fi
+	
+	testsetup ${1} ${2} ${3} ${4} ${5}
+	
+	enabletest
+	
+	kick
+	
+	while true
+		sleep 2
+		refresh > tmp
+		if ${System.X_OWERA-COM.TR069Test.Enable} EQ 0
+			break
+		fi
+	done
+
+done
+
+echo on

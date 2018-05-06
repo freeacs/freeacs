@@ -1,0 +1,6 @@
+var sum 1 - 2
+if ${sum} lt 0
+	echo Sum is negative
+else
+	echo Sum is positive
+fi

@@ -1,0 +1,10 @@
+echo off
+echo A > scripts/examples/file.txt
+echo B >> scripts/examples/file.txt
+echo C >> scripts/examples/file.txt
+echo D >> scripts/examples/file.txt
+
+while scripts/examples/file.txt
+	echo ${1}
+done
+echo on

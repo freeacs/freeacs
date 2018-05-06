@@ -1,0 +1,39 @@
+# Truncate the password down to 16 characters
+
+# This script was made in order to fix a situation were many units were
+# registered with a long ACS-password (more than 16 char), even though the
+# clients couldn't handle more than 16 char password. This script searches
+# through all the units on a server and simply truncates the size of each
+# password down to 16 char.
+
+# Turns off listing of script commands, only echo-commands are printed to output
+echo off
+
+# List all units for this server (assuming the script is run from root)
+listunits -c > all.u
+
+# List all unitparameters for all units with the specified parameter name 
+un:${1}/listunitparam  -c -u InternetGatewayDevice.ManagementServer.Password < all.u > pw.u
+
+# Loop over the file created in the previous step, each line argument can be 
+# accessed using ${1} for the first argument, ${2} for the seconds, etc...
+while pw.u
+
+  # translates to if parameter is more than 16 char long - using javascript syntax/engine
+  if '${5}'.length gt 16
+
+  	# make the new truncated parameter - using javascript syntax/engine
+  	var newPassword '${5}'.substring(0,16)
+  	# print the change to output
+	echo ${3} truncated ACS-password from ${5} to  ${newPassword}
+	# change context to the unit context (check the pw.u)
+	cc ${1}${2}${3}
+	# change the parameter value
+	setparam InternetGatewayDevice.ManagementServer.Password ${newPassword}
+
+  # end the if-clause
+  fi
+
+# end the while-loop
+done
+
