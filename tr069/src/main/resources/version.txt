@@ -1,0 +1,473 @@
+v3.1.2 (2015-01-29)
+- bug: TransferCompleteResponse did not return the CWMP:ID correctly
+v3.1.1 (2015-01-25)
+- ref: a Script download URL will end with the File name instead of the scriptname. It will be easier to specify a URL with a correct filename suffix that way.
+- doc: updated documenation about firmware/config download
+v3.1.0 (2015-01-25)
+- sec: added authorization check to File download, to make sure a device can only donwload a file within it's unittype
+- sec: added digest/basic authentication to File download (used in Firmware upgrade/Config file download(etc). By default, no authentication is required for file download,
+but it can be turned on by setting file.auth.used = true in xaps-tr069.properties.
+- ref: Removed a lot of warnings in the code - added a few more checks for null. *Should* not affect anything.
+- lib: prov v1.4.28 (moved FileServlet back to TR-069/SPP server project)
+v3.0.46 (2015-01-19)
+- add: added a quirk (check xaps-tr069.properties) to exchange <NextLevel>false</NextLevel> to <NextLevel>0</NextLevel> since a Huawei router had issues with false.
+v3.0.45 (2014-12-19)
+- lib: dbi v1.74.37 - a severe bug was fixed (matching of groups in a job)
+v3.0.44 (2014-11-19)
+- bug: the context of a SHELL JOB was not set correctly, most likely with all contexts containing whitespace
+v3.0.43 (2014-08-19)
+- bug: authentication bug fixed (for the 2nd time)
+v3.0.42 (2014-08-05)
+- doc: improved docs, removed some old docs. Updated to FreeACS
+- doc: improved some logging
+- doc: removed some unused stuff from property file
+- ref: removed some unused code
+v3.0.41 (2013-09-13)
+- bug: SHELL-JOB handles unknown parameters
+v3.0.40 (2013-08-27)
+- lib: prov v1.4.27
+- ref: handles a CURRENT_JOB which is non-existent (recently deleted)
+v3.0.39 (2013-07-04)
+- ref: Some refactoring in GPVDecision - easier to read
+- bug: Missing CPE parameter was not logged
+- bug: LastConnectTms was not updated in Discovery-situation
+- ref: old test system is slightly improved (does not check ManagementServer-parameters, better logging to file)
+- ref: more logging regarding Discover-setting
+- ref: Added method in SessionData to find previously run TR-069 methods
+- ref: Added automatic Kick after each completed test in the old test system (plugfest-test/kill-test)
+- ref: Removed usage of discovery.force, uses System-parameter to instrument this on a unit
+- ref: Dropped usage of job-unit-specific parameters, only uses job-defaul parameters
+- ref: correct logging of unit-id in HTTPReqResData
+- ref: more robust method to get download-URL (added logging)
+v3.0.38 (2013-06-10)
+- lib: prov v1.4.24 
+- bug: Logging of missing CPE parameter did not work, checked the wrong response method (added a new method in SessionData to check the correct one)
+- bug: JobType CONFIG did not work, did some refactoring in GPVDecision to set job-params directly to the SPV-request. GPV should be a little easier to read now.
+v3.0.37 (2013-05-30)
+- bug: Logging of missing CPE parameter did not work
+- ref: Removed some debug-logging
+v3.0.36 (2013-05-27)
+- lib: v1.74.32 (bugfix on parameter-search (operand-usage and NULL-values and group-parameter matching))
+v3.0.35 (2013-05-23)
+- lib: dbi v1.74.21 (group-matching bugfix)
+- ref: added logging for periodic inform time compared to expected time (on INFO level)
+- ref: added logging to track down why missing CPE parameter (in device) is not logged
+v3.0.34 (2013-05-21)
+- ref: pretty-print was always run, now a configurable quirk
+- ref: xmlcharfilter was a configureable quirk, now always run
+- bug: Discovery mode logging was not correct - confusing when tracking a bug
+- ref: More logging to track session-id problem
+- ref: Fixed tr069-propertyfile, ready for production
+v3.0.33 (2013-05-14)
+- ref: More robust code in EMDecision, to avoid OutOfArrayIndexBoundsException
+- ref: Added more logging when GPV-response fails, and no logging of missing CPE-parameters is seen
+v3.0.32 (2013-05-08)
+- ref: Removed automatic adding of CRQURL to unittype (in discovery)
+v3.0.31 (2013-05-07)
+- lib: prov v1.4.23 (Spread was not handled as an int between 0 and 100)
+v3.0.30 (2013-05-06)
+- lib: dbi v1.74.25 (Spread reverted back from 0 to 50)
+v3.0.29 (2013-04-27)
+- lib: dbi v1.74.23 (bugfix on jobs)
+- add: added block-feature of discovery - may block certain ACS-usernames (block-list read from properties)
+v3.0.28 (2013-04-26)
+- lib: dbi v1.74.22 (bugfix on jobs)
+v3.0.27 (2013-04-18)
+- lib: dbi v1.74.21 (added system contstants for spread/frequency)
+- lib: prov v1.4.22 (changed default spread to 0)
+v3.0.26 (2013-04-12)
+- ref: moved logging of "written param to CPE" to SPV-response
+v3.0.25 (2013-04-11)
+- ref: improved logging around missing/not-implemented parameters in GPVDecision-Readall
+v3.0.24 (2013-04-10)
+- ref: small improvement in StabilityTask output (shows time since start of server)
+v3.0.23 (2013-04-09)
+- ref: ActiveDeviceDetection also checks if there's been syslog activity from the device, before logging "TR-069 client inactivtity"
+- ref: Util-method to handle TestCaseMethods did not handle FILE-method properly
+v3.0.22 (2013-04-08)
+- ref: SyslogMessaging reporting a provisioning now reports with facility = 16 (=Device-facility) - to indicate to Core-server that the device is active
+- ref: ActiveDeviceDetection does not alert until 1h late TR-069 provisioning
+- bug: did not update system parameters in test-mode
+- bug: active-device-detection used wrong timestamps 
+v3.0.21 (2013-04-06)
+- ref: added some logging to track down a bug (does not store system-parameters in test-runs)
+v3.0.20 (2013-04-04)
+- ref: quirk does not require version info from device
+- add: Logs to syslog all parameters written to CPE
+v3.0.19 (2013-04-03)
+- add: Block devices which fail authentication repeatedly
+- add: Better logging in StabilityLogger (more counters are shown)
+v3.0.18 (2013-03-26)
+- add: ActiveDeviceDetection, will send syslog messages if device stops provisioning
+v3.0.17 (2013-03-22)
+- ref: Changed the server to skip SPV in case no parameter needs change (which will happen only if spread = 0 and no other parameter is changed)
+v3.0.16 (2013-03-21)
+- lib: dbi v1.74.10
+- bug: Unittype-creation in discovery-mode now creates correct flags on system parameters
+- ref: Unittype-creation in discovery-mode adds the D-flag to the ConnectionRequestURL
+- bug: Make sure key information in written, even in discovery-situation
+- ref: Writes SERIAL_NUMBER parameter instead of MAC 
+v3.0.15 (2013-03-20)
+- ref: Will not store '(null)' values in READALL-mode - this is something that only will make sense for Eltek-devices
+- ref: Do not write UDPConnectionRequestAddress to Fusion-DB if it's "" in the Inform
+- lib: dbi v1.74.9
+- ref: Improved GPN-force-discovery situation, updates the flags nicely (do not clean old flags unless necessary)
+v3.0.14 (2013-03-13)
+- lib: dbi v1.74.4
+- lib: prov v1.4.18
+- ref: Download of Software/Script now uses target-filename all the time. The configfiletargetname quirk is obsolete and removed
+- ref: ProvisioningState is removed, lot of refactoring due to changes in dbi
+v3.0.13 (2013-03-07)
+- ref: removed facility-version (version of the TR-069 server) in the syslog message 
+- ref: Parsing of Writable tag in GPNRes now treats every non-0 or not-false as Writeable (makes it compatible with R7121 non-standard usage of this tag)
+- ref: Handles duplicate parameters in the GPVRes (makes it compatible with R7121)
+v3.0.12 (2013-03-06)
+- ref: No longer force uppercase on OUI in case of no auth-method (consistent with digest/basic auth)
+- lib: dbi v1.74.1 (fixed a bug in Provisioning Message)
+v3.0.11 (2013-03-01)
+- lib: dbi v1.74.0
+- lib: prov v1.4.15
+- ref: small changes in doc/properties/code due to updated dbi/prov
+v3.0.10 (2013-02-26)
+- lib: prov v1.4.14 (some loglevel update)
+- ref: changed loglevel for a common error (to warning), since it's because of a client aborting the connection
+v3.0.9 (2013-01-29)
+- ref: Removed special logic for old Ping Communication devices, added quirk to ignore vendor config file (if devices do not support
+       asking for VenforConfigFile object.
+v3.0.8 (2013-01-28)
+- lib: dbi v1.73.9  
+- ref: Reverted some logic added in 2.8.0 (multiple config file download) for old Ping Communication devices (NPA201E + RGW208EN), since those couldn't support it. Other devices will keep the logic.
+v3.0.7 (2013-01-28)
+- ref: Changed the logic to recognize the CWMP method name, should be more robust
+- ref: Improved logging of exceptions
+v3.0.6 (2013-01-07)
+- ref: Changed the logic to recognize the CWMP method name, should be more robust
+- ref: Changed some logging
+v3.0.5 (2012-12-20)
+- lib: dbi v1.73.6 (TestCase improvements)
+- add: The new test system of TR-069 server now also supports testings custom made XML files (do not compare output with specified XML output files yet)
+v3.0.4 (2012-12-13)
+- lib: common v1.33.0
+- lib: dbi v1.73.2
+- ref: reworked property files
+v3.0.3 (2012-11-27)
+- ref: Should in theory handle dynamic data model for each unit (added unitdiscovery quirk)
+v3.0.2 (2012-11-02)
+- bug: ShellJob did not exit properly even if successful
+- bug: Did not handle FreeCWMP client SOAP-ENV string (not very good code)
+- ref: Added logging of XML-input size
+v3.0.1 (2012-09-18)
+- bug: web.xml was not updated with correct package-name for the TestServlet
+- bug: VendorConfigFile-object was not requested properly from device
+- bug: SOAPHandlerErrors are now thrown back to Provisioning-Servlet (handled the same way as every other error in the system)
+- ref: Two Quirks added (xmlcharfilter and prettyprint) - to handle device which does not do one or the other
+v3.0.0 (2012-09-04)
+- lib: common v1.32.2
+- lib: prov v1.4.11
+- lib: dbi v1.72.13
+- ref: Rearranged packages - easier to navigate the code
+- ref: Changed some exception-handling 
+
+
+v2.9.8 (2012-07-11)
+- ref: added more comments in the code, moved extractRequest further down in the code
+- ref: major package name cleanup and some class name changes (to make it easier to find the appropriate code)
+- ref: forward-ported from 2012R1 the ability to reject two concurrent sessions from the same unitId - also logging to warn about this, and allow if too long time has passed
+v2.9.7 (2012-07-09)
+- ref: a lot of changes to handle Factoy Reset correctly
+v2.9.6 (2012-07-05)
+- ref: should now support FactoryReset
+- ref: ignores 9005 Fault codes, test framework asks for non-existing parameters in the device
+- ref: should now support correct type in SetParameterValues in Test Framework
+- lib: dbi v1.72.10 (changed some method/class names in Test Framework)
+- ref: TR069 Test Framework now handles Set/GetParameterAttributes - tested
+v2.9.5 (2012-07-04)
+- lib: dbi v1.72.8
+- ref: TR069 Test Framework should handle Set/GetParameterAttributes - not tested though
+v2.9.4 (2012-07-03)
+- ref: TR069 Test Framework now handles values not returned from device
+- ref: conversation logging is always pretty-printed, but will not cost performance unless enabled
+v2.9.3 (2012-07-02) 
+- lib: dbi v1.72.7 (new package name)
+- bug: TR069 Test Framework works with multiple TC, GET, SET/GET, SET,REBOOT,GET)
+v2.9.2 (2012-06-29) (TR069 Test Framework works with one GET/SET-VALUE TC)
+- lib: dbi v1.72.6
+- bug: TR069 Test Framework did not handle Fault-method correctly - not reported
+- bug: TR069 Test Framework building of SPV was not correct - fixed
+- ref: tag/paramFilter in TR069 Test Framework can be set to "NULL" (treated as "not-set")
+v2.9.1 (2012-06-28)
+- lib: dbi v1.72.5
+- ref: Some small refactoring of methods in SessionData
+- ref: TR069 Test Framework - works for the first time
+- add: Pretty print of incoming XML
+- bug: Did not handle GetParameterNamesResponse with Writeable-tag set to "true" (only handled "1")
+v2.9.0 (2012-06-21)
+- lib: dbi v1.72.4 
+- ref: Introduced Schedule Framework (from common) to perform StabilityLogger and listen to messages from other modules (outside DBI)
+- add: New test framework integrated into TR-069
+
+v2.8.2 (2012-05-23)
+- bug: Discovery-force-mode did not update the unittype parameter flags 
+v2.8.1 (2012-05-18)
+- ref: Slight change in logging when problem with Provisioning Certificate
+v2.8.0 (2012-05-03) (Should support Multiple Script Files)
+- bug: Forward-ported fixes from 2012R1 (v2.6.3.6)
+- lib: dbi v1.70.2
+- add: Moved CPEParameters from xapsprov to this module, CPEParameters now handles an entire object-tree of ConfigFile
+- ref: Rewrite of DownloadLogic, added a Download-object to Session (stores url+file-object) and removed some fields from ResponseObject
+- add: Read CommandKey from Inform (Event-codes) and store it SessionData.
+- add: DownloadRequest also sends CommandKey set to version-number (for TR069_SCRIPT downloads)
+- test: No testing yet
+v2.7.7 (2012-04-26)
+- lib: dbi v1.69.9
+v2.7.6 (2012-04-19)
+- lib: dbi v1.69.5
+- ref: moved shell-script executions to Core
+v2.7.5 (2012-04-13)
+- lib: prov v1.4.5
+- add: Server supports HTTP Header 100-CONTINUE, always return yes - continue 
+v2.7.4 (2012-03-15)
+- lib: dbi v1.68.2
+- ref: takes advantage of Unit-writeQueue (better performance)
+- ref: removed a lot of logging, monitoring - kept only tr069-event-log and the new logging to syslog
+- ref: endOfSession is now in much better shape, should handle all exceptions and logging fine
+- ref: INSPECTION/EXTRACTION mode seems to work fine after refactoring (tested with shell)
+- ref: ProvisioningMessage is fully implemented
+v2.7.3 (2012-03-05)
+- ref: Extaction mode works the same has Inspection mode, except it asks for all parameters
+- ref: Extraction/Inspection mode has changed to use session-parameters
+- ref: GPVDecision has split out GPVDecisionInpsection/Extraction
+- add: ProvisioningMessage added to TR069, adds summary of provisioning to SyslogServer
+- lib: dbi v1.68 (some constants changed to Enum)
+v2.7.2 (2012-02-21)
+- add: target-filename is possible to specify in the download-request
+- imp: event-logging shows errors during shelljob execution
+v2.7.1 (2012-01-31)
+- lib: removed all xaps-libs (common, dbi, prov, shell), replaced by using Eclipse Deployment Assembly which is detected by WTF (Tomcat) 
+v2.7.1 (2012-01-31)
+- lib: dbi v1.65.10
+- lib: xaps-shelldeamon v2.1.4
+- ref: xaps-shelldeamon.jar added, all libraries within shell is explicitly added to WEB-INF/lib
+v2.7.0 (2012-01-30)
+- imp: TR-069 server made more robust, to avoid crash if a client sends an improper Inform
+- merged with 2012R1-branch (v2.6.3.2 - 2.6.3.4)
+
+-- branched out to 2012R1
+
+v2.6.3.4 (2012R1) (2012-01-20)
+- ref: will store all AlwaysRead params and already stored read-params in DB on each shelljob execution
+v2.6.3.3 (2012R1) (2012-01-18)
+- lib: prov v1.3.7 (support repeat interval at 0 or more)
+- lib: dbi v1.64.21 (support repeat interval at 0 or more)
+v2.6.3.2 (2012R1) (2012-01-18)
+- lib: prov v1.3.7
+v2.6.3.2 (2012R1) (2012-01-17)
+- bug: Running a shell-job where jobname contains whitespace failed, fixed by adding quotes
+v2.6.3.1 (2012R1) (2012-01-16)
+- lib: dbi v1.64.20
+- improve: shell-job will now be synchronized on the unit-id (to prevent same two devices fighting over the same context)
+v2.6.3 (2012R1) (2011-12-27)
+- lib: prov v1.3.6 (allows non-standard ACS usernames)
+v2.6.3 (2012R1) (2011-12-16)
+- updated: version numbers
+- improve: removed forced GC from StabilityLogger, caused high CPU
+- lib: common v1.31.27
+- lib: dbi v1.64.18
+- lib: shell v2.0.7
+- lib: prov v1.3.5 (bugfixes on group matching and OK-monitor)
+v2.6.2 (2012R1) (2011-12-13)
+- update: version numbers
+- lib: prov v1.3.4 (better monitoring/logging of hang-situation)
+- improve: logging of "end-of-session"
+- refactor: changed log levels on challenge/verify to NOTICE
+v2.6.1 (2012R1) (2011-12-13)
+- lib: prov v1.3.3
+- lib: dbi v1.64.16
+- lib: shell v2.0.6
+- bugfix: if reset-parameter is set on unit, FactoryReset was not triggered
+v2.6.1 (2012R1) (2011-12-06)
+- bugfix: will now handle CPE which do not send INFORM (only EMPTY request)
+- refactor: removes a print of stack-trace to stdout
+- build: updated version numbers
+- lib: dbi v1.64.15
+- lib: prov v1.3.1
+- lib: shell v2.0.5
+v2.6.0 (2012R1) (2011-11-28)
+- updated to xaps-shell v2.0.5
+- updated to xaps-prov v1.3.0
+- updated to xaps-dbi v1.64.13
+- logging is updated
+- added support for shell-jobs
+- added support for FactoryReset method
+- much improved PII calculation/logging - should now be correct for all
+scenarios (various job types, repeatable jobs, service-windows, etc)
+v2.5.4 (2011R2) (2011-06-23)
+- updated to xaps-dbi v1.64.3
+- updated to xaps-prov v1.2.1a
+- not tested
+v2.5.3c (2011R2) (2011-06-17)
+- changed computation of DonwloadURL - added filetype to URL
+v2.5.3b (2011R2) (2011-06-09)
+- updated logging to some extent
+- removed 3 unnecessary write of unit parameters on each session
+v2.5.3 (2011R2) (2011-06-06)
+- updated to v1.1.2 of xaps-prov
+- now handles quirk for config-file-version (Inteno TR-069 stack is out-of-spec)
+- now tested with CONFIG-file download - works fine with Inteno devices
+v2.5.2 (2011R2) (2011-06-01)
+- updated to use new library (v1.1.0 of xaps-prov), (re)moved lots of common base-classes to this library. 
+The library is now used by both xAPS SPP and xAPS TR069. This project is not tested right now, and 
+there has been some (although minor) refactoring to make the split complete. Some base-classes remain in
+this project, since they did not seem to have any value for the SPP project. 
+v2.5.1 (2011R2) (2011-05-03)
+- updated to latest DBI (v1.61.5)
+- fixed JobLogic to verify KICK-job
+- added InformParameters, to read important parameters from Inform-request
+- improved writeValueMap in DBAccessSession to handle write of non-existing unit type parameters
+- reads UDPConnectionRequestAddress from Inform (if possible) and store in database (if possible)
+v2.5.0 (2011R2) (2011-04-27)
+- merged with 2011R1 branch (r36065-37145)
+- updated with latest DBI (v1.61.0)
+
+v2.4.6 (2011R1SP2) (2011-04-24)
+- group parameter matching also support negative match
+- demoted logging in debug-log from fatal to info (less log-reports)
+- fixed a spelling error
+- will disregard KICK jobs
+- updated to latest xaps-dbi v1.57.22-21
+v2.4.6 (2011R1SP2) (2011-03-25)
+- fixed a bug in Download-request (hopefully it will not make troubles for other clients)
+v2.4.5 (2011R1SP1) (2011-03-21)
+- fixed a bug regarding non-existent jobs in history
+- updated all version numbers
+- updated to latest xaps-dbi v1.57.22-18
+v2.4.4 (2011R1SP1) (2011-03-15)
+- fixed a bug introduced in v2.4.4 (2011-02-23), did not really match using group parameters
+v2.4.4 (2011R1SP1) (2011-02-23)
+- updated to latest xaps-dbi v1.57.22-14
+v2.4.4 (2011R1SP1) (2011-02-23)
+- updated version number in Provisioning Servlet
+v2.4.4 (2011R1SP1) (2011-02-23)
+- fixed group parameter matching, to handle _ and %
+v2.4.3 (2011R1) (2011-01-21)
+- fixed a bug which occurred if TR-069 secret was shorter than 16 char
+- fixed a bug which occurred if no secret (or other system parameter) was defined for a unit
+v2.4.3 (2011R1) (2011-01-21)
+- updated xaps-dbi v1.57.22
+v2.4.3 (2010R1) (2010-12-20)
+- fixed a bug in server when device does not support all parameters asked for in GPV
+v2.4.3 (2010R1) (2010-12-06)
+- fixed a bug in JobHistory processing
+- updated to latest lib (v1.57.5 of xaps-dbi)
+- more roubust discovery mode handling
+v2.4.2 (2010R1) (2010-11-17)
+- always updates periodic inform on ACS, both the System.PERIODIC_INTERVAL parameter and the TR-069 parameter
+- fixed some unnecessary exceptions in findSpread() methods
+- updated to latest lib (v1.57.1 NYC)
+v2.4.1 (2010R1) (2010-11-08)
+- updated to latest lib (v1.56.4 of xaps-dbi)
+- changed ServiceWindow to handle job repeat-interval, will try to time next inform to the job interval
+- changed JobLogic to place repeating Jobs last in any Job-queue (list of Jobs to perform)
+- changed ServiceWindow to handle spread-factor
+- changed UnitJob.stop() to *not* store ReadOnly parameters in database and *not* store special TR-069 monitoring parameters in database
+- modified GPVDecision regarding monitoring parameters (some simplification)
+- reverted some changes regarding monitor-parameters in ResponseCreator (was added in 2.4.0 - first entry)
+- changed job selection to delay repeating jobs until other jobs have run
+v2.4.0 (2010R1) (2010-10-29)
+- fixed inspection mode to request periodic inform interval in GPV, also added to 2.3-branch
+v2.4.0 (2010R1) (2010-10-29)
+- bumped version number in Provisioning servlet
+v2.4.0 (2010R1) (2010-10-28)
+- many changes to allow the server to collect Monitor-data (TR-statistics):
+	uses new Job concept: repeatCounter/repeatInterval
+	uses new Job history: jobId:repeatedCounter:lastRunTms
+	asks for Monitor-data whenever session/event is CompletedDiagnostics
+	sends Monitor-data to syslog
+	should now be possible to make a Job which can run a number of times at a specified interval and collect monitor-data
+- updated to latest lib (v1.55.0 of xaps-dbi - supports the new Job concepts)
+v2.3.10 (2010R1) (2010-10-27)
+- writes System.X_OWERA-COM.SECRET in auto-discovery mode
+- removed all traces of KickRunnable - moved it to the STUN project
+- removed some compiler warning using annotations
+v2.3.10 (2010R1) (2010-10-18)
+- updated xaps-tr069.properties with 1000000 download limit
+v2.3.10 (2010R1) (2010-10-18)
+- fixed a bug in writing job history parameter
+- slight change in Log, to retrieve xAPS
+- download default limit is now 1000000
+v2.3.9 (2010R1) (2010-10-16)
+- changed from ERROR to WARN when a unit has wrong secret (according to xAPS)
+- updated to latest lib (dbi v1.54.17)
+v2.3.9 (2010R1) (2010-10-13)
+- updated to latest lib (dbi v1.54.15)
+- changed from ERROR to WARN when a unit is not found in the database
+v2.3.9 (2010R1) (2010-10-12)
+- updated to latest lib (dbi v1.54.14 and common v1.31.25) 
+v2.3.9 (2010R1-RC) (2010-09-28) (2010R1)
+- updated version numbers & property files
+- updated doc
+- tested with xapstr069tc
+- updated owera-common and xaps-dbi
+- sends monitor-messages to syslog
+- refactored code regarding publishing of provisioning state (NetAdmin requirement)
+v2.3.8 (2010R1-RC) (2010-09-13)
+- removed some code regarding timespeed (test code no longer needed)
+v2.3.7 (2010R1-RC) (2010-09-08)
+- changed writing of unit-parameters, now supports populating of same System parameters as SPP (PERIODIC_INTERVAL, MAC, SOFTWARE_VERSION, IP_ADDRESS)
+- delete eveything regarding config (SPP). 
+- fixed some logging statements
+v2.3.6 (2010R1-RC) (2010-09-08)
+- last version before split in SPP and TR069 modules
+- lot of refactoring to add SPP-module, tried to avoid complicated refactoring - (much renaming)
+v2.3.5-beta (2010R1-RC) (2010-08-27)
+- much work on config-server, not related to the release
+- some adjustmenst to xaps-dbi latest version
+v2.3.5-alfa (2010R1-RC) (2010-08-21)
+- improved logging other places as well
+- moved updating of LAST_CONNECT_TMS and FIRST_CONNECT_TMS to happen in EMDecision (beginning of a conv)
+- removed warnings according to JRE6
+- added facility version logging in syslog
+- now requires a provisioning certificate to run
+- updated to latest lib (xaps-dbi v1.53.7)
+- improved discovery mode, will not automatically retrieve parameters from device if no device parameters is present
+- FileServlet logging is considerably improved
+v2.3.4-beta (2010R1-RC) (2010-06-25)
+- updated to handle both full length secret in xAPS and 16 char secret (substring of full secret if necessary)
+- improved kill-test
+v2.3.4-alpha (2010R1-RC) (2010-06-15)
+- Improved kill-test
+- Changed job-history writing, will enclose all jobIds with comma -> make possible to search for units with completed jobs
+- Updated to latest xaps-dbi (v1.52.9)
+- Now handles cross-protocol-secret: System.X_OWERA-COM.Secret
+- Changed logging of device boot in the kill/torture test
+- Added event to be triggered if a set-parameter-value is successful
+2010-04-12
+- Added a new test mode (kill-mode)
+- Changed DesiredSoftwareVersion logic to match OPP-server. Now it will only trigger a
+software download if DSW != "".
+v2.3.3 (2009R2) 2009-11-17
+- Updated version.txt
+2009-11-17
+- Updated build.xml to add source files to war-file
+2009-11-15
+- Updated lib (xaps-dbi 1.50.10)
+- Added file output of extracted parameters
+2009-11-12
+- Added EXTRACTION mode to TR-069 Server
+v2.3.3 (2009R2) 2009-11-12
+- Fixed a deprecated method call to xaps-dbi
+- Compiled it with java 1.5
+- Made sure all libraries were in correct versions
+v2.3.3 (2009R2) 2009-11-12
+- All Owera libraries are updated. Drivers are unchanged.
+- Documents and module.mk is updated
+- Yet another try of a release this year! We bump the version number.
+- API change on com.owera.xaps.intf.util.Log-object (renamed to LogContext) to avoid
+name collisions (xaps-dbi updated to v1.50.9)
+- Fixed a bug introduced in the last patch (type was missing on ParameterValueStruct)
+2009-30-10
+- Removed code to print out all parameters received in GPN to a file
+- If RW parameter on the CPE is different from the ACS parameter, and the parameter has no C flag
+set, it will be overwritten by the server, even if the parameterKey is correct. A warning message
+will be printed to log.
+- Fixed a bug in ConnectionRequest procedure, had to do with wrong username/password

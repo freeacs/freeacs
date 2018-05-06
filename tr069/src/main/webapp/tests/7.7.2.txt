@@ -1,0 +1,37 @@
+$IAD1 = InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.DomainName
+$IAD2 = string
+$IAD3 = Dummy
+$IAD4 = InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.Name
+$IAD5 = Dummy
+
+$VoIP1 = InternetGatewayDevice.Services.VoiceService.1.VoiceProfile.1.Enable
+$VoIP2 = boolean
+$VoIP3 = 1
+$VoIP4 = InternetGatewayDevice.Services.VoiceService.1.VoiceProfile.1.Line.1.SIP.URI
+$VoIP5 = http://dummy.com/
+
+$STB1 = InternetGatewayDevice.Services.STBService.1.Components.Tuner.1.Enable
+$STB2 = boolean
+$STB3 = 1
+$STB4 = InternetGatewayDevice.Services.STBService.1.Components.UserInterface.InformationMsg
+$STB5 = Dummy
+
+
+
+<cwmp:SetParameterValues>
+ <ParameterList soapenc:arrayType="cwmp:ParameterValueStruct[3]">
+  <ParameterValueStruct>
+   <Name>InternetGatewayDevice.ManagementServer.UpgradesManaged</Name>
+   <Value xsi:type="xsd:boolean">1</Value>
+  </ParameterValueStruct>
+  <ParameterValueStruct>
+   <Name>$VAR1</Name>
+   <Value xsi:type="xsd:$VAR2">$VAR3</Value>
+  </ParameterValueStruct>
+  <ParameterValueStruct>
+   <Name>$VAR4</Name>
+   <Value xsi:type="xsd:string">$VAR5</Value>
+  </ParameterValueStruct>
+ </ParameterList>
+ <ParameterKey>Dummy</ParameterKey>
+</cwmp:SetParameterValues>

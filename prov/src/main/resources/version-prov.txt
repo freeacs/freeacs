@@ -1,0 +1,134 @@
+v1.4.28 (2015-01-25)
+- del: Removed FileServlet - it had to be moved back to SPP/TR069 servers (and duplicated), since authentication had to be added.
+v1.4.27 (2013-08-22)
+- ref: Handles a CURRENT_JOB which is non-existent (recently deleted)
+v1.4.26 (2013-08-14)
+- lib: common v1.33.12 
+- add: Use callback-function in cache-cleanup (to notify when something is removed from cache)
+v1.4.25 (2013-06-11)
+- lib: v1.74.34 (unit-specific job-parameters were dropped)
+- ref: Removed a method to retrieve job-parameters (with unit-specifics included)
+v1.4.24 (2013-06-10)
+- bug: JobType CONFIG did not work, since job-params were set to late (after GPV-response had been received). Moved the section from UnitJob.start() into
+TR069-servers GPVDecision.prepareSPVForConfigJob(). This will also require some change in SPP (which have not been done yet - and maybe never will?)
+v1.4.23 (2013-05-07)
+- bug: Did not handle Spread-factor as an int between 0-100
+v1.4.22 (2013-04-18)
+- ref: Changed to use SystemConstants' default spread setting - changed from 50% spread to 0% spread
+v1.4.21 (2013-04-15)
+- ref: Changed session-timeout for provisioning from 2min to 3min (one extremely slow device A7500 was tested)
+v1.4.20 (2013-03-21)
+- bug: PIIDecision did not handle properly if a PII was calculated in a non-job situation and there is Reset/Reboot/Download changes waiting in a disrupte service window
+v1.4.19 (2013-03-20)
+- ref: changed debug-logging. Only conversation log will be sent to debug-log
+v1.4.18 (2013-03-13)
+- lib: dbi v1.74.5
+v1.4.17 (2013-03-08)
+- ref: small change on logging from OK-servlet
+v1.4.16 (2013-03-05)
+- ref: changed logging in OK-servlet to avoid repetition of messages from Monitor server
+v1.4.15 (2013-03-01)
+- lib: dbi v1.74.0
+- del: removed SyslogServer-properties, Syslog-Server logging is simplified
+- del: removed some stuff related to the changes in dbi
+v1.4.14 (2013-02-26)
+- ref: Changed loglevel, to avoid unnecessary error messages in log
+v1.4.13 (2012-12-13)
+- lib: dbi v1.73.2
+- lib: common v1.33.0
+v1.4.12 (2012-12-11)
+- lib: dbi v1.73
+- ref: removed some unnecessary update of Files-object, will hurt performance if kept  
+v1.4.11 (2012-09-04)
+- lib: common v1.32.2 (changed NoAvailableConnectionException)
+- ref: removed Counter-class
+v1.4.10 (2012-07-03)
+- ref: offers a method to check if conversation log is enabled
+v1.4.9 (2012-06-29)
+- ref: Logging of conversation log is changed slightly - debug-conversation-log is not printed to a special debug-appender
+v1.4.8 (2012-05-09)
+- bug: Queued writing of Job-history caued job-loop. Replaced with direct write to database (no queuing)
+v1.4.7 (2012-05-03)
+- bug: OK-servlet could report both OK and ERROR at the same time
+- lib: dbi v1.70.1
+- ref: removed CPEParameters from prov (moved it to TR069-project)
+- ref: a TR069_SCRIPT job is considered complete if CommandKey matches
+- ref: removed stuff about "Move-to-profile"
+- ref: upon unit-job-stop, the Job.CurrentKey is set to ""
+- ref: cleanup of code considered unnecessary
+v1.4.6 (2012-04-19)
+- lib: dbi v1.69.5 
+v1.4.5 (2012-04-13)
+- ref: OK-servlet now also prints version number of server
+v1.4.4 (2012-03-15)
+- lib: dbi v1.68.2 (some constants to Enums)
+- ref: use unit-parameter write-queue (better performance)
+- ref: JobLogic logging refactoring 
+v1.4.3 (2012-03-05)
+- lib: dbi v1.68 (updated some constants to Enums)
+- add: SyslogClient to send ProvisioningMessage from SPP/TR069 to SyslogServer
+v1.4.2 (2012-02-23)
+- bug: logging in OK-servlet logged with context-information from other threads
+v1.4.1 (2012-02-09)
+- lib: dbi v1.66.6 (supports permission refactoring)
+v1.4.0 (2012-01-31)
+- ref: moved code from JobLogic to Group (in dbi v1.65.11) 
+
+- branched out 2012R1
+
+v1.3.7 (2012R1) (2012-01-18)
+- imp: Added/changed some comments
+- ref: Allows repeatInterval of a job at 0 or more (before 120 or more), improved calculation of nextRunTms
+- bug: The nextPII calculated for a future job leaked over to other sessions, a cleanup was required om PIIDecision
+v1.3.6 (2012R1) (2011-12-27)
+- allows TR-069 ACS username to deviate from standard and not containing OUI (will break if swithcing between auth-mode and none-auth-mode)
+v1.3.5 (2012R1) (2011-12-15)
+- refactor: changed from 120 sec session-hang to 600 sec (to avoid wolf, wolf-situation)
+- refactor: changed from Set to Map in ThreadCounter.ipSet, since we need to keep track of number of connections from each IP
+- bugfix: OK-servlet did not check on high ThreadCounter  
+- bugfix: group-parameter matching against unit-paramete002194-NPA201E-0021940012AC
+v1.3.4 (2012R1) (2011-12-13)
+- improve: Monitoring of sessions that never ends
+v1.3.3 (2012R1) (2011-12-12)
+- improve: OK-servlet also checks for DBI-errors
+v1.3.2 (2012R1) (2011-12-07) 
+- bugfix: reset-parameter was written (as "1") after a reset-job
+- refactor: removed logging
+v1.3.1 (2012R1) (2011-12-06)
+- refactor: improved monitoring of connection pool
+v1.3.0 (2012R1) (2011-11-28)
+- better logging to follow the flow of the logic
+- added PIIDecision - necessary to compute correct PII, this has always been buggy before,
+but never really discovered, since most people didn't use Jobs at all (and if they did, they
+would not discover the wrong PII anyway). The problem would be much more prominent with
+repeatable jobs.
+- major refactoring of both JobLogic and ServiceWindow (two of the more complicated classes)
+	these classes should be easier to read, and I also believe more robust, less error-prone
+- small change to allow UnitJob to be started by either server-side jobs, or client-side jobs
+- added support for job type RESET (= Factory Reset)
+- JobLogic bugfix - now checks for ServiceWindow & DownloadAllowed before in correct order
+v1.2.1a (2011R1) (2011-06-23)
+- updated to xaps-dbi v1.64.3
+v1.2.1 (2011-06-20)
+- improved on unit-job stop, now sets the timestamp of the job-start
+(more correct timing of the repeating jobs)
+v1.2.0a (2011-06-17)
+- refactored away from OweraParameters in one single place
+v1.2.0 (2011-06-17)
+- updated FileServlet to parse for file-type in URL -> more accurate
+- changed UnitJob from static to instance -> changes also in JobLogic
+- changed UnitJob to handle TelnetProvisioning as well
+v1.1.2 
+- fixed CPEParameters so it supports a quirk for config-file-version
+- fixed Properties so it downloads correct property file. A bug was introduced in v1.0.0
+v1.1.1
+- fixed FileServlet so it can also download SCRIPT-files
+v1.1.0 
+- updated project according to changes added in the TR-069 project since the
+split between xAPS SPP and xAPS TR-069.
+- also made some minor refactoring to make the split complete
+v1.0.0
+- these packages are moved from xapsspp v1.2.0, but modified slightly. Expect 
+minor modification when introducing this jar-file back into xAPS SPP
+
+

@@ -1,0 +1,10 @@
+<cwmp:SetParameterAttributes>
+ <ParameterList soapenc:arrayType="cwmp:ParameterValueStruct[1]">
+  <SetParameterAttributesStruct>
+   <Name>InternetGatewayDevice.ManagementServer.PeriodicInformEnable</Name>
+   <NotificationChange>false</NotificationChange>
+   <Notification>0</Notification>
+   <AccessListChange>true</AccessListChange>
+  </SetParameterAttributesStruct>
+ </ParameterList>
+</cwmp:SetParameterAttributes>

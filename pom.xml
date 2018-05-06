@@ -18,6 +18,8 @@
         <module>dbi</module>
         <module>wsc</module>
         <module>ws</module>
+        <module>prov</module>
+        <module>tr069</module>
         <module>web</module>
     </modules>
 
