@@ -33,7 +33,7 @@ public class AddOrChangeProfile {
 		List<ProfileParameter> dPpList = new ArrayList<ProfileParameter>();
 		Unittype unittypeXAPS = profileXAPS.getUnittype();
 		if (parameterList != null && parameterList.getParameterArray() != null) {
-			for (Parameter param : parameterList.getParameterArray()) {
+			for (Parameter param : parameterList.getParameterArray().getItem()) {
 				UnittypeParameter utp = unittypeXAPS.getUnittypeParameters().getByName(param.getName());
 				if (utp == null)
 					throw XAPSWS.error(logger, "The unittype parameter " + param.getName() + " does not exist, hence cannot add profile parameter");

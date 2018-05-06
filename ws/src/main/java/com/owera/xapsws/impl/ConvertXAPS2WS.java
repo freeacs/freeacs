@@ -2,10 +2,7 @@ package com.owera.xapsws.impl;
 
 import com.owera.xaps.dbi.ProfileParameter;
 import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xapsws.Parameter;
-import com.owera.xapsws.ParameterList;
-import com.owera.xapsws.Profile;
-import com.owera.xapsws.Unittype;
+import com.owera.xapsws.*;
 
 /**
  * Converts from XAPS objects to WS objects
@@ -29,7 +26,7 @@ public class ConvertXAPS2WS {
 			Parameter p = new Parameter(utp.getName(), utp.getFlag().getFlag(), null);
 			parameterArray[i++] = p;
 		}
-		ParameterList parameters = new ParameterList(parameterArray);
+		ParameterList parameters = new ParameterList(new ArrayOfParameter(parameterArray));
 		return new Unittype(name, null, vendor, description, protocol, parameters);
 	}
 
@@ -44,7 +41,7 @@ public class ConvertXAPS2WS {
 			Parameter param = new Parameter(pp.getUnittypeParameter().getName(), pp.getValue(), null);
 			parameterArray[i++] = param;
 		}
-		ParameterList parameters = new ParameterList(parameterArray);
+		ParameterList parameters = new ParameterList(new ArrayOfParameter(parameterArray));
 		return new Profile(name, parameters);
 	}
 }

@@ -27,7 +27,7 @@ public class AddOrChangeUnittype {
 	private XAPS xaps;
 	private XAPSWS xapsWS;
 
-	private void addOrChangeUnittypeImpl(Unittype unittypeXAPS, AddOrChangeUnittypeRequest gur) throws NoAvailableConnectionException, SQLException, RemoteException {
+	private void addOrChangeUnittypeImpl(Unittype unittypeXAPS, AddOrChangeUnittypeRequest gur) throws SQLException, RemoteException {
 		unittypeXAPS.setDescription(gur.getUnittype().getDescription());
 		//		unittypeXAPS.setMatcherId(gur.getUnittype().getMatcherId());
 		unittypeXAPS.setProtocol(ProvisioningProtocol.toEnum(gur.getUnittype().getProtocol()));
@@ -36,7 +36,7 @@ public class AddOrChangeUnittype {
 		List<UnittypeParameter> acUtpList = new ArrayList<UnittypeParameter>();
 		List<UnittypeParameter> dUtpList = new ArrayList<UnittypeParameter>();
 		if (parameterList != null && parameterList.getParameterArray() != null) {
-			for (Parameter param : parameterList.getParameterArray()) {
+			for (Parameter param : parameterList.getParameterArray().getItem()) {
 				UnittypeParameter utp = unittypeXAPS.getUnittypeParameters().getByName(param.getName());
 				if (param.getFlags() != null && !param.getFlags().equals("D") && !param.getFlags().equals("AC"))
 					throw XAPSWS.error(logger, "Flag for parameter " + param.getName() + " had value " + param.getFlags() + ", but must be either D or AC");

@@ -97,7 +97,7 @@ public class AddOrChangeUnit {
 
 	private List<UnitParameter> validateDeleteUnitParameters(Unit unitWS, Unittype unittype, Profile profile) throws RemoteException {
 		List<UnitParameter> unitParams = new ArrayList<UnitParameter>();
-		Parameter[] parameters = unitWS.getParameters().getParameterArray();
+		Parameter[] parameters = unitWS.getParameters().getParameterArray().getItem();
 		for (Parameter p : parameters) {
 			UnittypeParameter utp = unittype.getUnittypeParameters().getByName(p.getName());
 			if (utp == null) {
@@ -113,7 +113,7 @@ public class AddOrChangeUnit {
 
 	private List<UnitParameter> validateAddOrChangeUnitParameters(Unit unitWS, Unittype unittype, Profile profile) throws RemoteException {
 		List<UnitParameter> unitParams = new ArrayList<UnitParameter>();
-		Parameter[] parameters = unitWS.getParameters().getParameterArray();
+		Parameter[] parameters = unitWS.getParameters().getParameterArray().getItem();
 		for (Parameter p : parameters) {
 			UnittypeParameter utp = unittype.getUnittypeParameters().getByName(p.getName());
 			if (utp == null) {
