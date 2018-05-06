@@ -1,0 +1,14 @@
+$IAD1 = InternetGatewayDevice.Layer3Forwarding.ForwardNumberOfEntries
+$IAD2 = InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.ExternalIPAddress
+$VoIP1 = InternetGatewayDevice.Services.VoiceService.1.VoiceProfileNumberOfEntries
+$VoIP2 = InternetGatewayDevice.Services.VoiceService.1.VoiceProfile.1.Line.1.Enable
+$STB1 = InternetGatewayDevice.Services.STBService.1.Components.TunerNumberOfEntries
+$STB2 = InternetGatewayDevice.Services.STBService.1.Components.Tuner.1.Enable
+
+<cwmp:GetParameterValues>
+ <ParameterNames soapenc:arrayType="xsd:string[3]">
+  <string>InternetGatewayDevice.DeviceInfo.SoftwareVersion</string>
+  <string>$VAR1</string>
+  <string>$VAR2</string>
+ </ParameterNames>
+</cwmp:GetParameterValues>

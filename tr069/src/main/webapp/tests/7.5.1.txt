@@ -1,0 +1,4 @@
+<cwmp:GetParameterNames>
+ <ParameterPath>InternetGatewayDevice.DeviceInfo.Manufacturer</ParameterPath>
+ <NextLevel>false</NextLevel>
+</cwmp:GetParameterNames>

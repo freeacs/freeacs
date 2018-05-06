@@ -1,0 +1,7 @@
+$IAD1 = InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.PortMapping.
+$VoIP1 = InternetGatewayDevice.Services.VoiceService.1.VoiceProfile.1.Line.
+$STB1 = N/A
+<cwmp:AddObject>
+  <ObjectName>$VAR1</ObjectName>
+  <ParameterKey>Dummy</ParameterKey>
+</cwmp:AddObject>

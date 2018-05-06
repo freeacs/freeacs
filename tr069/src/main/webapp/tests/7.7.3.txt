@@ -1,0 +1,29 @@
+$IAD1 = InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1
+$IAD2 = Dummy
+$IAD3 = InternetGatewayDevice.WANDevice.1.NonExistent
+
+$VoIP1 = InternetGatewayDevice.Services.VoiceService.1.VoiceProfile.1
+$VoIP2 = Dummy
+$VoIP3 = InternetGatewayDevice.Services.VoiceService.1.Capabilities.NonExistent
+
+$STB1 = InternetGatewayDevice.Services.STBService.1.Capabilities
+$STB2 = Dummy
+$STB3 = InternetGatewayDevice.Services.STBService.1.Applications.NonExistent
+
+<cwmp:SetParameterValues>
+ <ParameterList soapenc:arrayType="cwmp:ParameterValueStruct[3]">
+  <ParameterValueStruct>
+   <Name>InternetGatewayDevice.DeviceInfo.Manufacturer</Name>
+   <Value xsi:type="xsd:string">Dummy</Value>
+  </ParameterValueStruct>
+  <ParameterValueStruct>
+   <Name>$VAR1</Name>
+   <Value xsi:type="xsd:string">$VAR2</Value>
+  </ParameterValueStruct>
+  <ParameterValueStruct>
+   <Name>$VAR3</Name>
+   <Value xsi:type="xsd:string">Dummy</Value>
+  </ParameterValueStruct>
+ </ParameterList>
+ <ParameterKey>Dummy</ParameterKey>
+</cwmp:SetParameterValues>

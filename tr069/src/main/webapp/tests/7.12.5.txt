@@ -1,0 +1,14 @@
+$IAD1 = InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.PortMappingNumberOfEntries
+$VoIP1 = InternetGatewayDevice.VoiceService.1.VoiceProfile.1.Enable
+$STB1 = InternetGatewayDevice.STBService.1.AVPlayer.PreferredSubtitlingLanguage
+
+<cwmp:SetParameterAttributes>
+ <ParameterList soapenc:arrayType="cwmp:ParameterValueStruct[1]">
+  <SetParameterAttributesStruct>
+   <Name>$VAR1</Name>
+   <NotificationChange>false</NotificationChange>
+   <Notification>0</Notification>
+   <AccessListChange>false</AccessListChange>
+  </SetParameterAttributesStruct>
+ </ParameterList>
+</cwmp:SetParameterAttributes>
