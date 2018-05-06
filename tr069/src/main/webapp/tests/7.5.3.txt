@@ -1,0 +1,8 @@
+$IAD1 = InternetGatewayDevice.Layer3Forwarding.
+$VoIP1 = InternetGatewayDevice.Services.VoiceService.1.VoiceProfile.1.SIP.
+$STB1 = InternetGatewayDevice.Services.STBService.1.Capabilities.AVDecoder.
+
+<cwmp:GetParameterNames>
+ <ParameterPath>$VAR1</ParameterPath>
+ <NextLevel>false</NextLevel>
+</cwmp:GetParameterNames>

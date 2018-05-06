@@ -1,0 +1,9 @@
+<cwmp:SetParameterValues>
+ <ParameterList soapenc:arrayType="cwmp:ParameterValueStruct[1]">
+  <ParameterValueStruct>
+   <Name>InternetGatewayDevice.ManagementServer.PeriodicInformEnable</Name>
+   <Value xsi:type="xsd:boolean">1</Value>
+  </ParameterValueStruct>
+ </ParameterList>
+ <ParameterKey>Dummy</ParameterKey>
+</cwmp:SetParameterValues>

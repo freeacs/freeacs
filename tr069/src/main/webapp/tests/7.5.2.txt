@@ -1,0 +1,8 @@
+$IAD1 = InternetGatewayDevice.WANDevice.1.
+$VoIP1 = InternetGatewayDevice.Services.VoiceService.1.
+$STB1 = InternetGatewayDevice.Services.STBService.1.
+
+<cwmp:GetParameterNames>
+ <ParameterPath>$VAR1</ParameterPath>
+ <NextLevel>true</NextLevel>
+</cwmp:GetParameterNames>

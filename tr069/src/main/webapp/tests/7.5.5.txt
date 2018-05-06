@@ -1,0 +1,4 @@
+<cwmp:GetParameterNames>
+ <ParameterPath>InternetGatewayDevice.</ParameterPath>
+ <NextLevel>false</NextLevel>
+</cwmp:GetParameterNames>

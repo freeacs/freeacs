@@ -1,0 +1,10 @@
+<cwmp:SetParameterAttributes>
+ <ParameterList soapenc:arrayType="cwmp:ParameterValueStruct[1]">
+  <SetParameterAttributesStruct>
+   <Name>InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.PortMapping.</Name>
+   <NotificationChange>false</NotificationChange>
+   <Notification>0</Notification>
+   <AccessListChange>true</AccessListChange>
+  </SetParameterAttributesStruct>
+ </ParameterList>
+</cwmp:SetParameterAttributes>

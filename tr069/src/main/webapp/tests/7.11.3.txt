@@ -1,0 +1,9 @@
+$IAD1 = InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.
+$VoIP1 = InternetGatewayDevice.VoiceService.1.VoiceProfile.1.Line.1.
+$STB1 = InternetGatewayDevice.STBService.1.Components.AudioDecoder.1.
+
+<cwmp:GetParameterAttributes>
+ <ParameterNames soapenc:arrayType="xsd:string[1]">
+  <string>$VAR1</string>
+ </ParameterNames>
+</cwmp:GetParameterAttributes>

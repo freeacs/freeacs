@@ -1,0 +1,5 @@
+<cwmp:GetParameterValues>
+ <ParameterNames soapenc:arrayType="xsd:string[1]">
+  <string>InternetGatewayDevice.ManagementServer.ConnectionRequestUsername</string>
+ </ParameterNames>
+</cwmp:GetParameterValues>
