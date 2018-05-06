@@ -1,0 +1,113 @@
+v1.3.9 (2014-09-02)
+- add: re-introduced possibility of overriding URLs for each module (suspected removed in v1.3.0)
+v1.3.8 (2013-06-05)
+- ref: Sorted the monitor events listed
+v1.3.7 (2013-04-16)
+- ref: The trigger-monitor mails where slightly re-formatted when trigger-events crossed over dates
+v1.3.6 (2013-04-11)
+- lib: dbi v1.74.19 (bugfix concerning read of trigger-releases)
+v1.3.5 (2013-03-13)
+- bug: Reverted the default property file for release purposes, no longer contain Pingcom account details.
+v1.3.4 (2012-03-01)
+- ref: Improved TriggerReport-mail
+v1.3.3 (2012-02-13)
+- bug: persists last error message to file, handles restart of server
+- bug: comparison with current/last-message did not employ trim(), may have caused multiple alerts
+- ref: removed monitor-status from monitor-servlet
+v1.3.2 (2012-01-31)
+- bug: Seems to cleared out most monitor-logging/mail issues
+- ref: Made retry-seconds possible to control by property monitor.retrysec (undocumented)
+- ref: Added logging and usage of hostname in heartbeat/alarms
+v1.3.1 (2012-01-30)
+- bug: Added version number to OK-servlet
+- bug: Updated ssl-trust-manager.jar to properly update cacerts with new certificates
+- bug: NullPointerException in SendEmailTask when MonitorInfo was not fully populated
+- bug: Cleaned up error messages. 
+- ref: Cleanup after 1.3.0 (not all was completed)
+- ref: Changed "fusion.url" property to "fusion.urlbase", to match "monitor.urlbase"
+- ref: Now uses fusion.urlbase property in monitor email alarms, just as for trigger alarms/reports
+- ref: cleanup/improved xaps-monitor.properties 
+v1.3.0 (2012-12-14)
+- ref: Rewrite of Module monitoring:
+	   - Remove a lot of configuration from propertyfile, since no one ever should need to change it. 
+	   - Allow configuration of host to monitor
+	   - Only xapsmonitor/ok result will be emailed, dramatic decrease of emails
+	   - Complete redesign of classes involved in Module monitoring 
+	   - Modules must fail consistently for 5 minutes before reported
+v1.2.7 (2012-12-13)
+- lib: common v1.33.0
+- lib: dbi v1.73.2
+- ref: refactored property files, better comments
+v1.2.6 (2012-09-06)
+- bug: fixed a typo
+- add: monitoring monitor-server itself (which in turn monitors all modules)
+v1.2.5 (2012-05-31)
+- lib: dbi v1.71.3 (Small change in Trigger-API)
+- add: ShowScheduledTasks
+- ref: Changed some logging settings
+v1.2.4 (2012-05-04)
+- lib: dbi v1.70.1
+- ref: better handling of registering/unregistering tasks.
+- ref: better printout from OK-servlet 
+- ref: improvments in the templates
+v1.2.3 (2012-04-26)
+- ref: Started to use OKServlet Multi-Module Monitoring
+- ref: Small changes in output, to print version, drop history/status 
+v1.2.2 (2012-04-16)
+- add: OKServlet offers a single URL to monitor the whole of Fusion
+- ref: HttpMonitorTask changed to avoid sending false alarms
+v1.2.1 (2012-04-14)
+- ref: Small changes in logging due to testing from v1.2.0
+v1.2.0 (2012-04-13)
+- ref: Complete refactoring of the server, the only thing kept was templates, SSL-handling and Email-stuff
+		The following features was implemented:
+		- Using Common Schedule Framework to control timing of all operations
+		- No use of database to persist any state - all state are memory-only 
+		- Monitor heartbeat (every morning at 7)
+		- Propertyfile changes is dynamically loaded
+		- No hard links between properties and which urls to monitor
+		- Only HTTP monitoring
+		- Greatly reduced LOC / Changed removed packages
+		- Not possible to changed interval/OK-response/timeout in propertyfile (never used)
+		- Changes in status on modules should be detected in max 120 sec.
+		
+v1.1.6 (2012-03-28)
+- bug: STUN-monitoring was not corrected (forward-ported from 2012R1 v1.0.13)
+v1.1.5 (2012-02-16)
+- lib: dbi v1.67.6 (updated interface)
+v1.1.4 (2012-02-15)
+- ref: Mail-notifications from Triggers are improved
+- lib: dbi v1.67.5 (name changes)
+v1.1.3 (2012-02-14)
+- ref: Separation of ALARM and REPORT (yet again), make sure to only send ALARM if trigger release within last eval-period.
+v1.1.2 (2012-02-14)
+- ref: ALARM and REPORT are consolidated into one type of message: Notification
+v1.1.1 (2012-02-09)
+- add: possible to manually trigger the all-triggers-check (using ?trigger=true)
+- add: periodically (every 30m) checks all triggers to look for alarms/reports
+- add: deletes old trigger-history
+- add: reports/alarms formatted in HTML
+- add: support composite trigger reports/alarms
+v1.1.0 (2012-01-31)
+- ref: removed build-folder from svn
+- lib: removed all xaps-libs (common, dbi, prov, shell), replaced by using Eclipse Deployment Assembly which is detected by WTF (Tomcat)
+v1.1.0 (2012-01-23)
+- add: Send alarms and reports from Triggers
+- ref: change Monitor/MonitorPersister to be more in line with general standards 
+followed elsewhere in xAPS/Fusion
+- ref: created Properties class to handle properties
+- ref: created SendMail class to handle mail
+v1.0.12 (2012R1) (2011-12-19)
+- improve: changed one log statement to "NOTICE" log level
+v1.0.12 (2012R1) (2011-12-16)
+- updated version numbers
+- removed 2 forced GC-run
+v1.0.11 (2012R1) (2011-11-28)
+- copied from 1.0.11-tag into trunk
+- set version numbers
+2011-02-08
+- Fixed problem with NameAndKey index rendering monitor unable to persist changes
+  - this was fixed by adding logic to retrieve the id of the existing entry an updating it
+2011-02-04
+- Fixed problem with certificate not accepted, added auto installation.
+v1.0.7
