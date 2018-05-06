@@ -1,0 +1,824 @@
+v2.2.58 (2016-02-27)
+- ref: Fixed issue #8 with regards to unittype protocol value not being selected
+- ref: Only adding permissions page to tools menu if user is admin
+- ref: removing unused method
+- ref: Fixed issue #11 with regards to redirect not working for unittype with space in the name after timing out
+v2.2.57 (2014-11-08)
+- ref: Updated logic concerning branding of the product. Removed/changed some text referring specifically to FreeACS/Ping,
+added some logic to specify own brand. 
+- bug: Missing license information about 3rd party libraries
+v2.2.56 (2014-10-27)
+- ref: Dashboard improvement, possible to sort the parameters listed
+v2.2.55 (2014-09-28)
+- add: Dashboard updated to add custom parameters - will make the dashboard much more useful. The parameters are configured in xaps-web.properties.
+v2.2.54 (2014-09-23)
+- ref: removed Certificate stuff - a report is locked up:), a menu item is removed
+v2.2.53 (2014-09-19)
+- ref: Fusion -> FreeACS (name change)
+- ref: Made Unit configuration page more responsive through use "Filter"-button (previously a bit sluggish when filtering was done on every keypress in the filter)
+- ref: Removed stuff related to Pingcom's VoIP and Hardware messages through usage of new properties in xaps-web.properties
+- bug: Do not change profile in Unit configuration unless explicitly pressing the "Move to" button
+v2.2.52 (2014-09-03)
+- bug: changed a URL in xaps-web.properties to point to port 80 by default
+- bug: some references to "xapsmonitor" was corrected to "monitor"
+- bug: login form explicitly posts to /web/login, instead of the relative path of "login". This should make things
+work when a user access http://host/ and is subsequently redirected to http://host/web. 
+v2.2.51 (2013-08-22)
+- ref: No longer possible to directly edit job-parameters in SOFTWARE, RESET or RESTART jobs (can cause inconsistency)
+v2.2.50 (2013-05-27)
+- ref: very slow performance with many hundreds of parameter-help-messages (added in 2.2.42) - reverted that change
+- lib: v1.74.32 (bugfix on parameter-search (operand-usage and NULL-values and group-parameter matching))
+- bug: Staging now handles serial numbers with case insensivity 
+v2.2.49 (2013-05-24)
+- bug: Provisioning history had wrong mouseover when 0 parameters where written
+v2.2.48 (2013-05-23)
+- bug: dashboard does not display line status for other unittypes than NPA/RGW/IAD (old Pingcom unittypes)
+- lib: dbi v1.74.21 (group-matching bugfix)
+- ref: changed mouseover text for spread on Unit Configuration Page
+v2.2.47 (2013-05-21)
+- lib: dbi v1.74.30 (Bugfix in Unittype.toString())
+v2.2.46 (2013-05-06)
+- lib: dbi v1.74.25 (Spread reverted back from 0 to 50)
+v2.2.45 (2013-05-02)
+- bug: not possible to change provider for an already shipped unit (staging-logic)
+v2.2.44 (2013-04-29)
+- lib: dbi v1.74.23 (bugfix on jobs)
+v2.2.43 (2013-04-26)
+- lib: dbi v1.74.22 (bugfix on jobs)
+v2.2.42 (2013-04-23)
+- ref: improved unit-configuration.xml (help)
+- del: remove some unused packages
+- add: Now supports a "confidentials.restricted" property to hide confidential parameters from users, and log to file when accessed.
+v2.2.41 (2013-04-22)
+- add: Automatic logout after session-timeout
+- ref: Upgrade-button triggers kick/immediate action
+- ref: Some fix regarding the Device GUI URL (shows the URL, do not always hide it when NATted)
+v2.2.40 (2013-04-19)
+- bug: Fixed bad regex causing malformed syslog history entries on unit config page.
+v2.2.39 (2013-04-18)
+- add: More mouseover on Unit-configuration page
+- add: Device GUI URL added to Unit-configuration page
+- ref: Parameter-name-filtering in Unit/Profile/UnitType-configuration supports regexp
+- add: Added link to mail-support 
+- ref: Added tab-index order and focus to search page and unit-configuration page
+- lib: dbi v1.74.21 (added system contstants for spread/frequency)
+- add: Unit Configuration Page also supports direct changing of frequency/spread
+- ref: Calculation of time since next/last provisioning is factored to a Util-class and also applied correct round-half-up
+- ref: Slight redesign of Unit Configuration Page layout, shows provsioning interval
+v2.2.38 (2013-04-16)
+- ref: Removed Refresh button on Unit Configuration page, CTRL-R (and  other shortcuts) will work just as fine (due to javascript-history-modification)
+v2.2.37 (2013-04-10)
+- bug: GroupConfiguration did not handle parameter enumerations - javascript fix
+v2.2.36 (2013-04-09)
+- ref: Improved mouseover help on Inititate provisioning/Readall buttons in Unit Configuration 
+- ref: UnitPage will not reset to REGULAR mode unless explicitly ordered to 
+- ref: UnitPage will hang for 30/60 seconds when mode is changed - to wait for LastConnectTms to change
+v2.2.35 (2013-04-08)
+- lib: common v1.33.6
+- ref: moved IPAddress-logic to common
+- add: Now links to ProvMsg syslog from provisioning history box on unit config page.
+v2.2.34 (2013-04-05)
+- bug: Fixed broken parsing of some "ProvMsg" syslog messages. 
+v2.2.33 (2013-04-04)
+- add: provisioning history box on unit config page.
+- ref: removed unnecessary column from trigger-release/history
+- ref: changed list-layout on syslog page
+- ref: added more icon-links to point to syslog-page
+- bug: added url-encoding on some link involving unit-id
+v2.2.32 (2013-04-02)
+- add: Mouseover tooltips added to unit parameter page.
+- bug: Regression prevented upgrade from unitconf page. Fixed it.
+- ref: reverted the refactoring in v2.2.27 - the issue was solved by other means - more clean solution
+- bug: Previous commit introduced FilePage bugs, addressed those.
+- bug: Fixed a bug preventing kicks in Unit Configuration page.  
+v2.2.31 (2013-04-02)
+- add: Added a column in Permissions page of user list: admin column
+- bug: Fixed a bug in FilePage that hindered the changing of fields for SOFTWARE files.
+v2.2.30 (2013-03-27)
+- ref: Changed staging from working with *Device.DeviceInfo.SerialNumber to System.X_OWERA-COM.SerialNumber
+- ref: Now handles IAD208AN-S correctly
+- ref: Reworked software upgrade on unitconf page.
+v2.2.29 (2013-03-27)
+- ref: Staging also handles units in IAD208AN unittype
+v2.2.28 (2013-03-26)
+- bug: Fixed glitches in software upgrade from unitconf page.
+v2.2.27 (2013-03-26)
+- ref: make sure that syslog-queries always modify end-tms to be the 0th millisecond of the next minute - to make sure trigger-events are always caputerd
+- bug: group-page failed beacuse of reference to inspection (which is removed)
+v2.2.26 (2013-03-25)
+- add: Firmware upgrade from unit configuration page
+- bug: Various fixes to the unit configuration page
+- add: Now shows the number of auto provisionings per week on unitconf page.
+v2.2.25 (2013-03-21)
+- add: added username in the staging-mail
+- lib: dbi v1.74.10
+- ref: removed references to SystemParameter.MAC, replaced with SERIAL_NUMBER - should only affect staging
+v2.2.24 (2013-03-20)
+- bug: Fixed newly introduced bug on unit dashboard page.
+- add: Now shows approx. next provisioning on unit configuration page.
+v2.2.23 (2013-03-20)
+- ref: changed flag-filtering on Unit Configuration Page, Inspection is removed, Boot-Required is added
+- add: More info on unit dashboard page.
+v2.2.22 (2013-03-20)
+- add: Heavily modified (hopefully improved) unit configuration page. 
+v2.2.21 (2013-03-18)
+- add: Added Bootable Unittype-parameter flag
+- lib: dbi v1.74.8
+- ref: Removed references to UnittypeParameterFlag.isInspection()
+- ref: Removed Group Time rolling parameters
+- ref: TriggerReleasePage & TriggerReleaseHistory also print noEvents, noUnits and noEventsPrUnit
+v2.2.20 (2013-03-14)
+- bug: if browser remembers session, after a restart of Tomcat, an NP would occur in clearSession
+v2.2.19 (2013-03-13)
+- lib: dbi v1.74.5 (updated from PERIODC to REGULAR, and from EXTRACTION/DEBUG to READALL)
+- ref: In process to remove inspection, simplify some states, work on unit-configuration page
+v2.2.18 (2013-03-08)
+- ref: fixed a staging-code to handle R7121 in addition to RGw/NPA
+v2.2.17 (2012-03-07)
+- bug: Clears the input fields after uploading/creating a file instead of automatically selecting it. Saves people from clicking "Clear" before uploading another file.
+v2.2.16 (2012-03-01)
+- lib: dbi v1.74.0
+- ref: Removed Create Trigger from left-side menu (main menu)
+- del: Removed TR-reports stuff
+- bug: Removed a Finish-button in UnittypeParameter page - it lead to a wrong page
+- bug: ScriptExecution-page did not handle arguments containing quotes
+- ref: Fixed property files according to changes in dbi
+v2.2.15 (2013-02-25)
+- bug: Trigger page displayed wrong value.
+v2.2.14 (2013-02-22)
+- lib: dbi v1.73.17
+- ref: minor change in log level for login-procedure
+v2.2.13 (2013-02-15)
+- lib: dbi v1.73.14 (many bugfixes) 
+- bug: Staging did not print end result of shipment 
+- bug: Slow queries against Syslog table. Fixed with absolute searches for unit-id
+- bug: DBI not closed down on logout
+- bug: Staging did not handle permission-exceptions (silently overlooked)
+v2.2.12 (2013-02-01)
+- bug: Fixed a bug introduced in v2.2.11 (staging)
+v2.2.11 (2013-01-30)
+- bug: Minor fix in HTTPSManager.
+- lib: dbi v1.73.10
+- ref: Staging-create-shipment action was very slow on cloud-server. Rewrote some logic in dbi + some changes in StagingActions, now much faster
+v2.2.10 (2012-12-17)
+- ref: Changed web.xml, can now run monitoring on /ok URL. Removed reference to Shell-servlet and some xAPS-naming
+v2.2.9 (2012-12-13)
+- ref: Updated property files to production ready files - rewritten the comments on xaps-web-logs.properties. 
+- lib: common v1.33.0 (changed ConnectionProperties retrieval)
+- lib: dbi v1.73.2 (SyslogAppender change, getUnitsWithDetails() bug-fix)
+- ref: changed propertyfile, to reflect the new style of database-url property introduced by common v1.33.0
+- ref: removed unnecessary code/method regarding ConnectionProperties retrieval
+v2.2.8 (2012-12-12)
+- lib: dbi v1.73.1 (XAPSVersionCheck is much faster, Syslog.write() performs bulk inserts)
+- ref: removed unnecessary suppress-warning
+- ref: removed unnecessary call to XAPSVersionCheck
+v2.2.7 (2012-11-27)
+- bug: Now handles staging shipment page, removed the other pages (for now)
+v2.2.6 (2012-11-02)
+- bug: ScriptExecution list did not handle deleted script file
+v2.2.5 (2012-09-07)
+- ref: Refactored enumerations in ScriptExecution page.
+v2.2.4 (2012-09-06)
+- lib: common v1.32.2
+- ref: changed some Exception-handling according to lib-change
+v2.2.3 (2012-08-28)
+- add: Support for enumerations in ScriptExecution page
+v2.2.2 (2012-07-04)
+- lib: dbi v1.72.7 
+v2.2.1 (2012-05-30)
+- add: ScriptExecution page now supports input-helper!! Meta-programming in script-files. 
+v2.2 (2012-05-29)
+- lib: dbi v1.71.3
+- add: ScriptExecution page, now possible to execute scripts in web directly!
+- ref: Serious cleanup in Allowed pages defined in User, much simpler to add pages
+- ref: File page added a button to execute a script
+- ref: Total change of top menu structure, some work on the menu layout
+- ref: Some refactoring regarding Page-hierarchy - strict separation of menu high-lightning and help pages
+- bug: Files-page did not handle if unittype was not specified and a fileId was attached to the URL
+- bug: Work on file add/change if version+type tuple was already made 
+
+v2.1.16 (2012-05-22)
+- ref: new Fusion favicon specified
+- bug: Software-dropdown on upgrade wizard only contains SOFTWAREs
+- lib: dbi v1.71
+- ref: FilePage shows file-owner. File owner is updated if file is changed/added
+- ref: FilePage now offers edit/change of file configuration/content
+v2.1.15 (2012-05-18)
+- add: ProvisioningReport added!
+v2.1.14 (2012-05-16)
+- bug: Files page did not handle Description == null
+v2.1.13 (2012-05-15)
+- ref: Some renaming from firmware to file in FilePage/FileData
+- ref: Changed package name from ..firmware to ..file
+v2.1.12 (2012-05-15)
+- ref: Help changed to reflect standard usage of Fusion-expression (Fusion-expression is something in between of SQL-search-string and Regexp)
+v2.1.11 (2012-05-14)
+- bug: The menu highlighting did not work properly for all pages
+- add: more help on Triggers/Syslog Events
+- ref: Small refactoring from Page.ALLFILES to Page.FILES
+v2.1.10 (2012-05-11)
+- ref: Heartbeat & Syslog events link directly from expression to syslog-message
+- bug: If a trigger was released based on events within a single minute, it could not be displayed in syslog page
+- bug: If vendor was omitted, Unittype overview crashed
+- bug: xaps-web-logs.properties/xaps-web.properties did not specify SyslogAppender properties correctly 
+- add: Help on File page
+v2.1.9 (2012-05-09)
+- ref: Heartbeat brush up, to set correct error message, retain earlier submitted data, help text improved
+- bug: Group page failed if group-parameter matched a unit type parameter with values
+- add: EXTRACTION mode is supported, everything seems to work
+v2.1.8 (2012-05-08)
+- ref: layout fixes (logo placement, rounded-corner-background, menu-system, IE-fix, context-search-background)
+v2.1.7 (2012-05-04)
+- bug: template referred to special (should be system)
+- bug: template referred to versionNumber (should be version)
+- lib: dbi v1.70.1
+- add: monitoring is improved a lot
+- ref: minor changes (in SessionCache among others)
+v2.1.6 (2012-05-01)
+- lib: dbi v1.70.0 (File change - added targetname)
+- ref: Refactoring of File page (small)
+- bug: Bugfixing on Job page - after all the refactoring
+v2.1.5 (2012-04-30)
+- lib: dbi v1.69.10 (File/Job changes)
+- ref: Refactoring of Job pages - more in line with Heartbeat/SyslogEvent/Trigger. Lot of cleanup, removed "move-to-profile"
+v2.1.4 (2012-04-26)
+- ref: Navigation/shortcuts/menuitems for Triggers/SyslogEvents/Heartbeats is updated/fixed
+v2.1.3 (2012-04-25)
+- add: Heartbeat page
+- ref: Moved SyslogEvent page to its own package
+v2.1.2 (2012-04-24)
+- ref: Change upgrade wizard slightly (wider)
+- bug: A lot of Profile-dropdowns was not working
+- ref: Major overhaul of syslog events - removed 400 LOC (down from 800)
+- ref: Moved group from trigger to syslog event, also other small changes on trigger
+v2.1.1 (2012-04-20)
+- bug: Trigger navigation bugs
+- imp: Trigger navigation + deletion of Trigger 
+v2.1.0 (2012-04-19)
+- ref: lots of refactoring of File/Firmware/Software/Job/Profile
+- lib: dbi v1.69.5 (Many changes to APIs - going over to Enum classes, change of Constants, etc)
+- ref: small change on OK/Monitor-servlet
+- ref: moved group from Trigger to SyslogEvent
+v2.0.19 (2012-04-11)
+- bug: did not show Context-menu for Files (also fixed in v1.9.1.7)
+- ref: Re-arranged Page and Context-Menu to make sure all necessary pages are covered with Context-menu (also fixed in v1.9.1.7)
+- bug: possible to add two files with same name within a unittype (fixes in template, java and db)
+v2.0.18 (2012-03-16)
+- bug: did not show Files in the menu for non-admin users
+v2.0.17 (2012-03-15)
+- lib: dbi v1.68.2
+- ref: some update on the UnitConfigurationPage
+v2.0.16 (2012-03-06)
+- ref: Trigger pages and classes has been refactored to major extent - some bugs has been fixed
+v2.0.15 (2012-03-05)
+- ref: Updated trigger overview page with correct link on trigger name
+- lib: dbi v1.68 (updated some constants to Enums)
+v2.0.14 (2012-02-29)
+-bug: Fikset det at activate checkbox kun returnerte false.
+-add: Lagt til h�ndtering dersom unittype er null
+v2.0.14 (2012-02-23)
+-add: lagt til støtte for å sette en trigger activated eller deactivated
+v2.0.13 (2012-02-23)
+-add: Lagt til sammenslåing av triggere i triggeroverview slik at man lettere ser hierarkiet.
+v2.0.12 (2012-02-20)
+-add: Lagt til javascript metoder for å disable/enable felt ved endring og oppdatering av trigger.
+v2.0.12 (2012-02-17)
+- add: Diverse små endringer på triggersider.
+v2.0.11 (2012-02-17)
+- ref: File-page changed slightly
+v2.0.10 (2012-02-16)
+- lib: dbi v1.67.6 (updated interface)
+- bug: File-page filtering did not work
+- bug: File-page context-menu not setup properly
+- add: File-page UNITS filtering added
+- ref: Some refactoring of File-page
+- add: TriggerReleaseHistory page added
+v2.0.9 (2012-02-15)
+- ref: TriggerRelease-overview is finished
+v2.0.8 (2012-02-15)
+- add: lagt til defaultvalg på nedtrekksfelt
+v2.0.7 (2012-02-15)
+- lib: dbi v1.67.3 (changed interface of a getGroups()-method
+- add: TriggerRelease page (updated TableElementMaker to sort/handle triggers) - not finished yet
+- add: MenuItems for Trigger-stuff
+v2.0.6 (2012-02-14)
+- add: Oppdatert lagring og endring av trigger.
+v2.0.5 (2012-02-08)
+- add: samlet CRUD av trigger fra flere sider til triggerOverview.
+- add: Opprettet hjelpetekst på triggerfelt i web.
+v2.0.4 (2012-02-07)
+- add: The user/permission page supports admin-flag
+- bug: ParameterParser did not accept check-box "on" values as 'true'-boolean
+v2.0.3 (2012-02-06)
+- lib: dbi v1.66.2 (removed xaps-libraries from WEB-INF)
+- ref: lot of changes regarding permissions/user logic. Tried to add admin-flag to User-create/change/view dialog
+v2.0.2 (2012-01-30)
+- lib: dbi v1.65.10
+- lib: shell-deamon v2.1.4 (without internal libs)
+- lib: added shell-deamon libs explicitly into WEB-INF/lib
+v2.0.1 (2012-01-27)
+- lib: v1.65.9
+- merged 1.9.1-v1.9.1.2
+v2.0.0 (2012-01-08)
+- bugfix: Unit-report gave an opening to view other unittypes than those permitted
+
+Branched out here to 2012R1
+
+v1.9.1.2 (2012R1) (2012-01-27)
+- bugfix: Fikset problem med url encoding.
+- bugfix: fikset problem med contextbar der valgt unittype forsvant.
+v1.9.1.1 (2012R1) (2012-01-18)
+- lib: dbi v1.64.21
+v1.9.1.1 (2012R1) (2012-01-16)
+- lib: dbi v1.64.20
+- bugfix: Unit-report gave an opening to view other unittypes than those permitted
+v1.9.1 (2012R1) (NYC)
+- bugfix: unit-list report page listed hours from 00-59, missing one minute of every hour
+v1.9.1 (2012R1) (2011-12-16)
+- update: version numbers
+- lib: common v1.31.27
+- lib: dbi v1.64.18
+- improve: help for syslog page
+- update: changed from xAPS to Fusion in all html-files (should not affect runtime at all)
+- bugfix: changed warning when shipping a unit to/from the same profile
+v1.9.0 (2012R1) (2011-12-13)
+- lib: dbi v1.64.16
+- bugfix: group check box removed from Group-report
+- bugfix: logo alignment
+- improve: Reset-job added
+v1.9.0-beta (2012R1) (2011-12-07)
+- version: changed to 1.9.0 because of name change/release
+- bugfix: JobStatusMethods had a coupling to TestUtil class (outside build-path)
+v1.8.5-beta (2012R1) (2011-12-07)
+- doc: updated
+- refactor: Name change from xAPS to Fusion
+- bugfix: Syslog event CALL task handles shell v2.0.5 properly in terms of context
+v1.8.5-beta (2012R1) (2011-11-30)
+- Elements logo not aligned properly
+- docs not completed, but started
+- changed some names from xAPS to Fusion
+- fixed some text with wrong wording
+- removed Owera-logo, exchanged with Elements/Fusion logo
+2011-07-15
+- Working with Firmware page and menu improvements
+2011-07-14
+- Added incasesensitive fix to add new parameter
+- Fixed search page so it can successfully contain two equal parameters with different settings (besides the group parameters ... so it is actually any existing .. plus the group parameters .. and the new parameter)
+- Fixed a problem with group search caused by changing from radio to checkbox
+- Trying to fix a problem with sorted tables headers getting to close to up/down arrwos .. setting right padding to 20px
+- Changed from radio to checkbox for active column on Search page parameters
+- Fixed onkeyp handler for search parameters to enabled/disable the radio buttons
+2011-07-13
+- Fixed/Improved Group page
+- Fixed/Improved Job page
+- Fixed/improved Search page
+- Updated dbi
+2001-07-11
+- Fixed link to search page on group details page
+2011-07-07
+- Fixed problem on Unittype Parameters page, no easy way to create many parameters in a row
+2011-07-05
+- Adding Staging to menu
+- Removed unsused template
+- Updated documentation
+2011-07-04
+- Cleaning up in the Group and Job templates
+- Improved macro for adding a text field based on supplied Input instance
+- Fixed a bug on Group Configuration page, shortcut to search for units that matches did not blank out the profile
+- Re-factored the Input/InputType logic to be more tolerant on misuse, and to log warnings if misuse occur.
+- Updated documentation
+2011-06-30
+- Adding new functionality to enable turning on confirmation for deleting and creating parameters
+- Fixed profile window page to be context aware
+- Added getBoolean(key,default) to WebProperties to enable getting a property and returning a default value if not found.
+- Updated User Manual.
+2011-06-29
+- Adding "Add new parameter" on search page with all the logic for remembering the added parameters
+- Fixed bugz relating to searching both on group parameters and custom parameters
+- Set minimum number of characters needed to autocomplete from 3 to 1
+2011-06-28
+- Fixing and improving on Job page
+- Improving on Group page
+2011-06-27
+- Adding operators and types to advanced search
+- Fixed group search result
+2011-06-21
+- Adding improvements on the unit list pages, filters etc
+- Re-factored the unit list filter system to leverage the Input system
+- Adding automatic URLDecoding for all String Input's in ParameterParser
+2011-06-18
+- Adding automatic support for using tablesorter_customkey attribute on td's, for sorting where the content of the td is human readable (not sortable)
+2011-06-16
+- Adding improvements on the hardware unit list filtering functionality
+2011-06-14
+- Fixed group report, "Normal" now lists groups that is not time groups
+- Adding group unit list page with space separated list of group links for each unit plus report count
+2011-06-10
+- Adding code improvement on unit list page, making it easier to read
+- implemented group syslog search in unit list page
+  - still just dummy classes, need to be implemented.
+- updated to v1.61.15 of xaps-dbi
+- Increased size of voip/hw-charts in unit-history
+- Improved group-list (links to syslog events)
+- Added unit list for Group
+- Fixed Group bug for zooming
+- Added documentation for Spring MVC annotated controller usage in UnitStatusPage, but also added comments to web.xml and app.xml
+- Renamed ResponseHandler to Output and moved it to to the app package and removed the output package
+2011-06-09
+- Fixing Hardware unit list
+- Added VoipTR-menu item
+- Removing reflection for retrieving ReportRetriever
+  - Going to static map
+- Renamed retriever classes from interface to retriever
+- Made some code easier to read
+2011-06-08
+- Fixed passing undefined to url in module report issue
+- Added hiding of SoftwareVersion checkbox if Software is selected
+- Added VoipTR report, possible to reach with "web?page=report&type=VoipTR"
+- updated to v1.61.13 xaps-dbi
+- fixed a bug in getGroups, when group without profile was chosen 
+- Updated to latest trunk version 
+- Added software-version as a drop-down to 5/8 reports. 
+- Refactored ReportRetriever interface to retrieve ReportGenerator
+2011-06-07
+- Fixed compile errors and implemented new upgraded dbi
+- Added groupSelect to Syslog and Hardware pages
+- Fix for Report page with compile errors
+- Moved the Group report specific if test from /templates/report/reportgraph.ftl into /templates/report/custom/Group.ftl
+- Software page: Added row coloring for checking of delete checbox
+- Added extra static method in InputSelectionFactory to avoid specifying null as argument for selected
+  - has been used for addTypes() in FirmwarePage to give an example
+  - the default use without specifying the selected element with generic type of String, will now automatically be stateful.
+2011-06-06
+- Added support for script-file in software management page
+- Fix for multiple group parameters
+- Added support for config-file in software management page
+2011-06-01
+- Fixed a bug with table sorting on job configuration
+- Fixed a bug on group configuration page (could not change parameters)
+- renamed rememberAndCheck to loadAndStoreSession, because it more closely resembles what it does
+2011-05-25
+- Fixed the addRecord method in RecordUIDataSyslogSumFromReport
+- Updating javadoc folder (executed the javadoc generator)
+- Removed a report dashboard page that was not used
+2011-03-16
+- Proposing fix to Report page, remove Profiel aggregation when unittype is not selected
+- Fixed filtering on unit list page, it was faulty
+- Renamed page.test to page.user
+- Updated template paths, following last refactoring
+- Fixed bug in freemarker macro causing to fail if exclude list is given to dropdown macro
+2011-03-11
+- REFACTORING, not everything works as expected
+2011-03-09
+- Removing usage of old input map technique
+  - all page now use the input package (DropDown etc) with freemarker macros for rendering
+- Removed static usage of MainServlet.config, instead passing the config variable to the content method
+2011-03-03
+- Added JavaScriptMVC to internal folder
+- Added a user.html with some demo on production widget
+2011-03-01
+- Fixed problem with url encoding on group details page in link to matches on search page
+2011-02-28
+- Added fixes to the unit dashboard
+  - Call total was displayed wrong divided by 1000 (it was already seconds)
+- Reports was cached wrongly, changed from Cache.SESSION to Cache.ABSOLUTE
+  - Changed cache key to hour based and cache timeout to 1 minute
+- Removed the use of SessionCache.INFINTE_TIMEOUT variable
+  - Went to using Long.MaxValue for cache values that should never expire for this session
+- Unit pages can now be retrieved by only appending the unitId in the url
+  - the rest will be figured out in the InputDataIntegrity class
+  - Unittype and Profile will now be set in cache if unit is valid
+- Updated the way how xapsUnit is retrieved
+  - it will now generate a new DBI if no exists
+2011-02-21
+- Added fixes to the Syslog Unit Middle Page
+- Added main method to Page for generating WEB_PAGES for DBI
+2011-02-16
+- Fixed could not select profile on Group create page
+- Added a fix to the LoginServlet for the return parameter
+2911-02-15
+- Added improvements to the group create page for time rolling settings
+- Fixed bug on Group create and display page
+  - Could not set offset to No offset, will now be set to 0
+2011-02-13
+- Fixed firmware download bug
+2011-02-11
+- Fixed isssue with Group page not able to properly manage time rolling settings
+- Fixed critical bug with Job page could not persist move to profile setting
+- Unit page now handles non existent units
+2011-02-08
+- v1.8.2.4
+- Fixed permission system so that users without access to report page will not have access to report specific pages, like unit-status or unit-list
+2011-02-04
+- Added fixes to HttpsManager and MonitorPage to install server certificate automatically
+2011-01-27
+- v1.8.2.3
+- Fixed Monitor page access when logging in as restricted user
+- Fixed tooltip error on unit history hardware tab
+- Removing Staging from menu in default installations by adding a "staging.enabled=false" in properties
+2011-01-26
+- v1.8.2.2
+- Fixed to date on report page to be current date and not yesterday
+- v1.8.2.1
+- Fixed Syslog Events delete limit bug and task not always displayed in overview
+- Fixed Unit Dashboard "is lines registered" logic
+2011-01-12
+- v1.8.2
+- Fixed software page, couldnt delete softwares
+- Updated dbi to support Unknown unittype
+2011-01-11
+- Added improvements to unit dashbaord
+- Fixed tool menu width
+- Fixed group report to not show graph when unittype and group is not selected
+- Added new favicon.
+2011-01-10
+- Fixed Report and Unit list problems
+- Fixed permissions bug
+- Fixed providers bug (couldn't update provider with new "from 'any software'" job
+2011-01-06
+- Updated web.properties
+- Fixed bugz on unit history and dashboard
+- Updated dbi with syslog query fix
+- Fixed tooltips usage
+- Fixed xaps.js to not load menu asynchronous
+- Fixed menu selected problem
+- Fixed copy parameters from on unittype page
+2011-01-05
+- Fixed some javascript problems related to the table trees.
+- Fixed menu disappearing problem.
+- Updated and added some tests
+- Added ixedit tool usable by adding "ixedit = true" in xaps-web.properties
+2010-12-20
+- Adding Always-Read to all tables, including javascript functionality to make it work (tested)
+  - Refactored the table flags and table types into two enums, UnittypeParameterFlags and UnittypeParameterTypes
+- Refactored the menu system to support rearranging the menu elements
+- Added more help to Group and Job pages
+- Adjusted layout to display the question marks properly on all pages
+- Morten fixed a bug in GatewayTR report (even though there is no data this was annoying).
+2010-12-17
+- Working with new menu system, may render web trunk useless for some time
+- Improved jHelp to only position help box when current element is visible
+- Improved jHelp to only search for elements in a form
+- Improved jHelp to enable adding help icon to any link in a table
+- Added flexjson to help with serialization of java objects, BSD license
+2010-12-16
+- Fixed time rolling offset to be selected as days
+- Beginning to work on new menu system
+- Added DTD on help xml files
+- Added help for group, profile, unittype + changed Unittype.html help page a little.
+- Updated about.html to reflect all the libraries in use in xAPS
+- Fixed jHelp to autoposition beside the current help field
+- Fixed bug #5032
+  - Additional fixes in other projects:
+    - web/monitor/trunk rev 35632
+- Finally fixed jHelp to work with parameters yay !: )
+2010-12-15
+- Adding fixes to jHelp to support parameters
+- Working with getting jHelp to display help in custom cases
+  - resulted in head aches. Need to take a look at it some more.
+  - the system now successfully displays help for inputs with id or name equal to the id in xml
+- Added unitwindow.xml and events.xml
+- updated help pages 
+- Added unit.xml for jHelp, updated search.xml
+- Improved jHelp to add help on elements with a name or id matching the xml files ID attribute
+- Added css for jHelp
+- Fixed bug in ParameterParser introduced yesterday
+- Moved jHelp init to xaps object initialization.
+  - Each page will now initialize with "help/[page].xml"
+  - If not found, this is ignored, since not all pages require help
+- Added jHelp, a jQuery addon for creating help icons
+  - Added an example on Search.. without styling.
+- Updated about.html with third-party libraries and licenses
+2010-12-03
+- Changed addUnitsToDistributor, UUID is now generated from MAC. Both secrets (OPP and standard-secret) is written to unit.
+2010-20-10
+- Removed individual inclusion of functions and macros.
+  - All commonly used functions and macros are now included for all templates in the Freemarker Configuration
+- Refactored unit list page, adding jquery tablesorter
+- Fixed help servlet
+- Added VoipConfigured.CONFIGURED_NOT_ENABLED to UnitStatusInfo and freemarker template
+- Fixed LARGE performance issue with search page
+2010-18-10
+- Preparing xaps web for demo release packaging
+2010-13-10
+- Fixed Unit list hardware page did not correspond with unit history page
+ - Updated also unit history hardware tab
+- Refactored syslog templates
+- Removed unused template
+- Updated dbi
+2010-12-10
+- Fixing hardware tab unit history
+- Splitting up search page into simple and advanced
+- Added metric to simpel view on Reports page (since simple view is not usable without it)
+2010-07-10
+- Added more menu items on Reports
+- Removed Provisioning
+- Hiding Dashboard and History on Unit when Report is not installed
+- Changed from routing to dashboard from search page to go to Parameters
+- Added column on memory tab in History
+- Fixed NP in CryptoPage
+2010-30-09
+- Fixed problems with realtime mos graph
+2010-22-09
+- Fixed small issue with compability tweak
+2010-22-09
+- Added browser compability tweaks
+2010-21-09
+- Working with reporting
+- Working with Staging
+2010-20-09
+- Working with reporting
+  - Implementing realtime voip monitoring
+  - From TotalScore to VoipQuality
+    - Still needs to fix voip tab (change TotalScore to VoipQuality)
++++
+2010-17-09
+- Improved unit list hardware page
+- Added mos realtime page with link to it on unit dashboard
+  - currently does nothing but printing date
+  - refreshes constantly when open
+2010-17-09
+- Added Secret parameter as required field on provider page
+ - Also made Serial Number required now
+ - Propagated the change down into StagingActions
+   - The parameters sent to the web service gets the secret parameter name from the provider
+- Hiding inspection mode on Unit page if Unit Type not TR-069
+2010-09-06
+- Alot of fixes related to usability
+- Some bugfixes and renaming
+- Dashboard and reporting upgraded.
+2010-09-03
+- Added limitation for the speedometers double value, cannot go below zero
+- fixed has -> have
+- making sure effects are printed with two decimals on unit dashboard
+- Splitting up unit list page
+2010-09-02
+- FIXED: Link to syslog from syslog table on unit dashboard was not working
+- Extended syslog table on syslog tab in unit dashboard with more columns
+- Changed max days allowed from 2 to 7 on unit dashboard history chart
+- Changed menu labels for Unit sub pages, and changed the legend text on the affected pages accordingly
+  - Example changed "Unit status" to "Unit params"
+- Moving staging return page to a dedicated folder
+- Fixed a bug in the logic that removes the link to unit list for non relevant reports.
+  - Could not zoom at all
+  - Now possible to zoom down to hour for non relevant reports, but to go further down to unit list is not possible
+- Splitting up Unit Dashboard into separate pages: Current and History
+  - Links are added to all pages for easy navigation forward and backwards.
+- Redesigned the "Current" page layout so its easier to understand
+- Moved many pages templates into dedicated folders in templates/
+  - this adds a little coding by convention. No code changes to the moved templates except for the above.
+- Improved the loading speed of unit dashboard
+  - Reports are now generated on demand, and not when the page loads for the first time.
+- Added ParameterParser.getBoolean(String name,Boolean default)
+  - Changed the background logic so that when the string parameter is null, default is returned correctly
+- Fixed a bug on Distributor page, links to providers was not working
+- Added RecordUIDataSyslog.getRealEntry() so the actual syslog entry can be accessed directly in the gui.
+2010-08-31
+- Added some fixes to the templates 
+  - refactored out the basic style, it is now shared between all pages'
+- Added date validation on unit dashboard
+  - Cannot choose more than two days and the dates cannot be invalid (start after date)
+  - It supports choosing two days across two months.
+  - Will present popup alerts if the validation is not successfull.
+- Fixed syslog page so it doesnt auto reload after each submit (it effectively always did two syslog queries)
+- Reconfigured log level for missing monitor page message to warn and not error
+- Going from normal strings to templates for modal top and bottom, so that it can take in use the shared meta/basic.ftl
+2010-08-30
+- Fixed NP's on Unit Dashboard when Reporting is not supported, added logic to return empty reports in UnitStatusInfo for getVoipReport/getHardwareReport/getSyslogReport
+- Also fixed a potential NP on Reports page, even though it may be a little more complex to get it to work with an unsupported database
+- Set log level for missing roles property file to warning, only applicable when ldap is authentication method
+- Fixed problem with syslog page that caused 5 entries to be listed when limit was set to 3.
+- Fixed logs properties, removed ERROR log. Only xaps-web.log remains.
+2010-08-27
+- Fixed a problem with report page, when changing from date to be larger than end date, the form is submitted, but should not
+- Fixed a NP on report page, when no data for reporting graph is present for secondary metric, addSeries threw an error
+- Update xaps dbi with syslog fixes and improved logging for debugging in tr069, and syslog page
+2010-08-26
+- Fixed a Staging Provider bug, could not update provider (example remove email address)
+- Improved the postMail function so that it can be used with GMail without changing the code directly
+  - Variables in the beginning of the method body can be adjusted accordingly to the mail system to be used
+  - Added default sender to be xaps-staging@pingcom.net.
+    - this is a real address and can be used from anywhere where smtp port 587 is not blocked
+- Changed Syslog page to date so it will not be added automatically
+  - thus making it possible to track changes live in the syslog by hitting F5
+- Fixed syslog events page according to new changes in syslog event architecture.
+  - Also updated other affected syslog pages, therein Reports.
+- In method getString in Input, an array will now be join with comma. If empty array empty string is returned.
+2010-08-24
+- Going through all pages and their links and adding freemarkers url encoding if not already there on all parameter values
+  - The encoding bug is now fixed
+  - all forms uses accept-charset
+- Changing how string parameters are retrieved. If retrieved with InputData and InputDataRetriever, all empty strings is null
+  - When accessing ParameterParser directly all empty strings is returned as empty, and not like null as above.
+  - this makes it possible to save unit parameter values as empty strings, because the parameter CRUD uses parameterparser directly
+  - All Input objects in InputData classes, will now contain either null or a non empty string.
+2010-08-23
+- Working with encoding
+- Fixed bug on unit page, could not blank unit parameter values
+2010-08-20
+- Added memory limit and added bad memory rows to the hardware effect
+- Removed the gray background on speedometer
+- Upgraded menu framework, added support for dynamically in code add menu item attributes, eg like onclick
+- Added then please wait dialog message when clicking on either Unit page in menu or by link on search page
+2010-08-19
+- including serial number and software version fields to the unit dashboard page
+  - plus "upgrade is pending" message if Desired is not equal to actual software version
+- Improving the speed of which the unit dashboard uses to load, with caching
+- Fixed a bug when limited users has access to more than two unittypes
+- Fixed Service window, was not accessible to limited customers
+2010-08-18
+- Using the new sorting library on syslog page
+- Added a "Completed unit jobs" link on job page
+- Fixed a bug causing unit dashboard charts to not appear (due to the change of sorting library)
+. Moved GetParameterValue to WebPageImpl and added a constructor that takes XAPSUnit
+- On search page when displaying parameter values for displayables, if unit parameter is blank [blank unit parameter] will be printed with a mouseover saying that this unit has overridden the profile parameter.
+- Added a fix on unit dashboard, some syslog messages messed up the search for reg ok. Added a regex type hat before the expression in SyslogFilter
+- removed the adding of LastIndexOfMethod to the root map on searchpage and providerpage, since it was not used.
+2010-08-17
+- Found a javascript library with out of box lexio sorting
+- Added lexiographical comparison for SoftwareVersion on the search results.
+  - an example that will be developed further 
+2010-08-16
+- Added javascript to keep the current help window open even after postback and/or going to another page in xaps web
+ - Will not reopen automatically when closed
+- Added syslog and hardware penalties on the overall score on the unit dashboard page.
+2010-08-13
+- Added a crude overall status decrementing for hardware and syslog reports on unit dashboard
+  - needs to be revaluated
+- Added functionality for getting a list of completed unit jobs on job page, but has not been able to test the changes
+- Added limit for syslog table on unit dashboard to 100
+- Added colors to syslog table on unit dashboard in syslog tab
+- Fixed bug no Syslog events page (could not update)
+- Changed Method to Metric on unit dashboard
+- Added functionality for automatically filling "To timestamp" on syslog with current date and time.
+- Moved property files for ldap into the docs folder
+  - Updated xaps-web.properties, removed the ldap option, and explains that database is only alternative in releases and that the customers must ask for specific implementations.
+- Removed javascript alerts on Staging provider page, and instead warnings are now presented statically on the page after submit
+- Tested xaps web for encoding issues
+  - all encoding is now set to IS0-8859-1
+  - Create group works (and access to the group from the Groups page)
+2010-08-12
+- Totally refactored Staging provider page layout
+ - Has been tested for Creating and Updating
+2010-08-10
+- Upgraded syslog report functionality on Unit status page
+  - syslog extract outputted below graph
+- Finalized syslog report functionality on Unit status page
+2010-08-09
+- Added Syslog report on Reports and Unit status page
+  - work is still needed on Unit status page syslog part
+- Fixed an issue with the end date on Reports while zooming
+2010-08-06
+- Added syslog report
+- Fixed unit status page to support a view width of 1280
+- Reordered columns on memory table on unit status page
+- Reworked how we use the numbers in the hardware report
+- the memory table now displays memory used in percent with mouseover explanation.
+- Added fixes and improvements on the memory table
+- Mouse over tooltips informs how much current is of pool size
+2010-08-05
+- Shrinked the memory table by removing columns and adding mouse over content
+- Added an extra header row for DDR and OCM
+- Changed upper memory limit for current memory of pool size to 98%
+- Fixed NP's on Unit status page caused by library issues
+- Added a record data object for voip calls (same as done with the hardware memory table).
+- renamed some classes to a more readable form.
+- renamed some templates to a more intuitive form.
+- work is begun to move from in-template programming to object modeling, eg passing objects rather than raw data.
+- Report pages and the Unit list page (all report related) are now restricted to only run when a valid certificate is present.
+- Fixed some compiler warnings that appeared after installing java 6. unchecked -> rawtypes, added some unused
+- Updated help for almost all pages
+2010-07-22
+- Updated provider page to require protocol
+- Updated create-shipment-logic to create correct unit-id depending upon protocol
+- Updated email-notification, depending upon protocol and whether or not an xAPS Web Services transmission has been executed.
+- Tested towards xAPS Web on xaps-a. Seems to work fine. 
+(2010-06-18)
+- Fixed
+  - bug on syslog page, could not use "to date" field
+  - Staging page class has been split into three separate page classes with their own inputdata implementations
+    - rough testing has been done to insure that everything works on top
+    - still need to do some serious integration testing
+  - Readjusted the input model to ensure that all input is sane input or NULL
+    - This fixed a bug on distributor page, could not deselect distributor
+  - Added check on staging overview page that user is admin before displaying distributor link
+(2010-06-17)
+- Fixed
+  - bug on Search page when user is limited and no unttype is selected
+  - bug when admin is logged in, upgrade page not in menu
+  - bug when clicking a unit link on search page when user is limited, page not allowed error
+(2010-06-16)
+- Added email as a parameter when creating a new provider
+(2010-06-16)
+- Added an XPATH expression lookup mechanism for retrieving help text
+(2010-06-16)
+- Fixed so the new system parameter SECRET will be populated when adding units to a distributor
+(2010-06-16)
+- Added methods for creating/confirming a shipment return
+- Added email-synchronization with a staging partner
+v1.7.10
+- Handles job with optional software dependency
+- Changed/Improved staging pages
+- Introduced permissions page
+- Introduced profile based login
+ 

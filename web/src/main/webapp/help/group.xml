@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE jHelp SYSTEM "help.dtd">
+<jHelp>
+	<Page Path="/xapsweb/web">
+		<Field ID="filterstring">
+			<Heading>
+				Name filter
+            </Heading>
+			<Help>
+				Will show only those parameters which matches (partly or fully)the filter string
+            </Help>
+		</Field>
+		<Field ID="filterflag">
+			<Heading>
+				Flag filter
+            </Heading>
+			<Help>
+				Will show only those parameters which matches the Unit Type parameter flag. 
+            </Help>
+		</Field>
+		<Field ID="filtertype">
+			<Heading>
+				Type filter
+            </Heading>
+			<Help>
+				Will show parameters based upon if they are configured or not configured. 
+            </Help>
+		</Field>
+		<Field ID="groupname">
+			<Heading>
+				Group name
+            </Heading>
+			<Help>
+				The name of the group
+            </Help>
+		</Field>
+		<Field ID="description">
+			<Heading>
+				Description
+            </Heading>
+			<Help>
+				Decription of the group
+            </Help>
+		</Field>
+		<Field ID="parentgroup">
+			<Heading>
+				Parent Group
+            </Heading>
+			<Help>
+				A group may inherit another group's criteria. The critera of the parent group will be 
+				ANDed together with this group's criteria. If the parent specifies a profile, this group
+				will inherit the profile requirement.  
+            </Help>
+		</Field>
+		<Field ID="profile">
+			<Heading>
+				Profile
+            </Heading>
+			<Help>
+				A group may specify a profile requirement, to reduce the group search within a profile, instead
+				of within the unittype.
+            </Help>
+		</Field>
+		<Field ID="timerollingparameter">
+			<Heading>
+				Time rolling parameter
+            </Heading>
+			<Help>
+				The parameter which will contain the time rolling criteria of this group. 
+				The parameter should be a System parameter, preferrably a System parameter custom made for this purpose.
+            </Help>
+		</Field>
+		<Field ID="timerollingformat">
+			<Heading>
+				Time rolling format
+            </Heading>
+			<Help>
+				The format can be either date or date+hour. This means that the time parameter criteria will change
+				every day or every hour. The agent responsible for changing the time criteria is the xAPS Core module,
+				so make sure to run the group report (see xaps-core.properties) as often as you like to change
+				the time criteria.
+            </Help>
+		</Field>
+		<Field ID="timerollingoffset">
+			<Heading>
+				Time rolling offset
+            </Heading>
+			<Help>
+				The time critera may change to a day in the future, instead of the current time. Specify the number
+				of days in advance it will be changed to. The idea behind this feature is to allow a job to work
+				on a group when some time has passed. 
+            </Help>
+		</Field>
+				<Parameter>
+			<Name>System.X_OWERA-COM.Device.MAC</Name>
+			<Heading>
+				System parameter: MAC
+            </Heading>
+			<Help>
+				The parameter should contain the WAN MAC address of the device. 
+				In some cases it will contain the serialnumber instead. The parameter
+				should be populated by the server on the first provisioning.  
+            </Help>
+		</Parameter>
+		<Parameter>
+			<Name>System.X_OWERA-COM.Device.PeriodicInterval</Name>
+			<Heading>
+				System parameter: PeriodicInterval
+            </Heading>
+			<Help>
+				The parameter should contain the number of seconds from the last 
+				provisioning to the next provisioning. The parameter is populated on
+				every provisioning of the device.
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.Device.PublicIPAddress</Name>
+			<Heading>
+				System parameter: PublicIPAddress
+            </Heading>
+			<Help>
+				The parameter should contain the public IP address of the device. The 
+				device is not necessarily reachable on this address, since it could
+				be behind a NAT-gateway. 
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.Device.SoftwareVersion</Name>
+			<Heading>
+				System parameter: SoftwareVersion
+            </Heading>
+			<Help>
+				The parameter should contain the software version of the device.
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.FirstConnectTms</Name>
+			<Heading>
+				System parameter: FirstConnectTms
+            </Heading>
+			<Help>
+				The parameter contains the timestamp of the first contact between
+				the server and the device. It doesn't necessarily mean that there 
+				has been a successful provisioning.
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.LastConnectTms</Name>
+			<Heading>
+				System parameter: LastConnectTms
+            </Heading>
+			<Help>
+				The parameter contains the timestamp of the latest contact between
+				the server and the device. It doesn't necessarily mean that there 
+				has been a successful provisioning.
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.Secret</Name>
+			<Heading>
+				System parameter: Secret
+            </Heading>
+			<Help>
+				The secret which authorizes the provisioning session. 
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.Debug</Name>
+			<Heading>
+				System parameter: Debug 
+            </Heading>
+			<Help>
+				If set to "1" it will cause xAPS to run in debug-mode for this particular unit. Default is "0".
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.DesiredScriptVersion</Name>
+			<Heading>
+				System parameter: DesiredScriptVersion 
+            </Heading>
+			<Help>
+				The desired script version can be set (in conjunction with ScriptURL) to order an upload of a script to the device.
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.DesiredSoftwareVersion</Name>
+			<Heading>
+				System parameter: DesiredSoftwareVersion
+            </Heading>
+			<Help>
+				The desired software version can be set (in conjunction with SoftwareURL) to order an upload of a software (firmware) to the device.
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.IM.Message</Name>
+			<Heading>
+				System parameter: Message
+            </Heading>
+			<Help>
+				The parameter contains information regarding inspection mode. Internal usage.
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.Job.Current</Name>
+			<Heading>
+				System parameter: Job.Current
+            </Heading>
+			<Help>
+				The parameter contains the ongoing job id for this unit.
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.Job.Disruptive</Name>
+			<Heading>
+				System parameter: Job.Disruptive
+            </Heading>
+			<Help>
+				If set to "1" the parameter indicates that a job in this job chain is disruptive, hence all sub-sequent jobs must run regardless of servicewindow restrictions. Default is "0". Internal usage.
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.Job.History</Name>
+			<Heading>
+				System parameter: Job.History
+            </Heading>
+			<Help>
+				The parameter contains the job history of the unit. The format is (,job-id:repeat-counter:last-run-tms)*. Internal usage.
+			</Help>	
+		</Parameter>				
+		<Parameter>
+			<Name>System.X_OWERA-COM.ProvisioningMode</Name>
+			<Heading>
+				System parameter: ProvisioningMode
+            </Heading>
+			<Help>
+				The parameter contains the provisioning mode. The default mode is "PERIODIC". "INSPECTION" is used in inspection mode. Internal usage. 
+			</Help>	
+		</Parameter>				
+		<Parameter>
+			<Name>System.X_OWERA-COM.ProvisioningState</Name>
+			<Heading>
+				System parameter: ProvisioningState
+            </Heading>
+			<Help>
+				The parameter contains the provisioning state. The default mode is "READY", but in inspection mode other states are used (LOAD, LOADING, STORE, STORING). Internal usage."
+			</Help>	
+		</Parameter>				
+		<Parameter>
+			<Name>System.X_OWERA-COM.Restart</Name>
+			<Heading>
+				System parameter: Restart
+            </Heading>
+			<Help>
+				Set to "1" to trigger a restart of the device. As soon as the restart has been provisioned, the parameter is set to "0", which is default. 
+			</Help>	
+		</Parameter>				
+		<Parameter>
+			<Name>System.X_OWERA-COM.ScriptURL</Name>
+			<Heading>
+				System parameter: ScriptURL
+            </Heading>
+			<Help>
+				The parameter contains a URL which the device may download a script to perform on the device.
+			</Help>	
+		</Parameter>				
+		<Parameter>
+			<Name>System.X_OWERA-COM.SecretScheme</Name>
+			<Heading>
+				System parameter: SecretScheme
+            </Heading>
+			<Help>
+				The parameter is only used in TFTP and HTTP provisioning. If set to "ENCRYPTED" the provisioning will be encrypted.
+			</Help>	
+		</Parameter>				
+		<Parameter>
+			<Name>System.X_OWERA-COM.ServiceWindow.Disruptive</Name>
+			<Heading>
+				System parameter: Disruptive
+            </Heading>
+			<Help>
+				The parameter defines the regular service window. Default is blank (interpreted as mo-su:0000-2400).
+				The service window format is weekday-weekday:hour-hour, an example are mo-fr:0800-1500. 
+			</Help>	
+		</Parameter>				
+		<Parameter>
+			<Name>System.X_OWERA-COM.ServiceWindow.Enable</Name>
+			<Heading>
+				System parameter: Enable
+            </Heading>
+			<Help>
+				If set to "0", service window is not enabled. Default is blank (interpreted as "1"). 
+			</Help>	
+		</Parameter>				
+		<Parameter>
+			<Name>System.X_OWERA-COM.ServiceWindow.Frequency</Name>
+			<Heading>
+				System parameter: Frequency
+            </Heading>
+			<Help>
+				The parameter contains the number of provisionings pr week. Default is blank (interpreted as 7).
+			</Help>	
+		</Parameter>				
+		<Parameter>
+			<Name>System.X_OWERA-COM.ServiceWindow.Regular</Name>
+			<Heading>
+				System parameter: Regular
+            </Heading>
+			<Help>
+				The parameter defines the regular service window. Default is blank (interpreted as mo-su:0000-2400).
+				The service window format is weekday-weekday:hour-hour, an example are mo-fr:0800-1500. 
+			</Help>	
+		</Parameter>				
+		<Parameter>
+			<Name>System.X_OWERA-COM.ServiceWindow.Spread</Name>
+			<Heading>
+				System parameter: Spread
+            </Heading>
+			<Help>
+				The parameter contains a spread-factor (default is blank (interpreted as 50) which tells how many percent 
+				the randomization of the spread will be. 
+				If set to 0, no spreading of the periodic inform interval will occur.  
+			</Help>	
+		</Parameter>				
+		<Parameter>
+			<Name>System.X_OWERA-COM.SoftwareURL</Name>
+			<Heading>
+				System parameter: SoftwareURL
+            </Heading>
+			<Help>
+				The parameter contains a URL which the device may download a software (firmware) to upgrade/downgrade the device. 
+			</Help>	
+		</Parameter>				
+	</Page>
+</jHelp>

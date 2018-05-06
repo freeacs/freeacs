@@ -1,0 +1,77 @@
+<p>In the Unit Type page, you can create, update or delete Unit Type and its parameters. In
+order to create a new Unit Type, the Administrator has to enter a model name,
+matcher id, vendor, protocol and some description related to it. You can choose values
+freely, except for the matcher id. This id important if and only if you are going to use OPP
+provisioning and must be set according to the OPP clients (in other words: the value
+must be provided by Owera). In case of TR-069 provisioning this field is disabled. If
+protocol is not set, matcher id will not be displayed.</p>
+
+<p>If you try to delete a Unit Type, then all Profiles, Units, Groups and Jobs within this Unit
+Type must be deleted first. Note that if you delete a Unit Type, then you will also delete
+all its parameters. The same goes for the Units and Profiles, the corresponding
+parameters will also be deleted. On the details page you can go directly to Syslog to see
+what has happened on the Unit Type. [b]Note:[/b] when you create new Unit Type system
+parameters is automatically created.</p>
+
+<p>The Unit Type parameters act as definitions of the parameters used within
+a Profile or within a Unit. To create a new parameter, click Add more parameters in the
+Links section, a modal window will popup:</p>
+
+<p>In the above window you can add enum values to the parameter, that will show up as a
+dropdown menu on unit, profile, group and job pages when creating or editing
+parameters. You change the values and move them up and down. The value at the top is
+the default value.</p>
+
+<p>Each parameter has a set of flag. The list of flags is now rather long:</p>
+<ul>
+	<li><b>R</b>ead-Only: The parameter can only be read from the device, never written</li>
+	<li><b>R</b>ead<b>W</b>rite: The parameter can only be written to the device, never read</li>
+	<li><b>X</b>(System): The parameter controls the behaviour of the system - never provisioned</li>
+	<li><b>A</b>lwaysRead: Optional parameter. If combined with an R parameter, it will make the system always read and store this parameter</li>
+	<li><b>C</b>onfidential: Optional parameter. Set on passwords to avoid showing the value in logs etc. Also necessary to avoid warnings in the system.</li>
+	<li><b>D</b>isplayable: Optional parameter. Set on parameter to add a column to the Search Page output.</li>
+	<li><b>I</b>nspection: Optional parameter. If set on a parameter, it will be retrieved from the device in inspection mode. After inspection mode it will be deleted from the system.</li>
+	<li><b>S</b>earchable: Optional parameter: Set on parameter to add a search field on the Search Page.</li>					
+</ul>
+<p>Not all combinations of parameters are allowed (examples:ARW or AIX) because the purpose of the flags
+defeat each other. 
+</p>
+
+<p>
+	In the links section you can find "Manage syslog events". This is useful if you have devices
+	that emit syslog messages to your Syslog Server. If that is the case, you may specify 
+	events to categorize a certain syslog message. A syslog event must have an id, which is a number larger
+	than 1000. Name and description are also nice to add. The expression field is crucial; here you
+	enter a regular expression which match the syslog message you're after. Usually that would simply
+	be a phrase or a word which is unique to the message (example: "Memory" or "QoS"), but you can
+	also use complex regular expression (ex: \d+.*\d?).<br /> 
+	The purpose is first to give such a syslog message
+	a syslog event id. This id will be stored in the syslog database, and can be search for in
+	the Sylsog Page.<br />
+	The next purpose is to decide an action for this event. Currently there are 4 task:
+</p>
+	<ol>
+		<li>STORE: This is the default task, simply store the syslog message in the database.</li>
+		<li>DISCARD: Throw away the syslog message</li>
+		<li>DCT (Duplicate Content Timeout): Compare the content of the syslog message with other syslog messages and keep a list of duplicates and the number of duplicates. Print the content of the message and the duplicate count every X minute. The X is decided by an extra input field.</li>
+		<li>DUCT (Duplicate Unit-Id Content Timeout: Compare both the unit-id and the content of the syslog message with other syslos message. Otherwise same behaviour as for DCT.</li>
+	</ol>
+<p>
+	A third purpose is to decide a syslog delete limit. This a "number-of-days" limit, so that you
+	can control how fast/slow you will remove these entries from the database. Remember that the
+	default deletion of syslog messages is governed by the severity level of the message, so that
+	all NOTICE messages are deleted after (for example) 10 days. This setting will override the
+	default severity setting, and allow you to keep vital information for a longer time in your
+	database. Typical example of such is QoS messages emitted from the device after a phone
+	call.
+</p>
+
+<p>One of the nice features of the web interface which is worth mentioning is that the parameter listings 
+can be collapsed and expanded as needed to hide any set of parameters. This is extremely
+useful from the users perspective when only a certain set of parameters is of concern. By
+entering "System" in the Name filter input field on the top, you will only show parameters
+which contains the word System. The flag drop-down filter can be use in a similar way
+to only see parameters with a specific flag.</p>
+
+<p>To collapse/expand just click the minus/plus icons. Clicking the header "Delete" will
+check all parameters for deletion. This goes for Profile and Unit too. </p>

@@ -1,0 +1,84 @@
+v1.4.8 (2013-05-27)
+- lib: v1.74.32 (bugfix on parameter-search (operand-usage and NULL-values and group-parameter matching))
+v1.4.7 (2013-03-01)
+- lib: dbi v1.74.0
+- ref: removed a lot of code/properties due to changes in dbi
+- doc: Updated doc
+v1.4.6 (2012-12-13)
+- lib: dbi v1.73.2
+- lib: common v1.33.0
+- ref: reworked property files
+v1.4.5 (2012-05-04)
+- lib: dbi v1.70.1
+- ref: improved monitoring
+v1.4.4 (2012-04-26)
+- ref: Monitoring now prints version
+v1.4.3 (2012-04-04)
+- imp: Tested against Hosting-server (2012R1) and seems to work. Considering to skip backporting to 2012R1
+- bug: Add/ChangeUnit based on SerialNumber/unique-value was refactored away! since 2012R1 - added back
+- bug: The Servlet-destroy methods were not implemented, causing tear-down of server to hang/fail
+- doc: updated document with XML appendix, removed OPP-stuff, changed some wording in Get-methods chapters, improved chapter 3 (General Stuff)
+- lib: dbi v1.69.1 (1 bug regarding unit-search fixed, 1 bug regarding unittype creation fixed)
+- ref: Get-Methods did not work very well, relatively large refactoring - tested and works
+v1.4.2 (2012-03-05)
+- lib: dbi v1.68 (updated some constants to Enums)
+v1.4.1
+- lib: dbi 1.66.1
+- ref: updated to match the permission system of dbi
+v1.4.0
+- lib: removed all xaps-libs (common, dbi, prov, shell), replaced by using Eclipse Deployment Assembly which is detected by WTF (Tomcat) 
+
+
+- branched out 2012R1
+
+v1.3.2 (2012R1) (2011-12-16)
+- doc: updated regarding search
+- lib: dbi v1.64.18
+- lib: common v1.31.27
+v1.3.2 (2012R1) (2011-12-13)
+- updated xaps-dbi v1.64.16
+- updated docs
+- updated version numbers and deployment properties
+v1.3.1 (2011R2) (2011-06-24)
+- updated xaps-dbi v1.64.3
+- updated the services to match the change in xAPSUnit.getUnits*() methods
+- updated the docs to reflect the change in some of the serviecs. Now possible to search for 
+all kinds of values, also more complex parameter search (using operators and datatype)
+- not tested
+v1.3.0 (2011R2) (2011-04-27)
+- merged with 2011R1-branch (r36069-36757)
+- updated with latest DBI (v1.61.0)
+v1.2.1 (2011R1SP1) (2011-03-17)
+- updated version number in XAPSWS
+v1.2.1 (2011R1SP1) (2011-02-23)
+- updated to latest xaps-dbi v1.57.22-14
+v1.2.1 (2011R1) (2011-01-21)
+- removed some System.out.println statements
+- updated xaps-dbi v1.57.22
+v1.2.1 (2010R1) (2010-10-11)
+- updated propertyfile documentation, removed a property no longer used
+v1.2.1 (2010R1-RC) (2010-09-24)
+- updated netadmin-message handler - may not be part of this relase anyway
+v1.2.1 (2010R1-RC) (2010-09-13)
+- updated to latest xaps-dbi
+v1.2.0-beta (2010R1-beta) - 2010-06-25
+- updated to latest xaps-dbi
+v1.2.0-alpha (2010R1-alpha) - 2010-05-11
+- added 6 services to manipulate Unittype/Profile (and support NetAdmin integration)
+- added 1 service to retrieve a list of unitIds
+- full integration of Login/User/Permissions
+v1.1.0 (2009R2) - 2009-12-18
+- fixed a bug in GetUnits() (used wsUnittype, not xapsUnittype)
+- small update on UUID-generation (probably never used)
+v1.1.0 (2009R2) - 2009-11-19
+- updated module.mk to tag from branches/1.1
+- updated lib (xaps-dbi v1.50.11) - serious bug- updated lib (xaps-dbi v1.50.11) - serious bug
+v1.1.0 (2009R2) - 2009-11-16
+- removed an unused method in XAPSWS
+- updated to latest lib (xaps-dbi 1.50.10, owera-common 1.31.19)
+v1.1.0 (2009R2) - 2009-11-16
+- fixed build.xml (added java source code to war file)
+v1.1.0 (2009R2) - 2009-11-16
+- bumped version number
+- updated doc about redirection
+- removed some unused code

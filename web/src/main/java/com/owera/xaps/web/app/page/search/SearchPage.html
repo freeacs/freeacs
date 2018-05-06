@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>Search</title>
+		<link rel="stylesheet" type="text/css" href="SearchPage.css" />
+		<script type="text/javascript" src="SearchPage.js"></script>
+	</head>
+	<body>
+		<h2>Search page</h2>
+		<div>
+			<p>There are basically three ways you can search for units on the search page.</p>
+			<ol>
+				<li>search directly on Unit Id</li> 
+				<li>search for matches on all unit parameter values when no Unit Type is selected</li>
+				<li>search for matches on a specific profile and unit parameter when Unit Type is selected</li>
+			</ol>
+			<p>You're allowed to combine Unit Id searches with one of the two other searches.</p>
+		</div>
+		<p>
+			Let's say a customer is calling in reporting strange behaviour with his device.
+			You have selected the correct Unit Type, and within that selected Unit Type the SerialNumber parameter is flagged as "searchable" 
+			and thus appears on the search page as a searchable parameter. 
+			You can then ask the customer to flip his device over and give to you the serial number printed on its bottom. 
+			Filling this into the search field for SerialNunber and then hitting Enter will give you one single result, the customers Unit.
+		</p>
+		<p>
+			You can dynamically add parameters to search for by typing the name of a parameter
+			in the "Add parameter" field. The system will automatically list all parameters that
+			match (partly) and you can choose which parameter you want to use. For permanent searchable 
+			parameter fields, go to the Unit Type page and add the "S" flag to the parameter you
+			want to search for.
+		</p>
+		<p>
+			Unfortunately there is an asymmetry in the search for parameters. The second search mentioned
+			will not take into account the profile parmeter values, but the third search will. The difference
+			is that if you search for "SIP-Server = 'owera.com'" and this value is a profile parameter value, the
+			third search will list all units within this profile (unless it overrides the 'owera.com' with another
+			value), but the second will only list those units which explictely have set this value on
+			the unit itself. Therefore the second search is mostly for searching after unique unit values like
+			Serialnumber (MAC-address), SIP-username, etc.<br />
+			The unfortunate thing is that we cannot offer both search method 2 and 3 at the same time. 
+		</p>
+	</body>
+</html>

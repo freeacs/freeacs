@@ -1,0 +1,82 @@
+<p>
+	The report page is designed to give an overall view of the devices provisioned by the system.
+	There are so many possibilities here, that it will be too much to describe them all,
+	but it suffice to say that you should be able to discover almost any anomality which affects
+	many devices. In sum this is a executive summary of the total pool of devices.
+</p>
+<p>
+	Currently there are 5 reports available. Each report operates in a similar manner, just
+	press "Advanced" to see all the possibilities. 
+	First and foremost you can decide upon the Unittype, secondly the Profile. But in many
+	cases you may leave the choice to "All unittypes" - at this point you may not know which
+	Unittype to focus on.<br>
+	You can change the default timespan and also the period type (HOUR, DAY and MONTH). By doing
+	so you can decide to look on very long timespans to discover slow trends or zoom in on
+	a particular day to find intra-day changes. If you have not already chosen HOUR, you can
+	do so by clicking on the line itself, the chart will then zoom in on that particular day.<br>
+	The third option is to decide which metric you will examine. Some reports offers a range
+	of metric, others just a few. A metric may be "UnitCount" - simply a number which counts
+	the number of units.<br>
+	Lastly there are checkboxes to check/uncheck. These varies a little for each report, but not
+	by much. The idea is that by checking "Unit Type", the chart will change to show one 
+	line for each Unit Type that you have chosen (assuming "All unittypes" are chosen). By checking 
+	yet another checkbox, like Profile, you will get a chart with one line for each combination
+	of Unit Type + Profile. To try to exaplain this a bit more abstract: By checking and 
+	unchecking you change the level of aggregation. This will allow you to inspect a problem and
+	identify more closely from where the problem arises.<br>  
+	
+</p>
+<p>
+	The Unit report tells you a simple status of the number of devices in your system. This is
+	pretty basic, but nontheless important. You can easily spot trends like "is the growth tapering
+	off?". By using the chekcboxes you can get more information: Check "software version" checkbox and 
+	you will see how many units are using each software version you have deployed. Checking
+	the "status" checkbox will show you the connect status to the system. It is not a good sign if many 
+	devices has not connected for a long time.
+</p>
+<p>
+	The Group report is very simple, just showing the number of units pr group. If you have
+	used groups extensively to count the population of certain traits/customers/etc, this report
+	is a usefaul progress report.
+</p>
+<p>
+	The job report offers more metrics/counters than Unit and Group report. It will show how many
+	failed, how many unconfirmed failed and confirmed failed. There are one aspect here which 
+	is not mentioned so far: The interface allows you to choose to metrics at the same time. The
+	chart will then show boths metrics at once, the left y-axis for the first metric and the right
+	y-axis for the second metric. This is useful to compare to metrics with each other.  
+</p>
+<p>
+	The voip report is much more complex than the reports mentioned so far. It is also different from
+	the beforementioned reports because it gathers all its information from syslog messages. The previous
+	reports gathered the information from internal database tables. Since the syslog messages comes 
+	directly (for the most part) from the devices, it means that a device must support a specific
+	syslog message. Only devices from Ping Communications support this syslog message.
+	<br>
+	Having said so, this information gives a excellent view over the VoIP situation. The default
+	metric is TotalScore which is a number between 0 and 100, 100 is top quality of the 
+	service. This score takes into account the quality of each phone call  + the time a phone
+	has been out of service (as recorded by the SIP-server). Total score does not take into account
+	if the device has been offline, so it is not perfect, but even so it is more than good enough
+	to spot trouble areas.<br>
+	Explore the various metrics to find more interesting information about the voip service. It can
+	often be useful to compare a metric with CallLengthTotal, because then you will see every metric
+	up aginst the usage of the service (low score in the middle of the night) might not be a huge problem.
+	<br>
+	The voip report has extra "zoom". If you click on a line you will zoom into that particular day,
+	like the other reports. But if you click yet again you will enter a page (you can also go here
+	directly from the leftside menu) which will list all units with calls or voip "trouble" this hour.
+	From there you pinpoint if the problems are coming from a small number of units, or if the trouble
+	is more widespread. You of course dig down even deeper, that is explained in the help section
+	for those pages.
+</p>
+<p>
+	The hardware report is similar to the voip report in the sense that it builds upon a particular
+	syslog message emitted from the devices. The intention of the hardware report is to
+	give a most accurate picture of hardware-related issues on the devices. At this point in the 
+	developement we offer memory statistics and boot-history. Later we might be able to add temperature
+	and CPU utilization. Anyhow, this information can be important to detect troubles that
+	are exetremely hard to spot on a single device, but rather easy to spot on a large population.
+	<br>
+	You can zoom in like in the voip report, down to a level where you can identify each device.
+</p>

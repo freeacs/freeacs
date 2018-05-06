@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE jHelp SYSTEM "help.dtd">
+<jHelp>
+	<Page Path="/xapsweb/web">
+		<Field ID="new_protocol">
+			<Heading>
+				Protocol
+            </Heading>
+			<Help>
+				Set to TR-069 if the device supports TR-069 provisioning. Set to N/A if the device supports HTTP(S)/TFTP provisioning. OPP is deprecated.
+            </Help>
+		</Field>
+		<Field ID="new_modelname">
+			<Heading>
+				Modelname
+            </Heading>
+			<Help>
+				Specify the name of the model
+            </Help>
+		</Field>
+		<Field ID="new_vendor">
+			<Heading>
+				Vendor
+            </Heading>
+			<Help>
+				Specify the name of the vendor
+            </Help>
+		</Field>
+		<Field ID="new_description">
+			<Heading>
+				Description
+            </Heading>
+			<Help>
+				Describe the device with a few words
+            </Help>
+		</Field>
+		<Field ID="filterstring">
+			<Heading>
+				Name filter
+            </Heading>
+			<Help>
+				Will show only those parameters which matches (partly or fully)the filter string
+            </Help>
+		</Field>
+		<Field ID="filterflag">
+			<Heading>
+				Flag filter
+            </Heading>
+			<Help>
+				Will show only those parameters which matches the Unit Type parameter flag. 
+            </Help>
+		</Field>
+		<Field ID="filtertype">
+			<Heading>
+				Type filter
+            </Heading>
+			<Help>
+				Will show parameters based upon if they are configured or not configured. 
+            </Help>
+		</Field>
+		<Parameter>
+			<Name>System.X_OWERA-COM.Device.PeriodicInterval</Name>
+			<Heading>
+				System parameter: PeriodicInterval
+            </Heading>
+			<Help>
+				Number of seconds from the last 
+				provisioning to the next provisioning. The parameter is populated on
+				every provisioning of the device. This is a read-only parameter, to change
+				the value, look at the system parameters Frequency and Spread.
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.Device.PublicIPAddress</Name>
+			<Heading>
+				System parameter: PublicIPAddress
+            </Heading>
+			<Help>
+				Public IP address of the device. The 
+				device is not necessarily reachable on this address, since it could
+				be behind a NAT-gateway. This is a read-only parameter.
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.Device.SoftwareVersion</Name>
+			<Heading>
+				System parameter: SoftwareVersion
+            </Heading>
+			<Help>
+				Software version of the device as registered on the last provisioning. This is a read-only parameter.
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.FirstConnectTms</Name>
+			<Heading>
+				System parameter: FirstConnectTms
+            </Heading>
+			<Help>
+				The parameter contains the timestamp of the first contact between
+				the server and the device. It doesn't necessarily mean that there 
+				has been a successful provisioning. This is a read-only parameter.
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.LastConnectTms</Name>
+			<Heading>
+				System parameter: LastConnectTms
+            </Heading>
+			<Help>
+				The parameter contains the timestamp of the latest contact between
+				the server and the device. It doesn't necessarily mean that there 
+				has been a successful provisioning. This is a read-only parameter.
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.Secret</Name>
+			<Heading>
+				System parameter: Secret
+            </Heading>
+			<Help>
+				The secret which authorizes the provisioning session. Changing this value
+				may easily disrupt provisioning. 
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.Debug</Name>
+			<Heading>
+				System parameter: Debug 
+            </Heading>
+			<Help>
+				If set to "1", TR-069 conversation log will be dumped into fusion-tr069-debug.log. Default is "0".
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.DesiredSoftwareVersion</Name>
+			<Heading>
+				System parameter: DesiredSoftwareVersion
+            </Heading>
+			<Help>
+				Set the desired software version, to initiate a firmware upgrade/downgrade. Simply specify the
+				version of the software file (found in Files-section).
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.IM.Message</Name>
+			<Heading>
+				System parameter: Message
+            </Heading>
+			<Help>
+				May contain information from STUN server regarding kick operation. This is a read-only parameter.
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.Job.Current</Name>
+			<Heading>
+				System parameter: Job.Current
+            </Heading>
+			<Help>
+				The parameter contains the ongoing job id for this unit. This is a read-only parameter. Internal usage.
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.Job.Disruptive</Name>
+			<Heading>
+				System parameter: Job.Disruptive
+            </Heading>
+			<Help>
+				If set to "1" the parameter indicates that a job in this job chain is disruptive, hence all sub-sequent jobs must run regardless of servicewindow restrictions. Default is "0". Internal usage.
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.Job.History</Name>
+			<Heading>
+				System parameter: Job.History
+            </Heading>
+			<Help>
+				The parameter contains the job history of the unit. The format is (,job-id:repeat-counter:last-run-tms)*. Internal usage mainly, but one can delete certain jobs from the history to re-run a job. 
+			</Help>	
+		</Parameter>				
+		<Parameter>
+			<Name>System.X_OWERA-COM.ProvisioningMode</Name>
+			<Heading>
+				System parameter: ProvisioningMode
+            </Heading>
+			<Help>
+				The parameter contains the provisioning mode. The default mode is "REGULAR". The other option is "READALL" used to retrieve all parameters from the device. Usually set by using the buttons on the top of the Unit Configuration Page. 
+			</Help>	
+		</Parameter>				
+		<Parameter>
+			<Name>System.X_OWERA-COM.Restart</Name>
+			<Heading>
+				System parameter: Restart
+            </Heading>
+			<Help>
+				Set to "1" to trigger a restart of the device. As soon as the restart has been provisioned, the parameter is set to "0", which is default. 
+			</Help>	
+		</Parameter>				
+		<Parameter>
+			<Name>System.X_OWERA-COM.Reset</Name>
+			<Heading>
+				System parameter: Restart
+            </Heading>
+			<Help>
+				Set to "1" to trigger a factory reset of the device. As soon as the reset has been provisioned, the parameter is set to "0", which is default. 
+			</Help>	
+		</Parameter>				
+		<Parameter>
+			<Name>System.X_OWERA-COM.SecretScheme</Name>
+			<Heading>
+				System parameter: SecretScheme
+            </Heading>
+			<Help>
+				The parameter is only used in TFTP and HTTP provisioning. If set to "ENCRYPTED" the provisioning will be encrypted.
+			</Help>	
+		</Parameter>				
+		<Parameter>
+			<Name>System.X_OWERA-COM.ServiceWindow.Disruptive</Name>
+			<Heading>
+				System parameter: Disruptive
+            </Heading>
+			<Help>
+				The parameter defines the regular service window. Default is blank (interpreted as mo-su:0000-2400).
+				The service window format is weekday-weekday:hour-hour, an example are mo-fr:0800-1500. 
+			</Help>	
+		</Parameter>				
+		<Parameter>
+			<Name>System.X_OWERA-COM.ServiceWindow.Enable</Name>
+			<Heading>
+				System parameter: Enable
+            </Heading>
+			<Help>
+				If set to "0", service window is not enabled. Default is blank (interpreted as "1"). 
+			</Help>	
+		</Parameter>				
+		<Parameter>
+			<Name>System.X_OWERA-COM.ServiceWindow.Frequency</Name>
+			<Heading>
+				System parameter: Frequency
+            </Heading>
+			<Help>
+				The parameter contains the number of provisionings pr week. Default is blank (interpreted as 7).
+			</Help>	
+		</Parameter>				
+		<Parameter>
+			<Name>System.X_OWERA-COM.ServiceWindow.Regular</Name>
+			<Heading>
+				System parameter: Regular
+            </Heading>
+			<Help>
+				The parameter defines the regular service window. Default is blank (interpreted as mo-su:0000-2400).
+				The service window format is weekday-weekday:hour-hour, an example are mo-fr:0800-1500. 
+			</Help>	
+		</Parameter>				
+		<Parameter>
+			<Name>System.X_OWERA-COM.ServiceWindow.Spread</Name>
+			<Heading>
+				System parameter: Spread
+            </Heading>
+			<Help>
+				The parameter contains a spread-factor (default is blank (interpreted as 50) which tells how many percent 
+				the randomization of the spread will be. 
+				If set to 0, no spreading of the periodic inform interval will occur.  
+			</Help>	
+		</Parameter>				
+		<Parameter>
+			<Name>System.X_OWERA-COM.SoftwareURL</Name>
+			<Heading>
+				System parameter: SoftwareURL
+            </Heading>
+			<Help>
+				This parameter can be used to specify an optional URL for firmware download. By default the system will handle a 
+				download without usage of this parameter, but if you want to download from some other location than the system, 
+				or if the device doens't handle the auto-generated URL from the system, then this parameter can be set in 
+				conjunction with DesiredSoftwareVersion. 
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.Telnet.IPAddress</Name>
+			<Heading>
+				System parameter: Telnet.IPAddress
+            </Heading>
+			<Help>
+				The IP address of the device you want to execute a telnet-script on. It must be a public IP address.
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.Telnet.Port</Name>
+			<Heading>
+				System parameter: Telnet.Port
+            </Heading>
+			<Help>
+				The TCP port on which you want to execute a telnet-script on. Defaults to 23 (standard Telnet port)
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.Telnet.Username</Name>
+			<Heading>
+				System parameter: Telnet.Username
+            </Heading>
+			<Help>
+				The username to use in Telnet-login 
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.Telnet.Password</Name>
+			<Heading>
+				System parameter: Telnet.Password
+            </Heading>
+			<Help>
+				The password to use in Telnet-login
+			</Help>	
+		</Parameter>		
+		<Parameter>
+			<Name>System.X_OWERA-COM.Telnet.DesiredScriptVersion</Name>
+			<Heading>
+				System parameter: Telnet.DesiredScriptVersion
+            </Heading>
+			<Help>
+				The TELNET script file version that you want to execute. Such a Telnet script execution can only be done using a Job (Telnet-job) in the Jobs section. 
+			</Help>	
+		</Parameter>			
+	</Page>
+</jHelp>

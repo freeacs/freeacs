@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE jHelp SYSTEM "help.dtd">
+<jHelp>
+	<Page Path="/xapsweb/web">
+		<Field ID="groupselect">
+			<Heading>Group</Heading>
+			<Help>
+				Execute a syslog query for the selected group
+            </Help>
+		</Field>
+		<Field ID="softwareselect">
+			<Heading>Software</Heading>
+			<Help>
+				Filter the report based on the selected software.
+			</Help>
+		</Field>
+	</Page>
+</jHelp>

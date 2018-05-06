@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE jHelp SYSTEM "help.dtd">
+<jHelp>
+	<Page Path="/xapsweb/web">
+		<Field ID="name">
+			<Heading>
+				Name 
+            </Heading>
+			<Help>
+				Name of the file
+            </Help>
+		</Field>
+		<Field ID="versionnumber">
+			<Heading>
+				Version 
+            </Heading>
+			<Help>
+				The version is a string. The version must be unique within the File Type in this Unit Type. If the File Type
+				is SOFTWARE or TR069_SCRIPT then the version number must match exactly whatever you upload to the device. Check
+				help on the File Type.
+            </Help>
+		</Field>
+		<Field ID="targetname">
+			<Heading>
+				Target Name
+			</Heading>
+			<Help>
+				A target name must be specified for a TR069_SCRIPT, because it will be used in the provisiniong to separate between multiple
+				script file in the same device. When the device has applied the TR069_SCRIPT file, it must use this target name as the name
+				of the so-called "ConfigFile"
+			</Help>
+		</Field>
+		<Field ID="type">
+			<Heading>
+				Type 
+            </Heading>
+			<Help>
+				Currently the system supports 5 types of files:&lt;p&gt;
+				SOFTWARE - Usually a firmware image for a CPE. The firmware version
+				number must match the version number of the file&lt;p&gt;
+				SHELL_SCRIPT - A FreeACS Shell Script, upload here to be able to run 
+				it as part of a Job, Syslog Event or a Trigger. The file will be modified 
+				to include your username, so the ShellDaemon running the script
+				will run with the correct access rights.&lt;p&gt;
+				TR069_SCRIPT - A Script/Config-file which can be sent to
+				a CPE using TR069. This script/config must then modify the parameter
+				InternetGatewayDevice.DeviceInfo.&lt;br&gt;VendorConfigFile.{i}.Version to match
+				the version number of the file.&lt;p&gt;
+				TELNET_SCRIPT - A Telnet script file, only to be used in a Job (of type 'Telnet').
+				The script will execute on the CPE, and can be used to change and even
+				extract data from the CPE.&lt;p&gt;
+				UNITS - This file *should* only contain unitIds. So far the usage is 
+				for Triggers which make a file for each Trigger Release to accompany a
+				possible Trigger Shell Script, to make it possible to modify or act 
+				on each CPE which was part of a Trigger Release.&lt;p&gt;
+				MISC - A filetype without any special purpose. &lt;p&gt;
+            </Help>
+		</Field>
+	</Page>
+</jHelp>

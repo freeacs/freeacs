@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE jHelp SYSTEM "help.dtd">
+<jHelp>
+	<Page Path="/xapsweb/web">
+		<Field ID="eventid">
+			<Heading>
+				Event Id
+            </Heading>
+			<Help>
+				Specify a number from 1000 and upwards. You may freely decide on a number, thus creating your own ranges for certain events.
+            </Help>
+		</Field>		
+		<Field ID="name">
+			<Heading>
+				Name
+            </Heading>
+			<Help>
+				The name of the syslog event.
+            </Help>
+		</Field>		
+		<Field ID="description">
+			<Heading>
+				Description
+            </Heading>
+			<Help>
+				The description of the syslog event
+            </Help>
+		</Field>		
+		<Field ID="expression">
+			<Heading>
+				Expression
+            </Heading>
+			<Help>
+				An expression used to match against the syslog message. If no units in the group have sent messages that    
+              matches this expression within the timeout period, then the heartbeat is considered "missing" and a syslog  
+              message will be generated. The expression syntax:&lt;br&gt;  
+              	&lt;table&gt;  
+              	&lt;tr&gt;&lt;td&gt;	word	&lt;/td&gt;&lt;td&gt;	matches messages which contain 'word' 	&lt;/td&gt;&lt;/tr&gt;                                                               
+              	&lt;tr&gt;&lt;td&gt;	* 		&lt;/td&gt;&lt;td&gt;	matches 0 or more characters  			&lt;/td&gt;&lt;/tr&gt;                                                                    
+              	&lt;tr&gt;&lt;td&gt;	_ 		&lt;/td&gt;&lt;td&gt;	matches 1 character        				&lt;/td&gt;&lt;/tr&gt;                                                                                
+              	&lt;tr&gt;&lt;td&gt;	^ 		&lt;/td&gt;&lt;td&gt;	if used at beginning (allowed after !) of expression, matches expression only from start of message&lt;/td&gt;&lt;/tr&gt;       
+              	&lt;tr&gt;&lt;td&gt;	$ 		&lt;/td&gt;&lt;td&gt;	if used at end of expression, matches expression only at end of message&lt;/td&gt;&lt;/tr&gt; 
+              	&lt;tr&gt;&lt;td&gt;	! 		&lt;/td&gt;&lt;td&gt;	if used at beginning of expression, will negate the matching&lt;/td&gt;&lt;/tr&gt;                       
+              	&lt;tr&gt;&lt;td&gt;	| 		&lt;/td&gt;&lt;td&gt;	split the search, so 'A|B' translates to 'A OR B', and '!A|B' translates to 'NOT A AND NOT B'&lt;/td&gt;&lt;/tr&gt; 
+              	&lt;/tr&gt; 
+              	&lt;/table&gt;           
+            </Help>
+		</Field>
+		<Field ID="groupId">
+			<Heading>Group</Heading>
+			<Help>
+				Specify a group to filter a set of Units where syslog messages will be matched
+				against the expression of this Syslog Event. The matching has some performance 
+				impact and it's not required to specify a Group. 
+			</Help>
+		</Field>
+		<Field ID="storepolicy">
+			<Heading>Store Policy</Heading>
+			<Help>
+				STORE - store the syslog message in the database (default choice for all messages unless a 
+				Syslog Event is specified)&lt;p&gt;
+				DISCARD - simply throw away syslog message.&lt;p&gt;
+				DUPLICATE - The tasks can be thought
+				of as something in between STORE and DISCARD, since these tasks count the occurrence of
+				duplicate syslog message content pr unit and store only one message pr 60 minutes.&lt;p&gt;
+			</Help>
+		</Field>	
+		<Field ID="scriptId">
+			<Heading>
+				Script
+            </Heading>
+			<Help>
+				A Shell script to run upon the occurrence of the Syslog Event. 
+				The script must be uploaded to the file storage of the system and will run with the access rights
+				of the person uploading the script. The context in which the script will run, will be that of
+				the Unit sending the syslog message (if possible). It is also possible to pass along
+				variables to the script, specified as a comma-separated list of strings.&lt;p&gt;
+            </Help>
+		</Field>		
+		<Field ID="limit">
+			<Heading>
+				Delete limit
+            </Heading>
+			<Help>
+				The limit (in days) tells when a certain syslog message should be deleted from the database.
+				This is important to avoid very large syslog table. However, all syslog messages are deleted
+				based upon severity (defined in xaps-core.properties). If the deletion limit is set to something
+				else than 0 or blank, the limit of this particular event will override the severity-based
+				deletion limit. This could be important to retain some syslog information for a longer
+				period than otherwise expected. 
+            </Help>
+		</Field>				
+	</Page>
+</jHelp>
