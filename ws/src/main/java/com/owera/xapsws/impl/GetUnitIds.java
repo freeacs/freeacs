@@ -18,6 +18,7 @@ import com.owera.xaps.dbi.UnittypeParameter;
 import com.owera.xaps.dbi.XAPS;
 import com.owera.xaps.dbi.XAPSUnit;
 
+import com.owera.xapsws.ArrayOfUnitId;
 import com.owera.xapsws.GetUnitIdsRequest;
 import com.owera.xapsws.GetUnitIdsResponse;
 import com.owera.xapsws.UnitIdList;
@@ -63,7 +64,7 @@ public class GetUnitIds {
 				} else
 					profilesXAPS = Arrays.asList(unittypeXAPS.getProfiles().getProfiles());
 			}
-			boolean useCase3 = unitWS.getParameters() != null && unitWS.getParameters().getParameterArray().length > 0;
+			boolean useCase3 = unitWS.getParameters() != null && unitWS.getParameters().getParameterArray().getItem().length > 0;
 			if (useCase3) {
 				if (profilesXAPS.size() == 0) {
 					throw XAPSWS.error(logger, "Unittype and profiles are not specified, not possible to execute parameter-search");
@@ -91,7 +92,7 @@ public class GetUnitIds {
 
 			String[] unitIdArray = new String[unitMap.size()];
 			unitMap.keySet().toArray(unitIdArray);
-			return new GetUnitIdsResponse(new UnitIdList(unitIdArray));
+			return new GetUnitIdsResponse(new UnitIdList(new ArrayOfUnitId(unitIdArray)));
 		} catch (Throwable t) {
 			if (t instanceof RemoteException)
 				throw (RemoteException) t;
@@ -134,7 +135,7 @@ public class GetUnitIds {
 		List<Parameter> parameters = new ArrayList<Parameter>();
 		if (unitWS.getParameters() != null && unitWS.getParameters().getParameterArray() != null) {
 			Unittype unittype = getUnittypeForParameters(allowedProfiles);
-			for (com.owera.xapsws.Parameter pWS : unitWS.getParameters().getParameterArray()) {
+			for (com.owera.xapsws.Parameter pWS : unitWS.getParameters().getParameterArray().getItem()) {
 				UnittypeParameter utp = unittype.getUnittypeParameters().getByName(pWS.getName());
 				if (utp == null)
 					throw XAPSWS.error(logger, "Unittype parameter " + pWS.getName() + " is not found in unittype " + unittype.getName());

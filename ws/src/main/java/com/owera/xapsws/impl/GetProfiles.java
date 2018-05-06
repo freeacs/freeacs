@@ -6,6 +6,7 @@ import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.Profile;
 import com.owera.xaps.dbi.Unittype;
 
+import com.owera.xapsws.ArrayOfProfile;
 import com.owera.xapsws.GetProfilesRequest;
 import com.owera.xapsws.GetProfilesResponse;
 import com.owera.xapsws.ProfileList;
@@ -39,7 +40,7 @@ public class GetProfiles {
 				Profile p = xapsWS.getProfileFromXAPS(unittype.getName(), gur.getProfile().getName());
 				profileArray[0] = ConvertXAPS2WS.convert(p);
 			}
-			return new GetProfilesResponse(new ProfileList(profileArray));
+			return new GetProfilesResponse(new ProfileList(new ArrayOfProfile(profileArray)));
 		} catch (Throwable t) {
 			if (t instanceof RemoteException)
 				throw (RemoteException) t;
