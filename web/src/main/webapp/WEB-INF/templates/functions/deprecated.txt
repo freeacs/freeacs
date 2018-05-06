@@ -1,0 +1,3 @@
+These template functions is deprecated and should not be used.
+
+Laying around for backwards compability and special use cases.

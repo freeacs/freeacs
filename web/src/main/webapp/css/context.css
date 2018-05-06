@@ -1,0 +1,71 @@
+#CONTEXTFIELDSET {
+	background-color:lightgray;
+	color:black;	
+	margin-bottom:10px;
+	z-index:100
+}
+
+#CONTEXTFIELDSET legend {
+	background-color:white;	
+}
+
+#CONTEXTFIELDSET div:first {
+	float:left;
+}
+
+#contextsearch {
+	background-color: #f9f9f9;
+}
+/* 
+CONTEXT DROPDOWN STYLE
+
+Configure the style for the context dropdowns initial state 
+*/
+dl.dropdown {
+	float:left;
+	left:0;
+	margin:0;
+/* 	border:1px solid gray; */
+}
+/* General dropdown styles */
+.dropdown dd,.dropdown dt,.dropdown ul {
+	margin: 0px;
+	padding: 0px;
+}
+.dropdown dd {
+	position: relative;
+}
+/* DT styles for sliding doors */
+.dropdown dt a {
+	background: lightgray url(../images/arrow.png) no-repeat scroll right center;
+	display: block;
+	padding-right: 20px;
+	white-space:nowrap;
+	min-width: 120px;
+}
+.dropdown dt a span {
+	cursor: pointer;
+	display: block;
+	padding-left: 5px;
+	padding-top:1px;
+	padding-bottom:1px;
+}
+/* UL styles */
+.dropdown dd ul {
+	background: lightgray none repeat scroll 0 0;
+	display: none;
+	list-style: none;
+	padding: 5px 0px;
+	position: absolute;
+	border:1px solid gray;
+	left: -1px;
+	top: 2px;
+	width: auto;
+	min-width: 140px;	
+}
+.dropdown dd ul li a,.dropdown dd ul li b {
+	padding-left: 5px;
+	padding-top:1px;
+	padding-bottom:1px;
+	display: block !important;
+}

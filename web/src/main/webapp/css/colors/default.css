@@ -1,0 +1,351 @@
+body {
+	font-size: 13px;
+	background: #5DBCD2;
+	background: #62AEC9;
+	background: #97BACB;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+body a {
+	text-decoration: none;
+	color: #103d74;
+}
+
+#logo {
+	height: 75px;
+	width: 75px;
+	margin: 17px;
+	background: transparent;
+	background-repeat:no-repeat;
+	background-image: url(../../images/elements_logo_small.png);
+}
+
+.headerboxstatus {
+	background: #FFFFFF;
+}
+
+.ddsmoothmenu-v ul li {
+	border-color: #028CB6;
+}
+
+.ddsmoothmenu-v ul li ul li a {
+	background-color: #ffffff;
+	border-color: black;
+}
+
+.ddsmoothmenu-v ul li a {
+	color: black;
+}
+
+.ddsmoothmenu-v ul li.selected a,.ddsmoothmenu-v ul li.selected ul li.selected a,.ddsmoothmenu-v ul li a.selected,.ddsmoothmenu-v ul li a:hover {
+	color: #62AEC9;
+}
+
+.ddsmoothmenu-v ul li.selected ul li.selected a {
+	border-color: black !important;
+}
+
+.ddsmoothmenu-v ul li.selected ul li a {
+	color: black;
+}
+
+.ddsmoothmenu-v ul li.selected ul li a:hover {
+	color: #62AEC9;
+}
+
+/*
+CSS FOR ROUNDED CORNERS
+START
+*/
+.container {
+	background: #FFFFFF;
+	color: #000000;
+}
+
+.rtop,.rbottom {
+	background: #97BACB;
+}
+
+.rtop *,.rbottom * {
+	background: #FFFFFF;
+}
+
+/*
+CSS FOR ROUNDED CORNERS
+END
+*/
+
+.upgrade_search {
+	background: #FFFFFF;
+}
+
+.hoverpopup {
+	background: #FFFFFF;
+}
+
+.hoverpopup a {
+	color: #000000;
+}
+
+.hoverpopup a:hover {
+	color: #FF7F00;
+}
+
+.hoverpopup table {
+	border: 1px solid #103d74;
+}
+
+#bodycontent {
+	background: #FFFFFF;
+}
+
+#bodylogon {
+	background: #FFFFFF;
+}
+
+#redblock {
+	color: red;
+	background: #FFFFFF;
+}
+
+.readonly {
+	background: #FF3300;
+}
+
+.flagcell {
+	color: #336600;
+	font-size: xx-large;
+}
+
+.tableheader {
+	background: #f9f9f9;
+}
+
+table.syslog {
+	background: white;
+}
+
+table.syslog th,table.syslog td {
+	border-color: #f9f9f9;
+}
+
+table.syslog th {
+	background: #f9f9f9;
+	color: #000000;
+}
+
+td.altcol {
+	background: #DD5200
+}
+
+table.syslog caption {
+	color: #C4D7ED; /*000066*/
+}
+
+
+#hoverpopup_failurerule {
+	background: #f9f9f9;
+}
+
+
+table.unitjobs {
+	background: white;
+}
+
+table.unitjobs th,table.unitjobs td {
+	border-color: #f9f9f9;
+}
+
+table.unitjobs th {
+	background: #F4E9DC;
+	color: #000000;
+}
+
+table.unitjobs caption {
+	color: #C4D7ED; /*000066*/
+}
+
+table.parameter {
+	background: white;
+}
+
+table.parameter th,table.parameter td {
+	border-color: #f9f9f9;
+}
+
+table.parameter th {
+	background: #f9f9f9;
+	color: #000000;
+}
+
+table.parameter caption {
+	color: #C4D7ED;
+}
+
+form.unit fieldset {
+	background: #f9f9f9;
+	border-color: #103d74;
+}
+
+form.unit legend {
+	font-size: small;
+	color: #103d74;
+	background: #FFFFFF;
+}
+
+form.unit label {
+	color: #375D81;
+}
+
+form.unit .buttonarea input {
+	color: white;
+	border-color:white;
+}
+
+form.unit .buttonarea {
+	background: #0066FF;
+}
+
+.calendar {
+	color: #000000;
+	background: #d4d0c8;
+	font-size: 11px;
+	font-family: tahoma, verdana, sans-serif;
+}
+
+.calendar table {
+	color: #000000;
+	background: #d4d0c8;
+	font-size: 11px;
+	font-family: tahoma, verdana, sans-serif;
+}
+
+.calendar .nav {
+	background: transparent url(menuarrow.gif) no-repeat 100% 100%;
+}
+
+.calendar thead .title { /* This holds the current "month, year" */
+	background: #848078;
+	color: #FFFFFF;
+	font-weight: bold;
+}
+
+.calendar thead .weekend { /* How a weekend day name shows in header */
+	color: #f00;
+}
+
+.calendar thead .hilite {
+	background-color: #e4e0d8;
+}
+
+.calendar thead .active { /* Active (pressed) buttons in header */
+	background-color: #c4c0b8;
+}
+
+.calendar tbody .day.othermonth {
+	font-size: 80%;
+	color: #aaa;
+}
+
+.calendar tbody .day.othermonth.oweekend {
+	color: #faa;
+}
+
+.calendar table .wn {
+	background: #f4f0e8;
+}
+
+.calendar tbody .rowhilite td {
+	background: #e4e0d8;
+}
+
+.calendar tbody .rowhilite td.wn {
+	background: #d4d0c8;
+}
+
+.calendar tbody td.selected { /* Cell showing selected date */
+	background: #e4e0d8;
+	font-weight: bold;
+}
+
+.calendar tbody td.weekend { /* Cells showing weekend days */
+	color: #f00;
+}
+
+.calendar tbody .disabled {
+	color: #999;
+}
+
+.calendar tbody td.today { /* Cell showing today date */
+	color: #00f;
+	font-weight: bold;
+}
+
+.calendar tfoot .ttip { /* Tooltip (status bar) cell <TD> */
+	background: #848078;
+	color: #FFFFFF;
+}
+
+.calendar tfoot .hilite { /* Hover style for buttons in footer */
+	background: #e4e0d8;
+}
+
+/* Combo boxes (menus that display months/years for direct selection) */
+.calendar .combo {
+	background: #e4e0d8;
+	font-size: 90%;
+}
+
+.calendar .combo .active {
+	background: #c4c0b8;
+}
+
+.calendar .combo .hilite {
+	background: #048;
+	color: #fea;
+}
+
+.calendar td.time {
+	background-color: #f4f0e8;
+}
+
+.calendar td.time .hour,.calendar td.time .minute,.calendar td.time .ampm {
+	background-color: #FFFFFF;
+	font-weight: bold;
+}
+
+.calendar td.time span.hilite {
+	border-color: #000000;
+	background-color: #766;
+	color: #FFFFFF;
+}
+
+.calendar td.time span.active {
+	border-color: #f00;
+	background-color: #000000;
+	color: #0f0;
+}
+
+#popupMask {
+	opacity: .4;
+	filter: alpha(opacity = 40);
+	background-color: transparent !important;
+	background-color: #333333;
+	background-image /**/: url("../../images/maskBG.png") !important; /* For browsers Moz, Opera, etc. background-image : none; */
+	background-repeat: repeat;
+}
+
+#popupInner {
+	border: 2px solid #000000;
+	background-color: #ffffff;
+}
+
+#popupTitleBar {
+	background-color: #486CAE;
+	height:20px;
+	color: #ffffff;
+	border-bottom: 2px solid #000000;
+	border-top: 1px solid #78A3F2;
+	border-left: 1px solid #78A3F2;
+	border-right: 1px solid #204095;
+}

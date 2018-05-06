@@ -1,0 +1,18 @@
+<h1>ScriptExecutions</h1>
+This page shows the previous and on-going script executions. The script may have been triggered in various ways:
+<ul>
+<li>Web - User initiated script execution 
+<li>Trigger - A trigger release may initiate a script execution. 
+<li>Syslog Event - A syslog event may initiate a script execution.
+<li>Job - If job is of SHELL type, it will initiate a script execution.
+<li>Shell - User initiated script execution by use of setexecution command (instead of call command) 
+</ul>
+You can identify from which source the script is initiated by looking at the Request-ID of the execution. This field is rather "open", 
+so some IDs refer to one specific script executions, while others refers to executions of a generic type (like all executions stemming 
+from one particular Syslog Event).
+
+<h2>Initiate execution from Web</h2>
+Web allows you to pick a file of SHELL_SCRIPT type and execute it. You may also click on the + sign after the
+arguments input field, to get input-help to the script.
+
+

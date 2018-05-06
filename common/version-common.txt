@@ -1,0 +1,153 @@
+v1.33.13 (2014-04-04)
+- ref: Backup-directory can now be specified in property-file using backup-directory property. Defaults to "backup-logs" in working diretory.
+v1.33.12 (2013-08-14)
+- add: Callback-function in cache-cleanup (to notify when something is removed from cache)
+v1.33.11 (2013-04-18)
+- bug: If all entries were removed from a TimestampMap, oldest pointer were not updated correctly 
+v1.33.10 (2013-04-18)
+- bug: If all entries were removed from a TimestampMap, oldest/newest pointers were not updated correctly
+v1.33.9 (2013-04-12)
+- ref: Trying to fix an occasional NullPointerException when using TimestampMap.oldest() 
+v1.33.8 (2013-04-11)
+- ref: Make sure that it is impossible to add null-keys/values into TimestampMap
+v1.33.7 (2013-04-09)
+- ref: The underlying map in TimestampMap is changed from HashMap to ConcurrentHashMap, to be able to retrieve the underlying map for iteration outside the object 
+v1.33.6 (2013-04-08)
+- add: IPAddress class to check if a IP address is public
+v1.33.5 (2013-04-03)
+- ref: Added some methods in Cache 
+v1.33.4 (2013-03-27)
+- del: Removed InsertOrderMap, replaced with TimestampMap. Decided that the class was too complex and bug-prone, replaced with a simple HashMap-wrapper. Even the
+       performance difference between these two implementations seems to be negligible. 
+v1.33.3 (2013-03-25)
+- ref: Added logging to InsertOrderMap.removeOld()
+- bug: Fixed bugs in InsertOrderMap
+- add: Added a method on InsertOrderMap to retrieve tooOld-set (cleanup of the InsertOrdeMap as well)
+v1.33.2 (2013-03-24)
+- add: InsertOrderMap copied from Core server, since it will be used in STUN server as well
+v1.33.1 (2013-03-15)
+- bug: If a propertyfile is temporarily unreadable, PropertyReader will continue to use whatever properties have been read  
+v1.33.0 (2012-12-13)
+- ref: default pattern for an appender is %m, no warnings/error - used by SyslogAppender to simplify configuration of appender
+- ref: changed how to retrieve a ConnectionProperties-object from propertyfile - will avoid problems of ambiguous setting of maxconn/maxage 
+- ref: changed default values for maxconn/maxage
+- ref: added code to prevent maxage below 60 sec
+
+v1.32.5 (2012-12-11)
+- ref: Improved logging when reaching connection limit
+v1.32.4 (2012-11-28)
+- ref: closed a BufferedReader to avoid a warning - probably no effect
+v1.32.3 (2012-11-27)
+- ref: removed some unused methods in ConnectionProvider
+v1.32.2 (2012-09-04)
+- ref: NoAvailableConnection is changed to be a subclass of SQLException, greatly reduces catch-clauses elsewhere in Fusion
+- ref: Context.X is specified to require at least 35 char (usually used to print Unit-id)
+- del : removed an unused method from StringUtility
+v1.32.1 (2012-16-04)
+- add: A default implementation of the Task interface; contains some boilerplate code
+- add: Possible to remove tasks dynamically
+v1.32.0 (2012-09-04) 
+- add: Schedule Framework (package) to be used by Core-server
+- bug: Sleep.sleep() didn't seem to work as intended - refactored to return on fixed interval according to maxSleep
+- ref: Removed some unused code in PropertyReader   
+
+v1.31.27 (2011-12-14)
+- bugfix-attempt: more synchronization in Log, to avoid Thread-conflict
+v1.31.26 (2010-10-28)
+- minimal change in Log, has no effect - just makes code clearer
+v1.31.25 (2010-10-11)
+- changed cleanup connections to commit connections which are set to autocommit = false (now fixed properly)
+v1.31.24
+- changed cleanup connections to commit connections which are set to autocommit = false
+v1.31.23
+- set all threads (log/connection cleanup) to be of daemon type
+v1.31.22
+- removed warning according to Java 6
+v1.31.21
+- more logging in ConnectionProvider - may turn out to be a problem for the SyslogAppender (loop may occur)
+v1.31.20
+- improved TimeWindow to handle a time like 2300-2300 as 24h. Necessary for xAPS Web.
+v1.31.19
+- added a simple join method in StringUtility
+v1.31.18 
+- added a suppress warning (Java 6 adaption)
+v1.31.17
+- Improvement of logging of Exceptions/Throwables
+v1.31.16
+- Can now make a "cheap", but clean (without error message) initialization of Log-framework
+v1.31.15
+- improvements in exception handling in the Log-framework
+	handles non-existing log-propertyfile
+	handles removed log-propertyfile
+	handles wrongly defined log-propertyfile
+	better error messages
+	default configuration kicks in - everything will be logged to stdout
+v1.31.14
+- changed PropertyReader to check if key != null, then, if value equals "", set value to null
+v1.31.13
+- changed PropertyReader to check if key != null, but value is allowed to be "".
+v1.31.12
+- non-essential fix - addded some to main-method of NaturalComparator to show the difference to StringComparator
+v1.31.11
+- non-essential fix - changed loglevel on a log-statement in ConnectionCleanup
+v1.31.10
+- changed default reload interval from 300 seconds to 30 seconds. Causes small performance loss - but usefulness is ten
+ten times improved
+v1.31.9
+- fixed a bug which occured when two FileAppenders were defined - caused by use of static fields
+v1.31.8
+- added debug mode to the logging for FileAppender (you can add a property "<appender-name>.debug = true" to enable debug)
+- improved logging about the workings for FileAppender - the log is always written to stdout 
+v1.31.7
+- fixed bugs related to logging:
+	- fixed bugs related to concurrent logging:
+		- backup method is not entered twice in "same" backup interval
+		- synchronized file-writer creation with actual file writing
+	- improved logging related to backups - will se if rename-operation fails
+	- added cleanup of all size-backups
+	- errors in ConfigError.log() method will no longer exit the log-thread
+	- fixed a bug in which caused ConfigError-logging to fail - made sure default-appender doesn't rely on too much code.
+	- fixed a bug which caused much of config-changes to be ignored
+	- tested with almost all kinds of config-changes runtime
+	- tested with up til 100 concurrent threads
+	- fixed a small spelling error in an error message
+	- tested simple case: One thread logging to one log: 2 500 ns pr statement
+	- tested advanced case: 10 threads logging to three logs: 200 000 ns pr statement
+v1.31.6
+- Synchronized writing to log with backups, to avoid failing backups due to parallel writing
+v1.31.5
+- Improved undeployment handling in the FileAppender daemon threads 
+v1.31.4
+- Fixed a bug in Cache, did not handle well Long.MAX_VALUE as cacheTimeout
+- Added cacheTimeout in Context-object (log), default cacheTimeout is not acceptable
+v1.31.3
+- Updated to usage of Sleep.isTerminated/Sleep.terminateApplication
+- Backup logs goes to backup-logs
+v1.31.2
+- Removed the usage of reload.use property for PropertyReader - reload is now always ON
+- Added a constructor to Logger class - not used yet by anyone
+- Fixed a bug in rollOnTime() - now correctly rolls on months
+- Removed constructor on Log object - instead uses initialize() (no usage for a constructor)
+v1.31.1
+- Added some methods in the log-package
+- Removed usage of log4j throughout the whole project, replaced it with owera.log
+v1.31
+- Added the log package. This is a log4j-substitute, better suited for Owera for the following reasons:
+	- no conflicts with log4j-libraries in J2EE-server => no need to think of classloader-strategies
+	- simpler/better configuration - easier for customers/documentation
+		- specify roll-on-size/time in one appender-configuration
+		- specify backups for roll-on-time (for automatic cleanup in production environment)
+		- no need to specify root-logger
+		- no need to specify inheritance
+		- automatic report of configuration-errors -> easy to correct
+	- automatic roll-on-time, even with no log-traffic
+	- automatic roll-on-time in startup (an old log will be rolled out to correct file name)
+	- filename suffix convention kept in case of backups, to allow ease of use with editors (no .1 suffix)  
+	- performance increased with up to 300% (some cases - no increase)
+	- complete dynamic reload of configuration - everything can change runtime
+	- supports the Syslog-severity hierarchy (plus FATAL from log4j)
+	- simple to add an Syslog-appender -> our code will be slimmer 
+- Slight change in PropertyReader, now uses TreeMap instead of HashMap..expect a little performance loss
+- Changed interface on Sleep - make it perfectly clear what the purpose with the stop-signal is
+
+ 

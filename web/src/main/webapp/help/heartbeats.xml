@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE jHelp SYSTEM "help.dtd">
+<jHelp>
+	<Page Path="/xapsweb/web">
+		<Field ID="name">
+			<Heading>
+				Name
+            </Heading>
+			<Help>
+				The name of the missing heartbeat detection.
+            </Help>
+		</Field>		
+		<Field ID="description">
+			<Heading>
+				Description
+            </Heading>
+			<Help>
+				The description of the missing heartbeat detection.
+            </Help>
+		</Field>		
+		<Field ID="expression">
+			<Heading>
+				Expression
+            </Heading>
+			<Help>
+				An expression used to match against the syslog message. If no units in the group have sent messages that    
+              matches this expression within the timeout period, then the heartbeat is considered "missing" and a syslog  
+              message will be generated. The expression syntax:&lt;br&gt;  
+              	&lt;table&gt;  
+              	&lt;tr&gt;&lt;td&gt;	word	&lt;/td&gt;&lt;td&gt;	matches messages which contain 'word' 	&lt;/td&gt;&lt;/tr&gt;                                                               
+              	&lt;tr&gt;&lt;td&gt;	* 		&lt;/td&gt;&lt;td&gt;	matches 0 or more characters  			&lt;/td&gt;&lt;/tr&gt;                                                                    
+              	&lt;tr&gt;&lt;td&gt;	_ 		&lt;/td&gt;&lt;td&gt;	matches 1 character        				&lt;/td&gt;&lt;/tr&gt;                                                                                
+              	&lt;tr&gt;&lt;td&gt;	^ 		&lt;/td&gt;&lt;td&gt;	if used at beginning (allowed after !) of expression, matches expression only from start of message&lt;/td&gt;&lt;/tr&gt;       
+              	&lt;tr&gt;&lt;td&gt;	$ 		&lt;/td&gt;&lt;td&gt;	if used at end of expression, matches expression only at end of message&lt;/td&gt;&lt;/tr&gt; 
+              	&lt;tr&gt;&lt;td&gt;	! 		&lt;/td&gt;&lt;td&gt;	if used at beginning of expression, will negate the matching&lt;/td&gt;&lt;/tr&gt;                       
+              	&lt;tr&gt;&lt;td&gt;	| 		&lt;/td&gt;&lt;td&gt;	split the search, so 'A|B' translates to 'A OR B', and '!A|B' translates to 'NOT A AND NOT B'&lt;/td&gt;&lt;/tr&gt; 
+              	&lt;/tr&gt; 
+              	&lt;/table&gt;           
+            </Help>
+		</Field>
+		<Field ID="groupId">
+			<Heading>Group</Heading>
+			<Help>
+				Specify a group to filter a set of Unit from which heartbeat messages will be expected
+			</Help>
+		</Field>
+		<Field ID="timeout">
+			<Heading>
+				Timeout
+            </Heading>
+			<Help>
+				The number of hours (1-48) to wait before a heartbeat is determined to be missing.
+            </Help>
+		</Field>				
+	</Page>
+</jHelp>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE jHelp SYSTEM "help.dtd">
+<jHelp>
+	<Page Path="/xapsweb/web">
+		<Field ID="name::1">
+			<Heading>
+				Unit Type Parameter name
+            </Heading>
+			<Help>
+				A Unit Type parameter name with dot separation. Examples =>&lt;br /&gt;
+				a normal system parameter: System.X_OWERA-COM.SomeParameterName&lt;br /&gt;
+				a normal device parameter: Device.DeviceInfo.SomeSetting&lt;br /&gt;
+				a custom parameter: Customer.Information.First_Name
+            </Help>
+		</Field>			
+	</Page>
+</jHelp>

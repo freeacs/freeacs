@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE jHelp SYSTEM "help.dtd">
+<jHelp>
+	<Page Path="/xapsweb/web">
+		<Field ID="parameter">
+			<Heading>
+				Search parameter
+            </Heading>
+			<Help>
+				Search for all units that has a specific parameter value or unit-id, or even parts of the search-string
+            </Help>
+		</Field>
+		<Field ID="remember-">
+			<Heading>
+				Custom search parameter
+            </Heading>
+			<Help>
+				This custom search parameter is remembered as long as you do not go away from this page.
+            </Help>
+		</Field>
+		<Field ID="addparameter">
+			<Heading>
+				Add new search parameter
+            </Heading>
+			<Help>
+				Refine your search by adding custom search parameters. Type into the text field and you will be able to choose among autocompleted parameters within the current unit type.
+            </Help>
+		</Field>
+		<Field ID="limit">
+			<Heading>Limit</Heading>
+			<Help>
+				Limit the number of search result. Default is 100 entries.
+			</Help>
+		</Field>
+		<Field ID="unit">
+			<Heading>Unit</Heading>
+			<Help>
+				Specify a specific unit-id or even a part of a unit-id.
+			</Help>
+		</Field>
+		
+	</Page>
+</jHelp>

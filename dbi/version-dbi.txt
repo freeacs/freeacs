@@ -1,0 +1,1292 @@
+v1.74.39 (2015-01-20)
+- bug: Upon a new year, the year of the time stamp logged into syslog from other FreeACS modules was still the previous year. (2nd attempt)
+v1.74.38 (2015-01-19)
+- bug: Upon a new year, the year of the time stamp logged into syslog from other FreeACS modules was still the previous year. 
+v1.74.37 (2014-12-19)
+- bug: If a group-hiearchy was defined, and the top-level group specified a profile - then matching for a sub-group in a job would fail!
+v1.74.36 (2014-11-14)
+- bug: SyslogEntryComparator gave runtime-exceptions - provisioning reports were not run!
+v1.74.35 (2013-06-14)
+- ref: Removed logging statement for every unittype parameter add/changed - logging one message at the end of the loop
+- add: Added system parameter DISCOVER (to allow for unittype discovery set for one single device)
+v1.74.34 (2013-06-11)
+- ref: Dropepd unit-specific job-parameters - causes extra work/SQL in TR-069 Server/SPP-server - never been used in 5 years.
+v1.74.34 (2013-06-03)
+- ref: Added heartbeat id to heartbeat.toString()
+v1.74.33 (2013-05-30)
+- ref: TestDB added a method to retrieve the TR069DMModel object
+v1.74.32 (2013-05-27)
+- bug: Group-search were not case-insensitive
+- bug: Did not search properly for parameter EQ NULL, if profile was not-NULL
+v1.74.31 (2013-05-23)
+- bug: Less, Less-than, Greater and Greater-than searches in groups were not handled if value contained wildcards - they will now automatically be
+converted to a standard string-search without any wildcard matching. This would perhaps not be understood by the user (since wildcards are applied),
+but using wildcards and LT, LE, GT and GE doesn't make sense for MySQL anyway.
+v1.74.30 (2013-05-21)
+- bug: Unittype.toString() failed if unittypeParameters or profiles object where null - something that never should happen, but still...
+- ref: Improved ensureValidSystemParameters function in Unittype  - more logging - hope to see what fails in discovery
+v1.74.29 (2013-05-14)
+- bug: Publish-mesage was sent out *before* System-parameters were updated - causing modules to loose information (withtout explicit logout/login) 
+v1.74.28 (2013-05-11)
+- ref: Reports are no longer run for periods older than two days..to avoid large datasets->memory/load issues
+v1.74.27 (2013-05-10)
+- bug: Syslog-write will clear insert-buffer upon an error (otherwise will repeat forever)
+v1.74.26 (2013-05-07)
+- ref: Make sure provisioning report tracks correct provisioning messages
+v1.74.25 (2013-05-06)
+- ref: reverted spread back from 0 to 50 - caused problems on Tomcat
+v1.74.24 (2013-05-02)
+- bug: Group-matching on profiles seemed to be wrong?
+v1.74.23 (2013-04-27)
+- bug: Job dependencies were not read correctly from db
+v1.74.22 (2013-04-26)
+- bug: Job dependencies were not read correctly from db
+v1.74.21 (2013-04-18)
+- add: System-parameter for WEBGUI-URL
+- add: SystemConstants for spread/frequency for provisioning
+v1.74.20 (2013-04-12)
+- ref: ScriptExceutions never retrieve more than poolsize-number of not-started script executions 
+v1.74.19 (2013-04-11)
+- bug: Read trigger history failed if triggers were defined in multiple unittypes 
+- ref: Updated info for lotfiles
+v1.74.18 (2013-04-09)
+- ref: Improved syslogging of temporary/session unit parameter add/change 
+v1.74.17 (2013-04-08)
+- add: TR069 test cases now has a unique ID tag.
+- add: Added filter functionality to 'listtesthistory' command.
+v1.74.16 (2013-04-06)
+- ref: reversed unnecessary logging
+- bug: provisioning report falsely classified some ProvMsg to MissingProv-count 
+v1.74.15 (2013-04-05)
+- ref: bugfixes and new functionality on TestCase-classes (new list method)
+v1.74.14 (2013-04-04)
+- bug: could not print Test Case, if files object was null
+- ref: removed some System.out.println() from TestDB (was seen in Shell command output)
+v1.74.13 (2013-04-03)
+- bug: refresh operations on Files, Jobs, Groups and in DBI did not handle if some object was allowed for this user (=null). 
+- bug: refreshGroups created! group if it was not found - negating the permission system - also caused a bug in refreshGroupParameters 
+v1.74.12 (2013-04-02)
+- bug: Groups.addOrChangeParameter did not handle unknown id correct - always added - now compares with existing parameters and will not create two equal group parameters
+- bug: Files.addOrChange() did not handle content = null (which could happen in Web when editing meta data about the file)
+v1.74.11 (2013-03-25)
+- bug: XAPS.readTriggers() failed if triggers were found in more than one unittypes, and if triggers had parent triggers
+v1.74.10 (2013-03-21)
+- bug: Jobs.refresh() did not properly handle removal of a job
+- ref: major cleanup on SystemParameters - removed several unused/not-to-be-used. Trying out a ProvisioningPriority parameter
+v1.74.9 (2013-03-20)
+- ref: changed query timeout to 120 sec for filestore-read
+v1.74.8 (2013-03-18)
+- del: Removed isInspection() method from UnittypeParameterFlag - some cleanup in other classes in DBI
+- add: Added BootRequired flag on UnittypeParameterFlag object
+- bug: Triggers did not handle removal of parent-trigger + removal of script
+v1.74.7 (2013-03-17)
+- add: improved expcetion handling of syslog-message parsing of Voip/HW-reports (an error causes widespread problems for the server after a while)
+v1.74.6 (2013-03-16)
+- del: removed Timerolling feature from Group - no support for it elsewhere in Fusion (after removing GROUPSYNC from syslog-events)
+- add: added convert-method for Provisiong reports
+- bug: addition of two ProvsionReport records did not add correctly session-length-average (forgot total-weight counter)
+v1.74.5 (2013-03-13)
+- ref: removed more Inspection-stuff, changed name of ProvisioningModes to REGULAR and READALL (from PERIODIC and INSPECTION/EXTRACTION/DEBUG)
+v1.74.4 (2013-03-11)
+- ref: experimental - have removed Inspection-mode, ProvisioningState,++ 
+v1.74.3 (2013-03-08)
+- ref: Added WS.User to staging-parameter list in SystemParameters (have been missing for a few years:)
+v1.74.2 (2013-03-07)
+- ref: Reverted the bugfix from previous version, not correct fix
+- ref: Improved on Unittype parameter equals, to handle GPNRes compare
+v1.74.1 (2013-03-06)
+- bug: SyslogClient introduced an extra space in the message, that one is now trimmed
+- del: Removed references to OPP-pattern for creation of units
+v1.74.0 (2013-03-01)
+- ref: SyslogClient is improved a lot, lots of new methods to make simple logging to Syslog possible
+- ref: Added logging to SyslogServer (not using SyslogAppender, simply posting a UDP-packet directly to the server). This
+       requires that a syslog server is always present on localhost:9116 (which is acceptable). The logging is done from
+       all XAPSUnit-method which changes the unit/unit-parameter 
+- del: Removed SyslogAppender/LogContext. These classes was introduced in v1.46.1, but have since proved problematic and caused
+       a lot of headache. Examples are:
+       	- bugs within SyslogAppender, can be hard to track down
+       	- context (facility, facility-version, user, etc) had to be set using Thread-context, causing unreadble code, lot of reset-statements
+       	- most logging should not be sent to syslog anyway 
+       	- debug-mode could cause massive load on the syslog database
+       	- direct writing to syslog table bypassed the syslog server + syslog event processing
+		- we've started to send messages to the syslog server, instead of writing to the table - this is a better solution for those
+			few selected places where we really want to log from our internal modules into syslog
+- del: Removed everything regarding the TR-reports. This feature was introduced in v1.54.4, but has never been used. In also
+       caused a lot of unnecessary logic and complications:
+       	- We never had a chance to actually test it (in 2.5 years!)
+       	- It was doubtful whether a device could actually support this
+       	- The setup of a TR-report was pretty complicated, to understand it's inner workings if something failed would be impossible (for customers)
+       	- We had to maintain an extra flag (Monitor-flag)
+       	- We had to maintain a set of special parameters (Command-parameters) which changed value upon setting the to the device (violation of standard procedure)
+       	For this reasons and others as well, I've decided to remove all of it. Good riddance!
+       	
+
+v1.73.18 (2013-02-25)
+- bug: Syslog event expression was not set correctly
+v1.73.17 (2013-02-22)
+- ref: Removed some Java 1.7 <> (diamond) syntax - was not possible to build in Ant for some reason 
+- bug: Intro v1.73.14, now handling missing groups correctly in permission-removal
+- ref: minor change in log level for some log statements
+v1.73.16 (2013-02-21)
+- bug: If sw-version was '' for certain units then unit-, hw- and voip-reports failed. Always make sure that sw-version is set to a string (Unknown)
+v1.73.15 (2013-02-18)
+- ref: Since introduction of bulk insert for syslog-writes, Duplicate-updates had to be rewritten (id no longer available)
+- ref: Improved report queries (faster matching of strings in syslog search)
+v1.73.14 (2013-02-14)
+- bug: Profile-admin could not see any groups/jobs, even though they were created depending on a group with the profile
+- bug: DBI.updateJobCounter got NP when a job was updated in a non-permitted unittype
+- bug: Job.refresh() got NP when a job was updated in a non-permitted unittype
+- bug: Syslog queries were very slowed, improved to use aboslute unit-id => better usage of index => improved with a factor of 100
+- bug: Group permission handling was incorrect if user was profile-admin and tried to set a group with a profile
+v1.73.13 (2013-02-12)
+- ref: Removed a sysout-statement
+v1.73.12 (2013-02-04)
+- ref: Small fix on the newly introduced SQL in v1.73.11. 
+v1.73.11 (2013-02-02)
+- ref: Refactored computeSQL in UnitQueryWithinUnittype (yet again). It should speed up all non-null parameter value searches.
+v1.73.10 (2013-01-30)
+- add: Added a method in XAPSUnit/UnitQueryCrossUnittype to retrieve a list of Units based on a list of unique-parameter-values, will be used in Staging
+v1.73.9 (2013-01-28)
+- ref: Changed a comment
+- bug: Did not handle backslash in filenames used in TR-069 Script Target Name 
+v1.73.8 (2013-01-07)
+- add: Support for raw FILE testcases. 
+v1.73.7 (2013-01-07)
+- bug: v1.73.0 introduced two bugs in XAPS.readJob, if no job was found and setting the job dependencies correctly   
+- ref: File now offers a public method to reset content to null (to avoid storing file content in XAPS-object)
+v1.73.6 (2012-12-20)
+- add: Initial support for FILE test method.
+v1.73.5 (2012-12-20)
+- bug: UnitQueryCrossUnittype.getUnitsById did not separate the units properly
+v1.73.4 (2012-12-19)
+- del: Removed the System parameter added in v1.73.3 - no longer necessary
+- add: Added EXECUTE in Steps-enumeration, to allow for FILE method test cases
+v1.73.3 (2012-12-17)
+- add: Added Test-System parameter for file
+v1.73.2½ (2012-12-14)
+- bug: When generating testcases, we now only ever try with the first parameter in a group. E.g. "foo.1.bar.1.baz", but never "foo.2.bar.3.baz".
+- bug: retroactively updated this file to match SVN commit message.
+v1.73.2 (2012-12-13)
+- ref: removed some comments
+- lib: common v1.33.0 (new ConnectionProperties retrieval)
+- ref: SyslogAppender simplified, no longer support for dynamic retrieval of ConnectionProperties - must always be found in a property file
+- bug: getUnitsWithDetails will not throw an exception if asked for 0 units, will simply return an empty list
+v1.73.1 (2012-12-12)
+- ref: Cached XAPSVersionCheck-results, removed Group-param-table check (since found in 2012R1)
+- bug: Syslog.write() did not handle quotes within content-field
+- bug: Syslog.write() from yesterday contained a few bugs, initial tests work well now - reaching 250K/msg/min on localhost!
+v1.73.0 (2012-12-11) 
+- ref: Syslog.write() will now performed bulk inserts every 1000 inserts or every 5 sec, whichever comes first
+- ref: Duplicates can no longer be updated with duplicate count, due to bulk insert introduced
+- ref: Removed commit every 5 seconds, no longer necessary
+- add: New method in the XAPSUnit facade, to allow many units+parameters to be retrieved in one SQL 
+- ref: XAPS object is populated with a lot fewer SQLs, starting to adapt to a hosting situation where disk is farther removed from the processor
+
+v1.72.20 (2012-12-06)
+- bug: Unit.getProvisioningMode/State() did not handle wrong values of mode/state, now always return default value
+- ref: Removed references to firmware table, the references were only found in commented code or text
+v1.72.19 (2012-11-30)
+- ref: Uncommented code related to Oracle (in Files class), no longer necessary to have oracle-JDBC-jar file in class path
+v1.72.18 (2012-11-27)
+- ref: Minute changes - some comments changed to UTF-8 encoding
+v1.72.17 (2012-10-29)
+- bug: Job.refresh did not handle deleted jobs
+v1.72.16 (2012-10-05)
+- add: A quick method to load some unit data for the syslog-server (forward-ported from v1.64.26 2012R1 branch)
+v1.72.15 (2012-09-13)
+- ref: removed some Sysout-statements
+v1.72.14 (2012-09-12)
+- bug: fixed some bad comments in the TC-file
+- bug: no longer generates twice as many broken testcases.
+v1.72.13 (2012-09-04)
+- ref: Changed som test/util classes
+v1.72.12 (2012-07-10)
+- ref: changed tags (removed time-tags, added xsd-tags)
+- ref: improve generate test case command (now also prints xsd-datatype to tags, and make SET-testcases, one by one parameters from master TC
+v1.72.11 (2012-07-09)
+- ref: improved generate test case command
+- ref: List/delTesthistory timerange now capture both ends inclusive: [from, to], not [from, to>
+- ref: changed AddOrChangeTestCase to return TestCase
+v1.72.10 (2012-07-05)
+- ref: history-result will be trunctated if larger than 4096 char, to fit the column size
+- ref: Added xsdType to TR069DMParameter - used in SPV in TR-069 server
+- ref: Added TR069DMParameter to test-case parameters - did some renaming
+- add: TestGeneration for larger test cases.
+- ref: cleaned up merged code.
+v1.72.9 (2012-07-05)
+- ref: Removed logging to System.out in TR069DataModelLoader
+v1.72.8 (2012-07-04)
+- add: TestGeneration for SetParameterAttibute test cases
+- add: Improved support for SetParameterAttibrute test (notification will be parsed correctly from test-case files)
+v1.72.7 (2012-07-02)
+- ref: Changed to standard package-name (net.pingcom.fusion caused problems for ant-scripts)
+- ref: UnitParameter-queue improved (removes duplicates)
+- ref: Steps.next() automatically introduced an EMPTY step after a RESET or REBOOT
+v1.72.6 (2012-06-29)
+- bug: Not possible to retrieve failed test-cases from test history
+- add: Method in TestDB to retrieve both Uncomplete and Complete Test Case list (with/without complete set of Test Case parameters)
+- ref: Listing of Test cases is ordered by Test-case Id
+- add: TR-104 added to TR069-Datamodel
+v1.72.5 (2012-06-28)
+- ref: Changed name of a publish method in DBI
+- ref: TR069 Test Framework
+- add: ConvertPalletId2Mac added
+v1.72.4 (2012-06-21)
+- ref: System parameters added to support TR069 Test Framework
+- ref: TR069 Test Framework package seems to be undergoing less changes now
+- add: A generic publish method in DBI, make it possible to send TR069 Test Disable message from Shell to TR-069 Server
+- bug: DynamicStatement.cleanupSQLTail did not handle cases were column names ended with standard SQL word like 'OR' or 'AND'
+- add: Possible to force InsertOrUpdateStatement to perform an insert (even if the primary key is known) 
+v1.72.3 (2012-06-13)
+- ref: TR069 test framework has undergone many changes
+v1.72.2 (2012-06-11) 
+- bug: Unittype updates were not handled correctly, may cause leakage of data across user-spaces
+- ref: change logging to track mysterious XAPS-state bug in Groups.refreshGroup
+- add: More on test framework
+v1.72.1 (2012-06-07)
+- add: Datamodel to store test runs
+v1.72.0 (2012-06-06)
+- del: removed tr069-folder, could not easily be found in jar on server
+- add: xml-documents placed on src-root, for classloader to find them
+- add: new package includes tr069 data model loader
+- add: folder including xml-documents published by Broadband Forum
+v1.71.4 (2012-06-04)
+- ref: Small logging change - to track a bug situation
+v1.71.3 (2012-05-29)
+- ref: ScriptExecutions added a method to retrieve a single ScriptExecution based on a unique id
+- ref: ScriptExecution table no longer requires request_id
+v1.71.2 (2012-05-25)
+- ref: Validates the file in Script-execution, to make sure it's of SHELL_SCRIPT type
+- ref: two methods in Triggers-object changed, remove unnecessary ref. to Triggers-object
+- ref: Changed WEB_PAGES in Permissions, no longer specifies specific pages, rather an overall access-level
+- bug: Delete of script-executions was based on end-timestamp, did not work if script execution never completed
+- bug: In case of a user with no unittype/profiles permissions, the Unit-Query failed (with NP)
+- ref: XAPS now offers a method to retrieve ScriptExecutions (not cached though)
+v1.71.1 (2012-05-23)
+- ref: owner field may not be overridden by logged-in-user in the case of import of files by an admin-user
+v1.71.0 (2010-05-22)
+- table: owner field added to filestore
+- ref: added constructor + methods to specify owner, removed implicit write of fusionuser to content (introduced in v1.69.4)
+- bug: fixed User-constructor, also copies id
+v1.70.8 (2010-05-18)
+- ref: ProvReport refactored
+- add: Added methods in Key object (report-package) to get key-value based on a key-name
+v1.70.7 (2012-05-15)
+- bug: SyslogAppender logs Unit-messages properly to Syslog-Server (not directly to database)
+- ref: Changed the facility names of SyslogConstants
+- ref: Syslog started to use SQLUtil to build SQL-expression from Fusion-expression
+- ref: Small change in parsing of ProvMessages -> easier to build correct Heartbeat-definitions
+- ref: SyslogEvent changed to store expression as String, move away from strict Regexp-expression, makes it easier to use against DB
+- bug: ProvisioningReport bugfixes, testlevel 50% 
+v1.70.6 (2012-05-14)
+- add: ProvisioningReport added
+- ref: Minor refactoring elsewhere in Report-package
+- moved a Heartbeat-constant from Core to DBI
+v1.70.5 (2012-05-11)
+- ref: toString() of Heartbeat is shortened
+- ref: Spelling fix in DBI
+v1.70.4 (2012-05-10)
+- bug: User-object does not need the permission object always - make it optional
+- bug: make sure Job-refresh actually creates a new Job object, not changing the old one -> easier to detect change for JobRuleEnforcer
+v1.70.3 (2012-05-09)
+- bug: update of job-status failed because of ClassCastException from JobStatus-enum to String
+- bug: setting default timeout-hours failed if validation was turned of
+- ref: Make sure heartbeat validates before add/change
+- add: LotFile-object also handles PIN
+- ref: Change from protected to public on validateInput() on Heartbeat - maybe better approach
+v1.70.2 (2012-05-04)
+- bug: ProvisioningMessage.setErrorMessage did not handle errorMessage == null
+- bug: Report label showed minute, should be hour
+- ref: Certificate also store the decrypted string - necessary to hunt down a bug in TR-069 Server
+v1.70.1 (2012-05-03)
+- ref: SystemParameter changes (DESIRED_SCRIPT related)
+- ref: Jobs protect better against forbidden parameters
+- ref: Handles DESIRED_SCRIPT - root object
+v1.70.0 (2012-05-01)
+- table: TABLE UPDATE: added target_name to filestore - will support Multiple Script Versions 
+- ref: Changed log-level on messages in DBI (no longer FATAL)
+- ref: Some refactoring on File-object, to be consistent with rules from SyslogEvent object
+
+v1.69.10 (2012-04-30)
+- ref: A medium refactoring of Job, conforms to the rules specified for SyslogEvent object
+- ref: A small refactoring of File, some method name changes
+v1.69.9 (2012-04-26)
+- bug: Could not add/change Unittype because of ProvisioningProtocol-cast, refactored method to use InsertOrUpdateStatement
+- ref: ScriptExecution will now handle a missing Unittype or Script-file, and updating the execution with a correct error message
+v1.69.8 (2012-04-25)
+- ref: Updated Heartbeat object to be in line with SyslogEvent object (following the same standards)
+- ref: Thread name of DBI changed to easier identify in debugger
+- ref: Small changes on ConvertCustomerSN2Mac
+- ref: No longer validate Trigger upon read from database
+v1.69.7 (2012-04-24)
+- ref: Another round of SyslogEvents refactoring - many table changes:
+		- removing GROUPSYNC option - too complex for most customers - too much setup for too little gain
+		- removing DCT and the option of specifying number of minutes - everything is represented as DUPLICATE = DUCT60
+		- introduced Enum for StorePolicy (STORE, DISCARD, DUPLICATE)
+		- possible to run script as well as specify StorePolicy
+		- changed from unit_type_name to unit_type_id in table
+		- introduced foreign keys to unit_type, filestore and group_ tables
+		- updated SyslogEvent to a new standard for DBI-objects of similar type
+v1.69.6 (2012-04-23)
+- bug: ScriptExecutions requestId changed from Integer to String
+- ref: Allowed empty constructor on SyslogEvent - more readable code in Web
+v1.69.5 (2012-04-19)
+- ref: Made enum of JobStatus, changed STOPPED to PAUSED (more intuitive)
+- ref: ScriptExecutions now can search for parts of requestIds
+- ref: Made enums out of JobFlag and FileType - caused a lot of refactoring in all modules. 
+- ref: Changed JobFlag.SCRIPT -> JobFlag.JobType.TR069_SCRIPT -- should be backward comp.
+- ref: Changed FileType.SCRIPT -> FileType.SHELL_SCRIPT -- should be backward comp.
+- ref: Added FileType.TR069_SCRIPT and FileType.TELNET_SCRIPT 
+- ref: Removed subtype from Filestore - has never been used, just clutters everything 
+v1.69.4 (2012-04-16)
+- ref: Validates the Trigger-script file to be of correct FileType
+- ref: ScriptExecution object changed requestId from int to String (to allow for unique namespace)
+- ref: File-object modifies SCRIPT-files by adding a header which contains fusionuser
+- ref: File-object offers a method to retrieve the fusionuser 
+- del: Removed subtype in File-object, no longer used
+- add: Added MISC as filetype in FileType
+now supports a method to retrieve fusionuser from script-file. This is necessary to keep
+v1.69.3 (2012-04-12)
+- ref: moved group from trigger to syslog-event - updated table definitions. This was important to make
+	eventId match both expression and group, which in turn make drill-down from trigger to syslog correct. It
+	also makes syslog event matching more flexible, since the same expression can be reused in non-overlapping
+	groups.
+v1.69.2 (2012-04-09)
+- ref: Changed logging from XAPSVersionCheck to match GoA => HeartbeatDetection
+v1.69.1 (2012-04-05)
+- bug: UnitQueryWithinUnittype gave wrong error message if unittype was not explicitly specified
+- bug: If a non-admin user tried to create a unittype, a bad error occurred - improved check
+- bug: NullPointer occurred if unit was not found and check for session-parameters was executed
+v1.69.0 (2012-04-03)
+- ref: Syslog write now uses DeviceTimestamp if Facility is > 50 (syslog is generated server-side)
+- bug: Was allowed to create an admin user with a non-admin user
+- bug: Fixed a bug in writing unittype - introduced in v1.68
+- add: SyslogClient added, to facilitate server-side syslog generation
+- table: TABLE UPDATE: heartbeat table added
+- add: New classes to handled heartbeat definitions
+- add: SQLUtil to help to build SQL (addition to DynamicStatement)
+- ref: Removed previously added Syslog-event columns
+
+v1.68.4 (2012-03-29)
+- bug: syslog-write failed if not ip-address was specified
+v1.68.3 (2012-03-20)
+- table: Added 3 columns on syslog event table, to specify syslog generation (backwards compatible)
+- ref: syslog-events.addOrChange now uses InsertOrUpdateStatement (easier to read)
+- ref: DynamicStatement now automatically translates boolean into into (1 or 1)
+v1.68.2 (2012-03-15)
+- bug: creating jobs of certain types (RESTART, RESET, SOFTWARE, etc) crashes the intermodule-message system -> restart Jboss (also fixed in 1.64.23)
+- ref: some minor fixes in DBI
+- add: XAPSUnit/Unit has got several new methods for easier use by modules. Queuing of parameters to write, retrieval of values, etc..
+- del: Unit-object removed the way of adding sessionValues - separate method to add session-parameters
+- ref: Much refactoring around enums/constants/ProvisioningMessage
+v1.68.1 (2012-03-06)
+- bug: Trigger parent was not validated to correct trigger type (must be COMPOSITE)
+v1.68 (2012-03-05)
+- add: ProvisioningMessage class added
+- ref: Enumified some constants, removed SystemConstants class
+- add: TABLE UPDATE: unit_param_session table added
+- ref: removed some old code in Parameter class
+- add: XAPSUnit now handles session-parameters, both in read/write/delete
+
+v1.67.7 (2012-02-21)
+- add: System parameter to specify TARGET_FILENAME in the event of a Download
+v1.67.6 (2012-02-16)
+- ref: slight change of readTriggerHistory, can read for all triggers within a unittype in one query
+v1.67.5 (2012-02-15)
+- ref: changed trigger table from action to notify_type, and made changes accordingly in DBI
+v1.67.4 (2012-02-15)
+- add: new method in Files to support getFilesByType
+- bug: table name change of trigger_history to trigger_release was not completed 
+v1.67.3 (2012-02-15)
+- ref: Changed interface of getGroups()-method because of change in permission system (from v1.66)
+- ref: Changed name of TriggerHistory to TriggerRelease
+v1.67.2 (2012-02-14)
+- add: Table update, added request_id to script-execution, to connect execution to event (syslog-event or trigger-history)
+v1.67.1 (2012-02-14)
+- ref: removed ACTION_SRIPT from Trigger, possible to add scripts to any type of Trigger.ACTION-type
+v1.67.0 (2012-02-13)
+- add: TABLE UPDATE: script_execution table added
+- add: ScriptExecution/s classes added, will support adding, updating, deleting and reading of scripts
+- add: FileType (UNITS) to store units which triggered a trigger (to be used in shell scripts)
+- ref: InsertOrUpdateStatement changed constructor to explicitely address primary key 
+- ref: Trigger/TriggerHistory refined/refactored in various ways
+- add: File change now only updates only file across all modules (DBI.refresh is more gentle)
+
+v1.66.6 (2012-02-09)
+- bug: Composite triggers do not require counter-fields, validation failed
+- ref: TriggerHistory changed to support COMPOSITE trigger, also added first_event_timestamp and changed name on create_timestamp
+v1.66.5 (2012-02-08)
+- add: TriggerComparable class to sort Triggers parent-wise
+- add: release-flag on Trigger (used by Core)
+- bug: read of Trigger was not correct (use wrong methods)
+- bug: validation of Trigger was fixed
+v1.66.4 (2012-02-08)
+- add: Comparable interface to SyslogEvent
+v1.66.3 (2012-02-07)
+- ref: Major trigger change, added many new fields
+- add: InsertOrUpdateStatement-class, to facilitate/help generate insert/update-statements (used in Trigger.addOrChange())
+- add: Added some new methods to DynamicStatement, to ease use of NullInteger/NullString
+v1.66.2 (2012-02-06)
+- ref: Changed interfaces on Users to intentionally break the interface - will prompt a cleanup of code to avoid 
+access to unprotected retrieval of user-data
+- ref: Added a constructor to User to ensure correct copying (for WebUser in Web)
+v1.66.1 (2012-02-03)
+- add: permission system fully implemented in DBI, all input/output going northbound is protected
+- ref: broke a lot of interfaces regarding allowed/isAdmin/etc..
+- db: new field "is_admin" added to user_ table, important to create users without any permissions - backwards compatible
+v1.66.0 (2012-02-01)
+- ref: empty Trigger-constructor created, an another not-complete Trigger constructor removed (convenience)
+- add: XAPS.getUnittypes() now filters on permissions
+v1.65.11 (2012-01-31)
+- add: match(Unit) added to Group-class, will be used by Syslog-Trigger-matching and TR069-Job-matching
+- ref: removed Profile from Trigger, Group will cover this need
+v1.65.10 (2012-01-30)
+- ref: Removed some warnings in test-code
+- ref: SyslogAppender will send all Unit-logging to Syslog-server, rest goes directly to syslog-db
+v1.65.9 (2012-01-27)
+- add: TriggerEvents will be deleted if a Trigger changes it's SyslogEvent
+v1.65.8
+- ref: added "static" back to the SyslogEvent.getById(), and refactored in XAPS.read()
+v1.65.7
+- imp: removed catch-block in Triggers.addEvent(), too avoid a lot of messages upon deletion of a trigger
+- ref: removed "static" from SyslogEvent.getById() method
+v1.65.6 (2012-01-18)
+- bug: Bugfixes/refactoring from v1.64.21 was merged
+- bug: DBI did not publish/process Trigger messages
+- ref: DBI creates a better Thread-name (easier to identify in debugger)
+- imp: Cascading delete on Trigger. Should handle deletion gracefully
+v1.65.5 (2012-01-17)
+- bug: Insert of Trigger History had SQL-syntax error
+- bug: Trigger-id was not read into the Trigger-object
+- ref: Removed some warnings
+- bug: Bugfixes from 1.64.19-20 (2012R1 branch) is added
+- ref: made a Crypto-package to export it as JAR-file and use it in deploy-project (to minimize xaps-dbi-classpath problems)
+v1.65.4 (2012-01-12)
+- add: Message for Trigger-released in Core
+- imp: Added some constants to Trigger
+- ref: Changed export-jar in build.xml to work in IntelliJ. Maybe not a very good fix..
+v1.65.3 (2012-01-12)
+- ref: build.xml changed to suit IntelliJ. Maybe not a very good fix..
+v1.65.2 (2012-01-11)
+- add: TriggerEvent/History was finally comitted
+- bug: Triggers.addOrChange did not specify notify_interval_hours -> SQLException
+v1.65.1 (2012-01-11)
+- add: TriggerEvent and TriggerHistory, Triggers-object provide methods to manipulate objects/table
+- imp: Change some names in Trigger-object/table
+- add: NotifyInterval to Trigger
+- imp: Valid range for TimePeriod on Trigger (15-120)
+v1.65.0 (2012-01-05)
+- tested with Shell (add/list)
+- improve: introduced Trigger tables/classes
+- refactor: removed some old deprecated methods from XAPSUnit - caused some refactoring in other classes
+
+2012R1 released around end of Decemeber 2011. 2012R1 is branched out.
+
+v1.64.21 (2012-01-18)
+- ref: Allows job repeat interval to be 0 or more (before 120 or more)
+v1.64.20 (2012-01-16)
+- bugfix: Same as for 1.64.19, but also updated object-model (added the Group to the Groups-maps)
+v1.64.19 (2012-01-13)v1.64.18 (2011-12-15)
+- bugfix: profile-/group-matching did not handle null-operands well
+- bugfix: previous version introduced NP around treating search control characters
+v1.64.17 (2011-12-15)
+- improve: unit-searches now support !, ^, $, _ and *
+- bugfix: profile-/group-matching with wildchars did not work
+- improve: profile-/group-matching now supports *, ^ and $
+- improve: syslog string searches now handles |, !, ^, $, _ and * (affect shell and web) 
+v1.64.16 (2011-12-08)
+- refactor: added method to retrieve Throwable in DBI - to signal ERROR in OK-servlet/monitor
+v1.64.15 (2011-12-02) 
+- bugfix: Job.getRepeatInterval, make sure default value 86400 is returned if repeatCount is specified
+- bugfix: Groups.refreshGroupParameters did not set group parameter id on the object
+- bugfix: Groups.refreshGroupParameters did not handle group parameter deletion
+v1.64.14 (2011-11-30)
+- bugfix: Groups.getGroups(XAPS) did not handle the absence of unittypes in permissions correctly
+v1.64.13 (2011-11-17)
+- refactoring: Crypto did not produce correct trial-certs (incorrect refactoring last time)
+v1.64.12 (2011-11-17)
+- bugfix: Job.updateMandatoryJobParameters() did not specify unit-id in JobParameter
+v1.64.11 (2011-11-16)
+- Added nextPII to job-object, necessary to compute correct Periodic Inform Interval to CPEs
+- Added system parameter for RESET, which is necessary to signal a provisioning of a
+TR-069 method called FactoryReset to the CPE. The parameter is treated likewise as the REBOOT
+parameter.
+- Also updated JobFlag and Jobs to handle RESET.
+v1.64.10 (2011-10-18) 
+- Fixed a possible NP in Unit.getParameters()
+- Added syslog-generation of data
+- improved UploadAllUnitsToStaging
+v1.64.9 (2011-08-11)
+- Fixed a bug in syslog-event-update
+v1.64.8 (2011-07-13)
+- Updated job-parameter rules in Jobs (to support TELNET/SHELL)
+v1.64.7 (2011-07-13)
+- Added SHELL job type
+v1.64.6 (2011-06-27)
+- Fixed bug in Parameter.Operator. Conversion from string to enum.
+v1.64.5 (2011-06-25)
+- severe bug in hasDeviceParameters fixed, caused massive performance loss because of reloading of xAPS all the time
+v1.64.4 (2011-06-24)
+- GroupParameters now support getById (necessary to import a group-parameter to new database)
+v1.64.3 (2011-06-23)
+- removed a couple of constructors (in GroupParameter and Parameter) - to avoid confusion with old style parameters
+- changed to two types: TEXT and NUMBER in ParameterDataType (easier for non-SQL people)
+- updated UploadAllUnitsToStaging - run a RGW208EN-update
+v1.64.2 (2011-06-22)
+- added Unittype to UnittypeParameter object. Reason: to do mass update of Unittype Parameter from shell 
+- added a method to DBI to change Lifetime. Reason: to kill off an old DBI, when shell fires up a new session
+- refactored a great deal to allow mass changes of unittype-parameter (both add/change/delete)
+v1.64.1 (2011-06-22)
+- fixed a bug in GroupParameters.addOrChange(), SQL was wrong
+- more work on ParameterDataType
+v1.64.0 (2011-06-22) (TABLE CHANGE: group_param: removed is_equal, added operator and data_type)
+- supports the table change of group_param, backwards compatible to v.1.60
+- added a method to XAPSUnit to support searching for a value/string across many profiles (maybe across unittypes)
+- added a helper method on Parameter.ParameterDataType to retrieve ParameterDataType
+- No testing in this commit
+v1.63.1 (2011-06-21)
+- Had to revert back to Map instead of Set for the getUnit* methods. Set has no way to retrieve
+an indexed element. Thus all the getUnitSet-methods in XAPSUnit had to change name to getUnits()
+- Has marked every deprecated method in XAPSUnit and UnitQuery as such, fixed all warnings in this project.
+- Tested the changes introduced in v1.63 and refactored xAPS Shell to work flawlessly with it
+- Group-parameter searches now handles null-parameter values
+- DynamicStatement now support NullString
+- DynamicStatement has improved DebugMessage (also prints execution time for sql)
+- DBI changed to handle all Group-changes without reloading the entire xAPS object
+- The whole DBI is updated to not use any deprecated methods
+- Changed some names the new classes: UnitQueryCrossUnittype/UnitQueryWithinUnittype
+v1.63.0 (2011-06-20) (Added UnitParameterQuery - very promising replacement for UnitQuery)
+- added UnitParameterQuery - will allow the following features:
+	- search for units and return unit-parameters in the query/question
+	- use comparisons like <,<=, >=, >
+	- can auto-convert operands in query from VARCHAR to SIGNED/UNSIGNED int
+	- take non-existing unit-parameters into account (correctly handles profile-parameter inheritance)
+	- possible to search for "NULL"
+	- returns a set of Units, no longer Map which was unnecessary
+	Other implications are:
+	- possible to add operator to group-parameter, instead of a simple boolean for equality
+	- possible to make group-search and advanced search much better
+	- a lot of functionality in UnitQuery may now be obsolete, only search for a unit-parameter value is now relevant
+- Parameter class is expanded to support Operator enumeration and ParameterDataType enumeration (see features above)
+- UnitParameterQuery is not tested very much at this stage
+- DynamicStatement got a new method for trimming the sql with a number of characters
+v1.62.0 (2011-06-17)  (First version to support Telnet-provisioning)
+- Changed "hasDeviceParameters" in UnittypeParameters-class to be computed upon request (and then cached)
+- DBI will now refresh Jobs upon PUBLISH_CHG from the Message-system, it will no longer re-read the entire XAPS
+- Small rule-change for Job - no parameter allowed for KICK job
+- Added TELNET job type to JobFlag
+- Added getAllMessages to Inbox, possible for others to see which messages has been processed
+- Added 5 new System Parameters: 
+	public static final String TELNET_IP = "System.X_OWERA-COM.Telnet.IPAddress";
+	public static final String TELNET_PORT = "System.X_OWERA-COM.Telnet.Port";
+	public static final String TELNET_USERNAME = "System.X_OWERA-COM.Telnet.Username";
+	public static final String TELNET_PASSWORD = "System.X_OWERA-COM.Telnet.Password";
+	public static final String TELNET_DESIRED_SCRIPT_VERSION = "System.X_OWERA-COM.Telnet.DesiredScriptVersion";
+- Removed 2 unused classes: Messages and UnitQuery2
+v1.61.17 (2011-06-15)
+- Added fixes to ReportSyslogGenerator for using SyslogFilter.getMessage() in queries (used as filter)
+v1.61.16 (2011-06-14)
+- added SyslogFilter to ReportGenerator, used the filter in ReportSyslogGenerator
+v1.61.15 (2011-06-10)
+- added getGroupSyncEvents to Group 
+v1.61.14 (2011-06-09)
+- moved publish-messages to after looping through all unittype parameter changes -> improves large changes of 
+unittype parameters as in xaps-shell setunittype-method 
+v1.61.13 (2011-06-08)
+- added the possibility to filter on software-version in reports (all reports except xAPS reports) both syslog/report-table
+- some refactoring of Report-system
+v1.61.12 (2011-06-07)
+- added group-selection to the rest of the reports (except job, group and unit = xAPS reports)
+v1.61.11 (2011-06-07)
+- added group-selections to several reports
+v1.61.10 (2011-06-06)
+- added possibility to make syslog-report based on group
+v1.61.9 (2011-06-06)
+- Added validation of file type
+v1.61.8 (2011-05-30)
+- Removed TR-069 unit id pattern check, the specification says only SHOULD, not MUST
+v1.61.7 (2011-05-25)
+- Fixed a bug in UnittypeParameters regarding displayable/searchable-name-cache
+- Added a method in SyslogConstants to quickly retrieve severity int from a severity name
+v1.61.6 (2011-05-24)
+- Updated the String array of allowed pages for the access field. It now only contains that of which can be found in the permissiblePageMap in the Page enum (in xAPS Web)
+v1.61.5 (2001-05-03)
+- removed warnings, only concerning test-code 
+v1.61.4 (2001-05-03)
+- added getUnitMap-method to XAPSUnit
+v1.61.3 (2001-05-03)
+- changed/improved logging regarding messages
+v1.61.2 (2011-05-02)
+- UnittypeParameters.getDisplayable/Searchable-NameMap changed interface
+v1.61.1 (2011-05-01)
+- UnittypeParameters got three new methods to retrieve short names for parameter names. Displayables/Searchables are cached.
+v1.61.0 (2011-04-27)
+- TABLE update: 'id' column added to group_param, now possible to have multiple group parameter with equal unittype parameter name
+- consequence: can no longer edit group parameters in older databases (before v1.61)
+v1.60.4 (2011-04-20)
+- manual merge with 2011R1-branch
+v1.60.3 (2011-03-25)
+- merged with 2011R1-branch, updated UploadAllUnitsToStaging
+v1.60.2 (2011-02-23)
+- removed empty intf-package
+v1.60.1 (2011-02-23)
+- changed package name from intf-> dbi, all modules must change import statements
+v1.60.0 (2011-02-23)
+- removed all XAPSVersionChecks -> FROM NOW ON DBI REQUIRES 2011R1 OR HIGHER
+- uncommented all code connected to XAPSVersionCheck
+- removed Firmware classes entirely, only File is used now
+
+2011-04-20
+- Manual merge with 2011R1 branch from 37005 to 37135
+2011-03-25
+- Merging with 2011R1 branch from 36739 to 36895 (had to manually merge UploadAllUnitsToStaging)
+2011-02-23
+- Merging with 2011R1 branch from 36501 to 36522
+2011-02-21
+- Merging with 2011R1 branch from 36267 to 36481
+2011-02-08
+- Merging with 2011R1 branch from 36056 to 36267
+
+Branched to 2011R1:
+v1.57.22-21 (2011-04-15)
+- prepared to support JobKick/SingleKick
+- added a method on XAPSUnit to retrieve units in a group
+- added KICK on JobFlag
+- added KICK as Mode in SystemConstants
+v1.57.22-20 (2011-04-07)
+- DBI doesn't log stacktrace in error message more than one time for each incident
+- Syslog-write take will use entry.getCollectorTimestamp) if populated 
+(which will happen in a failover-situation on the syslog server)
+v1.57.22-19 (2011-03-24)
+- RecordJob returned wrong name in function getGroupName() - caused wrong data in report_job
+v1.57.22-18 (2011-03-18)
+- changed lower boundary for repeating reports to minimum 2 minutes
+v1.57.22-17 (2011-03-18)
+- handles duplicate new unittype parameters (may be caused by buggy CPEs)
+- fixed some bugs in the combined command enabletr069report
+v1.57.22-16 (2011-03-17)
+- syslog event id update was not correct
+v1.57.22-15 (2011-03-16)
+- hardware report also handles unknown unittype/profile/unit
+v1.57.22-14 (2011-02-23)
+- improved handling of lotfiles (only for test)
+v1.57.22-13 (2011-02-22)
+- now also updates group parameters when group-message is sent to DBI
+v1.57.22-12 (2011-02-21)
+- Updated WEB_PAGES variable in Permissions
+v1.57.22-11 (2011-02-18)
+- fixed a bug when changing a certificate (the certificate was deleted)
+v1.57.22-10 (2011-02-10)
+- fixed a serious bug in xAPSUnit (addUnits()), introduced in v1.57.22-8
+- now handles syslog-report based on units with Unknown units.  
+- added som fixed to the lotfiles2staging-sync program
+v1.57.22-9 (2011-02-08)
+- Fixed pronlem with missing description and Total text for y axis in charts
+v1.57.22-8 (2011-02-07)
+- replace some regular SQL with PreparedStatement (to avoid SQL injection)
+- also updated some test/migration util programs
+v1.57.22-7 (2011-02-01)
+- searching for a unitId with "_" did not produce correct SQL
+v1.57.22-6 (2011-01-29)
+- changed an update SQL for a unit, to avoid update if there is no change in profile
+v1.57.22-5 (2011-01-29)
+- changed TotalCallLength from ms to second, since the database and code works with INT, causing overflow/wrap-around when
+calculated pr day. Took a quick look for similar cases, others seemed to be fine.
+v1.57.22-4 (2011-01-28)
+- fixed a serious bug in UnitQuery when searching for a unitParamValue which did not match any row
+- improved UploadAllUnitsToStaging (useful to run from time to time), will now sync secrets/mac/unitids
+v1.57.22-3 (2011-01-27)
+- Fixed reg ex problem with Certificate issuedTo
+- Changed how certificates are generated
+v1.57.22-2 (2011-01-26)
+- fixed HardwareReport yet again, switched to do pattern matching with text instead
+- fixed SyslogEvents update
+v1.57.22-1 (2011-01-25)
+- fixed HardwareReport, now correctly reports all reboots
+
+2011R1:
+v1.57.22 (2011-01-21) (2011R1)
+- removed some system.out.println statements
+v1.57.21 (2011-01-19)
+- changed issuedTo property to store any string
+v1.57.20 (2011-01-19)
+- added issuedTo property for production certificates
+- changed some comments in XAPSVersionCheck
+- added feature in Syslog.read() to search for negation of content
+v1.57.19 (2011-01-14)
+- fixed bug in ReportSyslogGenerator, now correctly searches with unittype/profile criteria
+v1.57.18 (2011-01-14)
+- updated XAPS.read() to read all group parameters for one unittype in one go. This speeds up
+the loading of the XAPS object a whole lot if there are many groups defined.
+v1.57.17 (2011-01-14)
+- changed UnitQuery if asked for a unique parameter value, now runs two smaller queries 
+instead of one big queries. Seems to hit indexes better in MySQL. Old code preserved, plus
+alternative code with 3 queries instead of two. The code is tested and seems to be
+running at the tenth of the time of the big single SQL.
+v1.57.16 (2011-01-12)
+- cascade delete of Default profile (if empty and the only profile in existence) when deleting a unittype.
+The automatic creation of Default profile was added in v1.54.0 (3 months ago), so now this deletion is
+symmetric to the add.
+v1.57.15 (2011-01-11)
+- changed SQL in ReportGenerator to also be able to read Unknown Unittypes & Profiles 
+v1.57.14 (2011-01-10)
+- fixed so syslog-reports also report on Unknown Unittypes & Profiles
+v1.57.13 (2011-01-06)
+- fixed a bug in UnitQuery (searching for unitParamValue - missing parenthesis)
+v1.57.12 (2011-01-05)
+- improved syslog-read() sorting (again) 
+v1.57.11 (2011-01-05)
+- improved syslog-read() sorting (again) 
+v1.57.10 (2010-12-20)
+- fixed a date format bug 
+v1.57.9 (2010-12-15)
+- unit parameter search (generic search) now also searches for unit-id 
+v1.57.8 (2010-12-15)
+- unit deletion will also delete any unit-job entries for the unit in question
+v1.57.7 (2010-12-13)
+- added the first X_XAPS-COM parameter, will eventually replace all OWERA-COM parameter
+- the system parameter will tell if the device emits syslog VoIP info
+v1.57.6 (2010-12-13)
+- added slightly better sorting in syslog-read()
+v1.57.5 (2010-12-06)
+- added line to ReportVoipCallGenerator interfaces, can distinguish between lines
+- added simulation mode to syslog-write, will populate collector-timestamp with device-timetamp
+v1.57.4 (2010-11-24)
+- fixed a bug in time-groups
+- added two classes, CombinedCommands and Util, to handles complex creation/change - 
+	lead to changes in TR069MonitorParameters and ReportVoipTRGenerator
+- fixed a bug in SyslogEvent.setTaskImpl(), now handles script files and group names with spaces
+- handles duplicate flags in unittype parameter, will strip away duplicates
+v1.57.3 (2010-11-16)
+- changed keynames delimiter from - to |
+v1.57.2 (2010-11-15)
+- added VoipCallReport from Syslog
+- added GroupReport (for time-rolling groups) from Syslog
+- moved GroupReport to it's own subclass of ReportGenerator
+v1.57.1 (2010-11-12)
+- fixed a bug in ReportGenerator for group (intro. v1.57.0) 
+- fixed UnitQuery, had a size limit on 250 char for unit parameters, now changed to 512 (according to database column size)
+- changed top MOS score from 4.36 to 4.38 (to avoid top score past 100)
+v1.57.0 (2010-11-11)
+- added timerolling to groups, two new colums to group_ (BACKWARD COMP.)
+- changed ReportGenerator for groups, now possible to make a report based on one group -> make changes in Web to support this change
+- added GROUPSYNC task to Syslog Event (made sure it can be loaded even if group is no longer available)
+
+v1.56.5 (2010-11-10)
+- some refactoring in how to read syslog events from database, more adherent to standard
+- fixed a bug in update of file content
+- added a new Syslog Event Task: CALL - now possible to run a script upon an event
+v1.56.4 (2010-11-07)
+- Set minimum repeat-interval on a job to 120 sec
+- Fixed a name in TR069MonitorParameters
+- Fixed a bug in XAPSVersionCheck, did check for the wrong column name for job-repeat change
+- Fixed a bug in population of TR069MonitorParameters in Report***TRGenerator
+- Added system parameter Spread to commonParmeters-list, will then be part of all updated unittypes
+v1.56.3 (2010-11-05)
+- *NOT BACKWARD COMPATIBLE* Changed all generateFrom-method names in all ReportGenerators
+v1.56.2 (2010-11-05)
+- Added methods in Average/Counter to add a String (automatically converted to long)
+- Added VoipTR report/record
+- Added GatewayTR report/record
+- Added HardwareTR report/record
+- *NOT BACKWARD COMPATIBLE* Refactored ReportGenerator - split this large class into one superclass and many subclasses - more readable
+- Modified TR069MonitorParameters - first version that *may* be complete
+- Added system parameter for SPREAD
+v1.56.1 (2010-11-03)
+- Added more parameters to TR069MonitorParameters
+- Changed report-generation on empty table to process the last 7 days of the syslog table
+- Added check to only allow monitor-flag with read-only flag
+v1.56.0 (2010-11-01)
+- Refactored RecordVoip and RecordHardware. Removed some methods, added others. Many changes in ReportGenerator and ReportConverter
+- Added a new class to store special TR-069 parameters for monitoring. Not in use as of yet
+
+v1.55.1 (2010-10-29)
+- Updated a utility program, non-essential for all except Staging-server
+v1.55.0 (2010-10-28)
+- Added monitorMap for easy access of monitor-parameters in UnittypeParameters
+- Added repeatCounter/repeatInterval to Job, changed XAPSVersionCheck, Job.add/change 
+- Removed an unused class (TREditor) and a compiler warning (unused code)
+
+v1.54.20 (2010-10-20)
+- Changed to 5 sec commit (from 15 sec, introduced in v1.54.14)
+v1.54.19 (2010-10-18)
+- More robust handling of Context.set() methods
+v1.54.18 (2010-10-18)
+- Now reads group-count on each group on startup
+v1.54.17 (2010-10-15)
+- Removed a memory leak introduced in v.1.54.14
+v1.54.16 (2010-10-14)
+- Removed DBI.isFinished() by mistake in past version, added it back
+v1.54.15 (2010-10-13)
+- Refactored group refresh in DBI, reports every hour caused massive reload of the whole DBI/XAPS object
+v1.54.14 (2010-10-11)
+- Updated syslog write to run uncommited, commits every 15 sec. Important to increase INSERT speed on syslog server
+v1.54.13 (2010-09-30)
+- Added denominator to charts (some methods have a denominator, some don't)
+v1.54.12 (2010-09-27)
+- Added list of WEB pages in Permissions
+v1.54.11 (2010-09-24)
+- Fixed ReportVoip generation (after adding SoftwareVersion and Channel it became unstable)
+- Automatically exchanges certificates of same type. However, it's not allowed to exchange production for trial cert.
+- Changed publish-message for SuccesfulProvisioning -> ProvisioningState
+- Fixed bugs regarding Oracle queries. This version seems to run ok with Oracle
+v1.54.10 (2010-09-22)
+- Domain-axis integer bug fixed
+- ReportGenerator.main() bug fixed
+v1.54.9 (2010-09-22)
+- Improved (hopefully) the domain-axsis on chart to show adequate time reference
+v1.54.8 (2010-09-22)
+- changed XAPSVersionCheck regarding reportSupported, not runs a much faster check
+v1.54.7 (2010-09-21)
+- generation of VoipCall Report was buggy, added channel information to RecordVoipCall
+v1.54.6 (2010-09-20)
+- some fixes regarding the name change from JCS -> Core
+- added softwareversion and channel to the key of RecordVoip -> many changes else where
+v1.54.5 (2010-09-20)
+- Fixed a bug in Chart, now able to draw using periodtype = SECOND
+v1.54.4 (2010-09-20)
+- Improved XAPSVersionCheck, did not work if called twice in a row (with different XAPS-databases)
+- Disabled the automatic system parameters check introduced in v1.54.0
+- Added a M flag for monitored data
+- Started working on a new RecordTR, will allow dynamic creation of TR-reports
+- Changed some SyslogContants (JCS->Core)
+- Added RecordVoipCall (not tested)
+- Updated RecordHardware to add uptime. Have not changed table.
+- Changed from UnitCount to MessageCount on RecordSyslog
+- Changed methodname from TotalScore to VoIPQuality on RecordVoip
+- Working on some new test/migrate classes
+v1.54.3 (2010-09-17)
+- Added System parameter for secret parameter of the provider (only for staging)
+v1.54.2 (2010-09-15)
+- Will not ensureValidSystemParameters on first startup, only on subsequent read of XAPS-object
+v1.54.1 (2010-09-13)
+- Started to add RecordVoipCall
+v1.54.0 (2010-09-03)
+- Supports HTTP-module (also named Config-module/TFTP-module - currently located within TR-069 module)
+- Added many new SystemParameters - to allow for the new South-Side module (HTTP/TFTP) and for cross-protocol to be true
+- Consequently many small changes because of changed SystemParameter (espcecially System.X_OWERA-COM.Device.MAC)
+- Fixed a SimpleDateFormat bug in ReportGenerator (used YYYY instead of yyyy)
+- Will throw an IllegalStateExpcetion if search for units on a unittype without a profile.
+- Automatically creates a profile (name 'Default') when a unittype is created -> try to keep database integrity 
+- Removed some previously commented code
+- Automatically add/changes system parameters upon read of unittype (refactored some code from Unittypes -> Unittype)
+- moved staging parameters to it's own category of system parameters, no longer added to a regular unittype
+- removed all TR-069 system parameters - no need for them anymore
+- updated build.xml to support xapsspp
+
+v1.53.16 (2010-08-30)
+- Fixed bug in addOrChangeUnittypeParameter(), introduced in v1.53.11-14
+v1.53.15 (2010-08-30)
+- Fixed NP in Chart.makeTimeChart, no check was made to ensure a non null state for timeSeriesMap2.get("Total")
+- Added fix to Syslog.read, wrong if statement caused NP
+v1.53.14 (2010-08-27)
+- Fixed Syslog.read() (again) - tested and seems to work ok now
+- Increased speed on insert/update on UnittypeParameter by allowing batchwise commits - can now write 1000 params in 25 sec.
+v1.53.13 (2010-08-27)
+- Fixed SQLException bug introd. in v1.53.12
+v1.53.12 (2010-08-27)
+- Changed from statement to prepared-statement in UnittypeParameters.addOrChangeUnittypeParameterImpl()
+v1.53.11 (2010-08-27)
+- More logging on UnittypeParameters.addOrChangeUnittypeParameterImpl()
+v1.53.10 (2010-08-27)
+- Fixed bug in Syslog.read (introd. in v1.53.9)
+v1.53.9 (2010-08-24)
+- Changed Syslog.read() to search for other units than requested, if a unit has no device syslog entries. Then
+it will search for units with the same MAC, since the syslog server will choose arbitrarily between such units. The
+change lead to some API changes on ReportGenerator and Syslog.read() 
+- Some changes on MigrateOPPUnitsToTR069, tested and run on xaps-a
+v1.53.8 (2010-08-22)
+- Changed syslog events - now only supports one default event
+- Gone through all logging statements to ensure correct settings of LogContext (will remove some unnecessary logging in syslog)
+- Changed deletion of syslog rows, now divides the timespan for deletion -> improved performance
+- Changed DynamicStatement to support Calendar
+- Run XAPSTest (OK)
+v1.53.7 (2010-08-19)
+- Changed syslog events a little, now supports getMethod on both id and eventId -> can log in syslog table using id (not eventId) -> faster deletion 
+- Changed syslog delete methods to achieve deletion execution within reasonable time (Also changed index on syslog table)
+- Added a method in UnittypeParameters to easily see if the unittype contains Device Parameters -> used in xAPS TR-069 Server (Discovery mode)
+v1.53.6 (2010-08-19)
+- Fixed a bug in XAPS.getAllowedUnittypes()
+- Improved logging in Syslog.delete*()-routines
+- Added a util class for migration from OPP to TR-069
+v1.53.5 (2010-08-18)
+- Improved syslog read filter to support ^ and $ (startswith and endswith)
+- Fixed a bug regarding QoS-pattern (matching bug)
+v1.53.4 (2010-08-09)
+- Fixed a bug regarding RecordSyslog for a unit (Unit was not part of the SQL => long query time)
+v1.53.3 (2010-08-09)
+- Added a method for RecordSyslog in ReportConverter
+v1.53.2 (2010-08-05)
+- Fixed connection pooling bugs introduced in 1.53.0
+- Fixed an SQL-error (copy/paste-bug)
+v1.53.1 (2010-08-05)
+- Fixed some bugs introduced in 1.53.0 (regarding Report Syslog)
+v1.53.0 (2010-08-05)
+- Added ReportSyslog. Not tested, but all methods are supposed to be complete.
+
+v1.52.24 (2010-08-05)
+- Fixed Crypto.java, added a missing println for the generated certificate
+v1.52.23 (2010-08-05)
+- More robust handling of RecordHardware when no unit count is found for a particular record.
+v1.52.22 (2010-08-03)
+- Improved Select-SQL for reports for DAY and MONTH, will now always search from midnight. 
+v1.52.21 (2010-08-02)
+- Changed some logic in Certificate, now supports isDecrypted() method
+- Fixed valid-boolean in Certificate.process() logic
+v1.52.20 (2010-08-02)
+- Changed method which return all methods on Record-objects with Counter/averages. Now static - maybe not so nice-looking:-|
+v1.52.19 (2010-08-02)
+- Added a method on Record which returns all methods on Record-objects with Counter/Averages
+- Added new (computed - not read from database) Average methods on RecordHardware
+v1.52.18 (2010-08-02)
+- Fixed an SQL bug in ReportGenerator (report_hardware -> report_hw)
+v1.52.17 (2010-07-28)
+- A relatively complete hardware report is tested and run in JCS
+- Now allows certificates of unlimited length
+v1.52.16 (2010-06-29)
+- More fixes on certificates
+v1.52.15 (2010-06-29)
+- More fixes on certificates
+v1.52.14 (2010-06-29)
+- More fixes on certificates
+v1.52.13 (2010-06-29)
+- Improved certificates, allows trial certificats, provisioning certificates, etc...
+v1.52.12 (2010-06-28)
+- Removed commented code
+v1.52.11 (2010-06-17)
+- Added version.txt into the generated xaps-dbi.jar
+v1.52.10 (2010-06-17)
+- Removed code/comment which reveals xaps-private-RSA-key
+- Added a build-script to produce a correct xapsdbi JAR
+v1.52.9 (15/06-2010)
+- Added system parameter for Secret (cross-protocol)
+v1.52.8 (15/06-2010)
+- Improved input validation of UnitQuery
+- Syslog Facility Version query now supports partial matches 
+v1.52.7 (15/06-2010)
+- Changed syslog facility version to LIKE search (not exact)
+v1.52.6 (15/06-2010)
+- Improved version handling of syslog facility version - should work now
+v1.52.5 (15/06-2010)
+- Fixed a small bug in UnitQuery - should now work to search for unitParamValue
+v1.52.4 (15/06-2010)
+- Added system parameter for staging provider email
+- Changed delete-syslog methods to retry until success
+v1.52.3 (15/06-2010)
+- Updated XAPSUnit to support the new search introduced in v1.52.2
+v1.52.2 (15/06-2010)
+- Added a convert method for Hardware reports
+- Changed UnitQuery to handle a single-unit-query even if unitParamValue search matches more than one unit
+v1.52.1 (15/06-2010)
+- Updated version number in XAPS class
+- Tested hardware report, fixed some bugs related to that test
+v1.52.0 (14/06-2010)
+- Added hardware report (not tested), also missing a method in ReportConverter (database-change: new table)
+- Added syslog-facility-version (tested to some degree) - will now make it 
+possible to log a version for each syslog entry (database-change: new column)
+- Changed UnitQuery to support queries for a single unit parameter value across all unittypes/profiles - 
+very efficient for MAC-searches or similar (tested with syslog server) (database-change: new index)
+v1.51.4 (09/06-2010)
+- Changed setName() methods in Certificate, Group, Profile & Unittype to avoid a bug which were 
+triggered if name was set to the same value as before.
+v1.51.3 (09/06-2010)
+- Changed isReportEnabled, no longer need to think of the name of the certificate
+v1.51.2 (09/06-2010)
+- Added isReportEnabled to Certificates class - for easy use
+v1.51.1 (08/06-2010)
+- Added some XAPSVersionChecks regarding certificates
+v1.51.0 (08/06-2010)
+- Tested with add/change/delete/list certificates
+- Changed DBI to allow publish of Certificate changes
+- Added certificate classes to xAPS (XAPSVersionCheck supports it)
+- Added new methods to Crypto class to handle RSA encryption/decryption
+- Added a text file which includes xaps-private-RSA-key, must never be exported!!! (will probably be removed later)
+v1.50.45 (07/06-2010)
+- Removed 3 methods from ReportConverter - the thinking was flawed! One cannot convert reports like
+unit, group and job. 
+v1.50.44 (07/06-2010)
+- Fixed a bug in delete syslog events
+- Changed top MOS score from 4.35 to 4.36
+v1.50.43 (03/06-2010)
+- Added a fix in Key to support ETERNITY from v1.50.42
+v1.50.42
+- Added ETERNITY to PeriodType
+v1.50.41
+- Refactored some logging in ReportGenerator
+v1.50.40
+- Fixed a bug in syslog query logging, introduced in v1.50.39
+v1.50.39 (02/06-2010)
+- Refactored some crypto/hash functions into a class - handles both SHA-1 hash and HMAC.
+- Small changes in the logging of unit-query
+- Small changes in the logging of syslog-query (Somewhat similar to unit-query)
+v1.50.38 (28/05-2010
+- Changed totalscore to reflect correct score (0) if 1 sip-reg failed has occurred and no conversations 
+v1.50.37 (28/05-2010)
+- Changed/refactored a generateVoip-method in ReportGenerator
+v1.50.36 (28/05-2010)
+- Fixed ReportGenerator-syslog queries for Voip-reports, they will now only get data from devices (filter on facility=16)
+- Fixed so DynamicStatement will substitute ? for dates correctly (also support java.util.Date)
+v1.50.35 (27/05-2010)
+- Fixed a bug in Syslog.addUnitypeOrProfileCriteria(), will increase performance 
+- Removed default max row limit on syslog query
+v1.50.34 (27/05-2010)
+- Fixed a bug in ReportGenerator - average was never computed
+v1.50.33 (27/05-2010)
+- Added a FACILITY in SyslogConstants
+- Fixed bug DynamicStatement.getSqlQuestionMarksSubstituted() (regarding dates), introduced in v1.50.32
+- Refactored UnitQuery and UnitQuery2 to use the newly added method in DynamicStatement
+v1.50.32 (26/05-2010)
+- Fixed a bug in Syslog.addUnitypeOrProfileCriteria() introduced in v1.50.29
+- Added logging in Syslog.read() 
+- Added a method in DynamicStatement to print SQL generated
+- Removed some logging in ReportGenerator
+v1.50.31 (26/05-2010)
+- Fixed a bug in Syslog.addUnitypeOrProfileCriteria() introduced in v1.50.29
+v1.50.30 (26/05-2010)
+- Refactored DynamicStatement.cleanupSQLTail, bug introduced in 1.50.29
+v1.50.29 (26/05-2010)
+- Refactored ReportGenerator to use Syslog.read() instead of it's own syslog queries.
+- Added a new class ReportConverter, to convert all types of reports
+- Refactored Syslog.read() method:
+	- handles profile, profiles, unittype, unittypes, automatically converts to most optimized query
+	- handles OR between two contents
+- Some refactoring in DynamicStatement, improved cleanupSQLTail(), 
+- Added a new message type, to signal a provisioning of parameters to a listening client (xAPS NetAdmin Plugin)
+- Changed XAPS to be backwards compatible with old syslog_event tables. 
+v1.50.28 (18/05-2010)
+- Changed Syslog.delete-methods to support the change in v1.50.27
+- Refactored PeriodType to an enum
+v1.50.27 (18/05-2010)
+- Added auto-increment primary key "id" to SyslogEvent (changed previous id to syslog_event_id) to 
+make it possible to specify the same  syslog_event_id for two different unittypes.
+- Added delete-limit for a syslog event - will make it possible to save a particular syslog entry
+longer than scheduled by the delete-limits based on severity (see JCS).
+- The database changed should be backward compatible
+v1.50.26
+- Chart now produces series shapes
+- RecordVoip's TotalScore comes with one decimal
+v1.50.25
+- Added a new method in ReportGenerator to retrieve report for a single unit with PeriodType SECOND
+- Added a new method in ReportGenerator to convert from Report<RecordVoip> to another similar report, but other PeriodType
+v1.50.24
+- Added a method in ReportGenerator - to retrieve a map of reports for units
+- Fixed a bug (I think) in addOrChange in UnittypeParameters
+- Some refactoring in XAPS regarding User/Permission (may have fixed a bug)
+- Automatically adds an "admin" user if it does not exist (fixed a bug)
+- Some small changes in toString() methods here and there
+v1.50.23
+- Added more tests to validate name in Profile/Unittype cannot be null or empty
+- Fixed a bug in generateVoipReportFromSyslog (introduced in 1.50.22)
+- Fixed so Unittype in LogContext is optional (User is always there in LogContext)
+- Delete on Profile/Unittype no returns number of rows deleted
+v1.50.22
+- Added a new method on ReportGenerator - to retrieve a VoIP-report for a single unit
+- Refactored some code in XAPS (introduced in 1.50.21)
+- UnitQuery can now also remove the unittypes argument - if all unittypes are specified (can happen because of user/permissions logic)
+v1.50.21
+- Added a method on XAPS object to retrieve a list of allowed Profiles
+v1.50.20
+- Added a method on XAPS object to retrieve a Unittypes object filtered with the permissions in the User-object. Also the profiles within
+the Unittypes object are filtered.
+- Removed all deprecated methods in XAPSUnit
+- Added a getUnit(String unitId) method in XAPSUnit
+v1.50.19
+- added active status in the unit report
+v1.50.18
+- added a test-package for some utility programs
+- added job software dependency optional feature
+- many bugfixes/improvements on reporting/charts
+- added group count
+- added a shipment system parameter
+- updated XAPSVersionCheck (optional software / group count)
+- overall status is ok on all things, except perhaps some of the reports
+v1.50.17
+- small updates on report/chart stuff
+v1.50.16 (2010-03-30)
+- fixed a bug in XAPSVersionCheck
+- introduced a new method on Groups to retrieved allowed groups
+- added a new method on User to request if the user is admin
+- changed readSyslog query to drop profiles in query if ALL profiles are specified => will also return changes on unittype regardless of profile
+v1.50.15 (2010-03-27)
+- Removed system parameter related to staging
+- Improved UnitQuery to retrieve all parameters when querying with a serial number
+v1.50.14 (2010-03-23)
+- Added 3 system parameters related to staging
+v1.50.13 (2010-03-18)
+- Now handles syslog searches for many profiles (necessary to support profiles-restrictions)
+- Improved logging of unittype parameter add/change/delete
+v1.50.12
+- Now handles the absence of message table - but no refresh of cached data. To refresh cache: 
+restart the application. Important fix to read Stings old database (from sep 2008).
+v1.50.11
+- Fixed bug #4581, not possible to search on searchable parameters when no profile match
+v1.50.10
+- Added SystemConstants.EXTRACTION_MODE
+v1.50.9
+- Added protected empty constructors to support getKeyFactory
+v1.50.8
+- Added getKeyFactory() to Report as well.
+v1.50.7
+- Added method to retrieve the KeyFactory from Records
+v1.50.6
+- Added generateProvisioningReport to ReportGenerator. Tested.
+v1.50.5
+- small API changes on Chart
+v1.50.4
+- more work on show/hide in Chart - moved some code
+- removed shadows from the bar series
+- make sure one Total line cannot be hidden
+v1.50.3
+- Renamed ChartMaker to Chart
+- Changed API on Chart, each constructor is responsible for exactly one Chart
+- Can highlight and force left range axis to certain range
+- Prepared the RecordProvisioning class
+- Tested - seems to work
+v1.50.2
+- Added a new computed metric to RecordJob
+- Removed some System.out.println()
+- Changed ReportGenerator to make a cheap initialization of Log framework
+v1.50.1
+- Changed clone() methods on Record-objects, Average and Counter - to actually clone
+  everything.
+v1.50
+- Added package com.owera.xaps.dbi.report:
+	ReportGenerator can provide 4 types of Reports: 
+		Unit : Timestamp, PeriodType, Unittype, Profile, UnitCount
+		Group: Timestamp, PeriodType, Unittype, GroupName, UnitCount
+		Job  : Timestamp, PeriodType, Unittype, JobName, GroupName, GroupSize, Completed, ConfirmedFailed, UnconfirmedFailed
+		Voip : Timestamp, PeriodType, Unittype, Profile, (17 metrics: MOS, Loss, TotalScore++) 
+	ChartMaker can produce charts on basis of the reports from ReportGenerator
+	ReportGenerator offers a main method to demonstrate the usage
+	Factors/Parameters to tune the report/chart before retrieving the data:
+		Report type (Unit, Group, Job, Voip)
+		Time span (From - To)
+		Period Type (MONTH, DAY, HOUR, MINUTE)
+		Unittypes and Profiles (Data selection/to support permissions)
+	Factors/Parameter to tune the report/chart after retrieving the data (in-memory-processing):
+		Aggregation keys (varies according to the report)
+		Filter keys (varies accordring to the content of the report)
+	All reports shall be retrieved from report tables whenever possible. 
+	Voip report may complement missing data by retrieving directly from the syslog table, at some performance penalty. 
+	JCS will be responsible for populating report tables
+v1.47.11
+- Changed name of intf.util.Log to intf.util.LogContext - caused changes in many classes in the library
+- Changed some logic in UnitQuery - now accepts to both set profile and unittype, but internal logic
+handles which is going to be used
+- Added two OPP-parameters for Unit Generation
+- DynamicStatement now supports Long
+- All delete operations in xAPSUnit now returns int to signal how many rows were touched.
+v1.47.10
+- Unconfirmed counter update (in PUBLISH_MSG) was not taken into account. Fixed bug in DBI.
+- Now checks for report_unit table in XAPSVersionCheck
+v1.47.9
+- Removed 6 interface methods (added in 1.47.7) and added 3. Changed the rules
+of how to specify unittypes and profile in XAPSUnit, profile will now override
+unittype if necessary. 
+- Changed logic, so many profiles can be converted into several unittypes if
+necessary. (If ALL profiles in several unittypes are listed)
+- Changed a lot of logging-statments and some busines logic to correctly show/log
+profiles in the groups.
+v1.47.8
+- Removed unused Integer argument from 2 wrapper methods
+v1.47.7
+- Added 6 wrapper methods in in XAPSUnit
+v1.47.6
+- Fixed a bug in UnitQuery, did not search properly on profiles when using
+params.
+v1.47.5
+- Reverted back to UnitQuery (SQL-based class)(from UnitQuery2). 
+UnitQuery is now improved a lot to handle multiple profiles or multiple unittypes. 
+Tested with 100K units, greatly improved performance over UnitQuery2, now have 
+only few seconds response time on queries concerning the whole population. Testlevel
+is 40-50% on this class.
+- Changed Syslog.delete(), to only delete 10000 at the time, to avoid problems with
+lock size (in MySQL) exceeding innodb_buffer_pool_size
+v1.47.4
+- Removed System.X_OWERA-COM.WebService.Password
+v1.47.3
+- added System parameters 
+	System.X_OWERA-COM.Staging.Provider.WS.URL (replaced ...WSURL)
+	System.X_OWERA-COM.Staging.Provider.WS.Password 
+v1.47.2
+- added System parameter STAGING_PROVIDER_SNPARAMETER, will contain the Serial Number
+parameter of the Provider server - replaces the KEYROOT (which we removed).
+v1.47.1
+- removed the System parameter "KEYROOT" - no use for right now
+v1.47
+- Added a new UnitQuery2 class. This class is able to support multiple unittypes and
+profiles. The join (between UNIT and UNIT_PARAM) is performed in the application. 
+The class is integrated with xAPSUnit and everything should work like before. However,
+testing with 100K units make the JOIN-queries slow (20-30sec). It might very well be 
+that this attempt will not be used in the future. Consider this a test. To switch back
+to previous version, just go back to XAPSUnit of v1.46.23. Might also consider removing
+the deprecated statement in UnitQuery.
+- DynamicStatement has changed interfaces, better naming convention - lead to lot of
+changes in all classes.
+- SystemParameters: Added 4 parameters which has to do with the staging concept
+- Log: Added a resetContext method to make sure that the log is put into syslog correctly
+v1.46.23
+- fixed a serious bug when logging to SyslogAppender, now makes sure that
+the appender will not log to itself, thus creating a loop-situation.
+v1.46.22
+- fixed a bug when adding the first permission
+v1.46.21
+- fixed a severe bug fixed caused the database to be unreadable if a syslog-event was
+found in the database.
+v1.46.20
+- fixed bugs in files/firmwares, change of name was not handled correctly
+- fixed bugs in permission, comparison of integer was wrong..lead to wrong results
+- syslogappender will now allow all debug-messages
+- small changes in logging i DBI
+v1.46.19
+- reverted back to message.type (instead of message.msg_type)
+v1.46.18
+- Fixed a bug introduced in v1.46.16-17, caused errors when the setValues() where run on read-only params
+- Fixed a bug: PUBLISH_IM -> PUBLISH-IM
+v1.46.17
+- Added checks to control that a parameter is not changed to read-only while having values
+v1.46.16
+- Added checks to control:
+	- no read-only parameter can have enumerated values
+	- no inspection parameter can be added to job, group or profile
+v1.46.15
+- Fixed a bug in filtering of Inbox
+v1.46.14
+- Added the new SystemParameter (added in v..13) to commonParameter-map
+v1.46.13
+- Changed signalling - removed REQUEST/RESPONSE - introduced PUBLISH-IM - added Inboxes
+- Added new SystemParameter
+- Messages class is obsolete 
+v1.46.12
+- Fixed a bug in UnitJob.start(), now always set processed to 0.
+v1.46.11
+- Fixed a bug in group change (DBI)
+v1.46.10
+- Moved construction of dbiId - testing
+v1.46.9
+- Fixed DBI so it should not read and process it's own messages
+v1.46.8
+- Fixed another bug relating to v1.46.5, readJobs() used job.getGroup.getUnittype() while job.getUnittype() was needed
+v1.46.7
+- Fixed a bug in XAPS.readJobs(), trying to use getUnittype() while unittype is already available
+v1.46.6
+- Fixed a bug in XAPS.read(), bug from v1.46.5
+v1.46.5
+- Fixed bug in group deletion - parent object was not updated correctly
+- Fixed bug in job add - parent object was not updated correctly
+- Fixed bug in XAPS.read(), now updated data is transferred to public object after complete read
+- Updated to latest lib (OweraCommon v1.31.4)
+v1.46.4
+- Fixed a bug in SyslogAppender, now correctly fails if no ConnectionProperties is present
+- Added a stop method on DBI...not necessary though
+- Fixed a bug in Job.setUnconfirmedTimeout(), introduced in v1.46.3, now unittype is always available in Job object
+v1.46.3
+- Added unittype to Job object - the unconfirmed timeout validation will vary according to unittype protocol
+v1.46.2
+- Updated to latest lib (OweraCommon v1.31.1)
+- Removed usage of log4j throughout the whole project, replaced it with owera.log
+- Some refactoring of code related to the above
+v1.46.1
+- Updated to latest lib (OweraCommon v1.31)
+- Added SyslogAppender 
+- Fixed a bug in converting from Firmware to File (did not set ConnectionProperties)

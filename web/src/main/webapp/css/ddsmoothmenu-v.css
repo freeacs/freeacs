@@ -1,0 +1,61 @@
+/* Top level menu */
+.ddsmoothmenu-v ul {
+	margin: 0;
+	padding: 0px;
+	width: 110px; /* Main Menu Item widths */
+	list-style-type: none;
+	font: 11px Verdana;
+}
+
+.ddsmoothmenu-v ul li {
+	/*background-image: url("../images/menu.png");*/
+	background-repeat: no-repeat;
+	background-color: white;
+	position: relative;
+	height: 35px;
+	border-left: 1px solid;
+	border-top: 1px solid;
+	border-bottom: 1px solid;
+/*border-bottom: 5px solid transparent;*/
+}
+
+.ddsmoothmenu-v ul li a {
+	display: block;
+	overflow: hidden; /*does not force hasLayout in IE7 */
+	padding-left: 10px;
+	padding-top: 4px;
+	padding-bottom: 6px;
+}
+
+
+/*Sub level menu items */
+.ddsmoothmenu-v ul li ul {
+	position: absolute;
+	width: 140px;
+	visibility: hidden;
+	/*top: 0;*/
+}
+
+.ddsmoothmenu-v ul li ul li {
+	height: 25px;
+	border: 1px solid;
+}
+
+.ddsmoothmenu-v ul li ul li a {
+	padding: 5px;
+}
+
+
+.ddsmoothmenu-v ul li.selected ul li a {
+	font-weight: normal;
+}
+
+
+.ddsmoothmenu-v ul li.selected a,.ddsmoothmenu-v ul li.selected ul li.selected a,.ddsmoothmenu-v ul li a.selected,.ddsmoothmenu-v ul li a:hover {
+	font-weight: bold;
+}
+
+.ddsmoothmenu-v ul li.selected ul li a:hover {
+	font-weight: bold;
+}
+

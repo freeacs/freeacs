@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE jHelp SYSTEM "help.dtd">
+<jHelp>
+	<Page Path="/xapsweb/web">
+		<Field ID="event">
+			<Heading>
+				Event Id
+            </Heading>
+			<Help>
+				Specify an event id to search for. Check sylog events on the
+				Unit Type page to create such event ids.
+            </Help>
+		</Field>
+		<Field ID="facility">
+			<Heading>
+				Facility
+            </Heading>
+			<Help>
+				A facility is the syslog-emitting enttity, it could be a device
+				or server. 
+            </Help>
+		</Field>
+		<Field ID="facility_version">
+			<Heading>
+				Facility Version
+            </Heading>
+			<Help>
+				A facility version is the version of the syslog-emitting
+				entity, it could be a device or server.
+              The syntax:&lt;br&gt;  
+              	&lt;table&gt;  
+              	&lt;tr&gt;&lt;td&gt;	word	&lt;/td&gt;&lt;td&gt;	matches messages which contain 'word' 	&lt;/td&gt;&lt;/tr&gt;                                                               
+              	&lt;tr&gt;&lt;td&gt;	* 		&lt;/td&gt;&lt;td&gt;	matches 0 or more characters  			&lt;/td&gt;&lt;/tr&gt;                                                                    
+              	&lt;tr&gt;&lt;td&gt;	_ 		&lt;/td&gt;&lt;td&gt;	matches 1 character        				&lt;/td&gt;&lt;/tr&gt;                                                                                
+              	&lt;tr&gt;&lt;td&gt;	^ 		&lt;/td&gt;&lt;td&gt;	if used at beginning (allowed after !) of expression, matches expression only from start of message&lt;/td&gt;&lt;/tr&gt;       
+              	&lt;tr&gt;&lt;td&gt;	$ 		&lt;/td&gt;&lt;td&gt;	if used at end of expression, matches expression only at end of message&lt;/td&gt;&lt;/tr&gt; 
+              	&lt;tr&gt;&lt;td&gt;	! 		&lt;/td&gt;&lt;td&gt;	if used at beginning of expression, will negate the matching&lt;/td&gt;&lt;/tr&gt;                       
+              	&lt;tr&gt;&lt;td&gt;	| 		&lt;/td&gt;&lt;td&gt;	split the search, so 'A|B' translates to 'A OR B', and '!A|B' translates to 'NOT A AND NOT B'&lt;/td&gt;&lt;/tr&gt; 
+              	&lt;/tr&gt; 
+              	&lt;/table&gt;           
+            </Help>
+		</Field>
+		<Field ID="severity">
+			<Heading>
+				Severity
+            </Heading>
+			<Help>
+				The severity of a message, going fra EMERGENCY to DEBUG. There
+				should not be anything more severe than ERROR coming from the
+				device.
+            </Help>
+		</Field>
+		<Field ID="userid">
+			<Heading>
+				User id
+            </Heading>
+			<Help>
+				The user id involved in running the server/facility/device
+              The syntax:&lt;br&gt;  
+              	&lt;table&gt;  
+              	&lt;tr&gt;&lt;td&gt;	word	&lt;/td&gt;&lt;td&gt;	matches messages which contain 'word' 	&lt;/td&gt;&lt;/tr&gt;                                                               
+              	&lt;tr&gt;&lt;td&gt;	* 		&lt;/td&gt;&lt;td&gt;	matches 0 or more characters  			&lt;/td&gt;&lt;/tr&gt;                                                                    
+              	&lt;tr&gt;&lt;td&gt;	_ 		&lt;/td&gt;&lt;td&gt;	matches 1 character        				&lt;/td&gt;&lt;/tr&gt;                                                                                
+              	&lt;tr&gt;&lt;td&gt;	^ 		&lt;/td&gt;&lt;td&gt;	if used at beginning (allowed after !) of expression, matches expression only from start of message&lt;/td&gt;&lt;/tr&gt;       
+              	&lt;tr&gt;&lt;td&gt;	$ 		&lt;/td&gt;&lt;td&gt;	if used at end of expression, matches expression only at end of message&lt;/td&gt;&lt;/tr&gt; 
+              	&lt;tr&gt;&lt;td&gt;	! 		&lt;/td&gt;&lt;td&gt;	if used at beginning of expression, will negate the matching&lt;/td&gt;&lt;/tr&gt;                       
+              	&lt;tr&gt;&lt;td&gt;	| 		&lt;/td&gt;&lt;td&gt;	split the search, so 'A|B' translates to 'A OR B', and '!A|B' translates to 'NOT A AND NOT B'&lt;/td&gt;&lt;/tr&gt; 
+              	&lt;/tr&gt; 
+              	&lt;/table&gt;           
+            </Help>
+		</Field>
+		<Field ID="ipaddress">
+			<Heading>
+				IP Address
+            </Heading>
+			<Help>
+				The public IP address of the facility.
+              The syntax:&lt;br&gt;  
+              	&lt;table&gt;  
+              	&lt;tr&gt;&lt;td&gt;	word	&lt;/td&gt;&lt;td&gt;	matches messages which contain 'word' 	&lt;/td&gt;&lt;/tr&gt;                                                               
+              	&lt;tr&gt;&lt;td&gt;	* 		&lt;/td&gt;&lt;td&gt;	matches 0 or more characters  			&lt;/td&gt;&lt;/tr&gt;                                                                    
+              	&lt;tr&gt;&lt;td&gt;	_ 		&lt;/td&gt;&lt;td&gt;	matches 1 character        				&lt;/td&gt;&lt;/tr&gt;                                                                                
+              	&lt;tr&gt;&lt;td&gt;	^ 		&lt;/td&gt;&lt;td&gt;	if used at beginning (allowed after !) of expression, matches expression only from start of message&lt;/td&gt;&lt;/tr&gt;       
+              	&lt;tr&gt;&lt;td&gt;	$ 		&lt;/td&gt;&lt;td&gt;	if used at end of expression, matches expression only at end of message&lt;/td&gt;&lt;/tr&gt; 
+              	&lt;tr&gt;&lt;td&gt;	! 		&lt;/td&gt;&lt;td&gt;	if used at beginning of expression, will negate the matching&lt;/td&gt;&lt;/tr&gt;                       
+              	&lt;tr&gt;&lt;td&gt;	| 		&lt;/td&gt;&lt;td&gt;	split the search, so 'A|B' translates to 'A OR B', and '!A|B' translates to 'NOT A AND NOT B'&lt;/td&gt;&lt;/tr&gt; 
+              	&lt;/tr&gt; 
+              	&lt;/table&gt;           
+			</Help>
+		</Field>
+		<Field ID="message">
+			<Heading>
+				Message
+            </Heading>
+			<Help>
+				An expression used to match against the syslog message. If no units in the group have sent messages that    
+              matches this expression within the timeout period, then the heartbeat is considered "missing" and a syslog  
+              message will be generated. 
+              The syntax:&lt;br&gt;  
+              	&lt;table&gt;  
+              	&lt;tr&gt;&lt;td&gt;	word	&lt;/td&gt;&lt;td&gt;	matches messages which contain 'word' 	&lt;/td&gt;&lt;/tr&gt;                                                               
+              	&lt;tr&gt;&lt;td&gt;	* 		&lt;/td&gt;&lt;td&gt;	matches 0 or more characters  			&lt;/td&gt;&lt;/tr&gt;                                                                    
+              	&lt;tr&gt;&lt;td&gt;	_ 		&lt;/td&gt;&lt;td&gt;	matches 1 character        				&lt;/td&gt;&lt;/tr&gt;                                                                                
+              	&lt;tr&gt;&lt;td&gt;	^ 		&lt;/td&gt;&lt;td&gt;	if used at beginning (allowed after !) of expression, matches expression only from start of message&lt;/td&gt;&lt;/tr&gt;       
+              	&lt;tr&gt;&lt;td&gt;	$ 		&lt;/td&gt;&lt;td&gt;	if used at end of expression, matches expression only at end of message&lt;/td&gt;&lt;/tr&gt; 
+              	&lt;tr&gt;&lt;td&gt;	! 		&lt;/td&gt;&lt;td&gt;	if used at beginning of expression, will negate the matching&lt;/td&gt;&lt;/tr&gt;                       
+              	&lt;tr&gt;&lt;td&gt;	| 		&lt;/td&gt;&lt;td&gt;	split the search, so 'A|B' translates to 'A OR B', and '!A|B' translates to 'NOT A AND NOT B'&lt;/td&gt;&lt;/tr&gt; 
+              	&lt;/tr&gt; 
+              	&lt;/table&gt;           
+            </Help>
+		</Field>
+		<Field ID="unittype">
+			<Heading>Unit Type</Heading>
+			<Help>
+				Search within a specific Unit Type
+			</Help>
+		</Field>
+		<Field ID="profile">
+			<Heading>Profile</Heading>
+			<Help>
+				Search within a specific Profile
+            </Help>
+		</Field>
+		<Field ID="maxrows">
+			<Heading>Max rows</Heading>
+			<Help>
+				Limit the number of search result. Default is 100 entries.
+			</Help>
+		</Field>
+		<Field ID="unit">
+			<Heading>Unit</Heading>
+			<Help>
+				Specify a specific unit-id or even a part of a unit-id.
+              The syntax:&lt;br&gt;  
+              	&lt;table&gt;  
+              	&lt;tr&gt;&lt;td&gt;	word	&lt;/td&gt;&lt;td&gt;	matches messages which contain 'word' 	&lt;/td&gt;&lt;/tr&gt;                                                               
+              	&lt;tr&gt;&lt;td&gt;	* 		&lt;/td&gt;&lt;td&gt;	matches 0 or more characters  			&lt;/td&gt;&lt;/tr&gt;                                                                    
+              	&lt;tr&gt;&lt;td&gt;	_ 		&lt;/td&gt;&lt;td&gt;	matches 1 character        				&lt;/td&gt;&lt;/tr&gt;                                                                                
+              	&lt;tr&gt;&lt;td&gt;	^ 		&lt;/td&gt;&lt;td&gt;	if used at beginning (allowed after !) of expression, matches expression only from start of message&lt;/td&gt;&lt;/tr&gt;       
+              	&lt;tr&gt;&lt;td&gt;	$ 		&lt;/td&gt;&lt;td&gt;	if used at end of expression, matches expression only at end of message&lt;/td&gt;&lt;/tr&gt; 
+              	&lt;tr&gt;&lt;td&gt;	! 		&lt;/td&gt;&lt;td&gt;	if used at beginning of expression, will negate the matching&lt;/td&gt;&lt;/tr&gt;                       
+              	&lt;tr&gt;&lt;td&gt;	| 		&lt;/td&gt;&lt;td&gt;	split the search, so 'A|B' translates to 'A OR B', and '!A|B' translates to 'NOT A AND NOT B'&lt;/td&gt;&lt;/tr&gt; 
+              	&lt;/tr&gt; 
+              	&lt;/table&gt;           
+			</Help>
+		</Field>
+	</Page>
+</jHelp>

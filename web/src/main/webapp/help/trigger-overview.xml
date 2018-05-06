@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE jHelp SYSTEM "help.dtd">
+<jHelp>
+	<Page Path="/xapsweb/web">
+		<Field ID="name">
+            <Heading>Name</Heading>
+            <Help>
+                The name of the trigger
+            </Help>
+		</Field>
+        <Field ID="description">
+            <Heading>Description</Heading>
+            <Help>
+                Provide a description to help identify the trigger in future listings.
+            </Help>
+        </Field>
+        <Field ID="typeTrigger">
+            <Heading>Type</Heading>
+            <Help>
+                BASIC: Must specify a syslog event and "Number of"-fields. If the syslog events occur as
+                specified by the "Number of"-fields within the Evaluation Period, then the trigger is released.  
+                &lt;p&gt;
+                COMPOSITE: If a child triggers (BASIC or COMPOSITE triggers) are released within the Evaluation Period,
+                then the trigger is released.
+            </Help>
+        </Field>
+        <Field ID="notifyType">
+            <Heading>Notify Type</Heading>
+            <Help>
+            	REPORT: A message will be sent to the list of users in "ToList" field if the trigger is released. The
+            	report will be sent every as often as the field Notify Interval indicate. The report will then contain
+            	a summary of all the trigger releases since last message.
+            	&lt;p&gt;
+            	ALARM: Just like REPORT, but it will not be sent regularly on Notify Interval unless there was a 
+            	trigger release at that time.
+            	&lt;p&gt;
+            	SILENT: No message 
+            </Help>
+        </Field>
+        <Field ID="syslogEventId">
+            <Heading>Syslog Event Id</Heading>
+            <Help>
+                Choose a syslog event if the trigger is of BASIC type.  
+            </Help>
+        </Field>
+        <Field ID="groupId">
+            <Heading>Group</Heading>
+            <Help>
+                Choose a group to narrow down which devices should be counted.
+            </Help>
+        </Field>
+        <Field ID="parentTrigger">
+            <Heading>Parent Trigger</Heading>
+            <Help>
+                Choose a COMPOSITE trigger as parent, it will then only be released if this trigger and all other
+                child trigger are released within Evalution Period.
+            </Help>
+        </Field>
+        <Field ID="toList">
+            <Heading>To List</Heading>
+            <Help>
+                A list of comma-separated e-mail addresses the trigger will report to. If omitted the e-mail list specified
+                in the propertyfile of the Monitor-server will be used.
+            </Help>
+        </Field>
+        <Field ID="evalPeriodMinutes">
+            <Heading>Evaluation Period (Minutes)</Heading>
+            <Help>
+                The Evaluation Period Minutes field allows a configurable timeframe to be set.
+                This timeframe states that a configurable number of events must be caught within it,
+                in order for the trigger to be fired.
+                Example: 10 events within 15 minutes.
+            </Help>
+        </Field>
+        <Field ID="noTotal">
+            <Heading>Number of total events</Heading>
+            <Help>
+                The number of total events that have to sent (within the timeframe given in the Evaluation Period above) before the trigger should fire.
+            </Help>
+        </Field>
+        <Field ID="noPrUnit">
+            <Heading>Number of events per unit</Heading>
+            <Help>
+                The number of total events that have to sent per unit (within the timeframe given in the Evaluation Period above) before the trigger should fire.
+            </Help>
+        </Field>
+        <Field ID="noUnits">
+            <Heading>Number of Units</Heading>
+            <Help>
+                The number of units that have to be affected (within the timeframe given in the Evaluation Period above) before the trigger should fire.
+            </Help>
+        </Field> 
+        <Field ID="notifyIntervalHours">
+        	<Heading>Notify Interval (Hours)</Heading>
+        	<Help>
+        		The number of hours that must pass before a new notification is sent.
+        	</Help>
+        </Field>  
+        <Field ID="scriptFileId">
+        	<Heading>Script File</Heading>
+        	<Help>
+        		A script file which will be run on every trigger release. The script file will have the opportunity to process the list
+        		of units which triggered the release, using a special variable ${_1} in the script. 
+        	</Help>
+        </Field>
+        <Field ID="active">
+        	<Heading>Active</Heading>
+        	<Help>
+        		Activate or deactivate trigger. A deactivated trigger behaves like a non-existent trigger and has no effect on the release of parent triggers.
+        	</Help>
+        </Field>
+    </Page>
+</jHelp>
