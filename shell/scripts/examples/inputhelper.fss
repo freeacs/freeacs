@@ -1,0 +1,39 @@
+#:Title			: Parameter promotion
+
+#:Description	: The script will promote a parameter from unit parameter to profile parameter.
+#:Description	: The script will search through all unit parameters of this particular type and make the most
+#:Description	: the most common among them a profile parameter. Thereafter, it will delete all those unit parameter
+#:Description	: with the same value as the newly created profile parameter. 	
+
+#:Argument		: Parameter Name : String : Name of the parameter to promote
+#:Argument		: Profile Name   : String : Name of the profile to promote to
+
+#  
+# Varindex	: Name		: Type		: Comment
+# --------------------------------------------
+#
+#:1			: Parameter Name : String : Name of the parameter to promote
+#:2 		: String	: Name of existing profile
+#:3 		: String  	: Parameter name
+#:4			: String	: Name of new profile
+#
+# Advanced input-helper
+# Varindex	: Type							: Comment
+# ------------------------------------------------------------------
+#: 1		: 5 - 40						: Number of connections 
+#: 2 		: Profiles.getByName			: Name of existing profile
+#: 3 		: UnittypeParameters.getByName  : Parameter name
+#: 4		: \w{5,25}						: Name of new profile
+#
+# Fully customized input-helper
+# Varindex	: Type							: Comment
+# ------------------------------------------------------------------
+#: 1		: 5 - 40						: Number of connections 
+#: 2 		: Profiles.getByName			: Name of existing profile
+#: 3 		: UnittypeParameters.getByName  : Parameter name
+#: 4		: newprofilecheck.fss			: Name of new profile
+
+
+
+
+

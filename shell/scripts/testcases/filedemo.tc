@@ -1,0 +1,40 @@
+# Dev testcase used to implement an extension to the existing TR-069 framework.
+# The usual list of "steps" (SET/GET) now also contains "FILE".
+#
+# The FILE step specifies two mandatory filenames found in the Fusion filestore.
+# These two files contain RAW DATA, of which the first is sent to the CPE and
+# the other is compared to the result.
+#
+# If the CPE reply is identical to the contents of the second argument, the TC
+# has succeeded.
+#
+# The second parameter also accepts [STRING] and [EMPTY] (but not [INTEGER]) as
+# usual, to allow for any string or empty result in the reply.
+#
+# Examples:
+#	FILE myfile.txt myexpectations.txt
+#	FILE myfile.txt [STRING]
+#	FILE myfile.txt [EMPTY]
+#
+# The 'testsetup' syntax when using these TC's has changed. For starters, you
+# can EITHER send the file contents, or do the usual SET/GET. Using FILE
+# combined with either SET or GET will result in an error. (Note that the TC
+# file may contain both, however.) Furthermore, the <method> and
+# <parameter-filter> must both be NULL. 
+#
+# Syntax:
+#	testsetup FILE <reset-on-startup> NULL NULL <tags>
+# Examples:
+#	testsetup FILE 0 NULL NULL [FILE]
+#	testsetup FILE 0 NULL NULL "[FOO] [BAR]"
+#	testsetup NULL 0 FILE NULL [foo]
+#	testsetup <steps> <reset-on-startup> <methods> <paramfilter> <tags>
+
+ID 5750
+
+TAGS			[FILE][DEV]
+EXPECTERROR		false
+METHOD          FILE
+
+INPUT TestInput
+OUTPUT TestOutput

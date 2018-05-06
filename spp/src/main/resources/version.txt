@@ -1,0 +1,120 @@
+v1.5.0 (2015-01-25)
+- sec: added authentication to File download. This is not tested a will most likely not work right away. Anyway - working with SPP will require some 
+effort to get it up and running, since this module has had so low priority for many years.
+- lib: prov v1.4.28 - moved FileServlet into SPP/TR069-project 
+v1.4.16 (2014-12-19)
+- lib: dbi v1.74.37 - a severe bug was fixed (matching of groups in a job)
+v1.4.15 (2013-06-06)
+- bug: telnet did not use job-file-version
+- bug: telnet client did not abort if no response from telnet server (device) - could happen if disconnected
+- ref: added comments to explain some data structures
+- ref: possible to specify Telnet-configuration parameters to link to other parameters
+- bug: removed dependcy on software-version - seemed to be totally wrong
+- bug: if no repeat interval was set, the repeations were constant 
+v1.4.14 (2013-04-29)
+- lib: dbi v1.74.23 (bugfix on jobs)
+v1.4.13 (2013-03-21)
+- lib: dbi v1.74.10
+- ref: no longer persist the MAC-address (if received) from device 
+v1.4.12 (2013-03-13)
+- lib: dbi v1.74.4
+- lib: prov v1.4.18
+v1.4.11 (2013-03-07)
+- ref: Reverted usage of facility version in Syslog-message
+v1.4.10 (2013-03-01)
+- lib: dbi v1.74.0
+- lib: prov v1.4.15
+- del: removed some unnecessary code due to changes in dbi
+- del: removed some unnecessary properties due to changes in dbi
+- del: removed some unnecessary doc due to change in dbi
+v1.4.9 (2013-02-21)
+- lib: dbi v1.73.15
+- doc: updated to 2013R1
+v1.4.8 (2013-01-09) (Now fully updated to all fixes in other branches)
+- ref: Forward-ported from v1.1.1.5 to v1.1.1.7 2011R1SP1 
+	- ref: changed OK-Servlet, now returns version number (included in OK-servlet in prov-library)
+	- add: some logging
+	- bug: direct firmware-output caused major memory/cpu drain
+- ref: Forward-ported from v1.3.3 to v1.3.3.2 2012R1 (includes changes from v1.1.1.1 to v.1.1.14 (2011R1SP1)):
+	- bug: Parsing of RequestURL-parameteres in HTTP-provisioning failed, used wrong method 
+	- ref: Allows upgrade-URL to be overridden by the System parameter "SoftwareURL" (like the TR-069 server) 
+	- ref: Allows direct return of binaries if download provisioning is specified. Introduced new property - a relatively large refactoring
+	- add: discovery-mode now creates TR-069 style unit-id for Hydrogen devices
+	- add: will find unit based on SerialNumber if a unit belongs to HydrogenHA/VoiceCatcher unittype (unit-id has prefix 002194-<Modelname>-)
+v1.4.7 (2012-12-13)
+- ref: small code change in Telnet-server, to remove warnings
+- lib: dbi v1.73.2
+- lib: common v1.33.0
+- ref: property files updated
+v1.4.6 (2012-12-11)
+- lib: dbi v1.73.0
+- ref: removed unnecessary call to update Firmwares in TFTP-server
+- ref: removed unnecessary warning-suppressers
+v1.4.5 (2012-09-06)
+- lib: common v1.32.2
+- ref: small logging fix - will avoid NP when server goes down
+v1.4.4 (2012-05-04)
+- lib: dbi v1.70.1 
+- lib: prov v1.4.7 
+- ref: removed CPEParameters from xapsprov, and also from SessionData
+v1.4.3 (2012-04-19)
+- lib: dbi v1.69.5
+v1.4.2 (2012-03-05)
+- lib: dbi v1.68 (some constants changed to Enum)
+- add: ProvisioningMessage added to SPP, adds summary of provisioning to SyslogServer
+v1.4.1 (2012-01-31)
+- lib: removed all xaps-libs (common, dbi, prov, shell), replaced by using Eclipse Deployment Assembly which is detected by WTF (Tomcat) 
+v1.4.1 (2012-01-23)
+- add: (copied and modified from TR-069) authentication of HTTP, 
+will store secret in database if running discovery-mode
+v1.4.0 (2012-01-18)
+- lib: prov v1.3.7
+- lib: dbi v1.65.6
+- added fixes from v1.3.2 (handle job repeat counter at 0 or more)
+
+-- Branched out 2012R1
+
+v1.3.1 (2012R1) (2011-12-27)
+- lib: prov v1.3.6
+- lib: dbi v1.64.18
+- lib: common v1.31.27
+v1.3.1 (2012R1) (2011-12-12)
+- doc: updated with Telnet, version number
+- lib: prov v1.3.3
+- lib: dbi v1.64.16
+- updated to support PIIDecision in prov library
+- bugfix: The Telnet-parameter should start with "System.X_OWERA-COM."
+v1.3.0a (2011R2) (2011-06-23)
+- small refactoring to allow for copying of method into xapstun (KickJob)
+v1.3.0 (2011R2) (2011-06-23)
+- Added Telnet provisioning!!
+- Lots of refactoring to allow telnet prov.
+- updated to xaps-dbi v1.64.3  
+
+v1.2.2a (2011R2) (2011-06-11)
+- added FCT to write to xAPS
+v1.2.2 (2011R2) (2011-06-10)
+- refactored write of parameters to xAPS
+- added LCT to write to xAPS
+- bugfix: TFTP-port is read from properties file
+v1.2.1a (2011R2) (2011-06-01)
+- updated project to fit the latest update of xaps-prov.jar (v1.1.0)
+- removed some packages with no classes
+v1.2.1 (2011R2) (2011-06-01)
+- moved base-code out into another jar-file/project: xaps-prov.jar/xapsprov (v1.0.0), had to make 3 small code-changes
+to adapt. 
+v1.2.0 (2011R2) (2011-04-26)
+- updated to xaps-dbi v1.61.0 (lot of package renaming)
+
+
+
+
+v1.1.1 (2011R1) (2011-01-21)
+- updated xaps-dbi v1.57.22
+v1.1.1 (2010R1-RC) (2010-09-13)
+- removed warnings from org.apache.commons.net
+v1.1.0 (2010R1-RC) (2010-09-10)
+- added AES-256 encryption for SPA-2102
+- some refactoring to include encryption execution time in logging
+v1.0.0 (2010R1-RC) (2010-09-08)
+- first version after split of from xapstr069 module

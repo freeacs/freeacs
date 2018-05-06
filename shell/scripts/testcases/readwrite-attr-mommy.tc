@@ -1,0 +1,204 @@
+# The ID is auto-generated. In the event of importing this test case file back into Fusion, the following rules apply:
+#	Changing the id : By changing it you may accidentally overwrite another test-case or create a new one.
+#	Deleting the id : You will make a new test-case, possibly a duplicate of this test case.
+#ID          3019000
+
+# The METHOD can be either VALUE or ATTRIBUTE. Make sure that the parameter definitions below match the method type
+METHOD      ATTRIBUTE
+
+# The TAGS is a series of strings used to identify a set of test cases. Each string must be enclosed in square brackets [ ].
+TAGS        [20120705-25] [CRAFTED] [COMPLEX] [READWRITE] [EXHAUSTIVE] [ATTR]
+
+# Set EXPECTERROR to true if the test case is designed to fail.
+EXPECTERROR false
+
+
+# Specify one more SET parameters, to be used in either SetParameterValue or SetParameterAttribute method.
+# If METHOD is ATTRIBUTE, a number between 0 and 2 is expected, and will be used as the notification value
+# If METHOD is VALUE, a value/string is expected, and will be used as the parameter value
+#	Format/syntax : SET <ParameterName> <Value>|0|1|2
+#	Example       : SET InternetGatewayDevice.DeviceInfo.ProvisioningCode HelloWorld
+#	Example       : SET InternetGatewayDevice.DeviceInfo.ProvisioningCode 0
+
+SET		InternetGatewayDevice.DeviceInfo.ProvisioningCode													0
+SET		InternetGatewayDevice.IPPingDiagnostics.DSCP														0
+SET		InternetGatewayDevice.IPPingDiagnostics.DataBlockSize												0
+SET		InternetGatewayDevice.IPPingDiagnostics.Host														0
+SET		InternetGatewayDevice.IPPingDiagnostics.Interface													0
+SET		InternetGatewayDevice.IPPingDiagnostics.NumberOfRepetitions											0
+SET		InternetGatewayDevice.IPPingDiagnostics.Timeout														0
+SET		InternetGatewayDevice.IPPingDiagnostics.DiagnosticsState											0
+SET		InternetGatewayDevice.LANConfigSecurity.ConfigPassword												0
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.AllowedMACAddresses						0
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.DHCPServerEnable							0
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.DNSServers								0
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.DomainName								0
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPInterface.1.IPInterfaceIPAddress		0
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPInterface.1.IPInterfaceSubnetMask		0
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPRouters									0
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.MaxAddress								0
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.MinAddress								0
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.ReservedAddresses							0
+SET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.SubnetMask								0   
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.1.AIFSN						0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.1.AckPolicy					0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.1.ECWMax						0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.1.ECWMin						0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.1.TXOP							0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.2.AIFSN						0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.2.AckPolicy					0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.2.ECWMax						0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.2.ECWMin						0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.2.TXOP							0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.3.AIFSN						0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.3.AckPolicy					0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.3.ECWMax						0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.3.ECWMin						0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.3.TXOP							0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.4.AIFSN						0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.4.AckPolicy					0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.4.ECWMax						0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.4.ECWMin						0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.4.TXOP							0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.BasicAuthenticationMode						0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.BasicEncryptionModes							0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.BeaconAdvertisementEnabled					0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.BeaconType									0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Channel										0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.DeviceOperationMode							0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Enable										0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.IEEE11iAuthenticationMode						0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.IEEE11iEncryptionModes						0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.InsecureOOBAccessEnabled						0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.KeyPassphrase									0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.MACAddressControlEnabled						0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.MaxBitRate									0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.OperationalDataTransmitRates					0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.RadioEnabled									0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.RegulatoryDomain								0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.SSID											0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.SSIDAdvertisementEnabled						0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TransmitPower									0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.WMMEnable										0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.WPAAuthenticationMode							0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.WPAEncryptionModes							0
+SET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.UAPSDEnable									0
+SET		InternetGatewayDevice.Layer3Forwarding.DefaultConnectionService										0
+SET		InternetGatewayDevice.Layer3Forwarding.ForwardNumberOfEntries										0
+SET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.DestIPAddress									0
+SET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.DestSubnetMask									0
+SET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.Enable											0
+SET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.ForwardingMetric								0
+SET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.GatewayIPAddress								0
+SET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.Interface										0
+SET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.SourceIPAddress									0
+SET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.SourceSubnetMask								0
+SET		InternetGatewayDevice.Time.LocalTimeZoneName														0
+SET		InternetGatewayDevice.Time.NTPServer1																0
+SET		InternetGatewayDevice.Time.NTPServer2																0
+SET		InternetGatewayDevice.Time.NTPServer3																0
+SET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.AddressingType			0
+SET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DNSServers				0
+SET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.Enable					0
+SET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.MaxMTUSize				0
+SET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.Name						0
+SET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.WarnDisconnectDelay		0
+
+
+
+# Specify one more SET parameters, to be used in either SetParameterValue or SetParameterAttribute method.
+# If METHOD is ATTRIBUTE, a number between 0 and 2 is expected, and will be used as the notification value
+# If METHOD is VALUE, a value/string is expected, and will be used as the parameter value
+#	Format/syntax : SET <ParameterName> <Value>|0|1|2
+#	Example       : SET InternetGatewayDevice.DeviceInfo.ProvisioningCode HelloWorld
+#	Example       : SET InternetGatewayDevice.DeviceInfo.ProvisioningCode 0
+# The value are what we expect from the device if the SET parameters in this test case have already been run.
+# If a FACTORY RESET has been run after the SET method, this value is not used for comparison - check the
+# next section
+# It is also allowed to specify the following special values:
+#	[STRING] - Any value is accepted - also blank/empty string
+#	[EMPTY]  - A blank/emtpy string
+#	[NUMBER] - Any integer is accepted
+GET		InternetGatewayDevice.DeviceInfo.ProvisioningCode													0
+GET		InternetGatewayDevice.IPPingDiagnostics.DSCP														0
+GET		InternetGatewayDevice.IPPingDiagnostics.DataBlockSize												0
+GET		InternetGatewayDevice.IPPingDiagnostics.Host														0
+GET		InternetGatewayDevice.IPPingDiagnostics.Interface													0
+GET		InternetGatewayDevice.IPPingDiagnostics.NumberOfRepetitions											0
+GET		InternetGatewayDevice.IPPingDiagnostics.Timeout														0
+GET		InternetGatewayDevice.IPPingDiagnostics.DiagnosticsState											0
+GET		InternetGatewayDevice.LANConfigSecurity.ConfigPassword												0
+GET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.AllowedMACAddresses						0
+GET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.DHCPServerEnable							0
+GET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.DNSServers								0
+GET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.DomainName								0
+GET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPInterface.1.IPInterfaceIPAddress		0
+GET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPInterface.1.IPInterfaceSubnetMask		0
+GET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.IPRouters									0
+GET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.MaxAddress								0
+GET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.MinAddress								0
+GET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.ReservedAddresses							0
+GET		InternetGatewayDevice.LANDevice.1.LANHostConfigManagement.SubnetMask								0   
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.1.AIFSN						0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.1.AckPolicy					0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.1.ECWMax						0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.1.ECWMin						0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.1.TXOP							0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.2.AIFSN						0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.2.AckPolicy					0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.2.ECWMax						0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.2.ECWMin						0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.2.TXOP							0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.3.AIFSN						0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.3.AckPolicy					0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.3.ECWMax						0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.3.ECWMin						0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.3.TXOP							0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.4.AIFSN						0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.4.AckPolicy					0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.4.ECWMax						0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.4.ECWMin						0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.APWMMParameter.4.TXOP							0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.BasicAuthenticationMode						0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.BasicEncryptionModes							0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.BeaconAdvertisementEnabled					0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.BeaconType									0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Channel										0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.DeviceOperationMode							0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.Enable										0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.IEEE11iAuthenticationMode						0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.IEEE11iEncryptionModes						0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.InsecureOOBAccessEnabled						0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.KeyPassphrase									0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.MACAddressControlEnabled						0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.MaxBitRate									0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.OperationalDataTransmitRates					0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.RadioEnabled									0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.RegulatoryDomain								0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.SSID											0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.SSIDAdvertisementEnabled						0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.TransmitPower									0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.WMMEnable										0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.WPAAuthenticationMode							0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.WPAEncryptionModes							0
+GET		InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.UAPSDEnable									0
+GET		InternetGatewayDevice.Layer3Forwarding.DefaultConnectionService										0
+GET		InternetGatewayDevice.Layer3Forwarding.ForwardNumberOfEntries										0
+GET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.DestIPAddress									0
+GET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.DestSubnetMask									0
+GET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.Enable											0
+GET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.ForwardingMetric								0
+GET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.GatewayIPAddress								0
+GET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.Interface										0
+GET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.SourceIPAddress									0
+GET		InternetGatewayDevice.Layer3Forwarding.Forwarding.1.SourceSubnetMask								0
+GET		InternetGatewayDevice.Time.LocalTimeZoneName														0
+GET		InternetGatewayDevice.Time.NTPServer1																0
+GET		InternetGatewayDevice.Time.NTPServer2																0
+GET		InternetGatewayDevice.Time.NTPServer3																0
+GET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.AddressingType			0
+GET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DNSServers				0
+GET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.Enable					0
+GET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.MaxMTUSize				0
+GET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.Name						0
+GET		InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.WarnDisconnectDelay		0

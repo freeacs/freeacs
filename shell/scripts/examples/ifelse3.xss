@@ -1,0 +1,10 @@
+echo off
+var sum 2 - 1
+if ${sum} lt 0
+	echo Sum is negative
+elseif ${sum} eq 1
+	echo Sum is 1
+else
+	echo Sum is positive but not 1
+fi
+echo on

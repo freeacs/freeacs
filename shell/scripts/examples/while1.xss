@@ -1,0 +1,10 @@
+echo off
+var counter 0
+while true
+	var counter ${counter} + 1
+	if ${counter} gt 10
+		break
+	fi
+	echo ${counter}
+done
+echo on

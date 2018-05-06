@@ -1,0 +1,10 @@
+/.classpath
+/.project
+/.settings
+/bin
+/build
+/fusion-shell.log
+/backup-logs
+/target
+*.iml
+*.log

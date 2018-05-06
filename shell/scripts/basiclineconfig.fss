@@ -1,0 +1,18 @@
+#:Title       : VoIP -- basic line configuration
+
+#:Description : Basic VoIP(SIP) configuration script.
+#:Description : Sets the most commonly used SIP line parameters,
+#:Description : just enough to get most units working right off the bat.
+
+#:Argument    : Unit              : String          :     Name of the unit to configure
+#:Argument    : Line              : Enum 1,2        : 1 : SIP line
+#:Argument    : Auth username     : String          :     SIP authentication username
+#:Argument    : Auth password     : String          :     SIP authentication password
+#:Argument    : Proxy server      : String          :     SIP proxy server address
+#:Argument    : Proxy server port : Integer 0-65535 :     SIP proxy server port
+
+unit ${_1}
+setparam InternetGatewayDevice.Services.VoiceService.1.VoiceProfile.1.Line.${_2}.SIP.AuthUserName ${_3}
+setparam InternetGatewayDevice.Services.VoiceService.1.VoiceProfile.1.Line.${_2}.SIP.AuthPassword ${_4}
+setparam InternetGatewayDevice.Services.VoiceService.1.VoiceProfile.1.SIP.ProxyServer ${_5}
+setparam InternetGatewayDevice.Services.VoiceService.1.VoiceProfile.1.SIP.ProxyServerPort ${_6}

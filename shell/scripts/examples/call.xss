@@ -1,0 +1,6 @@
+# Explicitly define a variable as Foo
+var Foo 'This is a foo'
+# Call another script. Two variables are sent along the call:
+# 1: Foo - this is a variable - check called.xss for referencing
+# 2: Bar - this is simply a text - check called.xss for referencing
+call -vFoo,Bar scripts/examples/called.xss

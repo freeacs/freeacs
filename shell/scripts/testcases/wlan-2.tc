@@ -1,0 +1,39 @@
+# The ID is auto-generated. In the event of importing this test case file back into Fusion, the following rules apply:
+#	Changing the id : By changing it you may accidentally overwrite another test-case or create a new one.
+#	Deleting the id : You will make a new test-case, possibly a duplicate of this test case.
+# ID          301900000
+
+# The METHOD can be either VALUE or ATTRIBUTE. Make sure that the parameter definitions below match the method type
+METHOD      VALUE
+
+# The TAGS is a series of strings used to identify a set of test cases. Each string must be enclosed in square brackets [ ].
+TAGS        [20120705-13] [CRAFTED] [COMPLEX] [LAYER3] [WLAN] [2]
+
+# Set EXPECTERROR to true if the test case is designed to fail.
+EXPECTERROR false
+
+
+# Specify one more SET parameters, to be used in either SetParameterValue or SetParameterAttribute method.
+# If METHOD is ATTRIBUTE, a number between 0 and 2 is expected, and will be used as the notification value
+# If METHOD is VALUE, a value/string is expected, and will be used as the parameter value
+#	Format/syntax : SET <ParameterName> <Value>|0|1|2
+#	Example       : SET InternetGatewayDevice.DeviceInfo.ProvisioningCode HelloWorld
+#	Example       : SET InternetGatewayDevice.DeviceInfo.ProvisioningCode 0
+SET         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.SSID                                                               Hydrogen0048
+SET         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.KeyPassphrase                                                      password
+
+# Specify one more SET parameters, to be used in either SetParameterValue or SetParameterAttribute method.
+# If METHOD is ATTRIBUTE, a number between 0 and 2 is expected, and will be used as the notification value
+# If METHOD is VALUE, a value/string is expected, and will be used as the parameter value
+#	Format/syntax : SET <ParameterName> <Value>|0|1|2
+#	Example       : SET InternetGatewayDevice.DeviceInfo.ProvisioningCode HelloWorld
+#	Example       : SET InternetGatewayDevice.DeviceInfo.ProvisioningCode 0
+# The value are what we expect from the device if the SET parameters in this test case have already been run.
+# If a FACTORY RESET has been run after the SET method, this value is not used for comparison - check the
+# next section
+# It is also allowed to specify the following special values:
+#	[STRING] - Any value is accepted - also blank/empty string
+#	[EMPTY]  - A blank/emtpy string
+#	[NUMBER] - Any integer is accepted
+GET         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.SSID                                                               Hydrogen0048
+GET         InternetGatewayDevice.LANDevice.1.WLANConfiguration.1.KeyPassphrase                                                      password

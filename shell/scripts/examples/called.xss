@@ -1,0 +1,5 @@
+# A variable can be referenced using the same variable name
+echo called.xss was run with this variable: ${Foo}
+# Any other text will be referenced with an underscore and a number, starting from
+# 1 and going upwards. 
+echo called.xss was run with this variable: ${_1}

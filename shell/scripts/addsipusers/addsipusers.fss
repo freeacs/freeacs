@@ -1,0 +1,57 @@
+# Purpose of script:
+#
+# This script should add SIP-user/pass to the units represented by a MAC-address. The
+# input to this script is a file with each line containing
+# 	<MAC> <SIP-user> <SIP-password>
+# Additionally a Unittype and a Profile must be specified
+
+# Turn off echoing of all commands
+echo off
+
+# Check whether input-araguments are specified
+if '${_1}' eq '' or '${_2}' eq '' or '${_3}' eq ''
+	echo "Usage: call scripts/addsipusers/addsipusers.fss -vSIPUserFile,UnittypeName,ProfileName"
+	echo SIPUserFile: A file where each line conforms to this format: 
+	echo MAC-address SIP-user SIP-password
+	echo UnittypeName: The name of the unittype where the devices (with the MAC-addresses are found)
+	echo ProfileName: The name of the profile where the devices will be placed (if not already there)
+	return
+fi
+
+# Reassign variable-name to more readable variable names - may also be
+# smart to avoid variable name collision (since these names are automatically
+# created by certain commands
+var sipFile '${_1}'
+var unittype '${_2}'
+var profile '${_3}'
+
+
+# Run file-check to verify existence of file. Rather cumbersome to do
+# in Fusion Shell, but it is possible at least:)
+call scripts/util/fileexists.fss -v${sipFile}
+if '${_return}' eq 'false'
+	echo SIPUserFile ${sipFile} not found
+	return
+fi
+
+# Run the actual configuration change. Loop over sip-file and
+# use argument 1-3 from the file to specify mac, sip-user and sip-pass 
+while ${sipFile} 
+  # switch to correct unittype, to avoid changing units in wrong unittype
+  cc ut:${unittype}
+  # switch to correct unit-context (if MAC-address is specified as unit-parameter)
+  unit ${1}
+  # set correct user/pass on the unit
+  setparam InternetGatewayDevice.Services.VoiceService.1.VoiceProfile.1.Line.1.SIP.AuthUserName ${2}
+  setparam InternetGatewayDevice.Services.VoiceService.1.VoiceProfile.1.Line.1.SIP.URI ${2}
+  setparam InternetGatewayDevice.Services.VoiceService.1.VoiceProfile.1.Line.1.CallingFeatures.CallerIDName ${2}
+  setparam InternetGatewayDevice.Services.VoiceService.1.VoiceProfile.1.Line.1.SIP.AuthPassword ${3}
+  # if profile for this unit differs from the profile specified in script, move
+  # unit to the specified profile
+  if '${_pr}' ne '${profile}'
+  	  # must copy unit-context name to a variable, because the ${_un}
+  	  # will be lost as soon as one changes context to profile (next line)
+  	  var unit '${_un} 
+	  ../moveunit ${unit} ${profile}
+  fi
+done

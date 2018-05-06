@@ -1,0 +1,10 @@
+# We assume a unit-context, where we can find the ConnectionRequestURL
+if '${InternetGatewayDevice.ManagementServer.ConnectionRequestURL}' eq 'NULL'
+	return 'NULL'
+elseif '${InternetGatewayDevice.ManagementServer.ConnectionRequestURL}'.substr(5,6) eq 's'
+	var ip '${InternetGatewayDevice.ManagementServer.ConnectionRequestURL}'.substr(8)
+else
+	var ip '${InternetGatewayDevice.ManagementServer.ConnectionRequestURL}'.substr(7)
+fi
+var ip '${ip}'.substr(0,'${ip}'.indexOf(':'))
+return '${ip}'

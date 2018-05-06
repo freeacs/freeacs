@@ -1,0 +1,10 @@
+call scripts/examples/make.xss
+call -uut:Example scripts/examples/listparams.xss
+cc ut:Example/../ut:Example/pr:Default
+listparams
+cc ../../
+/ut:Example/pr:Default/listparams -c > params.txt
+setparam -u A AAA < params.txt
+setparam -u B BBB < params.txt
+/ut:Example/pr:Default/listparams 
+delosfile params.txt

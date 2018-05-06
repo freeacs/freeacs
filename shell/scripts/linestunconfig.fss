@@ -1,0 +1,19 @@
+#:Title    : Line STUN configuration
+
+#:Description : Basic STUN configuration script.
+#:Description : Sets the most commonly used STUN parameters,
+#:Description : just enough to get most units working right off the bat.
+
+#:Argument : Unit             : String          : Name of the unit to configure
+#:Argument : STUN server      : String          : STUN server address
+#:Argument : STUN server port : Integer 1-65535 : 
+
+unit ${_1}
+
+setparam InternetGatewayDevice.ManagementServer.STUNEnable 1
+setparam InternetGatewayDevice.ManagementServer.STUNMinimumKeepAlivePeriod 25                        
+setparam InternetGatewayDevice.ManagementServer.STUNServerAddress ${_2}
+setparam InternetGatewayDevice.ManagementServer.STUNServerPort ${_3} 
+
+setparam InternetGatewayDevice.Services.VoiceService.1.VoiceProfile.1.STUNEnable 1
+setparam InternetGatewayDevice.Services.VoiceService.1.VoiceProfile.1.STUNServer ${_2}:${_3}
