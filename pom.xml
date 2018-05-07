@@ -28,6 +28,7 @@
 
     <modules>
         <module>db</module>
+	<module>readme</module>
         <module>common</module>
         <module>dbi</module>
         <module>wsc</module>
