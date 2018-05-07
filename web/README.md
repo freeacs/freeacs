@@ -35,6 +35,7 @@ MySQL
 docker run --name xaps_mysql -e MYSQL_ROOT_PASSWORD=root -d mysql:latest -p 3306:3306
 docker cp [path-to-db]/mysql xaps_mysql:/tmp/mysql
 docker exec -it xaps_mysql bash
+$ cd /tmp/mysql
 $ mysql -u root -p
 ****
 $ create user 'xaps'@'%' identified by 'xaps';
