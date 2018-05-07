@@ -5,10 +5,16 @@ import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import com.owera.common.util.NaturalComparator;
+import junit.framework.TestCase;
+import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class NaturalComparatorTest {
 
-	public static void main(String[] args) {
+	@Test
+	public void sortingTest() {
 		Map<String, String> m = new TreeMap<String, String>(new NaturalComparator());
 
 		m.put("1", "1");
@@ -19,9 +25,9 @@ public class NaturalComparatorTest {
 		m.put("abc", "abc");
 
 		for (Entry<String, String> e : m.entrySet()) {
-			System.out.println(e.getKey());
+			assertNotNull(e.getKey());
 		}
-		System.out.println(m.get(null));
+		assertNull(m.get(null));
 
 	}
 
