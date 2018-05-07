@@ -514,34 +514,15 @@ public class HTTPRequestProcessor {
 	 * @param reqStr (TR-069 XML)
 	 * @return TR-069 methodName
 	 */
-	private static String extractMethodName(String reqStr) {
+	static String extractMethodName(String reqStr) {
 
 		int soapenvBodyPos = reqStr.indexOf(":Body");
-		//		if (soapenvBodyPos == -1)
-		//			soapenvBodyPos = reqStr.indexOf("<soap:Body");
-		//		if (soapenvBodyPos == -1)
-		//			soapenvBodyPos = reqStr.indexOf("<SOAP-ENV:Body");
-		//		if (soapenvBodyPos == -1)
-		//			soapenvBodyPos = reqStr.indexOf("<soap_env:Body");
-		//		if (soapenvBodyPos == -1)
-		//			soapenvBodyPos = reqStr.indexOf("<soap-env:Body");
 		if (soapenvBodyPos > -1) {
 			int cwmpPos = reqStr.indexOf("<cwmp:", soapenvBodyPos);
 			int methodPos = cwmpPos + 6;
-			int cwmpEndBracketPos = reqStr.indexOf(">", methodPos);
+			int cwmpEndBracketPos = getEndBracketPos(reqStr, methodPos);
 			int cwmpEndSpacePos = reqStr.indexOf(" ", methodPos);
 			int cwmpEndPos = cwmpEndBracketPos;
-			//			String reqStrPart = "";
-			if (cwmpPos > -1) {
-				int partEndPos = cwmpPos + 200;
-				if (partEndPos > reqStr.length()) {
-					partEndPos = reqStr.length();
-				}
-				//				reqStrPart = reqStr.substring(cwmpPos, partEndPos);
-			}
-			//			Log.debug(HTTPRequestProcessor.class, "\n" + reqStrPart + "\nsbp:" + soapenvBodyPos + ", cp:" + cwmpPos + ", cebp:" + cwmpEndBracketPos + ", cesp:" + cwmpEndSpacePos + ", cep:"
-			//					+ cwmpEndPos);
-
 			if (cwmpEndSpacePos > -1 && cwmpEndSpacePos < cwmpEndPos)
 				cwmpEndPos = cwmpEndSpacePos;
 			String methodStr = reqStr.substring(methodPos, cwmpEndPos);
@@ -555,4 +536,12 @@ public class HTTPRequestProcessor {
 		}
 	}
 
+	private static int getEndBracketPos(String reqStr, int methodPos) {
+		int firstClosingBracket = reqStr.indexOf(">", methodPos);
+		int firstFinalizingBracket = reqStr.indexOf("/>", methodPos);
+		if (firstClosingBracket < firstFinalizingBracket) {
+			return firstClosingBracket;
+		}
+		return firstFinalizingBracket;
+	}
 }
