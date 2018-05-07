@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.TestCase;
+import org.junit.Ignore;
 
+@Ignore
 public class ConnectionProviderTest extends TestCase {
 
 	private ConnectionProperties props;
