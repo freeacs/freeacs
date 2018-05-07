@@ -9,7 +9,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mysql.jdbc.exceptions.MySQLTransactionRollbackException;
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
@@ -156,8 +155,6 @@ public class UnitJobs {
 					rowsUpdated = pp.executeUpdate();
 				}
 				finished = true;
-			} catch (MySQLTransactionRollbackException mtre) {
-				logger.warn("A deadlock occured, the statement is retried");
 			} catch (SQLException sqlex) {
 				sqle = sqlex;
 				throw sqlex;
@@ -193,8 +190,6 @@ public class UnitJobs {
 				pp.setQueryTimeout(60);
 				rowsUpdated = pp.executeUpdate();
 				finished = true;
-			} catch (MySQLTransactionRollbackException mtre) {
-				logger.warn("A deadlock occured, the statement is retried");
 			} catch (SQLException sqlex) {
 				sqle = sqlex;
 				throw sqlex;
@@ -228,8 +223,6 @@ public class UnitJobs {
 				pp.setQueryTimeout(60);
 				rowsUpdated = pp.executeUpdate();
 				finished = true;
-			} catch (MySQLTransactionRollbackException mtre) {
-				logger.warn("A deadlock occured, the statement is retried");
 			} catch (SQLException sqlex) {
 				sqle = sqlex;
 				throw sqlex;
@@ -266,8 +259,6 @@ public class UnitJobs {
 				rowsUpdated = pp.executeUpdate();
 				finished = true;
 				return rowsUpdated;
-			} catch (MySQLTransactionRollbackException mtre) {
-				logger.warn("A deadlock occured, the statement is retried");
 			} catch (SQLException sqlex) {
 				sqle = sqlex;
 				throw sqlex;
