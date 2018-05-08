@@ -33,5 +33,10 @@
             <version>${mysql.connector.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>${commons.httpclient.version}</version>
+        </dependency>
     </dependencies>
 </project>

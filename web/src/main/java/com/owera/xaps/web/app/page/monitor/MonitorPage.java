@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.owera.common.ssl.EasySSLProtocolSocketFactory;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
@@ -18,7 +19,7 @@ import com.owera.xaps.dbi.XAPS;
 import com.owera.xaps.web.app.Output;
 import com.owera.xaps.web.app.input.ParameterParser;
 import com.owera.xaps.web.app.page.AbstractWebPage;
-import com.owera.xaps.web.app.page.staging.logic.HTTPSManager;
+import com.owera.common.ssl.HTTPSManager;
 import com.owera.xaps.web.app.util.WebConstants;
 import com.owera.xaps.web.app.util.WebProperties;
 import com.owera.xaps.web.app.util.XAPSLoader;
@@ -77,7 +78,7 @@ public class MonitorPage extends AbstractWebPage {
 		
 		if(url.startsWith("https://")){
 			try{
-				HTTPSManager.installCertificate(url, WebProperties.getWebProperties());
+				HTTPSManager.installCertificate(url, WebProperties.getString("keystore.pass", "changeit"));
 			}catch(Exception e){
 				logger.error("Could not install server certificate for "+url,e);
 			}

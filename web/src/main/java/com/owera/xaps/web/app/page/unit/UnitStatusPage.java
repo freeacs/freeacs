@@ -250,13 +250,13 @@ public class UnitStatusPage extends AbstractWebPage {
 		templateMap.put("currentEnabled",currentEnabled);
 		boolean historyEnabled = params.getBoolean("history");
 		
-		templateMap.put("showVoip", WebProperties.getWebProperties().getShowVoip());
-		templateMap.put("showHardware", WebProperties.getWebProperties().getShowHardware());
+		templateMap.put("showVoip", WebProperties.getShowVoip());
+		templateMap.put("showHardware", WebProperties.getShowHardware());
 		
 		// Custom set properties that are to be displayed
 		String unittypeName = unit.getUnittype().getName();
 		Map<String, String> shortCutParams = new LinkedHashMap<String, String>();
-		for (Entry<String, String> property : WebProperties.getWebProperties().getCustomDash(unittypeName).entrySet()) {
+		for (Entry<String, String> property : WebProperties.getCustomDash(unittypeName).entrySet()) {
 			// Call to resolve any parameter referencing other parameters
 			String propValue = resolveParameters(property.getKey());
 			if (property.getValue() != null)

@@ -83,7 +83,7 @@ public class LoginServlet extends HttpServlet implements Filter {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws NoSuchAlgorithmException the no such algorithm exception
 	 */
-	protected void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSuchAlgorithmException {
+	private void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSuchAlgorithmException {
 		String sessionId = request.getSession().getId();
 		SessionData sessionData = SessionCache.getSessionData(sessionId);
 		if (isConfigured()) {
@@ -134,7 +134,7 @@ public class LoginServlet extends HttpServlet implements Filter {
 		Template template = tConfig.getTemplate("loginpage.ftl");
 		HashMap<String, Object> root = new HashMap<String, Object>();
 
-		root.put("CSS_FILE", WebProperties.getWebProperties().getString(WebConstants.DEFAULT_PROPERTIES_KEY, "default"));
+		root.put("CSS_FILE", WebProperties.getString(WebConstants.DEFAULT_PROPERTIES_KEY, "default"));
 
 		if (loginHandler != null)
 			root.put("scramblePassword", loginHandler.scramblePasswordWithMD5());
@@ -203,7 +203,7 @@ public class LoginServlet extends HttpServlet implements Filter {
 		 * Remember the currently accessed page by storing it in sessionData.
 		 * If there are no filtered unittypes add wildcard for allowed unittypes (ACCEPT ALL FIRST, THEN RESTRICT)
 		 */
-		if (isConfigured() == false) {
+		if (!isConfigured()) {
 			SessionData sessionData = SessionCache.getSessionData(sReq.getSession().getId());
 
 			/**
@@ -286,7 +286,7 @@ public class LoginServlet extends HttpServlet implements Filter {
 	 *
 	 * @param req the req
 	 */
-	public static void retrieveAndSetConnectionProperties(HttpServletRequest req) {
+	private static void retrieveAndSetConnectionProperties(HttpServletRequest req) {
 		ConnectionProperties xapsCp = LoginPage.getXAPSConnectionProperties();
 		ConnectionProperties syslogCp = LoginPage.getSyslogConnectionProperties();
 		if (xapsCp != null && xapsCp.getUrl() != null)
@@ -304,8 +304,8 @@ public class LoginServlet extends HttpServlet implements Filter {
 	 * @param req the req
 	 * @return true, if is timeout
 	 */
-	public boolean isTimeout(HttpServletRequest req) {
-		int timeoutInMinutes = WebProperties.getWebProperties().getSessionTimeout();
+	private boolean isTimeout(HttpServletRequest req) {
+		int timeoutInMinutes = WebProperties.getSessionTimeout();
 
 		Date lastAccessed = SessionCache.getSessionData(req.getSession().getId()).getLastAccessed();
 		if (lastAccessed == null)
@@ -326,7 +326,7 @@ public class LoginServlet extends HttpServlet implements Filter {
 	 *
 	 * @param req the req
 	 */
-	public void updateTimeout(HttpServletRequest req) {
+	private void updateTimeout(HttpServletRequest req) {
 		SessionData sessionData = SessionCache.getSessionData(req.getSession().getId());
 		sessionData.setLastAccessed(new Date(System.currentTimeMillis()));
 	}
@@ -338,7 +338,7 @@ public class LoginServlet extends HttpServlet implements Filter {
 	 * @return true, if is user logged in
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public boolean isUserLoggedIn(String sessionId) throws IOException {
+	private boolean isUserLoggedIn(String sessionId) throws IOException {
 		SessionData sessionData = SessionCache.getSessionData(sessionId);
 		if (sessionData.getUser() == null)
 			return false;
@@ -354,7 +354,7 @@ public class LoginServlet extends HttpServlet implements Filter {
 	 * @return true, if is user authenticated
 	 * @throws Exception the exception
 	 */
-	public boolean isUserAuthenticated(String name, String passwd, String sessionId) throws Exception {
+	private boolean isUserAuthenticated(String name, String passwd, String sessionId) throws Exception {
 		SessionData sessionData = SessionCache.getSessionData(sessionId);
 		name = name.toLowerCase();
 		logger.debug("Will check if " + name + "/" + passwd + " is authenticated using " + loginHandler.getClass() + " class");
@@ -486,13 +486,7 @@ public class LoginServlet extends HttpServlet implements Filter {
 	 * @throws ServletException the servlet exception
 	 */
 	public void init(FilterConfig filterConfig) throws ServletException {
-		String contextPath = "";// filterConfig.getServletContext().getContextPath();
-		if (contextPath.equals("/xapsweb")) {
-			contextPath = "";
-		} else if (contextPath.trim().length() > 1) {
-			contextPath = "-" + contextPath.substring(1);
-		}
-		SessionCache.CONTEXT_PATH = contextPath;
+		SessionCache.CONTEXT_PATH = "";
 
 		Log.initialize("xaps-web" + SessionCache.CONTEXT_PATH + "-logs.properties");
 

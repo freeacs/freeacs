@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.owera.common.ssl.EasySSLProtocolSocketFactory;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 
@@ -32,7 +33,6 @@ import com.owera.xaps.monitor.task.MonitorInfo;
 import com.owera.xaps.monitor.task.SendEmailTask;
 import com.owera.xaps.monitor.task.TriggerNotificationHourly;
 import com.owera.xaps.monitor.task.TriggerNotificationSecondly;
-import com.owera.xaps.web.app.page.monitor.EasySSLProtocolSocketFactory;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -104,7 +104,7 @@ public class MonitorServlet extends HttpServlet {
 		processRequest(request, response);
 	}
 
-	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
 		Template page = config.getTemplate("main.ftl");
 		Map<String, Object> rootMap = new HashMap<String, Object>();

@@ -135,7 +135,7 @@ public class Output {
 				pageContents = Freemarker.parseTemplate(getTemplateMap(), mainTemplate);
 			}catch(Throwable allPossibleExceptions){
 				allPossibleExceptions.printStackTrace();
-				pageContents = processExceptionTemplate(new Exception(allPossibleExceptions),WebProperties.getWebProperties().getBoolean("debug"));
+				pageContents = processExceptionTemplate(new Exception(allPossibleExceptions),WebProperties.getBoolean("debug"));
 			}finally{
 				deliverHTML(pageContents,inputParameters,servletResponseChannel);
 			}
@@ -473,7 +473,7 @@ public class Output {
 	 * @return true, if is gZIP enabled
 	 */
 	private boolean isGZIPEnabled() {
-		return WebProperties.getWebProperties().getBoolean("gzip.enabled");	
+		return WebProperties.getBoolean("gzip.enabled");
 	}
 	
 	/**

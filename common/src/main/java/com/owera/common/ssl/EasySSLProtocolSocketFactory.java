@@ -1,4 +1,4 @@
-package com.owera.xaps.web.app.page.monitor;
+package com.owera.common.ssl;
 
 /*
  * $HeadURL$

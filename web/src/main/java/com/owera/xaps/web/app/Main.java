@@ -172,13 +172,13 @@ public class Main extends HttpServlet {
 		templateMap.put("TOOLS_MENU", new MenuServlet().getToolsMenu(params.getSession().getId(), ""));
 		//		templateMap.put("SELECTED_MENU_PAGE", Page.getSelectedMenuPage(pageStr));
 		templateMap.put("HELP_PAGE", Page.getHelpPage(pageStr));
-		templateMap.put("CONFIRMCHANGES", WebProperties.getWebProperties().getBoolean("confirmchanges", false));
+		templateMap.put("CONFIRMCHANGES", WebProperties.getBoolean("confirmchanges", false));
 		templateMap.put("REQUESTED_PAGE", pageStr);
-		templateMap.put("IXEDIT_DEVELOPER", WebProperties.getWebProperties().getBoolean("ixedit.enabled"));
-		templateMap.put("CSS_FILE", WebProperties.getWebProperties().getString(WebConstants.DEFAULT_PROPERTIES_KEY, "default"));
+		templateMap.put("IXEDIT_DEVELOPER", WebProperties.getBoolean("ixedit.enabled"));
+		templateMap.put("CSS_FILE", WebProperties.getString(WebConstants.DEFAULT_PROPERTIES_KEY, "default"));
 		templateMap.put("STATUS_LOGGEDIN", getLoggedInStatusTitle(params));
-		templateMap.put("SESSION_TIMEOUT", WebProperties.getWebProperties().getSessionTimeout());
-		templateMap.put("JAVASCRIPT_DEBUG", Boolean.parseBoolean(WebProperties.getWebProperties().getString("javascript.debug", "false")));
+		templateMap.put("SESSION_TIMEOUT", WebProperties.getSessionTimeout());
+		templateMap.put("JAVASCRIPT_DEBUG", Boolean.parseBoolean(WebProperties.getString("javascript.debug", "false")));
 
 		outputHandler.deliverResponse();
 

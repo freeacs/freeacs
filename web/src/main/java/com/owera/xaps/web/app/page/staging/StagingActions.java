@@ -51,7 +51,7 @@ import com.owera.xaps.web.app.input.DropDownSingleSelect;
 import com.owera.xaps.web.app.input.Input;
 import com.owera.xaps.web.app.input.InputSelectionFactory;
 import com.owera.xaps.web.app.page.AbstractWebPage;
-import com.owera.xaps.web.app.page.staging.logic.HTTPSManager;
+import com.owera.common.ssl.HTTPSManager;
 import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.WebProperties;
 import com.owera.xaps.web.app.util.XAPSLoader;
@@ -803,7 +803,7 @@ public abstract class StagingActions extends AbstractWebPage {
 			tp.setEndpoint(url);
 			if (url.startsWith("https")) {
 				logger.debug("Provider URL is HTTPS, will check certificates and install if needed");
-				HTTPSManager.installCertificate(url, WebProperties.getWebProperties());
+				HTTPSManager.installCertificate(url, WebProperties.getString("keystore.pass", "changeit"));
 			}
 			com.owera.xapsws.Profile p = new com.owera.xapsws.Profile();
 			p.setName(profileName);

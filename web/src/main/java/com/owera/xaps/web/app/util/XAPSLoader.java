@@ -86,7 +86,7 @@ public class XAPSLoader {
 	 * @return the session timeout
 	 */
 	public static int getSessionTimeout() {
-		return WebProperties.getWebProperties().getSessionTimeout();
+		return WebProperties.getSessionTimeout();
 	}
 
 	/**

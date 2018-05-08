@@ -1,4 +1,4 @@
-package com.owera.xaps.web.app.page.staging.logic;
+package com.owera.common.ssl;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,7 +20,6 @@ import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import com.owera.common.log.Logger;
-import com.owera.xaps.web.app.util.WebProperties;
 
 
 /**
@@ -35,12 +34,12 @@ public class HTTPSManager {
 	 * Install certificate.
 	 *
 	 * @param url the url
-	 * @param props the props
+	 * @param password
 	 * @throws Exception the exception
 	 */
-	public static void installCertificate(String url,WebProperties props) throws Exception {
+	public static void installCertificate(String url, String password) throws Exception {
 		int port = 443;
-		char[] passphrase = props.getString("keystore.pass", "changeit").toCharArray();
+		char[] passphrase = password.toCharArray();
 		int doubleSlashPos = url.indexOf("//");
 		int slashPos = url.indexOf("/", doubleSlashPos + 2);
 		String host = url.substring(doubleSlashPos + 2, slashPos);
@@ -52,7 +51,7 @@ public class HTTPSManager {
 		char SEP = File.separatorChar;
 		File dir = new File(System.getProperty("java.home") + SEP + "lib" + SEP + "security");
 		File file = new File(dir, "jssecacerts");
-		if (file.isFile() == false) {
+		if (!file.isFile()) {
 			file = new File(dir, "cacerts");
 		}
 		InputStream in = new FileInputStream(file);
