@@ -1,7 +1,7 @@
 # freeacs
 freeacs with maven and jetty
 
-[![Build Status](https://travis-ci.org/jarlah/freeacs.svg?branch=master)](https://travis-ci.org/jarlah/freeacs)
+[![Build Status](https://travis-ci.org/freeacs/freeacs.svg?branch=master)](https://travis-ci.org/freeacs/freeacs)
 
 This is a work in progress. The plan is to convert the previous manual build and deployment process to a completely automated maven build backed with travis CI etc.
 
