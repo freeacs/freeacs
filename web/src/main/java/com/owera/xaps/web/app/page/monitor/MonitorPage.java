@@ -61,8 +61,7 @@ public class MonitorPage extends AbstractWebPage {
 		}
 
 		String cmd = req.getParameter("page");
-		PropertyReader pr = new PropertyReader("xaps-web.properties");
-		String baseURL = pr.getProperty("monitor.location");
+		String baseURL = WebProperties.getString("monitor.location", null);
 		if (!baseURL.endsWith("/"))
 			baseURL += "/";
 		String url = null;

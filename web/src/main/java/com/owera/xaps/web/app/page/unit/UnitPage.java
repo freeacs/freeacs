@@ -73,8 +73,7 @@ public class UnitPage extends AbstractWebPage {
 	private String nextConnectTms;
 	private String nextConnectDiff;
 	private boolean lateConnect;
-	private boolean confidentialsRestricted = Boolean.parseBoolean(
-			new PropertyReader("xaps-web.properties").getProperty("confidentials.restricted"));
+	private boolean confidentialsRestricted = WebProperties.getBoolean("confidentials.restricted");
 	
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.AbstractWebPage#getTitle(java.lang.String)

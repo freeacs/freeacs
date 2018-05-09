@@ -3,13 +3,18 @@ package com.owera.xaps.monitor;
 import java.util.Map;
 
 import com.owera.common.util.PropertyReader;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 
 public class Properties {
 
-	private static PropertyReader pr = new PropertyReader("xaps-monitor.properties");
+	private static Config config = ConfigFactory.parseResources("xaps-monitor.conf");
 
 	public static String get(String property) {
-		return pr.getProperty(property);
+		if (config.hasPath(property)) {
+			return config.getString(property);
+		}
+		return null;
 	}
 
 	/**
@@ -46,25 +51,26 @@ public class Properties {
 		return (long) getInteger("monitor.retrysec", 300);
 	}
 
-	private static int getInteger(String propertyKey, int defaultValue) {
-		String prop = pr.getProperty(propertyKey);
+	public static int getInteger(String propertyKey, int defaultValue) {
+		if (!config.hasPath(propertyKey)) {
+			return defaultValue;
+		}
 		try {
-			return Integer.parseInt(prop);
+			return config.getInt(propertyKey);
 		} catch (Throwable t) {
 			return defaultValue;
 		}
 	}
 
-	private static String getString(String propertyKey, String defaultValue) {
-		String prop = pr.getProperty(propertyKey);
+	public static String getString(String propertyKey, String defaultValue) {
+		if (!config.hasPath(propertyKey)) {
+			return defaultValue;
+		}
+		String prop = config.getString(propertyKey);
 		if (prop == null) {
 			return defaultValue;
 		}
 		return prop;
-	}
-
-	public static Map<String, Object> getPropertyMap() {
-		return pr.getPropertyMap();
 	}
 
 }

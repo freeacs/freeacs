@@ -41,6 +41,9 @@ public class WebProperties {
 	 * @return the integer
 	 */
 	public static int getInteger(String propertyKey, int defaultValue) {
+		if (!config.hasPath(propertyKey)) {
+			return defaultValue;
+		}
 		try {
 			return config.getInt(propertyKey);
 		} catch (Exception t) {
@@ -57,6 +60,9 @@ public class WebProperties {
 	 * @return the long
 	 */
 	public static long getLong(String propertyKey, long defaultValue) {
+		if (!config.hasPath(propertyKey)) {
+			return defaultValue;
+		}
 		try {
 			return config.getLong(propertyKey);
 		} catch (Throwable t) {
@@ -73,6 +79,9 @@ public class WebProperties {
 	 * @return the string
 	 */
 	public static String getString(String propertyKey, String defaultValue) {
+		if (!config.hasPath(propertyKey)) {
+			return defaultValue;
+		}
 		String prop = config.getString(propertyKey);
 		if (prop == null) {
 			log.debug("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
@@ -98,6 +107,9 @@ public class WebProperties {
 	 * @return the boolean
 	 */
 	public static Boolean getBoolean(String propertyKey, Boolean def) {
+		if (!config.hasPath(propertyKey)) {
+			return def;
+		}
 		try {
 			return config.getBoolean(propertyKey);
 		} catch (Throwable t) {

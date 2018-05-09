@@ -13,8 +13,8 @@ public class ConnectionProperties {
 	private String url;
 	private String user;
 	private String password;
-	private int maxconn = 10; // Default setting
-	private long maxage = 600000; // Default setting is 600 seconds
+	public static int maxconn = 10; // Default setting
+	public static long maxage = 600000; // Default setting is 600 seconds
 
 	private static final Logger log = new Logger();
 

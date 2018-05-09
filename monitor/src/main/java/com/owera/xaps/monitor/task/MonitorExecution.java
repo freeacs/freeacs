@@ -3,7 +3,6 @@ package com.owera.xaps.monitor.task;
 import java.io.IOException;
 
 import com.owera.common.ssl.HTTPSManager;
-import com.owera.xaps.monitor.MonitorProperties;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
@@ -42,7 +41,7 @@ public class MonitorExecution implements Runnable {
 		String version = "";
 		try {
 			if (url.startsWith("https://"))
-				HTTPSManager.installCertificate(url, MonitorProperties.getString("keystore.pass", "changeit"));
+				HTTPSManager.installCertificate(url, Properties.getString("keystore.pass", "changeit"));
 			while (System.currentTimeMillis() - startTms < Properties.getRetrySeconds() * 1000) {
 				try {
 					method = new GetMethod(url);
