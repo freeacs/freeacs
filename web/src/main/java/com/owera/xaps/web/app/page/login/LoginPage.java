@@ -13,14 +13,7 @@ import com.owera.xaps.web.app.page.AbstractWebPage;
 import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.SessionData;
 
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
-import static com.owera.xaps.web.app.util.WebProperties.getInteger;
-import static com.owera.xaps.web.app.util.WebProperties.getLong;
-import static com.owera.xaps.web.app.util.WebProperties.getString;
+import static com.owera.xaps.web.app.util.WebProperties.*;
 
 /**
  * The Login page is responsible for retrieving connection properties and clearing session (logging out).
@@ -65,24 +58,6 @@ public class LoginPage extends AbstractWebPage {
 		Long maxAge = getMaxAge("syslog");
 		Integer maxConn = getMaxConn("syslog");
 		return ConnectionProvider.getConnectionProperties(url, maxAge, maxConn);
-	}
-
-	private static int getMaxConn(final String infix) {
-		return getInteger("db." + infix + ".maxconn", ConnectionProperties.maxconn);
-	}
-
-	private static long getMaxAge(final String infix) {
-		return getLong("db." + infix + ".maxage", ConnectionProperties.maxage);
-	}
-
-	private static String getUrl(final String infix) {
-		return Optional.ofNullable(getString("db." + infix + ".url", null))
-				.orElseGet(new Supplier<String>() {
-					@Override
-					public String get() {
-						return getString("db." +infix, null);
-					}
-				});
 	}
 
 	/* (non-Javadoc)

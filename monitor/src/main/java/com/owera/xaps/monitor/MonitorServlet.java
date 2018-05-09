@@ -38,6 +38,8 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
+import static com.owera.xaps.monitor.Properties.*;
+
 /**
  * Servlet implementation class Welcome
  */
@@ -79,7 +81,7 @@ public class MonitorServlet extends HttpServlet {
 			// Run every morning at 0700 - light task - will send email if monitor-server is up
 			scheduler.registerTask(new Schedule(7 * 60 * 60000, false, ScheduleType.DAILY, new MonitorHeartbeatTask("MonitorHeartbeatTask")));
 
-			ConnectionProperties connProps = ConnectionProvider.getConnectionProperties("xaps-monitor.properties", "db.xaps");
+			ConnectionProperties connProps = ConnectionProvider.getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps"));
 			// Run every second - very light usually - check if there's a trigger release message (and process)
 			scheduler.registerTask(new Schedule(60000, false, ScheduleType.INTERVAL, new TriggerNotificationSecondly("TriggerNotificationSecondly", connProps)));
 			// Run every hour - very light usually - check if there's a trigger release we've missed 

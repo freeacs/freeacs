@@ -1,15 +1,11 @@
 package com.owera.xaps.web.app.util;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
+import com.owera.common.db.ConnectionProperties;
 import com.owera.common.log.Logger;
 import com.owera.common.util.PropertyReader;
 import com.typesafe.config.Config;
@@ -195,6 +191,24 @@ public class WebProperties {
 
 		Collections.sort(keys);
 		return keys;
+	}
+
+	public static int getMaxConn(final String infix) {
+		return getInteger("db." + infix + ".maxconn", ConnectionProperties.maxconn);
+	}
+
+	public static long getMaxAge(final String infix) {
+		return getLong("db." + infix + ".maxage", ConnectionProperties.maxage);
+	}
+
+	public static String getUrl(final String infix) {
+		return Optional.ofNullable(getString("db." + infix + ".url", null))
+				.orElseGet(new Supplier<String>() {
+					@Override
+					public String get() {
+						return getString("db." +infix, null);
+					}
+				});
 	}
 
 }

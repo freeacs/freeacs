@@ -61,6 +61,14 @@
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>9.2.11.v20150529</version>
+                <configuration>
+                    <webApp>
+                        <contextPath>/monitor</contextPath>
+                    </webApp>
+                    <httpConnector>
+                        <port>8082</port>
+                    </httpConnector>
+                </configuration>
             </plugin>
         </plugins>
     </build>

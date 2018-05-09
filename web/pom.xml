@@ -231,6 +231,9 @@
                     <webApp>
                         <contextPath>/web</contextPath>
                     </webApp>
+                    <httpConnector>
+                        <port>8081</port>
+                    </httpConnector>
                 </configuration>
             </plugin>
         </plugins>
