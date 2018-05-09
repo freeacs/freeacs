@@ -16,39 +16,6 @@ import com.owera.xaps.monitor.Properties;
  */
 public class MonitorExecution implements Runnable {
 
-	//	/**
-	//	 * If exception occur during monitoring, retry a number of times, until 5 minutes
-	//	 * of non-connectivity is established as a fact.
-	//	 * @author Morten
-	//	 *
-	//	 */
-	//	public class MonitorExecutionRetry implements HttpMethodRetryHandler {
-	//
-	//		private long startTms;
-	//
-	//		public MonitorExecutionRetry(long startTms) {
-	//			this.startTms = startTms;
-	//		}
-	//
-	//		@Override
-	//		public boolean retryMethod(HttpMethod httpMethod, IOException exception, int executionCount) {
-	//			if (System.currentTimeMillis() - startTms >= Properties.getRetrySeconds() * 1000) {
-	//				logger.debug("Monitoring: FiveMinuteRetry.retryMethod() invoked - return false -> no more retry since " + Properties.getRetrySeconds() + " seconds since start");
-	//				return false;
-	//			}
-	//			try {
-	//				Thread.sleep(Properties.getRetrySeconds() * 1000 / 10);
-	//
-	//			} catch (InterruptedException e) {
-	//				// TODO Auto-generated catch block
-	//				e.printStackTrace();
-	//			}
-	//			logger.debug("FiveMinuteRetry.retryMethod() invoked - return true -> retry");
-	//			return true;
-	//		}
-	//
-	//	}
-
 	private HttpClient client = new HttpClient();
 
 	private static Logger logger = new Logger();
@@ -63,10 +30,9 @@ public class MonitorExecution implements Runnable {
 
 	private long startTms;
 
-	public MonitorExecution(String url) {
+	MonitorExecution(String url) {
 		this.url = url;
 		this.startTms = System.currentTimeMillis();
-		//		client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new MonitorExecutionRetry(startTms));
 	}
 
 	public void run() {
@@ -87,7 +53,7 @@ public class MonitorExecution implements Runnable {
 					else {
 						errorMessage = "HTTP Return Code: " + returnCode;
 					}
-					if (response != null && response.indexOf("XAPSOK") > -1) {
+					if (response != null && response.contains("XAPSOK")) {
 						status = "OK";
 						errorMessage = null;
 						int pos = response.indexOf("XAPSOK");
@@ -124,7 +90,6 @@ public class MonitorExecution implements Runnable {
 	 *
 	 * @param method HttpMethod
 	 * @return The one line response
-	 * @throws IOException 
 	 */
 	private String getResponse(HttpMethod method) throws IOException {
 		String body = method.getResponseBodyAsString();
