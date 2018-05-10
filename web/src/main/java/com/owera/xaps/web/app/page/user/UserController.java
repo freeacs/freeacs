@@ -27,7 +27,7 @@ import com.owera.xaps.web.app.util.SessionCache;
  * The Class UserController.
  */
 @Controller
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/api/user")
 public class UserController extends PermissionController {
 
 	/** The user group controller. */
@@ -138,7 +138,7 @@ public class UserController extends PermissionController {
 	 * @throws SQLException the sQL exception
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 */
-	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	@RequestMapping(value = "list", method = RequestMethod.GET)
 	public @ResponseBody
 	Map<String, Object> list(HttpSession session, HttpServletRequest request, HttpServletResponse outputHandler) throws IOException, ParseException, SQLException, NoAvailableConnectionException {
 		Map<String, Object> map = new HashMap<String, Object>();

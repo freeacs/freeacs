@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * The Class UserGroupController.
  */
 @Controller
-@RequestMapping(value="/group")
+@RequestMapping(value="/api/group")
 public class UserGroupController extends PermissionController {
 	
 	/** The user controller. */

@@ -34,7 +34,7 @@ import com.owera.xaps.web.app.util.WebConstants;
 import com.owera.xaps.web.app.util.XAPSLoader;
 
 @Controller
-@RequestMapping(value = "/parameters")
+@RequestMapping(value = "/api/parameters")
 public class UnittypeParametersPage extends AbstractWebPage {
 
 	/** The session id. */
@@ -57,7 +57,7 @@ public class UnittypeParametersPage extends AbstractWebPage {
 	 * @throws NoAvailableConnectionException
 	 * @throws SQLException
 	 */
-	@RequestMapping(method=RequestMethod.GET,value="/list")
+	@RequestMapping(method=RequestMethod.GET,value="list")
 	public @ResponseBody String getUnittypeParameters(
 			@RequestParam(required=true) String unittype,
 			@RequestParam(required=true) String term,

@@ -27,6 +27,6 @@ public abstract class UnitNotFoundPage {
 	public static String getErrorText(String unit,Configuration config) throws TemplateException, IOException{
 		Map<String,Object> root = new HashMap<String,Object>();
 		root.put("unitId", unit);
-		return Freemarker.parseTemplate(root, config.getTemplate("/unit-status/notfound.ftl"));
+		return Freemarker.parseTemplate(root, config.getTemplate("templates/"+ "/unit-status/notfound.ftl"));
 	}
 }

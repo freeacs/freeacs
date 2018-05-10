@@ -15,7 +15,6 @@ import java.util.Map;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -97,16 +96,16 @@ public class LoginServlet extends HttpServlet implements Filter {
 							target = Page.SEARCH.getUrl();
 						response.sendRedirect(target.replaceAll("\\s", "%20"));
 					} else {
-						printLoginPage(request, response, sessionData);
+						printLoginPage(response, sessionData);
 					}
 				} catch (Exception e) {
 					sessionData.setErrorMessage("Error while authenticating: " + e.getLocalizedMessage());
-					printLoginPage(request, response, sessionData);
+					printLoginPage(response, sessionData);
 				}
 			} else if (isUserLoggedIn(sessionId))
 				response.sendRedirect(Page.SEARCH.getUrl());
 			else {
-				printLoginPage(request, response, sessionData);
+				printLoginPage(response, sessionData);
 			}
 		} else {
 			String target = sessionData.getLastLoginTarget();
@@ -122,14 +121,13 @@ public class LoginServlet extends HttpServlet implements Filter {
 	/**
 	 * Prints the login page.
 	 *
-	 * @param request the request
 	 * @param response the response
 	 * @param sessionData the session data
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	private void printLoginPage(HttpServletRequest request, HttpServletResponse response, SessionData sessionData) throws IOException {
+	private void printLoginPage(HttpServletResponse response, SessionData sessionData) throws IOException {
 		if (tConfig == null)
-			tConfig = Freemarker.initFreemarker(this.getServletContext());
+			tConfig = Freemarker.initFreemarker();
 
 		Template template = tConfig.getTemplate("loginpage.ftl");
 		HashMap<String, Object> root = new HashMap<String, Object>();
@@ -223,10 +221,8 @@ public class LoginServlet extends HttpServlet implements Filter {
 			return;
 		}
 
-		ServletContext context = config.getServletContext();
-
 		if (freemarker == null)
-			freemarker = Freemarker.initFreemarker(context);
+			freemarker = Freemarker.initFreemarker();
 
 		HttpServletRequest request = (HttpServletRequest) req;
 
@@ -249,7 +245,7 @@ public class LoginServlet extends HttpServlet implements Filter {
 				chain.doFilter(req, res);
 			} else {
 				sessionData.setLastLoginTarget(null);
-				Template t = freemarker.getTemplate("errorpage.ftl");
+				Template t = freemarker.getTemplate("templates/"+ "errorpage.ftl");
 				Map<String, String> root = new HashMap<String, String>();
 				root.put("message", "You are not allowed to access<br />the " + page + " page." + "<br /><a href='" + Page.SEARCH.getUrl()
 						+ "'>Go to the search page</a><br />or hit the browser back button.");

@@ -30,18 +30,10 @@ import freemarker.template.TemplateExceptionHandler;
 public abstract class HelpPage {
 	
 	/** The Constant config. */
-	private static final Configuration config;
+	private static final Configuration config = Freemarker.initFreemarker();
 
 	/** The Constant NO_DATA. */
 	private static final String NO_DATA = "No data available";
-
-	static {
-		config = new Configuration();
-		config.setTemplateLoader(new ClassTemplateLoader(HelpPage.class,""));
-		config.setTemplateUpdateDelay(0);
-		config.setTemplateExceptionHandler(TemplateExceptionHandler.HTML_DEBUG_HANDLER);
-		config.setObjectWrapper(ObjectWrapper.BEANS_WRAPPER);
-	}
 
 	/**
 	 * Gets the hTML for page by class.

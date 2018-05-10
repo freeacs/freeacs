@@ -130,7 +130,7 @@ import freemarker.template.TemplateModelException;
  * on the process method.</p>
  */
 @Controller
-@RequestMapping(value="unit-dashboard")
+@RequestMapping(value="/api/unit-dashboard")
 public class UnitStatusPage extends AbstractWebPage {
 	
 	/** The logger. */

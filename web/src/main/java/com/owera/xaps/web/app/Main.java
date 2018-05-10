@@ -139,7 +139,7 @@ public class Main extends HttpServlet {
 	 * It is thread safe as long as no changes is done to the Configuration after it has been initialized.
 	 */
 	public void init() {
-		config = Freemarker.initFreemarker(getServletContext());
+		config = Freemarker.initFreemarker();
 	}
 
 	/**
