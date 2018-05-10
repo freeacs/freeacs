@@ -1,26 +1,22 @@
 package com.owera.xaps.web.app.page.report.custom;
 
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.xaps.dbi.Group;
+import com.owera.xaps.dbi.Profile;
+import com.owera.xaps.dbi.Unittype;
+import com.owera.xaps.dbi.XAPS;
+import com.owera.xaps.dbi.report.*;
+import com.owera.xaps.web.app.input.ParameterParser;
+import com.owera.xaps.web.app.page.report.ReportData;
+import com.owera.xaps.web.app.util.SessionCache;
+import com.owera.xaps.web.app.util.XAPSLoader;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.Group;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.report.PeriodType;
-import com.owera.xaps.dbi.report.RecordSyslog;
-import com.owera.xaps.dbi.report.Report;
-import com.owera.xaps.dbi.report.ReportGenerator;
-import com.owera.xaps.dbi.report.ReportSyslogGenerator;
-import com.owera.xaps.web.app.input.ParameterParser;
-import com.owera.xaps.web.app.page.report.ReportData;
-import com.owera.xaps.web.app.util.SessionCache;
-import com.owera.xaps.web.app.util.XAPSLoader;
 
 
 /**

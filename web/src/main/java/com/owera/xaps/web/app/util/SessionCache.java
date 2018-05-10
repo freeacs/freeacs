@@ -1,12 +1,5 @@
 package com.owera.xaps.web.app.util;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.common.util.Cache;
@@ -15,15 +8,14 @@ import com.owera.xaps.dbi.DBI;
 import com.owera.xaps.dbi.SyslogEntry;
 import com.owera.xaps.dbi.SyslogFilter;
 import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.report.PeriodType;
-import com.owera.xaps.dbi.report.RecordHardware;
-import com.owera.xaps.dbi.report.RecordSyslog;
-import com.owera.xaps.dbi.report.RecordVoip;
-import com.owera.xaps.dbi.report.Report;
-import com.owera.xaps.dbi.report.ReportConverter;
-import com.owera.xaps.dbi.report.ReportHardwareGenerator;
-import com.owera.xaps.dbi.report.ReportSyslogGenerator;
-import com.owera.xaps.dbi.report.ReportVoipGenerator;
+import com.owera.xaps.dbi.report.*;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 
 /**

@@ -1,9 +1,5 @@
 package com.owera.xaps.web.app.page.group;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.owera.xaps.dbi.Group;
 import com.owera.xaps.dbi.Profile;
 import com.owera.xaps.dbi.Unittype;
@@ -21,11 +17,14 @@ import com.owera.xaps.web.app.table.TableElementMaker;
 import com.owera.xaps.web.app.util.SessionData;
 import com.owera.xaps.web.app.util.WebConstants;
 import com.owera.xaps.web.app.util.XAPSLoader;
-
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 /**

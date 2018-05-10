@@ -25,10 +25,9 @@
         <jfreechart.version>1.0.17</jfreechart.version>
     </properties>
 
-
     <modules>
         <module>db</module>
-	<module>readme</module>
+	    <module>readme</module>
         <module>common</module>
         <module>dbi</module>
         <module>wsc</module>

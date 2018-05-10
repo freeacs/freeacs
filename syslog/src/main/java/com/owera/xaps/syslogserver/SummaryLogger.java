@@ -16,9 +16,12 @@ public class SummaryLogger extends TaskDefaultImpl {
 	private static Logger summary = new Logger("Summary");
 	private static int summaryHeaderCount = 0;
 	private static boolean firstTime = true;
-	private static int maxMessagesPrMinute = Properties.getMaxMessagesPrMinute();
+	private static Integer maxMessagesPrMinute;
 
 	public static int getMaxMessagesPrMinute() {
+		if (maxMessagesPrMinute == null) {
+			maxMessagesPrMinute = Properties.getMaxMessagesPrMinute();
+		}
 		return maxMessagesPrMinute;
 	}
 

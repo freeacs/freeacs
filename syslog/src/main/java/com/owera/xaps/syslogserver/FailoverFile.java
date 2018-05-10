@@ -25,23 +25,18 @@ public class FailoverFile {
 
 	private static FailoverFile instance = new FailoverFile();
 
-	//	private static int noWriteMs = 0;
-
-	//	private static long tmsSinceLastWrite = System.currentTimeMillis();
-
-	private static long created = System.currentTimeMillis();
+	private static Long created;
 
 	private static long lastFlushed = System.currentTimeMillis();
 
-	static {
-		created -= Properties.getFailoverProcessInterval() * 60 * 1000;
-	}
-
-	public static FailoverFile getInstance() {
+	static FailoverFile getInstance() {
 		return instance;
 	}
 
-	public long createdTms() {
+	long createdTms() {
+		if (created == null) {
+			created = System.currentTimeMillis() - Properties.getFailoverProcessInterval() * 60 * 1000;
+		}
 		return created;
 	}
 
@@ -73,7 +68,7 @@ public class FailoverFile {
 		return bw;
 	}
 
-	public static long getFailoverCount(boolean checkStorage) {
+	static long getFailoverCount(boolean checkStorage) {
 		if (checkStorage && f.exists()) {
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(f));
@@ -92,16 +87,7 @@ public class FailoverFile {
 		return failoverCount;
 	}
 
-	//	public synchronized static long[] resetCount() {
-	//		long tmpFC = failoverCount;
-	//		long tmpNWS = noWriteMs;
-	//		tmsSinceLastWrite = System.currentTimeMillis();
-	//		failoverCount = 0;
-	//		noWriteMs = 0;
-	//		return new long[] { tmpFC, tmpNWS };
-	//	}
-
-	public synchronized File rotate() throws IOException {
+	synchronized File rotate() throws IOException {
 		try {
 			created = System.currentTimeMillis();
 			File tmp = f;

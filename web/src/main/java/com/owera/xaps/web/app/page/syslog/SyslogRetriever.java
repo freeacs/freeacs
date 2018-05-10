@@ -1,24 +1,15 @@
 package com.owera.xaps.web.app.page.syslog;
 
-import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Syslog;
-import com.owera.xaps.dbi.SyslogEntry;
-import com.owera.xaps.dbi.SyslogFilter;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.Unittype;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.app.page.AbstractWebPage;
 import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.XAPSLoader;
+
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.*;
 
 public class SyslogRetriever {
 	private SyslogData inputData;

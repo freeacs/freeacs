@@ -1,9 +1,15 @@
 package com.owera.xaps.web.app.page.monitor;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.owera.common.log.Logger;
+import com.owera.common.ssl.EasySSLProtocolSocketFactory;
+import com.owera.common.ssl.HTTPSManager;
+import com.owera.xaps.dbi.XAPS;
+import com.owera.xaps.web.app.Output;
+import com.owera.xaps.web.app.input.ParameterParser;
+import com.owera.xaps.web.app.page.AbstractWebPage;
+import com.owera.xaps.web.app.util.WebConstants;
+import com.owera.xaps.web.app.util.WebProperties;
+import com.owera.xaps.web.app.util.XAPSLoader;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
@@ -12,16 +18,9 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 
-import com.owera.common.log.Logger;
-import com.owera.common.util.PropertyReader;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.web.app.Output;
-import com.owera.xaps.web.app.input.ParameterParser;
-import com.owera.xaps.web.app.page.AbstractWebPage;
-import com.owera.xaps.web.app.page.staging.logic.HTTPSManager;
-import com.owera.xaps.web.app.util.WebConstants;
-import com.owera.xaps.web.app.util.WebProperties;
-import com.owera.xaps.web.app.util.XAPSLoader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -60,8 +59,7 @@ public class MonitorPage extends AbstractWebPage {
 		}
 
 		String cmd = req.getParameter("page");
-		PropertyReader pr = new PropertyReader("xaps-web.properties");
-		String baseURL = pr.getProperty("monitor.location");
+		String baseURL = WebProperties.getString("monitor.location", null);
 		if (!baseURL.endsWith("/"))
 			baseURL += "/";
 		String url = null;
@@ -77,7 +75,7 @@ public class MonitorPage extends AbstractWebPage {
 		
 		if(url.startsWith("https://")){
 			try{
-				HTTPSManager.installCertificate(url, WebProperties.getWebProperties());
+				HTTPSManager.installCertificate(url, WebProperties.getString("keystore.pass", "changeit"));
 			}catch(Exception e){
 				logger.error("Could not install server certificate for "+url,e);
 			}

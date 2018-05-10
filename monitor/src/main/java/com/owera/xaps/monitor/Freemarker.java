@@ -12,9 +12,9 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 
 public final class Freemarker  {
-	public Configuration initFreemarker(ServletContext context){
+	public Configuration initFreemarker(){
 		Configuration config = new Configuration();
-		config.setServletContextForTemplateLoading(context, "/WEB-INF/templates");
+		config.setClassForTemplateLoading(Freemarker.class, "/templates");
         config.setTemplateUpdateDelay(120);
         config.setTemplateExceptionHandler(TemplateExceptionHandler.HTML_DEBUG_HANDLER);
         config.setObjectWrapper(ObjectWrapper.DEFAULT_WRAPPER);
@@ -23,10 +23,4 @@ public final class Freemarker  {
 		return config;
 	}
 
-	public static String parseTemplate(Object root, Template template) throws TemplateException, IOException {
-		StringWriter writer = new StringWriter();
-		PrintWriter out = new PrintWriter(writer);
-		template.process(root, out);
-		return writer.toString();
-	}
 }

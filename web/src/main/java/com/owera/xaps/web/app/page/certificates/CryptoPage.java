@@ -1,11 +1,5 @@
 package com.owera.xaps.web.app.page.certificates;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpSession;
-
 import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.Certificate;
 import com.owera.xaps.dbi.XAPS;
@@ -16,9 +10,13 @@ import com.owera.xaps.web.app.input.ParameterParser;
 import com.owera.xaps.web.app.page.AbstractWebPage;
 import com.owera.xaps.web.app.util.WebConstants;
 import com.owera.xaps.web.app.util.XAPSLoader;
-
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
+
+import javax.servlet.http.HttpSession;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 
 /**

@@ -1,20 +1,33 @@
 package com.owera.xaps.core;
 
+import com.owera.common.db.ConnectionProperties;
 import com.owera.common.log.Logger;
 import com.owera.common.util.PropertyReader;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import com.typesafe.config.ConfigObject;
+
+import java.util.Optional;
+import java.util.function.Supplier;
 
 public class Properties {
 
-	private static String propertyfile = "xaps-core.properties";
-
-	private static PropertyReader pr = new PropertyReader(propertyfile);
+	private static Config config = ConfigFactory.parseResources("xaps-core.conf");
 
 	private static Logger logger = new Logger();
 
 	private static int getInteger(String propertyKey, int defaultValue) {
-		String prop = pr.getProperty(propertyKey);
 		try {
-			return Integer.parseInt(prop);
+			return config.getInt(propertyKey);
+		} catch (Throwable t) {
+			logger.warn("The value of " + propertyKey + " was not a number, instead using default value " + defaultValue);
+			return defaultValue;
+		}
+	}
+
+	private static long getLong(String propertyKey, long defaultValue) {
+		try {
+			return config.getLong(propertyKey);
 		} catch (Throwable t) {
 			logger.warn("The value of " + propertyKey + " was not a number, instead using default value " + defaultValue);
 			return defaultValue;
@@ -22,7 +35,7 @@ public class Properties {
 	}
 
 	private static String getString(String propertyKey, String defaultValue) {
-		String prop = pr.getProperty(propertyKey);
+		String prop = config.getString(propertyKey);
 		if (prop == null) {
 			logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
 			return defaultValue;
@@ -37,10 +50,6 @@ public class Properties {
 	public static int getCompletedJobLimit() {
 		return getInteger("completed.job.limit", 48);
 	}
-
-	//	public static int getNotProvisionedReportLimit() {
-	//		return getInteger("notprovisioned.report.limit", 48);
-	//	}
 
 	public static int getSyslogSeverityLimit(int severity) {
 		int defaultLimit = 7;
@@ -57,10 +66,6 @@ public class Properties {
 		return getInteger("syslog.severity." + severity + ".limit", defaultLimit);
 	}
 
-	public static String getCustomProperty(String customProperty) {
-		return pr.getProperty(customProperty);
-	}
-
 	public static String getReports() {
 		return getString("reports", "Basic");
 	}
@@ -75,6 +80,24 @@ public class Properties {
 
 	public static Integer getShellScriptLimit() {
 		return getInteger("shellscript.limit", 7);
+	}
+
+	public static int getMaxConn(final String infix) {
+		return getInteger("db." + infix + ".maxconn", ConnectionProperties.maxconn);
+	}
+
+	public static long getMaxAge(final String infix) {
+		return getLong("db." + infix + ".maxage", ConnectionProperties.maxage);
+	}
+
+	public static String getUrl(final String infix) {
+		return Optional.ofNullable(getString("db." + infix + ".url", null))
+				.orElseGet(new Supplier<String>() {
+					@Override
+					public String get() {
+						return getString("db." +infix, null);
+					}
+				});
 	}
 
 }

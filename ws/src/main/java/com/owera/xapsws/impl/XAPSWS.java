@@ -21,6 +21,10 @@ import com.owera.xaps.dbi.XAPSUnit;
 
 import com.owera.xapsws.Login;
 
+import static com.owera.xapsws.impl.Properties.getMaxAge;
+import static com.owera.xapsws.impl.Properties.getMaxConn;
+import static com.owera.xapsws.impl.Properties.getUrl;
+
 public class XAPSWS {
 
 	private static Logger logger = new Logger();
@@ -58,14 +62,14 @@ public class XAPSWS {
 	private synchronized void init(Login login, int lifetimeSec) throws RemoteException {
 		if (!initialized) {
 			try {
-				cp = ConnectionProvider.getConnectionProperties("xaps-ws.properties", "db.xaps");
+				cp = ConnectionProvider.getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps"));
 				Users users = new Users(cp);
 				User user = users.getUnprotected(login.getUsername());
 				if (user == null)
 					throw error("The user " + login.getUsername() + " is unknown");
 
 				id = new Identity(SyslogConstants.FACILITY_WEBSERVICE, VERSION, user);
-				syslog = new Syslog(ConnectionProvider.getConnectionProperties("xaps-ws.properties", "db.syslog"), id);
+				syslog = new Syslog(ConnectionProvider.getConnectionProperties(getUrl("syslog"), getMaxAge("syslog"), getMaxConn("syslog")), id);
 				dbi = new DBI(lifetimeSec + 30, cp, syslog);
 				xaps = dbi.getXaps();
 				if (!login.getPassword().equals(user.getSecret()) && !user.isCorrectSecret(login.getPassword()))

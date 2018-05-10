@@ -1,9 +1,12 @@
 package com.owera.xaps.base.db;
 
 import java.sql.SQLException;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
+import com.owera.common.log.Logger;
 import com.owera.xaps.Properties.Module;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.SessionDataI;
@@ -14,10 +17,16 @@ import com.owera.xaps.dbi.Syslog;
 import com.owera.xaps.dbi.Users;
 import com.owera.xaps.dbi.XAPS;
 import com.owera.xaps.dbi.XAPSUnit;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 
 public class DBAccess {
 
-	private static DBI dbi;
+	private static final Config config = ConfigFactory.load();
+
+    private static final Logger logger = new Logger();
+
+    private static DBI dbi;
 
 	private static Module module;
 	private static String facilityVersion;
@@ -42,11 +51,11 @@ public class DBAccess {
 	}
 
 	public static ConnectionProperties getXAPSProperties() {
-		return ConnectionProvider.getConnectionProperties("xaps-" + module.getModuleName() + ".properties", "db.xaps");
+		return ConnectionProvider.getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps"));
 	}
 
 	public static ConnectionProperties getSyslogProperties() {
-		return ConnectionProvider.getConnectionProperties("xaps-" + module.getModuleName() + ".properties", "db.syslog");
+		return ConnectionProvider.getConnectionProperties(getUrl("syslog"), getMaxAge("syslog"), getMaxConn("syslog"));
 	}
 
 	@SuppressWarnings("unused")
@@ -89,4 +98,58 @@ public class DBAccess {
 	public static XAPSUnit getXAPSUnit(XAPS xaps) throws SQLException {
 		return new XAPSUnit(getXAPSProperties(), xaps, xaps.getSyslog());
 	}
+
+    private static int getInteger(String propertyKey, int defaultValue) {
+        if (!config.hasPath(propertyKey)) {
+            logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
+            return defaultValue;
+        }
+        try {
+            return config.getInt(propertyKey);
+        } catch (Throwable t) {
+            logger.warn("The value of " + propertyKey + " was not a number, instead using default value " + defaultValue, t);
+            return defaultValue;
+        }
+    }
+
+    private static long getLong(String propertyKey, long defaultValue) {
+        if (!config.hasPath(propertyKey)) {
+            logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
+            return defaultValue;
+        }
+        try {
+            return config.getLong(propertyKey);
+        } catch (Throwable t) {
+            logger.warn("The value of " + propertyKey + " was not a number, instead using default value " + defaultValue, t);
+            return defaultValue;
+        }
+    }
+
+
+    private static String getString(String propertyKey, String defaultValue) {
+        if (!config.hasPath(propertyKey)) {
+            logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
+            return defaultValue;
+        }
+        return config.getString(propertyKey);
+    }
+
+
+    public static int getMaxConn(final String infix) {
+        return getInteger("db." + infix + ".maxconn", ConnectionProperties.maxconn);
+    }
+
+    public static long getMaxAge(final String infix) {
+        return getLong("db." + infix + ".maxage", ConnectionProperties.maxage);
+    }
+
+    public static String getUrl(final String infix) {
+        return Optional.ofNullable(getString("db." + infix + ".url", null))
+                .orElseGet(new Supplier<String>() {
+                    @Override
+                    public String get() {
+                        return getString("db." +infix, null);
+                    }
+                });
+    }
 }

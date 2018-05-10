@@ -1,5 +1,34 @@
 package com.owera.xaps.web.app.page.staging;
 
+import com.owera.common.db.ConnectionProperties;
+import com.owera.common.db.ConnectionProvider;
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.common.log.Logger;
+import com.owera.common.ssl.HTTPSManager;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.dbi.JobFlag.JobServiceWindow;
+import com.owera.xaps.dbi.JobFlag.JobType;
+import com.owera.xaps.dbi.Parameter;
+import com.owera.xaps.dbi.Profile;
+import com.owera.xaps.dbi.Unit;
+import com.owera.xaps.dbi.Unittype;
+import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
+import com.owera.xaps.dbi.util.SystemParameters;
+import com.owera.xaps.web.app.input.DropDownSingleSelect;
+import com.owera.xaps.web.app.input.Input;
+import com.owera.xaps.web.app.input.InputSelectionFactory;
+import com.owera.xaps.web.app.page.AbstractWebPage;
+import com.owera.xaps.web.app.util.SessionCache;
+import com.owera.xaps.web.app.util.WebProperties;
+import com.owera.xaps.web.app.util.XAPSLoader;
+import com.owera.xapsws.*;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,54 +37,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
 //import org.safehaus.uuid.UUID;
 //import org.safehaus.uuid.UUIDGenerator;
-
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
-import com.owera.xaps.dbi.File;
-import com.owera.xaps.dbi.FileType;
-import com.owera.xaps.dbi.Group;
-import com.owera.xaps.dbi.GroupParameter;
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.JobFlag;
-import com.owera.xaps.dbi.JobFlag.JobServiceWindow;
-import com.owera.xaps.dbi.JobFlag.JobType;
-import com.owera.xaps.dbi.JobParameter;
-import com.owera.xaps.dbi.JobStatus;
-import com.owera.xaps.dbi.Jobs;
-import com.owera.xaps.dbi.Parameter;
-import com.owera.xaps.dbi.Permissions;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.ProfileParameter;
-import com.owera.xaps.dbi.ProfileParameters;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.UnittypeParameterFlag;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
-import com.owera.xaps.dbi.util.SystemParameters;
-import com.owera.xaps.web.app.input.DropDownSingleSelect;
-import com.owera.xaps.web.app.input.Input;
-import com.owera.xaps.web.app.input.InputSelectionFactory;
-import com.owera.xaps.web.app.page.AbstractWebPage;
-import com.owera.xaps.web.app.page.staging.logic.HTTPSManager;
-import com.owera.xaps.web.app.util.SessionCache;
-import com.owera.xaps.web.app.util.WebProperties;
-import com.owera.xaps.web.app.util.XAPSLoader;
-import com.owera.xapsws.*;
 
 /**
  * The Class StagingActions.
@@ -803,7 +786,7 @@ public abstract class StagingActions extends AbstractWebPage {
 			tp.setEndpoint(url);
 			if (url.startsWith("https")) {
 				logger.debug("Provider URL is HTTPS, will check certificates and install if needed");
-				HTTPSManager.installCertificate(url, WebProperties.getWebProperties());
+				HTTPSManager.installCertificate(url, WebProperties.getString("keystore.pass", "changeit"));
 			}
 			com.owera.xapsws.Profile p = new com.owera.xapsws.Profile();
 			p.setName(profileName);

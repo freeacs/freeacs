@@ -1,23 +1,19 @@
 package com.owera.xaps.web.app.page.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 
 /**
  * The Class UserGroupController.
  */
 @Controller
-@RequestMapping(value="/group")
+@RequestMapping(value="/app/group")
 public class UserGroupController extends PermissionController {
 	
 	/** The user controller. */

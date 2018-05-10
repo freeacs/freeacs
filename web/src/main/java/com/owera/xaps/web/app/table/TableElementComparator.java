@@ -5,9 +5,9 @@
 
 package com.owera.xaps.web.app.table;
 
-import java.util.Comparator;
-
 import com.owera.common.util.NaturalComparator;
+
+import java.util.Comparator;
 
 
 /**

@@ -1,10 +1,9 @@
 package com.owera.xaps.web.app.util;
 
-import java.util.Map;
-
+import com.owera.xaps.web.Page;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
-import com.owera.xaps.web.Page;
+import java.util.Map;
 
 
 /**

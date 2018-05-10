@@ -1,29 +1,13 @@
 package com.owera.xaps.web.app.page.syslog;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.servlet.http.HttpServletRequest;
-
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.SyslogConstants;
-import com.owera.xaps.dbi.SyslogEvent;
-import com.owera.xaps.dbi.SyslogEvents;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.app.table.TableColor;
 import com.owera.xaps.web.app.util.DateUtils;
+import freemarker.template.*;
 
-import freemarker.template.SimpleObjectWrapper;
-import freemarker.template.SimpleScalar;
-import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+import java.util.Map.Entry;
 
 
 /**

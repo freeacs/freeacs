@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>freeacs-web</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>FreeACS Web</name>
 
     <properties>
@@ -28,6 +28,11 @@
             <groupId>com.github.jarlah</groupId>
             <artifactId>freeacs-ws-client</artifactId>
             <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+            <version>1.3.3</version>
         </dependency>
         <dependency>
             <groupId>javax.mail</groupId>
@@ -85,14 +90,14 @@
             <version>2.1</version>
         </dependency>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>${servlet.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
             <version>${freemarker.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>5.0.6.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
@@ -125,71 +130,6 @@
             <version>${jfreechart.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-asm</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.webflow</groupId>
-            <artifactId>spring-binding</artifactId>
-            <version>${spring.webflow.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-expression</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.webflow</groupId>
-            <artifactId>spring-faces</artifactId>
-            <version>${spring.webflow.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.webflow</groupId>
-            <artifactId>spring-js-resources</artifactId>
-            <version>${spring.webflow.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.webflow</groupId>
-            <artifactId>spring-js</artifactId>
-            <version>${spring.webflow.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-oxm</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.webflow</groupId>
-            <artifactId>spring-webflow</artifactId>
-            <version>${spring.webflow.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.metaparadigm</groupId>
             <artifactId>json-rpc</artifactId>
             <version>1.0</version>
@@ -199,34 +139,41 @@
             <artifactId>json</artifactId>
             <version>20140107</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>2.0.2.RELEASE</version>
+        </dependency>
+        <!-- tag::actuator[] -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+            <version>2.0.2.RELEASE</version>
+        </dependency>
+        <!-- end::actuator[] -->
+        <!-- tag::tests[] -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>2.0.2.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- end::tests[] -->
     </dependencies>
 
     <build>
         <plugins>
             <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <classifier>classes</classifier>
-                </configuration>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.0.2.RELEASE</version>
                 <executions>
                     <execution>
-                        <id>package-jar</id>
-                        <phase>package</phase>
                         <goals>
-                            <goal>jar</goal>
+                            <goal>repackage</goal>
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.2.11.v20150529</version>
-                <configuration>
-                    <webApp>
-                        <contextPath>/web</contextPath>
-                    </webApp>
-                </configuration>
             </plugin>
         </plugins>
     </build>

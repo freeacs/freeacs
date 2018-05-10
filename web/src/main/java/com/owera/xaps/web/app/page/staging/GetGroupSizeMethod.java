@@ -1,16 +1,15 @@
 package com.owera.xaps.web.app.page.staging;
 
-import java.util.List;
-
 import com.owera.xaps.dbi.Group;
 import com.owera.xaps.dbi.Parameter;
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.web.app.util.XAPSLoader;
-
 import freemarker.template.SimpleNumber;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
+
+import java.util.List;
 
 
 /**

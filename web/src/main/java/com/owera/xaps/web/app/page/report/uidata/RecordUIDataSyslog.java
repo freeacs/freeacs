@@ -1,16 +1,15 @@
 package com.owera.xaps.web.app.page.report.uidata;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.owera.xaps.dbi.SyslogEntry;
 import com.owera.xaps.dbi.SyslogEvent;
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.XAPS;
 import com.owera.xaps.web.app.page.syslog.SyslogUtil;
-
 import freemarker.template.TemplateModelException;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * This wrapper class contains helper methods, and also a static converter method <code>convertRecords(List<SyslogEntry> records,XAPS xaps)</code> for a larger set of SyslogEntry objects.

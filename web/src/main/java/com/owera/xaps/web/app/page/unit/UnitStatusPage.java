@@ -1,46 +1,29 @@
 package com.owera.xaps.web.app.page.unit;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.GradientPaint;
-import java.awt.Point;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.common.log.Logger;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.dbi.report.*;
+import com.owera.xaps.web.Page;
+import com.owera.xaps.web.app.Output;
+import com.owera.xaps.web.app.input.*;
+import com.owera.xaps.web.app.menu.MenuItem;
+import com.owera.xaps.web.app.page.AbstractWebPage;
+import com.owera.xaps.web.app.page.report.ReportPage;
+import com.owera.xaps.web.app.page.report.ReportType;
+import com.owera.xaps.web.app.page.report.UnitListData;
+import com.owera.xaps.web.app.page.report.uidata.RecordUIDataHardware;
+import com.owera.xaps.web.app.page.report.uidata.RecordUIDataHardwareFilter;
+import com.owera.xaps.web.app.page.report.uidata.RecordUIDataSyslog;
+import com.owera.xaps.web.app.page.report.uidata.RecordUIDataVoip;
+import com.owera.xaps.web.app.page.unit.UnitStatusInfo.VoipLine;
+import com.owera.xaps.web.app.util.*;
+import freemarker.template.TemplateMethodModel;
+import freemarker.template.TemplateModelException;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.plot.dial.DialBackground;
-import org.jfree.chart.plot.dial.DialCap;
-import org.jfree.chart.plot.dial.DialPlot;
-import org.jfree.chart.plot.dial.DialPointer;
-import org.jfree.chart.plot.dial.DialTextAnnotation;
-import org.jfree.chart.plot.dial.DialValueIndicator;
-import org.jfree.chart.plot.dial.StandardDialFrame;
-import org.jfree.chart.plot.dial.StandardDialRange;
-import org.jfree.chart.plot.dial.StandardDialScale;
+import org.jfree.chart.plot.dial.*;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.general.DefaultValueDataset;
 import org.jfree.data.general.ValueDataset;
@@ -53,50 +36,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
-import com.owera.xaps.dbi.Certificate;
-import com.owera.xaps.dbi.Syslog;
-import com.owera.xaps.dbi.SyslogEntry;
-import com.owera.xaps.dbi.SyslogFilter;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.XAPSUnit;
-import com.owera.xaps.dbi.report.Chart;
-import com.owera.xaps.dbi.report.PeriodType;
-import com.owera.xaps.dbi.report.RecordHardware;
-import com.owera.xaps.dbi.report.RecordSyslog;
-import com.owera.xaps.dbi.report.RecordVoip;
-import com.owera.xaps.dbi.report.Report;
-import com.owera.xaps.web.Page;
-import com.owera.xaps.web.app.Output;
-import com.owera.xaps.web.app.input.CheckBoxGroup;
-import com.owera.xaps.web.app.input.DropDownSingleSelect;
-import com.owera.xaps.web.app.input.Input;
-import com.owera.xaps.web.app.input.InputDataIntegrity;
-import com.owera.xaps.web.app.input.InputDataRetriever;
-import com.owera.xaps.web.app.input.InputSelectionFactory;
-import com.owera.xaps.web.app.input.ParameterParser;
-import com.owera.xaps.web.app.menu.MenuItem;
-import com.owera.xaps.web.app.page.AbstractWebPage;
-import com.owera.xaps.web.app.page.report.ReportPage;
-import com.owera.xaps.web.app.page.report.ReportType;
-import com.owera.xaps.web.app.page.report.UnitListData;
-import com.owera.xaps.web.app.page.report.uidata.RecordUIDataHardware;
-import com.owera.xaps.web.app.page.report.uidata.RecordUIDataHardwareFilter;
-import com.owera.xaps.web.app.page.report.uidata.RecordUIDataSyslog;
-import com.owera.xaps.web.app.page.report.uidata.RecordUIDataVoip;
-import com.owera.xaps.web.app.page.unit.UnitStatusInfo.VoipLine;
-import com.owera.xaps.web.app.util.CertificateVerification;
-import com.owera.xaps.web.app.util.DateUtils;
-import com.owera.xaps.web.app.util.DecimalUtils;
-import com.owera.xaps.web.app.util.SessionCache;
-import com.owera.xaps.web.app.util.SessionData;
-import com.owera.xaps.web.app.util.WebConstants;
-import com.owera.xaps.web.app.util.WebProperties;
-import com.owera.xaps.web.app.util.XAPSLoader;
-
-import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateModelException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.awt.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -130,7 +84,7 @@ import freemarker.template.TemplateModelException;
  * on the process method.</p>
  */
 @Controller
-@RequestMapping(value="unit-dashboard")
+@RequestMapping(value="/app/unit-dashboard")
 public class UnitStatusPage extends AbstractWebPage {
 	
 	/** The logger. */
@@ -250,13 +204,13 @@ public class UnitStatusPage extends AbstractWebPage {
 		templateMap.put("currentEnabled",currentEnabled);
 		boolean historyEnabled = params.getBoolean("history");
 		
-		templateMap.put("showVoip", WebProperties.getWebProperties().getShowVoip());
-		templateMap.put("showHardware", WebProperties.getWebProperties().getShowHardware());
+		templateMap.put("showVoip", WebProperties.getShowVoip());
+		templateMap.put("showHardware", WebProperties.getShowHardware());
 		
 		// Custom set properties that are to be displayed
 		String unittypeName = unit.getUnittype().getName();
 		Map<String, String> shortCutParams = new LinkedHashMap<String, String>();
-		for (Entry<String, String> property : WebProperties.getWebProperties().getCustomDash(unittypeName).entrySet()) {
+		for (Entry<String, String> property : WebProperties.getCustomDash(unittypeName).entrySet()) {
 			// Call to resolve any parameter referencing other parameters
 			String propValue = resolveParameters(property.getKey());
 			if (property.getValue() != null)
