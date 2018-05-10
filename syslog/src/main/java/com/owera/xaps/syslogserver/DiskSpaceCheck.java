@@ -9,12 +9,14 @@ import com.owera.common.scheduler.TaskDefaultImpl;
 
 public class DiskSpaceCheck extends TaskDefaultImpl {
 
-	public static int MIN_FREE_DISK_SPACE = Properties.getMinFreeDiskSpace() * 1024; // In KB
-
 	private static long freeSpace = Long.MAX_VALUE;
 
-	public DiskSpaceCheck(String taskName) {
+	DiskSpaceCheck(String taskName) {
 		super(taskName);
+	}
+
+	private int getMinFreeDiskSpace() {
+		return Properties.getMinFreeDiskSpace() * 1024;
 	}
 
 	private Logger logger = new Logger(); // Logging of internal matters - if necessary
@@ -22,11 +24,11 @@ public class DiskSpaceCheck extends TaskDefaultImpl {
 	@Override
 	public void runImpl() throws Throwable {
 		freeSpace = FileSystemUtils.freeSpaceKb(new File(".").getAbsolutePath());
-		if (freeSpace < MIN_FREE_DISK_SPACE) {
+		if (freeSpace < getMinFreeDiskSpace()) {
 			logger.error("Server will pause, since free disk space is " + freeSpace / 1024 + " MB.");
 			SyslogServer.pause(true);
 			Syslog2DB.pause(true);
-		} else if (SyslogServer.isPause() && freeSpace >= MIN_FREE_DISK_SPACE) {
+		} else if (SyslogServer.isPause() && freeSpace >= getMinFreeDiskSpace()) {
 			logger.notice("Server will resume operation, free disk space is " + freeSpace / 1024 + " MB.");
 			SyslogServer.pause(false);
 			Syslog2DB.pause(false);
@@ -38,7 +40,7 @@ public class DiskSpaceCheck extends TaskDefaultImpl {
 		return logger;
 	}
 
-	public static long getFreeSpace() {
+	static long getFreeSpace() {
 		while (freeSpace == Long.MAX_VALUE) {
 			try {
 				Thread.sleep(100); // may sleep for a short while until disk space has been calculated the first time after server start

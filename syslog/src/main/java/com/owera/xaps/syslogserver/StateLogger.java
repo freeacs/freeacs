@@ -7,6 +7,11 @@ import com.owera.common.db.ConnectionProvider;
 import com.owera.common.log.Logger;
 import com.owera.common.scheduler.TaskDefaultImpl;
 
+import static com.owera.common.db.ConnectionProvider.getConnectionProperties;
+import static com.owera.xaps.syslogserver.Properties.getMaxAge;
+import static com.owera.xaps.syslogserver.Properties.getMaxConn;
+import static com.owera.xaps.syslogserver.Properties.getUrl;
+
 public class StateLogger extends TaskDefaultImpl {
 
 	public StateLogger(String taskName) {
@@ -34,7 +39,7 @@ public class StateLogger extends TaskDefaultImpl {
 		if (summaryHeaderCount == 20)
 			summaryHeaderCount = 0;
 
-		Map<Connection, Long> syslogUsedConn = ConnectionProvider.getUsedConnCopy(ConnectionProvider.getConnectionProperties("xaps-syslog.properties", "db.syslog"));
+		Map<Connection, Long> syslogUsedConn = ConnectionProvider.getUsedConnCopy(getConnectionProperties(getUrl("syslog"), getMaxAge("syslog"), getMaxConn("syslog")));
 		String message = "";
 		message += String.format("%15s | ", getUsedMemory());
 		message += String.format("%13s | ", DiskSpaceCheck.getFreeSpace());

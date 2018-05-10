@@ -1,34 +1,66 @@
 package com.owera.xaps.syslogserver;
 
+import com.owera.common.db.ConnectionProperties;
 import com.owera.common.log.Logger;
-import com.owera.common.util.PropertyReader;
 import com.owera.xaps.dbi.Syslog;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+
+import java.util.Optional;
+import java.util.function.Supplier;
 
 public class Properties {
 
-	private static String propertyfile = "xaps-syslog.properties";
+	private Config config;
 
-	private static PropertyReader pr = new PropertyReader(propertyfile);
+	private Properties() {
+		config = ConfigFactory.parseResources("xaps-syslog.conf");
+	}
+
+	private static Properties instance;
+
+	private static Properties instance() {
+		if (instance == null) {
+			instance = new Properties();
+		}
+		return instance;
+	}
 
 	private static Logger logger = new Logger(Properties.class);
 
 	private static int getInteger(String propertyKey, int defaultValue) {
-		String prop = pr.getProperty(propertyKey);
+		if (!instance().config.hasPath(propertyKey)) {
+			logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
+			return defaultValue;
+		}
 		try {
-			return Integer.parseInt(prop);
+			return instance().config.getInt(propertyKey);
 		} catch (Throwable t) {
 			logger.warn("The value of " + propertyKey + " was not a number, instead using default value " + defaultValue);
 			return defaultValue;
 		}
 	}
 
-	private static String getString(String propertyKey, String defaultValue) {
-		String prop = pr.getProperty(propertyKey);
-		if (prop == null) {
+	private static long getLong(String propertyKey, long defaultValue) {
+		if (!instance().config.hasPath(propertyKey)) {
 			logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
 			return defaultValue;
 		}
-		return prop;
+		try {
+			return instance().config.getLong(propertyKey);
+		} catch (Throwable t) {
+			logger.warn("The value of " + propertyKey + " was not a number, instead using default value " + defaultValue);
+			return defaultValue;
+		}
+	}
+
+
+	private static String getString(String propertyKey, String defaultValue) {
+		if (!instance().config.hasPath(propertyKey)) {
+			logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
+			return defaultValue;
+		}
+		return instance().config.getString(propertyKey);
 	}
 
 	public static boolean isSimulation() {
@@ -75,10 +107,6 @@ public class Properties {
 		return getInteger("max-message-pr-minute", 10000);
 	}
 
-	public static String getCustomProperty(String customProperty) {
-		return pr.getProperty(customProperty);
-	}
-
 	public static String getDeviceIdPattern(int index) {
 		return getString("deviceid-pattern." + index, null);
 	}
@@ -89,6 +117,24 @@ public class Properties {
 	
 	public static int getMinDBCommitDelay() {
 		return getInteger("min-syslog-db-commit-delay", Syslog.defaultMinTmsDelay);
+	}
+
+	public static int getMaxConn(final String infix) {
+		return getInteger("db." + infix + ".maxconn", ConnectionProperties.maxconn);
+	}
+
+	public static long getMaxAge(final String infix) {
+		return getLong("db." + infix + ".maxage", ConnectionProperties.maxage);
+	}
+
+	public static String getUrl(final String infix) {
+		return Optional.ofNullable(getString("db." + infix + ".url", null))
+				.orElseGet(new Supplier<String>() {
+					@Override
+					public String get() {
+						return getString("db." +infix, null);
+					}
+				});
 	}
 
 }

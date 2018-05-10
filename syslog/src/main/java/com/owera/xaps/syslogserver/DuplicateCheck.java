@@ -13,12 +13,21 @@ import com.owera.xaps.dbi.SyslogEvent;
 public class DuplicateCheck {
 	private static HashMap<String, Duplicate> duplicateMap = new HashMap<String, Duplicate>();
 	private static int counter = 0;
-	private static int MAX_SIZE = Properties.getMaxMessagesInDuplicateBuffer();
-	private static int CLEANUP_LIMIT_COUNTER = MAX_SIZE / 4;
-	private static int CLEANUP_LIMIT_SIZE = 3 * MAX_SIZE / 4;
 	private static Logger logger = new Logger(DuplicateCheck.class);
 
-	public static int getDuplicateSize() {
+	private static int getMaxSize() {
+		return Properties.getMaxMessagesInDuplicateBuffer();
+	}
+
+	private static int getCleanupLimitCounter() {
+		return getMaxSize() / 4;
+	}
+
+	private static int getCleanupLimitSize() {
+		return 3 * getMaxSize() / 4;
+	}
+
+	static int getDuplicateSize() {
 		return duplicateMap.size();
 	}
 
@@ -33,7 +42,7 @@ public class DuplicateCheck {
 	}
 
 	private static void cleanup(int counter) throws SQLException, NoAvailableConnectionException {
-		if (counter <= CLEANUP_LIMIT_COUNTER || duplicateMap.size() <= CLEANUP_LIMIT_SIZE)
+		if (counter <= getCleanupLimitCounter() || duplicateMap.size() <= getCleanupLimitSize())
 			return;
 		logger.info("Duplicate Message Buffer cleanup initiated (counter:" + counter + ", size:" + duplicateMap.size() + ")");
 		Iterator<String> i = duplicateMap.keySet().iterator();
@@ -74,20 +83,19 @@ public class DuplicateCheck {
 	 * Will add a message to the duplicate map if no duplicate is found or if duplicate is too old
 	 * @param key
 	 * @param entry
-	 * @param duplicateTimeout
 	 * @return
 	 * @throws SQLException
 	 * @throws NoAvailableConnectionException
 	 */
 	public synchronized static boolean addMessage(String key, SyslogEntry entry, int duplicateTimeoutMinutes) throws SQLException, NoAvailableConnectionException {
 		Duplicate duplicate = new Duplicate(entry, System.currentTimeMillis() + duplicateTimeoutMinutes * 60000);
-		if (duplicateMap.size() <= MAX_SIZE && !duplicate(key)) {
+		if (duplicateMap.size() <= getMaxSize() && !duplicate(key)) {
 			counter++;
-			if (counter > CLEANUP_LIMIT_COUNTER && duplicateMap.size() > CLEANUP_LIMIT_SIZE) {
+			if (counter > getCleanupLimitCounter() && duplicateMap.size() > getCleanupLimitSize()) {
 				counter = 0;
 				cleanup(counter);
 			}
-			if (duplicateMap.size() < MAX_SIZE) {
+			if (duplicateMap.size() < getMaxSize()) {
 				duplicateMap.put(key, duplicate);
 				return true; // can only happen if no duplicate was found
 			}
