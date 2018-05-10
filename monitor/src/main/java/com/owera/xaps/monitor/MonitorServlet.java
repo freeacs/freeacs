@@ -66,7 +66,7 @@ public class MonitorServlet extends HttpServlet {
 	public void init(ServletConfig serlvetConfig) throws ServletException {
 		try {
 			context = serlvetConfig.getServletContext();
-			config = new Freemarker().initFreemarker(context);
+			config = new Freemarker().initFreemarker();
 
 			scheduler = new Scheduler();
 			Thread t = new Thread(scheduler);
