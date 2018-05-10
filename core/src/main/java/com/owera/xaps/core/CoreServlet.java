@@ -25,6 +25,10 @@ import com.owera.xaps.core.task.ScriptExecutor;
 import com.owera.xaps.core.task.TriggerReleaser;
 import com.owera.xaps.dbi.util.XAPSVersionCheck;
 
+import static com.owera.xaps.core.Properties.getMaxAge;
+import static com.owera.xaps.core.Properties.getMaxConn;
+import static com.owera.xaps.core.Properties.getUrl;
+
 public class CoreServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -3217484543967391741L;
@@ -47,7 +51,7 @@ public class CoreServlet extends HttpServlet {
 	public void init() {
 		try {
 			log.notice("Server starts...");
-			XAPSVersionCheck.versionCheck(ConnectionProvider.getConnectionProperties("xaps-core.properties", "db.xaps"));
+			XAPSVersionCheck.versionCheck(ConnectionProvider.getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps")));
 			scheduler = new Scheduler();
 			Thread t = new Thread(scheduler);
 			t.setName("Core (Scheduler)");
