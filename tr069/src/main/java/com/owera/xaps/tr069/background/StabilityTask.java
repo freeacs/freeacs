@@ -11,6 +11,11 @@ import com.owera.xaps.base.db.DBAccess;
 import com.owera.xaps.base.http.Authenticator;
 import com.owera.xaps.base.http.ThreadCounter;
 
+import static com.owera.common.db.ConnectionProvider.getConnectionProperties;
+import static com.owera.xaps.tr069.Properties.getMaxAge;
+import static com.owera.xaps.tr069.Properties.getMaxConn;
+import static com.owera.xaps.tr069.Properties.getUrl;
+
 public class StabilityTask extends TaskDefaultImpl {
 
 	private Logger logger = new Logger();
@@ -62,7 +67,7 @@ public class StabilityTask extends TaskDefaultImpl {
 			message += String.format("%14s | ", ThreadCounter.currentSessionsCount());
 			message += String.format("%13s | ", ActiveDeviceDetectionTask.activeDevicesMap.size());
 			message += String.format("%7s | ", Authenticator.getAndResetBlockedClientsCount());
-			Map<Connection, Long> usedConn = ConnectionProvider.getUsedConnCopy(DBAccess.getXAPSProperties());
+			Map<Connection, Long> usedConn = ConnectionProvider.getUsedConnCopy(getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps")));
 			if (usedConn != null) {
 				message += String.format("%8s ", usedConn.size());
 				Collection<Long> usedConnValues = usedConn.values();
