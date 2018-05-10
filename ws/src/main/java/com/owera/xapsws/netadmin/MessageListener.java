@@ -16,6 +16,10 @@ import com.owera.xaps.dbi.User;
 import com.owera.xaps.dbi.Users;
 import com.owera.xapsws.impl.XAPSWS;
 
+import static com.owera.xapsws.impl.Properties.getMaxAge;
+import static com.owera.xapsws.impl.Properties.getMaxConn;
+import static com.owera.xapsws.impl.Properties.getUrl;
+
 public class MessageListener implements Runnable {
 
 	private static Logger logger = new Logger();
@@ -31,7 +35,7 @@ public class MessageListener implements Runnable {
 
 	public MessageListener() {
 		try {
-			cp = ConnectionProvider.getConnectionProperties("xaps-ws.properties", "db.xaps");
+			cp = ConnectionProvider.getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps"));
 			Users users = new Users(cp);
 			User user = users.getUnprotected(Users.USER_ADMIN);
 			//		if (user == null)
@@ -39,7 +43,7 @@ public class MessageListener implements Runnable {
 
 			// At this stage we have a positivt authentication of the user
 			id = new Identity(SyslogConstants.FACILITY_WEBSERVICE, XAPSWS.VERSION, user);
-			syslog = new Syslog(ConnectionProvider.getConnectionProperties("xaps-ws.properties", "db.syslog"), id);
+			syslog = new Syslog(ConnectionProvider.getConnectionProperties(getUrl("syslog"), getMaxAge("syslog"), getMaxConn("syslog")), id);
 			dbi = new DBI(Integer.MAX_VALUE, cp, syslog);
 			inbox.addFilter(new Message(null, Message.MTYPE_PUB_PS, null, null));
 			dbi.registerInbox("publishSPVS", inbox);
