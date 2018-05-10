@@ -1,19 +1,12 @@
 package com.owera.xaps.web.app.util;
 
-import java.sql.SQLException;
-
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.DBI;
-import com.owera.xaps.dbi.Identity;
-import com.owera.xaps.dbi.Syslog;
-import com.owera.xaps.dbi.SyslogConstants;
-import com.owera.xaps.dbi.User;
-import com.owera.xaps.dbi.Users;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.app.Main;
 import com.owera.xaps.web.app.Monitor;
+
+import java.sql.SQLException;
 
 /**
  * This class contains code for 

@@ -1,9 +1,5 @@
 package com.owera.xaps.web.app.page.unittype;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.XAPS;
 import com.owera.xaps.web.Page;
@@ -16,6 +12,10 @@ import com.owera.xaps.web.app.page.AbstractWebPage;
 import com.owera.xaps.web.app.util.SessionData;
 import com.owera.xaps.web.app.util.WebConstants;
 import com.owera.xaps.web.app.util.XAPSLoader;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * The Class UnittypeOverviewPage.

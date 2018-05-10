@@ -1,9 +1,5 @@
 package com.owera.xaps.web.app.page.job;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.XAPS;
 import com.owera.xaps.web.Page;
@@ -18,6 +14,10 @@ import com.owera.xaps.web.app.table.TableElementMaker;
 import com.owera.xaps.web.app.util.SessionData;
 import com.owera.xaps.web.app.util.WebConstants;
 import com.owera.xaps.web.app.util.XAPSLoader;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Job overview.

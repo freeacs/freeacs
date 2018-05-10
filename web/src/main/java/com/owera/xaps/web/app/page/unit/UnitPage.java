@@ -1,5 +1,22 @@
 package com.owera.xaps.web.app.page.unit;
 
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.common.log.Logger;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.dbi.util.ProvisioningMode;
+import com.owera.xaps.dbi.util.SystemConstants;
+import com.owera.xaps.dbi.util.SystemParameters;
+import com.owera.xaps.web.Page;
+import com.owera.xaps.web.app.Output;
+import com.owera.xaps.web.app.input.*;
+import com.owera.xaps.web.app.menu.MenuItem;
+import com.owera.xaps.web.app.page.AbstractWebPage;
+import com.owera.xaps.web.app.page.syslog.SyslogUtil;
+import com.owera.xaps.web.app.page.unittype.UnittypeParameterFlags;
+import com.owera.xaps.web.app.page.unittype.UnittypeParameterTypes;
+import com.owera.xaps.web.app.table.TableElementMaker;
+import com.owera.xaps.web.app.util.*;
+
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -10,46 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
-import com.owera.common.util.PropertyReader;
-import com.owera.xaps.dbi.File;
-import com.owera.xaps.dbi.FileType;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.ProfileParameter;
-import com.owera.xaps.dbi.Syslog;
-import com.owera.xaps.dbi.SyslogConstants;
-import com.owera.xaps.dbi.SyslogEntry;
-import com.owera.xaps.dbi.SyslogFilter;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
-import com.owera.xaps.dbi.util.ProvisioningMode;
-import com.owera.xaps.dbi.util.SystemConstants;
-import com.owera.xaps.dbi.util.SystemParameters;
-import com.owera.xaps.web.Page;
-import com.owera.xaps.web.app.Output;
-import com.owera.xaps.web.app.input.DropDownSingleSelect;
-import com.owera.xaps.web.app.input.InputDataIntegrity;
-import com.owera.xaps.web.app.input.InputDataRetriever;
-import com.owera.xaps.web.app.input.InputSelectionFactory;
-import com.owera.xaps.web.app.input.ParameterParser;
-import com.owera.xaps.web.app.menu.MenuItem;
-import com.owera.xaps.web.app.page.AbstractWebPage;
-import com.owera.xaps.web.app.page.syslog.SyslogUtil;
-import com.owera.xaps.web.app.page.unittype.UnittypeParameterFlags;
-import com.owera.xaps.web.app.page.unittype.UnittypeParameterTypes;
-import com.owera.xaps.web.app.table.TableElementMaker;
-import com.owera.xaps.web.app.util.SessionCache;
-import com.owera.xaps.web.app.util.SessionData;
-import com.owera.xaps.web.app.util.TimeFormatter;
-import com.owera.xaps.web.app.util.WebConstants;
-import com.owera.xaps.web.app.util.WebProperties;
-import com.owera.xaps.web.app.util.XAPSLoader;
 
 /**
  * The Class UnitPage.

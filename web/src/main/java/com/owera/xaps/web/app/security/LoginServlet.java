@@ -1,29 +1,5 @@
 package com.owera.xaps.web.app.security;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.fileupload.FileUploadException;
-
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.common.log.Log;
@@ -33,15 +9,21 @@ import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.input.ParameterParser;
 import com.owera.xaps.web.app.page.login.LoginPage;
 import com.owera.xaps.web.app.security.handlers.Authenticator;
-import com.owera.xaps.web.app.util.Freemarker;
-import com.owera.xaps.web.app.util.SessionCache;
-import com.owera.xaps.web.app.util.SessionData;
-import com.owera.xaps.web.app.util.WebConstants;
-import com.owera.xaps.web.app.util.WebProperties;
-
+import com.owera.xaps.web.app.util.*;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.apache.commons.fileupload.FileUploadException;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * The login servlet is responsible for both the security  filtering and to display the login page.

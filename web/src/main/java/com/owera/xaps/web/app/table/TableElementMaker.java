@@ -1,22 +1,13 @@
 package com.owera.xaps.web.app.table;
 
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.web.app.page.job.JobFilter;
+import com.owera.xaps.web.app.util.WebConstants;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import com.owera.xaps.dbi.Group;
-import com.owera.xaps.dbi.GroupParameter;
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.JobParameter;
-import com.owera.xaps.dbi.ProfileParameter;
-import com.owera.xaps.dbi.Trigger;
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.web.app.page.job.JobFilter;
-import com.owera.xaps.web.app.util.WebConstants;
 
 /**
  * Table element list factory. Named wrongly, should be named TableElementListFactory.

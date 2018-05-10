@@ -1,16 +1,5 @@
 package com.owera.xaps.web.app.menu;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.Users;
 import com.owera.xaps.web.Page;
@@ -19,11 +8,20 @@ import com.owera.xaps.web.app.util.Freemarker;
 import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.SessionData;
 import com.owera.xaps.web.app.util.WebProperties;
-//import com.thoughtworks.xstream.XStream;
-
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+//import com.thoughtworks.xstream.XStream;
 
 /**
  * A menu servlet that generates different types of response based a type parameter.

@@ -1,17 +1,17 @@
 package com.owera.xaps.web.app.page.report.uidata;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.xaps.dbi.Unit;
 import com.owera.xaps.dbi.XAPSUnit;
 import com.owera.xaps.dbi.report.Key;
 import com.owera.xaps.dbi.report.RecordProvisioning;
 import com.owera.xaps.dbi.report.Report;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class RecordUIDataProv {
 	private Unit unit;

@@ -1,7 +1,5 @@
 package com.owera.xaps.web.app.page.unittype;
 
-import org.json.JSONObject;
-
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.UnittypeParameter;
 import com.owera.xaps.dbi.XAPS;
@@ -9,6 +7,7 @@ import com.owera.xaps.web.app.Output;
 import com.owera.xaps.web.app.input.ParameterParser;
 import com.owera.xaps.web.app.page.AbstractWebPage;
 import com.owera.xaps.web.app.util.XAPSLoader;
+import org.json.JSONObject;
 
 
 

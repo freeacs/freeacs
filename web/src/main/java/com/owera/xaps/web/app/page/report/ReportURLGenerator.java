@@ -1,13 +1,12 @@
 package com.owera.xaps.web.app.page.report;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import com.owera.xaps.web.app.util.WebConstants;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYDataset;
 
-import com.owera.xaps.web.app.util.WebConstants;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**

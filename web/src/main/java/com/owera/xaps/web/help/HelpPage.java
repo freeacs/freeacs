@@ -1,5 +1,12 @@
 package com.owera.xaps.web.help;
 
+import com.owera.xaps.web.Page;
+import com.owera.xaps.web.app.Main;
+import com.owera.xaps.web.app.util.Freemarker;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,17 +15,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-
-import com.owera.xaps.web.Page;
-import com.owera.xaps.web.app.Main;
-import com.owera.xaps.web.app.util.Freemarker;
-
-import freemarker.cache.ClassTemplateLoader;
-import freemarker.template.Configuration;
-import freemarker.template.ObjectWrapper;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateExceptionHandler;
 
 
 /**

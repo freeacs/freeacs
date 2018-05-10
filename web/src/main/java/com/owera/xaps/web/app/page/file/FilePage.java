@@ -1,34 +1,18 @@
 package com.owera.xaps.web.app.page.file;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.fileupload.FileItem;
-
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.File;
-import com.owera.xaps.dbi.FileType;
-import com.owera.xaps.dbi.Files;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.app.Output;
-import com.owera.xaps.web.app.input.DropDownSingleSelect;
-import com.owera.xaps.web.app.input.Input;
-import com.owera.xaps.web.app.input.InputDataIntegrity;
-import com.owera.xaps.web.app.input.InputDataRetriever;
-import com.owera.xaps.web.app.input.InputSelectionFactory;
-import com.owera.xaps.web.app.input.ParameterParser;
+import com.owera.xaps.web.app.input.*;
 import com.owera.xaps.web.app.page.AbstractWebPage;
 import com.owera.xaps.web.app.util.WebConstants;
 import com.owera.xaps.web.app.util.XAPSLoader;
+import org.apache.commons.fileupload.FileItem;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * Handles add/delete and update of firmwares.

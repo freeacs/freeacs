@@ -4,9 +4,9 @@
  */
 package com.owera.xaps.web.app.page.report.uidata;
 
-import java.util.Map;
-
 import com.owera.xaps.web.app.page.report.UnitListData;
+
+import java.util.Map;
 
 /**
  * This class acts a wrapper for all the filter logic used on the syslog unit list page. 

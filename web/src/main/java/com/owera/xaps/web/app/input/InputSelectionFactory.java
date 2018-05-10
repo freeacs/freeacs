@@ -1,13 +1,13 @@
 package com.owera.xaps.web.app.input;
 
+import com.owera.common.log.Logger;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.web.app.util.WebConstants;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import com.owera.common.log.Logger;
-import com.owera.xaps.dbi.*;
-import com.owera.xaps.web.app.util.WebConstants;
 
 /**
  * Static factory methods for creating instances that extends InputSelectionModel.

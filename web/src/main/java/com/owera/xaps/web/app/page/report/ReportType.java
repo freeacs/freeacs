@@ -1,19 +1,9 @@
 package com.owera.xaps.web.app.page.report;
 
+import com.owera.xaps.dbi.report.*;
+
 import java.util.Arrays;
 import java.util.List;
-
-import com.owera.xaps.dbi.report.Record;
-import com.owera.xaps.dbi.report.RecordGatewayTR;
-import com.owera.xaps.dbi.report.RecordGroup;
-import com.owera.xaps.dbi.report.RecordHardware;
-import com.owera.xaps.dbi.report.RecordHardwareTR;
-import com.owera.xaps.dbi.report.RecordJob;
-import com.owera.xaps.dbi.report.RecordProvisioning;
-import com.owera.xaps.dbi.report.RecordSyslog;
-import com.owera.xaps.dbi.report.RecordUnit;
-import com.owera.xaps.dbi.report.RecordVoip;
-import com.owera.xaps.dbi.report.RecordVoipTR;
 
 
 /**

@@ -1,9 +1,9 @@
 package com.owera.xaps.web.app.page.job;
 
-import java.util.Map;
-
 import com.owera.xaps.web.app.input.Input;
 import com.owera.xaps.web.app.input.InputData;
+
+import java.util.Map;
 
 
 /**

@@ -1,45 +1,26 @@
 package com.owera.xaps.web.app.page;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Formatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-import java.util.regex.Pattern;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.common.log.Logger;
 import com.owera.common.util.NaturalComparator;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.menu.MenuItem;
 import com.owera.xaps.web.app.security.AllowedUnittype;
 import com.owera.xaps.web.app.table.TableColor;
-import com.owera.xaps.web.app.util.ResourceHandler;
-import com.owera.xaps.web.app.util.SessionCache;
-import com.owera.xaps.web.app.util.SessionData;
-import com.owera.xaps.web.app.util.TimeFormatter;
-import com.owera.xaps.web.app.util.WebConstants;
-import com.owera.xaps.web.app.util.XAPSLoader;
-
+import com.owera.xaps.web.app.util.*;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import java.sql.SQLException;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 
 /**

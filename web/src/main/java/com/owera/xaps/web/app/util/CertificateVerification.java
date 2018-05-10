@@ -1,12 +1,12 @@
 package com.owera.xaps.web.app.util;
 
-import java.sql.SQLException;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.Certificate;
 import com.owera.xaps.dbi.Certificates;
 import com.owera.xaps.dbi.XAPS;
+
+import java.sql.SQLException;
 
 
 /**

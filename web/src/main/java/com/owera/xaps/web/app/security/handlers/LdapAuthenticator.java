@@ -1,8 +1,7 @@
 package com.owera.xaps.web.app.security.handlers;
 
-import org.apache.commons.lang.NotImplementedException;
-
 import com.owera.xaps.web.app.security.WebUser;
+import org.apache.commons.lang.NotImplementedException;
 
 
 /**

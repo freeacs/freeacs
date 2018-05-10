@@ -1,20 +1,7 @@
 package com.owera.xaps.web.app.page.trigger;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.File;
-import com.owera.xaps.dbi.FileType;
-import com.owera.xaps.dbi.SyslogEvent;
-import com.owera.xaps.dbi.SyslogEvents;
-import com.owera.xaps.dbi.Trigger;
-import com.owera.xaps.dbi.Triggers;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.app.input.DropDownSingleSelect;
 import com.owera.xaps.web.app.input.Input;
 import com.owera.xaps.web.app.input.InputSelectionFactory;
@@ -22,6 +9,12 @@ import com.owera.xaps.web.app.table.TableElement;
 import com.owera.xaps.web.app.table.TableElementMaker;
 import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.XAPSLoader;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 public class TriggerHandler {
 	private XAPS xaps;

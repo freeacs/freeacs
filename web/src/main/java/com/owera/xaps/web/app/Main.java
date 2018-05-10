@@ -1,14 +1,5 @@
 package com.owera.xaps.web.app;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.log.Logger;
 import com.owera.common.util.Sleep;
@@ -21,9 +12,16 @@ import com.owera.xaps.web.app.util.Freemarker;
 import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.WebConstants;
 import com.owera.xaps.web.app.util.WebProperties;
-
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
 /**
  * The front controller in xAPS Web.

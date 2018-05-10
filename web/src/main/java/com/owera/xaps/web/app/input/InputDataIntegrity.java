@@ -1,12 +1,12 @@
 package com.owera.xaps.web.app.input;
 
-import java.sql.SQLException;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.xaps.web.app.Output;
 import com.owera.xaps.web.app.context.ContextItem;
 import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.SessionData;
+
+import java.sql.SQLException;
 
 /**
  * This class ensures that:

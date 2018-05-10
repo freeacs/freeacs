@@ -1,34 +1,21 @@
 package com.owera.xaps.web.app.page.staging;
 
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.dbi.JobFlag.JobType;
+import com.owera.xaps.dbi.util.SystemParameters;
+import com.owera.xaps.web.Page;
+import com.owera.xaps.web.app.Output;
+import com.owera.xaps.web.app.input.*;
+import com.owera.xaps.web.app.util.WebConstants;
+import com.owera.xaps.web.app.util.XAPSLoader;
+
+import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpSession;
-
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.File;
-import com.owera.xaps.dbi.FileType;
-import com.owera.xaps.dbi.Group;
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.JobFlag.JobType;
-import com.owera.xaps.dbi.Jobs;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.util.SystemParameters;
-import com.owera.xaps.web.Page;
-import com.owera.xaps.web.app.Output;
-import com.owera.xaps.web.app.input.DropDownSingleSelect;
-import com.owera.xaps.web.app.input.InputData;
-import com.owera.xaps.web.app.input.InputDataIntegrity;
-import com.owera.xaps.web.app.input.InputDataRetriever;
-import com.owera.xaps.web.app.input.InputSelectionFactory;
-import com.owera.xaps.web.app.input.ParameterParser;
-import com.owera.xaps.web.app.util.WebConstants;
-import com.owera.xaps.web.app.util.XAPSLoader;
 
 /**
  * The Class StagingProviderPage.

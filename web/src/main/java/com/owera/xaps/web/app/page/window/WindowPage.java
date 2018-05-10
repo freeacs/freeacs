@@ -1,24 +1,7 @@
 package com.owera.xaps.web.app.page.window;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.ProfileParameter;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.UnittypeParameterFlag;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.util.SystemParameters;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.Output;
@@ -29,6 +12,11 @@ import com.owera.xaps.web.app.page.AbstractWebPage;
 import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.WebConstants;
 import com.owera.xaps.web.app.util.XAPSLoader;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
+import java.util.*;
 
 
 

@@ -5,14 +5,13 @@
 
 package com.owera.xaps.web.app.util;
 
+import freemarker.template.TemplateMethodModel;
+import freemarker.template.TemplateModelException;
+import org.apache.commons.lang.math.NumberUtils;
+
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang.math.NumberUtils;
-
-import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateModelException;
 
 
 /**

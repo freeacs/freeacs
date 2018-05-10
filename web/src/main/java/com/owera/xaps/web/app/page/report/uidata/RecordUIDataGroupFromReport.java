@@ -1,11 +1,11 @@
 package com.owera.xaps.web.app.page.report.uidata;
 
+import com.owera.xaps.dbi.Unit;
+import com.owera.xaps.dbi.report.RecordGroup;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.report.RecordGroup;
 
 public class RecordUIDataGroupFromReport {
 	private final RecordGroup record;

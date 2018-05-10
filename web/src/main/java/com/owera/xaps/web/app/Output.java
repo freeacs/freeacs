@@ -1,26 +1,8 @@
 package com.owera.xaps.web.app;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.GZIPOutputStream;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.common.log.Logger;
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.context.ContextItem;
 import com.owera.xaps.web.app.input.Input;
@@ -32,10 +14,21 @@ import com.owera.xaps.web.app.util.Freemarker;
 import com.owera.xaps.web.app.util.StackTraceFormatter;
 import com.owera.xaps.web.app.util.WebProperties;
 import com.owera.xaps.web.app.util.XAPSLoader;
-
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.GZIPOutputStream;
 
 
 /**

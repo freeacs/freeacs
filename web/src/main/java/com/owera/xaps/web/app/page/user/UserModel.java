@@ -1,10 +1,10 @@
 package com.owera.xaps.web.app.page.user;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.owera.xaps.dbi.User;
 import com.owera.xaps.dbi.Users;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Class UserModel.

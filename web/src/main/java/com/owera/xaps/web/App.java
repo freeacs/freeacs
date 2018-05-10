@@ -15,6 +15,7 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 @SpringBootApplication
 public class App {
@@ -24,50 +25,50 @@ public class App {
     }
 
     @Bean
-    ServletRegistrationBean monitor () {
-        ServletRegistrationBean srb = new ServletRegistrationBean();
+    ServletRegistrationBean<Monitor> monitor () {
+        ServletRegistrationBean<Monitor> srb = new ServletRegistrationBean<>();
         srb.setServlet(new Monitor());
         srb.setUrlMappings(Arrays.asList("/monitor", "/ok"));
         return srb;
     }
 
     @Bean
-    ServletRegistrationBean main () {
-        ServletRegistrationBean srb = new ServletRegistrationBean();
+    ServletRegistrationBean<Main> main () {
+        ServletRegistrationBean<Main> srb = new ServletRegistrationBean<>();
         srb.setServlet(new Main());
         srb.setName("main");
-        srb.setUrlMappings(Arrays.asList("/web"));
+        srb.setUrlMappings(Collections.singletonList("/web"));
         return srb;
     }
 
     @Bean
-    ServletRegistrationBean loginServlet () {
-        ServletRegistrationBean srb = new ServletRegistrationBean();
+    ServletRegistrationBean<LoginServlet> loginServlet () {
+        ServletRegistrationBean<LoginServlet> srb = new ServletRegistrationBean<LoginServlet>();
         srb.setServlet(new LoginServlet());
-        srb.setUrlMappings(Arrays.asList("/login"));
+        srb.setUrlMappings(Collections.singletonList("/login"));
         return srb;
     }
 
     @Bean
-    ServletRegistrationBean helpServlet () {
-        ServletRegistrationBean srb = new ServletRegistrationBean();
+    ServletRegistrationBean<HelpServlet> helpServlet () {
+        ServletRegistrationBean<HelpServlet> srb = new ServletRegistrationBean<HelpServlet>();
         srb.setServlet(new HelpServlet());
-        srb.setUrlMappings(Arrays.asList("/help"));
+        srb.setUrlMappings(Collections.singletonList("/help"));
         return srb;
     }
     @Bean
-    ServletRegistrationBean menuServlet () {
-        ServletRegistrationBean srb = new ServletRegistrationBean();
+    ServletRegistrationBean<MenuServlet> menuServlet () {
+        ServletRegistrationBean<MenuServlet> srb = new ServletRegistrationBean<>();
         srb.setServlet(new MenuServlet());
-        srb.setUrlMappings(Arrays.asList("/menu"));
+        srb.setUrlMappings(Collections.singletonList("/menu"));
         return srb;
     }
 
     @Bean
-    FilterRegistrationBean loginFilter () {
-        FilterRegistrationBean frb = new FilterRegistrationBean();
+    FilterRegistrationBean<LoginServlet> loginFilter () {
+        FilterRegistrationBean<LoginServlet> frb = new FilterRegistrationBean<LoginServlet>();
         frb.setFilter(new LoginServlet());
-        frb.setServletNames(Arrays.asList("main"));
+        frb.setServletNames(Collections.singletonList("main"));
         return frb;
     }
 

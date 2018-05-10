@@ -1,14 +1,5 @@
 package com.owera.xaps.web;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-
 import com.owera.xaps.web.app.page.SupportDashboardPage;
 import com.owera.xaps.web.app.page.WebPage;
 import com.owera.xaps.web.app.page.certificates.CryptoPage;
@@ -32,11 +23,7 @@ import com.owera.xaps.web.app.page.report.ReportPage;
 import com.owera.xaps.web.app.page.report.UnitListPage;
 import com.owera.xaps.web.app.page.scriptexecution.ScriptExecutionsPage;
 import com.owera.xaps.web.app.page.search.SearchPage;
-import com.owera.xaps.web.app.page.staging.StagingDistributorImportPage;
-import com.owera.xaps.web.app.page.staging.StagingPage;
-import com.owera.xaps.web.app.page.staging.StagingProviderPage;
-import com.owera.xaps.web.app.page.staging.StagingReturnPage;
-import com.owera.xaps.web.app.page.staging.StagingShipmentPage;
+import com.owera.xaps.web.app.page.staging.*;
 import com.owera.xaps.web.app.page.syslog.SyslogPage;
 import com.owera.xaps.web.app.page.trigger.TriggerOverviewPage;
 import com.owera.xaps.web.app.page.trigger.TriggerReleaseHistoryPage;
@@ -45,12 +32,11 @@ import com.owera.xaps.web.app.page.unit.InspectionPage;
 import com.owera.xaps.web.app.page.unit.UnitPage;
 import com.owera.xaps.web.app.page.unit.UnitStatusPage;
 import com.owera.xaps.web.app.page.unit.UnitStatusRealTimeMosPage;
-import com.owera.xaps.web.app.page.unittype.GetUnitTypeParameterFlagAndValuesPage;
-import com.owera.xaps.web.app.page.unittype.UnittypeCreatePage;
-import com.owera.xaps.web.app.page.unittype.UnittypeOverviewPage;
-import com.owera.xaps.web.app.page.unittype.UnittypePage;
-import com.owera.xaps.web.app.page.unittype.UnittypeParametersPage;
+import com.owera.xaps.web.app.page.unittype.*;
 import com.owera.xaps.web.app.page.window.WindowPage;
+import org.apache.commons.lang.StringUtils;
+
+import java.util.*;
 
 /**
  * <p>An enumeration of all defined pages in xAPS Web with their request id, page class and icon url.</p>

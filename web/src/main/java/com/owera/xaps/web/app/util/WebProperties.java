@@ -1,15 +1,13 @@
 package com.owera.xaps.web.app.util;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.function.Supplier;
-import java.util.regex.Pattern;
-
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.log.Logger;
-import com.owera.common.util.PropertyReader;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 
 /**

@@ -1,33 +1,12 @@
 package com.owera.xaps.web.app.page.group;
 
-import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.Group;
-import com.owera.xaps.dbi.GroupParameter;
-import com.owera.xaps.dbi.GroupParameters;
-import com.owera.xaps.dbi.Groups;
-import com.owera.xaps.dbi.Parameter;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.Parameter.Operator;
 import com.owera.xaps.dbi.Parameter.ParameterDataType;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.Output;
-import com.owera.xaps.web.app.input.DropDownSingleSelect;
-import com.owera.xaps.web.app.input.InputDataIntegrity;
-import com.owera.xaps.web.app.input.InputDataRetriever;
-import com.owera.xaps.web.app.input.InputSelectionFactory;
-import com.owera.xaps.web.app.input.ParameterParser;
+import com.owera.xaps.web.app.input.*;
 import com.owera.xaps.web.app.menu.MenuItem;
 import com.owera.xaps.web.app.page.AbstractWebPage;
 import com.owera.xaps.web.app.page.search.SearchParameter;
@@ -39,11 +18,14 @@ import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.SessionData;
 import com.owera.xaps.web.app.util.WebConstants;
 import com.owera.xaps.web.app.util.XAPSLoader;
-
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
+
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * A page for Group Configuration and Group Create.
