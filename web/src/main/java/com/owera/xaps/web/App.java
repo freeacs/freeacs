@@ -65,7 +65,6 @@ public class App {
         FilterRegistrationBean frb = new FilterRegistrationBean();
         frb.setFilter(new LoginServlet());
         frb.setServletNames(Arrays.asList("main"));
-        frb.setUrlPatterns(Arrays.asList("/api/**"));
         return frb;
     }
 }

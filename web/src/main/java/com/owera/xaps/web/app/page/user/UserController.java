@@ -27,7 +27,7 @@ import com.owera.xaps.web.app.util.SessionCache;
  * The Class UserController.
  */
 @Controller
-@RequestMapping(value = "/api/user")
+@RequestMapping(value = "/app/user")
 public class UserController extends PermissionController {
 
 	/** The user group controller. */

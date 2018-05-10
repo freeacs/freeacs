@@ -34,7 +34,7 @@ import com.owera.xaps.web.app.util.WebConstants;
 import com.owera.xaps.web.app.util.XAPSLoader;
 
 @Controller
-@RequestMapping(value = "/api/parameters")
+@RequestMapping(value = "/app/parameters")
 public class UnittypeParametersPage extends AbstractWebPage {
 
 	/** The session id. */
