@@ -24,7 +24,7 @@ import com.typesafe.config.ConfigFactory;
 public class WebProperties {
 
 	/** The pr. */
-	private static Config config = ConfigFactory.parseResources("xaps-web.conf");
+	private static Config config = ConfigFactory.load();
 	
 	/** The log. */
 	private static Logger log = new Logger();

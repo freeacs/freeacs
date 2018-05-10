@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 
 public class Properties {
 
-	private static final Config config = ConfigFactory.parseResources("xaps-tr069.conf");
+	private static final Config config = ConfigFactory.load();
 
 	private static String getUnittypeName(SessionData sessionData) {
 		String unittypeName = null;

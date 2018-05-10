@@ -11,30 +11,17 @@ import java.util.function.Supplier;
 
 public class Properties {
 
-	private Config config;
-
-	private Properties() {
-		config = ConfigFactory.parseResources("xaps-syslog.conf");
-	}
-
-	private static Properties instance;
-
-	private static Properties instance() {
-		if (instance == null) {
-			instance = new Properties();
-		}
-		return instance;
-	}
+	private static final  Config config = ConfigFactory.load();
 
 	private static Logger logger = new Logger(Properties.class);
 
 	private static int getInteger(String propertyKey, int defaultValue) {
-		if (!instance().config.hasPath(propertyKey)) {
+		if (!config.hasPath(propertyKey)) {
 			logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
 			return defaultValue;
 		}
 		try {
-			return instance().config.getInt(propertyKey);
+			return config.getInt(propertyKey);
 		} catch (Throwable t) {
 			logger.warn("The value of " + propertyKey + " was not a number, instead using default value " + defaultValue);
 			return defaultValue;
@@ -42,12 +29,12 @@ public class Properties {
 	}
 
 	private static long getLong(String propertyKey, long defaultValue) {
-		if (!instance().config.hasPath(propertyKey)) {
+		if (!config.hasPath(propertyKey)) {
 			logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
 			return defaultValue;
 		}
 		try {
-			return instance().config.getLong(propertyKey);
+			return config.getLong(propertyKey);
 		} catch (Throwable t) {
 			logger.warn("The value of " + propertyKey + " was not a number, instead using default value " + defaultValue);
 			return defaultValue;
@@ -56,11 +43,11 @@ public class Properties {
 
 
 	private static String getString(String propertyKey, String defaultValue) {
-		if (!instance().config.hasPath(propertyKey)) {
+		if (!config.hasPath(propertyKey)) {
 			logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
 			return defaultValue;
 		}
-		return instance().config.getString(propertyKey);
+		return config.getString(propertyKey);
 	}
 
 	public static boolean isSimulation() {

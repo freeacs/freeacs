@@ -13,7 +13,7 @@ import static java.lang.Long.getLong;
 
 public class Properties {
 
-	private static Config config = ConfigFactory.parseResources("xaps-monitor.conf");
+	private static final Config config = ConfigFactory.load();
 
 	public static String get(String property) {
 		if (config.hasPath(property)) {

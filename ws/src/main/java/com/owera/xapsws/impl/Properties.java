@@ -11,11 +11,11 @@ import java.util.function.Supplier;
 
 public class Properties {
 
-	private static final Config config = ConfigFactory.parseResources("xaps-ws.conf");
+	private static final Config config = ConfigFactory.load();
 
 	private static final Logger logger = new Logger();
 
-	public static int getInteger(String propertyKey, int defaultValue) {
+	private static int getInteger(String propertyKey, int defaultValue) {
 		if (!config.hasPath(propertyKey)) {
 			logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
 			return defaultValue;
@@ -28,7 +28,7 @@ public class Properties {
 		}
 	}
 
-	public static long getLong(String propertyKey, long defaultValue) {
+	private static long getLong(String propertyKey, long defaultValue) {
 		if (!config.hasPath(propertyKey)) {
 			logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
 			return defaultValue;
