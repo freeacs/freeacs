@@ -4,12 +4,15 @@ import com.owera.xaps.web.app.Main;
 import com.owera.xaps.web.app.Monitor;
 import com.owera.xaps.web.app.menu.MenuServlet;
 import com.owera.xaps.web.app.security.LoginServlet;
+import com.owera.xaps.web.app.util.Freemarker;
 import com.owera.xaps.web.help.HelpServlet;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
 import java.util.Arrays;
 
@@ -66,5 +69,21 @@ public class App {
         frb.setFilter(new LoginServlet());
         frb.setServletNames(Arrays.asList("main"));
         return frb;
+    }
+
+    @Bean
+    public FreeMarkerViewResolver freemarkerViewResolver() {
+        FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
+        resolver.setCache(true);
+        resolver.setPrefix("");
+        resolver.setSuffix(".ftl");
+        return resolver;
+    }
+
+    @Bean
+    public FreeMarkerConfigurer freemarkerConfig() {
+        FreeMarkerConfigurer freeMarkerConfigurer = new FreeMarkerConfigurer();
+        freeMarkerConfigurer.setConfiguration(Freemarker.initFreemarker());
+        return freeMarkerConfigurer;
     }
 }
