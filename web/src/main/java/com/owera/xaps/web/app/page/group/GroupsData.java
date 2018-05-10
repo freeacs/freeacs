@@ -1,8 +1,8 @@
 package com.owera.xaps.web.app.page.group;
 
-import java.util.Map;
-
 import com.owera.xaps.web.app.input.InputData;
+
+import java.util.Map;
 
 
 /**

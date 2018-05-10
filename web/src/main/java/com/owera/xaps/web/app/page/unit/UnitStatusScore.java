@@ -1,9 +1,9 @@
 package com.owera.xaps.web.app.page.unit;
 
-import java.util.List;
-
 import com.owera.xaps.dbi.SyslogEntry;
 import com.owera.xaps.web.app.page.report.uidata.RecordUIDataHardware;
+
+import java.util.List;
 
 
 /**

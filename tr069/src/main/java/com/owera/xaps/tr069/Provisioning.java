@@ -39,6 +39,10 @@ import com.owera.xaps.tr069.test.system1.TestDatabase;
 import com.owera.xaps.tr069.test.system1.TestDatabaseObject;
 import com.owera.xaps.tr069.test.system2.Util;
 
+import static com.owera.xaps.tr069.Properties.getMaxAge;
+import static com.owera.xaps.tr069.Properties.getMaxConn;
+import static com.owera.xaps.tr069.Properties.getUrl;
+
 /**
  * This is the "main-class" of TR069 Provisioning. It receives the HTTP-request
  * from the CPE and returns an HTTP-response. The content of the request/reponse
@@ -86,7 +90,7 @@ public class Provisioning extends HttpServlet {
 		String html = "";
 		html += "<title>xAPS TR-069 Server Monitoring Page</title>";
 		html += "<h1>Monitoring of the TR-069 Server v. " + VERSION + "</h1>";
-		ConnectionProperties props = DBAccess.getXAPSProperties();
+		ConnectionProperties props = ConnectionProvider.getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps"));
 		ConnectionPoolData poolData = ConnectionProvider.getConnectionPoolData(props);
 		if (poolData != null) {
 			html += "<h1>Database connection</h1>\n";

@@ -2,6 +2,7 @@ package com.owera.xaps.monitor.task;
 
 import java.io.IOException;
 
+import com.owera.common.ssl.HTTPSManager;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
@@ -9,46 +10,10 @@ import org.apache.commons.httpclient.methods.GetMethod;
 
 import com.owera.common.log.Logger;
 import com.owera.xaps.monitor.Properties;
-import com.owera.xaps.web.app.page.staging.logic.HTTPSManager;
-import com.owera.xaps.web.app.util.WebProperties;
-
 /*
  * Http check implementation
  */
 public class MonitorExecution implements Runnable {
-
-	//	/**
-	//	 * If exception occur during monitoring, retry a number of times, until 5 minutes
-	//	 * of non-connectivity is established as a fact.
-	//	 * @author Morten
-	//	 *
-	//	 */
-	//	public class MonitorExecutionRetry implements HttpMethodRetryHandler {
-	//
-	//		private long startTms;
-	//
-	//		public MonitorExecutionRetry(long startTms) {
-	//			this.startTms = startTms;
-	//		}
-	//
-	//		@Override
-	//		public boolean retryMethod(HttpMethod httpMethod, IOException exception, int executionCount) {
-	//			if (System.currentTimeMillis() - startTms >= Properties.getRetrySeconds() * 1000) {
-	//				logger.debug("Monitoring: FiveMinuteRetry.retryMethod() invoked - return false -> no more retry since " + Properties.getRetrySeconds() + " seconds since start");
-	//				return false;
-	//			}
-	//			try {
-	//				Thread.sleep(Properties.getRetrySeconds() * 1000 / 10);
-	//
-	//			} catch (InterruptedException e) {
-	//				// TODO Auto-generated catch block
-	//				e.printStackTrace();
-	//			}
-	//			logger.debug("FiveMinuteRetry.retryMethod() invoked - return true -> retry");
-	//			return true;
-	//		}
-	//
-	//	}
 
 	private HttpClient client = new HttpClient();
 
@@ -64,10 +29,9 @@ public class MonitorExecution implements Runnable {
 
 	private long startTms;
 
-	public MonitorExecution(String url) {
+	MonitorExecution(String url) {
 		this.url = url;
 		this.startTms = System.currentTimeMillis();
-		//		client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new MonitorExecutionRetry(startTms));
 	}
 
 	public void run() {
@@ -77,7 +41,7 @@ public class MonitorExecution implements Runnable {
 		String version = "";
 		try {
 			if (url.startsWith("https://"))
-				HTTPSManager.installCertificate(url, WebProperties.getReader("xaps-monitor.properties"));
+				HTTPSManager.installCertificate(url, Properties.getString("keystore.pass", "changeit"));
 			while (System.currentTimeMillis() - startTms < Properties.getRetrySeconds() * 1000) {
 				try {
 					method = new GetMethod(url);
@@ -88,7 +52,7 @@ public class MonitorExecution implements Runnable {
 					else {
 						errorMessage = "HTTP Return Code: " + returnCode;
 					}
-					if (response != null && response.indexOf("XAPSOK") > -1) {
+					if (response != null && response.contains("XAPSOK")) {
 						status = "OK";
 						errorMessage = null;
 						int pos = response.indexOf("XAPSOK");
@@ -125,7 +89,6 @@ public class MonitorExecution implements Runnable {
 	 *
 	 * @param method HttpMethod
 	 * @return The one line response
-	 * @throws IOException 
 	 */
 	private String getResponse(HttpMethod method) throws IOException {
 		String body = method.getResponseBodyAsString();

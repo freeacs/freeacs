@@ -1,8 +1,12 @@
 package com.owera.xaps.web.app.page.unit;
 
-import java.text.*;
-import java.util.*;
-import java.util.regex.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /* This class represents a single row in the "provisioning history" table
  * found on the unit configuration page. */

@@ -1,34 +1,12 @@
 package com.owera.xaps.web.app.page.job;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.File;
-import com.owera.xaps.dbi.FileType;
-import com.owera.xaps.dbi.Group;
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.JobFlag;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.JobFlag.JobServiceWindow;
 import com.owera.xaps.dbi.JobFlag.JobType;
-import com.owera.xaps.dbi.JobParameter;
-import com.owera.xaps.dbi.Jobs;
-import com.owera.xaps.dbi.Parameter;
-import com.owera.xaps.dbi.UnitJobs;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.XAPS;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.Output;
-import com.owera.xaps.web.app.input.DropDownSingleSelect;
-import com.owera.xaps.web.app.input.InputDataIntegrity;
-import com.owera.xaps.web.app.input.InputDataRetriever;
-import com.owera.xaps.web.app.input.InputSelectionFactory;
-import com.owera.xaps.web.app.input.ParameterParser;
+import com.owera.xaps.web.app.input.*;
 import com.owera.xaps.web.app.menu.MenuItem;
 import com.owera.xaps.web.app.page.AbstractWebPage;
 import com.owera.xaps.web.app.page.file.FileComparator;
@@ -40,6 +18,9 @@ import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.SessionData;
 import com.owera.xaps.web.app.util.WebConstants;
 import com.owera.xaps.web.app.util.XAPSLoader;
+
+import java.sql.SQLException;
+import java.util.*;
 
 public class JobPage extends AbstractWebPage {
 	// Do NOT static this variable, contains singletons that should NOT be shared by different views

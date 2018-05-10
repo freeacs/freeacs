@@ -1,15 +1,16 @@
 package com.owera.xaps.tr069;
 
-import com.owera.common.util.PropertyReader;
+import com.owera.common.db.ConnectionProperties;
 import com.owera.xaps.base.Log;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+
+import java.util.Optional;
+import java.util.function.Supplier;
 
 public class Properties {
 
-	private static PropertyReader pr = new PropertyReader("xaps-tr069.properties");
-
-	public static String getCustomProperty(String customProperty) {
-		return pr.getProperty(customProperty);
-	}
+	private static final Config config = ConfigFactory.load();
 
 	private static String getUnittypeName(SessionData sessionData) {
 		String unittypeName = null;
@@ -25,11 +26,6 @@ public class Properties {
 			version = sessionData.getCpeParameters().getValue(sessionData.getCpeParameters().SOFTWARE_VERSION);
 		return version;
 	}
-
-  // public static boolean isConfigFileVersionQuirk(SessionData sessionData) {
-  // return isQuirk("configfileversion", getUnittypeName(sessionData),
-  // getVersion(sessionData));
-  // }
 
 	public static boolean isParameterkeyQuirk(SessionData sessionData) {
 		return isQuirk("parameterkey", getUnittypeName(sessionData), getVersion(sessionData));
@@ -74,9 +70,9 @@ public class Properties {
 	private static String[] getQuirks(String unittypeName, String version) {
 		String quirks = null;
 		if (version != null)
-			quirks = pr.getProperty("quirks." + unittypeName + "@" + version);
+			quirks = getString("quirks." + unittypeName + "@" + version, null);
 		if (quirks == null)
-			quirks = pr.getProperty("quirks." + unittypeName);
+			quirks = getString("quirks." + unittypeName, null);
 		if (quirks == null)
 			return new String[0];
 		else
@@ -105,9 +101,25 @@ public class Properties {
 	}
 
 	private static int getInteger(String propertyKey, int defaultValue) {
-		String prop = pr.getProperty(propertyKey);
+		if (!config.hasPath(propertyKey)) {
+			Log.warn(Properties.class, "The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
+			return defaultValue;
+		}
 		try {
-			return Integer.parseInt(prop);
+			return config.getInt(propertyKey);
+		} catch (Throwable t) {
+			Log.warn(Properties.class, "The value of " + propertyKey + " was not a number, instead using default value " + defaultValue, t);
+			return defaultValue;
+		}
+	}
+
+	private static long getLong(String propertyKey, long defaultValue) {
+		if (!config.hasPath(propertyKey)) {
+			Log.warn(Properties.class, "The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
+			return defaultValue;
+		}
+		try {
+			return config.getLong(propertyKey);
 		} catch (Throwable t) {
 			Log.warn(Properties.class, "The value of " + propertyKey + " was not a number, instead using default value " + defaultValue, t);
 			return defaultValue;
@@ -115,18 +127,13 @@ public class Properties {
 	}
 
 	private static String getString(String propertyKey, String defaultValue) {
-		String prop = pr.getProperty(propertyKey);
-		if (prop == null) {
+		if (!config.hasPath(propertyKey)) {
 			Log.warn(Properties.class, "The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
 			return defaultValue;
 		}
-		return prop;
+		return config.getString(propertyKey);
 	}
 
-	//	public static String getLog2SyslogDB() {
-	//		return getString("log2syslogdb", "false");
-	//	}
-	//
 	public static String getAuthMethod() {
 		return getString("auth.method", "none");
 	}
@@ -137,5 +144,23 @@ public class Properties {
 	
 	public static boolean isFileAuthUsed() {
 	  return getString("file.auth.used", "false").equals("true");
+	}
+
+	public static int getMaxConn(final String infix) {
+		return getInteger("db." + infix + ".maxconn", ConnectionProperties.maxconn);
+	}
+
+	public static long getMaxAge(final String infix) {
+		return getLong("db." + infix + ".maxage", ConnectionProperties.maxage);
+	}
+
+	public static String getUrl(final String infix) {
+		return Optional.ofNullable(getString("db." + infix + ".url", null))
+				.orElseGet(new Supplier<String>() {
+					@Override
+					public String get() {
+						return getString("db." +infix, null);
+					}
+				});
 	}
 }

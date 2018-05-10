@@ -4,15 +4,13 @@
  */
 package com.owera.xaps.web.app.page.job;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.commons.lang.ArrayUtils;
-
 import com.owera.xaps.dbi.JobStatus;
-
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
+import org.apache.commons.lang.ArrayUtils;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class JobStatusMethods {
     private final GetNextAvailableStatusCodesMethod allowedStatusVerificator = new GetNextAvailableStatusCodesMethod();

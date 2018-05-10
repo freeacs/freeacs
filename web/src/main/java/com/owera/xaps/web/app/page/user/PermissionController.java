@@ -1,14 +1,14 @@
 package com.owera.xaps.web.app.page.user;
 
-import java.sql.SQLException;
-import java.util.Arrays;
-
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.xaps.dbi.User;
 import com.owera.xaps.dbi.Users;
 import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.SessionData;
+
+import java.sql.SQLException;
+import java.util.Arrays;
 
 /**
  * The Class PermissionController.

@@ -1,7 +1,5 @@
 package com.owera.xaps.web.app.page.login;
 
-import javax.servlet.http.HttpSession;
-
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.xaps.dbi.DBI;
@@ -12,6 +10,10 @@ import com.owera.xaps.web.app.input.ParameterParser;
 import com.owera.xaps.web.app.page.AbstractWebPage;
 import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.SessionData;
+
+import javax.servlet.http.HttpSession;
+
+import static com.owera.xaps.web.app.util.WebProperties.*;
 
 /**
  * The Login page is responsible for retrieving connection properties and clearing session (logging out).
@@ -42,16 +44,20 @@ public class LoginPage extends AbstractWebPage {
 
 	/**
 	 * Gets the xAPS connection properties.
-	 *
-	 * @param webprops the webprops
 	 * @return the xAPS connection properties
 	 */
 	public static ConnectionProperties getXAPSConnectionProperties() {
-		return ConnectionProvider.getConnectionProperties("xaps-web.properties", "db.xaps");
+		String url = getUrl("xaps");
+		Long maxAge = getMaxAge("xaps");
+		Integer maxConn = getMaxConn("xaps");
+		return ConnectionProvider.getConnectionProperties(url, maxAge, maxConn);
 	}
 
 	public static ConnectionProperties getSyslogConnectionProperties() {
-		return ConnectionProvider.getConnectionProperties("xaps-web.properties", "db.syslog");
+		String url = getUrl("syslog");
+		Long maxAge = getMaxAge("syslog");
+		Integer maxConn = getMaxConn("syslog");
+		return ConnectionProvider.getConnectionProperties(url, maxAge, maxConn);
 	}
 
 	/* (non-Javadoc)

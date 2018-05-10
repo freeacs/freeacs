@@ -1,20 +1,14 @@
 package com.owera.xaps.web.app.page.profile;
 
-import java.sql.SQLException;
-
 import com.owera.common.log.Logger;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.ProfileParameter;
-import com.owera.xaps.dbi.ProfileParameters;
-import com.owera.xaps.dbi.Profiles;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.XAPS;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.app.input.DropDownSingleSelect;
 import com.owera.xaps.web.app.input.ParameterParser;
 import com.owera.xaps.web.app.page.AbstractWebPage;
 import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.WebConstants;
+
+import java.sql.SQLException;
 
 
 /**

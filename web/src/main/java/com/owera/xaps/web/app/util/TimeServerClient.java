@@ -1,12 +1,12 @@
 package com.owera.xaps.web.app.util;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.util.Date;
-
 import org.apache.commons.net.ntp.NTPUDPClient;
 import org.apache.commons.net.ntp.TimeInfo;
 import org.apache.commons.net.ntp.TimeStamp;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.util.Date;
 
 
 /**

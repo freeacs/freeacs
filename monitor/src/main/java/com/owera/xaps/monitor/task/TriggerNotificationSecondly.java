@@ -21,6 +21,10 @@ import com.owera.xaps.dbi.Users;
 import com.owera.xaps.dbi.XAPS;
 import com.owera.xaps.monitor.MonitorServlet;
 
+import static com.owera.xaps.monitor.Properties.getMaxAge;
+import static com.owera.xaps.monitor.Properties.getMaxConn;
+import static com.owera.xaps.monitor.Properties.getUrl;
+
 public class TriggerNotificationSecondly extends TaskDefaultImpl {
 
 	private Logger log = new Logger();
@@ -60,7 +64,7 @@ public class TriggerNotificationSecondly extends TaskDefaultImpl {
 		Users users = new Users(xapsCp);
 		User user = users.getUnprotected(Users.USER_ADMIN);
 		Identity id = new Identity(SyslogConstants.FACILITY_STUN, MonitorServlet.VERSION, user);
-		ConnectionProperties sysCp = ConnectionProvider.getConnectionProperties("xaps-monitor.properties", "db.syslog");
+		ConnectionProperties sysCp = ConnectionProvider.getConnectionProperties(getUrl("syslog"), getMaxAge("syslog"), getMaxConn("syslog"));
 		Syslog syslog = new Syslog(sysCp, id);
 		return new DBI(Integer.MAX_VALUE, xapsCp, syslog);
 	}

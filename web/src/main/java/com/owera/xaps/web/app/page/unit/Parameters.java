@@ -1,18 +1,13 @@
 package com.owera.xaps.web.app.page.unit;
 
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.web.app.util.WebConstants;
+import com.owera.xaps.web.app.util.XAPSLoader;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.Parameter;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
-import com.owera.xaps.web.app.util.WebConstants;
-import com.owera.xaps.web.app.util.XAPSLoader;
 
 
 /**

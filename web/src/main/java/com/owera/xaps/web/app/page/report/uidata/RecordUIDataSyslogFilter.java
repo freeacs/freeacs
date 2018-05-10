@@ -4,13 +4,13 @@
  */
 package com.owera.xaps.web.app.page.report.uidata;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.owera.xaps.dbi.SyslogConstants;
 import com.owera.xaps.web.app.input.InputSelectionFactory;
 import com.owera.xaps.web.app.page.report.UnitListData;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class acts a wrapper for all the filter logic used on the syslog unit list page. 

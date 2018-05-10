@@ -1,15 +1,14 @@
 package com.owera.xaps.web.app.page.report.uidata;
 
+import com.owera.xaps.dbi.Unit;
+import com.owera.xaps.dbi.report.RecordSyslog;
+import com.owera.xaps.web.app.page.syslog.SyslogUtil;
+import freemarker.template.TemplateModelException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.report.RecordSyslog;
-import com.owera.xaps.web.app.page.syslog.SyslogUtil;
-
-import freemarker.template.TemplateModelException;
 
 
 /**

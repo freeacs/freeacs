@@ -1,28 +1,7 @@
 package com.owera.xaps.web.app.page.unittype;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpSession;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.UnittypeParameterFlag;
-import com.owera.xaps.dbi.UnittypeParameterValues;
-import com.owera.xaps.dbi.XAPS;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.Output;
 import com.owera.xaps.web.app.input.InputDataIntegrity;
@@ -32,9 +11,24 @@ import com.owera.xaps.web.app.page.AbstractWebPage;
 import com.owera.xaps.web.app.util.StackTraceFormatter;
 import com.owera.xaps.web.app.util.WebConstants;
 import com.owera.xaps.web.app.util.XAPSLoader;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpSession;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 @Controller
-@RequestMapping(value = "/parameters")
+@RequestMapping(value = "/app/parameters")
 public class UnittypeParametersPage extends AbstractWebPage {
 
 	/** The session id. */
@@ -57,7 +51,7 @@ public class UnittypeParametersPage extends AbstractWebPage {
 	 * @throws NoAvailableConnectionException
 	 * @throws SQLException
 	 */
-	@RequestMapping(method=RequestMethod.GET,value="/list")
+	@RequestMapping(method=RequestMethod.GET,value="list")
 	public @ResponseBody String getUnittypeParameters(
 			@RequestParam(required=true) String unittype,
 			@RequestParam(required=true) String term,

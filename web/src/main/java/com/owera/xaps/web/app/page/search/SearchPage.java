@@ -1,22 +1,19 @@
 package com.owera.xaps.web.app.page.search;
 
-import java.util.*;
-import java.util.Map.Entry;
-import org.json.*;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.Parameter.*;
+import com.owera.xaps.dbi.Parameter.Operator;
+import com.owera.xaps.dbi.Parameter.ParameterDataType;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.Output;
-import com.owera.xaps.web.app.input.DropDownSingleSelect;
-import com.owera.xaps.web.app.input.InputDataIntegrity;
-import com.owera.xaps.web.app.input.InputDataRetriever;
-import com.owera.xaps.web.app.input.InputSelectionFactory;
-import com.owera.xaps.web.app.input.ParameterParser;
+import com.owera.xaps.web.app.input.*;
 import com.owera.xaps.web.app.page.AbstractWebPage;
-import com.owera.xaps.web.app.util.CertificateVerification;
-import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.WebConstants;
 import com.owera.xaps.web.app.util.XAPSLoader;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * The search page.

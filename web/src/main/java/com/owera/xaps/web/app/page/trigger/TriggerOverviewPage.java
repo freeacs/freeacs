@@ -1,8 +1,5 @@
 package com.owera.xaps.web.app.page.trigger;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.owera.xaps.dbi.Trigger;
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.XAPS;
@@ -17,6 +14,9 @@ import com.owera.xaps.web.app.page.AbstractWebPage;
 import com.owera.xaps.web.app.util.SessionData;
 import com.owera.xaps.web.app.util.WebConstants;
 import com.owera.xaps.web.app.util.XAPSLoader;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TriggerOverviewPage extends AbstractWebPage {
 	private TriggerData inputData;

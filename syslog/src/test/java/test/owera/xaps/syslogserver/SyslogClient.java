@@ -92,42 +92,9 @@ public class SyslogClient {
 
 			System.out.println("SyslogClient starts");
 			List<String> macs = new ArrayList<String>();
-
-//			if (testType == TestType.VALID_MAC || testType == TestType.VALID_MAC_WITH_SWVER) {
-//				XAPSInitializer xapsInit = new XAPSInitializer("localhost");
-//				XAPS xaps = xapsInit.getXaps();
-//				ConnectionProperties xapsCp = getConnectionProperties("db.xaps");
-//				Connection c = ConnectionProvider.getConnection(xapsCp);
-//				for (Unittype ut : xaps.getUnittypes().getUnittypes()) {
-//					Integer macUtpId = ut.getUnittypeParameters().getByName(SystemParameters.SERIAL_NUMBER).getId();
-//					Integer swUtpId = ut.getUnittypeParameters().getByName(SystemParameters.SOFTWARE_VERSION).getId();
-//					Statement s = c.createStatement();
-//					ResultSet rs = s.executeQuery("SELECT value, unit_id FROM unit_param WHERE unit_type_param_id = " + macUtpId);
-//					while (rs.next()) {
-//						String mac = rs.getString(1);
-//						String unitId = rs.getString(2);
-//						if (mac == null || mac.trim().equals(""))
-//							continue;
-//						if (testType == TestType.VALID_MAC) {
-//							macs.add(mac);
-//						} else {
-//							s = c.createStatement();
-//							rs = s.executeQuery("SELECT value FROM unit_param WHERE unit_type_param_id = " + swUtpId + " AND unit_id = '" + unitId + "'");
-//							if (rs.next()) {
-//								String swv = rs.getString(1);
-//								if (swv == null || swv.trim().equals(""))
-//									continue;
-//								macs.add(mac);
-//							}
-//						}
-//					}
-//				}
-//			} else if (testType == TestType.RANDOM_MAC) {
-				for (int i = 0; i < 1000000; i++)
-					macs.add(String.format("%012x", i));
-
-			//			}
-
+			for (int i = 0; i < 1000000; i++) {
+				macs.add(String.format("%012x", i));
+			}
 			String hostname = "localhost";
 			InetAddress address = InetAddress.getByName(hostname);
 			DatagramSocket socket = new DatagramSocket();

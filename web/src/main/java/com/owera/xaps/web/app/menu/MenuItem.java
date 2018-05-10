@@ -1,9 +1,9 @@
 package com.owera.xaps.web.app.menu;
 
+import com.owera.xaps.web.Page;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.owera.xaps.web.Page;
 
 /**
  * Serves as a model for page menu items.

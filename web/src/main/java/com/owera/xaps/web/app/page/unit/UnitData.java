@@ -1,7 +1,9 @@
 package com.owera.xaps.web.app.page.unit;
 
-import java.util.*;
-import com.owera.xaps.web.app.input.*;
+import com.owera.xaps.web.app.input.Input;
+import com.owera.xaps.web.app.input.InputData;
+
+import java.util.Map;
 
 public class UnitData extends InputData {
 

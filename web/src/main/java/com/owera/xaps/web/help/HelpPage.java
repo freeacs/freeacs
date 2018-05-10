@@ -1,5 +1,12 @@
 package com.owera.xaps.web.help;
 
+import com.owera.xaps.web.Page;
+import com.owera.xaps.web.app.Main;
+import com.owera.xaps.web.app.util.Freemarker;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,17 +15,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-
-import com.owera.xaps.web.Page;
-import com.owera.xaps.web.app.Main;
-import com.owera.xaps.web.app.util.Freemarker;
-
-import freemarker.cache.ClassTemplateLoader;
-import freemarker.template.Configuration;
-import freemarker.template.ObjectWrapper;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateExceptionHandler;
 
 
 /**
@@ -30,18 +26,10 @@ import freemarker.template.TemplateExceptionHandler;
 public abstract class HelpPage {
 	
 	/** The Constant config. */
-	private static final Configuration config;
+	private static final Configuration config = Freemarker.initFreemarker();
 
 	/** The Constant NO_DATA. */
 	private static final String NO_DATA = "No data available";
-
-	static {
-		config = new Configuration();
-		config.setTemplateLoader(new ClassTemplateLoader(HelpPage.class,""));
-		config.setTemplateUpdateDelay(0);
-		config.setTemplateExceptionHandler(TemplateExceptionHandler.HTML_DEBUG_HANDLER);
-		config.setObjectWrapper(ObjectWrapper.BEANS_WRAPPER);
-	}
 
 	/**
 	 * Gets the hTML for page by class.

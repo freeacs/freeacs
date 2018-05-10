@@ -1,8 +1,8 @@
 package com.owera.xaps.web.app.page.scriptexecution;
 
-import java.util.List;
-
 import com.owera.xaps.dbi.File;
+
+import java.util.List;
 
 public class Script {
 	private List<ScriptArg> scriptArgs;

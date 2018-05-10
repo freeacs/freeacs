@@ -50,27 +50,6 @@ public class DBAccessSessionTR069 {
 				sessionData.setUnittypeCreated(true);
 				debug("Unittype " + unittypeName + " already exists, no need to create it in discovery mode");
 			}
-			//			List<UnittypeParameter> unittypeParameters = new ArrayList<UnittypeParameter>();
-			//			for (Entry<String, UnittypeParameterFlag> entry : SystemParameters.commonParameters.entrySet()) {
-			//				UnittypeParameter utp = ut.getUnittypeParameters().getByName(entry.getKey());
-			//				if (utp == null) {
-			//					utp = new UnittypeParameter(ut, entry.getKey(), entry.getValue());
-			//					unittypeParameters.add(utp);
-			//				}
-			//			}
-			//			UnittypeParameter[] crParams = new UnittypeParameter[3];
-			//			CPEParameters cpeParams = sessionData.getCpeParameters();
-			//
-			//			crParams[0] = new UnittypeParameter(ut, cpeParams.CONNECTION_URL, new UnittypeParameterFlag("ADR"));
-			//			crParams[1] = new UnittypeParameter(ut, cpeParams.CONNECTION_USERNAME, new UnittypeParameterFlag("RW"));
-			//			crParams[2] = new UnittypeParameter(ut, cpeParams.CONNECTION_PASSWORD, new UnittypeParameterFlag("RW"));
-			//			for (UnittypeParameter crParam : crParams) {
-			//				UnittypeParameter utp = ut.getUnittypeParameters().getByName(crParam.getName());
-			//				if (utp == null) {
-			//					unittypeParameters.add(crParam);
-			//				}
-			//			}
-			//			ut.getUnittypeParameters().addOrChangeUnittypeParameters(unittypeParameters, xaps);
 
 			Profile pr = ut.getProfiles().getByName("Default");
 			if (pr == null) {
@@ -78,17 +57,6 @@ public class DBAccessSessionTR069 {
 				ut.getProfiles().addOrChangeProfile(pr, xaps);
 				debug("Have created a profile with the name " + pr.getName() + " in discovery mode");
 			}
-
-			//			ProfileParameter ppUser = pr.getProfileParameters().getByName(cpeParams.CONNECTION_USERNAME);
-			//			if (ppUser == null) {
-			//				ppUser = new ProfileParameter(pr, ut.getUnittypeParameters().getByName(cpeParams.CONNECTION_USERNAME), "username");
-			//				pr.getProfileParameters().addOrChangeProfileParameter(ppUser, xaps);
-			//			}
-			//			ProfileParameter ppPass = pr.getProfileParameters().getByName(cpeParams.CONNECTION_PASSWORD);
-			//			if (ppPass == null) {
-			//				ppPass = new ProfileParameter(pr, ut.getUnittypeParameters().getByName(cpeParams.CONNECTION_PASSWORD), "password");
-			//				pr.getProfileParameters().addOrChangeProfileParameter(ppPass, xaps);
-			//			}
 
 			sessionData.setUnittype(ut);
 			sessionData.setProfile(pr);

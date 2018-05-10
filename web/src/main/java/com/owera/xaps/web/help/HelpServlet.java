@@ -1,15 +1,13 @@
 package com.owera.xaps.web.help;
 
-import java.io.IOException;
+import com.owera.xaps.web.Page;
+import freemarker.template.TemplateException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.owera.xaps.web.Page;
-
-import freemarker.template.TemplateException;
+import java.io.IOException;
 
 
 /**
