@@ -36,7 +36,15 @@ import com.owera.xaps.dbi.XAPS;
 import com.owera.xaps.dbi.XAPSUnit;
 import com.owera.xaps.dbi.util.SystemParameters;
 
+import static com.owera.common.db.ConnectionProvider.getConnectionProperties;
+import static com.owera.xaps.syslogserver.Properties.getMaxAge;
+import static com.owera.xaps.syslogserver.Properties.getMaxConn;
+import static com.owera.xaps.syslogserver.Properties.getUrl;
+
 public class Syslog2DB implements Runnable {
+
+	private ConnectionProperties syslogCp;
+	private ConnectionProperties xapsCp;
 
 	public static class Syslog2DBCounter {
 
@@ -196,6 +204,9 @@ public class Syslog2DB implements Runnable {
 
 	static {
 		deviceIdPatterns.add(Pattern.compile("\\[([a-fA-F0-9:-]{12,17})\\]:"));
+	}
+
+	private void poulateDeviceIdPatterns() {
 		int index = 1;
 		Pattern pattern = null;
 		do {
@@ -215,12 +226,6 @@ public class Syslog2DB implements Runnable {
 
 	private static DBI dbi;
 
-	private static ConnectionProperties syslogCp = ConnectionProvider.getConnectionProperties("xaps-syslog.properties", "db.syslog");
-
-	private static ConnectionProperties xapsCp = ConnectionProvider.getConnectionProperties("xaps-syslog.properties", "db.xaps");
-
-	//	private static FailoverFile ff = FailoverFile.getInstance();
-
 	private static Syslog syslog;
 
 	private static boolean pause;
@@ -231,13 +236,16 @@ public class Syslog2DB implements Runnable {
 
 	private static Cache unitCache = new Cache();
 
-	private ScriptExecutions executions = new ScriptExecutions(xapsCp);
+	private ScriptExecutions executions;
 
 	public static int getUnitCacheSize() {
 		return unitCache.getMap().size();
 	}
 
-	private static synchronized void init() {
+	private synchronized void init() {
+		syslogCp = getConnectionProperties(getUrl("syslog"), getMaxAge("syslog"), getMaxConn("syslog"));
+		xapsCp = getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps"));
+		executions = new ScriptExecutions(xapsCp);
 		if (dbi == null) {
 			try {
 				Users users = new Users(xapsCp);
@@ -254,7 +262,8 @@ public class Syslog2DB implements Runnable {
 		}
 	}
 
-	public Syslog2DB(int index) throws NoAvailableConnectionException, SQLException {
+	Syslog2DB(int index) {
+		poulateDeviceIdPatterns();
 		init();
 		populateXAPS();
 	}

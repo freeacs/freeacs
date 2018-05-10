@@ -1,24 +1,15 @@
 package com.owera.xaps.web.app.page.unit;
 
-import java.util.Arrays;
-import java.util.Map;
-
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.util.SystemParameters;
 import com.owera.xaps.web.app.Output;
-import com.owera.xaps.web.app.input.Input;
-import com.owera.xaps.web.app.input.InputData;
-import com.owera.xaps.web.app.input.InputDataIntegrity;
-import com.owera.xaps.web.app.input.InputDataRetriever;
-import com.owera.xaps.web.app.input.ParameterParser;
+import com.owera.xaps.web.app.input.*;
 import com.owera.xaps.web.app.page.AbstractWebPage;
 import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.XAPSLoader;
+
+import java.util.Arrays;
+import java.util.Map;
 
 
 

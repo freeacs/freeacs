@@ -1,15 +1,25 @@
 package com.owera.xaps.monitor;
 
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
 
+import com.owera.common.db.ConnectionProperties;
 import com.owera.common.util.PropertyReader;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+
+import static java.lang.Long.getLong;
 
 public class Properties {
 
-	private static PropertyReader pr = new PropertyReader("xaps-monitor.properties");
+	private static final Config config = ConfigFactory.load();
 
 	public static String get(String property) {
-		return pr.getProperty(property);
+		if (config.hasPath(property)) {
+			return config.getString(property);
+		}
+		return null;
 	}
 
 	/**
@@ -46,25 +56,45 @@ public class Properties {
 		return (long) getInteger("monitor.retrysec", 300);
 	}
 
-	private static int getInteger(String propertyKey, int defaultValue) {
-		String prop = pr.getProperty(propertyKey);
+	public static int getInteger(String propertyKey, int defaultValue) {
+		if (!config.hasPath(propertyKey)) {
+			return defaultValue;
+		}
 		try {
-			return Integer.parseInt(prop);
+			return config.getInt(propertyKey);
 		} catch (Throwable t) {
 			return defaultValue;
 		}
 	}
 
-	private static String getString(String propertyKey, String defaultValue) {
-		String prop = pr.getProperty(propertyKey);
+	public static String getString(String propertyKey, String defaultValue) {
+		if (!config.hasPath(propertyKey)) {
+			return defaultValue;
+		}
+		String prop = config.getString(propertyKey);
 		if (prop == null) {
 			return defaultValue;
 		}
 		return prop;
 	}
 
-	public static Map<String, Object> getPropertyMap() {
-		return pr.getPropertyMap();
+	public static int getMaxConn(final String infix) {
+		return getInteger("db." + infix + ".maxconn", ConnectionProperties.maxconn);
 	}
+
+	public static long getMaxAge(final String infix) {
+		return getLong("db." + infix + ".maxage", ConnectionProperties.maxage);
+	}
+
+	public static String getUrl(final String infix) {
+		return Optional.ofNullable(getString("db." + infix + ".url", null))
+				.orElseGet(new Supplier<String>() {
+					@Override
+					public String get() {
+						return getString("db." +infix, null);
+					}
+				});
+	}
+
 
 }

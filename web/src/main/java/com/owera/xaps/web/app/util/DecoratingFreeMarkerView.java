@@ -1,16 +1,13 @@
 package com.owera.xaps.web.app.util;
 
+import com.owera.xaps.web.Page;
+import freemarker.template.Template;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
-
-import com.owera.xaps.web.Page;
-
-import freemarker.template.Template;
 
 
 

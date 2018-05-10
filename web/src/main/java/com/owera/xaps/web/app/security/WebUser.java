@@ -1,14 +1,14 @@
 package com.owera.xaps.web.app.security;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.owera.xaps.dbi.User;
 import com.owera.xaps.dbi.Users;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.WebConstants;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * The Class WebUser.

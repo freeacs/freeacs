@@ -1,36 +1,10 @@
 package com.owera.xaps.web.app.page.unit;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.regex.Pattern;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.common.util.IPAddress;
 import com.owera.common.util.TimeWindow;
-import com.owera.xaps.dbi.Syslog;
-import com.owera.xaps.dbi.SyslogEntry;
-import com.owera.xaps.dbi.SyslogFilter;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.report.Key;
-import com.owera.xaps.dbi.report.PeriodType;
-import com.owera.xaps.dbi.report.RecordHardware;
-import com.owera.xaps.dbi.report.RecordSyslog;
-import com.owera.xaps.dbi.report.RecordVoip;
-import com.owera.xaps.dbi.report.Report;
-import com.owera.xaps.dbi.report.ReportConverter;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.dbi.report.*;
 import com.owera.xaps.dbi.util.SystemParameters;
 import com.owera.xaps.web.app.page.report.UnitListData;
 import com.owera.xaps.web.app.page.report.uidata.RecordUIDataHardware;
@@ -38,6 +12,15 @@ import com.owera.xaps.web.app.page.report.uidata.RecordUIDataHardwareFilter;
 import com.owera.xaps.web.app.page.syslog.SyslogRetriever;
 import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.XAPSLoader;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 /**
  * A place holder for data and logic related to a specific time window.

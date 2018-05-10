@@ -1,41 +1,19 @@
 package com.owera.xaps.web.app.page.unit;
 
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.codec.binary.Base64;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.common.log.Logger;
-import com.owera.xaps.dbi.Certificate;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Syslog;
-import com.owera.xaps.dbi.SyslogEntry;
-import com.owera.xaps.dbi.SyslogFilter;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
-import com.owera.xaps.dbi.report.Chart;
-import com.owera.xaps.dbi.report.PeriodType;
-import com.owera.xaps.dbi.report.RecordVoipCall;
-import com.owera.xaps.dbi.report.Report;
-import com.owera.xaps.dbi.report.ReportVoipCallGenerator;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.dbi.report.*;
 import com.owera.xaps.web.app.Output;
 import com.owera.xaps.web.app.input.InputDataRetriever;
 import com.owera.xaps.web.app.input.ParameterParser;
 import com.owera.xaps.web.app.page.AbstractWebPage;
 import com.owera.xaps.web.app.page.report.ReportPage;
-import com.owera.xaps.web.app.util.BrowserDetect;
-import com.owera.xaps.web.app.util.CertificateVerification;
-import com.owera.xaps.web.app.util.SessionCache;
-import com.owera.xaps.web.app.util.UserAgent;
-import com.owera.xaps.web.app.util.WebConstants;
-import com.owera.xaps.web.app.util.XAPSLoader;
+import com.owera.xaps.web.app.util.*;
+import org.apache.commons.codec.binary.Base64;
+
+import java.sql.SQLException;
+import java.util.*;
 
 
 

@@ -2,19 +2,22 @@ package com.owera.xaps.stun;
 
 import com.owera.common.log.Logger;
 import com.owera.common.util.PropertyReader;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 
 public class Properties {
 
-	private static String propertyfile = "xaps-stun.properties";
-
-	private static PropertyReader pr = new PropertyReader(propertyfile);
+	private static Config config = ConfigFactory.load();
 
 	private static Logger logger = new Logger();
 
 	private static int getInteger(String propertyKey, int defaultValue) {
-		String prop = pr.getProperty(propertyKey);
+		if (!config.hasPath(propertyKey)) {
+			logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
+			return defaultValue;
+		}
 		try {
-			return Integer.parseInt(prop);
+			return config.getInt(propertyKey);
 		} catch (Throwable t) {
 			logger.warn("The value of " + propertyKey + " was not a number, instead using default value " + defaultValue);
 			return defaultValue;
@@ -22,12 +25,11 @@ public class Properties {
 	}
 
 	private static String getString(String propertyKey, String defaultValue) {
-		String prop = pr.getProperty(propertyKey);
-		if (prop == null) {
+		if (!config.hasPath(propertyKey)) {
 			logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
 			return defaultValue;
 		}
-		return prop;
+		return config.getString(propertyKey);
 	}
 
 	public static int getKickRescan() {
@@ -47,11 +49,11 @@ public class Properties {
 	}
 
 	public static String getPrimaryIp() {
-		return pr.getProperty("primary.ip");
+		return getString("primary.ip", null);
 	}
 
 	public static String getSecondaryIp() {
-		return pr.getProperty("secondary.ip");
+		return getString("secondary.ip", null);
 	}
 
 	public static boolean runWithStun() {

@@ -1,28 +1,20 @@
 package com.owera.xaps.web.app.page.heartbeat;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import com.owera.xaps.dbi.Group;
-import com.owera.xaps.dbi.Heartbeat;
-import com.owera.xaps.dbi.Heartbeats;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.Output;
-import com.owera.xaps.web.app.input.DropDownSingleSelect;
-import com.owera.xaps.web.app.input.InputDataIntegrity;
-import com.owera.xaps.web.app.input.InputDataRetriever;
-import com.owera.xaps.web.app.input.InputSelectionFactory;
-import com.owera.xaps.web.app.input.ParameterParser;
+import com.owera.xaps.web.app.input.*;
 import com.owera.xaps.web.app.menu.MenuItem;
 import com.owera.xaps.web.app.page.AbstractWebPage;
 import com.owera.xaps.web.app.util.SessionData;
 import com.owera.xaps.web.app.util.WebConstants;
 import com.owera.xaps.web.app.util.XAPSLoader;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Class HeartbeatsPage.

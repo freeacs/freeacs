@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import com.owera.common.log.Logger;
 import com.owera.common.util.PropertyReader;
@@ -171,7 +172,6 @@ public class ConnectionProvider {
 		// TODO: Change signature of method: propertyfile, dbname
 		// TODO: Read user/password/url/maxage/maxconn from propertyfile
 		PropertyReader pr = new PropertyReader(propertyfile);
-
 		// Symlink check
 		String symlink = pr.getProperty(dbkey);
 		if (symlink != null && !symlink.contains("@")) {
@@ -180,12 +180,11 @@ public class ConnectionProvider {
 			}
 			dbkey = symlink;
 		}
+		return getConnectionProperties(getDbUrl(dbkey, pr), getMaxAge(pr.getProperty(dbkey + ".maxage")), getMaxConn(pr.getProperty(dbkey + ".maxconn")));
+	}
 
-		// Find database credentials and url:
-		String url = pr.getProperty(dbkey + ".url");
-		if (url == null)
-			url = pr.getProperty(dbkey); // Backward compatibility - a little
-											// ugly and non-explicit
+	public static ConnectionProperties getConnectionProperties(String url, Long maxAge, int maxConn) {
+
 		if (url == null)
 			return null;
 
@@ -200,29 +199,35 @@ public class ConnectionProvider {
 			throw new IllegalArgumentException(url + " is not on a correct database-config-format (<user>/<password>@<jdbc-url>");
 		}
 
-		String maxAge = pr.getProperty(dbkey + ".maxage");
-		if (maxAge != null) {
-			try {
-				props.setMaxAge(Long.parseLong(maxAge) * 1000);
-			} catch (NumberFormatException nfe) {
-				log.warn(maxAge + " is not a number, default value (600 sec) will be used");
-			}
-		}
+		props.setMaxAge(maxAge);
+		props.setMaxConn(maxConn);
 
-		String maxConn = pr.getProperty(dbkey + ".maxconn");
-		if (maxConn != null) {
-			try {
-				props.setMaxConn(Integer.parseInt(maxConn));
-			} catch (NumberFormatException nfe) {
-				log.warn(maxConn + " is not a number, default value (10) will be used");
-			}
-		}
-
-		if (props.getUrl().indexOf("mysql") > -1)
+		if (props.getUrl().contains("mysql"))
 			props.setDriver("com.mysql.jdbc.Driver"); // This class must be specified in the classpath (dynamically loaded)
 		else
 			throw new IllegalArgumentException("The url is not pointing to a MySQL database");
 		return props;
+	}
+
+	public static long getMaxAge(String property) {
+		try {
+			return Long.parseLong(property);
+		} catch (Exception e) {
+			return ConnectionProperties.maxage;
+		}
+	}
+
+	public static int getMaxConn(String property) {
+		try {
+			return Integer.parseInt(property);
+		} catch (Exception e) {
+			return ConnectionProperties.maxconn;
+		}
+	}
+
+	private static String getDbUrl(String dbkey, PropertyReader pr) {
+		return Optional.ofNullable(pr.getProperty(dbkey + ".url"))
+				.orElseGet(() -> pr.getProperty(dbkey));
 	}
 
 	/**

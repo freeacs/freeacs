@@ -1,10 +1,10 @@
 package com.owera.xaps.web.app.page.file;
 
-import java.util.List;
-
 import com.owera.xaps.dbi.File;
 import com.owera.xaps.dbi.FileType;
 import com.owera.xaps.web.app.input.DropDownSingleSelect;
+
+import java.util.List;
 
 public class SoftwarePage extends FilePage {
 	@Override

@@ -1,14 +1,5 @@
 package com.owera.xaps.web.app;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.log.Logger;
 import com.owera.common.util.Sleep;
@@ -21,9 +12,16 @@ import com.owera.xaps.web.app.util.Freemarker;
 import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.WebConstants;
 import com.owera.xaps.web.app.util.WebProperties;
-
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
 /**
  * The front controller in xAPS Web.
@@ -139,7 +137,7 @@ public class Main extends HttpServlet {
 	 * It is thread safe as long as no changes is done to the Configuration after it has been initialized.
 	 */
 	public void init() {
-		config = Freemarker.initFreemarker(getServletContext());
+		config = Freemarker.initFreemarker();
 	}
 
 	/**
@@ -172,13 +170,13 @@ public class Main extends HttpServlet {
 		templateMap.put("TOOLS_MENU", new MenuServlet().getToolsMenu(params.getSession().getId(), ""));
 		//		templateMap.put("SELECTED_MENU_PAGE", Page.getSelectedMenuPage(pageStr));
 		templateMap.put("HELP_PAGE", Page.getHelpPage(pageStr));
-		templateMap.put("CONFIRMCHANGES", WebProperties.getWebProperties().getBoolean("confirmchanges", false));
+		templateMap.put("CONFIRMCHANGES", WebProperties.getBoolean("confirmchanges", false));
 		templateMap.put("REQUESTED_PAGE", pageStr);
-		templateMap.put("IXEDIT_DEVELOPER", WebProperties.getWebProperties().getBoolean("ixedit.enabled"));
-		templateMap.put("CSS_FILE", WebProperties.getWebProperties().getString(WebConstants.DEFAULT_PROPERTIES_KEY, "default"));
+		templateMap.put("IXEDIT_DEVELOPER", WebProperties.getBoolean("ixedit.enabled"));
+		templateMap.put("CSS_FILE", WebProperties.getString(WebConstants.DEFAULT_PROPERTIES_KEY, "default"));
 		templateMap.put("STATUS_LOGGEDIN", getLoggedInStatusTitle(params));
-		templateMap.put("SESSION_TIMEOUT", WebProperties.getWebProperties().getSessionTimeout());
-		templateMap.put("JAVASCRIPT_DEBUG", Boolean.parseBoolean(WebProperties.getWebProperties().getString("javascript.debug", "false")));
+		templateMap.put("SESSION_TIMEOUT", WebProperties.getSessionTimeout());
+		templateMap.put("JAVASCRIPT_DEBUG", Boolean.parseBoolean(WebProperties.getString("javascript.debug", "false")));
 
 		outputHandler.deliverResponse();
 

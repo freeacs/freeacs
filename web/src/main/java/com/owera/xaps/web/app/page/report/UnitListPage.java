@@ -1,60 +1,24 @@
 package com.owera.xaps.web.app.page.report;
 
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.dbi.report.*;
+import com.owera.xaps.dbi.util.SystemParameters;
+import com.owera.xaps.web.app.Output;
+import com.owera.xaps.web.app.input.*;
+import com.owera.xaps.web.app.page.AbstractWebPage;
+import com.owera.xaps.web.app.page.report.uidata.*;
+import com.owera.xaps.web.app.util.DateUtils;
+import com.owera.xaps.web.app.util.WebConstants;
+import com.owera.xaps.web.app.util.XAPSLoader;
+import freemarker.template.TemplateMethodModel;
+import freemarker.template.TemplateModelException;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.Certificate;
-import com.owera.xaps.dbi.Group;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
-import com.owera.xaps.dbi.report.PeriodType;
-import com.owera.xaps.dbi.report.RecordHardware;
-import com.owera.xaps.dbi.report.RecordProvisioning;
-import com.owera.xaps.dbi.report.RecordSyslog;
-import com.owera.xaps.dbi.report.RecordVoip;
-import com.owera.xaps.dbi.report.Report;
-import com.owera.xaps.dbi.report.ReportHardwareGenerator;
-import com.owera.xaps.dbi.report.ReportProvisioningGenerator;
-import com.owera.xaps.dbi.report.ReportSyslogGenerator;
-import com.owera.xaps.dbi.report.ReportVoipGenerator;
-import com.owera.xaps.dbi.util.SystemParameters;
-import com.owera.xaps.web.app.Output;
-import com.owera.xaps.web.app.input.DropDownSingleSelect;
-import com.owera.xaps.web.app.input.Input;
-import com.owera.xaps.web.app.input.InputDataIntegrity;
-import com.owera.xaps.web.app.input.InputDataRetriever;
-import com.owera.xaps.web.app.input.InputSelectionFactory;
-import com.owera.xaps.web.app.input.ParameterParser;
-import com.owera.xaps.web.app.page.AbstractWebPage;
-import com.owera.xaps.web.app.page.report.uidata.RecordUIDataHardware;
-import com.owera.xaps.web.app.page.report.uidata.RecordUIDataHardwareFilter;
-import com.owera.xaps.web.app.page.report.uidata.RecordUIDataHwSum;
-import com.owera.xaps.web.app.page.report.uidata.RecordUIDataProv;
-import com.owera.xaps.web.app.page.report.uidata.RecordUIDataSyslogFilter;
-import com.owera.xaps.web.app.page.report.uidata.RecordUIDataSyslogFromReport;
-import com.owera.xaps.web.app.page.report.uidata.RecordUIDataSyslogSumFromReport;
-import com.owera.xaps.web.app.util.DateUtils;
-import com.owera.xaps.web.app.util.SessionCache;
-import com.owera.xaps.web.app.util.WebConstants;
-import com.owera.xaps.web.app.util.XAPSLoader;
-
-import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateModelException;
 
 /**
  * This page represents the unit list page that you will land on after zooming down into a syslog report.

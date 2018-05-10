@@ -1,27 +1,9 @@
 package com.owera.xaps.web.app.page.trigger;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import com.owera.xaps.dbi.ScriptExecution;
-import com.owera.xaps.dbi.ScriptExecutions;
-import com.owera.xaps.dbi.Trigger;
-import com.owera.xaps.dbi.TriggerRelease;
-import com.owera.xaps.dbi.Triggers;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.Output;
-import com.owera.xaps.web.app.input.Input;
-import com.owera.xaps.web.app.input.InputDataIntegrity;
-import com.owera.xaps.web.app.input.InputDataRetriever;
-import com.owera.xaps.web.app.input.InputSelectionFactory;
-import com.owera.xaps.web.app.input.ParameterParser;
+import com.owera.xaps.web.app.input.*;
 import com.owera.xaps.web.app.menu.MenuItem;
 import com.owera.xaps.web.app.page.AbstractWebPage;
 import com.owera.xaps.web.app.table.TableElement;
@@ -30,6 +12,14 @@ import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.SessionData;
 import com.owera.xaps.web.app.util.WebConstants;
 import com.owera.xaps.web.app.util.XAPSLoader;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class TriggerReleasePage extends AbstractWebPage {
 

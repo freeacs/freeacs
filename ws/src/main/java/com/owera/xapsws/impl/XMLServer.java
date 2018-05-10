@@ -48,7 +48,7 @@ public class XMLServer extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		doPost(req, res);
 	}
-	
+
 	public void destroy() {
 		Sleep.terminateApplication();
 	}
@@ -105,11 +105,7 @@ public class XMLServer extends HttpServlet {
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			InputSource is = new InputSource(new StringReader(in));
 			return db.parse(is);
-		} catch (ParserConfigurationException e) {
-			throw new RuntimeException(e);
-		} catch (SAXException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
+		} catch (ParserConfigurationException | SAXException | IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -151,9 +147,9 @@ public class XMLServer extends HttpServlet {
 		sb.append("<soapenv:Body>");
 		sb.append("<soapenv:Fault>");
 		sb.append("<faultcode>soapenv:Server.userException</faultcode>");
-		sb.append("<faultstring>" + errorMsg + "</faultstring>");
+		sb.append("<faultstring>").append(errorMsg).append("</faultstring>");
 		sb.append("<detail>");
-		sb.append("<ns1:hostname xmlns:ns1=\"http://xml.apache.org/axis/\">" + hostname + "</ns1:hostname>");
+		sb.append("<ns1:hostname xmlns:ns1=\"http://xml.apache.org/axis/\">").append(hostname).append("</ns1:hostname>");
 		sb.append("</detail>");
 		sb.append("</soapenv:Fault>");
 		sb.append("</soapenv:Body>");

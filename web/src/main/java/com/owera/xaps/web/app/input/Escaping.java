@@ -1,6 +1,6 @@
 package com.owera.xaps.web.app.input;
 
-import java.util.regex.*;
+import java.util.regex.Pattern;
 
 
 /**

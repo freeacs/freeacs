@@ -1,12 +1,12 @@
 package com.owera.xaps.web.app.page.trigger;
 
+import com.owera.xaps.dbi.ScriptExecution;
+import com.owera.xaps.dbi.Trigger;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
-import com.owera.xaps.dbi.ScriptExecution;
-import com.owera.xaps.dbi.Trigger;
 
 /**
  * This class is custom-tailored to display data on the TriggerRelease-page

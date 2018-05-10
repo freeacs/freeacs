@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.owera.common.ssl.EasySSLProtocolSocketFactory;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 
@@ -32,11 +33,12 @@ import com.owera.xaps.monitor.task.MonitorInfo;
 import com.owera.xaps.monitor.task.SendEmailTask;
 import com.owera.xaps.monitor.task.TriggerNotificationHourly;
 import com.owera.xaps.monitor.task.TriggerNotificationSecondly;
-import com.owera.xaps.web.app.page.monitor.EasySSLProtocolSocketFactory;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+
+import static com.owera.xaps.monitor.Properties.*;
 
 /**
  * Servlet implementation class Welcome
@@ -64,7 +66,7 @@ public class MonitorServlet extends HttpServlet {
 	public void init(ServletConfig serlvetConfig) throws ServletException {
 		try {
 			context = serlvetConfig.getServletContext();
-			config = new Freemarker().initFreemarker(context);
+			config = new Freemarker().initFreemarker();
 
 			scheduler = new Scheduler();
 			Thread t = new Thread(scheduler);
@@ -79,7 +81,7 @@ public class MonitorServlet extends HttpServlet {
 			// Run every morning at 0700 - light task - will send email if monitor-server is up
 			scheduler.registerTask(new Schedule(7 * 60 * 60000, false, ScheduleType.DAILY, new MonitorHeartbeatTask("MonitorHeartbeatTask")));
 
-			ConnectionProperties connProps = ConnectionProvider.getConnectionProperties("xaps-monitor.properties", "db.xaps");
+			ConnectionProperties connProps = ConnectionProvider.getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps"));
 			// Run every second - very light usually - check if there's a trigger release message (and process)
 			scheduler.registerTask(new Schedule(60000, false, ScheduleType.INTERVAL, new TriggerNotificationSecondly("TriggerNotificationSecondly", connProps)));
 			// Run every hour - very light usually - check if there's a trigger release we've missed 
@@ -104,7 +106,7 @@ public class MonitorServlet extends HttpServlet {
 		processRequest(request, response);
 	}
 
-	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter out = response.getWriter();
 		Template page = config.getTemplate("main.ftl");
 		Map<String, Object> rootMap = new HashMap<String, Object>();

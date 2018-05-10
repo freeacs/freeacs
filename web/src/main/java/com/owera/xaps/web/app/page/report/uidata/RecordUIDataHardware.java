@@ -1,15 +1,14 @@
 package com.owera.xaps.web.app.page.report.uidata;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.owera.xaps.dbi.Unit;
 import com.owera.xaps.dbi.report.RecordHardware;
 import com.owera.xaps.web.app.page.AbstractWebPage;
 import com.owera.xaps.web.app.util.DateUtils;
-
 import freemarker.template.TemplateModelException;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**

@@ -1,7 +1,9 @@
 package com.owera.xaps.web.app.page.search;
 
-import java.util.*;
-import com.owera.xaps.dbi.*;
+import com.owera.xaps.dbi.Unit;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SearchResultWrapper {
 

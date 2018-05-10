@@ -1,14 +1,14 @@
 package com.owera.xaps.web.app.page.staging;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-
 import com.owera.xaps.dbi.Profile;
 import com.owera.xaps.dbi.ProfileParameter;
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.util.SystemParameters;
 import com.owera.xaps.web.app.input.Input;
 import com.owera.xaps.web.app.input.InputData;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
 /**
  * The Class StagingProviderData.

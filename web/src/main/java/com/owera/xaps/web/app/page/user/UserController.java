@@ -1,33 +1,27 @@
 package com.owera.xaps.web.app.page.user;
 
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.xaps.dbi.User;
+import com.owera.xaps.dbi.Users;
+import com.owera.xaps.web.app.util.SessionCache;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.User;
-import com.owera.xaps.dbi.Users;
-import com.owera.xaps.web.app.util.SessionCache;
-
 /**
  * The Class UserController.
  */
 @Controller
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/app/user")
 public class UserController extends PermissionController {
 
 	/** The user group controller. */
@@ -138,7 +132,7 @@ public class UserController extends PermissionController {
 	 * @throws SQLException the sQL exception
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 */
-	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	@RequestMapping(value = "list", method = RequestMethod.GET)
 	public @ResponseBody
 	Map<String, Object> list(HttpSession session, HttpServletRequest request, HttpServletResponse outputHandler) throws IOException, ParseException, SQLException, NoAvailableConnectionException {
 		Map<String, Object> map = new HashMap<String, Object>();

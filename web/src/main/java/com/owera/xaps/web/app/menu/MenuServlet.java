@@ -1,16 +1,5 @@
 package com.owera.xaps.web.app.menu;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.Users;
 import com.owera.xaps.web.Page;
@@ -19,11 +8,20 @@ import com.owera.xaps.web.app.util.Freemarker;
 import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.SessionData;
 import com.owera.xaps.web.app.util.WebProperties;
-//import com.thoughtworks.xstream.XStream;
-
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+//import com.thoughtworks.xstream.XStream;
 
 /**
  * A menu servlet that generates different types of response based a type parameter.
@@ -55,8 +53,9 @@ public class MenuServlet extends HttpServlet {
 	 * @return the template config
 	 */
 	private static Configuration getTemplateConfig() {
-		if (templateConfig == null)
-			templateConfig = Freemarker.initFreemarkerForClassLoading(MenuServlet.class);
+		if (templateConfig == null) {
+			templateConfig = Freemarker.initFreemarker();
+		}
 		return templateConfig;
 	}
 
@@ -65,24 +64,11 @@ public class MenuServlet extends HttpServlet {
 	 */
 	@Override
 	@Deprecated
-	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest req, HttpServletResponse res) {
 		String type = req.getParameter("type");
 		if (type == null)
 			type = "html";
-		//		
-		//		ResponseCache.addNoCacheToResponse(res);
-
 		try {
-//			if (type.equals("xml")) {
-//				XStream xstream = new XStream();
-//				xstream.alias("menuitem", MenuItem.class);
-//				xstream.alias("attribute", MenuItemAttribute.class);
-//				List<MenuItem> mainMenu = getMainMenu(req);
-//				String xml = xstream.toXML(mainMenu);
-//				res.setContentType("application/xml");
-//				res.getWriter().println(xml);
-//				res.getWriter().close();
-//			} else
 			if (type.equals("json")) {
 				flexjson.JSONSerializer serializer = new flexjson.JSONSerializer();
 				List<MenuItem> mainMenu = getMainMenu(req);
@@ -189,38 +175,10 @@ public class MenuServlet extends HttpServlet {
 	}
 
 	/**
-	 * Checks if is current job.
-	 *
-	 * @param sessionId the session id
-	 * @return the boolean
-	 */
-	//	private static Boolean isCurrentJob(String sessionId) {
-	//		SessionData sessionData = SessionCache.getSessionData(sessionId);
-	//		String name = sessionData.getJobname();
-	//		String unittype = sessionData.getUnittypeName();
-	//		return name != null && unittype != null && !unittype.equals(WebConstants.ALL_ITEMS_OR_DEFAULT);
-	//	}
-
-	/**
-	 * Checks if is current group.
-	 *
-	 * @param sessionId the session id
-	 * @return the boolean
-	 */
-	//	private static Boolean isCurrentGroup(String sessionId) {
-	//		SessionData sessionData = SessionCache.getSessionData(sessionId);
-	//		String group = sessionData.getGroup();
-	//		String unittype = sessionData.getUnittypeName();
-	//		return group != null && !group.equals(WebConstants.ALL_ITEMS_OR_DEFAULT) && unittype != null && !unittype.equals(WebConstants.ALL_ITEMS_OR_DEFAULT);
-	//	}
-
-	/**
 	 * Creates the menu items new standard.
 	 *
 	 * @param allowedPages the pages
 	 * @param selectedPage the selected page
-	 * @param isCurrentGroup the is current group
-	 * @param isCurrentJob the is current job
 	 * @param sessionId the session id
 	 * @return the list
 	 */
@@ -291,8 +249,8 @@ public class MenuServlet extends HttpServlet {
 			syslogReport.addSubMenuItem(new MenuItem("Units", Page.UNITLIST.getUrl("type=" + ReportType.SYS.getName()), new ArrayList<MenuItem>()));
 			
 			// If both hardware and voip are to be hidden this menu item is redundant.
-			boolean showHardware = WebProperties.getWebProperties().getShowHardware();
-			boolean showVoip =  WebProperties.getWebProperties().getShowVoip();
+			boolean showHardware = WebProperties.getShowHardware();
+			boolean showVoip =  WebProperties.getShowVoip();
 			if (showHardware || showVoip) {
 				MenuItem syslogReports = new MenuItem("Pingcom Devices", Page.REPORT);
 				if (showVoip) {
@@ -308,13 +266,6 @@ public class MenuServlet extends HttpServlet {
 				syslogReports.setDisableOnClickWithJavaScript();
 				reporting.addSubMenuItem(syslogReports);
 			}
-
-			//			MenuItem trReports = new MenuItem("TR069 Devices", Page.REPORT);
-			//			reporting.addSubMenuItem(trReports);
-			//			trReports.addSubMenuItem(new MenuItem("Voip", Page.REPORT.getUrl("type=" + ReportType.VOIPTR.getName()), new ArrayList<MenuItem>()));
-			//			trReports.addSubMenuItem(new MenuItem("Hardware", Page.REPORT.getUrl("type=" + ReportType.HARDWARETR.getName()), new ArrayList<MenuItem>()));
-			//			trReports.addSubMenuItem(new MenuItem("Gateway", Page.REPORT.getUrl("type=" + ReportType.GATEWAYTR.getName()), new ArrayList<MenuItem>()));
-			//			trReports.setDisableOnClickWithJavaScript();
 			menu.add(reporting);
 		}
 		if (allowedPages.contains(Page.TOPMENU_WIZARDS)) {
@@ -322,12 +273,9 @@ public class MenuServlet extends HttpServlet {
 			wizards.addSubMenuItem(new MenuItem("Upgrade wizard", Page.UPGRADE));
 			menu.add(wizards);
 		}
-		if (WebProperties.getWebProperties().getBoolean("staging.enabled")) {
+		if (WebProperties.getBoolean("staging.enabled")) {
 			MenuItem staging = new MenuItem("Staging", Page.TOPMENU_STAGING).setSelected(
 					selectedPage.equalsAny(Page.STAGINGDISTRIBUTORS, Page.STAGINGPROVIDERS, Page.STAGINGRETURN, Page.STAGINGSHIPMENTS)).setDisableOnClickWithJavaScript();
-			//			staging.addSubMenuItem(new MenuItem("Manage distributors", Page.STAGINGDISTRIBUTORS));
-			//			staging.addSubMenuItem(new MenuItem("Manage providers", Page.STAGINGPROVIDERS));
-			//			staging.addSubMenuItem(new MenuItem("Return units", Page.STAGINGRETURN));
 			staging.addSubMenuItem(new MenuItem("Ship units", Page.STAGINGSHIPMENTS));
 			menu.add(staging);
 		}

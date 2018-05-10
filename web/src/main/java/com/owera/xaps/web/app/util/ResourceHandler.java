@@ -22,7 +22,7 @@ public abstract class ResourceHandler {
      */
     public static ResourceBundle getProperties(){
     	if(localeProperties==null){
-    		localeProperties = new ReferencingResourceBundle(WebProperties.getWebProperties().getString(WebConstants.DEFAULT_PROPERTIES_KEY, "default"), getLocale(), true);
+    		localeProperties = new ReferencingResourceBundle(WebProperties.getString(WebConstants.DEFAULT_PROPERTIES_KEY, "default"), getLocale(), true);
     	}
     	return localeProperties;
     }
@@ -45,7 +45,7 @@ public abstract class ResourceHandler {
      * @return the locale
      */
     private static Locale getLocale() {
-        String locale = WebProperties.getWebProperties().getProperty("locale");
+        String locale = WebProperties.getString("locale", null);
         if(locale!=null)
             return new Locale(locale);
         return Locale.getDefault();

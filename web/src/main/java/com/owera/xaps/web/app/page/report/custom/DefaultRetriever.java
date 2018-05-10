@@ -1,13 +1,5 @@
 package com.owera.xaps.web.app.page.report.custom;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.NotImplementedException;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.xaps.dbi.Group;
 import com.owera.xaps.dbi.Profile;
@@ -18,6 +10,13 @@ import com.owera.xaps.dbi.report.Report;
 import com.owera.xaps.dbi.report.ReportGenerator;
 import com.owera.xaps.web.app.input.ParameterParser;
 import com.owera.xaps.web.app.page.report.ReportData;
+import org.apache.commons.lang.NotImplementedException;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 
 /**
