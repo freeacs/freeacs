@@ -9,7 +9,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>freeacs-tr069</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>FreeACS TR069 Server</name>
 
     <properties>
