@@ -1,0 +1,12 @@
+[Unit]
+Description=freeacs-tr069
+After=syslog.target
+
+[Service]
+User=freeacs
+WorkingDirectory=/var/freeacs/tr069
+ExecStart=/var/freeacs/ws/freeacs-tr069.jar
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target

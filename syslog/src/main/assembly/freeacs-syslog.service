@@ -1,0 +1,12 @@
+[Unit]
+Description=freeacs-syslog
+After=syslog.target
+
+[Service]
+User=freeacs
+WorkingDirectory=/var/freeacs/syslog
+ExecStart=/var/freeacs/ws/freeacs-syslog.jar
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
