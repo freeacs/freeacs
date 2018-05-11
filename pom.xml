@@ -3,7 +3,7 @@
 
     <groupId>com.github.jarlah</groupId>
     <artifactId>freeacs-parent</artifactId>
-    <version>2.0.0-RC1</version>
+    <version>2.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>FreeACS Parent</name>
 
@@ -27,7 +27,7 @@
     <scm>
         <connection>scm:git:git://github.com/freeacs/freeacs.git</connection>
         <developerConnection>scm:git:git@github.com:freeacs/freeacs.git</developerConnection>
-        <tag>freeacs-parent-2.0.0-RC1</tag>
+        <tag>HEAD</tag>
         <url>https://github.com/freeacs/freeacs/</url>
     </scm>
 
