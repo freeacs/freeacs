@@ -14,8 +14,16 @@ Copy service file to systemd
     sudo cp freeacs-core.service /etc/systemd/system
     sudo systemctl enable freeacs-core
 
+Then start the service
+    sudo systemctl start freeacs-core
+    or
+    sudo systemctl restart freeacs-core
+
 Check logs from system out
 
     journalctl -f -u freeacs-core
 
 Or check logs in /var/freeacs/core
+
+To stop the service:
+    sudo systemctl stop freeacs-core

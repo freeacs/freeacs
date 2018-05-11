@@ -14,8 +14,16 @@ Copy service file to systemd
     sudo cp freeacs-syslog.service /etc/systemd/system
     sudo systemctl enable freeacs-syslog
 
+Then start the service
+    sudo systemctl start freeacs-syslog
+    or
+    sudo systemctl restart freeacs-syslog
+
 Check logs from system out
 
     journalctl -f -u freeacs-syslog
 
 Or check logs in /var/freeacs/syslog
+
+To stop the service:
+    sudo systemctl stop freeacs-syslog

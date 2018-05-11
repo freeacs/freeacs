@@ -14,8 +14,16 @@ Copy service file to systemd
     sudo cp freeacs-web.service /etc/systemd/system
     sudo systemctl enable freeacs-web
 
+Then start the service
+    sudo systemctl start freeacs-web
+    or
+    sudo systemctl restart freeacs-web
+
 Check logs from system out
 
     journalctl -f -u freeacs-web
 
 Or check logs in /var/freeacs/web
+
+To stop the service:
+    sudo systemctl stop freeacs-web
