@@ -1,0 +1,12 @@
+[Unit]
+Description=freeacs-core
+After=syslog.target
+
+[Service]
+User=freeacs
+WorkingDirectory=/var/freeacs/core
+ExecStart=/var/freeacs/ws/freeacs-core.jar
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target

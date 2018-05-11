@@ -1,0 +1,12 @@
+[Unit]
+Description=freeacs-monitor
+After=syslog.target
+
+[Service]
+User=freeacs
+WorkingDirectory=/var/freeacs/monitor
+ExecStart=/var/freeacs/ws/freeacs-monitor.jar
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
