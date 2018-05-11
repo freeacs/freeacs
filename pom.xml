@@ -44,6 +44,7 @@
                 <artifactId>dockerfile-maven-plugin</artifactId>
                 <version>1.3.6</version>
                 <configuration>
+                    <repository>${docker.image.prefix}/${project.artifactId}</repository>
                     <skip>true</skip>
                 </configuration>
             </plugin>
@@ -52,7 +53,7 @@
 
     <modules>
         <module>db</module>
-	    <module>readme</module>
+        <module>readme</module>
         <module>common</module>
         <module>dbi</module>
         <module>wsc</module>
