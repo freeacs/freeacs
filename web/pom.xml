@@ -3,31 +3,24 @@
     <parent>
         <artifactId>freeacs-parent</artifactId>
         <groupId>com.github.jarlah</groupId>
-        <version>1.0</version>
-        <relativePath>../pom.xml</relativePath>
+        <version>2.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>freeacs-web</artifactId>
     <packaging>jar</packaging>
     <name>FreeACS Web</name>
-
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.github.jarlah</groupId>
             <artifactId>freeacs-dbi</artifactId>
-            <version>1.0</version>
+            <version>2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.github.jarlah</groupId>
             <artifactId>freeacs-ws-client</artifactId>
-            <version>1.0</version>
+            <version>2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.typesafe</groupId>
