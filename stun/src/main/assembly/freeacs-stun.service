@@ -1,0 +1,12 @@
+[Unit]
+Description=freeacs-stun
+After=syslog.target
+
+[Service]
+User=freeacs
+WorkingDirectory=/var/freeacs/stun
+ExecStart=/var/freeacs/ws/freeacs-stun.jar
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
