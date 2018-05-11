@@ -14,8 +14,16 @@ Copy service file to systemd
     sudo cp freeacs-stun.service /etc/systemd/system
     sudo systemctl enable freeacs-stun
 
+Then start the service
+    sudo systemctl start freeacs-stun
+    or
+    sudo systemctl restart freeacs-stun
+
 Check logs from system out
 
     journalctl -f -u freeacs-stun
 
 Or check logs in /var/freeacs/stun
+
+To stop the service:
+    sudo systemctl stop freeacs-stun
