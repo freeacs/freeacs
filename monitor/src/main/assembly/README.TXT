@@ -7,7 +7,7 @@ Create new directory to hold service and copy jar file
     sudo mkdir -p /var/freeacs/monitor
     sudo cp freeacs-monitor.jar /var/freeacs/monitor
     sudo cp freeacs-monitor.conf /var/freeacs/monitor
-    sudo chown freeacs:freeacs /var/freeacs/monitor
+    sudo chown freeacs:freeacs -R /var/freeacs/monitor
 
 Copy service file to systemd
 
