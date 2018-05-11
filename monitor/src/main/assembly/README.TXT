@@ -14,8 +14,16 @@ Copy service file to systemd
     sudo cp freeacs-monitor.service /etc/systemd/system
     sudo systemctl enable freeacs-monitor
 
+Then start the service
+    sudo systemctl start freeacs-monitor
+    or
+    sudo systemctl restart freeacs-monitor
+
 Check logs from system out
 
     journalctl -f -u freeacs-monitor
 
 Or check logs in /var/freeacs/monitor
+
+To stop the service:
+    sudo systemctl stop freeacs-monitor
