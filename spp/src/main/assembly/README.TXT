@@ -7,7 +7,7 @@ Create new directory to hold service and copy jar file
     sudo mkdir -p /var/freeacs/spp
     sudo cp freeacs-spp.jar /var/freeacs/spp
     sudo cp freeacs-spp.conf /var/freeacs/spp
-    sudo chown freeacs:freeacs /var/freeacs/spp
+    sudo chown freeacs:freeacs -R /var/freeacs/spp
 
 Copy service file to systemd
 
