@@ -1,0 +1,12 @@
+[Unit]
+Description=freeacs-web
+After=syslog.target
+
+[Service]
+User=freeacs
+WorkingDirectory=/var/freeacs/web
+ExecStart=/var/freeacs/web/freeacs-web.jar
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
