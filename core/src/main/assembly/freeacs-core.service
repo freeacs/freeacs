@@ -5,7 +5,7 @@ After=syslog.target
 [Service]
 User=freeacs
 WorkingDirectory=/var/freeacs/core
-ExecStart=/var/freeacs/ws/freeacs-core.jar
+ExecStart=/var/freeacs/core/freeacs-core.jar
 SuccessExitStatus=143
 
 [Install]
