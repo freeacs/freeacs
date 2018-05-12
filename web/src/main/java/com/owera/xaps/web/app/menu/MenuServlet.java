@@ -1,6 +1,6 @@
 package com.owera.xaps.web.app.menu;
 
-import com.owera.xaps.dbi.Users;
+import com.github.freeacs.dbi.Users;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.page.report.ReportType;
 import com.owera.xaps.web.app.util.Freemarker;

@@ -1,14 +1,15 @@
 package com.owera.xaps.syslogserver;
 
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.util.Cache;
-import com.owera.common.util.CacheValue;
-import com.owera.common.util.Sleep;
+import com.github.freeacs.common.db.ConnectionProperties;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.util.Cache;
+import com.github.freeacs.common.util.CacheValue;
+import com.github.freeacs.common.util.Sleep;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.SyslogEvent.StorePolicy;
-import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.dbi.SyslogEvent.StorePolicy;
+import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.util.SystemParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.owera.common.db.ConnectionProvider.getConnectionProperties;
+import static com.github.freeacs.common.db.ConnectionProvider.getConnectionProperties;
 import static com.owera.xaps.syslogserver.Properties.*;
 
 public class Syslog2DB implements Runnable {

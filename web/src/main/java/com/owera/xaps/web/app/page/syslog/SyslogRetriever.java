@@ -1,6 +1,7 @@
 package com.owera.xaps.web.app.page.syslog;
 
-import com.owera.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.app.page.AbstractWebPage;
 import com.owera.xaps.web.app.util.SessionCache;

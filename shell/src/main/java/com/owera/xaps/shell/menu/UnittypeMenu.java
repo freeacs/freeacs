@@ -1,10 +1,11 @@
 package com.owera.xaps.shell.menu;
 
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.JobFlag.JobServiceWindow;
-import com.owera.xaps.dbi.JobFlag.JobType;
-import com.owera.xaps.dbi.SyslogEvent.StorePolicy;
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
+import com.github.freeacs.dbi.JobFlag.JobType;
+import com.github.freeacs.dbi.SyslogEvent.StorePolicy;
+import com.github.freeacs.dbi.util.SystemParameters;
 import com.owera.xaps.shell.Context;
 import com.owera.xaps.shell.Session;
 import com.owera.xaps.shell.command.Option;
@@ -294,12 +295,12 @@ public class UnittypeMenu {
 	}
 
 	private void listfiles(String[] args, OutputHandler oh) throws Exception {
-		com.owera.xaps.dbi.File[] files = context.getUnittype().getFiles().getFiles();
+		com.github.freeacs.dbi.File[] files = context.getUnittype().getFiles().getFiles();
 		Listing listing = oh.getListing();
 		listing.setHeading("Name", "Type", "Version", "Date", "TargetName", "Owner", "Description");
 
 		for (int i = 0; i < files.length; i++) {
-			com.owera.xaps.dbi.File f = files[i];
+			com.github.freeacs.dbi.File f = files[i];
 			String owner = f.getOwner() == null ? "NULL" : f.getOwner().getUsername();
 			if (!Validation.matches(args.length > 1 ? args[1] : null, f.getName(), f.getType().toString(), f.getVersion(), f.getTargetName(), owner, f.getDescription()))
 				continue;
@@ -314,7 +315,7 @@ public class UnittypeMenu {
 		if (name.indexOf(File.separator) > -1) {
 			name = name.substring(name.lastIndexOf(File.separator) + 1);
 		}
-		com.owera.xaps.dbi.File f = context.getUnittype().getFiles().getByName(name);
+		com.github.freeacs.dbi.File f = context.getUnittype().getFiles().getByName(name);
 		if (f == null)
 			throw new IllegalArgumentException("The file does not exist");
 		File file = new File(filename);
@@ -384,7 +385,7 @@ public class UnittypeMenu {
 			fs.read(b);
 			fs.close();
 		}
-		com.owera.xaps.dbi.File f = context.getUnittype().getFiles().getByVersionType(ver, type);
+		com.github.freeacs.dbi.File f = context.getUnittype().getFiles().getByVersionType(ver, type);
 		if (f != null && !f.getName().equals(name))
 			throw new IllegalArgumentException("Cannot add/change file, beacuse version + file type is the same as for " + f.getName());
 		String action = "added";
@@ -401,7 +402,7 @@ public class UnittypeMenu {
 			//			context.getUnittype().getFiles().deleteFile(f, session.getXaps());
 			//			context.println("Found an existing file with same name (" + name + "), deleted it");
 		} else {
-			f = new com.owera.xaps.dbi.File(context.getUnittype(), name, type, desc, ver, date, targetName, owner);
+			f = new com.github.freeacs.dbi.File(context.getUnittype(), name, type, desc, ver, date, targetName, owner);
 			f.setBytes(b);
 		}
 		context.getUnittype().getFiles().addOrChangeFile(f, session.getXaps());
@@ -412,7 +413,7 @@ public class UnittypeMenu {
 	private void delfile(String[] args) throws Exception {
 		Validation.numberOfArgs(args, 2);
 		String filename = args[1];
-		com.owera.xaps.dbi.File f = context.getUnittype().getFiles().getByName(filename);
+		com.github.freeacs.dbi.File f = context.getUnittype().getFiles().getByName(filename);
 		if (f == null)
 			throw new IllegalArgumentException("The file " + args[1] + " does not exist");
 		context.getUnittype().getFiles().deleteFile(f, session.getXaps());
@@ -483,7 +484,7 @@ public class UnittypeMenu {
 			context.println("WARNING: '_' (SQL wildchar) is converted to '.{1}' (Regex equivalent). If you really want to match the character '_', use '#_#'");
 		}
 		StorePolicy storePolicy = StorePolicy.valueOf(args[5]);
-		com.owera.xaps.dbi.File script = unittype.getFiles().getByName(autoboxString(args[6]));
+		com.github.freeacs.dbi.File script = unittype.getFiles().getByName(autoboxString(args[6]));
 		Integer deleteLimit = autoboxInteger(args[7]);
 		String desc = args[8];
 		String action = "changed";
@@ -627,7 +628,7 @@ public class UnittypeMenu {
 		String desc = args[6];
 
 		String fileVersion = args[7];
-		com.owera.xaps.dbi.File file = null;
+		com.github.freeacs.dbi.File file = null;
 		if (jobType.requireFile()) {
 			if (fileVersion.equals("NULL")) {
 				throw new IllegalArgumentException("The jobtype " + jobType + " requires a file to execute/download");
@@ -965,7 +966,7 @@ public class UnittypeMenu {
 			scriptFileStr = args1Str.substring(0, spacePos);
 			scriptArgs = args1Str.substring(spacePos + 1);
 		}
-		com.owera.xaps.dbi.File scriptFile = context.getUnittype().getFiles().getByName(scriptFileStr);
+		com.github.freeacs.dbi.File scriptFile = context.getUnittype().getFiles().getByName(scriptFileStr);
 		scriptExecutions.requestExecution(scriptFile, scriptArgs, autoboxString(args[2]));
 	}
 

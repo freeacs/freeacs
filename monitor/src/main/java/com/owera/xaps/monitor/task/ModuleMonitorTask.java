@@ -1,6 +1,6 @@
 package com.owera.xaps.monitor.task;
 
-import com.owera.common.scheduler.TaskDefaultImpl;
+import com.github.freeacs.common.scheduler.TaskDefaultImpl;
 import com.owera.xaps.monitor.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

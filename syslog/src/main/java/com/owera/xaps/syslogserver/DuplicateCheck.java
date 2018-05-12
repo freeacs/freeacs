@@ -1,8 +1,8 @@
 package com.owera.xaps.syslogserver;
 
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.SyslogEntry;
-import com.owera.xaps.dbi.SyslogEvent;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.SyslogEntry;
+import com.github.freeacs.dbi.SyslogEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

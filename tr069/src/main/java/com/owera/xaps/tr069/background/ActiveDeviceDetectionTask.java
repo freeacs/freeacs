@@ -1,8 +1,9 @@
 package com.owera.xaps.tr069.background;
 
-import com.owera.common.scheduler.TaskDefaultImpl;
+import com.github.freeacs.common.scheduler.TaskDefaultImpl;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.util.SyslogClient;
+import com.github.freeacs.dbi.util.SyslogClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

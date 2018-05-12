@@ -1,6 +1,6 @@
 package com.owera.xaps.shell;
 
-import com.owera.xaps.dbi.util.XAPSVersionCheck;
+import com.github.freeacs.dbi.util.XAPSVersionCheck;
 import com.owera.xaps.shell.util.FileUtil;
 import com.owera.xaps.shell.util.StringUtil;
 

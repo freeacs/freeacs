@@ -1,15 +1,16 @@
 package com.owera.xaps.core.task;
 
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.util.Cache;
-import com.owera.common.util.CacheValue;
-import com.owera.common.util.TimestampMap;
+import com.github.freeacs.common.db.ConnectionProvider;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.util.Cache;
+import com.github.freeacs.common.util.CacheValue;
+import com.github.freeacs.common.util.TimestampMap;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.core.util.SyslogMessageMapContainer;
 import com.owera.xaps.core.util.SyslogMessageMapContainer.SyslogMessageMap;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.util.SQLUtil;
-import com.owera.xaps.dbi.util.SyslogClient;
+import com.github.freeacs.dbi.util.SQLUtil;
+import com.github.freeacs.dbi.util.SyslogClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

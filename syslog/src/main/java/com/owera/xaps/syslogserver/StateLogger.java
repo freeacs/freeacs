@@ -1,14 +1,14 @@
 package com.owera.xaps.syslogserver;
 
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.scheduler.TaskDefaultImpl;
+import com.github.freeacs.common.db.ConnectionProvider;
+import com.github.freeacs.common.scheduler.TaskDefaultImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.util.Map;
 
-import static com.owera.common.db.ConnectionProvider.getConnectionProperties;
+import static com.github.freeacs.common.db.ConnectionProvider.getConnectionProperties;
 import static com.owera.xaps.syslogserver.Properties.*;
 
 public class StateLogger extends TaskDefaultImpl {

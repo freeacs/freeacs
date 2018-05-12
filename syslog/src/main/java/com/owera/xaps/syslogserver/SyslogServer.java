@@ -1,6 +1,6 @@
 package com.owera.xaps.syslogserver;
 
-import com.owera.common.util.Sleep;
+import com.github.freeacs.common.util.Sleep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

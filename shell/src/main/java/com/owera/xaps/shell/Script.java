@@ -1,7 +1,7 @@
 package com.owera.xaps.shell;
 
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.File;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.File;
 import com.owera.xaps.shell.util.FileUtil;
 
 import java.io.BufferedReader;

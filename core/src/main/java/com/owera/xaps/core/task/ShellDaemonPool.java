@@ -1,6 +1,6 @@
 package com.owera.xaps.core.task;
 
-import com.owera.common.db.ConnectionProperties;
+import com.github.freeacs.common.db.ConnectionProperties;
 import com.owera.xaps.core.Properties;
 import com.owera.xaps.shell.XAPSShell;
 import com.owera.xaps.shell.XAPSShellDaemon;

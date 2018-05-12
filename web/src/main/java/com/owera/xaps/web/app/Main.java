@@ -1,7 +1,7 @@
 package com.owera.xaps.web.app;
 
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.util.Sleep;
+import com.github.freeacs.common.db.ConnectionProperties;
+import com.github.freeacs.common.util.Sleep;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.input.ParameterParser;
 import com.owera.xaps.web.app.menu.MenuServlet;

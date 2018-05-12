@@ -1,7 +1,7 @@
 package com.owera.xaps.tr069.background;
 
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.scheduler.TaskDefaultImpl;
+import com.github.freeacs.common.db.ConnectionProvider;
+import com.github.freeacs.common.scheduler.TaskDefaultImpl;
 import com.owera.xaps.base.http.Authenticator;
 import com.owera.xaps.base.http.ThreadCounter;
 import org.slf4j.Logger;
@@ -11,7 +11,7 @@ import java.sql.Connection;
 import java.util.Collection;
 import java.util.Map;
 
-import static com.owera.common.db.ConnectionProvider.getConnectionProperties;
+import static com.github.freeacs.common.db.ConnectionProvider.getConnectionProperties;
 import static com.owera.xaps.tr069.Properties.*;
 
 public class StabilityTask extends TaskDefaultImpl {

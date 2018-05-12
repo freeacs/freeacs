@@ -1,6 +1,6 @@
 package com.owera.xapsws.impl;
 
-import com.owera.xaps.dbi.Unittype;
+import com.github.freeacs.dbi.Unittype;
 import com.owera.xapsws.ArrayOfUnittype;
 import com.owera.xapsws.GetUnittypesRequest;
 import com.owera.xapsws.GetUnittypesResponse;

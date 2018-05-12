@@ -1,6 +1,6 @@
 package com.owera.xaps.tr069.test.system1;
 
-import com.owera.common.util.NaturalComparator;
+import com.github.freeacs.common.util.NaturalComparator;
 
 import java.io.File;
 import java.util.Arrays;

@@ -1,11 +1,11 @@
 package com.owera.xaps.web.app.page.unittype;
 
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.UnittypeParameters;
-import com.owera.xaps.dbi.XAPS;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.UnittypeParameters;
+import com.github.freeacs.dbi.XAPS;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.Output;
 import com.owera.xaps.web.app.input.*;

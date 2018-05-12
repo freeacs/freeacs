@@ -1,10 +1,9 @@
 package com.owera.xaps.base.http;
 
-import com.owera.common.db.ConnectionProvider;
-import com.owera.xaps.base.BaseCache;
+import com.github.freeacs.common.db.ConnectionProvider;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.db.DBAccess;
-import com.owera.xaps.dbi.DBI;
+import com.github.freeacs.dbi.DBI;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

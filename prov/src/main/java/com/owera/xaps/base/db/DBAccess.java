@@ -1,7 +1,8 @@
 package com.owera.xaps.base.db;
 
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.ConnectionProvider;
+import com.github.freeacs.common.db.ConnectionProperties;
+import com.github.freeacs.common.db.ConnectionProvider;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.Properties.Module;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.SessionDataI;

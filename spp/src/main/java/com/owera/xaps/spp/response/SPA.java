@@ -1,6 +1,6 @@
 package com.owera.xaps.spp.response;
 
-import com.owera.xaps.dbi.Unit;
+import com.github.freeacs.dbi.Unit;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;

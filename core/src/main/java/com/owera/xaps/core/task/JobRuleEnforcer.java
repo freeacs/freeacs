@@ -1,12 +1,13 @@
 package com.owera.xaps.core.task;
 
-import com.owera.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.core.Properties;
 import com.owera.xaps.core.util.FractionStopRuleCounter;
 import com.owera.xaps.core.util.UnitJobResult;
 import com.owera.xaps.core.util.UnitResultMap;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.Job.StopRule;
+import com.github.freeacs.dbi.Job.StopRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

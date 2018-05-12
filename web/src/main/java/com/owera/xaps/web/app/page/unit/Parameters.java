@@ -1,6 +1,7 @@
 package com.owera.xaps.web.app.page.unit;
 
-import com.owera.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.app.util.WebConstants;
 import com.owera.xaps.web.app.util.XAPSLoader;
@@ -27,7 +28,7 @@ public class Parameters {
 	 * 
 	 * @return A string representing the value, could be anything from number to password.
 	 */
-	public static String getUnitParameterValue(Unit unit,String key){
+	public static String getUnitParameterValue(Unit unit, String key){
 		String value = unit.getParameters().get(key);
 		if(value==null){
 			value = unit.getParameters().get(WebConstants.KEYROOT_INTERNET_GATEWAY_DEVICE+key);

@@ -1,10 +1,10 @@
 package com.owera.xaps.base.http;
 
-import com.owera.common.util.Cache;
-import com.owera.common.util.CacheValue;
+import com.github.freeacs.common.util.Cache;
+import com.github.freeacs.common.util.CacheValue;
 import com.owera.xaps.base.Log;
-import com.owera.xaps.dbi.Certificate;
-import com.owera.xaps.dbi.Certificates;
+import com.github.freeacs.dbi.Certificate;
+import com.github.freeacs.dbi.Certificates;
 import com.owera.xaps.tr069.HTTPReqResData;
 import com.owera.xaps.tr069.Properties;
 import com.owera.xaps.tr069.SessionData;

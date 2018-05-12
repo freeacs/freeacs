@@ -1,6 +1,6 @@
 package com.owera.xaps.shell.help;
 
-import com.owera.xaps.dbi.util.XAPSVersionCheck;
+import com.github.freeacs.dbi.util.XAPSVersionCheck;
 
 import java.util.HashMap;
 import java.util.Map;

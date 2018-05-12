@@ -1,7 +1,7 @@
 package com.owera.xaps.web.app.security;
 
-import com.owera.xaps.dbi.User;
-import com.owera.xaps.dbi.Users;
+import com.github.freeacs.dbi.User;
+import com.github.freeacs.dbi.Users;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.WebConstants;

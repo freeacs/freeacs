@@ -1,7 +1,8 @@
 package com.owera.xaps.shell.sync;
 
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.owera.xaps.shell.Session;
 import com.owera.xaps.shell.output.OutputHandler;
 

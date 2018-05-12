@@ -1,6 +1,6 @@
 package com.owera.xaps.tr069;
 
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.dbi.util.SystemParameters;
 
 public class CommandKey {
 	private String cpeKey;

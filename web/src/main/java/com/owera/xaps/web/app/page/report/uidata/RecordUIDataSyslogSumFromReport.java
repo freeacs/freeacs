@@ -1,7 +1,7 @@
 package com.owera.xaps.web.app.page.report.uidata;
 
-import com.owera.xaps.dbi.SyslogConstants;
-import com.owera.xaps.dbi.Unit;
+import com.github.freeacs.dbi.SyslogConstants;
+import com.github.freeacs.dbi.Unit;
 import com.owera.xaps.web.app.page.AbstractWebPage;
 import freemarker.template.TemplateModelException;
 

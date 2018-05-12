@@ -1,6 +1,7 @@
 package com.owera.xapsws.impl;
 
-import com.owera.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
 import com.owera.xapsws.AddOrChangeUnitRequest;
 import com.owera.xapsws.AddOrChangeUnitResponse;
@@ -79,7 +80,7 @@ public class AddOrChangeUnit {
 	private String validateUnitId(Unit unitWS, Unittype unittype, Profile profile) throws SQLException, NoAvailableConnectionException, RemoteException {
 		if (unitWS.getUnitId() == null) {
 			if (unitWS.getSerialNumber() != null) {
-				com.owera.xaps.dbi.Unit unitXAPS = xapsWS.getUnitByMAC(xapsUnit, unittype, profile, unitWS.getSerialNumber());
+				com.github.freeacs.dbi.Unit unitXAPS = xapsWS.getUnitByMAC(xapsUnit, unittype, profile, unitWS.getSerialNumber());
 				if (unitXAPS != null) {
 					unitWS.setUnitId(unitXAPS.getId());
 				}

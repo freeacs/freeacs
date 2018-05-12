@@ -1,8 +1,8 @@
 package com.owera.xaps.web.app.page.login;
 
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.ConnectionProvider;
-import com.owera.xaps.dbi.DBI;
+import com.github.freeacs.common.db.ConnectionProperties;
+import com.github.freeacs.common.db.ConnectionProvider;
+import com.github.freeacs.dbi.DBI;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.Output;
 import com.owera.xaps.web.app.input.InputDataRetriever;

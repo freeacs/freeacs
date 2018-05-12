@@ -1,6 +1,6 @@
 package com.owera.xaps.tr069;
 
-import com.owera.common.db.ConnectionProperties;
+import com.github.freeacs.common.db.ConnectionProperties;
 import com.owera.xaps.base.Log;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;

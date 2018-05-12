@@ -1,6 +1,6 @@
 package com.owera.xaps.syslogserver;
 
-import com.owera.common.scheduler.TaskDefaultImpl;
+import com.github.freeacs.common.scheduler.TaskDefaultImpl;
 import com.owera.xaps.syslogserver.FailoverFileReader.FailoverCounter;
 import com.owera.xaps.syslogserver.Syslog2DB.Syslog2DBCounter;
 import com.owera.xaps.syslogserver.SyslogPackets.BufferCounter;

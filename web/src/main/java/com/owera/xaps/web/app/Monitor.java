@@ -1,8 +1,8 @@
 package com.owera.xaps.web.app;
 
-import com.owera.common.util.Cache;
-import com.owera.common.util.CacheValue;
-import com.owera.xaps.dbi.DBI;
+import com.github.freeacs.common.util.Cache;
+import com.github.freeacs.common.util.CacheValue;
+import com.github.freeacs.dbi.DBI;
 import com.owera.xaps.web.app.util.SessionCache;
 
 import javax.servlet.ServletException;

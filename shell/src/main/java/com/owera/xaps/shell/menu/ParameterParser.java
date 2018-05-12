@@ -1,9 +1,9 @@
 package com.owera.xaps.shell.menu;
 
-import com.owera.xaps.dbi.Parameter;
-import com.owera.xaps.dbi.Parameter.Operator;
-import com.owera.xaps.dbi.Parameter.ParameterDataType;
-import com.owera.xaps.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.Parameter;
+import com.github.freeacs.dbi.Parameter.Operator;
+import com.github.freeacs.dbi.Parameter.ParameterDataType;
+import com.github.freeacs.dbi.UnittypeParameter;
 import com.owera.xaps.shell.Context;
 
 import java.util.ArrayList;

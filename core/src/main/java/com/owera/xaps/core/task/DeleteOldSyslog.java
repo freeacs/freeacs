@@ -1,10 +1,10 @@
 package com.owera.xaps.core.task;
 
-import com.owera.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.owera.xaps.core.Properties;
-import com.owera.xaps.dbi.SyslogEvent;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
+import com.github.freeacs.dbi.SyslogEvent;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.XAPS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

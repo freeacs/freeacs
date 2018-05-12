@@ -11,8 +11,8 @@
 
 package de.javawi.jstun.test.demo;
 
-import com.owera.common.util.Sleep;
-import com.owera.common.util.TimestampMap;
+import com.github.freeacs.common.util.Sleep;
+import com.github.freeacs.common.util.TimestampMap;
 import com.owera.xaps.stun.MessageStack;
 import com.owera.xaps.stun.OKServlet;
 import de.javawi.jstun.attribute.*;

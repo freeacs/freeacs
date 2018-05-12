@@ -1,12 +1,13 @@
 package com.owera.xaps.spp.telnet;
 
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.db.ConnectionProperties;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.base.SessionDataI;
 import com.owera.xaps.base.UnitJob;
 import com.owera.xaps.base.db.DBAccessSession;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.dbi.util.SystemParameters;
 import com.owera.xaps.spp.SessionData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

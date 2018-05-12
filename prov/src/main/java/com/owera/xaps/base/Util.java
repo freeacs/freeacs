@@ -1,10 +1,10 @@
 package com.owera.xaps.base;
 
 import com.owera.xaps.base.db.DBAccessStatic;
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.dbi.UnitParameter;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.util.SystemParameters;
 
 import java.util.ArrayList;
 import java.util.List;

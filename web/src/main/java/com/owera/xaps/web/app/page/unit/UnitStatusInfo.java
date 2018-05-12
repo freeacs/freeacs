@@ -1,11 +1,12 @@
 package com.owera.xaps.web.app.page.unit;
 
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.util.IPAddress;
-import com.owera.common.util.TimeWindow;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.util.IPAddress;
+import com.github.freeacs.common.util.TimeWindow;
+import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.report.*;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.report.*;
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.dbi.util.SystemParameters;
 import com.owera.xaps.web.app.page.report.UnitListData;
 import com.owera.xaps.web.app.page.report.uidata.RecordUIDataHardware;
 import com.owera.xaps.web.app.page.report.uidata.RecordUIDataHardwareFilter;

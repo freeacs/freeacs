@@ -1,7 +1,7 @@
 package com.owera.xapsws.impl;
 
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unittype;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.Unittype;
 import com.owera.xapsws.ArrayOfProfile;
 import com.owera.xapsws.GetProfilesRequest;
 import com.owera.xapsws.GetProfilesResponse;

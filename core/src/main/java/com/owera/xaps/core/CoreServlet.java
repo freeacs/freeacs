@@ -1,13 +1,13 @@
 package com.owera.xaps.core;
 
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.scheduler.Schedule;
-import com.owera.common.scheduler.ScheduleType;
-import com.owera.common.scheduler.Scheduler;
-import com.owera.common.scheduler.ShowScheduleQueue;
-import com.owera.common.util.Sleep;
+import com.github.freeacs.common.db.ConnectionProvider;
+import com.github.freeacs.common.scheduler.Schedule;
+import com.github.freeacs.common.scheduler.ScheduleType;
+import com.github.freeacs.common.scheduler.Scheduler;
+import com.github.freeacs.common.scheduler.ShowScheduleQueue;
+import com.github.freeacs.common.util.Sleep;
 import com.owera.xaps.core.task.*;
-import com.owera.xaps.dbi.util.XAPSVersionCheck;
+import com.github.freeacs.dbi.util.XAPSVersionCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

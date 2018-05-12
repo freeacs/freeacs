@@ -1,17 +1,17 @@
 package com.owera.xaps.spp;
 
-import com.owera.common.util.Sleep;
+import com.github.freeacs.common.util.Sleep;
 import com.owera.xaps.Properties.Module;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.db.DBAccess;
-import com.owera.xaps.dbi.SyslogConstants;
-import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
-import com.owera.xaps.dbi.Users;
-import com.owera.xaps.dbi.util.ProvisioningMessage;
-import com.owera.xaps.dbi.util.ProvisioningMessage.ErrorResponsibility;
-import com.owera.xaps.dbi.util.ProvisioningMessage.ProvOutput;
-import com.owera.xaps.dbi.util.ProvisioningMessage.ProvStatus;
-import com.owera.xaps.dbi.util.SyslogClient;
+import com.github.freeacs.dbi.SyslogConstants;
+import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.Users;
+import com.github.freeacs.dbi.util.ProvisioningMessage;
+import com.github.freeacs.dbi.util.ProvisioningMessage.ErrorResponsibility;
+import com.github.freeacs.dbi.util.ProvisioningMessage.ProvOutput;
+import com.github.freeacs.dbi.util.ProvisioningMessage.ProvStatus;
+import com.github.freeacs.dbi.util.SyslogClient;
 import com.owera.xaps.spp.TFTPServer.ServerMode;
 import com.owera.xaps.spp.telnet.TelnetProvisioning;
 

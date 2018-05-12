@@ -2,7 +2,7 @@ package com.owera.xaps.base;
 
 import com.owera.xaps.Properties;
 import com.owera.xaps.Properties.Module;
-import com.owera.xaps.dbi.Job;
+import com.github.freeacs.dbi.Job;
 
 import java.util.LinkedList;
 

@@ -1,8 +1,8 @@
 package com.owera.xaps.spp.http;
 
 import com.owera.xaps.base.Log;
-import com.owera.xaps.dbi.Certificate;
-import com.owera.xaps.dbi.Certificates;
+import com.github.freeacs.dbi.Certificate;
+import com.github.freeacs.dbi.Certificates;
 import com.owera.xaps.spp.Properties;
 import com.owera.xaps.spp.SessionData;
 

@@ -1,5 +1,6 @@
 package com.owera.xaps.base.db;
 
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.SessionDataI;
 import com.owera.xaps.dbi.*;

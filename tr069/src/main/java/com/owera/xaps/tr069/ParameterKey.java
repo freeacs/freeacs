@@ -2,11 +2,11 @@ package com.owera.xaps.tr069;
 
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.db.DBAccess;
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.JobParameter;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.UnittypeParameters;
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.dbi.Job;
+import com.github.freeacs.dbi.JobParameter;
+import com.github.freeacs.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.UnittypeParameters;
+import com.github.freeacs.dbi.util.SystemParameters;
 import com.owera.xaps.tr069.xml.ParameterValueStruct;
 
 import java.security.MessageDigest;

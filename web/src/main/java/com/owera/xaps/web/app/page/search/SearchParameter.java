@@ -1,7 +1,7 @@
 package com.owera.xaps.web.app.page.search;
 
-import com.owera.xaps.dbi.Parameter.Operator;
-import com.owera.xaps.dbi.Parameter.ParameterDataType;
+import com.github.freeacs.dbi.Parameter.Operator;
+import com.github.freeacs.dbi.Parameter.ParameterDataType;
 
 
 /**

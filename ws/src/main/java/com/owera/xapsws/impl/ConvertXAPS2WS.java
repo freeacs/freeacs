@@ -1,7 +1,7 @@
 package com.owera.xapsws.impl;
 
-import com.owera.xaps.dbi.ProfileParameter;
-import com.owera.xaps.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.ProfileParameter;
+import com.github.freeacs.dbi.UnittypeParameter;
 import com.owera.xapsws.*;
 
 /**
@@ -11,7 +11,7 @@ import com.owera.xapsws.*;
  */
 public class ConvertXAPS2WS {
 
-	public static Unittype convert(com.owera.xaps.dbi.Unittype ut) {
+	public static Unittype convert(com.github.freeacs.dbi.Unittype ut) {
 		if (ut == null)
 			return null;
 		String name = ut.getName();
@@ -30,7 +30,7 @@ public class ConvertXAPS2WS {
 		return new Unittype(name, null, vendor, description, protocol, parameters);
 	}
 
-	public static Profile convert(com.owera.xaps.dbi.Profile p) {
+	public static Profile convert(com.github.freeacs.dbi.Profile p) {
 		if (p == null)
 			return null;
 		String name = p.getName();

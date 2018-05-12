@@ -4,10 +4,10 @@ import com.owera.xaps.base.DownloadLogic;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.db.DBAccess;
 import com.owera.xaps.base.db.DBAccessStatic;
-import com.owera.xaps.dbi.File;
-import com.owera.xaps.dbi.FileType;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
+import com.github.freeacs.dbi.File;
+import com.github.freeacs.dbi.FileType;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.XAPS;
 import com.owera.xaps.tr069.HTTPReqResData;
 import com.owera.xaps.tr069.Properties;
 

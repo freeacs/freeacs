@@ -1,6 +1,6 @@
 package com.owera.xapsws.impl;
 
-import com.owera.common.util.Sleep;
+import com.github.freeacs.common.util.Sleep;
 import com.owera.xapsws.netadmin.MessageListener;
 
 import javax.servlet.ServletException;

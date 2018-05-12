@@ -1,18 +1,15 @@
 package com.owera.xaps.web.app.page.staging;
 
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.ssl.HTTPSManager;
+import com.github.freeacs.common.db.ConnectionProperties;
+import com.github.freeacs.common.db.ConnectionProvider;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.ssl.HTTPSManager;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.JobFlag.JobServiceWindow;
-import com.owera.xaps.dbi.JobFlag.JobType;
-import com.owera.xaps.dbi.Parameter;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
+import com.github.freeacs.dbi.JobFlag.JobType;
+import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.util.SystemParameters;
 import com.owera.xaps.web.app.input.DropDownSingleSelect;
 import com.owera.xaps.web.app.input.Input;
 import com.owera.xaps.web.app.input.InputSelectionFactory;
@@ -106,7 +103,7 @@ public abstract class StagingActions extends AbstractWebPage {
 	 * @param unittype the unittype
 	 * @return the serial number utp
 	 */
-	private UnittypeParameter getSerialNumberUtp(Unittype unittype) {
+	private UnittypeParameter getSerialNumberUtp(com.github.freeacs.dbi.Unittype unittype) {
 		return unittype.getUnittypeParameters().getByName(SystemParameters.SERIAL_NUMBER);
 	}
 
@@ -121,15 +118,15 @@ public abstract class StagingActions extends AbstractWebPage {
 	 */
 	public void actionCreateDistributor(String sessionId, String distributorName, String unittypeName) throws NoAvailableConnectionException, SQLException {
 		XAPS xaps = XAPSLoader.getXAPS(sessionId);
-		Unittype unittype = xaps.getUnittype(unittypeName + "-" + distributorName);
+		com.github.freeacs.dbi.Unittype unittype = xaps.getUnittype(unittypeName + "-" + distributorName);
 		if (unittype == null) {
 			//			String matcherId = getMatcherId(unittypeName);
-			unittype = new Unittype(unittypeName + "-" + distributorName, "PingCom", "Dummy description", ProvisioningProtocol.OPP);
+			unittype = new com.github.freeacs.dbi.Unittype(unittypeName + "-" + distributorName, "PingCom", "Dummy description", ProvisioningProtocol.OPP);
 			xaps.getUnittypes().addOrChangeUnittype(unittype, xaps);
 		}
-		Profile profile = unittype.getProfiles().getByName("Default");
+		com.github.freeacs.dbi.Profile profile = unittype.getProfiles().getByName("Default");
 		if (profile == null) {
-			profile = new Profile("Default", unittype);
+			profile = new com.github.freeacs.dbi.Profile("Default", unittype);
 			unittype.getProfiles().addOrChangeProfile(profile, xaps);
 		}
 		UnittypeParameter serialUtp = getSerialNumberUtp(unittype);
@@ -164,19 +161,19 @@ public abstract class StagingActions extends AbstractWebPage {
 	 * @throws SQLException the sQL exception
 	 * @throws ClassNotFoundException 
 	 */
-	public List<ShippedUnit> actionRetrieveShipmentData(Unittype unittype, Profile profile, String sessionId, String shipmentName, ConnectionProperties cp) throws NoAvailableConnectionException,
+	public List<ShippedUnit> actionRetrieveShipmentData(com.github.freeacs.dbi.Unittype unittype, com.github.freeacs.dbi.Profile profile, String sessionId, String shipmentName, ConnectionProperties cp) throws NoAvailableConnectionException,
 			SQLException, ClassNotFoundException {
 		XAPSUnit xapsUnit = XAPSLoader.getXAPSUnit(sessionId);
-		List<Parameter> upList = new ArrayList<Parameter>();
+		List<com.github.freeacs.dbi.Parameter> upList = new ArrayList<com.github.freeacs.dbi.Parameter>();
 		// Konverter shipmentName (2010-03) to UnitParameters (2010, 03)
 		String year = shipmentName.substring(0, 4).trim();
 		String month = shipmentName.substring(5, 7).trim();
 		//		UnittypeParameter shipmentUtp = unittype.getUnittypeParameters().getByName(SystemParameters.STAGING_SHIPMENT);
 		UnittypeParameter syUtp = unittype.getUnittypeParameters().getByName(SystemParameters.STAGING_SHIPMENT_YEAR);
 		UnittypeParameter smUtp = unittype.getUnittypeParameters().getByName(SystemParameters.STAGING_SHIPMENT_MONTH);
-		upList.add(new Parameter(syUtp, year));
-		upList.add(new Parameter(smUtp, month));
-		Map<String, Unit> unitMap = xapsUnit.getUnits(unittype, profile, upList, Integer.MAX_VALUE);
+		upList.add(new com.github.freeacs.dbi.Parameter(syUtp, year));
+		upList.add(new com.github.freeacs.dbi.Parameter(smUtp, month));
+		Map<String, com.github.freeacs.dbi.Unit> unitMap = xapsUnit.getUnits(unittype, profile, upList, Integer.MAX_VALUE);
 		List<ShippedUnit> shippedUnits = new ArrayList<ShippedUnit>();
 		Connection c = ConnectionProvider.getConnection(cp);
 		SQLException sqle = null;
@@ -198,7 +195,7 @@ public abstract class StagingActions extends AbstractWebPage {
 					status = rs.getString("status");
 				}
 
-				Unit unit = xapsUnit.getUnitById(unitId, unittype, profile);
+				com.github.freeacs.dbi.Unit unit = xapsUnit.getUnitById(unitId, unittype, profile);
 				for (UnitParameter up : unit.getUnitParameters().values()) {
 					if (up.getParameter().getUnittypeParameter().getName().equals(SystemParameters.SERIAL_NUMBER)) {
 						serialNumber = up.getValue();
@@ -297,9 +294,9 @@ public abstract class StagingActions extends AbstractWebPage {
 	 * @param version the version
 	 * @throws Exception the exception
 	 */
-	public void actionAddUnitsToDistributor(Unittype unittype, String sessionId, List<String> taiwanFileLines, String version) throws Exception {
+	public void actionAddUnitsToDistributor(com.github.freeacs.dbi.Unittype unittype, String sessionId, List<String> taiwanFileLines, String version) throws Exception {
 		XAPSUnit xapsUnit = XAPSLoader.getXAPSUnit(sessionId);
-		Profile profile = unittype.getProfiles().getByName("Default");
+		com.github.freeacs.dbi.Profile profile = unittype.getProfiles().getByName("Default");
 		List<UnitParameter> unitParamList = new ArrayList<UnitParameter>();
 		List<String> unitList = new ArrayList<String>();
 		Map<String, String> unitMap = new HashMap<String, String>();
@@ -469,8 +466,8 @@ public abstract class StagingActions extends AbstractWebPage {
 		 *
 		 * @return the units
 		 */
-		public List<Unit> getUnits() {
-			List<Unit> list = new ArrayList<Unit>();
+		public List<com.github.freeacs.dbi.Unit> getUnits() {
+			List<com.github.freeacs.dbi.Unit> list = new ArrayList<com.github.freeacs.dbi.Unit>();
 			for (FoundUnit unit : units) {
 				list.add(unit.getUnit());
 			}
@@ -489,7 +486,7 @@ public abstract class StagingActions extends AbstractWebPage {
 		 * @param m the m
 		 * @param u the u
 		 */
-		public FoundUnit(String m, Unit u) {
+		public FoundUnit(String m, com.github.freeacs.dbi.Unit u) {
 			unit = u;
 			mac = m;
 		}
@@ -517,7 +514,7 @@ public abstract class StagingActions extends AbstractWebPage {
 		 *
 		 * @return the unit
 		 */
-		public Unit getUnit() {
+		public com.github.freeacs.dbi.Unit getUnit() {
 			return unit;
 		}
 
@@ -526,7 +523,7 @@ public abstract class StagingActions extends AbstractWebPage {
 		 *
 		 * @param unit the new unit
 		 */
-		public void setUnit(Unit unit) {
+		public void setUnit(com.github.freeacs.dbi.Unit unit) {
 			this.unit = unit;
 		}
 
@@ -534,7 +531,7 @@ public abstract class StagingActions extends AbstractWebPage {
 		private String mac;
 
 		/** The unit. */
-		private Unit unit;
+		private com.github.freeacs.dbi.Unit unit;
 	}
 
 	/**
@@ -547,7 +544,7 @@ public abstract class StagingActions extends AbstractWebPage {
 	 * @throws SQLException the sQL exception
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 */
-	public UnittypeParameter getUTP(String name, Unittype unittype, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public UnittypeParameter getUTP(String name, com.github.freeacs.dbi.Unittype unittype, XAPS xaps) throws SQLException, NoAvailableConnectionException {
 		if (name == null)
 			return null;
 		UnittypeParameter utp = unittype.getUnittypeParameters().getByName(name);
@@ -568,7 +565,7 @@ public abstract class StagingActions extends AbstractWebPage {
 	 * @return the shipment cache
 	 * @throws Exception the exception
 	 */
-	public ShipmentCache actionCreateReturn(Unittype unittype, Profile profile, String sessionId, List<String> macs) throws Exception {
+	public ShipmentCache actionCreateReturn(com.github.freeacs.dbi.Unittype unittype, com.github.freeacs.dbi.Profile profile, String sessionId, List<String> macs) throws Exception {
 		XAPSUnit xapsUnit = XAPSLoader.getXAPSUnit(sessionId);
 		XAPS xaps = XAPSLoader.getXAPS(sessionId);
 		Permissions perms = xaps.getSyslog().getIdentity().getUser().getPermissions();
@@ -576,7 +573,7 @@ public abstract class StagingActions extends AbstractWebPage {
 		List<FoundUnit> foundUnits = new ArrayList<FoundUnit>();
 
 		for (String mac : macs) {
-			Unit unit = xapsUnit.getUnitByValue(mac, null, null);
+			com.github.freeacs.dbi.Unit unit = xapsUnit.getUnitByValue(mac, null, null);
 			if (unit == null) {
 				errors.put(mac, "The SerialNumber did not correspond to any unit in xAPS");
 				continue;
@@ -617,8 +614,8 @@ public abstract class StagingActions extends AbstractWebPage {
 	 * @return the shipment cache
 	 * @throws Exception the exception
 	 */
-	public ShipmentCache actionCreateShipment(Unittype unittype, Profile profile, String sessionId, String shipmentName, List<String> macs, boolean forceMove) throws Exception {
-		Map<String, Unit> unitMap = new HashMap<String, Unit>();
+	public ShipmentCache actionCreateShipment(com.github.freeacs.dbi.Unittype unittype, com.github.freeacs.dbi.Profile profile, String sessionId, String shipmentName, List<String> macs, boolean forceMove) throws Exception {
+		Map<String, com.github.freeacs.dbi.Unit> unitMap = new HashMap<String, com.github.freeacs.dbi.Unit>();
 		List<UnitParameter> unitParameters = new ArrayList<UnitParameter>();
 		List<String> unitIdsToMove = new ArrayList<String>();
 		List<FoundUnit> foundUnits = new ArrayList<FoundUnit>();
@@ -637,13 +634,13 @@ public abstract class StagingActions extends AbstractWebPage {
 		//			}
 		//		}
 
-		Profile defaultProfile = unittype.getProfiles().getByName("Default");
+		com.github.freeacs.dbi.Profile defaultProfile = unittype.getProfiles().getByName("Default");
 
-		List<Unit> units = xapsUnit.getLimitedUnitsByValues(macs);
+		List<com.github.freeacs.dbi.Unit> units = xapsUnit.getLimitedUnitsByValues(macs);
 		units = xapsUnit.getUnitsWithParameters(unittype, null, units);
 
-		Map<String, Unit> sn2UnitMap = new HashMap<>();
-		for (Unit unit : units) {
+		Map<String, com.github.freeacs.dbi.Unit> sn2UnitMap = new HashMap<>();
+		for (com.github.freeacs.dbi.Unit unit : units) {
 			//			String mac = unit.getUnitParameters().get(SystemParameters.MAC) == null ? null : unit.getUnitParameters().get(SystemParameters.MAC).getValue();
 			//			if (mac == null)
 			String sn = unit.getUnitParameters().get(SystemParameters.SERIAL_NUMBER) == null ? null : unit.getUnitParameters().get(SystemParameters.SERIAL_NUMBER).getValue();
@@ -654,7 +651,7 @@ public abstract class StagingActions extends AbstractWebPage {
 				sn2UnitMap.put(sn.toUpperCase(), unit);
 		}
 		for (String mac : macs) {
-			Unit unit = sn2UnitMap.get(mac.toUpperCase());
+			com.github.freeacs.dbi.Unit unit = sn2UnitMap.get(mac.toUpperCase());
 			if (unit == null) {
 				errors.put(mac, "The SerialNumber did not correspond to a unit in this unittype.");
 				continue;
@@ -764,7 +761,7 @@ public abstract class StagingActions extends AbstractWebPage {
 	 * @param units the units
 	 * @throws Exception the exception
 	 */
-	private void createShipment(com.owera.xaps.dbi.Profile provider, List<com.owera.xaps.dbi.Unit> units, String user) throws Exception {
+	private void createShipment(Profile provider, List<Unit> units, String user) throws Exception {
 		XAPSWSProxy tp = new XAPSWSProxy();
 		ProfileParameters pps = provider.getProfileParameters();
 		ProfileParameter urlpp = pps.getByName(SystemParameters.STAGING_PROVIDER_WSURL);
@@ -790,7 +787,7 @@ public abstract class StagingActions extends AbstractWebPage {
 			p.setName(profileName);
 			com.owera.xapsws.Unittype ut = new com.owera.xapsws.Unittype();
 			ut.setName(unittypeName);
-			com.owera.xaps.dbi.Unittype unittypeXAPS = provider.getUnittype();
+			Unittype unittypeXAPS = provider.getUnittype();
 			UnittypeParameter snUtp = unittypeXAPS.getUnittypeParameters().getByName(SystemParameters.SERIAL_NUMBER);
 			//			if (snUtp == null)
 			//				snUtp = unittypeXAPS.getUnittypeParameters().getByName("Device.DeviceInfo.SerialNumber");
@@ -814,7 +811,7 @@ public abstract class StagingActions extends AbstractWebPage {
 				wspass = wspasspp.getValue();
 
 			logger.debug("All parmeters and information is ready, will now copy units to Provider's xAPS Server");
-			for (com.owera.xaps.dbi.Unit unitXAPS : units) {
+			for (Unit unitXAPS : units) {
 				com.owera.xapsws.Unit unit = new com.owera.xapsws.Unit();
 				String serialNumber = unitXAPS.getParameters().get(snUtp.getName());
 				if (serialNumber == null || serialNumber.trim().length() != 12) {
@@ -860,7 +857,7 @@ public abstract class StagingActions extends AbstractWebPage {
 		}
 		if (emailpp != null && emailpp.getValue() != null && emailpp.getValue().trim().length() > 0) {
 			String emailaddr = emailpp.getValue();
-			com.owera.xaps.dbi.Unittype unittypeXAPS = provider.getUnittype();
+			Unittype unittypeXAPS = provider.getUnittype();
 			StringBuffer msg = new StringBuffer("This mail is autogenerated from Fusion Staging Server\n\n");
 			msg.append("A shipment has been set up in Staging Server by user " + user + ". This mail is a confirmation\n");
 			msg.append("of a successful execution.\n\n");
@@ -876,7 +873,7 @@ public abstract class StagingActions extends AbstractWebPage {
 			msg.append(String.format("%1$-40s%2$-15s%3$-45s\n", "ACS-Username", "MAC Address", "ACS-Password"));
 			msg.append("====================================================================================================\n");
 
-			for (com.owera.xaps.dbi.Unit unitXAPS : units) {
+			for (Unit unitXAPS : units) {
 				Map<String, UnitParameter> unitParams = unitXAPS.getUnitParameters();
 				UnitParameter snUp = unitParams.get(SystemParameters.SERIAL_NUMBER);
 				//				if (snUp == null)
@@ -945,7 +942,7 @@ public abstract class StagingActions extends AbstractWebPage {
 	 * @return the shipment cache
 	 * @throws Exception the exception
 	 */
-	public ShipmentCache actionConfirmReturn(Unittype unittype, Profile profile, String sessionId) throws Exception {
+	public ShipmentCache actionConfirmReturn(com.github.freeacs.dbi.Unittype unittype, com.github.freeacs.dbi.Profile profile, String sessionId) throws Exception {
 		XAPSUnit xapsUnit = XAPSLoader.getXAPSUnit(sessionId);
 		ShipmentCache shipment = SessionCache.getSessionData(sessionId).getShipmentCache();
 		xapsUnit.moveUnits(shipment.getUnitIdsToMove(), profile);
@@ -961,7 +958,7 @@ public abstract class StagingActions extends AbstractWebPage {
 	 * @return the shipment cache
 	 * @throws Exception the exception
 	 */
-	public ShipmentCache actionConfirmShipment(Unittype unittype, Profile profile, String sessionId) throws Exception {
+	public ShipmentCache actionConfirmShipment(com.github.freeacs.dbi.Unittype unittype, com.github.freeacs.dbi.Profile profile, String sessionId) throws Exception {
 		XAPSUnit xapsUnit = XAPSLoader.getXAPSUnit(sessionId);
 		ShipmentCache shipment = SessionCache.getSessionData(sessionId).getShipmentCache();
 		xapsUnit.moveUnits(shipment.getUnitIdsToMove(), profile);
@@ -1259,14 +1256,14 @@ public abstract class StagingActions extends AbstractWebPage {
 	 * @throws SQLException the sQL exception
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 */
-	public void actionCreateProvider(Unittype unittype, String sessionId, String providerName, WebServiceParams params, String fromFwVersion, String toFwVersion) throws SQLException,
+	public void actionCreateProvider(com.github.freeacs.dbi.Unittype unittype, String sessionId, String providerName, WebServiceParams params, String fromFwVersion, String toFwVersion) throws SQLException,
 			NoAvailableConnectionException {
 		String jobAndGroupName = "Upgrade from " + (fromFwVersion != null ? fromFwVersion : "any") + " for " + providerName;
 
 		XAPS xaps = XAPSLoader.getXAPS(sessionId);
-		Profile profile = unittype.getProfiles().getByName(providerName);
+		com.github.freeacs.dbi.Profile profile = unittype.getProfiles().getByName(providerName);
 		if (profile == null) {
-			profile = new Profile(providerName, unittype);
+			profile = new com.github.freeacs.dbi.Profile(providerName, unittype);
 			unittype.getProfiles().addOrChangeProfile(profile, xaps);
 		}
 
@@ -1291,7 +1288,7 @@ public abstract class StagingActions extends AbstractWebPage {
 				errors.put("Trying to add SoftwareVersion to " + jobAndGroupName, "Could not find any matching keyroot on " + unittype.getName());
 				return;
 			}
-			Parameter param = new Parameter(versionUtp, fromFwVersion);
+			com.github.freeacs.dbi.Parameter param = new com.github.freeacs.dbi.Parameter(versionUtp, fromFwVersion);
 			GroupParameter gParam = new GroupParameter(param, group);
 			group.getGroupParameters().addOrChangeGroupParameter(gParam, xaps);
 		}
@@ -1307,7 +1304,7 @@ public abstract class StagingActions extends AbstractWebPage {
 				xapsJobs.add(job, xaps);
 				List<JobParameter> jobParameters = new ArrayList<JobParameter>();
 				UnittypeParameter utp = unittype.getUnittypeParameters().getByName(SystemParameters.DESIRED_SOFTWARE_VERSION);
-				JobParameter jp = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, new Parameter(utp, toFwVersion));
+				JobParameter jp = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, new com.github.freeacs.dbi.Parameter(utp, toFwVersion));
 				jobParameters.add(jp);
 				xapsJobs.addOrChangeJobParameters(jobParameters, xaps);
 				job.setStatus(JobStatus.STARTED);
@@ -1315,7 +1312,7 @@ public abstract class StagingActions extends AbstractWebPage {
 			} else if (job.getFile().getVersion().equals(fromFwVersion)) {
 				List<JobParameter> jobParameters = new ArrayList<JobParameter>();
 				UnittypeParameter utp = unittype.getUnittypeParameters().getByName(SystemParameters.DESIRED_SOFTWARE_VERSION);
-				JobParameter jp = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, new Parameter(utp, toFwVersion));
+				JobParameter jp = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, new com.github.freeacs.dbi.Parameter(utp, toFwVersion));
 				jobParameters.add(jp);
 				xapsJobs.addOrChangeJobParameters(jobParameters, xaps);
 				warnings.put(providerName, "Upgrade job from " + fromFwVersion + " is now upgrading to " + toFwVersion);
@@ -1334,7 +1331,7 @@ public abstract class StagingActions extends AbstractWebPage {
 	 * @throws SQLException the sQL exception
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 */
-	public void setProfileParameter(String utp, String value, Unittype unittype, Profile profile, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void setProfileParameter(String utp, String value, com.github.freeacs.dbi.Unittype unittype, com.github.freeacs.dbi.Profile profile, XAPS xaps) throws SQLException, NoAvailableConnectionException {
 		UnittypeParameter unittypeParameter = getUTP(utp, unittype, xaps);
 		ProfileParameter profileParameter = profile.getProfileParameters().getByName(utp);
 		if (profileParameter == null)
@@ -1353,19 +1350,19 @@ public abstract class StagingActions extends AbstractWebPage {
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	public void actionDeleteProvider(Unittype unittype, Profile profile, String sessionId) throws NoAvailableConnectionException, SQLException {
+	public void actionDeleteProvider(com.github.freeacs.dbi.Unittype unittype, com.github.freeacs.dbi.Profile profile, String sessionId) throws NoAvailableConnectionException, SQLException {
 		XAPS xaps = XAPSLoader.getXAPS(sessionId);
 		XAPSUnit xapsUnit = XAPSLoader.getXAPSUnit(sessionId);
-		Map<String, Unit> units = xapsUnit.getUnits(unittype, profile, new ArrayList<Parameter>(), Integer.MAX_VALUE);
+		Map<String, com.github.freeacs.dbi.Unit> units = xapsUnit.getUnits(unittype, profile, new ArrayList<com.github.freeacs.dbi.Parameter>(), Integer.MAX_VALUE);
 
 		if (units.size() > 0) {
-			for (Unit u : units.values()) {
+			for (com.github.freeacs.dbi.Unit u : units.values()) {
 				errors.put(u.getId(), "Unit found in provider " + profile.getName() + " - cancel shipment if possible");
 			}
 		} else {
 			Jobs jobs = unittype.getJobs();
 			for (Job job : jobs.getJobs()) {
-				Profile groupProfile = job.getGroup().getProfile();
+				com.github.freeacs.dbi.Profile groupProfile = job.getGroup().getProfile();
 				if (groupProfile != null && groupProfile.getId() == profile.getId()) {
 					job.setStatus(JobStatus.PAUSED);
 					jobs.changeStatus(job, xaps);
@@ -1379,7 +1376,7 @@ public abstract class StagingActions extends AbstractWebPage {
 			}
 			Group[] groups = unittype.getGroups().getGroups();
 			for (Group group : groups) {
-				Profile groupProfile = group.getProfile();
+				com.github.freeacs.dbi.Profile groupProfile = group.getProfile();
 				if (groupProfile != null && groupProfile.getId() == profile.getId())
 					unittype.getGroups().deleteGroup(group, xaps);
 			}
@@ -1452,12 +1449,12 @@ public abstract class StagingActions extends AbstractWebPage {
 	 * @return the shipments
 	 * @throws Exception the exception
 	 */
-	protected DropDownSingleSelect<Shipment> getShipments(Unittype unittype, Profile profile, Input shipmentInput, XAPS xaps) throws Exception {
+	protected DropDownSingleSelect<Shipment> getShipments(com.github.freeacs.dbi.Unittype unittype, com.github.freeacs.dbi.Profile profile, Input shipmentInput, XAPS xaps) throws Exception {
 		List<Shipment> shipments = new ArrayList<Shipment>();
 		Shipment selected = null;
 		Group[] groups = unittype.getGroups().getGroups();
 		for (Group g : groups) {
-			Profile groupProfile = g.getTopParent().getProfile();
+			com.github.freeacs.dbi.Profile groupProfile = g.getTopParent().getProfile();
 			boolean canceled = false;
 			if (groupProfile != null) {
 				canceled = groupProfile.getName().equals("Default");
@@ -1490,9 +1487,9 @@ public abstract class StagingActions extends AbstractWebPage {
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	protected List<Profile> getAllowedProfilesExceptDefault(Unittype selected, String sessionId) throws NoAvailableConnectionException, SQLException {
-		List<Profile> allowedProfiles = new ArrayList<Profile>();
-		for (Profile p : getAllowedProfiles(sessionId, selected)) {
+	protected List<com.github.freeacs.dbi.Profile> getAllowedProfilesExceptDefault(com.github.freeacs.dbi.Unittype selected, String sessionId) throws NoAvailableConnectionException, SQLException {
+		List<com.github.freeacs.dbi.Profile> allowedProfiles = new ArrayList<com.github.freeacs.dbi.Profile>();
+		for (com.github.freeacs.dbi.Profile p : getAllowedProfiles(sessionId, selected)) {
 			if (!p.getName().equals("Default"))
 				allowedProfiles.add(p);
 		}

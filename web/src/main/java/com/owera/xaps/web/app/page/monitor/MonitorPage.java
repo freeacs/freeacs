@@ -1,8 +1,8 @@
 package com.owera.xaps.web.app.page.monitor;
 
-import com.owera.common.ssl.EasySSLProtocolSocketFactory;
-import com.owera.common.ssl.HTTPSManager;
-import com.owera.xaps.dbi.XAPS;
+import com.github.freeacs.common.ssl.EasySSLProtocolSocketFactory;
+import com.github.freeacs.common.ssl.HTTPSManager;
+import com.github.freeacs.dbi.XAPS;
 import com.owera.xaps.web.app.Output;
 import com.owera.xaps.web.app.input.ParameterParser;
 import com.owera.xaps.web.app.page.AbstractWebPage;

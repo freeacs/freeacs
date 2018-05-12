@@ -1,11 +1,11 @@
 package com.owera.xaps.spp.http;
 
-import com.owera.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.owera.xaps.base.BaseCache;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.NoDataAvailableException;
 import com.owera.xaps.base.http.Util;
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.dbi.util.SystemParameters;
 import com.owera.xaps.spp.Properties;
 import com.owera.xaps.spp.SessionData;
 

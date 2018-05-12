@@ -4,9 +4,9 @@
  */
 package com.owera.xaps.web.app.page.job;
 
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.dbi.Job;
+import com.github.freeacs.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.util.SystemParameters;
 
 public class JobFilter {
 

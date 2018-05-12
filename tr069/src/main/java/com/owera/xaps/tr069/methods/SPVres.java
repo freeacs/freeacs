@@ -1,8 +1,8 @@
 package com.owera.xaps.tr069.methods;
 
 import com.owera.xaps.base.Log;
-import com.owera.xaps.dbi.SyslogConstants;
-import com.owera.xaps.dbi.util.SyslogClient;
+import com.github.freeacs.dbi.SyslogConstants;
+import com.github.freeacs.dbi.util.SyslogClient;
 import com.owera.xaps.tr069.HTTPReqResData;
 import com.owera.xaps.tr069.Provisioning;
 import com.owera.xaps.tr069.SessionData;

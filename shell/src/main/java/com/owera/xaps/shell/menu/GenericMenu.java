@@ -1,6 +1,7 @@
 package com.owera.xaps.shell.menu;
 
-import com.owera.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.shell.*;
 import com.owera.xaps.shell.command.ContextContainer;
@@ -231,7 +232,7 @@ public class GenericMenu {
 
 			boolean eval = true;
 			if (session.getContext().getUnittype() != null) {
-				com.owera.xaps.dbi.File fusionFile = session.getContext().getUnittype().getFiles().getByName(whileArg);
+				com.github.freeacs.dbi.File fusionFile = session.getContext().getUnittype().getFiles().getByName(whileArg);
 				if (fusionFile != null) {
 					if (whileScript.getWhileInput() == null) {
 						whileScript.setWhileInput(new BufferedReader(new InputStreamReader(new ByteArrayInputStream(fusionFile.getContent()))));
@@ -384,7 +385,7 @@ public class GenericMenu {
 		if (!FileUtil.allowed("cat " + filename, new File(filename)))
 			return;
 		if (session.getContext().getUnittype() != null) {
-			com.owera.xaps.dbi.File f = session.getContext().getUnittype().getFiles().getByName(filename);
+			com.github.freeacs.dbi.File f = session.getContext().getUnittype().getFiles().getByName(filename);
 			if (f != null) {
 				Listing listing = oh.getListing();
 				for (String line : new String(f.getContent()).split("\n")) {

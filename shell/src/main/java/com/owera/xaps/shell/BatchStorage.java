@@ -1,7 +1,7 @@
 package com.owera.xaps.shell;
 
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.UnitParameter;
+import com.github.freeacs.dbi.UnittypeParameter;
 
 import java.util.ArrayList;
 import java.util.List;

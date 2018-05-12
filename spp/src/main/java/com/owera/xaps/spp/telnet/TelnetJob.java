@@ -1,6 +1,6 @@
 package com.owera.xaps.spp.telnet;
 
-import com.owera.xaps.dbi.Job;
+import com.github.freeacs.dbi.Job;
 
 public class TelnetJob {
 	private Job job;

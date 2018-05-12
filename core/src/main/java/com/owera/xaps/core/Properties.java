@@ -1,6 +1,6 @@
 package com.owera.xaps.core;
 
-import com.owera.common.db.ConnectionProperties;
+import com.github.freeacs.common.db.ConnectionProperties;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;

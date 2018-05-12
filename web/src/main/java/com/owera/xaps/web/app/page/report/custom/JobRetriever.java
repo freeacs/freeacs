@@ -1,14 +1,14 @@
 package com.owera.xaps.web.app.page.report.custom;
 
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.Group;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.report.PeriodType;
-import com.owera.xaps.dbi.report.RecordJob;
-import com.owera.xaps.dbi.report.Report;
-import com.owera.xaps.dbi.report.ReportGenerator;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.Group;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.XAPS;
+import com.github.freeacs.dbi.report.PeriodType;
+import com.github.freeacs.dbi.report.RecordJob;
+import com.github.freeacs.dbi.report.Report;
+import com.github.freeacs.dbi.report.ReportGenerator;
 import com.owera.xaps.web.app.input.ParameterParser;
 import com.owera.xaps.web.app.page.report.ReportData;
 import com.owera.xaps.web.app.util.SessionCache;

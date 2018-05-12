@@ -1,8 +1,9 @@
 package com.owera.xapsws.impl;
 
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.Parameter.Operator;
-import com.owera.xaps.dbi.Parameter.ParameterDataType;
+import com.github.freeacs.dbi.Parameter.Operator;
+import com.github.freeacs.dbi.Parameter.ParameterDataType;
 import com.owera.xapsws.ArrayOfUnitId;
 import com.owera.xapsws.GetUnitIdsRequest;
 import com.owera.xapsws.GetUnitIdsResponse;

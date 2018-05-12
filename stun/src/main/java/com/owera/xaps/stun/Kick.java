@@ -1,11 +1,11 @@
 package com.owera.xaps.stun;
 
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.util.IPAddress;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.XAPSUnit;
-import com.owera.xaps.dbi.crypto.Crypto;
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.util.IPAddress;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.XAPSUnit;
+import com.github.freeacs.dbi.crypto.Crypto;
+import com.github.freeacs.dbi.util.SystemParameters;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthScope;

@@ -1,6 +1,6 @@
 package com.owera.xaps.web.app.page.user;
 
-import com.owera.xaps.dbi.Permission;
+import com.github.freeacs.dbi.Permission;
 
 
 /**

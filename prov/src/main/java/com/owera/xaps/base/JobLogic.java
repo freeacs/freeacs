@@ -1,13 +1,14 @@
 package com.owera.xaps.base;
 
-import com.owera.common.util.Cache;
+import com.github.freeacs.common.util.Cache;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.Properties.Module;
 import com.owera.xaps.base.db.DBAccess;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.JobFlag.JobServiceWindow;
-import com.owera.xaps.dbi.JobFlag.JobType;
-import com.owera.xaps.dbi.util.ProvisioningMode;
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
+import com.github.freeacs.dbi.JobFlag.JobType;
+import com.github.freeacs.dbi.util.ProvisioningMode;
+import com.github.freeacs.dbi.util.SystemParameters;
 
 import java.sql.SQLException;
 import java.util.HashMap;

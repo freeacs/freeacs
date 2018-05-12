@@ -1,14 +1,15 @@
 package com.owera.xaps.tr069.decision.shelljob;
 
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.util.Cache;
-import com.owera.common.util.CacheValue;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.util.Cache;
+import com.github.freeacs.common.util.CacheValue;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.UnitJob;
 import com.owera.xaps.base.db.DBAccess;
 import com.owera.xaps.base.db.DBAccessSessionTR069;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.dbi.util.SystemParameters;
 import com.owera.xaps.tr069.CPEParameters;
 import com.owera.xaps.tr069.Provisioning;
 import com.owera.xaps.tr069.SessionData;

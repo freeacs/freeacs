@@ -1,9 +1,10 @@
 package com.owera.xaps.web.app.page.job;
 
-import com.owera.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.JobFlag.JobServiceWindow;
-import com.owera.xaps.dbi.JobFlag.JobType;
+import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
+import com.github.freeacs.dbi.JobFlag.JobType;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.Output;
 import com.owera.xaps.web.app.input.*;

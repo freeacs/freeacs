@@ -1,5 +1,6 @@
 package com.owera.xaps.web.app.page.syslog;
 
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.app.table.TableColor;
 import com.owera.xaps.web.app.util.DateUtils;
@@ -243,7 +244,7 @@ public class SyslogUtil {
 	 * @param id the id
 	 * @return the event
 	 */
-	public static Event getEvent(Unittype unittype,Integer id){
+	public static Event getEvent(Unittype unittype, Integer id){
 		if(unittype==null && id!=null)
 			return convertSyslogEvent(SyslogEvents.getById(id));
 		if(id==null)

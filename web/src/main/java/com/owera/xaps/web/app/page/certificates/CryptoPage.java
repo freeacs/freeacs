@@ -1,7 +1,7 @@
 package com.owera.xaps.web.app.page.certificates;
 
-import com.owera.xaps.dbi.Certificate;
-import com.owera.xaps.dbi.XAPS;
+import com.github.freeacs.dbi.Certificate;
+import com.github.freeacs.dbi.XAPS;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.Output;
 import com.owera.xaps.web.app.input.InputDataRetriever;

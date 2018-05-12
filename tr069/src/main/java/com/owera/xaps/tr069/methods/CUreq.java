@@ -236,7 +236,7 @@ public class CUreq extends Body {
 			String xml = "";
 			if (TestUnitCache.get(unitId) != null) {
 				TestUnit tu = TestUnitCache.get(unitId);
-				com.owera.xaps.dbi.File inputFile = tu.getCurrentCase().getFiles().getInputFile();
+				com.github.freeacs.dbi.File inputFile = tu.getCurrentCase().getFiles().getInputFile();
 				xml = new String(inputFile.getContent());
 			} else {
 				if (tdo.getStep().equals("Kill")) {

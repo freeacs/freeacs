@@ -1,11 +1,11 @@
 package com.owera.xaps.web.app.page.report.uidata;
 
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.XAPSUnit;
-import com.owera.xaps.dbi.report.Key;
-import com.owera.xaps.dbi.report.RecordProvisioning;
-import com.owera.xaps.dbi.report.Report;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.XAPSUnit;
+import com.github.freeacs.dbi.report.Key;
+import com.github.freeacs.dbi.report.RecordProvisioning;
+import com.github.freeacs.dbi.report.Report;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

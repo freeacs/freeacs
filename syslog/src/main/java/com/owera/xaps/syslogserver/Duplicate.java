@@ -1,6 +1,6 @@
 package com.owera.xaps.syslogserver;
 
-import com.owera.xaps.dbi.SyslogEntry;
+import com.github.freeacs.dbi.SyslogEntry;
 
 
 public class Duplicate {

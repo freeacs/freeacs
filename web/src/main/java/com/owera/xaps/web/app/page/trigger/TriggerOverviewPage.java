@@ -1,8 +1,8 @@
 package com.owera.xaps.web.app.page.trigger;
 
-import com.owera.xaps.dbi.Trigger;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
+import com.github.freeacs.dbi.Trigger;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.XAPS;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.Output;
 import com.owera.xaps.web.app.input.InputDataIntegrity;

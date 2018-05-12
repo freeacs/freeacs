@@ -1,8 +1,8 @@
 package com.owera.xaps.base;
 
-import com.owera.common.util.Cache;
-import com.owera.common.util.CacheValue;
-import com.owera.xaps.dbi.File;
+import com.github.freeacs.common.util.Cache;
+import com.github.freeacs.common.util.CacheValue;
+import com.github.freeacs.dbi.File;
 
 import java.util.ArrayList;
 import java.util.List;

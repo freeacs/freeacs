@@ -1,7 +1,8 @@
 package com.owera.xaps.web.app.page;
 
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.util.NaturalComparator;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.util.NaturalComparator;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.menu.MenuItem;
@@ -127,7 +128,7 @@ public abstract class AbstractWebPage implements WebPage {
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	public boolean isProfilesLimited(Unittype unittype,String sessionId) throws NoAvailableConnectionException, SQLException {
+	public boolean isProfilesLimited(Unittype unittype, String sessionId) throws NoAvailableConnectionException, SQLException {
 		if(unittype==null)
 			return false;
 		List<Profile> list = getAllowedProfiles(sessionId,unittype);

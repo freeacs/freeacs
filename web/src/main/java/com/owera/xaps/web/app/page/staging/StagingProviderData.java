@@ -1,9 +1,9 @@
 package com.owera.xaps.web.app.page.staging;
 
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.ProfileParameter;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.ProfileParameter;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.util.SystemParameters;
 import com.owera.xaps.web.app.input.Input;
 import com.owera.xaps.web.app.input.InputData;
 

@@ -1,6 +1,7 @@
 package com.owera.xapsws.impl;
 
-import com.owera.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
 import com.owera.xapsws.AddOrChangeProfileRequest;
 import com.owera.xapsws.AddOrChangeProfileResponse;

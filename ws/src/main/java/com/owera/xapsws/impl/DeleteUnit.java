@@ -1,9 +1,9 @@
 package com.owera.xapsws.impl;
 
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.XAPS;
+import com.github.freeacs.dbi.XAPSUnit;
 import com.owera.xapsws.DeleteUnitRequest;
 import com.owera.xapsws.DeleteUnitResponse;
 import com.owera.xapsws.Unit;
@@ -27,7 +27,7 @@ public class DeleteUnit {
 			XAPSUnit xapsUnit = xapsWS.getXAPSUnit(xaps);
 			if (dur.getUnit() == null)
 				throw XAPSWS.error(logger, "No unit object is specified");
-			com.owera.xaps.dbi.Unit unitXAPS = validateUnitId(dur.getUnit(), xapsUnit);
+			com.github.freeacs.dbi.Unit unitXAPS = validateUnitId(dur.getUnit(), xapsUnit);
 			if (unitXAPS == null) {
 				return new DeleteUnitResponse(false);
 			} else {
@@ -49,8 +49,8 @@ public class DeleteUnit {
 
 	}
 
-	private com.owera.xaps.dbi.Unit validateUnitId(Unit unitWS, XAPSUnit xapsUnit) throws SQLException, NoAvailableConnectionException, RemoteException {
-		com.owera.xaps.dbi.Unit unitXAPS = null;
+	private com.github.freeacs.dbi.Unit validateUnitId(Unit unitWS, XAPSUnit xapsUnit) throws SQLException, NoAvailableConnectionException, RemoteException {
+		com.github.freeacs.dbi.Unit unitXAPS = null;
 		if (unitWS.getUnitId() == null) {
 			if (unitWS.getSerialNumber() != null) {
 				Unittype unittype = xapsWS.getUnittypeFromXAPS(unitWS.getUnittype().getName());

@@ -1,6 +1,7 @@
 package com.owera.xaps.shell;
 
-import com.owera.common.db.ConnectionProperties;
+import com.github.freeacs.common.db.ConnectionProperties;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.shell.util.FileUtil;
 

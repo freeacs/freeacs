@@ -1,9 +1,9 @@
 package com.owera.xaps.web.app.table;
 
-import com.owera.xaps.dbi.Group;
-import com.owera.xaps.dbi.GroupParameter;
-import com.owera.xaps.dbi.Parameter;
-import com.owera.xaps.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.Group;
+import com.github.freeacs.dbi.GroupParameter;
+import com.github.freeacs.dbi.Parameter;
+import com.github.freeacs.dbi.UnittypeParameter;
 import com.owera.xaps.web.app.page.search.SearchParameter;
 
 /**

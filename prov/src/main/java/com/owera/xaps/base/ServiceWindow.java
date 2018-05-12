@@ -1,8 +1,8 @@
 package com.owera.xaps.base;
 
-import com.owera.common.util.TimeWindow;
-import com.owera.xaps.dbi.util.SystemConstants;
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.common.util.TimeWindow;
+import com.github.freeacs.dbi.util.SystemConstants;
+import com.github.freeacs.dbi.util.SystemParameters;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;

@@ -1,10 +1,11 @@
 package com.owera.xaps.tr069;
 
-import com.owera.common.db.ConnectionMetaData;
-import com.owera.common.db.ConnectionPoolData;
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.util.Sleep;
+import com.github.freeacs.common.db.ConnectionMetaData;
+import com.github.freeacs.common.db.ConnectionPoolData;
+import com.github.freeacs.common.db.ConnectionProperties;
+import com.github.freeacs.common.db.ConnectionProvider;
+import com.github.freeacs.common.util.Sleep;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.Properties.Module;
 import com.owera.xaps.base.BaseCache;
 import com.owera.xaps.base.Log;

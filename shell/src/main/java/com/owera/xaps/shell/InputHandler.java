@@ -1,8 +1,8 @@
 package com.owera.xaps.shell;
 
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.File;
-import com.owera.xaps.dbi.Unittype;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.File;
+import com.github.freeacs.dbi.Unittype;
 import com.owera.xaps.shell.output.ListingReader;
 import com.owera.xaps.shell.output.OutputHandler;
 import com.owera.xaps.shell.util.StringUtil;

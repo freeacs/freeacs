@@ -1,6 +1,6 @@
 package com.owera.xaps.syslogserver;
 
-import com.owera.common.scheduler.TaskDefaultImpl;
+import com.github.freeacs.common.scheduler.TaskDefaultImpl;
 import org.apache.commons.io.FileSystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

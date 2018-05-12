@@ -1,6 +1,6 @@
 package com.owera.xaps.tr069.methods;
 
-import com.owera.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.owera.xaps.tr069.HTTPReqResData;
 
 import java.sql.SQLException;

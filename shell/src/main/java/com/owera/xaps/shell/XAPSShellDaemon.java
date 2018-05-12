@@ -1,7 +1,7 @@
 package com.owera.xaps.shell;
 
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.ConnectionProvider;
+import com.github.freeacs.common.db.ConnectionProperties;
+import com.github.freeacs.common.db.ConnectionProvider;
 
 import java.util.ArrayList;
 import java.util.List;

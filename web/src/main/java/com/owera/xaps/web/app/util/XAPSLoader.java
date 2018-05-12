@@ -1,7 +1,8 @@
 package com.owera.xaps.web.app.util;
 
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.db.ConnectionProperties;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.app.Main;
 import com.owera.xaps.web.app.Monitor;

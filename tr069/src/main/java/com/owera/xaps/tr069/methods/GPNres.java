@@ -1,9 +1,9 @@
 package com.owera.xaps.tr069.methods;
 
 import com.owera.xaps.base.Log;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.UnittypeParameterFlag;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.UnittypeParameterFlag;
 import com.owera.xaps.tr069.HTTPReqResData;
 import com.owera.xaps.tr069.SessionData;
 import com.owera.xaps.tr069.exception.TR069Exception;

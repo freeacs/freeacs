@@ -1,7 +1,7 @@
 package com.owera.xapsws.impl;
 
-import com.owera.common.util.Cache;
-import com.owera.common.util.CacheValue;
+import com.github.freeacs.common.util.Cache;
+import com.github.freeacs.common.util.CacheValue;
 import com.owera.xapsws.Login;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

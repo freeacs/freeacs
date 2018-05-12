@@ -1,10 +1,11 @@
 package com.owera.xaps.shell.menu;
 
-import com.owera.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
-import com.owera.xaps.dbi.crypto.Crypto;
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.crypto.Crypto;
+import com.github.freeacs.dbi.util.SystemParameters;
 import com.owera.xaps.shell.Session;
 import com.owera.xaps.shell.UnitTempStorage;
 import com.owera.xaps.shell.command.Option;

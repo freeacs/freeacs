@@ -4,7 +4,7 @@
  */
 package com.owera.xaps.web.app.page.report.uidata;
 
-import com.owera.xaps.dbi.SyslogConstants;
+import com.github.freeacs.dbi.SyslogConstants;
 import com.owera.xaps.web.app.input.InputSelectionFactory;
 import com.owera.xaps.web.app.page.report.UnitListData;
 

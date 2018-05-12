@@ -1,11 +1,8 @@
 package com.owera.xapsws.impl;
 
-import com.owera.xaps.dbi.Parameter;
-import com.owera.xaps.dbi.Parameter.Operator;
-import com.owera.xaps.dbi.Parameter.ParameterDataType;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.Unittype;
+import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.Parameter.Operator;
+import com.github.freeacs.dbi.Parameter.ParameterDataType;
 import com.owera.xaps.dbi.*;
 import com.owera.xapsws.*;
 import org.slf4j.Logger;
@@ -31,8 +28,8 @@ public class GetUnits {
 			com.owera.xapsws.Unit unitWS = gur.getUnit();
 
 			/* Validate input - only allow permitted unittypes/profiles for this login */
-			Unittype unittypeXAPS = null;
-			List<Profile> profilesXAPS = new ArrayList<Profile>();
+			com.github.freeacs.dbi.Unittype unittypeXAPS = null;
+			List<com.github.freeacs.dbi.Profile> profilesXAPS = new ArrayList<com.github.freeacs.dbi.Profile>();
 			if (unitWS.getUnittype() != null && unitWS.getUnittype().getName() != null) {
 				unittypeXAPS = xapsWS.getUnittypeFromXAPS(unitWS.getUnittype().getName());
 				if (unitWS.getProfile() != null && unitWS.getProfile().getName() != null) {
@@ -54,7 +51,7 @@ public class GetUnits {
 				if (unitXAPS != null)
 					unitMap.put(unitWS.getUnitId(), unitXAPS);
 			} else if (useCase3) {// Use-case 3, expect parameters and unittype
-				List<Parameter> upList = validateParameters(unitWS, profilesXAPS);
+				List<com.github.freeacs.dbi.Parameter> upList = validateParameters(unitWS, profilesXAPS);
 				Map<String, Unit> tmpMap = xapsUnit.getUnits(unittypeXAPS, profilesXAPS, upList, 51);
 				for (Unit unitXAPS : tmpMap.values())
 					unitMap.put(unitXAPS.getId(), xapsUnit.getUnitById(unitXAPS.getId()));
@@ -71,9 +68,9 @@ public class GetUnits {
 			ul.setUnitArray(new ArrayOfUnit(unitArray));
 			int ucount = 0;
 			for (Unit unit : unitMap.values()) {
-				Unittype utXAPS = unit.getUnittype();
+				com.github.freeacs.dbi.Unittype utXAPS = unit.getUnittype();
 				com.owera.xapsws.Unittype utWS = new com.owera.xapsws.Unittype(utXAPS.getName(), null, utXAPS.getVendor(), utXAPS.getDescription(), utXAPS.getProtocol().toString(), null);
-				Profile pXAPS = unit.getProfile();
+				com.github.freeacs.dbi.Profile pXAPS = unit.getProfile();
 				com.owera.xapsws.Profile pWS = new com.owera.xapsws.Profile(pXAPS.getName(), null);
 				UnittypeParameter snUtp = getSerialNumberUtp(utXAPS);
 				String serialNumber = null;
@@ -118,21 +115,21 @@ public class GetUnits {
 	//		//			return xaps.getAllowedProfiles(unittype);
 	//	}
 
-	private Unittype getUnittypeForParameters(List<Profile> allowedProfiles) throws RemoteException {
-		Unittype unittype = allowedProfiles.get(0).getUnittype();
-		for (Profile p : allowedProfiles) {
+	private com.github.freeacs.dbi.Unittype getUnittypeForParameters(List<com.github.freeacs.dbi.Profile> allowedProfiles) throws RemoteException {
+		com.github.freeacs.dbi.Unittype unittype = allowedProfiles.get(0).getUnittype();
+		for (com.github.freeacs.dbi.Profile p : allowedProfiles) {
 			if (!p.getUnittype().getName().equals(unittype.getName()))
 				throw XAPSWS.error(logger, "Cannot specify parameters or SerialNumber without specifying Unittype"); // there are more than 1 unittype - indicating no unittype has been specified
 		}
 		return unittype;
 	}
 
-	private List<Parameter> validateParameters(com.owera.xapsws.Unit unitWS, List<Profile> allowedProfiles) throws RemoteException {
+	private List<com.github.freeacs.dbi.Parameter> validateParameters(com.owera.xapsws.Unit unitWS, List<com.github.freeacs.dbi.Profile> allowedProfiles) throws RemoteException {
 		if (allowedProfiles == null || allowedProfiles.size() == 0)
 			throw XAPSWS.error(logger, "Unittype and profiles are not specified, not possible to make parameter-search");
-		List<Parameter> parameters = new ArrayList<Parameter>();
+		List<com.github.freeacs.dbi.Parameter> parameters = new ArrayList<com.github.freeacs.dbi.Parameter>();
 		if (unitWS.getParameters() != null && unitWS.getParameters().getParameterArray() != null) {
-			Unittype unittype = getUnittypeForParameters(allowedProfiles);
+			com.github.freeacs.dbi.Unittype unittype = getUnittypeForParameters(allowedProfiles);
 			for (com.owera.xapsws.Parameter pWS : unitWS.getParameters().getParameterArray().getItem()) {
 				UnittypeParameter utp = unittype.getUnittypeParameters().getByName(pWS.getName());
 				if (utp == null)
@@ -150,7 +147,7 @@ public class GetUnits {
 						throw XAPSWS.error(logger, "An error occurred in flag (" + pWS.getFlags() + "): " + iae.getMessage());
 					}
 				}
-				Parameter pXAPS = new Parameter(utp, pWS.getValue(), op, pdt);
+				com.github.freeacs.dbi.Parameter pXAPS = new com.github.freeacs.dbi.Parameter(utp, pWS.getValue(), op, pdt);
 				parameters.add(pXAPS);
 			}
 		}
@@ -164,7 +161,7 @@ public class GetUnits {
 		return parameters;
 	}
 
-	private UnittypeParameter getSerialNumberUtp(Unittype unittype) {
+	private UnittypeParameter getSerialNumberUtp(com.github.freeacs.dbi.Unittype unittype) {
 		String snName = "InternetGatewayDevice.DeviceInfo.SerialNumber";
 		UnittypeParameter serialNumberUtp = unittype.getUnittypeParameters().getByName(snName);
 		if (serialNumberUtp == null) {

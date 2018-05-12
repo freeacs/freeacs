@@ -1,7 +1,8 @@
 package com.owera.xapsws.impl;
 
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.owera.xapsws.AddOrChangeUnittypeRequest;
 import com.owera.xapsws.AddOrChangeUnittypeResponse;
 import com.owera.xapsws.Parameter;

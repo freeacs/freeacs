@@ -1,9 +1,10 @@
 package com.owera.xaps.web.app.page.group;
 
-import com.owera.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.Parameter.Operator;
-import com.owera.xaps.dbi.Parameter.ParameterDataType;
+import com.github.freeacs.dbi.Parameter.Operator;
+import com.github.freeacs.dbi.Parameter.ParameterDataType;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.Output;
 import com.owera.xaps.web.app.input.*;

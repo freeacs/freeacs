@@ -1,6 +1,6 @@
 package com.owera.xaps.shell.menu;
 
-import com.owera.xaps.dbi.Group;
+import com.github.freeacs.dbi.Group;
 
 import java.util.ArrayList;
 import java.util.Comparator;

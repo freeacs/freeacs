@@ -4,7 +4,7 @@
  */
 package com.owera.xaps.web.app.page.job;
 
-import com.owera.xaps.dbi.JobStatus;
+import com.github.freeacs.dbi.JobStatus;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
 import org.apache.commons.lang.ArrayUtils;

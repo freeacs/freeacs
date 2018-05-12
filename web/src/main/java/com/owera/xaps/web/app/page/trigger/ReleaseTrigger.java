@@ -1,7 +1,7 @@
 package com.owera.xaps.web.app.page.trigger;
 
-import com.owera.xaps.dbi.ScriptExecution;
-import com.owera.xaps.dbi.Trigger;
+import com.github.freeacs.dbi.ScriptExecution;
+import com.github.freeacs.dbi.Trigger;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

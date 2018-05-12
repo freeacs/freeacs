@@ -1,8 +1,8 @@
 package com.owera.xaps.web.app.page.user;
 
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.User;
-import com.owera.xaps.dbi.Users;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.User;
+import com.github.freeacs.dbi.Users;
 import com.owera.xaps.web.app.util.SessionCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

@@ -1,7 +1,7 @@
 package com.owera.xaps.tr069.test.system2;
 
-import com.owera.common.util.Cache;
-import com.owera.common.util.CacheValue;
+import com.github.freeacs.common.util.Cache;
+import com.github.freeacs.common.util.CacheValue;
 
 /**
  * Contains cached TestUnit objects. We keep this objects here, rather in the SessionData object, 

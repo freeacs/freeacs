@@ -1,6 +1,6 @@
 package com.owera.xapsws.impl;
 
-import com.owera.common.util.Sleep;
+import com.github.freeacs.common.util.Sleep;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import org.apache.commons.httpclient.Header;

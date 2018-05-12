@@ -1,9 +1,9 @@
 package com.owera.xaps.tr069.background;
 
-import com.owera.common.scheduler.Schedule;
-import com.owera.common.scheduler.ScheduleType;
-import com.owera.common.scheduler.Scheduler;
-import com.owera.xaps.dbi.DBI;
+import com.github.freeacs.common.scheduler.Schedule;
+import com.github.freeacs.common.scheduler.ScheduleType;
+import com.github.freeacs.common.scheduler.Scheduler;
+import com.github.freeacs.dbi.DBI;
 
 public class BackgroundProcesses {
 

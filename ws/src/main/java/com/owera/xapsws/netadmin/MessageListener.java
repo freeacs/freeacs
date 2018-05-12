@@ -1,8 +1,9 @@
 package com.owera.xapsws.netadmin;
 
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.util.Sleep;
+import com.github.freeacs.common.db.ConnectionProperties;
+import com.github.freeacs.common.db.ConnectionProvider;
+import com.github.freeacs.common.util.Sleep;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
 import com.owera.xapsws.impl.XAPSWS;
 import org.slf4j.Logger;

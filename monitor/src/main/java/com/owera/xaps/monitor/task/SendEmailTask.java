@@ -1,6 +1,6 @@
 package com.owera.xaps.monitor.task;
 
-import com.owera.common.scheduler.TaskDefaultImpl;
+import com.github.freeacs.common.scheduler.TaskDefaultImpl;
 import com.owera.xaps.monitor.Properties;
 import com.owera.xaps.monitor.SendMail;
 import org.slf4j.Logger;

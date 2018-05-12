@@ -1,7 +1,7 @@
 package com.owera.xaps.core.util;
 
-import com.owera.common.util.TimestampMap;
-import com.owera.xaps.dbi.Heartbeat;
+import com.github.freeacs.common.util.TimestampMap;
+import com.github.freeacs.dbi.Heartbeat;
 
 import java.text.SimpleDateFormat;
 import java.util.*;

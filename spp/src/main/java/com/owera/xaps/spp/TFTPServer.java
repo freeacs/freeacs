@@ -17,21 +17,21 @@
 
 package com.owera.xaps.spp;
 
-import com.owera.common.util.Sleep;
+import com.github.freeacs.common.util.Sleep;
 import com.owera.xaps.base.DownloadLogic;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.db.DBAccess;
 import com.owera.xaps.base.db.DBAccessStatic;
-import com.owera.xaps.dbi.FileType;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
-import com.owera.xaps.dbi.Users;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.util.ProvisioningMessage;
-import com.owera.xaps.dbi.util.ProvisioningMessage.ErrorResponsibility;
-import com.owera.xaps.dbi.util.ProvisioningMessage.ProvOutput;
-import com.owera.xaps.dbi.util.ProvisioningMessage.ProvStatus;
-import com.owera.xaps.dbi.util.SyslogClient;
+import com.github.freeacs.dbi.FileType;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.Users;
+import com.github.freeacs.dbi.XAPS;
+import com.github.freeacs.dbi.util.ProvisioningMessage;
+import com.github.freeacs.dbi.util.ProvisioningMessage.ErrorResponsibility;
+import com.github.freeacs.dbi.util.ProvisioningMessage.ProvOutput;
+import com.github.freeacs.dbi.util.ProvisioningMessage.ProvStatus;
+import com.github.freeacs.dbi.util.SyslogClient;
 import org.apache.commons.net.io.FromNetASCIIOutputStream;
 import org.apache.commons.net.io.ToNetASCIIInputStream;
 import org.apache.commons.net.tftp.*;
@@ -412,7 +412,7 @@ public class TFTPServer implements Runnable {
               transferTftp_.bufferedSend(new TFTPErrorPacket(trrp.getAddress(), trrp.getPort(), TFTPErrorPacket.FILE_NOT_FOUND, e));
               return;
             }
-            com.owera.xaps.dbi.File firmware = unittype.getFiles().getByVersionType(firmwareVersion, FileType.SOFTWARE);
+            com.github.freeacs.dbi.File firmware = unittype.getFiles().getByVersionType(firmwareVersion, FileType.SOFTWARE);
             if (firmware == null) {
               String e = "Could not find firmware version " + firmwareVersion + " (in unittype " + unittype + ") in xAPS";
               Log.error(FileServlet.class, e);

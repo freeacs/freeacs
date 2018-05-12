@@ -1,22 +1,23 @@
 package com.owera.xaps.spp;
 
-import com.owera.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.Properties.Module;
 import com.owera.xaps.base.*;
 import com.owera.xaps.base.db.DBAccess;
 import com.owera.xaps.base.db.DBAccessSession;
 import com.owera.xaps.base.db.DBAccessStatic;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.JobFlag.JobServiceWindow;
-import com.owera.xaps.dbi.JobFlag.JobType;
-import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
-import com.owera.xaps.dbi.util.ProvisioningMessage;
-import com.owera.xaps.dbi.util.ProvisioningMessage.ErrorResponsibility;
-import com.owera.xaps.dbi.util.ProvisioningMessage.ProvOutput;
-import com.owera.xaps.dbi.util.ProvisioningMessage.ProvStatus;
-import com.owera.xaps.dbi.util.ProvisioningMode;
-import com.owera.xaps.dbi.util.SystemParameters;
-import com.owera.xaps.dbi.util.TimestampWrapper;
+import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
+import com.github.freeacs.dbi.JobFlag.JobType;
+import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.util.ProvisioningMessage;
+import com.github.freeacs.dbi.util.ProvisioningMessage.ErrorResponsibility;
+import com.github.freeacs.dbi.util.ProvisioningMessage.ProvOutput;
+import com.github.freeacs.dbi.util.ProvisioningMessage.ProvStatus;
+import com.github.freeacs.dbi.util.ProvisioningMode;
+import com.github.freeacs.dbi.util.SystemParameters;
+import com.github.freeacs.dbi.util.TimestampWrapper;
 import com.owera.xaps.spp.response.ProvisioningResponse;
 import com.owera.xaps.spp.response.SPA;
 
@@ -221,7 +222,7 @@ public class SPP {
     DownloadLogic.removeOldest();
     // XAPS xaps = DBAccess.getDBI().getXaps();
     // xaps.updateFirmwares(sessionData.getUnittype());
-    com.owera.xaps.dbi.File firmware = sessionData.getUnittype().getFiles().getByVersionType(dsw, FileType.SOFTWARE);
+    File firmware = sessionData.getUnittype().getFiles().getByVersionType(dsw, FileType.SOFTWARE);
     Log.notice(SPP.class, "The firmware " + firmware.getName() + " is found and will be returned directly (upgrade-output=Staging)");
     sessionData.setBinaries(true);
     return DBAccessStatic.readFirmwareImage(firmware);

@@ -1,7 +1,8 @@
 package com.owera.xaps.web.app.page.event;
 
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.SyslogEvent.StorePolicy;
+import com.github.freeacs.dbi.SyslogEvent.StorePolicy;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.Output;
 import com.owera.xaps.web.app.input.*;

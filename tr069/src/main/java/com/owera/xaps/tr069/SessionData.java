@@ -1,12 +1,13 @@
 package com.owera.xaps.tr069;
 
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.base.*;
 import com.owera.xaps.base.db.DBAccess;
 import com.owera.xaps.base.db.DBAccessSession;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
-import com.owera.xaps.dbi.util.ProvisioningMessage;
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.util.ProvisioningMessage;
+import com.github.freeacs.dbi.util.SystemParameters;
 import com.owera.xaps.tr069.exception.TR069DatabaseException;
 import com.owera.xaps.tr069.xml.ParameterAttributeStruct;
 import com.owera.xaps.tr069.xml.ParameterList;

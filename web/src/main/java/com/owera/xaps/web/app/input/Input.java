@@ -1,7 +1,7 @@
 package com.owera.xaps.web.app.input;
 
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unittype;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.Unittype;
 import com.owera.xaps.web.app.input.Escaping.EscapeType;
 import com.owera.xaps.web.app.util.DateUtils;
 import com.owera.xaps.web.app.util.DateUtils.Format;

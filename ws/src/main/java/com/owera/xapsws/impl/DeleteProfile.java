@@ -1,8 +1,8 @@
 package com.owera.xapsws.impl;
 
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.XAPS;
 import com.owera.xapsws.DeleteProfileRequest;
 import com.owera.xapsws.DeleteProfileResponse;
 import org.slf4j.Logger;

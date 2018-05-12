@@ -1,6 +1,6 @@
 package com.owera.xaps.web.app.page.staging;
 
-import com.owera.xaps.dbi.UnitJobStatus;
+import com.github.freeacs.dbi.UnitJobStatus;
 
 
 /**

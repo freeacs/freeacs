@@ -1,7 +1,7 @@
 package com.owera.xaps.base;
 
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.UnitJobStatus;
+import com.github.freeacs.dbi.Job;
+import com.github.freeacs.dbi.UnitJobStatus;
 
 /**
  * This class should be the final decision maker on the next Periodic 

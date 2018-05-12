@@ -1,9 +1,9 @@
 package com.owera.xaps.syslogserver;
 
-import com.owera.common.scheduler.Schedule;
-import com.owera.common.scheduler.ScheduleType;
-import com.owera.common.scheduler.Scheduler;
-import com.owera.common.util.Sleep;
+import com.github.freeacs.common.scheduler.Schedule;
+import com.github.freeacs.common.scheduler.ScheduleType;
+import com.github.freeacs.common.scheduler.Scheduler;
+import com.github.freeacs.common.util.Sleep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

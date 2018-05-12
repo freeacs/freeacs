@@ -1,6 +1,6 @@
 package com.owera.xaps.base.db;
 
-import com.owera.common.counter.MeasurementTypes;
+import com.github.freeacs.common.counter.MeasurementTypes;
 
 public class DBAccessTypes implements MeasurementTypes {
 

@@ -1,8 +1,8 @@
 package com.owera.xaps.core.util;
 
-import com.owera.xaps.dbi.Job.StopRule;
-import com.owera.xaps.dbi.UnitJob;
-import com.owera.xaps.dbi.UnitJobStatus;
+import com.github.freeacs.dbi.Job.StopRule;
+import com.github.freeacs.dbi.UnitJob;
+import com.github.freeacs.dbi.UnitJobStatus;
 
 public class FractionStopRuleCounter {
 

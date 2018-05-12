@@ -1,9 +1,9 @@
 package com.owera.xaps.web.app.page.report.uidata;
 
-import com.owera.xaps.dbi.SyslogEntry;
-import com.owera.xaps.dbi.SyslogEvent;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
+import com.github.freeacs.dbi.SyslogEntry;
+import com.github.freeacs.dbi.SyslogEvent;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.XAPS;
 import com.owera.xaps.web.app.page.syslog.SyslogUtil;
 import freemarker.template.TemplateModelException;
 

@@ -1,5 +1,6 @@
 package com.owera.xaps.shell.util;
 
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.shell.Context;
 import com.owera.xaps.shell.Properties;

@@ -1,14 +1,14 @@
 package com.owera.xaps.shell.menu;
 
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.Message;
-import com.owera.xaps.dbi.SyslogConstants;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.tr069.*;
-import com.owera.xaps.dbi.tr069.TestCase.TestCaseMethod;
-import com.owera.xaps.dbi.tr069.TestCaseParameter.TestCaseParameterType;
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.Message;
+import com.github.freeacs.dbi.SyslogConstants;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.tr069.*;
+import com.github.freeacs.dbi.tr069.TestCase.TestCaseMethod;
+import com.github.freeacs.dbi.tr069.TestCaseParameter.TestCaseParameterType;
+import com.github.freeacs.dbi.util.SystemParameters;
 import com.owera.xaps.shell.Context;
 import com.owera.xaps.shell.Session;
 import com.owera.xaps.shell.output.Heading;

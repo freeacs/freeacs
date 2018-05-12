@@ -1,8 +1,9 @@
 package com.owera.xapsws.impl;
 
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.db.ConnectionProperties;
+import com.github.freeacs.common.db.ConnectionProvider;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
 import com.owera.xapsws.Login;
 import org.slf4j.Logger;
@@ -75,8 +76,8 @@ public class XAPSWS {
 		}
 	}
 
-	protected com.owera.xaps.dbi.Unit getUnitByMAC(XAPSUnit xapsUnit, Unittype unittype, Profile profile, String searchStr) throws RemoteException, SQLException, NoAvailableConnectionException {
-		com.owera.xaps.dbi.Unit unitFoundByMac = xapsUnit.getUnitByValue(searchStr, unittype, profile);
+	protected Unit getUnitByMAC(XAPSUnit xapsUnit, Unittype unittype, Profile profile, String searchStr) throws RemoteException, SQLException, NoAvailableConnectionException {
+		Unit unitFoundByMac = xapsUnit.getUnitByValue(searchStr, unittype, profile);
 		if (unitFoundByMac != null) {
 			return unitFoundByMac;
 		} else {

@@ -1,6 +1,6 @@
 package com.owera.xaps.web.app.page.report;
 
-import com.owera.xaps.dbi.report.*;
+import com.github.freeacs.dbi.report.*;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.owera.xaps.shell.menu;
 
-import com.owera.xaps.dbi.Job;
+import com.github.freeacs.dbi.Job;
 
 import java.util.ArrayList;
 import java.util.Comparator;

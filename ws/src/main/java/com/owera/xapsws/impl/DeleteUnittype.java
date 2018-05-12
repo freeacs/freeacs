@@ -1,7 +1,7 @@
 package com.owera.xapsws.impl;
 
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.XAPS;
 import com.owera.xapsws.DeleteUnittypeRequest;
 import com.owera.xapsws.DeleteUnittypeResponse;
 import org.slf4j.Logger;

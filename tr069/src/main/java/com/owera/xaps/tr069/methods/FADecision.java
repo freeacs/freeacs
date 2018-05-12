@@ -1,10 +1,10 @@
 package com.owera.xaps.tr069.methods;
 
 import com.owera.xaps.base.Log;
-import com.owera.xaps.dbi.util.ProvisioningMessage;
-import com.owera.xaps.dbi.util.ProvisioningMessage.ErrorResponsibility;
-import com.owera.xaps.dbi.util.ProvisioningMessage.ProvStatus;
-import com.owera.xaps.dbi.util.ProvisioningMode;
+import com.github.freeacs.dbi.util.ProvisioningMessage;
+import com.github.freeacs.dbi.util.ProvisioningMessage.ErrorResponsibility;
+import com.github.freeacs.dbi.util.ProvisioningMessage.ProvStatus;
+import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.owera.xaps.tr069.HTTPReqResData;
 import com.owera.xaps.tr069.SessionData;
 import com.owera.xaps.tr069.xml.Fault;

@@ -1,14 +1,14 @@
 package com.owera.xaps.web.app.util;
 
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.util.Cache;
-import com.owera.common.util.CacheValue;
-import com.owera.xaps.dbi.DBI;
-import com.owera.xaps.dbi.SyslogEntry;
-import com.owera.xaps.dbi.SyslogFilter;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.report.*;
+import com.github.freeacs.common.db.ConnectionProperties;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.util.Cache;
+import com.github.freeacs.common.util.CacheValue;
+import com.github.freeacs.dbi.DBI;
+import com.github.freeacs.dbi.SyslogEntry;
+import com.github.freeacs.dbi.SyslogFilter;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.report.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -236,7 +236,7 @@ public class SessionCache {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@SuppressWarnings("unchecked")
-	public static Report<RecordVoip> getVoipReport(String sessionId,String unitId, Date fromDate, Date toDate) throws NoAvailableConnectionException, SQLException, IOException {
+	public static Report<RecordVoip> getVoipReport(String sessionId, String unitId, Date fromDate, Date toDate) throws NoAvailableConnectionException, SQLException, IOException {
 		String key = getRangeKey(unitId,"voipcalls",fromDate,toDate);
 		
 		CacheValue cv = cache.get(key);

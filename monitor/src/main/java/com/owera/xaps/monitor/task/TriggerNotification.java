@@ -1,7 +1,8 @@
 package com.owera.xaps.monitor.task;
 
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.html.Element;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.html.Element;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.monitor.Properties;
 import com.owera.xaps.monitor.SendMail;

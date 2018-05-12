@@ -1,7 +1,7 @@
 package com.owera.xaps.base;
 
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.dbi.UnitParameter;
+import com.github.freeacs.dbi.util.SystemParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

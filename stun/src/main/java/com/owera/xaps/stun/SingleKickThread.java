@@ -1,13 +1,14 @@
 package com.owera.xaps.stun;
 
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.util.Sleep;
+import com.github.freeacs.common.db.ConnectionProperties;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.util.Sleep;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
-import com.owera.xaps.dbi.util.ProvisioningMode;
-import com.owera.xaps.dbi.util.SystemConstants;
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.util.ProvisioningMode;
+import com.github.freeacs.dbi.util.SystemConstants;
+import com.github.freeacs.dbi.util.SystemParameters;
 import com.owera.xaps.stun.Kick.KickResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

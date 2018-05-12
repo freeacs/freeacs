@@ -1,10 +1,10 @@
 package com.owera.xaps.tr069.background;
 
-import com.owera.common.scheduler.TaskDefaultImpl;
-import com.owera.xaps.dbi.DBI;
-import com.owera.xaps.dbi.Inbox;
-import com.owera.xaps.dbi.Message;
-import com.owera.xaps.dbi.SyslogConstants;
+import com.github.freeacs.common.scheduler.TaskDefaultImpl;
+import com.github.freeacs.dbi.DBI;
+import com.github.freeacs.dbi.Inbox;
+import com.github.freeacs.dbi.Message;
+import com.github.freeacs.dbi.SyslogConstants;
 import com.owera.xaps.tr069.test.system2.TestUnitCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

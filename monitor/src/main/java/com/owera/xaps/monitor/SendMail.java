@@ -1,6 +1,6 @@
 package com.owera.xaps.monitor;
 
-import com.owera.xaps.dbi.Trigger;
+import com.github.freeacs.dbi.Trigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

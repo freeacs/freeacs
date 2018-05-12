@@ -1,11 +1,12 @@
 package com.owera.xaps.stun;
 
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.scheduler.TaskDefaultImpl;
-import com.owera.common.util.TimestampMap;
+import com.github.freeacs.common.db.ConnectionProperties;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.scheduler.TaskDefaultImpl;
+import com.github.freeacs.common.util.TimestampMap;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.util.SyslogClient;
+import com.github.freeacs.dbi.util.SyslogClient;
 import de.javawi.jstun.test.demo.StunServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

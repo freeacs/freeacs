@@ -1,7 +1,7 @@
 package com.owera.xaps.web.app.page.file;
 
-import com.owera.common.util.NaturalComparator;
-import com.owera.xaps.dbi.File;
+import com.github.freeacs.common.util.NaturalComparator;
+import com.github.freeacs.dbi.File;
 
 import java.util.Comparator;
 

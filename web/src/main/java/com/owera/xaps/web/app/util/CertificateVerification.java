@@ -1,9 +1,9 @@
 package com.owera.xaps.web.app.util;
 
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.Certificate;
-import com.owera.xaps.dbi.Certificates;
-import com.owera.xaps.dbi.XAPS;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.Certificate;
+import com.github.freeacs.dbi.Certificates;
+import com.github.freeacs.dbi.XAPS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

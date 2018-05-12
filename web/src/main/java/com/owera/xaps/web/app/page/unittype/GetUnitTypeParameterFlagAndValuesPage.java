@@ -1,8 +1,8 @@
 package com.owera.xaps.web.app.page.unittype;
 
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.XAPS;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.XAPS;
 import com.owera.xaps.web.app.Output;
 import com.owera.xaps.web.app.input.ParameterParser;
 import com.owera.xaps.web.app.page.AbstractWebPage;

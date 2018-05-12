@@ -1,6 +1,6 @@
 package com.owera.xaps.shell;
 
-import com.owera.xaps.dbi.Profile;
+import com.github.freeacs.dbi.Profile;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,15 +1,15 @@
 package com.owera.xaps.tr069.methods;
 
-import com.owera.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.owera.xaps.base.Log;
-import com.owera.xaps.dbi.FileType;
-import com.owera.xaps.dbi.UnittypeParameters;
-import com.owera.xaps.dbi.tr069.TestCaseParameter;
-import com.owera.xaps.dbi.tr069.TestCaseParameter.TestCaseParameterType;
-import com.owera.xaps.dbi.util.ProvisioningMessage;
-import com.owera.xaps.dbi.util.ProvisioningMessage.ProvOutput;
-import com.owera.xaps.dbi.util.ProvisioningMode;
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.dbi.FileType;
+import com.github.freeacs.dbi.UnittypeParameters;
+import com.github.freeacs.dbi.tr069.TestCaseParameter;
+import com.github.freeacs.dbi.tr069.TestCaseParameter.TestCaseParameterType;
+import com.github.freeacs.dbi.util.ProvisioningMessage;
+import com.github.freeacs.dbi.util.ProvisioningMessage.ProvOutput;
+import com.github.freeacs.dbi.util.ProvisioningMode;
+import com.github.freeacs.dbi.util.SystemParameters;
 import com.owera.xaps.tr069.*;
 import com.owera.xaps.tr069.SessionData.Download;
 import com.owera.xaps.tr069.exception.TR069Exception;

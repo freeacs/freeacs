@@ -1,14 +1,14 @@
 package com.owera.xaps.tr069.test.system2;
 
 import com.owera.xaps.base.Log;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.tr069.Steps;
-import com.owera.xaps.dbi.tr069.Steps.Step;
-import com.owera.xaps.dbi.tr069.TestCase;
-import com.owera.xaps.dbi.tr069.TestHistory;
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.UnitParameter;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.tr069.Steps;
+import com.github.freeacs.dbi.tr069.Steps.Step;
+import com.github.freeacs.dbi.tr069.TestCase;
+import com.github.freeacs.dbi.tr069.TestHistory;
+import com.github.freeacs.dbi.util.SystemParameters;
 
 import java.util.List;
 

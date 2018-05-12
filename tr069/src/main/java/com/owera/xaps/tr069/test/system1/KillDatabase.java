@@ -1,6 +1,6 @@
 package com.owera.xaps.tr069.test.system1;
 
-import com.owera.common.util.FileDatabase;
+import com.github.freeacs.common.util.FileDatabase;
 import com.owera.xaps.base.Log;
 
 public class KillDatabase {

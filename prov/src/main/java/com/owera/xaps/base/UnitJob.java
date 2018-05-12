@@ -1,11 +1,12 @@
 package com.owera.xaps.base;
 
-import com.owera.common.db.NoAvailableConnectionException;
+import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.*;
 import com.owera.xaps.base.db.DBAccess;
 import com.owera.xaps.base.db.DBAccessStatic;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.dbi.JobFlag.JobServiceWindow;
-import com.owera.xaps.dbi.util.SystemParameters;
+import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
+import com.github.freeacs.dbi.util.SystemParameters;
 import com.owera.xaps.tr069.xml.ParameterValueStruct;
 
 import java.sql.SQLException;
