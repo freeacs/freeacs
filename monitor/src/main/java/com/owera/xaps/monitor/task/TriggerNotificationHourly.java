@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.common.scheduler.TaskDefaultImpl;
 import com.owera.xaps.dbi.DBI;
 import com.owera.xaps.dbi.Identity;
@@ -16,6 +15,8 @@ import com.owera.xaps.dbi.SyslogConstants;
 import com.owera.xaps.dbi.User;
 import com.owera.xaps.dbi.Users;
 import com.owera.xaps.monitor.MonitorServlet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.owera.xaps.monitor.Properties.getMaxAge;
 import static com.owera.xaps.monitor.Properties.getMaxConn;
@@ -23,7 +24,7 @@ import static com.owera.xaps.monitor.Properties.getUrl;
 
 public class TriggerNotificationHourly extends TaskDefaultImpl {
 
-	private Logger log = new Logger();
+	private static Logger log = LoggerFactory.getLogger(TriggerNotificationHourly.class);
 	private DBI dbi;
 	private Inbox inbox = new Inbox();
 

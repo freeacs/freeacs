@@ -30,9 +30,6 @@ public class GetUnittypes {
 				int i = 0;
 				for (Unittype unittypeXAPS : unittypeXAPSArr)
 					unittypeArray[i++] = ConvertXAPS2WS.convert(unittypeXAPS);
-				//				List<Unittype> allowedUnittypes = xapsWS.getXAPS().getUnittypes().getUnittypes();
-				//				for (int i = 0; i < allowedUnittypes.size(); i++)
-				//					unittypeArray[i] = ConvertXAPS2WS.convert(allowedUnittypes.get(i));
 				UnittypeList unittypeList = new UnittypeList(new ArrayOfUnittype(unittypeArray));
 				return new GetUnittypesResponse(unittypeList);
 			}

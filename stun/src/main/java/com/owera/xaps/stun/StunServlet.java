@@ -14,7 +14,6 @@ import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.common.log.Log;
-import com.owera.common.log.Logger;
 import com.owera.common.scheduler.Schedule;
 import com.owera.common.scheduler.ScheduleType;
 import com.owera.common.scheduler.Scheduler;
@@ -28,6 +27,8 @@ import com.owera.xaps.dbi.Users;
 
 import de.javawi.jstun.test.demo.StabilityLogger;
 import de.javawi.jstun.test.demo.StunServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class StunServlet extends HttpServlet {
 
@@ -46,7 +47,7 @@ public class StunServlet extends HttpServlet {
 
 	public static StunServer server = null;
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(StunServlet.class);
 
 	public void destroy() {
 		Sleep.terminateApplication();
@@ -115,7 +116,7 @@ public class StunServlet extends HttpServlet {
 
 		} catch (Throwable t) {
 			OKServlet.setStartupError(t);
-			logger.fatal("An error occurred while starting Stun Server", t);
+			logger.error("An error occurred while starting Stun Server", t);
 		}
 
 	}

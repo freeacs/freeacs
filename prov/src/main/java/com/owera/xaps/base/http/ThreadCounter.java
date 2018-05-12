@@ -4,8 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.owera.common.log.Logger;
 import com.owera.xaps.base.SessionDataI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A class which matches incoming requests with outgoing responses. If a second request from the same Unit 
@@ -21,7 +22,7 @@ public class ThreadCounter {
 
 	private static Map<String, Long> currentSessions = new HashMap<String, Long>();
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(ThreadCounter.class);
 
 	/**
 	 * Returns false if a request has not been responded to, and a second request is "counted"

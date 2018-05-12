@@ -8,8 +8,10 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 
-import com.owera.common.log.Logger;
 import com.owera.xaps.monitor.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*
  * Http check implementation
  */
@@ -17,7 +19,7 @@ public class MonitorExecution implements Runnable {
 
 	private HttpClient client = new HttpClient();
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(MonitorExecution.class);
 
 	private String url;
 

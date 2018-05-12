@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.Group;
 import com.owera.xaps.dbi.Job;
 import com.owera.xaps.dbi.Profile;
@@ -18,10 +17,12 @@ import com.owera.xaps.dbi.UnittypeParameter;
 import com.owera.xaps.shell.Context;
 import com.owera.xaps.shell.Properties;
 import com.owera.xaps.shell.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FileUtil {
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(FileUtil.class);
 
 	public static boolean exists(String filename) {
 		File f = new File(filename);

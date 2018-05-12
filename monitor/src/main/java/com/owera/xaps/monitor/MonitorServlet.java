@@ -20,8 +20,6 @@ import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
-import com.owera.common.log.Log;
-import com.owera.common.log.Logger;
 import com.owera.common.scheduler.Schedule;
 import com.owera.common.scheduler.ScheduleType;
 import com.owera.common.scheduler.Scheduler;
@@ -37,6 +35,8 @@ import com.owera.xaps.monitor.task.TriggerNotificationSecondly;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.owera.xaps.monitor.Properties.*;
 
@@ -54,13 +54,12 @@ public class MonitorServlet extends HttpServlet {
 	private Configuration config;
 
 	static {
-		Log.initialize("xaps-monitor-logs.properties");
 		ProtocolSocketFactory socketFactory = new EasySSLProtocolSocketFactory();
 		Protocol https = new Protocol("https", socketFactory, 443);
 		Protocol.registerProtocol("https", https);
 	}
 
-	private static Logger log = new Logger();
+	private static Logger log = LoggerFactory.getLogger(MonitorServlet.class);
 
 	@Override
 	public void init(ServletConfig serlvetConfig) throws ServletException {
@@ -91,7 +90,7 @@ public class MonitorServlet extends HttpServlet {
 			scheduler.registerTask(new Schedule(60000, false, ScheduleType.HOURLY, new ShowScheduleQueue("ShowScheduleQueue", scheduler)));
 
 		} catch (Exception ex) {
-			log.fatal("Error while initializing Monitor: " + ex.getLocalizedMessage(), ex);
+			log.error("Error while initializing Monitor: " + ex.getLocalizedMessage(), ex);
 			throw new ServletException(ex);
 		}
 	}

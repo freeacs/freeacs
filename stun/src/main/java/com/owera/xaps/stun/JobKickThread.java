@@ -36,10 +36,11 @@ import com.owera.xaps.dbi.Unittypes;
 import com.owera.xaps.dbi.XAPS;
 import com.owera.xaps.dbi.XAPSUnit;
 import com.owera.xaps.dbi.util.SystemParameters;
+import org.slf4j.LoggerFactory;
 
 public class JobKickThread implements Runnable {
 
-	private static Logger log = new Logger("KickJob");
+	private static org.slf4j.Logger log = LoggerFactory.getLogger("KickJob");
 	//	private static boolean initialized = false;
 	private DBI dbi;
 	//	private static Syslog syslog;
@@ -201,21 +202,21 @@ public class JobKickThread implements Runnable {
 				if (job.getFlags().getType().equals("KICK")) {
 					if (job.getStatus().equals(JobStatus.STARTED)) {
 						if (jobKickMap.get(job.getId()) == null) {
-							log.notice("Job " + job.getName() + " (" + job.getId() + ") is STARTED and discovered for the first time.");
+							log.info("Job " + job.getName() + " (" + job.getId() + ") is STARTED and discovered for the first time.");
 							jobKickMap.put(job.getId(), new HashSet<String>());
 							jobRefreshMap.put(job.getId(), System.currentTimeMillis());
 							populateJobKickMapForOneJob(job, xaps, unittype);
 						} else {
 							long lastRefresh = jobRefreshMap.get(job.getId());
 							if (lastRefresh + Properties.getKickRescan() * 60000 < System.currentTimeMillis()) {
-								log.notice("Job " + job.getId() + " is STARTED and refreshed.");
+								log.info("Job " + job.getId() + " is STARTED and refreshed.");
 								jobRefreshMap.put(job.getId(), System.currentTimeMillis());
 								populateJobKickMapForOneJob(job, xaps, unittype);
 							}
 						}
 					} else { // The job is STOPPED or READY or COMPLETED
 						if (jobKickMap.get(job.getId()) != null) {
-							log.notice("Job " + job.getName() + " (" + job.getId() + ") is not STARTED and no more units will be kicked from this job");
+							log.info("Job " + job.getName() + " (" + job.getId() + ") is not STARTED and no more units will be kicked from this job");
 							jobKickMap.remove(job.getId());
 						}
 					}
@@ -278,7 +279,7 @@ public class JobKickThread implements Runnable {
 			}
 		} catch (Throwable t) {
 			OKServlet.setJobKickError(t);
-			log.fatal("An error ocurred, JobKickSpawner exits - server is not able to process job-kick anymore!!!", t);
+			log.error("An error ocurred, JobKickSpawner exits - server is not able to process job-kick anymore!!!", t);
 		}
 	}
 
@@ -299,7 +300,7 @@ public class JobKickThread implements Runnable {
 
 	private boolean newJobStartedOrRunningJobStopped(Job j) {
 		if (!j.getStatus().equals(JobStatus.STARTED)) {
-			log.notice("Job " + j.getId() + " is no longer running, aborting this job");
+			log.info("Job " + j.getId() + " is no longer running, aborting this job");
 			return true;
 		}
 		List<Message> messages = jobChangeInbox.getUnreadMessages();
@@ -334,7 +335,7 @@ public class JobKickThread implements Runnable {
 				Job job = unittype.getJobs().getById(jobId);
 				if (job != null && job.getStatus().equals(JobStatus.STARTED)) {
 					if (jobKickMap.get(jobId) == null) {
-						log.notice("Job " + jobId + " is STARTED, but is not part of the JobKickMap. Will abort and rebuild the queue.");
+						log.info("Job " + jobId + " is STARTED, but is not part of the JobKickMap. Will abort and rebuild the queue.");
 						jobChangeInbox.deleteReadMessage();
 						return true;
 					} else {

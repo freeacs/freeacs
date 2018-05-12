@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.owera.common.log.Logger;
+import com.owera.xaps.shell.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The ContextContainer will store the context as parsed from
@@ -39,7 +41,7 @@ import com.owera.common.log.Logger;
 public class ContextContainer {
 	private List<ContextElement> contextList = new ArrayList<ContextElement>();
 	private Map<String, Integer> lookupMap = new HashMap<String, Integer>();
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(Properties.class);
 
 	public ContextElement getContextElement(String type) {
 		Integer index = lookupMap.get(type);

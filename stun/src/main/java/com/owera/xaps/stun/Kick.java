@@ -23,12 +23,13 @@ import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.params.CoreConnectionPNames;
 
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.common.util.IPAddress;
 import com.owera.xaps.dbi.Unit;
 import com.owera.xaps.dbi.XAPSUnit;
 import com.owera.xaps.dbi.crypto.Crypto;
 import com.owera.xaps.dbi.util.SystemParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Kick {
 
@@ -59,7 +60,7 @@ public class Kick {
 
 	}
 
-	private static Logger log = new Logger("KickSingle");
+	private static Logger log = LoggerFactory.getLogger("KickSingle");
 	private static Random random = new Random();
 
 	public static KickResponse kick(Unit unit, XAPSUnit xapsUnit) throws MalformedURLException, SQLException, NoAvailableConnectionException {

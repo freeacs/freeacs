@@ -1,15 +1,15 @@
 package com.owera.xaps.stun;
 
-import com.owera.common.log.Logger;
-import com.owera.common.util.PropertyReader;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Properties {
 
 	private static Config config = ConfigFactory.load();
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(Properties.class);
 
 	private static int getInteger(String propertyKey, int defaultValue) {
 		if (!config.hasPath(propertyKey)) {

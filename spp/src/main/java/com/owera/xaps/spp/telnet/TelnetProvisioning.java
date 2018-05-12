@@ -11,7 +11,6 @@ import java.util.Set;
 
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.common.util.Sleep;
 import com.owera.xaps.base.JobHistoryEntry;
 import com.owera.xaps.dbi.DBI;
@@ -35,10 +34,12 @@ import com.owera.xaps.dbi.XAPSUnit;
 
 import com.owera.xaps.dbi.util.SystemParameters;
 import com.owera.xaps.spp.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TelnetProvisioning implements Runnable {
 
-	private static Logger log = new Logger(TelnetProvisioning.class);
+	private static Logger log = LoggerFactory.getLogger(TelnetProvisioning.class);
 	private DBI dbi;
 	private ConnectionProperties xapsCp;
 
@@ -138,7 +139,7 @@ public class TelnetProvisioning implements Runnable {
 				if (job.getFlags().getType() == JobType.TELNET) {
 					if (job.getStatus().equals(JobStatus.STARTED)) {
 						if (jobRefreshMap.get(job.getId()) == null) {
-							log.notice("Job " + job.getName() + " (" + job.getId() + ") is STARTED and discovered for the first time.");
+							log.info("Job " + job.getName() + " (" + job.getId() + ") is STARTED and discovered for the first time.");
 							jobRefreshMap.put(job.getId(), now);
 							populateJobUnitSetMapForOneJob(job, xaps, unittype);
 						} else {
@@ -151,14 +152,14 @@ public class TelnetProvisioning implements Runnable {
 							// a) refresh interval specified in propertyfile is passed
 							// b) refresh interval for job is passed. 
 							if (timeSinceLastScan >= Properties.getTelnetRescan() * 60000 || timeSinceLastScan >= (repeatInterval * 1000l)) {
-								log.notice("Job " + job.getId() + " is STARTED and refreshed.");
+								log.info("Job " + job.getId() + " is STARTED and refreshed.");
 								jobRefreshMap.put(job.getId(), now);
 								populateJobUnitSetMapForOneJob(job, xaps, unittype);
 							}
 						}
 					} else { // The job is STOPPED or READY or COMPLETED
 						if (jobRefreshMap.get(job.getId()) != null) {
-							log.notice("Job " + job.getName() + " (" + job.getId() + ") is not STARTED and no more telnet session will be started from this job");
+							log.info("Job " + job.getName() + " (" + job.getId() + ") is not STARTED and no more telnet session will be started from this job");
 							jobRefreshMap.remove(job.getId());
 						}
 					}
@@ -169,7 +170,7 @@ public class TelnetProvisioning implements Runnable {
 
 	private boolean newJobStartedOrRunningJobStopped(Job j) {
 		if (!j.getStatus().equals(JobStatus.STARTED)) {
-			log.notice("Job " + j.getId() + " is no longer running, aborting this job");
+			log.info("Job " + j.getId() + " is no longer running, aborting this job");
 			return true;
 		}
 		List<Message> messages = jobChangeInbox.getUnreadMessages();
@@ -204,7 +205,7 @@ public class TelnetProvisioning implements Runnable {
 				Job job = unittype.getJobs().getById(jobId);
 				if (job != null && job.getStatus().equals(JobStatus.STARTED)) {
 					if (tjq.getTelnetJobMap(jobId) == null) {
-						log.notice("Job " + jobId + " is STARTED, but is not part of the TelnetQueue. Will abort and rebuild the queue.");
+						log.info("Job " + jobId + " is STARTED, but is not part of the TelnetQueue. Will abort and rebuild the queue.");
 						jobChangeInbox.deleteReadMessage();
 						return true;
 					} else {
@@ -259,7 +260,7 @@ public class TelnetProvisioning implements Runnable {
 				populateJobUnitSetMapForAllJobs(xaps);
 				runJobs(xaps);
 			} catch (Throwable t) {
-				log.fatal("An error ocurred in TelnetProvisioning.run() - continues anyway", t);
+				log.error("An error ocurred in TelnetProvisioning.run() - continues anyway", t);
 			}
 		}
 	}

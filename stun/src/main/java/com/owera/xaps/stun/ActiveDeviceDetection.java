@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.common.scheduler.TaskDefaultImpl;
 import com.owera.common.util.TimestampMap;
 import com.owera.xaps.dbi.DBI;
@@ -22,10 +21,12 @@ import com.owera.xaps.dbi.XAPSUnit;
 import com.owera.xaps.dbi.util.SyslogClient;
 
 import de.javawi.jstun.test.demo.StunServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ActiveDeviceDetection extends TaskDefaultImpl {
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(ActiveDeviceDetection.class);
 	private ConnectionProperties xapsCp;
 	private DBI dbi;
 	private TimestampMap activeDevicesLogged = new TimestampMap();
@@ -70,7 +71,7 @@ public class ActiveDeviceDetection extends TaskDefaultImpl {
 					Unit unit = xapsUnit.getUnitByValue(address, null, null);
 					if (unit != null) {
 						loggedCount++;
-						SyslogClient.notice(unit.getId(), "StunMsg/TR-111: Requests from " + address + " within last 5 minutes", 16, null, null);
+						SyslogClient.info(unit.getId(), "StunMsg/TR-111: Requests from " + address + " within last 5 minutes", 16, null, null);
 					} else {
 						logger.info("ActiveDeviceDetection: Stun request from " + address
 								+ ", but the address was not recorded in Fusion - consider adding A-flag to UDPConnectionRequestAddress in all unittypes");
@@ -78,7 +79,7 @@ public class ActiveDeviceDetection extends TaskDefaultImpl {
 				}
 			}
 		}
-		logger.notice("ActiveDeviceDetection: Processed " + processCount + " active device syslog messages to the syslog server. Sent " + loggedCount + " syslog messages. SentSyslogMap.size() = "
+		logger.info("ActiveDeviceDetection: Processed " + processCount + " active device syslog messages to the syslog server. Sent " + loggedCount + " syslog messages. SentSyslogMap.size() = "
 				+ sentSyslogMap.size() + ", ActiveDevices.size() = " + activeDevices.size());
 	}
 
@@ -100,20 +101,20 @@ public class ActiveDeviceDetection extends TaskDefaultImpl {
 				for (SyslogEntry sentry : entries) {
 					String c = sentry.getContent();
 					if (sentry.getFacility() < SyslogConstants.FACILITY_SHELL && !c.contains(Heartbeat.MISSING_HEARTBEAT_ID) && !c.startsWith("StunMsg/TR-111")) {
-						logger.notice("ActivceDeviceDetection: Found syslog activity for unit " + unit.getId() + " at " + sentry.getCollectorTimestamp() + " : " + sentry.getContent());
+						logger.info("ActivceDeviceDetection: Found syslog activity for unit " + unit.getId() + " at " + sentry.getCollectorTimestamp() + " : " + sentry.getContent());
 						active = true;
 						break;
 					}
 				}
 				if (active) {
-					logger.notice("ActiveDeviceDection: No STUN request from " + address + " (unit: " + unit.getId() + ") since " + new Date(tooOldTms));
-					SyslogClient.notice(unit.getId(), "StunMsg/TR-111: No request from " + address + " since " + new Date(tooOldTms) + " - but device has been active since then", dbi.getXaps()
+					logger.info("ActiveDeviceDection: No STUN request from " + address + " (unit: " + unit.getId() + ") since " + new Date(tooOldTms));
+					SyslogClient.info(unit.getId(), "StunMsg/TR-111: No request from " + address + " since " + new Date(tooOldTms) + " - but device has been active since then", dbi.getXaps()
 							.getSyslog());
 				} else {
-					logger.notice("ActiveDeviceDection: No STUN request from " + address + " (unit: " + unit.getId() + ") since " + new Date(tooOldTms) + " - but the device may not be active");
+					logger.info("ActiveDeviceDection: No STUN request from " + address + " (unit: " + unit.getId() + ") since " + new Date(tooOldTms) + " - but the device may not be active");
 				}
 			} else {
-				logger.notice("ActiveDeviceDection: No STUN request from " + address + " for more than 60 minutes (the device may have changed IP).");
+				logger.info("ActiveDeviceDection: No STUN request from " + address + " for more than 60 minutes (the device may have changed IP).");
 			}
 
 		}

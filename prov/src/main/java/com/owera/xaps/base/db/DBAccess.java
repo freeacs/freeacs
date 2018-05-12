@@ -6,7 +6,6 @@ import java.util.function.Supplier;
 
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
-import com.owera.common.log.Logger;
 import com.owera.xaps.Properties.Module;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.SessionDataI;
@@ -19,12 +18,14 @@ import com.owera.xaps.dbi.XAPS;
 import com.owera.xaps.dbi.XAPSUnit;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DBAccess {
 
 	private static final Config config = ConfigFactory.load();
 
-    private static final Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(DBAccess.class);
 
     private static DBI dbi;
 

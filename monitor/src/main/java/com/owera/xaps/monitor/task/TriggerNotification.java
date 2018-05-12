@@ -8,7 +8,6 @@ import java.util.Locale;
 
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.common.html.Element;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.DBI;
 import com.owera.xaps.dbi.Trigger;
 import com.owera.xaps.dbi.TriggerRelease;
@@ -17,10 +16,12 @@ import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.XAPS;
 import com.owera.xaps.monitor.Properties;
 import com.owera.xaps.monitor.SendMail;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TriggerNotification {
 
-	private static Logger log = new Logger();
+	private static Logger log = LoggerFactory.getLogger(TriggerNotification.class);
 	private static SimpleDateFormat clockFormat = new SimpleDateFormat("HH:mm");
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd", Locale.US);
 	private static SimpleDateFormat urlFormat = new SimpleDateFormat("yyyy-MM-dd&20HH:mm");

@@ -11,7 +11,6 @@ import java.util.Map;
 
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.common.util.Sleep;
 import com.owera.xaps.dbi.DBI;
 import com.owera.xaps.dbi.Inbox;
@@ -23,6 +22,8 @@ import com.owera.xaps.dbi.util.ProvisioningMode;
 import com.owera.xaps.dbi.util.SystemConstants;
 import com.owera.xaps.dbi.util.SystemParameters;
 import com.owera.xaps.stun.Kick.KickResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * SingleKickThread is responsible for initiating a kick (connect to ConnectionRequestURL or
@@ -61,7 +62,7 @@ public class SingleKickThread implements Runnable {
 		}
 	}
 
-	private static Logger log = new Logger("KickSingle");
+	private static Logger log = LoggerFactory.getLogger("KickSingle");
 	private DBI dbi;
 	private ConnectionProperties xapsCp;
 	private XAPSUnit xapsUnit;
@@ -239,7 +240,7 @@ public class SingleKickThread implements Runnable {
 			}
 		} catch (Throwable tOuter) {
 			OKServlet.setSingleKickError(tOuter);
-			log.fatal("An error ocurred, SingleKickThread.run() exits - server is not able to process Extraction/Inspection/Kick Mode anymore!!!", tOuter);
+			log.error("An error ocurred, SingleKickThread.run() exits - server is not able to process Extraction/Inspection/Kick Mode anymore!!!", tOuter);
 		}
 	}
 }

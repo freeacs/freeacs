@@ -11,12 +11,13 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.Trigger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SendMail {
 
-	private static Logger log = new Logger();
+	private static Logger log = LoggerFactory.getLogger(SendMail.class);
 
 	public static void sendNotification(Trigger trigger, String msg) {
 		String subject = trigger.getNotifyTypeAsStr() + " from trigger " + trigger.getName();
