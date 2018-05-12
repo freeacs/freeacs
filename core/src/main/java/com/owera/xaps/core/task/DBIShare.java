@@ -10,6 +10,10 @@ import org.slf4j.Logger;
 
 import java.sql.SQLException;
 
+import static com.owera.xaps.core.Properties.getMaxAge;
+import static com.owera.xaps.core.Properties.getMaxConn;
+import static com.owera.xaps.core.Properties.getUrl;
+
 /**
  * You can extend DBIShare if, and only if, you do not manipulate the contents of the xAPS object. 
  * Then you can share the same DBI object - and reduce the load on the system.
@@ -22,8 +26,8 @@ public abstract class DBIShare implements Task {
 	private static ConnectionProperties xapsCp = null;
 	private static ConnectionProperties sysCp = null;
 	static {
-		xapsCp = ConnectionProvider.getConnectionProperties("xaps-core.properties", "db.xaps");
-		sysCp = ConnectionProvider.getConnectionProperties("xaps-core.properties", "db.syslog");
+		xapsCp = ConnectionProvider.getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps"));
+		sysCp = ConnectionProvider.getConnectionProperties(getUrl("syslog"), getMaxAge("syslog"), getMaxConn("syslog"));
 		if (sysCp == null)
 			sysCp = xapsCp;
 	}

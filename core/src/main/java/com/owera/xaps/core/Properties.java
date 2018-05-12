@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 
 public class Properties {
 
-	private static Config config = ConfigFactory.parseResources("xaps-core.conf");
+	private static Config config = ConfigFactory.load();
 
 	private static Logger logger = LoggerFactory.getLogger(Properties.class);
 

@@ -10,6 +10,10 @@ import org.slf4j.Logger;
 
 import java.sql.SQLException;
 
+import static com.owera.xaps.core.Properties.getMaxAge;
+import static com.owera.xaps.core.Properties.getMaxConn;
+import static com.owera.xaps.core.Properties.getUrl;
+
 /**
  * You can extend this object if you need to manipulate the state of the XAPS object, then you will not
  * cause concurrent modification problems for other threads extending the same object (as would happen 
@@ -22,8 +26,8 @@ public abstract class DBIOwner implements Task {
 	private static ConnectionProperties xapsCp = null;
 	private static ConnectionProperties sysCp = null;
 	static {
-		xapsCp = ConnectionProvider.getConnectionProperties("xaps-core.properties", "db.xaps");
-		sysCp = ConnectionProvider.getConnectionProperties("xaps-core.properties", "db.syslog");
+		xapsCp = ConnectionProvider.getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps"));
+		sysCp = ConnectionProvider.getConnectionProperties(getUrl("syslog"), getMaxAge("syslog"), getMaxConn("syslog"));
 		if (sysCp == null)
 			sysCp = xapsCp;
 	}
