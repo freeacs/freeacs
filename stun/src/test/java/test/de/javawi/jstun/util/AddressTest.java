@@ -11,9 +11,9 @@
 
 package test.de.javawi.jstun.util;
 
-import junit.framework.TestCase;
 import de.javawi.jstun.util.Address;
 import de.javawi.jstun.util.UtilityException;
+import junit.framework.TestCase;
 
 public class AddressTest extends TestCase {
 	Address address;

@@ -1,16 +1,16 @@
 package com.owera.xaps.monitor.task;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.owera.common.scheduler.TaskDefaultImpl;
 import com.owera.xaps.monitor.Properties;
 import com.owera.xaps.monitor.SendMail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Responsible for monitoring status of HTTPMonitorTasks.

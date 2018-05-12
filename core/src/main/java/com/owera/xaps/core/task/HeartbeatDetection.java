@@ -1,19 +1,5 @@
 package com.owera.xaps.core.task;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.common.util.Cache;
@@ -21,18 +7,19 @@ import com.owera.common.util.CacheValue;
 import com.owera.common.util.TimestampMap;
 import com.owera.xaps.core.util.SyslogMessageMapContainer;
 import com.owera.xaps.core.util.SyslogMessageMapContainer.SyslogMessageMap;
-import com.owera.xaps.dbi.DynamicStatement;
-import com.owera.xaps.dbi.Group;
-import com.owera.xaps.dbi.Heartbeat;
-import com.owera.xaps.dbi.SyslogConstants;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.util.SQLUtil;
 import com.owera.xaps.dbi.util.SyslogClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class HeartbeatDetection extends DBIShare {
 

@@ -1,18 +1,19 @@
 package com.owera.xaps.syslogserver;
 
+import com.owera.common.util.Sleep;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.owera.common.log.Logger;
-import com.owera.common.util.Sleep;
-
 public class SyslogServer implements Runnable {
 
 	private static DatagramSocket socket = null;
-	private static Logger logger = new Logger(SyslogServer.class);
+	private static Logger logger = LoggerFactory.getLogger(SyslogPackets.class);
 	private static boolean ok = true;
 	private static Throwable throwable;
 	private static boolean started;
@@ -23,20 +24,20 @@ public class SyslogServer implements Runnable {
 
 	private static DatagramPacket initServer() {
 		while (true) {
-			logger.notice("Will try to bind server to port " + Properties.getPort());
+			logger.info("Will try to bind server to port " + Properties.getPort());
 			try {
 				socket = new DatagramSocket(Properties.getPort());
 				socket.setSoTimeout(SOCKET_TIMEOUT);
 				socket.setReceiveBufferSize(Properties.getReceiveBufferSize() * 1024);
-				logger.notice("Created a socket and bound to port " + Properties.getPort());
+				logger.info("Created a socket and bound to port " + Properties.getPort());
 				byte[] log_buffer = new byte[socket.getReceiveBufferSize()];
-				logger.notice("Created receive buffer, size " + log_buffer.length / 1024 + " KB");
+				logger.info("Created receive buffer, size " + log_buffer.length / 1024 + " KB");
 				DatagramPacket packet = new DatagramPacket(log_buffer, log_buffer.length);
 				FailoverFileReader failoverFileReader = new FailoverFileReader();
 				Thread failoverFileReaderThread = new Thread(failoverFileReader);
 				failoverFileReaderThread.setName("FailoverFileReader");
 				failoverFileReaderThread.start();
-				logger.notice("Created FailoverFileReader thread to read from any failover files created by the syslog server");
+				logger.info("Created FailoverFileReader thread to read from any failover files created by the syslog server");
 				return packet;
 			} catch (Throwable t) {
 				throwable = t;
@@ -57,7 +58,7 @@ public class SyslogServer implements Runnable {
 
 	private void initDBThreads() {
 		while (true) {
-			logger.notice("Will try to start Syslog2DB threads");
+			logger.info("Will try to start Syslog2DB threads");
 			try {
 				int maxSyslogDBThreads = Properties.getMaxSyslogdbThreads();
 				List<Syslog2DB> syslog2DBList = new ArrayList<Syslog2DB>();
@@ -67,7 +68,7 @@ public class SyslogServer implements Runnable {
 					Thread syslog2DBThread = new Thread(syslog2DB);
 					syslog2DBThread.setName("Syslog2DB-" + i);
 					syslog2DBThread.start();
-					logger.notice("Created a thread (Syslog2DB-" + i + ") to store syslog messages to database");
+					logger.info("Created a thread (Syslog2DB-" + i + ") to store syslog messages to database");
 				}
 				break;
 			} catch (Throwable t) {
@@ -92,7 +93,7 @@ public class SyslogServer implements Runnable {
 		try {
 			packet = initServer();
 			initDBThreads();
-			logger.notice("Server startup completed - will start to receive syslog packets");
+			logger.info("Server startup completed - will start to receive syslog packets");
 			while (true) {
 				try {
 					if (Sleep.isTerminated()) {
@@ -124,7 +125,7 @@ public class SyslogServer implements Runnable {
 			if (socket != null)
 				socket.close();
 			if (!Sleep.isTerminated())
-				logger.fatal("Error occured, server did not start - no attempts to restart it", t);
+				logger.error("Error occured, server did not start - no attempts to restart it", t);
 		}
 	}
 

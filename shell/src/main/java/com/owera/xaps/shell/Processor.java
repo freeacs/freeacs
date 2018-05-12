@@ -1,39 +1,19 @@
 package com.owera.xaps.shell;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.Group;
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.shell.command.Command;
-import com.owera.xaps.shell.command.CommandAndArgument;
-import com.owera.xaps.shell.command.ContextContainer;
-import com.owera.xaps.shell.command.ContextElement;
-import com.owera.xaps.shell.command.Option;
-import com.owera.xaps.shell.menu.GenericMenu;
-import com.owera.xaps.shell.menu.GroupMenu;
-import com.owera.xaps.shell.menu.JobMenu;
-import com.owera.xaps.shell.menu.ProfileMenu;
-import com.owera.xaps.shell.menu.RootMenu;
-import com.owera.xaps.shell.menu.UnitMenu;
-import com.owera.xaps.shell.menu.UnittypeMenu;
-import com.owera.xaps.shell.menu.UnittypeParameterMenu;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.shell.command.*;
+import com.owera.xaps.shell.menu.*;
 import com.owera.xaps.shell.output.OutputHandler;
 import com.owera.xaps.shell.util.StringUtil;
 import com.owera.xaps.shell.util.ValidateInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.*;
 
 public class Processor {
 

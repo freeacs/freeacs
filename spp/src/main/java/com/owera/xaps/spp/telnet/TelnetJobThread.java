@@ -1,5 +1,16 @@
 package com.owera.xaps.spp.telnet;
 
+import com.owera.common.db.ConnectionProperties;
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.xaps.base.SessionDataI;
+import com.owera.xaps.base.UnitJob;
+import com.owera.xaps.base.db.DBAccessSession;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.dbi.util.SystemParameters;
+import com.owera.xaps.spp.SessionData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -9,27 +20,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.base.SessionDataI;
-import com.owera.xaps.base.UnitJob;
-import com.owera.xaps.base.db.DBAccessSession;
-import com.owera.xaps.dbi.File;
-import com.owera.xaps.dbi.FileType;
-import com.owera.xaps.dbi.JobParameter;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.UnitJobStatus;
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.UnittypeParameterFlag;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
-
-import com.owera.xaps.dbi.util.SystemParameters;
-import com.owera.xaps.spp.SessionData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TelnetJobThread implements Runnable {
 

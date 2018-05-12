@@ -1,10 +1,10 @@
 package com.owera.tr069client;
 
+import com.owera.tr069client.monitor.VerboseOutputThread;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import com.owera.tr069client.monitor.VerboseOutputThread;
 
 public class TestCenter implements Runnable {
 

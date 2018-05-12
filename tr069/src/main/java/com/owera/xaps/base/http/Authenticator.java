@@ -1,12 +1,5 @@
 package com.owera.xaps.base.http;
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.owera.common.log.Context;
 import com.owera.common.util.Cache;
 import com.owera.common.util.CacheValue;
@@ -17,6 +10,12 @@ import com.owera.xaps.tr069.HTTPReqResData;
 import com.owera.xaps.tr069.Properties;
 import com.owera.xaps.tr069.SessionData;
 import com.owera.xaps.tr069.exception.TR069AuthenticationException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Authenticator {
 

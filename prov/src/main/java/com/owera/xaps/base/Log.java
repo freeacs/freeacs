@@ -1,12 +1,12 @@
 package com.owera.xaps.base;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.owera.xaps.dbi.UnitParameter;
 import com.owera.xaps.dbi.util.SystemParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class handles all the logging in this server.

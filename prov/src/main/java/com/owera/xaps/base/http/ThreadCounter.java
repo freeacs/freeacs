@@ -1,12 +1,12 @@
 package com.owera.xaps.base.http;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.owera.xaps.base.SessionDataI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * A class which matches incoming requests with outgoing responses. If a second request from the same Unit 

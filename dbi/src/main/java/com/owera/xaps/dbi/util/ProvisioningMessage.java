@@ -1,10 +1,10 @@
 package com.owera.xaps.dbi.util;
 
-import java.util.Date;
-
 import com.owera.xaps.dbi.Syslog;
 import com.owera.xaps.dbi.SyslogConstants;
 import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
+
+import java.util.Date;
 
 public class ProvisioningMessage {
 	public enum ProvStatus {

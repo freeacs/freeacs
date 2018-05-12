@@ -17,9 +17,9 @@
 
 package org.apache.commons.net.io;
 
-import java.util.EventListener;
-
 import org.apache.commons.net.util.ListenerList;
+
+import java.util.EventListener;
 
 /**
  * The CopyStreamAdapter will relay CopyStreamEvents to a list of listeners

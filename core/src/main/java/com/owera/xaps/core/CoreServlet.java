@@ -1,34 +1,24 @@
 package com.owera.xaps.core;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.scheduler.Schedule;
 import com.owera.common.scheduler.ScheduleType;
 import com.owera.common.scheduler.Scheduler;
 import com.owera.common.scheduler.ShowScheduleQueue;
 import com.owera.common.util.Sleep;
-import com.owera.xaps.core.task.DeleteOldJobs;
-import com.owera.xaps.core.task.DeleteOldScripts;
-import com.owera.xaps.core.task.DeleteOldSyslog;
-import com.owera.xaps.core.task.HeartbeatDetection;
-import com.owera.xaps.core.task.JobRuleEnforcer;
-import com.owera.xaps.core.task.ReportGenerator;
-import com.owera.xaps.core.task.ScriptExecutor;
-import com.owera.xaps.core.task.TriggerReleaser;
+import com.owera.xaps.core.task.*;
 import com.owera.xaps.dbi.util.XAPSVersionCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.owera.xaps.core.Properties.getMaxAge;
-import static com.owera.xaps.core.Properties.getMaxConn;
-import static com.owera.xaps.core.Properties.getUrl;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import static com.owera.xaps.core.Properties.*;
 
 public class CoreServlet extends HttpServlet {
 

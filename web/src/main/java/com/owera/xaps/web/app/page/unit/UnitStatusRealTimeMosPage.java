@@ -1,7 +1,6 @@
 package com.owera.xaps.web.app.page.unit;
 
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.report.*;
 import com.owera.xaps.web.app.Output;
@@ -11,6 +10,8 @@ import com.owera.xaps.web.app.page.AbstractWebPage;
 import com.owera.xaps.web.app.page.report.ReportPage;
 import com.owera.xaps.web.app.util.*;
 import org.apache.commons.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -29,7 +30,7 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
 	private XAPS xaps;
 	
 	/** The logger. */
-	private static Logger logger = new Logger();
+	private static final Logger logger = LoggerFactory.getLogger(UnitStatusRealTimeMosPage.class);
 
         /* (non-Javadoc)
          * @see com.owera.xaps.web.app.page.AbstractWebPage#requiresNoCache()

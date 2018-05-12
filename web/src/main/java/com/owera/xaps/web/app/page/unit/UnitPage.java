@@ -1,7 +1,6 @@
 package com.owera.xaps.web.app.page.unit;
 
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.util.ProvisioningMode;
 import com.owera.xaps.dbi.util.SystemConstants;
@@ -16,6 +15,8 @@ import com.owera.xaps.web.app.page.unittype.UnittypeParameterFlags;
 import com.owera.xaps.web.app.page.unittype.UnittypeParameterTypes;
 import com.owera.xaps.web.app.table.TableElementMaker;
 import com.owera.xaps.web.app.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -33,8 +34,8 @@ import java.util.regex.Pattern;
  */
 public class UnitPage extends AbstractWebPage {
 
-	private static Logger logger = new Logger();
-	private static Logger accessLogger = new Logger("Access");
+	private static final Logger logger = LoggerFactory.getLogger(UnitPage.class);
+	private static final Logger accessLogger = LoggerFactory.getLogger("Access");
 	private static DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static Pattern paramPattern = Pattern.compile("(\\$\\{([^\\}]+)\\})");
 

@@ -1,17 +1,16 @@
 package com.owera.xaps.tr069;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import org.w3c.dom.Document;
-
 import com.owera.common.log.Context;
 import com.owera.xaps.base.BaseCache;
 import com.owera.xaps.base.BaseCacheException;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.tr069.exception.TR069DatabaseException;
 import com.owera.xaps.tr069.xml.TR069TransactionID;
+import org.w3c.dom.Document;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 public class HTTPReqResData {
 	private HTTPReqData request;

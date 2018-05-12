@@ -1,10 +1,5 @@
 package com.owera.xaps.core.task;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.xaps.core.Properties;
 import com.owera.xaps.dbi.SyslogEvent;
@@ -12,6 +7,11 @@ import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.XAPS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 public class DeleteOldSyslog extends DBIShare {
 

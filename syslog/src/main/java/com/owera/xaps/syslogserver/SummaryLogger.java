@@ -1,10 +1,11 @@
 package com.owera.xaps.syslogserver;
 
-import com.owera.common.log.Logger;
 import com.owera.common.scheduler.TaskDefaultImpl;
 import com.owera.xaps.syslogserver.FailoverFileReader.FailoverCounter;
 import com.owera.xaps.syslogserver.Syslog2DB.Syslog2DBCounter;
 import com.owera.xaps.syslogserver.SyslogPackets.BufferCounter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SummaryLogger extends TaskDefaultImpl {
 
@@ -12,8 +13,8 @@ public class SummaryLogger extends TaskDefaultImpl {
 		super(taskName);
 	}
 
-	private Logger logger = new Logger(); // Logging of internal matters - if necessary
-	private static Logger summary = new Logger("Summary");
+	private static Logger logger = LoggerFactory.getLogger(StateLogger.class);
+	private static Logger summary = LoggerFactory.getLogger("Summary");
 	private static int summaryHeaderCount = 0;
 	private static boolean firstTime = true;
 	private static Integer maxMessagesPrMinute;

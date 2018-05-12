@@ -1,16 +1,16 @@
 package com.owera.xaps.tr069.test.system2;
 
-import java.util.List;
-
 import com.owera.xaps.base.Log;
 import com.owera.xaps.dbi.Unit;
 import com.owera.xaps.dbi.UnitParameter;
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.tr069.Steps;
+import com.owera.xaps.dbi.tr069.Steps.Step;
 import com.owera.xaps.dbi.tr069.TestCase;
 import com.owera.xaps.dbi.tr069.TestHistory;
-import com.owera.xaps.dbi.tr069.Steps.Step;
 import com.owera.xaps.dbi.util.SystemParameters;
+
+import java.util.List;
 
 /**
  * This class defines a group of TestCases, and how to execute them.

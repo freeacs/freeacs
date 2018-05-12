@@ -17,6 +17,9 @@
 
 package org.apache.commons.net.tftp;
 
+import org.apache.commons.net.io.FromNetASCIIOutputStream;
+import org.apache.commons.net.io.ToNetASCIIInputStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
@@ -24,8 +27,6 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import org.apache.commons.net.io.FromNetASCIIOutputStream;
-import org.apache.commons.net.io.ToNetASCIIInputStream;
 
 /***
  * The TFTPClient class encapsulates all the aspects of the TFTP protocol

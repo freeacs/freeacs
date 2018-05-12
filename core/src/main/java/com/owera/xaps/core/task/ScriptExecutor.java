@@ -1,13 +1,5 @@
 package com.owera.xaps.core.task;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.xaps.core.Properties;
 import com.owera.xaps.dbi.ScriptExecution;
@@ -18,6 +10,10 @@ import com.owera.xaps.shell.Session;
 import com.owera.xaps.shell.XAPSShellDaemon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.SQLException;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class ScriptExecutor extends DBIShare {
 

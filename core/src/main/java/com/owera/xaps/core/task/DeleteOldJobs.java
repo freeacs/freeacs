@@ -1,20 +1,16 @@
 package com.owera.xaps.core.task;
 
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.xaps.core.Properties;
+import com.owera.xaps.dbi.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.core.Properties;
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.JobStatus;
-import com.owera.xaps.dbi.UnitJobs;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DeleteOldJobs extends DBIOwner {
 

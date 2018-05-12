@@ -1,18 +1,14 @@
 package com.owera.xaps.dbi;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Arrays;
-import java.util.Map;
-
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.xaps.dbi.InsertOrUpdateStatement.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.*;
+import java.util.Arrays;
+import java.util.Map;
 
 public class Unittypes {
 	private static Logger logger = LoggerFactory.getLogger(Unittypes.class);

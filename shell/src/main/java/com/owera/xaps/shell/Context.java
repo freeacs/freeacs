@@ -1,18 +1,12 @@
 package com.owera.xaps.shell;
 
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.shell.help.HelpProcess;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.owera.xaps.dbi.Group;
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.shell.help.HelpProcess;
 
 public class Context {
 

@@ -1,11 +1,11 @@
 package com.owera.tr069client.monitor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.owera.tr069client.Session;
 import com.owera.tr069client.TestCenter;
 import com.owera.tr069client.messages.Download;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StatusReport {
 	private int[] currentlyServing;

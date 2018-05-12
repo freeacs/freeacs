@@ -1,19 +1,20 @@
 package com.owera.xaps.syslogserver;
 
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.xaps.dbi.SyslogEntry;
+import com.owera.xaps.dbi.SyslogEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
-import com.owera.xaps.dbi.SyslogEntry;
-import com.owera.xaps.dbi.SyslogEvent;
-
 public class DuplicateCheck {
 	private static HashMap<String, Duplicate> duplicateMap = new HashMap<String, Duplicate>();
 	private static int counter = 0;
-	private static Logger logger = new Logger(DuplicateCheck.class);
+	private static Logger logger = LoggerFactory.getLogger(DuplicateCheck.class);
 
 	private static int getMaxSize() {
 		return Properties.getMaxMessagesInDuplicateBuffer();

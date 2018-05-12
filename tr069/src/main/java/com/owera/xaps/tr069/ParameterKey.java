@@ -1,11 +1,5 @@
 package com.owera.xaps.tr069;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.db.DBAccess;
 import com.owera.xaps.dbi.Job;
@@ -14,6 +8,12 @@ import com.owera.xaps.dbi.UnittypeParameter;
 import com.owera.xaps.dbi.UnittypeParameters;
 import com.owera.xaps.dbi.util.SystemParameters;
 import com.owera.xaps.tr069.xml.ParameterValueStruct;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class ParameterKey {
 	private String cpeKey;

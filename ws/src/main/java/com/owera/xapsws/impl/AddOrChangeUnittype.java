@@ -1,28 +1,22 @@
 package com.owera.xapsws.impl;
 
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
+import com.owera.xapsws.AddOrChangeUnittypeRequest;
+import com.owera.xapsws.AddOrChangeUnittypeResponse;
+import com.owera.xapsws.Parameter;
+import com.owera.xapsws.ParameterList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.UnittypeParameterFlag;
-import com.owera.xaps.dbi.Unittypes;
-import com.owera.xaps.dbi.User;
-import com.owera.xaps.dbi.XAPS;
-
-import com.owera.xapsws.AddOrChangeUnittypeRequest;
-import com.owera.xapsws.AddOrChangeUnittypeResponse;
-import com.owera.xapsws.Parameter;
-import com.owera.xapsws.ParameterList;
-
 public class AddOrChangeUnittype {
 
-	private static Logger logger = new Logger();
+	private static final Logger logger = LoggerFactory.getLogger(AddOrChangeUnittype.class);
 
 	private XAPS xaps;
 	private XAPSWS xapsWS;

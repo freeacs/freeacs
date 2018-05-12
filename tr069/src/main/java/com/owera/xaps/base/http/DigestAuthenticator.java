@@ -1,13 +1,5 @@
 package com.owera.xaps.base.http;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.codec.digest.DigestUtils;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.common.log.Context;
 import com.owera.xaps.base.BaseCache;
@@ -18,6 +10,12 @@ import com.owera.xaps.tr069.HTTPReqResData;
 import com.owera.xaps.tr069.SessionData;
 import com.owera.xaps.tr069.exception.TR069AuthenticationException;
 import com.owera.xaps.tr069.exception.TR069Exception;
+import org.apache.commons.codec.digest.DigestUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.sql.SQLException;
 
 public class DigestAuthenticator {
 

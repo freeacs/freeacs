@@ -1,25 +1,19 @@
 package com.owera.xaps.base.db;
 
-import java.sql.SQLException;
-import java.util.Optional;
-import java.util.function.Supplier;
-
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.xaps.Properties.Module;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.SessionDataI;
-import com.owera.xaps.dbi.DBI;
-import com.owera.xaps.dbi.Identity;
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.Syslog;
-import com.owera.xaps.dbi.Users;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
+import com.owera.xaps.dbi.*;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.SQLException;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 public class DBAccess {
 

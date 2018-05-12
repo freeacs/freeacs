@@ -1,13 +1,13 @@
 package com.owera.xaps.shell.command;
 
+import com.owera.xaps.shell.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.owera.xaps.shell.Properties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The ContextContainer will store the context as parsed from

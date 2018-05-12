@@ -1,42 +1,18 @@
 package com.owera.xaps.stun;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.common.util.Sleep;
 import com.owera.xaps.base.JobHistoryEntry;
-import com.owera.xaps.dbi.DBI;
-import com.owera.xaps.dbi.Group;
-import com.owera.xaps.dbi.Inbox;
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.JobStatus;
-import com.owera.xaps.dbi.Message;
-import com.owera.xaps.dbi.Parameter;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.Parameter.Operator;
 import com.owera.xaps.dbi.Parameter.ParameterDataType;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.UnitJob;
-import com.owera.xaps.dbi.UnitJobs;
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.Unittypes;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
 import com.owera.xaps.dbi.util.SystemParameters;
 import org.slf4j.LoggerFactory;
+
+import java.sql.SQLException;
+import java.util.*;
 
 public class JobKickThread implements Runnable {
 

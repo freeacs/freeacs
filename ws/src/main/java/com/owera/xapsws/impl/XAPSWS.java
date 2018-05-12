@@ -1,30 +1,18 @@
 package com.owera.xapsws.impl;
 
-import java.rmi.RemoteException;
-import java.sql.SQLException;
-import java.util.Random;
-
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.DBI;
-import com.owera.xaps.dbi.Identity;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Syslog;
-import com.owera.xaps.dbi.SyslogConstants;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.User;
-import com.owera.xaps.dbi.Users;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
-
+import com.owera.xaps.dbi.*;
 import com.owera.xapsws.Login;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.owera.xapsws.impl.Properties.getMaxAge;
-import static com.owera.xapsws.impl.Properties.getMaxConn;
-import static com.owera.xapsws.impl.Properties.getUrl;
+import java.rmi.RemoteException;
+import java.sql.SQLException;
+import java.util.Random;
+
+import static com.owera.xapsws.impl.Properties.*;
 
 public class XAPSWS {
 

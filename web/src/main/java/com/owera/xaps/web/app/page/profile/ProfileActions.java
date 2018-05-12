@@ -1,12 +1,13 @@
 package com.owera.xaps.web.app.page.profile;
 
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.app.input.DropDownSingleSelect;
 import com.owera.xaps.web.app.input.ParameterParser;
 import com.owera.xaps.web.app.page.AbstractWebPage;
 import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.WebConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 
@@ -41,7 +42,7 @@ public abstract class ProfileActions extends AbstractWebPage{
 	}
 	
 	/** The logger. */
-	Logger logger = new Logger();
+	private static final Logger logger = LoggerFactory.getLogger(ProfileActions.class);
 	
 	/**
 	 * Action create profile.

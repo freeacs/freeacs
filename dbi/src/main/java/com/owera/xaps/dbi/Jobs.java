@@ -1,16 +1,5 @@
 package com.owera.xaps.dbi;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.xaps.dbi.DynamicStatement.NullInteger;
@@ -19,6 +8,10 @@ import com.owera.xaps.dbi.util.SystemParameters;
 import com.owera.xaps.dbi.util.SystemParameters.TR069ScriptType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.*;
+import java.util.*;
+import java.util.Date;
 
 /**
  * This interface is only for reading the following tables/concepts:

@@ -1,19 +1,18 @@
 package com.owera.xaps.spp.http;
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.owera.common.log.Context;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.dbi.Certificate;
 import com.owera.xaps.dbi.Certificates;
 import com.owera.xaps.spp.Properties;
 import com.owera.xaps.spp.SessionData;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Authenticator {
 

@@ -1,28 +1,20 @@
 package com.owera.xaps.stun;
 
+import com.owera.common.db.ConnectionProperties;
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.common.scheduler.TaskDefaultImpl;
+import com.owera.common.util.TimestampMap;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.dbi.util.SyslogClient;
+import de.javawi.jstun.test.demo.StunServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.scheduler.TaskDefaultImpl;
-import com.owera.common.util.TimestampMap;
-import com.owera.xaps.dbi.DBI;
-import com.owera.xaps.dbi.Heartbeat;
-import com.owera.xaps.dbi.Syslog;
-import com.owera.xaps.dbi.SyslogConstants;
-import com.owera.xaps.dbi.SyslogEntry;
-import com.owera.xaps.dbi.SyslogFilter;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.XAPSUnit;
-import com.owera.xaps.dbi.util.SyslogClient;
-
-import de.javawi.jstun.test.demo.StunServer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ActiveDeviceDetection extends TaskDefaultImpl {
 

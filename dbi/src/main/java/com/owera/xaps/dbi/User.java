@@ -1,9 +1,9 @@
 package com.owera.xaps.dbi;
 
-import java.sql.SQLException;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.xaps.dbi.crypto.Crypto;
+
+import java.sql.SQLException;
 
 public class User {
 	private Integer id;

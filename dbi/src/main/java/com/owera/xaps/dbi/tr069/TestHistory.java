@@ -1,8 +1,8 @@
 package com.owera.xaps.dbi.tr069;
 
-import java.util.Date;
-
 import com.owera.xaps.dbi.Unittype;
+
+import java.util.Date;
 
 public class TestHistory {
 

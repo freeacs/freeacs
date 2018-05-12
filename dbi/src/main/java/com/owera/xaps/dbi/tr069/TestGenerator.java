@@ -1,16 +1,16 @@
 package com.owera.xaps.dbi.tr069;
 
+import com.owera.xaps.dbi.Unittype;
+import com.owera.xaps.dbi.UnittypeParameter;
+import com.owera.xaps.dbi.tr069.TestCase.TestCaseMethod;
+import com.owera.xaps.dbi.tr069.TestCaseParameter.TestCaseParameterType;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.tr069.TestCase.TestCaseMethod;
-import com.owera.xaps.dbi.tr069.TestCaseParameter.TestCaseParameterType;
 
 public class TestGenerator {
 

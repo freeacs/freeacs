@@ -2,8 +2,6 @@ package com.owera.xaps.web.app.security;
 
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Log;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.Permission;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.input.ParameterParser;
@@ -14,6 +12,8 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.apache.commons.fileupload.FileUploadException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
@@ -36,7 +36,7 @@ public class LoginServlet extends HttpServlet implements Filter {
 	private static final long serialVersionUID = 7478533431699190488L;
 
 	/** The logger. */
-	private static Logger logger = new Logger();
+	private static final Logger logger = LoggerFactory.getLogger(LoginServlet.class);
 
 	/** The config. */
 	private FilterConfig config;
@@ -465,9 +465,6 @@ public class LoginServlet extends HttpServlet implements Filter {
 	 */
 	public void init(FilterConfig filterConfig) throws ServletException {
 		SessionCache.CONTEXT_PATH = "";
-
-		Log.initialize("xaps-web" + SessionCache.CONTEXT_PATH + "-logs.properties");
-
 		config = filterConfig;
 	}
 }

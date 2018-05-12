@@ -1,11 +1,21 @@
 package com.owera.xaps.monitor;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.owera.common.db.ConnectionProperties;
+import com.owera.common.db.ConnectionProvider;
+import com.owera.common.scheduler.Schedule;
+import com.owera.common.scheduler.ScheduleType;
+import com.owera.common.scheduler.Scheduler;
+import com.owera.common.scheduler.ShowScheduleQueue;
+import com.owera.common.ssl.EasySSLProtocolSocketFactory;
+import com.owera.common.util.Sleep;
+import com.owera.xaps.monitor.task.*;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -13,30 +23,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.owera.common.ssl.EasySSLProtocolSocketFactory;
-import org.apache.commons.httpclient.protocol.Protocol;
-import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
-
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.scheduler.Schedule;
-import com.owera.common.scheduler.ScheduleType;
-import com.owera.common.scheduler.Scheduler;
-import com.owera.common.scheduler.ShowScheduleQueue;
-import com.owera.common.util.Sleep;
-import com.owera.xaps.monitor.task.ModuleMonitorTask;
-import com.owera.xaps.monitor.task.MonitorHeartbeatTask;
-import com.owera.xaps.monitor.task.MonitorInfo;
-import com.owera.xaps.monitor.task.SendEmailTask;
-import com.owera.xaps.monitor.task.TriggerNotificationHourly;
-import com.owera.xaps.monitor.task.TriggerNotificationSecondly;
-
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.owera.xaps.monitor.Properties.*;
 

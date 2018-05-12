@@ -1,5 +1,11 @@
 package com.owera.xaps.dbi.util;
 
+import com.owera.xaps.dbi.Identity;
+import com.owera.xaps.dbi.Syslog;
+import com.owera.xaps.dbi.SyslogConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -7,12 +13,6 @@ import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-
-import com.owera.xaps.dbi.Identity;
-import com.owera.xaps.dbi.Syslog;
-import com.owera.xaps.dbi.SyslogConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SyslogClient {
 

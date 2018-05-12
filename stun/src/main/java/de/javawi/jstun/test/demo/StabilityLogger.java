@@ -10,8 +10,8 @@ public class StabilityLogger extends TaskDefaultImpl {
 		super(taskName);
 	}
 
-	private static org.slf4j.Logger logger = LoggerFactory.getLogger(StabilityLogger.class);
-	private static org.slf4j.Logger stability = LoggerFactory.getLogger("Stability");
+	private static Logger logger = LoggerFactory.getLogger(StabilityLogger.class);
+	private static Logger stability = LoggerFactory.getLogger("Stability");
 	private static int summaryHeaderCount = 0;
 	
 	@Override

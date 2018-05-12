@@ -1,10 +1,10 @@
 package com.owera.xaps.base;
 
-import java.util.LinkedList;
-
 import com.owera.xaps.Properties;
 import com.owera.xaps.Properties.Module;
 import com.owera.xaps.dbi.Job;
+
+import java.util.LinkedList;
 
 
 public class DownloadLogic {

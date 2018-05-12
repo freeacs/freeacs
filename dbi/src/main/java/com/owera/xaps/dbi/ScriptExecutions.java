@@ -1,5 +1,11 @@
 package com.owera.xaps.dbi;
 
+import com.owera.common.db.ConnectionProperties;
+import com.owera.common.db.ConnectionProvider;
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.xaps.dbi.InsertOrUpdateStatement.Field;
+import com.owera.xaps.dbi.util.XAPSVersionCheck;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,12 +13,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.InsertOrUpdateStatement.Field;
-import com.owera.xaps.dbi.util.XAPSVersionCheck;
 
 /**
  * XAPSUnit is a class to help you work with units and unit parameters.

@@ -1,9 +1,9 @@
 package com.owera.common.log;
 
+import com.owera.common.util.PropertyReader;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.owera.common.util.PropertyReader;
 
 /**
  * There will only be one appender object for

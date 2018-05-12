@@ -11,35 +11,21 @@
 
 package de.javawi.jstun.test.demo;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
-import java.util.Vector;
-
 import com.owera.common.util.Sleep;
 import com.owera.common.util.TimestampMap;
 import com.owera.xaps.stun.MessageStack;
 import com.owera.xaps.stun.OKServlet;
-
-import de.javawi.jstun.attribute.ChangeRequest;
-import de.javawi.jstun.attribute.ChangedAddress;
-import de.javawi.jstun.attribute.ConnectionRequestBinding;
-import de.javawi.jstun.attribute.MappedAddress;
-import de.javawi.jstun.attribute.MessageAttributeException;
+import de.javawi.jstun.attribute.*;
 import de.javawi.jstun.attribute.MessageAttributeInterface.MessageAttributeType;
-import de.javawi.jstun.attribute.ResponseAddress;
-import de.javawi.jstun.attribute.SourceAddress;
-import de.javawi.jstun.attribute.UnknownAttribute;
-import de.javawi.jstun.attribute.UnknownMessageAttributeException;
 import de.javawi.jstun.header.MessageHeader;
 import de.javawi.jstun.header.MessageHeaderInterface.MessageHeaderType;
 import de.javawi.jstun.util.Address;
 import de.javawi.jstun.util.UtilityException;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.*;
+import java.util.Vector;
 
 /*
  * This class implements a STUN server as described in RFC 3489.
@@ -135,13 +121,7 @@ public class StunServer {
 			sendMH.addMessageAttribute(sa);
 			byte[] data = sendMH.getBytes();
 			DatagramPacket send = new DatagramPacket(data, data.length);
-			if (ra != null) {
-				send.setPort(ra.getPort());
-				send.setAddress(ra.getAddress().getInetAddress());
-			} else {
-				send.setPort(receive.getPort());
-				send.setAddress(receive.getAddress());
-			}
+			setDatagramAddress(ra, receive, send);
 			if (logger.isDebugEnabled())
 				logger.debug("Connection binding request from " + send.getAddress().getHostAddress() + ":" + send.getPort());
 
@@ -164,13 +144,7 @@ public class StunServer {
 				sendMH.addMessageAttribute(sa);
 				byte[] data = sendMH.getBytes();
 				DatagramPacket send = new DatagramPacket(data, data.length);
-				if (ra != null) {
-					send.setPort(ra.getPort());
-					send.setAddress(ra.getAddress().getInetAddress());
-				} else {
-					send.setPort(receive.getPort());
-					send.setAddress(receive.getAddress());
-				}
+				setDatagramAddress(ra, receive, send);
 				changedPort.send(send);
 				if (logger.isDebugEnabled())
 					logger.debug(changedPort.getLocalAddress().getHostAddress() + ":" + changedPort.getLocalPort() + " send Binding Response to " + send.getAddress().getHostAddress() + ":"
@@ -186,13 +160,7 @@ public class StunServer {
 				sendMH.addMessageAttribute(sa);
 				byte[] data = sendMH.getBytes();
 				DatagramPacket send = new DatagramPacket(data, data.length);
-				if (ra != null) {
-					send.setPort(ra.getPort());
-					send.setAddress(ra.getAddress().getInetAddress());
-				} else {
-					send.setPort(receive.getPort());
-					send.setAddress(receive.getAddress());
-				}
+				setDatagramAddress(ra, receive, send);
 				changedIP.send(send);
 				logger.debug(changedIP.getLocalAddress().getHostAddress() + ":" + changedIP.getLocalPort() + " send Binding Response to " + send.getAddress().getHostAddress() + ":" + send.getPort());
 			} else if ((!cr.isChangePort()) && (!cr.isChangeIP())) {
@@ -206,13 +174,7 @@ public class StunServer {
 				sendMH.addMessageAttribute(sa);
 				byte[] data = sendMH.getBytes();
 				DatagramPacket send = new DatagramPacket(data, data.length);
-				if (ra != null) {
-					send.setPort(ra.getPort());
-					send.setAddress(ra.getAddress().getInetAddress());
-				} else {
-					send.setPort(receive.getPort());
-					send.setAddress(receive.getAddress());
-				}
+				setDatagramAddress(ra, receive, send);
 				receiverSocket.send(send);
 				if (logger.isDebugEnabled())
 					logger.debug(receiverSocket.getLocalAddress().getHostAddress() + ":" + receiverSocket.getLocalPort() + " send Binding Response to " + send.getAddress().getHostAddress() + ":"
@@ -228,17 +190,21 @@ public class StunServer {
 				sendMH.addMessageAttribute(sa);
 				byte[] data = sendMH.getBytes();
 				DatagramPacket send = new DatagramPacket(data, data.length);
-				if (ra != null) {
-					send.setPort(ra.getPort());
-					send.setAddress(ra.getAddress().getInetAddress());
-				} else {
-					send.setPort(receive.getPort());
-					send.setAddress(receive.getAddress());
-				}
+				setDatagramAddress(ra, receive, send);
 				changedPortIP.send(send);
 				if (logger.isDebugEnabled())
 					logger.debug(changedPortIP.getLocalAddress().getHostAddress() + ":" + changedPortIP.getLocalPort() + " send Binding Response to " + send.getAddress().getHostAddress() + ":"
 							+ send.getPort());
+			}
+		}
+
+		private void setDatagramAddress(ResponseAddress ra, DatagramPacket receive, DatagramPacket send) throws UtilityException, UnknownHostException {
+			if (ra != null) {
+				send.setPort(ra.getPort());
+				send.setAddress(ra.getAddress().getInetAddress());
+			} else {
+				send.setPort(receive.getPort());
+				send.setAddress(receive.getAddress());
 			}
 		}
 

@@ -1,6 +1,5 @@
 package com.owera.xaps.tr069.test.system2;
 
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.Unit;
 import com.owera.xaps.dbi.UnitParameter;
 import com.owera.xaps.dbi.tr069.Steps.Step;
@@ -8,11 +7,14 @@ import com.owera.xaps.dbi.tr069.TestCase.TestCaseMethod;
 import com.owera.xaps.dbi.util.SystemParameters;
 import com.owera.xaps.tr069.HTTPReqResData;
 import com.owera.xaps.tr069.background.ScheduledKickTask;
+import com.owera.xaps.tr069.methods.GPNres;
 import com.owera.xaps.tr069.methods.TR069Method;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Util {
 
-  private static Logger logger = new Logger();
+  private static Logger logger = LoggerFactory.getLogger(GPNres.class);
 
   /**
    * Checks whether a test of the "new test framework" is initialized for the

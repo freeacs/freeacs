@@ -1,29 +1,21 @@
 package com.owera.xaps.stun;
 
-import java.net.MalformedURLException;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.common.util.Sleep;
-import com.owera.xaps.dbi.DBI;
-import com.owera.xaps.dbi.Inbox;
-import com.owera.xaps.dbi.Message;
-import com.owera.xaps.dbi.Unit;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
-import com.owera.xaps.dbi.XAPSUnit;
 import com.owera.xaps.dbi.util.ProvisioningMode;
 import com.owera.xaps.dbi.util.SystemConstants;
 import com.owera.xaps.dbi.util.SystemParameters;
 import com.owera.xaps.stun.Kick.KickResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.MalformedURLException;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /*
  * SingleKickThread is responsible for initiating a kick (connect to ConnectionRequestURL or

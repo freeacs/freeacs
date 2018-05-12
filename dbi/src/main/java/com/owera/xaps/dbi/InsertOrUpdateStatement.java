@@ -1,13 +1,13 @@
 package com.owera.xaps.dbi;
 
+import com.owera.xaps.dbi.DynamicStatement.NullInteger;
+import com.owera.xaps.dbi.DynamicStatement.NullString;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.owera.xaps.dbi.DynamicStatement.NullInteger;
-import com.owera.xaps.dbi.DynamicStatement.NullString;
 
 /**
  * This is a helper class to easily build SQL for insert/update, since it's the 

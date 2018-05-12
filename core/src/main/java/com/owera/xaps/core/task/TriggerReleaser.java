@@ -1,32 +1,16 @@
 package com.owera.xaps.core.task;
 
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.xaps.dbi.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.DBI;
-import com.owera.xaps.dbi.File;
-import com.owera.xaps.dbi.FileType;
-import com.owera.xaps.dbi.Files;
-import com.owera.xaps.dbi.ScriptExecutions;
-import com.owera.xaps.dbi.SyslogConstants;
-import com.owera.xaps.dbi.Trigger;
-import com.owera.xaps.dbi.TriggerComparator;
-import com.owera.xaps.dbi.TriggerRelease;
-import com.owera.xaps.dbi.Triggers;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TriggerReleaser extends DBIShare {
 

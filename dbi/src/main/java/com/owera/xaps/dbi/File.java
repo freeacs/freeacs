@@ -1,15 +1,11 @@
 package com.owera.xaps.dbi;
 
-import java.sql.Blob;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Date;
-
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
+
+import java.sql.*;
+import java.util.Date;
 
 public class File {
 

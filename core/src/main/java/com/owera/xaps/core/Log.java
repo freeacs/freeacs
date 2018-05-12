@@ -1,9 +1,9 @@
 package com.owera.xaps.core;
 
+import com.owera.common.log.Logger;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.owera.common.log.Logger;
 
 /**
  * This class handles all the logging in this server.

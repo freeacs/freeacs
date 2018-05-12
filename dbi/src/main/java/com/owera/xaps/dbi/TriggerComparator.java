@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import com.owera.xaps.dbi.Trigger;
-
 public class TriggerComparator implements Comparator<Trigger> {
 
 	private boolean parentFirst = false;

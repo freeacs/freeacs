@@ -1,5 +1,13 @@
 package com.owera.xaps.dbi.report;
 
+import com.owera.common.db.ConnectionProperties;
+import com.owera.common.db.ConnectionProvider;
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.dbi.util.ProvisioningMessage.ProvStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,23 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.DynamicStatement;
-import com.owera.xaps.dbi.Group;
-import com.owera.xaps.dbi.Identity;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Syslog;
-import com.owera.xaps.dbi.SyslogEntry;
-import com.owera.xaps.dbi.SyslogFilter;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.util.ProvisioningMessage.ProvStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ReportProvisioningGenerator extends ReportGenerator {
 

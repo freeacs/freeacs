@@ -1,18 +1,18 @@
 package com.owera.xapsws.impl;
 
-import java.rmi.RemoteException;
-
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.Unittype;
-
 import com.owera.xapsws.ArrayOfUnittype;
 import com.owera.xapsws.GetUnittypesRequest;
 import com.owera.xapsws.GetUnittypesResponse;
 import com.owera.xapsws.UnittypeList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.rmi.RemoteException;
 
 public class GetUnittypes {
 
-	private static Logger logger = new Logger();
+	private static final Logger logger = LoggerFactory.getLogger(GetUnittypes.class);
 
 	public GetUnittypesResponse getUnittypes(GetUnittypesRequest gur) throws RemoteException {
 		try {

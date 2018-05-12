@@ -1,12 +1,12 @@
 package com.owera.common.db;
 
+import junit.framework.TestCase;
+import org.junit.Ignore;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.TestCase;
-import org.junit.Ignore;
 
 @Ignore
 public class ConnectionProviderTest extends TestCase {

@@ -1,12 +1,12 @@
 package com.owera.xaps.monitor.task;
 
-import java.util.Date;
-
 import com.owera.common.scheduler.TaskDefaultImpl;
 import com.owera.xaps.monitor.Properties;
 import com.owera.xaps.monitor.SendMail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
 
 public class MonitorHeartbeatTask extends TaskDefaultImpl {
 

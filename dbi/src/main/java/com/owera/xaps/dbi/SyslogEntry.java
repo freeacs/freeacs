@@ -1,8 +1,8 @@
 package com.owera.xaps.dbi;
 
-import java.util.Date;
-
 import com.owera.xaps.dbi.util.TimestampWrapper;
+
+import java.util.Date;
 
 public class SyslogEntry {
 	private Integer id;

@@ -1,13 +1,5 @@
 package com.owera.xaps.spp.http;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.common.log.Context;
 import com.owera.xaps.base.BaseCache;
@@ -17,6 +9,13 @@ import com.owera.xaps.base.http.Util;
 import com.owera.xaps.dbi.util.SystemParameters;
 import com.owera.xaps.spp.Properties;
 import com.owera.xaps.spp.SessionData;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
 
 public class BasicAuthenticator {
 

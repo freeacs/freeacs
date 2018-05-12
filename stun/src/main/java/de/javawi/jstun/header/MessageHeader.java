@@ -11,17 +11,14 @@
 
 package de.javawi.jstun.header;
 
-import java.util.Iterator;
-import java.util.TreeMap;
-
-import com.owera.common.log.Logger;
-
 import de.javawi.jstun.attribute.MessageAttribute;
 import de.javawi.jstun.attribute.MessageAttributeParsingException;
-import de.javawi.jstun.attribute.SourceAddress;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 import org.slf4j.LoggerFactory;
+
+import java.util.Iterator;
+import java.util.TreeMap;
 
 public class MessageHeader implements MessageHeaderInterface {
 	/*

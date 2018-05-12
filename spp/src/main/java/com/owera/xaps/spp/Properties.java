@@ -1,11 +1,11 @@
 package com.owera.xaps.spp;
 
+import com.owera.common.util.PropertyReader;
+import com.owera.xaps.base.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import com.owera.common.util.PropertyReader;
-import com.owera.xaps.base.Log;
 
 public class Properties {
 

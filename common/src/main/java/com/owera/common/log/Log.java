@@ -1,15 +1,10 @@
 package com.owera.common.log;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.owera.common.util.PropertyReader;
 import com.owera.common.util.PropertyReaderException;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 /*
  * Requirements

@@ -1,6 +1,5 @@
 package com.owera.xaps.web.app.page.monitor;
 
-import com.owera.common.log.Logger;
 import com.owera.common.ssl.EasySSLProtocolSocketFactory;
 import com.owera.common.ssl.HTTPSManager;
 import com.owera.xaps.dbi.XAPS;
@@ -17,6 +16,8 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -32,7 +33,7 @@ import java.util.Map;
 public class MonitorPage extends AbstractWebPage {
 	
 	/** The logger. */
-	private static Logger logger = new Logger();
+	private static final Logger logger = LoggerFactory.getLogger(MonitorPage.class);
 	
 	static{
 		ProtocolSocketFactory socketFactory = new EasySSLProtocolSocketFactory( );

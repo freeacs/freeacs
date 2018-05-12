@@ -1,5 +1,9 @@
 package com.owera.common.db;
 
+import com.owera.common.util.PropertyReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -8,10 +12,6 @@ import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import com.owera.common.util.PropertyReader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This connection provider can offer 

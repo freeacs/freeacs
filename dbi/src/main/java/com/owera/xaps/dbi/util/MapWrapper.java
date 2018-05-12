@@ -1,10 +1,10 @@
 package com.owera.xaps.dbi.util;
 
+import com.owera.common.util.NaturalComparator;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-
-import com.owera.common.util.NaturalComparator;
 
 public class MapWrapper<V> {
 

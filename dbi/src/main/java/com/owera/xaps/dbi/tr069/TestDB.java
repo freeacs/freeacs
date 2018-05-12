@@ -1,29 +1,20 @@
 package com.owera.xaps.dbi.tr069;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.DynamicStatement;
-import com.owera.xaps.dbi.Files;
-import com.owera.xaps.dbi.InsertOrUpdateStatement;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.InsertOrUpdateStatement.Field;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.XAPS;
 import com.owera.xaps.dbi.tr069.TestCase.TestCaseMethod;
 import com.owera.xaps.dbi.tr069.TestCaseParameter.TestCaseParameterType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * The class contains all SQL for the TR069-test related tables

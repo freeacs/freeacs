@@ -1,30 +1,20 @@
 package com.owera.xaps.syslogserver;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import com.owera.common.scheduler.Schedule;
+import com.owera.common.scheduler.ScheduleType;
+import com.owera.common.scheduler.Scheduler;
+import com.owera.common.util.Sleep;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.owera.common.log.Log;
-import com.owera.common.log.Logger;
-import com.owera.common.scheduler.Schedule;
-import com.owera.common.scheduler.ScheduleType;
-import com.owera.common.scheduler.Scheduler;
-import com.owera.common.util.Sleep;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 public class SyslogServlet extends HttpServlet {
-
-	static {
-		try {
-			Log.initialize("xaps-syslog-logs.properties");
-		} catch (Throwable t) {
-			// Cannot log to logs here!
-			System.err.println("ERROR when trying to read xaps-syslog-logs.properties: " + t.getMessage());
-		}
-	}
 
 	private static final long serialVersionUID = 3972885964801548360L;
 
@@ -32,7 +22,7 @@ public class SyslogServlet extends HttpServlet {
 
 	public static String version = "1.4.32";
 
-	private static Logger logger = new Logger(SyslogServlet.class);
+	private static Logger logger = LoggerFactory.getLogger(SyslogServlet.class);
 
 	public void destroy() {
 		logger.info("Server shutdown...");
