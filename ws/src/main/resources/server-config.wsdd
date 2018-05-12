@@ -44,8 +44,8 @@
   <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns11:&gt;AddOrChangeUnitRequest" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:com.github.freeacs.ws.AddOrChangeUnitRequest" xmlns:ns11="http://xapsws.owera.com/"/>
   <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns12:Profile" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:com.github.freeacs.ws.Profile" xmlns:ns12="http://xapsws.owera.com/"/>
   <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns13:Unittype" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:com.github.freeacs.ws.Unittype" xmlns:ns13="http://xapsws.owera.com/"/>
-  <ns1:arrayMapping innerType="ns14:Parameter" languageSpecificType="java:com.owera.xapsws.Parameter[]" qname="ns14:ArrayOfParameter" xmlns:ns14="http://xapsws.owera.com/"/>
-  <ns1:arrayMapping innerType="ns15:Unit" languageSpecificType="java:com.owera.xapsws.Unit[]" qname="ns15:ArrayOfUnit" xmlns:ns15="http://xapsws.owera.com/"/>
+  <ns1:arrayMapping innerType="ns14:Parameter" languageSpecificType="java:com.github.freeacs.ws.Parameter[]" qname="ns14:ArrayOfParameter" xmlns:ns14="http://xapsws.owera.com/"/>
+  <ns1:arrayMapping innerType="ns15:Unit" languageSpecificType="java:com.github.freeacs.ws.Unit[]" qname="ns15:ArrayOfUnit" xmlns:ns15="http://xapsws.owera.com/"/>
  </ns1:service>
  <ns1:service name="AdminService" provider="java:MSG">
   <ns1:parameter name="allowedMethods" value="AdminService"/>
