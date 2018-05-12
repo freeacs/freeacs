@@ -7,6 +7,7 @@ import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.login.LoginPage;
 import com.github.freeacs.web.app.security.handlers.Authenticator;
+import com.github.freeacs.web.app.security.handlers.DatabaseAuthenticator;
 import com.github.freeacs.web.app.util.*;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -44,14 +45,11 @@ public class LoginServlet extends HttpServlet implements Filter {
 	/** The t config. */
 	private Configuration tConfig;
 
-	/** The url map. */
-	private HashMap<String, List<String>> urlMap;
-
 	/** The freemarker. */
 	private Configuration freemarker;
 
 	/** The login handler. */
-	private static Authenticator loginHandler;
+	private static Authenticator loginHandler = new DatabaseAuthenticator();
 
 	/**
 	 * Processes a login, with username and password.
@@ -67,37 +65,27 @@ public class LoginServlet extends HttpServlet implements Filter {
 	private void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, NoSuchAlgorithmException {
 		String sessionId = request.getSession().getId();
 		SessionData sessionData = SessionCache.getSessionData(sessionId);
-		if (isConfigured()) {
-			String name = request.getParameter("username");
-			String passwd = request.getParameter("password");
-			if (name != null && passwd != null) {
-				try {
-					if (isUserAuthenticated(name, passwd, sessionId)) {
-						String target = sessionData.getLastLoginTarget();
-						if (target == null || target.trim().length() == 0) //Idiot safe solution, to avoid any unknown problems
-							target = Page.SEARCH.getUrl();
-						response.sendRedirect(target.replaceAll("\\s", "%20"));
-					} else {
-						printLoginPage(response, sessionData);
-					}
-				} catch (Exception e) {
-					sessionData.setErrorMessage("Error while authenticating: " + e.getLocalizedMessage());
-					printLoginPage(response, sessionData);
-				}
-			} else if (isUserLoggedIn(sessionId))
-				response.sendRedirect(Page.SEARCH.getUrl());
-			else {
-				printLoginPage(response, sessionData);
-			}
-		} else {
-			String target = sessionData.getLastLoginTarget();
-			if (target == null || target.trim().length() == 0) { //Idiot safe solution, to avoid any unknown problems
-				String s = getRequestURL(request);
-				SessionCache.getSessionData(request.getSession().getId()).setLastLoginTarget(s);
-				target = Page.SEARCH.getUrl();
-			}
-			response.sendRedirect(target);
-		}
+        String name = request.getParameter("username");
+        String passwd = request.getParameter("password");
+        if (name != null && passwd != null) {
+            try {
+                if (isUserAuthenticated(name, passwd, sessionId)) {
+                    String target = sessionData.getLastLoginTarget();
+                    if (target == null || target.trim().length() == 0) //Idiot safe solution, to avoid any unknown problems
+                        target = Page.SEARCH.getUrl();
+                    response.sendRedirect(target.replaceAll("\\s", "%20"));
+                } else {
+                    printLoginPage(response, sessionData);
+                }
+            } catch (Exception e) {
+                sessionData.setErrorMessage("Error while authenticating: " + e.getLocalizedMessage());
+                printLoginPage(response, sessionData);
+            }
+        } else if (isUserLoggedIn(sessionId))
+            response.sendRedirect(Page.SEARCH.getUrl());
+        else {
+            printLoginPage(response, sessionData);
+        }
 	}
 
 	/**
@@ -178,31 +166,6 @@ public class LoginServlet extends HttpServlet implements Filter {
 			retrieveAndSetConnectionProperties(sReq);
 		}
 
-		/**
-		 * If security is not configured, filter everything through.
-		 * Remember the currently accessed page by storing it in sessionData.
-		 * If there are no filtered unittypes add wildcard for allowed unittypes (ACCEPT ALL FIRST, THEN RESTRICT)
-		 */
-		if (!isConfigured()) {
-			SessionData sessionData = SessionCache.getSessionData(sReq.getSession().getId());
-
-			/**
-			 * If page parameter is not null and "login", and connection properties is not set,
-			 * we then retrieve and remember the current request URL.
-			 */
-			if (req.getParameter("page") != null && !req.getParameter("page").equals("login") && SessionCache.getXAPSConnectionProperties(sReq.getSession().getId()) == null) {
-				String lastRequestedPage = getRequestURL(sReq);
-				sessionData.setLastLoginTarget(lastRequestedPage);
-			}
-
-			if (sessionData.getFilteredUnittypes() == null) {
-				sessionData.setFilteredUnittypes(new AllowedUnittype[] { new AllowedUnittype("*") });
-			}
-
-			chain.doFilter(req, res);
-			return;
-		}
-
 		if (freemarker == null)
 			freemarker = Freemarker.initFreemarker();
 
@@ -212,8 +175,6 @@ public class LoginServlet extends HttpServlet implements Filter {
 
 		String sessionId = request.getSession().getId();
 		SessionData sessionData = SessionCache.getSessionData(sessionId);
-
-		sessionData.setUrlMap(urlMap);
 
 		WebUser user = sessionData.getUser();
 
@@ -375,42 +336,7 @@ public class LoginServlet extends HttpServlet implements Filter {
 		}
 	}
 
-	/**
-	 * Is xAPS Web configured to use a login handler?.
-	 *
-	 * @return A boolean saying if a login handler is set.
-	 */
-	public boolean isConfigured() {
-		if (loginHandler != null)
-			return true;
-
-		try {
-			ClassLoader classLoader = LoginServlet.class.getClassLoader();
-			Class<?> handler = classLoader.loadClass(getCamelCasedHandler("Database"));
-			loginHandler = (Authenticator) handler.newInstance();
-			return true;
-		} catch (Exception e) {
-			logger.error("Could not initialize login handler", e);
-			throw new IllegalStateException("Could not initialize login handler", e);
-		}
-	}
-
-	/**
-	 * Gets the camel cased handler.
-	 *
-	 * @param loginAuth the login auth
-	 * @return the camel cased handler
-	 */
-	private String getCamelCasedHandler(String loginAuth) {
-		String handlerString = Authenticator.class.getPackage().getName() + ".%HANDLER%Authenticator";
-		if (loginAuth == null || loginAuth.length() < 2)
-			return null;
-		loginAuth = loginAuth.substring(0, 1).toUpperCase() + loginAuth.substring(1).toLowerCase();
-		handlerString = handlerString.replace("%HANDLER%", loginAuth);
-		return handlerString;
-	}
-
-	/**
+    /**
 	 * Checks if the session has timed out. Redirects to login page if so.
 	 *
 	 * @param request the request
