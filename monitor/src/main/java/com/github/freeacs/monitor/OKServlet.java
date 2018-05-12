@@ -1,7 +1,7 @@
-package com.owera.xaps.monitor;
+package com.github.freeacs.monitor;
 
-import com.owera.xaps.monitor.task.ModuleMonitorTask;
-import com.owera.xaps.monitor.task.MonitorInfo;
+import com.github.freeacs.monitor.task.ModuleMonitorTask;
+import com.github.freeacs.monitor.task.MonitorInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

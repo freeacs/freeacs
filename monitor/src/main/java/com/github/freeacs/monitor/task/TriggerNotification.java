@@ -1,11 +1,11 @@
-package com.owera.xaps.monitor.task;
+package com.github.freeacs.monitor.task;
 
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.html.Element;
 import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.monitor.Properties;
-import com.owera.xaps.monitor.SendMail;
+import com.github.freeacs.monitor.Properties;
+import com.github.freeacs.monitor.SendMail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

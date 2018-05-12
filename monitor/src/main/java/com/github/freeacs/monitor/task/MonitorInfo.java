@@ -1,4 +1,4 @@
-package com.owera.xaps.monitor.task;
+package com.github.freeacs.monitor.task;
 
 
 public class MonitorInfo implements Comparable<MonitorInfo> {

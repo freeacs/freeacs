@@ -1,7 +1,7 @@
-package com.owera.xaps.monitor.task;
+package com.github.freeacs.monitor.task;
 
 import com.github.freeacs.common.ssl.HTTPSManager;
-import com.owera.xaps.monitor.Properties;
+import com.github.freeacs.monitor.Properties;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;

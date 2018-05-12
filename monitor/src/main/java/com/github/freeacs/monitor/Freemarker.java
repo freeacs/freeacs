@@ -1,4 +1,4 @@
-package com.owera.xaps.monitor;
+package com.github.freeacs.monitor;
 
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;

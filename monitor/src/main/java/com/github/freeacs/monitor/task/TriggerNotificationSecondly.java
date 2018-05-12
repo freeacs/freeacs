@@ -1,4 +1,4 @@
-package com.owera.xaps.monitor.task;
+package com.github.freeacs.monitor.task;
 
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.ConnectionProvider;
@@ -6,13 +6,13 @@ import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.scheduler.TaskDefaultImpl;
 import com.github.freeacs.dbi.*;
 import com.owera.xaps.dbi.*;
-import com.owera.xaps.monitor.MonitorServlet;
+import com.github.freeacs.monitor.MonitorServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 
-import static com.owera.xaps.monitor.Properties.*;
+import static com.github.freeacs.monitor.Properties.*;
 
 public class TriggerNotificationSecondly extends TaskDefaultImpl {
 

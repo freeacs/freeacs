@@ -1,4 +1,4 @@
-package com.owera.xaps.monitor;
+package com.github.freeacs.monitor;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

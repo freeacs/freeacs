@@ -1,4 +1,4 @@
-package com.owera.xaps.monitor;
+package com.github.freeacs.monitor;
 
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.typesafe.config.Config;

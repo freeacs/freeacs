@@ -1,4 +1,4 @@
-package com.owera.xaps.monitor;
+package com.github.freeacs.monitor;
 
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.ConnectionProvider;
@@ -8,6 +8,7 @@ import com.github.freeacs.common.scheduler.Scheduler;
 import com.github.freeacs.common.scheduler.ShowScheduleQueue;
 import com.github.freeacs.common.ssl.EasySSLProtocolSocketFactory;
 import com.github.freeacs.common.util.Sleep;
+import com.github.freeacs.monitor.task.*;
 import com.owera.xaps.monitor.task.*;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -30,7 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.owera.xaps.monitor.Properties.*;
+import static com.github.freeacs.monitor.Properties.*;
 
 /**
  * Servlet implementation class Welcome
