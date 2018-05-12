@@ -27,7 +27,7 @@ Open a pull request, add an issue or discuss in the forums.
 
 ## Versioning
 
-No special versioning paradigms used at the moment. But we are currently target an initial 2.0.0 release with several release candidates planned before we hit the actual 2.0.0 releae. The versioning does not correspond with the versions reported by the modules it self.
+No special versioning paradigms used at the moment. But we are currently targeting an initial 2.0.0 release with several release candidates planned before we hit the actual 2.0.0 releae. The versioning does not correspond with the versions reported by the modules it self.
 
 ## License
 
