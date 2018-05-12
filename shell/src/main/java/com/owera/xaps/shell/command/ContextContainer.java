@@ -1,6 +1,5 @@
 package com.owera.xaps.shell.command;
 
-import com.owera.xaps.shell.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +40,7 @@ import java.util.Map;
 public class ContextContainer {
 	private List<ContextElement> contextList = new ArrayList<ContextElement>();
 	private Map<String, Integer> lookupMap = new HashMap<String, Integer>();
-	private static Logger logger = LoggerFactory.getLogger(Properties.class);
+	private static Logger logger = LoggerFactory.getLogger(ContextContainer.class);
 
 	public ContextElement getContextElement(String type) {
 		Integer index = lookupMap.get(type);

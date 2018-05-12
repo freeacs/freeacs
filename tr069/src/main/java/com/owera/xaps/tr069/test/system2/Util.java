@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 public class Util {
 
-  private static Logger logger = LoggerFactory.getLogger(GPNres.class);
+  private static Logger logger = LoggerFactory.getLogger(Util.class);
 
   /**
    * Checks whether a test of the "new test framework" is initialized for the

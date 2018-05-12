@@ -13,7 +13,7 @@ import java.util.List;
 public class SyslogServer implements Runnable {
 
 	private static DatagramSocket socket = null;
-	private static Logger logger = LoggerFactory.getLogger(SyslogPackets.class);
+	private static Logger logger = LoggerFactory.getLogger(SyslogServer.class);
 	private static boolean ok = true;
 	private static Throwable throwable;
 	private static boolean started;

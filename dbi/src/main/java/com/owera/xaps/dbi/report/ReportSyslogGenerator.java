@@ -19,7 +19,7 @@ import java.util.*;
 
 public class ReportSyslogGenerator extends ReportGenerator {
 
-	private static Logger logger = LoggerFactory.getLogger(ReportProvisioningGenerator.class);
+	private static Logger logger = LoggerFactory.getLogger(ReportSyslogGenerator.class);
 
 	public ReportSyslogGenerator(ConnectionProperties sysCp, ConnectionProperties xapsCp, XAPS xaps, String logPrefix, Identity id) {
 		super(sysCp, xapsCp, xaps, logPrefix, id);

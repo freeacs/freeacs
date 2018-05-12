@@ -16,7 +16,7 @@ import static com.owera.xapsws.impl.Properties.*;
 
 public class XAPSWS {
 
-	private static Logger logger = LoggerFactory.getLogger(XMLServer.class);
+	private static Logger logger = LoggerFactory.getLogger(XAPSWS.class);
 
 	private ConnectionProperties cp;
 	private Identity id;

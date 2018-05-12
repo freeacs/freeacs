@@ -24,7 +24,7 @@ import java.util.Date;
  */
 public class Jobs {
 
-	private static Logger logger = LoggerFactory.getLogger(Inbox.class);
+	private static Logger logger = LoggerFactory.getLogger(Jobs.class);
 	private Map<Integer, Job> idMap = new HashMap<Integer, Job>();
 	private Map<String, Job> nameMap = new HashMap<String, Job>();
 	private Unittype unittype;

@@ -13,7 +13,7 @@ public class SummaryLogger extends TaskDefaultImpl {
 		super(taskName);
 	}
 
-	private static Logger logger = LoggerFactory.getLogger(StateLogger.class);
+	private static Logger logger = LoggerFactory.getLogger(SummaryLogger.class);
 	private static Logger summary = LoggerFactory.getLogger("Summary");
 	private static int summaryHeaderCount = 0;
 	private static boolean firstTime = true;

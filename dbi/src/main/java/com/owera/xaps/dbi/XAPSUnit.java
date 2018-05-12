@@ -20,7 +20,7 @@ import java.util.Map;
  */
 public class XAPSUnit {
 
-	private static Logger logger = LoggerFactory.getLogger(XAPS.class);
+	private static Logger logger = LoggerFactory.getLogger(XAPSUnit.class);
 	private static long updateCounter;
 	private static long insertCounter;
 
