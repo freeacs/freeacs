@@ -1,15 +1,16 @@
 package com.owera.xaps.monitor.task;
 
+import com.owera.common.scheduler.TaskDefaultImpl;
+import com.owera.xaps.monitor.Properties;
+import com.owera.xaps.monitor.SendMail;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.owera.common.log.Logger;
-import com.owera.common.scheduler.TaskDefaultImpl;
-import com.owera.xaps.monitor.Properties;
-import com.owera.xaps.monitor.SendMail;
 
 /**
  * Responsible for monitoring status of HTTPMonitorTasks.
@@ -21,7 +22,7 @@ import com.owera.xaps.monitor.SendMail;
  */
 public class SendEmailTask extends TaskDefaultImpl {
 
-	private Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(SendEmailTask.class);
 	private Map<String, String> lastErrorMessageMap = new HashMap<String, String>();
 
 	public SendEmailTask(String taskName) {
@@ -67,7 +68,7 @@ public class SendEmailTask extends TaskDefaultImpl {
 					if (status.indexOf("OK") == -1)
 						msg += em;
 					SendMail.sendFusionAlarm(module, status, msg);
-					logger.notice("Monitoring: SendEmailTask: Sent email for url " + url + ", status is " + status);
+					logger.info("Monitoring: SendEmailTask: Sent email for url " + url + ", status is " + status);
 					if (em != null) {
 						if (status.equals("OK"))
 							logger.warn("Status is OK, but error-message is not null!: " + em);

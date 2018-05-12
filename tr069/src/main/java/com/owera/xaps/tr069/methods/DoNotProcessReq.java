@@ -1,9 +1,9 @@
 package com.owera.xaps.tr069.methods;
 
-import java.sql.SQLException;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.xaps.tr069.HTTPReqResData;
+
+import java.sql.SQLException;
 
 public class DoNotProcessReq {
 

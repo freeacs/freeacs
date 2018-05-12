@@ -1,6 +1,5 @@
 package com.owera.xaps.web.app.input;
 
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.Profile;
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.web.app.input.Escaping.EscapeType;
@@ -9,6 +8,8 @@ import com.owera.xaps.web.app.util.DateUtils.Format;
 import com.owera.xaps.web.app.util.WebConstants;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,8 +46,8 @@ public class Input {
 	
 	/** The error. */
 	private String error;
-	
-	private static final Logger logger = new Logger();
+
+	private static final Logger logger = LoggerFactory.getLogger(Input.class);
 
 	// Hide constructor
 	/**

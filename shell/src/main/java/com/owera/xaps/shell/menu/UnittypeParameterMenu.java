@@ -1,8 +1,5 @@
 package com.owera.xaps.shell.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.owera.xaps.dbi.UnittypeParameter;
 import com.owera.xaps.dbi.UnittypeParameterValues;
 import com.owera.xaps.dbi.tr069.TR069DMLoader;
@@ -15,6 +12,9 @@ import com.owera.xaps.shell.output.Line;
 import com.owera.xaps.shell.output.Listing;
 import com.owera.xaps.shell.output.OutputHandler;
 import com.owera.xaps.shell.util.Validation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UnittypeParameterMenu {
 	private Context context;

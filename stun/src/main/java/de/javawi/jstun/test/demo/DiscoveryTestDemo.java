@@ -11,20 +11,14 @@
 
 package de.javawi.jstun.test.demo;
 
+import de.javawi.jstun.test.DiscoveryTest;
+
 import java.net.BindException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
 
-import com.owera.common.log.Log;
-
-import de.javawi.jstun.test.DiscoveryTest;
-
 public class DiscoveryTestDemo implements Runnable {
-
-	static {
-		Log.initialize("xaps-stun-logs.properties");
-	}
 
 	InetAddress iaddress;
 

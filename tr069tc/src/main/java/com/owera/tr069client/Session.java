@@ -1,20 +1,12 @@
 package com.owera.tr069client;
 
-import java.net.BindException;
-import java.util.Random;
-
+import com.owera.tr069client.messages.*;
+import com.owera.tr069client.monitor.Status;
 import org.apache.log4j.Logger;
 import org.apache.log4j.NDC;
 
-import com.owera.tr069client.messages.Download;
-import com.owera.tr069client.messages.Empty;
-import com.owera.tr069client.messages.GetParameterNames;
-import com.owera.tr069client.messages.GetParameterValues;
-import com.owera.tr069client.messages.Inform;
-import com.owera.tr069client.messages.Reboot;
-import com.owera.tr069client.messages.SetParameterValues;
-import com.owera.tr069client.messages.TransferComplete;
-import com.owera.tr069client.monitor.Status;
+import java.net.BindException;
+import java.util.Random;
 
 /**
  * A Session is responsible for actually running an entire TR069-session against

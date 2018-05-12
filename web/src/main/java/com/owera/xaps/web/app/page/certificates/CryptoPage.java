@@ -1,6 +1,5 @@
 package com.owera.xaps.web.app.page.certificates;
 
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.Certificate;
 import com.owera.xaps.dbi.XAPS;
 import com.owera.xaps.web.Page;
@@ -12,6 +11,8 @@ import com.owera.xaps.web.app.util.WebConstants;
 import com.owera.xaps.web.app.util.XAPSLoader;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
@@ -33,7 +34,7 @@ public class CryptoPage extends AbstractWebPage {
 	private XAPS xaps;
 	
 	/** The logger. */
-	private Logger logger = new Logger();
+	private static final Logger logger = LoggerFactory.getLogger(CryptoPage.class);
 
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)

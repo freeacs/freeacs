@@ -1,25 +1,17 @@
 package com.owera.xaps.base;
 
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.xaps.base.db.DBAccess;
+import com.owera.xaps.base.db.DBAccessStatic;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.dbi.JobFlag.JobServiceWindow;
+import com.owera.xaps.dbi.util.SystemParameters;
+import com.owera.xaps.tr069.xml.ParameterValueStruct;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.base.db.DBAccess;
-import com.owera.xaps.base.db.DBAccessStatic;
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.JobFlag.JobServiceWindow;
-import com.owera.xaps.dbi.JobParameter;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.UnitJobStatus;
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
-import com.owera.xaps.dbi.util.SystemParameters;
-import com.owera.xaps.tr069.xml.ParameterValueStruct;
 
 public class UnitJob {
 

@@ -1,15 +1,6 @@
 package com.owera.xaps.shell.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import com.owera.xaps.dbi.Parameter;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.ProfileParameter;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.UnittypeParameter;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.shell.Context;
 import com.owera.xaps.shell.Session;
 import com.owera.xaps.shell.UnitTempStorage;
@@ -19,6 +10,11 @@ import com.owera.xaps.shell.output.Line;
 import com.owera.xaps.shell.output.Listing;
 import com.owera.xaps.shell.output.OutputHandler;
 import com.owera.xaps.shell.util.Validation;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class ProfileMenu {
 	private Session session;

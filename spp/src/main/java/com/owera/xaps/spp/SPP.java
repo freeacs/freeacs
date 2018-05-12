@@ -1,35 +1,15 @@
 package com.owera.xaps.spp;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Context;
 import com.owera.xaps.Properties.Module;
-import com.owera.xaps.base.BaseCache;
-import com.owera.xaps.base.DownloadLogic;
-import com.owera.xaps.base.JobLogic;
-import com.owera.xaps.base.Log;
-import com.owera.xaps.base.ServiceWindow;
+import com.owera.xaps.base.*;
 import com.owera.xaps.base.db.DBAccess;
 import com.owera.xaps.base.db.DBAccessSession;
 import com.owera.xaps.base.db.DBAccessStatic;
-import com.owera.xaps.dbi.DBI;
-import com.owera.xaps.dbi.FileType;
-import com.owera.xaps.dbi.Job;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.JobFlag.JobServiceWindow;
 import com.owera.xaps.dbi.JobFlag.JobType;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.UnittypeParameters;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
 import com.owera.xaps.dbi.util.ProvisioningMessage;
 import com.owera.xaps.dbi.util.ProvisioningMessage.ErrorResponsibility;
 import com.owera.xaps.dbi.util.ProvisioningMessage.ProvOutput;
@@ -39,6 +19,11 @@ import com.owera.xaps.dbi.util.SystemParameters;
 import com.owera.xaps.dbi.util.TimestampWrapper;
 import com.owera.xaps.spp.response.ProvisioningResponse;
 import com.owera.xaps.spp.response.SPA;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class SPP {
 
@@ -52,7 +37,6 @@ public class SPP {
       Log.error(SPP.class, "No serialnumber found - cannot provision this unit - will return an empty output");
       output = sessionData.getResp().getEmptyResponse();
     } else {
-      Context.put(Context.X, sessionData.getSerialNumber(), BaseCache.SESSIONDATA_CACHE_TIMEOUT);
       Unit unit = readUnit(sessionData);
       if (unit == null) {
         if (Properties.isDiscoveryMode()) {

@@ -1,5 +1,7 @@
 package com.owera.xaps.shell.tools;
 
+import com.owera.xaps.shell.util.StringUtil;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -7,8 +9,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import com.owera.xaps.shell.util.StringUtil;
 
 public class CompareTF {
 

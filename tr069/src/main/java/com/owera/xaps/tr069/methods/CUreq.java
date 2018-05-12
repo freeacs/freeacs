@@ -1,32 +1,15 @@
 package com.owera.xaps.tr069.methods;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 import com.owera.xaps.base.Log;
 import com.owera.xaps.tr069.exception.TR069Exception;
-import com.owera.xaps.tr069.test.system1.KillDatabase;
-import com.owera.xaps.tr069.test.system1.KillDatabaseObject;
-import com.owera.xaps.tr069.test.system1.TestDatabase;
-import com.owera.xaps.tr069.test.system1.TestDatabaseObject;
-import com.owera.xaps.tr069.test.system1.TestServlet;
+import com.owera.xaps.tr069.test.system1.*;
 import com.owera.xaps.tr069.test.system2.TestUnit;
 import com.owera.xaps.tr069.test.system2.TestUnitCache;
-import com.owera.xaps.tr069.xml.Body;
-import com.owera.xaps.tr069.xml.ParameterInfoStruct;
-import com.owera.xaps.tr069.xml.ParameterList;
-import com.owera.xaps.tr069.xml.ParameterValueStruct;
-import com.owera.xaps.tr069.xml.Parser;
+import com.owera.xaps.tr069.xml.*;
+
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class CUreq extends Body {
 

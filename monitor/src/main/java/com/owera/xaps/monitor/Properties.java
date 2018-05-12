@@ -1,13 +1,11 @@
 package com.owera.xaps.monitor;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Supplier;
-
 import com.owera.common.db.ConnectionProperties;
-import com.owera.common.util.PropertyReader;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+
+import java.util.Optional;
+import java.util.function.Supplier;
 
 import static java.lang.Long.getLong;
 

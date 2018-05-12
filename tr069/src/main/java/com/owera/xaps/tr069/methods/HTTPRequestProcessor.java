@@ -1,33 +1,13 @@
 package com.owera.xaps.tr069.methods;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Context;
 import com.owera.common.util.NaturalComparator;
 import com.owera.xaps.base.BaseCache;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.NoDataAvailableException;
-import com.owera.xaps.dbi.tr069.TR069DMLoader;
-import com.owera.xaps.dbi.tr069.TR069DMParameter;
+import com.owera.xaps.dbi.tr069.*;
 import com.owera.xaps.dbi.tr069.TR069DMParameter.StringType;
-import com.owera.xaps.dbi.tr069.TR069DMParameterMap;
-import com.owera.xaps.dbi.tr069.TR069DMType;
-import com.owera.xaps.dbi.tr069.TestCase;
-import com.owera.xaps.dbi.tr069.TestCaseParameter;
 import com.owera.xaps.dbi.tr069.TestCaseParameter.TestCaseParameterType;
-import com.owera.xaps.dbi.tr069.TestDB;
-import com.owera.xaps.dbi.tr069.TestHistory;
 import com.owera.xaps.tr069.HTTPReqData.XMLFormatter;
 import com.owera.xaps.tr069.HTTPReqResData;
 import com.owera.xaps.tr069.Properties;
@@ -45,6 +25,14 @@ import com.owera.xaps.tr069.test.system2.TestUnitCache;
 import com.owera.xaps.tr069.test.system2.Util;
 import com.owera.xaps.tr069.xml.ParameterAttributeStruct;
 import com.owera.xaps.tr069.xml.ParameterValueStruct;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * RequestProcessor will parse the xml from the CPE. Any vital information will be stored in the SessionData or
@@ -494,8 +482,6 @@ public class HTTPRequestProcessor {
 			}
 			if (Log.isConversationLogEnabled()) {
 				String unitId = reqRes.getSessionData().getUnitId();
-				if (unitId != null)
-					Context.put(Context.X, unitId, BaseCache.SESSIONDATA_CACHE_TIMEOUT);
 				String xml = reqRes.getRequest().getXml();
 				if (Properties.isPrettyPrintQuirk(reqRes.getSessionData()))
 					xml = XMLFormatter.prettyprint(reqRes.getRequest().getXml());

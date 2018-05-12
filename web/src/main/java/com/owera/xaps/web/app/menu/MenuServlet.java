@@ -1,6 +1,5 @@
 package com.owera.xaps.web.app.menu;
 
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.Users;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.page.report.ReportType;
@@ -11,6 +10,8 @@ import com.owera.xaps.web.app.util.WebProperties;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +39,7 @@ public class MenuServlet extends HttpServlet {
 	private static Configuration templateConfig;
 
 	/** The logger. */
-	private static Logger logger = new Logger();
+	private static final Logger logger = LoggerFactory.getLogger(MenuServlet.class);
 
 	/* (non-Javadoc)
 	 * @see javax.servlet.GenericServlet#init()

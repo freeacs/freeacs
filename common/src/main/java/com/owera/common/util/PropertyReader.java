@@ -1,17 +1,12 @@
 package com.owera.common.util;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-
-import com.owera.common.log.Logger;
 
 public class PropertyReader {
 
@@ -20,7 +15,7 @@ public class PropertyReader {
 	private final static long RELOAD_INTERVAL_DEFAULT = 30 * 1000;
 
 	private static Map<String, Object> properties = new HashMap<String, Object>();
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(PropertyReader.class);
 	private String propertyfile;
 
 	public PropertyReader(String propertyfile) throws PropertyReaderException {

@@ -1,11 +1,11 @@
 package com.owera.xaps.syslogserver;
 
-import java.io.File;
-
-import org.apache.commons.io.FileSystemUtils;
-
-import com.owera.common.log.Logger;
 import com.owera.common.scheduler.TaskDefaultImpl;
+import org.apache.commons.io.FileSystemUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
 
 public class DiskSpaceCheck extends TaskDefaultImpl {
 
@@ -19,7 +19,7 @@ public class DiskSpaceCheck extends TaskDefaultImpl {
 		return Properties.getMinFreeDiskSpace() * 1024;
 	}
 
-	private Logger logger = new Logger(); // Logging of internal matters - if necessary
+	private static Logger logger = LoggerFactory.getLogger(DiskSpaceCheck.class);
 
 	@Override
 	public void runImpl() throws Throwable {
@@ -29,7 +29,7 @@ public class DiskSpaceCheck extends TaskDefaultImpl {
 			SyslogServer.pause(true);
 			Syslog2DB.pause(true);
 		} else if (SyslogServer.isPause() && freeSpace >= getMinFreeDiskSpace()) {
-			logger.notice("Server will resume operation, free disk space is " + freeSpace / 1024 + " MB.");
+			logger.info("Server will resume operation, free disk space is " + freeSpace / 1024 + " MB.");
 			SyslogServer.pause(false);
 			Syslog2DB.pause(false);
 		}

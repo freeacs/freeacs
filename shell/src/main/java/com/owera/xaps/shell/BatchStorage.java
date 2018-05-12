@@ -1,10 +1,10 @@
 package com.owera.xaps.shell;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.owera.xaps.dbi.UnitParameter;
 import com.owera.xaps.dbi.UnittypeParameter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BatchStorage {
 	private List<UnitParameter> addChangeUnitParameters;

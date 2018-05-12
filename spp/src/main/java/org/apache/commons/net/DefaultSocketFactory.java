@@ -17,13 +17,12 @@
 
 package org.apache.commons.net;
 
+import javax.net.SocketFactory;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
-import javax.net.SocketFactory;
 
 /***
  * DefaultSocketFactory implements the SocketFactory interface by

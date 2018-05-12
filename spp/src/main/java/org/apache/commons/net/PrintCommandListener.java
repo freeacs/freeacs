@@ -18,8 +18,6 @@
 package org.apache.commons.net;
 
 import java.io.PrintWriter;
-import org.apache.commons.net.ProtocolCommandEvent;
-import org.apache.commons.net.ProtocolCommandListener;
 
 /***
  * This is a support class for some of the example programs.  It is

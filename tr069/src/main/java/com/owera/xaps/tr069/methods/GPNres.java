@@ -1,9 +1,5 @@
 package com.owera.xaps.tr069.methods;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.owera.common.log.Logger;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.UnittypeParameter;
@@ -15,10 +11,15 @@ import com.owera.xaps.tr069.exception.TR069ExceptionShortMessage;
 import com.owera.xaps.tr069.xml.ParameterInfoStruct;
 import com.owera.xaps.tr069.xml.ParameterList;
 import com.owera.xaps.tr069.xml.Parser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GPNres {
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(GPNres.class);
 
 	public static void process(HTTPReqResData reqRes) throws TR069Exception {
 

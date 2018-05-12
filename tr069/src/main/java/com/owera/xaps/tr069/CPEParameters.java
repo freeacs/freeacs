@@ -1,10 +1,10 @@
 package com.owera.xaps.tr069;
 
+import com.owera.xaps.tr069.xml.ParameterValueStruct;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import com.owera.xaps.tr069.xml.ParameterValueStruct;
 
 /**
  * These parameters holds a special meaning for the TR-069 Server. The

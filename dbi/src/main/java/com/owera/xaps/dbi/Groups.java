@@ -1,26 +1,18 @@
 package com.owera.xaps.dbi;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.DynamicStatement.NullInteger;
 import com.owera.xaps.dbi.Parameter.Operator;
 import com.owera.xaps.dbi.Parameter.ParameterDataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.sql.*;
+import java.util.*;
 
 public class Groups {
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(Groups.class);
 	private Map<String, Group> nameMap;
 	private Map<Integer, Group> idMap;
 	private Unittype unittype;
@@ -99,13 +91,13 @@ public class Groups {
 			Set<Integer> groupParamIdSet = new HashSet<Integer>();
 			while (rs.next()) {
 				Integer unittypeParamId = rs.getInt("unit_type_param_id");
-				logger.notice("refreshGroupParameter: Group: " + group + ", unittypeParamId: " + unittypeParamId);
+				logger.info("refreshGroupParameter: Group: " + group + ", unittypeParamId: " + unittypeParamId);
 				if (group != null)
-					logger.notice("refreshGroupParameter: Group.getUnittype(): " + group.getUnittype());
+					logger.info("refreshGroupParameter: Group.getUnittype(): " + group.getUnittype());
 				if (group.getUnittype() != null)
-					logger.notice("refreshGroupParameter: Group.getUnittype().getUnittypeParameters(): " + group.getUnittype().getUnittypeParameters());
+					logger.info("refreshGroupParameter: Group.getUnittype().getUnittypeParameters(): " + group.getUnittype().getUnittypeParameters());
 				if (group.getUnittype().getUnittypeParameters() != null)
-					logger.notice("refreshGroupParameter: Group.getUnittype().getUnittypeParameters().getById(utpId): " + group.getUnittype().getUnittypeParameters().getById(unittypeParamId));
+					logger.info("refreshGroupParameter: Group.getUnittype().getUnittypeParameters().getById(utpId): " + group.getUnittype().getUnittypeParameters().getById(unittypeParamId));
 				UnittypeParameter utp = group.getUnittype().getUnittypeParameters().getById(unittypeParamId);
 				String value = rs.getString("value");
 				ParameterDataType pdt = ParameterDataType.TEXT;
@@ -220,11 +212,11 @@ public class Groups {
 
 			s.setQueryTimeout(60);
 			int rowsAffected = s.executeUpdate();
-			logger.notice("Updated " + rowsAffected + " childgroups of group " + group + " with either a new parent or no parent");
+			logger.info("Updated " + rowsAffected + " childgroups of group " + group + " with either a new parent or no parent");
 			sql = "DELETE FROM group_ WHERE group_id = " + group.getId();
 			s.setQueryTimeout(60);
 			s.executeUpdate(sql);
-			logger.notice("Deleted group " + group);
+			logger.info("Deleted group " + group);
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(group, group.getUnittype());
 		} catch (SQLException sqle) {
@@ -307,7 +299,7 @@ public class Groups {
 				if (gk.next())
 					group.setId(gk.getInt(1));
 				s.close();
-				logger.notice("Inserted group " + group.getName());
+				logger.info("Inserted group " + group.getName());
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishAdd(group, group.getUnittype());
 			} else {
@@ -336,7 +328,7 @@ public class Groups {
 				ps.setQueryTimeout(60);
 				ps.executeUpdate();
 
-				logger.notice("Updated group " + group.getName());
+				logger.info("Updated group " + group.getName());
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(group, group.getUnittype());
 			}

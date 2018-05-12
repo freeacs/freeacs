@@ -1,18 +1,12 @@
 package com.owera.xaps.dbi;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The purpose of unit_job table is for each job to:
@@ -90,9 +84,6 @@ public class UnitJobs {
 	public UnitJobs(ConnectionProperties cp) {
 		this.connectionProperties = cp;
 	}
-
-	//	private static Logger logger = Logger.getLogger(UnitJobs.class);
-	private static Logger logger = new Logger();
 
 	// 1.1 and 1.2
 	public boolean start(UnitJob uj) throws SQLException, NoAvailableConnectionException {

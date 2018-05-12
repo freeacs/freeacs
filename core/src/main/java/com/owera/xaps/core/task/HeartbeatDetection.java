@@ -1,37 +1,25 @@
 package com.owera.xaps.core.task;
 
+import com.owera.common.db.ConnectionProvider;
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.common.util.Cache;
+import com.owera.common.util.CacheValue;
+import com.owera.common.util.TimestampMap;
+import com.owera.xaps.core.util.SyslogMessageMapContainer;
+import com.owera.xaps.core.util.SyslogMessageMapContainer.SyslogMessageMap;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.dbi.util.SQLUtil;
+import com.owera.xaps.dbi.util.SyslogClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
-import com.owera.common.util.Cache;
-import com.owera.common.util.CacheValue;
-import com.owera.common.util.TimestampMap;
-import com.owera.xaps.core.util.SyslogMessageMapContainer;
-import com.owera.xaps.core.util.SyslogMessageMapContainer.SyslogMessageMap;
-import com.owera.xaps.dbi.DynamicStatement;
-import com.owera.xaps.dbi.Group;
-import com.owera.xaps.dbi.Heartbeat;
-import com.owera.xaps.dbi.SyslogConstants;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
-import com.owera.xaps.dbi.util.SQLUtil;
-import com.owera.xaps.dbi.util.SyslogClient;
+import java.util.*;
 
 public class HeartbeatDetection extends DBIShare {
 
@@ -48,9 +36,9 @@ public class HeartbeatDetection extends DBIShare {
 	private SyslogMessageMapContainer smmc = new SyslogMessageMapContainer();
 	private TimestampMap activeDevices = new TimestampMap();
 	private Cache sentMessages = new Cache();
-	private Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(HeartbeatDetection.class);
 
-	public HeartbeatDetection(String taskName) throws SQLException, NoAvailableConnectionException {
+	public HeartbeatDetection(String taskName) throws SQLException {
 		super(taskName);
 	}
 
@@ -237,7 +225,7 @@ public class HeartbeatDetection extends DBIShare {
 			}
 			logger.debug("HeartbeatDetection: SendHeartbeats: Found " + unitNotFoundCounter + " units not defined in Fusion with missing heartbeats (no missing heartbeat message created)");
 			logger.debug("HeartbeatDetection: SendHeartbeats: Found " + noHeartbeatNotActiveCounter + " inactive units with missing heartbeats (no missing heartbeat message created)");
-			logger.notice("HeartbeatDetection: SendHeartbeats: Created " + missingHeartbeatCounter + " missing heartbeat syslog entries");
+			logger.info("HeartbeatDetection: SendHeartbeats: Created " + missingHeartbeatCounter + " missing heartbeat syslog entries");
 		}
 	}
 

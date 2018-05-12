@@ -1,9 +1,9 @@
 package com.owera.xaps.tr069;
 
+import com.owera.xaps.tr069.xml.ParameterValueStruct;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.owera.xaps.tr069.xml.ParameterValueStruct;
 
 public class InformParameters {
 	// The keyroot of the CPE, must be set by the constuctor;

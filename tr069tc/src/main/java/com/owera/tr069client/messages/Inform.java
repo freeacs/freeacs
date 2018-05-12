@@ -1,12 +1,12 @@
 package com.owera.tr069client.messages;
 
-import java.io.IOException;
-
 import com.owera.tr069client.Arguments;
 import com.owera.tr069client.HttpHandler;
 import com.owera.tr069client.OutOfConnections;
 import com.owera.tr069client.TR069Client;
 import com.owera.tr069client.monitor.Status;
+
+import java.io.IOException;
 
 public class Inform {
 

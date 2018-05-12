@@ -11,8 +11,8 @@
 
 package test.de.javawi.jstun.attribute;
 
-import junit.framework.TestCase;
 import de.javawi.jstun.attribute.MappedAddress;
+import junit.framework.TestCase;
 
 public class MappedAddressTest extends TestCase {
 	MappedAddress ma;

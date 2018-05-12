@@ -1,37 +1,8 @@
 package com.owera.xaps.shell.menu;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Syslog;
-import com.owera.xaps.dbi.SyslogConstants;
-import com.owera.xaps.dbi.SyslogEntry;
-import com.owera.xaps.dbi.SyslogFilter;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.shell.Context;
-import com.owera.xaps.shell.Script;
-import com.owera.xaps.shell.ScriptMaker;
-import com.owera.xaps.shell.Session;
-import com.owera.xaps.shell.Variable;
-import com.owera.xaps.shell.XAPSShell;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.shell.*;
 import com.owera.xaps.shell.command.ContextContainer;
 import com.owera.xaps.shell.command.ContextElement;
 import com.owera.xaps.shell.output.Heading;
@@ -42,6 +13,15 @@ import com.owera.xaps.shell.util.FileUtil;
 import com.owera.xaps.shell.util.StringUtil;
 import com.owera.xaps.shell.util.ValidateInteger;
 import com.owera.xaps.shell.util.Validation;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import java.io.*;
+import java.io.File;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class GenericMenu {
 

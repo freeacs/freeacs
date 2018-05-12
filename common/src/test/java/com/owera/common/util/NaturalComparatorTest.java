@@ -1,12 +1,10 @@
 package com.owera.common.util;
 
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.Map.Entry;
-
-import com.owera.common.util.NaturalComparator;
-import junit.framework.TestCase;
 import org.junit.Test;
+
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;

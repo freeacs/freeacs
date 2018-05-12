@@ -1,17 +1,15 @@
 package com.owera.xaps.tr069;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import org.w3c.dom.Document;
-
-import com.owera.common.log.Context;
 import com.owera.xaps.base.BaseCache;
 import com.owera.xaps.base.BaseCacheException;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.tr069.exception.TR069DatabaseException;
 import com.owera.xaps.tr069.xml.TR069TransactionID;
+import org.w3c.dom.Document;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 public class HTTPReqResData {
 	private HTTPReqData request;
@@ -40,7 +38,6 @@ public class HTTPReqResData {
 		try {
 			sessionData = (SessionData) BaseCache.getSessionData(sessionId);
 		} catch (BaseCacheException tr069Ex) {
-			Context.remove(Context.X);
 			HttpSession session = req.getSession();
 			Log.debug(HTTPReqResData.class, "Sessionid " + sessionId + " did not return a SessionData object from cache, must create a new SessionData object");
 			Log.debug(HTTPReqResData.class, "Sessionid " + session.getId() + " created: " + session.getCreationTime() + ", lastAccess:" + session.getLastAccessedTime() + ", mxInactiveInterval:" + session.getMaxInactiveInterval());
@@ -49,8 +46,6 @@ public class HTTPReqResData {
 		}
 		if (sessionData.getStartupTmsForSession() == null)
 			sessionData.setStartupTmsForSession(System.currentTimeMillis());
-		if (sessionData.getUnitId() != null)
-			Context.put(Context.X, sessionData.getUnitId(), BaseCache.SESSIONDATA_CACHE_TIMEOUT);
 		Log.debug(HTTPReqResData.class, "Adding a HTTPReqResData object to the list");
 		sessionData.getReqResList().add(this);
 	}

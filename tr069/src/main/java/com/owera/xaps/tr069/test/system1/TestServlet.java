@@ -1,18 +1,5 @@
 package com.owera.xaps.tr069.test.system1;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Arrays;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.owera.common.html.Element;
 import com.owera.common.html.InputRadioMaker;
 import com.owera.common.html.SelectMaker;
@@ -20,6 +7,13 @@ import com.owera.common.html.TextAreaElement;
 import com.owera.common.util.FileDatabase;
 import com.owera.common.util.NaturalComparator;
 import com.owera.xaps.tr069.Properties;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.Arrays;
 
 public class TestServlet extends HttpServlet {
 

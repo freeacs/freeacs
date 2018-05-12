@@ -1,17 +1,17 @@
 package com.owera.xaps.tr069.methods;
 
-import java.lang.reflect.Method;
-
 import com.owera.xaps.base.Log;
 import com.owera.xaps.dbi.util.ProvisioningMode;
 import com.owera.xaps.tr069.HTTPReqResData;
 import com.owera.xaps.tr069.HTTPResData;
-import com.owera.xaps.tr069.exception.TR069ExceptionShortMessage;
 import com.owera.xaps.tr069.exception.TR069Exception;
+import com.owera.xaps.tr069.exception.TR069ExceptionShortMessage;
 import com.owera.xaps.tr069.test.system2.TestUnit;
+import com.owera.xaps.tr069.test.system2.TestUnit.TestState;
 import com.owera.xaps.tr069.test.system2.TestUnitCache;
 import com.owera.xaps.tr069.test.system2.Util;
-import com.owera.xaps.tr069.test.system2.TestUnit.TestState;
+
+import java.lang.reflect.Method;
 
 /* This class is responsible for choosing the next response in the
  * TR-069 conversation. Depending upon the request, different logic

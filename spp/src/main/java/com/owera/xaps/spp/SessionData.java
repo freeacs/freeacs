@@ -1,25 +1,17 @@
 package com.owera.xaps.spp;
 
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.xaps.base.*;
+import com.owera.xaps.base.db.DBAccessSession;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.dbi.util.ProvisioningMessage;
+import com.owera.xaps.spp.response.ProvisioningResponse;
+import com.owera.xaps.tr069.xml.ParameterValueStruct;
+
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.base.Log;
-import com.owera.xaps.base.NoDataAvailableException;
-import com.owera.xaps.base.OweraParameters;
-import com.owera.xaps.base.PIIDecision;
-import com.owera.xaps.base.SessionDataI;
-import com.owera.xaps.base.db.DBAccessSession;
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.JobParameter;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.util.ProvisioningMessage;
-import com.owera.xaps.spp.response.ProvisioningResponse;
-import com.owera.xaps.tr069.xml.ParameterValueStruct;
 
 public class SessionData implements SessionDataI {
 

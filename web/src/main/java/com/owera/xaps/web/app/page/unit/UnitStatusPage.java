@@ -1,7 +1,6 @@
 package com.owera.xaps.web.app.page.unit;
 
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.report.*;
 import com.owera.xaps.web.Page;
@@ -29,6 +28,8 @@ import org.jfree.data.general.DefaultValueDataset;
 import org.jfree.data.general.ValueDataset;
 import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.StandardGradientPaintTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -88,7 +89,7 @@ import java.util.regex.Pattern;
 public class UnitStatusPage extends AbstractWebPage {
 	
 	/** The logger. */
-	private static Logger logger = new Logger();
+	private static final Logger logger = LoggerFactory.getLogger(UnitStatusPage.class);
 	
 	/** The current unit. */
 	private Unit currentUnit;

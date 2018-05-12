@@ -1,11 +1,10 @@
 package com.owera.tr069client;
 
-import java.io.IOException;
-
+import com.owera.tr069client.monitor.Status;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.protocol.HttpContext;
 
-import com.owera.tr069client.monitor.Status;
+import java.io.IOException;
 
 public class RetryHandler implements HttpRequestRetryHandler {
 

@@ -1,12 +1,6 @@
 package com.owera.xaps.base.http;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
-import javax.servlet.http.HttpServletResponse;
-
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Context;
 import com.owera.xaps.base.BaseCache;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.NoDataAvailableException;
@@ -15,6 +9,10 @@ import com.owera.xaps.tr069.HTTPReqResData;
 import com.owera.xaps.tr069.Properties;
 import com.owera.xaps.tr069.SessionData;
 import com.owera.xaps.tr069.exception.TR069AuthenticationException;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.sql.SQLException;
 
 public class BasicAuthenticator {
 
@@ -45,7 +43,7 @@ public class BasicAuthenticator {
 	/**
 	 * Verifies login against database
 	 * 
-	 * @param request
+	 * @param reqRes
 	 *            HTTP servlet request
 	 * @param authorization
 	 *            Authorization credentials from this request
@@ -74,7 +72,6 @@ public class BasicAuthenticator {
 
 		// Do database read parameters and then perform verification
 		String unitId = Util.username2unitId(username);
-		Context.put(Context.X, unitId, BaseCache.SESSIONDATA_CACHE_TIMEOUT);
 		Log.debug(DigestAuthenticator.class, "Basic verification identifed unit id " + unitId + " from CPE IP-address " + reqRes.getReq().getRemoteHost());
 		try {
 			SessionData sessionData = reqRes.getSessionData();

@@ -1,27 +1,20 @@
 package com.owera.xaps.shell.util;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.owera.common.log.Logger;
-import com.owera.xaps.dbi.Group;
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.shell.Context;
 import com.owera.xaps.shell.Properties;
 import com.owera.xaps.shell.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FileUtil {
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(FileUtil.class);
 
 	public static boolean exists(String filename) {
 		File f = new File(filename);

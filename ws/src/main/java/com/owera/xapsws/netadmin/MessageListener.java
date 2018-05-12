@@ -1,28 +1,20 @@
 package com.owera.xapsws.netadmin;
 
-import java.util.List;
-
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
-import com.owera.common.log.Logger;
 import com.owera.common.util.Sleep;
-import com.owera.xaps.dbi.DBI;
-import com.owera.xaps.dbi.Identity;
-import com.owera.xaps.dbi.Inbox;
-import com.owera.xaps.dbi.Message;
-import com.owera.xaps.dbi.Syslog;
-import com.owera.xaps.dbi.SyslogConstants;
-import com.owera.xaps.dbi.User;
-import com.owera.xaps.dbi.Users;
+import com.owera.xaps.dbi.*;
 import com.owera.xapsws.impl.XAPSWS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static com.owera.xapsws.impl.Properties.getMaxAge;
-import static com.owera.xapsws.impl.Properties.getMaxConn;
-import static com.owera.xapsws.impl.Properties.getUrl;
+import java.util.List;
+
+import static com.owera.xapsws.impl.Properties.*;
 
 public class MessageListener implements Runnable {
 
-	private static Logger logger = new Logger();
+	private static final Logger logger = LoggerFactory.getLogger(MessageListener.class);
 
 	private ConnectionProperties cp;
 	private Identity id;

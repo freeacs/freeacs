@@ -1,27 +1,19 @@
 package com.owera.xaps.shell.menu;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.JobParameter;
-import com.owera.xaps.dbi.JobStatus;
-import com.owera.xaps.dbi.Parameter;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.UnitJob;
-import com.owera.xaps.dbi.UnitJobs;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.shell.Context;
 import com.owera.xaps.shell.Session;
 import com.owera.xaps.shell.output.Line;
 import com.owera.xaps.shell.output.Listing;
 import com.owera.xaps.shell.output.OutputHandler;
 import com.owera.xaps.shell.util.Validation;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class JobMenu {
 	private Session session;

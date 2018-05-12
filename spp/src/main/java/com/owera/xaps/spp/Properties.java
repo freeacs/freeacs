@@ -1,20 +1,24 @@
 package com.owera.xaps.spp;
 
+import com.owera.xaps.base.Log;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.owera.common.util.PropertyReader;
-import com.owera.xaps.base.Log;
-
 public class Properties {
 
-	private static PropertyReader pr = new PropertyReader("xaps-spp.properties");
+	private static Config config = ConfigFactory.load();
 
 	private static int getInteger(String propertyKey, int defaultValue) {
-		String prop = pr.getProperty(propertyKey);
+		if (!config.hasPath(propertyKey)) {
+			Log.warn(Properties.class, "The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
+			return defaultValue;
+		}
 		try {
-			return Integer.parseInt(prop);
+			return config.getInt(propertyKey);
 		} catch (Throwable t) {
 			Log.warn(Properties.class, "The value of " + propertyKey + " was not a number, instead using default value " + defaultValue, t);
 			return defaultValue;
@@ -22,12 +26,11 @@ public class Properties {
 	}
 
 	private static String getString(String propertyKey, String defaultValue) {
-		String prop = pr.getProperty(propertyKey);
-		if (prop == null) {
+		if (!config.hasPath(propertyKey)) {
 			Log.warn(Properties.class, "The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
 			return defaultValue;
 		}
-		return prop;
+		return config.getString(propertyKey);
 	}
 
 	public static int getTelnetMaxClients() {
@@ -64,13 +67,13 @@ public class Properties {
 
 	private static List<String> getPropertyList(String param, String sourceType, String name) {
 		List<String> propertyList = new ArrayList<String>();
-		Map<String, Object> propertyMap = pr.getPropertyMap();
+		Map<String, Object> propertyMap = config.root().unwrapped();
 		String propertyPrefix = param + "." + sourceType;
 		if (name != null)
 			propertyPrefix += "." + name;
 		for (String key : propertyMap.keySet()) {
 			if (key.startsWith(propertyPrefix)) {
-				String property = pr.getProperty(key);
+				String property = getString(key, null);
 				if (property != null)
 					propertyList.add(property);
 			}

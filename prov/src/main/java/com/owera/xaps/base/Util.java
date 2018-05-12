@@ -1,13 +1,13 @@
 package com.owera.xaps.base;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.owera.xaps.base.db.DBAccessStatic;
 import com.owera.xaps.dbi.UnitParameter;
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.UnittypeParameter;
 import com.owera.xaps.dbi.util.SystemParameters;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Util {
 	public static void resetReboot(SessionDataI sessionData) {

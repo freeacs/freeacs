@@ -1,5 +1,16 @@
 package com.owera.xaps.spp.telnet;
 
+import com.owera.common.db.ConnectionProperties;
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.xaps.base.SessionDataI;
+import com.owera.xaps.base.UnitJob;
+import com.owera.xaps.base.db.DBAccessSession;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.dbi.util.SystemParameters;
+import com.owera.xaps.spp.SessionData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -10,29 +21,9 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
-import com.owera.xaps.base.SessionDataI;
-import com.owera.xaps.base.UnitJob;
-import com.owera.xaps.base.db.DBAccessSession;
-import com.owera.xaps.dbi.File;
-import com.owera.xaps.dbi.FileType;
-import com.owera.xaps.dbi.JobParameter;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.UnitJobStatus;
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.UnittypeParameterFlag;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
-
-import com.owera.xaps.dbi.util.SystemParameters;
-import com.owera.xaps.spp.SessionData;
-
 public class TelnetJobThread implements Runnable {
 
-	private static Logger log = new Logger(TelnetJobThread.class);
+	private static Logger log = LoggerFactory.getLogger(TelnetJobThread.class);
 	private static Map<String, Pattern> compiledPatternMap = new HashMap<String, Pattern>();
 
 	private SessionDataI sessionData = new SessionData();
@@ -91,7 +82,7 @@ public class TelnetJobThread implements Runnable {
 			Map<String, Pattern> abortPatternMap = getAbortPatternMap(unitParameters, jobParams);
 
 			// start Telnet-session
-			log.notice("Will run telnet-sesion to IP: " + ip + ":" + port + " using " + user + "/" + pass + " with file " + file.getName() + ", will search for " + parsePatternMap.size()
+			log.info("Will run telnet-sesion to IP: " + ip + ":" + port + " using " + user + "/" + pass + " with file " + file.getName() + ", will search for " + parsePatternMap.size()
 					+ " patterns");
 			atc = new AutomatedTelnetClient(ip, user, pass, port);
 			String s = new String(file.getContent());

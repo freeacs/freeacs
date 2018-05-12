@@ -1,18 +1,19 @@
 package com.owera.xaps.tr069.background;
 
-import java.util.List;
-
-import com.owera.common.log.Logger;
 import com.owera.common.scheduler.TaskDefaultImpl;
 import com.owera.xaps.dbi.DBI;
 import com.owera.xaps.dbi.Inbox;
 import com.owera.xaps.dbi.Message;
 import com.owera.xaps.dbi.SyslogConstants;
 import com.owera.xaps.tr069.test.system2.TestUnitCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class MessageListenerTask extends TaskDefaultImpl {
 
-	private Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(MessageListenerTask.class);
 	private Inbox tr069ServerListenerInbox = new Inbox();
 
 	public MessageListenerTask(String taskName, DBI dbi) {

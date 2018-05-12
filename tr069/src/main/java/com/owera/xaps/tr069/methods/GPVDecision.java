@@ -1,25 +1,11 @@
 package com.owera.xaps.tr069.methods;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.owera.xaps.Properties.Module;
-import com.owera.xaps.base.DownloadLogic;
-import com.owera.xaps.base.JobLogic;
-import com.owera.xaps.base.Log;
-import com.owera.xaps.base.ServiceWindow;
+import com.owera.xaps.base.*;
 import com.owera.xaps.base.UnitJob;
-import com.owera.xaps.base.Util;
 import com.owera.xaps.base.db.DBAccessSessionTR069;
-import com.owera.xaps.dbi.Job;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.JobFlag.JobType;
-import com.owera.xaps.dbi.JobParameter;
-import com.owera.xaps.dbi.Parameter;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.UnittypeParameterFlag;
-import com.owera.xaps.dbi.UnittypeParameters;
 import com.owera.xaps.dbi.tr069.TR069DMParameter;
 import com.owera.xaps.dbi.tr069.TR069DMParameterMap;
 import com.owera.xaps.dbi.util.ProvisioningMessage;
@@ -39,6 +25,11 @@ import com.owera.xaps.tr069.exception.TR069Exception;
 import com.owera.xaps.tr069.exception.TR069ExceptionShortMessage;
 import com.owera.xaps.tr069.xml.ParameterList;
 import com.owera.xaps.tr069.xml.ParameterValueStruct;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Decision is the main class in the decision package and it contains the core

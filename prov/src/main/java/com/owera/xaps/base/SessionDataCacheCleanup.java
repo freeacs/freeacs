@@ -3,10 +3,10 @@ package com.owera.xaps.base;
 import com.owera.common.util.CleanupNotifier;
 import com.owera.xaps.dbi.Users;
 import com.owera.xaps.dbi.util.ProvisioningMessage;
-import com.owera.xaps.dbi.util.SyslogClient;
 import com.owera.xaps.dbi.util.ProvisioningMessage.ErrorResponsibility;
 import com.owera.xaps.dbi.util.ProvisioningMessage.ProvOutput;
 import com.owera.xaps.dbi.util.ProvisioningMessage.ProvStatus;
+import com.owera.xaps.dbi.util.SyslogClient;
 
 public class SessionDataCacheCleanup implements CleanupNotifier {
 

@@ -17,34 +17,7 @@
 
 package com.owera.xaps.spp;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.net.InetAddress;
-import java.net.SocketTimeoutException;
-import java.util.HashSet;
-import java.util.Iterator;
-
-import org.apache.commons.net.io.FromNetASCIIOutputStream;
-import org.apache.commons.net.io.ToNetASCIIInputStream;
-import org.apache.commons.net.tftp.TFTP;
-import org.apache.commons.net.tftp.TFTPAckPacket;
-import org.apache.commons.net.tftp.TFTPDataPacket;
-import org.apache.commons.net.tftp.TFTPErrorPacket;
-import org.apache.commons.net.tftp.TFTPPacket;
-import org.apache.commons.net.tftp.TFTPPacketException;
-import org.apache.commons.net.tftp.TFTPReadRequestPacket;
-import org.apache.commons.net.tftp.TFTPWriteRequestPacket;
-
-import com.owera.common.log.Context;
 import com.owera.common.util.Sleep;
-import com.owera.xaps.base.BaseCache;
 import com.owera.xaps.base.DownloadLogic;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.db.DBAccess;
@@ -59,6 +32,15 @@ import com.owera.xaps.dbi.util.ProvisioningMessage.ErrorResponsibility;
 import com.owera.xaps.dbi.util.ProvisioningMessage.ProvOutput;
 import com.owera.xaps.dbi.util.ProvisioningMessage.ProvStatus;
 import com.owera.xaps.dbi.util.SyslogClient;
+import org.apache.commons.net.io.FromNetASCIIOutputStream;
+import org.apache.commons.net.io.ToNetASCIIInputStream;
+import org.apache.commons.net.tftp.*;
+
+import java.io.*;
+import java.net.InetAddress;
+import java.net.SocketTimeoutException;
+import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * A fully multi-threaded tftp server. Can handle multiple clients at the same
@@ -416,19 +398,13 @@ public class TFTPServer implements Runnable {
           InetAddress address = trrp.getAddress();
           sessionData.setIpAddress(address.getHostAddress());
           sessionData.setReqURL("tftp://" + address.getHostAddress() + ":" + Properties.getTFTPPort() + trrp.getFilename());
-          if (sessionData.getReqURL().indexOf("/file/") > -1) { // firmware
-                                                                // download
+          if (sessionData.getReqURL().contains("/file/")) {
             XAPS xaps = DBAccess.getDBI().getXaps();
             String pathInfo = trrp.getFilename();
             pathInfo = pathInfo.replaceAll("--", " ");
             String[] pathInfoArr = pathInfo.split("/");
             String firmwareVersion = pathInfoArr[0];
             unittypeName = pathInfoArr[1];
-            if (pathInfoArr.length > 2) // The optional unit-id is also sent -
-                                        // only for logging purpose
-              Context.put(Context.X, pathInfoArr[2], BaseCache.SESSIONDATA_CACHE_TIMEOUT);
-            else
-              Context.remove(Context.X);
             Unittype unittype = xaps.getUnittype(unittypeName);
             if (unittype == null) {
               String e = "Could not find unittype " + unittypeName + " in xAPS, hence file URL is incorrect";

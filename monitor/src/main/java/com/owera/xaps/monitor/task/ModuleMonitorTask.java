@@ -1,14 +1,15 @@
 package com.owera.xaps.monitor.task;
 
+import com.owera.common.scheduler.TaskDefaultImpl;
+import com.owera.xaps.monitor.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
-
-import com.owera.common.log.Logger;
-import com.owera.common.scheduler.TaskDefaultImpl;
-import com.owera.xaps.monitor.Properties;
 
 /**
  * Responsible for monitoring a set of URLs. 
@@ -17,7 +18,7 @@ import com.owera.xaps.monitor.Properties;
  */
 public class ModuleMonitorTask extends TaskDefaultImpl {
 
-	private static Logger log = new Logger();
+	private static Logger log = LoggerFactory.getLogger(ModuleMonitorTask.class);
 
 	/**
 	 * Contains a list of MonitorInfo. This list is used to
@@ -26,6 +27,7 @@ public class ModuleMonitorTask extends TaskDefaultImpl {
 	 * 3. Read the status for each monitored URL. 
 	 */
 	private static Set<MonitorInfo> monitorInfoSet = new TreeSet<>();
+
 	/**
 	 * All modules are defined here - we assume that every module will be monitored using this
 	 * URL: monitor-urlbase+xaps+<module>+/ok

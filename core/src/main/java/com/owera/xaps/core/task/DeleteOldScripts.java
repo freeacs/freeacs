@@ -1,12 +1,13 @@
 package com.owera.xaps.core.task;
 
-import java.sql.SQLException;
-import java.util.Calendar;
-
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.core.Properties;
 import com.owera.xaps.dbi.ScriptExecutions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.sql.SQLException;
+import java.util.Calendar;
 
 public class DeleteOldScripts extends DBIShare {
 
@@ -14,7 +15,7 @@ public class DeleteOldScripts extends DBIShare {
 		super(taskName);
 	}
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(DeleteOldScripts.class);
 
 	@Override
 	public void runImpl() throws Exception {

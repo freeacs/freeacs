@@ -1,8 +1,8 @@
 package com.owera.xaps.tr069.methods;
 
-import java.lang.reflect.Method;
-
 import com.owera.xaps.tr069.HTTPReqResData;
+
+import java.lang.reflect.Method;
 
 public class HTTPResponseAction {
 

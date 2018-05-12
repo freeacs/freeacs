@@ -1,11 +1,11 @@
 package com.owera.xaps.dbi;
 
+import com.owera.xaps.dbi.util.MapWrapper;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.owera.xaps.dbi.util.MapWrapper;
 
 public class Group {
 	private Integer id;
