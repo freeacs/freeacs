@@ -1,4 +1,4 @@
-package com.owera.xaps.syslogserver;
+package com.github.freeacs.syslogserver;
 
 import java.net.DatagramPacket;
 

@@ -1,4 +1,4 @@
-package com.owera.xaps.syslogserver;
+package com.github.freeacs.syslogserver;
 
 import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.scheduler.TaskDefaultImpl;
@@ -38,7 +38,7 @@ public class StateLogger extends TaskDefaultImpl {
 		if (summaryHeaderCount == 20)
 			summaryHeaderCount = 0;
 
-		Map<Connection, Long> syslogUsedConn = ConnectionProvider.getUsedConnCopy(getConnectionProperties(getUrl("syslog"), getMaxAge("syslog"), getMaxConn("syslog")));
+		Map<Connection, Long> syslogUsedConn = ConnectionProvider.getUsedConnCopy(getConnectionProperties(Properties.getUrl("syslog"), Properties.getMaxAge("syslog"), Properties.getMaxConn("syslog")));
 		String message = "";
 		message += String.format("%15s | ", getUsedMemory());
 		message += String.format("%13s | ", DiskSpaceCheck.getFreeSpace());

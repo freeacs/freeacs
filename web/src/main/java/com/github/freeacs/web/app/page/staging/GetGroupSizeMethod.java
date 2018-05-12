@@ -1,8 +1,9 @@
-package com.owera.xaps.web.app.page.staging;
+package com.github.freeacs.web.app.page.staging;
 
 import com.github.freeacs.dbi.Group;
 import com.github.freeacs.dbi.Parameter;
 import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.web.app.util.XAPSLoader;
 import com.owera.xaps.web.app.util.XAPSLoader;
 import freemarker.template.SimpleNumber;
 import freemarker.template.TemplateMethodModel;

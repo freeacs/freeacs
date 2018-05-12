@@ -1,4 +1,4 @@
-package com.owera.xaps.core;
+package com.github.freeacs.core;
 
 import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.scheduler.Schedule;
@@ -6,6 +6,7 @@ import com.github.freeacs.common.scheduler.ScheduleType;
 import com.github.freeacs.common.scheduler.Scheduler;
 import com.github.freeacs.common.scheduler.ShowScheduleQueue;
 import com.github.freeacs.common.util.Sleep;
+import com.github.freeacs.core.task.*;
 import com.owera.xaps.core.task.*;
 import com.github.freeacs.dbi.util.XAPSVersionCheck;
 import org.slf4j.Logger;
@@ -38,7 +39,7 @@ public class CoreServlet extends HttpServlet {
 	public void init() {
 		try {
 			log.info("Server starts...");
-			XAPSVersionCheck.versionCheck(ConnectionProvider.getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps")));
+			XAPSVersionCheck.versionCheck(ConnectionProvider.getConnectionProperties(Properties.getUrl("xaps"), Properties.getMaxAge("xaps"), Properties.getMaxConn("xaps")));
 			scheduler = new Scheduler();
 			Thread t = new Thread(scheduler);
 			t.setName("Core (Scheduler)");

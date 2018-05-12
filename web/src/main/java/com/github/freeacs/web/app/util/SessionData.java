@@ -1,7 +1,9 @@
-package com.owera.xaps.web.app.util;
+package com.github.freeacs.web.app.util;
 
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.UnitJob;
+import com.github.freeacs.web.app.security.AllowedUnittype;
+import com.github.freeacs.web.app.security.WebUser;
 import com.owera.xaps.web.app.page.staging.StagingActions.ShipmentCache;
 import com.owera.xaps.web.app.security.AllowedUnittype;
 import com.owera.xaps.web.app.security.WebUser;

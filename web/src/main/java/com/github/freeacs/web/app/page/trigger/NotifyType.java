@@ -1,4 +1,4 @@
-package com.owera.xaps.web.app.page.trigger;
+package com.github.freeacs.web.app.page.trigger;
 
 public class NotifyType {
     private Integer id;

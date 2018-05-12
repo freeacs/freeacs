@@ -1,4 +1,4 @@
-package com.owera.xaps.web.app.page.report.uidata;
+package com.github.freeacs.web.app.page.report.uidata;
 
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.report.RecordGroup;

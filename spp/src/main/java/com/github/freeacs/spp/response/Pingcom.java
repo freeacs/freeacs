@@ -1,4 +1,4 @@
-package com.owera.xaps.spp.response;
+package com.github.freeacs.spp.response;
 
 import com.github.freeacs.dbi.Unit;
 

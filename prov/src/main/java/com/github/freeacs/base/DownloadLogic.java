@@ -1,4 +1,4 @@
-package com.owera.xaps.base;
+package com.github.freeacs.base;
 
 import com.owera.xaps.Properties;
 import com.owera.xaps.Properties.Module;

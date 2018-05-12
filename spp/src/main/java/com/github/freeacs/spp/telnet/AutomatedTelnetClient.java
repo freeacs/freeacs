@@ -1,4 +1,4 @@
-package com.owera.xaps.spp.telnet;
+package com.github.freeacs.spp.telnet;
 
 import org.apache.commons.net.telnet.InvalidTelnetOptionException;
 import org.apache.commons.net.telnet.TelnetClient;

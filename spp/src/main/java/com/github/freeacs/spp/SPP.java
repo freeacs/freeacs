@@ -1,7 +1,16 @@
-package com.owera.xaps.spp;
+package com.github.freeacs.spp;
 
+import com.github.freeacs.base.DownloadLogic;
+import com.github.freeacs.base.JobLogic;
+import com.github.freeacs.base.Log;
+import com.github.freeacs.base.ServiceWindow;
+import com.github.freeacs.base.db.DBAccess;
+import com.github.freeacs.base.db.DBAccessSession;
+import com.github.freeacs.base.db.DBAccessStatic;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.spp.response.ProvisioningResponse;
+import com.github.freeacs.spp.response.SPA;
 import com.owera.xaps.Properties.Module;
 import com.owera.xaps.base.*;
 import com.owera.xaps.base.db.DBAccess;
@@ -146,7 +155,7 @@ public class SPP {
     } else if (job.getFlags().getType() == JobType.SOFTWARE) {
       sw = new ServiceWindow(sessionData, disruptiveSw);
       pm.setProvOutput(ProvOutput.SOFTWARE);
-      if ((disruptive || sw.isWithin()) && DownloadLogic.downloadAllowed(Module.SPP, job)) {
+      if ((disruptive || sw.isWithin()) && DownloadLogic.downloadAllowed(com.github.freeacs.Properties.Module.SPP, job)) {
         unit = sessionData.getUnit();
         String dsw = unit.getParameters().get(SystemParameters.DESIRED_SOFTWARE_VERSION);
         if (sessionData.getUnittype().getFiles().getByVersionType(dsw, FileType.SOFTWARE) == null) {
@@ -262,7 +271,7 @@ public class SPP {
         sessionData.getPIIDecision().setDisruptiveSW(sw);
         sessionData.setPeriodicInterval(sessionData.getPIIDecision().nextPII());
         pm.setProvOutput(ProvOutput.SOFTWARE);
-        if (sw.isWithin() && DownloadLogic.downloadAllowed(Module.SPP, null)) {
+        if (sw.isWithin() && DownloadLogic.downloadAllowed(com.github.freeacs.Properties.Module.SPP, null)) {
           // firmware prov
           pm.setProvStatus(ProvStatus.OK);
           pm.setFileVersion(dsw);
@@ -306,7 +315,7 @@ public class SPP {
 
     boolean ok = JobLogic.checkJobOK(sessionData);
     if (ok)
-      JobLogic.checkNewJob(Module.SPP, sessionData);
+      JobLogic.checkNewJob(com.github.freeacs.Properties.Module.SPP, sessionData);
 
     Job job = sessionData.getJob();
     if (job == null) {

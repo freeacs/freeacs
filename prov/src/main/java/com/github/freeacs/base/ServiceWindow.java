@@ -1,4 +1,4 @@
-package com.owera.xaps.base;
+package com.github.freeacs.base;
 
 import com.github.freeacs.common.util.TimeWindow;
 import com.github.freeacs.dbi.util.SystemConstants;

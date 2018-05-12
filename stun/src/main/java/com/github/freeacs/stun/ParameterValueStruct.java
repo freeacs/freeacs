@@ -1,4 +1,4 @@
-package com.owera.xaps.stun;
+package com.github.freeacs.stun;
 
 public class ParameterValueStruct {
 

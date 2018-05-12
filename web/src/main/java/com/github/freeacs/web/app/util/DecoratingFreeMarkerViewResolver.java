@@ -1,4 +1,4 @@
-package com.owera.xaps.web.app.util;
+package com.github.freeacs.web.app.util;
 
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;

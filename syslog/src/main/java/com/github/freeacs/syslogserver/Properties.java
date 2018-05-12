@@ -1,4 +1,4 @@
-package com.owera.xaps.syslogserver;
+package com.github.freeacs.syslogserver;
 
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.dbi.Syslog;

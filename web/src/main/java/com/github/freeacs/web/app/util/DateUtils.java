@@ -1,4 +1,4 @@
-package com.owera.xaps.web.app.util;
+package com.github.freeacs.web.app.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

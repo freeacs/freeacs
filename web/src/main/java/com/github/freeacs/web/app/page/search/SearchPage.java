@@ -1,6 +1,9 @@
-package com.owera.xaps.web.app.page.search;
+package com.github.freeacs.web.app.page.search;
 
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.web.app.input.*;
+import com.github.freeacs.web.app.util.WebConstants;
+import com.github.freeacs.web.app.util.XAPSLoader;
 import com.owera.xaps.dbi.*;
 import com.github.freeacs.dbi.Parameter.Operator;
 import com.github.freeacs.dbi.Parameter.ParameterDataType;

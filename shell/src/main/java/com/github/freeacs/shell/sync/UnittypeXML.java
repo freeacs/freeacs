@@ -1,4 +1,4 @@
-package com.owera.xaps.shell.sync;
+package com.github.freeacs.shell.sync;
 
 import org.dom4j.Attribute;
 import org.dom4j.Document;

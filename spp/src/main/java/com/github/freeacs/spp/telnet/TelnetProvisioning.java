@@ -1,5 +1,6 @@
-package com.owera.xaps.spp.telnet;
+package com.github.freeacs.spp.telnet;
 
+import com.github.freeacs.base.JobHistoryEntry;
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.Sleep;

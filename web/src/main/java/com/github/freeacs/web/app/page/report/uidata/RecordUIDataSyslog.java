@@ -1,9 +1,10 @@
-package com.owera.xaps.web.app.page.report.uidata;
+package com.github.freeacs.web.app.page.report.uidata;
 
 import com.github.freeacs.dbi.SyslogEntry;
 import com.github.freeacs.dbi.SyslogEvent;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.XAPS;
+import com.github.freeacs.web.app.page.syslog.SyslogUtil;
 import com.owera.xaps.web.app.page.syslog.SyslogUtil;
 import freemarker.template.TemplateModelException;
 

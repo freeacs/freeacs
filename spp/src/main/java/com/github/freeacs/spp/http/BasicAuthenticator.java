@@ -1,6 +1,11 @@
-package com.owera.xaps.spp.http;
+package com.github.freeacs.spp.http;
 
+import com.github.freeacs.base.BaseCache;
+import com.github.freeacs.base.Log;
+import com.github.freeacs.base.NoDataAvailableException;
+import com.github.freeacs.base.http.Util;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.spp.SessionData;
 import com.owera.xaps.base.BaseCache;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.NoDataAvailableException;

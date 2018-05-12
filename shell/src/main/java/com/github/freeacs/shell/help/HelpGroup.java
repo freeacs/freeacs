@@ -1,4 +1,4 @@
-package com.owera.xaps.shell.help;
+package com.github.freeacs.shell.help;
 
 import java.util.ArrayList;
 import java.util.List;

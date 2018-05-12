@@ -1,4 +1,4 @@
-package com.owera.xaps.stun;
+package com.github.freeacs.stun;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

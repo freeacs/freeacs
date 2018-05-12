@@ -1,6 +1,9 @@
-package com.owera.xaps.shell.util;
+package com.github.freeacs.shell.util;
 
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.shell.Context;
+import com.github.freeacs.shell.Properties;
+import com.github.freeacs.shell.Session;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.shell.Context;
 import com.owera.xaps.shell.Properties;

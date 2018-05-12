@@ -1,4 +1,4 @@
-package com.owera.xaps.tr069.test.system2;
+package com.github.freeacs.tr069.test.system2;
 
 public class TestException extends Exception {
 

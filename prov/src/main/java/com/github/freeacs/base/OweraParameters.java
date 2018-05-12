@@ -1,5 +1,6 @@
-package com.owera.xaps.base;
+package com.github.freeacs.base;
 
+import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import com.owera.xaps.tr069.xml.ParameterValueStruct;
 
 import java.util.HashMap;

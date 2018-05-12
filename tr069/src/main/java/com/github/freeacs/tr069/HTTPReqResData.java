@@ -1,4 +1,4 @@
-package com.owera.xaps.tr069;
+package com.github.freeacs.tr069;
 
 import com.owera.xaps.base.BaseCache;
 import com.owera.xaps.base.BaseCacheException;

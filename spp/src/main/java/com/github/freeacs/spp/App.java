@@ -1,4 +1,4 @@
-package com.owera.xaps.spp;
+package com.github.freeacs.spp;
 
 import com.owera.xaps.base.http.OKServlet;
 import org.springframework.boot.SpringApplication;

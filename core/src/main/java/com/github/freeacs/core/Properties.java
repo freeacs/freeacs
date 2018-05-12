@@ -1,4 +1,4 @@
-package com.owera.xaps.core;
+package com.github.freeacs.core;
 
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.typesafe.config.Config;

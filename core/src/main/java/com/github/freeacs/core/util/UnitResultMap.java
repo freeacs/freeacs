@@ -1,4 +1,4 @@
-package com.owera.xaps.core.util;
+package com.github.freeacs.core.util;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

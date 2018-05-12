@@ -1,4 +1,4 @@
-package com.owera.xaps.web.app.util;
+package com.github.freeacs.web.app.util;
 
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.NoAvailableConnectionException;

@@ -1,4 +1,4 @@
-package com.owera.xaps.web.app.page.report.uidata;
+package com.github.freeacs.web.app.page.report.uidata;
 
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.Unit;

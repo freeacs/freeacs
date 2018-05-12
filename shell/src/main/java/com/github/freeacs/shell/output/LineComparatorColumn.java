@@ -1,4 +1,4 @@
-package com.owera.xaps.shell.output;
+package com.github.freeacs.shell.output;
 
 public class LineComparatorColumn {
 	public static String SORT_ALFA = "a";

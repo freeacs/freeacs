@@ -1,4 +1,4 @@
-package com.owera.xaps.web.app.security.handlers;
+package com.github.freeacs.web.app.security.handlers;
 
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.dbi.User;

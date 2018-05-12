@@ -1,5 +1,8 @@
-package com.owera.xaps.tr069.methods;
+package com.github.freeacs.tr069.methods;
 
+import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.exception.TR069Exception;
+import com.github.freeacs.tr069.xml.Header;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.tr069.HTTPReqResData;
 import com.owera.xaps.tr069.exception.TR069Exception;

@@ -1,4 +1,4 @@
-package com.owera.xaps.base;
+package com.github.freeacs.base;
 
 public class NoDataAvailableException extends RuntimeException {
 

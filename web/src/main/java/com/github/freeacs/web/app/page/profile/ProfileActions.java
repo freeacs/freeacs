@@ -1,6 +1,10 @@
-package com.owera.xaps.web.app.page.profile;
+package com.github.freeacs.web.app.page.profile;
 
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.web.app.input.DropDownSingleSelect;
+import com.github.freeacs.web.app.input.ParameterParser;
+import com.github.freeacs.web.app.util.SessionCache;
+import com.github.freeacs.web.app.util.WebConstants;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.app.input.DropDownSingleSelect;
 import com.owera.xaps.web.app.input.ParameterParser;
@@ -112,7 +116,7 @@ public abstract class ProfileActions extends AbstractWebPage{
 	 * @return the profile status
 	 * @throws Exception the exception
 	 */
-	ProfileStatus actionCUDParameters(ParameterParser req,XAPS xaps,DropDownSingleSelect<Unittype> unittypes,DropDownSingleSelect<Profile> profiles) throws Exception {
+	ProfileStatus actionCUDParameters(ParameterParser req, XAPS xaps, DropDownSingleSelect<Unittype> unittypes, DropDownSingleSelect<Profile> profiles) throws Exception {
 		UnittypeParameter[] upParams = unittypes.getSelected().getUnittypeParameters().getUnittypeParameters();
 		ProfileParameters pParams = profiles.getSelected().getProfileParameters();
 		int nDeleted = 0;

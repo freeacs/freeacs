@@ -1,4 +1,4 @@
-package com.owera.xaps.shell.testperf;
+package com.github.freeacs.shell.testperf;
 
 import java.io.BufferedReader;
 import java.io.File;

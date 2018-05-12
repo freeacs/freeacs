@@ -1,4 +1,4 @@
-package com.owera.xaps.tr069.background;
+package com.github.freeacs.tr069.background;
 
 import com.github.freeacs.common.scheduler.TaskDefaultImpl;
 import com.github.freeacs.dbi.DBI;

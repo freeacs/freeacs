@@ -1,4 +1,4 @@
-package com.owera.xaps.web.app.input;
+package com.github.freeacs.web.app.input;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;

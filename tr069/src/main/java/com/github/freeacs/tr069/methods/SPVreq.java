@@ -1,5 +1,6 @@
-package com.owera.xaps.tr069.methods;
+package com.github.freeacs.tr069.methods;
 
+import com.github.freeacs.tr069.Namespace;
 import com.owera.xaps.tr069.Namespace;
 import com.owera.xaps.tr069.xml.Body;
 import com.owera.xaps.tr069.xml.ParameterValueStruct;

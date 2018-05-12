@@ -1,5 +1,13 @@
-package com.owera.xaps.tr069.methods;
+package com.github.freeacs.tr069.methods;
 
+import com.github.freeacs.base.db.DBAccessSessionTR069;
+import com.github.freeacs.tr069.*;
+import com.github.freeacs.tr069.background.ScheduledKickTask;
+import com.github.freeacs.tr069.exception.TR069DatabaseException;
+import com.github.freeacs.tr069.exception.TR069Exception;
+import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
+import com.github.freeacs.tr069.xml.EventStruct;
+import com.github.freeacs.tr069.xml.Header;
 import com.owera.xaps.base.BaseCache;
 import com.owera.xaps.base.JobLogic;
 import com.owera.xaps.base.Log;

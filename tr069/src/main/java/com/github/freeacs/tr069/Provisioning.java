@@ -1,5 +1,6 @@
-package com.owera.xaps.tr069;
+package com.github.freeacs.tr069;
 
+import com.github.freeacs.base.http.Authenticator;
 import com.github.freeacs.common.db.ConnectionMetaData;
 import com.github.freeacs.common.db.ConnectionPoolData;
 import com.github.freeacs.common.db.ConnectionProperties;

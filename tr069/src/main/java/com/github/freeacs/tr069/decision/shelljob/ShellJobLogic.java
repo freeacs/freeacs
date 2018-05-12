@@ -1,9 +1,16 @@
-package com.owera.xaps.tr069.decision.shelljob;
+package com.github.freeacs.tr069.decision.shelljob;
 
+import com.github.freeacs.base.db.DBAccessSessionTR069;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.common.util.CacheValue;
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.tr069.CPEParameters;
+import com.github.freeacs.tr069.Provisioning;
+import com.github.freeacs.tr069.SessionData;
+import com.github.freeacs.tr069.exception.TR069DatabaseException;
+import com.github.freeacs.tr069.exception.TR069Exception;
+import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.UnitJob;
 import com.owera.xaps.base.db.DBAccess;
@@ -46,7 +53,7 @@ public class ShellJobLogic {
 	 * @param sessionData
 	 * @param job
 	 * @param uj
-	 * @throws TR069DatabaseException 
+	 * @throws TR069DatabaseException
 	 * @throws SQLException
 	 * @throws NoAvailableConnectionException
 	 */

@@ -1,5 +1,6 @@
-package com.owera.xaps.shell.help;
+package com.github.freeacs.shell.help;
 
+import com.github.freeacs.shell.Context;
 import com.owera.xaps.shell.Context;
 
 import java.util.List;

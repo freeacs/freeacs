@@ -1,4 +1,4 @@
-package com.owera.xaps.shell;
+package com.github.freeacs.shell;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;

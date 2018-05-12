@@ -1,6 +1,16 @@
-package com.owera.xaps.tr069.methods;
+package com.github.freeacs.tr069.methods;
 
+import com.github.freeacs.base.db.DBAccessSessionTR069;
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.tr069.CPEParameters;
+import com.github.freeacs.tr069.DownloadLogicTR069;
+import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.SessionData;
+import com.github.freeacs.tr069.background.ActiveDeviceDetectionTask;
+import com.github.freeacs.tr069.decision.shelljob.ShellJobLogic;
+import com.github.freeacs.tr069.exception.TR069DatabaseException;
+import com.github.freeacs.tr069.exception.TR069Exception;
+import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.owera.xaps.Properties.Module;
 import com.owera.xaps.base.*;
 import com.owera.xaps.base.UnitJob;

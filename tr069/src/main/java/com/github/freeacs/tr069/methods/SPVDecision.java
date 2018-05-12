@@ -1,6 +1,9 @@
-package com.owera.xaps.tr069.methods;
+package com.github.freeacs.tr069.methods;
 
 import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.Properties;
+import com.github.freeacs.tr069.SessionData;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.UnitJob;
 import com.github.freeacs.dbi.UnitJobStatus;

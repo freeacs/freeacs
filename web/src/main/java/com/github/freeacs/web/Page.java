@@ -1,5 +1,39 @@
-package com.owera.xaps.web;
+package com.github.freeacs.web;
 
+import com.github.freeacs.web.app.page.SupportDashboardPage;
+import com.github.freeacs.web.app.page.WebPage;
+import com.github.freeacs.web.app.page.certificates.CryptoPage;
+import com.github.freeacs.web.app.page.event.SyslogEventsPage;
+import com.github.freeacs.web.app.page.file.FilePage;
+import com.github.freeacs.web.app.page.file.SoftwarePage;
+import com.github.freeacs.web.app.page.file.UpgradePage;
+import com.github.freeacs.web.app.page.group.GroupPage;
+import com.github.freeacs.web.app.page.group.GroupsPage;
+import com.github.freeacs.web.app.page.heartbeat.HeartbeatsPage;
+import com.github.freeacs.web.app.page.job.JobPage;
+import com.github.freeacs.web.app.page.job.JobsPage;
+import com.github.freeacs.web.app.page.job.UnitJobPage;
+import com.github.freeacs.web.app.page.login.LoginPage;
+import com.github.freeacs.web.app.page.monitor.MonitorPage;
+import com.github.freeacs.web.app.page.permissions.PermissionsPage;
+import com.github.freeacs.web.app.page.profile.ProfileCreatePage;
+import com.github.freeacs.web.app.page.profile.ProfileDetailsPage;
+import com.github.freeacs.web.app.page.profile.ProfileOverviewPage;
+import com.github.freeacs.web.app.page.report.ReportPage;
+import com.github.freeacs.web.app.page.report.UnitListPage;
+import com.github.freeacs.web.app.page.scriptexecution.ScriptExecutionsPage;
+import com.github.freeacs.web.app.page.search.SearchPage;
+import com.github.freeacs.web.app.page.staging.*;
+import com.github.freeacs.web.app.page.syslog.SyslogPage;
+import com.github.freeacs.web.app.page.trigger.TriggerOverviewPage;
+import com.github.freeacs.web.app.page.trigger.TriggerReleaseHistoryPage;
+import com.github.freeacs.web.app.page.trigger.TriggerReleasePage;
+import com.github.freeacs.web.app.page.unit.InspectionPage;
+import com.github.freeacs.web.app.page.unit.UnitPage;
+import com.github.freeacs.web.app.page.unit.UnitStatusPage;
+import com.github.freeacs.web.app.page.unit.UnitStatusRealTimeMosPage;
+import com.github.freeacs.web.app.page.unittype.*;
+import com.github.freeacs.web.app.page.window.WindowPage;
 import com.owera.xaps.web.app.page.SupportDashboardPage;
 import com.owera.xaps.web.app.page.WebPage;
 import com.owera.xaps.web.app.page.certificates.CryptoPage;
@@ -110,7 +144,7 @@ public enum Page {
 	 * is of no concern perhaps). Some of these pages may not even be in use.
 	 */
 	GETVALUE("getvalue", GetUnitTypeParameterFlagAndValuesPage.class), //
-	INSPECTION("inspection", InspectionPage.class), // 
+	INSPECTION("inspection", InspectionPage.class), //
 	LOGIN("login", LoginPage.class), //
 	// MONITORHISTORY("history", MonitorPage.class), // old, removed
 	//	MONITORSTATUS("status", MonitorPage.class), //

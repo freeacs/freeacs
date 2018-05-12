@@ -1,8 +1,16 @@
-package com.owera.xaps.web.app.page.permissions;
+package com.github.freeacs.web.app.page.permissions;
 
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.web.app.input.InputDataIntegrity;
+import com.github.freeacs.web.app.input.InputDataRetriever;
+import com.github.freeacs.web.app.input.ParameterParser;
+import com.github.freeacs.web.app.security.WebUser;
+import com.github.freeacs.web.app.util.SessionCache;
+import com.github.freeacs.web.app.util.SessionData;
+import com.github.freeacs.web.app.util.WebConstants;
+import com.github.freeacs.web.app.util.XAPSLoader;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.Output;

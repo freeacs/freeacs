@@ -1,6 +1,11 @@
-package com.owera.xaps.tr069.methods;
+package com.github.freeacs.tr069.methods;
 
+import com.github.freeacs.base.db.DBAccessSessionTR069;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.InformParameters;
+import com.github.freeacs.tr069.Properties;
+import com.github.freeacs.tr069.SessionData;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.db.DBAccess;
 import com.owera.xaps.base.db.DBAccessSessionTR069;

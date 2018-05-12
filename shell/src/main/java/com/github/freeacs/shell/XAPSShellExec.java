@@ -1,4 +1,4 @@
-package com.owera.xaps.shell;
+package com.github.freeacs.shell;
 
 import jline.ConsoleReader;
 

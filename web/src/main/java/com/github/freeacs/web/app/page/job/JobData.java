@@ -1,6 +1,8 @@
-package com.owera.xaps.web.app.page.job;
+package com.github.freeacs.web.app.page.job;
 
 import com.github.freeacs.dbi.JobFlag.JobType;
+import com.github.freeacs.web.app.input.Input;
+import com.github.freeacs.web.app.input.InputData;
 import com.owera.xaps.web.app.input.Input;
 import com.owera.xaps.web.app.input.InputData;
 

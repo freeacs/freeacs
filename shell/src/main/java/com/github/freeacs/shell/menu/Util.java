@@ -1,4 +1,4 @@
-package com.owera.xaps.shell.menu;
+package com.github.freeacs.shell.menu;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

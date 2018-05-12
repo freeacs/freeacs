@@ -19,7 +19,7 @@
  * $Id$
  */
 
-package com.owera.xaps.tr069.xml;
+package com.github.freeacs.tr069.xml;
 
 /**
  * This class defines the basic XML character properties. The data

@@ -1,7 +1,13 @@
-package com.owera.xaps.web.app.page.window;
+package com.github.freeacs.web.app.page.window;
 
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.web.app.input.InputDataIntegrity;
+import com.github.freeacs.web.app.input.InputDataRetriever;
+import com.github.freeacs.web.app.input.ParameterParser;
+import com.github.freeacs.web.app.util.SessionCache;
+import com.github.freeacs.web.app.util.WebConstants;
+import com.github.freeacs.web.app.util.XAPSLoader;
 import com.owera.xaps.dbi.*;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.owera.xaps.web.Page;

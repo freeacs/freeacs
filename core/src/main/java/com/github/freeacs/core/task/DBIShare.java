@@ -1,9 +1,10 @@
-package com.owera.xaps.core.task;
+package com.github.freeacs.core.task;
 
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.scheduler.Task;
+import com.github.freeacs.core.Properties;
 import com.github.freeacs.dbi.*;
 import com.owera.xaps.core.CoreServlet;
 import com.owera.xaps.dbi.*;
@@ -27,8 +28,8 @@ public abstract class DBIShare implements Task {
 	private static ConnectionProperties xapsCp = null;
 	private static ConnectionProperties sysCp = null;
 	static {
-		xapsCp = ConnectionProvider.getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps"));
-		sysCp = ConnectionProvider.getConnectionProperties(getUrl("syslog"), getMaxAge("syslog"), getMaxConn("syslog"));
+		xapsCp = ConnectionProvider.getConnectionProperties(Properties.getUrl("xaps"), Properties.getMaxAge("xaps"), Properties.getMaxConn("xaps"));
+		sysCp = ConnectionProvider.getConnectionProperties(Properties.getUrl("syslog"), Properties.getMaxAge("syslog"), Properties.getMaxConn("syslog"));
 		if (sysCp == null)
 			sysCp = xapsCp;
 	}

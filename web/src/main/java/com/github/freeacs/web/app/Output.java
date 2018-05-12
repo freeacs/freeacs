@@ -1,7 +1,18 @@
-package com.owera.xaps.web.app;
+package com.github.freeacs.web.app;
 
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.web.Page;
+import com.github.freeacs.web.app.context.ContextItem;
+import com.github.freeacs.web.app.input.Input;
+import com.github.freeacs.web.app.input.InputSelectionFactory;
+import com.github.freeacs.web.app.input.ParameterParser;
+import com.github.freeacs.web.app.menu.MenuItem;
+import com.github.freeacs.web.app.page.WebPage;
+import com.github.freeacs.web.app.util.Freemarker;
+import com.github.freeacs.web.app.util.StackTraceFormatter;
+import com.github.freeacs.web.app.util.WebProperties;
+import com.github.freeacs.web.app.util.XAPSLoader;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.context.ContextItem;
@@ -36,7 +47,7 @@ import java.util.zip.GZIPOutputStream;
 /**
  * Responsible for redirecting from and writing data to the servlet response.
  * <br />
- * This logic was earlier located in the {@link com.owera.xaps.web.app.Main} servlet. 
+ * This logic was earlier located in the {@link Main} servlet.
  * <br />
  * Was moved here because the Main servlet was too cluttered and difficult to read.
  * 
@@ -52,15 +63,15 @@ public class Output {
 	private String 					templatePathString 			=  null;
 	private Boolean 				templatePathSet 			= false;
 	private Map<String, Object> 	templateMap 				= new HashMap<String,Object>();
-	private WebPage					currentPage 				= null;
-	private ParameterParser		    inputParameters 			= null;
+	private WebPage currentPage 				= null;
+	private ParameterParser inputParameters 			= null;
 	private static final Logger 	logger 						= LoggerFactory.getLogger(Output.class);
 	private String 					redirectToUrl 				= null;
 	private String 					directResponseString 		= null;
 	private String 					contentType 				= "text/html";
 	private Boolean					responseCommitted 			= false;
 	private Boolean 				delivered 					= false;
-	private ContextItem 			trailPoint 					= null;
+	private ContextItem trailPoint 					= null;
 	
 	/**
 	 * Instantiates a new output handler.

@@ -1,9 +1,11 @@
-package com.owera.xaps.web.app.page.user;
+package com.github.freeacs.web.app.page.user;
 
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.User;
 import com.github.freeacs.dbi.Users;
+import com.github.freeacs.web.app.util.SessionCache;
+import com.github.freeacs.web.app.util.SessionData;
 import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.SessionData;
 

@@ -1,4 +1,4 @@
-package com.owera.xaps.tr069.xml;
+package com.github.freeacs.tr069.xml;
 
 public class EventCodes {
 	public static final String BOOTSTRAP = "0 BOOTSTRAP";

@@ -1,5 +1,6 @@
-package com.owera.xaps.web.app.page.group;
+package com.github.freeacs.web.app.page.group;
 
+import com.github.freeacs.web.app.input.InputData;
 import com.owera.xaps.web.app.input.InputData;
 
 import java.util.Map;

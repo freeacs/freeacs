@@ -1,4 +1,4 @@
-package com.owera.xaps.syslogserver;
+package com.github.freeacs.syslogserver;
 
 import com.github.freeacs.common.scheduler.TaskDefaultImpl;
 import org.apache.commons.io.FileSystemUtils;

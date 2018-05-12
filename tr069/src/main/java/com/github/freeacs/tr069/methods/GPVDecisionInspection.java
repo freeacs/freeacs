@@ -1,4 +1,4 @@
-package com.owera.xaps.tr069.methods;
+package com.github.freeacs.tr069.methods;
 
 
 public class GPVDecisionInspection {

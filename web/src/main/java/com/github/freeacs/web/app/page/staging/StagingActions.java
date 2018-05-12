@@ -1,10 +1,16 @@
-package com.owera.xaps.web.app.page.staging;
+package com.github.freeacs.web.app.page.staging;
 
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.ssl.HTTPSManager;
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.web.app.input.DropDownSingleSelect;
+import com.github.freeacs.web.app.input.Input;
+import com.github.freeacs.web.app.input.InputSelectionFactory;
+import com.github.freeacs.web.app.util.SessionCache;
+import com.github.freeacs.web.app.util.WebProperties;
+import com.github.freeacs.web.app.util.XAPSLoader;
 import com.owera.xaps.dbi.*;
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
 import com.github.freeacs.dbi.JobFlag.JobType;

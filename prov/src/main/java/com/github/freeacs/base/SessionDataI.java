@@ -1,7 +1,9 @@
-package com.owera.xaps.base;
+package com.github.freeacs.base;
 
+import com.github.freeacs.base.db.DBAccessSession;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import com.owera.xaps.base.db.DBAccessSession;
 import com.owera.xaps.dbi.*;
 import com.github.freeacs.dbi.util.ProvisioningMessage;

@@ -1,8 +1,9 @@
-package com.owera.xaps.web.app.security;
+package com.github.freeacs.web.app.security;
 
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.Permission;
+import com.github.freeacs.web.app.security.handlers.Authenticator;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.input.ParameterParser;
 import com.owera.xaps.web.app.page.login.LoginPage;

@@ -1,4 +1,4 @@
-package com.owera.xaps.syslogserver;
+package com.github.freeacs.syslogserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

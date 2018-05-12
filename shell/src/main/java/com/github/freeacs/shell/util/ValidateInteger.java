@@ -1,4 +1,4 @@
-package com.owera.xaps.shell.util;
+package com.github.freeacs.shell.util;
 
 public class ValidateInteger implements ValidateInput {
 

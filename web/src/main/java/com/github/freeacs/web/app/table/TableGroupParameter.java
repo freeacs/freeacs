@@ -1,4 +1,4 @@
-package com.owera.xaps.web.app.table;
+package com.github.freeacs.web.app.table;
 
 import com.github.freeacs.dbi.Group;
 import com.github.freeacs.dbi.GroupParameter;

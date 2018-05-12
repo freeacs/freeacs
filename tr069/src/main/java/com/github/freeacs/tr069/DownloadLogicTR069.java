@@ -1,4 +1,4 @@
-package com.owera.xaps.tr069;
+package com.github.freeacs.tr069;
 
 import com.owera.xaps.base.DownloadLogic;
 import com.owera.xaps.base.Log;
@@ -84,7 +84,7 @@ public class DownloadLogicTR069 {
       }
       Log.debug(DownloadLogic.class, "Download script/config URL found (" + downloadURL + "), may trigger a Download");
       sessionData.getUnit().toWriteQueue(SystemParameters.JOB_CURRENT_KEY, scriptVersionFromDB);
-      sessionData.setDownload(new Download(downloadURL, file));
+      sessionData.setDownload(new SessionData.Download(downloadURL, file));
       return true;
     }
     return false;
@@ -135,7 +135,7 @@ public class DownloadLogicTR069 {
         logger.error("File-type " + FileType.SOFTWARE + " and version " + softwareVersionFromDB + " does not exists - indicate wrong setup of version number");
         return false;
       }
-      sessionData.setDownload(new Download(downloadURL, file));
+      sessionData.setDownload(new SessionData.Download(downloadURL, file));
       return true;
     } else if (job != null && softwareVersionFromDB != null && !softwareVersionFromDB.trim().equals("") && softwareVersionFromDB.equals(softwareVersionFromCPE)) {
       logger.warn("Software is already upgraded to " + softwareVersionFromCPE + " - will not issue an software job");

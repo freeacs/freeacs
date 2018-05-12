@@ -1,5 +1,7 @@
-package com.owera.xaps.web.app.page.permissions;
+package com.github.freeacs.web.app.page.permissions;
 
+import com.github.freeacs.web.app.input.Input;
+import com.github.freeacs.web.app.input.InputData;
 import com.owera.xaps.web.app.input.Input;
 import com.owera.xaps.web.app.input.InputData;
 

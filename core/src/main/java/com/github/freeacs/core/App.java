@@ -1,4 +1,4 @@
-package com.owera.xaps.core;
+package com.github.freeacs.core;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

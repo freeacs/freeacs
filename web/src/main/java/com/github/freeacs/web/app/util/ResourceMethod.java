@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package com.owera.xaps.web.app.util;
+package com.github.freeacs.web.app.util;
 
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;

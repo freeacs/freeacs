@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.owera.xaps.web.app.page.report.uidata;
+package com.github.freeacs.web.app.page.report.uidata;
 
 import com.owera.xaps.web.app.page.report.UnitListData;
 

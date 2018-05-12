@@ -1,4 +1,4 @@
-package com.owera.xaps.shell;
+package com.github.freeacs.shell;
 
 public enum SessionMode {
 	INTERACTIVE, SCRIPT, DAEMON;

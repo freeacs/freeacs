@@ -1,4 +1,4 @@
-package com.owera.xaps.core.util;
+package com.github.freeacs.core.util;
 
 import com.github.freeacs.dbi.Job.StopRule;
 import com.github.freeacs.dbi.UnitJob;

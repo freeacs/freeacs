@@ -1,4 +1,4 @@
-package com.owera.xaps.tr069.xml;
+package com.github.freeacs.tr069.xml;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package com.owera.xaps.tr069.exception;
+package com.github.freeacs.tr069.exception;
 
 public class TR069TestException extends TR069ServerException {
 

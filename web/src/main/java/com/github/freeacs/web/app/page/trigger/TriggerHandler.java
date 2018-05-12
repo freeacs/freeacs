@@ -1,7 +1,14 @@
-package com.owera.xaps.web.app.page.trigger;
+package com.github.freeacs.web.app.page.trigger;
 
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.web.app.input.DropDownSingleSelect;
+import com.github.freeacs.web.app.input.Input;
+import com.github.freeacs.web.app.input.InputSelectionFactory;
+import com.github.freeacs.web.app.table.TableElement;
+import com.github.freeacs.web.app.table.TableElementMaker;
+import com.github.freeacs.web.app.util.SessionCache;
+import com.github.freeacs.web.app.util.XAPSLoader;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.app.input.DropDownSingleSelect;
 import com.owera.xaps.web.app.input.Input;

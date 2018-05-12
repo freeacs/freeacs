@@ -1,4 +1,4 @@
-package com.owera.xaps.shell.menu;
+package com.github.freeacs.shell.menu;
 
 import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.UnittypeParameterValues;
@@ -6,6 +6,8 @@ import com.github.freeacs.dbi.tr069.TR069DMLoader;
 import com.github.freeacs.dbi.tr069.TR069DMParameter;
 import com.github.freeacs.dbi.tr069.TR069DMParameter.StringType;
 import com.github.freeacs.dbi.tr069.TR069DMParameterMap;
+import com.github.freeacs.shell.Context;
+import com.github.freeacs.shell.Session;
 import com.owera.xaps.shell.Context;
 import com.owera.xaps.shell.Session;
 import com.owera.xaps.shell.output.Line;

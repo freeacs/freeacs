@@ -1,4 +1,4 @@
-package com.owera.xaps.shell.output;
+package com.github.freeacs.shell.output;
 
 public class Column {
 	private int maxWidth = 0;

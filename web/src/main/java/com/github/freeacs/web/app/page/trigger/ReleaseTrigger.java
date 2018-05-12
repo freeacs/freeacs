@@ -1,4 +1,4 @@
-package com.owera.xaps.web.app.page.trigger;
+package com.github.freeacs.web.app.page.trigger;
 
 import com.github.freeacs.dbi.ScriptExecution;
 import com.github.freeacs.dbi.Trigger;

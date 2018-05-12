@@ -1,5 +1,7 @@
-package com.owera.xaps.tr069.xml;
+package com.github.freeacs.tr069.xml;
 
+import com.github.freeacs.tr069.exception.TR069Exception;
+import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.owera.xaps.tr069.exception.TR069Exception;
 import com.owera.xaps.tr069.exception.TR069ExceptionShortMessage;
 import org.xml.sax.*;

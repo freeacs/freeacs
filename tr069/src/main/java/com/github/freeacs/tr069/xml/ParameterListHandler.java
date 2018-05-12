@@ -1,4 +1,4 @@
-package com.owera.xaps.tr069.xml;
+package com.github.freeacs.tr069.xml;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

@@ -1,4 +1,4 @@
-package com.owera.xaps.tr069.test.system1;
+package com.github.freeacs.tr069.test.system1;
 
 import com.github.freeacs.common.html.Element;
 import com.github.freeacs.common.html.InputRadioMaker;
@@ -6,6 +6,7 @@ import com.github.freeacs.common.html.SelectMaker;
 import com.github.freeacs.common.html.TextAreaElement;
 import com.github.freeacs.common.util.FileDatabase;
 import com.github.freeacs.common.util.NaturalComparator;
+import com.github.freeacs.tr069.Properties;
 import com.owera.xaps.tr069.Properties;
 
 import javax.servlet.ServletException;

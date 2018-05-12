@@ -1,4 +1,4 @@
-package com.owera.xaps.base.http;
+package com.github.freeacs.base.http;
 
 import com.owera.xaps.base.SessionDataI;
 import org.slf4j.Logger;

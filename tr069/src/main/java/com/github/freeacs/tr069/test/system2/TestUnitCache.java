@@ -1,4 +1,4 @@
-package com.owera.xaps.tr069.test.system2;
+package com.github.freeacs.tr069.test.system2;
 
 import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.common.util.CacheValue;

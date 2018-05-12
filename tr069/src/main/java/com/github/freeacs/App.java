@@ -1,5 +1,9 @@
-package com.owera.xaps;
+package com.github.freeacs;
 
+import com.github.freeacs.base.http.FileServlet;
+import com.github.freeacs.base.http.OKServlet;
+import com.github.freeacs.tr069.Provisioning;
+import com.github.freeacs.tr069.test.system1.TestServlet;
 import com.owera.xaps.base.http.FileServlet;
 import com.owera.xaps.base.http.OKServlet;
 import com.owera.xaps.tr069.Provisioning;

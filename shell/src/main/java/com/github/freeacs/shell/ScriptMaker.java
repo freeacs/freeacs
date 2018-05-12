@@ -1,4 +1,4 @@
-package com.owera.xaps.shell;
+package com.github.freeacs.shell;
 
 import com.github.freeacs.dbi.util.XAPSVersionCheck;
 import com.owera.xaps.shell.util.FileUtil;

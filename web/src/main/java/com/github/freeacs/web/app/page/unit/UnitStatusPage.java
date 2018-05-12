@@ -1,8 +1,17 @@
-package com.owera.xaps.web.app.page.unit;
+package com.github.freeacs.web.app.page.unit;
 
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.report.*;
+import com.github.freeacs.web.app.input.*;
+import com.github.freeacs.web.app.page.report.ReportPage;
+import com.github.freeacs.web.app.page.report.ReportType;
+import com.github.freeacs.web.app.page.report.UnitListData;
+import com.github.freeacs.web.app.page.report.uidata.RecordUIDataHardware;
+import com.github.freeacs.web.app.page.report.uidata.RecordUIDataHardwareFilter;
+import com.github.freeacs.web.app.page.report.uidata.RecordUIDataSyslog;
+import com.github.freeacs.web.app.page.report.uidata.RecordUIDataVoip;
+import com.github.freeacs.web.app.util.*;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.Output;
@@ -311,8 +320,8 @@ public class UnitStatusPage extends AbstractWebPage {
 		Unit unit = xapsUnit.getUnitById(unitId);
 		if(unit == null)
 			throw new UnitNotFoundException();
-		boolean isline1up = isCallOngoing(session.getId(), VoipLine.LINE_0, unit, start, null);
-		boolean isline2up = isCallOngoing(session.getId(), VoipLine.LINE_1, unit, start, null);
+		boolean isline1up = isCallOngoing(session.getId(), UnitStatusInfo.VoipLine.LINE_0, unit, start, null);
+		boolean isline2up = isCallOngoing(session.getId(), UnitStatusInfo.VoipLine.LINE_1, unit, start, null);
 		status.put("line1", isline1up);
 		status.put("line2", isline2up);
 		return status;
@@ -679,7 +688,7 @@ public class UnitStatusPage extends AbstractWebPage {
 	 * @throws SQLException the sQL exception
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 */
-	public boolean isCallOngoing(String sessionId,VoipLine line,Unit unit,Date start,Date end) throws SQLException, NoAvailableConnectionException {
+	public boolean isCallOngoing(String sessionId, UnitStatusInfo.VoipLine line, Unit unit, Date start, Date end) throws SQLException, NoAvailableConnectionException {
 		Syslog syslog = new Syslog(SessionCache.getSyslogConnectionProperties(sessionId), XAPSLoader.getIdentity(sessionId));
 		SyslogFilter filter = new SyslogFilter();
 		filter.setMaxRows(1);

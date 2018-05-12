@@ -1,4 +1,4 @@
-package com.owera.xaps.shell.util;
+package com.github.freeacs.shell.util;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

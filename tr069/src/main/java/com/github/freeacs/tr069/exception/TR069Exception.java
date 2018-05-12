@@ -1,4 +1,4 @@
-package com.owera.xaps.tr069.exception;
+package com.github.freeacs.tr069.exception;
 
 import javax.servlet.http.HttpServletResponse;
 

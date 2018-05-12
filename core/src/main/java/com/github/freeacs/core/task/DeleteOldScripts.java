@@ -1,6 +1,7 @@
-package com.owera.xaps.core.task;
+package com.github.freeacs.core.task;
 
 import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.core.Properties;
 import com.owera.xaps.core.Properties;
 import com.github.freeacs.dbi.ScriptExecutions;
 import org.slf4j.Logger;

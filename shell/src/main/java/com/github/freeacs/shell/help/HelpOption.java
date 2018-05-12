@@ -1,4 +1,4 @@
-package com.owera.xaps.shell.help;
+package com.github.freeacs.shell.help;
 
 public class HelpOption {
 	private String option;

@@ -1,4 +1,4 @@
-package com.owera.xaps.stun;
+package com.github.freeacs.stun;
 
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.IPAddress;

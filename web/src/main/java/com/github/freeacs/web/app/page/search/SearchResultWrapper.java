@@ -1,4 +1,4 @@
-package com.owera.xaps.web.app.page.search;
+package com.github.freeacs.web.app.page.search;
 
 import com.github.freeacs.dbi.Unit;
 

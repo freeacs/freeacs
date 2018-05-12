@@ -1,9 +1,11 @@
-package com.owera.xaps.web.app.page.staging;
+package com.github.freeacs.web.app.page.staging;
 
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.ProfileParameter;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.util.SystemParameters;
+import com.github.freeacs.web.app.input.Input;
+import com.github.freeacs.web.app.input.InputData;
 import com.owera.xaps.web.app.input.Input;
 import com.owera.xaps.web.app.input.InputData;
 

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.owera.xaps.web.app.page.job;
+package com.github.freeacs.web.app.page.job;
 
 import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.UnittypeParameter;

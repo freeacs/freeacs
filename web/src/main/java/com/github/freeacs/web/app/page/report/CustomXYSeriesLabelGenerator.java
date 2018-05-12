@@ -1,4 +1,4 @@
-package com.owera.xaps.web.app.page.report;
+package com.github.freeacs.web.app.page.report;
 
 import org.jfree.chart.labels.StandardXYSeriesLabelGenerator;
 import org.jfree.data.xy.XYDataset;

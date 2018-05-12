@@ -1,10 +1,13 @@
-package com.owera.xaps.tr069.test.system2;
+package com.github.freeacs.tr069.test.system2;
 
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.UnitParameter;
 import com.github.freeacs.dbi.tr069.Steps.Step;
 import com.github.freeacs.dbi.tr069.TestCase.TestCaseMethod;
 import com.github.freeacs.dbi.util.SystemParameters;
+import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.background.ScheduledKickTask;
+import com.github.freeacs.tr069.methods.TR069Method;
 import com.owera.xaps.tr069.HTTPReqResData;
 import com.owera.xaps.tr069.background.ScheduledKickTask;
 import com.owera.xaps.tr069.methods.TR069Method;

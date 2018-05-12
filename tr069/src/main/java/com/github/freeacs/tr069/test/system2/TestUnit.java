@@ -1,4 +1,4 @@
-package com.owera.xaps.tr069.test.system2;
+package com.github.freeacs.tr069.test.system2;
 
 import com.owera.xaps.base.Log;
 import com.github.freeacs.dbi.Unit;

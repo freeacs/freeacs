@@ -1,4 +1,4 @@
-package com.owera.xaps.spp;
+package com.github.freeacs.spp;
 
 import com.owera.xaps.base.DownloadLogic;
 import com.owera.xaps.base.Log;

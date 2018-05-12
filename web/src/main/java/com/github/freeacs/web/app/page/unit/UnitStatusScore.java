@@ -1,6 +1,7 @@
-package com.owera.xaps.web.app.page.unit;
+package com.github.freeacs.web.app.page.unit;
 
 import com.github.freeacs.dbi.SyslogEntry;
+import com.github.freeacs.web.app.page.report.uidata.RecordUIDataHardware;
 import com.owera.xaps.web.app.page.report.uidata.RecordUIDataHardware;
 
 import java.util.List;
@@ -51,7 +52,7 @@ public class UnitStatusScore {
 	 * @param is1LinesHasProblems the is1 lines has problems
 	 * @param is2LinesHasProblems the is2 lines has problems
 	 */
-	public UnitStatusScore(Double totalScore,List<RecordUIDataHardware> hardwareReport,List<SyslogEntry> entries,boolean isWithinServiceWindow,boolean is1LinesHasProblems,boolean is2LinesHasProblems){
+	public UnitStatusScore(Double totalScore, List<RecordUIDataHardware> hardwareReport, List<SyslogEntry> entries, boolean isWithinServiceWindow, boolean is1LinesHasProblems, boolean is2LinesHasProblems){
 		if (!isWithinServiceWindow) {
 			serviceWindowEffect = 7;
 			if (is1LinesHasProblems)

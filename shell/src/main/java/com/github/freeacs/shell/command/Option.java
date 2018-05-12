@@ -1,4 +1,4 @@
-package com.owera.xaps.shell.command;
+package com.github.freeacs.shell.command;
 
 import java.util.HashSet;
 import java.util.Set;

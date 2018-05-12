@@ -1,5 +1,6 @@
-package com.owera.xaps.spp;
+package com.github.freeacs.spp;
 
+import com.github.freeacs.base.Log;
 import com.owera.xaps.base.Log;
 
 import javax.servlet.http.HttpServletRequest;

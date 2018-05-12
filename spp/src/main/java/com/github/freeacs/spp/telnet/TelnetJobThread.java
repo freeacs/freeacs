@@ -1,8 +1,12 @@
-package com.owera.xaps.spp.telnet;
+package com.github.freeacs.spp.telnet;
 
+import com.github.freeacs.base.SessionDataI;
+import com.github.freeacs.base.UnitJob;
+import com.github.freeacs.base.db.DBAccessSession;
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.spp.SessionData;
 import com.owera.xaps.base.SessionDataI;
 import com.owera.xaps.base.UnitJob;
 import com.owera.xaps.base.db.DBAccessSession;
@@ -34,7 +38,7 @@ public class TelnetJobThread implements Runnable {
 	private XAPS xaps;
 	private XAPSUnit xapsUnit;
 	private ConnectionProperties xapsCp;
-	private UnitJob unitJob;
+	private com.github.freeacs.base.UnitJob unitJob;
 
 	public TelnetJobThread(Monitor m, TelnetJob tj, XAPS xaps, ConnectionProperties xapsCp) {
 		this.m = m;

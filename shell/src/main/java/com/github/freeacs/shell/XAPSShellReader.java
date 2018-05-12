@@ -1,4 +1,4 @@
-package com.owera.xaps.shell;
+package com.github.freeacs.shell;
 
 import com.owera.xaps.shell.util.FileUtil;
 import jline.ArgumentCompletor;

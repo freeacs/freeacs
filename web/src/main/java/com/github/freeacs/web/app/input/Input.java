@@ -1,4 +1,4 @@
-package com.owera.xaps.web.app.input;
+package com.github.freeacs.web.app.input;
 
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unittype;

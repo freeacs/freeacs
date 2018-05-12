@@ -1,4 +1,4 @@
-package com.owera.xaps;
+package com.github.freeacs;
 
 import com.github.freeacs.common.util.PropertyReader;
 import com.owera.xaps.base.Log;

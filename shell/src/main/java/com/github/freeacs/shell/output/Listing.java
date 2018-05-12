@@ -1,6 +1,9 @@
-package com.owera.xaps.shell.output;
+package com.github.freeacs.shell.output;
 
 import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.shell.Context;
+import com.github.freeacs.shell.command.Command;
+import com.github.freeacs.shell.command.Option;
 import com.owera.xaps.shell.Context;
 import com.owera.xaps.shell.command.Command;
 import com.owera.xaps.shell.command.Option;

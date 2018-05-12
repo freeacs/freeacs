@@ -1,4 +1,4 @@
-package com.owera.xaps.shell.tools;
+package com.github.freeacs.shell.tools;
 
 import com.owera.xaps.shell.util.StringUtil;
 

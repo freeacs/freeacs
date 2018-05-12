@@ -1,8 +1,13 @@
-package com.owera.xaps.web.app.page.login;
+package com.github.freeacs.web.app.page.login;
 
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.dbi.DBI;
+import com.github.freeacs.web.app.input.InputDataRetriever;
+import com.github.freeacs.web.app.input.ParameterParser;
+import com.github.freeacs.web.app.util.SessionCache;
+import com.github.freeacs.web.app.util.SessionData;
+import com.github.freeacs.web.app.util.WebProperties;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.Output;
 import com.owera.xaps.web.app.input.InputDataRetriever;
@@ -47,16 +52,16 @@ public class LoginPage extends AbstractWebPage {
 	 * @return the xAPS connection properties
 	 */
 	public static ConnectionProperties getXAPSConnectionProperties() {
-		String url = getUrl("xaps");
-		Long maxAge = getMaxAge("xaps");
-		Integer maxConn = getMaxConn("xaps");
+		String url = WebProperties.getUrl("xaps");
+		Long maxAge = WebProperties.getMaxAge("xaps");
+		Integer maxConn = WebProperties.getMaxConn("xaps");
 		return ConnectionProvider.getConnectionProperties(url, maxAge, maxConn);
 	}
 
 	public static ConnectionProperties getSyslogConnectionProperties() {
-		String url = getUrl("syslog");
-		Long maxAge = getMaxAge("syslog");
-		Integer maxConn = getMaxConn("syslog");
+		String url = WebProperties.getUrl("syslog");
+		Long maxAge = WebProperties.getMaxAge("syslog");
+		Integer maxConn = WebProperties.getMaxConn("syslog");
 		return ConnectionProvider.getConnectionProperties(url, maxAge, maxConn);
 	}
 

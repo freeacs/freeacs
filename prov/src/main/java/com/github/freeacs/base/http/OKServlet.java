@@ -1,4 +1,4 @@
-package com.owera.xaps.base.http;
+package com.github.freeacs.base.http;
 
 import com.github.freeacs.common.db.ConnectionProvider;
 import com.owera.xaps.base.Log;

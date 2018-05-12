@@ -1,4 +1,4 @@
-package com.owera.xaps.web.app.page.staging;
+package com.github.freeacs.web.app.page.staging;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.owera.xaps.spp.telnet;
+package com.github.freeacs.spp.telnet;
 
 import com.github.freeacs.dbi.Job;
 

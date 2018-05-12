@@ -1,5 +1,7 @@
-package com.owera.xaps.spp.http;
+package com.github.freeacs.spp.http;
 
+import com.github.freeacs.base.Log;
+import com.github.freeacs.spp.SessionData;
 import com.owera.xaps.base.Log;
 import com.github.freeacs.dbi.Certificate;
 import com.github.freeacs.dbi.Certificates;

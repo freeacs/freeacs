@@ -1,6 +1,10 @@
-package com.owera.xaps.web.app.page.event;
+package com.github.freeacs.web.app.page.event;
 
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.web.app.input.*;
+import com.github.freeacs.web.app.util.SessionData;
+import com.github.freeacs.web.app.util.WebConstants;
+import com.github.freeacs.web.app.util.XAPSLoader;
 import com.owera.xaps.dbi.*;
 import com.github.freeacs.dbi.SyslogEvent.StorePolicy;
 import com.owera.xaps.web.Page;

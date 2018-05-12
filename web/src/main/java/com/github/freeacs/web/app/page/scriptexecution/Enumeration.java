@@ -1,4 +1,4 @@
-package com.owera.xaps.web.app.page.scriptexecution;
+package com.github.freeacs.web.app.page.scriptexecution;
 
 public class Enumeration {
 

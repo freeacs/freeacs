@@ -1,6 +1,9 @@
-package com.owera.xaps.spp;
+package com.github.freeacs.spp;
 
+import com.github.freeacs.base.Log;
+import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.common.util.Sleep;
+import com.github.freeacs.spp.telnet.TelnetProvisioning;
 import com.owera.xaps.Properties.Module;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.db.DBAccess;
@@ -35,7 +38,7 @@ public class HTTPProvisioning extends HttpServlet {
 	public static final String VERSION = "1.5.0";
 
 	static {
-		DBAccess.init(Module.SPP, SyslogConstants.FACILITY_SPP, VERSION);
+		DBAccess.init(com.github.freeacs.Properties.Module.SPP, SyslogConstants.FACILITY_SPP, VERSION);
 		Log.notice(HTTPProvisioning.class, "HTTP/TFTP-Server and Telnet Provisioning Controller starts...");
 		try {
 			// Start the server

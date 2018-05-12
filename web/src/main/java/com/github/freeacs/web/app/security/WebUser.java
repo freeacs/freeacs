@@ -1,4 +1,4 @@
-package com.owera.xaps.web.app.security;
+package com.github.freeacs.web.app.security;
 
 import com.github.freeacs.dbi.User;
 import com.github.freeacs.dbi.Users;

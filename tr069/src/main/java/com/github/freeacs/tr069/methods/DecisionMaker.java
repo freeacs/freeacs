@@ -1,5 +1,9 @@
-package com.owera.xaps.tr069.methods;
+package com.github.freeacs.tr069.methods;
 
+import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.HTTPResData;
+import com.github.freeacs.tr069.exception.TR069Exception;
+import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.owera.xaps.base.Log;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.owera.xaps.tr069.HTTPReqResData;

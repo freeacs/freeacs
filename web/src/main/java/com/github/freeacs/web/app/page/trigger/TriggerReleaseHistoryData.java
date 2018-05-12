@@ -1,5 +1,8 @@
-package com.owera.xaps.web.app.page.trigger;
+package com.github.freeacs.web.app.page.trigger;
 
+import com.github.freeacs.web.app.input.Input;
+import com.github.freeacs.web.app.input.InputData;
+import com.github.freeacs.web.app.util.DateUtils;
 import com.owera.xaps.web.app.input.Input;
 import com.owera.xaps.web.app.input.InputData;
 import com.owera.xaps.web.app.util.DateUtils.Format;
@@ -8,8 +11,8 @@ import java.util.Map;
 
 public class TriggerReleaseHistoryData extends InputData {
 	private Input triggerId = Input.getIntegerInput("triggerId");
-	private Input tmsstart = Input.getDateInput("tmsstart", Format.DEFAULT);
-	private Input tmsend = Input.getDateInput("tmsend", Format.DEFAULT);
+	private Input tmsstart = Input.getDateInput("tmsstart", DateUtils.Format.DEFAULT);
+	private Input tmsend = Input.getDateInput("tmsend", DateUtils.Format.DEFAULT);
 
 	@Override
 	protected void bindForm(Map<String, Object> root) {

@@ -1,4 +1,4 @@
-package com.owera.xaps.stun;
+package com.github.freeacs.stun;
 
 import java.net.DatagramPacket;
 import java.util.Stack;

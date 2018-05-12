@@ -1,6 +1,10 @@
-package com.owera.xaps.tr069.methods;
+package com.github.freeacs.tr069.methods;
 
 import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.tr069.*;
+import com.github.freeacs.tr069.exception.TR069Exception;
+import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
+import com.github.freeacs.tr069.xml.Header;
 import com.owera.xaps.base.Log;
 import com.github.freeacs.dbi.FileType;
 import com.github.freeacs.dbi.UnittypeParameters;
@@ -300,7 +304,7 @@ public class HTTPResponseCreator {
       reqRes.setTR069TransactionID(new TR069TransactionID("OWERA-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
     SessionData sessionData = reqRes.getSessionData();
-    Download download = sessionData.getDownload();
+    SessionData.Download download = sessionData.getDownload();
     ProvisioningMessage pm = sessionData.getProvisioningMessage();
     String downloadType = null;
     String tn = download.getFile().getTargetName();

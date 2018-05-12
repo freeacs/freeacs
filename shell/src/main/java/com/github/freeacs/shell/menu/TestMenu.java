@@ -1,4 +1,4 @@
-package com.owera.xaps.shell.menu;
+package com.github.freeacs.shell.menu;
 
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.Message;
@@ -9,6 +9,8 @@ import com.github.freeacs.dbi.tr069.*;
 import com.github.freeacs.dbi.tr069.TestCase.TestCaseMethod;
 import com.github.freeacs.dbi.tr069.TestCaseParameter.TestCaseParameterType;
 import com.github.freeacs.dbi.util.SystemParameters;
+import com.github.freeacs.shell.Context;
+import com.github.freeacs.shell.Session;
 import com.owera.xaps.shell.Context;
 import com.owera.xaps.shell.Session;
 import com.owera.xaps.shell.output.Heading;

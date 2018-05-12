@@ -1,4 +1,4 @@
-package com.owera.xaps.web.help;
+package com.github.freeacs.web.help;
 
 import com.owera.xaps.web.Page;
 import freemarker.template.TemplateException;

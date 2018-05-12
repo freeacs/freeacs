@@ -1,4 +1,4 @@
-package com.owera.xaps.web.app.security;
+package com.github.freeacs.web.app.security;
 
 /**
  * Always connected to an AllowedUnittype.

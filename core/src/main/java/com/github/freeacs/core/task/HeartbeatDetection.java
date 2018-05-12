@@ -1,10 +1,11 @@
-package com.owera.xaps.core.task;
+package com.github.freeacs.core.task;
 
 import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.common.util.CacheValue;
 import com.github.freeacs.common.util.TimestampMap;
+import com.github.freeacs.core.util.SyslogMessageMapContainer;
 import com.github.freeacs.dbi.*;
 import com.owera.xaps.core.util.SyslogMessageMapContainer;
 import com.owera.xaps.core.util.SyslogMessageMapContainer.SyslogMessageMap;
@@ -89,7 +90,7 @@ public class HeartbeatDetection extends DBIShare {
 					from = orgFrom;
 					logger.debug("HeartbeatDetection: FindHeartbeats: Process unittype " + unittype.getName() + " and heartbeat " + heartbeat.getName() + " [" + heartbeat.getId()
 							+ "] with expression " + heartbeat.getExpression());
-					SyslogMessageMap smm = smmc.getSyslogMessageMap(heartbeat.getId());
+					SyslogMessageMapContainer.SyslogMessageMap smm = smmc.getSyslogMessageMap(heartbeat.getId());
 					if (smm == null) { // The heartbeat is new - happens at server-startup and if there's been detected some change to it (group/expression/etc)
 						logger.debug("HeartbeatDetection: FindHeartbeats: Creating new syslog message map - because server-startup or heartbeat-change");
 						smm = smmc.createSyslogMessageMap(heartbeat);
@@ -194,7 +195,7 @@ public class HeartbeatDetection extends DBIShare {
 		// Now process the maps and the "absence"-events to see if there's any units
 		// missing and build a list of missing events from units
 		XAPSUnit xapsUnit = new XAPSUnit(getXapsCp(), xaps, getSyslog());
-		for (SyslogMessageMap smm : smmc.getContainerValues()) {
+		for (SyslogMessageMapContainer.SyslogMessageMap smm : smmc.getContainerValues()) {
 			logger.debug("HeartbeatDetection: FilterHeartbeats: Process " + smm);
 			// The list contains the units in the group without the heartbeat message
 			List<String> unitIdsAbsent = new ArrayList<String>();
@@ -261,7 +262,7 @@ public class HeartbeatDetection extends DBIShare {
 
 	private void removeOldEntriesFromSyslogMaps(long to) {
 		// Now remove all old entries according the the timeout-rule
-		for (SyslogMessageMap smm : smmc.getContainerValues()) {
+		for (SyslogMessageMapContainer.SyslogMessageMap smm : smmc.getContainerValues()) {
 			// Any records older than this timestamp will be removed
 			long tooOldTms = to - smm.getHeartbeat().getTimeoutHours() * HOUR_MS;
 			TimestampMap unitIdTmsMap = smm.getUnitIdTmsMap();
@@ -276,7 +277,7 @@ public class HeartbeatDetection extends DBIShare {
 		Iterator<Integer> keyIterator = smmc.getIterator();
 		while (keyIterator.hasNext()) {
 			Integer heartbeatId = keyIterator.next();
-			SyslogMessageMap smm = smmc.getSyslogMessageMap(heartbeatId);
+			SyslogMessageMapContainer.SyslogMessageMap smm = smmc.getSyslogMessageMap(heartbeatId);
 			// This heartbeat object could be old/outdated - we
 			Heartbeat heartbeat = smm.getHeartbeat();
 

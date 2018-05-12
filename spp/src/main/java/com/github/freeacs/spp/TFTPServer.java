@@ -15,8 +15,12 @@
  * limitations under the License.
  */
 
-package com.owera.xaps.spp;
+package com.github.freeacs.spp;
 
+import com.github.freeacs.base.DownloadLogic;
+import com.github.freeacs.base.Log;
+import com.github.freeacs.base.db.DBAccess;
+import com.github.freeacs.base.db.DBAccessStatic;
 import com.github.freeacs.common.util.Sleep;
 import com.owera.xaps.base.DownloadLogic;
 import com.owera.xaps.base.Log;

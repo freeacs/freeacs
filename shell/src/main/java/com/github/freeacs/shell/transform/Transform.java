@@ -1,6 +1,7 @@
-package com.owera.xaps.shell.transform;
+package com.github.freeacs.shell.transform;
 
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.shell.Session;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.shell.Session;
 import com.owera.xaps.shell.util.StringUtil;

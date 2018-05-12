@@ -1,6 +1,10 @@
-package com.owera.xaps.tr069.methods;
+package com.github.freeacs.tr069.methods;
 
+import com.github.freeacs.base.db.DBAccessSessionTR069;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.SessionData;
+import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.db.DBAccess;
 import com.owera.xaps.base.db.DBAccessSessionTR069;
@@ -24,7 +28,7 @@ public class GPVDecisionExtraction {
 	 * unit_param_session table. No data will be written to unit_param table (provisioned data).
 	 * 
 	 * @param reqRes
-	 * @throws TR069DatabaseException 
+	 * @throws TR069DatabaseException
 	 * @throws SQLException
 	 * @throws NoAvailableConnectionException
 	 */

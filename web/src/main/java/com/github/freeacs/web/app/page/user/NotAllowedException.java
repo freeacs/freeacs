@@ -1,4 +1,4 @@
-package com.owera.xaps.web.app.page.user;
+package com.github.freeacs.web.app.page.user;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

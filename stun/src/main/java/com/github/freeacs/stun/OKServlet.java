@@ -1,4 +1,4 @@
-package com.owera.xaps.stun;
+package com.github.freeacs.stun;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

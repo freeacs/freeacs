@@ -1,4 +1,4 @@
-package com.owera.xaps.base.db;
+package com.github.freeacs.base.db;
 
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;

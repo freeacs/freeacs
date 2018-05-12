@@ -1,4 +1,4 @@
-package com.owera.xaps.web.app.page.report;
+package com.github.freeacs.web.app.page.report;
 
 import com.github.freeacs.dbi.report.*;
 

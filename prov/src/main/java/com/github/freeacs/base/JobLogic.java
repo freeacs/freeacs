@@ -1,7 +1,9 @@
-package com.owera.xaps.base;
+package com.github.freeacs.base;
 
+import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.UnitJob;
 import com.owera.xaps.Properties.Module;
 import com.owera.xaps.base.db.DBAccess;
 import com.owera.xaps.dbi.*;
@@ -37,7 +39,7 @@ public class JobLogic {
 					Log.warn(JobLogic.class, "Current job " + jobId + " does no longer exist, cannot be verified");
 					return false;
 				}
-				UnitJob uj = new UnitJob(sessionData, job, false);
+				com.github.freeacs.dbi.UnitJob uj = new com.github.freeacs.dbi.UnitJob(sessionData, job, false);
 				if (!job.getStatus().equals(JobStatus.STARTED)) {
 					Log.warn(JobLogic.class, "Current job is not STARTED, UnitJob must be STOPPED");
 					uj.stop(UnitJobStatus.STOPPED);
@@ -89,13 +91,13 @@ public class JobLogic {
 		}
 	}
 
-	public static UnitJob checkNewJob(Module module, SessionDataI sessionData) throws SQLException {
+	public static com.github.freeacs.dbi.UnitJob checkNewJob(Module module, SessionDataI sessionData) throws SQLException {
 		if (sessionData.getUnit().getProvisioningMode() == ProvisioningMode.REGULAR) {
 			Job job = JobLogic.getJob(module, sessionData);
 			if (job != null) {
-				UnitJob uj = null;
+				com.github.freeacs.dbi.UnitJob uj = null;
 				if (job.getFlags().getType() == JobType.SHELL) // TELNET jobs are never triggered through provisioning
-					uj = new UnitJob(sessionData, job, true);
+					uj = new com.github.freeacs.dbi.UnitJob(sessionData, job, true);
 				else
 					// CONFIG/SOFTWARE/SCRIPT/RESET/RESTART are client-side jobs
 					uj = new UnitJob(sessionData, job, false);

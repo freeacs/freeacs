@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package com.owera.xaps.web.app.table;
+package com.github.freeacs.web.app.table;
 
 import com.github.freeacs.common.util.NaturalComparator;
 

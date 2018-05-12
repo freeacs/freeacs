@@ -1,6 +1,8 @@
-package com.owera.xaps.web.app.page.syslog;
+package com.github.freeacs.web.app.page.syslog;
 
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.web.app.table.TableColor;
+import com.github.freeacs.web.app.util.DateUtils;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.app.table.TableColor;
 import com.owera.xaps.web.app.util.DateUtils;

@@ -1,4 +1,4 @@
-package com.owera.xaps.web.app.page.report.custom;
+package com.github.freeacs.web.app.page.report.custom;
 
 import com.github.freeacs.dbi.Group;
 import com.github.freeacs.dbi.Profile;
@@ -7,6 +7,7 @@ import com.github.freeacs.dbi.XAPS;
 import com.github.freeacs.dbi.report.PeriodType;
 import com.github.freeacs.dbi.report.Report;
 import com.github.freeacs.dbi.report.ReportGenerator;
+import com.github.freeacs.web.app.input.ParameterParser;
 import com.owera.xaps.web.app.input.ParameterParser;
 import com.owera.xaps.web.app.page.report.ReportData;
 
