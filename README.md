@@ -1,10 +1,40 @@
-# freeacs
-freeacs with maven and spring boot
+![Jdbi Logo](readme/logo.png)
 
 [![Build Status](https://travis-ci.org/freeacs/freeacs.svg?branch=master)](https://travis-ci.org/freeacs/freeacs)
 
-This is a work in progress. The plan is to convert the previous manual build and deployment process to a completely automated maven build backed with travis CI etc.
+Fusion Free ACS is the most complete TR-069 ACS available for free under the MIT License. You can download and install it, or contribute to the project! 
 
-If you want to help, fork the repo and open a pull request.
+## Prerequisites
 
-To run any of the web applications, run ```mvn spring-boot:run```. But you need a mysql server running and you need to install the sql scripts.
+Freeacs requires Java and MySQL. It has been tested to work on Java 8 and latest version of MySQL (the latter with some minor quirk in the install script).
+
+## Social
+
+* [Freeforums](https://www.tapatalk.com/groups/freeacs/)
+
+
+## Builds
+
+Freeacs is built with Maven:
+
+```bash
+$ mvn clean install
+```
+
+## Contributing
+
+Open a pull request, add an issue or discuss in the forums. 
+
+## Versioning
+
+No special versioning paradigms used at the moment. But we are currently target an initial 2.0.0 release with several release candidates planned before we hit the actual 2.0.0 releae. The versioning does not correspond with the versions reported by the modules it self.
+
+## License
+
+This project is licensed under the The MIT License. See https://github.com/freeacs/freeacs/blob/master/readme/LICENSE
+
+## Active project Members
+
+* **Jarl André Hübenthal (@jarlah)**
+
+See https://github.com/freeacs/freeacs/wiki/About for information.
