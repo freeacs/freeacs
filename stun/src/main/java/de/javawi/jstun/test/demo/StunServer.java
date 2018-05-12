@@ -11,10 +11,10 @@
 
 package de.javawi.jstun.test.demo;
 
-import com.owera.common.util.Sleep;
-import com.owera.common.util.TimestampMap;
-import com.owera.xaps.stun.MessageStack;
-import com.owera.xaps.stun.OKServlet;
+import com.github.freeacs.common.util.Sleep;
+import com.github.freeacs.common.util.TimestampMap;
+import com.github.freeacs.stun.MessageStack;
+import com.github.freeacs.stun.OKServlet;
 import de.javawi.jstun.attribute.*;
 import de.javawi.jstun.attribute.MessageAttributeInterface.MessageAttributeType;
 import de.javawi.jstun.header.MessageHeader;

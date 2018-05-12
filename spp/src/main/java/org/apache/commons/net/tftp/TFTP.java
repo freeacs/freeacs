@@ -17,7 +17,7 @@
 
 package org.apache.commons.net.tftp;
 
-import com.owera.common.util.Sleep;
+import com.github.freeacs.common.util.Sleep;
 import org.apache.commons.net.DatagramSocketClient;
 
 import java.io.IOException;
