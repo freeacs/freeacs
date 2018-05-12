@@ -3,7 +3,6 @@ package com.github.freeacs.web.app.page.file;
 import com.github.freeacs.dbi.File;
 import com.github.freeacs.dbi.FileType;
 import com.github.freeacs.web.app.input.DropDownSingleSelect;
-import com.owera.xaps.web.app.input.DropDownSingleSelect;
 
 import java.util.List;
 

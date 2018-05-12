@@ -1,7 +1,6 @@
 package com.github.freeacs.spp;
 
 import com.github.freeacs.base.Log;
-import com.owera.xaps.base.Log;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 

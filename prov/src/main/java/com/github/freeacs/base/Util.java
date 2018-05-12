@@ -1,7 +1,6 @@
 package com.github.freeacs.base;
 
 import com.github.freeacs.base.db.DBAccessStatic;
-import com.owera.xaps.base.db.DBAccessStatic;
 import com.github.freeacs.dbi.UnitParameter;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.UnittypeParameter;

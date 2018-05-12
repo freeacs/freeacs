@@ -1,10 +1,11 @@
 package com.github.freeacs.tr069;
 
-import com.owera.xaps.base.BaseCache;
-import com.owera.xaps.base.BaseCacheException;
-import com.owera.xaps.base.Log;
-import com.owera.xaps.tr069.exception.TR069DatabaseException;
-import com.owera.xaps.tr069.xml.TR069TransactionID;
+import com.github.freeacs.base.BaseCache;
+import com.github.freeacs.base.BaseCacheException;
+import com.github.freeacs.base.Log;
+import com.github.freeacs.tr069.exception.TR069DatabaseException;
+import com.github.freeacs.tr069.xml.TR069TransactionID;
+
 import org.w3c.dom.Document;
 
 import javax.servlet.http.HttpServletRequest;

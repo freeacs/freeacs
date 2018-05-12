@@ -2,12 +2,12 @@ package com.github.freeacs.shell;
 
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
-import com.owera.xaps.dbi.*;
-import com.owera.xaps.shell.command.*;
-import com.owera.xaps.shell.menu.*;
-import com.owera.xaps.shell.output.OutputHandler;
-import com.owera.xaps.shell.util.StringUtil;
-import com.owera.xaps.shell.util.ValidateInput;
+
+import com.github.freeacs.shell.command.*;
+import com.github.freeacs.shell.menu.*;
+import com.github.freeacs.shell.output.OutputHandler;
+import com.github.freeacs.shell.util.StringUtil;
+import com.github.freeacs.shell.util.ValidateInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

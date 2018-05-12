@@ -1,12 +1,10 @@
 package com.github.freeacs.base;
 
+import com.github.freeacs.Properties;
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.dbi.*;
-import com.github.freeacs.dbi.UnitJob;
-import com.owera.xaps.Properties.Module;
-import com.owera.xaps.base.db.DBAccess;
-import com.owera.xaps.dbi.*;
+
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
 import com.github.freeacs.dbi.JobFlag.JobType;
 import com.github.freeacs.dbi.util.ProvisioningMode;
@@ -39,7 +37,7 @@ public class JobLogic {
 					Log.warn(JobLogic.class, "Current job " + jobId + " does no longer exist, cannot be verified");
 					return false;
 				}
-				com.github.freeacs.dbi.UnitJob uj = new com.github.freeacs.dbi.UnitJob(sessionData, job, false);
+				UnitJob uj = new UnitJob(sessionData, job, false);
 				if (!job.getStatus().equals(JobStatus.STARTED)) {
 					Log.warn(JobLogic.class, "Current job is not STARTED, UnitJob must be STOPPED");
 					uj.stop(UnitJobStatus.STOPPED);
@@ -91,13 +89,13 @@ public class JobLogic {
 		}
 	}
 
-	public static com.github.freeacs.dbi.UnitJob checkNewJob(Module module, SessionDataI sessionData) throws SQLException {
+	public static UnitJob checkNewJob(Properties.Module module, SessionDataI sessionData) throws SQLException {
 		if (sessionData.getUnit().getProvisioningMode() == ProvisioningMode.REGULAR) {
 			Job job = JobLogic.getJob(module, sessionData);
 			if (job != null) {
-				com.github.freeacs.dbi.UnitJob uj = null;
+				UnitJob uj = null;
 				if (job.getFlags().getType() == JobType.SHELL) // TELNET jobs are never triggered through provisioning
-					uj = new com.github.freeacs.dbi.UnitJob(sessionData, job, true);
+					uj = new UnitJob(sessionData, job, true);
 				else
 					// CONFIG/SOFTWARE/SCRIPT/RESET/RESTART are client-side jobs
 					uj = new UnitJob(sessionData, job, false);
@@ -118,7 +116,7 @@ public class JobLogic {
 	 * @param sessionData
 	 * @return
 	 */
-	private static Job getJob(Module module, SessionDataI sessionData) {
+	private static Job getJob(Properties.Module module, SessionDataI sessionData) {
 		Unit unit = sessionData.getUnit();
 		Jobs jobs = sessionData.getUnittype().getJobs();
 		String message = "";
@@ -298,7 +296,7 @@ public class JobLogic {
 		return nextPII;
 	}
 
-	private static Map<Integer, Job> filterOnDownloadAllowed(Map<Integer, Job> possibleJobs, Module module) {
+	private static Map<Integer, Job> filterOnDownloadAllowed(Map<Integer, Job> possibleJobs, Properties.Module module) {
 		Iterator<Entry<Integer, Job>> i = possibleJobs.entrySet().iterator();
 		while (i.hasNext()) {
 			Entry<Integer, Job> entry = i.next();

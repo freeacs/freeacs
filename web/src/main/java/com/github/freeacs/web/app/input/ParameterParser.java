@@ -1,7 +1,7 @@
 package com.github.freeacs.web.app.input;
 
-import com.owera.xaps.web.app.util.SessionCache;
-import com.owera.xaps.web.app.util.SessionData;
+import com.github.freeacs.web.app.util.SessionCache;
+import com.github.freeacs.web.app.util.SessionData;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;

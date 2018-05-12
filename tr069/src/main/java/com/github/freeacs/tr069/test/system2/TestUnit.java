@@ -1,6 +1,6 @@
 package com.github.freeacs.tr069.test.system2;
 
-import com.owera.xaps.base.Log;
+import com.github.freeacs.base.Log;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.UnitParameter;
 import com.github.freeacs.dbi.Unittype;

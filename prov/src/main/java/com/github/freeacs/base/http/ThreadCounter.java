@@ -1,6 +1,6 @@
 package com.github.freeacs.base.http;
 
-import com.owera.xaps.base.SessionDataI;
+import com.github.freeacs.base.SessionDataI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

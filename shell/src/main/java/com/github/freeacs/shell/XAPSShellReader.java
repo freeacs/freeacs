@@ -1,6 +1,6 @@
 package com.github.freeacs.shell;
 
-import com.owera.xaps.shell.util.FileUtil;
+import com.github.freeacs.shell.util.FileUtil;
 import jline.ArgumentCompletor;
 import jline.ConsoleReader;
 import jline.SimpleCompletor;

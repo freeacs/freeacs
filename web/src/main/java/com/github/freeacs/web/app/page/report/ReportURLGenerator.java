@@ -1,7 +1,6 @@
 package com.github.freeacs.web.app.page.report;
 
 import com.github.freeacs.web.app.util.WebConstants;
-import com.owera.xaps.web.app.util.WebConstants;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYDataset;
 

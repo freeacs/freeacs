@@ -3,7 +3,11 @@ package com.github.freeacs.web.app.page.unit;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.report.*;
+import com.github.freeacs.web.Page;
+import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.*;
+import com.github.freeacs.web.app.menu.MenuItem;
+import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.page.report.ReportPage;
 import com.github.freeacs.web.app.page.report.ReportType;
 import com.github.freeacs.web.app.page.report.UnitListData;
@@ -12,21 +16,6 @@ import com.github.freeacs.web.app.page.report.uidata.RecordUIDataHardwareFilter;
 import com.github.freeacs.web.app.page.report.uidata.RecordUIDataSyslog;
 import com.github.freeacs.web.app.page.report.uidata.RecordUIDataVoip;
 import com.github.freeacs.web.app.util.*;
-import com.owera.xaps.dbi.*;
-import com.owera.xaps.web.Page;
-import com.owera.xaps.web.app.Output;
-import com.owera.xaps.web.app.input.*;
-import com.owera.xaps.web.app.menu.MenuItem;
-import com.owera.xaps.web.app.page.AbstractWebPage;
-import com.owera.xaps.web.app.page.report.ReportPage;
-import com.owera.xaps.web.app.page.report.ReportType;
-import com.owera.xaps.web.app.page.report.UnitListData;
-import com.owera.xaps.web.app.page.report.uidata.RecordUIDataHardware;
-import com.owera.xaps.web.app.page.report.uidata.RecordUIDataHardwareFilter;
-import com.owera.xaps.web.app.page.report.uidata.RecordUIDataSyslog;
-import com.owera.xaps.web.app.page.report.uidata.RecordUIDataVoip;
-import com.owera.xaps.web.app.page.unit.UnitStatusInfo.VoipLine;
-import com.owera.xaps.web.app.util.*;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
 import org.jfree.chart.ChartUtilities;
@@ -861,7 +850,6 @@ public class UnitStatusPage extends AbstractWebPage {
 	 * instance: "https://${IP_parameter_reference}" if you want an IP-address to be
 	 * appended with a https:// input.
 	 * 
-	 * @param The original parameter to search for.
 	 * @return The parameter with any one step references resolved
 	 */
 	private String resolveParameters(String key) {

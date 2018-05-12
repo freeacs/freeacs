@@ -3,10 +3,8 @@ package com.github.freeacs.spp;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.common.util.Sleep;
+import com.github.freeacs.spp.http.Authenticator;
 import com.github.freeacs.spp.telnet.TelnetProvisioning;
-import com.owera.xaps.Properties.Module;
-import com.owera.xaps.base.Log;
-import com.owera.xaps.base.db.DBAccess;
 import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.Users;
@@ -15,8 +13,6 @@ import com.github.freeacs.dbi.util.ProvisioningMessage.ErrorResponsibility;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ProvOutput;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ProvStatus;
 import com.github.freeacs.dbi.util.SyslogClient;
-import com.owera.xaps.spp.TFTPServer.ServerMode;
-import com.owera.xaps.spp.telnet.TelnetProvisioning;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -43,7 +39,7 @@ public class HTTPProvisioning extends HttpServlet {
 		try {
 			// Start the server
 			PrintStream ps = new PrintStream(System.out);
-			TFTPServer tftpS = new TFTPServer(new File("."), new File("."), Properties.getTFTPPort(), ServerMode.GET_ONLY, ps, ps);
+			TFTPServer tftpS = new TFTPServer(new File("."), new File("."), Properties.getTFTPPort(), TFTPServer.ServerMode.GET_ONLY, ps, ps);
 			tftpS.setSocketTimeout(5000);
 		} catch (Throwable t) {
 			Log.fatal(HTTPProvisioning.class, "An error occurred - TFTP server did not start (triggered from HTTPProvisioning", t);
@@ -71,7 +67,7 @@ public class HTTPProvisioning extends HttpServlet {
 			sessionData.setReqURL(reqURL);
 			sessionData.setContextPath(req.getContextPath());
 
-			if (!com.owera.xaps.spp.http.Authenticator.authenticate(req, res, sessionData)) {
+			if (!Authenticator.authenticate(req, res, sessionData)) {
 				return;
 			}
 

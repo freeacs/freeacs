@@ -1,9 +1,6 @@
 package com.github.freeacs.syslogserver;
 
 import com.github.freeacs.common.scheduler.TaskDefaultImpl;
-import com.owera.xaps.syslogserver.FailoverFileReader.FailoverCounter;
-import com.owera.xaps.syslogserver.Syslog2DB.Syslog2DBCounter;
-import com.owera.xaps.syslogserver.SyslogPackets.BufferCounter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,9 +51,9 @@ public class SummaryLogger extends TaskDefaultImpl {
 		int discarded = received - maxMessagesPrMinute;
 		if (discarded > 0)
 			logger.error("Received " + received + " messages, discarded " + (discarded) + " messages due to maxMessagesPrMinute limit at " + maxMessagesPrMinute);
-		BufferCounter bc = SyslogPackets.getCounter().resetCounters();
-		Syslog2DBCounter sc = Syslog2DB.getCounter().resetCounters();
-		FailoverCounter fc = FailoverFileReader.getCounter().resetCounters();
+		SyslogPackets.BufferCounter bc = SyslogPackets.getCounter().resetCounters();
+		Syslog2DB.Syslog2DBCounter sc = Syslog2DB.getCounter().resetCounters();
+		FailoverFileReader.FailoverCounter fc = FailoverFileReader.getCounter().resetCounters();
 		String message = "";
 		message += String.format("%8s ", received);
 		message += String.format("%7s ", bc.getSize());

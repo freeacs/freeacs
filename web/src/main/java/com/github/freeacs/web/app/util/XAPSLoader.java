@@ -3,9 +3,8 @@ package com.github.freeacs.web.app.util;
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
-import com.owera.xaps.dbi.*;
-import com.owera.xaps.web.app.Main;
-import com.owera.xaps.web.app.Monitor;
+import com.github.freeacs.web.app.Main;
+import com.github.freeacs.web.app.Monitor;
 
 import java.sql.SQLException;
 

@@ -1,9 +1,8 @@
 package com.github.freeacs.base.db;
 
+import com.github.freeacs.base.Log;
+import com.github.freeacs.base.SessionDataI;
 import com.github.freeacs.dbi.*;
-import com.owera.xaps.base.Log;
-import com.owera.xaps.base.SessionDataI;
-import com.owera.xaps.dbi.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

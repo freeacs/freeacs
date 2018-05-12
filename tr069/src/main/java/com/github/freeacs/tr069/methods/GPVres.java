@@ -1,16 +1,12 @@
 package com.github.freeacs.tr069.methods;
 
+import com.github.freeacs.base.Log;
 import com.github.freeacs.tr069.CPEParameters;
 import com.github.freeacs.tr069.HTTPReqResData;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069Exception;
-import com.owera.xaps.base.Log;
-import com.owera.xaps.tr069.CPEParameters;
-import com.owera.xaps.tr069.HTTPReqResData;
-import com.owera.xaps.tr069.SessionData;
-import com.owera.xaps.tr069.exception.TR069Exception;
-import com.owera.xaps.tr069.xml.ParameterValueStruct;
-import com.owera.xaps.tr069.xml.Parser;
+import com.github.freeacs.tr069.xml.ParameterValueStruct;
+import com.github.freeacs.tr069.xml.Parser;
 
 public class GPVres {
 

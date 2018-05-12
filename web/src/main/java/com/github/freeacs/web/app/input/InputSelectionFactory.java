@@ -1,8 +1,7 @@
 package com.github.freeacs.web.app.input;
 
 import com.github.freeacs.dbi.*;
-import com.owera.xaps.dbi.*;
-import com.owera.xaps.web.app.util.WebConstants;
+import com.github.freeacs.web.app.util.WebConstants;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -7,7 +7,6 @@ import com.github.freeacs.common.scheduler.Scheduler;
 import com.github.freeacs.common.scheduler.ShowScheduleQueue;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.core.task.*;
-import com.owera.xaps.core.task.*;
 import com.github.freeacs.dbi.util.XAPSVersionCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import static com.owera.xaps.core.Properties.*;
 
 public class CoreServlet extends HttpServlet {
 

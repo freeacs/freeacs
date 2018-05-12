@@ -1,6 +1,6 @@
 package com.github.freeacs.web.help;
 
-import com.owera.xaps.web.Page;
+import com.github.freeacs.web.Page;
 import freemarker.template.TemplateException;
 
 import javax.servlet.ServletException;

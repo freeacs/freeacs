@@ -4,10 +4,6 @@ import com.github.freeacs.dbi.*;
 import com.github.freeacs.shell.Context;
 import com.github.freeacs.shell.Properties;
 import com.github.freeacs.shell.Session;
-import com.owera.xaps.dbi.*;
-import com.owera.xaps.shell.Context;
-import com.owera.xaps.shell.Properties;
-import com.owera.xaps.shell.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -5,12 +5,8 @@ import com.github.freeacs.base.db.DBAccessStatic;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
-import com.owera.xaps.base.db.DBAccess;
-import com.owera.xaps.base.db.DBAccessStatic;
-import com.owera.xaps.dbi.*;
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.owera.xaps.tr069.xml.ParameterValueStruct;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -91,8 +87,6 @@ public class UnitJob {
 	 * Specifically it updates:
 	 * 		oweraparameters: job-current
 	 * 		fromDB : all job-parameters (except job-current/job-history)
-	 * @param sessionData
-	 * @param job
 	 * @throws SQLException
 	 * @throws NoAvailableConnectionException
 	 */

@@ -8,7 +8,7 @@ import com.github.freeacs.common.scheduler.ScheduleType;
 import com.github.freeacs.common.scheduler.Scheduler;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.*;
-import com.owera.xaps.dbi.*;
+
 import de.javawi.jstun.test.demo.StabilityLogger;
 import de.javawi.jstun.test.demo.StunServer;
 import org.slf4j.Logger;
@@ -23,9 +23,10 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.sql.SQLException;
 
-import static com.owera.xaps.stun.Properties.getMaxAge;
-import static com.owera.xaps.stun.Properties.getMaxConn;
-import static com.owera.xaps.stun.Properties.getUrl;
+import static com.github.freeacs.stun.Properties.getMaxAge;
+import static com.github.freeacs.stun.Properties.getMaxConn;
+import static com.github.freeacs.stun.Properties.getUrl;
+
 
 public class StunServlet extends HttpServlet {
 

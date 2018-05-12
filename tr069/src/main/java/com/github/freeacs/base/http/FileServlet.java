@@ -1,15 +1,15 @@
 package com.github.freeacs.base.http;
 
-import com.owera.xaps.base.DownloadLogic;
-import com.owera.xaps.base.Log;
-import com.owera.xaps.base.db.DBAccess;
-import com.owera.xaps.base.db.DBAccessStatic;
+import com.github.freeacs.base.DownloadLogic;
+import com.github.freeacs.base.Log;
+import com.github.freeacs.base.db.DBAccess;
+import com.github.freeacs.base.db.DBAccessStatic;
 import com.github.freeacs.dbi.File;
 import com.github.freeacs.dbi.FileType;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.XAPS;
-import com.owera.xaps.tr069.HTTPReqResData;
-import com.owera.xaps.tr069.Properties;
+import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

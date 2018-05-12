@@ -1,7 +1,7 @@
 package com.github.freeacs.tr069;
 
+import com.github.freeacs.base.Log;
 import com.github.freeacs.common.db.ConnectionProperties;
-import com.owera.xaps.base.Log;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 

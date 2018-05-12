@@ -4,10 +4,10 @@ import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.util.PropertyReader;
 import com.github.freeacs.dbi.*;
-import com.owera.xaps.dbi.*;
+
 import com.github.freeacs.dbi.util.XAPSVersionCheck;
-import com.owera.xaps.shell.util.ValidateInput;
-import com.owera.xaps.shell.util.ValidateInteger;
+import com.github.freeacs.shell.util.ValidateInput;
+import com.github.freeacs.shell.util.ValidateInteger;
 
 import java.io.*;
 import java.sql.SQLException;

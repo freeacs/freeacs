@@ -1,6 +1,7 @@
 package com.github.freeacs.tr069.methods;
 
-import com.owera.xaps.base.Log;
+
+import com.github.freeacs.base.Log;
 
 import java.util.HashMap;
 import java.util.Map;

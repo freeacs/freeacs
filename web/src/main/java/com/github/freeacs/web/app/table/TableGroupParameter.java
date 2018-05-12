@@ -4,7 +4,7 @@ import com.github.freeacs.dbi.Group;
 import com.github.freeacs.dbi.GroupParameter;
 import com.github.freeacs.dbi.Parameter;
 import com.github.freeacs.dbi.UnittypeParameter;
-import com.owera.xaps.web.app.page.search.SearchParameter;
+import com.github.freeacs.web.app.page.search.SearchParameter;
 
 /**
  * Represents a clone for the supplied GroupParameter.

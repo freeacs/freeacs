@@ -1,16 +1,16 @@
 package com.github.freeacs.tr069;
 
-import com.owera.xaps.base.DownloadLogic;
-import com.owera.xaps.base.Log;
-import com.owera.xaps.base.OweraParameters;
+
+import com.github.freeacs.base.DownloadLogic;
+import com.github.freeacs.base.Log;
+import com.github.freeacs.base.OweraParameters;
 import com.github.freeacs.dbi.File;
 import com.github.freeacs.dbi.FileType;
 import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.JobParameter;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.SystemParameters.TR069ScriptType;
-import com.owera.xaps.tr069.SessionData.Download;
-import com.owera.xaps.tr069.xml.ParameterValueStruct;
+import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

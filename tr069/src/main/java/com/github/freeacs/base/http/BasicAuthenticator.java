@@ -1,14 +1,14 @@
 package com.github.freeacs.base.http;
 
+import com.github.freeacs.base.BaseCache;
+import com.github.freeacs.base.Log;
+import com.github.freeacs.base.NoDataAvailableException;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
-import com.owera.xaps.base.BaseCache;
-import com.owera.xaps.base.Log;
-import com.owera.xaps.base.NoDataAvailableException;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.owera.xaps.tr069.HTTPReqResData;
-import com.owera.xaps.tr069.Properties;
-import com.owera.xaps.tr069.SessionData;
-import com.owera.xaps.tr069.exception.TR069AuthenticationException;
+import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.Properties;
+import com.github.freeacs.tr069.SessionData;
+import com.github.freeacs.tr069.exception.TR069AuthenticationException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

@@ -1,30 +1,27 @@
 package com.github.freeacs.tr069;
 
+import com.github.freeacs.base.BaseCache;
+import com.github.freeacs.base.Log;
+import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.http.Authenticator;
+import com.github.freeacs.base.http.ThreadCounter;
 import com.github.freeacs.common.db.ConnectionMetaData;
 import com.github.freeacs.common.db.ConnectionPoolData;
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.*;
-import com.owera.xaps.Properties.Module;
-import com.owera.xaps.base.BaseCache;
-import com.owera.xaps.base.Log;
-import com.owera.xaps.base.db.DBAccess;
-import com.owera.xaps.base.http.Authenticator;
-import com.owera.xaps.base.http.ThreadCounter;
-import com.owera.xaps.dbi.*;
-import com.owera.xaps.tr069.background.BackgroundProcesses;
-import com.owera.xaps.tr069.background.ScheduledKickTask;
-import com.owera.xaps.tr069.exception.TR069Exception;
-import com.owera.xaps.tr069.exception.TR069ExceptionShortMessage;
-import com.owera.xaps.tr069.methods.DecisionMaker;
-import com.owera.xaps.tr069.methods.HTTPRequestProcessor;
-import com.owera.xaps.tr069.methods.HTTPResponseCreator;
-import com.owera.xaps.tr069.methods.TR069Method;
-import com.owera.xaps.tr069.test.system1.TestDatabase;
-import com.owera.xaps.tr069.test.system1.TestDatabaseObject;
-import com.owera.xaps.tr069.test.system2.Util;
+import com.github.freeacs.tr069.background.BackgroundProcesses;
+import com.github.freeacs.tr069.background.ScheduledKickTask;
+import com.github.freeacs.tr069.exception.TR069Exception;
+import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
+import com.github.freeacs.tr069.methods.DecisionMaker;
+import com.github.freeacs.tr069.methods.HTTPRequestProcessor;
+import com.github.freeacs.tr069.methods.HTTPResponseCreator;
+import com.github.freeacs.tr069.methods.TR069Method;
+import com.github.freeacs.tr069.test.system1.TestDatabase;
+import com.github.freeacs.tr069.test.system1.TestDatabaseObject;
+import com.github.freeacs.tr069.test.system2.Util;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -36,7 +33,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.List;
 
-import static com.owera.xaps.tr069.Properties.*;
+import static com.github.freeacs.tr069.Properties.getMaxAge;
+import static com.github.freeacs.tr069.Properties.getMaxConn;
+import static com.github.freeacs.tr069.Properties.getUrl;
+
 
 /**
  * This is the "main-class" of TR069 Provisioning. It receives the HTTP-request
@@ -60,7 +60,7 @@ public class Provisioning extends HttpServlet {
 	 * Starts background processes, initializes logging system
 	 */
 	static {
-		DBAccess.init(Module.TR069, SyslogConstants.FACILITY_TR069, VERSION);
+		DBAccess.init(com.github.freeacs.Properties.Module.TR069, SyslogConstants.FACILITY_TR069, VERSION);
 		Log.notice(Provisioning.class, "Server starts...");
 		try {
 			BackgroundProcesses.initiate(DBAccess.getDBI());
@@ -119,7 +119,7 @@ public class Provisioning extends HttpServlet {
 	 * Reads the XML input into a string and store it in the SessionData object
 	 * @param reqRes
 	 * @return
-	 * @throws TR069Exception 
+	 * @throws TR069Exception
 	 * @throws IOException
 	 */
 	private static long extractRequest(HTTPReqResData reqRes) throws TR069Exception {

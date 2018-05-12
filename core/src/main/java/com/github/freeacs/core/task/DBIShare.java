@@ -4,17 +4,16 @@ import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.scheduler.Task;
-import com.github.freeacs.core.Properties;
 import com.github.freeacs.dbi.*;
-import com.owera.xaps.core.CoreServlet;
-import com.owera.xaps.dbi.*;
+import com.github.freeacs.core.CoreServlet;
+
 import org.slf4j.Logger;
 
 import java.sql.SQLException;
 
-import static com.owera.xaps.core.Properties.getMaxAge;
-import static com.owera.xaps.core.Properties.getMaxConn;
-import static com.owera.xaps.core.Properties.getUrl;
+import static com.github.freeacs.core.Properties.getMaxAge;
+import static com.github.freeacs.core.Properties.getMaxConn;
+import static com.github.freeacs.core.Properties.getUrl;
 
 /**
  * You can extend DBIShare if, and only if, you do not manipulate the contents of the xAPS object. 
@@ -28,8 +27,8 @@ public abstract class DBIShare implements Task {
 	private static ConnectionProperties xapsCp = null;
 	private static ConnectionProperties sysCp = null;
 	static {
-		xapsCp = ConnectionProvider.getConnectionProperties(Properties.getUrl("xaps"), Properties.getMaxAge("xaps"), Properties.getMaxConn("xaps"));
-		sysCp = ConnectionProvider.getConnectionProperties(Properties.getUrl("syslog"), Properties.getMaxAge("syslog"), Properties.getMaxConn("syslog"));
+		xapsCp = ConnectionProvider.getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps"));
+		sysCp = ConnectionProvider.getConnectionProperties(getUrl("syslog"), getMaxAge("syslog"), getMaxConn("syslog"));
 		if (sysCp == null)
 			sysCp = xapsCp;
 	}

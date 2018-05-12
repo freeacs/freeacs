@@ -5,7 +5,7 @@ import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.scheduler.TaskDefaultImpl;
 import com.github.freeacs.dbi.*;
-import com.owera.xaps.dbi.*;
+
 import com.github.freeacs.monitor.MonitorServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

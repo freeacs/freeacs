@@ -3,9 +3,9 @@ package com.github.freeacs.web.app.security.handlers;
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.dbi.User;
 import com.github.freeacs.dbi.Users;
-import com.owera.xaps.web.app.page.login.LoginPage;
-import com.owera.xaps.web.app.security.WebUser;
-import com.owera.xaps.web.app.util.SessionCache;
+import com.github.freeacs.web.app.page.login.LoginPage;
+import com.github.freeacs.web.app.security.WebUser;
+import com.github.freeacs.web.app.util.SessionCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,13 +1,14 @@
 package com.github.freeacs.spp;
 
-import com.owera.xaps.base.DownloadLogic;
-import com.owera.xaps.base.Log;
-import com.owera.xaps.base.db.DBAccess;
-import com.owera.xaps.base.db.DBAccessStatic;
+import com.github.freeacs.base.DownloadLogic;
+import com.github.freeacs.base.Log;
+import com.github.freeacs.base.db.DBAccess;
+import com.github.freeacs.base.db.DBAccessStatic;
 import com.github.freeacs.dbi.File;
 import com.github.freeacs.dbi.FileType;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.XAPS;
+import com.github.freeacs.spp.http.Authenticator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -39,7 +40,7 @@ public class FileServlet extends HttpServlet {
         sessionData.setIpAddress(req.getRemoteHost());
         sessionData.setReqURL(reqURL);
         sessionData.setContextPath(req.getContextPath());
-        if (!com.owera.xaps.spp.http.Authenticator.authenticate(req, res, sessionData)) {
+        if (!Authenticator.authenticate(req, res, sessionData)) {
           return;
         }
       }

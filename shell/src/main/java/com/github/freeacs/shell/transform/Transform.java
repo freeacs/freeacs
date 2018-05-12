@@ -2,9 +2,7 @@ package com.github.freeacs.shell.transform;
 
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.shell.Session;
-import com.owera.xaps.dbi.*;
-import com.owera.xaps.shell.Session;
-import com.owera.xaps.shell.util.StringUtil;
+import com.github.freeacs.shell.util.StringUtil;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

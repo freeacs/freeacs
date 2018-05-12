@@ -1,11 +1,10 @@
 package com.github.freeacs.tr069.background;
 
 import com.github.freeacs.base.http.Authenticator;
+import com.github.freeacs.base.http.ThreadCounter;
 import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.scheduler.TaskDefaultImpl;
 import com.github.freeacs.tr069.Properties;
-import com.owera.xaps.base.http.Authenticator;
-import com.owera.xaps.base.http.ThreadCounter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +13,6 @@ import java.util.Collection;
 import java.util.Map;
 
 import static com.github.freeacs.common.db.ConnectionProvider.getConnectionProperties;
-import static com.owera.xaps.tr069.Properties.*;
 
 public class StabilityTask extends TaskDefaultImpl {
 

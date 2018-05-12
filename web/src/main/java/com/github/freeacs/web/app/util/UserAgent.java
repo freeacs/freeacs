@@ -1,7 +1,7 @@
 package com.github.freeacs.web.app.util;
 
-import com.owera.xaps.web.app.page.unit.UnitStatusRealTimeMosPage;
 
+import com.github.freeacs.web.app.page.unit.UnitStatusRealTimeMosPage;
 
 /**
  * Used by {@link BrowserDetect} and {@link UnitStatusRealTimeMosPage}.

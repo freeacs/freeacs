@@ -1,7 +1,7 @@
 package com.github.freeacs.core.task;
 
 import com.github.freeacs.common.db.NoAvailableConnectionException;
-import com.owera.xaps.core.Properties;
+import com.github.freeacs.core.Properties;
 import com.github.freeacs.dbi.SyslogEvent;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.XAPS;

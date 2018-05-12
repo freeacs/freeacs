@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://xapsws.owera.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	name="Test" targetNamespace="http://xapsws.owera.com/">
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://ws.freeacs.github.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	name="Test" targetNamespace="http://ws.freeacs.github.com/">
 	<wsdl:types>
 		<!-- WSDL Version 2 -->
-		<xsd:schema targetNamespace="http://xapsws.owera.com/">
+		<xsd:schema targetNamespace="http://ws.freeacs.github.com/">
 			<xsd:complexType name="Login">
 				<xsd:sequence>
 					<xsd:element name="username" nillable="false" type="xsd:string" />

@@ -1,5 +1,8 @@
 package com.github.freeacs.tr069.methods;
 
+import com.github.freeacs.Properties;
+import com.github.freeacs.base.*;
+import com.github.freeacs.base.UnitJob;
 import com.github.freeacs.base.db.DBAccessSessionTR069;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.tr069.CPEParameters;
@@ -11,11 +14,7 @@ import com.github.freeacs.tr069.decision.shelljob.ShellJobLogic;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
-import com.owera.xaps.Properties.Module;
-import com.owera.xaps.base.*;
-import com.owera.xaps.base.UnitJob;
-import com.owera.xaps.base.db.DBAccessSessionTR069;
-import com.owera.xaps.dbi.*;
+
 import com.github.freeacs.dbi.JobFlag.JobType;
 import com.github.freeacs.dbi.tr069.TR069DMParameter;
 import com.github.freeacs.dbi.tr069.TR069DMParameterMap;
@@ -25,17 +24,8 @@ import com.github.freeacs.dbi.util.ProvisioningMessage.ProvOutput;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ProvStatus;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.owera.xaps.tr069.CPEParameters;
-import com.owera.xaps.tr069.DownloadLogicTR069;
-import com.owera.xaps.tr069.HTTPReqResData;
-import com.owera.xaps.tr069.SessionData;
-import com.owera.xaps.tr069.background.ActiveDeviceDetectionTask;
-import com.owera.xaps.tr069.decision.shelljob.ShellJobLogic;
-import com.owera.xaps.tr069.exception.TR069DatabaseException;
-import com.owera.xaps.tr069.exception.TR069Exception;
-import com.owera.xaps.tr069.exception.TR069ExceptionShortMessage;
-import com.owera.xaps.tr069.xml.ParameterList;
-import com.owera.xaps.tr069.xml.ParameterValueStruct;
+import com.github.freeacs.tr069.xml.ParameterList;
+import com.github.freeacs.tr069.xml.ParameterValueStruct;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -164,14 +154,14 @@ public class GPVDecision {
         return;
       } else
         sessionData.getPIIDecision().setDisruptiveSW(serviceWindow);
-    } else if (DownloadLogicTR069.isSoftwareDownloadSetup(reqRes, null) && DownloadLogic.downloadAllowed(Module.TR069, null)) {
+    } else if (DownloadLogicTR069.isSoftwareDownloadSetup(reqRes, null) && DownloadLogic.downloadAllowed(Properties.Module.TR069, null)) {
       serviceWindow = new ServiceWindow(sessionData, true);
       if (serviceWindow.isWithin()) {
         reqRes.getResponse().setMethod(TR069Method.DOWNLOAD);
         return;
       } else
         sessionData.getPIIDecision().setDisruptiveSW(serviceWindow);
-    } else if (DownloadLogicTR069.isScriptDownloadSetup(reqRes, null) && DownloadLogic.downloadAllowed(Module.TR069, null)) {
+    } else if (DownloadLogicTR069.isScriptDownloadSetup(reqRes, null) && DownloadLogic.downloadAllowed(Properties.Module.TR069, null)) {
       serviceWindow = new ServiceWindow(sessionData, true);
       if (serviceWindow.isWithin()) {
         reqRes.getResponse().setMethod(TR069Method.DOWNLOAD);
@@ -205,7 +195,7 @@ public class GPVDecision {
       // will not affect the comparison in populateToCollections()
       updateUnitParameters(sessionData);
       try {
-        uj = JobLogic.checkNewJob(Module.TR069, sessionData); // may find a new
+        uj = JobLogic.checkNewJob(Properties.Module.TR069, sessionData); // may find a new
                                                               // job
       } catch (SQLException sqle) {
         throw new TR069DatabaseException(sqle);

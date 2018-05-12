@@ -1,9 +1,9 @@
 package com.github.freeacs.core.task;
 
 import com.github.freeacs.common.db.ConnectionProperties;
-import com.owera.xaps.core.Properties;
-import com.owera.xaps.shell.XAPSShell;
-import com.owera.xaps.shell.XAPSShellDaemon;
+import com.github.freeacs.core.Properties;
+import com.github.freeacs.shell.XAPSShell;
+import com.github.freeacs.shell.XAPSShellDaemon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

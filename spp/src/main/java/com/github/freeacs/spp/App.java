@@ -1,6 +1,6 @@
 package com.github.freeacs.spp;
 
-import com.owera.xaps.base.http.OKServlet;
+import com.github.freeacs.base.http.OKServlet;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;

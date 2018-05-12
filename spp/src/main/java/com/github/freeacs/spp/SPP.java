@@ -11,12 +11,7 @@ import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.spp.response.ProvisioningResponse;
 import com.github.freeacs.spp.response.SPA;
-import com.owera.xaps.Properties.Module;
-import com.owera.xaps.base.*;
-import com.owera.xaps.base.db.DBAccess;
-import com.owera.xaps.base.db.DBAccessSession;
-import com.owera.xaps.base.db.DBAccessStatic;
-import com.owera.xaps.dbi.*;
+
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
 import com.github.freeacs.dbi.JobFlag.JobType;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
@@ -27,8 +22,6 @@ import com.github.freeacs.dbi.util.ProvisioningMessage.ProvStatus;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.TimestampWrapper;
-import com.owera.xaps.spp.response.ProvisioningResponse;
-import com.owera.xaps.spp.response.SPA;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

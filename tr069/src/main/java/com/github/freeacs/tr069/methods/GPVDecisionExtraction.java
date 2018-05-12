@@ -1,21 +1,17 @@
 package com.github.freeacs.tr069.methods;
 
+import com.github.freeacs.base.Log;
+import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.db.DBAccessSessionTR069;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.tr069.HTTPReqResData;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;
-import com.owera.xaps.base.Log;
-import com.owera.xaps.base.db.DBAccess;
-import com.owera.xaps.base.db.DBAccessSessionTR069;
 import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.UnittypeParameters;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ProvOutput;
 import com.github.freeacs.dbi.util.ProvisioningMode;
-import com.owera.xaps.tr069.HTTPReqResData;
-import com.owera.xaps.tr069.SessionData;
-import com.owera.xaps.tr069.exception.TR069DatabaseException;
-import com.owera.xaps.tr069.xml.ParameterValueStruct;
+import com.github.freeacs.tr069.xml.ParameterValueStruct;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

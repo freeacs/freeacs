@@ -3,14 +3,9 @@ package com.github.freeacs.web.app.page.profile;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.web.app.input.DropDownSingleSelect;
 import com.github.freeacs.web.app.input.ParameterParser;
+import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.owera.xaps.dbi.*;
-import com.owera.xaps.web.app.input.DropDownSingleSelect;
-import com.owera.xaps.web.app.input.ParameterParser;
-import com.owera.xaps.web.app.page.AbstractWebPage;
-import com.owera.xaps.web.app.util.SessionCache;
-import com.owera.xaps.web.app.util.WebConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +18,7 @@ import java.sql.SQLException;
  * @author Jarl Andre Hubenthal
  *
  */
-public abstract class ProfileActions extends AbstractWebPage{
+public abstract class ProfileActions extends AbstractWebPage {
 	
 	/**
 	 * The Enum ProfileStatus.

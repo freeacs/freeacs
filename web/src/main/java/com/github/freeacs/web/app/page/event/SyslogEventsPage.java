@@ -1,20 +1,15 @@
 package com.github.freeacs.web.app.page.event;
 
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.SyslogEvent.StorePolicy;
+import com.github.freeacs.web.Page;
+import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.*;
+import com.github.freeacs.web.app.menu.MenuItem;
+import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.XAPSLoader;
-import com.owera.xaps.dbi.*;
-import com.github.freeacs.dbi.SyslogEvent.StorePolicy;
-import com.owera.xaps.web.Page;
-import com.owera.xaps.web.app.Output;
-import com.owera.xaps.web.app.input.*;
-import com.owera.xaps.web.app.menu.MenuItem;
-import com.owera.xaps.web.app.page.AbstractWebPage;
-import com.owera.xaps.web.app.util.SessionData;
-import com.owera.xaps.web.app.util.WebConstants;
-import com.owera.xaps.web.app.util.XAPSLoader;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;

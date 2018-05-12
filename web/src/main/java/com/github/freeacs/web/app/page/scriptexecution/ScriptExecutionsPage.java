@@ -1,26 +1,19 @@
 package com.github.freeacs.web.app.page.scriptexecution;
 
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.web.Page;
+import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.*;
+import com.github.freeacs.web.app.menu.MenuItem;
+import com.github.freeacs.web.app.page.AbstractWebPage;
+import com.github.freeacs.web.app.page.staging.StringUtil;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.XAPSLoader;
-import com.owera.xaps.dbi.*;
-import com.owera.xaps.web.Page;
-import com.owera.xaps.web.app.Output;
-import com.owera.xaps.web.app.input.*;
-import com.owera.xaps.web.app.menu.MenuItem;
-import com.owera.xaps.web.app.page.AbstractWebPage;
-import com.owera.xaps.web.app.page.scriptexecution.ScriptArg.ArgType;
-import com.owera.xaps.web.app.page.staging.StringUtil;
-import com.owera.xaps.web.app.util.SessionData;
-import com.owera.xaps.web.app.util.WebConstants;
-import com.owera.xaps.web.app.util.XAPSLoader;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -83,13 +76,13 @@ public class ScriptExecutionsPage extends AbstractWebPage {
 					for (int i = 0; i < script.getScriptArgs().size() && i < args.length; i++) {
 						ScriptArg scriptArg = script.getScriptArgs().get(i);
 //						System.out.println("Type: " + scriptArg.getType());
-						if (scriptArg.getType() == ArgType.FILE) {
+						if (scriptArg.getType() == ScriptArg.ArgType.FILE) {
 							scriptArg.getFileDropDown().setSelected(unittype.getFiles().getByName(args[i]));
 						}
-						if (scriptArg.getType() == ArgType.PROFILE) {
+						if (scriptArg.getType() == ScriptArg.ArgType.PROFILE) {
 							scriptArg.getProfileDropDown().setSelected(unittype.getProfiles().getByName(args[i]));
 						}
-						if (scriptArg.getType() == ArgType.ENUM) {
+						if (scriptArg.getType() == ScriptArg.ArgType.ENUM) {
 							Method m = ScriptExecutionData.class.getMethod("getArgument" + scriptArg.getIndex());
 							Input in = (Input) m.invoke(inputData, (Object[]) null);
 //							System.out.println("Bork: " + in.getString());
@@ -182,14 +175,14 @@ public class ScriptExecutionsPage extends AbstractWebPage {
 
 	private boolean validate(ScriptArg scriptArg, Unittype unittype) {
 
-		if (scriptArg.getType() == ArgType.INTEGER && scriptArg.getValidationRule() == null) {
+		if (scriptArg.getType() == ScriptArg.ArgType.INTEGER && scriptArg.getValidationRule() == null) {
 			try {
 				Integer.parseInt(scriptArg.getValue());
 			} catch (NumberFormatException nfe) {
 				scriptArg.setError("Not a number");
 				return false;
 			}
-		} else if (scriptArg.getType() == ArgType.INTEGER && scriptArg.getValidationRule() != null) {
+		} else if (scriptArg.getType() == ScriptArg.ArgType.INTEGER && scriptArg.getValidationRule() != null) {
 			Matcher matcher = rangePattern.matcher(scriptArg.getValidationRule());
 			if (matcher.matches()) {
 				int from = Integer.parseInt(matcher.group(1));
@@ -207,17 +200,17 @@ public class ScriptExecutionsPage extends AbstractWebPage {
 					return false;
 				}
 			}
-		} else if (scriptArg.getType() == ArgType.PROFILE) {
+		} else if (scriptArg.getType() == ScriptArg.ArgType.PROFILE) {
 			if (scriptArg.getValue() == null) {
 				scriptArg.setError("No profile is chosen");
 				return false;
 			}
-		} else if (scriptArg.getType() == ArgType.FILE) {
+		} else if (scriptArg.getType() == ScriptArg.ArgType.FILE) {
 			if (scriptArg.getValue() == null) {
 				scriptArg.setError("No file is chosen");
 				return false;
 			}
-		} else if (scriptArg.getType() == ArgType.ENUM) {
+		} else if (scriptArg.getType() == ScriptArg.ArgType.ENUM) {
 			if (scriptArg.getValue() == null) {
 				scriptArg.setError("No option is chosen");
 				return false;
@@ -247,15 +240,15 @@ public class ScriptExecutionsPage extends AbstractWebPage {
 						if (script != null && script.getScriptArgs() != null && script.getScriptArgs().size() >= index) {
 							ScriptArg scriptArg = script.getScriptArgs().get(index - 1);
 							try {
-								if (scriptArg.getType() == ArgType.PROFILE) {
+								if (scriptArg.getType() == ScriptArg.ArgType.PROFILE) {
 									Profile p = unittype.getProfiles().getById(new Integer(argValue));
 									scriptArg.getProfileDropDown().setSelected(p);
 									argValue = p.getName();
-								} else if (scriptArg.getType() == ArgType.FILE) {
+								} else if (scriptArg.getType() == ScriptArg.ArgType.FILE) {
 									File f = unittype.getFiles().getById(new Integer(argValue));
 									scriptArg.getFileDropDown().setSelected(f);
 									argValue = f.getName();
-								} else if (scriptArg.getType() == ArgType.ENUM) {
+								} else if (scriptArg.getType() == ScriptArg.ArgType.ENUM) {
 									Method m = ScriptExecutionData.class.getMethod("getArgument" + scriptArg.getIndex());
 									Input in =(Input) m.invoke(inputData, (Object[]) null);
 									scriptArg.getEnumDropDown().setSelected(new Enumeration(in.getString(), in.getString()));

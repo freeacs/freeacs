@@ -1,8 +1,7 @@
 package com.github.freeacs.web.app.table;
 
 import com.github.freeacs.dbi.*;
-import com.owera.xaps.dbi.*;
-import com.owera.xaps.web.app.page.trigger.ReleaseTrigger;
+import com.github.freeacs.web.app.page.trigger.ReleaseTrigger;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,7 +2,7 @@ package test.owera.xaps.syslogserver;
 
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.util.PropertyReader;
-import com.owera.xaps.syslogserver.Properties;
+import com.github.freeacs.syslogserver.Properties;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;

@@ -1,17 +1,16 @@
 package com.github.freeacs.tr069;
 
+import com.github.freeacs.base.*;
+import com.github.freeacs.base.db.DBAccess;
+import com.github.freeacs.base.db.DBAccessSession;
 import com.github.freeacs.dbi.*;
-import com.owera.xaps.base.*;
-import com.owera.xaps.base.db.DBAccess;
-import com.owera.xaps.base.db.DBAccessSession;
-import com.owera.xaps.dbi.*;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.owera.xaps.tr069.exception.TR069DatabaseException;
-import com.owera.xaps.tr069.xml.ParameterAttributeStruct;
-import com.owera.xaps.tr069.xml.ParameterList;
-import com.owera.xaps.tr069.xml.ParameterValueStruct;
+import com.github.freeacs.tr069.exception.TR069DatabaseException;
+import com.github.freeacs.tr069.xml.ParameterAttributeStruct;
+import com.github.freeacs.tr069.xml.ParameterList;
+import com.github.freeacs.tr069.xml.ParameterValueStruct;
 
 import java.sql.SQLException;
 import java.util.*;

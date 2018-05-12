@@ -1,6 +1,6 @@
 package com.github.freeacs.web.app.security.handlers;
 
-import com.owera.xaps.web.app.security.WebUser;
+import com.github.freeacs.web.app.security.WebUser;
 import org.apache.commons.lang.NotImplementedException;
 
 

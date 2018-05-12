@@ -1,20 +1,13 @@
 package com.github.freeacs.web.app.page.syslog;
 
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.*;
+import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.DateUtils;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.XAPSLoader;
-import com.owera.xaps.dbi.*;
-import com.owera.xaps.web.app.Output;
-import com.owera.xaps.web.app.input.*;
-import com.owera.xaps.web.app.page.AbstractWebPage;
-import com.owera.xaps.web.app.page.syslog.SyslogUtil.*;
-import com.owera.xaps.web.app.util.DateUtils;
-import com.owera.xaps.web.app.util.SessionCache;
-import com.owera.xaps.web.app.util.WebConstants;
-import com.owera.xaps.web.app.util.XAPSLoader;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -65,13 +58,13 @@ public class SyslogPage extends AbstractWebPage {
 
 		map.put("syslogSupported", true);
 		
-		map.put("background", new GetBackgroundColor());
-		map.put("fontcolor", new GetFontColor());
-		map.put("eventdesc", new GetEventMouseOver(xaps));
-		map.put("severitytext", new GetSeverityText());
-		map.put("facilitytext", new GetFacilityText());
-		map.put("getprofilebyid", new GetUnittypeProfileById(xaps));
-		map.put("getprofilebyname", new GetUnittypeProfileByName(xaps));
+		map.put("background", new SyslogUtil.GetBackgroundColor());
+		map.put("fontcolor", new SyslogUtil.GetFontColor());
+		map.put("eventdesc", new SyslogUtil.GetEventMouseOver(xaps));
+		map.put("severitytext", new SyslogUtil.GetSeverityText());
+		map.put("facilitytext", new SyslogUtil.GetFacilityText());
+		map.put("getprofilebyid", new SyslogUtil.GetUnittypeProfileById(xaps));
+		map.put("getprofilebyname", new SyslogUtil.GetUnittypeProfileByName(xaps));
 		map.put(inputData.getAdvanced().getKey(), inputData.getAdvanced().getBoolean());
 		
 		if (inputData.getAdvanced().getBoolean()) {
@@ -109,12 +102,12 @@ public class SyslogPage extends AbstractWebPage {
 		outputHandler.setTemplatePathWithIndex("syslog");
 	}
 
-	private DropDownSingleSelect<Event> getEventDropdown(
+	private DropDownSingleSelect<SyslogUtil.Event> getEventDropdown(
 			DropDownSingleSelect<Unittype> unittypes, SyslogData syslogData) {
 		return InputSelectionFactory.getDropDownSingleSelect(syslogData.getEvent(), SyslogUtil.getEvent(unittypes.getSelected(), syslogData.getEvent().getInteger()), SyslogUtil.getEvents(unittypes.getSelected()));
 	}
 
-	private DropDownSingleSelect<Facility> getFacilityDropdown(SyslogData syslogData) {
+	private DropDownSingleSelect<SyslogUtil.Facility> getFacilityDropdown(SyslogData syslogData) {
 		return InputSelectionFactory.getDropDownSingleSelect(syslogData.getFacility(), SyslogUtil.getFacility(syslogData.getFacility().getInteger()), SyslogUtil.getFacilities());
 	}
 

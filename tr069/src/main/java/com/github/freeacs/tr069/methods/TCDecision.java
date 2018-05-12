@@ -1,9 +1,8 @@
 package com.github.freeacs.tr069.methods;
 
+import com.github.freeacs.base.Log;
 import com.github.freeacs.tr069.HTTPReqResData;
-import com.owera.xaps.base.Log;
-import com.owera.xaps.tr069.HTTPReqResData;
-import com.owera.xaps.tr069.xml.Fault;
+import com.github.freeacs.tr069.xml.Fault;
 
 public class TCDecision {
 	public static void process(HTTPReqResData reqRes) {

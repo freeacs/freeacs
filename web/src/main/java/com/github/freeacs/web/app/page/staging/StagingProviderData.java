@@ -6,8 +6,6 @@ import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.web.app.input.Input;
 import com.github.freeacs.web.app.input.InputData;
-import com.owera.xaps.web.app.input.Input;
-import com.owera.xaps.web.app.input.InputData;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;

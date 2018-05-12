@@ -4,7 +4,7 @@ import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
-import com.owera.xaps.dbi.*;
+
 import com.github.freeacs.dbi.InsertOrUpdateStatement.Field;
 import com.github.freeacs.dbi.tr069.TestCaseParameter.TestCaseParameterType;
 import org.slf4j.Logger;

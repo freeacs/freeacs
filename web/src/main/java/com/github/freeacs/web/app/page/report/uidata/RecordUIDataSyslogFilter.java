@@ -6,8 +6,7 @@ package com.github.freeacs.web.app.page.report.uidata;
 
 import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.web.app.input.InputSelectionFactory;
-import com.owera.xaps.web.app.input.InputSelectionFactory;
-import com.owera.xaps.web.app.page.report.UnitListData;
+import com.github.freeacs.web.app.page.report.UnitListData;
 
 import java.util.ArrayList;
 import java.util.List;

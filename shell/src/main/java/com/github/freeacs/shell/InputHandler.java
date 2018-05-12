@@ -3,9 +3,9 @@ package com.github.freeacs.shell;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.File;
 import com.github.freeacs.dbi.Unittype;
-import com.owera.xaps.shell.output.ListingReader;
-import com.owera.xaps.shell.output.OutputHandler;
-import com.owera.xaps.shell.util.StringUtil;
+import com.github.freeacs.shell.output.ListingReader;
+import com.github.freeacs.shell.output.OutputHandler;
+import com.github.freeacs.shell.util.StringUtil;
 
 import java.io.*;
 import java.sql.SQLException;

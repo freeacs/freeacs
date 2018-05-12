@@ -4,7 +4,7 @@
  */
 package com.github.freeacs.web.app.page.report.uidata;
 
-import com.owera.xaps.web.app.page.report.UnitListData;
+import com.github.freeacs.web.app.page.report.UnitListData;
 
 import java.util.Map;
 
@@ -38,7 +38,7 @@ public class RecordUIDataHardwareFilter {
     public final String operand;
     public static final String operand_default = "OR";
 
-    public RecordUIDataHardwareFilter(UnitListData inputData,Map<String,Object> root) {
+    public RecordUIDataHardwareFilter(UnitListData inputData, Map<String,Object> root) {
         ddr_high = inputData.getFilterDdrHigh().getInteger(ddr_high_default);
         ddr_low = inputData.getFilterDdrLow().getInteger(ddr_low_default);
         ocm_high = inputData.getFilterOcmHigh().getInteger(ocm_high_default);

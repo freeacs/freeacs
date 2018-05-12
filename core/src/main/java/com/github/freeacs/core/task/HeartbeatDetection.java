@@ -7,9 +7,7 @@ import com.github.freeacs.common.util.CacheValue;
 import com.github.freeacs.common.util.TimestampMap;
 import com.github.freeacs.core.util.SyslogMessageMapContainer;
 import com.github.freeacs.dbi.*;
-import com.owera.xaps.core.util.SyslogMessageMapContainer;
-import com.owera.xaps.core.util.SyslogMessageMapContainer.SyslogMessageMap;
-import com.owera.xaps.dbi.*;
+
 import com.github.freeacs.dbi.util.SQLUtil;
 import com.github.freeacs.dbi.util.SyslogClient;
 import org.slf4j.Logger;

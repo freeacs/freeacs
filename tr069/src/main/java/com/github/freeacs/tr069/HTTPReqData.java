@@ -1,7 +1,8 @@
 package com.github.freeacs.tr069;
 
-import com.owera.xaps.tr069.xml.Fault;
-import com.owera.xaps.tr069.xml.XMLChar;
+
+import com.github.freeacs.tr069.xml.Fault;
+import com.github.freeacs.tr069.xml.XMLChar;
 
 public class HTTPReqData {
 	private String method;

@@ -1,21 +1,15 @@
 package com.github.freeacs.web.app.page.trigger;
 
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.web.Page;
+import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.*;
+import com.github.freeacs.web.app.menu.MenuItem;
+import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.XAPSLoader;
-import com.owera.xaps.dbi.*;
-import com.owera.xaps.web.Page;
-import com.owera.xaps.web.app.Output;
-import com.owera.xaps.web.app.input.*;
-import com.owera.xaps.web.app.menu.MenuItem;
-import com.owera.xaps.web.app.page.AbstractWebPage;
-import com.owera.xaps.web.app.util.SessionCache;
-import com.owera.xaps.web.app.util.SessionData;
-import com.owera.xaps.web.app.util.WebConstants;
-import com.owera.xaps.web.app.util.XAPSLoader;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

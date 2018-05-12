@@ -1,9 +1,8 @@
 package com.github.freeacs.web.app.page.report.uidata;
 
 import com.github.freeacs.dbi.report.RecordVoip;
+import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.TimeFormatter;
-import com.owera.xaps.web.app.page.AbstractWebPage;
-import com.owera.xaps.web.app.util.TimeFormatter;
 import freemarker.template.TemplateModelException;
 
 import java.util.*;

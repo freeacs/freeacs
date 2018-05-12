@@ -3,10 +3,8 @@ package com.github.freeacs.shell.sync;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.shell.Session;
 import com.github.freeacs.shell.output.OutputHandler;
-import com.owera.xaps.dbi.*;
+
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
-import com.owera.xaps.shell.Session;
-import com.owera.xaps.shell.output.OutputHandler;
 
 import java.io.FileWriter;
 import java.util.*;

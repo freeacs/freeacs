@@ -5,14 +5,9 @@ import com.github.freeacs.base.Log;
 import com.github.freeacs.base.NoDataAvailableException;
 import com.github.freeacs.base.http.Util;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.spp.Properties;
 import com.github.freeacs.spp.SessionData;
-import com.owera.xaps.base.BaseCache;
-import com.owera.xaps.base.Log;
-import com.owera.xaps.base.NoDataAvailableException;
-import com.owera.xaps.base.http.Util;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.owera.xaps.spp.Properties;
-import com.owera.xaps.spp.SessionData;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

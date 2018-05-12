@@ -8,9 +8,6 @@ import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.HTTPReqResData;
 import com.github.freeacs.tr069.background.ScheduledKickTask;
 import com.github.freeacs.tr069.methods.TR069Method;
-import com.owera.xaps.tr069.HTTPReqResData;
-import com.owera.xaps.tr069.background.ScheduledKickTask;
-import com.owera.xaps.tr069.methods.TR069Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

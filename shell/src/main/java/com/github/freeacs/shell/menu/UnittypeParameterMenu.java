@@ -8,12 +8,10 @@ import com.github.freeacs.dbi.tr069.TR069DMParameter.StringType;
 import com.github.freeacs.dbi.tr069.TR069DMParameterMap;
 import com.github.freeacs.shell.Context;
 import com.github.freeacs.shell.Session;
-import com.owera.xaps.shell.Context;
-import com.owera.xaps.shell.Session;
-import com.owera.xaps.shell.output.Line;
-import com.owera.xaps.shell.output.Listing;
-import com.owera.xaps.shell.output.OutputHandler;
-import com.owera.xaps.shell.util.Validation;
+import com.github.freeacs.shell.output.Line;
+import com.github.freeacs.shell.output.Listing;
+import com.github.freeacs.shell.output.OutputHandler;
+import com.github.freeacs.shell.util.Validation;
 
 import java.util.ArrayList;
 import java.util.List;

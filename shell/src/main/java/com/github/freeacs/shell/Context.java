@@ -1,8 +1,7 @@
 package com.github.freeacs.shell;
 
 import com.github.freeacs.dbi.*;
-import com.owera.xaps.dbi.*;
-import com.owera.xaps.shell.help.HelpProcess;
+import com.github.freeacs.shell.help.HelpProcess;
 
 import java.util.ArrayList;
 import java.util.List;

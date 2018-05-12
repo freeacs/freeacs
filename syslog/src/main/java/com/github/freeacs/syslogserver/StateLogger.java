@@ -9,7 +9,6 @@ import java.sql.Connection;
 import java.util.Map;
 
 import static com.github.freeacs.common.db.ConnectionProvider.getConnectionProperties;
-import static com.owera.xaps.syslogserver.Properties.*;
 
 public class StateLogger extends TaskDefaultImpl {
 

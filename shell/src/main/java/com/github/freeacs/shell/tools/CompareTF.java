@@ -1,6 +1,7 @@
 package com.github.freeacs.shell.tools;
 
-import com.owera.xaps.shell.util.StringUtil;
+
+import com.github.freeacs.shell.util.StringUtil;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

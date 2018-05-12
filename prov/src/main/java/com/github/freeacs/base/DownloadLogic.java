@@ -1,7 +1,6 @@
 package com.github.freeacs.base;
 
-import com.owera.xaps.Properties;
-import com.owera.xaps.Properties.Module;
+import com.github.freeacs.Properties;
 import com.github.freeacs.dbi.Job;
 
 import java.util.LinkedList;
@@ -41,7 +40,7 @@ public class DownloadLogic {
 		return downloadList.size();
 	}
 
-	public static boolean downloadAllowed(Module module, Job job) {
+	public static boolean downloadAllowed(Properties.Module module, Job job) {
 		int timeout = 10 * 60 * 1000; // 10 min
 		if (job != null)
 			timeout = job.getUnconfirmedTimeout() * 1000;

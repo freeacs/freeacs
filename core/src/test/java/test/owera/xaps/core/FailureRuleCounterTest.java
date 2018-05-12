@@ -1,6 +1,6 @@
 package test.owera.xaps.core;
 
-import com.owera.xaps.core.util.FractionStopRuleCounter;
+import com.github.freeacs.core.util.FractionStopRuleCounter;
 import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.Job.StopRule;
 import com.github.freeacs.dbi.JobFlag;

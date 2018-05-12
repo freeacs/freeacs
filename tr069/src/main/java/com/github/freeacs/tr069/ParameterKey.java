@@ -1,13 +1,13 @@
 package com.github.freeacs.tr069;
 
-import com.owera.xaps.base.Log;
-import com.owera.xaps.base.db.DBAccess;
+import com.github.freeacs.base.Log;
+import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.JobParameter;
 import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.UnittypeParameters;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.owera.xaps.tr069.xml.ParameterValueStruct;
+import com.github.freeacs.tr069.xml.ParameterValueStruct;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

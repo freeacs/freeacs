@@ -2,11 +2,9 @@ package com.github.freeacs.web.app.util;
 
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.UnitJob;
+import com.github.freeacs.web.app.page.staging.StagingActions;
 import com.github.freeacs.web.app.security.AllowedUnittype;
 import com.github.freeacs.web.app.security.WebUser;
-import com.owera.xaps.web.app.page.staging.StagingActions.ShipmentCache;
-import com.owera.xaps.web.app.security.AllowedUnittype;
-import com.owera.xaps.web.app.security.WebUser;
 
 import java.util.*;
 
@@ -68,7 +66,7 @@ public class SessionData {
 	private String jobWindow;
 	
 	/** The shipment cache. */
-	private ShipmentCache shipmentCache;
+	private StagingActions.ShipmentCache shipmentCache;
 	
 	/** The time server date. */
 	private Date timeServerDate;
@@ -425,7 +423,7 @@ public class SessionData {
 	 *
 	 * @param shipmentCache the new shipment cache
 	 */
-	public void setShipmentCache(ShipmentCache shipmentCache) {
+	public void setShipmentCache(StagingActions.ShipmentCache shipmentCache) {
 		this.shipmentCache = shipmentCache;
 	}
 
@@ -434,7 +432,7 @@ public class SessionData {
 	 *
 	 * @return the shipment cache
 	 */
-	public ShipmentCache getShipmentCache() {
+	public StagingActions.ShipmentCache getShipmentCache() {
 		return shipmentCache;
 	}
 	

@@ -2,7 +2,7 @@ package com.github.freeacs.shell;
 
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.File;
-import com.owera.xaps.shell.util.FileUtil;
+import com.github.freeacs.shell.util.FileUtil;
 
 import java.io.BufferedReader;
 import java.sql.SQLException;

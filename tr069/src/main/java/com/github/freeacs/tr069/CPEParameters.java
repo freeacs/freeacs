@@ -1,10 +1,9 @@
 package com.github.freeacs.tr069;
 
-import com.owera.xaps.tr069.xml.ParameterValueStruct;
+import com.github.freeacs.tr069.xml.ParameterValueStruct;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * These parameters holds a special meaning for the TR-069 Server. The
@@ -93,7 +92,7 @@ public class CPEParameters {
 	 */
 	public Map<String, String> getConfigFileMap() {
 		Map<String, String> cMap = new HashMap<String, String>();
-		for (Entry<String, ParameterValueStruct> entry : cpeParams.entrySet()) {
+		for (Map.Entry<String, ParameterValueStruct> entry : cpeParams.entrySet()) {
 			if (entry.getKey().contains(CONFIG_FILES)) {
 				if (entry.getKey().endsWith("Name")) {
 					String namePN = entry.getKey();

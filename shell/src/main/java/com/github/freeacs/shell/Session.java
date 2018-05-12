@@ -2,8 +2,7 @@ package com.github.freeacs.shell;
 
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.dbi.*;
-import com.owera.xaps.dbi.*;
-import com.owera.xaps.shell.util.FileUtil;
+import com.github.freeacs.shell.util.FileUtil;
 
 import java.util.*;
 

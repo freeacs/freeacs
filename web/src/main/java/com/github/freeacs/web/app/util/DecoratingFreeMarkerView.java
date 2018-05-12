@@ -1,6 +1,6 @@
 package com.github.freeacs.web.app.util;
 
-import com.owera.xaps.web.Page;
+import com.github.freeacs.web.Page;
 import freemarker.template.Template;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
 

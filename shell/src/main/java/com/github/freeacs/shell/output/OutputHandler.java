@@ -3,10 +3,7 @@ package com.github.freeacs.shell.output;
 import com.github.freeacs.shell.Context;
 import com.github.freeacs.shell.Properties;
 import com.github.freeacs.shell.command.Command;
-import com.owera.xaps.shell.Context;
-import com.owera.xaps.shell.Properties;
-import com.owera.xaps.shell.command.Command;
-import com.owera.xaps.shell.util.FileUtil;
+import com.github.freeacs.shell.util.FileUtil;
 
 import java.io.File;
 import java.io.FileWriter;

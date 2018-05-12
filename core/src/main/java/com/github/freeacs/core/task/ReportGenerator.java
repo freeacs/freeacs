@@ -4,10 +4,10 @@ import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.scheduler.ScheduleType;
+import com.github.freeacs.core.Properties;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.report.*;
-import com.owera.xaps.core.Properties;
-import com.owera.xaps.dbi.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

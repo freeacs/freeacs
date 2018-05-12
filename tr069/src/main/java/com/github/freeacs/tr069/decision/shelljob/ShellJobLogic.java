@@ -1,5 +1,8 @@
 package com.github.freeacs.tr069.decision.shelljob;
 
+import com.github.freeacs.base.Log;
+import com.github.freeacs.base.UnitJob;
+import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.db.DBAccessSessionTR069;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.Cache;
@@ -11,21 +14,11 @@ import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
-import com.owera.xaps.base.Log;
-import com.owera.xaps.base.UnitJob;
-import com.owera.xaps.base.db.DBAccess;
-import com.owera.xaps.base.db.DBAccessSessionTR069;
-import com.owera.xaps.dbi.*;
+
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.owera.xaps.tr069.CPEParameters;
-import com.owera.xaps.tr069.Provisioning;
-import com.owera.xaps.tr069.SessionData;
-import com.owera.xaps.tr069.exception.TR069DatabaseException;
-import com.owera.xaps.tr069.exception.TR069Exception;
-import com.owera.xaps.tr069.exception.TR069ExceptionShortMessage;
-import com.owera.xaps.tr069.methods.GPVDecision;
-import com.owera.xaps.tr069.xml.ParameterList;
-import com.owera.xaps.tr069.xml.ParameterValueStruct;
+import com.github.freeacs.tr069.methods.GPVDecision;
+import com.github.freeacs.tr069.xml.ParameterList;
+import com.github.freeacs.tr069.xml.ParameterValueStruct;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package com.github.freeacs.web.app.util;
 
-import com.owera.xaps.web.Page;
+import com.github.freeacs.web.Page;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
 import java.util.Map;
@@ -13,7 +13,7 @@ import java.util.Map;
  *
  */
 public class ViewResolver extends FreeMarkerViewResolver {
-	
+
 	/**
 	 * Instantiates a new view resolver.
 	 */

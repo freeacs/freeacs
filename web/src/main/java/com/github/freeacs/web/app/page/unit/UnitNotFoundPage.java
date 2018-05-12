@@ -1,7 +1,6 @@
 package com.github.freeacs.web.app.page.unit;
 
 import com.github.freeacs.web.app.util.Freemarker;
-import com.owera.xaps.web.app.util.Freemarker;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 

@@ -2,10 +2,8 @@ package com.github.freeacs.web.app.input;
 
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unittype;
-import com.owera.xaps.web.app.input.Escaping.EscapeType;
-import com.owera.xaps.web.app.util.DateUtils;
-import com.owera.xaps.web.app.util.DateUtils.Format;
-import com.owera.xaps.web.app.util.WebConstants;
+import com.github.freeacs.web.app.util.DateUtils;
+import com.github.freeacs.web.app.util.WebConstants;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -28,7 +26,7 @@ import java.util.List;
  * @author Jarl Andre Hubenthal
  */
 public class Input {
-	
+
 	/** The key. */
 	private String key;
 	
@@ -42,7 +40,7 @@ public class Input {
 	private InputType type;
 	
 	/** The date format. */
-	private Format dateFormat;
+	private DateUtils.Format dateFormat;
 	
 	/** The error. */
 	private String error;
@@ -84,7 +82,7 @@ public class Input {
 	 * @param type the type
 	 * @param df the df
 	 */
-	private Input(String key, Object value, boolean isArray, InputType type, Format df) {
+	private Input(String key, Object value, boolean isArray, InputType type, DateUtils.Format df) {
 		this(key, value, isArray, type);
 		this.dateFormat = df;
 	}
@@ -298,7 +296,7 @@ public class Input {
 	 * @param dateOnly the date only
 	 * @return the date input
 	 */
-	public static Input getDateInput(String key, Format dateOnly) {
+	public static Input getDateInput(String key, DateUtils.Format dateOnly) {
 		Input in = getSingleInput(key, InputType.DATE);
 		in.dateFormat = dateOnly;
 		return in;
@@ -311,7 +309,7 @@ public class Input {
 	 * @param sdf the sdf
 	 * @return the date array input
 	 */
-	public static Input getDateArrayInput(String key, Format sdf) {
+	public static Input getDateArrayInput(String key, DateUtils.Format sdf) {
 		Input in = getArrayInput(key, InputType.DATE);
 		in.dateFormat = sdf;
 		return in;
@@ -353,7 +351,7 @@ public class Input {
 	public String getStringWithoutTags() {
 		String string = getString();
 		if (string != null && string.length() > 0)
-			return Escaping.removeHTMLTags(string, EscapeType.TAGS_ONLY);
+			return Escaping.removeHTMLTags(string, Escaping.EscapeType.TAGS_ONLY);
 		return null;
 	}
 
@@ -365,7 +363,7 @@ public class Input {
 	public String getStringWithoutTagsAndContent() {
 		String string = getString();
 		if (string != null && string.length() > 0)
-			return Escaping.removeHTMLTags(string, EscapeType.TAGS_AND_CONTENT);
+			return Escaping.removeHTMLTags(string, Escaping.EscapeType.TAGS_AND_CONTENT);
 		return null;
 	}
 
@@ -838,7 +836,7 @@ public class Input {
 	 *
 	 * @return the date format
 	 */
-	public Format getDateFormat() {
+	public DateUtils.Format getDateFormat() {
 		return dateFormat;
 	}
 

@@ -1,19 +1,14 @@
 package com.github.freeacs.tr069.methods;
 
+import com.github.freeacs.base.Log;
 import com.github.freeacs.tr069.HTTPReqResData;
 import com.github.freeacs.tr069.HTTPResData;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
-import com.owera.xaps.base.Log;
 import com.github.freeacs.dbi.util.ProvisioningMode;
-import com.owera.xaps.tr069.HTTPReqResData;
-import com.owera.xaps.tr069.HTTPResData;
-import com.owera.xaps.tr069.exception.TR069Exception;
-import com.owera.xaps.tr069.exception.TR069ExceptionShortMessage;
-import com.owera.xaps.tr069.test.system2.TestUnit;
-import com.owera.xaps.tr069.test.system2.TestUnit.TestState;
-import com.owera.xaps.tr069.test.system2.TestUnitCache;
-import com.owera.xaps.tr069.test.system2.Util;
+import com.github.freeacs.tr069.test.system2.TestUnit;
+import com.github.freeacs.tr069.test.system2.TestUnitCache;
+import com.github.freeacs.tr069.test.system2.Util;
 
 import java.lang.reflect.Method;
 
@@ -40,7 +35,7 @@ public class DecisionMaker {
 					Log.error(DecisionMaker.class, "Test aborted, since testUnit object was not defined");
 				} else {
 					tu.next(); // Responsible for updating TestState
-					if (tu.getTestState() == TestState.ENDTEST) {
+					if (tu.getTestState() == TestUnit.TestState.ENDTEST) {
 						Log.notice(EMDecision.class, "A Test session has been completed - will return to " + ProvisioningMode.REGULAR + " provisioning");
 						Log.info(DecisionMaker.class, "Decision is " + TR069Method.EMPTY);
 						TestUnitCache.remove(tu.getUnit().getId());

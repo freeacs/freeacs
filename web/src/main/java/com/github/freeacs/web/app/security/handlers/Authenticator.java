@@ -1,8 +1,7 @@
 package com.github.freeacs.web.app.security.handlers;
 
-import com.owera.xaps.web.app.security.WebUser;
 
-
+import com.github.freeacs.web.app.security.WebUser;
 
 /**
  * The interface for defining authentication handlers.
@@ -27,5 +26,5 @@ public interface Authenticator {
 	 * @return WebUser the validated (or rejected) user
 	 * @throws Exception throws everything
 	 */
-	public WebUser authenticateUser(String username,String password, String sessionId) throws Exception;
+	public WebUser authenticateUser(String username, String password, String sessionId) throws Exception;
 }

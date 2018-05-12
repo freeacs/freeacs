@@ -6,7 +6,7 @@ import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.common.util.CacheValue;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.*;
-import com.owera.xaps.dbi.*;
+
 import com.github.freeacs.dbi.SyslogEvent.StorePolicy;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.util.SystemParameters;
@@ -21,7 +21,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.github.freeacs.common.db.ConnectionProvider.getConnectionProperties;
-import static com.owera.xaps.syslogserver.Properties.*;
+import static com.github.freeacs.syslogserver.Properties.getMaxAge;
+import static com.github.freeacs.syslogserver.Properties.getMaxConn;
+import static com.github.freeacs.syslogserver.Properties.getUrl;
 
 public class Syslog2DB implements Runnable {
 

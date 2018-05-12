@@ -1,7 +1,7 @@
 package com.github.freeacs;
 
+import com.github.freeacs.base.Log;
 import com.github.freeacs.common.util.PropertyReader;
-import com.owera.xaps.base.Log;
 
 public class Properties {
 

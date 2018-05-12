@@ -5,7 +5,7 @@ import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Inbox;
 import com.github.freeacs.dbi.Message;
 import com.github.freeacs.dbi.SyslogConstants;
-import com.owera.xaps.tr069.test.system2.TestUnitCache;
+import com.github.freeacs.tr069.test.system2.TestUnitCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

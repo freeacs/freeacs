@@ -1,7 +1,6 @@
 package com.github.freeacs.tr069.xml;
 
 import com.github.freeacs.tr069.Namespace;
-import com.owera.xaps.tr069.Namespace;
 
 public class NoMoreRequests {
 	private boolean noMoreRequests = false;

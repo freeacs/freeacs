@@ -1,11 +1,10 @@
 package com.github.freeacs.web.app.input;
 
 import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.context.ContextItem;
-import com.owera.xaps.web.app.Output;
-import com.owera.xaps.web.app.context.ContextItem;
-import com.owera.xaps.web.app.util.SessionCache;
-import com.owera.xaps.web.app.util.SessionData;
+import com.github.freeacs.web.app.util.SessionCache;
+import com.github.freeacs.web.app.util.SessionData;
 
 import java.sql.SQLException;
 
@@ -50,7 +49,7 @@ public class InputDataIntegrity {
 	 * @param inputs varargs of Input
 	 * @throws Exception Throws any exception.
 	 */
-	public static void loadAndStoreSession(ParameterParser params, Output response,InputData inputData, Input... inputs) throws Exception {
+	public static void loadAndStoreSession(ParameterParser params, Output response, InputData inputData, Input... inputs) throws Exception {
 		rememberAndCheck(params.getSession().getId(), inputs);
 		response.addNewTrailPoint(new ContextItem(inputData,params));
 	}

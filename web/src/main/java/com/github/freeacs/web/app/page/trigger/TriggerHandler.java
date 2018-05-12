@@ -9,14 +9,6 @@ import com.github.freeacs.web.app.table.TableElement;
 import com.github.freeacs.web.app.table.TableElementMaker;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.XAPSLoader;
-import com.owera.xaps.dbi.*;
-import com.owera.xaps.web.app.input.DropDownSingleSelect;
-import com.owera.xaps.web.app.input.Input;
-import com.owera.xaps.web.app.input.InputSelectionFactory;
-import com.owera.xaps.web.app.table.TableElement;
-import com.owera.xaps.web.app.table.TableElementMaker;
-import com.owera.xaps.web.app.util.SessionCache;
-import com.owera.xaps.web.app.util.XAPSLoader;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

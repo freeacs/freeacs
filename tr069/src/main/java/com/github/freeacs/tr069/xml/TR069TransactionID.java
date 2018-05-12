@@ -1,7 +1,6 @@
 package com.github.freeacs.tr069.xml;
 
 import com.github.freeacs.tr069.Namespace;
-import com.owera.xaps.tr069.Namespace;
 
 /**
  * TR069SessionID is a container of the TR-069 Session ID

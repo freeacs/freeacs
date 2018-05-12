@@ -1,12 +1,12 @@
 package com.github.freeacs.base.db;
 
+import com.github.freeacs.Properties;
+import com.github.freeacs.base.Log;
+import com.github.freeacs.base.SessionDataI;
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.dbi.*;
-import com.owera.xaps.Properties.Module;
-import com.owera.xaps.base.Log;
-import com.owera.xaps.base.SessionDataI;
-import com.owera.xaps.dbi.*;
+
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
@@ -24,17 +24,17 @@ public class DBAccess {
 
     private static DBI dbi;
 
-	private static Module module;
+	private static Properties.Module module;
 	private static String facilityVersion;
 	private static int facility;
 
-	public static void init(Module mod, int facilityInt, String facilityVersionStr) {
+	public static void init(Properties.Module mod, int facilityInt, String facilityVersionStr) {
 		module = mod;
 		facility = facilityInt;
 		facilityVersion = facilityVersionStr;
 	}
 	
-	public static Module getModule() {
+	public static Properties.Module getModule() {
 		return module;
 	}
 	

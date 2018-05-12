@@ -7,7 +7,6 @@ import com.github.freeacs.common.html.TextAreaElement;
 import com.github.freeacs.common.util.FileDatabase;
 import com.github.freeacs.common.util.NaturalComparator;
 import com.github.freeacs.tr069.Properties;
-import com.owera.xaps.tr069.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

@@ -1,14 +1,13 @@
 package com.github.freeacs.base.http;
 
+import com.github.freeacs.base.BaseCache;
+import com.github.freeacs.base.Log;
+import com.github.freeacs.base.NoDataAvailableException;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
-import com.owera.xaps.base.BaseCache;
-import com.owera.xaps.base.Log;
-import com.owera.xaps.base.NoDataAvailableException;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.owera.xaps.tr069.HTTPReqResData;
-import com.owera.xaps.tr069.SessionData;
-import com.owera.xaps.tr069.exception.TR069AuthenticationException;
-import com.owera.xaps.tr069.exception.TR069Exception;
+import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.SessionData;
+import com.github.freeacs.tr069.exception.TR069AuthenticationException;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,12 +16,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class DigestAuthenticator {
-
-	/**
-	 * MD5 message digest provider.
-	 * @throws TR069Exception 
-	 */
-	//	protected static MessageDigest md5Helper;
 
 	private static void sendChallenge(HttpServletRequest req, HttpServletResponse res) {
 		String nonce = DigestUtils.md5Hex(req.getRemoteAddr() + ":" + System.currentTimeMillis() + ":MortenRuler");

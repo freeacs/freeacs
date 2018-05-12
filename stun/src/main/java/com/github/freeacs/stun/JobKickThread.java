@@ -1,11 +1,11 @@
 package com.github.freeacs.stun;
 
+import com.github.freeacs.base.JobHistoryEntry;
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.*;
-import com.owera.xaps.base.JobHistoryEntry;
-import com.owera.xaps.dbi.*;
+
 import com.github.freeacs.dbi.Parameter.Operator;
 import com.github.freeacs.dbi.Parameter.ParameterDataType;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.util.*;
-import java.util.Properties;
 
 public class JobKickThread implements Runnable {
 
@@ -187,7 +186,7 @@ public class JobKickThread implements Runnable {
 							populateJobKickMapForOneJob(job, xaps, unittype);
 						} else {
 							long lastRefresh = jobRefreshMap.get(job.getId());
-							if (lastRefresh + java.util.Properties.getKickRescan() * 60000 < System.currentTimeMillis()) {
+							if (lastRefresh + Properties.getKickRescan() * 60000 < System.currentTimeMillis()) {
 								log.info("Job " + job.getId() + " is STARTED and refreshed.");
 								jobRefreshMap.put(job.getId(), System.currentTimeMillis());
 								populateJobKickMapForOneJob(job, xaps, unittype);

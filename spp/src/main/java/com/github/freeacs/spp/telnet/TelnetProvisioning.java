@@ -5,13 +5,12 @@ import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.*;
-import com.owera.xaps.base.JobHistoryEntry;
-import com.owera.xaps.dbi.*;
+
 import com.github.freeacs.dbi.JobFlag.JobType;
 import com.github.freeacs.dbi.Parameter.Operator;
 import com.github.freeacs.dbi.Parameter.ParameterDataType;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.owera.xaps.spp.Properties;
+import com.github.freeacs.spp.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

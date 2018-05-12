@@ -4,12 +4,11 @@ import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.*;
-import com.owera.xaps.dbi.*;
+
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemConstants;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.owera.xaps.stun.Kick.KickResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -182,7 +181,7 @@ public class SingleKickThread implements Runnable {
 					reset(iterator, unit);
 				} else {
 					if (!lastIS.isKicked()) {
-						KickResponse kr = Kick.kick(unit, xapsUnit);
+						Kick.KickResponse kr = Kick.kick(unit, xapsUnit);
 						if (kr.isKicked())
 							xapsUnit.addOrChangeUnitParameter(unit, SystemParameters.INSPECTION_MESSAGE,
 									"Kick success at " + sdf.format(new Date()) + " - *MAY* expect provisioning response :: " + kr.getMessage());

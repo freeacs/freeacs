@@ -2,7 +2,7 @@ package com.github.freeacs.web.app.page.report.uidata;
 
 import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.dbi.Unit;
-import com.owera.xaps.web.app.page.AbstractWebPage;
+import com.github.freeacs.web.app.page.AbstractWebPage;
 import freemarker.template.TemplateModelException;
 
 import java.util.ArrayList;

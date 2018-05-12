@@ -5,25 +5,21 @@ import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.ssl.HTTPSManager;
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
+import com.github.freeacs.dbi.JobFlag.JobType;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.web.app.input.DropDownSingleSelect;
 import com.github.freeacs.web.app.input.Input;
 import com.github.freeacs.web.app.input.InputSelectionFactory;
+import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.WebProperties;
 import com.github.freeacs.web.app.util.XAPSLoader;
-import com.owera.xaps.dbi.*;
-import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
-import com.github.freeacs.dbi.JobFlag.JobType;
-import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
-import com.github.freeacs.dbi.util.SystemParameters;
-import com.owera.xaps.web.app.input.DropDownSingleSelect;
-import com.owera.xaps.web.app.input.Input;
-import com.owera.xaps.web.app.input.InputSelectionFactory;
-import com.owera.xaps.web.app.page.AbstractWebPage;
-import com.owera.xaps.web.app.util.SessionCache;
-import com.owera.xaps.web.app.util.WebProperties;
-import com.owera.xaps.web.app.util.XAPSLoader;
-import com.owera.xapsws.*;
+import com.github.freeacs.ws.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -789,9 +785,9 @@ public abstract class StagingActions extends AbstractWebPage {
 				logger.debug("Provider URL is HTTPS, will check certificates and install if needed");
 				HTTPSManager.installCertificate(url, WebProperties.getString("keystore.pass", "changeit"));
 			}
-			com.owera.xapsws.Profile p = new com.owera.xapsws.Profile();
+			com.github.freeacs.ws.Profile p = new com.github.freeacs.ws.Profile();
 			p.setName(profileName);
-			com.owera.xapsws.Unittype ut = new com.owera.xapsws.Unittype();
+			com.github.freeacs.ws.Unittype ut = new com.github.freeacs.ws.Unittype();
 			ut.setName(unittypeName);
 			Unittype unittypeXAPS = provider.getUnittype();
 			UnittypeParameter snUtp = unittypeXAPS.getUnittypeParameters().getByName(SystemParameters.SERIAL_NUMBER);
@@ -818,7 +814,7 @@ public abstract class StagingActions extends AbstractWebPage {
 
 			logger.debug("All parmeters and information is ready, will now copy units to Provider's xAPS Server");
 			for (Unit unitXAPS : units) {
-				com.owera.xapsws.Unit unit = new com.owera.xapsws.Unit();
+				com.github.freeacs.ws.Unit unit = new com.github.freeacs.ws.Unit();
 				String serialNumber = unitXAPS.getParameters().get(snUtp.getName());
 				if (serialNumber == null || serialNumber.trim().length() != 12) {
 					logger.error(unitXAPS.getId() + " copy process failed because serialNumber was not found on the unit, which we need to generate correct unitid");
@@ -838,11 +834,11 @@ public abstract class StagingActions extends AbstractWebPage {
 				String secret = unitXAPS.getParameters().get(secUtp.getName());
 				//				String providerSerialNumber = getSerialNumberFromProvider(provider);
 				//				String providerSecret = getSecretFromProvider(provider);
-				com.owera.xapsws.Parameter[] parameterArr = new com.owera.xapsws.Parameter[2];
+				com.github.freeacs.ws.Parameter[] parameterArr = new com.github.freeacs.ws.Parameter[2];
 				//				parameterArr[0] = new com.owera.xapsws.Parameter(providerSerialNumber, serialNumber, null);
-				parameterArr[0] = new com.owera.xapsws.Parameter(SystemParameters.SERIAL_NUMBER, serialNumber, null);
+				parameterArr[0] = new com.github.freeacs.ws.Parameter(SystemParameters.SERIAL_NUMBER, serialNumber, null);
 				//				parameterArr[2] = new com.owera.xapsws.Parameter(providerSecret, secret, null);
-				parameterArr[1] = new com.owera.xapsws.Parameter(SystemParameters.SECRET, secret, null);
+				parameterArr[1] = new com.github.freeacs.ws.Parameter(SystemParameters.SECRET, secret, null);
 				ParameterList parameters = new ParameterList(new ArrayOfParameter(parameterArr));
 				unit.setParameters(parameters);
 				unit.setUnittype(ut);
@@ -885,7 +881,7 @@ public abstract class StagingActions extends AbstractWebPage {
 				//				if (snUp == null)
 				//					snUp = unitParams.get("InternetGatewayDevice.DeviceInfo.SerialNumber");
 				UnitParameter secUp = unitParams.get(SystemParameters.SECRET);
-				com.owera.xapsws.Unit unit = new com.owera.xapsws.Unit();
+				com.github.freeacs.ws.Unit unit = new com.github.freeacs.ws.Unit();
 				String serialNumber = snUp.getValue();
 				String secValue = secUp.getValue();
 				if (url != null)

@@ -1,6 +1,7 @@
 package com.github.freeacs.tr069.methods;
 
-import com.owera.xaps.tr069.xml.Body;
+
+import com.github.freeacs.tr069.xml.Body;
 
 public class GRMreq extends Body {
 
