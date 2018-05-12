@@ -1,6 +1,6 @@
 package de.javawi.jstun.test.demo;
 
-import com.owera.common.scheduler.TaskDefaultImpl;
+import com.github.freeacs.common.scheduler.TaskDefaultImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

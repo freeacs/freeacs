@@ -1,12 +1,12 @@
 package test.owera.xaps.core;
 
-import com.owera.xaps.core.util.FractionStopRuleCounter;
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.Job.StopRule;
-import com.owera.xaps.dbi.JobFlag;
-import com.owera.xaps.dbi.JobFlag.JobServiceWindow;
-import com.owera.xaps.dbi.JobFlag.JobType;
-import com.owera.xaps.dbi.UnitJob;
+import com.github.freeacs.core.util.FractionStopRuleCounter;
+import com.github.freeacs.dbi.Job;
+import com.github.freeacs.dbi.Job.StopRule;
+import com.github.freeacs.dbi.JobFlag;
+import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
+import com.github.freeacs.dbi.JobFlag.JobType;
+import com.github.freeacs.dbi.UnitJob;
 
 import java.util.Random;
 
