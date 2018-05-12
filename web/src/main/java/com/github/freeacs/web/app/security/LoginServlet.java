@@ -402,7 +402,7 @@ public class LoginServlet extends HttpServlet implements Filter {
 	 * @return the camel cased handler
 	 */
 	private String getCamelCasedHandler(String loginAuth) {
-		String handlerString = "com.owera.xaps.web.app.security.handlers.%HANDLER%Authenticator";
+		String handlerString = Authenticator.class.getPackage().getName() + ".%HANDLER%Authenticator";
 		if (loginAuth == null || loginAuth.length() < 2)
 			return null;
 		loginAuth = loginAuth.substring(0, 1).toUpperCase() + loginAuth.substring(1).toLowerCase();
