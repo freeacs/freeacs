@@ -77,9 +77,6 @@ public class SessionData {
 	/** The completed unit jobs list. */
 	private Collection<Unit> completedUnitJobsList;
 	
-	/** The url map. */
-	private Map<String, List<String>> urlMap = new HashMap<String, List<String>>();
-	
 	/** The user. */
 	private WebUser user;
 	
@@ -362,24 +359,6 @@ public class SessionData {
 	 */
 	public String getGroup() {
 		return group;
-	}
-
-	/**
-	 * Sets the url map.
-	 *
-	 * @param urlMap the url map
-	 */
-	public void setUrlMap(Map<String, List<String>> urlMap) {
-		this.urlMap = urlMap;
-	}
-
-	/**
-	 * Gets the url map.
-	 *
-	 * @return the url map
-	 */
-	public Map<String, List<String>> getUrlMap() {
-		return urlMap;
 	}
 
 	/**
