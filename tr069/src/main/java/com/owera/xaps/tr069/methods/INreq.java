@@ -1,6 +1,5 @@
 package com.owera.xaps.tr069.methods;
 
-import com.owera.common.log.Context;
 import com.owera.xaps.base.BaseCache;
 import com.owera.xaps.base.JobLogic;
 import com.owera.xaps.base.Log;
@@ -186,7 +185,6 @@ public class INreq {
 			String unitId = sessionData.getUnitId();
 			if (unitId == null)
 				unitId = getUnitId(deviceIdStruct);
-			Context.put(Context.X, unitId, BaseCache.SESSIONDATA_CACHE_TIMEOUT);
 			BaseCache.putSessionData(unitId, sessionData);
 			sessionData.setUnitId(unitId);
 			sessionData.setSerialNumber(deviceIdStruct.getSerialNumber());

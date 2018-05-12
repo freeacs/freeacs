@@ -1,6 +1,5 @@
 package com.owera.xaps.spp.http;
 
-import com.owera.common.log.Context;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.dbi.Certificate;
 import com.owera.xaps.dbi.Certificates;
@@ -23,7 +22,6 @@ public class Authenticator {
 		if (sessionData.isAuthenticated()) {
 			return true;
 		}
-		Context.remove(Context.X);
 		boolean authenticated = true; // default
 		String auth_method = Properties.getAuthMethod();
 		if (Properties.isDiscoveryMode()) {

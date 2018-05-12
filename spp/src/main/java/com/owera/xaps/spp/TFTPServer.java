@@ -17,9 +17,7 @@
 
 package com.owera.xaps.spp;
 
-import com.owera.common.log.Context;
 import com.owera.common.util.Sleep;
-import com.owera.xaps.base.BaseCache;
 import com.owera.xaps.base.DownloadLogic;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.db.DBAccess;
@@ -400,19 +398,13 @@ public class TFTPServer implements Runnable {
           InetAddress address = trrp.getAddress();
           sessionData.setIpAddress(address.getHostAddress());
           sessionData.setReqURL("tftp://" + address.getHostAddress() + ":" + Properties.getTFTPPort() + trrp.getFilename());
-          if (sessionData.getReqURL().indexOf("/file/") > -1) { // firmware
-                                                                // download
+          if (sessionData.getReqURL().contains("/file/")) {
             XAPS xaps = DBAccess.getDBI().getXaps();
             String pathInfo = trrp.getFilename();
             pathInfo = pathInfo.replaceAll("--", " ");
             String[] pathInfoArr = pathInfo.split("/");
             String firmwareVersion = pathInfoArr[0];
             unittypeName = pathInfoArr[1];
-            if (pathInfoArr.length > 2) // The optional unit-id is also sent -
-                                        // only for logging purpose
-              Context.put(Context.X, pathInfoArr[2], BaseCache.SESSIONDATA_CACHE_TIMEOUT);
-            else
-              Context.remove(Context.X);
             Unittype unittype = xaps.getUnittype(unittypeName);
             if (unittype == null) {
               String e = "Could not find unittype " + unittypeName + " in xAPS, hence file URL is incorrect";

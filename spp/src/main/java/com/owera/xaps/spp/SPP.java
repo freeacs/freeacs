@@ -1,7 +1,6 @@
 package com.owera.xaps.spp;
 
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Context;
 import com.owera.xaps.Properties.Module;
 import com.owera.xaps.base.*;
 import com.owera.xaps.base.db.DBAccess;
@@ -38,7 +37,6 @@ public class SPP {
       Log.error(SPP.class, "No serialnumber found - cannot provision this unit - will return an empty output");
       output = sessionData.getResp().getEmptyResponse();
     } else {
-      Context.put(Context.X, sessionData.getSerialNumber(), BaseCache.SESSIONDATA_CACHE_TIMEOUT);
       Unit unit = readUnit(sessionData);
       if (unit == null) {
         if (Properties.isDiscoveryMode()) {

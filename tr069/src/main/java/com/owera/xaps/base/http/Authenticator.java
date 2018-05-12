@@ -1,6 +1,5 @@
 package com.owera.xaps.base.http;
 
-import com.owera.common.log.Context;
 import com.owera.common.util.Cache;
 import com.owera.common.util.CacheValue;
 import com.owera.xaps.base.Log;
@@ -101,7 +100,6 @@ public class Authenticator {
       return false;
 
     // Start of normal authentication procedure
-    Context.remove(Context.X);
     boolean authenticated = true; // default
     String auth_method = Properties.getAuthMethod();
     try {

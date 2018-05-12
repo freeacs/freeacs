@@ -1,7 +1,5 @@
 package com.owera.xaps.base.http;
 
-import com.owera.common.log.Context;
-import com.owera.xaps.base.BaseCache;
 import com.owera.xaps.base.DownloadLogic;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.db.DBAccess;
@@ -58,12 +56,6 @@ public class FileServlet extends HttpServlet {
         res.sendError(HttpServletResponse.SC_FORBIDDEN);
         return;
       }
-    
-      if (pathInfoArr.length > 3) // The optional unit-id is also sent - only
-                                  // for logging purpose
-        Context.put(Context.X, pathInfoArr[3], BaseCache.SESSIONDATA_CACHE_TIMEOUT);
-      else
-        Context.remove(Context.X);
       Unittype unittype = xaps.getUnittype(unittypeName);
       if (unittype == null) {
         Log.error(FileServlet.class, "Could not find unittype " + unittypeName + " in xAPS, hence file URL is incorrect");

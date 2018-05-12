@@ -1,7 +1,6 @@
 package com.owera.xaps.base.http;
 
 import com.owera.common.db.ConnectionProvider;
-import com.owera.common.log.Context;
 import com.owera.xaps.base.BaseCache;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.db.DBAccess;
@@ -32,9 +31,7 @@ public class OKServlet extends HttpServlet {
 
 	@SuppressWarnings("rawtypes")
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		
-		String unitId = Context.get(Context.X);
-		Context.remove(Context.X);
+
 		PrintWriter out = res.getWriter();
 		Map<Connection, Long> usedConn = ConnectionProvider.getUsedConnCopy(DBAccess.getXAPSProperties());
 		String status = "XAPSOK";
@@ -72,7 +69,7 @@ public class OKServlet extends HttpServlet {
 				}
 			}
 		}
-		if (status.indexOf("ERROR") == -1 && ThreadCounter.currentSessionsCount() > 0) {
+		if (!status.contains("ERROR") && ThreadCounter.currentSessionsCount() > 0) {
 			Map<String, Long> currentSessions = ThreadCounter.cloneCurrentSessions();
 			Iterator<String> cctmIterator = currentConnectionTmsMap.keySet().iterator();
 			while (cctmIterator.hasNext()) {
@@ -90,13 +87,12 @@ public class OKServlet extends HttpServlet {
 			}
 			for (String uId : currentSessions.keySet()) {
 				if (currentConnectionTmsMap.get(uId) == null) // new process has been added
-					currentConnectionTmsMap.put(uId, new Long(System.currentTimeMillis()));
+					currentConnectionTmsMap.put(uId, System.currentTimeMillis());
 			}
 		} else {
 			currentConnectionTmsMap = new HashMap<String, Long>();
 		}
 		out.println(status);
 		out.close();
-		Context.put(Context.X, unitId, BaseCache.SESSIONDATA_CACHE_TIMEOUT);
 	}
 }

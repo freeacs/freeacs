@@ -1,7 +1,6 @@
 package com.owera.xaps.tr069.methods;
 
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Context;
 import com.owera.common.util.NaturalComparator;
 import com.owera.xaps.base.BaseCache;
 import com.owera.xaps.base.Log;
@@ -483,8 +482,6 @@ public class HTTPRequestProcessor {
 			}
 			if (Log.isConversationLogEnabled()) {
 				String unitId = reqRes.getSessionData().getUnitId();
-				if (unitId != null)
-					Context.put(Context.X, unitId, BaseCache.SESSIONDATA_CACHE_TIMEOUT);
 				String xml = reqRes.getRequest().getXml();
 				if (Properties.isPrettyPrintQuirk(reqRes.getSessionData()))
 					xml = XMLFormatter.prettyprint(reqRes.getRequest().getXml());

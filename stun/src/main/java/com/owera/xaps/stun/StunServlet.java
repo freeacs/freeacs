@@ -22,6 +22,10 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.sql.SQLException;
 
+import static com.owera.xaps.stun.Properties.getMaxAge;
+import static com.owera.xaps.stun.Properties.getMaxConn;
+import static com.owera.xaps.stun.Properties.getUrl;
+
 public class StunServlet extends HttpServlet {
 
 	public static String VERSION = "1.3.23";
@@ -55,7 +59,7 @@ public class StunServlet extends HttpServlet {
 		Users users = new Users(xapsCp);
 		User user = users.getUnprotected(Users.USER_ADMIN);
 		Identity id = new Identity(SyslogConstants.FACILITY_STUN, StunServlet.VERSION, user);
-		ConnectionProperties sysCp = ConnectionProvider.getConnectionProperties("xaps-stun.properties", "db.syslog");
+		ConnectionProperties sysCp = ConnectionProvider.getConnectionProperties(getUrl("syskog"), getMaxAge("syslog"), getMaxConn("syslog"));
 		Syslog syslog = new Syslog(sysCp, id);
 		return new DBI(Integer.MAX_VALUE, xapsCp, syslog);
 	}
@@ -76,7 +80,7 @@ public class StunServlet extends HttpServlet {
 				}
 			}
 
-			ConnectionProperties xapsCp = ConnectionProvider.getConnectionProperties("xaps-stun.properties", "db.xaps");
+			ConnectionProperties xapsCp = ConnectionProvider.getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps"));
 			DBI dbi = initializeDBI(xapsCp);
 
 			Scheduler scheduler = new Scheduler();
