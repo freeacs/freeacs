@@ -20,7 +20,6 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Vector;
 
-import com.owera.common.log.Logger;
 import com.owera.common.util.Sleep;
 import com.owera.common.util.TimestampMap;
 import com.owera.xaps.stun.MessageStack;
@@ -40,6 +39,7 @@ import de.javawi.jstun.header.MessageHeader;
 import de.javawi.jstun.header.MessageHeaderInterface.MessageHeaderType;
 import de.javawi.jstun.util.Address;
 import de.javawi.jstun.util.UtilityException;
+import org.slf4j.LoggerFactory;
 
 /*
  * This class implements a STUN server as described in RFC 3489.
@@ -53,7 +53,7 @@ import de.javawi.jstun.util.UtilityException;
  */
 public class StunServer {
 	private static boolean started = false;
-	private static final Logger logger = new Logger();
+	private static org.slf4j.Logger logger = LoggerFactory.getLogger(StunServer.class);
 	private static Counter counter = new Counter();
 	private Vector<DatagramSocket> sockets;
 	private static TimestampMap activeStunClients = new TimestampMap();
@@ -248,7 +248,7 @@ public class StunServer {
 				started = true;
 				try {
 					if (Sleep.isTerminated()) {
-						logger.notice("A Stun receiver thread shuts down");
+						logger.info("A Stun receiver thread shuts down");
 						return;
 					}
 					DatagramPacket receive = receiveAndKick();
@@ -335,9 +335,9 @@ public class StunServer {
 		sockets.add(new DatagramSocket(primaryPort, secondary));
 		sockets.add(new DatagramSocket(secondaryPort, secondary));
 		if (secondary.getHostAddress().equals("127.0.0.1"))
-			logger.notice("STUN Server has started, secondary interface uses to 127.0.0.1 - not optimal for full STUN functionality");
+			logger.info("STUN Server has started, secondary interface uses to 127.0.0.1 - not optimal for full STUN functionality");
 		else
-			logger.notice("STUN Server has started, all interfaces are operational");
+			logger.info("STUN Server has started, all interfaces are operational");
 	}
 
 	public void start() throws SocketException {
@@ -357,7 +357,7 @@ public class StunServer {
 
 	public void shutdown() {
 		for (DatagramSocket socket : sockets) {
-			logger.notice("Close down a socket");
+			logger.info("Close down a socket");
 			socket.disconnect();
 			socket.close();
 		}

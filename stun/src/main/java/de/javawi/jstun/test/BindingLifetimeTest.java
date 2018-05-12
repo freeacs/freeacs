@@ -21,8 +21,6 @@ import java.net.UnknownHostException;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.owera.common.log.Logger;
-
 import de.javawi.jstun.attribute.ChangeRequest;
 import de.javawi.jstun.attribute.ErrorCode;
 import de.javawi.jstun.attribute.MappedAddress;
@@ -33,9 +31,10 @@ import de.javawi.jstun.attribute.ResponseAddress;
 import de.javawi.jstun.header.MessageHeader;
 import de.javawi.jstun.header.MessageHeaderParsingException;
 import de.javawi.jstun.util.UtilityException;
+import org.slf4j.LoggerFactory;
 
 public class BindingLifetimeTest {
-	private static final Logger LOGGER = new Logger();
+	private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BindingLifetimeTest.class);
 	String stunServer;
 	int port;
 	int timeout = 300; //ms

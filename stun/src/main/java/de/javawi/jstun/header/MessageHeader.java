@@ -18,8 +18,10 @@ import com.owera.common.log.Logger;
 
 import de.javawi.jstun.attribute.MessageAttribute;
 import de.javawi.jstun.attribute.MessageAttributeParsingException;
+import de.javawi.jstun.attribute.SourceAddress;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
+import org.slf4j.LoggerFactory;
 
 public class MessageHeader implements MessageHeaderInterface {
 	/*
@@ -37,7 +39,7 @@ public class MessageHeader implements MessageHeaderInterface {
 	 *                                                                 |
 	 * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	 */
-	private static final Logger LOGGER = new Logger();
+	private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(MessageHeader.class);
 	MessageHeaderType type;
 	byte[] id = new byte[16];
 

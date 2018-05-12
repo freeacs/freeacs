@@ -11,10 +11,10 @@
 
 package de.javawi.jstun.attribute;
 
-import com.owera.common.log.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ChangedAddress extends MappedResponseChangedSourceAddressReflectedFrom {
-	private static final Logger LOGGER = new Logger();
+	private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ChangedAddress.class);
 
 	public ChangedAddress() {
 		super(MessageAttribute.MessageAttributeType.ChangedAddress);

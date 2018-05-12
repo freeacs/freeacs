@@ -32,9 +32,10 @@ import de.javawi.jstun.attribute.MessageAttributeParsingException;
 import de.javawi.jstun.header.MessageHeader;
 import de.javawi.jstun.header.MessageHeaderParsingException;
 import de.javawi.jstun.util.UtilityException;
+import org.slf4j.LoggerFactory;
 
 public class DiscoveryTest {
-	private static final Logger LOGGER = new Logger();
+	private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(DiscoveryTest.class);
 	InetAddress iaddress;
 	String stunServer;
 	int port;
