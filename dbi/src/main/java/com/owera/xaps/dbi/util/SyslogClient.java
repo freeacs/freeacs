@@ -8,16 +8,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.Identity;
 import com.owera.xaps.dbi.Syslog;
 import com.owera.xaps.dbi.SyslogConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SyslogClient {
 
 	private static SimpleDateFormat sdf = new SimpleDateFormat("MMM d HH:mm:ss", Locale.US);
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(SyslogClient.class);
 
 	public static void info(String unitId, String content, int facility, String facilityVersion, String user) {
 		send(SyslogConstants.SEVERITY_INFO, unitId, content, facility, facilityVersion, user);

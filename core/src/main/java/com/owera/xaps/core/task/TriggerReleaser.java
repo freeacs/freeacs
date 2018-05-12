@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.DBI;
 import com.owera.xaps.dbi.File;
 import com.owera.xaps.dbi.FileType;
@@ -26,14 +25,16 @@ import com.owera.xaps.dbi.TriggerRelease;
 import com.owera.xaps.dbi.Triggers;
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.XAPS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TriggerReleaser extends DBIShare {
 
-	public TriggerReleaser(String taskName) throws SQLException, NoAvailableConnectionException {
+	public TriggerReleaser(String taskName) throws SQLException {
 		super(taskName);
 	}
 
-	private Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(TriggerReleaser.class);
 	private XAPS xaps;
 	private static SimpleDateFormat tmsFormat = new SimpleDateFormat("HHmmss");
 	private static long MS_MINUTE = 60 * 1000;
@@ -116,9 +117,9 @@ public class TriggerReleaser extends DBIShare {
 			}
 			if (ne >= trigger.getNoEvents() && nu >= trigger.getNoUnits()) { // trigger is released!
 				Date firstEventTms = triggers.getFirstEventTms(trigger.getId(), evaluationStart, now, xaps);
-				logger.notice("TriggerReleaser: \t\tTrigger " + trigger.getName() + " was released since noEvents is " + ne + " (>= " + trigger.getNoEvents() + ") and noUnits is " + nu + " (>= "
+				logger.info("TriggerReleaser: \t\tTrigger " + trigger.getName() + " was released since noEvents is " + ne + " (>= " + trigger.getNoEvents() + ") and noUnits is " + nu + " (>= "
 						+ trigger.getNoUnits() + ")");
-				logger.notice("TriggerReleaser: \t\tTrigger " + trigger.getName() + " is evaluated in this timeframe: " + evaluationStart + " - " + now + ". First event was found at " + firstEventTms);
+				logger.info("TriggerReleaser: \t\tTrigger " + trigger.getName() + " is evaluated in this timeframe: " + evaluationStart + " - " + now + ". First event was found at " + firstEventTms);
 				TriggerRelease th = new TriggerRelease(trigger, ne, trigger.getNoEventsPrUnit(), nu, new Date(firstEventTms.getTime()), new Date(now.getTime()), null);
 				triggers.addOrChangeHistory(th, xaps);
 				if (trigger.getScript() != null) {
@@ -157,7 +158,7 @@ public class TriggerReleaser extends DBIShare {
 					firstEventTms = th.getFirstEventTms();
 			}
 			if (release) {
-				logger.notice("TriggerReleaser: \t\tTrigger " + trigger.getName() + " was released since all child trigger are released");
+				logger.info("TriggerReleaser: \t\tTrigger " + trigger.getName() + " was released since all child trigger are released");
 				TriggerRelease th = new TriggerRelease(trigger, firstEventTms, now, null);
 				triggers.addOrChangeHistory(th, xaps);
 				if (trigger.getScript() != null)

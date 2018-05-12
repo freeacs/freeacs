@@ -25,25 +25,20 @@ import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.params.HttpConnectionParams;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.owera.common.log.Log;
-import com.owera.common.log.Logger;
 import com.owera.common.util.Sleep;
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 public class XMLServer extends HttpServlet {
 
-	static {
-		Log.initialize("xaps-ws-logs.properties");
-	}
-
 	private static final long serialVersionUID = 7084562311369022182L;
-	private static Logger logger = new Logger();
-	private static Logger xmlLogger = new Logger("Xml");
+	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(XMLServer.class);
+	private static org.slf4j.Logger xmlLogger = LoggerFactory.getLogger("Xml");
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		doPost(req, res);

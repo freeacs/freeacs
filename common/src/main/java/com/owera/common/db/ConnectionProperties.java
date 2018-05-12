@@ -1,6 +1,7 @@
 package com.owera.common.db;
 
-import com.owera.common.log.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A simple wrapper class for the connection properties.
@@ -16,7 +17,7 @@ public class ConnectionProperties {
 	public static int maxconn = 10; // Default setting
 	public static long maxage = 600000; // Default setting is 600 seconds
 
-	private static final Logger log = new Logger();
+	private static Logger log = LoggerFactory.getLogger(ConnectionProperties.class);
 
 	public String getDriver() {
 		return driver;

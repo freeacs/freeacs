@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.owera.common.db.ConnectionProvider;
-import com.owera.common.log.Logger;
 import com.owera.common.scheduler.Schedule;
 import com.owera.common.scheduler.ScheduleType;
 import com.owera.common.scheduler.Scheduler;
@@ -24,6 +23,8 @@ import com.owera.xaps.core.task.ReportGenerator;
 import com.owera.xaps.core.task.ScriptExecutor;
 import com.owera.xaps.core.task.TriggerReleaser;
 import com.owera.xaps.dbi.util.XAPSVersionCheck;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.owera.xaps.core.Properties.getMaxAge;
 import static com.owera.xaps.core.Properties.getMaxConn;
@@ -37,20 +38,16 @@ public class CoreServlet extends HttpServlet {
 
 	private static Scheduler scheduler = null;
 
-	static {
-		com.owera.common.log.Log.initialize("xaps-core-logs.properties");
-	}
-
-	public static Logger log = new Logger();
+	private static Logger log = LoggerFactory.getLogger(CoreServlet.class);
 
 	public void destroy() {
-		log.notice("Server shutdown...");
+		log.info("Server shutdown...");
 		Sleep.terminateApplication();
 	}
 
 	public void init() {
 		try {
-			log.notice("Server starts...");
+			log.info("Server starts...");
 			XAPSVersionCheck.versionCheck(ConnectionProvider.getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps")));
 			scheduler = new Scheduler();
 			Thread t = new Thread(scheduler);

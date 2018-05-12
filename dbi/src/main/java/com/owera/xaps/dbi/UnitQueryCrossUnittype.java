@@ -11,8 +11,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.util.SystemParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Morten
@@ -20,7 +21,7 @@ import com.owera.xaps.dbi.util.SystemParameters;
  */
 class UnitQueryCrossUnittype {
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(UnitQueryCrossUnittype.class);
 
 	private List<Unittype> unittypes = new ArrayList<Unittype>();
 	private List<Profile> profiles = new ArrayList<Profile>();
@@ -266,7 +267,7 @@ class UnitQueryCrossUnittype {
 
 	/**
 	 * This method requires a list of unitIds, minimum 1 unitId.
-	 * @param unitIds
+	 * @param units
 	 * @return
 	 */
 	public List<Unit> getUnitsById(List<Unit> units) throws SQLException {

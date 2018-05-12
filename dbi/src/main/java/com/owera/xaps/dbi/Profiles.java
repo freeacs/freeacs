@@ -8,11 +8,12 @@ import java.util.Map;
 
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class Profiles {
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(Profiles.class);
 	private Map<String, Profile> nameMap;
 	private Map<Integer, Profile> idMap;
 
@@ -63,7 +64,7 @@ public class Profiles {
 			s.setQueryTimeout(60);
 			int rowsDeleted = s.executeUpdate(sql);
 			
-			logger.notice("Deleted profile " + profile.getName());
+			logger.info("Deleted profile " + profile.getName());
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(profile, profile.getUnittype());
 			return rowsDeleted;
@@ -118,7 +119,7 @@ public class Profiles {
 				if (gk.next())
 					profile.setId(gk.getInt(1));
 				
-				logger.notice("Inserted profile " + profile.getName());
+				logger.info("Inserted profile " + profile.getName());
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishAdd(profile, profile.getUnittype());
 			} else {
@@ -129,7 +130,7 @@ public class Profiles {
 				s.setQueryTimeout(60);
 				s.executeUpdate(sql);
 				
-				logger.notice("Updated profile " + profile.getName());
+				logger.info("Updated profile " + profile.getName());
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(profile, profile.getUnittype());
 			}
@@ -154,7 +155,7 @@ public class Profiles {
 	
 	/**
 	 * Only to be used internally (to shape XAPS object according to permissions)
-	 * @param id
+	 * @param profile
 	 * @return
 	 */
 	protected void removePermission(Profile profile) {

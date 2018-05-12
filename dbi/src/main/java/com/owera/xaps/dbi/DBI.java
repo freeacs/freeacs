@@ -20,8 +20,10 @@ import java.util.TreeSet;
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
+import com.owera.common.scheduler.ShowScheduleQueue;
 import com.owera.common.util.Sleep;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -188,7 +190,7 @@ public class DBI implements Runnable {
 		}
 	}
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(DBI.class);
 	public static String PUBLISH_INBOX_NAME = "publishXAPSInbox";
 
 	private ConnectionProperties cp;

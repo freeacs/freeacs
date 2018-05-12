@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.DynamicStatement;
 import com.owera.xaps.dbi.Group;
 import com.owera.xaps.dbi.Identity;
@@ -27,10 +26,12 @@ import com.owera.xaps.dbi.Unit;
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.XAPS;
 import com.owera.xaps.dbi.util.ProvisioningMessage.ProvStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReportProvisioningGenerator extends ReportGenerator {
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(ReportProvisioningGenerator.class);
 	private static String provMsgId = "^ProvMsg: PP:";
 	private static Pattern provPattern = Pattern.compile(provMsgId + ".*ST:(\\w+), PO:(\\w+), SL:(\\d+)");
 

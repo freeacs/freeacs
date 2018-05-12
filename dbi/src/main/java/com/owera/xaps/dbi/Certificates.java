@@ -9,11 +9,13 @@ import java.util.Map;
 
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
+import com.owera.common.scheduler.ShowScheduleQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class Certificates {
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(Certificates.class);
 	private Map<String, Certificate> nameMap;
 	private Map<Integer, Certificate> idMap;
 
@@ -96,7 +98,7 @@ public class Certificates {
 			s.setQueryTimeout(60);
 			int rowsDeleted = s.executeUpdate(sql);
 			
-			logger.notice("Deleted Certificate " + certificate.getName());
+			logger.info("Deleted Certificate " + certificate.getName());
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishCertificate(certificate);
 			return rowsDeleted;
@@ -115,7 +117,6 @@ public class Certificates {
 	 * The first time this method is run, the flag is set. The second time this
 	 * method is run, the parameter is removed from the name- and id-Map.
 	 * 
-	 * @param CertificateParameter
 	 * @throws NoAvailableConnectionException
 	 * @throws SQLException
 	 */
@@ -145,7 +146,7 @@ public class Certificates {
 				if (gk.next())
 					certificate.setId(gk.getInt(1));
 				
-				logger.notice("Inserted Certificate " + certificate.getName());
+				logger.info("Inserted Certificate " + certificate.getName());
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishCertificate(certificate);
 			} catch (SQLException sqlex2) {
@@ -159,7 +160,7 @@ public class Certificates {
 				if (rowsUpdated == 0)
 					throw sqlex2;
 				
-				logger.notice("Updated Certificate " + certificate.getName());
+				logger.info("Updated Certificate " + certificate.getName());
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishCertificate(certificate);
 			}

@@ -15,11 +15,12 @@ import java.util.TreeMap;
 
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.common.util.NaturalComparator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UnittypeParameters {
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(UnittypeParameters.class);
 	private Map<Integer, UnittypeParameter> idMap;
 	private Map<String, UnittypeParameter> nameMap;
 	private Map<Integer, UnittypeParameter> alwaysMap;
@@ -174,7 +175,7 @@ public class UnittypeParameters {
 		s.setQueryTimeout(60);
 		s.executeUpdate(sql);
 
-		logger.notice("Deleted all unittype parameter values for utp:" + unittypeParameter.getName());
+		logger.info("Deleted all unittype parameter values for utp:" + unittypeParameter.getName());
 	}
 
 	private void deleteUnittypeParameterImpl(List<UnittypeParameter> unittypeParameters, Unittype unittype, XAPS xaps) throws SQLException, NoAvailableConnectionException {
@@ -193,7 +194,7 @@ public class UnittypeParameters {
 				int rowsDeleted = s.executeUpdate(sql);
 				if (rowsDeleted > 0) {
 
-					logger.notice("Deleted unittype parameter " + unittypeParameter.getName());
+					logger.info("Deleted unittype parameter " + unittypeParameter.getName());
 				}
 			}
 			c.commit();
@@ -215,7 +216,7 @@ public class UnittypeParameters {
 	 * The first time this method is run, the flag is set. The second time this
 	 * method is run, the parameter is removed from the name- and id-Map.
 	 * 
-	 * @param profileParameter
+	 * @param unittypeParameter
 	 * @throws NoAvailableConnectionException
 	 * @throws SQLException
 	 */
@@ -265,7 +266,7 @@ public class UnittypeParameters {
 					if (gk.next())
 						unittypeParameter.setId(gk.getInt(1));
 
-					logger.notice("Added unittype parameter " + unittypeParameter.getName());
+					logger.info("Added unittype parameter " + unittypeParameter.getName());
 					//					tms1 = System.currentTimeMillis();
 				} else {
 					ds.addSql("UPDATE unit_type_param SET ");
@@ -277,7 +278,7 @@ public class UnittypeParameters {
 					ps.setQueryTimeout(60);
 					ps.executeUpdate();
 
-					//					logger.notice("Updated unittype parameter " + unittypeParameter.getName());
+					//					logger.info("Updated unittype parameter " + unittypeParameter.getName());
 					//					tms1 = System.currentTimeMillis();
 				}
 				if (unittypeParameter.getValues() != null)
@@ -288,7 +289,7 @@ public class UnittypeParameters {
 				//				long tms2 = System.currentTimeMillis();
 				//				logger.debug("addOrChangeUnittypeParameterImpl, insert/update: " + (tms1 - start) + "ms, add/change/delete values: " + (tms2 - tms1) + "ms");
 			}
-			logger.notice("Added/changed " + unittypeParameters.size() + " unittype parameters");
+			logger.info("Added/changed " + unittypeParameters.size() + " unittype parameters");
 			c.commit();
 			c.setAutoCommit(true);
 			if (xaps.getDbi() != null)
@@ -314,7 +315,7 @@ public class UnittypeParameters {
 		int rowsDeleted = s.executeUpdate(sql);
 		if (rowsDeleted > 0) {
 
-			logger.notice("Deleted all unittype parameter values for utp:" + unittypeParameter.getName());
+			logger.info("Deleted all unittype parameter values for utp:" + unittypeParameter.getName());
 		}
 		//		connection.commit();
 		UnittypeParameterValues values = unittypeParameter.getValues();
@@ -336,7 +337,7 @@ public class UnittypeParameters {
 				s.executeUpdate(sql);
 			}
 
-			logger.notice("Added all unittype parameter values for utp:" + unittypeParameter.getName());
+			logger.info("Added all unittype parameter values for utp:" + unittypeParameter.getName());
 		}
 	}
 

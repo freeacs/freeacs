@@ -6,17 +6,18 @@ import java.util.Calendar;
 import java.util.List;
 
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.core.Properties;
 import com.owera.xaps.dbi.SyslogEvent;
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.XAPS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DeleteOldSyslog extends DBIShare {
 
 	private XAPS xaps;
 
-	private Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(DeleteOldSyslog.class);
 
 	public DeleteOldSyslog(String taskName) throws SQLException, NoAvailableConnectionException {
 		super(taskName);

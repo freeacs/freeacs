@@ -19,7 +19,9 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
-import com.owera.common.log.Logger;
+import com.owera.common.db.ConnectionCleanup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -28,7 +30,7 @@ import com.owera.common.log.Logger;
 public class HTTPSManager {
 
 	/** The logger. */
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(HTTPSManager.class);
 
 	/**
 	 * Install certificate.

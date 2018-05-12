@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.common.scheduler.Task;
 import com.owera.xaps.core.CoreServlet;
 import com.owera.xaps.dbi.DBI;
@@ -14,6 +13,7 @@ import com.owera.xaps.dbi.Syslog;
 import com.owera.xaps.dbi.SyslogConstants;
 import com.owera.xaps.dbi.Users;
 import com.owera.xaps.dbi.XAPS;
+import org.slf4j.Logger;
 
 /**
  * You can extend DBIShare if, and only if, you do not manipulate the contents of the xAPS object. 
@@ -36,9 +36,6 @@ public abstract class DBIShare implements Task {
 	private static DBI dbi;
 	private static Syslog syslog;
 	private static Identity id;
-
-	@SuppressWarnings("unused")
-	private Logger logger = new Logger();
 
 	private String taskName;
 	private long launchTms;
@@ -70,7 +67,7 @@ public abstract class DBIShare implements Task {
 		return syslog.getIdentity();
 	}
 
-protected ConnectionProperties getXapsCp() {
+	protected ConnectionProperties getXapsCp() {
 		return xapsCp;
 	}
 

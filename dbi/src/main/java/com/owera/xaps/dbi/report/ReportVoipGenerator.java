@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.DynamicStatement;
 import com.owera.xaps.dbi.Group;
 import com.owera.xaps.dbi.Identity;
@@ -26,10 +25,12 @@ import com.owera.xaps.dbi.SyslogFilter;
 import com.owera.xaps.dbi.Unit;
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.XAPS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReportVoipGenerator extends ReportGenerator {
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(ReportVoipGenerator.class);
 	private static Pattern qosPattern = Pattern.compile(".*MOS: (\\d+)[^\\d]+(\\d+)[^\\d]+(\\d+)[^\\d]+(\\d+):(\\d+):(\\d+)[^\\d]+(\\d+)[^\\d]+(\\d+)[^\\d]+");
 	private static Pattern qosChannelPattern = Pattern.compile(".*channel (\\d+).*");
 	// Reg failed: ua0: reg failed 613883@nettala.fo: 903 DNS Error (0 bindings)

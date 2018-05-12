@@ -7,13 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.core.Properties;
 import com.owera.xaps.dbi.Job;
 import com.owera.xaps.dbi.JobStatus;
 import com.owera.xaps.dbi.UnitJobs;
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.XAPS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DeleteOldJobs extends DBIOwner {
 
@@ -21,7 +22,8 @@ public class DeleteOldJobs extends DBIOwner {
 		super(taskName);
 	}
 
-	private Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(DeleteOldJobs.class);
+
 	private XAPS xaps;
 	private Map<Integer, Job> jobMap;
 

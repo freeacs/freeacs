@@ -13,11 +13,12 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.owera.common.log.Logger;
 import com.owera.common.util.Cache;
 import com.owera.common.util.CacheValue;
 import com.owera.xaps.dbi.Parameter.Operator;
 import com.owera.xaps.dbi.Parameter.ParameterDataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * Jun 2011
@@ -56,7 +57,7 @@ import com.owera.xaps.dbi.Parameter.ParameterDataType;
  */
 public class UnitQueryWithinUnittype {
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(UnitQueryWithinUnittype.class);
 	public static Cache patternCache = new Cache();
 	private Connection connection;
 	private Unittype unittype;

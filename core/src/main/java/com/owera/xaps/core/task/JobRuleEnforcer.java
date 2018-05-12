@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.core.Properties;
 import com.owera.xaps.core.util.FractionStopRuleCounter;
 import com.owera.xaps.core.util.UnitJobResult;
@@ -21,6 +20,8 @@ import com.owera.xaps.dbi.UnitJobStatus;
 import com.owera.xaps.dbi.UnitJobs;
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.XAPS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JobRuleEnforcer extends DBIOwner {
 
@@ -161,8 +162,8 @@ public class JobRuleEnforcer extends DBIOwner {
 		}
 	}
 
-	
-	private Logger logger = new Logger();
+
+	private static Logger logger = LoggerFactory.getLogger(JobRuleEnforcer.class);
 	private XAPS xaps;
 	private UnitJobs unitJobs;
 	private Map<Integer, JobControl> jobControlMap = new HashMap<Integer, JobControl>();

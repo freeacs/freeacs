@@ -13,7 +13,6 @@ import java.util.Map;
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.DynamicStatement;
 import com.owera.xaps.dbi.Files;
 import com.owera.xaps.dbi.InsertOrUpdateStatement;
@@ -23,6 +22,8 @@ import com.owera.xaps.dbi.UnittypeParameter;
 import com.owera.xaps.dbi.XAPS;
 import com.owera.xaps.dbi.tr069.TestCase.TestCaseMethod;
 import com.owera.xaps.dbi.tr069.TestCaseParameter.TestCaseParameterType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The class contains all SQL for the TR069-test related tables
@@ -35,7 +36,7 @@ public class TestDB {
 	private ConnectionProperties cp;
 	private XAPS xaps;
 	private TR069DMParameterMap tr069DMMap;
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(TestDB.class);
 
 	public TestDB(XAPS xaps) {
 		try {

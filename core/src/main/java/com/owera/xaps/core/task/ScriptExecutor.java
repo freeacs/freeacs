@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.core.Properties;
 import com.owera.xaps.dbi.ScriptExecution;
 import com.owera.xaps.dbi.ScriptExecutions;
@@ -17,6 +16,8 @@ import com.owera.xaps.dbi.Users;
 import com.owera.xaps.shell.Processor;
 import com.owera.xaps.shell.Session;
 import com.owera.xaps.shell.XAPSShellDaemon;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ScriptExecutor extends DBIShare {
 
@@ -25,7 +26,7 @@ public class ScriptExecutor extends DBIShare {
 		private ScriptExecution se;
 		private XAPSShellDaemon xapsshellDaemon;
 		private ScriptExecutions executions;
-		private Logger daemonLogger = new Logger("ShellDaemon");
+		private static Logger daemonLogger = LoggerFactory.getLogger("ShellDaemon");
 
 		public ScriptDaemonRunnable(ScriptExecutions executions, ScriptExecution scriptExecution, XAPSShellDaemon xapsshellDaemon) {
 			this.xapsshellDaemon = xapsshellDaemon;
@@ -98,7 +99,7 @@ public class ScriptExecutor extends DBIShare {
 		super(taskName);
 	}
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(ScriptExecutor.class);
 
 	@Override
 	public void runImpl() throws Exception {

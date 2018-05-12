@@ -10,11 +10,12 @@ import java.util.Map;
 
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.InsertOrUpdateStatement.Field;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Unittypes {
-	private Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(Unittypes.class);
 	private Map<String, Unittype> nameMap;
 	private Map<Integer, Unittype> idMap;
 
@@ -29,7 +30,7 @@ public class Unittypes {
 
 	/**
 	 * Only to be used internally (to shape XAPS object according to permissions)
-	 * @param id
+	 * @param unittype
 	 * @return
 	 */
 	protected void removePermission(Unittype unittype) {
@@ -69,12 +70,12 @@ public class Unittypes {
 				if (gk.next())
 					unittype.setId(gk.getInt(1));
 				int changedSystemParameters = unittype.ensureValidSystemParameters(xaps);
-				logger.notice("Added unittype " + unittype.getName() + ", changed/added " + changedSystemParameters);
+				logger.info("Added unittype " + unittype.getName() + ", changed/added " + changedSystemParameters);
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishAdd(unittype, unittype);
 			} else {
 				int changedSystemParameters = unittype.ensureValidSystemParameters(xaps);
-				logger.notice("Updated unittype " + unittype.getName() + ", changed/added " + changedSystemParameters);
+				logger.info("Updated unittype " + unittype.getName() + ", changed/added " + changedSystemParameters);
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(unittype, unittype);
 			}
@@ -120,7 +121,7 @@ public class Unittypes {
 			s.setQueryTimeout(60);
 			int rowsDeleted = s.executeUpdate(sql);
 
-			logger.notice("Deleted unittype " + unittype.getName());
+			logger.info("Deleted unittype " + unittype.getName());
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(unittype, unittype);
 			return rowsDeleted;
@@ -140,8 +141,8 @@ public class Unittypes {
 	 * method is run, the parameter is removed from the nameMap. Setting the
 	 * cascade argument = true will also delete all unittype parameters and
 	 * enumerations for all these parameters.
-	 * 
-	 * @param profileParameter
+	 *
+	 * @param unittype
 	 * @throws NoAvailableConnectionException
 	 * @throws SQLException
 	 */

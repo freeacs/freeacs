@@ -13,9 +13,10 @@ import java.util.Map;
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.util.SyslogClient;
 import com.owera.xaps.dbi.util.XAPSVersionCheck;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * XAPSUnit is a class to help you work with units and unit parameters.
@@ -23,7 +24,7 @@ import com.owera.xaps.dbi.util.XAPSVersionCheck;
  */
 public class XAPSUnit {
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(XAPS.class);
 	private static long updateCounter;
 	private static long insertCounter;
 
@@ -141,8 +142,8 @@ public class XAPSUnit {
 					ps = ds.makePreparedStatement(connection);
 					ps.setQueryTimeout(60);
 					ps.executeUpdate();
-					SyslogClient.notice(unitId, "Added unit", syslog);
-					logger.notice("Added unit " + unitId);
+					SyslogClient.info(unitId, "Added unit", syslog);
+					logger.info("Added unit " + unitId);
 				} catch (SQLException ex) {
 					ds = new DynamicStatement();
 					ds.addSql("UPDATE unit SET profile_id = ? WHERE unit_id = ? AND unit_type_id = ?");
@@ -153,8 +154,8 @@ public class XAPSUnit {
 					if (rowsUpdated == 0)
 						throw ex;
 					if (rowsUpdated > 0) {
-						SyslogClient.notice(unitId, "Moved unit to profile " + profile.getName(), syslog);
-						logger.notice("Moved unit " + unitId + " to profile " + profile.getName());
+						SyslogClient.info(unitId, "Moved unit to profile " + profile.getName(), syslog);
+						logger.info("Moved unit " + unitId + " to profile " + profile.getName());
 					}
 				}
 				if (i > 0 && i % 100 == 0)
@@ -197,7 +198,7 @@ public class XAPSUnit {
 				ps.setQueryTimeout(60);
 				ps.executeUpdate();
 
-				logger.notice("Moved unit " + unitIds.get(i) + " to profile " + profile.getName());
+				logger.info("Moved unit " + unitIds.get(i) + " to profile " + profile.getName());
 			}
 			connection.commit();
 		} catch (SQLException sqle) {
@@ -317,8 +318,8 @@ public class XAPSUnit {
 					msg += " with confidental value (*****)";
 				else
 					msg += " with value " + parameter.getValue();
-				SyslogClient.notice(unitId, msg, syslog);
-				logger.notice(msg);
+				SyslogClient.info(unitId, msg, syslog);
+				logger.info(msg);
 				if (i > 0 && i % 100 == 0)
 					connection.commit();
 			}
@@ -401,14 +402,14 @@ public class XAPSUnit {
 
 			connection.commit();
 			if (paramsDeleted > 0)
-				logger.notice("Deleted " + paramsDeleted + " unit parameters for unit " + unit.getId());
+				logger.info("Deleted " + paramsDeleted + " unit parameters for unit " + unit.getId());
 			if (unitJobsDeleted > 0)
-				logger.notice("Deleted " + unitJobsDeleted + " unit jobs for unit " + unit.getId());
+				logger.info("Deleted " + unitJobsDeleted + " unit jobs for unit " + unit.getId());
 			if (rowsDeleted == 0)
 				logger.warn("No unit deleted, possibly because it did not exist.");
 			else {
-				SyslogClient.notice(unit.getId(), "Deleted unit", syslog);
-				logger.notice("Deleted unit " + unit.getId());
+				SyslogClient.info(unit.getId(), "Deleted unit", syslog);
+				logger.info("Deleted unit " + unit.getId());
 			}
 			return rowsDeleted;
 		} catch (SQLException sqle) {
@@ -453,10 +454,10 @@ public class XAPSUnit {
 				counter++;
 			}
 
-			logger.notice("Deleted unit parameters for all units in for profile " + profile.getName() + "(" + upDeleted + " parameters deleted)");
+			logger.info("Deleted unit parameters for all units in for profile " + profile.getName() + "(" + upDeleted + " parameters deleted)");
 			sql = "DELETE FROM unit WHERE profile_id = " + profile.getId();
 			int rowsDeleted = s.executeUpdate(sql);
-			logger.notice("Deleted all units in for profile " + profile.getName() + "(" + rowsDeleted + " units deleted)");
+			logger.info("Deleted all units in for profile " + profile.getName() + "(" + rowsDeleted + " units deleted)");
 			connection.commit();
 			return rowsDeleted;
 		} catch (SQLException sqle) {
@@ -509,8 +510,8 @@ public class XAPSUnit {
 				s.setQueryTimeout(60);
 				rowsDeleted += s.executeUpdate(sql);
 				if (rowsDeleted > 0) {
-					SyslogClient.notice(unitId, "Deleted unit parameter " + unitParameter.getParameter().getUnittypeParameter(), syslog);
-					logger.notice("Deleted unit parameter " + unitParameter.getParameter().getUnittypeParameter());
+					SyslogClient.info(unitId, "Deleted unit parameter " + unitParameter.getParameter().getUnittypeParameter(), syslog);
+					logger.info("Deleted unit parameter " + unitParameter.getParameter().getUnittypeParameter());
 				}
 			}
 			connection.commit();
@@ -540,7 +541,7 @@ public class XAPSUnit {
 			s.setQueryTimeout(60);
 			rowsDeleted += s.executeUpdate(sql);
 			if (rowsDeleted > 0)
-				logger.notice("Deleted " + rowsDeleted + " unit session parameters");
+				logger.info("Deleted " + rowsDeleted + " unit session parameters");
 			connection.commit();
 			return rowsDeleted;
 		} catch (SQLException sqle) {
@@ -574,12 +575,12 @@ public class XAPSUnit {
 				sql = "DELETE FROM unit_param WHERE unit_id = '" + unitIds.get(i) + "'";
 				s.setQueryTimeout(60);
 				int upDeleted = s.executeUpdate(sql);
-				logger.notice("Deleted all unit parameters for unit " + unitIds.get(i) + "(" + upDeleted + " parameters deleted)");
+				logger.info("Deleted all unit parameters for unit " + unitIds.get(i) + "(" + upDeleted + " parameters deleted)");
 				sql = "DELETE FROM unit WHERE unit_id = '" + unitIds.get(i) + "'";
 				s.setQueryTimeout(60);
 				rowsDeleted += s.executeUpdate(sql);
-				SyslogClient.notice(unitIds.get(i), "Deleted unit", syslog);
-				logger.notice("Deleted unit " + unitIds.get(i));
+				SyslogClient.info(unitIds.get(i), "Deleted unit", syslog);
+				logger.info("Deleted unit " + unitIds.get(i));
 				if (i > 0 && i % 100 == 0)
 					connection.commit();
 			}
@@ -623,7 +624,7 @@ public class XAPSUnit {
 	 * This method will return a map of fully populated Unit objects. Do not ask for a large number of units (>100), since then it may take a
 	 * long time to complete. Also the result-set may be memory-intensive if very large.
 	 * 
-	 * @param unitIds - this list must be retrieved by running one of the getUnits() methods
+	 * @param units - this list must be retrieved by running one of the getUnits() methods
 	 * @param unittype  - may be null
 	 * @param profile - may be null
 	 * @return map of fully populated Unit objects

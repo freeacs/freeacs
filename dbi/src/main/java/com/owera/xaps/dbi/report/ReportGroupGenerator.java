@@ -11,17 +11,18 @@ import java.util.List;
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.DynamicStatement;
 import com.owera.xaps.dbi.Group;
 import com.owera.xaps.dbi.Identity;
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.XAPS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class ReportGroupGenerator extends ReportGenerator {
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(ReportGroupGenerator.class);
 
 	public ReportGroupGenerator(ConnectionProperties sysCp, ConnectionProperties xapsCp, XAPS xaps, String logPrefix, Identity id) {
 		super(sysCp, xapsCp, xaps, logPrefix, id);

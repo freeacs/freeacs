@@ -7,7 +7,6 @@ import java.util.Random;
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.DBI;
 import com.owera.xaps.dbi.Identity;
 import com.owera.xaps.dbi.Profile;
@@ -20,6 +19,8 @@ import com.owera.xaps.dbi.XAPS;
 import com.owera.xaps.dbi.XAPSUnit;
 
 import com.owera.xapsws.Login;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.owera.xapsws.impl.Properties.getMaxAge;
 import static com.owera.xapsws.impl.Properties.getMaxConn;
@@ -27,7 +28,7 @@ import static com.owera.xapsws.impl.Properties.getUrl;
 
 public class XAPSWS {
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(XMLServer.class);
 
 	private ConnectionProperties cp;
 	private Identity id;

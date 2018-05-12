@@ -13,11 +13,12 @@ import java.util.Map;
 
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.DynamicStatement.NullInteger;
 import com.owera.xaps.dbi.JobFlag.JobType;
 import com.owera.xaps.dbi.util.SystemParameters;
 import com.owera.xaps.dbi.util.SystemParameters.TR069ScriptType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This interface is only for reading the following tables/concepts:
@@ -30,7 +31,7 @@ import com.owera.xaps.dbi.util.SystemParameters.TR069ScriptType;
  */
 public class Jobs {
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(Inbox.class);
 	private Map<Integer, Job> idMap = new HashMap<Integer, Job>();
 	private Map<String, Job> nameMap = new HashMap<String, Job>();
 	private Unittype unittype;
@@ -132,7 +133,7 @@ public class Jobs {
 					pp.close();
 				}
 
-				logger.notice(action + " job parameter " + parameter.getUnittypeParameter().getName());
+				logger.info(action + " job parameter " + parameter.getUnittypeParameter().getName());
 				if (unitId.equals(Job.ANY_UNIT_IN_GROUP))
 					jobParameter.getJob().getDefaultParameters().put(parameter.getUnittypeParameter().getName(), jobParameter);
 
@@ -174,7 +175,7 @@ public class Jobs {
 			Job j = getById(job.getId());
 			j.setDefaultParameters(null);
 
-			logger.notice("Deleted all job parameters for job " + job.getId());
+			logger.info("Deleted all job parameters for job " + job.getId());
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishChange(job, job.getGroup().getUnittype());
 		} catch (SQLException sqlex) {
@@ -210,7 +211,7 @@ public class Jobs {
 				s.setQueryTimeout(60);
 				rowsDeleted += s.executeUpdate(sql);
 
-				logger.notice("Deleted job parameter " + parameter.getUnittypeParameter().getName() + " on job " + jobParameter.getJob().getId());
+				logger.info("Deleted job parameter " + parameter.getUnittypeParameter().getName() + " on job " + jobParameter.getJob().getId());
 				if (unitId.equals(Job.ANY_UNIT_IN_GROUP)) {
 					Job j = getById(jobParameter.getJob().getId());
 					if (j != null && j.getDefaultParameters() != null && parameter.getUnittypeParameter() != null)
@@ -262,7 +263,7 @@ public class Jobs {
 			pp.execute();
 			removeJobFromDataModel(job);
 
-			logger.notice("Deleted job " + job.getId());
+			logger.info("Deleted job " + job.getId());
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(job, job.getGroup().getUnittype());
 		} catch (SQLException sqlex) {
@@ -359,7 +360,7 @@ public class Jobs {
 			nameMap.put(job.getName(), job);
 
 			updateMandatoryJobParameters(job, xaps);
-			logger.notice("Inserted job " + job.getId());
+			logger.info("Inserted job " + job.getId());
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishAdd(job, job.getGroup().getUnittype());
 		} catch (SQLException sqlex) {
@@ -480,7 +481,7 @@ public class Jobs {
 			String message = "\tUpdated job " + job.getId() + " with (" + job.getStatus() + "," + job.getCompletedNoFailures() + ",";
 			message += job.getCompletedHadFailures() + "," + job.getUnconfirmedFailed() + "," + job.getConfirmedFailed() + ")";
 
-			logger.notice(message);
+			logger.info(message);
 			if (publishMsg.length() > 0 && xaps.getDbi() != null)
 				xaps.getDbi().publishJobCounters(job.getId(), publishMsg);
 		} catch (SQLException sqlex) {
@@ -544,7 +545,7 @@ public class Jobs {
 			ps.close();
 			if (rowsUpdated > 0) {
 
-				logger.notice("Updated job " + job.getId() + " with status = " + job.getStatus());
+				logger.info("Updated job " + job.getId() + " with status = " + job.getStatus());
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(job, job.getGroup().getUnittype());
 			} else {
@@ -622,7 +623,7 @@ public class Jobs {
 			if (rowsUpdated > 0) {
 
 				updateMandatoryJobParameters(job, xaps);
-				logger.notice("Updated job " + job.getId() + " with type/description/status/rules");
+				logger.info("Updated job " + job.getId() + " with type/description/status/rules");
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(job, job.getGroup().getUnittype());
 			} else {

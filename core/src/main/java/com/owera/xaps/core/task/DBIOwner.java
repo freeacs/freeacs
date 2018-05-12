@@ -1,19 +1,14 @@
 package com.owera.xaps.core.task;
 
-import java.sql.SQLException;
-
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.common.scheduler.Task;
 import com.owera.xaps.core.CoreServlet;
-import com.owera.xaps.dbi.DBI;
-import com.owera.xaps.dbi.Identity;
-import com.owera.xaps.dbi.Syslog;
-import com.owera.xaps.dbi.SyslogConstants;
-import com.owera.xaps.dbi.Users;
-import com.owera.xaps.dbi.XAPS;
+import com.owera.xaps.dbi.*;
+import org.slf4j.Logger;
+
+import java.sql.SQLException;
 
 /**
  * You can extend this object if you need to manipulate the state of the XAPS object, then you will not
@@ -36,9 +31,6 @@ public abstract class DBIOwner implements Task {
 	private DBI dbi;
 	private Syslog syslog;
 	private Identity id;
-
-	@SuppressWarnings("unused")
-	private Logger logger = new Logger();
 
 	private String taskName;
 	private long launchTms;

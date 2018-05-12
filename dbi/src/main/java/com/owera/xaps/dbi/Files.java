@@ -1,25 +1,19 @@
 package com.owera.xaps.dbi;
 
+import com.owera.common.db.ConnectionProvider;
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.xaps.dbi.util.XAPSVersionCheck;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.ByteArrayInputStream;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
-import java.sql.Types;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
-
-import com.owera.xaps.dbi.util.XAPSVersionCheck;
-
 public class Files {
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(Files.class);
 	private Map<String, File> nameMap;
 	private Map<String, File> versionTypeMap;
 	private Map<Integer, File> idMap;
@@ -92,7 +86,7 @@ public class Files {
 			s.setQueryTimeout(60);
 			s.executeUpdate(sql);
 
-			logger.notice("Deleted file " + file.getName());
+			logger.info("Deleted file " + file.getName());
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(file, unittype);
 		} catch (SQLException sqle) {
@@ -112,7 +106,6 @@ public class Files {
 	 * cascade argument = true will also delete all unittype parameters and
 	 * enumerations for all these parameters.
 	 * 
-	 * @param profileParameter
 	 * @throws NoAvailableConnectionException
 	 * @throws SQLException
 	 */
@@ -208,7 +201,7 @@ public class Files {
 
 				// }
 
-				logger.notice("Added file " + file.getName());
+				logger.info("Added file " + file.getName());
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishAdd(file, unittype);
 			} catch (SQLException sqle) {
@@ -281,7 +274,7 @@ public class Files {
 				}
 				// }
 
-				logger.notice("Updated file to " + file.getName());
+				logger.info("Updated file to " + file.getName());
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishFile(file, unittype);
 			} catch (SQLException sqle) {

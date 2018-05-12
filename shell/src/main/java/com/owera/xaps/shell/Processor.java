@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.Group;
 import com.owera.xaps.dbi.Job;
 import com.owera.xaps.dbi.Profile;
@@ -33,10 +32,13 @@ import com.owera.xaps.shell.menu.UnittypeParameterMenu;
 import com.owera.xaps.shell.output.OutputHandler;
 import com.owera.xaps.shell.util.StringUtil;
 import com.owera.xaps.shell.util.ValidateInput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Processor {
 
-	private Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(Processor.class);
+
 	private String logPrefix = "";
 
 	private Session session;
@@ -186,14 +188,10 @@ public class Processor {
 	}
 
 	private void debugException(Exception e) {
-		if (logger == null)
-			logger = new Logger();
 		logger.error(logPrefix +"Output: " + session.getContext() + e.getMessage());
 	}
 
 	private void debugCommand(Command command) {
-		if (logger == null)
-			logger = new Logger();
 		if (logger.isDebugEnabled())
 			logger.debug(logPrefix +"Command: " + session.getContext() + command.toString());
 

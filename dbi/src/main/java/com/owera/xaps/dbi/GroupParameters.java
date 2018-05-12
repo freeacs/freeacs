@@ -12,12 +12,12 @@ import java.util.Map.Entry;
 
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.DynamicStatement.NullString;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GroupParameters {
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(GroupParameters.class);
 	private Map<String, GroupParameter> nameMap;
 	private Map<Integer, GroupParameter> idMap;
 	private Group group;
@@ -92,7 +92,7 @@ public class GroupParameters {
 				ResultSet gk = ps.getGeneratedKeys();
 				if (gk.next())
 					groupParameter.setId(gk.getInt(1));
-				logger.notice("Added group parameter " + groupParameter.getName());
+				logger.info("Added group parameter " + groupParameter.getName());
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishAdd(groupParameter, group.getUnittype());
 			} else {
@@ -105,7 +105,7 @@ public class GroupParameters {
 				ps = ds.makePreparedStatement(c);
 				ps.setQueryTimeout(60);
 				ps.executeUpdate();
-				logger.notice("Updated group parameter " + groupParameter.getName());
+				logger.info("Updated group parameter " + groupParameter.getName());
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(groupParameter, group.getUnittype());
 			}
@@ -187,7 +187,7 @@ public class GroupParameters {
 			sql += "id = " + groupParameter.getId();
 			s.setQueryTimeout(60);
 			s.executeUpdate(sql);
-			logger.notice("Deleted group parameter " + groupParameter.getName());
+			logger.info("Deleted group parameter " + groupParameter.getName());
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(groupParameter, group.getUnittype());
 		} catch (SQLException sqle) {

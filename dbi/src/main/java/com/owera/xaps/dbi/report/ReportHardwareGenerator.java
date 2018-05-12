@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.DynamicStatement;
 import com.owera.xaps.dbi.Group;
 import com.owera.xaps.dbi.Identity;
@@ -26,10 +25,12 @@ import com.owera.xaps.dbi.SyslogFilter;
 import com.owera.xaps.dbi.Unit;
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.XAPS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReportHardwareGenerator extends ReportGenerator {
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(ReportHardwareGenerator.class);
 	// Memory-content: HW Memory Pool/Current/LowWater: Heap(DDR)
 	// 10863616/10558784/10558144, Heap(OCM) 49152/34876/34876, NP(DDR)
 	// 4471/4094/4089, NP(OCM) 375/246/244

@@ -31,7 +31,8 @@ import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.ui.RectangleEdge;
 
-import com.owera.common.log.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @SuppressWarnings({ "rawtypes" })
@@ -46,7 +47,7 @@ public class Chart<R extends Record> {
 	/* Add to set to show in strategy mode STRATEGY_SHOW_SELECTED */
 	public static final String STRATEGY_SHOW_SELECTED = "SHOW";
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(Chart.class);
 
 	private long NINTY_DAYS = 90l * 24l * 3600l * 1000l;
 	private long TWO_DAYS = 2l * 24l * 3600l * 1000l;

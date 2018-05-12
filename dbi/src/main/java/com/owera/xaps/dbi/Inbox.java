@@ -6,12 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.owera.common.log.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class Inbox {
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(Inbox.class);
 	private Map<Integer, Message> map = new TreeMap<Integer, Message>();
 	private List<Message> filters = new ArrayList<Message>();
 
@@ -42,7 +43,6 @@ public class Inbox {
 				continue;
 			added = true;
 			if (logger.isDebugEnabled()) {
-				
 				logger.debug("Message: [" + m + "] was added to an inbox");
 			}
 			map.put(m.getId(), m);

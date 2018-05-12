@@ -9,10 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.owera.common.db.ConnectionProperties;
-import com.owera.common.log.Logger;
 import com.owera.xaps.core.Properties;
 import com.owera.xaps.shell.XAPSShell;
 import com.owera.xaps.shell.XAPSShellDaemon;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provide a container for all the shell daemons available within TR-069 server.
@@ -22,7 +23,7 @@ import com.owera.xaps.shell.XAPSShellDaemon;
  */
 public class ShellDaemonPool {
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(ShellDaemonPool.class);
 
 	//	private static List<XAPSShellDaemon> shellDaemonPool = new ArrayList<XAPSShellDaemon>();
 	private static Map<String, List<XAPSShellDaemon>> shellDaemonPoolMap = new HashMap<String, List<XAPSShellDaemon>>();

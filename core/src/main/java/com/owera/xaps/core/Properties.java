@@ -1,11 +1,10 @@
 package com.owera.xaps.core;
 
 import com.owera.common.db.ConnectionProperties;
-import com.owera.common.log.Logger;
-import com.owera.common.util.PropertyReader;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import com.typesafe.config.ConfigObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -14,7 +13,7 @@ public class Properties {
 
 	private static Config config = ConfigFactory.parseResources("xaps-core.conf");
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(Properties.class);
 
 	private static int getInteger(String propertyKey, int defaultValue) {
 		try {

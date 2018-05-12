@@ -12,7 +12,6 @@ import java.util.TreeMap;
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.common.util.NumberComparator;
 import com.owera.xaps.dbi.Parameter.Operator;
 import com.owera.xaps.dbi.Parameter.ParameterDataType;
@@ -20,6 +19,8 @@ import com.owera.xaps.dbi.SyslogEvent.StorePolicy;
 import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
 import com.owera.xaps.dbi.util.MapWrapper;
 import com.owera.xaps.dbi.util.XAPSVersionCheck;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The XAPS class is the main interface for the following tables/concepts in the
@@ -49,7 +50,7 @@ import com.owera.xaps.dbi.util.XAPSVersionCheck;
 public class XAPS {
 
 	public static String version = "1.74";
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(XAPS.class);
 	private static boolean strictOrder = true;
 
 	private Connection connection;

@@ -8,12 +8,13 @@ import java.util.Map;
 
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.InsertOrUpdateStatement.Field;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class Heartbeats {
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(Heartbeats.class);
 
 	private Map<String, Heartbeat> nameMap;
 	private Map<Integer, Heartbeat> idMap;
@@ -61,11 +62,11 @@ public class Heartbeats {
 				ResultSet gk = ps.getGeneratedKeys();
 				if (gk.next())
 					heartbeat.setId(gk.getInt(1));
-				logger.notice("Inserted heartbeat " + heartbeat.getId());
+				logger.info("Inserted heartbeat " + heartbeat.getId());
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishAdd(heartbeat, heartbeat.getUnittype());
 			} else {
-				logger.notice("Updated heartbeat " + heartbeat.getId());
+				logger.info("Updated heartbeat " + heartbeat.getId());
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(heartbeat, unittype);
 			}
@@ -101,7 +102,7 @@ public class Heartbeats {
 			ps.setQueryTimeout(60);
 			ps.executeUpdate();
 			
-			logger.notice("Deleted heartbeat " + heartbeat.getId());
+			logger.info("Deleted heartbeat " + heartbeat.getId());
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(heartbeat, unittype);
 		} catch (SQLException sqle) {

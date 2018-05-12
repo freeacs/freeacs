@@ -4,12 +4,13 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
-import com.owera.common.log.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class Report<R extends Record> {
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(Report.class);
 	private Map<Key, R> map = new TreeMap<Key, R>();
 	private Class<R> recordClass;
 	private PeriodType periodType;

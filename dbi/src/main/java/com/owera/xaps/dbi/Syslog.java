@@ -22,8 +22,9 @@ import java.util.Set;
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.util.SQLUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class handles all write/read to the syslog-table. Now it also supports
@@ -39,7 +40,7 @@ public class Syslog {
 
   private Identity id;
 
-  private static Logger logger = new Logger();
+  private static Logger logger = LoggerFactory.getLogger(Syslog.class);
 
   // Used to indicate if a read returns syslog entries from a device. Reset on
   // start of every read()
