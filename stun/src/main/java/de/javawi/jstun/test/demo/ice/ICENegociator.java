@@ -18,6 +18,7 @@ import de.javawi.jstun.test.DiscoveryTest;
 import de.javawi.jstun.test.demo.ice.Candidate.CandidateType;
 import de.javawi.jstun.util.Address;
 import de.javawi.jstun.util.UtilityException;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ import java.net.UnknownHostException;
 import java.util.*;
 
 public class ICENegociator {
-	private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ICENegociator.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(ICENegociator.class);
 	// type preference must be an integer from 0 (=lowest) to 126 (=highest) (inclusive)
 	private final static int LOCAL_PREFERENCE = 0;
 	private final static int SERVER_REFLEXIVE_PREFERENCE = 42;

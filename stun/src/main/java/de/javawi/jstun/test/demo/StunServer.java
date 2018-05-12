@@ -21,6 +21,7 @@ import de.javawi.jstun.header.MessageHeader;
 import de.javawi.jstun.header.MessageHeaderInterface.MessageHeaderType;
 import de.javawi.jstun.util.Address;
 import de.javawi.jstun.util.UtilityException;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -39,7 +40,7 @@ import java.util.Vector;
  */
 public class StunServer {
 	private static boolean started = false;
-	private static org.slf4j.Logger logger = LoggerFactory.getLogger(StunServer.class);
+	private static Logger logger = LoggerFactory.getLogger(StunServer.class);
 	private static Counter counter = new Counter();
 	private Vector<DatagramSocket> sockets;
 	private static TimestampMap activeStunClients = new TimestampMap();

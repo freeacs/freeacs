@@ -11,10 +11,11 @@
 
 package de.javawi.jstun.attribute;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ChangedAddress extends MappedResponseChangedSourceAddressReflectedFrom {
-	private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ChangedAddress.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(ChangedAddress.class);
 
 	public ChangedAddress() {
 		super(MessageAttribute.MessageAttributeType.ChangedAddress);

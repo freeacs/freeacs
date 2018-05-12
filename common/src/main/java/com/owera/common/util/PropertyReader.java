@@ -1,5 +1,6 @@
 package com.owera.common.util;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
@@ -14,7 +15,7 @@ public class PropertyReader {
 	private final static long RELOAD_INTERVAL_DEFAULT = 30 * 1000;
 
 	private static Map<String, Object> properties = new HashMap<String, Object>();
-	private static org.slf4j.Logger logger = LoggerFactory.getLogger(PropertyReader.class);
+	private static Logger logger = LoggerFactory.getLogger(PropertyReader.class);
 	private String propertyfile;
 
 	public PropertyReader(String propertyfile) throws PropertyReaderException {

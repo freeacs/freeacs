@@ -9,6 +9,7 @@ import com.owera.xaps.dbi.Parameter.Operator;
 import com.owera.xaps.dbi.Parameter.ParameterDataType;
 import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
 import com.owera.xaps.dbi.util.SystemParameters;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
@@ -16,7 +17,7 @@ import java.util.*;
 
 public class JobKickThread implements Runnable {
 
-	private static org.slf4j.Logger log = LoggerFactory.getLogger("KickJob");
+	private static Logger log = LoggerFactory.getLogger("KickJob");
 	//	private static boolean initialized = false;
 	private DBI dbi;
 	//	private static Syslog syslog;

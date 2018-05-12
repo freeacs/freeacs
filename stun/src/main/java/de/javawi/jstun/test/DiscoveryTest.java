@@ -15,13 +15,14 @@ import de.javawi.jstun.attribute.*;
 import de.javawi.jstun.header.MessageHeader;
 import de.javawi.jstun.header.MessageHeaderParsingException;
 import de.javawi.jstun.util.UtilityException;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.*;
 
 public class DiscoveryTest {
-	private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(DiscoveryTest.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(DiscoveryTest.class);
 	InetAddress iaddress;
 	String stunServer;
 	int port;

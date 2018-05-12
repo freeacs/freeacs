@@ -15,6 +15,7 @@ import de.javawi.jstun.attribute.*;
 import de.javawi.jstun.header.MessageHeader;
 import de.javawi.jstun.header.MessageHeaderParsingException;
 import de.javawi.jstun.util.UtilityException;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -23,7 +24,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class BindingLifetimeTest {
-	private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BindingLifetimeTest.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(BindingLifetimeTest.class);
 	String stunServer;
 	int port;
 	int timeout = 300; //ms

@@ -15,6 +15,7 @@ import de.javawi.jstun.attribute.MessageAttribute;
 import de.javawi.jstun.attribute.MessageAttributeParsingException;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
@@ -36,7 +37,7 @@ public class MessageHeader implements MessageHeaderInterface {
 	 *                                                                 |
 	 * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	 */
-	private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(MessageHeader.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(MessageHeader.class);
 	MessageHeaderType type;
 	byte[] id = new byte[16];
 
