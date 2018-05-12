@@ -1,30 +1,13 @@
 package com.owera.xaps.shell.menu;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.xaps.dbi.Message;
 import com.owera.xaps.dbi.SyslogConstants;
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.tr069.TR069DMLoader;
-import com.owera.xaps.dbi.tr069.TR069DMParameter;
-import com.owera.xaps.dbi.tr069.TR069DMParameterMap;
-import com.owera.xaps.dbi.tr069.TestCase;
+import com.owera.xaps.dbi.tr069.*;
 import com.owera.xaps.dbi.tr069.TestCase.TestCaseMethod;
-import com.owera.xaps.dbi.tr069.TestCaseFileHandler;
-import com.owera.xaps.dbi.tr069.TestCaseParameter;
 import com.owera.xaps.dbi.tr069.TestCaseParameter.TestCaseParameterType;
-import com.owera.xaps.dbi.tr069.TestDB;
-import com.owera.xaps.dbi.tr069.TestGenerator;
-import com.owera.xaps.dbi.tr069.TestHistory;
 import com.owera.xaps.dbi.util.SystemParameters;
 import com.owera.xaps.shell.Context;
 import com.owera.xaps.shell.Session;
@@ -33,6 +16,11 @@ import com.owera.xaps.shell.output.Line;
 import com.owera.xaps.shell.output.Listing;
 import com.owera.xaps.shell.output.OutputHandler;
 import com.owera.xaps.shell.util.Validation;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class TestMenu {
 

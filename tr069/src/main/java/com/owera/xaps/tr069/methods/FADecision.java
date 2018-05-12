@@ -1,7 +1,5 @@
 package com.owera.xaps.tr069.methods;
 
-import java.util.List;
-
 import com.owera.xaps.base.Log;
 import com.owera.xaps.dbi.util.ProvisioningMessage;
 import com.owera.xaps.dbi.util.ProvisioningMessage.ErrorResponsibility;
@@ -10,6 +8,8 @@ import com.owera.xaps.dbi.util.ProvisioningMode;
 import com.owera.xaps.tr069.HTTPReqResData;
 import com.owera.xaps.tr069.SessionData;
 import com.owera.xaps.tr069.xml.Fault;
+
+import java.util.List;
 
 public class FADecision {
 	public static void process(HTTPReqResData reqRes) {

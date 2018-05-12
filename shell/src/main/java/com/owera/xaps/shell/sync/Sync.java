@@ -1,21 +1,12 @@
 package com.owera.xaps.shell.sync;
 
-import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import com.owera.xaps.dbi.Unittype;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.UnittypeParameterFlag;
-import com.owera.xaps.dbi.UnittypeParameterValues;
-import com.owera.xaps.dbi.UnittypeParameters;
-import com.owera.xaps.dbi.XAPS;
 import com.owera.xaps.shell.Session;
 import com.owera.xaps.shell.output.OutputHandler;
+
+import java.io.FileWriter;
+import java.util.*;
 
 public class Sync {
 

@@ -1,5 +1,13 @@
 package com.owera.xaps.dbi;
 
+import com.owera.common.db.ConnectionProvider;
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.xaps.dbi.InsertOrUpdateStatement.Field;
+import com.owera.xaps.dbi.SyslogEvent.StorePolicy;
+import com.owera.xaps.dbi.util.XAPSVersionCheck;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,17 +15,8 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
-import com.owera.xaps.dbi.InsertOrUpdateStatement.Field;
-import com.owera.xaps.dbi.SyslogEvent.StorePolicy;
-
-import com.owera.xaps.dbi.util.XAPSVersionCheck;
-
 public class SyslogEvents {
-	public static int MAX_GENERATE_ON_ABSENCE_TIMEOUT_HOURS = 48;
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(SyslogEvents.class);
 	private static Map<Integer, SyslogEvent> idMap = new TreeMap<Integer, SyslogEvent>();
 	static {
 		SyslogEvent defaultEvent = new SyslogEvent();
@@ -91,11 +90,11 @@ public class SyslogEvents {
 				ResultSet gk = ps.getGeneratedKeys();
 				if (gk.next())
 					syslogEvent.setId(gk.getInt(1));
-				logger.notice("Inserted syslog event " + syslogEvent.getEventId());
+				logger.info("Inserted syslog event " + syslogEvent.getEventId());
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishAdd(syslogEvent, syslogEvent.getUnittype());
 			} else {
-				logger.notice("Updated syslog event " + syslogEvent.getEventId());
+				logger.info("Updated syslog event " + syslogEvent.getEventId());
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(syslogEvent, unittype);
 			}
@@ -135,7 +134,7 @@ public class SyslogEvents {
 			ps.setQueryTimeout(60);
 			ps.executeUpdate();
 			
-			logger.notice("Deleted syslog event " + syslogEvent.getEventId());
+			logger.info("Deleted syslog event " + syslogEvent.getEventId());
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(syslogEvent, unittype);
 		} catch (SQLException sqle) {

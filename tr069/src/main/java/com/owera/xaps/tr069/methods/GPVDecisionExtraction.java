@@ -1,9 +1,5 @@
 package com.owera.xaps.tr069.methods;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.db.DBAccess;
@@ -16,6 +12,10 @@ import com.owera.xaps.tr069.HTTPReqResData;
 import com.owera.xaps.tr069.SessionData;
 import com.owera.xaps.tr069.exception.TR069DatabaseException;
 import com.owera.xaps.tr069.xml.ParameterValueStruct;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GPVDecisionExtraction {
 

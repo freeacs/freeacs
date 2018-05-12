@@ -1,14 +1,11 @@
 package com.owera.xaps.stun;
 
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.common.util.IPAddress;
+import com.owera.xaps.dbi.Unit;
+import com.owera.xaps.dbi.XAPSUnit;
+import com.owera.xaps.dbi.crypto.Crypto;
+import com.owera.xaps.dbi.util.SystemParameters;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthScope;
@@ -21,14 +18,17 @@ import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.params.CoreConnectionPNames;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
-import com.owera.common.util.IPAddress;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.XAPSUnit;
-import com.owera.xaps.dbi.crypto.Crypto;
-import com.owera.xaps.dbi.util.SystemParameters;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class Kick {
 
@@ -59,7 +59,7 @@ public class Kick {
 
 	}
 
-	private static Logger log = new Logger("KickSingle");
+	private static Logger log = LoggerFactory.getLogger("KickSingle");
 	private static Random random = new Random();
 
 	public static KickResponse kick(Unit unit, XAPSUnit xapsUnit) throws MalformedURLException, SQLException, NoAvailableConnectionException {

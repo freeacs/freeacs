@@ -1,16 +1,12 @@
 package com.owera.xaps.dbi;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.owera.xaps.dbi.JobFlag.JobServiceWindow;
 import com.owera.xaps.dbi.JobFlag.JobType;
 import com.owera.xaps.dbi.util.MapWrapper;
+
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Job {
 

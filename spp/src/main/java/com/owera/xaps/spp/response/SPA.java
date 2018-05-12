@@ -1,15 +1,14 @@
 package com.owera.xaps.spp.response;
 
-import java.net.URLDecoder;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Map.Entry;
+import com.owera.xaps.dbi.Unit;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-
-import com.owera.xaps.dbi.Unit;
+import java.net.URLDecoder;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Map.Entry;
 
 public class SPA implements ProvisioningResponse {
 

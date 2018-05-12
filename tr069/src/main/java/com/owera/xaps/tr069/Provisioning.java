@@ -1,16 +1,5 @@
 package com.owera.xaps.tr069;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.util.List;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.owera.common.db.ConnectionMetaData;
 import com.owera.common.db.ConnectionPoolData;
 import com.owera.common.db.ConnectionProperties;
@@ -22,11 +11,7 @@ import com.owera.xaps.base.Log;
 import com.owera.xaps.base.db.DBAccess;
 import com.owera.xaps.base.http.Authenticator;
 import com.owera.xaps.base.http.ThreadCounter;
-import com.owera.xaps.dbi.ScriptExecutions;
-import com.owera.xaps.dbi.SyslogConstants;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.tr069.background.BackgroundProcesses;
 import com.owera.xaps.tr069.background.ScheduledKickTask;
 import com.owera.xaps.tr069.exception.TR069Exception;
@@ -39,9 +24,17 @@ import com.owera.xaps.tr069.test.system1.TestDatabase;
 import com.owera.xaps.tr069.test.system1.TestDatabaseObject;
 import com.owera.xaps.tr069.test.system2.Util;
 
-import static com.owera.xaps.tr069.Properties.getMaxAge;
-import static com.owera.xaps.tr069.Properties.getMaxConn;
-import static com.owera.xaps.tr069.Properties.getUrl;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.List;
+
+import static com.owera.xaps.tr069.Properties.*;
 
 /**
  * This is the "main-class" of TR069 Provisioning. It receives the HTTP-request
@@ -66,7 +59,6 @@ public class Provisioning extends HttpServlet {
 	 */
 	static {
 		DBAccess.init(Module.TR069, SyslogConstants.FACILITY_TR069, VERSION);
-		com.owera.common.log.Log.initialize("xaps-tr069-logs.properties");
 		Log.notice(Provisioning.class, "Server starts...");
 		try {
 			BackgroundProcesses.initiate(DBAccess.getDBI());

@@ -1,9 +1,9 @@
 package com.owera.xaps.shell.help;
 
+import com.owera.xaps.dbi.util.XAPSVersionCheck;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.owera.xaps.dbi.util.XAPSVersionCheck;
 
 public class HelpDefinitions {
 

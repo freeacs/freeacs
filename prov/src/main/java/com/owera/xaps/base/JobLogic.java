@@ -1,25 +1,19 @@
 package com.owera.xaps.base;
 
+import com.owera.common.util.Cache;
+import com.owera.xaps.Properties.Module;
+import com.owera.xaps.base.db.DBAccess;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.dbi.JobFlag.JobServiceWindow;
+import com.owera.xaps.dbi.JobFlag.JobType;
+import com.owera.xaps.dbi.util.ProvisioningMode;
+import com.owera.xaps.dbi.util.SystemParameters;
+
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import com.owera.common.util.Cache;
-import com.owera.xaps.Properties.Module;
-import com.owera.xaps.base.db.DBAccess;
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.JobFlag.JobServiceWindow;
-import com.owera.xaps.dbi.JobFlag.JobType;
-import com.owera.xaps.dbi.JobParameter;
-import com.owera.xaps.dbi.JobStatus;
-import com.owera.xaps.dbi.Jobs;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.UnitJobStatus;
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.util.ProvisioningMode;
-import com.owera.xaps.dbi.util.SystemParameters;
 
 /**
  * JobLogic should do two things, first and foremost:

@@ -11,10 +11,11 @@
 
 package de.javawi.jstun.attribute;
 
-import java.util.*;
-
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
+
+import java.util.Iterator;
+import java.util.Vector;
 
 public class UnknownAttribute extends MessageAttribute {
 	/* 

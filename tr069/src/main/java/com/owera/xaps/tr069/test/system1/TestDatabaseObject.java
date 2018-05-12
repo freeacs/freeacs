@@ -1,11 +1,11 @@
 package com.owera.xaps.tr069.test.system1;
 
+import com.owera.common.util.NaturalComparator;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
-
-import com.owera.common.util.NaturalComparator;
 
 public class TestDatabaseObject {
 	private String step = "7.3.1.txt";

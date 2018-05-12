@@ -1,10 +1,10 @@
 package com.owera.tr069client;
 
+import com.owera.tr069client.monitor.Status;
+
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.owera.tr069client.monitor.Status;
 
 /**
  * Method is class which contains information about  which method to perform next. 

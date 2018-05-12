@@ -1,7 +1,5 @@
 package com.owera.common.counter;
 
-import com.owera.common.counter.MeasurementTypes;
-
 public class BooleanMeasurementTypes implements MeasurementTypes {
 
 	public static final int ERROR = 0;

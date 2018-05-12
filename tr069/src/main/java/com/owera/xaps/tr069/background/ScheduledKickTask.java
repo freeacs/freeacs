@@ -1,17 +1,14 @@
 package com.owera.xaps.tr069.background;
 
+import com.owera.common.scheduler.TaskDefaultImpl;
+import com.owera.xaps.base.db.DBAccess;
+import com.owera.xaps.dbi.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import com.owera.common.log.Logger;
-import com.owera.common.scheduler.TaskDefaultImpl;
-import com.owera.xaps.base.db.DBAccess;
-import com.owera.xaps.dbi.DBI;
-import com.owera.xaps.dbi.SyslogConstants;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
 
 public class ScheduledKickTask extends TaskDefaultImpl {
 
@@ -62,7 +59,7 @@ public class ScheduledKickTask extends TaskDefaultImpl {
 		}
 	}
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(ScheduledKickTask.class);
 	private DBI dbi;
 	private static Object syncMonitor = new Object();
 

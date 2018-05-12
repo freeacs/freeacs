@@ -1,15 +1,15 @@
 package com.owera.xaps.tr069.methods;
 
-import java.sql.SQLException;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.UnitJob;
 import com.owera.xaps.dbi.UnitJobStatus;
 import com.owera.xaps.dbi.util.ProvisioningMode;
-import com.owera.xaps.tr069.Properties;
 import com.owera.xaps.tr069.HTTPReqResData;
+import com.owera.xaps.tr069.Properties;
 import com.owera.xaps.tr069.SessionData;
+
+import java.sql.SQLException;
 
 public class SPVDecision {
 	public static void process(HTTPReqResData reqRes) throws SQLException, NoAvailableConnectionException {

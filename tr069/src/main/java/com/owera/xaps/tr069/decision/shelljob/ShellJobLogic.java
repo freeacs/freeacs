@@ -1,10 +1,5 @@
 package com.owera.xaps.tr069.decision.shelljob;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.common.util.Cache;
 import com.owera.common.util.CacheValue;
@@ -12,16 +7,7 @@ import com.owera.xaps.base.Log;
 import com.owera.xaps.base.UnitJob;
 import com.owera.xaps.base.db.DBAccess;
 import com.owera.xaps.base.db.DBAccessSessionTR069;
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.ScriptExecution;
-import com.owera.xaps.dbi.ScriptExecutions;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.UnitJobStatus;
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.UnittypeParameters;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.util.SystemParameters;
 import com.owera.xaps.tr069.CPEParameters;
 import com.owera.xaps.tr069.Provisioning;
@@ -32,6 +18,11 @@ import com.owera.xaps.tr069.exception.TR069ExceptionShortMessage;
 import com.owera.xaps.tr069.methods.GPVDecision;
 import com.owera.xaps.tr069.xml.ParameterList;
 import com.owera.xaps.tr069.xml.ParameterValueStruct;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * This class performs a SHELL-job

@@ -1,8 +1,8 @@
 package com.owera.xaps.spp.response;
 
-import java.util.Map.Entry;
-
 import com.owera.xaps.dbi.Unit;
+
+import java.util.Map.Entry;
 
 /*
  * Pingcom only supports TFTP provisioning, not HTTP. (It does support TR-069 and OPP as well, but

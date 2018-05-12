@@ -1,18 +1,18 @@
 package com.owera.xapsws.impl;
 
-import java.rmi.RemoteException;
-
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.Profile;
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.XAPS;
-
 import com.owera.xapsws.DeleteProfileRequest;
 import com.owera.xapsws.DeleteProfileResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.rmi.RemoteException;
 
 public class DeleteProfile {
 
-	private static Logger logger = new Logger();
+	private static final Logger logger = LoggerFactory.getLogger(DeleteProfile.class);
 
 	private XAPS xaps;
 	private XAPSWS xapsWS;

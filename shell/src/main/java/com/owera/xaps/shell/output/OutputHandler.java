@@ -1,13 +1,13 @@
 package com.owera.xaps.shell.output;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
 import com.owera.xaps.shell.Context;
 import com.owera.xaps.shell.Properties;
 import com.owera.xaps.shell.command.Command;
 import com.owera.xaps.shell.util.FileUtil;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class OutputHandler {
 	private FileWriter fw;

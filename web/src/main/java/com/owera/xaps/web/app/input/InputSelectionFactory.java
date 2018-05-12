@@ -1,6 +1,5 @@
 package com.owera.xaps.web.app.input;
 
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.app.util.WebConstants;
 
@@ -15,9 +14,6 @@ import java.util.List;
  * @author Jarl Andre Hubenthal
  */
 public class InputSelectionFactory {
-	@SuppressWarnings("unused")
-	private static Logger logger = new Logger();
-
 	/**
 	 * Gets the unittype selection.
 	 *

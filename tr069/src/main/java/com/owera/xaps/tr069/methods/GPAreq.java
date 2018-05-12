@@ -1,10 +1,10 @@
 package com.owera.xaps.tr069.methods;
 
-import java.util.List;
-
 import com.owera.xaps.tr069.Namespace;
 import com.owera.xaps.tr069.xml.Body;
 import com.owera.xaps.tr069.xml.ParameterAttributeStruct;
+
+import java.util.List;
 
 public class GPAreq extends Body {
 

@@ -1,52 +1,40 @@
 package com.owera.xaps.stun;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.sql.SQLException;
+import com.owera.common.db.ConnectionProperties;
+import com.owera.common.db.ConnectionProvider;
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.common.scheduler.Schedule;
+import com.owera.common.scheduler.ScheduleType;
+import com.owera.common.scheduler.Scheduler;
+import com.owera.common.util.Sleep;
+import com.owera.xaps.dbi.*;
+import de.javawi.jstun.test.demo.StabilityLogger;
+import de.javawi.jstun.test.demo.StunServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.sql.SQLException;
 
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Log;
-import com.owera.common.log.Logger;
-import com.owera.common.scheduler.Schedule;
-import com.owera.common.scheduler.ScheduleType;
-import com.owera.common.scheduler.Scheduler;
-import com.owera.common.util.Sleep;
-import com.owera.xaps.dbi.DBI;
-import com.owera.xaps.dbi.Identity;
-import com.owera.xaps.dbi.Syslog;
-import com.owera.xaps.dbi.SyslogConstants;
-import com.owera.xaps.dbi.User;
-import com.owera.xaps.dbi.Users;
-
-import de.javawi.jstun.test.demo.StabilityLogger;
-import de.javawi.jstun.test.demo.StunServer;
+import static com.owera.xaps.stun.Properties.getMaxAge;
+import static com.owera.xaps.stun.Properties.getMaxConn;
+import static com.owera.xaps.stun.Properties.getUrl;
 
 public class StunServlet extends HttpServlet {
 
 	public static String VERSION = "1.3.23";
 
-	static {
-		try {
-			Log.initialize("xaps-stun-logs.properties");
-		} catch (Throwable t) {
-			// Cannot log to logs here!
-			System.err.println("ERROR when trying to read xaps-stun-logs.properties: " + t.getMessage());
-		}
-	}
-
 	private static final long serialVersionUID = 3972885964801548360L;
 
 	public static StunServer server = null;
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(StunServlet.class);
 
 	public void destroy() {
 		Sleep.terminateApplication();
@@ -71,7 +59,7 @@ public class StunServlet extends HttpServlet {
 		Users users = new Users(xapsCp);
 		User user = users.getUnprotected(Users.USER_ADMIN);
 		Identity id = new Identity(SyslogConstants.FACILITY_STUN, StunServlet.VERSION, user);
-		ConnectionProperties sysCp = ConnectionProvider.getConnectionProperties("xaps-stun.properties", "db.syslog");
+		ConnectionProperties sysCp = ConnectionProvider.getConnectionProperties(getUrl("syskog"), getMaxAge("syslog"), getMaxConn("syslog"));
 		Syslog syslog = new Syslog(sysCp, id);
 		return new DBI(Integer.MAX_VALUE, xapsCp, syslog);
 	}
@@ -92,7 +80,7 @@ public class StunServlet extends HttpServlet {
 				}
 			}
 
-			ConnectionProperties xapsCp = ConnectionProvider.getConnectionProperties("xaps-stun.properties", "db.xaps");
+			ConnectionProperties xapsCp = ConnectionProvider.getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps"));
 			DBI dbi = initializeDBI(xapsCp);
 
 			Scheduler scheduler = new Scheduler();
@@ -115,7 +103,7 @@ public class StunServlet extends HttpServlet {
 
 		} catch (Throwable t) {
 			OKServlet.setStartupError(t);
-			logger.fatal("An error occurred while starting Stun Server", t);
+			logger.error("An error occurred while starting Stun Server", t);
 		}
 
 	}

@@ -1,9 +1,5 @@
 package com.owera.xaps.tr069;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
-import com.owera.common.log.Logger;
 import com.owera.xaps.base.DownloadLogic;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.OweraParameters;
@@ -15,26 +11,15 @@ import com.owera.xaps.dbi.util.SystemParameters;
 import com.owera.xaps.dbi.util.SystemParameters.TR069ScriptType;
 import com.owera.xaps.tr069.SessionData.Download;
 import com.owera.xaps.tr069.xml.ParameterValueStruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class DownloadLogicTR069 {
 
-  // public static boolean download(RequestResponseData reqRes) {
-  // String softwareUrl = getSoftwareURL(reqRes);
-  // String scriptUrl = getScriptURL(reqRes);
-  // if (softwareUrl != null) {
-  // reqRes.getResponse().setDownloadURL(softwareUrl);
-  // reqRes.getResponse().setDownloadType(DOreq.FILE_TYPE_FIRMWARE);
-  // return true;
-  // } else if (scriptUrl != null) {
-  // reqRes.getResponse().setDownloadURL(scriptUrl);
-  // reqRes.getResponse().setDownloadType(DOreq.FILE_TYPE_CONFIG);
-  // return true;
-  // } else {
-  // return false;
-  // }
-  // }
-
-  private static Logger logger = new Logger();
+  private static Logger logger = LoggerFactory.getLogger(DownloadLogicTR069.class);
 
   public static boolean isScriptDownloadSetup(HTTPReqResData reqRes, Job job) {
     SessionData sessionData = reqRes.getSessionData();
@@ -48,16 +33,6 @@ public class DownloadLogicTR069 {
         if (SystemParameters.isTR069ScriptVersionParameter(entry.getKey())) {
           scriptName = SystemParameters.getTR069ScriptName(entry.getKey());
           scriptVersionFromDB = entry.getValue().getParameter().getValue();
-          // If a job is set to upgrade/upload a script, it should be done, even
-          // if
-          // the CPE already has been upgraded to the same version. This is done
-          // both to avoid creating more logic to handle a job which is
-          // "completed, but not
-          // executed" and because sometimes two files/script/software can have
-          // the same
-          // version number AND still be different! We a job we can then force
-          // an
-          // upgrade to the same version - that is considered a feature!
           break;
         }
       }

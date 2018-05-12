@@ -1,13 +1,5 @@
 package com.owera.xaps.tr069.methods;
 
-import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.dbi.FileType;
@@ -15,29 +7,25 @@ import com.owera.xaps.dbi.UnittypeParameters;
 import com.owera.xaps.dbi.tr069.TestCaseParameter;
 import com.owera.xaps.dbi.tr069.TestCaseParameter.TestCaseParameterType;
 import com.owera.xaps.dbi.util.ProvisioningMessage;
-import com.owera.xaps.dbi.util.SystemParameters;
 import com.owera.xaps.dbi.util.ProvisioningMessage.ProvOutput;
 import com.owera.xaps.dbi.util.ProvisioningMode;
-import com.owera.xaps.tr069.CPEParameters;
-import com.owera.xaps.tr069.HTTPReqResData;
-import com.owera.xaps.tr069.ParameterKey;
-import com.owera.xaps.tr069.Properties;
-import com.owera.xaps.tr069.SessionData;
+import com.owera.xaps.dbi.util.SystemParameters;
+import com.owera.xaps.tr069.*;
 import com.owera.xaps.tr069.SessionData.Download;
 import com.owera.xaps.tr069.exception.TR069Exception;
 import com.owera.xaps.tr069.exception.TR069ExceptionShortMessage;
 import com.owera.xaps.tr069.test.system2.TestUnit;
 import com.owera.xaps.tr069.test.system2.TestUnitCache;
 import com.owera.xaps.tr069.test.system2.Util;
-import com.owera.xaps.tr069.xml.Body;
-import com.owera.xaps.tr069.xml.EmptyResponse;
-import com.owera.xaps.tr069.xml.Header;
-import com.owera.xaps.tr069.xml.ParameterAttributeStruct;
-import com.owera.xaps.tr069.xml.ParameterList;
-import com.owera.xaps.tr069.xml.ParameterValueStruct;
-import com.owera.xaps.tr069.xml.ParameterValueStructComparator;
-import com.owera.xaps.tr069.xml.Response;
-import com.owera.xaps.tr069.xml.TR069TransactionID;
+import com.owera.xaps.tr069.xml.*;
+
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * The class is responsible for creating a suitable response to the CPE. This

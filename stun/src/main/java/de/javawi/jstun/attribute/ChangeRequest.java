@@ -11,7 +11,8 @@
 
 package de.javawi.jstun.attribute;
 
-import de.javawi.jstun.util.*;
+import de.javawi.jstun.util.Utility;
+import de.javawi.jstun.util.UtilityException;
 
 public class ChangeRequest extends MessageAttribute {
    /* 

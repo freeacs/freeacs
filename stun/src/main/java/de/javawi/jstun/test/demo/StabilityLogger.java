@@ -1,7 +1,8 @@
 package de.javawi.jstun.test.demo;
 
-import com.owera.common.log.Logger;
 import com.owera.common.scheduler.TaskDefaultImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class StabilityLogger extends TaskDefaultImpl {
 
@@ -9,8 +10,8 @@ public class StabilityLogger extends TaskDefaultImpl {
 		super(taskName);
 	}
 
-	private static Logger logger = new Logger();
-	private static Logger stability = new Logger("Stability");
+	private static Logger logger = LoggerFactory.getLogger(StabilityLogger.class);
+	private static Logger stability = LoggerFactory.getLogger("Stability");
 	private static int summaryHeaderCount = 0;
 	
 	@Override

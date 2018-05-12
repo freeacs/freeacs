@@ -1,10 +1,6 @@
 package com.owera.tr069client;
 
-import java.io.IOException;
-import java.net.BindException;
-import java.net.MalformedURLException;
-import java.util.Random;
-
+import com.owera.tr069client.monitor.Status;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthScope;
@@ -20,7 +16,10 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
-import com.owera.tr069client.monitor.Status;
+import java.io.IOException;
+import java.net.BindException;
+import java.net.MalformedURLException;
+import java.util.Random;
 
 public class HttpHandler {
 

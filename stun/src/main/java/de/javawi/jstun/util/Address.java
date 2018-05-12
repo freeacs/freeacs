@@ -11,8 +11,9 @@
 
 package de.javawi.jstun.util;
 
-import java.util.*;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.StringTokenizer;
 
 public class Address {
 	int firstOctet;

@@ -1,21 +1,13 @@
 package com.owera.xaps.shell.command;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.owera.xaps.dbi.GroupParameter;
-import com.owera.xaps.dbi.JobParameter;
-import com.owera.xaps.dbi.ProfileParameter;
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.Unittype;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.shell.Context;
 import com.owera.xaps.shell.Session;
 import com.owera.xaps.shell.util.StringUtil;
+
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *  This class represent one command. A full command is presented to the shell like this:

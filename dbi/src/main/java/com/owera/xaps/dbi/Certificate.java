@@ -1,11 +1,11 @@
 package com.owera.xaps.dbi;
 
+import com.owera.xaps.dbi.crypto.Crypto;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.owera.xaps.dbi.crypto.Crypto;
 
 public class Certificate {
 

@@ -4,8 +4,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.owera.xaps.tr069.xml.ParameterValueStruct;
-
 /**
  * The class is responsible for parsing the ParameterList entity and populating the 
  * ParameterList which is a list of ParameterValueStruct or ParameterInfoStruct objects 

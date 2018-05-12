@@ -1,31 +1,29 @@
 package com.owera.xaps.tr069.background;
 
+import com.owera.common.db.ConnectionProvider;
+import com.owera.common.scheduler.TaskDefaultImpl;
+import com.owera.xaps.base.http.Authenticator;
+import com.owera.xaps.base.http.ThreadCounter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.util.Collection;
 import java.util.Map;
 
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.log.Logger;
-import com.owera.common.scheduler.TaskDefaultImpl;
-import com.owera.xaps.base.db.DBAccess;
-import com.owera.xaps.base.http.Authenticator;
-import com.owera.xaps.base.http.ThreadCounter;
-
 import static com.owera.common.db.ConnectionProvider.getConnectionProperties;
-import static com.owera.xaps.tr069.Properties.getMaxAge;
-import static com.owera.xaps.tr069.Properties.getMaxConn;
-import static com.owera.xaps.tr069.Properties.getUrl;
+import static com.owera.xaps.tr069.Properties.*;
 
 public class StabilityTask extends TaskDefaultImpl {
 
-	private Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(StabilityTask.class);
 
 	private int lineCounter = 0;
 
 	private boolean serverStart = true;
 	private long startTms;
 
-	private static Logger log = new Logger("Stability");
+	private static Logger log = LoggerFactory.getLogger("Stability");
 	
 	public StabilityTask(String taskName) {
 		super(taskName);
@@ -51,7 +49,7 @@ public class StabilityTask extends TaskDefaultImpl {
 	@Override
 	public void runImpl() throws Throwable {
 		if (serverStart) {
-			log.fatal("The server starts...");
+			log.error("The server starts...");
 			serverStart = false;
 			startTms = getThisLaunchTms();
 		}

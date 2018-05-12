@@ -1,19 +1,13 @@
 package com.owera.xaps.tr069.xml;
 
-import java.io.StringReader;
-import java.util.HashMap;
-
-import javax.xml.parsers.SAXParserFactory;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
-
 import com.owera.xaps.tr069.exception.TR069Exception;
 import com.owera.xaps.tr069.exception.TR069ExceptionShortMessage;
+import org.xml.sax.*;
+import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.parsers.SAXParserFactory;
+import java.io.StringReader;
+import java.util.HashMap;
 
 /**
  * The class is responsible for parsing the SOAP messages from the CPE. 

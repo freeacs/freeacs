@@ -1,12 +1,13 @@
 package com.owera.xaps.web.app.security.handlers;
 
 import com.owera.common.db.ConnectionProperties;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.User;
 import com.owera.xaps.dbi.Users;
 import com.owera.xaps.web.app.page.login.LoginPage;
 import com.owera.xaps.web.app.security.WebUser;
 import com.owera.xaps.web.app.util.SessionCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Class DatabaseAuthenticator.
@@ -15,7 +16,7 @@ import com.owera.xaps.web.app.util.SessionCache;
  */
 public class DatabaseAuthenticator implements Authenticator {
 	/** The logger. */
-	private static Logger logger = new Logger();
+	private static final Logger logger = LoggerFactory.getLogger(DatabaseAuthenticator.class);
 
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.security.AuthenticationInterface#authenticateUser(java.lang.String, java.lang.String, java.lang.String)
@@ -36,7 +37,7 @@ public class DatabaseAuthenticator implements Authenticator {
 			logger.debug("Password from user     [" + password.toUpperCase() + "]");
 			boolean authenticated = userObject.getSecret().toUpperCase().equals(password.toUpperCase());
 			if (authenticated)
-				logger.notice("Found user with name " + username + ", password matched - login is accepted");
+				logger.info("Found user with name " + username + ", password matched - login is accepted");
 			else
 				logger.warn("Found user with name " + username + ", password did not match");
 			dbUser = new WebUser(userObject, authenticated);

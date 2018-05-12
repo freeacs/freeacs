@@ -1,15 +1,6 @@
 package com.owera.xaps.base.http;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.codec.digest.DigestUtils;
-
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Context;
 import com.owera.xaps.base.BaseCache;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.NoDataAvailableException;
@@ -18,6 +9,12 @@ import com.owera.xaps.tr069.HTTPReqResData;
 import com.owera.xaps.tr069.SessionData;
 import com.owera.xaps.tr069.exception.TR069AuthenticationException;
 import com.owera.xaps.tr069.exception.TR069Exception;
+import org.apache.commons.codec.digest.DigestUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.sql.SQLException;
 
 public class DigestAuthenticator {
 
@@ -52,8 +49,7 @@ public class DigestAuthenticator {
 	/**
 	 * Generates the WWW-Authenticate header.
 	 * 
-	 * @param request HTTP Servlet request
-	 * @param response HTTP Servlet response
+	 * @param res HTTP Servlet response
 	 * @param nonce nonce token
 	 */
 	private static void setAuthenticateHeader(HttpServletResponse res, String nonce) {
@@ -79,7 +75,7 @@ public class DigestAuthenticator {
 	/**
 	 * Verifies login against database
 	 * 
-	 * @param request HTTP servlet request
+	 * @param reqRes HTTP servlet request
 	 * @param authorization Authorization credentials from this request
 	 * @throws TR069AuthenticationException 
 	 */
@@ -137,7 +133,6 @@ public class DigestAuthenticator {
 
 		// Do database read parameters and then perform verification
 		String unitId = Util.username2unitId(username);
-		Context.put(Context.X, unitId, BaseCache.SESSIONDATA_CACHE_TIMEOUT);
 		Log.debug(DigestAuthenticator.class, "Digest verification identifed unit id " + unitId + " from CPE IP-address " + reqRes.getReq().getRemoteHost());
 		try {
 			SessionData sessionData = reqRes.getSessionData();

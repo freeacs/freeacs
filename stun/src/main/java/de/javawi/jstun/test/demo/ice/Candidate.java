@@ -11,12 +11,12 @@
 
 package de.javawi.jstun.test.demo.ice;
 
+import de.javawi.jstun.util.Address;
+import de.javawi.jstun.util.UtilityException;
+
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-
-import de.javawi.jstun.util.Address;
-import de.javawi.jstun.util.UtilityException;
 
 @SuppressWarnings("rawtypes")
 public class Candidate implements Comparable {

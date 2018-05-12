@@ -1,7 +1,6 @@
 package com.owera.xaps.web.app.page;
 
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.common.util.NaturalComparator;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.Page;
@@ -14,6 +13,7 @@ import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 

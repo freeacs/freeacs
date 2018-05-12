@@ -3,7 +3,6 @@ package com.owera.xaps.web.app.page.staging;
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.common.ssl.HTTPSManager;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.JobFlag.JobServiceWindow;
@@ -22,6 +21,8 @@ import com.owera.xaps.web.app.util.SessionCache;
 import com.owera.xaps.web.app.util.WebProperties;
 import com.owera.xaps.web.app.util.XAPSLoader;
 import com.owera.xapsws.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -37,9 +38,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
 
-//import org.safehaus.uuid.UUID;
-//import org.safehaus.uuid.UUIDGenerator;
-
 /**
  * The Class StagingActions.
  */
@@ -49,7 +47,7 @@ public abstract class StagingActions extends AbstractWebPage {
 	private static final String IGD_SOFTWARE_VERSION = "InternetGatewayDevice.DeviceInfo.SoftwareVersion";
 
 	/** The logger. */
-	private static Logger logger = new Logger();
+	private static final Logger logger = LoggerFactory.getLogger(StagingActions.class);
 
 	/** The warnings. */
 	public Map<String, String> warnings = new HashMap<String, String>();

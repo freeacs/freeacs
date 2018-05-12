@@ -1,19 +1,14 @@
 package com.owera.xaps.shell;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.sql.SQLException;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.xaps.dbi.File;
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.shell.output.ListingReader;
 import com.owera.xaps.shell.output.OutputHandler;
 import com.owera.xaps.shell.util.StringUtil;
+
+import java.io.*;
+import java.sql.SQLException;
 
 public class InputHandler {
 

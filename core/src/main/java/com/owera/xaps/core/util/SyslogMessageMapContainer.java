@@ -1,15 +1,10 @@
 package com.owera.xaps.core.util;
 
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import com.owera.common.util.TimestampMap;
 import com.owera.xaps.dbi.Heartbeat;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class SyslogMessageMapContainer {
 

@@ -1,7 +1,6 @@
 package com.owera.xaps.web.app;
 
 import com.owera.common.db.ConnectionProperties;
-import com.owera.common.log.Logger;
 import com.owera.common.util.Sleep;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.input.ParameterParser;
@@ -14,6 +13,8 @@ import com.owera.xaps.web.app.util.WebConstants;
 import com.owera.xaps.web.app.util.WebProperties;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -34,7 +35,7 @@ public class Main extends HttpServlet {
 	private static final long serialVersionUID = 1009523437560499266L;
 
 	/** The logger. */
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(Main.class);
 
 	/** The Constant version. */
 	public static final String version = "2.2.58";

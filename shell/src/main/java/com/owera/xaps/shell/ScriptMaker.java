@@ -1,12 +1,12 @@
 package com.owera.xaps.shell;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.owera.xaps.dbi.util.XAPSVersionCheck;
 import com.owera.xaps.shell.util.FileUtil;
 import com.owera.xaps.shell.util.StringUtil;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ScriptMaker {
 

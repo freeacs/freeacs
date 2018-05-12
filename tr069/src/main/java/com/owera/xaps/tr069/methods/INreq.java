@@ -1,5 +1,25 @@
 package com.owera.xaps.tr069.methods;
 
+import com.owera.xaps.base.BaseCache;
+import com.owera.xaps.base.JobLogic;
+import com.owera.xaps.base.Log;
+import com.owera.xaps.base.db.DBAccess;
+import com.owera.xaps.base.db.DBAccessSessionTR069;
+import com.owera.xaps.dbi.Unit;
+import com.owera.xaps.dbi.util.SystemParameters;
+import com.owera.xaps.dbi.util.TimestampWrapper;
+import com.owera.xaps.tr069.*;
+import com.owera.xaps.tr069.background.ScheduledKickTask;
+import com.owera.xaps.tr069.exception.TR069DatabaseException;
+import com.owera.xaps.tr069.exception.TR069Exception;
+import com.owera.xaps.tr069.exception.TR069ExceptionShortMessage;
+import com.owera.xaps.tr069.test.system1.KillDatabase;
+import com.owera.xaps.tr069.test.system1.KillDatabaseObject;
+import com.owera.xaps.tr069.test.system1.TestDatabase;
+import com.owera.xaps.tr069.test.system1.TestDatabaseObject;
+import com.owera.xaps.tr069.xml.*;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.FileWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -9,40 +29,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.owera.common.log.Context;
-import com.owera.xaps.base.BaseCache;
-import com.owera.xaps.base.JobLogic;
-import com.owera.xaps.base.Log;
-import com.owera.xaps.base.db.DBAccess;
-import com.owera.xaps.base.db.DBAccessSessionTR069;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.util.SystemParameters;
-import com.owera.xaps.dbi.util.TimestampWrapper;
-import com.owera.xaps.tr069.CPEParameters;
-import com.owera.xaps.tr069.CommandKey;
-import com.owera.xaps.tr069.HTTPReqResData;
-import com.owera.xaps.tr069.InformParameters;
-import com.owera.xaps.tr069.ParameterKey;
-import com.owera.xaps.tr069.Properties;
-import com.owera.xaps.tr069.SessionData;
-import com.owera.xaps.tr069.background.ScheduledKickTask;
-import com.owera.xaps.tr069.exception.TR069DatabaseException;
-import com.owera.xaps.tr069.exception.TR069Exception;
-import com.owera.xaps.tr069.exception.TR069ExceptionShortMessage;
-import com.owera.xaps.tr069.test.system1.KillDatabase;
-import com.owera.xaps.tr069.test.system1.KillDatabaseObject;
-import com.owera.xaps.tr069.test.system1.TestDatabase;
-import com.owera.xaps.tr069.test.system1.TestDatabaseObject;
-import com.owera.xaps.tr069.xml.DeviceIdStruct;
-import com.owera.xaps.tr069.xml.EventList;
-import com.owera.xaps.tr069.xml.EventStruct;
-import com.owera.xaps.tr069.xml.Header;
-import com.owera.xaps.tr069.xml.ParameterList;
-import com.owera.xaps.tr069.xml.ParameterValueStruct;
-import com.owera.xaps.tr069.xml.Parser;
 
 public class INreq {
 
@@ -199,7 +185,6 @@ public class INreq {
 			String unitId = sessionData.getUnitId();
 			if (unitId == null)
 				unitId = getUnitId(deviceIdStruct);
-			Context.put(Context.X, unitId, BaseCache.SESSIONDATA_CACHE_TIMEOUT);
 			BaseCache.putSessionData(unitId, sessionData);
 			sessionData.setUnitId(unitId);
 			sessionData.setSerialNumber(deviceIdStruct.getSerialNumber());

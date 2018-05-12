@@ -1,16 +1,17 @@
 package com.owera.xapsws.impl;
 
-import java.rmi.RemoteException;
-
-import com.owera.common.log.Logger;
 import com.owera.common.util.Cache;
 import com.owera.common.util.CacheValue;
 import com.owera.xapsws.Login;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.rmi.RemoteException;
 
 public class XAPSWSFactory {
 
 	private static Cache cache = new Cache();
-	private static Logger logger = new Logger();
+	private static final Logger logger = LoggerFactory.getLogger(XAPSWSFactory.class);
 
 	private static RemoteException error(String msg) {
 		logger.error(msg);

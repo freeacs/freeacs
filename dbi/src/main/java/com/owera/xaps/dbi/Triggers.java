@@ -1,22 +1,19 @@
 package com.owera.xaps.dbi;
 
+import com.owera.common.db.ConnectionProvider;
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.xaps.dbi.InsertOrUpdateStatement.Field;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
-import com.owera.xaps.dbi.InsertOrUpdateStatement.Field;
+import java.util.*;
 
 public class Triggers {
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(Triggers.class);
 	private Map<String, Trigger> nameMap;
 	private Map<Integer, Trigger> idMap;
 	private Unittype unittype;
@@ -395,7 +392,7 @@ public class Triggers {
 			c.setAutoCommit(true);
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(trigger, trigger.getUnittype());
-			logger.notice("Deleted trigger " + trigger.getName());
+			logger.info("Deleted trigger " + trigger.getName());
 			return rowsDeleted;
 		} catch (SQLException sqle) {
 			sqlex = sqle;
@@ -468,7 +465,7 @@ public class Triggers {
 				ResultSet gk = ps.getGeneratedKeys();
 				if (gk.next())
 					trigger.setId(gk.getInt(1));
-				logger.notice("Inserted trigger " + trigger.getName());
+				logger.info("Inserted trigger " + trigger.getName());
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishAdd(trigger, trigger.getUnittype());
 			} else {
@@ -476,7 +473,7 @@ public class Triggers {
 					deleteEvents(trigger.getId(), new Date(), xaps);
 					trigger.setSyslogEventChangeCompleted();
 				}
-				logger.notice("Updated trigger " + trigger.getName());
+				logger.info("Updated trigger " + trigger.getName());
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(trigger, trigger.getUnittype());
 			}

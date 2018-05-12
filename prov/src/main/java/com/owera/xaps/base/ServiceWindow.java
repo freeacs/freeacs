@@ -1,12 +1,12 @@
 package com.owera.xaps.base;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.util.Random;
-
 import com.owera.common.util.TimeWindow;
 import com.owera.xaps.dbi.util.SystemConstants;
 import com.owera.xaps.dbi.util.SystemParameters;
+
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.Random;
 
 public class ServiceWindow {
 

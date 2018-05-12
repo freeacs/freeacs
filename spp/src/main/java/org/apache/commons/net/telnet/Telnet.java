@@ -17,13 +17,13 @@
 
 package org.apache.commons.net.telnet;
 
+import org.apache.commons.net.SocketClient;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.OutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
-
-import org.apache.commons.net.SocketClient;
 
 /**
  * @author Bruno D'Avanzo

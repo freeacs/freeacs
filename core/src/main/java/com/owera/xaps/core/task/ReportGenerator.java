@@ -1,48 +1,23 @@
 package com.owera.xaps.core.task;
 
+import com.owera.common.db.ConnectionProperties;
+import com.owera.common.db.ConnectionProvider;
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.common.scheduler.ScheduleType;
+import com.owera.xaps.core.Properties;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.dbi.report.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
-import com.owera.common.scheduler.ScheduleType;
-import com.owera.xaps.core.Properties;
-import com.owera.xaps.dbi.DynamicStatement;
-import com.owera.xaps.dbi.Group;
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
-import com.owera.xaps.dbi.report.Key;
-import com.owera.xaps.dbi.report.PeriodType;
-import com.owera.xaps.dbi.report.RecordGroup;
-import com.owera.xaps.dbi.report.RecordHardware;
-import com.owera.xaps.dbi.report.RecordJob;
-import com.owera.xaps.dbi.report.RecordProvisioning;
-import com.owera.xaps.dbi.report.RecordSyslog;
-import com.owera.xaps.dbi.report.RecordUnit;
-import com.owera.xaps.dbi.report.RecordVoip;
-import com.owera.xaps.dbi.report.Report;
-import com.owera.xaps.dbi.report.ReportConverter;
-import com.owera.xaps.dbi.report.ReportHardwareGenerator;
-import com.owera.xaps.dbi.report.ReportProvisioningGenerator;
-import com.owera.xaps.dbi.report.ReportSyslogGenerator;
-import com.owera.xaps.dbi.report.ReportVoipGenerator;
-import com.owera.xaps.dbi.report.TmsConverter;
 
 public class ReportGenerator extends DBIOwner {
 
@@ -53,7 +28,7 @@ public class ReportGenerator extends DBIOwner {
 
 	//	private static Map<String, SimpleDateFormat> formatMap = new HashMap<String, SimpleDateFormat>();
 
-	private Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(ReportGenerator.class);
 	private XAPS xaps;
 	private ScheduleType scheduleType;
 	private TmsConverter converter = new TmsConverter();

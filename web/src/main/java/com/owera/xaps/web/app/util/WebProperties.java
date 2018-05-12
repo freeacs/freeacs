@@ -1,9 +1,10 @@
 package com.owera.xaps.web.app.util;
 
 import com.owera.common.db.ConnectionProperties;
-import com.owera.common.log.Logger;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -25,7 +26,7 @@ public class WebProperties {
 	private static Config config = ConfigFactory.load();
 	
 	/** The log. */
-	private static Logger log = new Logger();
+	private static final Logger log = LoggerFactory.getLogger(WebProperties.class);
 
 	/**
 	 * Gets the integer.

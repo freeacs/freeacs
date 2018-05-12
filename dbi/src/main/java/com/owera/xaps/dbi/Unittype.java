@@ -1,17 +1,13 @@
 package com.owera.xaps.dbi;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.common.util.NumberComparator;
 import com.owera.xaps.dbi.util.MapWrapper;
 import com.owera.xaps.dbi.util.SystemParameters;
+
+import java.sql.SQLException;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class Unittype implements Comparable<Unittype> {
 

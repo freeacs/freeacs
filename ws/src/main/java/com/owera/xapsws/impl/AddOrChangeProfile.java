@@ -1,28 +1,21 @@
 package com.owera.xapsws.impl;
 
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.xaps.dbi.*;
+import com.owera.xapsws.AddOrChangeProfileRequest;
+import com.owera.xapsws.AddOrChangeProfileResponse;
+import com.owera.xapsws.Parameter;
+import com.owera.xapsws.ParameterList;
+import org.slf4j.LoggerFactory;
+
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
-import com.owera.xaps.dbi.Permission;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.ProfileParameter;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.User;
-import com.owera.xaps.dbi.XAPS;
-
-import com.owera.xapsws.AddOrChangeProfileRequest;
-import com.owera.xapsws.AddOrChangeProfileResponse;
-import com.owera.xapsws.Parameter;
-import com.owera.xapsws.ParameterList;
-
 public class AddOrChangeProfile {
 
-	private static Logger logger = new Logger();
+	private static org.slf4j.Logger logger = LoggerFactory.getLogger(AddOrChangeProfile.class);
 
 	private XAPS xaps;
 	private XAPSWS xapsWS;

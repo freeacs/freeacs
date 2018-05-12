@@ -1,25 +1,17 @@
 package com.owera.xaps.tr069.background;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import com.owera.common.log.Logger;
 import com.owera.common.scheduler.TaskDefaultImpl;
-import com.owera.xaps.dbi.DBI;
-import com.owera.xaps.dbi.Heartbeat;
-import com.owera.xaps.dbi.Syslog;
-import com.owera.xaps.dbi.SyslogConstants;
-import com.owera.xaps.dbi.SyslogEntry;
-import com.owera.xaps.dbi.SyslogFilter;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.util.SyslogClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 public class ActiveDeviceDetectionTask extends TaskDefaultImpl {
 
-	private Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(ActiveDeviceDetectionTask.class);
 
 	private DBI dbi;
 
@@ -55,15 +47,15 @@ public class ActiveDeviceDetectionTask extends TaskDefaultImpl {
 			List<SyslogEntry> entries = syslog.read(sf, dbi.getXaps());
 			for (SyslogEntry sentry : entries) {
 				if (sentry.getFacility() < SyslogConstants.FACILITY_SHELL && !sentry.getContent().contains(Heartbeat.MISSING_HEARTBEAT_ID)) {
-					logger.notice("ActivceDeviceDetection: Found syslog activity for unit " + unitId + " at " + sentry.getCollectorTimestamp() + " : " + sentry.getContent());
+					logger.info("ActivceDeviceDetection: Found syslog activity for unit " + unitId + " at " + sentry.getCollectorTimestamp() + " : " + sentry.getContent());
 					active = true;
 					break;
 				}
 			}
 			if (active) {
-				SyslogClient.notice(entry.getKey(), "ProvMsg: No provisioning at " + new Date(entry.getValue()) + " (as expected) or since, but device has been active since " + new Date(anHourAgo)
+				SyslogClient.info(entry.getKey(), "ProvMsg: No provisioning at " + new Date(entry.getValue()) + " (as expected) or since, but device has been active since " + new Date(anHourAgo)
 						+ ". TR-069 client may have stopped", dbi.getXaps().getSyslog());
-				logger.notice("ActivceDeviceDetection: Unit " + entry.getKey() + ": No provisioning at " + new Date(entry.getValue()) + " (as expected) or since, but device has been active "
+				logger.info("ActivceDeviceDetection: Unit " + entry.getKey() + ": No provisioning at " + new Date(entry.getValue()) + " (as expected) or since, but device has been active "
 						+ new Date(anHourAgo) + ". TR-069 client may have stopped");
 			} else {
 				logger.info("ActivceDeviceDetection: Unit " + entry.getKey() + ": No provisioning at " + new Date(entry.getValue()) + " (as expected) or since, but device may be inactive since "

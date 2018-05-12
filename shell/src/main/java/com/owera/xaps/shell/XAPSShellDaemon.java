@@ -1,11 +1,10 @@
 package com.owera.xaps.shell;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
-import com.owera.common.log.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class XAPSShellDaemon implements Runnable {
 	private XAPSShell xapsShell = new XAPSShell();
@@ -63,7 +62,6 @@ public class XAPSShellDaemon implements Runnable {
 	 * Purely for test
 	 */
 	public static void main(String[] args) {
-		Log.initialize("xaps-shell-logs.properties");
 		XAPSShellDaemon daemon = new XAPSShellDaemon(ConnectionProvider.getConnectionProperties("xaps-shell.properties", "db.2"), "teamf1");
 		Thread t = new Thread(daemon);
 		t.start();

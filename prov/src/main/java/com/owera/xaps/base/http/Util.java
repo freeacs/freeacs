@@ -1,9 +1,9 @@
 package com.owera.xaps.base.http;
 
+import com.owera.xaps.base.Log;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-
-import com.owera.xaps.base.Log;
 
 public class Util {
 

@@ -11,7 +11,9 @@
 
 package de.javawi.jstun.test;
 
-import java.net.*;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 
 public class DiscoveryInfo {
 	private InetAddress testIP;

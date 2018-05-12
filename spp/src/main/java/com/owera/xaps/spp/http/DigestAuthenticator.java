@@ -1,24 +1,21 @@
 package com.owera.xaps.spp.http;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.sql.SQLException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.codec.digest.DigestUtils;
-
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Context;
 import com.owera.xaps.base.BaseCache;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.NoDataAvailableException;
 import com.owera.xaps.base.http.Util;
 import com.owera.xaps.dbi.util.SystemParameters;
 import com.owera.xaps.spp.SessionData;
+import org.apache.commons.codec.digest.DigestUtils;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.sql.SQLException;
 
 public class DigestAuthenticator {
 
@@ -57,7 +54,7 @@ public class DigestAuthenticator {
 	 * following pattern. NOnceToken = Base64 ( MD5 ( client-IP ":"
 	 * time-stamp ":" private-key ) ).
 	 *
-	 * @param request HTTP Servlet request
+	 * @param req HTTP Servlet request
 	 */
 	private static String generateNonce(HttpServletRequest req) {
 
@@ -71,8 +68,7 @@ public class DigestAuthenticator {
 	/**
 	 * Generates the WWW-Authenticate header.
 	 * 
-	 * @param request HTTP Servlet request
-	 * @param response HTTP Servlet response
+	 * @param res HTTP Servlet response
 	 * @param nonce nonce token
 	 */
 	private static void setAuthenticateHeader(HttpServletResponse res, String nonce) {
@@ -99,7 +95,7 @@ public class DigestAuthenticator {
 	/**
 	 * Verifies login against database
 	 * 
-	 * @param request HTTP servlet request
+	 * @param req HTTP servlet request
 	 * @param authorization Authorization credentials from this request
 	 */
 	private static boolean verify(HttpServletRequest req, HttpServletResponse res, String authorization, SessionData sessionData) throws ServletException, IOException {
@@ -161,7 +157,6 @@ public class DigestAuthenticator {
 
 		// Do database read parameters and then perform verification
 		String unitId = Util.username2unitId(username);
-		Context.put(Context.X, unitId, BaseCache.SESSIONDATA_CACHE_TIMEOUT);
 		try {
 			sessionData.setUnitId(unitId);
 			sessionData.updateParametersFromDB(unitId);

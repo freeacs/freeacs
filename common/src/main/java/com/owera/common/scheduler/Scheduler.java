@@ -1,8 +1,8 @@
 package com.owera.common.scheduler;
 
-import java.util.Calendar;
-
 import com.owera.common.util.Sleep;
+
+import java.util.Calendar;
 
 /**
  * The idea is to make a class with the sole responsibility of executing certain tasks at

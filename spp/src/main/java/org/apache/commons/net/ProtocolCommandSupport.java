@@ -17,10 +17,10 @@
 
 package org.apache.commons.net;
 
+import org.apache.commons.net.util.ListenerList;
+
 import java.io.Serializable;
 import java.util.EventListener;
-
-import org.apache.commons.net.util.ListenerList;
 
 /***
  * ProtocolCommandSupport is a convenience class for managing a list of

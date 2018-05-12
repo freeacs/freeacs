@@ -1,17 +1,13 @@
 package com.owera.xaps.base;
 
-import java.sql.SQLException;
-import java.util.Map;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.xaps.base.db.DBAccessSession;
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.JobParameter;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.Unittype;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.util.ProvisioningMessage;
 import com.owera.xaps.tr069.xml.ParameterValueStruct;
+
+import java.sql.SQLException;
+import java.util.Map;
 
 public interface SessionDataI {
 

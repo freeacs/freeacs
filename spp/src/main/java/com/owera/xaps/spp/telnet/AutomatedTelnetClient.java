@@ -1,18 +1,18 @@
 package com.owera.xaps.spp.telnet;
 
+import org.apache.commons.net.telnet.InvalidTelnetOptionException;
+import org.apache.commons.net.telnet.TelnetClient;
+import org.apache.commons.net.telnet.TerminalTypeOptionHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 
-import org.apache.commons.net.telnet.InvalidTelnetOptionException;
-import org.apache.commons.net.telnet.TelnetClient;
-import org.apache.commons.net.telnet.TerminalTypeOptionHandler;
-
-import com.owera.common.log.Logger;
-
 public class AutomatedTelnetClient {
-	private static Logger conversationLog = new Logger("ConversationTelnet");
-	private static Logger logger = new Logger();
+	private static Logger conversationLog = LoggerFactory.getLogger("ConversationTelnet");
+	private static Logger logger = LoggerFactory.getLogger(AutomatedTelnetClient.class);
 	private TelnetClient telnet = new TelnetClient();
 	private InputStream in;
 	private PrintStream out;

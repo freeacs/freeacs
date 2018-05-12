@@ -1,11 +1,11 @@
 package com.owera.xaps.dbi.tr069;
 
+import com.owera.xaps.dbi.Unittype;
+import com.owera.xaps.dbi.tr069.TestCaseParameter.TestCaseParameterType;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.tr069.TestCaseParameter.TestCaseParameterType;
 
 public class TestCase {
 

@@ -1,13 +1,13 @@
 package com.owera.tr069client.messages;
 
+import com.owera.tr069client.Arguments;
+import com.owera.tr069client.HttpHandler;
+import com.owera.tr069client.monitor.Status;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-
-import com.owera.tr069client.Arguments;
-import com.owera.tr069client.HttpHandler;
-import com.owera.tr069client.monitor.Status;
 
 public class GetParameterNames {
 	private static String response;

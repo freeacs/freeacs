@@ -11,15 +11,9 @@
 
 package de.javawi.jstun.test.demo;
 
-import com.owera.common.log.Log;
-
 import de.javawi.jstun.test.BindingLifetimeTest;
 
 public class BindingLifetimeTestDemo {
-
-	static {
-		Log.initialize("xaps-stun-logs.properties");
-	}
 
 	public static void main(String args[]) {
 		try {

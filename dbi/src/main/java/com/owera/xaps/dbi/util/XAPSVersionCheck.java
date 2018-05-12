@@ -3,13 +3,14 @@ package com.owera.xaps.dbi.util;
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
 public class XAPSVersionCheck {
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(XAPSVersionCheck.class);
 
 	// Marks the beginning of 2013R1
 	public static boolean triggerSupported = false;

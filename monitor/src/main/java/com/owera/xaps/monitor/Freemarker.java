@@ -1,14 +1,7 @@
 package com.owera.xaps.monitor;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import javax.servlet.ServletContext;
-
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 
 public final class Freemarker  {

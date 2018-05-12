@@ -1,26 +1,17 @@
 package com.owera.xaps.core.task;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.core.Properties;
 import com.owera.xaps.core.util.FractionStopRuleCounter;
 import com.owera.xaps.core.util.UnitJobResult;
 import com.owera.xaps.core.util.UnitResultMap;
-import com.owera.xaps.dbi.Job;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.Job.StopRule;
-import com.owera.xaps.dbi.JobStatus;
-import com.owera.xaps.dbi.UnitJob;
-import com.owera.xaps.dbi.UnitJobStatus;
-import com.owera.xaps.dbi.UnitJobs;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.sql.SQLException;
+import java.util.*;
 
 public class JobRuleEnforcer extends DBIOwner {
 
@@ -161,8 +152,8 @@ public class JobRuleEnforcer extends DBIOwner {
 		}
 	}
 
-	
-	private Logger logger = new Logger();
+
+	private static Logger logger = LoggerFactory.getLogger(JobRuleEnforcer.class);
 	private XAPS xaps;
 	private UnitJobs unitJobs;
 	private Map<Integer, JobControl> jobControlMap = new HashMap<Integer, JobControl>();
