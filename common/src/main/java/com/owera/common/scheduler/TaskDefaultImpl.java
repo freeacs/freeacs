@@ -1,6 +1,7 @@
 package com.owera.common.scheduler;
 
-import com.owera.common.log.Logger;
+
+import org.slf4j.Logger;
 
 public abstract class TaskDefaultImpl implements Task {
 

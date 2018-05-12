@@ -11,20 +11,6 @@
 
 package de.javawi.jstun.test.demo.ice;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
-
-import com.owera.common.log.Logger;
-
 import de.javawi.jstun.attribute.MessageAttributeException;
 import de.javawi.jstun.header.MessageHeaderParsingException;
 import de.javawi.jstun.test.DiscoveryInfo;
@@ -32,9 +18,18 @@ import de.javawi.jstun.test.DiscoveryTest;
 import de.javawi.jstun.test.demo.ice.Candidate.CandidateType;
 import de.javawi.jstun.util.Address;
 import de.javawi.jstun.util.UtilityException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.*;
 
 public class ICENegociator {
-	private static final Logger LOGGER = new Logger();
+	private static Logger LOGGER = LoggerFactory.getLogger(ICENegociator.class);
 	// type preference must be an integer from 0 (=lowest) to 126 (=highest) (inclusive)
 	private final static int LOCAL_PREFERENCE = 0;
 	private final static int SERVER_REFLEXIVE_PREFERENCE = 42;

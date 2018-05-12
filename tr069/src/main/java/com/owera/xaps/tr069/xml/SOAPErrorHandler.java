@@ -1,8 +1,8 @@
 package com.owera.xaps.tr069.xml;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.ErrorHandler;
-
-import com.owera.common.log.Logger;
 
 /**
  * 
@@ -12,7 +12,7 @@ import com.owera.common.log.Logger;
 
 public class SOAPErrorHandler implements ErrorHandler {
 
-	private static final transient Logger log = new Logger(SOAPErrorHandler.class);
+	private static final transient Logger log = LoggerFactory.getLogger(SOAPErrorHandler.class);
 
 	public SOAPErrorHandler() {
 	}
@@ -22,7 +22,7 @@ public class SOAPErrorHandler implements ErrorHandler {
 	}
 
 	public void fatalError(org.xml.sax.SAXParseException sAXParseException) throws org.xml.sax.SAXException {
-		log.fatal(sAXParseException.getLocalizedMessage());
+		log.error(sAXParseException.getLocalizedMessage());
 	}
 
 	public void warning(org.xml.sax.SAXParseException sAXParseException) throws org.xml.sax.SAXException {

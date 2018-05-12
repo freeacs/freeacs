@@ -1,10 +1,11 @@
 package com.owera.xaps.web.app.util;
 
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.Certificate;
 import com.owera.xaps.dbi.Certificates;
 import com.owera.xaps.dbi.XAPS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 
@@ -17,7 +18,7 @@ import java.sql.SQLException;
 public class CertificateVerification {
 	
 	/** The logger. */
-	private static Logger logger = new Logger();
+	private static final Logger logger = LoggerFactory.getLogger(CertificateVerification.class);
 	
 	/**
 	 * Checks if is certificate valid.

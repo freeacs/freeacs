@@ -1,7 +1,6 @@
 package com.owera.xaps.web.app;
 
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.*;
 import com.owera.xaps.web.Page;
 import com.owera.xaps.web.app.context.ContextItem;
@@ -17,6 +16,8 @@ import com.owera.xaps.web.app.util.XAPSLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
@@ -52,7 +53,7 @@ public class Output {
 	private Map<String, Object> 	templateMap 				= new HashMap<String,Object>();
 	private WebPage					currentPage 				= null;
 	private ParameterParser		    inputParameters 			= null;
-	private static final Logger		logger 						= new Logger();
+	private static final Logger 	logger 						= LoggerFactory.getLogger(Output.class);
 	private String 					redirectToUrl 				= null;
 	private String 					directResponseString 		= null;
 	private String 					contentType 				= "text/html";

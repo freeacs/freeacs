@@ -1,16 +1,15 @@
 package com.owera.xaps.syslogserver;
 
+import com.owera.common.db.ConnectionProvider;
+import com.owera.common.scheduler.TaskDefaultImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.util.Map;
 
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.log.Logger;
-import com.owera.common.scheduler.TaskDefaultImpl;
-
 import static com.owera.common.db.ConnectionProvider.getConnectionProperties;
-import static com.owera.xaps.syslogserver.Properties.getMaxAge;
-import static com.owera.xaps.syslogserver.Properties.getMaxConn;
-import static com.owera.xaps.syslogserver.Properties.getUrl;
+import static com.owera.xaps.syslogserver.Properties.*;
 
 public class StateLogger extends TaskDefaultImpl {
 
@@ -18,8 +17,8 @@ public class StateLogger extends TaskDefaultImpl {
 		super(taskName);
 	}
 
-	private Logger logger = new Logger(); // Logging of internal matters - if necessary
-	private static Logger stability = new Logger("Stability");
+	private static Logger logger = LoggerFactory.getLogger(StateLogger.class);
+	private static Logger stability = LoggerFactory.getLogger("Stability");
 	private static int summaryHeaderCount = 0;
 
 	private String getUsedMemory() {

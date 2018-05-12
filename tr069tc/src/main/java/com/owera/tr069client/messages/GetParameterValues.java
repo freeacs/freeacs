@@ -1,14 +1,14 @@
 package com.owera.tr069client.messages;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
 import com.owera.tr069client.Arguments;
 import com.owera.tr069client.HttpHandler;
 import com.owera.tr069client.TR069Client;
 import com.owera.tr069client.monitor.Status;
+
+import java.io.IOException;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 public class GetParameterValues {
 
@@ -19,7 +19,7 @@ public class GetParameterValues {
 	}
 
 	/*
-	 * Håndter (antatt arbeid: 3-4 timer)
+	 * Hï¿½ndter (antatt arbeid: 3-4 timer)
 	 * 0. Parse GPV-request
 	 * 1. En eller flere parametre
 	 * 2. Software-version (her og i Inform)

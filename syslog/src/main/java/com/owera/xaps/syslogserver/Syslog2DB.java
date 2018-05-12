@@ -1,5 +1,17 @@
 package com.owera.xaps.syslogserver;
 
+import com.owera.common.db.ConnectionProperties;
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.common.util.Cache;
+import com.owera.common.util.CacheValue;
+import com.owera.common.util.Sleep;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.dbi.SyslogEvent.StorePolicy;
+import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
+import com.owera.xaps.dbi.util.SystemParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,39 +19,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
-import com.owera.common.util.Cache;
-import com.owera.common.util.CacheValue;
-import com.owera.common.util.Sleep;
-import com.owera.xaps.dbi.DBI;
-import com.owera.xaps.dbi.Identity;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.ScriptExecutions;
-import com.owera.xaps.dbi.Syslog;
-import com.owera.xaps.dbi.SyslogConstants;
-import com.owera.xaps.dbi.SyslogEntry;
-import com.owera.xaps.dbi.SyslogEvent;
-import com.owera.xaps.dbi.SyslogEvent.StorePolicy;
-import com.owera.xaps.dbi.Trigger;
-import com.owera.xaps.dbi.TriggerEvent;
-import com.owera.xaps.dbi.Triggers;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.Users;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
-import com.owera.xaps.dbi.util.SystemParameters;
-
 import static com.owera.common.db.ConnectionProvider.getConnectionProperties;
-import static com.owera.xaps.syslogserver.Properties.getMaxAge;
-import static com.owera.xaps.syslogserver.Properties.getMaxConn;
-import static com.owera.xaps.syslogserver.Properties.getUrl;
+import static com.owera.xaps.syslogserver.Properties.*;
 
 public class Syslog2DB implements Runnable {
 
@@ -188,7 +169,7 @@ public class Syslog2DB implements Runnable {
 
 	private static Syslog2DBCounter counter = new Syslog2DBCounter();
 
-	private static Logger logger = new Logger(Syslog2DB.class);
+	private static Logger logger = LoggerFactory.getLogger(Syslog2DB.class);
 
 	private static Pattern priPattern = Pattern.compile("^<(\\d{1,3})>");
 

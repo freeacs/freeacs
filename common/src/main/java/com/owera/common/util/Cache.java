@@ -1,10 +1,11 @@
 package com.owera.common.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
-
-import com.owera.common.log.Logger;
 
 /**
  * Cache can store CacheValue object. A CacheValue is wrapper for an Object +
@@ -44,7 +45,7 @@ public class Cache {
 	private long cleanupFrequence = 60 * 1000;
 	private long lastCleanup = System.currentTimeMillis();
 
-	private static final Logger log = new Logger();
+	private static Logger log = LoggerFactory.getLogger(Cache.class);
 
 	class Cleanup extends Cache implements Runnable {
 

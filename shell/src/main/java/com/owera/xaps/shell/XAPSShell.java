@@ -1,30 +1,18 @@
 package com.owera.xaps.shell;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import com.owera.common.db.ConnectionProperties;
+import com.owera.common.db.ConnectionProvider;
+import com.owera.common.util.PropertyReader;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.dbi.util.XAPSVersionCheck;
+import com.owera.xaps.shell.util.ValidateInput;
+import com.owera.xaps.shell.util.ValidateInteger;
+
+import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import com.owera.common.db.ConnectionProperties;
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.log.Log;
-import com.owera.common.util.PropertyReader;
-import com.owera.xaps.dbi.DBI;
-import com.owera.xaps.dbi.Identity;
-import com.owera.xaps.dbi.Syslog;
-import com.owera.xaps.dbi.SyslogConstants;
-import com.owera.xaps.dbi.UnitJobs;
-import com.owera.xaps.dbi.User;
-import com.owera.xaps.dbi.Users;
-import com.owera.xaps.dbi.XAPSUnit;
-import com.owera.xaps.dbi.util.XAPSVersionCheck;
-import com.owera.xaps.shell.util.ValidateInput;
-import com.owera.xaps.shell.util.ValidateInteger;
 
 public class XAPSShell {
 
@@ -233,7 +221,6 @@ public class XAPSShell {
 	}
 
 	public static void main(String[] args) {
-		Log.initialize("xaps-shell-logs.properties");
 		Locale.setDefault(new Locale("en", "US"));
 		XAPSShell xapsShell = new XAPSShell();
 		xapsShell.mainImpl(args);

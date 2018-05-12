@@ -1,11 +1,12 @@
 package com.owera.common.counter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import com.owera.common.log.Logger;
 
 /**
  * This is the top-level class of this package. You may of course choose to used
@@ -46,7 +47,7 @@ public class BMCCollection {
 	private long periodeLength;
 	private int numberOfPeriods;
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(BMCCollection.class);
 
 	public BMCCollection(MeasurementTypes types, long periodeLength, int numberOfPeriods) {
 		this.types = types;
@@ -96,7 +97,6 @@ public class BMCCollection {
 	 * MeasurementTypes.
 	 * 
 	 * @param keys
-	 * @param bmcId
 	 * @param type
 	 * @param executeTime
 	 */

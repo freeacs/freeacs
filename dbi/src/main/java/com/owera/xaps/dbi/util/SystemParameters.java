@@ -1,14 +1,14 @@
 package com.owera.xaps.dbi.util;
 
-import java.sql.SQLException;
-import java.util.Map;
-import java.util.TreeMap;
-
 import com.owera.common.db.NoAvailableConnectionException;
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.UnittypeParameter;
 import com.owera.xaps.dbi.UnittypeParameterFlag;
 import com.owera.xaps.dbi.XAPS;
+
+import java.sql.SQLException;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class SystemParameters {
 

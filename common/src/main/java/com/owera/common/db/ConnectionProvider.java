@@ -1,5 +1,9 @@
 package com.owera.common.db;
 
+import com.owera.common.util.PropertyReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -8,9 +12,6 @@ import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import com.owera.common.log.Logger;
-import com.owera.common.util.PropertyReader;
 
 /**
  * This connection provider can offer 
@@ -33,7 +34,7 @@ import com.owera.common.util.PropertyReader;
 
 public class ConnectionProvider {
 
-	private static final Logger log = new Logger();
+	private static Logger log = LoggerFactory.getLogger(ConnectionProvider.class);
 
 	private static Map<String, ConnectionPoolData> poolMap = new HashMap<String, ConnectionPoolData>();
 
@@ -136,30 +137,30 @@ public class ConnectionProvider {
 	/**
 	 * This method allows you to specify database credentials in a property file
 	 * if you specify file name and database-property-key.
-	 * 
+	 *
 	 * Given a property file with this content:
-	 * 
+	 *
 	 * mydb.url = morten/morten@jdbc:mysql://xaps-a.owera.com:3306/xaps
 	 * mydb.maxconn = 10 mydb.maxage = 600
-	 * 
+	 *
 	 * This method will need to know the name of this file and the key "mydb" to
 	 * read and populate the ConnectionProperties object.
-	 * 
+	 *
 	 * url syntax: <user>/<password>@<jdbc-url-including-dbname> maxage:
 	 * (Connection will be taken out of the pool at this point - will not abort
 	 * running queries/executions) Specified in seconds. Default is 600.
 	 * maxconn: Specified in number of connections. Default is 10.
-	 * 
-	 * 
+	 *
+	 *
 	 * Another feature is "symlinks", where one property points to an already
 	 * defined db-property
-	 * 
+	 *
 	 * anotherdb = mydb
-	 * 
+	 *
 	 * With this setup, the property file can contain the option of having
 	 * several database connections (to various database), but also to be setup
 	 * to point to the same database.
-	 * 
+	 *
 	 * @param propertyfile
 	 *            - the name of the property file containing database
 	 *            credentials/url and possibly maxage/maxconn
@@ -255,7 +256,7 @@ public class ConnectionProvider {
 			log.error("Tried to create a new connection", sqle);
 			throw sqle;
 		} catch (Exception e) {
-			log.fatal("Tried to create a new connection, but something is seriously wrong", e);
+			log.error("Tried to create a new connection, but something is seriously wrong", e);
 			// This should only happen after if the driver
 			// is not present in the classpath, or if the
 			// driver is of the wrong version. Instead of throwing
@@ -273,7 +274,7 @@ public class ConnectionProvider {
 
 	/**
 	 * Returns a connection to the pool.
-	 * 
+	 *
 	 * If the connection is associated by a an SQL-exception or if it's too old,
 	 * then the connection is not put back into the pool. If not, we check to
 	 * see if the connection is closed or not. if it's closed ('accidentally' by

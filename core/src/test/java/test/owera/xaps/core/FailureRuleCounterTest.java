@@ -1,14 +1,14 @@
 package test.owera.xaps.core;
 
-import java.util.Random;
-
 import com.owera.xaps.core.util.FractionStopRuleCounter;
 import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.JobFlag;
-import com.owera.xaps.dbi.UnitJob;
 import com.owera.xaps.dbi.Job.StopRule;
+import com.owera.xaps.dbi.JobFlag;
 import com.owera.xaps.dbi.JobFlag.JobServiceWindow;
 import com.owera.xaps.dbi.JobFlag.JobType;
+import com.owera.xaps.dbi.UnitJob;
+
+import java.util.Random;
 
 public class FailureRuleCounterTest {
 

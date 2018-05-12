@@ -1,44 +1,9 @@
 package com.owera.xaps.shell.menu;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import com.owera.xaps.dbi.FileType;
-import com.owera.xaps.dbi.Group;
-import com.owera.xaps.dbi.Groups;
-import com.owera.xaps.dbi.Heartbeat;
-import com.owera.xaps.dbi.Heartbeats;
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.JobFlag;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.JobFlag.JobServiceWindow;
 import com.owera.xaps.dbi.JobFlag.JobType;
-import com.owera.xaps.dbi.Parameter;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.ScriptExecution;
-import com.owera.xaps.dbi.ScriptExecutions;
-import com.owera.xaps.dbi.SyslogEvent;
 import com.owera.xaps.dbi.SyslogEvent.StorePolicy;
-import com.owera.xaps.dbi.SyslogEvents;
-import com.owera.xaps.dbi.Trigger;
-import com.owera.xaps.dbi.TriggerComparator;
-import com.owera.xaps.dbi.Triggers;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.UnittypeParameterFlag;
-import com.owera.xaps.dbi.UnittypeParameters;
-import com.owera.xaps.dbi.User;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
 import com.owera.xaps.dbi.util.SystemParameters;
 import com.owera.xaps.shell.Context;
 import com.owera.xaps.shell.Session;
@@ -48,6 +13,12 @@ import com.owera.xaps.shell.output.Line;
 import com.owera.xaps.shell.output.Listing;
 import com.owera.xaps.shell.output.OutputHandler;
 import com.owera.xaps.shell.util.Validation;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class UnittypeMenu {
 	private Session session;

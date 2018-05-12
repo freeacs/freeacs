@@ -1,17 +1,18 @@
 package com.owera.xaps.dbi;
 
+import com.owera.common.db.ConnectionProvider;
+import com.owera.common.db.NoAvailableConnectionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
 
-import com.owera.common.db.ConnectionProvider;
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
-
 
 public class ProfileParameters {
-	private Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(ProfileParameters.class);
 	private Map<String, ProfileParameter> nameMap;
 	private Map<Integer, ProfileParameter> idMap;
 	private Profile profile;
@@ -62,7 +63,7 @@ public class ProfileParameters {
 				s.setQueryTimeout(60);
 				s.executeUpdate(sql);
 				
-				logger.notice("Added " + logMsg);
+				logger.info("Added " + logMsg);
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishAdd(profileParameter, profile.getUnittype());
 			} else {
@@ -73,7 +74,7 @@ public class ProfileParameters {
 				s.setQueryTimeout(60);
 				s.executeUpdate(sql);
 				
-				logger.notice("Updated " + logMsg);
+				logger.info("Updated " + logMsg);
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(profileParameter, profile.getUnittype());
 			}
@@ -111,7 +112,7 @@ public class ProfileParameters {
 			s.setQueryTimeout(60);
 			s.executeUpdate(sql);
 			
-			logger.notice("Deleted profile parameter " + profileParameter.getUnittypeParameter().getName());
+			logger.info("Deleted profile parameter " + profileParameter.getUnittypeParameter().getName());
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(profileParameter, profile.getUnittype());
 		} catch (SQLException sqle) {

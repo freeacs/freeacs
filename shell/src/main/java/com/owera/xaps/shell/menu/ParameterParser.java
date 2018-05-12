@@ -1,13 +1,13 @@
 package com.owera.xaps.shell.menu;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.owera.xaps.dbi.Parameter;
+import com.owera.xaps.dbi.Parameter.Operator;
 import com.owera.xaps.dbi.Parameter.ParameterDataType;
 import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.Parameter.Operator;
 import com.owera.xaps.shell.Context;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ParameterParser {
 	public static List<Parameter> parse(Context context, String[] args) {

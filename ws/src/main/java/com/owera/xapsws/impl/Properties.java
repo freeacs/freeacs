@@ -1,10 +1,10 @@
 package com.owera.xapsws.impl;
 
 import com.owera.common.db.ConnectionProperties;
-import com.owera.common.log.Logger;
-import com.owera.common.util.PropertyReader;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -13,7 +13,7 @@ public class Properties {
 
 	private static final Config config = ConfigFactory.load();
 
-	private static final Logger logger = new Logger();
+	private static final Logger logger = LoggerFactory.getLogger(Properties.class);
 
 	private static int getInteger(String propertyKey, int defaultValue) {
 		if (!config.hasPath(propertyKey)) {

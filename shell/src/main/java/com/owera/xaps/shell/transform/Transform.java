@@ -1,5 +1,9 @@
 package com.owera.xaps.shell.transform;
 
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.shell.Session;
+import com.owera.xaps.shell.util.StringUtil;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -7,16 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
-import com.owera.xaps.shell.Session;
-import com.owera.xaps.shell.util.StringUtil;
 
 public class Transform {
 

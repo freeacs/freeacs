@@ -1,13 +1,14 @@
 package com.owera.common.db;
 
+import com.owera.common.util.Sleep;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import com.owera.common.log.Logger;
-import com.owera.common.util.Sleep;
 
 /**
  * The basic idea of this cleanup-class is that it will
@@ -32,7 +33,7 @@ import com.owera.common.util.Sleep;
  */
 public class ConnectionCleanup implements Runnable {
 
-	private static final Logger log = new Logger();
+	private static Logger log = LoggerFactory.getLogger(ConnectionCleanup.class);
 
 	public int CLEANUP_SLEEP = 10 * 1000; // 10 sec.
 

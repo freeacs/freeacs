@@ -1,9 +1,5 @@
 package com.owera.xaps.tr069;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.owera.xaps.base.Log;
 import com.owera.xaps.dbi.Users;
 import com.owera.xaps.dbi.util.ProvisioningMessage;
@@ -14,6 +10,9 @@ import com.owera.xaps.dbi.util.ProvisioningMode;
 import com.owera.xaps.dbi.util.SyslogClient;
 import com.owera.xaps.tr069.methods.TR069Method;
 import com.owera.xaps.tr069.xml.ParameterValueStruct;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Responsible for logging to the tr069-event log

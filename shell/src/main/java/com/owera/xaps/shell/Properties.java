@@ -1,8 +1,9 @@
 package com.owera.xaps.shell;
 
-import com.owera.common.log.Logger;
 import com.owera.common.util.PropertyReader;
 import com.owera.common.util.PropertyReaderException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Properties {
 
@@ -17,7 +18,7 @@ public class Properties {
 		}
 	}
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(Properties.class);
 
 	@SuppressWarnings("unused")
 	private static int getInteger(String propertyKey, int defaultValue) {

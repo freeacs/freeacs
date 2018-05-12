@@ -1,29 +1,8 @@
 package com.owera.xaps.shell.menu;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.xaps.dbi.Certificate;
-import com.owera.xaps.dbi.Certificates;
-import com.owera.xaps.dbi.Permission;
-import com.owera.xaps.dbi.Permissions;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.Unittype;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
-import com.owera.xaps.dbi.UnittypeParameterFlag;
-import com.owera.xaps.dbi.User;
-import com.owera.xaps.dbi.Users;
-import com.owera.xaps.dbi.XAPSUnit;
 import com.owera.xaps.dbi.crypto.Crypto;
 import com.owera.xaps.dbi.util.SystemParameters;
 import com.owera.xaps.shell.Session;
@@ -37,6 +16,17 @@ import com.owera.xaps.shell.sync.Sync;
 import com.owera.xaps.shell.testperf.MakeTestperfUnits;
 import com.owera.xaps.shell.transform.Transform;
 import com.owera.xaps.shell.util.Validation;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RootMenu {
 

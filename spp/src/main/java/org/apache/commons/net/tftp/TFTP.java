@@ -17,15 +17,14 @@
 
 package org.apache.commons.net.tftp;
 
+import com.owera.common.util.Sleep;
+import org.apache.commons.net.DatagramSocketClient;
+
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-
-import org.apache.commons.net.DatagramSocketClient;
-
-import com.owera.common.util.Sleep;
 
 /***
  * The TFTP class exposes a set of methods to allow you to deal with the TFTP

@@ -1,19 +1,18 @@
 package com.owera.xaps.core.task;
 
-import java.sql.SQLException;
-
 import com.owera.common.db.ConnectionProperties;
 import com.owera.common.db.ConnectionProvider;
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.common.scheduler.Task;
 import com.owera.xaps.core.CoreServlet;
-import com.owera.xaps.dbi.DBI;
-import com.owera.xaps.dbi.Identity;
-import com.owera.xaps.dbi.Syslog;
-import com.owera.xaps.dbi.SyslogConstants;
-import com.owera.xaps.dbi.Users;
-import com.owera.xaps.dbi.XAPS;
+import com.owera.xaps.dbi.*;
+import org.slf4j.Logger;
+
+import java.sql.SQLException;
+
+import static com.owera.xaps.core.Properties.getMaxAge;
+import static com.owera.xaps.core.Properties.getMaxConn;
+import static com.owera.xaps.core.Properties.getUrl;
 
 /**
  * You can extend this object if you need to manipulate the state of the XAPS object, then you will not
@@ -27,8 +26,8 @@ public abstract class DBIOwner implements Task {
 	private static ConnectionProperties xapsCp = null;
 	private static ConnectionProperties sysCp = null;
 	static {
-		xapsCp = ConnectionProvider.getConnectionProperties("xaps-core.properties", "db.xaps");
-		sysCp = ConnectionProvider.getConnectionProperties("xaps-core.properties", "db.syslog");
+		xapsCp = ConnectionProvider.getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps"));
+		sysCp = ConnectionProvider.getConnectionProperties(getUrl("syslog"), getMaxAge("syslog"), getMaxConn("syslog"));
 		if (sysCp == null)
 			sysCp = xapsCp;
 	}
@@ -36,9 +35,6 @@ public abstract class DBIOwner implements Task {
 	private DBI dbi;
 	private Syslog syslog;
 	private Identity id;
-
-	@SuppressWarnings("unused")
-	private Logger logger = new Logger();
 
 	private String taskName;
 	private long launchTms;

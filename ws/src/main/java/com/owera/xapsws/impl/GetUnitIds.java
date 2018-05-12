@@ -1,30 +1,20 @@
 package com.owera.xapsws.impl;
 
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import com.owera.common.log.Logger;
-import com.owera.xaps.dbi.Parameter;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.Parameter.Operator;
 import com.owera.xaps.dbi.Parameter.ParameterDataType;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.UnittypeParameter;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.dbi.XAPSUnit;
-
 import com.owera.xapsws.ArrayOfUnitId;
 import com.owera.xapsws.GetUnitIdsRequest;
 import com.owera.xapsws.GetUnitIdsResponse;
 import com.owera.xapsws.UnitIdList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.rmi.RemoteException;
+import java.util.*;
 
 public class GetUnitIds {
-	private static Logger logger = new Logger();
+	private static final Logger logger = LoggerFactory.getLogger(GetUnitIds.class);
 
 	private XAPS xaps;
 	private XAPSWS xapsWS;

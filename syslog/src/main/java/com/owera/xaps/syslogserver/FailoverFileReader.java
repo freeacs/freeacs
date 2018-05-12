@@ -1,11 +1,12 @@
 package com.owera.xaps.syslogserver;
 
+import com.owera.common.util.Sleep;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-
-import com.owera.common.log.Logger;
-import com.owera.common.util.Sleep;
 
 public class FailoverFileReader implements Runnable {
 
@@ -51,9 +52,9 @@ public class FailoverFileReader implements Runnable {
 
 	private static FailoverCounter counter = new FailoverCounter();
 
-	private static Logger logger = new Logger(FailoverFileReader.class);
+	private static Logger logger = LoggerFactory.getLogger(FailoverFileReader.class);
 
-	private static Logger failedMessages = new Logger("FAILED");
+	private static Logger failedMessages = LoggerFactory.getLogger("FAILED");
 
 	private long MAX_AGE = Properties.getMaxFailoverMessageAge() * 60 * 60 * 1000;
 
@@ -80,10 +81,10 @@ public class FailoverFileReader implements Runnable {
 				if (Sleep.isTerminated())
 					return;
 				if ((System.currentTimeMillis() - ff.createdTms()) > PROCESS_INTERVAL && FailoverFile.getFailoverCount(true) > 0) {
-					logger.notice("Will process failover messages - that is to add them back into the system");
+					logger.info("Will process failover messages - that is to add them back into the system");
 					File processFile = ff.rotate();
 					if (processFile != null) {
-						logger.notice("The failover message log file is renamed and will be processed");
+						logger.info("The failover message log file is renamed and will be processed");
 						FileReader fr = new FileReader(processFile);
 						BufferedReader br = new BufferedReader(fr);
 						int lineCounter = 0;
@@ -117,7 +118,7 @@ public class FailoverFileReader implements Runnable {
 						br.close();
 						fr.close();
 						if (processFile.delete()) {
-							logger.notice("The " + processFile.getName() + " is processed (" + lineCounter + " messages) and deleted.");
+							logger.info("The " + processFile.getName() + " is processed (" + lineCounter + " messages) and deleted.");
 							ok = true;
 						} else {
 							String msg = "The " + processFile.getName() + " is processed (" + lineCounter + " messages) but not deleted! It will therefore be reprocessed!";

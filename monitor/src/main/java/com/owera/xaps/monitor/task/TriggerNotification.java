@@ -1,26 +1,22 @@
 package com.owera.xaps.monitor.task;
 
+import com.owera.common.db.NoAvailableConnectionException;
+import com.owera.common.html.Element;
+import com.owera.xaps.dbi.*;
+import com.owera.xaps.monitor.Properties;
+import com.owera.xaps.monitor.SendMail;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.html.Element;
-import com.owera.common.log.Logger;
-import com.owera.xaps.dbi.DBI;
-import com.owera.xaps.dbi.Trigger;
-import com.owera.xaps.dbi.TriggerRelease;
-import com.owera.xaps.dbi.Triggers;
-import com.owera.xaps.dbi.Unittype;
-import com.owera.xaps.dbi.XAPS;
-import com.owera.xaps.monitor.Properties;
-import com.owera.xaps.monitor.SendMail;
-
 public class TriggerNotification {
 
-	private static Logger log = new Logger();
+	private static Logger log = LoggerFactory.getLogger(TriggerNotification.class);
 	private static SimpleDateFormat clockFormat = new SimpleDateFormat("HH:mm");
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd", Locale.US);
 	private static SimpleDateFormat urlFormat = new SimpleDateFormat("yyyy-MM-dd&20HH:mm");

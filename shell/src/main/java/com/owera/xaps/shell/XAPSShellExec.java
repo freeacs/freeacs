@@ -1,15 +1,12 @@
 package com.owera.xaps.shell;
 
-import java.io.InputStreamReader;
-
-import com.owera.common.log.Log;
-
 import jline.ConsoleReader;
+
+import java.io.InputStreamReader;
 
 public class XAPSShellExec {
 
 	public static void main(String[] args) throws Exception {
-		Log.initialize("xaps-shell-logs.properties");
 		ConsoleReader reader = new ConsoleReader();
 		reader.setBellEnabled(false);
 		XAPSShell xapsShell = new XAPSShell();

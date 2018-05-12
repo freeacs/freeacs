@@ -1,10 +1,11 @@
 package com.owera.xaps.syslogserver;
 
+import com.owera.common.util.Sleep;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
-
-import com.owera.common.log.Logger;
-import com.owera.common.util.Sleep;
 
 public class SyslogPackets {
 
@@ -62,9 +63,9 @@ public class SyslogPackets {
 
 	private static BufferCounter counter = new BufferCounter();
 
-	private static Logger messages = new Logger("Messages");
+	private static Logger messages = LoggerFactory.getLogger("Messages");
 
-	private static Logger logger = new Logger(SyslogPackets.class);
+	private static Logger logger = LoggerFactory.getLogger(SyslogPackets.class);
 
 	//	private static FailoverFile ff = FailoverFile.getInstance();
 

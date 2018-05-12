@@ -1,12 +1,13 @@
 package com.owera.common.scheduler;
 
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.owera.common.log.Logger;
+import java.util.List;
 
 public class ShowScheduleQueue implements Task {
 
-	private Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(ShowScheduleQueue.class);
 
 	private String taskName;
 	private boolean running = false;

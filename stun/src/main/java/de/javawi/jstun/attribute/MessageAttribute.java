@@ -11,13 +11,13 @@
 
 package de.javawi.jstun.attribute;
 
-import com.owera.common.log.Logger;
-
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class MessageAttribute implements MessageAttributeInterface {
-	private static final Logger LOGGER = new Logger();
+	private static Logger LOGGER = LoggerFactory.getLogger(MessageAttribute.class);
 	MessageAttributeType type;
 
 	public MessageAttribute() {

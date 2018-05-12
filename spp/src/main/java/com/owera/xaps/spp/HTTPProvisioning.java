@@ -1,16 +1,5 @@
 package com.owera.xaps.spp;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.owera.common.util.Sleep;
 import com.owera.xaps.Properties.Module;
 import com.owera.xaps.base.Log;
@@ -25,6 +14,12 @@ import com.owera.xaps.dbi.util.ProvisioningMessage.ProvStatus;
 import com.owera.xaps.dbi.util.SyslogClient;
 import com.owera.xaps.spp.TFTPServer.ServerMode;
 import com.owera.xaps.spp.telnet.TelnetProvisioning;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 
 /**
  * This is the "main-class" of TR069Provisioning. It receives the HTTP-request
@@ -41,7 +36,6 @@ public class HTTPProvisioning extends HttpServlet {
 
 	static {
 		DBAccess.init(Module.SPP, SyslogConstants.FACILITY_SPP, VERSION);
-		com.owera.common.log.Log.initialize("xaps-spp-logs.properties");
 		Log.notice(HTTPProvisioning.class, "HTTP/TFTP-Server and Telnet Provisioning Controller starts...");
 		try {
 			// Start the server

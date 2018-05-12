@@ -1,11 +1,11 @@
 package com.owera.xaps.shell.transform;
 
+import com.owera.xaps.shell.util.StringUtil;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.owera.xaps.shell.util.StringUtil;
 
 public class CompareUVTCBatchWithStaging {
 

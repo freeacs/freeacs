@@ -1,15 +1,6 @@
 package com.owera.xaps.spp.http;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.sql.SQLException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Context;
 import com.owera.xaps.base.BaseCache;
 import com.owera.xaps.base.Log;
 import com.owera.xaps.base.NoDataAvailableException;
@@ -17,6 +8,13 @@ import com.owera.xaps.base.http.Util;
 import com.owera.xaps.dbi.util.SystemParameters;
 import com.owera.xaps.spp.Properties;
 import com.owera.xaps.spp.SessionData;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
 
 public class BasicAuthenticator {
 
@@ -43,7 +41,7 @@ public class BasicAuthenticator {
 	/**
 	 * Verifies login against database
 	 * 
-	 * @param request
+	 * @param req
 	 *            HTTP servlet request
 	 * @param authorization
 	 *            Authorization credentials from this request
@@ -74,7 +72,6 @@ public class BasicAuthenticator {
 
 		// Do database read parameters and then perform verification
 		String unitId = Util.username2unitId(username);
-		Context.put(Context.X, unitId, BaseCache.SESSIONDATA_CACHE_TIMEOUT);
 		try {
 			sessionData.setUnitId(unitId);
 			sessionData.updateParametersFromDB(unitId);

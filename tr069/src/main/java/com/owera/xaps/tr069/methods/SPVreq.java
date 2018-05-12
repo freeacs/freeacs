@@ -1,10 +1,10 @@
 package com.owera.xaps.tr069.methods;
 
-import java.util.List;
-
 import com.owera.xaps.tr069.Namespace;
 import com.owera.xaps.tr069.xml.Body;
 import com.owera.xaps.tr069.xml.ParameterValueStruct;
+
+import java.util.List;
 
 public class SPVreq extends Body {
 

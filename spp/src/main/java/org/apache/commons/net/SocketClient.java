@@ -17,17 +17,12 @@
 
 package org.apache.commons.net;
 
+import javax.net.ServerSocketFactory;
+import javax.net.SocketFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-
-import javax.net.ServerSocketFactory;
-import javax.net.SocketFactory;
+import java.net.*;
 
 
 /**

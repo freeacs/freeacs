@@ -1,10 +1,10 @@
 package com.owera.xaps.shell.menu;
 
+import com.owera.xaps.dbi.Job;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
-import com.owera.xaps.dbi.Job;
 
 public class JobComparator implements Comparator<Job> {
 

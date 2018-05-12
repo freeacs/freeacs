@@ -1,10 +1,10 @@
 package com.owera.tr069client;
 
+import org.apache.log4j.Logger;
+
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
-
-import org.apache.log4j.Logger;
 
 public class TR069Client {
 

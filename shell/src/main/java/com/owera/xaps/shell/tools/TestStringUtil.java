@@ -1,9 +1,9 @@
 package com.owera.xaps.shell.tools;
 
+import com.owera.xaps.shell.util.StringUtil;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.owera.xaps.shell.util.StringUtil;
 
 public class TestStringUtil {
 

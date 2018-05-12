@@ -1,9 +1,9 @@
 package com.owera.xaps.tr069.methods;
 
+import com.owera.xaps.base.Log;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.owera.xaps.base.Log;
 
 public class TR069Method {
 	public static final String EMPTY = "Empty";

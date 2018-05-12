@@ -1,19 +1,19 @@
 package com.owera.xapsws.impl;
 
-import java.rmi.RemoteException;
-
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.Profile;
 import com.owera.xaps.dbi.Unittype;
-
 import com.owera.xapsws.ArrayOfProfile;
 import com.owera.xapsws.GetProfilesRequest;
 import com.owera.xapsws.GetProfilesResponse;
 import com.owera.xapsws.ProfileList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.rmi.RemoteException;
 
 public class GetProfiles {
 
-	private static Logger logger = new Logger();
+	private static final Logger logger = LoggerFactory.getLogger(GetProfiles.class);
 
 	private XAPSWS xapsWS;
 

@@ -1,37 +1,20 @@
 package com.owera.xaps.tr069;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
-import com.owera.xaps.base.Log;
-import com.owera.xaps.base.NoDataAvailableException;
-import com.owera.xaps.base.OweraParameters;
-import com.owera.xaps.base.PIIDecision;
-import com.owera.xaps.base.ServiceWindow;
-import com.owera.xaps.base.SessionDataI;
+import com.owera.xaps.base.*;
 import com.owera.xaps.base.db.DBAccess;
 import com.owera.xaps.base.db.DBAccessSession;
-import com.owera.xaps.dbi.File;
-import com.owera.xaps.dbi.Job;
-import com.owera.xaps.dbi.JobParameter;
-import com.owera.xaps.dbi.Profile;
-import com.owera.xaps.dbi.ProfileParameter;
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.dbi.UnitParameter;
-import com.owera.xaps.dbi.Unittype;
+import com.owera.xaps.dbi.*;
 import com.owera.xaps.dbi.Unittype.ProvisioningProtocol;
-import com.owera.xaps.dbi.UnittypeParameter;
 import com.owera.xaps.dbi.util.ProvisioningMessage;
 import com.owera.xaps.dbi.util.SystemParameters;
 import com.owera.xaps.tr069.exception.TR069DatabaseException;
 import com.owera.xaps.tr069.xml.ParameterAttributeStruct;
 import com.owera.xaps.tr069.xml.ParameterList;
 import com.owera.xaps.tr069.xml.ParameterValueStruct;
+
+import java.sql.SQLException;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class SessionData implements SessionDataI {
 

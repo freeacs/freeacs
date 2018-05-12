@@ -1,11 +1,11 @@
 package com.owera.xaps.shell;
 
+import com.owera.xaps.dbi.Profile;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.owera.xaps.dbi.Profile;
 
 public class UnitTempStorage {
 

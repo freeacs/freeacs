@@ -1,15 +1,16 @@
 package com.owera.xaps.monitor.task;
 
-import java.io.IOException;
-
 import com.owera.common.ssl.HTTPSManager;
+import com.owera.xaps.monitor.Properties;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.owera.common.log.Logger;
-import com.owera.xaps.monitor.Properties;
+import java.io.IOException;
+
 /*
  * Http check implementation
  */
@@ -17,7 +18,7 @@ public class MonitorExecution implements Runnable {
 
 	private HttpClient client = new HttpClient();
 
-	private static Logger logger = new Logger();
+	private static Logger logger = LoggerFactory.getLogger(MonitorExecution.class);
 
 	private String url;
 

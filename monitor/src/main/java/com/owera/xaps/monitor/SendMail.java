@@ -1,22 +1,17 @@
 package com.owera.xaps.monitor;
 
-import java.util.Date;
+import com.owera.xaps.dbi.Trigger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
-import com.owera.common.log.Logger;
-import com.owera.xaps.dbi.Trigger;
+import java.util.Date;
 
 public class SendMail {
 
-	private static Logger log = new Logger();
+	private static Logger log = LoggerFactory.getLogger(SendMail.class);
 
 	public static void sendNotification(Trigger trigger, String msg) {
 		String subject = trigger.getNotifyTypeAsStr() + " from trigger " + trigger.getName();

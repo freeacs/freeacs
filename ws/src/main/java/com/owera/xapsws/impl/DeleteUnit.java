@@ -1,20 +1,20 @@
 package com.owera.xapsws.impl;
 
-import java.rmi.RemoteException;
-import java.sql.SQLException;
-
 import com.owera.common.db.NoAvailableConnectionException;
-import com.owera.common.log.Logger;
 import com.owera.xaps.dbi.Unittype;
 import com.owera.xaps.dbi.XAPS;
 import com.owera.xaps.dbi.XAPSUnit;
-
 import com.owera.xapsws.DeleteUnitRequest;
 import com.owera.xapsws.DeleteUnitResponse;
 import com.owera.xapsws.Unit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.rmi.RemoteException;
+import java.sql.SQLException;
 
 public class DeleteUnit {
-	private static Logger logger = new Logger();
+	private static final Logger logger = LoggerFactory.getLogger(DeleteUnit.class);
 
 	private XAPS xaps;
 	private XAPSWS xapsWS;

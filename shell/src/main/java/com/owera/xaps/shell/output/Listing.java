@@ -1,16 +1,16 @@
 package com.owera.xaps.shell.output;
 
+import com.owera.xaps.dbi.Unit;
+import com.owera.xaps.shell.Context;
+import com.owera.xaps.shell.command.Command;
+import com.owera.xaps.shell.command.Option;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.owera.xaps.dbi.Unit;
-import com.owera.xaps.shell.Context;
-import com.owera.xaps.shell.command.Command;
-import com.owera.xaps.shell.command.Option;
 
 public class Listing {
 
