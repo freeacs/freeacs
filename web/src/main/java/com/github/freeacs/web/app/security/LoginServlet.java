@@ -391,7 +391,7 @@ public class LoginServlet extends HttpServlet implements Filter {
 			return true;
 		} catch (Exception e) {
 			logger.error("Could not initialize login handler", e);
-			return false;
+			throw new IllegalStateException("Could not initialize login handler", e);
 		}
 	}
 
