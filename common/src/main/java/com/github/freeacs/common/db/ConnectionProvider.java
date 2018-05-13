@@ -243,7 +243,11 @@ public class ConnectionProvider {
 		Statement s = null;
 		try {
 			ConnectionProperties props = cpd.getProps();
-			Class.forName(props.getDriver()).newInstance();
+			try {
+				Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+			} catch(Exception ignored) {
+				Class.forName(props.getDriver()).newInstance();
+			}
 			Connection c = DriverManager.getConnection(props.getUrl(), props.getUser(), props.getPassword());
 			s = c.createStatement();
 			s.execute("SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED");
