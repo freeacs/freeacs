@@ -72,7 +72,7 @@ public class Kick {
 		// default response
 		KickResponse kr = new KickResponse(false, "Neither a public ConnectionRequestURL nor any UDPConnectionRequestAddress was found");
 		// TCP-kick (HTTP)
-		if (crUrl != null && !crUrl.trim().equals("") && IPAddress.isPublic(new URL(crUrl).getHost())) {
+		if (crUrl != null && !crUrl.trim().equals("") && checkIfPublicIP(crUrl)) {
 			log.debug(unit.getId() + " will try TCP kick");
 			kr = kickUsingTCP(unit, xapsUnit, crUrl, crPass, crUser);
 		}
@@ -87,6 +87,20 @@ public class Kick {
 		}
 
 		return kr;
+	}
+
+	/**
+	 * Check if IP is public only if its configured. If its not configured, this method returns true always.
+	 *
+	 * @param crUrl The ip to check
+	 * @return a boolean if configured to check if ip is public, otherwise always true
+	 * @throws MalformedURLException if the ip is malformed
+	 */
+	static boolean checkIfPublicIP(String crUrl) throws MalformedURLException {
+		if (!Properties.checkIfIpIsPublic()) {
+			return true; // we don't check it and we allow it.
+		}
+		return IPAddress.isPublic(new URL(crUrl).getHost());
 	}
 
 	private static KickResponse kickUsingTCP(Unit unit, XAPSUnit xapsUnit, String crUrl, String crPass, String crUser) throws SQLException, NoAvailableConnectionException, MalformedURLException {
