@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -489,44 +490,30 @@ public class HTTPRequestProcessor {
 		}
 	}
 
+	private static final Pattern methodNamePatternUnclosed = Pattern.compile("<cwmp:(\\w+)>");
+	private static final Pattern methodNamePatternClosed = Pattern.compile("<cwmp:(\\w+)/>");
+
 	/**
 	 * Fastest way to extract the method name without actually parsing the XML - the method name is crucial to
 	 * the next steps in TR-069 processing
-	 * 
+	 *
 	 * The TR-069 Method is found after the first "<cwmp:" after ":Body"
-	 * T
-	 * 
+	 *
 	 * @param reqStr (TR-069 XML)
 	 * @return TR-069 methodName
 	 */
 	static String extractMethodName(String reqStr) {
-
-		int soapenvBodyPos = reqStr.indexOf(":Body");
-		if (soapenvBodyPos > -1) {
-			int cwmpPos = reqStr.indexOf("<cwmp:", soapenvBodyPos);
-			int methodPos = cwmpPos + 6;
-			int cwmpEndBracketPos = getEndBracketPos(reqStr, methodPos);
-			int cwmpEndSpacePos = reqStr.indexOf(" ", methodPos);
-			int cwmpEndPos = cwmpEndBracketPos;
-			if (cwmpEndSpacePos > -1 && cwmpEndSpacePos < cwmpEndPos)
-				cwmpEndPos = cwmpEndSpacePos;
-			String methodStr = reqStr.substring(methodPos, cwmpEndPos);
-			if (methodStr.equals("GetRPCMethodsResponse"))
-				return methodStr;
-			if (methodStr.endsWith("Response"))
-				methodStr = methodStr.substring(0, methodStr.length() - 8);
-			return methodStr;
-		} else {
-			return null;
+		String methodStr = null;
+		Matcher matcherUnclosed = methodNamePatternUnclosed.matcher(reqStr);
+		if (matcherUnclosed.find()) {
+			methodStr = matcherUnclosed.group(1);
 		}
-	}
-
-	private static int getEndBracketPos(String reqStr, int methodPos) {
-		int firstClosingBracket = reqStr.indexOf(">", methodPos);
-		int firstFinalizingBracket = reqStr.indexOf("/>", methodPos);
-		if (firstClosingBracket < firstFinalizingBracket) {
-			return firstClosingBracket;
+		Matcher matcherClosed = methodNamePatternClosed.matcher(reqStr);
+		if (matcherClosed.find()) {
+			methodStr = matcherClosed.group(1);
 		}
-		return firstFinalizingBracket;
+		if (methodStr != null && methodStr.endsWith("Response"))
+			methodStr = methodStr.substring(0, methodStr.length() - 8);
+		return methodStr;
 	}
 }
