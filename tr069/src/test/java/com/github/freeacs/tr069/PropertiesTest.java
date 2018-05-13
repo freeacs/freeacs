@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 public class PropertiesTest {
 
     @Test
-    public void isParameterQuirkWithVersion() {
+    public void isParameterQuirkWithVersion_SpeedTouch() {
         // Given:
         SessionData sessionData = mock(SessionData.class);
         Unittype unittype = new Unittype("SpeedTouch 780", "na", "na", Unittype.ProvisioningProtocol.TR069);
@@ -28,7 +28,23 @@ public class PropertiesTest {
     }
 
     @Test
-    public void isParameterQuirkwithoutVersion() {
+    public void isParameterQuirkWithVersion_SlowTouch() {
+        // Given:
+        SessionData sessionData = mock(SessionData.class);
+        Unittype unittype = new Unittype("SlowTouch 780", "na", "na", Unittype.ProvisioningProtocol.TR069);
+        when(sessionData.getUnittype()).thenReturn(unittype);
+        CPEParameters cpeParameters = getCpeParameters();
+        when(sessionData.getCpeParameters()).thenReturn(cpeParameters);
+
+        // When:
+        boolean isParameterKeyQuirk = Properties.isParameterkeyQuirk(sessionData);
+
+        // Then:
+        assertTrue(isParameterKeyQuirk);
+    }
+
+    @Test
+    public void isParameterQuirkwithoutVersion_2602HW() {
         // Given:
         SessionData sessionData = mock(SessionData.class);
         Unittype unittype = new Unittype("P-2602HW-F3", "na", "na", Unittype.ProvisioningProtocol.TR069);
@@ -44,7 +60,7 @@ public class PropertiesTest {
     }
 
     @Test
-    public void isNotParameterQuirk() {
+    public void isNotParameterQuirk_freecwmp() {
         // Given:
         SessionData sessionData = mock(SessionData.class);
         Unittype unittype = new Unittype("freecwmp", "na", "na", Unittype.ProvisioningProtocol.TR069);
