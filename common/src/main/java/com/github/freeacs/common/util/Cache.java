@@ -109,7 +109,9 @@ public class Cache {
 
 	public void remove(Object key) {
 		log.debug("Key " + key + " will be removed from Cache (explicitely - not by Cache.Cleanup.run())");
-		map.remove(key);
+		if (key != null) {
+			map.remove(key);
+		}
 	}
 
 	public CacheValue get(Object key) {
