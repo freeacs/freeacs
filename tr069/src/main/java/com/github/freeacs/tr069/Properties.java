@@ -70,7 +70,7 @@ public class Properties {
 	private static String[] getQuirks(String unittypeName, String version) {
 		String quirks = null;
 		if (version != null)
-			quirks = getString("quirks." + unittypeName + "@" + version, null);
+			quirks = getString("quirks." + unittypeName + "_" + version, null);
 		if (quirks == null)
 			quirks = getString("quirks." + unittypeName, null);
 		if (quirks == null)
