@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 
 public class Properties {
 
-	private static Config config = ConfigFactory.load();
+	static Config config = ConfigFactory.load();
 
 	private static Logger logger = LoggerFactory.getLogger(Properties.class);
 
@@ -49,54 +49,62 @@ public class Properties {
 		return config.getString(propertyKey);
 	}
 
-	public static int getKickRescan() {
+	private static boolean getBooleab(String propertyKey) {
+		return config.getBoolean(propertyKey);
+	}
+
+	static boolean checkIfIpIsPublic() {
+		return getBooleab("kick.check-public-ip");
+	}
+
+	static int getKickRescan() {
 		return getInteger("kick.rescan", 60);
 	}
 
-	public static int getKickInterval() {
+	static int getKickInterval() {
 		return getInteger("kick.interval", 1000);
 	}
 
-	public static int getPrimaryPort() {
+	static int getPrimaryPort() {
 		return getInteger("primary.port", 3478);
 	}
 
-	public static int getSecondayPort() {
+	static int getSecondayPort() {
 		return getInteger("secondary.port", 3479);
 	}
 
-	public static String getPrimaryIp() {
+	static String getPrimaryIp() {
 		return getString("primary.ip", null);
 	}
 
-	public static String getSecondaryIp() {
+	static String getSecondaryIp() {
 		return getString("secondary.ip", null);
 	}
 
-	public static boolean runWithStun() {
+	static boolean runWithStun() {
 		return "true".equals(getString("test.runwithstun", "true").toLowerCase());
 	}
 
-	public static int getMaxConn() {
+	static int getMaxConn() {
 		Integer maxConn = getInteger("db.max-connections", 10);
 		if (maxConn < 5)
 			maxConn = 5;
 		return maxConn;
 	}
 
-	public static boolean expectPortForwarding() {
+	static boolean expectPortForwarding() {
 		return "true".equals(getString("kick.expect-port-forwarding", "false").toLowerCase());
 	}
 
-	public static int getMaxConn(final String infix) {
+	static int getMaxConn(final String infix) {
 		return getInteger("db." + infix + ".maxconn", ConnectionProperties.maxconn);
 	}
 
-	public static long getMaxAge(final String infix) {
+	static long getMaxAge(final String infix) {
 		return getLong("db." + infix + ".maxage", ConnectionProperties.maxage);
 	}
 
-	public static String getUrl(final String infix) {
+	static String getUrl(final String infix) {
 		return Optional.ofNullable(getString("db." + infix + ".url", null))
 				.orElseGet(new Supplier<String>() {
 					@Override
