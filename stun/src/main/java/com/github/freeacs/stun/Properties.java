@@ -49,12 +49,12 @@ public class Properties {
 		return config.getString(propertyKey);
 	}
 
-	private static boolean getBooleab(String propertyKey) {
+	private static boolean getBoolean(String propertyKey) {
 		return config.getBoolean(propertyKey);
 	}
 
 	static boolean checkIfIpIsPublic() {
-		return getBooleab("kick.check-public-ip");
+		return getBoolean("kick.check-public-ip");
 	}
 
 	static int getKickRescan() {

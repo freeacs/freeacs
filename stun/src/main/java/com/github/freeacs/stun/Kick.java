@@ -98,7 +98,7 @@ public class Kick {
 	 */
 	static boolean checkIfPublicIP(String crUrl) throws MalformedURLException {
 		if (!Properties.checkIfIpIsPublic()) {
-			return true; // we don't check it ant we allow it.
+			return true; // we don't check it and we allow it.
 		}
 		return IPAddress.isPublic(new URL(crUrl).getHost());
 	}
