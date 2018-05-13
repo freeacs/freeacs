@@ -512,8 +512,8 @@ public class HTTPRequestProcessor {
 		return methodStr;
 	}
 
-	private static String getMethodStr(String reqStr, Pattern methodNamePatternClosed) {
-		Matcher matcherClosed = methodNamePatternClosed.matcher(reqStr);
+	private static String getMethodStr(String reqStr, Pattern methodNamePattern) {
+		Matcher matcherClosed = methodNamePattern.matcher(reqStr);
 		if (matcherClosed.find()) {
 			return matcherClosed.group(1);
 		}
