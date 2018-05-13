@@ -503,17 +503,20 @@ public class HTTPRequestProcessor {
 	 * @return TR-069 methodName
 	 */
 	static String extractMethodName(String reqStr) {
-		String methodStr = null;
-		Matcher matcherUnclosed = methodNamePatternUnclosed.matcher(reqStr);
-		if (matcherUnclosed.find()) {
-			methodStr = matcherUnclosed.group(1);
-		}
-		Matcher matcherClosed = methodNamePatternClosed.matcher(reqStr);
-		if (matcherClosed.find()) {
-			methodStr = matcherClosed.group(1);
+		String methodStr = getMethodStr(reqStr, methodNamePatternUnclosed);
+		if (methodStr == null) {
+			methodStr = getMethodStr(reqStr, methodNamePatternClosed);
 		}
 		if (methodStr != null && methodStr.endsWith("Response"))
 			methodStr = methodStr.substring(0, methodStr.length() - 8);
 		return methodStr;
+	}
+
+	private static String getMethodStr(String reqStr, Pattern methodNamePatternClosed) {
+		Matcher matcherClosed = methodNamePatternClosed.matcher(reqStr);
+		if (matcherClosed.find()) {
+			return matcherClosed.group(1);
+		}
+		return null;
 	}
 }
