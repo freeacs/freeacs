@@ -12,7 +12,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.sql.SQLException;
 
 public class DigestAuthenticator {
@@ -20,11 +19,7 @@ public class DigestAuthenticator {
 	private static void sendChallenge(HttpServletRequest req, HttpServletResponse res) {
 		String nonce = DigestUtils.md5Hex(req.getRemoteAddr() + ":" + System.currentTimeMillis() + ":MortenRuler");
 		setAuthenticateHeader(res, nonce);
-		try {
-			res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-		} catch (IOException ioe) {
-			Log.warn(DigestAuthenticator.class, "Unable to make challenge", ioe);
-		}
+		res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 	}
 
 	public static boolean authenticate(HTTPReqResData reqRes) throws TR069AuthenticationException {
