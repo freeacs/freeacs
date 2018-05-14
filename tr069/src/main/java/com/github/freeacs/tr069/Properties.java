@@ -163,4 +163,8 @@ public class Properties {
 					}
 				});
 	}
+
+	public static boolean sessionCookieHttpOnly() {
+		return config.getBoolean("server.servlet.session.cookie.http-only");
+	}
 }
