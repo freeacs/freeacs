@@ -2,10 +2,13 @@ package com.github.freeacs;
 
 import com.github.freeacs.base.http.FileServlet;
 import com.github.freeacs.base.http.OKServlet;
+import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.Provisioning;
 import com.github.freeacs.tr069.test.system1.TestServlet;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 
@@ -49,5 +52,11 @@ public class App {
         srb.setServlet(new TestServlet());
         srb.setUrlMappings(Collections.singletonList("/test"));
         return srb;
+    }
+
+    @Bean
+    public WebServerFactoryCustomizer<TomcatServletWebServerFactory> tomcatCustomizer() {
+        return (tomcat) -> tomcat.addContextCustomizers((context) ->
+                context.setUseHttpOnly(Properties.sessionCookieHttpOnly()));
     }
 }
