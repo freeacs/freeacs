@@ -11,7 +11,6 @@ import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069AuthenticationException;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.sql.SQLException;
 
 public class BasicAuthenticator {
@@ -20,11 +19,7 @@ public class BasicAuthenticator {
 		// Send challenge
 		String authParam = "Basic realm=\"" + Util.getRealm() + "\"";
 		res.addHeader("WWW-Authenticate", authParam);
-		try {
-			res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-		} catch (IOException ioe) {
-			Log.warn(DigestAuthenticator.class, "Unable to make challenge", ioe);
-		}
+		res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 	}
 
 	public static boolean authenticate(HTTPReqResData reqRes) throws TR069AuthenticationException {
