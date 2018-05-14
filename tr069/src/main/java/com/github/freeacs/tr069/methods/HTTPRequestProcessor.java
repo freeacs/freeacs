@@ -490,7 +490,7 @@ public class HTTPRequestProcessor {
 		}
 	}
 
-	private static final Pattern methodNamePattern = Pattern.compile("<cwmp:(\\w+)(>|/>)");
+	private static final Pattern methodNamePattern = Pattern.compile("Body>\\s*<cwmp:(\\w+)(>|/>)");
 
 	/**
 	 * Fastest way to extract the method name without actually parsing the XML - the method name is crucial to
