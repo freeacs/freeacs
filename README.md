@@ -1,6 +1,7 @@
 ![Jdbi Logo](readme/logo.png)
 
 [![Build Status](https://travis-ci.org/freeacs/freeacs.svg?branch=master)](https://travis-ci.org/freeacs/freeacs)
+[![Gitter chat](https://badges.gitter.im/FreeACS-on-Gitter/Freeacs.png)](https://gitter.im/FreeACS-on-Gitter/Freeacs)
 
 Fusion Free ACS is the most complete TR-069 ACS available for free under the MIT License. You can download and install it, or contribute to the project! 
 
