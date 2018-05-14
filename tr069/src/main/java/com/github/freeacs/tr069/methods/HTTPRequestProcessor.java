@@ -490,8 +490,7 @@ public class HTTPRequestProcessor {
 		}
 	}
 
-	private static final Pattern methodNamePatternUnclosed = Pattern.compile("<cwmp:(\\w+)>");
-	private static final Pattern methodNamePatternClosed = Pattern.compile("<cwmp:(\\w+)/>");
+	private static final Pattern methodNamePattern = Pattern.compile("<cwmp:(\\w+)(>|/>)");
 
 	/**
 	 * Fastest way to extract the method name without actually parsing the XML - the method name is crucial to
@@ -503,19 +502,16 @@ public class HTTPRequestProcessor {
 	 * @return TR-069 methodName
 	 */
 	static String extractMethodName(String reqStr) {
-		String methodStr = getMethodStr(reqStr, methodNamePatternUnclosed);
-		if (methodStr == null) {
-			methodStr = getMethodStr(reqStr, methodNamePatternClosed);
-		}
+		String methodStr = getMethodStr(reqStr);
 		if (methodStr != null && methodStr.endsWith("Response"))
 			methodStr = methodStr.substring(0, methodStr.length() - 8);
 		return methodStr;
 	}
 
-	private static String getMethodStr(String reqStr, Pattern methodNamePattern) {
-		Matcher matcherClosed = methodNamePattern.matcher(reqStr);
-		if (matcherClosed.find()) {
-			return matcherClosed.group(1);
+	private static String getMethodStr(String reqStr) {
+		Matcher matcher = methodNamePattern.matcher(reqStr);
+		if (matcher.find()) {
+			return matcher.group(1);
 		}
 		return null;
 	}
