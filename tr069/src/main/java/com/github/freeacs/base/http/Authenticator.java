@@ -12,7 +12,6 @@ import com.github.freeacs.tr069.exception.TR069AuthenticationException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -54,12 +53,7 @@ public class Authenticator {
       if (cv != null) {
         int count = (Integer) cv.getObject();
         if (count >= 5) {
-          try {
-            reqRes.getRes().sendError(HttpServletResponse.SC_UNAUTHORIZED);
-          } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          }
+          reqRes.getRes().setStatus(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
           blockedClientsCount++;
           return true;
         }

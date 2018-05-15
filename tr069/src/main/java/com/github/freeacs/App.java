@@ -53,10 +53,4 @@ public class App {
         srb.setUrlMappings(Collections.singletonList("/test"));
         return srb;
     }
-
-    @Bean
-    public WebServerFactoryCustomizer<TomcatServletWebServerFactory> tomcatCustomizer() {
-        return (tomcat) -> tomcat.addContextCustomizers((context) ->
-                context.setUseHttpOnly(Properties.sessionCookieHttpOnly()));
-    }
 }
