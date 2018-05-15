@@ -16,10 +16,8 @@ import java.sql.SQLException;
 public class BasicAuthenticator {
 
 	private static void sendChallenge(HttpServletResponse res) {
-		// Send challenge
-		String authParam = "Basic realm=\"" + Util.getRealm() + "\"";
-		res.addHeader("WWW-Authenticate", authParam);
-		res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		res.setHeader("WWW-Authenticate", "Basic realm=\"" + Util.getRealm() + "\"");
+		res.setStatus(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
 	}
 
 	public static boolean authenticate(HTTPReqResData reqRes) throws TR069AuthenticationException {

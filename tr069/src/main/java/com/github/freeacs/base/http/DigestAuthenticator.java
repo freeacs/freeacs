@@ -17,9 +17,9 @@ import java.sql.SQLException;
 public class DigestAuthenticator {
 
 	private static void sendChallenge(HttpServletRequest req, HttpServletResponse res) {
-		String nonce = DigestUtils.md5Hex(req.getRemoteAddr() + ":" + System.currentTimeMillis() + ":MortenRuler");
-		setAuthenticateHeader(res, nonce);
-		res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		long now = System.currentTimeMillis();
+		setAuthenticateHeader(res, DigestUtils.md5Hex(req.getRemoteAddr() + ":" + now + ":MortenRuler"));
+		res.setStatus(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
 	}
 
 	public static boolean authenticate(HTTPReqResData reqRes) throws TR069AuthenticationException {
@@ -36,7 +36,7 @@ public class DigestAuthenticator {
 
 	/**
 	 * Generates the WWW-Authenticate header.
-	 * 
+	 *
 	 * @param res HTTP Servlet response
 	 * @param nonce nonce token
 	 */
@@ -62,10 +62,10 @@ public class DigestAuthenticator {
 
 	/**
 	 * Verifies login against database
-	 * 
+	 *
 	 * @param reqRes HTTP servlet request
 	 * @param authorization Authorization credentials from this request
-	 * @throws TR069AuthenticationException 
+	 * @throws TR069AuthenticationException
 	 */
 	private static boolean verify(HTTPReqResData reqRes, String authorization) throws TR069AuthenticationException {
 
