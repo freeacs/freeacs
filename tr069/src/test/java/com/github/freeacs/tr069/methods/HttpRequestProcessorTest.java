@@ -127,4 +127,69 @@ public class HttpRequestProcessorTest {
         // Then:
         assertEquals("Inform", methodName);
     }
+
+    @Test
+    public void testOtherCornerCase() {
+        // Given:
+        String informReq = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/informReq/envelope/\" xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/informReq/encoding/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">\n" +
+                "<SOAP-ENV:Header>\n" +
+                "<cwmp:ID SOAP-ENV:mustUnderstand=\"1\">inform</cwmp:ID>\n" +
+                "</SOAP-ENV:Header>\n" +
+                "<SOAP-ENV:Body SOAP-ENV:encodingStyle=\"http://schemas.xmlsoap.org/informReq/encoding/\">\n" +
+                "<cwmp:Inform>\n" +
+                "<DeviceId>\n" +
+                "<Manufacturer>Manufact</Manufacturer>\n" +
+                "<OUI>00000</OUI>\n" +
+                "<ProductClass>fffffff</ProductClass>\n" +
+                "<SerialNumber>ffffffffffffffffff</SerialNumber>\n" +
+                "</DeviceId>\n" +
+                "<Event xsi:type=\"SOAP-ENC:Array\" SOAP-ENC:arrayType=\"cwmp:EventStruct[2]\">\n" +
+                "<EventStruct>\n" +
+                "<EventCode>0 BOOTSTRAP</EventCode>\n" +
+                "<CommandKey></CommandKey>\n" +
+                "</EventStruct>\n" +
+                "<EventStruct>\n" +
+                "<EventCode>1 BOOT</EventCode>\n" +
+                "<CommandKey></CommandKey>\n" +
+                "</EventStruct>\n" +
+                "</Event>\n" +
+                "<MaxEnvelopes>1</MaxEnvelopes>\n" +
+                "<CurrentTime>2018-05-15T10:44:03</CurrentTime>\n" +
+                "<RetryCount>0</RetryCount>\n" +
+                "</cwmp:Inform>\n" +
+                "</SOAP-ENV:Body>\n" +
+                "</SOAP-ENV:Envelope>";
+
+        // When:
+        String methodName = HTTPRequestProcessor.extractMethodName(informReq);
+
+        // Then:
+        assertEquals("Inform", methodName);
+    }
+
+    @Test
+    public void testPrettyMuchIrregularRequest() {
+        // Given:
+        String rebootResponse = "<soap:Body ddsd=ssdsdsddd ><cwmp:RebootResponse><Irreleevant /></cwmp:RebootResponse></soap:Body>";
+
+        // When:
+        String methodName = HTTPRequestProcessor.extractMethodName(rebootResponse);
+
+        // Then:
+        assertEquals("Reboot", methodName);
+    }
+
+    @Test
+    public void testPrettyMuchIrregularRequestWithLineBreak() {
+        // Given:
+        String rebootResponse = "<soap:Body ddsd=ssdsdsddd\n ><cwmp:RebootResponse><Irreleevant /></cwmp:RebootResponse></soap:Body>";
+
+        // When:
+        String methodName = HTTPRequestProcessor.extractMethodName(rebootResponse);
+
+        // Then:
+        assertEquals("Reboot", methodName);
+    }
+
 }
