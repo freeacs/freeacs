@@ -54,8 +54,11 @@
     <logger name="Event" level="INFO" additivity="false">
         <appender-ref ref="EVENT-FILE"/>
     </logger>
-    <logger name="com.github.freeacs" level="INFO">
+    <logger name="com.github.freeacs.common.db.ConnectionProvider" level="ERROR" />
+    <logger name="com.github.freeacs.tr069.Properties" level="ERROR" />
+    <logger name="org.eclipse.jetty" level="WARN" />
+    <root level="DEBUG">
         <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT" />
-    </logger>
+    </root>
 </configuration>
