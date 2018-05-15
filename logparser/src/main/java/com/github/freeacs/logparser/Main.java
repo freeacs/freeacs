@@ -1,8 +1,6 @@
 package com.github.freeacs.logparser;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,29 +16,31 @@ public class Main {
         BufferedReader br = new BufferedReader(new FileReader(new File(fileName)));
         String outputFile = args[1];
         BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outputFile)));
-        String currentPayload = null;
+        StringBuilder currentPayload = new StringBuilder();
         String currentKey = null;
         String format = "%-40s%s";
+        System.out.print("converting, please wait...");
         while(br.ready()) {
             String line = br.readLine();
-            String payload = currentPayload;
+            String payload = currentPayload.toString();
             if (line.contains("Conversation - ==============")) {
                 if (currentKey != null) {
-                    String methodName = extractMethodName(currentPayload);
+                    String methodName = extractMethodName(payload);
                     String newKey = currentKey.replaceAll("\\[.*?\\]", "").replace("INFO  Conversation", String.format(format, methodName, ""));
-                    System.out.println(newKey);
-                    payload = payload.replaceAll("\n", "").replaceAll("\r", "");
+                    String newPayload = payload.replaceAll("\n", "").replaceAll("\r", "");
                     bw.append(newKey);
                     bw.newLine();
-                    bw.append(payload);
+                    bw.append(newPayload);
                     bw.newLine();
                 }
-                currentPayload = "";
+                currentPayload = new StringBuilder();
                 currentKey = line;
             } else {
-                currentPayload += line;
+                currentPayload.append(line);
             }
         }
+        System.out.print("Done");
+        System.out.println();
         br.close();
         bw.close();
     }
