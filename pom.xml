@@ -59,6 +59,7 @@
         <module>monitor</module>
         <module>core</module>
         <module>web</module>
+        <module>logparser</module>
     </modules>
 
 </project>
