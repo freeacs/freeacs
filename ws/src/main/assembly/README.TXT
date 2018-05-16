@@ -19,6 +19,7 @@ For systemd (suggested)
 For systemv (aka init.d, not tested)
 
     sudo ln -s /var/freeacs/ws/freeacs-ws.jar /etc/init.d/freeacs-ws
+    sudo update-rc.d freeacs-ws defaults
     sudo service freeacs-ws restart
 
 tail -f /var/freeacs/ws/log/ws.log

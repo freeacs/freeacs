@@ -19,6 +19,7 @@ For systemd (suggested)
 For systemv (aka init.d, not tested)
 
     sudo ln -s /var/freeacs/syslog/freeacs-syslog.jar /etc/init.d/freeacs-syslog
+    sudo update-rc.d freeacs-syslog defaults
     sudo service freeacs-syslog restart
 
 tail -f /var/freeacs/syslog/log/syslog.log

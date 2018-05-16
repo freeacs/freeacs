@@ -19,6 +19,7 @@ For systemd (suggested)
 For systemv (aka init.d, not tested)
 
     sudo ln -s /var/freeacs/stun/freeacs-stun.jar /etc/init.d/freeacs-stun
+    sudo update-rc.d freeacs-stun defaults
     sudo service freeacs-stun restart
 
 tail -f /var/freeacs/stun/log/stun.log

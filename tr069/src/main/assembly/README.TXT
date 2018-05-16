@@ -19,6 +19,7 @@ For systemd (suggested)
 For systemv (aka init.d, not tested)
 
     sudo ln -s /var/freeacs/tr069/freeacs-tr069.jar /etc/init.d/freeacs-tr069
+    sudo update-rc.d freeacs-tr069 defaults
     sudo service freeacs-tr069 restart
 
 tail -f /var/freeacs/tr069/log/tr069.log

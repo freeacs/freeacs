@@ -19,6 +19,7 @@ For systemd (suggested)
 For systemv (aka init.d, not tested)
 
     sudo ln -s /var/freeacs/monitor/freeacs-monitor.jar /etc/init.d/freeacs-monitor
+    sudo update-rc.d freeacs-monitor defaults
     sudo service freeacs-monitor restart
 
 tail -f /var/freeacs/monitor/log/monitor.log

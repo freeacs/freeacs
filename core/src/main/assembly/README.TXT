@@ -19,6 +19,7 @@ For systemd (suggested)
 For systemv (aka init.d, not tested)
 
     sudo ln -s /var/freeacs/core/freeacs-core.jar /etc/init.d/freeacs-core
+    sudo update-rc.d freeacs-core defaults
     sudo service freeacs-core restart
 
 tail -f /var/freeacs/core/log/core.log

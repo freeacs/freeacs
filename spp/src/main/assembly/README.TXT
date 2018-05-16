@@ -19,6 +19,7 @@ For systemd (suggested)
 For systemv (aka init.d, not tested)
 
     sudo ln -s /var/freeacs/spp/freeacs-spp.jar /etc/init.d/freeacs-spp
+    sudo update-rc.d freeacs-spp defaults
     sudo service freeacs-spp restart
 
 tail -f /var/freeacs/spp/log/spp.log
