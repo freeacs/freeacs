@@ -5,6 +5,9 @@
             <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
+    <appender name="ASYNC_STDOUT" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="STDOUT" />
+    </appender>
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH:-logs}/tr069.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -14,6 +17,9 @@
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
+    </appender>
+    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE" />
     </appender>
     <appender name="CONVERSATION-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH:-logs}/tr069-conversation.log</file>
@@ -25,6 +31,9 @@
             <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
+    <appender name="ASYNC_CONVERSATION_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="CONVERSATION-FILE" />
+    </appender>
     <appender name="STABILITY-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH:-logs}/tr069-stability.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -34,6 +43,9 @@
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
+    </appender>
+    <appender name="ASYNC_STABILITY_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="STABILITY-FILE" />
     </appender>
     <appender name="EVENT-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH:-logs}/tr069-event.log</file>
@@ -45,20 +57,23 @@
             <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
+    <appender name="ASYNC_EVENT_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="EVENT-FILE" />
+    </appender>
     <logger name="Conversation" level="INFO" additivity="false">
-        <appender-ref ref="CONVERSATION-FILE"/>
+        <appender-ref ref="ASYNC_CONVERSATION_FILE"/>
     </logger>
     <logger name="Stability" level="INFO" additivity="false">
-        <appender-ref ref="STABILITY-FILE"/>
+        <appender-ref ref="ASYNC_STABILITY_FILE"/>
     </logger>
     <logger name="Event" level="INFO" additivity="false">
-        <appender-ref ref="EVENT-FILE"/>
+        <appender-ref ref="ASYNC_EVENT_FILE"/>
     </logger>
     <logger name="com.github.freeacs.common.db.ConnectionProvider" level="ERROR" />
     <logger name="com.github.freeacs.tr069.Properties" level="ERROR" />
     <logger name="org.eclipse.jetty" level="WARN" />
     <root level="DEBUG">
-        <appender-ref ref="FILE"/>
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="ASYNC_FILE"/>
+        <appender-ref ref="ASYNC_STDOUT" />
     </root>
 </configuration>
