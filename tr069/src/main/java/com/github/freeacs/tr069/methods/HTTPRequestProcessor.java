@@ -485,7 +485,7 @@ public class HTTPRequestProcessor {
 				String xml = reqRes.getRequest().getXml();
 				if (Properties.isPrettyPrintQuirk(reqRes.getSessionData()))
 					xml = HTTPReqData.XMLFormatter.prettyprint(reqRes.getRequest().getXml());
-				Log.conversation(reqRes.getSessionData(), "============== FROM CPE ( " + Optional.ofNullable(unitId).orElseGet(() -> "Unknown") + " ) ===============\n" + xml);
+				Log.conversation(reqRes.getSessionData(), "============== FROM CPE ( " + Optional.ofNullable(unitId).orElseGet(() -> "Unknown") + " ) TO ACS ===============\n" + xml);
 			}
 		}
 	}
