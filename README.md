@@ -33,7 +33,7 @@ No special versioning paradigms used at the moment. But we are currently targeti
 
 ## License
 
-This project is licensed under the The MIT License. See https://github.com/freeacs/freeacs/blob/master/readme/LICENSE
+This project is licensed under the The MIT License.
 
 ## Active project Members
 
