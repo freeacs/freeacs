@@ -57,7 +57,7 @@ public class UnittypeCreatePage extends AbstractWebPage {
 		InputDataIntegrity.loadAndStoreSession(params, outputHandler, inputData);
 
 		DropDownSingleSelect<Unittype> unittypesToCopyFrom = InputSelectionFactory.getDropDownSingleSelect(inputData.getUnittypeToCopyFrom(),
-				xaps.getUnittype(inputData.getUnittypeToCopyFrom().getString()), getUnittypesWithProtocol(xaps, sessionId, inputData.getNewProtocol().getString()));
+				xaps.getUnittype(inputData.getUnittypeToCopyFrom().getString()), getUnittypesWithProtocol(xaps, sessionId, inputData.getNewProtocol().getString(), xapsDataSource));
 
 		if (inputData.getFormSubmit().hasValue("Create")) {
 			if (isUnittypesLimited(sessionId, xapsDataSource)) {
@@ -134,11 +134,12 @@ public class UnittypeCreatePage extends AbstractWebPage {
 	 * @param xaps the xaps
 	 * @param sessionId the session id
 	 * @param protocol the protocol
+	 * @param xapsDataSource
 	 * @return the unittypes with protocol
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	private List<Unittype> getUnittypesWithProtocol(XAPS xaps, String sessionId, String protocol) throws NoAvailableConnectionException, SQLException {
+	private List<Unittype> getUnittypesWithProtocol(XAPS xaps, String sessionId, String protocol, DataSource xapsDataSource) throws NoAvailableConnectionException, SQLException {
 		List<Unittype> unittypes = getAllowedUnittypes(sessionId, xapsDataSource);
 		List<Unittype> allowedUnittypes = new ArrayList<Unittype>();
 		if (protocol == null)

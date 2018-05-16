@@ -303,7 +303,7 @@ public class LoginServlet extends HttpServlet implements Filter {
 		SessionData sessionData = SessionCache.getSessionData(sessionId);
 		name = name.toLowerCase();
 		logger.debug("Will check if " + name + "/" + passwd + " is authenticated using " + loginHandler.getClass() + " class");
-		WebUser user = loginHandler.authenticateUser(name, passwd, sessionId);
+		WebUser user = loginHandler.authenticateUser(name, passwd, sessionId, xapsDataSource);
 
 		if (!user.isAuthenticated()) {
 			sessionData.setErrorMessage("Your login and password are invalid.");

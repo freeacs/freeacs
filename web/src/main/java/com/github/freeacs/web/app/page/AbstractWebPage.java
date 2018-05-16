@@ -124,14 +124,15 @@ public abstract class AbstractWebPage implements WebPage {
 	 *
 	 * @param unittype the unittype
 	 * @param sessionId the session id
+	 * @param xapsDataSource
 	 * @return true, if is profiles limited
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	public boolean isProfilesLimited(Unittype unittype, String sessionId) throws NoAvailableConnectionException, SQLException {
+	public boolean isProfilesLimited(Unittype unittype, String sessionId, DataSource xapsDataSource) throws NoAvailableConnectionException, SQLException {
 		if(unittype==null)
 			return false;
-		List<Profile> list = getAllowedProfiles(sessionId,unittype);
+		List<Profile> list = getAllowedProfiles(sessionId,unittype, xapsDataSource);
 		return list.size() != unittype.getProfiles().getProfiles().length;
 	}
 	
@@ -558,13 +559,14 @@ public abstract class AbstractWebPage implements WebPage {
 	 *
 	 * @param sessionId the session id
 	 * @param unittype the unittype
+	 * @param xapsDataSource
 	 * @return the allowed profiles
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	public static List<Profile> getAllowedProfiles(String sessionId,Unittype unittype) throws NoAvailableConnectionException, SQLException {
+	public static List<Profile> getAllowedProfiles(String sessionId, Unittype unittype, DataSource xapsDataSource) throws NoAvailableConnectionException, SQLException {
 		if(unittype==null)
-			return getAllAllowedProfiles(sessionId);
+			return getAllAllowedProfiles(sessionId, xapsDataSource);
 		
 		SessionData sessionData = SessionCache.getSessionData(sessionId);
 		
@@ -607,15 +609,16 @@ public abstract class AbstractWebPage implements WebPage {
 	 * Gets the all allowed profiles.
 	 *
 	 * @param sessionId the session id
+	 * @param xapsDataSource
 	 * @return the all allowed profiles
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	protected static List<Profile> getAllAllowedProfiles(String sessionId) throws NoAvailableConnectionException, SQLException{
+	protected static List<Profile> getAllAllowedProfiles(String sessionId, DataSource xapsDataSource) throws NoAvailableConnectionException, SQLException{
 		List<Unittype> unittypes = getAllowedUnittypes(sessionId, xapsDataSource);
  		List<Profile> filteredProfiles = new ArrayList<Profile>();
 		for(Unittype unittype: unittypes){
-			List<Profile> profiles = getAllowedProfiles(sessionId,unittype);
+			List<Profile> profiles = getAllowedProfiles(sessionId,unittype, xapsDataSource);
 			if(profiles!=null)
 				filteredProfiles.addAll(profiles);
 		}

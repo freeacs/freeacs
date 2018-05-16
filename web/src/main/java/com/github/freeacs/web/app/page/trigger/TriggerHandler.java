@@ -10,6 +10,7 @@ import com.github.freeacs.web.app.table.TableElementMaker;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.XAPSLoader;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +23,7 @@ public class TriggerHandler {
 	private String sessionId;
 	private TriggerData inputData;
 
-	public TriggerHandler(String sessionId, TriggerData inputData) throws NoAvailableConnectionException, SQLException {
+	public TriggerHandler(String sessionId, TriggerData inputData, DataSource xapsDataSource) throws NoAvailableConnectionException, SQLException {
 		this.xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
 		this.sessionId = sessionId;
 		this.inputData = inputData;

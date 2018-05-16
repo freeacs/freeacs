@@ -113,7 +113,7 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
 		if(params.getBoolean("display-chart")){
             ReportVoipCallGenerator rgVoip = ReportPage.getReportVoipCallGenerator(params.getSession().getId(), xaps);
 			List<Unittype> unittypes = unittype!=null?Arrays.asList(unittype):getAllowedUnittypes(sessionId, xapsDataSource);
-			List<Profile> profiles = profile!=null?Arrays.asList(profile):getAllowedProfiles(sessionId, unittype);
+			List<Profile> profiles = profile!=null?Arrays.asList(profile):getAllowedProfiles(sessionId, unittype, xapsDataSource);
 			String unitId = unit!=null?unit.getId():null;
 			Report<RecordVoipCall> report = rgVoip.generateFromSyslog(PeriodType.SECOND,start, end,unittypes,profiles, unitId,line,null);
 			logger.info("Found "+report.getMap().size()+" record voip call entries. From: "+start.toString()+". To: "+(end!=null?end.toString():"N/A"));

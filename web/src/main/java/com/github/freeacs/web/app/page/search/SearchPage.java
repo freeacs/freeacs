@@ -81,7 +81,7 @@ public class SearchPage extends AbstractWebPage {
 
 		if (inputData.getFormSubmit().isValue("Search")) {
 			int limit = inputData.getLimit().getInteger(100);
-			List<Unit> result = getSearchResults(limit, unittypes.getSelected(), profiles.getSelected(), params);
+			List<Unit> result = getSearchResults(limit, unittypes.getSelected(), profiles.getSelected(), params, xapsDataSource);
 			result = xapsUnit.getUnitsWithParameters(unittypes.getSelected(),
 					profiles.getSelected(),	result);
 			List<SearchResultWrapper> wrappedResults = new ArrayList<>();
@@ -123,7 +123,7 @@ public class SearchPage extends AbstractWebPage {
 		} else if (params.getParameter("term") != null) {
 			int limit = 10;
 			inputData.getUnitParamValue().setValue(params.getParameter("term"));
-			List<Unit> result = getSearchResults(limit, unittypes.getSelected(), profiles.getSelected(), params);
+			List<Unit> result = getSearchResults(limit, unittypes.getSelected(), profiles.getSelected(), params, xapsDataSource);
 			String out = null;
 			JSONArray json = new JSONArray();
 			if (result != null && result.size() > 0) {
@@ -165,12 +165,12 @@ public class SearchPage extends AbstractWebPage {
 	 * @throws Exception
 	 *             the exception
 	 */
-	private List<Unit> getSearchResults(int limit, Unittype unittype, Profile profile, ParameterParser req) throws Exception {
+	private List<Unit> getSearchResults(int limit, Unittype unittype, Profile profile, ParameterParser req, DataSource xapsDataSource) throws Exception {
 		List<Unit> results = null;
 
 		int more = limit + 1;
 
-		List<Profile> allowedProfiles = getAllowedProfiles(req.getSession().getId(), unittype);
+		List<Profile> allowedProfiles = getAllowedProfiles(req.getSession().getId(), unittype, xapsDataSource);
 
 		List<Parameter> searchParams = geSearchableParametersFromRequest(req, unittype);
 

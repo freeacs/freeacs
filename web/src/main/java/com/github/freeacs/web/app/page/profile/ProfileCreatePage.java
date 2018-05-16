@@ -66,7 +66,7 @@ public class ProfileCreatePage extends ProfileActions {
 			root.put("profilestocopyfrom",profilestocopyfrom);
 		
 		if (inputData.getFormSubmit().isValue("Create profile")) {
-			if (isProfilesLimited(unittypes.getSelected(), sessionId)) {
+			if (isProfilesLimited(unittypes.getSelected(), sessionId, xapsDataSource)) {
 				throw new Exception("You are not allowed to create profiles!");
 			}
 			if (unittypes.getSelected() != null && unittypes.getSelected().getProfiles().getByName(inputData.getProfilename().getString()) == null) {

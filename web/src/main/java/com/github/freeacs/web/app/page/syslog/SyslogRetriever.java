@@ -55,7 +55,7 @@ public class SyslogRetriever {
 		if (profile != null)
 			filter.setProfiles(Collections.singletonList(profile));
 		else {
-			List<Profile> profiles = AbstractWebPage.getAllowedProfiles(sessionId, unittype);
+			List<Profile> profiles = AbstractWebPage.getAllowedProfiles(sessionId, unittype, xapsDataSource);
 			if (profiles != null && profiles.size() > 0) {
 				filter.setProfiles(profiles);
 			}

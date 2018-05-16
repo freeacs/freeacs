@@ -242,8 +242,9 @@ public class GroupPage extends AbstractWebPage {
 	 * @return the string
 	 * @throws Exception
 	 *             the exception
+	 * @param xapsDataSource
 	 */
-	private String actionCreateGroup() throws Exception {
+	private String actionCreateGroup(DataSource xapsDataSource) throws Exception {
 		String gName = inputData.getGroupname().getStringWithoutTags();
 		String desc = inputData.getDescription().getString();
 
@@ -254,7 +255,7 @@ public class GroupPage extends AbstractWebPage {
 
 		if (inputData.getProfile().notNullNorValue(WebConstants.ALL_ITEMS_OR_DEFAULT))
 			profile = unittypes.getSelected().getProfiles().getByName(inputData.getProfile().getString());
-		else if (isProfilesLimited(unittypes.getSelected(), sessionId))
+		else if (isProfilesLimited(unittypes.getSelected(), sessionId, xapsDataSource))
 			throw new Exception("You are not allowed to create groups!");
 
 		if (gName != null && desc != null) {
@@ -313,7 +314,7 @@ public class GroupPage extends AbstractWebPage {
 		} else if (inputData.getFormSubmit().isValue(WebConstants.UPDATE))
 			actionUpdateGroup();
 		else if (inputData.getFormSubmit().isValue("Create group")) {
-			createMessage = actionCreateGroup();
+			createMessage = actionCreateGroup(xapsDataSource);
 		} else if (inputData.getFormSubmit().isValue(WebConstants.UPDATE_PARAMS))
 			actionCUDParameters(params);
 
@@ -359,7 +360,7 @@ public class GroupPage extends AbstractWebPage {
 		map.put("unittypes", unittypes);
 		map.put("groups", groups);
 		map.put("parents", parents);
-		map.put("profiles", addGroupProfile());
+		map.put("profiles", addGroupProfile(xapsDataSource));
 
 		if (groups.getSelected() == null)
 			outputHandler.setTemplatePath("group/create");
@@ -385,8 +386,9 @@ public class GroupPage extends AbstractWebPage {
 	 *             the no available connection exception
 	 * @throws SQLException
 	 *             the sQL exception
+	 * @param xapsDataSource
 	 */
-	private DropDownSingleSelect<Profile> addGroupProfile() throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException,
+	private DropDownSingleSelect<Profile> addGroupProfile(DataSource xapsDataSource) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException,
 			NoAvailableConnectionException, SQLException {
 		if (unittypes.getSelected() == null)
 			return null;
@@ -399,7 +401,7 @@ public class GroupPage extends AbstractWebPage {
 		Profile profile = parentGroup != null ? findProfile(parentGroup.getName()) : groups.getSelected() != null ? findProfile(groups.getSelected().getName())
 				: (inputData.getProfile().getString() != null ? xaps.getProfile(unittypes.getSelected().getName(), inputData.getProfile().getString()) : null);
 
-		List<Profile> allowedProfiles = parentGroup == null ? getAllowedProfiles(sessionId, unittypes.getSelected()) : new ArrayList<Profile>();
+		List<Profile> allowedProfiles = parentGroup == null ? getAllowedProfiles(sessionId, unittypes.getSelected(), xapsDataSource) : new ArrayList<Profile>();
 
 		DropDownSingleSelect<Profile> profiles = InputSelectionFactory.getDropDownSingleSelect(inputData.getProfile(), profile, allowedProfiles);
 

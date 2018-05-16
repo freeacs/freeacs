@@ -63,7 +63,7 @@ public class TriggerOverviewPage extends AbstractWebPage {
 		Unittype unittype = xaps.getUnittype(inputData.getUnittype().getString());
 
 		if (unittype != null) {
-			triggerHandler = new TriggerHandler(sessionId, inputData);
+			triggerHandler = new TriggerHandler(sessionId, inputData, xapsDataSource);
 			outputHandler.getTemplateMap().put("triggertablelist", triggerHandler.getTriggerTableElements());
 			if (inputData.getAction().hasValue(EDIT_ACTION)) {
 				setOutputDataForEditTriggerMode(outputHandler);

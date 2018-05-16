@@ -14,6 +14,7 @@ import com.github.freeacs.web.app.util.XAPSLoader;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,6 +42,8 @@ public class UnittypeParametersPage extends AbstractWebPage {
 	/** The Session keys */
 	private static final String SESSION_SAVE_BOOLEAN = "utp-save-complete";
 	private static final String SESSION_SAVE_ERRORS = "utp-save-error";
+
+	@Qualifier("xaps") DataSource xapsDataSource;
 
 	/**
 	 * For use by jQuery on the search page for the "Add new parameter" in advanced mode.

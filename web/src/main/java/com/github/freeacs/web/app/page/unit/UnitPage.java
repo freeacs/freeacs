@@ -490,7 +490,7 @@ public class UnitPage extends AbstractWebPage {
 				unit = xapsUnit.getUnitById(unit.getId());
 				SessionCache.putUnit(sessionId, unit);
 
-				displayUnit(root);
+				displayUnit(root, xapsDataSource);
 
 			} else if (unit == null && inputData.getUnit().notNullNorValue("")) {
 				root.put("unitId", inputData.getUnit().getString());
@@ -594,9 +594,10 @@ public class UnitPage extends AbstractWebPage {
 	 * Decides and prepares to display the unit page.
 	 *
 	 * @param root The template map
+	 * @param xapsDataSource
 	 * @throws Exception the exception
 	 */
-	private void displayUnit(Map<String, Object> root) throws Exception {
+	private void displayUnit(Map<String, Object> root, DataSource xapsDataSource) throws Exception {
 		root.put("unit", unit);
 		root.put("new_unit", inputData.getNewUnit().getString());
 		// Not sure if this is necessary, could perhaps use the object instance fields
@@ -604,7 +605,7 @@ public class UnitPage extends AbstractWebPage {
 		Profile profile = unit.getProfile();
 		root.put("unittype", unittype.getName());
 		root.put("syslogdate", SyslogUtil.getDateString());
-		List<Profile> profiles = getAllowedProfiles(sessionId, unittype);
+		List<Profile> profiles = getAllowedProfiles(sessionId, unittype, xapsDataSource);
 		root.put("profiles", InputSelectionFactory.getDropDownSingleSelect(inputData.getProfile(), unittype.getProfiles().getByName(inputData.getProfile().getString()), profiles));
 		UnittypeParameter[] utParams = unittype.getUnittypeParameters().getUnittypeParameters();
 		UnitParameter[] uParams = unit.getUnitParameters().values().toArray(new UnitParameter[] {});

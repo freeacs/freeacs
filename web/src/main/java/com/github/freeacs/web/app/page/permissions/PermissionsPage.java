@@ -195,7 +195,7 @@ public class PermissionsPage extends AbstractWebPage {
 			root.put("unittype", utString);
 			Unittype unittype = xaps.getUnittype(utString);
 			if (unittype != null) {
-				root.put("profiles", getAllowedProfiles(sessionId, unittype));
+				root.put("profiles", getAllowedProfiles(sessionId, unittype, xapsDataSource));
 				root.put("profile", inputData.getProfile().getString());
 			}
 		}

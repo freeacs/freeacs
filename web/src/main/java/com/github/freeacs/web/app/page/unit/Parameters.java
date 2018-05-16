@@ -38,34 +38,5 @@ public class Parameters {
 		}
 		return value;
 	}
-	
-	/**
-	 * Adds or changes a single unit parameter.
-	 *
-	 * @param key the key
-	 * @param value the value
-	 * @param unit the unit
-	 * @param sessionId the session id
-	 * @throws NoAvailableConnectionException the no available connection exception
-	 * @throws SQLException the sQL exception
-	 */
-	public static void setUnitParameterValue(String key,String value,Unit unit,String sessionId) throws NoAvailableConnectionException, SQLException{
-		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
-		XAPSUnit xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource);
-		
-		List<UnitParameter> toAddOrChange = new ArrayList<UnitParameter>();
-		
-		UnitParameter parameterToUpdate = unit.getUnitParameters().get(key);
-		
-		if(parameterToUpdate==null){
-			UnittypeParameter unittypeParameter = xaps.getUnittypeParameter(unit.getProfile().getUnittype().getName(), key);
-			Parameter parameter = new Parameter(unittypeParameter, value);
-			parameterToUpdate = new UnitParameter(parameter,unit.getId(),unit.getProfile());
-		}else
-			parameterToUpdate.setValue(value);
-		
-		toAddOrChange.add(parameterToUpdate);
-		
-		xapsUnit.addOrChangeUnitParameters(toAddOrChange, unit.getProfile());
-	}
+
 }

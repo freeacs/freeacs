@@ -13,6 +13,7 @@ import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.XAPSLoader;
 import freemarker.template.TemplateException;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -25,6 +26,8 @@ public class UnitJobPage extends AbstractWebPage {
 
 	// FIXME Why are we using class variables? What are the problem we are solving with this?
 	private JobData inputData;
+
+	@Qualifier("xaps") DataSource xapsDataSource;
 
 	private XAPS xaps;
 	//	private Unittype unittype;
