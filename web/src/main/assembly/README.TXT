@@ -1,29 +1,30 @@
-Create freeacs user
+Create freeacs user if not exists
 
     sudo useradd freeacs
 
-Create new directory to hold service and copy jar file
+Create new directory to hold service and copy jar file and config
 
     sudo mkdir -p /var/freeacs/web
     sudo cp freeacs-web.jar /var/freeacs/web
     sudo cp freeacs-web.conf /var/freeacs/web
     sudo chown freeacs:freeacs -R /var/freeacs/web
 
-Copy service file to systemd
+For systemd (suggested)
 
     sudo cp freeacs-web.service /etc/systemd/system
     sudo systemctl enable freeacs-web
-
-Then start the service
-    sudo systemctl start freeacs-web
-    or
     sudo systemctl restart freeacs-web
-
-Check logs from system out
-
     journalctl -f -u freeacs-web
 
-Or check logs in /var/freeacs/web
+For systemv (aka init.d, not tested)
+
+    sudo ln -s /var/freeacs/web/freeacs-web.jar /etc/init.d/freeacs-web
+    sudo update-rc.d freeacs-web defaults
+    sudo service freeacs-web restart
+
+tail -f /var/freeacs/web/log/web.log
 
 To stop the service:
     sudo systemctl stop freeacs-web
+    or
+    sudo service freeacs-web stop
