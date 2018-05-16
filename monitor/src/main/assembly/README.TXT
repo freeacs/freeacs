@@ -1,29 +1,29 @@
-Create freeacs user
+Create freeacs user if not exists
 
     sudo useradd freeacs
 
-Create new directory to hold service and copy jar file
+Create new directory to hold service and copy jar file and config
 
     sudo mkdir -p /var/freeacs/monitor
     sudo cp freeacs-monitor.jar /var/freeacs/monitor
     sudo cp freeacs-monitor.conf /var/freeacs/monitor
     sudo chown freeacs:freeacs -R /var/freeacs/monitor
 
-Copy service file to systemd
+For systemd (suggested)
 
     sudo cp freeacs-monitor.service /etc/systemd/system
     sudo systemctl enable freeacs-monitor
-
-Then start the service
-    sudo systemctl start freeacs-monitor
-    or
     sudo systemctl restart freeacs-monitor
-
-Check logs from system out
-
     journalctl -f -u freeacs-monitor
 
-Or check logs in /var/freeacs/monitor
+For systemv (aka init.d, not tested)
+
+    sudo ln -s /var/freeacs/monitor/freeacs-monitor.jar /etc/init.d/freeacs-monitor
+    sudo service freeacs-monitor restart
+
+tail -f /var/freeacs/monitor/log/monitor.log
 
 To stop the service:
     sudo systemctl stop freeacs-monitor
+    or
+    sudo service freeacs-monitor stop

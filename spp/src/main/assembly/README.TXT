@@ -1,29 +1,29 @@
-Create freeacs user
+Create freeacs user if not exists
 
     sudo useradd freeacs
 
-Create new directory to hold service and copy jar file
+Create new directory to hold service and copy jar file and config
 
     sudo mkdir -p /var/freeacs/spp
     sudo cp freeacs-spp.jar /var/freeacs/spp
     sudo cp freeacs-spp.conf /var/freeacs/spp
     sudo chown freeacs:freeacs -R /var/freeacs/spp
 
-Copy service file to systemd
+For systemd (suggested)
 
     sudo cp freeacs-spp.service /etc/systemd/system
     sudo systemctl enable freeacs-spp
-
-Then start the service
-    sudo systemctl start freeacs-spp
-    or
     sudo systemctl restart freeacs-spp
-
-Check logs from system out
-
     journalctl -f -u freeacs-spp
 
-Or check logs in /var/freeacs/spp
+For systemv (aka init.d, not tested)
+
+    sudo ln -s /var/freeacs/spp/freeacs-spp.jar /etc/init.d/freeacs-spp
+    sudo service freeacs-spp restart
+
+tail -f /var/freeacs/spp/log/spp.log
 
 To stop the service:
     sudo systemctl stop freeacs-spp
+    or
+    sudo service freeacs-spp stop
