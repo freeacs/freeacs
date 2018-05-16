@@ -145,7 +145,7 @@ public class UnitJobPage extends AbstractWebPage {
 	private void getFailedUnitJobs(Job job, Output res) throws SQLException, NoAvailableConnectionException, IOException, TemplateException {
 		res.setTemplatePath("unit-job/failed");
 		Map<String, Object> rootMap = new HashMap<String, Object>();
-		UnitJobs unitJobs = new UnitJobs(SessionCache.getXAPSConnectionProperties(sessionId));
+		UnitJobs unitJobs = new UnitJobs(xapsDataSource);
 		List<UnitJob> unitJobsList = unitJobs.readAllProcessed(job);
 		//		List<UnitJob> list = new ArrayList<UnitJob>();
 		//		if (limit != null) {

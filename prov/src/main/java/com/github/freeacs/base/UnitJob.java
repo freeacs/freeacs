@@ -176,7 +176,7 @@ public class UnitJob {
 					upList.add(jobUp);
 					DBAccessStatic.queueUnitParameters(sessionData.getUnit(), upList, sessionData.getProfile());
 				}
-				DBAccessStatic.startUnitJob(unitId, job.getId());
+				DBAccessStatic.startUnitJob(unitId, job.getId(), sessionData.getDbAccess().getDbAccess().getXapsDataSource());
 				if (!serverSideJob) {
 					//					if (job.getMoveToProfile() != null)
 					//						updateSessionWithProfile();
@@ -264,7 +264,7 @@ public class UnitJob {
 						Log.notice(UnitJob.class, "UnitJob is COMPLETED, job history, profile/unit parameters are updated");
 					}
 				}
-				DBAccessStatic.stopUnitJob(sessionData.getUnitId(), jobId, unitJobStatus);
+				DBAccessStatic.stopUnitJob(sessionData.getUnitId(), jobId, unitJobStatus, sessionData.getDbAccess().getDbAccess().getXapsDataSource());
 				sessionData.getPIIDecision().setCurrentJobStatus(unitJobStatus);
 				// Write directly to database, no queuing, since the all data are flushed in next step (most likely)
 				XAPS xaps = sessionData.getDbAccess().getXaps();

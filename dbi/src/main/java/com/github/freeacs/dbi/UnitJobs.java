@@ -4,6 +4,7 @@ import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,9 +80,9 @@ import java.util.List;
  */
 
 public class UnitJobs {
-	private ConnectionProperties connectionProperties;
+	private DataSource connectionProperties;
 
-	public UnitJobs(ConnectionProperties cp) {
+	public UnitJobs(DataSource cp) {
 		this.connectionProperties = cp;
 	}
 
@@ -91,7 +92,7 @@ public class UnitJobs {
 		PreparedStatement pp = null;
 		SQLException sqle = null;
 		try {
-			c = ConnectionProvider.getConnection(connectionProperties, true);
+			c = connectionProperties.getConnection();
 			pp = c.prepareStatement("INSERT INTO unit_job (job_id, unit_id, status, start_timestamp, processed, confirmed, unconfirmed) VALUES (?, ?, ?, ?, 0, 0, 0)");
 			pp.setInt(1, uj.getJobId());
 			pp.setString(2, uj.getUnitId());
@@ -129,7 +130,7 @@ public class UnitJobs {
 		int rowsUpdated = 0;
 		while (!finished) { // will loop if MySQLTransactionRollbackException occurs
 			try {
-				c = ConnectionProvider.getConnection(connectionProperties, true);
+				c = connectionProperties.getConnection();
 				if (uj.getStatus().equals(UnitJobStatus.COMPLETED_OK) || uj.getStatus().equals(UnitJobStatus.STOPPED)) {
 					pp = c.prepareStatement("UPDATE unit_job SET status = '" + uj.getStatus() + "', end_timestamp = ?, processed = 0 WHERE unit_id = ? AND job_id = ?");
 					pp.setTimestamp(1, new Timestamp(uj.getEndTimestamp().getTime()));
@@ -170,7 +171,7 @@ public class UnitJobs {
 		int rowsUpdated = 0;
 		while (!finished) { // will loop if MySQLTransactionRollbackException occurs
 			try {
-				c = ConnectionProvider.getConnection(connectionProperties, true);
+				c = connectionProperties.getConnection();
 				String sql = "UPDATE unit_job SET end_timestamp = ?, status = '" + UnitJobStatus.COMPLETED_OK;
 				sql += "', processed = 0 WHERE ";
 				sql += "status = '" + UnitJobStatus.UNCONFIRMED_FAILED + "' AND end_timestamp < ? AND job_id = ?";
@@ -203,7 +204,7 @@ public class UnitJobs {
 		int rowsUpdated = 0;
 		while (!finished) { // will loop if MySQLTransactionRollbackException occurs
 			try {
-				c = ConnectionProvider.getConnection(connectionProperties, true);
+				c = connectionProperties.getConnection();
 				String sql = "UPDATE unit_job SET end_timestamp = ?, status = '" + UnitJobStatus.UNCONFIRMED_FAILED;
 				sql += "', unconfirmed = unconfirmed + 1 WHERE ";
 				sql += "status = '" + UnitJobStatus.STARTED + "' AND start_timestamp < ? AND job_id = ?";
@@ -241,7 +242,7 @@ public class UnitJobs {
 		int rowsUpdated = 0;
 		while (!finished) { // will loop if MySQLTransactionRollbackException occurs
 			try {
-				c = ConnectionProvider.getConnection(connectionProperties, true);
+				c = connectionProperties.getConnection();
 				String sql = "UPDATE unit_job SET processed = 1 WHERE unit_id = ? AND job_id = ?";
 				pp = c.prepareStatement(sql);
 				pp.setString(1, uj.getUnitId());
@@ -268,7 +269,7 @@ public class UnitJobs {
 		Connection c = null;
 		PreparedStatement pp = null;
 		try {
-			c = ConnectionProvider.getConnection(connectionProperties, true);
+			c = connectionProperties.getConnection();
 			pp = c.prepareStatement("DELETE FROM unit_job WHERE processed = 1 AND job_id = ? AND status = '" + UnitJobStatus.COMPLETED_OK + "' AND confirmed = 0 AND unconfirmed = 0");
 			pp.setInt(1, job.getId());
 			pp.setQueryTimeout(60);
@@ -286,7 +287,7 @@ public class UnitJobs {
 		Connection c = null;
 		PreparedStatement pp = null;
 		try {
-			c = ConnectionProvider.getConnection(connectionProperties, true);
+			c = connectionProperties.getConnection();
 			pp = c.prepareStatement("DELETE FROM unit_job WHERE processed = 1 AND job_id = ? AND status = '" + UnitJobStatus.STOPPED + "' AND confirmed = 0 AND unconfirmed = 0");
 			pp.setInt(1, job.getId());
 			pp.setQueryTimeout(60);
@@ -309,7 +310,7 @@ public class UnitJobs {
 		Connection c = null;
 		PreparedStatement pp = null;
 		try {
-			c = ConnectionProvider.getConnection(connectionProperties, true);
+			c = connectionProperties.getConnection();
 			if (job == null)
 				pp = c.prepareStatement("DELETE FROM unit_job");
 			else {
@@ -332,7 +333,7 @@ public class UnitJobs {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			c = ConnectionProvider.getConnection(connectionProperties, true);
+			c = connectionProperties.getConnection();
 			String sql = "SELECT COUNT(status) FROM unit_job ";
 			sql += "WHERE job_id = " + job.getId() + " AND ";
 			if (isCompleted)
@@ -359,7 +360,7 @@ public class UnitJobs {
 	}
 
 	private List<UnitJob> read(boolean processed, Job job) throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(connectionProperties, true);
+		Connection c = connectionProperties.getConnection();
 		Statement s = null;
 		ResultSet rs = null;
 		List<UnitJob> unitJobs = new ArrayList<UnitJob>();
@@ -411,7 +412,7 @@ public class UnitJobs {
 		PreparedStatement pp = null;
 		SQLException sqle = null;
 		try {
-			c = ConnectionProvider.getConnection(connectionProperties, true);
+			c = connectionProperties.getConnection();
 			pp = c.prepareStatement("INSERT INTO unit_job (job_id, unit_id, status, start_timestamp, end_timestamp, processed, unconfirmed, confirmed) VALUES (?, ?, ?, ?, ?, 0, ?, ?)");
 			pp.setInt(1, uj.getJobId());
 			pp.setString(2, uj.getUnitId());

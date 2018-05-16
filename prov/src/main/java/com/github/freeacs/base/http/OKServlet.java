@@ -38,7 +38,6 @@ public class OKServlet extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
 		PrintWriter out = res.getWriter();
-		Map<Connection, Long> usedConn = ConnectionProvider.getUsedConnCopy(DBAccess.getXAPSProperties());
 		String status = "XAPSOK";
 		try {
 			Class tr069ProvClass = Class.forName("com.owera.xaps.tr069.Provisioning");
@@ -61,18 +60,6 @@ public class OKServlet extends HttpServlet {
 					status += ste.toString();
 			}
 		} catch (Throwable t) {
-		}
-		
-		if (usedConn != null) {
-			Collection<Long> usedConnValues = usedConn.values();
-			for (Long tms : usedConnValues) {
-				long spentTime = (System.currentTimeMillis() - tms) / 1000;
-				if (spentTime > 60) {
-					status = "ERROR: Connection hangup for more than 60 seconds. Consider restart MySQL and/or Tomcat on Fusion server";
-					Log.fatal(OKServlet.class, status);
-					break;
-				}
-			}
 		}
 		if (!status.contains("ERROR") && ThreadCounter.currentSessionsCount() > 0) {
 			Map<String, Long> currentSessions = ThreadCounter.cloneCurrentSessions();

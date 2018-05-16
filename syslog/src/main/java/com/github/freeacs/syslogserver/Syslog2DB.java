@@ -13,6 +13,7 @@ import com.github.freeacs.dbi.util.SystemParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,8 +28,8 @@ import static com.github.freeacs.syslogserver.Properties.getUrl;
 
 public class Syslog2DB implements Runnable {
 
-	private ConnectionProperties syslogCp;
-	private ConnectionProperties xapsCp;
+	private DataSource syslogCp;
+	private DataSource xapsCp;
 
 	public static class Syslog2DBCounter {
 
@@ -226,9 +227,7 @@ public class Syslog2DB implements Runnable {
 		return unitCache.getMap().size();
 	}
 
-	private synchronized void init() {
-		syslogCp = getConnectionProperties(getUrl("syslog"), getMaxAge("syslog"), getMaxConn("syslog"));
-		xapsCp = getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps"));
+	private synchronized void init(DataSource xapsCp, DataSource syslogCp) {
 		executions = new ScriptExecutions(xapsCp);
 		if (dbi == null) {
 			try {
@@ -246,9 +245,9 @@ public class Syslog2DB implements Runnable {
 		}
 	}
 
-	Syslog2DB(int index) {
+	Syslog2DB(int index, DataSource xapsDataSource, DataSource syslogDataSource) {
 		poulateDeviceIdPatterns();
-		init();
+		init(xapsDataSource, syslogDataSource);
 		populateXAPS();
 	}
 

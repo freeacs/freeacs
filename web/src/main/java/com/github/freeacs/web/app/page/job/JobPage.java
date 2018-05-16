@@ -184,7 +184,7 @@ public class JobPage extends AbstractWebPage {
 			}
 		} else if (inputData.getFormSubmit().hasValue(WebConstants.DELETE)) {
 			job = unittype.getJobs().getByName(SessionCache.getSessionData(sessionId).getJobname());
-			UnitJobs unitJobs = new UnitJobs(SessionCache.getXAPSConnectionProperties(sessionId));
+			UnitJobs unitJobs = new UnitJobs(xaps.getDataSource());
 			unitJobs.delete(job);
 			xapsJobs.deleteJobParameters(job, xaps);
 			xapsJobs.delete(job, xaps);

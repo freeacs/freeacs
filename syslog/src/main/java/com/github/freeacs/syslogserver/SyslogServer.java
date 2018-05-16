@@ -4,6 +4,7 @@ import com.github.freeacs.common.util.Sleep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketTimeoutException;
@@ -21,6 +22,13 @@ public class SyslogServer implements Runnable {
 	public static int SOCKET_TIMEOUT = 100;
 
 	private static int packetCount;
+	private final DataSource xapsDataSource;
+	private final DataSource syslogDataSource;
+
+	public SyslogServer(DataSource xapsDataSource, DataSource syslogDataSource) {
+		this.xapsDataSource = xapsDataSource;
+		this.syslogDataSource = syslogDataSource;
+	}
 
 	private static DatagramPacket initServer() {
 		while (true) {
@@ -56,14 +64,14 @@ public class SyslogServer implements Runnable {
 		return null; // unreachable code
 	}
 
-	private void initDBThreads() {
+	private void initDBThreads(DataSource xapsDataSource, DataSource syslogDataSoource) {
 		while (true) {
 			logger.info("Will try to start Syslog2DB threads");
 			try {
 				int maxSyslogDBThreads = Properties.getMaxSyslogdbThreads();
 				List<Syslog2DB> syslog2DBList = new ArrayList<Syslog2DB>();
 				for (int i = 0; i < maxSyslogDBThreads; i++) {
-					Syslog2DB syslog2DB = new Syslog2DB(i);
+					Syslog2DB syslog2DB = new Syslog2DB(i, xapsDataSource, syslogDataSoource);
 					syslog2DBList.add(syslog2DB);
 					Thread syslog2DBThread = new Thread(syslog2DB);
 					syslog2DBThread.setName("Syslog2DB-" + i);
@@ -92,7 +100,7 @@ public class SyslogServer implements Runnable {
 		DatagramPacket packet = null;
 		try {
 			packet = initServer();
-			initDBThreads();
+			initDBThreads(xapsDataSource, syslogDataSource);
 			logger.info("Server startup completed - will start to receive syslog packets");
 			while (true) {
 				try {
