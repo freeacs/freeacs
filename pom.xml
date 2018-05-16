@@ -43,15 +43,12 @@
     </build>
 
     <modules>
-        <module>db</module>
-        <module>readme</module>
         <module>common</module>
         <module>dbi</module>
         <module>wsc</module>
         <module>ws</module>
         <module>prov</module>
         <module>tr069</module>
-        <module>tr069tc</module>
         <module>syslog</module>
         <module>stun</module>
         <module>spp</module>
