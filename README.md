@@ -1,4 +1,4 @@
-![Jdbi Logo](readme/logo.png)
+![Freeacs Logo](https://raw.githubusercontent.com/freeacs/readme/master/logo.png)
 
 [![Build Status](https://travis-ci.org/freeacs/freeacs.svg?branch=master)](https://travis-ci.org/freeacs/freeacs)
 [![Gitter chat](https://badges.gitter.im/FreeACS-on-Gitter/Freeacs.png)](https://gitter.im/FreeACS-on-Gitter/Freeacs)
