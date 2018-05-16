@@ -25,8 +25,6 @@ import java.util.Map.Entry;
  */
 public class JobLogic {
 
-	public static Cache patternCache = new Cache();
-
 	public static boolean checkJobOK(SessionDataI sessionData) {
 		try {
 			String jobId = sessionData.getOweraParameters().getValue(SystemParameters.JOB_CURRENT);

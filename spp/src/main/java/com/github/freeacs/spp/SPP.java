@@ -30,8 +30,8 @@ import java.util.List;
 
 public class SPP {
 
-  public static byte[] provision(SessionData sessionData) throws SQLException, NoAvailableConnectionException {
-    DBI dbi = DBAccess.getDBI();
+  public static byte[] provision(SessionData sessionData, DBAccess dbAccess) throws SQLException {
+    DBI dbi = dbAccess.getDBI();
     sessionData.setDbAccess(new DBAccessSession(dbi));
     long start = System.currentTimeMillis();
     byte[] output = null;

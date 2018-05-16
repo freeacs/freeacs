@@ -22,27 +22,23 @@ public class DBAccess {
 
 	private static Logger logger = LoggerFactory.getLogger(DBAccess.class);
 
-    private static DBI dbi;
+    private DBI dbi;
 
-	private static Properties.Module module;
-	private static String facilityVersion;
-	private static int facility;
+	private Properties.Module module;
+	private String facilityVersion;
+	private int facility;
 
-	public static void init(Properties.Module mod, int facilityInt, String facilityVersionStr) {
+	public DBAccess(Properties.Module mod, int facilityInt, String facilityVersionStr) {
 		module = mod;
 		facility = facilityInt;
 		facilityVersion = facilityVersionStr;
 	}
 	
-	public static Properties.Module getModule() {
+	public Properties.Module getModule() {
 		return module;
 	}
-	
-	public static String getFacilityVersion() {
-		return facilityVersion;
-	}
-	
-	public static int getFacility() {
+
+	public int getFacility() {
 		return facility;
 	}
 
@@ -50,27 +46,21 @@ public class DBAccess {
 		return ConnectionProvider.getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps"));
 	}
 
-	public static ConnectionProperties getSyslogProperties() {
+	private static ConnectionProperties getSyslogProperties() {
 		return ConnectionProvider.getConnectionProperties(getUrl("syslog"), getMaxAge("syslog"), getMaxConn("syslog"));
-	}
-
-	@SuppressWarnings("unused")
-	private static void warn(String message) {
-		Log.warn(DBAccess.class, message);
 	}
 
 	private static void error(String message, Throwable t) {
 		Log.error(DBAccess.class, message, t);
 	}
 
-	public static Syslog getSyslog() throws SQLException {
+	public Syslog getSyslog() throws SQLException {
 		Users users = new Users(getXAPSProperties());
 		Identity id = new Identity(facility, facilityVersion, users.getUnprotected(Users.USER_ADMIN));
-		Syslog syslog = new Syslog(getSyslogProperties(), id);
-		return syslog;
+		return new Syslog(getSyslogProperties(), id);
 	}
 
-	public synchronized static DBI getDBI() throws SQLException {
+	public synchronized DBI getDBI() throws SQLException {
 		XAPS.setStrictOrder(false);
 		if (dbi == null) {
 			Syslog syslog = getSyslog();
@@ -83,7 +73,7 @@ public class DBAccess {
 		return sessionData.getUnittype().getJobs().getById(new Integer(id));
 	}
 
-	public static void handleError(String method, long start, Throwable t) throws SQLException {
+	static void handleError(String method, long start, Throwable t) throws SQLException {
 		error(method + " failed", t);
 		if (t instanceof SQLException) {
 			throw (SQLException) t;

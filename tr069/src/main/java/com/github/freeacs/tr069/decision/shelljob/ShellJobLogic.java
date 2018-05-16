@@ -189,15 +189,12 @@ public class ShellJobLogic {
 		}
 		if (unitParameters.size() > 0) {
 			try {
-				XAPS xaps = DBAccess.getDBI().getXaps();
+				XAPS xaps = sessionData.getDbAccess().getXaps();
 				XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
 				xapsUnit.addOrChangeUnitParameters(unitParameters, sessionData.getProfile());
 			} catch (SQLException sqle) {
 				throw new TR069DatabaseException(sqle);
 			}
-			//			sessionData.setToDB(toDB);
-			//			DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(DBAccess.getDBI(), sessionData.getDbAccess());
-			//			dbAccessSessionTR069.writeValueMap(sessionData);
 		}
 	}
 

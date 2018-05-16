@@ -24,6 +24,12 @@ public class OKServlet extends HttpServlet {
 	private static final long serialVersionUID = -3217484543967391741L;
 	private static Map<String, Long> currentConnectionTmsMap = new HashMap<String, Long>();
 
+	private final DBAccess dbAccess;
+
+	public OKServlet(DBAccess dbAccess) {
+		this.dbAccess = dbAccess;
+	}
+
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		doGet(req, res);
 	}
@@ -48,7 +54,7 @@ public class OKServlet extends HttpServlet {
 		}
 		
 		try {
-			DBI dbi = DBAccess.getDBI();
+			DBI dbi = dbAccess.getDBI();
 			if (dbi != null && dbi.getDbiThrowable() != null) {
 				status = "ERROR: DBI reported error:\n" + dbi.getDbiThrowable() + "\n";
 				for (StackTraceElement ste : dbi.getDbiThrowable().getStackTrace())

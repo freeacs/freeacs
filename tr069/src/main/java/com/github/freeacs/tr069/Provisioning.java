@@ -10,7 +10,10 @@ import com.github.freeacs.common.db.ConnectionPoolData;
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.util.Sleep;
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.ScriptExecutions;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.XAPS;
+import com.github.freeacs.dbi.XAPSUnit;
 import com.github.freeacs.tr069.background.BackgroundProcesses;
 import com.github.freeacs.tr069.background.ScheduledKickTask;
 import com.github.freeacs.tr069.exception.TR069Exception;
@@ -22,6 +25,8 @@ import com.github.freeacs.tr069.methods.TR069Method;
 import com.github.freeacs.tr069.test.system1.TestDatabase;
 import com.github.freeacs.tr069.test.system1.TestDatabaseObject;
 import com.github.freeacs.tr069.test.system2.Util;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -33,9 +38,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.List;
 
-import static com.github.freeacs.tr069.Properties.getMaxAge;
-import static com.github.freeacs.tr069.Properties.getMaxConn;
-import static com.github.freeacs.tr069.Properties.getUrl;
+import static com.github.freeacs.tr069.Properties.*;
 
 
 /**
@@ -52,18 +55,17 @@ public class Provisioning extends HttpServlet {
 
 	public static final String VERSION = "3.1.2";
 
-//	private static BackgroundProcesses backgroundProcesses = new BackgroundProcesses();
-
 	private static ScriptExecutions executions;
+	private final DBAccess dbAccess;
 
-	/**
-	 * Starts background processes, initializes logging system
-	 */
-	static {
-		DBAccess.init(com.github.freeacs.Properties.Module.TR069, SyslogConstants.FACILITY_TR069, VERSION);
+	public Provisioning(DBAccess dbAccess) {
+		this.dbAccess = dbAccess;
+	}
+
+	public void init() {
 		Log.notice(Provisioning.class, "Server starts...");
 		try {
-			BackgroundProcesses.initiate(DBAccess.getDBI());
+			BackgroundProcesses.initiate(dbAccess.getDBI());
 		} catch (Throwable t) {
 			Log.fatal(Provisioning.class, "Couldn't start BackgroundProcesses correctly ", t);
 		}
@@ -194,7 +196,7 @@ public class Provisioning extends HttpServlet {
 		try {
 			// Create the main object which contains all objects concerning the entire
 			// session. This object also contains the SessionData object 
-			reqRes = new HTTPReqResData(req, res);
+			reqRes = new HTTPReqResData(req, res, dbAccess);
 			// 2. Authenticate the client (first issue challenge, then authenticate)
 			if (!Authenticator.authenticate(reqRes))
 				return;

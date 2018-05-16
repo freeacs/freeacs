@@ -29,7 +29,7 @@ public class Users {
 	private Map<Integer, User> idMap = new HashMap<Integer, User>();
 	private Map<String, User> nameMap = new TreeMap<String, User>();
 
-	public Users(ConnectionProperties cp) throws SQLException, NoAvailableConnectionException {
+	public Users(ConnectionProperties cp) throws SQLException {
 		XAPSVersionCheck.versionCheck(cp);
 		this.connectionProperties = cp;
 		readAllUsers();
@@ -254,7 +254,7 @@ public class Users {
 	 * Access will be granted if
 	 * 1. requestedBy-user is admin
 	 * 2. requestedBy-user is unittypeAdmin for all unittypes found in accessTo-user's permissions
-	 * @param user
+	 * @param requestedBy
 	 * @return
 	 */
 	private boolean allowAccessTo(User accessTo, User requestedBy) {
