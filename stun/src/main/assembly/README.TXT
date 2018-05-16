@@ -1,29 +1,30 @@
-Create freeacs user
+Create freeacs user if not exists
 
     sudo useradd freeacs
 
-Create new directory to hold service and copy jar file
+Create new directory to hold service and copy jar file and config
 
     sudo mkdir -p /var/freeacs/stun
     sudo cp freeacs-stun.jar /var/freeacs/stun
     sudo cp freeacs-stun.conf /var/freeacs/stun
     sudo chown freeacs:freeacs -R /var/freeacs/stun
 
-Copy service file to systemd
+For systemd (suggested)
 
     sudo cp freeacs-stun.service /etc/systemd/system
     sudo systemctl enable freeacs-stun
-
-Then start the service
-    sudo systemctl start freeacs-stun
-    or
     sudo systemctl restart freeacs-stun
-
-Check logs from system out
-
     journalctl -f -u freeacs-stun
 
-Or check logs in /var/freeacs/stun
+For systemv (aka init.d, not tested)
+
+    sudo ln -s /var/freeacs/stun/freeacs-stun.jar /etc/init.d/freeacs-stun
+    sudo update-rc.d freeacs-stun defaults
+    sudo service freeacs-stun restart
+
+tail -f /var/freeacs/stun/log/stun.log
 
 To stop the service:
     sudo systemctl stop freeacs-stun
+    or
+    sudo service freeacs-stun stop
