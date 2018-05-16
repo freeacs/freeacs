@@ -45,7 +45,7 @@ public class Heartbeats {
 	}
 
 	private void addOrChangeHeartbeatImpl(Heartbeat heartbeat, XAPS xaps) throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		PreparedStatement ps = null;
 		try {
@@ -93,7 +93,7 @@ public class Heartbeats {
 
 	private void deleteHeartbeatImpl(Heartbeat heartbeat, XAPS xaps) throws SQLException, NoAvailableConnectionException {
 		PreparedStatement ps = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		try {
 			DynamicStatement ds = new DynamicStatement();

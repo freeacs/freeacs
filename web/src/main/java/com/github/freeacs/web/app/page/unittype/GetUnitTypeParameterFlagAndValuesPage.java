@@ -9,6 +9,7 @@ import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.XAPSLoader;
 import org.json.JSONObject;
 
+import javax.sql.DataSource;
 
 
 /**
@@ -22,14 +23,14 @@ public class GetUnitTypeParameterFlagAndValuesPage extends AbstractWebPage {
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
 	 */
-	public void process(ParameterParser params, Output res) throws Exception {
+	public void process(ParameterParser params, Output res, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		String type = params.getParameter("type");
 		String name = params.getParameter("name");
 		String unittype = params.getParameter("unittype");
 		res.setContentType("text/html");
 		if(type!=null && name!=null){
 			if(type.equals("unittype") && unittype!=null){
-				XAPS xaps = XAPSLoader.getXAPS(params.getSession().getId());
+				XAPS xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource);
 				Unittype ut = xaps.getUnittype(unittype);
 				if(ut!=null){
 					UnittypeParameter utp = ut.getUnittypeParameters().getByName(name);

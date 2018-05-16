@@ -10,6 +10,7 @@ import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.XAPSLoader;
 
+import javax.sql.DataSource;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,13 +28,13 @@ public class HeartbeatsPage extends AbstractWebPage {
 	/** The xaps. */
 	private XAPS xaps;
 
-	public void process(ParameterParser params, Output outputHandler) throws Exception {
+	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 
 		/* Parse input data to the servlet */
 		inputData = (HeartbeatsData) InputDataRetriever.parseInto(new HeartbeatsData(), params);
 
 		/* Retrieve the XAPS object from session */
-		xaps = XAPSLoader.getXAPS(params.getSession().getId());
+		xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;

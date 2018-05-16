@@ -72,24 +72,6 @@ public class User {
 		return username;
 	}
 
-	//	public static String getHash(String secret) {
-	//		try {
-	//			MessageDigest md = MessageDigest.getInstance("SHA");
-	//			byte[] hash = md.digest(secret.getBytes());
-	//			String hashSecret = "";
-	//			for (byte b : hash) {
-	//				String hex = Integer.toHexString(b + 128);
-	//				if (hex.length() == 1)
-	//					hex = "0" + hex;
-	//				hashSecret += hex;
-	//			}
-	//			hashSecret = hashSecret.toUpperCase();
-	//			return hashSecret;
-	//		} catch (NoSuchAlgorithmException e) {
-	//			return secret;
-	//		}
-	//	}
-
 	public void setSecretHashed(String secret) {
 		this.secret = secret;
 	}

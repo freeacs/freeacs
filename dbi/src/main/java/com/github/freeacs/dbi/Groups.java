@@ -139,7 +139,7 @@ public class Groups {
 		PreparedStatement ps = null;
 		//		if (!XAPSVersionCheck.groupSupported)
 		//			return;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		try {
 			DynamicStatement ds = new DynamicStatement();
@@ -193,7 +193,7 @@ public class Groups {
 		String sql = null;
 		//		if (!XAPSVersionCheck.groupSupported)
 		//			return;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		try {
 			sql = "UPDATE group_ SET parent_group_id = ?, profile_id = ? WHERE parent_group_id = ?";
@@ -269,7 +269,7 @@ public class Groups {
 		//			return;
 		if (group.getParent() != null && group.getId() == null)
 			addOrChangeGroup(group.getParent(), xaps);
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		try {
 			if (group.getId() == null) {

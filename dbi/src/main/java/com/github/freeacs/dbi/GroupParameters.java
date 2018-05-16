@@ -69,7 +69,7 @@ public class GroupParameters {
 	}
 
 	private void addOrChangeGroupParameterImpl(GroupParameter groupParameter, Group group, XAPS xaps) throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		PreparedStatement ps = null;
 		try {
@@ -175,7 +175,7 @@ public class GroupParameters {
 		String sql = null;
 		//		if (!XAPSVersionCheck.groupSupported)
 		//			return;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		try {
 			s = c.createStatement();

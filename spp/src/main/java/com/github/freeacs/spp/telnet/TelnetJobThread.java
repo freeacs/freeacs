@@ -2,6 +2,7 @@ package com.github.freeacs.spp.telnet;
 
 import com.github.freeacs.base.SessionDataI;
 import com.github.freeacs.base.UnitJob;
+import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.db.DBAccessSession;
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
@@ -12,6 +13,7 @@ import com.github.freeacs.dbi.util.SystemParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -33,18 +35,16 @@ public class TelnetJobThread implements Runnable {
 	private Map<String, JobParameter> jobParams;
 	private XAPS xaps;
 	private XAPSUnit xapsUnit;
-	private ConnectionProperties xapsCp;
 	private com.github.freeacs.base.UnitJob unitJob;
 
-	public TelnetJobThread(Monitor m, TelnetJob tj, XAPS xaps, ConnectionProperties xapsCp) {
+	public TelnetJobThread(Monitor m, TelnetJob tj, DBAccess dbAccess) throws SQLException {
 		this.m = m;
 		this.tj = tj;
 		sessionData.setUnittype(tj.getJob().getUnittype());
 		sessionData.setUnitId(tj.getUnitId());
 		sessionData.setJob(tj.getJob());
-		sessionData.setDbAccess(new DBAccessSession(xaps.getDbi()));
-		this.xaps = xaps;
-		this.xapsCp = xapsCp;
+		sessionData.setDbAccess(new DBAccessSession(dbAccess));
+		this.xaps = dbAccess.getDBI().getXaps();
 		this.unitJob = new UnitJob(sessionData, tj.getJob(), true);
 	}
 
@@ -52,7 +52,7 @@ public class TelnetJobThread implements Runnable {
 	public void run() {
 		AutomatedTelnetClient atc = null;
 		try {
-			xapsUnit = new XAPSUnit(xapsCp, xaps, xaps.getSyslog());
+			xapsUnit = new XAPSUnit(sessionData.getDbAccess().getDbAccess().getXapsDataSource(), xaps, xaps.getSyslog());
 			Unit unit = xapsUnit.getUnitById(tj.getUnitId());
 			if (unit == null) // very unlikely - the units are retrieved from a group in a job quite recently
 				throw new TelnetClientException("The unit " + tj.getUnitId() + " was not found in xAPS, cannot execute Telnet-session");

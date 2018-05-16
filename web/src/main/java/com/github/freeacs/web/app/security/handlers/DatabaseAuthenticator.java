@@ -9,6 +9,8 @@ import com.github.freeacs.web.app.util.SessionCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
+
 /**
  * The Class DatabaseAuthenticator.
  *
@@ -21,7 +23,7 @@ public class DatabaseAuthenticator implements Authenticator {
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.security.AuthenticationInterface#authenticateUser(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public WebUser authenticateUser(String username, String password, String sessionId) throws Exception {
+	public WebUser authenticateUser(String username, String password, String sessionId, DataSource xapsDataSource) throws Exception {
 		ConnectionProperties props = SessionCache.getXAPSConnectionProperties(sessionId);
 		logger.debug("Running authenticateUser in DatabaseAuthenticator");
 		if (props == null) {
@@ -29,7 +31,7 @@ public class DatabaseAuthenticator implements Authenticator {
 			if (props == null)
 				throw new LoginException("Login handler is set to database, but connection properties is not overriden.");
 		}
-		Users users = new Users(props);
+		Users users = new Users(xapsDataSource);
 		WebUser dbUser = null;
 		User userObject = users.getUnprotected(username);
 		if (userObject != null) {

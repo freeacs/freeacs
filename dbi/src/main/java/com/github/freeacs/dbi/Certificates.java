@@ -84,7 +84,7 @@ public class Certificates {
 	private int deleteCertificateImpl(Certificate certificate, XAPS xaps) throws SQLException, NoAvailableConnectionException {
 		Statement s = null;
 		String sql = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		try {
 			s = c.createStatement();
@@ -126,7 +126,7 @@ public class Certificates {
 
 	private void addOrChangeCertificateImpl(Certificate certificate, XAPS xaps) throws SQLException, NoAvailableConnectionException {
 		PreparedStatement ps = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		try {
 			DynamicStatement ds = new DynamicStatement();

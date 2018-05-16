@@ -44,7 +44,7 @@ public class ProfileParameters {
 	}
 
 	private void addOrChangeProfileParameterImpl(ProfileParameter profileParameter, Profile profile, XAPS xaps) throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		Statement s = null;
 		String sql = null;
@@ -102,7 +102,7 @@ public class ProfileParameters {
 	private void deleteProfileParameterImpl(ProfileParameter profileParameter, Profile profile, XAPS xaps) throws SQLException, NoAvailableConnectionException {
 		Statement s = null;
 		String sql = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		try {
 			s = c.createStatement();

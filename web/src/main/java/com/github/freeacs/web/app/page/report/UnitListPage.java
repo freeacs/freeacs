@@ -14,6 +14,7 @@ import com.github.freeacs.web.app.util.XAPSLoader;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -36,12 +37,12 @@ public class UnitListPage extends AbstractWebPage {
 	private ParameterParser req;
 	private UnitListData inputData;
 
-	public void process(ParameterParser req, Output outputHandler) throws Exception {
+	public void process(ParameterParser req, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		this.req = req;
 
 		inputData = (UnitListData) InputDataRetriever.parseInto(new UnitListData(), req);
 
-		xaps = XAPSLoader.getXAPS(req.getSession().getId());
+		xaps = XAPSLoader.getXAPS(req.getSession().getId(), xapsDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -60,7 +61,7 @@ public class UnitListPage extends AbstractWebPage {
 		}
 		*/
 
-		xapsUnit = XAPSLoader.getXAPSUnit(req.getSession().getId());
+		xapsUnit = XAPSLoader.getXAPSUnit(req.getSession().getId(), xapsDataSource);
 
 		unittype = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps);
 		profile = InputSelectionFactory.getProfileSelection(inputData.getProfile(), inputData.getUnittype(), xaps);

@@ -6,11 +6,11 @@ import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.*;
 import com.github.freeacs.web.app.menu.MenuItem;
 import com.github.freeacs.web.app.page.AbstractWebPage;
-import com.github.freeacs.web.app.page.staging.StringUtil;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.XAPSLoader;
 
+import javax.sql.DataSource;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -23,13 +23,13 @@ public class ScriptExecutionsPage extends AbstractWebPage {
 
 	private XAPS xaps;
 
-	public void process(ParameterParser params, Output outputHandler) throws Exception {
+	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 
 		/* Parse input data to the servlet */
 		inputData = (ScriptExecutionData) InputDataRetriever.parseInto(new ScriptExecutionData(), params);
 
 		/* Retrieve the XAPS object from session */
-		xaps = XAPSLoader.getXAPS(params.getSession().getId());
+		xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;

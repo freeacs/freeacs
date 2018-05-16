@@ -16,6 +16,7 @@ import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.XAPSLoader;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -154,13 +155,13 @@ public class UnittypePage extends AbstractWebPage {
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
 	 */
-	public void process(ParameterParser params, Output outputHandler) throws Exception {
+	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		// Get important var
 		inputData = (UnittypeData) InputDataRetriever.parseInto(new UnittypeData(), params);
 
 		sessionId = params.getSession().getId();
 
-		xaps = XAPSLoader.getXAPS(sessionId);
+		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -188,7 +189,7 @@ public class UnittypePage extends AbstractWebPage {
 			return;
 		}
 
-		List<Unittype> unittypes = getAllowedUnittypes(sessionId);
+		List<Unittype> unittypes = getAllowedUnittypes(sessionId, xapsDataSource);
 
 		if (unittype != null) {
 			template = "/unit-type/details.ftl";

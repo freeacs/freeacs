@@ -1,13 +1,12 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.dbi.util.XAPSVersionCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,12 +23,12 @@ public class XAPSUnit {
 	private static long updateCounter;
 	private static long insertCounter;
 
-	private ConnectionProperties connectionProperties;
+	private DataSource dataSource;
 	private Syslog syslog;
 	private XAPS xaps;
 
-	public XAPSUnit(ConnectionProperties connectionProperties, XAPS xaps, Syslog syslog) throws NoAvailableConnectionException, SQLException {
-		this.connectionProperties = connectionProperties;
+	public XAPSUnit(DataSource dataSource, XAPS xaps, Syslog syslog) throws NoAvailableConnectionException, SQLException {
+		this.dataSource = dataSource;
 		this.syslog = syslog;
 		if (xaps == null)
 			throw new IllegalArgumentException("The XAPSUnit constructor requires a non-null XAPS object");
@@ -50,8 +49,11 @@ public class XAPSUnit {
 	*/
 	public Unit getUnitByValue(String value, Unittype unittype, Profile profile) throws SQLException, NoAvailableConnectionException {
 		Connection connection = null;
+		boolean wasAutoCommit = false;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, false);
+			connection = dataSource.getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, xaps, unittype, profile);
 			Unit u = uqcu.getUnitByValue(value);
 			if (u != null && XAPSVersionCheck.unitParamSessionSupported && u.isSessionMode())
@@ -60,20 +62,23 @@ public class XAPSUnit {
 				return u;
 		} finally {
 			if (connection != null) {
-				ConnectionProvider.returnConnection(connection, null);
+				connection.setAutoCommit(wasAutoCommit);
 			}
 		}
 	}
 
 	public Unit getLimitedUnitByValue(String value) throws SQLException, NoAvailableConnectionException {
 		Connection connection = null;
+		boolean wasAutoCommit = false;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, false);
+			connection = dataSource.getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, xaps, (Unittype) null, (Profile) null);
 			return uqcu.getLimitedUnitByValue(value);
 		} finally {
 			if (connection != null) {
-				ConnectionProvider.returnConnection(connection, null);
+				connection.setAutoCommit(wasAutoCommit);
 			}
 		}
 	}
@@ -89,8 +94,11 @@ public class XAPSUnit {
 	 */
 	public Unit getUnitById(String unitId, Unittype unittype, Profile profile) throws SQLException, NoAvailableConnectionException {
 		Connection connection = null;
+		boolean wasAutoCommit = false;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, false);
+			connection = dataSource.getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, xaps, unittype, profile);
 			Unit u = uqcu.getUnitById(unitId);
 			if (u != null && XAPSVersionCheck.unitParamSessionSupported && u.isSessionMode())
@@ -99,7 +107,7 @@ public class XAPSUnit {
 				return u;
 		} finally {
 			if (connection != null) {
-				ConnectionProvider.returnConnection(connection, null);
+				connection.setAutoCommit(wasAutoCommit);
 			}
 		}
 	}
@@ -126,8 +134,11 @@ public class XAPSUnit {
 	public void addUnits(List<String> unitIds, Profile profile) throws SQLException, NoAvailableConnectionException {
 		Connection connection = null;
 		PreparedStatement ps = null;
+		boolean wasAutoCommit = false;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, false);
+			connection = dataSource.getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			Unittype unittype = profile.getUnittype();
 			for (int i = 0; unitIds != null && i < unitIds.size(); i++) {
 				String unitId = unitIds.get(i);
@@ -165,7 +176,7 @@ public class XAPSUnit {
 			if (ps != null)
 				ps.close();
 			if (connection != null)
-				ConnectionProvider.returnConnection(connection, null);
+				connection.setAutoCommit(wasAutoCommit);
 		}
 	}
 
@@ -183,8 +194,11 @@ public class XAPSUnit {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		SQLException sqlex = null;
+		boolean wasAutoCommit = false;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, false);
+			connection = dataSource.getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			Integer unittypeId = profile.getUnittype().getId();
 			Integer profileId = profile.getId();
 			for (int i = 0; unitIds != null && i < unitIds.size(); i++) {
@@ -205,7 +219,7 @@ public class XAPSUnit {
 			if (ps != null)
 				ps.close();
 			if (connection != null)
-				ConnectionProvider.returnConnection(connection, sqlex);
+				connection.setAutoCommit(wasAutoCommit);
 		}
 	}
 
@@ -225,8 +239,11 @@ public class XAPSUnit {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		SQLException sqlex = null;
+		boolean wasAutoCommit = false;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, false);
+			connection = dataSource.getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSql("SELECT unit_id FROM unit_param_session");
 			ps = ds.makePreparedStatement(connection);
@@ -244,7 +261,7 @@ public class XAPSUnit {
 			if (ps != null)
 				ps.close();
 			if (connection != null)
-				ConnectionProvider.returnConnection(connection, sqlex);
+				connection.setAutoCommit(wasAutoCommit);
 		}
 
 	}
@@ -257,10 +274,13 @@ public class XAPSUnit {
 		String tableName = "unit_param";
 		if (session)
 			tableName += "_session";
+		boolean wasAutoCommit = false;
 		try {
 			if (updateCounter < insertCounter)
 				updateFirst = false;
-			connection = ConnectionProvider.getConnection(connectionProperties, false);
+			connection = dataSource.getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			for (int i = 0; unitParameters != null && i < unitParameters.size(); i++) {
 				UnitParameter unitParameter = unitParameters.get(i);
 				String unitId = unitParameter.getUnitId();
@@ -327,7 +347,7 @@ public class XAPSUnit {
 			if (pp != null)
 				pp.close();
 			if (connection != null)
-				ConnectionProvider.returnConnection(connection, null);
+				connection.setAutoCommit(wasAutoCommit);
 		}
 	}
 
@@ -373,8 +393,11 @@ public class XAPSUnit {
 	public int deleteUnit(Unit unit) throws SQLException, NoAvailableConnectionException {
 		Connection connection = null;
 		PreparedStatement ps = null;
+		boolean wasAutoCommit = false;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, false);
+			connection = dataSource.getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("DELETE FROM unit_param WHERE unit_id = ?", unit.getId());
 			ps = ds.makePreparedStatement(connection);
@@ -415,7 +438,7 @@ public class XAPSUnit {
 			if (ps != null)
 				ps.close();
 			if (connection != null)
-				ConnectionProvider.returnConnection(connection, null);
+				connection.setAutoCommit(wasAutoCommit);
 		}
 
 	}
@@ -437,8 +460,11 @@ public class XAPSUnit {
 		String sql = null;
 		Map<String, Unit> unitMap = getUnits(profile.getUnittype(), profile, (Parameter) null, Integer.MAX_VALUE);
 		Connection connection = null;
+		boolean wasAutoCommit = false;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, false);
+			connection = dataSource.getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			s = connection.createStatement();
 			int counter = 0;
 			int upDeleted = 0;
@@ -463,7 +489,7 @@ public class XAPSUnit {
 			if (s != null)
 				s.close();
 			if (connection != null)
-				ConnectionProvider.returnConnection(connection, null);
+				connection.setAutoCommit(wasAutoCommit);
 		}
 	}
 
@@ -494,8 +520,11 @@ public class XAPSUnit {
 		Connection connection = null;
 		Statement s = null;
 		String sql = null;
+		boolean wasAutoCommit = false;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, false);
+			connection = dataSource.getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			s = connection.createStatement();
 			int rowsDeleted = 0;
 			for (int i = 0; i < unitParameters.size(); i++) {
@@ -519,7 +548,7 @@ public class XAPSUnit {
 			if (s != null)
 				s.close();
 			if (connection != null)
-				ConnectionProvider.returnConnection(connection, null);
+				connection.setAutoCommit(wasAutoCommit);
 		}
 	}
 
@@ -529,8 +558,11 @@ public class XAPSUnit {
 		Connection connection = null;
 		Statement s = null;
 		String sql = null;
+		boolean wasAutoCommit = false;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, false);
+			connection = dataSource.getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			s = connection.createStatement();
 			int rowsDeleted = 0;
 			sql = "DELETE FROM unit_param_session WHERE unit_id = '" + unit.getId() + "'";
@@ -546,7 +578,7 @@ public class XAPSUnit {
 			if (s != null)
 				s.close();
 			if (connection != null)
-				ConnectionProvider.returnConnection(connection, null);
+				connection.setAutoCommit(wasAutoCommit);
 		}
 	}
 
@@ -563,8 +595,11 @@ public class XAPSUnit {
 		Connection connection = null;
 		Statement s = null;
 		String sql = null;
+		boolean wasAutoCommit = false;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, false);
+			connection = dataSource.getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			s = connection.createStatement();
 			int rowsDeleted = 0;
 			for (int i = 0; i < unitIds.size(); i++) {
@@ -590,7 +625,7 @@ public class XAPSUnit {
 			if (s != null)
 				s.close();
 			if (connection != null)
-				ConnectionProvider.returnConnection(connection, null);
+				connection.setAutoCommit(wasAutoCommit);
 		}
 
 	}
@@ -605,13 +640,16 @@ public class XAPSUnit {
 	 */
 	public List<Unit> getLimitedUnitsByValues(List<String> values) throws NoAvailableConnectionException, SQLException {
 		Connection connection = null;
+		boolean wasAutoCommit = false;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, false);
+			connection = dataSource.getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, xaps, (Unittype) null, (Profile) null);
 			return uqcu.getLimitedUnitsByValue(values);
 		} finally {
 			if (connection != null) {
-				ConnectionProvider.returnConnection(connection, null);
+				connection.setAutoCommit(wasAutoCommit);
 			}
 		}
 	}
@@ -627,13 +665,16 @@ public class XAPSUnit {
 	 */
 	public List<Unit> getUnitsWithParameters(Unittype unittype, Profile profile, List<Unit> units) throws SQLException {
 		Connection connection = null;
+		boolean wasAutoCommit = false;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, false);
+			connection = dataSource.getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, xaps, unittype, profile);
 			return uqcu.getUnitsById(units);
 		} finally {
 			if (connection != null) {
-				ConnectionProvider.returnConnection(connection, null);
+				connection.setAutoCommit(wasAutoCommit);
 			}
 		}
 	}
@@ -650,26 +691,32 @@ public class XAPSUnit {
 	 */
 	public Map<String, Unit> getUnits(String searchStr, Unittype unittype, Profile profile, Integer maxRows) throws SQLException, NoAvailableConnectionException {
 		Connection connection = null;
+		boolean wasAutoCommit = false;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, false);
+			connection = dataSource.getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, xaps, unittype, profile);
 			return uqcu.getUnits(searchStr, maxRows);
 		} finally {
 			if (connection != null) {
-				ConnectionProvider.returnConnection(connection, null);
+				connection.setAutoCommit(wasAutoCommit);
 			}
 		}
 	}
 
 	public Map<String, Unit> getUnits(String searchStr, List<Profile> profiles, Integer maxRows) throws SQLException, NoAvailableConnectionException {
 		Connection connection = null;
+		boolean wasAutoCommit = false;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, false);
+			connection = dataSource.getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, xaps, (Unittype) null, profiles);
 			return uqcu.getUnits(searchStr, maxRows);
 		} finally {
 			if (connection != null) {
-				ConnectionProvider.returnConnection(connection, null);
+				connection.setAutoCommit(wasAutoCommit);
 			}
 		}
 	}
@@ -684,13 +731,16 @@ public class XAPSUnit {
 	*/
 	public Map<String, Unit> getUnits(Unittype unittype, List<Profile> profiles, List<Parameter> parameters, Integer limit) throws SQLException, NoAvailableConnectionException {
 		Connection connection = null;
+		boolean wasAutoCommit = false;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, false);
+			connection = dataSource.getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			UnitQueryWithinUnittype uqwu = new UnitQueryWithinUnittype(connection, xaps, unittype, profiles);
 			return uqwu.getUnits(parameters, limit);
 		} finally {
 			if (connection != null) {
-				ConnectionProvider.returnConnection(connection, null);
+				connection.setAutoCommit(wasAutoCommit);
 			}
 		}
 	}
@@ -743,13 +793,16 @@ public class XAPSUnit {
 	*/
 	public int getUnitCount(Unittype unittype, List<Profile> profiles, List<Parameter> parameters) throws SQLException, NoAvailableConnectionException {
 		Connection connection = null;
+		boolean wasAutoCommit = false;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, false);
+			connection = dataSource.getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			UnitQueryWithinUnittype uqwu = new UnitQueryWithinUnittype(connection, xaps, unittype, profiles);
 			return uqwu.getUnitCount(parameters);
 		} finally {
 			if (connection != null) {
-				ConnectionProvider.returnConnection(connection, null);
+				connection.setAutoCommit(wasAutoCommit);
 			}
 		}
 	}

@@ -13,6 +13,7 @@ import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebProperties;
 
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 
 /**
  * The Login page is responsible for retrieving connection properties and clearing session (logging out).
@@ -62,7 +63,7 @@ public class LoginPage extends AbstractWebPage {
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
 	 */
-	public void process(ParameterParser req, Output outputHandler) throws Exception {
+	public void process(ParameterParser req, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		inputData = (LoginData) InputDataRetriever.parseInto(new LoginData(), req);
 
 		sessionId = req.getSession().getId();

@@ -8,6 +8,7 @@ import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.XAPSLoader;
 
+import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -73,14 +74,14 @@ public class InspectionPage extends AbstractWebPage {
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
 	 */
-	public void process(ParameterParser params, Output res) throws Exception {
+	public void process(ParameterParser params, Output res, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		inputData = (InspectionData) InputDataRetriever.parseInto(new InspectionData(), params);
 		res.setContentType("text/html");
 		try {
 			sessionId = params.getSession().getId();
 
-			xaps = XAPSLoader.getXAPS(sessionId);
-			xapsUnit = XAPSLoader.getXAPSUnit(sessionId);
+			xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
+			xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource);
 
 			if (xaps == null || xapsUnit == null) {
 				throw new Exception("Could not load xaps objects!");

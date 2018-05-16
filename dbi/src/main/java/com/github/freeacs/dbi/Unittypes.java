@@ -50,7 +50,7 @@ public class Unittypes {
 	}
 
 	private void addOrChangeUnittypeImpl(Unittype unittype, XAPS xaps) throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		PreparedStatement s = null;
 		try {
@@ -108,7 +108,7 @@ public class Unittypes {
 	private int deleteUnittypeImpl(Unittype unittype, XAPS xaps) throws SQLException, NoAvailableConnectionException {
 		Statement s = null;
 		String sql = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		try {
 			s = c.createStatement();

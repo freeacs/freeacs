@@ -2,7 +2,6 @@ package com.github.freeacs.web.app.util;
 
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.UnitJob;
-import com.github.freeacs.web.app.page.staging.StagingActions;
 import com.github.freeacs.web.app.security.AllowedUnittype;
 import com.github.freeacs.web.app.security.WebUser;
 
@@ -64,9 +63,6 @@ public class SessionData {
 	
 	/** The job window. */
 	private String jobWindow;
-	
-	/** The shipment cache. */
-	private StagingActions.ShipmentCache shipmentCache;
 	
 	/** The time server date. */
 	private Date timeServerDate;
@@ -395,24 +391,6 @@ public class SessionData {
 	 */
 	public String getJobWindow() {
 		return jobWindow;
-	}
-
-	/**
-	 * Sets the shipment cache.
-	 *
-	 * @param shipmentCache the new shipment cache
-	 */
-	public void setShipmentCache(StagingActions.ShipmentCache shipmentCache) {
-		this.shipmentCache = shipmentCache;
-	}
-
-	/**
-	 * Gets the shipment cache.
-	 *
-	 * @return the shipment cache
-	 */
-	public StagingActions.ShipmentCache getShipmentCache() {
-		return shipmentCache;
 	}
 	
 	/**

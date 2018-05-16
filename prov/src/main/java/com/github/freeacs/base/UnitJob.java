@@ -268,7 +268,7 @@ public class UnitJob {
 				sessionData.getPIIDecision().setCurrentJobStatus(unitJobStatus);
 				// Write directly to database, no queuing, since the all data are flushed in next step (most likely)
 				XAPS xaps = sessionData.getDbAccess().getXaps();
-				XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
+				XAPSUnit xapsUnit = sessionData.getDbAccess().getDbAccess().getXAPSUnit(xaps);
 				xapsUnit.addOrChangeUnitParameters(upList, sessionData.getProfile());
 				//				sessionData.getDbAccess().writeUnitParameters(sessionData.getUnit(), upList, sessionData.getProfile());
 				if (!serverSideJob) {

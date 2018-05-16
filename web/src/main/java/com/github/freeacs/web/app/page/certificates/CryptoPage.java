@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -39,12 +40,12 @@ public class CryptoPage extends AbstractWebPage {
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
 	 */
-	public void process(ParameterParser params, Output outputHandler) throws Exception {
+	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		inputData = (CryptoData) InputDataRetriever.parseInto(new CryptoData(), params);
 
 		HttpSession session = params.getSession();
 		
-		xaps = XAPSLoader.getXAPS(session.getId());
+		xaps = XAPSLoader.getXAPS(session.getId(), xapsDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;

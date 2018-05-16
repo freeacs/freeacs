@@ -5,6 +5,7 @@ import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.util.XAPSVersionCheck;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
 
@@ -25,13 +26,13 @@ public class Users {
 	public static String ACCESS_ADMIN = "Admin";
 	public static String ADMIN_DEFAULT_PASSWORD = "xaps";
 
-	private ConnectionProperties connectionProperties;
+	private final DataSource dataSource;
 	private Map<Integer, User> idMap = new HashMap<Integer, User>();
 	private Map<String, User> nameMap = new TreeMap<String, User>();
 
-	public Users(ConnectionProperties cp) throws SQLException {
-		XAPSVersionCheck.versionCheck(cp);
-		this.connectionProperties = cp;
+	public Users(DataSource dataSource) throws SQLException {
+		XAPSVersionCheck.versionCheck(dataSource);
+		this.dataSource = dataSource;
 		readAllUsers();
 	}
 
@@ -112,7 +113,7 @@ public class Users {
 		PreparedStatement ps = null;
 		SQLException sqle = null;
 		try {
-			c = ConnectionProvider.getConnection(connectionProperties, true);
+			c = dataSource.getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("DELETE FROM user_ WHERE id = ?", delete.getId());
 			ps = ds.makePreparedStatement(c);
@@ -161,7 +162,7 @@ public class Users {
 		PreparedStatement ps = null;
 		SQLException sqle = null;
 		try {
-			c = ConnectionProvider.getConnection(connectionProperties, true);
+			c = dataSource.getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			if (addOrChange.getId() == null) {
 				ds.addSql("INSERT INTO user_ (username, secret, fullname, accesslist");
@@ -290,7 +291,7 @@ public class Users {
 		Statement s = null;
 		SQLException sqle = null;
 		try {
-			c = ConnectionProvider.getConnection(connectionProperties, true);
+			c = dataSource.getConnection();
 			s = c.createStatement();
 			ResultSet rs = s.executeQuery("SELECT * FROM user_");
 			Map<Integer, User> tmpIdMap = new HashMap<Integer, User>();
@@ -340,7 +341,6 @@ public class Users {
 			}
 			idMap = tmpIdMap;
 			nameMap = tmpNameMap;
-			return;
 		} catch (SQLException sqlex) {
 			sqle = sqlex;
 			throw sqlex;
@@ -352,7 +352,7 @@ public class Users {
 		}
 	}
 
-	protected ConnectionProperties getConnectionProperties() {
-		return connectionProperties;
+	protected DataSource getConnectionProperties() {
+		return dataSource;
 	}
 }

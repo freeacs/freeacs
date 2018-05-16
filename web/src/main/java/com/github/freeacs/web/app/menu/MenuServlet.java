@@ -275,12 +275,6 @@ public class MenuServlet extends HttpServlet {
 			wizards.addSubMenuItem(new MenuItem("Upgrade wizard", Page.UPGRADE));
 			menu.add(wizards);
 		}
-		if (WebProperties.getBoolean("staging.enabled")) {
-			MenuItem staging = new MenuItem("Staging", Page.TOPMENU_STAGING).setSelected(
-					selectedPage.equalsAny(Page.STAGINGDISTRIBUTORS, Page.STAGINGPROVIDERS, Page.STAGINGRETURN, Page.STAGINGSHIPMENTS)).setDisableOnClickWithJavaScript();
-			staging.addSubMenuItem(new MenuItem("Ship units", Page.STAGINGSHIPMENTS));
-			menu.add(staging);
-		}
 		return menu;
 	}
 }

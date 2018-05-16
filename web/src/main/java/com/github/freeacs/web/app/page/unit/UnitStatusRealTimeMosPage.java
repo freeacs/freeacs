@@ -13,6 +13,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -43,18 +44,18 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
     	/* (non-Javadoc)
 	     * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
 	     */
-	    public void process(ParameterParser params, Output outputHandler) throws Exception {
+	    public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		inputData = (UnitStatusRealTimeMosData) InputDataRetriever.parseInto(new UnitStatusRealTimeMosData(), params);
 		
 		String sessionId = params.getSession().getId();
 		
-		xaps = XAPSLoader.getXAPS(sessionId);
+		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
 
-		XAPSUnit xapsUnit = XAPSLoader.getXAPSUnit(sessionId);
+		XAPSUnit xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource);
 		
 		Map<String, Object> root = outputHandler.getTemplateMap();
 		
@@ -111,7 +112,7 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
 		
 		if(params.getBoolean("display-chart")){
             ReportVoipCallGenerator rgVoip = ReportPage.getReportVoipCallGenerator(params.getSession().getId(), xaps);
-			List<Unittype> unittypes = unittype!=null?Arrays.asList(unittype):getAllowedUnittypes(sessionId);
+			List<Unittype> unittypes = unittype!=null?Arrays.asList(unittype):getAllowedUnittypes(sessionId, xapsDataSource);
 			List<Profile> profiles = profile!=null?Arrays.asList(profile):getAllowedProfiles(sessionId, unittype);
 			String unitId = unit!=null?unit.getId():null;
 			Report<RecordVoipCall> report = rgVoip.generateFromSyslog(PeriodType.SECOND,start, end,unittypes,profiles, unitId,line,null);
@@ -151,7 +152,7 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 */
 	public static Date getLastQoSTimestamp(String sessionId,Unit unit,Date start,String line,XAPS xaps) throws SQLException, NoAvailableConnectionException {
-		Syslog syslog = new Syslog(SessionCache.getSyslogConnectionProperties(sessionId), XAPSLoader.getIdentity(sessionId));
+		Syslog syslog = new Syslog(xaps.getSyslog().getDataSource(), XAPSLoader.getIdentity(sessionId, xaps.getDataSource()));
 		SyslogFilter filter = new SyslogFilter();
 		filter.setMaxRows(1);
 		String keyToFind = "QoS report for channel "+(line!=null?line:"");

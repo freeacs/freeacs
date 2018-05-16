@@ -11,7 +11,6 @@ import com.github.freeacs.dbi.report.Report;
 import com.github.freeacs.dbi.report.ReportGenerator;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.report.ReportData;
-import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.XAPSLoader;
 
 import java.io.IOException;
@@ -40,8 +39,8 @@ public class JobRetriever extends ReportRetriever {
 	 */
 	public JobRetriever(ReportData inputData, ParameterParser params, XAPS xaps) throws SQLException, NoAvailableConnectionException {
 		super(inputData, params, xaps);
-		generator = new ReportGenerator(SessionCache.getSyslogConnectionProperties(params.getSession().getId()), SessionCache.getXAPSConnectionProperties(params.getSession().getId()), xaps, null,
-				XAPSLoader.getIdentity(params.getSession().getId()));
+		generator = new ReportGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(), xaps, null,
+				XAPSLoader.getIdentity(params.getSession().getId(), xaps.getDataSource()));
 	}
 
 	/* (non-Javadoc)

@@ -70,7 +70,7 @@ public class Provisioning extends HttpServlet {
 			Log.fatal(Provisioning.class, "Couldn't start BackgroundProcesses correctly ", t);
 		}
 		try {
-			executions = new ScriptExecutions(DBAccess.getXAPSProperties());
+			executions = new ScriptExecutions(dbAccess.getXapsDataSource());
 		} catch (Throwable t) {
 			Log.fatal(Provisioning.class, "Couldn't initialize ScriptExecutions - not possible to run SHELL-jobs", t);
 		}
@@ -284,12 +284,12 @@ public class Provisioning extends HttpServlet {
 		}
 	}
 
-	private static void writeQueuedUnitParameters(HTTPReqResData reqRes) {
+	private void writeQueuedUnitParameters(HTTPReqResData reqRes) {
 		try {
 			Unit unit = reqRes.getSessionData().getUnit();
 			if (unit != null) {
 				XAPS xaps = reqRes.getSessionData().getDbAccess().getXaps();
-				XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
+				XAPSUnit xapsUnit = dbAccess.getXAPSUnit(xaps);
 				xapsUnit.addOrChangeQueuedUnitParameters(unit);
 			}
 		} catch (Throwable t) {

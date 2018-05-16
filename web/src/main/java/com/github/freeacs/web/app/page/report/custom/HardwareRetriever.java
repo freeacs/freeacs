@@ -37,7 +37,7 @@ public class HardwareRetriever extends ReportRetriever {
 	 */
 	public HardwareRetriever(ReportData inputData, ParameterParser params, XAPS xaps) throws SQLException, NoAvailableConnectionException {
 		super(inputData, params, xaps);
-		generator = new ReportHardwareGenerator(SessionCache.getSyslogConnectionProperties(params.getSession().getId()), SessionCache.getXAPSConnectionProperties(params.getSession().getId()), xaps, null, XAPSLoader.getIdentity(params.getSession().getId()));
+		generator = new ReportHardwareGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(), xaps, null, XAPSLoader.getIdentity(params.getSession().getId(), xaps.getDataSource()));
 	}
 
 	/* (non-Javadoc)

@@ -16,6 +16,7 @@ import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.XAPSLoader;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,14 +41,14 @@ public class UnittypeCreatePage extends AbstractWebPage {
 	 * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
 	 */
 	@Override
-	public void process(ParameterParser params, Output outputHandler) throws Exception {
+	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		UnittypeCreateData inputData = (UnittypeCreateData) InputDataRetriever.parseInto(new UnittypeCreateData(), params);
 
 		inputData.getUnittype().setValue(null);
 
 		String sessionId = params.getSession().getId();
 
-		XAPS xaps = XAPSLoader.getXAPS(sessionId);
+		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -59,7 +60,7 @@ public class UnittypeCreatePage extends AbstractWebPage {
 				xaps.getUnittype(inputData.getUnittypeToCopyFrom().getString()), getUnittypesWithProtocol(xaps, sessionId, inputData.getNewProtocol().getString()));
 
 		if (inputData.getFormSubmit().hasValue("Create")) {
-			if (isUnittypesLimited(sessionId)) {
+			if (isUnittypesLimited(sessionId, xapsDataSource)) {
 				outputHandler.setDirectResponse("You are not allowed to create unittypes!");
 				return;
 			}
@@ -138,7 +139,7 @@ public class UnittypeCreatePage extends AbstractWebPage {
 	 * @throws SQLException the sQL exception
 	 */
 	private List<Unittype> getUnittypesWithProtocol(XAPS xaps, String sessionId, String protocol) throws NoAvailableConnectionException, SQLException {
-		List<Unittype> unittypes = getAllowedUnittypes(sessionId);
+		List<Unittype> unittypes = getAllowedUnittypes(sessionId, xapsDataSource);
 		List<Unittype> allowedUnittypes = new ArrayList<Unittype>();
 		if (protocol == null)
 			protocol = UnittypePage.NA_PROTOCOL;

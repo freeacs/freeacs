@@ -8,6 +8,7 @@ import com.github.freeacs.dbi.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,7 +22,7 @@ public class ReportGroupGenerator extends ReportGenerator {
 
 	private static Logger logger = LoggerFactory.getLogger(ReportGroupGenerator.class);
 
-	public ReportGroupGenerator(ConnectionProperties sysCp, ConnectionProperties xapsCp, XAPS xaps, String logPrefix, Identity id) {
+	public ReportGroupGenerator(DataSource sysCp, DataSource xapsCp, XAPS xaps, String logPrefix, Identity id) {
 		super(sysCp, xapsCp, xaps, logPrefix, id);
 	}
 
@@ -127,7 +128,7 @@ public class ReportGroupGenerator extends ReportGenerator {
 		SQLException sqle = null;
 		try {
 			Report<RecordGroup> report = new Report<RecordGroup>(RecordGroup.class, periodType);
-			xapsConnection = ConnectionProvider.getConnection(xapsCp, true);
+			xapsConnection = xapsCp.getConnection();
 			
 			logger.info(logPrefix + "Reads from report_group table from " + start + " to " + end);
 			DynamicStatement ds = selectReportSQL("report_group", periodType, start, end, uts, null);

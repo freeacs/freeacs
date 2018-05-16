@@ -1,6 +1,5 @@
 package com.github.freeacs.dbi.tr069;
 
-import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
@@ -10,6 +9,7 @@ import com.github.freeacs.dbi.tr069.TestCaseParameter.TestCaseParameterType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,7 +24,7 @@ import java.util.*;
  */
 public class TestDB {
 
-	private ConnectionProperties cp;
+	private DataSource dataSource;
 	private XAPS xaps;
 	private TR069DMParameterMap tr069DMMap;
 	private static Logger logger = LoggerFactory.getLogger(TestDB.class);
@@ -36,14 +36,17 @@ public class TestDB {
 		} catch (Exception e) {
 			throw new RuntimeException("Could not load TR069 Datamodel");
 		}
-		this.cp = xaps.getConnectionProperties();
+		this.dataSource = xaps.getConnectionProperties();
 		this.xaps = xaps;
 	}
 	
 
 	public void deleteTestCase(TestCase tc) throws SQLException,
 			NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(cp, false);
+		boolean wasAutoCommit = false;
+		Connection c = dataSource.getConnection();
+		wasAutoCommit = c.getAutoCommit();
+		c.setAutoCommit(false);
 		PreparedStatement ps = null;
 		SQLException sqle = null;
 		try {
@@ -83,7 +86,7 @@ public class TestDB {
 			if (ps != null)
 				ps.close();
 			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
+				c.setAutoCommit(wasAutoCommit);
 
 		}
 
@@ -91,7 +94,10 @@ public class TestDB {
 
 	public TestCase addOrChangeTestCase(TestCase tc) throws SQLException,
 			NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(cp, false);
+		boolean wasAutoCommit = false;
+		Connection c = dataSource.getConnection();
+		wasAutoCommit = c.getAutoCommit();
+		c.setAutoCommit(false);
 		DynamicStatement ds;
 		PreparedStatement ps1 = null, ps2 = null;
 		SQLException sqle = null;
@@ -192,13 +198,13 @@ public class TestDB {
 			if (ps1 != null)
 				ps1.close();
 			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
+				c.setAutoCommit(wasAutoCommit);
 
 		}
 	}
 
 	public TestCase getTestCase(Unittype unittype, int testCaseId) throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(cp, true);
+		Connection c = dataSource.getConnection();
 		PreparedStatement ps = null;
 		SQLException sqle = null;
 		ResultSet rs = null;
@@ -311,7 +317,7 @@ public class TestDB {
 	public List<TestCase> getUncompleteTestCases(Unittype unittype,
                                                  TestCase.TestCaseMethod method, String paramFilter, String tagFilter)
 			throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(cp, true);
+		Connection c = dataSource.getConnection();
 		PreparedStatement ps = null;
 		SQLException sqle = null;
 		ResultSet rs = null;
@@ -413,7 +419,7 @@ public class TestDB {
 
 	public void addOrChangeTestHistory(TestHistory history)
 			throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(cp, true);
+		Connection c = dataSource.getConnection();
 		PreparedStatement ps = null;
 		SQLException sqle = null;
 		ResultSet gk = null;
@@ -466,7 +472,7 @@ public class TestDB {
 
 	public int deleteHistory(TestHistory filter) throws SQLException,
 			NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(cp, true);
+		Connection c = dataSource.getConnection();
 		PreparedStatement ps = null;
 		SQLException sqle = null;
 		try {
@@ -514,7 +520,7 @@ public class TestDB {
 
 	public List<TestHistory> getHistory(TestHistory filter)
 			throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(cp, true);
+		Connection c = dataSource.getConnection();
 		PreparedStatement ps = null;
 		SQLException sqle = null;
 		ResultSet rs = null;

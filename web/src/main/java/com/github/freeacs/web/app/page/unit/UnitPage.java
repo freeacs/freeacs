@@ -18,6 +18,7 @@ import com.github.freeacs.web.app.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -417,13 +418,13 @@ public class UnitPage extends AbstractWebPage {
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
 	 */
-	public void process(ParameterParser params, Output outputHandler) throws Exception {
+	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		// Get important var
 		inputData = (UnitData) InputDataRetriever.parseInto(new UnitData(), params);
 
 		sessionId = params.getSession().getId();
 
-		xaps = XAPSLoader.getXAPS(sessionId);
+		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -431,7 +432,7 @@ public class UnitPage extends AbstractWebPage {
 
 		InputDataIntegrity.loadAndStoreSession(params, outputHandler, inputData, inputData.getUnittype(), inputData.getProfile(), inputData.getUnit());
 
-		xapsUnit = XAPSLoader.getXAPSUnit(sessionId);
+		xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource);
 
 		boolean isCreate = inputData.getCmd().isValue("create");
 

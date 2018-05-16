@@ -61,7 +61,7 @@ public class SyslogEvents {
 	}
 
 	private void addOrChangeSyslogEventImpl(SyslogEvent syslogEvent, XAPS xaps) throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		PreparedStatement ps = null;
 		try {
@@ -120,7 +120,7 @@ public class SyslogEvents {
 
 	private void deleteSyslogEventImpl(Unittype unittype, SyslogEvent syslogEvent, XAPS xaps) throws SQLException, NoAvailableConnectionException {
 		PreparedStatement ps = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		try {
 			DynamicStatement ds = new DynamicStatement();

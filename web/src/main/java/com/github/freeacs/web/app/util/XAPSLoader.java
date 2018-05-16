@@ -6,6 +6,7 @@ import com.github.freeacs.dbi.*;
 import com.github.freeacs.web.app.Main;
 import com.github.freeacs.web.app.Monitor;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 
 /**
@@ -24,11 +25,12 @@ public class XAPSLoader {
 	 * Gets the dBI.
 	 *
 	 * @param sessionId the session id
+	 * @param xapsDataSource
 	 * @return the dBI
 	 * @throws SQLException the sQL exception
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 */
-	public static DBI getDBI(String sessionId) throws SQLException, NoAvailableConnectionException {
+	public static DBI getDBI(String sessionId, DataSource xapsDataSource) throws SQLException, NoAvailableConnectionException {
 		DBI dbi = SessionCache.getDBI(sessionId);
 		try {
 			int sessionTimeoutSecs = getSessionTimeout() * 60;
@@ -36,12 +38,12 @@ public class XAPSLoader {
 				ConnectionProperties cp = SessionCache.getXAPSConnectionProperties(sessionId);
 				if (cp == null)
 					return null;
-				Identity ident = getIdentity(sessionId);
+				Identity ident = getIdentity(sessionId, xapsDataSource);
 				ConnectionProperties syscp = SessionCache.getSyslogConnectionProperties(sessionId);
 				if (syscp == null)
 					return null;
-				Syslog syslog = new Syslog(syscp, ident);
-				dbi = new DBI(sessionTimeoutSecs, cp, syslog);
+				Syslog syslog = new Syslog(dbi.getXaps().getSyslog().getDataSource(), ident);
+				dbi = new DBI(sessionTimeoutSecs, dbi.getXaps().getDataSource(), syslog);
 				SessionCache.putDBI(sessionId, dbi, sessionTimeoutSecs);
 			}
 			Monitor.setLastDBILogin(null);
@@ -62,12 +64,13 @@ public class XAPSLoader {
 	 * Gets the xAPS.
 	 *
 	 * @param sessionId the session id
+	 * @param xapsDataSource
 	 * @return the xAPS
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	public static XAPS getXAPS(String sessionId) throws NoAvailableConnectionException, SQLException {
-		DBI dbi = getDBI(sessionId);
+	public static XAPS getXAPS(String sessionId, DataSource xapsDataSource) throws NoAvailableConnectionException, SQLException {
+		DBI dbi = getDBI(sessionId, xapsDataSource);
 		if (dbi != null)
 			return dbi.getXaps();
 		return null;
@@ -86,14 +89,15 @@ public class XAPSLoader {
 	 * Gets the identity.
 	 *
 	 * @param sessionId the session id
+	 * @param dataSource
 	 * @return the identity
 	 * @throws SQLException the sQL exception
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 */
-	public static Identity getIdentity(String sessionId) throws SQLException, NoAvailableConnectionException {
+	public static Identity getIdentity(String sessionId, DataSource dataSource) throws SQLException, NoAvailableConnectionException {
 		User user = SessionCache.getSessionData(sessionId).getUser();
 		if (user == null)
-			user = getDefaultUser(sessionId);
+			user = getDefaultUser(sessionId, dataSource);
 		return new Identity(SyslogConstants.FACILITY_WEB, Main.version, user);
 	}
 
@@ -101,12 +105,13 @@ public class XAPSLoader {
 	 * Gets the default user.
 	 *
 	 * @param sessionId the session id
+	 * @param dataSource
 	 * @return the default user
 	 * @throws NoAvailableConnectionException 
 	 * @throws SQLException 
 	 */
-	private static User getDefaultUser(String sessionId) throws SQLException, NoAvailableConnectionException {
-		Users users = new Users(SessionCache.getXAPSConnectionProperties(sessionId));
+	private static User getDefaultUser(String sessionId, DataSource dataSource) throws SQLException, NoAvailableConnectionException {
+		Users users = new Users(dataSource);
 		User user = new User("anonymous", null, null, false, users);
 		return user;
 	}
@@ -115,22 +120,23 @@ public class XAPSLoader {
 	 * Gets the xAPS unit.
 	 *
 	 * @param sessionId the session id
+	 * @param xapsDataSource
 	 * @return the xAPS unit
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	public static XAPSUnit getXAPSUnit(String sessionId) throws NoAvailableConnectionException, SQLException {
+	public static XAPSUnit getXAPSUnit(String sessionId, DataSource xapsDataSource) throws NoAvailableConnectionException, SQLException {
 		ConnectionProperties cp = SessionCache.getXAPSConnectionProperties(sessionId);
 		if (cp == null)
 			return null;
-		XAPS xaps = getDBI(sessionId).getXaps();
+		XAPS xaps = getDBI(sessionId, xapsDataSource).getXaps();
 		if (xaps == null)
 			return null;
-		Identity ident = getIdentity(sessionId);
+		Identity ident = getIdentity(sessionId, xaps.getDataSource());
 		ConnectionProperties syscp = SessionCache.getSyslogConnectionProperties(sessionId);
 		if (syscp == null)
 			return null;
-		Syslog syslog = new Syslog(syscp, ident);
-		return new XAPSUnit(cp, xaps, syslog);
+		Syslog syslog = new Syslog(xaps.getSyslog().getDataSource(), ident);
+		return new XAPSUnit(xaps.getDataSource(), xaps, syslog);
 	}
 }

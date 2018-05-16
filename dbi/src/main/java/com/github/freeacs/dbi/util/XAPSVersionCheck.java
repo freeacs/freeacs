@@ -6,6 +6,7 @@ import com.github.freeacs.common.db.NoAvailableConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.*;
 
 public class XAPSVersionCheck {
@@ -44,10 +45,10 @@ public class XAPSVersionCheck {
 		return false;
 	}
 
-	public static void versionCheck(ConnectionProperties connectionProperties) throws SQLException, NoAvailableConnectionException {
+	public static void versionCheck(DataSource dataSource) throws SQLException, NoAvailableConnectionException {
 		if (databaseChecked) // possible to force re-check of database
 			return;
-		Connection c = ConnectionProvider.getConnection(connectionProperties);
+		Connection c = dataSource.getConnection();
 		Statement s = null;
 		ResultSet rs = null;
 		SQLException sqle = null;

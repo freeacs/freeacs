@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -45,6 +46,8 @@ import java.util.zip.GZIPOutputStream;
 public class Output {
 	
 	private static final String 	INCLUDE_TEMPLATE_KEY 		= "INCLUDED_TEMPLATE";
+	private final DataSource xapsDataSource;
+	private final DataSource syslogDataSource;
 	private HttpServletResponse 	servletResponseChannel 		= null;
 	private Configuration 			freemarkerConfig 			= null;
 	private static final String 	defaultTemplatePath 		= "/index.ftl";
@@ -63,17 +66,20 @@ public class Output {
 	
 	/**
 	 * Instantiates a new output handler.
-	 *
-	 * @param page the page
+	 *  @param page the page
 	 * @param params the params
 	 * @param res the res
 	 * @param config the config
+	 * @param xapsDataSource
+	 * @param syslogDataSource
 	 */
-	public Output(WebPage page,ParameterParser params,HttpServletResponse res,Configuration config){
+	public Output(WebPage page, ParameterParser params, HttpServletResponse res, Configuration config, DataSource xapsDataSource, DataSource syslogDataSource){
 		this.servletResponseChannel = res;
 		this.freemarkerConfig = config;
 		this.inputParameters = params;
 		this.currentPage = page;
+		this.xapsDataSource = xapsDataSource;
+		this.syslogDataSource = syslogDataSource;
 	}
 	
 	/**
@@ -99,7 +105,7 @@ public class Output {
 				
 				processContextBarUpdates();
 				
-				currentPage.process(inputParameters, this);
+				currentPage.process(inputParameters, this, xapsDataSource, syslogDataSource);
 			    
 				if(isResponseCommitted())
 					return;
@@ -143,7 +149,7 @@ public class Output {
 	}
 
 	private void populateTemplateMapWithContextBar() throws NoAvailableConnectionException, SQLException {
-		XAPS xaps = XAPSLoader.getXAPS(inputParameters.getSession().getId());
+		XAPS xaps = XAPSLoader.getXAPS(inputParameters.getSession().getId(), xapsDataSource);
 		Unittype currentUnittype = xaps.getUnittype(trailPoint!=null?trailPoint.getUnitTypeName():null);
 		Input utInput = Input.getStringInput("unittype");
 		if(currentUnittype!=null)
@@ -203,7 +209,7 @@ public class Output {
 			inputParameters.getSessionData().setUnitId(cU);
 			inputParameters.getHttpServletRequest().ignoreParameter("unit");
 			String newValue = inputParameters.getSessionData().getUnitId();
-			XAPSUnit xaps = XAPSLoader.getXAPSUnit(inputParameters.getSession().getId());
+			XAPSUnit xaps = XAPSLoader.getXAPSUnit(inputParameters.getSession().getId(), xapsDataSource);
 			Unit unit = null;
 			if((unit = xaps.getUnitById(newValue))!=null){
 				redirect(Page.UNITSTATUS.getUrl("unit="+unit.getId()+"&unittype="+unit.getUnittype().getName()+"&profile="+unit.getProfile().getName()),servletResponseChannel);

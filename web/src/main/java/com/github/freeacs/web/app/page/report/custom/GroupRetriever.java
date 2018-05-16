@@ -77,8 +77,9 @@ public class GroupRetriever extends ReportRetriever {
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 */
 	private ReportGroupGenerator generateGroupGenerator() throws SQLException, NoAvailableConnectionException {
-		return new ReportGroupGenerator(SessionCache.getSyslogConnectionProperties(getParams().getSession().getId()), SessionCache.getXAPSConnectionProperties(getParams().getSession().getId()),
-				getXaps(), null, XAPSLoader.getIdentity(getParams().getSession().getId()));
+		XAPS xaps = getXaps();
+		return new ReportGroupGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(),
+				xaps, null, XAPSLoader.getIdentity(getParams().getSession().getId(), xaps.getDataSource()));
 	}
 
 	/* (non-Javadoc)

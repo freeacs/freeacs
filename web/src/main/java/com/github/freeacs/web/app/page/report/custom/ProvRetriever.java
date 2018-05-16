@@ -36,8 +36,8 @@ public class ProvRetriever extends ReportRetriever {
 	 */
 	public ProvRetriever(ReportData inputData, ParameterParser params, XAPS xaps) throws SQLException, NoAvailableConnectionException {
 		super(inputData, params, xaps);
-		generatorProv = new ReportProvisioningGenerator(SessionCache.getSyslogConnectionProperties(params.getSession().getId()), SessionCache.getXAPSConnectionProperties(params.getSession().getId()), xaps,
-				null, XAPSLoader.getIdentity(params.getSession().getId()));
+		generatorProv = new ReportProvisioningGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(), xaps,
+				null, XAPSLoader.getIdentity(params.getSession().getId(), xaps.getDataSource()));
 	}
 
 	/* (non-Javadoc)

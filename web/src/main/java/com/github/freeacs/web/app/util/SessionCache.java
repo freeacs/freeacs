@@ -10,6 +10,7 @@ import com.github.freeacs.dbi.SyslogFilter;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.report.*;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -230,18 +231,20 @@ public class SessionCache {
 	 * @param unitId the unit id
 	 * @param fromDate the from date
 	 * @param toDate the to date
+	 * @param xapsDataSource
+	 * @param syslogDataSource
 	 * @return The report. Is null when report functionality is not supported by the database.
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 * @throws SQLException the sQL exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@SuppressWarnings("unchecked")
-	public static Report<RecordVoip> getVoipReport(String sessionId, String unitId, Date fromDate, Date toDate) throws NoAvailableConnectionException, SQLException, IOException {
+	public static Report<RecordVoip> getVoipReport(String sessionId, String unitId, Date fromDate, Date toDate, DataSource xapsDataSource, DataSource syslogDataSource) throws NoAvailableConnectionException, SQLException, IOException {
 		String key = getRangeKey(unitId,"voipcalls",fromDate,toDate);
 		
 		CacheValue cv = cache.get(key);
 		if(cv == null){
-			ReportVoipGenerator rg = new ReportVoipGenerator(getSyslogConnectionProperties(sessionId), getXAPSConnectionProperties(sessionId), XAPSLoader.getXAPS(sessionId),null,XAPSLoader.getIdentity(sessionId));
+			ReportVoipGenerator rg = new ReportVoipGenerator(syslogDataSource, xapsDataSource, XAPSLoader.getXAPS(sessionId, xapsDataSource),null,XAPSLoader.getIdentity(sessionId, xapsDataSource));
 			Report<RecordVoip> value = rg.generateFromSyslog(fromDate, toDate, unitId);
 			cv = new CacheValue(value,Cache.ABSOLUTE,SYSLOG_RESULT_TIMEOUT);
 			cache.put(key, cv);
@@ -287,18 +290,20 @@ public class SessionCache {
 	 * @param unitId the unit id
 	 * @param fromDate the from date
 	 * @param toDate the to date
+	 * @param xapsDataSource
+	 * @param syslogDataSource
 	 * @return the hardware report
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 * @throws SQLException the sQL exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@SuppressWarnings("unchecked")
-	public static Report<RecordHardware> getHardwareReport(String sessionId,String unitId, Date fromDate, Date toDate) throws NoAvailableConnectionException, SQLException, IOException {
+	public static Report<RecordHardware> getHardwareReport(String sessionId, String unitId, Date fromDate, Date toDate, DataSource xapsDataSource, DataSource syslogDataSource) throws NoAvailableConnectionException, SQLException, IOException {
 		String key = getRangeKey(unitId,"hardwarereport",fromDate,toDate);
 		
 		CacheValue cv = cache.get(key);
 		if(cv == null){
-			ReportHardwareGenerator rg = new ReportHardwareGenerator(getSyslogConnectionProperties(sessionId), getXAPSConnectionProperties(sessionId),XAPSLoader.getXAPS(sessionId), null,XAPSLoader.getIdentity(sessionId));
+			ReportHardwareGenerator rg = new ReportHardwareGenerator(syslogDataSource, xapsDataSource, XAPSLoader.getXAPS(sessionId, xapsDataSource), null,XAPSLoader.getIdentity(sessionId, xapsDataSource));
 			Report<RecordHardware> value = rg.generateFromSyslog(fromDate, toDate, unitId);
 			cv = new CacheValue(value,Cache.ABSOLUTE,SYSLOG_RESULT_TIMEOUT);
 			cache.put(key, cv);
@@ -327,7 +332,9 @@ public class SessionCache {
 	 * @param unitId the unit id
 	 * @param fromDate the from date
 	 * @param toDate the to date
-	 * @param syslogFilter 
+	 * @param syslogFilter
+	 * @param xapsDataSource
+	 * @param syslogDataSource
 	 * @return the syslog report
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 * @throws SQLException the sQL exception
@@ -335,14 +342,14 @@ public class SessionCache {
 	 * @throws ParseException the parse exception
 	 */
 	@SuppressWarnings("unchecked")
-	public static Report<RecordSyslog> getSyslogReport(String sessionId,String unitId, Date fromDate, Date toDate, String syslogFilter) throws NoAvailableConnectionException, SQLException, IOException, ParseException {
+	public static Report<RecordSyslog> getSyslogReport(String sessionId, String unitId, Date fromDate, Date toDate, String syslogFilter, DataSource xapsDataSource, DataSource syslogDataSource) throws NoAvailableConnectionException, SQLException, IOException, ParseException {
 		String key = getSyslogRangeKey(unitId,"syslogreport",fromDate,toDate,syslogFilter);
 		
 		CacheValue cv = cache.get(key);
 		if(cv == null){
 			SyslogFilter filter = new SyslogFilter();
 			filter.setMessage(syslogFilter);
-			ReportSyslogGenerator rg = new ReportSyslogGenerator(getSyslogConnectionProperties(sessionId), getXAPSConnectionProperties(sessionId),XAPSLoader.getXAPS(sessionId), null,XAPSLoader.getIdentity(sessionId));
+			ReportSyslogGenerator rg = new ReportSyslogGenerator(syslogDataSource, xapsDataSource,XAPSLoader.getXAPS(sessionId, xapsDataSource), null,XAPSLoader.getIdentity(sessionId, xapsDataSource));
 			rg.setSyslogFilter(filter);
 			Report<RecordSyslog> value = rg.generateFromSyslog(fromDate, toDate, unitId);
 			cv = new CacheValue(value,Cache.ABSOLUTE,SYSLOG_RESULT_TIMEOUT);

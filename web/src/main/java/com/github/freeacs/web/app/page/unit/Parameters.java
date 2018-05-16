@@ -50,8 +50,8 @@ public class Parameters {
 	 * @throws SQLException the sQL exception
 	 */
 	public static void setUnitParameterValue(String key,String value,Unit unit,String sessionId) throws NoAvailableConnectionException, SQLException{
-		XAPS xaps = XAPSLoader.getXAPS(sessionId);
-		XAPSUnit xapsUnit = XAPSLoader.getXAPSUnit(sessionId);
+		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
+		XAPSUnit xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource);
 		
 		List<UnitParameter> toAddOrChange = new ArrayList<UnitParameter>();
 		

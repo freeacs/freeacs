@@ -28,6 +28,7 @@ import org.jfree.chart.urls.XYURLGenerator;
 import org.jfree.data.time.TimeSeriesCollection;
 
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -84,9 +85,11 @@ public class ReportPage extends AbstractWebPage {
 	 *
 	 * @param req the req
 	 * @param outputHandler the outputHandler
+	 * @param xapsDataSource
+	 * @param syslogDataSource
 	 * @throws Exception the exception
 	 */
-	public void process(ParameterParser req, Output outputHandler) throws Exception {
+	public void process(ParameterParser req, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		this.req = req;
 		// 1
 		inputData = (ReportData) InputDataRetriever.parseInto(new ReportData(), req);
@@ -102,7 +105,7 @@ public class ReportPage extends AbstractWebPage {
 		InputDataIntegrity.loadAndStoreSession(req, outputHandler, inputData, inputData.getUnittype(), inputData.getProfile());
 
 		// 3
-		xaps = XAPSLoader.getXAPS(req.getSession().getId());
+		xaps = XAPSLoader.getXAPS(req.getSession().getId(), xapsDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -593,12 +596,12 @@ public class ReportPage extends AbstractWebPage {
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 */
 	public static ReportVoipGenerator getReportVoipGenerator(String sessionId, XAPS xaps) throws SQLException, NoAvailableConnectionException {
-		return new ReportVoipGenerator(SessionCache.getSyslogConnectionProperties(sessionId), SessionCache.getXAPSConnectionProperties(sessionId), xaps, null, XAPSLoader.getIdentity(sessionId));
+		return new ReportVoipGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(), xaps, null, XAPSLoader.getIdentity(sessionId, xaps.getDataSource()));
 	}
 
 	public static ReportProvisioningGenerator getReportProvGenerator(String sessionId, XAPS xaps) throws SQLException, NoAvailableConnectionException {
-		return new ReportProvisioningGenerator(SessionCache.getSyslogConnectionProperties(sessionId), SessionCache.getXAPSConnectionProperties(sessionId), xaps, null,
-				XAPSLoader.getIdentity(sessionId));
+		return new ReportProvisioningGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(), xaps, null,
+				XAPSLoader.getIdentity(sessionId, xaps.getDataSource()));
 	}
 
 	/**
@@ -611,7 +614,7 @@ public class ReportPage extends AbstractWebPage {
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 */
 	public static ReportHardwareGenerator getReportHardwareGenerator(String sessionId, XAPS xaps) throws SQLException, NoAvailableConnectionException {
-		return new ReportHardwareGenerator(SessionCache.getSyslogConnectionProperties(sessionId), SessionCache.getXAPSConnectionProperties(sessionId), xaps, null, XAPSLoader.getIdentity(sessionId));
+		return new ReportHardwareGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(), xaps, null, XAPSLoader.getIdentity(sessionId, xaps.getDataSource()));
 	}
 
 	/**
@@ -624,7 +627,7 @@ public class ReportPage extends AbstractWebPage {
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 */
 	public static ReportGroupGenerator getReportGroupGenerator(String sessionId, XAPS xaps) throws SQLException, NoAvailableConnectionException {
-		return new ReportGroupGenerator(SessionCache.getSyslogConnectionProperties(sessionId), SessionCache.getXAPSConnectionProperties(sessionId), xaps, null, XAPSLoader.getIdentity(sessionId));
+		return new ReportGroupGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(), xaps, null, XAPSLoader.getIdentity(sessionId, xaps.getDataSource()));
 	}
 
 	/**
@@ -637,7 +640,7 @@ public class ReportPage extends AbstractWebPage {
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 */
 	public static ReportSyslogGenerator getReportSyslogGenerator(String sessionId, XAPS xaps) throws SQLException, NoAvailableConnectionException {
-		return new ReportSyslogGenerator(SessionCache.getSyslogConnectionProperties(sessionId), SessionCache.getXAPSConnectionProperties(sessionId), xaps, null, XAPSLoader.getIdentity(sessionId));
+		return new ReportSyslogGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(), xaps, null, XAPSLoader.getIdentity(sessionId, xaps.getDataSource()));
 	}
 
 	/**
@@ -650,7 +653,7 @@ public class ReportPage extends AbstractWebPage {
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 */
 	public static ReportVoipCallGenerator getReportVoipCallGenerator(String sessionId, XAPS xaps) throws SQLException, NoAvailableConnectionException {
-		return new ReportVoipCallGenerator(SessionCache.getSyslogConnectionProperties(sessionId), SessionCache.getXAPSConnectionProperties(sessionId), xaps, null, XAPSLoader.getIdentity(sessionId));
+		return new ReportVoipCallGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(), xaps, null, XAPSLoader.getIdentity(sessionId, xaps.getDataSource()));
 	}
 
 	/**

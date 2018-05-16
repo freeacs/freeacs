@@ -40,10 +40,10 @@ public class VoipRetriever extends ReportRetriever {
 	 */
 	public VoipRetriever(ReportData inputData, ParameterParser params, XAPS xaps) throws SQLException, NoAvailableConnectionException {
 		super(inputData, params, xaps);
-		generatorVoip = new ReportVoipGenerator(SessionCache.getSyslogConnectionProperties(params.getSession().getId()), SessionCache.getXAPSConnectionProperties(params.getSession().getId()), xaps, null,
-				XAPSLoader.getIdentity(params.getSession().getId()));
-		generatorVoipCall = new ReportVoipCallGenerator(SessionCache.getSyslogConnectionProperties(params.getSession().getId()), SessionCache.getXAPSConnectionProperties(params.getSession().getId()),
-				xaps, null, XAPSLoader.getIdentity(params.getSession().getId()));
+		generatorVoip = new ReportVoipGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(), xaps, null,
+				XAPSLoader.getIdentity(params.getSession().getId(), xaps.getDataSource()));
+		generatorVoipCall = new ReportVoipCallGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(),
+				xaps, null, XAPSLoader.getIdentity(params.getSession().getId(), xaps.getDataSource()));
 	}
 
 	/* (non-Javadoc)

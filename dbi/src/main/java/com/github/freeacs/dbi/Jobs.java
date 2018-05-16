@@ -89,9 +89,12 @@ public class Jobs {
 		SQLException sqle = null;
 		//		if (!XAPSVersionCheck.jobSupported)
 		//			return;
+		boolean wasAutoCommit = false;
 		try {
 			checkParameters(jobParameters);
-			connection = ConnectionProvider.getConnection(xaps.connectionProperties, false);
+			Connection c = xaps.getDataSource().getConnection();
+			wasAutoCommit = c.getAutoCommit();
+			c.setAutoCommit(false);
 			for (int i = 0; jobParameters != null && i < jobParameters.size(); i++) {
 				JobParameter jobParameter = jobParameters.get(i);
 				Parameter parameter = jobParameter.getParameter();
@@ -143,7 +146,7 @@ public class Jobs {
 			if (pp != null)
 				pp.close();
 			if (connection != null)
-				ConnectionProvider.returnConnection(connection, sqle);
+				connection.setAutoCommit(wasAutoCommit);
 		}
 
 	}
@@ -158,7 +161,7 @@ public class Jobs {
 		//		if (!XAPSVersionCheck.jobSupported)
 		//			return;
 		try {
-			connection = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+			Connection c = xaps.getDataSource().getConnection();
 			s = connection.createStatement();
 			sql = "DELETE FROM job_param WHERE job_id = " + job.getId();
 			s.setQueryTimeout(60);
@@ -189,8 +192,11 @@ public class Jobs {
 		SQLException sqle = null;
 		//		if (!XAPSVersionCheck.jobSupported)
 		//			return 0;
+		boolean wasAutoCommit = false;
 		try {
-			connection = ConnectionProvider.getConnection(xaps.connectionProperties, false);
+			Connection c = xaps.getDataSource().getConnection();
+			wasAutoCommit = c.getAutoCommit();
+			c.setAutoCommit(false);
 			s = connection.createStatement();
 			int rowsDeleted = 0;
 			for (int i = 0; i < jobParameters.size(); i++) {
@@ -225,7 +231,7 @@ public class Jobs {
 			if (s != null)
 				s.close();
 			if (connection != null)
-				ConnectionProvider.returnConnection(connection, sqle);
+				connection.setAutoCommit(wasAutoCommit);
 		}
 	}
 
@@ -246,7 +252,7 @@ public class Jobs {
 		//		if (!XAPSVersionCheck.jobSupported)
 		//			return;
 		try {
-			c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+			c = xaps.getDataSource().getConnection();
 			String sql = "DELETE FROM job WHERE job_id = ?";
 			pp = c.prepareStatement(sql);
 			pp.setInt(1, job.getId());
@@ -313,7 +319,7 @@ public class Jobs {
 		try {
 			if (nameMap.get(job.getName()) != null)
 				throw new IllegalArgumentException("The job name already exists, choose another name");
-			c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+			c = xaps.getDataSource().getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.setSql("INSERT INTO job (");
 			ds.addSqlAndArguments("job_name, ", job.getName());
@@ -454,7 +460,7 @@ public class Jobs {
 		//		if (!XAPSVersionCheck.jobSupported)
 		//			return;
 		try {
-			c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+			c = xaps.getDataSource().getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSql("UPDATE job SET ");
 			ds.addSqlAndArguments("completed_had_failure = ?, ", job.getCompletedHadFailures());
@@ -503,7 +509,7 @@ public class Jobs {
 		PreparedStatement pp = null;
 		SQLException sqle = null;
 		try {
-			c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+			c = xaps.getDataSource().getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSql("UPDATE job SET ");
 			if (job.getStatus() == JobStatus.STARTED && job.getStartTimestamp() == null) {
@@ -572,7 +578,7 @@ public class Jobs {
 		PreparedStatement pp = null;
 		SQLException sqle = null;
 		try {
-			c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+			c = xaps.getDataSource().getConnection();
 			if (isDependencyLoop(job, job.getDependency()))
 				throw new IllegalArgumentException("Job " + job.getId() + " cannot depend upon job " + job.getDependency().getId() + " since that creates a loop");
 			DynamicStatement ds = new DynamicStatement();
@@ -640,7 +646,7 @@ public class Jobs {
 		ResultSet rs = null;
 		SQLException sqle = null;
 		try {
-			c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+			c = xaps.getDataSource().getConnection();
 			s = c.createStatement();
 			s.setQueryTimeout(60);
 			rs = s.executeQuery("SELECT * FROM job j, group_ g, unit_type u WHERE j.group_id = g.group_id AND g.unit_type_id = u.unit_type_id AND j.job_id = " + jobId);

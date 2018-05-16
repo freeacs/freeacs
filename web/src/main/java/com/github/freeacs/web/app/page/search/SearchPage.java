@@ -12,6 +12,7 @@ import com.github.freeacs.web.app.util.XAPSLoader;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.sql.DataSource;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -42,14 +43,14 @@ public class SearchPage extends AbstractWebPage {
 	 * com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input
 	 * .ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
 	 */
-	public void process(ParameterParser params, Output outputHandler) throws Exception {
+	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		inputData = (SearchData) InputDataRetriever.parseInto(new SearchData(), params);
-		xaps = XAPSLoader.getXAPS(params.getSession().getId());
+		xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
-		xapsUnit = XAPSLoader.getXAPSUnit(params.getSession().getId());
+		xapsUnit = XAPSLoader.getXAPSUnit(params.getSession().getId(), xapsDataSource);
 		InputDataIntegrity.loadAndStoreSession(params, outputHandler, inputData, inputData.getUnittype(), inputData.getProfile());
 
 		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps);

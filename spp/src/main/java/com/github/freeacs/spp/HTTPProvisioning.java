@@ -50,7 +50,7 @@ public class HTTPProvisioning extends HttpServlet {
 			Log.fatal(HTTPProvisioning.class, "An error occurred - TFTP server did not start (triggered from HTTPProvisioning", t);
 		}
 		try {
-			TelnetProvisioning tpc = new TelnetProvisioning(DBAccess.getXAPSProperties(), dbAccess.getDBI());
+			TelnetProvisioning tpc = new TelnetProvisioning(dbAccess, dbAccess.getDBI());
 			Thread t = new Thread(tpc);
 			t.start();
 		} catch (Throwable t) {

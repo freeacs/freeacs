@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.Map.Entry;
@@ -505,13 +506,14 @@ public abstract class AbstractWebPage implements WebPage {
 	 * Checks if is unittypes limited.
 	 *
 	 * @param sessionId the session id
+	 * @param xapsDataSource
 	 * @return true, if is unittypes limited
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	public static boolean isUnittypesLimited(String sessionId) throws NoAvailableConnectionException, SQLException {
-		List<Unittype> list = getAllowedUnittypes(sessionId);
-		XAPS xaps = XAPSLoader.getXAPS(sessionId);
+	public static boolean isUnittypesLimited(String sessionId, DataSource xapsDataSource) throws NoAvailableConnectionException, SQLException {
+		List<Unittype> list = getAllowedUnittypes(sessionId, xapsDataSource);
+		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
 		return list.size() != xaps.getUnittypes().getUnittypes().length;
 	}
 
@@ -519,12 +521,13 @@ public abstract class AbstractWebPage implements WebPage {
 	 * Gets the allowed unittypes.
 	 *
 	 * @param sessionId the session id
+	 * @param xapsDataSource
 	 * @return the allowed unittypes
 	 * @throws NoAvailableConnectionException the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	public static List<Unittype> getAllowedUnittypes(String sessionId) throws NoAvailableConnectionException, SQLException {
-		XAPS xaps = XAPSLoader.getXAPS(sessionId);
+	public static List<Unittype> getAllowedUnittypes(String sessionId, DataSource xapsDataSource) throws NoAvailableConnectionException, SQLException {
+		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
 		SessionData sessionData = SessionCache.getSessionData(sessionId);
 		List<Unittype> unittypesList = null;
 		if (sessionData.getFilteredUnittypes() != null) {
@@ -609,7 +612,7 @@ public abstract class AbstractWebPage implements WebPage {
 	 * @throws SQLException the sQL exception
 	 */
 	protected static List<Profile> getAllAllowedProfiles(String sessionId) throws NoAvailableConnectionException, SQLException{
-		List<Unittype> unittypes = getAllowedUnittypes(sessionId);
+		List<Unittype> unittypes = getAllowedUnittypes(sessionId, xapsDataSource);
  		List<Profile> filteredProfiles = new ArrayList<Profile>();
 		for(Unittype unittype: unittypes){
 			List<Profile> profiles = getAllowedProfiles(sessionId,unittype);

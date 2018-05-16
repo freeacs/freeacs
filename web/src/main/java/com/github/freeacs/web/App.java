@@ -6,6 +6,8 @@ import com.github.freeacs.web.app.menu.MenuServlet;
 import com.github.freeacs.web.app.security.LoginServlet;
 import com.github.freeacs.web.app.util.Freemarker;
 import com.github.freeacs.web.help.HelpServlet;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -14,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
+import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -25,6 +28,18 @@ public class App {
     }
 
     @Bean
+    @Qualifier("xaps")
+    public DataSource getXapsDataSource() {
+        return null;
+    }
+
+    @Bean
+    @Qualifier("syslog")
+    public DataSource getSyslogDataSource() {
+        return null;
+    }
+
+    @Bean
     ServletRegistrationBean<Monitor> monitor () {
         ServletRegistrationBean<Monitor> srb = new ServletRegistrationBean<>();
         srb.setServlet(new Monitor());
@@ -33,18 +48,18 @@ public class App {
     }
 
     @Bean
-    ServletRegistrationBean<Main> main () {
+    ServletRegistrationBean<Main> main (@Autowired @Qualifier("xaps") DataSource xapsDataSource, @Autowired @Qualifier("syslog") DataSource syslogDataSource) {
         ServletRegistrationBean<Main> srb = new ServletRegistrationBean<>();
-        srb.setServlet(new Main());
+        srb.setServlet(new Main(xapsDataSource, syslogDataSource));
         srb.setName("main");
         srb.setUrlMappings(Collections.singletonList("/web"));
         return srb;
     }
 
     @Bean
-    ServletRegistrationBean<LoginServlet> loginServlet () {
+    ServletRegistrationBean<LoginServlet> loginServlet (@Autowired @Qualifier("xaps") DataSource xapsDataSource) {
         ServletRegistrationBean<LoginServlet> srb = new ServletRegistrationBean<LoginServlet>();
-        srb.setServlet(new LoginServlet());
+        srb.setServlet(new LoginServlet(xapsDataSource));
         srb.setUrlMappings(Collections.singletonList("/login"));
         return srb;
     }
@@ -65,9 +80,9 @@ public class App {
     }
 
     @Bean
-    FilterRegistrationBean<LoginServlet> loginFilter () {
+    FilterRegistrationBean<LoginServlet> loginFilter (@Autowired @Qualifier("xaps") DataSource xapsDataSource) {
         FilterRegistrationBean<LoginServlet> frb = new FilterRegistrationBean<LoginServlet>();
-        frb.setFilter(new LoginServlet());
+        frb.setFilter(new LoginServlet(xapsDataSource));
         frb.setServletNames(Collections.singletonList("main"));
         return frb;
     }

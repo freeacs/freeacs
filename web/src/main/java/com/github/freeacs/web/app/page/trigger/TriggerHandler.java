@@ -23,7 +23,7 @@ public class TriggerHandler {
 	private TriggerData inputData;
 
 	public TriggerHandler(String sessionId, TriggerData inputData) throws NoAvailableConnectionException, SQLException {
-		this.xaps = XAPSLoader.getXAPS(sessionId);
+		this.xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
 		this.sessionId = sessionId;
 		this.inputData = inputData;
 		setUnittype(inputData);

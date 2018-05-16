@@ -40,8 +40,8 @@ public class UnitRetriever extends ReportRetriever {
 	 */
 	public UnitRetriever(ReportData inputData, ParameterParser params, XAPS xaps) throws SQLException, NoAvailableConnectionException {
 		super(inputData, params, xaps);
-		generator = new ReportGenerator(SessionCache.getSyslogConnectionProperties(params.getSession().getId()), SessionCache.getXAPSConnectionProperties(params.getSession().getId()), xaps, null,
-				XAPSLoader.getIdentity(params.getSession().getId()));
+		generator = new ReportGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(), xaps, null,
+				XAPSLoader.getIdentity(params.getSession().getId(), xaps.getDataSource()));
 	}
 
 	/* (non-Javadoc)

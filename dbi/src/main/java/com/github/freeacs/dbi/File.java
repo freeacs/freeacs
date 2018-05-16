@@ -4,6 +4,7 @@ import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.Date;
 
@@ -24,7 +25,7 @@ public class File {
 
 	private boolean validateInput = true;
 
-	private ConnectionProperties connectionProperties;
+	private DataSource dataSource;
 
 	// code-order: id, unittype, name, type, desc, version, timestamp, targetname, (content)
 	public File() {
@@ -95,7 +96,7 @@ public class File {
 			ResultSet rs = null;
 			SQLException sqlex = null;
 			try {
-				c = ConnectionProvider.getConnection(connectionProperties);
+				c = dataSource.getConnection();
 				s = c.createStatement();
 				s.setQueryTimeout(60);
 				rs = s.executeQuery("SELECT content FROM filestore WHERE id = '" + id + "'");
@@ -206,8 +207,8 @@ public class File {
 	/* MISC methods */
 
 	// Necessary to retrieve content - we do not cache content as default action
-	protected void setConnectionProperties(ConnectionProperties connectionProperties) {
-		this.connectionProperties = connectionProperties;
+	protected void setConnectionProperties(DataSource dataSource) {
+		this.dataSource = dataSource;
 	}
 
 	// Used by Web

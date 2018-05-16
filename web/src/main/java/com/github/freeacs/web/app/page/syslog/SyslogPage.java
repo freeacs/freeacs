@@ -9,6 +9,7 @@ import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.XAPSLoader;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.Map;
  * The Class SyslogPage.
  */
 public class SyslogPage extends AbstractWebPage {
-	public void process(ParameterParser params, Output outputHandler) throws Exception {
+	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		SyslogData inputData = (SyslogData) InputDataRetriever.parseInto(new SyslogData(), params);
 		
 		if (params.getBoolean("history")) {
@@ -28,14 +29,14 @@ public class SyslogPage extends AbstractWebPage {
 			return;
 		}
 
-		XAPS xaps = XAPSLoader.getXAPS(params.getSession().getId());
+		XAPS xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource);
 
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
 
-		XAPSLoader.getXAPSUnit(params.getSession().getId());
+		XAPSLoader.getXAPSUnit(params.getSession().getId(), xapsDataSource);
 
 		// Fix
 		InputDataIntegrity.loadAndStoreSession(params,outputHandler,inputData, inputData.getUnittype(),inputData.getProfile());
@@ -81,7 +82,7 @@ public class SyslogPage extends AbstractWebPage {
 		if (inputData.getFormSubmit().isValue("Retrieve syslog")) {
 			int maxrows = SyslogUtil.convertToInt(inputData.getMaxRows().getString());
 			SyslogRetriever syslogRetriever = SyslogRetriever.getInstance(inputData);
-			List<SyslogEntry> entries = syslogRetriever.getSyslogEntries(maxrows,unittypes.getSelected(),profiles.getSelected(), params.getSession().getId());
+			List<SyslogEntry> entries = syslogRetriever.getSyslogEntries(maxrows,unittypes.getSelected(),profiles.getSelected(), params.getSession().getId(), xapsDataSource, syslogDataSource);
 			map.put("rowsreturned",entries.size());
 			if(entries.size()>maxrows)
 				entries = entries.subList(0, maxrows);

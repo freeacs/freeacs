@@ -9,6 +9,7 @@ import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.XAPSLoader;
 
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -106,18 +107,18 @@ public class UpgradePage extends AbstractWebPage {
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
 	 */
-	public void process(ParameterParser params, Output outputHandler) throws Exception {
+	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		inputData = (UpgradeData) InputDataRetriever.parseInto(new UpgradeData(), params);
 
 		sessionId = params.getSession().getId();
 
-		xaps = XAPSLoader.getXAPS(sessionId);
+		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
 
-		xapsUnit = XAPSLoader.getXAPSUnit(sessionId);
+		xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource);
 
 		InputDataIntegrity.loadAndStoreSession(params, outputHandler, inputData, inputData.getUnittype());
 

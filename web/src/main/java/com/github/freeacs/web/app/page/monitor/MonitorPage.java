@@ -19,6 +19,7 @@ import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,8 +52,8 @@ public class MonitorPage extends AbstractWebPage {
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
 	 */
-	public void process(ParameterParser req, Output outputHandler) throws Exception {
-		XAPS xaps = XAPSLoader.getXAPS(req.getSession().getId());
+	public void process(ParameterParser req, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
+		XAPS xaps = XAPSLoader.getXAPS(req.getSession().getId(), xapsDataSource);
 
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);

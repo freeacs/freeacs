@@ -8,6 +8,7 @@ import com.github.freeacs.dbi.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -28,7 +29,7 @@ public class ReportVoipGenerator extends ReportGenerator {
 	// Reg failed: ua0: reg failed 613883@nettala.fo: 903 DNS Error (0 bindings)
 	private static Pattern regfailedPattern = Pattern.compile(".*reg failed.*");
 
-	public ReportVoipGenerator(ConnectionProperties sysCp, ConnectionProperties xapsCp, XAPS xaps, String logPrefix, Identity id) {
+	public ReportVoipGenerator(DataSource sysCp, DataSource xapsCp, XAPS xaps, String logPrefix, Identity id) {
 		super(sysCp, xapsCp, xaps, logPrefix, id);
 	}
 
@@ -43,7 +44,7 @@ public class ReportVoipGenerator extends ReportGenerator {
 			Report<RecordVoip> report = new Report<RecordVoip>(RecordVoip.class, periodType);
 
 			logger.debug(logPrefix + "VoipReport: Reads from report_voip table from " + start + " to " + end);
-			xapsConnection = ConnectionProvider.getConnection(xapsCp, true);
+			xapsConnection = xapsCp.getConnection();
 			DynamicStatement ds = selectReportSQL("report_voip", periodType, start, end, uts, prs);
 			ps = ds.makePreparedStatement(xapsConnection);
 			rs = ps.executeQuery();

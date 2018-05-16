@@ -30,7 +30,7 @@ public class CertificateVerification {
 	 * @throws SQLException the sQL exception
 	 */
 	private static boolean isCertificateValid(String name,String sessionId) throws NoAvailableConnectionException, SQLException{
-		XAPS xaps = XAPSLoader.getXAPS(sessionId);
+		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
 		
 		Certificates certs = xaps.getCertificates();
 		

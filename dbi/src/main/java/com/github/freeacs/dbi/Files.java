@@ -61,7 +61,7 @@ public class Files {
 	public void addOrChangeFile(File file, XAPS xaps) throws SQLException, NoAvailableConnectionException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
-		file.setConnectionProperties(xaps.connectionProperties); // just in
+		file.setConnectionProperties(xaps.getDataSource()); // just in
 																	// case...
 		file.validate();
 		addOrChangeFileImpl(unittype, file, xaps);
@@ -77,7 +77,7 @@ public class Files {
 	private void deleteFileImpl(Unittype unittype, File file, XAPS xaps) throws SQLException, NoAvailableConnectionException {
 		Statement s = null;
 		String sql = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		try {
 			s = c.createStatement();
@@ -119,7 +119,7 @@ public class Files {
 	}
 
 	private void addOrChangeFileImpl(Unittype unittype, File file, XAPS xaps) throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		PreparedStatement s = null;
 		String sql = null;
@@ -293,7 +293,7 @@ public class Files {
 	protected static void refreshFile(Integer fileId, Integer unittypeId, XAPS xaps) throws SQLException, NoAvailableConnectionException {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		try {
 			Unittype unittype = xaps.getUnittype(unittypeId);
@@ -307,7 +307,7 @@ public class Files {
 			ps = ds.makePreparedStatement(c);
 			rs = ps.executeQuery();
 			if (rs.next()) {
-				file.setConnectionProperties(xaps.connectionProperties);
+				file.setConnectionProperties(xaps.getDataSource());
 				file.setName(rs.getString("name"));
 				file.setType(FileType.valueOf(rs.getString("type")));
 				// file.setSubtype(rs.getString("subtype"));

@@ -38,7 +38,7 @@ public class SyslogRetriever extends ReportRetriever {
 	 */
 	public SyslogRetriever(ReportData inputData, ParameterParser params, XAPS xaps) throws SQLException, NoAvailableConnectionException {
 		super(inputData, params, xaps);
-		generator = new ReportSyslogGenerator(SessionCache.getSyslogConnectionProperties(params.getSession().getId()), SessionCache.getXAPSConnectionProperties(params.getSession().getId()), xaps, null, XAPSLoader.getIdentity(params.getSession().getId()));
+		generator = new ReportSyslogGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(), xaps, null, XAPSLoader.getIdentity(params.getSession().getId(), xaps.getDataSource()));
 	}
 
 	/* (non-Javadoc)

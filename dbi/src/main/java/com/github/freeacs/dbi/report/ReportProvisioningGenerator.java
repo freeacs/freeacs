@@ -9,6 +9,7 @@ import com.github.freeacs.dbi.util.ProvisioningMessage.ProvStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,7 +28,7 @@ public class ReportProvisioningGenerator extends ReportGenerator {
 	private static String provMsgId = "^ProvMsg: PP:";
 	private static Pattern provPattern = Pattern.compile(provMsgId + ".*ST:(\\w+), PO:(\\w+), SL:(\\d+)");
 
-	public ReportProvisioningGenerator(ConnectionProperties sysCp, ConnectionProperties xapsCp, XAPS xaps, String logPrefix, Identity id) {
+	public ReportProvisioningGenerator(DataSource sysCp, DataSource xapsCp, XAPS xaps, String logPrefix, Identity id) {
 		super(sysCp, xapsCp, xaps, logPrefix, id);
 	}
 
@@ -43,7 +44,7 @@ public class ReportProvisioningGenerator extends ReportGenerator {
 			Report<RecordProvisioning> report = new Report<RecordProvisioning>(RecordProvisioning.class, periodType);
 
 			logger.debug(logPrefix + "ProvisioningReport: Reads from report_prov table from " + start + " to " + end);
-			xapsConnection = ConnectionProvider.getConnection(xapsCp, true);
+			xapsConnection = xapsCp.getConnection();
 			DynamicStatement ds = selectReportSQL("report_prov", periodType, start, end, uts, prs);
 			ps = ds.makePreparedStatement(xapsConnection);
 			rs = ps.executeQuery();

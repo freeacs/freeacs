@@ -7,11 +7,13 @@ import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.tr069.Provisioning;
 import com.github.freeacs.tr069.test.system1.TestServlet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 
+import javax.sql.DataSource;
 import java.util.Collections;
 
 import static com.github.freeacs.tr069.Provisioning.VERSION;
@@ -24,8 +26,20 @@ public class App {
     }
 
     @Bean
-    public DBAccess getDBAccess() {
-        return new DBAccess(com.github.freeacs.Properties.Module.TR069, SyslogConstants.FACILITY_TR069, VERSION);
+    @Qualifier("xaps")
+    public DataSource getXapsDataSource() {
+        return null;
+    }
+
+    @Bean
+    @Qualifier("syslog")
+    public DataSource getSyslogDataSource() {
+        return null;
+    }
+
+    @Bean
+    public DBAccess getDBAccess(@Autowired @Qualifier("xaps") DataSource xapsDataSource, @Autowired @Qualifier("syslog") DataSource syslogDataSource) {
+        return new DBAccess(com.github.freeacs.Properties.Module.TR069, SyslogConstants.FACILITY_TR069, VERSION, xapsDataSource, syslogDataSource);
     }
 
     @Bean

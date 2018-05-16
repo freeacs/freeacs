@@ -7,6 +7,7 @@ import com.github.freeacs.common.util.Sleep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
@@ -180,7 +181,7 @@ public class DBI implements Runnable {
 	private static Logger logger = LoggerFactory.getLogger(DBI.class);
 	public static String PUBLISH_INBOX_NAME = "publishXAPSInbox";
 
-	private ConnectionProperties cp;
+	private DataSource dataSource;
 	private int lifetimeSec;
 	private long start = System.currentTimeMillis();
 	private boolean finished = false;
@@ -202,14 +203,14 @@ public class DBI implements Runnable {
 	// Set if an error occurs within DBI, used to signal ERROR in monitor
 	private Throwable dbiThrowable;
 
-	public DBI(int lifetimeSec, ConnectionProperties connectionProperties, Syslog syslog) throws NoAvailableConnectionException, SQLException {
-		this.cp = connectionProperties;
+	public DBI(int lifetimeSec, DataSource dataSource, Syslog syslog) throws NoAvailableConnectionException, SQLException {
+		this.dataSource = dataSource;
 		this.lifetimeSec = lifetimeSec;
 		this.syslog = syslog;
 		populateInboxes();
 		publishInbox.deleteReadMessage();
 		this.sleep = new Sleep(1000, 1000, true);
-		this.xaps = new XAPS(cp, syslog);
+		this.xaps = new XAPS(dataSource, syslog);
 		this.dbiId = random.nextInt(1000000);
 		xaps.setDbi(this);
 		publishInbox.addFilter(new Message(null, Message.MTYPE_PUB_ADD, null, null));
@@ -245,7 +246,7 @@ public class DBI implements Runnable {
 	}
 
 	private void populateInboxes() throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(cp);
+		Connection c = dataSource.getConnection();
 		SQLException sqlex = null;
 		Statement s = null;
 		try {
@@ -295,7 +296,7 @@ public class DBI implements Runnable {
 	private void cleanup() throws SQLException, NoAvailableConnectionException {
 		//		if (!XAPSVersionCheck.messageSupported)
 		//			return;
-		Connection c = ConnectionProvider.getConnection(cp, true);
+		Connection c = dataSource.getConnection();
 		SQLException sqlex = null;
 		PreparedStatement ps = null;
 		try {
@@ -322,7 +323,7 @@ public class DBI implements Runnable {
 	private void send(Message message) throws SQLException, NoAvailableConnectionException {
 		//		if (!XAPSVersionCheck.messageSupported)
 		//			return;
-		Connection c = ConnectionProvider.getConnection(cp, true);
+		Connection c = dataSource.getConnection();
 		SQLException sqlex = null;
 		PreparedStatement ps = null;
 		try {

@@ -6,6 +6,7 @@ import com.github.freeacs.dbi.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
@@ -23,7 +24,7 @@ public class ReportVoipCallGenerator extends ReportGenerator {
 	// MOS-report: MOS Report: Channel 0: MOS: 434
 	private static Pattern mosPattern = Pattern.compile("MOS: (\\d+)");
 
-	public ReportVoipCallGenerator(ConnectionProperties sysCp, ConnectionProperties xapsCp, XAPS xaps, String logPrefix, Identity id) {
+	public ReportVoipCallGenerator(DataSource sysCp, DataSource xapsCp, XAPS xaps, String logPrefix, Identity id) {
 		super(sysCp, xapsCp, xaps, logPrefix, id);
 	}
 

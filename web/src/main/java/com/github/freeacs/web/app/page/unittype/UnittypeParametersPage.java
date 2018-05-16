@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,7 +57,7 @@ public class UnittypeParametersPage extends AbstractWebPage {
 			@RequestParam(required=true) String unittype,
 			@RequestParam(required=true) String term,
 			HttpSession session) throws NoAvailableConnectionException, SQLException, JSONException{
-		XAPS xaps = XAPSLoader.getXAPS(session.getId());
+		XAPS xaps = XAPSLoader.getXAPS(session.getId(), xapsDataSource);
 		List<Unittype> allowedUnittypes = Arrays.asList(xaps.getUnittypes().getUnittypes());
 		Unittype unittypeFromRequest = xaps.getUnittype(unittype);
 		if(allowedUnittypes.contains(unittypeFromRequest)){
@@ -77,12 +78,12 @@ public class UnittypeParametersPage extends AbstractWebPage {
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
 	 */
-	public void process(ParameterParser params, Output outputHandler) throws Exception {
+	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		UnittypeParametersData inputData = (UnittypeParametersData) InputDataRetriever.parseInto(new UnittypeParametersData(), params);
 
 		sessionId = params.getSession().getId();
 
-		XAPS xaps = XAPSLoader.getXAPS(sessionId);
+		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;

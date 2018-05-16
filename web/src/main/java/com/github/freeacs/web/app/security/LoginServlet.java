@@ -20,6 +20,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
@@ -38,6 +39,7 @@ public class LoginServlet extends HttpServlet implements Filter {
 
 	/** The logger. */
 	private static final Logger logger = LoggerFactory.getLogger(LoginServlet.class);
+	private final DataSource xapsDataSource;
 
 	/** The config. */
 	private FilterConfig config;
@@ -50,6 +52,10 @@ public class LoginServlet extends HttpServlet implements Filter {
 
 	/** The login handler. */
 	private static Authenticator loginHandler = new DatabaseAuthenticator();
+	
+	public LoginServlet(DataSource xapsDataSource) {
+		this.xapsDataSource = xapsDataSource;
+	}
 
 	/**
 	 * Processes a login, with username and password.

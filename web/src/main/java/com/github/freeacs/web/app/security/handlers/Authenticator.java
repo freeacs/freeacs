@@ -3,6 +3,8 @@ package com.github.freeacs.web.app.security.handlers;
 
 import com.github.freeacs.web.app.security.WebUser;
 
+import javax.sql.DataSource;
+
 /**
  * The interface for defining authentication handlers.
  * 
@@ -26,5 +28,5 @@ public interface Authenticator {
 	 * @return WebUser the validated (or rejected) user
 	 * @throws Exception throws everything
 	 */
-	public WebUser authenticateUser(String username, String password, String sessionId) throws Exception;
+	public WebUser authenticateUser(String username, String password, String sessionId, DataSource xapsDataSource) throws Exception;
 }

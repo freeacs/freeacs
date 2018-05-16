@@ -20,6 +20,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
@@ -42,6 +43,13 @@ public class Main extends HttpServlet {
 
 	/** The config. */
 	private Configuration config;
+
+	private final DataSource xapsDataSource, syslogDataSource;
+
+	public Main(DataSource xapsDataSource, DataSource syslogDataSource) {
+		this.xapsDataSource = xapsDataSource;
+		this.syslogDataSource = syslogDataSource;
+	}
 
 	/**
 	 * This is the main magic of this web application.
@@ -162,7 +170,7 @@ public class Main extends HttpServlet {
 
 		WebPage page = getWebPage(pageStr);
 
-		Output outputHandler = new Output(page, params, res, config);
+		Output outputHandler = new Output(page, params, res, config, xapsDataSource, syslogDataSource);
 
 		Map<String, Object> templateMap = outputHandler.getTemplateMap();
 

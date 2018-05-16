@@ -8,6 +8,7 @@ import com.github.freeacs.dbi.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -32,7 +33,7 @@ public class ReportHardwareGenerator extends ReportGenerator {
 	// Reboot-content: Reboot reason [0x0002]
 	private static Pattern rebootPattern = Pattern.compile(".*Reboot reason \\[.+\\](.+)");
 
-	public ReportHardwareGenerator(ConnectionProperties sysCp, ConnectionProperties xapsCp, XAPS xaps, String logPrefix, Identity id) {
+	public ReportHardwareGenerator(DataSource sysCp, DataSource xapsCp, XAPS xaps, String logPrefix, Identity id) {
 		super(sysCp, xapsCp, xaps, logPrefix, id);
 	}
 
@@ -48,7 +49,7 @@ public class ReportHardwareGenerator extends ReportGenerator {
 			Report<RecordHardware> report = new Report<RecordHardware>(RecordHardware.class, periodType);
 
 			logger.debug(logPrefix + "HardwareReport: Reads from report_hw table from " + start + " to " + end);
-			xapsConnection = ConnectionProvider.getConnection(xapsCp, true);
+			xapsConnection = xapsCp.getConnection();
 			DynamicStatement ds = selectReportSQL("report_hw", periodType, start, end, uts, prs);
 			ps = ds.makePreparedStatement(xapsConnection);
 			rs = ps.executeQuery();

@@ -172,7 +172,10 @@ public class UnittypeParameters {
 	private void deleteUnittypeParameterImpl(List<UnittypeParameter> unittypeParameters, Unittype unittype, XAPS xaps) throws SQLException, NoAvailableConnectionException {
 		Statement s = null;
 		String sql = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, false);
+		boolean wasAutoCommit = false;
+		Connection c = xaps.getDataSource().getConnection();
+		wasAutoCommit = c.getAutoCommit();
+		c.setAutoCommit(false);
 		SQLException sqlex = null;
 		try {
 			for (UnittypeParameter unittypeParameter : unittypeParameters) {
@@ -199,7 +202,7 @@ public class UnittypeParameters {
 			if (s != null)
 				s.close();
 			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+				c.setAutoCommit(wasAutoCommit);
 		}
 	}
 
@@ -236,7 +239,10 @@ public class UnittypeParameters {
 	}
 
 	private void addOrChangeUnittypeParameterImpl(List<UnittypeParameter> unittypeParameters, Unittype unittype, XAPS xaps) throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, false);
+		boolean wasAutoCommit = false;
+		Connection c = xaps.getDataSource().getConnection();
+		wasAutoCommit = c.getAutoCommit();
+		c.setAutoCommit(false);
 		SQLException sqlex = null;
 		PreparedStatement ps = null;
 		try {
@@ -292,7 +298,7 @@ public class UnittypeParameters {
 			if (ps != null)
 				ps.close();
 			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+				c.setAutoCommit(wasAutoCommit);
 		}
 	}
 
