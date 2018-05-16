@@ -3,6 +3,7 @@ package com.github.freeacs.tr069.methods;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.tr069.*;
+import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.github.freeacs.dbi.FileType;
@@ -20,10 +21,7 @@ import com.github.freeacs.tr069.xml.*;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 /**
@@ -337,7 +335,8 @@ public class HTTPResponseCreator {
         Log.error(HTTPResponseCreator.class, "The methodName " + methodName + " has no corresponding ResponseAction-method");
       }
       String responseStr = response.toXml();
-      Log.conversation(reqRes.getSessionData(), "=============== FROM ACS ============\n" + responseStr + "\n");
+      String unitId = reqRes.getSessionData().getUnitId();
+      Log.conversation(reqRes.getSessionData(), "=============== FROM ACS TO ( " + Optional.ofNullable(unitId).orElseGet(() -> "Unknown") + " ) ============\n" + responseStr + "\n");
       reqRes.getResponse().setXml(responseStr);
     } catch (Throwable t) {
       throw new TR069Exception("Not possible to create HTTP-response (to the TR-069 client)", TR069ExceptionShortMessage.MISC, t);
