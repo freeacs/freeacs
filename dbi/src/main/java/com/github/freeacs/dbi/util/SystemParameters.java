@@ -1,6 +1,5 @@
 package com.github.freeacs.dbi.util;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.UnittypeParameterFlag;
@@ -212,10 +211,10 @@ public class SystemParameters {
 	 * 
 	 * @param targetName
 	 * @return
-	 * @throws NoAvailableConnectionException 
+	 *
 	 * @throws SQLException 
 	 */
-	public static UnittypeParameter getTR069ScriptParameter(String targetName, TR069ScriptType type, XAPS xaps, Unittype unittype) throws SQLException, NoAvailableConnectionException {
+	public static UnittypeParameter getTR069ScriptParameter(String targetName, TR069ScriptType type, XAPS xaps, Unittype unittype) throws SQLException {
 		String parameterName = getTR069ScriptParameterName(targetName, type);
 		UnittypeParameter parameter = unittype.getUnittypeParameters().getByName(parameterName);
 		if (parameter == null) {

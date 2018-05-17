@@ -1,6 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.util.SystemParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -471,7 +470,7 @@ class UnitQueryCrossUnittype {
 		}
 	}
 
-	public Unit getLimitedUnitByValue(String uniqueUnitParamValue) throws SQLException, NoAvailableConnectionException {
+	public Unit getLimitedUnitByValue(String uniqueUnitParamValue) throws SQLException {
 		DynamicStatement ds = new DynamicStatement();
 		ds.addSqlAndArguments("SELECT unit_id FROM unit_param WHERE value = ?", uniqueUnitParamValue);
 		ResultSet rs = null;
@@ -511,7 +510,7 @@ class UnitQueryCrossUnittype {
 
 	}
 
-	public Unit getUnitByValue(String uniqueUnitParamValue) throws SQLException, NoAvailableConnectionException {
+	public Unit getUnitByValue(String uniqueUnitParamValue) throws SQLException {
 		DynamicStatement ds = new DynamicStatement();
 		ds.addSql("SELECT u.unit_id, u.profile_id, u.unit_type_id, up.unit_type_param_id, up.value FROM unit u ");
 		ds.addSql("LEFT JOIN unit_param up ON u.unit_id = up.unit_id WHERE ");

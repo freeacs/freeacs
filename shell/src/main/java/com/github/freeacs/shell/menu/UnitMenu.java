@@ -1,11 +1,6 @@
 package com.github.freeacs.shell.menu;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
-import com.github.freeacs.shell.Context;
-import com.github.freeacs.shell.Session;
-import com.github.freeacs.shell.UnitTempStorage;
-
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.tr069.Steps;
 import com.github.freeacs.dbi.tr069.TestCase;
@@ -14,6 +9,9 @@ import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemConstants;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.XAPSVersionCheck;
+import com.github.freeacs.shell.Context;
+import com.github.freeacs.shell.Session;
+import com.github.freeacs.shell.UnitTempStorage;
 import com.github.freeacs.shell.output.Heading;
 import com.github.freeacs.shell.output.Line;
 import com.github.freeacs.shell.output.Listing;
@@ -121,7 +119,7 @@ public class UnitMenu {
 		session.incCounter();
 	}
 
-	private void testSetup(String[] args, OutputHandler oh) throws IOException, SQLException, NoAvailableConnectionException {
+	private void testSetup(String[] args, OutputHandler oh) throws IOException, SQLException {
 
 		// Provide sensible defaults for every option.
 		Map<String, String> argMap = StringUtil.getOptionMap(args);

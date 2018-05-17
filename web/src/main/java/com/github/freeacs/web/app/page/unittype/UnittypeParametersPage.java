@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.page.unittype;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.Output;
@@ -14,6 +13,7 @@ import com.github.freeacs.web.app.util.XAPSLoader;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,22 +42,26 @@ public class UnittypeParametersPage extends AbstractWebPage {
 	private static final String SESSION_SAVE_BOOLEAN = "utp-save-complete";
 	private static final String SESSION_SAVE_ERRORS = "utp-save-error";
 
-	/**
+	@Qualifier("xaps") DataSource xapsDataSource;
+
+    @Qualifier("syslog") DataSource syslogDataSource;
+
+    /**
 	 * For use by jQuery on the search page for the "Add new parameter" in advanced mode.
 	 * 
 	 * @param unittype
 	 * @param term
 	 * @param session
 	 * @return A toString()'ed JSON object
-	 * @throws NoAvailableConnectionException
+	 *
 	 * @throws SQLException
 	 */
 	@RequestMapping(method=RequestMethod.GET,value="list")
 	public @ResponseBody String getUnittypeParameters(
 			@RequestParam(required=true) String unittype,
 			@RequestParam(required=true) String term,
-			HttpSession session) throws NoAvailableConnectionException, SQLException, JSONException{
-		XAPS xaps = XAPSLoader.getXAPS(session.getId());
+			HttpSession session) throws SQLException, JSONException{
+		XAPS xaps = XAPSLoader.getXAPS(session.getId(), xapsDataSource, syslogDataSource);
 		List<Unittype> allowedUnittypes = Arrays.asList(xaps.getUnittypes().getUnittypes());
 		Unittype unittypeFromRequest = xaps.getUnittype(unittype);
 		if(allowedUnittypes.contains(unittypeFromRequest)){
@@ -77,12 +82,12 @@ public class UnittypeParametersPage extends AbstractWebPage {
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
 	 */
-	public void process(ParameterParser params, Output outputHandler) throws Exception {
+	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		UnittypeParametersData inputData = (UnittypeParametersData) InputDataRetriever.parseInto(new UnittypeParametersData(), params);
 
 		sessionId = params.getSession().getId();
 
-		XAPS xaps = XAPSLoader.getXAPS(sessionId);
+		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -175,8 +180,6 @@ public class UnittypeParametersPage extends AbstractWebPage {
 				unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utParam, xaps);
 
 				utpAdded = true;
-			} catch (NoAvailableConnectionException ex) {
-				error += "Failed to add parameter " + name + ". There is no available connections.";
 			} catch (SQLException e) {
 				error += "Failed to add parameter " + name + ": " + e.getLocalizedMessage();
 			} catch (Exception ex) {

@@ -1,6 +1,5 @@
 package com.github.freeacs.ws.impl;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unittype;
@@ -8,6 +7,7 @@ import com.github.freeacs.ws.*;
 import com.github.freeacs.ws.Parameter;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class AddOrChangeProfile {
 	private XAPS xaps;
 	private XAPSWS xapsWS;
 
-	private void addOrChangeProfileImpl(Profile profileXAPS, AddOrChangeProfileRequest gur) throws NoAvailableConnectionException, SQLException, RemoteException {
+	private void addOrChangeProfileImpl(Profile profileXAPS, AddOrChangeProfileRequest gur) throws SQLException, RemoteException {
 		ParameterList parameterList = gur.getProfile().getParameters();
 		List<ProfileParameter> acPpList = new ArrayList<ProfileParameter>();
 		List<ProfileParameter> dPpList = new ArrayList<ProfileParameter>();
@@ -52,10 +52,10 @@ public class AddOrChangeProfile {
 			profileXAPS.getProfileParameters().addOrChangeProfileParameter(pp, xaps);
 	}
 
-	public AddOrChangeProfileResponse addOrChangeProfile(AddOrChangeProfileRequest gur) throws RemoteException {
+	public AddOrChangeProfileResponse addOrChangeProfile(AddOrChangeProfileRequest gur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 			
-			xapsWS = XAPSWSFactory.getXAPSWS(gur.getLogin());
+			xapsWS = XAPSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
 			xaps = xapsWS.getXAPS();
 			if (gur.getUnittype() == null || gur.getProfile() == null)
 				throw XAPSWS.error(logger, "No unittype or profile specified");

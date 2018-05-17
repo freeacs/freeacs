@@ -1,16 +1,15 @@
 package com.github.freeacs.core.task;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.core.Properties;
 import com.github.freeacs.core.util.FractionStopRuleCounter;
 import com.github.freeacs.core.util.UnitJobResult;
 import com.github.freeacs.core.util.UnitResultMap;
 import com.github.freeacs.dbi.*;
-
 import com.github.freeacs.dbi.Job.StopRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -159,8 +158,8 @@ public class JobRuleEnforcer extends DBIOwner {
 	private UnitJobs unitJobs;
 	private Map<Integer, JobControl> jobControlMap = new HashMap<Integer, JobControl>();
 
-	public JobRuleEnforcer(String taskName) throws SQLException, NoAvailableConnectionException {
-		super(taskName);
+	public JobRuleEnforcer(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException {
+		super(taskName, xapsCp, sysCp);
 	}
 
 	@Override
@@ -236,7 +235,7 @@ public class JobRuleEnforcer extends DBIOwner {
 		}
 	}
 
-	private void processUnprocessed(List<UnitJob> ujList, JobControl jc) throws SQLException, NoAvailableConnectionException {
+	private void processUnprocessed(List<UnitJob> ujList, JobControl jc) throws SQLException {
 		Job job = jc.getJob();
 		for (UnitJob uj : ujList) {
 			if (uj.getStatus().equals(UnitJobStatus.STOPPED)) {
@@ -274,7 +273,7 @@ public class JobRuleEnforcer extends DBIOwner {
 		}
 	}
 
-	private void ruleMatching(JobControl jc) throws SQLException, NoAvailableConnectionException {
+	private void ruleMatching(JobControl jc) throws SQLException {
 		Job job = jc.getJob();
 		int unitJobsPerformed = job.getCompletedNoFailures() + job.getConfirmedFailed() + job.getUnconfirmedFailed() + job.getCompletedHadFailures();
 		FractionStopRuleCounter fr = jc.fractionRuleMatch();
@@ -312,7 +311,7 @@ public class JobRuleEnforcer extends DBIOwner {
 
 	}
 
-	private void updateJob(Job job, UnitJobs unitJobs) throws SQLException, NoAvailableConnectionException {
+	private void updateJob(Job job, UnitJobs unitJobs) throws SQLException {
 		String publishMsg = "";
 		int completedThisRound = unitJobs.countAndDeleteCompletedNoFailure(job);
 		if (completedThisRound != 0)

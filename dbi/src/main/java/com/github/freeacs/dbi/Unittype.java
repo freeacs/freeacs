@@ -1,6 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.NumberComparator;
 import com.github.freeacs.dbi.util.MapWrapper;
 import com.github.freeacs.dbi.util.SystemParameters;
@@ -285,7 +284,7 @@ public class Unittype implements Comparable<Unittype> {
 		return 0;
 	}
 
-	protected int ensureValidSystemParameters(XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	protected int ensureValidSystemParameters(XAPS xaps) throws SQLException {
 		int changedParams = 0;
 		if (xaps.getDbi() != null) { // Will not run on startup (initialization case)
 			List<UnittypeParameter> utpList = new ArrayList<UnittypeParameter>();

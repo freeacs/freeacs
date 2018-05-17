@@ -2,20 +2,17 @@ package com.github.freeacs.tr069.decision.shelljob;
 
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.UnitJob;
-import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.db.DBAccessSessionTR069;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.common.util.CacheValue;
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.CPEParameters;
 import com.github.freeacs.tr069.Provisioning;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
-
-import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.methods.GPVDecision;
 import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
@@ -48,7 +45,7 @@ public class ShellJobLogic {
 	 * @param uj
 	 * @throws TR069DatabaseException
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
 	public static void execute(SessionData sessionData, Job job, UnitJob uj) throws TR069Exception {
 		String unitId = sessionData.getUnitId();
@@ -130,7 +127,7 @@ public class ShellJobLogic {
 		XAPS xaps = sessionData.getDbAccess().getXaps();
 		Unit unit;
 		try {
-			XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
+			XAPSUnit xapsUnit = new XAPSUnit(xaps.getDataSource(), xaps, xaps.getSyslog());
 			unit = xapsUnit.getUnitById(sessionData.getUnitId());
 		} catch (SQLException e) {
 			throw new TR069DatabaseException(e);
@@ -189,15 +186,12 @@ public class ShellJobLogic {
 		}
 		if (unitParameters.size() > 0) {
 			try {
-				XAPS xaps = DBAccess.getDBI().getXaps();
-				XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
+				XAPS xaps = sessionData.getDbAccess().getXaps();
+				XAPSUnit xapsUnit = new XAPSUnit(xaps.getDataSource(), xaps, xaps.getSyslog());
 				xapsUnit.addOrChangeUnitParameters(unitParameters, sessionData.getProfile());
 			} catch (SQLException sqle) {
 				throw new TR069DatabaseException(sqle);
 			}
-			//			sessionData.setToDB(toDB);
-			//			DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(DBAccess.getDBI(), sessionData.getDbAccess());
-			//			dbAccessSessionTR069.writeValueMap(sessionData);
 		}
 	}
 

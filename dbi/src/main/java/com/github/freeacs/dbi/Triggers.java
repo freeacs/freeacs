@@ -1,7 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.InsertOrUpdateStatement.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,12 +50,11 @@ public class Triggers {
 	 * @param history
 	 * @param xaps
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
-	public void addOrChangeHistory(TriggerRelease history, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeHistory(TriggerRelease history, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
-		SQLException sqlex = null;
+		Connection c = xaps.getDataSource().getConnection();
 		try {
 			if (history.getId() == null) {
 				DynamicStatement ds = new DynamicStatement();
@@ -83,29 +80,24 @@ public class Triggers {
 				ps.setQueryTimeout(60);
 				ps.executeUpdate();
 			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.close();
 		}
 	}
 
-	public TriggerRelease readLatestTriggerRelease(Trigger trigger, Date from, Date to, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public TriggerRelease readLatestTriggerRelease(Trigger trigger, Date from, Date to, XAPS xaps) throws SQLException {
 		List<TriggerRelease> history = readTriggerReleases(trigger, from, to, xaps, 1);
 		if (history.size() > 0)
 			return history.get(0);
 		return null;
 	}
 
-	public List<TriggerRelease> readTriggerReleases(Trigger trigger, Date from, Date to, XAPS xaps, Integer limit) throws SQLException, NoAvailableConnectionException {
+	public List<TriggerRelease> readTriggerReleases(Trigger trigger, Date from, Date to, XAPS xaps, Integer limit) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
-		SQLException sqlex = null;
+		Connection c = xaps.getDataSource().getConnection();
 		try {
 			List<TriggerRelease> thList = new ArrayList<TriggerRelease>();
 			DynamicStatement ds = new DynamicStatement();
@@ -134,16 +126,12 @@ public class Triggers {
 				thList.add(th);
 			}
 			return thList;
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (rs != null)
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.close();
 		}
 	}
 
@@ -155,11 +143,11 @@ public class Triggers {
 	 * @param event
 	 * @param xaps
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
-	public void addEvent(TriggerEvent event, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void addEvent(TriggerEvent event, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+		Connection c = xaps.getDataSource().getConnection();
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("trigger_id, ", event.getTrigger().getId());
@@ -177,19 +165,17 @@ public class Triggers {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, null);
+			c.close();
 		}
 	}
 
-	public int deleteHistory(Date upUntil, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public int deleteHistory(Date upUntil, XAPS xaps) throws SQLException {
 		return deleteHistory(null, upUntil, xaps);
 	}
 
-	public int deleteHistory(Integer triggerId, Date upUntil, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public int deleteHistory(Integer triggerId, Date upUntil, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
-		SQLException sqlex = null;
+		Connection c = xaps.getDataSource().getConnection();
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			if (triggerId == null)
@@ -199,18 +185,14 @@ public class Triggers {
 			ps = ds.makePreparedStatement(c);
 			ps.setQueryTimeout(60);
 			return ps.executeUpdate();
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.close();
 		}
 	}
 
-	public int deleteEvents(Date upUntil, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public int deleteEvents(Date upUntil, XAPS xaps) throws SQLException {
 		return deleteEvents(null, upUntil, xaps);
 	}
 
@@ -222,12 +204,11 @@ public class Triggers {
 	 * @param xaps
 	 * @return
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
-	public int deleteEvents(Integer triggerId, Date upUntil, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public int deleteEvents(Integer triggerId, Date upUntil, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
-		SQLException sqlex = null;
+		Connection c = xaps.getDataSource().getConnection();
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			if (triggerId == null)
@@ -237,14 +218,10 @@ public class Triggers {
 			ps = ds.makePreparedStatement(c);
 			ps.setQueryTimeout(60);
 			return ps.executeUpdate();
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.close();
 		}
 	}
 
@@ -258,13 +235,12 @@ public class Triggers {
 	 * @param xaps
 	 * @return
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
-	public Map<String, Integer> countEventsPrUnit(Integer triggerId, Date from, Date to, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public Map<String, Integer> countEventsPrUnit(Integer triggerId, Date from, Date to, XAPS xaps) throws SQLException {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
-		SQLException sqlex = null;
+		Connection c = xaps.getDataSource().getConnection();
 		Map<String, Integer> unitMap = new HashMap<String, Integer>();
 		try {
 			DynamicStatement ds = new DynamicStatement();
@@ -281,22 +257,17 @@ public class Triggers {
 			}
 			unitMap.put("TEC-TotalEventsCounter", totalCounter);
 			return unitMap;
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.close();
 		}
 	}
 
-	public Date getFirstEventTms(Integer triggerId, Date from, Date to, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public Date getFirstEventTms(Integer triggerId, Date from, Date to, XAPS xaps) throws SQLException {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
-		SQLException sqlex = null;
+		Connection c = xaps.getDataSource().getConnection();
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("SELECT timestamp_ FROM trigger_event WHERE trigger_id = ? AND timestamp_ >= ? AND timestamp_ < ? ORDER BY timestamp_ ASC LIMIT 1", triggerId, from, to);
@@ -307,14 +278,10 @@ public class Triggers {
 				return rs.getTimestamp("timestamp_");
 			else
 				return null;
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.close();
 		}
 	}
 
@@ -327,13 +294,12 @@ public class Triggers {
 	 * @param xaps
 	 * @return
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
-	public Integer countUnits(Integer triggerId, Date from, Date to, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public Integer countUnits(Integer triggerId, Date from, Date to, XAPS xaps) throws SQLException {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
-		SQLException sqlex = null;
+		Connection c = xaps.getDataSource().getConnection();
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("SELECT COUNT(DISTINCT(unit_id)) FROM trigger_event WHERE trigger_id = ? AND timestamp_ >= ? AND timestamp_ < ?", triggerId, from, to);
@@ -344,18 +310,14 @@ public class Triggers {
 				return rs.getInt(1);
 			else
 				return 0;
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.close();
 		}
 	}
 
-	public void addOrChangeTrigger(Trigger trigger, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeTrigger(Trigger trigger, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		trigger.validate();
@@ -368,10 +330,12 @@ public class Triggers {
 		}
 	}
 
-	private int deleteTriggerImpl(Trigger trigger, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private int deleteTriggerImpl(Trigger trigger, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, false);
-		SQLException sqlex = null;
+		boolean wasAutoCommit = false;
+		Connection c = xaps.getDataSource().getConnection();
+		wasAutoCommit = c.getAutoCommit();
+		c.setAutoCommit(false);
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("DELETE FROM trigger_event WHERE trigger_id = ?", trigger.getId());
@@ -394,14 +358,11 @@ public class Triggers {
 				xaps.getDbi().publishDelete(trigger, trigger.getUnittype());
 			logger.info("Deleted trigger " + trigger.getName());
 			return rowsDeleted;
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.setAutoCommit(wasAutoCommit);
+			c.close();
 		}
 	}
 
@@ -409,11 +370,11 @@ public class Triggers {
 	 * The first time this method is run, the flag is set. The second time this
 	 * method is run, the parameter is removed from the name- and id-Map.
 	 *
-	 * @throws NoAvailableConnectionException
+	 *
 	 *
 	 * @throws java.sql.SQLException
 	 */
-	public int deleteTrigger(Trigger trigger, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public int deleteTrigger(Trigger trigger, XAPS xaps) throws SQLException {
 		if (trigger.getChildren().size() > 0)
 			throw new IllegalArgumentException("This trigger is a composite trigger with \"child\" triggers. Remove child triggers before deleting this trigger");
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
@@ -426,10 +387,9 @@ public class Triggers {
 		return rowsDeleted;
 	}
 
-	private void addOrChangeTriggerImpl(Trigger trigger, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void addOrChangeTriggerImpl(Trigger trigger, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
-		SQLException sqlex = null;
+		Connection c = xaps.getDataSource().getConnection();
 		try {
 			InsertOrUpdateStatement ious = new InsertOrUpdateStatement("trigger_", new Field("id", trigger.getId()));
 			ious.addField(new Field("name", trigger.getName()));
@@ -477,14 +437,10 @@ public class Triggers {
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(trigger, trigger.getUnittype());
 			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.close();
 		}
 	}
 

@@ -1,12 +1,10 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.Sleep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
@@ -180,7 +178,7 @@ public class DBI implements Runnable {
 	private static Logger logger = LoggerFactory.getLogger(DBI.class);
 	public static String PUBLISH_INBOX_NAME = "publishXAPSInbox";
 
-	private ConnectionProperties cp;
+	private DataSource dataSource;
 	private int lifetimeSec;
 	private long start = System.currentTimeMillis();
 	private boolean finished = false;
@@ -202,14 +200,14 @@ public class DBI implements Runnable {
 	// Set if an error occurs within DBI, used to signal ERROR in monitor
 	private Throwable dbiThrowable;
 
-	public DBI(int lifetimeSec, ConnectionProperties connectionProperties, Syslog syslog) throws NoAvailableConnectionException, SQLException {
-		this.cp = connectionProperties;
+	public DBI(int lifetimeSec, DataSource dataSource, Syslog syslog) throws  SQLException {
+		this.dataSource = dataSource;
 		this.lifetimeSec = lifetimeSec;
 		this.syslog = syslog;
 		populateInboxes();
 		publishInbox.deleteReadMessage();
 		this.sleep = new Sleep(1000, 1000, true);
-		this.xaps = new XAPS(cp, syslog);
+		this.xaps = new XAPS(dataSource, syslog);
 		this.dbiId = random.nextInt(1000000);
 		xaps.setDbi(this);
 		publishInbox.addFilter(new Message(null, Message.MTYPE_PUB_ADD, null, null));
@@ -244,9 +242,8 @@ public class DBI implements Runnable {
 		return inboxes.get(key);
 	}
 
-	private void populateInboxes() throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(cp);
-		SQLException sqlex = null;
+	private void populateInboxes() throws SQLException {
+		Connection c = dataSource.getConnection();
 		Statement s = null;
 		try {
 			s = c.createStatement();
@@ -281,22 +278,15 @@ public class DBI implements Runnable {
 				}
 
 			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (s != null)
 				s.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.close();
 		}
 	}
 
-	private void cleanup() throws SQLException, NoAvailableConnectionException {
-		//		if (!XAPSVersionCheck.messageSupported)
-		//			return;
-		Connection c = ConnectionProvider.getConnection(cp, true);
-		SQLException sqlex = null;
+	private void cleanup() throws SQLException {
+		Connection c = dataSource.getConnection();
 		PreparedStatement ps = null;
 		try {
 			String sql = "DELETE FROM message WHERE timestamp_ < ?";
@@ -308,22 +298,15 @@ public class DBI implements Runnable {
 				
 				logger.debug(rowsDeleted + " messages was deleted from message table");
 			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.close();
 		}
 	}
 
-	private void send(Message message) throws SQLException, NoAvailableConnectionException {
-		//		if (!XAPSVersionCheck.messageSupported)
-		//			return;
-		Connection c = ConnectionProvider.getConnection(cp, true);
-		SQLException sqlex = null;
+	private void send(Message message) throws SQLException {
+		Connection c = dataSource.getConnection();
 		PreparedStatement ps = null;
 		try {
 			DynamicStatement ds = new DynamicStatement();
@@ -345,14 +328,10 @@ public class DBI implements Runnable {
 				
 				logger.debug("Message: [" + message + "] sent/inserted");
 			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.close();
 		}
 
 	}
@@ -389,7 +368,7 @@ public class DBI implements Runnable {
 					} else {
 						logger.error("An error occurred in DBI.run() (stacktrace printed earlier): " + t.getMessage());
 					}
-				} catch (Throwable t2) {
+				} catch (Throwable ignored) {
 
 				}
 			}
@@ -400,14 +379,12 @@ public class DBI implements Runnable {
 	 * Must be called if an application is about to be terminated, otherwise it will be run every
 	 * second.
 	 */
-	public synchronized void processOutbox() throws SQLException, NoAvailableConnectionException {
+	public synchronized void processOutbox() throws SQLException {
 		for (Entry<Integer, UnittypePublish> entry : publishUnittypes.entrySet()) {
 			UnittypePublish up = entry.getValue();
 			up.addUnittypePublish();
 			List<Message> messages = up.getMessages(syslog.getIdentity().getFacility());
-			for (Message message : messages) {
-				outbox.add(message);
-			}
+			outbox.addAll(messages);
 		}
 		for (Message message : outbox) {
 			message.setObjectId(dbiId + ":" + message.getObjectId());
@@ -444,18 +421,24 @@ public class DBI implements Runnable {
 		for (int i = 1; i < msgArr.length; i++) {
 			String id = msgArr[i].split("=")[0];
 			int counter = new Integer(msgArr[i].split("=")[1]);
-			if (id.equals("cnf"))
-				job.setCompletedNoFailures(counter);
-			else if (id.equals("chf"))
-				job.setCompletedHadFailures(counter);
-			else if (id.equals("cf"))
-				job.setConfirmedFailed(counter);
-			else if (id.equals("uf"))
-				job.setUnconfirmedFailed(counter);
+			switch (id) {
+				case "cnf":
+					job.setCompletedNoFailures(counter);
+					break;
+				case "chf":
+					job.setCompletedHadFailures(counter);
+					break;
+				case "cf":
+					job.setConfirmedFailed(counter);
+					break;
+				case "uf":
+					job.setUnconfirmedFailed(counter);
+					break;
+			}
 		}
 	}
 
-	private void processPublishInbox() throws NoAvailableConnectionException, SQLException {
+	private void processPublishInbox() throws SQLException {
 		boolean updateXaps = false;
 		for (Message m : publishInbox.getUnreadMessages()) {
 			publishInbox.markMessageAsRead(m);
@@ -590,10 +573,6 @@ public class DBI implements Runnable {
 			message.setTimestamp(new Date());
 			outbox.add(message);
 		}
-	}
-
-	public int getLifetimeSec() {
-		return lifetimeSec;
 	}
 
 	public boolean isFinished() {

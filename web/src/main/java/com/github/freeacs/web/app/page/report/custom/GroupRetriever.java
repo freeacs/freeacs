@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.page.report.custom;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.Group;
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unittype;
@@ -10,7 +9,6 @@ import com.github.freeacs.web.app.input.DropDownSingleSelect;
 import com.github.freeacs.web.app.input.InputSelectionFactory;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.report.ReportData;
-import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.XAPSLoader;
 
 import java.io.IOException;
@@ -42,9 +40,9 @@ public class GroupRetriever extends ReportRetriever {
 	 * @param params the params
 	 * @param xaps the xaps
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
-	public GroupRetriever(ReportData inputData, ParameterParser params, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public GroupRetriever(ReportData inputData, ParameterParser params, XAPS xaps) throws SQLException {
 		super(inputData, params, xaps);
 
 		generator = generateGroupGenerator();
@@ -74,19 +72,19 @@ public class GroupRetriever extends ReportRetriever {
 	 *
 	 * @return the report group generator
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
-	private ReportGroupGenerator generateGroupGenerator() throws SQLException, NoAvailableConnectionException {
-		return new ReportGroupGenerator(SessionCache.getSyslogConnectionProperties(getParams().getSession().getId()), SessionCache.getXAPSConnectionProperties(getParams().getSession().getId()),
-				getXaps(), null, XAPSLoader.getIdentity(getParams().getSession().getId()));
+	private ReportGroupGenerator generateGroupGenerator() throws SQLException {
+		XAPS xaps = getXaps();
+		return new ReportGroupGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(),
+				xaps, null, XAPSLoader.getIdentity(getParams().getSession().getId(), xaps.getDataSource()));
 	}
 
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.report.custom.ReportRetriever#generateReport(com.owera.xaps.dbi.report.PeriodType, java.util.Date, java.util.Date, java.util.List, java.util.List)
 	 */
 	@Override
-	public Report<RecordGroup> generateReport(PeriodType periodType, Date start, Date end, List<Unittype> unittypes, List<Profile> profiles, Group group) throws NoAvailableConnectionException,
-			SQLException, IOException {
+	public Report<RecordGroup> generateReport(PeriodType periodType, Date start, Date end, List<Unittype> unittypes, List<Profile> profiles, Group group) throws SQLException, IOException {
 		return (Report<RecordGroup>) generator.generateGroupReport(periodType, start, end, unittypes, groups.getSelected());
 	}
 

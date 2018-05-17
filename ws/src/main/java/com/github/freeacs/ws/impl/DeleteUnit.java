@@ -1,6 +1,5 @@
 package com.github.freeacs.ws.impl;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.XAPS;
 import com.github.freeacs.dbi.XAPSUnit;
@@ -10,6 +9,7 @@ import com.github.freeacs.ws.Unit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 
@@ -19,10 +19,10 @@ public class DeleteUnit {
 	private XAPS xaps;
 	private XAPSWS xapsWS;
 
-	public DeleteUnitResponse deleteUnit(DeleteUnitRequest dur) throws RemoteException {
+	public DeleteUnitResponse deleteUnit(DeleteUnitRequest dur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 			
-			xapsWS = XAPSWSFactory.getXAPSWS(dur.getLogin());
+			xapsWS = XAPSWSFactory.getXAPSWS(dur.getLogin(), xapsDs, syslogDs);
 			xaps = xapsWS.getXAPS();
 			XAPSUnit xapsUnit = xapsWS.getXAPSUnit(xaps);
 			if (dur.getUnit() == null)
@@ -49,7 +49,7 @@ public class DeleteUnit {
 
 	}
 
-	private com.github.freeacs.dbi.Unit validateUnitId(Unit unitWS, XAPSUnit xapsUnit) throws SQLException, NoAvailableConnectionException, RemoteException {
+	private com.github.freeacs.dbi.Unit validateUnitId(Unit unitWS, XAPSUnit xapsUnit) throws SQLException, RemoteException {
 		com.github.freeacs.dbi.Unit unitXAPS = null;
 		if (unitWS.getUnitId() == null) {
 			if (unitWS.getSerialNumber() != null) {

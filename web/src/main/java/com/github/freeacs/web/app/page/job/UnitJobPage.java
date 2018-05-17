@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.page.job;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.web.Page;
@@ -13,7 +12,9 @@ import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.XAPSLoader;
 import freemarker.template.TemplateException;
+import org.springframework.beans.factory.annotation.Qualifier;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
@@ -25,6 +26,9 @@ public class UnitJobPage extends AbstractWebPage {
 	// FIXME Why are we using class variables? What are the problem we are solving with this?
 	private JobData inputData;
 
+	@Qualifier("xaps") DataSource xapsDataSource;
+	@Qualifier("syslog") DataSource syslogDataSource;
+
 	private XAPS xaps;
 	//	private Unittype unittype;
 	//	private Group group;
@@ -32,12 +36,12 @@ public class UnitJobPage extends AbstractWebPage {
 
 	private String sessionId;
 
-	public void process(ParameterParser req, Output outputHandler) throws Exception {
+	public void process(ParameterParser req, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		inputData = (JobData) InputDataRetriever.parseInto(new JobData(), req);
 
 		sessionId = req.getSession().getId();
 
-		xaps = XAPSLoader.getXAPS(sessionId);
+		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -138,10 +142,10 @@ public class UnitJobPage extends AbstractWebPage {
 		res.setDirectResponse(string.toString());
 	}
 
-	private void getFailedUnitJobs(Job job, Output res) throws SQLException, NoAvailableConnectionException, IOException, TemplateException {
+	private void getFailedUnitJobs(Job job, Output res) throws SQLException, IOException, TemplateException {
 		res.setTemplatePath("unit-job/failed");
 		Map<String, Object> rootMap = new HashMap<String, Object>();
-		UnitJobs unitJobs = new UnitJobs(SessionCache.getXAPSConnectionProperties(sessionId));
+		UnitJobs unitJobs = new UnitJobs(xapsDataSource);
 		List<UnitJob> unitJobsList = unitJobs.readAllProcessed(job);
 		//		List<UnitJob> list = new ArrayList<UnitJob>();
 		//		if (limit != null) {
@@ -161,9 +165,9 @@ public class UnitJobPage extends AbstractWebPage {
 		res.getTemplateMap().putAll(rootMap);
 	}
 
-	private void getCompletedUnitJobs(Job job, Output res, Unittype unittype) throws SQLException, NoAvailableConnectionException, IOException, TemplateException {
+	private void getCompletedUnitJobs(Job job, Output res, Unittype unittype) throws SQLException, IOException, TemplateException {
 		res.setTemplatePath("unit-job/completed");
-		XAPSUnit xapsUnit = XAPSLoader.getXAPSUnit(sessionId);
+		XAPSUnit xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource, syslogDataSource);
 		Profile profile = job.getGroup().getProfile();
 		UnittypeParameter historyParameterUtp = job.getGroup().getUnittype().getUnittypeParameters().getByName(SystemParameters.JOB_HISTORY);
 		Parameter historyParameter = new Parameter(historyParameterUtp, "%," + job.getId() + ":%");

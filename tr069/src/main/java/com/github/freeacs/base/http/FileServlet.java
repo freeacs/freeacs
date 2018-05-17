@@ -22,6 +22,12 @@ public class FileServlet extends HttpServlet {
 
   private static final long serialVersionUID = -9027563648829505599L;
 
+  private final DBAccess dbAccess;
+
+  public FileServlet(DBAccess dbAccess) {
+    this.dbAccess = dbAccess;
+  }
+
   protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
     String firmwareName = null;
@@ -33,7 +39,7 @@ public class FileServlet extends HttpServlet {
       // Create the main object which contains all objects concerning the entire
       // session. This object also contains the SessionData object
       if (Properties.isFileAuthUsed()) {
-        HTTPReqResData reqRes = new HTTPReqResData(req, res);
+        HTTPReqResData reqRes = new HTTPReqResData(req, res, dbAccess);
         // 2. Authenticate the client (first issue challenge, then authenticate)
         if (!Authenticator.authenticate(reqRes))
           return;
@@ -42,7 +48,7 @@ public class FileServlet extends HttpServlet {
         }
       }
 
-      XAPS xaps = DBAccess.getDBI().getXaps();
+      XAPS xaps = dbAccess.getDBI().getXaps();
       File firmware = null;
       String pathInfo = req.getPathInfo().substring(1);
       pathInfo = pathInfo.replaceAll("--", " ");

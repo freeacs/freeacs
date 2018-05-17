@@ -2,9 +2,7 @@ package com.github.freeacs.spp;
 
 import com.github.freeacs.base.*;
 import com.github.freeacs.base.db.DBAccessSession;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
-
 import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.spp.response.ProvisioningResponse;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
@@ -197,7 +195,7 @@ public class SessionData implements SessionDataI {
 		return fromDB;
 	}
 
-	public void updateParametersFromDB(String unitId) throws SQLException, NoAvailableConnectionException {
+	public void updateParametersFromDB(String unitId) throws SQLException {
 		if (this.getUnit() == null)
 			this.unit = this.getDbAccess().readUnit(unitId);
 		OweraParameters oweraParameters = new OweraParameters();

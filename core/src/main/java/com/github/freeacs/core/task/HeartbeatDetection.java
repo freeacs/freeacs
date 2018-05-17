@@ -1,18 +1,16 @@
 package com.github.freeacs.core.task;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.common.util.CacheValue;
 import com.github.freeacs.common.util.TimestampMap;
 import com.github.freeacs.core.util.SyslogMessageMapContainer;
 import com.github.freeacs.dbi.*;
-
 import com.github.freeacs.dbi.util.SQLUtil;
 import com.github.freeacs.dbi.util.SyslogClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -38,8 +36,8 @@ public class HeartbeatDetection extends DBIShare {
 	private Cache sentMessages = new Cache();
 	private static Logger logger = LoggerFactory.getLogger(HeartbeatDetection.class);
 
-	public HeartbeatDetection(String taskName) throws SQLException {
-		super(taskName);
+	public HeartbeatDetection(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException {
+		super(taskName, xapsCp, sysCp);
 	}
 
 	@Override
@@ -66,7 +64,7 @@ public class HeartbeatDetection extends DBIShare {
 		lastTms = tms;
 	}
 
-	private void findHeartbeats(long from, long to) throws NoAvailableConnectionException, SQLException {
+	private void findHeartbeats(long from, long to) throws SQLException {
 		long orgTo = to;
 		long orgFrom = from;
 		if (from == 0)
@@ -76,10 +74,9 @@ public class HeartbeatDetection extends DBIShare {
 		Connection c = null;
 		ResultSet rs = null;
 		PreparedStatement ps = null;
-		SQLException sqle = null;
 		DynamicStatement ds = null;
 		try {
-			c = ConnectionProvider.getConnection(getSysCp());
+			c = getSysCp().getConnection();
 			Unittype[] unittypes = xaps.getUnittypes().getUnittypes();
 			for (Unittype unittype : unittypes) {
 				Heartbeat[] heartbeats = unittype.getHeartbeats().getHeartbeats();
@@ -130,7 +127,6 @@ public class HeartbeatDetection extends DBIShare {
 				}
 			}
 		} catch (SQLException sqlex) {
-			sqle = sqlex;
 			logger.error("HeartbeatDetection: FindHeartbeats: SQL that failed: " + ds.getSqlQuestionMarksSubstituted(), sqlex);
 			throw sqlex;
 		} finally {
@@ -138,30 +134,24 @@ public class HeartbeatDetection extends DBIShare {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
+			if (c != null) {
+				c.close();
+			}
 		}
 
 	}
 
-	private void findActiveDevices(long from, long to) throws NoAvailableConnectionException, SQLException {
-		//		if (from == null)
-		//			logger.info("FindActiveDevices: Parse syslog in the timespan " + sdf.format(new Date(to - (long) Heartbeat.MAX_TIMEOUT_HOURS * HOUR_MS)) + " to " + sdf.format(new Date(to)));
-		//		else
+	private void findActiveDevices(long from, long to) throws SQLException {
 		logger.info("HeartbeatDetection: FindActiveDevices: Parse syslog in the timespan " + sdf.format(new Date(from)) + " to " + sdf.format(new Date(to)));
 		Connection c = null;
 		ResultSet rs = null;
 		PreparedStatement ps = null;
-		SQLException sqle = null;
 		DynamicStatement ds = null;
 		int counter = 0;
 		try {
-			c = ConnectionProvider.getConnection(getSysCp());
+			c = getSysCp().getConnection();
 			ds = new DynamicStatement();
 			ds.addSql("SELECT distinct(unit_id) FROM syslog WHERE ");
-			//			if (from == null)
-			//				ds.addSqlAndArguments("collector_timestamp >= ? AND ", new Date(to - (long) Heartbeat.MAX_TIMEOUT_HOURS * HOUR_MS));
-			//			else
 			ds.addSqlAndArguments("collector_timestamp >= ? AND ", new Date(from));
 			ds.addSqlAndArguments("collector_timestamp < ? AND ", new Date(to));
 			ds.addSqlAndArguments("facility < ?", SyslogConstants.FACILITY_SHELL);
@@ -175,7 +165,6 @@ public class HeartbeatDetection extends DBIShare {
 			}
 			logger.debug("HeartbeatDetection: FindActiveDevices: Found " + counter + " devices (total number of active: " + activeDevices.size() + ")");
 		} catch (SQLException sqlex) {
-			sqle = sqlex;
 			logger.error("HeartbeatDetection: FindActiveDevices: SQL that failed: " + ds.getSqlQuestionMarksSubstituted(), sqlex);
 			throw sqlex;
 		} finally {
@@ -183,13 +172,14 @@ public class HeartbeatDetection extends DBIShare {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
+			if (c != null) {
+				c.close();
+			}
 		}
 
 	}
 
-	private void filterAndSendHeartbeats(long to) throws SQLException, NoAvailableConnectionException, IOException {
+	private void filterAndSendHeartbeats(long to) throws SQLException, IOException {
 		// Now process the maps and the "absence"-events to see if there's any units
 		// missing and build a list of missing events from units
 		XAPSUnit xapsUnit = new XAPSUnit(getXapsCp(), xaps, getSyslog());
@@ -229,7 +219,7 @@ public class HeartbeatDetection extends DBIShare {
 		}
 	}
 
-	private void sendHeartbeat(Heartbeat heartbeat, String unitId, long tms) throws SQLException, NoAvailableConnectionException, IOException {
+	private void sendHeartbeat(Heartbeat heartbeat, String unitId, long tms) throws SQLException, IOException {
 		String expression = heartbeat.getExpression();
 		if (heartbeat.getExpression().startsWith("^"))
 			expression = expression.substring(1);

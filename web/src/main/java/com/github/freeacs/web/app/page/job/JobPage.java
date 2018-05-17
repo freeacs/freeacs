@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.page.job;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
 import com.github.freeacs.dbi.JobFlag.JobType;
@@ -19,6 +18,7 @@ import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.XAPSLoader;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -34,12 +34,12 @@ public class JobPage extends AbstractWebPage {
 
 	private String sessionId;
 
-	public void process(ParameterParser req, Output outputHandler) throws Exception {
+	public void process(ParameterParser req, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		inputData = (JobData) InputDataRetriever.parseInto(new JobData(), req);
 
 		sessionId = req.getSession().getId();
 
-		xaps = XAPSLoader.getXAPS(sessionId);
+		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -105,7 +105,7 @@ public class JobPage extends AbstractWebPage {
 		return list;
 	}
 
-	private boolean actionCUDParameters(ParameterParser req, XAPS xaps, Job job) throws SQLException, NoAvailableConnectionException {
+	private boolean actionCUDParameters(ParameterParser req, XAPS xaps, Job job) throws SQLException {
 		Jobs xapsJobs = unittype.getJobs();
 		UnittypeParameter[] utParams = unittype.getUnittypeParameters().getUnittypeParameters();
 		List<JobParameter> deleteList = new ArrayList<JobParameter>();
@@ -183,7 +183,7 @@ public class JobPage extends AbstractWebPage {
 			}
 		} else if (inputData.getFormSubmit().hasValue(WebConstants.DELETE)) {
 			job = unittype.getJobs().getByName(SessionCache.getSessionData(sessionId).getJobname());
-			UnitJobs unitJobs = new UnitJobs(SessionCache.getXAPSConnectionProperties(sessionId));
+			UnitJobs unitJobs = new UnitJobs(xaps.getDataSource());
 			unitJobs.delete(job);
 			xapsJobs.deleteJobParameters(job, xaps);
 			xapsJobs.delete(job, xaps);

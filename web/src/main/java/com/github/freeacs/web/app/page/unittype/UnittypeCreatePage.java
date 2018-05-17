@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.page.unittype;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.UnittypeParameter;
@@ -16,6 +15,7 @@ import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.XAPSLoader;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,14 +40,14 @@ public class UnittypeCreatePage extends AbstractWebPage {
 	 * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
 	 */
 	@Override
-	public void process(ParameterParser params, Output outputHandler) throws Exception {
+	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		UnittypeCreateData inputData = (UnittypeCreateData) InputDataRetriever.parseInto(new UnittypeCreateData(), params);
 
 		inputData.getUnittype().setValue(null);
 
 		String sessionId = params.getSession().getId();
 
-		XAPS xaps = XAPSLoader.getXAPS(sessionId);
+		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -56,10 +56,10 @@ public class UnittypeCreatePage extends AbstractWebPage {
 		InputDataIntegrity.loadAndStoreSession(params, outputHandler, inputData);
 
 		DropDownSingleSelect<Unittype> unittypesToCopyFrom = InputSelectionFactory.getDropDownSingleSelect(inputData.getUnittypeToCopyFrom(),
-				xaps.getUnittype(inputData.getUnittypeToCopyFrom().getString()), getUnittypesWithProtocol(xaps, sessionId, inputData.getNewProtocol().getString()));
+				xaps.getUnittype(inputData.getUnittypeToCopyFrom().getString()), getUnittypesWithProtocol(xaps, sessionId, inputData.getNewProtocol().getString(), xapsDataSource, syslogDataSource));
 
 		if (inputData.getFormSubmit().hasValue("Create")) {
-			if (isUnittypesLimited(sessionId)) {
+			if (isUnittypesLimited(sessionId, xapsDataSource, syslogDataSource)) {
 				outputHandler.setDirectResponse("You are not allowed to create unittypes!");
 				return;
 			}
@@ -133,12 +133,14 @@ public class UnittypeCreatePage extends AbstractWebPage {
 	 * @param xaps the xaps
 	 * @param sessionId the session id
 	 * @param protocol the protocol
+	 * @param xapsDataSource
+	 * @param syslogDataSource
 	 * @return the unittypes with protocol
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	private List<Unittype> getUnittypesWithProtocol(XAPS xaps, String sessionId, String protocol) throws NoAvailableConnectionException, SQLException {
-		List<Unittype> unittypes = getAllowedUnittypes(sessionId);
+	private List<Unittype> getUnittypesWithProtocol(XAPS xaps, String sessionId, String protocol, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
+		List<Unittype> unittypes = getAllowedUnittypes(sessionId, xapsDataSource, syslogDataSource);
 		List<Unittype> allowedUnittypes = new ArrayList<Unittype>();
 		if (protocol == null)
 			protocol = UnittypePage.NA_PROTOCOL;

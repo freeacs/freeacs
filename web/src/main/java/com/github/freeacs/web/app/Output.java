@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.context.ContextItem;
@@ -21,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -45,6 +45,8 @@ import java.util.zip.GZIPOutputStream;
 public class Output {
 	
 	private static final String 	INCLUDE_TEMPLATE_KEY 		= "INCLUDED_TEMPLATE";
+	private final DataSource xapsDataSource;
+	private final DataSource syslogDataSource;
 	private HttpServletResponse 	servletResponseChannel 		= null;
 	private Configuration 			freemarkerConfig 			= null;
 	private static final String 	defaultTemplatePath 		= "/index.ftl";
@@ -63,17 +65,20 @@ public class Output {
 	
 	/**
 	 * Instantiates a new output handler.
-	 *
-	 * @param page the page
+	 *  @param page the page
 	 * @param params the params
 	 * @param res the res
 	 * @param config the config
+	 * @param xapsDataSource
+	 * @param syslogDataSource
 	 */
-	public Output(WebPage page,ParameterParser params,HttpServletResponse res,Configuration config){
+	public Output(WebPage page, ParameterParser params, HttpServletResponse res, Configuration config, DataSource xapsDataSource, DataSource syslogDataSource){
 		this.servletResponseChannel = res;
 		this.freemarkerConfig = config;
 		this.inputParameters = params;
 		this.currentPage = page;
+		this.xapsDataSource = xapsDataSource;
+		this.syslogDataSource = syslogDataSource;
 	}
 	
 	/**
@@ -99,7 +104,7 @@ public class Output {
 				
 				processContextBarUpdates();
 				
-				currentPage.process(inputParameters, this);
+				currentPage.process(inputParameters, this, xapsDataSource, syslogDataSource);
 			    
 				if(isResponseCommitted())
 					return;
@@ -142,8 +147,8 @@ public class Output {
 		printPartialPage(content, currentPage,inputParameters, servletResponseChannel);
 	}
 
-	private void populateTemplateMapWithContextBar() throws NoAvailableConnectionException, SQLException {
-		XAPS xaps = XAPSLoader.getXAPS(inputParameters.getSession().getId());
+	private void populateTemplateMapWithContextBar() throws SQLException {
+		XAPS xaps = XAPSLoader.getXAPS(inputParameters.getSession().getId(), xapsDataSource, syslogDataSource);
 		Unittype currentUnittype = xaps.getUnittype(trailPoint!=null?trailPoint.getUnitTypeName():null);
 		Input utInput = Input.getStringInput("unittype");
 		if(currentUnittype!=null)
@@ -179,10 +184,10 @@ public class Output {
 	 * Processes the requested changes from the context bar
 	 * 
 	 * @throws IOException
-	 * @throws NoAvailableConnectionException
+	 *
 	 * @throws SQLException
 	 */
-	private void processContextBarUpdates() throws IOException, NoAvailableConnectionException, SQLException {
+	private void processContextBarUpdates() throws IOException, SQLException {
 		String cUT = inputParameters.getStringParameter("contextunittype");			
 		if(cUT!=null){
 			if(cUT.equals("All"))
@@ -203,7 +208,7 @@ public class Output {
 			inputParameters.getSessionData().setUnitId(cU);
 			inputParameters.getHttpServletRequest().ignoreParameter("unit");
 			String newValue = inputParameters.getSessionData().getUnitId();
-			XAPSUnit xaps = XAPSLoader.getXAPSUnit(inputParameters.getSession().getId());
+			XAPSUnit xaps = XAPSLoader.getXAPSUnit(inputParameters.getSession().getId(), xapsDataSource, syslogDataSource);
 			Unit unit = null;
 			if((unit = xaps.getUnitById(newValue))!=null){
 				redirect(Page.UNITSTATUS.getUrl("unit="+unit.getId()+"&unittype="+unit.getUnittype().getName()+"&profile="+unit.getProfile().getName()),servletResponseChannel);

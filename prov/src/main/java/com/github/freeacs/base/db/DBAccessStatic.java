@@ -4,7 +4,7 @@ import com.github.freeacs.base.BaseCache;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.dbi.*;
 
-
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -39,11 +39,11 @@ public class DBAccessStatic {
 		return null; // Unreachable code - compiler doesn't detect it
 	}
 
-	public static void startUnitJob(String unitId, Integer jobId) throws SQLException {
+	public static void startUnitJob(String unitId, Integer jobId, DataSource xapsDataSource) throws SQLException {
 		long start = System.currentTimeMillis();
 		String action = "startUnitJob";
 		try {
-			UnitJobs unitJobs = new UnitJobs(DBAccess.getXAPSProperties());
+			UnitJobs unitJobs = new UnitJobs(xapsDataSource);
 			UnitJob uj = new UnitJob(unitId, jobId);
 			uj.setStartTimestamp(new Date());
 			boolean updated = unitJobs.start(uj);
@@ -57,11 +57,11 @@ public class DBAccessStatic {
 		}
 	}
 
-	public static void stopUnitJob(String unitId, Integer jobId, String unitJobStatus) throws SQLException {
+	public static void stopUnitJob(String unitId, Integer jobId, String unitJobStatus, DataSource xapsDataSource) throws SQLException {
 		long start = System.currentTimeMillis();
 		String action = "stopUnitJob";
 		try {
-			UnitJobs unitJobs = new UnitJobs(DBAccess.getXAPSProperties());
+			UnitJobs unitJobs = new UnitJobs(xapsDataSource);
 			UnitJob uj = new UnitJob(unitId, jobId);
 			uj.setEndTimestamp(new Date());
 			uj.setStatus(unitJobStatus);

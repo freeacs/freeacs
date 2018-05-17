@@ -1,19 +1,12 @@
 package com.github.freeacs.core.task;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.scheduler.Task;
-import com.github.freeacs.dbi.*;
 import com.github.freeacs.core.CoreServlet;
-
+import com.github.freeacs.dbi.*;
 import org.slf4j.Logger;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
-
-import static com.github.freeacs.core.Properties.getMaxAge;
-import static com.github.freeacs.core.Properties.getMaxConn;
-import static com.github.freeacs.core.Properties.getUrl;
 
 /**
  * You can extend DBIShare if, and only if, you do not manipulate the contents of the xAPS object. 
@@ -24,14 +17,9 @@ import static com.github.freeacs.core.Properties.getUrl;
  */
 public abstract class DBIShare implements Task {
 
-	private static ConnectionProperties xapsCp = null;
-	private static ConnectionProperties sysCp = null;
-	static {
-		xapsCp = ConnectionProvider.getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps"));
-		sysCp = ConnectionProvider.getConnectionProperties(getUrl("syslog"), getMaxAge("syslog"), getMaxConn("syslog"));
-		if (sysCp == null)
-			sysCp = xapsCp;
-	}
+	private DataSource xapsCp;
+	private DataSource sysCp;
+
 	private static Users users;
 	private static DBI dbi;
 	private static Syslog syslog;
@@ -43,7 +31,9 @@ public abstract class DBIShare implements Task {
 
 	private Throwable throwable;
 
-	public DBIShare(String taskName) throws SQLException, NoAvailableConnectionException {
+	public DBIShare(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException {
+		this.xapsCp = xapsCp;
+		this.sysCp = sysCp;
 		this.taskName = taskName;
 		if (users == null)
 			users = new Users(xapsCp);
@@ -59,7 +49,7 @@ public abstract class DBIShare implements Task {
 		return dbi.getXaps();
 	}
 
-	protected ConnectionProperties getSysCp() {
+	protected DataSource getSysCp() {
 		return sysCp;
 	}
 
@@ -67,7 +57,7 @@ public abstract class DBIShare implements Task {
 		return syslog.getIdentity();
 	}
 
-	protected ConnectionProperties getXapsCp() {
+	protected DataSource getXapsCp() {
 		return xapsCp;
 	}
 

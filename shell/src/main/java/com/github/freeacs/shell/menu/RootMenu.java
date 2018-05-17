@@ -1,13 +1,11 @@
 package com.github.freeacs.shell.menu;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
-import com.github.freeacs.shell.Session;
-import com.github.freeacs.shell.UnitTempStorage;
-
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.crypto.Crypto;
 import com.github.freeacs.dbi.util.SystemParameters;
+import com.github.freeacs.shell.Session;
+import com.github.freeacs.shell.UnitTempStorage;
 import com.github.freeacs.shell.command.Option;
 import com.github.freeacs.shell.output.Heading;
 import com.github.freeacs.shell.output.Line;
@@ -499,7 +497,7 @@ public class RootMenu {
 		fw.close();
 	}
 
-	private String[] findRange(String arg0, Session session) throws SQLException, NoAvailableConnectionException {
+	private String[] findRange(String arg0, Session session) throws SQLException {
 		String[] args = new String[3];
 		int add = new Integer(arg0);
 		XAPSUnit xapsUnit = session.getXapsUnit();

@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.page.unit;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemConstants;
@@ -18,6 +17,7 @@ import com.github.freeacs.web.app.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -417,13 +417,13 @@ public class UnitPage extends AbstractWebPage {
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
 	 */
-	public void process(ParameterParser params, Output outputHandler) throws Exception {
+	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		// Get important var
 		inputData = (UnitData) InputDataRetriever.parseInto(new UnitData(), params);
 
 		sessionId = params.getSession().getId();
 
-		xaps = XAPSLoader.getXAPS(sessionId);
+		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -431,7 +431,7 @@ public class UnitPage extends AbstractWebPage {
 
 		InputDataIntegrity.loadAndStoreSession(params, outputHandler, inputData, inputData.getUnittype(), inputData.getProfile(), inputData.getUnit());
 
-		xapsUnit = XAPSLoader.getXAPSUnit(sessionId);
+		xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource, syslogDataSource);
 
 		boolean isCreate = inputData.getCmd().isValue("create");
 
@@ -489,7 +489,7 @@ public class UnitPage extends AbstractWebPage {
 				unit = xapsUnit.getUnitById(unit.getId());
 				SessionCache.putUnit(sessionId, unit);
 
-				displayUnit(root);
+				displayUnit(root, xapsDataSource, syslogDataSource);
 
 			} else if (unit == null && inputData.getUnit().notNullNorValue("")) {
 				root.put("unitId", inputData.getUnit().getString());
@@ -507,13 +507,13 @@ public class UnitPage extends AbstractWebPage {
 	 * @param root the root
 	 * @throws IllegalArgumentException the illegal argument exception
 	 * @throws SecurityException the security exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 * @throws IllegalAccessException the illegal access exception
 	 * @throws InvocationTargetException the invocation target exception
 	 * @throws NoSuchMethodException the no such method exception
 	 */
-	private void displayCreate(Map<String, Object> root) throws IllegalArgumentException, SecurityException, NoAvailableConnectionException, SQLException, IllegalAccessException,
+	private void displayCreate(Map<String, Object> root) throws IllegalArgumentException, SecurityException, SQLException, IllegalAccessException,
 			InvocationTargetException, NoSuchMethodException {
 		DropDownSingleSelect<Unittype> unittypeDropdown = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps);
 		root.put("unittypes", unittypeDropdown);
@@ -593,9 +593,11 @@ public class UnitPage extends AbstractWebPage {
 	 * Decides and prepares to display the unit page.
 	 *
 	 * @param root The template map
+	 * @param xapsDataSource
+	 * @param syslogDataSource
 	 * @throws Exception the exception
 	 */
-	private void displayUnit(Map<String, Object> root) throws Exception {
+	private void displayUnit(Map<String, Object> root, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		root.put("unit", unit);
 		root.put("new_unit", inputData.getNewUnit().getString());
 		// Not sure if this is necessary, could perhaps use the object instance fields
@@ -603,7 +605,7 @@ public class UnitPage extends AbstractWebPage {
 		Profile profile = unit.getProfile();
 		root.put("unittype", unittype.getName());
 		root.put("syslogdate", SyslogUtil.getDateString());
-		List<Profile> profiles = getAllowedProfiles(sessionId, unittype);
+		List<Profile> profiles = getAllowedProfiles(sessionId, unittype, xapsDataSource, syslogDataSource);
 		root.put("profiles", InputSelectionFactory.getDropDownSingleSelect(inputData.getProfile(), unittype.getProfiles().getByName(inputData.getProfile().getString()), profiles));
 		UnittypeParameter[] utParams = unittype.getUnittypeParameters().getUnittypeParameters();
 		UnitParameter[] uParams = unit.getUnitParameters().values().toArray(new UnitParameter[] {});

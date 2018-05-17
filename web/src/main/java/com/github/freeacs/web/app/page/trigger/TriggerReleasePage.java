@@ -8,11 +8,11 @@ import com.github.freeacs.web.app.menu.MenuItem;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.table.TableElement;
 import com.github.freeacs.web.app.table.TableElementMaker;
-import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.XAPSLoader;
 
+import javax.sql.DataSource;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -56,12 +56,12 @@ public class TriggerReleasePage extends AbstractWebPage {
 	}
 
 	@Override
-	public void process(ParameterParser params, Output outputHandler) throws Exception {
+	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		inputData = (TriggerReleaseData) InputDataRetriever.parseInto(new TriggerReleaseData(), params);
 		this.sessionId = params.getSession().getId();
 		this.outputHandler = outputHandler;
 		Map<String, Object> fmMap = outputHandler.getTemplateMap();
-		this.xaps = XAPSLoader.getXAPS(sessionId);
+		this.xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -111,7 +111,7 @@ public class TriggerReleasePage extends AbstractWebPage {
 					rt.setSyslogPageQueryString(syslogQS);
 				}
 				if (trigger.getScript() != null && rt.getReleasedTms() != null) {
-					ScriptExecutions scriptExecutions = new ScriptExecutions(SessionCache.getXAPSConnectionProperties(sessionId));
+					ScriptExecutions scriptExecutions = new ScriptExecutions(xapsDataSource);
 					ScriptExecution exec = scriptExecutions.getExecution(unittype, "TRIGGER:" + rt.getReleaseId());
 					rt.setScriptExecution(exec);
 				}

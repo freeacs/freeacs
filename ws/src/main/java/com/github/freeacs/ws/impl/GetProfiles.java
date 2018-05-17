@@ -9,6 +9,7 @@ import com.github.freeacs.ws.ProfileList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.rmi.RemoteException;
 
 public class GetProfiles {
@@ -17,10 +18,10 @@ public class GetProfiles {
 
 	private XAPSWS xapsWS;
 
-	public GetProfilesResponse getProfiles(GetProfilesRequest gur) throws RemoteException {
+	public GetProfilesResponse getProfiles(GetProfilesRequest gur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 			
-			xapsWS = XAPSWSFactory.getXAPSWS(gur.getLogin());
+			xapsWS = XAPSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
 			if (gur.getUnittype() == null || gur.getUnittype().getName() == null)
 				throw XAPSWS.error(logger, "No unittype is specified");
 			Unittype unittype = xapsWS.getUnittypeFromXAPS(gur.getUnittype().getName());

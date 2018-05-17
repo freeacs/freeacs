@@ -1,9 +1,7 @@
 package com.github.freeacs.tr069.background;
 
-import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.common.scheduler.TaskDefaultImpl;
 import com.github.freeacs.dbi.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,7 +87,7 @@ public class ScheduledKickTask extends TaskDefaultImpl {
 				Unit unit = uk.getUnit();
 				//				unit.toWriteQueue(SystemParameters.PROVISIONING_MODE, ProvisioningMode.KICK.toString());
 				//				unit.toWriteQueue(SystemParameters.PROVISIONING_STATE, ProvisioningState.LOAD.toString());
-				XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
+				XAPSUnit xapsUnit = new XAPSUnit(xaps.getDataSource(), xaps, xaps.getSyslog());
 				xapsUnit.addOrChangeQueuedUnitParameters(unit);
 				dbi.publishKick(unit, SyslogConstants.FACILITY_STUN);
 				uk.setNextTms(now + 30000);

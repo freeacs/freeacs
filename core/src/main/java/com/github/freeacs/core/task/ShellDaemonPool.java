@@ -1,12 +1,12 @@
 package com.github.freeacs.core.task;
 
-import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.core.Properties;
 import com.github.freeacs.shell.XAPSShell;
 import com.github.freeacs.shell.XAPSShellDaemon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -28,7 +28,7 @@ public class ShellDaemonPool {
 	//	private static List<XAPSShellDaemon> shellDaemonPool = new ArrayList<XAPSShellDaemon>();
 	private static Map<String, List<XAPSShellDaemon>> shellDaemonPoolMap = new HashMap<String, List<XAPSShellDaemon>>();
 
-	private static XAPSShellDaemon createNewShellDaemon(ConnectionProperties xapsCp, int index, String fusionUser) throws Throwable {
+	private static XAPSShellDaemon createNewShellDaemon(DataSource xapsCp, int index, String fusionUser) throws Throwable {
 		XAPSShellDaemon xapsshellDaemon = new XAPSShellDaemon(xapsCp, fusionUser);
 		xapsshellDaemon.setIndex(index);
 		XAPSShell xapsShell = xapsshellDaemon.getXapsShell();
@@ -67,7 +67,7 @@ public class ShellDaemonPool {
 		return shellDaemonPool;
 	}
 
-	public static synchronized XAPSShellDaemon getShellDaemon(ConnectionProperties xapsCp, String fusionUser) throws Throwable {
+	public static synchronized XAPSShellDaemon getShellDaemon(DataSource xapsCp, String fusionUser) throws Throwable {
 		List<XAPSShellDaemon> shellDaemonPool = getShellDaemonPool(fusionUser);
 		int poolsize = Properties.getShellScriptPoolSize();
 		XAPSShellDaemon xapsshellDaemon = null;

@@ -1,6 +1,5 @@
 package com.github.freeacs.shell.menu;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.shell.*;
 import com.github.freeacs.shell.command.ContextContainer;
@@ -88,9 +87,6 @@ public class GenericMenu {
 			XAPSShell xapsShell = session.getXapsShell();
 			xapsShell.setSession(new Session(session.getOriginalOptionArgs(), xapsShell));
 			xapsShell.init();
-			return true;
-		} else if (input.startsWith("dbin")) {
-			session.println("DB-User@DB-URL: " + session.getXapsProps().getUser() + "@" + session.getXapsProps().getUrl());
 			return true;
 		} else if (input.startsWith("userin")) {
 			session.println("Logged in as " + session.getVerifiedFusionUser().getUsername());
@@ -187,7 +183,7 @@ public class GenericMenu {
 		return path.substring(0, path.length() - 1);
 	}
 
-	private void whiledone(String[] args, Session session) throws IOException, SQLException, NoAvailableConnectionException {
+	private void whiledone(String[] args, Session session) throws IOException, SQLException {
 		String command = getCommand(args[0]);
 		if (command.equals(WHILE)) {
 			String whilePath = getWhilePath(session);
@@ -377,7 +373,7 @@ public class GenericMenu {
 		}
 	}
 
-	private void cat(String[] args, OutputHandler oh) throws IOException, SQLException, NoAvailableConnectionException {
+	private void cat(String[] args, OutputHandler oh) throws IOException, SQLException {
 		Validation.numberOfArgs(args, 2);
 
 		String filename = args[1];

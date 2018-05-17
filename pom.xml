@@ -45,8 +45,6 @@
     <modules>
         <module>common</module>
         <module>dbi</module>
-        <module>wsc</module>
-        <module>ws</module>
         <module>prov</module>
         <module>tr069</module>
         <module>syslog</module>
@@ -56,6 +54,8 @@
         <module>monitor</module>
         <module>core</module>
         <module>web</module>
+        <module>wsc</module>
+        <module>ws</module>
     </modules>
 
 </project>

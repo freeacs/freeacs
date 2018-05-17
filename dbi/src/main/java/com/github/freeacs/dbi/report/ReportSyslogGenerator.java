@@ -1,13 +1,10 @@
 package com.github.freeacs.dbi.report;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,13 +19,12 @@ public class ReportSyslogGenerator extends ReportGenerator {
 
 	private static Logger logger = LoggerFactory.getLogger(ReportSyslogGenerator.class);
 
-	public ReportSyslogGenerator(ConnectionProperties sysCp, ConnectionProperties xapsCp, XAPS xaps, String logPrefix, Identity id) {
+	public ReportSyslogGenerator(DataSource sysCp, DataSource xapsCp, XAPS xaps, String logPrefix, Identity id) {
 		super(sysCp, xapsCp, xaps, logPrefix, id);
 	}
 
-	public Report<RecordSyslog> generateFromReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws NoAvailableConnectionException, SQLException, IOException {
+	public Report<RecordSyslog> generateFromReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws SQLException, IOException {
 		Connection xapsConnection = null;
-		Connection sysConnection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		SQLException sqle = null;
@@ -37,7 +33,7 @@ public class ReportSyslogGenerator extends ReportGenerator {
 			Report<RecordSyslog> report = new Report<RecordSyslog>(RecordSyslog.class, periodType);
 			
 			logger.debug(logPrefix + "SyslogReport: Reads from report_syslog table from " + start + " to " + end);
-			xapsConnection = ConnectionProvider.getConnection(xapsCp, true);
+			xapsConnection = xapsCp.getConnection();
 			DynamicStatement ds = selectReportSQL("report_syslog", periodType, start, end, uts, prs);
 			ps = ds.makePreparedStatement(xapsConnection);
 			rs = ps.executeQuery();
@@ -70,19 +66,17 @@ public class ReportSyslogGenerator extends ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (xapsConnection != null)
-				ConnectionProvider.returnConnection(xapsConnection, sqle);
-			if (sysConnection != null)
-				ConnectionProvider.returnConnection(sysConnection, sqle);
+			if (xapsConnection != null) {
+				xapsConnection.close();
+			}
 		}
-
 	}
 
-	public Report<RecordSyslog> generateFromSyslog(Date start, Date end, String unitId) throws NoAvailableConnectionException, SQLException, IOException, ParseException {
+	public Report<RecordSyslog> generateFromSyslog(Date start, Date end, String unitId) throws SQLException, IOException, ParseException {
 		return generateFromSyslog(PeriodType.SECOND, start, end, null, null, unitId, null);
 	}
 
-	public Map<String, Report<RecordSyslog>> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs, Group group) throws NoAvailableConnectionException,
+	public Map<String, Report<RecordSyslog>> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs, Group group) throws
 			SQLException, IOException, ParseException {
 		Connection c = null;
 		PreparedStatement ps = null;
@@ -124,7 +118,7 @@ public class ReportSyslogGenerator extends ReportGenerator {
 			//			ds.addSql(" AND unit_type_name <> '' AND profile_name <> '' ");
 			ds.addSqlAndArguments("collector_timestamp < ? ", end);
 			ds.addSql("GROUP BY date_format(collector_timestamp, '" + sqlFormat + "'), unit_type_name, profile_name, unit_id, severity, syslog_event_id, facility");
-			c = ConnectionProvider.getConnection(sysCp);
+			c = sysCp.getConnection();
 			ps = ds.makePreparedStatement(c);
 			rs = ps.executeQuery();
 			Map<String, Report<RecordSyslog>> unitReportMap = new HashMap<String, Report<RecordSyslog>>();
@@ -171,13 +165,14 @@ public class ReportSyslogGenerator extends ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
 	public Report<RecordSyslog> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs, String unitId, Group group) throws SQLException,
-			NoAvailableConnectionException, IOException, ParseException {
+			IOException, ParseException {
 		Connection c = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -223,7 +218,7 @@ public class ReportSyslogGenerator extends ReportGenerator {
 				if (syslogFilter != null && syslogFilter.getMessage() != null)
 					ds.addSqlAndArguments("content LIKE ? AND ", syslogFilter.getMessage());
 				ds.addSqlAndArguments("collector_timestamp < ? ", end);
-				c = ConnectionProvider.getConnection(sysCp);
+				c = sysCp.getConnection();
 				ps = ds.makePreparedStatement(c);
 				rs = ps.executeQuery();
 				while (rs.next()) {
@@ -265,7 +260,7 @@ public class ReportSyslogGenerator extends ReportGenerator {
 					ds.addSqlAndArguments("content LIKE ? AND ", syslogFilter.getMessage());
 				ds.addSqlAndArguments("collector_timestamp < ? ", end);
 				ds.addSql("GROUP BY date_format(collector_timestamp, '" + sqlFormat + "'), unit_type_name, profile_name, severity, syslog_event_id, facility");
-				c = ConnectionProvider.getConnection(sysCp);
+				c = sysCp.getConnection();
 				ps = ds.makePreparedStatement(c);
 				rs = ps.executeQuery();
 				while (rs.next()) {
@@ -303,8 +298,9 @@ public class ReportSyslogGenerator extends ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
+			if (c != null) {
+				c.close();
+			}
 		}
 
 	}
@@ -391,71 +387,4 @@ public class ReportSyslogGenerator extends ReportGenerator {
 		}
 		return ds;
 	}
-
-	//	private DynamicStatement addUnittypeOrProfileCriteria(DynamicStatement ds, List<Unittype> unittypes, List<Profile> profiles) {
-	//		Permissions permissionsObj = id.getUser().getPermissions();
-	//		if (profiles != null && profiles.size() > 0) {
-	//			Map<Integer, Set<Profile>> unittypesWithSomeProfilesSpecified = new HashMap<Integer, Set<Profile>>();
-	//			Set<Integer> unittypesWithAllProfilesSpecified = new HashSet<Integer>();
-	//			boolean allUnittypesSpecified = false;
-	//			XAPS xaps = profiles.get(0).getUnittype().getXaps();
-	//			int noUnittypes = xaps.getUnittypes().getUnittypes().length; // the number of unittypes in xAPS
-	//			boolean isAdmin = true; // backward comp. before users where supported
-	//			if (permissionsObj != null)
-	//				isAdmin = permissionsObj.isAdmin();
-	//			for (Profile profile : profiles) {
-	//				Integer unittypeId = profile.getUnittype().getId();
-	//				Set<Profile> profilesInUnittype = unittypesWithSomeProfilesSpecified.get(unittypeId);
-	//				if (profilesInUnittype == null)
-	//					profilesInUnittype = new HashSet<Profile>();
-	//				profilesInUnittype.add(profile);
-	//				if (unittypesWithAllProfilesSpecified.contains(unittypeId))
-	//					continue;
-	//				unittypesWithSomeProfilesSpecified.put(unittypeId, profilesInUnittype);
-	//				int noProfiles = profile.getUnittype().getProfiles().getProfiles().length;
-	//				// populate and delete (logically: move from "someSpecified" to "allSpecified")
-	//				if (unittypesWithSomeProfilesSpecified.get(unittypeId).size() == noProfiles) {
-	//					unittypesWithAllProfilesSpecified.add(unittypeId);
-	//					unittypesWithSomeProfilesSpecified.remove(unittypeId);
-	//				}
-	//			}
-	//			if (noUnittypes == unittypesWithAllProfilesSpecified.size())
-	//				allUnittypesSpecified = true;
-	//			if (allUnittypesSpecified && isAdmin)
-	//				return ds; // no criteria added - will search for all unittypes/profiles
-	//			ds.addSql("(");
-	//			for (Profile profile : profiles) {
-	//				Set<Profile> someProfilesSpecified = unittypesWithSomeProfilesSpecified.get(profile.getUnittype().getId());
-	//				if (someProfilesSpecified != null) {
-	//					ds.addSqlAndArguments("(profile_name = ? AND unit_type_name = ?) OR ", profile.getName(), profile.getUnittype().getName());
-	//				} else { // all profiles in unittype are specified
-	//					boolean isUnittypeAdmin = true;
-	//					if (permissionsObj != null)
-	//						isUnittypeAdmin = permissionsObj.allowed(profile.getUnittype());
-	//					if (isUnittypeAdmin)
-	//						ds.addSqlAndArguments("unit_type_name = ? OR ", profile.getUnittype().getName());
-	//					else
-	//						ds.addSqlAndArguments("(profile_name = ? AND unit_type_name = ?) OR ", profile.getName(), profile.getUnittype().getName());
-	//				}
-	//			}
-	//			ds.cleanupSQLTail();
-	//			ds.addSql(") AND ");
-	//		} else if (unittypes != null && unittypes.size() > 0) {
-	//			XAPS xaps = unittypes.get(0).getXaps();
-	//			int noUnittypes = xaps.getUnittypes().getUnittypes().length;
-	//			boolean isAdmin = true;
-	//			if (permissionsObj != null)
-	//				isAdmin = permissionsObj.isAdmin();
-	//			if ((isAdmin && noUnittypes > unittypes.size()) || !isAdmin) {
-	//				ds.addSql("(");
-	//				for (Unittype unittype : unittypes) {
-	//					ds.addSqlAndArguments("unit_type_name = ? OR ", unittype.getName());
-	//				}
-	//				ds.cleanupSQLTail();
-	//				ds.addSql(") AND ");
-	//			}
-	//		}
-	//		return ds;
-	//	}
-
 }

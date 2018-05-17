@@ -3,8 +3,10 @@ package com.github.freeacs.tr069.methods;
 import com.github.freeacs.base.BaseCache;
 import com.github.freeacs.base.JobLogic;
 import com.github.freeacs.base.Log;
-import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.db.DBAccessSessionTR069;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.util.SystemParameters;
+import com.github.freeacs.dbi.util.TimestampWrapper;
 import com.github.freeacs.tr069.*;
 import com.github.freeacs.tr069.background.ScheduledKickTask;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;
@@ -15,9 +17,6 @@ import com.github.freeacs.tr069.test.system1.KillDatabaseObject;
 import com.github.freeacs.tr069.test.system1.TestDatabase;
 import com.github.freeacs.tr069.test.system1.TestDatabaseObject;
 import com.github.freeacs.tr069.xml.*;
-import com.github.freeacs.dbi.Unit;
-import com.github.freeacs.dbi.util.SystemParameters;
-import com.github.freeacs.dbi.util.TimestampWrapper;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileWriter;
@@ -204,7 +203,7 @@ public class INreq {
 				}
 			}
 			if (Properties.isDiscoveryMode() && sessionData.isFirstConnect()) {
-				DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(DBAccess.getDBI(), sessionData.getDbAccess());
+				DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(reqRes.getDbAccess().getDBI(), sessionData.getDbAccess());
 				dbAccessSessionTR069.writeUnittypeProfileUnit(sessionData, deviceIdStruct.getProductClass(), unitId);
 				sessionData.setFromDB(null);
 				sessionData.setOweraParameters(null);

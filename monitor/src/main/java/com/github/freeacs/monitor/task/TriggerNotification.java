@@ -1,9 +1,7 @@
 package com.github.freeacs.monitor.task;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.html.Element;
 import com.github.freeacs.dbi.*;
-
 import com.github.freeacs.monitor.Properties;
 import com.github.freeacs.monitor.SendMail;
 import org.slf4j.Logger;
@@ -44,7 +42,7 @@ public class TriggerNotification {
 		}
 	}
 
-	public static void checkTrigger(Unittype unittype, Triggers triggers, Trigger trigger, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public static void checkTrigger(Unittype unittype, Triggers triggers, Trigger trigger, XAPS xaps) throws SQLException {
 		Date now = new Date();
 		Date notifyIntervalStart = new Date(now.getTime() - trigger.getNotifyIntervalHours() * 3600 * 1000);
 		List<TriggerRelease> triggerReleaseList = triggers.readTriggerReleases(trigger, notifyIntervalStart, now, xaps, null);

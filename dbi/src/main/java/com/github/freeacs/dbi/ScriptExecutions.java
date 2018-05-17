@@ -1,11 +1,9 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
-import com.github.freeacs.dbi.util.XAPSVersionCheck;
 import com.github.freeacs.dbi.InsertOrUpdateStatement.Field;
+import com.github.freeacs.dbi.util.XAPSVersionCheck;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,10 +18,10 @@ import java.util.List;
  */
 public class ScriptExecutions {
 
-	private ConnectionProperties connectionProperties;
+	private DataSource dataSource;
 
-	public ScriptExecutions(ConnectionProperties connectionProperties) {
-		this.connectionProperties = connectionProperties;
+	public ScriptExecutions(DataSource dataSource) {
+		this.dataSource = dataSource;
 	}
 
 	/**
@@ -31,15 +29,14 @@ public class ScriptExecutions {
 	 * @param scriptFile
 	 * @param scriptArgs
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
 	 */
-	public void requestExecution(File scriptFile, String scriptArgs, String requestId) throws SQLException, NoAvailableConnectionException {
+	public void requestExecution(File scriptFile, String scriptArgs, String requestId) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		if (scriptFile.getType() != FileType.SHELL_SCRIPT)
 			throw new IllegalArgumentException("The file type is not " + FileType.SHELL_SCRIPT);
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, true);
+			connection = dataSource.getConnection();
 			InsertOrUpdateStatement ious = new InsertOrUpdateStatement("script_execution", new Field("id", (Integer) null));
 			ious.addField(new Field("unit_type_id", scriptFile.getUnittype().getId()));
 			ious.addField(new Field("filestore_id", scriptFile.getId()));
@@ -60,22 +57,22 @@ public class ScriptExecutions {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (connection != null)
-				ConnectionProvider.returnConnection(connection, null);
+			if (connection != null) {
+				connection.close();
+			}
 		}
 	}
 
 	/**
 	 * Used by Core. Update execeutions when they start/failed/finish
 	 * @param se
-	 * @throws NoAvailableConnectionException
 	 * @throws SQLException
 	 */
-	public void updateExecution(ScriptExecution se) throws NoAvailableConnectionException, SQLException {
+	public void updateExecution(ScriptExecution se) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, true);
+			connection = dataSource.getConnection();
 			InsertOrUpdateStatement ious = new InsertOrUpdateStatement("script_execution", new Field("id", se.getId()));
 			ious.addField(new Field("start_timestamp", se.getStartTms()));
 			ious.addField(new Field("end_timestamp", se.getEndTms()));
@@ -90,8 +87,9 @@ public class ScriptExecutions {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (connection != null)
-				ConnectionProvider.returnConnection(connection, null);
+			if (connection != null) {
+				connection.close();
+			}
 		}
 	}
 
@@ -99,10 +97,9 @@ public class ScriptExecutions {
 	 * Only to be used from Core (Script Daemon)
 	 * @param xaps
 	 * @return
-	 * @throws NoAvailableConnectionException
 	 * @throws SQLException
 	 */
-	public List<ScriptExecution> getNotStartedExecutions(XAPS xaps, int poolsize) throws NoAvailableConnectionException, SQLException {
+	public List<ScriptExecution> getNotStartedExecutions(XAPS xaps, int poolsize) throws SQLException {
 		List<ScriptExecution> scriptExecutionList = new ArrayList<ScriptExecution>();
 		if (!XAPSVersionCheck.scriptExecutionSupported)
 			return scriptExecutionList;
@@ -110,7 +107,7 @@ public class ScriptExecutions {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, true);
+			connection = dataSource.getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSql("SELECT * from script_execution WHERE start_timestamp IS NULL LIMIT " + poolsize);
 			ps = ds.makePreparedStatement(connection);
@@ -124,8 +121,9 @@ public class ScriptExecutions {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (connection != null)
-				ConnectionProvider.returnConnection(connection, null);
+			if (connection != null) {
+				connection.close();
+			}
 		}
 	}
 
@@ -159,10 +157,9 @@ public class ScriptExecutions {
 	 * @param unittype
 	 * @param requestTmsFrom
 	 * @return
-	 * @throws NoAvailableConnectionException
 	 * @throws SQLException
 	 */
-	public List<ScriptExecution> getExecutions(Unittype unittype, Date requestTmsFrom, String requestId) throws NoAvailableConnectionException, SQLException {
+	public List<ScriptExecution> getExecutions(Unittype unittype, Date requestTmsFrom, String requestId) throws SQLException {
 		List<ScriptExecution> scriptExecutionList = new ArrayList<ScriptExecution>();
 		if (!XAPSVersionCheck.scriptExecutionSupported)
 			return scriptExecutionList;
@@ -171,7 +168,7 @@ public class ScriptExecutions {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, true);
+			connection = dataSource.getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("SELECT * from script_execution WHERE unit_type_id = ? ", unittype.getId());
 			if (requestTmsFrom != null)
@@ -195,12 +192,13 @@ public class ScriptExecutions {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (connection != null)
-				ConnectionProvider.returnConnection(connection, null);
+			if (connection != null) {
+				connection.close();
+			}
 		}
 	}
 
-	public ScriptExecution getById(Unittype unittype, Integer id) throws NoAvailableConnectionException, SQLException {
+	public ScriptExecution getById(Unittype unittype, Integer id) throws SQLException {
 		if (!XAPSVersionCheck.scriptExecutionSupported)
 			return null;
 		XAPS xaps = unittype.getXaps();
@@ -208,7 +206,7 @@ public class ScriptExecutions {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, true);
+			connection = dataSource.getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("SELECT * from script_execution WHERE unit_type_id = ? ", unittype.getId());
 			ds.addSqlAndArguments("AND id = ?", id);
@@ -227,8 +225,9 @@ public class ScriptExecutions {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (connection != null)
-				ConnectionProvider.returnConnection(connection, null);
+			if (connection != null) {
+				connection.close();
+			}
 		}
 	}
 
@@ -236,12 +235,11 @@ public class ScriptExecutions {
 	 * Used by Web to identify one single ScriptExecution trigger by a trigger-release
 	 * Used by TR069 to check if the script-execution is finished
 	 * @param unittype
-	 * @param requestTmsFrom
+	 * @param requestId
 	 * @return
-	 * @throws NoAvailableConnectionException
 	 * @throws SQLException
 	 */
-	public ScriptExecution getExecution(Unittype unittype, String requestId) throws NoAvailableConnectionException, SQLException {
+	public ScriptExecution getExecution(Unittype unittype, String requestId) throws SQLException {
 		if (!XAPSVersionCheck.scriptExecutionSupported)
 			return null;
 		XAPS xaps = unittype.getXaps();
@@ -249,7 +247,7 @@ public class ScriptExecutions {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, true);
+			connection = dataSource.getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("SELECT * from script_execution WHERE unit_type_id = ? ", unittype.getId());
 			if (requestId != null)
@@ -269,8 +267,9 @@ public class ScriptExecutions {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (connection != null)
-				ConnectionProvider.returnConnection(connection, null);
+			if (connection != null) {
+				connection.close();
+			}
 		}
 	}
 
@@ -278,31 +277,26 @@ public class ScriptExecutions {
 	 * Used by Core to delete old executions
 	 * @param upUntil
 	 * @return
-	 * @throws NoAvailableConnectionException
 	 * @throws SQLException
 	 */
-	public int deleteExecutions(Date upUntil) throws NoAvailableConnectionException, SQLException {
+	public int deleteExecutions(Date upUntil) throws  SQLException {
 		if (!XAPSVersionCheck.scriptExecutionSupported)
 			return 0;
 		Connection connection = null;
 		PreparedStatement ps = null;
-		ResultSet rs = null;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, true);
+			connection = dataSource.getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("DELETE from script_execution WHERE request_timestamp < ?", upUntil);
 			ps = ds.makePreparedStatement(connection);
 			ps.setQueryTimeout(60);
 			return ps.executeUpdate();
-		} catch (SQLException sqle) {
-			throw sqle;
 		} finally {
-			if (rs != null)
-				rs.close();
 			if (ps != null)
 				ps.close();
-			if (connection != null)
-				ConnectionProvider.returnConnection(connection, null);
+			if (connection != null) {
+				connection.close();
+			}
 		}
 	}
 
