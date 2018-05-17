@@ -11,6 +11,7 @@ import com.github.freeacs.ws.UnitIdList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.rmi.RemoteException;
 import java.util.*;
 
@@ -20,10 +21,10 @@ public class GetUnitIds {
 	private XAPS xaps;
 	private XAPSWS xapsWS;
 
-	public GetUnitIdsResponse getUnits(GetUnitIdsRequest gur) throws RemoteException {
+	public GetUnitIdsResponse getUnits(GetUnitIdsRequest gur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 			
-			xapsWS = XAPSWSFactory.getXAPSWS(gur.getLogin());
+			xapsWS = XAPSWSFactory.getXAPSWS(gur.getLogin(), xapsDs,syslogDs);
 			xaps = xapsWS.getXAPS();
 			XAPSUnit xapsUnit = xapsWS.getXAPSUnit(xaps);
 			

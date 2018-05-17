@@ -10,10 +10,12 @@ import java.util.List;
 
 public class DBAccessSession {
 
+	private final DBAccess dbAccess;
 	private XAPS xaps;
 
-	public DBAccessSession(DBI dbi) {
-		this.xaps = dbi.getXaps();
+	public DBAccessSession(DBAccess dbAccess) throws SQLException {
+		this.dbAccess = dbAccess;
+		this.xaps = dbAccess.getDBI().getXaps();
 	}
 
 	private static void debug(String message) {
@@ -24,7 +26,7 @@ public class DBAccessSession {
 		long start = System.currentTimeMillis();
 		String method = "writeProfileChange";
 		try {
-			XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
+			XAPSUnit xapsUnit = dbAccess.getXAPSUnit(xaps);
 			List<String> uList = new ArrayList<String>();
 			uList.add(unitId);
 			xapsUnit.addUnits(uList, newProfile);
@@ -50,7 +52,7 @@ public class DBAccessSession {
 		long start = System.currentTimeMillis();
 		String action = "deleteUnitParameters";
 		try {
-			XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
+			XAPSUnit xapsUnit = dbAccess.getXAPSUnit(xaps);
 			xapsUnit.deleteUnitParameters(unitParameters);
 			debug("Have deleted " + unitParameters.size() + " unit parameters");
 		} catch (Throwable t) {
@@ -58,28 +60,12 @@ public class DBAccessSession {
 		}
 	}
 
-	//	public Map<String, JobParameter> readJobParameters(SessionDataI sessionData, Job job) throws SQLException {
-	//		long start = System.currentTimeMillis();
-	//		String method = "readJobParameters";
-	//		Jobs jobs = sessionData.getUnittype().getJobs();
-	//		//		XAPSJobs xapsJobs = DBAccess.getXAPSJobs(xaps);
-	//		try {
-	//			Map<String, JobParameter> jobParams = jobs.readJobParameters(job, new Unit(sessionData.getUnitId(), null, null), xaps);
-	//			debug("Found " + jobParams.size() + " job parameters (job-id:" + job.getId() + ")");
-	//			return jobParams;
-	//		} catch (Throwable t) {
-	//			DBAccess.handleError(method, start, t);
-	//		}
-	//		return null; // unreachable code - compiler doesn't detect it!
-	//
-	//	}
-
 	public Unit readUnit(String unitId) throws SQLException {
 		long start = System.currentTimeMillis();
 		String method = "readUnit";
 		Unit unit = null;
 		try {
-			XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
+			XAPSUnit xapsUnit = dbAccess.getXAPSUnit(xaps);
 			unit = xapsUnit.getUnitById(unitId);
 			if (unit != null)
 				debug("Found unit " + unit.getId() + ", unittype " + unit.getUnittype().getName() + ", profile " + unit.getProfile().getName());
@@ -92,5 +78,9 @@ public class DBAccessSession {
 
 	public XAPS getXaps() {
 		return xaps;
+	}
+
+	public DBAccess getDbAccess() {
+		return dbAccess;
 	}
 }

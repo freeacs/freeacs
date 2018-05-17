@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
 public abstract class ResourceHandler {
     
     /** The locale properties. */
-    public static ResourceBundle localeProperties = null;
+    private static ResourceBundle localeProperties = null;
 
     /**
      * Gets the properties.

@@ -1,12 +1,10 @@
 package com.github.freeacs.web.app;
 
-import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.menu.MenuServlet;
 import com.github.freeacs.web.app.page.WebPage;
-import com.github.freeacs.web.app.security.WebUser;
 import com.github.freeacs.web.app.util.Freemarker;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.WebConstants;
@@ -20,6 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
@@ -42,6 +41,13 @@ public class Main extends HttpServlet {
 
 	/** The config. */
 	private Configuration config;
+
+	private final DataSource xapsDataSource, syslogDataSource;
+
+	public Main(DataSource xapsDataSource, DataSource syslogDataSource) {
+		this.xapsDataSource = xapsDataSource;
+		this.syslogDataSource = syslogDataSource;
+	}
 
 	/**
 	 * This is the main magic of this web application.
@@ -87,7 +93,7 @@ public class Main extends HttpServlet {
 	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException {
 		String pageStr = req.getParameter("page");
 		try {
 			doImpl(new ParameterParser(req, getServletContext()), res, pageStr);
@@ -106,28 +112,9 @@ public class Main extends HttpServlet {
 	 * @return the logged in status title
 	 */
 	private String getLoggedInStatusTitle(ParameterParser params) {
-		try {
-			if (params.getHttpServletRequest().getSession() != null) {
-				ConnectionProperties cp = SessionCache.getXAPSConnectionProperties(params.getHttpServletRequest().getSession().getId());
-
-				String status = "";
-				if (cp != null) {
-					String username = null;
-					WebUser user = SessionCache.getSessionData(params.getHttpServletRequest().getSession().getId()).getUser();
-					if (user != null)
-						username = user.getUsername();
-					else
-						username = "anonymous";
-					String url = params.getHttpServletRequest().getServerName();
-					status += username + "@" + url;
-				} else {
-					status = "Not connected to any xAPS database";
-				}
-				return status;
-			}
-		} catch (IllegalStateException e) {
-		}
-		return "Not connected to any xAPS database";
+		String username = SessionCache.getSessionData(params.getHttpServletRequest().getSession().getId()).getUser().getUsername();
+		String url = params.getHttpServletRequest().getServerName();
+		return username + "@" + url;
 	}
 
 	/**
@@ -162,7 +149,7 @@ public class Main extends HttpServlet {
 
 		WebPage page = getWebPage(pageStr);
 
-		Output outputHandler = new Output(page, params, res, config);
+		Output outputHandler = new Output(page, params, res, config, xapsDataSource, syslogDataSource);
 
 		Map<String, Object> templateMap = outputHandler.getTemplateMap();
 

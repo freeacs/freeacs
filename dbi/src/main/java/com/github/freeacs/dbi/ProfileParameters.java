@@ -1,7 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,9 +41,8 @@ public class ProfileParameters {
 		return pArr;
 	}
 
-	private void addOrChangeProfileParameterImpl(ProfileParameter profileParameter, Profile profile, XAPS xaps) throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
-		SQLException sqlex = null;
+	private void addOrChangeProfileParameterImpl(ProfileParameter profileParameter, Profile profile, XAPS xaps) throws SQLException {
+		Connection c = xaps.getDataSource().getConnection();
 		Statement s = null;
 		String sql = null;
 		try {
@@ -78,18 +75,14 @@ public class ProfileParameters {
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(profileParameter, profile.getUnittype());
 			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (s != null)
 				s.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.close();
 		}
 	}
 
-	public void addOrChangeProfileParameter(ProfileParameter profileParameter, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeProfileParameter(ProfileParameter profileParameter, XAPS xaps) throws SQLException {
  		if (!xaps.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		//		if (profileParameter.getUnittypeParameter().getFlag().isInspection())
@@ -99,11 +92,10 @@ public class ProfileParameters {
 		idMap.put(profileParameter.getUnittypeParameter().getId(), profileParameter);
 	}
 
-	private void deleteProfileParameterImpl(ProfileParameter profileParameter, Profile profile, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void deleteProfileParameterImpl(ProfileParameter profileParameter, Profile profile, XAPS xaps) throws SQLException {
 		Statement s = null;
 		String sql = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
-		SQLException sqlex = null;
+		Connection c = xaps.getDataSource().getConnection();
 		try {
 			s = c.createStatement();
 			sql = "DELETE FROM profile_param WHERE ";
@@ -115,14 +107,10 @@ public class ProfileParameters {
 			logger.info("Deleted profile parameter " + profileParameter.getUnittypeParameter().getName());
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(profileParameter, profile.getUnittype());
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (s != null)
 				s.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.close();
 		}
 	}
 
@@ -131,10 +119,9 @@ public class ProfileParameters {
 	 * method is run, the parameter is removed from the name- and id-Map.
 	 * 
 	 * @param profileParameter
-	 * @throws NoAvailableConnectionException 
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
-	public void deleteProfileParameter(ProfileParameter profileParameter, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void deleteProfileParameter(ProfileParameter profileParameter, XAPS xaps) throws SQLException {
  		if (!xaps.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		deleteProfileParameterImpl(profileParameter, profile, xaps);

@@ -3,7 +3,6 @@ package com.github.freeacs.shell.menu;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.shell.Context;
 import com.github.freeacs.shell.Session;
-
 import com.github.freeacs.shell.command.Option;
 import com.github.freeacs.shell.output.Heading;
 import com.github.freeacs.shell.output.Line;

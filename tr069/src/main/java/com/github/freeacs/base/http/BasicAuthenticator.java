@@ -3,7 +3,6 @@ package com.github.freeacs.base.http;
 import com.github.freeacs.base.BaseCache;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.NoDataAvailableException;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.HTTPReqResData;
 import com.github.freeacs.tr069.Properties;
@@ -100,9 +99,6 @@ public class BasicAuthenticator {
 				Log.notice(BasicAuthenticator.class, "Authentication verified (CPE IP address: " + reqRes.getReq().getRemoteHost() + ")");
 				return true;
 			}
-		} catch (NoAvailableConnectionException e) {
-			throw new TR069AuthenticationException("Authentication failed because of no available database connections  (CPE IP address: " + reqRes.getReq().getRemoteHost() + ") (username: "
-					+ username + ")", e, HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 		} catch (SQLException e) {
 			throw new TR069AuthenticationException("Authentication failed because of database error (CPE IP address: " + reqRes.getReq().getRemoteHost() + ") (username: " + username + ")", e,
 					HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

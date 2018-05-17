@@ -1,11 +1,11 @@
 package com.github.freeacs.tr069.methods;
 
 import com.github.freeacs.base.Log;
+import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.tr069.HTTPReqResData;
 import com.github.freeacs.tr069.HTTPResData;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
-import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.tr069.test.system2.TestUnit;
 import com.github.freeacs.tr069.test.system2.TestUnitCache;
 import com.github.freeacs.tr069.test.system2.Util;

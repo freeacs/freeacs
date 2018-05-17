@@ -11,6 +11,7 @@ import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.XAPSLoader;
 
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,12 +38,12 @@ public class ProfileCreatePage extends ProfileActions {
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
 	 */
-	public void process(ParameterParser params, Output outputHandler) throws Exception {
+	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		ProfileData inputData = (ProfileData) InputDataRetriever.parseInto(new ProfileData(), params);
 
 		String sessionId = params.getSession().getId();
 
-		XAPS xaps = XAPSLoader.getXAPS(sessionId);
+		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
@@ -65,7 +66,7 @@ public class ProfileCreatePage extends ProfileActions {
 			root.put("profilestocopyfrom",profilestocopyfrom);
 		
 		if (inputData.getFormSubmit().isValue("Create profile")) {
-			if (isProfilesLimited(unittypes.getSelected(), sessionId)) {
+			if (isProfilesLimited(unittypes.getSelected(), sessionId, xapsDataSource, syslogDataSource)) {
 				throw new Exception("You are not allowed to create profiles!");
 			}
 			if (unittypes.getSelected() != null && unittypes.getSelected().getProfiles().getByName(inputData.getProfilename().getString()) == null) {

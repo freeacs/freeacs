@@ -7,7 +7,6 @@ import com.github.freeacs.web.app.util.Freemarker;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebProperties;
-
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -274,12 +273,6 @@ public class MenuServlet extends HttpServlet {
 			MenuItem wizards = new MenuItem("Wizards", Page.TOPMENU_WIZARDS).setSelected(selectedPage.equalsAny(Page.UPGRADE)).setDisableOnClickWithJavaScript();
 			wizards.addSubMenuItem(new MenuItem("Upgrade wizard", Page.UPGRADE));
 			menu.add(wizards);
-		}
-		if (WebProperties.getBoolean("staging.enabled")) {
-			MenuItem staging = new MenuItem("Staging", Page.TOPMENU_STAGING).setSelected(
-					selectedPage.equalsAny(Page.STAGINGDISTRIBUTORS, Page.STAGINGPROVIDERS, Page.STAGINGRETURN, Page.STAGINGSHIPMENTS)).setDisableOnClickWithJavaScript();
-			staging.addSubMenuItem(new MenuItem("Ship units", Page.STAGINGSHIPMENTS));
-			menu.add(staging);
 		}
 		return menu;
 	}

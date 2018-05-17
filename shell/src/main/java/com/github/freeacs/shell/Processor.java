@@ -1,8 +1,6 @@
 package com.github.freeacs.shell;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
-
 import com.github.freeacs.shell.command.*;
 import com.github.freeacs.shell.menu.*;
 import com.github.freeacs.shell.output.OutputHandler;
@@ -72,7 +70,7 @@ public class Processor {
 		return new IllegalArgumentException("The context switch to " + ce + " was not possible");
 	}
 
-	public void changeContext(ContextContainer cc, Context context, Session session) throws SQLException, NoAvailableConnectionException {
+	public void changeContext(ContextContainer cc, Context context, Session session) throws SQLException {
 		for (ContextElement ce : cc.getContextList()) {
 			if (ce.getType().equals(ContextElement.TYPE_ROOT)) {
 				context.resetToNull();
@@ -485,7 +483,7 @@ public class Processor {
 		return null;
 	}
 
-	private void call(Command command) throws SQLException, NoAvailableConnectionException {
+	private void call(Command command) throws SQLException {
 		List<CommandAndArgument> caaList = command.getCommandAndArguments();
 		if (caaList.size() < 2)
 			throw new IllegalArgumentException("call expects a filename as the first argumnet");

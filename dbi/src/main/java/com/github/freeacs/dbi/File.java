@@ -1,9 +1,6 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
-
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.Date;
 
@@ -24,7 +21,7 @@ public class File {
 
 	private boolean validateInput = true;
 
-	private ConnectionProperties connectionProperties;
+	private DataSource dataSource;
 
 	// code-order: id, unittype, name, type, desc, version, timestamp, targetname, (content)
 	public File() {
@@ -88,14 +85,13 @@ public class File {
 		return owner;
 	}
 
-	public byte[] getContent() throws SQLException, NoAvailableConnectionException {
+	public byte[] getContent() throws SQLException {
 		if (content == null) {
 			Connection c = null;
 			Statement s = null;
 			ResultSet rs = null;
-			SQLException sqlex = null;
 			try {
-				c = ConnectionProvider.getConnection(connectionProperties);
+				c = dataSource.getConnection();
 				s = c.createStatement();
 				s.setQueryTimeout(60);
 				rs = s.executeQuery("SELECT content FROM filestore WHERE id = '" + id + "'");
@@ -103,17 +99,14 @@ public class File {
 					Blob blob = rs.getBlob("content");
 					content = blob.getBytes(1, (int) blob.length());
 				}
-			} catch (SQLException sqle) {
-				sqlex = sqle;
-				throw sqle;
 			} finally {
-
 				if (rs != null)
 					rs.close();
 				if (s != null)
 					s.close();
-				if (c != null)
-					ConnectionProvider.returnConnection(c, sqlex);
+				if (c != null) {
+					c.close();
+				}
 			}
 			if (content == null)
 				content = new byte[0];
@@ -206,8 +199,8 @@ public class File {
 	/* MISC methods */
 
 	// Necessary to retrieve content - we do not cache content as default action
-	protected void setConnectionProperties(ConnectionProperties connectionProperties) {
-		this.connectionProperties = connectionProperties;
+	protected void setConnectionProperties(DataSource dataSource) {
+		this.dataSource = dataSource;
 	}
 
 	// Used by Web

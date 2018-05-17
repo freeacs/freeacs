@@ -1,10 +1,8 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.util.XAPSVersionCheck;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
 
@@ -25,13 +23,13 @@ public class Users {
 	public static String ACCESS_ADMIN = "Admin";
 	public static String ADMIN_DEFAULT_PASSWORD = "xaps";
 
-	private ConnectionProperties connectionProperties;
+	private final DataSource dataSource;
 	private Map<Integer, User> idMap = new HashMap<Integer, User>();
 	private Map<String, User> nameMap = new TreeMap<String, User>();
 
-	public Users(ConnectionProperties cp) throws SQLException, NoAvailableConnectionException {
-		XAPSVersionCheck.versionCheck(cp);
-		this.connectionProperties = cp;
+	public Users(DataSource dataSource) throws SQLException {
+		XAPSVersionCheck.versionCheck(dataSource);
+		this.dataSource = dataSource;
 		readAllUsers();
 	}
 
@@ -97,9 +95,8 @@ public class Users {
 	 * @param delete
 	 * @param requestedBy
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
 	 */
-	public void delete(User delete, User requestedBy) throws SQLException, NoAvailableConnectionException {
+	public void delete(User delete, User requestedBy) throws SQLException {
 		if (!allowAccessTo(delete, requestedBy))
 			throw new IllegalArgumentException("Not allowed to delete user " + delete.getUsername());
 		if (delete.getUsername().equals(USER_ADMIN) && !requestedBy.getUsername().equals(USER_ADMIN))
@@ -112,7 +109,7 @@ public class Users {
 		PreparedStatement ps = null;
 		SQLException sqle = null;
 		try {
-			c = ConnectionProvider.getConnection(connectionProperties, true);
+			c = dataSource.getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("DELETE FROM user_ WHERE id = ?", delete.getId());
 			ps = ds.makePreparedStatement(c);
@@ -125,8 +122,9 @@ public class Users {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
@@ -137,9 +135,8 @@ public class Users {
 	 * @param addOrChange
 	 * @param requestedBy
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
 	 */
-	public void addOrChange(User addOrChange, User requestedBy) throws SQLException, NoAvailableConnectionException {
+	public void addOrChange(User addOrChange, User requestedBy) throws SQLException {
 		boolean unittypeAdmin = false;
 		for (Permission p : requestedBy.getPermissions().getPermissions()) {
 			if (p.getProfileId() == null)
@@ -161,7 +158,7 @@ public class Users {
 		PreparedStatement ps = null;
 		SQLException sqle = null;
 		try {
-			c = ConnectionProvider.getConnection(connectionProperties, true);
+			c = dataSource.getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			if (addOrChange.getId() == null) {
 				ds.addSql("INSERT INTO user_ (username, secret, fullname, accesslist");
@@ -220,8 +217,9 @@ public class Users {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
@@ -254,7 +252,7 @@ public class Users {
 	 * Access will be granted if
 	 * 1. requestedBy-user is admin
 	 * 2. requestedBy-user is unittypeAdmin for all unittypes found in accessTo-user's permissions
-	 * @param user
+	 * @param requestedBy
 	 * @return
 	 */
 	private boolean allowAccessTo(User accessTo, User requestedBy) {
@@ -283,14 +281,13 @@ public class Users {
 	/**
 	 * Raw read from the database
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
 	 */
-	private void readAllUsers() throws SQLException, NoAvailableConnectionException {
+	private void readAllUsers() throws SQLException {
 		Connection c = null;
 		Statement s = null;
 		SQLException sqle = null;
 		try {
-			c = ConnectionProvider.getConnection(connectionProperties, true);
+			c = dataSource.getConnection();
 			s = c.createStatement();
 			ResultSet rs = s.executeQuery("SELECT * FROM user_");
 			Map<Integer, User> tmpIdMap = new HashMap<Integer, User>();
@@ -340,19 +337,19 @@ public class Users {
 			}
 			idMap = tmpIdMap;
 			nameMap = tmpNameMap;
-			return;
 		} catch (SQLException sqlex) {
 			sqle = sqlex;
 			throw sqlex;
 		} finally {
 			if (s != null)
 				s.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
-	protected ConnectionProperties getConnectionProperties() {
-		return connectionProperties;
+	protected DataSource getConnectionProperties() {
+		return dataSource;
 	}
 }

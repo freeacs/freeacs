@@ -1,7 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.DynamicStatement.NullString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,14 +66,12 @@ public class GroupParameters {
 		return groupParams;
 	}
 
-	private void addOrChangeGroupParameterImpl(GroupParameter groupParameter, Group group, XAPS xaps) throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
-		SQLException sqlex = null;
+	private void addOrChangeGroupParameterImpl(GroupParameter groupParameter, Group group, XAPS xaps) throws SQLException {
+		Connection c = xaps.getDataSource().getConnection();
 		PreparedStatement ps = null;
 		try {
 			Parameter parameter = groupParameter.getParameter();
 			DynamicStatement ds = new DynamicStatement();
-			//			if (XAPSVersionCheck.groupParamTypeSupported) {
 			if (groupParameter.getId() == null) {
 				ds.addSql("INSERT INTO group_param (group_id, unit_type_param_id, operator, data_type, value) VALUES (?, ?, ?, ?, ?)");
 				ds.addArguments(groupParameter.getGroup().getId(), parameter.getUnittypeParameter().getId());
@@ -105,49 +101,14 @@ public class GroupParameters {
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(groupParameter, group.getUnittype());
 			}
-			//			} else {
-			//				if (groupParameter.getId() == null) {
-			//					ds.addSql("INSERT INTO group_param (group_id, unit_type_param_id, is_equal, value) VALUES (?, ?, ?, ?)");
-			//					ds.addArguments(groupParameter.getGroup().getId(), parameter.getUnittypeParameter().getId());
-			//					ds.addArguments(parameter.getOp().equals(Operator.EQ) ? 1 : 0);
-			//					ds.addArguments((parameter.valueWasNull() || parameter.getValue() == null) ? new NullString() : parameter.getValue());
-			//					ps = ds.makePreparedStatement(c, "id");
-			//					ps.setQueryTimeout(60);
-			//					ps.executeUpdate();
-			//					ResultSet gk = ps.getGeneratedKeys();
-			//					if (gk.next())
-			//						groupParameter.setId(gk.getInt(1));
-			//					LogContext.set(group.getUnittype(), group.getTopParent().getProfile(), xaps);
-			//					logger.notice("Added group parameter " + groupParameter.getName());
-			//					if (xaps.getDbi() != null)
-			//						xaps.getDbi().publishAdd(groupParameter, group.getUnittype());
-			//				} else {
-			//					ds.addSql("UPDATE group_param SET ");
-			//					ds.addSql("value = ?, is_equal = ? WHERE id = ?");
-			//					ds.addArguments((parameter.valueWasNull() || parameter.getValue() == null) ? new NullString() : parameter.getValue());
-			//					ds.addArguments(parameter.getOp().equals(Operator.EQ) ? 1 : 0);
-			//					ds.addArguments(groupParameter.getId());
-			//					ps = ds.makePreparedStatement(c);
-			//					ps.setQueryTimeout(60);
-			//					ps.executeUpdate();
-			//					LogContext.set(group.getUnittype(), group.getTopParent().getProfile(), xaps);
-			//					logger.notice("Updated group parameter " + groupParameter.getName());
-			//					if (xaps.getDbi() != null)
-			//						xaps.getDbi().publishChange(groupParameter, group.getUnittype());
-			//				}
-			//			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.close();
 		}
 	}
 
-	public void addOrChangeGroupParameter(GroupParameter groupParameter, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeGroupParameter(GroupParameter groupParameter, XAPS xaps) throws SQLException {
 		Groups.checkPermission(group, xaps);
 		//		if (groupParameter.getParameter().getUnittypeParameter().getFlag().isInspection())
 		//			throw new IllegalArgumentException("The unit type parameter is an inspection parameter - cannot be set on a group");
@@ -170,13 +131,10 @@ public class GroupParameters {
 		idMap.put(groupParameter.getId(), groupParameter);
 	}
 
-	private void deleteGroupParameterImpl(GroupParameter groupParameter, Group group, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void deleteGroupParameterImpl(GroupParameter groupParameter, Group group, XAPS xaps) throws SQLException {
 		Statement s = null;
 		String sql = null;
-		//		if (!XAPSVersionCheck.groupSupported)
-		//			return;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
-		SQLException sqlex = null;
+		Connection c = xaps.getDataSource().getConnection();
 		try {
 			s = c.createStatement();
 			sql = "DELETE FROM group_param WHERE ";
@@ -186,14 +144,10 @@ public class GroupParameters {
 			logger.info("Deleted group parameter " + groupParameter.getName());
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(groupParameter, group.getUnittype());
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (s != null)
 				s.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.close();
 		}
 	}
 
@@ -202,10 +156,10 @@ public class GroupParameters {
 	 * method is run, the parameter is removed from the name- and id-Map.
 	 * 
 	 * @param groupParameter
-	 * @throws NoAvailableConnectionException 
+	 *
 	 * @throws SQLException 
 	 */
-	public void deleteGroupParameter(GroupParameter groupParameter, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void deleteGroupParameter(GroupParameter groupParameter, XAPS xaps) throws SQLException {
 		Groups.checkPermission(group, xaps);
 		deleteGroupParameterImpl(groupParameter, group, xaps);
 		nameMap.remove(groupParameter.getName());

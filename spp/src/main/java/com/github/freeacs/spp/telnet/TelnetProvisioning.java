@@ -1,11 +1,9 @@
 package com.github.freeacs.spp.telnet;
 
 import com.github.freeacs.base.JobHistoryEntry;
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.*;
-
 import com.github.freeacs.dbi.JobFlag.JobType;
 import com.github.freeacs.dbi.Parameter.Operator;
 import com.github.freeacs.dbi.Parameter.ParameterDataType;
@@ -21,7 +19,7 @@ public class TelnetProvisioning implements Runnable {
 
 	private static Logger log = LoggerFactory.getLogger(TelnetProvisioning.class);
 	private DBI dbi;
-	private ConnectionProperties xapsCp;
+	private DBAccess dbAccess;
 
 	// This inbox listens for changes on job (from other modules in xAPS)
 	private Inbox jobChangeInbox = new Inbox();
@@ -35,17 +33,17 @@ public class TelnetProvisioning implements Runnable {
 	// Value: Tms of last refresh
 	private Map<Integer, Long> jobRefreshMap = new HashMap<Integer, Long>();
 
-	public TelnetProvisioning(ConnectionProperties xapsCp, DBI dbi) {
-		this.xapsCp = xapsCp;
+	public TelnetProvisioning(DBAccess dbAccess, DBI dbi) {
+		this.dbAccess = dbAccess;
 		this.dbi = dbi;
 		jobChangeInbox.addFilter(new Message(null, Message.MTYPE_PUB_CHG, null, Message.OTYPE_JOB));
 		dbi.registerInbox("jobChangeInbox", jobChangeInbox);
 	}
 
-	private void populateJobUnitSetMapForOneJob(Job job, XAPS xaps, Unittype unittype) throws SQLException, NoAvailableConnectionException {
+	private void populateJobUnitSetMapForOneJob(Job job, XAPS xaps, Unittype unittype) throws SQLException {
 		Group group = job.getGroup();
 		long now = jobRefreshMap.get(job.getId());
-		XAPSUnit xapsUnit = new XAPSUnit(xapsCp, xaps, xaps.getSyslog());
+		XAPSUnit xapsUnit = new XAPSUnit(dbAccess.getXapsDataSource(), xaps, xaps.getSyslog());
 		Map<String, Unit> unitsInGroup = xapsUnit.getUnits(group);
 		log.info("Found " + unitsInGroup.size() + " units in group " + group.getName() + " from job " + job.getName() + " (" + job.getId() + ")");
 		Group topParent = group.getTopParent();
@@ -109,7 +107,7 @@ public class TelnetProvisioning implements Runnable {
 		tjq.put(job.getId(), telnetJobMap);
 	}
 
-	private void populateJobUnitSetMapForAllJobs(XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void populateJobUnitSetMapForAllJobs(XAPS xaps) throws SQLException {
 		tjq = new TelnetJobQueue();
 		Unittype[] unittypes = xaps.getUnittypes().getUnittypes();
 		long now = System.currentTimeMillis();
@@ -203,7 +201,7 @@ public class TelnetProvisioning implements Runnable {
 
 	}
 
-	private void runJobs(XAPS xaps) {
+	private void runJobs() throws SQLException {
 		while (true) {
 			TelnetJob tj = tjq.getNextTelnetJob();
 			if (tj == null) {
@@ -219,7 +217,7 @@ public class TelnetProvisioning implements Runnable {
 					} catch (InterruptedException e) {
 					}
 				}
-				TelnetJobThread tjt = new TelnetJobThread(monitor, tj, xaps, xapsCp);
+				TelnetJobThread tjt = new TelnetJobThread(monitor, tj, dbAccess);
 				activeTelnetSessions.add(tj.getUnitId());
 				Thread t = new Thread(tjt);
 				t.start();
@@ -238,7 +236,7 @@ public class TelnetProvisioning implements Runnable {
 					break;
 				XAPS xaps = dbi.getXaps();
 				populateJobUnitSetMapForAllJobs(xaps);
-				runJobs(xaps);
+				runJobs();
 			} catch (Throwable t) {
 				log.error("An error ocurred in TelnetProvisioning.run() - continues anyway", t);
 			}

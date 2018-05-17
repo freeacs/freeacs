@@ -1,7 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.NaturalComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +83,7 @@ public class UnittypeParameters {
 		return "Contains " + nameMap.size() + " unittype parameters";
 	}
 
-	public void addOrChangeUnittypeParameters(List<UnittypeParameter> unittypeParameters, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeUnittypeParameters(List<UnittypeParameter> unittypeParameters, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		for (UnittypeParameter unittypeParameter : unittypeParameters) {
@@ -150,7 +148,7 @@ public class UnittypeParameters {
 		return resultMap;
 	}
 
-	public void addOrChangeUnittypeParameter(UnittypeParameter unittypeParameter, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeUnittypeParameter(UnittypeParameter unittypeParameter, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		List<UnittypeParameter> unittypeParameters = new ArrayList<UnittypeParameter>();
@@ -169,11 +167,13 @@ public class UnittypeParameters {
 		logger.info("Deleted all unittype parameter values for utp:" + unittypeParameter.getName());
 	}
 
-	private void deleteUnittypeParameterImpl(List<UnittypeParameter> unittypeParameters, Unittype unittype, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void deleteUnittypeParameterImpl(List<UnittypeParameter> unittypeParameters, Unittype unittype, XAPS xaps) throws SQLException {
 		Statement s = null;
 		String sql = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, false);
-		SQLException sqlex = null;
+		boolean wasAutoCommit = false;
+		Connection c = xaps.getDataSource().getConnection();
+		wasAutoCommit = c.getAutoCommit();
+		c.setAutoCommit(false);
 		try {
 			for (UnittypeParameter unittypeParameter : unittypeParameters) {
 				s = c.createStatement();
@@ -192,14 +192,11 @@ public class UnittypeParameters {
 			c.setAutoCommit(true);
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishChange(unittype, unittype);
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (s != null)
 				s.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.setAutoCommit(wasAutoCommit);
+			c.close();
 		}
 	}
 
@@ -208,10 +205,10 @@ public class UnittypeParameters {
 	 * method is run, the parameter is removed from the name- and id-Map.
 	 * 
 	 * @param unittypeParameter
-	 * @throws NoAvailableConnectionException
+	 *
 	 * @throws SQLException
 	 */
-	public void deleteUnittypeParameter(UnittypeParameter unittypeParameter, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void deleteUnittypeParameter(UnittypeParameter unittypeParameter, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		List<UnittypeParameter> unittypeParameters = new ArrayList<UnittypeParameter>();
@@ -219,7 +216,7 @@ public class UnittypeParameters {
 		deleteUnittypeParameters(unittypeParameters, xaps);
 	}
 
-	public void deleteUnittypeParameters(List<UnittypeParameter> unittypeParameters, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void deleteUnittypeParameters(List<UnittypeParameter> unittypeParameters, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		deleteUnittypeParameterImpl(unittypeParameters, unittype, xaps);
@@ -235,9 +232,11 @@ public class UnittypeParameters {
 		}
 	}
 
-	private void addOrChangeUnittypeParameterImpl(List<UnittypeParameter> unittypeParameters, Unittype unittype, XAPS xaps) throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, false);
-		SQLException sqlex = null;
+	private void addOrChangeUnittypeParameterImpl(List<UnittypeParameter> unittypeParameters, Unittype unittype, XAPS xaps) throws SQLException {
+		boolean wasAutoCommit = false;
+		Connection c = xaps.getDataSource().getConnection();
+		wasAutoCommit = c.getAutoCommit();
+		c.setAutoCommit(false);
 		PreparedStatement ps = null;
 		try {
 			for (UnittypeParameter unittypeParameter : unittypeParameters) {
@@ -285,14 +284,11 @@ public class UnittypeParameters {
 			c.setAutoCommit(true);
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishChange(unittype, unittype);
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.setAutoCommit(wasAutoCommit);
+			c.close();
 		}
 	}
 

@@ -1,19 +1,17 @@
 package com.github.freeacs.shell;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
 public class XAPSShellDaemon implements Runnable {
 	private XAPSShell xapsShell = new XAPSShell();
-	private ConnectionProperties cp;
+	private DataSource cp;
 	private String fusionUser;
 	private int index; // used to track which instance of a shell-daemon is running
 	private boolean idle = true;
 
-	public XAPSShellDaemon(ConnectionProperties cp, String fusionUser) {
+	public XAPSShellDaemon(DataSource cp, String fusionUser) {
 		this.cp = cp;
 		this.fusionUser = fusionUser;
 	}
@@ -36,7 +34,8 @@ public class XAPSShellDaemon implements Runnable {
 
 	@Override
 	public void run() {
-		xapsShell.mainImpl(new String[] { "-daemon", "-url", cp.getUrl(), "-user", cp.getUser(), "-password", cp.getPassword(), "-maxconn", "" + cp.getMaxConn(), "-fusionuser", fusionUser });
+		// TODO
+		// xapsShell.mainImpl(new String[] { "-daemon", "-url", cp.getUrl(), "-user", cp.getUser(), "-password", cp.getPassword(), "-maxconn", "" + cp.getMaxConn(), "-fusionuser", fusionUser });
 	}
 
 	public List<Throwable> getAndResetThrowables() {
@@ -56,23 +55,6 @@ public class XAPSShellDaemon implements Runnable {
 
 	public boolean isInitialized() {
 		return xapsShell.isInitialized();
-	}
-
-	/*
-	 * Purely for test
-	 */
-	public static void main(String[] args) {
-		XAPSShellDaemon daemon = new XAPSShellDaemon(ConnectionProvider.getConnectionProperties("xaps-shell.properties", "db.2"), "teamf1");
-		Thread t = new Thread(daemon);
-		t.start();
-		while (!daemon.isInitialized())
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		daemon.addToRunList("listunittypes > unittypes.txt");
 	}
 
 	public boolean isIdle() {

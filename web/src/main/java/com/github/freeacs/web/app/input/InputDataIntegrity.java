@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.input;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.context.ContextItem;
 import com.github.freeacs.web.app.util.SessionCache;
@@ -60,10 +59,10 @@ public class InputDataIntegrity {
 	 *
 	 * @param sessionId the session id
 	 * @param inputs the inputs
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	public static void rememberAndCheck(String sessionId, Input... inputs) throws NoAvailableConnectionException, SQLException {
+	public static void rememberAndCheck(String sessionId, Input... inputs) throws SQLException {
 		SessionData sessionData = SessionCache.getSessionData(sessionId);
 
 		Input unittypeInput = getInputByName(inputs, "unittype");

@@ -3,15 +3,13 @@ package com.github.freeacs.base.db;
 import com.github.freeacs.Properties;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.SessionDataI;
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.dbi.*;
-
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -19,62 +17,46 @@ import java.util.function.Supplier;
 public class DBAccess {
 
 	private static final Config config = ConfigFactory.load();
-
 	private static Logger logger = LoggerFactory.getLogger(DBAccess.class);
+	private final DataSource xapsDataSource;
+	private final DataSource syslogDataSource;
+	private final Properties.Module module;
+	private final String facilityVersion;
+	private final int facility;
 
-    private static DBI dbi;
+	private DBI dbi;
 
-	private static Properties.Module module;
-	private static String facilityVersion;
-	private static int facility;
-
-	public static void init(Properties.Module mod, int facilityInt, String facilityVersionStr) {
-		module = mod;
-		facility = facilityInt;
-		facilityVersion = facilityVersionStr;
+	public DBAccess(Properties.Module mod, int facilityInt, String facilityVersionStr, DataSource xapsDataSource, DataSource syslogDataSource) {
+		this.module = mod;
+		this.facility = facilityInt;
+		this.facilityVersion = facilityVersionStr;
+		this.xapsDataSource = xapsDataSource;
+		this.syslogDataSource = syslogDataSource;
 	}
-	
-	public static Properties.Module getModule() {
+
+	public Properties.Module getModule() {
 		return module;
 	}
-	
-	public static String getFacilityVersion() {
-		return facilityVersion;
-	}
-	
-	public static int getFacility() {
+
+	public int getFacility() {
 		return facility;
-	}
-
-	public static ConnectionProperties getXAPSProperties() {
-		return ConnectionProvider.getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps"));
-	}
-
-	public static ConnectionProperties getSyslogProperties() {
-		return ConnectionProvider.getConnectionProperties(getUrl("syslog"), getMaxAge("syslog"), getMaxConn("syslog"));
-	}
-
-	@SuppressWarnings("unused")
-	private static void warn(String message) {
-		Log.warn(DBAccess.class, message);
 	}
 
 	private static void error(String message, Throwable t) {
 		Log.error(DBAccess.class, message, t);
 	}
 
-	public static Syslog getSyslog() throws SQLException {
-		Users users = new Users(getXAPSProperties());
+	public Syslog getSyslog() throws SQLException {
+		Users users = new Users(getXapsDataSource());
 		Identity id = new Identity(facility, facilityVersion, users.getUnprotected(Users.USER_ADMIN));
-		Syslog syslog = new Syslog(getSyslogProperties(), id);
-		return syslog;
+		return new Syslog(getSyslogDataSource(), id);
 	}
 
-	public synchronized static DBI getDBI() throws SQLException {
+	public synchronized DBI getDBI() throws SQLException {
 		XAPS.setStrictOrder(false);
 		if (dbi == null) {
 			Syslog syslog = getSyslog();
-			dbi = new DBI(Integer.MAX_VALUE, getXAPSProperties(), syslog);
+			dbi = new DBI(Integer.MAX_VALUE, getXapsDataSource(), syslog);
 		}
 		return dbi;
 	}
@@ -83,7 +65,7 @@ public class DBAccess {
 		return sessionData.getUnittype().getJobs().getById(new Integer(id));
 	}
 
-	public static void handleError(String method, long start, Throwable t) throws SQLException {
+	static void handleError(String method, long start, Throwable t) throws SQLException {
 		error(method + " failed", t);
 		if (t instanceof SQLException) {
 			throw (SQLException) t;
@@ -91,8 +73,8 @@ public class DBAccess {
 		throw (RuntimeException) t;
 	}
 
-	public static XAPSUnit getXAPSUnit(XAPS xaps) throws SQLException {
-		return new XAPSUnit(getXAPSProperties(), xaps, xaps.getSyslog());
+	public XAPSUnit getXAPSUnit(XAPS xaps) throws SQLException {
+		return new XAPSUnit(getXapsDataSource(), xaps, xaps.getSyslog());
 	}
 
     private static int getInteger(String propertyKey, int defaultValue) {
@@ -132,11 +114,11 @@ public class DBAccess {
 
 
     public static int getMaxConn(final String infix) {
-        return getInteger("db." + infix + ".maxconn", ConnectionProperties.maxconn);
+        return getInteger("db." + infix + ".maxconn", 20);
     }
 
     public static long getMaxAge(final String infix) {
-        return getLong("db." + infix + ".maxage", ConnectionProperties.maxage);
+        return getLong("db." + infix + ".maxage", 60000);
     }
 
     public static String getUrl(final String infix) {
@@ -148,4 +130,12 @@ public class DBAccess {
                     }
                 });
     }
+
+	public DataSource getXapsDataSource() {
+		return xapsDataSource;
+	}
+
+	public DataSource getSyslogDataSource() {
+		return syslogDataSource;
+	}
 }

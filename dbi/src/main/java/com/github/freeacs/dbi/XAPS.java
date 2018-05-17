@@ -1,15 +1,13 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.NumberComparator;
+import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.util.MapWrapper;
 import com.github.freeacs.dbi.util.XAPSVersionCheck;
-import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +46,7 @@ public class XAPS {
 
 	private Connection connection;
 
-	protected ConnectionProperties connectionProperties;
+	private final DataSource dataSource;
 
 	private Unittypes unittypes;
 
@@ -60,12 +58,12 @@ public class XAPS {
 
 	private ScriptExecutions scriptExecutions;
 
-	public XAPS(ConnectionProperties connectionProperties, Syslog syslog) throws NoAvailableConnectionException, SQLException {
+	public XAPS(DataSource dataSource, Syslog syslog) throws SQLException {
 		long start = System.currentTimeMillis();
-		this.connectionProperties = connectionProperties;
+		this.dataSource = dataSource;
 		this.syslog = syslog;
 		/* Checks all necessary tables to see which version they're in */
-		XAPSVersionCheck.versionCheck(connectionProperties);
+		XAPSVersionCheck.versionCheck(dataSource);
 		this.unittypes = read();
 		if (logger.isDebugEnabled()) {
 
@@ -83,7 +81,7 @@ public class XAPS {
 
 	public ScriptExecutions getScriptExecutions() {
 		if (scriptExecutions == null)
-			scriptExecutions = new ScriptExecutions(connectionProperties);
+			scriptExecutions = new ScriptExecutions(getDataSource());
 		return scriptExecutions;
 	}
 
@@ -117,9 +115,8 @@ public class XAPS {
 	 * 
 	 * @return
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
 	 */
-	public Unittypes read() throws SQLException, NoAvailableConnectionException {
+	public Unittypes read() throws SQLException {
 		unittypes = readAsAdmin();
 		logger.debug("Updated XAPS object, read " + unittypes.getUnittypes().length + " unittypes");
 		User user = syslog.getIdentity().getUser();
@@ -143,9 +140,12 @@ public class XAPS {
 		return unittypes;
 	}
 
-	private Unittypes readAsAdmin() throws SQLException, NoAvailableConnectionException {
+	private Unittypes readAsAdmin() throws SQLException {
+		boolean wasAutoCommit = false;
 		try {
-			connection = ConnectionProvider.getConnection(connectionProperties, false);
+			connection = getDataSource().getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			certificates = readCertificates();
 			Unittypes tmpUnittypes = readUnittypes();
 			readFilestore(tmpUnittypes);
@@ -164,7 +164,7 @@ public class XAPS {
 			return tmpUnittypes;
 		} finally {
 			if (connection != null)
-				ConnectionProvider.returnConnection(connection, null);
+				connection.setAutoCommit(wasAutoCommit);
 		}
 	}
 
@@ -803,7 +803,7 @@ public class XAPS {
 				file.setTargetName(targetName);
 				file.setOwner(owner);
 				file.validateInput(true);
-				file.setConnectionProperties(connectionProperties);
+				file.setConnectionProperties(getDataSource());
 				file.resetContentToNull();
 				if (lastUnittype == null || lastUnittype != unittype) {
 					idMap = new HashMap<Integer, File>();
@@ -867,7 +867,7 @@ public class XAPS {
 
 	}
 
-	private void readJobs(Unittypes unittypes) throws SQLException, NoAvailableConnectionException {
+	private void readJobs(Unittypes unittypes) throws SQLException {
 		Connection c = null;
 		Statement s = null;
 		ResultSet rs = null;
@@ -877,7 +877,7 @@ public class XAPS {
 			Map<String, Job> nameMap = null;
 			Unittype lastUnittype = null;
 
-			c = ConnectionProvider.getConnection(connectionProperties, true);
+			c = getDataSource().getConnection();
 			s = c.createStatement();
 			s.setQueryTimeout(60);
 			rs = s.executeQuery("SELECT * FROM job j, group_ g WHERE j.group_id = g.group_id ORDER BY g.unit_type_id ASC, j.job_id_dependency ASC"); // will list non-dependent jobs first
@@ -956,8 +956,7 @@ public class XAPS {
 			// Update job parameters
 			s = c.createStatement();
 			s.setQueryTimeout(60);
-			rs = s.executeQuery("SELECT utp.unit_type_id, jp.job_id, jp.unit_type_param_id, jp.value FROM job_param jp, unit_type_param utp WHERE jp.unit_type_param_id = utp.unit_type_param_id AND unit_id = '"
-					+ Job.ANY_UNIT_IN_GROUP + "'");
+			rs = s.executeQuery("SELECT utp.unit_type_id, jp.job_id, jp.unit_type_param_id, jp.value FROM job_param jp, unit_type_param utp WHERE jp.unit_type_param_id = utp.unit_type_param_id AND unit_id = '" + Job.ANY_UNIT_IN_GROUP + "'");
 			int paramsCounter = 0;
 			while (rs.next()) {
 				paramsCounter++;
@@ -979,8 +978,6 @@ public class XAPS {
 				rs.close();
 			if (s != null)
 				s.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 
 	}
@@ -1072,7 +1069,11 @@ public class XAPS {
 		return certificates;
 	}
 
-	public ConnectionProperties getConnectionProperties() {
-		return connectionProperties;
+	public DataSource getConnectionProperties() {
+		return getDataSource();
 	}
+
+    public DataSource getDataSource() {
+        return dataSource;
+    }
 }

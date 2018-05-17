@@ -1,6 +1,5 @@
 package com.github.freeacs.ws.impl;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 
 import com.github.freeacs.ws.AddOrChangeUnitRequest;
@@ -10,6 +9,7 @@ import com.github.freeacs.ws.Unit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -22,10 +22,10 @@ public class AddOrChangeUnit {
 	private XAPSWS xapsWS;
 	private XAPSUnit xapsUnit;
 
-	public AddOrChangeUnitResponse addOrChangeUnit(AddOrChangeUnitRequest aocur) throws RemoteException {
+	public AddOrChangeUnitResponse addOrChangeUnit(AddOrChangeUnitRequest aocur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 			
-			xapsWS = XAPSWSFactory.getXAPSWS(aocur.getLogin());
+			xapsWS = XAPSWSFactory.getXAPSWS(aocur.getLogin(), xapsDs, syslogDs);
 			xaps = xapsWS.getXAPS();
 			xapsUnit = xapsWS.getXAPSUnit(xaps);
 
@@ -77,7 +77,7 @@ public class AddOrChangeUnit {
 		}
 	}
 
-	private String validateUnitId(Unit unitWS, Unittype unittype, Profile profile) throws SQLException, NoAvailableConnectionException, RemoteException {
+	private String validateUnitId(Unit unitWS, Unittype unittype, Profile profile) throws SQLException, RemoteException {
 		if (unitWS.getUnitId() == null) {
 			if (unitWS.getSerialNumber() != null) {
 				com.github.freeacs.dbi.Unit unitXAPS = xapsWS.getUnitByMAC(xapsUnit, unittype, profile, unitWS.getSerialNumber());

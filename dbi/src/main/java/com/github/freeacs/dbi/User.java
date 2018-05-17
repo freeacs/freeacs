@@ -1,6 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.crypto.Crypto;
 
 import java.sql.SQLException;
@@ -72,24 +71,6 @@ public class User {
 		return username;
 	}
 
-	//	public static String getHash(String secret) {
-	//		try {
-	//			MessageDigest md = MessageDigest.getInstance("SHA");
-	//			byte[] hash = md.digest(secret.getBytes());
-	//			String hashSecret = "";
-	//			for (byte b : hash) {
-	//				String hex = Integer.toHexString(b + 128);
-	//				if (hex.length() == 1)
-	//					hex = "0" + hex;
-	//				hashSecret += hex;
-	//			}
-	//			hashSecret = hashSecret.toUpperCase();
-	//			return hashSecret;
-	//		} catch (NoSuchAlgorithmException e) {
-	//			return secret;
-	//		}
-	//	}
-
 	public void setSecretHashed(String secret) {
 		this.secret = secret;
 	}
@@ -118,10 +99,9 @@ public class User {
 	 * 	Else If requestedBy user is unittypeAdmin for the permission added, then allow
 	 * 	Else deny 
 	 * @param permission
-	 * @throws NoAvailableConnectionException
 	 * @throws SQLException
 	 */
-	public void addOrChangePermission(Permission permission, User requestedBy) throws NoAvailableConnectionException, SQLException {
+	public void addOrChangePermission(Permission permission, User requestedBy) throws SQLException {
 		if (this.isAdmin()) {
 			throw new IllegalArgumentException("Cannot add/change permissions for admin user, set admin-flag to 'false' to add/change permissions");
 		} else if (requestedBy.isAdmin() || requestedBy.isUnittypeAdmin(permission.getUnittypeId())) {
@@ -134,10 +114,9 @@ public class User {
 	 * Permission status: Will not be protected - if you can access the user (and therefore the permissions), you are
 	 * allowed to delete all kinds of permissions
 	 * @param permission
-	 * @throws NoAvailableConnectionException
 	 * @throws SQLException
 	 */
-	public void deletePermission(Permission permission) throws NoAvailableConnectionException, SQLException {
+	public void deletePermission(Permission permission) throws SQLException {
 		permissions.delete(permission);
 	}
 

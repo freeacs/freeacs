@@ -1,12 +1,10 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.util.SQLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,20 +21,12 @@ import java.util.Date;
  */
 public class Syslog {
 
-  private ConnectionProperties connectionProperties = null;
+  private DataSource dataSource = null;
 
   private Identity id;
 
   private static Logger logger = LoggerFactory.getLogger(Syslog.class);
 
-  // Used to indicate if a read returns syslog entries from a device. Reset on
-  // start of every read()
-  // private boolean facilityDevice = false;
-
-  // Holds all connections used and last commit timestamp, needed to commit
-  // every 5 seconds
-  // private static Cache connectionCache = new Cache();
-  // Holds a number of inserts for the last 5 seconds
   private StringBuilder insertValues = new StringBuilder(1000);
   private int insertCount = 0;
   private long insertTms = System.currentTimeMillis();
@@ -60,14 +50,13 @@ public class Syslog {
   // suppression. Requires loggingEnabled=true
   // private Unit unit;
 
-  public Syslog(ConnectionProperties cp, Identity id) {
-    this(cp, id, defaultMaxInsertCount, defaultMinTmsDelay); // Default values.
+  public Syslog(DataSource dataSource, Identity id) {
+    this(dataSource, id, defaultMaxInsertCount, defaultMinTmsDelay); // Default values.
   }
 
   /**
    * 
-   * @param cp
-   *          The {@link ConnectionProperties} for this syslog instance
+   * @param dataSource
    * @param id
    *          The {@link Identity} for this syslog instance
    * @param maxInsertCount
@@ -75,8 +64,8 @@ public class Syslog {
    * @param minTmsDelay
    *          The min milliseconds between inserts into the DB
    */
-  public Syslog(ConnectionProperties cp, Identity id, int maxInsertCount, int minTmsDelay) {
-    this.connectionProperties = cp;
+  public Syslog(DataSource dataSource, Identity id, int maxInsertCount, int minTmsDelay) {
+    this.dataSource = dataSource;
     this.id = id;
     this.maxInsertCount = maxInsertCount; // The max number of insert commands
                                           // in the commit queue
@@ -119,22 +108,15 @@ public class Syslog {
 
   private DynamicStatement addUnittypeOrProfileCriteria(DynamicStatement ds, SyslogFilter filter) {
     User user = id.getUser();
-    // Permissions permissionsObj = user.getPermissions();
-    // if (filter.getProfile() != null) {
-    // ds.addSqlAndArguments("profile_name = ? AND unit_type_name = ? AND ",
-    // filter.getProfile().getName(),
-    // filter.getProfile().getUnittype().getName());
-    // } else
     if (filter.getProfiles() != null && filter.getProfiles().size() > 0) {
       Map<Integer, Set<Profile>> unittypesWithSomeProfilesSpecified = new HashMap<Integer, Set<Profile>>();
       boolean allUnittypesSpecified = allUnittypesSpecified(filter, unittypesWithSomeProfilesSpecified);
       if (user.isAdmin() && allUnittypesSpecified)
-        return ds; // no criteria added -> quicker search, will search for all
-                   // unittypes/profiles
+        return ds;
       ds.addSql("(");
       for (int i = 0; i < filter.getProfiles().size(); i++) {
         Profile profile = filter.getProfiles().get(i);
-        boolean allProfilesSpecified = (unittypesWithSomeProfilesSpecified.get(profile.getUnittype().getId()) == null ? true : false);
+        boolean allProfilesSpecified = unittypesWithSomeProfilesSpecified.get(profile.getUnittype().getId()) == null;
         // all profiles in unittype are specified, we can skip profiles criteria
         if (allProfilesSpecified && user.isUnittypeAdmin(profile.getUnittype().getId())) {
           boolean alreadyTreated = false;
@@ -154,15 +136,6 @@ public class Syslog {
       }
       ds.cleanupSQLTail();
       ds.addSql(") AND ");
-      // } else if (filter.getUnittype() != null) {
-      // XAPS xaps = filter.getUnittype().getXaps();
-      // int noUnittypes = xaps.getUnittypes().getUnittypes().length;
-      // boolean isAdmin = true;
-      // if (permissionsObj != null)
-      // isAdmin = permissionsObj.isAdmin();
-      // if ((isAdmin && noUnittypes > 1) || !isAdmin)
-      // ds.addSqlAndArguments("unit_type_name = ? AND ",
-      // filter.getUnittype().getName());
     } else if (filter.getUnittypes() != null && filter.getUnittypes().size() > 0) {
       XAPS xaps = filter.getUnittypes().get(0).getXaps();
       int noUnittypes = xaps.getUnittypes().getUnittypes().length;
@@ -174,9 +147,8 @@ public class Syslog {
         }
         ds.cleanupSQLTail();
         ds.addSql(") AND ");
-      } else {
-        // no criteria added, all unittypes are specified and user isAdmin
-      }
+      }  // no criteria added, all unittypes are specified and user isAdmin
+
     }
     return ds;
   }
@@ -198,64 +170,7 @@ public class Syslog {
     SQLUtil.input2SQLCriteria(ds, criteriaName, criteria);
     if (ds.getSql().length() > dsLength)
       ds.addSql(" AND ");
-    // if (criteria == null)
-    // return ds;
-    // boolean equality = true;
-    // if (criteria.startsWith("!")) {
-    // criteria = criteria.substring(1);
-    // equality = false;
-    // }
-    // String[] contentArr = criteria.split("\\|");
-    // ds.addSql("(");
-    // for (String c : contentArr) {
-    // c = c.replace('*', '%');
-    // String searchStr = "%" + c + "%";
-    // boolean exact = false;
-    // if (c.startsWith("^") && c.endsWith("$") && c.indexOf("%") == -1 &&
-    // c.indexOf("_") == -1)
-    // exact = true;
-    // if (c.startsWith("^"))
-    // searchStr = searchStr.substring(2); // remove %^
-    // if (c.endsWith("$"))
-    // searchStr = searchStr.substring(0, searchStr.length() - 2); // remove $%
-    // if (exact) {
-    // if (equality)
-    // ds.addSqlAndArguments(criteriaName + " = ? OR ", searchStr);
-    // else
-    // ds.addSqlAndArguments(criteriaName + " <> ? AND ", searchStr);
-    // } else {
-    // if (equality)
-    // ds.addSqlAndArguments(criteriaName + " LIKE ? OR ", searchStr);
-    // else
-    // ds.addSqlAndArguments(criteriaName + " NOT LIKE ? AND ", searchStr);
-    // }
-    // }
-    // ds.cleanupSQLTail();
-    // ds.addSql(") AND ");
-    // return ds;
   }
-
-  /**
-   * Content will be split on "|" to make it possible to search for more than
-   * one type of content. Apart from that it will also handle the same as
-   * addCriteria(): !, ^, $, *, _
-   * 
-   * @param ds
-   * @param content
-   * @return
-   */
-  /*
-   * private DynamicStatement addContentCriteria(DynamicStatement ds, String
-   * content) { if (content == null) return ds; boolean equality = true; if
-   * (content.startsWith("!")) { content = content.substring(1); equality =
-   * false; } String[] contentArr = content.split("\\|"); ds.addSql("("); for
-   * (String c : contentArr) { c = c.replace('*', '%'); String searchStr = "%" +
-   * c + "%"; if (c.startsWith("^")) searchStr = searchStr.substring(2); if
-   * (c.endsWith("$")) searchStr = searchStr.substring(0, searchStr.length() -
-   * 2); if (equality) ds.addSqlAndArguments("content LIKE ? OR ", searchStr);
-   * else ds.addSqlAndArguments("content NOT LIKE ? AND ", searchStr); }
-   * ds.cleanupSQLTail(); ds.addSql(") AND "); return ds; }
-   */
 
   private DynamicStatement addSeverityCriteria(DynamicStatement ds, Integer[] severities) {
     if (severities != null && severities.length > 0) {
@@ -293,25 +208,12 @@ public class Syslog {
     ds.addSql("ORDER BY collector_timestamp DESC ");
     if (filter.getMaxRows() != null && filter.getMaxRows() < Integer.MAX_VALUE) {
       String sql = ds.getSql();
-      if (connectionProperties.getDriver().indexOf("mysql") > -1)
-        sql += " LIMIT " + filter.getMaxRows();
-      else if (connectionProperties.getDriver().indexOf("oracle") > -1)
-        sql = "SELECT * FROM (" + sql + ") WHERE ROWNUM <= " + filter.getMaxRows();
+      sql += " LIMIT " + filter.getMaxRows();
       ds.setSql(sql);
     }
     return ds.makePreparedStatement(c);
   }
 
-  // private String defaultTmsArg() {
-  // if (connectionProperties.getDriver().indexOf("oracle") > -1) {
-  // return "SYSTIMESTAMP, ";
-  // } else {
-  // return "NOW(), ";
-  // }
-  // }
-
-  
-  
   private String getTmsArg(SyslogEntry entry) {
     if (simulationMode || (entry.getFacility() != null && entry.getFacility() >= 50)) {
       if (entry.getDeviceTimestamp() != null && !entry.getDeviceTimestamp().trim().equals("Jan 1 00:00:00")) {
@@ -338,32 +240,6 @@ public class Syslog {
       return "'" + dbDateFormat.format(new Date()) + "'";
     }
   }
-
-  // private String getTmsArg(DynamicStatement ds, SyslogEntry entry) {
-  // if (simulationMode || (entry.getFacility() != null && entry.getFacility()
-  // >= 50)) {
-  // if (entry.getDeviceTimestamp() != null &&
-  // !entry.getDeviceTimestamp().trim().equals("Jan 1 00:00:00")) {
-  // try {
-  // Date deviceTms = simulationTmsFormat.parse(simulationYear + " " +
-  // entry.getDeviceTimestamp());
-  // ds.addArguments(deviceTms); // results in "return null" from this method
-  // return null;
-  // } catch (ParseException e) {
-  // logger.error("Device timestamp (" + entry.getDeviceTimestamp() +
-  // ") could not be parsed into a date, using NOW tms instead", e);
-  // return defaultTmsArg();
-  // }
-  // } else {
-  // return defaultTmsArg();
-  // }
-  // } else if (entry.getCollectorTimestamp() != null) {
-  // ds.addArguments(entry.getCollectorTimestamp());
-  // return null;
-  // } else {
-  // return defaultTmsArg();
-  // }
-  // }
 
   private String makeInsertColumnSQL() {
     return "INSERT INTO syslog (collector_timestamp, syslog_event_id, facility, facility_version, severity, device_timestamp, hostname, tag, unit_id, profile_name, unit_type_name, user_id, content, flags, ipaddress) VALUES ";
@@ -465,63 +341,6 @@ public class Syslog {
     return sb.toString();
   }
 
-  // private PreparedStatement makeWriteSQL(SyslogEntry entry, Connection c)
-  // throws SQLException {
-  // DynamicStatement ds = new DynamicStatement();
-  // ds.addSql("INSERT INTO syslog (");
-  // ds.addSql("collector_timestamp, ");
-  // String tmsArg = getTmsArg(ds, entry);
-  // if (entry.getEventId() != null)
-  // ds.addSqlAndArguments("syslog_event_id, ", entry.getEventId());
-  // else if (entry.getId() != null)
-  // ds.addSqlAndArguments("syslog_event_id, ", entry.getId());
-  // else
-  // ds.addSqlAndArguments("syslog_event_id, ", 0);
-  // if (entry.getFacility() != null)
-  // ds.addSqlAndArguments("facility, ", entry.getFacility());
-  // else
-  // ds.addSqlAndArguments("facility, ", id.getFacility());
-  // if (entry.getFacilityVersion() != null /*&&
-  // XAPSVersionCheck.syslogFacilityVersionSupported*/)
-  // ds.addSqlAndArguments("facility_version, ", entry.getFacilityVersion());
-  // ds.addSqlAndArguments("severity, ", entry.getSeverity());
-  // if (entry.getDeviceTimestamp() != null)
-  // ds.addSqlAndArguments("device_timestamp, ", entry.getDeviceTimestamp());
-  // if (entry.getHostname() != null)
-  // ds.addSqlAndArguments("hostname, ", entry.getHostname());
-  // if (entry.getTag() != null)
-  // ds.addSqlAndArguments("tag, ", entry.getTag());
-  // if (entry.getUnitId() != null)
-  // ds.addSqlAndArguments("unit_id, ", entry.getUnitId());
-  // if (entry.getProfileName() != null/* && XAPSVersionCheck.syslogSupported*/)
-  // ds.addSqlAndArguments("profile_name, ", entry.getProfileName());
-  // if (entry.getProfileId() != null/* && !XAPSVersionCheck.syslogSupported*/)
-  // ds.addSqlAndArguments("profile_id, ", entry.getProfileId());
-  // if (entry.getUnittypeName() != null/* &&
-  // XAPSVersionCheck.syslogSupported*/)
-  // ds.addSqlAndArguments("unit_type_name, ", entry.getUnittypeName());
-  // if (entry.getUnittypeId() != null/* && !XAPSVersionCheck.syslogSupported*/)
-  // ds.addSqlAndArguments("unit_type_id, ", entry.getUnittypeId());
-  // if (id.getUser() != null)
-  // ds.addSqlAndArguments("user_id, ", id.getUser().getUsername());
-  // if (entry.getContent() != null) {
-  // if (entry.getContent().length() > 1024) {
-  // entry.setContent(entry.getContent().substring(0, 1020) + "....");
-  // }
-  // ds.addSqlAndArguments("content, ", entry.getContent());
-  // }
-  // if (entry.getFlags() != null)
-  // ds.addSqlAndArguments("flags, ", entry.getFlags());
-  // if (entry.getIpAddress() != null)
-  // ds.addSqlAndArguments("ipaddress", entry.getIpAddress());
-  // ds.cleanupSQLTail();
-  // ds.addSql(") VALUES (");
-  // if (tmsArg != null)
-  // ds.addSql(tmsArg);
-  // ds.addSql(ds.getQuestionMarks() + ")");
-  // return ds.makePreparedStatement(c, "syslog_id");
-  // }
-
   private List<SyslogEntry> makeSyslogEntries(ResultSet rs) throws SQLException {
     List<SyslogEntry> result = new ArrayList<SyslogEntry>();
     while (rs.next()) {
@@ -562,8 +381,8 @@ public class Syslog {
     return result;
   }
 
-  public void updateContent(long tms, String oldContent, String newContent, String unitId) throws SQLException, NoAvailableConnectionException {
-    Connection c = ConnectionProvider.getConnection(connectionProperties, true);
+  public void updateContent(long tms, String oldContent, String newContent, String unitId) throws SQLException {
+    Connection c = getDataSource().getConnection();
     PreparedStatement pp = null;
     try {
       DynamicStatement ds = new DynamicStatement();
@@ -581,14 +400,13 @@ public class Syslog {
     } finally {
       if (pp != null)
         pp.close();
-      if (c != null)
-        ConnectionProvider.returnConnection(c, null);
+      c.close();
     }
   }
 
   // Delete entries with a specific event, unless it has some a severity level
-  public int deleteOldEventsEntries(Calendar fromCal, Calendar toCal, SyslogEvent event, int limit) throws SQLException, NoAvailableConnectionException {
-    Connection c = ConnectionProvider.getConnection(connectionProperties, true);
+  public int deleteOldEventsEntries(Calendar fromCal, Calendar toCal, SyslogEvent event, int limit) throws SQLException {
+    Connection c = getDataSource().getConnection();
     PreparedStatement pp = null;
     DynamicStatement ds = new DynamicStatement();
     try {
@@ -597,17 +415,14 @@ public class Syslog {
       if (fromCal != null)
         ds.addSqlAndArguments("collector_timestamp >= ? and ", fromCal);
       ds.addSqlAndArguments("collector_timestamp < ? ", toCal);
-      if (connectionProperties.getDriver().indexOf("mysql") > -1)
-        ds.addSql(" LIMIT " + limit);
-      else if (connectionProperties.getDriver().indexOf("oracle") > -1)
-        ds.addSql(" ROWNUM <= " + limit);
+      ds.addSql(" LIMIT " + limit);
       pp = ds.makePreparedStatement(c);
 
       logger.debug("The SQL which will be executed: " + ds.getSqlQuestionMarksSubstituted());
       return pp.executeUpdate();
     } catch (SQLException sqle) {
       // This happens if MYSQL database is busy, perhaps running a backup
-      if (sqle.getMessage().indexOf("Lock wait timeout exceeded") > -1) {
+      if (sqle.getMessage().contains("Lock wait timeout exceeded")) {
 
         logger.warn("The database is busy (perhaps running a backup?), we'll wait 10 minutes and try again. SQLError: " + sqle.getErrorCode() + ", " + sqle.getMessage());
         try {
@@ -626,14 +441,13 @@ public class Syslog {
     } finally {
       if (pp != null)
         pp.close();
-      if (c != null)
-        ConnectionProvider.returnConnection(c, null);
+      c.close();
     }
   }
 
   // Delete entries with a specific severity, unless it has a specified event id
-  public int deleteOldSeverityEntries(Calendar fromCal, Calendar toCal, int severity, List<SyslogEvent> events, int limit) throws SQLException, NoAvailableConnectionException {
-    Connection c = ConnectionProvider.getConnection(connectionProperties, true);
+  public int deleteOldSeverityEntries(Calendar fromCal, Calendar toCal, int severity, List<SyslogEvent> events, int limit) throws SQLException {
+    Connection c = getDataSource().getConnection();
     PreparedStatement pp = null;
     DynamicStatement ds = new DynamicStatement();
     try {
@@ -644,17 +458,14 @@ public class Syslog {
       if (fromCal != null)
         ds.addSqlAndArguments("collector_timestamp >= ? and ", fromCal);
       ds.addSqlAndArguments("collector_timestamp < ? ", toCal);
-      if (connectionProperties.getDriver().indexOf("mysql") > -1)
-        ds.addSql(" LIMIT " + limit);
-      else if (connectionProperties.getDriver().indexOf("oracle") > -1)
-        ds.addSql(" ROWNUM <= " + limit);
+      ds.addSql(" LIMIT " + limit);
       pp = ds.makePreparedStatement(c);
 
       logger.debug("The SQL which will be executed: " + ds.getSqlQuestionMarksSubstituted());
       return pp.executeUpdate();
     } catch (SQLException sqle) {
       // This happens if MYSQL database is busy, perhaps running a backup
-      if (sqle.getMessage().indexOf("Lock wait timeout exceeded") > -1) {
+      if (sqle.getMessage().contains("Lock wait timeout exceeded")) {
 
         logger.warn("The database is busy (perhaps running a backup?), we'll wait 10 minutes and try again. SQLError: " + sqle.getErrorCode() + ", " + sqle.getMessage());
         try {
@@ -672,13 +483,12 @@ public class Syslog {
     } finally {
       if (pp != null)
         pp.close();
-      if (c != null)
-        ConnectionProvider.returnConnection(c, null);
+      c.close();
     }
   }
 
-  public List<SyslogEntry> read(SyslogFilter filter, XAPS xaps) throws SQLException, NoAvailableConnectionException {
-    Connection c = ConnectionProvider.getConnection(connectionProperties, true);
+  public List<SyslogEntry> read(SyslogFilter filter, XAPS xaps) throws SQLException {
+    Connection c = getDataSource().getConnection();
     PreparedStatement pp = null;
     ResultSet rs = null;
     // facilityDevice = false;
@@ -696,72 +506,27 @@ public class Syslog {
         }
       }
       List<SyslogEntry> syslogEntryList = makeSyslogEntries(rs);
-      Collections.sort(syslogEntryList, new SyslogEntryComparator());
-      // if (!facilityDevice && filter.getUnitId() != null && xaps != null) {
-      // logger.info("No device syslog entries found for " + filter.getUnitId()
-      // + ", will search among other units with same MAC");
-      // String orgUnitId = filter.getUnitId();
-      // XAPSUnit xapsUnit = new XAPSUnit(xaps.connectionProperties, xaps,
-      // this);
-      // Unit u = xapsUnit.getUnitById(filter.getUnitId());
-      // if (u != null) {
-      // UnitParameter up = u.getUnitParameters().get(SystemParameters.MAC);
-      // if (up != null && up.getValue() != null) {
-      // Map<String, Unit> unitMap = xapsUnit.getUnits(up.getValue(), null,
-      // null, null);
-      // logger.info("Found " + unitMap.size() + " units with MAC " +
-      // up.getValue());
-      // for (Unit unit : unitMap.values()) {
-      // if (unit.getId().equals(orgUnitId))
-      // continue;
-      //
-      // logger.info("UnitId " + orgUnitId +
-      // " had no device syslog entries, using (" + unit.getId() + "," +
-      // unit.getUnittype().getName() + ") (sharing same MAC) instead.");
-      // filter.setUnittype(unit.getUnittype());
-      // filter.setUnittypes(new ArrayList<Unittype>());
-      // filter.setProfile(unit.getProfile());
-      // filter.setProfiles(new ArrayList<Profile>());
-      // filter.setUnitId(unit.getId());
-      // syslogEntryList.addAll(read(filter, null));
-      // }
-      // if (unitMap.size() > 1) { // Actually found another unit with the same
-      // MAC
-      // Collections.sort(syslogEntryList, new SyslogEntryComparator());
-      // // Run limit according to filter
-      // if (filter.getMaxRows() != null && filter.getMaxRows() <
-      // Integer.MAX_VALUE && syslogEntryList.size() > filter.getMaxRows()) {
-      // int entriesToRemove = syslogEntryList.size() - filter.getMaxRows();
-      // for (int i = 0; i < entriesToRemove; i++) {
-      // syslogEntryList.remove(filter.getMaxRows());
-      // }
-      // }
-      // }
-      // }
-      // }
-      // }
+      syslogEntryList.sort(new SyslogEntryComparator());
       return syslogEntryList;
     } finally {
       if (rs != null)
         rs.close();
       if (pp != null)
         pp.close();
-      if (c != null)
-        ConnectionProvider.returnConnection(c, null);
+      c.close();
     }
   }
 
   // Returns syslog id
-  public void write(SyslogEntry entry) throws SQLException, NoAvailableConnectionException {
+  public void write(SyslogEntry entry) throws SQLException {
     Connection c = null;
     Statement s = null;
-    SQLException sqlex = null;
     try {
       insertValues.append(makeInsertValueSQL(entry));
       insertCount++;
       if (insertCount > maxInsertCount || System.currentTimeMillis() > insertTms + minTmsDelay) {
         String sql = makeInsertColumnSQL() + insertValues.toString();
-        c = ConnectionProvider.getConnection(connectionProperties, true);
+        c = getDataSource().getConnection();
         s = c.createStatement();
         s.executeUpdate(sql);
         insertCount = 0;
@@ -772,13 +537,13 @@ public class Syslog {
 
     } catch (SQLException sqle) {
       insertValues = new StringBuilder();
-      sqlex = sqle;
       throw sqle;
     } finally {
       if (s != null)
         s.close();
-      if (c != null)
-        ConnectionProvider.returnConnection(c, sqlex);
+      if (c != null) {
+        c.close();
+      }
     }
   }
 
@@ -786,15 +551,11 @@ public class Syslog {
     this.id = id;
   }
 
-  public void setConnectionProperties(ConnectionProperties connectionProperties) {
-    this.connectionProperties = connectionProperties;
-  }
-
-  public boolean isSimulationMode() {
-    return simulationMode;
-  }
-
   public void setSimulationMode(boolean simulationMode) {
     this.simulationMode = simulationMode;
+  }
+
+  public DataSource getDataSource() {
+    return dataSource;
   }
 }

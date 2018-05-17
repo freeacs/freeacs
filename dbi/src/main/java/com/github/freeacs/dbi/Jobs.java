@@ -1,9 +1,7 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
-import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.DynamicStatement.NullInteger;
+import com.github.freeacs.dbi.util.SystemParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +78,7 @@ public class Jobs {
 		}
 	}
 
-	public void addOrChangeJobParameters(List<JobParameter> jobParameters, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeJobParameters(List<JobParameter> jobParameters, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		Connection connection = null;
@@ -89,9 +87,12 @@ public class Jobs {
 		SQLException sqle = null;
 		//		if (!XAPSVersionCheck.jobSupported)
 		//			return;
+		boolean wasAutoCommit = false;
 		try {
 			checkParameters(jobParameters);
-			connection = ConnectionProvider.getConnection(xaps.connectionProperties, false);
+			connection = xaps.getDataSource().getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			for (int i = 0; jobParameters != null && i < jobParameters.size(); i++) {
 				JobParameter jobParameter = jobParameters.get(i);
 				Parameter parameter = jobParameter.getParameter();
@@ -142,13 +143,15 @@ public class Jobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			if (connection != null)
-				ConnectionProvider.returnConnection(connection, sqle);
+			if (connection != null) {
+				connection.setAutoCommit(wasAutoCommit);
+				connection.close();
+			}
 		}
 
 	}
 
-	public void deleteJobParameters(Job job, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void deleteJobParameters(Job job, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		Connection connection = null;
@@ -158,7 +161,7 @@ public class Jobs {
 		//		if (!XAPSVersionCheck.jobSupported)
 		//			return;
 		try {
-			connection = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+			connection = xaps.getDataSource().getConnection();
 			s = connection.createStatement();
 			sql = "DELETE FROM job_param WHERE job_id = " + job.getId();
 			s.setQueryTimeout(60);
@@ -175,12 +178,13 @@ public class Jobs {
 		} finally {
 			if (s != null)
 				s.close();
-			if (connection != null)
-				ConnectionProvider.returnConnection(connection, sqle);
+			if (connection != null) {
+				connection.close();
+			}
 		}
 	}
 
-	public int deleteJobParameters(List<JobParameter> jobParameters, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public int deleteJobParameters(List<JobParameter> jobParameters, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		Connection connection = null;
@@ -189,8 +193,11 @@ public class Jobs {
 		SQLException sqle = null;
 		//		if (!XAPSVersionCheck.jobSupported)
 		//			return 0;
+		boolean wasAutoCommit = false;
 		try {
-			connection = ConnectionProvider.getConnection(xaps.connectionProperties, false);
+			connection = xaps.getDataSource().getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			s = connection.createStatement();
 			int rowsDeleted = 0;
 			for (int i = 0; i < jobParameters.size(); i++) {
@@ -224,8 +231,10 @@ public class Jobs {
 		} finally {
 			if (s != null)
 				s.close();
-			if (connection != null)
-				ConnectionProvider.returnConnection(connection, sqle);
+			if (connection != null) {
+				connection.setAutoCommit(wasAutoCommit);
+				connection.close();
+			}
 		}
 	}
 
@@ -236,7 +245,7 @@ public class Jobs {
 		nameMap.remove(job.getName());
 	}
 
-	public void delete(Job job, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void delete(Job job, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		deleteJobParameters(job, xaps);
@@ -246,7 +255,7 @@ public class Jobs {
 		//		if (!XAPSVersionCheck.jobSupported)
 		//			return;
 		try {
-			c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+			c = xaps.getDataSource().getConnection();
 			String sql = "DELETE FROM job WHERE job_id = ?";
 			pp = c.prepareStatement(sql);
 			pp.setInt(1, job.getId());
@@ -263,8 +272,9 @@ public class Jobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
@@ -301,7 +311,7 @@ public class Jobs {
 		return false;
 	}
 
-	public void add(Job job, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void add(Job job, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		job.setStatus(JobStatus.READY);
@@ -313,7 +323,7 @@ public class Jobs {
 		try {
 			if (nameMap.get(job.getName()) != null)
 				throw new IllegalArgumentException("The job name already exists, choose another name");
-			c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+			c = xaps.getDataSource().getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.setSql("INSERT INTO job (");
 			ds.addSqlAndArguments("job_name, ", job.getName());
@@ -362,13 +372,11 @@ public class Jobs {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 
 	}
 
-	private void updateMandatoryJobParameters(Job job, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void updateMandatoryJobParameters(Job job, XAPS xaps) throws SQLException {
 		if (job.getFlags().getType() == JobFlag.JobType.SOFTWARE) {
 			Parameter param = new Parameter(unittype.getUnittypeParameters().getByName(SystemParameters.DESIRED_SOFTWARE_VERSION), job.getFile().getVersion());
 			JobParameter jp = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, param);
@@ -398,7 +406,7 @@ public class Jobs {
 	}
 
 	/* Decided to skip unit-specific job parameters. Cause extra work/SQL in TR-069 server, has never been used in 5 years. */
-	public Map<String, JobParameter> readJobParameters(Job job, Unit unit, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public Map<String, JobParameter> readJobParameters(Job job, Unit unit, XAPS xaps) throws SQLException {
 		return job.getDefaultParameters();
 		//		Connection c = null;
 		//		Statement s = null;
@@ -447,14 +455,14 @@ public class Jobs {
 	 * job table. We make an effort to only send the data if there really is a change.
 	 * That will keep the number of message and data and load and the very minimum.
 	 */
-	public void changeFromCore(Job job, String publishMsg, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void changeFromCore(Job job, String publishMsg, XAPS xaps) throws SQLException {
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;
 		//		if (!XAPSVersionCheck.jobSupported)
 		//			return;
 		try {
-			c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+			c = xaps.getDataSource().getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSql("UPDATE job SET ");
 			ds.addSqlAndArguments("completed_had_failure = ?, ", job.getCompletedHadFailures());
@@ -481,8 +489,6 @@ public class Jobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 	}
 
@@ -496,14 +502,14 @@ public class Jobs {
 	//		return false;
 	//	}
 
-	public void changeStatus(Job job, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void changeStatus(Job job, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;
 		try {
-			c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+			c = xaps.getDataSource().getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSql("UPDATE job SET ");
 			if (job.getStatus() == JobStatus.STARTED && job.getStartTimestamp() == null) {
@@ -550,8 +556,6 @@ public class Jobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 
 	}
@@ -564,7 +568,7 @@ public class Jobs {
 	 * since they are updated by an other method (and another agent). It's important to separate the various
 	 * updates methods since the agents are independent of each other.
 	 */
-	public int changeFromUI(Job job, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public int changeFromUI(Job job, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		job.validate();
@@ -572,7 +576,7 @@ public class Jobs {
 		PreparedStatement pp = null;
 		SQLException sqle = null;
 		try {
-			c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+			c = xaps.getDataSource().getConnection();
 			if (isDependencyLoop(job, job.getDependency()))
 				throw new IllegalArgumentException("Job " + job.getId() + " cannot depend upon job " + job.getDependency().getId() + " since that creates a loop");
 			DynamicStatement ds = new DynamicStatement();
@@ -629,18 +633,16 @@ public class Jobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 	}
 
-	protected static void refreshJob(Integer jobId, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	protected static void refreshJob(Integer jobId, XAPS xaps) throws SQLException {
 		Connection c = null;
 		Statement s = null;
 		ResultSet rs = null;
 		SQLException sqle = null;
 		try {
-			c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
+			c = xaps.getDataSource().getConnection();
 			s = c.createStatement();
 			s.setQueryTimeout(60);
 			rs = s.executeQuery("SELECT * FROM job j, group_ g, unit_type u WHERE j.group_id = g.group_id AND g.unit_type_id = u.unit_type_id AND j.job_id = " + jobId);
@@ -724,8 +726,6 @@ public class Jobs {
 				rs.close();
 			if (s != null)
 				s.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 	}
 

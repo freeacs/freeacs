@@ -1,12 +1,11 @@
 package com.github.freeacs.web.app.page.user;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.User;
 import com.github.freeacs.dbi.Users;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.Arrays;
 
@@ -19,15 +18,13 @@ public abstract class PermissionController {
 	 * Gets the users.
 	 *
 	 * @param sessionid the sessionid
+	 * @param xapsDataSource
 	 * @return the users
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
-	Users getUsers(String sessionid) throws SQLException, NoAvailableConnectionException {
-		ConnectionProperties props = SessionCache.getXAPSConnectionProperties(sessionid);
-		if (props == null)
-			throw new NotAllowedException("You are not logged in");
-		return new Users(props);
+	Users getUsers(String sessionid, DataSource xapsDataSource) throws SQLException {
+		return new Users(xapsDataSource);
 	}
 
 	/**
@@ -37,12 +34,13 @@ public abstract class PermissionController {
 	 * @param max the max
 	 * @param sessionId the session id
 	 * @param group the group
+	 * @param xapsDataSource
 	 * @return the all users
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
-	UserModel[] getAllUsers(Integer min, Integer max, String sessionId, UserGroupModel group) throws SQLException, NoAvailableConnectionException {
-		Users users = getUsers(sessionId);
+	UserModel[] getAllUsers(Integer min, Integer max, String sessionId, UserGroupModel group, DataSource xapsDataSource) throws SQLException {
+		Users users = getUsers(sessionId, xapsDataSource);
 		SessionData sessionData = SessionCache.getSessionData(sessionId);
 		User loggedInUser = sessionData.getUser();
 		UserModel[] toReturn = UserModel.convertUsers(users.getUsers(loggedInUser), group);

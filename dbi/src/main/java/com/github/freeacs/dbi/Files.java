@@ -1,7 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.util.XAPSVersionCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,10 +56,10 @@ public class Files {
 		return filteredFiles.toArray(new File[] {});
 	}
 
-	public void addOrChangeFile(File file, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeFile(File file, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
-		file.setConnectionProperties(xaps.connectionProperties); // just in
+		file.setConnectionProperties(xaps.getDataSource()); // just in
 																	// case...
 		file.validate();
 		addOrChangeFileImpl(unittype, file, xaps);
@@ -74,11 +72,10 @@ public class Files {
 		}
 	}
 
-	private void deleteFileImpl(Unittype unittype, File file, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void deleteFileImpl(Unittype unittype, File file, XAPS xaps) throws SQLException {
 		Statement s = null;
 		String sql = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
-		SQLException sqlex = null;
+		Connection c = xaps.getDataSource().getConnection();
 		try {
 			s = c.createStatement();
 			sql = "DELETE FROM filestore WHERE ";
@@ -89,14 +86,10 @@ public class Files {
 			logger.info("Deleted file " + file.getName());
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(file, unittype);
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (s != null)
 				s.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.close();
 		}
 	}
 
@@ -106,10 +99,10 @@ public class Files {
 	 * cascade argument = true will also delete all unittype parameters and
 	 * enumerations for all these parameters.
 	 * 
-	 * @throws NoAvailableConnectionException
+	 *
 	 * @throws SQLException
 	 */
-	public void deleteFile(File file, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void deleteFile(File file, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		deleteFileImpl(unittype, file, xaps);
@@ -118,9 +111,8 @@ public class Files {
 		versionTypeMap.remove(file.getVersion() + file.getType());
 	}
 
-	private void addOrChangeFileImpl(Unittype unittype, File file, XAPS xaps) throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
-		SQLException sqlex = null;
+	private void addOrChangeFileImpl(Unittype unittype, File file, XAPS xaps) throws SQLException {
+		Connection c = xaps.getDataSource().getConnection();
 		PreparedStatement s = null;
 		String sql = null;
 		// The file owner is set automatically to the logged-in user upon
@@ -132,51 +124,6 @@ public class Files {
 		if (file.getId() == null) {
 			try {
 				DynamicStatement ds = new DynamicStatement();
-				// if (xaps.connectionProperties.getDriver().indexOf("oracle") >
-				// -1) {
-				// // code-order: id, unittype, name, type, desc, version,
-				// timestamp, targetname, (content)
-				// ds.addSql("INSERT INTO filestore (");
-				// ds.addSqlAndArguments("name,", file.getName());
-				// ds.addSqlAndArguments("unit_type_id,", unittype.getId());
-				// ds.addSqlAndArguments("type,", file.getType().toString());
-				// ds.addSqlAndArguments("description,", file.getDescription());
-				// ds.addSqlAndArguments("version,", file.getVersion());
-				// if (XAPSVersionCheck.fileReworkSupported) {
-				// ds.addSqlAndStringArgs("target_name,", file.getTargetName());
-				// if (file.getOwner() != null && file.getOwner().getId() !=
-				// null)
-				// ds.addSqlAndArguments("owner,", file.getOwner().getId());
-				// }
-				// ds.addSqlAndArguments("timestamp_,", new
-				// Timestamp(file.getTimestamp().getTime()));
-				// ds.addSql("content");
-				// ds.addSql(") VALUES (" + ds.getQuestionMarks() +
-				// ",empty_blob())");
-				// s = ds.makePreparedStatement(c, "id");
-				// s.setQueryTimeout(60);
-				// s.executeUpdate();
-				// ResultSet gk = s.getGeneratedKeys();
-				// if (gk.next())
-				// file.setId(gk.getInt(1));
-				//
-				// /* Adding binary data to file */
-				// s =
-				// c.prepareStatement("select content from filestore where id = ? for update");
-				// s.setInt(1, file.getId());
-				// s.setQueryTimeout(60);
-				// ResultSet rs = s.executeQuery();
-				// rs.next();
-				// BLOB blob = ((oracle.jdbc.OracleResultSet) rs).getBLOB(1);
-				// OutputStream os = blob.setBinaryStream(0);
-				// try {
-				// os.write(file.getContentProtected(), 0, file.getLength());
-				// os.close();
-				// } catch (IOException e) {
-				// throw new
-				// SQLException("Couldn't write to the BLOB in the filestore-table.");
-				// }
-				// } else {
 				ds.addSql("INSERT INTO filestore (");
 				ds.addSqlAndArguments("name,", file.getName());
 				ds.addSqlAndArguments("type,", file.getType().toString());
@@ -204,14 +151,10 @@ public class Files {
 				logger.info("Added file " + file.getName());
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishAdd(file, unittype);
-			} catch (SQLException sqle) {
-				sqlex = sqle;
-				throw sqle;
 			} finally {
 				if (s != null)
 					s.close();
-				if (c != null)
-					ConnectionProvider.returnConnection(c, sqlex);
+				c.close();
 			}
 		} else {
 			try {
@@ -246,25 +189,6 @@ public class Files {
 				int rowsAffected = s.executeUpdate();
 				if (rowsAffected == 0)
 					throw new SQLException("The file [" + file.getId() + "] does not exist!");
-				// if (xaps.connectionProperties.getDriver().indexOf("oracle") >
-				// -1) {
-				// s =
-				// c.prepareStatement("select content from filestore where id = ? for update");
-				// s.setInt(1, file.getId());
-				// s.setQueryTimeout(60);
-				// ResultSet rs = s.executeQuery();
-				// rs.next();
-				// BLOB blob = ((oracle.jdbc.OracleResultSet) rs).getBLOB(1);
-				// OutputStream os = blob.setBinaryStream(0);
-				// try {
-				// os.write(file.getContentProtected(), 0,
-				// file.getLength());
-				// os.close();
-				// } catch (IOException e) {
-				// throw new SQLException(
-				// "Couldn't write to the BLOB in the filestore-table.");
-				// }
-				// } else {
 				if (file.getContentProtected() != null) {
 					DynamicStatement ds = new DynamicStatement();
 					ds.addSqlAndArguments("UPDATE filestore set content=? where id=?", new ByteArrayInputStream(file.getContentProtected()), file.getId());
@@ -272,29 +196,22 @@ public class Files {
 					s.setQueryTimeout(60);
 					s.executeUpdate();
 				}
-				// }
-
 				logger.info("Updated file to " + file.getName());
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishFile(file, unittype);
-			} catch (SQLException sqle) {
-				sqlex = sqle;
-				throw sqle;
 			} finally {
 				if (s != null)
 					s.close();
-				if (c != null)
-					ConnectionProvider.returnConnection(c, sqlex);
+				c.close();
 			}
 		}
 	}
 
 	/* only used to refresh the cache, used from DBI */
-	protected static void refreshFile(Integer fileId, Integer unittypeId, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	protected static void refreshFile(Integer fileId, Integer unittypeId, XAPS xaps) throws SQLException {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
-		SQLException sqlex = null;
+		Connection c = xaps.getDataSource().getConnection();
 		try {
 			Unittype unittype = xaps.getUnittype(unittypeId);
 			if (unittype == null)
@@ -307,7 +224,7 @@ public class Files {
 			ps = ds.makePreparedStatement(c);
 			rs = ps.executeQuery();
 			if (rs.next()) {
-				file.setConnectionProperties(xaps.connectionProperties);
+				file.setConnectionProperties(xaps.getDataSource());
 				file.setName(rs.getString("name"));
 				file.setType(FileType.valueOf(rs.getString("type")));
 				// file.setSubtype(rs.getString("subtype"));
@@ -321,16 +238,12 @@ public class Files {
 				files.getVersionTypeMap().put(file.getVersion() + file.getType(), file);
 			}
 			logger.debug("Refreshed file " + file.getName());
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (rs != null)
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.close();
 		}
 	}
 

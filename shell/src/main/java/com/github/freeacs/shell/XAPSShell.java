@@ -1,10 +1,7 @@
 package com.github.freeacs.shell;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.util.PropertyReader;
 import com.github.freeacs.dbi.*;
-
 import com.github.freeacs.dbi.util.XAPSVersionCheck;
 import com.github.freeacs.shell.util.ValidateInput;
 import com.github.freeacs.shell.util.ValidateInteger;
@@ -56,7 +53,7 @@ public class XAPSShell {
 	}
 
 	private Users getUsers(boolean failedLastTime) throws Exception {
-		if (!Properties.isRestricted() && (failedLastTime || (session.getXapsProps().getUrl() == null && session.getMode() == SessionMode.INTERACTIVE)))
+		if (!Properties.isRestricted() && (failedLastTime || (session.getXapsProps() == null && session.getMode() == SessionMode.INTERACTIVE)))
 			initConnectionProperties(session);
 		if (session.getMode() != SessionMode.DAEMON && session.getFusionUser() == null && session.getFusionPass() == null)
 			initFusionUser(session);
@@ -244,21 +241,6 @@ public class XAPSShell {
 		}
 		ValidateInput valInput = new ValidateInteger(0, i);
 		int chosen = Integer.parseInt(session.getProcessor().questionProcessing(question, valInput));
-		ConnectionProperties xapsProps = null;
-		ConnectionProperties sysProps = null;
-		if (chosen > 0 && chosen < i) {
-			String xapsDb = "db." + chosen;
-			String syslogDb = "sysdb." + chosen;
-			xapsProps = ConnectionProvider.getConnectionProperties(propFile, xapsDb);
-			sysProps = ConnectionProvider.getConnectionProperties(propFile, syslogDb);
-			if (sysProps == null)
-				sysProps = xapsProps;
-		} else if (chosen == 0) {
-			xapsProps = getConnectionPropertiesCustom(session);
-			sysProps = xapsProps;
-		}
-		session.setXapsProps(xapsProps);
-		session.setSysProps(sysProps);
 	}
 
 	private void initFusionUser(Session session) throws IOException {
@@ -273,21 +255,6 @@ public class XAPSShell {
 			session.print("Password: ");
 			session.setFusionPass(session.getProcessor().retrieveInput());
 		}
-	}
-
-	private static ConnectionProperties getConnectionPropertiesCustom(Session session) throws Exception {
-		ConnectionProperties props = new ConnectionProperties();
-		Processor processor = session.getProcessor();
-		props.setUrl(processor.questionProcessing("What is the url to the database?", null));
-		if (props.getUrl().indexOf("mysql") > -1)
-			props.setDriver("com.mysql.jdbc.Driver");
-		else
-			props.setDriver("oracle.jdbc.driver.OracleDriver");
-		props.setUser(processor.questionProcessing("What is the username to the database?", null));
-		props.setPassword(processor.questionProcessing("What is the password to the database?", null));
-		props.setMaxAge(600000);
-		props.setMaxConn(5);
-		return props;
 	}
 
 	public Session getSession() {

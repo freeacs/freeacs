@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -23,6 +24,13 @@ public class SyslogServlet extends HttpServlet {
 	public static String version = "1.4.32";
 
 	private static Logger logger = LoggerFactory.getLogger(SyslogServlet.class);
+	private final DataSource xapsDataSource;
+	private final DataSource syslogDataSource;
+
+	public SyslogServlet(DataSource xapsDataSource, DataSource syslogDataSource) {
+		this.xapsDataSource = xapsDataSource;
+		this.syslogDataSource = syslogDataSource;
+	}
 
 	public void destroy() {
 		logger.info("Server shutdown...");
@@ -31,7 +39,7 @@ public class SyslogServlet extends HttpServlet {
 
 	public void init() {
 		if (server == null)
-			server = new SyslogServer();
+			server = new SyslogServer(xapsDataSource, syslogDataSource);
 		if (!SyslogServer.isStarted()) {
 			logger.info("Server startup...");
 			Thread serverThread = new Thread(server);

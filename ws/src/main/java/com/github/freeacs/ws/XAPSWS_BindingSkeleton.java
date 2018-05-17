@@ -7,10 +7,18 @@
 
 package com.github.freeacs.ws;
 
+import com.github.freeacs.ws.impl.XAPSWS_BindingImplCopy;
+
+import javax.sql.DataSource;
+
 public class XAPSWS_BindingSkeleton implements XAPSWS_PortType, org.apache.axis.wsdl.Skeleton {
     private XAPSWS_PortType impl;
     private static java.util.Map _myOperations = new java.util.Hashtable();
     private static java.util.Collection _myOperationsList = new java.util.ArrayList();
+
+    public static DataSource xapsDs;
+
+    public static DataSource syslogDs;
 
     /**
     * Returns List of OperationDesc objects with this name
@@ -153,7 +161,7 @@ public class XAPSWS_BindingSkeleton implements XAPSWS_PortType, org.apache.axis.
     }
 
     public XAPSWS_BindingSkeleton() {
-        this.impl = new XAPSWS_BindingImpl();
+        this.impl = new XAPSWS_BindingImplCopy(xapsDs, syslogDs);
     }
 
     public XAPSWS_BindingSkeleton(XAPSWS_PortType impl) {

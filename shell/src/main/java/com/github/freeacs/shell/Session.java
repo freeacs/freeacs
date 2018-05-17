@@ -1,9 +1,9 @@
 package com.github.freeacs.shell;
 
-import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.shell.util.FileUtil;
 
+import javax.sql.DataSource;
 import java.util.*;
 
 public class Session {
@@ -18,8 +18,8 @@ public class Session {
 	private XAPSShell xapsShell;
 
 	/* Information on how to access xAPS database */
-	private ConnectionProperties xapsProps = new ConnectionProperties();
-	private ConnectionProperties sysProps = null;
+//	private ConnectionProperties xapsProps = new ConnectionProperties();
+//	private ConnectionProperties sysProps = null;
 
 	/* Fusion user/pass - can be used instead of running as Admin (default) */
 	private String fusionUser;
@@ -61,9 +61,9 @@ public class Session {
 		this.processor = new Processor(this);
 
 		// default settings
-		xapsProps.setMaxConn(5);
-		xapsProps.setDriver("com.mysql.jdbc.Driver");
-		xapsProps.setMaxAge(600000);
+//		xapsProps.setMaxConn(5);
+//		xapsProps.setDriver("com.mysql.jdbc.Driver");
+//		xapsProps.setMaxAge(600000);
 
 		// read from options
 		Map<String, Variable> variables = new HashMap<String, Variable>();
@@ -85,24 +85,26 @@ public class Session {
 					scriptStack.push(new Script(ScriptMaker.getUpgradeSystemparametersScript(i, args), context, Script.SCRIPT));
 					mode = SessionMode.SCRIPT;
 					i--; // since this argument don't need a 2nd arg.
-				} else if (args[i].equals("-url")) {
-					xapsProps.setUrl(args[i + 1]);
-					if (xapsProps.getUrl().indexOf("oracle") > -1) {
-						xapsProps.setDriver("oracle.jdbc.OracleDriver");
-					} else if (xapsProps.getUrl().indexOf("mysql") > -1) {
-						xapsProps.setDriver("com.mysql.jdbc.Driver");
-					} else {
-						throw new IllegalArgumentException("The url is not pointing to a MySQL or Oracle database");
-					}
-					xapsProps.setMaxAge(600000);
-					sysProps = xapsProps;
-				} else if (args[i].equals("-user")) {
-					xapsProps.setUser(args[i + 1]);
-				} else if (args[i].equals("-password")) {
-					xapsProps.setPassword(args[i + 1]);
-				} else if (args[i].equals("-maxconn")) {
-					xapsProps.setMaxConn(new Integer(args[i + 1]));
-				} else if (args[i].equals("-fusionuser")) {
+				}
+//				else if (args[i].equals("-url")) {
+//					xapsProps.setUrl(args[i + 1]);
+//					if (xapsProps.getUrl().indexOf("oracle") > -1) {
+//						xapsProps.setDriver("oracle.jdbc.OracleDriver");
+//					} else if (xapsProps.getUrl().indexOf("mysql") > -1) {
+//						xapsProps.setDriver("com.mysql.jdbc.Driver");
+//					} else {
+//						throw new IllegalArgumentException("The url is not pointing to a MySQL or Oracle database");
+//					}
+//					xapsProps.setMaxAge(600000);
+//					sysProps = xapsProps;
+//				} else if (args[i].equals("-user")) {
+//					xapsProps.setUser(args[i + 1]);
+//				} else if (args[i].equals("-password")) {
+//					xapsProps.setPassword(args[i + 1]);
+//				} else if (args[i].equals("-maxconn")) {
+//					xapsProps.setMaxConn(new Integer(args[i + 1]));
+//				}
+				else if (args[i].equals("-fusionuser")) {
 					fusionUser = args[i + 1];
 				} else if (args[i].equals("-fusionpass")) {
 					fusionPass = args[i + 1];
@@ -118,9 +120,9 @@ public class Session {
 		getScript().setVariables(variables);
 		//		if (scriptStack.size() > 0)
 		//			scriptStack.peek().setVariables(variables);
-		if (xapsProps.getUrl() != null && (xapsProps.getUser() == null || xapsProps.getPassword() == null)) {
-			throw new IllegalArgumentException("Missing password or username for the database logon");
-		}
+//		if (xapsProps.getUrl() != null && (xapsProps.getUser() == null || xapsProps.getPassword() == null)) {
+//			throw new IllegalArgumentException("Missing password or username for the database logon");
+//		}
 	}
 
 	public XAPSUnit getXapsUnit() {
@@ -149,8 +151,8 @@ public class Session {
 	public String getDatabaseName() {
 		if (databaseName != null)
 			return databaseName;
-		if (xapsProps.getDriver() != null && xapsProps.getDriver().indexOf("Oracle") > -1)
-			return "Oracle";
+//		if (xapsProps.getDriver() != null && xapsProps.getDriver().indexOf("Oracle") > -1)
+//			return "Oracle";
 		return null;
 	}
 
@@ -158,13 +160,13 @@ public class Session {
 		this.databaseName = databaseName;
 	}
 
-	public ConnectionProperties getXapsProps() {
-		return xapsProps;
+	public DataSource getXapsProps() {
+		return null; // TODO
 	}
 
-	public void setXapsProps(ConnectionProperties props) {
-		this.xapsProps = props;
-	}
+//	public void setXapsProps(ConnectionProperties props) {
+//		this.xapsProps = props;
+//	}
 
 	public int getCounter() {
 		return counter;
@@ -203,13 +205,13 @@ public class Session {
 		return migrationFolder;
 	}
 
-	public ConnectionProperties getSysProps() {
-		return sysProps;
+	public DataSource getSysProps() {
+		return null; // TODO
 	}
 
-	public void setSysProps(ConnectionProperties sysProps) {
-		this.sysProps = sysProps;
-	}
+//	public void setSysProps(ConnectionProperties sysProps) {
+//		this.sysProps = sysProps;
+//	}
 
 	//	public boolean isInteractiveMode() {
 	//		return interactiveMode;

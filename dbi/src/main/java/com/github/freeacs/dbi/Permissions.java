@@ -1,9 +1,6 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
-
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,15 +13,14 @@ public class Permissions {
 	//	public static final String[] WEB_PAGES = { "search", "unit", "profile", "unittype", "group", "job", "software", "syslog", "report", "monitor", "staging" };
 	public static final String[] WEB_PAGES = { "support", "limited-provisioning", "full-provisioning", "report", "staging", "monitor" };
 
-	private ConnectionProperties connectionProperties;
+	private DataSource dataSource;
 	//	private User user;
 	private Map<Integer, Permission> idMap = new HashMap<Integer, Permission>();
 	// A unittype-id maps to a set of permission-ids
 	private Map<Integer, Set<Integer>> unittypeIdMap = new TreeMap<Integer, Set<Integer>>();
 
-	protected Permissions(ConnectionProperties cp) {
-		//		this.user = user;
-		this.connectionProperties = cp;
+	protected Permissions(DataSource dataSource) {
+		this.dataSource = dataSource;
 	}
 
 	public Permission[] getPermissions() {
@@ -60,12 +56,12 @@ public class Permissions {
 		return idMap.get(id);
 	}
 
-	protected void delete(Permission permission) throws NoAvailableConnectionException, SQLException {
+	protected void delete(Permission permission) throws SQLException {
 		Connection c = null;
 		PreparedStatement ps = null;
 		SQLException sqle = null;
 		try {
-			c = ConnectionProvider.getConnection(connectionProperties, true);
+			c = dataSource.getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("DELETE FROM permission_ WHERE id = ?", permission.getId());
 			ps = ds.makePreparedStatement(c);
@@ -76,8 +72,9 @@ public class Permissions {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
+			if (c != null) {
+				c.close();
+			}
 		}
 		idMap.remove(permission.getId());
 		Set<Integer> permissionIdSet = unittypeIdMap.get(permission.getUnittypeId());
@@ -114,13 +111,13 @@ public class Permissions {
 		}
 	}
 
-	protected void addOrChange(Permission permission) throws NoAvailableConnectionException, SQLException {
+	protected void addOrChange(Permission permission) throws SQLException {
 		checkAmbigiousPermissions(permission); // can throw IllegalArgumentException containg error message
 		Connection c = null;
 		PreparedStatement ps = null;
 		SQLException sqle = null;
 		try {
-			c = ConnectionProvider.getConnection(connectionProperties, true);
+			c = dataSource.getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			if (permission.getId() == null) {
 				ds.addSqlAndArguments("INSERT INTO permission_ (user_id, ", permission.getUser().getId());
@@ -150,8 +147,9 @@ public class Permissions {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 

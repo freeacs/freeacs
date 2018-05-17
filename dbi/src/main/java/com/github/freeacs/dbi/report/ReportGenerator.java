@@ -1,13 +1,10 @@
 package com.github.freeacs.dbi.report;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.*;
 import java.util.*;
@@ -18,8 +15,8 @@ public class ReportGenerator {
 	private static Logger logger = LoggerFactory.getLogger(ReportGenerator.class);
 
 	protected TmsConverter converter = new TmsConverter();
-	protected ConnectionProperties sysCp;
-	protected ConnectionProperties xapsCp;
+	protected DataSource sysCp;
+	protected DataSource xapsCp;
 	protected XAPS xaps;
 	protected Identity id;
 	protected String logPrefix = "";
@@ -44,7 +41,7 @@ public class ReportGenerator {
 		swVersion = null;
 	}
 
-	public ReportGenerator(ConnectionProperties sysCp, ConnectionProperties xapsCp, XAPS xaps, String logPrefix, Identity id) {
+	public ReportGenerator(DataSource sysCp, DataSource xapsCp, XAPS xaps, String logPrefix, Identity id) {
 		this.sysCp = sysCp;
 		this.xapsCp = xapsCp;
 		this.xaps = xaps;
@@ -107,14 +104,14 @@ public class ReportGenerator {
 		return ds;
 	}
 
-	public List<String> getSoftwareVersions(Unittype unittype, Profile profile, Date start, Date end, String tablename) throws SQLException, NoAvailableConnectionException {
+	public List<String> getSoftwareVersions(Unittype unittype, Profile profile, Date start, Date end, String tablename) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		SQLException sqle = null;
 		List<String> swVersionList = new ArrayList<String>();
 		try {
-			connection = ConnectionProvider.getConnection(xapsCp, true);
+			connection = xapsCp.getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("select distinct(software_version) from " + tablename + " where ");
 			Calendar startCal = Calendar.getInstance();
@@ -145,8 +142,9 @@ public class ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (connection != null)
-				ConnectionProvider.returnConnection(connection, sqle);
+			if (connection !=  null) {
+				connection.close();
+			}
 		}
 	}
 
@@ -157,10 +155,10 @@ public class ReportGenerator {
 	 * @param periodType
 	 * @param tablename
 	 * @return
-	 * @throws NoAvailableConnectionException
+	 *
 	 * @throws SQLException
 	 */
-	public Date startReportFromTms(PeriodType periodType, String tablename) throws NoAvailableConnectionException, SQLException {
+	public Date startReportFromTms(PeriodType periodType, String tablename) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -168,7 +166,7 @@ public class ReportGenerator {
 		try {
 			long now = System.currentTimeMillis();
 			long twoDaysAgo = now - 2l * 86400l * 1000l;
-			connection = ConnectionProvider.getConnection(xapsCp, true);
+			connection = xapsCp.getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("select timestamp_ from " + tablename + " where period_type = " + periodType.getTypeInt() + " order by timestamp_ desc");
 			ps = ds.makePreparedStatement(connection);
@@ -194,13 +192,14 @@ public class ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (connection != null)
-				ConnectionProvider.returnConnection(connection, sqle);
+			if (connection != null) {
+				connection.close();
+			}
 		}
 
 	}
 
-	public Map<String, Unit> getUnitsInGroup(Group group) throws NoAvailableConnectionException, SQLException {
+	public Map<String, Unit> getUnitsInGroup(Group group) throws SQLException {
 		Map<String, Unit> unitsInGroup = new HashMap<String, Unit>();
 		if (group != null) {
 			XAPSUnit xapsUnit = new XAPSUnit(xapsCp, xaps, xaps.getSyslog());
@@ -209,67 +208,14 @@ public class ReportGenerator {
 		return unitsInGroup;
 	}
 
-	/*
-	 * Generate reports from report table
-	 */
-
-	//	public Report<RecordProvisioning> generateProvisioningReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws NoAvailableConnectionException,
-	//			SQLException, IOException {
-	//		Connection xapsConnection = null;
-	//		Connection sysConnection = null;
-	//		PreparedStatement ps = null;
-	//		ResultSet rs = null;
-	//		SQLException sqle = null;
-	//		try {
-	//			Report<RecordProvisioning> report = new Report<RecordProvisioning>(RecordProvisioning.class, periodType);
-	//			xapsConnection = ConnectionProvider.getConnection(xapsCp, true);
-	//			
-	//			logger.info(logPrefix + "Reads from report_unit table from " + start + " to " + end);
-	//			DynamicStatement ds = selectReportSQL("report_provisioning", periodType, start, end, uts, prs);
-	//			ps = ds.makePreparedStatement(xapsConnection);
-	//			rs = ps.executeQuery();
-	//			int counter = 0;
-	//			while (rs.next()) {
-	//				counter++;
-	//				start = rs.getTimestamp("timestamp_");
-	//				String unittypeName = rs.getString("unit_type_name");
-	//				String profileName = rs.getString("profile_name");
-	//				RecordProvisioning recordTmp = new RecordProvisioning(start, periodType, unittypeName, profileName);
-	//				Key key = recordTmp.getKey();
-	//				RecordProvisioning record = report.getRecord(key);
-	//				if (record == null)
-	//					record = recordTmp;
-	//				record.getNeverProvisionedCount().set(rs.getInt("never_provisioned_count"));
-	//				record.getOkProvisionedCount().set(rs.getInt("ok_provisioned_count"));
-	//				record.getOldProvisionedCount().set(rs.getInt("old_provisioned_count"));
-	//				report.setRecord(key, record);
-	//			}
-	//			logger.info(logPrefix + "Have read " + counter + " rows, last tms was " + start + ", report is now " + report.getMap().size() + " entries");
-	//			return report;
-	//		} catch (SQLException sqlex) {
-	//			sqle = sqlex;
-	//			throw sqlex;
-	//		} finally {
-	//			if (rs != null)
-	//				rs.close();
-	//			if (ps != null)
-	//				ps.close();
-	//			if (xapsConnection != null)
-	//				ConnectionProvider.returnConnection(xapsConnection, sqle);
-	//			if (sysConnection != null)
-	//				ConnectionProvider.returnConnection(sysConnection, sqle);
-	//		}
-	//	}
-
-	public Report<RecordUnit> generateUnitReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws NoAvailableConnectionException, SQLException, IOException {
+	public Report<RecordUnit> generateUnitReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws SQLException, IOException {
 		Connection xapsConnection = null;
-		Connection sysConnection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		SQLException sqle = null;
 		try {
 			Report<RecordUnit> report = new Report<RecordUnit>(RecordUnit.class, periodType);
-			xapsConnection = ConnectionProvider.getConnection(xapsCp, true);
+			xapsConnection = xapsCp.getConnection();
 
 			logger.info(logPrefix + "Reads from report_unit table from " + start + " to " + end);
 			DynamicStatement ds = selectReportSQL("report_unit", periodType, start, end, uts, prs);
@@ -301,22 +247,20 @@ public class ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (xapsConnection != null)
-				ConnectionProvider.returnConnection(xapsConnection, sqle);
-			if (sysConnection != null)
-				ConnectionProvider.returnConnection(sysConnection, sqle);
+			if (xapsConnection != null) {
+				xapsConnection.close();
+			}
 		}
 	}
 
-	public Report<RecordJob> generateJobReport(PeriodType periodType, Date start, Date end, List<Unittype> uts) throws NoAvailableConnectionException, SQLException, IOException {
+	public Report<RecordJob> generateJobReport(PeriodType periodType, Date start, Date end, List<Unittype> uts) throws SQLException, IOException {
 		Connection xapsConnection = null;
-		Connection sysConnection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		SQLException sqle = null;
 		try {
 			Report<RecordJob> report = new Report<RecordJob>(RecordJob.class, periodType);
-			xapsConnection = ConnectionProvider.getConnection(xapsCp, true);
+			xapsConnection = xapsCp.getConnection();
 
 			logger.info(logPrefix + "Reads from report_job table from " + start + " to " + end);
 			DynamicStatement ds = selectReportSQL("report_job", periodType, start, end, uts, null);
@@ -350,10 +294,9 @@ public class ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (xapsConnection != null)
-				ConnectionProvider.returnConnection(xapsConnection, sqle);
-			if (sysConnection != null)
-				ConnectionProvider.returnConnection(sysConnection, sqle);
+			if (xapsConnection != null) {
+				xapsConnection.close();
+			}
 		}
 	}
 

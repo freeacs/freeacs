@@ -3,9 +3,6 @@ package com.github.freeacs.spp;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.common.util.Sleep;
-import com.github.freeacs.spp.http.Authenticator;
-import com.github.freeacs.spp.telnet.TelnetProvisioning;
-import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.Users;
 import com.github.freeacs.dbi.util.ProvisioningMessage;
@@ -13,6 +10,8 @@ import com.github.freeacs.dbi.util.ProvisioningMessage.ErrorResponsibility;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ProvOutput;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ProvStatus;
 import com.github.freeacs.dbi.util.SyslogClient;
+import com.github.freeacs.spp.http.Authenticator;
+import com.github.freeacs.spp.telnet.TelnetProvisioning;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -33,19 +32,24 @@ public class HTTPProvisioning extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	public static final String VERSION = "1.5.0";
 
-	static {
-		DBAccess.init(com.github.freeacs.Properties.Module.SPP, SyslogConstants.FACILITY_SPP, VERSION);
+	private final DBAccess dbAccess;
+
+	public HTTPProvisioning(DBAccess dbAccess) {
+		this.dbAccess = dbAccess;
+	}
+
+	public void init() {
 		Log.notice(HTTPProvisioning.class, "HTTP/TFTP-Server and Telnet Provisioning Controller starts...");
 		try {
 			// Start the server
 			PrintStream ps = new PrintStream(System.out);
-			TFTPServer tftpS = new TFTPServer(new File("."), new File("."), Properties.getTFTPPort(), TFTPServer.ServerMode.GET_ONLY, ps, ps);
+			TFTPServer tftpS = new TFTPServer(new File("."), new File("."), Properties.getTFTPPort(), TFTPServer.ServerMode.GET_ONLY, ps, ps, dbAccess);
 			tftpS.setSocketTimeout(5000);
 		} catch (Throwable t) {
 			Log.fatal(HTTPProvisioning.class, "An error occurred - TFTP server did not start (triggered from HTTPProvisioning", t);
 		}
 		try {
-			TelnetProvisioning tpc = new TelnetProvisioning(DBAccess.getXAPSProperties(), DBAccess.getDBI());
+			TelnetProvisioning tpc = new TelnetProvisioning(dbAccess, dbAccess.getDBI());
 			Thread t = new Thread(tpc);
 			t.start();
 		} catch (Throwable t) {
@@ -72,7 +76,7 @@ public class HTTPProvisioning extends HttpServlet {
 			}
 
 			/* xAPS specific */
-			byte[] output = SPP.provision(sessionData);
+			byte[] output = SPP.provision(sessionData, dbAccess);
 
 			/* HTTP specific */
 			if (sessionData.isEncrypted() || sessionData.isBinaries()) {// use encrypted response
@@ -103,7 +107,7 @@ public class HTTPProvisioning extends HttpServlet {
 			ProvisioningMessage pm = sessionData.getProvisioningMessage();
 			pm.setProvProtocol(ProvisioningProtocol.HTTP);
 			pm.setIpAddress(req.getRemoteHost());
-			SyslogClient.send(pm.syslogMsg(DBAccess.getFacility(), null, Users.USER_ADMIN));
+			SyslogClient.send(pm.syslogMsg(dbAccess.getFacility(), null, Users.USER_ADMIN));
 			Log.event(sessionData, pm.logMsg());
 		}
 	}

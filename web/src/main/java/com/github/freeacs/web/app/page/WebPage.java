@@ -5,6 +5,7 @@ import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.menu.MenuItem;
 import com.github.freeacs.web.app.util.SessionData;
 
+import javax.sql.DataSource;
 import java.util.List;
 
 
@@ -72,7 +73,9 @@ public interface WebPage {
      *
      * @param params the parameter parser
      * @param outputHandler the outputHandler handler
+     * @param xapsDataSource
+     * @param syslogDataSource
      * @throws Exception the exception
      */
-	public void process(ParameterParser params, Output outputHandler) throws Exception;
+	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception;
 }

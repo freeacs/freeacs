@@ -1,14 +1,12 @@
 package com.github.freeacs.web.app.page.syslog;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.XAPSLoader;
 
-import java.lang.reflect.InvocationTargetException;
+import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.*;
 
 public class SyslogRetriever {
@@ -30,41 +28,34 @@ public class SyslogRetriever {
 		return new SyslogRetriever(inputData);
 	}
 
-	public List<SyslogEntry> getSyslogEntries(Unit unit, Date fromDate, Date endDate, Integer max, String sessionId) throws NoAvailableConnectionException, SQLException, ParseException,
-			IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+	public List<SyslogEntry> getSyslogEntries(Unit unit, Date fromDate, Date endDate, Integer max, String sessionId, DataSource xapsDataSource, DataSource syslogDataSource) throws
+			IllegalArgumentException, SecurityException, SQLException {
 		inputData.getTimestampStart().setValue(fromDate);
 		inputData.getTimestampEnd().setValue(endDate);
 		inputData.getUnit().setValue("^" + unit.getId() + "$");
-		List<SyslogEntry> entries = getSyslogEntries(max, unit.getUnittype(), unit.getProfile(), sessionId);
-		return entries;
+		return getSyslogEntries(max, unit.getUnittype(), unit.getProfile(), sessionId, xapsDataSource, syslogDataSource);
 	}
 
-	public List<SyslogEntry> getSyslogEntries(Unit unit, Date fromDate, Date endDate, Integer max, String messageFilter, String sessionId) throws NoAvailableConnectionException, SQLException,
-			ParseException, IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		inputData.getMessage().setValue(messageFilter);
-		return getSyslogEntries(unit, fromDate, endDate, max, sessionId);
-	}
-
-	public List<SyslogEntry> getSyslogEntries(Integer maxrows, Unittype unittype, Profile profile, String sessionId) throws NoAvailableConnectionException, SQLException, ParseException,
-			IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		Syslog syslog = new Syslog(SessionCache.getSyslogConnectionProperties(sessionId), XAPSLoader.getIdentity(sessionId));
+	public List<SyslogEntry> getSyslogEntries(Integer maxrows, Unittype unittype, Profile profile, String sessionId, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException,
+			IllegalArgumentException, SecurityException {
+		Syslog syslog = new Syslog(syslogDataSource, XAPSLoader.getIdentity(sessionId, xapsDataSource));
 		SyslogFilter filter = new SyslogFilter();
 		if (maxrows != null)
 			filter.setMaxRows(maxrows + 1);
 		filter.setMessage(inputData.getMessage().getString());
 		filter.setFacilityVersion(inputData.getFacilityVersion().getString());
 		if (unittype != null)
-			filter.setUnittypes(Arrays.asList(new Unittype[] { unittype }));
-		else if (AbstractWebPage.isUnittypesLimited(sessionId)) {
-			List<Unittype> uts = AbstractWebPage.getAllowedUnittypes(sessionId);
+			filter.setUnittypes(Collections.singletonList(unittype));
+		else if (AbstractWebPage.isUnittypesLimited(sessionId, xapsDataSource, syslogDataSource)) {
+			List<Unittype> uts = AbstractWebPage.getAllowedUnittypes(sessionId, xapsDataSource, syslogDataSource);
 			if (uts.size() == 0)
 				return new ArrayList<SyslogEntry>();
 			filter.setUnittypes(uts);
 		}
 		if (profile != null)
-			filter.setProfiles(Arrays.asList(new Profile[] { profile }));
+			filter.setProfiles(Collections.singletonList(profile));
 		else {
-			List<Profile> profiles = AbstractWebPage.getAllowedProfiles(sessionId, unittype);
+			List<Profile> profiles = AbstractWebPage.getAllowedProfiles(sessionId, unittype, xapsDataSource, syslogDataSource);
 			if (profiles != null && profiles.size() > 0) {
 				filter.setProfiles(profiles);
 			}
@@ -91,7 +82,7 @@ public class SyslogRetriever {
 			filter.setCollectorTmsEnd(c.getTime());
 		}
 		filter.setUnitId(inputData.getUnit().getString());
-		List<SyslogEntry> entries = syslog.read(filter, XAPSLoader.getXAPS(sessionId));
+		List<SyslogEntry> entries = syslog.read(filter, XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource));
 		SessionCache.putSyslogEntries(sessionId, entries);
 		return entries;
 	}

@@ -1,16 +1,17 @@
 package com.github.freeacs.web.app.page.user;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.User;
 import com.github.freeacs.dbi.Users;
 import com.github.freeacs.web.app.util.SessionCache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -28,6 +29,9 @@ public class UserController extends PermissionController {
 	@Autowired
 	UserGroupController userGroupController;
 
+	@Autowired @Qualifier("xaps")
+	DataSource xapsDataSource;
+
 	/**
 	 * Delete.
 	 *
@@ -36,12 +40,12 @@ public class UserController extends PermissionController {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws ParseException the parse exception
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
 	@RequestMapping(value = "/{name}", method = RequestMethod.DELETE)
 	public @ResponseBody
-	void delete(@PathVariable String name, HttpSession session) throws IOException, ParseException, SQLException, NoAvailableConnectionException {
-		Users users = getUsers(session.getId());
+	void delete(@PathVariable String name, HttpSession session) throws IOException, ParseException, SQLException {
+		Users users = getUsers(session.getId(), xapsDataSource);
 		User loggedInUser = SessionCache.getSessionData(session.getId()).getUser();
 		if (users.getProtected(name, loggedInUser) == null)
 			throw new ResourceNotFoundException();
@@ -56,12 +60,12 @@ public class UserController extends PermissionController {
 	 * @return the user model
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
 	@RequestMapping(value = "/{name}", method = RequestMethod.GET)
 	public @ResponseBody
-	UserModel get(@PathVariable String name, HttpSession session) throws IOException, SQLException, NoAvailableConnectionException {
-		Users users = getUsers(session.getId());
+	UserModel get(@PathVariable String name, HttpSession session) throws IOException, SQLException {
+		Users users = getUsers(session.getId(), xapsDataSource);
 		User loggedInUser = SessionCache.getSessionData(session.getId()).getUser();
 		if (users.getProtected(name, loggedInUser) == null)
 			throw new ResourceNotFoundException();
@@ -77,12 +81,12 @@ public class UserController extends PermissionController {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws ParseException the parse exception
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public @ResponseBody
-	UserModel create(@RequestBody UserModel details, HttpSession session) throws IOException, ParseException, SQLException, NoAvailableConnectionException {
-		Users users = getUsers(session.getId());
+	UserModel create(@RequestBody UserModel details, HttpSession session) throws IOException, ParseException, SQLException {
+		Users users = getUsers(session.getId(), xapsDataSource);
 		User loggedInUser = SessionCache.getSessionData(session.getId()).getUser();
 		if (!details.getUsername().isEmpty() && users.getUnprotected(details.getUsername()) == null) {
 			User toCreate = UserModel.toUser(details, users);
@@ -101,12 +105,12 @@ public class UserController extends PermissionController {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws ParseException the parse exception
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
 	@RequestMapping(method = RequestMethod.PUT)
 	public @ResponseBody
-	UserModel update(@RequestBody UserModel details, HttpSession session) throws IOException, ParseException, SQLException, NoAvailableConnectionException {
-		Users users = getUsers(session.getId());
+	UserModel update(@RequestBody UserModel details, HttpSession session) throws IOException, ParseException, SQLException {
+		Users users = getUsers(session.getId(), xapsDataSource);
 		User loggedInUser = SessionCache.getSessionData(session.getId()).getUser();
 		if (users.getProtected(details.getUsername(), loggedInUser) != null) {
 			User oldUser = users.getProtected(details.getUsername(), loggedInUser);
@@ -130,13 +134,13 @@ public class UserController extends PermissionController {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws ParseException the parse exception
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
 	@RequestMapping(value = "list", method = RequestMethod.GET)
 	public @ResponseBody
-	Map<String, Object> list(HttpSession session, HttpServletRequest request, HttpServletResponse outputHandler) throws IOException, ParseException, SQLException, NoAvailableConnectionException {
+	Map<String, Object> list(HttpSession session, HttpServletRequest request, HttpServletResponse outputHandler) throws IOException, ParseException, SQLException {
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("users", getAllUsers(0, 100, session.getId(), userGroupController.getNameMap().get("NotAdmin")));
+		map.put("users", getAllUsers(0, 100, session.getId(), userGroupController.getNameMap().get("NotAdmin"), xapsDataSource));
 		return map;
 	}
 

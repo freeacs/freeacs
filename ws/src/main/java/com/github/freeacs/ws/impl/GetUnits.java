@@ -10,6 +10,7 @@ import com.github.freeacs.ws.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.Map.Entry;
@@ -20,10 +21,10 @@ public class GetUnits {
 	private XAPS xaps;
 	private XAPSWS xapsWS;
 
-	public GetUnitsResponse getUnits(GetUnitsRequest gur) throws RemoteException {
+	public GetUnitsResponse getUnits(GetUnitsRequest gur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 			
-			xapsWS = XAPSWSFactory.getXAPSWS(gur.getLogin());
+			xapsWS = XAPSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
 			xaps = xapsWS.getXAPS();
 			XAPSUnit xapsUnit = xapsWS.getXAPSUnit(xaps);
 
