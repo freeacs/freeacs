@@ -2,18 +2,22 @@ package com.github.freeacs.spp;
 
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.http.OKServlet;
-import com.github.freeacs.dbi.SyslogConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
 import java.util.Collections;
 
+import static com.github.freeacs.dbi.SyslogConstants.FACILITY_SPP;
 import static com.github.freeacs.spp.HTTPProvisioning.VERSION;
+import static com.github.freeacs.Properties.Module.SPP;
 
 @SpringBootApplication
 public class App {
@@ -23,20 +27,23 @@ public class App {
     }
 
     @Bean
+    @Primary
     @Qualifier("xaps")
+    @ConfigurationProperties(prefix = "xaps.datasource")
     public DataSource getXapsDataSource() {
-        return null;
+        return DataSourceBuilder.create().build();
     }
 
     @Bean
     @Qualifier("syslog")
+    @ConfigurationProperties(prefix = "syslog.datasource")
     public DataSource getSyslogDataSource() {
-        return null;
+        return DataSourceBuilder.create().build();
     }
 
     @Bean
-    public DBAccess getDBAccess(@Autowired @Qualifier("xaps") DataSource xapsDataSource, @Autowired @Qualifier("syslog") DataSource syslogDataSource) {
-        return new DBAccess(com.github.freeacs.Properties.Module.SPP, SyslogConstants.FACILITY_SPP, VERSION, xapsDataSource, syslogDataSource);
+    public DBAccess getDBAccess(@Qualifier("xaps") DataSource xapsDataSource, @Qualifier("syslog") DataSource syslogDataSource) {
+        return new DBAccess(SPP, FACILITY_SPP, VERSION, xapsDataSource, syslogDataSource);
     }
 
     @Bean

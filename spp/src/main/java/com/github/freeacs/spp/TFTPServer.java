@@ -147,25 +147,6 @@ public class TFTPServer implements Runnable {
   }
 
   /**
-   * Set the max number of retries in response to a timeout. Default 3. Min 0.
-   * 
-   * @param retries
-   */
-  public void setMaxTimeoutRetries(int retries) {
-    if (retries < 0) {
-      throw new RuntimeException("Invalid Value");
-    }
-    maxTimeoutRetries_ = retries;
-  }
-
-  /**
-   * Get the current value for maxTimeoutRetries
-   */
-  public int getMaxTimeoutRetries() {
-    return maxTimeoutRetries_;
-  }
-
-  /**
    * Set the socket timeout in milliseconds used in transfers. Defaults to the
    * value here:
    * http://commons.apache.org/net/apidocs/org/apache/commons/net/tftp
@@ -176,13 +157,6 @@ public class TFTPServer implements Runnable {
       throw new RuntimeException("Invalid Value");
     }
     socketTimeout_ = timeout;
-  }
-
-  /**
-   * The current socket timeout used during transfers in milliseconds.
-   */
-  public int getSocketTimeout() {
-    return socketTimeout_;
   }
 
   /*

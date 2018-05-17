@@ -29,7 +29,6 @@ import java.util.List;
 public class SPP {
 
   public static byte[] provision(SessionData sessionData, DBAccess dbAccess) throws SQLException {
-    DBI dbi = dbAccess.getDBI();
     sessionData.setDbAccess(new DBAccessSession(dbAccess));
     long start = System.currentTimeMillis();
     byte[] output = null;
@@ -61,7 +60,7 @@ public class SPP {
     if (output == null)
       output = sessionData.getResp().getEmptyResponse();
     byte[] encrypted = encrypt(output, sessionData);
-    updateXAPS(sessionData, dbi);
+    updateXAPS(sessionData);
     updateSomeLogs(sessionData, output, start);
     if (encrypted != null) {
       sessionData.setEncrypted(true);
@@ -376,7 +375,7 @@ public class SPP {
       unitParameters.add(new UnitParameter(utp, unit.getId(), sessionParameter, profile));
   }
 
-  private static void updateXAPS(SessionData sessionData, DBI dbi) throws SQLException {
+  private static void updateXAPS(SessionData sessionData) throws SQLException {
     if (sessionData.getUnit() != null) {
       Unit unit = sessionData.getUnit();
       List<UnitParameter> unitParameters = new ArrayList<UnitParameter>();
@@ -402,7 +401,7 @@ public class SPP {
       if (fct == null)
         addToUnitParameterList(SystemParameters.FIRST_CONNECT_TMS, unitParameters, utps, lct, unit, sessionData.getProfile());
       addToUnitParameterList(SystemParameters.LAST_CONNECT_TMS, unitParameters, utps, lct, unit, sessionData.getProfile());
-      XAPSUnit xapsUnit = new XAPSUnit(dbi.getXaps().getDataSource(), dbi.getXaps(), dbi.getXaps().getSyslog());
+      XAPSUnit xapsUnit = new XAPSUnit(sessionData.getDbAccess().getXaps().getDataSource(), sessionData.getDbAccess().getXaps(), sessionData.getDbAccess().getXaps().getSyslog());
       xapsUnit.addOrChangeUnitParameters(unitParameters, unit.getProfile());
       Log.info(SPP.class, unitParameters.size() + " unit parameters were updated in xAPS");
     }

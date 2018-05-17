@@ -81,10 +81,6 @@ public class Properties {
 		return propertyList;
 	}
 
-	public static int getXAPSCacheTimeout() {
-		return getInteger("xaps.cache.timeout", 300);
-	}
-
 	public static int getTelnetRescan() {
 		return getInteger("telnet.rescan", 60);
 	}
@@ -93,7 +89,7 @@ public class Properties {
 		return getString("auth.method", "none");
 	}
 	
-	 public static boolean isFileAuthUsed() {
+	public static boolean isFileAuthUsed() {
 	    return getString("file.auth.used", "false").equals("true");
 	  }
 
