@@ -956,8 +956,7 @@ public class XAPS {
 			// Update job parameters
 			s = c.createStatement();
 			s.setQueryTimeout(60);
-			rs = s.executeQuery("SELECT utp.unit_type_id, jp.job_id, jp.unit_type_param_id, jp.value FROM job_param jp, unit_type_param utp WHERE jp.unit_type_param_id = utp.unit_type_param_id AND unit_id = '"
-					+ Job.ANY_UNIT_IN_GROUP + "'");
+			rs = s.executeQuery("SELECT utp.unit_type_id, jp.job_id, jp.unit_type_param_id, jp.value FROM job_param jp, unit_type_param utp WHERE jp.unit_type_param_id = utp.unit_type_param_id AND unit_id = '" + Job.ANY_UNIT_IN_GROUP + "'");
 			int paramsCounter = 0;
 			while (rs.next()) {
 				paramsCounter++;

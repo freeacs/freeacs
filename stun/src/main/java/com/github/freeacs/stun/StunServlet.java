@@ -67,6 +67,8 @@ public class StunServlet extends HttpServlet {
 
 	private synchronized void trigger() {
 		try {
+			DBI dbi = initializeDBI(xapsCp, sysCp);
+
 			if (Properties.runWithStun()) {
 				if (server == null) {
 					int pPort = Properties.getPrimaryPort();
@@ -80,8 +82,6 @@ public class StunServlet extends HttpServlet {
 					server.start();
 				}
 			}
-
-			DBI dbi = initializeDBI(xapsCp, sysCp);
 
 			Scheduler scheduler = new Scheduler();
 			scheduler.registerTask(new Schedule(60000, true, ScheduleType.INTERVAL, new StabilityLogger("StabilityLogger STUN")));
