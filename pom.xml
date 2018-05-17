@@ -54,6 +54,8 @@
         <module>monitor</module>
         <module>core</module>
         <module>web</module>
+        <module>wsc</module>
+        <module>ws</module>
     </modules>
 
 </project>

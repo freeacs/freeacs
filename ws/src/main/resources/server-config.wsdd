@@ -1,0 +1,77 @@
+<ns1:deployment xmlns="http://xml.apache.org/axis/wsdd/" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java" xmlns:ns1="http://xml.apache.org/axis/wsdd/">
+ <ns1:globalConfiguration>
+  <ns1:parameter name="sendMultiRefs" value="true"/>
+  <ns1:parameter name="disablePrettyXML" value="true"/>
+  <ns1:parameter name="adminPassword" value="admin"/>
+  <ns1:parameter name="attachments.Directory" value="attachments"/>
+  <ns1:parameter name="dotNetSoapEncFix" value="true"/>
+  <ns1:parameter name="enableNamespacePrefixOptimization" value="false"/>
+  <ns1:parameter name="sendXMLDeclaration" value="true"/>
+  <ns1:parameter name="attachments.implementation" value="org.apache.axis.attachments.AttachmentsImpl"/>
+  <ns1:parameter name="sendXsiTypes" value="true"/>
+  <ns1:requestFlow>
+   <ns1:handler type="java:org.apache.axis.handlers.JWSHandler">
+    <ns1:parameter name="scope" value="session"/>
+   </ns1:handler>
+   <ns1:handler type="java:org.apache.axis.handlers.JWSHandler">
+    <ns1:parameter name="scope" value="request"/>
+    <ns1:parameter name="extension" value=".jwr"/>
+   </ns1:handler>
+  </ns1:requestFlow>
+ </ns1:globalConfiguration>
+ <ns1:handler name="LocalResponder" type="java:org.apache.axis.transport.local.LocalResponder"/>
+ <ns1:handler name="URLMapper" type="java:org.apache.axis.handlers.http.URLMapper"/>
+ <ns1:handler name="Authenticate" type="java:org.apache.axis.handlers.SimpleAuthenticationHandler"/>
+ <ns1:service name="xAPSWS" provider="java:RPC" style="document" use="literal">
+  <ns1:parameter name="allowedMethods" value="*"/>
+  <ns1:parameter name="typeMappingVersion" value="1.2"/>
+  <ns1:parameter name="wsdlPortType" value="xAPSWS"/>
+  <ns1:parameter name="className" value="com.github.freeacs.ws.XAPSWS_BindingSkeleton"/>
+  <ns1:parameter name="wsdlServicePort" value="xAPSWS"/>
+  <ns1:parameter name="wsdlTargetNamespace" value="http://xapsws.owera.com/"/>
+  <ns1:parameter name="wsdlServiceElement" value="xAPSWS"/>
+  <ns1:parameter name="schemaUnqualified" value="http://xapsws.owera.com/"/>
+  <ns2:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns1:&gt;DeleteUnitResponse" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:com.github.freeacs.ws.DeleteUnitResponse" xmlns:ns1="http://xapsws.owera.com/" xmlns:ns2="http://xml.apache.org/axis/wsdd/"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns2:Unit" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:com.github.freeacs.ws.Unit" xmlns:ns2="http://xapsws.owera.com/"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns3:Parameter" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:com.github.freeacs.ws.Parameter" xmlns:ns3="http://xapsws.owera.com/"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns4:&gt;GetUnitsResponse" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:com.github.freeacs.ws.GetUnitsResponse" xmlns:ns4="http://xapsws.owera.com/"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns5:&gt;DeleteUnitRequest" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:com.github.freeacs.ws.DeleteUnitRequest" xmlns:ns5="http://xapsws.owera.com/"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns6:Login" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:com.github.freeacs.ws.Login" xmlns:ns6="http://xapsws.owera.com/"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns7:&gt;AddOrChangeUnitResponse" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:com.github.freeacs.ws.AddOrChangeUnitResponse" xmlns:ns7="http://xapsws.owera.com/"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns8:parameterList" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:com.github.freeacs.ws.ParameterList" xmlns:ns8="http://xapsws.owera.com/"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns9:&gt;GetUnitsRequest" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:com.github.freeacs.ws.GetUnitsRequest" xmlns:ns9="http://xapsws.owera.com/"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns10:unitList" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:com.github.freeacs.ws.UnitList" xmlns:ns10="http://xapsws.owera.com/"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns11:&gt;AddOrChangeUnitRequest" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:com.github.freeacs.ws.AddOrChangeUnitRequest" xmlns:ns11="http://xapsws.owera.com/"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns12:Profile" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:com.github.freeacs.ws.Profile" xmlns:ns12="http://xapsws.owera.com/"/>
+  <ns1:typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns13:Unittype" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:com.github.freeacs.ws.Unittype" xmlns:ns13="http://xapsws.owera.com/"/>
+  <ns1:arrayMapping innerType="ns14:Parameter" languageSpecificType="java:com.github.freeacs.ws.Parameter[]" qname="ns14:ArrayOfParameter" xmlns:ns14="http://xapsws.owera.com/"/>
+  <ns1:arrayMapping innerType="ns15:Unit" languageSpecificType="java:com.github.freeacs.ws.Unit[]" qname="ns15:ArrayOfUnit" xmlns:ns15="http://xapsws.owera.com/"/>
+ </ns1:service>
+ <ns1:service name="AdminService" provider="java:MSG">
+  <ns1:parameter name="allowedMethods" value="AdminService"/>
+  <ns1:parameter name="enableRemoteAdmin" value="false"/>
+  <ns1:parameter name="className" value="org.apache.axis.utils.Admin"/>
+  <ns1:namespace>http://xml.apache.org/axis/wsdd/</ns1:namespace>
+ </ns1:service>
+ <ns1:service name="Version" provider="java:RPC">
+  <ns1:parameter name="allowedMethods" value="getVersion"/>
+  <ns1:parameter name="className" value="org.apache.axis.Version"/>
+ </ns1:service>
+ <ns1:transport name="http">
+  <ns1:requestFlow>
+   <ns1:handler type="URLMapper"/>
+   <ns1:handler type="java:org.apache.axis.handlers.http.HTTPAuthHandler"/>
+  </ns1:requestFlow>
+  <ns1:parameter name="qs:list" value="org.apache.axis.transport.http.QSListHandler"/>
+  <ns1:parameter name="qs:wsdl" value="org.apache.axis.transport.http.QSWSDLHandler"/>
+  <ns1:parameter name="qs.list" value="org.apache.axis.transport.http.QSListHandler"/>
+  <ns1:parameter name="qs.method" value="org.apache.axis.transport.http.QSMethodHandler"/>
+  <ns1:parameter name="qs:method" value="org.apache.axis.transport.http.QSMethodHandler"/>
+  <ns1:parameter name="qs.wsdl" value="org.apache.axis.transport.http.QSWSDLHandler"/>
+ </ns1:transport>
+ <ns1:transport name="local">
+  <ns1:responseFlow>
+   <ns1:handler type="LocalResponder"/>
+  </ns1:responseFlow>
+ </ns1:transport>
+</ns1:deployment>
