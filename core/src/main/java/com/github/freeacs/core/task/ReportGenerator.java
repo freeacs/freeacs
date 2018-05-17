@@ -11,6 +11,7 @@ import com.github.freeacs.dbi.report.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.*;
 import java.text.ParseException;
@@ -34,8 +35,8 @@ public class ReportGenerator extends DBIOwner {
 	private ScheduleType scheduleType;
 	private TmsConverter converter = new TmsConverter();
 
-	public ReportGenerator(String taskName, ScheduleType scheduleType) throws SQLException, NoAvailableConnectionException {
-		super(taskName);
+	public ReportGenerator(String taskName, ScheduleType scheduleType, DataSource xapsCp, DataSource sysCp) throws SQLException, NoAvailableConnectionException {
+		super(taskName, xapsCp, sysCp);
 		this.scheduleType = scheduleType;
 
 	}
@@ -80,14 +81,14 @@ public class ReportGenerator extends DBIOwner {
 		}
 	}
 
-	private void populateReportGroupTable(ConnectionProperties cp, Date now, PeriodType pt) throws NoAvailableConnectionException, SQLException {
+	private void populateReportGroupTable(DataSource cp, Date now, PeriodType pt) throws NoAvailableConnectionException, SQLException {
 		Connection c = null;
 		PreparedStatement ps = null;
 		SQLException sqle = null;
 		int inserted = 0;
 		int updated = 0;
 		try {
-			c = ConnectionProvider.getConnection(cp, true);
+			c = cp.getConnection();
 			XAPSUnit xapsUnit = new XAPSUnit(cp, xaps, getSyslog());
 			for (Unittype unittype : xaps.getUnittypes().getUnittypes()) {
 				for (Group group : unittype.getGroups().getGroups()) {
@@ -158,12 +159,10 @@ public class ReportGenerator extends DBIOwner {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 	}
 
-	private void populateReportHWTable(ConnectionProperties cp, Report<RecordHardware> report) throws NoAvailableConnectionException, SQLException {
+	private void populateReportHWTable(DataSource cp, Report<RecordHardware> report) throws NoAvailableConnectionException, SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -178,7 +177,7 @@ public class ReportGenerator extends DBIOwner {
 		int inserted = 0;
 		int updated = 0;
 		try {
-			connection = ConnectionProvider.getConnection(cp, true);
+			connection = cp.getConnection();
 			Map<Key, RecordHardware> recordMap = report.getMap();
 			for (RecordHardware r : recordMap.values()) {
 				long diff = nowTms - r.getTms().getTime();
@@ -251,20 +250,18 @@ public class ReportGenerator extends DBIOwner {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (connection != null)
-				ConnectionProvider.returnConnection(connection, sqle);
 		}
 
 	}
 
-	private void populateReportJobTable(ConnectionProperties cp, Date now, PeriodType pt) throws NoAvailableConnectionException, SQLException {
+	private void populateReportJobTable(DataSource cp, Date now, PeriodType pt) throws NoAvailableConnectionException, SQLException {
 		Connection c = null;
 		PreparedStatement ps = null;
 		SQLException sqle = null;
 		int inserted = 0;
 		int updated = 0;
 		try {
-			c = ConnectionProvider.getConnection(cp, true);
+			c = cp.getConnection();
 			for (Unittype unittype : xaps.getUnittypes().getUnittypes()) {
 				for (Job job : unittype.getJobs().getJobs()) {
 					int completed = job.getCompletedHadFailures() + job.getCompletedNoFailures();
@@ -306,12 +303,10 @@ public class ReportGenerator extends DBIOwner {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 	}
 
-	private void populateReportSyslogTable(ConnectionProperties cp, Report<RecordSyslog> report) throws NoAvailableConnectionException, SQLException {
+	private void populateReportSyslogTable(DataSource cp, Report<RecordSyslog> report) throws NoAvailableConnectionException, SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -326,7 +321,7 @@ public class ReportGenerator extends DBIOwner {
 		int inserted = 0;
 		int updated = 0;
 		try {
-			connection = ConnectionProvider.getConnection(cp, true);
+			connection = cp.getConnection();
 			Map<Key, RecordSyslog> recordMap = report.getMap();
 			for (RecordSyslog r : recordMap.values()) {
 				long diff = nowTms - r.getTms().getTime();
@@ -389,12 +384,10 @@ public class ReportGenerator extends DBIOwner {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (connection != null)
-				ConnectionProvider.returnConnection(connection, sqle);
 		}
 	}
 
-	private void populateReportUnitTable(ConnectionProperties cp, Date now, PeriodType pt) throws NoAvailableConnectionException, SQLException {
+	private void populateReportUnitTable(DataSource cp, Date now, PeriodType pt) throws NoAvailableConnectionException, SQLException {
 		Connection c1 = null;
 		PreparedStatement ps1 = null;
 		Connection c2 = null;
@@ -405,8 +398,8 @@ public class ReportGenerator extends DBIOwner {
 		int inserted = 0;
 		int updated = 0;
 		try {
-			c1 = ConnectionProvider.getConnection(cp, true);
-			c2 = ConnectionProvider.getConnection(cp, true);
+			c1 = cp.getConnection();
+			c2 = cp.getConnection();
 			s = c1.createStatement();
 			rs = s.executeQuery("SELECT unit_id, profile_id, unit_type_id FROM unit");
 			Map<String, UnitSWLCT> unitMap = new HashMap<String, UnitSWLCT>();
@@ -492,12 +485,8 @@ public class ReportGenerator extends DBIOwner {
 				ps1.close();
 			if (s != null)
 				s.close();
-			if (c1 != null)
-				ConnectionProvider.returnConnection(c1, sqle);
 			if (ps2 != null)
 				ps2.close();
-			if (c2 != null)
-				ConnectionProvider.returnConnection(c2, sqle);
 		}
 	}
 
@@ -536,7 +525,7 @@ public class ReportGenerator extends DBIOwner {
 
 	}
 
-	private void populateReportVoipTable(ConnectionProperties cp, Report<RecordVoip> report) throws NoAvailableConnectionException, SQLException {
+	private void populateReportVoipTable(DataSource cp, Report<RecordVoip> report) throws NoAvailableConnectionException, SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -551,7 +540,7 @@ public class ReportGenerator extends DBIOwner {
 		int inserted = 0;
 		int updated = 0;
 		try {
-			connection = ConnectionProvider.getConnection(cp, true);
+			connection = cp.getConnection();
 			Map<Key, RecordVoip> recordMap = report.getMap();
 			for (RecordVoip r : recordMap.values()) {
 				long diff = nowTms - r.getTms().getTime();
@@ -663,7 +652,7 @@ public class ReportGenerator extends DBIOwner {
 		return false;
 	}
 
-	private void populateReportProvTable(ConnectionProperties cp, Report<RecordProvisioning> report) throws NoAvailableConnectionException, SQLException {
+	private void populateReportProvTable(DataSource cp, Report<RecordProvisioning> report) throws NoAvailableConnectionException, SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -672,7 +661,7 @@ public class ReportGenerator extends DBIOwner {
 			int skipped = 0;
 			int inserted = 0;
 			int updated = 0;
-			connection = ConnectionProvider.getConnection(cp, true);
+			connection = cp.getConnection();
 			Map<Key, RecordProvisioning> recordMap = report.getMap();
 			Calendar now = Calendar.getInstance();
 			for (RecordProvisioning r : recordMap.values()) {
@@ -723,8 +712,6 @@ public class ReportGenerator extends DBIOwner {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (connection != null)
-				ConnectionProvider.returnConnection(connection, sqle);
 		}
 
 	}

@@ -6,6 +6,7 @@ import com.github.freeacs.dbi.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -15,8 +16,8 @@ import java.util.Map.Entry;
 
 public class TriggerReleaser extends DBIShare {
 
-	public TriggerReleaser(String taskName) throws SQLException {
-		super(taskName);
+	public TriggerReleaser(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException {
+		super(taskName, xapsCp, sysCp);
 	}
 
 	private static Logger logger = LoggerFactory.getLogger(TriggerReleaser.class);

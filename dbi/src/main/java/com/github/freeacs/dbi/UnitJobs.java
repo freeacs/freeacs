@@ -115,8 +115,7 @@ public class UnitJobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
+			
 		}
 		return true;
 	}
@@ -153,8 +152,7 @@ public class UnitJobs {
 			} finally {
 				if (pp != null)
 					pp.close();
-				if (c != null)
-					ConnectionProvider.returnConnection(c, sqle);
+				
 			}
 		}
 		if (rowsUpdated > 0)
@@ -188,8 +186,7 @@ public class UnitJobs {
 			} finally {
 				if (pp != null)
 					pp.close();
-				if (c != null)
-					ConnectionProvider.returnConnection(c, sqle);
+				
 			}
 		}
 		return rowsUpdated;
@@ -221,8 +218,7 @@ public class UnitJobs {
 			} finally {
 				if (pp != null)
 					pp.close();
-				if (c != null)
-					ConnectionProvider.returnConnection(c, sqle);
+				
 			}
 		}
 		return rowsUpdated;
@@ -257,8 +253,7 @@ public class UnitJobs {
 			} finally {
 				if (pp != null)
 					pp.close();
-				if (c != null)
-					ConnectionProvider.returnConnection(c, sqle);
+				
 			}
 		}
 		return rowsUpdated;
@@ -277,8 +272,7 @@ public class UnitJobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, null);
+			
 		}
 	}
 
@@ -295,8 +289,7 @@ public class UnitJobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, null);
+			
 		}
 	}
 
@@ -322,8 +315,7 @@ public class UnitJobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, null);
+			
 		}
 	}
 
@@ -354,8 +346,7 @@ public class UnitJobs {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, null);
+			
 		}
 	}
 
@@ -399,8 +390,7 @@ public class UnitJobs {
 				rs.close();
 			if (s != null)
 				s.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, null);
+			
 		}
 		return unitJobs;
 	}
@@ -453,8 +443,7 @@ public class UnitJobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
+			
 		}
 	}
 

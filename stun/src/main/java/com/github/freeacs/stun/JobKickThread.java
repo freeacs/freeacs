@@ -13,6 +13,7 @@ import com.github.freeacs.dbi.util.SystemParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -22,7 +23,7 @@ public class JobKickThread implements Runnable {
 	//	private static boolean initialized = false;
 	private DBI dbi;
 	//	private static Syslog syslog;
-	private ConnectionProperties xapsCp;
+	private DataSource xapsCp;
 	// Key: jobId
 	// Value: Set of unitId
 	private Map<Integer, Set<String>> jobKickMap;
@@ -32,7 +33,7 @@ public class JobKickThread implements Runnable {
 	// This inbox listens for changes on job (from other modules in xAPS)
 	private Inbox jobChangeInbox = new Inbox();
 
-	public JobKickThread(ConnectionProperties xapsCp, DBI dbi) {
+	public JobKickThread(DataSource xapsCp, DBI dbi) {
 		this.xapsCp = xapsCp;
 		this.dbi = dbi;
 		jobChangeInbox.addFilter(new Message(null, Message.MTYPE_PUB_CHG, null, Message.OTYPE_JOB));

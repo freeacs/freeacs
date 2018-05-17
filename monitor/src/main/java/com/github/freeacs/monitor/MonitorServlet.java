@@ -23,6 +23,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -41,9 +42,16 @@ public class MonitorServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 3051630277238752841L;
 	private static Scheduler scheduler = null;
+	private final DataSource xapsCp;
+	private final DataSource sysCp;
 
 	private ServletContext context;
 	private Configuration config;
+
+	public MonitorServlet(DataSource xapsCp, DataSource sysCp) {
+		this.xapsCp = xapsCp;
+		this.sysCp = sysCp;
+	}
 
 	static {
 		ProtocolSocketFactory socketFactory = new EasySSLProtocolSocketFactory();
@@ -72,11 +80,10 @@ public class MonitorServlet extends HttpServlet {
 			// Run every morning at 0700 - light task - will send email if monitor-server is up
 			scheduler.registerTask(new Schedule(7 * 60 * 60000, false, ScheduleType.DAILY, new MonitorHeartbeatTask("MonitorHeartbeatTask")));
 
-			ConnectionProperties connProps = ConnectionProvider.getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps"));
 			// Run every second - very light usually - check if there's a trigger release message (and process)
-			scheduler.registerTask(new Schedule(60000, false, ScheduleType.INTERVAL, new TriggerNotificationSecondly("TriggerNotificationSecondly", connProps)));
+			scheduler.registerTask(new Schedule(60000, false, ScheduleType.INTERVAL, new TriggerNotificationSecondly("TriggerNotificationSecondly", xapsCp, sysCp)));
 			// Run every hour - very light usually - check if there's a trigger release we've missed 
-			scheduler.registerTask(new Schedule(60 * 60000, false, ScheduleType.INTERVAL, new TriggerNotificationHourly("TriggerNotificationHourly", connProps)));
+			scheduler.registerTask(new Schedule(60 * 60000, false, ScheduleType.INTERVAL, new TriggerNotificationHourly("TriggerNotificationHourly", xapsCp, sysCp)));
 
 			// Run at 59 every hour - very light task
 			scheduler.registerTask(new Schedule(60000, false, ScheduleType.HOURLY, new ShowScheduleQueue("ShowScheduleQueue", scheduler)));

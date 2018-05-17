@@ -56,7 +56,7 @@ public class XAPSShell {
 	}
 
 	private Users getUsers(boolean failedLastTime) throws Exception {
-		if (!Properties.isRestricted() && (failedLastTime || (session.getXapsProps().getUrl() == null && session.getMode() == SessionMode.INTERACTIVE)))
+		if (!Properties.isRestricted() && (failedLastTime || (session.getXapsProps() == null && session.getMode() == SessionMode.INTERACTIVE)))
 			initConnectionProperties(session);
 		if (session.getMode() != SessionMode.DAEMON && session.getFusionUser() == null && session.getFusionPass() == null)
 			initFusionUser(session);

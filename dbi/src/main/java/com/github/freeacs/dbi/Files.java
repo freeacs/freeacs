@@ -95,8 +95,6 @@ public class Files {
 		} finally {
 			if (s != null)
 				s.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
 		}
 	}
 
@@ -210,8 +208,6 @@ public class Files {
 			} finally {
 				if (s != null)
 					s.close();
-				if (c != null)
-					ConnectionProvider.returnConnection(c, sqlex);
 			}
 		} else {
 			try {
@@ -283,8 +279,6 @@ public class Files {
 			} finally {
 				if (s != null)
 					s.close();
-				if (c != null)
-					ConnectionProvider.returnConnection(c, sqlex);
 			}
 		}
 	}
@@ -329,8 +323,6 @@ public class Files {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
 		}
 	}
 

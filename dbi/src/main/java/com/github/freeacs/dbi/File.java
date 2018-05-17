@@ -113,8 +113,6 @@ public class File {
 					rs.close();
 				if (s != null)
 					s.close();
-				if (c != null)
-					ConnectionProvider.returnConnection(c, sqlex);
 			}
 			if (content == null)
 				content = new byte[0];

@@ -76,8 +76,6 @@ public class Permissions {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 		idMap.remove(permission.getId());
 		Set<Integer> permissionIdSet = unittypeIdMap.get(permission.getUnittypeId());
@@ -150,8 +148,6 @@ public class Permissions {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 	}
 

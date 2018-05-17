@@ -183,8 +183,6 @@ public class Groups {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
 		}
 	}
 
@@ -223,8 +221,6 @@ public class Groups {
 		} finally {
 			if (s != null)
 				s.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
 		}
 	}
 
@@ -336,8 +332,6 @@ public class Groups {
 		} finally {
 			if (s != null)
 				s.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
 		}
 	}
 

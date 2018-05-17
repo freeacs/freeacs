@@ -74,8 +74,6 @@ public class Profiles {
 		} finally {
 			if (s != null)
 				s.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
 		}
 	}
 
@@ -140,8 +138,6 @@ public class Profiles {
 		} finally {
 			if (s != null)
 				s.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
 		}
 	}
 

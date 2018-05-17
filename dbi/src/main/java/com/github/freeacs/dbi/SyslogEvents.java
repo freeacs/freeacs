@@ -104,8 +104,6 @@ public class SyslogEvents {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
 		}
 	}
 
@@ -143,8 +141,6 @@ public class SyslogEvents {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
 		}
 	}
 

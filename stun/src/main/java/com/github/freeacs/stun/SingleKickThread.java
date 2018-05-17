@@ -12,6 +12,7 @@ import com.github.freeacs.dbi.util.SystemParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.net.MalformedURLException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -56,13 +57,13 @@ public class SingleKickThread implements Runnable {
 
 	private static Logger log = LoggerFactory.getLogger("KickSingle");
 	private DBI dbi;
-	private ConnectionProperties xapsCp;
+	private DataSource xapsCp;
 	private XAPSUnit xapsUnit;
 	private Map<String, InspectionState> unitWatch = new HashMap<String, InspectionState>();
 	private Inbox inbox = new Inbox();
 	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
-	public SingleKickThread(ConnectionProperties xapsCp, DBI dbi) {
+	public SingleKickThread(DataSource xapsCp, DBI dbi) {
 		this.xapsCp = xapsCp;
 		this.dbi = dbi;
 	}

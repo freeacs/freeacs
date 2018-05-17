@@ -89,8 +89,6 @@ public class Triggers {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
 		}
 	}
 
@@ -142,8 +140,7 @@ public class Triggers {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			
 		}
 	}
 
@@ -177,8 +174,6 @@ public class Triggers {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, null);
 		}
 	}
 
@@ -205,8 +200,7 @@ public class Triggers {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			
 		}
 	}
 
@@ -243,8 +237,7 @@ public class Triggers {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			
 		}
 	}
 
@@ -287,8 +280,7 @@ public class Triggers {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			
 		}
 	}
 
@@ -313,8 +305,7 @@ public class Triggers {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			
 		}
 	}
 
@@ -350,8 +341,7 @@ public class Triggers {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			
 		}
 	}
 
@@ -486,8 +476,7 @@ public class Triggers {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			
 		}
 	}
 

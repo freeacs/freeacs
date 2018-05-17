@@ -32,7 +32,7 @@ public class SPP {
 
   public static byte[] provision(SessionData sessionData, DBAccess dbAccess) throws SQLException {
     DBI dbi = dbAccess.getDBI();
-    sessionData.setDbAccess(new DBAccessSession(dbi));
+    sessionData.setDbAccess(new DBAccessSession(dbAccess));
     long start = System.currentTimeMillis();
     byte[] output = null;
     sessionData.setResp(getProvisioningResponse(sessionData));
@@ -87,7 +87,7 @@ public class SPP {
     if (unit != null)
       return unit;
     XAPS xaps = sessionData.getDbAccess().getXaps();
-    XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
+    XAPSUnit xapsUnit = new XAPSUnit(xaps.getDataSource(), xaps, xaps.getSyslog());
     if (sessionData.getSerialNumber() != null)
       return xapsUnit.getUnitByValue(sessionData.getSerialNumber(), null, null);
     if (sessionData.getMac() != null)
@@ -319,7 +319,7 @@ public class SPP {
 
   private static void writeUnittypeProfileUnit(SessionData sessionData, String modelName, String serialNumber) throws NoAvailableConnectionException, SQLException {
     XAPS xaps = sessionData.getDbAccess().getXaps();
-    XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
+    XAPSUnit xapsUnit = new XAPSUnit(xaps.getDataSource(), xaps, xaps.getSyslog());
     Unittype unittype = xaps.getUnittype(modelName);
     if (unittype == null) {
       // Will automatically create "Default" profile
@@ -404,7 +404,7 @@ public class SPP {
       if (fct == null)
         addToUnitParameterList(SystemParameters.FIRST_CONNECT_TMS, unitParameters, utps, lct, unit, sessionData.getProfile());
       addToUnitParameterList(SystemParameters.LAST_CONNECT_TMS, unitParameters, utps, lct, unit, sessionData.getProfile());
-      XAPSUnit xapsUnit = DBAccess.getXAPSUnit(dbi.getXaps());
+      XAPSUnit xapsUnit = new XAPSUnit(dbi.getXaps().getDataSource(), dbi.getXaps(), dbi.getXaps().getSyslog());
       xapsUnit.addOrChangeUnitParameters(unitParameters, unit.getProfile());
       Log.info(SPP.class, unitParameters.size() + " unit parameters were updated in xAPS");
     }

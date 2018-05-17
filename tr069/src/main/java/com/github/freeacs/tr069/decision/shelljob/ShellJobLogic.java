@@ -130,7 +130,7 @@ public class ShellJobLogic {
 		XAPS xaps = sessionData.getDbAccess().getXaps();
 		Unit unit;
 		try {
-			XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
+			XAPSUnit xapsUnit = new XAPSUnit(xaps.getDataSource(), xaps, xaps.getSyslog());
 			unit = xapsUnit.getUnitById(sessionData.getUnitId());
 		} catch (SQLException e) {
 			throw new TR069DatabaseException(e);
@@ -190,7 +190,7 @@ public class ShellJobLogic {
 		if (unitParameters.size() > 0) {
 			try {
 				XAPS xaps = sessionData.getDbAccess().getXaps();
-				XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
+				XAPSUnit xapsUnit = new XAPSUnit(xaps.getDataSource(), xaps, xaps.getSyslog());
 				xapsUnit.addOrChangeUnitParameters(unitParameters, sessionData.getProfile());
 			} catch (SQLException sqle) {
 				throw new TR069DatabaseException(sqle);

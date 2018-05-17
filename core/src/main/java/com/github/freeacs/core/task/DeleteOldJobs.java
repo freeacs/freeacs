@@ -7,6 +7,7 @@ import com.github.freeacs.core.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,8 +16,8 @@ import java.util.Map;
 
 public class DeleteOldJobs extends DBIOwner {
 
-	public DeleteOldJobs(String taskName) throws SQLException, NoAvailableConnectionException {
-		super(taskName);
+	public DeleteOldJobs(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException, NoAvailableConnectionException {
+		super(taskName, xapsCp, sysCp);
 	}
 
 	private static Logger logger = LoggerFactory.getLogger(DeleteOldJobs.class);

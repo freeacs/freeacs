@@ -89,9 +89,6 @@ public class GenericMenu {
 			xapsShell.setSession(new Session(session.getOriginalOptionArgs(), xapsShell));
 			xapsShell.init();
 			return true;
-		} else if (input.startsWith("dbin")) {
-			session.println("DB-User@DB-URL: " + session.getXapsProps().getUser() + "@" + session.getXapsProps().getUrl());
-			return true;
 		} else if (input.startsWith("userin")) {
 			session.println("Logged in as " + session.getVerifiedFusionUser().getUsername());
 			return true;

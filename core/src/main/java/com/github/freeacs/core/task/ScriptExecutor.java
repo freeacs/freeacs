@@ -11,6 +11,7 @@ import com.github.freeacs.shell.XAPSShellDaemon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.Map.Entry;
@@ -91,8 +92,8 @@ public class ScriptExecutor extends DBIShare {
 		}
 	}
 
-	public ScriptExecutor(String taskName) throws SQLException, NoAvailableConnectionException {
-		super(taskName);
+	public ScriptExecutor(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException, NoAvailableConnectionException {
+		super(taskName, xapsCp, sysCp);
 	}
 
 	private static Logger logger = LoggerFactory.getLogger(ScriptExecutor.class);

@@ -11,6 +11,7 @@ import com.github.freeacs.dbi.Job.StopRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -159,8 +160,8 @@ public class JobRuleEnforcer extends DBIOwner {
 	private UnitJobs unitJobs;
 	private Map<Integer, JobControl> jobControlMap = new HashMap<Integer, JobControl>();
 
-	public JobRuleEnforcer(String taskName) throws SQLException, NoAvailableConnectionException {
-		super(taskName);
+	public JobRuleEnforcer(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException, NoAvailableConnectionException {
+		super(taskName, xapsCp, sysCp);
 	}
 
 	@Override

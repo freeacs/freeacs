@@ -2,8 +2,10 @@ package com.github.freeacs.shell;
 
 import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.dbi.*;
+import com.github.freeacs.shell.tools.Data;
 import com.github.freeacs.shell.util.FileUtil;
 
+import javax.sql.DataSource;
 import java.util.*;
 
 public class Session {
@@ -158,8 +160,8 @@ public class Session {
 		this.databaseName = databaseName;
 	}
 
-	public ConnectionProperties getXapsProps() {
-		return xapsProps;
+	public DataSource getXapsProps() {
+		return null; // TODO
 	}
 
 	public void setXapsProps(ConnectionProperties props) {
@@ -203,8 +205,8 @@ public class Session {
 		return migrationFolder;
 	}
 
-	public ConnectionProperties getSysProps() {
-		return sysProps;
+	public DataSource getSysProps() {
+		return null; // TODO
 	}
 
 	public void setSysProps(ConnectionProperties sysProps) {

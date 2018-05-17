@@ -7,13 +7,14 @@ import com.github.freeacs.dbi.ScriptExecutions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.Calendar;
 
 public class DeleteOldScripts extends DBIShare {
 
-	public DeleteOldScripts(String taskName) throws SQLException, NoAvailableConnectionException {
-		super(taskName);
+	public DeleteOldScripts(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException, NoAvailableConnectionException {
+		super(taskName, xapsCp, sysCp);
 	}
 
 	private static Logger logger = LoggerFactory.getLogger(DeleteOldScripts.class);

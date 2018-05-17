@@ -60,7 +60,6 @@ public class Syslog {
   /**
    * 
    * @param dataSource
-   *          The {@link ConnectionProperties} for this syslog instance
    * @param id
    *          The {@link Identity} for this syslog instance
    * @param maxInsertCount
@@ -404,8 +403,7 @@ public class Syslog {
     } finally {
       if (pp != null)
         pp.close();
-      if (c != null)
-        ConnectionProvider.returnConnection(c, null);
+      
     }
   }
 
@@ -446,8 +444,7 @@ public class Syslog {
     } finally {
       if (pp != null)
         pp.close();
-      if (c != null)
-        ConnectionProvider.returnConnection(c, null);
+      
     }
   }
 
@@ -489,8 +486,7 @@ public class Syslog {
     } finally {
       if (pp != null)
         pp.close();
-      if (c != null)
-        ConnectionProvider.returnConnection(c, null);
+      
     }
   }
 
@@ -520,8 +516,7 @@ public class Syslog {
         rs.close();
       if (pp != null)
         pp.close();
-      if (c != null)
-        ConnectionProvider.returnConnection(c, null);
+      
     }
   }
 
@@ -551,8 +546,7 @@ public class Syslog {
     } finally {
       if (s != null)
         s.close();
-      if (c != null)
-        ConnectionProvider.returnConnection(c, sqlex);
+
     }
   }
 

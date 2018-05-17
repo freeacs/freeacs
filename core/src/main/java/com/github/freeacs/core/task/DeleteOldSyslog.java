@@ -8,6 +8,7 @@ import com.github.freeacs.dbi.XAPS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,8 +20,8 @@ public class DeleteOldSyslog extends DBIShare {
 
 	private static Logger logger = LoggerFactory.getLogger(DeleteOldSyslog.class);
 
-	public DeleteOldSyslog(String taskName) throws SQLException, NoAvailableConnectionException {
-		super(taskName);
+	public DeleteOldSyslog(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException, NoAvailableConnectionException {
+		super(taskName, xapsCp, sysCp);
 		// TODO Auto-generated constructor stub
 	}
 

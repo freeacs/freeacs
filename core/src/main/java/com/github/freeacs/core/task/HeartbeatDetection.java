@@ -13,6 +13,7 @@ import com.github.freeacs.dbi.util.SyslogClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -38,8 +39,8 @@ public class HeartbeatDetection extends DBIShare {
 	private Cache sentMessages = new Cache();
 	private static Logger logger = LoggerFactory.getLogger(HeartbeatDetection.class);
 
-	public HeartbeatDetection(String taskName) throws SQLException {
-		super(taskName);
+	public HeartbeatDetection(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException {
+		super(taskName, xapsCp, sysCp);
 	}
 
 	@Override
@@ -79,7 +80,7 @@ public class HeartbeatDetection extends DBIShare {
 		SQLException sqle = null;
 		DynamicStatement ds = null;
 		try {
-			c = ConnectionProvider.getConnection(getSysCp());
+			c = getSysCp().getConnection();
 			Unittype[] unittypes = xaps.getUnittypes().getUnittypes();
 			for (Unittype unittype : unittypes) {
 				Heartbeat[] heartbeats = unittype.getHeartbeats().getHeartbeats();
@@ -138,8 +139,6 @@ public class HeartbeatDetection extends DBIShare {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 
 	}
@@ -156,7 +155,7 @@ public class HeartbeatDetection extends DBIShare {
 		DynamicStatement ds = null;
 		int counter = 0;
 		try {
-			c = ConnectionProvider.getConnection(getSysCp());
+			c = getSysCp().getConnection();
 			ds = new DynamicStatement();
 			ds.addSql("SELECT distinct(unit_id) FROM syslog WHERE ");
 			//			if (from == null)
@@ -183,8 +182,6 @@ public class HeartbeatDetection extends DBIShare {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 
 	}

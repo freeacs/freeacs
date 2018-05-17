@@ -157,7 +157,7 @@ public class EMDecision {
 		DBAccessSessionTR069.writeUnitParams(sessionData); // queue-parameters - will be written at end-of-session
 		if (!queue) { // execute changes immediately - since otherwise these parameters will be lost (in the event of GPNRes.process())
 			XAPS xaps = reqRes.getSessionData().getDbAccess().getXaps();
-			XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
+			XAPSUnit xapsUnit = new XAPSUnit(xaps.getDataSource(), xaps, xaps.getSyslog());
 			xapsUnit.addOrChangeQueuedUnitParameters(sessionData.getUnit());
 		}
 		sessionData.setToDB(null);

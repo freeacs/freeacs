@@ -10,6 +10,7 @@ import com.github.freeacs.monitor.MonitorServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 
 import static com.github.freeacs.monitor.Properties.*;
@@ -20,10 +21,10 @@ public class TriggerNotificationHourly extends TaskDefaultImpl {
 	private DBI dbi;
 	private Inbox inbox = new Inbox();
 
-	public TriggerNotificationHourly(String taskName, ConnectionProperties xapsCp) throws SQLException, NoAvailableConnectionException {
+	public TriggerNotificationHourly(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException, NoAvailableConnectionException {
 		super(taskName);
 		log.info("TriggerNotificationRoundUpTask starts...");
-		dbi = initializeDBI(xapsCp);
+		dbi = initializeDBI(xapsCp, sysCp);
 		inbox.addFilter(new Message(SyslogConstants.FACILITY_CORE, Message.MTYPE_PUB_TRG_REL, SyslogConstants.FACILITY_MONITOR, Message.OTYPE_UNIT_TYPE));
 		dbi.registerInbox("TriggerNotificationRoundUpTask", inbox);
 	}
@@ -38,11 +39,10 @@ public class TriggerNotificationHourly extends TaskDefaultImpl {
 		return log;
 	}
 
-	public static DBI initializeDBI(ConnectionProperties xapsCp) throws SQLException, NoAvailableConnectionException {
+	public static DBI initializeDBI(DataSource xapsCp, DataSource sysCp) throws SQLException, NoAvailableConnectionException {
 		Users users = new Users(xapsCp);
 		User user = users.getUnprotected(Users.USER_ADMIN);
 		Identity id = new Identity(SyslogConstants.FACILITY_STUN, MonitorServlet.VERSION, user);
-		ConnectionProperties sysCp = ConnectionProvider.getConnectionProperties(getUrl("syslog"), getMaxAge("syslog"), getMaxConn("syslog"));
 		Syslog syslog = new Syslog(sysCp, id);
 		return new DBI(Integer.MAX_VALUE, xapsCp, syslog);
 	}

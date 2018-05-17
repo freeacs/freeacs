@@ -11,6 +11,7 @@ import de.javawi.jstun.test.demo.StunServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -20,11 +21,11 @@ import java.util.Map.Entry;
 public class ActiveDeviceDetection extends TaskDefaultImpl {
 
 	private static Logger logger = LoggerFactory.getLogger(ActiveDeviceDetection.class);
-	private ConnectionProperties xapsCp;
+	private DataSource xapsCp;
 	private DBI dbi;
 	private TimestampMap activeDevicesLogged = new TimestampMap();
 
-	public ActiveDeviceDetection(ConnectionProperties xapsCp, DBI dbi, String taskName) {
+	public ActiveDeviceDetection(DataSource xapsCp, DBI dbi, String taskName) {
 		super(taskName);
 		this.xapsCp = xapsCp;
 		this.dbi = dbi;

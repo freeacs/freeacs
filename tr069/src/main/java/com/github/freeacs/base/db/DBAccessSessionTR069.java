@@ -55,7 +55,7 @@ public class DBAccessSessionTR069 {
 			sessionData.setUnittype(ut);
 			sessionData.setProfile(pr);
 			
-			XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
+			XAPSUnit xapsUnit = new XAPSUnit(xaps.getDataSource(), xaps, xaps.getSyslog());
 			List<String> unitIds = new ArrayList<String>();
 			unitIds.add(unitId);
 			xapsUnit.addUnits(unitIds, pr);
@@ -93,7 +93,7 @@ public class DBAccessSessionTR069 {
 					Log.warn(DBAccessSession.class, "\t" + pvs.getName() + " : does not exist, cannot write session value " + pvs.getValue());
 			}
 			if (unitSessionParameters.size() > 0) {
-				XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
+				XAPSUnit xapsUnit = new XAPSUnit(xaps.getDataSource(), xaps, xaps.getSyslog());
 				xapsUnit.addOrChangeSessionUnitParameters(unitSessionParameters, profile);
 			}
 		} catch (SQLException sqle) {

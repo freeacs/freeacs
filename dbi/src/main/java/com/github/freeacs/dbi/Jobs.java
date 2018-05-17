@@ -178,8 +178,6 @@ public class Jobs {
 		} finally {
 			if (s != null)
 				s.close();
-			if (connection != null)
-				ConnectionProvider.returnConnection(connection, sqle);
 		}
 	}
 
@@ -269,8 +267,6 @@ public class Jobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 	}
 
@@ -368,8 +364,6 @@ public class Jobs {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 
 	}
@@ -487,8 +481,6 @@ public class Jobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 	}
 
@@ -556,8 +548,6 @@ public class Jobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 
 	}
@@ -635,8 +625,6 @@ public class Jobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 	}
 
@@ -730,8 +718,6 @@ public class Jobs {
 				rs.close();
 			if (s != null)
 				s.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 	}
 

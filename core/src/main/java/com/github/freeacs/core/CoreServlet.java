@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -28,6 +29,13 @@ public class CoreServlet extends HttpServlet {
 	private static Scheduler scheduler = null;
 
 	private static Logger log = LoggerFactory.getLogger(CoreServlet.class);
+	private final DataSource xapsCp;
+	private final DataSource sysCp;
+
+	public CoreServlet(DataSource xapsCp, DataSource sysCp) {
+		this.xapsCp = xapsCp;
+		this.sysCp = sysCp;
+	}
 
 	public void destroy() {
 		log.info("Server shutdown...");
@@ -37,7 +45,7 @@ public class CoreServlet extends HttpServlet {
 	public void init() {
 		try {
 			log.info("Server starts...");
-			XAPSVersionCheck.versionCheck(ConnectionProvider.getConnectionProperties(Properties.getUrl("xaps"), Properties.getMaxAge("xaps"), Properties.getMaxConn("xaps")));
+			XAPSVersionCheck.versionCheck(xapsCp);
 			scheduler = new Scheduler();
 			Thread t = new Thread(scheduler);
 			t.setName("Core (Scheduler)");
@@ -45,30 +53,30 @@ public class CoreServlet extends HttpServlet {
 
 			// only to test: scheduler.registerTask(new Schedule(60 * 60000, false, ScheduleType.INTERVAL, new ReportGenerator("ReportGeneratorHourly", ScheduleType.INTERVAL)));
 			//Run at 00 every hour - heavy task
-			scheduler.registerTask(new Schedule(0, false, ScheduleType.HOURLY, new ReportGenerator("ReportGeneratorHourly", ScheduleType.HOURLY)));
+			scheduler.registerTask(new Schedule(0, false, ScheduleType.HOURLY, new ReportGenerator("ReportGeneratorHourly", ScheduleType.HOURLY, xapsCp, sysCp)));
 			// Run at 0015 every night - very heavy task
-			scheduler.registerTask(new Schedule(15 * 60000, false, ScheduleType.DAILY, new ReportGenerator("ReportGeneratorDaily", ScheduleType.DAILY)));
+			scheduler.registerTask(new Schedule(15 * 60000, false, ScheduleType.DAILY, new ReportGenerator("ReportGeneratorDaily", ScheduleType.DAILY, xapsCp, sysCp)));
 			// Run at 0500 every night - very heavy task
-			scheduler.registerTask(new Schedule(5 * 60 * 60000, false, ScheduleType.DAILY, new DeleteOldSyslog("DeleteOldSyslogEntries")));
+			scheduler.registerTask(new Schedule(5 * 60 * 60000, false, ScheduleType.DAILY, new DeleteOldSyslog("DeleteOldSyslogEntries", xapsCp, sysCp)));
 			// Run at 0530 every night - light task
-			scheduler.registerTask(new Schedule((5 * 60 + 30) * 60000, false, ScheduleType.DAILY, new DeleteOldJobs("DeleteOldJobs")));
+			scheduler.registerTask(new Schedule((5 * 60 + 30) * 60000, false, ScheduleType.DAILY, new DeleteOldJobs("DeleteOldJobs", xapsCp, sysCp)));
 			
 
 			// Run every second - light task
-			scheduler.registerTask(new Schedule(1000, false, ScheduleType.INTERVAL, new JobRuleEnforcer("JobRuleEnforcer")));
+			scheduler.registerTask(new Schedule(1000, false, ScheduleType.INTERVAL, new JobRuleEnforcer("JobRuleEnforcer", xapsCp, sysCp)));
 			if (XAPSVersionCheck.triggerSupported) {
 				// Run at 30(sec) every minute - light task 
-				scheduler.registerTask(new Schedule(30000, false, ScheduleType.MINUTELY, new TriggerReleaser("TriggerReleaser")));
+				scheduler.registerTask(new Schedule(30000, false, ScheduleType.MINUTELY, new TriggerReleaser("TriggerReleaser", xapsCp, sysCp)));
 			}
 			if (XAPSVersionCheck.scriptExecutionSupported) {
 				// Run every 100 ms - very light task
-				scheduler.registerTask(new Schedule(100, false, ScheduleType.INTERVAL, new ScriptExecutor("ScriptExecutor")));
+				scheduler.registerTask(new Schedule(100, false, ScheduleType.INTERVAL, new ScriptExecutor("ScriptExecutor", xapsCp, sysCp)));
 				// Run at 45 every hour - light task
-				scheduler.registerTask(new Schedule(45 * 1000, false, ScheduleType.MINUTELY, new DeleteOldScripts("DeleteOldScripts")));
+				scheduler.registerTask(new Schedule(45 * 1000, false, ScheduleType.MINUTELY, new DeleteOldScripts("DeleteOldScripts", xapsCp, sysCp)));
 			}
 			if (XAPSVersionCheck.heartbeatSupported) {
 				// Run every 5 minute - moderate task
-				scheduler.registerTask(new Schedule(5 * 60000, false, ScheduleType.INTERVAL, new HeartbeatDetection("HeartbeatDetection")));
+				scheduler.registerTask(new Schedule(5 * 60000, false, ScheduleType.INTERVAL, new HeartbeatDetection("HeartbeatDetection", xapsCp, sysCp)));
 			}
 			// Run at 59 every hour - very light task
 			scheduler.registerTask(new Schedule(60000, false, ScheduleType.HOURLY, new ShowScheduleQueue("ShowScheduleQueue", scheduler)));
