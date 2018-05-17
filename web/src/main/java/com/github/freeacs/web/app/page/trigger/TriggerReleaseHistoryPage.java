@@ -60,7 +60,7 @@ public class TriggerReleaseHistoryPage extends AbstractWebPage {
 		this.outputHandler = outputHandler;
 		outputHandler.getTemplateMap().put("triggerOverviewUrl", Page.TRIGGEROVERVIEW.getUrl());
 		Map<String, Object> fmMap = outputHandler.getTemplateMap();
-		this.xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
+		this.xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;

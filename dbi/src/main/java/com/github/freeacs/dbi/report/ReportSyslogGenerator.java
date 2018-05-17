@@ -1,10 +1,6 @@
 package com.github.freeacs.dbi.report;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +23,7 @@ public class ReportSyslogGenerator extends ReportGenerator {
 		super(sysCp, xapsCp, xaps, logPrefix, id);
 	}
 
-	public Report<RecordSyslog> generateFromReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws NoAvailableConnectionException, SQLException, IOException {
+	public Report<RecordSyslog> generateFromReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws SQLException, IOException {
 		Connection xapsConnection = null;
 		Connection sysConnection = null;
 		PreparedStatement ps = null;
@@ -71,19 +67,15 @@ public class ReportSyslogGenerator extends ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (xapsConnection != null)
-				ConnectionProvider.returnConnection(xapsConnection, sqle);
-			if (sysConnection != null)
-				ConnectionProvider.returnConnection(sysConnection, sqle);
 		}
 
 	}
 
-	public Report<RecordSyslog> generateFromSyslog(Date start, Date end, String unitId) throws NoAvailableConnectionException, SQLException, IOException, ParseException {
+	public Report<RecordSyslog> generateFromSyslog(Date start, Date end, String unitId) throws SQLException, IOException, ParseException {
 		return generateFromSyslog(PeriodType.SECOND, start, end, null, null, unitId, null);
 	}
 
-	public Map<String, Report<RecordSyslog>> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs, Group group) throws NoAvailableConnectionException,
+	public Map<String, Report<RecordSyslog>> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs, Group group) throws
 			SQLException, IOException, ParseException {
 		Connection c = null;
 		PreparedStatement ps = null;
@@ -172,13 +164,11 @@ public class ReportSyslogGenerator extends ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 	}
 
 	public Report<RecordSyslog> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs, String unitId, Group group) throws SQLException,
-			NoAvailableConnectionException, IOException, ParseException {
+			IOException, ParseException {
 		Connection c = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -304,8 +294,6 @@ public class ReportSyslogGenerator extends ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 
 	}

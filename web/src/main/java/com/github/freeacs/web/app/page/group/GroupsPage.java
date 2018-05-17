@@ -103,7 +103,7 @@ public class GroupsPage extends AbstractWebPage {
 
 		sessionId = req.getSession().getId();
 		
-		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
+		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;

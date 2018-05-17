@@ -7,11 +7,7 @@ import com.github.freeacs.base.ServiceWindow;
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.db.DBAccessSession;
 import com.github.freeacs.base.db.DBAccessStatic;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
-import com.github.freeacs.spp.response.ProvisioningResponse;
-import com.github.freeacs.spp.response.SPA;
-
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
 import com.github.freeacs.dbi.JobFlag.JobType;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
@@ -22,6 +18,8 @@ import com.github.freeacs.dbi.util.ProvisioningMessage.ProvStatus;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.TimestampWrapper;
+import com.github.freeacs.spp.response.ProvisioningResponse;
+import com.github.freeacs.spp.response.SPA;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -79,10 +77,10 @@ public class SPP {
    * values to match with the unit id
    * 
    * @return
-   * @throws NoAvailableConnectionException
+   *
    * @throws SQLException
    */
-  private static Unit readUnit(SessionData sessionData) throws SQLException, NoAvailableConnectionException {
+  private static Unit readUnit(SessionData sessionData) throws SQLException {
     Unit unit = sessionData.getDbAccess().readUnit(sessionData.getSerialNumber());
     if (unit != null)
       return unit;
@@ -299,7 +297,7 @@ public class SPP {
 
   }
 
-  private static byte[] getResponse(SessionData sessionData) throws NoAvailableConnectionException, SQLException {
+  private static byte[] getResponse(SessionData sessionData) throws SQLException {
     Unit unit = sessionData.getUnit();
     sessionData.setUnittype(unit.getUnittype());
     sessionData.setProfile(unit.getProfile());
@@ -317,7 +315,7 @@ public class SPP {
     return getResponseJob(sessionData);
   }
 
-  private static void writeUnittypeProfileUnit(SessionData sessionData, String modelName, String serialNumber) throws NoAvailableConnectionException, SQLException {
+  private static void writeUnittypeProfileUnit(SessionData sessionData, String modelName, String serialNumber) throws SQLException {
     XAPS xaps = sessionData.getDbAccess().getXaps();
     XAPSUnit xapsUnit = new XAPSUnit(xaps.getDataSource(), xaps, xaps.getSyslog());
     Unittype unittype = xaps.getUnittype(modelName);
@@ -378,7 +376,7 @@ public class SPP {
       unitParameters.add(new UnitParameter(utp, unit.getId(), sessionParameter, profile));
   }
 
-  private static void updateXAPS(SessionData sessionData, DBI dbi) throws NoAvailableConnectionException, SQLException {
+  private static void updateXAPS(SessionData sessionData, DBI dbi) throws SQLException {
     if (sessionData.getUnit() != null) {
       Unit unit = sessionData.getUnit();
       List<UnitParameter> unitParameters = new ArrayList<UnitParameter>();

@@ -1,11 +1,6 @@
 package com.github.freeacs.tr069.methods;
 
 import com.github.freeacs.base.Log;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
-import com.github.freeacs.tr069.*;
-import com.github.freeacs.tr069.Properties;
-import com.github.freeacs.tr069.exception.TR069Exception;
-import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.github.freeacs.dbi.FileType;
 import com.github.freeacs.dbi.UnittypeParameters;
 import com.github.freeacs.dbi.tr069.TestCaseParameter;
@@ -14,6 +9,10 @@ import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ProvOutput;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemParameters;
+import com.github.freeacs.tr069.*;
+import com.github.freeacs.tr069.Properties;
+import com.github.freeacs.tr069.exception.TR069Exception;
+import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.github.freeacs.tr069.test.system2.TestUnit;
 import com.github.freeacs.tr069.test.system2.TestUnitCache;
 import com.github.freeacs.tr069.test.system2.Util;
@@ -179,11 +178,11 @@ public class HTTPResponseCreator {
    * That's because we have 2 different ways to set it in the database, the
    * standard and the Owera-way.
    * 
-   * @throws NoAvailableConnectionException
+   *
    * @throws SQLException
    */
   @SuppressWarnings(value = { "unused" })
-  private static Response buildGPV(HTTPReqResData reqRes) throws SQLException, NoAvailableConnectionException {
+  private static Response buildGPV(HTTPReqResData reqRes) throws SQLException {
     if (reqRes.getTR069TransactionID() == null)
       reqRes.setTR069TransactionID(new TR069TransactionID("OWERA-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
@@ -257,7 +256,7 @@ public class HTTPResponseCreator {
   }
 
   @SuppressWarnings(value = { "unused" })
-  private static Response buildSPV(HTTPReqResData reqRes) throws NoSuchAlgorithmException, SQLException, NoAvailableConnectionException {
+  private static Response buildSPV(HTTPReqResData reqRes) throws NoSuchAlgorithmException, SQLException {
     if (reqRes.getTR069TransactionID() == null)
       reqRes.setTR069TransactionID(new TR069TransactionID("OWERA-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
@@ -292,7 +291,7 @@ public class HTTPResponseCreator {
   }
 
   @SuppressWarnings(value = { "unused" })
-  private static Response buildDO(HTTPReqResData reqRes) throws SQLException, NoAvailableConnectionException {
+  private static Response buildDO(HTTPReqResData reqRes) throws SQLException {
     if (reqRes.getTR069TransactionID() == null)
       reqRes.setTR069TransactionID(new TR069TransactionID("OWERA-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
@@ -348,7 +347,7 @@ public class HTTPResponseCreator {
   }
 
   @SuppressWarnings(value = { "unused" })
-  private static Response buildSPA(HTTPReqResData reqRes) throws NoSuchAlgorithmException, SQLException, NoAvailableConnectionException {
+  private static Response buildSPA(HTTPReqResData reqRes) throws NoSuchAlgorithmException, SQLException {
     if (reqRes.getTR069TransactionID() == null)
       reqRes.setTR069TransactionID(new TR069TransactionID("OWERA-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);

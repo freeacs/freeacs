@@ -30,7 +30,7 @@ public class GetUnitTypeParameterFlagAndValuesPage extends AbstractWebPage {
 		res.setContentType("text/html");
 		if(type!=null && name!=null){
 			if(type.equals("unittype") && unittype!=null){
-				XAPS xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource);
+				XAPS xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
 				Unittype ut = xaps.getUnittype(unittype);
 				if(ut!=null){
 					UnittypeParameter utp = ut.getUnittypeParameters().getByName(name);

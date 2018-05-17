@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.page.file;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.*;
@@ -198,7 +197,7 @@ public class FilePage extends AbstractWebPage {
 	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		inputData = (FileData) InputDataRetriever.parseInto(new FileData(), params);
 
-		xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource);
+		xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -287,7 +286,7 @@ public class FilePage extends AbstractWebPage {
 	 * @param outputHandler the outputHandler
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
 	private void exportFirmware(Output outputHandler) {
 		try {
@@ -314,7 +313,7 @@ public class FilePage extends AbstractWebPage {
 	 * @throws IllegalAccessException the illegal access exception
 	 * @throws InvocationTargetException the invocation target exception
 	 * @throws NoSuchMethodException the no such method exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
 	protected DropDownSingleSelect<FileType> getTypeSelect(FileType selectedFileType, FileType... types) {

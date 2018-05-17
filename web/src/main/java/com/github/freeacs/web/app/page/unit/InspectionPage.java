@@ -80,8 +80,8 @@ public class InspectionPage extends AbstractWebPage {
 		try {
 			sessionId = params.getSession().getId();
 
-			xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
-			xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource);
+			xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+			xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource, syslogDataSource);
 
 			if (xaps == null || xapsUnit == null) {
 				throw new Exception("Could not load xaps objects!");

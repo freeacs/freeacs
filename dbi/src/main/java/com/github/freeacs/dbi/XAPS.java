@@ -1,11 +1,9 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.NumberComparator;
+import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.util.MapWrapper;
 import com.github.freeacs.dbi.util.XAPSVersionCheck;
-import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +58,7 @@ public class XAPS {
 
 	private ScriptExecutions scriptExecutions;
 
-	public XAPS(DataSource dataSource, Syslog syslog) throws NoAvailableConnectionException, SQLException {
+	public XAPS(DataSource dataSource, Syslog syslog) throws SQLException {
 		long start = System.currentTimeMillis();
 		this.dataSource = dataSource;
 		this.syslog = syslog;
@@ -117,9 +115,8 @@ public class XAPS {
 	 * 
 	 * @return
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
 	 */
-	public Unittypes read() throws SQLException, NoAvailableConnectionException {
+	public Unittypes read() throws SQLException {
 		unittypes = readAsAdmin();
 		logger.debug("Updated XAPS object, read " + unittypes.getUnittypes().length + " unittypes");
 		User user = syslog.getIdentity().getUser();
@@ -870,7 +867,7 @@ public class XAPS {
 
 	}
 
-	private void readJobs(Unittypes unittypes) throws SQLException, NoAvailableConnectionException {
+	private void readJobs(Unittypes unittypes) throws SQLException {
 		Connection c = null;
 		Statement s = null;
 		ResultSet rs = null;
@@ -982,8 +979,6 @@ public class XAPS {
 				rs.close();
 			if (s != null)
 				s.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 
 	}

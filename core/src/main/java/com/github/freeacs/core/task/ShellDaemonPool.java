@@ -1,6 +1,5 @@
 package com.github.freeacs.core.task;
 
-import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.core.Properties;
 import com.github.freeacs.shell.XAPSShell;
 import com.github.freeacs.shell.XAPSShellDaemon;

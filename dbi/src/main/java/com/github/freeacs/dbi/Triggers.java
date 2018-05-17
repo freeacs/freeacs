@@ -1,7 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.InsertOrUpdateStatement.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,9 +50,9 @@ public class Triggers {
 	 * @param history
 	 * @param xaps
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
-	public void addOrChangeHistory(TriggerRelease history, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeHistory(TriggerRelease history, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
 		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
@@ -92,14 +90,14 @@ public class Triggers {
 		}
 	}
 
-	public TriggerRelease readLatestTriggerRelease(Trigger trigger, Date from, Date to, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public TriggerRelease readLatestTriggerRelease(Trigger trigger, Date from, Date to, XAPS xaps) throws SQLException {
 		List<TriggerRelease> history = readTriggerReleases(trigger, from, to, xaps, 1);
 		if (history.size() > 0)
 			return history.get(0);
 		return null;
 	}
 
-	public List<TriggerRelease> readTriggerReleases(Trigger trigger, Date from, Date to, XAPS xaps, Integer limit) throws SQLException, NoAvailableConnectionException {
+	public List<TriggerRelease> readTriggerReleases(Trigger trigger, Date from, Date to, XAPS xaps, Integer limit) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Connection c = xaps.getDataSource().getConnection();
@@ -152,9 +150,9 @@ public class Triggers {
 	 * @param event
 	 * @param xaps
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
-	public void addEvent(TriggerEvent event, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void addEvent(TriggerEvent event, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
 		Connection c = xaps.getDataSource().getConnection();
 		try {
@@ -177,11 +175,11 @@ public class Triggers {
 		}
 	}
 
-	public int deleteHistory(Date upUntil, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public int deleteHistory(Date upUntil, XAPS xaps) throws SQLException {
 		return deleteHistory(null, upUntil, xaps);
 	}
 
-	public int deleteHistory(Integer triggerId, Date upUntil, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public int deleteHistory(Integer triggerId, Date upUntil, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
 		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
@@ -204,7 +202,7 @@ public class Triggers {
 		}
 	}
 
-	public int deleteEvents(Date upUntil, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public int deleteEvents(Date upUntil, XAPS xaps) throws SQLException {
 		return deleteEvents(null, upUntil, xaps);
 	}
 
@@ -216,9 +214,9 @@ public class Triggers {
 	 * @param xaps
 	 * @return
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
-	public int deleteEvents(Integer triggerId, Date upUntil, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public int deleteEvents(Integer triggerId, Date upUntil, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
 		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
@@ -251,9 +249,9 @@ public class Triggers {
 	 * @param xaps
 	 * @return
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
-	public Map<String, Integer> countEventsPrUnit(Integer triggerId, Date from, Date to, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public Map<String, Integer> countEventsPrUnit(Integer triggerId, Date from, Date to, XAPS xaps) throws SQLException {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		Connection c = xaps.getDataSource().getConnection();
@@ -284,7 +282,7 @@ public class Triggers {
 		}
 	}
 
-	public Date getFirstEventTms(Integer triggerId, Date from, Date to, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public Date getFirstEventTms(Integer triggerId, Date from, Date to, XAPS xaps) throws SQLException {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		Connection c = xaps.getDataSource().getConnection();
@@ -318,9 +316,9 @@ public class Triggers {
 	 * @param xaps
 	 * @return
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
-	public Integer countUnits(Integer triggerId, Date from, Date to, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public Integer countUnits(Integer triggerId, Date from, Date to, XAPS xaps) throws SQLException {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		Connection c = xaps.getDataSource().getConnection();
@@ -345,7 +343,7 @@ public class Triggers {
 		}
 	}
 
-	public void addOrChangeTrigger(Trigger trigger, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeTrigger(Trigger trigger, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		trigger.validate();
@@ -358,7 +356,7 @@ public class Triggers {
 		}
 	}
 
-	private int deleteTriggerImpl(Trigger trigger, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private int deleteTriggerImpl(Trigger trigger, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
 		boolean wasAutoCommit = false;
 		Connection c = xaps.getDataSource().getConnection();
@@ -402,11 +400,11 @@ public class Triggers {
 	 * The first time this method is run, the flag is set. The second time this
 	 * method is run, the parameter is removed from the name- and id-Map.
 	 *
-	 * @throws NoAvailableConnectionException
+	 *
 	 *
 	 * @throws java.sql.SQLException
 	 */
-	public int deleteTrigger(Trigger trigger, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public int deleteTrigger(Trigger trigger, XAPS xaps) throws SQLException {
 		if (trigger.getChildren().size() > 0)
 			throw new IllegalArgumentException("This trigger is a composite trigger with \"child\" triggers. Remove child triggers before deleting this trigger");
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
@@ -419,7 +417,7 @@ public class Triggers {
 		return rowsDeleted;
 	}
 
-	private void addOrChangeTriggerImpl(Trigger trigger, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void addOrChangeTriggerImpl(Trigger trigger, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
 		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;

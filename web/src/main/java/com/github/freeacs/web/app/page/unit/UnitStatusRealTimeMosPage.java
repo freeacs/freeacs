@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.page.unit;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.report.*;
 import com.github.freeacs.web.app.Output;
@@ -8,7 +7,10 @@ import com.github.freeacs.web.app.input.InputDataRetriever;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.page.report.ReportPage;
-import com.github.freeacs.web.app.util.*;
+import com.github.freeacs.web.app.util.BrowserDetect;
+import com.github.freeacs.web.app.util.UserAgent;
+import com.github.freeacs.web.app.util.WebConstants;
+import com.github.freeacs.web.app.util.XAPSLoader;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,13 +51,13 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
 		
 		String sessionId = params.getSession().getId();
 		
-		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
+		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
 
-		XAPSUnit xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource);
+		XAPSUnit xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource, syslogDataSource);
 		
 		Map<String, Object> root = outputHandler.getTemplateMap();
 		
@@ -112,8 +114,8 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
 		
 		if(params.getBoolean("display-chart")){
             ReportVoipCallGenerator rgVoip = ReportPage.getReportVoipCallGenerator(params.getSession().getId(), xaps);
-			List<Unittype> unittypes = unittype!=null?Arrays.asList(unittype):getAllowedUnittypes(sessionId, xapsDataSource);
-			List<Profile> profiles = profile!=null?Arrays.asList(profile):getAllowedProfiles(sessionId, unittype, xapsDataSource);
+			List<Unittype> unittypes = unittype!=null?Arrays.asList(unittype):getAllowedUnittypes(sessionId, xapsDataSource, syslogDataSource);
+			List<Profile> profiles = profile!=null?Arrays.asList(profile):getAllowedProfiles(sessionId, unittype, xapsDataSource, syslogDataSource);
 			String unitId = unit!=null?unit.getId():null;
 			Report<RecordVoipCall> report = rgVoip.generateFromSyslog(PeriodType.SECOND,start, end,unittypes,profiles, unitId,line,null);
 			logger.info("Found "+report.getMap().size()+" record voip call entries. From: "+start.toString()+". To: "+(end!=null?end.toString():"N/A"));
@@ -149,9 +151,9 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
 	 * @param xaps the xaps
 	 * @return the last qo s timestamp
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
-	public static Date getLastQoSTimestamp(String sessionId,Unit unit,Date start,String line,XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public static Date getLastQoSTimestamp(String sessionId,Unit unit,Date start,String line,XAPS xaps) throws SQLException {
 		Syslog syslog = new Syslog(xaps.getSyslog().getDataSource(), XAPSLoader.getIdentity(sessionId, xaps.getDataSource()));
 		SyslogFilter filter = new SyslogFilter();
 		filter.setMaxRows(1);
@@ -173,9 +175,9 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
 	 * @param start the start
 	 * @return the last qo s timestamp
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
-	private Date getLastQoSTimestamp(String sessionId,Unit unit,Date start) throws SQLException, NoAvailableConnectionException{
+	private Date getLastQoSTimestamp(String sessionId,Unit unit,Date start) throws SQLException{
 		return getLastQoSTimestamp(sessionId, unit, start,null,xaps);
 	}
 	

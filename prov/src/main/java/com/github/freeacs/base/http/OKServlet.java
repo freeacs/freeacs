@@ -2,7 +2,6 @@ package com.github.freeacs.base.http;
 
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.db.DBAccess;
-import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.dbi.DBI;
 
 import javax.servlet.ServletException;
@@ -12,8 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;

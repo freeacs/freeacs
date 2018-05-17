@@ -1,13 +1,10 @@
 package com.github.freeacs.core.task;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.common.util.CacheValue;
 import com.github.freeacs.common.util.TimestampMap;
 import com.github.freeacs.core.util.SyslogMessageMapContainer;
 import com.github.freeacs.dbi.*;
-
 import com.github.freeacs.dbi.util.SQLUtil;
 import com.github.freeacs.dbi.util.SyslogClient;
 import org.slf4j.Logger;
@@ -67,7 +64,7 @@ public class HeartbeatDetection extends DBIShare {
 		lastTms = tms;
 	}
 
-	private void findHeartbeats(long from, long to) throws NoAvailableConnectionException, SQLException {
+	private void findHeartbeats(long from, long to) throws SQLException {
 		long orgTo = to;
 		long orgFrom = from;
 		if (from == 0)
@@ -143,7 +140,7 @@ public class HeartbeatDetection extends DBIShare {
 
 	}
 
-	private void findActiveDevices(long from, long to) throws NoAvailableConnectionException, SQLException {
+	private void findActiveDevices(long from, long to) throws SQLException {
 		//		if (from == null)
 		//			logger.info("FindActiveDevices: Parse syslog in the timespan " + sdf.format(new Date(to - (long) Heartbeat.MAX_TIMEOUT_HOURS * HOUR_MS)) + " to " + sdf.format(new Date(to)));
 		//		else
@@ -186,7 +183,7 @@ public class HeartbeatDetection extends DBIShare {
 
 	}
 
-	private void filterAndSendHeartbeats(long to) throws SQLException, NoAvailableConnectionException, IOException {
+	private void filterAndSendHeartbeats(long to) throws SQLException, IOException {
 		// Now process the maps and the "absence"-events to see if there's any units
 		// missing and build a list of missing events from units
 		XAPSUnit xapsUnit = new XAPSUnit(getXapsCp(), xaps, getSyslog());
@@ -226,7 +223,7 @@ public class HeartbeatDetection extends DBIShare {
 		}
 	}
 
-	private void sendHeartbeat(Heartbeat heartbeat, String unitId, long tms) throws SQLException, NoAvailableConnectionException, IOException {
+	private void sendHeartbeat(Heartbeat heartbeat, String unitId, long tms) throws SQLException, IOException {
 		String expression = heartbeat.getExpression();
 		if (heartbeat.getExpression().startsWith("^"))
 			expression = expression.substring(1);

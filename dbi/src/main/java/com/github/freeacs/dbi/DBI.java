@@ -1,8 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.Sleep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -203,7 +200,7 @@ public class DBI implements Runnable {
 	// Set if an error occurs within DBI, used to signal ERROR in monitor
 	private Throwable dbiThrowable;
 
-	public DBI(int lifetimeSec, DataSource dataSource, Syslog syslog) throws NoAvailableConnectionException, SQLException {
+	public DBI(int lifetimeSec, DataSource dataSource, Syslog syslog) throws  SQLException {
 		this.dataSource = dataSource;
 		this.lifetimeSec = lifetimeSec;
 		this.syslog = syslog;
@@ -245,7 +242,7 @@ public class DBI implements Runnable {
 		return inboxes.get(key);
 	}
 
-	private void populateInboxes() throws SQLException, NoAvailableConnectionException {
+	private void populateInboxes() throws SQLException {
 		Connection c = dataSource.getConnection();
 		SQLException sqlex = null;
 		Statement s = null;
@@ -291,7 +288,7 @@ public class DBI implements Runnable {
 		}
 	}
 
-	private void cleanup() throws SQLException, NoAvailableConnectionException {
+	private void cleanup() throws SQLException {
 		//		if (!XAPSVersionCheck.messageSupported)
 		//			return;
 		Connection c = dataSource.getConnection();
@@ -316,7 +313,7 @@ public class DBI implements Runnable {
 		}
 	}
 
-	private void send(Message message) throws SQLException, NoAvailableConnectionException {
+	private void send(Message message) throws SQLException {
 		//		if (!XAPSVersionCheck.messageSupported)
 		//			return;
 		Connection c = dataSource.getConnection();
@@ -395,7 +392,7 @@ public class DBI implements Runnable {
 	 * Must be called if an application is about to be terminated, otherwise it will be run every
 	 * second.
 	 */
-	public synchronized void processOutbox() throws SQLException, NoAvailableConnectionException {
+	public synchronized void processOutbox() throws SQLException {
 		for (Entry<Integer, UnittypePublish> entry : publishUnittypes.entrySet()) {
 			UnittypePublish up = entry.getValue();
 			up.addUnittypePublish();
@@ -450,7 +447,7 @@ public class DBI implements Runnable {
 		}
 	}
 
-	private void processPublishInbox() throws NoAvailableConnectionException, SQLException {
+	private void processPublishInbox() throws SQLException {
 		boolean updateXaps = false;
 		for (Message m : publishInbox.getUnreadMessages()) {
 			publishInbox.markMessageAsRead(m);

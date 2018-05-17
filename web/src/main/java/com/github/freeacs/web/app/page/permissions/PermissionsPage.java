@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.page.permissions;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.Output;
@@ -59,7 +58,7 @@ public class PermissionsPage extends AbstractWebPage {
 		SessionData sessionData = SessionCache.getSessionData(sessionId);
 		WebUser loggedInUser = sessionData.getUser();
 
-		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
+		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -195,7 +194,7 @@ public class PermissionsPage extends AbstractWebPage {
 			root.put("unittype", utString);
 			Unittype unittype = xaps.getUnittype(utString);
 			if (unittype != null) {
-				root.put("profiles", getAllowedProfiles(sessionId, unittype, xapsDataSource));
+				root.put("profiles", getAllowedProfiles(sessionId, unittype, xapsDataSource, syslogDataSource));
 				root.put("profile", inputData.getProfile().getString());
 			}
 		}
@@ -390,11 +389,11 @@ public class PermissionsPage extends AbstractWebPage {
 	 * @throws SecurityException the security exception
 	 * @throws IllegalAccessException the illegal access exception
 	 * @throws InvocationTargetException the invocation target exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
 	private void setPermissions(User newUser, boolean update) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException,
-			NoAvailableConnectionException, SQLException {
+			SQLException {
 		Permissions perms = newUser.getPermissions();
 
 		List<Permission> toAdd = new ArrayList<Permission>();

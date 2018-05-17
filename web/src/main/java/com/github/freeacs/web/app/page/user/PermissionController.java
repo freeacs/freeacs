@@ -1,7 +1,5 @@
 package com.github.freeacs.web.app.page.user;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.User;
 import com.github.freeacs.dbi.Users;
 import com.github.freeacs.web.app.util.SessionCache;
@@ -23,9 +21,9 @@ public abstract class PermissionController {
 	 * @param xapsDataSource
 	 * @return the users
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
-	Users getUsers(String sessionid, DataSource xapsDataSource) throws SQLException, NoAvailableConnectionException {
+	Users getUsers(String sessionid, DataSource xapsDataSource) throws SQLException {
 		return new Users(xapsDataSource);
 	}
 
@@ -39,9 +37,9 @@ public abstract class PermissionController {
 	 * @param xapsDataSource
 	 * @return the all users
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
-	UserModel[] getAllUsers(Integer min, Integer max, String sessionId, UserGroupModel group, DataSource xapsDataSource) throws SQLException, NoAvailableConnectionException {
+	UserModel[] getAllUsers(Integer min, Integer max, String sessionId, UserGroupModel group, DataSource xapsDataSource) throws SQLException {
 		Users users = getUsers(sessionId, xapsDataSource);
 		SessionData sessionData = SessionCache.getSessionData(sessionId);
 		User loggedInUser = sessionData.getUser();

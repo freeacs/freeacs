@@ -1,11 +1,7 @@
 package com.github.freeacs.monitor.task;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.scheduler.TaskDefaultImpl;
 import com.github.freeacs.dbi.*;
-
 import com.github.freeacs.monitor.MonitorServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,15 +9,13 @@ import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
-import static com.github.freeacs.monitor.Properties.*;
-
 public class TriggerNotificationSecondly extends TaskDefaultImpl {
 
 	private static Logger log = LoggerFactory.getLogger(TriggerNotificationSecondly.class);
 	private DBI dbi;
 	private Inbox inbox = new Inbox();
 
-	public TriggerNotificationSecondly(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException, NoAvailableConnectionException {
+	public TriggerNotificationSecondly(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException {
 		super(taskName);
 		log.info("TriggerNotificationTask starts...");
 		dbi = initializeDBI(xapsCp, sysCp);
@@ -50,7 +44,7 @@ public class TriggerNotificationSecondly extends TaskDefaultImpl {
 		return log;
 	}
 
-	public static DBI initializeDBI(DataSource xapsCp, DataSource sysCp) throws SQLException, NoAvailableConnectionException {
+	public static DBI initializeDBI(DataSource xapsCp, DataSource sysCp) throws SQLException {
 		Users users = new Users(xapsCp);
 		User user = users.getUnprotected(Users.USER_ADMIN);
 		Identity id = new Identity(SyslogConstants.FACILITY_STUN, MonitorServlet.VERSION, user);

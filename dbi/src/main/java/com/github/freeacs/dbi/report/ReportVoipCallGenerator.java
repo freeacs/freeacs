@@ -1,7 +1,5 @@
 package com.github.freeacs.dbi.report;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,12 +26,12 @@ public class ReportVoipCallGenerator extends ReportGenerator {
 		super(sysCp, xapsCp, xaps, logPrefix, id);
 	}
 
-	public Report<RecordVoipCall> generateFromSyslog(Date start, Date end, String unitId, String line) throws NoAvailableConnectionException, SQLException, IOException {
+	public Report<RecordVoipCall> generateFromSyslog(Date start, Date end, String unitId, String line) throws SQLException, IOException {
 		return generateFromSyslog(PeriodType.SECOND, start, end, null, null, unitId, line, null);
 	}
 
 	public Report<RecordVoipCall> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs, String unitId, String line, Group group)
-			throws NoAvailableConnectionException, SQLException, IOException {
+			throws SQLException, IOException {
 		Report<RecordVoipCall> report = new Report<RecordVoipCall>(RecordVoipCall.class, periodType);
 		logInfo("VoipCallReport", null, uts, prs, start, end);
 		if (unitId != null)
@@ -51,7 +49,7 @@ public class ReportVoipCallGenerator extends ReportGenerator {
 	}
 
 	public Map<String, Report<RecordVoipCall>> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs, Group group)
-			throws NoAvailableConnectionException, SQLException, IOException {
+			throws SQLException, IOException {
 		logInfo("VoipCallReport", null, uts, prs, start, end);
 		Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
 		List<SyslogEntry> entries = readSyslog(start, end, uts, prs, null, null);
@@ -82,7 +80,7 @@ public class ReportVoipCallGenerator extends ReportGenerator {
 		}
 	}
 
-	private List<SyslogEntry> readSyslog(Date start, Date end, List<Unittype> uts, List<Profile> prs, String unitId, String line) throws SQLException, NoAvailableConnectionException {
+	private List<SyslogEntry> readSyslog(Date start, Date end, List<Unittype> uts, List<Profile> prs, String unitId, String line) throws SQLException {
 		Syslog syslog = new Syslog(sysCp, id);
 		SyslogFilter filter = new SyslogFilter();
 		filter.setFacility(16); // Only messages from device

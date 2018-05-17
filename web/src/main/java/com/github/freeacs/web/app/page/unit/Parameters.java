@@ -1,13 +1,7 @@
 package com.github.freeacs.web.app.page.unit;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**

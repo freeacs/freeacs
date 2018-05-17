@@ -43,7 +43,7 @@ public class ProfileCreatePage extends ProfileActions {
 
 		String sessionId = params.getSession().getId();
 
-		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
+		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
@@ -66,7 +66,7 @@ public class ProfileCreatePage extends ProfileActions {
 			root.put("profilestocopyfrom",profilestocopyfrom);
 		
 		if (inputData.getFormSubmit().isValue("Create profile")) {
-			if (isProfilesLimited(unittypes.getSelected(), sessionId, xapsDataSource)) {
+			if (isProfilesLimited(unittypes.getSelected(), sessionId, xapsDataSource, syslogDataSource)) {
 				throw new Exception("You are not allowed to create profiles!");
 			}
 			if (unittypes.getSelected() != null && unittypes.getSelected().getProfiles().getByName(inputData.getProfilename().getString()) == null) {

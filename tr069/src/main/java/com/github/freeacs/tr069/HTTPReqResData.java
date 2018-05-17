@@ -6,7 +6,6 @@ import com.github.freeacs.base.Log;
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.tr069.xml.TR069TransactionID;
-
 import org.w3c.dom.Document;
 
 import javax.servlet.http.HttpServletRequest;

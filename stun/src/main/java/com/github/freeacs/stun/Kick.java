@@ -1,6 +1,5 @@
 package com.github.freeacs.stun;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.IPAddress;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.XAPSUnit;
@@ -62,7 +61,7 @@ public class Kick {
 	private static Logger log = LoggerFactory.getLogger("KickSingle");
 	private static Random random = new Random();
 
-	public static KickResponse kick(Unit unit, XAPSUnit xapsUnit) throws MalformedURLException, SQLException, NoAvailableConnectionException {
+	public static KickResponse kick(Unit unit, XAPSUnit xapsUnit) throws MalformedURLException, SQLException {
 		CPEParameters cpeParams = new CPEParameters(getKeyroot(unit));
 		String udpCrUrl = unit.getParameterValue(cpeParams.UDP_CONNECTION_URL, false);
 		String crUrl = unit.getParameterValue(cpeParams.CONNECTION_URL, false);
@@ -103,7 +102,7 @@ public class Kick {
 		return IPAddress.isPublic(new URL(crUrl).getHost());
 	}
 
-	private static KickResponse kickUsingTCP(Unit unit, XAPSUnit xapsUnit, String crUrl, String crPass, String crUser) throws SQLException, NoAvailableConnectionException, MalformedURLException {
+	private static KickResponse kickUsingTCP(Unit unit, XAPSUnit xapsUnit, String crUrl, String crPass, String crUser) throws SQLException, MalformedURLException {
 		DefaultHttpClient client = new DefaultHttpClient();
 		HttpGet get = new HttpGet(crUrl);
 		get.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, new Integer(20000));
@@ -137,7 +136,7 @@ public class Kick {
 		}
 	}
 
-	private static KickResponse kickUsingUDP(Unit unit, XAPSUnit xapsUnit, String udpCrUrl, String crUrl, String crPass, String crUser) throws NoAvailableConnectionException, SQLException {
+	private static KickResponse kickUsingUDP(Unit unit, XAPSUnit xapsUnit, String udpCrUrl, String crUrl, String crPass, String crUser) throws SQLException {
 		try {
 			String id = "" + random.nextInt(100000);
 			String cn = "" + random.nextLong();

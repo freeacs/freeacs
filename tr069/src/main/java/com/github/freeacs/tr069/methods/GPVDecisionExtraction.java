@@ -1,16 +1,14 @@
 package com.github.freeacs.tr069.methods;
 
 import com.github.freeacs.base.Log;
-import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.db.DBAccessSessionTR069;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
-import com.github.freeacs.tr069.HTTPReqResData;
-import com.github.freeacs.tr069.SessionData;
-import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.UnittypeParameters;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ProvOutput;
 import com.github.freeacs.dbi.util.ProvisioningMode;
+import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.SessionData;
+import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 
 import java.sql.SQLException;
@@ -26,7 +24,7 @@ public class GPVDecisionExtraction {
 	 * @param reqRes
 	 * @throws TR069DatabaseException
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
 	protected static void processExtraction(HTTPReqResData reqRes) throws TR069DatabaseException {
 		SessionData sessionData = reqRes.getSessionData();

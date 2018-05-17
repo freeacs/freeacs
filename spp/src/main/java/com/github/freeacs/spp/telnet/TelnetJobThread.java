@@ -4,16 +4,12 @@ import com.github.freeacs.base.SessionDataI;
 import com.github.freeacs.base.UnitJob;
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.db.DBAccessSession;
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
-import com.github.freeacs.spp.SessionData;
-
 import com.github.freeacs.dbi.util.SystemParameters;
+import com.github.freeacs.spp.SessionData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -191,7 +187,7 @@ public class TelnetJobThread implements Runnable {
 
 	private static Pattern paramPattern = Pattern.compile("(\\$\\{([^\\}]+)\\})");
 
-	private String getParameter(String paramName) throws SQLException, NoAvailableConnectionException {
+	private String getParameter(String paramName) throws SQLException {
 		if (jobParams != null && jobParams.get(paramName) != null)
 			return jobParams.get(paramName).getParameter().getValue();
 		String param = sessionData.getUnit().getParameters().get(paramName);

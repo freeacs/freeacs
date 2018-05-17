@@ -1,7 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.util.XAPSVersionCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +56,7 @@ public class Files {
 		return filteredFiles.toArray(new File[] {});
 	}
 
-	public void addOrChangeFile(File file, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeFile(File file, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		file.setConnectionProperties(xaps.getDataSource()); // just in
@@ -74,7 +72,7 @@ public class Files {
 		}
 	}
 
-	private void deleteFileImpl(Unittype unittype, File file, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void deleteFileImpl(Unittype unittype, File file, XAPS xaps) throws SQLException {
 		Statement s = null;
 		String sql = null;
 		Connection c = xaps.getDataSource().getConnection();
@@ -104,10 +102,10 @@ public class Files {
 	 * cascade argument = true will also delete all unittype parameters and
 	 * enumerations for all these parameters.
 	 * 
-	 * @throws NoAvailableConnectionException
+	 *
 	 * @throws SQLException
 	 */
-	public void deleteFile(File file, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void deleteFile(File file, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		deleteFileImpl(unittype, file, xaps);
@@ -116,7 +114,7 @@ public class Files {
 		versionTypeMap.remove(file.getVersion() + file.getType());
 	}
 
-	private void addOrChangeFileImpl(Unittype unittype, File file, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void addOrChangeFileImpl(Unittype unittype, File file, XAPS xaps) throws SQLException {
 		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		PreparedStatement s = null;
@@ -284,7 +282,7 @@ public class Files {
 	}
 
 	/* only used to refresh the cache, used from DBI */
-	protected static void refreshFile(Integer fileId, Integer unittypeId, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	protected static void refreshFile(Integer fileId, Integer unittypeId, XAPS xaps) throws SQLException {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		Connection c = xaps.getDataSource().getConnection();

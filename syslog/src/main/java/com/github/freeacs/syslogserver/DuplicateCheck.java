@@ -1,6 +1,5 @@
 package com.github.freeacs.syslogserver;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.SyslogEntry;
 import com.github.freeacs.dbi.SyslogEvent;
 import org.slf4j.Logger;
@@ -32,7 +31,7 @@ public class DuplicateCheck {
 		return duplicateMap.size();
 	}
 
-	private static void updateSyslogEntry(Duplicate duplicate) throws SQLException, NoAvailableConnectionException {
+	private static void updateSyslogEntry(Duplicate duplicate) throws SQLException {
 		if (duplicate.getCount() > 0) {
 			logger.debug("Syslog entry is updated with duplicate counter = " + duplicate.getCount());
 			String orgMsg = duplicate.getEntry().getContent();
@@ -42,7 +41,7 @@ public class DuplicateCheck {
 		}
 	}
 
-	private static void cleanup(int counter) throws SQLException, NoAvailableConnectionException {
+	private static void cleanup(int counter) throws SQLException {
 		if (counter <= getCleanupLimitCounter() || duplicateMap.size() <= getCleanupLimitSize())
 			return;
 		logger.info("Duplicate Message Buffer cleanup initiated (counter:" + counter + ", size:" + duplicateMap.size() + ")");
@@ -60,7 +59,7 @@ public class DuplicateCheck {
 		logger.info(removeCounter + " messages removed from Duplicate Message Buffer (size:" + duplicateMap.size() + ")");
 	}
 
-	private static boolean duplicate(String msg) throws SQLException, NoAvailableConnectionException {
+	private static boolean duplicate(String msg) throws SQLException {
 		Duplicate duplicate = duplicateMap.get(msg);
 		if (logger.isDebugEnabled()) {
 			if (duplicate == null)
@@ -86,9 +85,9 @@ public class DuplicateCheck {
 	 * @param entry
 	 * @return
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
-	public synchronized static boolean addMessage(String key, SyslogEntry entry, int duplicateTimeoutMinutes) throws SQLException, NoAvailableConnectionException {
+	public synchronized static boolean addMessage(String key, SyslogEntry entry, int duplicateTimeoutMinutes) throws SQLException {
 		Duplicate duplicate = new Duplicate(entry, System.currentTimeMillis() + duplicateTimeoutMinutes * 60000);
 		if (duplicateMap.size() <= getMaxSize() && !duplicate(key)) {
 			counter++;

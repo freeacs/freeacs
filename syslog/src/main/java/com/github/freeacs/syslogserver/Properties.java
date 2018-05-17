@@ -1,6 +1,5 @@
 package com.github.freeacs.syslogserver;
 
-import com.github.freeacs.common.db.ConnectionProperties;
 import com.github.freeacs.dbi.Syslog;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -108,11 +107,11 @@ public class Properties {
 	}
 
 	public static int getMaxConn(final String infix) {
-		return getInteger("db." + infix + ".maxconn", ConnectionProperties.maxconn);
+		return getInteger("db." + infix + ".maxconn", 20);
 	}
 
 	public static long getMaxAge(final String infix) {
-		return getLong("db." + infix + ".maxage", ConnectionProperties.maxage);
+		return getLong("db." + infix + ".maxage", 60000);
 	}
 
 	public static String getUrl(final String infix) {

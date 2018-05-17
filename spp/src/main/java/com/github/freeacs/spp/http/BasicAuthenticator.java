@@ -4,10 +4,9 @@ import com.github.freeacs.base.BaseCache;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.NoDataAvailableException;
 import com.github.freeacs.base.http.Util;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
+import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.spp.Properties;
 import com.github.freeacs.spp.SessionData;
-import com.github.freeacs.dbi.util.SystemParameters;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -101,9 +100,6 @@ public class BasicAuthenticator {
 				Log.notice(BasicAuthenticator.class, "Authentication verified (CPE IP address: " + req.getRemoteHost() + ")");
 				return true;
 			}
-		} catch (NoAvailableConnectionException e) {
-			Log.error(BasicAuthenticator.class, "Authentication failed because of no available database connections (CPE IP address: " + req.getRemoteHost() + ")");
-			res.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 		} catch (SQLException e) {
 			Log.fatal(BasicAuthenticator.class, "Authentication failed because of database error (CPE IP address: " + req.getRemoteHost() + ")", e);
 			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

@@ -1,6 +1,5 @@
 package com.github.freeacs.shell;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.File;
 import com.github.freeacs.shell.util.FileUtil;
 
@@ -69,8 +68,6 @@ public class Script {
 			} else if (!fileFound)
 				throw new IllegalArgumentException("The script file " + filename + " does not exist");
 			this.variables = variables;
-		} catch (NoAvailableConnectionException nce) {
-			throw new IllegalArgumentException("The script file " + filename + " was not found due to database connection problem");
 		} catch (SQLException nce) {
 			throw new IllegalArgumentException("The script file " + filename + " was not found due to database connection problem");
 		}

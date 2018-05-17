@@ -5,10 +5,6 @@ import com.github.freeacs.base.Log;
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.http.Authenticator;
 import com.github.freeacs.base.http.ThreadCounter;
-import com.github.freeacs.common.db.ConnectionMetaData;
-import com.github.freeacs.common.db.ConnectionPoolData;
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.ScriptExecutions;
 import com.github.freeacs.dbi.Unit;
@@ -25,8 +21,6 @@ import com.github.freeacs.tr069.methods.TR069Method;
 import com.github.freeacs.tr069.test.system1.TestDatabase;
 import com.github.freeacs.tr069.test.system1.TestDatabaseObject;
 import com.github.freeacs.tr069.test.system2.Util;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -37,8 +31,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.List;
-
-import static com.github.freeacs.tr069.Properties.*;
 
 
 /**
@@ -86,29 +78,6 @@ public class Provisioning extends HttpServlet {
 		String html = "";
 		html += "<title>xAPS TR-069 Server Monitoring Page</title>";
 		html += "<h1>Monitoring of the TR-069 Server v. " + VERSION + "</h1>";
-		ConnectionProperties props = ConnectionProvider.getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps"));
-		ConnectionPoolData poolData = ConnectionProvider.getConnectionPoolData(props);
-		if (poolData != null) {
-			html += "<h1>Database connection</h1>\n";
-			html += "This server is connected to " + poolData.getProps().getUrl() + " with user " + poolData.getProps().getUser() + "<br>\n";
-			ConnectionMetaData metaData = poolData.getMetaData().clone();
-			html += "<ul>Accessed   : " + metaData.getAccessed() + "<br>\n";
-			html += "Retries        : " + metaData.getRetries() + "<br>\n";
-			html += "Denied         : " + metaData.getDenied() + "<br>\n";
-			html += "Denied %       : " + metaData.calculateDeniedPercent() + "<br>\n";
-			html += "Free           : " + poolData.getFreeConn().size() + "<br>\n";
-			html += "Currently used : " + poolData.getUsedConn().size() + "<br>\n";
-			html += "Used %         : " + metaData.calculateUsedPercent() + "<br>\n<ul>";
-			int[] accessedSim = metaData.getAccessedSim();
-			for (int i = 1; i < accessedSim.length; i++) {
-				if (accessedSim[i] == 0 && accessedSim[i + 1] == 0 && accessedSim[i + 2] == 0)
-					break;
-				float percent = ((float) accessedSim[i] / metaData.getAccessed()) * 100f;
-				html += String.format("Used " + i + " connection(s) simultaneously: %8.5f", percent);
-				html += "% (accessed: " + accessedSim[i] + ")<br>\n";
-			}
-			html += "</ul>\n</ul><br>\n";
-		}
 		long total = Runtime.getRuntime().totalMemory();
 		long free = Runtime.getRuntime().freeMemory();
 		long used = total - free;

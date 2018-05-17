@@ -1,7 +1,5 @@
 package com.github.freeacs.web.app.security;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.Permission;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.input.ParameterParser;
@@ -232,15 +230,6 @@ public class LoginServlet extends HttpServlet implements Filter {
 	 * @param req the req
 	 */
 	private static void retrieveAndSetConnectionProperties(HttpServletRequest req) {
-		ConnectionProperties xapsCp = LoginPage.getXAPSConnectionProperties();
-		ConnectionProperties syslogCp = LoginPage.getSyslogConnectionProperties();
-		if (xapsCp != null && xapsCp.getUrl() != null)
-			SessionCache.putXAPSConnectionProperties(req.getSession().getId(), xapsCp);
-
-		if (syslogCp != null && syslogCp.getUrl() != null)
-			SessionCache.putSyslogConnectionProperties(req.getSession().getId(), syslogCp);
-		else
-			SessionCache.putSyslogConnectionProperties(req.getSession().getId(), xapsCp);
 	}
 
 	/**
@@ -321,10 +310,10 @@ public class LoginServlet extends HttpServlet implements Filter {
 	 * @param user the user
 	 * @param sessionId the session id
 	 * @return the allowed unittype[]
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	private AllowedUnittype[] retrieveAllowedUnittypes(String user, String sessionId) throws NoAvailableConnectionException, SQLException {
+	private AllowedUnittype[] retrieveAllowedUnittypes(String user, String sessionId) throws SQLException {
 		WebUser usr = SessionCache.getSessionData(sessionId).getUser();
 		List<AllowedUnittype> uts = new ArrayList<AllowedUnittype>();
 		if (usr.getPermissions() != null) {

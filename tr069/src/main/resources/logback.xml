@@ -69,7 +69,6 @@
     <logger name="Event" level="INFO" additivity="false">
         <appender-ref ref="ASYNC_EVENT_FILE"/>
     </logger>
-    <logger name="com.github.freeacs.common.db.ConnectionProvider" level="ERROR" />
     <logger name="com.github.freeacs.tr069.Properties" level="ERROR" />
     <logger name="org.eclipse.jetty" level="WARN" />
     <root level="DEBUG">

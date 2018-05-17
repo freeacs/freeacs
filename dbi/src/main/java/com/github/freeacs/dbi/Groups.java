@@ -1,7 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.DynamicStatement.NullInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +51,7 @@ public class Groups {
 		}
 	}
 
-	public void addOrChangeGroup(Group group, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeGroup(Group group, XAPS xaps) throws SQLException {
 		checkPermission(group, xaps);
 		addOrChangeGroupImpl(group, unittype, xaps);
 		group.setUnittype(unittype);
@@ -77,7 +75,7 @@ public class Groups {
 	}
 
 	/* only used to refresh the cache, used from DBI */
-	protected static void refreshGroupParameter(Group group, XAPS xaps, Connection c) throws SQLException, NoAvailableConnectionException {
+	protected static void refreshGroupParameter(Group group, XAPS xaps, Connection c) throws SQLException {
 		Statement s = null;
 		ResultSet rs = null;
 		String sql = null;
@@ -134,7 +132,7 @@ public class Groups {
 	}
 
 	/* only used to refresh the cache, used from DBI */
-	protected static void refreshGroup(Integer groupId, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	protected static void refreshGroup(Integer groupId, XAPS xaps) throws SQLException {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		//		if (!XAPSVersionCheck.groupSupported)
@@ -186,7 +184,7 @@ public class Groups {
 		}
 	}
 
-	private void deleteGroupImpl(Unittype unittype, Group group, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void deleteGroupImpl(Unittype unittype, Group group, XAPS xaps) throws SQLException {
 		PreparedStatement s = null;
 		String sql = null;
 		//		if (!XAPSVersionCheck.groupSupported)
@@ -228,10 +226,10 @@ public class Groups {
 	 * The first time this method is run, the flag is set. The second time this
 	 * method is run, the parameter is removed from the name- and id-Map.
 	 *
-	 * @throws NoAvailableConnectionException 
+	 *
 	 * @throws SQLException 
 	 */
-	public void deleteGroup(Group group, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void deleteGroup(Group group, XAPS xaps) throws SQLException {
 		checkPermission(group, xaps);
 		for (GroupParameter gp : group.getGroupParameters().getGroupParameters()) {
 			group.getGroupParameters().deleteGroupParameter(gp, xaps);
@@ -258,7 +256,7 @@ public class Groups {
 		return unittype;
 	}
 
-	private void addOrChangeGroupImpl(Group group, Unittype unittype, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void addOrChangeGroupImpl(Group group, Unittype unittype, XAPS xaps) throws SQLException {
 		PreparedStatement s = null;
 		//		String sql = null;
 		//		if (!XAPSVersionCheck.groupSupported)

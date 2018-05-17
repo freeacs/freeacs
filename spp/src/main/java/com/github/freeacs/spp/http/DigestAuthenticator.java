@@ -4,9 +4,8 @@ import com.github.freeacs.base.BaseCache;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.NoDataAvailableException;
 import com.github.freeacs.base.http.Util;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
-import com.github.freeacs.spp.SessionData;
 import com.github.freeacs.dbi.util.SystemParameters;
+import com.github.freeacs.spp.SessionData;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.servlet.ServletException;
@@ -181,10 +180,7 @@ public class DigestAuthenticator {
 					return true;
 				}
 			}
-		} catch (NoAvailableConnectionException e) {
-			Log.error(DigestAuthenticator.class, "Authentication failed because of no available database connections (CPE IP address: " + req.getRemoteHost() + ")");
-			res.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-		} catch (SQLException e) {
+		}catch (SQLException e) {
 			Log.fatal(DigestAuthenticator.class, "Authentication failed because of database error (CPE IP address: " + req.getRemoteHost() + ")", e);
 			res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		} catch (NoDataAvailableException e) {

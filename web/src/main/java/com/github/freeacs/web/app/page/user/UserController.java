@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.page.user;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.User;
 import com.github.freeacs.dbi.Users;
 import com.github.freeacs.web.app.util.SessionCache;
@@ -41,11 +40,11 @@ public class UserController extends PermissionController {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws ParseException the parse exception
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
 	@RequestMapping(value = "/{name}", method = RequestMethod.DELETE)
 	public @ResponseBody
-	void delete(@PathVariable String name, HttpSession session) throws IOException, ParseException, SQLException, NoAvailableConnectionException {
+	void delete(@PathVariable String name, HttpSession session) throws IOException, ParseException, SQLException {
 		Users users = getUsers(session.getId(), xapsDataSource);
 		User loggedInUser = SessionCache.getSessionData(session.getId()).getUser();
 		if (users.getProtected(name, loggedInUser) == null)
@@ -61,11 +60,11 @@ public class UserController extends PermissionController {
 	 * @return the user model
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
 	@RequestMapping(value = "/{name}", method = RequestMethod.GET)
 	public @ResponseBody
-	UserModel get(@PathVariable String name, HttpSession session) throws IOException, SQLException, NoAvailableConnectionException {
+	UserModel get(@PathVariable String name, HttpSession session) throws IOException, SQLException {
 		Users users = getUsers(session.getId(), xapsDataSource);
 		User loggedInUser = SessionCache.getSessionData(session.getId()).getUser();
 		if (users.getProtected(name, loggedInUser) == null)
@@ -82,11 +81,11 @@ public class UserController extends PermissionController {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws ParseException the parse exception
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public @ResponseBody
-	UserModel create(@RequestBody UserModel details, HttpSession session) throws IOException, ParseException, SQLException, NoAvailableConnectionException {
+	UserModel create(@RequestBody UserModel details, HttpSession session) throws IOException, ParseException, SQLException {
 		Users users = getUsers(session.getId(), xapsDataSource);
 		User loggedInUser = SessionCache.getSessionData(session.getId()).getUser();
 		if (!details.getUsername().isEmpty() && users.getUnprotected(details.getUsername()) == null) {
@@ -106,11 +105,11 @@ public class UserController extends PermissionController {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws ParseException the parse exception
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
 	@RequestMapping(method = RequestMethod.PUT)
 	public @ResponseBody
-	UserModel update(@RequestBody UserModel details, HttpSession session) throws IOException, ParseException, SQLException, NoAvailableConnectionException {
+	UserModel update(@RequestBody UserModel details, HttpSession session) throws IOException, ParseException, SQLException {
 		Users users = getUsers(session.getId(), xapsDataSource);
 		User loggedInUser = SessionCache.getSessionData(session.getId()).getUser();
 		if (users.getProtected(details.getUsername(), loggedInUser) != null) {
@@ -135,11 +134,11 @@ public class UserController extends PermissionController {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws ParseException the parse exception
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
 	@RequestMapping(value = "list", method = RequestMethod.GET)
 	public @ResponseBody
-	Map<String, Object> list(HttpSession session, HttpServletRequest request, HttpServletResponse outputHandler) throws IOException, ParseException, SQLException, NoAvailableConnectionException {
+	Map<String, Object> list(HttpSession session, HttpServletRequest request, HttpServletResponse outputHandler) throws IOException, ParseException, SQLException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("users", getAllUsers(0, 100, session.getId(), userGroupController.getNameMap().get("NotAdmin"), xapsDataSource));
 		return map;

@@ -2,18 +2,14 @@ package com.github.freeacs.tr069.methods;
 
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.NoDataAvailableException;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.NaturalComparator;
 import com.github.freeacs.dbi.tr069.*;
-import com.github.freeacs.tr069.HTTPReqData;
-import com.github.freeacs.tr069.HTTPReqResData;
-import com.github.freeacs.tr069.Properties;
-import com.github.freeacs.tr069.SessionData;
-import com.github.freeacs.tr069.UnknownMethodException;
-import com.github.freeacs.tr069.exception.TR069Exception;
-import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.github.freeacs.dbi.tr069.TR069DMParameter.StringType;
 import com.github.freeacs.dbi.tr069.TestCaseParameter.TestCaseParameterType;
+import com.github.freeacs.tr069.*;
+import com.github.freeacs.tr069.Properties;
+import com.github.freeacs.tr069.exception.TR069Exception;
+import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.github.freeacs.tr069.test.system1.KillDatabase;
 import com.github.freeacs.tr069.test.system1.KillDatabaseObject;
 import com.github.freeacs.tr069.test.system1.TestDatabase;
@@ -90,7 +86,7 @@ public class HTTPRequestProcessor {
 	 * The verification is based on several sources, like CWMP fault, what parameter values
 	 * might be expected.
 	 * @param reqRes
-	 * @throws NoAvailableConnectionException 
+	 *
 	 * @throws SQLException 
 	 */
 	private static void verifyResponseNEW(String requestMethodName, HTTPReqResData reqRes) throws Exception {

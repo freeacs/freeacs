@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.page.window;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.web.Page;
@@ -167,7 +166,7 @@ public class WindowPage extends AbstractWebPage {
 
 		sessionId = params.getSession().getId();
 
-		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
+		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
@@ -205,7 +204,7 @@ public class WindowPage extends AbstractWebPage {
 					spread = profileSpread.getValue();
 			}
 		} else if (inputData.getPage().startsWith("unit") && inputData.getUnit().getString() != null) {
-			xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource);
+			xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource, syslogDataSource);
 			unit = xapsUnit.getUnitById(inputData.getUnit().getString());
 			if (unit != null) {
 				unitDownload = unit.getUnitParameters().get(ServiceWindowDownload);
@@ -330,7 +329,7 @@ public class WindowPage extends AbstractWebPage {
 	 *
 	 * @return the string
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws IllegalArgumentException the illegal argument exception
 	 * @throws SecurityException the security exception
@@ -338,7 +337,7 @@ public class WindowPage extends AbstractWebPage {
 	 * @throws InvocationTargetException the invocation target exception
 	 * @throws NoSuchMethodException the no such method exception
 	 */
-	private String action() throws SQLException, NoAvailableConnectionException, IOException, IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException,
+	private String action() throws SQLException, IOException, IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException,
 			NoSuchMethodException {
 		if (inputData.getFormSubmit().hasValue(submitText)) {
 

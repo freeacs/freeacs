@@ -1,7 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.InsertOrUpdateStatement.Field;
 import com.github.freeacs.dbi.util.XAPSVersionCheck;
 
@@ -31,9 +29,8 @@ public class ScriptExecutions {
 	 * @param scriptFile
 	 * @param scriptArgs
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
 	 */
-	public void requestExecution(File scriptFile, String scriptArgs, String requestId) throws SQLException, NoAvailableConnectionException {
+	public void requestExecution(File scriptFile, String scriptArgs, String requestId) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		if (scriptFile.getType() != FileType.SHELL_SCRIPT)
@@ -66,10 +63,9 @@ public class ScriptExecutions {
 	/**
 	 * Used by Core. Update execeutions when they start/failed/finish
 	 * @param se
-	 * @throws NoAvailableConnectionException
 	 * @throws SQLException
 	 */
-	public void updateExecution(ScriptExecution se) throws NoAvailableConnectionException, SQLException {
+	public void updateExecution(ScriptExecution se) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		try {
@@ -95,10 +91,9 @@ public class ScriptExecutions {
 	 * Only to be used from Core (Script Daemon)
 	 * @param xaps
 	 * @return
-	 * @throws NoAvailableConnectionException
 	 * @throws SQLException
 	 */
-	public List<ScriptExecution> getNotStartedExecutions(XAPS xaps, int poolsize) throws NoAvailableConnectionException, SQLException {
+	public List<ScriptExecution> getNotStartedExecutions(XAPS xaps, int poolsize) throws SQLException {
 		List<ScriptExecution> scriptExecutionList = new ArrayList<ScriptExecution>();
 		if (!XAPSVersionCheck.scriptExecutionSupported)
 			return scriptExecutionList;
@@ -153,10 +148,9 @@ public class ScriptExecutions {
 	 * @param unittype
 	 * @param requestTmsFrom
 	 * @return
-	 * @throws NoAvailableConnectionException
 	 * @throws SQLException
 	 */
-	public List<ScriptExecution> getExecutions(Unittype unittype, Date requestTmsFrom, String requestId) throws NoAvailableConnectionException, SQLException {
+	public List<ScriptExecution> getExecutions(Unittype unittype, Date requestTmsFrom, String requestId) throws SQLException {
 		List<ScriptExecution> scriptExecutionList = new ArrayList<ScriptExecution>();
 		if (!XAPSVersionCheck.scriptExecutionSupported)
 			return scriptExecutionList;
@@ -192,7 +186,7 @@ public class ScriptExecutions {
 		}
 	}
 
-	public ScriptExecution getById(Unittype unittype, Integer id) throws NoAvailableConnectionException, SQLException {
+	public ScriptExecution getById(Unittype unittype, Integer id) throws SQLException {
 		if (!XAPSVersionCheck.scriptExecutionSupported)
 			return null;
 		XAPS xaps = unittype.getXaps();
@@ -228,10 +222,9 @@ public class ScriptExecutions {
 	 * @param unittype
 	 * @param requestId
 	 * @return
-	 * @throws NoAvailableConnectionException
 	 * @throws SQLException
 	 */
-	public ScriptExecution getExecution(Unittype unittype, String requestId) throws NoAvailableConnectionException, SQLException {
+	public ScriptExecution getExecution(Unittype unittype, String requestId) throws SQLException {
 		if (!XAPSVersionCheck.scriptExecutionSupported)
 			return null;
 		XAPS xaps = unittype.getXaps();
@@ -266,10 +259,9 @@ public class ScriptExecutions {
 	 * Used by Core to delete old executions
 	 * @param upUntil
 	 * @return
-	 * @throws NoAvailableConnectionException
 	 * @throws SQLException
 	 */
-	public int deleteExecutions(Date upUntil) throws NoAvailableConnectionException, SQLException {
+	public int deleteExecutions(Date upUntil) throws  SQLException {
 		if (!XAPSVersionCheck.scriptExecutionSupported)
 			return 0;
 		Connection connection = null;

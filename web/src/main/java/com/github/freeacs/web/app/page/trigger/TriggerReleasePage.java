@@ -8,7 +8,6 @@ import com.github.freeacs.web.app.menu.MenuItem;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.table.TableElement;
 import com.github.freeacs.web.app.table.TableElementMaker;
-import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.XAPSLoader;
@@ -62,7 +61,7 @@ public class TriggerReleasePage extends AbstractWebPage {
 		this.sessionId = params.getSession().getId();
 		this.outputHandler = outputHandler;
 		Map<String, Object> fmMap = outputHandler.getTemplateMap();
-		this.xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
+		this.xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;

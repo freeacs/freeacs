@@ -44,7 +44,7 @@ public class ProfileOverviewPage extends AbstractWebPage {
 		ProfileData inputData = (ProfileData) InputDataRetriever.parseInto(new ProfileData(), params);
 		String sessionId = params.getSession().getId();
 
-		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
+		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);

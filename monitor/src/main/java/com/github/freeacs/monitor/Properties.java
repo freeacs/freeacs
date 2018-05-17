@@ -1,13 +1,10 @@
 package com.github.freeacs.monitor;
 
-import com.github.freeacs.common.db.ConnectionProperties;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 import java.util.Optional;
 import java.util.function.Supplier;
-
-import static java.lang.Long.getLong;
 
 public class Properties {
 
@@ -74,14 +71,6 @@ public class Properties {
 			return defaultValue;
 		}
 		return prop;
-	}
-
-	public static int getMaxConn(final String infix) {
-		return getInteger("db." + infix + ".maxconn", ConnectionProperties.maxconn);
-	}
-
-	public static long getMaxAge(final String infix) {
-		return getLong("db." + infix + ".maxage", ConnectionProperties.maxage);
 	}
 
 	public static String getUrl(final String infix) {

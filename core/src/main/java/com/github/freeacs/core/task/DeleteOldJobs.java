@@ -1,9 +1,7 @@
 package com.github.freeacs.core.task;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
-import com.github.freeacs.dbi.*;
 import com.github.freeacs.core.Properties;
-
+import com.github.freeacs.dbi.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +14,7 @@ import java.util.Map;
 
 public class DeleteOldJobs extends DBIOwner {
 
-	public DeleteOldJobs(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException, NoAvailableConnectionException {
+	public DeleteOldJobs(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException {
 		super(taskName, xapsCp, sysCp);
 	}
 

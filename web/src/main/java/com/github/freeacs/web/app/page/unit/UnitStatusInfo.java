@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.page.unit;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.IPAddress;
 import com.github.freeacs.common.util.TimeWindow;
 import com.github.freeacs.dbi.*;
@@ -109,9 +108,9 @@ public class UnitStatusInfo {
 	 * @throws ParseException the parse exception
 	 * @throws NumberFormatException the number format exception
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
-	public static UnitStatusInfo getUnitStatusInfo(Unit unit, Date fromDate, Date toDate, String sessionId) throws ParseException, NumberFormatException, SQLException, NoAvailableConnectionException {
+	public static UnitStatusInfo getUnitStatusInfo(Unit unit, Date fromDate, Date toDate, String sessionId) throws ParseException, NumberFormatException, SQLException {
 		UnitStatusInfo info = new UnitStatusInfo(unit);
 		info.fromDate = fromDate;
 		info.toDate = toDate;
@@ -184,13 +183,13 @@ public class UnitStatusInfo {
 	 * Gets the total score.
 	 *
 	 * @return the total score
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @param xapsDataSource
 	 * @param syslogDataSource
 	 */
-	public synchronized Double getTotalScore(DataSource xapsDataSource, DataSource syslogDataSource) throws NoAvailableConnectionException, SQLException, IOException {
+	public synchronized Double getTotalScore(DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException, IOException {
 		if (totalScore == null) {
 			Report<RecordVoip> report = getVoipReport(xapsDataSource, syslogDataSource);
 			report = ReportConverter.convertVoipReport(report, PeriodType.ETERNITY);
@@ -231,11 +230,11 @@ public class UnitStatusInfo {
 	 *
 	 * @return true, if is 1 lines has problems
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @param xapsDataSource
 	 * @param syslogDataSource
 	 */
-	public boolean is1LinesHasProblems(DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException, NoAvailableConnectionException {
+	public boolean is1LinesHasProblems(DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
 		if (((isLine2Configured() && !isLine2Registered(xapsDataSource, syslogDataSource)) || isLine2ConfiguredError()) || ((isLine1Configured() && !isLine1Registered(xapsDataSource, syslogDataSource)) || isLine1ConfiguredError()))
 			return true;
 		return false;
@@ -246,11 +245,11 @@ public class UnitStatusInfo {
 	 *
 	 * @return true, if is 2 lines has problems
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @param xapsDataSource
 	 * @param syslogDataSource
 	 */
-	public boolean is2LinesHasProblems(DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException, NoAvailableConnectionException {
+	public boolean is2LinesHasProblems(DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
 		if (((isLine2Configured() && !isLine2Registered(xapsDataSource, syslogDataSource)) || isLine2ConfiguredError()) && ((isLine1Configured() && !isLine1Registered(xapsDataSource, syslogDataSource)) || isLine1ConfiguredError()))
 			return true;
 		return false;
@@ -329,9 +328,9 @@ public class UnitStatusInfo {
 	 * @return the voip configured
 	 * @throws NumberFormatException the number format exception
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
-	public VoipConfigured isLineConfigured(VoipLine index, String sessionId) throws NumberFormatException, SQLException, NoAvailableConnectionException {
+	public VoipConfigured isLineConfigured(VoipLine index, String sessionId) throws NumberFormatException, SQLException {
 		String line = "Services.VoiceService.1.VoiceProfile." + index.toNonZero() + ".Line.1";
 		String voiceEnabled = Parameters.getUnitParameterValue(currentUnit, line + ".Enable");
 		String user = Parameters.getUnitParameterValue(currentUnit, line + ".SIP.AuthUserName");
@@ -395,9 +394,9 @@ public class UnitStatusInfo {
 	 * @param syslogDataSource
 	 * @return the boolean
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
-	public Boolean isLineRegisteredOk(String sessionId, VoipLine line, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException, NoAvailableConnectionException {
+	public Boolean isLineRegisteredOk(String sessionId, VoipLine line, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
 		Syslog syslog = new Syslog(syslogDataSource, XAPSLoader.getIdentity(sessionId, xapsDataSource));
 		SyslogFilter filter = new SyslogFilter();
 		filter.setMaxRows(100);
@@ -405,7 +404,7 @@ public class UnitStatusInfo {
 		filter.setMessage("^" + keyToFind);
 		filter.setCollectorTmsStart(getMaxSipRegisterIntervalDate());
 		filter.setUnitId("^" + currentUnit.getId() + "$"); //The unit object can never become NULL since this is checked in UnitStatusPage very early.
-		List<SyslogEntry> entries = syslog.read(filter, XAPSLoader.getXAPS(sessionId, xapsDataSource));
+		List<SyslogEntry> entries = syslog.read(filter, XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource));
 		if (entries != null) {
 			Date lastFailed = null;
 			Date lastRegged = null;
@@ -499,10 +498,10 @@ public class UnitStatusInfo {
 	}
 
 	
-	public boolean isLine1Applicable() throws SQLException, NoAvailableConnectionException {
+	public boolean isLine1Applicable() throws SQLException {
 		return line1Configured != VoipConfigured.NOT_APPLICABLE;
 	}
-	public boolean isLine2Applicable() throws SQLException, NoAvailableConnectionException {
+	public boolean isLine2Applicable() throws SQLException {
 		return line2Configured != VoipConfigured.NOT_APPLICABLE;
 	}
 	
@@ -511,11 +510,11 @@ public class UnitStatusInfo {
 	 *
 	 * @return true, if is line1 registered
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @param xapsDataSource
 	 * @param syslogDataSource
 	 */
-	public boolean isLine1Registered(DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException, NoAvailableConnectionException {
+	public boolean isLine1Registered(DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
 		return isLineRegisteredOk(sessionId, VoipLine.LINE_0, xapsDataSource, syslogDataSource);
 	}
 
@@ -524,11 +523,11 @@ public class UnitStatusInfo {
 	 *
 	 * @return true, if is line2 registered
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @param xapsDataSource
 	 * @param syslogDataSource
 	 */
-	public boolean isLine2Registered(DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException, NoAvailableConnectionException {
+	public boolean isLine2Registered(DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
 		return isLineRegisteredOk(sessionId, VoipLine.LINE_1, xapsDataSource, syslogDataSource);
 	}
 
@@ -734,7 +733,7 @@ public class UnitStatusInfo {
 	 *
 	 * @return the overall status
 	 * @throws ParseException the parse exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws IllegalArgumentException the illegal argument exception
@@ -745,7 +744,7 @@ public class UnitStatusInfo {
 	 * @param xapsDataSource
 	 * @param syslogDataSource
 	 */
-	public UnitStatusScore getOverallStatus(DataSource xapsDataSource, DataSource syslogDataSource) throws ParseException, NoAvailableConnectionException, SQLException, IOException, IllegalArgumentException, SecurityException, IllegalAccessException,
+	public UnitStatusScore getOverallStatus(DataSource xapsDataSource, DataSource syslogDataSource) throws ParseException, SQLException, IOException, IllegalArgumentException, SecurityException, IllegalAccessException,
 			InvocationTargetException, NoSuchMethodException {
 		return getOverallStatus(getTotalScore(xapsDataSource, syslogDataSource), xapsDataSource, syslogDataSource);
 	}
@@ -758,7 +757,7 @@ public class UnitStatusInfo {
 	 * @param syslogDataSource
 	 * @return the overall status
 	 * @throws ParseException the parse exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws IllegalArgumentException the illegal argument exception
@@ -767,7 +766,7 @@ public class UnitStatusInfo {
 	 * @throws InvocationTargetException the invocation target exception
 	 * @throws NoSuchMethodException the no such method exception
 	 */
-	private UnitStatusScore getOverallStatus(Double totalScore, DataSource xapsDataSource, DataSource syslogDataSource) throws ParseException, NoAvailableConnectionException, SQLException, IOException, IllegalArgumentException, SecurityException,
+	private UnitStatusScore getOverallStatus(Double totalScore, DataSource xapsDataSource, DataSource syslogDataSource) throws ParseException, SQLException, IOException, IllegalArgumentException, SecurityException,
 			IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return new UnitStatusScore(totalScore, getHardwareRecords(xapsDataSource, syslogDataSource), getSyslogEntriesFromCache(xapsDataSource, syslogDataSource), isWithinServiceWindow(), is1LinesHasProblems(xapsDataSource, syslogDataSource), is2LinesHasProblems(xapsDataSource, syslogDataSource));
 	}
@@ -776,13 +775,13 @@ public class UnitStatusInfo {
 	 * Gets the hardware report.
 	 *
 	 * @return the hardware report
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @param xapsDataSource
 	 * @param syslogDataSource
 	 */
-	public synchronized Report<RecordHardware> getHardwareReport(DataSource xapsDataSource, DataSource syslogDataSource) throws NoAvailableConnectionException, SQLException, IOException {
+	public synchronized Report<RecordHardware> getHardwareReport(DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException, IOException {
 		if (this.hardwareReport == null) {
 			Report<RecordHardware> hardwareReport = SessionCache.getHardwareReport(sessionId, currentUnit.getId(), fromDate, toDate, xapsDataSource, syslogDataSource);
 			if (hardwareReport == null) // Generated report is empty or reports is not supported
@@ -796,13 +795,13 @@ public class UnitStatusInfo {
 	 * Gets the hardware records.
 	 *
 	 * @return the hardware records
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @param xapsDataSource
 	 * @param syslogDataSource
 	 */
-	public synchronized List<RecordUIDataHardware> getHardwareRecords(DataSource xapsDataSource, DataSource syslogDataSource) throws NoAvailableConnectionException, SQLException, IOException {
+	public synchronized List<RecordUIDataHardware> getHardwareRecords(DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException, IOException {
 		Collection<RecordHardware> hwRecords = getHardwareReport(xapsDataSource, syslogDataSource).getMap().values();
 		List<RecordUIDataHardware> hardwareRecords = RecordUIDataHardware.convertRecords(getUnit(), new ArrayList<RecordHardware>(hwRecords), new RecordUIDataHardwareFilter(new UnitListData(),
 				new HashMap<String, Object>()));
@@ -815,7 +814,7 @@ public class UnitStatusInfo {
 	 * @return A list of syslog entries
 	 * @throws IllegalArgumentException the illegal argument exception
 	 * @throws SecurityException the security exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 * @throws ParseException the parse exception
 	 * @throws IllegalAccessException the illegal access exception
@@ -825,7 +824,7 @@ public class UnitStatusInfo {
 	 * @param xapsDataSource
 	 * @param syslogDataSource
 	 */
-	public synchronized List<SyslogEntry> getSyslogEntries(String syslogFilter, DataSource xapsDataSource, DataSource syslogDataSource) throws IllegalArgumentException, SecurityException, NoAvailableConnectionException, SQLException, ParseException, IllegalAccessException,
+	public synchronized List<SyslogEntry> getSyslogEntries(String syslogFilter, DataSource xapsDataSource, DataSource syslogDataSource) throws IllegalArgumentException, SecurityException, SQLException, ParseException, IllegalAccessException,
 			InvocationTargetException, NoSuchMethodException {
 		return SyslogRetriever.getInstance().getSyslogEntries(currentUnit, fromDate, toDate, 100, sessionId, xapsDataSource, syslogDataSource);
 	}
@@ -836,7 +835,7 @@ public class UnitStatusInfo {
 	 * @return the syslog entries from cache
 	 * @throws IllegalArgumentException the illegal argument exception
 	 * @throws SecurityException the security exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 * @throws ParseException the parse exception
 	 * @throws IllegalAccessException the illegal access exception
@@ -845,7 +844,7 @@ public class UnitStatusInfo {
 	 * @param xapsDataSource
 	 * @param syslogDataSource
 	 */
-	public synchronized List<SyslogEntry> getSyslogEntriesFromCache(DataSource xapsDataSource, DataSource syslogDataSource) throws IllegalArgumentException, SecurityException, NoAvailableConnectionException, SQLException, ParseException,
+	public synchronized List<SyslogEntry> getSyslogEntriesFromCache(DataSource xapsDataSource, DataSource syslogDataSource) throws IllegalArgumentException, SecurityException, SQLException, ParseException,
 			IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		if (this.syslogEntries == null)
 			return (this.syslogEntries = SyslogRetriever.getInstance().getSyslogEntries(currentUnit, fromDate, toDate, 100, sessionId, xapsDataSource, syslogDataSource));
@@ -859,12 +858,12 @@ public class UnitStatusInfo {
 	 * @param xapsDataSource
 	 * @param syslogDataSource
 	 * @return the syslog report
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws ParseException the parse exception
 	 */
-	public synchronized Report<RecordSyslog> getSyslogReport(String syslogFilter, DataSource xapsDataSource, DataSource syslogDataSource) throws NoAvailableConnectionException, SQLException, IOException, ParseException {
+	public synchronized Report<RecordSyslog> getSyslogReport(String syslogFilter, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException, IOException, ParseException {
 		if (this.syslogReport == null) {
 			String toUseAsFilter = (syslogFilter != null ? ("%" + syslogFilter + "%") : null);
 			Report<RecordSyslog> _syslogReport = SessionCache.getSyslogReport(sessionId, currentUnit.getId(), fromDate, toDate, toUseAsFilter, xapsDataSource, syslogDataSource);
@@ -879,13 +878,13 @@ public class UnitStatusInfo {
 	 * Gets the voip report.
 	 *
 	 * @return the voip report
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @param xapsDataSource
 	 * @param syslogDataSource
 	 */
-	public synchronized Report<RecordVoip> getVoipReport(DataSource xapsDataSource, DataSource syslogDataSource) throws NoAvailableConnectionException, SQLException, IOException {
+	public synchronized Report<RecordVoip> getVoipReport(DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException, IOException {
 		if (this.voipReport == null) {
 			Report<RecordVoip> voipReport = SessionCache.getVoipReport(sessionId, currentUnit.getId(), fromDate, toDate, xapsDataSource, syslogDataSource);
 			if (voipReport == null) // Generated report is empty or reports is not supported

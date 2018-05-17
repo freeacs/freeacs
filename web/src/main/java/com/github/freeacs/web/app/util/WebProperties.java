@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.util;
 
-import com.github.freeacs.common.db.ConnectionProperties;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
@@ -193,11 +192,11 @@ public class WebProperties {
 	}
 
 	public static int getMaxConn(final String infix) {
-		return getInteger("db." + infix + ".maxconn", ConnectionProperties.maxconn);
+		return getInteger("db." + infix + ".maxconn", 20);
 	}
 
 	public static long getMaxAge(final String infix) {
-		return getLong("db." + infix + ".maxage", ConnectionProperties.maxage);
+		return getLong("db." + infix + ".maxage", 60000);
 	}
 
 	public static String getUrl(final String infix) {

@@ -1,6 +1,5 @@
 package com.github.freeacs.core;
 
-import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.scheduler.Schedule;
 import com.github.freeacs.common.scheduler.ScheduleType;
 import com.github.freeacs.common.scheduler.Scheduler;

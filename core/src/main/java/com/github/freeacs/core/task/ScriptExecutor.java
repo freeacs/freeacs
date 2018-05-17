@@ -1,6 +1,5 @@
 package com.github.freeacs.core.task;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.core.Properties;
 import com.github.freeacs.dbi.ScriptExecution;
 import com.github.freeacs.dbi.ScriptExecutions;
@@ -92,7 +91,7 @@ public class ScriptExecutor extends DBIShare {
 		}
 	}
 
-	public ScriptExecutor(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException, NoAvailableConnectionException {
+	public ScriptExecutor(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException {
 		super(taskName, xapsCp, sysCp);
 	}
 

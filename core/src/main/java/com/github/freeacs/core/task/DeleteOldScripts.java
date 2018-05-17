@@ -1,7 +1,5 @@
 package com.github.freeacs.core.task;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
-import com.github.freeacs.core.Properties;
 import com.github.freeacs.core.Properties;
 import com.github.freeacs.dbi.ScriptExecutions;
 import org.slf4j.Logger;
@@ -13,7 +11,7 @@ import java.util.Calendar;
 
 public class DeleteOldScripts extends DBIShare {
 
-	public DeleteOldScripts(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException, NoAvailableConnectionException {
+	public DeleteOldScripts(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException {
 		super(taskName, xapsCp, sysCp);
 	}
 
@@ -29,7 +27,7 @@ public class DeleteOldScripts extends DBIShare {
 		return logger;
 	}
 
-	private void deleteOldScripts() throws NoAvailableConnectionException, SQLException {
+	private void deleteOldScripts() throws SQLException {
 		ScriptExecutions executions = new ScriptExecutions(getXapsCp());
 		int days = Properties.getShellScriptLimit();
 		Calendar c = Calendar.getInstance();

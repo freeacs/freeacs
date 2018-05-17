@@ -1,9 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
-
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.Date;
@@ -89,7 +85,7 @@ public class File {
 		return owner;
 	}
 
-	public byte[] getContent() throws SQLException, NoAvailableConnectionException {
+	public byte[] getContent() throws SQLException {
 		if (content == null) {
 			Connection c = null;
 			Statement s = null;

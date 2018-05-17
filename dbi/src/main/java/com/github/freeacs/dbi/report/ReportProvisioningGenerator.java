@@ -1,10 +1,6 @@
 package com.github.freeacs.dbi.report;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
-
 import com.github.freeacs.dbi.util.ProvisioningMessage.ProvStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +28,7 @@ public class ReportProvisioningGenerator extends ReportGenerator {
 		super(sysCp, xapsCp, xaps, logPrefix, id);
 	}
 
-	public Report<RecordProvisioning> generateFromReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws NoAvailableConnectionException, SQLException,
+	public Report<RecordProvisioning> generateFromReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws SQLException,
 			IOException {
 		Connection xapsConnection = null;
 		Connection sysConnection = null;
@@ -81,10 +77,6 @@ public class ReportProvisioningGenerator extends ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (xapsConnection != null)
-				ConnectionProvider.returnConnection(xapsConnection, sqle);
-			if (sysConnection != null)
-				ConnectionProvider.returnConnection(sysConnection, sqle);
 		}
 	}
 
@@ -93,7 +85,7 @@ public class ReportProvisioningGenerator extends ReportGenerator {
 	 * but keep them separated in a map of reports
 	 */
 	public Map<String, Report<RecordProvisioning>> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs, Group group)
-			throws NoAvailableConnectionException, SQLException, IOException {
+			throws SQLException, IOException {
 		return generateFromSyslogImpl(periodType, start, end, uts, prs, null, group);
 	}
 
@@ -101,7 +93,7 @@ public class ReportProvisioningGenerator extends ReportGenerator {
 	 * Generate reports directly from syslog - retrieve data for one single unit
 	 * and with periodtype = SECOND
 	 */
-	public Report<RecordProvisioning> generateFromSyslog(Date start, Date end, String unitId) throws NoAvailableConnectionException, SQLException, IOException {
+	public Report<RecordProvisioning> generateFromSyslog(Date start, Date end, String unitId) throws SQLException, IOException {
 		return generateFromSyslog(PeriodType.SECOND, start, end, null, null, unitId, null);
 	}
 
@@ -110,7 +102,7 @@ public class ReportProvisioningGenerator extends ReportGenerator {
 	 * units
 	 */
 	public Report<RecordProvisioning> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs, String unitId, Group group)
-			throws NoAvailableConnectionException, SQLException, IOException {
+			throws SQLException, IOException {
 		Map<String, Report<RecordProvisioning>> unitReportMap = generateFromSyslogImpl(periodType, start, end, uts, prs, unitId, group);
 		Report<RecordProvisioning> endReport = new Report<RecordProvisioning>(RecordProvisioning.class, periodType);
 
@@ -127,7 +119,7 @@ public class ReportProvisioningGenerator extends ReportGenerator {
 	}
 
 	private Map<String, Report<RecordProvisioning>> generateFromSyslogImpl(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs, String unitId, Group group)
-			throws NoAvailableConnectionException, SQLException, IOException {
+			throws SQLException, IOException {
 		logInfo("ProvisioningReport", unitId, uts, prs, start, end);
 		Syslog syslog = new Syslog(sysCp, id);
 		SyslogFilter filter = new SyslogFilter();

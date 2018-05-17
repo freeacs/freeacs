@@ -1,7 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +41,7 @@ public class ProfileParameters {
 		return pArr;
 	}
 
-	private void addOrChangeProfileParameterImpl(ProfileParameter profileParameter, Profile profile, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void addOrChangeProfileParameterImpl(ProfileParameter profileParameter, Profile profile, XAPS xaps) throws SQLException {
 		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		Statement s = null;
@@ -87,7 +85,7 @@ public class ProfileParameters {
 		}
 	}
 
-	public void addOrChangeProfileParameter(ProfileParameter profileParameter, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeProfileParameter(ProfileParameter profileParameter, XAPS xaps) throws SQLException {
  		if (!xaps.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		//		if (profileParameter.getUnittypeParameter().getFlag().isInspection())
@@ -97,7 +95,7 @@ public class ProfileParameters {
 		idMap.put(profileParameter.getUnittypeParameter().getId(), profileParameter);
 	}
 
-	private void deleteProfileParameterImpl(ProfileParameter profileParameter, Profile profile, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void deleteProfileParameterImpl(ProfileParameter profileParameter, Profile profile, XAPS xaps) throws SQLException {
 		Statement s = null;
 		String sql = null;
 		Connection c = xaps.getDataSource().getConnection();
@@ -127,10 +125,9 @@ public class ProfileParameters {
 	 * method is run, the parameter is removed from the name- and id-Map.
 	 * 
 	 * @param profileParameter
-	 * @throws NoAvailableConnectionException 
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
-	public void deleteProfileParameter(ProfileParameter profileParameter, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void deleteProfileParameter(ProfileParameter profileParameter, XAPS xaps) throws SQLException {
  		if (!xaps.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		deleteProfileParameterImpl(profileParameter, profile, xaps);

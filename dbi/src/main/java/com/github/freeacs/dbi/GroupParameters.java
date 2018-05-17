@@ -1,7 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.DynamicStatement.NullString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +66,7 @@ public class GroupParameters {
 		return groupParams;
 	}
 
-	private void addOrChangeGroupParameterImpl(GroupParameter groupParameter, Group group, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void addOrChangeGroupParameterImpl(GroupParameter groupParameter, Group group, XAPS xaps) throws SQLException {
 		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		PreparedStatement ps = null;
@@ -145,7 +143,7 @@ public class GroupParameters {
 		}
 	}
 
-	public void addOrChangeGroupParameter(GroupParameter groupParameter, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeGroupParameter(GroupParameter groupParameter, XAPS xaps) throws SQLException {
 		Groups.checkPermission(group, xaps);
 		//		if (groupParameter.getParameter().getUnittypeParameter().getFlag().isInspection())
 		//			throw new IllegalArgumentException("The unit type parameter is an inspection parameter - cannot be set on a group");
@@ -168,7 +166,7 @@ public class GroupParameters {
 		idMap.put(groupParameter.getId(), groupParameter);
 	}
 
-	private void deleteGroupParameterImpl(GroupParameter groupParameter, Group group, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void deleteGroupParameterImpl(GroupParameter groupParameter, Group group, XAPS xaps) throws SQLException {
 		Statement s = null;
 		String sql = null;
 		//		if (!XAPSVersionCheck.groupSupported)
@@ -198,10 +196,10 @@ public class GroupParameters {
 	 * method is run, the parameter is removed from the name- and id-Map.
 	 * 
 	 * @param groupParameter
-	 * @throws NoAvailableConnectionException 
+	 *
 	 * @throws SQLException 
 	 */
-	public void deleteGroupParameter(GroupParameter groupParameter, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void deleteGroupParameter(GroupParameter groupParameter, XAPS xaps) throws SQLException {
 		Groups.checkPermission(group, xaps);
 		deleteGroupParameterImpl(groupParameter, group, xaps);
 		nameMap.remove(groupParameter.getName());

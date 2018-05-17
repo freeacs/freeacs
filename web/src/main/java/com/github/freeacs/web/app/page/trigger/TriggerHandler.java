@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.page.trigger;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.web.app.input.DropDownSingleSelect;
 import com.github.freeacs.web.app.input.Input;
@@ -23,8 +22,8 @@ public class TriggerHandler {
 	private String sessionId;
 	private TriggerData inputData;
 
-	public TriggerHandler(String sessionId, TriggerData inputData, DataSource xapsDataSource) throws NoAvailableConnectionException, SQLException {
-		this.xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
+	public TriggerHandler(String sessionId, TriggerData inputData, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
+		this.xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		this.sessionId = sessionId;
 		this.inputData = inputData;
 		setUnittype(inputData);
@@ -34,7 +33,7 @@ public class TriggerHandler {
 		return unittype;
 	}
 
-	public void deleteTrigger(TriggerData inputData) throws SQLException, NoAvailableConnectionException {
+	public void deleteTrigger(TriggerData inputData) throws SQLException {
 		setUnittype(inputData);
 		Triggers triggers = unittype.getTriggers();
 		Trigger trigger = triggers.getById(inputData.getTriggerId().getInteger());

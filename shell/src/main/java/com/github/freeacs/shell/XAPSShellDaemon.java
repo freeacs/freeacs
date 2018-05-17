@@ -1,8 +1,5 @@
 package com.github.freeacs.shell;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;

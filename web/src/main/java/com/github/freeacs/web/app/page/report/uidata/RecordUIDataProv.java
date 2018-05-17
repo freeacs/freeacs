@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.page.report.uidata;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.XAPSUnit;
 import com.github.freeacs.dbi.report.Key;
@@ -21,7 +20,7 @@ public class RecordUIDataProv {
 	private long errorCount;
 	private long missingCount;
 
-	public static List<RecordUIDataProv> convertRecords(XAPSUnit xapsUnit, Map<String, Report<RecordProvisioning>> reportMap) throws SQLException, NoAvailableConnectionException {
+	public static List<RecordUIDataProv> convertRecords(XAPSUnit xapsUnit, Map<String, Report<RecordProvisioning>> reportMap) throws SQLException {
 		List<RecordUIDataProv> list = new ArrayList<RecordUIDataProv>();
 
 		for (Entry<String, Report<RecordProvisioning>> reportMapEntry : reportMap.entrySet()) {

@@ -2,17 +2,9 @@ package com.github.freeacs.tr069.background;
 
 import com.github.freeacs.base.http.Authenticator;
 import com.github.freeacs.base.http.ThreadCounter;
-import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.scheduler.TaskDefaultImpl;
-import com.github.freeacs.tr069.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.sql.Connection;
-import java.util.Collection;
-import java.util.Map;
-
-import static com.github.freeacs.common.db.ConnectionProvider.getConnectionProperties;
 
 public class StabilityTask extends TaskDefaultImpl {
 
@@ -65,15 +57,6 @@ public class StabilityTask extends TaskDefaultImpl {
 			message += String.format("%14s | ", ThreadCounter.currentSessionsCount());
 			message += String.format("%13s | ", ActiveDeviceDetectionTask.activeDevicesMap.size());
 			message += String.format("%7s | ", Authenticator.getAndResetBlockedClientsCount());
-			Map<Connection, Long> usedConn = ConnectionProvider.getUsedConnCopy(getConnectionProperties(Properties.getUrl("xaps"), Properties.getMaxAge("xaps"), Properties.getMaxConn("xaps")));
-			if (usedConn != null) {
-				message += String.format("%8s ", usedConn.size());
-				Collection<Long> usedConnValues = usedConn.values();
-				for (Long tms : usedConnValues) {
-					long spentTime = (System.currentTimeMillis() - tms) / 1000;
-					message += String.format("%4s ", spentTime);
-				}
-			}
 			log.info(message);
 		}
 	}

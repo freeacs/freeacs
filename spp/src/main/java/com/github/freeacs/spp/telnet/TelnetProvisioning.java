@@ -2,10 +2,8 @@ package com.github.freeacs.spp.telnet;
 
 import com.github.freeacs.base.JobHistoryEntry;
 import com.github.freeacs.base.db.DBAccess;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.*;
-
 import com.github.freeacs.dbi.JobFlag.JobType;
 import com.github.freeacs.dbi.Parameter.Operator;
 import com.github.freeacs.dbi.Parameter.ParameterDataType;
@@ -14,7 +12,6 @@ import com.github.freeacs.spp.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -43,7 +40,7 @@ public class TelnetProvisioning implements Runnable {
 		dbi.registerInbox("jobChangeInbox", jobChangeInbox);
 	}
 
-	private void populateJobUnitSetMapForOneJob(Job job, XAPS xaps, Unittype unittype) throws SQLException, NoAvailableConnectionException {
+	private void populateJobUnitSetMapForOneJob(Job job, XAPS xaps, Unittype unittype) throws SQLException {
 		Group group = job.getGroup();
 		long now = jobRefreshMap.get(job.getId());
 		XAPSUnit xapsUnit = new XAPSUnit(dbAccess.getXapsDataSource(), xaps, xaps.getSyslog());
@@ -110,7 +107,7 @@ public class TelnetProvisioning implements Runnable {
 		tjq.put(job.getId(), telnetJobMap);
 	}
 
-	private void populateJobUnitSetMapForAllJobs(XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void populateJobUnitSetMapForAllJobs(XAPS xaps) throws SQLException {
 		tjq = new TelnetJobQueue();
 		Unittype[] unittypes = xaps.getUnittypes().getUnittypes();
 		long now = System.currentTimeMillis();

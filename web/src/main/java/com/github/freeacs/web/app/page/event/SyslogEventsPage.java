@@ -35,7 +35,7 @@ public class SyslogEventsPage extends AbstractWebPage {
 		inputData = (SyslogEventsData) InputDataRetriever.parseInto(new SyslogEventsData(), params);
 
 		/* Retrieve the XAPS object from session */
-		xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource);
+		xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;

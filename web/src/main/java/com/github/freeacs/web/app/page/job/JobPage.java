@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.page.job;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
 import com.github.freeacs.dbi.JobFlag.JobType;
@@ -40,7 +39,7 @@ public class JobPage extends AbstractWebPage {
 
 		sessionId = req.getSession().getId();
 
-		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
+		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -106,7 +105,7 @@ public class JobPage extends AbstractWebPage {
 		return list;
 	}
 
-	private boolean actionCUDParameters(ParameterParser req, XAPS xaps, Job job) throws SQLException, NoAvailableConnectionException {
+	private boolean actionCUDParameters(ParameterParser req, XAPS xaps, Job job) throws SQLException {
 		Jobs xapsJobs = unittype.getJobs();
 		UnittypeParameter[] utParams = unittype.getUnittypeParameters().getUnittypeParameters();
 		List<JobParameter> deleteList = new ArrayList<JobParameter>();

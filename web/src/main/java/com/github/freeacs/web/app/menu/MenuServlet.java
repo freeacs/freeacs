@@ -7,7 +7,6 @@ import com.github.freeacs.web.app.util.Freemarker;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebProperties;
-
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;

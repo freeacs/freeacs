@@ -45,12 +45,12 @@ public class SearchPage extends AbstractWebPage {
 	 */
 	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		inputData = (SearchData) InputDataRetriever.parseInto(new SearchData(), params);
-		xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource);
+		xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
-		xapsUnit = XAPSLoader.getXAPSUnit(params.getSession().getId(), xapsDataSource);
+		xapsUnit = XAPSLoader.getXAPSUnit(params.getSession().getId(), xapsDataSource, syslogDataSource);
 		InputDataIntegrity.loadAndStoreSession(params, outputHandler, inputData, inputData.getUnittype(), inputData.getProfile());
 
 		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps);
@@ -81,7 +81,7 @@ public class SearchPage extends AbstractWebPage {
 
 		if (inputData.getFormSubmit().isValue("Search")) {
 			int limit = inputData.getLimit().getInteger(100);
-			List<Unit> result = getSearchResults(limit, unittypes.getSelected(), profiles.getSelected(), params, xapsDataSource);
+			List<Unit> result = getSearchResults(limit, unittypes.getSelected(), profiles.getSelected(), params, xapsDataSource, syslogDataSource);
 			result = xapsUnit.getUnitsWithParameters(unittypes.getSelected(),
 					profiles.getSelected(),	result);
 			List<SearchResultWrapper> wrappedResults = new ArrayList<>();
@@ -123,7 +123,7 @@ public class SearchPage extends AbstractWebPage {
 		} else if (params.getParameter("term") != null) {
 			int limit = 10;
 			inputData.getUnitParamValue().setValue(params.getParameter("term"));
-			List<Unit> result = getSearchResults(limit, unittypes.getSelected(), profiles.getSelected(), params, xapsDataSource);
+			List<Unit> result = getSearchResults(limit, unittypes.getSelected(), profiles.getSelected(), params, xapsDataSource, syslogDataSource);
 			String out = null;
 			JSONArray json = new JSONArray();
 			if (result != null && result.size() > 0) {
@@ -161,16 +161,17 @@ public class SearchPage extends AbstractWebPage {
 	 *            the unittype
 	 * @param profile
 	 *            the profile
-	 * @return the results
+	 * @param syslogDataSource
+     * @return the results
 	 * @throws Exception
 	 *             the exception
 	 */
-	private List<Unit> getSearchResults(int limit, Unittype unittype, Profile profile, ParameterParser req, DataSource xapsDataSource) throws Exception {
+	private List<Unit> getSearchResults(int limit, Unittype unittype, Profile profile, ParameterParser req, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		List<Unit> results = null;
 
 		int more = limit + 1;
 
-		List<Profile> allowedProfiles = getAllowedProfiles(req.getSession().getId(), unittype, xapsDataSource);
+		List<Profile> allowedProfiles = getAllowedProfiles(req.getSession().getId(), unittype, xapsDataSource, syslogDataSource);
 
 		List<Parameter> searchParams = geSearchableParametersFromRequest(req, unittype);
 

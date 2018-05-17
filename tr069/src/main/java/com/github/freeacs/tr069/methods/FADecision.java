@@ -1,12 +1,12 @@
 package com.github.freeacs.tr069.methods;
 
 import com.github.freeacs.base.Log;
-import com.github.freeacs.tr069.HTTPReqResData;
-import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ErrorResponsibility;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ProvStatus;
 import com.github.freeacs.dbi.util.ProvisioningMode;
+import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.xml.Fault;
 
 import java.util.List;

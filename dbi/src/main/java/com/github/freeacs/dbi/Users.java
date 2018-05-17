@@ -1,8 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.util.XAPSVersionCheck;
 
 import javax.sql.DataSource;
@@ -98,9 +95,8 @@ public class Users {
 	 * @param delete
 	 * @param requestedBy
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
 	 */
-	public void delete(User delete, User requestedBy) throws SQLException, NoAvailableConnectionException {
+	public void delete(User delete, User requestedBy) throws SQLException {
 		if (!allowAccessTo(delete, requestedBy))
 			throw new IllegalArgumentException("Not allowed to delete user " + delete.getUsername());
 		if (delete.getUsername().equals(USER_ADMIN) && !requestedBy.getUsername().equals(USER_ADMIN))
@@ -126,8 +122,6 @@ public class Users {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 	}
 
@@ -138,9 +132,8 @@ public class Users {
 	 * @param addOrChange
 	 * @param requestedBy
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
 	 */
-	public void addOrChange(User addOrChange, User requestedBy) throws SQLException, NoAvailableConnectionException {
+	public void addOrChange(User addOrChange, User requestedBy) throws SQLException {
 		boolean unittypeAdmin = false;
 		for (Permission p : requestedBy.getPermissions().getPermissions()) {
 			if (p.getProfileId() == null)
@@ -221,8 +214,6 @@ public class Users {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 	}
 
@@ -284,9 +275,8 @@ public class Users {
 	/**
 	 * Raw read from the database
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
 	 */
-	private void readAllUsers() throws SQLException, NoAvailableConnectionException {
+	private void readAllUsers() throws SQLException {
 		Connection c = null;
 		Statement s = null;
 		SQLException sqle = null;
@@ -347,8 +337,6 @@ public class Users {
 		} finally {
 			if (s != null)
 				s.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 	}
 

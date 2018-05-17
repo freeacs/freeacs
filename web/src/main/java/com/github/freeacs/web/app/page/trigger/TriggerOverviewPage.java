@@ -50,7 +50,7 @@ public class TriggerOverviewPage extends AbstractWebPage {
 		inputData = (TriggerData) InputDataRetriever.parseInto(new TriggerData(), params);
 		String sessionId = params.getSession().getId();
 
-		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
+		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -63,7 +63,7 @@ public class TriggerOverviewPage extends AbstractWebPage {
 		Unittype unittype = xaps.getUnittype(inputData.getUnittype().getString());
 
 		if (unittype != null) {
-			triggerHandler = new TriggerHandler(sessionId, inputData, xapsDataSource);
+			triggerHandler = new TriggerHandler(sessionId, inputData, xapsDataSource, syslogDataSource);
 			outputHandler.getTemplateMap().put("triggertablelist", triggerHandler.getTriggerTableElements());
 			if (inputData.getAction().hasValue(EDIT_ACTION)) {
 				setOutputDataForEditTriggerMode(outputHandler);

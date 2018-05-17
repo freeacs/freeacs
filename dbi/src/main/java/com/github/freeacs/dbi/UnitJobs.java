@@ -1,9 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
-
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
@@ -87,7 +83,7 @@ public class UnitJobs {
 	}
 
 	// 1.1 and 1.2
-	public boolean start(UnitJob uj) throws SQLException, NoAvailableConnectionException {
+	public boolean start(UnitJob uj) throws SQLException {
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;
@@ -121,7 +117,7 @@ public class UnitJobs {
 	}
 
 	// 1.3 and 1.4
-	public boolean stop(UnitJob uj) throws SQLException, NoAvailableConnectionException {
+	public boolean stop(UnitJob uj) throws SQLException {
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;
@@ -161,7 +157,7 @@ public class UnitJobs {
 	}
 
 	// added 2010-04-08 (see comment above)
-	public int markAsCompleted(Job job) throws SQLException, NoAvailableConnectionException {
+	public int markAsCompleted(Job job) throws SQLException {
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;
@@ -193,7 +189,7 @@ public class UnitJobs {
 	}
 
 	// 2.1
-	public int markAsUnconfirmed(Job job) throws SQLException, NoAvailableConnectionException {
+	public int markAsUnconfirmed(Job job) throws SQLException {
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;
@@ -225,12 +221,12 @@ public class UnitJobs {
 	}
 
 	// 2.2
-	public List<UnitJob> readAllUnprocessed(Job job) throws SQLException, NoAvailableConnectionException {
+	public List<UnitJob> readAllUnprocessed(Job job) throws SQLException {
 		return read(false, job);
 	}
 
 	// 2.3
-	public int markAsProcessed(UnitJob uj) throws SQLException, NoAvailableConnectionException {
+	public int markAsProcessed(UnitJob uj) throws SQLException {
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;
@@ -260,7 +256,7 @@ public class UnitJobs {
 	}
 
 	// 2.4
-	public int countAndDeleteCompletedNoFailure(Job job) throws SQLException, NoAvailableConnectionException {
+	public int countAndDeleteCompletedNoFailure(Job job) throws SQLException {
 		Connection c = null;
 		PreparedStatement pp = null;
 		try {
@@ -277,7 +273,7 @@ public class UnitJobs {
 	}
 
 	// 2.4 modified - due to introduction of STOPPED state for unit-jobs
-	public int countAndDeleteStoppedNoFailure(Job job) throws SQLException, NoAvailableConnectionException {
+	public int countAndDeleteStoppedNoFailure(Job job) throws SQLException {
 		Connection c = null;
 		PreparedStatement pp = null;
 		try {
@@ -294,12 +290,12 @@ public class UnitJobs {
 	}
 
 	// 2.5
-	public List<UnitJob> readAllProcessed(Job job) throws SQLException, NoAvailableConnectionException {
+	public List<UnitJob> readAllProcessed(Job job) throws SQLException {
 		return read(true, job);
 	}
 
 	// 2.6
-	public void delete(Job job) throws SQLException, NoAvailableConnectionException {
+	public void delete(Job job) throws SQLException {
 		Connection c = null;
 		PreparedStatement pp = null;
 		try {
@@ -320,7 +316,7 @@ public class UnitJobs {
 	}
 
 	// 2.7 & 2.8
-	public int count(Job job, String column, boolean isCompleted) throws SQLException, NoAvailableConnectionException {
+	public int count(Job job, String column, boolean isCompleted) throws SQLException {
 		Connection c = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -350,7 +346,7 @@ public class UnitJobs {
 		}
 	}
 
-	private List<UnitJob> read(boolean processed, Job job) throws SQLException, NoAvailableConnectionException {
+	private List<UnitJob> read(boolean processed, Job job) throws SQLException {
 		Connection c = connectionProperties.getConnection();
 		Statement s = null;
 		ResultSet rs = null;
@@ -397,7 +393,7 @@ public class UnitJobs {
 
 	// This method is purely for migration purposes, only used by XAPS Shell to migrate
 	// data from one database to another (perhaps after an upgrade of the database itself).
-	public void addOrChange(UnitJob uj) throws SQLException, NoAvailableConnectionException {
+	public void addOrChange(UnitJob uj) throws SQLException {
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;

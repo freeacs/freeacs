@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.page.unit;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.report.*;
 import com.github.freeacs.web.Page;
@@ -157,7 +156,7 @@ public class UnitStatusPage extends AbstractWebPage {
 		
 		String sessionId = params.getSession().getId();
 
-		if (XAPSLoader.getXAPS(sessionId, xapsDataSource) == null) {
+		if (XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource) == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -172,7 +171,7 @@ public class UnitStatusPage extends AbstractWebPage {
 		}
 		*/
 
-		XAPSUnit xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource);
+		XAPSUnit xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource, syslogDataSource);
 		
 		Unit unit = null;
 
@@ -314,7 +313,7 @@ public class UnitStatusPage extends AbstractWebPage {
 		cal.setTimeInMillis(System.currentTimeMillis());
 		cal.add(Calendar.SECOND, -30);
 		Date start = cal.getTime();
-		XAPSUnit xapsUnit = XAPSLoader.getXAPSUnit(session.getId(), xapsDataSource);
+		XAPSUnit xapsUnit = XAPSLoader.getXAPSUnit(session.getId(), xapsDataSource, syslogDataSource);
 		if(xapsUnit == null)
 			throw new NotLoggedInException();
 		Unit unit = xapsUnit.getUnitById(unitId);
@@ -357,7 +356,7 @@ public class UnitStatusPage extends AbstractWebPage {
 		
 		Date fromDate = DateUtils.parseDateDefault(startTms);
 		Date toDate = DateUtils.parseDateDefault(endTms);
-		Unit unit = XAPSLoader.getXAPSUnit(session.getId(), xapsDataSource).getUnitById(unitId);
+		Unit unit = XAPSLoader.getXAPSUnit(session.getId(), xapsDataSource, syslogDataSource).getUnitById(unitId);
 		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId());
 		PeriodType type = getPeriodType(periodType);
 		ReportType reportType = ReportType.getEnum(pageType);
@@ -425,7 +424,7 @@ public class UnitStatusPage extends AbstractWebPage {
 		
 		Date fromDate = DateUtils.parseDateDefault(startTms);
 		Date toDate = DateUtils.parseDateDefault(endTms);
-		Unit unit = XAPSLoader.getXAPSUnit(session.getId(), xapsDataSource).getUnitById(unitId);
+		Unit unit = XAPSLoader.getXAPSUnit(session.getId(), xapsDataSource, syslogDataSource).getUnitById(unitId);
 		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId());
 		ReportType reportType = ReportType.getEnum(pageType);
 		String page = null;
@@ -454,7 +453,7 @@ public class UnitStatusPage extends AbstractWebPage {
 				break;
 			case SYS:
 				long getSyslogChart = System.nanoTime();
-				records = RecordUIDataSyslog.convertRecords(info.getSyslogEntries(syslogFilter, xapsDataSource, syslogDataSource),XAPSLoader.getXAPS(session.getId(), xapsDataSource));
+				records = RecordUIDataSyslog.convertRecords(info.getSyslogEntries(syslogFilter, xapsDataSource, syslogDataSource),XAPSLoader.getXAPS(session.getId(), xapsDataSource, syslogDataSource));
 				page = "syslog";
 				logTimeElapsed(getSyslogChart, "Retrieved Syslog table",logger);
 				break;
@@ -482,7 +481,7 @@ public class UnitStatusPage extends AbstractWebPage {
 	 * @throws IllegalArgumentException the illegal argument exception
 	 * @throws SecurityException the security exception
 	 * @throws ParseException the parse exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws IllegalAccessException the illegal access exception
@@ -494,10 +493,10 @@ public class UnitStatusPage extends AbstractWebPage {
 			@RequestParam("start") String startTms,
 			@RequestParam("end") String endTms,
 			@RequestParam("unitId") String unitId,
-			HttpSession session) throws IllegalArgumentException, SecurityException, ParseException, NoAvailableConnectionException, SQLException, IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+			HttpSession session) throws IllegalArgumentException, SecurityException, ParseException, SQLException, IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		Date fromDate = DateUtils.parseDateDefault(startTms);
 		Date toDate = DateUtils.parseDateDefault(endTms);
-		Unit unit = XAPSLoader.getXAPSUnit(session.getId(), xapsDataSource).getUnitById(unitId);
+		Unit unit = XAPSLoader.getXAPSUnit(session.getId(), xapsDataSource, syslogDataSource).getUnitById(unitId);
 		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId());
 		Double effect = info.getOverallStatus(xapsDataSource, syslogDataSource).getTotalScoreEffect();
 		DecimalUtils.Format df = DecimalUtils.Format.ONE_DECIMAL;
@@ -517,7 +516,7 @@ public class UnitStatusPage extends AbstractWebPage {
 	 * @param unitId the unit id
 	 * @param session the session
 	 * @return the total score number
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws TemplateModelException the template model exception
@@ -528,10 +527,10 @@ public class UnitStatusPage extends AbstractWebPage {
 			@RequestParam("start") String startTms,
 			@RequestParam("end") String endTms,
 			@RequestParam("unitId") String unitId,
-			HttpSession session) throws NoAvailableConnectionException, SQLException, IOException, TemplateModelException, ParseException {
+			HttpSession session) throws SQLException, IOException, TemplateModelException, ParseException {
 		Date fromDate = DateUtils.parseDateDefault(startTms);
 		Date toDate = DateUtils.parseDateDefault(endTms);
-		Unit unit = XAPSLoader.getXAPSUnit(session.getId(), xapsDataSource).getUnitById(unitId);
+		Unit unit = XAPSLoader.getXAPSUnit(session.getId(), xapsDataSource, syslogDataSource).getUnitById(unitId);
 		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId());
 		Double totalScore = info.getTotalScore(xapsDataSource, syslogDataSource);
 		DecimalUtils.Format df = DecimalUtils.Format.ONE_DECIMAL;
@@ -564,7 +563,7 @@ public class UnitStatusPage extends AbstractWebPage {
 			HttpSession session) throws Exception {
 		Date fromDate = DateUtils.parseDateDefault(startTms);
 		Date toDate = DateUtils.parseDateDefault(endTms);
-		Unit unit = XAPSLoader.getXAPSUnit(session.getId(), xapsDataSource).getUnitById(unitId);
+		Unit unit = XAPSLoader.getXAPSUnit(session.getId(), xapsDataSource, syslogDataSource).getUnitById(unitId);
 		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId());
 		JFreeChart chart = createStatusDialChart(null, "Overall status", new DefaultValueDataset(info.getOverallStatus(xapsDataSource, syslogDataSource).getStatus()), UnitStatusInfo.OVERALL_STATUS_MIN, UnitStatusInfo.OVERALL_STATUS_MAX);
 		byte[] image = getReportChartImageBytes(null, chart,380,380);
@@ -577,12 +576,12 @@ public class UnitStatusPage extends AbstractWebPage {
 	 * @param inputData the input data
 	 * @param info the info
 	 * @return the syslog aggregation
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws ParseException the parse exception
 	 */
-	private CheckBoxGroup<String> getSyslogAggregation(UnitStatusData inputData,UnitStatusInfo info) throws NoAvailableConnectionException, SQLException, IOException, ParseException {
+	private CheckBoxGroup<String> getSyslogAggregation(UnitStatusData inputData,UnitStatusInfo info) throws SQLException, IOException, ParseException {
 		List<String> keyNames = new ArrayList<String>(Arrays.asList("Severity","Facility","EventId"));
 		Input input = ReportPage.getSelectedAggregation(inputData.getAggregate(), keyNames);
 		return InputSelectionFactory.getCheckBoxGroup(input, input.getStringList(), keyNames);
@@ -687,9 +686,9 @@ public class UnitStatusPage extends AbstractWebPage {
 	 * @param xapsDataSource
 	 * @return true, if is call ongoing
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
-	public boolean isCallOngoing(String sessionId, UnitStatusInfo.VoipLine line, Unit unit, Date start, Date end, DataSource xapsDataSource) throws SQLException, NoAvailableConnectionException {
+	public boolean isCallOngoing(String sessionId, UnitStatusInfo.VoipLine line, Unit unit, Date start, Date end, DataSource xapsDataSource) throws SQLException {
 		Syslog syslog = new Syslog(syslogDataSource, XAPSLoader.getIdentity(sessionId, xapsDataSource));
 		SyslogFilter filter = new SyslogFilter();
 		filter.setMaxRows(1);
@@ -699,10 +698,10 @@ public class UnitStatusPage extends AbstractWebPage {
 		filter.setCollectorTmsEnd(end);
 		filter.setUnitId("^" + unit.getId() + "$");
 		long isCallOngoingMs = System.nanoTime();
-		List<SyslogEntry> mosEntry = syslog.read(filter, XAPSLoader.getXAPS(sessionId, this.xapsDataSource));
+		List<SyslogEntry> mosEntry = syslog.read(filter, XAPSLoader.getXAPS(sessionId, this.xapsDataSource, syslogDataSource));
 		logTimeElapsed(isCallOngoingMs, "Retrieved last MOS report from Syslog. Result size: "+mosEntry.size(), logger);
 		long getQoS = System.nanoTime();
-		Date lastQoS = UnitStatusRealTimeMosPage.getLastQoSTimestamp(sessionId, unit, start, line.toString(), XAPSLoader.getXAPS(sessionId, this.xapsDataSource));
+		Date lastQoS = UnitStatusRealTimeMosPage.getLastQoSTimestamp(sessionId, unit, start, line.toString(), XAPSLoader.getXAPS(sessionId, this.xapsDataSource, syslogDataSource));
 		logTimeElapsed(getQoS, "Retrieved last QoS report from Syslog. QoS timestamp: "+(lastQoS!=null?lastQoS.toString():"n/a"), logger);
 		if(mosEntry.size()>0 && lastQoS!=null){
 			SyslogEntry mosSyslogEntry = mosEntry.get(0);

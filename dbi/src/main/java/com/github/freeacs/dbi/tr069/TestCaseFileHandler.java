@@ -1,6 +1,5 @@
 package com.github.freeacs.dbi.tr069;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.FileType;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.UnittypeParameter;
@@ -18,7 +17,7 @@ public class TestCaseFileHandler {
 		this.unittype = unittype;
 	}
 
-	public List<TestCase> parseDirectory(String directory) throws IOException, NoAvailableConnectionException, SQLException {
+	public List<TestCase> parseDirectory(String directory) throws IOException, SQLException {
 		directory = directory(directory, false);
 		File dir = new File(directory);
 		List<TestCase> list = new ArrayList<TestCase>();
@@ -40,7 +39,7 @@ public class TestCaseFileHandler {
 		}
 	}
 
-	public TestCase parseFile(String filename) throws IOException, NoAvailableConnectionException, SQLException {
+	public TestCase parseFile(String filename) throws IOException, SQLException {
 		BufferedReader br = new BufferedReader(new FileReader(new File(filename)));
 		TestCase tc = new TestCase();
 		tc.setUnittype(unittype);

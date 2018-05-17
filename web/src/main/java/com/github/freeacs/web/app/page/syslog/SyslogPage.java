@@ -29,14 +29,14 @@ public class SyslogPage extends AbstractWebPage {
 			return;
 		}
 
-		XAPS xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource);
+		XAPS xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
 
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
 
-		XAPSLoader.getXAPSUnit(params.getSession().getId(), xapsDataSource);
+		XAPSLoader.getXAPSUnit(params.getSession().getId(), xapsDataSource, syslogDataSource);
 
 		// Fix
 		InputDataIntegrity.loadAndStoreSession(params,outputHandler,inputData, inputData.getUnittype(),inputData.getProfile());

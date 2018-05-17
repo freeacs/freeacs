@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.page.report.custom;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.Group;
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unittype;
@@ -11,7 +10,6 @@ import com.github.freeacs.dbi.report.Report;
 import com.github.freeacs.dbi.report.ReportGenerator;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.report.ReportData;
-import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.XAPSLoader;
 
 import java.io.IOException;
@@ -36,9 +34,9 @@ public class UnitRetriever extends ReportRetriever {
 	 * @param params the params
 	 * @param xaps the xaps
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 */
-	public UnitRetriever(ReportData inputData, ParameterParser params, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public UnitRetriever(ReportData inputData, ParameterParser params, XAPS xaps) throws SQLException {
 		super(inputData, params, xaps);
 		generator = new ReportGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(), xaps, null,
 				XAPSLoader.getIdentity(params.getSession().getId(), xaps.getDataSource()));
@@ -48,7 +46,7 @@ public class UnitRetriever extends ReportRetriever {
 	 * @see com.owera.xaps.web.app.page.report.custom.ReportRetriever#generateReport(com.owera.xaps.dbi.report.PeriodType, java.util.Date, java.util.Date, java.util.List, java.util.List)
 	 */
 	@Override
-	public Report<?> generateReport(PeriodType periodType, Date start, Date end, List<Unittype> unittypes, List<Profile> profiles, Group group) throws NoAvailableConnectionException, SQLException,
+	public Report<?> generateReport(PeriodType periodType, Date start, Date end, List<Unittype> unittypes, List<Profile> profiles, Group group) throws SQLException,
 			IOException {
 		return (Report<RecordUnit>) generator.generateUnitReport(periodType, start, end, unittypes, profiles);
 	}

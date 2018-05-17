@@ -1,20 +1,12 @@
 package com.github.freeacs.core.task;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.scheduler.Task;
-import com.github.freeacs.dbi.*;
 import com.github.freeacs.core.CoreServlet;
-
+import com.github.freeacs.dbi.*;
 import org.slf4j.Logger;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
-
-import static com.github.freeacs.core.Properties.getMaxAge;
-import static com.github.freeacs.core.Properties.getMaxConn;
-import static com.github.freeacs.core.Properties.getUrl;
 
 /**
  * You can extend DBIShare if, and only if, you do not manipulate the contents of the xAPS object. 
@@ -39,7 +31,7 @@ public abstract class DBIShare implements Task {
 
 	private Throwable throwable;
 
-	public DBIShare(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException, NoAvailableConnectionException {
+	public DBIShare(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException {
 		this.xapsCp = xapsCp;
 		this.sysCp = sysCp;
 		this.taskName = taskName;

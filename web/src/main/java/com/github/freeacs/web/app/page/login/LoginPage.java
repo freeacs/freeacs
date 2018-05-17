@@ -1,7 +1,5 @@
 package com.github.freeacs.web.app.page.login;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.Output;
@@ -10,7 +8,6 @@ import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
-import com.github.freeacs.web.app.util.WebProperties;
 
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
@@ -40,24 +37,6 @@ public class LoginPage extends AbstractWebPage {
 	@Override
 	public boolean requiresNoCache() {
 		return true;
-	}
-
-	/**
-	 * Gets the xAPS connection properties.
-	 * @return the xAPS connection properties
-	 */
-	public static ConnectionProperties getXAPSConnectionProperties() {
-		String url = WebProperties.getUrl("xaps");
-		Long maxAge = WebProperties.getMaxAge("xaps");
-		Integer maxConn = WebProperties.getMaxConn("xaps");
-		return ConnectionProvider.getConnectionProperties(url, maxAge, maxConn);
-	}
-
-	public static ConnectionProperties getSyslogConnectionProperties() {
-		String url = WebProperties.getUrl("syslog");
-		Long maxAge = WebProperties.getMaxAge("syslog");
-		Integer maxConn = WebProperties.getMaxConn("syslog");
-		return ConnectionProvider.getConnectionProperties(url, maxAge, maxConn);
 	}
 
 	/* (non-Javadoc)

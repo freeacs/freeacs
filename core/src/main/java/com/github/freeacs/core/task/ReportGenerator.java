@@ -1,13 +1,9 @@
 package com.github.freeacs.core.task;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.scheduler.ScheduleType;
 import com.github.freeacs.core.Properties;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.report.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +31,7 @@ public class ReportGenerator extends DBIOwner {
 	private ScheduleType scheduleType;
 	private TmsConverter converter = new TmsConverter();
 
-	public ReportGenerator(String taskName, ScheduleType scheduleType, DataSource xapsCp, DataSource sysCp) throws SQLException, NoAvailableConnectionException {
+	public ReportGenerator(String taskName, ScheduleType scheduleType, DataSource xapsCp, DataSource sysCp) throws SQLException {
 		super(taskName, xapsCp, sysCp);
 		this.scheduleType = scheduleType;
 
@@ -81,7 +77,7 @@ public class ReportGenerator extends DBIOwner {
 		}
 	}
 
-	private void populateReportGroupTable(DataSource cp, Date now, PeriodType pt) throws NoAvailableConnectionException, SQLException {
+	private void populateReportGroupTable(DataSource cp, Date now, PeriodType pt) throws SQLException {
 		Connection c = null;
 		PreparedStatement ps = null;
 		SQLException sqle = null;
@@ -162,7 +158,7 @@ public class ReportGenerator extends DBIOwner {
 		}
 	}
 
-	private void populateReportHWTable(DataSource cp, Report<RecordHardware> report) throws NoAvailableConnectionException, SQLException {
+	private void populateReportHWTable(DataSource cp, Report<RecordHardware> report) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -254,7 +250,7 @@ public class ReportGenerator extends DBIOwner {
 
 	}
 
-	private void populateReportJobTable(DataSource cp, Date now, PeriodType pt) throws NoAvailableConnectionException, SQLException {
+	private void populateReportJobTable(DataSource cp, Date now, PeriodType pt) throws SQLException {
 		Connection c = null;
 		PreparedStatement ps = null;
 		SQLException sqle = null;
@@ -306,7 +302,7 @@ public class ReportGenerator extends DBIOwner {
 		}
 	}
 
-	private void populateReportSyslogTable(DataSource cp, Report<RecordSyslog> report) throws NoAvailableConnectionException, SQLException {
+	private void populateReportSyslogTable(DataSource cp, Report<RecordSyslog> report) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -387,7 +383,7 @@ public class ReportGenerator extends DBIOwner {
 		}
 	}
 
-	private void populateReportUnitTable(DataSource cp, Date now, PeriodType pt) throws NoAvailableConnectionException, SQLException {
+	private void populateReportUnitTable(DataSource cp, Date now, PeriodType pt) throws SQLException {
 		Connection c1 = null;
 		PreparedStatement ps1 = null;
 		Connection c2 = null;
@@ -525,7 +521,7 @@ public class ReportGenerator extends DBIOwner {
 
 	}
 
-	private void populateReportVoipTable(DataSource cp, Report<RecordVoip> report) throws NoAvailableConnectionException, SQLException {
+	private void populateReportVoipTable(DataSource cp, Report<RecordVoip> report) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -633,8 +629,6 @@ public class ReportGenerator extends DBIOwner {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (connection != null)
-				ConnectionProvider.returnConnection(connection, sqle);
 		}
 
 	}
@@ -652,7 +646,7 @@ public class ReportGenerator extends DBIOwner {
 		return false;
 	}
 
-	private void populateReportProvTable(DataSource cp, Report<RecordProvisioning> report) throws NoAvailableConnectionException, SQLException {
+	private void populateReportProvTable(DataSource cp, Report<RecordProvisioning> report) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -716,7 +710,7 @@ public class ReportGenerator extends DBIOwner {
 
 	}
 
-	private void dailyJobs() throws NoAvailableConnectionException, SQLException, IOException, ParseException {
+	private void dailyJobs() throws SQLException, IOException, ParseException {
 		logger.info("ReportGenerator: Daily report processing starts...");
 		logger.info("ReportGenerator: Generate reports start");
 		String reports = Properties.getReports();
@@ -729,7 +723,7 @@ public class ReportGenerator extends DBIOwner {
 		logger.info("ReportGenerator: Daily report processing ends");
 	}
 
-	private void hourlyJobs() throws NoAvailableConnectionException, SQLException, IOException, ParseException {
+	private void hourlyJobs() throws SQLException, IOException, ParseException {
 		logger.info("ReportGenerator: Hourly report processing starts...");
 		logger.info("ReportGenerator: Generate reports start");
 		String reports = Properties.getReports();
@@ -741,7 +735,7 @@ public class ReportGenerator extends DBIOwner {
 		logger.info("ReportGenerator: Hourly report processing ends");
 	}
 
-	private void runReports(String reportProperty, PeriodType periodType) throws NoAvailableConnectionException, SQLException, IOException, ParseException {
+	private void runReports(String reportProperty, PeriodType periodType) throws SQLException, IOException, ParseException {
 		Date now = converter.convert(new Date(), periodType);
 		int counter = 5;
 		logger.info("ReportGenerator: Process reports start...");
@@ -772,12 +766,12 @@ public class ReportGenerator extends DBIOwner {
 		logger.info("ReportGenerator: Process reports end, " + counter + " reports are made");
 	}
 
-	private void buildUnit(PeriodType periodType, Date now) throws NoAvailableConnectionException, SQLException {
+	private void buildUnit(PeriodType periodType, Date now) throws SQLException {
 		logger.info("ReportGenerator: - Generating and populating UnitReport (" + periodType.getTypeStr() + "-based)");
 		populateReportUnitTable(getXapsCp(), now, periodType);
 	}
 
-	private void buildProvisioning(PeriodType periodType) throws NoAvailableConnectionException, SQLException, IOException, ParseException {
+	private void buildProvisioning(PeriodType periodType) throws SQLException, IOException, ParseException {
 		ReportProvisioningGenerator rg = new ReportProvisioningGenerator(getSysCp(), getXapsCp(), xaps, "- - ", getIdentity());
 		Date endTmsExc = new Date();
 		Date startTmsInc = rg.startReportFromTms(periodType, "report_prov");
@@ -794,7 +788,7 @@ public class ReportGenerator extends DBIOwner {
 		logger.info("ReportGenerator: - Populated ProvSYSReport  (" + periodType.getTypeStr() + "-based)");
 	}
 
-	private void buildSyslog(PeriodType periodType) throws NoAvailableConnectionException, SQLException, IOException, ParseException {
+	private void buildSyslog(PeriodType periodType) throws SQLException, IOException, ParseException {
 		ReportSyslogGenerator rg = new ReportSyslogGenerator(getSysCp(), getXapsCp(), xaps, "- - ", getIdentity());
 		Date endTmsExc = new Date();
 		Date startTmsInc = rg.startReportFromTms(periodType, "report_syslog");
@@ -811,7 +805,7 @@ public class ReportGenerator extends DBIOwner {
 		logger.info("ReportGenerator: - Populated SyslogReport  (" + periodType.getTypeStr() + "-based)");
 	}
 
-	private void buildHardwareSYS(PeriodType periodType) throws NoAvailableConnectionException, SQLException, IOException {
+	private void buildHardwareSYS(PeriodType periodType) throws SQLException, IOException {
 		ReportHardwareGenerator rg = new ReportHardwareGenerator(getSysCp(), getXapsCp(), xaps, "- - ", getIdentity());
 		Date endTmsExc = new Date();
 		Date startTmsInc = rg.startReportFromTms(periodType, "report_hw");
@@ -828,18 +822,18 @@ public class ReportGenerator extends DBIOwner {
 		logger.info("ReportGenerator: - Populated HardwareSYSReport  (" + periodType.getTypeStr() + "-based)");
 	}
 
-	private void buildGroup(PeriodType periodType, Date now) throws NoAvailableConnectionException, SQLException {
+	private void buildGroup(PeriodType periodType, Date now) throws SQLException {
 		logger.info("ReportGenerator: - Generating and populating GroupReport (" + periodType.getTypeStr() + "-based)");
 		populateReportGroupTable(getXapsCp(), now, periodType);
 
 	}
 
-	private void buildJob(PeriodType periodType, Date now) throws NoAvailableConnectionException, SQLException, IOException {
+	private void buildJob(PeriodType periodType, Date now) throws SQLException, IOException {
 		logger.info("ReportGenerator: - Generating and populating JobReport (" + periodType.getTypeStr() + "-based)");
 		populateReportJobTable(getXapsCp(), now, periodType);
 	}
 
-	private void buildVoipSYS(PeriodType periodType) throws NoAvailableConnectionException, SQLException, IOException {
+	private void buildVoipSYS(PeriodType periodType) throws SQLException, IOException {
 		ReportVoipGenerator rg = new ReportVoipGenerator(getSysCp(), getXapsCp(), xaps, "- - ", getIdentity());
 		Date endTmsExc = new Date();
 		Date startTmsInc = rg.startReportFromTms(periodType, "report_voip");

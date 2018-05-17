@@ -1,7 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.InsertOrUpdateStatement.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +42,7 @@ public class Heartbeats {
 		return "Contains " + idMap.size() + " heartbeats";
 	}
 
-	private void addOrChangeHeartbeatImpl(Heartbeat heartbeat, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void addOrChangeHeartbeatImpl(Heartbeat heartbeat, XAPS xaps) throws SQLException {
 		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		PreparedStatement ps = null;
@@ -79,7 +77,7 @@ public class Heartbeats {
 		}
 	}
 
-	public void addOrChangeHeartbeat(Heartbeat heartbeat, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeHeartbeat(Heartbeat heartbeat, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		heartbeat.validateInput(true);
@@ -89,7 +87,7 @@ public class Heartbeats {
 		nameMap.put(heartbeat.getName(), heartbeat);
 	}
 
-	private void deleteHeartbeatImpl(Heartbeat heartbeat, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void deleteHeartbeatImpl(Heartbeat heartbeat, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
 		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
@@ -116,10 +114,10 @@ public class Heartbeats {
 	 * The first time this method is run, the flag is set. The second time this
 	 * method is run, the parameter is removed from the name- and id-Map.
 	 * 
-	 * @throws NoAvailableConnectionException
+	 *
 	 * @throws SQLException
 	 */
-	public void deleteHeartbeat(Heartbeat heartbeat, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void deleteHeartbeat(Heartbeat heartbeat, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		deleteHeartbeatImpl(heartbeat, xaps);

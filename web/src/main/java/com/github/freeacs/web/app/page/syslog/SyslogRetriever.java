@@ -46,8 +46,8 @@ public class SyslogRetriever {
 		filter.setFacilityVersion(inputData.getFacilityVersion().getString());
 		if (unittype != null)
 			filter.setUnittypes(Collections.singletonList(unittype));
-		else if (AbstractWebPage.isUnittypesLimited(sessionId, xapsDataSource)) {
-			List<Unittype> uts = AbstractWebPage.getAllowedUnittypes(sessionId, xapsDataSource);
+		else if (AbstractWebPage.isUnittypesLimited(sessionId, xapsDataSource, syslogDataSource)) {
+			List<Unittype> uts = AbstractWebPage.getAllowedUnittypes(sessionId, xapsDataSource, syslogDataSource);
 			if (uts.size() == 0)
 				return new ArrayList<SyslogEntry>();
 			filter.setUnittypes(uts);
@@ -55,7 +55,7 @@ public class SyslogRetriever {
 		if (profile != null)
 			filter.setProfiles(Collections.singletonList(profile));
 		else {
-			List<Profile> profiles = AbstractWebPage.getAllowedProfiles(sessionId, unittype, xapsDataSource);
+			List<Profile> profiles = AbstractWebPage.getAllowedProfiles(sessionId, unittype, xapsDataSource, syslogDataSource);
 			if (profiles != null && profiles.size() > 0) {
 				filter.setProfiles(profiles);
 			}
@@ -82,7 +82,7 @@ public class SyslogRetriever {
 			filter.setCollectorTmsEnd(c.getTime());
 		}
 		filter.setUnitId(inputData.getUnit().getString());
-		List<SyslogEntry> entries = syslog.read(filter, XAPSLoader.getXAPS(sessionId, xapsDataSource));
+		List<SyslogEntry> entries = syslog.read(filter, XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource));
 		SessionCache.putSyslogEntries(sessionId, entries);
 		return entries;
 	}

@@ -29,7 +29,7 @@ public class ScriptExecutionsPage extends AbstractWebPage {
 		inputData = (ScriptExecutionData) InputDataRetriever.parseInto(new ScriptExecutionData(), params);
 
 		/* Retrieve the XAPS object from session */
-		xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource);
+		xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;

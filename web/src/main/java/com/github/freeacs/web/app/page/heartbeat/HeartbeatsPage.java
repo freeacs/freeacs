@@ -34,7 +34,7 @@ public class HeartbeatsPage extends AbstractWebPage {
 		inputData = (HeartbeatsData) InputDataRetriever.parseInto(new HeartbeatsData(), params);
 
 		/* Retrieve the XAPS object from session */
-		xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource);
+		xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;

@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.context.ContextItem;
@@ -148,8 +147,8 @@ public class Output {
 		printPartialPage(content, currentPage,inputParameters, servletResponseChannel);
 	}
 
-	private void populateTemplateMapWithContextBar() throws NoAvailableConnectionException, SQLException {
-		XAPS xaps = XAPSLoader.getXAPS(inputParameters.getSession().getId(), xapsDataSource);
+	private void populateTemplateMapWithContextBar() throws SQLException {
+		XAPS xaps = XAPSLoader.getXAPS(inputParameters.getSession().getId(), xapsDataSource, syslogDataSource);
 		Unittype currentUnittype = xaps.getUnittype(trailPoint!=null?trailPoint.getUnitTypeName():null);
 		Input utInput = Input.getStringInput("unittype");
 		if(currentUnittype!=null)
@@ -185,10 +184,10 @@ public class Output {
 	 * Processes the requested changes from the context bar
 	 * 
 	 * @throws IOException
-	 * @throws NoAvailableConnectionException
+	 *
 	 * @throws SQLException
 	 */
-	private void processContextBarUpdates() throws IOException, NoAvailableConnectionException, SQLException {
+	private void processContextBarUpdates() throws IOException, SQLException {
 		String cUT = inputParameters.getStringParameter("contextunittype");			
 		if(cUT!=null){
 			if(cUT.equals("All"))
@@ -209,7 +208,7 @@ public class Output {
 			inputParameters.getSessionData().setUnitId(cU);
 			inputParameters.getHttpServletRequest().ignoreParameter("unit");
 			String newValue = inputParameters.getSessionData().getUnitId();
-			XAPSUnit xaps = XAPSLoader.getXAPSUnit(inputParameters.getSession().getId(), xapsDataSource);
+			XAPSUnit xaps = XAPSLoader.getXAPSUnit(inputParameters.getSession().getId(), xapsDataSource, syslogDataSource);
 			Unit unit = null;
 			if((unit = xaps.getUnitById(newValue))!=null){
 				redirect(Page.UNITSTATUS.getUrl("unit="+unit.getId()+"&unittype="+unit.getUnittype().getName()+"&profile="+unit.getProfile().getName()),servletResponseChannel);

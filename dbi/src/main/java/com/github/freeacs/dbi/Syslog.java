@@ -1,8 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.util.SQLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -384,7 +381,7 @@ public class Syslog {
     return result;
   }
 
-  public void updateContent(long tms, String oldContent, String newContent, String unitId) throws SQLException, NoAvailableConnectionException {
+  public void updateContent(long tms, String oldContent, String newContent, String unitId) throws SQLException {
     Connection c = getDataSource().getConnection();
     PreparedStatement pp = null;
     try {
@@ -408,7 +405,7 @@ public class Syslog {
   }
 
   // Delete entries with a specific event, unless it has some a severity level
-  public int deleteOldEventsEntries(Calendar fromCal, Calendar toCal, SyslogEvent event, int limit) throws SQLException, NoAvailableConnectionException {
+  public int deleteOldEventsEntries(Calendar fromCal, Calendar toCal, SyslogEvent event, int limit) throws SQLException {
     Connection c = getDataSource().getConnection();
     PreparedStatement pp = null;
     DynamicStatement ds = new DynamicStatement();
@@ -449,7 +446,7 @@ public class Syslog {
   }
 
   // Delete entries with a specific severity, unless it has a specified event id
-  public int deleteOldSeverityEntries(Calendar fromCal, Calendar toCal, int severity, List<SyslogEvent> events, int limit) throws SQLException, NoAvailableConnectionException {
+  public int deleteOldSeverityEntries(Calendar fromCal, Calendar toCal, int severity, List<SyslogEvent> events, int limit) throws SQLException {
     Connection c = getDataSource().getConnection();
     PreparedStatement pp = null;
     DynamicStatement ds = new DynamicStatement();
@@ -490,7 +487,7 @@ public class Syslog {
     }
   }
 
-  public List<SyslogEntry> read(SyslogFilter filter, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+  public List<SyslogEntry> read(SyslogFilter filter, XAPS xaps) throws SQLException {
     Connection c = getDataSource().getConnection();
     PreparedStatement pp = null;
     ResultSet rs = null;
@@ -521,7 +518,7 @@ public class Syslog {
   }
 
   // Returns syslog id
-  public void write(SyslogEntry entry) throws SQLException, NoAvailableConnectionException {
+  public void write(SyslogEntry entry) throws SQLException {
     Connection c = null;
     Statement s = null;
     SQLException sqlex = null;

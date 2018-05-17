@@ -1,10 +1,6 @@
 package com.github.freeacs.dbi.report;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,7 +104,7 @@ public class ReportGenerator {
 		return ds;
 	}
 
-	public List<String> getSoftwareVersions(Unittype unittype, Profile profile, Date start, Date end, String tablename) throws SQLException, NoAvailableConnectionException {
+	public List<String> getSoftwareVersions(Unittype unittype, Profile profile, Date start, Date end, String tablename) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -146,8 +142,7 @@ public class ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (connection != null)
-				ConnectionProvider.returnConnection(connection, sqle);
+			
 		}
 	}
 
@@ -158,10 +153,10 @@ public class ReportGenerator {
 	 * @param periodType
 	 * @param tablename
 	 * @return
-	 * @throws NoAvailableConnectionException
+	 *
 	 * @throws SQLException
 	 */
-	public Date startReportFromTms(PeriodType periodType, String tablename) throws NoAvailableConnectionException, SQLException {
+	public Date startReportFromTms(PeriodType periodType, String tablename) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -195,13 +190,12 @@ public class ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (connection != null)
-				ConnectionProvider.returnConnection(connection, sqle);
+			
 		}
 
 	}
 
-	public Map<String, Unit> getUnitsInGroup(Group group) throws NoAvailableConnectionException, SQLException {
+	public Map<String, Unit> getUnitsInGroup(Group group) throws SQLException {
 		Map<String, Unit> unitsInGroup = new HashMap<String, Unit>();
 		if (group != null) {
 			XAPSUnit xapsUnit = new XAPSUnit(xapsCp, xaps, xaps.getSyslog());
@@ -214,7 +208,7 @@ public class ReportGenerator {
 	 * Generate reports from report table
 	 */
 
-	//	public Report<RecordProvisioning> generateProvisioningReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws NoAvailableConnectionException,
+	//	public Report<RecordProvisioning> generateProvisioningReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws
 	//			SQLException, IOException {
 	//		Connection xapsConnection = null;
 	//		Connection sysConnection = null;
@@ -262,7 +256,7 @@ public class ReportGenerator {
 	//		}
 	//	}
 
-	public Report<RecordUnit> generateUnitReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws NoAvailableConnectionException, SQLException, IOException {
+	public Report<RecordUnit> generateUnitReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws SQLException, IOException {
 		Connection xapsConnection = null;
 		Connection sysConnection = null;
 		PreparedStatement ps = null;
@@ -302,14 +296,10 @@ public class ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (xapsConnection != null)
-				ConnectionProvider.returnConnection(xapsConnection, sqle);
-			if (sysConnection != null)
-				ConnectionProvider.returnConnection(sysConnection, sqle);
 		}
 	}
 
-	public Report<RecordJob> generateJobReport(PeriodType periodType, Date start, Date end, List<Unittype> uts) throws NoAvailableConnectionException, SQLException, IOException {
+	public Report<RecordJob> generateJobReport(PeriodType periodType, Date start, Date end, List<Unittype> uts) throws SQLException, IOException {
 		Connection xapsConnection = null;
 		Connection sysConnection = null;
 		PreparedStatement ps = null;
@@ -351,10 +341,6 @@ public class ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (xapsConnection != null)
-				ConnectionProvider.returnConnection(xapsConnection, sqle);
-			if (sysConnection != null)
-				ConnectionProvider.returnConnection(sysConnection, sqle);
 		}
 	}
 

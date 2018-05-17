@@ -1,7 +1,5 @@
 package com.github.freeacs.monitor;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.scheduler.Schedule;
 import com.github.freeacs.common.scheduler.ScheduleType;
 import com.github.freeacs.common.scheduler.Scheduler;
@@ -30,8 +28,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.github.freeacs.monitor.Properties.*;
 
 /**
  * Servlet implementation class Welcome

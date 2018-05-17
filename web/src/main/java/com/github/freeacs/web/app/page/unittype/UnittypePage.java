@@ -161,7 +161,7 @@ public class UnittypePage extends AbstractWebPage {
 
 		sessionId = params.getSession().getId();
 
-		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
+		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -189,7 +189,7 @@ public class UnittypePage extends AbstractWebPage {
 			return;
 		}
 
-		List<Unittype> unittypes = getAllowedUnittypes(sessionId, xapsDataSource);
+		List<Unittype> unittypes = getAllowedUnittypes(sessionId, xapsDataSource, syslogDataSource);
 
 		if (unittype != null) {
 			template = "/unit-type/details.ftl";

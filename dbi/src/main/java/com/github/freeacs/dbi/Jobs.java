@@ -1,9 +1,7 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
-import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.DynamicStatement.NullInteger;
+import com.github.freeacs.dbi.util.SystemParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +78,7 @@ public class Jobs {
 		}
 	}
 
-	public void addOrChangeJobParameters(List<JobParameter> jobParameters, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeJobParameters(List<JobParameter> jobParameters, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		Connection connection = null;
@@ -151,7 +149,7 @@ public class Jobs {
 
 	}
 
-	public void deleteJobParameters(Job job, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void deleteJobParameters(Job job, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		Connection connection = null;
@@ -181,7 +179,7 @@ public class Jobs {
 		}
 	}
 
-	public int deleteJobParameters(List<JobParameter> jobParameters, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public int deleteJobParameters(List<JobParameter> jobParameters, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		Connection connection = null;
@@ -240,7 +238,7 @@ public class Jobs {
 		nameMap.remove(job.getName());
 	}
 
-	public void delete(Job job, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void delete(Job job, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		deleteJobParameters(job, xaps);
@@ -303,7 +301,7 @@ public class Jobs {
 		return false;
 	}
 
-	public void add(Job job, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void add(Job job, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		job.setStatus(JobStatus.READY);
@@ -368,7 +366,7 @@ public class Jobs {
 
 	}
 
-	private void updateMandatoryJobParameters(Job job, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void updateMandatoryJobParameters(Job job, XAPS xaps) throws SQLException {
 		if (job.getFlags().getType() == JobFlag.JobType.SOFTWARE) {
 			Parameter param = new Parameter(unittype.getUnittypeParameters().getByName(SystemParameters.DESIRED_SOFTWARE_VERSION), job.getFile().getVersion());
 			JobParameter jp = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, param);
@@ -398,7 +396,7 @@ public class Jobs {
 	}
 
 	/* Decided to skip unit-specific job parameters. Cause extra work/SQL in TR-069 server, has never been used in 5 years. */
-	public Map<String, JobParameter> readJobParameters(Job job, Unit unit, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public Map<String, JobParameter> readJobParameters(Job job, Unit unit, XAPS xaps) throws SQLException {
 		return job.getDefaultParameters();
 		//		Connection c = null;
 		//		Statement s = null;
@@ -447,7 +445,7 @@ public class Jobs {
 	 * job table. We make an effort to only send the data if there really is a change.
 	 * That will keep the number of message and data and load and the very minimum.
 	 */
-	public void changeFromCore(Job job, String publishMsg, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void changeFromCore(Job job, String publishMsg, XAPS xaps) throws SQLException {
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;
@@ -494,7 +492,7 @@ public class Jobs {
 	//		return false;
 	//	}
 
-	public void changeStatus(Job job, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void changeStatus(Job job, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		Connection c = null;
@@ -560,7 +558,7 @@ public class Jobs {
 	 * since they are updated by an other method (and another agent). It's important to separate the various
 	 * updates methods since the agents are independent of each other.
 	 */
-	public int changeFromUI(Job job, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public int changeFromUI(Job job, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		job.validate();
@@ -628,7 +626,7 @@ public class Jobs {
 		}
 	}
 
-	protected static void refreshJob(Integer jobId, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	protected static void refreshJob(Integer jobId, XAPS xaps) throws SQLException {
 		Connection c = null;
 		Statement s = null;
 		ResultSet rs = null;

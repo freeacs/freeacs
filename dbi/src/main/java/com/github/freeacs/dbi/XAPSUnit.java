@@ -1,6 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.dbi.util.XAPSVersionCheck;
 import org.slf4j.Logger;
@@ -27,7 +26,7 @@ public class XAPSUnit {
 	private Syslog syslog;
 	private XAPS xaps;
 
-	public XAPSUnit(DataSource dataSource, XAPS xaps, Syslog syslog) throws NoAvailableConnectionException, SQLException {
+	public XAPSUnit(DataSource dataSource, XAPS xaps, Syslog syslog) throws SQLException {
 		this.dataSource = dataSource;
 		this.syslog = syslog;
 		if (xaps == null)
@@ -45,9 +44,9 @@ public class XAPSUnit {
 	* @param profile - may be null
 	* @return a unit object will all unit parameters found
 	* @throws SQLException
-	* @throws NoAvailableConnectionException
+	*
 	*/
-	public Unit getUnitByValue(String value, Unittype unittype, Profile profile) throws SQLException, NoAvailableConnectionException {
+	public Unit getUnitByValue(String value, Unittype unittype, Profile profile) throws SQLException {
 		Connection connection = null;
 		boolean wasAutoCommit = false;
 		try {
@@ -67,7 +66,7 @@ public class XAPSUnit {
 		}
 	}
 
-	public Unit getLimitedUnitByValue(String value) throws SQLException, NoAvailableConnectionException {
+	public Unit getLimitedUnitByValue(String value) throws SQLException {
 		Connection connection = null;
 		boolean wasAutoCommit = false;
 		try {
@@ -90,9 +89,9 @@ public class XAPSUnit {
 	 * @param profile - may be null
 	 * @return a unit object will all unit parameters found
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
-	public Unit getUnitById(String unitId, Unittype unittype, Profile profile) throws SQLException, NoAvailableConnectionException {
+	public Unit getUnitById(String unitId, Unittype unittype, Profile profile) throws SQLException {
 		Connection connection = null;
 		boolean wasAutoCommit = false;
 		try {
@@ -112,7 +111,7 @@ public class XAPSUnit {
 		}
 	}
 
-	public Unit getUnitById(String unitId) throws SQLException, NoAvailableConnectionException {
+	public Unit getUnitById(String unitId) throws SQLException {
 		return getUnitById(unitId, null, null);
 	}
 
@@ -129,9 +128,9 @@ public class XAPSUnit {
 	*
 	* @param unitIds
 	 * @throws SQLException
-	* @throws NoAvailableConnectionException
+	*
 	*/
-	public void addUnits(List<String> unitIds, Profile profile) throws SQLException, NoAvailableConnectionException {
+	public void addUnits(List<String> unitIds, Profile profile) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		boolean wasAutoCommit = false;
@@ -188,9 +187,9 @@ public class XAPSUnit {
 	 * @param unitIds
 	 * @param profile
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
-	public void moveUnits(List<String> unitIds, Profile profile) throws SQLException, NoAvailableConnectionException {
+	public void moveUnits(List<String> unitIds, Profile profile) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		SQLException sqlex = null;
@@ -234,7 +233,7 @@ public class XAPSUnit {
 		return rowsupdated;
 	}
 
-	public List<String> getUnitIdsFromSessionUnitParameters() throws SQLException, NoAvailableConnectionException {
+	public List<String> getUnitIdsFromSessionUnitParameters() throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -266,7 +265,7 @@ public class XAPSUnit {
 
 	}
 
-	private void addOrChangeUnitParameters(List<UnitParameter> unitParameters, Profile prof, boolean session) throws NoAvailableConnectionException, SQLException {
+	private void addOrChangeUnitParameters(List<UnitParameter> unitParameters, Profile prof, boolean session) throws SQLException {
 		Connection connection = null;
 		PreparedStatement pp = null;
 		String sql = null;
@@ -351,7 +350,7 @@ public class XAPSUnit {
 		}
 	}
 
-	public void addOrChangeQueuedUnitParameters(Unit unit) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeQueuedUnitParameters(Unit unit) throws SQLException {
 
 		List<UnitParameter> queuedParameters = unit.flushWriteQueue();
 		Iterator<UnitParameter> iterator = queuedParameters.iterator();
@@ -365,11 +364,11 @@ public class XAPSUnit {
 		addOrChangeUnitParameters(queuedParameters, unit.getProfile());
 	}
 
-	public void addOrChangeUnitParameters(List<UnitParameter> unitParameters, Profile prof) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeUnitParameters(List<UnitParameter> unitParameters, Profile prof) throws SQLException {
 		addOrChangeUnitParameters(unitParameters, prof, false);
 	}
 
-	public void addOrChangeUnitParameter(Unit unit, String unittypeParameterName, String value) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeUnitParameter(Unit unit, String unittypeParameterName, String value) throws SQLException {
 		Unittype unittype = unit.getUnittype();
 		Parameter parameter = new Parameter(unittype.getUnittypeParameters().getByName(unittypeParameterName), value);
 		UnitParameter up = new UnitParameter(parameter, unit.getId(), unit.getProfile());
@@ -378,7 +377,7 @@ public class XAPSUnit {
 		addOrChangeUnitParameters(ups, unit.getProfile());
 	}
 
-	public void addOrChangeSessionUnitParameters(List<UnitParameter> unitParameters, Profile prof) throws NoAvailableConnectionException, SQLException {
+	public void addOrChangeSessionUnitParameters(List<UnitParameter> unitParameters, Profile prof) throws SQLException {
 		if (XAPSVersionCheck.unitParamSessionSupported)
 			addOrChangeUnitParameters(unitParameters, prof, true);
 	}
@@ -388,9 +387,9 @@ public class XAPSUnit {
 	 * 
 	 * @param unit
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
-	public int deleteUnit(Unit unit) throws SQLException, NoAvailableConnectionException {
+	public int deleteUnit(Unit unit) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		boolean wasAutoCommit = false;
@@ -453,9 +452,9 @@ public class XAPSUnit {
 	 * 
 	 * @param profile
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
-	public int deleteUnits(Profile profile) throws SQLException, NoAvailableConnectionException {
+	public int deleteUnits(Profile profile) throws SQLException {
 		Statement s = null;
 		String sql = null;
 		Map<String, Unit> unitMap = getUnits(profile.getUnittype(), profile, (Parameter) null, Integer.MAX_VALUE);
@@ -496,7 +495,7 @@ public class XAPSUnit {
 	/**
 	 * See comment on deleteUnits(Profile)
 	 */
-	public int deleteUnits(Unittype unittype) throws SQLException, NoAvailableConnectionException {
+	public int deleteUnits(Unittype unittype) throws SQLException {
 		Profile[] profiles = unittype.getProfiles().getProfiles();
 		int rowsDeleted = 0;
 		for (int i = 0; i < profiles.length; i++) {
@@ -505,7 +504,7 @@ public class XAPSUnit {
 		return rowsDeleted;
 	}
 
-	public void deleteUnitParameters(Unit unit) throws SQLException, NoAvailableConnectionException {
+	public void deleteUnitParameters(Unit unit) throws SQLException {
 		deleteUnitParameters(unit.flushDeleteQueue());
 	}
 
@@ -514,9 +513,9 @@ public class XAPSUnit {
 	 * parameters are deleted.
 	 *
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
-	public int deleteUnitParameters(List<UnitParameter> unitParameters) throws SQLException, NoAvailableConnectionException {
+	public int deleteUnitParameters(List<UnitParameter> unitParameters) throws SQLException {
 		Connection connection = null;
 		Statement s = null;
 		String sql = null;
@@ -552,7 +551,7 @@ public class XAPSUnit {
 		}
 	}
 
-	public int deleteAllSessionParameters(Unit unit) throws NoAvailableConnectionException, SQLException {
+	public int deleteAllSessionParameters(Unit unit) throws SQLException {
 		if (!XAPSVersionCheck.unitParamSessionSupported)
 			return 0;
 		Connection connection = null;
@@ -589,9 +588,9 @@ public class XAPSUnit {
 	 * performance reasons.
 	 *
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
-	public int deleteUnits(List<String> unitIds, Profile profile) throws SQLException, NoAvailableConnectionException {
+	public int deleteUnits(List<String> unitIds, Profile profile) throws SQLException {
 		Connection connection = null;
 		Statement s = null;
 		String sql = null;
@@ -635,10 +634,10 @@ public class XAPSUnit {
 	 * the unit, run getUnitsWithParameters(Unittype,Profile,List<Unit>)
 	 * @param values
 	 * @return
-	 * @throws NoAvailableConnectionException
+	 *
 	 * @throws SQLException
 	 */
-	public List<Unit> getLimitedUnitsByValues(List<String> values) throws NoAvailableConnectionException, SQLException {
+	public List<Unit> getLimitedUnitsByValues(List<String> values) throws SQLException {
 		Connection connection = null;
 		boolean wasAutoCommit = false;
 		try {
@@ -687,9 +686,9 @@ public class XAPSUnit {
 	 * @param maxRows - may be null
 	 * @return a set of units. The unit object is not populated with unit parameters
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
-	public Map<String, Unit> getUnits(String searchStr, Unittype unittype, Profile profile, Integer maxRows) throws SQLException, NoAvailableConnectionException {
+	public Map<String, Unit> getUnits(String searchStr, Unittype unittype, Profile profile, Integer maxRows) throws SQLException {
 		Connection connection = null;
 		boolean wasAutoCommit = false;
 		try {
@@ -705,7 +704,7 @@ public class XAPSUnit {
 		}
 	}
 
-	public Map<String, Unit> getUnits(String searchStr, List<Profile> profiles, Integer maxRows) throws SQLException, NoAvailableConnectionException {
+	public Map<String, Unit> getUnits(String searchStr, List<Profile> profiles, Integer maxRows) throws SQLException {
 		Connection connection = null;
 		boolean wasAutoCommit = false;
 		try {
@@ -729,7 +728,7 @@ public class XAPSUnit {
 	* 
 	* @return A set of units with unit-parameters populated for those parameters asked for
 	*/
-	public Map<String, Unit> getUnits(Unittype unittype, List<Profile> profiles, List<Parameter> parameters, Integer limit) throws SQLException, NoAvailableConnectionException {
+	public Map<String, Unit> getUnits(Unittype unittype, List<Profile> profiles, List<Parameter> parameters, Integer limit) throws SQLException {
 		Connection connection = null;
 		boolean wasAutoCommit = false;
 		try {
@@ -745,14 +744,14 @@ public class XAPSUnit {
 		}
 	}
 
-	public Map<String, Unit> getUnits(Unittype unittype, Profile profile, List<Parameter> parameters, Integer limit) throws SQLException, NoAvailableConnectionException {
+	public Map<String, Unit> getUnits(Unittype unittype, Profile profile, List<Parameter> parameters, Integer limit) throws SQLException {
 		List<Profile> profiles = new ArrayList<Profile>();
 		if (profile != null)
 			profiles.add(profile);
 		return getUnits(unittype, profiles, parameters, limit);
 	}
 
-	public Map<String, Unit> getUnits(Unittype unittype, Profile profile, Parameter parameter, Integer limit) throws SQLException, NoAvailableConnectionException {
+	public Map<String, Unit> getUnits(Unittype unittype, Profile profile, Parameter parameter, Integer limit) throws SQLException {
 		List<Profile> profiles = new ArrayList<Profile>();
 		if (profile != null)
 			profiles.add(profile);
@@ -762,21 +761,21 @@ public class XAPSUnit {
 		return getUnits(unittype, profiles, parameters, limit);
 	}
 
-	public Map<String, Unit> getUnits(Unittype unittype, List<Profile> profiles, Parameter parameter, Integer limit) throws SQLException, NoAvailableConnectionException {
+	public Map<String, Unit> getUnits(Unittype unittype, List<Profile> profiles, Parameter parameter, Integer limit) throws SQLException {
 		List<Parameter> parameters = new ArrayList<Parameter>();
 		if (parameter != null)
 			parameters.add(parameter);
 		return getUnits(unittype, profiles, parameters, limit);
 	}
 
-	public Map<String, Unit> getUnits(Group group) throws SQLException, NoAvailableConnectionException {
+	public Map<String, Unit> getUnits(Group group) throws SQLException {
 		Group topParent = group.getTopParent();
 		Profile profile = topParent.getProfile();
 		Unittype unittype = group.getUnittype();
 		return getUnits(unittype, profile, group.getGroupParameters().getAllParameters(group), Integer.MAX_VALUE);
 	}
 
-	public int getUnitCount(Group group) throws SQLException, NoAvailableConnectionException {
+	public int getUnitCount(Group group) throws SQLException {
 		Group topParent = group.getTopParent();
 		Profile profile = topParent.getProfile();
 		Unittype unittype = group.getUnittype();
@@ -791,7 +790,7 @@ public class XAPSUnit {
 	* 
 	* @return A set of units with unit-parameters populated for those parameters asked for
 	*/
-	public int getUnitCount(Unittype unittype, List<Profile> profiles, List<Parameter> parameters) throws SQLException, NoAvailableConnectionException {
+	public int getUnitCount(Unittype unittype, List<Profile> profiles, List<Parameter> parameters) throws SQLException {
 		Connection connection = null;
 		boolean wasAutoCommit = false;
 		try {
@@ -807,21 +806,21 @@ public class XAPSUnit {
 		}
 	}
 
-	public int getUnitCount(Unittype unittype, List<Profile> profiles, Parameter parameter) throws SQLException, NoAvailableConnectionException {
+	public int getUnitCount(Unittype unittype, List<Profile> profiles, Parameter parameter) throws SQLException {
 		List<Parameter> parameters = new ArrayList<Parameter>();
 		if (parameter != null)
 			parameters.add(parameter);
 		return getUnitCount(unittype, profiles, parameters);
 	}
 
-	public int getUnitCount(Unittype unittype, Profile profile, List<Parameter> parameters) throws SQLException, NoAvailableConnectionException {
+	public int getUnitCount(Unittype unittype, Profile profile, List<Parameter> parameters) throws SQLException {
 		List<Profile> profiles = new ArrayList<Profile>();
 		if (profile != null)
 			profiles.add(profile);
 		return getUnitCount(unittype, profiles, parameters);
 	}
 
-	public int getUnitCount(Unittype unittype, Profile profile, Parameter parameter) throws SQLException, NoAvailableConnectionException {
+	public int getUnitCount(Unittype unittype, Profile profile, Parameter parameter) throws SQLException {
 		List<Profile> profiles = new ArrayList<Profile>();
 		if (profile != null)
 			profiles.add(profile);

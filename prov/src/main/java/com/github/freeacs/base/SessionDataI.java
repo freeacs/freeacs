@@ -1,11 +1,9 @@
 package com.github.freeacs.base;
 
 import com.github.freeacs.base.db.DBAccessSession;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
-import com.github.freeacs.tr069.xml.ParameterValueStruct;
-
 import com.github.freeacs.dbi.util.ProvisioningMessage;
+import com.github.freeacs.tr069.xml.ParameterValueStruct;
 
 import java.sql.SQLException;
 import java.util.Map;
@@ -50,7 +48,7 @@ public interface SessionDataI {
 
 	public Map<String, ParameterValueStruct> getFromDB();
 
-	public void updateParametersFromDB(String unitId) throws SQLException, NoAvailableConnectionException, NoDataAvailableException;
+	public void updateParametersFromDB(String unitId) throws SQLException, NoDataAvailableException;
 
 	public void setFromDB(Map<String, ParameterValueStruct> fromDB);
 

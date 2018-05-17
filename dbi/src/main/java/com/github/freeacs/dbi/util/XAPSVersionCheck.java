@@ -1,8 +1,5 @@
 package com.github.freeacs.dbi.util;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +42,7 @@ public class XAPSVersionCheck {
 		return false;
 	}
 
-	public static void versionCheck(DataSource dataSource) throws SQLException, NoAvailableConnectionException {
+	public static void versionCheck(DataSource dataSource) throws SQLException {
 		if (databaseChecked) // possible to force re-check of database
 			return;
 		Connection c = dataSource.getConnection();
@@ -130,7 +127,6 @@ public class XAPSVersionCheck {
 				rs.close();
 			if (s != null)
 				s.close();
-			ConnectionProvider.returnConnection(c, sqle);
 		}
 
 	}

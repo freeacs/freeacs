@@ -1,9 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
-
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -60,7 +56,7 @@ public class Permissions {
 		return idMap.get(id);
 	}
 
-	protected void delete(Permission permission) throws NoAvailableConnectionException, SQLException {
+	protected void delete(Permission permission) throws SQLException {
 		Connection c = null;
 		PreparedStatement ps = null;
 		SQLException sqle = null;
@@ -112,7 +108,7 @@ public class Permissions {
 		}
 	}
 
-	protected void addOrChange(Permission permission) throws NoAvailableConnectionException, SQLException {
+	protected void addOrChange(Permission permission) throws SQLException {
 		checkAmbigiousPermissions(permission); // can throw IllegalArgumentException containg error message
 		Connection c = null;
 		PreparedStatement ps = null;

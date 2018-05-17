@@ -1,11 +1,8 @@
 package com.github.freeacs.stun;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.scheduler.TaskDefaultImpl;
 import com.github.freeacs.common.util.TimestampMap;
 import com.github.freeacs.dbi.*;
-
 import com.github.freeacs.dbi.util.SyslogClient;
 import de.javawi.jstun.test.demo.StunServer;
 import org.slf4j.Logger;
@@ -31,7 +28,7 @@ public class ActiveDeviceDetection extends TaskDefaultImpl {
 		this.dbi = dbi;
 	}
 
-	private void logActiveDevices(TimestampMap activeDevices, TimestampMap sentSyslogMap) throws NoAvailableConnectionException, SQLException {
+	private void logActiveDevices(TimestampMap activeDevices, TimestampMap sentSyslogMap) throws SQLException {
 		// Process 1/60 of all active devices each time this method is called
 		// Note that process 1/60 of the activeDevices map will be too much, since
 		// some of the units will be more than 5 minutes old - and we cannot log
@@ -77,7 +74,7 @@ public class ActiveDeviceDetection extends TaskDefaultImpl {
 				+ sentSyslogMap.size() + ", ActiveDevices.size() = " + activeDevices.size());
 	}
 
-	private void logInactiveDevices(TimestampMap activeDevices) throws NoAvailableConnectionException, SQLException {
+	private void logInactiveDevices(TimestampMap activeDevices) throws SQLException {
 		long tooOldTms = getThisLaunchTms() - 3600 * 1000;
 		logger.info("Will check for inactive STUN clients (map size before check: " + activeDevices.size() + ")");
 		Map<String, Long> tooOldMap = activeDevices.removeOldSync(tooOldTms);

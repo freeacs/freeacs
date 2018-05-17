@@ -1,10 +1,6 @@
 package com.github.freeacs.dbi.report;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +29,7 @@ public class ReportVoipGenerator extends ReportGenerator {
 		super(sysCp, xapsCp, xaps, logPrefix, id);
 	}
 
-	public Report<RecordVoip> generateFromReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws NoAvailableConnectionException, SQLException, IOException {
+	public Report<RecordVoip> generateFromReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws SQLException, IOException {
 		Connection xapsConnection = null;
 		Connection sysConnection = null;
 		PreparedStatement ps = null;
@@ -93,10 +89,6 @@ public class ReportVoipGenerator extends ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (xapsConnection != null)
-				ConnectionProvider.returnConnection(xapsConnection, sqle);
-			if (sysConnection != null)
-				ConnectionProvider.returnConnection(sysConnection, sqle);
 		}
 
 	}
@@ -106,7 +98,7 @@ public class ReportVoipGenerator extends ReportGenerator {
 	 * and with periodtype = SECOND
 	 */
 
-	public Report<RecordVoip> generateFromSyslog(Date start, Date end, String unitId) throws NoAvailableConnectionException, SQLException, IOException {
+	public Report<RecordVoip> generateFromSyslog(Date start, Date end, String unitId) throws SQLException, IOException {
 		return generateFromSyslog(PeriodType.SECOND, start, end, null, null, unitId, null);
 	}
 
@@ -115,7 +107,7 @@ public class ReportVoipGenerator extends ReportGenerator {
 	 * but keep them separated in a map of reports
 	 */
 
-	public Map<String, Report<RecordVoip>> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs, Group group) throws NoAvailableConnectionException,
+	public Map<String, Report<RecordVoip>> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs, Group group) throws
 			SQLException, IOException {
 		logInfo("VoipReport", null, uts, prs, start, end);
 		Syslog syslog = new Syslog(sysCp, id);
@@ -169,7 +161,7 @@ public class ReportVoipGenerator extends ReportGenerator {
 	 * units
 	 */
 
-	public Report<RecordVoip> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs, String unitId, Group group) throws NoAvailableConnectionException,
+	public Report<RecordVoip> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs, String unitId, Group group) throws
 			SQLException, IOException {
 		Report<RecordVoip> report = new Report<RecordVoip>(RecordVoip.class, periodType);
 		logInfo("VoipReport", unitId, uts, prs, start, end);

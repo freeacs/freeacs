@@ -1,7 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +54,7 @@ public class Certificates {
 		nameMap.put(certificate.getName(), certificate);
 	}
 
-	public void addOrChangeCertificate(Certificate certificate, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeCertificate(Certificate certificate, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isAdmin())
 			throw new IllegalArgumentException("Not allowed action for this user");
 		Certificate replaceCert = null;
@@ -81,7 +79,7 @@ public class Certificates {
 		}
 	}
 
-	private int deleteCertificateImpl(Certificate certificate, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private int deleteCertificateImpl(Certificate certificate, XAPS xaps) throws SQLException {
 		Statement s = null;
 		String sql = null;
 		Connection c = xaps.getDataSource().getConnection();
@@ -110,10 +108,9 @@ public class Certificates {
 	 * The first time this method is run, the flag is set. The second time this
 	 * method is run, the parameter is removed from the name- and id-Map.
 	 * 
-	 * @throws NoAvailableConnectionException
 	 * @throws SQLException
 	 */
-	public int deleteCertificate(Certificate certificate, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public int deleteCertificate(Certificate certificate, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isAdmin())
 			throw new IllegalArgumentException("Not allowed action for this user");
 		int rowsDeleted = deleteCertificateImpl(certificate, xaps);
@@ -122,7 +119,7 @@ public class Certificates {
 		return rowsDeleted;
 	}
 
-	private void addOrChangeCertificateImpl(Certificate certificate, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void addOrChangeCertificateImpl(Certificate certificate, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
 		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;

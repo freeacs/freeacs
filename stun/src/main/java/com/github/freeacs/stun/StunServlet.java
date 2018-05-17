@@ -1,14 +1,10 @@
 package com.github.freeacs.stun;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.scheduler.Schedule;
 import com.github.freeacs.common.scheduler.ScheduleType;
 import com.github.freeacs.common.scheduler.Scheduler;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.*;
-
 import de.javawi.jstun.test.demo.StabilityLogger;
 import de.javawi.jstun.test.demo.StunServer;
 import org.slf4j.Logger;
@@ -19,15 +15,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.sql.SQLException;
-
-import static com.github.freeacs.stun.Properties.getMaxAge;
-import static com.github.freeacs.stun.Properties.getMaxConn;
-import static com.github.freeacs.stun.Properties.getUrl;
 
 
 public class StunServlet extends HttpServlet {
@@ -66,7 +57,7 @@ public class StunServlet extends HttpServlet {
 		out.close();
 	}
 
-	public static DBI initializeDBI(DataSource xapsCp, DataSource sysCp) throws SQLException, NoAvailableConnectionException {
+	public static DBI initializeDBI(DataSource xapsCp, DataSource sysCp) throws SQLException {
 		Users users = new Users(xapsCp);
 		User user = users.getUnprotected(Users.USER_ADMIN);
 		Identity id = new Identity(SyslogConstants.FACILITY_STUN, StunServlet.VERSION, user);

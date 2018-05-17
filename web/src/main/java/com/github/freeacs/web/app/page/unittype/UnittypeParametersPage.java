@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.page.unittype;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.Output;
@@ -45,22 +44,24 @@ public class UnittypeParametersPage extends AbstractWebPage {
 
 	@Qualifier("xaps") DataSource xapsDataSource;
 
-	/**
+    @Qualifier("syslog") DataSource syslogDataSource;
+
+    /**
 	 * For use by jQuery on the search page for the "Add new parameter" in advanced mode.
 	 * 
 	 * @param unittype
 	 * @param term
 	 * @param session
 	 * @return A toString()'ed JSON object
-	 * @throws NoAvailableConnectionException
+	 *
 	 * @throws SQLException
 	 */
 	@RequestMapping(method=RequestMethod.GET,value="list")
 	public @ResponseBody String getUnittypeParameters(
 			@RequestParam(required=true) String unittype,
 			@RequestParam(required=true) String term,
-			HttpSession session) throws NoAvailableConnectionException, SQLException, JSONException{
-		XAPS xaps = XAPSLoader.getXAPS(session.getId(), xapsDataSource);
+			HttpSession session) throws SQLException, JSONException{
+		XAPS xaps = XAPSLoader.getXAPS(session.getId(), xapsDataSource, syslogDataSource);
 		List<Unittype> allowedUnittypes = Arrays.asList(xaps.getUnittypes().getUnittypes());
 		Unittype unittypeFromRequest = xaps.getUnittype(unittype);
 		if(allowedUnittypes.contains(unittypeFromRequest)){
@@ -86,7 +87,7 @@ public class UnittypeParametersPage extends AbstractWebPage {
 
 		sessionId = params.getSession().getId();
 
-		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource);
+		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -179,8 +180,6 @@ public class UnittypeParametersPage extends AbstractWebPage {
 				unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utParam, xaps);
 
 				utpAdded = true;
-			} catch (NoAvailableConnectionException ex) {
-				error += "Failed to add parameter " + name + ". There is no available connections.";
 			} catch (SQLException e) {
 				error += "Failed to add parameter " + name + ": " + e.getLocalizedMessage();
 			} catch (Exception ex) {

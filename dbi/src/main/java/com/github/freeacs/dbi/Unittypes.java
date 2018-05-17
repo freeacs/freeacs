@@ -1,7 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.InsertOrUpdateStatement.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +47,7 @@ public class Unittypes {
 		return "Contains " + nameMap.size() + " unittypes (" + super.toString() + ")";
 	}
 
-	private void addOrChangeUnittypeImpl(Unittype unittype, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void addOrChangeUnittypeImpl(Unittype unittype, XAPS xaps) throws SQLException {
 		Connection c = xaps.getDataSource().getConnection();
 		SQLException sqlex = null;
 		PreparedStatement s = null;
@@ -81,12 +79,10 @@ public class Unittypes {
 		} finally {
 			if (s != null)
 				s.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
 		}
 	}
 
-	public void addOrChangeUnittype(Unittype unittype, XAPS xaps) throws NoAvailableConnectionException, SQLException {
+	public void addOrChangeUnittype(Unittype unittype, XAPS xaps) throws SQLException {
 		if (unittype.getId() == null && !xaps.getUser().isAdmin())
 			throw new IllegalArgumentException("Not allowed action for this user");
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
@@ -105,7 +101,7 @@ public class Unittypes {
 
 	}
 
-	private int deleteUnittypeImpl(Unittype unittype, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private int deleteUnittypeImpl(Unittype unittype, XAPS xaps) throws SQLException {
 		Statement s = null;
 		String sql = null;
 		Connection c = xaps.getDataSource().getConnection();
@@ -127,8 +123,6 @@ public class Unittypes {
 		} finally {
 			if (s != null)
 				s.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
 		}
 	}
 
@@ -139,10 +133,9 @@ public class Unittypes {
 	 * enumerations for all these parameters.
 	 *
 	 * @param unittype
-	 * @throws NoAvailableConnectionException
 	 * @throws SQLException
 	 */
-	public int deleteUnittype(Unittype unittype, XAPS xaps, boolean cascade) throws SQLException, NoAvailableConnectionException {
+	public int deleteUnittype(Unittype unittype, XAPS xaps, boolean cascade) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		if (cascade) {

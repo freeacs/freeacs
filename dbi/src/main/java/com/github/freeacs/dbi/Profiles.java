@@ -1,7 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +38,7 @@ public class Profiles {
 		return "Contains " + nameMap.size() + " profiles";
 	}
 
-    public void addOrChangeProfile(Profile profile, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+    public void addOrChangeProfile(Profile profile, XAPS xaps) throws SQLException {
  		if (!xaps.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		addOrChangeProfileImpl(profile, xaps);
@@ -52,7 +50,7 @@ public class Profiles {
 		}
 	}
 
-	private int deleteProfileImpl(Profile profile, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private int deleteProfileImpl(Profile profile, XAPS xaps) throws SQLException {
 		Statement s = null;
 		String sql = null;
 		Connection c = xaps.getDataSource().getConnection();
@@ -81,10 +79,9 @@ public class Profiles {
 	 * The first time this method is run, the flag is set. The second time this
 	 * method is run, the parameter is removed from the name- and id-Map.
 	 * 
-	 * @throws NoAvailableConnectionException
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
-	public int deleteProfile(Profile profile, XAPS xaps, boolean cascade) throws SQLException, NoAvailableConnectionException {
+	public int deleteProfile(Profile profile, XAPS xaps, boolean cascade) throws SQLException {
 		if (!xaps.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		if (cascade) {
@@ -100,7 +97,7 @@ public class Profiles {
 		return rowsDeleted;
 	}
 
-	private void addOrChangeProfileImpl(Profile profile, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void addOrChangeProfileImpl(Profile profile, XAPS xaps) throws SQLException {
 		Statement s = null;
 		String sql = null;
 		Connection c = xaps.getDataSource().getConnection();

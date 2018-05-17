@@ -1,10 +1,7 @@
 package com.github.freeacs.stun;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.*;
-
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemConstants;
@@ -74,9 +71,9 @@ public class SingleKickThread implements Runnable {
 	 * The standard way of detecting change, a message is sent from Shell, Web or WS directly
 	 * to this module.
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
-	private void updateUnitWatchBasedOnMessages() throws SQLException, NoAvailableConnectionException {
+	private void updateUnitWatchBasedOnMessages() throws SQLException {
 		for (Message m : inbox.getUnreadMessages()) {
 			String unitId = m.getObjectId();
 			if (unitWatch.get(unitId) == null) {
@@ -108,10 +105,10 @@ public class SingleKickThread implements Runnable {
 	 * This methods is run once every 5 minute. Will check if there are units which have stored
 	 * data in the unit_param_session table. If so, and they're not already on the unitWatch-list,
 	 * they're units which are "stranded" and it must be cleaned up (after a 15m wait).
-	 * @throws NoAvailableConnectionException
+	 *
 	 * @throws SQLException
 	 */
-	private void updateUnitWatchBasedOnSessionParams() throws NoAvailableConnectionException, SQLException {
+	private void updateUnitWatchBasedOnSessionParams() throws SQLException {
 		List<String> unitIds = xapsUnit.getUnitIdsFromSessionUnitParameters();
 		for (String unitId : unitIds) {
 			if (unitWatch.get(unitId) == null) {
@@ -129,10 +126,10 @@ public class SingleKickThread implements Runnable {
 	 * This methods is run once every 5 minute. Will check if there are units which have
 	 * provisioning mode set to INSPECTION or EXTRACTION. If so, and they're not already on the unitWatch-list,
 	 * they're units which are "stranded" and it must be cleaned up (after a 15m wait).
-	 * @throws NoAvailableConnectionException
+	 *
 	 * @throws SQLException
 	 */
-	private void updateUnitWatchBasedOnProvisioningMode() throws SQLException, NoAvailableConnectionException {
+	private void updateUnitWatchBasedOnProvisioningMode() throws SQLException {
 		Map<String, Unit> units = xapsUnit.getUnits(ProvisioningMode.READALL.toString(), null, null);
 		for (String unitId : units.keySet()) {
 			if (unitWatch.get(unitId) == null) {
@@ -152,7 +149,7 @@ public class SingleKickThread implements Runnable {
 
 	/* CLEAN UP */
 
-	private void reset(Iterator<String> watchListIterator, Unit unit/*, UnitParameter stateUp, UnitParameter modeUp*/) throws SQLException, NoAvailableConnectionException {
+	private void reset(Iterator<String> watchListIterator, Unit unit/*, UnitParameter stateUp, UnitParameter modeUp*/) throws SQLException {
 		watchListIterator.remove();
 		unit.toWriteQueue(SystemParameters.PROVISIONING_MODE, ProvisioningMode.REGULAR.toString());
 		if (SystemConstants.DEFAULT_INSPECTION_MESSAGE.equals(unit.getParameterValue(SystemParameters.INSPECTION_MESSAGE)))
@@ -163,7 +160,7 @@ public class SingleKickThread implements Runnable {
 
 	/* MAIN LOOP */
 
-	private void processUnitWatchList() throws NoAvailableConnectionException, SQLException, MalformedURLException {
+	private void processUnitWatchList() throws SQLException, MalformedURLException {
 		Iterator<String> iterator = unitWatch.keySet().iterator();
 		while (iterator.hasNext()) {
 			String unitId = null;

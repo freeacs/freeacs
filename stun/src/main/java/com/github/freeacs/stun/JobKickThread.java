@@ -1,11 +1,8 @@
 package com.github.freeacs.stun;
 
 import com.github.freeacs.base.JobHistoryEntry;
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.*;
-
 import com.github.freeacs.dbi.Parameter.Operator;
 import com.github.freeacs.dbi.Parameter.ParameterDataType;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
@@ -41,7 +38,7 @@ public class JobKickThread implements Runnable {
 
 	}
 
-	//	public static void initialize() throws SQLException, NoAvailableConnectionException {
+	//	public static void initialize() throws SQLException {
 	//		if (!initialized	) {
 	//			int maxAge = 600000;
 	//			int maxConn = 5;
@@ -57,7 +54,7 @@ public class JobKickThread implements Runnable {
 	//
 	//	}
 
-	private void populateJobKickMapForOneJob(Job job, XAPS xaps, Unittype unittype) throws SQLException, NoAvailableConnectionException {
+	private void populateJobKickMapForOneJob(Job job, XAPS xaps, Unittype unittype) throws SQLException {
 		Group group = job.getGroup();
 		long now = jobRefreshMap.get(job.getId());
 		XAPSUnit xapsUnit = new XAPSUnit(xapsCp, xaps, xaps.getSyslog());
@@ -124,7 +121,7 @@ public class JobKickThread implements Runnable {
 		jobKickMap.put(job.getId(), unitSet);
 	}
 
-	//	private void populateJobKickMapForOneJob(Job job, XAPS xaps, Unittype unittype) throws SQLException, NoAvailableConnectionException {
+	//	private void populateJobKickMapForOneJob(Job job, XAPS xaps, Unittype unittype) throws SQLException {
 	//		Group group = job.getGroup();
 	//		XAPSUnit xapsUnit = new XAPSUnit(xapsCp, xaps, xaps.getSyslog());
 	//		Map<String, Unit> unitsInGroup = xapsUnit.getUnitMap(group);
@@ -169,7 +166,7 @@ public class JobKickThread implements Runnable {
 	//		}
 	//	}
 
-	private void populateJobKickMapForAllJobs(XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void populateJobKickMapForAllJobs(XAPS xaps) throws SQLException {
 		jobKickMap = new HashMap<Integer, Set<String>>();
 		Unittype[] unittypes = xaps.getUnittypes().getUnittypes();
 		for (Unittype unittype : unittypes) {
@@ -262,7 +259,7 @@ public class JobKickThread implements Runnable {
 		}
 	}
 
-	private void startUnitJob(Unit u, Integer jobId, XAPS xaps) throws NoAvailableConnectionException, SQLException {
+	private void startUnitJob(Unit u, Integer jobId, XAPS xaps) throws SQLException {
 		XAPSUnit xapsUnit = new XAPSUnit(xapsCp, xaps, xaps.getSyslog());
 		Unittype unittype = u.getUnittype();
 		UnittypeParameter currentUtp = unittype.getUnittypeParameters().getByName(SystemParameters.JOB_CURRENT);

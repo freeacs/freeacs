@@ -1,13 +1,12 @@
 package com.github.freeacs.shell.menu;
 
 import com.github.freeacs.dbi.*;
-import com.github.freeacs.shell.Context;
-import com.github.freeacs.shell.Session;
-
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
 import com.github.freeacs.dbi.JobFlag.JobType;
 import com.github.freeacs.dbi.SyslogEvent.StorePolicy;
 import com.github.freeacs.dbi.util.SystemParameters;
+import com.github.freeacs.shell.Context;
+import com.github.freeacs.shell.Session;
 import com.github.freeacs.shell.command.Option;
 import com.github.freeacs.shell.output.Heading;
 import com.github.freeacs.shell.output.Line;
@@ -1186,7 +1185,7 @@ public class UnittypeMenu {
 	//		context.println("Syslog event (" + syslogEventId + ") has been " + syslogAction);
 	//	}
 
-	//	private void enabletr069report(String args[]) throws SQLException, NoAvailableConnectionException {
+	//	private void enabletr069report(String args[]) throws SQLException {
 	//		Validation.numberOfArgs(args, 4);
 	//		String reporttype = args[1];
 	//		String groupName = args[2];

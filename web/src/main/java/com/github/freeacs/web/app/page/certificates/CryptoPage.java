@@ -45,7 +45,7 @@ public class CryptoPage extends AbstractWebPage {
 
 		HttpSession session = params.getSession();
 		
-		xaps = XAPSLoader.getXAPS(session.getId(), xapsDataSource);
+		xaps = XAPSLoader.getXAPS(session.getId(), xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
