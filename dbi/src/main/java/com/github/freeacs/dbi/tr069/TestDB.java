@@ -1,15 +1,12 @@
 package com.github.freeacs.dbi.tr069;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
-
 import com.github.freeacs.dbi.InsertOrUpdateStatement.Field;
 import com.github.freeacs.dbi.tr069.TestCaseParameter.TestCaseParameterType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,7 +21,7 @@ import java.util.*;
  */
 public class TestDB {
 
-	private ConnectionProperties cp;
+	private DataSource dataSource;
 	private XAPS xaps;
 	private TR069DMParameterMap tr069DMMap;
 	private static Logger logger = LoggerFactory.getLogger(TestDB.class);
@@ -36,14 +33,16 @@ public class TestDB {
 		} catch (Exception e) {
 			throw new RuntimeException("Could not load TR069 Datamodel");
 		}
-		this.cp = xaps.getConnectionProperties();
+		this.dataSource = xaps.getConnectionProperties();
 		this.xaps = xaps;
 	}
 	
 
-	public void deleteTestCase(TestCase tc) throws SQLException,
-			NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(cp, false);
+	public void deleteTestCase(TestCase tc) throws SQLException {
+		boolean wasAutoCommit = false;
+		Connection c = dataSource.getConnection();
+		wasAutoCommit = c.getAutoCommit();
+		c.setAutoCommit(false);
 		PreparedStatement ps = null;
 		SQLException sqle = null;
 		try {
@@ -78,20 +77,19 @@ public class TestDB {
 			sqle = sqlex;
 			throw sqlex;
 		} finally {
-			if (c != null)
-				c.setAutoCommit(true);
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
-
+			c.setAutoCommit(wasAutoCommit);
+			c.close();
 		}
 
 	}
 
-	public TestCase addOrChangeTestCase(TestCase tc) throws SQLException,
-			NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(cp, false);
+	public TestCase addOrChangeTestCase(TestCase tc) throws SQLException{
+		boolean wasAutoCommit = false;
+		Connection c = dataSource.getConnection();
+		wasAutoCommit = c.getAutoCommit();
+		c.setAutoCommit(false);
 		DynamicStatement ds;
 		PreparedStatement ps1 = null, ps2 = null;
 		SQLException sqle = null;
@@ -187,18 +185,15 @@ public class TestDB {
 			sqle = sqlex;
 			throw sqlex;
 		} finally {
-			if (c != null)
-				c.setAutoCommit(true);
 			if (ps1 != null)
 				ps1.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
-
+			c.setAutoCommit(wasAutoCommit);
+			c.close();
 		}
 	}
 
-	public TestCase getTestCase(Unittype unittype, int testCaseId) throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(cp, true);
+	public TestCase getTestCase(Unittype unittype, int testCaseId) throws SQLException {
+		Connection c = dataSource.getConnection();
 		PreparedStatement ps = null;
 		SQLException sqle = null;
 		ResultSet rs = null;
@@ -263,8 +258,6 @@ public class TestDB {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 
 		}
 
@@ -281,11 +274,11 @@ public class TestDB {
 	 * @param tagFilter
 	 * @return
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
 	public List<TestCase> getCompleteTestCases(Unittype unittype,
                                                TestCase.TestCaseMethod method, String paramFilter, String tagFilter)
-			throws SQLException, NoAvailableConnectionException {
+			throws SQLException {
 		List<TestCase> testCaseList = getUncompleteTestCases(unittype, method,
 				paramFilter, tagFilter);
 		List<TestCase> retList = new ArrayList<TestCase>();
@@ -306,12 +299,12 @@ public class TestDB {
 	 * @param tagFilter
 	 * @return
 	 * @throws SQLException
-	 * @throws NoAvailableConnectionException
+	 *
 	 */
 	public List<TestCase> getUncompleteTestCases(Unittype unittype,
                                                  TestCase.TestCaseMethod method, String paramFilter, String tagFilter)
-			throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(cp, true);
+			throws SQLException {
+		Connection c = dataSource.getConnection();
 		PreparedStatement ps = null;
 		SQLException sqle = null;
 		ResultSet rs = null;
@@ -405,15 +398,13 @@ public class TestDB {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 
 		}
 	}
 
 	public void addOrChangeTestHistory(TestHistory history)
-			throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(cp, true);
+			throws SQLException {
+		Connection c = dataSource.getConnection();
 		PreparedStatement ps = null;
 		SQLException sqle = null;
 		ResultSet gk = null;
@@ -458,15 +449,12 @@ public class TestDB {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 
 		}
 	}
 
-	public int deleteHistory(TestHistory filter) throws SQLException,
-			NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(cp, true);
+	public int deleteHistory(TestHistory filter) throws SQLException {
+		Connection c = dataSource.getConnection();
 		PreparedStatement ps = null;
 		SQLException sqle = null;
 		try {
@@ -506,15 +494,13 @@ public class TestDB {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 		}
 
 	}
 
 	public List<TestHistory> getHistory(TestHistory filter)
-			throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(cp, true);
+			throws SQLException {
+		Connection c = dataSource.getConnection();
 		PreparedStatement ps = null;
 		SQLException sqle = null;
 		ResultSet rs = null;
@@ -578,8 +564,6 @@ public class TestDB {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
 
 		}
 	}

@@ -1,6 +1,5 @@
 package com.github.freeacs.shell;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.File;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.shell.output.ListingReader;
@@ -14,7 +13,7 @@ public class InputHandler {
 
 	private BufferedReader br;
 
-	public InputHandler(String filename, OutputHandler oh, Unittype unittype) throws FileNotFoundException, SQLException, NoAvailableConnectionException {
+	public InputHandler(String filename, OutputHandler oh, Unittype unittype) throws FileNotFoundException, SQLException {
 		if (oh != null && oh.getListing() != null) {
 			ListingReader lr = new ListingReader(oh.getListing());
 			br = new BufferedReader(lr);

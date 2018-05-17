@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.page;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.NaturalComparator;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.web.Page;
@@ -17,6 +16,7 @@ import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.Map.Entry;
@@ -123,14 +123,16 @@ public abstract class AbstractWebPage implements WebPage {
 	 *
 	 * @param unittype the unittype
 	 * @param sessionId the session id
+	 * @param xapsDataSource
+	 * @param syslogDataSource
 	 * @return true, if is profiles limited
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	public boolean isProfilesLimited(Unittype unittype, String sessionId) throws NoAvailableConnectionException, SQLException {
+	public boolean isProfilesLimited(Unittype unittype, String sessionId, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
 		if(unittype==null)
 			return false;
-		List<Profile> list = getAllowedProfiles(sessionId,unittype);
+		List<Profile> list = getAllowedProfiles(sessionId,unittype, xapsDataSource, syslogDataSource);
 		return list.size() != unittype.getProfiles().getProfiles().length;
 	}
 	
@@ -332,8 +334,6 @@ public abstract class AbstractWebPage implements WebPage {
 				try {
 					unit = xapsUnit.getUnitById(id);
 					units.put(id, unit);
-				} catch (NoAvailableConnectionException e) {
-					throw new TemplateModelException("Error: " + e.getLocalizedMessage());
 				} catch (SQLException e) {
 					throw new TemplateModelException("Error: " + e.getLocalizedMessage());
 				}
@@ -505,13 +505,15 @@ public abstract class AbstractWebPage implements WebPage {
 	 * Checks if is unittypes limited.
 	 *
 	 * @param sessionId the session id
+	 * @param xapsDataSource
+	 * @param syslogDataSource
 	 * @return true, if is unittypes limited
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	public static boolean isUnittypesLimited(String sessionId) throws NoAvailableConnectionException, SQLException {
-		List<Unittype> list = getAllowedUnittypes(sessionId);
-		XAPS xaps = XAPSLoader.getXAPS(sessionId);
+	public static boolean isUnittypesLimited(String sessionId, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
+		List<Unittype> list = getAllowedUnittypes(sessionId, xapsDataSource, syslogDataSource);
+		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		return list.size() != xaps.getUnittypes().getUnittypes().length;
 	}
 
@@ -519,12 +521,14 @@ public abstract class AbstractWebPage implements WebPage {
 	 * Gets the allowed unittypes.
 	 *
 	 * @param sessionId the session id
+	 * @param xapsDataSource
+	 * @param syslogDataSource
 	 * @return the allowed unittypes
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	public static List<Unittype> getAllowedUnittypes(String sessionId) throws NoAvailableConnectionException, SQLException {
-		XAPS xaps = XAPSLoader.getXAPS(sessionId);
+	public static List<Unittype> getAllowedUnittypes(String sessionId, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
+		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		SessionData sessionData = SessionCache.getSessionData(sessionId);
 		List<Unittype> unittypesList = null;
 		if (sessionData.getFilteredUnittypes() != null) {
@@ -555,13 +559,15 @@ public abstract class AbstractWebPage implements WebPage {
 	 *
 	 * @param sessionId the session id
 	 * @param unittype the unittype
+	 * @param xapsDataSource
+	 * @param syslogDataSource
 	 * @return the allowed profiles
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	public static List<Profile> getAllowedProfiles(String sessionId,Unittype unittype) throws NoAvailableConnectionException, SQLException {
+	public static List<Profile> getAllowedProfiles(String sessionId, Unittype unittype, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
 		if(unittype==null)
-			return getAllAllowedProfiles(sessionId);
+			return getAllAllowedProfiles(sessionId, xapsDataSource, syslogDataSource);
 		
 		SessionData sessionData = SessionCache.getSessionData(sessionId);
 		
@@ -604,15 +610,17 @@ public abstract class AbstractWebPage implements WebPage {
 	 * Gets the all allowed profiles.
 	 *
 	 * @param sessionId the session id
+	 * @param xapsDataSource
+	 * @param syslogDataSource
 	 * @return the all allowed profiles
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	protected static List<Profile> getAllAllowedProfiles(String sessionId) throws NoAvailableConnectionException, SQLException{
-		List<Unittype> unittypes = getAllowedUnittypes(sessionId);
+	protected static List<Profile> getAllAllowedProfiles(String sessionId, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException{
+		List<Unittype> unittypes = getAllowedUnittypes(sessionId, xapsDataSource, syslogDataSource);
  		List<Profile> filteredProfiles = new ArrayList<Profile>();
 		for(Unittype unittype: unittypes){
-			List<Profile> profiles = getAllowedProfiles(sessionId,unittype);
+			List<Profile> profiles = getAllowedProfiles(sessionId,unittype, xapsDataSource, syslogDataSource);
 			if(profiles!=null)
 				filteredProfiles.addAll(profiles);
 		}

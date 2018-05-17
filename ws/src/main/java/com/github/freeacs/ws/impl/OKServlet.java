@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -15,6 +16,13 @@ public class OKServlet extends HttpServlet {
 	private static final long serialVersionUID = -3217484543967391741L;
 	
 	private static Throwable error = null;
+
+	private final DataSource xapsDs, syslogDs;
+
+	public OKServlet(DataSource xapsDs, DataSource syslogDs) {
+		this.xapsDs = xapsDs;
+		this.syslogDs = syslogDs;
+	}
 
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		doGet(req, res);
@@ -35,7 +43,7 @@ public class OKServlet extends HttpServlet {
 	}
 
 	public void init() {
-		Thread t = new Thread(new MessageListener());
+		Thread t = new Thread(new MessageListener(xapsDs, syslogDs));
 		t.setName("XAPSWS - MessageListener");
 		t.start();
 	}

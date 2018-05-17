@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.page.report;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.report.*;
 import com.github.freeacs.dbi.util.SystemParameters;
@@ -14,6 +13,7 @@ import com.github.freeacs.web.app.util.XAPSLoader;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -36,12 +36,12 @@ public class UnitListPage extends AbstractWebPage {
 	private ParameterParser req;
 	private UnitListData inputData;
 
-	public void process(ParameterParser req, Output outputHandler) throws Exception {
+	public void process(ParameterParser req, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		this.req = req;
 
 		inputData = (UnitListData) InputDataRetriever.parseInto(new UnitListData(), req);
 
-		xaps = XAPSLoader.getXAPS(req.getSession().getId());
+		xaps = XAPSLoader.getXAPS(req.getSession().getId(), xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -60,7 +60,7 @@ public class UnitListPage extends AbstractWebPage {
 		}
 		*/
 
-		xapsUnit = XAPSLoader.getXAPSUnit(req.getSession().getId());
+		xapsUnit = XAPSLoader.getXAPSUnit(req.getSession().getId(), xapsDataSource, syslogDataSource);
 
 		unittype = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps);
 		profile = InputSelectionFactory.getProfileSelection(inputData.getProfile(), inputData.getUnittype(), xaps);
@@ -105,7 +105,7 @@ public class UnitListPage extends AbstractWebPage {
 		outputHandler.setTemplatePathWithIndex("unit-list");
 	}
 
-	//	private void displayGroupReport(Map<String, Object> root) throws SQLException, NoAvailableConnectionException, IOException {
+	//	private void displayGroupReport(Map<String, Object> root) throws SQLException, IOException {
 	//		Group group = null;
 	//		if (unittype.getSelected() != null)
 	//			group = unittype.getSelected().getGroups().getByName(inputData.getGroup().getString());
@@ -137,7 +137,7 @@ public class UnitListPage extends AbstractWebPage {
 	//		root.put("reports", records.values());
 	//	}
 
-	private void displaySyslogReport(Map<String, Object> root, Group groupSelect) throws SQLException, NoAvailableConnectionException, IOException, ParseException {
+	private void displaySyslogReport(Map<String, Object> root, Group groupSelect) throws SQLException, IOException, ParseException {
 		ReportSyslogGenerator rgSyslog = ReportPage.getReportSyslogGenerator(req.getSession().getId(), xaps);
 		Map<String, Report<RecordSyslog>> reports = rgSyslog.generateFromSyslog(PeriodType.DAY, fromDate, toDate, unittype.getSelectedOrAllItemsAsList(), profile.getSelectedOrAllItemsAsList(),
 				groupSelect);
@@ -187,7 +187,7 @@ public class UnitListPage extends AbstractWebPage {
 		root.put("reports", list);
 	}
 
-	private void displayHardwareReport(Map<String, Object> root, ReportHardwareGenerator rgHardware, Group groupSelect, List<String> swVersions) throws NoAvailableConnectionException, SQLException,
+	private void displayHardwareReport(Map<String, Object> root, ReportHardwareGenerator rgHardware, Group groupSelect, List<String> swVersions) throws SQLException,
 			IOException {
 		Map<String, Report<RecordHardware>> reports = rgHardware.generateFromSyslog(PeriodType.DAY, fromDate, toDate, unittype.getSelectedOrAllItemsAsList(), profile.getSelectedOrAllItemsAsList(),
 				groupSelect);
@@ -241,14 +241,14 @@ public class UnitListPage extends AbstractWebPage {
 		root.put("swVersionList", swVersionList);
 	}
 
-	private void displayProvReport(Map<String, Object> root, Group groupSelect) throws SQLException, NoAvailableConnectionException, IOException {
+	private void displayProvReport(Map<String, Object> root, Group groupSelect) throws SQLException, IOException {
 		ReportProvisioningGenerator rgProv = ReportPage.getReportProvGenerator(req.getSession().getId(), xaps);
 		Map<String, Report<RecordProvisioning>> reports = rgProv.generateFromSyslog(PeriodType.DAY, fromDate, toDate, unittype.getSelectedOrAllItemsAsList(), profile.getSelectedOrAllItemsAsList(),
 				groupSelect);
 		root.put("records", RecordUIDataProv.convertRecords(xapsUnit, reports));
 	}
 
-	private void displayVoipReport(Map<String, Object> root, Group groupSelect) throws SQLException, NoAvailableConnectionException, IOException {
+	private void displayVoipReport(Map<String, Object> root, Group groupSelect) throws SQLException, IOException {
 		ReportVoipGenerator rgVoip = ReportPage.getReportVoipGenerator(req.getSession().getId(), xaps);
 		Map<String, Report<RecordVoip>> reports = rgVoip.generateFromSyslog(PeriodType.DAY, fromDate, toDate, unittype.getSelectedOrAllItemsAsList(), profile.getSelectedOrAllItemsAsList(), groupSelect);
 		List<RecordWrapper<RecordVoip>> recordsWorking = new ArrayList<RecordWrapper<RecordVoip>>();

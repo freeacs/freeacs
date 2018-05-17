@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.page.report.custom;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.Group;
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unittype;
@@ -43,7 +42,7 @@ public class DefaultRetriever extends ReportRetriever {
 	 * @see com.owera.xaps.web.app.page.report.custom.ReportRetriever#generateReport(com.owera.xaps.dbi.report.PeriodType, java.util.Date, java.util.Date, java.util.List, java.util.List)
 	 */
 	@Override
-	public Report<?> generateReport(PeriodType periodType, Date start, Date end, List<Unittype> unittypes, List<Profile> profiles, Group group) throws NoAvailableConnectionException, SQLException,
+	public Report<?> generateReport(PeriodType periodType, Date start, Date end, List<Unittype> unittypes, List<Profile> profiles, Group group) throws SQLException,
 			IOException {
 		throw new NotImplementedException("The report is not implemented correctly.");
 	}

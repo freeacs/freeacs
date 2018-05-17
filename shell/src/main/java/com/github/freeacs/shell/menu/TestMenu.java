@@ -1,6 +1,5 @@
 package com.github.freeacs.shell.menu;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.Message;
 import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.dbi.Unittype;
@@ -32,22 +31,22 @@ public class TestMenu {
 		this.context = session.getContext();
 	}
 
-	public static void addOrChangeTestHistory(Unittype unittype, TestHistory testHistory) throws SQLException, NoAvailableConnectionException {
+	public static void addOrChangeTestHistory(Unittype unittype, TestHistory testHistory) throws SQLException {
 		TestDB testDB = new TestDB(unittype.getXaps());
 		testDB.addOrChangeTestHistory(testHistory);
 	}
 
-	public static int deleteTestHistory(Unittype unittype, TestHistory filter) throws SQLException, NoAvailableConnectionException {
+	public static int deleteTestHistory(Unittype unittype, TestHistory filter) throws SQLException {
 		TestDB testDB = new TestDB(unittype.getXaps());
 		return testDB.deleteHistory(filter);
 	}
 
-	public static List<TestHistory> listTestHistory(Unittype unittype, TestHistory filter) throws SQLException, NoAvailableConnectionException {
+	public static List<TestHistory> listTestHistory(Unittype unittype, TestHistory filter) throws SQLException {
 		TestDB testDB = new TestDB(unittype.getXaps());
 		return testDB.getHistory(filter);
 	}
 
-	public static int importDirectory(Unittype unittype, String directory) throws IOException, SQLException, NoAvailableConnectionException {
+	public static int importDirectory(Unittype unittype, String directory) throws IOException, SQLException {
 		TestDB testDB = new TestDB(unittype.getXaps());
 		TestCaseFileHandler tcfh = new TestCaseFileHandler(unittype);
 		List<TestCase> testCaseList = tcfh.parseDirectory(directory);
@@ -56,7 +55,7 @@ public class TestMenu {
 		return testCaseList.size();
 	}
 
-	public static TestCase importFile(Unittype unittype, String filename) throws IOException, SQLException, NoAvailableConnectionException {
+	public static TestCase importFile(Unittype unittype, String filename) throws IOException, SQLException {
 		TestDB testDB = new TestDB(unittype.getXaps());
 		TestCaseFileHandler tcfh = new TestCaseFileHandler(unittype);
 		TestCase tc = tcfh.parseFile(filename);
@@ -64,7 +63,7 @@ public class TestMenu {
 		return tc;
 	}
 
-	public static int exportTestCase(Unittype unittype, String directory, int testCaseId) throws IOException, SQLException, NoAvailableConnectionException {
+	public static int exportTestCase(Unittype unittype, String directory, int testCaseId) throws IOException, SQLException {
 		TestDB testDB = new TestDB(unittype.getXaps());
 		TestCase tc = testDB.getTestCase(unittype, testCaseId);
 		if (tc == null)
@@ -74,7 +73,7 @@ public class TestMenu {
 		return 1;
 	}
 
-	public static int exportTestCase(Unittype unittype, String directory, TestCaseMethod method, String paramFilter, String tagFilter) throws SQLException, NoAvailableConnectionException, IOException {
+	public static int exportTestCase(Unittype unittype, String directory, TestCaseMethod method, String paramFilter, String tagFilter) throws SQLException, IOException {
 		TestDB testDB = new TestDB(unittype.getXaps());
 		Collection<TestCase> testCases = testDB.getCompleteTestCases(unittype, method, paramFilter, tagFilter);
 		TestCaseFileHandler tcfh = new TestCaseFileHandler(unittype);
@@ -83,17 +82,17 @@ public class TestMenu {
 		return testCases.size();
 	}
 
-	public static TestCase getTestCase(Unittype unittype, int testCaseId) throws SQLException, NoAvailableConnectionException {
+	public static TestCase getTestCase(Unittype unittype, int testCaseId) throws SQLException {
 		TestDB testDB = new TestDB(unittype.getXaps());
 		return testDB.getTestCase(unittype, testCaseId);
 	}
 
-	public static List<TestCase> listTestCases(Unittype unittype, TestCaseMethod method, String paramFilter, String tagFilter) throws SQLException, NoAvailableConnectionException {
+	public static List<TestCase> listTestCases(Unittype unittype, TestCaseMethod method, String paramFilter, String tagFilter) throws SQLException {
 		TestDB testDB = new TestDB(unittype.getXaps());
 		return testDB.getUncompleteTestCases(unittype, method, paramFilter, tagFilter);
 	}
 
-	public static Map<String, Integer> listTestCaseTags(Unittype unittype, TestCaseMethod method, String paramFilter, String tagFilter) throws SQLException, NoAvailableConnectionException {
+	public static Map<String, Integer> listTestCaseTags(Unittype unittype, TestCaseMethod method, String paramFilter, String tagFilter) throws SQLException {
 		TestDB testDB = new TestDB(unittype.getXaps());
 		List<TestCase> tcList = testDB.getUncompleteTestCases(unittype, method, paramFilter, tagFilter);
 		Map<String, Integer> tagMap = new HashMap<String, Integer>();
@@ -110,7 +109,7 @@ public class TestMenu {
 		return tagMap;
 	}
 
-	public static int deleteTestCases(Unittype unittype, TestCaseMethod method, String paramFilter, String tagFilter, Session session) throws SQLException, NoAvailableConnectionException {
+	public static int deleteTestCases(Unittype unittype, TestCaseMethod method, String paramFilter, String tagFilter, Session session) throws SQLException {
 		TestDB testDB = new TestDB(unittype.getXaps());
 		List<TestCase> testCases = testDB.getUncompleteTestCases(unittype, method, paramFilter, tagFilter);
 		int count = 0;
@@ -123,11 +122,11 @@ public class TestMenu {
 		return testCases.size();
 	}
 
-	public static int deleteDuplicateTestCases(Unittype unittype) throws SQLException, NoAvailableConnectionException {
+	public static int deleteDuplicateTestCases(Unittype unittype) throws SQLException {
 		return deleteDuplicateTestCasesImpl(unittype, TestCaseMethod.VALUE) + deleteDuplicateTestCasesImpl(unittype, TestCaseMethod.ATTRIBUTE);
 	}
 
-	private static int deleteDuplicateTestCasesImpl(Unittype unittype, TestCaseMethod method) throws SQLException, NoAvailableConnectionException {
+	private static int deleteDuplicateTestCasesImpl(Unittype unittype, TestCaseMethod method) throws SQLException {
 		TestDB testDB = new TestDB(unittype.getXaps());
 		Collection<TestCase> testCases = testDB.getCompleteTestCases(unittype, method, null, null);
 		Map<Integer, TestCase> deleteMap = new HashMap<Integer, TestCase>();
@@ -164,7 +163,7 @@ public class TestMenu {
 		}
 	}
 
-	public void showtc(String[] args, OutputHandler oh) throws SQLException, NoAvailableConnectionException {
+	public void showtc(String[] args, OutputHandler oh) throws SQLException {
 		Validation.numberOfArgs(args, 2);
 		Integer id = Util.autoboxInteger(args[1]);
 		if (id == null)
@@ -176,7 +175,7 @@ public class TestMenu {
 		session.println(tc.toString());
 	}
 
-	public void exporttcdir(String args[]) throws SQLException, NoAvailableConnectionException, IOException {
+	public void exporttcdir(String args[]) throws SQLException, IOException {
 		Validation.numberOfArgs(args, 2);
 
 		TestCaseMethod method = null;
@@ -195,7 +194,7 @@ public class TestMenu {
 		session.println("Exported " + exported + " Test Cases to " + args[1]);
 	}
 
-	public void exporttcfile(String[] args) throws IOException, SQLException, NoAvailableConnectionException {
+	public void exporttcfile(String[] args) throws IOException, SQLException {
 		Validation.numberOfArgs(args, 3);
 		Integer id = Util.autoboxInteger(args[2]);
 		if (id == null)
@@ -237,19 +236,19 @@ public class TestMenu {
 		session.println("Generated " + generatedTc.size() + " Test Cases");
 	}
 
-	public void importtcdir(String args[]) throws IOException, SQLException, NoAvailableConnectionException {
+	public void importtcdir(String args[]) throws IOException, SQLException {
 		Validation.numberOfArgs(args, 2);
 		int imported = TestMenu.importDirectory(context.getUnittype(), args[1]);
 		session.println("Imported " + imported + " Test Cases from " + args[1]);
 	}
 
-	public void importtcfile(String args[]) throws IOException, SQLException, NoAvailableConnectionException {
+	public void importtcfile(String args[]) throws IOException, SQLException {
 		Validation.numberOfArgs(args, 2);
 		TestCase tc = TestMenu.importFile(context.getUnittype(), args[1]);
 		session.println("File " + args[1] + " was imported with id " + tc.getId());
 	}
 
-	public void listtctags(String args[], OutputHandler oh) throws SQLException, NoAvailableConnectionException {
+	public void listtctags(String args[], OutputHandler oh) throws SQLException {
 		TestCaseMethod method = null;
 		String paramFilter = null;
 		String tagFilter = null;
@@ -271,7 +270,7 @@ public class TestMenu {
 
 	}
 
-	public void listtc(String args[], OutputHandler oh) throws SQLException, NoAvailableConnectionException {
+	public void listtc(String args[], OutputHandler oh) throws SQLException {
 		TestCaseMethod method = null;
 		String paramFilter = null;
 		String tagFilter = null;
@@ -312,9 +311,9 @@ public class TestMenu {
 	}
 
 	/** TR069 Test Case methods 
-	 * @throws NoAvailableConnectionException 
+	 *
 	 * @throws SQLException */
-	public void deltc(String args[]) throws SQLException, NoAvailableConnectionException {
+	public void deltc(String args[]) throws SQLException {
 		TestCaseMethod method = null;
 		String paramFilter = null;
 		String tagFilter = null;
@@ -330,12 +329,12 @@ public class TestMenu {
 		session.println("Deleted " + deleted + " Test Cases");
 	}
 
-	public void deltcduplicates(String args[]) throws SQLException, NoAvailableConnectionException {
+	public void deltcduplicates(String args[]) throws SQLException {
 		int deleted = TestMenu.deleteDuplicateTestCases(context.getUnittype());
 		session.println("Deleted " + deleted + " duplicate Test Cases");
 	}
 
-	public void deltesthistory(String args[]) throws SQLException, NoAvailableConnectionException {
+	public void deltesthistory(String args[]) throws SQLException {
 		Date startTms = null;
 		String unitId = null;
 		if (context.getUnit() != null)
@@ -348,7 +347,7 @@ public class TestMenu {
 		TestMenu.deleteTestHistory(context.getUnittype(), th);
 	}
 
-	public void listTestHistory(String[] args, OutputHandler oh) throws SQLException, NoAvailableConnectionException {
+	public void listTestHistory(String[] args, OutputHandler oh) throws SQLException {
 
 		TestHistory filter = new TestHistory();
 		for (int i = 1; i < args.length; i++) {
@@ -399,7 +398,7 @@ public class TestMenu {
 		}
 	}
 
-	public void testModeChange(boolean enable) throws SQLException, NoAvailableConnectionException {
+	public void testModeChange(boolean enable) throws SQLException {
 		if (enable) {
 			session.getXapsUnit().addOrChangeUnitParameter(context.getUnit(), SystemParameters.TEST_ENABLE, "1");
 			session.println("Test is enabled - you may initiate connection from device by sending a 'kick' command");

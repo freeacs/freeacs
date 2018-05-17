@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.util;
 
-import com.github.freeacs.common.db.ConnectionProperties;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
@@ -42,25 +41,6 @@ public class WebProperties {
 		try {
 			return config.getInt(propertyKey);
 		} catch (Exception t) {
-			log.debug("The value of " + propertyKey + " was not a number, instead using default value " + defaultValue, t);
-			return defaultValue;
-		}
-	}
-	
-	/**
-	 * Gets the long.
-	 *
-	 * @param propertyKey the property key
-	 * @param defaultValue the default value
-	 * @return the long
-	 */
-	public static long getLong(String propertyKey, long defaultValue) {
-		if (!config.hasPath(propertyKey)) {
-			return defaultValue;
-		}
-		try {
-			return config.getLong(propertyKey);
-		} catch (Throwable t) {
 			log.debug("The value of " + propertyKey + " was not a number, instead using default value " + defaultValue, t);
 			return defaultValue;
 		}
@@ -123,15 +103,6 @@ public class WebProperties {
 	}
 
 	/**
-	 * Gets the login auth.
-	 *
-	 * @return the login auth
-	 */
-	public static String getLoginAuth() {
-		return getString("login.auth", "none");
-	}
-
-	/**
 	 * Returns an indicator for if hardware syslog should be available
 	 * @return
 	 */
@@ -190,24 +161,6 @@ public class WebProperties {
 
 		Collections.sort(keys);
 		return keys;
-	}
-
-	public static int getMaxConn(final String infix) {
-		return getInteger("db." + infix + ".maxconn", ConnectionProperties.maxconn);
-	}
-
-	public static long getMaxAge(final String infix) {
-		return getLong("db." + infix + ".maxage", ConnectionProperties.maxage);
-	}
-
-	public static String getUrl(final String infix) {
-		return Optional.ofNullable(getString("db." + infix + ".url", null))
-				.orElseGet(new Supplier<String>() {
-					@Override
-					public String get() {
-						return getString("db." +infix, null);
-					}
-				});
 	}
 
 }

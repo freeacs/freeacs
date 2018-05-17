@@ -5,12 +5,11 @@ import com.github.freeacs.base.Log;
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.http.Authenticator;
 import com.github.freeacs.base.http.ThreadCounter;
-import com.github.freeacs.common.db.ConnectionMetaData;
-import com.github.freeacs.common.db.ConnectionPoolData;
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.util.Sleep;
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.ScriptExecutions;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.XAPS;
+import com.github.freeacs.dbi.XAPSUnit;
 import com.github.freeacs.tr069.background.BackgroundProcesses;
 import com.github.freeacs.tr069.background.ScheduledKickTask;
 import com.github.freeacs.tr069.exception.TR069Exception;
@@ -33,10 +32,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.List;
 
-import static com.github.freeacs.tr069.Properties.getMaxAge;
-import static com.github.freeacs.tr069.Properties.getMaxConn;
-import static com.github.freeacs.tr069.Properties.getUrl;
-
 
 /**
  * This is the "main-class" of TR069 Provisioning. It receives the HTTP-request
@@ -52,23 +47,22 @@ public class Provisioning extends HttpServlet {
 
 	public static final String VERSION = "3.1.2";
 
-//	private static BackgroundProcesses backgroundProcesses = new BackgroundProcesses();
-
 	private static ScriptExecutions executions;
+	private final DBAccess dbAccess;
 
-	/**
-	 * Starts background processes, initializes logging system
-	 */
-	static {
-		DBAccess.init(com.github.freeacs.Properties.Module.TR069, SyslogConstants.FACILITY_TR069, VERSION);
+	public Provisioning(DBAccess dbAccess) {
+		this.dbAccess = dbAccess;
+	}
+
+	public void init() {
 		Log.notice(Provisioning.class, "Server starts...");
 		try {
-			BackgroundProcesses.initiate(DBAccess.getDBI());
+			BackgroundProcesses.initiate(dbAccess.getDBI());
 		} catch (Throwable t) {
 			Log.fatal(Provisioning.class, "Couldn't start BackgroundProcesses correctly ", t);
 		}
 		try {
-			executions = new ScriptExecutions(DBAccess.getXAPSProperties());
+			executions = new ScriptExecutions(dbAccess.getXapsDataSource());
 		} catch (Throwable t) {
 			Log.fatal(Provisioning.class, "Couldn't initialize ScriptExecutions - not possible to run SHELL-jobs", t);
 		}
@@ -84,29 +78,6 @@ public class Provisioning extends HttpServlet {
 		String html = "";
 		html += "<title>xAPS TR-069 Server Monitoring Page</title>";
 		html += "<h1>Monitoring of the TR-069 Server v. " + VERSION + "</h1>";
-		ConnectionProperties props = ConnectionProvider.getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps"));
-		ConnectionPoolData poolData = ConnectionProvider.getConnectionPoolData(props);
-		if (poolData != null) {
-			html += "<h1>Database connection</h1>\n";
-			html += "This server is connected to " + poolData.getProps().getUrl() + " with user " + poolData.getProps().getUser() + "<br>\n";
-			ConnectionMetaData metaData = poolData.getMetaData().clone();
-			html += "<ul>Accessed   : " + metaData.getAccessed() + "<br>\n";
-			html += "Retries        : " + metaData.getRetries() + "<br>\n";
-			html += "Denied         : " + metaData.getDenied() + "<br>\n";
-			html += "Denied %       : " + metaData.calculateDeniedPercent() + "<br>\n";
-			html += "Free           : " + poolData.getFreeConn().size() + "<br>\n";
-			html += "Currently used : " + poolData.getUsedConn().size() + "<br>\n";
-			html += "Used %         : " + metaData.calculateUsedPercent() + "<br>\n<ul>";
-			int[] accessedSim = metaData.getAccessedSim();
-			for (int i = 1; i < accessedSim.length; i++) {
-				if (accessedSim[i] == 0 && accessedSim[i + 1] == 0 && accessedSim[i + 2] == 0)
-					break;
-				float percent = ((float) accessedSim[i] / metaData.getAccessed()) * 100f;
-				html += String.format("Used " + i + " connection(s) simultaneously: %8.5f", percent);
-				html += "% (accessed: " + accessedSim[i] + ")<br>\n";
-			}
-			html += "</ul>\n</ul><br>\n";
-		}
 		long total = Runtime.getRuntime().totalMemory();
 		long free = Runtime.getRuntime().freeMemory();
 		long used = total - free;
@@ -132,7 +103,7 @@ public class Provisioning extends HttpServlet {
 				String line = br.readLine();
 				if (line == null)
 					break;
-				requestSB.append(line + "\n");
+				requestSB.append(line).append("\n");
 			}
 			reqRes.getRequest().setXml(requestSB.toString());
 			return System.currentTimeMillis() - tms;
@@ -151,7 +122,7 @@ public class Provisioning extends HttpServlet {
 	@SuppressWarnings("unused")
   private static boolean hasContinueHeader(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		// Support 100 Continue header - always YES - CONTINUE!
-		if (req.getHeader("Expect") != null && req.getHeader("Expect").indexOf("100-continue") > -1) {
+		if (req.getHeader("Expect") != null && req.getHeader("Expect").contains("100-continue")) {
 			res.setStatus(HttpServletResponse.SC_CONTINUE);
 			res.getWriter().print("");
 			return true;
@@ -194,7 +165,7 @@ public class Provisioning extends HttpServlet {
 		try {
 			// Create the main object which contains all objects concerning the entire
 			// session. This object also contains the SessionData object 
-			reqRes = new HTTPReqResData(req, res);
+			reqRes = new HTTPReqResData(req, res, dbAccess);
 			// 2. Authenticate the client (first issue challenge, then authenticate)
 			if (!Authenticator.authenticate(reqRes))
 				return;
@@ -282,12 +253,12 @@ public class Provisioning extends HttpServlet {
 		}
 	}
 
-	private static void writeQueuedUnitParameters(HTTPReqResData reqRes) {
+	private void writeQueuedUnitParameters(HTTPReqResData reqRes) {
 		try {
 			Unit unit = reqRes.getSessionData().getUnit();
 			if (unit != null) {
 				XAPS xaps = reqRes.getSessionData().getDbAccess().getXaps();
-				XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
+				XAPSUnit xapsUnit = dbAccess.getXAPSUnit(xaps);
 				xapsUnit.addOrChangeQueuedUnitParameters(unit);
 			}
 		} catch (Throwable t) {

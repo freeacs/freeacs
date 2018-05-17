@@ -2,9 +2,7 @@ package com.github.freeacs.base;
 
 import com.github.freeacs.Properties;
 import com.github.freeacs.base.db.DBAccess;
-import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.dbi.*;
-
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
 import com.github.freeacs.dbi.JobFlag.JobType;
 import com.github.freeacs.dbi.util.ProvisioningMode;
@@ -24,8 +22,6 @@ import java.util.Map.Entry;
  *
  */
 public class JobLogic {
-
-	public static Cache patternCache = new Cache();
 
 	public static boolean checkJobOK(SessionDataI sessionData) {
 		try {

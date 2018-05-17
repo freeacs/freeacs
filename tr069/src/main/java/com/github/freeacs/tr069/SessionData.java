@@ -129,10 +129,10 @@ public class SessionData implements SessionDataI {
 	// An object to store data about a download
 	private Download download;
 
-	public SessionData(String id) throws TR069DatabaseException {
+	public SessionData(String id, DBAccess dbAccess) throws TR069DatabaseException {
 		try {
 			this.id = id;
-			this.dbAccess = new DBAccessSession(DBAccess.getDBI());
+			this.dbAccess = new DBAccessSession(dbAccess);
 			provisioningMessage.setProvProtocol(ProvisioningProtocol.TR069);
 		} catch (SQLException sqle) {
 			throw new TR069DatabaseException("Could not create SessionData object", sqle);

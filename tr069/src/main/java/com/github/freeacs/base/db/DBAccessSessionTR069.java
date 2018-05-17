@@ -1,9 +1,7 @@
 package com.github.freeacs.base.db;
 
 import com.github.freeacs.base.Log;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
-
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.SessionData;
@@ -55,7 +53,7 @@ public class DBAccessSessionTR069 {
 			sessionData.setUnittype(ut);
 			sessionData.setProfile(pr);
 			
-			XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
+			XAPSUnit xapsUnit = new XAPSUnit(xaps.getDataSource(), xaps, xaps.getSyslog());
 			List<String> unitIds = new ArrayList<String>();
 			unitIds.add(unitId);
 			xapsUnit.addUnits(unitIds, pr);
@@ -69,7 +67,7 @@ public class DBAccessSessionTR069 {
 			debug("Have created a unit:" + unitId + " with the obtained secret");
 		} catch (Throwable t) {
 			String errorMsg = "Exception while auto-generating unittype/profile/unit";
-			if (t instanceof NoAvailableConnectionException || t instanceof SQLException) {
+			if (t instanceof SQLException) {
 				throw new TR069DatabaseException(errorMsg, t);
 			} else {
 				throw new TR069Exception(errorMsg, TR069ExceptionShortMessage.MISC, t);
@@ -93,7 +91,7 @@ public class DBAccessSessionTR069 {
 					Log.warn(DBAccessSession.class, "\t" + pvs.getName() + " : does not exist, cannot write session value " + pvs.getValue());
 			}
 			if (unitSessionParameters.size() > 0) {
-				XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
+				XAPSUnit xapsUnit = new XAPSUnit(xaps.getDataSource(), xaps, xaps.getSyslog());
 				xapsUnit.addOrChangeSessionUnitParameters(unitSessionParameters, profile);
 			}
 		} catch (SQLException sqle) {

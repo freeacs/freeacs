@@ -1,13 +1,10 @@
 package com.github.freeacs.dbi.report;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -32,14 +29,13 @@ public class ReportHardwareGenerator extends ReportGenerator {
 	// Reboot-content: Reboot reason [0x0002]
 	private static Pattern rebootPattern = Pattern.compile(".*Reboot reason \\[.+\\](.+)");
 
-	public ReportHardwareGenerator(ConnectionProperties sysCp, ConnectionProperties xapsCp, XAPS xaps, String logPrefix, Identity id) {
+	public ReportHardwareGenerator(DataSource sysCp, DataSource xapsCp, XAPS xaps, String logPrefix, Identity id) {
 		super(sysCp, xapsCp, xaps, logPrefix, id);
 	}
 
-	public Report<RecordHardware> generateFromReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws NoAvailableConnectionException, SQLException,
+	public Report<RecordHardware> generateFromReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws SQLException,
 			IOException {
 		Connection xapsConnection = null;
-		Connection sysConnection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		SQLException sqle = null;
@@ -48,7 +44,7 @@ public class ReportHardwareGenerator extends ReportGenerator {
 			Report<RecordHardware> report = new Report<RecordHardware>(RecordHardware.class, periodType);
 
 			logger.debug(logPrefix + "HardwareReport: Reads from report_hw table from " + start + " to " + end);
-			xapsConnection = ConnectionProvider.getConnection(xapsCp, true);
+			xapsConnection = xapsCp.getConnection();
 			DynamicStatement ds = selectReportSQL("report_hw", periodType, start, end, uts, prs);
 			ps = ds.makePreparedStatement(xapsConnection);
 			rs = ps.executeQuery();
@@ -102,20 +98,19 @@ public class ReportHardwareGenerator extends ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (xapsConnection != null)
-				ConnectionProvider.returnConnection(xapsConnection, sqle);
-			if (sysConnection != null)
-				ConnectionProvider.returnConnection(sysConnection, sqle);
+			if (xapsConnection != null) {
+				xapsConnection.close();
+			}
 		}
 
 	}
 
-	public Report<RecordHardware> generateFromSyslog(Date start, Date end, String unitId) throws NoAvailableConnectionException, SQLException, IOException {
+	public Report<RecordHardware> generateFromSyslog(Date start, Date end, String unitId) throws SQLException, IOException {
 		return generateFromSyslog(PeriodType.SECOND, start, end, null, null, unitId, null);
 	}
 
 	public Map<String, Report<RecordHardware>> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs, Group group)
-			throws NoAvailableConnectionException, SQLException, IOException {
+			throws SQLException, IOException {
 		logInfo("HardwareReport", null, uts, prs, start, end);
 		Syslog syslog = new Syslog(sysCp, id);
 		SyslogFilter filter = new SyslogFilter();
@@ -166,7 +161,7 @@ public class ReportHardwareGenerator extends ReportGenerator {
 	}
 
 	public Report<RecordHardware> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs, String unitId, Group group) throws SQLException,
-			NoAvailableConnectionException, IOException {
+			IOException {
 		Report<RecordHardware> report = new Report<RecordHardware>(RecordHardware.class, periodType);
 		logInfo("HardwareReport", unitId, uts, prs, start, end);
 		Syslog syslog = new Syslog(sysCp, id);

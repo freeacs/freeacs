@@ -20,17 +20,12 @@ import java.util.regex.Pattern;
  * @author Jarl Andre Hubenthal
  */
 public class ResourceMethod implements TemplateMethodModel {
-    
-    /** The pattern. */
-    Pattern pattern;
 
     /**
-     * Instantiates a new resource method.
+     * The pattern.
      */
-    public ResourceMethod(){
-        pattern = Pattern.compile("\\{.*?\\}");
-    }
-    
+    private Pattern pattern = Pattern.compile("\\{.*?\\}");
+
     /**
      * Executes the method.
      *
@@ -39,24 +34,24 @@ public class ResourceMethod implements TemplateMethodModel {
      * @throws TemplateModelException the template model exception
      */
     @SuppressWarnings("rawtypes")
-	public String exec(List list) throws TemplateModelException {
-        if(list.size()>1){
+    public String exec(List list) throws TemplateModelException {
+        if (list.size() > 1) {
             String value = (String) list.get(0);
-            List args = list.subList(1,list.size());
+            List args = list.subList(1, list.size());
             Matcher matcher = pattern.matcher(value);
-            while(matcher.find()){
-                    String match = matcher.group();
-                    String s = match.substring(1, match.length()-1);
-                    if(NumberUtils.isNumber(s)){
-                        String matchedValue = (String) args.get(Integer.parseInt(s));
-                        if(matchedValue!=null)
-                            value = value.replace(match, matchedValue);
-                    }
+            while (matcher.find()) {
+                String match = matcher.group();
+                String s = match.substring(1, match.length() - 1);
+                if (NumberUtils.isNumber(s)) {
+                    String matchedValue = (String) args.get(Integer.parseInt(s));
+                    if (matchedValue != null)
+                        value = value.replace(match, matchedValue);
+                }
             }
             return value;
-        }else if(list.size()>0){
+        } else if (list.size() > 0) {
             throw new TemplateModelException("Unnecessary call to this method without any arguments other than property key. Reference properties directly instead.");
-        }else{
+        } else {
             throw new TemplateModelException("Wrong number of arguments supplied");
         }
     }

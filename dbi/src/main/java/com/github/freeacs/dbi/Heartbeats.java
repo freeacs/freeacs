@@ -1,7 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.InsertOrUpdateStatement.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,9 +42,8 @@ public class Heartbeats {
 		return "Contains " + idMap.size() + " heartbeats";
 	}
 
-	private void addOrChangeHeartbeatImpl(Heartbeat heartbeat, XAPS xaps) throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
-		SQLException sqlex = null;
+	private void addOrChangeHeartbeatImpl(Heartbeat heartbeat, XAPS xaps) throws SQLException {
+		Connection c = xaps.getDataSource().getConnection();
 		PreparedStatement ps = null;
 		try {
 			InsertOrUpdateStatement ious = new InsertOrUpdateStatement("heartbeat", new Field("id", heartbeat.getId()));
@@ -70,18 +67,14 @@ public class Heartbeats {
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(heartbeat, unittype);
 			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.close();
 		}
 	}
 
-	public void addOrChangeHeartbeat(Heartbeat heartbeat, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeHeartbeat(Heartbeat heartbeat, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		heartbeat.validateInput(true);
@@ -91,10 +84,9 @@ public class Heartbeats {
 		nameMap.put(heartbeat.getName(), heartbeat);
 	}
 
-	private void deleteHeartbeatImpl(Heartbeat heartbeat, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void deleteHeartbeatImpl(Heartbeat heartbeat, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
-		SQLException sqlex = null;
+		Connection c = xaps.getDataSource().getConnection();
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("DELETE FROM heartbeat WHERE id = ? ", heartbeat.getId());
@@ -105,14 +97,10 @@ public class Heartbeats {
 			logger.info("Deleted heartbeat " + heartbeat.getId());
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(heartbeat, unittype);
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.close();
 		}
 	}
 
@@ -120,10 +108,10 @@ public class Heartbeats {
 	 * The first time this method is run, the flag is set. The second time this
 	 * method is run, the parameter is removed from the name- and id-Map.
 	 * 
-	 * @throws NoAvailableConnectionException
+	 *
 	 * @throws SQLException
 	 */
-	public void deleteHeartbeat(Heartbeat heartbeat, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void deleteHeartbeat(Heartbeat heartbeat, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		deleteHeartbeatImpl(heartbeat, xaps);

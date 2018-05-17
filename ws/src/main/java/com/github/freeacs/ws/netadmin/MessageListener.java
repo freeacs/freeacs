@@ -1,22 +1,18 @@
 package com.github.freeacs.ws.netadmin;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.*;
-import com.github.freeacs.ws.impl.Properties;
 import com.github.freeacs.ws.impl.XAPSWS;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.util.List;
 
 public class MessageListener implements Runnable {
 
 	private static final Logger logger = LoggerFactory.getLogger(MessageListener.class);
 
-	private ConnectionProperties cp;
 	private Identity id;
 	private DBI dbi;
 	private Syslog syslog;
@@ -25,18 +21,17 @@ public class MessageListener implements Runnable {
 	private Inbox inbox = new Inbox();
 	private Sleep sleep;
 
-	public MessageListener() {
+	public MessageListener(DataSource xapsDs, DataSource syslogDs) {
 		try {
-			cp = ConnectionProvider.getConnectionProperties(Properties.getUrl("xaps"), Properties.getMaxAge("xaps"), Properties.getMaxConn("xaps"));
-			Users users = new Users(cp);
+			Users users = new Users(xapsDs);
 			User user = users.getUnprotected(Users.USER_ADMIN);
 			//		if (user == null)
 			//			throw error("The user " + login.getUsername() + " is unknown");
 
 			// At this stage we have a positivt authentication of the user
 			id = new Identity(SyslogConstants.FACILITY_WEBSERVICE, XAPSWS.VERSION, user);
-			syslog = new Syslog(ConnectionProvider.getConnectionProperties(Properties.getUrl("syslog"), Properties.getMaxAge("syslog"), Properties.getMaxConn("syslog")), id);
-			dbi = new DBI(Integer.MAX_VALUE, cp, syslog);
+			syslog = new Syslog(syslogDs, id);
+			dbi = new DBI(Integer.MAX_VALUE, xapsDs, syslog);
 			inbox.addFilter(new Message(null, Message.MTYPE_PUB_PS, null, null));
 			dbi.registerInbox("publishSPVS", inbox);
 			sleep = new Sleep(1000, 10000, false);

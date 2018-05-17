@@ -1,9 +1,6 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
-
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,19 +76,19 @@ import java.util.List;
  */
 
 public class UnitJobs {
-	private ConnectionProperties connectionProperties;
+	private DataSource connectionProperties;
 
-	public UnitJobs(ConnectionProperties cp) {
+	public UnitJobs(DataSource cp) {
 		this.connectionProperties = cp;
 	}
 
 	// 1.1 and 1.2
-	public boolean start(UnitJob uj) throws SQLException, NoAvailableConnectionException {
+	public boolean start(UnitJob uj) throws SQLException {
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;
 		try {
-			c = ConnectionProvider.getConnection(connectionProperties, true);
+			c = connectionProperties.getConnection();
 			pp = c.prepareStatement("INSERT INTO unit_job (job_id, unit_id, status, start_timestamp, processed, confirmed, unconfirmed) VALUES (?, ?, ?, ?, 0, 0, 0)");
 			pp.setInt(1, uj.getJobId());
 			pp.setString(2, uj.getUnitId());
@@ -114,14 +111,15 @@ public class UnitJobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
+			if (c != null) {
+				c.close();
+			}
 		}
 		return true;
 	}
 
 	// 1.3 and 1.4
-	public boolean stop(UnitJob uj) throws SQLException, NoAvailableConnectionException {
+	public boolean stop(UnitJob uj) throws SQLException {
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;
@@ -129,7 +127,7 @@ public class UnitJobs {
 		int rowsUpdated = 0;
 		while (!finished) { // will loop if MySQLTransactionRollbackException occurs
 			try {
-				c = ConnectionProvider.getConnection(connectionProperties, true);
+				c = connectionProperties.getConnection();
 				if (uj.getStatus().equals(UnitJobStatus.COMPLETED_OK) || uj.getStatus().equals(UnitJobStatus.STOPPED)) {
 					pp = c.prepareStatement("UPDATE unit_job SET status = '" + uj.getStatus() + "', end_timestamp = ?, processed = 0 WHERE unit_id = ? AND job_id = ?");
 					pp.setTimestamp(1, new Timestamp(uj.getEndTimestamp().getTime()));
@@ -152,8 +150,9 @@ public class UnitJobs {
 			} finally {
 				if (pp != null)
 					pp.close();
-				if (c != null)
-					ConnectionProvider.returnConnection(c, sqle);
+				if (c != null) {
+					c.close();
+				}
 			}
 		}
 		if (rowsUpdated > 0)
@@ -162,7 +161,7 @@ public class UnitJobs {
 	}
 
 	// added 2010-04-08 (see comment above)
-	public int markAsCompleted(Job job) throws SQLException, NoAvailableConnectionException {
+	public int markAsCompleted(Job job) throws SQLException {
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;
@@ -170,7 +169,7 @@ public class UnitJobs {
 		int rowsUpdated = 0;
 		while (!finished) { // will loop if MySQLTransactionRollbackException occurs
 			try {
-				c = ConnectionProvider.getConnection(connectionProperties, true);
+				c = connectionProperties.getConnection();
 				String sql = "UPDATE unit_job SET end_timestamp = ?, status = '" + UnitJobStatus.COMPLETED_OK;
 				sql += "', processed = 0 WHERE ";
 				sql += "status = '" + UnitJobStatus.UNCONFIRMED_FAILED + "' AND end_timestamp < ? AND job_id = ?";
@@ -187,15 +186,16 @@ public class UnitJobs {
 			} finally {
 				if (pp != null)
 					pp.close();
-				if (c != null)
-					ConnectionProvider.returnConnection(c, sqle);
+				if (c != null) {
+					c.close();
+				}
 			}
 		}
 		return rowsUpdated;
 	}
 
 	// 2.1
-	public int markAsUnconfirmed(Job job) throws SQLException, NoAvailableConnectionException {
+	public int markAsUnconfirmed(Job job) throws SQLException {
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;
@@ -203,7 +203,7 @@ public class UnitJobs {
 		int rowsUpdated = 0;
 		while (!finished) { // will loop if MySQLTransactionRollbackException occurs
 			try {
-				c = ConnectionProvider.getConnection(connectionProperties, true);
+				c = connectionProperties.getConnection();
 				String sql = "UPDATE unit_job SET end_timestamp = ?, status = '" + UnitJobStatus.UNCONFIRMED_FAILED;
 				sql += "', unconfirmed = unconfirmed + 1 WHERE ";
 				sql += "status = '" + UnitJobStatus.STARTED + "' AND start_timestamp < ? AND job_id = ?";
@@ -220,20 +220,21 @@ public class UnitJobs {
 			} finally {
 				if (pp != null)
 					pp.close();
-				if (c != null)
-					ConnectionProvider.returnConnection(c, sqle);
+				if (c != null) {
+				    c.close();
+                }
 			}
 		}
 		return rowsUpdated;
 	}
 
 	// 2.2
-	public List<UnitJob> readAllUnprocessed(Job job) throws SQLException, NoAvailableConnectionException {
+	public List<UnitJob> readAllUnprocessed(Job job) throws SQLException {
 		return read(false, job);
 	}
 
 	// 2.3
-	public int markAsProcessed(UnitJob uj) throws SQLException, NoAvailableConnectionException {
+	public int markAsProcessed(UnitJob uj) throws SQLException {
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;
@@ -241,7 +242,7 @@ public class UnitJobs {
 		int rowsUpdated = 0;
 		while (!finished) { // will loop if MySQLTransactionRollbackException occurs
 			try {
-				c = ConnectionProvider.getConnection(connectionProperties, true);
+				c = connectionProperties.getConnection();
 				String sql = "UPDATE unit_job SET processed = 1 WHERE unit_id = ? AND job_id = ?";
 				pp = c.prepareStatement(sql);
 				pp.setString(1, uj.getUnitId());
@@ -256,19 +257,20 @@ public class UnitJobs {
 			} finally {
 				if (pp != null)
 					pp.close();
-				if (c != null)
-					ConnectionProvider.returnConnection(c, sqle);
+				if (c != null) {
+					c.close();
+				}
 			}
 		}
 		return rowsUpdated;
 	}
 
 	// 2.4
-	public int countAndDeleteCompletedNoFailure(Job job) throws SQLException, NoAvailableConnectionException {
+	public int countAndDeleteCompletedNoFailure(Job job) throws SQLException {
 		Connection c = null;
 		PreparedStatement pp = null;
 		try {
-			c = ConnectionProvider.getConnection(connectionProperties, true);
+			c = connectionProperties.getConnection();
 			pp = c.prepareStatement("DELETE FROM unit_job WHERE processed = 1 AND job_id = ? AND status = '" + UnitJobStatus.COMPLETED_OK + "' AND confirmed = 0 AND unconfirmed = 0");
 			pp.setInt(1, job.getId());
 			pp.setQueryTimeout(60);
@@ -276,17 +278,18 @@ public class UnitJobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, null);
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
 	// 2.4 modified - due to introduction of STOPPED state for unit-jobs
-	public int countAndDeleteStoppedNoFailure(Job job) throws SQLException, NoAvailableConnectionException {
+	public int countAndDeleteStoppedNoFailure(Job job) throws SQLException {
 		Connection c = null;
 		PreparedStatement pp = null;
 		try {
-			c = ConnectionProvider.getConnection(connectionProperties, true);
+			c = connectionProperties.getConnection();
 			pp = c.prepareStatement("DELETE FROM unit_job WHERE processed = 1 AND job_id = ? AND status = '" + UnitJobStatus.STOPPED + "' AND confirmed = 0 AND unconfirmed = 0");
 			pp.setInt(1, job.getId());
 			pp.setQueryTimeout(60);
@@ -294,22 +297,23 @@ public class UnitJobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, null);
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
 	// 2.5
-	public List<UnitJob> readAllProcessed(Job job) throws SQLException, NoAvailableConnectionException {
+	public List<UnitJob> readAllProcessed(Job job) throws SQLException {
 		return read(true, job);
 	}
 
 	// 2.6
-	public void delete(Job job) throws SQLException, NoAvailableConnectionException {
+	public void delete(Job job) throws SQLException {
 		Connection c = null;
 		PreparedStatement pp = null;
 		try {
-			c = ConnectionProvider.getConnection(connectionProperties, true);
+			c = connectionProperties.getConnection();
 			if (job == null)
 				pp = c.prepareStatement("DELETE FROM unit_job");
 			else {
@@ -321,18 +325,19 @@ public class UnitJobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, null);
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
 	// 2.7 & 2.8
-	public int count(Job job, String column, boolean isCompleted) throws SQLException, NoAvailableConnectionException {
+	public int count(Job job, String column, boolean isCompleted) throws SQLException {
 		Connection c = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			c = ConnectionProvider.getConnection(connectionProperties, true);
+			c = connectionProperties.getConnection();
 			String sql = "SELECT COUNT(status) FROM unit_job ";
 			sql += "WHERE job_id = " + job.getId() + " AND ";
 			if (isCompleted)
@@ -353,13 +358,14 @@ public class UnitJobs {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, null);
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
-	private List<UnitJob> read(boolean processed, Job job) throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(connectionProperties, true);
+	private List<UnitJob> read(boolean processed, Job job) throws SQLException {
+		Connection c = connectionProperties.getConnection();
 		Statement s = null;
 		ResultSet rs = null;
 		List<UnitJob> unitJobs = new ArrayList<UnitJob>();
@@ -398,20 +404,21 @@ public class UnitJobs {
 				rs.close();
 			if (s != null)
 				s.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, null);
+			if (c != null) {
+				c.close();
+			}
 		}
 		return unitJobs;
 	}
 
 	// This method is purely for migration purposes, only used by XAPS Shell to migrate
 	// data from one database to another (perhaps after an upgrade of the database itself).
-	public void addOrChange(UnitJob uj) throws SQLException, NoAvailableConnectionException {
+	public void addOrChange(UnitJob uj) throws SQLException {
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;
 		try {
-			c = ConnectionProvider.getConnection(connectionProperties, true);
+			c = connectionProperties.getConnection();
 			pp = c.prepareStatement("INSERT INTO unit_job (job_id, unit_id, status, start_timestamp, end_timestamp, processed, unconfirmed, confirmed) VALUES (?, ?, ?, ?, ?, 0, ?, ?)");
 			pp.setInt(1, uj.getJobId());
 			pp.setString(2, uj.getUnitId());
@@ -452,8 +459,9 @@ public class UnitJobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqle);
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 

@@ -299,8 +299,12 @@ public class StunServer {
 		sockets = new Vector<DatagramSocket>();
 		sockets.add(new DatagramSocket(primaryPort, primary));
 		sockets.add(new DatagramSocket(secondaryPort, primary));
-		sockets.add(new DatagramSocket(primaryPort, secondary));
-		sockets.add(new DatagramSocket(secondaryPort, secondary));
+		if (!(primary.getHostAddress().equals("127.0.0.1") && secondary.getHostAddress().equals("127.0.0.1"))) {
+			sockets.add(new DatagramSocket(primaryPort, secondary));
+			sockets.add(new DatagramSocket(secondaryPort, secondary));
+		} else {
+			logger.info("Not adding sockets for secondary interface 127.0.0.1, since primary interface is also 127.0.0.1");
+		}
 		if (secondary.getHostAddress().equals("127.0.0.1"))
 			logger.info("STUN Server has started, secondary interface uses to 127.0.0.1 - not optimal for full STUN functionality");
 		else

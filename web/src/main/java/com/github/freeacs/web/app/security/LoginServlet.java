@@ -1,7 +1,5 @@
 package com.github.freeacs.web.app.security;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.Permission;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.input.ParameterParser;
@@ -20,10 +18,10 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -39,17 +37,17 @@ public class LoginServlet extends HttpServlet implements Filter {
 	/** The logger. */
 	private static final Logger logger = LoggerFactory.getLogger(LoginServlet.class);
 
-	/** The config. */
-	private FilterConfig config;
-
-	/** The t config. */
-	private Configuration tConfig;
+	private final DataSource xapsDataSource;
 
 	/** The freemarker. */
 	private Configuration freemarker;
 
 	/** The login handler. */
 	private static Authenticator loginHandler = new DatabaseAuthenticator();
+	
+	public LoginServlet(DataSource xapsDataSource) {
+		this.xapsDataSource = xapsDataSource;
+	}
 
 	/**
 	 * Processes a login, with username and password.
@@ -96,10 +94,10 @@ public class LoginServlet extends HttpServlet implements Filter {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	private void printLoginPage(HttpServletResponse response, SessionData sessionData) throws IOException {
-		if (tConfig == null)
-			tConfig = Freemarker.initFreemarker();
+		if (freemarker == null)
+			freemarker = Freemarker.initFreemarker();
 
-		Template template = tConfig.getTemplate("loginpage.ftl");
+		Template template = freemarker.getTemplate("loginpage.ftl");
 		HashMap<String, Object> root = new HashMap<String, Object>();
 
 		root.put("CSS_FILE", WebProperties.getString(WebConstants.DEFAULT_PROPERTIES_KEY, "default"));
@@ -157,15 +155,6 @@ public class LoginServlet extends HttpServlet implements Filter {
 	 * @throws ServletException the servlet exception
 	 */
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-		if (config == null)
-			return;
-
-		HttpServletRequest sReq = (HttpServletRequest) req;
-
-		if (SessionCache.getXAPSConnectionProperties(sReq.getSession().getId()) == null) {
-			retrieveAndSetConnectionProperties(sReq);
-		}
-
 		if (freemarker == null)
 			freemarker = Freemarker.initFreemarker();
 
@@ -218,23 +207,6 @@ public class LoginServlet extends HttpServlet implements Filter {
 			response.sendRedirect("login");
 			return;
 		}
-	}
-
-	/**
-	 * Retrieve and set connection properties.
-	 *
-	 * @param req the req
-	 */
-	private static void retrieveAndSetConnectionProperties(HttpServletRequest req) {
-		ConnectionProperties xapsCp = LoginPage.getXAPSConnectionProperties();
-		ConnectionProperties syslogCp = LoginPage.getSyslogConnectionProperties();
-		if (xapsCp != null && xapsCp.getUrl() != null)
-			SessionCache.putXAPSConnectionProperties(req.getSession().getId(), xapsCp);
-
-		if (syslogCp != null && syslogCp.getUrl() != null)
-			SessionCache.putSyslogConnectionProperties(req.getSession().getId(), syslogCp);
-		else
-			SessionCache.putSyslogConnectionProperties(req.getSession().getId(), xapsCp);
 	}
 
 	/**
@@ -297,14 +269,13 @@ public class LoginServlet extends HttpServlet implements Filter {
 		SessionData sessionData = SessionCache.getSessionData(sessionId);
 		name = name.toLowerCase();
 		logger.debug("Will check if " + name + "/" + passwd + " is authenticated using " + loginHandler.getClass() + " class");
-		WebUser user = loginHandler.authenticateUser(name, passwd, sessionId);
-
+		WebUser user = loginHandler.authenticateUser(name, passwd, sessionId, xapsDataSource);
 		if (!user.isAuthenticated()) {
 			sessionData.setErrorMessage("Your login and password are invalid.");
 			return false;
 		} else {
 			sessionData.setUser(user);
-			sessionData.setFilteredUnittypes(retrieveAllowedUnittypes(name, sessionId));
+			sessionData.setFilteredUnittypes(retrieveAllowedUnittypes(sessionId));
 			return true;
 		}
 	}
@@ -312,13 +283,11 @@ public class LoginServlet extends HttpServlet implements Filter {
 	/**
 	 * Retrieve allowed unittypes.
 	 *
-	 * @param user the user
 	 * @param sessionId the session id
 	 * @return the allowed unittype[]
-	 * @throws NoAvailableConnectionException the no available connection exception
-	 * @throws SQLException the sQL exception
+	 *  the no available connection exception
 	 */
-	private AllowedUnittype[] retrieveAllowedUnittypes(String user, String sessionId) throws NoAvailableConnectionException, SQLException {
+	private AllowedUnittype[] retrieveAllowedUnittypes(String sessionId) {
 		WebUser usr = SessionCache.getSessionData(sessionId).getUser();
 		List<AllowedUnittype> uts = new ArrayList<AllowedUnittype>();
 		if (usr.getPermissions() != null) {
@@ -374,7 +343,7 @@ public class LoginServlet extends HttpServlet implements Filter {
 			target.append("?");
 		while (parms.hasMoreElements()) {
 			String object = (String) parms.nextElement();
-			if (((String) object).equals("index"))
+			if (object.equals("index"))
 				continue;
 			target.append(object).append("=").append(request.getParameter(object));
 			if (parms.hasMoreElements())
@@ -387,10 +356,6 @@ public class LoginServlet extends HttpServlet implements Filter {
 	 * Filter init method.
 	 *
 	 * @param filterConfig the filter config
-	 * @throws ServletException the servlet exception
 	 */
-	public void init(FilterConfig filterConfig) throws ServletException {
-		SessionCache.CONTEXT_PATH = "";
-		config = filterConfig;
-	}
+	public void init(FilterConfig filterConfig) {}
 }

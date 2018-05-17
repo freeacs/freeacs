@@ -1,13 +1,13 @@
 package com.github.freeacs.tr069.methods;
 
 import com.github.freeacs.base.Log;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.UnittypeParameterFlag;
 import com.github.freeacs.tr069.HTTPReqResData;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
-import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.UnittypeParameter;
-import com.github.freeacs.dbi.UnittypeParameterFlag;
 import com.github.freeacs.tr069.xml.ParameterInfoStruct;
 import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.Parser;

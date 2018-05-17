@@ -21,6 +21,12 @@ public class FileServlet extends HttpServlet {
 
   private static final long serialVersionUID = -9027563648829505599L;
 
+  private final DBAccess dbAccess;
+
+  public FileServlet(DBAccess dbAccess) {
+    this.dbAccess = dbAccess;
+  }
+
   protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
     String firmwareName = null;
@@ -44,7 +50,7 @@ public class FileServlet extends HttpServlet {
           return;
         }
       }
-      XAPS xaps = DBAccess.getDBI().getXaps();
+      XAPS xaps = dbAccess.getDBI().getXaps();
       File firmware = null;
       String pathInfo = req.getPathInfo().substring(1);
       pathInfo = pathInfo.replaceAll("--", " ");

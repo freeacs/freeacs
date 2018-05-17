@@ -1,13 +1,7 @@
 package com.github.freeacs.tr069.methods;
 
 import com.github.freeacs.base.Log;
-import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.db.DBAccessSessionTR069;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
-import com.github.freeacs.tr069.HTTPReqResData;
-import com.github.freeacs.tr069.InformParameters;
-import com.github.freeacs.tr069.Properties;
-import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.XAPS;
 import com.github.freeacs.dbi.XAPSUnit;
@@ -16,6 +10,10 @@ import com.github.freeacs.dbi.tr069.TestDB;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.TimestampWrapper;
+import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.InformParameters;
+import com.github.freeacs.tr069.Properties;
+import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.test.system1.TestDatabase;
 import com.github.freeacs.tr069.test.system1.TestDatabaseObject;
 import com.github.freeacs.tr069.test.system2.TestUnit;
@@ -157,13 +155,13 @@ public class EMDecision {
 		DBAccessSessionTR069.writeUnitParams(sessionData); // queue-parameters - will be written at end-of-session
 		if (!queue) { // execute changes immediately - since otherwise these parameters will be lost (in the event of GPNRes.process())
 			XAPS xaps = reqRes.getSessionData().getDbAccess().getXaps();
-			XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
+			XAPSUnit xapsUnit = new XAPSUnit(xaps.getDataSource(), xaps, xaps.getSyslog());
 			xapsUnit.addOrChangeQueuedUnitParameters(sessionData.getUnit());
 		}
 		sessionData.setToDB(null);
 	}
 
-	public static void process(HTTPReqResData reqRes) throws NoAvailableConnectionException, SQLException {
+	public static void process(HTTPReqResData reqRes) throws SQLException {
 		SessionData sessionData = reqRes.getSessionData();
 		String prevResponseMethod = sessionData.getPreviousResponseMethod();
 		if (prevResponseMethod == null) {

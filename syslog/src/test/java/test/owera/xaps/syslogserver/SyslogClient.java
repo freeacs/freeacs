@@ -1,9 +1,5 @@
 package test.owera.xaps.syslogserver;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.util.PropertyReader;
-import com.github.freeacs.syslogserver.Properties;
-
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -19,25 +15,6 @@ public class SyslogClient {
 	protected boolean realtime = false;
 	protected boolean initiallyRealtime = false;
 	protected int counter = 0;
-
-	public static ConnectionProperties getConnectionProperties(String type) {
-		ConnectionProperties props = new ConnectionProperties();
-		PropertyReader pr = new PropertyReader("xaps-syslog.properties");
-		String db = pr.getProperty(type);
-		String equalDb = pr.getProperty(db);
-		if (equalDb != null)
-			db = equalDb;
-		props.setUrl(db.substring(db.indexOf("@") + 1));
-		props.setUser(db.substring(0, db.indexOf("/")));
-		props.setPassword(db.substring(db.indexOf("/") + 1, db.indexOf("@")));
-		props.setMaxAge(600000);
-		props.setMaxConn(Properties.getMaxSyslogdbThreads() * 3 + 3);
-		if (props.getUrl().contains("mysql"))
-			props.setDriver("com.mysql.jdbc.Driver");
-		if (props.getUrl().contains("oracle"))
-			props.setDriver("oracle.jdbc.driver.OracleDriver");
-		return props;
-	}
 
 	public void send(String msg, String hostname) {
 		try {

@@ -1,7 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.InsertOrUpdateStatement.Field;
 import com.github.freeacs.dbi.SyslogEvent.StorePolicy;
 import com.github.freeacs.dbi.util.XAPSVersionCheck;
@@ -60,9 +58,8 @@ public class SyslogEvents {
 		return "Contains " + idMap.size() + " syslog events";
 	}
 
-	private void addOrChangeSyslogEventImpl(SyslogEvent syslogEvent, XAPS xaps) throws SQLException, NoAvailableConnectionException {
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
-		SQLException sqlex = null;
+	private void addOrChangeSyslogEventImpl(SyslogEvent syslogEvent, XAPS xaps) throws SQLException {
+		Connection c = xaps.getDataSource().getConnection();
 		PreparedStatement ps = null;
 		try {
 			InsertOrUpdateStatement ious = new InsertOrUpdateStatement("syslog_event", new Field("id", syslogEvent.getId()));
@@ -98,18 +95,16 @@ public class SyslogEvents {
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(syslogEvent, unittype);
 			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
-	public void addOrChangeSyslogEvent(SyslogEvent syslogEvent, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeSyslogEvent(SyslogEvent syslogEvent, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		syslogEvent.validate();
@@ -118,10 +113,9 @@ public class SyslogEvents {
 		eventIdMap.put(syslogEvent.getEventId(), syslogEvent);
 	}
 
-	private void deleteSyslogEventImpl(Unittype unittype, SyslogEvent syslogEvent, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void deleteSyslogEventImpl(Unittype unittype, SyslogEvent syslogEvent, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
-		SQLException sqlex = null;
+		Connection c = xaps.getDataSource().getConnection();
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			if (XAPSVersionCheck.syslogEventReworkSupported)
@@ -137,14 +131,12 @@ public class SyslogEvents {
 			logger.info("Deleted syslog event " + syslogEvent.getEventId());
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(syslogEvent, unittype);
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
@@ -152,10 +144,10 @@ public class SyslogEvents {
 	 * The first time this method is run, the flag is set. The second time this
 	 * method is run, the parameter is removed from the name- and id-Map.
 	 * 
-	 * @throws NoAvailableConnectionException
+	 *
 	 * @throws SQLException
 	 */
-	public void deleteSyslogEvent(SyslogEvent syslogEvent, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void deleteSyslogEvent(SyslogEvent syslogEvent, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		if (syslogEvent.getEventId() < 1000)
@@ -163,7 +155,7 @@ public class SyslogEvents {
 		deleteSyslogEventImpl(syslogEvent, xaps);
 	}
 
-	protected void deleteSyslogEventImpl(SyslogEvent syslogEvent, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	protected void deleteSyslogEventImpl(SyslogEvent syslogEvent, XAPS xaps) throws SQLException {
 		deleteSyslogEventImpl(unittype, syslogEvent, xaps);
 		idMap.remove(syslogEvent.getId());
 		eventIdMap.remove(syslogEvent.getEventId());

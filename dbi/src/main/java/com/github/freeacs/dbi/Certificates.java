@@ -1,7 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,8 +26,7 @@ public class Certificates {
 	}
 
 	public Certificate[] getCertificates() {
-		Certificate[] Certificates = nameMap.values().toArray(new Certificate[] {});
-		return Certificates;
+		return nameMap.values().toArray(new Certificate[] {});
 	}
 
 	@Override
@@ -56,7 +53,7 @@ public class Certificates {
 		nameMap.put(certificate.getName(), certificate);
 	}
 
-	public void addOrChangeCertificate(Certificate certificate, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public void addOrChangeCertificate(Certificate certificate, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isAdmin())
 			throw new IllegalArgumentException("Not allowed action for this user");
 		Certificate replaceCert = null;
@@ -81,11 +78,10 @@ public class Certificates {
 		}
 	}
 
-	private int deleteCertificateImpl(Certificate certificate, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private int deleteCertificateImpl(Certificate certificate, XAPS xaps) throws SQLException {
 		Statement s = null;
 		String sql = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
-		SQLException sqlex = null;
+		Connection c = xaps.getDataSource().getConnection();
 		try {
 			s = c.createStatement();
 			sql = "DELETE FROM certificate WHERE ";
@@ -97,14 +93,10 @@ public class Certificates {
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishCertificate(certificate);
 			return rowsDeleted;
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (s != null)
 				s.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.close();
 		}
 	}
 
@@ -112,10 +104,9 @@ public class Certificates {
 	 * The first time this method is run, the flag is set. The second time this
 	 * method is run, the parameter is removed from the name- and id-Map.
 	 * 
-	 * @throws NoAvailableConnectionException
 	 * @throws SQLException
 	 */
-	public int deleteCertificate(Certificate certificate, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	public int deleteCertificate(Certificate certificate, XAPS xaps) throws SQLException {
 		if (!xaps.getUser().isAdmin())
 			throw new IllegalArgumentException("Not allowed action for this user");
 		int rowsDeleted = deleteCertificateImpl(certificate, xaps);
@@ -124,10 +115,9 @@ public class Certificates {
 		return rowsDeleted;
 	}
 
-	private void addOrChangeCertificateImpl(Certificate certificate, XAPS xaps) throws SQLException, NoAvailableConnectionException {
+	private void addOrChangeCertificateImpl(Certificate certificate, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
-		Connection c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
-		SQLException sqlex = null;
+		Connection c = xaps.getDataSource().getConnection();
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			try {
@@ -159,14 +149,10 @@ public class Certificates {
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishCertificate(certificate);
 			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				ConnectionProvider.returnConnection(c, sqlex);
+			c.close();
 		}
 	}
 

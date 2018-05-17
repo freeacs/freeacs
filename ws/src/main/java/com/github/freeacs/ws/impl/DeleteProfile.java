@@ -8,6 +8,7 @@ import com.github.freeacs.ws.DeleteProfileResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.rmi.RemoteException;
 
 public class DeleteProfile {
@@ -17,10 +18,10 @@ public class DeleteProfile {
 	private XAPS xaps;
 	private XAPSWS xapsWS;
 
-	public DeleteProfileResponse deleteProfile(DeleteProfileRequest dur) throws RemoteException {
+	public DeleteProfileResponse deleteProfile(DeleteProfileRequest dur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 			
-			xapsWS = XAPSWSFactory.getXAPSWS(dur.getLogin());
+			xapsWS = XAPSWSFactory.getXAPSWS(dur.getLogin(), xapsDs, syslogDs);
 			xaps = xapsWS.getXAPS();
 			if (dur.getUnittype() == null)
 				throw XAPSWS.error(logger, "No unittype is specified");

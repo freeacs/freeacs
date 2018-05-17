@@ -23,7 +23,6 @@ import com.github.freeacs.web.app.page.report.ReportPage;
 import com.github.freeacs.web.app.page.report.UnitListPage;
 import com.github.freeacs.web.app.page.scriptexecution.ScriptExecutionsPage;
 import com.github.freeacs.web.app.page.search.SearchPage;
-import com.github.freeacs.web.app.page.staging.*;
 import com.github.freeacs.web.app.page.syslog.SyslogPage;
 import com.github.freeacs.web.app.page.trigger.TriggerOverviewPage;
 import com.github.freeacs.web.app.page.trigger.TriggerReleaseHistoryPage;
@@ -123,19 +122,12 @@ public enum Page {
 	TOPMENU_REPORT("topmenu-report", null), //
 	TOPMENU_TRIGEVENT("topmenu-trigevent", null), //
 	TOPMENU_WIZARDS("topmenu-wizard", null), //
-	TOPMENU_STAGING("staging", StagingPage.class), //
 
 	/* Top top menu pages*/
 	CERTIFICATES("certificates", CryptoPage.class), //
 	MONITOR("monitor", MonitorPage.class), //
 	PERMISSIONS("permissions", PermissionsPage.class), //
 	REALTIMEMOS("unit-status-realtime-mos", UnitStatusRealTimeMosPage.class),
-
-	/* Staging pages, not used anywhere right now */
-	STAGINGRETURN("return", StagingReturnPage.class), //
-	STAGINGSHIPMENTS("shipments", StagingShipmentPage.class), //
-	STAGINGDISTRIBUTORS("distributors", StagingDistributorImportPage.class), //
-	STAGINGPROVIDERS("providers", StagingProviderPage.class),
 
 	NONE(null, null);
 
@@ -236,7 +228,7 @@ public enum Page {
 	 * @return a list of page ids
 	 */
 	public static List<String> getPermissiblePagesAsString() {
-		List<Page> toConvert = Arrays.asList(SEARCH, UNIT, PROFILE, UNITTYPE, GROUP, JOB, SOFTWARE, SYSLOG, REPORT, MONITOR, TOPMENU_STAGING);
+		List<Page> toConvert = Arrays.asList(SEARCH, UNIT, PROFILE, UNITTYPE, GROUP, JOB, SOFTWARE, SYSLOG, REPORT, MONITOR);
 		List<String> pages = new ArrayList<String>();
 		for (Page p : toConvert) {
 			pages.add(p.getId());
@@ -250,7 +242,6 @@ public enum Page {
 		permissiblePages.put("limited-provisioning", TOPMENU_EASY);
 		permissiblePages.put("full-provisioning", TOPMENU_ADV);
 		permissiblePages.put("report", TOPMENU_REPORT);
-		permissiblePages.put("staging", TOPMENU_STAGING);
 		permissiblePages.put("monitor", MONITOR);
 	}
 
@@ -360,12 +351,6 @@ public enum Page {
 		case TRIGGERRELEASE:
 		case TRIGGERRELEASEHISTORY:
 			return TRIGGEROVERVIEW.getId();
-
-		case STAGINGDISTRIBUTORS:
-		case STAGINGPROVIDERS:
-		case STAGINGSHIPMENTS:
-		case STAGINGRETURN:
-			return TOPMENU_STAGING.getId();
 
 		case UNITLIST:
 			return REPORT.getId();
@@ -487,13 +472,6 @@ public enum Page {
 			list.add(WINDOWUNIT);
 			list.add(UPGRADE);
 			list.add(TOPMENU_WIZARDS);
-		}
-		
-		if (list.contains(TOPMENU_STAGING)) {
-			list.add(STAGINGDISTRIBUTORS);
-			list.add(STAGINGPROVIDERS);
-			list.add(STAGINGSHIPMENTS);
-			list.add(STAGINGRETURN);
 		}
 		
 		if (list.contains(TOPMENU_REPORT)) {

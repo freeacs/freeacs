@@ -10,6 +10,7 @@ import com.github.freeacs.ws.ParameterList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -59,10 +60,10 @@ public class AddOrChangeUnittype {
 		}
 	}
 
-	public AddOrChangeUnittypeResponse addOrChangeUnittype(AddOrChangeUnittypeRequest gur) throws RemoteException {
+	public AddOrChangeUnittypeResponse addOrChangeUnittype(AddOrChangeUnittypeRequest gur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 			
-			xapsWS = XAPSWSFactory.getXAPSWS(gur.getLogin());
+			xapsWS = XAPSWSFactory.getXAPSWS(gur.getLogin(),xapsDs,syslogDs);
 			xaps = xapsWS.getXAPS();
 			User user = xapsWS.getId().getUser();
 			if (gur.getUnittype() == null || gur.getUnittype().getName() == null)

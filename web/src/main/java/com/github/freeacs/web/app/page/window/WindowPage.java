@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.page.window;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.web.Page;
@@ -13,6 +12,7 @@ import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.XAPSLoader;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -159,14 +159,14 @@ public class WindowPage extends AbstractWebPage {
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
 	 */
-	public void process(ParameterParser params, Output outputHandler) throws Exception {
+	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		Map<String, Object> root = outputHandler.getTemplateMap();
 
 		inputData = (WindowData) InputDataRetriever.parseInto(new WindowData(),params);
 
 		sessionId = params.getSession().getId();
 
-		xaps = XAPSLoader.getXAPS(sessionId);
+		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
@@ -204,7 +204,7 @@ public class WindowPage extends AbstractWebPage {
 					spread = profileSpread.getValue();
 			}
 		} else if (inputData.getPage().startsWith("unit") && inputData.getUnit().getString() != null) {
-			xapsUnit = XAPSLoader.getXAPSUnit(sessionId);
+			xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource, syslogDataSource);
 			unit = xapsUnit.getUnitById(inputData.getUnit().getString());
 			if (unit != null) {
 				unitDownload = unit.getUnitParameters().get(ServiceWindowDownload);
@@ -329,7 +329,7 @@ public class WindowPage extends AbstractWebPage {
 	 *
 	 * @return the string
 	 * @throws SQLException the sQL exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws IllegalArgumentException the illegal argument exception
 	 * @throws SecurityException the security exception
@@ -337,7 +337,7 @@ public class WindowPage extends AbstractWebPage {
 	 * @throws InvocationTargetException the invocation target exception
 	 * @throws NoSuchMethodException the no such method exception
 	 */
-	private String action() throws SQLException, NoAvailableConnectionException, IOException, IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException,
+	private String action() throws SQLException, IOException, IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException,
 			NoSuchMethodException {
 		if (inputData.getFormSubmit().hasValue(submitText)) {
 

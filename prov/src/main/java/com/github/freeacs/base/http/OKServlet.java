@@ -2,7 +2,6 @@ package com.github.freeacs.base.http;
 
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.db.DBAccess;
-import com.github.freeacs.common.db.ConnectionProvider;
 import com.github.freeacs.dbi.DBI;
 
 import javax.servlet.ServletException;
@@ -12,8 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -24,6 +21,12 @@ public class OKServlet extends HttpServlet {
 	private static final long serialVersionUID = -3217484543967391741L;
 	private static Map<String, Long> currentConnectionTmsMap = new HashMap<String, Long>();
 
+	private final DBAccess dbAccess;
+
+	public OKServlet(DBAccess dbAccess) {
+		this.dbAccess = dbAccess;
+	}
+
 	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		doGet(req, res);
 	}
@@ -32,7 +35,6 @@ public class OKServlet extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
 		PrintWriter out = res.getWriter();
-		Map<Connection, Long> usedConn = ConnectionProvider.getUsedConnCopy(DBAccess.getXAPSProperties());
 		String status = "XAPSOK";
 		try {
 			Class tr069ProvClass = Class.forName("com.owera.xaps.tr069.Provisioning");
@@ -48,25 +50,13 @@ public class OKServlet extends HttpServlet {
 		}
 		
 		try {
-			DBI dbi = DBAccess.getDBI();
+			DBI dbi = dbAccess.getDBI();
 			if (dbi != null && dbi.getDbiThrowable() != null) {
 				status = "ERROR: DBI reported error:\n" + dbi.getDbiThrowable() + "\n";
 				for (StackTraceElement ste : dbi.getDbiThrowable().getStackTrace())
 					status += ste.toString();
 			}
 		} catch (Throwable t) {
-		}
-		
-		if (usedConn != null) {
-			Collection<Long> usedConnValues = usedConn.values();
-			for (Long tms : usedConnValues) {
-				long spentTime = (System.currentTimeMillis() - tms) / 1000;
-				if (spentTime > 60) {
-					status = "ERROR: Connection hangup for more than 60 seconds. Consider restart MySQL and/or Tomcat on Fusion server";
-					Log.fatal(OKServlet.class, status);
-					break;
-				}
-			}
 		}
 		if (!status.contains("ERROR") && ThreadCounter.currentSessionsCount() > 0) {
 			Map<String, Long> currentSessions = ThreadCounter.cloneCurrentSessions();

@@ -1,18 +1,16 @@
 package com.github.freeacs.syslogserver;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.common.util.CacheValue;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.*;
-
 import com.github.freeacs.dbi.SyslogEvent.StorePolicy;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.util.SystemParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,15 +18,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.github.freeacs.common.db.ConnectionProvider.getConnectionProperties;
-import static com.github.freeacs.syslogserver.Properties.getMaxAge;
-import static com.github.freeacs.syslogserver.Properties.getMaxConn;
-import static com.github.freeacs.syslogserver.Properties.getUrl;
-
 public class Syslog2DB implements Runnable {
 
-	private ConnectionProperties syslogCp;
-	private ConnectionProperties xapsCp;
+	private DataSource syslogCp;
+	private DataSource xapsCp;
 
 	public static class Syslog2DBCounter {
 
@@ -226,9 +219,7 @@ public class Syslog2DB implements Runnable {
 		return unitCache.getMap().size();
 	}
 
-	private synchronized void init() {
-		syslogCp = getConnectionProperties(getUrl("syslog"), getMaxAge("syslog"), getMaxConn("syslog"));
-		xapsCp = getConnectionProperties(getUrl("xaps"), getMaxAge("xaps"), getMaxConn("xaps"));
+	private synchronized void init(DataSource xapsCp, DataSource syslogCp) {
 		executions = new ScriptExecutions(xapsCp);
 		if (dbi == null) {
 			try {
@@ -246,9 +237,9 @@ public class Syslog2DB implements Runnable {
 		}
 	}
 
-	Syslog2DB(int index) {
+	Syslog2DB(int index, DataSource xapsDataSource, DataSource syslogDataSource) {
 		poulateDeviceIdPatterns();
-		init();
+		init(xapsDataSource, syslogDataSource);
 		populateXAPS();
 	}
 
@@ -295,7 +286,7 @@ public class Syslog2DB implements Runnable {
 
 	}
 
-	private SyslogEntry processSyslogEvent(SyslogEntry entry, SyslogEvent se, Unittype unittype, Unit unit) throws SQLException, NoAvailableConnectionException {
+	private SyslogEntry processSyslogEvent(SyslogEntry entry, SyslogEvent se, Unittype unittype, Unit unit) throws SQLException {
 
 		if (logger.isDebugEnabled())
 			logger.debug("Unitid " + entry.getUnitId() + " will process syslog event " + se.getName() + " (policy: " + se.getStorePolicy() + ")");
@@ -329,7 +320,7 @@ public class Syslog2DB implements Runnable {
 		return entry;
 	}
 
-	private SyslogEntry prepareEntryWithXAPSInfo(SyslogEntry entry, SyslogPacket packet) throws SQLException, NoAvailableConnectionException {
+	private SyslogEntry prepareEntryWithXAPSInfo(SyslogEntry entry, SyslogPacket packet) throws SQLException {
 		CacheValue cv = unitCache.get(entry.getUnitId());
 		Unit unit;
 		XAPS xaps = populateXAPS();
@@ -407,7 +398,7 @@ public class Syslog2DB implements Runnable {
 		return entry;
 	}
 
-	private SyslogEntry populateSyslogEvent(Unittype unittype, SyslogEntry entry, Unit unit) throws SQLException, NoAvailableConnectionException {
+	private SyslogEntry populateSyslogEvent(Unittype unittype, SyslogEntry entry, Unit unit) throws SQLException {
 		SyslogEvent[] syslogEvents = unittype.getSyslogEvents().getSyslogEvents();
 		if (logger.isDebugEnabled())
 			logger.debug("Found " + syslogEvents.length + " syslog events for unit-id " + unit.getId());
@@ -452,7 +443,7 @@ public class Syslog2DB implements Runnable {
 		return entry;
 	}
 
-	private SyslogEntry prepareEntry(SyslogPacket packet) throws SQLException, NoAvailableConnectionException {
+	private SyslogEntry prepareEntry(SyslogPacket packet) throws SQLException {
 		SyslogEntry entry = parse(packet);
 		if (entry == null)
 			return null;
@@ -484,7 +475,7 @@ public class Syslog2DB implements Runnable {
 		}
 	}
 
-	private SyslogEntry parse(SyslogPacket packet) throws SQLException, NoAvailableConnectionException {
+	private SyslogEntry parse(SyslogPacket packet) throws SQLException {
 		String syslogStr = packet.getSyslogStr().trim();
 		Matcher m = priPattern.matcher(syslogStr);
 		int severity = 7;

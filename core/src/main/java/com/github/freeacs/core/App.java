@@ -1,10 +1,16 @@
 package com.github.freeacs.core;
 
+import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 
+import javax.sql.DataSource;
 import java.util.Collections;
 
 @SpringBootApplication
@@ -15,9 +21,24 @@ public class App {
     }
 
     @Bean
-    ServletRegistrationBean<CoreServlet> core() {
+    @Primary
+    @Qualifier("xaps")
+    @ConfigurationProperties("xaps.datasource")
+    public DataSource getXapsDataSource() {
+        return DataSourceBuilder.create().type(HikariDataSource.class).build();
+    }
+
+    @Bean
+    @Qualifier("syslog")
+    @ConfigurationProperties("syslog.datasource")
+    public DataSource getSyslogDataSource() {
+        return DataSourceBuilder.create().type(HikariDataSource.class).build();
+    }
+
+    @Bean
+    ServletRegistrationBean<CoreServlet> core(@Qualifier("xaps") DataSource xapsDataSource, @Qualifier("syslog") DataSource syslogDataSource) {
         ServletRegistrationBean<CoreServlet> srb = new ServletRegistrationBean<>();
-        srb.setServlet(new CoreServlet());
+        srb.setServlet(new CoreServlet(xapsDataSource, syslogDataSource));
         srb.setLoadOnStartup(1);
         srb.setUrlMappings(Collections.singletonList("/*"));
         return srb;

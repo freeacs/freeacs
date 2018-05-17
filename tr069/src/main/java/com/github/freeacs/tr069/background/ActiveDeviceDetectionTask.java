@@ -2,7 +2,6 @@ package com.github.freeacs.tr069.background;
 
 import com.github.freeacs.common.scheduler.TaskDefaultImpl;
 import com.github.freeacs.dbi.*;
-
 import com.github.freeacs.dbi.util.SyslogClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

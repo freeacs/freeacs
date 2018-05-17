@@ -91,12 +91,14 @@ import java.util.Iterator;
 
 public class TFTPServer implements Runnable {
   private static final int DEFAULT_TFTP_PORT = 69;
+  
+  private final DBAccess dbAccess;
 
   public static enum ServerMode {
     GET_ONLY, PUT_ONLY, GET_AND_PUT;
   }
 
-  private HashSet<TFTPTransfer> transfers_ = new HashSet<TFTPTransfer>();
+  private final HashSet<TFTPTransfer> transfers_ = new HashSet<TFTPTransfer>();
   private volatile boolean shutdownServer = false;
   private TFTP serverTftp_;
   private File serverReadDirectory_;
@@ -108,32 +110,6 @@ public class TFTPServer implements Runnable {
   private int maxTimeoutRetries_ = 3;
   private int socketTimeout_;
   private Thread serverThread;
-
-  /**
-   * Start a TFTP Server on the default port (69). Gets and Puts occur in the
-   * specified directories.
-   * 
-   * The server will start in another thread, allowing this constructor to
-   * return immediately.
-   * 
-   * If a get or a put comes in with a relative path that tries to get outside
-   * of the serverDirectory, then the get or put will be denied.
-   * 
-   * GET_ONLY mode only allows gets, PUT_ONLY mode only allows puts, and
-   * GET_AND_PUT allows both. Modes are defined as int constants in this class.
-   * 
-   * @param serverReadDirectory
-   *          directory for GET requests
-   * @param serverWriteDirectory
-   *          directory for PUT requests
-   * @param mode
-   *          A value as specified above.
-   * @throws IOException
-   *           if the server directory is invalid or does not exist.
-   */
-  public TFTPServer(File serverReadDirectory, File serverWriteDirectory, ServerMode mode) throws IOException {
-    this(serverReadDirectory, serverWriteDirectory, DEFAULT_TFTP_PORT, mode, null, null);
-  }
 
   /**
    * Start a TFTP Server on the specified port. Gets and Puts occur in the
@@ -162,29 +138,12 @@ public class TFTPServer implements Runnable {
    * @throws IOException
    *           if the server directory is invalid or does not exist.
    */
-  public TFTPServer(File serverReadDirectory, File serverWriteDirectory, int port, ServerMode mode, PrintStream log, PrintStream errorLog) throws IOException {
+  TFTPServer(File serverReadDirectory, File serverWriteDirectory, int port, ServerMode mode, PrintStream log, PrintStream errorLog, DBAccess dbAccess) throws IOException {
     port_ = port;
     mode_ = mode;
+    this.dbAccess = dbAccess;
     launch(serverReadDirectory, serverWriteDirectory);
-  }
 
-  /**
-   * Set the max number of retries in response to a timeout. Default 3. Min 0.
-   * 
-   * @param retries
-   */
-  public void setMaxTimeoutRetries(int retries) {
-    if (retries < 0) {
-      throw new RuntimeException("Invalid Value");
-    }
-    maxTimeoutRetries_ = retries;
-  }
-
-  /**
-   * Get the current value for maxTimeoutRetries
-   */
-  public int getMaxTimeoutRetries() {
-    return maxTimeoutRetries_;
   }
 
   /**
@@ -193,18 +152,11 @@ public class TFTPServer implements Runnable {
    * http://commons.apache.org/net/apidocs/org/apache/commons/net/tftp
    * /TFTP.html#DEFAULT_TIMEOUT (5000 at the time I write this) Min value of 10.
    */
-  public void setSocketTimeout(int timeout) {
+  void setSocketTimeout(int timeout) {
     if (timeout < 10) {
       throw new RuntimeException("Invalid Value");
     }
     socketTimeout_ = timeout;
-  }
-
-  /**
-   * The current socket timeout used during transfers in milliseconds.
-   */
-  public int getSocketTimeout() {
-    return socketTimeout_;
   }
 
   /*
@@ -399,7 +351,7 @@ public class TFTPServer implements Runnable {
           sessionData.setIpAddress(address.getHostAddress());
           sessionData.setReqURL("tftp://" + address.getHostAddress() + ":" + Properties.getTFTPPort() + trrp.getFilename());
           if (sessionData.getReqURL().contains("/file/")) {
-            XAPS xaps = DBAccess.getDBI().getXaps();
+            XAPS xaps = dbAccess.getDBI().getXaps();
             String pathInfo = trrp.getFilename();
             pathInfo = pathInfo.replaceAll("--", " ");
             String[] pathInfoArr = pathInfo.split("/");
@@ -433,7 +385,7 @@ public class TFTPServer implements Runnable {
             Log.debug(FileServlet.class, "Transmission of firmware " + firmwareName + " (in unittype " + unittypeName + ") ends");
           } else { // config download
             ProvisioningInput.parseRequestFile(trrp.getFilename(), sessionData);
-            byte[] output = SPP.provision(sessionData);
+            byte[] output = SPP.provision(sessionData, dbAccess);
             is = new BufferedInputStream(new ByteArrayInputStream(output));
           }
         } catch (Exception e) {
@@ -450,7 +402,7 @@ public class TFTPServer implements Runnable {
           ProvisioningMessage pm = sessionData.getProvisioningMessage();
           pm.setProvProtocol(ProvisioningProtocol.TFTP);
           pm.setIpAddress(trrp.getAddress().getHostAddress());
-          SyslogClient.send(pm.syslogMsg(DBAccess.getFacility(), null, Users.USER_ADMIN));
+          SyslogClient.send(pm.syslogMsg(dbAccess.getFacility(), null, Users.USER_ADMIN));
           Log.event(sessionData, pm.logMsg());
         }
 
@@ -739,20 +691,4 @@ public class TFTPServer implements Runnable {
       return isSubdirectoryOf(parent, childsParent);
     }
   }
-
-  /* Not used */
-  public static void main(String[] args) {
-    try {
-      // Start the server
-      PrintStream ps = new PrintStream(System.out);
-      TFTPServer tftpS = new TFTPServer(new File("."), new File("."), 1069, ServerMode.GET_AND_PUT, ps, ps);
-      tftpS.setSocketTimeout(5000);
-    } catch (Throwable t) {
-      Log.error(TFTPServer.class, "An error occurred - TFTP server did not start", t);
-    }
-
-    // TODO Auto-generated method stub
-
-  }
-
 }

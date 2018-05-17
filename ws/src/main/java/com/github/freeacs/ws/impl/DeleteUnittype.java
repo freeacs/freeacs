@@ -7,6 +7,7 @@ import com.github.freeacs.ws.DeleteUnittypeResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.rmi.RemoteException;
 
 public class DeleteUnittype {
@@ -16,10 +17,10 @@ public class DeleteUnittype {
 	private XAPS xaps;
 	private XAPSWS xapsWS;
 
-	public DeleteUnittypeResponse deleteUnittype(DeleteUnittypeRequest dur) throws RemoteException {
+	public DeleteUnittypeResponse deleteUnittype(DeleteUnittypeRequest dur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 			
-			xapsWS = XAPSWSFactory.getXAPSWS(dur.getLogin());
+			xapsWS = XAPSWSFactory.getXAPSWS(dur.getLogin(), xapsDs, syslogDs);
 			xaps = xapsWS.getXAPS();
 			if (dur.getUnittypeName() == null)
 				throw XAPSWS.error(logger, "No unittype name is specified");

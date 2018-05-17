@@ -5,16 +5,17 @@ import com.github.freeacs.ws.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.rmi.RemoteException;
 
 public class GetUnittypes {
 
 	private static final Logger logger = LoggerFactory.getLogger(GetUnittypes.class);
 
-	public GetUnittypesResponse getUnittypes(GetUnittypesRequest gur) throws RemoteException {
+	public GetUnittypesResponse getUnittypes(GetUnittypesRequest gur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 			
-			XAPSWS xapsWS = XAPSWSFactory.getXAPSWS(gur.getLogin());
+			XAPSWS xapsWS = XAPSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
 			if (gur.getUnittypeName() != null) {
 				Unittype unittypeXAPS = xapsWS.getUnittypeFromXAPS(gur.getUnittypeName());
 				com.github.freeacs.ws.Unittype[] unittypeArray = new com.github.freeacs.ws.Unittype[1];

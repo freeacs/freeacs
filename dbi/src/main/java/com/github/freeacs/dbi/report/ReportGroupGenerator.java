@@ -1,13 +1,10 @@
 package com.github.freeacs.dbi.report;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.ConnectionProvider;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,11 +18,11 @@ public class ReportGroupGenerator extends ReportGenerator {
 
 	private static Logger logger = LoggerFactory.getLogger(ReportGroupGenerator.class);
 
-	public ReportGroupGenerator(ConnectionProperties sysCp, ConnectionProperties xapsCp, XAPS xaps, String logPrefix, Identity id) {
+	public ReportGroupGenerator(DataSource sysCp, DataSource xapsCp, XAPS xaps, String logPrefix, Identity id) {
 		super(sysCp, xapsCp, xaps, logPrefix, id);
 	}
 
-	//	private List<SyslogEntry> readSyslog(Date start, Date end, List<Unittype> uts, String unitId, String msgIdentifier) throws SQLException, NoAvailableConnectionException {
+	//	private List<SyslogEntry> readSyslog(Date start, Date end, List<Unittype> uts, String unitId, String msgIdentifier) throws SQLException {
 	//		Syslog syslog = new Syslog(sysCp, id);
 	//		SyslogFilter filter = new SyslogFilter();
 	//		filter.setFacility(16); // Only messages from device
@@ -63,7 +60,7 @@ public class ReportGroupGenerator extends ReportGenerator {
 	//
 	//	}
 
-	//	public Report<RecordGroup> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, Group group, String unitId) throws NoAvailableConnectionException, SQLException,
+	//	public Report<RecordGroup> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, Group group, String unitId) throws SQLException,
 	//			IOException {
 	//		Report<RecordGroup> report = new Report<RecordGroup>(RecordGroup.class, periodType);
 	//		logInfo("TimeGroupReport", unitId, uts, null, start, end);
@@ -85,11 +82,11 @@ public class ReportGroupGenerator extends ReportGenerator {
 	//		return report;
 	//	}
 
-	//	public Report<RecordGroup> generateFromSyslog(Date start, Date end, String unitId) throws NoAvailableConnectionException, SQLException, IOException {
+	//	public Report<RecordGroup> generateFromSyslog(Date start, Date end, String unitId) throws SQLException, IOException {
 	//		return generateFromSyslog(PeriodType.SECOND, start, end, null, null, unitId);
 	//	}
 
-	//	public Map<String, Report<RecordGroup>> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, Group group) throws NoAvailableConnectionException, SQLException,
+	//	public Map<String, Report<RecordGroup>> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, Group group) throws SQLException,
 	//			IOException {
 	//		logInfo("TimeGroupReport", null, uts, null, start, end);
 	//		Map<String, Report<RecordGroup>> unitReportMap = new HashMap<String, Report<RecordGroup>>();
@@ -119,15 +116,14 @@ public class ReportGroupGenerator extends ReportGenerator {
 	//		return unitReportMap;
 	//	}
 
-	public Report<RecordGroup> generateGroupReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, Group g) throws NoAvailableConnectionException, SQLException, IOException {
+	public Report<RecordGroup> generateGroupReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, Group g) throws SQLException, IOException {
 		Connection xapsConnection = null;
-		Connection sysConnection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		SQLException sqle = null;
 		try {
 			Report<RecordGroup> report = new Report<RecordGroup>(RecordGroup.class, periodType);
-			xapsConnection = ConnectionProvider.getConnection(xapsCp, true);
+			xapsConnection = xapsCp.getConnection();
 			
 			logger.info(logPrefix + "Reads from report_group table from " + start + " to " + end);
 			DynamicStatement ds = selectReportSQL("report_group", periodType, start, end, uts, null);
@@ -160,10 +156,9 @@ public class ReportGroupGenerator extends ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (xapsConnection != null)
-				ConnectionProvider.returnConnection(xapsConnection, sqle);
-			if (sysConnection != null)
-				ConnectionProvider.returnConnection(sysConnection, sqle);
+			if (xapsConnection != null) {
+				xapsConnection.close();
+			}
 		}
 	}
 

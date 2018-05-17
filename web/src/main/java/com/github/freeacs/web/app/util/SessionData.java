@@ -2,11 +2,12 @@ package com.github.freeacs.web.app.util;
 
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.UnitJob;
-import com.github.freeacs.web.app.page.staging.StagingActions;
 import com.github.freeacs.web.app.security.AllowedUnittype;
 import com.github.freeacs.web.app.security.WebUser;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -16,10 +17,7 @@ import java.util.*;
  *
  */
 public class SessionData {
-	
-	/** The role. */
-	private String role;
-	
+
 	/** The name. */
 	private String name;
 	
@@ -61,16 +59,7 @@ public class SessionData {
 	
 	/** The job type. */
 	private String jobType;
-	
-	/** The job window. */
-	private String jobWindow;
-	
-	/** The shipment cache. */
-	private StagingActions.ShipmentCache shipmentCache;
-	
-	/** The time server date. */
-	private Date timeServerDate;
-	
+
 	/** The failed unit jobs list. */
 	private List<UnitJob> failedUnitJobsList;
 	
@@ -79,24 +68,6 @@ public class SessionData {
 	
 	/** The user. */
 	private WebUser user;
-	
-	/**
-	 * Sets the role.
-	 *
-	 * @param role the new role
-	 */
-	public void setRole(String role) {
-		this.role = role;
-	}
-
-	/**
-	 * Gets the role.
-	 *
-	 * @return the role
-	 */
-	public String getRole() {
-		return role;
-	}
 
 	/**
 	 * Sets the name.
@@ -380,42 +351,6 @@ public class SessionData {
 	}
 
 	/**
-	 * Sets the job window.
-	 *
-	 * @param jobWindow the new job window
-	 */
-	public void setJobWindow(String jobWindow) {
-		this.jobWindow = jobWindow;
-	}
-
-	/**
-	 * Gets the job window.
-	 *
-	 * @return the job window
-	 */
-	public String getJobWindow() {
-		return jobWindow;
-	}
-
-	/**
-	 * Sets the shipment cache.
-	 *
-	 * @param shipmentCache the new shipment cache
-	 */
-	public void setShipmentCache(StagingActions.ShipmentCache shipmentCache) {
-		this.shipmentCache = shipmentCache;
-	}
-
-	/**
-	 * Gets the shipment cache.
-	 *
-	 * @return the shipment cache
-	 */
-	public StagingActions.ShipmentCache getShipmentCache() {
-		return shipmentCache;
-	}
-	
-	/**
 	 * Sets the user.
 	 *
 	 * @param user the new user
@@ -451,21 +386,4 @@ public class SessionData {
 		return this.completedUnitJobsList;	
 	}
 
-	/**
-	 * Gets the time server date.
-	 *
-	 * @return the time server date
-	 */
-	public Date getTimeServerDate() {
-		return timeServerDate;
-	}
-
-	/**
-	 * Sets the time server date.
-	 *
-	 * @param timeServerDate the new time server date
-	 */
-	public void setTimeServerDate(Date timeServerDate) {
-		this.timeServerDate = timeServerDate;
-	}
 }

@@ -1,7 +1,5 @@
 package com.github.freeacs.web.app.page.permissions;
 
-import com.github.freeacs.common.db.ConnectionProperties;
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.Output;
@@ -19,6 +17,7 @@ import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
 import org.apache.commons.lang.StringUtils;
 
+import javax.sql.DataSource;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.*;
@@ -50,7 +49,7 @@ public class PermissionsPage extends AbstractWebPage {
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
 	 */
-	public void process(ParameterParser req, Output outputHandler) throws Exception {
+	public void process(ParameterParser req, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		inputData = (PermissionsData) InputDataRetriever.parseInto(new PermissionsData(), req);
 
 		sessionId = req.getSession().getId();
@@ -59,24 +58,17 @@ public class PermissionsPage extends AbstractWebPage {
 		SessionData sessionData = SessionCache.getSessionData(sessionId);
 		WebUser loggedInUser = sessionData.getUser();
 
-		xaps = XAPSLoader.getXAPS(sessionId);
+		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
 
-		ConnectionProperties props = SessionCache.getXAPSConnectionProperties(req.getSession().getId());
-
 		String template = null;
 
 		Map<String, Object> root = outputHandler.getTemplateMap();
 
-		if (props != null) {
-			users = new Users(props);
-		} else {
-			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
-			return;
-		}
+		users = new Users(xapsDataSource);
 
 		if (inputData.getUser().getString() != null)
 			user = users.getProtected(inputData.getUser().getString(), loggedInUser);
@@ -100,7 +92,7 @@ public class PermissionsPage extends AbstractWebPage {
 				else if (user.isAdmin())
 					user.setAccess(Users.ACCESS_ADMIN);
 				users.addOrChange(user, loggedInUser);
-				setPermissions(user, props, true);
+				setPermissions(user, true);
 				root.put("message", "Successfully updated user");
 				root.put("submitted", true);
 			} else if (button.equals("Create new user")) {
@@ -115,7 +107,7 @@ public class PermissionsPage extends AbstractWebPage {
 						User newUser = new User(username, fullname, modules, isAdmin, users);
 						newUser.setSecretClearText(password);
 						users.addOrChange(newUser, loggedInUser);
-						setPermissions(newUser, props, false);
+						setPermissions(newUser, false);
 						inputData.getUsername().setValue(null);
 						inputData.getPassword().setValue(null);
 						inputData.getFullname().setValue(null);
@@ -202,7 +194,7 @@ public class PermissionsPage extends AbstractWebPage {
 			root.put("unittype", utString);
 			Unittype unittype = xaps.getUnittype(utString);
 			if (unittype != null) {
-				root.put("profiles", getAllowedProfiles(sessionId, unittype));
+				root.put("profiles", getAllowedProfiles(sessionId, unittype, xapsDataSource, syslogDataSource));
 				root.put("profile", inputData.getProfile().getString());
 			}
 		}
@@ -392,18 +384,16 @@ public class PermissionsPage extends AbstractWebPage {
 	 * Sets the permissions.
 	 *
 	 * @param newUser the new user
-	 * @param props the props
 	 * @param update the update
 	 * @throws IllegalArgumentException the illegal argument exception
 	 * @throws SecurityException the security exception
 	 * @throws IllegalAccessException the illegal access exception
 	 * @throws InvocationTargetException the invocation target exception
-	 * @throws NoSuchMethodException the no such method exception
-	 * @throws NoAvailableConnectionException the no available connection exception
+	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	private void setPermissions(User newUser, ConnectionProperties props, boolean update) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException,
-			NoSuchMethodException, NoAvailableConnectionException, SQLException {
+	private void setPermissions(User newUser, boolean update) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException,
+			SQLException {
 		Permissions perms = newUser.getPermissions();
 
 		List<Permission> toAdd = new ArrayList<Permission>();

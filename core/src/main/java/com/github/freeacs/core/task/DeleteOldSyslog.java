@@ -1,6 +1,5 @@
 package com.github.freeacs.core.task;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.core.Properties;
 import com.github.freeacs.dbi.SyslogEvent;
 import com.github.freeacs.dbi.Unittype;
@@ -8,6 +7,7 @@ import com.github.freeacs.dbi.XAPS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,8 +19,8 @@ public class DeleteOldSyslog extends DBIShare {
 
 	private static Logger logger = LoggerFactory.getLogger(DeleteOldSyslog.class);
 
-	public DeleteOldSyslog(String taskName) throws SQLException, NoAvailableConnectionException {
-		super(taskName);
+	public DeleteOldSyslog(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException {
+		super(taskName, xapsCp, sysCp);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -39,7 +39,7 @@ public class DeleteOldSyslog extends DBIShare {
 	 * 3.1. Find all severityLimits longer than eventIdLimits -> put severity in a list
 	 * 3.2. Delete appropriate syslog statments
 	 */
-	private void removeOldSyslogEntries() throws SQLException, NoAvailableConnectionException {
+	private void removeOldSyslogEntries() throws SQLException {
 		// 1.
 		Unittype[] unittypeArr = xaps.getUnittypes().getUnittypes();
 		List<SyslogEvent> events = new ArrayList<SyslogEvent>();
@@ -59,7 +59,7 @@ public class DeleteOldSyslog extends DBIShare {
 
 	}
 
-	private void removeOldSyslogEntriesEventBased(List<SyslogEvent> events) throws SQLException, NoAvailableConnectionException {
+	private void removeOldSyslogEntriesEventBased(List<SyslogEvent> events) throws SQLException {
 		// 3.
 		for (SyslogEvent event : events) {
 			Calendar limitCal = Calendar.getInstance();
@@ -120,7 +120,7 @@ public class DeleteOldSyslog extends DBIShare {
 	 * (somewhat surprisingly) faster. The whole logic attempts to work it's way through the
 	 * syslog database back until there's is no more data.
 	 */
-	private void removeOldSyslogEntriesSeverityBased(List<SyslogEvent> events) throws SQLException, NoAvailableConnectionException {
+	private void removeOldSyslogEntriesSeverityBased(List<SyslogEvent> events) throws SQLException {
 		// 2.
 		for (int severity = 0; severity <= 7; severity++) {
 			int severityLimit = Properties.getSyslogSeverityLimit(severity);

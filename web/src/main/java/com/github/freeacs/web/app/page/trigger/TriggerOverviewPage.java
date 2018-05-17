@@ -15,6 +15,7 @@ import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.XAPSLoader;
 
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,11 +46,11 @@ public class TriggerOverviewPage extends AbstractWebPage {
 	}
 
 	@Override
-	public void process(ParameterParser params, Output outputHandler) throws Exception {
+	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		inputData = (TriggerData) InputDataRetriever.parseInto(new TriggerData(), params);
 		String sessionId = params.getSession().getId();
 
-		XAPS xaps = XAPSLoader.getXAPS(sessionId);
+		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (xaps == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -62,7 +63,7 @@ public class TriggerOverviewPage extends AbstractWebPage {
 		Unittype unittype = xaps.getUnittype(inputData.getUnittype().getString());
 
 		if (unittype != null) {
-			triggerHandler = new TriggerHandler(sessionId, inputData);
+			triggerHandler = new TriggerHandler(sessionId, inputData, xapsDataSource, syslogDataSource);
 			outputHandler.getTemplateMap().put("triggertablelist", triggerHandler.getTriggerTableElements());
 			if (inputData.getAction().hasValue(EDIT_ACTION)) {
 				setOutputDataForEditTriggerMode(outputHandler);

@@ -1,11 +1,10 @@
 package com.github.freeacs.core.task;
 
-import com.github.freeacs.common.db.NoAvailableConnectionException;
 import com.github.freeacs.dbi.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -15,8 +14,8 @@ import java.util.Map.Entry;
 
 public class TriggerReleaser extends DBIShare {
 
-	public TriggerReleaser(String taskName) throws SQLException {
-		super(taskName);
+	public TriggerReleaser(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException {
+		super(taskName, xapsCp, sysCp);
 	}
 
 	private static Logger logger = LoggerFactory.getLogger(TriggerReleaser.class);
@@ -37,12 +36,12 @@ public class TriggerReleaser extends DBIShare {
 		return logger;
 	}
 
-	private void executeTriggerScript(Trigger trigger, Map<String, Integer> unitEventsMap, Integer triggerReleaseId) throws SQLException, NoAvailableConnectionException {
+	private void executeTriggerScript(Trigger trigger, Map<String, Integer> unitEventsMap, Integer triggerReleaseId) throws SQLException {
 		ScriptExecutions executions = new ScriptExecutions(getXapsCp());
 		executions.requestExecution(trigger.getScript(), "\"-uut:" + trigger.getUnittype().getName() + "\" -v" + makeTriggerUnitsFilename(trigger), "TRIGGER:" + triggerReleaseId);
 	}
 
-	private Map<String, Integer> getUnitEventsMapFromChilden(Trigger trigger) throws SQLException, NoAvailableConnectionException {
+	private Map<String, Integer> getUnitEventsMapFromChilden(Trigger trigger) throws SQLException {
 		Map<String, Integer> unitEventsMap = new HashMap<String, Integer>();
 		for (Trigger child : trigger.getAllChildren()) {
 			if (child.getTriggerType() == Trigger.TRIGGER_TYPE_BASIC) {
@@ -66,7 +65,7 @@ public class TriggerReleaser extends DBIShare {
 		return "TU-" + trigger.getId();
 	}
 
-	private void processAllTriggers() throws NoAvailableConnectionException, SQLException, IOException, ParseException {
+	private void processAllTriggers() throws SQLException, IOException, ParseException {
 		logger.info("TriggerReleaser: Trigger processing starts...");
 		// The now/process-timestamp is set to the beginning of this minute (which should be 30 seconds ago since the
 		// TriggerTask runs 30 seconds into every minute). All syslog-write operations initiated before 30 seconds
@@ -91,7 +90,7 @@ public class TriggerReleaser extends DBIShare {
 		}
 	}
 
-	private void processTrigger(Date now, Triggers triggers, Trigger trigger, Date evaluationStart) throws SQLException, NoAvailableConnectionException {
+	private void processTrigger(Date now, Triggers triggers, Trigger trigger, Date evaluationStart) throws SQLException {
 		if (trigger.getTriggerType() == Trigger.TRIGGER_TYPE_BASIC) {
 			Map<String, Integer> unitEventsMap = triggers.countEventsPrUnit(trigger.getId(), evaluationStart, now, xaps);
 			int ne = unitEventsMap.remove("TEC-TotalEventsCounter"); // will always return an int and then remove it from map
@@ -157,7 +156,7 @@ public class TriggerReleaser extends DBIShare {
 		}
 	}
 
-	private void processTriggersForUnittype(Triggers triggers, Date now) throws SQLException, NoAvailableConnectionException {
+	private void processTriggersForUnittype(Triggers triggers, Date now) throws SQLException {
 		Trigger[] triggerArr = triggers.getTriggers();
 		// This sorting will make sure that all BASIC triggers are treated first, then higher level COMPOSITE until
 		// the highest level COMPOSITE will be treated last.
@@ -189,7 +188,7 @@ public class TriggerReleaser extends DBIShare {
 		}
 	}
 
-	private boolean sentWithinNotifyInterval(Triggers triggers, Trigger trigger, Date now) throws SQLException, NoAvailableConnectionException {
+	private boolean sentWithinNotifyInterval(Triggers triggers, Trigger trigger, Date now) throws SQLException {
 		Date notifyIntervalStart = new Date(now.getTime() - trigger.getNotifyIntervalHours() * MS_HOUR);
 		List<TriggerRelease> historyList = triggers.readTriggerReleases(trigger, notifyIntervalStart, now, xaps, null);
 		boolean sent = false;
@@ -202,7 +201,7 @@ public class TriggerReleaser extends DBIShare {
 		return sent;
 	}
 
-	private void storeTriggerUnits(Trigger trigger, Map<String, Integer> unitEventsMap, Date now) throws SQLException, NoAvailableConnectionException {
+	private void storeTriggerUnits(Trigger trigger, Map<String, Integer> unitEventsMap, Date now) throws SQLException {
 		Files files = trigger.getUnittype().getFiles();
 		String filename = makeTriggerUnitsFilename(trigger);
 		String desc = "Units causing release of trigger " + trigger.getName() + " at " + tmsFormat.format(now);
