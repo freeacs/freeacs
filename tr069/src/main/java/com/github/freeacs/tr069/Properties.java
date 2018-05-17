@@ -4,9 +4,6 @@ import com.github.freeacs.base.Log;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
-import java.util.Optional;
-import java.util.function.Supplier;
-
 public class Properties {
 
 	private static final Config config = ConfigFactory.load();
@@ -34,7 +31,7 @@ public class Properties {
 		return isQuirk("unitdiscovery", getUnittypeName(sessionData), getVersion(sessionData));
 	}
 
-	public static boolean isTerminationQuirk(SessionData sessionData) {
+	static boolean isTerminationQuirk(SessionData sessionData) {
 		return isQuirk("termination", getUnittypeName(sessionData), getVersion(sessionData));
 	}
 
@@ -79,10 +76,6 @@ public class Properties {
 
 	}
 
-	//	public static boolean isDiscoveryForce() {
-	//		return getString("discovery.force", "false").equals("true");
-	//	}
-
 	public static boolean isDiscoveryMode() {
 		return getString("discovery.mode", "false").equals("true");
 	}
@@ -99,32 +92,6 @@ public class Properties {
 		return getString("debug.test.mode", "false").equals("true");
 	}
 
-	private static int getInteger(String propertyKey, int defaultValue) {
-		if (!config.hasPath(propertyKey)) {
-			Log.warn(Properties.class, "The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
-			return defaultValue;
-		}
-		try {
-			return config.getInt(propertyKey);
-		} catch (Throwable t) {
-			Log.warn(Properties.class, "The value of " + propertyKey + " was not a number, instead using default value " + defaultValue, t);
-			return defaultValue;
-		}
-	}
-
-	private static long getLong(String propertyKey, long defaultValue) {
-		if (!config.hasPath(propertyKey)) {
-			Log.warn(Properties.class, "The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
-			return defaultValue;
-		}
-		try {
-			return config.getLong(propertyKey);
-		} catch (Throwable t) {
-			Log.warn(Properties.class, "The value of " + propertyKey + " was not a number, instead using default value " + defaultValue, t);
-			return defaultValue;
-		}
-	}
-
 	private static String getString(String propertyKey, String defaultValue) {
 		if (!config.hasPath(propertyKey)) {
 			Log.warn(Properties.class, "The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
@@ -137,33 +104,7 @@ public class Properties {
 		return getString("auth.method", "none");
 	}
 
-	public static int getXAPSCacheTimeout() {
-		return getInteger("xaps.cache.timeout", 300);
-	}
-	
 	public static boolean isFileAuthUsed() {
 	  return getString("file.auth.used", "false").equals("true");
-	}
-
-	public static int getMaxConn(final String infix) {
-		return getInteger("db." + infix + ".maxconn", 20);
-	}
-
-	public static long getMaxAge(final String infix) {
-		return getLong("db." + infix + ".maxage", 60000);
-	}
-
-	public static String getUrl(final String infix) {
-		return Optional.ofNullable(getString("db." + infix + ".url", null))
-				.orElseGet(new Supplier<String>() {
-					@Override
-					public String get() {
-						return getString("db." +infix, null);
-					}
-				});
-	}
-
-	public static boolean sessionCookieHttpOnly() {
-		return config.getBoolean("server.servlet.session.cookie.http-only");
 	}
 }

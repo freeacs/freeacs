@@ -103,7 +103,7 @@ public class Provisioning extends HttpServlet {
 				String line = br.readLine();
 				if (line == null)
 					break;
-				requestSB.append(line + "\n");
+				requestSB.append(line).append("\n");
 			}
 			reqRes.getRequest().setXml(requestSB.toString());
 			return System.currentTimeMillis() - tms;
@@ -122,7 +122,7 @@ public class Provisioning extends HttpServlet {
 	@SuppressWarnings("unused")
   private static boolean hasContinueHeader(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		// Support 100 Continue header - always YES - CONTINUE!
-		if (req.getHeader("Expect") != null && req.getHeader("Expect").indexOf("100-continue") > -1) {
+		if (req.getHeader("Expect") != null && req.getHeader("Expect").contains("100-continue")) {
 			res.setStatus(HttpServletResponse.SC_CONTINUE);
 			res.getWriter().print("");
 			return true;
