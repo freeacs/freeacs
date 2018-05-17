@@ -21,7 +21,7 @@
     <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="FILE" />
     </appender>
-    <root name="com.github.freeacs" level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="ASYNC_FILE"/>
         <appender-ref ref="ASYNC_STDOUT" />
     </root>
