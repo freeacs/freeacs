@@ -25,12 +25,6 @@ import javax.sql.DataSource;
  */
 public class LoginPage extends AbstractWebPage {
 
-	/** The input data. */
-	private LoginData inputData;
-
-	/** The session id. */
-	private String sessionId;
-
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.AbstractWebPage#requiresNoCache()
 	 */
@@ -43,35 +37,23 @@ public class LoginPage extends AbstractWebPage {
 	 * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
 	 */
 	public void process(ParameterParser req, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
-		inputData = (LoginData) InputDataRetriever.parseInto(new LoginData(), req);
-
-		sessionId = req.getSession().getId();
+		LoginData inputData = (LoginData) InputDataRetriever.parseInto(new LoginData(), req);
 
 		if (inputData.getLogoff().getString() != null && inputData.getLogoff().getString().equals("true")) {
 			clearSession(req);
-
 			outputHandler.setDirectToPage(Page.LOGIN);
-
 			return;
 		}
 
-		if (SessionCache.getXAPSConnectionProperties(req.getSession().getId()) != null) {
-			SessionData sessionData = SessionCache.getSessionData(req.getSession().getId());
+		SessionData sessionData = SessionCache.getSessionData(req.getSession().getId());
 
-			String target = sessionData.getLastLoginTarget();
-			if (target == null || target.contains("?page=login"))
-				outputHandler.setDirectToPage(Page.SEARCH);
-			else
-				outputHandler.setRedirectTarget(target);
+		String target = sessionData.getLastLoginTarget();
+		if (target == null || target.contains("?page=login"))
+			outputHandler.setDirectToPage(Page.SEARCH);
+		else
+			outputHandler.setRedirectTarget(target);
 
-			sessionData.setLastLoginTarget(null);
-
-			return;
-		}
-
-		SessionCache.putXAPSConnectionProperties(sessionId, null);
-
-		outputHandler.setTemplatePath("/databasespage.ftl");
+		sessionData.setLastLoginTarget(null);
 	}
 
 	/**

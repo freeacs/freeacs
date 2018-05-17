@@ -36,7 +36,7 @@ public class XAPSLoader {
 			if (dbi == null || dbi.isFinished()) {
 				Identity ident = getIdentity(sessionId, xapsDataSource);
 				Syslog syslog = new Syslog(syslogDataSource, ident);
-				dbi = new DBI(sessionTimeoutSecs, dbi.getXaps().getDataSource(), syslog);
+				dbi = new DBI(sessionTimeoutSecs, xapsDataSource, syslog);
 				SessionCache.putDBI(sessionId, dbi, sessionTimeoutSecs);
 			}
 			Monitor.setLastDBILogin(null);

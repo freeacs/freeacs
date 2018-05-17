@@ -155,19 +155,6 @@ public class SessionCache {
 	}
 
 	/**
-	 * Gets the syslog connection properties.
-	 *
-	 * @param sessionId the session id
-	 * @return the syslog connection properties
-	 */
-	public static DataSource getSyslogConnectionProperties(String sessionId) {
-		CacheValue cv = cache.get(key(sessionId, "syslogprops"));
-		if (cv == null)
-			return null;
-		return (DataSource) cv.getObject();
-	}
-
-	/**
 	 * Put connection properties.
 	 *
 	 * @param sessionId the session id
@@ -356,11 +343,7 @@ public class SessionCache {
 
 		return (Report<RecordSyslog>) cv.getObject();
 	}
-	
-	public static void deleteSyslogReport(String sessionId,String unitId,Date fromDate,Date toDate){
-		cache.remove(getRangeKey(unitId, sessionId, fromDate, toDate));
-	}
-	
+
 	/**
 	 * Convert syslog report.
 	 *

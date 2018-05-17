@@ -50,79 +50,6 @@ public class BrowserDetect
 {
     
     /**
-     * How many connections can this browser open simultaneously?.
-     *
-     * @param request The request so we can get at the user-agent header
-     * @return The number of connections that we think this browser can take
-     */
-    public static int getConnectionLimit(HttpServletRequest request)
-    {
-        if (atLeast(request, UserAgent.IE, 8))
-        {
-            return 6;
-        }
-        else if (atLeast(request, UserAgent.AppleWebKit, 8))
-        {
-            return 4;
-        }
-        else if (atLeast(request, UserAgent.Opera, 9))
-        {
-            return 4;
-        }
-        else
-        {
-            return 2;
-        }
-    }
-
-    /**
-     * Does this web browser support comet?.
-     *
-     * @param request The request so we can get at the user-agent header
-     * @return True if long lived HTTP connections are supported
-     */
-    public static boolean supportsComet(HttpServletRequest request)
-    {
-        String userAgent = request.getHeader("user-agent");
-
-        // None of the non-iPhone mobile browsers that I've tested support comet
-        if (userAgent.contains("Symbian"))
-        {
-            return false;
-        }
-
-        // We need to test for other failing browsers here
-
-        return true;
-    }
-
-    /**
-     * Check that the user-agent string indicates some minimum browser level.
-     *
-     * @param request The browsers request
-     * @param requiredUserAgent The UA required
-     * @return true if the browser matches the spec.
-     */
-    public static boolean atLeast(HttpServletRequest request, UserAgent requiredUserAgent)
-    {
-        return atLeast(request, requiredUserAgent, -1);
-    }
-
-    /**
-     * Check that the user-agent string indicates some minimum browser level.
-     *
-     * @param request The browsers request
-     * @param requiredUserAgent The UA required. Currently this is major version only
-     * @param requiredVersion The version required, or -1 if versions are not important
-     * @return true iff the browser matches the spec.
-     */
-    public static boolean atLeast(HttpServletRequest request, UserAgent requiredUserAgent, int requiredVersion)
-    {
-    	int realVersion = getRealVersion(request, requiredUserAgent);
-        return realVersion >= requiredVersion;
-    }
-    
-    /**
      * Less than.
      *
      * @param request the request
@@ -144,7 +71,7 @@ public class BrowserDetect
      * @param requiredUserAgent the required user agent
      * @return the real version
      */
-    public static int getRealVersion(HttpServletRequest request,UserAgent requiredUserAgent){
+    private static int getRealVersion(HttpServletRequest request, UserAgent requiredUserAgent){
         String userAgent = request.getHeader("user-agent");
         int realVersion;
 
@@ -174,13 +101,11 @@ public class BrowserDetect
     }
 
     /**
-     * Check {@link #atLeast(HttpServletRequest, UserAgent)} for.
-     *
      * @param userAgent the user agent
      * @return the major version assuming apple web kit
      * {@link UserAgent#AppleWebKit}
      */
-    public static int getMajorVersionAssumingAppleWebKit(String userAgent)
+    private static int getMajorVersionAssumingAppleWebKit(String userAgent)
     {
         int webKitPos = userAgent.indexOf("AppleWebKit");
         if (webKitPos == -1)
@@ -192,13 +117,11 @@ public class BrowserDetect
     }
 
     /**
-     * Check {@link #atLeast(HttpServletRequest, UserAgent)} for.
-     *
      * @param userAgent the user agent
      * @return the major version assuming opera
      * {@link UserAgent#Opera}
      */
-    public static int getMajorVersionAssumingOpera(String userAgent)
+    private static int getMajorVersionAssumingOpera(String userAgent)
     {
         int operaPos = userAgent.indexOf("Opera");
         if (operaPos == -1)
@@ -210,13 +133,11 @@ public class BrowserDetect
     }
 
     /**
-     * Check {@link #atLeast(HttpServletRequest, UserAgent)} for.
-     *
      * @param userAgent the user agent
      * @return the major version assuming gecko
      * {@link UserAgent#Gecko}
      */
-    public static int getMajorVersionAssumingGecko(String userAgent)
+    private static int getMajorVersionAssumingGecko(String userAgent)
     {
         int geckoPos = userAgent.indexOf(" Gecko/20");
         if (geckoPos == -1 || userAgent.contains("WebKit/"))
@@ -228,13 +149,11 @@ public class BrowserDetect
     }
 
     /**
-     * Check {@link #atLeast(HttpServletRequest, UserAgent)} for.
-     *
      * @param userAgent the user agent
      * @return the major version assuming ie
      * {@link UserAgent#IE}
      */
-    public static int getMajorVersionAssumingIE(String userAgent)
+    private static int getMajorVersionAssumingIE(String userAgent)
     {
         int msiePos = userAgent.indexOf("MSIE ");
         if (msiePos == -1 || userAgent.contains("Opera"))
@@ -251,7 +170,7 @@ public class BrowserDetect
      * @param numberString the number string
      * @return the int
      */
-    public static int parseNumberAtStart(String numberString)
+    private static int parseNumberAtStart(String numberString)
     {
         if (numberString == null || numberString.length() == 0)
         {
@@ -272,43 +191,6 @@ public class BrowserDetect
         {
             return -1;
         }
-    }
-
-    /**
-     * This method is for debugging only.
-     *
-     * @param request the request
-     * @return the user agent debug string
-     */
-    public static String getUserAgentDebugString(HttpServletRequest request)
-    {
-        String userAgent = request.getHeader("user-agent");
-
-        int version = getMajorVersionAssumingIE(userAgent);
-        if (version != -1)
-        {
-            return "IE/" + version;
-        }
-
-        version = getMajorVersionAssumingGecko(userAgent);
-        if (version != -1)
-        {
-            return "Gecko/" + version;
-        }
-
-        version = getMajorVersionAssumingAppleWebKit(userAgent);
-        if (version != -1)
-        {
-            return "WebKit/" + version;
-        }
-
-        version = getMajorVersionAssumingOpera(userAgent);
-        if (version != -1)
-        {
-            return "Opera/" + version;
-        }
-
-        return "Unknown: (" + userAgent + ")";
     }
 
 }

@@ -45,25 +45,6 @@ public class WebProperties {
 			return defaultValue;
 		}
 	}
-	
-	/**
-	 * Gets the long.
-	 *
-	 * @param propertyKey the property key
-	 * @param defaultValue the default value
-	 * @return the long
-	 */
-	public static long getLong(String propertyKey, long defaultValue) {
-		if (!config.hasPath(propertyKey)) {
-			return defaultValue;
-		}
-		try {
-			return config.getLong(propertyKey);
-		} catch (Throwable t) {
-			log.debug("The value of " + propertyKey + " was not a number, instead using default value " + defaultValue, t);
-			return defaultValue;
-		}
-	}
 
 	/**
 	 * Gets the string.
@@ -119,15 +100,6 @@ public class WebProperties {
 	 */
 	public static int getSessionTimeout() {
 		return getInteger("session.timeout", 30);
-	}
-
-	/**
-	 * Gets the login auth.
-	 *
-	 * @return the login auth
-	 */
-	public static String getLoginAuth() {
-		return getString("login.auth", "none");
 	}
 
 	/**
@@ -189,24 +161,6 @@ public class WebProperties {
 
 		Collections.sort(keys);
 		return keys;
-	}
-
-	public static int getMaxConn(final String infix) {
-		return getInteger("db." + infix + ".maxconn", 20);
-	}
-
-	public static long getMaxAge(final String infix) {
-		return getLong("db." + infix + ".maxage", 60000);
-	}
-
-	public static String getUrl(final String infix) {
-		return Optional.ofNullable(getString("db." + infix + ".url", null))
-				.orElseGet(new Supplier<String>() {
-					@Override
-					public String get() {
-						return getString("db." +infix, null);
-					}
-				});
 	}
 
 }
