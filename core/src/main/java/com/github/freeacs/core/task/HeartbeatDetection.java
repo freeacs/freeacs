@@ -136,6 +136,9 @@ public class HeartbeatDetection extends DBIShare {
 				rs.close();
 			if (ps != null)
 				ps.close();
+			if (c != null) {
+				c.close();
+			}
 		}
 
 	}
@@ -179,6 +182,9 @@ public class HeartbeatDetection extends DBIShare {
 				rs.close();
 			if (ps != null)
 				ps.close();
+			if (c != null) {
+				c.close();
+			}
 		}
 
 	}

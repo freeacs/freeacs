@@ -155,6 +155,9 @@ public class ReportGenerator extends DBIOwner {
 		} finally {
 			if (ps != null)
 				ps.close();
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
@@ -246,6 +249,9 @@ public class ReportGenerator extends DBIOwner {
 				rs.close();
 			if (ps != null)
 				ps.close();
+			if (connection != null) {
+				connection.close();
+			}
 		}
 
 	}
@@ -299,6 +305,9 @@ public class ReportGenerator extends DBIOwner {
 		} finally {
 			if (ps != null)
 				ps.close();
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
@@ -380,6 +389,9 @@ public class ReportGenerator extends DBIOwner {
 				rs.close();
 			if (ps != null)
 				ps.close();
+			if (connection != null) {
+				connection.close();
+			}
 		}
 	}
 
@@ -483,6 +495,12 @@ public class ReportGenerator extends DBIOwner {
 				s.close();
 			if (ps2 != null)
 				ps2.close();
+			if (c1 != null) {
+				c1.close();
+			}
+			if (c2 != null) {
+				c2.close();
+			}
 		}
 	}
 
@@ -629,6 +647,9 @@ public class ReportGenerator extends DBIOwner {
 				rs.close();
 			if (ps != null)
 				ps.close();
+			if (connection != null) {
+				connection.close();
+			}
 		}
 
 	}
@@ -706,6 +727,9 @@ public class ReportGenerator extends DBIOwner {
 				rs.close();
 			if (ps != null)
 				ps.close();
+			if (connection != null) {
+				connection.close();
+			}
 		}
 
 	}
