@@ -140,6 +140,7 @@ public class GroupParameters {
 		} finally {
 			if (ps != null)
 				ps.close();
+			c.close();
 		}
 	}
 
@@ -188,6 +189,7 @@ public class GroupParameters {
 		} finally {
 			if (s != null)
 				s.close();
+			c.close();
 		}
 	}
 

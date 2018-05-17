@@ -142,7 +142,9 @@ public class ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			
+			if (connection !=  null) {
+				connection.close();
+			}
 		}
 	}
 
@@ -190,7 +192,9 @@ public class ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			
+			if (connection != null) {
+				connection.close();
+			}
 		}
 
 	}
@@ -204,61 +208,8 @@ public class ReportGenerator {
 		return unitsInGroup;
 	}
 
-	/*
-	 * Generate reports from report table
-	 */
-
-	//	public Report<RecordProvisioning> generateProvisioningReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws
-	//			SQLException, IOException {
-	//		Connection xapsConnection = null;
-	//		Connection sysConnection = null;
-	//		PreparedStatement ps = null;
-	//		ResultSet rs = null;
-	//		SQLException sqle = null;
-	//		try {
-	//			Report<RecordProvisioning> report = new Report<RecordProvisioning>(RecordProvisioning.class, periodType);
-	//			xapsConnection = ConnectionProvider.getConnection(xapsCp, true);
-	//			
-	//			logger.info(logPrefix + "Reads from report_unit table from " + start + " to " + end);
-	//			DynamicStatement ds = selectReportSQL("report_provisioning", periodType, start, end, uts, prs);
-	//			ps = ds.makePreparedStatement(xapsConnection);
-	//			rs = ps.executeQuery();
-	//			int counter = 0;
-	//			while (rs.next()) {
-	//				counter++;
-	//				start = rs.getTimestamp("timestamp_");
-	//				String unittypeName = rs.getString("unit_type_name");
-	//				String profileName = rs.getString("profile_name");
-	//				RecordProvisioning recordTmp = new RecordProvisioning(start, periodType, unittypeName, profileName);
-	//				Key key = recordTmp.getKey();
-	//				RecordProvisioning record = report.getRecord(key);
-	//				if (record == null)
-	//					record = recordTmp;
-	//				record.getNeverProvisionedCount().set(rs.getInt("never_provisioned_count"));
-	//				record.getOkProvisionedCount().set(rs.getInt("ok_provisioned_count"));
-	//				record.getOldProvisionedCount().set(rs.getInt("old_provisioned_count"));
-	//				report.setRecord(key, record);
-	//			}
-	//			logger.info(logPrefix + "Have read " + counter + " rows, last tms was " + start + ", report is now " + report.getMap().size() + " entries");
-	//			return report;
-	//		} catch (SQLException sqlex) {
-	//			sqle = sqlex;
-	//			throw sqlex;
-	//		} finally {
-	//			if (rs != null)
-	//				rs.close();
-	//			if (ps != null)
-	//				ps.close();
-	//			if (xapsConnection != null)
-	//				ConnectionProvider.returnConnection(xapsConnection, sqle);
-	//			if (sysConnection != null)
-	//				ConnectionProvider.returnConnection(sysConnection, sqle);
-	//		}
-	//	}
-
 	public Report<RecordUnit> generateUnitReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws SQLException, IOException {
 		Connection xapsConnection = null;
-		Connection sysConnection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		SQLException sqle = null;
@@ -296,12 +247,14 @@ public class ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
+			if (xapsConnection != null) {
+				xapsConnection.close();
+			}
 		}
 	}
 
 	public Report<RecordJob> generateJobReport(PeriodType periodType, Date start, Date end, List<Unittype> uts) throws SQLException, IOException {
 		Connection xapsConnection = null;
-		Connection sysConnection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		SQLException sqle = null;
@@ -341,6 +294,9 @@ public class ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
+			if (xapsConnection != null) {
+				xapsConnection.close();
+			}
 		}
 	}
 

@@ -57,6 +57,9 @@ public class ScriptExecutions {
 		} finally {
 			if (ps != null)
 				ps.close();
+			if (connection != null) {
+				connection.close();
+			}
 		}
 	}
 
@@ -84,6 +87,9 @@ public class ScriptExecutions {
 		} finally {
 			if (ps != null)
 				ps.close();
+			if (connection != null) {
+				connection.close();
+			}
 		}
 	}
 
@@ -115,6 +121,9 @@ public class ScriptExecutions {
 				rs.close();
 			if (ps != null)
 				ps.close();
+			if (connection != null) {
+				connection.close();
+			}
 		}
 	}
 
@@ -183,6 +192,9 @@ public class ScriptExecutions {
 				rs.close();
 			if (ps != null)
 				ps.close();
+			if (connection != null) {
+				connection.close();
+			}
 		}
 	}
 
@@ -213,6 +225,9 @@ public class ScriptExecutions {
 				rs.close();
 			if (ps != null)
 				ps.close();
+			if (connection != null) {
+				connection.close();
+			}
 		}
 	}
 
@@ -252,6 +267,9 @@ public class ScriptExecutions {
 				rs.close();
 			if (ps != null)
 				ps.close();
+			if (connection != null) {
+				connection.close();
+			}
 		}
 	}
 
@@ -276,6 +294,9 @@ public class ScriptExecutions {
 		} finally {
 			if (ps != null)
 				ps.close();
+			if (connection != null) {
+				connection.close();
+			}
 		}
 	}
 

@@ -62,6 +62,7 @@ public class XAPSUnit {
 		} finally {
 			if (connection != null) {
 				connection.setAutoCommit(wasAutoCommit);
+				connection.close();
 			}
 		}
 	}
@@ -78,6 +79,7 @@ public class XAPSUnit {
 		} finally {
 			if (connection != null) {
 				connection.setAutoCommit(wasAutoCommit);
+				connection.close();
 			}
 		}
 	}
@@ -107,6 +109,7 @@ public class XAPSUnit {
 		} finally {
 			if (connection != null) {
 				connection.setAutoCommit(wasAutoCommit);
+				connection.close();
 			}
 		}
 	}
@@ -174,8 +177,10 @@ public class XAPSUnit {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (connection != null)
+			if (connection != null) {
 				connection.setAutoCommit(wasAutoCommit);
+				connection.close();
+			}
 		}
 	}
 
@@ -217,8 +222,10 @@ public class XAPSUnit {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (connection != null)
+			if (connection != null) {
 				connection.setAutoCommit(wasAutoCommit);
+				connection.close();
+			}
 		}
 	}
 
@@ -259,10 +266,11 @@ public class XAPSUnit {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (connection != null)
+			if (connection != null) {
 				connection.setAutoCommit(wasAutoCommit);
+				connection.close();
+			}
 		}
-
 	}
 
 	private void addOrChangeUnitParameters(List<UnitParameter> unitParameters, Profile prof, boolean session) throws SQLException {
@@ -345,8 +353,10 @@ public class XAPSUnit {
 		} finally {
 			if (pp != null)
 				pp.close();
-			if (connection != null)
+			if (connection != null) {
 				connection.setAutoCommit(wasAutoCommit);
+				connection.close();
+			}
 		}
 	}
 
@@ -436,8 +446,10 @@ public class XAPSUnit {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (connection != null)
+			if (connection != null) {
 				connection.setAutoCommit(wasAutoCommit);
+				connection.close();
+			}
 		}
 
 	}
@@ -487,8 +499,10 @@ public class XAPSUnit {
 		} finally {
 			if (s != null)
 				s.close();
-			if (connection != null)
+			if (connection != null) {
 				connection.setAutoCommit(wasAutoCommit);
+				connection.close();
+			}
 		}
 	}
 
@@ -546,8 +560,10 @@ public class XAPSUnit {
 		} finally {
 			if (s != null)
 				s.close();
-			if (connection != null)
+			if (connection != null) {
 				connection.setAutoCommit(wasAutoCommit);
+				connection.close();
+			}
 		}
 	}
 
@@ -576,8 +592,10 @@ public class XAPSUnit {
 		} finally {
 			if (s != null)
 				s.close();
-			if (connection != null)
+			if (connection != null) {
 				connection.setAutoCommit(wasAutoCommit);
+				connection.close();
+			}
 		}
 	}
 
@@ -623,8 +641,10 @@ public class XAPSUnit {
 		} finally {
 			if (s != null)
 				s.close();
-			if (connection != null)
+			if (connection != null) {
 				connection.setAutoCommit(wasAutoCommit);
+				connection.close();
+			}
 		}
 
 	}
@@ -649,6 +669,7 @@ public class XAPSUnit {
 		} finally {
 			if (connection != null) {
 				connection.setAutoCommit(wasAutoCommit);
+				connection.close();
 			}
 		}
 	}
@@ -674,6 +695,7 @@ public class XAPSUnit {
 		} finally {
 			if (connection != null) {
 				connection.setAutoCommit(wasAutoCommit);
+				connection.close();
 			}
 		}
 	}
@@ -700,6 +722,7 @@ public class XAPSUnit {
 		} finally {
 			if (connection != null) {
 				connection.setAutoCommit(wasAutoCommit);
+				connection.close();
 			}
 		}
 	}
@@ -716,6 +739,7 @@ public class XAPSUnit {
 		} finally {
 			if (connection != null) {
 				connection.setAutoCommit(wasAutoCommit);
+				connection.close();
 			}
 		}
 	}
@@ -740,6 +764,7 @@ public class XAPSUnit {
 		} finally {
 			if (connection != null) {
 				connection.setAutoCommit(wasAutoCommit);
+				connection.close();
 			}
 		}
 	}
@@ -802,6 +827,7 @@ public class XAPSUnit {
 		} finally {
 			if (connection != null) {
 				connection.setAutoCommit(wasAutoCommit);
+				connection.close();
 			}
 		}
 	}

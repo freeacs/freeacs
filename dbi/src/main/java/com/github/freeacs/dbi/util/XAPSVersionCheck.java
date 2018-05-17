@@ -124,6 +124,7 @@ public class XAPSVersionCheck {
 				rs.close();
 			if (s != null)
 				s.close();
+			c.close();
 		}
 
 	}

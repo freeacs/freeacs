@@ -87,6 +87,7 @@ public class Triggers {
 		} finally {
 			if (ps != null)
 				ps.close();
+			c.close();
 		}
 	}
 
@@ -138,7 +139,7 @@ public class Triggers {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			
+			c.close();
 		}
 	}
 
@@ -172,6 +173,7 @@ public class Triggers {
 		} finally {
 			if (ps != null)
 				ps.close();
+			c.close();
 		}
 	}
 
@@ -198,7 +200,7 @@ public class Triggers {
 		} finally {
 			if (ps != null)
 				ps.close();
-			
+			c.close();
 		}
 	}
 
@@ -235,7 +237,7 @@ public class Triggers {
 		} finally {
 			if (ps != null)
 				ps.close();
-			
+			c.close();
 		}
 	}
 
@@ -278,7 +280,7 @@ public class Triggers {
 		} finally {
 			if (ps != null)
 				ps.close();
-			
+			c.close();
 		}
 	}
 
@@ -303,7 +305,7 @@ public class Triggers {
 		} finally {
 			if (ps != null)
 				ps.close();
-			
+			c.close();
 		}
 	}
 
@@ -339,7 +341,7 @@ public class Triggers {
 		} finally {
 			if (ps != null)
 				ps.close();
-			
+			c.close();
 		}
 	}
 
@@ -391,8 +393,8 @@ public class Triggers {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				c.setAutoCommit(wasAutoCommit);
+			c.setAutoCommit(wasAutoCommit);
+			c.close();
 		}
 	}
 
@@ -474,7 +476,7 @@ public class Triggers {
 		} finally {
 			if (ps != null)
 				ps.close();
-			
+			c.close();
 		}
 	}
 

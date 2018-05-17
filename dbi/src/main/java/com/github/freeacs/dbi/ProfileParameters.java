@@ -82,6 +82,7 @@ public class ProfileParameters {
 		} finally {
 			if (s != null)
 				s.close();
+			c.close();
 		}
 	}
 
@@ -117,6 +118,7 @@ public class ProfileParameters {
 		} finally {
 			if (s != null)
 				s.close();
+			c.close();
 		}
 	}
 

@@ -74,6 +74,7 @@ public class Heartbeats {
 		} finally {
 			if (ps != null)
 				ps.close();
+			c.close();
 		}
 	}
 
@@ -107,6 +108,7 @@ public class Heartbeats {
 		} finally {
 			if (ps != null)
 				ps.close();
+			c.close();
 		}
 	}
 

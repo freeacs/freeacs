@@ -285,6 +285,7 @@ public class DBI implements Runnable {
 		} finally {
 			if (s != null)
 				s.close();
+			c.close();
 		}
 	}
 
@@ -310,6 +311,7 @@ public class DBI implements Runnable {
 		} finally {
 			if (ps != null)
 				ps.close();
+			c.close();
 		}
 	}
 
@@ -345,6 +347,7 @@ public class DBI implements Runnable {
 		} finally {
 			if (ps != null)
 				ps.close();
+			c.close();
 		}
 
 	}

@@ -181,6 +181,7 @@ public class Groups {
 				rs.close();
 			if (ps != null)
 				ps.close();
+			c.close();
 		}
 	}
 
@@ -219,6 +220,7 @@ public class Groups {
 		} finally {
 			if (s != null)
 				s.close();
+			c.close();
 		}
 	}
 
@@ -330,6 +332,7 @@ public class Groups {
 		} finally {
 			if (s != null)
 				s.close();
+			c.close();
 		}
 	}
 

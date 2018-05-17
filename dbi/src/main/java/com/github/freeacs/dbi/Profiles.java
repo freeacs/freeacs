@@ -72,6 +72,7 @@ public class Profiles {
 		} finally {
 			if (s != null)
 				s.close();
+			c.close();
 		}
 	}
 
@@ -135,6 +136,7 @@ public class Profiles {
 		} finally {
 			if (s != null)
 				s.close();
+			c.close();
 		}
 	}
 

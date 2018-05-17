@@ -199,8 +199,8 @@ public class UnittypeParameters {
 		} finally {
 			if (s != null)
 				s.close();
-			if (c != null)
-				c.setAutoCommit(wasAutoCommit);
+			c.setAutoCommit(wasAutoCommit);
+			c.close();
 		}
 	}
 
@@ -295,8 +295,8 @@ public class UnittypeParameters {
 		} finally {
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				c.setAutoCommit(wasAutoCommit);
+			c.setAutoCommit(wasAutoCommit);
+			c.close();
 		}
 	}
 

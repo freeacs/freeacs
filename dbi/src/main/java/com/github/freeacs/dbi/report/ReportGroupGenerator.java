@@ -118,7 +118,6 @@ public class ReportGroupGenerator extends ReportGenerator {
 
 	public Report<RecordGroup> generateGroupReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, Group g) throws SQLException, IOException {
 		Connection xapsConnection = null;
-		Connection sysConnection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		SQLException sqle = null;
@@ -157,6 +156,9 @@ public class ReportGroupGenerator extends ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
+			if (xapsConnection != null) {
+				xapsConnection.close();
+			}
 		}
 	}
 

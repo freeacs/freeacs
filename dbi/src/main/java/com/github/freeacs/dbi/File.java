@@ -104,11 +104,13 @@ public class File {
 				sqlex = sqle;
 				throw sqle;
 			} finally {
-
 				if (rs != null)
 					rs.close();
 				if (s != null)
 					s.close();
+				if (c != null) {
+					c.close();
+				}
 			}
 			if (content == null)
 				content = new byte[0];

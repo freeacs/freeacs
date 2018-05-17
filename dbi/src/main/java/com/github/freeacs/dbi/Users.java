@@ -122,6 +122,9 @@ public class Users {
 		} finally {
 			if (ps != null)
 				ps.close();
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
@@ -214,6 +217,9 @@ public class Users {
 		} finally {
 			if (ps != null)
 				ps.close();
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
@@ -337,6 +343,9 @@ public class Users {
 		} finally {
 			if (s != null)
 				s.close();
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 

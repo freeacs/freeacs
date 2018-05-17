@@ -102,6 +102,9 @@ public class SyslogEvents {
 		} finally {
 			if (ps != null)
 				ps.close();
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
@@ -139,6 +142,9 @@ public class SyslogEvents {
 		} finally {
 			if (ps != null)
 				ps.close();
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 

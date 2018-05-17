@@ -400,7 +400,7 @@ public class Syslog {
     } finally {
       if (pp != null)
         pp.close();
-      
+      c.close();
     }
   }
 
@@ -441,7 +441,7 @@ public class Syslog {
     } finally {
       if (pp != null)
         pp.close();
-      
+      c.close();
     }
   }
 
@@ -483,7 +483,7 @@ public class Syslog {
     } finally {
       if (pp != null)
         pp.close();
-      
+      c.close();
     }
   }
 
@@ -513,7 +513,7 @@ public class Syslog {
         rs.close();
       if (pp != null)
         pp.close();
-      
+      c.close();
     }
   }
 
@@ -543,7 +543,9 @@ public class Syslog {
     } finally {
       if (s != null)
         s.close();
-
+      if (c != null) {
+        c.close();
+      }
     }
   }
 

@@ -90,9 +90,9 @@ public class Jobs {
 		boolean wasAutoCommit = false;
 		try {
 			checkParameters(jobParameters);
-			Connection c = xaps.getDataSource().getConnection();
-			wasAutoCommit = c.getAutoCommit();
-			c.setAutoCommit(false);
+			connection = xaps.getDataSource().getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			for (int i = 0; jobParameters != null && i < jobParameters.size(); i++) {
 				JobParameter jobParameter = jobParameters.get(i);
 				Parameter parameter = jobParameter.getParameter();
@@ -143,8 +143,10 @@ public class Jobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			if (connection != null)
+			if (connection != null) {
 				connection.setAutoCommit(wasAutoCommit);
+				connection.close();
+			}
 		}
 
 	}
@@ -159,7 +161,7 @@ public class Jobs {
 		//		if (!XAPSVersionCheck.jobSupported)
 		//			return;
 		try {
-			Connection c = xaps.getDataSource().getConnection();
+			connection = xaps.getDataSource().getConnection();
 			s = connection.createStatement();
 			sql = "DELETE FROM job_param WHERE job_id = " + job.getId();
 			s.setQueryTimeout(60);
@@ -176,6 +178,9 @@ public class Jobs {
 		} finally {
 			if (s != null)
 				s.close();
+			if (connection != null) {
+				connection.close();
+			}
 		}
 	}
 
@@ -190,9 +195,9 @@ public class Jobs {
 		//			return 0;
 		boolean wasAutoCommit = false;
 		try {
-			Connection c = xaps.getDataSource().getConnection();
-			wasAutoCommit = c.getAutoCommit();
-			c.setAutoCommit(false);
+			connection = xaps.getDataSource().getConnection();
+			wasAutoCommit = connection.getAutoCommit();
+			connection.setAutoCommit(false);
 			s = connection.createStatement();
 			int rowsDeleted = 0;
 			for (int i = 0; i < jobParameters.size(); i++) {
@@ -226,8 +231,10 @@ public class Jobs {
 		} finally {
 			if (s != null)
 				s.close();
-			if (connection != null)
+			if (connection != null) {
 				connection.setAutoCommit(wasAutoCommit);
+				connection.close();
+			}
 		}
 	}
 
@@ -265,6 +272,9 @@ public class Jobs {
 		} finally {
 			if (pp != null)
 				pp.close();
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 

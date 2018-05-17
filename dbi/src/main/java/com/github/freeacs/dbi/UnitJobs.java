@@ -111,7 +111,9 @@ public class UnitJobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			
+			if (c != null) {
+				c.close();
+			}
 		}
 		return true;
 	}
@@ -148,7 +150,9 @@ public class UnitJobs {
 			} finally {
 				if (pp != null)
 					pp.close();
-				
+				if (c != null) {
+					c.close();
+				}
 			}
 		}
 		if (rowsUpdated > 0)
@@ -182,7 +186,9 @@ public class UnitJobs {
 			} finally {
 				if (pp != null)
 					pp.close();
-				
+				if (c != null) {
+					c.close();
+				}
 			}
 		}
 		return rowsUpdated;
@@ -214,7 +220,9 @@ public class UnitJobs {
 			} finally {
 				if (pp != null)
 					pp.close();
-				
+				if (c != null) {
+				    c.close();
+                }
 			}
 		}
 		return rowsUpdated;
@@ -249,7 +257,9 @@ public class UnitJobs {
 			} finally {
 				if (pp != null)
 					pp.close();
-				
+				if (c != null) {
+					c.close();
+				}
 			}
 		}
 		return rowsUpdated;
@@ -268,7 +278,9 @@ public class UnitJobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
@@ -285,7 +297,9 @@ public class UnitJobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
@@ -311,7 +325,9 @@ public class UnitJobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
@@ -342,7 +358,9 @@ public class UnitJobs {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
@@ -386,7 +404,9 @@ public class UnitJobs {
 				rs.close();
 			if (s != null)
 				s.close();
-			
+			if (c != null) {
+				c.close();
+			}
 		}
 		return unitJobs;
 	}
@@ -439,7 +459,9 @@ public class UnitJobs {
 		} finally {
 			if (pp != null)
 				pp.close();
-			
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 

@@ -79,6 +79,7 @@ public class Unittypes {
 		} finally {
 			if (s != null)
 				s.close();
+			c.close();
 		}
 	}
 
@@ -123,6 +124,7 @@ public class Unittypes {
 		} finally {
 			if (s != null)
 				s.close();
+			c.close();
 		}
 	}
 

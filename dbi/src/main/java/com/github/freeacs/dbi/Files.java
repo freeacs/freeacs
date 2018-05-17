@@ -93,6 +93,7 @@ public class Files {
 		} finally {
 			if (s != null)
 				s.close();
+			c.close();
 		}
 	}
 
@@ -277,6 +278,7 @@ public class Files {
 			} finally {
 				if (s != null)
 					s.close();
+				c.close();
 			}
 		}
 	}
@@ -321,6 +323,7 @@ public class Files {
 				rs.close();
 			if (ps != null)
 				ps.close();
+			c.close();
 		}
 	}
 

@@ -101,6 +101,7 @@ public class Certificates {
 		} finally {
 			if (s != null)
 				s.close();
+			c.close();
 		}
 	}
 
@@ -160,6 +161,7 @@ public class Certificates {
 		} finally {
 			if (ps != null)
 				ps.close();
+			c.close();
 		}
 	}
 

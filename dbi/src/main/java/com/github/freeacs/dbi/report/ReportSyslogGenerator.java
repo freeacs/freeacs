@@ -25,7 +25,6 @@ public class ReportSyslogGenerator extends ReportGenerator {
 
 	public Report<RecordSyslog> generateFromReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws SQLException, IOException {
 		Connection xapsConnection = null;
-		Connection sysConnection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		SQLException sqle = null;
@@ -67,8 +66,10 @@ public class ReportSyslogGenerator extends ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
+			if (xapsConnection != null) {
+				xapsConnection.close();
+			}
 		}
-
 	}
 
 	public Report<RecordSyslog> generateFromSyslog(Date start, Date end, String unitId) throws SQLException, IOException, ParseException {
@@ -164,6 +165,9 @@ public class ReportSyslogGenerator extends ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
@@ -294,6 +298,9 @@ public class ReportSyslogGenerator extends ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
+			if (c != null) {
+				c.close();
+			}
 		}
 
 	}

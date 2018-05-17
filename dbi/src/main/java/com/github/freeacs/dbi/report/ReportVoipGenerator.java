@@ -31,7 +31,6 @@ public class ReportVoipGenerator extends ReportGenerator {
 
 	public Report<RecordVoip> generateFromReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws SQLException, IOException {
 		Connection xapsConnection = null;
-		Connection sysConnection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		SQLException sqle = null;
@@ -89,6 +88,9 @@ public class ReportVoipGenerator extends ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
+			if (xapsConnection != null) {
+				xapsConnection.close();
+			}
 		}
 
 	}

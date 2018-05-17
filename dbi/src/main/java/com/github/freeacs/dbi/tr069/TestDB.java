@@ -77,13 +77,10 @@ public class TestDB {
 			sqle = sqlex;
 			throw sqlex;
 		} finally {
-			if (c != null)
-				c.setAutoCommit(true);
 			if (ps != null)
 				ps.close();
-			if (c != null)
-				c.setAutoCommit(wasAutoCommit);
-
+			c.setAutoCommit(wasAutoCommit);
+			c.close();
 		}
 
 	}
@@ -188,13 +185,10 @@ public class TestDB {
 			sqle = sqlex;
 			throw sqlex;
 		} finally {
-			if (c != null)
-				c.setAutoCommit(true);
 			if (ps1 != null)
 				ps1.close();
-			if (c != null)
-				c.setAutoCommit(wasAutoCommit);
-
+			c.setAutoCommit(wasAutoCommit);
+			c.close();
 		}
 	}
 
