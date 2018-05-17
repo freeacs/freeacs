@@ -33,14 +33,14 @@ public class App {
     @Bean
     @Primary
     @Qualifier("xaps")
-    @ConfigurationProperties(prefix = "xaps.datasource")
+    @ConfigurationProperties("xaps.datasource")
     public DataSource getXapsDataSource() {
         return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
     @Bean
     @Qualifier("syslog")
-    @ConfigurationProperties(prefix = "syslog.datasource")
+    @ConfigurationProperties("syslog.datasource")
     public DataSource getSyslogDataSource() {
         return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }

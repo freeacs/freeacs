@@ -6,13 +6,17 @@ import com.github.freeacs.web.app.menu.MenuServlet;
 import com.github.freeacs.web.app.security.LoginServlet;
 import com.github.freeacs.web.app.util.Freemarker;
 import com.github.freeacs.web.help.HelpServlet;
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
@@ -28,15 +32,18 @@ public class App {
     }
 
     @Bean
+    @Primary
     @Qualifier("xaps")
+    @ConfigurationProperties("xaps.datasource")
     public DataSource getXapsDataSource() {
-        return null;
+        return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
     @Bean
     @Qualifier("syslog")
+    @ConfigurationProperties("syslog.datasource")
     public DataSource getSyslogDataSource() {
-        return null;
+        return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
     @Bean
@@ -48,7 +55,7 @@ public class App {
     }
 
     @Bean
-    ServletRegistrationBean<Main> main (@Autowired @Qualifier("xaps") DataSource xapsDataSource, @Autowired @Qualifier("syslog") DataSource syslogDataSource) {
+    ServletRegistrationBean<Main> main (@Qualifier("xaps") DataSource xapsDataSource, @Qualifier("syslog") DataSource syslogDataSource) {
         ServletRegistrationBean<Main> srb = new ServletRegistrationBean<>();
         srb.setServlet(new Main(xapsDataSource, syslogDataSource));
         srb.setName("main");
@@ -57,7 +64,7 @@ public class App {
     }
 
     @Bean
-    ServletRegistrationBean<LoginServlet> loginServlet (@Autowired @Qualifier("xaps") DataSource xapsDataSource) {
+    ServletRegistrationBean<LoginServlet> loginServlet (@Qualifier("xaps") DataSource xapsDataSource) {
         ServletRegistrationBean<LoginServlet> srb = new ServletRegistrationBean<LoginServlet>();
         srb.setServlet(new LoginServlet(xapsDataSource));
         srb.setUrlMappings(Collections.singletonList("/login"));
@@ -80,7 +87,7 @@ public class App {
     }
 
     @Bean
-    FilterRegistrationBean<LoginServlet> loginFilter (@Autowired @Qualifier("xaps") DataSource xapsDataSource) {
+    FilterRegistrationBean<LoginServlet> loginFilter (@Qualifier("xaps") DataSource xapsDataSource) {
         FilterRegistrationBean<LoginServlet> frb = new FilterRegistrationBean<LoginServlet>();
         frb.setFilter(new LoginServlet(xapsDataSource));
         frb.setServletNames(Collections.singletonList("main"));
