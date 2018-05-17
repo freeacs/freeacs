@@ -68,12 +68,10 @@ public class GroupParameters {
 
 	private void addOrChangeGroupParameterImpl(GroupParameter groupParameter, Group group, XAPS xaps) throws SQLException {
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		PreparedStatement ps = null;
 		try {
 			Parameter parameter = groupParameter.getParameter();
 			DynamicStatement ds = new DynamicStatement();
-			//			if (XAPSVersionCheck.groupParamTypeSupported) {
 			if (groupParameter.getId() == null) {
 				ds.addSql("INSERT INTO group_param (group_id, unit_type_param_id, operator, data_type, value) VALUES (?, ?, ?, ?, ?)");
 				ds.addArguments(groupParameter.getGroup().getId(), parameter.getUnittypeParameter().getId());
@@ -103,40 +101,6 @@ public class GroupParameters {
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(groupParameter, group.getUnittype());
 			}
-			//			} else {
-			//				if (groupParameter.getId() == null) {
-			//					ds.addSql("INSERT INTO group_param (group_id, unit_type_param_id, is_equal, value) VALUES (?, ?, ?, ?)");
-			//					ds.addArguments(groupParameter.getGroup().getId(), parameter.getUnittypeParameter().getId());
-			//					ds.addArguments(parameter.getOp().equals(Operator.EQ) ? 1 : 0);
-			//					ds.addArguments((parameter.valueWasNull() || parameter.getValue() == null) ? new NullString() : parameter.getValue());
-			//					ps = ds.makePreparedStatement(c, "id");
-			//					ps.setQueryTimeout(60);
-			//					ps.executeUpdate();
-			//					ResultSet gk = ps.getGeneratedKeys();
-			//					if (gk.next())
-			//						groupParameter.setId(gk.getInt(1));
-			//					LogContext.set(group.getUnittype(), group.getTopParent().getProfile(), xaps);
-			//					logger.notice("Added group parameter " + groupParameter.getName());
-			//					if (xaps.getDbi() != null)
-			//						xaps.getDbi().publishAdd(groupParameter, group.getUnittype());
-			//				} else {
-			//					ds.addSql("UPDATE group_param SET ");
-			//					ds.addSql("value = ?, is_equal = ? WHERE id = ?");
-			//					ds.addArguments((parameter.valueWasNull() || parameter.getValue() == null) ? new NullString() : parameter.getValue());
-			//					ds.addArguments(parameter.getOp().equals(Operator.EQ) ? 1 : 0);
-			//					ds.addArguments(groupParameter.getId());
-			//					ps = ds.makePreparedStatement(c);
-			//					ps.setQueryTimeout(60);
-			//					ps.executeUpdate();
-			//					LogContext.set(group.getUnittype(), group.getTopParent().getProfile(), xaps);
-			//					logger.notice("Updated group parameter " + groupParameter.getName());
-			//					if (xaps.getDbi() != null)
-			//						xaps.getDbi().publishChange(groupParameter, group.getUnittype());
-			//				}
-			//			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
@@ -170,10 +134,7 @@ public class GroupParameters {
 	private void deleteGroupParameterImpl(GroupParameter groupParameter, Group group, XAPS xaps) throws SQLException {
 		Statement s = null;
 		String sql = null;
-		//		if (!XAPSVersionCheck.groupSupported)
-		//			return;
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		try {
 			s = c.createStatement();
 			sql = "DELETE FROM group_param WHERE ";
@@ -183,9 +144,6 @@ public class GroupParameters {
 			logger.info("Deleted group parameter " + groupParameter.getName());
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(groupParameter, group.getUnittype());
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (s != null)
 				s.close();

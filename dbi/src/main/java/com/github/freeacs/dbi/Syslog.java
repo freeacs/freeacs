@@ -521,7 +521,6 @@ public class Syslog {
   public void write(SyslogEntry entry) throws SQLException {
     Connection c = null;
     Statement s = null;
-    SQLException sqlex = null;
     try {
       insertValues.append(makeInsertValueSQL(entry));
       insertCount++;
@@ -538,7 +537,6 @@ public class Syslog {
 
     } catch (SQLException sqle) {
       insertValues = new StringBuilder();
-      sqlex = sqle;
       throw sqle;
     } finally {
       if (s != null)

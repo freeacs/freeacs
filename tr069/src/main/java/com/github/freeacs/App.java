@@ -5,6 +5,7 @@ import com.github.freeacs.base.http.FileServlet;
 import com.github.freeacs.base.http.OKServlet;
 import com.github.freeacs.tr069.Provisioning;
 import com.github.freeacs.tr069.test.system1.TestServlet;
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
@@ -34,14 +35,14 @@ public class App {
     @Qualifier("xaps")
     @ConfigurationProperties(prefix = "xaps.datasource")
     public DataSource getXapsDataSource() {
-        return DataSourceBuilder.create().build();
+        return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
     @Bean
     @Qualifier("syslog")
     @ConfigurationProperties(prefix = "syslog.datasource")
     public DataSource getSyslogDataSource() {
-        return DataSourceBuilder.create().build();
+        return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
     @Bean

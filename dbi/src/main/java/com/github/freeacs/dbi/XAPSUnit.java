@@ -197,7 +197,6 @@ public class XAPSUnit {
 	public void moveUnits(List<String> unitIds, Profile profile) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
-		SQLException sqlex = null;
 		boolean wasAutoCommit = false;
 		try {
 			connection = dataSource.getConnection();
@@ -216,7 +215,6 @@ public class XAPSUnit {
 			}
 			connection.commit();
 		} catch (SQLException sqle) {
-			sqlex = sqle;
 			connection.rollback();
 			throw sqle;
 		} finally {
@@ -244,7 +242,6 @@ public class XAPSUnit {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		SQLException sqlex = null;
 		boolean wasAutoCommit = false;
 		try {
 			connection = dataSource.getConnection();
@@ -260,9 +257,6 @@ public class XAPSUnit {
 				unitIds.add(rs.getString("unit_id"));
 			}
 			return unitIds;
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();

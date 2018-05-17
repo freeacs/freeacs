@@ -43,7 +43,6 @@ public class ProfileParameters {
 
 	private void addOrChangeProfileParameterImpl(ProfileParameter profileParameter, Profile profile, XAPS xaps) throws SQLException {
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		Statement s = null;
 		String sql = null;
 		try {
@@ -76,9 +75,6 @@ public class ProfileParameters {
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(profileParameter, profile.getUnittype());
 			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (s != null)
 				s.close();
@@ -100,7 +96,6 @@ public class ProfileParameters {
 		Statement s = null;
 		String sql = null;
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		try {
 			s = c.createStatement();
 			sql = "DELETE FROM profile_param WHERE ";
@@ -112,9 +107,6 @@ public class ProfileParameters {
 			logger.info("Deleted profile parameter " + profileParameter.getUnittypeParameter().getName());
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(profileParameter, profile.getUnittype());
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (s != null)
 				s.close();

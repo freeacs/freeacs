@@ -54,7 +54,6 @@ public class Profiles {
 		Statement s = null;
 		String sql = null;
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		try {
 			s = c.createStatement();
 			sql = "DELETE FROM profile WHERE ";
@@ -66,9 +65,6 @@ public class Profiles {
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(profile, profile.getUnittype());
 			return rowsDeleted;
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (s != null)
 				s.close();
@@ -102,7 +98,6 @@ public class Profiles {
 		Statement s = null;
 		String sql = null;
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		try {
 			s = c.createStatement();
 			if (profile.getId() == null) {
@@ -130,9 +125,6 @@ public class Profiles {
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(profile, profile.getUnittype());
 			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (s != null)
 				s.close();

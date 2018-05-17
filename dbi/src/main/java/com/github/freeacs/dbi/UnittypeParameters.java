@@ -174,7 +174,6 @@ public class UnittypeParameters {
 		Connection c = xaps.getDataSource().getConnection();
 		wasAutoCommit = c.getAutoCommit();
 		c.setAutoCommit(false);
-		SQLException sqlex = null;
 		try {
 			for (UnittypeParameter unittypeParameter : unittypeParameters) {
 				s = c.createStatement();
@@ -193,9 +192,6 @@ public class UnittypeParameters {
 			c.setAutoCommit(true);
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishChange(unittype, unittype);
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (s != null)
 				s.close();
@@ -241,7 +237,6 @@ public class UnittypeParameters {
 		Connection c = xaps.getDataSource().getConnection();
 		wasAutoCommit = c.getAutoCommit();
 		c.setAutoCommit(false);
-		SQLException sqlex = null;
 		PreparedStatement ps = null;
 		try {
 			for (UnittypeParameter unittypeParameter : unittypeParameters) {
@@ -289,9 +284,6 @@ public class UnittypeParameters {
 			c.setAutoCommit(true);
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishChange(unittype, unittype);
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();

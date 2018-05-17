@@ -76,7 +76,6 @@ public class Files {
 		Statement s = null;
 		String sql = null;
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		try {
 			s = c.createStatement();
 			sql = "DELETE FROM filestore WHERE ";
@@ -87,9 +86,6 @@ public class Files {
 			logger.info("Deleted file " + file.getName());
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(file, unittype);
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (s != null)
 				s.close();
@@ -117,7 +113,6 @@ public class Files {
 
 	private void addOrChangeFileImpl(Unittype unittype, File file, XAPS xaps) throws SQLException {
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		PreparedStatement s = null;
 		String sql = null;
 		// The file owner is set automatically to the logged-in user upon
@@ -129,51 +124,6 @@ public class Files {
 		if (file.getId() == null) {
 			try {
 				DynamicStatement ds = new DynamicStatement();
-				// if (xaps.connectionProperties.getDriver().indexOf("oracle") >
-				// -1) {
-				// // code-order: id, unittype, name, type, desc, version,
-				// timestamp, targetname, (content)
-				// ds.addSql("INSERT INTO filestore (");
-				// ds.addSqlAndArguments("name,", file.getName());
-				// ds.addSqlAndArguments("unit_type_id,", unittype.getId());
-				// ds.addSqlAndArguments("type,", file.getType().toString());
-				// ds.addSqlAndArguments("description,", file.getDescription());
-				// ds.addSqlAndArguments("version,", file.getVersion());
-				// if (XAPSVersionCheck.fileReworkSupported) {
-				// ds.addSqlAndStringArgs("target_name,", file.getTargetName());
-				// if (file.getOwner() != null && file.getOwner().getId() !=
-				// null)
-				// ds.addSqlAndArguments("owner,", file.getOwner().getId());
-				// }
-				// ds.addSqlAndArguments("timestamp_,", new
-				// Timestamp(file.getTimestamp().getTime()));
-				// ds.addSql("content");
-				// ds.addSql(") VALUES (" + ds.getQuestionMarks() +
-				// ",empty_blob())");
-				// s = ds.makePreparedStatement(c, "id");
-				// s.setQueryTimeout(60);
-				// s.executeUpdate();
-				// ResultSet gk = s.getGeneratedKeys();
-				// if (gk.next())
-				// file.setId(gk.getInt(1));
-				//
-				// /* Adding binary data to file */
-				// s =
-				// c.prepareStatement("select content from filestore where id = ? for update");
-				// s.setInt(1, file.getId());
-				// s.setQueryTimeout(60);
-				// ResultSet rs = s.executeQuery();
-				// rs.next();
-				// BLOB blob = ((oracle.jdbc.OracleResultSet) rs).getBLOB(1);
-				// OutputStream os = blob.setBinaryStream(0);
-				// try {
-				// os.write(file.getContentProtected(), 0, file.getLength());
-				// os.close();
-				// } catch (IOException e) {
-				// throw new
-				// SQLException("Couldn't write to the BLOB in the filestore-table.");
-				// }
-				// } else {
 				ds.addSql("INSERT INTO filestore (");
 				ds.addSqlAndArguments("name,", file.getName());
 				ds.addSqlAndArguments("type,", file.getType().toString());
@@ -201,12 +151,10 @@ public class Files {
 				logger.info("Added file " + file.getName());
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishAdd(file, unittype);
-			} catch (SQLException sqle) {
-				sqlex = sqle;
-				throw sqle;
 			} finally {
 				if (s != null)
 					s.close();
+				c.close();
 			}
 		} else {
 			try {
@@ -241,25 +189,6 @@ public class Files {
 				int rowsAffected = s.executeUpdate();
 				if (rowsAffected == 0)
 					throw new SQLException("The file [" + file.getId() + "] does not exist!");
-				// if (xaps.connectionProperties.getDriver().indexOf("oracle") >
-				// -1) {
-				// s =
-				// c.prepareStatement("select content from filestore where id = ? for update");
-				// s.setInt(1, file.getId());
-				// s.setQueryTimeout(60);
-				// ResultSet rs = s.executeQuery();
-				// rs.next();
-				// BLOB blob = ((oracle.jdbc.OracleResultSet) rs).getBLOB(1);
-				// OutputStream os = blob.setBinaryStream(0);
-				// try {
-				// os.write(file.getContentProtected(), 0,
-				// file.getLength());
-				// os.close();
-				// } catch (IOException e) {
-				// throw new SQLException(
-				// "Couldn't write to the BLOB in the filestore-table.");
-				// }
-				// } else {
 				if (file.getContentProtected() != null) {
 					DynamicStatement ds = new DynamicStatement();
 					ds.addSqlAndArguments("UPDATE filestore set content=? where id=?", new ByteArrayInputStream(file.getContentProtected()), file.getId());
@@ -267,14 +196,9 @@ public class Files {
 					s.setQueryTimeout(60);
 					s.executeUpdate();
 				}
-				// }
-
 				logger.info("Updated file to " + file.getName());
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishFile(file, unittype);
-			} catch (SQLException sqle) {
-				sqlex = sqle;
-				throw sqle;
 			} finally {
 				if (s != null)
 					s.close();
@@ -288,7 +212,6 @@ public class Files {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		try {
 			Unittype unittype = xaps.getUnittype(unittypeId);
 			if (unittype == null)
@@ -315,9 +238,6 @@ public class Files {
 				files.getVersionTypeMap().put(file.getVersion() + file.getType(), file);
 			}
 			logger.debug("Refreshed file " + file.getName());
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (rs != null)
 				rs.close();

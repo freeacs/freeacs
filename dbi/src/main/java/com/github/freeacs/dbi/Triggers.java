@@ -55,7 +55,6 @@ public class Triggers {
 	public void addOrChangeHistory(TriggerRelease history, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		try {
 			if (history.getId() == null) {
 				DynamicStatement ds = new DynamicStatement();
@@ -81,9 +80,6 @@ public class Triggers {
 				ps.setQueryTimeout(60);
 				ps.executeUpdate();
 			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
@@ -102,7 +98,6 @@ public class Triggers {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		try {
 			List<TriggerRelease> thList = new ArrayList<TriggerRelease>();
 			DynamicStatement ds = new DynamicStatement();
@@ -131,9 +126,6 @@ public class Triggers {
 				thList.add(th);
 			}
 			return thList;
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (rs != null)
 				rs.close();
@@ -184,7 +176,6 @@ public class Triggers {
 	public int deleteHistory(Integer triggerId, Date upUntil, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			if (triggerId == null)
@@ -194,9 +185,6 @@ public class Triggers {
 			ps = ds.makePreparedStatement(c);
 			ps.setQueryTimeout(60);
 			return ps.executeUpdate();
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
@@ -221,7 +209,6 @@ public class Triggers {
 	public int deleteEvents(Integer triggerId, Date upUntil, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			if (triggerId == null)
@@ -231,9 +218,6 @@ public class Triggers {
 			ps = ds.makePreparedStatement(c);
 			ps.setQueryTimeout(60);
 			return ps.executeUpdate();
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
@@ -257,7 +241,6 @@ public class Triggers {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		Map<String, Integer> unitMap = new HashMap<String, Integer>();
 		try {
 			DynamicStatement ds = new DynamicStatement();
@@ -274,9 +257,6 @@ public class Triggers {
 			}
 			unitMap.put("TEC-TotalEventsCounter", totalCounter);
 			return unitMap;
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
@@ -288,7 +268,6 @@ public class Triggers {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("SELECT timestamp_ FROM trigger_event WHERE trigger_id = ? AND timestamp_ >= ? AND timestamp_ < ? ORDER BY timestamp_ ASC LIMIT 1", triggerId, from, to);
@@ -299,9 +278,6 @@ public class Triggers {
 				return rs.getTimestamp("timestamp_");
 			else
 				return null;
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
@@ -324,7 +300,6 @@ public class Triggers {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("SELECT COUNT(DISTINCT(unit_id)) FROM trigger_event WHERE trigger_id = ? AND timestamp_ >= ? AND timestamp_ < ?", triggerId, from, to);
@@ -335,9 +310,6 @@ public class Triggers {
 				return rs.getInt(1);
 			else
 				return 0;
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
@@ -364,7 +336,6 @@ public class Triggers {
 		Connection c = xaps.getDataSource().getConnection();
 		wasAutoCommit = c.getAutoCommit();
 		c.setAutoCommit(false);
-		SQLException sqlex = null;
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("DELETE FROM trigger_event WHERE trigger_id = ?", trigger.getId());
@@ -387,9 +358,6 @@ public class Triggers {
 				xaps.getDbi().publishDelete(trigger, trigger.getUnittype());
 			logger.info("Deleted trigger " + trigger.getName());
 			return rowsDeleted;
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
@@ -422,7 +390,6 @@ public class Triggers {
 	private void addOrChangeTriggerImpl(Trigger trigger, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		try {
 			InsertOrUpdateStatement ious = new InsertOrUpdateStatement("trigger_", new Field("id", trigger.getId()));
 			ious.addField(new Field("name", trigger.getName()));
@@ -470,9 +437,6 @@ public class Triggers {
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(trigger, trigger.getUnittype());
 			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();

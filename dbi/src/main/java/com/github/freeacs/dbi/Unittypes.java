@@ -49,7 +49,6 @@ public class Unittypes {
 
 	private void addOrChangeUnittypeImpl(Unittype unittype, XAPS xaps) throws SQLException {
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		PreparedStatement s = null;
 		try {
 			InsertOrUpdateStatement ious = new InsertOrUpdateStatement("unit_type", new Field("unit_type_id", unittype.getId()));
@@ -73,9 +72,6 @@ public class Unittypes {
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(unittype, unittype);
 			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (s != null)
 				s.close();
@@ -106,7 +102,6 @@ public class Unittypes {
 		Statement s = null;
 		String sql = null;
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		try {
 			s = c.createStatement();
 			sql = "DELETE FROM unit_type WHERE ";
@@ -118,9 +113,6 @@ public class Unittypes {
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(unittype, unittype);
 			return rowsDeleted;
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (s != null)
 				s.close();

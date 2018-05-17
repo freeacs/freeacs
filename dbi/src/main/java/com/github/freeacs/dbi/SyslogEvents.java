@@ -60,7 +60,6 @@ public class SyslogEvents {
 
 	private void addOrChangeSyslogEventImpl(SyslogEvent syslogEvent, XAPS xaps) throws SQLException {
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		PreparedStatement ps = null;
 		try {
 			InsertOrUpdateStatement ious = new InsertOrUpdateStatement("syslog_event", new Field("id", syslogEvent.getId()));
@@ -96,9 +95,6 @@ public class SyslogEvents {
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(syslogEvent, unittype);
 			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
@@ -120,7 +116,6 @@ public class SyslogEvents {
 	private void deleteSyslogEventImpl(Unittype unittype, SyslogEvent syslogEvent, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			if (XAPSVersionCheck.syslogEventReworkSupported)
@@ -136,9 +131,6 @@ public class SyslogEvents {
 			logger.info("Deleted syslog event " + syslogEvent.getEventId());
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(syslogEvent, unittype);
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();

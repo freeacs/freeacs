@@ -135,10 +135,7 @@ public class Groups {
 	protected static void refreshGroup(Integer groupId, XAPS xaps) throws SQLException {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
-		//		if (!XAPSVersionCheck.groupSupported)
-		//			return;
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("SELECT unit_type_id, group_name, description, parent_group_id, profile_id, count FROM group_ WHERE group_id = ?", groupId);
@@ -166,16 +163,9 @@ public class Groups {
 				group.setProfile(unittype.getProfiles().getById(rs.getInt("profile_id")));
 				group.setCount(rs.getInt("count"));
 				group.setUnittype(unittype);
-				//				if (makeNewGroup) {
-				//					unittype.getGroups().getIdMap().put(groupId, group);
-				//					unittype.getGroups().getNameMap().put(group.getName(), group);
-				//				}
 				refreshGroupParameter(group, xaps, c);
 				logger.debug("Refreshed group " + group);
 			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (rs != null)
 				rs.close();
@@ -188,10 +178,7 @@ public class Groups {
 	private void deleteGroupImpl(Unittype unittype, Group group, XAPS xaps) throws SQLException {
 		PreparedStatement s = null;
 		String sql = null;
-		//		if (!XAPSVersionCheck.groupSupported)
-		//			return;
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		try {
 			sql = "UPDATE group_ SET parent_group_id = ?, profile_id = ? WHERE parent_group_id = ?";
 			s = c.prepareStatement(sql);
@@ -214,9 +201,6 @@ public class Groups {
 			logger.info("Deleted group " + group);
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(group, group.getUnittype());
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (s != null)
 				s.close();
@@ -260,13 +244,9 @@ public class Groups {
 
 	private void addOrChangeGroupImpl(Group group, Unittype unittype, XAPS xaps) throws SQLException {
 		PreparedStatement s = null;
-		//		String sql = null;
-		//		if (!XAPSVersionCheck.groupSupported)
-		//			return;
 		if (group.getParent() != null && group.getId() == null)
 			addOrChangeGroup(group.getParent(), xaps);
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		try {
 			if (group.getId() == null) {
 				DynamicStatement ds = new DynamicStatement();
@@ -277,14 +257,8 @@ public class Groups {
 					ds.addSqlAndArguments(", parent_group_id", group.getParent().getId());
 				if (group.getProfile() != null)
 					ds.addSqlAndArguments(", profile_id", group.getProfile().getId());
-				if (/*XAPSVersionCheck.groupCount &&*/group.getCount() != null)
+				if (group.getCount() != null)
 					ds.addSqlAndArguments(", count", group.getCount());
-				//				if (XAPSVersionCheck.groupRollingSupported) {
-				//				if (group.getTimeRollingRule() != null)
-				//					ds.addSqlAndArguments(", time_rolling_rule", group.getTimeRollingRule());
-				//				if (group.getTimeParameter() != null)
-				//					ds.addSqlAndArguments(", time_param_id", group.getTimeParameter().getId());
-				//				}
 				ds.setSql(ds.getSql() + ") VALUES (" + ds.getQuestionMarks() + ")");
 				s = ds.makePreparedStatement(c, "group_id");
 				s.setQueryTimeout(60);
@@ -304,14 +278,7 @@ public class Groups {
 					ds.addSqlAndArguments("parent_group_id  = ?, ", new NullInteger());
 				else
 					ds.addSqlAndArguments("parent_group_id  = ?, ", group.getParent().getId());
-				//				if (XAPSVersionCheck.groupRollingSupported) {
-				//				ds.addSqlAndArguments("time_rolling_rule = ?, ", group.getTimeRollingRule());
-				//				if (group.getTimeParameter() != null)
-				//					ds.addSqlAndArguments("time_param_id = ?, ", group.getTimeParameter().getId());
-				//				else
-				//					ds.addSqlAndArguments("time_param_id = ?, ", new NullInteger());
-				//				}
-				if (/*XAPSVersionCheck.groupCount &&*/group.getCount() != null)
+				if (group.getCount() != null)
 					ds.addSqlAndArguments("count = ?, ", group.getCount());
 				if (group.getProfile() == null)
 					ds.addSqlAndArguments("profile_id = ? ", new NullInteger());
@@ -326,9 +293,6 @@ public class Groups {
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(group, group.getUnittype());
 			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (s != null)
 				s.close();

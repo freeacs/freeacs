@@ -74,7 +74,6 @@ public class HeartbeatDetection extends DBIShare {
 		Connection c = null;
 		ResultSet rs = null;
 		PreparedStatement ps = null;
-		SQLException sqle = null;
 		DynamicStatement ds = null;
 		try {
 			c = getSysCp().getConnection();
@@ -128,7 +127,6 @@ public class HeartbeatDetection extends DBIShare {
 				}
 			}
 		} catch (SQLException sqlex) {
-			sqle = sqlex;
 			logger.error("HeartbeatDetection: FindHeartbeats: SQL that failed: " + ds.getSqlQuestionMarksSubstituted(), sqlex);
 			throw sqlex;
 		} finally {
@@ -144,23 +142,16 @@ public class HeartbeatDetection extends DBIShare {
 	}
 
 	private void findActiveDevices(long from, long to) throws SQLException {
-		//		if (from == null)
-		//			logger.info("FindActiveDevices: Parse syslog in the timespan " + sdf.format(new Date(to - (long) Heartbeat.MAX_TIMEOUT_HOURS * HOUR_MS)) + " to " + sdf.format(new Date(to)));
-		//		else
 		logger.info("HeartbeatDetection: FindActiveDevices: Parse syslog in the timespan " + sdf.format(new Date(from)) + " to " + sdf.format(new Date(to)));
 		Connection c = null;
 		ResultSet rs = null;
 		PreparedStatement ps = null;
-		SQLException sqle = null;
 		DynamicStatement ds = null;
 		int counter = 0;
 		try {
 			c = getSysCp().getConnection();
 			ds = new DynamicStatement();
 			ds.addSql("SELECT distinct(unit_id) FROM syslog WHERE ");
-			//			if (from == null)
-			//				ds.addSqlAndArguments("collector_timestamp >= ? AND ", new Date(to - (long) Heartbeat.MAX_TIMEOUT_HOURS * HOUR_MS));
-			//			else
 			ds.addSqlAndArguments("collector_timestamp >= ? AND ", new Date(from));
 			ds.addSqlAndArguments("collector_timestamp < ? AND ", new Date(to));
 			ds.addSqlAndArguments("facility < ?", SyslogConstants.FACILITY_SHELL);
@@ -174,7 +165,6 @@ public class HeartbeatDetection extends DBIShare {
 			}
 			logger.debug("HeartbeatDetection: FindActiveDevices: Found " + counter + " devices (total number of active: " + activeDevices.size() + ")");
 		} catch (SQLException sqlex) {
-			sqle = sqlex;
 			logger.error("HeartbeatDetection: FindActiveDevices: SQL that failed: " + ds.getSqlQuestionMarksSubstituted(), sqlex);
 			throw sqlex;
 		} finally {

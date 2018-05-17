@@ -26,8 +26,7 @@ public class Certificates {
 	}
 
 	public Certificate[] getCertificates() {
-		Certificate[] Certificates = nameMap.values().toArray(new Certificate[] {});
-		return Certificates;
+		return nameMap.values().toArray(new Certificate[] {});
 	}
 
 	@Override
@@ -83,7 +82,6 @@ public class Certificates {
 		Statement s = null;
 		String sql = null;
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		try {
 			s = c.createStatement();
 			sql = "DELETE FROM certificate WHERE ";
@@ -95,9 +93,6 @@ public class Certificates {
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishCertificate(certificate);
 			return rowsDeleted;
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (s != null)
 				s.close();
@@ -123,7 +118,6 @@ public class Certificates {
 	private void addOrChangeCertificateImpl(Certificate certificate, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			try {
@@ -155,9 +149,6 @@ public class Certificates {
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishCertificate(certificate);
 			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();

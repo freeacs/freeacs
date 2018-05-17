@@ -244,7 +244,6 @@ public class DBI implements Runnable {
 
 	private void populateInboxes() throws SQLException {
 		Connection c = dataSource.getConnection();
-		SQLException sqlex = null;
 		Statement s = null;
 		try {
 			s = c.createStatement();
@@ -279,9 +278,6 @@ public class DBI implements Runnable {
 				}
 
 			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (s != null)
 				s.close();
@@ -290,10 +286,7 @@ public class DBI implements Runnable {
 	}
 
 	private void cleanup() throws SQLException {
-		//		if (!XAPSVersionCheck.messageSupported)
-		//			return;
 		Connection c = dataSource.getConnection();
-		SQLException sqlex = null;
 		PreparedStatement ps = null;
 		try {
 			String sql = "DELETE FROM message WHERE timestamp_ < ?";
@@ -305,9 +298,6 @@ public class DBI implements Runnable {
 				
 				logger.debug(rowsDeleted + " messages was deleted from message table");
 			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
@@ -316,10 +306,7 @@ public class DBI implements Runnable {
 	}
 
 	private void send(Message message) throws SQLException {
-		//		if (!XAPSVersionCheck.messageSupported)
-		//			return;
 		Connection c = dataSource.getConnection();
-		SQLException sqlex = null;
 		PreparedStatement ps = null;
 		try {
 			DynamicStatement ds = new DynamicStatement();
@@ -341,9 +328,6 @@ public class DBI implements Runnable {
 				
 				logger.debug("Message: [" + message + "] sent/inserted");
 			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
@@ -384,7 +368,7 @@ public class DBI implements Runnable {
 					} else {
 						logger.error("An error occurred in DBI.run() (stacktrace printed earlier): " + t.getMessage());
 					}
-				} catch (Throwable t2) {
+				} catch (Throwable ignored) {
 
 				}
 			}
@@ -400,9 +384,7 @@ public class DBI implements Runnable {
 			UnittypePublish up = entry.getValue();
 			up.addUnittypePublish();
 			List<Message> messages = up.getMessages(syslog.getIdentity().getFacility());
-			for (Message message : messages) {
-				outbox.add(message);
-			}
+			outbox.addAll(messages);
 		}
 		for (Message message : outbox) {
 			message.setObjectId(dbiId + ":" + message.getObjectId());
@@ -439,14 +421,20 @@ public class DBI implements Runnable {
 		for (int i = 1; i < msgArr.length; i++) {
 			String id = msgArr[i].split("=")[0];
 			int counter = new Integer(msgArr[i].split("=")[1]);
-			if (id.equals("cnf"))
-				job.setCompletedNoFailures(counter);
-			else if (id.equals("chf"))
-				job.setCompletedHadFailures(counter);
-			else if (id.equals("cf"))
-				job.setConfirmedFailed(counter);
-			else if (id.equals("uf"))
-				job.setUnconfirmedFailed(counter);
+			switch (id) {
+				case "cnf":
+					job.setCompletedNoFailures(counter);
+					break;
+				case "chf":
+					job.setCompletedHadFailures(counter);
+					break;
+				case "cf":
+					job.setConfirmedFailed(counter);
+					break;
+				case "uf":
+					job.setUnconfirmedFailed(counter);
+					break;
+			}
 		}
 	}
 
@@ -585,10 +573,6 @@ public class DBI implements Runnable {
 			message.setTimestamp(new Date());
 			outbox.add(message);
 		}
-	}
-
-	public int getLifetimeSec() {
-		return lifetimeSec;
 	}
 
 	public boolean isFinished() {

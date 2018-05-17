@@ -1,6 +1,6 @@
 package com.github.freeacs.syslogserver;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,14 +25,14 @@ public class App {
     @Qualifier("xaps")
     @ConfigurationProperties(prefix = "xaps.datasource")
     public DataSource getXapsDataSource() {
-        return DataSourceBuilder.create().build();
+        return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
     @Bean
     @Qualifier("syslog")
     @ConfigurationProperties(prefix = "syslog.datasource")
     public DataSource getSyslogDataSource() {
-        return DataSourceBuilder.create().build();
+        return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
     @Bean

@@ -90,7 +90,6 @@ public class File {
 			Connection c = null;
 			Statement s = null;
 			ResultSet rs = null;
-			SQLException sqlex = null;
 			try {
 				c = dataSource.getConnection();
 				s = c.createStatement();
@@ -100,9 +99,6 @@ public class File {
 					Blob blob = rs.getBlob("content");
 					content = blob.getBytes(1, (int) blob.length());
 				}
-			} catch (SQLException sqle) {
-				sqlex = sqle;
-				throw sqle;
 			} finally {
 				if (rs != null)
 					rs.close();

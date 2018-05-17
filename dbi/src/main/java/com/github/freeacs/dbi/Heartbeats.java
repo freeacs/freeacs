@@ -44,7 +44,6 @@ public class Heartbeats {
 
 	private void addOrChangeHeartbeatImpl(Heartbeat heartbeat, XAPS xaps) throws SQLException {
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		PreparedStatement ps = null;
 		try {
 			InsertOrUpdateStatement ious = new InsertOrUpdateStatement("heartbeat", new Field("id", heartbeat.getId()));
@@ -68,9 +67,6 @@ public class Heartbeats {
 				if (xaps.getDbi() != null)
 					xaps.getDbi().publishChange(heartbeat, unittype);
 			}
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();
@@ -91,7 +87,6 @@ public class Heartbeats {
 	private void deleteHeartbeatImpl(Heartbeat heartbeat, XAPS xaps) throws SQLException {
 		PreparedStatement ps = null;
 		Connection c = xaps.getDataSource().getConnection();
-		SQLException sqlex = null;
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("DELETE FROM heartbeat WHERE id = ? ", heartbeat.getId());
@@ -102,9 +97,6 @@ public class Heartbeats {
 			logger.info("Deleted heartbeat " + heartbeat.getId());
 			if (xaps.getDbi() != null)
 				xaps.getDbi().publishDelete(heartbeat, unittype);
-		} catch (SQLException sqle) {
-			sqlex = sqle;
-			throw sqle;
 		} finally {
 			if (ps != null)
 				ps.close();

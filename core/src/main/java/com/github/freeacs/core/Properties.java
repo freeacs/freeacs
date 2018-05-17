@@ -5,9 +5,6 @@ import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
-import java.util.function.Supplier;
-
 public class Properties {
 
 	private static Config config = ConfigFactory.load();
@@ -17,15 +14,6 @@ public class Properties {
 	private static int getInteger(String propertyKey, int defaultValue) {
 		try {
 			return config.getInt(propertyKey);
-		} catch (Throwable t) {
-			logger.warn("The value of " + propertyKey + " was not a number, instead using default value " + defaultValue);
-			return defaultValue;
-		}
-	}
-
-	private static long getLong(String propertyKey, long defaultValue) {
-		try {
-			return config.getLong(propertyKey);
 		} catch (Throwable t) {
 			logger.warn("The value of " + propertyKey + " was not a number, instead using default value " + defaultValue);
 			return defaultValue;
@@ -78,24 +66,6 @@ public class Properties {
 
 	public static Integer getShellScriptLimit() {
 		return getInteger("shellscript.limit", 7);
-	}
-
-	public static int getMaxConn(final String infix) {
-		return getInteger("db." + infix + ".maxconn", 20);
-	}
-
-	public static long getMaxAge(final String infix) {
-		return getLong("db." + infix + ".maxage", 60000);
-	}
-
-	public static String getUrl(final String infix) {
-		return Optional.ofNullable(getString("db." + infix + ".url", null))
-				.orElseGet(new Supplier<String>() {
-					@Override
-					public String get() {
-						return getString("db." +infix, null);
-					}
-				});
 	}
 
 }

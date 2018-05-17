@@ -24,8 +24,6 @@ public class ReportGenerator extends DBIOwner {
 	private static long DAY_MS = 24 * HOUR_MS;
 	private static long MONTH_MS = 31 * DAY_MS;
 
-	//	private static Map<String, SimpleDateFormat> formatMap = new HashMap<String, SimpleDateFormat>();
-
 	private static Logger logger = LoggerFactory.getLogger(ReportGenerator.class);
 	private XAPS xaps;
 	private ScheduleType scheduleType;
@@ -34,7 +32,6 @@ public class ReportGenerator extends DBIOwner {
 	public ReportGenerator(String taskName, ScheduleType scheduleType, DataSource xapsCp, DataSource sysCp) throws SQLException {
 		super(taskName, xapsCp, sysCp);
 		this.scheduleType = scheduleType;
-
 	}
 
 	@Override
@@ -80,7 +77,6 @@ public class ReportGenerator extends DBIOwner {
 	private void populateReportGroupTable(DataSource cp, Date now, PeriodType pt) throws SQLException {
 		Connection c = null;
 		PreparedStatement ps = null;
-		SQLException sqle = null;
 		int inserted = 0;
 		int updated = 0;
 		try {
@@ -114,44 +110,9 @@ public class ReportGenerator extends DBIOwner {
 						logger.debug("ReportGenerator: ReportGenerator: - - The entry " + ru.getKey() + " was updated");
 						updated++;
 					}
-					//					if (group.getTimeParameter() != null) {
-					//						GroupParameter timeParameter = null;
-					//						for (GroupParameter gp : group.getGroupParameters().getGroupParameters()) {
-					//							if (gp.getParameter().getUnittypeParameter().getName().equals(group.getTimeParameter().getName())) {
-					//								timeParameter = gp;
-					//								break;
-					//							}
-					//						}
-					//						String timeFormat = group.getTimeRollingFormat();
-					//						if (timeFormat == null)
-					//							timeFormat = "yyyyMMdd";
-					//						Integer secOffset = group.getTimeRollingOffset();
-					//						if (secOffset == null)
-					//							secOffset = 0;
-					//						SimpleDateFormat sdf = formatMap.get(timeFormat);
-					//						if (sdf == null) {
-					//							sdf = new SimpleDateFormat(timeFormat);
-					//							formatMap.put(timeFormat, sdf);
-					//						}
-					//						String timeValue = null;
-					//						if (secOffset != 0)
-					//							timeValue = sdf.format(new Date(now.getTime() + (long) secOffset * 1000l));
-					//						else
-					//							timeValue = sdf.format(now);
-					//
-					//						if (timeParameter == null)
-					//							timeParameter = new GroupParameter(new Parameter(group.getTimeParameter(), timeValue), group);
-					//						else
-					//							timeParameter.getParameter().setValue(timeValue);
-					//						logger.debug("ReportGenerator: ReportGenerator: - - Time parameter " + timeParameter.getParameter().getUnittypeParameter().getName() + " is updated to " + timeValue);
-					//						group.getGroupParameters().addOrChangeGroupParameter(timeParameter, xaps);
-					//					}
 				}
 			}
 			logger.info("ReportGenerator: - " + inserted + " entries inserted, " + updated + " entries updated");
-		} catch (SQLException sqlex) {
-			sqle = sqlex;
-			throw sqlex;
 		} finally {
 			if (ps != null)
 				ps.close();
@@ -164,8 +125,6 @@ public class ReportGenerator extends DBIOwner {
 	private void populateReportHWTable(DataSource cp, Report<RecordHardware> report) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
-		ResultSet rs = null;
-		SQLException sqle = null;
 		Calendar c = Calendar.getInstance();
 		int nowMonth = c.get(Calendar.MONTH);
 		int nowDay = c.get(Calendar.DAY_OF_MONTH);
@@ -241,12 +200,7 @@ public class ReportGenerator extends DBIOwner {
 			if (recordMap.size() > 0) {
 				logger.info("ReportGenerator: - " + inserted + " entries inserted, " + updated + " entries updated, " + skipped + " entries skipped (too new)");
 			}
-		} catch (SQLException sqlex) {
-			sqle = sqlex;
-			throw sqlex;
 		} finally {
-			if (rs != null)
-				rs.close();
 			if (ps != null)
 				ps.close();
 			if (connection != null) {
@@ -259,7 +213,6 @@ public class ReportGenerator extends DBIOwner {
 	private void populateReportJobTable(DataSource cp, Date now, PeriodType pt) throws SQLException {
 		Connection c = null;
 		PreparedStatement ps = null;
-		SQLException sqle = null;
 		int inserted = 0;
 		int updated = 0;
 		try {
@@ -299,9 +252,6 @@ public class ReportGenerator extends DBIOwner {
 				}
 			}
 			logger.info("ReportGenerator: - " + inserted + " entries inserted, " + updated + " entries updated");
-		} catch (SQLException sqlex) {
-			sqle = sqlex;
-			throw sqlex;
 		} finally {
 			if (ps != null)
 				ps.close();
@@ -314,8 +264,6 @@ public class ReportGenerator extends DBIOwner {
 	private void populateReportSyslogTable(DataSource cp, Report<RecordSyslog> report) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
-		ResultSet rs = null;
-		SQLException sqle = null;
 		Calendar c = Calendar.getInstance();
 		int nowMonth = c.get(Calendar.MONTH);
 		int nowDay = c.get(Calendar.DAY_OF_MONTH);
@@ -381,12 +329,7 @@ public class ReportGenerator extends DBIOwner {
 			if (recordMap.size() > 0) {
 				logger.info("ReportGenerator: - " + inserted + " entries inserted, " + updated + " entries updated, " + skipped + " entries skipped (too new)");
 			}
-		} catch (SQLException sqlex) {
-			sqle = sqlex;
-			throw sqlex;
 		} finally {
-			if (rs != null)
-				rs.close();
 			if (ps != null)
 				ps.close();
 			if (connection != null) {
@@ -402,7 +345,6 @@ public class ReportGenerator extends DBIOwner {
 		PreparedStatement ps2 = null;
 		ResultSet rs = null;
 		Statement s = null;
-		SQLException sqle = null;
 		int inserted = 0;
 		int updated = 0;
 		try {
@@ -483,9 +425,6 @@ public class ReportGenerator extends DBIOwner {
 
 			}
 			logger.info("ReportGenerator: - " + inserted + " entries inserted, " + updated + " entries updated");
-		} catch (SQLException sqlex) {
-			sqle = sqlex;
-			throw sqlex;
 		} finally {
 			if (rs != null)
 				rs.close();
@@ -542,8 +481,6 @@ public class ReportGenerator extends DBIOwner {
 	private void populateReportVoipTable(DataSource cp, Report<RecordVoip> report) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
-		ResultSet rs = null;
-		SQLException sqle = null;
 		Calendar c = Calendar.getInstance();
 		int nowMonth = c.get(Calendar.MONTH);
 		int nowDay = c.get(Calendar.DAY_OF_MONTH);
@@ -639,12 +576,7 @@ public class ReportGenerator extends DBIOwner {
 			if (recordMap.size() > 0) {
 				logger.info("ReportGenerator: - " + inserted + " entries inserted, " + updated + " entries updated, " + skipped + " entries skipped (too new)");
 			}
-		} catch (SQLException sqlex) {
-			sqle = sqlex;
-			throw sqlex;
 		} finally {
-			if (rs != null)
-				rs.close();
 			if (ps != null)
 				ps.close();
 			if (connection != null) {
@@ -670,8 +602,6 @@ public class ReportGenerator extends DBIOwner {
 	private void populateReportProvTable(DataSource cp, Report<RecordProvisioning> report) throws SQLException {
 		Connection connection = null;
 		PreparedStatement ps = null;
-		ResultSet rs = null;
-		SQLException sqle = null;
 		try {
 			int skipped = 0;
 			int inserted = 0;
@@ -719,12 +649,7 @@ public class ReportGenerator extends DBIOwner {
 			if (recordMap.size() > 0) {
 				logger.info("ReportGenerator: - " + inserted + " entries inserted, " + updated + " entries updated, " + skipped + " entries skipped (too new)");
 			}
-		} catch (SQLException sqlex) {
-			sqle = sqlex;
-			throw sqlex;
 		} finally {
-			if (rs != null)
-				rs.close();
 			if (ps != null)
 				ps.close();
 			if (connection != null) {
@@ -740,7 +665,7 @@ public class ReportGenerator extends DBIOwner {
 		String reports = Properties.getReports();
 		if (reports == null)
 			reports = "Unit";
-		else if (reports.indexOf("Unit") == -1)
+		else if (!reports.contains("Unit"))
 			reports = "Unit, " + reports;
 
 		runReports(reports, PeriodType.DAY);
@@ -753,7 +678,7 @@ public class ReportGenerator extends DBIOwner {
 		String reports = Properties.getReports();
 		if (reports == null)
 			reports = "Unit";
-		else if (reports.indexOf("Unit") == -1)
+		else if (!reports.contains("Unit"))
 			reports = "Unit, " + reports;
 		runReports(reports, PeriodType.HOUR);
 		logger.info("ReportGenerator: Hourly report processing ends");
@@ -766,7 +691,7 @@ public class ReportGenerator extends DBIOwner {
 		buildUnit(periodType, now);
 		String skippingReports = "";
 
-		if (reportProperty != null && reportProperty.indexOf("Basic") > -1) {
+		if (reportProperty != null && reportProperty.contains("Basic")) {
 			buildSyslog(periodType);
 			buildGroup(periodType, now);
 			buildJob(periodType, now);
@@ -775,7 +700,7 @@ public class ReportGenerator extends DBIOwner {
 			skippingReports += "Syslog, Group, Job, Provisioning, ";
 		}
 
-		if (reportProperty != null && reportProperty.indexOf("Pingcom") > -1) {
+		if (reportProperty != null && reportProperty.contains("Pingcom")) {
 			counter += 2;
 			buildHardwareSYS(periodType);
 			buildVoipSYS(periodType);
