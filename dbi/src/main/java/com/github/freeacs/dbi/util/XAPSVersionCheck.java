@@ -119,9 +119,6 @@ public class XAPSVersionCheck {
 				logger.debug(msg);
 			}
 			databaseChecked = true;
-		} catch (Throwable t) {
-			if (t instanceof SQLException)
-				sqle = (SQLException) t;
 		} finally {
 			if (rs != null)
 				rs.close();

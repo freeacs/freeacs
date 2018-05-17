@@ -10,8 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
 import java.util.Collections;
@@ -26,15 +29,18 @@ public class App {
     }
 
     @Bean
+    @Primary
     @Qualifier("xaps")
+    @ConfigurationProperties(prefix = "xaps.datasource")
     public DataSource getXapsDataSource() {
-        return null;
+        return DataSourceBuilder.create().build();
     }
 
     @Bean
     @Qualifier("syslog")
+    @ConfigurationProperties(prefix = "syslog.datasource")
     public DataSource getSyslogDataSource() {
-        return null;
+        return DataSourceBuilder.create().build();
     }
 
     @Bean
