@@ -119,7 +119,6 @@ public class Provisioning extends HttpServlet {
 	 * @return
 	 * @throws IOException
 	 */
-	@SuppressWarnings("unused")
   private static boolean hasContinueHeader(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		// Support 100 Continue header - always YES - CONTINUE!
 		if (req.getHeader("Expect") != null && req.getHeader("Expect").contains("100-continue")) {
