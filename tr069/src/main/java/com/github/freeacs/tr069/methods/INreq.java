@@ -96,9 +96,6 @@ public class INreq {
 				keyRoot = paramValue.substring(0, keyRootEndPos + 1);
 				if (keyRoot != null && (keyRoot.equals("Device.") || keyRoot.equals("InternetGatewayDevice."))) {
 					sessionData.setKeyRoot(keyRoot);
-//					String configFileVersionParameter = "DeviceInfo.VendorConfigFile.1.Version";
-//					if (Module.isConfigFileVersionQuirk(sessionData))
-//						configFileVersionParameter = "DeviceInfo.VendorConfigFile.Version";
 					cpeParams = new CPEParameters(keyRoot);
 					sessionData.setCpeParameters(cpeParams);
 					informParams = new InformParameters(keyRoot);
@@ -114,10 +111,8 @@ public class INreq {
 					cpeParams.putPvs(cpeParams.CONNECTION_URL, pvs);
 				if (informParams != null && pvs.getName().equals(informParams.UDP_CONNECTION_URL))
 					informParams.putPvs(informParams.UDP_CONNECTION_URL, pvs);
-				//				if (pvs.getName().equals(cpeParams.CONFIG_VERSION))
-				//					cpeParams.putPvs(cpeParams.CONFIG_VERSION, pvs);
 			}
-			if (pvs.getName().indexOf("ParameterKey") > -1)
+			if (pvs.getName().contains("ParameterKey"))
 				pk.setCpeKey(pvs.getValue());
 		}
 		if (keyRoot == null) {
