@@ -17,7 +17,7 @@ public final class WebConstants {
 	public static final String KEYROOT_DEVICE 					= "Device.";
 	public static final String KEYROOT_SYSTEM 					= "System.";
 	public static final String ALL_ITEMS_OR_DEFAULT			    = ".";
-	public static final String ALL_PAGES 					    = "OWERA_ALL_PAGES";
+	public static final String ALL_PAGES 					    = "ALL_PAGES";
 	public static final String DB_LOGIN_URL 				    = Page.LOGIN.getUrl();
 	public static final String DEFAULT_PROPERTIES_KEY 		    = "properties";
 	public static final String DELETE 						    = "Delete";

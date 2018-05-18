@@ -59,7 +59,7 @@
             </Help>
 		</Field>
 		<Parameter>
-			<Name>System.X_OWERA-COM.Device.PeriodicInterval</Name>
+			<Name>System.X_FREEACS-COM.Device.PeriodicInterval</Name>
 			<Heading>
 				System parameter: PeriodicInterval
             </Heading>
@@ -71,7 +71,7 @@
 			</Help>	
 		</Parameter>		
 		<Parameter>
-			<Name>System.X_OWERA-COM.Device.PublicIPAddress</Name>
+			<Name>System.X_FREEACS-COM.Device.PublicIPAddress</Name>
 			<Heading>
 				System parameter: PublicIPAddress
             </Heading>
@@ -82,7 +82,7 @@
 			</Help>	
 		</Parameter>		
 		<Parameter>
-			<Name>System.X_OWERA-COM.Device.SoftwareVersion</Name>
+			<Name>System.X_FREEACS-COM.Device.SoftwareVersion</Name>
 			<Heading>
 				System parameter: SoftwareVersion
             </Heading>
@@ -91,7 +91,7 @@
 			</Help>	
 		</Parameter>		
 		<Parameter>
-			<Name>System.X_OWERA-COM.FirstConnectTms</Name>
+			<Name>System.X_FREEACS-COM.FirstConnectTms</Name>
 			<Heading>
 				System parameter: FirstConnectTms
             </Heading>
@@ -102,7 +102,7 @@
 			</Help>	
 		</Parameter>		
 		<Parameter>
-			<Name>System.X_OWERA-COM.LastConnectTms</Name>
+			<Name>System.X_FREEACS-COM.LastConnectTms</Name>
 			<Heading>
 				System parameter: LastConnectTms
             </Heading>
@@ -113,7 +113,7 @@
 			</Help>	
 		</Parameter>		
 		<Parameter>
-			<Name>System.X_OWERA-COM.Secret</Name>
+			<Name>System.X_FREEACS-COM.Secret</Name>
 			<Heading>
 				System parameter: Secret
             </Heading>
@@ -123,7 +123,7 @@
 			</Help>	
 		</Parameter>		
 		<Parameter>
-			<Name>System.X_OWERA-COM.Debug</Name>
+			<Name>System.X_FREEACS-COM.Debug</Name>
 			<Heading>
 				System parameter: Debug 
             </Heading>
@@ -132,7 +132,7 @@
 			</Help>	
 		</Parameter>		
 		<Parameter>
-			<Name>System.X_OWERA-COM.DesiredSoftwareVersion</Name>
+			<Name>System.X_FREEACS-COM.DesiredSoftwareVersion</Name>
 			<Heading>
 				System parameter: DesiredSoftwareVersion
             </Heading>
@@ -142,7 +142,7 @@
 			</Help>	
 		</Parameter>		
 		<Parameter>
-			<Name>System.X_OWERA-COM.IM.Message</Name>
+			<Name>System.X_FREEACS-COM.IM.Message</Name>
 			<Heading>
 				System parameter: Message
             </Heading>
@@ -151,7 +151,7 @@
 			</Help>	
 		</Parameter>		
 		<Parameter>
-			<Name>System.X_OWERA-COM.Job.Current</Name>
+			<Name>System.X_FREEACS-COM.Job.Current</Name>
 			<Heading>
 				System parameter: Job.Current
             </Heading>
@@ -160,7 +160,7 @@
 			</Help>	
 		</Parameter>		
 		<Parameter>
-			<Name>System.X_OWERA-COM.Job.Disruptive</Name>
+			<Name>System.X_FREEACS-COM.Job.Disruptive</Name>
 			<Heading>
 				System parameter: Job.Disruptive
             </Heading>
@@ -169,7 +169,7 @@
 			</Help>	
 		</Parameter>		
 		<Parameter>
-			<Name>System.X_OWERA-COM.Job.History</Name>
+			<Name>System.X_FREEACS-COM.Job.History</Name>
 			<Heading>
 				System parameter: Job.History
             </Heading>
@@ -178,7 +178,7 @@
 			</Help>	
 		</Parameter>				
 		<Parameter>
-			<Name>System.X_OWERA-COM.ProvisioningMode</Name>
+			<Name>System.X_FREEACS-COM.ProvisioningMode</Name>
 			<Heading>
 				System parameter: ProvisioningMode
             </Heading>
@@ -187,7 +187,7 @@
 			</Help>	
 		</Parameter>				
 		<Parameter>
-			<Name>System.X_OWERA-COM.Restart</Name>
+			<Name>System.X_FREEACS-COM.Restart</Name>
 			<Heading>
 				System parameter: Restart
             </Heading>
@@ -196,7 +196,7 @@
 			</Help>	
 		</Parameter>				
 		<Parameter>
-			<Name>System.X_OWERA-COM.Reset</Name>
+			<Name>System.X_FREEACS-COM.Reset</Name>
 			<Heading>
 				System parameter: Restart
             </Heading>
@@ -205,7 +205,7 @@
 			</Help>	
 		</Parameter>				
 		<Parameter>
-			<Name>System.X_OWERA-COM.SecretScheme</Name>
+			<Name>System.X_FREEACS-COM.SecretScheme</Name>
 			<Heading>
 				System parameter: SecretScheme
             </Heading>
@@ -214,7 +214,7 @@
 			</Help>	
 		</Parameter>				
 		<Parameter>
-			<Name>System.X_OWERA-COM.ServiceWindow.Disruptive</Name>
+			<Name>System.X_FREEACS-COM.ServiceWindow.Disruptive</Name>
 			<Heading>
 				System parameter: Disruptive
             </Heading>
@@ -224,7 +224,7 @@
 			</Help>	
 		</Parameter>				
 		<Parameter>
-			<Name>System.X_OWERA-COM.ServiceWindow.Enable</Name>
+			<Name>System.X_FREEACS-COM.ServiceWindow.Enable</Name>
 			<Heading>
 				System parameter: Enable
             </Heading>
@@ -233,7 +233,7 @@
 			</Help>	
 		</Parameter>				
 		<Parameter>
-			<Name>System.X_OWERA-COM.ServiceWindow.Frequency</Name>
+			<Name>System.X_FREEACS-COM.ServiceWindow.Frequency</Name>
 			<Heading>
 				System parameter: Frequency
             </Heading>
@@ -242,7 +242,7 @@
 			</Help>	
 		</Parameter>				
 		<Parameter>
-			<Name>System.X_OWERA-COM.ServiceWindow.Regular</Name>
+			<Name>System.X_FREEACS-COM.ServiceWindow.Regular</Name>
 			<Heading>
 				System parameter: Regular
             </Heading>
@@ -252,7 +252,7 @@
 			</Help>	
 		</Parameter>				
 		<Parameter>
-			<Name>System.X_OWERA-COM.ServiceWindow.Spread</Name>
+			<Name>System.X_FREEACS-COM.ServiceWindow.Spread</Name>
 			<Heading>
 				System parameter: Spread
             </Heading>
@@ -263,7 +263,7 @@
 			</Help>	
 		</Parameter>				
 		<Parameter>
-			<Name>System.X_OWERA-COM.SoftwareURL</Name>
+			<Name>System.X_FREEACS-COM.SoftwareURL</Name>
 			<Heading>
 				System parameter: SoftwareURL
             </Heading>
@@ -275,7 +275,7 @@
 			</Help>	
 		</Parameter>		
 		<Parameter>
-			<Name>System.X_OWERA-COM.Telnet.IPAddress</Name>
+			<Name>System.X_FREEACS-COM.Telnet.IPAddress</Name>
 			<Heading>
 				System parameter: Telnet.IPAddress
             </Heading>
@@ -284,7 +284,7 @@
 			</Help>	
 		</Parameter>		
 		<Parameter>
-			<Name>System.X_OWERA-COM.Telnet.Port</Name>
+			<Name>System.X_FREEACS-COM.Telnet.Port</Name>
 			<Heading>
 				System parameter: Telnet.Port
             </Heading>
@@ -293,7 +293,7 @@
 			</Help>	
 		</Parameter>		
 		<Parameter>
-			<Name>System.X_OWERA-COM.Telnet.Username</Name>
+			<Name>System.X_FREEACS-COM.Telnet.Username</Name>
 			<Heading>
 				System parameter: Telnet.Username
             </Heading>
@@ -302,7 +302,7 @@
 			</Help>	
 		</Parameter>		
 		<Parameter>
-			<Name>System.X_OWERA-COM.Telnet.Password</Name>
+			<Name>System.X_FREEACS-COM.Telnet.Password</Name>
 			<Heading>
 				System parameter: Telnet.Password
             </Heading>
@@ -311,7 +311,7 @@
 			</Help>	
 		</Parameter>		
 		<Parameter>
-			<Name>System.X_OWERA-COM.Telnet.DesiredScriptVersion</Name>
+			<Name>System.X_FREEACS-COM.Telnet.DesiredScriptVersion</Name>
 			<Heading>
 				System parameter: Telnet.DesiredScriptVersion
             </Heading>

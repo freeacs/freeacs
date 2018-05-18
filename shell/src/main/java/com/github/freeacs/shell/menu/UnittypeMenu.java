@@ -1121,7 +1121,7 @@ public class UnittypeMenu {
 		UnittypeParameters utps = context.getUnittype().getUnittypeParameters();
 		List<UnittypeParameter> deleteList = new ArrayList<UnittypeParameter>();
 		for (UnittypeParameter utp : utps.getUnittypeParameters()) {
-			if (utp.getName().startsWith("System.X_OWERA-COM.")) {
+			if (utp.getName().startsWith("System.X_FREEACS-COM.")) {
 				if (SystemParameters.commonParameters.get(utp.getName()) != null)
 					continue;
 				if (SystemParameters.stagingParameters.get(utp.getName()) != null)
