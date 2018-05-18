@@ -100,11 +100,23 @@ public class Properties {
 		return config.getString(propertyKey);
 	}
 
+	private static Integer getInteger(String propertyKey, Integer defaultValue) {
+		if (!config.hasPath(propertyKey)) {
+			Log.warn(Properties.class, "The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
+			return defaultValue;
+		}
+		return config.getInt(propertyKey);
+	}
+
 	public static String getAuthMethod() {
 		return getString("auth.method", "none");
 	}
 
 	public static boolean isFileAuthUsed() {
 	  return getString("file.auth.used", "false").equals("true");
+	}
+
+	public static int concurrentDownloadLimit() {
+		return getInteger("concurrent.download.limit", 50);
 	}
 }

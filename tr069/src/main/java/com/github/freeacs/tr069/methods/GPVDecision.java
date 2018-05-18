@@ -1,6 +1,5 @@
 package com.github.freeacs.tr069.methods;
 
-import com.github.freeacs.Properties;
 import com.github.freeacs.base.*;
 import com.github.freeacs.base.UnitJob;
 import com.github.freeacs.base.db.DBAccessSessionTR069;
@@ -153,14 +152,14 @@ public class GPVDecision {
         return;
       } else
         sessionData.getPIIDecision().setDisruptiveSW(serviceWindow);
-    } else if (DownloadLogicTR069.isSoftwareDownloadSetup(reqRes, null) && DownloadLogic.downloadAllowed(Properties.Module.TR069, null)) {
+    } else if (DownloadLogicTR069.isSoftwareDownloadSetup(reqRes, null) && DownloadLogic.downloadAllowed(null, com.github.freeacs.tr069.Properties.concurrentDownloadLimit())) {
       serviceWindow = new ServiceWindow(sessionData, true);
       if (serviceWindow.isWithin()) {
         reqRes.getResponse().setMethod(TR069Method.DOWNLOAD);
         return;
       } else
         sessionData.getPIIDecision().setDisruptiveSW(serviceWindow);
-    } else if (DownloadLogicTR069.isScriptDownloadSetup(reqRes, null) && DownloadLogic.downloadAllowed(Properties.Module.TR069, null)) {
+    } else if (DownloadLogicTR069.isScriptDownloadSetup(reqRes, null) && DownloadLogic.downloadAllowed(null, com.github.freeacs.tr069.Properties.concurrentDownloadLimit())) {
       serviceWindow = new ServiceWindow(sessionData, true);
       if (serviceWindow.isWithin()) {
         reqRes.getResponse().setMethod(TR069Method.DOWNLOAD);
@@ -194,7 +193,7 @@ public class GPVDecision {
       // will not affect the comparison in populateToCollections()
       updateUnitParameters(sessionData);
       try {
-        uj = JobLogic.checkNewJob(Properties.Module.TR069, sessionData); // may find a new
+        uj = JobLogic.checkNewJob(sessionData, com.github.freeacs.tr069.Properties.concurrentDownloadLimit()); // may find a new
                                                               // job
       } catch (SQLException sqle) {
         throw new TR069DatabaseException(sqle);
@@ -378,34 +377,6 @@ public class GPVDecision {
     }
     DBAccessSessionTR069.writeUnitParams(sessionData);
   }
-
-  // private static void sendSyslogMessage(SessionData sessionData) {
-  // try {
-  // InetAddress address =
-  // InetAddress.getByName(Properties.getSyslogServer(Module.TR069));
-  // DatagramSocket socket = new DatagramSocket();
-  // StringBuffer sb = new StringBuffer();
-  // sb.append("<133>Jan  1 00:00:00 cpe [" +
-  // sessionData.getOweraParameters().getValue(SystemParameters.MAC) +
-  // "]:TR-metrics:");
-  // for (ParameterValueStruct pvs : sessionData.getToSyslog()) {
-  // UnittypeParameters unittypeParameters =
-  // sessionData.getUnittype().getUnittypeParameters();
-  // UnittypeParameter utp = unittypeParameters.getByName(pvs.getName());
-  // sb.append(utp.getId() + "=" + pvs.getValue() + ",");
-  // }
-  // byte[] message = sb.toString().getBytes("UTF-8");
-  // DatagramPacket packet = new DatagramPacket(message, message.length);
-  // packet.setPort(Properties.getSyslogServerPort(Module.TR069));
-  // packet.setAddress(address);
-  // socket.send(packet);
-  // socket.close();
-  // } catch (Throwable t) {
-  // Log.warn(GPVDecision.class,
-  // "Transmission of metrics to syslog server failed:", t);
-  // }
-  //
-  // }
 
   /**
    * Loop through all parameters defined in the database, and see which ones are
