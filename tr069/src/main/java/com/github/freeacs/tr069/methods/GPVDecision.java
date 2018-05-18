@@ -95,40 +95,6 @@ public class GPVDecision {
       ActiveDeviceDetectionTask.remove(sessionData.getUnitId());
   }
 
-  @SuppressWarnings("unused")
-  private static void oppositePriorityProvisioning(HTTPReqResData reqRes) {
-
-    /*
-     * To accomplish opposite priority provisioning - we have to deal with some
-     * obstacles:
-     * 
-     * - We must know when there are no more CONFIG-changes. This is usually
-     * true when no parameter will be transmitted to the CPE. However, a
-     * password can complicate this, if a device do not support ParameterKey
-     * feature and/or the passwords have not set the C-flag on the unittype
-     * parameter. This introduces some level of dependency both on the
-     * device-implementation and on the setup of the unittype.
-     * 
-     * - We must know if reset/restart/download method needs to be run, before
-     * deciding the next periodic inform interval. If there is no such method
-     * "waiting" the next periodic inform interval will be calculated as usual.
-     * In other words, the service-window which those other methods might need
-     * will be ignored, since config has priority and is running in regular
-     * service window. This can in itself be an issue, since the other methods
-     * may never be run (if a service-window is short and one never hits that
-     * window). The question is if this in itself is so troubling that this
-     * whole idea must be abandoned. Perhaps the most reasonable solution is to
-     * remove service window from easy-provisioning altogether, and only use
-     * service window in jobs - making jobs more feature-rich compared to
-     * easy-provisioning. Service Windows never been used AFAIK - so this may be
-     * a fair trade. To accomplish this change, we need to change the job table
-     * - adding service-window there - which we cannot do in 2013R1. Thus we
-     * should wait with this until 2014R1.
-     */
-
-    normalPriorityProvisioning(reqRes);
-  }
-
   private static void normalPriorityProvisioning(HTTPReqResData reqRes) {
     ServiceWindow serviceWindow = null;
     SessionData sessionData = reqRes.getSessionData();
@@ -202,15 +168,7 @@ public class GPVDecision {
     Job job = sessionData.getJob();
     if (job == null) { // No job is present - process according to
                        // profile/unit-parameters
-      // String priority =
-      // sessionData.getOweraParameters().getValue(SystemParameters.PROVISIONING_PRIORITY);
-      // if (priority != null &&
-      // priority.equals("Config-Download-Reboot-Reset")) {
-      // oppositePriorityProvisioning(reqRes); // Not implemented - does normal
-      // priority-prov
-      // } else {
       normalPriorityProvisioning(reqRes);
-      // }
     } else {
       jobProvisioning(reqRes, job, uj);
     }
@@ -223,28 +181,23 @@ public class GPVDecision {
     if (type == JobType.RESET) {
       sessionData.getProvisioningMessage().setProvOutput(ProvOutput.RESET);
       reqRes.getResponse().setMethod(TR069Method.FACTORY_RESET);
-      return;
     } else if (type == JobType.RESTART) {
       sessionData.getProvisioningMessage().setProvOutput(ProvOutput.REBOOT);
       reqRes.getResponse().setMethod(TR069Method.REBOOT);
-      return;
     } else if (type == JobType.SOFTWARE) {
       sessionData.getProvisioningMessage().setProvOutput(ProvOutput.SOFTWARE);
       if (!DownloadLogicTR069.isSoftwareDownloadSetup(reqRes, job))
         throw new RuntimeException("Not possible to setup a Software Download job");
       reqRes.getResponse().setMethod(TR069Method.DOWNLOAD);
-      return;
     } else if (type == JobType.TR069_SCRIPT) {
       sessionData.getProvisioningMessage().setProvOutput(ProvOutput.SCRIPT);
       if (!DownloadLogicTR069.isScriptDownloadSetup(reqRes, job))
         throw new RuntimeException("Not possible to setup a Script Download job");
       reqRes.getResponse().setMethod(TR069Method.DOWNLOAD);
-      return;
     } else if (type == JobType.SHELL) {
       sessionData.getProvisioningMessage().setProvOutput(ProvOutput.SHELL);
       ShellJobLogic.execute(sessionData, job, uj);
       reqRes.getResponse().setMethod(TR069Method.SET_PARAMETER_VALUES);
-      return;
     } else { // type == JobType.CONFIG
       // The service-window is unimportant for next PII calculation, will
       // be set to 31 no matter what, since a job is "in the process".
@@ -252,7 +205,6 @@ public class GPVDecision {
       // ServiceWindow serviceWindow = new ServiceWindow(sessionData, false);
       prepareSPVForConfigJob(sessionData);
       reqRes.getResponse().setMethod(TR069Method.SET_PARAMETER_VALUES);
-      return;
     }
   }
 
@@ -282,8 +234,6 @@ public class GPVDecision {
     ParameterList toCPE = new ParameterList();
     long nextPII = sessionData.getPIIDecision().nextPII();
     sessionData.getProvisioningMessage().setPeriodicInformInterval((int) nextPII);
-    // if (serviceWindow != null)
-    // nextPII = serviceWindow.nextPII();
     pvs.setValue("" + nextPII);
     pvs.setType("xsd:unsignedInt");
     Log.debug(GPVDecision.class, "All previous CPE parameter changes are cancelled, will only set PeriodicInformInterval (" + pvs.getValue() + ") to CPE and ACS");
@@ -293,8 +243,6 @@ public class GPVDecision {
     Log.debug(GPVDecision.class, "-ACS->ACS      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
     sessionData.getToDB().add(new ParameterValueStruct(SystemParameters.PERIODIC_INTERVAL, "" + nextPII));
     Log.debug(GPVDecision.class, "-ACS->ACS      " + SystemParameters.PERIODIC_INTERVAL + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
-    // DBAccessSessionTR069 dbAccessSessionTR069 = new
-    // DBAccessSessionTR069(DBAccess.getDBI(), sessionData.getDbAccess());
     DBAccessSessionTR069.writeUnitParams(sessionData);
   }
 
@@ -419,8 +367,6 @@ public class GPVDecision {
     UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
     ParameterList toCPE = new ParameterList();
     List<ParameterValueStruct> toDB = new ArrayList<ParameterValueStruct>();
-    // List<ParameterValueStruct> toSyslog = new
-    // ArrayList<ParameterValueStruct>();
 
     for (int i = 0; i < sessionData.getFromCPE().size(); i++) {
       ParameterValueStruct pvsCPE = sessionData.getFromCPE().get(i);
@@ -434,10 +380,6 @@ public class GPVDecision {
         Log.debug(GPVDecision.class, "The parameter name " + pvsCPE.getName() + " was not recognized in ACS, could happen if a GPV on all params was issued.");
         continue;
       }
-      // if (utp.getFlag().isInspection())
-      // Log.warn(GPVDecision.class, msg(utp, cpeV, acsV, "Ignored",
-      // "Inspection-flag & mode is PERIODIC"));
-      // else
       if (acsV != null && !acsV.equals("ExtraCPEParam") && !(acsV.equals(cpeV))) {
         if (utp.getFlag().isReadWrite()) {
           if (sessionData.getParameterKey().isEqual()) {
@@ -447,7 +389,7 @@ public class GPVDecision {
             } else {
               String unlc = utp.getName().toLowerCase();
               String msg = null;
-              if (unlc.indexOf("password") > -1 || unlc.indexOf("secret") > -1 || unlc.indexOf("passphrase") > -1) {
+              if (unlc.contains("password") || unlc.contains("secret") || unlc.contains("passphrase")) {
                 msg = msg(utp, cpeV, acsV, "ACS->CPE",
                     "Values differ & parameterkey is correct -> parameter is probably a secret and should be set to confidential to avoid unnecessary prov. of secret");
 
@@ -467,22 +409,8 @@ public class GPVDecision {
             toCPE.addParameterValueStruct(pvsDB);
           }
         } else {
-          // if (utp.getFlag().isMonitored()) {
-          // if (sessionData.getJobParams() != null &&
-          // sessionData.getJobParams().get(utp.getName()) != null) {
-          // Log.debug(GPVDecision.class, msg(utp, cpeV, acsV, "CPE->SYS",
-          // "Param has ReadOnly- and Monitored-flag and is requested in a (monitor-)job"));
-          // toSyslog.add(pvsCPE);
-          // }
-          // if (utp.getFlag().isAlwaysRead()) {
-          // Log.debug(GPVDecision.class, msg(utp, cpeV, acsV, "CPE->ACS",
-          // "Param has ReadOnly-, Monitored- and AlwaysRead-flag"));
-          // toDB.add(pvsCPE);
-          // }
-          // } else {
           Log.debug(GPVDecision.class, msg(utp, cpeV, acsV, "CPE->ACS", "Param has ReadOnly-flag"));
           toDB.add(pvsCPE);
-          // }
         }
       } else if (pvsDB != null && pvsDB.getValue() == null && pvsCPE.getValue() != null && pvsCPE.getValue().length() > 0) {
         Log.debug(GPVDecision.class, msg(utp, cpeV, acsV, "CPE->ACS", "Param new to ACS"));
