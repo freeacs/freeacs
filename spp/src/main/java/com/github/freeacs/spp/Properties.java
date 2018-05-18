@@ -93,4 +93,7 @@ public class Properties {
 	    return getString("file.auth.used", "false").equals("true");
 	  }
 
+	public static int concurrentDownloadLimit() {
+		return getInteger("concurrent.download.limit", 50);
+	}
 }
