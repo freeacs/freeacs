@@ -297,10 +297,9 @@ public class JobLogic {
 			Entry<Integer, Job> entry = i.next();
 			Job job = entry.getValue();
 			JobType type = job.getFlags().getType();
-			if (type == JobType.SOFTWARE || type == JobType.TR069_SCRIPT) {
-				if (!DownloadLogic.downloadAllowed(job, downloadLimit)) {
-					i.remove();
-				}
+			if ((type == JobType.SOFTWARE || type == JobType.TR069_SCRIPT)
+                    && !DownloadLogic.downloadAllowed(job, downloadLimit)) {
+                i.remove();
 			}
 		}
 		return possibleJobs;
