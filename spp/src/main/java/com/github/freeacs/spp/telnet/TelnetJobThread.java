@@ -167,7 +167,7 @@ public class TelnetJobThread implements Runnable {
 	private Map<String, Pattern> getAbortPatternMap(Map<String, String> unitParameters, Map<String, JobParameter> jobParams) {
 		Map<String, Pattern> patternMap = new HashMap<String, Pattern>();
 		for (Entry<String, String> entry : unitParameters.entrySet()) {
-			if (entry.getKey().startsWith("System.X_OWERA-COM.Telnet.AbortCondition.") && entry.getKey().endsWith("_PP")) {
+			if (entry.getKey().startsWith("System.X_FREEACS-COM.Telnet.AbortCondition.") && entry.getKey().endsWith("_PP")) {
 				if (compiledPatternMap.get(entry.getKey()) == null) {
 					compiledPatternMap.put(entry.getKey(), Pattern.compile(entry.getValue()));
 				}
@@ -175,7 +175,7 @@ public class TelnetJobThread implements Runnable {
 			}
 		}
 		for (Entry<String, JobParameter> entry : jobParams.entrySet()) {
-			if (entry.getKey().startsWith("System.X_OWERA-COM.Telnet.AbortCondition.") && entry.getKey().endsWith("_PP")) {
+			if (entry.getKey().startsWith("System.X_FREEACS-COM.Telnet.AbortCondition.") && entry.getKey().endsWith("_PP")) {
 				if (compiledPatternMap.get(entry.getKey()) == null) {
 					compiledPatternMap.put(entry.getKey(), Pattern.compile(entry.getValue().getParameter().getValue()));
 				}

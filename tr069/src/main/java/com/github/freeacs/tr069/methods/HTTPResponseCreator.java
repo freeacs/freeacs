@@ -40,7 +40,7 @@ public class HTTPResponseCreator {
   @SuppressWarnings(value = { "unused" })
   private static Response buildRE(HTTPReqResData reqRes) {
     if (reqRes.getTR069TransactionID() == null)
-      reqRes.setTR069TransactionID(new TR069TransactionID("OWERA-" + System.currentTimeMillis()));
+      reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
     Header header = new Header(tr069ID, null, null);
     Body body = new REreq();
@@ -50,7 +50,7 @@ public class HTTPResponseCreator {
   @SuppressWarnings(value = { "unused" })
   private static Response buildFR(HTTPReqResData reqRes) {
     if (reqRes.getTR069TransactionID() == null)
-      reqRes.setTR069TransactionID(new TR069TransactionID("OWERA-" + System.currentTimeMillis()));
+      reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
     Header header = new Header(tr069ID, null, null);
     Body body = new FRreq();
@@ -93,7 +93,7 @@ public class HTTPResponseCreator {
   private static Response buildCU(HTTPReqResData reqRes) {
     TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
     if (reqRes.getTR069TransactionID() == null)
-      reqRes.setTR069TransactionID(new TR069TransactionID("OWERA-" + System.currentTimeMillis()));
+      reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
     SessionData sessionData = reqRes.getSessionData();
     String keyRoot = sessionData.getKeyRoot();
@@ -105,7 +105,7 @@ public class HTTPResponseCreator {
   @SuppressWarnings(value = { "unused" })
   private static Response buildGPN(HTTPReqResData reqRes) {
     if (reqRes.getTR069TransactionID() == null)
-      reqRes.setTR069TransactionID(new TR069TransactionID("OWERA-" + System.currentTimeMillis()));
+      reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
     String keyRoot = reqRes.getSessionData().getKeyRoot();
     Body body = new GPNreq(keyRoot, Properties.isNextLevel0InGPN(reqRes.getSessionData()));
@@ -115,7 +115,7 @@ public class HTTPResponseCreator {
   @SuppressWarnings(value = { "unused" })
   private static Response buildGPA(HTTPReqResData reqRes) {
     if (reqRes.getTR069TransactionID() == null)
-      reqRes.setTR069TransactionID(new TR069TransactionID("OWERA-" + System.currentTimeMillis()));
+      reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
     String keyRoot = reqRes.getSessionData().getKeyRoot();
     List<ParameterAttributeStruct> parameterAttributeList = new ArrayList<ParameterAttributeStruct>();
@@ -176,7 +176,7 @@ public class HTTPResponseCreator {
    * Special treatment for PeriodicInformInterval, we want to get that parameter
    * from the CPE, regardless of what parameteres we have in the database.
    * That's because we have 2 different ways to set it in the database, the
-   * standard and the Owera-way.
+   * standard and the FREEACS-way.
    * 
    *
    * @throws SQLException
@@ -184,7 +184,7 @@ public class HTTPResponseCreator {
   @SuppressWarnings(value = { "unused" })
   private static Response buildGPV(HTTPReqResData reqRes) throws SQLException {
     if (reqRes.getTR069TransactionID() == null)
-      reqRes.setTR069TransactionID(new TR069TransactionID("OWERA-" + System.currentTimeMillis()));
+      reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
     SessionData sessionData = reqRes.getSessionData();
     ProvisioningMode mode = sessionData.getUnit().getProvisioningMode();
@@ -201,28 +201,6 @@ public class HTTPResponseCreator {
           }
         }
       }
-      // } else if (mode == ProvisioningMode.INSPECTION) {
-      // UnittypeParameters utps =
-      // sessionData.getUnittype().getUnittypeParameters();
-      // Map<String, ParameterValueStruct> paramValueMap =
-      // sessionData.getFromDB();
-      // addCPEParameters(sessionData);
-      // int inspectionCount = 0;
-      // for (UnittypeParameter utp : utps.getUnittypeParameters()) {
-      // if (utp.getFlag().isInspection() || paramValueMap.get(utp.getName()) !=
-      // null) {
-      // inspectionCount++;
-      // ParameterValueStruct pvs = new ParameterValueStruct(utp.getName(), "");
-      // parameterValueList.add(pvs);
-      // }
-      // }
-      // Log.debug(HTTPResponseCreator.class, "Added " + inspectionCount +
-      // " inspection params to GPV-req");
-      // Log.debug(HTTPResponseCreator.class, "Asks for " +
-      // parameterValueList.size() + " parameters in GPV-req");
-      // Collections.sort(parameterValueList, new
-      // ParameterValueStructComparator());
-      // } else if (mode == ProvisioningMode.EXTRACTION) {
     } else if (mode == ProvisioningMode.READALL) {
       Log.debug(HTTPResponseCreator.class, "Asks for all params (" + sessionData.getKeyRoot() + "), since in " + ProvisioningMode.READALL.toString() + " mode");
       ParameterValueStruct pvs = new ParameterValueStruct(sessionData.getKeyRoot(), "");
@@ -258,7 +236,7 @@ public class HTTPResponseCreator {
   @SuppressWarnings(value = { "unused" })
   private static Response buildSPV(HTTPReqResData reqRes) throws NoSuchAlgorithmException, SQLException {
     if (reqRes.getTR069TransactionID() == null)
-      reqRes.setTR069TransactionID(new TR069TransactionID("OWERA-" + System.currentTimeMillis()));
+      reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
     Body body = null;
     ParameterList paramList = new ParameterList();
@@ -293,7 +271,7 @@ public class HTTPResponseCreator {
   @SuppressWarnings(value = { "unused" })
   private static Response buildDO(HTTPReqResData reqRes) throws SQLException {
     if (reqRes.getTR069TransactionID() == null)
-      reqRes.setTR069TransactionID(new TR069TransactionID("OWERA-" + System.currentTimeMillis()));
+      reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
     SessionData sessionData = reqRes.getSessionData();
     SessionData.Download download = sessionData.getDownload();
@@ -308,11 +286,6 @@ public class HTTPResponseCreator {
     if (download.getFile().getType() == FileType.TR069_SCRIPT) {
       downloadType = DOreq.FILE_TYPE_CONFIG;
       pm.setProvOutput(ProvOutput.SCRIPT);
-      // String tfnPN =
-      // SystemParameters.getTR069ScriptParameterName(download.getFile().getTargetName(),
-      // TR069ScriptType.TargetFileName);
-      // tfn = sessionData.getOweraParameters().getValue(tfnPN);
-      // commandKey = download.getFile().getVersion();
     }
     String version = download.getFile().getVersion();
     pm.setFileVersion(version);
@@ -339,17 +312,13 @@ public class HTTPResponseCreator {
       reqRes.getResponse().setXml(responseStr);
     } catch (Throwable t) {
       throw new TR069Exception("Not possible to create HTTP-response (to the TR-069 client)", TR069ExceptionShortMessage.MISC, t);
-      // reqRes.setThrowable(t);
-      // Log.error(HTTPResponseCreator.class, "The response with methodname " +
-      // reqRes.getResponse().getMethod() + " failed, return EmptyResponse", t);
-      // reqRes.getResponse().setXml("");
     }
   }
 
   @SuppressWarnings(value = { "unused" })
   private static Response buildSPA(HTTPReqResData reqRes) throws NoSuchAlgorithmException, SQLException {
     if (reqRes.getTR069TransactionID() == null)
-      reqRes.setTR069TransactionID(new TR069TransactionID("OWERA-" + System.currentTimeMillis()));
+      reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
     Body body = null;
     List<ParameterAttributeStruct> attributes = new ArrayList<ParameterAttributeStruct>();

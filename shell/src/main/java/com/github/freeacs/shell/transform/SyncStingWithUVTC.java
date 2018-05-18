@@ -152,23 +152,23 @@ public class SyncStingWithUVTC {
 					sb.append("InternetGateway" + line + "\n");
 			} else {
 				line = line.replace("VoiceService", "Services.VoiceService");
-				line = line.replace("SIP.X_OWERA-COM_DisplayName", "CallingFeatures.CallerIDName");
-				line = line.replace("SIP.X_OWERA-COM_UserName", "SIP.URI");
-				if (!line.startsWith("Device.X_OWERA-COM"))
+				line = line.replace("SIP.X_FREEACS-COM_DisplayName", "CallingFeatures.CallerIDName");
+				line = line.replace("SIP.X_FREEACS-COM_UserName", "SIP.URI");
+				if (!line.startsWith("Device.X_FREEACS-COM"))
 					line = line.replace("Device.", "InternetGatewayDevice.");
 				else {
 					line = line.replace("Device.", "System.");
-					if (line.startsWith("System.X_OWERA-COM.Protocol"))
+					if (line.startsWith("System.X_FREEACS-COM.Protocol"))
 						continue;
-					if (line.startsWith("System.X_OWERA-COM.OPP.Connector.FDSecret.Unit"))
+					if (line.startsWith("System.X_FREEACS-COM.OPP.Connector.FDSecret.Unit"))
 						continue;
-					if (line.startsWith("System.X_OWERA-COM.ProvisioningMode"))
+					if (line.startsWith("System.X_FREEACS-COM.ProvisioningMode"))
 						continue;
-					if (line.startsWith("System.X_OWERA-COM.ProvisioningState"))
+					if (line.startsWith("System.X_FREEACS-COM.ProvisioningState"))
 						continue;
-					if (line.startsWith("System.X_OWERA-COM.DesiredSoftwareVersion"))
+					if (line.startsWith("System.X_FREEACS-COM.DesiredSoftwareVersion"))
 						continue;
-					if (line.startsWith("System.X_OWERA-COM.OPP.Reporter.LogLevel"))
+					if (line.startsWith("System.X_FREEACS-COM.OPP.Reporter.LogLevel"))
 						continue;
 					//					System.out.println(line);
 				}
