@@ -6,10 +6,12 @@ import com.github.freeacs.base.http.OKServlet;
 import com.github.freeacs.tr069.Provisioning;
 import com.github.freeacs.tr069.test.system1.TestServlet;
 import com.zaxxer.hikari.HikariDataSource;
+import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -23,7 +25,7 @@ import static com.github.freeacs.tr069.Provisioning.VERSION;
 import static com.github.freeacs.Properties.Module.TR069;
 import static com.github.freeacs.dbi.SyslogConstants.FACILITY_TR069;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = FlywayAutoConfiguration.class)
 public class App {
 
     public static void main(String[] args) {
@@ -31,7 +33,6 @@ public class App {
     }
 
     @Bean
-    @Primary
     @Qualifier("xaps")
     @ConfigurationProperties("xaps.datasource")
     public DataSource getXapsDataSource() {
@@ -47,6 +48,11 @@ public class App {
 
     @Bean
     public DBAccess getDBAccess(@Qualifier("xaps") DataSource xapsDataSource, @Qualifier("syslog") DataSource syslogDataSource) {
+        Flyway flyway = new Flyway();
+        flyway.setDataSource(xapsDataSource);
+        flyway.migrate();
+        flyway.setDataSource(syslogDataSource);
+        flyway.migrate();
         return new DBAccess(TR069, FACILITY_TR069, VERSION, xapsDataSource, syslogDataSource);
     }
 
