@@ -121,52 +121,9 @@ public class Authenticator {
     if (authenticated) {
       sessionData.setAuthenticated(true);
     }
-    /*
-     * Morten - jan 2014 - no longer check certificates, since going open source
-     * if (authenticated) { // Can only happen if verification process is
-     * completed authenticated = checkCertificate(reqRes); } else { // Challenge
-     * is sent - not authenticated }
-     */
     if (authenticated) { // all checks are passed - cleanup
       blockedClients.remove(bcKey);
     }
     return authenticated;
-  }
-
-  @SuppressWarnings("unused")
-  private static boolean checkCertificate(HTTPReqResData reqRes) {
-    SessionData sessionData = reqRes.getSessionData();
-    Certificates certs = reqRes.getSessionData().getDbAccess().getXaps().getCertificates();
-    Certificate cert = certs.getCertificate(Certificate.CERT_TYPE_PROVISIONING);
-    if (cert == null || !cert.isDecrypted()) {
-      Log.error(Authenticator.class, "The authentication was ok, but no Fusion provisioning certificate exists");
-      sessionData.setAuthenticated(false);
-    } else if (cert.isTrial()) {
-      if (cert.getMaxCount() != null) {
-        if (hostSet.size() <= cert.getMaxCount()) {
-          hostSet.add(reqRes.getReq().getRemoteHost());
-          sessionData.setAuthenticated(true);
-
-        } else {
-          Log.error(Authenticator.class, "The authentication was ok, but the Fusion provisioning certificate does not allow more than " + cert.getMaxCount() + " provisioned units");
-          sessionData.setAuthenticated(false);
-        }
-      } else if (cert.getDateLimit() != null) {
-        // will always add 1 day extra
-        if (System.currentTimeMillis() <= cert.getDateLimit().getTime() + 1440 * 60 * 1000) {
-          sessionData.setAuthenticated(true);
-        } else {
-          Log.error(Authenticator.class, "The authentication was ok, but the Fusion provisioning certificate expired at " + cert.getDateLimit());
-          sessionData.setAuthenticated(false);
-        }
-      }
-
-    } else if (cert.isProductionAndValid()) {
-      sessionData.setAuthenticated(true);
-    } else {
-      Log.error(Authenticator.class, "The authentication was ok, but the Fusion provisioning certificate was not ok (the error is unknown)");
-      sessionData.setAuthenticated(false);
-    }
-    return sessionData.isAuthenticated();
   }
 }
