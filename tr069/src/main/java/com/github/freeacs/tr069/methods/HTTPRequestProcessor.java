@@ -51,12 +51,12 @@ public class HTTPRequestProcessor {
 		try {
 			KillDatabaseObject kdo = new KillDatabaseObject(KillDatabase.database.select(unitId));
 			kdo.setTestRunning(false);
-			if (xml.indexOf("GetParameterNamesResponse") > -1) {
+			if (xml.contains("GetParameterNamesResponse")) {
 				FileWriter gpnW = new FileWriter("GPN-" + unitId + ".txt");
 				gpnW.write(xml);
 				gpnW.close();
 				kdo.setGpnFile("GPN-" + unitId + ".txt");
-			} else if (xml.indexOf("GetParameterValuesResponse") > -1) {
+			} else if (xml.contains("GetParameterValuesResponse")) {
 				FileWriter gpvW = new FileWriter("GPV-" + unitId + ".txt");
 				gpvW.write(xml);
 				gpvW.close();
@@ -65,7 +65,7 @@ public class HTTPRequestProcessor {
 			} else {
 				FileWriter fw = new FileWriter("kill-report-" + unitId + ".txt", true);
 				FileWriter fwDetails = new FileWriter("kill-report-details-" + unitId + ".txt", true);
-				if (xml.indexOf("Fault") > -1) {
+				if (xml.contains("Fault")) {
 					fw.write("failed");
 					fwDetails.write("\nCPE-response was Fault:\n" + xml + "\n");
 				} else {

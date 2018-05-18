@@ -30,15 +30,13 @@ import java.util.Map.Entry;
  * @author morten
  * 
  */
-public class HTTPResponseCreator {
+public interface HTTPResponseCreator {
 
-  @SuppressWarnings(value = { "unused" })
-  private static Response buildEM(HTTPReqResData reqRes) {
+  static Response buildEM(HTTPReqResData reqRes) {
     return new EmptyResponse();
   }
 
-  @SuppressWarnings(value = { "unused" })
-  private static Response buildRE(HTTPReqResData reqRes) {
+  static Response buildRE(HTTPReqResData reqRes) {
     if (reqRes.getTR069TransactionID() == null)
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
@@ -47,8 +45,7 @@ public class HTTPResponseCreator {
     return new Response(header, body);
   }
 
-  @SuppressWarnings(value = { "unused" })
-  private static Response buildFR(HTTPReqResData reqRes) {
+  static Response buildFR(HTTPReqResData reqRes) {
     if (reqRes.getTR069TransactionID() == null)
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
@@ -57,40 +54,35 @@ public class HTTPResponseCreator {
     return new Response(header, body);
   }
 
-  @SuppressWarnings(value = { "unused" })
-  private static Response buildTC(HTTPReqResData reqRes) {
+  static Response buildTC(HTTPReqResData reqRes) {
     TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
     Header header = new Header(tr069ID, null, null);
     Body body = new TCres();
     return new Response(header, body);
   }
 
-  @SuppressWarnings(value = { "unused" })
-  private static Response buildIN(HTTPReqResData reqRes) {
+  static Response buildIN(HTTPReqResData reqRes) {
     TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
     Header header = new Header(tr069ID, null, null);
     Body body = new INres();
     return new Response(header, body);
   }
 
-  @SuppressWarnings(value = { "unused" })
-  private static Response buildGRMReq(HTTPReqResData reqRes) {
+   static Response buildGRMReq(HTTPReqResData reqRes) {
     TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
     Header header = new Header(tr069ID, null, null);
     Body body = new GRMreq();
     return new Response(header, body);
   }
 
-  @SuppressWarnings(value = { "unused" })
-  private static Response buildGRMRes(HTTPReqResData reqRes) {
+   static Response buildGRMRes(HTTPReqResData reqRes) {
     TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
     Header header = new Header(tr069ID, null, null);
     Body body = new GRMres();
     return new Response(header, body);
   }
 
-  @SuppressWarnings(value = { "unused" })
-  private static Response buildCU(HTTPReqResData reqRes) {
+   static Response buildCU(HTTPReqResData reqRes) {
     TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
     if (reqRes.getTR069TransactionID() == null)
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
@@ -102,8 +94,7 @@ public class HTTPResponseCreator {
     return new Response(header, body);
   }
 
-  @SuppressWarnings(value = { "unused" })
-  private static Response buildGPN(HTTPReqResData reqRes) {
+   static Response buildGPN(HTTPReqResData reqRes) {
     if (reqRes.getTR069TransactionID() == null)
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
@@ -112,8 +103,7 @@ public class HTTPResponseCreator {
     return new Response(header, body);
   }
 
-  @SuppressWarnings(value = { "unused" })
-  private static Response buildGPA(HTTPReqResData reqRes) {
+   static Response buildGPA(HTTPReqResData reqRes) {
     if (reqRes.getTR069TransactionID() == null)
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
@@ -135,7 +125,7 @@ public class HTTPResponseCreator {
     return new Response(header, body);
   }
 
-  private static boolean isOldPingcomDevice(String unitId) {
+  static boolean isOldPingcomDevice(String unitId) {
     if (unitId.contains("NPA201E"))
       return true;
     if (unitId.contains("RGW208EN"))
@@ -145,7 +135,7 @@ public class HTTPResponseCreator {
     return false;
   }
 
-  private static void addCPEParameters(SessionData sessionData) {
+  static void addCPEParameters(SessionData sessionData) {
     Map<String, ParameterValueStruct> paramValueMap = sessionData.getFromDB();
     CPEParameters cpeParams = sessionData.getCpeParameters();
     UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
@@ -179,10 +169,8 @@ public class HTTPResponseCreator {
    * standard and the FREEACS-way.
    * 
    *
-   * @throws SQLException
    */
-  @SuppressWarnings(value = { "unused" })
-  private static Response buildGPV(HTTPReqResData reqRes) throws SQLException {
+   static Response buildGPV(HTTPReqResData reqRes) {
     if (reqRes.getTR069TransactionID() == null)
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
@@ -233,8 +221,7 @@ public class HTTPResponseCreator {
     return new Response(header, body);
   }
 
-  @SuppressWarnings(value = { "unused" })
-  private static Response buildSPV(HTTPReqResData reqRes) throws NoSuchAlgorithmException, SQLException {
+   static Response buildSPV(HTTPReqResData reqRes) throws NoSuchAlgorithmException, SQLException {
     if (reqRes.getTR069TransactionID() == null)
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
@@ -268,8 +255,7 @@ public class HTTPResponseCreator {
     return new Response(header, body);
   }
 
-  @SuppressWarnings(value = { "unused" })
-  private static Response buildDO(HTTPReqResData reqRes) throws SQLException {
+   static Response buildDO(HTTPReqResData reqRes) {
     if (reqRes.getTR069TransactionID() == null)
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
@@ -295,13 +281,13 @@ public class HTTPResponseCreator {
     return new Response(header, body);
   }
 
-  public static void createResponse(HTTPReqResData reqRes) throws TR069Exception {
+  static void createResponse(HTTPReqResData reqRes) throws TR069Exception {
     try {
       String methodName = reqRes.getResponse().getMethod();
       Response response = null;
       HTTPResponseAction resAction = TR069Method.responseMap.get(methodName);
       if (resAction != null)
-        response = (Response) resAction.getCreateResponseMethod().invoke(null, reqRes);
+        response = (Response) resAction.getCreateResponseMethod().apply(reqRes);
       else {
         response = new EmptyResponse();
         Log.error(HTTPResponseCreator.class, "The methodName " + methodName + " has no corresponding ResponseAction-method");
@@ -315,8 +301,7 @@ public class HTTPResponseCreator {
     }
   }
 
-  @SuppressWarnings(value = { "unused" })
-  private static Response buildSPA(HTTPReqResData reqRes) throws NoSuchAlgorithmException, SQLException {
+   static Response buildSPA(HTTPReqResData reqRes) {
     if (reqRes.getTR069TransactionID() == null)
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);

@@ -1,24 +1,26 @@
 package com.github.freeacs.tr069.methods;
 
 import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.xml.Response;
 
-import java.lang.reflect.Method;
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 
 public class HTTPResponseAction {
 
-	private Method createResponseMethod;
+	private CheckedResponseFunction createResponseMethod;
 
-	public HTTPResponseAction(String responseMethod) throws NoSuchMethodException {
-		setCreateResponseMethod(responseMethod);
+	public HTTPResponseAction(CheckedResponseFunction responseMethod) {
+		this.createResponseMethod = responseMethod;
 	}
 
-	public Method getCreateResponseMethod() {
+	public CheckedResponseFunction getCreateResponseMethod() {
 		return createResponseMethod;
 	}
 
-	public void setCreateResponseMethod(String methodName) throws NoSuchMethodException {
-		if (methodName != null)
-			this.createResponseMethod = HTTPResponseCreator.class.getDeclaredMethod(methodName, HTTPReqResData.class);
+	@FunctionalInterface
+	public interface CheckedResponseFunction {
+		Response apply(HTTPReqResData t) throws NoSuchAlgorithmException, SQLException;
 	}
 
 }

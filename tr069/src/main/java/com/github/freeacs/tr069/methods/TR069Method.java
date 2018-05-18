@@ -50,60 +50,60 @@ public class TR069Method {
 		try {
 			abbrevMap.put(EMPTY, "EM");
 			requestMap.put(EMPTY, new HTTPRequestAction(DoNotProcessReq.class, EMDecision.class));
-			responseMap.put(EMPTY, new HTTPResponseAction("buildEM"));
+			responseMap.put(EMPTY, new HTTPResponseAction(HTTPResponseCreator::buildEM));
 
 			abbrevMap.put(GET_RPC_METHODS, "GRM");
 			abbrevMap.put(GET_RPC_METHODS_RES, "GRM");
 			requestMap.put(GET_RPC_METHODS, new HTTPRequestAction(DoNotProcessReq.class, GET_RPC_METHODS_RES));
 			requestMap.put(GET_RPC_METHODS_RES, new HTTPRequestAction(DoNotProcessReq.class, GET_PARAMETER_VALUES));
-			responseMap.put(GET_RPC_METHODS, new HTTPResponseAction("buildGRMReq"));
-			responseMap.put(GET_RPC_METHODS_RES, new HTTPResponseAction("buildGRMRes"));
+			responseMap.put(GET_RPC_METHODS, new HTTPResponseAction(HTTPResponseCreator::buildGRMReq));
+			responseMap.put(GET_RPC_METHODS_RES, new HTTPResponseAction(HTTPResponseCreator::buildGRMRes));
 
 			abbrevMap.put(GET_PARAMETER_NAMES, "GPN");
 			requestMap.put(GET_PARAMETER_NAMES, new HTTPRequestAction(GPNres.class, GET_PARAMETER_VALUES));
-			responseMap.put(GET_PARAMETER_NAMES, new HTTPResponseAction("buildGPN"));
+			responseMap.put(GET_PARAMETER_NAMES, new HTTPResponseAction(HTTPResponseCreator::buildGPN));
 
 			abbrevMap.put(INFORM, "IN");
 			requestMap.put(INFORM, new HTTPRequestAction(INreq.class, INFORM));
-			responseMap.put(INFORM, new HTTPResponseAction("buildIN"));
+			responseMap.put(INFORM, new HTTPResponseAction(HTTPResponseCreator::buildIN));
 
 			abbrevMap.put(GET_PARAMETER_VALUES, "GPV");
 			requestMap.put(GET_PARAMETER_VALUES, new HTTPRequestAction(GPVres.class, GPVDecision.class));
-			responseMap.put(GET_PARAMETER_VALUES, new HTTPResponseAction("buildGPV"));
+			responseMap.put(GET_PARAMETER_VALUES, new HTTPResponseAction(HTTPResponseCreator::buildGPV));
 			
 			abbrevMap.put(SET_PARAMETER_VALUES, "SPV");
 			requestMap.put(SET_PARAMETER_VALUES, new HTTPRequestAction(SPVres.class, SPVDecision.class));
-			responseMap.put(SET_PARAMETER_VALUES, new HTTPResponseAction("buildSPV"));
+			responseMap.put(SET_PARAMETER_VALUES, new HTTPResponseAction(HTTPResponseCreator::buildSPV));
 			
 			abbrevMap.put(GET_PARAMETER_ATTRIBUTES, "GPA");
 			requestMap.put(GET_PARAMETER_ATTRIBUTES, new HTTPRequestAction(GPAres.class, GPADecision.class));
-			responseMap.put(GET_PARAMETER_ATTRIBUTES, new HTTPResponseAction("buildGPA"));
+			responseMap.put(GET_PARAMETER_ATTRIBUTES, new HTTPResponseAction(HTTPResponseCreator::buildGPA));
 			
 			abbrevMap.put(SET_PARAMETER_ATTRIBUTES, "SPA");
 			requestMap.put(SET_PARAMETER_ATTRIBUTES, new HTTPRequestAction(SPAres.class, SPADecision.class));
-			responseMap.put(SET_PARAMETER_ATTRIBUTES, new HTTPResponseAction("buildSPA"));
+			responseMap.put(SET_PARAMETER_ATTRIBUTES, new HTTPResponseAction(HTTPResponseCreator::buildSPA));
 
 			abbrevMap.put(TRANSFER_COMPLETE, "TC");
 			requestMap.put(TRANSFER_COMPLETE, new HTTPRequestAction(TCreq.class, TCDecision.class));
-			responseMap.put(TRANSFER_COMPLETE, new HTTPResponseAction("buildTC"));
+			responseMap.put(TRANSFER_COMPLETE, new HTTPResponseAction(HTTPResponseCreator::buildTC));
 
 			abbrevMap.put(DOWNLOAD, "DO");
 			requestMap.put(DOWNLOAD, new HTTPRequestAction(DOres.class, EMPTY));
-			responseMap.put(DOWNLOAD, new HTTPResponseAction("buildDO"));
+			responseMap.put(DOWNLOAD, new HTTPResponseAction(HTTPResponseCreator::buildDO));
 			
 			abbrevMap.put(FAULT, "FA");
 			requestMap.put(FAULT, new HTTPRequestAction(FAres.class, FADecision.class));
 
 			abbrevMap.put(REBOOT, "RE");
 			requestMap.put(REBOOT, new HTTPRequestAction(REres.class, EMPTY));
-			responseMap.put(REBOOT, new HTTPResponseAction("buildRE"));
+			responseMap.put(REBOOT, new HTTPResponseAction(HTTPResponseCreator::buildRE));
 
 			abbrevMap.put(FACTORY_RESET, "FR");
 			requestMap.put(FACTORY_RESET, new HTTPRequestAction(FRres.class, EMPTY));
-			responseMap.put(FACTORY_RESET, new HTTPResponseAction("buildFR"));
+			responseMap.put(FACTORY_RESET, new HTTPResponseAction(HTTPResponseCreator::buildFR));
 
 			abbrevMap.put(CUSTOM, "CU");
-			responseMap.put(CUSTOM, new HTTPResponseAction("buildCU"));
+			responseMap.put(CUSTOM, new HTTPResponseAction(HTTPResponseCreator::buildCU));
 		} catch (Throwable t) {
 			Log.fatal(TR069Method.class, "The buildup of TR069 Method Associations failed. TR069 server must stop.", t);
 			System.exit(1);
