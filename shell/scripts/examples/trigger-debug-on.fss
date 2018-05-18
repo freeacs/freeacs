@@ -1,9 +1,9 @@
 while ${_1}
 	unit ${1}
-	if '${System.X_OWERA-COM.Debug}' eq 0
-		setparam System.X_OWERA-COM.Debug 1
-		setparam InternetGatewayDevice.X_OWERA-COM.Syslog.Enable 1
-		setparam InternetGatewayDevice.X_OWERA-COM.Syslog.Severity 7
+	if '${System.X_FREEACS-COM.Debug}' eq 0
+		setparam System.X_FREEACS-COM.Debug 1
+		setparam InternetGatewayDevice.X_FREEACS-COM.Syslog.Enable 1
+		setparam InternetGatewayDevice.X_FREEACS-COM.Syslog.Severity 7
 	kick
 	fi 
 done

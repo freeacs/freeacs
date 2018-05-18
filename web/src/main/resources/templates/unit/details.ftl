@@ -72,7 +72,7 @@
 															<td><input name="unitdelete" value="Delete" type="submit" onclick="return processDelete('delete the unit');" class="tiptip" title="The unit will be deleted from the system, all unit parameter settings will be lost. The device may continue to connect to the system and may be recovered through Discovery or manual creation of Unit in the system" /></td>
 														</tr>
 														<tr>
-															<th style="text-align:right;white-space:nowrap;" class="tiptip" title="Link to Web GUI of device. You may specify the System.X_OWERA-COM.Device.GUIURL as a profile/unit parameter to change/set this URL. Reference other parameters to build the URL by using ${r'${parameter-name}'}">Device GUI:</th>
+															<th style="text-align:right;white-space:nowrap;" class="tiptip" title="Link to Web GUI of device. You may specify the System.X_FREEACS-COM.Device.GUIURL as a profile/unit parameter to change/set this URL. Reference other parameters to build the URL by using ${r'${parameter-name}'}">Device GUI:</th>
 															<td colspan="2">
 																<#if guiurl??>
 																	<a target="_blank" href="${guiurl}">${guiurl}</a><#if natdetected??> (Behind NAT)</#if>
@@ -124,8 +124,8 @@
 															Freq/Spread: 
 														</th>
 														<td style="white-space:nowrap">
-															<input name="frequency" value=${frequency} type="text" size="3" class="tiptip" title="Set provisioning frequency (provisionings pr week), default is 7. Update the parameter System.X_OWERA-COM.ServiceWindow.Frequency in the profile if you want to make changes to all devices in the profile."/>/
-															<input name="spread" value=${spread} type="text" size="2" class="tiptip" title="Set provisioning spread (0-100% from fixed interval), default is 20. Update the parameter System.X_OWERA-COM.ServiceWindow.Spread in the profile if you want to make changes to all devices in the profile."/>
+															<input name="frequency" value=${frequency} type="text" size="3" class="tiptip" title="Set provisioning frequency (provisionings pr week), default is 7. Update the parameter System.X_FREEACS-COM.ServiceWindow.Frequency in the profile if you want to make changes to all devices in the profile."/>/
+															<input name="spread" value=${spread} type="text" size="2" class="tiptip" title="Set provisioning spread (0-100% from fixed interval), default is 20. Update the parameter System.X_FREEACS-COM.ServiceWindow.Spread in the profile if you want to make changes to all devices in the profile."/>
 															<input name="change_freqspread" value="Change" type="submit" class="tiptip" title="Initiates provisioning interval change immediately - if ConnectionRequestURL or UDPConnectionRequestUDP is defined. The device should provision within 30 seconds max - at which point at frequency change will be issued"/>
 														</td>
 													</tr>
@@ -239,7 +239,7 @@
 											<#--if mode_session=true><th align="left">CPE (current) value</th></#if-->
 											<#--if mode_readall??><th align="left">CPE (current) value</th></#if-->
 											<#list params as param>
-												<#if param.name == "System.X_OWERA-COM.ProvisioningMode" && param.unitParameter?? && param.unitParameter.value == "READALL">
+												<#if param.name == "System.X_FREEACS-COM.ProvisioningMode" && param.unitParameter?? && param.unitParameter.value == "READALL">
 													<th align="left">CPE (current) value</th>
 													<#assign mode_readall=true>
 													<#break>

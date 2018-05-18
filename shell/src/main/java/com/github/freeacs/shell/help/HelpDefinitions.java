@@ -304,7 +304,7 @@ public class HelpDefinitions {
 		help.addOption(getUseContextHelpOption());
 		help.addArgument("<parameter-name>", "Adding: A valid unittype parameter name. Changing: A valid unit parameter name.");
 		help.addArgument("<value>", "Any String, maximum 512 character.");
-		help.addExamples("setparam Device.DeviceInfo.PeriodicInformInterval 100", "setparam System.X_OWERA-COM.Comment \"Service is unavailable\"");
+		help.addExamples("setparam Device.DeviceInfo.PeriodicInformInterval 100", "setparam System.X_FREEACS-COM.Comment \"Service is unavailable\"");
 		hg.addHelp(help);
 
 		help = new Help("delparam <parameter-name>");
@@ -618,7 +618,7 @@ public class HelpDefinitions {
 		argCom += "like. Please adhere to standard name convention for such parameters:\n\t\tSystem.X_COMPAMY-COM.NameOfParameter<.SubName>";
 		help.addArgument("<flags>", argCom);
 		help.addExample("setparam Device.DeviceInfo.PeriodicInformInterval RW");
-		help.addExample("setparam System.X_OWERA-COM.Comment SDX");
+		help.addExample("setparam System.X_FREEACS-COM.Comment SDX");
 		help.addExample("setparam Device.DeviceInfo.SerialNumber AR");
 		hg.addHelp(help);
 

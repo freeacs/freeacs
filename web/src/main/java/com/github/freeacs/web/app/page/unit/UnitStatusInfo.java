@@ -153,7 +153,7 @@ public class UnitStatusInfo {
 	 * @return the software version
 	 */
 	public String getSoftwareVersion() {
-		UnittypeParameter serialUtp = currentUnit.getUnittype().getUnittypeParameters().getByName("System.X_OWERA-COM.Device.SoftwareVersion");
+		UnittypeParameter serialUtp = currentUnit.getUnittype().getUnittypeParameters().getByName(SystemParameters.SOFTWARE_VERSION);
 		if (serialUtp == null)
 			serialUtp = currentUnit.getUnittype().getUnittypeParameters().getByName("Device.DeviceInfo.SoftwareVersion");
 		if (serialUtp == null)
@@ -171,7 +171,7 @@ public class UnitStatusInfo {
 	 * @return the desired software version
 	 */
 	public String getDesiredSoftwareVersion() {
-		UnittypeParameter desiredSw = currentUnit.getUnittype().getUnittypeParameters().getByName("System.X_OWERA-COM.DesiredSoftwareVersion");
+		UnittypeParameter desiredSw = currentUnit.getUnittype().getUnittypeParameters().getByName(SystemParameters.DESIRED_SOFTWARE_VERSION);
 		if (desiredSw != null) {
 			String param = currentUnit.getParameters().get(desiredSw.getName());
 			return param != null ? param : null;
@@ -266,28 +266,6 @@ public class UnitStatusInfo {
 		boolean hasConnected = firstConnect != null || lastConnect != null;
 		this.hasConnected = hasConnected;
 		return hasConnected;
-	}
-
-	/**
-	 * Gets the ip address.
-	 *
-	 * @return the ip address
-	 */
-	public String getIpAddress() {
-		//		String ipAddress = Parameters.getUnitParameterValue(currentUnit, "ManagementServer.ConnectionRequestURL");
-		//		if (ipAddress != null) {
-		//			if (ipAddress.indexOf("http://") > -1) {
-		//				ipAddress = ipAddress.substring(ipAddress.indexOf("http://") + 7);
-		//				if (ipAddress.indexOf("/") > -1)
-		//					ipAddress = ipAddress.substring(0, ipAddress.indexOf("/"));
-		//				else
-		//					ipAddress = null;
-		//			} else
-		//				ipAddress = null;
-		//		} else
-		//			ipAddress = Parameters.getUnitParameterValue(currentUnit, "System.X_OWERA-COM.Device.PublicIPAddress");
-		//		return ipAddress;
-		return Parameters.getUnitParameterValue(currentUnit, "System.X_OWERA-COM.Device.PublicIPAddress");
 	}
 
 	/**

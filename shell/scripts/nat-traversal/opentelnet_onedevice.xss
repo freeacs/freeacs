@@ -18,8 +18,8 @@ call scripts/nat-traversal/get_connection_url_ip.xss
 # A call always store the result in the variable ${_return}, store the ip found in the script
 var gateway_ip '${_return}'
 
-# We need to see if any device is behind this unit - use System.X_OWERA-COM.Device.PublicIPAddress
-if '${System.X_OWERA-COM.Device.PublicIPAddress}' eq '${gateway_ip}'
+# We need to see if any device is behind this unit - use System.X_FREEACS-COM.Device.PublicIPAddress
+if '${System.X_FREEACS-COM.Device.PublicIPAddress}' eq '${gateway_ip}'
 	# echo ${gateway_unit} (${gateway_ip}) is a gateway device (on public IP), will now search for target devices (behind gateway)
 	# find all units referring to the same gateway_ip (any unit-parameter value that matches)
 	/listunits ${gateway_ip} > unitsbehind_gateway.u
@@ -34,7 +34,7 @@ if '${System.X_OWERA-COM.Device.PublicIPAddress}' eq '${gateway_ip}'
 			/unit ${1}
 			call scripts/nat-traversal/get_connection_url_ip.xss
 			var target_ip '${_return}'
-			if '${target_ip}' eq 'NULL' or '${target_ip}' eq '' or '${System.X_OWERA-COM.Device.PublicIPAddress}' ne '${gateway_ip}'
+			if '${target_ip}' eq 'NULL' or '${target_ip}' eq '' or '${System.X_FREEACS-COM.Device.PublicIPAddress}' ne '${gateway_ip}'
 				# echo Could not find a target ip or the target's public ip did not match gateway ip, jump to top of while loop
 				continue
 			fi
