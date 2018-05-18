@@ -18,7 +18,6 @@ import java.util.Collections;
 
 import static com.github.freeacs.dbi.SyslogConstants.FACILITY_SPP;
 import static com.github.freeacs.spp.HTTPProvisioning.VERSION;
-import static com.github.freeacs.Properties.Module.SPP;
 
 @SpringBootApplication
 public class App {
@@ -44,7 +43,7 @@ public class App {
 
     @Bean
     public DBAccess getDBAccess(@Qualifier("xaps") DataSource xapsDataSource, @Qualifier("syslog") DataSource syslogDataSource) {
-        return new DBAccess(SPP, FACILITY_SPP, VERSION, xapsDataSource, syslogDataSource);
+        return new DBAccess(FACILITY_SPP, VERSION, xapsDataSource, syslogDataSource);
     }
 
     @Bean

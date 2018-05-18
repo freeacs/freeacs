@@ -145,7 +145,7 @@ public class SPP {
     } else if (job.getFlags().getType() == JobType.SOFTWARE) {
       sw = new ServiceWindow(sessionData, disruptiveSw);
       pm.setProvOutput(ProvOutput.SOFTWARE);
-      if ((disruptive || sw.isWithin()) && DownloadLogic.downloadAllowed(com.github.freeacs.Properties.Module.SPP, job)) {
+      if ((disruptive || sw.isWithin()) && DownloadLogic.downloadAllowed(job, Properties.concurrentDownloadLimit())) {
         unit = sessionData.getUnit();
         String dsw = unit.getParameters().get(SystemParameters.DESIRED_SOFTWARE_VERSION);
         if (sessionData.getUnittype().getFiles().getByVersionType(dsw, FileType.SOFTWARE) == null) {
@@ -261,7 +261,7 @@ public class SPP {
         sessionData.getPIIDecision().setDisruptiveSW(sw);
         sessionData.setPeriodicInterval(sessionData.getPIIDecision().nextPII());
         pm.setProvOutput(ProvOutput.SOFTWARE);
-        if (sw.isWithin() && DownloadLogic.downloadAllowed(com.github.freeacs.Properties.Module.SPP, null)) {
+        if (sw.isWithin() && DownloadLogic.downloadAllowed(null, Properties.concurrentDownloadLimit())) {
           // firmware prov
           pm.setProvStatus(ProvStatus.OK);
           pm.setFileVersion(dsw);
@@ -305,7 +305,7 @@ public class SPP {
 
     boolean ok = JobLogic.checkJobOK(sessionData);
     if (ok)
-      JobLogic.checkNewJob(com.github.freeacs.Properties.Module.SPP, sessionData);
+      JobLogic.checkNewJob(sessionData, Properties.concurrentDownloadLimit());
 
     Job job = sessionData.getJob();
     if (job == null) {
