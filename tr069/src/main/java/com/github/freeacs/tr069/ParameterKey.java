@@ -70,7 +70,7 @@ public class ParameterKey {
 			UnittypeParameter utp = utps.getByName(utpName);
 			//			if (pis != null && pis.isWritable()) {
 			if (utp != null && utp.getFlag().isReadWrite()) {
-				if (utpName.indexOf("PeriodicInformInterval") > -1)
+				if (utpName.contains("PeriodicInformInterval"))
 					continue;
 				if (entry.getValue().getValue().equals("ExtraCPEParam"))
 					continue;
