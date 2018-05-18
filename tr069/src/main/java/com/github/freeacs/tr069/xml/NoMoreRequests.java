@@ -3,11 +3,7 @@ package com.github.freeacs.tr069.xml;
 import com.github.freeacs.tr069.Namespace;
 
 public class NoMoreRequests {
-	private boolean noMoreRequests = false;
-
-	public NoMoreRequests(boolean noMoreRequests) {
-		this.noMoreRequests = noMoreRequests;
-	}
+	private boolean noMoreRequests;
 
 	public NoMoreRequests(String noMoreRequests) {
 		if (noMoreRequests == "0")

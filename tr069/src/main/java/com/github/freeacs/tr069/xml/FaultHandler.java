@@ -11,11 +11,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 /**
  * The class is responsible for parsing the SOAP Fault entity received from the CPE.
- * 
- * @author knut petter
- * 
  */
-
 public class FaultHandler extends DefaultHandler {
 
 	public static final String DSLFORUM_NS = "urn:dslforum-org:cwmp-1-0";

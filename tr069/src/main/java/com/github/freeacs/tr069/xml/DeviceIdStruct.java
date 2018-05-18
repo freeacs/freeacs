@@ -16,13 +16,6 @@ public class DeviceIdStruct {
 		this.serialNumber = null;
 	}
 
-	public DeviceIdStruct(String manufacturer, String oui, String productClass, String serialNumber) {
-		this.manufacturer = manufacturer;
-		this.oui = oui;
-		this.productClass = productClass;
-		this.serialNumber = serialNumber;
-	}
-
 	public String getManufacturer() {
 		return manufacturer;
 	}

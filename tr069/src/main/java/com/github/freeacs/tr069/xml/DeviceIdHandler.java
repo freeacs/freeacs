@@ -8,10 +8,6 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * The class is responsible for parsing the DeviceId entity and populating the 
  * DeviceIdStruct object fields (manufacturer, oui, productClass, serialNumber).
- * 
- * 
- * @author knut petter
- * 
  */
 
 public class DeviceIdHandler extends DefaultHandler {
@@ -22,7 +18,7 @@ public class DeviceIdHandler extends DefaultHandler {
 	public static final String SERIAL_NUMBER_TAG = "SerialNumber";
 
 	Parser owner;
-	private DeviceIdStruct didStruct = null;
+	private DeviceIdStruct didStruct;
 	private StringBuilder currTextContent = new StringBuilder();
 
 	public DeviceIdHandler(DeviceIdStruct didStruct, Parser owner) {

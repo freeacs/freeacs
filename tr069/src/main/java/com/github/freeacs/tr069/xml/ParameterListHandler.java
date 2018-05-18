@@ -8,12 +8,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * The class is responsible for parsing the ParameterList entity and populating the 
  * ParameterList which is a list of ParameterValueStruct or ParameterInfoStruct objects 
  * (which depends on the RPC method performed).
- * 
- *   
- * @author knut petter
- * 
  */
-
 public class ParameterListHandler extends DefaultHandler {
 
 	private enum ParameterType {

@@ -19,15 +19,6 @@ public class EventList {
 		return this.events;
 	}
 
-	public boolean containsEvent(String eventCode) {
-		for (EventStruct event : events) {
-			if (event.getEventCode().equals(eventCode)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public EventList clone() {
 		EventList clonedEventList = new EventList();
 		for (int i = 0; i < events.size(); i++) {

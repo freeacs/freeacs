@@ -4,9 +4,6 @@ import com.github.freeacs.tr069.Namespace;
 
 public class Header {
 
-	public static final String TRANSACTION_ID_TAG = "ID";
-	public static final String HOLD_REQUESTS_TAG = "HoldRequests";
-
 	private HoldRequests holdRequests;
 	private TR069TransactionID id;
 	private NoMoreRequests noMoreRequests;

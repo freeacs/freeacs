@@ -37,16 +37,6 @@ public class ParameterList {
 	public ArrayList<ParameterAttributeStruct> getParameterAttributeList() {
 		return this.attributes;
 	}
-	
-	public String getParameterValueListKeyValue(String key) {
-		for (ParameterValueStruct struct : this.params) {
-			if (struct.getName().equals(key)) {
-				return struct.getValue();
-			}
-		}
-
-		return null;
-	}
 
 	public void addOrChangeParameterValueStruct(String key, String value, String type) {
 		boolean changed = false;

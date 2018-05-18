@@ -9,10 +9,6 @@ import org.xml.sax.helpers.DefaultHandler;
  * The class is responsible for parsing the Event entity and populating the EventList
  * which is a list of EventStruct objects (Note that each EventStruct object
  * has two parameters called the EventCode and the CommandKey).
- * 
- * 
- * @author knut petter
- * 
  */
 
 public class EventHandler extends DefaultHandler {
