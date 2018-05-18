@@ -18,7 +18,7 @@ import java.util.Collections;
 
 import static com.github.freeacs.dbi.SyslogConstants.FACILITY_SPP;
 import static com.github.freeacs.spp.HTTPProvisioning.VERSION;
-import static com.github.freeacs.Properties.Module.SPP;
+import static com.github.freeacs.Module.SPP;
 
 @SpringBootApplication
 public class App {

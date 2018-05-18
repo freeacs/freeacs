@@ -1,6 +1,5 @@
 package com.github.freeacs.base;
 
-import com.github.freeacs.Properties;
 import com.github.freeacs.dbi.Job;
 
 import java.util.LinkedList;
@@ -40,13 +39,13 @@ public class DownloadLogic {
 		return downloadList.size();
 	}
 
-	public static boolean downloadAllowed(Properties.Module module, Job job) {
+	public static boolean downloadAllowed(Job job, int downloadLimit) {
 		int timeout = 10 * 60 * 1000; // 10 min
 		if (job != null)
 			timeout = job.getUnconfirmedTimeout() * 1000;
 		DownloadLogic.removeOlderThan(timeout); // remove old downloads
-		if (DownloadLogic.size() >= Properties.concurrentDownloadLimit(module)) {
-			Log.warn(DownloadLogic.class, "Download cannot be run since number of concurrent downloads are above " + Properties.concurrentDownloadLimit(module) + ", download will be postponed");
+		if (DownloadLogic.size() >= downloadLimit) {
+			Log.warn(DownloadLogic.class, "Download cannot be run since number of concurrent downloads are above " + downloadLimit + ", download will be postponed");
 			return false;
 		}
 		return true;

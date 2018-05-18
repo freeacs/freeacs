@@ -9,7 +9,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class PropertiesTest {
+public class ModuleTest {
 
     @Test
     public void isParameterQuirkWithVersion_SpeedTouch() {

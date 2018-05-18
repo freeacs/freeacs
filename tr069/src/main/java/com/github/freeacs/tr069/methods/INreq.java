@@ -97,7 +97,7 @@ public class INreq {
 				if (keyRoot != null && (keyRoot.equals("Device.") || keyRoot.equals("InternetGatewayDevice."))) {
 					sessionData.setKeyRoot(keyRoot);
 //					String configFileVersionParameter = "DeviceInfo.VendorConfigFile.1.Version";
-//					if (Properties.isConfigFileVersionQuirk(sessionData))
+//					if (Module.isConfigFileVersionQuirk(sessionData))
 //						configFileVersionParameter = "DeviceInfo.VendorConfigFile.Version";
 					cpeParams = new CPEParameters(keyRoot);
 					sessionData.setCpeParameters(cpeParams);

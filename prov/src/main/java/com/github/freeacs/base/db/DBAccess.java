@@ -1,6 +1,6 @@
 package com.github.freeacs.base.db;
 
-import com.github.freeacs.Properties;
+import com.github.freeacs.Module;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.SessionDataI;
 import com.github.freeacs.dbi.*;
@@ -20,13 +20,13 @@ public class DBAccess {
 	private static Logger logger = LoggerFactory.getLogger(DBAccess.class);
 	private final DataSource xapsDataSource;
 	private final DataSource syslogDataSource;
-	private final Properties.Module module;
+	private final Module module;
 	private final String facilityVersion;
 	private final int facility;
 
 	private DBI dbi;
 
-	public DBAccess(Properties.Module mod, int facilityInt, String facilityVersionStr, DataSource xapsDataSource, DataSource syslogDataSource) {
+	public DBAccess(Module mod, int facilityInt, String facilityVersionStr, DataSource xapsDataSource, DataSource syslogDataSource) {
 		this.module = mod;
 		this.facility = facilityInt;
 		this.facilityVersion = facilityVersionStr;
@@ -34,7 +34,7 @@ public class DBAccess {
 		this.syslogDataSource = syslogDataSource;
 	}
 
-	public Properties.Module getModule() {
+	public Module getModule() {
 		return module;
 	}
 

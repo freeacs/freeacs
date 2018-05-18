@@ -16,14 +16,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
 import java.util.Collections;
 
-import static com.github.freeacs.tr069.Provisioning.VERSION;
-import static com.github.freeacs.Properties.Module.TR069;
+import static com.github.freeacs.Module.TR069;
 import static com.github.freeacs.dbi.SyslogConstants.FACILITY_TR069;
+import static com.github.freeacs.tr069.Provisioning.VERSION;
 
 @SpringBootApplication(exclude = FlywayAutoConfiguration.class)
 public class App {

@@ -1,6 +1,5 @@
 package com.github.freeacs.base;
 
-import com.github.freeacs.Properties;
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
@@ -85,9 +84,9 @@ public class JobLogic {
 		}
 	}
 
-	public static UnitJob checkNewJob(Properties.Module module, SessionDataI sessionData) throws SQLException {
+	public static UnitJob checkNewJob(SessionDataI sessionData, int downloadLimit) throws SQLException {
 		if (sessionData.getUnit().getProvisioningMode() == ProvisioningMode.REGULAR) {
-			Job job = JobLogic.getJob(module, sessionData);
+			Job job = JobLogic.getJob(sessionData, downloadLimit);
 			if (job != null) {
 				UnitJob uj = null;
 				if (job.getFlags().getType() == JobType.SHELL) // TELNET jobs are never triggered through provisioning
@@ -108,11 +107,11 @@ public class JobLogic {
 	/**
 	 * The method filters through all kinds of factors to find
 	 * which Job (if any) should be the next to run.
-	 * @param module
 	 * @param sessionData
-	 * @return
+	 * @param downloadLimit
+     * @return
 	 */
-	private static Job getJob(Properties.Module module, SessionDataI sessionData) {
+	private static Job getJob(SessionDataI sessionData, int downloadLimit) {
 		Unit unit = sessionData.getUnit();
 		Jobs jobs = sessionData.getUnittype().getJobs();
 		String message = "";
@@ -142,7 +141,7 @@ public class JobLogic {
 			if (possibleJobs.size() == 0)
 				return null;
 
-			possibleJobs = filterOnDownloadAllowed(possibleJobs, module);
+			possibleJobs = filterOnDownloadAllowed(possibleJobs, downloadLimit);
 			message += "DownloadAllowed:" + possibleJobs.size() + ", ";
 			if (possibleJobs.size() == 0)
 				return null;
@@ -292,14 +291,14 @@ public class JobLogic {
 		return nextPII;
 	}
 
-	private static Map<Integer, Job> filterOnDownloadAllowed(Map<Integer, Job> possibleJobs, Properties.Module module) {
+	private static Map<Integer, Job> filterOnDownloadAllowed(Map<Integer, Job> possibleJobs, int downloadLimit) {
 		Iterator<Entry<Integer, Job>> i = possibleJobs.entrySet().iterator();
 		while (i.hasNext()) {
 			Entry<Integer, Job> entry = i.next();
 			Job job = entry.getValue();
 			JobType type = job.getFlags().getType();
 			if (type == JobType.SOFTWARE || type == JobType.TR069_SCRIPT) {
-				if (!DownloadLogic.downloadAllowed(module, job)) {
+				if (!DownloadLogic.downloadAllowed(job, downloadLimit)) {
 					i.remove();
 				}
 			}
