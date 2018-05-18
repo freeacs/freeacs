@@ -1,41 +1,29 @@
 package com.github.freeacs.base.db;
 
-import com.github.freeacs.Module;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.SessionDataI;
 import com.github.freeacs.dbi.*;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.util.Optional;
-import java.util.function.Supplier;
 
 public class DBAccess {
 
 	private static final Config config = ConfigFactory.load();
-	private static Logger logger = LoggerFactory.getLogger(DBAccess.class);
 	private final DataSource xapsDataSource;
 	private final DataSource syslogDataSource;
-	private final Module module;
 	private final String facilityVersion;
 	private final int facility;
 
 	private DBI dbi;
 
-	public DBAccess(Module mod, int facilityInt, String facilityVersionStr, DataSource xapsDataSource, DataSource syslogDataSource) {
-		this.module = mod;
+	public DBAccess(int facilityInt, String facilityVersionStr, DataSource xapsDataSource, DataSource syslogDataSource) {
 		this.facility = facilityInt;
 		this.facilityVersion = facilityVersionStr;
 		this.xapsDataSource = xapsDataSource;
 		this.syslogDataSource = syslogDataSource;
-	}
-
-	public Module getModule() {
-		return module;
 	}
 
 	public int getFacility() {
@@ -77,59 +65,6 @@ public class DBAccess {
 		return new XAPSUnit(getXapsDataSource(), xaps, xaps.getSyslog());
 	}
 
-    private static int getInteger(String propertyKey, int defaultValue) {
-        if (!config.hasPath(propertyKey)) {
-            logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
-            return defaultValue;
-        }
-        try {
-            return config.getInt(propertyKey);
-        } catch (Throwable t) {
-            logger.warn("The value of " + propertyKey + " was not a number, instead using default value " + defaultValue, t);
-            return defaultValue;
-        }
-    }
-
-    private static long getLong(String propertyKey, long defaultValue) {
-        if (!config.hasPath(propertyKey)) {
-            logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
-            return defaultValue;
-        }
-        try {
-            return config.getLong(propertyKey);
-        } catch (Throwable t) {
-            logger.warn("The value of " + propertyKey + " was not a number, instead using default value " + defaultValue, t);
-            return defaultValue;
-        }
-    }
-
-
-    private static String getString(String propertyKey, String defaultValue) {
-        if (!config.hasPath(propertyKey)) {
-            logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
-            return defaultValue;
-        }
-        return config.getString(propertyKey);
-    }
-
-
-    public static int getMaxConn(final String infix) {
-        return getInteger("db." + infix + ".maxconn", 20);
-    }
-
-    public static long getMaxAge(final String infix) {
-        return getLong("db." + infix + ".maxage", 60000);
-    }
-
-    public static String getUrl(final String infix) {
-        return Optional.ofNullable(getString("db." + infix + ".url", null))
-                .orElseGet(new Supplier<String>() {
-                    @Override
-                    public String get() {
-                        return getString("db." +infix, null);
-                    }
-                });
-    }
 
 	public DataSource getXapsDataSource() {
 		return xapsDataSource;

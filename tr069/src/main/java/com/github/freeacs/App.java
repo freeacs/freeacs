@@ -20,7 +20,6 @@ import org.springframework.context.annotation.Bean;
 import javax.sql.DataSource;
 import java.util.Collections;
 
-import static com.github.freeacs.Module.TR069;
 import static com.github.freeacs.dbi.SyslogConstants.FACILITY_TR069;
 import static com.github.freeacs.tr069.Provisioning.VERSION;
 
@@ -52,7 +51,7 @@ public class App {
         flyway.migrate();
         flyway.setDataSource(syslogDataSource);
         flyway.migrate();
-        return new DBAccess(TR069, FACILITY_TR069, VERSION, xapsDataSource, syslogDataSource);
+        return new DBAccess(FACILITY_TR069, VERSION, xapsDataSource, syslogDataSource);
     }
 
     @Bean

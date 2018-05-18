@@ -378,34 +378,6 @@ public class GPVDecision {
     DBAccessSessionTR069.writeUnitParams(sessionData);
   }
 
-  // private static void sendSyslogMessage(SessionData sessionData) {
-  // try {
-  // InetAddress address =
-  // InetAddress.getByName(Module.getSyslogServer(Module.TR069));
-  // DatagramSocket socket = new DatagramSocket();
-  // StringBuffer sb = new StringBuffer();
-  // sb.append("<133>Jan  1 00:00:00 cpe [" +
-  // sessionData.getOweraParameters().getValue(SystemParameters.MAC) +
-  // "]:TR-metrics:");
-  // for (ParameterValueStruct pvs : sessionData.getToSyslog()) {
-  // UnittypeParameters unittypeParameters =
-  // sessionData.getUnittype().getUnittypeParameters();
-  // UnittypeParameter utp = unittypeParameters.getByName(pvs.getName());
-  // sb.append(utp.getId() + "=" + pvs.getValue() + ",");
-  // }
-  // byte[] message = sb.toString().getBytes("UTF-8");
-  // DatagramPacket packet = new DatagramPacket(message, message.length);
-  // packet.setPort(Module.getSyslogServerPort(Module.TR069));
-  // packet.setAddress(address);
-  // socket.send(packet);
-  // socket.close();
-  // } catch (Throwable t) {
-  // Log.warn(GPVDecision.class,
-  // "Transmission of metrics to syslog server failed:", t);
-  // }
-  //
-  // }
-
   /**
    * Loop through all parameters defined in the database, and see which ones are
    * missing in the CPE. We only do this if the GPV has been run twice, clearly
