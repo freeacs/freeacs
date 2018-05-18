@@ -10,8 +10,6 @@ import com.github.freeacs.tr069.test.system2.TestUnit;
 import com.github.freeacs.tr069.test.system2.TestUnitCache;
 import com.github.freeacs.tr069.test.system2.Util;
 
-import java.lang.reflect.Method;
-
 /* This class is responsible for choosing the next response in the
  * TR-069 conversation. Depending upon the request, different logic
  * applies. 
