@@ -4,12 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.ErrorHandler;
 
-/**
- * 
- * @author knut petter
- *
- */
-
 public class SOAPErrorHandler implements ErrorHandler {
 
 	private static final transient Logger log = LoggerFactory.getLogger(SOAPErrorHandler.class);

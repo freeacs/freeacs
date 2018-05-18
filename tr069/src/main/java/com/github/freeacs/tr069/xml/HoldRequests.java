@@ -3,11 +3,7 @@ package com.github.freeacs.tr069.xml;
 import com.github.freeacs.tr069.Namespace;
 
 public class HoldRequests {
-	private boolean holdRequests = false;
-
-	public HoldRequests(boolean holdRequests) {
-		this.holdRequests = holdRequests;
-	}
+	private boolean holdRequests;
 
 	public HoldRequests(String holdRequests) {
 		if (holdRequests == "0")
@@ -34,7 +30,4 @@ public class HoldRequests {
 			holdRequests = true;
 	}
 
-	public boolean getHoldRequestFlag() {
-		return this.holdRequests;
-	}
 }
