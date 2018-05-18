@@ -26,7 +26,7 @@ public class DecisionMaker {
 		}
 		String reqMethod = null;
 		HTTPRequestAction reqAction = null;
-		Method decisionMakerMethod = null;
+		HTTPRequestAction.CheckedRequestFunction decisionMakerMethod = null;
 		try {
 			if (reqRes.getSessionData().isTestMode() && Util.testEnabled(reqRes, false)) {
 				// TODO:TF - find next method - completed
@@ -53,7 +53,7 @@ public class DecisionMaker {
 				reqAction = TR069Method.requestMap.get(reqMethod);
 				decisionMakerMethod = reqAction.getDecisionMakerMethod();
 				if (decisionMakerMethod != null)
-					decisionMakerMethod.invoke(null, reqRes);
+					decisionMakerMethod.apply(reqRes);
 				else
 					resData.setMethod(reqAction.getNextMethod());
 			}
