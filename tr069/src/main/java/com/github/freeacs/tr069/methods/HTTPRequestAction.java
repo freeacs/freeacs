@@ -1,16 +1,18 @@
 package com.github.freeacs.tr069.methods;
 
 import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.exception.TR069Exception;
+import com.github.freeacs.tr069.xml.Response;
 
 import java.lang.reflect.Method;
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 
-
-@SuppressWarnings("rawtypes")
 public class HTTPRequestAction {
 
-	private Method processRequestMethod;
+	private CheckedRequestFunction processRequestMethod;
 
-	private Method decisionMakerMethod;
+	private CheckedRequestFunction decisionMakerMethod;
 
 	private String nextMethod;
 
@@ -20,9 +22,9 @@ public class HTTPRequestAction {
 	 * decideClass: In case there are several options of what to do next (depending upon the 
 	 * information extracted in reqClass), we need a decideClass with a process(RequestResponse) method.
 	 */
-	public HTTPRequestAction(Class reqClass, Class decideClass) throws NoSuchMethodException {
-		setProcessRequestMethod(reqClass);
-		setDecisionMakerMethod(decideClass);
+	public HTTPRequestAction(CheckedRequestFunction processRequestMethod, CheckedRequestFunction decisionMakerMethod) {
+		this.processRequestMethod = processRequestMethod;
+		this.decisionMakerMethod = decisionMakerMethod;
 	}
 	
 	/*
@@ -31,35 +33,27 @@ public class HTTPRequestAction {
 	 * nextMethod: the response-method which should follow this incoming "request"
 	 * shortname: only used in monitoring-page
 	 */
-	public HTTPRequestAction(Class reqClass, String nextMethod) throws NoSuchMethodException {
-		setProcessRequestMethod(reqClass);
+	public HTTPRequestAction(CheckedRequestFunction processRequestMethod, String nextMethod) {
+		this.processRequestMethod = processRequestMethod;
 		this.nextMethod = nextMethod;
 	}
 	
 
-	public Method getProcessRequestMethod() {
+	CheckedRequestFunction getProcessRequestMethod() {
 		return processRequestMethod;
 	}
 
-	public Method getDecisionMakerMethod() {
+	CheckedRequestFunction getDecisionMakerMethod() {
 		return decisionMakerMethod;
 	}
 
-	@SuppressWarnings("unchecked")
-	public void setProcessRequestMethod(Class requestProcessor) throws NoSuchMethodException {
-		this.processRequestMethod = requestProcessor.getMethod("process", HTTPReqResData.class);
-	}
-
-	@SuppressWarnings("unchecked")
-	public void setDecisionMakerMethod(Class decisionMakerClass) throws NoSuchMethodException {
-		this.decisionMakerMethod = decisionMakerClass.getMethod("process", HTTPReqResData.class);
-	}
-
-	public String getNextMethod() {
+	String getNextMethod() {
 		return nextMethod;
 	}
 
-	public void setNextMethod(String nextMethod) {
-		this.nextMethod = nextMethod;
+	@FunctionalInterface
+	public interface CheckedRequestFunction {
+		void apply(HTTPReqResData t) throws NoSuchAlgorithmException, SQLException, TR069Exception;
 	}
+
 }

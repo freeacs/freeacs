@@ -456,7 +456,7 @@ public class HTTPRequestProcessor {
 				HTTPRequestAction reqAction = TR069Method.requestMap.get(requestMethodName);
 				if (reqAction != null) {
 					reqRes.getRequest().setXml(HTTPReqData.XMLFormatter.filter(reqRes.getRequest().getXml()));
-					reqAction.getProcessRequestMethod().invoke(null, reqRes);
+					reqAction.getProcessRequestMethod().apply(reqRes);
 				} else {
 					throw new UnknownMethodException(requestMethodName);
 				}
