@@ -25,11 +25,7 @@ public class MethodList {
     public void addMethod(String method) {
         this.methods.add(method);
     }
-    
-    public int indexOfMethod(String method) {
-        return methods.indexOf(method);
-    }
-    
+
     public boolean contains(String method) {
         return methods.contains(method);
     }

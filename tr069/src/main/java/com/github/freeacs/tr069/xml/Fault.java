@@ -66,14 +66,6 @@ public class Fault {
 		this.faultString = faultString;
 	}
 
-	public ArrayList<SetParameterValuesFault> getParameterFaults() {
-		return parameterFaults;
-	}
-
-	public void setParameterFaults(ArrayList<SetParameterValuesFault> parameterFaults) {
-		this.parameterFaults = parameterFaults;
-	}
-
 	public void addParameterValuesFault(SetParameterValuesFault paramFault) {
 		this.parameterFaults.add(paramFault);
 	}

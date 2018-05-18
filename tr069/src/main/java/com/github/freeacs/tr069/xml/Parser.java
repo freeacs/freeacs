@@ -12,12 +12,7 @@ import java.util.HashMap;
 /**
  * The class is responsible for parsing the SOAP messages from the CPE. 
  * The messages could be a TR-069 request or a TR-069 response.
- * 
- * 
- * @author knut petter
- * 
  */
-
 public class Parser extends DefaultHandler {
 	public static final String MAX_ENVELOPES_TAG = "MaxEnvelopes";
 	public static final String CURRENT_TIME_TAG = "CurrentTime";

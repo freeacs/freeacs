@@ -31,12 +31,4 @@ public class ParameterInfoStruct {
 		this.writable = writable;
 	}
 
-	public boolean isInspect() {
-		return inspect;
-	}
-
-	public void setInspect(boolean inspect) {
-		this.inspect = inspect;
-	}
-
 }
