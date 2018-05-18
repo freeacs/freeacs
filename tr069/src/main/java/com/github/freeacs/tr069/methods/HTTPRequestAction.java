@@ -12,8 +12,6 @@ public class HTTPRequestAction {
 
 	private CheckedRequestFunction decisionMakerMethod;
 
-	private String nextMethod;
-
 	/*
 	 * reqClass: The class must provide a process(RequestResponse) method. This method is responsible
 	 * for processing the incoming request.
@@ -24,18 +22,7 @@ public class HTTPRequestAction {
 		this.processRequestMethod = processRequestMethod;
 		this.decisionMakerMethod = decisionMakerMethod;
 	}
-	
-	/*
-	 * reqClass: The class must provide a process(RequestResponse) method. This method is responsible
-	 * for processing the incoming request.
-	 * nextMethod: the response-method which should follow this incoming "request"
-	 * shortname: only used in monitoring-page
-	 */
-	public HTTPRequestAction(CheckedRequestFunction processRequestMethod, String nextMethod) {
-		this.processRequestMethod = processRequestMethod;
-		this.nextMethod = nextMethod;
-	}
-	
+
 
 	public CheckedRequestFunction getProcessRequestMethod() {
 		return processRequestMethod;
@@ -43,10 +30,6 @@ public class HTTPRequestAction {
 
 	public CheckedRequestFunction getDecisionMakerMethod() {
 		return decisionMakerMethod;
-	}
-
-	public String getNextMethod() {
-		return nextMethod;
 	}
 
 	@FunctionalInterface
