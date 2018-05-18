@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/freeacs/freeacs.svg?branch=master)](https://travis-ci.org/freeacs/freeacs)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bbbaea0fbfd84abb9013ece867747e30)](https://www.codacy.com/app/Freeacs/freeacs?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=freeacs/freeacs&amp;utm_campaign=Badge_Grade)
 [![Gitter chat](https://badges.gitter.im/FreeACS-on-Gitter/Freeacs.png)](https://gitter.im/FreeACS-on-Gitter/Freeacs)
+[![Donate](https://img.shields.io/badge/Patreon-Donate-blue.svg)](https://www.patreon.com/freeacs)
 
 Fusion Free ACS is the most complete TR-069 ACS available for free under the MIT License. You can download and install it, or contribute to the project! 
 
