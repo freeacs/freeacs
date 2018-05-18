@@ -22,9 +22,8 @@ public class DecisionMaker {
 			resData.setMethod(TR069Method.EMPTY);
 			return;
 		}
-		String reqMethod = null;
-		HTTPRequestAction reqAction = null;
-		HTTPRequestAction.CheckedRequestFunction decisionMakerMethod = null;
+		String reqMethod;
+		HTTPRequestAction reqAction;
 		try {
 			if (reqRes.getSessionData().isTestMode() && Util.testEnabled(reqRes, false)) {
 				// TODO:TF - find next method - completed
@@ -49,11 +48,7 @@ public class DecisionMaker {
 			} else {
 				reqMethod = reqRes.getRequest().getMethod();
 				reqAction = TR069Method.requestMap.get(reqMethod);
-				decisionMakerMethod = reqAction.getDecisionMakerMethod();
-				if (decisionMakerMethod != null)
-					decisionMakerMethod.apply(reqRes);
-				else
-					resData.setMethod(reqAction.getNextMethod());
+				reqAction.getDecisionMakerMethod().apply(reqRes);
 			}
 		} catch (Throwable t) {
 			int loopCount = 0;
