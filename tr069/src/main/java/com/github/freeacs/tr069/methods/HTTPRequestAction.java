@@ -2,9 +2,7 @@ package com.github.freeacs.tr069.methods;
 
 import com.github.freeacs.tr069.HTTPReqResData;
 import com.github.freeacs.tr069.exception.TR069Exception;
-import com.github.freeacs.tr069.xml.Response;
 
-import java.lang.reflect.Method;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
@@ -39,15 +37,15 @@ public class HTTPRequestAction {
 	}
 	
 
-	CheckedRequestFunction getProcessRequestMethod() {
+	public CheckedRequestFunction getProcessRequestMethod() {
 		return processRequestMethod;
 	}
 
-	CheckedRequestFunction getDecisionMakerMethod() {
+	public CheckedRequestFunction getDecisionMakerMethod() {
 		return decisionMakerMethod;
 	}
 
-	String getNextMethod() {
+	public String getNextMethod() {
 		return nextMethod;
 	}
 
