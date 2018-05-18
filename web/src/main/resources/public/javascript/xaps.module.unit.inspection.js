@@ -14,8 +14,8 @@ xAPS.createModule("unit.inspection",function($this,$super,$){
 	 * The configuration.
 	 */
     $this.settings = {
-    	modeSelector: "input[name='update::System.X_OWERA-COM.ProvisioningMode.Cache']",
-    	stateSelector: "input[name='update::System.X_OWERA-COM.ProvisioningState.Cache']",
+    	modeSelector: "input[name='update::System.X_FREEACS-COM.ProvisioningMode.Cache']",
+    	stateSelector: "input[name='update::System.X_FREEACS-COM.ProvisioningState.Cache']",
     	messageSelector: "#unitkickmessage",
     	inspectionPageId: null, // REQUIRED the page id for the background callback to the inspection page
     	unitPageId: null, // REQUIRED the page id for reloading (or redirecting to) the unit page

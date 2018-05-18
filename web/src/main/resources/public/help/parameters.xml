@@ -8,7 +8,7 @@
             </Heading>
 			<Help>
 				A Unit Type parameter name with dot separation. Examples =>&lt;br /&gt;
-				a normal system parameter: System.X_OWERA-COM.SomeParameterName&lt;br /&gt;
+				a normal system parameter: System.X_FREEACS-COM.SomeParameterName&lt;br /&gt;
 				a normal device parameter: Device.DeviceInfo.SomeSetting&lt;br /&gt;
 				a custom parameter: Customer.Information.First_Name
             </Help>

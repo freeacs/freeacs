@@ -81,11 +81,11 @@ public class CUreq extends Body {
 					if (pvs.getName().equals(pis.getName())) {
 						if (pvs.getName().indexOf("ManagementServer.") > -1)
 							continue;
-						if (pvs.getName().indexOf("X_OWERA-COM.TFTP.SoftwareVersion") > -1)
+						if (pvs.getName().indexOf("X_FREEACS-COM.TFTP.SoftwareVersion") > -1)
 							continue;
-						if (pvs.getName().indexOf("X_OWERA-COM.TFTP.RefreshInterval") > -1)
+						if (pvs.getName().indexOf("X_FREEACS-COM.TFTP.RefreshInterval") > -1)
 							continue;
-						if (pvs.getName().indexOf("X_OWERA-COM.Web.") > -1)
+						if (pvs.getName().indexOf("X_FREEACS-COM.Web.") > -1)
 							continue;
 						newPvsList.add(pvs);
 					}

@@ -368,7 +368,7 @@ public class ReportGenerator extends DBIOwner {
 			}
 			rs.close();
 
-			rs = s.executeQuery("SELECT up.unit_id, timestampdiff(DAY, up.value, sysdate()) FROM unit_type_param utp, unit_param up WHERE up.unit_type_param_id = utp.unit_type_param_id AND utp.name LIKE 'System.X_OWERA-COM.LastConnectTms'");
+			rs = s.executeQuery("SELECT up.unit_id, timestampdiff(DAY, up.value, sysdate()) FROM unit_type_param utp, unit_param up WHERE up.unit_type_param_id = utp.unit_type_param_id AND utp.name LIKE 'System.X_FREEACS-COM.LastConnectTms'");
 			while (rs.next()) {
 				UnitSWLCT u = unitMap.get(rs.getString("unit_id"));
 				if (u != null)

@@ -35,7 +35,7 @@ while ${_2}
 	while true
 		sleep 2
 		refresh > tmp
-		if ${System.X_OWERA-COM.TR069Test.Enable} EQ 0
+		if ${System.X_FREEACS-COM.TR069Test.Enable} EQ 0
 			break
 		fi
 	done
