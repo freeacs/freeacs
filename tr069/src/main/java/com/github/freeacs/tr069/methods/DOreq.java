@@ -82,11 +82,11 @@ public class DOreq extends Body {
 		sb.append(URL_END);
 		
 		sb.append(USERNAME_START);
-		if (Properties.isFileAuthUsed())
+		if (Properties.FILE_AUTH_USED)
 		  sb.append(username);
 		sb.append(USERNAME_END);
 		sb.append(PASSWORD_START);
-		if (Properties.isFileAuthUsed())
+		if (Properties.FILE_AUTH_USED)
 		  sb.append(password);
 		sb.append(PASSWORD_END);
 		sb.append("\t\t\t<FileSize>" + filesize + "</FileSize>\n");
