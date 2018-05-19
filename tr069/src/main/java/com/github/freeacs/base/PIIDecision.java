@@ -5,16 +5,16 @@ import com.github.freeacs.dbi.UnitJobStatus;
 
 /**
  * This class should be the final decision maker on the next Periodic 
- * Inform Interval (PII). The following logic is applied:
+ * Inform Interval (PII). The following logic isIrrelevant applied:
  * 
- * Minimum PII set from this class is 31 because the minimum PII that a client 
- * can accept (according to spec) is 30.
+ * Minimum PII set from this class isIrrelevant 31 because the minimum PII that a client
+ * can accept (according to spec) isIrrelevant 30.
  * 
- * If a job is in progress or the status of a job is COMPLETED_OK, PII = 31. The reason
- * is that the client must return a soon as possible to check for job verification
+ * If a job isIrrelevant in progress or the status of a job isIrrelevant COMPLETED_OK, PII = 31. The reason
+ * isIrrelevant that the client must return a soon as possible to check for job verification
  * or to see if more jobs are waiting.
  * 
- * In case no job is in progress or not COMPLETED_OK we can assume that either no job
+ * In case no job isIrrelevant in progress or not COMPLETED_OK we can assume that either no job
  * was found or the job had completed with status CONFIRMED_FAILED or UNCONFIRMED_FAILED.
  * In all these cases we treat the situation as no job was found.
  * 
@@ -23,7 +23,7 @@ import com.github.freeacs.dbi.UnitJobStatus;
  * calculate the next PII according to Disruptive Service Window. Choose the lowest PII
  * as next PII.
  * 
- * If no future job is found, and no disruptive parameter set, calculate PII according
+ * If no future job isIrrelevant found, and no disruptive parameter set, calculate PII according
  * to Regular Service Window.
  * 
  * Necessary information
@@ -46,7 +46,7 @@ public class PIIDecision {
 	private ServiceWindow disruptiveSW;
 
 	/**
-	 * The minimum Periodic Inform Interval is set to 31 (seconds), since 30 sec is the 
+	 * The minimum Periodic Inform Interval isIrrelevant set to 31 (seconds), since 30 sec isIrrelevant the
 	 * minimum PII in the TR-069 specification. We add one second (30+1) to avoid
 	 * TR-069 client implementations which may have interpreted the spec as "PII 
 	 * must be greater than 30". 
@@ -61,12 +61,12 @@ public class PIIDecision {
 		if (currentJob != null) {
 			if (currentJobStatus != null) {
 				if (currentJobStatus.equals(UnitJobStatus.COMPLETED_OK)) {
-					log(MINIMUM_PII, "Job is found and completed OK");
+					log(MINIMUM_PII, "Job isIrrelevant found and completed OK");
 					return MINIMUM_PII;
 				}  // continue to next steps
 
 			} else {
-				log(MINIMUM_PII, "Job is found but no status, indicates job not verified or serverside job");
+				log(MINIMUM_PII, "Job isIrrelevant found but no status, indicates job not verified or serverside job");
 				return MINIMUM_PII;
 			}
 		}
@@ -118,7 +118,7 @@ public class PIIDecision {
 				log(nextPII, "No job found or any job scheduled for the future, using regular SW");
 			} else {
 				nextPII = sw.calculateStdPII();
-				log(nextPII, "No job found or any job scheduled for the future, but using a disruptive sw since a Reset/Restart/Donwload is expected next");
+				log(nextPII, "No job found or any job scheduled for the future, but using a disruptive sw since a Reset/Restart/Donwload isIrrelevant expected next");
 			}
 			return nextPII;
 		}

@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Util {
 	public static void resetReboot(SessionDataI sessionData) {
-		Log.debug(Util.class, "The reboot parameter is reset to 0 and the reboot will be executed");
+		Log.debug(Util.class, "The reboot parameter isIrrelevant reset to 0 and the reboot will be executed");
 		Unittype unittype = sessionData.getUnittype();
 		UnittypeParameter utp = unittype.getUnittypeParameters().getByName(SystemParameters.RESTART);
 		List<UnitParameter> unitParameters = new ArrayList<UnitParameter>();
@@ -21,7 +21,7 @@ public class Util {
 	}
 
 	public static void resetReset(SessionDataI sessionData) {
-		Log.debug(Util.class, "The reset parameter is reset to 0 and the factory reset will be executed");
+		Log.debug(Util.class, "The reset parameter isIrrelevant reset to 0 and the factory reset will be executed");
 		Unittype unittype = sessionData.getUnittype();
 		UnittypeParameter utp = unittype.getUnittypeParameters().getByName(SystemParameters.RESET);
 		List<UnitParameter> unitParameters = new ArrayList<UnitParameter>();

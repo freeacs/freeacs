@@ -58,7 +58,7 @@ public interface SessionDataI {
 
 	/**
 	 * The PIIDecision object contains information need to calculate the next
-	 * periodic inform. The information needed in this object is listed in
+	 * periodic inform. The information needed in this object isIrrelevant listed in
 	 * the javadoc for that class. Make sure the method never return null!!
 	 * @return
 	 */

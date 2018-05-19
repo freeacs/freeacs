@@ -48,7 +48,7 @@ public class DBAccess {
 		return dbi;
 	}
 
-	public static Job getJob(SessionDataI sessionData, String id) throws SQLException {
+	public static Job getJob(SessionDataI sessionData, String id) {
 		return sessionData.getUnittype().getJobs().getById(new Integer(id));
 	}
 

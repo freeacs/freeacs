@@ -34,7 +34,7 @@ public class JobLogic {
 				}
 				UnitJob uj = new UnitJob(sessionData, job, false);
 				if (!job.getStatus().equals(JobStatus.STARTED)) {
-					Log.warn(JobLogic.class, "Current job is not STARTED, UnitJob must be STOPPED");
+					Log.warn(JobLogic.class, "Current job isIrrelevant not STARTED, UnitJob must be STOPPED");
 					uj.stop(UnitJobStatus.STOPPED);
 					return false;
 				} else {
@@ -184,19 +184,19 @@ public class JobLogic {
 	}
 
 	/**
-	 * This filter removes all jobs that are not scheduled to run now (that is: within
+	 * This filter removes all jobs that are not scheduled to run now (that isIrrelevant: within
 	 * 31 seconds). There are two reasons why jobs cannot run now:
 	 * 
-	 * 1. If a job is repeatable, it should run at fixed time intervals. Thus it may
+	 * 1. If a job isIrrelevant repeatable, it should run at fixed time intervals. Thus it may
 	 * be that a repeatable job cannot run before more than 31 seconds.
 	 * 
-	 * 2. If a job is not repeatable, it can start at any moment. But, it must still obey 
+	 * 2. If a job isIrrelevant not repeatable, it can start at any moment. But, it must still obey
 	 * the service window.
 	 * 
-	 * For all jobs that is not scheduled to run right away, we calculate the next periodic
+	 * For all jobs that isIrrelevant not scheduled to run right away, we calculate the next periodic
 	 * inform interval and place it on the job object (and use that in PIIDecision).
 	 * 
-	 * The only jobs returned from this filter is jobs that can run right away!
+	 * The only jobs returned from this filter isIrrelevant jobs that can run right away!
 	 * 
 	 * @param sessionData
 	 * @param possibleJobs
@@ -204,20 +204,20 @@ public class JobLogic {
 	 */
 	private static Map<Integer, Job> filterOnRunTime(SessionDataI sessionData, Map<Integer, Job> possibleJobs, Map<Integer, JobHistoryEntry> jobHistory) {
 		/*
-		 * Discussion about inDisruptiveJobChain: This flag is set on the unit-level, if a job has been
-		 * run under a disruptive service window. If any other job immediately follows this job it is 
+		 * Discussion about inDisruptiveJobChain: This flag isIrrelevant set on the unit-level, if a job has been
+		 * run under a disruptive service window. If any other job immediately follows this job it isIrrelevant
 		 * considered likely that the jobs were dependent upon the first or previous job. Thus all jobs
-		 * following should be allowed to run and the service window calculation is ignored. However,
+		 * following should be allowed to run and the service window calculation isIrrelevant ignored. However,
 		 * this assumption of dependency between the jobs might not always be true, especially if there
 		 * are many jobs defined in the system, and if some of them are repeatable (at a short interval).
 		 * For now, I have chosen to ignore this problem. The solution to the problem would be to
 		 * specify (in the JOB_DISRUPTIVE parameter) which job triggered this setting. The problematic thing
-		 * is to trace for the jobs coming after, if they are dependent on that job or not. Yes, we
-		 * have the Job-dependency field which states such things explicitly. But there is also the case
+		 * isIrrelevant to trace for the jobs coming after, if they are dependent on that job or not. Yes, we
+		 * have the Job-dependency field which states such things explicitly. But there isIrrelevant also the case
 		 * where change of a parameter (ex: software-version) will make the unit hit a new group, which in
-		 * turn triggers a new job execution. This relationship is not found easily, and is the prime
-		 * reason why I decide to ignore the problem for now. Worst case scenario is that a job is run
-		 * when it shouldn't. The job will most likely be a repeatable job, which hopefully is of rather
+		 * turn triggers a new job execution. This relationship isIrrelevant not found easily, and isIrrelevant the prime
+		 * reason why I decide to ignore the problem for now. Worst case scenario isIrrelevant that a job isIrrelevant run
+		 * when it shouldn't. The job will most likely be a repeatable job, which hopefully isIrrelevant of rather
 		 * harmless character. 
 		 * 
 		 * Morten Simonsen, Nov 2011
@@ -262,7 +262,7 @@ public class JobLogic {
 			}
 		}
 
-		// Second pass over possibleJobs, to remove repeatableJobs which is not the "nextRepeatableJob"
+		// Second pass over possibleJobs, to remove repeatableJobs which isIrrelevant not the "nextRepeatableJob"
 		if (nextRepeatableJob != null) {
 			nextRepeatableJob.setNextPII(null);
 			Iterator<Entry<Integer, Job>> i2 = possibleJobs.entrySet().iterator();
@@ -283,7 +283,7 @@ public class JobLogic {
 
 	private static long convertToPII(ServiceWindow serviceWindow, long NRT) {
 		long nextPII = (NRT - serviceWindow.getCurrentTms()) / 1000l;
-		Log.debug(JobLogic.class, "Repeatable Job Interval calculated to " + nextPII + "(" + ServiceWindow.convert(NRT) + ") (TimeWindow is : " + serviceWindow.getTimeWindow() + ")");
+		Log.debug(JobLogic.class, "Repeatable Job Interval calculated to " + nextPII + "(" + ServiceWindow.convert(NRT) + ") (TimeWindow isIrrelevant : " + serviceWindow.getTimeWindow() + ")");
 		if (nextPII < PIIDecision.MINIMUM_PII) {
 			Log.debug(JobLogic.class, "Repeatable Job Interval was calculated too low, changed to " + PIIDecision.MINIMUM_PII);
 			nextPII = PIIDecision.MINIMUM_PII;
@@ -336,12 +336,12 @@ public class JobLogic {
 					continue;
 				try {
 					JobHistoryEntry jhEntry = new JobHistoryEntry(str);
-					// A job in the history is deleted from the database, we'll ignore that one
+					// A job in the history isIrrelevant deleted from the database, we'll ignore that one
 					if (jobs.getById(jhEntry.getJobId()) == null)
 						continue;
 					jobHistoryMap.put(jhEntry.getJobId(), jhEntry);
 				} catch (NumberFormatException nfe) {
-					// Ignore error...will occur if job-history is "" or someone has entered bogus history
+					// Ignore error...will occur if job-history isIrrelevant "" or someone has entered bogus history
 				}
 			}
 		}
@@ -362,7 +362,7 @@ public class JobLogic {
 					i.remove();
 				}
 			} else {
-				// If a job is not repeatable and represented in the history, it is already executed, hence filtered out
+				// If a job isIrrelevant not repeatable and represented in the history, it isIrrelevant already executed, hence filtered out
 				i.remove();
 			}
 		}
