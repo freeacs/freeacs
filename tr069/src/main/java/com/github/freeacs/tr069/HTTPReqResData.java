@@ -4,13 +4,12 @@ import com.github.freeacs.base.BaseCache;
 import com.github.freeacs.base.BaseCacheException;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.db.DBAccess;
-import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.tr069.xml.TR069TransactionID;
-import org.w3c.dom.Document;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.sql.SQLException;
 
 public class HTTPReqResData {
 	private final DBAccess dbAccess;
@@ -29,9 +28,7 @@ public class HTTPReqResData {
 
 	private SessionData sessionData;
 
-	private Document doc;
-
-	public HTTPReqResData(HttpServletRequest req, HttpServletResponse res, DBAccess dbAccess) throws TR069DatabaseException {
+	public HTTPReqResData(HttpServletRequest req, HttpServletResponse res, DBAccess dbAccess) throws SQLException {
 		this.req = req;
 		this.res = res;
 		this.request = new HTTPReqData();
@@ -45,7 +42,7 @@ public class HTTPReqResData {
 			HttpSession session = req.getSession();
 			Log.debug(HTTPReqResData.class, "Sessionid " + sessionId + " did not return a SessionData object from cache, must create a new SessionData object");
 			Log.debug(HTTPReqResData.class, "Sessionid " + session.getId() + " created: " + session.getCreationTime() + ", lastAccess:" + session.getLastAccessedTime() + ", mxInactiveInterval:" + session.getMaxInactiveInterval());
-			sessionData = new SessionData(sessionId, dbAccess);
+			sessionData = new SessionData(sessionId, dbAccess.getDBI().getXaps());
 			BaseCache.putSessionData(sessionId, sessionData);
 		}
 		if (sessionData.getStartupTmsForSession() == null)
@@ -88,14 +85,6 @@ public class HTTPReqResData {
 
 	public SessionData getSessionData() {
 		return sessionData;
-	}
-
-	public Document getDoc() {
-		return doc;
-	}
-
-	public void setDoc(Document doc) {
-		this.doc = doc;
 	}
 
 	public DBAccess getDbAccess() {

@@ -52,7 +52,7 @@ public class DBAccess {
 		return sessionData.getUnittype().getJobs().getById(new Integer(id));
 	}
 
-	static void handleError(String method, long start, Throwable t) throws SQLException {
+	static void handleError(String method, Throwable t) throws SQLException {
 		error(method + " failed", t);
 		if (t instanceof SQLException) {
 			throw (SQLException) t;
@@ -60,8 +60,8 @@ public class DBAccess {
 		throw (RuntimeException) t;
 	}
 
-	public XAPSUnit getXAPSUnit(XAPS xaps) throws SQLException {
-		return new XAPSUnit(getXapsDataSource(), xaps, xaps.getSyslog());
+	public static XAPSUnit getXAPSUnit(XAPS xaps) throws SQLException {
+		return new XAPSUnit(xaps.getDataSource(), xaps, xaps.getSyslog());
 	}
 
 

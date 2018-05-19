@@ -139,7 +139,7 @@ public class Provisioning extends HttpServlet {
 	 * In special cases the server will kick the device to "come back" and continue testing a new test case.
 	 * 
 	 */
-	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		HTTPReqResData reqRes = null;
 		try {
 			// Create the main object which contains all objects concerning the entire
@@ -236,7 +236,7 @@ public class Provisioning extends HttpServlet {
 		try {
 			Unit unit = reqRes.getSessionData().getUnit();
 			if (unit != null) {
-				XAPS xaps = reqRes.getSessionData().getDbAccess().getXaps();
+				XAPS xaps = reqRes.getSessionData().getDbAccessSession().getXaps();
 				XAPSUnit xapsUnit = dbAccess.getXAPSUnit(xaps);
 				xapsUnit.addOrChangeQueuedUnitParameters(unit);
 			}

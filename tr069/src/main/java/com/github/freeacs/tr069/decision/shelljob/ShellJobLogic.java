@@ -2,6 +2,7 @@ package com.github.freeacs.tr069.decision.shelljob;
 
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.UnitJob;
+import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.db.DBAccessSessionTR069;
 import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.common.util.CacheValue;
@@ -124,10 +125,10 @@ public class ShellJobLogic {
 	 */
 	private static void toCPE(SessionData sessionData) throws TR069DatabaseException {
 		UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
-		XAPS xaps = sessionData.getDbAccess().getXaps();
+		XAPS xaps = sessionData.getDbAccessSession().getXaps();
 		Unit unit;
 		try {
-			XAPSUnit xapsUnit = new XAPSUnit(xaps.getDataSource(), xaps, xaps.getSyslog());
+			XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
 			unit = xapsUnit.getUnitById(sessionData.getUnitId());
 		} catch (SQLException e) {
 			throw new TR069DatabaseException(e);
@@ -186,8 +187,8 @@ public class ShellJobLogic {
 		}
 		if (unitParameters.size() > 0) {
 			try {
-				XAPS xaps = sessionData.getDbAccess().getXaps();
-				XAPSUnit xapsUnit = new XAPSUnit(xaps.getDataSource(), xaps, xaps.getSyslog());
+				XAPS xaps = sessionData.getDbAccessSession().getXaps();
+				XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
 				xapsUnit.addOrChangeUnitParameters(unitParameters, sessionData.getProfile());
 			} catch (SQLException sqle) {
 				throw new TR069DatabaseException(sqle);
@@ -209,7 +210,6 @@ public class ShellJobLogic {
 		Log.debug(GPVDecision.class, "-ACS->ACS      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
 		sessionData.getToDB().add(new ParameterValueStruct(SystemParameters.PERIODIC_INTERVAL, "" + nextPII));
 		Log.debug(GPVDecision.class, "-ACS->ACS      " + SystemParameters.PERIODIC_INTERVAL + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
-		//		DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(DBAccess.getDBI(), sessionData.getDbAccess());
 		DBAccessSessionTR069.writeUnitParams(sessionData);
 	}
 

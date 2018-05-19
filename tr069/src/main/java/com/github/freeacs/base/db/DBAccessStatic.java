@@ -35,7 +35,7 @@ public class DBAccessStatic {
 			}
 			return firmwareReturn.getContent();
 		} catch (Throwable t) {
-			DBAccess.handleError(action, start, t);
+			DBAccess.handleError(action, t);
 		}
 		return null; // Unreachable code - compiler doesn't detect it
 	}
@@ -54,7 +54,7 @@ public class DBAccessStatic {
 				error("The unit-job couldn't be started. The reason might it is already COMPLETED_OK state");
 			}
 		} catch (Throwable t) {
-			DBAccess.handleError(action, start, t);
+			DBAccess.handleError(action, t);
 		}
 	}
 
@@ -73,7 +73,7 @@ public class DBAccessStatic {
 				error("The unit-job couldn't be stopped. The reason might be it is deleted or maybe even in COMPLETED_OK state already");
 			}
 		} catch (Throwable t) {
-			DBAccess.handleError(action, start, t);
+			DBAccess.handleError(action, t);
 		}
 	}
 
