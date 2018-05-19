@@ -307,7 +307,7 @@ public class TestServlet extends HttpServlet {
 			html.head().title("xAPS Test Verification Process");
 			Element body = html.body();
 			body.h(1, "xAPS Test Verification Process");
-			if (!Properties.isDiscoveryMode() || !Properties.isTestMode()) {
+			if (!Properties.DISCOVERY_MODE || !Properties.DEBUG_TEST_MODE) {
 				body.add("The server is not set up in both discovery and test mode, thus it will not support this process.");
 				body.add("Change configuration (or contact xAPS Administrator) to enable xAPS Test Verification Process.");
 				out.println(html.toString(""));

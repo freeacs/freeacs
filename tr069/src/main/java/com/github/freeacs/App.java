@@ -6,7 +6,6 @@ import com.github.freeacs.base.http.OKServlet;
 import com.github.freeacs.tr069.Provisioning;
 import com.github.freeacs.tr069.test.system1.TestServlet;
 import com.zaxxer.hikari.HikariDataSource;
-import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
@@ -46,11 +45,6 @@ public class App {
 
     @Bean
     public DBAccess getDBAccess(@Qualifier("xaps") DataSource xapsDataSource, @Qualifier("syslog") DataSource syslogDataSource) {
-        Flyway flyway = new Flyway();
-        flyway.setDataSource(xapsDataSource);
-        flyway.migrate();
-        flyway.setDataSource(syslogDataSource);
-        flyway.migrate();
         return new DBAccess(FACILITY_TR069, VERSION, xapsDataSource, syslogDataSource);
     }
 
@@ -80,7 +74,7 @@ public class App {
     }
 
     @Bean
-    ServletRegistrationBean<TestServlet> test() {
+    ServletRegistrationBean<TestServlet> testServlet() {
         ServletRegistrationBean<TestServlet> srb = new ServletRegistrationBean<>();
         srb.setServlet(new TestServlet());
         srb.setUrlMappings(Collections.singletonList("/test"));

@@ -70,8 +70,8 @@ public class BasicAuthenticator {
 			sessionData.setUnitId(unitId);
 			sessionData.updateParametersFromDB(unitId); // Unit is now stored in sessionData
 			String secret = null;
-			if (sessionData.isFirstConnect() && Properties.isDiscoveryMode()) {
-				for (String blocked : Properties.getDiscoveryBlocked()) {
+			if (sessionData.isFirstConnect() && Properties.DISCOVERY_MODE) {
+				for (String blocked : Properties.DISCOVERY_BLOCK) {
 					if (unitId.contains(blocked))
 						throw new TR069AuthenticationException("ACS Username is blocked by \"" + blocked + "\" in discovery mode. Access denied", null, HttpServletResponse.SC_FORBIDDEN);
 				}

@@ -90,9 +90,9 @@ public class Authenticator {
 
     // Start of normal authentication procedure
     boolean authenticated = true; // default
-    String auth_method = Properties.getAuthMethod();
+    String auth_method = Properties.AUTH_METHOD;
     try {
-      if (Properties.isDiscoveryMode()) {
+      if (Properties.DISCOVERY_MODE) {
         authenticated = BasicAuthenticator.authenticate(reqRes);
       } else {
         if (auth_method.equalsIgnoreCase("basic"))
