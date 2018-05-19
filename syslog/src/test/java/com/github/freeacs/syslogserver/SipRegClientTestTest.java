@@ -1,8 +1,8 @@
-package test.owera.xaps.syslogserver;
+package com.github.freeacs.syslogserver;
 
 import java.util.Random;
 
-public class SipRegClient extends SyslogClient implements Runnable {
+public class SipRegClientTestTest extends SyslogClientTest implements Runnable {
 
 	private static Random random = new Random(System.nanoTime());
 
@@ -10,7 +10,7 @@ public class SipRegClient extends SyslogClient implements Runnable {
 	private String hostname;
 	private long startTms;
 
-	public SipRegClient(String mac, String hostname, boolean realtime) {
+	public SipRegClientTestTest(String mac, String hostname, boolean realtime) {
 		this.mac = mac;
 		this.hostname = hostname;
 		this.realtime = realtime;

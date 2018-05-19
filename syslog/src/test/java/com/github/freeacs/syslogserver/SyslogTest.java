@@ -1,4 +1,4 @@
-package test.owera.xaps.syslogserver;
+package com.github.freeacs.syslogserver;
 
 import java.util.Random;
 
@@ -16,11 +16,11 @@ public class SyslogTest {
 			boolean realtime = "true".equals(args[3]);
 
 			for (int i = 0; i < numberOfRegClients; i++) {
-				Thread t = new Thread(new SipRegClient(String.format("%012d", i), hostname, realtime));
+				Thread t = new Thread(new SipRegClientTestTest(String.format("%012d", i), hostname, realtime));
 				t.start();
 			}
 			for (int i = 0; i < numberOfVoipCalls; i++) {
-				Thread t = new Thread(new VoipCallClient(String.format("%012d", i), hostname, realtime));
+				Thread t = new Thread(new VoipCallClientTest(String.format("%012d", i), hostname, realtime));
 				t.start();
 				Thread.sleep(random.nextInt(1000));
 			}
