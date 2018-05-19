@@ -10,9 +10,9 @@ import java.util.Map;
 
 public interface SessionDataI {
 
-	public OweraParameters getOweraParameters();
+	public FreeacsParameters getFreeacsParameters();
 
-	public void setOweraParameters(OweraParameters oweraParameters);
+	public void setFreeacsParameters(FreeacsParameters freeacsParameters);
 
 	public Unittype getUnittype();
 

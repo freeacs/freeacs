@@ -11,7 +11,6 @@ import java.sql.SQLException;
 
 public class DBAccess {
 
-	private static final Config config = ConfigFactory.load();
 	private final DataSource xapsDataSource;
 	private final DataSource syslogDataSource;
 	private final String facilityVersion;
@@ -49,7 +48,7 @@ public class DBAccess {
 		return dbi;
 	}
 
-	public static Job getJob(SessionDataI sessionData, String id) throws SQLException {
+	public static Job getJob(SessionDataI sessionData, String id) {
 		return sessionData.getUnittype().getJobs().getById(new Integer(id));
 	}
 

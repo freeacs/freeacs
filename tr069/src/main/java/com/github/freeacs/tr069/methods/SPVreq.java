@@ -42,7 +42,7 @@ public class SPVreq extends Body {
 			sb.append(pvs.getName());
 			sb.append(NAME_END);
 			sb.append("\t\t\t\t\t<Value xsi:type=\"" + pvs.getType() + "\">");
-			if (pvs.getType() != null && pvs.getType().indexOf("int") > -1 && (pvs.getValue() == null || pvs.getValue().trim().equals("")))
+			if (pvs.getType() != null && pvs.getType().contains("int") && (pvs.getValue() == null || pvs.getValue().trim().equals("")))
 				sb.append("0");
 			else
 				sb.append(pvs.getValue());

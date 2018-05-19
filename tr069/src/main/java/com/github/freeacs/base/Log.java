@@ -71,7 +71,7 @@ public class Log {
 		return false;
 	}
 
-	public static void event(SessionDataI sessionData, String message) {
+	public static void event(String message) {
 		eventLog.info(message);
 	}
 

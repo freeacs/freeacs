@@ -74,7 +74,7 @@ public class SessionData implements SessionDataI {
 	private String eventCodes;
 
 	/* Owera parameters */
-	private OweraParameters oweraParameters;
+	private FreeacsParameters freeacsParameters;
 	/* Special parameters, will always be retrieved */
 	private CPEParameters cpeParameters;
 	/* Special parameter, will only be retrieved from the Inform */
@@ -99,8 +99,6 @@ public class SessionData implements SessionDataI {
 	private Job job;
 	/* All parameters from a job */
 	private Map<String, JobParameter> jobParams;
-	/* ServiceWindow */
-	private ServiceWindow serviceWindow;
 	/* May be populated if a job is scheduled at a certain interval (repeat-jobs) */
 	private Long secondsToNextJob;
 
@@ -177,8 +175,8 @@ public class SessionData implements SessionDataI {
 		}
 
 		if (!fromDB.isEmpty()) {
-			if (oweraParameters == null)
-				oweraParameters = new OweraParameters();
+			if (freeacsParameters == null)
+				freeacsParameters = new FreeacsParameters();
 			Iterator<String> i = fromDB.keySet().iterator();
 			int systemParamCounter = 0;
 			while (i.hasNext()) {
@@ -186,7 +184,7 @@ public class SessionData implements SessionDataI {
 				UnittypeParameter utp = unittype.getUnittypeParameters().getByName(utpName);
 				if (utp != null && utp.getFlag().isSystem()) {
 					systemParamCounter++;
-					oweraParameters.putPvs(utpName, fromDB.get(utpName));
+					freeacsParameters.putPvs(utpName, fromDB.get(utpName));
 					i.remove();
 				}
 			}
@@ -213,10 +211,6 @@ public class SessionData implements SessionDataI {
 		this.authenticated = authenticated;
 	}
 
-	public boolean isNoMoreRequests() {
-		return noMoreRequests;
-	}
-
 	public void setNoMoreRequests(boolean noMoreRequests) {
 		this.noMoreRequests = noMoreRequests;
 	}
@@ -229,12 +223,12 @@ public class SessionData implements SessionDataI {
 		this.cpeParameters = cpeParameters;
 	}
 
-	public OweraParameters getOweraParameters() {
-		return oweraParameters;
+	public FreeacsParameters getFreeacsParameters() {
+		return freeacsParameters;
 	}
 
-	public void setOweraParameters(OweraParameters oweraParameters) {
-		this.oweraParameters = oweraParameters;
+	public void setFreeacsParameters(FreeacsParameters freeacsParameters) {
+		this.freeacsParameters = freeacsParameters;
 	}
 
 	public List<ParameterValueStruct> getFromCPE() {
@@ -309,13 +303,6 @@ public class SessionData implements SessionDataI {
 	public String getPreviousResponseMethod() {
 		if (reqResList != null && reqResList.size() > 1)
 			return reqResList.get(reqResList.size() - 2).getResponse().getMethod();
-		else
-			return null;
-	}
-
-	public String getPreviousRequestMethod() {
-		if (reqResList != null && reqResList.size() > 1)
-			return reqResList.get(reqResList.size() - 2).getRequest().getMethod();
 		else
 			return null;
 	}
@@ -473,14 +460,6 @@ public class SessionData implements SessionDataI {
 		this.job = job;
 	}
 
-	public ServiceWindow getServiceWindow() {
-		return serviceWindow;
-	}
-
-	public void setServiceWindow(ServiceWindow serviceWindow) {
-		this.serviceWindow = serviceWindow;
-	}
-
 	public void addUnitDataToSession(SessionData sessionData) throws SQLException {
 		Unit unit = this.getDbAccess().readUnit(sessionData.getUnitId());
 		Map<String, ParameterValueStruct> valueMap = new TreeMap<String, ParameterValueStruct>();
@@ -544,20 +523,8 @@ public class SessionData implements SessionDataI {
 		return getParameterKey().isEqual() && getCommandKey().isEqual();
 	}
 
-	public boolean isDiagnosticsComplete() {
-		return diagnosticsComplete;
-	}
-
 	public void setDiagnosticsComplete(boolean diagnosticsComplete) {
 		this.diagnosticsComplete = diagnosticsComplete;
-	}
-
-	public Long getSecondsToNextJob() {
-		return secondsToNextJob;
-	}
-
-	public void setSecondsToNextJob(long secondsToNextJob) {
-		this.secondsToNextJob = secondsToNextJob;
 	}
 
 	public InformParameters getInformParameters() {
@@ -631,14 +598,14 @@ public class SessionData implements SessionDataI {
 	}
 
 	public boolean discoverUnittype() {
-		if (oweraParameters != null && oweraParameters.getValue(SystemParameters.DISCOVER) != null && oweraParameters.getValue(SystemParameters.DISCOVER).equals("1"))
+		if (freeacsParameters != null && freeacsParameters.getValue(SystemParameters.DISCOVER) != null && freeacsParameters.getValue(SystemParameters.DISCOVER).equals("1"))
 			return true;
-		else if (oweraParameters == null)
-			Log.debug(SessionData.class, "oweraParameters not found in discoverUnittype()");
-		else if (oweraParameters.getValue(SystemParameters.DISCOVER) == null)
+		else if (freeacsParameters == null)
+			Log.debug(SessionData.class, "freeacsParameters not found in discoverUnittype()");
+		else if (freeacsParameters.getValue(SystemParameters.DISCOVER) == null)
 			Log.debug(SessionData.class, "DISCOVER parameter not found of value is null in discoverUnittype() ");
 		else
-			Log.debug(SessionData.class, "DISCOVER parameter value is " + oweraParameters.getValue(SystemParameters.DISCOVER) + " in discoverUnittype()");
+			Log.debug(SessionData.class, "DISCOVER parameter value is " + freeacsParameters.getValue(SystemParameters.DISCOVER) + " in discoverUnittype()");
 		return false;
 	}
 

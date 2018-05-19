@@ -11,7 +11,7 @@ public class BaseCache {
 	private static Cache cache = new Cache();
 
 	// 2 minutes
-	public static final int SESSIONDATA_CACHE_TIMEOUT = 3 * 60 * 1000;
+	private static final int SESSIONDATA_CACHE_TIMEOUT = 3 * 60 * 1000;
 
 	// 10 minutes
 	private static final int FIRMWAREIMAGE_CACHE_TIMEOUT = 10 * 60 * 1000;
@@ -26,7 +26,7 @@ public class BaseCache {
 		List<String> keyRemoveList = new ArrayList<String>();
 		for (Object key : cache.getMap().keySet()) {
 			String keyStr = (String) key;
-			if (keyStr.indexOf(SESSION_KEY) == -1) {
+			if (!keyStr.contains(SESSION_KEY)) {
 				keyRemoveList.add(keyStr);
 			}
 		}
@@ -50,23 +50,6 @@ public class BaseCache {
 			return (SessionDataI) cv.getObject();
 		else
 			throw new BaseCacheException(key);
-	}
-
-	/**
-	 * Retrieves the current session data from the cache based on a key that
-	 * identifies the client.
-	 * 
-	 * @param unitKey
-	 *            Can be either session id or unit id
-	 * @return SessionDataI
-	 */
-	public static SessionDataI getSessionDataSilent(String unitKey) {
-		String key = unitKey + SESSION_KEY;
-		CacheValue cv = cache.get(key);
-		if (cv != null)
-			return (SessionDataI) cv.getObject();
-		else
-			return null;
 	}
 
 	/**

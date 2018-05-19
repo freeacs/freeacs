@@ -113,23 +113,6 @@ public class Provisioning extends HttpServlet {
 	}
 
 	/**
-	 * Some devices may send a CONTINUE header - server always reply "yes" - do continue
-	 * @param req
-	 * @param res
-	 * @return
-	 * @throws IOException
-	 */
-  private static boolean hasContinueHeader(HttpServletRequest req, HttpServletResponse res) throws IOException {
-		// Support 100 Continue header - always YES - CONTINUE!
-		if (req.getHeader("Expect") != null && req.getHeader("Expect").contains("100-continue")) {
-			res.setStatus(HttpServletResponse.SC_CONTINUE);
-			res.getWriter().print("");
-			return true;
-		}
-		return false;
-	}
-
-	/**
 	 * This is the entry point for TR-069 Clients - everything starts here!!!
 	 * 
 	 * A TR-069 session consists of many rounds of HTTP request/responses, however
@@ -157,9 +140,6 @@ public class Provisioning extends HttpServlet {
 	 * 
 	 */
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		// 1. If HTTP CONTINUE header present, return "yes" and return - should be correct behavior - the client will return 
-//    if (hasContinueHeader(req, res))
-//      return;
 		HTTPReqResData reqRes = null;
 		try {
 			// Create the main object which contains all objects concerning the entire

@@ -48,25 +48,6 @@ import java.util.List;
  */
 
 public class EMDecision {
-	//	private static boolean modeCheck(SessionData sessionData) {
-	//		Unit unit = sessionData.getUnit();
-	//		if (unit.isSessionMode() && sessionData.isPeriodic() && !sessionData.isKicked()) {
-	//			Log.warn(EMDecision.class, "EM-Decision is EM since a periodic inform happened in EXTRACTION/INSPECTION mode");
-	//			return true;
-	//		} else if (unit.getProvisioningMode() == ProvisioningMode.KICK) {
-	//			unit.toWriteQueue(SystemParameters.PROVISIONING_MODE, ProvisioningMode.PERIODIC.toString());
-	//			unit.toWriteQueue(SystemParameters.PROVISIONING_STATE, ProvisioningState.READY.toString());
-	//			// Since the parameters above may not be written till the database until later in the session, we
-	//			// must inject the new state into the Unit - without waiting for it to be written to db. 
-	//			Map<String, UnitParameter> unitParams = unit.getUnitParameters();
-	//			unitParams.get(SystemParameters.PROVISIONING_MODE).setValue(ProvisioningMode.PERIODIC.toString()); // No chance of NP
-	//			UnitParameter upState = unitParams.get(SystemParameters.PROVISIONING_STATE);
-	//			if (upState != null)
-	//				upState.setValue(ProvisioningState.READY.toString());
-	//		}
-	//		Log.debug(EMDecision.class, "Unit is in " + unit.getProvisioningMode() + " mode and " + unit.getProvisioningState() + " state");
-	//		return false;
-	//	}
 
 	private static boolean testExecution(HTTPReqResData reqRes) {
 		SessionData sessionData = reqRes.getSessionData();
@@ -129,7 +110,7 @@ public class EMDecision {
 			toDB = new ArrayList<ParameterValueStruct>(params);
 		String timestamp = TimestampWrapper.tmsFormat.format(new Date());
 		toDB.add(new ParameterValueStruct(SystemParameters.LAST_CONNECT_TMS, timestamp));
-		if (sessionData.getOweraParameters().getValue(SystemParameters.FIRST_CONNECT_TMS) == null)
+		if (sessionData.getFreeacsParameters().getValue(SystemParameters.FIRST_CONNECT_TMS) == null)
 			toDB.add(new ParameterValueStruct(SystemParameters.FIRST_CONNECT_TMS, timestamp));
 		String ipAddress = sessionData.getUnit().getParameters().get(SystemParameters.IP_ADDRESS);
 		if (ipAddress == null || !ipAddress.equals(reqRes.getReq().getRemoteHost()))
