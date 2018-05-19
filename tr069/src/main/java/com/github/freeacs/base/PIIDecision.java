@@ -46,7 +46,7 @@ public class PIIDecision {
 	private ServiceWindow disruptiveSW;
 
 	/**
-	 * The minimum Periodic Inform Interval isIrrelevant set to 31 (seconds), since 30 sec isIrrelevant the
+	 * The minimum Periodic Inform Interval is set to 31 (seconds), since 30 sec is the
 	 * minimum PII in the TR-069 specification. We add one second (30+1) to avoid
 	 * TR-069 client implementations which may have interpreted the spec as "PII 
 	 * must be greater than 30". 
@@ -61,12 +61,12 @@ public class PIIDecision {
 		if (currentJob != null) {
 			if (currentJobStatus != null) {
 				if (currentJobStatus.equals(UnitJobStatus.COMPLETED_OK)) {
-					log(MINIMUM_PII, "Job isIrrelevant found and completed OK");
+					log(MINIMUM_PII, "Job is found and completed OK");
 					return MINIMUM_PII;
 				}  // continue to next steps
 
 			} else {
-				log(MINIMUM_PII, "Job isIrrelevant found but no status, indicates job not verified or serverside job");
+				log(MINIMUM_PII, "Job is found but no status, indicates job not verified or serverside job");
 				return MINIMUM_PII;
 			}
 		}
@@ -118,7 +118,7 @@ public class PIIDecision {
 				log(nextPII, "No job found or any job scheduled for the future, using regular SW");
 			} else {
 				nextPII = sw.calculateStdPII();
-				log(nextPII, "No job found or any job scheduled for the future, but using a disruptive sw since a Reset/Restart/Donwload isIrrelevant expected next");
+				log(nextPII, "No job found or any job scheduled for the future, but using a disruptive sw since a Reset/Restart/Donwload is expected next");
 			}
 			return nextPII;
 		}
