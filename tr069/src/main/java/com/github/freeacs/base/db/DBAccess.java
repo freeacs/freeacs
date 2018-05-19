@@ -3,8 +3,6 @@ package com.github.freeacs.base.db;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.SessionDataI;
 import com.github.freeacs.dbi.*;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
