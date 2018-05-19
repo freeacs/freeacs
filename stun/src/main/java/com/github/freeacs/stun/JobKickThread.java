@@ -1,6 +1,5 @@
 package com.github.freeacs.stun;
 
-import com.github.freeacs.base.JobHistoryEntry;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.Parameter.Operator;
@@ -37,22 +36,6 @@ public class JobKickThread implements Runnable {
 		dbi.registerInbox("jobChangeInbox", jobChangeInbox);
 
 	}
-
-	//	public static void initialize() throws SQLException {
-	//		if (!initialized	) {
-	//			int maxAge = 600000;
-	//			int maxConn = 5;
-	//			xapsCp = ConnectionProvider.getConnectionPropertiesOneLiner("xaps-stun.properties", "db.xaps", maxAge, maxConn);
-	//			Users users = new Users(xapsCp);
-	//			User user = users.getByName(Users.USER_ADMIN);
-	//			Identity id = new Identity(SyslogConstants.FACILITY_STUN, StunServlet.VERSION, user);
-	//			ConnectionProperties sysCp = ConnectionProvider.getConnectionPropertiesOneLiner("xaps-stun.properties", "db.syslog", maxAge, maxConn);
-	//			syslog = new Syslog(sysCp, id);
-	//			dbi = new DBI(Integer.MAX_VALUE, xapsCp, syslog);
-	//			initialized = true;
-	//		}
-	//
-	//	}
 
 	private void populateJobKickMapForOneJob(Job job, XAPS xaps, Unittype unittype) throws SQLException {
 		Group group = job.getGroup();
@@ -102,15 +85,6 @@ public class JobKickThread implements Runnable {
 		Map<String, Unit> unitsInProcess = xapsUnit.getUnits(unittype, profile, upList, Integer.MAX_VALUE);
 		log.info("Found " + unitsInProcess.size() + " units in group " + group.getName() + " from job " + job.getName() + " (" + job.getId() + ") in process.");
 
-		//		Map<String, Unit> unitsWithSwVer = null;
-		//		if (job.getSoftware() != null) {
-		//			UnittypeParameter softwareVersionUtp = unittype.getUnittypeParameters().getByName(SystemParameters.SOFTWARE_VERSION);
-		//			Parameter softwareVersionParam = new Parameter(softwareVersionUtp, job.getSoftware().getVersionNumber());
-		//			upList.add(softwareVersionParam);
-		//			unitsWithSwVer = xapsUnit.getUnits(unittype, profile, upList, Integer.MAX_VALUE);
-		//			log.info("Found " + unitsWithSwVer.size() + " units in group " + group.getName() + " from job " + job.getName() + " (" + job.getId() + ") with correct software version.");
-		//		}
-
 		Set<String> unitSet = new HashSet<String>();
 		for (String unitId : unitsInGroup.keySet()) {
 			if (unitsCompleted.get(unitId) == null && unitsInProcess.get(unitId) == null) {
@@ -120,51 +94,6 @@ public class JobKickThread implements Runnable {
 		}
 		jobKickMap.put(job.getId(), unitSet);
 	}
-
-	//	private void populateJobKickMapForOneJob(Job job, XAPS xaps, Unittype unittype) throws SQLException {
-	//		Group group = job.getGroup();
-	//		XAPSUnit xapsUnit = new XAPSUnit(xapsCp, xaps, xaps.getSyslog());
-	//		Map<String, Unit> unitsInGroup = xapsUnit.getUnitMap(group);
-	//		log.info("Found " + unitsInGroup.size() + " units in group " + group.getName() + " from job " + job.getName() + " (" + job.getId() + ")");
-	//		Group topParent = group.getTopParent();
-	//		Profile profile = topParent.getProfile();
-	//		List<Parameter> upList = new ArrayList<Parameter>();
-	//		UnittypeParameter historyUtp = unittype.getUnittypeParameters().getByName(SystemParameters.JOB_HISTORY);
-	//		Parameter historyParam = new Parameter(historyUtp, "%," + job.getId() + ":%", true);
-	//		upList.add(historyParam);
-	//		Map<String, Unit> unitsCompleted = xapsUnit.getUnitMap(null, unittype, profile, upList, Integer.MAX_VALUE);
-	//		log.info("Found " + unitsCompleted.size() + " units in group " + group.getName() + " from job " + job.getName() + " (" + job.getId() + ") already completed.");
-	//		upList = new ArrayList<Parameter>();
-	//		UnittypeParameter currentUtp = unittype.getUnittypeParameters().getByName(SystemParameters.JOB_CURRENT);
-	//		Parameter currentParam = new Parameter(currentUtp, "%," + job.getId() + ":%", true);
-	//		upList.add(currentParam);
-	//		Map<String, Unit> unitsInProcess = xapsUnit.getUnitMap(null, unittype, profile, upList, Integer.MAX_VALUE);
-	//		log.info("Found " + unitsInProcess.size() + " units in group " + group.getName() + " from job " + job.getName() + " (" + job.getId() + ") in process.");
-	//		Map<String, Unit> unitsWithSwVer = null;
-	//		if (job.getSoftware() != null) {
-	//			UnittypeParameter softwareVersionUtp = unittype.getUnittypeParameters().getByName(SystemParameters.SOFTWARE_VERSION);
-	//			Parameter softwareVersionParam = new Parameter(softwareVersionUtp, job.getSoftware().getVersionNumber(), true);
-	//			upList.add(softwareVersionParam);
-	//			unitsWithSwVer = xapsUnit.getUnitMap(null, unittype, profile, upList, Integer.MAX_VALUE);
-	//			log.info("Found " + unitsWithSwVer.size() + " units in group " + group.getName() + " from job " + job.getName() + " (" + job.getId() + ") with correct software version.");
-	//		}
-	//		for (String unitId : unitsInGroup.keySet()) {
-	//			if (unitsCompleted.get(unitId) == null && unitsInProcess.get(unitId) == null && (unitsWithSwVer == null || unitsWithSwVer.get(unitId) != null)) {
-	//				Set<String> unitSet = jobKickMap.get(job.getId());
-	//				log.debug("Added  " + unitId + " to list of units to be kicked");
-	//				unitSet.add(unitId);
-	//			}
-	//		}
-	//		Set<String> unitSet = jobKickMap.get(job.getId());
-	//		Iterator<String> iterator = unitSet.iterator();
-	//		while (iterator.hasNext()) {
-	//			String unitId = iterator.next();
-	//			if (unitsInGroup.get(unitId) == null) {
-	//				log.debug("Removed " + unitId + " from list of units to be kicked (no longer in group)");
-	//				iterator.remove();
-	//			}
-	//		}
-	//	}
 
 	private void populateJobKickMapForAllJobs(XAPS xaps) throws SQLException {
 		jobKickMap = new HashMap<Integer, Set<String>>();

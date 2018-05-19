@@ -45,13 +45,10 @@
     <modules>
         <module>common</module>
         <module>dbi</module>
-        <module>prov</module>
         <module>tr069</module>
         <module>syslog</module>
         <module>stun</module>
-        <module>spp</module>
         <module>shell</module>
-        <module>monitor</module>
         <module>core</module>
         <module>web</module>
         <module>wsc</module>
