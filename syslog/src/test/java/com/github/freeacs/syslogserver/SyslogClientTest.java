@@ -1,4 +1,4 @@
-package test.owera.xaps.syslogserver;
+package com.github.freeacs.syslogserver;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -6,7 +6,7 @@ import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class SyslogClient {
+public class SyslogClientTest {
 
 	protected static Random random = new Random();
 
@@ -63,7 +63,7 @@ public class SyslogClient {
 			TestType testType = TestType.SINGLE_MSG;
 			int MESSAGES_PR_MAC = 1000;
 
-			System.out.println("SyslogClient starts");
+			System.out.println("SyslogClientTest starts");
 			List<String> macs = new ArrayList<String>();
 			for (int i = 0; i < 1000000; i++) {
 				macs.add(String.format("%012x", i));
@@ -103,7 +103,7 @@ public class SyslogClient {
 					}
 				}
 			}
-			System.out.println("SyslogClient ends");
+			System.out.println("SyslogClientTest ends");
 			socket.close();
 		} catch (Throwable t) {
 			System.err.println("An error occured: " + t);
