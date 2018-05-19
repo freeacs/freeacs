@@ -113,7 +113,7 @@ public class UnitJob {
 	 * - update session data with profile parameters  
 	 * - update session data with job current
 	 */
-	public void start() throws SQLException {
+	public void start() {
 		try {
 			try {
 				String unitId = sessionData.getUnitId();
@@ -123,10 +123,8 @@ public class UnitJob {
 					upList.add(jobUp);
 					DBAccessStatic.queueUnitParameters(sessionData.getUnit(), upList, sessionData.getProfile());
 				}
-				DBAccessStatic.startUnitJob(unitId, job.getId(), sessionData.getDbAccess().getDbAccess().getXapsDataSource());
+				DBAccessStatic.startUnitJob(unitId, job.getId(), sessionData.getDbAccessSession().getXaps().getDataSource());
 				if (!serverSideJob) {
-					//					if (job.getMoveToProfile() != null)
-					//						updateSessionWithProfile();
 					updateSessionWithJobParams(false);
 					updateSessionWithJobCurrent();
 					Log.debug(UnitJob.class, "UnitJob status is updated to STARTED and job parameters / job profile are written to session.");
@@ -166,11 +164,11 @@ public class UnitJob {
 			Integer jobId = jobInfo.getJobId();
 			try {
 				List<UnitParameter> upList = getUnitParameters(unitJobStatus);
-				DBAccessStatic.stopUnitJob(sessionData.getUnitId(), jobId, unitJobStatus, sessionData.getDbAccess().getDbAccess().getXapsDataSource());
+				DBAccessStatic.stopUnitJob(sessionData.getUnitId(), jobId, unitJobStatus, sessionData.getDbAccessSession().getXaps().getDataSource());
 				sessionData.getPIIDecision().setCurrentJobStatus(unitJobStatus);
 				// Write directly to database, no queuing, since the all data are flushed in next step (most likely)
-				XAPS xaps = sessionData.getDbAccess().getXaps();
-				XAPSUnit xapsUnit = sessionData.getDbAccess().getDbAccess().getXAPSUnit(xaps);
+				XAPS xaps = sessionData.getDbAccessSession().getXaps();
+				XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
 				xapsUnit.addOrChangeUnitParameters(upList, sessionData.getProfile());
 				if (!serverSideJob) {
 					sessionData.setFromDB(null);

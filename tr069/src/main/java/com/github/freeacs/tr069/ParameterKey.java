@@ -41,9 +41,8 @@ public class ParameterKey {
 		return false;
 	}
 
-	private static String calculateParameterKey(HTTPReqResData reqRes) throws SQLException, NoSuchAlgorithmException {
+	private static String calculateParameterKey(HTTPReqResData reqRes) throws NoSuchAlgorithmException {
 		SessionData sessionData = reqRes.getSessionData();
-		//		Map<String, ParameterInfoStruct> infoMap = sessionData.getDbAccess().readInfoMap(sessionData.getUnittype().getUnittypeName());
 		UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
 		Map<String, ParameterValueStruct> fromDB = sessionData.getFromDB();
 		if (sessionData.getJobParams() == null) { // already populated job params in fromDB.

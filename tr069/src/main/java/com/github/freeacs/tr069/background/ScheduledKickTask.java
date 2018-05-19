@@ -1,5 +1,6 @@
 package com.github.freeacs.tr069.background;
 
+import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.common.scheduler.TaskDefaultImpl;
 import com.github.freeacs.dbi.*;
 import org.slf4j.Logger;
@@ -33,14 +34,6 @@ public class ScheduledKickTask extends TaskDefaultImpl {
 			this.unit = unit;
 		}
 
-		public long getInitiatedTms() {
-			return initiatedTms;
-		}
-
-		public void setInitiatedTms(long initiatedTms) {
-			this.initiatedTms = initiatedTms;
-		}
-
 		public int getKickCount() {
 			return kickCount;
 		}
@@ -60,7 +53,7 @@ public class ScheduledKickTask extends TaskDefaultImpl {
 
 	private static Logger logger = LoggerFactory.getLogger(ScheduledKickTask.class);
 	private DBI dbi;
-	private static Object syncMonitor = new Object();
+	private static final Object syncMonitor = new Object();
 
 	private static List<UnitKick> kickList = new ArrayList<ScheduledKickTask.UnitKick>();
 
@@ -85,9 +78,7 @@ public class ScheduledKickTask extends TaskDefaultImpl {
 					continue;
 				}
 				Unit unit = uk.getUnit();
-				//				unit.toWriteQueue(SystemParameters.PROVISIONING_MODE, ProvisioningMode.KICK.toString());
-				//				unit.toWriteQueue(SystemParameters.PROVISIONING_STATE, ProvisioningState.LOAD.toString());
-				XAPSUnit xapsUnit = new XAPSUnit(xaps.getDataSource(), xaps, xaps.getSyslog());
+				XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
 				xapsUnit.addOrChangeQueuedUnitParameters(unit);
 				dbi.publishKick(unit, SyslogConstants.FACILITY_STUN);
 				uk.setNextTms(now + 30000);
