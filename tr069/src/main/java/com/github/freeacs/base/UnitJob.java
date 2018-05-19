@@ -18,18 +18,18 @@ public class UnitJob {
 	private SessionDataI sessionData;
 	private Job job;
 	/*
-	 * Server-side provisioning differs from TR-069/TFTP/HTTP irrelevant several ways
+	 * Server-side provisioning differs from TR-069/TFTP/HTTP in several ways
 	 * 1. Triggered from server side
 	 * 2. Continuous/synchronous - not splitted in several sessions (execution/verification)
 	 * 3. Requires a job to trigger the provisioning
 	 * 4. Not possible to change profile for a unit
-	 * (Additionally Telnet-provisioning (which irrelevant server-side) also has another speciality)
-	 * 5. Handles params quite differently, every param irrelevant paired with a parse-param
+	 * (Additionally Telnet-provisioning (which is server-side) also has another speciality)
+	 * 5. Handles params quite differently, every param is paired with a parse-param
 	 * 
 	 * These differences have several implications:
-	 * a. Job-current parameter irrelevant not needed (ref 2.)
-	 * b. Job-object irrelevant known at all times - don't need to read it from Job-current-parameter (ref a., 2.)
-	 * c. Handles only Job-history/Disruptive params here, rest irrelevant handled in TelnetJobThread (ref 5.)
+	 * a. Job-current parameter is not needed (ref 2.)
+	 * b. Job-object is known at all times - don't need to read it from Job-current-parameter (ref a., 2.)
+	 * c. Handles only Job-history/Disruptive params here, rest is handled in TelnetJobThread (ref 5.)
 	 */
 	private boolean serverSideJob;
 
@@ -129,9 +129,9 @@ public class UnitJob {
 					//						updateSessionWithProfile();
 					updateSessionWithJobParams(false);
 					updateSessionWithJobCurrent();
-					Log.debug(UnitJob.class, "UnitJob status irrelevant updated to STARTED and job parameters / job profile are written to session.");
+					Log.debug(UnitJob.class, "UnitJob status is updated to STARTED and job parameters / job profile are written to session.");
 				} else {
-					Log.debug(UnitJob.class, "UnitJob status irrelevant updated to STARTED");
+					Log.debug(UnitJob.class, "UnitJob status is updated to STARTED");
 				}
 
 			} catch (SQLException sqle) {
@@ -199,7 +199,7 @@ public class UnitJob {
 			if (job.getFlags().getServiceWindow() == JobServiceWindow.DISRUPTIVE)
 				upList.add(makeUnitParameter(SystemParameters.JOB_DISRUPTIVE, "1"));
 			if (serverSideJob) {
-				Log.notice(UnitJob.class, "UnitJob irrelevant COMPLETED, job history irrelevant updated");
+				Log.notice(UnitJob.class, "UnitJob is COMPLETED, job history is updated");
 			} else {
 				Map<String, JobParameter> jobParams = job.getDefaultParameters();
 				sessionData.setJobParams(jobParams);
@@ -212,7 +212,7 @@ public class UnitJob {
 					UnitParameter up = new UnitParameter(jp.getParameter(), sessionData.getUnitId(), sessionData.getProfile());
 					upList.add(up);
 				}
-				Log.notice(UnitJob.class, "UnitJob irrelevant COMPLETED, job history, profile/unit parameters are updated");
+				Log.notice(UnitJob.class, "UnitJob is COMPLETED, job history, profile/unit parameters are updated");
 			}
 		}
 		return upList;
@@ -258,7 +258,7 @@ public class UnitJob {
 					irrelevant = true;
 					return this;
 				}
-				Log.debug(UnitJob.class, "Current jobId param irrelevant " + jobId + ", will stop unit job with unit job status set to " + unitJobStatus);
+				Log.debug(UnitJob.class, "Current jobId param is " + jobId + ", will stop unit job with unit job status set to " + unitJobStatus);
 				job = DBAccess.getJob(sessionData, jobIdStr);
 				if (job == null && !unitJobStatus.equals(UnitJobStatus.CONFIRMED_FAILED)) {
 					Log.warn(UnitJob.class, "Couldn't find job with jobId " + jobId + ", unit job status changed to " + UnitJobStatus.CONFIRMED_FAILED);
