@@ -1,16 +1,16 @@
-package test.owera.xaps.syslogserver;
+package com.github.freeacs.syslogserver;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class VoipCallClient extends SyslogClient implements Runnable {
+public class VoipCallClientTest extends SyslogClientTest implements Runnable {
 
 	private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 	private String mac;
 	private String hostname;
 	private long startTms;
 
-	public VoipCallClient(String mac, String hostname, boolean realtime) {
+	public VoipCallClientTest(String mac, String hostname, boolean realtime) {
 		this.mac = mac;
 		this.hostname = hostname;
 		this.realtime = realtime;
