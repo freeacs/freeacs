@@ -22,20 +22,6 @@ public class DBAccessSession {
 		Log.debug(DBAccessSession.class, message);
 	}
 
-	public void writeProfileChange(String unitId, Profile newProfile) throws SQLException{
-		long start = System.currentTimeMillis();
-		String method = "writeProfileChange";
-		try {
-			XAPSUnit xapsUnit = dbAccess.getXAPSUnit(xaps);
-			List<String> uList = new ArrayList<String>();
-			uList.add(unitId);
-			xapsUnit.addUnits(uList, newProfile);
-		} catch (Throwable t) {
-			DBAccess.handleError(method, start, t);
-		}
-
-	}
-
 	public void writeUnittypeParameters(SessionDataI sessionData, List<UnittypeParameter> utpList) throws SQLException {
 		long start = System.currentTimeMillis();
 		String method = "writeUnittypeParameters";
@@ -45,18 +31,6 @@ public class DBAccessSession {
 			debug("Have written " + utpList.size() + " unittype parameters");
 		} catch (Throwable t) {
 			DBAccess.handleError(method, start, t);
-		}
-	}
-
-	public void deleteUnitParameters(List<UnitParameter> unitParameters) throws SQLException {
-		long start = System.currentTimeMillis();
-		String action = "deleteUnitParameters";
-		try {
-			XAPSUnit xapsUnit = dbAccess.getXAPSUnit(xaps);
-			xapsUnit.deleteUnitParameters(unitParameters);
-			debug("Have deleted " + unitParameters.size() + " unit parameters");
-		} catch (Throwable t) {
-			DBAccess.handleError(action, start, t);
 		}
 	}
 

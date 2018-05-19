@@ -4,7 +4,6 @@ import com.github.freeacs.base.Log;
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.dbi.DBI;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,25 +26,25 @@ public class OKServlet extends HttpServlet {
 		this.dbAccess = dbAccess;
 	}
 
-	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+	public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		doGet(req, res);
 	}
 
 	@SuppressWarnings("rawtypes")
-	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+	public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
 
 		PrintWriter out = res.getWriter();
 		String status = "XAPSOK";
 		try {
 			Class tr069ProvClass = Class.forName("com.owera.xaps.tr069.Provisioning");
 			Field field = tr069ProvClass.getField("VERSION");
-			status += " " + (String) field.get(null);
+			status += " " + field.get(null);
 		} catch (Throwable t) {
 			try {
 				Class sppProvClass = Class.forName("com.owera.xaps.spp.HTTPProvisioning");
 				Field field = sppProvClass.getField("VERSION");
-				status += " " + (String) field.get(null);
-			} catch (Throwable t2) {
+				status += " " + field.get(null);
+			} catch (Throwable ignored) {
 			}
 		}
 		
@@ -56,7 +55,7 @@ public class OKServlet extends HttpServlet {
 				for (StackTraceElement ste : dbi.getDbiThrowable().getStackTrace())
 					status += ste.toString();
 			}
-		} catch (Throwable t) {
+		} catch (Throwable ignored) {
 		}
 		if (!status.contains("ERROR") && ThreadCounter.currentSessionsCount() > 0) {
 			Map<String, Long> currentSessions = ThreadCounter.cloneCurrentSessions();

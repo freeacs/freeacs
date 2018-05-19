@@ -24,7 +24,7 @@ public class JobLogic {
 
 	public static boolean checkJobOK(SessionDataI sessionData) {
 		try {
-			String jobId = sessionData.getOweraParameters().getValue(SystemParameters.JOB_CURRENT);
+			String jobId = sessionData.getFreeacsParameters().getValue(SystemParameters.JOB_CURRENT);
 			if (jobId != null && jobId.trim().length() > 0) {
 				Log.debug(JobLogic.class, "Verification stage entered for job " + jobId);
 				Job job = DBAccess.getJob(sessionData, jobId);
@@ -223,7 +223,7 @@ public class JobLogic {
 		 * Morten Simonsen, Nov 2011
 		 *
 		 */
-		String disruptiveJob = sessionData.getOweraParameters().getValue(SystemParameters.JOB_DISRUPTIVE);
+		String disruptiveJob = sessionData.getFreeacsParameters().getValue(SystemParameters.JOB_DISRUPTIVE);
 		boolean inDisruptiveJobChain = false;
 		if (disruptiveJob != null && disruptiveJob.equals("1"))
 			inDisruptiveJobChain = true;

@@ -23,9 +23,6 @@ import java.util.Map;
  *
  */
 public class CPEParameters {
-
-	// The keyroot of the CPE, must be set by the constuctor;
-	private String keyRoot;
 	// All config file information 
 	public String CONFIG_FILES;
 	// Special solution for Ping Communication's NPA and RGW
@@ -44,7 +41,6 @@ public class CPEParameters {
 	private Map<String, ParameterValueStruct> cpeParams = new HashMap<String, ParameterValueStruct>();
 
 	public CPEParameters(String keyRoot) {
-		this.keyRoot = keyRoot;
 		CONFIG_FILES = keyRoot + "DeviceInfo.VendorConfigFile.";
 		SOFTWARE_VERSION = keyRoot + "DeviceInfo.SoftwareVersion";
 		PERIODIC_INFORM_INTERVAL = keyRoot + "ManagementServer.PeriodicInformInterval";
@@ -77,10 +73,6 @@ public class CPEParameters {
 
 	public void putPvs(String param, ParameterValueStruct pvs) {
 		cpeParams.put(param, pvs);
-	}
-
-	public String getKeyRoot() {
-		return keyRoot;
 	}
 
 	/*

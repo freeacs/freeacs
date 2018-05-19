@@ -11,7 +11,6 @@ import com.github.freeacs.dbi.XAPS;
 import com.github.freeacs.tr069.HTTPReqResData;
 import com.github.freeacs.tr069.Properties;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,7 +27,7 @@ public class FileServlet extends HttpServlet {
     this.dbAccess = dbAccess;
   }
 
-  protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+  protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
 
     String firmwareName = null;
     String unittypeName = null;
@@ -101,7 +100,7 @@ public class FileServlet extends HttpServlet {
     }
   }
 
-  protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+  protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
     doGet(req, res);
   }
 }

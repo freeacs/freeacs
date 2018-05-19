@@ -45,42 +45,6 @@ public class UnitJob {
 		return new UnitParameter(utp, sessionData.getUnitId(), value, sessionData.getProfile());
 	}
 
-	//	private Map<String, String> getParameters(Unit unit, Profile profile) {
-	//		Map<String, String> map = new TreeMap<String, String>(new NaturalComparator());
-	//		ProfileParameters profileParameters = profile.getProfileParameters();
-	//		Map<String, UnitParameter> unitParameters = unit.getUnitParameters();
-	//		if (profileParameters != null) {
-	//			ProfileParameter[] pparams = profileParameters.getProfileParameters();
-	//			unit.getUnitParameters();
-	//			for (int i = 0; pparams != null && i < pparams.length; i++) {
-	//				if (unitParameters != null && unitParameters.get(pparams[i].getUnittypeParameter().getName()) != null)
-	//					continue;
-	//				map.put(pparams[i].getUnittypeParameter().getName(), pparams[i].getValue());
-	//			}
-	//		}
-	//		if (unitParameters != null) {
-	//			for (Entry<String, UnitParameter> entry : unitParameters.entrySet()) {
-	//				map.put(entry.getKey(), entry.getValue().getParameter().getValue());
-	//			}
-	//		}
-	//		return map;
-	//	}
-
-	//	private void updateSessionWithProfile() {
-	//		//		sessionData.setProfile(job.getMoveToProfile());
-	//		Map<String, String> parameters = getParameters(sessionData.getUnit(), sessionData.getProfile());
-	//		UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
-	//		for (Entry<String, String> entry : parameters.entrySet()) {
-	//			UnittypeParameter utp = utps.getByName(entry.getKey());
-	//			String utpName = utp.getName();
-	//			ParameterValueStruct pvs = new ParameterValueStruct(utpName, entry.getValue());
-	//			if (utp.getFlag().isSpecial())
-	//				sessionData.getOweraParameters().putPvs(utpName, pvs);
-	//			else
-	//				sessionData.getFromDB().put(utpName, pvs);
-	//		}
-	//	}
-
 	/**
 	 * This method updates the sessiondata object with the job parameters.
 	 * Specifically it updates:
@@ -92,28 +56,11 @@ public class UnitJob {
 	private void updateSessionWithJobParams(boolean verification) throws SQLException {
 		Map<String, JobParameter> jobParams = job.getDefaultParameters();
 		sessionData.setJobParams(jobParams);
-		//		for (JobParameter jp : jobParams.values()) {
-		//			Parameter jup = jp.getParameter();
-		//			String jpName = jup.getUnittypeParameter().getName();
-		//			//			if (jpName.equals(SystemParameters.JOB_CURRENT) || jpName.equals(SystemParameters.JOB_HISTORY))
-		//			//				continue;
-		//			String jpValue = jup.getValue();
-		//			ParameterValueStruct jpPvs = new ParameterValueStruct(jpName, jpValue);
-		//			if (jp.getParameter().getUnittypeParameter().getFlag().isSystem()) {
-		//				Log.debug(UnitJob.class, "Added " + jpName + ", value:[" + jpValue + "] to system parameters");
-		//				sessionData.getOweraParameters().putPvs(jpName, jpPvs);
-		//			} else if (verification && jp.getParameter().getUnittypeParameter().getFlag().isReadOnly()) {
-		//				Log.debug(UnitJob.class, "Skipped " + jpName + " in verification stage since it's read-only, should not be asked for in GPV");
-		//			} else {
-		//				Log.debug(UnitJob.class, "Added " + jpName + ", value:[" + jpValue + "] to session - will be asked for in GPV");
-		//				sessionData.getFromDB().put(jpName, jpPvs);
-		//			}
-		//		}
 	}
 
 	private void updateSessionWithJobCurrent() {
 		ParameterValueStruct jobIdPvs = new ParameterValueStruct(SystemParameters.JOB_CURRENT, "" + job.getId());
-		sessionData.getOweraParameters().putPvs(SystemParameters.JOB_CURRENT, jobIdPvs);
+		sessionData.getFreeacsParameters().putPvs(SystemParameters.JOB_CURRENT, jobIdPvs);
 	}
 
 	/*
@@ -214,9 +161,9 @@ public class UnitJob {
 			if (serverSideJob)
 				jobId = sessionData.getJob().getId();
 			else {
-				if (sessionData == null || sessionData.getOweraParameters() == null)
+				if (sessionData == null || sessionData.getFreeacsParameters() == null)
 					return;
-				String jobIdStr = sessionData.getOweraParameters().getValue(SystemParameters.JOB_CURRENT);
+				String jobIdStr = sessionData.getFreeacsParameters().getValue(SystemParameters.JOB_CURRENT);
 				if (jobIdStr == null)
 					return;
 				try {
@@ -238,17 +185,12 @@ public class UnitJob {
 					upList.add(makeUnitParameter(SystemParameters.JOB_CURRENT_KEY, ""));
 				}
 				if (unitJobStatus.equals(UnitJobStatus.COMPLETED_OK)) {
-					//					if (!serverSideJob && job.getMoveToProfile() != null) {
-					//						sessionData.getDbAccess().writeProfileChange(sessionData.getUnitId(), job.getMoveToProfile());
-					//						sessionData.setProfile(job.getMoveToProfile());
-					//					}
 					upList.add(makeHistoryParameter(job.getId()));
 					if (job.getFlags().getServiceWindow() == JobServiceWindow.DISRUPTIVE)
 						upList.add(makeUnitParameter(SystemParameters.JOB_DISRUPTIVE, "1"));
 					if (serverSideJob) {
 						Log.notice(UnitJob.class, "UnitJob is COMPLETED, job history is updated");
 					} else {
-						//						updateSessionWithJobParams(true);
 						Map<String, JobParameter> jobParams = job.getDefaultParameters();
 						sessionData.setJobParams(jobParams);
 						for (JobParameter jp : sessionData.getJobParams().values()) {
@@ -272,7 +214,7 @@ public class UnitJob {
 				//				sessionData.getDbAccess().writeUnitParameters(sessionData.getUnit(), upList, sessionData.getProfile());
 				if (!serverSideJob) {
 					sessionData.setFromDB(null);
-					sessionData.setOweraParameters(null);
+					sessionData.setFreeacsParameters(null);
 					sessionData.setJobParams(null);
 					Log.debug(UnitJob.class, "Unit-information will be reloaded to reflect changes in profile/unit parameters");
 					sessionData.updateParametersFromDB(sessionData.getUnitId());
@@ -284,10 +226,6 @@ public class UnitJob {
 		} catch (Throwable t) {
 			Log.error(UnitJob.class, "An error ocurred in stop()", t);
 		}
-	}
-
-	public void setJobStartTime(Long jobStartTime) {
-		this.jobStartTime = jobStartTime;
 	}
 
 }

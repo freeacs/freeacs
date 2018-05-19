@@ -125,14 +125,10 @@ public class DigestAuthenticator {
 			SessionData sessionData = reqRes.getSessionData();
 			sessionData.setUnitId(unitId);
 			sessionData.updateParametersFromDB(unitId);
-			//			String secret = sessionData.getOweraParameters().getValue(SystemParameters.SHARED_SECRET);
 			BaseCache.putSessionData(unitId, sessionData);
-			//			if (secret == null)
-			String secret = sessionData.getOweraParameters().getValue(SystemParameters.SECRET);
+			String secret = sessionData.getFreeacsParameters().getValue(SystemParameters.SECRET);
 			if (secret != null && secret.length() > 16 && !passwordMd5(username, secret, method, uri, nonce, nc, cnonce, qop).equals(response))
 				secret = secret.substring(0, 16);
-			//			if (secret == null)
-			//				secret = sessionData.getOweraParameters().getValue(SystemParameters.TR069_SECRET);
 			if (secret == null) {
 				throw new TR069AuthenticationException("No ACS Password found in database (CPE IP address: " + reqRes.getReq().getRemoteHost() + ") (username: " + username + ")", null,
 						HttpServletResponse.SC_FORBIDDEN);

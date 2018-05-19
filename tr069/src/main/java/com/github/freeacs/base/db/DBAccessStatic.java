@@ -24,8 +24,8 @@ public class DBAccessStatic {
 		String action = "readFirmwareImage";
 		try {
 			File firmwareCache = BaseCache.getFirmware(firmwareFresh.getName(), firmwareFresh.getUnittype().getName());
-			File firmwareReturn = null;
-			if (firmwareCache != null && firmwareFresh != null && firmwareFresh.getId() == firmwareCache.getId())
+			final File firmwareReturn;
+			if (firmwareCache != null && firmwareFresh.getId().equals(firmwareCache.getId()))
 				firmwareReturn = firmwareCache;
 			else {
 				firmwareFresh.setBytes(firmwareFresh.getContent());

@@ -26,9 +26,9 @@ import java.util.Map.Entry;
 /**
  * The class is responsible for creating a suitable response to the CPE. This
  * response could be a TR-069 request or a TR-069 response.
- * 
+ *
  * @author morten
- * 
+ *
  */
 public interface HTTPResponseCreator {
 
@@ -167,7 +167,7 @@ public interface HTTPResponseCreator {
    * from the CPE, regardless of what parameteres we have in the database.
    * That's because we have 2 different ways to set it in the database, the
    * standard and the FREEACS-way.
-   * 
+   *
    *
    */
    static Response buildGPV(HTTPReqResData reqRes) {
@@ -276,7 +276,7 @@ public interface HTTPResponseCreator {
     String version = download.getFile().getVersion();
     pm.setFileVersion(version);
     String username = sessionData.getUnitId();
-    String password = sessionData.getOweraParameters().getValue(SystemParameters.SECRET);
+    String password = sessionData.getFreeacsParameters().getValue(SystemParameters.SECRET);
     Body body = new DOreq(download.getUrl(), downloadType, tn, download.getFile().getLength(), commandKey, username, password);
     return new Response(header, body);
   }
@@ -284,10 +284,10 @@ public interface HTTPResponseCreator {
   static void createResponse(HTTPReqResData reqRes) throws TR069Exception {
     try {
       String methodName = reqRes.getResponse().getMethod();
-      Response response = null;
+      final Response response;
       HTTPResponseAction resAction = TR069Method.responseMap.get(methodName);
       if (resAction != null)
-        response = (Response) resAction.getCreateResponseMethod().apply(reqRes);
+        response = resAction.getCreateResponseMethod().apply(reqRes);
       else {
         response = new EmptyResponse();
         Log.error(HTTPResponseCreator.class, "The methodName " + methodName + " has no corresponding ResponseAction-method");

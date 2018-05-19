@@ -26,9 +26,9 @@ public class TR069Method {
 	public static final String GET_RPC_METHODS_RES = "GetRPCMethodsResponse";
 
 	public static final String REBOOT = "Reboot";
-	
+
 	public static final String CUSTOM = "Custom";
-	
+
 	public static final String FACTORY_RESET = "FactoryReset";
 	
 	public static final String GET_PARAMETER_ATTRIBUTES = "GetParameterAttributes";

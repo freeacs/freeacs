@@ -25,9 +25,9 @@ public class SessionLogging {
 			SessionData sessionData = reqRes.getSessionData();
 			// The old logging to eventlog
 			String methodsUsed = abbreviate(sessionData.getReqResList());
-			long diff = System.currentTimeMillis() - sessionData.getStartupTmsForSession().longValue();
+			long diff = System.currentTimeMillis() - sessionData.getStartupTmsForSession();
 			String eventMsg = makeEventMsg(reqRes, diff, methodsUsed);
-			Log.event(sessionData, eventMsg);
+			Log.event(eventMsg);
 
 			// The new logging to syslog
 			ProvisioningMessage pm = sessionData.getProvisioningMessage();

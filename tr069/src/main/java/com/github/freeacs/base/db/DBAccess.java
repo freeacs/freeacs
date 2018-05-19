@@ -11,7 +11,6 @@ import java.sql.SQLException;
 
 public class DBAccess {
 
-	private static final Config config = ConfigFactory.load();
 	private final DataSource xapsDataSource;
 	private final DataSource syslogDataSource;
 	private final String facilityVersion;

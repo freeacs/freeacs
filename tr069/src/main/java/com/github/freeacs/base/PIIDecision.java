@@ -63,9 +63,8 @@ public class PIIDecision {
 				if (currentJobStatus.equals(UnitJobStatus.COMPLETED_OK)) {
 					log(MINIMUM_PII, "Job is found and completed OK");
 					return MINIMUM_PII;
-				} else {
-					// continue to next steps
-				}
+				}  // continue to next steps
+
 			} else {
 				log(MINIMUM_PII, "Job is found but no status, indicates job not verified or serverside job");
 				return MINIMUM_PII;
@@ -128,61 +127,6 @@ public class PIIDecision {
 	private void log(long pii, String reason) {
 		Log.debug(ServiceWindow.class, "PeriodicInformInterval (final): " + pii + " (reason: " + reason + ")");
 	}
-
-	/**
-	 * Will calculate the next PeriodicInformInterval, so we can control when
-	 * the CPE will connect to the ACS the next time.
-	 * 
-	 * nextPII = nextPeriodicInformInterval is calculated based on the following rules:
-	 * 1. If a job exists and status is not set (the job has not ended so far in this session)
-	 * 		or status is COMPLETED_OK, then PII = 31.
-	 * 2. Else if job exists (but status is otherwise) then PII = PII_STD
-	 * 3. Else
-	 * 	3.1 If NextJobTms-CurrentTms < PII_STD then PII = Start of next ServiceWindow
-	 * 	3.2 Else PII = PII_STD
-	 * 
-	 * PII_STD:
-	 * 	If Enabled it will be calculated according these rules
-	 * 	a) PII must be within ServiceWindow
-	 * 	b) PII must be set according to the Frequency -> interval
-	 * 	c) PII must be spread according to Spread
-	 * 	If Not Enabled, it will only be calculated according to a)
-	 */
-	/*
-	public long oldNextPII() {
-		if (sessionData.getJob() != null) {
-			// UnitJobStatus is updated in UnitJob.stop() whenever a Job is stopped (can be both OK and FAILED)
-			if (sessionData.getUnitJobStatus() == null || sessionData.getUnitJobStatus().equals(UnitJobStatus.COMPLETED_OK)) {
-				Log.debug(ServiceWindow.class, "Final decision on PeriodicInformInterval: 31 (reason: Job is found and either completed or still in proces");
-				return 31; // 31 seconds is returned in case we're in a job or trying to verfiy a job
-			} else {
-				long PII_STD = calculateStdPII();
-				Log.debug(ServiceWindow.class, "Final decision on PeriodicInformInterval: " + PII_STD + " (reason: Job is found but has failed");
-				return PII_STD;// A job failed, we will wait a full interval (to avoid jobfail-loops)
-			}
-		} else {
-			long PII_STD = calculateStdPII();
-			// TmsForNextJob is updated in JobLogic.findJobWithHighestPriority whenever a new job is sought after
-			if (sessionData.getTmsForNextJob() != null && sessionData.getTmsForNextJob() - currentTms < PII_STD * 1000) {
-				// The next repeatable job is scheduled before next standard periodic inform - modify
-				// PII to hit earliest possible time, but still within ServiceWindow.
-				long nextPII = (timeWindow.getNextStartTms(currentTms) - currentTms) / 1000;
-				//				long nextPII = (sessionData.getTmsForNextJob() - currentTms) / 1000;
-				if (nextPII < 31) {
-					Log.debug(ServiceWindow.class, "Final decision on PeriodicInformInterval: 31 (reason: repeatable Job should start in " + nextPII + " seconds)");
-					return 31;
-				} else {
-					Log.debug(ServiceWindow.class, "Final decision on PeriodicInformInterval: " + nextPII + "  (reason: repeatable Job should start in " + nextPII + " seconds)");
-					return nextPII;
-				}
-			} else {
-				Log.debug(ServiceWindow.class, "Final decision on PeriodicInformInterval: " + PII_STD + " (reason: no jobs running or repeatable jobs found, use standard PII)");
-				return PII_STD;
-			}
-		}
-		
-	}
-	*/
 
 	/** 
 	 * Set by JobLogic.checkNewJob() - verified
