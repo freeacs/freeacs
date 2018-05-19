@@ -363,9 +363,7 @@ public class JobLogic {
 				}
 			} else {
 				// If a job is not repeatable and represented in the history, it is already executed, hence filtered out
-				if (jhEntry != null) {
-					i.remove();
-				}
+				i.remove();
 			}
 		}
 		return possibleJobs;

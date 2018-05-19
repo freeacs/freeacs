@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class UnitJob {
 
@@ -90,7 +91,7 @@ public class UnitJob {
 			JobHistoryEntry jhEntry = new JobHistoryEntry(entry);
 			Job entryJob = DBAccess.getJob(sessionData, "" + jhEntry.getJobId());
 			if (entryJob != null) {
-				if (entryJob.getId() == jobId) { // inc repeated-counter
+				if (Objects.equals(entryJob.getId(), jobId)) { // inc repeated-counter
 					jh2 += jhEntry.incEntry(tms) + ",";
 					found = true;
 				} else {
@@ -155,9 +156,9 @@ public class UnitJob {
 	 * 	- write unit-job entry to DB (failed)
 	 *  - write job-current to DB (as "")
 	 */
-	public void stop(String unitJobStatus) throws SQLException {
+	public void stop(String unitJobStatus) {
 		try {
-			Integer jobId = null;
+			Integer jobId;
 			if (serverSideJob)
 				jobId = sessionData.getJob().getId();
 			else {
