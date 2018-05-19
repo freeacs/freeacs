@@ -30,9 +30,7 @@ public interface SessionDataI {
 
 	public void setUnitId(String unitId);
 
-	public DBAccessSession getDbAccess();
-
-	public void setDbAccess(DBAccessSession dbAccess);
+	public DBAccessSession getDbAccessSession();
 
 	public Job getJob();
 
@@ -68,14 +66,8 @@ public interface SessionDataI {
 
 	public String getSerialNumber();
 
-	public void setMac(String mac);
-
-	public String getMac();
-
 	public ProvisioningMessage getProvisioningMessage();
 
-	public void setProvisioningMessage(ProvisioningMessage provisioningMessage);
-	
 	public Long getStartupTmsForSession();
 
 }

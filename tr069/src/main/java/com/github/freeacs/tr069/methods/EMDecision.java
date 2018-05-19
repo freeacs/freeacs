@@ -1,6 +1,7 @@
 package com.github.freeacs.tr069.methods;
 
 import com.github.freeacs.base.Log;
+import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.db.DBAccessSessionTR069;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.XAPS;
@@ -58,7 +59,7 @@ public class EMDecision {
 			TestUnit tu = TestUnitCache.get(sessionData.getUnitId());
 			try {
 				if (tu == null) {
-					TestDB testDB = new TestDB(sessionData.getDbAccess().getXaps());
+					TestDB testDB = new TestDB(sessionData.getDbAccessSession().getXaps());
 					List<TestCase> testCases = testDB.getCompleteTestCases(sessionData.getUnittype(), Util.getTestCaseMethod(unit), Util.getParamFilter(unit), Util.getTagFilter(unit));
 					tu = new TestUnit(sessionData.getUnittype(), sessionData.getUnit(), testCases);
 					TestUnitCache.put(sessionData.getUnitId(), tu);
@@ -135,8 +136,8 @@ public class EMDecision {
 		sessionData.setToDB(toDB);
 		DBAccessSessionTR069.writeUnitParams(sessionData); // queue-parameters - will be written at end-of-session
 		if (!queue) { // execute changes immediately - since otherwise these parameters will be lost (in the event of GPNRes.process())
-			XAPS xaps = reqRes.getSessionData().getDbAccess().getXaps();
-			XAPSUnit xapsUnit = new XAPSUnit(xaps.getDataSource(), xaps, xaps.getSyslog());
+			XAPS xaps = reqRes.getSessionData().getDbAccessSession().getXaps();
+			XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
 			xapsUnit.addOrChangeQueuedUnitParameters(sessionData.getUnit());
 		}
 		sessionData.setToDB(null);

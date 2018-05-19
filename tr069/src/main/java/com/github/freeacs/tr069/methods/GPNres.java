@@ -60,7 +60,7 @@ public class GPNres {
 				else
 					logger.debug("The unittype parameter " + utp.getName() + " was found more than once in the GPNRes");
 			}
-			sessionData.getDbAccess().writeUnittypeParameters(sessionData, utpList);
+			sessionData.getDbAccessSession().writeUnittypeParameters(sessionData, utpList);
 			Log.debug(GPNres.class, "Unittype parameters (" + pisList.size() + ") is written to DB, will now reload unit");
 			sessionData.setFromDB(null);
 			sessionData.setFreeacsParameters(null);
