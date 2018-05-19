@@ -1,13 +1,11 @@
 package com.github.freeacs.tr069;
 
 import com.github.freeacs.base.*;
-import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.db.DBAccessSession;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.tr069.xml.ParameterAttributeStruct;
 import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
@@ -99,8 +97,6 @@ public class SessionData implements SessionDataI {
 	private Job job;
 	/* All parameters from a job */
 	private Map<String, JobParameter> jobParams;
-	/* May be populated if a job is scheduled at a certain interval (repeat-jobs) */
-	private Long secondsToNextJob;
 
 	/* parameterkey contains a hash of all values sent to CPE */
 	private ParameterKey parameterKey;
@@ -127,14 +123,10 @@ public class SessionData implements SessionDataI {
 	// An object to store data about a download
 	private Download download;
 
-	public SessionData(String id, DBAccess dbAccess) throws TR069DatabaseException {
-		try {
-			this.id = id;
-			this.dbAccess = new DBAccessSession(dbAccess);
-			provisioningMessage.setProvProtocol(ProvisioningProtocol.TR069);
-		} catch (SQLException sqle) {
-			throw new TR069DatabaseException("Could not create SessionData object", sqle);
-		}
+	public SessionData(String id, XAPS xaps) throws SQLException {
+		this.id = id;
+		this.dbAccess = new DBAccessSession(xaps);
+		provisioningMessage.setProvProtocol(ProvisioningProtocol.TR069);
 	}
 
 	public String getKeyRoot() {
@@ -143,7 +135,7 @@ public class SessionData implements SessionDataI {
 
 	public void setKeyRoot(String keyRoot) {
 		if (keyRoot != null)
-			this.keyRoot = new String(keyRoot);
+			this.keyRoot = keyRoot;
 	}
 
 	public Map<String, ParameterValueStruct> getFromDB() {
@@ -155,7 +147,7 @@ public class SessionData implements SessionDataI {
 	}
 
 	public void setStartupTmsForSession(long startupTmsForSession) {
-		this.startupTmsForSession = new Long(startupTmsForSession);
+		this.startupTmsForSession = startupTmsForSession;
 	}
 
 	public void updateParametersFromDB(String unitId) throws SQLException {
@@ -198,7 +190,7 @@ public class SessionData implements SessionDataI {
 
 	public void setUnitId(String unitId) {
 		if (unitId != null) {
-			this.unitId = new String(unitId);
+			this.unitId = unitId;
 			this.provisioningMessage.setUniqueId(unitId);
 		}
 	}
@@ -287,10 +279,6 @@ public class SessionData implements SessionDataI {
 
 	public List<HTTPReqResData> getReqResList() {
 		return reqResList;
-	}
-
-	public void setReqResList(List<HTTPReqResData> reqResList) {
-		this.reqResList = reqResList;
 	}
 
 	public String getMethodBeforePreviousResponseMethod() {
@@ -444,12 +432,8 @@ public class SessionData implements SessionDataI {
 		this.testMode = testMode;
 	}
 
-	public DBAccessSession getDbAccess() {
+	public DBAccessSession getDbAccessSession() {
 		return dbAccess;
-	}
-
-	public void setDbAccess(DBAccessSession dbAccess) {
-		this.dbAccess = dbAccess;
 	}
 
 	public Job getJob() {
@@ -461,7 +445,7 @@ public class SessionData implements SessionDataI {
 	}
 
 	public void addUnitDataToSession(SessionData sessionData) throws SQLException {
-		Unit unit = this.getDbAccess().readUnit(sessionData.getUnitId());
+		Unit unit = this.getDbAccessSession().readUnit(sessionData.getUnitId());
 		Map<String, ParameterValueStruct> valueMap = new TreeMap<String, ParameterValueStruct>();
 		if (unit != null) {
 			sessionData.setUnit(unit);
@@ -561,24 +545,8 @@ public class SessionData implements SessionDataI {
 	}
 
 	@Override
-	public void setMac(String mac) {
-		this.mac = mac;
-
-	}
-
-	@Override
-	public String getMac() {
-		return mac;
-	}
-
-	@Override
 	public ProvisioningMessage getProvisioningMessage() {
 		return provisioningMessage;
-	}
-
-	@Override
-	public void setProvisioningMessage(ProvisioningMessage provisioningMessage) {
-		this.provisioningMessage = provisioningMessage;
 	}
 
 	public CommandKey getCommandKey() {
