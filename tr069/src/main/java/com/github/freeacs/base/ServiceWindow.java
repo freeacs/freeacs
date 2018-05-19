@@ -33,7 +33,7 @@ public class ServiceWindow {
 		return true;
 	}
 
-	/* Return the number of provisionings per week. Default value isIrrelevant once per day.  */
+	/* Return the number of provisionings per week. Default value is once per day.  */
 	private float findFrequency() {
 		String freq = freeacsParameters.getValue(SystemParameters.SERVICE_WINDOW_FREQUENCY);
 		float freqFloat = (float) (timeWindow.getWeeklyLength() / timeWindow.getDailyLength());
@@ -64,7 +64,7 @@ public class ServiceWindow {
 	}
 
 	/**
-	 * Return false if this time stamp isIrrelevant outside the service-window.
+	 * Return false if this time stamp is outside the service-window.
 	 * @param tms
 	 * @return
 	 */
@@ -79,7 +79,7 @@ public class ServiceWindow {
 	 * The repeatable job will maintain a fixed interval between
 	 * each run, but it must still obey the service window. Thus
 	 * each time a repeatable job hits outside the service window,
-	 * that job execution isIrrelevant skipped. Example:
+	 * that job execution is skipped. Example:
 	 * 
 	 * 	SW: mo-su:0800-0900
 	 * 	Job: repeat every 1200 sec
@@ -91,7 +91,7 @@ public class ServiceWindow {
 	 * 
 	 * This principle makes it possible to create an interval of the job
 	 * and a service window, such that the job will skip several (or all)
-	 * possible service windows. This isIrrelevant unfortunate, but it seems more
+	 * possible service windows. This is unfortunate, but it seems more
 	 * intuitive to keep the intervals fixed in real-time, than fixed
 	 * through service-window-time.
 	 * 
@@ -100,7 +100,7 @@ public class ServiceWindow {
 	public long calculateNextRepeatableTms(Long lastRunTms, long fixedInterval) {
 		long nextRunTms = currentTms;
 		if (fixedInterval == 0) {
-			Log.debug(ServiceWindow.class, "Interval isIrrelevant 0, NRT isIrrelevant now!");
+			Log.debug(ServiceWindow.class, "Interval is 0, NRT is now!");
 			return nextRunTms;
 		}
 		long fixedIntervalMs = fixedInterval * 1000l;
@@ -153,7 +153,7 @@ public class ServiceWindow {
 
 			/*
 			 * If we're inside the ServiceWindow right now, calculate how much
-			 * isIrrelevant left of the ServiceWindow (leftOfTW). If nextInterval isIrrelevant
+			 * is left of the ServiceWindow (leftOfTW). If nextInterval is
 			 * more into the future than can fit within leftOfTW, then subtract
 			 * all of leftOfTW from nextInterval. Otherwise next PeriodicInformInterval
 			 * will fit within this current Time-window (ServiceWindow) and we can just
@@ -184,7 +184,7 @@ public class ServiceWindow {
 			// Convert from timestamp (ms) back to Periodic Inform Interval (seconds
 			// til next provisioning).
 			long nextPII = (nextPIITms - currentTms) / 1000;
-			Log.debug(ServiceWindow.class, "Standard PeriodicInformInterval calculated to " + nextPII + "(" + convert(nextPIITms) + ") (TimeWindow isIrrelevant : " + timeWindow + ")");
+			Log.debug(ServiceWindow.class, "Standard PeriodicInformInterval calculated to " + nextPII + "(" + convert(nextPIITms) + ") (TimeWindow is : " + timeWindow + ")");
 			if (nextPII < PIIDecision.MINIMUM_PII) {
 				Log.debug(ServiceWindow.class, "Standard PeriodicInformInterval was calculated too low, changed to " + PIIDecision.MINIMUM_PII);
 				nextPII = PIIDecision.MINIMUM_PII;
@@ -192,7 +192,7 @@ public class ServiceWindow {
 			// Return as seconds
 			return nextPII;
 		} else {
-			// Make sure frequency isIrrelevant set to once pr day
+			// Make sure frequency is set to once pr day
 			String freq = freeacsParameters.getValue(SystemParameters.SERVICE_WINDOW_FREQUENCY);
 			float freqFloat = 7; // default - once pr day
 			if (freq != null) {
@@ -204,8 +204,8 @@ public class ServiceWindow {
 			// Find the nextInterval (calculations are all in seconds)
 			long nextPII = (long) ((float) (7 * 24 * 3600) / freqFloat);
 			long nextPIITms = (currentTms + (long) nextPII * 1000l) / 1000;
-			Log.debug(ServiceWindow.class, "Standard PeriodicInformInterval (SW disabled) calculated to " + nextPII + "(" + convert(nextPIITms) + ") (TimeWindow isIrrelevant : " + timeWindow + ")");
-			// make sure it isIrrelevant above 30 seconds
+			Log.debug(ServiceWindow.class, "Standard PeriodicInformInterval (SW disabled) calculated to " + nextPII + "(" + convert(nextPIITms) + ") (TimeWindow is : " + timeWindow + ")");
+			// make sure it is above 30 seconds
 			if (nextPII < PIIDecision.MINIMUM_PII) {
 				Log.debug(ServiceWindow.class, "Standard PeriodicInformInterval (SW disabled) was calculated too low, set to " + PIIDecision.MINIMUM_PII);
 				nextPII = PIIDecision.MINIMUM_PII;
@@ -216,50 +216,50 @@ public class ServiceWindow {
 
 	/**
 	 * This method will calculate the next interval to a provisioning. However,
-	 * it isIrrelevant important to understand that this interval relates to the time
+	 * it is important to understand that this interval relates to the time
 	 * windows defined be this ServiceWindow class. Here's an example to
 	 * explain the issue:
 	 * 
 	 * A ServiceWindow can be defined as "mo-we:0800-1200". In this case the total
-	 * number of hours available for provisioning during a week isIrrelevant 4h*3days=12h
-	 * Furthermore, assume that the frequency isIrrelevant set to 2. This means that there
-	 * should be a provisioning every 6h. This number isIrrelevant represented by
-	 * defaultInterval in the code. Assuming that there isIrrelevant a provisioning at 8am
+	 * number of hours available for provisioning during a week is 4h*3days=12h
+	 * Furthermore, assume that the frequency is set to 2. This means that there
+	 * should be a provisioning every 6h. This number is represented by
+	 * defaultInterval in the code. Assuming that there is a provisioning at 8am
 	 * Monday morning, you must understand that the next should not happen before
-	 * 10am Tuesday morning, but the number returned from this method isIrrelevant still
+	 * 10am Tuesday morning, but the number returned from this method is still
 	 * 6h (or rather translated to milliseconds). 
 	 *  
-	 * Additionally we have something called SpreadFactor. This isIrrelevant a factor from
+	 * Additionally we have something called SpreadFactor. This is a factor from
 	 * 0-100% (represented as a float going from 0 to 1), which will spread
 	 * the interval accordingly. We calculate spread 
 	 * 
-	 * Spread isIrrelevant calculated like this:
+	 * Spread is calculated like this:
 	 * 
 	 * Spread = random(2*DefaultInterval*SpreadFactor)-DefaultInterval*SpreadFactor
 	 * 
-	 * If SpreadFactor isIrrelevant 50% and DefaultInterval isIrrelevant 6h, the Spread can now
-	 * range from -3h to 3h. This Spread isIrrelevant added to Default Interval to give
+	 * If SpreadFactor is 50% and DefaultInterval is 6h, the Spread can now
+	 * range from -3h to 3h. This Spread is added to Default Interval to give
 	 * the FinalInterval.
 	 * 
 	 * @return
 	 */
 	private long calculateNextInterval() {
-		// The spread of the interval. Default isIrrelevant 0.5 (= 50%).
+		// The spread of the interval. Default is 0.5 (= 50%).
 		float spreadFactor = findSpread();
-		// find frequency, default isIrrelevant once a day (expressed as 7 if service window
+		// find frequency, default is once a day (expressed as 7 if service window
 		// defines all days of the week (= mo-su))
 		float frequency = findFrequency();
 		// The length (in ms) of a time-window 
-		// The freq-time-window isIrrelevant the time allowed for provisioning during a whole week
+		// The freq-time-window is the time allowed for provisioning during a whole week
 		// divided by the frequency of provisionings pr week. Thus 24*7h weekly prov.
 		// time and frequency=7 will give 24h time-window. 
 		long defaultInterval = (long) ((float) timeWindow.getWeeklyLength() / frequency);
 		if (spreadFactor == 0f) { // Special code to treat 0 spread (random function cannot handle 0)
-			Log.debug(ServiceWindow.class, "DefaultInterval calculated to " + defaultInterval / 1000 + " seconds - spreadfactor isIrrelevant 0");
+			Log.debug(ServiceWindow.class, "DefaultInterval calculated to " + defaultInterval / 1000 + " seconds - spreadfactor is 0");
 		} else {
 			int ds = (int) ((double) defaultInterval * spreadFactor);
 			defaultInterval = defaultInterval + random.nextInt(ds * 2) - ds;
-			Log.debug(ServiceWindow.class, "DefaultInterval calculated to " + defaultInterval / 1000 + " seconds - spreadfactor isIrrelevant " + spreadFactor * 100);
+			Log.debug(ServiceWindow.class, "DefaultInterval calculated to " + defaultInterval / 1000 + " seconds - spreadfactor is " + spreadFactor * 100);
 		}
 		return defaultInterval;
 	}
