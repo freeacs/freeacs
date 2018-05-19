@@ -37,7 +37,7 @@ public class FileServlet extends HttpServlet {
     try {
       // Create the main object which contains all objects concerning the entire
       // session. This object also contains the SessionData object
-      if (Properties.isFileAuthUsed()) {
+      if (Properties.FILE_AUTH_USED) {
         HTTPReqResData reqRes = new HTTPReqResData(req, res, dbAccess);
         // 2. Authenticate the client (first issue challenge, then authenticate)
         if (!Authenticator.authenticate(reqRes))

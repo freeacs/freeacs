@@ -13,10 +13,7 @@ import com.github.freeacs.dbi.util.ProvisioningMessage.ProvOutput;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ProvStatus;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.github.freeacs.tr069.CPEParameters;
-import com.github.freeacs.tr069.DownloadLogicTR069;
-import com.github.freeacs.tr069.HTTPReqResData;
-import com.github.freeacs.tr069.SessionData;
+import com.github.freeacs.tr069.*;
 import com.github.freeacs.tr069.background.ActiveDeviceDetectionTask;
 import com.github.freeacs.tr069.decision.shelljob.ShellJobLogic;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;
@@ -118,14 +115,14 @@ public class GPVDecision {
         return;
       } else
         sessionData.getPIIDecision().setDisruptiveSW(serviceWindow);
-    } else if (DownloadLogicTR069.isSoftwareDownloadSetup(reqRes, null) && DownloadLogic.downloadAllowed(null, com.github.freeacs.tr069.Properties.concurrentDownloadLimit())) {
+    } else if (DownloadLogicTR069.isSoftwareDownloadSetup(reqRes, null) && DownloadLogic.downloadAllowed(null, Properties.CONCURRENT_DOWNLOAD_LIMIT)) {
       serviceWindow = new ServiceWindow(sessionData, true);
       if (serviceWindow.isWithin()) {
         reqRes.getResponse().setMethod(TR069Method.DOWNLOAD);
         return;
       } else
         sessionData.getPIIDecision().setDisruptiveSW(serviceWindow);
-    } else if (DownloadLogicTR069.isScriptDownloadSetup(reqRes, null) && DownloadLogic.downloadAllowed(null, com.github.freeacs.tr069.Properties.concurrentDownloadLimit())) {
+    } else if (DownloadLogicTR069.isScriptDownloadSetup(reqRes, null) && DownloadLogic.downloadAllowed(null, Properties.CONCURRENT_DOWNLOAD_LIMIT)) {
       serviceWindow = new ServiceWindow(sessionData, true);
       if (serviceWindow.isWithin()) {
         reqRes.getResponse().setMethod(TR069Method.DOWNLOAD);
@@ -159,8 +156,7 @@ public class GPVDecision {
       // will not affect the comparison in populateToCollections()
       updateUnitParameters(sessionData);
       try {
-        uj = JobLogic.checkNewJob(sessionData, com.github.freeacs.tr069.Properties.concurrentDownloadLimit()); // may find a new
-                                                              // job
+        uj = JobLogic.checkNewJob(sessionData, Properties.CONCURRENT_DOWNLOAD_LIMIT); // may find a new job
       } catch (SQLException sqle) {
         throw new TR069DatabaseException(sqle);
       }

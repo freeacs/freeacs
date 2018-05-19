@@ -159,7 +159,7 @@ public class SessionData implements SessionDataI {
 		addUnitDataToSession(this);
 
 		if (fromDB.isEmpty()) {
-			if (Properties.isDiscoveryMode()) {
+			if (Properties.DISCOVERY_MODE) {
 				Log.debug(SessionData.class, "No unit data found & discovery mode true -> first-connect = true, allow to continue");
 				this.setFirstConnect(true);
 			} else
@@ -577,4 +577,17 @@ public class SessionData implements SessionDataI {
 		return false;
 	}
 
+	public String getUnittypeName() {
+		String unittypeName = null;
+		if (unittype != null)
+			unittypeName = unittype.getName();
+		return unittypeName;
+	}
+
+	public String getVersion() {
+		String version = null;
+		if (cpeParameters != null)
+			version = cpeParameters.getValue(cpeParameters.SOFTWARE_VERSION);
+		return version;
+	}
 }
