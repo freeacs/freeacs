@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -24,7 +25,7 @@ import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.Collections;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = FlywayAutoConfiguration.class)
 public class App {
 
     public static void main(String[] args) {
