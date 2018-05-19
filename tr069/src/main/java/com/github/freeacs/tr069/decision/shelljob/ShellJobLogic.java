@@ -96,7 +96,7 @@ public class ShellJobLogic {
 				timeWaitFactor += 2;
 				ScriptExecution se = executions.getExecution(sessionData.getUnittype(), requestId);
 				if (se.getExitStatus() != null) {
-					if (se.getExitStatus() == true) { // ERROR OCCURRED
+					if (se.getExitStatus()) { // ERROR OCCURRED
 						Log.error(ShellJobLogic.class, se.getErrorMessage());
 						uj.stop(UnitJobStatus.CONFIRMED_FAILED);
 					} else

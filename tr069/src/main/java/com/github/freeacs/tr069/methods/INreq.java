@@ -201,7 +201,7 @@ public class INreq {
 				DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(reqRes.getDbAccess().getDBI(), sessionData.getDbAccess());
 				dbAccessSessionTR069.writeUnittypeProfileUnit(sessionData, deviceIdStruct.getProductClass(), unitId);
 				sessionData.setFromDB(null);
-				sessionData.setOweraParameters(null);
+				sessionData.setFreeacsParameters(null);
 				sessionData.updateParametersFromDB(unitId);
 				Log.debug(INreq.class, "Unittype, profile and unit is created, since discovery mode is enabled and this is the first connect");
 			}

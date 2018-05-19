@@ -3,8 +3,6 @@ package com.github.freeacs.base.http;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.common.util.CacheValue;
-import com.github.freeacs.dbi.Certificate;
-import com.github.freeacs.dbi.Certificates;
 import com.github.freeacs.tr069.HTTPReqResData;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
@@ -12,12 +10,9 @@ import com.github.freeacs.tr069.exception.TR069AuthenticationException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashSet;
-import java.util.Set;
 
 public class Authenticator {
 
-  private static Set<String> hostSet = new HashSet<String>();
   private static Cache blockedClients = new Cache();
   private static int blockedClientsCount = 0;
 

@@ -13,18 +13,6 @@ import java.util.List;
 
 public class FADecision {
 	public static void process(HTTPReqResData reqRes) {
-		//		Fault fault = reqRes.getRequest().getFault();
-		//		String errormsg = null;
-		//		if (fault != null)
-		//			errormsg = "The CPE reported faultcode " + fault.getFaultCode() + " and faultstring " + fault.getFaultString();
-		//		Throwable throwable = reqRes.getThrowable();
-		//		if (throwable != null) {
-		//			if (errormsg == null)
-		//				errormsg = "The ACS experienced an exception: " + throwable;
-		//			else
-		//				errormsg += " and the ACS experienced an exception: " + throwable;
-		//		}
-		//		Log.error(FADecision.class, errormsg);
 
 		SessionData sessionData = reqRes.getSessionData();
 		if (sessionData.getUnit().getProvisioningMode() == ProvisioningMode.REGULAR) {

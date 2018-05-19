@@ -14,20 +14,20 @@ public class ServiceWindow {
 	private static Random random = new Random(System.currentTimeMillis());
 	private TimeWindow timeWindow;
 	private long currentTms;
-	private OweraParameters oweraParams;
+	private FreeacsParameters freeacsParameters;
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public ServiceWindow(SessionDataI sessionData, boolean disruptive) {
 		this.currentTms = System.currentTimeMillis();
-		this.oweraParams = sessionData.getOweraParameters();
+		this.freeacsParameters = sessionData.getFreeacsParameters();
 		if (disruptive)
-			timeWindow = new TimeWindow(oweraParams.getValue(SystemParameters.SERVICE_WINDOW_DISRUPTIVE));
+			timeWindow = new TimeWindow(freeacsParameters.getValue(SystemParameters.SERVICE_WINDOW_DISRUPTIVE));
 		else
-			timeWindow = new TimeWindow(oweraParams.getValue(SystemParameters.SERVICE_WINDOW_REGULAR));
+			timeWindow = new TimeWindow(freeacsParameters.getValue(SystemParameters.SERVICE_WINDOW_REGULAR));
 	}
 
 	private boolean isEnabled() {
-		String enable = oweraParams.getValue(SystemParameters.SERVICE_WINDOW_ENABLE);
+		String enable = freeacsParameters.getValue(SystemParameters.SERVICE_WINDOW_ENABLE);
 		if (enable != null && (enable.equals("0") || enable.equalsIgnoreCase("false")))
 			return false;
 		return true;
@@ -35,7 +35,7 @@ public class ServiceWindow {
 
 	/* Return the number of provisionings per week. Default value is once per day.  */
 	private float findFrequency() {
-		String freq = oweraParams.getValue(SystemParameters.SERVICE_WINDOW_FREQUENCY);
+		String freq = freeacsParameters.getValue(SystemParameters.SERVICE_WINDOW_FREQUENCY);
 		float freqFloat = (float) (timeWindow.getWeeklyLength() / timeWindow.getDailyLength());
 		if (freq != null) {
 			try {
@@ -49,7 +49,7 @@ public class ServiceWindow {
 
 	private float findSpread() {
 		float freqFloat = (float) SystemConstants.DEFAULT_SERVICEWINDOW_SPREAD_INT / 100f;
-		String freq = oweraParams.getValue(SystemParameters.SERVICE_WINDOW_SPREAD);
+		String freq = freeacsParameters.getValue(SystemParameters.SERVICE_WINDOW_SPREAD);
 		if (freq != null) {
 			try {
 				freqFloat = new Float(freq) / 100f;
@@ -64,7 +64,7 @@ public class ServiceWindow {
 	}
 
 	/**
-	 * Return false if this time stamp is outside the service-window. 
+	 * Return false if this time stamp is outside the service-window.
 	 * @param tms
 	 * @return
 	 */
@@ -153,7 +153,7 @@ public class ServiceWindow {
 
 			/*
 			 * If we're inside the ServiceWindow right now, calculate how much
-			 * is left of the ServiceWindow (leftOfTW). If nextInterval is 
+			 * is left of the ServiceWindow (leftOfTW). If nextInterval is
 			 * more into the future than can fit within leftOfTW, then subtract
 			 * all of leftOfTW from nextInterval. Otherwise next PeriodicInformInterval
 			 * will fit within this current Time-window (ServiceWindow) and we can just
@@ -193,7 +193,7 @@ public class ServiceWindow {
 			return nextPII;
 		} else {
 			// Make sure frequency is set to once pr day
-			String freq = oweraParams.getValue(SystemParameters.SERVICE_WINDOW_FREQUENCY);
+			String freq = freeacsParameters.getValue(SystemParameters.SERVICE_WINDOW_FREQUENCY);
 			float freqFloat = 7; // default - once pr day
 			if (freq != null) {
 				try {
@@ -223,7 +223,7 @@ public class ServiceWindow {
 	 * A ServiceWindow can be defined as "mo-we:0800-1200". In this case the total
 	 * number of hours available for provisioning during a week is 4h*3days=12h
 	 * Furthermore, assume that the frequency is set to 2. This means that there
-	 * should be a provisioning every 6h. This number is represented by 
+	 * should be a provisioning every 6h. This number is represented by
 	 * defaultInterval in the code. Assuming that there is a provisioning at 8am
 	 * Monday morning, you must understand that the next should not happen before
 	 * 10am Tuesday morning, but the number returned from this method is still
