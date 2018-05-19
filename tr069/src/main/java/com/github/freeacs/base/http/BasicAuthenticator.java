@@ -80,15 +80,11 @@ public class BasicAuthenticator {
 				Log.warn(DigestAuthenticator.class, "Authentication not verified, but accepted since in Discovery Mode");
 			}
 			BaseCache.putSessionData(unitId, sessionData);
-			//			if (secret == null)
-			//				secret = sessionData.getOweraParameters().getValue(SystemParameters.SHARED_SECRET);
 			if (secret == null) {
-				secret = sessionData.getOweraParameters().getValue(SystemParameters.SECRET);
+				secret = sessionData.getFreeacsParameters().getValue(SystemParameters.SECRET);
 				if (secret != null && !secret.equals(password) && secret.length() > 16)
 					secret = secret.substring(0, 16);
 			}
-			//			if (secret == null)
-			//				secret = sessionData.getOweraParameters().getValue(SystemParameters.TR069_SECRET);
 			if (secret == null) {
 				throw new TR069AuthenticationException("No ACS Password found in database (CPE IP address: " + reqRes.getReq().getRemoteHost() + ") (username: " + username + ")", null,
 						HttpServletResponse.SC_FORBIDDEN);

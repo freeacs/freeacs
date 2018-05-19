@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class DBAccessStatic {
 
@@ -24,8 +25,8 @@ public class DBAccessStatic {
 		String action = "readFirmwareImage";
 		try {
 			File firmwareCache = BaseCache.getFirmware(firmwareFresh.getName(), firmwareFresh.getUnittype().getName());
-			File firmwareReturn = null;
-			if (firmwareCache != null && firmwareFresh != null && firmwareFresh.getId() == firmwareCache.getId())
+			final File firmwareReturn;
+			if (firmwareCache != null && Objects.equals(firmwareFresh.getId(), firmwareCache.getId()))
 				firmwareReturn = firmwareCache;
 			else {
 				firmwareFresh.setBytes(firmwareFresh.getContent());

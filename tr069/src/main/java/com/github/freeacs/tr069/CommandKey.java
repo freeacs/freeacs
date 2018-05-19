@@ -6,16 +6,8 @@ public class CommandKey {
 	private String cpeKey;
 	private String serverKey;
 
-	public String getCpeKey() {
-		return cpeKey;
-	}
-
 	public void setCpeKey(String cpeKey) {
 		this.cpeKey = cpeKey;
-	}
-
-	public String getServerKey() {
-		return serverKey;
 	}
 
 	public void setServerKey(HTTPReqResData reqRes)  {

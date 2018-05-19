@@ -24,7 +24,7 @@ public class JobLogic {
 
 	public static boolean checkJobOK(SessionDataI sessionData) {
 		try {
-			String jobId = sessionData.getOweraParameters().getValue(SystemParameters.JOB_CURRENT);
+			String jobId = sessionData.getFreeacsParameters().getValue(SystemParameters.JOB_CURRENT);
 			if (jobId != null && jobId.trim().length() > 0) {
 				Log.debug(JobLogic.class, "Verification stage entered for job " + jobId);
 				Job job = DBAccess.getJob(sessionData, jobId);
@@ -190,7 +190,7 @@ public class JobLogic {
 	 * 1. If a job is repeatable, it should run at fixed time intervals. Thus it may
 	 * be that a repeatable job cannot run before more than 31 seconds.
 	 * 
-	 * 2. If a job is not repeatable, it can start at any moment. But, it must still obey 
+	 * 2. If a job is not repeatable, it can start at any moment. But, it must still obey
 	 * the service window.
 	 * 
 	 * For all jobs that is not scheduled to run right away, we calculate the next periodic
@@ -205,7 +205,7 @@ public class JobLogic {
 	private static Map<Integer, Job> filterOnRunTime(SessionDataI sessionData, Map<Integer, Job> possibleJobs, Map<Integer, JobHistoryEntry> jobHistory) {
 		/*
 		 * Discussion about inDisruptiveJobChain: This flag is set on the unit-level, if a job has been
-		 * run under a disruptive service window. If any other job immediately follows this job it is 
+		 * run under a disruptive service window. If any other job immediately follows this job it is
 		 * considered likely that the jobs were dependent upon the first or previous job. Thus all jobs
 		 * following should be allowed to run and the service window calculation is ignored. However,
 		 * this assumption of dependency between the jobs might not always be true, especially if there
@@ -223,7 +223,7 @@ public class JobLogic {
 		 * Morten Simonsen, Nov 2011
 		 *
 		 */
-		String disruptiveJob = sessionData.getOweraParameters().getValue(SystemParameters.JOB_DISRUPTIVE);
+		String disruptiveJob = sessionData.getFreeacsParameters().getValue(SystemParameters.JOB_DISRUPTIVE);
 		boolean inDisruptiveJobChain = false;
 		if (disruptiveJob != null && disruptiveJob.equals("1"))
 			inDisruptiveJobChain = true;
@@ -363,9 +363,7 @@ public class JobLogic {
 				}
 			} else {
 				// If a job is not repeatable and represented in the history, it is already executed, hence filtered out
-				if (jhEntry != null) {
-					i.remove();
-				}
+				i.remove();
 			}
 		}
 		return possibleJobs;

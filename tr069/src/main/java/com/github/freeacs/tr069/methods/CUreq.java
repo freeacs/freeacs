@@ -22,27 +22,6 @@ public class CUreq extends Body {
 		this.unitId = unitId;
 	}
 
-	//	private String GPV(String paramName) {
-	//		StringBuilder sb = new StringBuilder(3);
-	//		sb.append("\t\t<cwmp:GetParameterValues>\n");
-	//		sb.append("\t\t\t<ParameterNames " + Namespace.getSoapEncNS() + ":arrayType=\"xsd:string[1]\">\n");
-	//		sb.append("\t\t\t\t<string>" + paramName + "</string>\n");
-	//		sb.append("\t\t\t</ParameterNames>\n");
-	//		sb.append("\t\t</cwmp:GetParameterValues>\n");
-	//		return sb.toString();
-	//	}
-	//
-	//	private String GPN(String paramName) {
-	//		StringBuilder sb = new StringBuilder(3);
-	//		sb.append("\t\t<cwmp:GetParameterNames>\n");
-	//		sb.append("\t\t\t<ParameterPath>\n");
-	//		sb.append("\t\t\t\t<string>" + paramName + "</string>\n");
-	//		sb.append("\t\t\t</ParameterPath>\n");
-	//		sb.append("\t\t\t<NextLevel>false</NextLevel>\n");
-	//		sb.append("\t\t</cwmp:GetParameterNames>\n");
-	//		return sb.toString();
-	//	}
-
 	private static void populateParamsMap(String unitId, String gpnFile, String gpvFile) throws IOException, TR069Exception {
 
 		// process gpnFile
@@ -79,13 +58,13 @@ public class CUreq extends Body {
 			if (pis.isWritable()) {
 				for (ParameterValueStruct pvs : pvsList) {
 					if (pvs.getName().equals(pis.getName())) {
-						if (pvs.getName().indexOf("ManagementServer.") > -1)
+						if (pvs.getName().contains("ManagementServer."))
 							continue;
-						if (pvs.getName().indexOf("X_FREEACS-COM.TFTP.SoftwareVersion") > -1)
+						if (pvs.getName().contains("X_FREEACS-COM.TFTP.SoftwareVersion"))
 							continue;
-						if (pvs.getName().indexOf("X_FREEACS-COM.TFTP.RefreshInterval") > -1)
+						if (pvs.getName().contains("X_FREEACS-COM.TFTP.RefreshInterval"))
 							continue;
-						if (pvs.getName().indexOf("X_FREEACS-COM.Web.") > -1)
+						if (pvs.getName().contains("X_FREEACS-COM.Web."))
 							continue;
 						newPvsList.add(pvs);
 					}

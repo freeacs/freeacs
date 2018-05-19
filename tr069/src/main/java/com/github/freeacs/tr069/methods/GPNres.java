@@ -63,7 +63,7 @@ public class GPNres {
 			sessionData.getDbAccess().writeUnittypeParameters(sessionData, utpList);
 			Log.debug(GPNres.class, "Unittype parameters (" + pisList.size() + ") is written to DB, will now reload unit");
 			sessionData.setFromDB(null);
-			sessionData.setOweraParameters(null);
+			sessionData.setFreeacsParameters(null);
 			sessionData.updateParametersFromDB(sessionData.getUnitId());
 		} catch (Throwable t) {
 			throw new TR069Exception("Processing GPNRes failed", TR069ExceptionShortMessage.MISC, t);
