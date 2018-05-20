@@ -14,7 +14,7 @@ public class SyslogClient {
 		try {
 			
 			String hostname = host;
-			int port = Properties.getPort();
+			int port = Properties.PORT;
 			if (host.indexOf(":") > -1) {
 				hostname = host.substring(0,host.indexOf(":"));
 				port = new Integer(host.substring(host.indexOf(":")+1));

@@ -32,12 +32,12 @@ public class SyslogServer implements Runnable {
 
 	private static DatagramPacket initServer() {
 		while (true) {
-			logger.info("Will try to bind server to port " + Properties.getPort());
+			logger.info("Will try to bind server to port " + Properties.PORT);
 			try {
-				socket = new DatagramSocket(Properties.getPort());
+				socket = new DatagramSocket(Properties.PORT);
 				socket.setSoTimeout(SOCKET_TIMEOUT);
-				socket.setReceiveBufferSize(Properties.getReceiveBufferSize() * 1024);
-				logger.info("Created a socket and bound to port " + Properties.getPort());
+				socket.setReceiveBufferSize(Properties.RECEIVE_BUFFER_SIZE * 1024);
+				logger.info("Created a socket and bound to port " + Properties.PORT);
 				byte[] log_buffer = new byte[socket.getReceiveBufferSize()];
 				logger.info("Created receive buffer, size " + log_buffer.length / 1024 + " KB");
 				DatagramPacket packet = new DatagramPacket(log_buffer, log_buffer.length);
@@ -68,7 +68,7 @@ public class SyslogServer implements Runnable {
 		while (true) {
 			logger.info("Will try to start Syslog2DB threads");
 			try {
-				int maxSyslogDBThreads = Properties.getMaxSyslogdbThreads();
+				int maxSyslogDBThreads = Properties.MAX_SYSLOGDB_THREADS;
 				List<Syslog2DB> syslog2DBList = new ArrayList<Syslog2DB>();
 				for (int i = 0; i < maxSyslogDBThreads; i++) {
 					Syslog2DB syslog2DB = new Syslog2DB(i, xapsDataSource, syslogDataSoource);

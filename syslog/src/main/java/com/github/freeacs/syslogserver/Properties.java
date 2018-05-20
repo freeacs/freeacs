@@ -1,127 +1,93 @@
 package com.github.freeacs.syslogserver;
 
-import com.github.freeacs.dbi.Syslog;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-import java.util.function.Supplier;
-
+@Component
 public class Properties {
 
-	private static final  Config config = ConfigFactory.load();
+	public static Integer MIN_SYSLOGDB_COMMIT_DELAY;
+	public static Integer MAX_SYSLOGDB_COMMIT_QUEUE;
+	public static Integer MAX_MESSAGES_PER_MINUTE;
+	public static Integer MIN_FREE_DISK_SPACE;
+	public static String UNKNOWN_UNITS_ACTION;
+	public static Integer MAX_FAILOVER_MESSAGE_AGE;
+	public static Integer MAX_SYSLOGDB_THREADS;
+	public static Integer MAX_MESSAGES_IN_DUPLICATE_BUFFER;
+	public static Integer MAX_MESSAGES_IN_BUFFER;
+	public static Integer RECEIVE_BUFFER_SIZE;
+	public static Integer FAILOVER_PROCESS_INTERVAL;
+	public static Integer PORT;
+	public static boolean SIMULATION;
 
-	private static Logger logger = LoggerFactory.getLogger(Properties.class);
-
-	private static int getInteger(String propertyKey, int defaultValue) {
-		if (!config.hasPath(propertyKey)) {
-			logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
-			return defaultValue;
-		}
-		try {
-			return config.getInt(propertyKey);
-		} catch (Throwable t) {
-			logger.warn("The value of " + propertyKey + " was not a number, instead using default value " + defaultValue);
-			return defaultValue;
-		}
+	@Value("${simulation:false}")
+	public void setSimulation(Boolean simulation) {
+		SIMULATION = simulation;
 	}
 
-	private static long getLong(String propertyKey, long defaultValue) {
-		if (!config.hasPath(propertyKey)) {
-			logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
-			return defaultValue;
-		}
-		try {
-			return config.getLong(propertyKey);
-		} catch (Throwable t) {
-			logger.warn("The value of " + propertyKey + " was not a number, instead using default value " + defaultValue);
-			return defaultValue;
-		}
+	@Value("${port:9116}")
+	public void setPort(Integer port) {
+		PORT = port;
 	}
 
-
-	private static String getString(String propertyKey, String defaultValue) {
-		if (!config.hasPath(propertyKey)) {
-			logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
-			return defaultValue;
-		}
-		return config.getString(propertyKey);
+	@Value("${failover-process-interval:30}")
+	public void setFailoverProcessInterval(Integer interval) {
+		FAILOVER_PROCESS_INTERVAL = interval;
 	}
 
-	public static boolean isSimulation() {
-		return "true".equals(getString("simulation", "false"));
-	}
-	
-	public static int getPort() {
-		return getInteger("port", 9116);
+	@Value("${receive-buffer-size:10240}")
+	public void setReceiveBufferSize(Integer bufferSize) {
+		RECEIVE_BUFFER_SIZE = bufferSize;
 	}
 
-	public static int getFailoverProcessInterval() {
-		return getInteger("failover-process-interval", 30);
+	@Value("${max-messages-in-buffer:100000}")
+	public void setMaxMessagesInBuffer(Integer maxMessages) {
+		MAX_MESSAGES_IN_BUFFER = maxMessages;
 	}
 
-	public static int getReceiveBufferSize() {
-		return getInteger("receive-buffer-size", 1024 * 10);
+	@Value("${max-message-in-duplicate-buffer:100000}")
+	public void setMaxMessagesInDuplicateBuffer(Integer maxMessages) {
+		MAX_MESSAGES_IN_DUPLICATE_BUFFER = maxMessages;
 	}
 
-	public static int getMaxMessagesInBuffer() {
-		return getInteger("max-messages-in-buffer", 100000);
+	@Value("${max-syslogdb-threads:1}")
+	public void setMaxSyslogdbThreads(Integer maxThreads) {
+		MAX_SYSLOGDB_THREADS = maxThreads;
 	}
 
-	public static int getMaxMessagesInDuplicateBuffer() {
-		return getInteger("max-message-in-duplicate-buffer", 100000);
+	@Value("${max-failover-message-age:24}")
+	public void setMaxFailoverMessageAge(Integer maxAge) {
+		MAX_FAILOVER_MESSAGE_AGE = maxAge;
 	}
 
-	public static int getMaxSyslogdbThreads() {
-		return getInteger("max-syslogdb-threads", 1);
+	@Value("${unknown-units:discard}")
+	public void setUnknownUnitsAction(String action) {
+		UNKNOWN_UNITS_ACTION = action;
 	}
 
-	public static int getMaxFailoverMessageAge() {
-		return getInteger("max-failover-message-age", 24);
+	@Value("${min-free-disk-space:100}")
+	public void setMinFreeDiskSpace(Integer minFreeDiskSpace) {
+		MIN_FREE_DISK_SPACE = minFreeDiskSpace;
 	}
 
-	public static String getUnknownUnitsAction() {
-		return getString("unknown-units", "discard");
-	}
-	
-	public static int getMinFreeDiskSpace() {
-		return getInteger("min-free-disk-space", 100);
+	@Value("${max-message-pr-minute:10000}")
+	public void setMaxMessagesPrMinute(Integer maxMessagesPrMinute) {
+		MAX_MESSAGES_PER_MINUTE = maxMessagesPrMinute;
 	}
 
-	public static int getMaxMessagesPrMinute() {
-		return getInteger("max-message-pr-minute", 10000);
+	@Value("${max-syslog-db-commit-queue:1000}")
+	public void setMaxDBCommitQueue(Integer maxDBCommitQueue) {
+		MAX_SYSLOGDB_COMMIT_QUEUE = maxDBCommitQueue;
+	}
+
+	@Value("${min-syslog-db-commit-delay:5000}")
+	public void setMinDBCommitDelay(Integer minDBCommitDelay) {
+		MIN_SYSLOGDB_COMMIT_DELAY = minDBCommitDelay;
 	}
 
 	public static String getDeviceIdPattern(int index) {
-		return getString("deviceid-pattern." + index, null);
-	}
-	
-	public static int getMaxDBCommitQueue() {
-		return getInteger("max-syslog-db-commit-queue", Syslog.defaultMaxInsertCount);
-	}
-	
-	public static int getMinDBCommitDelay() {
-		return getInteger("min-syslog-db-commit-delay", Syslog.defaultMinTmsDelay);
-	}
-
-	public static int getMaxConn(final String infix) {
-		return getInteger("db." + infix + ".maxconn", 20);
-	}
-
-	public static long getMaxAge(final String infix) {
-		return getLong("db." + infix + ".maxage", 60000);
-	}
-
-	public static String getUrl(final String infix) {
-		return Optional.ofNullable(getString("db." + infix + ".url", null))
-				.orElseGet(new Supplier<String>() {
-					@Override
-					public String get() {
-						return getString("db." +infix, null);
-					}
-				});
+		// TODO should this be reimplemented?
+		return null;
 	}
 
 }

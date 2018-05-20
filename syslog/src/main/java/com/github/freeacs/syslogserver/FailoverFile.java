@@ -31,7 +31,7 @@ public class FailoverFile {
 
 	long createdTms() {
 		if (created == null) {
-			created = System.currentTimeMillis() - Properties.getFailoverProcessInterval() * 60 * 1000;
+			created = System.currentTimeMillis() - Properties.FAILOVER_PROCESS_INTERVAL * 60 * 1000;
 		}
 		return created;
 	}
