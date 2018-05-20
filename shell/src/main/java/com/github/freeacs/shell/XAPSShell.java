@@ -4,12 +4,15 @@ import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.util.XAPSVersionCheck;
 import com.github.freeacs.shell.util.ValidateInput;
 import com.github.freeacs.shell.util.ValidateInteger;
+import com.zaxxer.hikari.HikariDataSource;
 
+import javax.sql.DataSource;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 public class XAPSShell {
 
@@ -37,10 +40,6 @@ public class XAPSShell {
 		out = printer;
 	}
 
-	public PrintWriter getPrinter() {
-		return out;
-	}
-
 	public void println(String s) {
 		out.println(s);
 		out.flush();
@@ -56,7 +55,7 @@ public class XAPSShell {
 			initConnectionProperties(session);
 		if (session.getMode() != SessionMode.DAEMON && session.getFusionUser() == null && session.getFusionPass() == null)
 			initFusionUser(session);
-		Users users = null;
+		Users users;
 		try {
 			users = new Users(session.getXapsProps());
 			if (session.getFusionUser() != null) {
@@ -223,23 +222,26 @@ public class XAPSShell {
 		xapsShell.mainImpl(args);
 	}
 
-	private void initConnectionProperties(Session session) throws Exception {
-		String question = "Choose one of the following database-connections by entering\n";
-		question += "the number.\n";
-		String propFile = "xaps-shell.properties";
-		PropertyReader pr = new PropertyReader(propFile);
-		int i = 1;
-		question += "\t0. Custom.\n";
-		while (true) {
-			String db = pr.getProperty("db." + i);
-			if (db != null) {
-				question += "\t" + i + ". " + db + "\n";
-				i++;
-			} else
-				break;
-		}
-		ValidateInput valInput = new ValidateInteger(0, i);
-		int chosen = Integer.parseInt(session.getProcessor().questionProcessing(question, valInput));
+	private void initConnectionProperties(Session session) {
+		session.setXapsProps(getHikariDataSource("xaps"));
+		session.setSysProps(getHikariDataSource("syslog"));
+	}
+
+	private DataSource getHikariDataSource(String prefix) {
+		HikariDataSource ds = new HikariDataSource();
+		String jdbcUrl = prefix + ".datasource.jdbcUrl";
+		ds.setJdbcUrl(Optional.ofNullable(System.getProperty(jdbcUrl)).orElseGet(() -> Properties.pr.getProperty(jdbcUrl)));
+		String className = prefix + ".datasource.driverClassName";
+		ds.setDriverClassName(Optional.ofNullable(System.getProperty(className)).orElseGet(() -> Properties.pr.getProperty(className)));
+		String user = prefix + ".datasource.username";
+		ds.setUsername(Optional.ofNullable(System.getProperty(user)).orElseGet(() -> Properties.pr.getProperty(user)));
+		String password = prefix + ".datasource.password";
+		ds.setPassword(Optional.ofNullable(System.getProperty(password)).orElseGet(() -> Properties.pr.getProperty(password)));
+		String poolSize = prefix + ".datasource.maximum-pool-size";
+		ds.setMaximumPoolSize(Integer.parseInt(Optional.ofNullable(System.getProperty(poolSize)).orElseGet(() -> Properties.pr.getProperty(poolSize))));
+		String poolName = prefix + ".datasource.poolName";
+		ds.setPoolName(Optional.ofNullable(System.getProperty(poolName)).orElseGet(() -> Properties.pr.getProperty(poolName)));
+		return ds;
 	}
 
 	private void initFusionUser(Session session) throws IOException {
@@ -248,7 +250,6 @@ public class XAPSShell {
 			session.println("You may skip login to become Admin, just press ENTER");
 		session.print("Username: ");
 		String fusionUser = session.getProcessor().retrieveInput();
-//		String fusionUser = "Admin";
 		if (Properties.isRestricted() || (fusionUser != null && fusionUser.trim().length() > 0 && !fusionUser.toLowerCase().equals("admin"))) {
 			session.setFusionUser(fusionUser);
 			session.print("Password: ");

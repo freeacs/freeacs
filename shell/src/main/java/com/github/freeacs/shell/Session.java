@@ -18,8 +18,8 @@ public class Session {
 	private XAPSShell xapsShell;
 
 	/* Information on how to access xAPS database */
-//	private ConnectionProperties xapsProps = new ConnectionProperties();
-//	private ConnectionProperties sysProps = null;
+	private DataSource xapsProps = null;
+	private DataSource sysProps = null;
 
 	/* Fusion user/pass - can be used instead of running as Admin (default) */
 	private String fusionUser;
@@ -47,11 +47,7 @@ public class Session {
 	// Default mode of a session is Interactive mode
 	private SessionMode mode = SessionMode.INTERACTIVE;
 
-	private String databaseName;
-
-	private String migrationFolder = null;
-
-	// Counts number of operations during one command (only for set/del)
+    // Counts number of operations during one command (only for set/del)
 	private int counter = 1;
 
 	public Session(String[] args, XAPSShell xapsShell) {
@@ -59,11 +55,6 @@ public class Session {
 		this.xapsShell = xapsShell;
 		Context context = new Context(this);
 		this.processor = new Processor(this);
-
-		// default settings
-//		xapsProps.setMaxConn(5);
-//		xapsProps.setDriver("com.mysql.jdbc.Driver");
-//		xapsProps.setMaxAge(600000);
 
 		// read from options
 		Map<String, Variable> variables = new HashMap<String, Variable>();
@@ -86,24 +77,6 @@ public class Session {
 					mode = SessionMode.SCRIPT;
 					i--; // since this argument don't need a 2nd arg.
 				}
-//				else if (args[i].equals("-url")) {
-//					xapsProps.setUrl(args[i + 1]);
-//					if (xapsProps.getUrl().indexOf("oracle") > -1) {
-//						xapsProps.setDriver("oracle.jdbc.OracleDriver");
-//					} else if (xapsProps.getUrl().indexOf("mysql") > -1) {
-//						xapsProps.setDriver("com.mysql.jdbc.Driver");
-//					} else {
-//						throw new IllegalArgumentException("The url is not pointing to a MySQL or Oracle database");
-//					}
-//					xapsProps.setMaxAge(600000);
-//					sysProps = xapsProps;
-//				} else if (args[i].equals("-user")) {
-//					xapsProps.setUser(args[i + 1]);
-//				} else if (args[i].equals("-password")) {
-//					xapsProps.setPassword(args[i + 1]);
-//				} else if (args[i].equals("-maxconn")) {
-//					xapsProps.setMaxConn(new Integer(args[i + 1]));
-//				}
 				else if (args[i].equals("-fusionuser")) {
 					fusionUser = args[i + 1];
 				} else if (args[i].equals("-fusionpass")) {
@@ -118,11 +91,6 @@ public class Session {
 			}
 		}
 		getScript().setVariables(variables);
-		//		if (scriptStack.size() > 0)
-		//			scriptStack.peek().setVariables(variables);
-//		if (xapsProps.getUrl() != null && (xapsProps.getUser() == null || xapsProps.getPassword() == null)) {
-//			throw new IllegalArgumentException("Missing password or username for the database logon");
-//		}
 	}
 
 	public XAPSUnit getXapsUnit() {
@@ -144,54 +112,21 @@ public class Session {
 		this.xapsUnit = xapsU;
 	}
 
-	//	public boolean isScriptmode() {
-	//		return scriptMode;
-	//	}
-
-	public String getDatabaseName() {
-		if (databaseName != null)
-			return databaseName;
-//		if (xapsProps.getDriver() != null && xapsProps.getDriver().indexOf("Oracle") > -1)
-//			return "Oracle";
-		return null;
-	}
-
-	public void setDatabaseName(String databaseName) {
-		this.databaseName = databaseName;
-	}
-
 	public DataSource getXapsProps() {
-		return null; // TODO
+		return xapsProps;
 	}
-
-//	public void setXapsProps(ConnectionProperties props) {
-//		this.xapsProps = props;
-//	}
 
 	public int getCounter() {
 		return counter;
 	}
 
-	public void setCounter(int counter) {
-		this.counter = counter;
-	}
-
-	public void incCounter() {
+    public void incCounter() {
 		this.counter++;
 	}
 
 	public void resetCounter() {
 		this.counter = 1;
 	}
-
-	/* Get active/current context */
-	//	public Context getContext() {
-	//		return getScript().getContext();
-	//	}
-
-	//	public void setContext(Context context) {
-	//		this.context = context;
-	//	}
 
 	public UnitJobs getUnitJobs() {
 		return unitJobs;
@@ -201,21 +136,9 @@ public class Session {
 		this.unitJobs = unitJobs;
 	}
 
-	public String getMigrationFolder() {
-		return migrationFolder;
+    public DataSource getSysProps() {
+		return sysProps;
 	}
-
-	public DataSource getSysProps() {
-		return null; // TODO
-	}
-
-//	public void setSysProps(ConnectionProperties sysProps) {
-//		this.sysProps = sysProps;
-//	}
-
-	//	public boolean isInteractiveMode() {
-	//		return interactiveMode;
-	//	}
 
 	public Users getUsers() {
 		return users;
@@ -258,35 +181,15 @@ public class Session {
 		return getScript().getContext();
 	}
 
-	public void setScriptStack(Stack<Script> scriptStack) {
-		this.scriptStack = scriptStack;
-	}
-
-	public Processor getProcessor() {
+    public Processor getProcessor() {
 		return processor;
 	}
-
-	//	public void setScriptMode(boolean scriptMode) {
-	//		this.scriptMode = scriptMode;
-	//	}
-
-	//	public void setInteractiveMode(boolean interactiveMode) {
-	//		this.interactiveMode = interactiveMode;
-	//	}
-	//
-	//	public boolean isDaemonMode() {
-	//		return daemonMode;
-	//	}
 
 	public XAPSShell getXapsShell() {
 		return xapsShell;
 	}
 
-	public void setXapsShell(XAPSShell xapsShell) {
-		this.xapsShell = xapsShell;
-	}
-
-	public void println(String s) {
+    public void println(String s) {
 		getXapsShell().println(s);
 	}
 
@@ -297,30 +200,6 @@ public class Session {
 	public List<String> getCommandHistory() {
 		return commandHistory;
 	}
-
-	//	public IfElse getIfElse() {
-	//		return ifElse;
-	//	}
-	//
-	//	public void setIfElse(IfElse ifElse) {
-	//		this.ifElse = ifElse;
-	//	}
-	//
-	//	public While getWhileDone() {
-	//		return whileDone;
-	//	}
-	//
-	//	public void setWhileDone(While whileDone) {
-	//		this.whileDone = whileDone;
-	//	}
-
-	//	public boolean isEcho() {
-	//		return echo;
-	//	}
-	//
-	//	public void setEcho(boolean echo) {
-	//		this.echo = echo;
-	//	}
 
 	public BatchStorage getBatchStorage() {
 		return batchStorage;
@@ -361,4 +240,12 @@ public class Session {
 	public String[] getOriginalOptionArgs() {
 		return originalOptionArgs;
 	}
+
+    public void setXapsProps(DataSource xapsProps) {
+        this.xapsProps = xapsProps;
+    }
+
+    public void setSysProps(DataSource sysProps) {
+        this.sysProps = sysProps;
+    }
 }
