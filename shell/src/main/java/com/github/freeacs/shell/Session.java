@@ -120,7 +120,7 @@ public class Session {
 		return counter;
 	}
 
-    public void incCounter() {
+	public void incCounter() {
 		this.counter++;
 	}
 
@@ -136,7 +136,7 @@ public class Session {
 		this.unitJobs = unitJobs;
 	}
 
-    public DataSource getSysProps() {
+	public DataSource getSysProps() {
 		return sysProps;
 	}
 
@@ -181,7 +181,7 @@ public class Session {
 		return getScript().getContext();
 	}
 
-    public Processor getProcessor() {
+	public Processor getProcessor() {
 		return processor;
 	}
 
@@ -189,7 +189,7 @@ public class Session {
 		return xapsShell;
 	}
 
-    public void println(String s) {
+	public void println(String s) {
 		getXapsShell().println(s);
 	}
 
@@ -241,11 +241,11 @@ public class Session {
 		return originalOptionArgs;
 	}
 
-    public void setXapsProps(DataSource xapsProps) {
-        this.xapsProps = xapsProps;
-    }
+	public void setXapsProps(DataSource xapsProps) {
+		this.xapsProps = xapsProps;
+	}
 
-    public void setSysProps(DataSource sysProps) {
-        this.sysProps = sysProps;
-    }
+	public void setSysProps(DataSource sysProps) {
+		this.sysProps = sysProps;
+	}
 }
