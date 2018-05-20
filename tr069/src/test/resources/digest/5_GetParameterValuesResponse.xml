@@ -3,14 +3,14 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                    xmlns:cwmp="urn:dslforum-org:cwmp-1-0">
     <SOAP-ENV:Header>
-        <cwmp:ID SOAP-ENV:mustUnderstand="1">FREEACS-1526377677522</cwmp:ID>
+        <cwmp:ID SOAP-ENV:mustUnderstand="1">FREEACS-0</cwmp:ID>
     </SOAP-ENV:Header>
     <SOAP-ENV:Body>
         <cwmp:GetParameterValuesResponse>
             <ParameterList SOAP-ENC:arrayType="cwmp:ParameterValueStruct[1]">
                 <ParameterValueStruct>
                     <Name>InternetGatewayDevice.ManagementServer.PeriodicInformInterval</Name>
-                    <Value xsi:type="xsd:unsignedInt">122295</Value>
+                    <Value xsi:type="xsd:unsignedInt">0</Value>
                 </ParameterValueStruct>
             </ParameterList>
         </cwmp:GetParameterValuesResponse>
