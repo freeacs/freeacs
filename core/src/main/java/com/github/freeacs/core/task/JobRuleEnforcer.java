@@ -217,7 +217,7 @@ public class JobRuleEnforcer extends DBIOwner {
 	private void process() throws Exception {
 		for (JobControl jc : jobControlMap.values()) {
 			Job job = jc.getJob();
-			if (Properties.isStaging()) {
+			if (Properties.STAGING) {
 				int countCompleted = unitJobs.markAsCompleted(job);
 				if (countCompleted > 0)
 					logger.info("JobRuleEnforcer: [" + job.getName() + "] " + countCompleted + " unitjobs changed status to " + UnitJobStatus.COMPLETED_OK + " after one hour in " + UnitJobStatus.UNCONFIRMED_FAILED

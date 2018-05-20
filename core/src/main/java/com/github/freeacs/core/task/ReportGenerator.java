@@ -662,7 +662,7 @@ public class ReportGenerator extends DBIOwner {
 	private void dailyJobs() throws SQLException, IOException, ParseException {
 		logger.info("ReportGenerator: Daily report processing starts...");
 		logger.info("ReportGenerator: Generate reports start");
-		String reports = Properties.getReports();
+		String reports = Properties.REPORTS;
 		if (reports == null)
 			reports = "Unit";
 		else if (!reports.contains("Unit"))
@@ -675,7 +675,7 @@ public class ReportGenerator extends DBIOwner {
 	private void hourlyJobs() throws SQLException, IOException, ParseException {
 		logger.info("ReportGenerator: Hourly report processing starts...");
 		logger.info("ReportGenerator: Generate reports start");
-		String reports = Properties.getReports();
+		String reports = Properties.REPORTS;
 		if (reports == null)
 			reports = "Unit";
 		else if (!reports.contains("Unit"))
