@@ -69,7 +69,7 @@ public class SyslogPackets {
 
 	//	private static FailoverFile ff = FailoverFile.getInstance();
 
-	private static int MAX_MESSAGES = Properties.getMaxMessagesInBuffer();
+	private static int MAX_MESSAGES = Properties.MAX_MESSAGES_IN_BUFFER;
 
 	private static Object monitor = new Object();
 

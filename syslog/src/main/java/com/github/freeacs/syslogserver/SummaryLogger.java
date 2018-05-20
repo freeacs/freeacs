@@ -18,20 +18,20 @@ public class SummaryLogger extends TaskDefaultImpl {
 
 	public static int getMaxMessagesPrMinute() {
 		if (maxMessagesPrMinute == null) {
-			maxMessagesPrMinute = Properties.getMaxMessagesPrMinute();
+			maxMessagesPrMinute = Properties.MAX_MESSAGES_PER_MINUTE;
 		}
 		return maxMessagesPrMinute;
 	}
 
 	private void updateProperties() {
-		maxMessagesPrMinute = Properties.getMaxMessagesPrMinute();
+		maxMessagesPrMinute = Properties.MAX_MESSAGES_PER_MINUTE;
 	}
 
 	@Override
 	public void runImpl() throws Throwable {
 		updateProperties();
 		if (summaryHeaderCount == 0) {
-			String uua = Properties.getUnknownUnitsAction();
+			String uua = Properties.UNKNOWN_UNITS_ACTION;
 			if (uua.equals("allow"))
 				uua = "    Allow";
 			else if (uua.equals("discard"))
