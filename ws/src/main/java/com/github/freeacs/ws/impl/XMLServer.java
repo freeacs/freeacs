@@ -44,7 +44,7 @@ public class XMLServer extends HttpServlet {
 		String xmlIn = convert2Str(new InputStreamReader(req.getInputStream()));
 		logger.debug("Received an xml from " + req.getRemoteHost());
 		String xmlInFormatted = prettyFormat(xmlIn);
-		String url = Properties.getRedirectUrl();
+		String url = Properties.REDIRECT_URL;
 		PrintWriter pw = res.getWriter();
 		if (url != null) {
 			if (url.startsWith("https")) {
