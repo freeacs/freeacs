@@ -79,7 +79,7 @@ public class Kick {
 		if (!kr.isKicked() && udpCrUrl != null && !udpCrUrl.trim().equals("")) {
 			log.debug(unit.getId() + " will try UDP kick");
 			kr = kickUsingUDP(unit, xapsUnit, udpCrUrl, crUrl, crPass, crUser);
-		} else if (Properties.expectPortForwarding() && publicIP != null && crUrl != null) {
+		} else if (Properties.EXPECT_PORT_FORWARDING && publicIP != null && crUrl != null) {
 			log.debug(unit.getId() + " will try TCP kick by expecting port forwarding");
 			crUrl = crUrl.replace(new URL(crUrl).getHost(), publicIP);
 			kr = kickUsingTCP(unit, xapsUnit, crUrl, crPass, crUser);
@@ -96,7 +96,7 @@ public class Kick {
 	 * @throws MalformedURLException if the ip is malformed
 	 */
 	static boolean checkIfPublicIP(String crUrl) throws MalformedURLException {
-		if (!Properties.checkIfIpIsPublic()) {
+		if (!Properties.CHECK_PUBLIC_IP) {
 			return true; // we don't check it and we allow it.
 		}
 		return IPAddress.isPublic(new URL(crUrl).getHost());
@@ -105,8 +105,8 @@ public class Kick {
 	private static KickResponse kickUsingTCP(Unit unit, XAPSUnit xapsUnit, String crUrl, String crPass, String crUser) throws SQLException, MalformedURLException {
 		DefaultHttpClient client = new DefaultHttpClient();
 		HttpGet get = new HttpGet(crUrl);
-		get.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, new Integer(20000));
-		get.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, new Integer(20000));
+		get.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 20000);
+		get.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 20000);
 		client.setHttpRequestRetryHandler(new DefaultHttpRequestRetryHandler(0, true));
 		int statusCode = HttpStatus.SC_OK;
 		if (crUser != null && crPass != null) {
@@ -152,7 +152,7 @@ public class Kick {
 			// testing without absolute URI
 			String req = "GET http://" + udpCrUrl + "/?ts=" + ts + "&id=" + id + "&un=" + crUser + "&cn=" + cn + "&sig=" + sig + " HTTP/1.1\r\n\r\n";
 			byte[] buf = req.getBytes();
-			if (udpCrUrl.indexOf(":") == -1)
+			if (!udpCrUrl.contains(":"))
 				udpCrUrl += ":80";
 			InetAddress address = InetAddress.getByName(udpCrUrl.split(":")[0]);
 			int port = Integer.parseInt(udpCrUrl.split(":")[1]);

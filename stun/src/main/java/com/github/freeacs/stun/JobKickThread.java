@@ -104,7 +104,7 @@ public class JobKickThread implements Runnable {
 			}
 			Job[] jobs = unittype.getJobs().getJobs();
 			for (Job job : jobs) {
-				if (job.getFlags().getType().equals("KICK")) {
+				if (job.getFlags().getType().name().equals("KICK")) {
 					if (job.getStatus().equals(JobStatus.STARTED)) {
 						if (jobKickMap.get(job.getId()) == null) {
 							log.info("Job " + job.getName() + " (" + job.getId() + ") is STARTED and discovered for the first time.");
@@ -113,7 +113,7 @@ public class JobKickThread implements Runnable {
 							populateJobKickMapForOneJob(job, xaps, unittype);
 						} else {
 							long lastRefresh = jobRefreshMap.get(job.getId());
-							if (lastRefresh + Properties.getKickRescan() * 60000 < System.currentTimeMillis()) {
+							if (lastRefresh + Properties.KICK_RESCAN * 60000 < System.currentTimeMillis()) {
 								log.info("Job " + job.getId() + " is STARTED and refreshed.");
 								jobRefreshMap.put(job.getId(), System.currentTimeMillis());
 								populateJobKickMapForOneJob(job, xaps, unittype);
@@ -140,7 +140,7 @@ public class JobKickThread implements Runnable {
 	}
 
 	private void kickJobs(XAPS xaps) {
-		int kickInterval = Properties.getKickInterval();
+		int kickInterval = Properties.KICK_INTERVAL;
 		Sleep kickSleep = new Sleep(kickInterval, kickInterval / 10, false);
 		for (Integer jobId : jobKickMap.keySet()) {
 			Job job = findJobById(jobId);
@@ -229,7 +229,7 @@ public class JobKickThread implements Runnable {
 					break;
 				try {
 					Thread.sleep(500);
-				} catch (InterruptedException e) {
+				} catch (InterruptedException ignored) {
 				}
 			}
 			log.debug("DBI has processed the change message for job " + jcMessage.getObjectId());
