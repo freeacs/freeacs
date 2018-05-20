@@ -250,8 +250,8 @@ public class MenuServlet extends HttpServlet {
 			syslogReport.addSubMenuItem(new MenuItem("Units", Page.UNITLIST.getUrl("type=" + ReportType.SYS.getName()), new ArrayList<MenuItem>()));
 			
 			// If both hardware and voip are to be hidden this menu item is redundant.
-			boolean showHardware = WebProperties.getShowHardware();
-			boolean showVoip =  WebProperties.getShowVoip();
+			boolean showHardware = WebProperties.SHOW_HARDWARE;
+			boolean showVoip =  WebProperties.SHOW_VOIP;
 			if (showHardware || showVoip) {
 				MenuItem syslogReports = new MenuItem("Pingcom Devices", Page.REPORT);
 				if (showVoip) {

@@ -51,7 +51,7 @@ public class UnitPage extends AbstractWebPage {
 	private String nextConnectTms;
 	private String nextConnectDiff;
 	private boolean lateConnect;
-	private boolean confidentialsRestricted = WebProperties.getBoolean("confidentials.restricted");
+	private boolean confidentialsRestricted = WebProperties.CONFIDENTIALS_RESTRICTED;
 	
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.AbstractWebPage#getTitle(java.lang.String)
@@ -618,7 +618,7 @@ public class UnitPage extends AbstractWebPage {
 		root.put("nextconnecttimestamp", nextConnectTms);
 		root.put("nextconnectdiff", nextConnectDiff);
 		root.put("lateconnect", lateConnect);
-		root.put("autofilter", WebProperties.getBoolean("unit.config.autofilter", new Boolean(false)));
+		root.put("autofilter", WebProperties.UNIT_CONFIG_AUTOFILTER);
 		String selectedFlag = inputData.getFilterFlag().getString() != null ? inputData.getFilterFlag().getString() : "All";
 		DropDownSingleSelect<String> flags = InputSelectionFactory.getDropDownSingleSelect(inputData.getFilterFlag(), selectedFlag, UnittypeParameterFlags.toList());
 		root.put("flags", flags);

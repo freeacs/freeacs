@@ -49,7 +49,7 @@ public class Properties {
 		return config.getString(propertyKey);
 	}
 
-	static String getRedirectUrl() {
+	public static String getRedirectUrl() {
 		return getString("redirect-url", null);
 	}
 
