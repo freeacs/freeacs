@@ -69,7 +69,7 @@ public class ShellDaemonPool {
 
 	public static synchronized XAPSShellDaemon getShellDaemon(DataSource xapsCp, String fusionUser) throws Throwable {
 		List<XAPSShellDaemon> shellDaemonPool = getShellDaemonPool(fusionUser);
-		int poolsize = Properties.getShellScriptPoolSize();
+		int poolsize = Properties.SHELL_SCRIPT_POOL_SIZE;
 		XAPSShellDaemon xapsshellDaemon = null;
 		// Check if any shell daemon is available. If not create a new one within poolsize-limit
 		for (int i = 0; i < poolsize; i++) {

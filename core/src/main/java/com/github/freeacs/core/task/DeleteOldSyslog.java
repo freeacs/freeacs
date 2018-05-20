@@ -94,7 +94,7 @@ public class DeleteOldSyslog extends DBIShare {
 					if (rowsDeleted == 500000) {
 						loopCounter++;
 					} else if (fromCal != null) {
-						if (!Properties.getSyslogCleanup().equals("comprehensive") && rowsDeleted == 0) {
+						if (!Properties.SYSLOG_CLEANUP.equals("comprehensive") && rowsDeleted == 0) {
 							logger.debug("DeleteOldSyslog: Assuming no more dates need to be checked for deletion. Set to syslog.cleanup = comprehensive (in config) to check all dates");
 							fromCal = null;
 						} else {
@@ -172,7 +172,7 @@ public class DeleteOldSyslog extends DBIShare {
 				if (rowsDeleted == 500000) {
 					loopCounter++;
 				} else if (fromCal != null) {
-					if (!Properties.getSyslogCleanup().equals("comprehensive") && rowsDeleted == 0) {
+					if (!Properties.SYSLOG_CLEANUP.equals("comprehensive") && rowsDeleted == 0) {
 						logger.debug("DeleteOldSyslog: Assuming no more dates need to be checked for deletion. Set to comprehensive mode to check all dates");
 						fromCal = null;
 					} else {
