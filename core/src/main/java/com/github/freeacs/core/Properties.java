@@ -15,7 +15,7 @@ public class Properties {
 	public static Integer COMPLETED_JOB_LIMIT;
 	public static Integer SHELL_SCRIPT_POOL_SIZE;
 	public static String SYSLOG_CLEANUP;
-	public static Map<Integer, Integer> SYSLOG_SEVERITY_LIMIT = new HashMap<>();
+	private static final Map<Integer, Integer> SYSLOG_SEVERITY_LIMIT = new HashMap<>();
 
 	@Value("${syslog.cleanup:normal}")
 	public void setSyslogCleanup(String syslogCleanup) {
