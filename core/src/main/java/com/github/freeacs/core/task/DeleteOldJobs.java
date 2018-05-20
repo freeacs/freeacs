@@ -48,7 +48,7 @@ public class DeleteOldJobs extends DBIOwner {
 		}
 		List<Job> removeFromJCMap = new ArrayList<Job>();
 		for (Job job : jobMap.values()) {
-			if (System.currentTimeMillis() - job.getEndTimestamp().getTime() > Properties.getCompletedJobLimit() * 3600 * 1000) {
+			if (System.currentTimeMillis() - job.getEndTimestamp().getTime() > Properties.COMPLETED_JOB_LIMIT * 3600 * 1000) {
 				logger.info("DeleteOldJobs: Found an old job (" + job.getName() + ")(ended at " + job.getEndTimestamp() + "), will try to delete it");
 				if (job.getChildren().size() == 0) {
 					unitJobs.delete(job);
