@@ -10,7 +10,6 @@ import org.springframework.http.*;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -21,16 +20,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations="classpath:application-discover.properties")
-public class ProvisioningIntegrationTest {
+public class ProvisioningDiscoverIntegrationTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
-
-    @Test
-    public void testStatusPage() {
-        String body = this.restTemplate.getForObject("/", String.class);
-        assertThat(body).contains("xAPS TR-069 Server Monitoring Page");
-    }
 
     private String getBasicAuthorization(String u, String p) {
         String auth = u + ":" + p;
@@ -40,7 +33,7 @@ public class ProvisioningIntegrationTest {
     }
 
     private String getFileContent(String fileName) {
-        InputStream is = ProvisioningIntegrationTest.class.getClassLoader().getResourceAsStream(fileName);
+        InputStream is = ProvisioningDiscoverIntegrationTest.class.getClassLoader().getResourceAsStream(fileName);
         String text;
         try (Scanner scanner = new Scanner(is, StandardCharsets.UTF_8.name())) {
             text = scanner.useDelimiter("\\A").next();

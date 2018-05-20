@@ -11,8 +11,8 @@
     <logger name="org.eclipse.jetty" level="WARN" />
     <logger name="org.flywaydb.core" level="WARN" />
     <logger name="com.zaxxer.hikari" level="WARN" />
-    <logger name="com.github.freeacs.tr069" level="WARN" />
-    <logger name="Conversation" level="OFF" />
+    <logger name="com.github.freeacs.tr069" level="INFO" />
+    <logger name="Conversation" level="INFO" />
     <root level="DEBUG">
         <appender-ref ref="ASYNC_STDOUT" />
     </root>
