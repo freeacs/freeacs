@@ -25,15 +25,19 @@ public class ProvisioningDigestIntegrationTest {
     private TestRestTemplate restTemplate;
 
     private String getDigestAuthorization(String header, String u, String p) {
+        System.out.println(header);
         Map<String, String> props = DigestHelper.getDigestMap(header);
+        String qop = props.get("qop");
+        String cnonce = "cnonce";
+        String nc = "nc";
         return "Digest " +
                 "    username=\""+ u + "\"," +
                 "    realm=\"" + props.get("realm") + "\"," +
                 "    nonce=\"" + props.get("nonce") + "\"," +
-                "    nc=\"nc\"," +
-                "    qop=\"qop\"," +
-                "    cnonce=\"cnonce\"," +
-                "    response=\"" + DigestHelper.getDigestAuthentication(header, "/", "nc", "cnonce", "qop", u, p)  + "\"," +
+                "    nc=\"" + nc + "\"," +
+                "    qop=\"" + qop + "\"," +
+                "    cnonce=\"" + cnonce + "\"," +
+                "    response=\"" + DigestHelper.getDigestAuthentication(header, "/", nc, cnonce, qop, u, p)  + "\"," +
                 "    method=\"POST\"," +
                 "    uri=\"/\"";
     }
@@ -64,6 +68,9 @@ public class ProvisioningDigestIntegrationTest {
         assertThat(getGPNResponse.getBody().replaceAll(">FREEACS-(\\d+)<", ">FREEACS-0<")).isEqualToIgnoringWhitespace(getFileContent("digest/4_GetParameterValues.xml"));
         ResponseEntity<String> setParameterValuesRequest = this.restTemplate.exchange("/", HttpMethod.POST, new HttpEntity<Object>(getFileContent("digest/5_GetParameterValuesResponse.xml"), headersWithCookueAndBasicChallenge), String.class);
         assertThat(setParameterValuesRequest.getStatusCode()).isEqualTo(HttpStatus.OK);
-        // TODO
+        assertThat(setParameterValuesRequest.getBody().replaceAll(">FREEACS-(\\d+)<", ">FREEACS-0<").replaceAll(">(\\d+)<", ">0<")).isEqualToIgnoringWhitespace(getFileContent("digest/6_SetParameterValues.xml"));
+        ResponseEntity<String> noContentResponse = this.restTemplate.exchange("/", HttpMethod.POST, new HttpEntity<Object>(getFileContent("digest/7_SetParameterValuesResponse.xml"), headersWithCookueAndBasicChallenge), String.class);
+        assertThat(noContentResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(noContentResponse.getBody()).isNullOrEmpty();
     }
 }
