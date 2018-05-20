@@ -9,10 +9,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
 import java.io.*;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 public class XAPSShell {
 
@@ -222,11 +219,7 @@ public class XAPSShell {
 		xapsShell.mainImpl(args);
 	}
 
-	private void initConnectionProperties(Session session) throws IOException {
-		if (System.getProperty("headless") == null) {
-			System.out.println("Continue with interactive mode? Hit any key. (tip: use -Dheadless=true to run non-interactively)");
-			System.in.read();
-		}
+	private void initConnectionProperties(Session session) {
 		session.setXapsProps(getHikariDataSource("xaps"));
 		session.setSysProps(getHikariDataSource("syslog"));
 	}
