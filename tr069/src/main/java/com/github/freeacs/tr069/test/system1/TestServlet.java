@@ -1,9 +1,9 @@
 package com.github.freeacs.tr069.test.system1;
 
-import com.github.freeacs.common.html.Element;
-import com.github.freeacs.common.html.InputRadioMaker;
-import com.github.freeacs.common.html.SelectMaker;
-import com.github.freeacs.common.html.TextAreaElement;
+import com.github.freeacs.tr069.test.system1.html.Element;
+import com.github.freeacs.tr069.test.system1.html.InputRadioMaker;
+import com.github.freeacs.tr069.test.system1.html.SelectMaker;
+import com.github.freeacs.tr069.test.system1.html.TextAreaElement;
 import com.github.freeacs.common.util.FileDatabase;
 import com.github.freeacs.common.util.NaturalComparator;
 import com.github.freeacs.tr069.Properties;

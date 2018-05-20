@@ -1,4 +1,4 @@
-package com.github.freeacs.common.html;
+package com.github.freeacs.tr069.test.system1.html;
 
 import java.util.ArrayList;
 import java.util.List;
