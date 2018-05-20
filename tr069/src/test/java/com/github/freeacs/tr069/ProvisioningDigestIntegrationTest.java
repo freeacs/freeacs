@@ -53,25 +53,21 @@ public class ProvisioningDigestIntegrationTest {
 
     @Test
     public void discoverDeviceWithDigestChallenge() {
-        ResponseEntity<String> challengeRes = this.restTemplate.postForEntity("/", getFileContent("discover/1_inform.xml"), String.class);
+        ResponseEntity<String> challengeRes = this.restTemplate.postForEntity("/", getFileContent("digest/1_inform.xml"), String.class);
         assertThat(challengeRes.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
         HttpHeaders headers = challengeRes.getHeaders();
         String set_cookie = headers.getFirst(HttpHeaders.SET_COOKIE);
         HttpHeaders headersWithCookueAndBasicChallenge = new HttpHeaders();
         headersWithCookueAndBasicChallenge.set("Cookie", set_cookie);
         headersWithCookueAndBasicChallenge.set("Authorization", getDigestAuthorization(challengeRes.getHeaders().getFirst("WWW-Authenticate"), "test123", "password"));
-        ResponseEntity<String> informResponse = this.restTemplate.exchange("/", HttpMethod.POST, new HttpEntity<Object>(getFileContent("discover/1_inform.xml"), headersWithCookueAndBasicChallenge), String.class);
+        ResponseEntity<String> informResponse = this.restTemplate.exchange("/", HttpMethod.POST, new HttpEntity<Object>(getFileContent("digest/1_inform.xml"), headersWithCookueAndBasicChallenge), String.class);
         assertThat(informResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(informResponse.getBody()).isEqualToIgnoringWhitespace(getFileContent("discover/2_informResponse.xml"));
+        assertThat(informResponse.getBody()).isEqualToIgnoringWhitespace(getFileContent("digest/2_informResponse.xml"));
         headersWithCookueAndBasicChallenge.remove("Authorization");
         ResponseEntity<String> getGPNResponse = this.restTemplate.exchange("/", HttpMethod.POST, new HttpEntity<>(headersWithCookueAndBasicChallenge), String.class);
-        assertThat(getGPNResponse.getBody().replaceAll(">FREEACS-(\\d+)<", ">FREEACS-0<")).isEqualToIgnoringWhitespace(getFileContent("discover/4_GetParameterNames.xml"));
-        ResponseEntity<String> getParameterValuesRequest = this.restTemplate.exchange("/", HttpMethod.POST, new HttpEntity<Object>(getFileContent("discover/5_GetParameterNamesResponse.xml"), headersWithCookueAndBasicChallenge), String.class);
-        assertThat(getParameterValuesRequest.getBody().replaceAll(">FREEACS-(\\d+)<", ">FREEACS-0<")).isEqualToIgnoringWhitespace(getFileContent("discover/6_GetParameterValues.xml"));
-        ResponseEntity<String> setParameterValuesRequest = this.restTemplate.exchange("/", HttpMethod.POST, new HttpEntity<Object>(getFileContent("discover/7_GetParameterValuesResponse.xml"), headersWithCookueAndBasicChallenge), String.class);
-        assertThat(setParameterValuesRequest.getBody().replaceAll(">FREEACS-(\\d+)<", ">FREEACS-0<").replaceAll(">(\\d+)<", ">70075<")).isEqualToIgnoringWhitespace(getFileContent("discover/8_SetParameterValues.xml"));
-        ResponseEntity<String> noContentResponse = this.restTemplate.exchange("/", HttpMethod.POST, new HttpEntity<Object>(getFileContent("discover/9_SetParameterValuesResponse.xml"), headersWithCookueAndBasicChallenge), String.class);
-        assertThat(noContentResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-        assertThat(noContentResponse.getBody()).isNullOrEmpty();
+        assertThat(getGPNResponse.getBody().replaceAll(">FREEACS-(\\d+)<", ">FREEACS-0<")).isEqualToIgnoringWhitespace(getFileContent("digest/4_GetParameterValues.xml"));
+        ResponseEntity<String> setParameterValuesRequest = this.restTemplate.exchange("/", HttpMethod.POST, new HttpEntity<Object>(getFileContent("digest/5_GetParameterValuesResponse.xml"), headersWithCookueAndBasicChallenge), String.class);
+        assertThat(setParameterValuesRequest.getStatusCode()).isEqualTo(HttpStatus.OK);
+        // TODO
     }
 }
