@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS unit_type;
-CREATE TABLE unit_type (
+
+CREATE TABLE IF NOT EXISTS unit_type (
   unit_type_id INTEGER NOT NULL AUTO_INCREMENT,
   matcher_id VARCHAR(32) NULL,
   unit_type_name VARCHAR(64) NOT NULL,
@@ -11,8 +11,8 @@ CREATE TABLE unit_type (
 );
 
 
-DROP TABLE IF EXISTS unit_type_param;
-CREATE TABLE unit_type_param (
+
+CREATE TABLE IF NOT EXISTS unit_type_param (
   unit_type_param_id INTEGER NOT NULL AUTO_INCREMENT,
   unit_type_id INTEGER NOT NULL,
   name VARCHAR(255) NOT NULL,
@@ -26,8 +26,8 @@ CREATE TABLE unit_type_param (
 );
 
 
-DROP TABLE IF EXISTS unit_type_param_value;
-CREATE TABLE unit_type_param_value (
+
+CREATE TABLE IF NOT EXISTS unit_type_param_value (
   unit_type_param_id INTEGER NOT NULL,
   value VARCHAR(255)  NOT NULL,
   priority INTEGER NOT NULL,
@@ -39,8 +39,8 @@ CREATE TABLE unit_type_param_value (
     ON UPDATE NO ACTION
 );
 
-DROP TABLE IF EXISTS profile;
-CREATE TABLE profile (
+
+CREATE TABLE IF NOT EXISTS profile (
   profile_id INTEGER NOT NULL AUTO_INCREMENT,
   unit_type_id INTEGER NOT NULL,
   profile_name VARCHAR(64) NOT NULL,
@@ -53,8 +53,8 @@ CREATE TABLE profile (
 );
 
 
-DROP TABLE IF EXISTS profile_param;
-CREATE TABLE profile_param (
+
+CREATE TABLE IF NOT EXISTS profile_param (
   profile_id INTEGER NOT NULL,
   unit_type_param_id INTEGER NOT NULL,
   value VARCHAR(255)  NULL,
@@ -70,8 +70,8 @@ CREATE TABLE profile_param (
 );
 
 
-DROP TABLE IF EXISTS unit;
-CREATE TABLE unit (
+
+CREATE TABLE IF NOT EXISTS unit (
   unit_id VARCHAR(64) NOT NULL,
   unit_type_id INTEGER NOT NULL,
   profile_id INTEGER NOT NULL,
@@ -89,8 +89,8 @@ CREATE TABLE unit (
 );
 
 
-DROP TABLE IF EXISTS unit_param;
-CREATE TABLE unit_param (
+
+CREATE TABLE IF NOT EXISTS unit_param (
   unit_id VARCHAR(64) NOT NULL,
   unit_type_param_id INTEGER NOT NULL,
   value VARCHAR(512)  NULL,
@@ -108,8 +108,8 @@ CREATE TABLE unit_param (
 );
 
 
-DROP TABLE IF EXISTS unit_param_session;
-CREATE TABLE unit_param_session (
+
+CREATE TABLE IF NOT EXISTS unit_param_session (
   unit_id VARCHAR(64) NOT NULL,
   unit_type_param_id INTEGER NOT NULL,
   value VARCHAR(512)  NULL,
@@ -125,15 +125,15 @@ CREATE TABLE unit_param_session (
 );
 
 
-DROP TABLE IF EXISTS group_;
-CREATE TABLE group_ (
+
+CREATE TABLE IF NOT EXISTS group_ (
   group_id INTEGER NOT NULL AUTO_INCREMENT,
   unit_type_id INTEGER NOT NULL,
   group_name VARCHAR(64) NOT NULL,
   description VARCHAR(2000)  NULL,
   parent_group_id INTEGER NULL,
   profile_id INTEGER NULL,
-  count INTEGER NULL, 
+  count INTEGER NULL,
   time_param_id INTEGER NULL,
   time_rolling_rule VARCHAR(32) NULL,
   PRIMARY KEY (group_id),
@@ -156,13 +156,13 @@ CREATE TABLE group_ (
 );
 
 
-DROP TABLE IF EXISTS group_param;
-CREATE TABLE group_param (
+
+CREATE TABLE IF NOT EXISTS group_param (
 	id INTEGER NOT NULL AUTO_INCREMENT,
   group_id INTEGER NOT NULL,
   unit_type_param_id INTEGER NOT NULL,
   operator VARCHAR(2) NOT NULL DEFAULT '=',
-  data_type VARCHAR(32) NOT NULL DEFAULT 'TEXT',  
+  data_type VARCHAR(32) NOT NULL DEFAULT 'TEXT',
   value VARCHAR(255)  NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_group_param_group_id FOREIGN KEY (group_id)
@@ -176,8 +176,8 @@ CREATE TABLE group_param (
 );
 
 
-DROP TABLE IF EXISTS user_;
-CREATE TABLE user_ (
+
+CREATE TABLE IF NOT EXISTS user_ (
   id INTEGER NOT NULL AUTO_INCREMENT,
   username VARCHAR(64) NOT NULL,
   secret VARCHAR(64) NOT NULL,
@@ -188,8 +188,8 @@ CREATE TABLE user_ (
   UNIQUE INDEX idx_username (username)
 );
 
-DROP TABLE IF EXISTS permission_;
-CREATE TABLE permission_ (
+
+CREATE TABLE IF NOT EXISTS permission_ (
   id INTEGER NOT NULL AUTO_INCREMENT,
   user_id INTEGER NOT NULL,
   unit_type_id INTEGER NOT NULL,
@@ -206,8 +206,8 @@ CONSTRAINT fk_permission_unit_type_id FOREIGN KEY (unit_type_id)
     ON UPDATE NO ACTION
 );
 
-DROP TABLE IF EXISTS filestore;
-CREATE TABLE filestore (
+
+CREATE TABLE IF NOT EXISTS filestore (
   id INTEGER NOT NULL AUTO_INCREMENT,
   name VARCHAR(64) NOT NULL,
   unit_type_id INTEGER NOT NULL,
@@ -231,14 +231,14 @@ CREATE TABLE filestore (
     ON UPDATE NO ACTION
 );
 
-DROP TABLE IF EXISTS syslog_event;
-CREATE TABLE syslog_event (
+
+CREATE TABLE IF NOT EXISTS syslog_event (
   id INTEGER NOT NULL AUTO_INCREMENT,
   syslog_event_id INTEGER NOT NULL,
   syslog_event_name VARCHAR(64) NOT NULL,
   unit_type_id INTEGER NOT NULL,
   group_id INTEGER NULL,
-  expression VARCHAR(64) NOT NULL DEFAULT 'Specify an expression', 
+  expression VARCHAR(64) NOT NULL DEFAULT 'Specify an expression',
   store_policy VARCHAR(16) NOT NULL DEFAULT 'STORE',
   filestore_id INTEGER,
   description VARCHAR(1024) ,
@@ -259,8 +259,8 @@ CREATE TABLE syslog_event (
   UNIQUE INDEX idx_syslog_event_id_unit_type_name (syslog_event_id, unit_type_id)
 );
 
-DROP TABLE IF EXISTS job;
-CREATE TABLE job (
+
+CREATE TABLE IF NOT EXISTS job (
   job_id INTEGER NOT NULL AUTO_INCREMENT,
   job_name VARCHAR(64) NOT NULL,
   job_type VARCHAR(32) NOT NULL,
@@ -301,8 +301,8 @@ CREATE TABLE job (
 );
 
 
-DROP TABLE IF EXISTS job_param;
-CREATE TABLE job_param (
+
+CREATE TABLE IF NOT EXISTS job_param (
   job_id INTEGER NOT NULL,
   unit_id VARCHAR(64) NOT NULL,
   unit_type_param_id INTEGER NOT NULL,
@@ -319,8 +319,8 @@ CREATE TABLE job_param (
 );
 
 
-DROP TABLE IF EXISTS unit_job;
-CREATE TABLE unit_job (
+
+CREATE TABLE IF NOT EXISTS unit_job (
   unit_id VARCHAR(64) NOT NULL,
   job_id INTEGER NOT NULL,
   start_timestamp DATETIME NOT NULL,
@@ -343,11 +343,11 @@ CREATE TABLE unit_job (
 );
 
 
-DROP TABLE IF EXISTS heartbeat;
-CREATE TABLE heartbeat (
+
+CREATE TABLE IF NOT EXISTS heartbeat (
   id INTEGER NOT NULL AUTO_INCREMENT,
   name VARCHAR(64) NOT NULL,
-  unit_type_id INTEGER NOT NULL,  
+  unit_type_id INTEGER NOT NULL,
   heartbeat_expression VARCHAR(64) NOT NULL,
   heartbeat_group_id INTEGER NOT NULL,
   heartbeat_timeout_hour INTEGER NOT NULL DEFAULT 1,
@@ -363,33 +363,33 @@ CREATE TABLE heartbeat (
 );
 
 
-DROP TABLE IF EXISTS trigger_;
-CREATE TABLE trigger_ (
+
+CREATE TABLE IF NOT EXISTS trigger_ (
   id INTEGER NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
   description VARCHAR(1024),
 -- BASIC or COMPOSITE (0 or 1)
-  trigger_type INTEGER NOT NULL DEFAULT 0, 
+  trigger_type INTEGER NOT NULL DEFAULT 0,
 -- ALARM, REPORT or SILENT (0-2)
-  notify_type INTEGER NOT NULL DEFAULT 0, 
--- 0 or 1 
-  active INTEGER NOT NULL DEFAULT 0, 
+  notify_type INTEGER NOT NULL DEFAULT 0,
+-- 0 or 1
+  active INTEGER NOT NULL DEFAULT 0,
   unit_type_id INTEGER NOT NULL,
   group_id INTEGER,
 -- 15 to 120 (minutes)
-  eval_period_minutes INTEGER NOT NULL, 
+  eval_period_minutes INTEGER NOT NULL,
 -- 1 to 168 (hours)
-  notify_interval_hours INTEGER NULL, 
--- REFERS TO FILESTORE.ID  
+  notify_interval_hours INTEGER NULL,
+-- REFERS TO FILESTORE.ID
   filestore_id INTEGER,
 -- REFERS TO ID
-  parent_trigger_id INTEGER, 
+  parent_trigger_id INTEGER,
   to_list VARCHAR(512),
 -- JUST FOR BASIC
-  syslog_event_id INTEGER, 
-  no_events INTEGER, 
+  syslog_event_id INTEGER,
+  no_events INTEGER,
   no_events_pr_unit INTEGER,
-  no_units INTEGER, 
+  no_units INTEGER,
   PRIMARY KEY (id),
   UNIQUE INDEX idx_trigger_unit_type_id_name (unit_type_id, name),
   CONSTRAINT fk_trigger_unit_type_id FOREIGN KEY  (unit_type_id)
@@ -415,8 +415,8 @@ CREATE TABLE trigger_ (
 );
 
 
-DROP TABLE IF EXISTS trigger_event;
-CREATE TABLE trigger_event (
+
+CREATE TABLE IF NOT EXISTS trigger_event (
   id INTEGER NOT NULL AUTO_INCREMENT,
   timestamp_ DATETIME NOT NULL,
   trigger_id INTEGER NOT NULL,
@@ -429,8 +429,8 @@ CREATE TABLE trigger_event (
 );
 
 
-DROP TABLE IF EXISTS trigger_release;
-CREATE TABLE trigger_release (
+
+CREATE TABLE IF NOT EXISTS trigger_release (
   id INTEGER NOT NULL AUTO_INCREMENT,
   trigger_id INTEGER NOT NULL,
   no_events INTEGER NULL,
@@ -448,16 +448,16 @@ CREATE TABLE trigger_release (
 
 
 -- Tables with no or few foreign keys
-DROP TABLE IF EXISTS certificate;
-CREATE TABLE certificate (
+
+CREATE TABLE IF NOT EXISTS certificate (
   id INTEGER NOT NULL AUTO_INCREMENT,
   name VARCHAR(64) NOT NULL,
   certificate VARCHAR(256) NOT NULL,
   PRIMARY KEY (id),
   UNIQUE INDEX idx_name (name)
 );
-DROP TABLE IF EXISTS message;
-CREATE TABLE message (
+
+CREATE TABLE IF NOT EXISTS message (
   id INTEGER NOT NULL AUTO_INCREMENT,
   type VARCHAR(64) NOT NULL,
   sender VARCHAR(64) NOT NULL,
@@ -469,7 +469,7 @@ CREATE TABLE message (
   PRIMARY KEY (id)
 );
 
-DROP TABLE IF EXISTS monitor_event;
+
 
 
 --
@@ -490,8 +490,8 @@ CREATE TABLE monitor_event
   CONSTRAINT NameAndKey UNIQUE (module_name,module_key)
 );
 
-DROP TABLE IF EXISTS script_execution;
-CREATE TABLE script_execution (
+
+CREATE TABLE IF NOT EXISTS script_execution (
   id INTEGER NOT NULL AUTO_INCREMENT,
   unit_type_id INTEGER NOT NULL, -- SET BY REQUEST-CLIENT
   filestore_id INTEGER NOT NULL, -- SET BY REQUEST-CLIENT
@@ -506,8 +506,8 @@ CREATE TABLE script_execution (
 );
 
 
-DROP TABLE IF EXISTS syslog;
-CREATE TABLE syslog (
+
+CREATE TABLE IF NOT EXISTS syslog (
   syslog_id BIGINT NOT NULL AUTO_INCREMENT,
   collector_timestamp DATETIME NOT NULL,
   syslog_event_id INTEGER NOT NULL,
@@ -530,8 +530,8 @@ CREATE TABLE syslog (
 );
 
 
-DROP TABLE IF EXISTS report_unit;
-CREATE TABLE report_unit (
+
+CREATE TABLE IF NOT EXISTS report_unit (
   timestamp_ DATETIME NOT NULL,
   period_type INTEGER NOT NULL,
   unit_type_name VARCHAR(64) NOT NULL,
@@ -542,8 +542,8 @@ CREATE TABLE report_unit (
   PRIMARY KEY (timestamp_, period_type, unit_type_name, profile_name, software_version, status)
 );
 
-DROP TABLE IF EXISTS report_group;
-CREATE TABLE report_group (
+
+CREATE TABLE IF NOT EXISTS report_group (
   timestamp_ DATETIME NOT NULL,
   period_type INTEGER NOT NULL,
   unit_type_name VARCHAR(64) NOT NULL,
@@ -552,8 +552,8 @@ CREATE TABLE report_group (
   PRIMARY KEY (timestamp_, period_type, unit_type_name, group_name)
 );
 
-DROP TABLE IF EXISTS report_job;
-CREATE TABLE report_job (
+
+CREATE TABLE IF NOT EXISTS report_job (
   timestamp_ DATETIME NOT NULL,
   period_type INTEGER NOT NULL,
   unit_type_name VARCHAR(64) NOT NULL,
@@ -566,21 +566,21 @@ CREATE TABLE report_job (
   PRIMARY KEY (timestamp_, period_type, unit_type_name, job_name)
 );
 
-DROP TABLE IF EXISTS report_syslog;
-CREATE TABLE report_syslog (
+
+CREATE TABLE IF NOT EXISTS report_syslog (
   timestamp_ DATETIME NOT NULL,
   period_type INTEGER NOT NULL,
   unit_type_name VARCHAR(64) NOT NULL,
   profile_name VARCHAR(64) NOT NULL,
   severity VARCHAR(16) NOT NULL,
   syslog_event_id INTEGER NOT NULL,
-  facility VARCHAR(32) NOT NULL, 
+  facility VARCHAR(32) NOT NULL,
   unit_count INTEGER NOT NULL,
   PRIMARY KEY (timestamp_, period_type, unit_type_name, profile_name, severity, syslog_event_id, facility)
 );
 
-DROP TABLE IF EXISTS report_prov;
-CREATE TABLE report_prov (
+
+CREATE TABLE IF NOT EXISTS report_prov (
   timestamp_ DATETIME NOT NULL,
   period_type INTEGER NOT NULL,
   unit_type_name VARCHAR(64) NOT NULL,
@@ -596,8 +596,8 @@ CREATE TABLE report_prov (
 );
 
 
-DROP TABLE IF EXISTS report_voip;
-CREATE TABLE report_voip (
+
+CREATE TABLE IF NOT EXISTS report_voip (
   timestamp_ DATETIME NOT NULL,
   period_type INTEGER NOT NULL,
   unit_type_name VARCHAR(64) NOT NULL,
@@ -618,15 +618,15 @@ CREATE TABLE report_voip (
   PRIMARY KEY (timestamp_, period_type, unit_type_name, profile_name, software_version, line)
 );
 
-DROP TABLE IF EXISTS report_voip_tr;
-CREATE TABLE report_voip_tr (
+
+CREATE TABLE IF NOT EXISTS report_voip_tr (
   timestamp_ DATETIME NOT NULL,
   period_type INTEGER NOT NULL,
   unit_type_name VARCHAR(64) NOT NULL,
   profile_name VARCHAR(64) NOT NULL,
   software_version VARCHAR(64) NOT NULL,
   line VARCHAR(16) NOT NULL,
-  line_status VARCHAR(64) NOT NULL, 
+  line_status VARCHAR(64) NOT NULL,
   overruns_count INTEGER NOT NULL,
   underruns_count INTEGER NOT NULL,
   percent_loss_avg INTEGER,
@@ -640,8 +640,8 @@ CREATE TABLE report_voip_tr (
   PRIMARY KEY (timestamp_, period_type, unit_type_name, profile_name, software_version, line, line_status)
 );
 
-DROP TABLE IF EXISTS report_hw;
-CREATE TABLE report_hw (
+
+CREATE TABLE IF NOT EXISTS report_hw (
   timestamp_ DATETIME NOT NULL,
   period_type INTEGER NOT NULL,
   unit_type_name VARCHAR(64) NOT NULL,
@@ -673,8 +673,8 @@ CREATE TABLE report_hw (
   PRIMARY KEY (timestamp_, period_type, unit_type_name, profile_name, software_version)
 );
 
-DROP TABLE IF EXISTS report_hw_tr;
-CREATE TABLE report_hw_tr (
+
+CREATE TABLE IF NOT EXISTS report_hw_tr (
   timestamp_ DATETIME NOT NULL,
   period_type INTEGER NOT NULL,
   unit_type_name VARCHAR(64) NOT NULL,
@@ -690,8 +690,8 @@ CREATE TABLE report_hw_tr (
   PRIMARY KEY (timestamp_, period_type, unit_type_name, profile_name, software_version)
 );
 
-DROP TABLE IF EXISTS report_gateway_tr;
-CREATE TABLE report_gateway_tr (
+
+CREATE TABLE IF NOT EXISTS report_gateway_tr (
   timestamp_ DATETIME NOT NULL,
   period_type INTEGER NOT NULL,
   unit_type_name VARCHAR(64) NOT NULL,
@@ -706,8 +706,8 @@ CREATE TABLE report_gateway_tr (
   PRIMARY KEY (timestamp_, period_type, unit_type_name, profile_name, software_version)
 );
 
-DROP TABLE IF EXISTS test_case;
-CREATE TABLE test_case (
+
+CREATE TABLE IF NOT EXISTS test_case (
   id INTEGER NOT NULL AUTO_INCREMENT,
   unit_type_id INTEGER NOT NULL,
   method VARCHAR(16) NOT NULL, -- ATTRIBUTE, VALUE
@@ -720,8 +720,8 @@ CREATE TABLE test_case (
     ON UPDATE NO ACTION
 
 );
-DROP TABLE IF EXISTS test_case_param;
-CREATE TABLE test_case_param (
+
+CREATE TABLE IF NOT EXISTS test_case_param (
   id INTEGER NOT NULL AUTO_INCREMENT,
   type VARCHAR(16) NOT NULL, -- IN, OUT
   case_id INTEGER NOT NULL,
@@ -739,8 +739,8 @@ CREATE TABLE test_case_param (
     ON UPDATE NO ACTION
 
 );
-DROP TABLE IF EXISTS test_case_files;
-CREATE TABLE test_case_files (
+
+CREATE TABLE IF NOT EXISTS test_case_files (
   id INTEGER NOT NULL AUTO_INCREMENT,
   case_id INTEGER NOT NULL,
   input_file_id INTEGER NOT NULL,
@@ -760,8 +760,8 @@ CREATE TABLE test_case_files (
     ON UPDATE NO ACTION
 
 );
-DROP TABLE IF EXISTS test_history;
-CREATE TABLE test_history (
+
+CREATE TABLE IF NOT EXISTS test_history (
   id INTEGER NOT NULL AUTO_INCREMENT,
   unit_type_id INTEGER NOT NULL,
   unit_id VARCHAR(64) NOT NULL,
@@ -769,7 +769,7 @@ CREATE TABLE test_history (
   start_timestamp DATETIME NOT NULL,
   end_timestamp DATETIME,
   failed INTEGER NOT NULL DEFAULT 0,
-  expect_error INTEGER NOT NULL DEFAULT 0, 
+  expect_error INTEGER NOT NULL DEFAULT 0,
   result VARCHAR(4096),
   PRIMARY KEY (id)
 );

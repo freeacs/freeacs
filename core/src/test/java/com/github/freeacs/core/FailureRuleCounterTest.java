@@ -1,4 +1,4 @@
-package test.owera.xaps.core;
+package com.github.freeacs.core;
 
 import com.github.freeacs.core.util.FractionStopRuleCounter;
 import com.github.freeacs.dbi.Job;
