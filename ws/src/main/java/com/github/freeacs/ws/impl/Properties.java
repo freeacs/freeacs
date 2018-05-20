@@ -9,7 +9,7 @@ public class Properties {
 	public static String REDIRECT_URL;
 
 	@Value("${redirect-url:#{null}}")
-	static void setRedirectUrl(String url) {
+	public static void setRedirectUrl(String url) {
 		REDIRECT_URL = url;
 	}
 
