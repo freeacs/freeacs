@@ -47,59 +47,48 @@ public class Properties {
 		SHELL_SCRIPT_POOL_SIZE = shellScriptPoolSize;
 	}
 
-	@Value("${syslog.severity.0.limit}")
+	@Value("${syslog.severity.0.limit:90}")
 	public void setSyslogSeverity0Limit(Integer severityLimit) {
 		SYSLOG_SEVERITY_LIMIT.put(0, severityLimit);
 	}
 
-	@Value("${syslog.severity.1.limit}")
+	@Value("${syslog.severity.1.limit:90}")
 	public void setSyslogSeverity1Limit(Integer severityLimit) {
 		SYSLOG_SEVERITY_LIMIT.put(1, severityLimit);
 	}
 
-	@Value("${syslog.severity.2.limit}")
+	@Value("${syslog.severity.2.limit:90}")
 	public void setSyslogSeverity2Limit(Integer severityLimit) {
 		SYSLOG_SEVERITY_LIMIT.put(2, severityLimit);
 	}
 
-	@Value("${syslog.severity.3.limit}")
+	@Value("${syslog.severity.3.limit:90}")
 	public void setSyslogSeverity3Limit(Integer severityLimit) {
 		SYSLOG_SEVERITY_LIMIT.put(3, severityLimit);
 	}
 
-	@Value("${syslog.severity.4.limit}")
+	@Value("${syslog.severity.4.limit:60}")
 	public void setSyslogSeverity4Limit(Integer severityLimit) {
 		SYSLOG_SEVERITY_LIMIT.put(4, severityLimit);
 	}
 
-	@Value("${syslog.severity.5.limit}")
+	@Value("${syslog.severity.5.limit:30}")
 	public void setSyslogSeverity5Limit(Integer severityLimit) {
 		SYSLOG_SEVERITY_LIMIT.put(5, severityLimit);
 	}
 
-	@Value("${syslog.severity.6.limit}")
+	@Value("${syslog.severity.6.limit:7}")
 	public void setSyslogSeverity6Limit(Integer severityLimit) {
 		SYSLOG_SEVERITY_LIMIT.put(6, severityLimit);
 	}
 
-	@Value("${syslog.severity.7.limit}")
+	@Value("${syslog.severity.7.limit:4}")
 	public void setSyslogSeverity7Limit(Integer severityLimit) {
 		SYSLOG_SEVERITY_LIMIT.put(7, severityLimit);
 	}
 
-	public static int getSyslogSeverityLimit(int severity) {
-		int defaultLimit = 7;
-		if (severity <= 3)
-			defaultLimit = 90;
-		if (severity == 4)
-			defaultLimit = 60;
-		if (severity == 5)
-			defaultLimit = 30;
-		if (severity == 6)
-			defaultLimit = 7;
-		if (severity > 6)
-			defaultLimit = 4;
-		return SYSLOG_SEVERITY_LIMIT.getOrDefault(severity, defaultLimit);
+	public static Integer getSyslogSeverityLimit(int severity) {
+		return SYSLOG_SEVERITY_LIMIT.get(severity);
 	}
 
 }
