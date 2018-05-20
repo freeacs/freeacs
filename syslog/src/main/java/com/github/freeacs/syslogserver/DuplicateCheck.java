@@ -16,7 +16,7 @@ public class DuplicateCheck {
 	private static Logger logger = LoggerFactory.getLogger(DuplicateCheck.class);
 
 	private static int getMaxSize() {
-		return Properties.getMaxMessagesInDuplicateBuffer();
+		return Properties.MAX_MESSAGES_IN_DUPLICATE_BUFFER;
 	}
 
 	private static int getCleanupLimitCounter() {

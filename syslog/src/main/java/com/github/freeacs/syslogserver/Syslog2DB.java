@@ -225,8 +225,8 @@ public class Syslog2DB implements Runnable {
 			try {
 				Users users = new Users(xapsCp);
 				Identity id = new Identity(5, SyslogServlet.version, users.getUnprotected(Users.USER_ADMIN));
-				syslog = new Syslog(syslogCp, id, Properties.getMaxDBCommitQueue(), Properties.getMinDBCommitDelay());
-				if (Properties.isSimulation()) {
+				syslog = new Syslog(syslogCp, id, Properties.MAX_SYSLOGDB_COMMIT_QUEUE, Properties.MIN_SYSLOGDB_COMMIT_DELAY);
+				if (Properties.SIMULATION) {
 					syslog.setSimulationMode(true);
 					logger.warn("Syslog server runs in simulation mode, collector timestamp will be populated with device timestamp *if* they differ from 1 Jan 00:00:00");
 				}
@@ -354,7 +354,7 @@ public class Syslog2DB implements Runnable {
 				return null;
 		} else {
 			// unit was not found in xAPS
-			String action = Properties.getUnknownUnitsAction();
+			String action = Properties.UNKNOWN_UNITS_ACTION;
 			if (action.startsWith("allow")) {
 				entry.setEventId(SyslogConstants.EVENT_DEFAULT);
 				counter.incUknownAllowed();

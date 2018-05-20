@@ -56,9 +56,9 @@ public class FailoverFileReader implements Runnable {
 
 	private static Logger failedMessages = LoggerFactory.getLogger("FAILED");
 
-	private long MAX_AGE = Properties.getMaxFailoverMessageAge() * 60 * 60 * 1000;
+	private long MAX_AGE = Properties.MAX_FAILOVER_MESSAGE_AGE * 60 * 60 * 1000;
 
-	private long PROCESS_INTERVAL = Properties.getFailoverProcessInterval() * 60 * 1000;
+	private long PROCESS_INTERVAL = Properties.FAILOVER_PROCESS_INTERVAL * 60 * 1000;
 
 	//	private static boolean stop;
 
