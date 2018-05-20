@@ -1,7 +1,5 @@
 package com.github.freeacs.shell;
 
-import com.github.freeacs.common.util.PropertyReader;
-import com.github.freeacs.common.util.PropertyReaderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

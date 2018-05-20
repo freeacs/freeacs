@@ -1,6 +1,5 @@
 package com.github.freeacs.shell;
 
-import com.github.freeacs.common.util.PropertyReader;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.util.XAPSVersionCheck;
 import com.github.freeacs.shell.util.ValidateInput;

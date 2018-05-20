@@ -1,4 +1,4 @@
-package com.github.freeacs.common.util;
+package com.github.freeacs.shell;
 
 public class PropertyReaderException extends RuntimeException {
 

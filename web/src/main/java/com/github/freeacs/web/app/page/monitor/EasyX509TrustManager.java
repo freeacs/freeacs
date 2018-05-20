@@ -1,4 +1,4 @@
-package com.github.freeacs.common.ssl;
+package com.github.freeacs.web.app.page.monitor;
 
 /*
  * ====================================================================

@@ -1,7 +1,5 @@
 package com.github.freeacs.web.app.page.monitor;
 
-import com.github.freeacs.common.ssl.EasySSLProtocolSocketFactory;
-import com.github.freeacs.common.ssl.HTTPSManager;
 import com.github.freeacs.dbi.XAPS;
 import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.ParameterParser;
