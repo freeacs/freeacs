@@ -1,116 +1,64 @@
 package com.github.freeacs.stun;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-import java.util.function.Supplier;
-
+@Component
 public class Properties {
 
-	static Config config = ConfigFactory.load();
+	public static boolean EXPECT_PORT_FORWARDING;
+	public static boolean RUN_WITH_STUN;
+	public static String SECONDARY_IP;
+	public static String PRIMARY_IP;
+	public static Integer SECONDARY_PORT;
+	public static Integer PRIMARY_PORT;
+	public static Integer KICK_INTERVAL;
+	public static boolean CHECK_PUBLIC_IP;
+	public static Integer KICK_RESCAN;
 
-	private static Logger logger = LoggerFactory.getLogger(Properties.class);
-
-	private static int getInteger(String propertyKey, int defaultValue) {
-		if (!config.hasPath(propertyKey)) {
-			logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
-			return defaultValue;
-		}
-		try {
-			return config.getInt(propertyKey);
-		} catch (Throwable t) {
-			logger.warn("The value of " + propertyKey + " was not a number, instead using default value " + defaultValue);
-			return defaultValue;
-		}
+	@Value("${kick.rescan:60}")
+	public void setKickRescan(Integer kickRescan) {
+		KICK_RESCAN = kickRescan;
 	}
 
-	private static long getLong(String propertyKey, long defaultValue) {
-		if (!config.hasPath(propertyKey)) {
-			logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
-			return defaultValue;
-		}
-		try {
-			return config.getLong(propertyKey);
-		} catch (Throwable t) {
-			logger.warn("The value of " + propertyKey + " was not a number, instead using default value " + defaultValue);
-			return defaultValue;
-		}
+	@Value("${kick.check-public-ip:false}")
+	public void setCheckPublicIp(Boolean checkPublicIp) {
+		CHECK_PUBLIC_IP = checkPublicIp;
 	}
 
-	private static String getString(String propertyKey, String defaultValue) {
-		if (!config.hasPath(propertyKey)) {
-			logger.warn("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
-			return defaultValue;
-		}
-		return config.getString(propertyKey);
+	@Value("${kick.interval:1000}")
+	public void setKickInterval(Integer kickInterval) {
+		KICK_INTERVAL = kickInterval;
 	}
 
-	private static boolean getBoolean(String propertyKey) {
-		return config.getBoolean(propertyKey);
+	@Value("${primary.port:3478}")
+	public void setPrimaryPort(Integer port) {
+		PRIMARY_PORT = port;
 	}
 
-	static boolean checkIfIpIsPublic() {
-		return getBoolean("kick.check-public-ip");
+	@Value("${secondary.port:3479}")
+	public void setSecondaryPort(Integer port) {
+		SECONDARY_PORT = port;
 	}
 
-	static int getKickRescan() {
-		return getInteger("kick.rescan", 60);
+	@Value("${primary.ip:#{null}}")
+	public void setPrimaryIp(String ip) {
+		PRIMARY_IP = ip;
 	}
 
-	static int getKickInterval() {
-		return getInteger("kick.interval", 1000);
+	@Value("${secondary.ip:#{null}}")
+	public void setSecondaryIp(String ip) {
+		SECONDARY_IP = ip;
 	}
 
-	static int getPrimaryPort() {
-		return getInteger("primary.port", 3478);
+	@Value("${test.runwithstun:true}")
+	public void setRunWithStun(Boolean runWithStun) {
+		RUN_WITH_STUN = runWithStun;
 	}
 
-	static int getSecondayPort() {
-		return getInteger("secondary.port", 3479);
+	@Value("${kick.expect-port-forwarding:false}")
+	public void setExpectPortForwarding(Boolean expectPortForwarding) {
+		EXPECT_PORT_FORWARDING = expectPortForwarding;
 	}
 
-	static String getPrimaryIp() {
-		return getString("primary.ip", null);
-	}
-
-	static String getSecondaryIp() {
-		return getString("secondary.ip", null);
-	}
-
-	static boolean runWithStun() {
-		return "true".equals(getString("test.runwithstun", "true").toLowerCase());
-	}
-
-	static int getMaxConn() {
-		Integer maxConn = getInteger("db.max-connections", 10);
-		if (maxConn < 5)
-			maxConn = 5;
-		return maxConn;
-	}
-
-	static boolean expectPortForwarding() {
-		return "true".equals(getString("kick.expect-port-forwarding", "false").toLowerCase());
-	}
-
-	static int getMaxConn(final String infix) {
-		return getInteger("db." + infix + ".maxconn", 20);
-	}
-
-	static long getMaxAge(final String infix) {
-		return getLong("db." + infix + ".maxage",60000);
-	}
-
-	static String getUrl(final String infix) {
-		return Optional.ofNullable(getString("db." + infix + ".url", null))
-				.orElseGet(new Supplier<String>() {
-					@Override
-					public String get() {
-						return getString("db." +infix, null);
-					}
-				});
-	}
-	
 }

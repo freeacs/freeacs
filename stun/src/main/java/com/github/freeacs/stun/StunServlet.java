@@ -69,12 +69,12 @@ public class StunServlet extends HttpServlet {
 		try {
 			DBI dbi = initializeDBI(xapsCp, sysCp);
 
-			if (Properties.runWithStun()) {
+			if (Properties.RUN_WITH_STUN) {
 				if (server == null) {
-					int pPort = Properties.getPrimaryPort();
-					String pIp = Properties.getPrimaryIp();
-					int sPort = Properties.getSecondayPort();
-					String sIp = Properties.getSecondaryIp();
+					int pPort = Properties.PRIMARY_PORT;
+					String pIp = Properties.PRIMARY_IP;
+					int sPort = Properties.SECONDARY_PORT;
+					String sIp = Properties.SECONDARY_IP;
 					server = new StunServer(pPort, InetAddress.getByName(pIp), sPort, InetAddress.getByName(sIp));
 				}
 				if (!StunServer.isStarted()) {
