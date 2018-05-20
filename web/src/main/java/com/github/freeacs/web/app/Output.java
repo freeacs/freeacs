@@ -134,7 +134,7 @@ public class Output {
 				pageContents = Freemarker.parseTemplate(getTemplateMap(), mainTemplate);
 			}catch(Throwable allPossibleExceptions){
 				allPossibleExceptions.printStackTrace();
-				pageContents = processExceptionTemplate(new Exception(allPossibleExceptions),WebProperties.getBoolean("debug"));
+				pageContents = processExceptionTemplate(new Exception(allPossibleExceptions),WebProperties.DEBUG);
 			}finally{
 				deliverHTML(pageContents,inputParameters,servletResponseChannel);
 			}
@@ -453,7 +453,7 @@ public class Output {
 				logger.error("Main.doImpl(): a problem occured while trying to write to GZIPOutputStream",ie);
 				throw new IOException("<p>An error occured</p>" + ie);
 			}
-		} else if (res.isCommitted() == false) {
+		} else if (!res.isCommitted()) {
 			res.setContentType("text/html");
 			PrintWriter out = res.getWriter();
 			if(outputString!=null){
@@ -472,7 +472,7 @@ public class Output {
 	 * @return true, if is gZIP enabled
 	 */
 	private boolean isGZIPEnabled() {
-		return WebProperties.getBoolean("gzip.enabled");
+		return WebProperties.GZIP_ENABLED;
 	}
 	
 	/**
@@ -484,7 +484,7 @@ public class Output {
 	private boolean isGZIPSupported(ParameterParser params) {
 		String encoding = params.getHttpServletRequest().getHeader("Accept-Encoding");
 		if (encoding != null) {
-			if (encoding.toLowerCase().indexOf("gzip") > -1)
+			if (encoding.toLowerCase().contains("gzip"))
 				return true;
 		}
 		return false;
