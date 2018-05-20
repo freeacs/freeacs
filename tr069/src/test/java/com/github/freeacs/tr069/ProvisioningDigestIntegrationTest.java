@@ -25,7 +25,6 @@ public class ProvisioningDigestIntegrationTest {
     private TestRestTemplate restTemplate;
 
     private String getDigestAuthorization(String header, String u, String p) {
-        System.out.println(header);
         Map<String, String> props = DigestHelper.getDigestMap(header);
         String qop = props.get("qop");
         String cnonce = "cnonce";
