@@ -5,6 +5,7 @@ import com.github.freeacs.base.Log;
 import com.github.freeacs.base.NoDataAvailableException;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069AuthenticationException;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -17,7 +18,7 @@ public class DigestAuthenticator {
 
 	private static void sendChallenge(HttpServletRequest req, HttpServletResponse res) {
 		long now = System.currentTimeMillis();
-		setAuthenticateHeader(res, DigestUtils.md5Hex(req.getRemoteAddr() + ":" + now + ":MortenRuler"));
+		setAuthenticateHeader(res, DigestUtils.md5Hex(req.getRemoteAddr() + ":" + now + ":" + Properties.DIGEST_SECRET));
 		res.setStatus(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
 	}
 
