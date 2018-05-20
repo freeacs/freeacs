@@ -1,0 +1,15 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cwmp="urn:dslforum-org:cwmp-1-0">
+    <soapenv:Header>
+        <cwmp:ID soapenv:mustUnderstand="1">FREEACS-0</cwmp:ID>
+    </soapenv:Header>
+    <soapenv:Body>
+        <cwmp:GetParameterValues>
+            <ParameterNames soapenc:arrayType="xsd:string[2]">
+                <string>InternetGatewayDevice.DeviceInfo.VendorConfigFile.</string>
+                <string>InternetGatewayDevice.ManagementServer.PeriodicInformInterval</string>
+            </ParameterNames>
+        </cwmp:GetParameterValues>
+    </soapenv:Body>
+</soapenv:Envelope>

@@ -47,7 +47,7 @@ public class DigestAuthenticator {
 		res.setHeader("WWW-Authenticate", authenticateHeader);
 	}
 
-	private static String passwordMd5(String username, String password, String method, String uri, String nonce, String nc, String cnonce, String qop) {
+	public static String passwordMd5(String username, String password, String method, String uri, String nonce, String nc, String cnonce, String qop) {
 		String realm = Util.getRealm();
 		String a1 = username + ":" + realm + ":" + password;
 		String md5a1 = DigestUtils.md5Hex(a1);

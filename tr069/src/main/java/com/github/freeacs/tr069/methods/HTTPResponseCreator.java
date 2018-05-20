@@ -205,12 +205,7 @@ public interface HTTPResponseCreator {
         UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
         addCPEParameters(sessionData);
         for (Entry<String, ParameterValueStruct> entry : paramValueMap.entrySet()) {
-          // if (utps.getByName(entry.getKey()) != null) {
           parameterValueList.add(entry.getValue());
-          // } else {
-          // Log.debug(HTTPResponseCreator.class, "Skipped " + entry.getKey() +
-          // " in GPV, since the unittype parameter did not exist");
-          // }
         }
         Log.debug(HTTPResponseCreator.class, "Asks for " + parameterValueList.size() + " parameters in GPV-req");
         Collections.sort(parameterValueList, new ParameterValueStructComparator());
