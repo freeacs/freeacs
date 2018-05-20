@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 @Component
 public class Properties {
 
+	public static String DIGEST_SECRET;
 	public static boolean FILE_AUTH_USED;
 	public static boolean DEBUG_TEST_MODE;
 	public static boolean DISCOVERY_MODE;
@@ -38,6 +39,11 @@ public class Properties {
 	@Value("${auth.method}")
 	public void setAuthMethod(String authMethod) {
 		AUTH_METHOD = authMethod;
+	}
+
+	@Value("${digest.secret}")
+	public void setDigestSecret(String digestSecret) {
+		DIGEST_SECRET = digestSecret;
 	}
 
 	@Value("${discovery.mode}")
