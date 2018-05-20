@@ -61,7 +61,7 @@ public class MonitorPage extends AbstractWebPage {
 		}
 
 		String cmd = req.getParameter("page");
-		String baseURL = WebProperties.getString("monitor.location", null);
+		String baseURL = WebProperties.MONITOR_LOCATION;
 		if (!baseURL.endsWith("/"))
 			baseURL += "/";
 		String url = null;
@@ -75,9 +75,9 @@ public class MonitorPage extends AbstractWebPage {
 			url = baseURL + "monitor/web?html=no";
 		}
 		
-		if(url.startsWith("https://")){
+		if(url != null && url.startsWith("https://")){
 			try{
-				HTTPSManager.installCertificate(url, WebProperties.getString("keystore.pass", "changeit"));
+				HTTPSManager.installCertificate(url, WebProperties.KEYSTORE_PASS);
 			}catch(Exception e){
 				logger.error("Could not install server certificate for "+url,e);
 			}
@@ -106,7 +106,7 @@ public class MonitorPage extends AbstractWebPage {
 	private String getStringFromURL(String url, ParameterParser req) {
 		HttpClient client = new HttpClient();
 		HttpMethod method = null;
-		if (url.indexOf("page=history") > -1) {
+		if (url.contains("page=history")) {
 			method = new PostMethod(url);
 			PostMethod pm = (PostMethod) method;
 			String limit = req.getParameter("limit");

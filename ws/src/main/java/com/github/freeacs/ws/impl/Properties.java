@@ -12,5 +12,4 @@ public class Properties {
 	public static void setRedirectUrl(String url) {
 		REDIRECT_URL = url;
 	}
-
 }

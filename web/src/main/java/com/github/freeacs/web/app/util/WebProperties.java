@@ -1,13 +1,10 @@
 package com.github.freeacs.web.app.util;
 
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-import java.util.*;
-import java.util.function.Supplier;
-import java.util.regex.Pattern;
+import java.util.Collections;
+import java.util.Map;
 
 
 /**
@@ -19,103 +16,105 @@ import java.util.regex.Pattern;
  * @author Jarl Andre Hubenthal
  *
  */
+@Component
 public class WebProperties {
 
-	/** The pr. */
-	private static Config config = ConfigFactory.load();
-	
-	/** The log. */
-	private static final Logger log = LoggerFactory.getLogger(WebProperties.class);
-
-	/**
-	 * Gets the integer.
-	 *
-	 * @param propertyKey the property key
-	 * @param defaultValue the default value
-	 * @return the integer
-	 */
-	public static int getInteger(String propertyKey, int defaultValue) {
-		if (!config.hasPath(propertyKey)) {
-			return defaultValue;
-		}
-		try {
-			return config.getInt(propertyKey);
-		} catch (Exception t) {
-			log.debug("The value of " + propertyKey + " was not a number, instead using default value " + defaultValue, t);
-			return defaultValue;
-		}
-	}
-
-	/**
-	 * Gets the string.
-	 *
-	 * @param propertyKey the property key
-	 * @param defaultValue the default value
-	 * @return the string
-	 */
-	public static String getString(String propertyKey, String defaultValue) {
-		if (!config.hasPath(propertyKey)) {
-			return defaultValue;
-		}
-		String prop = config.getString(propertyKey);
-		if (prop == null) {
-			log.debug("The value of " + propertyKey + " was not specified, instead using default value " + defaultValue);
-			return defaultValue;
-		}
-		return prop;
-	}
-	
-	/**
-	 * Gets the boolean.
-	 *
-	 * @param propertyKey the property key
-	 * @return the boolean
-	 */
-	public static boolean getBoolean(String propertyKey) {
-		return getBoolean(propertyKey, false);
-	}
-	
-	/**
-	 * Gets the boolean.
-	 *
-	 * @param propertyKey the property key
-	 * @return the boolean
-	 */
-	public static Boolean getBoolean(String propertyKey, Boolean def) {
-		if (!config.hasPath(propertyKey)) {
-			return def;
-		}
-		try {
-			return config.getBoolean(propertyKey);
-		} catch (Throwable t) {
-			log.debug("The value of " + propertyKey + " was not a boolean, instead returning false", t);
-			return def;
-		}
-	}
+	public static String KEYSTORE_PASS;
+	public static String MONITOR_LOCATION;
+	public static String LOCALE;
+	public static boolean JAVASCRIPT_DEBUG;
+	public static boolean IX_EDIT_ENABLED;
+	public static boolean CONFIRM_CHANGES;
+	public static String PROPERTIES;
+	public static boolean UNIT_CONFIG_AUTOFILTER;
+	public static boolean CONFIDENTIALS_RESTRICTED;
+	public static boolean GZIP_ENABLED;
+	public static boolean DEBUG;
+	public static boolean SHOW_VOIP;
+	public static boolean SHOW_HARDWARE;
+	public static Integer SESSION_TIMEOUT;
 
 	/**
 	 * Gets the session timeout.
 	 *
 	 * @return the session timeout
 	 */
-	public static int getSessionTimeout() {
-		return getInteger("session.timeout", 30);
+	@Value("${session.timeout:30}")
+	public void setSessionTimeout(Integer timeout) {
+		SESSION_TIMEOUT = timeout;
 	}
 
 	/**
 	 * Returns an indicator for if hardware syslog should be available
 	 * @return
 	 */
-	public static Boolean getShowHardware() {
-		return getBoolean("unit.dash.hardware", false);
+	@Value("${unit.dash.hardware:false}")
+	public void setShowHardware(Boolean showHardware) {
+		SHOW_HARDWARE = showHardware;
 	}
 
 	/**
 	 * Returns an indicator for if voip syslog should be available
 	 * @return
 	 */
-	public static Boolean getShowVoip() {
-		return getBoolean("unit.dash.voip", false);
+	@Value("${unit.dash.voip:false}")
+	public void setShowVoip(Boolean showVoip) {
+		SHOW_VOIP = showVoip;
+	}
+
+	@Value("${debug:false}")
+	public void setDebug(Boolean debug) {
+		DEBUG = debug;
+	}
+
+	@Value("${gzip.enabled:false}")
+	public void setGzipEnabled(Boolean enabled) {
+		GZIP_ENABLED = enabled;
+	}
+
+	@Value("${confidentials.restricted:false}")
+	public void setConfidentialsRestricted(Boolean restricted) {
+		CONFIDENTIALS_RESTRICTED = restricted;
+	}
+
+	@Value("${unit.config.autofilter:false}")
+	public void setUnitConfigAutofilter(Boolean autofilter) {
+		UNIT_CONFIG_AUTOFILTER = autofilter;
+	}
+
+	@Value("${properties:default}")
+	public void setProperties(String properties) {
+		PROPERTIES = properties;
+	}
+
+	@Value("${confirmchanges:false}")
+	public void setConfirmChanges(Boolean confirmChanges) {
+		CONFIRM_CHANGES = confirmChanges;
+	}
+
+	@Value("${ixedit.enabled:false}")
+	public void setIxEditEnabled(Boolean enabled) {
+		IX_EDIT_ENABLED = enabled;
+	}
+
+	@Value("${javascript.debug:false}")
+	public void setJavascriptDebug(Boolean debug) {
+		JAVASCRIPT_DEBUG = debug;
+	}
+
+	@Value("${locale:#{null}}")
+	public void setLocale(String locale) {
+		LOCALE = locale;
+	}
+
+	@Value("${monitor.location:#{null}}")
+	public void setMonitorLocation(String monitorLocation) {
+		MONITOR_LOCATION = monitorLocation;
+	}
+
+	@Value("${keystore.pass:changeit}")
+	public void setKeyStorePass(String keyStorePass) {
+		KEYSTORE_PASS = keyStorePass;
 	}
 
 	/**
@@ -126,41 +125,8 @@ public class WebProperties {
 	 * @return List of CustomDashDisplayProperty containing the settings
 	 */
 	public static Map<String, String> getCustomDash(String unittypeName) {
-		String regex = "^custom\\.dash\\.\\*.*";
-		if (unittypeName != null && !unittypeName.isEmpty())
-			regex += "|^custom\\.dash\\." + unittypeName + ".*";
-
-		Map<String, String> configDisplay = new LinkedHashMap<String, String>();
-
-		for (String key : getFilteredKeys(regex)) {
-			String[] parts = getString(key, null).split("\\;");
-			if (parts.length > 1)
-				configDisplay.put(parts[0].trim(), parts[1].trim());
-			else
-				configDisplay.put(parts[0].trim(), null);
-		}
-
-		return configDisplay;
-	}
-
-	/**
-	 * Gets the keys in the web properties that matches a certain
-	 * regular expression.
-	 *
-	 * @param regex
-	 * @return A list containing the resulting keys
-	 */
-	private static List<String> getFilteredKeys(String regex) {
-		List<String> keys = new LinkedList<String>();
-
-		Pattern pattern = Pattern.compile(regex);
-
-		for (String key : config.root().unwrapped().keySet())
-			if (pattern.matcher(key).matches())
-				keys.add(key);
-
-		Collections.sort(keys);
-		return keys;
+		// TODO should this be reimplemented?
+		return Collections.emptyMap();
 	}
 
 }

@@ -100,7 +100,7 @@ public class LoginServlet extends HttpServlet implements Filter {
 		Template template = freemarker.getTemplate("loginpage.ftl");
 		HashMap<String, Object> root = new HashMap<String, Object>();
 
-		root.put("CSS_FILE", WebProperties.getString(WebConstants.DEFAULT_PROPERTIES_KEY, "default"));
+		root.put("CSS_FILE", WebProperties.PROPERTIES);
 
 		if (loginHandler != null)
 			root.put("scramblePassword", loginHandler.scramblePasswordWithMD5());
@@ -216,7 +216,7 @@ public class LoginServlet extends HttpServlet implements Filter {
 	 * @return true, if is timeout
 	 */
 	private boolean isTimeout(HttpServletRequest req) {
-		int timeoutInMinutes = WebProperties.getSessionTimeout();
+		int timeoutInMinutes = WebProperties.SESSION_TIMEOUT;
 
 		Date lastAccessed = SessionCache.getSessionData(req.getSession().getId()).getLastAccessed();
 		if (lastAccessed == null)
