@@ -59,7 +59,7 @@ public class ProvisioningDiscoverIntegrationTest {
         ResponseEntity<String> getParameterValuesRequest = this.restTemplate.exchange("/", HttpMethod.POST, new HttpEntity<Object>(getFileContent("discover/5_GetParameterNamesResponse.xml"), headersWithCookueAndBasicChallenge), String.class);
         assertThat(getParameterValuesRequest.getBody().replaceAll(">FREEACS-(\\d+)<", ">FREEACS-0<")).isEqualToIgnoringWhitespace(getFileContent("discover/6_GetParameterValues.xml"));
         ResponseEntity<String> setParameterValuesRequest = this.restTemplate.exchange("/", HttpMethod.POST, new HttpEntity<Object>(getFileContent("discover/7_GetParameterValuesResponse.xml"), headersWithCookueAndBasicChallenge), String.class);
-        assertThat(setParameterValuesRequest.getBody().replaceAll(">FREEACS-(\\d+)<", ">FREEACS-0<").replaceAll(">(\\d+)<", ">70075<")).isEqualToIgnoringWhitespace(getFileContent("discover/8_SetParameterValues.xml"));
+        assertThat(setParameterValuesRequest.getBody().replaceAll(">FREEACS-(\\d+)<", ">FREEACS-0<").replaceAll(">(\\d+)<", ">0<")).isEqualToIgnoringWhitespace(getFileContent("discover/8_SetParameterValues.xml"));
         ResponseEntity<String> noContentResponse = this.restTemplate.exchange("/", HttpMethod.POST, new HttpEntity<Object>(getFileContent("discover/9_SetParameterValuesResponse.xml"), headersWithCookueAndBasicChallenge), String.class);
         assertThat(noContentResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         assertThat(noContentResponse.getBody()).isNullOrEmpty();
