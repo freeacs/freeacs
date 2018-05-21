@@ -13,6 +13,7 @@
                 <include>*.service</include>
                 <include>README.*</include>
                 <include>*.conf</include>
+                <include>*.properties</include>
             </includes>
         </fileSet>
     </fileSets>
