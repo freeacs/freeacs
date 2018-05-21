@@ -68,7 +68,7 @@ public class ScriptExecutionsPage extends AbstractWebPage {
 			ScriptExecution se = scriptExecutions.getById(unittype, inputData.getId().getInteger());
 			selectedFile = se.getScriptFile();
 			script = parse(selectedFile, unittype);
-			fmMap.put("arguments", se.getArguments().replaceAll("\"", "&quot;"));
+			fmMap.put("arguments", se.getArguments() != null ? se.getArguments().replaceAll("\"", "&quot;") : " ");
 			if (se.getArguments() != null && se.getArguments().length() > 0) { // copy from arguments-array into ScriptArgs-values
 				String[] args = StringUtil.split(se.getArguments());
 //				System.out.println(args);
