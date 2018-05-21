@@ -323,7 +323,12 @@ public interface HTTPResponseCreator {
     return new Response(header, body);
   }
 
-    static Response buildADO(HTTPReqResData httpReqResData) {
-        return null;
+    static Response buildADO(HTTPReqResData reqRes) {
+        if (reqRes.getTR069TransactionID() == null)
+            reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
+        Header header = new Header(reqRes.getTR069TransactionID(), null, null);
+        // TODO fetch what object to add from jobs or something.
+        Body body = new ADOreq("Test.", "Parameter");
+        return new Response(header, body);
     }
 }
