@@ -322,4 +322,8 @@ public interface HTTPResponseCreator {
       Log.notice(HTTPResponseCreator.class, "\t" + pvs.getName() + " : " + pvs.getNotifcation());
     return new Response(header, body);
   }
+
+    static Response buildADO(HTTPReqResData httpReqResData) {
+        return null;
+    }
 }

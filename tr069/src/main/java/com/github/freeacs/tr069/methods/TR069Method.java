@@ -35,6 +35,8 @@ public class TR069Method {
 	
 	public static final String SET_PARAMETER_ATTRIBUTES = "SetParameterAttributes";
 
+	public static final String ADD_OBJECT = "AddObject";
+
 	/* Map of all (SOAP/HTTP-)request actions and what to do next */
 	public static Map<String, HTTPRequestAction> requestMap = new HashMap<String, HTTPRequestAction>();
 	/* Map of all (SOAP/HTTP-)response actions and what to return */
@@ -96,6 +98,10 @@ public class TR069Method {
 		abbrevMap.put(FACTORY_RESET, "FR");
 		requestMap.put(FACTORY_RESET, new HTTPRequestAction(FRres::process, makeSimpleDecision(EMPTY)));
 		responseMap.put(FACTORY_RESET, new HTTPResponseAction(HTTPResponseCreator::buildFR));
+
+		abbrevMap.put(ADD_OBJECT, "ADO");
+		requestMap.put(ADD_OBJECT, new HTTPRequestAction(ADOres::process, ADODecision::process));
+		responseMap.put(ADD_OBJECT, new HTTPResponseAction(HTTPResponseCreator::buildADO));
 
 		abbrevMap.put(CUSTOM, "CU");
 		responseMap.put(CUSTOM, new HTTPResponseAction(HTTPResponseCreator::buildCU));
