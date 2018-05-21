@@ -2,8 +2,6 @@ package com.github.freeacs.shell;
 
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.util.XAPSVersionCheck;
-import com.github.freeacs.shell.util.ValidateInput;
-import com.github.freeacs.shell.util.ValidateInteger;
 import com.zaxxer.hikari.HikariDataSource;
 
 import javax.sql.DataSource;
@@ -47,12 +45,10 @@ public class XAPSShell {
 		out.flush();
 	}
 
-	private Users getUsers(boolean failedLastTime) throws Exception {
-		if (!Properties.isRestricted() && (failedLastTime || (session.getXapsProps() == null && session.getMode() == SessionMode.INTERACTIVE)))
-			initConnectionProperties(session);
+	private Users getUsers() throws Exception {
 		if (session.getMode() != SessionMode.DAEMON && session.getFusionUser() == null && session.getFusionPass() == null)
 			initFusionUser(session);
-		Users users;
+		Users users = null;
 		try {
 			users = new Users(session.getXapsProps());
 			if (session.getFusionUser() != null) {
@@ -73,14 +69,15 @@ public class XAPSShell {
 			if (t.getMessage().length() > 150)
 				msg = t.getMessage().substring(0, 150) + "....";
 			println("\n**********************************\n " + msg + "\n**********************************\n");
-			return getUsers(true);
 		}
 		return users;
 	}
 
-	public void init() throws Exception {
+	public void init(DataSource xapsDs, DataSource syslogDs) throws Exception {
+		session.setXapsProps(xapsDs);
+		session.setSysProps(syslogDs);
 		XAPSVersionCheck.setDatabaseChecked(false); // force another database check
-		Users users = getUsers(false);
+		Users users = getUsers();
 		session.setUsers(users);
 		Identity id = new Identity(SyslogConstants.FACILITY_SHELL, XAPSShell.version, session.getVerifiedFusionUser());
 		Syslog syslog = new Syslog(session.getSysProps(), id);
@@ -149,14 +146,14 @@ public class XAPSShell {
 		return false;
 	}
 
-	public void mainImpl(String[] args) {
+	public void mainImpl(String[] args, DataSource xapsDs, DataSource syslogDs) {
 		try {
 			if (help(args)) {
 				System.exit(1);
 				return;
 			}
 			session = new Session(args, this);
-			init();
+			init(xapsDs, syslogDs);
 			if (session.getMode() != SessionMode.SCRIPT) {
 
 				println("  ____ _  _ ____ _ ____ _  _    ____ _  _ ____ _    _    ");
@@ -213,18 +210,7 @@ public class XAPSShell {
 		session.exitShell(0);
 	}
 
-	public static void main(String[] args) {
-		Locale.setDefault(new Locale("en", "US"));
-		XAPSShell xapsShell = new XAPSShell();
-		xapsShell.mainImpl(args);
-	}
-
-	private void initConnectionProperties(Session session) {
-		session.setXapsProps(getHikariDataSource("xaps"));
-		session.setSysProps(getHikariDataSource("syslog"));
-	}
-
-	private DataSource getHikariDataSource(String prefix) {
+	public static DataSource getHikariDataSource(String prefix) {
 		HikariDataSource ds = new HikariDataSource();
 		String jdbcUrl = prefix + ".datasource.jdbcUrl";
 		ds.setJdbcUrl(Optional.ofNullable(System.getProperty(jdbcUrl)).orElseGet(() -> Properties.pr.getProperty(jdbcUrl)));
