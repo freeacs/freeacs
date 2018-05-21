@@ -13,6 +13,6 @@ public class XAPSShellExec {
 		XAPSShellReader xapsShellReader = new XAPSShellReader(new InputStreamReader(System.in), reader);
 		xapsShellReader.setXapsShell(xapsShell);
 		xapsShell.setReader(xapsShellReader);
-		xapsShell.mainImpl(args);
+		xapsShell.mainImpl(args, XAPSShell.getHikariDataSource("xaps"), XAPSShell.getHikariDataSource("syslog"));
 	}
 }

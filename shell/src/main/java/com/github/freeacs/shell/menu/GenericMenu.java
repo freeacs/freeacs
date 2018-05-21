@@ -86,7 +86,7 @@ public class GenericMenu {
 			session.getDbi().setLifetimeSec(0); // kill the old DBI
 			XAPSShell xapsShell = session.getXapsShell();
 			xapsShell.setSession(new Session(session.getOriginalOptionArgs(), xapsShell));
-			xapsShell.init();
+			xapsShell.init(XAPSShell.getHikariDataSource("xaps"), XAPSShell.getHikariDataSource("syslog"));
 			return true;
 		} else if (input.startsWith("userin")) {
 			session.println("Logged in as " + session.getVerifiedFusionUser().getUsername());

@@ -6,26 +6,20 @@ import java.util.List;
 
 public class XAPSShellDaemon implements Runnable {
 	private XAPSShell xapsShell = new XAPSShell();
-	private DataSource cp;
+	private final DataSource xapsCp;
+	private final DataSource syslogCp;
 	private String fusionUser;
 	private int index; // used to track which instance of a shell-daemon is running
 	private boolean idle = true;
 
-	public XAPSShellDaemon(DataSource cp, String fusionUser) {
-		this.cp = cp;
+	public XAPSShellDaemon(DataSource xapsCp, DataSource syslogCp, String fusionUser) {
+		this.xapsCp = xapsCp;
+		this.syslogCp = syslogCp;
 		this.fusionUser = fusionUser;
 	}
 
 	public int getCommandsNotRunYet() {
 		return xapsShell.getSession().getProcessor().getDaemonCommandSize();
-	}
-
-	public List<String> getProcessedCommands() {
-		return xapsShell.getSession().getProcessor().getProcessedCommands();
-	}
-
-	public String getLastProcessedCommand() {
-		return xapsShell.getSession().getProcessor().getLastProcessedCommand();
 	}
 
 	public void addToRunList(String command) {
@@ -34,8 +28,7 @@ public class XAPSShellDaemon implements Runnable {
 
 	@Override
 	public void run() {
-		// TODO
-		// xapsShell.mainImpl(new String[] { "-daemon", "-url", cp.getUrl(), "-user", cp.getUser(), "-password", cp.getPassword(), "-maxconn", "" + cp.getMaxConn(), "-fusionuser", fusionUser });
+		xapsShell.mainImpl(new String[] { "-daemon", "-fusionuser", fusionUser }, xapsCp, syslogCp);
 	}
 
 	public List<Throwable> getAndResetThrowables() {

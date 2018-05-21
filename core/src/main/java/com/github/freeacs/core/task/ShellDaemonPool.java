@@ -25,11 +25,10 @@ public class ShellDaemonPool {
 
 	private static Logger logger = LoggerFactory.getLogger(ShellDaemonPool.class);
 
-	//	private static List<XAPSShellDaemon> shellDaemonPool = new ArrayList<XAPSShellDaemon>();
 	private static Map<String, List<XAPSShellDaemon>> shellDaemonPoolMap = new HashMap<String, List<XAPSShellDaemon>>();
 
-	private static XAPSShellDaemon createNewShellDaemon(DataSource xapsCp, int index, String fusionUser) throws Throwable {
-		XAPSShellDaemon xapsshellDaemon = new XAPSShellDaemon(xapsCp, fusionUser);
+	private static XAPSShellDaemon createNewShellDaemon(DataSource xapsCp, DataSource syslogCp, int index, String fusionUser) throws Throwable {
+		XAPSShellDaemon xapsshellDaemon = new XAPSShellDaemon(xapsCp, syslogCp, fusionUser);
 		xapsshellDaemon.setIndex(index);
 		XAPSShell xapsShell = xapsshellDaemon.getXapsShell();
 		try {
@@ -41,9 +40,7 @@ public class ShellDaemonPool {
 		xapsShellThread.setName("Core Shell Daemon " + index);
 		xapsShellThread.setDaemon(true);
 		xapsShellThread.start();
-		while (true) {
-			if (xapsshellDaemon.isInitialized())
-				break;
+		while (!xapsshellDaemon.isInitialized()) {
 			List<Throwable> throwables = xapsshellDaemon.getAndResetThrowables();
 			if (throwables != null && throwables.size() > 0) {
 				throw throwables.get(0);
@@ -59,15 +56,10 @@ public class ShellDaemonPool {
 	}
 
 	private static List<XAPSShellDaemon> getShellDaemonPool(String fusionUser) {
-		List<XAPSShellDaemon> shellDaemonPool = shellDaemonPoolMap.get(fusionUser);
-		if (shellDaemonPool == null) {
-			shellDaemonPool = new ArrayList<XAPSShellDaemon>();
-			shellDaemonPoolMap.put(fusionUser, shellDaemonPool);
-		}
-		return shellDaemonPool;
+		return shellDaemonPoolMap.computeIfAbsent(fusionUser, k -> new ArrayList<>());
 	}
 
-	public static synchronized XAPSShellDaemon getShellDaemon(DataSource xapsCp, String fusionUser) throws Throwable {
+	public static synchronized XAPSShellDaemon getShellDaemon(DataSource xapsCp, DataSource syslogCp, String fusionUser) throws Throwable {
 		List<XAPSShellDaemon> shellDaemonPool = getShellDaemonPool(fusionUser);
 		int poolsize = Properties.SHELL_SCRIPT_POOL_SIZE;
 		XAPSShellDaemon xapsshellDaemon = null;
@@ -82,7 +74,7 @@ public class ShellDaemonPool {
 					continue;
 				}
 			} else {
-				xapsshellDaemon = createNewShellDaemon(xapsCp, i, fusionUser);
+				xapsshellDaemon = createNewShellDaemon(xapsCp, syslogCp, i, fusionUser);
 				shellDaemonPool.add(xapsshellDaemon);
 				break;
 			}
