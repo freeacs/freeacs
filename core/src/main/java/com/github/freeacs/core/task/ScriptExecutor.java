@@ -125,11 +125,7 @@ public class ScriptExecutor extends DBIShare {
 			String fusionUser = Users.USER_ADMIN; // This will only happen if no users are defined, then only admin is available
 			if (se.getScriptFile().getOwner() != null)
 				fusionUser = se.getScriptFile().getOwner().getUsername();
-			List<ScriptExecution> list = userMap.get(fusionUser);
-			if (list == null) {
-				list = new ArrayList<ScriptExecution>();
-				userMap.put(fusionUser, list);
-			}
+			List<ScriptExecution> list = userMap.computeIfAbsent(fusionUser, k -> new ArrayList<>());
 			list.add(se);
 		}
 
@@ -145,10 +141,9 @@ public class ScriptExecutor extends DBIShare {
 						se.setErrorMessage("The script is deleted, aborting script execution");
 					executions.updateExecution(se);
 				} else {
-					XAPSShellDaemon xapsshellDaemon = ShellDaemonPool.getShellDaemon(getXapsCp(), entry.getKey());
+					XAPSShellDaemon xapsshellDaemon = ShellDaemonPool.getShellDaemon(getXapsCp(), getSysCp(), entry.getKey());
 					if (xapsshellDaemon == null) {
 						logger.debug("No shell daemon available within pool size limit, will try again in 100 ms");
-						continue;
 					} else {
 						logger.debug("Found shell daemon, will initiate execution");
 						se.setStartTms(new Date());
