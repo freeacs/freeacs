@@ -7,6 +7,7 @@ Create new directory to hold service and copy jar file and config
     sudo mkdir -p /var/freeacs/syslog
     sudo cp freeacs-syslog.jar /var/freeacs/syslog
     sudo cp freeacs-syslog.conf /var/freeacs/syslog
+    sudp cp application-config.properties /var/freeacs/syslog
     sudo chown freeacs:freeacs -R /var/freeacs/syslog
 
 For systemd (suggested)
