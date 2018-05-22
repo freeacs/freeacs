@@ -53,7 +53,7 @@ public class Groups {
 
 	public void addOrChangeGroup(Group group, ACS acs) throws SQLException {
 		checkPermission(group, acs);
-		addOrChangeGroupImpl(group, unittype, acs);
+		addOrChangeGroupImpl(group, acs);
 		group.setUnittype(unittype);
 		nameMap.put(group.getName(), group);
 		idMap.put(group.getId(), group);
@@ -75,7 +75,7 @@ public class Groups {
 	}
 
 	/* only used to refresh the cache, used from DBI */
-	protected static void refreshGroupParameter(Group group, ACS acs, Connection c) throws SQLException {
+	protected static void refreshGroupParameter(Group group, Connection c) throws SQLException {
 		Statement s = null;
 		ResultSet rs = null;
 		String sql = null;
@@ -156,7 +156,7 @@ public class Groups {
 				group.setProfile(unittype.getProfiles().getById(rs.getInt("profile_id")));
 				group.setCount(rs.getInt("count"));
 				group.setUnittype(unittype);
-				refreshGroupParameter(group, acs, c);
+				refreshGroupParameter(group, c);
 				logger.debug("Refreshed group " + group);
 			}
 		} finally {
@@ -168,7 +168,7 @@ public class Groups {
 		}
 	}
 
-	private void deleteGroupImpl(Unittype unittype, Group group, ACS acs) throws SQLException {
+	private void deleteGroupImpl(Group group, ACS acs) throws SQLException {
 		PreparedStatement s = null;
 		String sql = null;
 		Connection c = acs.getDataSource().getConnection();
@@ -213,7 +213,7 @@ public class Groups {
 		for (GroupParameter gp : group.getGroupParameters().getGroupParameters()) {
 			group.getGroupParameters().deleteGroupParameter(gp, acs);
 		}
-		deleteGroupImpl(unittype, group, acs);
+		deleteGroupImpl(group, acs);
 		removeGroupFromDataModel(group);
 	}
 
@@ -235,7 +235,7 @@ public class Groups {
 		return unittype;
 	}
 
-	private void addOrChangeGroupImpl(Group group, Unittype unittype, ACS acs) throws SQLException {
+	private void addOrChangeGroupImpl(Group group, ACS acs) throws SQLException {
 		PreparedStatement s = null;
 		if (group.getParent() != null && group.getId() == null)
 			addOrChangeGroup(group.getParent(), acs);

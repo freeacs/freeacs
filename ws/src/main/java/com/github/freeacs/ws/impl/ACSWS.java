@@ -31,7 +31,7 @@ public class ACSWS {
 		return acs;
 	}
 
-	ACSUnit getXAPSUnit(ACS acs) throws RemoteException {
+	public ACSUnit getXAPSUnit(ACS acs) throws RemoteException {
 		try {
 			return new ACSUnit(xapsDataSource, acs, acs.getSyslog());
 		} catch (Throwable t) {
@@ -68,7 +68,7 @@ public class ACSWS {
 		}
 	}
 
-	Unit getUnitByMAC(ACSUnit acsUnit, Unittype unittype, Profile profile, String searchStr) throws RemoteException, SQLException {
+	public Unit getUnitByMAC(ACSUnit acsUnit, Unittype unittype, Profile profile, String searchStr) throws RemoteException, SQLException {
 		Unit unitFoundByMac = acsUnit.getUnitByValue(searchStr, unittype, profile);
 		if (unitFoundByMac != null) {
 			return unitFoundByMac;
@@ -125,7 +125,7 @@ public class ACSWS {
 	 * @return
 	 * @throws RemoteException
 	 */
-	Profile getProfileFromXAPS(String unittypeName, String profileName) throws RemoteException {
+	public Profile getProfileFromXAPS(String unittypeName, String profileName) throws RemoteException {
 		Unittype unittype = getUnittypeFromXAPS(unittypeName);
 		if (profileName == null)
 			throw error("The profile name is not specified");
@@ -135,7 +135,7 @@ public class ACSWS {
 		return profile;
 	}
 
-	Identity getId() {
+	public Identity getId() {
 		return id;
 	}
 

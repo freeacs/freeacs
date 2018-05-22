@@ -156,7 +156,7 @@ public class UnittypeParameters {
 		addOrChangeUnittypeParameters(unittypeParameters, acs);
 	}
 
-	private void deleteUnittypeParameterValues(UnittypeParameter unittypeParameter, Unittype unittype, Statement s, ACS acs) throws SQLException {
+	private void deleteUnittypeParameterValues(UnittypeParameter unittypeParameter, Statement s) throws SQLException {
 		String sql = "DELETE FROM unit_type_param_value WHERE ";
 		sql += "unit_type_param_id = " + unittypeParameter.getId();
 		s.setQueryTimeout(60);
@@ -176,7 +176,7 @@ public class UnittypeParameters {
 			for (UnittypeParameter unittypeParameter : unittypeParameters) {
 				s = c.createStatement();
 				if (unittypeParameter.getValues() != null)
-					deleteUnittypeParameterValues(unittypeParameter, unittype, s, acs);
+					deleteUnittypeParameterValues(unittypeParameter, s);
 				sql = "DELETE FROM unit_type_param WHERE ";
 				sql += "unit_type_param_id = " + unittypeParameter.getId();
 				s.setQueryTimeout(60);
@@ -273,7 +273,7 @@ public class UnittypeParameters {
 					if (unittypeParameter.getValues().getValues().size() > 0)
 						addOrChangeUnittypeParameterValues(unittypeParameter, unittype, ps, acs);
 					else
-						deleteUnittypeParameterValues(unittypeParameter, unittype, ps, acs);
+						deleteUnittypeParameterValues(unittypeParameter, ps);
 				//				long tms2 = System.currentTimeMillis();
 				//				logger.debug("addOrChangeUnittypeParameterImpl, insert/update: " + (tms1 - start) + "ms, add/change/delete values: " + (tms2 - tms1) + "ms");
 			}
