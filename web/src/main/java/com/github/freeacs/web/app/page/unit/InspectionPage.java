@@ -22,10 +22,10 @@ import java.util.Map;
 public class InspectionPage extends AbstractWebPage {
 	
 	/** The xaps. */
-	private XAPS xaps;
+	private ACS ACS;
 	
 	/** The xaps unit. */
-	private XAPSUnit xapsUnit;
+	private ACSUnit ACSUnit;
 	
 	/** The unit. */
 	private Unit unit;
@@ -53,7 +53,7 @@ public class InspectionPage extends AbstractWebPage {
 		profile = null;
 		unittype = null;
 		if (inputData.getUnit().getString() != null) {
-			unit = xapsUnit.getUnitById(inputData.getUnit().getString());
+			unit = ACSUnit.getUnitById(inputData.getUnit().getString());
 			SessionCache.putUnit(sessionId, unit);
 			if (unit != null) {
 				profile = unit.getProfile();
@@ -63,7 +63,7 @@ public class InspectionPage extends AbstractWebPage {
 				inputData.getUnittype().setValue(unittype.getName());
 			}
 			if (unittype == null && inputData.getUnittype().getString() != null) {
-				unittype = xaps.getUnittype(inputData.getUnittype().getString());
+				unittype = ACS.getUnittype(inputData.getUnittype().getString());
 			}
 			if (profile == null && inputData.getProfile().getString()!= null && unittype != null) {
 				profile = unittype.getProfiles().getByName(inputData.getProfile().getString());
@@ -80,10 +80,10 @@ public class InspectionPage extends AbstractWebPage {
 		try {
 			sessionId = params.getSession().getId();
 
-			xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-			xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource, syslogDataSource);
+			ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+			ACSUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource, syslogDataSource);
 
-			if (xaps == null || xapsUnit == null) {
+			if (ACS == null || ACSUnit == null) {
 				throw new Exception("Could not load xaps objects!");
 			}
 			
@@ -97,7 +97,7 @@ public class InspectionPage extends AbstractWebPage {
 				if(up!=null && !up.getValue().equals("N/A")){
 					message = up.getValue();
 					up.setValue("N/A");
-					xapsUnit.addOrChangeUnitParameters(Arrays.asList(new UnitParameter[]{up}), profile);
+					ACSUnit.addOrChangeUnitParameters(Arrays.asList(new UnitParameter[]{up}), profile);
 				}
 			}
 

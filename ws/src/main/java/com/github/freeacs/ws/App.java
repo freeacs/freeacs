@@ -62,8 +62,8 @@ public class App {
 
     @Bean
     ServletRegistrationBean<AxisServlet> axisServlet(@Qualifier("xaps") DataSource xaps, @Qualifier("syslog") DataSource syslog) {
-        XAPSWS_BindingSkeleton.xapsDs = xaps;
-        XAPSWS_BindingSkeleton.syslogDs = syslog;
+        ACSWS_BindingSkeleton.xapsDs = xaps;
+        ACSWS_BindingSkeleton.syslogDs = syslog;
         System.setProperty(EngineConfigurationFactory.SYSTEM_PROPERTY_NAME, com.github.freeacs.ws.axis.EngineConfigurationFactory.class.getName());
         ServletRegistrationBean<AxisServlet> srb = new ServletRegistrationBean<>();
         srb.setServlet(new AxisServlet());

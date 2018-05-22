@@ -18,15 +18,15 @@ import java.util.*;
 public class GetUnitIds {
 	private static final Logger logger = LoggerFactory.getLogger(GetUnitIds.class);
 
-	private XAPS xaps;
-	private XAPSWS xapsWS;
+	private ACS ACS;
+	private ACSWS xapsWS;
 
 	public GetUnitIdsResponse getUnits(GetUnitIdsRequest gur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 			
-			xapsWS = XAPSWSFactory.getXAPSWS(gur.getLogin(), xapsDs,syslogDs);
-			xaps = xapsWS.getXAPS();
-			XAPSUnit xapsUnit = xapsWS.getXAPSUnit(xaps);
+			xapsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs,syslogDs);
+			ACS = xapsWS.getXAPS();
+			ACSUnit ACSUnit = xapsWS.getXAPSUnit(ACS);
 			
 			
 			//			List<Profile> allowedProfileList = validateProfiles(unitWS);
@@ -59,25 +59,25 @@ public class GetUnitIds {
 			boolean useCase3 = unitWS.getParameters() != null && unitWS.getParameters().getParameterArray().getItem().length > 0;
 			if (useCase3) {
 				if (profilesXAPS.size() == 0) {
-					throw XAPSWS.error(logger, "Unittype and profiles are not specified, not possible to execute parameter-search");
+					throw ACSWS.error(logger, "Unittype and profiles are not specified, not possible to execute parameter-search");
 				}
 			}
 
 			/* Input is validated - now execute searches */
 			Map<String, Unit> unitMap = new TreeMap<String, Unit>();
 			if (unitWS.getUnitId() != null) { // Use-case 1
-				Unit unitXAPS = xapsUnit.getUnitById(unitWS.getUnitId());
+				Unit unitXAPS = ACSUnit.getUnitById(unitWS.getUnitId());
 				if (unitXAPS != null)
 					unitMap.put(unitWS.getUnitId(), unitXAPS);
 			} else if (useCase3) {// Use-case 3, expect parameters and unittype
 				List<Parameter> upList = validateParameters(unitWS, profilesXAPS);
-				Map<String, Unit> tmpMap = xapsUnit.getUnits(unittypeXAPS, profilesXAPS, upList, 51);
+				Map<String, Unit> tmpMap = ACSUnit.getUnits(unittypeXAPS, profilesXAPS, upList, 51);
 				for (Unit unitXAPS : tmpMap.values())
-					unitMap.put(unitXAPS.getId(), xapsUnit.getUnitById(unitXAPS.getId()));
+					unitMap.put(unitXAPS.getId(), ACSUnit.getUnitById(unitXAPS.getId()));
 			} else { // Use-case 2
-				Map<String, Unit> tmpMap = xapsUnit.getUnits(unitWS.getSerialNumber(), profilesXAPS, 51);
+				Map<String, Unit> tmpMap = ACSUnit.getUnits(unitWS.getSerialNumber(), profilesXAPS, 51);
 				for (Unit unitXAPS : tmpMap.values())
-					unitMap.put(unitXAPS.getId(), xapsUnit.getUnitById(unitXAPS.getId()));
+					unitMap.put(unitXAPS.getId(), ACSUnit.getUnitById(unitXAPS.getId()));
 			}
 
 			
@@ -116,21 +116,21 @@ public class GetUnitIds {
 		for (Profile p : allowedProfiles) {
 			if (!p.getUnittype().getName().equals(unittype.getName()))
 				// there are more than 1 unittype - indicating no unittype has been specified
-				throw XAPSWS.error(logger, "Cannot specify parameters or SerialNumber without specifying Unittype");
+				throw ACSWS.error(logger, "Cannot specify parameters or SerialNumber without specifying Unittype");
 		}
 		return unittype;
 	}
 
 	private List<Parameter> validateParameters(com.github.freeacs.ws.Unit unitWS, List<Profile> allowedProfiles) throws RemoteException {
 		if (allowedProfiles == null || allowedProfiles.size() == 0)
-			throw XAPSWS.error(logger, "Unittype and profiles are not specified, not possible to make parameter-search");
+			throw ACSWS.error(logger, "Unittype and profiles are not specified, not possible to make parameter-search");
 		List<Parameter> parameters = new ArrayList<Parameter>();
 		if (unitWS.getParameters() != null && unitWS.getParameters().getParameterArray() != null) {
 			Unittype unittype = getUnittypeForParameters(allowedProfiles);
 			for (com.github.freeacs.ws.Parameter pWS : unitWS.getParameters().getParameterArray().getItem()) {
 				UnittypeParameter utp = unittype.getUnittypeParameters().getByName(pWS.getName());
 				if (utp == null)
-					throw XAPSWS.error(logger, "Unittype parameter " + pWS.getName() + " is not found in unittype " + unittype.getName());
+					throw ACSWS.error(logger, "Unittype parameter " + pWS.getName() + " is not found in unittype " + unittype.getName());
 				//				boolean equal = true;
 				ParameterDataType pdt = ParameterDataType.TEXT;
 				Operator op = Operator.EQ;
@@ -141,7 +141,7 @@ public class GetUnitIds {
 						if (opTypeArr.length == 2)
 							pdt = ParameterDataType.getDataType(opTypeArr[1]);
 					} catch (IllegalArgumentException iae) {
-						throw XAPSWS.error(logger, "An error occurred in flag (" + pWS.getFlags() + "): " + iae.getMessage());
+						throw ACSWS.error(logger, "An error occurred in flag (" + pWS.getFlags() + "): " + iae.getMessage());
 					}
 				}
 				Parameter pXAPS = new Parameter(utp, pWS.getValue(), op, pdt);

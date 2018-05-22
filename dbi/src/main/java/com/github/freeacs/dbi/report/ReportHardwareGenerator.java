@@ -29,13 +29,13 @@ public class ReportHardwareGenerator extends ReportGenerator {
 	// Reboot-content: Reboot reason [0x0002]
 	private static Pattern rebootPattern = Pattern.compile(".*Reboot reason \\[.+\\](.+)");
 
-	public ReportHardwareGenerator(DataSource sysCp, DataSource xapsCp, XAPS xaps, String logPrefix, Identity id) {
-		super(sysCp, xapsCp, xaps, logPrefix, id);
+	public ReportHardwareGenerator(DataSource mainDataSource, DataSource syslogDataSource, ACS ACS, String logPrefix, Identity id) {
+		super(mainDataSource, syslogDataSource, ACS, logPrefix, id);
 	}
 
 	public Report<RecordHardware> generateFromReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws SQLException,
 			IOException {
-		Connection xapsConnection = null;
+		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		SQLException sqle = null;
@@ -44,9 +44,9 @@ public class ReportHardwareGenerator extends ReportGenerator {
 			Report<RecordHardware> report = new Report<RecordHardware>(RecordHardware.class, periodType);
 
 			logger.debug(logPrefix + "HardwareReport: Reads from report_hw table from " + start + " to " + end);
-			xapsConnection = xapsCp.getConnection();
+			connection = mainDataSource.getConnection();
 			DynamicStatement ds = selectReportSQL("report_hw", periodType, start, end, uts, prs);
-			ps = ds.makePreparedStatement(xapsConnection);
+			ps = ds.makePreparedStatement(connection);
 			rs = ps.executeQuery();
 			int counter = 0;
 			while (rs.next()) {
@@ -98,8 +98,8 @@ public class ReportHardwareGenerator extends ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (xapsConnection != null) {
-				xapsConnection.close();
+			if (connection != null) {
+				connection.close();
 			}
 		}
 
@@ -112,7 +112,7 @@ public class ReportHardwareGenerator extends ReportGenerator {
 	public Map<String, Report<RecordHardware>> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs, Group group)
 			throws SQLException, IOException {
 		logInfo("HardwareReport", null, uts, prs, start, end);
-		Syslog syslog = new Syslog(sysCp, id);
+		Syslog syslog = new Syslog(syslogDataSource, id);
 		SyslogFilter filter = new SyslogFilter();
 		filter.setFacility(16); // Only messages from device
 		filter.setMessage("^Reboot reason|^HW Memory");
@@ -122,7 +122,7 @@ public class ReportHardwareGenerator extends ReportGenerator {
 		filter.setCollectorTmsEnd(end);
 		filter.setFacilityVersion(swVersion);
 		Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
-		List<SyslogEntry> entries = syslog.read(filter, xaps);
+		List<SyslogEntry> entries = syslog.read(filter, ACS);
 		Map<String, Report<RecordHardware>> unitReportMap = new HashMap<String, Report<RecordHardware>>();
 		for (SyslogEntry entry : entries) {
 			String unitId = entry.getUnitId();
@@ -164,7 +164,7 @@ public class ReportHardwareGenerator extends ReportGenerator {
 			IOException {
 		Report<RecordHardware> report = new Report<RecordHardware>(RecordHardware.class, periodType);
 		logInfo("HardwareReport", unitId, uts, prs, start, end);
-		Syslog syslog = new Syslog(sysCp, id);
+		Syslog syslog = new Syslog(syslogDataSource, id);
 		SyslogFilter filter = new SyslogFilter();
 		filter.setFacility(16); // Only messages from device
 		filter.setMessage("^Reboot reason|^HW Memory");
@@ -176,7 +176,7 @@ public class ReportHardwareGenerator extends ReportGenerator {
 		filter.setCollectorTmsEnd(end);
 		filter.setFacilityVersion(swVersion);
 		Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
-		List<SyslogEntry> entries = syslog.read(filter, xaps);
+		List<SyslogEntry> entries = syslog.read(filter, ACS);
 		for (SyslogEntry entry : entries) {
 			if (group != null && unitsInGroup.get(entry.getUnitId()) == null)
 				continue;

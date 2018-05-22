@@ -136,7 +136,7 @@ public class FileUtil {
 				completions.add("G-" + group.getName());
 			}
 		} else {
-			for (Unittype unittype : session.getXaps().getUnittypes().getUnittypes()) {
+			for (Unittype unittype : session.getACS().getUnittypes().getUnittypes()) {
 				completions.add(unittype.getName());
 			}
 		}

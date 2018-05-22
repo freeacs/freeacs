@@ -83,15 +83,15 @@ public class UnittypeParameters {
 		return "Contains " + nameMap.size() + " unittype parameters";
 	}
 
-	public void addOrChangeUnittypeParameters(List<UnittypeParameter> unittypeParameters, XAPS xaps) throws SQLException {
-		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
+	public void addOrChangeUnittypeParameters(List<UnittypeParameter> unittypeParameters, ACS ACS) throws SQLException {
+		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		for (UnittypeParameter unittypeParameter : unittypeParameters) {
 			if (unittypeParameter.getName().contains(",") || unittypeParameter.getName().contains("\"") || unittypeParameter.getName().contains("'")) {
 				throw new IllegalArgumentException("Cannot use SQL specific characters in parameter name");
 			}
 		}
-		addOrChangeUnittypeParameterImpl(unittypeParameters, unittype, xaps);
+		addOrChangeUnittypeParameterImpl(unittypeParameters, unittype, ACS);
 		displayableNameMap = null;
 		searchableNameMap = null;
 		for (UnittypeParameter unittypeParameter : unittypeParameters) {
@@ -148,17 +148,15 @@ public class UnittypeParameters {
 		return resultMap;
 	}
 
-	public void addOrChangeUnittypeParameter(UnittypeParameter unittypeParameter, XAPS xaps) throws SQLException {
-		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
+	public void addOrChangeUnittypeParameter(UnittypeParameter unittypeParameter, ACS ACS) throws SQLException {
+		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		List<UnittypeParameter> unittypeParameters = new ArrayList<UnittypeParameter>();
 		unittypeParameters.add(unittypeParameter);
-		addOrChangeUnittypeParameters(unittypeParameters, xaps);
+		addOrChangeUnittypeParameters(unittypeParameters, ACS);
 	}
 
-	private void deleteUnittypeParameterValues(UnittypeParameter unittypeParameter, Unittype unittype, Statement s, XAPS xaps) throws SQLException {
-		//		if (!XAPSVersionCheck.valuesSupported)
-		//			return;
+	private void deleteUnittypeParameterValues(UnittypeParameter unittypeParameter, Unittype unittype, Statement s, ACS ACS) throws SQLException {
 		String sql = "DELETE FROM unit_type_param_value WHERE ";
 		sql += "unit_type_param_id = " + unittypeParameter.getId();
 		s.setQueryTimeout(60);
@@ -167,18 +165,18 @@ public class UnittypeParameters {
 		logger.info("Deleted all unittype parameter values for utp:" + unittypeParameter.getName());
 	}
 
-	private void deleteUnittypeParameterImpl(List<UnittypeParameter> unittypeParameters, Unittype unittype, XAPS xaps) throws SQLException {
+	private void deleteUnittypeParameterImpl(List<UnittypeParameter> unittypeParameters, Unittype unittype, ACS ACS) throws SQLException {
 		Statement s = null;
 		String sql = null;
 		boolean wasAutoCommit = false;
-		Connection c = xaps.getDataSource().getConnection();
+		Connection c = ACS.getDataSource().getConnection();
 		wasAutoCommit = c.getAutoCommit();
 		c.setAutoCommit(false);
 		try {
 			for (UnittypeParameter unittypeParameter : unittypeParameters) {
 				s = c.createStatement();
 				if (unittypeParameter.getValues() != null)
-					deleteUnittypeParameterValues(unittypeParameter, unittype, s, xaps);
+					deleteUnittypeParameterValues(unittypeParameter, unittype, s, ACS);
 				sql = "DELETE FROM unit_type_param WHERE ";
 				sql += "unit_type_param_id = " + unittypeParameter.getId();
 				s.setQueryTimeout(60);
@@ -190,8 +188,8 @@ public class UnittypeParameters {
 			}
 			c.commit();
 			c.setAutoCommit(true);
-			if (xaps.getDbi() != null)
-				xaps.getDbi().publishChange(unittype, unittype);
+			if (ACS.getDbi() != null)
+				ACS.getDbi().publishChange(unittype, unittype);
 		} finally {
 			if (s != null)
 				s.close();
@@ -208,18 +206,18 @@ public class UnittypeParameters {
 	 *
 	 * @throws SQLException
 	 */
-	public void deleteUnittypeParameter(UnittypeParameter unittypeParameter, XAPS xaps) throws SQLException {
-		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
+	public void deleteUnittypeParameter(UnittypeParameter unittypeParameter, ACS ACS) throws SQLException {
+		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		List<UnittypeParameter> unittypeParameters = new ArrayList<UnittypeParameter>();
 		unittypeParameters.add(unittypeParameter);
-		deleteUnittypeParameters(unittypeParameters, xaps);
+		deleteUnittypeParameters(unittypeParameters, ACS);
 	}
 
-	public void deleteUnittypeParameters(List<UnittypeParameter> unittypeParameters, XAPS xaps) throws SQLException {
-		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
+	public void deleteUnittypeParameters(List<UnittypeParameter> unittypeParameters, ACS ACS) throws SQLException {
+		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
-		deleteUnittypeParameterImpl(unittypeParameters, unittype, xaps);
+		deleteUnittypeParameterImpl(unittypeParameters, unittype, ACS);
 		for (UnittypeParameter unittypeParameter : unittypeParameters) {
 			resetHasDeviceParameters();
 			nameMap.remove(unittypeParameter.getName());
@@ -232,9 +230,9 @@ public class UnittypeParameters {
 		}
 	}
 
-	private void addOrChangeUnittypeParameterImpl(List<UnittypeParameter> unittypeParameters, Unittype unittype, XAPS xaps) throws SQLException {
+	private void addOrChangeUnittypeParameterImpl(List<UnittypeParameter> unittypeParameters, Unittype unittype, ACS ACS) throws SQLException {
 		boolean wasAutoCommit = false;
-		Connection c = xaps.getDataSource().getConnection();
+		Connection c = ACS.getDataSource().getConnection();
 		wasAutoCommit = c.getAutoCommit();
 		c.setAutoCommit(false);
 		PreparedStatement ps = null;
@@ -273,17 +271,17 @@ public class UnittypeParameters {
 				}
 				if (unittypeParameter.getValues() != null)
 					if (unittypeParameter.getValues().getValues().size() > 0)
-						addOrChangeUnittypeParameterValues(unittypeParameter, unittype, ps, xaps);
+						addOrChangeUnittypeParameterValues(unittypeParameter, unittype, ps, ACS);
 					else
-						deleteUnittypeParameterValues(unittypeParameter, unittype, ps, xaps);
+						deleteUnittypeParameterValues(unittypeParameter, unittype, ps, ACS);
 				//				long tms2 = System.currentTimeMillis();
 				//				logger.debug("addOrChangeUnittypeParameterImpl, insert/update: " + (tms1 - start) + "ms, add/change/delete values: " + (tms2 - tms1) + "ms");
 			}
 			logger.info("Added/changed " + unittypeParameters.size() + " unittype parameters");
 			c.commit();
 			c.setAutoCommit(true);
-			if (xaps.getDbi() != null)
-				xaps.getDbi().publishChange(unittype, unittype);
+			if (ACS.getDbi() != null)
+				ACS.getDbi().publishChange(unittype, unittype);
 		} finally {
 			if (ps != null)
 				ps.close();
@@ -292,9 +290,7 @@ public class UnittypeParameters {
 		}
 	}
 
-	private void addOrChangeUnittypeParameterValues(UnittypeParameter unittypeParameter, Unittype unittype, PreparedStatement s, XAPS xaps) throws SQLException {
-		//		if (!XAPSVersionCheck.valuesSupported)
-		//			return;
+	private void addOrChangeUnittypeParameterValues(UnittypeParameter unittypeParameter, Unittype unittype, PreparedStatement s, ACS ACS) throws SQLException {
 		String sql = null;
 		sql = "DELETE FROM unit_type_param_value WHERE ";
 		sql += "unit_type_param_id = " + unittypeParameter.getId();

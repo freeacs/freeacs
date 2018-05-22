@@ -8,10 +8,10 @@
 		<script src="javascript/jquery.tipTip.js" type="text/javascript"></script>
 		<#include "/meta/tablesorter.ftl" />
 		<script src="javascript/calendar.min.js" type="text/javascript"></script>
-		<script src="javascript/xaps.js" type="text/javascript"></script>
-		<script src="javascript/xaps.legacy.js" type="text/javascript"></script>
-		<script src="javascript/xaps.plugin.tabletree.js" type="text/javascript"></script>
-		<script src="javascript/xaps.plugin.modalpopup.js" type="text/javascript"></script>
-		<script src="javascript/xaps.plugin.iframedialogs.js" type="text/javascript"></script>
-		<script src="javascript/xaps.plugin.cookiecollapser.js" type="text/javascript"></script>
-		<script src="javascript/xaps.module.tabcomplete.js" type="text/javascript"></script>
+		<script src="javascript/ACS.js" type="text/javascript"></script>
+		<script src="javascript/ACS.legacy.js" type="text/javascript"></script>
+		<script src="javascript/ACS.plugin.tabletree.js" type="text/javascript"></script>
+		<script src="javascript/ACS.plugin.modalpopup.js" type="text/javascript"></script>
+		<script src="javascript/ACS.plugin.iframedialogs.js" type="text/javascript"></script>
+		<script src="javascript/ACS.plugin.cookiecollapser.js" type="text/javascript"></script>
+		<script src="javascript/ACS.module.tabcomplete.js" type="text/javascript"></script>

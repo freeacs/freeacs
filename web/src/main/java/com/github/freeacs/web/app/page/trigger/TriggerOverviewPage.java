@@ -1,8 +1,8 @@
 package com.github.freeacs.web.app.page.trigger;
 
+import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.Trigger;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.XAPS;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.InputDataIntegrity;
@@ -50,17 +50,17 @@ public class TriggerOverviewPage extends AbstractWebPage {
 		inputData = (TriggerData) InputDataRetriever.parseInto(new TriggerData(), params);
 		String sessionId = params.getSession().getId();
 
-		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (xaps == null) {
+		ACS ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (ACS == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
 
 		InputDataIntegrity.loadAndStoreSession(params, outputHandler, inputData, inputData.getUnittype(), inputData.getProfile());
 
-		outputHandler.getTemplateMap().put("unittypes", InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps));
+		outputHandler.getTemplateMap().put("unittypes", InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS));
 
-		Unittype unittype = xaps.getUnittype(inputData.getUnittype().getString());
+		Unittype unittype = ACS.getUnittype(inputData.getUnittype().getString());
 
 		if (unittype != null) {
 			triggerHandler = new TriggerHandler(sessionId, inputData, xapsDataSource, syslogDataSource);

@@ -123,9 +123,9 @@ public class SessionData implements SessionDataI {
 	// An object to store data about a download
 	private Download download;
 
-	public SessionData(String id, XAPS xaps) throws SQLException {
+	public SessionData(String id, ACS ACS) throws SQLException {
 		this.id = id;
-		this.dbAccess = new DBAccessSession(xaps);
+		this.dbAccess = new DBAccessSession(ACS);
 		provisioningMessage.setProvProtocol(ProvisioningProtocol.TR069);
 	}
 

@@ -3,9 +3,9 @@ package com.github.freeacs.tr069.methods;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.db.DBAccessSessionTR069;
+import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.Unit;
-import com.github.freeacs.dbi.XAPS;
-import com.github.freeacs.dbi.XAPSUnit;
+import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.tr069.TestCase;
 import com.github.freeacs.dbi.tr069.TestDB;
 import com.github.freeacs.dbi.util.ProvisioningMode;
@@ -56,7 +56,7 @@ public class EMDecision {
 			TestUnit tu = TestUnitCache.get(sessionData.getUnitId());
 			try {
 				if (tu == null) {
-					TestDB testDB = new TestDB(sessionData.getDbAccessSession().getXaps());
+					TestDB testDB = new TestDB(sessionData.getDbAccessSession().getACS());
 					List<TestCase> testCases = testDB.getCompleteTestCases(sessionData.getUnittype(), Util.getTestCaseMethod(unit), Util.getParamFilter(unit), Util.getTagFilter(unit));
 					tu = new TestUnit(sessionData.getUnittype(), sessionData.getUnit(), testCases);
 					TestUnitCache.put(sessionData.getUnitId(), tu);
@@ -133,9 +133,9 @@ public class EMDecision {
 		sessionData.setToDB(toDB);
 		DBAccessSessionTR069.writeUnitParams(sessionData); // queue-parameters - will be written at end-of-session
 		if (!queue) { // execute changes immediately - since otherwise these parameters will be lost (in the event of GPNRes.process())
-			XAPS xaps = reqRes.getSessionData().getDbAccessSession().getXaps();
-			XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
-			xapsUnit.addOrChangeQueuedUnitParameters(sessionData.getUnit());
+			ACS ACS = reqRes.getSessionData().getDbAccessSession().getACS();
+			ACSUnit ACSUnit = DBAccess.getXAPSUnit(ACS);
+			ACSUnit.addOrChangeQueuedUnitParameters(sessionData.getUnit());
 		}
 		sessionData.setToDB(null);
 	}

@@ -52,10 +52,8 @@ public class Unit {
 	 * The unit-parameters will override the profile parameters.
 	 */
 	public Map<String, String> getParameters() {
-		MapWrapper<String> mw = new MapWrapper<String>(XAPS.isStrictOrder());
+		MapWrapper<String> mw = new MapWrapper<String>(ACS.isStrictOrder());
 		Map<String, String> map = mw.getMap();
-		// Map<String, String> map = new TreeMap<String,
-		// String>(XAPS.getComparator());
 		if (profile != null && profile.getProfileParameters() != null) {
 			ProfileParameter[] pparams = profile.getProfileParameters().getProfileParameters();
 			for (int i = 0; pparams != null && i < pparams.length; i++) {
@@ -74,10 +72,8 @@ public class Unit {
 
 	public Map<String, UnitParameter> getUnitParameters() {
 		if (this.unitParameters == null) {
-			MapWrapper<UnitParameter> mw = new MapWrapper<UnitParameter>(XAPS.isStrictOrder());
+			MapWrapper<UnitParameter> mw = new MapWrapper<UnitParameter>(ACS.isStrictOrder());
 			unitParameters = mw.getMap();
-			// unitParameters = new TreeMap<String,
-			// UnitParameter>(XAPS.getComparator());
 		}
 		return unitParameters;
 	}
@@ -222,7 +218,7 @@ public class Unit {
 
 	public Map<String, UnitParameter> getSessionParameters() {
 		if (this.sessionParameters == null) {
-			MapWrapper<UnitParameter> mw = new MapWrapper<UnitParameter>(XAPS.isStrictOrder());
+			MapWrapper<UnitParameter> mw = new MapWrapper<UnitParameter>(ACS.isStrictOrder());
 			sessionParameters = mw.getMap();
 		}
 		return sessionParameters;

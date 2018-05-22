@@ -78,19 +78,17 @@ public class Jobs {
 		}
 	}
 
-	public void addOrChangeJobParameters(List<JobParameter> jobParameters, XAPS xaps) throws SQLException {
-		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
+	public void addOrChangeJobParameters(List<JobParameter> jobParameters, ACS ACS) throws SQLException {
+		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		Connection connection = null;
 		PreparedStatement pp = null;
 		String sql = null;
 		SQLException sqle = null;
-		//		if (!XAPSVersionCheck.jobSupported)
-		//			return;
 		boolean wasAutoCommit = false;
 		try {
 			checkParameters(jobParameters);
-			connection = xaps.getDataSource().getConnection();
+			connection = ACS.getDataSource().getConnection();
 			wasAutoCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
 			for (int i = 0; jobParameters != null && i < jobParameters.size(); i++) {
@@ -134,8 +132,8 @@ public class Jobs {
 				}
 			}
 			connection.commit();
-			if (xaps.getDbi() != null && jobParameters.size() > 0)
-				xaps.getDbi().publishChange(jobParameters.get(0).getJob(), jobParameters.get(0).getJob().getGroup().getUnittype());
+			if (ACS.getDbi() != null && jobParameters.size() > 0)
+				ACS.getDbi().publishChange(jobParameters.get(0).getJob(), jobParameters.get(0).getJob().getGroup().getUnittype());
 		} catch (SQLException sqlex) {
 			connection.rollback();
 			sqle = sqlex;
@@ -151,17 +149,15 @@ public class Jobs {
 
 	}
 
-	public void deleteJobParameters(Job job, XAPS xaps) throws SQLException {
-		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
+	public void deleteJobParameters(Job job, ACS ACS) throws SQLException {
+		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		Connection connection = null;
 		Statement s = null;
 		String sql = null;
 		SQLException sqle = null;
-		//		if (!XAPSVersionCheck.jobSupported)
-		//			return;
 		try {
-			connection = xaps.getDataSource().getConnection();
+			connection = ACS.getDataSource().getConnection();
 			s = connection.createStatement();
 			sql = "DELETE FROM job_param WHERE job_id = " + job.getId();
 			s.setQueryTimeout(60);
@@ -170,8 +166,8 @@ public class Jobs {
 			j.setDefaultParameters(null);
 
 			logger.info("Deleted all job parameters for job " + job.getId());
-			if (xaps.getDbi() != null)
-				xaps.getDbi().publishChange(job, job.getGroup().getUnittype());
+			if (ACS.getDbi() != null)
+				ACS.getDbi().publishChange(job, job.getGroup().getUnittype());
 		} catch (SQLException sqlex) {
 			sqle = sqlex;
 			throw sqle;
@@ -184,18 +180,16 @@ public class Jobs {
 		}
 	}
 
-	public int deleteJobParameters(List<JobParameter> jobParameters, XAPS xaps) throws SQLException {
-		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
+	public int deleteJobParameters(List<JobParameter> jobParameters, ACS ACS) throws SQLException {
+		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		Connection connection = null;
 		Statement s = null;
 		String sql = null;
 		SQLException sqle = null;
-		//		if (!XAPSVersionCheck.jobSupported)
-		//			return 0;
 		boolean wasAutoCommit = false;
 		try {
-			connection = xaps.getDataSource().getConnection();
+			connection = ACS.getDataSource().getConnection();
 			wasAutoCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
 			s = connection.createStatement();
@@ -221,8 +215,8 @@ public class Jobs {
 				}
 			}
 			connection.commit();
-			if (xaps.getDbi() != null && jobParameters.size() > 0)
-				xaps.getDbi().publishChange(jobParameters.get(0).getJob(), jobParameters.get(0).getJob().getGroup().getUnittype());
+			if (ACS.getDbi() != null && jobParameters.size() > 0)
+				ACS.getDbi().publishChange(jobParameters.get(0).getJob(), jobParameters.get(0).getJob().getGroup().getUnittype());
 			return rowsDeleted;
 		} catch (SQLException sqlex) {
 			sqle = sqlex;
@@ -245,17 +239,15 @@ public class Jobs {
 		nameMap.remove(job.getName());
 	}
 
-	public void delete(Job job, XAPS xaps) throws SQLException {
-		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
+	public void delete(Job job, ACS ACS) throws SQLException {
+		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
-		deleteJobParameters(job, xaps);
+		deleteJobParameters(job, ACS);
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;
-		//		if (!XAPSVersionCheck.jobSupported)
-		//			return;
 		try {
-			c = xaps.getDataSource().getConnection();
+			c = ACS.getDataSource().getConnection();
 			String sql = "DELETE FROM job WHERE job_id = ?";
 			pp = c.prepareStatement(sql);
 			pp.setInt(1, job.getId());
@@ -264,8 +256,8 @@ public class Jobs {
 			removeJobFromDataModel(job);
 
 			logger.info("Deleted job " + job.getId());
-			if (xaps.getDbi() != null)
-				xaps.getDbi().publishDelete(job, job.getGroup().getUnittype());
+			if (ACS.getDbi() != null)
+				ACS.getDbi().publishDelete(job, job.getGroup().getUnittype());
 		} catch (SQLException sqlex) {
 			sqle = sqlex;
 			throw sqle;
@@ -311,8 +303,8 @@ public class Jobs {
 		return false;
 	}
 
-	public void add(Job job, XAPS xaps) throws SQLException {
-		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
+	public void add(Job job, ACS ACS) throws SQLException {
+		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		job.setStatus(JobStatus.READY);
 		job.validate();
@@ -323,7 +315,7 @@ public class Jobs {
 		try {
 			if (nameMap.get(job.getName()) != null)
 				throw new IllegalArgumentException("The job name already exists, choose another name");
-			c = xaps.getDataSource().getConnection();
+			c = ACS.getDataSource().getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.setSql("INSERT INTO job (");
 			ds.addSqlAndArguments("job_name, ", job.getName());
@@ -360,10 +352,10 @@ public class Jobs {
 			idMap.put(job.getId(), job);
 			nameMap.put(job.getName(), job);
 
-			updateMandatoryJobParameters(job, xaps);
+			updateMandatoryJobParameters(job, ACS);
 			logger.info("Inserted job " + job.getId());
-			if (xaps.getDbi() != null)
-				xaps.getDbi().publishAdd(job, job.getGroup().getUnittype());
+			if (ACS.getDbi() != null)
+				ACS.getDbi().publishAdd(job, job.getGroup().getUnittype());
 		} catch (SQLException sqlex) {
 			sqle = sqlex;
 			throw sqlex;
@@ -376,78 +368,45 @@ public class Jobs {
 
 	}
 
-	private void updateMandatoryJobParameters(Job job, XAPS xaps) throws SQLException {
+	private void updateMandatoryJobParameters(Job job, ACS ACS) throws SQLException {
 		if (job.getFlags().getType() == JobFlag.JobType.SOFTWARE) {
 			Parameter param = new Parameter(unittype.getUnittypeParameters().getByName(SystemParameters.DESIRED_SOFTWARE_VERSION), job.getFile().getVersion());
 			JobParameter jp = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, param);
 			List<JobParameter> jobParameters = new ArrayList<JobParameter>();
 			jobParameters.add(jp);
-			addOrChangeJobParameters(jobParameters, xaps);
+			addOrChangeJobParameters(jobParameters, ACS);
 		} else if (job.getFlags().getType() == JobFlag.JobType.TR069_SCRIPT) {
-			UnittypeParameter jobUtp = SystemParameters.getTR069ScriptParameter(job.getFile().getTargetName(), SystemParameters.TR069ScriptType.Version, xaps, job.getUnittype());
+			UnittypeParameter jobUtp = SystemParameters.getTR069ScriptParameter(job.getFile().getTargetName(), SystemParameters.TR069ScriptType.Version, ACS, job.getUnittype());
 			Parameter param = new Parameter(jobUtp, job.getFile().getVersion());
 			JobParameter jp = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, param);
 			List<JobParameter> jobParameters = new ArrayList<JobParameter>();
 			jobParameters.add(jp);
-			addOrChangeJobParameters(jobParameters, xaps);
+			addOrChangeJobParameters(jobParameters, ACS);
 		} else if (job.getFlags().getType() == JobFlag.JobType.RESTART) {
 			Parameter param = new Parameter(unittype.getUnittypeParameters().getByName(SystemParameters.RESTART), "1");
 			JobParameter jp = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, param);
 			List<JobParameter> jobParameters = new ArrayList<JobParameter>();
 			jobParameters.add(jp);
-			addOrChangeJobParameters(jobParameters, xaps);
+			addOrChangeJobParameters(jobParameters, ACS);
 		} else if (job.getFlags().getType() == JobFlag.JobType.RESET) {
 			Parameter param = new Parameter(unittype.getUnittypeParameters().getByName(SystemParameters.RESET), "1");
 			JobParameter jp = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, param);
 			List<JobParameter> jobParameters = new ArrayList<JobParameter>();
 			jobParameters.add(jp);
-			addOrChangeJobParameters(jobParameters, xaps);
+			addOrChangeJobParameters(jobParameters, ACS);
 		}
 	}
 
 	/* Decided to skip unit-specific job parameters. Cause extra work/SQL in TR-069 server, has never been used in 5 years. */
-	public Map<String, JobParameter> readJobParameters(Job job, Unit unit, XAPS xaps) throws SQLException {
+	public Map<String, JobParameter> readJobParameters(Job job, Unit unit, ACS ACS) throws SQLException {
 		return job.getDefaultParameters();
-		//		Connection c = null;
-		//		Statement s = null;
-		//		ResultSet rs = null;
-		//		Map<String, JobParameter> jobParams = new TreeMap<String, JobParameter>(job.getDefaultParameters());
-		//		try {
-		//			c = ConnectionProvider.getConnection(xaps.connectionProperties, true);
-		//			s = c.createStatement();
-		//			String sql = "SELECT unit_id, unit_type_param_id, value FROM job_param WHERE job_id = " + job.getId();
-		//			if (unit != null && unit.getId() != null)
-		//				sql += " AND unit_id = '" + unit.getId() + "'";
-		//			s.setQueryTimeout(60);
-		//			rs = s.executeQuery(sql);
-		//
-		//			while (rs.next()) {
-		//				String unitId = rs.getString("unit_id");
-		//				Integer unitTypeParamId = rs.getInt("unit_type_param_id");
-		//				String value = rs.getString("value");
-		//				if (value == null)
-		//					value = "";
-		//				Unittype ut = job.getGroup().getUnittype();
-		//				UnittypeParameter utp = ut.getUnittypeParameters().getById(unitTypeParamId);
-		//				JobParameter jp = new JobParameter(job, unitId, new Parameter(utp, value));
-		//				jobParams.put(utp.getName(), jp);
-		//			}
-		//		} finally {
-		//			if (rs != null)
-		//				rs.close();
-		//			if (s != null)
-		//				s.close();
-		//			if (c != null)
-		//				ConnectionProvider.returnConnection(c, null);
-		//		}
-		//		return jobParams;
 	}
 
 	/*
 	 * This method can't publish the same way all other add/change/delete methods
-	 * do in xAPS. The reason is simply that this method may be run very often, 
-	 * maybe every second. Thus we could end up demanding all modules in xAPS to
-	 * reload the whole XAPS object every second. Even if we modified publish of
+	 * do in Freeacs. The reason is simply that this method may be run very often,
+	 * maybe every second. Thus we could end up demanding all modules in Freeacs to
+	 * reload the whole Freeacs object every second. Even if we modified publish of
 	 * Job-object to only read the job-table, that could still be a significant load.
 	 * 
 	 * The conclusion: Prepare a message in this publish which gives the information
@@ -455,14 +414,12 @@ public class Jobs {
 	 * job table. We make an effort to only send the data if there really is a change.
 	 * That will keep the number of message and data and load and the very minimum.
 	 */
-	public void changeFromCore(Job job, String publishMsg, XAPS xaps) throws SQLException {
+	public void changeFromCore(Job job, String publishMsg, ACS ACS) throws SQLException {
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;
-		//		if (!XAPSVersionCheck.jobSupported)
-		//			return;
 		try {
-			c = xaps.getDataSource().getConnection();
+			c = ACS.getDataSource().getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSql("UPDATE job SET ");
 			ds.addSqlAndArguments("completed_had_failure = ?, ", job.getCompletedHadFailures());
@@ -481,8 +438,8 @@ public class Jobs {
 			message += job.getCompletedHadFailures() + "," + job.getUnconfirmedFailed() + "," + job.getConfirmedFailed() + ")";
 
 			logger.info(message);
-			if (publishMsg.length() > 0 && xaps.getDbi() != null)
-				xaps.getDbi().publishJobCounters(job.getId(), publishMsg);
+			if (publishMsg.length() > 0 && ACS.getDbi() != null)
+				ACS.getDbi().publishJobCounters(job.getId(), publishMsg);
 		} catch (SQLException sqlex) {
 			sqle = sqlex;
 			throw sqle;
@@ -502,14 +459,14 @@ public class Jobs {
 	//		return false;
 	//	}
 
-	public void changeStatus(Job job, XAPS xaps) throws SQLException {
-		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
+	public void changeStatus(Job job, ACS ACS) throws SQLException {
+		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;
 		try {
-			c = xaps.getDataSource().getConnection();
+			c = ACS.getDataSource().getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSql("UPDATE job SET ");
 			if (job.getStatus() == JobStatus.STARTED && job.getStartTimestamp() == null) {
@@ -543,8 +500,8 @@ public class Jobs {
 			if (rowsUpdated > 0) {
 
 				logger.info("Updated job " + job.getId() + " with status = " + job.getStatus());
-				if (xaps.getDbi() != null)
-					xaps.getDbi().publishChange(job, job.getGroup().getUnittype());
+				if (ACS.getDbi() != null)
+					ACS.getDbi().publishChange(job, job.getGroup().getUnittype());
 			} else {
 				String msg = "The job was not updated, most likely because the status change was not allowed ";
 				msg += "(but could also happen because the job was deleted).";
@@ -568,15 +525,15 @@ public class Jobs {
 	 * since they are updated by an other method (and another agent). It's important to separate the various
 	 * updates methods since the agents are independent of each other.
 	 */
-	public int changeFromUI(Job job, XAPS xaps) throws SQLException {
-		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
+	public int changeFromUI(Job job, ACS ACS) throws SQLException {
+		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		job.validate();
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;
 		try {
-			c = xaps.getDataSource().getConnection();
+			c = ACS.getDataSource().getConnection();
 			if (isDependencyLoop(job, job.getDependency()))
 				throw new IllegalArgumentException("Job " + job.getId() + " cannot depend upon job " + job.getDependency().getId() + " since that creates a loop");
 			DynamicStatement ds = new DynamicStatement();
@@ -617,10 +574,10 @@ public class Jobs {
 			ps.close();
 			if (rowsUpdated > 0) {
 
-				updateMandatoryJobParameters(job, xaps);
+				updateMandatoryJobParameters(job, ACS);
 				logger.info("Updated job " + job.getId() + " with type/description/status/rules");
-				if (xaps.getDbi() != null)
-					xaps.getDbi().publishChange(job, job.getGroup().getUnittype());
+				if (ACS.getDbi() != null)
+					ACS.getDbi().publishChange(job, job.getGroup().getUnittype());
 			} else {
 				String msg = "The job was not updated, most likely because status was " + JobStatus.COMPLETED;
 				msg += " or because the job was recently removed from the system";
@@ -636,20 +593,20 @@ public class Jobs {
 		}
 	}
 
-	protected static void refreshJob(Integer jobId, XAPS xaps) throws SQLException {
+	protected static void refreshJob(Integer jobId, ACS ACS) throws SQLException {
 		Connection c = null;
 		Statement s = null;
 		ResultSet rs = null;
 		SQLException sqle = null;
 		try {
-			c = xaps.getDataSource().getConnection();
+			c = ACS.getDataSource().getConnection();
 			s = c.createStatement();
 			s.setQueryTimeout(60);
 			rs = s.executeQuery("SELECT * FROM job j, group_ g, unit_type u WHERE j.group_id = g.group_id AND g.unit_type_id = u.unit_type_id AND j.job_id = " + jobId);
 			Unittype unittype = null;
 			Job newJob = null;
 			if (rs.next()) {
-				unittype = xaps.getUnittype(rs.getInt("u.unit_type_id"));
+				unittype = ACS.getUnittype(rs.getInt("u.unit_type_id"));
 				if (unittype == null)
 					return; // The unittype is not accessible for this user
 				Job oldJob = unittype.getJobs().getById(rs.getInt("job_id"));
@@ -715,7 +672,7 @@ public class Jobs {
 				unittype.getJobs().getIdMap().put(newJob.getId(), newJob);
 				unittype.getJobs().getNameMap().put(newJob.getName(), newJob);
 			} else {
-				for (Unittype ut : xaps.getUnittypes().getUnittypes()) {
+				for (Unittype ut : ACS.getUnittypes().getUnittypes()) {
 					Job j = ut.getJobs().getIdMap().remove(jobId);
 					if (j != null) // should always be true - but for good measure...
 						ut.getJobs().getNameMap().remove(j.getName());
@@ -730,8 +687,6 @@ public class Jobs {
 	}
 
 	public Job[] getGroupJobs(Integer groupId) {
-		//		if (!XAPSVersionCheck.jobSupported)
-		//			return new Job[0];
 		List<Job> groupJobs = new ArrayList<Job>();
 		for (Job job : idMap.values()) {
 			if (job.getGroup().getId().intValue() == groupId.intValue())
@@ -741,8 +696,6 @@ public class Jobs {
 	}
 
 	public boolean isGroupInvolvedInJob(Group group) throws Exception {
-		//		if (!XAPSVersionCheck.jobSupported)
-		//			return false;
 		List<Group> childrenGroups = group.getAllChildren();
 		childrenGroups.add(group);
 		for (Job j : idMap.values()) {

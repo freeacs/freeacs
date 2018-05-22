@@ -7,8 +7,8 @@
 		<script src="javascript/jquery-ui-1.8.7.custom.min.js" type="text/javascript"></script>
 		<#include "/meta/tablesorter.ftl" />
 		<script src="javascript/jquery.jqote.js" type="text/javascript"></script>
-		<script src="javascript/xaps.js"></script>
-		<script src="javascript/xaps.legacy.js"></script>
+		<script src="javascript/ACS.js"></script>
+		<script src="javascript/ACS.legacy.js"></script>
 		<script type="text/javascript">
 			xAPS.initModule({});
 		</script>

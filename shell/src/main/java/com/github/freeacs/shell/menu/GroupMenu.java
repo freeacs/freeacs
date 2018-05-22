@@ -66,7 +66,7 @@ public class GroupMenu {
 					gp.setParameter(param);
 					action = "changed";
 				}
-				group.getGroupParameters().addOrChangeGroupParameter(gp, session.getXaps());
+				group.getGroupParameters().addOrChangeGroupParameter(gp, session.getACS());
 				session.println("[" + session.getCounter() + "] The group parameter is " + action);
 				session.incCounter();
 			}
@@ -80,7 +80,7 @@ public class GroupMenu {
 		GroupParameters groupParams = group.getGroupParameters();
 		GroupParameter gp = groupParams.getByName(unittypeParameterName);
 		if (gp != null) {
-			groupParams.deleteGroupParameter(gp, session.getXaps());
+			groupParams.deleteGroupParameter(gp, session.getACS());
 			session.println("[" + session.getCounter() + "] The group parameter is deleted");
 			session.incCounter();
 		} else {
@@ -121,7 +121,7 @@ public class GroupMenu {
 
 		GroupParameter[] gpArr = group.getGroupParameters().getGroupParameters();
 		for (GroupParameter gp : gpArr) {
-			group.getGroupParameters().deleteGroupParameter(gp, session.getXaps());
+			group.getGroupParameters().deleteGroupParameter(gp, session.getACS());
 		}
 		session.println("[" + session.getCounter() + "] The group parameters are deleted");
 		session.incCounter();
@@ -138,9 +138,9 @@ public class GroupMenu {
 				tmp = null;
 		}
 		Profile profile = context.getGroup().getTopParent().getProfile();
-		int units = session.getXapsUnit().getUnitCount(context.getGroup());
+		int units = session.getACSUnit().getUnitCount(context.getGroup());
 		context.getGroup().setCount(units);
-		context.getUnittype().getGroups().addOrChangeGroup(context.getGroup(), session.getXaps());
+		context.getUnittype().getGroups().addOrChangeGroup(context.getGroup(), session.getACS());
 
 		oh.setHeading("Details:\n");
 		for (int i = 0; i < groups.size(); i++) {
@@ -172,7 +172,7 @@ public class GroupMenu {
 	private void count(String[] args, OutputHandler oh) throws Exception {
 		Listing listing = oh.getListing();
 		listing.setHeading(new Heading(new Line("Unit-count")));
-		int count = session.getXapsUnit().getUnitCount(context.getGroup());
+		int count = session.getACSUnit().getUnitCount(context.getGroup());
 		listing.addLine(new Line("" + count));
 		context.getGroup().setCount(count);
 	}
@@ -186,12 +186,12 @@ public class GroupMenu {
 				headingLine.addValue(shortName);
 		}
 		listing.setHeading(new Heading(headingLine), true);
-		Map<String, Unit> units = session.getXapsUnit().getUnits(context.getGroup());
+		Map<String, Unit> units = session.getACSUnit().getUnits(context.getGroup());
 		for (String unitId : units.keySet()) {
 			Line line = new Line(unitId);
 			if (oh.getCommand().getOptions().containsKey(Option.OPTION_LIST_ALL_COLUMNS)) {
 				Map<String, String> displayableMap = context.getUnittype().getUnittypeParameters().getDisplayableNameMap();
-				Unit unit = session.getXapsUnit().getUnitById(unitId);
+				Unit unit = session.getACSUnit().getUnitById(unitId);
 				for (String utpName : displayableMap.keySet()) {
 					String value = unit.getParameters().get(utpName);
 					if (value == null)

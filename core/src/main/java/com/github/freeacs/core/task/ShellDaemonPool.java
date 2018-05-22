@@ -1,8 +1,8 @@
 package com.github.freeacs.core.task;
 
 import com.github.freeacs.core.Properties;
-import com.github.freeacs.shell.XAPSShell;
-import com.github.freeacs.shell.XAPSShellDaemon;
+import com.github.freeacs.shell.FreeacsShell;
+import com.github.freeacs.shell.FreeacsShellDaemon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,23 +25,23 @@ public class ShellDaemonPool {
 
 	private static Logger logger = LoggerFactory.getLogger(ShellDaemonPool.class);
 
-	private static Map<String, List<XAPSShellDaemon>> shellDaemonPoolMap = new HashMap<String, List<XAPSShellDaemon>>();
+	private static Map<String, List<FreeacsShellDaemon>> shellDaemonPoolMap = new HashMap<String, List<FreeacsShellDaemon>>();
 
-	private static XAPSShellDaemon createNewShellDaemon(DataSource xapsCp, DataSource syslogCp, int index, String fusionUser) throws Throwable {
-		XAPSShellDaemon xapsshellDaemon = new XAPSShellDaemon(xapsCp, syslogCp, fusionUser);
-		xapsshellDaemon.setIndex(index);
-		XAPSShell xapsShell = xapsshellDaemon.getXapsShell();
+	private static FreeacsShellDaemon createNewShellDaemon(DataSource mainDataSource, DataSource syslogDataSource, int index, String fusionUser) throws Throwable {
+		FreeacsShellDaemon freeacsShellDaemon = new FreeacsShellDaemon(mainDataSource, syslogDataSource, fusionUser);
+		freeacsShellDaemon.setIndex(index);
+		FreeacsShell freeacsShell = freeacsShellDaemon.getFreeacsShell();
 		try {
-			xapsShell.setPrinter(new PrintWriter(new FileWriter("fusion-core-shell-daemon-for-" + fusionUser + "-" + index + ".log")));
+			freeacsShell.setPrinter(new PrintWriter(new FileWriter("fusion-core-shell-daemon-for-" + fusionUser + "-" + index + ".log")));
 		} catch (IOException e) {
-			logger.error("ScriptExecutor: Cannot log xaps-shell output til fusion-core-shell-daemon-for-" + fusionUser + "-" + index + ".log file", e);
+			logger.error("ScriptExecutor: Cannot log freeacs-shell output til fusion-core-shell-daemon-for-" + fusionUser + "-" + index + ".log file", e);
 		}
-		Thread xapsShellThread = new Thread(xapsshellDaemon);
-		xapsShellThread.setName("Core Shell Daemon " + index);
-		xapsShellThread.setDaemon(true);
-		xapsShellThread.start();
-		while (!xapsshellDaemon.isInitialized()) {
-			List<Throwable> throwables = xapsshellDaemon.getAndResetThrowables();
+		Thread thread = new Thread(freeacsShellDaemon);
+		thread.setName("Core Shell Daemon " + index);
+		thread.setDaemon(true);
+		thread.start();
+		while (!freeacsShellDaemon.isInitialized()) {
+			List<Throwable> throwables = freeacsShellDaemon.getAndResetThrowables();
 			if (throwables != null && throwables.size() > 0) {
 				throw throwables.get(0);
 			}
@@ -52,35 +52,35 @@ public class ShellDaemonPool {
 				e.printStackTrace();
 			}
 		}
-		return xapsshellDaemon;
+		return freeacsShellDaemon;
 	}
 
-	private static List<XAPSShellDaemon> getShellDaemonPool(String fusionUser) {
+	private static List<FreeacsShellDaemon> getShellDaemonPool(String fusionUser) {
 		return shellDaemonPoolMap.computeIfAbsent(fusionUser, k -> new ArrayList<>());
 	}
 
-	public static synchronized XAPSShellDaemon getShellDaemon(DataSource xapsCp, DataSource syslogCp, String fusionUser) throws Throwable {
-		List<XAPSShellDaemon> shellDaemonPool = getShellDaemonPool(fusionUser);
+	public static synchronized FreeacsShellDaemon getShellDaemon(DataSource mainDataSource, DataSource syslogDataSource, String fusionUser) throws Throwable {
+		List<FreeacsShellDaemon> shellDaemonPool = getShellDaemonPool(fusionUser);
 		int poolsize = Properties.SHELL_SCRIPT_POOL_SIZE;
-		XAPSShellDaemon xapsshellDaemon = null;
+		FreeacsShellDaemon freeacsShellDaemon = null;
 		// Check if any shell daemon is available. If not create a new one within poolsize-limit
 		for (int i = 0; i < poolsize; i++) {
 			if (shellDaemonPool.size() > i) {
-				xapsshellDaemon = shellDaemonPool.get(i);
-				if (xapsshellDaemon.isIdle()) {
+				freeacsShellDaemon = shellDaemonPool.get(i);
+				if (freeacsShellDaemon.isIdle()) {
 					break;
 				} else {
-					xapsshellDaemon = null;
+					freeacsShellDaemon = null;
 					continue;
 				}
 			} else {
-				xapsshellDaemon = createNewShellDaemon(xapsCp, syslogCp, i, fusionUser);
-				shellDaemonPool.add(xapsshellDaemon);
+				freeacsShellDaemon = createNewShellDaemon(mainDataSource, syslogDataSource, i, fusionUser);
+				shellDaemonPool.add(freeacsShellDaemon);
 				break;
 			}
 		}
-		if (xapsshellDaemon != null)
-			xapsshellDaemon.setIdle(false);
-		return xapsshellDaemon;
+		if (freeacsShellDaemon != null)
+			freeacsShellDaemon.setIdle(false);
+		return freeacsShellDaemon;
 	}
 }

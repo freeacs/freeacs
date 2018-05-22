@@ -38,7 +38,7 @@ public class DBAccess {
 	}
 
 	public synchronized DBI getDBI() throws SQLException {
-		XAPS.setStrictOrder(false);
+		ACS.setStrictOrder(false);
 		if (dbi == null) {
 			Syslog syslog = getSyslog();
 			dbi = new DBI(Integer.MAX_VALUE, getXapsDataSource(), syslog);
@@ -58,8 +58,8 @@ public class DBAccess {
 		throw (RuntimeException) t;
 	}
 
-	public static XAPSUnit getXAPSUnit(XAPS xaps) throws SQLException {
-		return new XAPSUnit(xaps.getDataSource(), xaps, xaps.getSyslog());
+	public static ACSUnit getXAPSUnit(ACS ACS) throws SQLException {
+		return new ACSUnit(ACS.getDataSource(), ACS, ACS.getSyslog());
 	}
 
 

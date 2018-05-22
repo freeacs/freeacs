@@ -41,19 +41,19 @@ public class Groups {
 		return "Contains " + nameMap.size() + " groups";
 	}
 
-	protected static void checkPermission(Group group, XAPS xaps) {
+	protected static void checkPermission(Group group, ACS ACS) {
 		if (group.getTopParent().getProfile() == null) {
-			if (!xaps.getUser().isUnittypeAdmin(group.getUnittype().getId()))
+			if (!ACS.getUser().isUnittypeAdmin(group.getUnittype().getId()))
 				throw new IllegalArgumentException("Not allowed action for this user");
 		} else {
-			if (!xaps.getUser().isProfileAdmin(group.getUnittype().getId(), group.getTopParent().getProfile().getId()))
+			if (!ACS.getUser().isProfileAdmin(group.getUnittype().getId(), group.getTopParent().getProfile().getId()))
 				throw new IllegalArgumentException("Not allowed action for this user");
 		}
 	}
 
-	public void addOrChangeGroup(Group group, XAPS xaps) throws SQLException {
-		checkPermission(group, xaps);
-		addOrChangeGroupImpl(group, unittype, xaps);
+	public void addOrChangeGroup(Group group, ACS ACS) throws SQLException {
+		checkPermission(group, ACS);
+		addOrChangeGroupImpl(group, unittype, ACS);
 		group.setUnittype(unittype);
 		nameMap.put(group.getName(), group);
 		idMap.put(group.getId(), group);
@@ -75,7 +75,7 @@ public class Groups {
 	}
 
 	/* only used to refresh the cache, used from DBI */
-	protected static void refreshGroupParameter(Group group, XAPS xaps, Connection c) throws SQLException {
+	protected static void refreshGroupParameter(Group group, ACS ACS, Connection c) throws SQLException {
 		Statement s = null;
 		ResultSet rs = null;
 		String sql = null;
@@ -99,16 +99,9 @@ public class Groups {
 				Parameter.ParameterDataType pdt = Parameter.ParameterDataType.TEXT;
 				Parameter.Operator op = Parameter.Operator.EQ;
 				Integer groupParamId = null;
-				//				if (XAPSVersionCheck.groupParamTypeSupported) {
 				groupParamId = rs.getInt("id");
 				op = Parameter.Operator.getOperator(rs.getString("operator"));
 				pdt = Parameter.ParameterDataType.getDataType(rs.getString("data_type"));
-				//				} else {
-				//					String isEqualStr = rs.getString("is_equal");
-				//					if (isEqualStr != null && isEqualStr.equals("0"))
-				//						op = Operator.NE;
-				//					groupParamId = utp.getId();
-				//				}
 				groupParamIdSet.add(groupParamId);
 				Parameter parameter = new Parameter(utp, value, op, pdt);
 				GroupParameter groupParameter = new GroupParameter(parameter, group);
@@ -132,10 +125,10 @@ public class Groups {
 	}
 
 	/* only used to refresh the cache, used from DBI */
-	protected static void refreshGroup(Integer groupId, XAPS xaps) throws SQLException {
+	protected static void refreshGroup(Integer groupId, ACS ACS) throws SQLException {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
-		Connection c = xaps.getDataSource().getConnection();
+		Connection c = ACS.getDataSource().getConnection();
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("SELECT unit_type_id, group_name, description, parent_group_id, profile_id, count FROM group_ WHERE group_id = ?", groupId);
@@ -143,7 +136,7 @@ public class Groups {
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				//				boolean makeNewGroup = false;
-				Unittype unittype = xaps.getUnittype(rs.getInt(1));
+				Unittype unittype = ACS.getUnittype(rs.getInt(1));
 				if (unittype == null)
 					return; // The unittype is not accessible for this user
 				Group group = unittype.getGroups().getById(groupId);
@@ -163,7 +156,7 @@ public class Groups {
 				group.setProfile(unittype.getProfiles().getById(rs.getInt("profile_id")));
 				group.setCount(rs.getInt("count"));
 				group.setUnittype(unittype);
-				refreshGroupParameter(group, xaps, c);
+				refreshGroupParameter(group, ACS, c);
 				logger.debug("Refreshed group " + group);
 			}
 		} finally {
@@ -175,10 +168,10 @@ public class Groups {
 		}
 	}
 
-	private void deleteGroupImpl(Unittype unittype, Group group, XAPS xaps) throws SQLException {
+	private void deleteGroupImpl(Unittype unittype, Group group, ACS ACS) throws SQLException {
 		PreparedStatement s = null;
 		String sql = null;
-		Connection c = xaps.getDataSource().getConnection();
+		Connection c = ACS.getDataSource().getConnection();
 		try {
 			sql = "UPDATE group_ SET parent_group_id = ?, profile_id = ? WHERE parent_group_id = ?";
 			s = c.prepareStatement(sql);
@@ -199,8 +192,8 @@ public class Groups {
 			s.setQueryTimeout(60);
 			s.executeUpdate(sql);
 			logger.info("Deleted group " + group);
-			if (xaps.getDbi() != null)
-				xaps.getDbi().publishDelete(group, group.getUnittype());
+			if (ACS.getDbi() != null)
+				ACS.getDbi().publishDelete(group, group.getUnittype());
 		} finally {
 			if (s != null)
 				s.close();
@@ -215,12 +208,12 @@ public class Groups {
 	 *
 	 * @throws SQLException 
 	 */
-	public void deleteGroup(Group group, XAPS xaps) throws SQLException {
-		checkPermission(group, xaps);
+	public void deleteGroup(Group group, ACS ACS) throws SQLException {
+		checkPermission(group, ACS);
 		for (GroupParameter gp : group.getGroupParameters().getGroupParameters()) {
-			group.getGroupParameters().deleteGroupParameter(gp, xaps);
+			group.getGroupParameters().deleteGroupParameter(gp, ACS);
 		}
-		deleteGroupImpl(unittype, group, xaps);
+		deleteGroupImpl(unittype, group, ACS);
 		removeGroupFromDataModel(group);
 	}
 
@@ -242,11 +235,11 @@ public class Groups {
 		return unittype;
 	}
 
-	private void addOrChangeGroupImpl(Group group, Unittype unittype, XAPS xaps) throws SQLException {
+	private void addOrChangeGroupImpl(Group group, Unittype unittype, ACS ACS) throws SQLException {
 		PreparedStatement s = null;
 		if (group.getParent() != null && group.getId() == null)
-			addOrChangeGroup(group.getParent(), xaps);
-		Connection c = xaps.getDataSource().getConnection();
+			addOrChangeGroup(group.getParent(), ACS);
+		Connection c = ACS.getDataSource().getConnection();
 		try {
 			if (group.getId() == null) {
 				DynamicStatement ds = new DynamicStatement();
@@ -268,8 +261,8 @@ public class Groups {
 					group.setId(gk.getInt(1));
 				s.close();
 				logger.info("Inserted group " + group.getName());
-				if (xaps.getDbi() != null)
-					xaps.getDbi().publishAdd(group, group.getUnittype());
+				if (ACS.getDbi() != null)
+					ACS.getDbi().publishAdd(group, group.getUnittype());
 			} else {
 				DynamicStatement ds = new DynamicStatement();
 				ds.addSqlAndArguments("UPDATE group_ SET group_name = ?, ", group.getName());
@@ -290,8 +283,8 @@ public class Groups {
 				ps.executeUpdate();
 
 				logger.info("Updated group " + group.getName());
-				if (xaps.getDbi() != null)
-					xaps.getDbi().publishChange(group, group.getUnittype());
+				if (ACS.getDbi() != null)
+					ACS.getDbi().publishChange(group, group.getUnittype());
 			}
 		} finally {
 			if (s != null)

@@ -1,7 +1,7 @@
 package com.github.freeacs.web.app.page.unittype;
 
+import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.XAPS;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.InputDataIntegrity;
@@ -42,14 +42,14 @@ public class UnittypeOverviewPage extends AbstractWebPage {
 
 		String sessionId = params.getSession().getId();
 
-		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (xaps == null) {
+		ACS ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (ACS == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
 		InputDataIntegrity.loadAndStoreSession(params, outputHandler, inputData, inputData.getUnittype(), inputData.getProfile(), inputData.getUnit());
 
-		List<Unittype> unittypes = Arrays.asList(xaps.getUnittypes().getUnittypes());
+		List<Unittype> unittypes = Arrays.asList(ACS.getUnittypes().getUnittypes());
 		outputHandler.getTemplateMap().put("unittypes", unittypes);
 		outputHandler.getTemplateMap().put("urltodetails", Page.UNITTYPE.getUrl());
 		outputHandler.setTemplatePath("unit-type/list.ftl");

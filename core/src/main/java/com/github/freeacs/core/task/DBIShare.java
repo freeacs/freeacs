@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 
 /**
- * You can extend DBIShare if, and only if, you do not manipulate the contents of the xAPS object. 
+ * You can extend DBIShare if, and only if, you do not manipulate the contents of the Freeacs object.
  * Then you can share the same DBI object - and reduce the load on the system.
  * @author Morten
  *
@@ -17,8 +17,8 @@ import java.sql.SQLException;
  */
 public abstract class DBIShare implements Task {
 
-	private DataSource xapsCp;
-	private DataSource sysCp;
+	private final DataSource mainDataSource;
+	private final DataSource syslogDataSource;
 
 	private static Users users;
 	private static DBI dbi;
@@ -31,34 +31,34 @@ public abstract class DBIShare implements Task {
 
 	private Throwable throwable;
 
-	public DBIShare(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException {
-		this.xapsCp = xapsCp;
-		this.sysCp = sysCp;
+	public DBIShare(String taskName, DataSource mainDataSource, DataSource syslogDataSource) throws SQLException {
+		this.mainDataSource = mainDataSource;
+		this.syslogDataSource = syslogDataSource;
 		this.taskName = taskName;
 		if (users == null)
-			users = new Users(xapsCp);
+			users = new Users(this.mainDataSource);
 		if (id == null)
 			id = new Identity(SyslogConstants.FACILITY_CORE, CoreServlet.version, users.getUnprotected(Users.USER_ADMIN));
 		if (dbi == null) {
-			syslog = new Syslog(sysCp, id);
-			dbi = new DBI(Integer.MAX_VALUE, xapsCp, syslog);
+			syslog = new Syslog(this.syslogDataSource, id);
+			dbi = new DBI(Integer.MAX_VALUE, this.mainDataSource, syslog);
 		}
 	}
 
-	protected XAPS getLatestXAPS() {
-		return dbi.getXaps();
+	protected ACS getLatestFreeacs() {
+		return dbi.getACS();
 	}
 
-	protected DataSource getSysCp() {
-		return sysCp;
+	protected DataSource getSyslogDataSource() {
+		return syslogDataSource;
 	}
 
 	protected Identity getIdentity() {
 		return syslog.getIdentity();
 	}
 
-	protected DataSource getXapsCp() {
-		return xapsCp;
+	protected DataSource getMainDataSource() {
+		return mainDataSource;
 	}
 
 	protected long getLaunchTms() {

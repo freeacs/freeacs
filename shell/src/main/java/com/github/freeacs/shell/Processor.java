@@ -76,7 +76,7 @@ public class Processor {
 				context.resetToNull();
 			} else if (ce.getType().equals(ContextElement.TYPE_UNITTYPE)) {
 				String ceName = ce.getStringToSubstitute();
-				Unittype unittype = session.getXaps().getUnittype(ceName);
+				Unittype unittype = session.getACS().getUnittype(ceName);
 				if (unittype == null)
 					throw makeContextSwitchException(ce);
 				context.resetToNull();
@@ -104,7 +104,7 @@ public class Processor {
 				Profile profile = context.getProfile();
 				if (profile == null)
 					throw makeContextSwitchException(ce);
-				Unit unit = session.getXapsUnit().getUnitById(ceName, unittype, profile);
+				Unit unit = session.getACSUnit().getUnitById(ceName, unittype, profile);
 				if (unit == null)
 					throw new IllegalArgumentException("The context switch to " + ce + " was not possible");
 				if (context.getGroup() != null)
@@ -401,14 +401,14 @@ public class Processor {
 					script.addScriptLine(getDaemonCommand()); // In Daemon-mode, wait until more input arrives
 				else if (session.getMode() == SessionMode.INTERACTIVE) {
 					echo.printInteractiveMode();
-					BufferedReader br = session.getXapsShell().getReader(); // In interactive-mode, wait for keyboard-input
+					BufferedReader br = session.getFreeacsShell().getReader(); // In interactive-mode, wait for keyboard-input
 					script.addScriptLine(br.readLine());
 					echo.setFromKeyboard(true); // set keyboard flag
 				}
 			}
-			if (session.getDbi() != null && session.getDbi().isXapsUpdated()) {
-				session.setXaps(session.getDbi().getXaps());
-				session.getContext().resetXAPS(session.getXaps());
+			if (session.getDbi() != null && session.getDbi().isFreeacsUpdated()) {
+				session.setACS(session.getDbi().getACS());
+				session.getContext().resetXAPS(session.getACS());
 				session.println("# XAPS data was refreshed due to changes by another XAPS module");
 			}
 			String input = script.getNextScriptLine();

@@ -6,7 +6,7 @@ import com.github.freeacs.dbi.ScriptExecutions;
 import com.github.freeacs.dbi.Users;
 import com.github.freeacs.shell.Processor;
 import com.github.freeacs.shell.Session;
-import com.github.freeacs.shell.XAPSShellDaemon;
+import com.github.freeacs.shell.FreeacsShellDaemon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,12 +20,12 @@ public class ScriptExecutor extends DBIShare {
 	public static class ScriptDaemonRunnable implements Runnable {
 
 		private ScriptExecution se;
-		private XAPSShellDaemon xapsshellDaemon;
+		private FreeacsShellDaemon freeacsShellDaemon;
 		private ScriptExecutions executions;
 		private static Logger daemonLogger = LoggerFactory.getLogger("ShellDaemon");
 
-		public ScriptDaemonRunnable(ScriptExecutions executions, ScriptExecution scriptExecution, XAPSShellDaemon xapsshellDaemon) {
-			this.xapsshellDaemon = xapsshellDaemon;
+		public ScriptDaemonRunnable(ScriptExecutions executions, ScriptExecution scriptExecution, FreeacsShellDaemon freeacsShellDaemon) {
+			this.freeacsShellDaemon = freeacsShellDaemon;
 			this.se = scriptExecution;
 			this.executions = executions;
 		}
@@ -33,9 +33,9 @@ public class ScriptExecutor extends DBIShare {
 		@Override
 		public void run() {
 			try {
-				Session session = xapsshellDaemon.getXapsShell().getSession();
+				Session session = freeacsShellDaemon.getFreeacsShell().getSession();
 				Processor proc = session.getProcessor();
-				String logPrefix = "ScriptExecutor: " + session.getFusionUser() + "-" + xapsshellDaemon.getIndex() + ":  ";
+				String logPrefix = "ScriptExecutor: " + session.getFusionUser() + "-" + freeacsShellDaemon.getIndex() + ":  ";
 
 				String name = se.getScriptFile().getName();
 				String command = "call \"" + name + "\" " + se.getArguments();
@@ -44,25 +44,25 @@ public class ScriptExecutor extends DBIShare {
 				proc.setLogger(daemonLogger);
 				proc.setLogPrefix(logPrefix);
 				session.getContext().setUnittype(se.getUnittype());
-				xapsshellDaemon.addToRunList("var initial_tms \"new Date().toString()\"");
-				xapsshellDaemon.addToRunList("echo ${initial_tms}");
-				xapsshellDaemon.addToRunList(command);
-				xapsshellDaemon.addToRunList("listvars | delvar"); // Cleanup of state
+				freeacsShellDaemon.addToRunList("var initial_tms \"new Date().toString()\"");
+				freeacsShellDaemon.addToRunList("echo ${initial_tms}");
+				freeacsShellDaemon.addToRunList(command);
+				freeacsShellDaemon.addToRunList("listvars | delvar"); // Cleanup of state
 				while (true) {
-					synchronized (xapsshellDaemon.getMonitor()) {
+					synchronized (freeacsShellDaemon.getMonitor()) {
 						try {
-							xapsshellDaemon.getMonitor().wait(1000);
+							freeacsShellDaemon.getMonitor().wait(1000);
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
-					if (xapsshellDaemon.getCommandsNotRunYet() == 0) {
+					if (freeacsShellDaemon.getCommandsNotRunYet() == 0) {
 						break;
 					}
 				}
-				List<Throwable> throwables = xapsshellDaemon.getAndResetThrowables();
-				xapsshellDaemon.setIdle(true);
+				List<Throwable> throwables = freeacsShellDaemon.getAndResetThrowables();
+				freeacsShellDaemon.setIdle(true);
 				boolean exitStatus = false;
 				String errorMsg = null;
 				if (throwables.size() > 0) {
@@ -91,8 +91,8 @@ public class ScriptExecutor extends DBIShare {
 		}
 	}
 
-	public ScriptExecutor(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException {
-		super(taskName, xapsCp, sysCp);
+	public ScriptExecutor(String taskName, DataSource mainDataSource, DataSource syslogDataSource) throws SQLException {
+		super(taskName, mainDataSource, syslogDataSource);
 	}
 
 	private static Logger logger = LoggerFactory.getLogger(ScriptExecutor.class);
@@ -116,8 +116,8 @@ public class ScriptExecutor extends DBIShare {
 	}
 
 	private void processScripts() throws Throwable {
-		ScriptExecutions executions = new ScriptExecutions(getXapsCp());
-		List<ScriptExecution> executionList = executions.getNotStartedExecutions(getLatestXAPS(), Properties.SHELL_SCRIPT_POOL_SIZE);
+		ScriptExecutions executions = new ScriptExecutions(getMainDataSource());
+		List<ScriptExecution> executionList = executions.getNotStartedExecutions(getLatestFreeacs(), Properties.SHELL_SCRIPT_POOL_SIZE);
 
 		// Organize all script-executions pr fusion-user - they must be executed in separate shell-deamons
 		Map<String, List<ScriptExecution>> userMap = new HashMap<String, List<ScriptExecution>>();
@@ -141,14 +141,14 @@ public class ScriptExecutor extends DBIShare {
 						se.setErrorMessage("The script is deleted, aborting script execution");
 					executions.updateExecution(se);
 				} else {
-					XAPSShellDaemon xapsshellDaemon = ShellDaemonPool.getShellDaemon(getXapsCp(), getSysCp(), entry.getKey());
-					if (xapsshellDaemon == null) {
+					FreeacsShellDaemon shellDaemon = ShellDaemonPool.getShellDaemon(getMainDataSource(), getSyslogDataSource(), entry.getKey());
+					if (shellDaemon == null) {
 						logger.debug("No shell daemon available within pool size limit, will try again in 100 ms");
 					} else {
 						logger.debug("Found shell daemon, will initiate execution");
 						se.setStartTms(new Date());
 						executions.updateExecution(se);
-						ScriptDaemonRunnable ser = new ScriptDaemonRunnable(executions, se, xapsshellDaemon);
+						ScriptDaemonRunnable ser = new ScriptDaemonRunnable(executions, se, shellDaemon);
 						Thread t = new Thread(ser);
 						t.start();
 					}

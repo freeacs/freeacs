@@ -39,9 +39,8 @@ public class Profile {
 	public ProfileParameters getProfileParameters() {
 		if (profileParameters == null) {
 			Map<Integer, ProfileParameter> idMap = new HashMap<Integer, ProfileParameter>();
-			MapWrapper<ProfileParameter> mw = new MapWrapper<ProfileParameter>(XAPS.isStrictOrder());
+			MapWrapper<ProfileParameter> mw = new MapWrapper<ProfileParameter>(ACS.isStrictOrder());
 			Map<String, ProfileParameter> nameMap = mw.getMap();
-			//			Map<String, ProfileParameter> nameMap = new TreeMap<String, ProfileParameter>(XAPS.getComparator());
 			profileParameters = new ProfileParameters(idMap, nameMap, this);
 		}
 		return profileParameters;

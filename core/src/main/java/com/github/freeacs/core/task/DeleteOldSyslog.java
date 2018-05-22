@@ -3,7 +3,7 @@ package com.github.freeacs.core.task;
 import com.github.freeacs.core.Properties;
 import com.github.freeacs.dbi.SyslogEvent;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.XAPS;
+import com.github.freeacs.dbi.ACS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,18 +15,17 @@ import java.util.List;
 
 public class DeleteOldSyslog extends DBIShare {
 
-	private XAPS xaps;
+	private ACS ACS;
 
 	private static Logger logger = LoggerFactory.getLogger(DeleteOldSyslog.class);
 
-	public DeleteOldSyslog(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException {
-		super(taskName, xapsCp, sysCp);
-		// TODO Auto-generated constructor stub
+	public DeleteOldSyslog(String taskName, DataSource mainDataSource, DataSource syslogDataSource) throws SQLException {
+		super(taskName, mainDataSource, syslogDataSource);
 	}
 
 	@Override
 	public void runImpl() throws Exception {
-		xaps = getLatestXAPS();
+		ACS = getLatestFreeacs();
 		removeOldSyslogEntries();
 	}
 
@@ -41,7 +40,7 @@ public class DeleteOldSyslog extends DBIShare {
 	 */
 	private void removeOldSyslogEntries() throws SQLException {
 		// 1.
-		Unittype[] unittypeArr = xaps.getUnittypes().getUnittypes();
+		Unittype[] unittypeArr = ACS.getUnittypes().getUnittypes();
 		List<SyslogEvent> events = new ArrayList<SyslogEvent>();
 		for (Unittype ut : unittypeArr) {
 			SyslogEvent[] eventArr = ut.getSyslogEvents().getSyslogEvents();

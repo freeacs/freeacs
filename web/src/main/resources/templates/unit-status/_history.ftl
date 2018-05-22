@@ -1,5 +1,5 @@
 <#import "/unit-status/chart.ftl" as unitmacros>
-<script src="javascript/xaps.module.unit.history.js" type="text/javascript"></script>
+<script src="javascript/ACS.module.unit.history.js" type="text/javascript"></script>
 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 <td valign="top" style="width:800px;">
 	<div id="tabs">

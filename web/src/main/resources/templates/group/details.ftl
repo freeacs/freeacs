@@ -1,4 +1,4 @@
-<script src="javascript/xaps.module.group.js"></script>
+<script src="javascript/ACS.module.group.js"></script>
 <@macros.form>
     <@macros.hidden list=groups />
     <@macros.hidden list=unittypes />

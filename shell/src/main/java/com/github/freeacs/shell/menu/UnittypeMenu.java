@@ -152,7 +152,7 @@ public class UnittypeMenu {
 		Profile profile = context.getUnittype().getProfiles().getByName(profileName);
 		if (profile == null) {
 			profile = new Profile(profileName, context.getUnittype());
-			context.getUnittype().getProfiles().addOrChangeProfile(profile, session.getXaps());
+			context.getUnittype().getProfiles().addOrChangeProfile(profile, session.getACS());
 			context.println("[" + session.getCounter() + "] The profile " + profileName + " is added.");
 		} else {
 			context.println("[" + session.getCounter() + "] The profile " + profileName + " already exists");
@@ -167,7 +167,7 @@ public class UnittypeMenu {
 		if (profile == null) {
 			context.println("The profile " + profileName + " does not exist");
 		} else {
-			context.getUnittype().getProfiles().deleteProfile(profile, session.getXaps(), true);
+			context.getUnittype().getProfiles().deleteProfile(profile, session.getACS(), true);
 			context.println("[" + session.getCounter() + "] The profile " + profileName + " is deleted.");
 			session.incCounter();
 		}
@@ -234,7 +234,7 @@ public class UnittypeMenu {
 			UnittypeParameter previousUtp = utpList.get(utpList.size() - 1);
 			if (previousUtp.getUnittype().getId().intValue() != unittypeParameter.getUnittype().getId()) {
 				Unittype ut = previousUtp.getUnittype();
-				ut.getUnittypeParameters().addOrChangeUnittypeParameters(utpList, session.getXaps());
+				ut.getUnittypeParameters().addOrChangeUnittypeParameters(utpList, session.getACS());
 				session.getBatchStorage().setAddChangeUnittypeParameters(null);
 				utpList = session.getBatchStorage().getAddChangeUnittypeParameters();
 			}
@@ -242,7 +242,7 @@ public class UnittypeMenu {
 		utpList.add(unittypeParameter);
 		context.println("[" + session.getCounter() + "] The unit type parameter " + unittypeParameter.getName() + " is " + action + ".");
 		if (session.getBatchStorage().getAddChangeUnittypeParameters().size() == 1000) {
-			unittypeParameters.addOrChangeUnittypeParameters(utpList, session.getXaps());
+			unittypeParameters.addOrChangeUnittypeParameters(utpList, session.getACS());
 			session.getBatchStorage().setAddChangeUnittypeParameters(null);
 		}
 		session.incCounter();
@@ -259,7 +259,7 @@ public class UnittypeMenu {
 				UnittypeParameter previousUtp = utpList.get(utpList.size() - 1);
 				if (previousUtp.getUnittype().getId().intValue() != up.getUnittype().getId()) {
 					Unittype ut = previousUtp.getUnittype();
-					ut.getUnittypeParameters().deleteUnittypeParameters(utpList, session.getXaps());
+					ut.getUnittypeParameters().deleteUnittypeParameters(utpList, session.getACS());
 					session.getBatchStorage().setDeleteUnittypeParameters(null);
 					utpList = session.getBatchStorage().getDeleteUnittypeParameters();
 				}
@@ -267,7 +267,7 @@ public class UnittypeMenu {
 			utpList.add(up);
 			context.println("[" + session.getCounter() + "] The unit type parameter " + unittypeParameterName + " is scheduled for deletion.");
 			if (utpList.size() == 1000) {
-				unittypeParameters.deleteUnittypeParameters(utpList, session.getXaps());
+				unittypeParameters.deleteUnittypeParameters(utpList, session.getACS());
 				session.getBatchStorage().setDeleteUnittypeParameters(null);
 				context.println("The unit type parameters scheduled for deletion are deleted");
 			}
@@ -365,10 +365,10 @@ public class UnittypeMenu {
 			desc = args[7];
 		}
 		
-		User loggedInUser = session.getXaps().getUser();
+		User loggedInUser = session.getACS().getUser();
 		owner = loggedInUser;
 		if (loggedInUser.isAdmin() && ownerName != null)
-			owner = session.getXaps().getUsers().getUnprotected(ownerName);
+			owner = session.getACS().getUsers().getUnprotected(ownerName);
 		byte[] b = null;
 		if (filename.startsWith("DUMMY")) {
 			b = "Test".getBytes();
@@ -404,7 +404,7 @@ public class UnittypeMenu {
 			f = new com.github.freeacs.dbi.File(context.getUnittype(), name, type, desc, ver, date, targetName, owner);
 			f.setBytes(b);
 		}
-		context.getUnittype().getFiles().addOrChangeFile(f, session.getXaps());
+		context.getUnittype().getFiles().addOrChangeFile(f, session.getACS());
 		f.resetContentToNull();
 		context.println("File: " + name + " was " + action);
 	}
@@ -415,7 +415,7 @@ public class UnittypeMenu {
 		com.github.freeacs.dbi.File f = context.getUnittype().getFiles().getByName(filename);
 		if (f == null)
 			throw new IllegalArgumentException("The file " + args[1] + " does not exist");
-		context.getUnittype().getFiles().deleteFile(f, session.getXaps());
+		context.getUnittype().getFiles().deleteFile(f, session.getACS());
 		context.println("[" + session.getCounter() + "] File " + args[1] + " is deleted");
 		session.incCounter();
 	}
@@ -446,7 +446,7 @@ public class UnittypeMenu {
 		heartbeat.setExpression(expression);
 		heartbeat.setGroup(group);
 		heartbeat.setTimeoutHours(timeoutHours);
-		heartbeats.addOrChangeHeartbeat(heartbeat, session.getXaps());
+		heartbeats.addOrChangeHeartbeat(heartbeat, session.getACS());
 		context.println("[" + session.getCounter() + "] The heartbeat " + heartbeat.getName() + " is " + action);
 		session.incCounter();
 
@@ -501,7 +501,7 @@ public class UnittypeMenu {
 		syslogEvent.setStorePolicy(storePolicy);
 		syslogEvent.setScript(script);
 		syslogEvent.setDeleteLimit(deleteLimit);
-		syslogEvents.addOrChangeSyslogEvent(syslogEvent, session.getXaps());
+		syslogEvents.addOrChangeSyslogEvent(syslogEvent, session.getACS());
 		context.println("[" + session.getCounter() + "] The syslog event " + eventId + " is " + action);
 		session.incCounter();
 	}
@@ -523,7 +523,7 @@ public class UnittypeMenu {
 			context.println("The syslogevent " + args[1] + " does not exist");
 			return;
 		}
-		syslogEvents.deleteSyslogEvent(syslogEvent, session.getXaps());
+		syslogEvents.deleteSyslogEvent(syslogEvent, session.getACS());
 		context.println("[" + session.getCounter() + "] The syslog event " + args[1] + " is deleted");
 		session.incCounter();
 
@@ -539,7 +539,7 @@ public class UnittypeMenu {
 			context.println("The trigger " + args[1] + " does not exist");
 			return;
 		}
-		triggers.deleteTrigger(trigger, session.getXaps());
+		triggers.deleteTrigger(trigger, session.getACS());
 		context.println("[" + session.getCounter() + "] The trigger " + args[1] + " is deleted");
 		session.incCounter();
 
@@ -555,7 +555,7 @@ public class UnittypeMenu {
 			context.println("The heartbeat " + args[1] + " does not exist");
 			return;
 		}
-		heartbeats.deleteHeartbeat(heartbeat, session.getXaps());
+		heartbeats.deleteHeartbeat(heartbeat, session.getACS());
 		context.println("[" + session.getCounter() + "] The hearbeat " + args[1] + " is deleted");
 		session.incCounter();
 
@@ -681,7 +681,7 @@ public class UnittypeMenu {
 			//			job.setMoveToProfile(moveToProfile);
 			job.setRepeatCount(repeat);
 			job.setRepeatInterval(repeatInterval);
-			context.getUnittype().getJobs().changeFromUI(job, session.getXaps());
+			context.getUnittype().getJobs().changeFromUI(job, session.getACS());
 			context.println("[" + session.getCounter() + "] The job " + job.getName() + " is changed, but not all fields are changed since the job is already created.");
 			session.incCounter();
 		} else {
@@ -689,7 +689,7 @@ public class UnittypeMenu {
 			//			job.setMoveToProfile(moveToProfile);
 			//			job.setRepeatCount(repeat);
 			//			job.setRepeatInterval(repeatInterval);
-			context.getUnittype().getJobs().add(job, session.getXaps());
+			context.getUnittype().getJobs().add(job, session.getACS());
 			context.println("[" + session.getCounter() + "] The job " + job.getName() + " is added");
 			session.incCounter();
 		}
@@ -703,7 +703,7 @@ public class UnittypeMenu {
 			context.println("The job " + args[1] + " does not exist");
 			return;
 		}
-		context.getUnittype().getJobs().delete(j, session.getXaps());
+		context.getUnittype().getJobs().delete(j, session.getACS());
 		context.println("[" + session.getCounter() + "] Job " + j.getName() + " is deleted");
 		session.incCounter();
 	}
@@ -947,13 +947,13 @@ public class UnittypeMenu {
 		thisTrigger.setNoEvents(autoboxInteger(args[12]));
 		thisTrigger.setNoEventPrUnit(autoboxInteger(args[13]));
 		thisTrigger.setNoUnits(autoboxInteger(args[14]));
-		triggers.addOrChangeTrigger(thisTrigger, session.getXaps());
+		triggers.addOrChangeTrigger(thisTrigger, session.getACS());
 		context.println("[" + session.getCounter() + "] Trigger " + thisTrigger.getName() + " is " + action);
 		session.incCounter();
 	}
 
 	private void setexecution(String[] args) throws Exception {
-		ScriptExecutions scriptExecutions = session.getXaps().getScriptExecutions();
+		ScriptExecutions scriptExecutions = session.getACS().getScriptExecutions();
 		Validation.numberOfArgs(args, 3);
 		String args1Str = args[1].trim();
 		int spacePos = args1Str.indexOf(" ");
@@ -1022,7 +1022,7 @@ public class UnittypeMenu {
 		//			}
 		//		}
 
-		groups.addOrChangeGroup(thisGroup, session.getXaps());
+		groups.addOrChangeGroup(thisGroup, session.getACS());
 		context.println("[" + session.getCounter() + "] Group " + thisGroup.getName() + " is " + action);
 		session.incCounter();
 	}
@@ -1035,7 +1035,7 @@ public class UnittypeMenu {
 			context.println("The group " + args[1] + " does not exist");
 			return;
 		}
-		groups.deleteGroup(group, session.getXaps());
+		groups.deleteGroup(group, session.getACS());
 		context.println("[" + session.getCounter() + "] Group " + group.getName() + " is deleted");
 		session.incCounter();
 
@@ -1044,12 +1044,12 @@ public class UnittypeMenu {
 	private void moveunit(String[] args, OutputHandler oh) throws Exception {
 		Validation.numberOfArgs(args, 4);
 		Unittype unittype = session.getContext().getUnittype();
-		XAPSUnit xapsUnit = session.getXapsUnit();
-		Unit u = xapsUnit.getUnitById(args[1], unittype, null);
+		ACSUnit ACSUnit = session.getACSUnit();
+		Unit u = ACSUnit.getUnitById(args[1], unittype, null);
 		if (u == null)
 			throw new IllegalArgumentException("The unitid " + args[1] + " was not found in this unittype.");
-		XAPS xaps = session.getXaps();
-		Unittype targetUnittype = xaps.getUnittype(args[2]);
+		ACS ACS = session.getACS();
+		Unittype targetUnittype = ACS.getUnittype(args[2]);
 		if (targetUnittype == null)
 			throw new IllegalArgumentException("The target unittype " + args[2] + " was not found.");
 		if (!args[2].equals(targetUnittype.getName()))
@@ -1070,21 +1070,21 @@ public class UnittypeMenu {
 		}
 		List<String> unitList = new ArrayList<String>();
 		unitList.add(u.getId());
-		xapsUnit.deleteUnit(u);
-		xapsUnit.addUnits(unitList, targetProfile);
-		xapsUnit.addOrChangeUnitParameters(targetUnitParams, targetProfile);
+		ACSUnit.deleteUnit(u);
+		ACSUnit.addUnits(unitList, targetProfile);
+		ACSUnit.addOrChangeUnitParameters(targetUnitParams, targetProfile);
 		context.println("The unit " + args[1] + " is moved to unittype " + args[2] + ", profile " + args[3]);
 	}
 
 	private Map<String, Unit> getUnitMap(String[] args) throws Exception {
 		Map<String, Unit> units = null;
 		if (args.length == 1)
-			units = session.getXapsUnit().getUnits((String) null, context.getUnittype(), null, null);
+			units = session.getACSUnit().getUnits((String) null, context.getUnittype(), null, null);
 		else if (args.length == 2) {
-			units = session.getXapsUnit().getUnits("%" + args[1] + "%", context.getUnittype(), null, null);
+			units = session.getACSUnit().getUnits("%" + args[1] + "%", context.getUnittype(), null, null);
 		} else if (args.length > 2) {
 			List<Parameter> params = ParameterParser.parse(context, args);
-			units = session.getXapsUnit().getUnits(context.getUnittype(), (Profile) null, params, null);
+			units = session.getACSUnit().getUnits(context.getUnittype(), (Profile) null, params, null);
 		}
 		return units;
 	}
@@ -1103,7 +1103,7 @@ public class UnittypeMenu {
 			Line line = new Line(unitId);
 			if (oh.getCommand().getOptions().containsKey(Option.OPTION_LIST_ALL_COLUMNS)) {
 				Map<String, String> displayableMap = context.getUnittype().getUnittypeParameters().getDisplayableNameMap();
-				Unit unit = session.getXapsUnit().getUnitById(unitId);
+				Unit unit = session.getACSUnit().getUnitById(unitId);
 				for (String utpName : displayableMap.keySet()) {
 					String value = unit.getParameters().get(utpName);
 					if (value == null)
@@ -1131,10 +1131,10 @@ public class UnittypeMenu {
 		}
 		for (UnittypeParameter utp : deleteList) {
 			try {
-				utps.deleteUnittypeParameter(utp, session.getXaps());
+				utps.deleteUnittypeParameter(utp, session.getACS());
 				context.println("The system parameter " + utp.getName() + " (unittype: " + context.getUnittype().getName() + ") is obsolete and has been deleted (it was not in use).");
 			} catch (Throwable t) {
-				Unittype unittype = session.getXaps().getUnittype(context.getUnittype().getId());
+				Unittype unittype = session.getACS().getUnittype(context.getUnittype().getId());
 				context.setUnittype(unittype);
 				utps = context.getUnittype().getUnittypeParameters();
 				context.println("The system parameter " + utp.getName() + " (unittype: " + context.getUnittype().getName() + ") is obsolete, but could not be deleted since it was in use.");

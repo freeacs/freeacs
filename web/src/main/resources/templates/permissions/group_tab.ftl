@@ -1,4 +1,4 @@
-	<script src="javascript/xaps.module.user.group.js" type="text/javascript"></script>
+	<script src="javascript/ACS.module.user.group.js" type="text/javascript"></script>
 	
 	<form action="" method="get">
 		<fieldset>

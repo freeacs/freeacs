@@ -125,11 +125,11 @@ public class ShellJobLogic {
 	 */
 	private static void toCPE(SessionData sessionData) throws TR069DatabaseException {
 		UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
-		XAPS xaps = sessionData.getDbAccessSession().getXaps();
+		ACS ACS = sessionData.getDbAccessSession().getACS();
 		Unit unit;
 		try {
-			XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
-			unit = xapsUnit.getUnitById(sessionData.getUnitId());
+			ACSUnit ACSUnit = DBAccess.getXAPSUnit(ACS);
+			unit = ACSUnit.getUnitById(sessionData.getUnitId());
 		} catch (SQLException e) {
 			throw new TR069DatabaseException(e);
 		}
@@ -187,9 +187,9 @@ public class ShellJobLogic {
 		}
 		if (unitParameters.size() > 0) {
 			try {
-				XAPS xaps = sessionData.getDbAccessSession().getXaps();
-				XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
-				xapsUnit.addOrChangeUnitParameters(unitParameters, sessionData.getProfile());
+				ACS ACS = sessionData.getDbAccessSession().getACS();
+				ACSUnit ACSUnit = DBAccess.getXAPSUnit(ACS);
+				ACSUnit.addOrChangeUnitParameters(unitParameters, sessionData.getProfile());
 			} catch (SQLException sqle) {
 				throw new TR069DatabaseException(sqle);
 			}

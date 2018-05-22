@@ -114,7 +114,7 @@ public class HTTPRequestProcessor {
 			history = new TestHistory(sessionData.getUnittype(), new Date(sessionData.getStartupTmsForSession()), sessionData.getUnitId(), tc.getId(), tc.getExpectError());
 			tu.setHistory(history);
 		}
-		TestDB testDB = new TestDB(sessionData.getDbAccessSession().getXaps());
+		TestDB testDB = new TestDB(sessionData.getDbAccessSession().getACS());
 		Log.debug(HTTPRequestProcessor.class, "Have retrieved the TestDB object");
 		try {
 			try {

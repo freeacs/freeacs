@@ -17,8 +17,8 @@ public class AddOrChangeProfile {
 
 	private static org.slf4j.Logger logger = LoggerFactory.getLogger(AddOrChangeProfile.class);
 
-	private XAPS xaps;
-	private XAPSWS xapsWS;
+	private ACS ACS;
+	private ACSWS xapsWS;
 
 	private void addOrChangeProfileImpl(Profile profileXAPS, AddOrChangeProfileRequest gur) throws SQLException, RemoteException {
 		ParameterList parameterList = gur.getProfile().getParameters();
@@ -29,9 +29,9 @@ public class AddOrChangeProfile {
 			for (Parameter param : parameterList.getParameterArray().getItem()) {
 				UnittypeParameter utp = unittypeXAPS.getUnittypeParameters().getByName(param.getName());
 				if (utp == null)
-					throw XAPSWS.error(logger, "The unittype parameter " + param.getName() + " does not exist, hence cannot add profile parameter");
+					throw ACSWS.error(logger, "The unittype parameter " + param.getName() + " does not exist, hence cannot add profile parameter");
 				if (param.getFlags() != null && !param.getFlags().equals("D") && !param.getFlags().equals("AC"))
-					throw XAPSWS.error(logger, "Flag for parameter " + param.getName() + " had value " + param.getFlags() + ", but must be either D or AC");
+					throw ACSWS.error(logger, "Flag for parameter " + param.getName() + " had value " + param.getFlags() + ", but must be either D or AC");
 				ProfileParameter pp = profileXAPS.getProfileParameters().getByName(param.getName());
 				if (param.getFlags() == null || param.getFlags().equals("AC")) {
 					if (pp == null)
@@ -45,21 +45,21 @@ public class AddOrChangeProfile {
 				}
 			}
 		}
-		unittypeXAPS.getProfiles().addOrChangeProfile(profileXAPS, xaps);
+		unittypeXAPS.getProfiles().addOrChangeProfile(profileXAPS, ACS);
 		for (ProfileParameter pp : dPpList)
-			profileXAPS.getProfileParameters().deleteProfileParameter(pp, xaps);
+			profileXAPS.getProfileParameters().deleteProfileParameter(pp, ACS);
 		for (ProfileParameter pp : acPpList)
-			profileXAPS.getProfileParameters().addOrChangeProfileParameter(pp, xaps);
+			profileXAPS.getProfileParameters().addOrChangeProfileParameter(pp, ACS);
 	}
 
 	public AddOrChangeProfileResponse addOrChangeProfile(AddOrChangeProfileRequest gur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 			
-			xapsWS = XAPSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
-			xaps = xapsWS.getXAPS();
+			xapsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
+			ACS = xapsWS.getXAPS();
 			if (gur.getUnittype() == null || gur.getProfile() == null)
-				throw XAPSWS.error(logger, "No unittype or profile specified");
-			Unittype unittype = xaps.getUnittype(gur.getUnittype().getName());
+				throw ACSWS.error(logger, "No unittype or profile specified");
+			Unittype unittype = ACS.getUnittype(gur.getUnittype().getName());
 			User user = xapsWS.getId().getUser();
 			boolean isAllowedToMakeProfile = user.getPermissions().getPermissions().length == 0;
 			if (!isAllowedToMakeProfile) {
@@ -75,18 +75,18 @@ public class AddOrChangeProfile {
 					profileXAPS = new Profile(pWS.getName(), unittype);
 					addOrChangeProfileImpl(profileXAPS, gur);
 				} else {
-					throw XAPSWS.error(logger, "The profile " + gur.getProfile().getName() + " does not exist, your login does not have the permissions to create it.");
+					throw ACSWS.error(logger, "The profile " + gur.getProfile().getName() + " does not exist, your login does not have the permissions to create it.");
 				}
 			} else { // change an existing one
 				profileXAPS = xapsWS.getProfileFromXAPS(unittype.getName(), gur.getProfile().getName());
 				addOrChangeProfileImpl(profileXAPS, gur);
 			}
-			return new AddOrChangeProfileResponse(ConvertXAPS2WS.convert(profileXAPS));
+			return new AddOrChangeProfileResponse(ConvertACS2WS.convert(profileXAPS));
 		} catch (Throwable t) {
 			if (t instanceof RemoteException)
 				throw (RemoteException) t;
 			else {
-				throw XAPSWS.error(logger, t);
+				throw ACSWS.error(logger, t);
 			}
 		}
 

@@ -42,7 +42,7 @@ public class HTTPReqResData {
 			HttpSession session = req.getSession();
 			Log.debug(HTTPReqResData.class, "Sessionid " + sessionId + " did not return a SessionData object from cache, must create a new SessionData object");
 			Log.debug(HTTPReqResData.class, "Sessionid " + session.getId() + " created: " + session.getCreationTime() + ", lastAccess:" + session.getLastAccessedTime() + ", mxInactiveInterval:" + session.getMaxInactiveInterval());
-			sessionData = new SessionData(sessionId, dbAccess.getDBI().getXaps());
+			sessionData = new SessionData(sessionId, dbAccess.getDBI().getACS());
 			BaseCache.putSessionData(sessionId, sessionData);
 		}
 		if (sessionData.getStartupTmsForSession() == null)

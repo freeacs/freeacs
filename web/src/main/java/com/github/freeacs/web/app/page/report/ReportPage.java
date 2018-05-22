@@ -1,9 +1,9 @@
 package com.github.freeacs.web.app.page.report;
 
+import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.Group;
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.XAPS;
 import com.github.freeacs.dbi.report.*;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.Output;
@@ -46,7 +46,7 @@ import java.util.List;
  */
 public class ReportPage extends AbstractWebPage {
 	private Chart<?> chartMaker;
-	private XAPS xaps;
+	private ACS ACS;
 	private ReportData inputData;
 	private JFreeChart chart;
 	private Report<?> report;
@@ -104,8 +104,8 @@ public class ReportPage extends AbstractWebPage {
 		InputDataIntegrity.loadAndStoreSession(req, outputHandler, inputData, inputData.getUnittype(), inputData.getProfile());
 
 		// 3
-		xaps = XAPSLoader.getXAPS(req.getSession().getId(), xapsDataSource, syslogDataSource);
-		if (xaps == null) {
+		ACS = XAPSLoader.getXAPS(req.getSession().getId(), xapsDataSource, syslogDataSource);
+		if (ACS == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -124,8 +124,8 @@ public class ReportPage extends AbstractWebPage {
 
 		// 4
 		reportType = ReportType.getEnum(pageType);
-		unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps);
-		profiles = InputSelectionFactory.getProfileSelection(inputData.getProfile(), inputData.getUnittype(), xaps);
+		unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS);
+		profiles = InputSelectionFactory.getProfileSelection(inputData.getProfile(), inputData.getUnittype(), ACS);
 		method = InputSelectionFactory.getDropDownSingleSelect(inputData.getMethod(), inputData.getMethod().getString(), getMethodOptions(pageType));
 		optionalmethod = InputSelectionFactory.getDropDownSingleSelect(inputData.getOptionalMethod(), inputData.getOptionalMethod().getString(),
 				getOptionalMethodOptions(method.getSelectedOrFirstItem(), method.getItems()));
@@ -155,7 +155,7 @@ public class ReportPage extends AbstractWebPage {
 		reportImplementation = DefaultRetriever.class.newInstance();
 		Class<? extends ReportRetriever> reportImplementationClass = reportType2Implementation.get(reportType);
 		if (reportImplementationClass != null)
-			reportImplementation = (ReportRetriever) reportImplementationClass.getConstructors()[0].newInstance(inputData, req, xaps);
+			reportImplementation = (ReportRetriever) reportImplementationClass.getConstructors()[0].newInstance(inputData, req, ACS);
 
 		/**
 		 * We need to get a reference to the ReportRetriever
@@ -589,70 +589,70 @@ public class ReportPage extends AbstractWebPage {
 	 * Gets the report voip generator.
 	 *
 	 * @param sessionId the session id
-	 * @param xaps the xaps
+	 * @param ACS the xaps
 	 * @return the report voip generator
 	 * @throws SQLException the sQL exception
 	 *  the no available connection exception
 	 */
-	public static ReportVoipGenerator getReportVoipGenerator(String sessionId, XAPS xaps) throws SQLException {
-		return new ReportVoipGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(), xaps, null, XAPSLoader.getIdentity(sessionId, xaps.getDataSource()));
+	public static ReportVoipGenerator getReportVoipGenerator(String sessionId, ACS ACS) throws SQLException {
+		return new ReportVoipGenerator(ACS.getDataSource(), ACS.getSyslog().getDataSource(), ACS, null, XAPSLoader.getIdentity(sessionId, ACS.getDataSource()));
 	}
 
-	public static ReportProvisioningGenerator getReportProvGenerator(String sessionId, XAPS xaps) throws SQLException {
-		return new ReportProvisioningGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(), xaps, null,
-				XAPSLoader.getIdentity(sessionId, xaps.getDataSource()));
+	public static ReportProvisioningGenerator getReportProvGenerator(String sessionId, ACS ACS) throws SQLException {
+		return new ReportProvisioningGenerator(ACS.getDataSource(), ACS.getSyslog().getDataSource(), ACS, null,
+				XAPSLoader.getIdentity(sessionId, ACS.getDataSource()));
 	}
 
 	/**
 	 * Gets the report hardware generator.
 	 *
 	 * @param sessionId the session id
-	 * @param xaps the xaps
+	 * @param ACS the xaps
 	 * @return the report hardware generator
 	 * @throws SQLException the sQL exception
 	 *  the no available connection exception
 	 */
-	public static ReportHardwareGenerator getReportHardwareGenerator(String sessionId, XAPS xaps) throws SQLException {
-		return new ReportHardwareGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(), xaps, null, XAPSLoader.getIdentity(sessionId, xaps.getDataSource()));
+	public static ReportHardwareGenerator getReportHardwareGenerator(String sessionId, ACS ACS) throws SQLException {
+		return new ReportHardwareGenerator(ACS.getDataSource(), ACS.getSyslog().getDataSource(), ACS, null, XAPSLoader.getIdentity(sessionId, ACS.getDataSource()));
 	}
 
 	/**
 	 * Gets the report group generator.
 	 *
 	 * @param sessionId the session id
-	 * @param xaps the xaps
+	 * @param ACS the xaps
 	 * @return the report syslog generator
 	 * @throws SQLException the sQL exception
 	 *  the no available connection exception
 	 */
-	public static ReportGroupGenerator getReportGroupGenerator(String sessionId, XAPS xaps) throws SQLException {
-		return new ReportGroupGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(), xaps, null, XAPSLoader.getIdentity(sessionId, xaps.getDataSource()));
+	public static ReportGroupGenerator getReportGroupGenerator(String sessionId, ACS ACS) throws SQLException {
+		return new ReportGroupGenerator(ACS.getDataSource(), ACS.getSyslog().getDataSource(), ACS, null, XAPSLoader.getIdentity(sessionId, ACS.getDataSource()));
 	}
 
 	/**
 	 * Gets the report syslog generator.
 	 *
 	 * @param sessionId the session id
-	 * @param xaps the xaps
+	 * @param ACS the xaps
 	 * @return the report syslog generator
 	 * @throws SQLException the sQL exception
 	 *  the no available connection exception
 	 */
-	public static ReportSyslogGenerator getReportSyslogGenerator(String sessionId, XAPS xaps) throws SQLException {
-		return new ReportSyslogGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(), xaps, null, XAPSLoader.getIdentity(sessionId, xaps.getDataSource()));
+	public static ReportSyslogGenerator getReportSyslogGenerator(String sessionId, ACS ACS) throws SQLException {
+		return new ReportSyslogGenerator(ACS.getDataSource(), ACS.getSyslog().getDataSource(), ACS, null, XAPSLoader.getIdentity(sessionId, ACS.getDataSource()));
 	}
 
 	/**
 	 * Gets the report voip call generator.
 	 *
 	 * @param sessionId the session id
-	 * @param xaps the xaps
+	 * @param ACS the xaps
 	 * @return the report voip call generator
 	 * @throws SQLException the sQL exception
 	 *  the no available connection exception
 	 */
-	public static ReportVoipCallGenerator getReportVoipCallGenerator(String sessionId, XAPS xaps) throws SQLException {
-		return new ReportVoipCallGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(), xaps, null, XAPSLoader.getIdentity(sessionId, xaps.getDataSource()));
+	public static ReportVoipCallGenerator getReportVoipCallGenerator(String sessionId, ACS ACS) throws SQLException {
+		return new ReportVoipCallGenerator(ACS.getDataSource(), ACS.getSyslog().getDataSource(), ACS, null, XAPSLoader.getIdentity(sessionId, ACS.getDataSource()));
 	}
 
 	/**

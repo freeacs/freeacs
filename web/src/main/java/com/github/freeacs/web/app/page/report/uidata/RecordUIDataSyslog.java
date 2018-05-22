@@ -1,9 +1,9 @@
 package com.github.freeacs.web.app.page.report.uidata;
 
+import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.SyslogEntry;
 import com.github.freeacs.dbi.SyslogEvent;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.XAPS;
 import com.github.freeacs.web.app.page.syslog.SyslogUtil;
 import freemarker.template.TemplateModelException;
 
@@ -19,7 +19,7 @@ import java.util.List;
 public class RecordUIDataSyslog {
 
 	/** The xaps. */
-	private XAPS xaps;
+	private ACS ACS;
 
 	/** The entry. */
 	private SyslogEntry entry;
@@ -63,24 +63,24 @@ public class RecordUIDataSyslog {
 	 * Instantiates a new record ui data syslog.
 	 *
 	 * @param record the record
-	 * @param xaps the xaps
+	 * @param ACS the xaps
 	 */
-	public RecordUIDataSyslog(SyslogEntry record, XAPS xaps) {
+	public RecordUIDataSyslog(SyslogEntry record, ACS ACS) {
 		this.entry = record;
-		this.xaps = xaps;
+		this.ACS = ACS;
 	}
 
 	/**
 	 * Convert records.
 	 *
 	 * @param records the records
-	 * @param xaps the xaps
+	 * @param ACS the xaps
 	 * @return the list
 	 */
-	public static List<RecordUIDataSyslog> convertRecords(List<SyslogEntry> records, XAPS xaps) {
+	public static List<RecordUIDataSyslog> convertRecords(List<SyslogEntry> records, ACS ACS) {
 		List<RecordUIDataSyslog> list = new ArrayList<RecordUIDataSyslog>();
 		for (SyslogEntry record : records) {
-			list.add(new RecordUIDataSyslog(record, xaps));
+			list.add(new RecordUIDataSyslog(record, ACS));
 		}
 		return list;
 	}
@@ -111,7 +111,7 @@ public class RecordUIDataSyslog {
 	 * @return the event id as string
 	 */
 	public String getEventIdAsString() {
-		Unittype unittype = xaps.getUnittype(entry.getUnittypeName());
+		Unittype unittype = ACS.getUnittype(entry.getUnittypeName());
 		if (unittype != null) {
 			@SuppressWarnings("static-access")
 			SyslogEvent event = unittype.getSyslogEvents().getById(entry.getEventId());

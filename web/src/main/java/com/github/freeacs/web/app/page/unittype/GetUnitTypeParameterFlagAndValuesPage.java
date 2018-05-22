@@ -1,8 +1,8 @@
 package com.github.freeacs.web.app.page.unittype;
 
+import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.UnittypeParameter;
-import com.github.freeacs.dbi.XAPS;
 import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.AbstractWebPage;
@@ -30,8 +30,8 @@ public class GetUnitTypeParameterFlagAndValuesPage extends AbstractWebPage {
 		res.setContentType("text/html");
 		if(type!=null && name!=null){
 			if(type.equals("unittype") && unittype!=null){
-				XAPS xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
-				Unittype ut = xaps.getUnittype(unittype);
+				ACS ACS = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
+				Unittype ut = ACS.getUnittype(unittype);
 				if(ut!=null){
 					UnittypeParameter utp = ut.getUnittypeParameters().getByName(name);
 					String flag = utp.getFlag().getFlag();

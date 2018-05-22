@@ -14,19 +14,19 @@ import java.util.Map;
 
 public class DeleteOldJobs extends DBIOwner {
 
-	public DeleteOldJobs(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException {
-		super(taskName, xapsCp, sysCp);
+	public DeleteOldJobs(String taskName, DataSource mainDataSource, DataSource syslogDataSource) throws SQLException {
+		super(taskName, mainDataSource, syslogDataSource);
 	}
 
 	private static Logger logger = LoggerFactory.getLogger(DeleteOldJobs.class);
 
-	private XAPS xaps;
+	private ACS ACS;
 	private Map<Integer, Job> jobMap;
 
 
 	@Override
 	public void runImpl() throws Exception {
-		xaps = getLatestXAPS();
+		ACS = getLatestFreeacs();
 		removeOldJobs();
 	}
 
@@ -36,9 +36,9 @@ public class DeleteOldJobs extends DBIOwner {
 	}
 
 	private void removeOldJobs() throws Exception {
-		UnitJobs unitJobs = new UnitJobs(getXapsCp());
+		UnitJobs unitJobs = new UnitJobs(getMainDataSource());
 		jobMap = new HashMap<Integer, Job>();
-		Unittype[] unittypeArr = xaps.getUnittypes().getUnittypes();
+		Unittype[] unittypeArr = ACS.getUnittypes().getUnittypes();
 		for (Unittype unittype : unittypeArr) {
 			Job[] jobList = unittype.getJobs().getJobs();
 			for (Job j : jobList) {
@@ -53,9 +53,9 @@ public class DeleteOldJobs extends DBIOwner {
 				if (job.getChildren().size() == 0) {
 					unitJobs.delete(job);
 					logger.info("DeleteOldJobs: \tDeleted all rows in unit_job with jobId = " + job.getId());
-					job.getGroup().getUnittype().getJobs().deleteJobParameters(job, xaps);
+					job.getGroup().getUnittype().getJobs().deleteJobParameters(job, ACS);
 					logger.info("DeleteOldJobs: \tDeleted all rows in job_param with jobId = " + job.getId());
-					job.getGroup().getUnittype().getJobs().delete(job, xaps);
+					job.getGroup().getUnittype().getJobs().delete(job, ACS);
 					logger.info("DeleteOldJobs: \tDeleted row in job with jobId = " + job.getId());
 					removeFromJCMap.add(job);
 				} else {

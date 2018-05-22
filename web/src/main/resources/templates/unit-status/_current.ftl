@@ -1,4 +1,4 @@
-<script src="javascript/xaps.module.unit.dashboard.js" tyoe="text/javascript"></script>
+<script src="javascript/ACS.module.unit.dashboard.js" tyoe="text/javascript"></script>
 <td valign="top" class="dashboard">
 	<fieldset>
 		<legend>${UNIT_DASHBOARD}</legend>

@@ -64,7 +64,7 @@ public class ScheduledKickTask extends TaskDefaultImpl {
 
 	@Override
 	public void runImpl() throws Throwable {
-		XAPS xaps = dbi.getXaps();
+		ACS ACS = dbi.getACS();
 		synchronized (syncMonitor) {
 			Iterator<UnitKick> listIterator = kickList.iterator();
 			long now = System.currentTimeMillis();
@@ -78,8 +78,8 @@ public class ScheduledKickTask extends TaskDefaultImpl {
 					continue;
 				}
 				Unit unit = uk.getUnit();
-				XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
-				xapsUnit.addOrChangeQueuedUnitParameters(unit);
+				ACSUnit ACSUnit = DBAccess.getXAPSUnit(ACS);
+				ACSUnit.addOrChangeQueuedUnitParameters(unit);
 				dbi.publishKick(unit, SyslogConstants.FACILITY_STUN);
 				uk.setNextTms(now + 30000);
 				uk.setKickCount(uk.getKickCount() + 1);

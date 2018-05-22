@@ -1,9 +1,9 @@
 package com.github.freeacs.web.app.page.group;
 
+import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.Group;
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.XAPS;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.InputDataIntegrity;
@@ -36,7 +36,7 @@ import java.util.Map;
 public class GroupsPage extends AbstractWebPage {
 
 	/** The xaps. */
-	private XAPS xaps;
+	private ACS ACS;
 
 	/** The input data. */
 	private GroupsData inputData;
@@ -103,8 +103,8 @@ public class GroupsPage extends AbstractWebPage {
 
 		sessionId = req.getSession().getId();
 		
-		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (xaps == null) {
+		ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (ACS == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -113,18 +113,18 @@ public class GroupsPage extends AbstractWebPage {
 
 		// Action
 		if (inputData.getUnittype().notNullNorValue(WebConstants.ALL_ITEMS_OR_DEFAULT)) {
-			unittype = xaps.getUnittype(inputData.getUnittype().getString());
+			unittype = ACS.getUnittype(inputData.getUnittype().getString());
 			if (unittype != null) {
 				profile = unittype.getProfiles().getByName(inputData.getProfile().getString());
 			}
 		}
 
 		Map<String, Object> root = outputHandler.getTemplateMap();
-		root.put("unittypes", InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps));
+		root.put("unittypes", InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS));
 		if (unittype != null) {
 			root.put("findprofile", new GroupProfileMethod());
-			root.put("profiles", InputSelectionFactory.getProfileSelection(inputData.getProfile(), inputData.getUnittype(), xaps));
-			List<TableElement> params = new TableElementMaker().getGroups(unittype,xaps);
+			root.put("profiles", InputSelectionFactory.getProfileSelection(inputData.getProfile(), inputData.getUnittype(), ACS));
+			List<TableElement> params = new TableElementMaker().getGroups(unittype, ACS);
 			List<TableElement> copy = new ArrayList<TableElement>();
 			copy.addAll(params);
 			for (TableElement elm : copy) {

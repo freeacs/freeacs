@@ -17,13 +17,13 @@ import java.util.Iterator;
 import java.util.List;
 
 public class TriggerHandler {
-	private XAPS xaps;
+	private ACS ACS;
 	private Unittype unittype;
 	private String sessionId;
 	private TriggerData inputData;
 
 	public TriggerHandler(String sessionId, TriggerData inputData, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
-		this.xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		this.ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		this.sessionId = sessionId;
 		this.inputData = inputData;
 		setUnittype(inputData);
@@ -37,7 +37,7 @@ public class TriggerHandler {
 		setUnittype(inputData);
 		Triggers triggers = unittype.getTriggers();
 		Trigger trigger = triggers.getById(inputData.getTriggerId().getInteger());
-		triggers.deleteTrigger(trigger, xaps);
+		triggers.deleteTrigger(trigger, ACS);
 	}
 
 	public boolean createTrigger(TriggerData inputData) {
@@ -52,8 +52,8 @@ public class TriggerHandler {
 	}
 
 	public void setUnittype(TriggerData inputData) {
-		if (inputData.getUnittype().getString() != null && xaps != null) {
-			unittype = xaps.getUnittype(inputData.getUnittype().getString());
+		if (inputData.getUnittype().getString() != null && ACS != null) {
+			unittype = ACS.getUnittype(inputData.getUnittype().getString());
 			resetUnitTypeInSessionCacheIfNecessary();
 		}
 	}
@@ -62,7 +62,7 @@ public class TriggerHandler {
 		boolean isTriggerSaved = true;
 		fillTrigger(trigger, inputData);
 		try {
-			unittype.getTriggers().addOrChangeTrigger(trigger, xaps);
+			unittype.getTriggers().addOrChangeTrigger(trigger, ACS);
 		} catch (SQLException exception) {
 			isTriggerSaved = false;
 			exception.printStackTrace();
@@ -117,7 +117,7 @@ public class TriggerHandler {
 
 	public List<TableElement> getTriggerTableElements() {
 		try {
-			return new TableElementMaker().getTriggers(unittype, xaps);
+			return new TableElementMaker().getTriggers(unittype, ACS);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

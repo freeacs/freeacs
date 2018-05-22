@@ -94,7 +94,7 @@ public class JobMenu {
 	private void changeStatus(JobStatus status) throws Exception {
 		refresh();
 		context.getJob().setStatus(status);
-		context.getUnittype().getJobs().changeStatus(context.getJob(), session.getXaps());
+		context.getUnittype().getJobs().changeStatus(context.getJob(), session.getACS());
 		session.println("Status changed to " + status);
 		refresh();
 	}
@@ -109,9 +109,9 @@ public class JobMenu {
 			if (unitId.equals("DEFAULT"))
 				params = context.getJob().getDefaultParameters();
 			else
-				params = context.getUnittype().getJobs().readJobParameters(context.getJob(), new Unit(unitId, null, null), session.getXaps());
+				params = context.getUnittype().getJobs().readJobParameters(context.getJob(), new Unit(unitId, null, null), session.getACS());
 		} else
-			params = context.getUnittype().getJobs().readJobParameters(context.getJob(), null, session.getXaps());
+			params = context.getUnittype().getJobs().readJobParameters(context.getJob(), null, session.getACS());
 		for (Entry<String, JobParameter> entry : params.entrySet()) {
 			Line line = new Line();
 			String unitId = entry.getValue().getUnitId();
@@ -142,7 +142,7 @@ public class JobMenu {
 		}
 		JobParameter jp = new JobParameter(job, unitId, new Parameter(utp, "dummy"));
 		toBeDeleted.add(jp);
-		int rowsDeleted = context.getUnittype().getJobs().deleteJobParameters(toBeDeleted, session.getXaps());
+		int rowsDeleted = context.getUnittype().getJobs().deleteJobParameters(toBeDeleted, session.getACS());
 		if (rowsDeleted >= 1)
 			session.println("[" + session.getCounter() + "] Job parameter " + inputArr[2] + " was deleted");
 		else
@@ -164,7 +164,7 @@ public class JobMenu {
 			JobParameter p = new JobParameter(job, unitId, new Parameter(utp, inputArr[3]));
 			List<JobParameter> toBeAdded = new ArrayList<JobParameter>();
 			toBeAdded.add(p);
-			context.getUnittype().getJobs().addOrChangeJobParameters(toBeAdded, session.getXaps());
+			context.getUnittype().getJobs().addOrChangeJobParameters(toBeAdded, session.getACS());
 			session.println("[" + session.getCounter() + "] Job parameter " + inputArr[2] + " was added/changed");
 		} else {
 			session.println("[" + session.getCounter() + "] Wrong unittype parameter name");
@@ -291,7 +291,7 @@ public class JobMenu {
 
 	private void delallparams(String[] inputArr) throws Exception {
 		session.println("[" + session.getCounter() + "] Job parameters were deleted");
-		context.getUnittype().getJobs().deleteJobParameters(context.getJob(), session.getXaps());
+		context.getUnittype().getJobs().deleteJobParameters(context.getJob(), session.getACS());
 		session.incCounter();
 	}
 }

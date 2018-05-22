@@ -9,9 +9,9 @@ import javax.xml.rpc.ServiceException;
 import javax.xml.rpc.Stub;
 import java.rmi.RemoteException;
 
-public class XAPSWSProxy implements XAPSWS_PortType {
+public class XAPSWSProxy implements ACSWS_PortType {
     private String _endpoint = null;
-    private XAPSWS_PortType xAPSWS_PortType = null;
+    private ACSWS_PortType xAPSWS_PortType = null;
 
     public XAPSWSProxy() {
         this._initXAPSWSProxy();
@@ -24,7 +24,7 @@ public class XAPSWSProxy implements XAPSWS_PortType {
 
     private void _initXAPSWSProxy() {
         try {
-            this.xAPSWS_PortType = (new XAPSWS_ServiceLocator()).getxAPSWS();
+            this.xAPSWS_PortType = (new ACSWS_ServiceLocator()).getACSWS();
             if (this.xAPSWS_PortType != null) {
                 if (this._endpoint != null) {
                     ((Stub)this.xAPSWS_PortType)._setProperty("javax.xml.rpc.service.endpoint.address", this._endpoint);
@@ -50,7 +50,7 @@ public class XAPSWSProxy implements XAPSWS_PortType {
 
     }
 
-    public XAPSWS_PortType getXAPSWS_PortType() {
+    public ACSWS_PortType getXAPSWS_PortType() {
         if (this.xAPSWS_PortType == null) {
             this._initXAPSWSProxy();
         }

@@ -28,7 +28,7 @@ public class HeartbeatDetection extends DBIShare {
 	private static long OFFSET = MINUTE_MS;
 	private static SimpleDateFormat sdf = new SimpleDateFormat("MMM dd HH:mm:ss", Locale.US);
 
-	private XAPS xaps;
+	private ACS ACS;
 	private long lastTms;
 	// Contains SyslogMessageMaps (which wraps InsertOrderMap) for each heartbeat
 	private SyslogMessageMapContainer smmc = new SyslogMessageMapContainer();
@@ -36,13 +36,13 @@ public class HeartbeatDetection extends DBIShare {
 	private Cache sentMessages = new Cache();
 	private static Logger logger = LoggerFactory.getLogger(HeartbeatDetection.class);
 
-	public HeartbeatDetection(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException {
-		super(taskName, xapsCp, sysCp);
+	public HeartbeatDetection(String taskName, DataSource mainDataSource, DataSource syslogDataSource) throws SQLException {
+		super(taskName, mainDataSource, syslogDataSource);
 	}
 
 	@Override
 	public void runImpl() throws Exception {
-		xaps = getLatestXAPS();
+		ACS = getLatestFreeacs();
 		// Set the tms back 60 sec, since we expect all writing 
 		// to syslog table (with tms 60 sec old) to be finished
 		Long tms = getLaunchTms() - OFFSET;
@@ -76,8 +76,8 @@ public class HeartbeatDetection extends DBIShare {
 		PreparedStatement ps = null;
 		DynamicStatement ds = null;
 		try {
-			c = getSysCp().getConnection();
-			Unittype[] unittypes = xaps.getUnittypes().getUnittypes();
+			c = getSyslogDataSource().getConnection();
+			Unittype[] unittypes = ACS.getUnittypes().getUnittypes();
 			for (Unittype unittype : unittypes) {
 				Heartbeat[] heartbeats = unittype.getHeartbeats().getHeartbeats();
 				for (Heartbeat heartbeat : heartbeats) {
@@ -109,8 +109,8 @@ public class HeartbeatDetection extends DBIShare {
 						int counter = 0;
 						Map<String, Unit> unitsInGroupMap = null;
 						if (heartbeat.getGroup() != null) {
-							XAPSUnit xapsUnit = new XAPSUnit(xaps.getConnectionProperties(), xaps, xaps.getSyslog());
-							unitsInGroupMap = xapsUnit.getUnits(heartbeat.getGroup());
+							ACSUnit ACSUnit = new ACSUnit(ACS.getConnectionProperties(), ACS, ACS.getSyslog());
+							unitsInGroupMap = ACSUnit.getUnits(heartbeat.getGroup());
 						}
 						while (rs.next()) {
 							String unitId = rs.getString("unit_id");
@@ -149,7 +149,7 @@ public class HeartbeatDetection extends DBIShare {
 		DynamicStatement ds = null;
 		int counter = 0;
 		try {
-			c = getSysCp().getConnection();
+			c = getSyslogDataSource().getConnection();
 			ds = new DynamicStatement();
 			ds.addSql("SELECT distinct(unit_id) FROM syslog WHERE ");
 			ds.addSqlAndArguments("collector_timestamp >= ? AND ", new Date(from));
@@ -182,14 +182,14 @@ public class HeartbeatDetection extends DBIShare {
 	private void filterAndSendHeartbeats(long to) throws SQLException, IOException {
 		// Now process the maps and the "absence"-events to see if there's any units
 		// missing and build a list of missing events from units
-		XAPSUnit xapsUnit = new XAPSUnit(getXapsCp(), xaps, getSyslog());
+		ACSUnit ACSUnit = new ACSUnit(getMainDataSource(), ACS, getSyslog());
 		for (SyslogMessageMapContainer.SyslogMessageMap smm : smmc.getContainerValues()) {
 			logger.debug("HeartbeatDetection: FilterHeartbeats: Process " + smm);
 			// The list contains the units in the group without the heartbeat message
 			List<String> unitIdsAbsent = new ArrayList<String>();
 			Heartbeat heartbeat = smm.getHeartbeat();
 			Group group = heartbeat.getGroup();
-			Map<String, Unit> groupUnits = xapsUnit.getUnits(group);
+			Map<String, Unit> groupUnits = ACSUnit.getUnits(group);
 			for (String unitId : groupUnits.keySet()) {
 				if (smm.getUnitIdTmsMap().get(unitId) == null && sentMessages.get(heartbeat.getId() + ":" + unitId) == null)
 					unitIdsAbsent.add(unitId);
@@ -200,7 +200,7 @@ public class HeartbeatDetection extends DBIShare {
 			int missingHeartbeatCounter = 0;
 			int unitNotFoundCounter = 0;
 			for (String unitIdMissing : unitIdsAbsent) {
-				Unit unit = xapsUnit.getUnitById(unitIdMissing);
+				Unit unit = ACSUnit.getUnitById(unitIdMissing);
 				if (unit == null) {
 					logger.debug("HeartbeatDetection: FilterHeartbeats: Unit " + unitIdMissing + " was not found in Fusion, will not generate syslog message for this unit");
 					unitNotFoundCounter++;
@@ -269,31 +269,31 @@ public class HeartbeatDetection extends DBIShare {
 			// This heartbeat object could be old/outdated - we
 			Heartbeat heartbeat = smm.getHeartbeat();
 
-			Unittype unittypeXAPS = xaps.getUnittype(heartbeat.getUnittype().getId());
-			if (unittypeXAPS == null) {
+			Unittype unittypeFreeacs = ACS.getUnittype(heartbeat.getUnittype().getId());
+			if (unittypeFreeacs == null) {
 				keyIterator.remove();
 				logger.debug("HeartbeatDetection: UpdateSyslogMessageMap: Unittype " + heartbeat.getUnittype().getName() + " could not be found, syslog message map is removed");
 				continue;
 			}
-			Heartbeat heartbeatXAPS = unittypeXAPS.getHeartbeats().getById(heartbeatId);
-			if (heartbeatXAPS == null) {
+			Heartbeat heartbeatFreeacs = unittypeFreeacs.getHeartbeats().getById(heartbeatId);
+			if (heartbeatFreeacs == null) {
 				keyIterator.remove();
 				logger.debug("HeartbeatDetection: UpdateSyslogMessageMap: Heartbeat " + heartbeat.getId() + " could not be found, syslog message map is removed");
 				continue;
 			}
-			Group groupXAPS = unittypeXAPS.getGroups().getById(heartbeat.getGroup().getId());
-			if (groupXAPS == null) {
+			Group groupFreeacs = unittypeFreeacs.getGroups().getById(heartbeat.getGroup().getId());
+			if (groupFreeacs == null) {
 				keyIterator.remove();
 				logger.debug("HeartbeatDetection: UpdateSyslogMessageMap: Group " + heartbeat.getGroup().getName() + " could not be found, syslog message map is removed");
 				continue;
 			}
-			if (!heartbeat.getExpression().equals(heartbeatXAPS.getExpression())) {
+			if (!heartbeat.getExpression().equals(heartbeatFreeacs.getExpression())) {
 				keyIterator.remove();
-				logger.debug("HeartbeatDetection: UpdateSyslogMessageMap: Heartbeat expression " + heartbeat.getExpression() + " has changed to " + heartbeatXAPS.getExpression()
+				logger.debug("HeartbeatDetection: UpdateSyslogMessageMap: Heartbeat expression " + heartbeat.getExpression() + " has changed to " + heartbeatFreeacs.getExpression()
 						+ ", we'll remove this syslog message map and start over");
 				continue;
 			}
-			smm.setHeartbeat(heartbeatXAPS);
+			smm.setHeartbeat(heartbeatFreeacs);
 		}
 	}
 

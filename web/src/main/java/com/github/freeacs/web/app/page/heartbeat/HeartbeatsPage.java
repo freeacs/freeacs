@@ -26,7 +26,7 @@ public class HeartbeatsPage extends AbstractWebPage {
 	private HeartbeatsData inputData;
 
 	/** The xaps. */
-	private XAPS xaps;
+	private ACS ACS;
 
 	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 
@@ -34,8 +34,8 @@ public class HeartbeatsPage extends AbstractWebPage {
 		inputData = (HeartbeatsData) InputDataRetriever.parseInto(new HeartbeatsData(), params);
 
 		/* Retrieve the XAPS object from session */
-		xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
-		if (xaps == null) {
+		ACS = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
+		if (ACS == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -44,7 +44,7 @@ public class HeartbeatsPage extends AbstractWebPage {
 		InputDataIntegrity.loadAndStoreSession(params, outputHandler, inputData, inputData.getUnittype());
 
 		/* Make the unittype-dropdown */
-		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps);
+		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS);
 		outputHandler.getTemplateMap().put("unittypes", unittypes);
 
 		if (unittypes.getSelected() != null) {
@@ -91,7 +91,7 @@ public class HeartbeatsPage extends AbstractWebPage {
 
 		if (inputData.getAction().isValue("delete") && inputData.getId().getInteger() != null) {
 			try {
-				heartbeats.deleteHeartbeat(heartbeats.getById(inputData.getId().getInteger()), xaps);
+				heartbeats.deleteHeartbeat(heartbeats.getById(inputData.getId().getInteger()), ACS);
 			} catch (Throwable ex) {
 				fmMap.put("error", "Could not delete Heartbeat " + ex.getLocalizedMessage());
 			}
@@ -113,7 +113,7 @@ public class HeartbeatsPage extends AbstractWebPage {
 			heartbeat.validateInput(true);
 			if (inputData.validateForm()) {
 				try {
-					heartbeats.addOrChangeHeartbeat(heartbeat, xaps);
+					heartbeats.addOrChangeHeartbeat(heartbeat, ACS);
 				} catch (Throwable ex) {
 					fmMap.put("error", "Could not add Heartbeat: " + ex.getLocalizedMessage());
 				}

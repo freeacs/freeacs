@@ -1,7 +1,7 @@
 package com.github.freeacs.web.app.page.report.uidata;
 
 import com.github.freeacs.dbi.Unit;
-import com.github.freeacs.dbi.XAPSUnit;
+import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.report.Key;
 import com.github.freeacs.dbi.report.RecordProvisioning;
 import com.github.freeacs.dbi.report.Report;
@@ -20,11 +20,11 @@ public class RecordUIDataProv {
 	private long errorCount;
 	private long missingCount;
 
-	public static List<RecordUIDataProv> convertRecords(XAPSUnit xapsUnit, Map<String, Report<RecordProvisioning>> reportMap) throws SQLException {
+	public static List<RecordUIDataProv> convertRecords(ACSUnit ACSUnit, Map<String, Report<RecordProvisioning>> reportMap) throws SQLException {
 		List<RecordUIDataProv> list = new ArrayList<RecordUIDataProv>();
 
 		for (Entry<String, Report<RecordProvisioning>> reportMapEntry : reportMap.entrySet()) {
-			Unit unit = xapsUnit.getUnitById(reportMapEntry.getKey());
+			Unit unit = ACSUnit.getUnitById(reportMapEntry.getKey());
 			Map<Key, RecordProvisioning> recordMap = reportMapEntry.getValue().getMapAggregatedOn("Output");
 			for (Entry<Key, RecordProvisioning> recordMapEntry : recordMap.entrySet()) {
 				Key key = recordMapEntry.getKey();

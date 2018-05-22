@@ -16,7 +16,7 @@ public class XAPSShellReader extends BufferedReader {
 
 	private ConsoleReader console;
 	private ArgumentCompletor argumentCompletor;
-	private XAPSShell xapsShell;
+	private FreeacsShell freeacsShell;
 
 	public XAPSShellReader(Reader in, ConsoleReader reader) {
 		super(in);
@@ -46,8 +46,8 @@ public class XAPSShellReader extends BufferedReader {
 
 	private String[] getLines() throws IOException {
 		List<String> completions = new ArrayList<String>();
-		if (xapsShell.getSession() != null && xapsShell.getSession().getXaps() != null)
-			completions.addAll(FileUtil.getCompletions(xapsShell.getSession()));
+		if (freeacsShell.getSession() != null && freeacsShell.getSession().getACS() != null)
+			completions.addAll(FileUtil.getCompletions(freeacsShell.getSession()));
 
 		File folder = new File(System.getProperty("user.dir"));
 		File[] listOfFiles = folder.listFiles();
@@ -63,15 +63,15 @@ public class XAPSShellReader extends BufferedReader {
 	}
 
 	private void println(String s) {
-		xapsShell.println(s);
+		freeacsShell.println(s);
 	}
 
-	public XAPSShell getXapsShell() {
-		return xapsShell;
+	public FreeacsShell getFreeacsShell() {
+		return freeacsShell;
 	}
 
-	public void setXapsShell(XAPSShell xapsShell) {
-		this.xapsShell = xapsShell;
+	public void setFreeacsShell(FreeacsShell freeacsShell) {
+		this.freeacsShell = freeacsShell;
 	}
 
 	//	private void listFiles() {

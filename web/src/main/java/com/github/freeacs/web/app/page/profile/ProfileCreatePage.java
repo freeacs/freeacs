@@ -1,8 +1,8 @@
 package com.github.freeacs.web.app.page.profile;
 
+import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.XAPS;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.*;
@@ -43,9 +43,9 @@ public class ProfileCreatePage extends ProfileActions {
 
 		String sessionId = params.getSession().getId();
 
-		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		ACS ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 
-		if (xaps == null) {
+		if (ACS == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -54,11 +54,11 @@ public class ProfileCreatePage extends ProfileActions {
 
 		Map<String, Object> root = outputHandler.getTemplateMap();
 		
-		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps);
+		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS);
 		
-		DropDownSingleSelect<Profile> profiles = InputSelectionFactory.getProfileSelection(inputData.getProfile(),inputData.getUnittype(), xaps);
+		DropDownSingleSelect<Profile> profiles = InputSelectionFactory.getProfileSelection(inputData.getProfile(),inputData.getUnittype(), ACS);
 
-		DropDownSingleSelect<Profile> profilestocopyfrom = InputSelectionFactory.getProfileSelection(inputData.getProfileCopy(), inputData.getUnittype(), xaps);
+		DropDownSingleSelect<Profile> profilestocopyfrom = InputSelectionFactory.getProfileSelection(inputData.getProfileCopy(), inputData.getUnittype(), ACS);
 		
 		root.put("unittypes", unittypes);
 		
@@ -70,7 +70,7 @@ public class ProfileCreatePage extends ProfileActions {
 				throw new Exception("You are not allowed to create profiles!");
 			}
 			if (unittypes.getSelected() != null && unittypes.getSelected().getProfiles().getByName(inputData.getProfilename().getString()) == null) {
-				ProfileStatus status = actionCreateProfile(sessionId, inputData, xaps, unittypes, profiles);
+				ProfileStatus status = actionCreateProfile(sessionId, inputData, ACS, unittypes, profiles);
 				if (status == ProfileStatus.PROFILE_CREATED) {
 					outputHandler.setDirectToPage(Page.PROFILE);
 					return;

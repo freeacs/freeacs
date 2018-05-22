@@ -243,8 +243,8 @@ public class Syslog2DB implements Runnable {
 		populateXAPS();
 	}
 
-	private static synchronized XAPS populateXAPS() {
-		return dbi.getXaps();
+	private static synchronized ACS populateXAPS() {
+		return dbi.getACS();
 	}
 
 	public void run() {
@@ -323,13 +323,13 @@ public class Syslog2DB implements Runnable {
 	private SyslogEntry prepareEntryWithXAPSInfo(SyslogEntry entry, SyslogPacket packet) throws SQLException {
 		CacheValue cv = unitCache.get(entry.getUnitId());
 		Unit unit;
-		XAPS xaps = populateXAPS();
+		ACS ACS = populateXAPS();
 		if (cv == null) {
-			XAPSUnit xapsUnit = new XAPSUnit(xapsCp, xaps, syslog);
+			ACSUnit ACSUnit = new ACSUnit(xapsCp, ACS, syslog);
 			if (entry.getTag() != null && entry.getTag().equals("UNITID"))
-				unit = xapsUnit.getUnitById(entry.getUnitId());
+				unit = ACSUnit.getUnitById(entry.getUnitId());
 			else
-				unit = xapsUnit.getLimitedUnitByValue(entry.getUnitId());
+				unit = ACSUnit.getLimitedUnitByValue(entry.getUnitId());
 			if (unit == null) {
 				cv = new CacheValue("Not found", Cache.ABSOLUTE, 1000 * 30);
 				unitCache.put(entry.getUnitId(), cv);
@@ -344,7 +344,7 @@ public class Syslog2DB implements Runnable {
 			entry.setUnitId(unit.getId());
 			entry.setProfileName(unit.getProfile().getName());
 			entry.setUnittypeName(unit.getUnittype().getName());
-			Unittype unittype = xaps.getUnittype(entry.getUnittypeName());
+			Unittype unittype = ACS.getUnittype(entry.getUnittypeName());
 
 			UnitParameter swUp = unit.getUnitParameters().get(SystemParameters.SOFTWARE_VERSION);
 			if (swUp != null && entry.getFacilityVersion() == null)
@@ -360,21 +360,21 @@ public class Syslog2DB implements Runnable {
 				counter.incUknownAllowed();
 				if (action.endsWith("allow-create")) {
 					counter.incUknownAllowedCreated();
-					Unittype unittype = xaps.getUnittype("MonitorDevice");
+					Unittype unittype = ACS.getUnittype("MonitorDevice");
 					if (unittype == null) {
 						unittype = new Unittype("MonitorDevice", "Unknown", "A dummy unittype for monitoring purpose", ProvisioningProtocol.TR069);
-						xaps.getUnittypes().addOrChangeUnittype(unittype, xaps);
+						ACS.getUnittypes().addOrChangeUnittype(unittype, ACS);
 					}
 					Profile profile = unittype.getProfiles().getByName("Default");
-					XAPSUnit xapsUnit = new XAPSUnit(xapsCp, xaps, syslog);
+					ACSUnit ACSUnit = new ACSUnit(xapsCp, ACS, syslog);
 					List<String> units = new ArrayList<String>();
 					String unitId = "000000-MD-" + entry.getUnitId();
 					units.add(unitId);
-					xapsUnit.addUnits(units, profile);
+					ACSUnit.addUnits(units, profile);
 					UnittypeParameter utp = unittype.getUnittypeParameters().getByName(SystemParameters.SERIAL_NUMBER);
 					List<UnitParameter> unitParameters = new ArrayList<UnitParameter>();
 					unitParameters.add(new UnitParameter(utp, unitId, entry.getUnitId(), profile));
-					xapsUnit.addOrChangeUnitParameters(unitParameters, profile);
+					ACSUnit.addOrChangeUnitParameters(unitParameters, profile);
 					unitCache.remove(entry.getUnitId());
 					if (logger.isDebugEnabled())
 						logger.debug("Unitid " + entry.getUnitId() + " unknown, but unknown units are allowed and dummy unit is created");

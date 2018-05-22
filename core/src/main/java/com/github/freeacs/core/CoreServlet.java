@@ -6,7 +6,7 @@ import com.github.freeacs.common.scheduler.Scheduler;
 import com.github.freeacs.common.scheduler.ShowScheduleQueue;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.core.task.*;
-import com.github.freeacs.dbi.util.XAPSVersionCheck;
+import com.github.freeacs.dbi.util.FreeacsVersionCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,12 +28,12 @@ public class CoreServlet extends HttpServlet {
 	private static Scheduler scheduler = null;
 
 	private static Logger log = LoggerFactory.getLogger(CoreServlet.class);
-	private final DataSource xapsCp;
-	private final DataSource sysCp;
+	private final DataSource mainDataSource;
+	private final DataSource syslogDataSource;
 
-	public CoreServlet(DataSource xapsCp, DataSource sysCp) {
-		this.xapsCp = xapsCp;
-		this.sysCp = sysCp;
+	public CoreServlet(DataSource mainDataSource, DataSource syslogDataSource) {
+		this.mainDataSource = mainDataSource;
+		this.syslogDataSource = syslogDataSource;
 	}
 
 	public void destroy() {
@@ -44,7 +44,7 @@ public class CoreServlet extends HttpServlet {
 	public void init() {
 		try {
 			log.info("Server starts...");
-			XAPSVersionCheck.versionCheck(xapsCp);
+			FreeacsVersionCheck.versionCheck(mainDataSource);
 			scheduler = new Scheduler();
 			Thread t = new Thread(scheduler);
 			t.setName("Core (Scheduler)");
@@ -52,30 +52,30 @@ public class CoreServlet extends HttpServlet {
 
 			// only to test: scheduler.registerTask(new Schedule(60 * 60000, false, ScheduleType.INTERVAL, new ReportGenerator("ReportGeneratorHourly", ScheduleType.INTERVAL)));
 			//Run at 00 every hour - heavy task
-			scheduler.registerTask(new Schedule(0, false, ScheduleType.HOURLY, new ReportGenerator("ReportGeneratorHourly", ScheduleType.HOURLY, xapsCp, sysCp)));
+			scheduler.registerTask(new Schedule(0, false, ScheduleType.HOURLY, new ReportGenerator("ReportGeneratorHourly", ScheduleType.HOURLY, mainDataSource, syslogDataSource)));
 			// Run at 0015 every night - very heavy task
-			scheduler.registerTask(new Schedule(15 * 60000, false, ScheduleType.DAILY, new ReportGenerator("ReportGeneratorDaily", ScheduleType.DAILY, xapsCp, sysCp)));
+			scheduler.registerTask(new Schedule(15 * 60000, false, ScheduleType.DAILY, new ReportGenerator("ReportGeneratorDaily", ScheduleType.DAILY, mainDataSource, syslogDataSource)));
 			// Run at 0500 every night - very heavy task
-			scheduler.registerTask(new Schedule(5 * 60 * 60000, false, ScheduleType.DAILY, new DeleteOldSyslog("DeleteOldSyslogEntries", xapsCp, sysCp)));
+			scheduler.registerTask(new Schedule(5 * 60 * 60000, false, ScheduleType.DAILY, new DeleteOldSyslog("DeleteOldSyslogEntries", mainDataSource, syslogDataSource)));
 			// Run at 0530 every night - light task
-			scheduler.registerTask(new Schedule((5 * 60 + 30) * 60000, false, ScheduleType.DAILY, new DeleteOldJobs("DeleteOldJobs", xapsCp, sysCp)));
+			scheduler.registerTask(new Schedule((5 * 60 + 30) * 60000, false, ScheduleType.DAILY, new DeleteOldJobs("DeleteOldJobs", mainDataSource, syslogDataSource)));
 			
 
 			// Run every second - light task
-			scheduler.registerTask(new Schedule(1000, false, ScheduleType.INTERVAL, new JobRuleEnforcer("JobRuleEnforcer", xapsCp, sysCp)));
-			if (XAPSVersionCheck.triggerSupported) {
+			scheduler.registerTask(new Schedule(1000, false, ScheduleType.INTERVAL, new JobRuleEnforcer("JobRuleEnforcer", mainDataSource, syslogDataSource)));
+			if (FreeacsVersionCheck.triggerSupported) {
 				// Run at 30(sec) every minute - light task 
-				scheduler.registerTask(new Schedule(30000, false, ScheduleType.MINUTELY, new TriggerReleaser("TriggerReleaser", xapsCp, sysCp)));
+				scheduler.registerTask(new Schedule(30000, false, ScheduleType.MINUTELY, new TriggerReleaser("TriggerReleaser", mainDataSource, syslogDataSource)));
 			}
-			if (XAPSVersionCheck.scriptExecutionSupported) {
+			if (FreeacsVersionCheck.scriptExecutionSupported) {
 				// Run every 100 ms - very light task
-				scheduler.registerTask(new Schedule(100, false, ScheduleType.INTERVAL, new ScriptExecutor("ScriptExecutor", xapsCp, sysCp)));
+				scheduler.registerTask(new Schedule(100, false, ScheduleType.INTERVAL, new ScriptExecutor("ScriptExecutor", mainDataSource, syslogDataSource)));
 				// Run at 45 every hour - light task
-				scheduler.registerTask(new Schedule(45 * 1000, false, ScheduleType.MINUTELY, new DeleteOldScripts("DeleteOldScripts", xapsCp, sysCp)));
+				scheduler.registerTask(new Schedule(45 * 1000, false, ScheduleType.MINUTELY, new DeleteOldScripts("DeleteOldScripts", mainDataSource, syslogDataSource)));
 			}
-			if (XAPSVersionCheck.heartbeatSupported) {
+			if (FreeacsVersionCheck.heartbeatSupported) {
 				// Run every 5 minute - moderate task
-				scheduler.registerTask(new Schedule(5 * 60000, false, ScheduleType.INTERVAL, new HeartbeatDetection("HeartbeatDetection", xapsCp, sysCp)));
+				scheduler.registerTask(new Schedule(5 * 60000, false, ScheduleType.INTERVAL, new HeartbeatDetection("HeartbeatDetection", mainDataSource, syslogDataSource)));
 			}
 			// Run at 59 every hour - very light task
 			scheduler.registerTask(new Schedule(60000, false, ScheduleType.HOURLY, new ShowScheduleQueue("ShowScheduleQueue", scheduler)));
@@ -106,7 +106,7 @@ public class CoreServlet extends HttpServlet {
 				}
 			}
 		}
-		out.println("XAPSOK " + version);
+		out.println("FREEACSOK " + version);
 		out.close();
 	}
 }

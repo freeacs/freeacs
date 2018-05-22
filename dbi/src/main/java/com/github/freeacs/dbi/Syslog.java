@@ -80,10 +80,8 @@ public class Syslog {
   private boolean allUnittypesSpecified(SyslogFilter filter, Map<Integer, Set<Profile>> unittypesWithSomeProfilesSpecified) {
     Set<Integer> unittypesWithAllProfilesSpecified = new HashSet<Integer>();
     boolean allUnittypesSpecified = false;
-    XAPS xaps = filter.getProfiles().get(0).getUnittype().getXaps();
-    int noUnittypes = xaps.getUnittypes().getUnittypes().length; // the number
-                                                                 // of unittypes
-                                                                 // in xAPS
+    ACS ACS = filter.getProfiles().get(0).getUnittype().getACS();
+    int noUnittypes = ACS.getUnittypes().getUnittypes().length;
     for (Profile profile : filter.getProfiles()) {
       Integer unittypeId = profile.getUnittype().getId();
       Set<Profile> profilesInUnittype = unittypesWithSomeProfilesSpecified.get(unittypeId);
@@ -137,8 +135,8 @@ public class Syslog {
       ds.cleanupSQLTail();
       ds.addSql(") AND ");
     } else if (filter.getUnittypes() != null && filter.getUnittypes().size() > 0) {
-      XAPS xaps = filter.getUnittypes().get(0).getXaps();
-      int noUnittypes = xaps.getUnittypes().getUnittypes().length;
+      ACS ACS = filter.getUnittypes().get(0).getACS();
+      int noUnittypes = ACS.getUnittypes().getUnittypes().length;
       boolean isAdmin = user.isAdmin();
       if (noUnittypes > filter.getUnittypes().size() || !isAdmin) {
         ds.addSql("(");
@@ -349,9 +347,6 @@ public class Syslog {
       se.setCollectorTimestamp(rs.getTimestamp("collector_timestamp"));
       se.setEventId(rs.getInt("syslog_event_id"));
       se.setFacility(rs.getInt("facility"));
-      // if (se.getFacility() <= 16) // Local devices
-      // facilityDevice = true;
-      // if (XAPSVersionCheck.syslogFacilityVersionSupported)
       se.setFacilityVersion(rs.getString("facility_version"));
       se.setSeverity(rs.getInt("severity"));
       se.setDeviceTimestamp(rs.getString("device_timestamp"));
@@ -361,20 +356,8 @@ public class Syslog {
       se.setFlags(rs.getString("flags"));
       se.setIpAddress(rs.getString("ipaddress"));
       se.setUnitId(rs.getString("unit_id"));
-      // if (XAPSVersionCheck.syslogSupported)
       se.setProfileName(rs.getString("profile_name"));
-      // else {
-      // String profileIdStr = rs.getString("profile_id");
-      // if (profileIdStr != null)
-      // se.setProfileId(rs.getInt("profile_id"));
-      // }
-      // if (XAPSVersionCheck.syslogSupported)
       se.setUnittypeName(rs.getString("unit_type_name"));
-      // else {
-      // String unittypeIdStr = rs.getString("unit_type_id");
-      // if (unittypeIdStr != null)
-      // se.setUnittypeId(rs.getInt("unit_type_id"));
-      // }
       se.setUserId(rs.getString("user_id"));
       result.add(se);
     }
@@ -487,7 +470,7 @@ public class Syslog {
     }
   }
 
-  public List<SyslogEntry> read(SyslogFilter filter, XAPS xaps) throws SQLException {
+  public List<SyslogEntry> read(SyslogFilter filter, ACS ACS) throws SQLException {
     Connection c = getDataSource().getConnection();
     PreparedStatement pp = null;
     ResultSet rs = null;

@@ -18,16 +18,16 @@ import java.util.List;
 public class AddOrChangeUnit {
 	private static final Logger logger = LoggerFactory.getLogger(AddOrChangeUnit.class);
 
-	private XAPS xaps;
-	private XAPSWS xapsWS;
-	private XAPSUnit xapsUnit;
+	private ACS ACS;
+	private ACSWS xapsWS;
+	private ACSUnit ACSUnit;
 
 	public AddOrChangeUnitResponse addOrChangeUnit(AddOrChangeUnitRequest aocur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 			
-			xapsWS = XAPSWSFactory.getXAPSWS(aocur.getLogin(), xapsDs, syslogDs);
-			xaps = xapsWS.getXAPS();
-			xapsUnit = xapsWS.getXAPSUnit(xaps);
+			xapsWS = ACSWSFactory.getXAPSWS(aocur.getLogin(), xapsDs, syslogDs);
+			ACS = xapsWS.getXAPS();
+			ACSUnit = xapsWS.getXAPSUnit(ACS);
 
 			/* 
 			 * We need to support these use cases
@@ -57,22 +57,22 @@ public class AddOrChangeUnit {
 			 */
 			Unit unitWS = aocur.getUnit();
 			if (unitWS.getUnittype() == null || unitWS.getProfile() == null)
-				throw XAPSWS.error(logger, "Unittype and/or Profile object are missing");
+				throw ACSWS.error(logger, "Unittype and/or Profile object are missing");
 			Profile profile = xapsWS.getProfileFromXAPS(unitWS.getUnittype().getName(), unitWS.getProfile().getName());
 			String unitId = validateUnitId(unitWS, profile.getUnittype(), profile);
 			List<String> unitIds = new ArrayList<String>();
 			unitIds.add(unitId);
 			List<UnitParameter> acParams = validateAddOrChangeUnitParameters(unitWS, profile.getUnittype(), profile);
 			List<UnitParameter> dParams = validateDeleteUnitParameters(unitWS, profile.getUnittype(), profile);
-			xapsUnit.addUnits(unitIds, profile);
-			xapsUnit.addOrChangeUnitParameters(acParams, profile);
-			xapsUnit.deleteUnitParameters(dParams);
+			ACSUnit.addUnits(unitIds, profile);
+			ACSUnit.addOrChangeUnitParameters(acParams, profile);
+			ACSUnit.deleteUnitParameters(dParams);
 			return new AddOrChangeUnitResponse(unitWS);
 		} catch (Throwable t) {
 			if (t instanceof RemoteException)
 				throw (RemoteException) t;
 			else {
-				throw XAPSWS.error(logger, t);
+				throw ACSWS.error(logger, t);
 			}
 		}
 	}
@@ -80,13 +80,13 @@ public class AddOrChangeUnit {
 	private String validateUnitId(Unit unitWS, Unittype unittype, Profile profile) throws SQLException, RemoteException {
 		if (unitWS.getUnitId() == null) {
 			if (unitWS.getSerialNumber() != null) {
-				com.github.freeacs.dbi.Unit unitXAPS = xapsWS.getUnitByMAC(xapsUnit, unittype, profile, unitWS.getSerialNumber());
+				com.github.freeacs.dbi.Unit unitXAPS = xapsWS.getUnitByMAC(ACSUnit, unittype, profile, unitWS.getSerialNumber());
 				if (unitXAPS != null) {
 					unitWS.setUnitId(unitXAPS.getId());
 				}
 			}
 			if (unitWS.getUnitId() == null)
-				XAPSWS.error(logger, "No unitId or serial number is supplied to the service");
+				ACSWS.error(logger, "No unitId or serial number is supplied to the service");
 		}
 		return unitWS.getUnitId();
 	}
@@ -97,7 +97,7 @@ public class AddOrChangeUnit {
 		for (Parameter p : parameters) {
 			UnittypeParameter utp = unittype.getUnittypeParameters().getByName(p.getName());
 			if (utp == null) {
-				throw XAPSWS.error(logger, "Unittype parameter " + p.getName() + " is not found in unittype " + unittype.getName());
+				throw ACSWS.error(logger, "Unittype parameter " + p.getName() + " is not found in unittype " + unittype.getName());
 			} else {
 				if (p.getFlags() != null && p.getFlags().equals("D")) {
 					unitParams.add(new UnitParameter(utp, unitWS.getUnitId(), p.getValue(), profile));
@@ -113,7 +113,7 @@ public class AddOrChangeUnit {
 		for (Parameter p : parameters) {
 			UnittypeParameter utp = unittype.getUnittypeParameters().getByName(p.getName());
 			if (utp == null) {
-				throw XAPSWS.error(logger, "Unittype parameter " + p.getName() + " is not found in unittype " + unittype.getName());
+				throw ACSWS.error(logger, "Unittype parameter " + p.getName() + " is not found in unittype " + unittype.getName());
 			} else {
 				if (p.getFlags() == null || p.getFlags().equals("AC")) {
 					unitParams.add(new UnitParameter(utp, unitWS.getUnitId(), p.getValue(), profile));

@@ -27,7 +27,7 @@ public class TriggerReleaseHistoryPage extends AbstractWebPage {
 	private String sessionId;
 	@SuppressWarnings("unused")
 	private Output outputHandler;
-	private XAPS xaps;
+	private ACS ACS;
 	private Unittype unittype;
 
 	public List<MenuItem> getShortcutItems(SessionData sessionData) {
@@ -60,8 +60,8 @@ public class TriggerReleaseHistoryPage extends AbstractWebPage {
 		this.outputHandler = outputHandler;
 		outputHandler.getTemplateMap().put("triggerOverviewUrl", Page.TRIGGEROVERVIEW.getUrl());
 		Map<String, Object> fmMap = outputHandler.getTemplateMap();
-		this.xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (xaps == null) {
+		this.ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (ACS == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -79,20 +79,20 @@ public class TriggerReleaseHistoryPage extends AbstractWebPage {
 		}
 		fmMap.put("tmsEnd", urlFormat.format(tmsEnd));
 		fmMap.put("tmsStart", urlFormat.format(tmsStart));
-		fmMap.put("unittypes", InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps));
-		this.unittype = xaps.getUnittype(inputData.getUnittype().getString());
+		fmMap.put("unittypes", InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS));
+		this.unittype = ACS.getUnittype(inputData.getUnittype().getString());
 		if (unittype != null) {
 			Triggers triggers = unittype.getTriggers();
 			Input triggerIdInput = inputData.getTriggerId();
 			Trigger trigger = null;
-			fmMap.put("triggers", InputSelectionFactory.getTriggerSelection(triggerIdInput, unittype, xaps));
+			fmMap.put("triggers", InputSelectionFactory.getTriggerSelection(triggerIdInput, unittype, ACS));
 			List<ReleaseTrigger> releaseTriggerList = new ArrayList<ReleaseTrigger>();
 			fmMap.put("releasetriggers", releaseTriggerList);
 			if (triggerIdInput != null && triggerIdInput.getValue() != null) {
 				trigger = triggers.getById(triggerIdInput.getInteger());
 				fmMap.put("trigger", trigger);
 			}
-			List<TriggerRelease> trList = triggers.readTriggerReleases(trigger, tmsStart, tmsEnd, xaps, null);
+			List<TriggerRelease> trList = triggers.readTriggerReleases(trigger, tmsStart, tmsEnd, ACS, null);
 			for (TriggerRelease tr : trList) {
 				ReleaseTrigger rt = new ReleaseTrigger();
 				rt.setTrigger(tr.getTrigger());

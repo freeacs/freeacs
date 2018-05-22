@@ -11,7 +11,7 @@ import java.util.regex.PatternSyntaxException;
  * - Make a validate() method which should call upon all set-methods (except setId())
  * - all set-methods shall make input-validation and throw IllegalArgumentException if something is wrong
  * - offer a validateInput(boolean) method and a corresponding validateInput-field. Use this field in all
- * set-methods to skip input-validation if validateInput = false (will be used from XAPS-object). In those cases were a value should
+ * set-methods to skip input-validation if validateInput = false (will be used from Freeacs-object). In those cases were a value should
  * be specified (or it would cause NullPointerException or other things), set a reasonable default-value. In some
  * cases it doesn't make any sense to allow input, for example "name=null", since it will break everything.
  * In that case we will always throw an IllegalArgumentException. The validateInput() method must be protected and must always be
@@ -92,7 +92,7 @@ public class SyslogEvent implements Comparable<SyslogEvent> {
 		return this.getEventId() - o.getEventId();
 	}
 
-	/* Only to be used by XAPS object - to read from database.
+	/* Only to be used by Freeacs object - to read from database.
 	 * The idea is that data corruption in database should not make it
 	 * impossible to start Fusion */
 	protected void validateInput(boolean validateInput) {

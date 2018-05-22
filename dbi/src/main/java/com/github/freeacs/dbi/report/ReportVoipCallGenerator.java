@@ -22,8 +22,8 @@ public class ReportVoipCallGenerator extends ReportGenerator {
 	// MOS-report: MOS Report: Channel 0: MOS: 434
 	private static Pattern mosPattern = Pattern.compile("MOS: (\\d+)");
 
-	public ReportVoipCallGenerator(DataSource sysCp, DataSource xapsCp, XAPS xaps, String logPrefix, Identity id) {
-		super(sysCp, xapsCp, xaps, logPrefix, id);
+	public ReportVoipCallGenerator(DataSource mainDataSource, DataSource syslogDataSource, ACS ACS, String logPrefix, Identity id) {
+		super(mainDataSource, syslogDataSource, ACS, logPrefix, id);
 	}
 
 	public Report<RecordVoipCall> generateFromSyslog(Date start, Date end, String unitId, String line) throws SQLException, IOException {
@@ -81,7 +81,7 @@ public class ReportVoipCallGenerator extends ReportGenerator {
 	}
 
 	private List<SyslogEntry> readSyslog(Date start, Date end, List<Unittype> uts, List<Profile> prs, String unitId, String line) throws SQLException {
-		Syslog syslog = new Syslog(sysCp, id);
+		Syslog syslog = new Syslog(syslogDataSource, id);
 		SyslogFilter filter = new SyslogFilter();
 		filter.setFacility(16); // Only messages from device
 		if (line == null)
@@ -94,7 +94,7 @@ public class ReportVoipCallGenerator extends ReportGenerator {
 		filter.setCollectorTmsStart(start);
 		filter.setCollectorTmsEnd(end);
 		filter.setFacilityVersion(swVersion);
-		return syslog.read(filter, xaps);
+		return syslog.read(filter, ACS);
 	}
 
 	private void addToReport(Report<RecordVoipCall> report, SyslogEntry entry, PeriodType periodType) {

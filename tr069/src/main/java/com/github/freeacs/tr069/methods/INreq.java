@@ -198,7 +198,7 @@ public class INreq {
 				}
 			}
 			if (Properties.DISCOVERY_MODE && sessionData.isFirstConnect()) {
-				DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(reqRes.getDbAccess().getDBI().getXaps(), sessionData.getDbAccessSession());
+				DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(reqRes.getDbAccess().getDBI().getACS(), sessionData.getDbAccessSession());
 				dbAccessSessionTR069.writeUnittypeProfileUnit(sessionData, deviceIdStruct.getProductClass(), unitId);
 				sessionData.setFromDB(null);
 				sessionData.setFreeacsParameters(null);

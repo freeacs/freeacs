@@ -29,7 +29,7 @@ public class TriggerReleasePage extends AbstractWebPage {
 	private String sessionId;
 	@SuppressWarnings("unused")
 	private Output outputHandler;
-	private XAPS xaps;
+	private ACS ACS;
 	private Unittype unittype;
 
 	public List<MenuItem> getShortcutItems(SessionData sessionData) {
@@ -61,8 +61,8 @@ public class TriggerReleasePage extends AbstractWebPage {
 		this.sessionId = params.getSession().getId();
 		this.outputHandler = outputHandler;
 		Map<String, Object> fmMap = outputHandler.getTemplateMap();
-		this.xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (xaps == null) {
+		this.ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (ACS == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -74,11 +74,11 @@ public class TriggerReleasePage extends AbstractWebPage {
 		Date twoHoursBeforeTms = new Date(tms.getTime() - 7200 * 1000);
 		fmMap.put("tms", urlFormat.format(tms));
 		fmMap.put("twohoursbeforetms", urlFormat.format(twoHoursBeforeTms));
-		fmMap.put("unittypes", InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps));
-		this.unittype = xaps.getUnittype(inputData.getUnittype().getString());
+		fmMap.put("unittypes", InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS));
+		this.unittype = ACS.getUnittype(inputData.getUnittype().getString());
 		if (unittype != null) {
 			/* The table elements */
-			List<TableElement> triggerTableElements = new TableElementMaker().getTriggers(unittype, xaps);
+			List<TableElement> triggerTableElements = new TableElementMaker().getTriggers(unittype, ACS);
 			outputHandler.getTemplateMap().put("triggertablelist", triggerTableElements);
 
 			/* Map to retrieve ReleaseTrigger object for every trigger */
@@ -88,7 +88,7 @@ public class TriggerReleasePage extends AbstractWebPage {
 				ReleaseTrigger rt = new ReleaseTrigger();
 				//				Date evalPeriodStart = new Date(tms.getTime() - trigger.getEvalPeriodMinutes() * 60000);
 				Date evalPeriodStart = new Date(tms.getTime() - 3600 * 1000 * 2);
-				List<TriggerRelease> trList = triggers.readTriggerReleases(trigger, evalPeriodStart, tms, xaps, null);
+				List<TriggerRelease> trList = triggers.readTriggerReleases(trigger, evalPeriodStart, tms, ACS, null);
 				for (TriggerRelease tr : trList) {
 					if (rt.getReleasedTms() == null) {
 						rt.setReleasedTms(tr.getReleaseTms());

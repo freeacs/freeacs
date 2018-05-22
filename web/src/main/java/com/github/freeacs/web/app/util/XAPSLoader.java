@@ -61,10 +61,10 @@ public class XAPSLoader {
 	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	public static XAPS getXAPS(String sessionId, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
+	public static ACS getXAPS(String sessionId, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
 		DBI dbi = getDBI(sessionId, xapsDataSource, syslogDataSource);
 		if (dbi != null)
-			return dbi.getXaps();
+			return dbi.getACS();
 		return null;
 	}
 
@@ -118,12 +118,12 @@ public class XAPSLoader {
 	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	public static XAPSUnit getXAPSUnit(String sessionId, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
-		XAPS xaps = getDBI(sessionId, xapsDataSource, syslogDataSource).getXaps();
-		if (xaps == null)
+	public static ACSUnit getXAPSUnit(String sessionId, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
+		ACS ACS = getDBI(sessionId, xapsDataSource, syslogDataSource).getACS();
+		if (ACS == null)
 			return null;
-		Identity ident = getIdentity(sessionId, xaps.getDataSource());
+		Identity ident = getIdentity(sessionId, ACS.getDataSource());
 		Syslog syslog = new Syslog(syslogDataSource, ident);
-		return new XAPSUnit(xaps.getDataSource(), xaps, syslog);
+		return new ACSUnit(ACS.getDataSource(), ACS, syslog);
 	}
 }

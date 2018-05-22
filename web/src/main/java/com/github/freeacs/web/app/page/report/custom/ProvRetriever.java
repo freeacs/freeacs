@@ -1,9 +1,9 @@
 package com.github.freeacs.web.app.page.report.custom;
 
+import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.Group;
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.XAPS;
 import com.github.freeacs.dbi.report.*;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.report.ReportData;
@@ -28,14 +28,14 @@ public class ProvRetriever extends ReportRetriever {
 	 *
 	 * @param inputData the input data
 	 * @param params the params
-	 * @param xaps the xaps
+	 * @param ACS the xaps
 	 * @throws SQLException the sQL exception
 	 *  the no available connection exception
 	 */
-	public ProvRetriever(ReportData inputData, ParameterParser params, XAPS xaps) throws SQLException {
-		super(inputData, params, xaps);
-		generatorProv = new ReportProvisioningGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(), xaps,
-				null, XAPSLoader.getIdentity(params.getSession().getId(), xaps.getDataSource()));
+	public ProvRetriever(ReportData inputData, ParameterParser params, ACS ACS) throws SQLException {
+		super(inputData, params, ACS);
+		generatorProv = new ReportProvisioningGenerator(ACS.getDataSource(), ACS.getSyslog().getDataSource(), ACS,
+				null, XAPSLoader.getIdentity(params.getSession().getId(), ACS.getDataSource()));
 	}
 
 	/* (non-Javadoc)

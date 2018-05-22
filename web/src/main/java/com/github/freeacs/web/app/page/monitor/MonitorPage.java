@@ -1,6 +1,6 @@
 package com.github.freeacs.web.app.page.monitor;
 
-import com.github.freeacs.dbi.XAPS;
+import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.AbstractWebPage;
@@ -51,9 +51,9 @@ public class MonitorPage extends AbstractWebPage {
 	 * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
 	 */
 	public void process(ParameterParser req, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
-		XAPS xaps = XAPSLoader.getXAPS(req.getSession().getId(), xapsDataSource, syslogDataSource);
+		ACS ACS = XAPSLoader.getXAPS(req.getSession().getId(), xapsDataSource, syslogDataSource);
 
-		if (xaps == null) {
+		if (ACS == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}

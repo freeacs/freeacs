@@ -1,7 +1,7 @@
 package com.github.freeacs.web.app.page.certificates;
 
+import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.Certificate;
-import com.github.freeacs.dbi.XAPS;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.InputDataRetriever;
@@ -32,7 +32,7 @@ public class CryptoPage extends AbstractWebPage {
 	private CryptoData inputData;
 	
 	/** The xaps. */
-	private XAPS xaps;
+	private ACS ACS;
 	
 	/** The logger. */
 	private static final Logger logger = LoggerFactory.getLogger(CryptoPage.class);
@@ -45,8 +45,8 @@ public class CryptoPage extends AbstractWebPage {
 
 		HttpSession session = params.getSession();
 		
-		xaps = XAPSLoader.getXAPS(session.getId(), xapsDataSource, syslogDataSource);
-		if (xaps == null) {
+		ACS = XAPSLoader.getXAPS(session.getId(), xapsDataSource, syslogDataSource);
+		if (ACS == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -54,11 +54,11 @@ public class CryptoPage extends AbstractWebPage {
 		Map<String,Object> root = outputHandler.getTemplateMap();
 		
 		if(inputData.getAction().notNullNorValue("") && inputData.getId().getInteger()!=null){
-			Certificate certToEdit = xaps.getCertificates().getById(inputData.getId().getInteger());
+			Certificate certToEdit = ACS.getCertificates().getById(inputData.getId().getInteger());
 			if(certToEdit!=null){
 				if(inputData.getAction().isValue("delete")){
 					try{
-						xaps.getCertificates().deleteCertificate(certToEdit, xaps);
+						ACS.getCertificates().deleteCertificate(certToEdit, ACS);
 						session.setAttribute("info","Successfully deleted Certificate ["+certToEdit.getId().toString()+"]");
 						outputHandler.setDirectToPage(Page.CERTIFICATES); // Avoid postback warning
 						return;
@@ -73,7 +73,7 @@ public class CryptoPage extends AbstractWebPage {
 				try{
 					 cert = new Certificate("Uploaded "+new Date().toString(), inputData.getCertificate().getFileAsString());
 					 try{
-						xaps.getCertificates().addOrChangeCertificate(cert, xaps);
+						ACS.getCertificates().addOrChangeCertificate(cert, ACS);
 						params.getSession().setAttribute("info","Successfully added Certificate ["+cert.getId()+"]");
 						outputHandler.setDirectToPage(Page.CERTIFICATES); // Avoid postback warning
 						return;
@@ -82,11 +82,11 @@ public class CryptoPage extends AbstractWebPage {
 						logger.debug("Certificate is "+(valid?"valid":"invalid"));
 						if(valid){
 							logger.debug("Deleting current "+cert.getCertType()+" certificate");
-							Certificate certToDelete = xaps.getCertificates().getCertificate(cert.getCertType());
+							Certificate certToDelete = ACS.getCertificates().getCertificate(cert.getCertType());
 							if(certToDelete.isTrial()){
-								xaps.getCertificates().deleteCertificate(certToDelete, xaps);
+								ACS.getCertificates().deleteCertificate(certToDelete, ACS);
 								logger.debug("Upgrading "+cert.getCertType()+" certificate");
-								xaps.getCertificates().addOrChangeCertificate(cert, xaps);
+								ACS.getCertificates().addOrChangeCertificate(cert, ACS);
 								params.getSession().setAttribute("info","Successfully updated Certificate ["+cert.getId()+"]");
 								outputHandler.setDirectToPage(Page.CERTIFICATES); // Avoid postback warning
 								return;
@@ -106,8 +106,8 @@ public class CryptoPage extends AbstractWebPage {
 		
 		root.put("ismodulevalid",new IsModuleValidMethod());
 		
-		if(xaps.getCertificates()!=null)
-			root.put("certificates", xaps.getCertificates().getCertificates());
+		if(ACS.getCertificates()!=null)
+			root.put("certificates", ACS.getCertificates().getCertificates());
 		
 		outputHandler.setTemplatePath("/certificates.ftl");
 	}
@@ -128,7 +128,7 @@ public class CryptoPage extends AbstractWebPage {
 
 			Integer id = Integer.parseInt((String) args.get(0));
 
-			Certificate cert = xaps.getCertificates().getById(id);
+			Certificate cert = ACS.getCertificates().getById(id);
 			
 			if(cert==null)
 				throw new IllegalArgumentException("Certificate "+id+" was not found");

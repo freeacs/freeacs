@@ -171,13 +171,13 @@ public class UnitStatusPage extends AbstractWebPage {
 		}
 		*/
 
-		XAPSUnit xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource, syslogDataSource);
+		ACSUnit ACSUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource, syslogDataSource);
 		
 		Unit unit = null;
 
 		if (inputData.getUnit().notNullNorValue("")){
 			long getUnitStatusInfo = System.nanoTime();
-			unit = xapsUnit.getUnitById(inputData.getUnit().getString());
+			unit = ACSUnit.getUnitById(inputData.getUnit().getString());
 			logTimeElapsed(getUnitStatusInfo, "Retrieved Unit from database!",logger);
 		}
 
@@ -313,10 +313,10 @@ public class UnitStatusPage extends AbstractWebPage {
 		cal.setTimeInMillis(System.currentTimeMillis());
 		cal.add(Calendar.SECOND, -30);
 		Date start = cal.getTime();
-		XAPSUnit xapsUnit = XAPSLoader.getXAPSUnit(session.getId(), xapsDataSource, syslogDataSource);
-		if(xapsUnit == null)
+		ACSUnit ACSUnit = XAPSLoader.getXAPSUnit(session.getId(), xapsDataSource, syslogDataSource);
+		if(ACSUnit == null)
 			throw new NotLoggedInException();
-		Unit unit = xapsUnit.getUnitById(unitId);
+		Unit unit = ACSUnit.getUnitById(unitId);
 		if(unit == null)
 			throw new UnitNotFoundException();
 		boolean isline1up = isCallOngoing(session.getId(), UnitStatusInfo.VoipLine.LINE_0, unit, start, null, xapsDataSource);

@@ -29,9 +29,9 @@ public class SyslogPage extends AbstractWebPage {
 			return;
 		}
 
-		XAPS xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
+		ACS ACS = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
 
-		if (xaps == null) {
+		if (ACS == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -41,8 +41,8 @@ public class SyslogPage extends AbstractWebPage {
 		// Fix
 		InputDataIntegrity.loadAndStoreSession(params,outputHandler,inputData, inputData.getUnittype(),inputData.getProfile());
 
-		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps);
-		DropDownSingleSelect<Profile> profiles = InputSelectionFactory.getProfileSelection(inputData.getProfile(), inputData.getUnittype(), xaps);
+		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS);
+		DropDownSingleSelect<Profile> profiles = InputSelectionFactory.getProfileSelection(inputData.getProfile(), inputData.getUnittype(), ACS);
 		
 		String startTimeString = inputData.getTimestampStart().getDateOrDefaultFormatted(SyslogUtil.getDate());
 		String endTimeString = inputData.getTimestampEnd().getDateFormatted();
@@ -61,11 +61,11 @@ public class SyslogPage extends AbstractWebPage {
 		
 		map.put("background", new SyslogUtil.GetBackgroundColor());
 		map.put("fontcolor", new SyslogUtil.GetFontColor());
-		map.put("eventdesc", new SyslogUtil.GetEventMouseOver(xaps));
+		map.put("eventdesc", new SyslogUtil.GetEventMouseOver(ACS));
 		map.put("severitytext", new SyslogUtil.GetSeverityText());
 		map.put("facilitytext", new SyslogUtil.GetFacilityText());
-		map.put("getprofilebyid", new SyslogUtil.GetUnittypeProfileById(xaps));
-		map.put("getprofilebyname", new SyslogUtil.GetUnittypeProfileByName(xaps));
+		map.put("getprofilebyid", new SyslogUtil.GetUnittypeProfileById(ACS));
+		map.put("getprofilebyname", new SyslogUtil.GetUnittypeProfileByName(ACS));
 		map.put(inputData.getAdvanced().getKey(), inputData.getAdvanced().getBoolean());
 		
 		if (inputData.getAdvanced().getBoolean()) {

@@ -372,9 +372,8 @@ public class Job {
 
 	public Map<String, JobParameter> getDefaultParameters() {
 		if (defaultParameters == null) {
-			MapWrapper<JobParameter> mw = new MapWrapper<JobParameter>(XAPS.isStrictOrder());
+			MapWrapper<JobParameter> mw = new MapWrapper<JobParameter>(ACS.isStrictOrder());
 			defaultParameters = mw.getMap();
-			//			defaultParameters = new TreeMap<String, JobParameter>(XAPS.getComparator());
 		}
 		return defaultParameters;
 	}

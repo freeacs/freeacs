@@ -15,7 +15,7 @@ public class Session {
 	private String[] originalOptionArgs = null;
 
 	/* Object holding the Session object and printer-objects */
-	private XAPSShell xapsShell;
+	private FreeacsShell freeacsShell;
 
 	/* Information on how to access xAPS database */
 	private DataSource xapsProps = null;
@@ -29,8 +29,8 @@ public class Session {
 	/* Key objects to access/manipulate xAPS database */
 	private Users users;
 	private DBI dbi;
-	private XAPS xaps;
-	private XAPSUnit xapsUnit;
+	private ACS ACS;
+	private ACSUnit ACSUnit;
 	private UnitJobs unitJobs;
 
 	/* Responsible for processing all commands */
@@ -50,9 +50,9 @@ public class Session {
     // Counts number of operations during one command (only for set/del)
 	private int counter = 1;
 
-	public Session(String[] args, XAPSShell xapsShell) {
+	public Session(String[] args, FreeacsShell freeacsShell) {
 		this.originalOptionArgs = args;
-		this.xapsShell = xapsShell;
+		this.freeacsShell = freeacsShell;
 		Context context = new Context(this);
 		this.processor = new Processor(this);
 
@@ -93,8 +93,8 @@ public class Session {
 		getScript().setVariables(variables);
 	}
 
-	public XAPSUnit getXapsUnit() {
-		return xapsUnit;
+	public ACSUnit getACSUnit() {
+		return ACSUnit;
 	}
 
 	public void exitShell(int status) {
@@ -108,8 +108,8 @@ public class Session {
 			System.exit(status);
 	}
 
-	public void setXapsUnit(XAPSUnit xapsU) {
-		this.xapsUnit = xapsU;
+	public void setACSUnit(ACSUnit xapsU) {
+		this.ACSUnit = xapsU;
 	}
 
 	public DataSource getXapsProps() {
@@ -156,12 +156,12 @@ public class Session {
 		this.dbi = dbi;
 	}
 
-	public XAPS getXaps() {
-		return xaps;
+	public ACS getACS() {
+		return ACS;
 	}
 
-	public void setXaps(XAPS xaps) {
-		this.xaps = xaps;
+	public void setACS(ACS ACS) {
+		this.ACS = ACS;
 	}
 
 	public Stack<Script> getScriptStack() {
@@ -185,16 +185,16 @@ public class Session {
 		return processor;
 	}
 
-	public XAPSShell getXapsShell() {
-		return xapsShell;
+	public FreeacsShell getFreeacsShell() {
+		return freeacsShell;
 	}
 
 	public void println(String s) {
-		getXapsShell().println(s);
+		getFreeacsShell().println(s);
 	}
 
 	public void print(String s) {
-		getXapsShell().print(s);
+		getFreeacsShell().print(s);
 	}
 
 	public List<String> getCommandHistory() {

@@ -66,8 +66,8 @@ public class GroupParameters {
 		return groupParams;
 	}
 
-	private void addOrChangeGroupParameterImpl(GroupParameter groupParameter, Group group, XAPS xaps) throws SQLException {
-		Connection c = xaps.getDataSource().getConnection();
+	private void addOrChangeGroupParameterImpl(GroupParameter groupParameter, Group group, ACS ACS) throws SQLException {
+		Connection c = ACS.getDataSource().getConnection();
 		PreparedStatement ps = null;
 		try {
 			Parameter parameter = groupParameter.getParameter();
@@ -85,8 +85,8 @@ public class GroupParameters {
 				if (gk.next())
 					groupParameter.setId(gk.getInt(1));
 				logger.info("Added group parameter " + groupParameter.getName());
-				if (xaps.getDbi() != null)
-					xaps.getDbi().publishAdd(groupParameter, group.getUnittype());
+				if (ACS.getDbi() != null)
+					ACS.getDbi().publishAdd(groupParameter, group.getUnittype());
 			} else {
 				ds.addSql("UPDATE group_param SET ");
 				ds.addSql("value = ?, operator = ?, data_type = ? WHERE id = ?");
@@ -98,8 +98,8 @@ public class GroupParameters {
 				ps.setQueryTimeout(60);
 				ps.executeUpdate();
 				logger.info("Updated group parameter " + groupParameter.getName());
-				if (xaps.getDbi() != null)
-					xaps.getDbi().publishChange(groupParameter, group.getUnittype());
+				if (ACS.getDbi() != null)
+					ACS.getDbi().publishChange(groupParameter, group.getUnittype());
 			}
 		} finally {
 			if (ps != null)
@@ -108,8 +108,8 @@ public class GroupParameters {
 		}
 	}
 
-	public void addOrChangeGroupParameter(GroupParameter groupParameter, XAPS xaps) throws SQLException {
-		Groups.checkPermission(group, xaps);
+	public void addOrChangeGroupParameter(GroupParameter groupParameter, ACS ACS) throws SQLException {
+		Groups.checkPermission(group, ACS);
 		//		if (groupParameter.getParameter().getUnittypeParameter().getFlag().isInspection())
 		//			throw new IllegalArgumentException("The unit type parameter is an inspection parameter - cannot be set on a group");
 		if (groupParameter.getId() == null) {
@@ -126,15 +126,15 @@ public class GroupParameters {
 			}
 			
 		}
-		addOrChangeGroupParameterImpl(groupParameter, group, xaps);
+		addOrChangeGroupParameterImpl(groupParameter, group, ACS);
 		nameMap.put(groupParameter.getName(), groupParameter);
 		idMap.put(groupParameter.getId(), groupParameter);
 	}
 
-	private void deleteGroupParameterImpl(GroupParameter groupParameter, Group group, XAPS xaps) throws SQLException {
+	private void deleteGroupParameterImpl(GroupParameter groupParameter, Group group, ACS ACS) throws SQLException {
 		Statement s = null;
 		String sql = null;
-		Connection c = xaps.getDataSource().getConnection();
+		Connection c = ACS.getDataSource().getConnection();
 		try {
 			s = c.createStatement();
 			sql = "DELETE FROM group_param WHERE ";
@@ -142,8 +142,8 @@ public class GroupParameters {
 			s.setQueryTimeout(60);
 			s.executeUpdate(sql);
 			logger.info("Deleted group parameter " + groupParameter.getName());
-			if (xaps.getDbi() != null)
-				xaps.getDbi().publishDelete(groupParameter, group.getUnittype());
+			if (ACS.getDbi() != null)
+				ACS.getDbi().publishDelete(groupParameter, group.getUnittype());
 		} finally {
 			if (s != null)
 				s.close();
@@ -159,14 +159,14 @@ public class GroupParameters {
 	 *
 	 * @throws SQLException 
 	 */
-	public void deleteGroupParameter(GroupParameter groupParameter, XAPS xaps) throws SQLException {
-		Groups.checkPermission(group, xaps);
-		deleteGroupParameterImpl(groupParameter, group, xaps);
+	public void deleteGroupParameter(GroupParameter groupParameter, ACS ACS) throws SQLException {
+		Groups.checkPermission(group, ACS);
+		deleteGroupParameterImpl(groupParameter, group, ACS);
 		nameMap.remove(groupParameter.getName());
 		idMap.remove(groupParameter.getId());
 	}
 
-	/* Will only update the object model, not the database, used by XAPS.read() and Groups.refreshGroupParameters() */
+	/* Will only update the object model, not the database, used by Freeacs.read() and Groups.refreshGroupParameters() */
 	protected void addOrChangeGroupParameter(GroupParameter groupParameter) {
 		nameMap.put(groupParameter.getName(), groupParameter);
 		idMap.put(groupParameter.getId(), groupParameter);

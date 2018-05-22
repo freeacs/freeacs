@@ -1,4 +1,4 @@
-<script type="text/javascript" src="javascript/xaps.module.report.js"></script>
+<script type="text/javascript" src="javascript/ACS.module.report.js"></script>
 <script>
 	xAPS.report.initSettings({
     	type : '${pageType}',
