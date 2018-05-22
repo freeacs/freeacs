@@ -9,7 +9,7 @@ import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.StackTraceFormatter;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,7 +42,7 @@ public class UnittypeParametersPage extends AbstractWebPage {
 	private static final String SESSION_SAVE_BOOLEAN = "utp-save-complete";
 	private static final String SESSION_SAVE_ERRORS = "utp-save-error";
 
-	@Qualifier("xaps") DataSource xapsDataSource;
+	@Qualifier("main") DataSource mainDataSource;
 
     @Qualifier("syslog") DataSource syslogDataSource;
 
@@ -61,9 +61,9 @@ public class UnittypeParametersPage extends AbstractWebPage {
 			@RequestParam(required=true) String unittype,
 			@RequestParam(required=true) String term,
 			HttpSession session) throws SQLException, JSONException{
-		XAPS xaps = XAPSLoader.getXAPS(session.getId(), xapsDataSource, syslogDataSource);
-		List<Unittype> allowedUnittypes = Arrays.asList(xaps.getUnittypes().getUnittypes());
-		Unittype unittypeFromRequest = xaps.getUnittype(unittype);
+		ACS acs = ACSLoader.getXAPS(session.getId(), mainDataSource, syslogDataSource);
+		List<Unittype> allowedUnittypes = Arrays.asList(acs.getUnittypes().getUnittypes());
+		Unittype unittypeFromRequest = acs.getUnittype(unittype);
 		if(allowedUnittypes.contains(unittypeFromRequest)){
 			UnittypeParameter[] utpArr = unittypeFromRequest.getUnittypeParameters().getUnittypeParameters();
 			JSONArray json = new JSONArray();
@@ -87,8 +87,8 @@ public class UnittypeParametersPage extends AbstractWebPage {
 
 		sessionId = params.getSession().getId();
 
-		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (xaps == null) {
+		ACS acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -99,7 +99,7 @@ public class UnittypeParametersPage extends AbstractWebPage {
 
 		String utName = inputData.getUnittype().getString();
 		if (isValidString(utName))
-			unittype = xaps.getUnittype(utName);
+			unittype = acs.getUnittype(utName);
 
 		if (unittype == null) {
 			outputHandler.setDirectToPage(Page.UNITTYPE);
@@ -116,7 +116,7 @@ public class UnittypeParametersPage extends AbstractWebPage {
 			utParam = unittype.getUnittypeParameters().getByName(params.getParameter("utp"));
 
 		if (inputData.getFormSubmit().isValue("Save parameter"))
-			saveParameter(params, unittype, xaps);
+			saveParameter(params, unittype, acs);
 		//		else if (inputData.getFormSubmit().isValue("Finish")) {
 		//			saveParameter(params, unittype, xaps);
 		//			params.getSession().setAttribute(SESSION_SAVE_ERRORS, error);
@@ -142,7 +142,7 @@ public class UnittypeParametersPage extends AbstractWebPage {
 		outputHandler.setTemplatePath("/unit-type/addparameter.ftl");
 	}
 
-	private void saveParameter(ParameterParser params, Unittype unittype, XAPS xaps) {
+	private void saveParameter(ParameterParser params, Unittype unittype, ACS acs) {
 		String name = params.getParameter("name::1");
 		String old_name = params.getParameter("param.name");
 		String flag = params.getParameter("flag::1");
@@ -177,7 +177,7 @@ public class UnittypeParametersPage extends AbstractWebPage {
 					utParam.getValues().setValues(new ArrayList<String>());
 				}
 
-				unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utParam, xaps);
+				unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utParam, acs);
 
 				utpAdded = true;
 			} catch (SQLException e) {

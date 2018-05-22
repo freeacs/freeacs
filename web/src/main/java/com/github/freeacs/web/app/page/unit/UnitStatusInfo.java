@@ -10,7 +10,7 @@ import com.github.freeacs.web.app.page.report.uidata.RecordUIDataHardware;
 import com.github.freeacs.web.app.page.report.uidata.RecordUIDataHardwareFilter;
 import com.github.freeacs.web.app.page.syslog.SyslogRetriever;
 import com.github.freeacs.web.app.util.SessionCache;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -375,14 +375,14 @@ public class UnitStatusInfo {
 	 *  the no available connection exception
 	 */
 	public Boolean isLineRegisteredOk(String sessionId, VoipLine line, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
-		Syslog syslog = new Syslog(syslogDataSource, XAPSLoader.getIdentity(sessionId, xapsDataSource));
+		Syslog syslog = new Syslog(syslogDataSource, ACSLoader.getIdentity(sessionId, xapsDataSource));
 		SyslogFilter filter = new SyslogFilter();
 		filter.setMaxRows(100);
 		String keyToFind = "ua_: ";
 		filter.setMessage("^" + keyToFind);
 		filter.setCollectorTmsStart(getMaxSipRegisterIntervalDate());
 		filter.setUnitId("^" + currentUnit.getId() + "$"); //The unit object can never become NULL since this is checked in UnitStatusPage very early.
-		List<SyslogEntry> entries = syslog.read(filter, XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource));
+		List<SyslogEntry> entries = syslog.read(filter, ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource));
 		if (entries != null) {
 			Date lastFailed = null;
 			Date lastRegged = null;

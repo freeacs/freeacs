@@ -48,13 +48,13 @@ public class Triggers {
 	 * Add or change history in the trigger_release table.
 	 *
 	 * @param history
-	 * @param xaps
+	 * @param acs
 	 * @throws SQLException
 	 *
 	 */
-	public void addOrChangeHistory(TriggerRelease history, XAPS xaps) throws SQLException {
+	public void addOrChangeHistory(TriggerRelease history, ACS acs) throws SQLException {
 		PreparedStatement ps = null;
-		Connection c = xaps.getDataSource().getConnection();
+		Connection c = acs.getDataSource().getConnection();
 		try {
 			if (history.getId() == null) {
 				DynamicStatement ds = new DynamicStatement();
@@ -87,17 +87,17 @@ public class Triggers {
 		}
 	}
 
-	public TriggerRelease readLatestTriggerRelease(Trigger trigger, Date from, Date to, XAPS xaps) throws SQLException {
-		List<TriggerRelease> history = readTriggerReleases(trigger, from, to, xaps, 1);
+	public TriggerRelease readLatestTriggerRelease(Trigger trigger, Date from, Date to, ACS acs) throws SQLException {
+		List<TriggerRelease> history = readTriggerReleases(trigger, from, to, acs, 1);
 		if (history.size() > 0)
 			return history.get(0);
 		return null;
 	}
 
-	public List<TriggerRelease> readTriggerReleases(Trigger trigger, Date from, Date to, XAPS xaps, Integer limit) throws SQLException {
+	public List<TriggerRelease> readTriggerReleases(Trigger trigger, Date from, Date to, ACS acs, Integer limit) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		Connection c = xaps.getDataSource().getConnection();
+		Connection c = acs.getDataSource().getConnection();
 		try {
 			List<TriggerRelease> thList = new ArrayList<TriggerRelease>();
 			DynamicStatement ds = new DynamicStatement();
@@ -141,13 +141,13 @@ public class Triggers {
 	 * be run by the Syslog- and TR-069 server. Not necessary with any permission checks.
 	 *
 	 * @param event
-	 * @param xaps
+	 * @param acs
 	 * @throws SQLException
 	 *
 	 */
-	public void addEvent(TriggerEvent event, XAPS xaps) throws SQLException {
+	public void addEvent(TriggerEvent event, ACS acs) throws SQLException {
 		PreparedStatement ps = null;
-		Connection c = xaps.getDataSource().getConnection();
+		Connection c = acs.getDataSource().getConnection();
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("trigger_id, ", event.getTrigger().getId());
@@ -169,13 +169,13 @@ public class Triggers {
 		}
 	}
 
-	public int deleteHistory(Date upUntil, XAPS xaps) throws SQLException {
-		return deleteHistory(null, upUntil, xaps);
+	public int deleteHistory(Date upUntil, ACS acs) throws SQLException {
+		return deleteHistory(null, upUntil, acs);
 	}
 
-	public int deleteHistory(Integer triggerId, Date upUntil, XAPS xaps) throws SQLException {
+	public int deleteHistory(Integer triggerId, Date upUntil, ACS acs) throws SQLException {
 		PreparedStatement ps = null;
-		Connection c = xaps.getDataSource().getConnection();
+		Connection c = acs.getDataSource().getConnection();
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			if (triggerId == null)
@@ -192,8 +192,8 @@ public class Triggers {
 		}
 	}
 
-	public int deleteEvents(Date upUntil, XAPS xaps) throws SQLException {
-		return deleteEvents(null, upUntil, xaps);
+	public int deleteEvents(Date upUntil, ACS acs) throws SQLException {
+		return deleteEvents(null, upUntil, acs);
 	}
 
 	/**
@@ -201,14 +201,14 @@ public class Triggers {
 	 *
 	 * @param triggerId
 	 * @param upUntil
-	 * @param xaps
+	 * @param acs
 	 * @return
 	 * @throws SQLException
 	 *
 	 */
-	public int deleteEvents(Integer triggerId, Date upUntil, XAPS xaps) throws SQLException {
+	public int deleteEvents(Integer triggerId, Date upUntil, ACS acs) throws SQLException {
 		PreparedStatement ps = null;
-		Connection c = xaps.getDataSource().getConnection();
+		Connection c = acs.getDataSource().getConnection();
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			if (triggerId == null)
@@ -232,15 +232,15 @@ public class Triggers {
 	 * @param triggerId
 	 * @param from
 	 * @param to
-	 * @param xaps
+	 * @param acs
 	 * @return
 	 * @throws SQLException
 	 *
 	 */
-	public Map<String, Integer> countEventsPrUnit(Integer triggerId, Date from, Date to, XAPS xaps) throws SQLException {
+	public Map<String, Integer> countEventsPrUnit(Integer triggerId, Date from, Date to, ACS acs) throws SQLException {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
-		Connection c = xaps.getDataSource().getConnection();
+		Connection c = acs.getDataSource().getConnection();
 		Map<String, Integer> unitMap = new HashMap<String, Integer>();
 		try {
 			DynamicStatement ds = new DynamicStatement();
@@ -264,10 +264,10 @@ public class Triggers {
 		}
 	}
 
-	public Date getFirstEventTms(Integer triggerId, Date from, Date to, XAPS xaps) throws SQLException {
+	public Date getFirstEventTms(Integer triggerId, Date from, Date to, ACS acs) throws SQLException {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
-		Connection c = xaps.getDataSource().getConnection();
+		Connection c = acs.getDataSource().getConnection();
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("SELECT timestamp_ FROM trigger_event WHERE trigger_id = ? AND timestamp_ >= ? AND timestamp_ < ? ORDER BY timestamp_ ASC LIMIT 1", triggerId, from, to);
@@ -291,15 +291,15 @@ public class Triggers {
 	 * @param triggerId
 	 * @param from
 	 * @param to
-	 * @param xaps
+	 * @param acs
 	 * @return
 	 * @throws SQLException
 	 *
 	 */
-	public Integer countUnits(Integer triggerId, Date from, Date to, XAPS xaps) throws SQLException {
+	public Integer countUnits(Integer triggerId, Date from, Date to, ACS acs) throws SQLException {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
-		Connection c = xaps.getDataSource().getConnection();
+		Connection c = acs.getDataSource().getConnection();
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("SELECT COUNT(DISTINCT(unit_id)) FROM trigger_event WHERE trigger_id = ? AND timestamp_ >= ? AND timestamp_ < ?", triggerId, from, to);
@@ -317,11 +317,11 @@ public class Triggers {
 		}
 	}
 
-	public void addOrChangeTrigger(Trigger trigger, XAPS xaps) throws SQLException {
-		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
+	public void addOrChangeTrigger(Trigger trigger, ACS acs) throws SQLException {
+		if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		trigger.validate();
-		addOrChangeTriggerImpl(trigger, xaps);
+		addOrChangeTriggerImpl(trigger, acs);
 		nameMap.put(trigger.getName(), trigger);
 		idMap.put(trigger.getId(), trigger);
 		if (trigger.getOldName() != null) {
@@ -330,10 +330,10 @@ public class Triggers {
 		}
 	}
 
-	private int deleteTriggerImpl(Trigger trigger, XAPS xaps) throws SQLException {
+	private int deleteTriggerImpl(Trigger trigger, ACS acs) throws SQLException {
 		PreparedStatement ps = null;
 		boolean wasAutoCommit = false;
-		Connection c = xaps.getDataSource().getConnection();
+		Connection c = acs.getDataSource().getConnection();
 		wasAutoCommit = c.getAutoCommit();
 		c.setAutoCommit(false);
 		try {
@@ -354,8 +354,8 @@ public class Triggers {
 			int rowsDeleted = ps.executeUpdate();
 			c.commit();
 			c.setAutoCommit(true);
-			if (xaps.getDbi() != null)
-				xaps.getDbi().publishDelete(trigger, trigger.getUnittype());
+			if (acs.getDbi() != null)
+				acs.getDbi().publishDelete(trigger, trigger.getUnittype());
 			logger.info("Deleted trigger " + trigger.getName());
 			return rowsDeleted;
 		} finally {
@@ -374,12 +374,12 @@ public class Triggers {
 	 *
 	 * @throws java.sql.SQLException
 	 */
-	public int deleteTrigger(Trigger trigger, XAPS xaps) throws SQLException {
+	public int deleteTrigger(Trigger trigger, ACS acs) throws SQLException {
 		if (trigger.getChildren().size() > 0)
 			throw new IllegalArgumentException("This trigger is a composite trigger with \"child\" triggers. Remove child triggers before deleting this trigger");
-		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
+		if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
-		int rowsDeleted = deleteTriggerImpl(trigger, xaps);
+		int rowsDeleted = deleteTriggerImpl(trigger, acs);
 		nameMap.remove(trigger.getName());
 		idMap.remove(trigger.getId());
 		if (trigger.getParent() != null)
@@ -387,9 +387,9 @@ public class Triggers {
 		return rowsDeleted;
 	}
 
-	private void addOrChangeTriggerImpl(Trigger trigger, XAPS xaps) throws SQLException {
+	private void addOrChangeTriggerImpl(Trigger trigger, ACS acs) throws SQLException {
 		PreparedStatement ps = null;
-		Connection c = xaps.getDataSource().getConnection();
+		Connection c = acs.getDataSource().getConnection();
 		try {
 			InsertOrUpdateStatement ious = new InsertOrUpdateStatement("trigger_", new Field("id", trigger.getId()));
 			ious.addField(new Field("name", trigger.getName()));
@@ -426,16 +426,16 @@ public class Triggers {
 				if (gk.next())
 					trigger.setId(gk.getInt(1));
 				logger.info("Inserted trigger " + trigger.getName());
-				if (xaps.getDbi() != null)
-					xaps.getDbi().publishAdd(trigger, trigger.getUnittype());
+				if (acs.getDbi() != null)
+					acs.getDbi().publishAdd(trigger, trigger.getUnittype());
 			} else {
 				if (trigger.isSyslogEventChanged()) { // delete all trigger_events for this trigger
-					deleteEvents(trigger.getId(), new Date(), xaps);
+					deleteEvents(trigger.getId(), new Date(), acs);
 					trigger.setSyslogEventChangeCompleted();
 				}
 				logger.info("Updated trigger " + trigger.getName());
-				if (xaps.getDbi() != null)
-					xaps.getDbi().publishChange(trigger, trigger.getUnittype());
+				if (acs.getDbi() != null)
+					acs.getDbi().publishChange(trigger, trigger.getUnittype());
 			}
 		} finally {
 			if (ps != null)

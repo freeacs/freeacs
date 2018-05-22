@@ -5,12 +5,12 @@ import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FreeacsParameters {
+public class ACSParameters {
 
-	private Map<String, ParameterValueStruct> freeacsParams = new HashMap<String, ParameterValueStruct>();
+	private Map<String, ParameterValueStruct> acsParams = new HashMap<String, ParameterValueStruct>();
 
 	public String getValue(String param) {
-		ParameterValueStruct pvs = freeacsParams.get(param);
+		ParameterValueStruct pvs = acsParams.get(param);
 		if (pvs != null && pvs.getValue() != null)
 			return pvs.getValue();
 		else
@@ -18,11 +18,11 @@ public class FreeacsParameters {
 	}
 
 	public void putPvs(String param, ParameterValueStruct pvs) {
-		freeacsParams.put(param, pvs);
+		acsParams.put(param, pvs);
 	}
 
-	public Map<String, ParameterValueStruct> getFreeacsParams() {
-		return freeacsParams;
+	public Map<String, ParameterValueStruct> getAcsParams() {
+		return acsParams;
 	}
 
 }

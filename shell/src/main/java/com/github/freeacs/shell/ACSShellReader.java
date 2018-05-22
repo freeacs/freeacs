@@ -12,13 +12,13 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class XAPSShellReader extends BufferedReader {
+public class ACSShellReader extends BufferedReader {
 
 	private ConsoleReader console;
 	private ArgumentCompletor argumentCompletor;
-	private XAPSShell xapsShell;
+	private ACSShell ACSShell;
 
-	public XAPSShellReader(Reader in, ConsoleReader reader) {
+	public ACSShellReader(Reader in, ConsoleReader reader) {
 		super(in);
 		this.console = reader;
 	}
@@ -46,8 +46,8 @@ public class XAPSShellReader extends BufferedReader {
 
 	private String[] getLines() throws IOException {
 		List<String> completions = new ArrayList<String>();
-		if (xapsShell.getSession() != null && xapsShell.getSession().getXaps() != null)
-			completions.addAll(FileUtil.getCompletions(xapsShell.getSession()));
+		if (ACSShell.getSession() != null && ACSShell.getSession().getAcs() != null)
+			completions.addAll(FileUtil.getCompletions(ACSShell.getSession()));
 
 		File folder = new File(System.getProperty("user.dir"));
 		File[] listOfFiles = folder.listFiles();
@@ -63,15 +63,15 @@ public class XAPSShellReader extends BufferedReader {
 	}
 
 	private void println(String s) {
-		xapsShell.println(s);
+		ACSShell.println(s);
 	}
 
-	public XAPSShell getXapsShell() {
-		return xapsShell;
+	public ACSShell getACSShell() {
+		return ACSShell;
 	}
 
-	public void setXapsShell(XAPSShell xapsShell) {
-		this.xapsShell = xapsShell;
+	public void setACSShell(ACSShell ACSShell) {
+		this.ACSShell = ACSShell;
 	}
 
 	//	private void listFiles() {

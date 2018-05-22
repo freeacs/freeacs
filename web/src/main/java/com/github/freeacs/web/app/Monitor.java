@@ -16,7 +16,7 @@ import java.util.Hashtable;
 /**
  * Responds to incoming requests from xAPS Monitor Server.
  * 
- * Just a (very) simple servlet that returns XAPSOK and the version number.
+ * Just a (very) simple servlet that returns FREEACSOK and the version number.
  * 
  * @author Jarl Andre Hubenthal
  */
@@ -32,7 +32,7 @@ public class Monitor extends HttpServlet {
 		PrintWriter out = res.getWriter();
 		Cache cache = SessionCache.getCache();
 		Hashtable<Object, CacheValue> map = cache.getMap();
-		String status = "XAPSOK " + Main.version;
+		String status = "FREEACSOK " + Main.version;
 		for (Object o : map.keySet()) {
 			if (o instanceof String) {
 				String s = (String) o;

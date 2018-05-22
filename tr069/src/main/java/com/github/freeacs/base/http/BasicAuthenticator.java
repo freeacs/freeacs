@@ -81,7 +81,7 @@ public class BasicAuthenticator {
 			}
 			BaseCache.putSessionData(unitId, sessionData);
 			if (secret == null) {
-				secret = sessionData.getFreeacsParameters().getValue(SystemParameters.SECRET);
+				secret = sessionData.getAcsParameters().getValue(SystemParameters.SECRET);
 				if (secret != null && !secret.equals(password) && secret.length() > 16)
 					secret = secret.substring(0, 16);
 			}

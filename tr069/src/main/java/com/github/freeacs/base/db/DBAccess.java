@@ -9,17 +9,17 @@ import java.sql.SQLException;
 
 public class DBAccess {
 
-	private final DataSource xapsDataSource;
+	private final DataSource mainDataSource;
 	private final DataSource syslogDataSource;
 	private final String facilityVersion;
 	private final int facility;
 
 	private DBI dbi;
 
-	public DBAccess(int facilityInt, String facilityVersionStr, DataSource xapsDataSource, DataSource syslogDataSource) {
+	public DBAccess(int facilityInt, String facilityVersionStr, DataSource mainDataSource, DataSource syslogDataSource) {
 		this.facility = facilityInt;
 		this.facilityVersion = facilityVersionStr;
-		this.xapsDataSource = xapsDataSource;
+		this.mainDataSource = mainDataSource;
 		this.syslogDataSource = syslogDataSource;
 	}
 
@@ -32,16 +32,16 @@ public class DBAccess {
 	}
 
 	public Syslog getSyslog() throws SQLException {
-		Users users = new Users(getXapsDataSource());
+		Users users = new Users(getMainDataSource());
 		Identity id = new Identity(facility, facilityVersion, users.getUnprotected(Users.USER_ADMIN));
 		return new Syslog(getSyslogDataSource(), id);
 	}
 
 	public synchronized DBI getDBI() throws SQLException {
-		XAPS.setStrictOrder(false);
+		ACS.setStrictOrder(false);
 		if (dbi == null) {
 			Syslog syslog = getSyslog();
-			dbi = new DBI(Integer.MAX_VALUE, getXapsDataSource(), syslog);
+			dbi = new DBI(Integer.MAX_VALUE, getMainDataSource(), syslog);
 		}
 		return dbi;
 	}
@@ -58,13 +58,13 @@ public class DBAccess {
 		throw (RuntimeException) t;
 	}
 
-	public static XAPSUnit getXAPSUnit(XAPS xaps) throws SQLException {
-		return new XAPSUnit(xaps.getDataSource(), xaps, xaps.getSyslog());
+	public static ACSUnit getXAPSUnit(ACS acs) throws SQLException {
+		return new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
 	}
 
 
-	public DataSource getXapsDataSource() {
-		return xapsDataSource;
+	public DataSource getMainDataSource() {
+		return mainDataSource;
 	}
 
 	public DataSource getSyslogDataSource() {

@@ -17,26 +17,26 @@ import java.sql.SQLException;
  * @author Jarl Andre Hubenthal
  * 
  */
-public class XAPSLoader {
+public class ACSLoader {
 
 	/**
 	 * Gets the dBI.
 	 *
 	 * @param sessionId the session id
-	 * @param xapsDataSource
+	 * @param mainDataSource
 	 * @param syslogDataSource
      * @return the dBI
 	 * @throws SQLException the sQL exception
 	 *  the no available connection exception
 	 */
-	public static DBI getDBI(String sessionId, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
+	public static DBI getDBI(String sessionId, DataSource mainDataSource, DataSource syslogDataSource) throws SQLException {
 		DBI dbi = SessionCache.getDBI(sessionId);
 		try {
 			int sessionTimeoutSecs = getSessionTimeout() * 60;
 			if (dbi == null || dbi.isFinished()) {
-				Identity ident = getIdentity(sessionId, xapsDataSource);
+				Identity ident = getIdentity(sessionId, mainDataSource);
 				Syslog syslog = new Syslog(syslogDataSource, ident);
-				dbi = new DBI(sessionTimeoutSecs, xapsDataSource, syslog);
+				dbi = new DBI(sessionTimeoutSecs, mainDataSource, syslog);
 				SessionCache.putDBI(sessionId, dbi, sessionTimeoutSecs);
 			}
 			Monitor.setLastDBILogin(null);
@@ -55,16 +55,16 @@ public class XAPSLoader {
 	 * Gets the xAPS.
 	 *
 	 * @param sessionId the session id
-	 * @param xapsDataSource
+	 * @param mainDataSource
 	 * @param syslogDataSource
      * @return the xAPS
 	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	public static XAPS getXAPS(String sessionId, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
-		DBI dbi = getDBI(sessionId, xapsDataSource, syslogDataSource);
+	public static ACS getXAPS(String sessionId, DataSource mainDataSource, DataSource syslogDataSource) throws SQLException {
+		DBI dbi = getDBI(sessionId, mainDataSource, syslogDataSource);
 		if (dbi != null)
-			return dbi.getXaps();
+			return dbi.getAcs();
 		return null;
 	}
 
@@ -112,18 +112,18 @@ public class XAPSLoader {
 	 * Gets the xAPS unit.
 	 *
 	 * @param sessionId the session id
-	 * @param xapsDataSource
+	 * @param mainDataSource
 	 * @param syslogDataSource
      * @return the xAPS unit
 	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	public static XAPSUnit getXAPSUnit(String sessionId, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
-		XAPS xaps = getDBI(sessionId, xapsDataSource, syslogDataSource).getXaps();
-		if (xaps == null)
+	public static ACSUnit getACSUnit(String sessionId, DataSource mainDataSource, DataSource syslogDataSource) throws SQLException {
+		ACS acs = getDBI(sessionId, mainDataSource, syslogDataSource).getAcs();
+		if (acs == null)
 			return null;
-		Identity ident = getIdentity(sessionId, xaps.getDataSource());
+		Identity ident = getIdentity(sessionId, acs.getDataSource());
 		Syslog syslog = new Syslog(syslogDataSource, ident);
-		return new XAPSUnit(xaps.getDataSource(), xaps, syslog);
+		return new ACSUnit(acs.getDataSource(), acs, syslog);
 	}
 }

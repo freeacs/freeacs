@@ -6,8 +6,8 @@ import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.db.DBAccessStatic;
 import com.github.freeacs.dbi.File;
 import com.github.freeacs.dbi.FileType;
+import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.XAPS;
 import com.github.freeacs.tr069.HTTPReqResData;
 import com.github.freeacs.tr069.Properties;
 
@@ -47,7 +47,7 @@ public class FileServlet extends HttpServlet {
         }
       }
 
-      XAPS xaps = dbAccess.getDBI().getXaps();
+      ACS acs = dbAccess.getDBI().getAcs();
       File firmware = null;
       String pathInfo = req.getPathInfo().substring(1);
       pathInfo = pathInfo.replaceAll("--", " ");
@@ -61,7 +61,7 @@ public class FileServlet extends HttpServlet {
         res.sendError(HttpServletResponse.SC_FORBIDDEN);
         return;
       }
-      Unittype unittype = xaps.getUnittype(unittypeName);
+      Unittype unittype = acs.getUnittype(unittypeName);
       if (unittype == null) {
         Log.error(FileServlet.class, "Could not find unittype " + unittypeName + " in xAPS, hence file URL is incorrect");
         res.sendError(HttpServletResponse.SC_NOT_FOUND);

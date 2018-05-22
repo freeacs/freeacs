@@ -8,7 +8,7 @@ import com.github.freeacs.web.app.menu.MenuItem;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 
 import javax.sql.DataSource;
 import java.lang.reflect.InvocationTargetException;
@@ -21,7 +21,7 @@ public class ScriptExecutionsPage extends AbstractWebPage {
 
 	private ScriptExecutionData inputData;
 
-	private XAPS xaps;
+	private ACS acs;
 
 	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 
@@ -29,8 +29,8 @@ public class ScriptExecutionsPage extends AbstractWebPage {
 		inputData = (ScriptExecutionData) InputDataRetriever.parseInto(new ScriptExecutionData(), params);
 
 		/* Retrieve the XAPS object from session */
-		xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
-		if (xaps == null) {
+		acs = ACSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -40,7 +40,7 @@ public class ScriptExecutionsPage extends AbstractWebPage {
 
 //		System.out.println("Making unittype-dropdown.");
 		/* Make the unittype-dropdown */
-		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps);
+		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
 		outputHandler.getTemplateMap().put("unittypes", unittypes);
 
 //		System.out.println("Calling action/output..");
@@ -58,7 +58,7 @@ public class ScriptExecutionsPage extends AbstractWebPage {
 	private void output(Output outputHandler, Unittype unittype, Script script) throws Exception {
 		Map<String, Object> fmMap = outputHandler.getTemplateMap();
 
-		ScriptExecutions scriptExecutions = xaps.getScriptExecutions();
+		ScriptExecutions scriptExecutions = acs.getScriptExecutions();
 
 		/* Output for the configuration */
 		File selectedFile = null;
@@ -224,7 +224,7 @@ public class ScriptExecutionsPage extends AbstractWebPage {
 	 */
 	private Script action(ParameterParser params, Output outputHandler, Unittype unittype) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		Map<String, Object> fmMap = outputHandler.getTemplateMap();
-		ScriptExecutions scriptExecutions = xaps.getScriptExecutions();
+		ScriptExecutions scriptExecutions = acs.getScriptExecutions();
 		if (inputData.getFormSubmit().isValue("Execute")) {
 			if (inputData.getFileId().getInteger() != null) {
 				try {

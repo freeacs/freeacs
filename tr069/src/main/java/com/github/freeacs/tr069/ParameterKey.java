@@ -46,7 +46,7 @@ public class ParameterKey {
 		UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
 		Map<String, ParameterValueStruct> fromDB = sessionData.getFromDB();
 		if (sessionData.getJobParams() == null) { // already populated job params in fromDB.
-			String jobId = sessionData.getFreeacsParameters().getValue(SystemParameters.JOB_CURRENT);
+			String jobId = sessionData.getAcsParameters().getValue(SystemParameters.JOB_CURRENT);
 			if (jobId != null && !jobId.trim().equals("")) {
 				Job job = DBAccess.getJob(sessionData, jobId);
 				if (job != null) {

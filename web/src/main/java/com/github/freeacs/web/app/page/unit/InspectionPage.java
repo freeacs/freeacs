@@ -6,7 +6,7 @@ import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.*;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.SessionCache;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 
 import javax.sql.DataSource;
 import java.util.Arrays;
@@ -22,10 +22,10 @@ import java.util.Map;
 public class InspectionPage extends AbstractWebPage {
 	
 	/** The xaps. */
-	private XAPS xaps;
+	private ACS acs;
 	
 	/** The xaps unit. */
-	private XAPSUnit xapsUnit;
+	private ACSUnit acsUnit;
 	
 	/** The unit. */
 	private Unit unit;
@@ -53,7 +53,7 @@ public class InspectionPage extends AbstractWebPage {
 		profile = null;
 		unittype = null;
 		if (inputData.getUnit().getString() != null) {
-			unit = xapsUnit.getUnitById(inputData.getUnit().getString());
+			unit = acsUnit.getUnitById(inputData.getUnit().getString());
 			SessionCache.putUnit(sessionId, unit);
 			if (unit != null) {
 				profile = unit.getProfile();
@@ -63,7 +63,7 @@ public class InspectionPage extends AbstractWebPage {
 				inputData.getUnittype().setValue(unittype.getName());
 			}
 			if (unittype == null && inputData.getUnittype().getString() != null) {
-				unittype = xaps.getUnittype(inputData.getUnittype().getString());
+				unittype = acs.getUnittype(inputData.getUnittype().getString());
 			}
 			if (profile == null && inputData.getProfile().getString()!= null && unittype != null) {
 				profile = unittype.getProfiles().getByName(inputData.getProfile().getString());
@@ -80,10 +80,10 @@ public class InspectionPage extends AbstractWebPage {
 		try {
 			sessionId = params.getSession().getId();
 
-			xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-			xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource, syslogDataSource);
+			acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+			acsUnit = ACSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
 
-			if (xaps == null || xapsUnit == null) {
+			if (acs == null || acsUnit == null) {
 				throw new Exception("Could not load xaps objects!");
 			}
 			
@@ -97,7 +97,7 @@ public class InspectionPage extends AbstractWebPage {
 				if(up!=null && !up.getValue().equals("N/A")){
 					message = up.getValue();
 					up.setValue("N/A");
-					xapsUnit.addOrChangeUnitParameters(Arrays.asList(new UnitParameter[]{up}), profile);
+					acsUnit.addOrChangeUnitParameters(Arrays.asList(new UnitParameter[]{up}), profile);
 				}
 			}
 

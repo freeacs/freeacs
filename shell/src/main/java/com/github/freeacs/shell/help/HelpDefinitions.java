@@ -1,6 +1,6 @@
 package com.github.freeacs.shell.help;
 
-import com.github.freeacs.dbi.util.XAPSVersionCheck;
+import com.github.freeacs.dbi.util.ACSVersionCheck;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -892,7 +892,7 @@ public class HelpDefinitions {
 		help.addExamples("delsyslogevent 5000");
 		hg.addHelp(help);
 
-		if (XAPSVersionCheck.scriptExecutionSupported) {
+		if (ACSVersionCheck.scriptExecutionSupported) {
 			help = new Help("listexecutions [<match-expression>|NULL]");
 			help.addComment("List all script executions by ShellDaemon, usually from Trigger or SyslogEvent");
 			help.addOption(getUseContextHelpOption());
@@ -903,7 +903,7 @@ public class HelpDefinitions {
 			hg.addHelp(help);
 		}
 
-		if (XAPSVersionCheck.heartbeatSupported) {
+		if (ACSVersionCheck.heartbeatSupported) {
 			help = new Help("listheartbeats [<match-expression>]|NULL]");
 			help.addComment("List all \"Missing Heartbeat Detection\" definitions within the Unit Type");
 			help.addOption(getUseContextHelpOption());
@@ -937,7 +937,7 @@ public class HelpDefinitions {
 			help.addExamples("delheartbeat Device");
 			hg.addHelp(help);
 		}
-		if (XAPSVersionCheck.triggerSupported) {
+		if (ACSVersionCheck.triggerSupported) {
 			help = new Help("listtriggers [<match-expression>|NULL] [PARENT-FIRST|PARENT-LAST]");
 			help.addComment("List all triggers within the Unit Type");
 			help.addOption(getUseContextHelpOption());

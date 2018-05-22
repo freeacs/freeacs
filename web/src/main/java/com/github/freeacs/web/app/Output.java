@@ -11,7 +11,7 @@ import com.github.freeacs.web.app.page.WebPage;
 import com.github.freeacs.web.app.util.Freemarker;
 import com.github.freeacs.web.app.util.StackTraceFormatter;
 import com.github.freeacs.web.app.util.WebProperties;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -148,21 +148,21 @@ public class Output {
 	}
 
 	private void populateTemplateMapWithContextBar() throws SQLException {
-		XAPS xaps = XAPSLoader.getXAPS(inputParameters.getSession().getId(), xapsDataSource, syslogDataSource);
-		Unittype currentUnittype = xaps.getUnittype(trailPoint!=null?trailPoint.getUnitTypeName():null);
+		ACS acs = ACSLoader.getXAPS(inputParameters.getSession().getId(), xapsDataSource, syslogDataSource);
+		Unittype currentUnittype = acs.getUnittype(trailPoint!=null?trailPoint.getUnitTypeName():null);
 		Input utInput = Input.getStringInput("unittype");
 		if(currentUnittype!=null)
 			utInput.setValue(currentUnittype.getName());
-		templateMap.put("UNITTYPE_DROPDOWN", InputSelectionFactory.getUnittypeSelection(utInput, xaps));
+		templateMap.put("UNITTYPE_DROPDOWN", InputSelectionFactory.getUnittypeSelection(utInput, acs));
 		Input prInput = Input.getStringInput("profile");
 		if(currentUnittype!=null && trailPoint!=null && trailPoint.getProfileName()!=null){
 			Profile currentProfile = currentUnittype.getProfiles().getByName(trailPoint.getProfileName());
 			if(currentProfile!=null)
 				prInput.setValue(currentProfile.getName());
 		}
-		templateMap.put("PROFILE_DROPDOWN", InputSelectionFactory.getProfileSelection(prInput, utInput, xaps));
+		templateMap.put("PROFILE_DROPDOWN", InputSelectionFactory.getProfileSelection(prInput, utInput, acs));
 		Input grInput = Input.getStringInput("group");
-		templateMap.put("GROUP_DROPDOWN",InputSelectionFactory.getGroupSelection(grInput, currentUnittype, xaps));
+		templateMap.put("GROUP_DROPDOWN",InputSelectionFactory.getGroupSelection(grInput, currentUnittype, acs));
 		Input jInput = Input.getStringInput("job");
 		templateMap.put("JOB_DROPDOWN", InputSelectionFactory.getDropDownSingleSelect(jInput, null, Arrays.asList(currentUnittype!=null?currentUnittype.getJobs().getJobs():new Job[]{})));
 		
@@ -208,7 +208,7 @@ public class Output {
 			inputParameters.getSessionData().setUnitId(cU);
 			inputParameters.getHttpServletRequest().ignoreParameter("unit");
 			String newValue = inputParameters.getSessionData().getUnitId();
-			XAPSUnit xaps = XAPSLoader.getXAPSUnit(inputParameters.getSession().getId(), xapsDataSource, syslogDataSource);
+			ACSUnit xaps = ACSLoader.getACSUnit(inputParameters.getSession().getId(), xapsDataSource, syslogDataSource);
 			Unit unit = null;
 			if((unit = xaps.getUnitById(newValue))!=null){
 				redirect(Page.UNITSTATUS.getUrl("unit="+unit.getId()+"&unittype="+unit.getUnittype().getName()+"&profile="+unit.getProfile().getName()),servletResponseChannel);

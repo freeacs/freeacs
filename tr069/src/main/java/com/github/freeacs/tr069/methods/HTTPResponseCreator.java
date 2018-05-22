@@ -271,7 +271,7 @@ public interface HTTPResponseCreator {
     String version = download.getFile().getVersion();
     pm.setFileVersion(version);
     String username = sessionData.getUnitId();
-    String password = sessionData.getFreeacsParameters().getValue(SystemParameters.SECRET);
+    String password = sessionData.getAcsParameters().getValue(SystemParameters.SECRET);
     Body body = new DOreq(download.getUrl(), downloadType, tn, download.getFile().getLength(), commandKey, username, password);
     return new Response(header, body);
   }

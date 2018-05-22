@@ -12,18 +12,18 @@ import javax.sql.DataSource;
 public class FlywayConfiguration {
 
     private final DataSource syslogDataSource;
-    private final DataSource xapsDataSource;
+    private final DataSource mainDataSource;
 
     @Autowired
-    public FlywayConfiguration(@Qualifier("xaps") DataSource xapsDataSource, @Qualifier("syslog") DataSource syslogDataSource) {
-        this.xapsDataSource = xapsDataSource;
+    public FlywayConfiguration(@Qualifier("main") DataSource mainDataSource, @Qualifier("syslog") DataSource syslogDataSource) {
+        this.mainDataSource = mainDataSource;
         this.syslogDataSource = syslogDataSource;
     }
 
     @PostConstruct
     public void runFlyway() {
         Flyway flyway = new Flyway();
-        flyway.setDataSource(xapsDataSource);
+        flyway.setDataSource(mainDataSource);
         flyway.migrate();
         flyway.setDataSource(syslogDataSource);
         flyway.migrate();

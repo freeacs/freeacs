@@ -10,7 +10,7 @@ import com.github.freeacs.ws.*;
  * @author Morten
  *
  */
-public class ConvertXAPS2WS {
+public class ConvertACS2WS {
 
 	public static Unittype convert(com.github.freeacs.dbi.Unittype ut) {
 		if (ut == null)

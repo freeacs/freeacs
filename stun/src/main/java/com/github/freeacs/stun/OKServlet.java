@@ -22,7 +22,7 @@ public class OKServlet extends HttpServlet {
 
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		PrintWriter out = res.getWriter();
-		String status = "XAPSOK " + StunServlet.VERSION;
+		String status = "FREEACSOK " + StunServlet.VERSION;
 		if (startupError != null) {
 			status = "ERROR: Server did not start properly :" + startupError + "<br>\n";
 			for (StackTraceElement ste : startupError.getStackTrace())

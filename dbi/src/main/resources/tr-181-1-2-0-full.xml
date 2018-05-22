@@ -1705,7 +1705,7 @@ If the ACS sets the value of this parameter to {{enum|Requested}}, the CPE MUST 
 When requested, the CPE SHOULD wait until after completion of the communication session with the ACS before starting the diagnostic.
 When the test is completed, the value of this parameter MUST be either {{enum|Completed}} (if the test completed successfully), or one of the ''Error'' values listed above.
 If the value of this parameter is anything other than {{enum|Completed}}, the values of the results parameters for this test are indeterminate.
-When the diagnostic initiated by the ACS is completed (successfully or not), the CPE MUST establish a new connection to the ACS to allow the ACS to view the results, indicating the Event code ''8 DIAGNOSTICS COMPLETE'' in the Inform message.
+When the diagnostic initiated by the ACS is completed (successfully or not), the CPE MUST establish a new connection to the acs to allow the acs to view the results, indicating the Event code ''8 DIAGNOSTICS COMPLETE'' in the Inform message.
 After the diagnostic is complete, the value of all result parameters (all read-only parameters in this object) MUST be retained by the CPE until either this diagnostic is run again, or the CPE reboots.  After a reboot, if the CPE has not retained the result parameters from the most recent test, it MUST set the value of this parameter to {{enum|None}}.
 Modifying any of the writable parameters in this object except for this one MUST result in the value of this parameter being set to {{enum|None}}.
 While the test is in progress, modifying any of the writable parameters in this object except for this one MUST result in the test being terminated and the value of this parameter being set to {{enum|None}}.
@@ -3965,7 +3965,7 @@ If the ACS sets the value of this parameter to {{enum|Requested}}, the CPE MUST 
 When requested, the CPE SHOULD wait until after completion of the communication session with the ACS before starting the diagnostic.
 When the test is completed, the value of this parameter MUST be either {{enum|Complete}} (if the test completed successfully), or one of the ''Error'' values listed above.
 If the value of this parameter is anything other than {{enum|Complete}}, the values of the results parameters for this test are indeterminate.
-When the diagnostic initiated by the ACS is completed (successfully or not), the CPE MUST establish a new connection to the ACS to allow the ACS to view the results, indicating the Event code ''8 DIAGNOSTICS COMPLETE'' in the Inform message.
+When the diagnostic initiated by the ACS is completed (successfully or not), the CPE MUST establish a new connection to the acs to allow the acs to view the results, indicating the Event code ''8 DIAGNOSTICS COMPLETE'' in the Inform message.
 After the diagnostic is complete, the value of all result parameters (all read-only parameters in this object) MUST be retained by the CPE until either this diagnostic is run again, or the CPE reboots.  After a reboot, if the CPE has not retained the result parameters from the most recent test, it MUST set the value of this parameter to {{enum|None}}.
 Modifying any of the writable parameters in this object except for this one MUST result in the value of this parameter being set to {{enum|None}}.
 While the test is in progress, modifying any of the writable parameters in this object except for this one MUST result in the test being terminated and the value of this parameter being set to {{enum|None}}.
@@ -4157,7 +4157,7 @@ If the ACS sets the value of this parameter to {{enum|Requested}}, the CPE MUST 
 When requested, the CPE SHOULD wait until after completion of the communication session with the ACS before starting the diagnostic.
 When the test is completed, the value of this parameter MUST be either {{enum|Complete}} (if the test completed successfully), or one of the ''Error'' values listed above.
 If the value of this parameter is anything other than {{enum|Complete}}, the values of the results parameters for this test are indeterminate.
-When the diagnostic initiated by the ACS is completed (successfully or not), the CPE MUST establish a new connection to the ACS to allow the ACS to view the results, indicating the Event code ''8 DIAGNOSTICS COMPLETE'' in the Inform message.
+When the diagnostic initiated by the ACS is completed (successfully or not), the CPE MUST establish a new connection to the acs to allow the acs to view the results, indicating the Event code ''8 DIAGNOSTICS COMPLETE'' in the Inform message.
 After the diagnostic is complete, the value of all result parameters (all read-only parameters in this object) MUST be retained by the CPE until either this diagnostic is run again, or the CPE reboots.  After a reboot, if the CPE has not retained the result parameters from the most recent test, it MUST set the value of this parameter to {{enum|None}}.
 Modifying any of the writable parameters in this object except for this one MUST result in the value of this parameter being set to {{enum|None}}.
 While the test is in progress, modifying any of the writable parameters in this object except for this one MUST result in the test being terminated and the value of this parameter being set to {{enum|None}}.
@@ -4242,7 +4242,7 @@ While the test is in progress, setting this parameter to {{enum|Requested}} (and
       <description>This object contains parameters relating to the CPE's association with an ACS.</description>
       <parameter name="EnableCWMP" access="readWrite" dmr:version="1.5">
         <description>Enables and disables the CPE's support for CWMP. 
-{{false}} means that CWMP support in the CPE is disabled, in which case the device MUST NOT send any Inform messages to the ACS or accept any Connection Request notifications from the ACS.
+{{false}} means that CWMP support in the CPE is disabled, in which case the device MUST NOT send any Inform messages to the ACS or accept any Connection Request notifications from the acs.
 {{true}} means that CWMP support on the CPE is enabled.
 The subscriber can re-enable the CPE's CWMP support either by performing a factory reset or by using a LAN-side protocol to change the value of this parameter back to {{true}}.</description>
         <syntax>
@@ -4307,7 +4307,7 @@ If absolute time is not available to the CPE, its periodic Inform behavior MUST 
         </syntax>
       </parameter>
       <parameter name="ParameterKey" access="readOnly" activeNotify="canDeny" forcedInform="true" dmr:version="1.0">
-        <description>{{param}} provides the ACS a reliable and extensible means to track changes made by the ACS.  The value of {{param}} MUST be equal to the value of the ParameterKey argument from the most recent successful SetParameterValues, AddObject, or DeleteObject method call from the ACS.
+        <description>{{param}} provides the ACS a reliable and extensible means to track changes made by the acs.  The value of {{param}} MUST be equal to the value of the ParameterKey argument from the most recent successful SetParameterValues, AddObject, or DeleteObject method call from the acs.
 The CPE MUST set {{param}} to the value specified in the corresponding method arguments if and only if the method completes successfully and no fault response is generated.  If a method call does not complete successfully (implying that the changes requested in the method did not take effect), the value of {{param}} MUST NOT be modified.
 The CPE MUST only modify the value of {{param}} as a result of SetParameterValues, AddObject, DeleteObject, or due to a factory reset.  On factory reset, the value of {{param}} MUST be set to {{empty}}.</description>
         <syntax>
@@ -4345,7 +4345,7 @@ When read, this parameter returns {{empty}}, regardless of the actual value.</de
         </syntax>
       </parameter>
       <parameter name="UpgradesManaged" access="readWrite" dmr:version="1.0">
-        <description>Indicates whether or not the ACS will manage upgrades for the CPE.  If {{true}}, the CPE SHOULD NOT use other means other than the ACS to seek out available upgrades.  If {{false}}, the CPE MAY use other means for this purpose.
+        <description>Indicates whether or not the ACS will manage upgrades for the CPE.  If {{true}}, the CPE SHOULD NOT use other means other than the acs to seek out available upgrades.  If {{false}}, the CPE MAY use other means for this purpose.
 Note that an autonomous upgrade (reported via an "10 AUTONOMOUS TRANSFER COMPLETE" Inform Event code) SHOULD be regarded as a managed upgrade if it is performed according to ACS-specified policy.</description>
         <syntax>
           <boolean/>
@@ -4370,7 +4370,7 @@ LAN-accessible URL, as defined in {{bibref|RFC3986}}, to which a web-server asso
         </syntax>
       </parameter>
       <parameter name="DefaultActiveNotificationThrottle" access="readWrite" dmr:version="1.5">
-        <description>This parameter is used to control throttling of active notifications sent by the CPE to the ACS.  It defines the minimum number of seconds that the CPE MUST wait since the end of the last session with the ACS before establishing a new session for the purpose of delivering an active notification.
+        <description>This parameter is used to control throttling of active notifications sent by the CPE to the ACS.  It defines the minimum number of seconds that the CPE MUST wait since the end of the last session with the acs before establishing a new session for the purpose of delivering an active notification.
 In other words, if CPE needs to establish a new session with the ACS for the sole purpose of delivering an active notification, it MUST delay establishing such a session as needed to ensure that the minimum time since the last session completion has been met.
 The time is counted since the last successfully completed session, regardless of whether or not it was used for active notifications or other purposes. However, if connection to the ACS is established for purposes other than just delivering active notifications, including for the purpose of retrying a failed session, such connection MUST NOT be delayed based on this parameter value, and the pending active notifications MUST be communicated during that connection.
 The time of the last session completion does not need to be tracked across reboots.</description>
@@ -4427,7 +4427,7 @@ The second form of this parameter MAY be used only if the port value is equal to
       </parameter>
       <parameter name="STUNServerAddress" access="readWrite" dmr:version="1.1">
         <description>Host name or IP address of the STUN server for the CPE to send Binding Requests if STUN is enabled via {{param|STUNEnable}}.
-If is {{empty}} and {{param|STUNEnable}} is {{true}}, the CPE MUST use the address of the ACS extracted from the host portion of the ACS URL.</description>
+If is {{empty}} and {{param|STUNEnable}} is {{true}}, the CPE MUST use the address of the ACS extracted from the host portion of the acs URL.</description>
         <syntax>
           <string>
             <size maxLength="256"/>
@@ -4515,7 +4515,7 @@ This parameter is REQUIRED for any CPE supporting Alias-Based Addressing.</descr
     </object>
     <object name="Device.ManagementServer.AutonomousTransferCompletePolicy." access="readOnly" minEntries="1" maxEntries="1" dmr:version="1.3">
       <description>This object allows configuration of CPE policy for notification of AUTONOMOUS TRANSFER COMPLETE events, defined in {{bibref|TR-069a2}}.
-The CPE policy determines the conditions under which the CPE notifies the ACS of the completion of file transfers that were not specifically requested by the ACS.</description>
+The CPE policy determines the conditions under which the CPE notifies the ACS of the completion of file transfers that were not specifically requested by the acs.</description>
       <parameter name="Enable" access="readWrite" dmr:version="1.3">
         <description>Enable/disable CPE notification of AUTONOMOUS TRANSFER COMPLETE events to the ACS.</description>
         <syntax>
@@ -4523,7 +4523,7 @@ The CPE policy determines the conditions under which the CPE notifies the ACS of
         </syntax>
       </parameter>
       <parameter name="TransferTypeFilter" access="readWrite" dmr:version="1.3">
-        <description>Indicates the transfer types that MUST be included when the CPE notifies the ACS of AUTONOMOUS TRANSFER COMPLETE events.   Transfer types not indicated by this filter MUST NOT be included when the CPE notifies the ACS. {{enum}}
+        <description>Indicates the transfer types that MUST be included when the CPE notifies the ACS of AUTONOMOUS TRANSFER COMPLETE events.   Transfer types not indicated by this filter MUST NOT be included when the CPE notifies the acs. {{enum}}
 Note that this includes any backup or restore operations that were not specifically requested by the ACS.  A backup is regarded as an Upload and a restore is regarded as a Download.</description>
         <syntax>
           <string>
@@ -4536,7 +4536,7 @@ Note that this includes any backup or restore operations that were not specifica
         </syntax>
       </parameter>
       <parameter name="ResultTypeFilter" access="readWrite" dmr:version="1.6">
-        <description>Indicates the transfer results that MUST be included when the CPE notifies the ACS of AUTONOMOUS TRANSFER COMPLETE events.  Transfer results omitted from this list MUST NOT be included when the CPE notifies the ACS.
+        <description>Indicates the transfer results that MUST be included when the CPE notifies the ACS of AUTONOMOUS TRANSFER COMPLETE events.  Transfer results omitted from this list MUST NOT be included when the CPE notifies the acs.
 Note that this includes any backup or restore operations that were not specifically requested by the ACS.  A backup is regarded as an Upload and a restore is regarded as a Download.</description>
         <syntax>
           <string>
@@ -4553,7 +4553,7 @@ Note that this includes any backup or restore operations that were not specifica
         </syntax>
       </parameter>
       <parameter name="FileTypeFilter" access="readWrite" dmr:version="1.3">
-        <description>{{list}} Indicates the file types that MUST be included when the CPE notifies the ACS of AUTONOMOUS TRANSFER COMPLETE events.  File types omitted from this list MUST NOT be included when the CPE notifies the ACS.
+        <description>{{list}} Indicates the file types that MUST be included when the CPE notifies the ACS of AUTONOMOUS TRANSFER COMPLETE events.  File types omitted from this list MUST NOT be included when the CPE notifies the acs.
 {{pattern}}
 Additionally, the following format is defined to allow the unique definition of vendor-specific file types:
 * ''"X &lt;OUI&gt; &lt;Vendor-specific identifier&gt;"''
@@ -4605,7 +4605,7 @@ Operation types not indicated by this list MUST NOT be included when the CPE not
         </syntax>
       </parameter>
       <parameter name="ResultTypeFilter" access="readWrite" dmr:version="1.7">
-        <description>Indicates the Deployment Unit state change results that MUST be included when the CPE notifies the ACS of "12 AUTONOMOUS DU STATE CHANGE COMPLETE" events.  State change results omitted from this filter MUST NOT be included when the CPE notifies the ACS.</description>
+        <description>Indicates the Deployment Unit state change results that MUST be included when the CPE notifies the ACS of "12 AUTONOMOUS DU STATE CHANGE COMPLETE" events.  State change results omitted from this filter MUST NOT be included when the CPE notifies the acs.</description>
         <syntax>
           <string>
             <enumeration value="Success">
@@ -4621,7 +4621,7 @@ Operation types not indicated by this list MUST NOT be included when the CPE not
         </syntax>
       </parameter>
       <parameter name="FaultCodeFilter" access="readWrite" dmr:version="1.7">
-        <description>Indicates the Deployment Unit state change fault codes that MUST be included when the CPE notifies the ACS of "12 AUTONOMOUS DU STATE CHANGE COMPLETE" events.  State change fault codes omitted from this filter MUST NOT be included when the CPE notifies the ACS.
+        <description>Indicates the Deployment Unit state change fault codes that MUST be included when the CPE notifies the ACS of "12 AUTONOMOUS DU STATE CHANGE COMPLETE" events.  State change fault codes omitted from this filter MUST NOT be included when the CPE notifies the acs.
 This filter has no effect on the notification of a successful autonomous state change. This filter only applies when {{param|ResultTypeFilter}} is set to either {{enum|Failure|ResultTypeFilter}} or {{enum|Both|ResultTypeFilter}}.  {{empty}} means that failed autonomous state changes will not be sent to the ACS.</description>
         <syntax>
           <list/>
@@ -4660,7 +4660,7 @@ If the ACS sets the value of this parameter to {{enum|Requested}}, the CPE MUST 
 When requested, the CPE SHOULD wait until after completion of the communication session with the ACS before starting the diagnostic.
 When the test is completed, the value of this parameter MUST be either {{enum|Complete}} (if the test completed successfully), or one of the Error values listed above.
 If the value of this parameter is anything other than {{enum|Complete}}, the values of the results parameters for this test are indeterminate.
-When the diagnostic initiated by the ACS is completed (successfully or not), the CPE MUST establish a new connection to the ACS to allow the ACS to view the results, indicating the Event code "8 DIAGNOSTICS COMPLETE" in the Inform message.
+When the diagnostic initiated by the ACS is completed (successfully or not), the CPE MUST establish a new connection to the acs to allow the acs to view the results, indicating the Event code "8 DIAGNOSTICS COMPLETE" in the Inform message.
 After the diagnostic is complete, the value of all result parameters (all read-only parameters in this object) MUST be retained by the CPE until either this diagnostic is run again, or the CPE reboots.  After a reboot, if the CPE has not retained the result parameters from the most recent test, it MUST set the value of this parameter to {{enum|None}}.
 Modifying any of the writable parameters in this object except for this one MUST result in the value of this parameter being set to {{enum|None}}.
 While the test is in progress, modifying any of the writable parameters in this object except for this one MUST result in the test being terminated and the value of this parameter being set to {{enum|None}}.
@@ -5195,7 +5195,7 @@ If the ACS sets the value of this parameter to {{enum|Requested}}, the CPE MUST 
 When requested, the CPE SHOULD wait until after completion of the communication session with the ACS before starting the diagnostic.
 When the test is completed, the value of this parameter MUST be either {{enum|Complete}} (if the test completed successfully), or one of the Error values listed above.
 If the value of this parameter is anything other than {{enum|Complete}}, the values of the results parameters for this test are indeterminate.
-When the diagnostic initiated by the ACS is completed (successfully or not), the CPE MUST establish a new connection to the ACS to allow the ACS to view the results, indicating the Event code "8 DIAGNOSTICS COMPLETE" in the Inform message.
+When the diagnostic initiated by the ACS is completed (successfully or not), the CPE MUST establish a new connection to the acs to allow the acs to view the results, indicating the Event code "8 DIAGNOSTICS COMPLETE" in the Inform message.
 After the diagnostic is complete, the value of all result parameters (all read-only parameters in this object) MUST be retained by the CPE until either this diagnostic is run again, or the CPE reboots.  After a reboot, if the CPE has not retained the result parameters from the most recent test, it MUST set the value of this parameter to {{enum|None}}.
 Modifying any of the writable parameters in this object except for this one MUST result in the value of this parameter being set to {{enum|None}}.
 While the test is in progress, modifying any of the writable parameters in this object except for this one MUST result in the test being terminated and the value of this parameter being set to {{enum|None}}.
@@ -6815,7 +6815,7 @@ If the ACS sets the value of this parameter to {{enum|Requested}}, the CPE MUST 
 When requested, the CPE SHOULD wait until after completion of the communication session with the ACS before starting the diagnostic.
 When the test is completed, the value of this parameter MUST be either {{enum|Completed}} (if the test completed successfully), or one of the ''Error'' values listed above.
 If the value of this parameter is anything other than {{enum|Completed}}, the values of the results parameters for this test are indeterminate.
-When the diagnostic initiated by the ACS is completed (successfully or not), the CPE MUST establish a new connection to the ACS to allow the ACS to view the results, indicating the Event code ''8 DIAGNOSTICS COMPLETE'' in the Inform message.
+When the diagnostic initiated by the ACS is completed (successfully or not), the CPE MUST establish a new connection to the acs to allow the acs to view the results, indicating the Event code ''8 DIAGNOSTICS COMPLETE'' in the Inform message.
 After the diagnostic is complete, the value of all result parameters (all read-only parameters in this object) MUST be retained by the CPE until either this diagnostic is run again, or the CPE reboots.  After a reboot, if the CPE has not retained the result parameters from the most recent test, it MUST set the value of this parameter to {{enum|None}}.
 Modifying any of the writable parameters in this object except for this one MUST result in the value of this parameter being set to {{enum|None}}.
 While the test is in progress, modifying any of the writable parameters in this object except for this one MUST result in the test being terminated and the value of this parameter being set to {{enum|None}}.

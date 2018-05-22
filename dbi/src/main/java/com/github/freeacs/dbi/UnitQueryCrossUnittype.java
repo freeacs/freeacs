@@ -21,11 +21,11 @@ class UnitQueryCrossUnittype {
 	private List<Unittype> unittypes = new ArrayList<Unittype>();
 	private List<Profile> profiles = new ArrayList<Profile>();
 	private Connection connection;
-	private XAPS xaps;
+	private ACS acs;
 
-	public UnitQueryCrossUnittype(Connection c, XAPS xaps, List<Unittype> unittypes, List<Profile> profiles) {
+	public UnitQueryCrossUnittype(Connection c, ACS acs, List<Unittype> unittypes, List<Profile> profiles) {
 		this.connection = c;
-		this.xaps = xaps;
+		this.acs = acs;
 		if (unittypes != null)
 			this.unittypes = unittypes;
 		else
@@ -37,9 +37,9 @@ class UnitQueryCrossUnittype {
 		prepareUnittypesAndProfiles();
 	}
 
-	public UnitQueryCrossUnittype(Connection c, XAPS xaps, Unittype unittype, List<Profile> profiles) {
+	public UnitQueryCrossUnittype(Connection c, ACS acs, Unittype unittype, List<Profile> profiles) {
 		this.connection = c;
-		this.xaps = xaps;
+		this.acs = acs;
 		this.unittypes = new ArrayList<Unittype>();
 		if (unittype != null)
 			unittypes.add(unittype);
@@ -50,9 +50,9 @@ class UnitQueryCrossUnittype {
 		prepareUnittypesAndProfiles();
 	}
 
-	public UnitQueryCrossUnittype(Connection c, XAPS xaps, Unittype unittype, Profile profile) {
+	public UnitQueryCrossUnittype(Connection c, ACS acs, Unittype unittype, Profile profile) {
 		this.connection = c;
-		this.xaps = xaps;
+		this.acs = acs;
 		this.unittypes = new ArrayList<Unittype>();
 		if (unittype != null)
 			unittypes.add(unittype);
@@ -78,7 +78,7 @@ class UnitQueryCrossUnittype {
 	 */
 	private void prepareUnittypesAndProfiles() {
 
-		User user = xaps.getSyslog().getIdentity().getUser();
+		User user = acs.getSyslog().getIdentity().getUser();
 
 		if (profiles.size() > 0) {
 			// Making a map of the number of profiles in the input, listed pr unittype 
@@ -98,7 +98,7 @@ class UnitQueryCrossUnittype {
 			for (Integer unittypeId : profileCountMap.keySet()) {
 				boolean isUnittypeAdmin = user.isUnittypeAdmin(unittypeId);
 				if (isUnittypeAdmin) {
-					int allProfiles = xaps.getUnittype(unittypeId).getProfiles().getProfiles().length;
+					int allProfiles = acs.getUnittype(unittypeId).getProfiles().getProfiles().length;
 					if (allProfiles > profileCountMap.get(unittypeId)) {
 						allProfilesSpecified = false;
 						break;
@@ -110,19 +110,19 @@ class UnitQueryCrossUnittype {
 			if (allProfilesSpecified) {
 				profiles = new ArrayList<Profile>(); // search for all profiles in this unittype
 				for (Integer unittypeId : profileCountMap.keySet())
-					unittypes.add(xaps.getUnittype(unittypeId));
+					unittypes.add(acs.getUnittype(unittypeId));
 			} else {
 				unittypes = new ArrayList<Unittype>(); // do not search for unittype, profiles must be specified
 			}
 		}
 		if (user.isAdmin()) {
-			if (unittypes.size() == xaps.getUnittypes().getUnittypes().length)
+			if (unittypes.size() == acs.getUnittypes().getUnittypes().length)
 				unittypes = new ArrayList<Unittype>(); // search for all unittypes
 		} else {
 			if (profiles.size() == 0 && unittypes.size() == 0) {
 				List<Unittype> allowedUnittypes = new ArrayList<Unittype>();
 				List<Profile> allowedProfiles = new ArrayList<Profile>();
-				Unittype[] allowedUnittypeArr = xaps.getUnittypes().getUnittypes();
+				Unittype[] allowedUnittypeArr = acs.getUnittypes().getUnittypes();
 				boolean allUnittypesAdmin = true;
 				for (Unittype allowedU : allowedUnittypeArr) {
 					if (!user.isUnittypeAdmin(allowedU.getId())) {
@@ -161,7 +161,7 @@ class UnitQueryCrossUnittype {
 				String unitId = rs.getString("unit_id");
 				Integer profileId = rs.getInt("profile_id");
 				Integer unittypeId = rs.getInt("unit_type_id");
-				Unittype unittype = xaps.getUnittype(unittypeId);
+				Unittype unittype = acs.getUnittype(unittypeId);
 				if (unittype == null)
 					break; // can happen if user has no unittypes allowed
 				Profile profile = unittype.getProfiles().getById(profileId);
@@ -303,7 +303,7 @@ class UnitQueryCrossUnittype {
 				Integer profileId = rs.getInt("profile_id");
 				Integer unittypeId = rs.getInt("unit_type_id");
 				if (lastUnit == null || !lastUnit.getId().equals(uid)) {
-					ut = xaps.getUnittype(unittypeId);
+					ut = acs.getUnittype(unittypeId);
 					if (ut != null)
 						pr = ut.getProfiles().getById(profileId);
 					unit = new Unit(uid, ut, pr);
@@ -363,7 +363,7 @@ class UnitQueryCrossUnittype {
 				Integer profileId = rs.getInt("profile_id");
 				Integer unittypeId = rs.getInt("unit_type_id");
 				if (unit == null) {
-					ut = xaps.getUnittype(unittypeId);
+					ut = acs.getUnittype(unittypeId);
 					if (ut != null)
 						pr = ut.getProfiles().getById(profileId);
 					unit = new Unit(uid, ut, pr);
@@ -485,7 +485,7 @@ class UnitQueryCrossUnittype {
 				pp = ds.makePreparedStatement(connection);
 				rs = pp.executeQuery();
 				rs.next();
-				Unittype ut = xaps.getUnittype(rs.getInt("unit_type_id"));
+				Unittype ut = acs.getUnittype(rs.getInt("unit_type_id"));
 				Profile pr = ut.getProfiles().getById((rs.getInt("profile_id")));
 				UnittypeParameter swUtp = ut.getUnittypeParameters().getByName(SystemParameters.SOFTWARE_VERSION);
 				ds = new DynamicStatement();
@@ -540,7 +540,7 @@ class UnitQueryCrossUnittype {
 				Integer profileId = rs.getInt("profile_id");
 				Integer unittypeId = rs.getInt("unit_type_id");
 				if (unit == null) {
-					ut = xaps.getUnittype(unittypeId);
+					ut = acs.getUnittype(unittypeId);
 					if (ut != null)
 						pr = ut.getProfiles().getById(profileId);
 					unit = new Unit(uid, ut, pr);
@@ -573,7 +573,7 @@ class UnitQueryCrossUnittype {
 
 	public Map<String, Unit> getUnits(String searchStr, Integer limit) throws SQLException {
 		Map<String, Unit> units = null;
-		if (XAPS.isStrictOrder())
+		if (acs.isStrictOrder())
 			units = new TreeMap<String, Unit>();
 		else
 			units = new HashMap<String, Unit>();

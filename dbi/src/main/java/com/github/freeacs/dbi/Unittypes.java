@@ -23,7 +23,7 @@ public class Unittypes {
 	}
 
 	/**
-	 * Only to be used internally (to shape XAPS object according to permissions)
+	 * Only to be used internally (to shape ACS object according to permissions)
 	 * @param unittype
 	 * @return
 	 */
@@ -47,8 +47,8 @@ public class Unittypes {
 		return "Contains " + nameMap.size() + " unittypes (" + super.toString() + ")";
 	}
 
-	private void addOrChangeUnittypeImpl(Unittype unittype, XAPS xaps) throws SQLException {
-		Connection c = xaps.getDataSource().getConnection();
+	private void addOrChangeUnittypeImpl(Unittype unittype, ACS acs) throws SQLException {
+		Connection c = acs.getDataSource().getConnection();
 		PreparedStatement s = null;
 		try {
 			InsertOrUpdateStatement ious = new InsertOrUpdateStatement("unit_type", new Field("unit_type_id", unittype.getId()));
@@ -62,15 +62,15 @@ public class Unittypes {
 				ResultSet gk = s.getGeneratedKeys();
 				if (gk.next())
 					unittype.setId(gk.getInt(1));
-				int changedSystemParameters = unittype.ensureValidSystemParameters(xaps);
+				int changedSystemParameters = unittype.ensureValidSystemParameters(acs);
 				logger.info("Added unittype " + unittype.getName() + ", changed/added " + changedSystemParameters);
-				if (xaps.getDbi() != null)
-					xaps.getDbi().publishAdd(unittype, unittype);
+				if (acs.getDbi() != null)
+					acs.getDbi().publishAdd(unittype, unittype);
 			} else {
-				int changedSystemParameters = unittype.ensureValidSystemParameters(xaps);
+				int changedSystemParameters = unittype.ensureValidSystemParameters(acs);
 				logger.info("Updated unittype " + unittype.getName() + ", changed/added " + changedSystemParameters);
-				if (xaps.getDbi() != null)
-					xaps.getDbi().publishChange(unittype, unittype);
+				if (acs.getDbi() != null)
+					acs.getDbi().publishChange(unittype, unittype);
 			}
 		} finally {
 			if (s != null)
@@ -79,13 +79,13 @@ public class Unittypes {
 		}
 	}
 
-	public void addOrChangeUnittype(Unittype unittype, XAPS xaps) throws SQLException {
-		if (unittype.getId() == null && !xaps.getUser().isAdmin())
+	public void addOrChangeUnittype(Unittype unittype, ACS acs) throws SQLException {
+		if (unittype.getId() == null && !acs.getUser().isAdmin())
 			throw new IllegalArgumentException("Not allowed action for this user");
-		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
+		if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
-		addOrChangeUnittypeImpl(unittype, xaps);
-		unittype.setXaps(xaps);
+		addOrChangeUnittypeImpl(unittype, acs);
+		unittype.setAcs(acs);
 		nameMap.put(unittype.getName(), unittype);
 		idMap.put(unittype.getId(), unittype);
 		if (unittype.getOldName() != null) {
@@ -94,14 +94,14 @@ public class Unittypes {
 		}
 		Profiles profiles = unittype.getProfiles();
 		if (profiles.getProfiles().length == 0)
-			profiles.addOrChangeProfile(new Profile("Default", unittype), xaps);
+			profiles.addOrChangeProfile(new Profile("Default", unittype), acs);
 
 	}
 
-	private int deleteUnittypeImpl(Unittype unittype, XAPS xaps) throws SQLException {
+	private int deleteUnittypeImpl(Unittype unittype, ACS acs) throws SQLException {
 		Statement s = null;
 		String sql = null;
-		Connection c = xaps.getDataSource().getConnection();
+		Connection c = acs.getDataSource().getConnection();
 		try {
 			s = c.createStatement();
 			sql = "DELETE FROM unit_type WHERE ";
@@ -110,8 +110,8 @@ public class Unittypes {
 			int rowsDeleted = s.executeUpdate(sql);
 
 			logger.info("Deleted unittype " + unittype.getName());
-			if (xaps.getDbi() != null)
-				xaps.getDbi().publishDelete(unittype, unittype);
+			if (acs.getDbi() != null)
+				acs.getDbi().publishDelete(unittype, unittype);
 			return rowsDeleted;
 		} finally {
 			if (s != null)
@@ -129,8 +129,8 @@ public class Unittypes {
 	 * @param unittype
 	 * @throws SQLException
 	 */
-	public int deleteUnittype(Unittype unittype, XAPS xaps, boolean cascade) throws SQLException {
-		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
+	public int deleteUnittype(Unittype unittype, ACS acs, boolean cascade) throws SQLException {
+		if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		if (cascade) {
 			UnittypeParameters utParams = unittype.getUnittypeParameters();
@@ -139,21 +139,21 @@ public class Unittypes {
 			Profile defaultProfile = unittype.getProfiles().getByName("Default");
 			// Delete the defaultProfile if this is the only profile in existence and if the profile has no profile parameters
 			if (defaultProfile != null && unittype.getProfiles().getProfiles().length == 1 && defaultProfile.getProfileParameters().getProfileParameters().length == 0)
-				unittype.getProfiles().deleteProfile(defaultProfile, xaps, false);
-			utParams.deleteUnittypeParameters(Arrays.asList(utParamsArr), xaps);
+				unittype.getProfiles().deleteProfile(defaultProfile, acs, false);
+			utParams.deleteUnittypeParameters(Arrays.asList(utParamsArr), acs);
 			Groups groups = unittype.getGroups();
 			for (Group g : groups.getGroups()) {
-				groups.deleteGroup(g, xaps);
+				groups.deleteGroup(g, acs);
 			}
 
 			SyslogEvents syslogEvents = unittype.getSyslogEvents();
 			for (SyslogEvent sg : syslogEvents.getSyslogEvents()) {
 				if (sg.getUnittype() != null)
-					syslogEvents.deleteSyslogEventImpl(sg, xaps);
+					syslogEvents.deleteSyslogEventImpl(sg, acs);
 			}
 
 		}
-		int rowsDeleted = deleteUnittypeImpl(unittype, xaps);
+		int rowsDeleted = deleteUnittypeImpl(unittype, acs);
 		nameMap.remove(unittype.getName());
 		idMap.remove(unittype.getId());
 		return rowsDeleted;

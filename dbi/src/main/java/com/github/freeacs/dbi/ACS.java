@@ -2,8 +2,8 @@ package com.github.freeacs.dbi;
 
 import com.github.freeacs.common.util.NumberComparator;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.util.ACSVersionCheck;
 import com.github.freeacs.dbi.util.MapWrapper;
-import com.github.freeacs.dbi.util.XAPSVersionCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,34 +14,34 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * The XAPS class is the main interface for the following tables/concepts in the
- * XAPS database:
+ * The ACS class is the main interface for the following tables/concepts in the
+ * ACS database:
  * <p/>
  * Unittype, UnittypeParameter, UnittypeParameterValues, Profile,
  * ProfileParameter Group, GroupParameter, Job, JobParameter, SyslogEvent,
  * Filetore, Files, Certificates
  * <p/>
  * All the information stored within these tables/objects can be retrieved from
- * XAPS, although you need to start with the Unittype, and work you way down the
+ * ACS, although you need to start with the Unittype, and work you way down the
  * object-tree to find the various information.
  * <p/>
- * The XAPS object should always be retrieved from the DBI class, because the
- * DBI takes care of synching information about changes from other XAPS objects
+ * The ACS object should always be retrieved from the DBI class, because the
+ * DBI takes care of synching information about changes from other ACS objects
  * in other modules/threads etc.
  * <p/>
- * What is not covered in XAPS:
+ * What is not covered in ACS:
  * <p/>
  * a) To access information about Users/Permissions, you need to start with the
  * Users-class. b) To access information about Units/UnitParameters, you need to
- * start with the XAPSUnit class c) To access information about Syslog, you need
+ * start with the ACSUnit class c) To access information about Syslog, you need
  * to start with the Syslog class
  * 
  * @author Morten S
  */
-public class XAPS {
+public class ACS {
 
 	public static String version = "1.74";
-	private static Logger logger = LoggerFactory.getLogger(XAPS.class);
+	private static Logger logger = LoggerFactory.getLogger(ACS.class);
 	private static boolean strictOrder = true;
 
 	private Connection connection;
@@ -58,16 +58,16 @@ public class XAPS {
 
 	private ScriptExecutions scriptExecutions;
 
-	public XAPS(DataSource dataSource, Syslog syslog) throws SQLException {
+	public ACS(DataSource dataSource, Syslog syslog) throws SQLException {
 		long start = System.currentTimeMillis();
 		this.dataSource = dataSource;
 		this.syslog = syslog;
 		/* Checks all necessary tables to see which version they're in */
-		XAPSVersionCheck.versionCheck(dataSource);
+		ACSVersionCheck.versionCheck(dataSource);
 		this.unittypes = read();
 		if (logger.isDebugEnabled()) {
 
-			logger.debug("Read XAPS object in " + (System.currentTimeMillis() - start) + " ms.");
+			logger.debug("Read ACS object in " + (System.currentTimeMillis() - start) + " ms.");
 		}
 	}
 
@@ -118,7 +118,7 @@ public class XAPS {
 	 */
 	public Unittypes read() throws SQLException {
 		unittypes = readAsAdmin();
-		logger.debug("Updated XAPS object, read " + unittypes.getUnittypes().length + " unittypes");
+		logger.debug("Updated ACS object, read " + unittypes.getUnittypes().length + " unittypes");
 		User user = syslog.getIdentity().getUser();
 		if (user.isAdmin())
 			return unittypes;
@@ -153,13 +153,13 @@ public class XAPS {
 			readUnittypeParameterValues(tmpUnittypes);
 			readProfiles(tmpUnittypes);
 			readGroups(tmpUnittypes);
-			if (XAPSVersionCheck.heartbeatSupported)
+			if (ACSVersionCheck.heartbeatSupported)
 				readHeartbeats(tmpUnittypes);
 			readSyslogEvents(tmpUnittypes);
 			readProfileParameters(tmpUnittypes);
 			readGroupParameters(tmpUnittypes);
 			readJobs(tmpUnittypes);
-			if (XAPSVersionCheck.triggerSupported)
+			if (ACSVersionCheck.triggerSupported)
 				readTriggers(tmpUnittypes);
 			return tmpUnittypes;
 		} finally {
@@ -174,13 +174,9 @@ public class XAPS {
 		String sql = null;
 		try {
 			sql = "SELECT ut.unit_type_name, ";
-			//			if (XAPSVersionCheck.groupParamIdSupported)
 			sql += "gp.id, ";
 			sql += "gp.group_id, gp.unit_type_param_id, ";
-			//			if (XAPSVersionCheck.groupParamTypeSupported)
 			sql += "gp.operator, gp.data_type, ";
-			//			else
-			//				sql += "gp.is_equal, ";
 			sql += "gp.value ";
 			sql += " FROM group_param gp, unit_type_param utp, unit_type ut ";
 			sql += " WHERE gp.unit_type_param_id = utp.unit_type_param_id AND utp.unit_type_id = ut.unit_type_id ORDER BY ut.unit_type_name ASC";
@@ -197,17 +193,10 @@ public class XAPS {
 				String value = rs.getString("gp.value");
 				Parameter.ParameterDataType pdt = Parameter.ParameterDataType.TEXT;
 				Parameter.Operator op = Parameter.Operator.EQ;
-				//				if (XAPSVersionCheck.groupParamTypeSupported) {
 				op = Parameter.Operator.getOperator(rs.getString("operator"));
 				pdt = Parameter.ParameterDataType.getDataType(rs.getString("data_type"));
-				//				} else {
-				//					String isEqualStr = rs.getString("is_equal");
-				//					if (isEqualStr != null && isEqualStr.equals("0"))
-				//						op = Operator.NE;
-				//				}
 				Parameter parameter = new Parameter(utp, value, op, pdt);
 				GroupParameter groupParameter = new GroupParameter(parameter, group);
-				//				if (XAPSVersionCheck.groupParamIdSupported)
 				groupParameter.setId(rs.getInt("gp.id"));
 				GroupParameters groupParams = group.getGroupParameters();
 				groupParams.addOrChangeGroupParameter(groupParameter);
@@ -290,7 +279,7 @@ public class XAPS {
 				if (lastUnittypeParameterId == null || !lastUnittypeParameterId.equals(utpId)) {
 					UnittypeParameter up = unittype.getUnittypeParameters().getById(utpId);
 					values = new UnittypeParameterValues();
-					up.setValuesFromXAPS(values);
+					up.setValuesFromACS(values);
 					lastUnittypeParameterId = utpId;
 				}
 				String type = rs.getString("type");
@@ -371,7 +360,7 @@ public class XAPS {
 		try {
 			TreeMap<Integer, SyslogEvent> syslogIdMap = null;
 			Unittype lastUnittype = null;
-			if (XAPSVersionCheck.syslogEventReworkSupported)
+			if (ACSVersionCheck.syslogEventReworkSupported)
 				sql = "SELECT * FROM syslog_event ORDER BY unit_type_id ASC";
 			else
 				sql = "SELECT * FROM syslog_event ORDER BY unit_type_name ASC";
@@ -382,7 +371,7 @@ public class XAPS {
 			while (rs.next()) {
 				counter++;
 				Unittype unittype = null;
-				if (XAPSVersionCheck.syslogEventReworkSupported)
+				if (ACSVersionCheck.syslogEventReworkSupported)
 					unittype = unittypes.getById(rs.getInt("unit_type_id"));
 				else
 					unittype = unittypes.getByName(rs.getString("unit_type_name"));
@@ -398,7 +387,7 @@ public class XAPS {
 				String deleteLimitStr = rs.getString("delete_limit");
 				if (deleteLimitStr != null)
 					syslogEvent.setDeleteLimit(new Integer(deleteLimitStr));
-				if (XAPSVersionCheck.syslogEventReworkSupported) {
+				if (ACSVersionCheck.syslogEventReworkSupported) {
 					String groupId = rs.getString("group_id");
 					if (groupId != null)
 						syslogEvent.setGroup(unittype.getGroups().getById(new Integer(groupId)));
@@ -759,7 +748,7 @@ public class XAPS {
 			s = connection.createStatement();
 			s.setQueryTimeout(120);
 			sql = "SELECT unit_type_id, id, name, type, description, version, timestamp_, length(content) as length";
-			if (XAPSVersionCheck.fileReworkSupported)
+			if (ACSVersionCheck.fileReworkSupported)
 				sql += ", target_name, owner ";
 			sql += " FROM filestore ORDER BY unit_type_id ASC";
 			rs = s.executeQuery(sql);
@@ -789,12 +778,12 @@ public class XAPS {
 				file.setLength(rs.getInt("length"));
 				String targetName = null;
 				User owner = null;
-				if (XAPSVersionCheck.fileReworkSupported) {
+				if (ACSVersionCheck.fileReworkSupported) {
 					targetName = rs.getString("target_name");
 					String userIdStr = rs.getString("owner");
 					if (userIdStr != null) {
 						try {
-							owner = unittype.getXaps().getUser().getUsers().getUnprotected(new Integer(userIdStr));
+							owner = unittype.getAcs().getUser().getUsers().getUnprotected(new Integer(userIdStr));
 						} catch (NumberFormatException nfe) {
 							// ignore
 						}
@@ -849,7 +838,7 @@ public class XAPS {
 				String protocol = rs.getString("protocol");
 				Unittype unittype = new Unittype(unittypeName, vendorName, desc, ProvisioningProtocol.toEnum(protocol));
 				unittype.setId(id);
-				unittype.setXaps(this);
+				unittype.setAcs(this);
 				unittypeMap.put(unittypeName, unittype);
 				idMap.put(id, unittype);
 			}
@@ -930,7 +919,7 @@ public class XAPS {
 				// The job has been retrieved. put it in the map
 				if (lastUnittype == null || lastUnittype != unittype) {
 					idMap = new TreeMap<Integer, Job>();
-					nameMap = new MapWrapper<Job>(XAPS.isStrictOrder()).getMap();
+					nameMap = new MapWrapper<Job>(ACS.isStrictOrder()).getMap();
 					unittype.setJobs(new Jobs(idMap, nameMap, unittype));
 					lastUnittype = unittype;
 				}
@@ -1054,7 +1043,7 @@ public class XAPS {
 	}
 
 	public static void setStrictOrder(boolean strictOrder) {
-		XAPS.strictOrder = strictOrder;
+		ACS.strictOrder = strictOrder;
 	}
 
 	public void setDbi(DBI dbi) {

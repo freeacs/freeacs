@@ -33,11 +33,11 @@ public class Context {
 	}
 
 	public void println(String s) {
-		getSession().getXapsShell().println(s);
+		getSession().getACSShell().println(s);
 	}
 
 	public void print(String s) {
-		getSession().getXapsShell().print(s);
+		getSession().getACSShell().print(s);
 	}
 
 	public UnittypeParameter getUnittypeParameter() {
@@ -192,10 +192,10 @@ public class Context {
 		this.setUnittypeParameter(null);
 	}
 
-	public void resetXAPS(XAPS xaps) {
+	public void resetXAPS(ACS acs) {
 
 		if (this.getUnittype() != null)
-			this.setUnittype(xaps.getUnittype(this.getUnittype().getId()));
+			this.setUnittype(acs.getUnittype(this.getUnittype().getId()));
 		if (this.getProfile() != null)
 			this.setProfile(this.getProfile().getUnittype().getProfiles().getById(this.getProfile().getId()));
 		if (this.getGroup() != null)

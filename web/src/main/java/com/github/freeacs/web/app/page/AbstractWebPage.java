@@ -281,40 +281,22 @@ public abstract class AbstractWebPage implements WebPage {
 		}
 	}
 
-	
-	public static class GetUnitDetails implements TemplateMethodModel {
 
-		@SuppressWarnings("unused")
-		private XAPSUnit xapsUnit;
-		
-		public GetUnitDetails(XAPSUnit xu) {
-			xapsUnit = xu;
-		}
-		
-		@SuppressWarnings("rawtypes")
-		@Override
-		public Object exec(List arg0) throws TemplateModelException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-	
-	}
-	
 	/**
 	 * The Class GetParameterValue.
 	 */
 	public static class GetParameterValue implements TemplateMethodModel {
 		
 		/** The xaps unit. */
-		private XAPSUnit xapsUnit;
+		private ACSUnit acsUnit;
 
 		/**
 		 * Instantiates a new gets the parameter value.
 		 *
-		 * @param xapsUnit the xaps unit
+		 * @param ACSUnit the xaps unit
 		 */
-		public GetParameterValue(XAPSUnit xapsUnit){
-			this.xapsUnit = xapsUnit;
+		public GetParameterValue(ACSUnit acsUnit){
+			this.acsUnit = acsUnit;
 		}
 		
 		/** The units. */
@@ -332,7 +314,7 @@ public abstract class AbstractWebPage implements WebPage {
 			Unit unit = units.get(id);
 			if (unit == null) {
 				try {
-					unit = xapsUnit.getUnitById(id);
+					unit = acsUnit.getUnitById(id);
 					units.put(id, unit);
 				} catch (SQLException e) {
 					throw new TemplateModelException("Error: " + e.getLocalizedMessage());
@@ -513,8 +495,8 @@ public abstract class AbstractWebPage implements WebPage {
 	 */
 	public static boolean isUnittypesLimited(String sessionId, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
 		List<Unittype> list = getAllowedUnittypes(sessionId, xapsDataSource, syslogDataSource);
-		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		return list.size() != xaps.getUnittypes().getUnittypes().length;
+		ACS acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		return list.size() != acs.getUnittypes().getUnittypes().length;
 	}
 
 	/**
@@ -528,12 +510,12 @@ public abstract class AbstractWebPage implements WebPage {
 	 * @throws SQLException the sQL exception
 	 */
 	public static List<Unittype> getAllowedUnittypes(String sessionId, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
-		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		ACS acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		SessionData sessionData = SessionCache.getSessionData(sessionId);
 		List<Unittype> unittypesList = null;
 		if (sessionData.getFilteredUnittypes() != null) {
 			List<Unittype> unittypes = new ArrayList<Unittype>();
-			Unittype[] xAPSUnittypes = xaps.getUnittypes().getUnittypes();
+			Unittype[] xAPSUnittypes = acs.getUnittypes().getUnittypes();
 			
 			if(sessionData.getFilteredUnittypes().length==1 && sessionData.getFilteredUnittypes()[0].getName()!=null && sessionData.getFilteredUnittypes()[0].getName().equals("*"))
 				return (unittypesList=Arrays.asList(xAPSUnittypes));
@@ -543,7 +525,7 @@ public abstract class AbstractWebPage implements WebPage {
 					if (ut.getName()!=null && ut.getName().trim().equals(xAPSUnittypes[i].getName())) {
 						unittypes.add(xAPSUnittypes[i]);
 					}else if(ut.getId()!=null){
-						Unittype unittype = xaps.getUnittype(ut.getId());
+						Unittype unittype = acs.getUnittype(ut.getId());
 						if(unittype!=null && unittype.getName().equals(xAPSUnittypes[i].getName()) && !unittypes.contains(xAPSUnittypes[i]))
 							unittypes.add(xAPSUnittypes[i]);
 					}

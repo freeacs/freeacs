@@ -10,7 +10,7 @@ import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -26,10 +26,10 @@ public class UnitJobPage extends AbstractWebPage {
 	// FIXME Why are we using class variables? What are the problem we are solving with this?
 	private JobData inputData;
 
-	@Qualifier("xaps") DataSource xapsDataSource;
+	@Qualifier("main") DataSource mainDataSource;
 	@Qualifier("syslog") DataSource syslogDataSource;
 
-	private XAPS xaps;
+	private ACS acs;
 	//	private Unittype unittype;
 	//	private Group group;
 	//	private Job job;
@@ -41,8 +41,8 @@ public class UnitJobPage extends AbstractWebPage {
 
 		sessionId = req.getSession().getId();
 
-		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (xaps == null) {
+		acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -51,7 +51,7 @@ public class UnitJobPage extends AbstractWebPage {
 
 		Map<String, Object> fmMap = outputHandler.getTemplateMap();
 
-		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps);
+		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
 		fmMap.put("unittypes", unittypes);
 		Unittype unittype = unittypes.getSelected();
 		if (unittype != null) {
@@ -82,7 +82,7 @@ public class UnitJobPage extends AbstractWebPage {
 			list.add(new MenuItem("Create new Job", Page.JOB).addCommand("create"));
 			list.add(new MenuItem("Job overwiew", Page.JOBSOVERVIEW));
 			if (sessionData.getJobname() != null) {
-				Unittype unittype = xaps.getUnittype(sessionData.getUnittypeName());
+				Unittype unittype = acs.getUnittype(sessionData.getUnittypeName());
 				Job job = unittype.getJobs().getByName(sessionData.getJobname());
 				if (job != null) {
 					list.add(new MenuItem("List failed unit jobs", Page.JOB).addCommand("getfailedunitjobs").addParameter("limit", "100").addParameter("unittype", job.getUnittype().getName())
@@ -145,7 +145,7 @@ public class UnitJobPage extends AbstractWebPage {
 	private void getFailedUnitJobs(Job job, Output res) throws SQLException, IOException, TemplateException {
 		res.setTemplatePath("unit-job/failed");
 		Map<String, Object> rootMap = new HashMap<String, Object>();
-		UnitJobs unitJobs = new UnitJobs(xapsDataSource);
+		UnitJobs unitJobs = new UnitJobs(mainDataSource);
 		List<UnitJob> unitJobsList = unitJobs.readAllProcessed(job);
 		//		List<UnitJob> list = new ArrayList<UnitJob>();
 		//		if (limit != null) {
@@ -167,17 +167,17 @@ public class UnitJobPage extends AbstractWebPage {
 
 	private void getCompletedUnitJobs(Job job, Output res, Unittype unittype) throws SQLException, IOException, TemplateException {
 		res.setTemplatePath("unit-job/completed");
-		XAPSUnit xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource, syslogDataSource);
+		ACSUnit acsUnit = ACSLoader.getACSUnit(sessionId, mainDataSource, syslogDataSource);
 		Profile profile = job.getGroup().getProfile();
 		UnittypeParameter historyParameterUtp = job.getGroup().getUnittype().getUnittypeParameters().getByName(SystemParameters.JOB_HISTORY);
 		Parameter historyParameter = new Parameter(historyParameterUtp, "%," + job.getId() + ":%");
-		Collection<Unit> units = xapsUnit.getUnits(unittype, profile, Arrays.asList(historyParameter), null).values();
+		Collection<Unit> units = acsUnit.getUnits(unittype, profile, Arrays.asList(historyParameter), null).values();
 		Map<String, Object> rootMap = new HashMap<String, Object>();
 		SessionCache.getSessionData(sessionId).setFailedUnitJobsList(null);
 		if (units.size() > 0) {
 			rootMap.put("completedUnitJobs", units);
 			rootMap.put("lastindexof", new LastIndexOfMethod());
-			rootMap.put("getparamvalue", new GetParameterValue(xapsUnit));
+			rootMap.put("getparamvalue", new GetParameterValue(acsUnit));
 			rootMap.put("jobparameters", job.getDefaultParameters().values());
 			SessionCache.getSessionData(sessionId).setCompletedUnitJobsList(units);
 		}

@@ -52,7 +52,7 @@ public class UnittypeParameterMenu {
 				upv.getValues().add(st.getValue());
 				context.print(st.getValue() + " ");
 			}
-			context.getUnittype().getUnittypeParameters().addOrChangeUnittypeParameter(utp, session.getXaps());
+			context.getUnittype().getUnittypeParameters().addOrChangeUnittypeParameter(utp, session.getAcs());
 			context.println("");
 		} else {
 			context.println(utp.getName() + " : No enumeration found for this parameter");
@@ -99,7 +99,7 @@ public class UnittypeParameterMenu {
 		} else if (args[1].equals(UnittypeParameterValues.REGEXP)) {
 			upv.setPattern(args[2]);
 		}
-		context.getUnittype().getUnittypeParameters().addOrChangeUnittypeParameter(up, session.getXaps());
+		context.getUnittype().getUnittypeParameters().addOrChangeUnittypeParameter(up, session.getAcs());
 		context.println("[" + session.getCounter() + "] The unittype parameter values for " + up.getName() + " are updated");
 		session.incCounter();
 	}
@@ -108,7 +108,7 @@ public class UnittypeParameterMenu {
 		UnittypeParameter unittypeParameter = context.getUnittypeParameter();
 		unittypeParameter.getValues().setValues(new ArrayList<String>());
 		unittypeParameter.getValues().setPattern(null);
-		context.getUnittype().getUnittypeParameters().addOrChangeUnittypeParameter(unittypeParameter, session.getXaps());
+		context.getUnittype().getUnittypeParameters().addOrChangeUnittypeParameter(unittypeParameter, session.getAcs());
 		unittypeParameter.setValues(null);
 		context.println("[" + session.getCounter() + "] The unittype parameter values for " + unittypeParameter.getName() + " are deleted.");
 		session.incCounter();
