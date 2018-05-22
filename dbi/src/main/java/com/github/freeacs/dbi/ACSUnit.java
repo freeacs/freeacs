@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * FreeacsUnit is a class to help you work with units and unit parameters.
+ * ACSUnit is a class to help you work with units and unit parameters.
  * 
  */
 public class ACSUnit {
@@ -30,7 +30,7 @@ public class ACSUnit {
 		this.dataSource = dataSource;
 		this.syslog = syslog;
 		if (acs == null)
-			throw new IllegalArgumentException("The FreeacsUnit constructor requires a non-null Freeacs object");
+			throw new IllegalArgumentException("The ACSUnit constructor requires a non-null ACS object");
 		this.acs = acs;
 		if (acs.getUnittypes() == null) {
 			acs.read();

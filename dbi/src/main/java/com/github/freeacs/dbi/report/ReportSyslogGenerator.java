@@ -309,7 +309,7 @@ public class ReportSyslogGenerator extends ReportGenerator {
 		Set<Integer> unittypesWithAllProfilesSpecified = new HashSet<Integer>();
 		boolean allUnittypesSpecified = false;
 		ACS acs = profiles.get(0).getUnittype().getAcs();
-		int noUnittypes = acs.getUnittypes().getUnittypes().length; // the number of unittypes in Freeacs
+		int noUnittypes = acs.getUnittypes().getUnittypes().length; // the number of unittypes in ACS
 		for (Profile profile : profiles) {
 			Integer unittypeId = profile.getUnittype().getId();
 			Set<Profile> profilesInUnittype = unittypesWithSomeProfilesSpecified.get(unittypeId);

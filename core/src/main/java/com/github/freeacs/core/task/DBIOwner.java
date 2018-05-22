@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 
 /**
- * You can extend this object if you need to manipulate the state of the Freeacs object, then you will not
+ * You can extend this object if you need to manipulate the state of the ACS object, then you will not
  * cause concurrent modification problems for other threads extending the same object (as would happen 
  * if you extended DBIShare).
  * @author Morten

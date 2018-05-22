@@ -14,26 +14,26 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * The Freeacs class is the main interface for the following tables/concepts in the
- * Freeacs database:
+ * The ACS class is the main interface for the following tables/concepts in the
+ * ACS database:
  * <p/>
  * Unittype, UnittypeParameter, UnittypeParameterValues, Profile,
  * ProfileParameter Group, GroupParameter, Job, JobParameter, SyslogEvent,
  * Filetore, Files, Certificates
  * <p/>
  * All the information stored within these tables/objects can be retrieved from
- * Freeacs, although you need to start with the Unittype, and work you way down the
+ * ACS, although you need to start with the Unittype, and work you way down the
  * object-tree to find the various information.
  * <p/>
- * The Freeacs object should always be retrieved from the DBI class, because the
- * DBI takes care of synching information about changes from other Freeacs objects
+ * The ACS object should always be retrieved from the DBI class, because the
+ * DBI takes care of synching information about changes from other ACS objects
  * in other modules/threads etc.
  * <p/>
- * What is not covered in Freeacs:
+ * What is not covered in ACS:
  * <p/>
  * a) To access information about Users/Permissions, you need to start with the
  * Users-class. b) To access information about Units/UnitParameters, you need to
- * start with the FreeacsUnit class c) To access information about Syslog, you need
+ * start with the ACSUnit class c) To access information about Syslog, you need
  * to start with the Syslog class
  * 
  * @author Morten S
@@ -67,7 +67,7 @@ public class ACS {
 		this.unittypes = read();
 		if (logger.isDebugEnabled()) {
 
-			logger.debug("Read Freeacs object in " + (System.currentTimeMillis() - start) + " ms.");
+			logger.debug("Read ACS object in " + (System.currentTimeMillis() - start) + " ms.");
 		}
 	}
 
@@ -118,7 +118,7 @@ public class ACS {
 	 */
 	public Unittypes read() throws SQLException {
 		unittypes = readAsAdmin();
-		logger.debug("Updated Freeacs object, read " + unittypes.getUnittypes().length + " unittypes");
+		logger.debug("Updated ACS object, read " + unittypes.getUnittypes().length + " unittypes");
 		User user = syslog.getIdentity().getUser();
 		if (user.isAdmin())
 			return unittypes;
@@ -279,7 +279,7 @@ public class ACS {
 				if (lastUnittypeParameterId == null || !lastUnittypeParameterId.equals(utpId)) {
 					UnittypeParameter up = unittype.getUnittypeParameters().getById(utpId);
 					values = new UnittypeParameterValues();
-					up.setValuesFromFreeacs(values);
+					up.setValuesFromACS(values);
 					lastUnittypeParameterId = utpId;
 				}
 				String type = rs.getString("type");

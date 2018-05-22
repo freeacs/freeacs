@@ -1,8 +1,8 @@
 package com.github.freeacs.core.task;
 
 import com.github.freeacs.core.Properties;
-import com.github.freeacs.shell.FreeacsShell;
-import com.github.freeacs.shell.FreeacsShellDaemon;
+import com.github.freeacs.shell.ACSShell;
+import com.github.freeacs.shell.ACSShellDaemon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,23 +25,23 @@ public class ShellDaemonPool {
 
 	private static Logger logger = LoggerFactory.getLogger(ShellDaemonPool.class);
 
-	private static Map<String, List<FreeacsShellDaemon>> shellDaemonPoolMap = new HashMap<String, List<FreeacsShellDaemon>>();
+	private static Map<String, List<ACSShellDaemon>> shellDaemonPoolMap = new HashMap<String, List<ACSShellDaemon>>();
 
-	private static FreeacsShellDaemon createNewShellDaemon(DataSource mainDataSource, DataSource syslogDataSource, int index, String fusionUser) throws Throwable {
-		FreeacsShellDaemon freeacsShellDaemon = new FreeacsShellDaemon(mainDataSource, syslogDataSource, fusionUser);
-		freeacsShellDaemon.setIndex(index);
-		FreeacsShell freeacsShell = freeacsShellDaemon.getFreeacsShell();
+	private static ACSShellDaemon createNewShellDaemon(DataSource mainDataSource, DataSource syslogDataSource, int index, String fusionUser) throws Throwable {
+		ACSShellDaemon ACSShellDaemon = new ACSShellDaemon(mainDataSource, syslogDataSource, fusionUser);
+		ACSShellDaemon.setIndex(index);
+		ACSShell ACSShell = ACSShellDaemon.getACSShell();
 		try {
-			freeacsShell.setPrinter(new PrintWriter(new FileWriter("fusion-core-shell-daemon-for-" + fusionUser + "-" + index + ".log")));
+			ACSShell.setPrinter(new PrintWriter(new FileWriter("fusion-core-shell-daemon-for-" + fusionUser + "-" + index + ".log")));
 		} catch (IOException e) {
 			logger.error("ScriptExecutor: Cannot log freeacs-shell output til fusion-core-shell-daemon-for-" + fusionUser + "-" + index + ".log file", e);
 		}
-		Thread thread = new Thread(freeacsShellDaemon);
+		Thread thread = new Thread(ACSShellDaemon);
 		thread.setName("Core Shell Daemon " + index);
 		thread.setDaemon(true);
 		thread.start();
-		while (!freeacsShellDaemon.isInitialized()) {
-			List<Throwable> throwables = freeacsShellDaemon.getAndResetThrowables();
+		while (!ACSShellDaemon.isInitialized()) {
+			List<Throwable> throwables = ACSShellDaemon.getAndResetThrowables();
 			if (throwables != null && throwables.size() > 0) {
 				throw throwables.get(0);
 			}
@@ -52,35 +52,35 @@ public class ShellDaemonPool {
 				e.printStackTrace();
 			}
 		}
-		return freeacsShellDaemon;
+		return ACSShellDaemon;
 	}
 
-	private static List<FreeacsShellDaemon> getShellDaemonPool(String fusionUser) {
+	private static List<ACSShellDaemon> getShellDaemonPool(String fusionUser) {
 		return shellDaemonPoolMap.computeIfAbsent(fusionUser, k -> new ArrayList<>());
 	}
 
-	public static synchronized FreeacsShellDaemon getShellDaemon(DataSource mainDataSource, DataSource syslogDataSource, String fusionUser) throws Throwable {
-		List<FreeacsShellDaemon> shellDaemonPool = getShellDaemonPool(fusionUser);
+	public static synchronized ACSShellDaemon getShellDaemon(DataSource mainDataSource, DataSource syslogDataSource, String fusionUser) throws Throwable {
+		List<ACSShellDaemon> shellDaemonPool = getShellDaemonPool(fusionUser);
 		int poolsize = Properties.SHELL_SCRIPT_POOL_SIZE;
-		FreeacsShellDaemon freeacsShellDaemon = null;
+		ACSShellDaemon ACSShellDaemon = null;
 		// Check if any shell daemon is available. If not create a new one within poolsize-limit
 		for (int i = 0; i < poolsize; i++) {
 			if (shellDaemonPool.size() > i) {
-				freeacsShellDaemon = shellDaemonPool.get(i);
-				if (freeacsShellDaemon.isIdle()) {
+				ACSShellDaemon = shellDaemonPool.get(i);
+				if (ACSShellDaemon.isIdle()) {
 					break;
 				} else {
-					freeacsShellDaemon = null;
+					ACSShellDaemon = null;
 					continue;
 				}
 			} else {
-				freeacsShellDaemon = createNewShellDaemon(mainDataSource, syslogDataSource, i, fusionUser);
-				shellDaemonPool.add(freeacsShellDaemon);
+				ACSShellDaemon = createNewShellDaemon(mainDataSource, syslogDataSource, i, fusionUser);
+				shellDaemonPool.add(ACSShellDaemon);
 				break;
 			}
 		}
-		if (freeacsShellDaemon != null)
-			freeacsShellDaemon.setIdle(false);
-		return freeacsShellDaemon;
+		if (ACSShellDaemon != null)
+			ACSShellDaemon.setIdle(false);
+		return ACSShellDaemon;
 	}
 }

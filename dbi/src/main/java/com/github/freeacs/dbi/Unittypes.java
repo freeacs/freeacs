@@ -23,7 +23,7 @@ public class Unittypes {
 	}
 
 	/**
-	 * Only to be used internally (to shape Freeacs object according to permissions)
+	 * Only to be used internally (to shape ACS object according to permissions)
 	 * @param unittype
 	 * @return
 	 */

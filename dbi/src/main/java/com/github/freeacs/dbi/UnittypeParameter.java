@@ -83,7 +83,7 @@ public class UnittypeParameter {
 		this.values = values;
 	}
 
-	protected void setValuesFromFreeacs(UnittypeParameterValues values) {
+	protected void setValuesFromACS(UnittypeParameterValues values) {
 		this.values = values;
 	}
 

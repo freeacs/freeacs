@@ -10,9 +10,9 @@ import java.util.Map;
 
 public interface SessionDataI {
 
-	public FreeacsParameters getFreeacsParameters();
+	public ACSParameters getAcsParameters();
 
-	public void setFreeacsParameters(FreeacsParameters freeacsParameters);
+	public void setAcsParameters(ACSParameters acsParameters);
 
 	public Unittype getUnittype();
 

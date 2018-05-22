@@ -401,12 +401,12 @@ public class Processor {
 					script.addScriptLine(getDaemonCommand()); // In Daemon-mode, wait until more input arrives
 				else if (session.getMode() == SessionMode.INTERACTIVE) {
 					echo.printInteractiveMode();
-					BufferedReader br = session.getFreeacsShell().getReader(); // In interactive-mode, wait for keyboard-input
+					BufferedReader br = session.getACSShell().getReader(); // In interactive-mode, wait for keyboard-input
 					script.addScriptLine(br.readLine());
 					echo.setFromKeyboard(true); // set keyboard flag
 				}
 			}
-			if (session.getDbi() != null && session.getDbi().isFreeacsUpdated()) {
+			if (session.getDbi() != null && session.getDbi().isACSUpdated()) {
 				session.setAcs(session.getDbi().getAcs());
 				session.getContext().resetXAPS(session.getAcs());
 				session.println("# XAPS data was refreshed due to changes by another XAPS module");

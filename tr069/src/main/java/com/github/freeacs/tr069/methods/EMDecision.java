@@ -108,7 +108,7 @@ public class EMDecision {
 			toDB = new ArrayList<ParameterValueStruct>(params);
 		String timestamp = TimestampWrapper.tmsFormat.format(new Date());
 		toDB.add(new ParameterValueStruct(SystemParameters.LAST_CONNECT_TMS, timestamp));
-		if (sessionData.getFreeacsParameters().getValue(SystemParameters.FIRST_CONNECT_TMS) == null)
+		if (sessionData.getAcsParameters().getValue(SystemParameters.FIRST_CONNECT_TMS) == null)
 			toDB.add(new ParameterValueStruct(SystemParameters.FIRST_CONNECT_TMS, timestamp));
 		String ipAddress = sessionData.getUnit().getParameters().get(SystemParameters.IP_ADDRESS);
 		if (ipAddress == null || !ipAddress.equals(reqRes.getReq().getRemoteHost()))

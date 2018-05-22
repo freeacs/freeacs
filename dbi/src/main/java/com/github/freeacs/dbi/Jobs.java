@@ -404,9 +404,9 @@ public class Jobs {
 
 	/*
 	 * This method can't publish the same way all other add/change/delete methods
-	 * do in Freeacs. The reason is simply that this method may be run very often,
-	 * maybe every second. Thus we could end up demanding all modules in Freeacs to
-	 * reload the whole Freeacs object every second. Even if we modified publish of
+	 * do in ACS. The reason is simply that this method may be run very often,
+	 * maybe every second. Thus we could end up demanding all modules in ACS to
+	 * reload the whole ACS object every second. Even if we modified publish of
 	 * Job-object to only read the job-table, that could still be a significant load.
 	 * 
 	 * The conclusion: Prepare a message in this publish which gives the information

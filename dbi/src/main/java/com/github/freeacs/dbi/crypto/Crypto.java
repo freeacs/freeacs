@@ -15,10 +15,10 @@ import java.security.spec.RSAPublicKeySpec;
 import java.util.Calendar;
 
 /*
- * This class should handle all crypto and crypto-like operations for Freeacs. There are currently X
+ * This class should handle all crypto and crypto-like operations for ACS. There are currently X
  * operations needed:
  * 
- *  1. compute a SHA1 digest - used to store passwords in the Freeacs database
+ *  1. compute a SHA1 digest - used to store passwords in the ACS database
  *  2. compute a HMAC-SHA1 digest - used to transmit ConnectionPassword securly in TR-111
  *  3. encrypt certificates to send to customers - uses RSA private key from file
  *  4. decrypt certificates - uses RSA public key found in this class

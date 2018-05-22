@@ -84,9 +84,9 @@ public class GenericMenu {
 			return true;
 		} else if (input.startsWith("logout")) {
 			session.getDbi().setLifetimeSec(0); // kill the old DBI
-			FreeacsShell freeacsShell = session.getFreeacsShell();
-			freeacsShell.setSession(new Session(session.getOriginalOptionArgs(), freeacsShell));
-			freeacsShell.init(FreeacsShell.getHikariDataSource("xaps"), FreeacsShell.getHikariDataSource("syslog"));
+			ACSShell acsShell = session.getACSShell();
+			acsShell.setSession(new Session(session.getOriginalOptionArgs(), acsShell));
+			acsShell.init(ACSShell.getHikariDataSource("xaps"), ACSShell.getHikariDataSource("syslog"));
 			return true;
 		} else if (input.startsWith("userin")) {
 			session.println("Logged in as " + session.getVerifiedFusionUser().getUsername());

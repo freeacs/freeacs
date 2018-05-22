@@ -20,15 +20,15 @@ import java.util.Map.Entry;
  * - fast access - updated data
  * 
  * This last requirement is only possible since DBI will build upon a table
- * called 'message', which will convey messages from Freeacs applications and
- * inform all other Freeacs applications about changes to the tables/data.
+ * called 'message', which will convey messages from ACS applications and
+ * inform all other ACS applications about changes to the tables/data.
  * 
  * 
  * Details
  * 
  * The main idea of this class is to be both a listener (subscriber) and a
  * broadcaster (publisher) of changes to the various objects (data) found in the
- * Freeacs database tables. To do the "listening" we need one thread which
+ * ACS database tables. To do the "listening" we need one thread which
  * constantly polls on a special table called "message". By polling every second
  * we would quickly discover changes made to the various objects in DBI. If user
  * of DBI changes some data in an object (table), the user should in general
@@ -38,7 +38,7 @@ import java.util.Map.Entry;
  * These objects/tables are under DBI caching mechanism:
  * 
  * Objects Tables ------------------------------------------------------ DBI
- * message Freeacs filestore (firmware) group_ group_param profile profile_param
+ * message ACS filestore (firmware) group_ group_param profile profile_param
  * syslog_event unit_type unit_type_param unit_type_param_value job job_param
  * (only parameters for unitid = ANY_UNIT_IN_GROUP)
  * 
@@ -47,8 +47,8 @@ import java.util.Map.Entry;
  * updated.
  * 
  * Objects Tables ------------------------------------------------------ Syslog
- * syslog UnitJobs unit_job Users user_ permission_ FreeacsJobs job_param (all
- * parameters for unitid != ANY_UNIT_IN_GROUP) FreeacsUnit unit unit_param
+ * syslog UnitJobs unit_job Users user_ permission_ ACSJobs job_param (all
+ * parameters for unitid != ANY_UNIT_IN_GROUP) ACSUnit unit unit_param
  * 
  * Messages that are sent/received must contain this information:
  * 
@@ -176,7 +176,7 @@ public class DBI implements Runnable {
 	}
 
 	private static Logger logger = LoggerFactory.getLogger(DBI.class);
-	public static String PUBLISH_INBOX_NAME = "publishFreeacsInbox";
+	public static String PUBLISH_INBOX_NAME = "publishACSInbox";
 
 	private DataSource dataSource;
 	private int lifetimeSec;
@@ -433,7 +433,7 @@ public class DBI implements Runnable {
 	}
 
 	private void processPublishInbox() throws SQLException {
-		boolean updateFreeacs = false;
+		boolean updateACS = false;
 		for (Message m : publishInbox.getUnreadMessages()) {
 			publishInbox.markMessageAsRead(m);
 			if (logger.isDebugEnabled()) {
@@ -441,7 +441,7 @@ public class DBI implements Runnable {
 				logger.debug("DBI discovered that " + m.getObjectType() + " with id = " + m.getObjectId() + " has changed (" + m.getMessageType() + ") (sent from "
 						+ SyslogConstants.getFacilityName(m.getSender()) + ")");
 			}
-			if (!updateFreeacs) {
+			if (!updateACS) {
 				if (m.getObjectType().equals(Message.OTYPE_JOB) && m.getContent() != null && m.getSender() == SyslogConstants.FACILITY_CORE)
 					updateJobCounters(new Integer(m.getObjectId()), m.getContent());
 				else if (m.getObjectType().equals(Message.OTYPE_JOB) && m.getMessageType().equals(Message.MTYPE_PUB_CHG))
@@ -451,21 +451,21 @@ public class DBI implements Runnable {
 				else if (m.getObjectType().equals(Message.OTYPE_FILE) && m.getMessageType().equals(Message.MTYPE_PUB_CHG))
 					Files.refreshFile(new Integer(m.getObjectId()), new Integer(m.getContent()), acs);
 				else
-					updateFreeacs = true;
+					updateACS = true;
 			}
 		}
-		if (updateFreeacs) {
+		if (updateACS) {
 			acs.read();
 			freeacsUpdated = true;
 			if (logger.isDebugEnabled()) {
 				
-				logger.debug("Freeacs object has been updated due to changes in the tables");
+				logger.debug("ACS object has been updated due to changes in the tables");
 			}
 		}
 		publishInbox.deleteReadMessage();
 	}
 
-	public boolean isFreeacsUpdated() {
+	public boolean isACSUpdated() {
 		if (freeacsUpdated) {
 			freeacsUpdated = false;
 			return true;

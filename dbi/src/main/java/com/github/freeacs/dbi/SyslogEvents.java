@@ -151,7 +151,7 @@ public class SyslogEvents {
 		if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		if (syslogEvent.getEventId() < 1000)
-			throw new IllegalArgumentException("Cannot delete syslog events with id 0-999, they are restricted to Freeacs");
+			throw new IllegalArgumentException("Cannot delete syslog events with id 0-999, they are restricted to ACS");
 		deleteSyslogEventImpl(syslogEvent, acs);
 	}
 

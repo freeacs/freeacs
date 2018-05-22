@@ -33,11 +33,11 @@ public class Context {
 	}
 
 	public void println(String s) {
-		getSession().getFreeacsShell().println(s);
+		getSession().getACSShell().println(s);
 	}
 
 	public void print(String s) {
-		getSession().getFreeacsShell().print(s);
+		getSession().getACSShell().print(s);
 	}
 
 	public UnittypeParameter getUnittypeParameter() {

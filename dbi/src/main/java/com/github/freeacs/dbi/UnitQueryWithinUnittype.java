@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  * Jun 2011
  * 
  * UnitQueryWithinUnittype is an attempt to resolve a query which we have not been able to 
- * "get through" UnitQueryCrossUnittype. The following things are new abilities for Freeacs:
+ * "get through" UnitQueryCrossUnittype. The following things are new abilities for ACS:
  * 	1. Possible to return unit-object + certain unit parameters for all units, previously only
  * the unit object was returned, and it required another query to retrieve the set of 
  * unit parameters. Granted, this query only returns the parameters searched for, but this can be 

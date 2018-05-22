@@ -65,7 +65,7 @@ import java.util.List;
  * 
  * 2010-04-08:
  * 
- * Staging server is a special type of an Freeacs Server. It stages devices to work with another Freeacs Server or
+ * Staging server is a special type of an ACS Server. It stages devices to work with another ACS Server or
  * even another provisioning system! In this case the end result of a unit job will always be UNCONFIRMED_FAILED,
  * since the unit disappears. To counter this relatively non-intuitive result, we will add a method which
  * will set the status to COMPLETED_OK if it has been in an UNCONFIRMED_FAILED state for more than one hour. 
@@ -411,7 +411,7 @@ public class UnitJobs {
 		return unitJobs;
 	}
 
-	// This method is purely for migration purposes, only used by Freeacs Shell to migrate
+	// This method is purely for migration purposes, only used by ACS Shell to migrate
 	// data from one database to another (perhaps after an upgrade of the database itself).
 	public void addOrChange(UnitJob uj) throws SQLException {
 		Connection c = null;

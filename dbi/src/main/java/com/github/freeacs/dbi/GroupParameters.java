@@ -166,7 +166,7 @@ public class GroupParameters {
 		idMap.remove(groupParameter.getId());
 	}
 
-	/* Will only update the object model, not the database, used by Freeacs.read() and Groups.refreshGroupParameters() */
+	/* Will only update the object model, not the database, used by ACS.read() and Groups.refreshGroupParameters() */
 	protected void addOrChangeGroupParameter(GroupParameter groupParameter) {
 		nameMap.put(groupParameter.getName(), groupParameter);
 		idMap.put(groupParameter.getId(), groupParameter);

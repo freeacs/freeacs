@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 
 /**
- * You can extend DBIShare if, and only if, you do not manipulate the contents of the Freeacs object.
+ * You can extend DBIShare if, and only if, you do not manipulate the contents of the ACS object.
  * Then you can share the same DBI object - and reduce the load on the system.
  * @author Morten
  *

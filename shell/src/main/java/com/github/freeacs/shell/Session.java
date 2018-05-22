@@ -15,7 +15,7 @@ public class Session {
 	private String[] originalOptionArgs = null;
 
 	/* Object holding the Session object and printer-objects */
-	private FreeacsShell freeacsShell;
+	private ACSShell ACSShell;
 
 	/* Information on how to access xAPS database */
 	private DataSource xapsProps = null;
@@ -50,9 +50,9 @@ public class Session {
     // Counts number of operations during one command (only for set/del)
 	private int counter = 1;
 
-	public Session(String[] args, FreeacsShell freeacsShell) {
+	public Session(String[] args, ACSShell ACSShell) {
 		this.originalOptionArgs = args;
-		this.freeacsShell = freeacsShell;
+		this.ACSShell = ACSShell;
 		Context context = new Context(this);
 		this.processor = new Processor(this);
 
@@ -185,16 +185,16 @@ public class Session {
 		return processor;
 	}
 
-	public FreeacsShell getFreeacsShell() {
-		return freeacsShell;
+	public ACSShell getACSShell() {
+		return ACSShell;
 	}
 
 	public void println(String s) {
-		getFreeacsShell().println(s);
+		getACSShell().println(s);
 	}
 
 	public void print(String s) {
-		getFreeacsShell().print(s);
+		getACSShell().print(s);
 	}
 
 	public List<String> getCommandHistory() {

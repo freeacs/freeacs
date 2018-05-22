@@ -9,7 +9,7 @@ import java.io.*;
 import java.sql.SQLException;
 import java.util.*;
 
-public class FreeacsShell {
+public class ACSShell {
 
 	public static String version = "2.3.41";
 
@@ -79,7 +79,7 @@ public class FreeacsShell {
 		ACSVersionCheck.setDatabaseChecked(false); // force another database check
 		Users users = getUsers();
 		session.setUsers(users);
-		Identity id = new Identity(SyslogConstants.FACILITY_SHELL, FreeacsShell.version, session.getVerifiedFusionUser());
+		Identity id = new Identity(SyslogConstants.FACILITY_SHELL, ACSShell.version, session.getVerifiedFusionUser());
 		Syslog syslog = new Syslog(session.getSysProps(), id);
 		DBI dbi = new DBI(Integer.MAX_VALUE, session.getXapsProps(), syslog);
 		session.setDbi(dbi);

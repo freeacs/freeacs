@@ -127,7 +127,7 @@ public class DigestAuthenticator {
 			sessionData.setUnitId(unitId);
 			sessionData.updateParametersFromDB(unitId);
 			BaseCache.putSessionData(unitId, sessionData);
-			String secret = sessionData.getFreeacsParameters().getValue(SystemParameters.SECRET);
+			String secret = sessionData.getAcsParameters().getValue(SystemParameters.SECRET);
 			if (secret != null && secret.length() > 16 && !passwordMd5(username, secret, method, uri, nonce, nc, cnonce, qop).equals(response))
 				secret = secret.substring(0, 16);
 			if (secret == null) {

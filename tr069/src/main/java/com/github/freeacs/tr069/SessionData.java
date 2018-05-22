@@ -72,7 +72,7 @@ public class SessionData implements SessionDataI {
 	private String eventCodes;
 
 	/* Owera parameters */
-	private FreeacsParameters freeacsParameters;
+	private ACSParameters acsParameters;
 	/* Special parameters, will always be retrieved */
 	private CPEParameters cpeParameters;
 	/* Special parameter, will only be retrieved from the Inform */
@@ -167,8 +167,8 @@ public class SessionData implements SessionDataI {
 		}
 
 		if (!fromDB.isEmpty()) {
-			if (freeacsParameters == null)
-				freeacsParameters = new FreeacsParameters();
+			if (acsParameters == null)
+				acsParameters = new ACSParameters();
 			Iterator<String> i = fromDB.keySet().iterator();
 			int systemParamCounter = 0;
 			while (i.hasNext()) {
@@ -176,7 +176,7 @@ public class SessionData implements SessionDataI {
 				UnittypeParameter utp = unittype.getUnittypeParameters().getByName(utpName);
 				if (utp != null && utp.getFlag().isSystem()) {
 					systemParamCounter++;
-					freeacsParameters.putPvs(utpName, fromDB.get(utpName));
+					acsParameters.putPvs(utpName, fromDB.get(utpName));
 					i.remove();
 				}
 			}
@@ -215,12 +215,12 @@ public class SessionData implements SessionDataI {
 		this.cpeParameters = cpeParameters;
 	}
 
-	public FreeacsParameters getFreeacsParameters() {
-		return freeacsParameters;
+	public ACSParameters getAcsParameters() {
+		return acsParameters;
 	}
 
-	public void setFreeacsParameters(FreeacsParameters freeacsParameters) {
-		this.freeacsParameters = freeacsParameters;
+	public void setAcsParameters(ACSParameters acsParameters) {
+		this.acsParameters = acsParameters;
 	}
 
 	public List<ParameterValueStruct> getFromCPE() {
@@ -566,14 +566,14 @@ public class SessionData implements SessionDataI {
 	}
 
 	public boolean discoverUnittype() {
-		if (freeacsParameters != null && freeacsParameters.getValue(SystemParameters.DISCOVER) != null && freeacsParameters.getValue(SystemParameters.DISCOVER).equals("1"))
+		if (acsParameters != null && acsParameters.getValue(SystemParameters.DISCOVER) != null && acsParameters.getValue(SystemParameters.DISCOVER).equals("1"))
 			return true;
-		else if (freeacsParameters == null)
+		else if (acsParameters == null)
 			Log.debug(SessionData.class, "freeacsParameters not found in discoverUnittype()");
-		else if (freeacsParameters.getValue(SystemParameters.DISCOVER) == null)
+		else if (acsParameters.getValue(SystemParameters.DISCOVER) == null)
 			Log.debug(SessionData.class, "DISCOVER parameter not found of value is null in discoverUnittype() ");
 		else
-			Log.debug(SessionData.class, "DISCOVER parameter value is " + freeacsParameters.getValue(SystemParameters.DISCOVER) + " in discoverUnittype()");
+			Log.debug(SessionData.class, "DISCOVER parameter value is " + acsParameters.getValue(SystemParameters.DISCOVER) + " in discoverUnittype()");
 		return false;
 	}
 

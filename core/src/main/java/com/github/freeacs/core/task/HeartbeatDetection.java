@@ -269,31 +269,31 @@ public class HeartbeatDetection extends DBIShare {
 			// This heartbeat object could be old/outdated - we
 			Heartbeat heartbeat = smm.getHeartbeat();
 
-			Unittype unittypeFreeacs = acs.getUnittype(heartbeat.getUnittype().getId());
-			if (unittypeFreeacs == null) {
+			Unittype unittypeACS = acs.getUnittype(heartbeat.getUnittype().getId());
+			if (unittypeACS == null) {
 				keyIterator.remove();
 				logger.debug("HeartbeatDetection: UpdateSyslogMessageMap: Unittype " + heartbeat.getUnittype().getName() + " could not be found, syslog message map is removed");
 				continue;
 			}
-			Heartbeat heartbeatFreeacs = unittypeFreeacs.getHeartbeats().getById(heartbeatId);
-			if (heartbeatFreeacs == null) {
+			Heartbeat heartbeatACS = unittypeACS.getHeartbeats().getById(heartbeatId);
+			if (heartbeatACS == null) {
 				keyIterator.remove();
 				logger.debug("HeartbeatDetection: UpdateSyslogMessageMap: Heartbeat " + heartbeat.getId() + " could not be found, syslog message map is removed");
 				continue;
 			}
-			Group groupFreeacs = unittypeFreeacs.getGroups().getById(heartbeat.getGroup().getId());
-			if (groupFreeacs == null) {
+			Group groupACS = unittypeACS.getGroups().getById(heartbeat.getGroup().getId());
+			if (groupACS == null) {
 				keyIterator.remove();
 				logger.debug("HeartbeatDetection: UpdateSyslogMessageMap: Group " + heartbeat.getGroup().getName() + " could not be found, syslog message map is removed");
 				continue;
 			}
-			if (!heartbeat.getExpression().equals(heartbeatFreeacs.getExpression())) {
+			if (!heartbeat.getExpression().equals(heartbeatACS.getExpression())) {
 				keyIterator.remove();
-				logger.debug("HeartbeatDetection: UpdateSyslogMessageMap: Heartbeat expression " + heartbeat.getExpression() + " has changed to " + heartbeatFreeacs.getExpression()
+				logger.debug("HeartbeatDetection: UpdateSyslogMessageMap: Heartbeat expression " + heartbeat.getExpression() + " has changed to " + heartbeatACS.getExpression()
 						+ ", we'll remove this syslog message map and start over");
 				continue;
 			}
-			smm.setHeartbeat(heartbeatFreeacs);
+			smm.setHeartbeat(heartbeatACS);
 		}
 	}
 

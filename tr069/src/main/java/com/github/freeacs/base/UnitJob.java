@@ -61,7 +61,7 @@ public class UnitJob {
 
 	private void updateSessionWithJobCurrent() {
 		ParameterValueStruct jobIdPvs = new ParameterValueStruct(SystemParameters.JOB_CURRENT, "" + job.getId());
-		sessionData.getFreeacsParameters().putPvs(SystemParameters.JOB_CURRENT, jobIdPvs);
+		sessionData.getAcsParameters().putPvs(SystemParameters.JOB_CURRENT, jobIdPvs);
 	}
 
 	/*
@@ -172,7 +172,7 @@ public class UnitJob {
 				acsUnit.addOrChangeUnitParameters(upList, sessionData.getProfile());
 				if (!serverSideJob) {
 					sessionData.setFromDB(null);
-					sessionData.setFreeacsParameters(null);
+					sessionData.setAcsParameters(null);
 					sessionData.setJobParams(null);
 					Log.debug(UnitJob.class, "Unit-information will be reloaded to reflect changes in profile/unit parameters");
 					sessionData.updateParametersFromDB(sessionData.getUnitId());
@@ -241,11 +241,11 @@ public class UnitJob {
 			if (serverSideJob)
 				jobId = sessionData.getJob().getId();
 			else {
-				if (sessionData == null || sessionData.getFreeacsParameters() == null) {
+				if (sessionData == null || sessionData.getAcsParameters() == null) {
 					irrelevant = true;
 					return this;
 				}
-				String jobIdStr = sessionData.getFreeacsParameters().getValue(SystemParameters.JOB_CURRENT);
+				String jobIdStr = sessionData.getAcsParameters().getValue(SystemParameters.JOB_CURRENT);
 				if (jobIdStr == null) {
 					irrelevant = true;
 					return this;

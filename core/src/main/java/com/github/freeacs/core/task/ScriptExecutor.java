@@ -6,7 +6,7 @@ import com.github.freeacs.dbi.ScriptExecutions;
 import com.github.freeacs.dbi.Users;
 import com.github.freeacs.shell.Processor;
 import com.github.freeacs.shell.Session;
-import com.github.freeacs.shell.FreeacsShellDaemon;
+import com.github.freeacs.shell.ACSShellDaemon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,12 +20,12 @@ public class ScriptExecutor extends DBIShare {
 	public static class ScriptDaemonRunnable implements Runnable {
 
 		private ScriptExecution se;
-		private FreeacsShellDaemon freeacsShellDaemon;
+		private ACSShellDaemon acsShellDaemon;
 		private ScriptExecutions executions;
 		private static Logger daemonLogger = LoggerFactory.getLogger("ShellDaemon");
 
-		public ScriptDaemonRunnable(ScriptExecutions executions, ScriptExecution scriptExecution, FreeacsShellDaemon freeacsShellDaemon) {
-			this.freeacsShellDaemon = freeacsShellDaemon;
+		public ScriptDaemonRunnable(ScriptExecutions executions, ScriptExecution scriptExecution, ACSShellDaemon acsShellDaemon) {
+			this.acsShellDaemon = acsShellDaemon;
 			this.se = scriptExecution;
 			this.executions = executions;
 		}
@@ -33,9 +33,9 @@ public class ScriptExecutor extends DBIShare {
 		@Override
 		public void run() {
 			try {
-				Session session = freeacsShellDaemon.getFreeacsShell().getSession();
+				Session session = acsShellDaemon.getACSShell().getSession();
 				Processor proc = session.getProcessor();
-				String logPrefix = "ScriptExecutor: " + session.getFusionUser() + "-" + freeacsShellDaemon.getIndex() + ":  ";
+				String logPrefix = "ScriptExecutor: " + session.getFusionUser() + "-" + acsShellDaemon.getIndex() + ":  ";
 
 				String name = se.getScriptFile().getName();
 				String command = "call \"" + name + "\" " + se.getArguments();
@@ -44,25 +44,25 @@ public class ScriptExecutor extends DBIShare {
 				proc.setLogger(daemonLogger);
 				proc.setLogPrefix(logPrefix);
 				session.getContext().setUnittype(se.getUnittype());
-				freeacsShellDaemon.addToRunList("var initial_tms \"new Date().toString()\"");
-				freeacsShellDaemon.addToRunList("echo ${initial_tms}");
-				freeacsShellDaemon.addToRunList(command);
-				freeacsShellDaemon.addToRunList("listvars | delvar"); // Cleanup of state
+				acsShellDaemon.addToRunList("var initial_tms \"new Date().toString()\"");
+				acsShellDaemon.addToRunList("echo ${initial_tms}");
+				acsShellDaemon.addToRunList(command);
+				acsShellDaemon.addToRunList("listvars | delvar"); // Cleanup of state
 				while (true) {
-					synchronized (freeacsShellDaemon.getMonitor()) {
+					synchronized (acsShellDaemon.getMonitor()) {
 						try {
-							freeacsShellDaemon.getMonitor().wait(1000);
+							acsShellDaemon.getMonitor().wait(1000);
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
-					if (freeacsShellDaemon.getCommandsNotRunYet() == 0) {
+					if (acsShellDaemon.getCommandsNotRunYet() == 0) {
 						break;
 					}
 				}
-				List<Throwable> throwables = freeacsShellDaemon.getAndResetThrowables();
-				freeacsShellDaemon.setIdle(true);
+				List<Throwable> throwables = acsShellDaemon.getAndResetThrowables();
+				acsShellDaemon.setIdle(true);
 				boolean exitStatus = false;
 				String errorMsg = null;
 				if (throwables.size() > 0) {
@@ -141,7 +141,7 @@ public class ScriptExecutor extends DBIShare {
 						se.setErrorMessage("The script is deleted, aborting script execution");
 					executions.updateExecution(se);
 				} else {
-					FreeacsShellDaemon shellDaemon = ShellDaemonPool.getShellDaemon(getMainDataSource(), getSyslogDataSource(), entry.getKey());
+					ACSShellDaemon shellDaemon = ShellDaemonPool.getShellDaemon(getMainDataSource(), getSyslogDataSource(), entry.getKey());
 					if (shellDaemon == null) {
 						logger.debug("No shell daemon available within pool size limit, will try again in 100 ms");
 					} else {

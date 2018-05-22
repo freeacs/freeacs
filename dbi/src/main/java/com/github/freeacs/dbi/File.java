@@ -215,7 +215,7 @@ public class File {
 		this.validateInput = validateInput;
 	}
 
-	// To avoid storing file content in Freeacs-object - this must always be used with care!
+	// To avoid storing file content in ACS-object - this must always be used with care!
 	public void resetContentToNull() {
 		content = null;
 	}

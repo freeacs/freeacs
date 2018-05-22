@@ -9,10 +9,10 @@ public class XAPSShellExec {
 	public static void main(String[] args) throws Exception {
 		ConsoleReader reader = new ConsoleReader();
 		reader.setBellEnabled(false);
-		FreeacsShell freeacsShell = new FreeacsShell();
+		ACSShell ACSShell = new ACSShell();
 		XAPSShellReader xapsShellReader = new XAPSShellReader(new InputStreamReader(System.in), reader);
-		xapsShellReader.setFreeacsShell(freeacsShell);
-		freeacsShell.setReader(xapsShellReader);
-		freeacsShell.mainImpl(args, FreeacsShell.getHikariDataSource("xaps"), FreeacsShell.getHikariDataSource("syslog"));
+		xapsShellReader.setACSShell(ACSShell);
+		ACSShell.setReader(xapsShellReader);
+		ACSShell.mainImpl(args, ACSShell.getHikariDataSource("xaps"), ACSShell.getHikariDataSource("syslog"));
 	}
 }
