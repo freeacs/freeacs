@@ -10,7 +10,7 @@ import com.github.freeacs.web.app.page.report.ReportPage;
 import com.github.freeacs.web.app.util.BrowserDetect;
 import com.github.freeacs.web.app.util.UserAgent;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,13 +51,13 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
 		
 		String sessionId = params.getSession().getId();
 		
-		acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
 
-		ACSUnit acsUnit = XAPSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
+		ACSUnit acsUnit = ACSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
 		
 		Map<String, Object> root = outputHandler.getTemplateMap();
 		
@@ -154,7 +154,7 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
 	 *  the no available connection exception
 	 */
 	public static Date getLastQoSTimestamp(String sessionId,Unit unit,Date start,String line,ACS acs) throws SQLException {
-		Syslog syslog = new Syslog(acs.getSyslog().getDataSource(), XAPSLoader.getIdentity(sessionId, acs.getDataSource()));
+		Syslog syslog = new Syslog(acs.getSyslog().getDataSource(), ACSLoader.getIdentity(sessionId, acs.getDataSource()));
 		SyslogFilter filter = new SyslogFilter();
 		filter.setMaxRows(1);
 		String keyToFind = "QoS report for channel "+(line!=null?line:"");

@@ -9,7 +9,7 @@ import com.github.freeacs.web.app.input.DropDownSingleSelect;
 import com.github.freeacs.web.app.input.InputSelectionFactory;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.report.ReportData;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -77,7 +77,7 @@ public class GroupRetriever extends ReportRetriever {
 	private ReportGroupGenerator generateGroupGenerator() throws SQLException {
 		ACS acs = getAcs();
 		return new ReportGroupGenerator(acs.getDataSource(), acs.getSyslog().getDataSource(),
-                acs, null, XAPSLoader.getIdentity(getParams().getSession().getId(), acs.getDataSource()));
+                acs, null, ACSLoader.getIdentity(getParams().getSession().getId(), acs.getDataSource()));
 	}
 
 	/* (non-Javadoc)

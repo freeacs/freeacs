@@ -12,7 +12,7 @@ import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.page.report.custom.*;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -104,7 +104,7 @@ public class ReportPage extends AbstractWebPage {
 		InputDataIntegrity.loadAndStoreSession(req, outputHandler, inputData, inputData.getUnittype(), inputData.getProfile());
 
 		// 3
-		acs = XAPSLoader.getXAPS(req.getSession().getId(), xapsDataSource, syslogDataSource);
+		acs = ACSLoader.getXAPS(req.getSession().getId(), xapsDataSource, syslogDataSource);
 		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -595,12 +595,12 @@ public class ReportPage extends AbstractWebPage {
 	 *  the no available connection exception
 	 */
 	public static ReportVoipGenerator getReportVoipGenerator(String sessionId, ACS acs) throws SQLException {
-		return new ReportVoipGenerator(acs.getDataSource(), acs.getSyslog().getDataSource(), acs, null, XAPSLoader.getIdentity(sessionId, acs.getDataSource()));
+		return new ReportVoipGenerator(acs.getDataSource(), acs.getSyslog().getDataSource(), acs, null, ACSLoader.getIdentity(sessionId, acs.getDataSource()));
 	}
 
 	public static ReportProvisioningGenerator getReportProvGenerator(String sessionId, ACS acs) throws SQLException {
 		return new ReportProvisioningGenerator(acs.getDataSource(), acs.getSyslog().getDataSource(), acs, null,
-				XAPSLoader.getIdentity(sessionId, acs.getDataSource()));
+				ACSLoader.getIdentity(sessionId, acs.getDataSource()));
 	}
 
 	/**
@@ -613,7 +613,7 @@ public class ReportPage extends AbstractWebPage {
 	 *  the no available connection exception
 	 */
 	public static ReportHardwareGenerator getReportHardwareGenerator(String sessionId, ACS acs) throws SQLException {
-		return new ReportHardwareGenerator(acs.getDataSource(), acs.getSyslog().getDataSource(), acs, null, XAPSLoader.getIdentity(sessionId, acs.getDataSource()));
+		return new ReportHardwareGenerator(acs.getDataSource(), acs.getSyslog().getDataSource(), acs, null, ACSLoader.getIdentity(sessionId, acs.getDataSource()));
 	}
 
 	/**
@@ -626,7 +626,7 @@ public class ReportPage extends AbstractWebPage {
 	 *  the no available connection exception
 	 */
 	public static ReportGroupGenerator getReportGroupGenerator(String sessionId, ACS acs) throws SQLException {
-		return new ReportGroupGenerator(acs.getDataSource(), acs.getSyslog().getDataSource(), acs, null, XAPSLoader.getIdentity(sessionId, acs.getDataSource()));
+		return new ReportGroupGenerator(acs.getDataSource(), acs.getSyslog().getDataSource(), acs, null, ACSLoader.getIdentity(sessionId, acs.getDataSource()));
 	}
 
 	/**
@@ -639,7 +639,7 @@ public class ReportPage extends AbstractWebPage {
 	 *  the no available connection exception
 	 */
 	public static ReportSyslogGenerator getReportSyslogGenerator(String sessionId, ACS acs) throws SQLException {
-		return new ReportSyslogGenerator(acs.getDataSource(), acs.getSyslog().getDataSource(), acs, null, XAPSLoader.getIdentity(sessionId, acs.getDataSource()));
+		return new ReportSyslogGenerator(acs.getDataSource(), acs.getSyslog().getDataSource(), acs, null, ACSLoader.getIdentity(sessionId, acs.getDataSource()));
 	}
 
 	/**
@@ -652,7 +652,7 @@ public class ReportPage extends AbstractWebPage {
 	 *  the no available connection exception
 	 */
 	public static ReportVoipCallGenerator getReportVoipCallGenerator(String sessionId, ACS acs) throws SQLException {
-		return new ReportVoipCallGenerator(acs.getDataSource(), acs.getSyslog().getDataSource(), acs, null, XAPSLoader.getIdentity(sessionId, acs.getDataSource()));
+		return new ReportVoipCallGenerator(acs.getDataSource(), acs.getSyslog().getDataSource(), acs, null, ACSLoader.getIdentity(sessionId, acs.getDataSource()));
 	}
 
 	/**

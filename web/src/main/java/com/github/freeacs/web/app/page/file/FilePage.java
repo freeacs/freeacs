@@ -5,7 +5,7 @@ import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.*;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 import org.apache.commons.fileupload.FileItem;
 
 import javax.sql.DataSource;
@@ -197,7 +197,7 @@ public class FilePage extends AbstractWebPage {
 	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		inputData = (FileData) InputDataRetriever.parseInto(new FileData(), params);
 
-		acs = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
+		acs = ACSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
 		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;

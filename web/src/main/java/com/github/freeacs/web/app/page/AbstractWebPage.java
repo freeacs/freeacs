@@ -495,7 +495,7 @@ public abstract class AbstractWebPage implements WebPage {
 	 */
 	public static boolean isUnittypesLimited(String sessionId, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
 		List<Unittype> list = getAllowedUnittypes(sessionId, xapsDataSource, syslogDataSource);
-		ACS acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		ACS acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		return list.size() != acs.getUnittypes().getUnittypes().length;
 	}
 
@@ -510,7 +510,7 @@ public abstract class AbstractWebPage implements WebPage {
 	 * @throws SQLException the sQL exception
 	 */
 	public static List<Unittype> getAllowedUnittypes(String sessionId, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
-		ACS acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		ACS acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		SessionData sessionData = SessionCache.getSessionData(sessionId);
 		List<Unittype> unittypesList = null;
 		if (sessionData.getFilteredUnittypes() != null) {

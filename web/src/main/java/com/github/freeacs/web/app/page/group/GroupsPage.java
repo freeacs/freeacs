@@ -16,7 +16,7 @@ import com.github.freeacs.web.app.table.TableElement;
 import com.github.freeacs.web.app.table.TableElementMaker;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModel;
@@ -103,7 +103,7 @@ public class GroupsPage extends AbstractWebPage {
 
 		sessionId = req.getSession().getId();
 		
-		acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;

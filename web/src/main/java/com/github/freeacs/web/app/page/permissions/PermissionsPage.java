@@ -11,7 +11,7 @@ import com.github.freeacs.web.app.security.WebUser;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
@@ -58,7 +58,7 @@ public class PermissionsPage extends AbstractWebPage {
 		SessionData sessionData = SessionCache.getSessionData(sessionId);
 		WebUser loggedInUser = sessionData.getUser();
 
-		acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;

@@ -9,7 +9,7 @@ import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.page.report.uidata.*;
 import com.github.freeacs.web.app.util.DateUtils;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
 
@@ -41,7 +41,7 @@ public class UnitListPage extends AbstractWebPage {
 
 		inputData = (UnitListData) InputDataRetriever.parseInto(new UnitListData(), req);
 
-		acs = XAPSLoader.getXAPS(req.getSession().getId(), xapsDataSource, syslogDataSource);
+		acs = ACSLoader.getXAPS(req.getSession().getId(), xapsDataSource, syslogDataSource);
 		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -60,7 +60,7 @@ public class UnitListPage extends AbstractWebPage {
 		}
 		*/
 
-		acsUnit = XAPSLoader.getACSUnit(req.getSession().getId(), xapsDataSource, syslogDataSource);
+		acsUnit = ACSLoader.getACSUnit(req.getSession().getId(), xapsDataSource, syslogDataSource);
 
 		unittype = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
 		profile = InputSelectionFactory.getProfileSelection(inputData.getProfile(), inputData.getUnittype(), acs);

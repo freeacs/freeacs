@@ -229,7 +229,7 @@ public class SessionCache {
 		
 		CacheValue cv = cache.get(key);
 		if(cv == null){
-			ReportVoipGenerator rg = new ReportVoipGenerator(xapsDataSource, syslogDataSource, XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource),null,XAPSLoader.getIdentity(sessionId, xapsDataSource));
+			ReportVoipGenerator rg = new ReportVoipGenerator(xapsDataSource, syslogDataSource, ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource),null,ACSLoader.getIdentity(sessionId, xapsDataSource));
 			Report<RecordVoip> value = rg.generateFromSyslog(fromDate, toDate, unitId);
 			cv = new CacheValue(value,Cache.ABSOLUTE,SYSLOG_RESULT_TIMEOUT);
 			cache.put(key, cv);
@@ -288,7 +288,7 @@ public class SessionCache {
 		
 		CacheValue cv = cache.get(key);
 		if(cv == null){
-			ReportHardwareGenerator rg = new ReportHardwareGenerator(xapsDataSource, syslogDataSource, XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource), null,XAPSLoader.getIdentity(sessionId, xapsDataSource));
+			ReportHardwareGenerator rg = new ReportHardwareGenerator(xapsDataSource, syslogDataSource, ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource), null,ACSLoader.getIdentity(sessionId, xapsDataSource));
 			Report<RecordHardware> value = rg.generateFromSyslog(fromDate, toDate, unitId);
 			cv = new CacheValue(value,Cache.ABSOLUTE,SYSLOG_RESULT_TIMEOUT);
 			cache.put(key, cv);
@@ -334,7 +334,7 @@ public class SessionCache {
 		if(cv == null){
 			SyslogFilter filter = new SyslogFilter();
 			filter.setMessage(syslogFilter);
-			ReportSyslogGenerator rg = new ReportSyslogGenerator(xapsDataSource, syslogDataSource, XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource), null,XAPSLoader.getIdentity(sessionId, xapsDataSource));
+			ReportSyslogGenerator rg = new ReportSyslogGenerator(xapsDataSource, syslogDataSource, ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource), null,ACSLoader.getIdentity(sessionId, xapsDataSource));
 			rg.setSyslogFilter(filter);
 			Report<RecordSyslog> value = rg.generateFromSyslog(fromDate, toDate, unitId);
 			cv = new CacheValue(value,Cache.ABSOLUTE,SYSLOG_RESULT_TIMEOUT);

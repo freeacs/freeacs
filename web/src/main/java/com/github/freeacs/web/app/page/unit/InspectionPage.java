@@ -6,7 +6,7 @@ import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.*;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.SessionCache;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 
 import javax.sql.DataSource;
 import java.util.Arrays;
@@ -80,8 +80,8 @@ public class InspectionPage extends AbstractWebPage {
 		try {
 			sessionId = params.getSession().getId();
 
-			acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-			acsUnit = XAPSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
+			acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+			acsUnit = ACSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
 
 			if (acs == null || acsUnit == null) {
 				throw new Exception("Could not load xaps objects!");

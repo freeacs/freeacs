@@ -11,7 +11,7 @@ import com.github.freeacs.web.app.page.WebPage;
 import com.github.freeacs.web.app.util.Freemarker;
 import com.github.freeacs.web.app.util.StackTraceFormatter;
 import com.github.freeacs.web.app.util.WebProperties;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -148,7 +148,7 @@ public class Output {
 	}
 
 	private void populateTemplateMapWithContextBar() throws SQLException {
-		ACS acs = XAPSLoader.getXAPS(inputParameters.getSession().getId(), xapsDataSource, syslogDataSource);
+		ACS acs = ACSLoader.getXAPS(inputParameters.getSession().getId(), xapsDataSource, syslogDataSource);
 		Unittype currentUnittype = acs.getUnittype(trailPoint!=null?trailPoint.getUnitTypeName():null);
 		Input utInput = Input.getStringInput("unittype");
 		if(currentUnittype!=null)
@@ -208,7 +208,7 @@ public class Output {
 			inputParameters.getSessionData().setUnitId(cU);
 			inputParameters.getHttpServletRequest().ignoreParameter("unit");
 			String newValue = inputParameters.getSessionData().getUnitId();
-			ACSUnit xaps = XAPSLoader.getACSUnit(inputParameters.getSession().getId(), xapsDataSource, syslogDataSource);
+			ACSUnit xaps = ACSLoader.getACSUnit(inputParameters.getSession().getId(), xapsDataSource, syslogDataSource);
 			Unit unit = null;
 			if((unit = xaps.getUnitById(newValue))!=null){
 				redirect(Page.UNITSTATUS.getUrl("unit="+unit.getId()+"&unittype="+unit.getUnittype().getName()+"&profile="+unit.getProfile().getName()),servletResponseChannel);

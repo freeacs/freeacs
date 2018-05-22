@@ -423,7 +423,7 @@ public class UnitPage extends AbstractWebPage {
 
 		sessionId = params.getSession().getId();
 
-		acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -431,7 +431,7 @@ public class UnitPage extends AbstractWebPage {
 
 		InputDataIntegrity.loadAndStoreSession(params, outputHandler, inputData, inputData.getUnittype(), inputData.getProfile(), inputData.getUnit());
 
-		acsUnit = XAPSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
+		acsUnit = ACSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
 
 		boolean isCreate = inputData.getCmd().isValue("create");
 

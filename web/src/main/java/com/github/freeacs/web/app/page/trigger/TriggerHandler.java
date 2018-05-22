@@ -7,7 +7,7 @@ import com.github.freeacs.web.app.input.InputSelectionFactory;
 import com.github.freeacs.web.app.table.TableElement;
 import com.github.freeacs.web.app.table.TableElementMaker;
 import com.github.freeacs.web.app.util.SessionCache;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -23,7 +23,7 @@ public class TriggerHandler {
 	private TriggerData inputData;
 
 	public TriggerHandler(String sessionId, TriggerData inputData, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
-		this.acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		this.acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		this.sessionId = sessionId;
 		this.inputData = inputData;
 		setUnittype(inputData);

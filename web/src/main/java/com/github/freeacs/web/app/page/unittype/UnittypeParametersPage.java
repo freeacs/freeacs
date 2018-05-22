@@ -9,7 +9,7 @@ import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.StackTraceFormatter;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,7 +61,7 @@ public class UnittypeParametersPage extends AbstractWebPage {
 			@RequestParam(required=true) String unittype,
 			@RequestParam(required=true) String term,
 			HttpSession session) throws SQLException, JSONException{
-		ACS acs = XAPSLoader.getXAPS(session.getId(), mainDataSource, syslogDataSource);
+		ACS acs = ACSLoader.getXAPS(session.getId(), mainDataSource, syslogDataSource);
 		List<Unittype> allowedUnittypes = Arrays.asList(acs.getUnittypes().getUnittypes());
 		Unittype unittypeFromRequest = acs.getUnittype(unittype);
 		if(allowedUnittypes.contains(unittypeFromRequest)){
@@ -87,7 +87,7 @@ public class UnittypeParametersPage extends AbstractWebPage {
 
 		sessionId = params.getSession().getId();
 
-		ACS acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		ACS acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;

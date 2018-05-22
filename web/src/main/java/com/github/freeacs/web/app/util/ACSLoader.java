@@ -17,7 +17,7 @@ import java.sql.SQLException;
  * @author Jarl Andre Hubenthal
  * 
  */
-public class XAPSLoader {
+public class ACSLoader {
 
 	/**
 	 * Gets the dBI.

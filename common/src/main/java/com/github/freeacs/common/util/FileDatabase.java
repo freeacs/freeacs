@@ -74,7 +74,7 @@ public class FileDatabase {
 
 	public static void main(String[] args) {
 		try {
-			FileDatabase db = new FileDatabase("xAPS-TR069-Test.dat");
+			FileDatabase db = new FileDatabase("acs-TR069-Test.dat");
 			db.insert("Test", "Test");
 			db.insert("Test2", "Test2");
 			System.out.println(db.select("Test"));

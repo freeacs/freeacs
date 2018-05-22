@@ -10,7 +10,7 @@ import com.github.freeacs.dbi.report.Report;
 import com.github.freeacs.dbi.report.ReportGenerator;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.report.ReportData;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -39,7 +39,7 @@ public class JobRetriever extends ReportRetriever {
 	public JobRetriever(ReportData inputData, ParameterParser params, ACS acs) throws SQLException {
 		super(inputData, params, acs);
 		generator = new ReportGenerator(acs.getDataSource(), acs.getSyslog().getDataSource(), acs, null,
-				XAPSLoader.getIdentity(params.getSession().getId(), acs.getDataSource()));
+				ACSLoader.getIdentity(params.getSession().getId(), acs.getDataSource()));
 	}
 
 	/* (non-Javadoc)

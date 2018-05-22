@@ -8,7 +8,7 @@ import com.github.freeacs.web.app.input.InputDataRetriever;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
 import org.slf4j.Logger;
@@ -45,7 +45,7 @@ public class CryptoPage extends AbstractWebPage {
 
 		HttpSession session = params.getSession();
 		
-		acs = XAPSLoader.getXAPS(session.getId(), xapsDataSource, syslogDataSource);
+		acs = ACSLoader.getXAPS(session.getId(), xapsDataSource, syslogDataSource);
 		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;

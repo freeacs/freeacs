@@ -10,7 +10,7 @@ import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -41,7 +41,7 @@ public class UnitJobPage extends AbstractWebPage {
 
 		sessionId = req.getSession().getId();
 
-		acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -167,7 +167,7 @@ public class UnitJobPage extends AbstractWebPage {
 
 	private void getCompletedUnitJobs(Job job, Output res, Unittype unittype) throws SQLException, IOException, TemplateException {
 		res.setTemplatePath("unit-job/completed");
-		ACSUnit acsUnit = XAPSLoader.getACSUnit(sessionId, mainDataSource, syslogDataSource);
+		ACSUnit acsUnit = ACSLoader.getACSUnit(sessionId, mainDataSource, syslogDataSource);
 		Profile profile = job.getGroup().getProfile();
 		UnittypeParameter historyParameterUtp = job.getGroup().getUnittype().getUnittypeParameters().getByName(SystemParameters.JOB_HISTORY);
 		Parameter historyParameter = new Parameter(historyParameterUtp, "%," + job.getId() + ":%");

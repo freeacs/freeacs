@@ -10,7 +10,7 @@ import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -166,7 +166,7 @@ public class WindowPage extends AbstractWebPage {
 
 		sessionId = params.getSession().getId();
 
-		acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 
 		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
@@ -204,7 +204,7 @@ public class WindowPage extends AbstractWebPage {
 					spread = profileSpread.getValue();
 			}
 		} else if (inputData.getPage().startsWith("unit") && inputData.getUnit().getString() != null) {
-			acsUnit = XAPSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
+			acsUnit = ACSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
 			unit = acsUnit.getUnitById(inputData.getUnit().getString());
 			if (unit != null) {
 				unitDownload = unit.getUnitParameters().get(ServiceWindowDownload);

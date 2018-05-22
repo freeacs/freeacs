@@ -10,7 +10,7 @@ import com.github.freeacs.web.app.table.TableElement;
 import com.github.freeacs.web.app.table.TableElementMaker;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 
 import javax.sql.DataSource;
 import java.io.UnsupportedEncodingException;
@@ -53,7 +53,7 @@ public class TriggerReleasePage extends AbstractWebPage {
 		TriggerReleaseData inputData = (TriggerReleaseData) InputDataRetriever.parseInto(new TriggerReleaseData(), params);
 		String sessionId = params.getSession().getId();
 		Map<String, Object> fmMap = outputHandler.getTemplateMap();
-		ACS acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		ACS acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;

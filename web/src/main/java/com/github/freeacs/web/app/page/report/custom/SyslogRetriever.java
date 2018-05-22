@@ -7,7 +7,7 @@ import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.report.*;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.report.ReportData;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -36,7 +36,7 @@ public class SyslogRetriever extends ReportRetriever {
 	 */
 	public SyslogRetriever(ReportData inputData, ParameterParser params, ACS acs) throws SQLException {
 		super(inputData, params, acs);
-		generator = new ReportSyslogGenerator(acs.getDataSource(), acs.getSyslog().getDataSource(), acs, null, XAPSLoader.getIdentity(params.getSession().getId(), acs.getDataSource()));
+		generator = new ReportSyslogGenerator(acs.getDataSource(), acs.getSyslog().getDataSource(), acs, null, ACSLoader.getIdentity(params.getSession().getId(), acs.getDataSource()));
 	}
 
 	/* (non-Javadoc)
