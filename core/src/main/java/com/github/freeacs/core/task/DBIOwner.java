@@ -45,7 +45,7 @@ public abstract class DBIOwner implements Task {
 		}
 	}
 
-	protected ACS getLatestFreeacs() {
+	protected ACS getLatestACS() {
 		return dbi.getAcs();
 	}
 

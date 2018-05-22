@@ -174,7 +174,7 @@ public class JobRuleEnforcer extends DBIOwner {
 	}
 
 	private void populate() throws Exception {
-		acs = getLatestFreeacs();
+		acs = getLatestACS();
 		Unittype[] unittypeArr = acs.getUnittypes().getUnittypes();
 		for (Unittype ut : unittypeArr) {
 			Job[] jobList = ut.getJobs().getJobs();

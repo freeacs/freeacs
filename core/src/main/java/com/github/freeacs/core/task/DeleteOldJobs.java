@@ -26,7 +26,7 @@ public class DeleteOldJobs extends DBIOwner {
 
 	@Override
 	public void runImpl() throws Exception {
-		acs = getLatestFreeacs();
+		acs = getLatestACS();
 		removeOldJobs();
 	}
 

@@ -36,7 +36,7 @@ public class ReportGenerator extends DBIOwner {
 
 	@Override
 	public void runImpl() throws Exception {
-		acs = getLatestFreeacs();
+		acs = getLatestACS();
 		if (scheduleType == ScheduleType.DAILY)
 			dailyJobs();
 		else if (scheduleType == ScheduleType.HOURLY) {
