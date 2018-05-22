@@ -26,7 +26,7 @@ public class TriggerReleaser extends DBIShare {
 
 	@Override
 	public void runImpl() throws Exception {
-		acs = getLatestFreeacs();
+		acs = getLatestACS();
 		processAllTriggers();
 
 	}

@@ -25,7 +25,7 @@ public class DeleteOldSyslog extends DBIShare {
 
 	@Override
 	public void runImpl() throws Exception {
-		acs = getLatestFreeacs();
+		acs = getLatestACS();
 		removeOldSyslogEntries();
 	}
 

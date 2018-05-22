@@ -117,7 +117,7 @@ public class ScriptExecutor extends DBIShare {
 
 	private void processScripts() throws Throwable {
 		ScriptExecutions executions = new ScriptExecutions(getMainDataSource());
-		List<ScriptExecution> executionList = executions.getNotStartedExecutions(getLatestFreeacs(), Properties.SHELL_SCRIPT_POOL_SIZE);
+		List<ScriptExecution> executionList = executions.getNotStartedExecutions(getLatestACS(), Properties.SHELL_SCRIPT_POOL_SIZE);
 
 		// Organize all script-executions pr fusion-user - they must be executed in separate shell-deamons
 		Map<String, List<ScriptExecution>> userMap = new HashMap<String, List<ScriptExecution>>();

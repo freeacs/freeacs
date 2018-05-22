@@ -42,7 +42,7 @@ public class HeartbeatDetection extends DBIShare {
 
 	@Override
 	public void runImpl() throws Exception {
-		acs = getLatestFreeacs();
+		acs = getLatestACS();
 		// Set the tms back 60 sec, since we expect all writing 
 		// to syslog table (with tms 60 sec old) to be finished
 		Long tms = getLaunchTms() - OFFSET;

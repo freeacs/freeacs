@@ -45,16 +45,12 @@ public abstract class DBIShare implements Task {
 		}
 	}
 
-	protected ACS getLatestFreeacs() {
+	protected ACS getLatestACS() {
 		return dbi.getAcs();
 	}
 
 	protected DataSource getSyslogDataSource() {
 		return syslogDataSource;
-	}
-
-	protected Identity getIdentity() {
-		return syslog.getIdentity();
 	}
 
 	protected DataSource getMainDataSource() {
