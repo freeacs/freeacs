@@ -141,9 +141,7 @@ public class Kick {
 			String cn = "" + random.nextLong();
 			String ts = "" + System.currentTimeMillis();
 			String text = ts + id + crUser + cn;
-			if (crPass == null)
-				crPass = "password"; // we must have a password - so we simply set a default password
-			String sig = Crypto.computeHmacSHA1AsHexUpperCase(crPass, text);
+			String sig = Crypto.computeHmacSHA1AsHexUpperCase(crPass == null ? "password" : crPass, text);
 			// original, according to TR-111 spec example
 			//			String req = "GET http://" + udpCrUrl + "?ts=" + ts + "&id=" + id + "&un=" + crUser + "&cn=" + cn + "&sig=" + sig + " HTTP/1.1\r\n";
 			// assumed proper HTTP URI

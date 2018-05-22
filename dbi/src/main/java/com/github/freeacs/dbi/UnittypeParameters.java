@@ -271,7 +271,7 @@ public class UnittypeParameters {
 				}
 				if (unittypeParameter.getValues() != null)
 					if (unittypeParameter.getValues().getValues().size() > 0)
-						addOrChangeUnittypeParameterValues(unittypeParameter, unittype, ps, acs);
+						addOrChangeUnittypeParameterValues(unittypeParameter, ps);
 					else
 						deleteUnittypeParameterValues(unittypeParameter, ps);
 				//				long tms2 = System.currentTimeMillis();
@@ -290,7 +290,7 @@ public class UnittypeParameters {
 		}
 	}
 
-	private void addOrChangeUnittypeParameterValues(UnittypeParameter unittypeParameter, Unittype unittype, PreparedStatement s, ACS acs) throws SQLException {
+	private void addOrChangeUnittypeParameterValues(UnittypeParameter unittypeParameter, PreparedStatement s) throws SQLException {
 		String sql = null;
 		sql = "DELETE FROM unit_type_param_value WHERE ";
 		sql += "unit_type_param_id = " + unittypeParameter.getId();
