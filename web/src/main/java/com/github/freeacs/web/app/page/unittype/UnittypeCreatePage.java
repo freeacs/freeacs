@@ -141,10 +141,8 @@ public class UnittypeCreatePage extends AbstractWebPage {
 	private List<Unittype> getUnittypesWithProtocol(String sessionId, String protocol, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
 		List<Unittype> unittypes = getAllowedUnittypes(sessionId, xapsDataSource, syslogDataSource);
 		List<Unittype> allowedUnittypes = new ArrayList<Unittype>();
-		if (protocol == null)
-			protocol = UnittypePage.NA_PROTOCOL;
 		for (Unittype ut : unittypes) {
-			if (ut.getProtocol().equals(protocol))
+			if (ut.getProtocol().equals(protocol == null ? UnittypePage.NA_PROTOCOL : protocol))
 				allowedUnittypes.add(ut);
 		}
 		return allowedUnittypes;
