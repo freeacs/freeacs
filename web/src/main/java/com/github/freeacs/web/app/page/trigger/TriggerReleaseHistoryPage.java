@@ -23,11 +23,6 @@ public class TriggerReleaseHistoryPage extends AbstractWebPage {
 
 	private static SimpleDateFormat urlFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-	private TriggerReleaseHistoryData inputData;
-	private String sessionId;
-    private ACS acs;
-	private Unittype unittype;
-
 	public List<MenuItem> getShortcutItems(SessionData sessionData) {
 		List<MenuItem> list = new ArrayList<MenuItem>();
 		list.addAll(super.getShortcutItems(sessionData));
@@ -53,11 +48,11 @@ public class TriggerReleaseHistoryPage extends AbstractWebPage {
 
 	@Override
 	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
-		inputData = (TriggerReleaseHistoryData) InputDataRetriever.parseInto(new TriggerReleaseHistoryData(), params);
-		this.sessionId = params.getSession().getId();
+		TriggerReleaseHistoryData inputData = (TriggerReleaseHistoryData) InputDataRetriever.parseInto(new TriggerReleaseHistoryData(), params);
+		String sessionId = params.getSession().getId();
         outputHandler.getTemplateMap().put("triggerOverviewUrl", Page.TRIGGEROVERVIEW.getUrl());
 		Map<String, Object> fmMap = outputHandler.getTemplateMap();
-		this.acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		ACS acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
@@ -77,7 +72,7 @@ public class TriggerReleaseHistoryPage extends AbstractWebPage {
 		fmMap.put("tmsEnd", urlFormat.format(tmsEnd));
 		fmMap.put("tmsStart", urlFormat.format(tmsStart));
 		fmMap.put("unittypes", InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs));
-		this.unittype = acs.getUnittype(inputData.getUnittype().getString());
+		Unittype unittype = acs.getUnittype(inputData.getUnittype().getString());
 		if (unittype != null) {
 			Triggers triggers = unittype.getTriggers();
 			Input triggerIdInput = inputData.getTriggerId();

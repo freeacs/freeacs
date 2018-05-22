@@ -77,7 +77,7 @@ public class Kick {
 		// UDP-kick
 		if (!kr.isKicked() && udpCrUrl != null && !udpCrUrl.trim().equals("")) {
 			log.debug(unit.getId() + " will try UDP kick");
-			kr = kickUsingUDP(unit, udpCrUrl, crUrl, crPass, crUser);
+			kr = kickUsingUDP(unit, udpCrUrl, crPass, crUser);
 		} else if (Properties.EXPECT_PORT_FORWARDING && publicIP != null && crUrl != null) {
 			log.debug(unit.getId() + " will try TCP kick by expecting port forwarding");
 			crUrl = crUrl.replace(new URL(crUrl).getHost(), publicIP);
@@ -101,7 +101,7 @@ public class Kick {
 		return IPAddress.isPublic(new URL(crUrl).getHost());
 	}
 
-	private static KickResponse kickUsingTCP(Unit unit, String crUrl, String crPass, String crUser) throws SQLException, MalformedURLException {
+	private static KickResponse kickUsingTCP(Unit unit, String crUrl, String crPass, String crUser) throws MalformedURLException {
 		DefaultHttpClient client = new DefaultHttpClient();
 		HttpGet get = new HttpGet(crUrl);
 		get.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 20000);
@@ -135,7 +135,7 @@ public class Kick {
 		}
 	}
 
-	private static KickResponse kickUsingUDP(Unit unit, String udpCrUrl, String crUrl, String crPass, String crUser) throws SQLException {
+	private static KickResponse kickUsingUDP(Unit unit, String udpCrUrl, String crPass, String crUser) {
 		try {
 			String id = "" + random.nextInt(100000);
 			String cn = "" + random.nextLong();
