@@ -12,13 +12,13 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class XAPSShellReader extends BufferedReader {
+public class ACSShellReader extends BufferedReader {
 
 	private ConsoleReader console;
 	private ArgumentCompletor argumentCompletor;
 	private ACSShell ACSShell;
 
-	public XAPSShellReader(Reader in, ConsoleReader reader) {
+	public ACSShellReader(Reader in, ConsoleReader reader) {
 		super(in);
 		this.console = reader;
 	}
