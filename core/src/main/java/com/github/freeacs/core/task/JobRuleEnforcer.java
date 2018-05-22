@@ -298,9 +298,9 @@ public class JobRuleEnforcer extends DBIOwner {
 			job.setStatus(JobStatus.PAUSED);
 			job.getGroup().getUnittype().getJobs().changeStatus(job, acs);
 			// Must also change the job object found in the ACS object -
-			Unittype freeacsUnittype = acs.getUnittype(job.getUnittype().getId());
-			Job freeacsJob = freeacsUnittype.getJobs().getById(job.getId());
-			freeacsJob.setStatus(job.getStatus());
+			Unittype acsUnittype = acs.getUnittype(job.getUnittype().getId());
+			Job acsJob = acsUnittype.getJobs().getById(job.getId());
+			acsJob.setStatus(job.getStatus());
 		}
 
 	}
