@@ -30,22 +30,22 @@ public class App {
     }
 
     @Bean
-    @Qualifier("xaps")
-    @ConfigurationProperties("xaps.datasource")
-    public DataSource getXapsDataSource() {
+    @Qualifier("main")
+    @ConfigurationProperties("main.datasource")
+    public DataSource mainDs() {
         return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
     @Bean
     @Qualifier("syslog")
     @ConfigurationProperties("syslog.datasource")
-    public DataSource getSyslogDataSource() {
+    public DataSource syslogDs() {
         return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
     @Bean
-    public DBAccess getDBAccess(@Qualifier("xaps") DataSource xapsDataSource, @Qualifier("syslog") DataSource syslogDataSource) {
-        return new DBAccess(FACILITY_TR069, VERSION, xapsDataSource, syslogDataSource);
+    public DBAccess getDBAccess(@Qualifier("main") DataSource mainDataSource, @Qualifier("syslog") DataSource syslogDataSource) {
+        return new DBAccess(FACILITY_TR069, VERSION, mainDataSource, syslogDataSource);
     }
 
     @Bean

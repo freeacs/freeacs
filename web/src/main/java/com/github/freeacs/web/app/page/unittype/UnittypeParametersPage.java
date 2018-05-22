@@ -42,7 +42,7 @@ public class UnittypeParametersPage extends AbstractWebPage {
 	private static final String SESSION_SAVE_BOOLEAN = "utp-save-complete";
 	private static final String SESSION_SAVE_ERRORS = "utp-save-error";
 
-	@Qualifier("xaps") DataSource xapsDataSource;
+	@Qualifier("main") DataSource mainDataSource;
 
     @Qualifier("syslog") DataSource syslogDataSource;
 
@@ -61,7 +61,7 @@ public class UnittypeParametersPage extends AbstractWebPage {
 			@RequestParam(required=true) String unittype,
 			@RequestParam(required=true) String term,
 			HttpSession session) throws SQLException, JSONException{
-		ACS acs = XAPSLoader.getXAPS(session.getId(), xapsDataSource, syslogDataSource);
+		ACS acs = XAPSLoader.getXAPS(session.getId(), mainDataSource, syslogDataSource);
 		List<Unittype> allowedUnittypes = Arrays.asList(acs.getUnittypes().getUnittypes());
 		Unittype unittypeFromRequest = acs.getUnittype(unittype);
 		if(allowedUnittypes.contains(unittypeFromRequest)){

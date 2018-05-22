@@ -26,7 +26,7 @@ public class UnitJobPage extends AbstractWebPage {
 	// FIXME Why are we using class variables? What are the problem we are solving with this?
 	private JobData inputData;
 
-	@Qualifier("xaps") DataSource xapsDataSource;
+	@Qualifier("main") DataSource mainDataSource;
 	@Qualifier("syslog") DataSource syslogDataSource;
 
 	private ACS acs;
@@ -145,7 +145,7 @@ public class UnitJobPage extends AbstractWebPage {
 	private void getFailedUnitJobs(Job job, Output res) throws SQLException, IOException, TemplateException {
 		res.setTemplatePath("unit-job/failed");
 		Map<String, Object> rootMap = new HashMap<String, Object>();
-		UnitJobs unitJobs = new UnitJobs(xapsDataSource);
+		UnitJobs unitJobs = new UnitJobs(mainDataSource);
 		List<UnitJob> unitJobsList = unitJobs.readAllProcessed(job);
 		//		List<UnitJob> list = new ArrayList<UnitJob>();
 		//		if (limit != null) {
@@ -167,7 +167,7 @@ public class UnitJobPage extends AbstractWebPage {
 
 	private void getCompletedUnitJobs(Job job, Output res, Unittype unittype) throws SQLException, IOException, TemplateException {
 		res.setTemplatePath("unit-job/completed");
-		ACSUnit acsUnit = XAPSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
+		ACSUnit acsUnit = XAPSLoader.getACSUnit(sessionId, mainDataSource, syslogDataSource);
 		Profile profile = job.getGroup().getProfile();
 		UnittypeParameter historyParameterUtp = job.getGroup().getUnittype().getUnittypeParameters().getByName(SystemParameters.JOB_HISTORY);
 		Parameter historyParameter = new Parameter(historyParameterUtp, "%," + job.getId() + ":%");

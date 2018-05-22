@@ -5,6 +5,11 @@
         <version>2.0.1-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
     <modelVersion>4.0.0</modelVersion>
     <artifactId>common</artifactId>
     <packaging>jar</packaging>

@@ -24,23 +24,23 @@ public class App {
 
     @Bean
     @Primary
-    @Qualifier("xaps")
-    @ConfigurationProperties("xaps.datasource")
-    public DataSource getXapsDataSource() {
+    @Qualifier("main")
+    @ConfigurationProperties("main.datasource")
+    public DataSource mainDs() {
         return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
     @Bean
     @Qualifier("syslog")
     @ConfigurationProperties("syslog.datasource")
-    public DataSource getSyslogDataSource() {
+    public DataSource syslogDs() {
         return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
     @Bean
-    ServletRegistrationBean<StunServlet> stun(@Qualifier("xaps") DataSource xapsDataSource, @Qualifier("syslog") DataSource syslogDataSource) {
+    ServletRegistrationBean<StunServlet> stun(@Qualifier("main") DataSource mainDataSource, @Qualifier("syslog") DataSource syslogDataSource) {
         ServletRegistrationBean<StunServlet> srb = new ServletRegistrationBean<>();
-        srb.setServlet(new StunServlet(xapsDataSource, syslogDataSource));
+        srb.setServlet(new StunServlet(mainDataSource, syslogDataSource));
         srb.setLoadOnStartup(1);
         srb.setUrlMappings(Collections.singletonList("/*"));
         return srb;

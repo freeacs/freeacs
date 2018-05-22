@@ -29,23 +29,23 @@ public class App {
 
     @Bean
     @Primary
-    @Qualifier("xaps")
-    @ConfigurationProperties("xaps.datasource")
-    public DataSource getXapsDataSource() {
+    @Qualifier("main")
+    @ConfigurationProperties("main.datasource")
+    public DataSource mainDs() {
         return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
     @Bean
     @Qualifier("syslog")
     @ConfigurationProperties("syslog.datasource")
-    public DataSource getSyslogDataSource() {
+    public DataSource syslogDs() {
         return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
     @Bean
-    ServletRegistrationBean<OKServlet> monitor(@Qualifier("xaps") DataSource xaps, @Qualifier("syslog") DataSource syslog) {
+    ServletRegistrationBean<OKServlet> monitor(@Qualifier("main") DataSource main, @Qualifier("syslog") DataSource syslog) {
         ServletRegistrationBean<OKServlet> srb = new ServletRegistrationBean<>();
-        srb.setServlet(new OKServlet(xaps, syslog));
+        srb.setServlet(new OKServlet(main, syslog));
         srb.setLoadOnStartup(2);
         srb.setUrlMappings(Arrays.asList("/monitor", "/ok"));
         return srb;
@@ -61,8 +61,8 @@ public class App {
     }
 
     @Bean
-    ServletRegistrationBean<AxisServlet> axisServlet(@Qualifier("xaps") DataSource xaps, @Qualifier("syslog") DataSource syslog) {
-        ACSWS_BindingSkeleton.xapsDs = xaps;
+    ServletRegistrationBean<AxisServlet> axisServlet(@Qualifier("main") DataSource main, @Qualifier("syslog") DataSource syslog) {
+        ACSWS_BindingSkeleton.xapsDs = main;
         ACSWS_BindingSkeleton.syslogDs = syslog;
         System.setProperty(EngineConfigurationFactory.SYSTEM_PROPERTY_NAME, com.github.freeacs.ws.axis.EngineConfigurationFactory.class.getName());
         ServletRegistrationBean<AxisServlet> srb = new ServletRegistrationBean<>();

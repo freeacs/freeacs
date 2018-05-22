@@ -25,14 +25,14 @@ public class App {
     @Primary
     @Qualifier("main")
     @ConfigurationProperties("main.datasource")
-    public DataSource main() {
+    public DataSource mainDs() {
         return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
     @Bean
     @Qualifier("syslog")
     @ConfigurationProperties("syslog.datasource")
-    public DataSource syslog() {
+    public DataSource syslogDs() {
         return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
