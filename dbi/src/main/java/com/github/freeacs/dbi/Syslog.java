@@ -80,8 +80,8 @@ public class Syslog {
   private boolean allUnittypesSpecified(SyslogFilter filter, Map<Integer, Set<Profile>> unittypesWithSomeProfilesSpecified) {
     Set<Integer> unittypesWithAllProfilesSpecified = new HashSet<Integer>();
     boolean allUnittypesSpecified = false;
-    ACS ACS = filter.getProfiles().get(0).getUnittype().getACS();
-    int noUnittypes = ACS.getUnittypes().getUnittypes().length;
+    ACS acs = filter.getProfiles().get(0).getUnittype().getAcs();
+    int noUnittypes = acs.getUnittypes().getUnittypes().length;
     for (Profile profile : filter.getProfiles()) {
       Integer unittypeId = profile.getUnittype().getId();
       Set<Profile> profilesInUnittype = unittypesWithSomeProfilesSpecified.get(unittypeId);
@@ -135,8 +135,8 @@ public class Syslog {
       ds.cleanupSQLTail();
       ds.addSql(") AND ");
     } else if (filter.getUnittypes() != null && filter.getUnittypes().size() > 0) {
-      ACS ACS = filter.getUnittypes().get(0).getACS();
-      int noUnittypes = ACS.getUnittypes().getUnittypes().length;
+      ACS acs = filter.getUnittypes().get(0).getAcs();
+      int noUnittypes = acs.getUnittypes().getUnittypes().length;
       boolean isAdmin = user.isAdmin();
       if (noUnittypes > filter.getUnittypes().size() || !isAdmin) {
         ds.addSql("(");
@@ -470,7 +470,7 @@ public class Syslog {
     }
   }
 
-  public List<SyslogEntry> read(SyslogFilter filter, ACS ACS) throws SQLException {
+  public List<SyslogEntry> read(SyslogFilter filter, ACS acs) throws SQLException {
     Connection c = getDataSource().getConnection();
     PreparedStatement pp = null;
     ResultSet rs = null;

@@ -38,7 +38,7 @@ public class PermissionsPage extends AbstractWebPage {
 	private Users users;
 
 	/** The xaps. */
-	private ACS ACS;
+	private ACS acs;
 
 	/** The input data. */
 	private PermissionsData inputData;
@@ -58,8 +58,8 @@ public class PermissionsPage extends AbstractWebPage {
 		SessionData sessionData = SessionCache.getSessionData(sessionId);
 		WebUser loggedInUser = sessionData.getUser();
 
-		ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (ACS == null) {
+		acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -188,11 +188,11 @@ public class PermissionsPage extends AbstractWebPage {
 		}
 		root.put("getunittypename", new GetUnittypeName());
 		root.put("getprofilename", new GetProfileName());
-		root.put("unittypes", ACS.getUnittypes().getUnittypes());
+		root.put("unittypes", acs.getUnittypes().getUnittypes());
 		String utString = inputData.getUnittype().getString();
 		if (utString != null) {
 			root.put("unittype", utString);
-			Unittype unittype = ACS.getUnittype(utString);
+			Unittype unittype = acs.getUnittype(utString);
 			if (unittype != null) {
 				root.put("profiles", getAllowedProfiles(sessionId, unittype, xapsDataSource, syslogDataSource));
 				root.put("profile", inputData.getProfile().getString());
@@ -329,12 +329,12 @@ public class PermissionsPage extends AbstractWebPage {
 				continue;
 			String[] permDetails = permission.split("\\\\");
 			if (permDetails.length > 1) {
-				Unittype unittype = ACS.getUnittype(permDetails[0]);
+				Unittype unittype = acs.getUnittype(permDetails[0]);
 				Profile profile = unittype.getProfiles().getByName(permDetails[1]);
 				if (unittype != null && profile != null)
 					perms.add(new Permission(null, unittype.getId(), profile.getId()));
 			} else if (permDetails.length > 0) {
-				Unittype unittype = ACS.getUnittype(permDetails[0]);
+				Unittype unittype = acs.getUnittype(permDetails[0]);
 				if (unittype != null)
 					perms.add(new Permission(null, unittype.getId(), null));
 			}
@@ -354,7 +354,7 @@ public class PermissionsPage extends AbstractWebPage {
 			if (args.size() < 1)
 				throw new TemplateModelException("Specify Unit Type Id");
 			Integer unittypeId = Integer.parseInt((String) args.get(0));
-			Unittype unittype = ACS.getUnittype(unittypeId);
+			Unittype unittype = acs.getUnittype(unittypeId);
 			return new SimpleScalar(unittype.getName());
 		}
 	}
@@ -372,7 +372,7 @@ public class PermissionsPage extends AbstractWebPage {
 				throw new TemplateModelException("Specify Unit Type Id and Profile Id");
 			Integer unittypeId = Integer.parseInt((String) args.get(1));
 			Integer profileId = Integer.parseInt((String) args.get(0));
-			Unittype unittype = ACS.getUnittype(unittypeId);
+			Unittype unittype = acs.getUnittype(unittypeId);
 			Profile profile = unittype.getProfiles().getById(profileId);
 			if (profile != null)
 				return new SimpleScalar(profile.getName());
@@ -405,12 +405,12 @@ public class PermissionsPage extends AbstractWebPage {
 			for (String permission : permissions) {
 				String[] permDetails = permission.split("\\\\");
 				if (permDetails.length > 1) {
-					Unittype unittype = ACS.getUnittype(permDetails[0]);
+					Unittype unittype = acs.getUnittype(permDetails[0]);
 					Profile profile = unittype.getProfiles().getByName(permDetails[1]);
 					if (newUser.getId() != null && unittype != null && profile != null)
 						toAdd.add(new Permission(newUser, unittype.getId(), profile.getId()));
 				} else if (permDetails.length > 0) {
-					Unittype unittype = ACS.getUnittype(permDetails[0]);
+					Unittype unittype = acs.getUnittype(permDetails[0]);
 					if (newUser.getId() != null && unittype != null)
 						toAdd.add(new Permission(newUser, unittype.getId(), null));
 				}

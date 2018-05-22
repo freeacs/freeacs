@@ -29,8 +29,8 @@ public class Session {
 	/* Key objects to access/manipulate xAPS database */
 	private Users users;
 	private DBI dbi;
-	private ACS ACS;
-	private ACSUnit ACSUnit;
+	private ACS acs;
+	private ACSUnit acsUnit;
 	private UnitJobs unitJobs;
 
 	/* Responsible for processing all commands */
@@ -93,8 +93,8 @@ public class Session {
 		getScript().setVariables(variables);
 	}
 
-	public ACSUnit getACSUnit() {
-		return ACSUnit;
+	public ACSUnit getAcsUnit() {
+		return acsUnit;
 	}
 
 	public void exitShell(int status) {
@@ -108,8 +108,8 @@ public class Session {
 			System.exit(status);
 	}
 
-	public void setACSUnit(ACSUnit xapsU) {
-		this.ACSUnit = xapsU;
+	public void setAcsUnit(ACSUnit xapsU) {
+		this.acsUnit = xapsU;
 	}
 
 	public DataSource getXapsProps() {
@@ -156,12 +156,12 @@ public class Session {
 		this.dbi = dbi;
 	}
 
-	public ACS getACS() {
-		return ACS;
+	public ACS getAcs() {
+		return acs;
 	}
 
-	public void setACS(ACS ACS) {
-		this.ACS = ACS;
+	public void setAcs(ACS acs) {
+		this.acs = acs;
 	}
 
 	public Stack<Script> getScriptStack() {

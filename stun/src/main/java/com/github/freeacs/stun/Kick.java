@@ -2,7 +2,6 @@ package com.github.freeacs.stun;
 
 import com.github.freeacs.common.util.IPAddress;
 import com.github.freeacs.dbi.Unit;
-import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.crypto.Crypto;
 import com.github.freeacs.dbi.util.SystemParameters;
 import org.apache.http.HttpResponse;
@@ -61,7 +60,7 @@ public class Kick {
 	private static Logger log = LoggerFactory.getLogger("KickSingle");
 	private static Random random = new Random();
 
-	public static KickResponse kick(Unit unit, ACSUnit ACSUnit) throws MalformedURLException, SQLException {
+	public static KickResponse kick(Unit unit) throws MalformedURLException, SQLException {
 		CPEParameters cpeParams = new CPEParameters(getKeyroot(unit));
 		String udpCrUrl = unit.getParameterValue(cpeParams.UDP_CONNECTION_URL, false);
 		String crUrl = unit.getParameterValue(cpeParams.CONNECTION_URL, false);
@@ -73,16 +72,16 @@ public class Kick {
 		// TCP-kick (HTTP)
 		if (crUrl != null && !crUrl.trim().equals("") && checkIfPublicIP(crUrl)) {
 			log.debug(unit.getId() + " will try TCP kick");
-			kr = kickUsingTCP(unit, ACSUnit, crUrl, crPass, crUser);
+			kr = kickUsingTCP(unit, crUrl, crPass, crUser);
 		}
 		// UDP-kick
 		if (!kr.isKicked() && udpCrUrl != null && !udpCrUrl.trim().equals("")) {
 			log.debug(unit.getId() + " will try UDP kick");
-			kr = kickUsingUDP(unit, ACSUnit, udpCrUrl, crUrl, crPass, crUser);
+			kr = kickUsingUDP(unit, udpCrUrl, crUrl, crPass, crUser);
 		} else if (Properties.EXPECT_PORT_FORWARDING && publicIP != null && crUrl != null) {
 			log.debug(unit.getId() + " will try TCP kick by expecting port forwarding");
 			crUrl = crUrl.replace(new URL(crUrl).getHost(), publicIP);
-			kr = kickUsingTCP(unit, ACSUnit, crUrl, crPass, crUser);
+			kr = kickUsingTCP(unit, crUrl, crPass, crUser);
 		}
 
 		return kr;
@@ -102,7 +101,7 @@ public class Kick {
 		return IPAddress.isPublic(new URL(crUrl).getHost());
 	}
 
-	private static KickResponse kickUsingTCP(Unit unit, ACSUnit ACSUnit, String crUrl, String crPass, String crUser) throws SQLException, MalformedURLException {
+	private static KickResponse kickUsingTCP(Unit unit, String crUrl, String crPass, String crUser) throws SQLException, MalformedURLException {
 		DefaultHttpClient client = new DefaultHttpClient();
 		HttpGet get = new HttpGet(crUrl);
 		get.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 20000);
@@ -136,7 +135,7 @@ public class Kick {
 		}
 	}
 
-	private static KickResponse kickUsingUDP(Unit unit, ACSUnit ACSUnit, String udpCrUrl, String crUrl, String crPass, String crUser) throws SQLException {
+	private static KickResponse kickUsingUDP(Unit unit, String udpCrUrl, String crUrl, String crPass, String crUser) throws SQLException {
 		try {
 			String id = "" + random.nextInt(100000);
 			String cn = "" + random.nextLong();

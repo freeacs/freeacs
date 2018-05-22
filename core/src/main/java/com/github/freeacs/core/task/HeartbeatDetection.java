@@ -28,7 +28,7 @@ public class HeartbeatDetection extends DBIShare {
 	private static long OFFSET = MINUTE_MS;
 	private static SimpleDateFormat sdf = new SimpleDateFormat("MMM dd HH:mm:ss", Locale.US);
 
-	private ACS ACS;
+	private ACS acs;
 	private long lastTms;
 	// Contains SyslogMessageMaps (which wraps InsertOrderMap) for each heartbeat
 	private SyslogMessageMapContainer smmc = new SyslogMessageMapContainer();
@@ -42,7 +42,7 @@ public class HeartbeatDetection extends DBIShare {
 
 	@Override
 	public void runImpl() throws Exception {
-		ACS = getLatestFreeacs();
+		acs = getLatestFreeacs();
 		// Set the tms back 60 sec, since we expect all writing 
 		// to syslog table (with tms 60 sec old) to be finished
 		Long tms = getLaunchTms() - OFFSET;
@@ -77,7 +77,7 @@ public class HeartbeatDetection extends DBIShare {
 		DynamicStatement ds = null;
 		try {
 			c = getSyslogDataSource().getConnection();
-			Unittype[] unittypes = ACS.getUnittypes().getUnittypes();
+			Unittype[] unittypes = acs.getUnittypes().getUnittypes();
 			for (Unittype unittype : unittypes) {
 				Heartbeat[] heartbeats = unittype.getHeartbeats().getHeartbeats();
 				for (Heartbeat heartbeat : heartbeats) {
@@ -109,8 +109,8 @@ public class HeartbeatDetection extends DBIShare {
 						int counter = 0;
 						Map<String, Unit> unitsInGroupMap = null;
 						if (heartbeat.getGroup() != null) {
-							ACSUnit ACSUnit = new ACSUnit(ACS.getConnectionProperties(), ACS, ACS.getSyslog());
-							unitsInGroupMap = ACSUnit.getUnits(heartbeat.getGroup());
+							ACSUnit acsUnit = new ACSUnit(acs.getConnectionProperties(), acs, acs.getSyslog());
+							unitsInGroupMap = acsUnit.getUnits(heartbeat.getGroup());
 						}
 						while (rs.next()) {
 							String unitId = rs.getString("unit_id");
@@ -182,14 +182,14 @@ public class HeartbeatDetection extends DBIShare {
 	private void filterAndSendHeartbeats(long to) throws SQLException, IOException {
 		// Now process the maps and the "absence"-events to see if there's any units
 		// missing and build a list of missing events from units
-		ACSUnit ACSUnit = new ACSUnit(getMainDataSource(), ACS, getSyslog());
+		ACSUnit acsUnit = new ACSUnit(getMainDataSource(), acs, getSyslog());
 		for (SyslogMessageMapContainer.SyslogMessageMap smm : smmc.getContainerValues()) {
 			logger.debug("HeartbeatDetection: FilterHeartbeats: Process " + smm);
 			// The list contains the units in the group without the heartbeat message
 			List<String> unitIdsAbsent = new ArrayList<String>();
 			Heartbeat heartbeat = smm.getHeartbeat();
 			Group group = heartbeat.getGroup();
-			Map<String, Unit> groupUnits = ACSUnit.getUnits(group);
+			Map<String, Unit> groupUnits = acsUnit.getUnits(group);
 			for (String unitId : groupUnits.keySet()) {
 				if (smm.getUnitIdTmsMap().get(unitId) == null && sentMessages.get(heartbeat.getId() + ":" + unitId) == null)
 					unitIdsAbsent.add(unitId);
@@ -200,7 +200,7 @@ public class HeartbeatDetection extends DBIShare {
 			int missingHeartbeatCounter = 0;
 			int unitNotFoundCounter = 0;
 			for (String unitIdMissing : unitIdsAbsent) {
-				Unit unit = ACSUnit.getUnitById(unitIdMissing);
+				Unit unit = acsUnit.getUnitById(unitIdMissing);
 				if (unit == null) {
 					logger.debug("HeartbeatDetection: FilterHeartbeats: Unit " + unitIdMissing + " was not found in Fusion, will not generate syslog message for this unit");
 					unitNotFoundCounter++;
@@ -269,7 +269,7 @@ public class HeartbeatDetection extends DBIShare {
 			// This heartbeat object could be old/outdated - we
 			Heartbeat heartbeat = smm.getHeartbeat();
 
-			Unittype unittypeFreeacs = ACS.getUnittype(heartbeat.getUnittype().getId());
+			Unittype unittypeFreeacs = acs.getUnittype(heartbeat.getUnittype().getId());
 			if (unittypeFreeacs == null) {
 				keyIterator.remove();
 				logger.debug("HeartbeatDetection: UpdateSyslogMessageMap: Unittype " + heartbeat.getUnittype().getName() + " could not be found, syslog message map is removed");

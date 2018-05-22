@@ -47,8 +47,8 @@ public abstract class ReportRetriever{
 	 *
 	 * @return the xaps
 	 */
-	public ACS getACS() {
-		return ACS;
+	public ACS getAcs() {
+		return acs;
 	}
 
 	/** The input data. */
@@ -58,19 +58,19 @@ public abstract class ReportRetriever{
 	private final ParameterParser params;
 	
 	/** The xaps. */
-	private final ACS ACS;
+	private final ACS acs;
 	
 	/**
 	 * Instantiates a new report retriever.
 	 *
 	 * @param inputData the input data
 	 * @param params the params
-	 * @param ACS the xaps
+	 * @param acs the xaps
 	 */
-	public ReportRetriever(ReportData inputData,ParameterParser params,ACS ACS){
+	public ReportRetriever(ReportData inputData,ParameterParser params,ACS acs){
 		this.inputData = inputData;
 		this.params = params;
-		this.ACS = ACS;
+		this.acs = acs;
 	}
 	
 	/**

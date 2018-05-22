@@ -148,21 +148,21 @@ public class Output {
 	}
 
 	private void populateTemplateMapWithContextBar() throws SQLException {
-		ACS ACS = XAPSLoader.getXAPS(inputParameters.getSession().getId(), xapsDataSource, syslogDataSource);
-		Unittype currentUnittype = ACS.getUnittype(trailPoint!=null?trailPoint.getUnitTypeName():null);
+		ACS acs = XAPSLoader.getXAPS(inputParameters.getSession().getId(), xapsDataSource, syslogDataSource);
+		Unittype currentUnittype = acs.getUnittype(trailPoint!=null?trailPoint.getUnitTypeName():null);
 		Input utInput = Input.getStringInput("unittype");
 		if(currentUnittype!=null)
 			utInput.setValue(currentUnittype.getName());
-		templateMap.put("UNITTYPE_DROPDOWN", InputSelectionFactory.getUnittypeSelection(utInput, ACS));
+		templateMap.put("UNITTYPE_DROPDOWN", InputSelectionFactory.getUnittypeSelection(utInput, acs));
 		Input prInput = Input.getStringInput("profile");
 		if(currentUnittype!=null && trailPoint!=null && trailPoint.getProfileName()!=null){
 			Profile currentProfile = currentUnittype.getProfiles().getByName(trailPoint.getProfileName());
 			if(currentProfile!=null)
 				prInput.setValue(currentProfile.getName());
 		}
-		templateMap.put("PROFILE_DROPDOWN", InputSelectionFactory.getProfileSelection(prInput, utInput, ACS));
+		templateMap.put("PROFILE_DROPDOWN", InputSelectionFactory.getProfileSelection(prInput, utInput, acs));
 		Input grInput = Input.getStringInput("group");
-		templateMap.put("GROUP_DROPDOWN",InputSelectionFactory.getGroupSelection(grInput, currentUnittype, ACS));
+		templateMap.put("GROUP_DROPDOWN",InputSelectionFactory.getGroupSelection(grInput, currentUnittype, acs));
 		Input jInput = Input.getStringInput("job");
 		templateMap.put("JOB_DROPDOWN", InputSelectionFactory.getDropDownSingleSelect(jInput, null, Arrays.asList(currentUnittype!=null?currentUnittype.getJobs().getJobs():new Job[]{})));
 		
@@ -208,7 +208,7 @@ public class Output {
 			inputParameters.getSessionData().setUnitId(cU);
 			inputParameters.getHttpServletRequest().ignoreParameter("unit");
 			String newValue = inputParameters.getSessionData().getUnitId();
-			ACSUnit xaps = XAPSLoader.getXAPSUnit(inputParameters.getSession().getId(), xapsDataSource, syslogDataSource);
+			ACSUnit xaps = XAPSLoader.getACSUnit(inputParameters.getSession().getId(), xapsDataSource, syslogDataSource);
 			Unit unit = null;
 			if((unit = xaps.getUnitById(newValue))!=null){
 				redirect(Page.UNITSTATUS.getUrl("unit="+unit.getId()+"&unittype="+unit.getUnittype().getName()+"&profile="+unit.getProfile().getName()),servletResponseChannel);

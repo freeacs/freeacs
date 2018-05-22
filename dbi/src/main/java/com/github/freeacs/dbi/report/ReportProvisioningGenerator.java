@@ -24,8 +24,8 @@ public class ReportProvisioningGenerator extends ReportGenerator {
 	private static String provMsgId = "^ProvMsg: PP:";
 	private static Pattern provPattern = Pattern.compile(provMsgId + ".*ST:(\\w+), PO:(\\w+), SL:(\\d+)");
 
-	public ReportProvisioningGenerator(DataSource mainDataSource, DataSource syslogDataSource, ACS ACS, String logPrefix, Identity id) {
-		super(mainDataSource, syslogDataSource, ACS, logPrefix, id);
+	public ReportProvisioningGenerator(DataSource mainDataSource, DataSource syslogDataSource, ACS acs, String logPrefix, Identity id) {
+		super(mainDataSource, syslogDataSource, acs, logPrefix, id);
 	}
 
 	public Report<RecordProvisioning> generateFromReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws SQLException,
@@ -134,7 +134,7 @@ public class ReportProvisioningGenerator extends ReportGenerator {
 		filter.setCollectorTmsEnd(end);
 		filter.setFacilityVersion(swVersion);
 		Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
-		List<SyslogEntry> entries = syslog.read(filter, ACS);
+		List<SyslogEntry> entries = syslog.read(filter, acs);
 		Map<String, Report<RecordProvisioning>> unitReportMap = new HashMap<String, Report<RecordProvisioning>>();
 		for (SyslogEntry entry : entries) {
 			if (group != null && unitsInGroup.get(entry.getUnitId()) == null)

@@ -1,4 +1,4 @@
-<script src="javascript/ACS.module.unit.list.js"></script>
+<script src="javascript/acs.module.unit.list.js"></script>
 <@macros.form>
  	<input type="hidden" name="type" value="${type}" />
 	<fieldset>

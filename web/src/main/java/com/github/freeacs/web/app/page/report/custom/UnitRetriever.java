@@ -32,14 +32,14 @@ public class UnitRetriever extends ReportRetriever {
 	 *
 	 * @param inputData the input data
 	 * @param params the params
-	 * @param ACS the xaps
+	 * @param acs the xaps
 	 * @throws SQLException the sQL exception
 	 *  the no available connection exception
 	 */
-	public UnitRetriever(ReportData inputData, ParameterParser params, ACS ACS) throws SQLException {
-		super(inputData, params, ACS);
-		generator = new ReportGenerator(ACS.getDataSource(), ACS.getSyslog().getDataSource(), ACS, null,
-				XAPSLoader.getIdentity(params.getSession().getId(), ACS.getDataSource()));
+	public UnitRetriever(ReportData inputData, ParameterParser params, ACS acs) throws SQLException {
+		super(inputData, params, acs);
+		generator = new ReportGenerator(acs.getDataSource(), acs.getSyslog().getDataSource(), acs, null,
+				XAPSLoader.getIdentity(params.getSession().getId(), acs.getDataSource()));
 	}
 
 	/* (non-Javadoc)

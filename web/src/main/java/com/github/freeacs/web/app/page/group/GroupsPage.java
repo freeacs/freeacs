@@ -36,7 +36,7 @@ import java.util.Map;
 public class GroupsPage extends AbstractWebPage {
 
 	/** The xaps. */
-	private ACS ACS;
+	private ACS acs;
 
 	/** The input data. */
 	private GroupsData inputData;
@@ -103,8 +103,8 @@ public class GroupsPage extends AbstractWebPage {
 
 		sessionId = req.getSession().getId();
 		
-		ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (ACS == null) {
+		acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -113,18 +113,18 @@ public class GroupsPage extends AbstractWebPage {
 
 		// Action
 		if (inputData.getUnittype().notNullNorValue(WebConstants.ALL_ITEMS_OR_DEFAULT)) {
-			unittype = ACS.getUnittype(inputData.getUnittype().getString());
+			unittype = acs.getUnittype(inputData.getUnittype().getString());
 			if (unittype != null) {
 				profile = unittype.getProfiles().getByName(inputData.getProfile().getString());
 			}
 		}
 
 		Map<String, Object> root = outputHandler.getTemplateMap();
-		root.put("unittypes", InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS));
+		root.put("unittypes", InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs));
 		if (unittype != null) {
 			root.put("findprofile", new GroupProfileMethod());
-			root.put("profiles", InputSelectionFactory.getProfileSelection(inputData.getProfile(), inputData.getUnittype(), ACS));
-			List<TableElement> params = new TableElementMaker().getGroups(unittype, ACS);
+			root.put("profiles", InputSelectionFactory.getProfileSelection(inputData.getProfile(), inputData.getUnittype(), acs));
+			List<TableElement> params = new TableElementMaker().getGroups(unittype);
 			List<TableElement> copy = new ArrayList<TableElement>();
 			copy.addAll(params);
 			for (TableElement elm : copy) {

@@ -437,15 +437,15 @@ public class SyslogUtil {
 		Map<String, String> texts = new HashMap<String, String>();
 		
 		/** The xaps. */
-		private ACS ACS;
+		private ACS acs;
 		
 		/**
 		 * Instantiates a new gets the event mouse over.
 		 *
-		 * @param ACS the xaps
+		 * @param acs the xaps
 		 */
-		public GetEventMouseOver(ACS ACS){
-			this.ACS = ACS;
+		public GetEventMouseOver(ACS acs){
+			this.acs = acs;
 		}
 
 		
@@ -462,7 +462,7 @@ public class SyslogUtil {
 				return new SimpleScalar(text);
 			Integer unittypeId = !uts.equals("") ? Integer.parseInt(uts) : null;
 			Integer eventId = Integer.parseInt(es);
-			Unittype ut = unittypeId != null ? ACS.getUnittype(unittypeId) : null;
+			Unittype ut = unittypeId != null ? acs.getUnittype(unittypeId) : null;
 			SyslogEvent event = ut != null && eventId != null ? ut.getSyslogEvents().getByEventId(eventId) : null;
 			if (ut != null && event != null) {
 				texts.put(uts + ":" + es, event.toString());
@@ -496,15 +496,15 @@ public class SyslogUtil {
 	public static class GetUnittypeProfileByName implements TemplateMethodModel {
 		
 		/** The xaps. */
-		private ACS ACS;
+		private ACS acs;
 		
 		/**
 		 * Instantiates a new gets the unittype profile by name.
 		 *
-		 * @param ACS the xaps
+		 * @param acs the xaps
 		 */
-		public GetUnittypeProfileByName(ACS ACS){
-			this.ACS = ACS;
+		public GetUnittypeProfileByName(ACS acs){
+			this.acs = acs;
 		}
 		
 		/* (non-Javadoc)
@@ -516,7 +516,7 @@ public class SyslogUtil {
 			Map<String, String> map = new HashMap<String, String>();
 			String unittypeString = (String) args.get(0);
 			String profileString = (String) args.get(1);
-			Unittype entryUnittype = ACS.getUnittype(unittypeString);
+			Unittype entryUnittype = acs.getUnittype(unittypeString);
 			Profile entryProfile = (entryUnittype != null && profileString != null ? entryUnittype.getProfiles().getByName(profileString) : null);
 			String unittypeName = entryUnittype != null ? entryUnittype.getName() : null;
 			String profileName = entryProfile != null ? entryProfile.getName() : null;
@@ -538,15 +538,15 @@ public class SyslogUtil {
 	public static class GetUnittypeProfileById implements TemplateMethodModel {
 		
 		/** The xaps. */
-		private ACS ACS;
+		private ACS acs;
 		
 		/**
 		 * Instantiates a new gets the unittype profile by id.
 		 *
-		 * @param ACS the xaps
+		 * @param acs the xaps
 		 */
-		public GetUnittypeProfileById(ACS ACS){
-			this.ACS = ACS;
+		public GetUnittypeProfileById(ACS acs){
+			this.acs = acs;
 		}
 		
 		/* (non-Javadoc)
@@ -558,7 +558,7 @@ public class SyslogUtil {
 			Map<String, String> map = new HashMap<String, String>();
 			Integer unittypeId = Integer.parseInt((String) args.get(0));
 			Integer profileId = !((String) args.get(1)).equals("") ? Integer.parseInt((String) args.get(1)) : null;
-			Unittype entryUnittype = ACS.getUnittype(unittypeId);
+			Unittype entryUnittype = acs.getUnittype(unittypeId);
 			Profile entryProfile = (entryUnittype != null && profileId != null ? entryUnittype.getProfiles().getById(profileId) : null);
 			String unittypeName = entryUnittype != null ? entryUnittype.getName() : null;
 			String profileName = entryProfile != null ? entryProfile.getName() : null;

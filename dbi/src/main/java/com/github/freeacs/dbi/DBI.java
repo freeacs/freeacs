@@ -183,7 +183,7 @@ public class DBI implements Runnable {
 	private long start = System.currentTimeMillis();
 	private boolean finished = false;
 	private Sleep sleep;
-	private ACS ACS;
+	private ACS acs;
 	private boolean freeacsUpdated = false;
 	private Map<Integer, UnittypePublish> publishUnittypes = new HashMap<Integer, UnittypePublish>();
 	private List<Message> outbox = new ArrayList<Message>();
@@ -205,9 +205,9 @@ public class DBI implements Runnable {
 		populateInboxes();
 		publishInbox.deleteReadMessage();
 		this.sleep = new Sleep(1000, 1000, true);
-		this.ACS = new ACS(dataSource, syslog);
+		this.acs = new ACS(dataSource, syslog);
 		this.dbiId = random.nextInt(1000000);
-		ACS.setDbi(this);
+		acs.setDbi(this);
 		publishInbox.addFilter(new Message(null, Message.MTYPE_PUB_ADD, null, null));
 		publishInbox.addFilter(new Message(null, Message.MTYPE_PUB_CHG, null, null));
 		publishInbox.addFilter(new Message(null, Message.MTYPE_PUB_DEL, null, null));
@@ -222,10 +222,10 @@ public class DBI implements Runnable {
 		logger.debug("DBI is loaded for user " + syslog.getIdentity().getUser().getFullname());
 	}
 
-	public ACS getACS() {
+	public ACS getAcs() {
 		if (finished)
 			throw new RuntimeException("DBI does not run anymore since it passed it's lifetime timeout");
-		return ACS;
+		return acs;
 	}
 
 	public void registerInbox(String key, Inbox inbox) {
@@ -406,7 +406,7 @@ public class DBI implements Runnable {
 	// uf: unconfirmed-failed
 	private void updateJobCounters(Integer jobId, String message) {
 		String[] msgArr = message.split(",");
-		Unittype unittype = ACS.getUnittype(new Integer(msgArr[0]));
+		Unittype unittype = acs.getUnittype(new Integer(msgArr[0]));
 		if (unittype == null)
 			return; // the user does not have access to this unittype
 		Job job = unittype.getJobs().getById(jobId);
@@ -445,17 +445,17 @@ public class DBI implements Runnable {
 				if (m.getObjectType().equals(Message.OTYPE_JOB) && m.getContent() != null && m.getSender() == SyslogConstants.FACILITY_CORE)
 					updateJobCounters(new Integer(m.getObjectId()), m.getContent());
 				else if (m.getObjectType().equals(Message.OTYPE_JOB) && m.getMessageType().equals(Message.MTYPE_PUB_CHG))
-					Jobs.refreshJob(new Integer(m.getObjectId()), ACS);
+					Jobs.refreshJob(new Integer(m.getObjectId()), acs);
 				else if (m.getObjectType().equals(Message.OTYPE_GROUP) && m.getMessageType().equals(Message.MTYPE_PUB_CHG))
-					Groups.refreshGroup(new Integer(m.getObjectId()), ACS);
+					Groups.refreshGroup(new Integer(m.getObjectId()), acs);
 				else if (m.getObjectType().equals(Message.OTYPE_FILE) && m.getMessageType().equals(Message.MTYPE_PUB_CHG))
-					Files.refreshFile(new Integer(m.getObjectId()), new Integer(m.getContent()), ACS);
+					Files.refreshFile(new Integer(m.getObjectId()), new Integer(m.getContent()), acs);
 				else
 					updateFreeacs = true;
 			}
 		}
 		if (updateFreeacs) {
-			ACS.read();
+			acs.read();
 			freeacsUpdated = true;
 			if (logger.isDebugEnabled()) {
 				

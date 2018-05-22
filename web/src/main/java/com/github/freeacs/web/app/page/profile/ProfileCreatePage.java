@@ -43,9 +43,9 @@ public class ProfileCreatePage extends ProfileActions {
 
 		String sessionId = params.getSession().getId();
 
-		ACS ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		ACS acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 
-		if (ACS == null) {
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -54,11 +54,11 @@ public class ProfileCreatePage extends ProfileActions {
 
 		Map<String, Object> root = outputHandler.getTemplateMap();
 		
-		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS);
+		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
 		
-		DropDownSingleSelect<Profile> profiles = InputSelectionFactory.getProfileSelection(inputData.getProfile(),inputData.getUnittype(), ACS);
+		DropDownSingleSelect<Profile> profiles = InputSelectionFactory.getProfileSelection(inputData.getProfile(),inputData.getUnittype(), acs);
 
-		DropDownSingleSelect<Profile> profilestocopyfrom = InputSelectionFactory.getProfileSelection(inputData.getProfileCopy(), inputData.getUnittype(), ACS);
+		DropDownSingleSelect<Profile> profilestocopyfrom = InputSelectionFactory.getProfileSelection(inputData.getProfileCopy(), inputData.getUnittype(), acs);
 		
 		root.put("unittypes", unittypes);
 		
@@ -70,7 +70,7 @@ public class ProfileCreatePage extends ProfileActions {
 				throw new Exception("You are not allowed to create profiles!");
 			}
 			if (unittypes.getSelected() != null && unittypes.getSelected().getProfiles().getByName(inputData.getProfilename().getString()) == null) {
-				ProfileStatus status = actionCreateProfile(sessionId, inputData, ACS, unittypes, profiles);
+				ProfileStatus status = actionCreateProfile(sessionId, inputData, acs, unittypes, profiles);
 				if (status == ProfileStatus.PROFILE_CREATED) {
 					outputHandler.setDirectToPage(Page.PROFILE);
 					return;

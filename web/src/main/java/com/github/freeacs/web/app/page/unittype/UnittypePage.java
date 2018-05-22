@@ -35,7 +35,7 @@ public class UnittypePage extends AbstractWebPage {
 	private UnittypeData inputData;
 
 	/** The xaps. */
-	private ACS ACS;
+	private ACS acs;
 
 	/** The unittype. */
 	private Unittype unittype;
@@ -92,12 +92,12 @@ public class UnittypePage extends AbstractWebPage {
 			//				unittype.setProtocol(null);
 			unittype.setVendor(inputData.getVendor().getString());
 			unittype.setDescription(inputData.getDescription().getString());
-			ACS.getUnittypes().addOrChangeUnittype(unittype, ACS);
+			acs.getUnittypes().addOrChangeUnittype(unittype, acs);
 			unittypeUpdated = true;
 		}
 		if (inputData.getFormSubmit().isValue(WebConstants.DELETE)) {
 			try {
-				ACS.getUnittypes().deleteUnittype(unittype, ACS, true);
+				acs.getUnittypes().deleteUnittype(unittype, acs, true);
 				inputData.getUnittype().setValue(null);
 				SessionCache.getSessionData(sessionId).setUnittypeName(null);
 				unittype = null;
@@ -123,7 +123,7 @@ public class UnittypePage extends AbstractWebPage {
 				String upFlag = utp.getFlag().getFlag();
 				if (params.getParameter("delete::" + upName) != null) {
 					try {
-						unittype.getUnittypeParameters().deleteUnittypeParameter(utp, ACS);
+						unittype.getUnittypeParameters().deleteUnittypeParameter(utp, acs);
 					} catch (SQLException ex) {
 						throw new SQLException("Could not delete Unit Type parameter [" + utp.getName() + "]. Delete profile, unit, group and/or job parameters first.");
 					}
@@ -131,7 +131,7 @@ public class UnittypePage extends AbstractWebPage {
 					String updatedFlag = params.getParameter("update::" + upName).trim();
 					if (!upFlag.equals(updatedFlag)) {
 						utp.getFlag().setFlag(updatedFlag);
-						unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, ACS);
+						unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, acs);
 					}
 				}
 			}
@@ -161,8 +161,8 @@ public class UnittypePage extends AbstractWebPage {
 
 		sessionId = params.getSession().getId();
 
-		ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (ACS == null) {
+		acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -174,7 +174,7 @@ public class UnittypePage extends AbstractWebPage {
 		String template = null;
 
 		if (inputData.getUnittype().getString() != null) {
-			unittype = ACS.getUnittype(inputData.getUnittype().getString());
+			unittype = acs.getUnittype(inputData.getUnittype().getString());
 			if (unittype == null) {
 				SessionCache.getSessionData(sessionId).setUnittypeName(null);
 			}

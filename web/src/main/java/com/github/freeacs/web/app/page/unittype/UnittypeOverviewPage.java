@@ -42,14 +42,14 @@ public class UnittypeOverviewPage extends AbstractWebPage {
 
 		String sessionId = params.getSession().getId();
 
-		ACS ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (ACS == null) {
+		ACS acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
 		InputDataIntegrity.loadAndStoreSession(params, outputHandler, inputData, inputData.getUnittype(), inputData.getProfile(), inputData.getUnit());
 
-		List<Unittype> unittypes = Arrays.asList(ACS.getUnittypes().getUnittypes());
+		List<Unittype> unittypes = Arrays.asList(acs.getUnittypes().getUnittypes());
 		outputHandler.getTemplateMap().put("unittypes", unittypes);
 		outputHandler.getTemplateMap().put("urltodetails", Page.UNITTYPE.getUrl());
 		outputHandler.setTemplatePath("unit-type/list.ftl");

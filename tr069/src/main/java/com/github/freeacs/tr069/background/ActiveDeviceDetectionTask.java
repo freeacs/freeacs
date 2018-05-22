@@ -39,12 +39,12 @@ public class ActiveDeviceDetectionTask extends TaskDefaultImpl {
 		logger.info("ActiveDeviceDetectionTask: Have found " + inactiveUnits.size() + " inactive devices");
 		for (Entry<String, Long> entry : inactiveUnits.entrySet()) {
 			String unitId = entry.getKey();
-			Syslog syslog = dbi.getACS().getSyslog();
+			Syslog syslog = dbi.getAcs().getSyslog();
 			SyslogFilter sf = new SyslogFilter();
 			sf.setCollectorTmsStart(new Date(anHourAgo)); // look for syslog newer than 1 hour
 			sf.setUnitId(unitId);
 			boolean active = false;
-			List<SyslogEntry> entries = syslog.read(sf, dbi.getACS());
+			List<SyslogEntry> entries = syslog.read(sf, dbi.getAcs());
 			for (SyslogEntry sentry : entries) {
 				if (sentry.getFacility() < SyslogConstants.FACILITY_SHELL && !sentry.getContent().contains(Heartbeat.MISSING_HEARTBEAT_ID)) {
 					logger.info("ActivceDeviceDetection: Found syslog activity for unit " + unitId + " at " + sentry.getCollectorTimestamp() + " : " + sentry.getContent());
@@ -54,7 +54,7 @@ public class ActiveDeviceDetectionTask extends TaskDefaultImpl {
 			}
 			if (active) {
 				SyslogClient.info(entry.getKey(), "ProvMsg: No provisioning at " + new Date(entry.getValue()) + " (as expected) or since, but device has been active since " + new Date(anHourAgo)
-						+ ". TR-069 client may have stopped", dbi.getACS().getSyslog());
+						+ ". TR-069 client may have stopped", dbi.getAcs().getSyslog());
 				logger.info("ActivceDeviceDetection: Unit " + entry.getKey() + ": No provisioning at " + new Date(entry.getValue()) + " (as expected) or since, but device has been active "
 						+ new Date(anHourAgo) + ". TR-069 client may have stopped");
 			} else {

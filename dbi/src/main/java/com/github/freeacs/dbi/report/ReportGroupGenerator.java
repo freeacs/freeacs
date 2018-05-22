@@ -18,8 +18,8 @@ public class ReportGroupGenerator extends ReportGenerator {
 
 	private static Logger logger = LoggerFactory.getLogger(ReportGroupGenerator.class);
 
-	public ReportGroupGenerator(DataSource mainDataSource, DataSource syslogDataSource, ACS ACS, String logPrefix, Identity id) {
-		super(mainDataSource, syslogDataSource, ACS, logPrefix, id);
+	public ReportGroupGenerator(DataSource mainDataSource, DataSource syslogDataSource, ACS acs, String logPrefix, Identity id) {
+		super(mainDataSource, syslogDataSource, acs, logPrefix, id);
 	}
 
 	public Report<RecordGroup> generateGroupReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, Group g) throws SQLException, IOException {

@@ -58,8 +58,8 @@ public class SyslogEvents {
 		return "Contains " + idMap.size() + " syslog events";
 	}
 
-	private void addOrChangeSyslogEventImpl(SyslogEvent syslogEvent, ACS ACS) throws SQLException {
-		Connection c = ACS.getDataSource().getConnection();
+	private void addOrChangeSyslogEventImpl(SyslogEvent syslogEvent, ACS acs) throws SQLException {
+		Connection c = acs.getDataSource().getConnection();
 		PreparedStatement ps = null;
 		try {
 			InsertOrUpdateStatement ious = new InsertOrUpdateStatement("syslog_event", new Field("id", syslogEvent.getId()));
@@ -88,12 +88,12 @@ public class SyslogEvents {
 				if (gk.next())
 					syslogEvent.setId(gk.getInt(1));
 				logger.info("Inserted syslog event " + syslogEvent.getEventId());
-				if (ACS.getDbi() != null)
-					ACS.getDbi().publishAdd(syslogEvent, syslogEvent.getUnittype());
+				if (acs.getDbi() != null)
+					acs.getDbi().publishAdd(syslogEvent, syslogEvent.getUnittype());
 			} else {
 				logger.info("Updated syslog event " + syslogEvent.getEventId());
-				if (ACS.getDbi() != null)
-					ACS.getDbi().publishChange(syslogEvent, unittype);
+				if (acs.getDbi() != null)
+					acs.getDbi().publishChange(syslogEvent, unittype);
 			}
 		} finally {
 			if (ps != null)
@@ -104,18 +104,18 @@ public class SyslogEvents {
 		}
 	}
 
-	public void addOrChangeSyslogEvent(SyslogEvent syslogEvent, ACS ACS) throws SQLException {
-		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
+	public void addOrChangeSyslogEvent(SyslogEvent syslogEvent, ACS acs) throws SQLException {
+		if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		syslogEvent.validate();
-		addOrChangeSyslogEventImpl(syslogEvent, ACS);
+		addOrChangeSyslogEventImpl(syslogEvent, acs);
 		idMap.put(syslogEvent.getId(), syslogEvent);
 		eventIdMap.put(syslogEvent.getEventId(), syslogEvent);
 	}
 
-	private void deleteSyslogEventImpl(Unittype unittype, SyslogEvent syslogEvent, ACS ACS) throws SQLException {
+	private void deleteSyslogEventImpl(Unittype unittype, SyslogEvent syslogEvent, ACS acs) throws SQLException {
 		PreparedStatement ps = null;
-		Connection c = ACS.getDataSource().getConnection();
+		Connection c = acs.getDataSource().getConnection();
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			if (ACSVersionCheck.syslogEventReworkSupported)
@@ -129,8 +129,8 @@ public class SyslogEvents {
 			ps.executeUpdate();
 			
 			logger.info("Deleted syslog event " + syslogEvent.getEventId());
-			if (ACS.getDbi() != null)
-				ACS.getDbi().publishDelete(syslogEvent, unittype);
+			if (acs.getDbi() != null)
+				acs.getDbi().publishDelete(syslogEvent, unittype);
 		} finally {
 			if (ps != null)
 				ps.close();
@@ -147,16 +147,16 @@ public class SyslogEvents {
 	 *
 	 * @throws SQLException
 	 */
-	public void deleteSyslogEvent(SyslogEvent syslogEvent, ACS ACS) throws SQLException {
-		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
+	public void deleteSyslogEvent(SyslogEvent syslogEvent, ACS acs) throws SQLException {
+		if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		if (syslogEvent.getEventId() < 1000)
 			throw new IllegalArgumentException("Cannot delete syslog events with id 0-999, they are restricted to Freeacs");
-		deleteSyslogEventImpl(syslogEvent, ACS);
+		deleteSyslogEventImpl(syslogEvent, acs);
 	}
 
-	protected void deleteSyslogEventImpl(SyslogEvent syslogEvent, ACS ACS) throws SQLException {
-		deleteSyslogEventImpl(unittype, syslogEvent, ACS);
+	protected void deleteSyslogEventImpl(SyslogEvent syslogEvent, ACS acs) throws SQLException {
+		deleteSyslogEventImpl(unittype, syslogEvent, acs);
 		idMap.remove(syslogEvent.getId());
 		eventIdMap.remove(syslogEvent.getEventId());
 	}

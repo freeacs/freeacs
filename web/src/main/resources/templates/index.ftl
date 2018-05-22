@@ -8,7 +8,7 @@
 		<#include "/meta/web.ftl">
 		<!-- popup a debug window on window.error -->
 		<#if JAVASCRIPT_DEBUG>
-			<script src="javascript/ACS.plugin.debug.js" type="text/javascript"></script>
+			<script src="javascript/acs.plugin.debug.js" type="text/javascript"></script>
 		</#if>
 		<!-- menu css and js -->
 		<#include "/meta/menu.ftl">

@@ -18,16 +18,16 @@ import java.util.List;
 public class AddOrChangeUnit {
 	private static final Logger logger = LoggerFactory.getLogger(AddOrChangeUnit.class);
 
-	private ACS ACS;
-	private ACSWS xapsWS;
-	private ACSUnit ACSUnit;
+	private ACS acs;
+	private ACSWS acsWS;
+	private ACSUnit acsUnit;
 
 	public AddOrChangeUnitResponse addOrChangeUnit(AddOrChangeUnitRequest aocur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 			
-			xapsWS = ACSWSFactory.getXAPSWS(aocur.getLogin(), xapsDs, syslogDs);
-			ACS = xapsWS.getXAPS();
-			ACSUnit = xapsWS.getXAPSUnit(ACS);
+			acsWS = ACSWSFactory.getXAPSWS(aocur.getLogin(), xapsDs, syslogDs);
+			acs = acsWS.getAcs();
+			acsUnit = acsWS.getXAPSUnit(acs);
 
 			/* 
 			 * We need to support these use cases
@@ -58,15 +58,15 @@ public class AddOrChangeUnit {
 			Unit unitWS = aocur.getUnit();
 			if (unitWS.getUnittype() == null || unitWS.getProfile() == null)
 				throw ACSWS.error(logger, "Unittype and/or Profile object are missing");
-			Profile profile = xapsWS.getProfileFromXAPS(unitWS.getUnittype().getName(), unitWS.getProfile().getName());
+			Profile profile = acsWS.getProfileFromXAPS(unitWS.getUnittype().getName(), unitWS.getProfile().getName());
 			String unitId = validateUnitId(unitWS, profile.getUnittype(), profile);
 			List<String> unitIds = new ArrayList<String>();
 			unitIds.add(unitId);
 			List<UnitParameter> acParams = validateAddOrChangeUnitParameters(unitWS, profile.getUnittype(), profile);
 			List<UnitParameter> dParams = validateDeleteUnitParameters(unitWS, profile.getUnittype(), profile);
-			ACSUnit.addUnits(unitIds, profile);
-			ACSUnit.addOrChangeUnitParameters(acParams, profile);
-			ACSUnit.deleteUnitParameters(dParams);
+			acsUnit.addUnits(unitIds, profile);
+			acsUnit.addOrChangeUnitParameters(acParams, profile);
+			acsUnit.deleteUnitParameters(dParams);
 			return new AddOrChangeUnitResponse(unitWS);
 		} catch (Throwable t) {
 			if (t instanceof RemoteException)
@@ -80,7 +80,7 @@ public class AddOrChangeUnit {
 	private String validateUnitId(Unit unitWS, Unittype unittype, Profile profile) throws SQLException, RemoteException {
 		if (unitWS.getUnitId() == null) {
 			if (unitWS.getSerialNumber() != null) {
-				com.github.freeacs.dbi.Unit unitXAPS = xapsWS.getUnitByMAC(ACSUnit, unittype, profile, unitWS.getSerialNumber());
+				com.github.freeacs.dbi.Unit unitXAPS = acsWS.getUnitByMAC(acsUnit, unittype, profile, unitWS.getSerialNumber());
 				if (unitXAPS != null) {
 					unitWS.setUnitId(unitXAPS.getId());
 				}

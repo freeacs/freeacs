@@ -18,41 +18,25 @@ import java.util.*;
 public class GetUnitIds {
 	private static final Logger logger = LoggerFactory.getLogger(GetUnitIds.class);
 
-	private ACS ACS;
-	private ACSWS xapsWS;
+	private ACS acs;
+	private ACSWS acsWS;
 
 	public GetUnitIdsResponse getUnits(GetUnitIdsRequest gur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 			
-			xapsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs,syslogDs);
-			ACS = xapsWS.getXAPS();
-			ACSUnit ACSUnit = xapsWS.getXAPSUnit(ACS);
-			
-			
-			//			List<Profile> allowedProfileList = validateProfiles(unitWS);
-			//			LogContext.set(allowedProfileList, xaps);
-			//
-			//			Map<String, Unit> unitMap = new TreeMap<String, Unit>();
-			//			if (unitWS.getUnitId() != null) { // Use-case 1
-			//				Unit unitXAPS = xapsUnit.getUnitById(unitWS.getUnitId());
-			//				if (unitXAPS != null)
-			//					unitMap.put(unitWS.getUnitId(), unitXAPS);
-			//			} else if (unitWS.getSerialNumber() != null) { // Use-case 2
-			//				unitMap = xapsUnit.getUnits(unitWS.getSerialNumber(), allowedProfileList, 51);
-			//			} else { // Use-case 3, expect parameters and unittype
-			//				List<Parameter> upList = validateParameters(unitWS, allowedProfileList);
-			//				unitMap = xapsUnit.getUnits(null, allowedProfileList, upList, 51);
-			//			}
-			
+			acsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs,syslogDs);
+			acs = acsWS.getAcs();
+			ACSUnit acsUnit = acsWS.getXAPSUnit(acs);
+
 			com.github.freeacs.ws.Unit unitWS = gur.getUnit();
 
 			/* Validate input - only allow permitted unittypes/profiles for this login */
 			Unittype unittypeXAPS = null;
 			List<Profile> profilesXAPS = new ArrayList<Profile>();
 			if (unitWS.getUnittype() != null && unitWS.getUnittype().getName() != null) {
-				unittypeXAPS = xapsWS.getUnittypeFromXAPS(unitWS.getUnittype().getName());
+				unittypeXAPS = acsWS.getUnittypeFromXAPS(unitWS.getUnittype().getName());
 				if (unitWS.getProfile() != null && unitWS.getProfile().getName() != null) {
-					profilesXAPS.add(xapsWS.getProfileFromXAPS(unittypeXAPS.getName(), unitWS.getProfile().getName()));
+					profilesXAPS.add(acsWS.getProfileFromXAPS(unittypeXAPS.getName(), unitWS.getProfile().getName()));
 				} else
 					profilesXAPS = Arrays.asList(unittypeXAPS.getProfiles().getProfiles());
 			}
@@ -66,18 +50,18 @@ public class GetUnitIds {
 			/* Input is validated - now execute searches */
 			Map<String, Unit> unitMap = new TreeMap<String, Unit>();
 			if (unitWS.getUnitId() != null) { // Use-case 1
-				Unit unitXAPS = ACSUnit.getUnitById(unitWS.getUnitId());
+				Unit unitXAPS = acsUnit.getUnitById(unitWS.getUnitId());
 				if (unitXAPS != null)
 					unitMap.put(unitWS.getUnitId(), unitXAPS);
 			} else if (useCase3) {// Use-case 3, expect parameters and unittype
 				List<Parameter> upList = validateParameters(unitWS, profilesXAPS);
-				Map<String, Unit> tmpMap = ACSUnit.getUnits(unittypeXAPS, profilesXAPS, upList, 51);
+				Map<String, Unit> tmpMap = acsUnit.getUnits(unittypeXAPS, profilesXAPS, upList, 51);
 				for (Unit unitXAPS : tmpMap.values())
-					unitMap.put(unitXAPS.getId(), ACSUnit.getUnitById(unitXAPS.getId()));
+					unitMap.put(unitXAPS.getId(), acsUnit.getUnitById(unitXAPS.getId()));
 			} else { // Use-case 2
-				Map<String, Unit> tmpMap = ACSUnit.getUnits(unitWS.getSerialNumber(), profilesXAPS, 51);
+				Map<String, Unit> tmpMap = acsUnit.getUnits(unitWS.getSerialNumber(), profilesXAPS, 51);
 				for (Unit unitXAPS : tmpMap.values())
-					unitMap.put(unitXAPS.getId(), ACSUnit.getUnitById(unitXAPS.getId()));
+					unitMap.put(unitXAPS.getId(), acsUnit.getUnitById(unitXAPS.getId()));
 			}
 
 			

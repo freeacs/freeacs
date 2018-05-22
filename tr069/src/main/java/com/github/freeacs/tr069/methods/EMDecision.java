@@ -56,7 +56,7 @@ public class EMDecision {
 			TestUnit tu = TestUnitCache.get(sessionData.getUnitId());
 			try {
 				if (tu == null) {
-					TestDB testDB = new TestDB(sessionData.getDbAccessSession().getACS());
+					TestDB testDB = new TestDB(sessionData.getDbAccessSession().getAcs());
 					List<TestCase> testCases = testDB.getCompleteTestCases(sessionData.getUnittype(), Util.getTestCaseMethod(unit), Util.getParamFilter(unit), Util.getTagFilter(unit));
 					tu = new TestUnit(sessionData.getUnittype(), sessionData.getUnit(), testCases);
 					TestUnitCache.put(sessionData.getUnitId(), tu);
@@ -133,9 +133,9 @@ public class EMDecision {
 		sessionData.setToDB(toDB);
 		DBAccessSessionTR069.writeUnitParams(sessionData); // queue-parameters - will be written at end-of-session
 		if (!queue) { // execute changes immediately - since otherwise these parameters will be lost (in the event of GPNRes.process())
-			ACS ACS = reqRes.getSessionData().getDbAccessSession().getACS();
-			ACSUnit ACSUnit = DBAccess.getXAPSUnit(ACS);
-			ACSUnit.addOrChangeQueuedUnitParameters(sessionData.getUnit());
+			ACS acs = reqRes.getSessionData().getDbAccessSession().getAcs();
+			ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
+			acsUnit.addOrChangeQueuedUnitParameters(sessionData.getUnit());
 		}
 		sessionData.setToDB(null);
 	}

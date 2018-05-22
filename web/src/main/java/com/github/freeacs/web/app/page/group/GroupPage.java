@@ -35,10 +35,10 @@ import java.util.*;
 public class GroupPage extends AbstractWebPage {
 
 	/** The xaps. */
-	private ACS ACS;
+	private ACS acs;
 
 	/** The xaps unit. */
-	private ACSUnit ACSUnit;
+	private ACSUnit acsUnit;
 
 	/** The input data. */
 	private GroupData inputData;
@@ -98,7 +98,7 @@ public class GroupPage extends AbstractWebPage {
 	 */
 	private void actionDeleteGroup() throws Exception {
 		if (groups.getSelected() != null) {
-			unittypes.getSelected().getGroups().deleteGroup(groups.getSelected(), ACS);
+			unittypes.getSelected().getGroups().deleteGroup(groups.getSelected(), acs);
 			inputData.getGroup().setValue(null);
 			SessionCache.getSessionData(sessionId).setGroup(null);
 		}
@@ -151,7 +151,7 @@ public class GroupPage extends AbstractWebPage {
 					UnittypeParameter utp = groups.getSelected().getUnittype().getUnittypeParameters().getByName(gpName);
 					Parameter param = new Parameter(utp, newValue, operator, type);
 					GroupParameter newGP = new GroupParameter(param, groups.getSelected());
-					gParams.addOrChangeGroupParameter(newGP, ACS);
+					gParams.addOrChangeGroupParameter(newGP, acs);
 				}
 
 				// If a group parameter exists and there is a value to replace
@@ -169,14 +169,14 @@ public class GroupPage extends AbstractWebPage {
 					if ((!groupParameter.getParameter().getValue().equals(updatedValue) || groupParameter.getParameter().getOp() != operator) || groupParameter.getParameter().getType() != type) {
 						Parameter param = new Parameter(groupParameter.getParameter().getUnittypeParameter(), updatedValue, operator, type);
 						groupParameter.setParameter(param);
-						gParams.addOrChangeGroupParameter(groupParameter, ACS);
+						gParams.addOrChangeGroupParameter(groupParameter, acs);
 					}
 				}
 			}
 
 			// Then we delete those that should be deleted
 			if (key.startsWith("delete::") && groupParameter != null) {
-				gParams.deleteGroupParameter(groupParameter, ACS);
+				gParams.deleteGroupParameter(groupParameter, acs);
 			}
 		}
 	}
@@ -229,7 +229,7 @@ public class GroupPage extends AbstractWebPage {
 				throw ie;
 			}
 
-			allGroups.addOrChangeGroup(groups.getSelected(), ACS);
+			allGroups.addOrChangeGroup(groups.getSelected(), acs);
 
 			inputData.getGroup().setValue(groups.getSelected().getName());
 		}
@@ -262,7 +262,7 @@ public class GroupPage extends AbstractWebPage {
 			if (allGroups.getByName(gName) != null)
 				return "The group " + gName + " is already created";
 			groups.setSelected(new Group(gName, desc, parent, unittypes.getSelected(), profile));
-			allGroups.addOrChangeGroup(groups.getSelected(), ACS);
+			allGroups.addOrChangeGroup(groups.getSelected(), acs);
 			SessionCache.getSessionData(sessionId).setGroup(gName);
 			return "OK";
 		} else {
@@ -283,21 +283,21 @@ public class GroupPage extends AbstractWebPage {
 
 		sessionId = params.getSession().getId();
 
-		ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (ACS == null) {
+		acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
 
-		ACSUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource, syslogDataSource);
+		acsUnit = XAPSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
 
 		InputDataIntegrity.loadAndStoreSession(params, outputHandler, inputData, inputData.getUnittype(), inputData.getGroup());
 
 		if (inputData.getCmd().hasValue("create"))
 			inputData.getGroup().setValue(null);
 
-		unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS);
-		groups = InputSelectionFactory.getGroupSelection(inputData.getGroup(), unittypes.getSelected(), ACS);
+		unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
+		groups = InputSelectionFactory.getGroupSelection(inputData.getGroup(), unittypes.getSelected(), acs);
 		Group selectedParent = (unittypes.getSelected() != null && inputData.getParentgroup().getString() != null ? unittypes.getSelected().getGroups()
 				.getByName(inputData.getParentgroup().getString()) : (groups.getSelected() != null ? groups.getSelected().getParent() : null));
 		List<Group> possibleParents = (groups.getSelected() != null ? Arrays.asList(calculatePossibleParents(groups.getSelected(), unittypes.getSelected().getGroups().getGroups())) : (unittypes
@@ -332,10 +332,10 @@ public class GroupPage extends AbstractWebPage {
 			map.put("description", inputData.getDescription().getString());
 		} else if (unittypes.getSelected() != null && groups.getSelected() != null) {
 			List<Parameter> gParams = groups.getSelected().getGroupParameters().getAllParameters(groups.getSelected());
-			int unitCount = ACSUnit.getUnitCount(unittypes.getSelected(), findProfile(groups.getSelected().getName()), gParams);
+			int unitCount = acsUnit.getUnitCount(unittypes.getSelected(), findProfile(groups.getSelected().getName()), gParams);
 			Groups allGroups = unittypes.getSelected().getGroups();
 			groups.getSelected().setCount(unitCount);
-			allGroups.addOrChangeGroup(groups.getSelected(), ACS);
+			allGroups.addOrChangeGroup(groups.getSelected(), acs);
 			map.put("count", unitCount);
 
 			GroupParameter[] groupParameters = groups.getSelected().getGroupParameters().getGroupParameters();
@@ -400,7 +400,7 @@ public class GroupPage extends AbstractWebPage {
 			parentGroup = groups.getSelected().getParent();
 
 		Profile profile = parentGroup != null ? findProfile(parentGroup.getName()) : groups.getSelected() != null ? findProfile(groups.getSelected().getName())
-				: (inputData.getProfile().getString() != null ? ACS.getProfile(unittypes.getSelected().getName(), inputData.getProfile().getString()) : null);
+				: (inputData.getProfile().getString() != null ? acs.getProfile(unittypes.getSelected().getName(), inputData.getProfile().getString()) : null);
 
 		List<Profile> allowedProfiles = parentGroup == null ? getAllowedProfiles(sessionId, unittypes.getSelected(), xapsDataSource, syslogDataSource) : new ArrayList<Profile>();
 

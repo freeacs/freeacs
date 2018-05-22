@@ -50,17 +50,17 @@ public class TriggerOverviewPage extends AbstractWebPage {
 		inputData = (TriggerData) InputDataRetriever.parseInto(new TriggerData(), params);
 		String sessionId = params.getSession().getId();
 
-		ACS ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (ACS == null) {
+		ACS acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
 
 		InputDataIntegrity.loadAndStoreSession(params, outputHandler, inputData, inputData.getUnittype(), inputData.getProfile());
 
-		outputHandler.getTemplateMap().put("unittypes", InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS));
+		outputHandler.getTemplateMap().put("unittypes", InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs));
 
-		Unittype unittype = ACS.getUnittype(inputData.getUnittype().getString());
+		Unittype unittype = acs.getUnittype(inputData.getUnittype().getString());
 
 		if (unittype != null) {
 			triggerHandler = new TriggerHandler(sessionId, inputData, xapsDataSource, syslogDataSource);

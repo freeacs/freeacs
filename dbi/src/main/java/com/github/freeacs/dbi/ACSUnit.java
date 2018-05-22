@@ -24,16 +24,16 @@ public class ACSUnit {
 
 	private DataSource dataSource;
 	private Syslog syslog;
-	private ACS ACS;
+	private ACS acs;
 
-	public ACSUnit(DataSource dataSource, ACS ACS, Syslog syslog) throws SQLException {
+	public ACSUnit(DataSource dataSource, ACS acs, Syslog syslog) throws SQLException {
 		this.dataSource = dataSource;
 		this.syslog = syslog;
-		if (ACS == null)
+		if (acs == null)
 			throw new IllegalArgumentException("The FreeacsUnit constructor requires a non-null Freeacs object");
-		this.ACS = ACS;
-		if (ACS.getUnittypes() == null) {
-			ACS.read();
+		this.acs = acs;
+		if (acs.getUnittypes() == null) {
+			acs.read();
 		}
 	}
 
@@ -53,7 +53,7 @@ public class ACSUnit {
 			connection = dataSource.getConnection();
 			wasAutoCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
-			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, ACS, unittype, profile);
+			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, acs, unittype, profile);
 			Unit u = uqcu.getUnitByValue(value);
 			if (u != null && ACSVersionCheck.unitParamSessionSupported && u.isSessionMode())
 				return uqcu.addSessionParameters(u);
@@ -74,7 +74,7 @@ public class ACSUnit {
 			connection = dataSource.getConnection();
 			wasAutoCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
-			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, ACS, (Unittype) null, (Profile) null);
+			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, acs, (Unittype) null, (Profile) null);
 			return uqcu.getLimitedUnitByValue(value);
 		} finally {
 			if (connection != null) {
@@ -100,7 +100,7 @@ public class ACSUnit {
 			connection = dataSource.getConnection();
 			wasAutoCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
-			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, ACS, unittype, profile);
+			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, acs, unittype, profile);
 			Unit u = uqcu.getUnitById(unitId);
 			if (u != null && ACSVersionCheck.unitParamSessionSupported && u.isSessionMode())
 				return uqcu.addSessionParameters(u);
@@ -658,7 +658,7 @@ public class ACSUnit {
 			connection = dataSource.getConnection();
 			wasAutoCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
-			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, ACS, (Unittype) null, (Profile) null);
+			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, acs, (Unittype) null, (Profile) null);
 			return uqcu.getLimitedUnitsByValue(values);
 		} finally {
 			if (connection != null) {
@@ -684,7 +684,7 @@ public class ACSUnit {
 			connection = dataSource.getConnection();
 			wasAutoCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
-			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, ACS, unittype, profile);
+			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, acs, unittype, profile);
 			return uqcu.getUnitsById(units);
 		} finally {
 			if (connection != null) {
@@ -711,7 +711,7 @@ public class ACSUnit {
 			connection = dataSource.getConnection();
 			wasAutoCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
-			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, ACS, unittype, profile);
+			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, acs, unittype, profile);
 			return uqcu.getUnits(searchStr, maxRows);
 		} finally {
 			if (connection != null) {
@@ -728,7 +728,7 @@ public class ACSUnit {
 			connection = dataSource.getConnection();
 			wasAutoCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
-			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, ACS, (Unittype) null, profiles);
+			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, acs, (Unittype) null, profiles);
 			return uqcu.getUnits(searchStr, maxRows);
 		} finally {
 			if (connection != null) {
@@ -753,7 +753,7 @@ public class ACSUnit {
 			connection = dataSource.getConnection();
 			wasAutoCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
-			UnitQueryWithinUnittype uqwu = new UnitQueryWithinUnittype(connection, ACS, unittype, profiles);
+			UnitQueryWithinUnittype uqwu = new UnitQueryWithinUnittype(connection, acs, unittype, profiles);
 			return uqwu.getUnits(parameters, limit);
 		} finally {
 			if (connection != null) {
@@ -816,7 +816,7 @@ public class ACSUnit {
 			connection = dataSource.getConnection();
 			wasAutoCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
-			UnitQueryWithinUnittype uqwu = new UnitQueryWithinUnittype(connection, ACS, unittype, profiles);
+			UnitQueryWithinUnittype uqwu = new UnitQueryWithinUnittype(connection, acs, unittype, profiles);
 			return uqwu.getUnitCount(parameters);
 		} finally {
 			if (connection != null) {

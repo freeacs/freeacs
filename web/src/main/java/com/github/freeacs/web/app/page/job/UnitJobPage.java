@@ -29,7 +29,7 @@ public class UnitJobPage extends AbstractWebPage {
 	@Qualifier("xaps") DataSource xapsDataSource;
 	@Qualifier("syslog") DataSource syslogDataSource;
 
-	private ACS ACS;
+	private ACS acs;
 	//	private Unittype unittype;
 	//	private Group group;
 	//	private Job job;
@@ -41,8 +41,8 @@ public class UnitJobPage extends AbstractWebPage {
 
 		sessionId = req.getSession().getId();
 
-		ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (ACS == null) {
+		acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -51,7 +51,7 @@ public class UnitJobPage extends AbstractWebPage {
 
 		Map<String, Object> fmMap = outputHandler.getTemplateMap();
 
-		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS);
+		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
 		fmMap.put("unittypes", unittypes);
 		Unittype unittype = unittypes.getSelected();
 		if (unittype != null) {
@@ -82,7 +82,7 @@ public class UnitJobPage extends AbstractWebPage {
 			list.add(new MenuItem("Create new Job", Page.JOB).addCommand("create"));
 			list.add(new MenuItem("Job overwiew", Page.JOBSOVERVIEW));
 			if (sessionData.getJobname() != null) {
-				Unittype unittype = ACS.getUnittype(sessionData.getUnittypeName());
+				Unittype unittype = acs.getUnittype(sessionData.getUnittypeName());
 				Job job = unittype.getJobs().getByName(sessionData.getJobname());
 				if (job != null) {
 					list.add(new MenuItem("List failed unit jobs", Page.JOB).addCommand("getfailedunitjobs").addParameter("limit", "100").addParameter("unittype", job.getUnittype().getName())
@@ -167,17 +167,17 @@ public class UnitJobPage extends AbstractWebPage {
 
 	private void getCompletedUnitJobs(Job job, Output res, Unittype unittype) throws SQLException, IOException, TemplateException {
 		res.setTemplatePath("unit-job/completed");
-		ACSUnit ACSUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource, syslogDataSource);
+		ACSUnit acsUnit = XAPSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
 		Profile profile = job.getGroup().getProfile();
 		UnittypeParameter historyParameterUtp = job.getGroup().getUnittype().getUnittypeParameters().getByName(SystemParameters.JOB_HISTORY);
 		Parameter historyParameter = new Parameter(historyParameterUtp, "%," + job.getId() + ":%");
-		Collection<Unit> units = ACSUnit.getUnits(unittype, profile, Arrays.asList(historyParameter), null).values();
+		Collection<Unit> units = acsUnit.getUnits(unittype, profile, Arrays.asList(historyParameter), null).values();
 		Map<String, Object> rootMap = new HashMap<String, Object>();
 		SessionCache.getSessionData(sessionId).setFailedUnitJobsList(null);
 		if (units.size() > 0) {
 			rootMap.put("completedUnitJobs", units);
 			rootMap.put("lastindexof", new LastIndexOfMethod());
-			rootMap.put("getparamvalue", new GetParameterValue(ACSUnit));
+			rootMap.put("getparamvalue", new GetParameterValue(acsUnit));
 			rootMap.put("jobparameters", job.getDefaultParameters().values());
 			SessionCache.getSessionData(sessionId).setCompletedUnitJobsList(units);
 		}

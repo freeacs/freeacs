@@ -15,7 +15,7 @@ import java.util.List;
 
 public class DeleteOldSyslog extends DBIShare {
 
-	private ACS ACS;
+	private ACS acs;
 
 	private static Logger logger = LoggerFactory.getLogger(DeleteOldSyslog.class);
 
@@ -25,7 +25,7 @@ public class DeleteOldSyslog extends DBIShare {
 
 	@Override
 	public void runImpl() throws Exception {
-		ACS = getLatestFreeacs();
+		acs = getLatestFreeacs();
 		removeOldSyslogEntries();
 	}
 
@@ -40,7 +40,7 @@ public class DeleteOldSyslog extends DBIShare {
 	 */
 	private void removeOldSyslogEntries() throws SQLException {
 		// 1.
-		Unittype[] unittypeArr = ACS.getUnittypes().getUnittypes();
+		Unittype[] unittypeArr = acs.getUnittypes().getUnittypes();
 		List<SyslogEvent> events = new ArrayList<SyslogEvent>();
 		for (Unittype ut : unittypeArr) {
 			SyslogEvent[] eventArr = ut.getSyslogEvents().getSyslogEvents();

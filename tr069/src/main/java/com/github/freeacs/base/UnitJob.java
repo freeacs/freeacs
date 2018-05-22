@@ -123,7 +123,7 @@ public class UnitJob {
 					upList.add(jobUp);
 					DBAccessStatic.queueUnitParameters(sessionData.getUnit(), upList, sessionData.getProfile());
 				}
-				DBAccessStatic.startUnitJob(unitId, job.getId(), sessionData.getDbAccessSession().getACS().getDataSource());
+				DBAccessStatic.startUnitJob(unitId, job.getId(), sessionData.getDbAccessSession().getAcs().getDataSource());
 				if (!serverSideJob) {
 					updateSessionWithJobParams(false);
 					updateSessionWithJobCurrent();
@@ -164,12 +164,12 @@ public class UnitJob {
 			Integer jobId = jobInfo.getJobId();
 			try {
 				List<UnitParameter> upList = getUnitParameters(unitJobStatus);
-				DBAccessStatic.stopUnitJob(sessionData.getUnitId(), jobId, unitJobStatus, sessionData.getDbAccessSession().getACS().getDataSource());
+				DBAccessStatic.stopUnitJob(sessionData.getUnitId(), jobId, unitJobStatus, sessionData.getDbAccessSession().getAcs().getDataSource());
 				sessionData.getPIIDecision().setCurrentJobStatus(unitJobStatus);
 				// Write directly to database, no queuing, since the all data are flushed in next step (most likely)
-				ACS ACS = sessionData.getDbAccessSession().getACS();
-				ACSUnit ACSUnit = DBAccess.getXAPSUnit(ACS);
-				ACSUnit.addOrChangeUnitParameters(upList, sessionData.getProfile());
+				ACS acs = sessionData.getDbAccessSession().getAcs();
+				ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
+				acsUnit.addOrChangeUnitParameters(upList, sessionData.getProfile());
 				if (!serverSideJob) {
 					sessionData.setFromDB(null);
 					sessionData.setFreeacsParameters(null);

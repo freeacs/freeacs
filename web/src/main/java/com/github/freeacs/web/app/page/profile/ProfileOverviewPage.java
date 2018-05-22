@@ -44,17 +44,17 @@ public class ProfileOverviewPage extends AbstractWebPage {
 		ProfileData inputData = (ProfileData) InputDataRetriever.parseInto(new ProfileData(), params);
 		String sessionId = params.getSession().getId();
 
-		ACS ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		ACS acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 
-		if (ACS == null) {
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
 		
 		InputDataIntegrity.loadAndStoreSession(params,outputHandler,inputData, inputData.getUnittype(), inputData.getProfile(), inputData.getUnit());
 		
-		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS);
-		DropDownSingleSelect<Profile> profiles = InputSelectionFactory.getProfileSelection(inputData.getProfile(),inputData.getUnittype(), ACS);
+		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
+		DropDownSingleSelect<Profile> profiles = InputSelectionFactory.getProfileSelection(inputData.getProfile(),inputData.getUnittype(), acs);
 
 		Map<String,Object> map = outputHandler.getTemplateMap();
 		

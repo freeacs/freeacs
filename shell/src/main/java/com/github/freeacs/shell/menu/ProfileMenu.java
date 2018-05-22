@@ -49,7 +49,7 @@ public class ProfileMenu {
 					action = "ignored (parameter was set to NULL and did not exist in database)";
 				} else {
 					action = "deleted (parameter was set to NULL)";
-					context.getProfile().getProfileParameters().deleteProfileParameter(profileParameter, session.getACS());
+					context.getProfile().getProfileParameters().deleteProfileParameter(profileParameter, session.getAcs());
 				}
 			} else {
 				if (profileParameter == null) {
@@ -59,7 +59,7 @@ public class ProfileMenu {
 					profileParameter.setValue(args[2]);
 					action = "changed (parameter existed in database, this message does not imply a change of value)";
 				}
-				context.getProfile().getProfileParameters().addOrChangeProfileParameter(profileParameter, session.getACS());
+				context.getProfile().getProfileParameters().addOrChangeProfileParameter(profileParameter, session.getAcs());
 			}
 			session.println("[" + session.getCounter() + "] The profile parameter " + args[1] + " is " + action + ".");
 			session.incCounter();
@@ -72,7 +72,7 @@ public class ProfileMenu {
 		if (profileParameter == null)
 			throw new IllegalArgumentException("The profile parameter does not exist.");
 		else {
-			context.getProfile().getProfileParameters().deleteProfileParameter(profileParameter, session.getACS());
+			context.getProfile().getProfileParameters().deleteProfileParameter(profileParameter, session.getAcs());
 			session.println("[" + session.getCounter() + "] The profile parameter " + args[1] + " is deleted.");
 			session.incCounter();
 		}
@@ -92,7 +92,7 @@ public class ProfileMenu {
 			Line line = new Line(unitId);
 			if (oh.getCommand().getOptions().containsKey(Option.OPTION_LIST_ALL_COLUMNS)) {
 				Map<String, String> displayableMap = context.getUnittype().getUnittypeParameters().getDisplayableNameMap();
-				Unit unit = session.getACSUnit().getUnitById(unitId);
+				Unit unit = session.getAcsUnit().getUnitById(unitId);
 				for (String utpName : displayableMap.keySet()) {
 					String value = unit.getParameters().get(utpName);
 					if (value == null)
@@ -113,7 +113,7 @@ public class ProfileMenu {
 		session.println("[" + session.getCounter() + "] The unit " + args[1] + " was added/changed (context: " + context + ")");
 		if (uts.size() == 1000) {
 			for (Entry<Profile, List<String>> entry : uts.getUnits().entrySet()) {
-				session.getACSUnit().addUnits(entry.getValue(), entry.getKey());
+				session.getAcsUnit().addUnits(entry.getValue(), entry.getKey());
 			}
 			uts.reset();
 		}
@@ -127,7 +127,7 @@ public class ProfileMenu {
 		session.println("[" + session.getCounter() + "] The unit " + args[1] + " is scheduled for deletion");
 		if (uts.size() == 1000) {
 			for (Entry<Profile, List<String>> entry : uts.getUnits().entrySet()) {
-				session.getACSUnit().deleteUnits(entry.getValue(), entry.getKey());
+				session.getAcsUnit().deleteUnits(entry.getValue(), entry.getKey());
 			}
 			context.println("The units scheduled for deletion are deleted");
 			uts.reset();
@@ -136,18 +136,18 @@ public class ProfileMenu {
 	}
 
 	private void delallunits() throws Exception {
-		session.getACSUnit().deleteUnits(context.getProfile());
+		session.getAcsUnit().deleteUnits(context.getProfile());
 		session.println("All units (in this profile) were deleted");
 	}
 
 	private void moveunit(String[] args) throws Exception {
 		Validation.numberOfArgs(args, 3);
-		Unit unit = session.getACSUnit().getUnitById(args[1], context.getUnittype(), context.getProfile());
+		Unit unit = session.getAcsUnit().getUnitById(args[1], context.getUnittype(), context.getProfile());
 		Profile profile = context.getUnittype().getProfiles().getByName(args[2]);
 		if (unit != null && profile != null) {
 			List<String> unitIds = new ArrayList<String>();
 			unitIds.add(args[1]);
-			session.getACSUnit().moveUnits(unitIds, profile);
+			session.getAcsUnit().moveUnits(unitIds, profile);
 			session.println("[" + session.getCounter() + "] The unit was moved to profile " + profile.getName());
 		} else {
 			session.println("[" + session.getCounter() + "] The unit does not exist");
@@ -186,12 +186,12 @@ public class ProfileMenu {
 	private Map<String, Unit> getUnitMap(String[] args) throws Exception {
 		Map<String, Unit> units = null;
 		if (args.length == 1)
-			units = session.getACSUnit().getUnits((String) null, context.getUnittype(), context.getProfile(), null);
+			units = session.getAcsUnit().getUnits((String) null, context.getUnittype(), context.getProfile(), null);
 		else if (args.length == 2) {
-			units = session.getACSUnit().getUnits("%" + args[1] + "%", context.getUnittype(), context.getProfile(), null);
+			units = session.getAcsUnit().getUnits("%" + args[1] + "%", context.getUnittype(), context.getProfile(), null);
 		} else if (args.length > 2) {
 			List<Parameter> params = ParameterParser.parse(context, args);
-			units = session.getACSUnit().getUnits(context.getUnittype(), context.getProfile(), params, null);
+			units = session.getAcsUnit().getUnits(context.getUnittype(), context.getProfile(), params, null);
 		}
 		return units;
 	}

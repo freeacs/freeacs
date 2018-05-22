@@ -783,7 +783,7 @@ public class ACS {
 					String userIdStr = rs.getString("owner");
 					if (userIdStr != null) {
 						try {
-							owner = unittype.getACS().getUser().getUsers().getUnprotected(new Integer(userIdStr));
+							owner = unittype.getAcs().getUser().getUsers().getUnprotected(new Integer(userIdStr));
 						} catch (NumberFormatException nfe) {
 							// ignore
 						}
@@ -838,7 +838,7 @@ public class ACS {
 				String protocol = rs.getString("protocol");
 				Unittype unittype = new Unittype(unittypeName, vendorName, desc, ProvisioningProtocol.toEnum(protocol));
 				unittype.setId(id);
-				unittype.setACS(this);
+				unittype.setAcs(this);
 				unittypeMap.put(unittypeName, unittype);
 				idMap.put(id, unittype);
 			}

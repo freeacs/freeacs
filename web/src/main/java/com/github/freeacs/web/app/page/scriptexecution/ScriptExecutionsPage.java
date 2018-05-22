@@ -21,7 +21,7 @@ public class ScriptExecutionsPage extends AbstractWebPage {
 
 	private ScriptExecutionData inputData;
 
-	private ACS ACS;
+	private ACS acs;
 
 	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 
@@ -29,8 +29,8 @@ public class ScriptExecutionsPage extends AbstractWebPage {
 		inputData = (ScriptExecutionData) InputDataRetriever.parseInto(new ScriptExecutionData(), params);
 
 		/* Retrieve the XAPS object from session */
-		ACS = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
-		if (ACS == null) {
+		acs = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -40,7 +40,7 @@ public class ScriptExecutionsPage extends AbstractWebPage {
 
 //		System.out.println("Making unittype-dropdown.");
 		/* Make the unittype-dropdown */
-		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS);
+		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
 		outputHandler.getTemplateMap().put("unittypes", unittypes);
 
 //		System.out.println("Calling action/output..");
@@ -58,7 +58,7 @@ public class ScriptExecutionsPage extends AbstractWebPage {
 	private void output(Output outputHandler, Unittype unittype, Script script) throws Exception {
 		Map<String, Object> fmMap = outputHandler.getTemplateMap();
 
-		ScriptExecutions scriptExecutions = ACS.getScriptExecutions();
+		ScriptExecutions scriptExecutions = acs.getScriptExecutions();
 
 		/* Output for the configuration */
 		File selectedFile = null;
@@ -224,7 +224,7 @@ public class ScriptExecutionsPage extends AbstractWebPage {
 	 */
 	private Script action(ParameterParser params, Output outputHandler, Unittype unittype) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		Map<String, Object> fmMap = outputHandler.getTemplateMap();
-		ScriptExecutions scriptExecutions = ACS.getScriptExecutions();
+		ScriptExecutions scriptExecutions = acs.getScriptExecutions();
 		if (inputData.getFormSubmit().isValue("Execute")) {
 			if (inputData.getFileId().getInteger() != null) {
 				try {

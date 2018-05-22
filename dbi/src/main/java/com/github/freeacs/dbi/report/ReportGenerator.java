@@ -17,7 +17,7 @@ public class ReportGenerator {
 	protected TmsConverter converter = new TmsConverter();
 	protected DataSource syslogDataSource;
 	protected DataSource mainDataSource;
-	protected ACS ACS;
+	protected ACS acs;
 	protected Identity id;
 	protected String logPrefix = "";
 
@@ -41,10 +41,10 @@ public class ReportGenerator {
 		swVersion = null;
 	}
 
-	public ReportGenerator(DataSource mainDataSource, DataSource syslogDataSource, ACS ACS, String logPrefix, Identity id) {
+	public ReportGenerator(DataSource mainDataSource, DataSource syslogDataSource, ACS acs, String logPrefix, Identity id) {
 		this.syslogDataSource = syslogDataSource;
 		this.mainDataSource = mainDataSource;
-		this.ACS = ACS;
+		this.acs = acs;
 		this.id = id;
 		if (logPrefix != null)
 			this.logPrefix = logPrefix;
@@ -64,7 +64,7 @@ public class ReportGenerator {
 			}
 			if (id.getUser().getUsername().equals(Users.USER_ADMIN)) {
 				int numberOfProfiles = 0;
-				for (Unittype ut : ACS.getUnittypes().getUnittypes())
+				for (Unittype ut : acs.getUnittypes().getUnittypes())
 					numberOfProfiles += ut.getProfiles().getProfiles().length;
 				if (prs.size() >= numberOfProfiles)
 					ds.addSqlAndArguments("(unit_type_name = ? and profile_name = ?) or ", "Unknown", "Unknown");
@@ -75,7 +75,7 @@ public class ReportGenerator {
 			ds.addSql("(");
 			for (Unittype ut : uts)
 				ds.addSqlAndArguments("unit_type_name = ? or ", ut.getName());
-			if (id.getUser().getUsername().equals(Users.USER_ADMIN) && uts.size() >= ACS.getUnittypes().getUnittypes().length)
+			if (id.getUser().getUsername().equals(Users.USER_ADMIN) && uts.size() >= acs.getUnittypes().getUnittypes().length)
 				ds.addSqlAndArguments("unit_type_name = ? or ", "Unknown");
 			ds.cleanupSQLTail();
 			ds.addSql(") and ");
@@ -202,8 +202,8 @@ public class ReportGenerator {
 	public Map<String, Unit> getUnitsInGroup(Group group) throws SQLException {
 		Map<String, Unit> unitsInGroup = new HashMap<String, Unit>();
 		if (group != null) {
-			ACSUnit ACSUnit = new ACSUnit(mainDataSource, ACS, ACS.getSyslog());
-			unitsInGroup = ACSUnit.getUnits(group);
+			ACSUnit acsUnit = new ACSUnit(mainDataSource, acs, acs.getSyslog());
+			unitsInGroup = acsUnit.getUnits(group);
 		}
 		return unitsInGroup;
 	}

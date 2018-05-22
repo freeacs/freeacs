@@ -38,10 +38,10 @@ public class Profiles {
 		return "Contains " + nameMap.size() + " profiles";
 	}
 
-    public void addOrChangeProfile(Profile profile, ACS ACS) throws SQLException {
- 		if (!ACS.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId()))
+    public void addOrChangeProfile(Profile profile, ACS acs) throws SQLException {
+ 		if (!acs.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
-		addOrChangeProfileImpl(profile, ACS);
+		addOrChangeProfileImpl(profile, acs);
 		nameMap.put(profile.getName(), profile);
 		idMap.put(profile.getId(), profile);
 		if (profile.getOldName() != null) {
@@ -50,10 +50,10 @@ public class Profiles {
 		}
 	}
 
-	private int deleteProfileImpl(Profile profile, ACS ACS) throws SQLException {
+	private int deleteProfileImpl(Profile profile, ACS acs) throws SQLException {
 		Statement s = null;
 		String sql = null;
-		Connection c = ACS.getDataSource().getConnection();
+		Connection c = acs.getDataSource().getConnection();
 		try {
 			s = c.createStatement();
 			sql = "DELETE FROM profile WHERE ";
@@ -62,8 +62,8 @@ public class Profiles {
 			int rowsDeleted = s.executeUpdate(sql);
 			
 			logger.info("Deleted profile " + profile.getName());
-			if (ACS.getDbi() != null)
-				ACS.getDbi().publishDelete(profile, profile.getUnittype());
+			if (acs.getDbi() != null)
+				acs.getDbi().publishDelete(profile, profile.getUnittype());
 			return rowsDeleted;
 		} finally {
 			if (s != null)
@@ -78,26 +78,26 @@ public class Profiles {
 	 * 
 	 * @throws SQLException
 	 */
-	public int deleteProfile(Profile profile, ACS ACS, boolean cascade) throws SQLException {
-		if (!ACS.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId()))
+	public int deleteProfile(Profile profile, ACS acs, boolean cascade) throws SQLException {
+		if (!acs.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		if (cascade) {
 			ProfileParameters pParams = profile.getProfileParameters();
 			ProfileParameter[] pParamsArr = pParams.getProfileParameters();
 			for (ProfileParameter pp : pParamsArr) {
-				pParams.deleteProfileParameter(pp, ACS);
+				pParams.deleteProfileParameter(pp, acs);
 			}
 		}
-		int rowsDeleted = deleteProfileImpl(profile, ACS);
+		int rowsDeleted = deleteProfileImpl(profile, acs);
 		nameMap.remove(profile.getName());
 		idMap.remove(profile.getId());
 		return rowsDeleted;
 	}
 
-	private void addOrChangeProfileImpl(Profile profile, ACS ACS) throws SQLException {
+	private void addOrChangeProfileImpl(Profile profile, ACS acs) throws SQLException {
 		Statement s = null;
 		String sql = null;
-		Connection c = ACS.getDataSource().getConnection();
+		Connection c = acs.getDataSource().getConnection();
 		try {
 			s = c.createStatement();
 			if (profile.getId() == null) {
@@ -111,8 +111,8 @@ public class Profiles {
 					profile.setId(gk.getInt(1));
 				
 				logger.info("Inserted profile " + profile.getName());
-				if (ACS.getDbi() != null)
-					ACS.getDbi().publishAdd(profile, profile.getUnittype());
+				if (acs.getDbi() != null)
+					acs.getDbi().publishAdd(profile, profile.getUnittype());
 			} else {
 				sql = "UPDATE profile SET ";
 				sql += "unit_type_id = " + profile.getUnittype().getId() + ", ";
@@ -122,8 +122,8 @@ public class Profiles {
 				s.executeUpdate(sql);
 				
 				logger.info("Updated profile " + profile.getName());
-				if (ACS.getDbi() != null)
-					ACS.getDbi().publishChange(profile, profile.getUnittype());
+				if (acs.getDbi() != null)
+					acs.getDbi().publishChange(profile, profile.getUnittype());
 			}
 		} finally {
 			if (s != null)

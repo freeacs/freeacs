@@ -29,8 +29,8 @@ public class ReportHardwareGenerator extends ReportGenerator {
 	// Reboot-content: Reboot reason [0x0002]
 	private static Pattern rebootPattern = Pattern.compile(".*Reboot reason \\[.+\\](.+)");
 
-	public ReportHardwareGenerator(DataSource mainDataSource, DataSource syslogDataSource, ACS ACS, String logPrefix, Identity id) {
-		super(mainDataSource, syslogDataSource, ACS, logPrefix, id);
+	public ReportHardwareGenerator(DataSource mainDataSource, DataSource syslogDataSource, ACS acs, String logPrefix, Identity id) {
+		super(mainDataSource, syslogDataSource, acs, logPrefix, id);
 	}
 
 	public Report<RecordHardware> generateFromReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws SQLException,
@@ -122,7 +122,7 @@ public class ReportHardwareGenerator extends ReportGenerator {
 		filter.setCollectorTmsEnd(end);
 		filter.setFacilityVersion(swVersion);
 		Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
-		List<SyslogEntry> entries = syslog.read(filter, ACS);
+		List<SyslogEntry> entries = syslog.read(filter, acs);
 		Map<String, Report<RecordHardware>> unitReportMap = new HashMap<String, Report<RecordHardware>>();
 		for (SyslogEntry entry : entries) {
 			String unitId = entry.getUnitId();
@@ -176,7 +176,7 @@ public class ReportHardwareGenerator extends ReportGenerator {
 		filter.setCollectorTmsEnd(end);
 		filter.setFacilityVersion(swVersion);
 		Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
-		List<SyslogEntry> entries = syslog.read(filter, ACS);
+		List<SyslogEntry> entries = syslog.read(filter, acs);
 		for (SyslogEntry entry : entries) {
 			if (group != null && unitsInGroup.get(entry.getUnitId()) == null)
 				continue;

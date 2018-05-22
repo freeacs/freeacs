@@ -30,7 +30,7 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
 	private UnitStatusRealTimeMosData inputData;
 
 	/** The xaps. */
-	private ACS ACS;
+	private ACS acs;
 	
 	/** The logger. */
 	private static final Logger logger = LoggerFactory.getLogger(UnitStatusRealTimeMosPage.class);
@@ -51,13 +51,13 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
 		
 		String sessionId = params.getSession().getId();
 		
-		ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (ACS == null) {
+		acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
 
-		ACSUnit ACSUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource, syslogDataSource);
+		ACSUnit acsUnit = XAPSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
 		
 		Map<String, Object> root = outputHandler.getTemplateMap();
 		
@@ -71,7 +71,7 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
 		
 		Unittype unittype = null;
 		if(inputData.getUnittype().notNullNorValue(""))
-			unittype = ACS.getUnittype(inputData.getUnittype().getString());
+			unittype = acs.getUnittype(inputData.getUnittype().getString());
 		
 		Profile profile = null;
 		if(inputData.getProfile().notNullNorValue("") && unittype!=null)
@@ -80,7 +80,7 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
 		Unit unit = null;
 
 		if (inputData.getUnit().notNullNorValue("")){
-			unit = ACSUnit.getUnitById(inputData.getUnit().getString());
+			unit = acsUnit.getUnitById(inputData.getUnit().getString());
 		}
 	
 		Date start = inputData.getStart().getDate();
@@ -113,7 +113,7 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
 		String line = inputData.getChannel().getInteger()!=null?inputData.getChannel().getInteger().toString():null;
 		
 		if(params.getBoolean("display-chart")){
-            ReportVoipCallGenerator rgVoip = ReportPage.getReportVoipCallGenerator(params.getSession().getId(), ACS);
+            ReportVoipCallGenerator rgVoip = ReportPage.getReportVoipCallGenerator(params.getSession().getId(), acs);
 			List<Unittype> unittypes = unittype!=null?Arrays.asList(unittype):getAllowedUnittypes(sessionId, xapsDataSource, syslogDataSource);
 			List<Profile> profiles = profile!=null?Arrays.asList(profile):getAllowedProfiles(sessionId, unittype, xapsDataSource, syslogDataSource);
 			String unitId = unit!=null?unit.getId():null;
@@ -148,20 +148,20 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
 	 * @param unit the unit
 	 * @param start the start
 	 * @param line the line
-	 * @param ACS the xaps
+	 * @param acs the xaps
 	 * @return the last qo s timestamp
 	 * @throws SQLException the sQL exception
 	 *  the no available connection exception
 	 */
-	public static Date getLastQoSTimestamp(String sessionId,Unit unit,Date start,String line,ACS ACS) throws SQLException {
-		Syslog syslog = new Syslog(ACS.getSyslog().getDataSource(), XAPSLoader.getIdentity(sessionId, ACS.getDataSource()));
+	public static Date getLastQoSTimestamp(String sessionId,Unit unit,Date start,String line,ACS acs) throws SQLException {
+		Syslog syslog = new Syslog(acs.getSyslog().getDataSource(), XAPSLoader.getIdentity(sessionId, acs.getDataSource()));
 		SyslogFilter filter = new SyslogFilter();
 		filter.setMaxRows(1);
 		String keyToFind = "QoS report for channel "+(line!=null?line:"");
 		filter.setMessage("^"+keyToFind);
 		filter.setCollectorTmsStart(start);
 		filter.setUnitId("^" + unit.getId() + "$");
-		List<SyslogEntry> qosEntry = syslog.read(filter, ACS);
+		List<SyslogEntry> qosEntry = syslog.read(filter, acs);
 		if(qosEntry.size()>0)
 			return qosEntry.get(0).getCollectorTimestamp();
 		return null;
@@ -178,7 +178,7 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
 	 *  the no available connection exception
 	 */
 	private Date getLastQoSTimestamp(String sessionId,Unit unit,Date start) throws SQLException{
-		return getLastQoSTimestamp(sessionId, unit, start,null, ACS);
+		return getLastQoSTimestamp(sessionId, unit, start,null, acs);
 	}
 	
 	/**

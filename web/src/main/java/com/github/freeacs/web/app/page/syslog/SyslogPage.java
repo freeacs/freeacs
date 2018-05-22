@@ -29,20 +29,20 @@ public class SyslogPage extends AbstractWebPage {
 			return;
 		}
 
-		ACS ACS = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
+		ACS acs = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
 
-		if (ACS == null) {
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
 
-		XAPSLoader.getXAPSUnit(params.getSession().getId(), xapsDataSource, syslogDataSource);
+		XAPSLoader.getACSUnit(params.getSession().getId(), xapsDataSource, syslogDataSource);
 
 		// Fix
 		InputDataIntegrity.loadAndStoreSession(params,outputHandler,inputData, inputData.getUnittype(),inputData.getProfile());
 
-		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS);
-		DropDownSingleSelect<Profile> profiles = InputSelectionFactory.getProfileSelection(inputData.getProfile(), inputData.getUnittype(), ACS);
+		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
+		DropDownSingleSelect<Profile> profiles = InputSelectionFactory.getProfileSelection(inputData.getProfile(), inputData.getUnittype(), acs);
 		
 		String startTimeString = inputData.getTimestampStart().getDateOrDefaultFormatted(SyslogUtil.getDate());
 		String endTimeString = inputData.getTimestampEnd().getDateFormatted();
@@ -61,11 +61,11 @@ public class SyslogPage extends AbstractWebPage {
 		
 		map.put("background", new SyslogUtil.GetBackgroundColor());
 		map.put("fontcolor", new SyslogUtil.GetFontColor());
-		map.put("eventdesc", new SyslogUtil.GetEventMouseOver(ACS));
+		map.put("eventdesc", new SyslogUtil.GetEventMouseOver(acs));
 		map.put("severitytext", new SyslogUtil.GetSeverityText());
 		map.put("facilitytext", new SyslogUtil.GetFacilityText());
-		map.put("getprofilebyid", new SyslogUtil.GetUnittypeProfileById(ACS));
-		map.put("getprofilebyname", new SyslogUtil.GetUnittypeProfileByName(ACS));
+		map.put("getprofilebyid", new SyslogUtil.GetUnittypeProfileById(acs));
+		map.put("getprofilebyname", new SyslogUtil.GetUnittypeProfileByName(acs));
 		map.put(inputData.getAdvanced().getKey(), inputData.getAdvanced().getBoolean());
 		
 		if (inputData.getAdvanced().getBoolean()) {

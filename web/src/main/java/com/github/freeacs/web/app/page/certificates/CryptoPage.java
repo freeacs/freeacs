@@ -32,7 +32,7 @@ public class CryptoPage extends AbstractWebPage {
 	private CryptoData inputData;
 	
 	/** The xaps. */
-	private ACS ACS;
+	private ACS acs;
 	
 	/** The logger. */
 	private static final Logger logger = LoggerFactory.getLogger(CryptoPage.class);
@@ -45,8 +45,8 @@ public class CryptoPage extends AbstractWebPage {
 
 		HttpSession session = params.getSession();
 		
-		ACS = XAPSLoader.getXAPS(session.getId(), xapsDataSource, syslogDataSource);
-		if (ACS == null) {
+		acs = XAPSLoader.getXAPS(session.getId(), xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -54,11 +54,11 @@ public class CryptoPage extends AbstractWebPage {
 		Map<String,Object> root = outputHandler.getTemplateMap();
 		
 		if(inputData.getAction().notNullNorValue("") && inputData.getId().getInteger()!=null){
-			Certificate certToEdit = ACS.getCertificates().getById(inputData.getId().getInteger());
+			Certificate certToEdit = acs.getCertificates().getById(inputData.getId().getInteger());
 			if(certToEdit!=null){
 				if(inputData.getAction().isValue("delete")){
 					try{
-						ACS.getCertificates().deleteCertificate(certToEdit, ACS);
+						acs.getCertificates().deleteCertificate(certToEdit, acs);
 						session.setAttribute("info","Successfully deleted Certificate ["+certToEdit.getId().toString()+"]");
 						outputHandler.setDirectToPage(Page.CERTIFICATES); // Avoid postback warning
 						return;
@@ -73,7 +73,7 @@ public class CryptoPage extends AbstractWebPage {
 				try{
 					 cert = new Certificate("Uploaded "+new Date().toString(), inputData.getCertificate().getFileAsString());
 					 try{
-						ACS.getCertificates().addOrChangeCertificate(cert, ACS);
+						acs.getCertificates().addOrChangeCertificate(cert, acs);
 						params.getSession().setAttribute("info","Successfully added Certificate ["+cert.getId()+"]");
 						outputHandler.setDirectToPage(Page.CERTIFICATES); // Avoid postback warning
 						return;
@@ -82,11 +82,11 @@ public class CryptoPage extends AbstractWebPage {
 						logger.debug("Certificate is "+(valid?"valid":"invalid"));
 						if(valid){
 							logger.debug("Deleting current "+cert.getCertType()+" certificate");
-							Certificate certToDelete = ACS.getCertificates().getCertificate(cert.getCertType());
+							Certificate certToDelete = acs.getCertificates().getCertificate(cert.getCertType());
 							if(certToDelete.isTrial()){
-								ACS.getCertificates().deleteCertificate(certToDelete, ACS);
+								acs.getCertificates().deleteCertificate(certToDelete, acs);
 								logger.debug("Upgrading "+cert.getCertType()+" certificate");
-								ACS.getCertificates().addOrChangeCertificate(cert, ACS);
+								acs.getCertificates().addOrChangeCertificate(cert, acs);
 								params.getSession().setAttribute("info","Successfully updated Certificate ["+cert.getId()+"]");
 								outputHandler.setDirectToPage(Page.CERTIFICATES); // Avoid postback warning
 								return;
@@ -106,8 +106,8 @@ public class CryptoPage extends AbstractWebPage {
 		
 		root.put("ismodulevalid",new IsModuleValidMethod());
 		
-		if(ACS.getCertificates()!=null)
-			root.put("certificates", ACS.getCertificates().getCertificates());
+		if(acs.getCertificates()!=null)
+			root.put("certificates", acs.getCertificates().getCertificates());
 		
 		outputHandler.setTemplatePath("/certificates.ftl");
 	}
@@ -128,7 +128,7 @@ public class CryptoPage extends AbstractWebPage {
 
 			Integer id = Integer.parseInt((String) args.get(0));
 
-			Certificate cert = ACS.getCertificates().getById(id);
+			Certificate cert = acs.getCertificates().getById(id);
 			
 			if(cert==null)
 				throw new IllegalArgumentException("Certificate "+id+" was not found");

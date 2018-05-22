@@ -27,7 +27,7 @@ public class SyslogEventsPage extends AbstractWebPage {
 	private SyslogEventsData inputData;
 
 	/** The xaps. */
-	private ACS ACS;
+	private ACS acs;
 
 	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 
@@ -35,8 +35,8 @@ public class SyslogEventsPage extends AbstractWebPage {
 		inputData = (SyslogEventsData) InputDataRetriever.parseInto(new SyslogEventsData(), params);
 
 		/* Retrieve the XAPS object from session */
-		ACS = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
-		if (ACS == null) {
+		acs = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -48,7 +48,7 @@ public class SyslogEventsPage extends AbstractWebPage {
 		Map<String, Object> fmMap = outputHandler.getTemplateMap();
 
 		/* Make the unittype-dropdown */
-		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS);
+		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
 		fmMap.put("unittypes", unittypes);
 		if (unittypes.getSelected() != null) {
 			SyslogEvent syslogEvent = action(params, outputHandler, unittypes.getSelected());
@@ -107,7 +107,7 @@ public class SyslogEventsPage extends AbstractWebPage {
 
 		if (inputData.getAction().isValue("delete") && inputData.getEventId().getInteger() != null) {
 			try {
-				events.deleteSyslogEvent(events.getByEventId(inputData.getEventId().getInteger()), ACS);
+				events.deleteSyslogEvent(events.getByEventId(inputData.getEventId().getInteger()), acs);
 			} catch (Throwable ex) {
 				fmMap.put("error", "Could not delete syslog event " + ex.getLocalizedMessage());
 			}
@@ -134,7 +134,7 @@ public class SyslogEventsPage extends AbstractWebPage {
 					else
 						syslogEvent.setScript(null);
 					syslogEvent.setDeleteLimit(inputData.getLimit().getInteger());
-					events.addOrChangeSyslogEvent(syslogEvent, ACS);
+					events.addOrChangeSyslogEvent(syslogEvent, acs);
 					return syslogEvent;
 				} catch (Throwable ex) {
 					fmMap.put("error", "Could not add Syslog Event: " + ex.getLocalizedMessage());

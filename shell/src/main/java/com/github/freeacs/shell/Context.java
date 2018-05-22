@@ -192,10 +192,10 @@ public class Context {
 		this.setUnittypeParameter(null);
 	}
 
-	public void resetXAPS(ACS ACS) {
+	public void resetXAPS(ACS acs) {
 
 		if (this.getUnittype() != null)
-			this.setUnittype(ACS.getUnittype(this.getUnittype().getId()));
+			this.setUnittype(acs.getUnittype(this.getUnittype().getId()));
 		if (this.getProfile() != null)
 			this.setProfile(this.getProfile().getUnittype().getProfiles().getById(this.getProfile().getId()));
 		if (this.getGroup() != null)

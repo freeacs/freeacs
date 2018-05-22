@@ -154,7 +154,7 @@ public class JobRuleEnforcer extends DBIOwner {
 
 
 	private static Logger logger = LoggerFactory.getLogger(JobRuleEnforcer.class);
-	private ACS ACS;
+	private ACS acs;
 	private UnitJobs unitJobs;
 	private Map<Integer, JobControl> jobControlMap = new HashMap<Integer, JobControl>();
 
@@ -174,8 +174,8 @@ public class JobRuleEnforcer extends DBIOwner {
 	}
 
 	private void populate() throws Exception {
-		ACS = getLatestFreeacs();
-		Unittype[] unittypeArr = ACS.getUnittypes().getUnittypes();
+		acs = getLatestFreeacs();
+		Unittype[] unittypeArr = acs.getUnittypes().getUnittypes();
 		for (Unittype ut : unittypeArr) {
 			Job[] jobList = ut.getJobs().getJobs();
 			for (Job j : jobList) {
@@ -296,9 +296,9 @@ public class JobRuleEnforcer extends DBIOwner {
 		}
 		if (ruleMatch) {
 			job.setStatus(JobStatus.PAUSED);
-			job.getGroup().getUnittype().getJobs().changeStatus(job, ACS);
+			job.getGroup().getUnittype().getJobs().changeStatus(job, acs);
 			// Must also change the job object found in the Freeacs object -
-			Unittype freeacsUnittype = ACS.getUnittype(job.getUnittype().getId());
+			Unittype freeacsUnittype = acs.getUnittype(job.getUnittype().getId());
 			Job freeacsJob = freeacsUnittype.getJobs().getById(job.getId());
 			freeacsJob.setStatus(job.getStatus());
 		}
@@ -334,7 +334,7 @@ public class JobRuleEnforcer extends DBIOwner {
 		job.setUnconfirmedFailed(unconfirmedFailed);
 		job.setCompletedNoFailures(job.getCompletedNoFailures() + completedThisRound);
 		job.setCompletedHadFailures(confirmedFailedButCompleted + unconfirmedFailedButCompleted);
-		job.getGroup().getUnittype().getJobs().changeFromCore(job, publishMsg, ACS);
+		job.getGroup().getUnittype().getJobs().changeFromCore(job, publishMsg, acs);
 		logMsg += "[Total: " + job.getCompletedNoFailures() + " OK, " + job.getCompletedHadFailures() + " OKHF, ";
 		logMsg += job.getConfirmedFailed() + " CF, " + job.getUnconfirmedFailed() + " UCF]";
 		logger.info("JobRuleEnforcer: [" + job.getName() + "] " + logMsg);

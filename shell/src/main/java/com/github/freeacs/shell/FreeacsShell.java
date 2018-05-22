@@ -83,9 +83,9 @@ public class FreeacsShell {
 		Syslog syslog = new Syslog(session.getSysProps(), id);
 		DBI dbi = new DBI(Integer.MAX_VALUE, session.getXapsProps(), syslog);
 		session.setDbi(dbi);
-		session.setACS(dbi.getACS());
-		ACSUnit xapsU = new ACSUnit(session.getXapsProps(), session.getACS(), syslog);
-		session.setACSUnit(xapsU);
+		session.setAcs(dbi.getAcs());
+		ACSUnit xapsU = new ACSUnit(session.getXapsProps(), session.getAcs(), syslog);
+		session.setAcsUnit(xapsU);
 		UnitJobs unitJobs = new UnitJobs(session.getXapsProps());
 		session.setUnitJobs(unitJobs);
 	}
@@ -185,7 +185,7 @@ public class FreeacsShell {
 						session.exitShell(1);
 				} catch (SQLException sqle) {
 					addThrowable(sqle);
-					session.getContext().resetXAPS(session.getDbi().getACS());
+					session.getContext().resetXAPS(session.getDbi().getAcs());
 					println("An SQL-error occurred: " + sqle);
 					if (session.getMode() == SessionMode.SCRIPT)
 						session.exitShell(1);

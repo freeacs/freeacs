@@ -47,7 +47,7 @@ public class FileServlet extends HttpServlet {
         }
       }
 
-      ACS ACS = dbAccess.getDBI().getACS();
+      ACS acs = dbAccess.getDBI().getAcs();
       File firmware = null;
       String pathInfo = req.getPathInfo().substring(1);
       pathInfo = pathInfo.replaceAll("--", " ");
@@ -61,7 +61,7 @@ public class FileServlet extends HttpServlet {
         res.sendError(HttpServletResponse.SC_FORBIDDEN);
         return;
       }
-      Unittype unittype = ACS.getUnittype(unittypeName);
+      Unittype unittype = acs.getUnittype(unittypeName);
       if (unittype == null) {
         Log.error(FileServlet.class, "Could not find unittype " + unittypeName + " in xAPS, hence file URL is incorrect");
         res.sendError(HttpServletResponse.SC_NOT_FOUND);

@@ -1,9 +1,6 @@
 package com.github.freeacs.web.app.page.report.uidata;
 
-import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.SyslogEntry;
-import com.github.freeacs.dbi.SyslogEvent;
-import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.web.app.page.syslog.SyslogUtil;
 import freemarker.template.TemplateModelException;
 
@@ -18,17 +15,8 @@ import java.util.List;
  */
 public class RecordUIDataSyslog {
 
-	/** The xaps. */
-	private ACS ACS;
-
 	/** The entry. */
 	private SyslogEntry entry;
-
-	/**
-	 * Instantiates a new record ui data syslog.
-	 */
-	RecordUIDataSyslog() {
-	}
 
 	/**
 	 * Gets the severity.
@@ -51,49 +39,26 @@ public class RecordUIDataSyslog {
 	}
 
 	/**
-	 * Gets the ip address.
-	 *
-	 * @return the ip address
-	 */
-	public String getIpAddress() {
-		return entry.getIpAddress();
-	}
-
-	/**
 	 * Instantiates a new record ui data syslog.
 	 *
 	 * @param record the record
-	 * @param ACS the xaps
 	 */
-	public RecordUIDataSyslog(SyslogEntry record, ACS ACS) {
+	public RecordUIDataSyslog(SyslogEntry record) {
 		this.entry = record;
-		this.ACS = ACS;
 	}
 
 	/**
 	 * Convert records.
 	 *
 	 * @param records the records
-	 * @param ACS the xaps
 	 * @return the list
 	 */
-	public static List<RecordUIDataSyslog> convertRecords(List<SyslogEntry> records, ACS ACS) {
+	public static List<RecordUIDataSyslog> convertRecords(List<SyslogEntry> records) {
 		List<RecordUIDataSyslog> list = new ArrayList<RecordUIDataSyslog>();
 		for (SyslogEntry record : records) {
-			list.add(new RecordUIDataSyslog(record, ACS));
+			list.add(new RecordUIDataSyslog(record));
 		}
 		return list;
-	}
-
-	/**
-	 * Gets the message excerpt.
-	 *
-	 * @return the message excerpt
-	 */
-	public String getMessageExcerpt() {
-		if (entry.getContent() == null || entry.getContent().length() > 90)
-			return entry.getContent().substring(0, 90);
-		return entry.getContent();
 	}
 
 	/**
@@ -105,37 +70,4 @@ public class RecordUIDataSyslog {
 		return entry.getContent();
 	}
 
-	/**
-	 * Gets the event id as string.
-	 *
-	 * @return the event id as string
-	 */
-	public String getEventIdAsString() {
-		Unittype unittype = ACS.getUnittype(entry.getUnittypeName());
-		if (unittype != null) {
-			@SuppressWarnings("static-access")
-			SyslogEvent event = unittype.getSyslogEvents().getById(entry.getEventId());
-			if (event != null)
-				return entry.getEventId() + "(" + event.getName() + ")";
-		}
-		return "" + entry.getEventId();
-	}
-
-	/**
-	 * Gets the tms as string.
-	 *
-	 * @return the tms as string
-	 */
-	public String getTmsAsString() {
-		return RecordUIDataConstants.DATE_FORMAT.format(entry.getCollectorTimestamp()).replace(" ", "&nbsp;");
-	}
-
-	/**
-	 * Gets the row background style.
-	 *
-	 * @return the row background style
-	 */
-	public String getRowBackgroundStyle() {
-		return "background-color:#" + SyslogUtil.getBackgroundColor(entry.getSeverity()) + ";";
-	}
 }

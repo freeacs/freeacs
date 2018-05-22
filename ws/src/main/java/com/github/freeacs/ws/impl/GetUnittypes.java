@@ -23,7 +23,7 @@ public class GetUnittypes {
 				UnittypeList unittypeList = new UnittypeList(new ArrayOfUnittype(unittypeArray));
 				return new GetUnittypesResponse(unittypeList);
 			} else { // return all Unittypes allowed
-				Unittype[] unittypeXAPSArr = xapsWS.getXAPS().getUnittypes().getUnittypes();
+				Unittype[] unittypeXAPSArr = xapsWS.getAcs().getUnittypes().getUnittypes();
 				com.github.freeacs.ws.Unittype[] unittypeArray = new com.github.freeacs.ws.Unittype[unittypeXAPSArr.length];
 				int i = 0;
 				for (Unittype unittypeXAPS : unittypeXAPSArr)

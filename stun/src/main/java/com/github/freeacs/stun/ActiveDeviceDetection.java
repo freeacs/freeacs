@@ -42,7 +42,7 @@ public class ActiveDeviceDetection extends TaskDefaultImpl {
 		int unitsToProcess = activeDevices.size() / 60;
 		long fiveMinAgo = getThisLaunchTms() - 5 * 60000;
 		long oneHourAgo = getThisLaunchTms() - 60 * 60000;
-		ACSUnit ACSUnit = new ACSUnit(xapsCp, dbi.getACS(), dbi.getACS().getSyslog());
+		ACSUnit acsUnit = new ACSUnit(xapsCp, dbi.getAcs(), dbi.getAcs().getSyslog());
 
 		// this will force units which haven't been processed the last hour to
 		// be processed again.
@@ -59,7 +59,7 @@ public class ActiveDeviceDetection extends TaskDefaultImpl {
 				if (sentSyslogMap.get(address) == null) {
 					processCount++;
 					sentSyslogMap.put(address, getThisLaunchTms());
-					Unit unit = ACSUnit.getUnitByValue(address, null, null);
+					Unit unit = acsUnit.getUnitByValue(address, null, null);
 					if (unit != null) {
 						loggedCount++;
 						SyslogClient.info(unit.getId(), "StunMsg/TR-111: Requests from " + address + " within last 5 minutes", 16, null, null);
@@ -80,15 +80,15 @@ public class ActiveDeviceDetection extends TaskDefaultImpl {
 		Map<String, Long> tooOldMap = activeDevices.removeOldSync(tooOldTms);
 		for (Entry<String, Long> entry : tooOldMap.entrySet()) {
 			String address = entry.getKey();
-			ACSUnit ACSUnit = new ACSUnit(xapsCp, dbi.getACS(), dbi.getACS().getSyslog());
-			Unit unit = ACSUnit.getUnitByValue(address, null, null);
+			ACSUnit acsUnit = new ACSUnit(xapsCp, dbi.getAcs(), dbi.getAcs().getSyslog());
+			Unit unit = acsUnit.getUnitByValue(address, null, null);
 			if (unit != null) {
-				Syslog syslog = dbi.getACS().getSyslog();
+				Syslog syslog = dbi.getAcs().getSyslog();
 				SyslogFilter sf = new SyslogFilter();
 				sf.setCollectorTmsStart(new Date(tooOldTms)); // look for syslog newer than 1 hour
 				sf.setUnitId(unit.getId());
 				boolean active = false;
-				List<SyslogEntry> entries = syslog.read(sf, dbi.getACS());
+				List<SyslogEntry> entries = syslog.read(sf, dbi.getAcs());
 				for (SyslogEntry sentry : entries) {
 					String c = sentry.getContent();
 					if (sentry.getFacility() < SyslogConstants.FACILITY_SHELL && !c.contains(Heartbeat.MISSING_HEARTBEAT_ID) && !c.startsWith("StunMsg/TR-111")) {
@@ -99,7 +99,7 @@ public class ActiveDeviceDetection extends TaskDefaultImpl {
 				}
 				if (active) {
 					logger.info("ActiveDeviceDection: No STUN request from " + address + " (unit: " + unit.getId() + ") since " + new Date(tooOldTms));
-					SyslogClient.info(unit.getId(), "StunMsg/TR-111: No request from " + address + " since " + new Date(tooOldTms) + " - but device has been active since then", dbi.getACS()
+					SyslogClient.info(unit.getId(), "StunMsg/TR-111: No request from " + address + " since " + new Date(tooOldTms) + " - but device has been active since then", dbi.getAcs()
 							.getSyslog());
 				} else {
 					logger.info("ActiveDeviceDection: No STUN request from " + address + " (unit: " + unit.getId() + ") since " + new Date(tooOldTms) + " - but the device may not be active");

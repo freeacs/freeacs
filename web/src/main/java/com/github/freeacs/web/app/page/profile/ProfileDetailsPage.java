@@ -74,17 +74,17 @@ public class ProfileDetailsPage extends ProfileActions {
 
 		String sessionId = params.getSession().getId();
 
-		ACS ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		ACS acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 
-		if (ACS == null) {
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
 
 		InputDataIntegrity.loadAndStoreSession(params, outputHandler, inputData, inputData.getUnittype(), inputData.getProfile(), inputData.getUnit());
 
-		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS);
-		Unittype unittype = ACS.getUnittype(inputData.getUnittype().getString());
+		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
+		Unittype unittype = acs.getUnittype(inputData.getUnittype().getString());
 		DropDownSingleSelect<Profile> profiles = InputSelectionFactory.getProfileSelection(inputData.getProfile(), unittype);
 
 		Map<String, Object> root = outputHandler.getTemplateMap();
@@ -94,9 +94,9 @@ public class ProfileDetailsPage extends ProfileActions {
 
 		ProfileStatus status = null;
 		if (inputData.getFormSubmit().isValue(WebConstants.DELETE))
-			status = actionDeleteProfile(sessionId, ACS, unittypes, profiles);
+			status = actionDeleteProfile(sessionId, acs, unittypes, profiles);
 		else if (inputData.getFormSubmit().isValue(WebConstants.UPDATE_PARAMS)) {
-			status = actionCUDParameters(params, ACS, unittypes, profiles);
+			status = actionCUDParameters(params, acs, unittypes, profiles);
 		}
 
 		currentProfile = profiles.getSelected();

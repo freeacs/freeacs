@@ -19,14 +19,14 @@ public class TriggerReleaser extends DBIShare {
 	}
 
 	private static Logger logger = LoggerFactory.getLogger(TriggerReleaser.class);
-	private ACS ACS;
+	private ACS acs;
 	private static SimpleDateFormat tmsFormat = new SimpleDateFormat("HHmmss");
 	private static long MS_MINUTE = 60 * 1000;
 	private static long MS_HOUR = 60 * MS_MINUTE;
 
 	@Override
 	public void runImpl() throws Exception {
-		ACS = getLatestFreeacs();
+		acs = getLatestFreeacs();
 		processAllTriggers();
 
 	}
@@ -76,11 +76,11 @@ public class TriggerReleaser extends DBIShare {
 		c.set(Calendar.MILLISECOND, 0);
 		Date now = c.getTime();
 		boolean deleteOldEvents = true;
-		for (Unittype unittype : ACS.getUnittypes().getUnittypes()) {
+		for (Unittype unittype : acs.getUnittypes().getUnittypes()) {
 			Triggers triggers = unittype.getTriggers();
 			if (deleteOldEvents) { // execute this only once, will delete for all unittypes...
 				Date startOfMaxEvaluationPeriod = new Date(now.getTime() - Trigger.EVAL_PERIOD_MAX * MS_MINUTE);
-				int rowsDeleted = triggers.deleteEvents(startOfMaxEvaluationPeriod, ACS);
+				int rowsDeleted = triggers.deleteEvents(startOfMaxEvaluationPeriod, acs);
 				if (rowsDeleted > 0)
 					logger.info("TriggerReleaser: Deleted " + rowsDeleted + " Trigger Events which was older than evaluation max period (" + Trigger.EVAL_PERIOD_MAX + " min) (before "
 							+ startOfMaxEvaluationPeriod + ")");
@@ -92,7 +92,7 @@ public class TriggerReleaser extends DBIShare {
 
 	private void processTrigger(Date now, Triggers triggers, Trigger trigger, Date evaluationStart) throws SQLException {
 		if (trigger.getTriggerType() == Trigger.TRIGGER_TYPE_BASIC) {
-			Map<String, Integer> unitEventsMap = triggers.countEventsPrUnit(trigger.getId(), evaluationStart, now, ACS);
+			Map<String, Integer> unitEventsMap = triggers.countEventsPrUnit(trigger.getId(), evaluationStart, now, acs);
 			int ne = unitEventsMap.remove("TEC-TotalEventsCounter"); // will always return an int and then remove it from map
 			int nu = 0;
 			for (Integer noEvents : unitEventsMap.values()) {
@@ -100,23 +100,23 @@ public class TriggerReleaser extends DBIShare {
 					nu++;
 			}
 			if (ne >= trigger.getNoEvents() && nu >= trigger.getNoUnits()) { // trigger is released!
-				Date firstEventTms = triggers.getFirstEventTms(trigger.getId(), evaluationStart, now, ACS);
+				Date firstEventTms = triggers.getFirstEventTms(trigger.getId(), evaluationStart, now, acs);
 				logger.info("TriggerReleaser: \t\tTrigger " + trigger.getName() + " was released since noEvents is " + ne + " (>= " + trigger.getNoEvents() + ") and noUnits is " + nu + " (>= "
 						+ trigger.getNoUnits() + ")");
 				logger.info("TriggerReleaser: \t\tTrigger " + trigger.getName() + " is evaluated in this timeframe: " + evaluationStart + " - " + now + ". First event was found at " + firstEventTms);
 				TriggerRelease th = new TriggerRelease(trigger, ne, trigger.getNoEventsPrUnit(), nu, new Date(firstEventTms.getTime()), new Date(now.getTime()), null);
-				triggers.addOrChangeHistory(th, ACS);
+				triggers.addOrChangeHistory(th, acs);
 				if (trigger.getScript() != null) {
 					storeTriggerUnits(trigger, unitEventsMap, now);
 					executeTriggerScript(trigger, unitEventsMap, th.getId());
 				} else if (trigger.hasAnyParentScript()) {
 					storeTriggerUnits(trigger, unitEventsMap, now);
 				}
-				int rowsDeleted = triggers.deleteEvents(trigger.getId(), now, ACS);
+				int rowsDeleted = triggers.deleteEvents(trigger.getId(), now, acs);
 				if (rowsDeleted > 0)
 					logger.debug("TriggerReleaser: \t\tDeleted " + rowsDeleted + " Trigger Events which was older than processing timestamp (before " + now
 							+ "), to avoid trigger release based on the same Trigger Events");
-				DBI dbi = ACS.getDbi();
+				DBI dbi = acs.getDbi();
 				if (!sentWithinNotifyInterval(triggers, trigger, now) && (trigger.getNotifyType() == Trigger.NOTIFY_TYPE_ALARM || trigger.getNotifyType() == Trigger.NOTIFY_TYPE_REPORT))
 					dbi.publishTriggerReleased(trigger, SyslogConstants.FACILITY_MONITOR);
 				else
@@ -132,7 +132,7 @@ public class TriggerReleaser extends DBIShare {
 				if (!child.isActive())
 					continue;
 				Date evaluationPeriodStart = new Date(now.getTime() - trigger.getEvalPeriodMinutes() * MS_MINUTE);
-				TriggerRelease th = triggers.readLatestTriggerRelease(trigger, evaluationPeriodStart, now, ACS);
+				TriggerRelease th = triggers.readLatestTriggerRelease(trigger, evaluationPeriodStart, now, acs);
 				if (th == null) {
 					release = false;
 					break;
@@ -144,10 +144,10 @@ public class TriggerReleaser extends DBIShare {
 			if (release) {
 				logger.info("TriggerReleaser: \t\tTrigger " + trigger.getName() + " was released since all child trigger are released");
 				TriggerRelease th = new TriggerRelease(trigger, firstEventTms, now, null);
-				triggers.addOrChangeHistory(th, ACS);
+				triggers.addOrChangeHistory(th, acs);
 				if (trigger.getScript() != null)
 					executeTriggerScript(trigger, getUnitEventsMapFromChilden(trigger), th.getId());
-				DBI dbi = ACS.getDbi();
+				DBI dbi = acs.getDbi();
 				if (!sentWithinNotifyInterval(triggers, trigger, now) && (trigger.getNotifyType() == Trigger.NOTIFY_TYPE_ALARM || trigger.getNotifyType() == Trigger.NOTIFY_TYPE_REPORT))
 					dbi.publishTriggerReleased(trigger, SyslogConstants.FACILITY_MONITOR);
 			} else {
@@ -172,13 +172,13 @@ public class TriggerReleaser extends DBIShare {
 			Date evaluationStart = new Date(now.getTime() - trigger.getEvalPeriodMinutes() * MS_MINUTE);
 			if (trigger.getTriggerType() == Trigger.TRIGGER_TYPE_BASIC) {
 				// No trigger events to delete for a COMPOSITE trigger 
-				int rowsDeleted = triggers.deleteEvents(trigger.getId(), evaluationStart, ACS);
+				int rowsDeleted = triggers.deleteEvents(trigger.getId(), evaluationStart, acs);
 				if (rowsDeleted > 0)
 					logger.debug("TriggerReleaser: \t\tDeleted " + rowsDeleted + " Trigger Events which was older than evaluation period (" + trigger.getEvalPeriodMinutes() + " min) (before "
 							+ evaluationStart + ")");
 			}
 			Date evaluationPeriodStart = new Date(now.getTime() - trigger.getEvalPeriodMinutes() * MS_MINUTE);
-			TriggerRelease th = triggers.readLatestTriggerRelease(trigger, evaluationPeriodStart, now, ACS);
+			TriggerRelease th = triggers.readLatestTriggerRelease(trigger, evaluationPeriodStart, now, acs);
 			if (th != null) {
 				logger.debug("TriggerReleaser: \t\tFound a recent Trigger release within evaluation period, no trigger processing so quickly after last release");
 				continue;
@@ -190,7 +190,7 @@ public class TriggerReleaser extends DBIShare {
 
 	private boolean sentWithinNotifyInterval(Triggers triggers, Trigger trigger, Date now) throws SQLException {
 		Date notifyIntervalStart = new Date(now.getTime() - trigger.getNotifyIntervalHours() * MS_HOUR);
-		List<TriggerRelease> historyList = triggers.readTriggerReleases(trigger, notifyIntervalStart, now, ACS, null);
+		List<TriggerRelease> historyList = triggers.readTriggerReleases(trigger, notifyIntervalStart, now, acs, null);
 		boolean sent = false;
 		for (TriggerRelease history : historyList) {
 			if (history.getSentTms() != null) {
@@ -211,10 +211,10 @@ public class TriggerReleaser extends DBIShare {
 		byte[] triggerUnitsFileByteArr = sb.toString().getBytes();
 		File f = files.getByName(filename);
 		if (f == null)
-			f = new File(trigger.getUnittype(), filename, FileType.UNITS, desc, trigger.getId() + "", now, null, ACS.getUser());
+			f = new File(trigger.getUnittype(), filename, FileType.UNITS, desc, trigger.getId() + "", now, null, acs.getUser());
 		f.setDescription(desc);
 		f.setBytes(triggerUnitsFileByteArr);
-		files.addOrChangeFile(f, ACS);
+		files.addOrChangeFile(f, acs);
 	}
 
 }

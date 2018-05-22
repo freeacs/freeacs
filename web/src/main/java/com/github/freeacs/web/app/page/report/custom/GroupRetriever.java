@@ -38,12 +38,12 @@ public class GroupRetriever extends ReportRetriever {
 	 *
 	 * @param inputData the input data
 	 * @param params the params
-	 * @param ACS the xaps
+	 * @param acs the xaps
 	 * @throws SQLException the sQL exception
 	 *  the no available connection exception
 	 */
-	public GroupRetriever(ReportData inputData, ParameterParser params, ACS ACS) throws SQLException {
-		super(inputData, params, ACS);
+	public GroupRetriever(ReportData inputData, ParameterParser params, ACS acs) throws SQLException {
+		super(inputData, params, acs);
 
 		generator = generateGroupGenerator();
 
@@ -52,7 +52,7 @@ public class GroupRetriever extends ReportRetriever {
 
 		Unittype unittype = null;
 		if (inputData.getUnittype().notNullNorValue(""))
-			unittype = ACS.getUnittype(inputData.getUnittype().getString());
+			unittype = acs.getUnittype(inputData.getUnittype().getString());
 
 		List<Group> groupList = new ArrayList<Group>();
 		if (unittype != null) {
@@ -75,9 +75,9 @@ public class GroupRetriever extends ReportRetriever {
 	 *  the no available connection exception
 	 */
 	private ReportGroupGenerator generateGroupGenerator() throws SQLException {
-		ACS ACS = getACS();
-		return new ReportGroupGenerator(ACS.getDataSource(), ACS.getSyslog().getDataSource(),
-                ACS, null, XAPSLoader.getIdentity(getParams().getSession().getId(), ACS.getDataSource()));
+		ACS acs = getAcs();
+		return new ReportGroupGenerator(acs.getDataSource(), acs.getSyslog().getDataSource(),
+                acs, null, XAPSLoader.getIdentity(getParams().getSession().getId(), acs.getDataSource()));
 	}
 
 	/* (non-Javadoc)

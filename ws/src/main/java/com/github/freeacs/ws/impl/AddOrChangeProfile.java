@@ -17,8 +17,8 @@ public class AddOrChangeProfile {
 
 	private static org.slf4j.Logger logger = LoggerFactory.getLogger(AddOrChangeProfile.class);
 
-	private ACS ACS;
-	private ACSWS xapsWS;
+	private ACS acs;
+	private ACSWS acsWS;
 
 	private void addOrChangeProfileImpl(Profile profileXAPS, AddOrChangeProfileRequest gur) throws SQLException, RemoteException {
 		ParameterList parameterList = gur.getProfile().getParameters();
@@ -45,22 +45,22 @@ public class AddOrChangeProfile {
 				}
 			}
 		}
-		unittypeXAPS.getProfiles().addOrChangeProfile(profileXAPS, ACS);
+		unittypeXAPS.getProfiles().addOrChangeProfile(profileXAPS, acs);
 		for (ProfileParameter pp : dPpList)
-			profileXAPS.getProfileParameters().deleteProfileParameter(pp, ACS);
+			profileXAPS.getProfileParameters().deleteProfileParameter(pp, acs);
 		for (ProfileParameter pp : acPpList)
-			profileXAPS.getProfileParameters().addOrChangeProfileParameter(pp, ACS);
+			profileXAPS.getProfileParameters().addOrChangeProfileParameter(pp, acs);
 	}
 
 	public AddOrChangeProfileResponse addOrChangeProfile(AddOrChangeProfileRequest gur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 			
-			xapsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
-			ACS = xapsWS.getXAPS();
+			acsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
+			acs = acsWS.getAcs();
 			if (gur.getUnittype() == null || gur.getProfile() == null)
 				throw ACSWS.error(logger, "No unittype or profile specified");
-			Unittype unittype = ACS.getUnittype(gur.getUnittype().getName());
-			User user = xapsWS.getId().getUser();
+			Unittype unittype = acs.getUnittype(gur.getUnittype().getName());
+			User user = acsWS.getId().getUser();
 			boolean isAllowedToMakeProfile = user.getPermissions().getPermissions().length == 0;
 			if (!isAllowedToMakeProfile) {
 				Permission perm = user.getPermissions().getByUnittypeProfile(unittype.getId(), null);
@@ -78,7 +78,7 @@ public class AddOrChangeProfile {
 					throw ACSWS.error(logger, "The profile " + gur.getProfile().getName() + " does not exist, your login does not have the permissions to create it.");
 				}
 			} else { // change an existing one
-				profileXAPS = xapsWS.getProfileFromXAPS(unittype.getName(), gur.getProfile().getName());
+				profileXAPS = acsWS.getProfileFromXAPS(unittype.getName(), gur.getProfile().getName());
 				addOrChangeProfileImpl(profileXAPS, gur);
 			}
 			return new AddOrChangeProfileResponse(ConvertACS2WS.convert(profileXAPS));

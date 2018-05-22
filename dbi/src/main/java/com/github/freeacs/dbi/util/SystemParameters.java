@@ -214,12 +214,12 @@ public class SystemParameters {
 	 *
 	 * @throws SQLException 
 	 */
-	public static UnittypeParameter getTR069ScriptParameter(String targetName, TR069ScriptType type, ACS ACS, Unittype unittype) throws SQLException {
+	public static UnittypeParameter getTR069ScriptParameter(String targetName, TR069ScriptType type, ACS acs, Unittype unittype) throws SQLException {
 		String parameterName = getTR069ScriptParameterName(targetName, type);
 		UnittypeParameter parameter = unittype.getUnittypeParameters().getByName(parameterName);
 		if (parameter == null) {
 			parameter = new UnittypeParameter(unittype, parameterName, X);
-			unittype.getUnittypeParameters().addOrChangeUnittypeParameter(parameter, ACS);
+			unittype.getUnittypeParameters().addOrChangeUnittypeParameter(parameter, acs);
 		}
 		return parameter;
 	}

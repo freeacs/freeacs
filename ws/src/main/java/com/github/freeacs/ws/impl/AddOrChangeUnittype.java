@@ -20,8 +20,8 @@ public class AddOrChangeUnittype {
 
 	private static final Logger logger = LoggerFactory.getLogger(AddOrChangeUnittype.class);
 
-	private ACS ACS;
-	private ACSWS xapsWS;
+	private ACS acs;
+	private ACSWS acsWS;
 
 	private void addOrChangeUnittypeImpl(Unittype unittypeXAPS, AddOrChangeUnittypeRequest gur) throws SQLException, RemoteException {
 		unittypeXAPS.setDescription(gur.getUnittype().getDescription());
@@ -49,27 +49,27 @@ public class AddOrChangeUnittype {
 			}
 		}
 		//		System.out.println("AOC: Unitypes object: " + xapsWS.getXAPS().getUnittypes());
-		xapsWS.getXAPS().getUnittypes().addOrChangeUnittype(unittypeXAPS, ACS);
+		acsWS.getAcs().getUnittypes().addOrChangeUnittype(unittypeXAPS, acs);
 		for (UnittypeParameter utp : dUtpList) {
 			//			System.out.println("D: Unittype: " + unittypeXAPS + ", UTP:" + utp.getName() + ", " + utp.getFlag().getFlag());
-			unittypeXAPS.getUnittypeParameters().deleteUnittypeParameter(utp, ACS);
+			unittypeXAPS.getUnittypeParameters().deleteUnittypeParameter(utp, acs);
 		}
 		for (UnittypeParameter utp : acUtpList) {
 			//			System.out.println("AOC: Unittype: " + unittypeXAPS + ", UTP:" + utp.getName() + ", " + utp.getFlag().getFlag());
-			unittypeXAPS.getUnittypeParameters().addOrChangeUnittypeParameter(utp, ACS);
+			unittypeXAPS.getUnittypeParameters().addOrChangeUnittypeParameter(utp, acs);
 		}
 	}
 
 	public AddOrChangeUnittypeResponse addOrChangeUnittype(AddOrChangeUnittypeRequest gur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 			
-			xapsWS = ACSWSFactory.getXAPSWS(gur.getLogin(),xapsDs,syslogDs);
-			ACS = xapsWS.getXAPS();
-			User user = xapsWS.getId().getUser();
+			acsWS = ACSWSFactory.getXAPSWS(gur.getLogin(),xapsDs,syslogDs);
+			acs = acsWS.getAcs();
+			User user = acsWS.getId().getUser();
 			if (gur.getUnittype() == null || gur.getUnittype().getName() == null)
 				throw ACSWS.error(logger, "No unittype name specified");
 			boolean isAdmin = user.getPermissions().getPermissions().length == 0;
-			Unittypes unittypes = ACS.getUnittypes();
+			Unittypes unittypes = acs.getUnittypes();
 			Unittype unittypeXAPS = null;
 			if (unittypes.getByName(gur.getUnittype().getName()) == null) { // make new unittype
 				if (isAdmin) {// allow if login is admin
@@ -80,7 +80,7 @@ public class AddOrChangeUnittype {
 					throw ACSWS.error(logger, "The unittype " + gur.getUnittype().getName() + " does not exist, your login does not have the permissions to create it.");
 				}
 			} else { // change an existing one
-				unittypeXAPS = xapsWS.getUnittypeFromXAPS(gur.getUnittype().getName());
+				unittypeXAPS = acsWS.getUnittypeFromXAPS(gur.getUnittype().getName());
 				addOrChangeUnittypeImpl(unittypeXAPS, gur);
 			}
 			return new AddOrChangeUnittypeResponse(ConvertACS2WS.convert(unittypeXAPS));

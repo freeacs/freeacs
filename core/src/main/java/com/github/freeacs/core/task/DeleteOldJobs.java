@@ -20,13 +20,13 @@ public class DeleteOldJobs extends DBIOwner {
 
 	private static Logger logger = LoggerFactory.getLogger(DeleteOldJobs.class);
 
-	private ACS ACS;
+	private ACS acs;
 	private Map<Integer, Job> jobMap;
 
 
 	@Override
 	public void runImpl() throws Exception {
-		ACS = getLatestFreeacs();
+		acs = getLatestFreeacs();
 		removeOldJobs();
 	}
 
@@ -38,7 +38,7 @@ public class DeleteOldJobs extends DBIOwner {
 	private void removeOldJobs() throws Exception {
 		UnitJobs unitJobs = new UnitJobs(getMainDataSource());
 		jobMap = new HashMap<Integer, Job>();
-		Unittype[] unittypeArr = ACS.getUnittypes().getUnittypes();
+		Unittype[] unittypeArr = acs.getUnittypes().getUnittypes();
 		for (Unittype unittype : unittypeArr) {
 			Job[] jobList = unittype.getJobs().getJobs();
 			for (Job j : jobList) {
@@ -53,9 +53,9 @@ public class DeleteOldJobs extends DBIOwner {
 				if (job.getChildren().size() == 0) {
 					unitJobs.delete(job);
 					logger.info("DeleteOldJobs: \tDeleted all rows in unit_job with jobId = " + job.getId());
-					job.getGroup().getUnittype().getJobs().deleteJobParameters(job, ACS);
+					job.getGroup().getUnittype().getJobs().deleteJobParameters(job, acs);
 					logger.info("DeleteOldJobs: \tDeleted all rows in job_param with jobId = " + job.getId());
-					job.getGroup().getUnittype().getJobs().delete(job, ACS);
+					job.getGroup().getUnittype().getJobs().delete(job, acs);
 					logger.info("DeleteOldJobs: \tDeleted row in job with jobId = " + job.getId());
 					removeFromJCMap.add(job);
 				} else {

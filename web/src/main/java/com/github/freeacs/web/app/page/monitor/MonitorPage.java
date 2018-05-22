@@ -51,9 +51,9 @@ public class MonitorPage extends AbstractWebPage {
 	 * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
 	 */
 	public void process(ParameterParser req, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
-		ACS ACS = XAPSLoader.getXAPS(req.getSession().getId(), xapsDataSource, syslogDataSource);
+		ACS acs = XAPSLoader.getXAPS(req.getSession().getId(), xapsDataSource, syslogDataSource);
 
-		if (ACS == null) {
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}

@@ -18,15 +18,15 @@ import java.util.Map.Entry;
 public class GetUnits {
 	private static final Logger logger = LoggerFactory.getLogger(GetUnits.class);
 
-	private ACS ACS;
-	private ACSWS xapsWS;
+	private ACS acs;
+	private ACSWS acsWS;
 
 	public GetUnitsResponse getUnits(GetUnitsRequest gur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 			
-			xapsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
-			ACS = xapsWS.getXAPS();
-			ACSUnit ACSUnit = xapsWS.getXAPSUnit(ACS);
+			acsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
+			acs = acsWS.getAcs();
+			ACSUnit acsUnit = acsWS.getXAPSUnit(acs);
 
 			com.github.freeacs.ws.Unit unitWS = gur.getUnit();
 
@@ -34,9 +34,9 @@ public class GetUnits {
 			com.github.freeacs.dbi.Unittype unittypeXAPS = null;
 			List<com.github.freeacs.dbi.Profile> profilesXAPS = new ArrayList<com.github.freeacs.dbi.Profile>();
 			if (unitWS.getUnittype() != null && unitWS.getUnittype().getName() != null) {
-				unittypeXAPS = xapsWS.getUnittypeFromXAPS(unitWS.getUnittype().getName());
+				unittypeXAPS = acsWS.getUnittypeFromXAPS(unitWS.getUnittype().getName());
 				if (unitWS.getProfile() != null && unitWS.getProfile().getName() != null) {
-					profilesXAPS.add(xapsWS.getProfileFromXAPS(unittypeXAPS.getName(), unitWS.getProfile().getName()));
+					profilesXAPS.add(acsWS.getProfileFromXAPS(unittypeXAPS.getName(), unitWS.getProfile().getName()));
 				} else
 					profilesXAPS = Arrays.asList(unittypeXAPS.getProfiles().getProfiles());
 			}
@@ -50,18 +50,18 @@ public class GetUnits {
 			/* Input is validated - now execute searches */
 			Map<String, Unit> unitMap = new TreeMap<String, Unit>();
 			if (unitWS.getUnitId() != null) { // Use-case 1
-				Unit unitXAPS = ACSUnit.getUnitById(unitWS.getUnitId());
+				Unit unitXAPS = acsUnit.getUnitById(unitWS.getUnitId());
 				if (unitXAPS != null)
 					unitMap.put(unitWS.getUnitId(), unitXAPS);
 			} else if (useCase3) {// Use-case 3, expect parameters and unittype
 				List<com.github.freeacs.dbi.Parameter> upList = validateParameters(unitWS, profilesXAPS);
-				Map<String, Unit> tmpMap = ACSUnit.getUnits(unittypeXAPS, profilesXAPS, upList, 51);
+				Map<String, Unit> tmpMap = acsUnit.getUnits(unittypeXAPS, profilesXAPS, upList, 51);
 				for (Unit unitXAPS : tmpMap.values())
-					unitMap.put(unitXAPS.getId(), ACSUnit.getUnitById(unitXAPS.getId()));
+					unitMap.put(unitXAPS.getId(), acsUnit.getUnitById(unitXAPS.getId()));
 			} else { // Use-case 2
-				Map<String, Unit> tmpMap = ACSUnit.getUnits(unitWS.getSerialNumber(), profilesXAPS, 51);
+				Map<String, Unit> tmpMap = acsUnit.getUnits(unitWS.getSerialNumber(), profilesXAPS, 51);
 				for (Unit unitXAPS : tmpMap.values())
-					unitMap.put(unitXAPS.getId(), ACSUnit.getUnitById(unitXAPS.getId()));
+					unitMap.put(unitXAPS.getId(), acsUnit.getUnitById(unitXAPS.getId()));
 			}
 			
 			/* Search is executed - now build response */

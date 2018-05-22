@@ -47,8 +47,8 @@ public class UnittypeCreatePage extends AbstractWebPage {
 
 		String sessionId = params.getSession().getId();
 
-		ACS ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (ACS == null) {
+		ACS acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -56,7 +56,7 @@ public class UnittypeCreatePage extends AbstractWebPage {
 		InputDataIntegrity.loadAndStoreSession(params, outputHandler, inputData);
 
 		DropDownSingleSelect<Unittype> unittypesToCopyFrom = InputSelectionFactory.getDropDownSingleSelect(inputData.getUnittypeToCopyFrom(),
-				ACS.getUnittype(inputData.getUnittypeToCopyFrom().getString()), getUnittypesWithProtocol(ACS, sessionId, inputData.getNewProtocol().getString(), xapsDataSource, syslogDataSource));
+				acs.getUnittype(inputData.getUnittypeToCopyFrom().getString()), getUnittypesWithProtocol(sessionId, inputData.getNewProtocol().getString(), xapsDataSource, syslogDataSource));
 
 		if (inputData.getFormSubmit().hasValue("Create")) {
 			if (isUnittypesLimited(sessionId, xapsDataSource, syslogDataSource)) {
@@ -76,7 +76,7 @@ public class UnittypeCreatePage extends AbstractWebPage {
 				String copyFrom = inputData.getUnittypeToCopyFrom().getString();
 				Unittype unittypeToCopyFrom = null;
 				if (copyFrom != null)
-					unittypeToCopyFrom = ACS.getUnittype(copyFrom);
+					unittypeToCopyFrom = acs.getUnittype(copyFrom);
 
 				if (unittypeToCopyFrom != null) {
 					if (!unittypeToCopyFrom.getProtocol().equals(protocol)) {
@@ -86,7 +86,7 @@ public class UnittypeCreatePage extends AbstractWebPage {
 				}
 
 				Unittype unittype = new Unittype(modelName, vendor, description, ProvisioningProtocol.toEnum(protocol));
-				ACS.getUnittypes().addOrChangeUnittype(unittype, ACS);
+				acs.getUnittypes().addOrChangeUnittype(unittype, acs);
 
 				if (unittypeToCopyFrom != null) {
 					for (UnittypeParameter utp : getParametersFromUnittype(unittypeToCopyFrom).getUnittypeParameters()) {
@@ -94,7 +94,7 @@ public class UnittypeCreatePage extends AbstractWebPage {
 							UnittypeParameter newUtp = new UnittypeParameter(unittype, utp.getName(), utp.getFlag());
 							if (utp.getValues() != null)
 								newUtp.setValues(utp.getValues());
-							unittype.getUnittypeParameters().addOrChangeUnittypeParameter(newUtp, ACS);
+							unittype.getUnittypeParameters().addOrChangeUnittypeParameter(newUtp, acs);
 						}
 					}
 				}
@@ -130,7 +130,6 @@ public class UnittypeCreatePage extends AbstractWebPage {
 	/**
 	 * Gets the unittypes with protocol.
 	 *
-	 * @param ACS the xaps
 	 * @param sessionId the session id
 	 * @param protocol the protocol
 	 * @param xapsDataSource
@@ -139,7 +138,7 @@ public class UnittypeCreatePage extends AbstractWebPage {
 	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	private List<Unittype> getUnittypesWithProtocol(ACS ACS, String sessionId, String protocol, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
+	private List<Unittype> getUnittypesWithProtocol(String sessionId, String protocol, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
 		List<Unittype> unittypes = getAllowedUnittypes(sessionId, xapsDataSource, syslogDataSource);
 		List<Unittype> allowedUnittypes = new ArrayList<Unittype>();
 		if (protocol == null)

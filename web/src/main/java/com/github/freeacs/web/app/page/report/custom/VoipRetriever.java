@@ -32,16 +32,16 @@ public class VoipRetriever extends ReportRetriever {
 	 *
 	 * @param inputData the input data
 	 * @param params the params
-	 * @param ACS the xaps
+	 * @param acs the xaps
 	 * @throws SQLException the sQL exception
 	 *  the no available connection exception
 	 */
-	public VoipRetriever(ReportData inputData, ParameterParser params, ACS ACS) throws SQLException {
-		super(inputData, params, ACS);
-		generatorVoip = new ReportVoipGenerator(ACS.getDataSource(), ACS.getSyslog().getDataSource(), ACS, null,
-				XAPSLoader.getIdentity(params.getSession().getId(), ACS.getDataSource()));
-		generatorVoipCall = new ReportVoipCallGenerator(ACS.getDataSource(), ACS.getSyslog().getDataSource(),
-                ACS, null, XAPSLoader.getIdentity(params.getSession().getId(), ACS.getDataSource()));
+	public VoipRetriever(ReportData inputData, ParameterParser params, ACS acs) throws SQLException {
+		super(inputData, params, acs);
+		generatorVoip = new ReportVoipGenerator(acs.getDataSource(), acs.getSyslog().getDataSource(), acs, null,
+				XAPSLoader.getIdentity(params.getSession().getId(), acs.getDataSource()));
+		generatorVoipCall = new ReportVoipCallGenerator(acs.getDataSource(), acs.getSyslog().getDataSource(),
+                acs, null, XAPSLoader.getIdentity(params.getSession().getId(), acs.getDataSource()));
 	}
 
 	/* (non-Javadoc)

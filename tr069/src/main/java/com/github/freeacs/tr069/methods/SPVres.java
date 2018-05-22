@@ -22,7 +22,7 @@ public class SPVres {
 		ParameterList paramList = sessionData.getToCPE();
 		for (ParameterValueStruct pvs : paramList.getParameterValueList()) {
 			Log.notice(HTTPResponseCreator.class, "\t" + pvs.getName() + " : " + pvs.getValue());
-			String user = sessionData.getDbAccessSession().getACS().getSyslog().getIdentity().getUser().getUsername();
+			String user = sessionData.getDbAccessSession().getAcs().getSyslog().getIdentity().getUser().getUsername();
 			SyslogClient.notice(sessionData.getUnitId(), "ProvMsg: Written to CPE: " + pvs.getName() + " = " + pvs.getValue(), SyslogConstants.FACILITY_TR069, Provisioning.VERSION, user);
 		}
 

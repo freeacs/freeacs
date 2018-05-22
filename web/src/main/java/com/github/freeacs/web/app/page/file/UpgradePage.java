@@ -23,13 +23,13 @@ import java.util.Map;
 public class UpgradePage extends AbstractWebPage {
 
 	/** The xaps. */
-	private ACS ACS;
+	private ACS acs;
 
 	/** The input data. */
 	private UpgradeData inputData = new UpgradeData();
 
 	/** The xaps unit. */
-	private ACSUnit ACSUnit;
+	private ACSUnit acsUnit;
 
 	/** The parameter version. */
 	private String parameterVersion = SystemParameters.DESIRED_SOFTWARE_VERSION;
@@ -47,30 +47,30 @@ public class UpgradePage extends AbstractWebPage {
 	 * @throws Exception the exception
 	 */
 	private void updateDatabaseForUnit(Map<String, Object> root) throws Exception {
-		Unit u = ACSUnit.getUnitById(inputData.getUnit().getString(), unittypes.getSelected(), null);
+		Unit u = acsUnit.getUnitById(inputData.getUnit().getString(), unittypes.getSelected(), null);
 
 		if (u == null)
 			throw new Exception("The unit <i>" + inputData.getUnit().getString() + "</i> was not found");
 
-		Map<String, UnitParameter> params = ACSUnit.getUnitById(u.getId()).getUnitParameters();
+		Map<String, UnitParameter> params = acsUnit.getUnitById(u.getId()).getUnitParameters();
 
 		UnitParameter version = params.get(parameterVersion);
 
 		String versionNumber = inputData.getFirmware().getString();
 
 		if (version == null) {
-			UnittypeParameter utp = ACS.getUnittypeParameter(inputData.getUnittype().getString(), parameterVersion);
+			UnittypeParameter utp = acs.getUnittypeParameter(inputData.getUnittype().getString(), parameterVersion);
 			if (utp == null)
 				throw new Exception("Invalid unittype. Missing Owera specific parameters. Cannot add Unit parameters.");
-			version = new UnitParameter(utp, u.getId(), versionNumber, ACS.getProfile(u.getProfile().getId()));
+			version = new UnitParameter(utp, u.getId(), versionNumber, acs.getProfile(u.getProfile().getId()));
 		} else
 			version.getParameter().setValue(versionNumber);
 
 		List<UnitParameter> updatedParams = new ArrayList<UnitParameter>();
 		updatedParams.add(version);
-		ACSUnit.addOrChangeUnitParameters(updatedParams, u.getProfile());
+		acsUnit.addOrChangeUnitParameters(updatedParams, u.getProfile());
 
-		u = ACSUnit.getUnitById(u.getId());
+		u = acsUnit.getUnitById(u.getId());
 		SessionCache.putUnit(sessionId, u);
 
 		root.put("message", "Saved successfully");
@@ -83,7 +83,7 @@ public class UpgradePage extends AbstractWebPage {
 	 * @throws Exception the exception
 	 */
 	private void updateDatabaseForProfile(Map<String, Object> root) throws Exception {
-		Profile profile = ACS.getProfile(inputData.getUnittype().getString(), inputData.getProfile().getString());
+		Profile profile = acs.getProfile(inputData.getUnittype().getString(), inputData.getProfile().getString());
 		ProfileParameters params = profile.getProfileParameters();
 		ProfileParameter version = params.getByName(parameterVersion);
 
@@ -92,7 +92,7 @@ public class UpgradePage extends AbstractWebPage {
 			value = unittypes.getSelected().getFiles().getByVersionType(inputData.getFirmware().getString(), FileType.SOFTWARE).getVersion();
 
 		if (version == null) {
-			UnittypeParameter utp = ACS.getUnittypeParameter(inputData.getUnittype().getString(), parameterVersion);
+			UnittypeParameter utp = acs.getUnittypeParameter(inputData.getUnittype().getString(), parameterVersion);
 			if (utp == null)
 				throw new Exception("Invalid unittype. Missing Owera specific parameters. Cannot add Profile parameters.");
 			version = new ProfileParameter(profile, utp, value);
@@ -100,7 +100,7 @@ public class UpgradePage extends AbstractWebPage {
 			version.setValue(value);
 		}
 
-		params.addOrChangeProfileParameter(version, ACS);
+		params.addOrChangeProfileParameter(version, acs);
 		root.put("message", "Saved successfully");
 	}
 
@@ -112,17 +112,17 @@ public class UpgradePage extends AbstractWebPage {
 
 		sessionId = params.getSession().getId();
 
-		ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (ACS == null) {
+		acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
 
-		ACSUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource, syslogDataSource);
+		acsUnit = XAPSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
 
 		InputDataIntegrity.loadAndStoreSession(params, outputHandler, inputData, inputData.getUnittype());
 
-		unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS);
+		unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
 
 		Map<String, Object> root = outputHandler.getTemplateMap();
 

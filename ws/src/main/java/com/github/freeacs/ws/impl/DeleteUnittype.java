@@ -14,20 +14,20 @@ public class DeleteUnittype {
 
 	private static final Logger logger = LoggerFactory.getLogger(DeleteUnittype.class);
 
-	private ACS ACS;
-	private ACSWS xapsWS;
+	private ACS acs;
+	private ACSWS acsWS;
 
 	public DeleteUnittypeResponse deleteUnittype(DeleteUnittypeRequest dur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 			
-			xapsWS = ACSWSFactory.getXAPSWS(dur.getLogin(), xapsDs, syslogDs);
-			ACS = xapsWS.getXAPS();
+			acsWS = ACSWSFactory.getXAPSWS(dur.getLogin(), xapsDs, syslogDs);
+			acs = acsWS.getAcs();
 			if (dur.getUnittypeName() == null)
 				throw ACSWS.error(logger, "No unittype name is specified");
-			Unittype unittype = xapsWS.getUnittypeFromXAPS(dur.getUnittypeName());
+			Unittype unittype = acsWS.getUnittypeFromXAPS(dur.getUnittypeName());
 			//			System.out.println("D: Unitypes object: " + xaps.getUnittypes());
 			//			System.out.println("D: Unittype object: " + unittype);
-			int rowsDeleted = ACS.getUnittypes().deleteUnittype(unittype, ACS, true);
+			int rowsDeleted = acs.getUnittypes().deleteUnittype(unittype, acs, true);
 			if (rowsDeleted > 0)
 				return new DeleteUnittypeResponse(true);
 			else

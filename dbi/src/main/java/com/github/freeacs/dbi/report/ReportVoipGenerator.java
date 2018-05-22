@@ -25,8 +25,8 @@ public class ReportVoipGenerator extends ReportGenerator {
 	// Reg failed: ua0: reg failed 613883@nettala.fo: 903 DNS Error (0 bindings)
 	private static Pattern regfailedPattern = Pattern.compile(".*reg failed.*");
 
-	public ReportVoipGenerator(DataSource mainDataSource, DataSource syslogDataSource, ACS ACS, String logPrefix, Identity id) {
-		super(mainDataSource, syslogDataSource, ACS, logPrefix, id);
+	public ReportVoipGenerator(DataSource mainDataSource, DataSource syslogDataSource, ACS acs, String logPrefix, Identity id) {
+		super(mainDataSource, syslogDataSource, acs, logPrefix, id);
 	}
 
 	public Report<RecordVoip> generateFromReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws SQLException, IOException {
@@ -122,7 +122,7 @@ public class ReportVoipGenerator extends ReportGenerator {
 		filter.setCollectorTmsEnd(end);
 		filter.setFacilityVersion(swVersion);
 		Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
-		List<SyslogEntry> entries = syslog.read(filter, ACS);
+		List<SyslogEntry> entries = syslog.read(filter, acs);
 		Map<String, Report<RecordVoip>> unitReportMap = new HashMap<String, Report<RecordVoip>>();
 		for (SyslogEntry entry : entries) {
 			if (entry.getUnittypeName() == null || entry.getProfileName() == null)
@@ -179,7 +179,7 @@ public class ReportVoipGenerator extends ReportGenerator {
 		filter.setCollectorTmsEnd(end);
 		filter.setFacilityVersion(swVersion);
 		Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
-		List<SyslogEntry> entries = syslog.read(filter, ACS);
+		List<SyslogEntry> entries = syslog.read(filter, acs);
 		for (SyslogEntry entry : entries) {
 			if (entry.getUnittypeName() == null || entry.getProfileName() == null)
 				continue;

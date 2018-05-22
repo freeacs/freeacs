@@ -52,7 +52,7 @@ public class Unittype implements Comparable<Unittype> {
 
 	private Heartbeats heartbeats;
 
-	private ACS ACS;
+	private ACS acs;
 
 	public Unittype(String name, String vendor, String desc, ProvisioningProtocol protocol) {
 		if (name == null || name.trim().equals(""))
@@ -65,7 +65,7 @@ public class Unittype implements Comparable<Unittype> {
 
 	/**
 	 * Only to be used internally (to shape Freeacs object according to permissions)
-	 * @param id
+	 * @param p
 	 * @return
 	 */
 	protected void removeObjects(Profile p) {
@@ -88,12 +88,12 @@ public class Unittype implements Comparable<Unittype> {
 		heartbeats = null;
 	}
 
-	public void setACS(ACS ACS) {
-		this.ACS = ACS;
+	public void setAcs(ACS acs) {
+		this.acs = acs;
 	}
 
-	public ACS getACS() {
-		return ACS;
+	public ACS getAcs() {
+		return acs;
 	}
 
 	public String getDescription() {
@@ -107,7 +107,7 @@ public class Unittype implements Comparable<Unittype> {
 	public Profiles getProfiles() {
 		if (profiles == null) {
 			Map<Integer, Profile> idMap = new HashMap<Integer, Profile>();
-			MapWrapper<Profile> mw = new MapWrapper<Profile>(ACS.isStrictOrder());
+			MapWrapper<Profile> mw = new MapWrapper<Profile>(acs.isStrictOrder());
 			Map<String, Profile> nameMap = mw.getMap();
 			profiles = new Profiles(idMap, nameMap);
 		}
@@ -130,7 +130,7 @@ public class Unittype implements Comparable<Unittype> {
 	public UnittypeParameters getUnittypeParameters() {
 		if (unittypeParameters == null) {
 			Map<Integer, UnittypeParameter> idMap = new HashMap<Integer, UnittypeParameter>();
-			MapWrapper<UnittypeParameter> mw = new MapWrapper<UnittypeParameter>(ACS.isStrictOrder());
+			MapWrapper<UnittypeParameter> mw = new MapWrapper<UnittypeParameter>(acs.isStrictOrder());
 			Map<String, UnittypeParameter> nameMap = mw.getMap();
 			unittypeParameters = new UnittypeParameters(idMap, nameMap, this);
 		}
@@ -163,9 +163,9 @@ public class Unittype implements Comparable<Unittype> {
 
 	public Files getFiles() {
 		if (files == null) {
-			MapWrapper<File> mw1 = new MapWrapper<File>(ACS.isStrictOrder());
+			MapWrapper<File> mw1 = new MapWrapper<File>(acs.isStrictOrder());
 			Map<String, File> m1 = mw1.getMap();
-			MapWrapper<File> mw2 = new MapWrapper<File>(ACS.isStrictOrder());
+			MapWrapper<File> mw2 = new MapWrapper<File>(acs.isStrictOrder());
 			Map<String, File> m2 = mw2.getMap();
 			files = new Files(new HashMap<Integer, File>(), m1, m2, this);
 		}
@@ -187,7 +187,7 @@ public class Unittype implements Comparable<Unittype> {
 	public Heartbeats getHeartbeats() {
 		if (heartbeats == null) {
 			Map<Integer, Heartbeat> idMap = new HashMap<Integer, Heartbeat>();
-			MapWrapper<Heartbeat> mw = new MapWrapper<Heartbeat>(ACS.isStrictOrder());
+			MapWrapper<Heartbeat> mw = new MapWrapper<Heartbeat>(acs.isStrictOrder());
 			Map<String, Heartbeat> nameMap = mw.getMap();
 			heartbeats = new Heartbeats(idMap, nameMap, this);
 		}
@@ -201,7 +201,7 @@ public class Unittype implements Comparable<Unittype> {
 	public Triggers getTriggers() {
 		if (triggers == null) {
 			Map<Integer, Trigger> idMap = new HashMap<Integer, Trigger>();
-			MapWrapper<Trigger> mw = new MapWrapper<Trigger>(ACS.isStrictOrder());
+			MapWrapper<Trigger> mw = new MapWrapper<Trigger>(acs.isStrictOrder());
 			Map<String, Trigger> nameMap = mw.getMap();
 			triggers = new Triggers(idMap, nameMap, this);
 		}
@@ -215,7 +215,7 @@ public class Unittype implements Comparable<Unittype> {
 	public Groups getGroups() {
 		if (groups == null) {
 			Map<Integer, Group> idMap = new HashMap<Integer, Group>();
-			MapWrapper<Group> mw = new MapWrapper<Group>(ACS.isStrictOrder());
+			MapWrapper<Group> mw = new MapWrapper<Group>(acs.isStrictOrder());
 			Map<String, Group> nameMap = mw.getMap();
 			groups = new Groups(idMap, nameMap, this);
 		}
@@ -265,7 +265,7 @@ public class Unittype implements Comparable<Unittype> {
 	public Jobs getJobs() {
 		if (jobs == null) {
 			Map<Integer, Job> idMap = new HashMap<Integer, Job>();
-			MapWrapper<Job> mw = new MapWrapper<Job>(ACS.isStrictOrder());
+			MapWrapper<Job> mw = new MapWrapper<Job>(acs.isStrictOrder());
 			Map<String, Job> nameMap = mw.getMap();
 			jobs = new Jobs(idMap, nameMap, this);
 		}
@@ -282,9 +282,9 @@ public class Unittype implements Comparable<Unittype> {
 		return 0;
 	}
 
-	protected int ensureValidSystemParameters(ACS ACS) throws SQLException {
+	protected int ensureValidSystemParameters(ACS acs) throws SQLException {
 		int changedParams = 0;
-		if (ACS.getDbi() != null) { // Will not run on startup (initialization case)
+		if (acs.getDbi() != null) { // Will not run on startup (initialization case)
 			List<UnittypeParameter> utpList = new ArrayList<UnittypeParameter>();
 			for (Entry<String, UnittypeParameterFlag> entry : SystemParameters.commonParameters.entrySet()) {
 				UnittypeParameter utp = this.getUnittypeParameters().getByName(entry.getKey());
@@ -298,7 +298,7 @@ public class Unittype implements Comparable<Unittype> {
 					changedParams++;
 				}
 			}
-			this.getUnittypeParameters().addOrChangeUnittypeParameters(utpList, ACS);
+			this.getUnittypeParameters().addOrChangeUnittypeParameters(utpList, acs);
 		}
 		return changedParams;
 	}

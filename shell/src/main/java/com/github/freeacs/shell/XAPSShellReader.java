@@ -46,7 +46,7 @@ public class XAPSShellReader extends BufferedReader {
 
 	private String[] getLines() throws IOException {
 		List<String> completions = new ArrayList<String>();
-		if (freeacsShell.getSession() != null && freeacsShell.getSession().getACS() != null)
+		if (freeacsShell.getSession() != null && freeacsShell.getSession().getAcs() != null)
 			completions.addAll(FileUtil.getCompletions(freeacsShell.getSession()));
 
 		File folder = new File(System.getProperty("user.dir"));

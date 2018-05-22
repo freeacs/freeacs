@@ -29,7 +29,7 @@ public class JobPage extends AbstractWebPage {
 	// FIXME Why are we using class variables? What are the problem we are solving with this?
 	private JobData inputData;
 
-	private ACS ACS;
+	private ACS acs;
 	private Unittype unittype;
 
 	private String sessionId;
@@ -39,8 +39,8 @@ public class JobPage extends AbstractWebPage {
 
 		sessionId = req.getSession().getId();
 
-		ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (ACS == null) {
+		acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -51,30 +51,30 @@ public class JobPage extends AbstractWebPage {
 			InputDataIntegrity.loadAndStoreSession(req, outputHandler, inputData, inputData.getUnittype(), inputData.getJob());
 
 		Map<String, Object> fmMap = outputHandler.getTemplateMap();
-		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS);
+		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
 		fmMap.put("unittypes", unittypes);
 		unittype = unittypes.getSelected();
 
 		Job job = null;
 		if (unittype != null)
-			job = action(req, outputHandler, ACS);
+			job = action(req, outputHandler, acs);
 		output(outputHandler, fmMap, job);
 	}
 
 	private void output(Output outputHandler, Map<String, Object> fmMap, Job jobFromAction) {
 		if (jobFromAction != null) {
 			outputHandler.getTrailPoint().setJobName(jobFromAction.getName()); // Make sure job is set in Context-menu 
-			prepareEditOutput(jobFromAction, fmMap, ACS);
+			prepareEditOutput(jobFromAction, fmMap);
 			outputHandler.setTemplatePath("job/details");
 		} else if (inputData.getCmd().hasValue("create")) {
-			prepareCreateOutput(jobFromAction, fmMap, ACS);
+			prepareCreateOutput(jobFromAction, fmMap, acs);
 			outputHandler.getTrailPoint().setJobName(null);
 			outputHandler.setTemplatePath("job/create");
 		} else {
 			boolean delete = inputData.getFormSubmit().hasValue(WebConstants.DELETE);
 			Job jobFromSession = (unittype != null? unittype.getJobs().getByName(SessionCache.getSessionData(sessionId).getJobname()) : null);
 			if (!delete && jobFromSession != null) {
-				prepareEditOutput(jobFromSession, fmMap, ACS);
+				prepareEditOutput(jobFromSession, fmMap);
 				outputHandler.setTemplatePath("job/details");
 			} else {
 				outputHandler.getTrailPoint().setJobName(null);
@@ -105,7 +105,7 @@ public class JobPage extends AbstractWebPage {
 		return list;
 	}
 
-	private boolean actionCUDParameters(ParameterParser req, ACS ACS, Job job) throws SQLException {
+	private boolean actionCUDParameters(ParameterParser req, ACS acs, Job job) throws SQLException {
 		Jobs xapsJobs = unittype.getJobs();
 		UnittypeParameter[] utParams = unittype.getUnittypeParameters().getUnittypeParameters();
 		List<JobParameter> deleteList = new ArrayList<JobParameter>();
@@ -136,8 +136,8 @@ public class JobPage extends AbstractWebPage {
 				}
 			}
 		}
-		xapsJobs.deleteJobParameters(deleteList, ACS);
-		xapsJobs.addOrChangeJobParameters(updateList, ACS);
+		xapsJobs.deleteJobParameters(deleteList, acs);
+		xapsJobs.addOrChangeJobParameters(updateList, acs);
 
 		if (deleteList.size() > 0 || updateList.size() > 0) {
 			return true;
@@ -148,7 +148,7 @@ public class JobPage extends AbstractWebPage {
 
 	// code-order: unty, id, name, flag, desc, group, unct, rules, file, dep, repc, repi
 
-	private Job action(ParameterParser req, Output res, ACS ACS) throws Exception {
+	private Job action(ParameterParser req, Output res, ACS acs) throws Exception {
 		Jobs xapsJobs = unittype.getJobs();
 		Job job = null;
 		if (inputData.getFormSubmit().hasValue("Create new job") || inputData.getFormSubmit().hasValue(WebConstants.UPDATE)) {
@@ -174,34 +174,34 @@ public class JobPage extends AbstractWebPage {
 				job.setRepeatCount(inputData.getRepeatCount().getInteger());
 				job.setRepeatInterval(inputData.getRepeatInterval().getInteger());
 				if (inputData.getFormSubmit().hasValue("Create new job")) {
-					xapsJobs.add(job, ACS);
+					xapsJobs.add(job, acs);
 				} else
-					xapsJobs.changeFromUI(job, ACS);
+					xapsJobs.changeFromUI(job, acs);
 				return job;
 			} else {
 				res.getTemplateMap().put("errors", inputData.getErrors());
 			}
 		} else if (inputData.getFormSubmit().hasValue(WebConstants.DELETE)) {
 			job = unittype.getJobs().getByName(SessionCache.getSessionData(sessionId).getJobname());
-			UnitJobs unitJobs = new UnitJobs(ACS.getDataSource());
+			UnitJobs unitJobs = new UnitJobs(acs.getDataSource());
 			unitJobs.delete(job);
-			xapsJobs.deleteJobParameters(job, ACS);
-			xapsJobs.delete(job, ACS);
+			xapsJobs.deleteJobParameters(job, acs);
+			xapsJobs.delete(job, acs);
 			return null;
 		} else if (inputData.getFormSubmit().hasValue(WebConstants.UPDATE_PARAMS)) {
 			job = unittype.getJobs().getByName(SessionCache.getSessionData(sessionId).getJobname());
-			actionCUDParameters(req, ACS, job);
+			actionCUDParameters(req, acs, job);
 			return job;
 		} else if (inputData.getStatusSubmit().getString() != null) {
 			job = unittype.getJobs().getByName(SessionCache.getSessionData(sessionId).getJobname());
 			job.setStatus(jobStatusMethods.getJobStatusFromAcronym(inputData.getStatusSubmit().getString()));
-			xapsJobs.changeStatus(job, ACS);
+			xapsJobs.changeStatus(job, acs);
 			return job;
 		}
 		return null;
 	}
 
-	private void prepareEditOutput(Job job, Map<String, Object> map, ACS ACS) {
+	private void prepareEditOutput(Job job, Map<String, Object> map) {
 		map.put("job", job);
 		map.put("haschildren", job.getChildren() != null && job.getChildren().size() > 0);
 		map.put("requirefile", job.getFlags().getType().requireFile());
@@ -226,11 +226,11 @@ public class JobPage extends AbstractWebPage {
 		map.put("files", InputSelectionFactory.getDropDownSingleSelect(inputData.getFileId(), selectedFile, getFiles(job.getFlags().getType().getCorrelatedFileType())));
 	}
 
-	private void prepareCreateOutput(Job jobInAction, Map<String, Object> map, ACS ACS) {
+	private void prepareCreateOutput(Job jobInAction, Map<String, Object> map, ACS acs) {
 		if (unittype != null) {
 			JobServiceWindow selectedJobWindow = JobServiceWindow.valueOf(getServiceWindowString());
 			map.put("windows", InputSelectionFactory.getDropDownSingleSelect(inputData.getServiceWindow(), selectedJobWindow, Arrays.asList(JobServiceWindow.values())));
-			map.put("groups", InputSelectionFactory.getGroupSelection(inputData.getGroupId(), unittype, ACS));
+			map.put("groups", InputSelectionFactory.getGroupSelection(inputData.getGroupId(), unittype, acs));
 			Group selectedGroup = unittype.getGroups().getById(inputData.getGroupId().getInteger());
 			map.put("groups", InputSelectionFactory.getDropDownSingleSelect(inputData.getGroupId(), selectedGroup, Arrays.asList(unittype.getGroups().getGroups())));
 			JobType selectedJobType = JobType.valueOf(inputData.getType().getString());

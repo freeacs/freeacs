@@ -25,7 +25,7 @@ public class ReportGenerator extends DBIOwner {
 	private static long MONTH_MS = 31 * DAY_MS;
 
 	private static Logger logger = LoggerFactory.getLogger(ReportGenerator.class);
-	private ACS ACS;
+	private ACS acs;
 	private ScheduleType scheduleType;
 	private TmsConverter converter = new TmsConverter();
 
@@ -36,7 +36,7 @@ public class ReportGenerator extends DBIOwner {
 
 	@Override
 	public void runImpl() throws Exception {
-		ACS = getLatestFreeacs();
+		acs = getLatestFreeacs();
 		if (scheduleType == ScheduleType.DAILY)
 			dailyJobs();
 		else if (scheduleType == ScheduleType.HOURLY) {
@@ -81,11 +81,11 @@ public class ReportGenerator extends DBIOwner {
 		int updated = 0;
 		try {
 			c = cp.getConnection();
-			ACSUnit ACSUnit = new ACSUnit(cp, ACS, getSyslog());
-			for (Unittype unittype : ACS.getUnittypes().getUnittypes()) {
+			ACSUnit acsUnit = new ACSUnit(cp, acs, getSyslog());
+			for (Unittype unittype : acs.getUnittypes().getUnittypes()) {
 				for (Group group : unittype.getGroups().getGroups()) {
 
-					int unitCount = ACSUnit.getUnitCount(group);
+					int unitCount = acsUnit.getUnitCount(group);
 					DynamicStatement ds = new DynamicStatement();
 					ds.addSql("INSERT INTO report_group VALUES(?,?,?,?,?)");
 					ds.addArguments(now, pt.getTypeInt(), unittype.getName(), group.getName());
@@ -95,7 +95,7 @@ public class ReportGenerator extends DBIOwner {
 					RecordGroup ru = new RecordGroup(now, pt, unittype.getName(), group.getName());
 					try {
 						ps.executeUpdate();
-						unittype.getGroups().addOrChangeGroup(group, ACS);
+						unittype.getGroups().addOrChangeGroup(group, acs);
 						logger.debug("ReportGenerator: - - The entry " + ru.getKey() + " was inserted");
 						inserted++;
 					} catch (SQLException sqle2) {
@@ -106,7 +106,7 @@ public class ReportGenerator extends DBIOwner {
 						ps = ds.makePreparedStatement(c);
 						int rowsUpdated = ps.executeUpdate();
 						if (rowsUpdated > 0)
-							unittype.getGroups().addOrChangeGroup(group, ACS);
+							unittype.getGroups().addOrChangeGroup(group, acs);
 						logger.debug("ReportGenerator: ReportGenerator: - - The entry " + ru.getKey() + " was updated");
 						updated++;
 					}
@@ -217,7 +217,7 @@ public class ReportGenerator extends DBIOwner {
 		int updated = 0;
 		try {
 			c = cp.getConnection();
-			for (Unittype unittype : ACS.getUnittypes().getUnittypes()) {
+			for (Unittype unittype : acs.getUnittypes().getUnittypes()) {
 				for (Job job : unittype.getJobs().getJobs()) {
 					int completed = job.getCompletedHadFailures() + job.getCompletedNoFailures();
 					int confirmedFailed = job.getConfirmedFailed();
@@ -354,7 +354,7 @@ public class ReportGenerator extends DBIOwner {
 			rs = s.executeQuery("SELECT unit_id, profile_id, unit_type_id FROM unit");
 			Map<String, UnitSWLCT> unitMap = new HashMap<String, UnitSWLCT>();
 			while (rs.next()) {
-				Unittype unittype = ACS.getUnittype(rs.getInt("unit_type_id"));
+				Unittype unittype = acs.getUnittype(rs.getInt("unit_type_id"));
 				Profile profile = unittype.getProfiles().getById(rs.getInt("profile_id"));
 				Unit unit = new Unit(rs.getString("unit_id"), unittype, profile);
 				unitMap.put(unit.getId(), new UnitSWLCT(unit));
@@ -721,7 +721,7 @@ public class ReportGenerator extends DBIOwner {
 	}
 
 	private void buildProvisioning(PeriodType periodType) throws SQLException, IOException, ParseException {
-		ReportProvisioningGenerator rg = new ReportProvisioningGenerator(getMainDataSource(), getSyslogDataSource(), ACS, "- - ", getIdentity());
+		ReportProvisioningGenerator rg = new ReportProvisioningGenerator(getMainDataSource(), getSyslogDataSource(), acs, "- - ", getIdentity());
 		Date endTmsExc = new Date();
 		Date startTmsInc = rg.startReportFromTms(periodType, "report_prov");
 		logger.info("ReportGenerator: - Generating ProvSYSReport (" + periodType.getTypeStr() + "-based) from " + startTmsInc + " to " + endTmsExc);
@@ -738,7 +738,7 @@ public class ReportGenerator extends DBIOwner {
 	}
 
 	private void buildSyslog(PeriodType periodType) throws SQLException, IOException, ParseException {
-		ReportSyslogGenerator rg = new ReportSyslogGenerator(getMainDataSource(), getSyslogDataSource(), ACS, "- - ", getIdentity());
+		ReportSyslogGenerator rg = new ReportSyslogGenerator(getMainDataSource(), getSyslogDataSource(), acs, "- - ", getIdentity());
 		Date endTmsExc = new Date();
 		Date startTmsInc = rg.startReportFromTms(periodType, "report_syslog");
 		logger.info("ReportGenerator: - Generating SyslogReport (" + periodType.getTypeStr() + "-based) from " + startTmsInc + " to " + endTmsExc);
@@ -755,7 +755,7 @@ public class ReportGenerator extends DBIOwner {
 	}
 
 	private void buildHardwareSYS(PeriodType periodType) throws SQLException, IOException {
-		ReportHardwareGenerator rg = new ReportHardwareGenerator(getMainDataSource(), getSyslogDataSource(), ACS, "- - ", getIdentity());
+		ReportHardwareGenerator rg = new ReportHardwareGenerator(getMainDataSource(), getSyslogDataSource(), acs, "- - ", getIdentity());
 		Date endTmsExc = new Date();
 		Date startTmsInc = rg.startReportFromTms(periodType, "report_hw");
 		logger.info("ReportGenerator: - Generating HardwareSYSReport (" + periodType.getTypeStr() + "-based) from " + startTmsInc + " to " + endTmsExc);
@@ -783,7 +783,7 @@ public class ReportGenerator extends DBIOwner {
 	}
 
 	private void buildVoipSYS(PeriodType periodType) throws SQLException, IOException {
-		ReportVoipGenerator rg = new ReportVoipGenerator(getMainDataSource(), getSyslogDataSource(), ACS, "- - ", getIdentity());
+		ReportVoipGenerator rg = new ReportVoipGenerator(getMainDataSource(), getSyslogDataSource(), acs, "- - ", getIdentity());
 		Date endTmsExc = new Date();
 		Date startTmsInc = rg.startReportFromTms(periodType, "report_voip");
 		logger.info("ReportGenerator: - Generating VoipSYSReport (" + periodType.getTypeStr() + "-based) from " + startTmsInc + " to " + endTmsExc);

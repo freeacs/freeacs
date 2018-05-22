@@ -1,4 +1,4 @@
-									<script src="javascript/ACS.module.permissions.js"></script>
+									<script src="javascript/acs.module.permissions.js"></script>
 									<form autocomplete="off" action="${URL_MAP.PERMISSIONS}&cmd=create<#if async??>&async=true</#if>" method="post" name="details" class="unit" accept-charset="ISO-8859-1">
 										<#if submitted?? && submitted><input type="hidden" id="submitted" value="true" /></#if>
 										<input type="hidden" value="permissions" name="page" />

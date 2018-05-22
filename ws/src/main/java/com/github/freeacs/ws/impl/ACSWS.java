@@ -16,7 +16,7 @@ public class ACSWS {
 	private DataSource xapsDataSource;
 	private DataSource syslogDataSource;
 	private Identity id;
-	private ACS ACS;
+	private ACS acs;
 	private boolean initialized = false;
 
 	public static String VERSION = "1.4.8";
@@ -27,13 +27,13 @@ public class ACSWS {
 		init(login, lifetimeSec);
 	}
 
-	public ACS getXAPS() {
-		return ACS;
+	public ACS getAcs() {
+		return acs;
 	}
 
-	ACSUnit getXAPSUnit(ACS ACS) throws RemoteException {
+	ACSUnit getXAPSUnit(ACS acs) throws RemoteException {
 		try {
-			return new ACSUnit(xapsDataSource, ACS, ACS.getSyslog());
+			return new ACSUnit(xapsDataSource, acs, acs.getSyslog());
 		} catch (Throwable t) {
 			String msg = "An exception occured while retrieving XAPSUnit object";
 			logger.error(msg, t);
@@ -53,7 +53,7 @@ public class ACSWS {
 				//	private Unittypes allowedUnittypes;
 				Syslog syslog = new Syslog(syslogDataSource, id);
 				DBI dbi = new DBI(lifetimeSec + 30, xapsDataSource, syslog);
-				ACS = dbi.getACS();
+				acs = dbi.getAcs();
 				if (!login.getPassword().equals(user.getSecret()) && !user.isCorrectSecret(login.getPassword()))
 					throw error("The password is incorrect");
 				// At this stage we have a positive authentication of the user
@@ -68,8 +68,8 @@ public class ACSWS {
 		}
 	}
 
-	Unit getUnitByMAC(ACSUnit ACSUnit, Unittype unittype, Profile profile, String searchStr) throws RemoteException, SQLException {
-		Unit unitFoundByMac = ACSUnit.getUnitByValue(searchStr, unittype, profile);
+	Unit getUnitByMAC(ACSUnit acsUnit, Unittype unittype, Profile profile, String searchStr) throws RemoteException, SQLException {
+		Unit unitFoundByMac = acsUnit.getUnitByValue(searchStr, unittype, profile);
 		if (unitFoundByMac != null) {
 			return unitFoundByMac;
 		} else {
@@ -107,7 +107,7 @@ public class ACSWS {
 	protected Unittype getUnittypeFromXAPS(String unittypeName) throws RemoteException {
 		if (unittypeName == null)
 			throw error("The unittype name is not specified");
-		Unittype unittype = ACS.getUnittype(unittypeName);
+		Unittype unittype = acs.getUnittype(unittypeName);
 		if (unittype == null)
 			throw error("The unittype " + unittypeName + " is not found/allowed in xAPS");
 		return unittype;

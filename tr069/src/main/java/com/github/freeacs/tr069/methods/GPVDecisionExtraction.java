@@ -48,7 +48,7 @@ public class GPVDecisionExtraction {
 		}
 		sessionData.setToDB(toDB);
 		try {
-			DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(reqRes.getDbAccess().getDBI().getACS(), sessionData.getDbAccessSession());
+			DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(reqRes.getDbAccess().getDBI().getAcs(), sessionData.getDbAccessSession());
 			dbAccessSessionTR069.writeUnitSessionParams(sessionData);
 			//			reqRes.getSessionData().getUnit().toWriteQueue(SystemParameters.PROVISIONING_MODE, ProvisioningMode.PERIODIC.toString());
 			Log.debug(GPVDecisionExtraction.class, toDB.size() + " params written to ACS session storage");

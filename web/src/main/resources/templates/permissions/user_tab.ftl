@@ -1,4 +1,4 @@
-	<script src="javascript/ACS.module.user.js" type="text/javascript"></script>
+	<script src="javascript/acs.module.user.js" type="text/javascript"></script>
 	
 	<form action="" method="get">
 		<fieldset>

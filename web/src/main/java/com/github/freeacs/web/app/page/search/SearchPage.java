@@ -25,10 +25,10 @@ import java.util.Map.Entry;
 public class SearchPage extends AbstractWebPage {
 
 	/** The xaps. */
-	private ACS ACS;
+	private ACS acs;
 
 	/** The xaps unit. */
-	private ACSUnit ACSUnit;
+	private ACSUnit acsUnit;
 
 	/** The input data. */
 	private SearchData inputData;
@@ -45,16 +45,16 @@ public class SearchPage extends AbstractWebPage {
 	 */
 	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		inputData = (SearchData) InputDataRetriever.parseInto(new SearchData(), params);
-		ACS = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
-		if (ACS == null) {
+		acs = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
-		ACSUnit = XAPSLoader.getXAPSUnit(params.getSession().getId(), xapsDataSource, syslogDataSource);
+		acsUnit = XAPSLoader.getACSUnit(params.getSession().getId(), xapsDataSource, syslogDataSource);
 		InputDataIntegrity.loadAndStoreSession(params, outputHandler, inputData, inputData.getUnittype(), inputData.getProfile());
 
-		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS);
-		DropDownSingleSelect<Profile> profiles = InputSelectionFactory.getProfileSelection(inputData.getProfile(), inputData.getUnittype(), ACS);
+		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
+		DropDownSingleSelect<Profile> profiles = InputSelectionFactory.getProfileSelection(inputData.getProfile(), inputData.getUnittype(), acs);
 
 		Map<String, Object> map = outputHandler.getTemplateMap();
 
@@ -82,7 +82,7 @@ public class SearchPage extends AbstractWebPage {
 		if (inputData.getFormSubmit().isValue("Search")) {
 			int limit = inputData.getLimit().getInteger(100);
 			List<Unit> result = getSearchResults(limit, unittypes.getSelected(), profiles.getSelected(), params, xapsDataSource, syslogDataSource);
-			result = ACSUnit.getUnitsWithParameters(unittypes.getSelected(),
+			result = acsUnit.getUnitsWithParameters(unittypes.getSelected(),
 					profiles.getSelected(),	result);
 			List<SearchResultWrapper> wrappedResults = new ArrayList<>();
 			for (Unit u : result) {
@@ -180,15 +180,15 @@ public class SearchPage extends AbstractWebPage {
 			if (inputData.getUnitParamValue().notNullNorValue(""))
 				unitParamValue = "%" + inputData.getUnitParamValue().getString() + "%";
 			if (profile == null) {
-				results = new ArrayList<Unit>(ACSUnit.getUnits(unitParamValue, allowedProfiles, more).values());
+				results = new ArrayList<Unit>(acsUnit.getUnits(unitParamValue, allowedProfiles, more).values());
 			} else {
-				results = new ArrayList<Unit>(ACSUnit.getUnits(unitParamValue, unittype, profile, more).values());
+				results = new ArrayList<Unit>(acsUnit.getUnits(unitParamValue, unittype, profile, more).values());
 			}
 		} else if (advancedMode() && unittype != null) {
 			if (profile == null) {
-				results = new ArrayList<Unit>(ACSUnit.getUnits(unittype, allowedProfiles, searchParams, more).values());
+				results = new ArrayList<Unit>(acsUnit.getUnits(unittype, allowedProfiles, searchParams, more).values());
 			} else {
-				results = new ArrayList<Unit>(ACSUnit.getUnits(unittype, profile, searchParams, more).values());
+				results = new ArrayList<Unit>(acsUnit.getUnits(unittype, profile, searchParams, more).values());
 			}
 		}
 

@@ -78,8 +78,8 @@ public class Jobs {
 		}
 	}
 
-	public void addOrChangeJobParameters(List<JobParameter> jobParameters, ACS ACS) throws SQLException {
-		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
+	public void addOrChangeJobParameters(List<JobParameter> jobParameters, ACS acs) throws SQLException {
+		if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		Connection connection = null;
 		PreparedStatement pp = null;
@@ -88,7 +88,7 @@ public class Jobs {
 		boolean wasAutoCommit = false;
 		try {
 			checkParameters(jobParameters);
-			connection = ACS.getDataSource().getConnection();
+			connection = acs.getDataSource().getConnection();
 			wasAutoCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
 			for (int i = 0; jobParameters != null && i < jobParameters.size(); i++) {
@@ -132,8 +132,8 @@ public class Jobs {
 				}
 			}
 			connection.commit();
-			if (ACS.getDbi() != null && jobParameters.size() > 0)
-				ACS.getDbi().publishChange(jobParameters.get(0).getJob(), jobParameters.get(0).getJob().getGroup().getUnittype());
+			if (acs.getDbi() != null && jobParameters.size() > 0)
+				acs.getDbi().publishChange(jobParameters.get(0).getJob(), jobParameters.get(0).getJob().getGroup().getUnittype());
 		} catch (SQLException sqlex) {
 			connection.rollback();
 			sqle = sqlex;
@@ -149,15 +149,15 @@ public class Jobs {
 
 	}
 
-	public void deleteJobParameters(Job job, ACS ACS) throws SQLException {
-		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
+	public void deleteJobParameters(Job job, ACS acs) throws SQLException {
+		if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		Connection connection = null;
 		Statement s = null;
 		String sql = null;
 		SQLException sqle = null;
 		try {
-			connection = ACS.getDataSource().getConnection();
+			connection = acs.getDataSource().getConnection();
 			s = connection.createStatement();
 			sql = "DELETE FROM job_param WHERE job_id = " + job.getId();
 			s.setQueryTimeout(60);
@@ -166,8 +166,8 @@ public class Jobs {
 			j.setDefaultParameters(null);
 
 			logger.info("Deleted all job parameters for job " + job.getId());
-			if (ACS.getDbi() != null)
-				ACS.getDbi().publishChange(job, job.getGroup().getUnittype());
+			if (acs.getDbi() != null)
+				acs.getDbi().publishChange(job, job.getGroup().getUnittype());
 		} catch (SQLException sqlex) {
 			sqle = sqlex;
 			throw sqle;
@@ -180,8 +180,8 @@ public class Jobs {
 		}
 	}
 
-	public int deleteJobParameters(List<JobParameter> jobParameters, ACS ACS) throws SQLException {
-		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
+	public int deleteJobParameters(List<JobParameter> jobParameters, ACS acs) throws SQLException {
+		if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		Connection connection = null;
 		Statement s = null;
@@ -189,7 +189,7 @@ public class Jobs {
 		SQLException sqle = null;
 		boolean wasAutoCommit = false;
 		try {
-			connection = ACS.getDataSource().getConnection();
+			connection = acs.getDataSource().getConnection();
 			wasAutoCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
 			s = connection.createStatement();
@@ -215,8 +215,8 @@ public class Jobs {
 				}
 			}
 			connection.commit();
-			if (ACS.getDbi() != null && jobParameters.size() > 0)
-				ACS.getDbi().publishChange(jobParameters.get(0).getJob(), jobParameters.get(0).getJob().getGroup().getUnittype());
+			if (acs.getDbi() != null && jobParameters.size() > 0)
+				acs.getDbi().publishChange(jobParameters.get(0).getJob(), jobParameters.get(0).getJob().getGroup().getUnittype());
 			return rowsDeleted;
 		} catch (SQLException sqlex) {
 			sqle = sqlex;
@@ -239,15 +239,15 @@ public class Jobs {
 		nameMap.remove(job.getName());
 	}
 
-	public void delete(Job job, ACS ACS) throws SQLException {
-		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
+	public void delete(Job job, ACS acs) throws SQLException {
+		if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
-		deleteJobParameters(job, ACS);
+		deleteJobParameters(job, acs);
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;
 		try {
-			c = ACS.getDataSource().getConnection();
+			c = acs.getDataSource().getConnection();
 			String sql = "DELETE FROM job WHERE job_id = ?";
 			pp = c.prepareStatement(sql);
 			pp.setInt(1, job.getId());
@@ -256,8 +256,8 @@ public class Jobs {
 			removeJobFromDataModel(job);
 
 			logger.info("Deleted job " + job.getId());
-			if (ACS.getDbi() != null)
-				ACS.getDbi().publishDelete(job, job.getGroup().getUnittype());
+			if (acs.getDbi() != null)
+				acs.getDbi().publishDelete(job, job.getGroup().getUnittype());
 		} catch (SQLException sqlex) {
 			sqle = sqlex;
 			throw sqle;
@@ -303,8 +303,8 @@ public class Jobs {
 		return false;
 	}
 
-	public void add(Job job, ACS ACS) throws SQLException {
-		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
+	public void add(Job job, ACS acs) throws SQLException {
+		if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		job.setStatus(JobStatus.READY);
 		job.validate();
@@ -315,7 +315,7 @@ public class Jobs {
 		try {
 			if (nameMap.get(job.getName()) != null)
 				throw new IllegalArgumentException("The job name already exists, choose another name");
-			c = ACS.getDataSource().getConnection();
+			c = acs.getDataSource().getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.setSql("INSERT INTO job (");
 			ds.addSqlAndArguments("job_name, ", job.getName());
@@ -352,10 +352,10 @@ public class Jobs {
 			idMap.put(job.getId(), job);
 			nameMap.put(job.getName(), job);
 
-			updateMandatoryJobParameters(job, ACS);
+			updateMandatoryJobParameters(job, acs);
 			logger.info("Inserted job " + job.getId());
-			if (ACS.getDbi() != null)
-				ACS.getDbi().publishAdd(job, job.getGroup().getUnittype());
+			if (acs.getDbi() != null)
+				acs.getDbi().publishAdd(job, job.getGroup().getUnittype());
 		} catch (SQLException sqlex) {
 			sqle = sqlex;
 			throw sqlex;
@@ -368,37 +368,37 @@ public class Jobs {
 
 	}
 
-	private void updateMandatoryJobParameters(Job job, ACS ACS) throws SQLException {
+	private void updateMandatoryJobParameters(Job job, ACS acs) throws SQLException {
 		if (job.getFlags().getType() == JobFlag.JobType.SOFTWARE) {
 			Parameter param = new Parameter(unittype.getUnittypeParameters().getByName(SystemParameters.DESIRED_SOFTWARE_VERSION), job.getFile().getVersion());
 			JobParameter jp = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, param);
 			List<JobParameter> jobParameters = new ArrayList<JobParameter>();
 			jobParameters.add(jp);
-			addOrChangeJobParameters(jobParameters, ACS);
+			addOrChangeJobParameters(jobParameters, acs);
 		} else if (job.getFlags().getType() == JobFlag.JobType.TR069_SCRIPT) {
-			UnittypeParameter jobUtp = SystemParameters.getTR069ScriptParameter(job.getFile().getTargetName(), SystemParameters.TR069ScriptType.Version, ACS, job.getUnittype());
+			UnittypeParameter jobUtp = SystemParameters.getTR069ScriptParameter(job.getFile().getTargetName(), SystemParameters.TR069ScriptType.Version, acs, job.getUnittype());
 			Parameter param = new Parameter(jobUtp, job.getFile().getVersion());
 			JobParameter jp = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, param);
 			List<JobParameter> jobParameters = new ArrayList<JobParameter>();
 			jobParameters.add(jp);
-			addOrChangeJobParameters(jobParameters, ACS);
+			addOrChangeJobParameters(jobParameters, acs);
 		} else if (job.getFlags().getType() == JobFlag.JobType.RESTART) {
 			Parameter param = new Parameter(unittype.getUnittypeParameters().getByName(SystemParameters.RESTART), "1");
 			JobParameter jp = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, param);
 			List<JobParameter> jobParameters = new ArrayList<JobParameter>();
 			jobParameters.add(jp);
-			addOrChangeJobParameters(jobParameters, ACS);
+			addOrChangeJobParameters(jobParameters, acs);
 		} else if (job.getFlags().getType() == JobFlag.JobType.RESET) {
 			Parameter param = new Parameter(unittype.getUnittypeParameters().getByName(SystemParameters.RESET), "1");
 			JobParameter jp = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, param);
 			List<JobParameter> jobParameters = new ArrayList<JobParameter>();
 			jobParameters.add(jp);
-			addOrChangeJobParameters(jobParameters, ACS);
+			addOrChangeJobParameters(jobParameters, acs);
 		}
 	}
 
 	/* Decided to skip unit-specific job parameters. Cause extra work/SQL in TR-069 server, has never been used in 5 years. */
-	public Map<String, JobParameter> readJobParameters(Job job, Unit unit, ACS ACS) throws SQLException {
+	public Map<String, JobParameter> readJobParameters(Job job, Unit unit, ACS acs) throws SQLException {
 		return job.getDefaultParameters();
 	}
 
@@ -414,12 +414,12 @@ public class Jobs {
 	 * job table. We make an effort to only send the data if there really is a change.
 	 * That will keep the number of message and data and load and the very minimum.
 	 */
-	public void changeFromCore(Job job, String publishMsg, ACS ACS) throws SQLException {
+	public void changeFromCore(Job job, String publishMsg, ACS acs) throws SQLException {
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;
 		try {
-			c = ACS.getDataSource().getConnection();
+			c = acs.getDataSource().getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSql("UPDATE job SET ");
 			ds.addSqlAndArguments("completed_had_failure = ?, ", job.getCompletedHadFailures());
@@ -438,8 +438,8 @@ public class Jobs {
 			message += job.getCompletedHadFailures() + "," + job.getUnconfirmedFailed() + "," + job.getConfirmedFailed() + ")";
 
 			logger.info(message);
-			if (publishMsg.length() > 0 && ACS.getDbi() != null)
-				ACS.getDbi().publishJobCounters(job.getId(), publishMsg);
+			if (publishMsg.length() > 0 && acs.getDbi() != null)
+				acs.getDbi().publishJobCounters(job.getId(), publishMsg);
 		} catch (SQLException sqlex) {
 			sqle = sqlex;
 			throw sqle;
@@ -449,24 +449,14 @@ public class Jobs {
 		}
 	}
 
-	//	private boolean isDependencyEqualSoftwareVersion(Job job) {
-	//		if (job.getDependency() == null)
-	//			return true;
-	//		if (job.getDependency().getSoftware() == null && job.getSoftware() == null)
-	//			return true;
-	//		if (job.getDependency().getSoftware().getId().intValue() == job.getSoftware().getId().intValue())
-	//			return true;
-	//		return false;
-	//	}
-
-	public void changeStatus(Job job, ACS ACS) throws SQLException {
-		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
+	public void changeStatus(Job job, ACS acs) throws SQLException {
+		if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;
 		try {
-			c = ACS.getDataSource().getConnection();
+			c = acs.getDataSource().getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSql("UPDATE job SET ");
 			if (job.getStatus() == JobStatus.STARTED && job.getStartTimestamp() == null) {
@@ -500,8 +490,8 @@ public class Jobs {
 			if (rowsUpdated > 0) {
 
 				logger.info("Updated job " + job.getId() + " with status = " + job.getStatus());
-				if (ACS.getDbi() != null)
-					ACS.getDbi().publishChange(job, job.getGroup().getUnittype());
+				if (acs.getDbi() != null)
+					acs.getDbi().publishChange(job, job.getGroup().getUnittype());
 			} else {
 				String msg = "The job was not updated, most likely because the status change was not allowed ";
 				msg += "(but could also happen because the job was deleted).";
@@ -525,15 +515,15 @@ public class Jobs {
 	 * since they are updated by an other method (and another agent). It's important to separate the various
 	 * updates methods since the agents are independent of each other.
 	 */
-	public int changeFromUI(Job job, ACS ACS) throws SQLException {
-		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
+	public int changeFromUI(Job job, ACS acs) throws SQLException {
+		if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		job.validate();
 		Connection c = null;
 		PreparedStatement pp = null;
 		SQLException sqle = null;
 		try {
-			c = ACS.getDataSource().getConnection();
+			c = acs.getDataSource().getConnection();
 			if (isDependencyLoop(job, job.getDependency()))
 				throw new IllegalArgumentException("Job " + job.getId() + " cannot depend upon job " + job.getDependency().getId() + " since that creates a loop");
 			DynamicStatement ds = new DynamicStatement();
@@ -574,10 +564,10 @@ public class Jobs {
 			ps.close();
 			if (rowsUpdated > 0) {
 
-				updateMandatoryJobParameters(job, ACS);
+				updateMandatoryJobParameters(job, acs);
 				logger.info("Updated job " + job.getId() + " with type/description/status/rules");
-				if (ACS.getDbi() != null)
-					ACS.getDbi().publishChange(job, job.getGroup().getUnittype());
+				if (acs.getDbi() != null)
+					acs.getDbi().publishChange(job, job.getGroup().getUnittype());
 			} else {
 				String msg = "The job was not updated, most likely because status was " + JobStatus.COMPLETED;
 				msg += " or because the job was recently removed from the system";
@@ -593,20 +583,20 @@ public class Jobs {
 		}
 	}
 
-	protected static void refreshJob(Integer jobId, ACS ACS) throws SQLException {
+	protected static void refreshJob(Integer jobId, ACS acs) throws SQLException {
 		Connection c = null;
 		Statement s = null;
 		ResultSet rs = null;
 		SQLException sqle = null;
 		try {
-			c = ACS.getDataSource().getConnection();
+			c = acs.getDataSource().getConnection();
 			s = c.createStatement();
 			s.setQueryTimeout(60);
 			rs = s.executeQuery("SELECT * FROM job j, group_ g, unit_type u WHERE j.group_id = g.group_id AND g.unit_type_id = u.unit_type_id AND j.job_id = " + jobId);
 			Unittype unittype = null;
 			Job newJob = null;
 			if (rs.next()) {
-				unittype = ACS.getUnittype(rs.getInt("u.unit_type_id"));
+				unittype = acs.getUnittype(rs.getInt("u.unit_type_id"));
 				if (unittype == null)
 					return; // The unittype is not accessible for this user
 				Job oldJob = unittype.getJobs().getById(rs.getInt("job_id"));
@@ -672,7 +662,7 @@ public class Jobs {
 				unittype.getJobs().getIdMap().put(newJob.getId(), newJob);
 				unittype.getJobs().getNameMap().put(newJob.getName(), newJob);
 			} else {
-				for (Unittype ut : ACS.getUnittypes().getUnittypes()) {
+				for (Unittype ut : acs.getUnittypes().getUnittypes()) {
 					Job j = ut.getJobs().getIdMap().remove(jobId);
 					if (j != null) // should always be true - but for good measure...
 						ut.getJobs().getNameMap().remove(j.getName());

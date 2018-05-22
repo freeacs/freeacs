@@ -32,22 +32,22 @@ public class TestMenu {
 	}
 
 	public static void addOrChangeTestHistory(Unittype unittype, TestHistory testHistory) throws SQLException {
-		TestDB testDB = new TestDB(unittype.getACS());
+		TestDB testDB = new TestDB(unittype.getAcs());
 		testDB.addOrChangeTestHistory(testHistory);
 	}
 
 	public static int deleteTestHistory(Unittype unittype, TestHistory filter) throws SQLException {
-		TestDB testDB = new TestDB(unittype.getACS());
+		TestDB testDB = new TestDB(unittype.getAcs());
 		return testDB.deleteHistory(filter);
 	}
 
 	public static List<TestHistory> listTestHistory(Unittype unittype, TestHistory filter) throws SQLException {
-		TestDB testDB = new TestDB(unittype.getACS());
+		TestDB testDB = new TestDB(unittype.getAcs());
 		return testDB.getHistory(filter);
 	}
 
 	public static int importDirectory(Unittype unittype, String directory) throws IOException, SQLException {
-		TestDB testDB = new TestDB(unittype.getACS());
+		TestDB testDB = new TestDB(unittype.getAcs());
 		TestCaseFileHandler tcfh = new TestCaseFileHandler(unittype);
 		List<TestCase> testCaseList = tcfh.parseDirectory(directory);
 		for (TestCase tc : testCaseList)
@@ -56,7 +56,7 @@ public class TestMenu {
 	}
 
 	public static TestCase importFile(Unittype unittype, String filename) throws IOException, SQLException {
-		TestDB testDB = new TestDB(unittype.getACS());
+		TestDB testDB = new TestDB(unittype.getAcs());
 		TestCaseFileHandler tcfh = new TestCaseFileHandler(unittype);
 		TestCase tc = tcfh.parseFile(filename);
 		testDB.addOrChangeTestCase(tc);
@@ -64,7 +64,7 @@ public class TestMenu {
 	}
 
 	public static int exportTestCase(Unittype unittype, String directory, int testCaseId) throws IOException, SQLException {
-		TestDB testDB = new TestDB(unittype.getACS());
+		TestDB testDB = new TestDB(unittype.getAcs());
 		TestCase tc = testDB.getTestCase(unittype, testCaseId);
 		if (tc == null)
 			return 0;
@@ -74,7 +74,7 @@ public class TestMenu {
 	}
 
 	public static int exportTestCase(Unittype unittype, String directory, TestCaseMethod method, String paramFilter, String tagFilter) throws SQLException, IOException {
-		TestDB testDB = new TestDB(unittype.getACS());
+		TestDB testDB = new TestDB(unittype.getAcs());
 		Collection<TestCase> testCases = testDB.getCompleteTestCases(unittype, method, paramFilter, tagFilter);
 		TestCaseFileHandler tcfh = new TestCaseFileHandler(unittype);
 		for (TestCase tc : testCases)
@@ -83,17 +83,17 @@ public class TestMenu {
 	}
 
 	public static TestCase getTestCase(Unittype unittype, int testCaseId) throws SQLException {
-		TestDB testDB = new TestDB(unittype.getACS());
+		TestDB testDB = new TestDB(unittype.getAcs());
 		return testDB.getTestCase(unittype, testCaseId);
 	}
 
 	public static List<TestCase> listTestCases(Unittype unittype, TestCaseMethod method, String paramFilter, String tagFilter) throws SQLException {
-		TestDB testDB = new TestDB(unittype.getACS());
+		TestDB testDB = new TestDB(unittype.getAcs());
 		return testDB.getUncompleteTestCases(unittype, method, paramFilter, tagFilter);
 	}
 
 	public static Map<String, Integer> listTestCaseTags(Unittype unittype, TestCaseMethod method, String paramFilter, String tagFilter) throws SQLException {
-		TestDB testDB = new TestDB(unittype.getACS());
+		TestDB testDB = new TestDB(unittype.getAcs());
 		List<TestCase> tcList = testDB.getUncompleteTestCases(unittype, method, paramFilter, tagFilter);
 		Map<String, Integer> tagMap = new HashMap<String, Integer>();
 		for (TestCase tc : tcList) {
@@ -110,7 +110,7 @@ public class TestMenu {
 	}
 
 	public static int deleteTestCases(Unittype unittype, TestCaseMethod method, String paramFilter, String tagFilter, Session session) throws SQLException {
-		TestDB testDB = new TestDB(unittype.getACS());
+		TestDB testDB = new TestDB(unittype.getAcs());
 		List<TestCase> testCases = testDB.getUncompleteTestCases(unittype, method, paramFilter, tagFilter);
 		int count = 0;
 		for (TestCase tc : testCases) {
@@ -127,7 +127,7 @@ public class TestMenu {
 	}
 
 	private static int deleteDuplicateTestCasesImpl(Unittype unittype, TestCaseMethod method) throws SQLException {
-		TestDB testDB = new TestDB(unittype.getACS());
+		TestDB testDB = new TestDB(unittype.getAcs());
 		Collection<TestCase> testCases = testDB.getCompleteTestCases(unittype, method, null, null);
 		Map<Integer, TestCase> deleteMap = new HashMap<Integer, TestCase>();
 		for (TestCase tc1 : testCases) {
@@ -148,7 +148,7 @@ public class TestMenu {
 
 	public void validateFlags(OutputHandler oh) {
 		Unittype unittype = context.getUnittype();
-		TestDB testDB = new TestDB(unittype.getACS());
+		TestDB testDB = new TestDB(unittype.getAcs());
 		TR069DMParameterMap tr069DMMamp = testDB.getTr069DMMap();
 		Listing listing = oh.getListing();
 		listing.setHeading("Unittype Parameter Name", "Read-From-Device-Flag", "TR069-DM-Flag");
@@ -168,7 +168,7 @@ public class TestMenu {
 		Integer id = Util.autoboxInteger(args[1]);
 		if (id == null)
 			throw new IllegalArgumentException("The id was not a number");
-		TestDB testDB = new TestDB(session.getACS());
+		TestDB testDB = new TestDB(session.getAcs());
 		TestCase tc = testDB.getTestCase(context.getUnittype(), id);
 		if (tc == null)
 			throw new IllegalArgumentException("No Test Case was found");
@@ -207,7 +207,7 @@ public class TestMenu {
 	}
 
 	public void generatetc(String args[]) throws Exception {
-		TestDB testDB = new TestDB(session.getACS());
+		TestDB testDB = new TestDB(session.getAcs());
 		TestGenerator tg = new TestGenerator(TR069DMLoader.load(), context.getUnittype());
 		List<TestCase> generatedTc = null;
 		if (args.length > 1) {
@@ -400,10 +400,10 @@ public class TestMenu {
 
 	public void testModeChange(boolean enable) throws SQLException {
 		if (enable) {
-			session.getACSUnit().addOrChangeUnitParameter(context.getUnit(), SystemParameters.TEST_ENABLE, "1");
+			session.getAcsUnit().addOrChangeUnitParameter(context.getUnit(), SystemParameters.TEST_ENABLE, "1");
 			session.println("Test is enabled - you may initiate connection from device by sending a 'kick' command");
 		} else {
-			session.getACSUnit().addOrChangeUnitParameter(context.getUnit(), SystemParameters.TEST_ENABLE, "0");
+			session.getAcsUnit().addOrChangeUnitParameter(context.getUnit(), SystemParameters.TEST_ENABLE, "0");
 			// will be read by MessageListenerTask in TR-069 Server - the change will be picked up by the TR-069 server within max 11 seconds (average 5-6 sec)
 			session.getDbi().publishMessage("N/A", Message.MTYPE_PUB_TR069_TEST_END, Message.OTYPE_UNIT, context.getUnit().getId(), SyslogConstants.FACILITY_TR069);
 			session.println("Test is disabled - the TR-069 server will be notified within 10 seconds");

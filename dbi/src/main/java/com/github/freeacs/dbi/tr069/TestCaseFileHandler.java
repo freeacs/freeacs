@@ -79,11 +79,11 @@ public class TestCaseFileHandler {
 					fs.read(b);
 					fs.close();
 					f = new com.github.freeacs.dbi.File(unittype, array[1], FileType.MISC,
-							null, "1", null, null, unittype.getACS().getUser());
+							null, "1", null, null, unittype.getAcs().getUser());
 					f.setBytes(b);
 				}
 				tc.getFiles().setInputFile(f);
-				unittype.getFiles().addOrChangeFile(f, unittype.getACS());
+				unittype.getFiles().addOrChangeFile(f, unittype.getAcs());
 			}
 			else if (array[0].toUpperCase().equals("OUTPUT")) {
 				if (array.length >= 2) {

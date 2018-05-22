@@ -56,11 +56,11 @@ public class UnitQueryWithinUnittype {
 	private Unittype unittype;
 	private List<Profile> profiles;
 
-	private ACS ACS;
+	private ACS acs;
 
-	public UnitQueryWithinUnittype(Connection c, ACS ACS, Unittype unittype, List<Profile> profiles) {
+	public UnitQueryWithinUnittype(Connection c, ACS acs, Unittype unittype, List<Profile> profiles) {
 		this.connection = c;
-		this.ACS = ACS;
+		this.acs = acs;
 		if (unittype != null)
 			this.unittype = unittype;
 		else if (profiles != null && profiles.size() > 0 && profiles.get(0).getUnittype() != null)
@@ -79,9 +79,9 @@ public class UnitQueryWithinUnittype {
 		}
 	}
 
-	public UnitQueryWithinUnittype(Connection c, ACS ACS, Unittype unittype, Profile profile) {
+	public UnitQueryWithinUnittype(Connection c, ACS acs, Unittype unittype, Profile profile) {
 		this.connection = c;
-		this.ACS = ACS;
+		this.acs = acs;
 		if (unittype != null)
 			this.unittype = unittype;
 		else if (profiles != null && profiles.size() > 0 && profiles.get(0).getUnittype() != null)
@@ -525,7 +525,7 @@ public class UnitQueryWithinUnittype {
 				String unitId = rs.getString("u.unit_id");
 				Integer profileId = rs.getInt("u.profile_id");
 				Integer unittypeId = rs.getInt("u.unit_type_id");
-				Unittype unittype = ACS.getUnittype(unittypeId);
+				Unittype unittype = acs.getUnittype(unittypeId);
 				Profile profile = unittype.getProfiles().getById(profileId);
 				Unit unit = new Unit(unitId, unittype, profile);
 				for (int i = 0; i < parameters.size(); i++) {
@@ -564,7 +564,7 @@ public class UnitQueryWithinUnittype {
 
 	public Map<String, Unit> getUnits(List<Parameter> parameters, Integer limit) throws SQLException {
 		Map<String, Unit> units = null;
-		if (ACS.isStrictOrder())
+		if (acs.isStrictOrder())
 			units = new TreeMap<String, Unit>();
 		else
 			units = new HashMap<String, Unit>();

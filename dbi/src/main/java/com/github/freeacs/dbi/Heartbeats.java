@@ -42,8 +42,8 @@ public class Heartbeats {
 		return "Contains " + idMap.size() + " heartbeats";
 	}
 
-	private void addOrChangeHeartbeatImpl(Heartbeat heartbeat, ACS ACS) throws SQLException {
-		Connection c = ACS.getDataSource().getConnection();
+	private void addOrChangeHeartbeatImpl(Heartbeat heartbeat, ACS acs) throws SQLException {
+		Connection c = acs.getDataSource().getConnection();
 		PreparedStatement ps = null;
 		try {
 			InsertOrUpdateStatement ious = new InsertOrUpdateStatement("heartbeat", new Field("id", heartbeat.getId()));
@@ -60,12 +60,12 @@ public class Heartbeats {
 				if (gk.next())
 					heartbeat.setId(gk.getInt(1));
 				logger.info("Inserted heartbeat " + heartbeat.getId());
-				if (ACS.getDbi() != null)
-					ACS.getDbi().publishAdd(heartbeat, heartbeat.getUnittype());
+				if (acs.getDbi() != null)
+					acs.getDbi().publishAdd(heartbeat, heartbeat.getUnittype());
 			} else {
 				logger.info("Updated heartbeat " + heartbeat.getId());
-				if (ACS.getDbi() != null)
-					ACS.getDbi().publishChange(heartbeat, unittype);
+				if (acs.getDbi() != null)
+					acs.getDbi().publishChange(heartbeat, unittype);
 			}
 		} finally {
 			if (ps != null)
@@ -74,19 +74,19 @@ public class Heartbeats {
 		}
 	}
 
-	public void addOrChangeHeartbeat(Heartbeat heartbeat, ACS ACS) throws SQLException {
-		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
+	public void addOrChangeHeartbeat(Heartbeat heartbeat, ACS acs) throws SQLException {
+		if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		heartbeat.validateInput(true);
 		heartbeat.validate();
-		addOrChangeHeartbeatImpl(heartbeat, ACS);
+		addOrChangeHeartbeatImpl(heartbeat, acs);
 		idMap.put(heartbeat.getId(), heartbeat);
 		nameMap.put(heartbeat.getName(), heartbeat);
 	}
 
-	private void deleteHeartbeatImpl(Heartbeat heartbeat, ACS ACS) throws SQLException {
+	private void deleteHeartbeatImpl(Heartbeat heartbeat, ACS acs) throws SQLException {
 		PreparedStatement ps = null;
-		Connection c = ACS.getDataSource().getConnection();
+		Connection c = acs.getDataSource().getConnection();
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("DELETE FROM heartbeat WHERE id = ? ", heartbeat.getId());
@@ -95,8 +95,8 @@ public class Heartbeats {
 			ps.executeUpdate();
 			
 			logger.info("Deleted heartbeat " + heartbeat.getId());
-			if (ACS.getDbi() != null)
-				ACS.getDbi().publishDelete(heartbeat, unittype);
+			if (acs.getDbi() != null)
+				acs.getDbi().publishDelete(heartbeat, unittype);
 		} finally {
 			if (ps != null)
 				ps.close();
@@ -111,10 +111,10 @@ public class Heartbeats {
 	 *
 	 * @throws SQLException
 	 */
-	public void deleteHeartbeat(Heartbeat heartbeat, ACS ACS) throws SQLException {
-		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
+	public void deleteHeartbeat(Heartbeat heartbeat, ACS acs) throws SQLException {
+		if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
-		deleteHeartbeatImpl(heartbeat, ACS);
+		deleteHeartbeatImpl(heartbeat, acs);
 		idMap.remove(heartbeat.getId());
 		nameMap.remove(heartbeat.getName());
 	}

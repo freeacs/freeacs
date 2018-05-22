@@ -56,13 +56,13 @@ public class Files {
 		return filteredFiles.toArray(new File[] {});
 	}
 
-	public void addOrChangeFile(File file, ACS ACS) throws SQLException {
-		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
+	public void addOrChangeFile(File file, ACS acs) throws SQLException {
+		if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
-		file.setConnectionProperties(ACS.getDataSource()); // just in
+		file.setConnectionProperties(acs.getDataSource()); // just in
 																	// case...
 		file.validate();
-		addOrChangeFileImpl(unittype, file, ACS);
+		addOrChangeFileImpl(unittype, file, acs);
 		nameMap.put(file.getName(), file);
 		idMap.put(file.getId(), file);
 		versionTypeMap.put(file.getVersion() + file.getType(), file);
@@ -72,10 +72,10 @@ public class Files {
 		}
 	}
 
-	private void deleteFileImpl(Unittype unittype, File file, ACS ACS) throws SQLException {
+	private void deleteFileImpl(Unittype unittype, File file, ACS acs) throws SQLException {
 		Statement s = null;
 		String sql = null;
-		Connection c = ACS.getDataSource().getConnection();
+		Connection c = acs.getDataSource().getConnection();
 		try {
 			s = c.createStatement();
 			sql = "DELETE FROM filestore WHERE ";
@@ -84,8 +84,8 @@ public class Files {
 			s.executeUpdate(sql);
 
 			logger.info("Deleted file " + file.getName());
-			if (ACS.getDbi() != null)
-				ACS.getDbi().publishDelete(file, unittype);
+			if (acs.getDbi() != null)
+				acs.getDbi().publishDelete(file, unittype);
 		} finally {
 			if (s != null)
 				s.close();
@@ -102,25 +102,25 @@ public class Files {
 	 *
 	 * @throws SQLException
 	 */
-	public void deleteFile(File file, ACS ACS) throws SQLException {
-		if (!ACS.getUser().isUnittypeAdmin(unittype.getId()))
+	public void deleteFile(File file, ACS acs) throws SQLException {
+		if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
-		deleteFileImpl(unittype, file, ACS);
+		deleteFileImpl(unittype, file, acs);
 		nameMap.remove(file.getName());
 		idMap.remove(file.getId());
 		versionTypeMap.remove(file.getVersion() + file.getType());
 	}
 
-	private void addOrChangeFileImpl(Unittype unittype, File file, ACS ACS) throws SQLException {
-		Connection c = ACS.getDataSource().getConnection();
+	private void addOrChangeFileImpl(Unittype unittype, File file, ACS acs) throws SQLException {
+		Connection c = acs.getDataSource().getConnection();
 		PreparedStatement s = null;
 		String sql = null;
 		// The file owner is set automatically to the logged-in user upon
 		// add/change of file.
 		// If logged-in user isAdmin, will skip this override, and will allow
 		// any user specified in the file object.
-		if (!unittype.getACS().getUser().isAdmin() && unittype.getACS().getUser().getId() != null)
-			file.setOwner(unittype.getACS().getUser());
+		if (!unittype.getAcs().getUser().isAdmin() && unittype.getAcs().getUser().getId() != null)
+			file.setOwner(unittype.getAcs().getUser());
 		if (file.getId() == null) {
 			try {
 				DynamicStatement ds = new DynamicStatement();
@@ -149,8 +149,8 @@ public class Files {
 				// }
 
 				logger.info("Added file " + file.getName());
-				if (ACS.getDbi() != null)
-					ACS.getDbi().publishAdd(file, unittype);
+				if (acs.getDbi() != null)
+					acs.getDbi().publishAdd(file, unittype);
 			} finally {
 				if (s != null)
 					s.close();
@@ -197,8 +197,8 @@ public class Files {
 					s.executeUpdate();
 				}
 				logger.info("Updated file to " + file.getName());
-				if (ACS.getDbi() != null)
-					ACS.getDbi().publishFile(file, unittype);
+				if (acs.getDbi() != null)
+					acs.getDbi().publishFile(file, unittype);
 			} finally {
 				if (s != null)
 					s.close();
@@ -208,12 +208,12 @@ public class Files {
 	}
 
 	/* only used to refresh the cache, used from DBI */
-	protected static void refreshFile(Integer fileId, Integer unittypeId, ACS ACS) throws SQLException {
+	protected static void refreshFile(Integer fileId, Integer unittypeId, ACS acs) throws SQLException {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
-		Connection c = ACS.getDataSource().getConnection();
+		Connection c = acs.getDataSource().getConnection();
 		try {
-			Unittype unittype = ACS.getUnittype(unittypeId);
+			Unittype unittype = acs.getUnittype(unittypeId);
 			if (unittype == null)
 				return; // unittype not accessible by this user
 			Files files = unittype.getFiles();
@@ -224,7 +224,7 @@ public class Files {
 			ps = ds.makePreparedStatement(c);
 			rs = ps.executeQuery();
 			if (rs.next()) {
-				file.setConnectionProperties(ACS.getDataSource());
+				file.setConnectionProperties(acs.getDataSource());
 				file.setName(rs.getString("name"));
 				file.setType(FileType.valueOf(rs.getString("type")));
 				// file.setSubtype(rs.getString("subtype"));

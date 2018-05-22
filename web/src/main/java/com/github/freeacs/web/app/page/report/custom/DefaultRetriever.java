@@ -28,10 +28,10 @@ public class DefaultRetriever extends ReportRetriever {
 	 *
 	 * @param inputData the input data
 	 * @param params the params
-	 * @param ACS the xaps
+	 * @param acs the xaps
 	 */
-	public DefaultRetriever(ReportData inputData, ParameterParser params, ACS ACS) {
-		super(inputData, params, ACS);
+	public DefaultRetriever(ReportData inputData, ParameterParser params, ACS acs) {
+		super(inputData, params, acs);
 	}
 	
 	public DefaultRetriever() {

@@ -53,8 +53,8 @@ public class Certificates {
 		nameMap.put(certificate.getName(), certificate);
 	}
 
-	public void addOrChangeCertificate(Certificate certificate, ACS ACS) throws SQLException {
-		if (!ACS.getUser().isAdmin())
+	public void addOrChangeCertificate(Certificate certificate, ACS acs) throws SQLException {
+		if (!acs.getUser().isAdmin())
 			throw new IllegalArgumentException("Not allowed action for this user");
 		Certificate replaceCert = null;
 		for (Certificate cert : nameMap.values()) {
@@ -65,11 +65,11 @@ public class Certificates {
 			}
 		}
 		if (replaceCert != null) {
-			deleteCertificateImpl(replaceCert, ACS);
+			deleteCertificateImpl(replaceCert, acs);
 			nameMap.remove(replaceCert.getName());
 			idMap.remove(replaceCert.getId());
 		}
-		addOrChangeCertificateImpl(certificate, ACS);
+		addOrChangeCertificateImpl(certificate, acs);
 		nameMap.put(certificate.getName(), certificate);
 		idMap.put(certificate.getId(), certificate);
 		if (certificate.getOldName() != null) {
@@ -78,10 +78,10 @@ public class Certificates {
 		}
 	}
 
-	private int deleteCertificateImpl(Certificate certificate, ACS ACS) throws SQLException {
+	private int deleteCertificateImpl(Certificate certificate, ACS acs) throws SQLException {
 		Statement s = null;
 		String sql = null;
-		Connection c = ACS.getDataSource().getConnection();
+		Connection c = acs.getDataSource().getConnection();
 		try {
 			s = c.createStatement();
 			sql = "DELETE FROM certificate WHERE ";
@@ -90,8 +90,8 @@ public class Certificates {
 			int rowsDeleted = s.executeUpdate(sql);
 			
 			logger.info("Deleted Certificate " + certificate.getName());
-			if (ACS.getDbi() != null)
-				ACS.getDbi().publishCertificate(certificate);
+			if (acs.getDbi() != null)
+				acs.getDbi().publishCertificate(certificate);
 			return rowsDeleted;
 		} finally {
 			if (s != null)
@@ -106,18 +106,18 @@ public class Certificates {
 	 * 
 	 * @throws SQLException
 	 */
-	public int deleteCertificate(Certificate certificate, ACS ACS) throws SQLException {
-		if (!ACS.getUser().isAdmin())
+	public int deleteCertificate(Certificate certificate, ACS acs) throws SQLException {
+		if (!acs.getUser().isAdmin())
 			throw new IllegalArgumentException("Not allowed action for this user");
-		int rowsDeleted = deleteCertificateImpl(certificate, ACS);
+		int rowsDeleted = deleteCertificateImpl(certificate, acs);
 		nameMap.remove(certificate.getName());
 		idMap.remove(certificate.getId());
 		return rowsDeleted;
 	}
 
-	private void addOrChangeCertificateImpl(Certificate certificate, ACS ACS) throws SQLException {
+	private void addOrChangeCertificateImpl(Certificate certificate, ACS acs) throws SQLException {
 		PreparedStatement ps = null;
-		Connection c = ACS.getDataSource().getConnection();
+		Connection c = acs.getDataSource().getConnection();
 		try {
 			DynamicStatement ds = new DynamicStatement();
 			try {
@@ -132,8 +132,8 @@ public class Certificates {
 					certificate.setId(gk.getInt(1));
 				
 				logger.info("Inserted Certificate " + certificate.getName());
-				if (ACS.getDbi() != null)
-					ACS.getDbi().publishCertificate(certificate);
+				if (acs.getDbi() != null)
+					acs.getDbi().publishCertificate(certificate);
 			} catch (SQLException sqlex2) {
 				ds.setSql("UPDATE certificate SET name = ?, certificate = ? WHERE id = ?");
 				ds.addArguments(certificate.getName());
@@ -146,8 +146,8 @@ public class Certificates {
 					throw sqlex2;
 				
 				logger.info("Updated Certificate " + certificate.getName());
-				if (ACS.getDbi() != null)
-					ACS.getDbi().publishCertificate(certificate);
+				if (acs.getDbi() != null)
+					acs.getDbi().publishCertificate(certificate);
 			}
 		} finally {
 			if (ps != null)

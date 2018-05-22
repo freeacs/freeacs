@@ -45,8 +45,8 @@ public class JobsPage extends AbstractWebPage {
 
 		String sessionId = req.getSession().getId();
 
-		ACS ACS = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (ACS == null) {
+		ACS acs = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -54,11 +54,11 @@ public class JobsPage extends AbstractWebPage {
 		InputDataIntegrity.loadAndStoreSession(req, outputHandler, inputData, inputData.getUnittype(), inputData.getProfile(), inputData.getUnit());
 
 		Map<String, Object> root = outputHandler.getTemplateMap();
-		root.put("unittypes", InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS));
+		root.put("unittypes", InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs));
 
 		Unittype unittype = null;
 		if (inputData.getUnittype().notNullNorValue(WebConstants.ALL_ITEMS_OR_DEFAULT)) 
-			unittype = ACS.getUnittype(inputData.getUnittype().getString());
+			unittype = acs.getUnittype(inputData.getUnittype().getString());
 		if (unittype != null) 
 			root.put("params", new TableElementMaker().getJobs(unittype));
 		

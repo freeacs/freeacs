@@ -19,8 +19,8 @@ public class ReportSyslogGenerator extends ReportGenerator {
 
 	private static Logger logger = LoggerFactory.getLogger(ReportSyslogGenerator.class);
 
-	public ReportSyslogGenerator(DataSource mainDataSource, DataSource syslogDataSource, ACS ACS, String logPrefix, Identity id) {
-		super(mainDataSource, syslogDataSource, ACS, logPrefix, id);
+	public ReportSyslogGenerator(DataSource mainDataSource, DataSource syslogDataSource, ACS acs, String logPrefix, Identity id) {
+		super(mainDataSource, syslogDataSource, acs, logPrefix, id);
 	}
 
 	public Report<RecordSyslog> generateFromReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws SQLException, IOException {
@@ -308,8 +308,8 @@ public class ReportSyslogGenerator extends ReportGenerator {
 	private boolean allUnittypesSpecified(List<Profile> profiles, Map<Integer, Set<Profile>> unittypesWithSomeProfilesSpecified) {
 		Set<Integer> unittypesWithAllProfilesSpecified = new HashSet<Integer>();
 		boolean allUnittypesSpecified = false;
-		ACS ACS = profiles.get(0).getUnittype().getACS();
-		int noUnittypes = ACS.getUnittypes().getUnittypes().length; // the number of unittypes in Freeacs
+		ACS acs = profiles.get(0).getUnittype().getAcs();
+		int noUnittypes = acs.getUnittypes().getUnittypes().length; // the number of unittypes in Freeacs
 		for (Profile profile : profiles) {
 			Integer unittypeId = profile.getUnittype().getId();
 			Set<Profile> profilesInUnittype = unittypesWithSomeProfilesSpecified.get(unittypeId);
@@ -363,8 +363,8 @@ public class ReportSyslogGenerator extends ReportGenerator {
 			ds.cleanupSQLTail();
 			ds.addSql(") AND ");
 		} else if (unittypes != null && unittypes.size() > 0) {
-			ACS ACS = unittypes.get(0).getACS();
-			int noUnittypes = ACS.getUnittypes().getUnittypes().length;
+			ACS acs = unittypes.get(0).getAcs();
+			int noUnittypes = acs.getUnittypes().getUnittypes().length;
 			boolean isAdmin = user.isAdmin();
 			if (noUnittypes > unittypes.size() || !isAdmin) {
 				ds.addSql("(");

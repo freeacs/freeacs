@@ -31,8 +31,8 @@ public class UnitListPage extends AbstractWebPage {
 	private DropDownSingleSelect<Profile> profile;
 	private Date fromDate;
 	private Date toDate;
-	private ACS ACS;
-	private ACSUnit ACSUnit;
+	private ACS acs;
+	private ACSUnit acsUnit;
 	private ParameterParser req;
 	private UnitListData inputData;
 
@@ -41,8 +41,8 @@ public class UnitListPage extends AbstractWebPage {
 
 		inputData = (UnitListData) InputDataRetriever.parseInto(new UnitListData(), req);
 
-		ACS = XAPSLoader.getXAPS(req.getSession().getId(), xapsDataSource, syslogDataSource);
-		if (ACS == null) {
+		acs = XAPSLoader.getXAPS(req.getSession().getId(), xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -60,10 +60,10 @@ public class UnitListPage extends AbstractWebPage {
 		}
 		*/
 
-		ACSUnit = XAPSLoader.getXAPSUnit(req.getSession().getId(), xapsDataSource, syslogDataSource);
+		acsUnit = XAPSLoader.getACSUnit(req.getSession().getId(), xapsDataSource, syslogDataSource);
 
-		unittype = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), ACS);
-		profile = InputSelectionFactory.getProfileSelection(inputData.getProfile(), inputData.getUnittype(), ACS);
+		unittype = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
+		profile = InputSelectionFactory.getProfileSelection(inputData.getProfile(), inputData.getUnittype(), acs);
 		fromDate = getStartDate(inputData.getStart());
 		toDate = getEndDate(inputData.getEnd());
 
@@ -80,7 +80,7 @@ public class UnitListPage extends AbstractWebPage {
 		if (reportType == ReportType.VOIP)
 			displayVoipReport(root, groupSelect);
 		else if (reportType == ReportType.HARDWARE) {
-			ReportHardwareGenerator rgHardware = ReportPage.getReportHardwareGenerator(req.getSession().getId(), ACS);
+			ReportHardwareGenerator rgHardware = ReportPage.getReportHardwareGenerator(req.getSession().getId(), acs);
 			List<String> swVersions = ReportPage.getSwVersion(ReportType.HARDWARE, fromDate, toDate, unittype.getSelected(), profile.getSelected(), rgHardware);
 			displayHardwareReport(root, rgHardware, groupSelect, swVersions);
 		} else if (reportType == ReportType.SYS) {
@@ -138,13 +138,13 @@ public class UnitListPage extends AbstractWebPage {
 	//	}
 
 	private void displaySyslogReport(Map<String, Object> root, Group groupSelect) throws SQLException, IOException, ParseException {
-		ReportSyslogGenerator rgSyslog = ReportPage.getReportSyslogGenerator(req.getSession().getId(), ACS);
+		ReportSyslogGenerator rgSyslog = ReportPage.getReportSyslogGenerator(req.getSession().getId(), acs);
 		Map<String, Report<RecordSyslog>> reports = rgSyslog.generateFromSyslog(PeriodType.DAY, fromDate, toDate, unittype.getSelectedOrAllItemsAsList(), profile.getSelectedOrAllItemsAsList(),
 				groupSelect);
 		Map<Unit, RecordUIDataSyslogSumFromReport> records = new HashMap<Unit, RecordUIDataSyslogSumFromReport>();
 		RecordUIDataSyslogFilter filter = new RecordUIDataSyslogFilter(inputData, root);
 		for (Entry<String, Report<RecordSyslog>> entry : reports.entrySet()) {
-			Unit unit = ACSUnit.getUnitById(entry.getKey());
+			Unit unit = acsUnit.getUnitById(entry.getKey());
 
 			if (unit == null)
 				unit = new Unit(entry.getKey(), null, null);
@@ -197,7 +197,7 @@ public class UnitListPage extends AbstractWebPage {
 		String selectedSoftwareVersion = swVersionFromReport != null ? swVersionFromReport : inputData.getSwVersion().getString();
 		DropDownSingleSelect<String> swVersionList = InputSelectionFactory.getDropDownSingleSelect(inputData.getSwVersion(), selectedSoftwareVersion, swVersions);
 		for (Entry<String, Report<RecordHardware>> entry : reports.entrySet()) {
-			Unit unit = ACSUnit.getUnitById(entry.getKey());
+			Unit unit = acsUnit.getUnitById(entry.getKey());
 
 			if (unit == null)
 				unit = new Unit(entry.getKey(), null, null);
@@ -242,19 +242,19 @@ public class UnitListPage extends AbstractWebPage {
 	}
 
 	private void displayProvReport(Map<String, Object> root, Group groupSelect) throws SQLException, IOException {
-		ReportProvisioningGenerator rgProv = ReportPage.getReportProvGenerator(req.getSession().getId(), ACS);
+		ReportProvisioningGenerator rgProv = ReportPage.getReportProvGenerator(req.getSession().getId(), acs);
 		Map<String, Report<RecordProvisioning>> reports = rgProv.generateFromSyslog(PeriodType.DAY, fromDate, toDate, unittype.getSelectedOrAllItemsAsList(), profile.getSelectedOrAllItemsAsList(),
 				groupSelect);
-		root.put("records", RecordUIDataProv.convertRecords(ACSUnit, reports));
+		root.put("records", RecordUIDataProv.convertRecords(acsUnit, reports));
 	}
 
 	private void displayVoipReport(Map<String, Object> root, Group groupSelect) throws SQLException, IOException {
-		ReportVoipGenerator rgVoip = ReportPage.getReportVoipGenerator(req.getSession().getId(), ACS);
+		ReportVoipGenerator rgVoip = ReportPage.getReportVoipGenerator(req.getSession().getId(), acs);
 		Map<String, Report<RecordVoip>> reports = rgVoip.generateFromSyslog(PeriodType.DAY, fromDate, toDate, unittype.getSelectedOrAllItemsAsList(), profile.getSelectedOrAllItemsAsList(), groupSelect);
 		List<RecordWrapper<RecordVoip>> recordsWorking = new ArrayList<RecordWrapper<RecordVoip>>();
 		List<RecordWrapper<RecordVoip>> recordsDown = new ArrayList<RecordWrapper<RecordVoip>>();
 		for (Entry<String, Report<RecordVoip>> entry : reports.entrySet()) {
-			Unit unit = ACSUnit.getUnitById(entry.getKey());
+			Unit unit = acsUnit.getUnitById(entry.getKey());
 
 			if (unit == null)
 				unit = new Unit(entry.getKey(), null, null);

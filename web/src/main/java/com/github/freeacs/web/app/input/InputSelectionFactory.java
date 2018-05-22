@@ -18,14 +18,14 @@ public class InputSelectionFactory {
 	 * Gets the unittype selection.
 	 *
 	 * @param unittypeInput the unittype input
-	 * @param ACS the xaps
+	 * @param acs the xaps
 	 * @return the unittype selection
 	 */
-	public static DropDownSingleSelect<Unittype> getUnittypeSelection(Input unittypeInput, ACS ACS) {
+	public static DropDownSingleSelect<Unittype> getUnittypeSelection(Input unittypeInput, ACS acs) {
 		Unittype unittype = null;
 		if (unittypeInput.notNullNorValue(WebConstants.ALL_ITEMS_OR_DEFAULT))
-			unittype = ACS.getUnittype(unittypeInput.getString());
-		List<Unittype> items = Arrays.asList(ACS.getUnittypes().getUnittypes());
+			unittype = acs.getUnittype(unittypeInput.getString());
+		List<Unittype> items = Arrays.asList(acs.getUnittypes().getUnittypes());
 		return new DropDownSingleSelect<Unittype>(unittypeInput, unittype, items);
 	}
 
@@ -33,10 +33,10 @@ public class InputSelectionFactory {
 	 * Gets the trigger selection
 	 * @param triggerInput
 	 * @param unittype
-	 * @param ACS
+	 * @param acs
 	 * @return
 	 */
-	public static DropDownSingleSelect<Trigger> getTriggerSelection(Input triggerInput, Unittype unittype, ACS ACS) {
+	public static DropDownSingleSelect<Trigger> getTriggerSelection(Input triggerInput, Unittype unittype, ACS acs) {
 		Trigger trigger = null;
 		if (unittype != null && triggerInput.notNullNorValue(WebConstants.ALL_ITEMS_OR_DEFAULT))
 			trigger = unittype.getTriggers().getById(triggerInput.getInteger());
@@ -51,10 +51,10 @@ public class InputSelectionFactory {
 	*
 	* @param groupInput the group input
 	* @param unittype the unittype
-	* @param ACS the xaps
+	* @param acs the xaps
 	* @return the group selection
 	*/
-	public static DropDownSingleSelect<Group> getGroupSelection(Input groupInput, Unittype unittype, ACS ACS) {
+	public static DropDownSingleSelect<Group> getGroupSelection(Input groupInput, Unittype unittype, ACS acs) {
 		Group group = null;
 		if (unittype != null && groupInput.notNullNorValue(WebConstants.ALL_ITEMS_OR_DEFAULT))
 			group = unittype.getGroups().getByName(groupInput.getString());
@@ -69,13 +69,13 @@ public class InputSelectionFactory {
 	 *
 	 * @param profileInput the profile input
 	 * @param unittypeInput the unittype
-	 * @param ACS the xaps
+	 * @param acs the xaps
 	 * @return the profile selection
 	 */
-	public static DropDownSingleSelect<Profile> getProfileSelection(Input profileInput, Input unittypeInput, ACS ACS) {
+	public static DropDownSingleSelect<Profile> getProfileSelection(Input profileInput, Input unittypeInput, ACS acs) {
 		Profile profile = null;
 		List<Profile> items = new ArrayList<Profile>();
-		Unittype unittype = ACS.getUnittype(unittypeInput.getString());
+		Unittype unittype = acs.getUnittype(unittypeInput.getString());
 		if (unittype != null) {
 			return getProfileSelection(profileInput, unittype);
 		} else {

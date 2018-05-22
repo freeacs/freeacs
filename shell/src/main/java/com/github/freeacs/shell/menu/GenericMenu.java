@@ -482,9 +482,9 @@ public class GenericMenu {
 	private Map<String, Unit> getUnits(String[] args, Context context) throws Exception {
 		Map<String, Unit> units = null;
 		if (args.length > 1)
-			units = session.getACSUnit().getUnits("%" + args[1] + "%", context.getUnittype(), context.getProfile(), null);
+			units = session.getAcsUnit().getUnits("%" + args[1] + "%", context.getUnittype(), context.getProfile(), null);
 		else
-			units = session.getACSUnit().getUnits(null, context.getUnittype(), context.getProfile(), null);
+			units = session.getAcsUnit().getUnits(null, context.getUnittype(), context.getProfile(), null);
 		return units;
 	}
 
@@ -562,9 +562,9 @@ public class GenericMenu {
 				}
 			}
 		}
-		Syslog syslog = session.getACS().getSyslog();
+		Syslog syslog = session.getAcs().getSyslog();
 		String[] listOptions = listOptionStr.split(",");
-		List<SyslogEntry> entries = syslog.read(sf, session.getACS());
+		List<SyslogEntry> entries = syslog.read(sf, session.getAcs());
 		Listing listing = oh.getListing();
 		Line headingLine = new Line();
 		for (String listOption : listOptions) {
@@ -710,7 +710,7 @@ public class GenericMenu {
 				}
 				listing.setHeading(new Heading(headingLine));
 				for (Unit u : units.values()) {
-					Unit unit = session.getACSUnit().getUnitById(u.getId());
+					Unit unit = session.getAcsUnit().getUnitById(u.getId());
 					Line line = new Line();
 					line.addValue(u.getUnittype().getName());
 					line.addValue(u.getProfile().getName());
@@ -736,7 +736,7 @@ public class GenericMenu {
 					listing.addLine(unit.getUnittype().getName(), unit.getProfile().getName(), unit.getId());
 			}
 		} else { // units.size() == 1
-			Unit unit = session.getACSUnit().getUnitById((String) units.keySet().toArray()[0]);
+			Unit unit = session.getAcsUnit().getUnitById((String) units.keySet().toArray()[0]);
 			//			Unit unit = (Unit) units.values().toArray()[0];
 			context.resetToNull();
 			context.setUnittype(unit.getUnittype());

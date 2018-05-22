@@ -22,19 +22,19 @@ import java.util.*;
 public class TestDB {
 
 	private DataSource dataSource;
-	private ACS ACS;
+	private ACS acs;
 	private TR069DMParameterMap tr069DMMap;
 	private static Logger logger = LoggerFactory.getLogger(TestDB.class);
 
-	public TestDB(ACS ACS) {
+	public TestDB(ACS acs) {
 		try {
 			if (this.tr069DMMap == null)
 				this.tr069DMMap = TR069DMLoader.load();
 		} catch (Exception e) {
 			throw new RuntimeException("Could not load TR069 Datamodel");
 		}
-		this.dataSource = ACS.getConnectionProperties();
-		this.ACS = ACS;
+		this.dataSource = acs.getConnectionProperties();
+		this.acs = acs;
 	}
 	
 
@@ -56,9 +56,9 @@ public class TestDB {
 			TestCaseFiles tcf = tc.getFiles();
 			if (tcf != null) {
 				Files files = tcf.getInputFile().getUnittype().getFiles();
-				ACS ACS = tcf.getInputFile().getUnittype().getACS();
-				files.deleteFile(tcf.getInputFile(), ACS);
-				files.deleteFile(tcf.getOutputFile(), ACS);
+				ACS acs = tcf.getInputFile().getUnittype().getAcs();
+				files.deleteFile(tcf.getInputFile(), acs);
+				files.deleteFile(tcf.getOutputFile(), acs);
 			}
 			
 			ds = new DynamicStatement();
@@ -543,7 +543,7 @@ public class TestDB {
 				String unitId = rs.getString("unit_id");
 				Integer testCaseId = rs.getInt("case_id");
 				Integer unittypeId = rs.getInt("unit_type_id");
-				Unittype unittype = ACS.getUnittype(unittypeId);
+				Unittype unittype = acs.getUnittype(unittypeId);
 				boolean expectError = rs.getInt("expect_error") == 1 ? true
 						: false;
 				if (unittype == null)

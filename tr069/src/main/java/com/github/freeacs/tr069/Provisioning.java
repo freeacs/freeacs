@@ -62,7 +62,7 @@ public class Provisioning extends HttpServlet {
 			Log.fatal(Provisioning.class, "Couldn't start BackgroundProcesses correctly ", t);
 		}
 		try {
-			executions = new ScriptExecutions(dbAccess.getXapsDataSource());
+			executions = new ScriptExecutions(dbAccess.getMainDataSource());
 		} catch (Throwable t) {
 			Log.fatal(Provisioning.class, "Couldn't initialize ScriptExecutions - not possible to run SHELL-jobs", t);
 		}
@@ -236,9 +236,9 @@ public class Provisioning extends HttpServlet {
 		try {
 			Unit unit = reqRes.getSessionData().getUnit();
 			if (unit != null) {
-				ACS ACS = reqRes.getSessionData().getDbAccessSession().getACS();
-				ACSUnit ACSUnit = dbAccess.getXAPSUnit(ACS);
-				ACSUnit.addOrChangeQueuedUnitParameters(unit);
+				ACS acs = reqRes.getSessionData().getDbAccessSession().getAcs();
+				ACSUnit acsUnit = dbAccess.getXAPSUnit(acs);
+				acsUnit.addOrChangeQueuedUnitParameters(unit);
 			}
 		} catch (Throwable t) {
 			Log.error(Provisioning.class, "An error occured when writing queued unit parameters to Fusion. May affect provisioning", t);
