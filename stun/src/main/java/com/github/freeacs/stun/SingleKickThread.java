@@ -55,7 +55,7 @@ public class SingleKickThread implements Runnable {
 	private static Logger log = LoggerFactory.getLogger("KickSingle");
 	private DBI dbi;
 	private DataSource xapsCp;
-	private XAPSUnit xapsUnit;
+	private ACSUnit acsUnit;
 	private Map<String, InspectionState> unitWatch = new HashMap<String, InspectionState>();
 	private Inbox inbox = new Inbox();
 	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
@@ -77,7 +77,7 @@ public class SingleKickThread implements Runnable {
 		for (Message m : inbox.getUnreadMessages()) {
 			String unitId = m.getObjectId();
 			if (unitWatch.get(unitId) == null) {
-				Unit unit = xapsUnit.getUnitById(unitId);
+				Unit unit = acsUnit.getUnitById(unitId);
 				if (unit == null) {
 					log.debug(unitId + " was not found in the database, no kick performed");
 					continue;
@@ -109,7 +109,7 @@ public class SingleKickThread implements Runnable {
 	 * @throws SQLException
 	 */
 	private void updateUnitWatchBasedOnSessionParams() throws SQLException {
-		List<String> unitIds = xapsUnit.getUnitIdsFromSessionUnitParameters();
+		List<String> unitIds = acsUnit.getUnitIdsFromSessionUnitParameters();
 		for (String unitId : unitIds) {
 			if (unitWatch.get(unitId) == null) {
 				InspectionState is = new InspectionState();
@@ -130,10 +130,10 @@ public class SingleKickThread implements Runnable {
 	 * @throws SQLException
 	 */
 	private void updateUnitWatchBasedOnProvisioningMode() throws SQLException {
-		Map<String, Unit> units = xapsUnit.getUnits(ProvisioningMode.READALL.toString(), null, null);
+		Map<String, Unit> units = acsUnit.getUnits(ProvisioningMode.READALL.toString(), null, null);
 		for (String unitId : units.keySet()) {
 			if (unitWatch.get(unitId) == null) {
-				Unit unit = xapsUnit.getUnitById(unitId);
+				Unit unit = acsUnit.getUnitById(unitId);
 				if (unit.getProvisioningMode() != ProvisioningMode.REGULAR) {
 					InspectionState is = new InspectionState();
 					is.setTmsOfLastChange(System.currentTimeMillis());
@@ -154,8 +154,8 @@ public class SingleKickThread implements Runnable {
 		unit.toWriteQueue(SystemParameters.PROVISIONING_MODE, ProvisioningMode.REGULAR.toString());
 		if (SystemConstants.DEFAULT_INSPECTION_MESSAGE.equals(unit.getParameterValue(SystemParameters.INSPECTION_MESSAGE)))
 			unit.toWriteQueue(SystemParameters.INSPECTION_MESSAGE, SystemConstants.DEFAULT_INSPECTION_MESSAGE);
-		xapsUnit.addOrChangeQueuedUnitParameters(unit);
-		xapsUnit.deleteAllSessionParameters(unit);
+		acsUnit.addOrChangeQueuedUnitParameters(unit);
+		acsUnit.deleteAllSessionParameters(unit);
 	}
 
 	/* MAIN LOOP */
@@ -168,8 +168,8 @@ public class SingleKickThread implements Runnable {
 			try {
 				unitId = iterator.next();
 				InspectionState lastIS = unitWatch.get(unitId);
-				xapsUnit = new XAPSUnit(xapsCp, dbi.getXaps(), dbi.getXaps().getSyslog()); // make sure xAPS object is updated
-				unit = xapsUnit.getUnitById(unitId);
+				acsUnit = new ACSUnit(xapsCp, dbi.getAcs(), dbi.getAcs().getSyslog()); // make sure xAPS object is updated
+				unit = acsUnit.getUnitById(unitId);
 				long timeSinceLastChange = System.currentTimeMillis() - lastIS.getTmsOfLastChange();
 				if (timeSinceLastChange > 15 * 60 * 1000) {
 					log.debug(unitId + " is reset (inspection-params deleted, mode/state reset, removed from watchList) because it's been 15 min. since provisioning mode change.");
@@ -179,12 +179,12 @@ public class SingleKickThread implements Runnable {
 					reset(iterator, unit);
 				} else {
 					if (!lastIS.isKicked()) {
-						Kick.KickResponse kr = Kick.kick(unit, xapsUnit);
+						Kick.KickResponse kr = Kick.kick(unit);
 						if (kr.isKicked())
-							xapsUnit.addOrChangeUnitParameter(unit, SystemParameters.INSPECTION_MESSAGE,
+							acsUnit.addOrChangeUnitParameter(unit, SystemParameters.INSPECTION_MESSAGE,
 									"Kick success at " + sdf.format(new Date()) + " - *MAY* expect provisioning response :: " + kr.getMessage());
 						else
-							xapsUnit.addOrChangeUnitParameter(unit, SystemParameters.INSPECTION_MESSAGE, "Kick failed at " + sdf.format(new Date()) + " - require reboot to initiate provisioning :: "
+							acsUnit.addOrChangeUnitParameter(unit, SystemParameters.INSPECTION_MESSAGE, "Kick failed at " + sdf.format(new Date()) + " - require reboot to initiate provisioning :: "
 									+ kr.getMessage());
 						log.debug(unit.getId() + " was kicked (response = " + kr.isKicked() + ", message =  " + kr.getMessage() + ").");
 						lastIS.setKicked(true);
@@ -205,7 +205,7 @@ public class SingleKickThread implements Runnable {
 		try {
 			inbox.addFilter(new Message(null, Message.MTYPE_PUB_IM, null, Message.OTYPE_UNIT));
 			dbi.registerInbox("KickRunnable", inbox);
-			this.xapsUnit = new XAPSUnit(xapsCp, dbi.getXaps(), dbi.getXaps().getSyslog());
+			this.acsUnit = new ACSUnit(xapsCp, dbi.getAcs(), dbi.getAcs().getSyslog());
 			Sleep sleep = new Sleep(1000, 1000, true);
 			long lastUpdateCheck = 0;
 			while (true) {

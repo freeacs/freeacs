@@ -1,10 +1,10 @@
 package com.github.freeacs.web.app.page.unittype;
 
+import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.UnittypeParameters;
-import com.github.freeacs.dbi.XAPS;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.*;
@@ -13,7 +13,7 @@ import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -47,8 +47,8 @@ public class UnittypeCreatePage extends AbstractWebPage {
 
 		String sessionId = params.getSession().getId();
 
-		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (xaps == null) {
+		ACS acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -56,7 +56,7 @@ public class UnittypeCreatePage extends AbstractWebPage {
 		InputDataIntegrity.loadAndStoreSession(params, outputHandler, inputData);
 
 		DropDownSingleSelect<Unittype> unittypesToCopyFrom = InputSelectionFactory.getDropDownSingleSelect(inputData.getUnittypeToCopyFrom(),
-				xaps.getUnittype(inputData.getUnittypeToCopyFrom().getString()), getUnittypesWithProtocol(xaps, sessionId, inputData.getNewProtocol().getString(), xapsDataSource, syslogDataSource));
+				acs.getUnittype(inputData.getUnittypeToCopyFrom().getString()), getUnittypesWithProtocol(sessionId, inputData.getNewProtocol().getString(), xapsDataSource, syslogDataSource));
 
 		if (inputData.getFormSubmit().hasValue("Create")) {
 			if (isUnittypesLimited(sessionId, xapsDataSource, syslogDataSource)) {
@@ -76,7 +76,7 @@ public class UnittypeCreatePage extends AbstractWebPage {
 				String copyFrom = inputData.getUnittypeToCopyFrom().getString();
 				Unittype unittypeToCopyFrom = null;
 				if (copyFrom != null)
-					unittypeToCopyFrom = xaps.getUnittype(copyFrom);
+					unittypeToCopyFrom = acs.getUnittype(copyFrom);
 
 				if (unittypeToCopyFrom != null) {
 					if (!unittypeToCopyFrom.getProtocol().equals(protocol)) {
@@ -86,7 +86,7 @@ public class UnittypeCreatePage extends AbstractWebPage {
 				}
 
 				Unittype unittype = new Unittype(modelName, vendor, description, ProvisioningProtocol.toEnum(protocol));
-				xaps.getUnittypes().addOrChangeUnittype(unittype, xaps);
+				acs.getUnittypes().addOrChangeUnittype(unittype, acs);
 
 				if (unittypeToCopyFrom != null) {
 					for (UnittypeParameter utp : getParametersFromUnittype(unittypeToCopyFrom).getUnittypeParameters()) {
@@ -94,7 +94,7 @@ public class UnittypeCreatePage extends AbstractWebPage {
 							UnittypeParameter newUtp = new UnittypeParameter(unittype, utp.getName(), utp.getFlag());
 							if (utp.getValues() != null)
 								newUtp.setValues(utp.getValues());
-							unittype.getUnittypeParameters().addOrChangeUnittypeParameter(newUtp, xaps);
+							unittype.getUnittypeParameters().addOrChangeUnittypeParameter(newUtp, acs);
 						}
 					}
 				}
@@ -130,7 +130,6 @@ public class UnittypeCreatePage extends AbstractWebPage {
 	/**
 	 * Gets the unittypes with protocol.
 	 *
-	 * @param xaps the xaps
 	 * @param sessionId the session id
 	 * @param protocol the protocol
 	 * @param xapsDataSource
@@ -139,13 +138,11 @@ public class UnittypeCreatePage extends AbstractWebPage {
 	 *  the no available connection exception
 	 * @throws SQLException the sQL exception
 	 */
-	private List<Unittype> getUnittypesWithProtocol(XAPS xaps, String sessionId, String protocol, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
+	private List<Unittype> getUnittypesWithProtocol(String sessionId, String protocol, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
 		List<Unittype> unittypes = getAllowedUnittypes(sessionId, xapsDataSource, syslogDataSource);
 		List<Unittype> allowedUnittypes = new ArrayList<Unittype>();
-		if (protocol == null)
-			protocol = UnittypePage.NA_PROTOCOL;
 		for (Unittype ut : unittypes) {
-			if (ut.getProtocol().equals(protocol))
+			if (ut.getProtocol().equals(protocol == null ? UnittypePage.NA_PROTOCOL : protocol))
 				allowedUnittypes.add(ut);
 		}
 		return allowedUnittypes;

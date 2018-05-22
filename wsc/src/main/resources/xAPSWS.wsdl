@@ -310,7 +310,7 @@
 	<wsdl:message name="deleteUnitResponse">
 		<wsdl:part element="tns:DeleteUnitResponse" name="wsm4" />
 	</wsdl:message>
-	<wsdl:portType name="xAPSWS">
+	<wsdl:portType name="ACSWS">
 		<wsdl:operation name="getUnittypes">
 			<wsdl:input message="tns:getUnittypesRequest" />
 			<wsdl:output message="tns:getUnittypesResponse" />
@@ -352,10 +352,10 @@
 			<wsdl:output message="tns:deleteUnitResponse" />
 		</wsdl:operation>
 	</wsdl:portType>
-	<wsdl:binding name="xAPSWS" type="tns:xAPSWS">
+	<wsdl:binding name="ACSWS" type="tns:ACSWS">
 		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
 		<wsdl:operation name="getUnittypes">
-			<soap:operation soapAction="http://http://xapsws.owera.com/xapsws/soap" />
+			<soap:operation soapAction="http://http://freeacsws.owera.com/freeacsws/soap" />
 			<wsdl:input>
 				<soap:body use="literal" />
 			</wsdl:input>
@@ -364,7 +364,7 @@
 			</wsdl:output>
 		</wsdl:operation>
 		<wsdl:operation name="addOrChangeUnittype">
-			<soap:operation soapAction="http://http://xapsws.owera.com/xapsws/soap" />
+			<soap:operation soapAction="http://http://freeacsws.owera.com/freeacsws/soap" />
 			<wsdl:input>
 				<soap:body use="literal" />
 			</wsdl:input>
@@ -373,7 +373,7 @@
 			</wsdl:output>
 		</wsdl:operation>
 		<wsdl:operation name="deleteUnittype">
-			<soap:operation soapAction="http://http://xapsws.owera.com/xapsws/soap" />
+			<soap:operation soapAction="http://http://freeacsws.owera.com/freeacsws/soap" />
 			<wsdl:input>
 				<soap:body use="literal" />
 			</wsdl:input>
@@ -382,7 +382,7 @@
 			</wsdl:output>
 		</wsdl:operation>
 		<wsdl:operation name="getProfiles">
-			<soap:operation soapAction="http://http://xapsws.owera.com/xapsws/soap" />
+			<soap:operation soapAction="http://http://freeacsws.owera.com/freeacsws/soap" />
 			<wsdl:input>
 				<soap:body use="literal" />
 			</wsdl:input>
@@ -391,7 +391,7 @@
 			</wsdl:output>
 		</wsdl:operation>
 		<wsdl:operation name="addOrChangeProfile">
-			<soap:operation soapAction="http://http://xapsws.owera.com/xapsws/soap" />
+			<soap:operation soapAction="http://http://freeacsws.owera.com/freeacsws/soap" />
 			<wsdl:input>
 				<soap:body use="literal" />
 			</wsdl:input>
@@ -400,7 +400,7 @@
 			</wsdl:output>
 		</wsdl:operation>
 		<wsdl:operation name="deleteProfile">
-			<soap:operation soapAction="http://http://xapsws.owera.com/xapsws/soap" />
+			<soap:operation soapAction="http://http://freeacsws.owera.com/freeacsws/soap" />
 			<wsdl:input>
 				<soap:body use="literal" />
 			</wsdl:input>
@@ -409,7 +409,7 @@
 			</wsdl:output>
 		</wsdl:operation>
 		<wsdl:operation name="getUnitIds">
-			<soap:operation soapAction="http://http://xapsws.owera.com/xapsws/soap" />
+			<soap:operation soapAction="http://http://freeacsws.owera.com/freeacsws/soap" />
 			<wsdl:input>
 				<soap:body use="literal" />
 			</wsdl:input>
@@ -418,7 +418,7 @@
 			</wsdl:output>
 		</wsdl:operation>
 		<wsdl:operation name="getUnits">
-			<soap:operation soapAction="http://http://xapsws.owera.com/xapsws/soap" />
+			<soap:operation soapAction="http://http://freeacsws.owera.com/freeacsws/soap" />
 			<wsdl:input>
 				<soap:body use="literal" />
 			</wsdl:input>
@@ -427,7 +427,7 @@
 			</wsdl:output>
 		</wsdl:operation>
 		<wsdl:operation name="addOrChangeUnit">
-			<soap:operation soapAction="http://http://xapsws.owera.com/xapsws/soap" />
+			<soap:operation soapAction="http://http://freeacsws.owera.com/freeacsws/soap" />
 			<wsdl:input>
 				<soap:body use="literal" />
 			</wsdl:input>
@@ -436,7 +436,7 @@
 			</wsdl:output>
 		</wsdl:operation>
 		<wsdl:operation name="deleteUnit">
-			<soap:operation soapAction="http://http://xapsws.owera.com/xapsws/soap" />
+			<soap:operation soapAction="http://http://freeacsws.owera.com/freeacsws/soap" />
 			<wsdl:input>
 				<soap:body use="literal" />
 			</wsdl:input>
@@ -445,9 +445,9 @@
 			</wsdl:output>
 		</wsdl:operation>
 	</wsdl:binding>
-	<wsdl:service name="xAPSWS">
-		<wsdl:port binding="tns:xAPSWS" name="xAPSWS">
-			<soap:address location="http://localhost:8082/xapsws/services/xAPSWS" />
+	<wsdl:service name="ACSWS">
+		<wsdl:port binding="tns:ACSWS" name="ACSWS">
+			<soap:address location="http://localhost:8082/freeacsws/services/ACSWS" />
 		</wsdl:port>
 	</wsdl:service>
 </wsdl:definitions>

@@ -1,9 +1,9 @@
 package com.github.freeacs.dbi.util;
 
+import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.UnittypeParameterFlag;
-import com.github.freeacs.dbi.XAPS;
 
 import java.sql.SQLException;
 import java.util.Map;
@@ -214,12 +214,12 @@ public class SystemParameters {
 	 *
 	 * @throws SQLException 
 	 */
-	public static UnittypeParameter getTR069ScriptParameter(String targetName, TR069ScriptType type, XAPS xaps, Unittype unittype) throws SQLException {
+	public static UnittypeParameter getTR069ScriptParameter(String targetName, TR069ScriptType type, ACS acs, Unittype unittype) throws SQLException {
 		String parameterName = getTR069ScriptParameterName(targetName, type);
 		UnittypeParameter parameter = unittype.getUnittypeParameters().getByName(parameterName);
 		if (parameter == null) {
 			parameter = new UnittypeParameter(unittype, parameterName, X);
-			unittype.getUnittypeParameters().addOrChangeUnittypeParameter(parameter, xaps);
+			unittype.getUnittypeParameters().addOrChangeUnittypeParameter(parameter, acs);
 		}
 		return parameter;
 	}

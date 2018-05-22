@@ -15,19 +15,19 @@ public class GetUnittypes {
 	public GetUnittypesResponse getUnittypes(GetUnittypesRequest gur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 			
-			XAPSWS xapsWS = XAPSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
+			ACSWS xapsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
 			if (gur.getUnittypeName() != null) {
 				Unittype unittypeXAPS = xapsWS.getUnittypeFromXAPS(gur.getUnittypeName());
 				com.github.freeacs.ws.Unittype[] unittypeArray = new com.github.freeacs.ws.Unittype[1];
-				unittypeArray[0] = ConvertXAPS2WS.convert(unittypeXAPS);
+				unittypeArray[0] = ConvertACS2WS.convert(unittypeXAPS);
 				UnittypeList unittypeList = new UnittypeList(new ArrayOfUnittype(unittypeArray));
 				return new GetUnittypesResponse(unittypeList);
 			} else { // return all Unittypes allowed
-				Unittype[] unittypeXAPSArr = xapsWS.getXAPS().getUnittypes().getUnittypes();
+				Unittype[] unittypeXAPSArr = xapsWS.getAcs().getUnittypes().getUnittypes();
 				com.github.freeacs.ws.Unittype[] unittypeArray = new com.github.freeacs.ws.Unittype[unittypeXAPSArr.length];
 				int i = 0;
 				for (Unittype unittypeXAPS : unittypeXAPSArr)
-					unittypeArray[i++] = ConvertXAPS2WS.convert(unittypeXAPS);
+					unittypeArray[i++] = ConvertACS2WS.convert(unittypeXAPS);
 				UnittypeList unittypeList = new UnittypeList(new ArrayOfUnittype(unittypeArray));
 				return new GetUnittypesResponse(unittypeList);
 			}
@@ -35,7 +35,7 @@ public class GetUnittypes {
 			if (t instanceof RemoteException)
 				throw (RemoteException) t;
 			else {
-				throw XAPSWS.error(logger, t);
+				throw ACSWS.error(logger, t);
 			}
 		}
 

@@ -11,8 +11,8 @@ import java.util.Calendar;
 
 public class DeleteOldScripts extends DBIShare {
 
-	public DeleteOldScripts(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException {
-		super(taskName, xapsCp, sysCp);
+	public DeleteOldScripts(String taskName, DataSource mainDataSource, DataSource syslogDataSource) throws SQLException {
+		super(taskName, mainDataSource, syslogDataSource);
 	}
 
 	private static Logger logger = LoggerFactory.getLogger(DeleteOldScripts.class);
@@ -28,7 +28,7 @@ public class DeleteOldScripts extends DBIShare {
 	}
 
 	private void deleteOldScripts() throws SQLException {
-		ScriptExecutions executions = new ScriptExecutions(getXapsCp());
+		ScriptExecutions executions = new ScriptExecutions(getMainDataSource());
 		int days = Properties.SHELL_SCRIPT_LIMIT;
 		Calendar c = Calendar.getInstance();
 		c.add(Calendar.DAY_OF_MONTH, -days);

@@ -8,7 +8,7 @@ import com.github.freeacs.dbi.tr069.TestCase.TestCaseMethod;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemConstants;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.github.freeacs.dbi.util.XAPSVersionCheck;
+import com.github.freeacs.dbi.util.ACSVersionCheck;
 import com.github.freeacs.shell.Context;
 import com.github.freeacs.shell.Session;
 import com.github.freeacs.shell.UnitTempStorage;
@@ -61,10 +61,10 @@ public class UnitMenu {
 			if (session.getBatchStorage().getAddChangeUnitParameters().size() == 1000) {
 				UnitTempStorage uts = session.getBatchStorage().getAddUnits();
 				for (Entry<Profile, List<String>> entry : uts.getUnits().entrySet()) {
-					session.getXapsUnit().addUnits(entry.getValue(), entry.getKey());
+					session.getAcsUnit().addUnits(entry.getValue(), entry.getKey());
 				}
 				uts.reset();
-				session.getXapsUnit().addOrChangeUnitParameters(session.getBatchStorage().getAddChangeUnitParameters(), context.getProfile());
+				session.getAcsUnit().addOrChangeUnitParameters(session.getBatchStorage().getAddChangeUnitParameters(), context.getProfile());
 				session.getBatchStorage().setAddChangeUnitParameters(null);
 			}
 			session.incCounter();
@@ -91,7 +91,7 @@ public class UnitMenu {
 			}
 			List<UnitParameter> unitParameterList = new ArrayList<UnitParameter>();
 			unitParameterList.add(unitParameter);
-			session.getXapsUnit().addOrChangeSessionUnitParameters(unitParameterList, context.getProfile());
+			session.getAcsUnit().addOrChangeSessionUnitParameters(unitParameterList, context.getProfile());
 			context.println("[" + session.getCounter() + "] The unit session parameter " + args[1] + " is " + action + ".");
 			session.incCounter();
 		}
@@ -101,7 +101,7 @@ public class UnitMenu {
 		Validation.numberOfArgs(args, 2);
 		Unit unit = context.getUnit();
 		if (!unit.isParamsAvailable()) {
-			unit = session.getXapsUnit().getUnitById(unit.getId());
+			unit = session.getAcsUnit().getUnitById(unit.getId());
 			context.setUnit(unit);
 		}
 		Map<String, UnitParameter> unitParameters = unit.getUnitParameters();
@@ -111,7 +111,7 @@ public class UnitMenu {
 			session.getBatchStorage().getDeleteUnitParameters().add(unitParameters.get(args[1]));
 			context.println("[" + session.getCounter() + "] The unit parameter " + args[1] + " is scheduled for deletion.");
 			if (session.getBatchStorage().getDeleteUnitParameters().size() == 1000) {
-				session.getXapsUnit().deleteUnitParameters(session.getBatchStorage().getDeleteUnitParameters());
+				session.getAcsUnit().deleteUnitParameters(session.getBatchStorage().getDeleteUnitParameters());
 				session.println("The unit parameters scheduled for deletion are deleted");
 				session.getBatchStorage().setDeleteUnitParameters(null);
 			}
@@ -177,13 +177,13 @@ public class UnitMenu {
 
 		// Set the relevant System parameters used for testing.
 		try {
-			XAPSUnit xapsUnit = session.getXapsUnit();
+			ACSUnit acsUnit = session.getAcsUnit();
 			Unit unit = context.getUnit();
-			xapsUnit.addOrChangeUnitParameter(unit, SystemParameters.TEST_METHOD, method.toString());
-			xapsUnit.addOrChangeUnitParameter(unit, SystemParameters.TEST_STEPS, steps.toString());
-			xapsUnit.addOrChangeUnitParameter(unit, SystemParameters.TEST_RESET_ON_STARTUP, Boolean.toString(reset));
-			xapsUnit.addOrChangeUnitParameter(unit, SystemParameters.TEST_PARAM_FILTER, paramFilter);
-			xapsUnit.addOrChangeUnitParameter(unit, SystemParameters.TEST_TAG_FILTER, tagFilter);
+			acsUnit.addOrChangeUnitParameter(unit, SystemParameters.TEST_METHOD, method.toString());
+			acsUnit.addOrChangeUnitParameter(unit, SystemParameters.TEST_STEPS, steps.toString());
+			acsUnit.addOrChangeUnitParameter(unit, SystemParameters.TEST_RESET_ON_STARTUP, Boolean.toString(reset));
+			acsUnit.addOrChangeUnitParameter(unit, SystemParameters.TEST_PARAM_FILTER, paramFilter);
+			acsUnit.addOrChangeUnitParameter(unit, SystemParameters.TEST_TAG_FILTER, tagFilter);
 		} catch (Throwable t) {
 			throw new IllegalArgumentException("Some system parameters were not found in the unit-type - not possible to setup test");
 		}
@@ -249,7 +249,7 @@ public class UnitMenu {
 	}
 
 	private void refresh(String[] inputArr) throws Exception {
-		context.setUnit(session.getXapsUnit().getUnitById(context.getUnit().getId()));
+		context.setUnit(session.getAcsUnit().getUnitById(context.getUnit().getId()));
 		context.println("The unit is refreshed");
 	}
 
@@ -267,18 +267,18 @@ public class UnitMenu {
 			context.println("The device will return to " + ProvisioningMode.REGULAR + " mode");
 			unit.toWriteQueue(SystemParameters.PROVISIONING_MODE, ProvisioningMode.REGULAR.toString());
 			//			unit.toWriteQueue(SystemParameters.PROVISIONING_STATE, ProvisioningState.READY.toString());
-			session.getXapsUnit().addOrChangeQueuedUnitParameters(unit);
-			context.setUnit(session.getXapsUnit().getUnitById(context.getUnit().getId()));
+			session.getAcsUnit().addOrChangeQueuedUnitParameters(unit);
+			context.setUnit(session.getAcsUnit().getUnitById(context.getUnit().getId()));
 			return;
 		}
-		session.getXapsUnit().addOrChangeQueuedUnitParameters(unit);
+		session.getAcsUnit().addOrChangeQueuedUnitParameters(unit);
 		DBI dbi = session.getDbi();
 		if (inputArr.length > 1 && inputArr[1].equals("async")) {
 			dbi.publishKick(context.getUnit(), SyslogConstants.FACILITY_STUN);
 			return;
 		}
 		context.println("Fusion will try to connect to the device, waiting max " + MAX_WAIT_MS / 1000 + "s to see outcome.");
-		unit = session.getXapsUnit().getUnitById(context.getUnit().getId());
+		unit = session.getAcsUnit().getUnitById(context.getUnit().getId());
 		String lct = unit.getParameterValue(SystemParameters.LAST_CONNECT_TMS);
 		if (lct == null)
 			lct = "";
@@ -294,7 +294,7 @@ public class UnitMenu {
 		String lastInspectionMessage = "";
 		while (true) {
 			Thread.sleep(500);
-			Unit u = session.getXapsUnit().getUnitById(context.getUnit().getId());
+			Unit u = session.getAcsUnit().getUnitById(context.getUnit().getId());
 			context.setUnit(u);
 			//			if (!modePeriodic && u.getProvisioningMode() == ProvisioningMode.PERIODIC) {
 			//				context.println("STUN server has changed the provisioning mode back to " + u.getProvisioningMode());
@@ -321,8 +321,8 @@ public class UnitMenu {
 
 		}
 		context.getUnit().toDeleteQueue(SystemParameters.INSPECTION_MESSAGE);
-		session.getXapsUnit().deleteUnitParameters(context.getUnit());
-		context.setUnit(session.getXapsUnit().getUnitById(context.getUnit().getId()));
+		session.getAcsUnit().deleteUnitParameters(context.getUnit());
+		context.setUnit(session.getAcsUnit().getUnitById(context.getUnit().getId()));
 
 	}
 
@@ -333,11 +333,11 @@ public class UnitMenu {
 	private void listparamsImpl(String[] inputArr, OutputHandler oh, PrintLevel pl) throws Exception {
 		Unit unit = context.getUnit();
 		//		if (!unit.isParamsAvailable() || unit.isSessionMode()) {
-		unit = session.getXapsUnit().getUnitById(unit.getId());
+		unit = session.getAcsUnit().getUnitById(unit.getId());
 		context.setUnit(unit);
 		//		}
 
-		boolean sessionMode = context.getUnit().isSessionMode() && XAPSVersionCheck.unitParamSessionSupported;
+		boolean sessionMode = context.getUnit().isSessionMode() && ACSVersionCheck.unitParamSessionSupported;
 
 		// Prepare paramSet - which parameters can be listed  && Make heading
 		Line headingLine = new Line();

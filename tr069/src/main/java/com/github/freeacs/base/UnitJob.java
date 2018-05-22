@@ -61,7 +61,7 @@ public class UnitJob {
 
 	private void updateSessionWithJobCurrent() {
 		ParameterValueStruct jobIdPvs = new ParameterValueStruct(SystemParameters.JOB_CURRENT, "" + job.getId());
-		sessionData.getFreeacsParameters().putPvs(SystemParameters.JOB_CURRENT, jobIdPvs);
+		sessionData.getAcsParameters().putPvs(SystemParameters.JOB_CURRENT, jobIdPvs);
 	}
 
 	/*
@@ -123,7 +123,7 @@ public class UnitJob {
 					upList.add(jobUp);
 					DBAccessStatic.queueUnitParameters(sessionData.getUnit(), upList, sessionData.getProfile());
 				}
-				DBAccessStatic.startUnitJob(unitId, job.getId(), sessionData.getDbAccessSession().getXaps().getDataSource());
+				DBAccessStatic.startUnitJob(unitId, job.getId(), sessionData.getDbAccessSession().getAcs().getDataSource());
 				if (!serverSideJob) {
 					updateSessionWithJobParams(false);
 					updateSessionWithJobCurrent();
@@ -164,15 +164,15 @@ public class UnitJob {
 			Integer jobId = jobInfo.getJobId();
 			try {
 				List<UnitParameter> upList = getUnitParameters(unitJobStatus);
-				DBAccessStatic.stopUnitJob(sessionData.getUnitId(), jobId, unitJobStatus, sessionData.getDbAccessSession().getXaps().getDataSource());
+				DBAccessStatic.stopUnitJob(sessionData.getUnitId(), jobId, unitJobStatus, sessionData.getDbAccessSession().getAcs().getDataSource());
 				sessionData.getPIIDecision().setCurrentJobStatus(unitJobStatus);
 				// Write directly to database, no queuing, since the all data are flushed in next step (most likely)
-				XAPS xaps = sessionData.getDbAccessSession().getXaps();
-				XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
-				xapsUnit.addOrChangeUnitParameters(upList, sessionData.getProfile());
+				ACS acs = sessionData.getDbAccessSession().getAcs();
+				ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
+				acsUnit.addOrChangeUnitParameters(upList, sessionData.getProfile());
 				if (!serverSideJob) {
 					sessionData.setFromDB(null);
-					sessionData.setFreeacsParameters(null);
+					sessionData.setAcsParameters(null);
 					sessionData.setJobParams(null);
 					Log.debug(UnitJob.class, "Unit-information will be reloaded to reflect changes in profile/unit parameters");
 					sessionData.updateParametersFromDB(sessionData.getUnitId());
@@ -241,11 +241,11 @@ public class UnitJob {
 			if (serverSideJob)
 				jobId = sessionData.getJob().getId();
 			else {
-				if (sessionData == null || sessionData.getFreeacsParameters() == null) {
+				if (sessionData == null || sessionData.getAcsParameters() == null) {
 					irrelevant = true;
 					return this;
 				}
-				String jobIdStr = sessionData.getFreeacsParameters().getValue(SystemParameters.JOB_CURRENT);
+				String jobIdStr = sessionData.getAcsParameters().getValue(SystemParameters.JOB_CURRENT);
 				if (jobIdStr == null) {
 					irrelevant = true;
 					return this;

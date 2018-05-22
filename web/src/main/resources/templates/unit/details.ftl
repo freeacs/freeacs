@@ -1,4 +1,4 @@
-							<script src="javascript/xaps.module.unit.inspection.js"></script>
+							<script src="javascript/acs.module.unit.inspection.js"></script>
 							<script>
 								xAPS.unit.inspection.initSettings({
 									unitId: '${unit.id}',

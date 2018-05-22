@@ -11,11 +11,11 @@ import javax.sql.DataSource;
  * @author Morten
  *
  */
-public class XAPSWS_BindingImplCopy extends XAPSWS_BindingImpl{
+public class ACSWS_BindingImplCopy extends ACSWS_BindingImpl{
 
 	private final DataSource xapsDs, syslogDs;
 
-	public XAPSWS_BindingImplCopy(DataSource xapsDs, DataSource syslogDs) {
+	public ACSWS_BindingImplCopy(DataSource xapsDs, DataSource syslogDs) {
 		this.xapsDs = xapsDs;
 		this.syslogDs = syslogDs;
 	}

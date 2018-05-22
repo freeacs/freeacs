@@ -15,11 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DBAccessSessionTR069 {
-	private XAPS xaps;
+	private ACS acs;
 	private DBAccessSession dbAccessSession;
 
-	public DBAccessSessionTR069(XAPS xaps, DBAccessSession dbAccessSession) {
-		this.xaps = xaps;
+	public DBAccessSessionTR069(ACS acs, DBAccessSession dbAccessSession) {
+		this.acs = acs;
 		this.dbAccessSession = dbAccessSession;
 	}
 
@@ -32,11 +32,11 @@ public class DBAccessSessionTR069 {
 		if (unittypeName == null || unittypeName.trim().equals(""))
 			unittypeName = "OUI-" + unitId.substring(0, 6);
 		try {
-			Unittype ut = xaps.getUnittype(unittypeName);
+			Unittype ut = acs.getUnittype(unittypeName);
 			if (ut == null) {
 				sessionData.setUnittypeCreated(false);
 				ut = new Unittype(unittypeName, unittypeName, "Auto-generated", ProvisioningProtocol.TR069);
-				xaps.getUnittypes().addOrChangeUnittype(ut, xaps);
+				acs.getUnittypes().addOrChangeUnittype(ut, acs);
 				debug("Have created a unittype with the name " + unittypeName +" in discovery mode");
 			} else {
 				sessionData.setUnittypeCreated(true);
@@ -46,22 +46,22 @@ public class DBAccessSessionTR069 {
 			Profile pr = ut.getProfiles().getByName("Default");
 			if (pr == null) {
 				pr = new Profile("Default", ut);
-				ut.getProfiles().addOrChangeProfile(pr, xaps);
+				ut.getProfiles().addOrChangeProfile(pr, acs);
 				debug("Have created a profile with the name " + pr.getName() + " in discovery mode");
 			}
 
 			sessionData.setUnittype(ut);
 			sessionData.setProfile(pr);
 			
-			XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
+			ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
 			List<String> unitIds = new ArrayList<String>();
 			unitIds.add(unitId);
-			xapsUnit.addUnits(unitIds, pr);
+			acsUnit.addUnits(unitIds, pr);
 			List<UnitParameter> unitParameters = new ArrayList<UnitParameter>();
 			UnittypeParameter secretUtp = ut.getUnittypeParameters().getByName(SystemParameters.SECRET);
 			UnitParameter up = new UnitParameter(secretUtp, unitId, sessionData.getSecret(), pr);
 			unitParameters.add(up);
-			xapsUnit.addOrChangeUnitParameters(unitParameters, pr);
+			acsUnit.addOrChangeUnitParameters(unitParameters, pr);
 			Unit unit = dbAccessSession.readUnit(sessionData.getUnitId());
 			sessionData.setUnit(unit);
 			debug("Have created a unit:" + unitId + " with the obtained secret");
@@ -91,8 +91,8 @@ public class DBAccessSessionTR069 {
 					Log.warn(DBAccessSession.class, "\t" + pvs.getName() + " : does not exist, cannot write session value " + pvs.getValue());
 			}
 			if (unitSessionParameters.size() > 0) {
-				XAPSUnit xapsUnit = DBAccess.getXAPSUnit(xaps);
-				xapsUnit.addOrChangeSessionUnitParameters(unitSessionParameters, profile);
+				ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
+				acsUnit.addOrChangeSessionUnitParameters(unitSessionParameters, profile);
 			}
 		} catch (SQLException sqle) {
 			throw new TR069DatabaseException("Not possible to write session parameters to database", sqle);

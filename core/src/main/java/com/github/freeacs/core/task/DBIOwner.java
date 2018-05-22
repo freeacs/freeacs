@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 
 /**
- * You can extend this object if you need to manipulate the state of the XAPS object, then you will not
+ * You can extend this object if you need to manipulate the state of the ACS object, then you will not
  * cause concurrent modification problems for other threads extending the same object (as would happen 
  * if you extended DBIShare).
  * @author Morten
@@ -17,8 +17,8 @@ import java.sql.SQLException;
  */
 public abstract class DBIOwner implements Task {
 
-	private final DataSource xapsCp;
-	private final DataSource sysCp;
+	private final DataSource mainDataSource;
+	private final DataSource syslogDataSource;
 
 	private Users users;
 	private DBI dbi;
@@ -31,34 +31,34 @@ public abstract class DBIOwner implements Task {
 
 	private Throwable throwable;
 
-	public DBIOwner(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException {
-		this.xapsCp = xapsCp;
-		this.sysCp = sysCp;
+	public DBIOwner(String taskName, DataSource mainDataSource, DataSource syslogDataSource) throws SQLException {
+		this.mainDataSource = mainDataSource;
+		this.syslogDataSource = syslogDataSource;
 		this.taskName = taskName;
 		if (users == null)
-			users = new Users(xapsCp);
+			users = new Users(mainDataSource);
 		if (id == null)
 			id = new Identity(SyslogConstants.FACILITY_CORE, CoreServlet.version, users.getUnprotected(Users.USER_ADMIN));
 		if (dbi == null) {
-			syslog = new Syslog(sysCp, id);
-			dbi = new DBI(Integer.MAX_VALUE, xapsCp, syslog);
+			syslog = new Syslog(syslogDataSource, id);
+			dbi = new DBI(Integer.MAX_VALUE, mainDataSource, syslog);
 		}
 	}
 
-	protected XAPS getLatestXAPS() {
-		return dbi.getXaps();
+	protected ACS getLatestACS() {
+		return dbi.getAcs();
 	}
 
-	protected DataSource getSysCp() {
-		return sysCp;
+	protected DataSource getSyslogDataSource() {
+		return syslogDataSource;
 	}
 
 	protected Identity getIdentity() {
 		return syslog.getIdentity();
 	}
 
-	protected DataSource getXapsCp() {
-		return xapsCp;
+	protected DataSource getMainDataSource() {
+		return mainDataSource;
 	}
 
 	protected long getLaunchTms() {

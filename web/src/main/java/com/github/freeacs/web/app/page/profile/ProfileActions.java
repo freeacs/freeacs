@@ -49,17 +49,17 @@ public abstract class ProfileActions extends AbstractWebPage {
 	 *
 	 * @param sessionId the session id
 	 * @param inputData the input data
-	 * @param xaps the xaps
+	 * @param acs the xaps
 	 * @param unittypes the unittypes
 	 * @param profiles the profiles
 	 * @return the profile status
 	 * @throws Exception the exception
 	 */
-	ProfileStatus actionCreateProfile(String sessionId, ProfileData inputData, XAPS xaps, DropDownSingleSelect<Unittype> unittypes, DropDownSingleSelect<Profile> profiles) throws Exception {
+	ProfileStatus actionCreateProfile(String sessionId, ProfileData inputData, ACS acs, DropDownSingleSelect<Unittype> unittypes, DropDownSingleSelect<Profile> profiles) throws Exception {
 		if (inputData.getProfilename().notNullNorValue(WebConstants.ALL_ITEMS_OR_DEFAULT)) {
 			String pName = inputData.getProfilename().getString();
 			Profiles profilesObject = unittypes.getSelected().getProfiles();
-			profilesObject.addOrChangeProfile(new Profile(pName, unittypes.getSelected()), xaps);
+			profilesObject.addOrChangeProfile(new Profile(pName, unittypes.getSelected()), acs);
 			String profileCopy = inputData.getProfileCopy().getString();
 			if (inputData.getProfileCopy().notNullNorValue(WebConstants.ALL_ITEMS_OR_DEFAULT)) {
 				Profile profileC = unittypes.getSelected().getProfiles().getByName(profileCopy);
@@ -68,7 +68,7 @@ public abstract class ProfileActions extends AbstractWebPage {
 				ProfileParameters pParams = profiles.getSelected().getProfileParameters();
 				for (ProfileParameter ppC : pParamsC.getProfileParameters()) {
 					ProfileParameter pp = new ProfileParameter(profiles.getSelected(), ppC.getUnittypeParameter(), ppC.getValue());
-					pParams.addOrChangeProfileParameter(pp, xaps);
+					pParams.addOrChangeProfileParameter(pp, acs);
 				}
 			} else {
 				profiles.setSelected(unittypes.getSelected().getProfiles().getByName(pName));
@@ -84,15 +84,15 @@ public abstract class ProfileActions extends AbstractWebPage {
 	 * Action delete profile.
 	 *
 	 * @param sessionId the session id
-	 * @param xaps the xaps
+	 * @param acs the xaps
 	 * @param unittypes the unittypes
 	 * @param profiles the profiles
 	 * @return the profile status
 	 * @throws Exception the exception
 	 */
-	ProfileStatus actionDeleteProfile(String sessionId,XAPS xaps,DropDownSingleSelect<Unittype> unittypes,DropDownSingleSelect<Profile> profiles) throws Exception {
+	ProfileStatus actionDeleteProfile(String sessionId, ACS acs, DropDownSingleSelect<Unittype> unittypes, DropDownSingleSelect<Profile> profiles) throws Exception {
 		try {
-			unittypes.getSelected().getProfiles().deleteProfile(profiles.getSelected(), xaps, true);
+			unittypes.getSelected().getProfiles().deleteProfile(profiles.getSelected(), acs, true);
 			profiles.setSelected(null);
 			SessionCache.getSessionData(sessionId).setProfileName(null);
 		} catch (SQLException ex) {
@@ -105,13 +105,13 @@ public abstract class ProfileActions extends AbstractWebPage {
 	 * Action cud parameters.
 	 *
 	 * @param req the req
-	 * @param xaps the xaps
+	 * @param acs the xaps
 	 * @param unittypes the unittypes
 	 * @param profiles the profiles
 	 * @return the profile status
 	 * @throws Exception the exception
 	 */
-	ProfileStatus actionCUDParameters(ParameterParser req, XAPS xaps, DropDownSingleSelect<Unittype> unittypes, DropDownSingleSelect<Profile> profiles) throws Exception {
+	ProfileStatus actionCUDParameters(ParameterParser req, ACS acs, DropDownSingleSelect<Unittype> unittypes, DropDownSingleSelect<Profile> profiles) throws Exception {
 		UnittypeParameter[] upParams = unittypes.getSelected().getUnittypeParameters().getUnittypeParameters();
 		ProfileParameters pParams = profiles.getSelected().getProfileParameters();
 		int nDeleted = 0;
@@ -124,14 +124,14 @@ public abstract class ProfileActions extends AbstractWebPage {
 			if (pp != null)
 				pValue = pp.getValue();
 			if (pp != null && req.getParameter("delete::" + upName) != null) {
-				pParams.deleteProfileParameter(pp, xaps);
+				pParams.deleteProfileParameter(pp, acs);
 				nDeleted++;
 			} else if (pp == null && req.getParameter("create::" + upName) != null) {
 				String newValue = req.getParameter("update::" + upName);
 				if (newValue != null)
 					newValue = removeFromStart(newValue, '!');
 				pp = new ProfileParameter(profiles.getSelected(), utp, newValue);
-				pParams.addOrChangeProfileParameter(pp, xaps);
+				pParams.addOrChangeProfileParameter(pp, acs);
 				nCreated++;
 			} else if (pp != null && req.getParameter("update::" + upName) != null) {
 				String updatedValue = req.getParameter("update::" + upName);
@@ -140,7 +140,7 @@ public abstract class ProfileActions extends AbstractWebPage {
 				if (updatedValue != null)
 					updatedValue = removeFromStart(updatedValue, '!');
 				pp.setValue(updatedValue);
-				pParams.addOrChangeProfileParameter(pp, xaps);
+				pParams.addOrChangeProfileParameter(pp, acs);
 				nUpdated++;
 			}
 		}

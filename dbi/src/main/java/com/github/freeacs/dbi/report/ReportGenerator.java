@@ -15,9 +15,9 @@ public class ReportGenerator {
 	private static Logger logger = LoggerFactory.getLogger(ReportGenerator.class);
 
 	protected TmsConverter converter = new TmsConverter();
-	protected DataSource sysCp;
-	protected DataSource xapsCp;
-	protected XAPS xaps;
+	protected DataSource syslogDataSource;
+	protected DataSource mainDataSource;
+	protected ACS acs;
 	protected Identity id;
 	protected String logPrefix = "";
 
@@ -41,10 +41,10 @@ public class ReportGenerator {
 		swVersion = null;
 	}
 
-	public ReportGenerator(DataSource sysCp, DataSource xapsCp, XAPS xaps, String logPrefix, Identity id) {
-		this.sysCp = sysCp;
-		this.xapsCp = xapsCp;
-		this.xaps = xaps;
+	public ReportGenerator(DataSource mainDataSource, DataSource syslogDataSource, ACS acs, String logPrefix, Identity id) {
+		this.syslogDataSource = syslogDataSource;
+		this.mainDataSource = mainDataSource;
+		this.acs = acs;
 		this.id = id;
 		if (logPrefix != null)
 			this.logPrefix = logPrefix;
@@ -64,7 +64,7 @@ public class ReportGenerator {
 			}
 			if (id.getUser().getUsername().equals(Users.USER_ADMIN)) {
 				int numberOfProfiles = 0;
-				for (Unittype ut : xaps.getUnittypes().getUnittypes())
+				for (Unittype ut : acs.getUnittypes().getUnittypes())
 					numberOfProfiles += ut.getProfiles().getProfiles().length;
 				if (prs.size() >= numberOfProfiles)
 					ds.addSqlAndArguments("(unit_type_name = ? and profile_name = ?) or ", "Unknown", "Unknown");
@@ -75,7 +75,7 @@ public class ReportGenerator {
 			ds.addSql("(");
 			for (Unittype ut : uts)
 				ds.addSqlAndArguments("unit_type_name = ? or ", ut.getName());
-			if (id.getUser().getUsername().equals(Users.USER_ADMIN) && uts.size() >= xaps.getUnittypes().getUnittypes().length)
+			if (id.getUser().getUsername().equals(Users.USER_ADMIN) && uts.size() >= acs.getUnittypes().getUnittypes().length)
 				ds.addSqlAndArguments("unit_type_name = ? or ", "Unknown");
 			ds.cleanupSQLTail();
 			ds.addSql(") and ");
@@ -111,7 +111,7 @@ public class ReportGenerator {
 		SQLException sqle = null;
 		List<String> swVersionList = new ArrayList<String>();
 		try {
-			connection = xapsCp.getConnection();
+			connection = mainDataSource.getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("select distinct(software_version) from " + tablename + " where ");
 			Calendar startCal = Calendar.getInstance();
@@ -166,7 +166,7 @@ public class ReportGenerator {
 		try {
 			long now = System.currentTimeMillis();
 			long twoDaysAgo = now - 2l * 86400l * 1000l;
-			connection = xapsCp.getConnection();
+			connection = mainDataSource.getConnection();
 			DynamicStatement ds = new DynamicStatement();
 			ds.addSqlAndArguments("select timestamp_ from " + tablename + " where period_type = " + periodType.getTypeInt() + " order by timestamp_ desc");
 			ps = ds.makePreparedStatement(connection);
@@ -202,24 +202,24 @@ public class ReportGenerator {
 	public Map<String, Unit> getUnitsInGroup(Group group) throws SQLException {
 		Map<String, Unit> unitsInGroup = new HashMap<String, Unit>();
 		if (group != null) {
-			XAPSUnit xapsUnit = new XAPSUnit(xapsCp, xaps, xaps.getSyslog());
-			unitsInGroup = xapsUnit.getUnits(group);
+			ACSUnit acsUnit = new ACSUnit(mainDataSource, acs, acs.getSyslog());
+			unitsInGroup = acsUnit.getUnits(group);
 		}
 		return unitsInGroup;
 	}
 
 	public Report<RecordUnit> generateUnitReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws SQLException, IOException {
-		Connection xapsConnection = null;
+		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		SQLException sqle = null;
 		try {
 			Report<RecordUnit> report = new Report<RecordUnit>(RecordUnit.class, periodType);
-			xapsConnection = xapsCp.getConnection();
+			connection = mainDataSource.getConnection();
 
 			logger.info(logPrefix + "Reads from report_unit table from " + start + " to " + end);
 			DynamicStatement ds = selectReportSQL("report_unit", periodType, start, end, uts, prs);
-			ps = ds.makePreparedStatement(xapsConnection);
+			ps = ds.makePreparedStatement(connection);
 			rs = ps.executeQuery();
 			int counter = 0;
 			while (rs.next()) {
@@ -247,24 +247,24 @@ public class ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (xapsConnection != null) {
-				xapsConnection.close();
+			if (connection != null) {
+				connection.close();
 			}
 		}
 	}
 
 	public Report<RecordJob> generateJobReport(PeriodType periodType, Date start, Date end, List<Unittype> uts) throws SQLException, IOException {
-		Connection xapsConnection = null;
+		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		SQLException sqle = null;
 		try {
 			Report<RecordJob> report = new Report<RecordJob>(RecordJob.class, periodType);
-			xapsConnection = xapsCp.getConnection();
+			connection = mainDataSource.getConnection();
 
 			logger.info(logPrefix + "Reads from report_job table from " + start + " to " + end);
 			DynamicStatement ds = selectReportSQL("report_job", periodType, start, end, uts, null);
-			ps = ds.makePreparedStatement(xapsConnection);
+			ps = ds.makePreparedStatement(connection);
 			rs = ps.executeQuery();
 			int counter = 0;
 			while (rs.next()) {
@@ -294,8 +294,8 @@ public class ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (xapsConnection != null) {
-				xapsConnection.close();
+			if (connection != null) {
+				connection.close();
 			}
 		}
 	}

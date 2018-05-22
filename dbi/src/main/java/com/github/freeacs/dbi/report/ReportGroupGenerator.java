@@ -18,119 +18,25 @@ public class ReportGroupGenerator extends ReportGenerator {
 
 	private static Logger logger = LoggerFactory.getLogger(ReportGroupGenerator.class);
 
-	public ReportGroupGenerator(DataSource sysCp, DataSource xapsCp, XAPS xaps, String logPrefix, Identity id) {
-		super(sysCp, xapsCp, xaps, logPrefix, id);
+	public ReportGroupGenerator(DataSource mainDataSource, DataSource syslogDataSource, ACS acs, String logPrefix, Identity id) {
+		super(mainDataSource, syslogDataSource, acs, logPrefix, id);
 	}
 
-	//	private List<SyslogEntry> readSyslog(Date start, Date end, List<Unittype> uts, String unitId, String msgIdentifier) throws SQLException {
-	//		Syslog syslog = new Syslog(sysCp, id);
-	//		SyslogFilter filter = new SyslogFilter();
-	//		filter.setFacility(16); // Only messages from device
-	//		filter.setMessage(msgIdentifier);
-	//		filter.setUnittypes(uts);
-	//		filter.setCollectorTmsStart(start);
-	//		filter.setCollectorTmsEnd(end);
-	//		filter.setUnitId(unitId);
-	//		return syslog.read(filter, xaps);
-	//	}
-
-	//	private void addToReport(Report<RecordGroup> report, SyslogEntry entry, PeriodType periodType, String groupName) {
-	//		if (entry.getUnittypeName() == null || entry.getProfileName() == null)
-	//			return;
-	//		if (entry.getFacilityVersion() == null)
-	//			entry.setFacilityVersion("Unknown");
-	//		RecordGroup recordTmp = new RecordGroup(entry.getCollectorTimestamp(), periodType, entry.getUnittypeName(), groupName);
-	//		Key key = recordTmp.getKey();
-	//		RecordGroup record = report.getRecord(key);
-	//		if (record == null)
-	//			record = recordTmp;
-	//		record.getUnitCount().inc();
-	//		report.setRecord(key, record);
-	//	}
-
-	//	private String getMessageIdentifier(Group group) {
-	//		String msgIdentifier = null;
-	//		for (SyslogEvent se : group.getUnittype().getSyslogEvents().getSyslogEvents()) {
-	//			if (se.getTask().getTaskType() == SyslogEventTaskType.GROUPSYNC) {
-	//				if (se.getTask().getSyncGroup().getName().equals(group.getName()))
-	//					msgIdentifier = se.getExpression().toString();
-	//			}
-	//		}
-	//		return msgIdentifier;
-	//
-	//	}
-
-	//	public Report<RecordGroup> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, Group group, String unitId) throws SQLException,
-	//			IOException {
-	//		Report<RecordGroup> report = new Report<RecordGroup>(RecordGroup.class, periodType);
-	//		logInfo("TimeGroupReport", unitId, uts, null, start, end);
-	//		if (group.getTimeParameter() == null) {
-	//			logger.info(logPrefix + "TimeGroupReport: The group was not a time (rolling) group - no report produced");
-	//			return report;
-	//		}
-	//		String msgIdentifier = getMessageIdentifier(group);
-	//		if (msgIdentifier == null) {
-	//			logger.info(logPrefix + "TimeGroupReport: The group was a time rolling group, but no syslog event are synching with this group - no report produced");
-	//			return report;
-	//		}
-	//		List<SyslogEntry> entries = readSyslog(start, end, uts, unitId, msgIdentifier);
-	//		for (SyslogEntry entry : entries) {
-	//			addToReport(report, entry, periodType, group.getName());
-	//		}
-	//		
-	//		logger.info(logPrefix + "TimeGroupReport: Have read " + entries.size() + " rows from syslog, report is now " + report.getMap().size() + " entries");
-	//		return report;
-	//	}
-
-	//	public Report<RecordGroup> generateFromSyslog(Date start, Date end, String unitId) throws SQLException, IOException {
-	//		return generateFromSyslog(PeriodType.SECOND, start, end, null, null, unitId);
-	//	}
-
-	//	public Map<String, Report<RecordGroup>> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, Group group) throws SQLException,
-	//			IOException {
-	//		logInfo("TimeGroupReport", null, uts, null, start, end);
-	//		Map<String, Report<RecordGroup>> unitReportMap = new HashMap<String, Report<RecordGroup>>();
-	//		if (group.getTimeParameter() == null) {
-	//			logger.info(logPrefix + "TimeGroupReport: The group was not a time (rolling) group - no report produced");
-	//			return unitReportMap;
-	//		}
-	//		String msgIdentifier = getMessageIdentifier(group);
-	//		if (msgIdentifier == null) {
-	//			logger.info(logPrefix + "TimeGroupReport: The group was a time rolling group, but no syslog event are synching with this group - no report produced");
-	//			return unitReportMap;
-	//		}
-	//		List<SyslogEntry> entries = readSyslog(start, end, uts, null, msgIdentifier);
-	//		for (SyslogEntry entry : entries) {
-	//			if (entry.getUnittypeName() == null || entry.getProfileName() == null)
-	//				continue;
-	//			String unitId = entry.getUnitId();
-	//			Report<RecordGroup> report = unitReportMap.get(unitId);
-	//			if (report == null) {
-	//				report = new Report<RecordGroup>(RecordGroup.class, periodType);
-	//				unitReportMap.put(unitId, report);
-	//			}
-	//			addToReport(report, entry, periodType, group.getName());
-	//		}
-	//		
-	//		logger.info(logPrefix + "TimeGroupReport: Have read " + entries.size() + " rows from syslog, " + unitReportMap.size() + " units are mapped");
-	//		return unitReportMap;
-	//	}
-
 	public Report<RecordGroup> generateGroupReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, Group g) throws SQLException, IOException {
-		Connection xapsConnection = null;
+		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		SQLException sqle = null;
 		try {
 			Report<RecordGroup> report = new Report<RecordGroup>(RecordGroup.class, periodType);
-			xapsConnection = xapsCp.getConnection();
+			connection = mainDataSource.getConnection();
 			
 			logger.info(logPrefix + "Reads from report_group table from " + start + " to " + end);
 			DynamicStatement ds = selectReportSQL("report_group", periodType, start, end, uts, null);
 			if (g != null) {
 				ds.addSqlAndArguments(" and group_name = ?", g.getName());
 			}
-			ps = ds.makePreparedStatement(xapsConnection);
+			ps = ds.makePreparedStatement(connection);
 			rs = ps.executeQuery();
 			int counter = 0;
 			while (rs.next()) {
@@ -156,8 +62,8 @@ public class ReportGroupGenerator extends ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (xapsConnection != null) {
-				xapsConnection.close();
+			if (connection != null) {
+				connection.close();
 			}
 		}
 	}

@@ -10,7 +10,7 @@ import com.github.freeacs.web.app.table.TableElement;
 import com.github.freeacs.web.app.table.TableElementMaker;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 
 import javax.sql.DataSource;
 import java.io.UnsupportedEncodingException;
@@ -24,13 +24,6 @@ import java.util.Map;
 public class TriggerReleasePage extends AbstractWebPage {
 
 	private static SimpleDateFormat urlFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-
-	private TriggerReleaseData inputData;
-	private String sessionId;
-	@SuppressWarnings("unused")
-	private Output outputHandler;
-	private XAPS xaps;
-	private Unittype unittype;
 
 	public List<MenuItem> getShortcutItems(SessionData sessionData) {
 		List<MenuItem> list = new ArrayList<MenuItem>();
@@ -57,12 +50,11 @@ public class TriggerReleasePage extends AbstractWebPage {
 
 	@Override
 	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
-		inputData = (TriggerReleaseData) InputDataRetriever.parseInto(new TriggerReleaseData(), params);
-		this.sessionId = params.getSession().getId();
-		this.outputHandler = outputHandler;
+		TriggerReleaseData inputData = (TriggerReleaseData) InputDataRetriever.parseInto(new TriggerReleaseData(), params);
+		String sessionId = params.getSession().getId();
 		Map<String, Object> fmMap = outputHandler.getTemplateMap();
-		this.xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (xaps == null) {
+		ACS acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -74,11 +66,11 @@ public class TriggerReleasePage extends AbstractWebPage {
 		Date twoHoursBeforeTms = new Date(tms.getTime() - 7200 * 1000);
 		fmMap.put("tms", urlFormat.format(tms));
 		fmMap.put("twohoursbeforetms", urlFormat.format(twoHoursBeforeTms));
-		fmMap.put("unittypes", InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps));
-		this.unittype = xaps.getUnittype(inputData.getUnittype().getString());
+		fmMap.put("unittypes", InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs));
+		Unittype unittype = acs.getUnittype(inputData.getUnittype().getString());
 		if (unittype != null) {
 			/* The table elements */
-			List<TableElement> triggerTableElements = new TableElementMaker().getTriggers(unittype, xaps);
+			List<TableElement> triggerTableElements = new TableElementMaker().getTriggers(unittype);
 			outputHandler.getTemplateMap().put("triggertablelist", triggerTableElements);
 
 			/* Map to retrieve ReleaseTrigger object for every trigger */
@@ -88,7 +80,7 @@ public class TriggerReleasePage extends AbstractWebPage {
 				ReleaseTrigger rt = new ReleaseTrigger();
 				//				Date evalPeriodStart = new Date(tms.getTime() - trigger.getEvalPeriodMinutes() * 60000);
 				Date evalPeriodStart = new Date(tms.getTime() - 3600 * 1000 * 2);
-				List<TriggerRelease> trList = triggers.readTriggerReleases(trigger, evalPeriodStart, tms, xaps, null);
+				List<TriggerRelease> trList = triggers.readTriggerReleases(trigger, evalPeriodStart, tms, acs, null);
 				for (TriggerRelease tr : trList) {
 					if (rt.getReleasedTms() == null) {
 						rt.setReleasedTms(tr.getReleaseTms());

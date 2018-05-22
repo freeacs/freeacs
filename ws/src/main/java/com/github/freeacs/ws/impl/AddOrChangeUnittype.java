@@ -20,8 +20,8 @@ public class AddOrChangeUnittype {
 
 	private static final Logger logger = LoggerFactory.getLogger(AddOrChangeUnittype.class);
 
-	private XAPS xaps;
-	private XAPSWS xapsWS;
+	private ACS acs;
+	private ACSWS acsWS;
 
 	private void addOrChangeUnittypeImpl(Unittype unittypeXAPS, AddOrChangeUnittypeRequest gur) throws SQLException, RemoteException {
 		unittypeXAPS.setDescription(gur.getUnittype().getDescription());
@@ -35,7 +35,7 @@ public class AddOrChangeUnittype {
 			for (Parameter param : parameterList.getParameterArray().getItem()) {
 				UnittypeParameter utp = unittypeXAPS.getUnittypeParameters().getByName(param.getName());
 				if (param.getFlags() != null && !param.getFlags().equals("D") && !param.getFlags().equals("AC"))
-					throw XAPSWS.error(logger, "Flag for parameter " + param.getName() + " had value " + param.getFlags() + ", but must be either D or AC");
+					throw ACSWS.error(logger, "Flag for parameter " + param.getName() + " had value " + param.getFlags() + ", but must be either D or AC");
 				if (param.getFlags() == null || param.getFlags().equals("AC")) {
 					if (utp == null)
 						acUtpList.add(new UnittypeParameter(unittypeXAPS, param.getName(), new UnittypeParameterFlag(param.getValue())));
@@ -49,27 +49,27 @@ public class AddOrChangeUnittype {
 			}
 		}
 		//		System.out.println("AOC: Unitypes object: " + xapsWS.getXAPS().getUnittypes());
-		xapsWS.getXAPS().getUnittypes().addOrChangeUnittype(unittypeXAPS, xaps);
+		acsWS.getAcs().getUnittypes().addOrChangeUnittype(unittypeXAPS, acs);
 		for (UnittypeParameter utp : dUtpList) {
 			//			System.out.println("D: Unittype: " + unittypeXAPS + ", UTP:" + utp.getName() + ", " + utp.getFlag().getFlag());
-			unittypeXAPS.getUnittypeParameters().deleteUnittypeParameter(utp, xaps);
+			unittypeXAPS.getUnittypeParameters().deleteUnittypeParameter(utp, acs);
 		}
 		for (UnittypeParameter utp : acUtpList) {
 			//			System.out.println("AOC: Unittype: " + unittypeXAPS + ", UTP:" + utp.getName() + ", " + utp.getFlag().getFlag());
-			unittypeXAPS.getUnittypeParameters().addOrChangeUnittypeParameter(utp, xaps);
+			unittypeXAPS.getUnittypeParameters().addOrChangeUnittypeParameter(utp, acs);
 		}
 	}
 
 	public AddOrChangeUnittypeResponse addOrChangeUnittype(AddOrChangeUnittypeRequest gur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 			
-			xapsWS = XAPSWSFactory.getXAPSWS(gur.getLogin(),xapsDs,syslogDs);
-			xaps = xapsWS.getXAPS();
-			User user = xapsWS.getId().getUser();
+			acsWS = ACSWSFactory.getXAPSWS(gur.getLogin(),xapsDs,syslogDs);
+			acs = acsWS.getAcs();
+			User user = acsWS.getId().getUser();
 			if (gur.getUnittype() == null || gur.getUnittype().getName() == null)
-				throw XAPSWS.error(logger, "No unittype name specified");
+				throw ACSWS.error(logger, "No unittype name specified");
 			boolean isAdmin = user.getPermissions().getPermissions().length == 0;
-			Unittypes unittypes = xaps.getUnittypes();
+			Unittypes unittypes = acs.getUnittypes();
 			Unittype unittypeXAPS = null;
 			if (unittypes.getByName(gur.getUnittype().getName()) == null) { // make new unittype
 				if (isAdmin) {// allow if login is admin
@@ -77,18 +77,18 @@ public class AddOrChangeUnittype {
 					unittypeXAPS = new Unittype(uWS.getName(), uWS.getVendor(), uWS.getDescription(), ProvisioningProtocol.toEnum(uWS.getProtocol()));
 					addOrChangeUnittypeImpl(unittypeXAPS, gur);
 				} else {
-					throw XAPSWS.error(logger, "The unittype " + gur.getUnittype().getName() + " does not exist, your login does not have the permissions to create it.");
+					throw ACSWS.error(logger, "The unittype " + gur.getUnittype().getName() + " does not exist, your login does not have the permissions to create it.");
 				}
 			} else { // change an existing one
-				unittypeXAPS = xapsWS.getUnittypeFromXAPS(gur.getUnittype().getName());
+				unittypeXAPS = acsWS.getUnittypeFromXAPS(gur.getUnittype().getName());
 				addOrChangeUnittypeImpl(unittypeXAPS, gur);
 			}
-			return new AddOrChangeUnittypeResponse(ConvertXAPS2WS.convert(unittypeXAPS));
+			return new AddOrChangeUnittypeResponse(ConvertACS2WS.convert(unittypeXAPS));
 		} catch (Throwable t) {
 			if (t instanceof RemoteException)
 				throw (RemoteException) t;
 			else {
-				throw XAPSWS.error(logger, t);
+				throw ACSWS.error(logger, t);
 			}
 		}
 

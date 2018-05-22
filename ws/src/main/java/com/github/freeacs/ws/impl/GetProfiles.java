@@ -16,14 +16,14 @@ public class GetProfiles {
 
 	private static final Logger logger = LoggerFactory.getLogger(GetProfiles.class);
 
-	private XAPSWS xapsWS;
+	private ACSWS xapsWS;
 
 	public GetProfilesResponse getProfiles(GetProfilesRequest gur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 			
-			xapsWS = XAPSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
+			xapsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
 			if (gur.getUnittype() == null || gur.getUnittype().getName() == null)
-				throw XAPSWS.error(logger, "No unittype is specified");
+				throw ACSWS.error(logger, "No unittype is specified");
 			Unittype unittype = xapsWS.getUnittypeFromXAPS(gur.getUnittype().getName());
 			com.github.freeacs.ws.Profile[] profileArray = null;
 			if (gur.getProfile() == null || gur.getProfile().getName() == null) {
@@ -33,20 +33,20 @@ public class GetProfiles {
 				profileArray = new com.github.freeacs.ws.Profile[profileXAPSArr.length];
 				int i = 0;
 				for (Profile profileXAPS : profileXAPSArr)
-					profileArray[i++] = ConvertXAPS2WS.convert(profileXAPS);
+					profileArray[i++] = ConvertACS2WS.convert(profileXAPS);
 				//				for (int i = 0; i < allowedProfiles.size(); i++)
 				//					profileArray[i] = ConvertXAPS2WS.convert(allowedProfiles.get(i));
 			} else {
 				profileArray = new com.github.freeacs.ws.Profile[1];
 				Profile p = xapsWS.getProfileFromXAPS(unittype.getName(), gur.getProfile().getName());
-				profileArray[0] = ConvertXAPS2WS.convert(p);
+				profileArray[0] = ConvertACS2WS.convert(p);
 			}
 			return new GetProfilesResponse(new ProfileList(new ArrayOfProfile(profileArray)));
 		} catch (Throwable t) {
 			if (t instanceof RemoteException)
 				throw (RemoteException) t;
 			else {
-				throw XAPSWS.error(logger, t);
+				throw ACSWS.error(logger, t);
 			}
 		}
 

@@ -15,10 +15,10 @@ import java.security.spec.RSAPublicKeySpec;
 import java.util.Calendar;
 
 /*
- * This class should handle all crypto and crypto-like operations for xAPS. There are currently X 
+ * This class should handle all crypto and crypto-like operations for ACS. There are currently X
  * operations needed:
  * 
- *  1. compute a SHA1 digest - used to store passwords in the xAPS database
+ *  1. compute a SHA1 digest - used to store passwords in the ACS database
  *  2. compute a HMAC-SHA1 digest - used to transmit ConnectionPassword securly in TR-111
  *  3. encrypt certificates to send to customers - uses RSA private key from file
  *  4. decrypt certificates - uses RSA public key found in this class
@@ -28,7 +28,7 @@ public class Crypto {
 	private static final BigInteger mPub = new BigInteger(
 			"120269692064713533478389412839671283417190682426870272314449441321184544461014990076810327411338879981623246052223890289623629997288030091485056773717523566355022759812796435413424582764103109105774543772877073128855329339531440780115102907452611266194976734052729897312276845685331050852311259750770004972459");
 	private static final BigInteger ePub = new BigInteger("65537");
-	public static String PK_PATH = "xaps-private-RSA-key.txt";
+	public static String PK_PATH = "freeacs-private-RSA-key.txt";
 
 	private static String convertByte2HexUpperCase(byte[] bytes) {
 		StringBuffer s = new StringBuffer();

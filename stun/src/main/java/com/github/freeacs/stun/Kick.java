@@ -2,7 +2,6 @@ package com.github.freeacs.stun;
 
 import com.github.freeacs.common.util.IPAddress;
 import com.github.freeacs.dbi.Unit;
-import com.github.freeacs.dbi.XAPSUnit;
 import com.github.freeacs.dbi.crypto.Crypto;
 import com.github.freeacs.dbi.util.SystemParameters;
 import org.apache.http.HttpResponse;
@@ -61,7 +60,7 @@ public class Kick {
 	private static Logger log = LoggerFactory.getLogger("KickSingle");
 	private static Random random = new Random();
 
-	public static KickResponse kick(Unit unit, XAPSUnit xapsUnit) throws MalformedURLException, SQLException {
+	public static KickResponse kick(Unit unit) throws MalformedURLException, SQLException {
 		CPEParameters cpeParams = new CPEParameters(getKeyroot(unit));
 		String udpCrUrl = unit.getParameterValue(cpeParams.UDP_CONNECTION_URL, false);
 		String crUrl = unit.getParameterValue(cpeParams.CONNECTION_URL, false);
@@ -73,16 +72,16 @@ public class Kick {
 		// TCP-kick (HTTP)
 		if (crUrl != null && !crUrl.trim().equals("") && checkIfPublicIP(crUrl)) {
 			log.debug(unit.getId() + " will try TCP kick");
-			kr = kickUsingTCP(unit, xapsUnit, crUrl, crPass, crUser);
+			kr = kickUsingTCP(unit, crUrl, crPass, crUser);
 		}
 		// UDP-kick
 		if (!kr.isKicked() && udpCrUrl != null && !udpCrUrl.trim().equals("")) {
 			log.debug(unit.getId() + " will try UDP kick");
-			kr = kickUsingUDP(unit, xapsUnit, udpCrUrl, crUrl, crPass, crUser);
+			kr = kickUsingUDP(unit, udpCrUrl, crPass, crUser);
 		} else if (Properties.EXPECT_PORT_FORWARDING && publicIP != null && crUrl != null) {
 			log.debug(unit.getId() + " will try TCP kick by expecting port forwarding");
 			crUrl = crUrl.replace(new URL(crUrl).getHost(), publicIP);
-			kr = kickUsingTCP(unit, xapsUnit, crUrl, crPass, crUser);
+			kr = kickUsingTCP(unit, crUrl, crPass, crUser);
 		}
 
 		return kr;
@@ -102,7 +101,7 @@ public class Kick {
 		return IPAddress.isPublic(new URL(crUrl).getHost());
 	}
 
-	private static KickResponse kickUsingTCP(Unit unit, XAPSUnit xapsUnit, String crUrl, String crPass, String crUser) throws SQLException, MalformedURLException {
+	private static KickResponse kickUsingTCP(Unit unit, String crUrl, String crPass, String crUser) throws MalformedURLException {
 		DefaultHttpClient client = new DefaultHttpClient();
 		HttpGet get = new HttpGet(crUrl);
 		get.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 20000);
@@ -136,20 +135,14 @@ public class Kick {
 		}
 	}
 
-	private static KickResponse kickUsingUDP(Unit unit, XAPSUnit xapsUnit, String udpCrUrl, String crUrl, String crPass, String crUser) throws SQLException {
+	private static KickResponse kickUsingUDP(Unit unit, String udpCrUrl, String crPass, String crUser) {
 		try {
 			String id = "" + random.nextInt(100000);
 			String cn = "" + random.nextLong();
 			String ts = "" + System.currentTimeMillis();
 			String text = ts + id + crUser + cn;
-			if (crPass == null)
-				crPass = "password"; // we must have a password - so we simply set a default password
-			String sig = Crypto.computeHmacSHA1AsHexUpperCase(crPass, text);
-			// original, according to TR-111 spec example
-			//			String req = "GET http://" + udpCrUrl + "?ts=" + ts + "&id=" + id + "&un=" + crUser + "&cn=" + cn + "&sig=" + sig + " HTTP/1.1\r\n";
-			// assumed proper HTTP URI
-			//			String req = "GET http://" + udpCrUrl + "/?ts=" + ts + "&id=" + id + "&un=" + crUser + "&cn=" + cn + "&sig=" + sig + " HTTP/1.1\r\n";
-			// testing without absolute URI
+			String passFix = crPass == null ? "password" : crPass;
+			String sig = Crypto.computeHmacSHA1AsHexUpperCase(passFix, text);
 			String req = "GET http://" + udpCrUrl + "/?ts=" + ts + "&id=" + id + "&un=" + crUser + "&cn=" + cn + "&sig=" + sig + " HTTP/1.1\r\n\r\n";
 			byte[] buf = req.getBytes();
 			if (!udpCrUrl.contains(":"))

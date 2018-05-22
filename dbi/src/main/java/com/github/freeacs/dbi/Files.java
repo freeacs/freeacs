@@ -1,6 +1,6 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.dbi.util.XAPSVersionCheck;
+import com.github.freeacs.dbi.util.ACSVersionCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,13 +56,13 @@ public class Files {
 		return filteredFiles.toArray(new File[] {});
 	}
 
-	public void addOrChangeFile(File file, XAPS xaps) throws SQLException {
-		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
+	public void addOrChangeFile(File file, ACS acs) throws SQLException {
+		if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
-		file.setConnectionProperties(xaps.getDataSource()); // just in
+		file.setConnectionProperties(acs.getDataSource()); // just in
 																	// case...
 		file.validate();
-		addOrChangeFileImpl(unittype, file, xaps);
+		addOrChangeFileImpl(unittype, file, acs);
 		nameMap.put(file.getName(), file);
 		idMap.put(file.getId(), file);
 		versionTypeMap.put(file.getVersion() + file.getType(), file);
@@ -72,10 +72,10 @@ public class Files {
 		}
 	}
 
-	private void deleteFileImpl(Unittype unittype, File file, XAPS xaps) throws SQLException {
+	private void deleteFileImpl(Unittype unittype, File file, ACS acs) throws SQLException {
 		Statement s = null;
 		String sql = null;
-		Connection c = xaps.getDataSource().getConnection();
+		Connection c = acs.getDataSource().getConnection();
 		try {
 			s = c.createStatement();
 			sql = "DELETE FROM filestore WHERE ";
@@ -84,8 +84,8 @@ public class Files {
 			s.executeUpdate(sql);
 
 			logger.info("Deleted file " + file.getName());
-			if (xaps.getDbi() != null)
-				xaps.getDbi().publishDelete(file, unittype);
+			if (acs.getDbi() != null)
+				acs.getDbi().publishDelete(file, unittype);
 		} finally {
 			if (s != null)
 				s.close();
@@ -102,25 +102,25 @@ public class Files {
 	 *
 	 * @throws SQLException
 	 */
-	public void deleteFile(File file, XAPS xaps) throws SQLException {
-		if (!xaps.getUser().isUnittypeAdmin(unittype.getId()))
+	public void deleteFile(File file, ACS acs) throws SQLException {
+		if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
-		deleteFileImpl(unittype, file, xaps);
+		deleteFileImpl(unittype, file, acs);
 		nameMap.remove(file.getName());
 		idMap.remove(file.getId());
 		versionTypeMap.remove(file.getVersion() + file.getType());
 	}
 
-	private void addOrChangeFileImpl(Unittype unittype, File file, XAPS xaps) throws SQLException {
-		Connection c = xaps.getDataSource().getConnection();
+	private void addOrChangeFileImpl(Unittype unittype, File file, ACS acs) throws SQLException {
+		Connection c = acs.getDataSource().getConnection();
 		PreparedStatement s = null;
 		String sql = null;
 		// The file owner is set automatically to the logged-in user upon
 		// add/change of file.
 		// If logged-in user isAdmin, will skip this override, and will allow
 		// any user specified in the file object.
-		if (!unittype.getXaps().getUser().isAdmin() && unittype.getXaps().getUser().getId() != null)
-			file.setOwner(unittype.getXaps().getUser());
+		if (!unittype.getAcs().getUser().isAdmin() && unittype.getAcs().getUser().getId() != null)
+			file.setOwner(unittype.getAcs().getUser());
 		if (file.getId() == null) {
 			try {
 				DynamicStatement ds = new DynamicStatement();
@@ -132,7 +132,7 @@ public class Files {
 				ds.addSqlAndArguments("version,", file.getVersion());
 				if (file.getContentProtected() != null)
 					ds.addSqlAndArguments("content,", new ByteArrayInputStream(file.getContentProtected()));
-				if (XAPSVersionCheck.fileReworkSupported) {
+				if (ACSVersionCheck.fileReworkSupported) {
 					ds.addSqlAndStringArgs("target_name,", file.getTargetName());
 					if (file.getOwner() != null && file.getOwner().getId() != null)
 						ds.addSqlAndArguments("owner,", file.getOwner().getId());
@@ -149,8 +149,8 @@ public class Files {
 				// }
 
 				logger.info("Added file " + file.getName());
-				if (xaps.getDbi() != null)
-					xaps.getDbi().publishAdd(file, unittype);
+				if (acs.getDbi() != null)
+					acs.getDbi().publishAdd(file, unittype);
 			} finally {
 				if (s != null)
 					s.close();
@@ -159,7 +159,7 @@ public class Files {
 		} else {
 			try {
 				sql = "UPDATE filestore SET description=?,name=?,timestamp_=?,type=?,version=?,unit_type_id=?";
-				if (XAPSVersionCheck.fileReworkSupported)
+				if (ACSVersionCheck.fileReworkSupported)
 					sql += ",target_name=?,owner=?";
 				sql += " WHERE id=?";
 				s = c.prepareStatement(sql);
@@ -173,7 +173,7 @@ public class Files {
 				// s.setString(5, file.getSubtype());
 				s.setString(5, file.getVersion());
 				s.setInt(6, unittype.getId());
-				if (XAPSVersionCheck.fileReworkSupported) {
+				if (ACSVersionCheck.fileReworkSupported) {
 					if (file.getTargetName() == null)
 						s.setNull(7, Types.VARCHAR);
 					else
@@ -197,8 +197,8 @@ public class Files {
 					s.executeUpdate();
 				}
 				logger.info("Updated file to " + file.getName());
-				if (xaps.getDbi() != null)
-					xaps.getDbi().publishFile(file, unittype);
+				if (acs.getDbi() != null)
+					acs.getDbi().publishFile(file, unittype);
 			} finally {
 				if (s != null)
 					s.close();
@@ -208,12 +208,12 @@ public class Files {
 	}
 
 	/* only used to refresh the cache, used from DBI */
-	protected static void refreshFile(Integer fileId, Integer unittypeId, XAPS xaps) throws SQLException {
+	protected static void refreshFile(Integer fileId, Integer unittypeId, ACS acs) throws SQLException {
 		ResultSet rs = null;
 		PreparedStatement ps = null;
-		Connection c = xaps.getDataSource().getConnection();
+		Connection c = acs.getDataSource().getConnection();
 		try {
-			Unittype unittype = xaps.getUnittype(unittypeId);
+			Unittype unittype = acs.getUnittype(unittypeId);
 			if (unittype == null)
 				return; // unittype not accessible by this user
 			Files files = unittype.getFiles();
@@ -224,7 +224,7 @@ public class Files {
 			ps = ds.makePreparedStatement(c);
 			rs = ps.executeQuery();
 			if (rs.next()) {
-				file.setConnectionProperties(xaps.getDataSource());
+				file.setConnectionProperties(acs.getDataSource());
 				file.setName(rs.getString("name"));
 				file.setType(FileType.valueOf(rs.getString("type")));
 				// file.setSubtype(rs.getString("subtype"));

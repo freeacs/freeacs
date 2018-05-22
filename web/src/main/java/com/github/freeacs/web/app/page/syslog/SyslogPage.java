@@ -7,7 +7,7 @@ import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.DateUtils;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -29,20 +29,20 @@ public class SyslogPage extends AbstractWebPage {
 			return;
 		}
 
-		XAPS xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
+		ACS acs = ACSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
 
-		if (xaps == null) {
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
 
-		XAPSLoader.getXAPSUnit(params.getSession().getId(), xapsDataSource, syslogDataSource);
+		ACSLoader.getACSUnit(params.getSession().getId(), xapsDataSource, syslogDataSource);
 
 		// Fix
 		InputDataIntegrity.loadAndStoreSession(params,outputHandler,inputData, inputData.getUnittype(),inputData.getProfile());
 
-		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps);
-		DropDownSingleSelect<Profile> profiles = InputSelectionFactory.getProfileSelection(inputData.getProfile(), inputData.getUnittype(), xaps);
+		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
+		DropDownSingleSelect<Profile> profiles = InputSelectionFactory.getProfileSelection(inputData.getProfile(), inputData.getUnittype(), acs);
 		
 		String startTimeString = inputData.getTimestampStart().getDateOrDefaultFormatted(SyslogUtil.getDate());
 		String endTimeString = inputData.getTimestampEnd().getDateFormatted();
@@ -61,11 +61,11 @@ public class SyslogPage extends AbstractWebPage {
 		
 		map.put("background", new SyslogUtil.GetBackgroundColor());
 		map.put("fontcolor", new SyslogUtil.GetFontColor());
-		map.put("eventdesc", new SyslogUtil.GetEventMouseOver(xaps));
+		map.put("eventdesc", new SyslogUtil.GetEventMouseOver(acs));
 		map.put("severitytext", new SyslogUtil.GetSeverityText());
 		map.put("facilitytext", new SyslogUtil.GetFacilityText());
-		map.put("getprofilebyid", new SyslogUtil.GetUnittypeProfileById(xaps));
-		map.put("getprofilebyname", new SyslogUtil.GetUnittypeProfileByName(xaps));
+		map.put("getprofilebyid", new SyslogUtil.GetUnittypeProfileById(acs));
+		map.put("getprofilebyname", new SyslogUtil.GetUnittypeProfileByName(acs));
 		map.put(inputData.getAdvanced().getKey(), inputData.getAdvanced().getBoolean());
 		
 		if (inputData.getAdvanced().getBoolean()) {

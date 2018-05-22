@@ -179,13 +179,6 @@ public class File {
 	}
 
 	public void setBytes(byte[] bytes) {
-		//		if (type == FileType.SHELL_SCRIPT) {
-		//			User user = unittype.getXaps().getSyslog().getIdentity().getUser();
-		//			String tmp = new String(bytes);
-		//			if (!tmp.startsWith("#!fusionuser:"))
-		//				tmp = "#!fusionuser:" + user.getUsername() + ":!#\n" + tmp;
-		//			bytes = tmp.getBytes();
-		//		}
 		this.content = bytes;
 		this.length = bytes.length;
 	}
@@ -208,28 +201,6 @@ public class File {
 		return name + " (ver: " + version + ")";
 	}
 
-	//	// Used by ScriptExecutor in Core-server
-	//	public String getFusionUser() {
-	//		if (type == FileType.SHELL_SCRIPT) {
-	//			byte[] tmp = getContentProtected();
-	//			if (tmp == null) {
-	//				try {
-	//					tmp = getContent();
-	//				} catch (Throwable t) {
-	//					// Ignore
-	//				}
-	//			}
-	//			if (tmp != null) {
-	//				String tmpStr = new String(tmp);
-	//				if (tmpStr.startsWith("#!fusionuser:")) {
-	//					int endPos = tmpStr.indexOf(":!#");
-	//					return tmpStr.substring(13, endPos);
-	//				}
-	//			}
-	//		}
-	//		return null;
-	//	}
-
 	public void validate() {
 		setUnittype(unittype);
 		setName(name);
@@ -244,7 +215,7 @@ public class File {
 		this.validateInput = validateInput;
 	}
 
-	// To avoid storing file content in XAPS-object - this must always be used with care!
+	// To avoid storing file content in ACS-object - this must always be used with care!
 	public void resetContentToNull() {
 		content = null;
 	}

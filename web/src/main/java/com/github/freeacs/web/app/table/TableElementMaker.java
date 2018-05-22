@@ -22,7 +22,7 @@ public class TableElementMaker {
 	public TableElementMaker() {
 	}
 
-	public List<TableElement> getGroups(Unittype unittype, XAPS xaps) throws Exception {
+	public List<TableElement> getGroups(Unittype unittype) throws Exception {
 		List<TableElement> list = new ArrayList<TableElement>();
 		List<String> topLevelGroupnames = convertGroupsToNames(unittype.getGroups().getTopLevelGroups());
 		Collections.sort(topLevelGroupnames, String.CASE_INSENSITIVE_ORDER);
@@ -33,7 +33,7 @@ public class TableElementMaker {
 		return list;
 	}
 
-	public List<TableElement> getTriggers(Unittype unittype, XAPS xaps) throws Exception {
+	public List<TableElement> getTriggers(Unittype unittype) throws Exception {
 		List<TableElement> list = new ArrayList<TableElement>();
 		List<String> topLevelTriggerNames = convertTriggersToNames(unittype.getTriggers().getTopLevelTriggers());
 		Collections.sort(topLevelTriggerNames, String.CASE_INSENSITIVE_ORDER);

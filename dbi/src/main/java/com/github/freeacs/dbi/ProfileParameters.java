@@ -41,8 +41,8 @@ public class ProfileParameters {
 		return pArr;
 	}
 
-	private void addOrChangeProfileParameterImpl(ProfileParameter profileParameter, Profile profile, XAPS xaps) throws SQLException {
-		Connection c = xaps.getDataSource().getConnection();
+	private void addOrChangeProfileParameterImpl(ProfileParameter profileParameter, Profile profile, ACS acs) throws SQLException {
+		Connection c = acs.getDataSource().getConnection();
 		Statement s = null;
 		String sql = null;
 		try {
@@ -61,8 +61,8 @@ public class ProfileParameters {
 				s.executeUpdate(sql);
 				
 				logger.info("Added " + logMsg);
-				if (xaps.getDbi() != null)
-					xaps.getDbi().publishAdd(profileParameter, profile.getUnittype());
+				if (acs.getDbi() != null)
+					acs.getDbi().publishAdd(profileParameter, profile.getUnittype());
 			} else {
 				sql = "UPDATE profile_param SET ";
 				sql += "VALUE = '" + profileParameter.getValue() + "' ";
@@ -72,8 +72,8 @@ public class ProfileParameters {
 				s.executeUpdate(sql);
 				
 				logger.info("Updated " + logMsg);
-				if (xaps.getDbi() != null)
-					xaps.getDbi().publishChange(profileParameter, profile.getUnittype());
+				if (acs.getDbi() != null)
+					acs.getDbi().publishChange(profileParameter, profile.getUnittype());
 			}
 		} finally {
 			if (s != null)
@@ -82,20 +82,20 @@ public class ProfileParameters {
 		}
 	}
 
-	public void addOrChangeProfileParameter(ProfileParameter profileParameter, XAPS xaps) throws SQLException {
- 		if (!xaps.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId()))
+	public void addOrChangeProfileParameter(ProfileParameter profileParameter, ACS acs) throws SQLException {
+ 		if (!acs.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
 		//		if (profileParameter.getUnittypeParameter().getFlag().isInspection())
 		//			throw new IllegalArgumentException("The unit type parameter is an inspection parameter - cannot be set on a profile");
-		addOrChangeProfileParameterImpl(profileParameter, profile, xaps);
+		addOrChangeProfileParameterImpl(profileParameter, profile, acs);
 		nameMap.put(profileParameter.getUnittypeParameter().getName(), profileParameter);
 		idMap.put(profileParameter.getUnittypeParameter().getId(), profileParameter);
 	}
 
-	private void deleteProfileParameterImpl(ProfileParameter profileParameter, Profile profile, XAPS xaps) throws SQLException {
+	private void deleteProfileParameterImpl(ProfileParameter profileParameter, Profile profile, ACS acs) throws SQLException {
 		Statement s = null;
 		String sql = null;
-		Connection c = xaps.getDataSource().getConnection();
+		Connection c = acs.getDataSource().getConnection();
 		try {
 			s = c.createStatement();
 			sql = "DELETE FROM profile_param WHERE ";
@@ -105,8 +105,8 @@ public class ProfileParameters {
 			s.executeUpdate(sql);
 			
 			logger.info("Deleted profile parameter " + profileParameter.getUnittypeParameter().getName());
-			if (xaps.getDbi() != null)
-				xaps.getDbi().publishDelete(profileParameter, profile.getUnittype());
+			if (acs.getDbi() != null)
+				acs.getDbi().publishDelete(profileParameter, profile.getUnittype());
 		} finally {
 			if (s != null)
 				s.close();
@@ -121,10 +121,10 @@ public class ProfileParameters {
 	 * @param profileParameter
 	 * @throws SQLException
 	 */
-	public void deleteProfileParameter(ProfileParameter profileParameter, XAPS xaps) throws SQLException {
- 		if (!xaps.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId()))
+	public void deleteProfileParameter(ProfileParameter profileParameter, ACS acs) throws SQLException {
+ 		if (!acs.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId()))
 			throw new IllegalArgumentException("Not allowed action for this user");
-		deleteProfileParameterImpl(profileParameter, profile, xaps);
+		deleteProfileParameterImpl(profileParameter, profile, acs);
 		nameMap.remove(profileParameter.getUnittypeParameter().getName());
 		idMap.remove(profileParameter.getId());
 
