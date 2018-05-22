@@ -1,6 +1,6 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.dbi.util.FreeacsVersionCheck;
+import com.github.freeacs.dbi.util.ACSVersionCheck;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -27,7 +27,7 @@ public class Users {
 	private Map<String, User> nameMap = new TreeMap<String, User>();
 
 	public Users(DataSource dataSource) throws SQLException {
-		FreeacsVersionCheck.versionCheck(dataSource);
+		ACSVersionCheck.versionCheck(dataSource);
 		this.dataSource = dataSource;
 		readAllUsers();
 	}
@@ -162,7 +162,7 @@ public class Users {
 			if (addOrChange.getId() == null) {
 				ds.addSql("INSERT INTO user_ (username, secret, fullname, accesslist");
 				ds.addArguments(addOrChange.getUsername(), addOrChange.getSecret(), addOrChange.getFullname(), addOrChange.getAccess());
-				if (FreeacsVersionCheck.adminSupported) {
+				if (ACSVersionCheck.adminSupported) {
 					Integer adminInt = 0;
 					if (addOrChange.getAdmin() != null && addOrChange.getAdmin() == true) {
 						if (requestedBy.isAdmin()) {
@@ -192,7 +192,7 @@ public class Users {
 				if (allowAccessTo(addOrChange, requestedBy)) {
 					ds.addSqlAndArguments("UPDATE user_ SET username = ?, secret = ?, ", addOrChange.getUsername(), addOrChange.getSecret());
 					ds.addSqlAndArguments("fullname = ?, accesslist = ?", addOrChange.getFullname(), addOrChange.getAccess());
-					if (FreeacsVersionCheck.adminSupported) {
+					if (ACSVersionCheck.adminSupported) {
 						Integer adminInt = 0;
 						if (addOrChange.getAdmin() != null && addOrChange.getAdmin()) {
 							adminInt = 1;
@@ -300,7 +300,7 @@ public class Users {
 				Boolean isAdmin = null;
 				if (username.equals(USER_ADMIN))
 					isAdmin = true;
-				else if (FreeacsVersionCheck.adminSupported)
+				else if (ACSVersionCheck.adminSupported)
 					isAdmin = (rs.getInt("is_admin") == 1);
 				User user = new User(username, fullname, access, isAdmin, this);
 				user.setSecretHashed(secret);

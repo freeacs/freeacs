@@ -6,9 +6,9 @@ import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 import java.sql.*;
 
-public class FreeacsVersionCheck {
+public class ACSVersionCheck {
 
-	private static Logger logger = LoggerFactory.getLogger(FreeacsVersionCheck.class);
+	private static Logger logger = LoggerFactory.getLogger(ACSVersionCheck.class);
 
 	// Marks the beginning of 2013R1
 	public static boolean triggerSupported = false;
@@ -64,7 +64,7 @@ public class FreeacsVersionCheck {
 			s = c.createStatement();
 			s.setQueryTimeout(10);
 			rs = s.executeQuery("SELECT * FROM user_ WHERE id = -1");
-			adminSupported = FreeacsVersionCheck.existsColum(rs.getMetaData(), "is_admin");
+			adminSupported = ACSVersionCheck.existsColum(rs.getMetaData(), "is_admin");
 			rs.close();
 
 			try {
@@ -101,13 +101,13 @@ public class FreeacsVersionCheck {
 			s = c.createStatement();
 			s.setQueryTimeout(10);
 			rs = s.executeQuery("SELECT * FROM syslog_event WHERE id = -1");
-			syslogEventReworkSupported = FreeacsVersionCheck.existsColum(rs.getMetaData(), "filestore_id");
+			syslogEventReworkSupported = ACSVersionCheck.existsColum(rs.getMetaData(), "filestore_id");
 			rs.close();
 
 			s = c.createStatement();
 			s.setQueryTimeout(10);
 			rs = s.executeQuery("SELECT * FROM filestore WHERE id = -1");
-			fileReworkSupported = FreeacsVersionCheck.existsColum(rs.getMetaData(), "owner");
+			fileReworkSupported = ACSVersionCheck.existsColum(rs.getMetaData(), "owner");
 			rs.close();
 
 			if (logger.isDebugEnabled()) {
@@ -130,6 +130,6 @@ public class FreeacsVersionCheck {
 	}
 
 	public static void setDatabaseChecked(boolean databaseChecked) {
-		FreeacsVersionCheck.databaseChecked = databaseChecked;
+		ACSVersionCheck.databaseChecked = databaseChecked;
 	}
 }

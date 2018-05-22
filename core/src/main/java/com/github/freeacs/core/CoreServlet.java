@@ -6,7 +6,7 @@ import com.github.freeacs.common.scheduler.Scheduler;
 import com.github.freeacs.common.scheduler.ShowScheduleQueue;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.core.task.*;
-import com.github.freeacs.dbi.util.FreeacsVersionCheck;
+import com.github.freeacs.dbi.util.ACSVersionCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ public class CoreServlet extends HttpServlet {
 	public void init() {
 		try {
 			log.info("Server starts...");
-			FreeacsVersionCheck.versionCheck(mainDataSource);
+			ACSVersionCheck.versionCheck(mainDataSource);
 			scheduler = new Scheduler();
 			Thread t = new Thread(scheduler);
 			t.setName("Core (Scheduler)");
@@ -63,17 +63,17 @@ public class CoreServlet extends HttpServlet {
 
 			// Run every second - light task
 			scheduler.registerTask(new Schedule(1000, false, ScheduleType.INTERVAL, new JobRuleEnforcer("JobRuleEnforcer", mainDataSource, syslogDataSource)));
-			if (FreeacsVersionCheck.triggerSupported) {
+			if (ACSVersionCheck.triggerSupported) {
 				// Run at 30(sec) every minute - light task 
 				scheduler.registerTask(new Schedule(30000, false, ScheduleType.MINUTELY, new TriggerReleaser("TriggerReleaser", mainDataSource, syslogDataSource)));
 			}
-			if (FreeacsVersionCheck.scriptExecutionSupported) {
+			if (ACSVersionCheck.scriptExecutionSupported) {
 				// Run every 100 ms - very light task
 				scheduler.registerTask(new Schedule(100, false, ScheduleType.INTERVAL, new ScriptExecutor("ScriptExecutor", mainDataSource, syslogDataSource)));
 				// Run at 45 every hour - light task
 				scheduler.registerTask(new Schedule(45 * 1000, false, ScheduleType.MINUTELY, new DeleteOldScripts("DeleteOldScripts", mainDataSource, syslogDataSource)));
 			}
-			if (FreeacsVersionCheck.heartbeatSupported) {
+			if (ACSVersionCheck.heartbeatSupported) {
 				// Run every 5 minute - moderate task
 				scheduler.registerTask(new Schedule(5 * 60000, false, ScheduleType.INTERVAL, new HeartbeatDetection("HeartbeatDetection", mainDataSource, syslogDataSource)));
 			}

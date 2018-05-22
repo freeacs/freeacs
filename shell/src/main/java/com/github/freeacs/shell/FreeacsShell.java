@@ -1,7 +1,7 @@
 package com.github.freeacs.shell;
 
 import com.github.freeacs.dbi.*;
-import com.github.freeacs.dbi.util.FreeacsVersionCheck;
+import com.github.freeacs.dbi.util.ACSVersionCheck;
 import com.zaxxer.hikari.HikariDataSource;
 
 import javax.sql.DataSource;
@@ -76,7 +76,7 @@ public class FreeacsShell {
 	public void init(DataSource xapsDs, DataSource syslogDs) throws Exception {
 		session.setXapsProps(xapsDs);
 		session.setSysProps(syslogDs);
-		FreeacsVersionCheck.setDatabaseChecked(false); // force another database check
+		ACSVersionCheck.setDatabaseChecked(false); // force another database check
 		Users users = getUsers();
 		session.setUsers(users);
 		Identity id = new Identity(SyslogConstants.FACILITY_SHELL, FreeacsShell.version, session.getVerifiedFusionUser());

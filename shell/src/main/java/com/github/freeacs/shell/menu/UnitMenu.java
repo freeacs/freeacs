@@ -8,7 +8,7 @@ import com.github.freeacs.dbi.tr069.TestCase.TestCaseMethod;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemConstants;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.github.freeacs.dbi.util.FreeacsVersionCheck;
+import com.github.freeacs.dbi.util.ACSVersionCheck;
 import com.github.freeacs.shell.Context;
 import com.github.freeacs.shell.Session;
 import com.github.freeacs.shell.UnitTempStorage;
@@ -337,7 +337,7 @@ public class UnitMenu {
 		context.setUnit(unit);
 		//		}
 
-		boolean sessionMode = context.getUnit().isSessionMode() && FreeacsVersionCheck.unitParamSessionSupported;
+		boolean sessionMode = context.getUnit().isSessionMode() && ACSVersionCheck.unitParamSessionSupported;
 
 		// Prepare paramSet - which parameters can be listed  && Make heading
 		Line headingLine = new Line();

@@ -2,7 +2,7 @@ package com.github.freeacs.dbi;
 
 import com.github.freeacs.dbi.InsertOrUpdateStatement.Field;
 import com.github.freeacs.dbi.SyslogEvent.StorePolicy;
-import com.github.freeacs.dbi.util.FreeacsVersionCheck;
+import com.github.freeacs.dbi.util.ACSVersionCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +68,7 @@ public class SyslogEvents {
 			ious.addField(new Field("description", syslogEvent.getDescription()));
 			ious.addField(new Field("expression", syslogEvent.getExpression().toString()));
 			ious.addField(new Field("delete_limit", syslogEvent.getDeleteLimit()));
-			if (FreeacsVersionCheck.syslogEventReworkSupported) {
+			if (ACSVersionCheck.syslogEventReworkSupported) {
 				ious.addField(new Field("unit_type_id", syslogEvent.getUnittype().getId()));
 				ious.addField(new Field("store_policy", syslogEvent.getStorePolicy().toString()));
 				ious.addField(new Field("filestore_id", syslogEvent.getScript() == null ? null : syslogEvent.getScript().getId()));
@@ -118,9 +118,9 @@ public class SyslogEvents {
 		Connection c = ACS.getDataSource().getConnection();
 		try {
 			DynamicStatement ds = new DynamicStatement();
-			if (FreeacsVersionCheck.syslogEventReworkSupported)
+			if (ACSVersionCheck.syslogEventReworkSupported)
 				ds.addSqlAndArguments("DELETE FROM syslog_event WHERE syslog_event_id = ? ", syslogEvent.getEventId());
-			if (FreeacsVersionCheck.syslogEventReworkSupported)
+			if (ACSVersionCheck.syslogEventReworkSupported)
 				ds.addSqlAndArguments("AND unit_type_id = ?", unittype.getId());
 			else
 				ds.addSqlAndArguments("AND unit_type_name = ?", unittype.getName());

@@ -1,7 +1,7 @@
 package com.github.freeacs.dbi;
 
 import com.github.freeacs.dbi.InsertOrUpdateStatement.Field;
-import com.github.freeacs.dbi.util.FreeacsVersionCheck;
+import com.github.freeacs.dbi.util.ACSVersionCheck;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -97,7 +97,7 @@ public class ScriptExecutions {
 	 */
 	public List<ScriptExecution> getNotStartedExecutions(ACS ACS, int poolsize) throws SQLException {
 		List<ScriptExecution> scriptExecutionList = new ArrayList<ScriptExecution>();
-		if (!FreeacsVersionCheck.scriptExecutionSupported)
+		if (!ACSVersionCheck.scriptExecutionSupported)
 			return scriptExecutionList;
 		Connection connection = null;
 		PreparedStatement ps = null;
@@ -157,7 +157,7 @@ public class ScriptExecutions {
 	 */
 	public List<ScriptExecution> getExecutions(Unittype unittype, Date requestTmsFrom, String requestId) throws SQLException {
 		List<ScriptExecution> scriptExecutionList = new ArrayList<ScriptExecution>();
-		if (!FreeacsVersionCheck.scriptExecutionSupported)
+		if (!ACSVersionCheck.scriptExecutionSupported)
 			return scriptExecutionList;
 		ACS ACS = unittype.getACS();
 		Connection connection = null;
@@ -195,7 +195,7 @@ public class ScriptExecutions {
 	}
 
 	public ScriptExecution getById(Unittype unittype, Integer id) throws SQLException {
-		if (!FreeacsVersionCheck.scriptExecutionSupported)
+		if (!ACSVersionCheck.scriptExecutionSupported)
 			return null;
 		ACS ACS = unittype.getACS();
 		Connection connection = null;
@@ -236,7 +236,7 @@ public class ScriptExecutions {
 	 * @throws SQLException
 	 */
 	public ScriptExecution getExecution(Unittype unittype, String requestId) throws SQLException {
-		if (!FreeacsVersionCheck.scriptExecutionSupported)
+		if (!ACSVersionCheck.scriptExecutionSupported)
 			return null;
 		ACS ACS = unittype.getACS();
 		Connection connection = null;
@@ -276,7 +276,7 @@ public class ScriptExecutions {
 	 * @throws SQLException
 	 */
 	public int deleteExecutions(Date upUntil) throws  SQLException {
-		if (!FreeacsVersionCheck.scriptExecutionSupported)
+		if (!ACSVersionCheck.scriptExecutionSupported)
 			return 0;
 		Connection connection = null;
 		PreparedStatement ps = null;

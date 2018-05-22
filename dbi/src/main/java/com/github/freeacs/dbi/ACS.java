@@ -2,7 +2,7 @@ package com.github.freeacs.dbi;
 
 import com.github.freeacs.common.util.NumberComparator;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
-import com.github.freeacs.dbi.util.FreeacsVersionCheck;
+import com.github.freeacs.dbi.util.ACSVersionCheck;
 import com.github.freeacs.dbi.util.MapWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +63,7 @@ public class ACS {
 		this.dataSource = dataSource;
 		this.syslog = syslog;
 		/* Checks all necessary tables to see which version they're in */
-		FreeacsVersionCheck.versionCheck(dataSource);
+		ACSVersionCheck.versionCheck(dataSource);
 		this.unittypes = read();
 		if (logger.isDebugEnabled()) {
 
@@ -153,13 +153,13 @@ public class ACS {
 			readUnittypeParameterValues(tmpUnittypes);
 			readProfiles(tmpUnittypes);
 			readGroups(tmpUnittypes);
-			if (FreeacsVersionCheck.heartbeatSupported)
+			if (ACSVersionCheck.heartbeatSupported)
 				readHeartbeats(tmpUnittypes);
 			readSyslogEvents(tmpUnittypes);
 			readProfileParameters(tmpUnittypes);
 			readGroupParameters(tmpUnittypes);
 			readJobs(tmpUnittypes);
-			if (FreeacsVersionCheck.triggerSupported)
+			if (ACSVersionCheck.triggerSupported)
 				readTriggers(tmpUnittypes);
 			return tmpUnittypes;
 		} finally {
@@ -360,7 +360,7 @@ public class ACS {
 		try {
 			TreeMap<Integer, SyslogEvent> syslogIdMap = null;
 			Unittype lastUnittype = null;
-			if (FreeacsVersionCheck.syslogEventReworkSupported)
+			if (ACSVersionCheck.syslogEventReworkSupported)
 				sql = "SELECT * FROM syslog_event ORDER BY unit_type_id ASC";
 			else
 				sql = "SELECT * FROM syslog_event ORDER BY unit_type_name ASC";
@@ -371,7 +371,7 @@ public class ACS {
 			while (rs.next()) {
 				counter++;
 				Unittype unittype = null;
-				if (FreeacsVersionCheck.syslogEventReworkSupported)
+				if (ACSVersionCheck.syslogEventReworkSupported)
 					unittype = unittypes.getById(rs.getInt("unit_type_id"));
 				else
 					unittype = unittypes.getByName(rs.getString("unit_type_name"));
@@ -387,7 +387,7 @@ public class ACS {
 				String deleteLimitStr = rs.getString("delete_limit");
 				if (deleteLimitStr != null)
 					syslogEvent.setDeleteLimit(new Integer(deleteLimitStr));
-				if (FreeacsVersionCheck.syslogEventReworkSupported) {
+				if (ACSVersionCheck.syslogEventReworkSupported) {
 					String groupId = rs.getString("group_id");
 					if (groupId != null)
 						syslogEvent.setGroup(unittype.getGroups().getById(new Integer(groupId)));
@@ -748,7 +748,7 @@ public class ACS {
 			s = connection.createStatement();
 			s.setQueryTimeout(120);
 			sql = "SELECT unit_type_id, id, name, type, description, version, timestamp_, length(content) as length";
-			if (FreeacsVersionCheck.fileReworkSupported)
+			if (ACSVersionCheck.fileReworkSupported)
 				sql += ", target_name, owner ";
 			sql += " FROM filestore ORDER BY unit_type_id ASC";
 			rs = s.executeQuery(sql);
@@ -778,7 +778,7 @@ public class ACS {
 				file.setLength(rs.getInt("length"));
 				String targetName = null;
 				User owner = null;
-				if (FreeacsVersionCheck.fileReworkSupported) {
+				if (ACSVersionCheck.fileReworkSupported) {
 					targetName = rs.getString("target_name");
 					String userIdStr = rs.getString("owner");
 					if (userIdStr != null) {

@@ -1,6 +1,6 @@
 package com.github.freeacs.shell;
 
-import com.github.freeacs.dbi.util.FreeacsVersionCheck;
+import com.github.freeacs.dbi.util.ACSVersionCheck;
 import com.github.freeacs.shell.util.FileUtil;
 import com.github.freeacs.shell.util.StringUtil;
 
@@ -26,9 +26,9 @@ public class ScriptMaker {
 		script.add("/ut:${1}/ listprofiles -c < unittypes_sd.txt > profile_sd.txt");
 		script.add("/ut:${1}/ listsyslogevents -c < unittypes_sd.txt > syslog_events_sd.txt");
 		script.add("pr:${1}/ listunits -u -c < profile_sd.txt > units_sd.txt");
-		if (FreeacsVersionCheck.triggerSupported)
+		if (ACSVersionCheck.triggerSupported)
 			script.add("/ut:${1}/ listtriggers -c parent-last < unittypes_sd.txt > triggers_sd.txt");
-		if (FreeacsVersionCheck.heartbeatSupported)
+		if (ACSVersionCheck.heartbeatSupported)
 			script.add("/ut:${1}/ listheartbeats -c < unittypes_sd.txt > heartbeats_sd.txt");
 		script.add("/ut:${1}/ listfiles -c < unittypes_sd.txt > files_sd.txt");
 		script.add("/ut:${1}/ listgroups -c parent-last < unittypes_sd.txt > groups_sd.txt");
@@ -39,9 +39,9 @@ public class ScriptMaker {
 		else
 			script.add("listperms \"^" + unittypeName + "$\" > perms_sd.txt");
 		script.add("delperm -u < perms_sd.txt");
-		if (FreeacsVersionCheck.heartbeatSupported)
+		if (ACSVersionCheck.heartbeatSupported)
 			script.add("delheartbeat -u < heartbeats_sd.txt");
-		if (FreeacsVersionCheck.triggerSupported)
+		if (ACSVersionCheck.triggerSupported)
 			script.add("deltrigger -u < triggers_sd.txt");
 		script.add("delsyslogevent -u < syslog_events_sd.txt");
 		script.add("deljob -u < jobs_sd.txt");
@@ -76,7 +76,7 @@ public class ScriptMaker {
 			scriptLines.add("listunittypes -a \"^" + unittypeName + "$\" > " + path + "unittypes.txt");
 		scriptLines.add("/ut:${1}/ listparams -c < " + path + "unittypes.txt > " + path + "unittypeparams.txt");
 		scriptLines.add("/ut:${1}/ listsyslogevents -c < " + path + "unittypes.txt > " + path + "syslogevents.txt");
-		if (FreeacsVersionCheck.heartbeatSupported)
+		if (ACSVersionCheck.heartbeatSupported)
 			scriptLines.add("/ut:${1}/listheartbeats -c < " + path + "unittypes.txt > " + path + "heartbeats.txt");
 		scriptLines.add("up:${1}/ listvalues -c -u < " + path + "unittypeparams.txt > " + path + "unittypeparamvalues.txt");
 		scriptLines.add("/ut:${1}/ listprofiles -c < " + path + "unittypes.txt > " + path + "profiles.txt");
@@ -90,7 +90,7 @@ public class ScriptMaker {
 		scriptLines.add("jo:${1}/ status -c -u < " + path + "jobs.txt > " + path + "jobstatus.txt");
 		scriptLines.add("gr:${1}/ listparamsforexport -c -u < " + path + "groups.txt > " + path + "groupparams.txt");
 		scriptLines.add("jo:${1}/ listfailedunits -c -u < " + path + "jobs.txt > " + path + "unitjobs.txt");
-		if (FreeacsVersionCheck.triggerSupported)
+		if (ACSVersionCheck.triggerSupported)
 			scriptLines.add("/ut:${1}/ listtriggers -c parent-first < " + path + "unittypes.txt > " + path + "triggers.txt");
 		scriptLines.add("listusers -c > " + path + "users.txt");
 		if (unittypeName.equals("ALL"))
@@ -125,13 +125,13 @@ public class ScriptMaker {
 		scriptLines.add("setgroup -u < " + path + "groups.txt");
 		scriptLines.add("setparam -u < " + path + "groupparams.txt");
 		scriptLines.add("setsyslogevent -u < " + path + "syslogevents.txt");
-		if (FreeacsVersionCheck.heartbeatSupported && (new File(path + "heartbeats.txt")).exists())
+		if (ACSVersionCheck.heartbeatSupported && (new File(path + "heartbeats.txt")).exists())
 			scriptLines.add("setheartbeat -u < " + path + "heartbeats.txt");
 		scriptLines.add("setjob -u < " + path + "jobs.txt");
 		scriptLines.add("setparam -u < " + path + "jobparams.txt");
 		scriptLines.add("${1} -u < " + path + "jobstatus.txt");
 		scriptLines.add("setfailedunits -u < " + path + "unitjobs.txt");
-		if (FreeacsVersionCheck.triggerSupported && (new File(path + "triggers.txt")).exists())
+		if (ACSVersionCheck.triggerSupported && (new File(path + "triggers.txt")).exists())
 			scriptLines.add("settrigger -u < " + path + "triggers.txt");
 		scriptLines.add("return");
 		return scriptLines;

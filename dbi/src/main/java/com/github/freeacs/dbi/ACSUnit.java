@@ -1,6 +1,6 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.dbi.util.FreeacsVersionCheck;
+import com.github.freeacs.dbi.util.ACSVersionCheck;
 import com.github.freeacs.dbi.util.SyslogClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +55,7 @@ public class ACSUnit {
 			connection.setAutoCommit(false);
 			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, ACS, unittype, profile);
 			Unit u = uqcu.getUnitByValue(value);
-			if (u != null && FreeacsVersionCheck.unitParamSessionSupported && u.isSessionMode())
+			if (u != null && ACSVersionCheck.unitParamSessionSupported && u.isSessionMode())
 				return uqcu.addSessionParameters(u);
 			else
 				return u;
@@ -102,7 +102,7 @@ public class ACSUnit {
 			connection.setAutoCommit(false);
 			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, ACS, unittype, profile);
 			Unit u = uqcu.getUnitById(unitId);
-			if (u != null && FreeacsVersionCheck.unitParamSessionSupported && u.isSessionMode())
+			if (u != null && ACSVersionCheck.unitParamSessionSupported && u.isSessionMode())
 				return uqcu.addSessionParameters(u);
 			else
 				return u;
@@ -382,7 +382,7 @@ public class ACSUnit {
 	}
 
 	public void addOrChangeSessionUnitParameters(List<UnitParameter> unitParameters, Profile prof) throws SQLException {
-		if (FreeacsVersionCheck.unitParamSessionSupported)
+		if (ACSVersionCheck.unitParamSessionSupported)
 			addOrChangeUnitParameters(unitParameters, prof, true);
 	}
 
@@ -562,7 +562,7 @@ public class ACSUnit {
 	}
 
 	public int deleteAllSessionParameters(Unit unit) throws SQLException {
-		if (!FreeacsVersionCheck.unitParamSessionSupported)
+		if (!ACSVersionCheck.unitParamSessionSupported)
 			return 0;
 		Connection connection = null;
 		Statement s = null;

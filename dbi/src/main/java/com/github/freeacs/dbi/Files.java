@@ -1,6 +1,6 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.dbi.util.FreeacsVersionCheck;
+import com.github.freeacs.dbi.util.ACSVersionCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,7 +132,7 @@ public class Files {
 				ds.addSqlAndArguments("version,", file.getVersion());
 				if (file.getContentProtected() != null)
 					ds.addSqlAndArguments("content,", new ByteArrayInputStream(file.getContentProtected()));
-				if (FreeacsVersionCheck.fileReworkSupported) {
+				if (ACSVersionCheck.fileReworkSupported) {
 					ds.addSqlAndStringArgs("target_name,", file.getTargetName());
 					if (file.getOwner() != null && file.getOwner().getId() != null)
 						ds.addSqlAndArguments("owner,", file.getOwner().getId());
@@ -159,7 +159,7 @@ public class Files {
 		} else {
 			try {
 				sql = "UPDATE filestore SET description=?,name=?,timestamp_=?,type=?,version=?,unit_type_id=?";
-				if (FreeacsVersionCheck.fileReworkSupported)
+				if (ACSVersionCheck.fileReworkSupported)
 					sql += ",target_name=?,owner=?";
 				sql += " WHERE id=?";
 				s = c.prepareStatement(sql);
@@ -173,7 +173,7 @@ public class Files {
 				// s.setString(5, file.getSubtype());
 				s.setString(5, file.getVersion());
 				s.setInt(6, unittype.getId());
-				if (FreeacsVersionCheck.fileReworkSupported) {
+				if (ACSVersionCheck.fileReworkSupported) {
 					if (file.getTargetName() == null)
 						s.setNull(7, Types.VARCHAR);
 					else
