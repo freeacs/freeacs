@@ -1,15 +1,15 @@
 package com.github.freeacs.web.app.page.report.custom;
 
+import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.Group;
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.XAPS;
 import com.github.freeacs.dbi.report.*;
 import com.github.freeacs.web.app.input.DropDownSingleSelect;
 import com.github.freeacs.web.app.input.InputSelectionFactory;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.report.ReportData;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -38,12 +38,12 @@ public class GroupRetriever extends ReportRetriever {
 	 *
 	 * @param inputData the input data
 	 * @param params the params
-	 * @param xaps the xaps
+	 * @param acs the xaps
 	 * @throws SQLException the sQL exception
 	 *  the no available connection exception
 	 */
-	public GroupRetriever(ReportData inputData, ParameterParser params, XAPS xaps) throws SQLException {
-		super(inputData, params, xaps);
+	public GroupRetriever(ReportData inputData, ParameterParser params, ACS acs) throws SQLException {
+		super(inputData, params, acs);
 
 		generator = generateGroupGenerator();
 
@@ -52,7 +52,7 @@ public class GroupRetriever extends ReportRetriever {
 
 		Unittype unittype = null;
 		if (inputData.getUnittype().notNullNorValue(""))
-			unittype = xaps.getUnittype(inputData.getUnittype().getString());
+			unittype = acs.getUnittype(inputData.getUnittype().getString());
 
 		List<Group> groupList = new ArrayList<Group>();
 		if (unittype != null) {
@@ -75,9 +75,9 @@ public class GroupRetriever extends ReportRetriever {
 	 *  the no available connection exception
 	 */
 	private ReportGroupGenerator generateGroupGenerator() throws SQLException {
-		XAPS xaps = getXaps();
-		return new ReportGroupGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(),
-				xaps, null, XAPSLoader.getIdentity(getParams().getSession().getId(), xaps.getDataSource()));
+		ACS acs = getAcs();
+		return new ReportGroupGenerator(acs.getDataSource(), acs.getSyslog().getDataSource(),
+                acs, null, ACSLoader.getIdentity(getParams().getSession().getId(), acs.getDataSource()));
 	}
 
 	/* (non-Javadoc)

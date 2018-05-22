@@ -16,8 +16,8 @@ public class Sync {
 		String unittypeName = args[1];
 		ProvisioningProtocol protocol = ProvisioningProtocol.toEnum(args[2]);
 		String filename = args[3];
-		XAPS xaps = session.getXaps();
-		Unittype unittype = xaps.getUnittype(unittypeName);
+		ACS acs = session.getAcs();
+		Unittype unittype = acs.getUnittype(unittypeName);
 
 		if (unittype != null && unittype.getProtocol() != protocol)
 			throw new IllegalArgumentException("The unittype has a different protocol than the one supplied: " + args[3] + ", you may omit the last argument");
@@ -36,7 +36,7 @@ public class Sync {
 			action = "changed";
 			protocol = unittype.getProtocol();
 		}
-		session.getXaps().getUnittypes().addOrChangeUnittype(unittype, session.getXaps());
+		session.getAcs().getUnittypes().addOrChangeUnittype(unittype, session.getAcs());
 		oh.print("Unittype " + unittypeName + " basic information " + action + "\n");
 
 		/* Create/Update Unittype Parameters */
@@ -75,7 +75,7 @@ public class Sync {
 			utpList.add(utp);
 		}
 		oh.print("Commiting the changes to the database - notifying other modules about the change\n");
-		utps.addOrChangeUnittypeParameters(utpList, xaps);
+		utps.addOrChangeUnittypeParameters(utpList, acs);
 
 		/* Delete Unittype Parameters not defined in XML */
 		FileWriter fw = new FileWriter("setunittype-delete-report.xss", true);

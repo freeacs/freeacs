@@ -1,4 +1,4 @@
-<script src="javascript/xaps.module.search.js" type="text/javascript"></script>
+<script src="javascript/acs.module.search.js" type="text/javascript"></script>
 <@macros.form>
 <table cellspacing="0" cellpadding="0">
     <tr>

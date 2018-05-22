@@ -2,7 +2,7 @@ package com.github.freeacs.ws.netadmin;
 
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.*;
-import com.github.freeacs.ws.impl.XAPSWS;
+import com.github.freeacs.ws.impl.ACSWS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +29,7 @@ public class MessageListener implements Runnable {
 			//			throw error("The user " + login.getUsername() + " is unknown");
 
 			// At this stage we have a positivt authentication of the user
-			id = new Identity(SyslogConstants.FACILITY_WEBSERVICE, XAPSWS.VERSION, user);
+			id = new Identity(SyslogConstants.FACILITY_WEBSERVICE, ACSWS.VERSION, user);
 			syslog = new Syslog(syslogDs, id);
 			dbi = new DBI(Integer.MAX_VALUE, xapsDs, syslog);
 			inbox.addFilter(new Message(null, Message.MTYPE_PUB_PS, null, null));

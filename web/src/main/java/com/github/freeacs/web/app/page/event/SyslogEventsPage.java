@@ -9,7 +9,7 @@ import com.github.freeacs.web.app.menu.MenuItem;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 
 import javax.sql.DataSource;
 import java.lang.reflect.InvocationTargetException;
@@ -27,7 +27,7 @@ public class SyslogEventsPage extends AbstractWebPage {
 	private SyslogEventsData inputData;
 
 	/** The xaps. */
-	private XAPS xaps;
+	private ACS acs;
 
 	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 
@@ -35,8 +35,8 @@ public class SyslogEventsPage extends AbstractWebPage {
 		inputData = (SyslogEventsData) InputDataRetriever.parseInto(new SyslogEventsData(), params);
 
 		/* Retrieve the XAPS object from session */
-		xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
-		if (xaps == null) {
+		acs = ACSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -48,7 +48,7 @@ public class SyslogEventsPage extends AbstractWebPage {
 		Map<String, Object> fmMap = outputHandler.getTemplateMap();
 
 		/* Make the unittype-dropdown */
-		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps);
+		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
 		fmMap.put("unittypes", unittypes);
 		if (unittypes.getSelected() != null) {
 			SyslogEvent syslogEvent = action(params, outputHandler, unittypes.getSelected());
@@ -107,7 +107,7 @@ public class SyslogEventsPage extends AbstractWebPage {
 
 		if (inputData.getAction().isValue("delete") && inputData.getEventId().getInteger() != null) {
 			try {
-				events.deleteSyslogEvent(events.getByEventId(inputData.getEventId().getInteger()), xaps);
+				events.deleteSyslogEvent(events.getByEventId(inputData.getEventId().getInteger()), acs);
 			} catch (Throwable ex) {
 				fmMap.put("error", "Could not delete syslog event " + ex.getLocalizedMessage());
 			}
@@ -134,7 +134,7 @@ public class SyslogEventsPage extends AbstractWebPage {
 					else
 						syslogEvent.setScript(null);
 					syslogEvent.setDeleteLimit(inputData.getLimit().getInteger());
-					events.addOrChangeSyslogEvent(syslogEvent, xaps);
+					events.addOrChangeSyslogEvent(syslogEvent, acs);
 					return syslogEvent;
 				} catch (Throwable ex) {
 					fmMap.put("error", "Could not add Syslog Event: " + ex.getLocalizedMessage());

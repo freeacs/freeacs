@@ -83,7 +83,7 @@ public class UnittypeParameter {
 		this.values = values;
 	}
 
-	protected void setValuesFromXAPS(UnittypeParameterValues values) {
+	protected void setValuesFromACS(UnittypeParameterValues values) {
 		this.values = values;
 	}
 

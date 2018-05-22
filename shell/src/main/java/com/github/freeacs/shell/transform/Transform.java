@@ -18,8 +18,8 @@ public class Transform {
 	 * @param args
 	 */
 	public static void transform(Session session, String unitFile, String paramFile) throws Exception {
-		XAPS xaps = session.getXaps();
-		XAPSUnit xapsUnit = session.getXapsUnit();
+		ACS acs = session.getAcs();
+		ACSUnit acsUnit = session.getAcsUnit();
 		BufferedReader unitFileBr = new BufferedReader(new FileReader(unitFile));
 		String unitFileLine = null;
 		Map<String, String> convertParamMap = new HashMap<String, String>();
@@ -34,14 +34,14 @@ public class Transform {
 		}
 		while ((unitFileLine = unitFileBr.readLine()) != null) {
 			String[] units = StringUtil.split(unitFileLine);
-			Unit unit = xapsUnit.getUnitById(units[0]);
+			Unit unit = acsUnit.getUnitById(units[0]);
 			List<String> addUnits = new ArrayList<String>();
 			addUnits.add(units[1]);
-			Unit newUnit = xapsUnit.getUnitById(units[1]);
-			Profile profile = xaps.getProfile("NPA201E-2", "internal-sip-server");
-			xapsUnit.addUnits(addUnits, profile);
+			Unit newUnit = acsUnit.getUnitById(units[1]);
+			Profile profile = acs.getProfile("NPA201E-2", "internal-sip-server");
+			acsUnit.addUnits(addUnits, profile);
 			Map<String, UnitParameter> unitParameters = unit.getUnitParameters();
-			Unittype newUnittype = xaps.getUnittype("NPA201E-2");
+			Unittype newUnittype = acs.getUnittype("NPA201E-2");
 			List<UnitParameter> newUnitParams = new ArrayList<UnitParameter>();
 			for (Entry<String, UnitParameter> entry : unitParameters.entrySet()) {
 				if (entry.getKey().endsWith("ConnectTms"))
@@ -66,7 +66,7 @@ public class Transform {
 				//						newUnitParams.add(new UnitParameter(newUtp, newUnit.getId(), entry.getValue().getValue(), profile));
 				//				}
 			}
-			xapsUnit.addOrChangeUnitParameters(newUnitParams, profile);
+			acsUnit.addOrChangeUnitParameters(newUnitParams, profile);
 		}
 	}
 

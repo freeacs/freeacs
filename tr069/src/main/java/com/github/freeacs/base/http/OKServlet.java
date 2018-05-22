@@ -34,7 +34,7 @@ public class OKServlet extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
 
 		PrintWriter out = res.getWriter();
-		String status = "XAPSOK";
+		String status = "FREEACSOK";
 		try {
 			Class tr069ProvClass = Class.forName("com.owera.xaps.tr069.Provisioning");
 			Field field = tr069ProvClass.getField("VERSION");

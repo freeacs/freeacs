@@ -39,8 +39,8 @@ public class UnitPage extends AbstractWebPage {
 	private static DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static Pattern paramPattern = Pattern.compile("(\\$\\{([^\\}]+)\\})");
 
-	private XAPS xaps;
-	private XAPSUnit xapsUnit;
+	private ACS acs;
+	private ACSUnit acsUnit;
 	private Unit unit;
 	private Profile profile;
 	private Unittype unittype;
@@ -126,9 +126,9 @@ public class UnitPage extends AbstractWebPage {
 		}
 
 		if (upDeleteList.size() > 0)
-			xapsUnit.deleteUnitParameters(upDeleteList);
+			acsUnit.deleteUnitParameters(upDeleteList);
 		if (upUpdateList.size() > 0)
-			xapsUnit.addOrChangeUnitParameters(upUpdateList, profile);
+			acsUnit.addOrChangeUnitParameters(upUpdateList, profile);
 	}
 
 	/**
@@ -138,15 +138,15 @@ public class UnitPage extends AbstractWebPage {
 	 * @throws Exception the exception
 	 */
 	private void actionMoveUnit(ParameterParser req) throws Exception {
-		Unittype unittype = xaps.getUnittype(unit.getUnittype().getId());
+		Unittype unittype = acs.getUnittype(unit.getUnittype().getId());
 		String newProfileStr = req.getParameter("profile");
-		Profile newProfile = xaps.getProfile(unittype.getName(), newProfileStr);
-		Profile oldProfile = xaps.getProfile(unit.getProfile().getId());
+		Profile newProfile = acs.getProfile(unittype.getName(), newProfileStr);
+		Profile oldProfile = acs.getProfile(unit.getProfile().getId());
 		if (!oldProfile.getName().equals(newProfile.getName())) {
 			List<String> unitList = new ArrayList<String>();
 			unitList.add(unit.getId());
-			xapsUnit.moveUnits(unitList, newProfile);
-			unit = xapsUnit.getUnitById(unit.getId());
+			acsUnit.moveUnits(unitList, newProfile);
+			unit = acsUnit.getUnitById(unit.getId());
 			profile = unit.getProfile();
 		}
 	}
@@ -162,8 +162,8 @@ public class UnitPage extends AbstractWebPage {
 		Unittype oldUnittype = unit.getUnittype();
 		String newProfileStr = req.getParameter("profile");
 		String newUnitTypeString = req.getParameter("unittype");
-		Unittype newUnittype = xaps.getUnittype(newUnitTypeString);
-		Profile newProfile = xaps.getProfile(newUnittype.getName(), newProfileStr);
+		Unittype newUnittype = acs.getUnittype(newUnitTypeString);
+		Profile newProfile = acs.getProfile(newUnittype.getName(), newProfileStr);
 		boolean sameProtocol = oldUnittype.getProtocol() != null && newUnittype != null && oldUnittype.getProtocol().equals(newUnittype.getProtocol());
 		boolean sameModel = oldUnittype.getName().length() > 7 && newUnittype != null && newUnittype.getName().length() > 7
 				&& oldUnittype.getName().substring(0, 7).equals(newUnittype.getName().substring(0, 7));
@@ -172,8 +172,8 @@ public class UnitPage extends AbstractWebPage {
 			//unit.setProfile(newProfile);
 			List<String> unitList = new ArrayList<String>();
 			unitList.add(unit.getId());
-			xapsUnit.moveUnits(unitList, newProfile);
-			unit = xapsUnit.getUnitById(unit.getId());
+			acsUnit.moveUnits(unitList, newProfile);
+			unit = acsUnit.getUnitById(unit.getId());
 			profile = unit.getProfile();
 		}
 	}
@@ -265,7 +265,7 @@ public class UnitPage extends AbstractWebPage {
 		if (mode != null) {
 			/* Initiate the kick and Wait for changes... */
 			unit.toWriteQueue(SystemParameters.PROVISIONING_MODE, mode.toString());
-			xapsUnit.addOrChangeUnitParameters(unit.flushWriteQueue(), unit.getProfile());
+			acsUnit.addOrChangeUnitParameters(unit.flushWriteQueue(), unit.getProfile());
 			if (publish) {
 				String lct = unit.getParameterValue(SystemParameters.LAST_CONNECT_TMS);
 				String initialKickResponse = unit.getParameterValue(SystemParameters.INSPECTION_MESSAGE);
@@ -281,7 +281,7 @@ public class UnitPage extends AbstractWebPage {
 					int secCount = 0;
 					while (secCount < waitSec) {
 						Thread.sleep(1000);
-						unit = xapsUnit.getUnitById(unit.getId());
+						unit = acsUnit.getUnitById(unit.getId());
 						currentKickResponse = unit.getParameterValue(SystemParameters.INSPECTION_MESSAGE);
 						if (!initialKickResponse.equals(currentKickResponse) && currentKickResponse != null && !currentKickResponse.contains("success"))
 							break; // if kick failed - fail fast
@@ -376,7 +376,7 @@ public class UnitPage extends AbstractWebPage {
 	 * @throws Exception the exception
 	 */
 	private void actionDeleteUnit() throws Exception {
-		xapsUnit.deleteUnit(unit);
+		acsUnit.deleteUnit(unit);
 		unit = null;
 	}
 
@@ -393,7 +393,7 @@ public class UnitPage extends AbstractWebPage {
 		if (inputData.getUnit().notNullNorValue("")) {
 			unit = SessionCache.getUnit(sessionId, inputData.getUnit().getString());
 			if (unit == null) {
-				unit = xapsUnit.getUnitById(inputData.getUnit().getString());
+				unit = acsUnit.getUnitById(inputData.getUnit().getString());
 				SessionCache.putUnit(sessionId, unit);
 			}
 			if (unit != null) {
@@ -406,7 +406,7 @@ public class UnitPage extends AbstractWebPage {
 		}
 
 		if (unittype == null && inputData.getUnittype().getString() != null) {
-			unittype = xaps.getUnittype(inputData.getUnittype().getString());
+			unittype = acs.getUnittype(inputData.getUnittype().getString());
 		}
 
 		if (profile == null && inputData.getProfile().getString() != null && unittype != null) {
@@ -423,15 +423,15 @@ public class UnitPage extends AbstractWebPage {
 
 		sessionId = params.getSession().getId();
 
-		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (xaps == null) {
+		acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
 
 		InputDataIntegrity.loadAndStoreSession(params, outputHandler, inputData, inputData.getUnittype(), inputData.getProfile(), inputData.getUnit());
 
-		xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource, syslogDataSource);
+		acsUnit = ACSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
 
 		boolean isCreate = inputData.getCmd().isValue("create");
 
@@ -449,11 +449,11 @@ public class UnitPage extends AbstractWebPage {
 				String unitId = params.getParameter("new_unit");
 				if (!isValidString(unitId)) {
 					root.put("error", "Please enter a unitId");
-				} else if (xapsUnit.getUnitById(unitId) == null) {
+				} else if (acsUnit.getUnitById(unitId) == null) {
 					List<String> unitIds = new ArrayList<String>();
 					unitIds.add(unitId);
-					xapsUnit.addUnits(unitIds, profile);
-					unit = xapsUnit.getUnitById(unitId, unittype, profile);
+					acsUnit.addUnits(unitIds, profile);
+					unit = acsUnit.getUnitById(unitId, unittype, profile);
 					SessionCache.getSessionData(sessionId).setUnitId(unit.getId());
 					outputHandler.setDirectToPage(Page.UNIT);
 					return;
@@ -486,7 +486,7 @@ public class UnitPage extends AbstractWebPage {
 						}
 					}
 				}
-				unit = xapsUnit.getUnitById(unit.getId());
+				unit = acsUnit.getUnitById(unit.getId());
 				SessionCache.putUnit(sessionId, unit);
 
 				displayUnit(root, xapsDataSource, syslogDataSource);
@@ -515,10 +515,10 @@ public class UnitPage extends AbstractWebPage {
 	 */
 	private void displayCreate(Map<String, Object> root) throws IllegalArgumentException, SecurityException, SQLException, IllegalAccessException,
 			InvocationTargetException, NoSuchMethodException {
-		DropDownSingleSelect<Unittype> unittypeDropdown = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps);
+		DropDownSingleSelect<Unittype> unittypeDropdown = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
 		root.put("unittypes", unittypeDropdown);
 		root.put("unit", inputData.getUnit().getString());
-		root.put("profiles", InputSelectionFactory.getProfileSelection(inputData.getProfile(), inputData.getUnittype(), xaps));
+		root.put("profiles", InputSelectionFactory.getProfileSelection(inputData.getProfile(), inputData.getUnittype(), acs));
 	}
 
 	private void displayGUIURL(Map<String, Object> root) {
@@ -679,14 +679,14 @@ public class UnitPage extends AbstractWebPage {
 		root.put("desiredsoftware", desiredSoftwareVersion);
 		root.put("currentsoftware", currentSoftwareVersion);
 
-		Syslog syslog = xaps.getSyslog();
+		Syslog syslog = acs.getSyslog();
 		Date twodaysago = new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 2);
 		SyslogFilter filter = new SyslogFilter();
 		filter.setUnitId("^" + unit.getId() + "$");
 		filter.setMessage("^ProvMsg: PP:");
 		filter.setCollectorTmsStart(twodaysago);
 		filter.setMaxRows(20);
-		List<SyslogEntry> syslogEntries = syslog.read(filter, xaps);
+		List<SyslogEntry> syslogEntries = syslog.read(filter, acs);
 		List<HistoryElement> history = new ArrayList<>();
 		for (SyslogEntry entry : syslogEntries) {
 			try {
@@ -703,7 +703,7 @@ public class UnitPage extends AbstractWebPage {
 		// Send the "showconfidential"-flag if necessary.
 		root.put("confidentialsrestricted", confidentialsRestricted);
 		if (inputData.getShowConfidential().getBoolean()) {
-			accessLogger.info("User \"" + xaps.getUser() + "\" accessed confidential " +
+			accessLogger.info("User \"" + acs.getUser() + "\" accessed confidential " +
 					"params on unit \"" + unit.getId() + "\"");
 			root.put("showconfidential", true);
 		}

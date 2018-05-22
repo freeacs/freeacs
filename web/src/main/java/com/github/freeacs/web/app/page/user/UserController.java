@@ -29,8 +29,8 @@ public class UserController extends PermissionController {
 	@Autowired
 	UserGroupController userGroupController;
 
-	@Autowired @Qualifier("xaps")
-	DataSource xapsDataSource;
+	@Autowired @Qualifier("main")
+	DataSource mainDataSource;
 
 	/**
 	 * Delete.
@@ -45,7 +45,7 @@ public class UserController extends PermissionController {
 	@RequestMapping(value = "/{name}", method = RequestMethod.DELETE)
 	public @ResponseBody
 	void delete(@PathVariable String name, HttpSession session) throws IOException, ParseException, SQLException {
-		Users users = getUsers(session.getId(), xapsDataSource);
+		Users users = getUsers(session.getId(), mainDataSource);
 		User loggedInUser = SessionCache.getSessionData(session.getId()).getUser();
 		if (users.getProtected(name, loggedInUser) == null)
 			throw new ResourceNotFoundException();
@@ -65,7 +65,7 @@ public class UserController extends PermissionController {
 	@RequestMapping(value = "/{name}", method = RequestMethod.GET)
 	public @ResponseBody
 	UserModel get(@PathVariable String name, HttpSession session) throws IOException, SQLException {
-		Users users = getUsers(session.getId(), xapsDataSource);
+		Users users = getUsers(session.getId(), mainDataSource);
 		User loggedInUser = SessionCache.getSessionData(session.getId()).getUser();
 		if (users.getProtected(name, loggedInUser) == null)
 			throw new ResourceNotFoundException();
@@ -86,7 +86,7 @@ public class UserController extends PermissionController {
 	@RequestMapping(method = RequestMethod.POST)
 	public @ResponseBody
 	UserModel create(@RequestBody UserModel details, HttpSession session) throws IOException, ParseException, SQLException {
-		Users users = getUsers(session.getId(), xapsDataSource);
+		Users users = getUsers(session.getId(), mainDataSource);
 		User loggedInUser = SessionCache.getSessionData(session.getId()).getUser();
 		if (!details.getUsername().isEmpty() && users.getUnprotected(details.getUsername()) == null) {
 			User toCreate = UserModel.toUser(details, users);
@@ -110,7 +110,7 @@ public class UserController extends PermissionController {
 	@RequestMapping(method = RequestMethod.PUT)
 	public @ResponseBody
 	UserModel update(@RequestBody UserModel details, HttpSession session) throws IOException, ParseException, SQLException {
-		Users users = getUsers(session.getId(), xapsDataSource);
+		Users users = getUsers(session.getId(), mainDataSource);
 		User loggedInUser = SessionCache.getSessionData(session.getId()).getUser();
 		if (users.getProtected(details.getUsername(), loggedInUser) != null) {
 			User oldUser = users.getProtected(details.getUsername(), loggedInUser);
@@ -140,7 +140,7 @@ public class UserController extends PermissionController {
 	public @ResponseBody
 	Map<String, Object> list(HttpSession session, HttpServletRequest request, HttpServletResponse outputHandler) throws IOException, ParseException, SQLException {
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("users", getAllUsers(0, 100, session.getId(), userGroupController.getNameMap().get("NotAdmin"), xapsDataSource));
+		map.put("users", getAllUsers(0, 100, session.getId(), userGroupController.getNameMap().get("NotAdmin"), mainDataSource));
 		return map;
 	}
 

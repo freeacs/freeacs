@@ -1,8 +1,8 @@
 package com.github.freeacs.web.app.page.profile;
 
+import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.XAPS;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.*;
@@ -13,7 +13,7 @@ import com.github.freeacs.web.app.page.unittype.UnittypeParameterTypes;
 import com.github.freeacs.web.app.table.TableElementMaker;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -74,17 +74,17 @@ public class ProfileDetailsPage extends ProfileActions {
 
 		String sessionId = params.getSession().getId();
 
-		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		ACS acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 
-		if (xaps == null) {
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
 
 		InputDataIntegrity.loadAndStoreSession(params, outputHandler, inputData, inputData.getUnittype(), inputData.getProfile(), inputData.getUnit());
 
-		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps);
-		Unittype unittype = xaps.getUnittype(inputData.getUnittype().getString());
+		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
+		Unittype unittype = acs.getUnittype(inputData.getUnittype().getString());
 		DropDownSingleSelect<Profile> profiles = InputSelectionFactory.getProfileSelection(inputData.getProfile(), unittype);
 
 		Map<String, Object> root = outputHandler.getTemplateMap();
@@ -94,9 +94,9 @@ public class ProfileDetailsPage extends ProfileActions {
 
 		ProfileStatus status = null;
 		if (inputData.getFormSubmit().isValue(WebConstants.DELETE))
-			status = actionDeleteProfile(sessionId, xaps, unittypes, profiles);
+			status = actionDeleteProfile(sessionId, acs, unittypes, profiles);
 		else if (inputData.getFormSubmit().isValue(WebConstants.UPDATE_PARAMS)) {
-			status = actionCUDParameters(params, xaps, unittypes, profiles);
+			status = actionCUDParameters(params, acs, unittypes, profiles);
 		}
 
 		currentProfile = profiles.getSelected();

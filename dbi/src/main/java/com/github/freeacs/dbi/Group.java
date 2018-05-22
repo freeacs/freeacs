@@ -201,9 +201,8 @@ public class Group {
 	public GroupParameters getGroupParameters() {
 		if (parameters == null) {
 			Map<Integer, GroupParameter> idMap = new HashMap<Integer, GroupParameter>();
-			MapWrapper<GroupParameter> mw = new MapWrapper<GroupParameter>(XAPS.isStrictOrder());
+			MapWrapper<GroupParameter> mw = new MapWrapper<GroupParameter>(ACS.isStrictOrder());
 			Map<String, GroupParameter> nameMap = mw.getMap();
-			//			TreeMap<String, GroupParameter> nameMap = new TreeMap<String, GroupParameter>(XAPS.getComparator());
 			parameters = new GroupParameters(nameMap, idMap, this);
 		}
 		return parameters;

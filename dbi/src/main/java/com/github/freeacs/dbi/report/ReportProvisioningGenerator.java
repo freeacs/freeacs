@@ -24,13 +24,13 @@ public class ReportProvisioningGenerator extends ReportGenerator {
 	private static String provMsgId = "^ProvMsg: PP:";
 	private static Pattern provPattern = Pattern.compile(provMsgId + ".*ST:(\\w+), PO:(\\w+), SL:(\\d+)");
 
-	public ReportProvisioningGenerator(DataSource sysCp, DataSource xapsCp, XAPS xaps, String logPrefix, Identity id) {
-		super(sysCp, xapsCp, xaps, logPrefix, id);
+	public ReportProvisioningGenerator(DataSource mainDataSource, DataSource syslogDataSource, ACS acs, String logPrefix, Identity id) {
+		super(mainDataSource, syslogDataSource, acs, logPrefix, id);
 	}
 
 	public Report<RecordProvisioning> generateFromReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws SQLException,
 			IOException {
-		Connection xapsConnection = null;
+		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		SQLException sqle = null;
@@ -39,9 +39,9 @@ public class ReportProvisioningGenerator extends ReportGenerator {
 			Report<RecordProvisioning> report = new Report<RecordProvisioning>(RecordProvisioning.class, periodType);
 
 			logger.debug(logPrefix + "ProvisioningReport: Reads from report_prov table from " + start + " to " + end);
-			xapsConnection = xapsCp.getConnection();
+			connection = mainDataSource.getConnection();
 			DynamicStatement ds = selectReportSQL("report_prov", periodType, start, end, uts, prs);
-			ps = ds.makePreparedStatement(xapsConnection);
+			ps = ds.makePreparedStatement(connection);
 			rs = ps.executeQuery();
 			int counter = 0;
 			while (rs.next()) {
@@ -76,8 +76,8 @@ public class ReportProvisioningGenerator extends ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (xapsConnection != null) {
-				xapsConnection.close();
+			if (connection != null) {
+				connection.close();
 			}
 		}
 	}
@@ -123,7 +123,7 @@ public class ReportProvisioningGenerator extends ReportGenerator {
 	private Map<String, Report<RecordProvisioning>> generateFromSyslogImpl(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs, String unitId, Group group)
 			throws SQLException, IOException {
 		logInfo("ProvisioningReport", unitId, uts, prs, start, end);
-		Syslog syslog = new Syslog(sysCp, id);
+		Syslog syslog = new Syslog(syslogDataSource, id);
 		SyslogFilter filter = new SyslogFilter();
 		filter.setMessage(provMsgId);
 		if (unitId != null)
@@ -134,7 +134,7 @@ public class ReportProvisioningGenerator extends ReportGenerator {
 		filter.setCollectorTmsEnd(end);
 		filter.setFacilityVersion(swVersion);
 		Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
-		List<SyslogEntry> entries = syslog.read(filter, xaps);
+		List<SyslogEntry> entries = syslog.read(filter, acs);
 		Map<String, Report<RecordProvisioning>> unitReportMap = new HashMap<String, Report<RecordProvisioning>>();
 		for (SyslogEntry entry : entries) {
 			if (group != null && unitsInGroup.get(entry.getUnitId()) == null)

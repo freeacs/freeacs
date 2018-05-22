@@ -5,7 +5,7 @@ import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.*;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 import org.apache.commons.fileupload.FileItem;
 
 import javax.sql.DataSource;
@@ -23,7 +23,7 @@ import java.util.*;
 public class FilePage extends AbstractWebPage {
 
 	/** The xaps. */
-	private XAPS xaps;
+	private ACS acs;
 
 	/** The unittype. */
 	private Unittype unittype;
@@ -135,7 +135,7 @@ public class FilePage extends AbstractWebPage {
 					throw new IllegalArgumentException("Cannot add/change file, beacuse version + file type is the same as for " + compare.getName());
 				Date softwaredate = date;
 				if (files.getByName(name) == null) {
-					File file = new File(unittype, name, fileTypeEnum, description, versionNumber, softwaredate, targetName, xaps.getUser());
+					File file = new File(unittype, name, fileTypeEnum, description, versionNumber, softwaredate, targetName, acs.getUser());
 					if (bytes != null && bytes.length > 0) {
 						file.setBytes(bytes);
 					} else if (fileTypeEnum != FileType.SOFTWARE && content != null) {
@@ -143,7 +143,7 @@ public class FilePage extends AbstractWebPage {
 					} else {
 						throw new IllegalArgumentException("No file or content specified (content will be neglected if file type is SOFTWARE) - cannot create file");
 					}
-					files.addOrChangeFile(file, xaps);
+					files.addOrChangeFile(file, acs);
 					// We no longer want to automatically select the recently uploaded file,
 					// instead we wish to leave all the fields cleared for another upload.
 					// (requested by Jarl-Even 2013-03-07)
@@ -180,11 +180,11 @@ public class FilePage extends AbstractWebPage {
 				}
 				
 				// This means that SOFTWARE file contents often goes unchanged at this point.
-				files.addOrChangeFile(file, xaps);
+				files.addOrChangeFile(file, acs);
 			} else if (formsubmit.equals("Delete selected files")) {
 				for (String name : deleteList) {
 					File firmware = files.getByName(name);
-					files.deleteFile(firmware, xaps);
+					files.deleteFile(firmware, acs);
 				}
 
 			}
@@ -197,8 +197,8 @@ public class FilePage extends AbstractWebPage {
 	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
 		inputData = (FileData) InputDataRetriever.parseInto(new FileData(), params);
 
-		xaps = XAPSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
-		if (xaps == null) {
+		acs = ACSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -214,9 +214,9 @@ public class FilePage extends AbstractWebPage {
 
 		String utN = inputData.getUnittype().getString();
 		if (utN != null)
-			unittype = xaps.getUnittype(utN);
+			unittype = acs.getUnittype(utN);
 
-		DropDownSingleSelect<Unittype> unittypeSelect = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps);
+		DropDownSingleSelect<Unittype> unittypeSelect = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
 		Map<String, Object> rootMap = outputHandler.getTemplateMap();
 		rootMap.put("unittypes", unittypeSelect);
 
@@ -291,7 +291,7 @@ public class FilePage extends AbstractWebPage {
 	private void exportFirmware(Output outputHandler) {
 		try {
 			String unittypeName = inputData.getUnittype().getString();
-			Unittype unittype = xaps.getUnittype(unittypeName);
+			Unittype unittype = acs.getUnittype(unittypeName);
 			File firmware = unittype.getFiles().getByName(inputData.getName().getString());
 			outputHandler.setContentType("application/binary");
 			outputHandler.setDownloadAttachment(stripSpacesReplaceWithUnderScore(firmware.getName()));

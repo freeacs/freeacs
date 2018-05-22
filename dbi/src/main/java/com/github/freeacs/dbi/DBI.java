@@ -20,15 +20,15 @@ import java.util.Map.Entry;
  * - fast access - updated data
  * 
  * This last requirement is only possible since DBI will build upon a table
- * called 'message', which will convey messages from xAPS applications and
- * inform all other xAPS applications about changes to the tables/data.
+ * called 'message', which will convey messages from ACS applications and
+ * inform all other ACS applications about changes to the tables/data.
  * 
  * 
  * Details
  * 
  * The main idea of this class is to be both a listener (subscriber) and a
  * broadcaster (publisher) of changes to the various objects (data) found in the
- * xAPS database tables. To do the "listening" we need one thread which
+ * ACS database tables. To do the "listening" we need one thread which
  * constantly polls on a special table called "message". By polling every second
  * we would quickly discover changes made to the various objects in DBI. If user
  * of DBI changes some data in an object (table), the user should in general
@@ -38,7 +38,7 @@ import java.util.Map.Entry;
  * These objects/tables are under DBI caching mechanism:
  * 
  * Objects Tables ------------------------------------------------------ DBI
- * message XAPS filestore (firmware) group_ group_param profile profile_param
+ * message ACS filestore (firmware) group_ group_param profile profile_param
  * syslog_event unit_type unit_type_param unit_type_param_value job job_param
  * (only parameters for unitid = ANY_UNIT_IN_GROUP)
  * 
@@ -47,8 +47,8 @@ import java.util.Map.Entry;
  * updated.
  * 
  * Objects Tables ------------------------------------------------------ Syslog
- * syslog UnitJobs unit_job Users user_ permission_ XAPSJobs job_param (all
- * parameters for unitid != ANY_UNIT_IN_GROUP) XAPSUnit unit unit_param
+ * syslog UnitJobs unit_job Users user_ permission_ ACSJobs job_param (all
+ * parameters for unitid != ANY_UNIT_IN_GROUP) ACSUnit unit unit_param
  * 
  * Messages that are sent/received must contain this information:
  * 
@@ -176,17 +176,15 @@ public class DBI implements Runnable {
 	}
 
 	private static Logger logger = LoggerFactory.getLogger(DBI.class);
-	public static String PUBLISH_INBOX_NAME = "publishXAPSInbox";
+	public static String PUBLISH_INBOX_NAME = "publishACSInbox";
 
 	private DataSource dataSource;
 	private int lifetimeSec;
 	private long start = System.currentTimeMillis();
 	private boolean finished = false;
 	private Sleep sleep;
-	private XAPS xaps;
-	private boolean xapsUpdated = false;
-	private Jobs xapsJobs;
-	//	private Messages inbox = new Messages();
+	private ACS acs;
+	private boolean freeacsUpdated = false;
 	private Map<Integer, UnittypePublish> publishUnittypes = new HashMap<Integer, UnittypePublish>();
 	private List<Message> outbox = new ArrayList<Message>();
 	private Set<Integer> sent = new TreeSet<Integer>();
@@ -207,9 +205,9 @@ public class DBI implements Runnable {
 		populateInboxes();
 		publishInbox.deleteReadMessage();
 		this.sleep = new Sleep(1000, 1000, true);
-		this.xaps = new XAPS(dataSource, syslog);
+		this.acs = new ACS(dataSource, syslog);
 		this.dbiId = random.nextInt(1000000);
-		xaps.setDbi(this);
+		acs.setDbi(this);
 		publishInbox.addFilter(new Message(null, Message.MTYPE_PUB_ADD, null, null));
 		publishInbox.addFilter(new Message(null, Message.MTYPE_PUB_CHG, null, null));
 		publishInbox.addFilter(new Message(null, Message.MTYPE_PUB_DEL, null, null));
@@ -224,14 +222,10 @@ public class DBI implements Runnable {
 		logger.debug("DBI is loaded for user " + syslog.getIdentity().getUser().getFullname());
 	}
 
-	public XAPS getXaps() {
+	public ACS getAcs() {
 		if (finished)
 			throw new RuntimeException("DBI does not run anymore since it passed it's lifetime timeout");
-		return xaps;
-	}
-
-	public Jobs getXapsJobs() {
-		return xapsJobs;
+		return acs;
 	}
 
 	public void registerInbox(String key, Inbox inbox) {
@@ -412,7 +406,7 @@ public class DBI implements Runnable {
 	// uf: unconfirmed-failed
 	private void updateJobCounters(Integer jobId, String message) {
 		String[] msgArr = message.split(",");
-		Unittype unittype = xaps.getUnittype(new Integer(msgArr[0]));
+		Unittype unittype = acs.getUnittype(new Integer(msgArr[0]));
 		if (unittype == null)
 			return; // the user does not have access to this unittype
 		Job job = unittype.getJobs().getById(jobId);
@@ -439,7 +433,7 @@ public class DBI implements Runnable {
 	}
 
 	private void processPublishInbox() throws SQLException {
-		boolean updateXaps = false;
+		boolean updateACS = false;
 		for (Message m : publishInbox.getUnreadMessages()) {
 			publishInbox.markMessageAsRead(m);
 			if (logger.isDebugEnabled()) {
@@ -447,33 +441,33 @@ public class DBI implements Runnable {
 				logger.debug("DBI discovered that " + m.getObjectType() + " with id = " + m.getObjectId() + " has changed (" + m.getMessageType() + ") (sent from "
 						+ SyslogConstants.getFacilityName(m.getSender()) + ")");
 			}
-			if (!updateXaps) {
+			if (!updateACS) {
 				if (m.getObjectType().equals(Message.OTYPE_JOB) && m.getContent() != null && m.getSender() == SyslogConstants.FACILITY_CORE)
 					updateJobCounters(new Integer(m.getObjectId()), m.getContent());
 				else if (m.getObjectType().equals(Message.OTYPE_JOB) && m.getMessageType().equals(Message.MTYPE_PUB_CHG))
-					Jobs.refreshJob(new Integer(m.getObjectId()), xaps);
+					Jobs.refreshJob(new Integer(m.getObjectId()), acs);
 				else if (m.getObjectType().equals(Message.OTYPE_GROUP) && m.getMessageType().equals(Message.MTYPE_PUB_CHG))
-					Groups.refreshGroup(new Integer(m.getObjectId()), xaps);
+					Groups.refreshGroup(new Integer(m.getObjectId()), acs);
 				else if (m.getObjectType().equals(Message.OTYPE_FILE) && m.getMessageType().equals(Message.MTYPE_PUB_CHG))
-					Files.refreshFile(new Integer(m.getObjectId()), new Integer(m.getContent()), xaps);
+					Files.refreshFile(new Integer(m.getObjectId()), new Integer(m.getContent()), acs);
 				else
-					updateXaps = true;
+					updateACS = true;
 			}
 		}
-		if (updateXaps) {
-			xaps.read();
-			xapsUpdated = true;
+		if (updateACS) {
+			acs.read();
+			freeacsUpdated = true;
 			if (logger.isDebugEnabled()) {
 				
-				logger.debug("XAPS object has been updated due to changes in the tables");
+				logger.debug("ACS object has been updated due to changes in the tables");
 			}
 		}
 		publishInbox.deleteReadMessage();
 	}
 
-	public boolean isXapsUpdated() {
-		if (xapsUpdated) {
-			xapsUpdated = false;
+	public boolean isACSUpdated() {
+		if (freeacsUpdated) {
+			freeacsUpdated = false;
 			return true;
 		}
 		return false;

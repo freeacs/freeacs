@@ -1,7 +1,7 @@
 package com.github.freeacs.dbi;
 
+import com.github.freeacs.dbi.util.ACSVersionCheck;
 import com.github.freeacs.dbi.util.SyslogClient;
-import com.github.freeacs.dbi.util.XAPSVersionCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,27 +13,27 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * XAPSUnit is a class to help you work with units and unit parameters.
+ * ACSUnit is a class to help you work with units and unit parameters.
  * 
  */
-public class XAPSUnit {
+public class ACSUnit {
 
-	private static Logger logger = LoggerFactory.getLogger(XAPSUnit.class);
+	private static Logger logger = LoggerFactory.getLogger(ACSUnit.class);
 	private static long updateCounter;
 	private static long insertCounter;
 
 	private DataSource dataSource;
 	private Syslog syslog;
-	private XAPS xaps;
+	private ACS acs;
 
-	public XAPSUnit(DataSource dataSource, XAPS xaps, Syslog syslog) throws SQLException {
+	public ACSUnit(DataSource dataSource, ACS acs, Syslog syslog) throws SQLException {
 		this.dataSource = dataSource;
 		this.syslog = syslog;
-		if (xaps == null)
-			throw new IllegalArgumentException("The XAPSUnit constructor requires a non-null XAPS object");
-		this.xaps = xaps;
-		if (xaps.getUnittypes() == null) {
-			xaps.read();
+		if (acs == null)
+			throw new IllegalArgumentException("The ACSUnit constructor requires a non-null ACS object");
+		this.acs = acs;
+		if (acs.getUnittypes() == null) {
+			acs.read();
 		}
 	}
 
@@ -53,9 +53,9 @@ public class XAPSUnit {
 			connection = dataSource.getConnection();
 			wasAutoCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
-			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, xaps, unittype, profile);
+			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, acs, unittype, profile);
 			Unit u = uqcu.getUnitByValue(value);
-			if (u != null && XAPSVersionCheck.unitParamSessionSupported && u.isSessionMode())
+			if (u != null && ACSVersionCheck.unitParamSessionSupported && u.isSessionMode())
 				return uqcu.addSessionParameters(u);
 			else
 				return u;
@@ -74,7 +74,7 @@ public class XAPSUnit {
 			connection = dataSource.getConnection();
 			wasAutoCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
-			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, xaps, (Unittype) null, (Profile) null);
+			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, acs, (Unittype) null, (Profile) null);
 			return uqcu.getLimitedUnitByValue(value);
 		} finally {
 			if (connection != null) {
@@ -100,9 +100,9 @@ public class XAPSUnit {
 			connection = dataSource.getConnection();
 			wasAutoCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
-			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, xaps, unittype, profile);
+			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, acs, unittype, profile);
 			Unit u = uqcu.getUnitById(unitId);
-			if (u != null && XAPSVersionCheck.unitParamSessionSupported && u.isSessionMode())
+			if (u != null && ACSVersionCheck.unitParamSessionSupported && u.isSessionMode())
 				return uqcu.addSessionParameters(u);
 			else
 				return u;
@@ -382,7 +382,7 @@ public class XAPSUnit {
 	}
 
 	public void addOrChangeSessionUnitParameters(List<UnitParameter> unitParameters, Profile prof) throws SQLException {
-		if (XAPSVersionCheck.unitParamSessionSupported)
+		if (ACSVersionCheck.unitParamSessionSupported)
 			addOrChangeUnitParameters(unitParameters, prof, true);
 	}
 
@@ -562,7 +562,7 @@ public class XAPSUnit {
 	}
 
 	public int deleteAllSessionParameters(Unit unit) throws SQLException {
-		if (!XAPSVersionCheck.unitParamSessionSupported)
+		if (!ACSVersionCheck.unitParamSessionSupported)
 			return 0;
 		Connection connection = null;
 		Statement s = null;
@@ -658,7 +658,7 @@ public class XAPSUnit {
 			connection = dataSource.getConnection();
 			wasAutoCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
-			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, xaps, (Unittype) null, (Profile) null);
+			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, acs, (Unittype) null, (Profile) null);
 			return uqcu.getLimitedUnitsByValue(values);
 		} finally {
 			if (connection != null) {
@@ -684,7 +684,7 @@ public class XAPSUnit {
 			connection = dataSource.getConnection();
 			wasAutoCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
-			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, xaps, unittype, profile);
+			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, acs, unittype, profile);
 			return uqcu.getUnitsById(units);
 		} finally {
 			if (connection != null) {
@@ -711,7 +711,7 @@ public class XAPSUnit {
 			connection = dataSource.getConnection();
 			wasAutoCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
-			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, xaps, unittype, profile);
+			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, acs, unittype, profile);
 			return uqcu.getUnits(searchStr, maxRows);
 		} finally {
 			if (connection != null) {
@@ -728,7 +728,7 @@ public class XAPSUnit {
 			connection = dataSource.getConnection();
 			wasAutoCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
-			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, xaps, (Unittype) null, profiles);
+			UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, acs, (Unittype) null, profiles);
 			return uqcu.getUnits(searchStr, maxRows);
 		} finally {
 			if (connection != null) {
@@ -753,7 +753,7 @@ public class XAPSUnit {
 			connection = dataSource.getConnection();
 			wasAutoCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
-			UnitQueryWithinUnittype uqwu = new UnitQueryWithinUnittype(connection, xaps, unittype, profiles);
+			UnitQueryWithinUnittype uqwu = new UnitQueryWithinUnittype(connection, acs, unittype, profiles);
 			return uqwu.getUnits(parameters, limit);
 		} finally {
 			if (connection != null) {
@@ -816,7 +816,7 @@ public class XAPSUnit {
 			connection = dataSource.getConnection();
 			wasAutoCommit = connection.getAutoCommit();
 			connection.setAutoCommit(false);
-			UnitQueryWithinUnittype uqwu = new UnitQueryWithinUnittype(connection, xaps, unittype, profiles);
+			UnitQueryWithinUnittype uqwu = new UnitQueryWithinUnittype(connection, acs, unittype, profiles);
 			return uqwu.getUnitCount(parameters);
 		} finally {
 			if (connection != null) {

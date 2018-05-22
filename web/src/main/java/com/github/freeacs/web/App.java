@@ -34,16 +34,16 @@ public class App {
 
     @Bean
     @Primary
-    @Qualifier("xaps")
-    @ConfigurationProperties("xaps.datasource")
-    public DataSource getXapsDataSource() {
+    @Qualifier("main")
+    @ConfigurationProperties("main.datasource")
+    public DataSource mainDs() {
         return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
     @Bean
     @Qualifier("syslog")
     @ConfigurationProperties("syslog.datasource")
-    public DataSource getSyslogDataSource() {
+    public DataSource syslogDs() {
         return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 
@@ -56,18 +56,18 @@ public class App {
     }
 
     @Bean
-    ServletRegistrationBean<Main> main (@Qualifier("xaps") DataSource xapsDataSource, @Qualifier("syslog") DataSource syslogDataSource) {
+    ServletRegistrationBean<Main> main (@Qualifier("main") DataSource mainDataSource, @Qualifier("syslog") DataSource syslogDataSource) {
         ServletRegistrationBean<Main> srb = new ServletRegistrationBean<>();
-        srb.setServlet(new Main(xapsDataSource, syslogDataSource));
+        srb.setServlet(new Main(mainDataSource, syslogDataSource));
         srb.setName("main");
         srb.setUrlMappings(Collections.singletonList("/web"));
         return srb;
     }
 
     @Bean
-    ServletRegistrationBean<LoginServlet> loginServlet (@Qualifier("xaps") DataSource xapsDataSource) {
+    ServletRegistrationBean<LoginServlet> loginServlet (@Qualifier("main") DataSource mainDataSource) {
         ServletRegistrationBean<LoginServlet> srb = new ServletRegistrationBean<LoginServlet>();
-        srb.setServlet(new LoginServlet(xapsDataSource));
+        srb.setServlet(new LoginServlet(mainDataSource));
         srb.setUrlMappings(Collections.singletonList("/login"));
         return srb;
     }
@@ -88,9 +88,9 @@ public class App {
     }
 
     @Bean
-    FilterRegistrationBean<LoginServlet> loginFilter (@Qualifier("xaps") DataSource xapsDataSource) {
+    FilterRegistrationBean<LoginServlet> loginFilter (@Qualifier("main") DataSource mainDataSource) {
         FilterRegistrationBean<LoginServlet> frb = new FilterRegistrationBean<LoginServlet>();
-        frb.setFilter(new LoginServlet(xapsDataSource));
+        frb.setFilter(new LoginServlet(mainDataSource));
         frb.setServletNames(Collections.singletonList("main"));
         return frb;
     }

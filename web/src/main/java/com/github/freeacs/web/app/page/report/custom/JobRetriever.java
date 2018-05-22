@@ -1,16 +1,16 @@
 package com.github.freeacs.web.app.page.report.custom;
 
+import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.Group;
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.XAPS;
 import com.github.freeacs.dbi.report.PeriodType;
 import com.github.freeacs.dbi.report.RecordJob;
 import com.github.freeacs.dbi.report.Report;
 import com.github.freeacs.dbi.report.ReportGenerator;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.report.ReportData;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -32,14 +32,14 @@ public class JobRetriever extends ReportRetriever {
 	 *
 	 * @param inputData the input data
 	 * @param params the params
-	 * @param xaps the xaps
+	 * @param acs the xaps
 	 * @throws SQLException the sQL exception
 	 *  the no available connection exception
 	 */
-	public JobRetriever(ReportData inputData, ParameterParser params, XAPS xaps) throws SQLException {
-		super(inputData, params, xaps);
-		generator = new ReportGenerator(xaps.getSyslog().getDataSource(), xaps.getDataSource(), xaps, null,
-				XAPSLoader.getIdentity(params.getSession().getId(), xaps.getDataSource()));
+	public JobRetriever(ReportData inputData, ParameterParser params, ACS acs) throws SQLException {
+		super(inputData, params, acs);
+		generator = new ReportGenerator(acs.getDataSource(), acs.getSyslog().getDataSource(), acs, null,
+				ACSLoader.getIdentity(params.getSession().getId(), acs.getDataSource()));
 	}
 
 	/* (non-Javadoc)

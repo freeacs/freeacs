@@ -1,6 +1,6 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.dbi.util.XAPSVersionCheck;
+import com.github.freeacs.dbi.util.ACSVersionCheck;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -14,21 +14,20 @@ import java.util.*;
  */
 public class Users {
 	/**
-	 * We return a default root-user if it's not defined. Default
-	 * password is xaps
+	 * We return a default root-user if it's not defined. Default password is freeacs
 	 * @param name
 	 * @return
 	 */
 	public static String USER_ADMIN = "admin";
 	public static String ACCESS_ADMIN = "Admin";
-	public static String ADMIN_DEFAULT_PASSWORD = "xaps";
+	public static String ADMIN_DEFAULT_PASSWORD = "freeacs";
 
 	private final DataSource dataSource;
 	private Map<Integer, User> idMap = new HashMap<Integer, User>();
 	private Map<String, User> nameMap = new TreeMap<String, User>();
 
 	public Users(DataSource dataSource) throws SQLException {
-		XAPSVersionCheck.versionCheck(dataSource);
+		ACSVersionCheck.versionCheck(dataSource);
 		this.dataSource = dataSource;
 		readAllUsers();
 	}
@@ -101,7 +100,7 @@ public class Users {
 			throw new IllegalArgumentException("Not allowed to delete user " + delete.getUsername());
 		if (delete.getUsername().equals(USER_ADMIN) && !requestedBy.getUsername().equals(USER_ADMIN))
 			throw new IllegalArgumentException(
-					"Not allowed to delete admin user without being logged in as admin. If admin password is lost, reset it by deleting the admin user from the xaps.user_ table (default password is 'xaps')");
+					"Not allowed to delete admin user without being logged in as admin. If admin password is lost, reset it by deleting the admin user from the freeacs.user_ table (default password is 'freeacs')");
 		Permission[] permissions = delete.getPermissions().getPermissions();
 		for (Permission p : permissions) 
 			delete.getPermissions().delete(p);
@@ -146,7 +145,7 @@ public class Users {
 			throw new IllegalArgumentException("Not allowed to add or change user for this user (must be unittype admin or admin)");
 		if (addOrChange.getUsername().equals(USER_ADMIN) && !requestedBy.getUsername().equals(USER_ADMIN))
 			throw new IllegalArgumentException(
-					"Not allowed to change admin user without being logged in as admin. If admin password is lost, reset it by deleting the admin user from the xaps.user_ table (default password is 'xaps')");
+					"Not allowed to change admin user without being logged in as admin. If admin password is lost, reset it by deleting the admin user from the freeacs.user_ table (default password is 'freeacs')");
 		if (addOrChange.getAdmin() && !requestedBy.getAdmin()) {
 			throw new IllegalArgumentException("Not allowed to make an admin user if you're not an admin yourself");
 		}
@@ -163,7 +162,7 @@ public class Users {
 			if (addOrChange.getId() == null) {
 				ds.addSql("INSERT INTO user_ (username, secret, fullname, accesslist");
 				ds.addArguments(addOrChange.getUsername(), addOrChange.getSecret(), addOrChange.getFullname(), addOrChange.getAccess());
-				if (XAPSVersionCheck.adminSupported) {
+				if (ACSVersionCheck.adminSupported) {
 					Integer adminInt = 0;
 					if (addOrChange.getAdmin() != null && addOrChange.getAdmin() == true) {
 						if (requestedBy.isAdmin()) {
@@ -193,7 +192,7 @@ public class Users {
 				if (allowAccessTo(addOrChange, requestedBy)) {
 					ds.addSqlAndArguments("UPDATE user_ SET username = ?, secret = ?, ", addOrChange.getUsername(), addOrChange.getSecret());
 					ds.addSqlAndArguments("fullname = ?, accesslist = ?", addOrChange.getFullname(), addOrChange.getAccess());
-					if (XAPSVersionCheck.adminSupported) {
+					if (ACSVersionCheck.adminSupported) {
 						Integer adminInt = 0;
 						if (addOrChange.getAdmin() != null && addOrChange.getAdmin()) {
 							adminInt = 1;
@@ -301,7 +300,7 @@ public class Users {
 				Boolean isAdmin = null;
 				if (username.equals(USER_ADMIN))
 					isAdmin = true;
-				else if (XAPSVersionCheck.adminSupported)
+				else if (ACSVersionCheck.adminSupported)
 					isAdmin = (rs.getInt("is_admin") == 1);
 				User user = new User(username, fullname, access, isAdmin, this);
 				user.setSecretHashed(secret);
@@ -329,7 +328,7 @@ public class Users {
 			}
 
 			if (tmpNameMap.get("admin") == null) {
-				// make an admin account with 'xaps' as password
+				// make an admin account with 'freeacs' as password
 				User adminUser = new User(USER_ADMIN, "Admin user", ACCESS_ADMIN, true, this);
 				adminUser.setSecretClearText(ADMIN_DEFAULT_PASSWORD);
 				tmpNameMap.put(USER_ADMIN, adminUser);

@@ -6,9 +6,9 @@ import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 import java.sql.*;
 
-public class XAPSVersionCheck {
+public class ACSVersionCheck {
 
-	private static Logger logger = LoggerFactory.getLogger(XAPSVersionCheck.class);
+	private static Logger logger = LoggerFactory.getLogger(ACSVersionCheck.class);
 
 	// Marks the beginning of 2013R1
 	public static boolean triggerSupported = false;
@@ -64,7 +64,7 @@ public class XAPSVersionCheck {
 			s = c.createStatement();
 			s.setQueryTimeout(10);
 			rs = s.executeQuery("SELECT * FROM user_ WHERE id = -1");
-			adminSupported = XAPSVersionCheck.existsColum(rs.getMetaData(), "is_admin");
+			adminSupported = ACSVersionCheck.existsColum(rs.getMetaData(), "is_admin");
 			rs.close();
 
 			try {
@@ -101,13 +101,13 @@ public class XAPSVersionCheck {
 			s = c.createStatement();
 			s.setQueryTimeout(10);
 			rs = s.executeQuery("SELECT * FROM syslog_event WHERE id = -1");
-			syslogEventReworkSupported = XAPSVersionCheck.existsColum(rs.getMetaData(), "filestore_id");
+			syslogEventReworkSupported = ACSVersionCheck.existsColum(rs.getMetaData(), "filestore_id");
 			rs.close();
 
 			s = c.createStatement();
 			s.setQueryTimeout(10);
 			rs = s.executeQuery("SELECT * FROM filestore WHERE id = -1");
-			fileReworkSupported = XAPSVersionCheck.existsColum(rs.getMetaData(), "owner");
+			fileReworkSupported = ACSVersionCheck.existsColum(rs.getMetaData(), "owner");
 			rs.close();
 
 			if (logger.isDebugEnabled()) {
@@ -130,6 +130,6 @@ public class XAPSVersionCheck {
 	}
 
 	public static void setDatabaseChecked(boolean databaseChecked) {
-		XAPSVersionCheck.databaseChecked = databaseChecked;
+		ACSVersionCheck.databaseChecked = databaseChecked;
 	}
 }
