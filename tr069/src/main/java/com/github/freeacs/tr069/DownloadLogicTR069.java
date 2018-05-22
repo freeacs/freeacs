@@ -2,7 +2,7 @@ package com.github.freeacs.tr069;
 
 
 import com.github.freeacs.base.DownloadLogic;
-import com.github.freeacs.base.FreeacsParameters;
+import com.github.freeacs.base.ACSParameters;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.dbi.File;
 import com.github.freeacs.dbi.FileType;
@@ -23,7 +23,7 @@ public class DownloadLogicTR069 {
 
   public static boolean isScriptDownloadSetup(HTTPReqResData reqRes, Job job) {
     SessionData sessionData = reqRes.getSessionData();
-    FreeacsParameters oweraParams = sessionData.getFreeacsParameters();
+    ACSParameters oweraParams = sessionData.getAcsParameters();
     CPEParameters cpeParams = sessionData.getCpeParameters();
     String scriptVersionFromDB = null;
     String scriptName = null;
@@ -37,7 +37,7 @@ public class DownloadLogicTR069 {
         }
       }
     } else {
-      Map<String, ParameterValueStruct> opMap = oweraParams.getFreeacsParams();
+      Map<String, ParameterValueStruct> opMap = oweraParams.getAcsParams();
       for (Entry<String, ParameterValueStruct> entry : opMap.entrySet()) {
         if (SystemParameters.isTR069ScriptVersionParameter(entry.getKey())) {
           String svDB = entry.getValue().getValue();
@@ -98,7 +98,7 @@ public class DownloadLogicTR069 {
     String softwareVersionFromDB = null;
     String downloadURL = null;
     if (job == null) {
-      FreeacsParameters oweraParams = sessionData.getFreeacsParameters();
+      ACSParameters oweraParams = sessionData.getAcsParameters();
       softwareVersionFromDB = oweraParams.getValue(SystemParameters.DESIRED_SOFTWARE_VERSION);
       if (oweraParams.getValue(SystemParameters.SOFTWARE_URL) != null)
         downloadURL = oweraParams.getValue(SystemParameters.SOFTWARE_URL);

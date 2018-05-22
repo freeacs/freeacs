@@ -25,12 +25,12 @@ public class ReportVoipGenerator extends ReportGenerator {
 	// Reg failed: ua0: reg failed 613883@nettala.fo: 903 DNS Error (0 bindings)
 	private static Pattern regfailedPattern = Pattern.compile(".*reg failed.*");
 
-	public ReportVoipGenerator(DataSource sysCp, DataSource xapsCp, XAPS xaps, String logPrefix, Identity id) {
-		super(sysCp, xapsCp, xaps, logPrefix, id);
+	public ReportVoipGenerator(DataSource mainDataSource, DataSource syslogDataSource, ACS acs, String logPrefix, Identity id) {
+		super(mainDataSource, syslogDataSource, acs, logPrefix, id);
 	}
 
 	public Report<RecordVoip> generateFromReport(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs) throws SQLException, IOException {
-		Connection xapsConnection = null;
+		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		SQLException sqle = null;
@@ -39,9 +39,9 @@ public class ReportVoipGenerator extends ReportGenerator {
 			Report<RecordVoip> report = new Report<RecordVoip>(RecordVoip.class, periodType);
 
 			logger.debug(logPrefix + "VoipReport: Reads from report_voip table from " + start + " to " + end);
-			xapsConnection = xapsCp.getConnection();
+			connection = mainDataSource.getConnection();
 			DynamicStatement ds = selectReportSQL("report_voip", periodType, start, end, uts, prs);
-			ps = ds.makePreparedStatement(xapsConnection);
+			ps = ds.makePreparedStatement(connection);
 			rs = ps.executeQuery();
 			int counter = 0;
 			while (rs.next()) {
@@ -88,8 +88,8 @@ public class ReportVoipGenerator extends ReportGenerator {
 				rs.close();
 			if (ps != null)
 				ps.close();
-			if (xapsConnection != null) {
-				xapsConnection.close();
+			if (connection != null) {
+				connection.close();
 			}
 		}
 
@@ -112,7 +112,7 @@ public class ReportVoipGenerator extends ReportGenerator {
 	public Map<String, Report<RecordVoip>> generateFromSyslog(PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs, Group group) throws
 			SQLException, IOException {
 		logInfo("VoipReport", null, uts, prs, start, end);
-		Syslog syslog = new Syslog(sysCp, id);
+		Syslog syslog = new Syslog(syslogDataSource, id);
 		SyslogFilter filter = new SyslogFilter();
 		filter.setFacility(16); // Only messages from device
 		filter.setMessage("^QoS|^ua_: reg failed");
@@ -122,7 +122,7 @@ public class ReportVoipGenerator extends ReportGenerator {
 		filter.setCollectorTmsEnd(end);
 		filter.setFacilityVersion(swVersion);
 		Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
-		List<SyslogEntry> entries = syslog.read(filter, xaps);
+		List<SyslogEntry> entries = syslog.read(filter, acs);
 		Map<String, Report<RecordVoip>> unitReportMap = new HashMap<String, Report<RecordVoip>>();
 		for (SyslogEntry entry : entries) {
 			if (entry.getUnittypeName() == null || entry.getProfileName() == null)
@@ -167,7 +167,7 @@ public class ReportVoipGenerator extends ReportGenerator {
 			SQLException, IOException {
 		Report<RecordVoip> report = new Report<RecordVoip>(RecordVoip.class, periodType);
 		logInfo("VoipReport", unitId, uts, prs, start, end);
-		Syslog syslog = new Syslog(sysCp, id);
+		Syslog syslog = new Syslog(syslogDataSource, id);
 		SyslogFilter filter = new SyslogFilter();
 		filter.setFacility(16); // Only messages from device
 		filter.setMessage("^QoS|^ua_: reg failed");
@@ -179,7 +179,7 @@ public class ReportVoipGenerator extends ReportGenerator {
 		filter.setCollectorTmsEnd(end);
 		filter.setFacilityVersion(swVersion);
 		Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
-		List<SyslogEntry> entries = syslog.read(filter, xaps);
+		List<SyslogEntry> entries = syslog.read(filter, acs);
 		for (SyslogEntry entry : entries) {
 			if (entry.getUnittypeName() == null || entry.getProfileName() == null)
 				continue;

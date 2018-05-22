@@ -8,8 +8,8 @@ import com.github.freeacs.base.http.ThreadCounter;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.ScriptExecutions;
 import com.github.freeacs.dbi.Unit;
-import com.github.freeacs.dbi.XAPS;
-import com.github.freeacs.dbi.XAPSUnit;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.tr069.background.BackgroundProcesses;
 import com.github.freeacs.tr069.background.ScheduledKickTask;
 import com.github.freeacs.tr069.exception.TR069Exception;
@@ -62,7 +62,7 @@ public class Provisioning extends HttpServlet {
 			Log.fatal(Provisioning.class, "Couldn't start BackgroundProcesses correctly ", t);
 		}
 		try {
-			executions = new ScriptExecutions(dbAccess.getXapsDataSource());
+			executions = new ScriptExecutions(dbAccess.getMainDataSource());
 		} catch (Throwable t) {
 			Log.fatal(Provisioning.class, "Couldn't initialize ScriptExecutions - not possible to run SHELL-jobs", t);
 		}
@@ -236,9 +236,9 @@ public class Provisioning extends HttpServlet {
 		try {
 			Unit unit = reqRes.getSessionData().getUnit();
 			if (unit != null) {
-				XAPS xaps = reqRes.getSessionData().getDbAccessSession().getXaps();
-				XAPSUnit xapsUnit = dbAccess.getXAPSUnit(xaps);
-				xapsUnit.addOrChangeQueuedUnitParameters(unit);
+				ACS acs = reqRes.getSessionData().getDbAccessSession().getAcs();
+				ACSUnit acsUnit = dbAccess.getXAPSUnit(acs);
+				acsUnit.addOrChangeQueuedUnitParameters(unit);
 			}
 		} catch (Throwable t) {
 			Log.error(Provisioning.class, "An error occured when writing queued unit parameters to Fusion. May affect provisioning", t);

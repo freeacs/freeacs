@@ -8,7 +8,7 @@ import com.github.freeacs.web.app.menu.MenuItem;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 
 import javax.sql.DataSource;
 import java.io.UnsupportedEncodingException;
@@ -22,13 +22,6 @@ import java.util.Map;
 public class TriggerReleaseHistoryPage extends AbstractWebPage {
 
 	private static SimpleDateFormat urlFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-
-	private TriggerReleaseHistoryData inputData;
-	private String sessionId;
-	@SuppressWarnings("unused")
-	private Output outputHandler;
-	private XAPS xaps;
-	private Unittype unittype;
 
 	public List<MenuItem> getShortcutItems(SessionData sessionData) {
 		List<MenuItem> list = new ArrayList<MenuItem>();
@@ -55,13 +48,12 @@ public class TriggerReleaseHistoryPage extends AbstractWebPage {
 
 	@Override
 	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
-		inputData = (TriggerReleaseHistoryData) InputDataRetriever.parseInto(new TriggerReleaseHistoryData(), params);
-		this.sessionId = params.getSession().getId();
-		this.outputHandler = outputHandler;
-		outputHandler.getTemplateMap().put("triggerOverviewUrl", Page.TRIGGEROVERVIEW.getUrl());
+		TriggerReleaseHistoryData inputData = (TriggerReleaseHistoryData) InputDataRetriever.parseInto(new TriggerReleaseHistoryData(), params);
+		String sessionId = params.getSession().getId();
+        outputHandler.getTemplateMap().put("triggerOverviewUrl", Page.TRIGGEROVERVIEW.getUrl());
 		Map<String, Object> fmMap = outputHandler.getTemplateMap();
-		this.xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (xaps == null) {
+		ACS acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -79,20 +71,20 @@ public class TriggerReleaseHistoryPage extends AbstractWebPage {
 		}
 		fmMap.put("tmsEnd", urlFormat.format(tmsEnd));
 		fmMap.put("tmsStart", urlFormat.format(tmsStart));
-		fmMap.put("unittypes", InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps));
-		this.unittype = xaps.getUnittype(inputData.getUnittype().getString());
+		fmMap.put("unittypes", InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs));
+		Unittype unittype = acs.getUnittype(inputData.getUnittype().getString());
 		if (unittype != null) {
 			Triggers triggers = unittype.getTriggers();
 			Input triggerIdInput = inputData.getTriggerId();
 			Trigger trigger = null;
-			fmMap.put("triggers", InputSelectionFactory.getTriggerSelection(triggerIdInput, unittype, xaps));
+			fmMap.put("triggers", InputSelectionFactory.getTriggerSelection(triggerIdInput, unittype, acs));
 			List<ReleaseTrigger> releaseTriggerList = new ArrayList<ReleaseTrigger>();
 			fmMap.put("releasetriggers", releaseTriggerList);
 			if (triggerIdInput != null && triggerIdInput.getValue() != null) {
 				trigger = triggers.getById(triggerIdInput.getInteger());
 				fmMap.put("trigger", trigger);
 			}
-			List<TriggerRelease> trList = triggers.readTriggerReleases(trigger, tmsStart, tmsEnd, xaps, null);
+			List<TriggerRelease> trList = triggers.readTriggerReleases(trigger, tmsStart, tmsEnd, acs, null);
 			for (TriggerRelease tr : trList) {
 				ReleaseTrigger rt = new ReleaseTrigger();
 				rt.setTrigger(tr.getTrigger());

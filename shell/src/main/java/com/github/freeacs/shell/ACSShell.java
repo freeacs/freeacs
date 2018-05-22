@@ -1,7 +1,7 @@
 package com.github.freeacs.shell;
 
 import com.github.freeacs.dbi.*;
-import com.github.freeacs.dbi.util.XAPSVersionCheck;
+import com.github.freeacs.dbi.util.ACSVersionCheck;
 import com.zaxxer.hikari.HikariDataSource;
 
 import javax.sql.DataSource;
@@ -9,7 +9,7 @@ import java.io.*;
 import java.sql.SQLException;
 import java.util.*;
 
-public class XAPSShell {
+public class ACSShell {
 
 	public static String version = "2.3.41";
 
@@ -76,16 +76,16 @@ public class XAPSShell {
 	public void init(DataSource xapsDs, DataSource syslogDs) throws Exception {
 		session.setXapsProps(xapsDs);
 		session.setSysProps(syslogDs);
-		XAPSVersionCheck.setDatabaseChecked(false); // force another database check
+		ACSVersionCheck.setDatabaseChecked(false); // force another database check
 		Users users = getUsers();
 		session.setUsers(users);
-		Identity id = new Identity(SyslogConstants.FACILITY_SHELL, XAPSShell.version, session.getVerifiedFusionUser());
+		Identity id = new Identity(SyslogConstants.FACILITY_SHELL, ACSShell.version, session.getVerifiedFusionUser());
 		Syslog syslog = new Syslog(session.getSysProps(), id);
 		DBI dbi = new DBI(Integer.MAX_VALUE, session.getXapsProps(), syslog);
 		session.setDbi(dbi);
-		session.setXaps(dbi.getXaps());
-		XAPSUnit xapsU = new XAPSUnit(session.getXapsProps(), session.getXaps(), syslog);
-		session.setXapsUnit(xapsU);
+		session.setAcs(dbi.getAcs());
+		ACSUnit xapsU = new ACSUnit(session.getXapsProps(), session.getAcs(), syslog);
+		session.setAcsUnit(xapsU);
 		UnitJobs unitJobs = new UnitJobs(session.getXapsProps());
 		session.setUnitJobs(unitJobs);
 	}
@@ -185,7 +185,7 @@ public class XAPSShell {
 						session.exitShell(1);
 				} catch (SQLException sqle) {
 					addThrowable(sqle);
-					session.getContext().resetXAPS(session.getDbi().getXaps());
+					session.getContext().resetXAPS(session.getDbi().getAcs());
 					println("An SQL-error occurred: " + sqle);
 					if (session.getMode() == SessionMode.SCRIPT)
 						session.exitShell(1);

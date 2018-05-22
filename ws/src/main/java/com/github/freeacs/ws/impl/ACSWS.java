@@ -9,31 +9,31 @@ import javax.sql.DataSource;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 
-public class XAPSWS {
+public class ACSWS {
 
-	private static Logger logger = LoggerFactory.getLogger(XAPSWS.class);
+	private static Logger logger = LoggerFactory.getLogger(ACSWS.class);
 
 	private DataSource xapsDataSource;
 	private DataSource syslogDataSource;
 	private Identity id;
-	private XAPS xaps;
+	private ACS acs;
 	private boolean initialized = false;
 
 	public static String VERSION = "1.4.8";
 
-	public XAPSWS(Login login, int lifetimeSec, DataSource xaps, DataSource syslog) throws RemoteException {
+	public ACSWS(Login login, int lifetimeSec, DataSource xaps, DataSource syslog) throws RemoteException {
 		this.xapsDataSource = xaps;
 		this.syslogDataSource = syslog;
 		init(login, lifetimeSec);
 	}
 
-	public XAPS getXAPS() {
-		return xaps;
+	public ACS getAcs() {
+		return acs;
 	}
 
-	XAPSUnit getXAPSUnit(XAPS xaps) throws RemoteException {
+	public ACSUnit getXAPSUnit(ACS acs) throws RemoteException {
 		try {
-			return new XAPSUnit(xapsDataSource, xaps, xaps.getSyslog());
+			return new ACSUnit(xapsDataSource, acs, acs.getSyslog());
 		} catch (Throwable t) {
 			String msg = "An exception occured while retrieving XAPSUnit object";
 			logger.error(msg, t);
@@ -53,7 +53,7 @@ public class XAPSWS {
 				//	private Unittypes allowedUnittypes;
 				Syslog syslog = new Syslog(syslogDataSource, id);
 				DBI dbi = new DBI(lifetimeSec + 30, xapsDataSource, syslog);
-				xaps = dbi.getXaps();
+				acs = dbi.getAcs();
 				if (!login.getPassword().equals(user.getSecret()) && !user.isCorrectSecret(login.getPassword()))
 					throw error("The password is incorrect");
 				// At this stage we have a positive authentication of the user
@@ -68,8 +68,8 @@ public class XAPSWS {
 		}
 	}
 
-	Unit getUnitByMAC(XAPSUnit xapsUnit, Unittype unittype, Profile profile, String searchStr) throws RemoteException, SQLException {
-		Unit unitFoundByMac = xapsUnit.getUnitByValue(searchStr, unittype, profile);
+	public Unit getUnitByMAC(ACSUnit acsUnit, Unittype unittype, Profile profile, String searchStr) throws RemoteException, SQLException {
+		Unit unitFoundByMac = acsUnit.getUnitByValue(searchStr, unittype, profile);
 		if (unitFoundByMac != null) {
 			return unitFoundByMac;
 		} else {
@@ -107,7 +107,7 @@ public class XAPSWS {
 	protected Unittype getUnittypeFromXAPS(String unittypeName) throws RemoteException {
 		if (unittypeName == null)
 			throw error("The unittype name is not specified");
-		Unittype unittype = xaps.getUnittype(unittypeName);
+		Unittype unittype = acs.getUnittype(unittypeName);
 		if (unittype == null)
 			throw error("The unittype " + unittypeName + " is not found/allowed in xAPS");
 		return unittype;
@@ -125,7 +125,7 @@ public class XAPSWS {
 	 * @return
 	 * @throws RemoteException
 	 */
-	Profile getProfileFromXAPS(String unittypeName, String profileName) throws RemoteException {
+	public Profile getProfileFromXAPS(String unittypeName, String profileName) throws RemoteException {
 		Unittype unittype = getUnittypeFromXAPS(unittypeName);
 		if (profileName == null)
 			throw error("The profile name is not specified");
@@ -135,7 +135,7 @@ public class XAPSWS {
 		return profile;
 	}
 
-	Identity getId() {
+	public Identity getId() {
 		return id;
 	}
 

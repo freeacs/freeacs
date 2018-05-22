@@ -3,7 +3,7 @@ package com.github.freeacs.web.app.page.syslog;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.SessionCache;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -38,7 +38,7 @@ public class SyslogRetriever {
 
 	public List<SyslogEntry> getSyslogEntries(Integer maxrows, Unittype unittype, Profile profile, String sessionId, DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException,
 			IllegalArgumentException, SecurityException {
-		Syslog syslog = new Syslog(syslogDataSource, XAPSLoader.getIdentity(sessionId, xapsDataSource));
+		Syslog syslog = new Syslog(syslogDataSource, ACSLoader.getIdentity(sessionId, xapsDataSource));
 		SyslogFilter filter = new SyslogFilter();
 		if (maxrows != null)
 			filter.setMaxRows(maxrows + 1);
@@ -82,7 +82,7 @@ public class SyslogRetriever {
 			filter.setCollectorTmsEnd(c.getTime());
 		}
 		filter.setUnitId(inputData.getUnit().getString());
-		List<SyslogEntry> entries = syslog.read(filter, XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource));
+		List<SyslogEntry> entries = syslog.read(filter, ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource));
 		SessionCache.putSyslogEntries(sessionId, entries);
 		return entries;
 	}

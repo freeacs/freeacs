@@ -10,7 +10,7 @@ import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -32,10 +32,10 @@ public class WindowPage extends AbstractWebPage {
 	private WindowData inputData;
 	
 	/** The xaps. */
-	private XAPS xaps;
+	private ACS acs;
 	
 	/** The xaps unit. */
-	private XAPSUnit xapsUnit;
+	private ACSUnit acsUnit;
 
 	/** The Constant ServiceWindowDownload. */
 	private static final String ServiceWindowDownload = SystemParameters.SERVICE_WINDOW_DISRUPTIVE;
@@ -166,9 +166,9 @@ public class WindowPage extends AbstractWebPage {
 
 		sessionId = params.getSession().getId();
 
-		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 
-		if (xaps == null) {
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -187,7 +187,7 @@ public class WindowPage extends AbstractWebPage {
 		tohourRegular = params.getParameter("tohour::regular");
 
 		if (inputData.getPage().startsWith("profile") && inputData.getUnittype().getString() != null && inputData.getProfile().getString() != null) {
-			unittype = xaps.getUnittype(inputData.getUnittype().getString());
+			unittype = acs.getUnittype(inputData.getUnittype().getString());
 			profile = unittype.getProfiles().getByName(inputData.getProfile().getString());
 			if (profile != null) {
 				profileDownload = profile.getProfileParameters().getByName(ServiceWindowDownload);
@@ -204,8 +204,8 @@ public class WindowPage extends AbstractWebPage {
 					spread = profileSpread.getValue();
 			}
 		} else if (inputData.getPage().startsWith("unit") && inputData.getUnit().getString() != null) {
-			xapsUnit = XAPSLoader.getXAPSUnit(sessionId, xapsDataSource, syslogDataSource);
-			unit = xapsUnit.getUnitById(inputData.getUnit().getString());
+			acsUnit = ACSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
+			unit = acsUnit.getUnitById(inputData.getUnit().getString());
 			if (unit != null) {
 				unitDownload = unit.getUnitParameters().get(ServiceWindowDownload);
 				if(unitDownload!=null && unitDownload.getValue()!=null)
@@ -348,180 +348,180 @@ public class WindowPage extends AbstractWebPage {
 				boolean updated = false;
 
 				if (download == null && profileDownload != null) {
-					profile.getProfileParameters().deleteProfileParameter(profileDownload, xaps);
+					profile.getProfileParameters().deleteProfileParameter(profileDownload, acs);
 					updated = true;
 				} else if (profileDownload == null && download!=null) {
 					UnittypeParameter utp = unittype.getUnittypeParameters().getByName(ServiceWindowDownload);
 					if (utp == null) {
 						UnittypeParameterFlag flag = new UnittypeParameterFlag("X");
 						utp = new UnittypeParameter(unittype, ServiceWindowDownload, flag);
-						unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, xaps);
+						unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, acs);
 					}
 					profileDownload = new ProfileParameter(profile, utp, getDownload());
-					profile.getProfileParameters().addOrChangeProfileParameter(profileDownload, xaps);
+					profile.getProfileParameters().addOrChangeProfileParameter(profileDownload, acs);
 					updated = true;
 				} else if(download!=null) {
 					profileDownload.setValue(getDownload());
-					profile.getProfileParameters().addOrChangeProfileParameter(profileDownload, xaps);
+					profile.getProfileParameters().addOrChangeProfileParameter(profileDownload, acs);
 					updated = true;
 				}
 
 				if (regular == null && profileRegular != null) {
-					profile.getProfileParameters().deleteProfileParameter(profileRegular, xaps);
+					profile.getProfileParameters().deleteProfileParameter(profileRegular, acs);
 					updated = true;
 				} else if (profileRegular == null && regular!=null) {
 					UnittypeParameter utp = unittype.getUnittypeParameters().getByName(ServiceWindowRegular);
 					if (utp == null) {
 						UnittypeParameterFlag flag = new UnittypeParameterFlag("X");
 						utp = new UnittypeParameter(unittype, ServiceWindowRegular, flag);
-						unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, xaps);
+						unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, acs);
 					}
 					profileRegular = new ProfileParameter(profile, utp, getRegular());
-					profile.getProfileParameters().addOrChangeProfileParameter(profileRegular, xaps);
+					profile.getProfileParameters().addOrChangeProfileParameter(profileRegular, acs);
 					updated = true;
 				} else if(regular!=null){
 					profileRegular.setValue(getRegular());
-					profile.getProfileParameters().addOrChangeProfileParameter(profileRegular, xaps);
+					profile.getProfileParameters().addOrChangeProfileParameter(profileRegular, acs);
 					updated = true;
 				}
 
 				if(frequency==null && profileFrequency!=null){
-					profile.getProfileParameters().deleteProfileParameter(profileFrequency, xaps);
+					profile.getProfileParameters().deleteProfileParameter(profileFrequency, acs);
 					updated = true;
 				}else if (profileFrequency == null && frequency != null) {
 					UnittypeParameter utp = unittype.getUnittypeParameters().getByName(ServiceWindowFrequency);
 					if (utp == null) {
 						UnittypeParameterFlag flag = new UnittypeParameterFlag("X");
 						utp = new UnittypeParameter(unittype, ServiceWindowFrequency, flag);
-						unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, xaps);
+						unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, acs);
 					}
 					profileFrequency = new ProfileParameter(profile, utp, frequency);
-					profile.getProfileParameters().addOrChangeProfileParameter(profileFrequency, xaps);
+					profile.getProfileParameters().addOrChangeProfileParameter(profileFrequency, acs);
 					updated = true;
 				} else if (frequency != null) {
 					profileFrequency.setValue(frequency);
-					profile.getProfileParameters().addOrChangeProfileParameter(profileFrequency, xaps);
+					profile.getProfileParameters().addOrChangeProfileParameter(profileFrequency, acs);
 					updated = true;
 				}
 				
 				if(spread==null && profileSpread!=null){
-					profile.getProfileParameters().deleteProfileParameter(profileSpread, xaps);
+					profile.getProfileParameters().deleteProfileParameter(profileSpread, acs);
 					updated = true;
 				}else if (profileSpread == null && spread != null) {
 					UnittypeParameter utp = unittype.getUnittypeParameters().getByName(ServiceWindowSpread);
 					if (utp == null) {
 						UnittypeParameterFlag flag = new UnittypeParameterFlag("X");
 						utp = new UnittypeParameter(unittype, ServiceWindowSpread, flag);
-						unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, xaps);
+						unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, acs);
 					}
 					profileSpread = new ProfileParameter(profile, utp, spread);
-					profile.getProfileParameters().addOrChangeProfileParameter(profileSpread, xaps);
+					profile.getProfileParameters().addOrChangeProfileParameter(profileSpread, acs);
 					updated = true;
 				} else if (spread != null) {
 					profileSpread.setValue(spread);
-					profile.getProfileParameters().addOrChangeProfileParameter(profileSpread, xaps);
+					profile.getProfileParameters().addOrChangeProfileParameter(profileSpread, acs);
 					updated = true;
 				}
 
 				if (updated)
 					return "Service Window for profile was updated";
 			} else if (unit != null) {
-				unittype = xaps.getUnittype(unit.getUnittype().getId());
+				unittype = acs.getUnittype(unit.getUnittype().getId());
 				Profile p = unittype.getProfiles().getById(unit.getProfile().getId());
 				boolean updated = false;
 				if(download==null && unitDownload!=null){
-					xapsUnit.deleteUnitParameters(Arrays.asList(new UnitParameter[]{unitDownload}));
+					acsUnit.deleteUnitParameters(Arrays.asList(new UnitParameter[]{unitDownload}));
 					updated = true;
 				}else if (unitDownload == null && download!=null) {
 					UnittypeParameter utp = unittype.getUnittypeParameters().getByName(ServiceWindowDownload);
 					if (utp == null) {
 						UnittypeParameterFlag flag = new UnittypeParameterFlag("X");
 						utp = new UnittypeParameter(unittype, ServiceWindowDownload, flag);
-						unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, xaps);
+						unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, acs);
 					}
 					unitDownload = new UnitParameter(utp, unit.getId(), getDownload(), p);
 					List<UnitParameter> toAdd = new ArrayList<UnitParameter>();
 					toAdd.add(unitDownload);
-					xapsUnit.addOrChangeUnitParameters(toAdd, p);
+					acsUnit.addOrChangeUnitParameters(toAdd, p);
 					updated = true;
 				} else if(download!=null){
 					unitDownload.getParameter().setValue(getDownload());
 					List<UnitParameter> toAdd = new ArrayList<UnitParameter>();
 					toAdd.add(unitDownload);
-					xapsUnit.addOrChangeUnitParameters(toAdd, p);
+					acsUnit.addOrChangeUnitParameters(toAdd, p);
 					updated = true;
 				}
 				
 				if(regular==null && unitRegular!=null){
-					xapsUnit.deleteUnitParameters(Arrays.asList(new UnitParameter[]{unitRegular}));
+					acsUnit.deleteUnitParameters(Arrays.asList(new UnitParameter[]{unitRegular}));
 					updated = true;
 				}else if (unitRegular == null && regular!=null) {
 					UnittypeParameter utp = unittype.getUnittypeParameters().getByName(ServiceWindowRegular);
 					if (utp == null) {
 						UnittypeParameterFlag flag = new UnittypeParameterFlag("X");
 						utp = new UnittypeParameter(unittype, ServiceWindowRegular, flag);
-						unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, xaps);
+						unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, acs);
 					}
 					unitRegular = new UnitParameter(utp, unit.getId(), getRegular(), p);
 					List<UnitParameter> toAdd = new ArrayList<UnitParameter>();
 					toAdd.add(unitRegular);
-					xapsUnit.addOrChangeUnitParameters(toAdd, p);
+					acsUnit.addOrChangeUnitParameters(toAdd, p);
 					updated = true;
 				} else if(regular!=null) {
 					unitRegular.getParameter().setValue(getRegular());
 					List<UnitParameter> toAdd = new ArrayList<UnitParameter>();
 					toAdd.add(unitRegular);
-					xapsUnit.addOrChangeUnitParameters(toAdd, p);
+					acsUnit.addOrChangeUnitParameters(toAdd, p);
 					updated = true;
 				}
 				
 				if(frequency==null && unitFrequency!=null){
-					xapsUnit.deleteUnitParameters(Arrays.asList(new UnitParameter[]{unitFrequency}));
+					acsUnit.deleteUnitParameters(Arrays.asList(new UnitParameter[]{unitFrequency}));
 					updated = true;
 				}else if (unitFrequency == null && frequency != null) {
 					UnittypeParameter utp = unittype.getUnittypeParameters().getByName(ServiceWindowFrequency);
 					if (utp == null) {
 						UnittypeParameterFlag flag = new UnittypeParameterFlag("X");
 						utp = new UnittypeParameter(unittype, ServiceWindowFrequency, flag);
-						unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, xaps);
+						unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, acs);
 					}
 					unitFrequency = new UnitParameter(utp, unit.getId(), frequency, p);
 					List<UnitParameter> toAdd = new ArrayList<UnitParameter>();
 					toAdd.add(unitFrequency);
-					xapsUnit.addOrChangeUnitParameters(toAdd, p);
+					acsUnit.addOrChangeUnitParameters(toAdd, p);
 					updated = true;
 				} else if (frequency != null) {
 					unitFrequency.getParameter().setValue(frequency);
 					List<UnitParameter> toAdd = new ArrayList<UnitParameter>();
 					toAdd.add(unitFrequency);
-					xapsUnit.addOrChangeUnitParameters(toAdd, p);
+					acsUnit.addOrChangeUnitParameters(toAdd, p);
 					updated = true;
 				}
 				
 				if(spread==null && unitSpread!=null){
-					xapsUnit.deleteUnitParameters(Arrays.asList(new UnitParameter[]{unitSpread}));
+					acsUnit.deleteUnitParameters(Arrays.asList(new UnitParameter[]{unitSpread}));
 					updated = true;
 				}else if (unitSpread == null && spread != null) {
 					UnittypeParameter utp = unittype.getUnittypeParameters().getByName(ServiceWindowSpread);
 					if (utp == null) {
 						UnittypeParameterFlag flag = new UnittypeParameterFlag("X");
 						utp = new UnittypeParameter(unittype, ServiceWindowSpread, flag);
-						unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, xaps);
+						unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, acs);
 					}
 					unitSpread = new UnitParameter(utp, unit.getId(), spread, p);
 					List<UnitParameter> toAdd = new ArrayList<UnitParameter>();
 					toAdd.add(unitSpread);
-					xapsUnit.addOrChangeUnitParameters(toAdd, p);
+					acsUnit.addOrChangeUnitParameters(toAdd, p);
 					updated = true;
 				} else if (spread != null) {
 					unitSpread.getParameter().setValue(spread);
 					List<UnitParameter> toAdd = new ArrayList<UnitParameter>();
 					toAdd.add(unitSpread);
-					xapsUnit.addOrChangeUnitParameters(toAdd, p);
+					acsUnit.addOrChangeUnitParameters(toAdd, p);
 					updated = true;
 				}
 				
-				SessionCache.putUnit(sessionId, xapsUnit.getUnitById(unit.getId()));
+				SessionCache.putUnit(sessionId, acsUnit.getUnitById(unit.getId()));
 				if (updated){
 					return "Service Window for unit was updated";
 				}

@@ -1,7 +1,7 @@
 package com.github.freeacs.dbi;
 
 import com.github.freeacs.dbi.InsertOrUpdateStatement.Field;
-import com.github.freeacs.dbi.util.XAPSVersionCheck;
+import com.github.freeacs.dbi.util.ACSVersionCheck;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -12,10 +12,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * XAPSUnit is a class to help you work with units and unit parameters.
- * 
- */
 public class ScriptExecutions {
 
 	private DataSource dataSource;
@@ -95,13 +91,13 @@ public class ScriptExecutions {
 
 	/**
 	 * Only to be used from Core (Script Daemon)
-	 * @param xaps
+	 * @param acs
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<ScriptExecution> getNotStartedExecutions(XAPS xaps, int poolsize) throws SQLException {
+	public List<ScriptExecution> getNotStartedExecutions(ACS acs, int poolsize) throws SQLException {
 		List<ScriptExecution> scriptExecutionList = new ArrayList<ScriptExecution>();
-		if (!XAPSVersionCheck.scriptExecutionSupported)
+		if (!ACSVersionCheck.scriptExecutionSupported)
 			return scriptExecutionList;
 		Connection connection = null;
 		PreparedStatement ps = null;
@@ -113,7 +109,7 @@ public class ScriptExecutions {
 			ps = ds.makePreparedStatement(connection);
 			ps.setQueryTimeout(60);
 			rs = ps.executeQuery();
-			return getExecutionList(rs, xaps);
+			return getExecutionList(rs, acs);
 		} catch (SQLException sqle) {
 			throw sqle;
 		} finally {
@@ -127,7 +123,7 @@ public class ScriptExecutions {
 		}
 	}
 
-	private List<ScriptExecution> getExecutionList(ResultSet rs, XAPS xaps) throws SQLException {
+	private List<ScriptExecution> getExecutionList(ResultSet rs, ACS acs) throws SQLException {
 		List<ScriptExecution> scriptExecutionList = new ArrayList<ScriptExecution>();
 		while (rs.next()) {
 			ScriptExecution se = new ScriptExecution();
@@ -135,7 +131,7 @@ public class ScriptExecutions {
 			se.setRequestTms(rs.getTimestamp("request_timestamp"));
 			se.setRequestId(rs.getString("request_id"));
 			se.setId(rs.getInt("id"));
-			Unittype unittype = xaps.getUnittype(rs.getInt("unit_type_id"));
+			Unittype unittype = acs.getUnittype(rs.getInt("unit_type_id"));
 			if (unittype != null) {
 				se.setUnittype(unittype);
 				se.setScriptFile(unittype.getFiles().getById(rs.getInt("filestore_id")));
@@ -161,9 +157,9 @@ public class ScriptExecutions {
 	 */
 	public List<ScriptExecution> getExecutions(Unittype unittype, Date requestTmsFrom, String requestId) throws SQLException {
 		List<ScriptExecution> scriptExecutionList = new ArrayList<ScriptExecution>();
-		if (!XAPSVersionCheck.scriptExecutionSupported)
+		if (!ACSVersionCheck.scriptExecutionSupported)
 			return scriptExecutionList;
-		XAPS xaps = unittype.getXaps();
+		ACS acs = unittype.getAcs();
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -183,7 +179,7 @@ public class ScriptExecutions {
 			ps = ds.makePreparedStatement(connection);
 			ps.setQueryTimeout(60);
 			rs = ps.executeQuery();
-			return getExecutionList(rs, xaps);
+			return getExecutionList(rs, acs);
 		} catch (SQLException sqle) {
 			sqle.printStackTrace();
 			throw sqle;
@@ -199,9 +195,9 @@ public class ScriptExecutions {
 	}
 
 	public ScriptExecution getById(Unittype unittype, Integer id) throws SQLException {
-		if (!XAPSVersionCheck.scriptExecutionSupported)
+		if (!ACSVersionCheck.scriptExecutionSupported)
 			return null;
-		XAPS xaps = unittype.getXaps();
+		ACS acs = unittype.getAcs();
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -213,7 +209,7 @@ public class ScriptExecutions {
 			ps = ds.makePreparedStatement(connection);
 			ps.setQueryTimeout(60);
 			rs = ps.executeQuery();
-			List<ScriptExecution> list = getExecutionList(rs, xaps);
+			List<ScriptExecution> list = getExecutionList(rs, acs);
 			if (list.size() > 0)
 				return list.get(0);
 			else
@@ -240,9 +236,9 @@ public class ScriptExecutions {
 	 * @throws SQLException
 	 */
 	public ScriptExecution getExecution(Unittype unittype, String requestId) throws SQLException {
-		if (!XAPSVersionCheck.scriptExecutionSupported)
+		if (!ACSVersionCheck.scriptExecutionSupported)
 			return null;
-		XAPS xaps = unittype.getXaps();
+		ACS acs = unittype.getAcs();
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -255,7 +251,7 @@ public class ScriptExecutions {
 			ps = ds.makePreparedStatement(connection);
 			ps.setQueryTimeout(60);
 			rs = ps.executeQuery();
-			List<ScriptExecution> list = getExecutionList(rs, xaps);
+			List<ScriptExecution> list = getExecutionList(rs, acs);
 			if (list.size() > 0)
 				return list.get(0);
 			else
@@ -280,7 +276,7 @@ public class ScriptExecutions {
 	 * @throws SQLException
 	 */
 	public int deleteExecutions(Date upUntil) throws  SQLException {
-		if (!XAPSVersionCheck.scriptExecutionSupported)
+		if (!ACSVersionCheck.scriptExecutionSupported)
 			return 0;
 		Connection connection = null;
 		PreparedStatement ps = null;

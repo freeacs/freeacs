@@ -31,7 +31,7 @@ public class OKServlet extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 		
 		PrintWriter out = res.getWriter();
-		String status = "XAPSOK " + XAPSWS.VERSION;
+		String status = "FREEACSOK " + ACSWS.VERSION;
 		if (error != null) {
 			status = "ERROR: WS Server experienced an error :" + error + "<br>\n";
 			for (StackTraceElement ste : error.getStackTrace())

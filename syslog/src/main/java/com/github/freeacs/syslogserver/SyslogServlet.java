@@ -85,7 +85,7 @@ public class SyslogServlet extends HttpServlet {
 			status += "\n";
 		}
 		if (status.equals(""))
-			status = "XAPSOK " + version;
+			status = "FREEACSOK " + version;
 		out.println(status);
 		out.close();
 	}

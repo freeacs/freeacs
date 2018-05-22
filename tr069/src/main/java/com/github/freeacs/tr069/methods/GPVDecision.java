@@ -99,8 +99,8 @@ public class GPVDecision {
   private static void normalPriorityProvisioning(HTTPReqResData reqRes) {
     ServiceWindow serviceWindow = null;
     SessionData sessionData = reqRes.getSessionData();
-    String reset = sessionData.getFreeacsParameters().getValue(SystemParameters.RESET);
-    String reboot = sessionData.getFreeacsParameters().getValue(SystemParameters.RESTART);
+    String reset = sessionData.getAcsParameters().getValue(SystemParameters.RESET);
+    String reboot = sessionData.getAcsParameters().getValue(SystemParameters.RESTART);
     if (reset != null && reset.equals("1")) {
       sessionData.getProvisioningMessage().setProvOutput(ProvOutput.RESET);
       serviceWindow = new ServiceWindow(sessionData, true);
@@ -305,7 +305,7 @@ public class GPVDecision {
     String nextPII = "" + sessionData.getPIIDecision().nextPII();
 
     // Cleanup after all jobs have been completed
-    String disruptiveJob = sessionData.getFreeacsParameters().getValue(SystemParameters.JOB_DISRUPTIVE);
+    String disruptiveJob = sessionData.getAcsParameters().getValue(SystemParameters.JOB_DISRUPTIVE);
     if (disruptiveJob != null && disruptiveJob.equals("1")) {
       Log.debug(GPVDecision.class, "No more jobs && disruptive flag set -> disruptive flag reset (to 0)");
       ParameterValueStruct disruptivePvs = new ParameterValueStruct(SystemParameters.JOB_DISRUPTIVE, "0");

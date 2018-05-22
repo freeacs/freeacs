@@ -1,9 +1,9 @@
 package com.github.freeacs.web.app.page.unittype;
 
+import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.UnittypeParameter;
-import com.github.freeacs.dbi.XAPS;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.*;
@@ -14,7 +14,7 @@ import com.github.freeacs.web.app.table.TableElementMaker;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -35,7 +35,7 @@ public class UnittypePage extends AbstractWebPage {
 	private UnittypeData inputData;
 
 	/** The xaps. */
-	private XAPS xaps;
+	private ACS acs;
 
 	/** The unittype. */
 	private Unittype unittype;
@@ -92,12 +92,12 @@ public class UnittypePage extends AbstractWebPage {
 			//				unittype.setProtocol(null);
 			unittype.setVendor(inputData.getVendor().getString());
 			unittype.setDescription(inputData.getDescription().getString());
-			xaps.getUnittypes().addOrChangeUnittype(unittype, xaps);
+			acs.getUnittypes().addOrChangeUnittype(unittype, acs);
 			unittypeUpdated = true;
 		}
 		if (inputData.getFormSubmit().isValue(WebConstants.DELETE)) {
 			try {
-				xaps.getUnittypes().deleteUnittype(unittype, xaps, true);
+				acs.getUnittypes().deleteUnittype(unittype, acs, true);
 				inputData.getUnittype().setValue(null);
 				SessionCache.getSessionData(sessionId).setUnittypeName(null);
 				unittype = null;
@@ -123,7 +123,7 @@ public class UnittypePage extends AbstractWebPage {
 				String upFlag = utp.getFlag().getFlag();
 				if (params.getParameter("delete::" + upName) != null) {
 					try {
-						unittype.getUnittypeParameters().deleteUnittypeParameter(utp, xaps);
+						unittype.getUnittypeParameters().deleteUnittypeParameter(utp, acs);
 					} catch (SQLException ex) {
 						throw new SQLException("Could not delete Unit Type parameter [" + utp.getName() + "]. Delete profile, unit, group and/or job parameters first.");
 					}
@@ -131,7 +131,7 @@ public class UnittypePage extends AbstractWebPage {
 					String updatedFlag = params.getParameter("update::" + upName).trim();
 					if (!upFlag.equals(updatedFlag)) {
 						utp.getFlag().setFlag(updatedFlag);
-						unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, xaps);
+						unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, acs);
 					}
 				}
 			}
@@ -161,8 +161,8 @@ public class UnittypePage extends AbstractWebPage {
 
 		sessionId = params.getSession().getId();
 
-		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (xaps == null) {
+		acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -174,7 +174,7 @@ public class UnittypePage extends AbstractWebPage {
 		String template = null;
 
 		if (inputData.getUnittype().getString() != null) {
-			unittype = xaps.getUnittype(inputData.getUnittype().getString());
+			unittype = acs.getUnittype(inputData.getUnittype().getString());
 			if (unittype == null) {
 				SessionCache.getSessionData(sessionId).setUnittypeName(null);
 			}

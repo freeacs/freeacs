@@ -7,12 +7,12 @@
 
 package com.github.freeacs.ws;
 
-import com.github.freeacs.ws.impl.XAPSWS_BindingImplCopy;
+import com.github.freeacs.ws.impl.ACSWS_BindingImplCopy;
 
 import javax.sql.DataSource;
 
-public class XAPSWS_BindingSkeleton implements XAPSWS_PortType, org.apache.axis.wsdl.Skeleton {
-    private XAPSWS_PortType impl;
+public class ACSWS_BindingSkeleton implements ACSWS_PortType, org.apache.axis.wsdl.Skeleton {
+    private ACSWS_PortType impl;
     private static java.util.Map _myOperations = new java.util.Hashtable();
     private static java.util.Collection _myOperationsList = new java.util.ArrayList();
 
@@ -160,11 +160,11 @@ public class XAPSWS_BindingSkeleton implements XAPSWS_PortType, org.apache.axis.
         ((java.util.List)_myOperations.get("deleteUnit")).add(_oper);
     }
 
-    public XAPSWS_BindingSkeleton() {
-        this.impl = new XAPSWS_BindingImplCopy(xapsDs, syslogDs);
+    public ACSWS_BindingSkeleton() {
+        this.impl = new ACSWS_BindingImplCopy(xapsDs, syslogDs);
     }
 
-    public XAPSWS_BindingSkeleton(XAPSWS_PortType impl) {
+    public ACSWS_BindingSkeleton(ACSWS_PortType impl) {
         this.impl = impl;
     }
     public GetUnittypesResponse getUnittypes(GetUnittypesRequest wsm1) throws java.rmi.RemoteException

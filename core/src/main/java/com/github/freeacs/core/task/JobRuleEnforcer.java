@@ -154,12 +154,12 @@ public class JobRuleEnforcer extends DBIOwner {
 
 
 	private static Logger logger = LoggerFactory.getLogger(JobRuleEnforcer.class);
-	private XAPS xaps;
+	private ACS acs;
 	private UnitJobs unitJobs;
 	private Map<Integer, JobControl> jobControlMap = new HashMap<Integer, JobControl>();
 
-	public JobRuleEnforcer(String taskName, DataSource xapsCp, DataSource sysCp) throws SQLException {
-		super(taskName, xapsCp, sysCp);
+	public JobRuleEnforcer(String taskName, DataSource mainDataSource, DataSource syslogDataSource) throws SQLException {
+		super(taskName, mainDataSource, syslogDataSource);
 	}
 
 	@Override
@@ -174,13 +174,8 @@ public class JobRuleEnforcer extends DBIOwner {
 	}
 
 	private void populate() throws Exception {
-		xaps = getLatestXAPS();
-		//		if (xapsCache == null)
-		//			xapsCache = new XAPSCache(20, Integer.MAX_VALUE, xapsCp, syslog);
-		//		xaps = xapsCache.getXaps(20);
-		//		xapsJobs = new XAPSJobs(xapsCp, xaps, syslog);
-		//		Job[] jobList = xapsJobs.getJobs();
-		Unittype[] unittypeArr = xaps.getUnittypes().getUnittypes();
+		acs = getLatestACS();
+		Unittype[] unittypeArr = acs.getUnittypes().getUnittypes();
 		for (Unittype ut : unittypeArr) {
 			Job[] jobList = ut.getJobs().getJobs();
 			for (Job j : jobList) {
@@ -211,7 +206,7 @@ public class JobRuleEnforcer extends DBIOwner {
 			}
 			removeDeletedJobs(jobList, ut);
 		}
-		unitJobs = new UnitJobs(getXapsCp());
+		unitJobs = new UnitJobs(getMainDataSource());
 	}
 
 	private void process() throws Exception {
@@ -301,12 +296,11 @@ public class JobRuleEnforcer extends DBIOwner {
 		}
 		if (ruleMatch) {
 			job.setStatus(JobStatus.PAUSED);
-			job.getGroup().getUnittype().getJobs().changeStatus(job, xaps);
-			// Must also change the job object found in the XAPS object - 
-			Unittype xapsUnittype = xaps.getUnittype(job.getUnittype().getId());
-			Job xapsJob = xapsUnittype.getJobs().getById(job.getId());
-			xapsJob.setStatus(job.getStatus());
-			//			jobs.updateStatus(job, xaps);
+			job.getGroup().getUnittype().getJobs().changeStatus(job, acs);
+			// Must also change the job object found in the ACS object -
+			Unittype acsUnittype = acs.getUnittype(job.getUnittype().getId());
+			Job acsJob = acsUnittype.getJobs().getById(job.getId());
+			acsJob.setStatus(job.getStatus());
 		}
 
 	}
@@ -340,7 +334,7 @@ public class JobRuleEnforcer extends DBIOwner {
 		job.setUnconfirmedFailed(unconfirmedFailed);
 		job.setCompletedNoFailures(job.getCompletedNoFailures() + completedThisRound);
 		job.setCompletedHadFailures(confirmedFailedButCompleted + unconfirmedFailedButCompleted);
-		job.getGroup().getUnittype().getJobs().changeFromCore(job, publishMsg, xaps);
+		job.getGroup().getUnittype().getJobs().changeFromCore(job, publishMsg, acs);
 		logMsg += "[Total: " + job.getCompletedNoFailures() + " OK, " + job.getCompletedHadFailures() + " OKHF, ";
 		logMsg += job.getConfirmedFailed() + " CF, " + job.getUnconfirmedFailed() + " UCF]";
 		logger.info("JobRuleEnforcer: [" + job.getName() + "] " + logMsg);

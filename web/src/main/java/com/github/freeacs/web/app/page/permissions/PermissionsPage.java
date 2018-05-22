@@ -11,7 +11,7 @@ import com.github.freeacs.web.app.security.WebUser;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
@@ -38,7 +38,7 @@ public class PermissionsPage extends AbstractWebPage {
 	private Users users;
 
 	/** The xaps. */
-	private XAPS xaps;
+	private ACS acs;
 
 	/** The input data. */
 	private PermissionsData inputData;
@@ -58,8 +58,8 @@ public class PermissionsPage extends AbstractWebPage {
 		SessionData sessionData = SessionCache.getSessionData(sessionId);
 		WebUser loggedInUser = sessionData.getUser();
 
-		xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (xaps == null) {
+		acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -188,11 +188,11 @@ public class PermissionsPage extends AbstractWebPage {
 		}
 		root.put("getunittypename", new GetUnittypeName());
 		root.put("getprofilename", new GetProfileName());
-		root.put("unittypes", xaps.getUnittypes().getUnittypes());
+		root.put("unittypes", acs.getUnittypes().getUnittypes());
 		String utString = inputData.getUnittype().getString();
 		if (utString != null) {
 			root.put("unittype", utString);
-			Unittype unittype = xaps.getUnittype(utString);
+			Unittype unittype = acs.getUnittype(utString);
 			if (unittype != null) {
 				root.put("profiles", getAllowedProfiles(sessionId, unittype, xapsDataSource, syslogDataSource));
 				root.put("profile", inputData.getProfile().getString());
@@ -329,12 +329,12 @@ public class PermissionsPage extends AbstractWebPage {
 				continue;
 			String[] permDetails = permission.split("\\\\");
 			if (permDetails.length > 1) {
-				Unittype unittype = xaps.getUnittype(permDetails[0]);
+				Unittype unittype = acs.getUnittype(permDetails[0]);
 				Profile profile = unittype.getProfiles().getByName(permDetails[1]);
 				if (unittype != null && profile != null)
 					perms.add(new Permission(null, unittype.getId(), profile.getId()));
 			} else if (permDetails.length > 0) {
-				Unittype unittype = xaps.getUnittype(permDetails[0]);
+				Unittype unittype = acs.getUnittype(permDetails[0]);
 				if (unittype != null)
 					perms.add(new Permission(null, unittype.getId(), null));
 			}
@@ -354,7 +354,7 @@ public class PermissionsPage extends AbstractWebPage {
 			if (args.size() < 1)
 				throw new TemplateModelException("Specify Unit Type Id");
 			Integer unittypeId = Integer.parseInt((String) args.get(0));
-			Unittype unittype = xaps.getUnittype(unittypeId);
+			Unittype unittype = acs.getUnittype(unittypeId);
 			return new SimpleScalar(unittype.getName());
 		}
 	}
@@ -372,7 +372,7 @@ public class PermissionsPage extends AbstractWebPage {
 				throw new TemplateModelException("Specify Unit Type Id and Profile Id");
 			Integer unittypeId = Integer.parseInt((String) args.get(1));
 			Integer profileId = Integer.parseInt((String) args.get(0));
-			Unittype unittype = xaps.getUnittype(unittypeId);
+			Unittype unittype = acs.getUnittype(unittypeId);
 			Profile profile = unittype.getProfiles().getById(profileId);
 			if (profile != null)
 				return new SimpleScalar(profile.getName());
@@ -405,12 +405,12 @@ public class PermissionsPage extends AbstractWebPage {
 			for (String permission : permissions) {
 				String[] permDetails = permission.split("\\\\");
 				if (permDetails.length > 1) {
-					Unittype unittype = xaps.getUnittype(permDetails[0]);
+					Unittype unittype = acs.getUnittype(permDetails[0]);
 					Profile profile = unittype.getProfiles().getByName(permDetails[1]);
 					if (newUser.getId() != null && unittype != null && profile != null)
 						toAdd.add(new Permission(newUser, unittype.getId(), profile.getId()));
 				} else if (permDetails.length > 0) {
-					Unittype unittype = xaps.getUnittype(permDetails[0]);
+					Unittype unittype = acs.getUnittype(permDetails[0]);
 					if (newUser.getId() != null && unittype != null)
 						toAdd.add(new Permission(newUser, unittype.getId(), null));
 				}

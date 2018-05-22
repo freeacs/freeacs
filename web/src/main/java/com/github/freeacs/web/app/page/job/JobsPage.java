@@ -1,7 +1,7 @@
 package com.github.freeacs.web.app.page.job;
 
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.XAPS;
+import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.InputDataIntegrity;
@@ -13,7 +13,7 @@ import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.table.TableElementMaker;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
-import com.github.freeacs.web.app.util.XAPSLoader;
+import com.github.freeacs.web.app.util.ACSLoader;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -45,8 +45,8 @@ public class JobsPage extends AbstractWebPage {
 
 		String sessionId = req.getSession().getId();
 
-		XAPS xaps = XAPSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
-		if (xaps == null) {
+		ACS acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+		if (acs == null) {
 			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
 			return;
 		}
@@ -54,11 +54,11 @@ public class JobsPage extends AbstractWebPage {
 		InputDataIntegrity.loadAndStoreSession(req, outputHandler, inputData, inputData.getUnittype(), inputData.getProfile(), inputData.getUnit());
 
 		Map<String, Object> root = outputHandler.getTemplateMap();
-		root.put("unittypes", InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), xaps));
+		root.put("unittypes", InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs));
 
 		Unittype unittype = null;
 		if (inputData.getUnittype().notNullNorValue(WebConstants.ALL_ITEMS_OR_DEFAULT)) 
-			unittype = xaps.getUnittype(inputData.getUnittype().getString());
+			unittype = acs.getUnittype(inputData.getUnittype().getString());
 		if (unittype != null) 
 			root.put("params", new TableElementMaker().getJobs(unittype));
 		

@@ -940,7 +940,7 @@ If this object is supported, {{param|.Capabilities.VoicePortTests}} MUST be equa
         <description>Indicates the current test state.  {{enum}}
 Value MAY be set to {{enum|Requested}} to initiate a diagnostic test.  When writing, the only allowed value is {{enum|Requested}}.  To ensure the use of the proper test parameters (the writable parameters in this object), the test parameters MUST be set either prior to or at the same time as (in the same SetParameterValues) setting the value {{enum|Requested}}.
 When requested, the CPE SHOULD wait until after completion of the communication session with the ACS before starting the test.
-When the test initiated by the ACS is completed (successfully or not), the CPE MUST establish a new connection to the ACS to allow the ACS to view the results, indicating the Event code "8 DIAGNOSTICS COMPLETE" in the Inform message.</description>
+When the test initiated by the ACS is completed (successfully or not), the CPE MUST establish a new connection to the acs to allow the acs to view the results, indicating the Event code "8 DIAGNOSTICS COMPLETE" in the Inform message.</description>
         <syntax>
           <string>
             <enumeration value="None"/>

@@ -3,7 +3,7 @@ package com.github.freeacs.web.app.page.report.custom;
 import com.github.freeacs.dbi.Group;
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.XAPS;
+import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.report.PeriodType;
 import com.github.freeacs.dbi.report.Report;
 import com.github.freeacs.dbi.report.ReportGenerator;
@@ -28,10 +28,10 @@ public class DefaultRetriever extends ReportRetriever {
 	 *
 	 * @param inputData the input data
 	 * @param params the params
-	 * @param xaps the xaps
+	 * @param acs the xaps
 	 */
-	public DefaultRetriever(ReportData inputData, ParameterParser params, XAPS xaps) {
-		super(inputData, params, xaps);
+	public DefaultRetriever(ReportData inputData, ParameterParser params, ACS acs) {
+		super(inputData, params, acs);
 	}
 	
 	public DefaultRetriever() {
