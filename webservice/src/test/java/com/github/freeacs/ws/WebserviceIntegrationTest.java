@@ -19,8 +19,8 @@ public class WebserviceIntegrationTest {
     private TestRestTemplate restTemplate;
 
     @Test
-    public void testStatusPage() {
+    public void testWsdlPage() {
         String body = this.restTemplate.getForObject("/ws/acs.wsdl", String.class);
-        assertThat(body).isNotBlank();
+        assertThat(body).contains("GetUnittypesRequest");
     }
 }
