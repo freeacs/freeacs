@@ -3,7 +3,10 @@ package com.github.freeacs.ws.impl;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.ws.xml.*;
+import com.github.freeacs.ws.xml.DeleteUnitRequest;
+import com.github.freeacs.ws.xml.DeleteUnitResponse;
+import com.github.freeacs.ws.xml.ObjectFactory;
+import com.github.freeacs.ws.xml.Unit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -3,7 +3,8 @@ package com.github.freeacs.ws.impl;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.ws.xml.*;
+import com.github.freeacs.ws.xml.DeleteProfileRequest;
+import com.github.freeacs.ws.xml.DeleteProfileResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

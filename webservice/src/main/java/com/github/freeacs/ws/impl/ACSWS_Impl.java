@@ -2,6 +2,7 @@ package com.github.freeacs.ws.impl;
 
 import com.github.freeacs.ws.xml.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -19,7 +20,7 @@ public class ACSWS_Impl {
 	private final DataSource xapsDs, syslogDs;
 
 	@Autowired
-	public ACSWS_Impl(DataSource xapsDs, DataSource syslogDs) {
+	public ACSWS_Impl(@Qualifier("main") DataSource xapsDs, @Qualifier("syslog") DataSource syslogDs) {
 		this.xapsDs = xapsDs;
 		this.syslogDs = syslogDs;
 	}

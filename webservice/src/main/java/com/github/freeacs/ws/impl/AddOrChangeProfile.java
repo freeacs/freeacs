@@ -1,11 +1,11 @@
 package com.github.freeacs.ws.impl;
 
 import com.github.freeacs.dbi.*;
-import com.github.freeacs.dbi.Profile;
-import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.ws.xml.AddOrChangeProfileRequest;
+import com.github.freeacs.ws.xml.AddOrChangeProfileResponse;
 import com.github.freeacs.ws.xml.Parameter;
+import com.github.freeacs.ws.xml.ParameterList;
 import org.slf4j.LoggerFactory;
-import com.github.freeacs.ws.xml.*;
 
 import javax.sql.DataSource;
 import java.rmi.RemoteException;
