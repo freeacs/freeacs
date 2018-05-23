@@ -64,9 +64,9 @@ public class GetUnits {
             ul.setUnitArray(array);
 			getParameters(factory, unitMap, unitArray);
 			GetUnitsResponse response = new GetUnitsResponse();
-            response.setUnits(factory.createGetUnitsResponseUnits(ul));
-            response.setMoreUnits(moreUnits);
-            return response;
+			response.setUnits(factory.createGetUnitsResponseUnits(ul));
+			response.setMoreUnits(moreUnits);
+			return response;
 		} catch (RemoteException re) {
 			throw re;
 		} catch (Throwable t) {
