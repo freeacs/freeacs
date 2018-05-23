@@ -2,7 +2,12 @@ package com.github.freeacs.ws.impl;
 
 import com.github.freeacs.dbi.ProfileParameter;
 import com.github.freeacs.dbi.UnittypeParameter;
-import com.github.freeacs.ws.xml.*;
+import com.github.freeacs.ws.xml.ArrayOfParameter;
+import com.github.freeacs.ws.xml.ObjectFactory;
+import com.github.freeacs.ws.xml.Parameter;
+import com.github.freeacs.ws.xml.ParameterList;
+import com.github.freeacs.ws.xml.Profile;
+import com.github.freeacs.ws.xml.Unittype;
 
 import java.util.Arrays;
 

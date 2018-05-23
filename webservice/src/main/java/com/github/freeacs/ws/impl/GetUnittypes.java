@@ -1,7 +1,11 @@
 package com.github.freeacs.ws.impl;
 
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.ws.xml.*;
+import com.github.freeacs.ws.xml.ArrayOfUnittype;
+import com.github.freeacs.ws.xml.GetUnittypesRequest;
+import com.github.freeacs.ws.xml.GetUnittypesResponse;
+import com.github.freeacs.ws.xml.ObjectFactory;
+import com.github.freeacs.ws.xml.UnittypeList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,8 +16,6 @@ import java.util.Arrays;
 public class GetUnittypes {
 
 	private static final Logger logger = LoggerFactory.getLogger(GetUnittypes.class);
-
-	private static final ObjectFactory factory = new ObjectFactory();
 
 	public GetUnittypesResponse getUnittypes(GetUnittypesRequest gur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
@@ -48,6 +50,7 @@ public class GetUnittypes {
 		arrayOfUnittype.getItem().addAll(Arrays.asList(unittypeArray));
 		unittypeList.setUnittypeArray(arrayOfUnittype);
 		GetUnittypesResponse response = new GetUnittypesResponse();
+		ObjectFactory factory = new ObjectFactory();
 		response.setUnittypes(factory.createGetUnittypesResponseUnittypes(unittypeList));
 		return response;
 	}

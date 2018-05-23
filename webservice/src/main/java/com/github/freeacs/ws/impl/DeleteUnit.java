@@ -16,7 +16,6 @@ import java.sql.SQLException;
 
 public class DeleteUnit {
 	private static final Logger logger = LoggerFactory.getLogger(DeleteUnit.class);
-	private static final ObjectFactory factory = new ObjectFactory();
 
 	private ACSFactory acsWS;
 
@@ -62,6 +61,7 @@ public class DeleteUnit {
 			if (unitWS.getSerialNumber() != null) {
 				Unittype unittype = acsWS.getUnittypeFromXAPS(unitWS.getUnittype().getValue().getName());
 				unitXAPS = acsWS.getUnitByMAC(acsUnit, unittype, null, unitWS.getSerialNumber().getValue());
+				ObjectFactory factory = new ObjectFactory();
 				unitWS.setUnitId(factory.createUnitUnitId(unitXAPS.getId()));
 			} else {
 				ACSFactory.error(logger, "No unitId or serial number is supplied to the service");

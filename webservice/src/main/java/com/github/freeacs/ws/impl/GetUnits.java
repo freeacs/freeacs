@@ -1,13 +1,21 @@
 package com.github.freeacs.ws.impl;
 
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.Parameter;
 import com.github.freeacs.dbi.Parameter.Operator;
 import com.github.freeacs.dbi.Parameter.ParameterDataType;
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.ws.xml.*;
+import com.github.freeacs.dbi.UnittypeParameter;
+import com.github.freeacs.ws.xml.ArrayOfParameter;
+import com.github.freeacs.ws.xml.ArrayOfUnit;
+import com.github.freeacs.ws.xml.GetUnitsRequest;
+import com.github.freeacs.ws.xml.GetUnitsResponse;
+import com.github.freeacs.ws.xml.ObjectFactory;
+import com.github.freeacs.ws.xml.ParameterList;
+import com.github.freeacs.ws.xml.UnitList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,10 +27,9 @@ import java.util.Map.Entry;
 public class GetUnits {
 	private static final Logger logger = LoggerFactory.getLogger(GetUnits.class);
 
-    private static final ObjectFactory factory = new ObjectFactory();
-
 	public GetUnitsResponse getUnits(GetUnitsRequest gur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
+			ObjectFactory factory = new ObjectFactory();
 
             ACSFactory acsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
             ACS acs = acsWS.getAcs();

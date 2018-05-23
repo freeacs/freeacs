@@ -1,7 +1,12 @@
 package com.github.freeacs.ws.impl;
 
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.UnittypeParameterFlag;
+import com.github.freeacs.dbi.Unittypes;
+import com.github.freeacs.dbi.User;
 import com.github.freeacs.ws.xml.AddOrChangeUnittypeRequest;
 import com.github.freeacs.ws.xml.AddOrChangeUnittypeResponse;
 import com.github.freeacs.ws.xml.ObjectFactory;
@@ -21,8 +26,6 @@ public class AddOrChangeUnittype {
 
 	private ACS acs;
 	private ACSFactory acsWS;
-
-	private static final ObjectFactory factory = new ObjectFactory();
 
 	private void addOrChangeUnittypeImpl(Unittype unittypeXAPS, AddOrChangeUnittypeRequest gur) throws SQLException, RemoteException {
 		unittypeXAPS.setDescription(gur.getUnittype().getDescription().getValue());

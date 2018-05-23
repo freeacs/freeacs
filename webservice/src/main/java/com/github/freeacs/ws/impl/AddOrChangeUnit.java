@@ -17,7 +17,6 @@ import java.util.List;
 
 public class AddOrChangeUnit {
 	private static final Logger logger = LoggerFactory.getLogger(AddOrChangeUnit.class);
-	private static final ObjectFactory factory = new ObjectFactory();
 
 	private ACSFactory acsWS;
 	private ACSUnit acsUnit;
@@ -84,11 +83,12 @@ public class AddOrChangeUnit {
 			if (unitWS.getSerialNumber() != null) {
 				com.github.freeacs.dbi.Unit unitXAPS = acsWS.getUnitByMAC(acsUnit, unittype, profile, unitWS.getSerialNumber().getValue());
 				if (unitXAPS != null) {
+					ObjectFactory factory = new ObjectFactory();
 					unitWS.setUnitId(factory.createUnitUnitId(unitXAPS.getId()));
 				}
 			}
 			if (unitWS.getUnitId() == null)
-				ACSFactory.error(logger, "No unitId or serial number is supplied to the service");
+				throw ACSFactory.error(logger, "No unitId or serial number is supplied to the service");
 		}
 		return unitWS.getUnitId().getValue();
 	}

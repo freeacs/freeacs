@@ -1,32 +1,38 @@
 package com.github.freeacs.ws.impl;
 
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.Parameter;
 import com.github.freeacs.dbi.Parameter.Operator;
 import com.github.freeacs.dbi.Parameter.ParameterDataType;
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.ws.xml.*;
+import com.github.freeacs.dbi.UnittypeParameter;
+import com.github.freeacs.ws.xml.ArrayOfUnitId;
+import com.github.freeacs.ws.xml.GetUnitIdsRequest;
+import com.github.freeacs.ws.xml.GetUnitIdsResponse;
+import com.github.freeacs.ws.xml.ObjectFactory;
+import com.github.freeacs.ws.xml.UnitIdList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.rmi.RemoteException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class GetUnitIds {
 	private static final Logger logger = LoggerFactory.getLogger(GetUnitIds.class);
-	private static final ObjectFactory factory = new ObjectFactory();
-
-	private ACS acs;
-	private ACSFactory acsWS;
 
 	public GetUnitIdsResponse getUnits(GetUnitIdsRequest gur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
-			
-			acsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs,syslogDs);
-			acs = acsWS.getAcs();
+
+			ACSFactory acsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
+			ACS acs = acsWS.getAcs();
 			ACSUnit acsUnit = acsWS.getXAPSUnit(acs);
 
 			com.github.freeacs.ws.xml.Unit unitWS = gur.getUnit();
@@ -74,6 +80,7 @@ public class GetUnitIds {
 			ArrayOfUnitId arrayOfUnitId = new ArrayOfUnitId();
 			arrayOfUnitId.getUnitId().addAll(Arrays.asList(unitIdArray));
 			unitIdList.setUnitIdArray(arrayOfUnitId);
+			ObjectFactory factory = new ObjectFactory();
 			response.setUnits(factory.createGetUnitIdsResponseUnits(unitIdList));
 			return response;
 		} catch (Throwable t) {

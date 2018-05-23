@@ -1,6 +1,12 @@
 package com.github.freeacs.ws.impl;
 
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.Permission;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.ProfileParameter;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.User;
 import com.github.freeacs.ws.xml.AddOrChangeProfileRequest;
 import com.github.freeacs.ws.xml.AddOrChangeProfileResponse;
 import com.github.freeacs.ws.xml.Parameter;
@@ -18,7 +24,6 @@ public class AddOrChangeProfile {
 	private static org.slf4j.Logger logger = LoggerFactory.getLogger(AddOrChangeProfile.class);
 
 	private ACS acs;
-	private ACSFactory acsWS;
 
 	private void addOrChangeProfileImpl(Profile profileXAPS, AddOrChangeProfileRequest gur) throws SQLException, RemoteException {
 		ParameterList parameterList = gur.getProfile().getParameters().getValue();
@@ -54,8 +59,8 @@ public class AddOrChangeProfile {
 
 	public AddOrChangeProfileResponse addOrChangeProfile(AddOrChangeProfileRequest gur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
-			
-			acsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
+
+			ACSFactory acsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
 			acs = acsWS.getAcs();
 			if (gur.getUnittype() == null || gur.getProfile() == null)
 				throw ACSFactory.error(logger, "No unittype or profile specified");

@@ -14,8 +14,6 @@ public class GetProfiles {
 
 	private static final Logger logger = LoggerFactory.getLogger(GetProfiles.class);
 
-	private static final ObjectFactory factory = new ObjectFactory();
-
 	public GetProfilesResponse getProfiles(GetProfilesRequest gur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
 		try {
 
@@ -40,6 +38,7 @@ public class GetProfiles {
 			ArrayOfProfile arrayOfProfile = new ArrayOfProfile();
 			arrayOfProfile.getItem().addAll(Arrays.asList(profileArray));
 			profileList.setProfileArray(arrayOfProfile);
+			ObjectFactory factory = new ObjectFactory();
 			response.setProfiles(factory.createGetProfilesResponseProfiles(profileList));
 			return response;
 		} catch (Throwable t) {

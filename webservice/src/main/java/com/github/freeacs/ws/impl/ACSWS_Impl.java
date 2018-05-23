@@ -1,6 +1,25 @@
 package com.github.freeacs.ws.impl;
 
-import com.github.freeacs.ws.xml.*;
+import com.github.freeacs.ws.xml.AddOrChangeProfileRequest;
+import com.github.freeacs.ws.xml.AddOrChangeProfileResponse;
+import com.github.freeacs.ws.xml.AddOrChangeUnitRequest;
+import com.github.freeacs.ws.xml.AddOrChangeUnitResponse;
+import com.github.freeacs.ws.xml.AddOrChangeUnittypeRequest;
+import com.github.freeacs.ws.xml.AddOrChangeUnittypeResponse;
+import com.github.freeacs.ws.xml.DeleteProfileRequest;
+import com.github.freeacs.ws.xml.DeleteProfileResponse;
+import com.github.freeacs.ws.xml.DeleteUnitRequest;
+import com.github.freeacs.ws.xml.DeleteUnitResponse;
+import com.github.freeacs.ws.xml.DeleteUnittypeRequest;
+import com.github.freeacs.ws.xml.DeleteUnittypeResponse;
+import com.github.freeacs.ws.xml.GetProfilesRequest;
+import com.github.freeacs.ws.xml.GetProfilesResponse;
+import com.github.freeacs.ws.xml.GetUnitIdsRequest;
+import com.github.freeacs.ws.xml.GetUnitIdsResponse;
+import com.github.freeacs.ws.xml.GetUnitsRequest;
+import com.github.freeacs.ws.xml.GetUnitsResponse;
+import com.github.freeacs.ws.xml.GetUnittypesRequest;
+import com.github.freeacs.ws.xml.GetUnittypesResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;

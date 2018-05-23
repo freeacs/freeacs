@@ -1,6 +1,16 @@
 package com.github.freeacs.ws.impl;
 
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.ACSUnit;
+import com.github.freeacs.dbi.DBI;
+import com.github.freeacs.dbi.Identity;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.Syslog;
+import com.github.freeacs.dbi.SyslogConstants;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.User;
+import com.github.freeacs.dbi.Users;
 import com.github.freeacs.ws.xml.Login;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +28,6 @@ public class ACSFactory {
 	private Identity id;
 	private ACS acs;
 	private boolean initialized = false;
-
-	public static String VERSION = "1.4.8";
 
 	public ACSFactory(Login login, int lifetimeSec, DataSource xaps, DataSource syslog) throws RemoteException {
 		this.xapsDataSource = xaps;
@@ -49,12 +57,12 @@ public class ACSFactory {
 				if (user == null)
 					throw error("The user " + login.getUsername() + " is unknown");
 
-				id = new Identity(SyslogConstants.FACILITY_WEBSERVICE, VERSION, user);
+				id = new Identity(SyslogConstants.FACILITY_WEBSERVICE, "2.0.1-SNAPSHOT", user);
 				//	private Unittypes allowedUnittypes;
 				Syslog syslog = new Syslog(syslogDataSource, id);
 				DBI dbi = new DBI(lifetimeSec + 30, xapsDataSource, syslog);
 				acs = dbi.getAcs();
-				if (!login.getPassword().equals(user.getSecret()) && !user.isCorrectSecret(login.getPassword().getValue()))
+				if (!login.getPassword().getValue().equals(user.getSecret()) && !user.isCorrectSecret(login.getPassword().getValue()))
 					throw error("The password is incorrect");
 				// At this stage we have a positive authentication of the user
 				initialized = true;
