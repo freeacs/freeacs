@@ -23,7 +23,7 @@ For systemv (aka init.d, not tested)
     sudo update-rc.d freeacs-tr069 defaults
     sudo service freeacs-tr069 restart
 
-tail -f /var/freeacs/tr069/log/tr069.log
+tail -f /var/freeacs/tr069/logs/tr069.log
 
 To stop the service:
     sudo systemctl stop freeacs-tr069
