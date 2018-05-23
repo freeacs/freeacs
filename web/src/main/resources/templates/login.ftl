@@ -35,10 +35,12 @@
 								</td>
 							</tr>
 						</table>
-						<#if error??>
-						    ${error}
-						</#if>
 					</fieldset>
+					<font color="red"><b>
+						<#if Session.SPRING_SECURITY_LAST_EXCEPTION?? && Session.SPRING_SECURITY_LAST_EXCEPTION.message?has_content>
+							${Session.SPRING_SECURITY_LAST_EXCEPTION.message}
+						</#if>
+					</b></font>
 				</form>
 			</div>
 		</center>
