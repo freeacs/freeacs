@@ -45,10 +45,8 @@ public class GetUnits {
 					profilesXAPS = Arrays.asList(unittypeXAPS.getProfiles().getProfiles());
 			}
 			boolean useCase3 = unitWS.getParameters() != null && unitWS.getParameters().getValue().getParameterArray().getItem().size() > 0;
-			if (useCase3) {
-				if (profilesXAPS.size() == 0) {
-					throw ACSFactory.error(logger, "Unittype and profiles are not specified, not possible to execute parameter-search");
-				}
+			if (useCase3 && profilesXAPS.size() == 0) {
+				throw ACSFactory.error(logger, "Unittype and profiles are not specified, not possible to execute parameter-search");
 			}
 
 			/* Input is validated - now execute searches */

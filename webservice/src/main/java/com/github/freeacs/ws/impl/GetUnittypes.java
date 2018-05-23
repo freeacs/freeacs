@@ -34,14 +34,11 @@ public class GetUnittypes {
 					unittypeArray[i++] = ConvertACS2WS.convert(unittypeXAPS);
 				return getGetUnittypesResponse(unittypeArray);
 			}
+		} catch (RemoteException re) {
+			throw re;
 		} catch (Throwable t) {
-			if (t instanceof RemoteException)
-				throw (RemoteException) t;
-			else {
-				throw ACSFactory.error(logger, t);
-			}
+			throw ACSFactory.error(logger, t);
 		}
-
 	}
 
 	private GetUnittypesResponse getGetUnittypesResponse(com.github.freeacs.ws.xml.Unittype[] unittypeArray) {
