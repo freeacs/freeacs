@@ -23,7 +23,7 @@
     	</div>
     </div>
     <script>
-         xAPS.unit.history.initSettings({
+         ACS.unit.history.initSettings({
 			selectedTab: ${selectedTab?default(0)},
 			unitId: '${info.unit.id}',
 			pageId: 'unit-dashboard',

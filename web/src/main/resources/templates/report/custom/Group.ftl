@@ -11,7 +11,7 @@
 </script>
 <#if unittype.selected??>
 <script>
- xAPS.report.prePostback = function(url,$){
+ ACS.report.prePostback = function(url, $){
     url += "&${groups.input.key}=" + $("#${groups.input.key}").val();
     return url;
  };

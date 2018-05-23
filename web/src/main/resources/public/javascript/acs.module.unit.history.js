@@ -14,7 +14,7 @@
  * 
  * @author Jarl Andre Hubenthal
  */
-xAPS.createModule("unit.history",function($this,$super,$){
+ACS.createModule("unit.history",function($this, $super, $){
 	/**
 	 * The configuration.
 	 */

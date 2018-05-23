@@ -1,4 +1,9 @@
-package com.github.freeacs.web.app.security;
+package com.github.freeacs.web.security;
+
+import com.github.freeacs.dbi.Permission;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is mutable!
@@ -83,5 +88,22 @@ public class AllowedUnittype {
 	 */
 	public void setProfile(Integer profileId) {
 		this.profile = new AllowedProfile(profileId);
+	}
+
+	public static AllowedUnittype[] retrieveAllowedUnittypes(WebUser usr) {
+		List<AllowedUnittype> uts = new ArrayList<AllowedUnittype>();
+		if (usr.getPermissions() != null) {
+			if (usr.getPermissions().getPermissions().length == 0)
+				return new AllowedUnittype[] { new AllowedUnittype("*") };
+			for (Permission permission : usr.getPermissions().getPermissions()) {
+				AllowedUnittype allowed = new AllowedUnittype(permission.getUnittypeId());
+				allowed.setProfile(permission.getProfileId());
+				uts.add(allowed);
+			}
+			return uts.toArray(new AllowedUnittype[] {});
+		} else {
+			uts.add(new AllowedUnittype("*"));
+			return uts.toArray(new AllowedUnittype[] {});
+		}
 	}
 }

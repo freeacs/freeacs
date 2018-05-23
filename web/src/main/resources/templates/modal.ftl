@@ -10,7 +10,7 @@
 		<script src="javascript/acs.js"></script>
 		<script src="javascript/acs.legacy.js"></script>
 		<script type="text/javascript">
-			xAPS.initModule({});
+			ACS.initModule({});
 		</script>
 		<#include "/meta/jhelp.ftl">
 	</head>

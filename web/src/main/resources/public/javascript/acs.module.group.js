@@ -1,4 +1,4 @@
-xAPS.createModule("group",function($this,$super,$){
+ACS.createModule("group",function($this, $super, $){
 	/**
 	 * The configuration.
 	 */

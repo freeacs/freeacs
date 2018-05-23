@@ -11,7 +11,7 @@
 							<td valign="top">
 								DDR range:&nbsp;<input type="text" size="2" name="filter_ddr_low" value="${filter_ddr_low}" /> - <input type="text" size="2" name="filter_ddr_high" value="${filter_ddr_high}" />&nbsp;%
 								<br />
-								AND<input type="radio" onchange="xAPS.submitForm()" name="filter_operand" <#if !filter_operand?? || (filter_operand?? && filter_operand="AND")>checked="checked"</#if> value="AND" /> OR<input type="radio" onchange="xAPS.submitForm()" <#if filter_operand?? && filter_operand="OR">checked="checked"</#if> name="filter_operand" value="OR" /> 
+								AND<input type="radio" onchange="ACS.submitForm()" name="filter_operand" <#if !filter_operand?? || (filter_operand?? && filter_operand="AND")>checked="checked"</#if>value="AND" /> OR<input type="radio" onchange="ACS.submitForm()" <#if filter_operand?? && filter_operand="OR">checked="checked"</#if>name="filter_operand" value="OR" />
 								<br />
 								OCM range:&nbsp;<input type="text" size="2" name="filter_ocm_low" value="${filter_ocm_low}" /> - <input type="text" size="2" name="filter_ocm_high" value="${filter_ocm_high}" />&nbsp;%
 							</td>

@@ -32,7 +32,7 @@
 	<script>
 		jQuery(document).ready(function(){
 			$("#voip-calls-table").tablesorter();
-			$(xAPS.settings.titlePopupClass).tipTip();
+			$(ACS.settings.titlePopupClass).tipTip();
 		});
 	</script>
 <#else>
