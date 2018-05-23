@@ -6,7 +6,7 @@
  * 
  * @author Jarl Andre Hubenthal
  */
-xAPS.createModule("user.group",function($this, $super, $) {
+ACS.createModule("user.group",function($this, $super, $) {
 		$this.settings = {
 			//Hooks
 			contents : 				"#groups-contents",

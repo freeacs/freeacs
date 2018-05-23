@@ -14,7 +14,7 @@
  * 
  * @author Jarl Andre Hubenthal
  */
-xAPS.createModule("search",function($this,$super,$){
+ACS.createModule("search",function($this, $super, $){
 	/**
 	 * The configuration.
 	 */

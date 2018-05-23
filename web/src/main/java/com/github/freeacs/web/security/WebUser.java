@@ -1,19 +1,20 @@
-package com.github.freeacs.web.app.security;
+package com.github.freeacs.web.security;
 
 import com.github.freeacs.dbi.User;
 import com.github.freeacs.dbi.Users;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.WebConstants;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * The Class WebUser.
  */
-public class WebUser extends User {
+public class WebUser extends User implements UserDetails {
 
 	/** The authenticated. */
 	private boolean authenticated = false;
@@ -61,26 +62,41 @@ public class WebUser extends User {
 	/** The allowed pages. */
 	private List<String> allowedPages;
 
-	/**
-	 * Checks if is authenticated.
-	 *
-	 * @return true, if is authenticated
-	 */
-	public boolean isAuthenticated() {
-		return authenticated;
-	}
-
-	/**
-	 * Sets the authenticated.
-	 *
-	 * @param authenticated the new authenticated
-	 */
-	public void setAuthenticated(boolean authenticated) {
-		this.authenticated = authenticated;
-	}
-
-	public WebUser(User user, boolean authenticated) {
+	public WebUser(User user) {
 		super(user);
-		this.setAuthenticated(authenticated);
+		this.setSecretHashed(user.getSecret());
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		if (isAdmin()) {
+			return Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+		}
+		return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+	}
+
+	@Override
+	public String getPassword() {
+		return this.getSecret();
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
 	}
 }

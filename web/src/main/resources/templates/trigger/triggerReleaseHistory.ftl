@@ -110,13 +110,13 @@
 	</#if></#if>
 	<script type='text/javascript'>
 		if (document.getElementById('tmsstart') != null) {
-			xAPS.setupFromCalendar(null,{
+			ACS.setupFromCalendar(null,{
 				field: "tmsstart",
 				button: "startDate_img"
 			});
 		}
 		if (document.getElementById('tmsend') != null) {
-			xAPS.setupFromCalendar(null,{
+			ACS.setupFromCalendar(null,{
 				field: "tmsend",
 				button: "endDate_img"
 			});

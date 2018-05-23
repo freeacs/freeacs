@@ -30,7 +30,7 @@
  * 
  * @author Jarl Andre Hubenthal
  */
-xAPS.createModule("report", function($this,$super,$){
+ACS.createModule("report", function($this, $super, $){
 	/**
 	 * The configuration.
 	 */

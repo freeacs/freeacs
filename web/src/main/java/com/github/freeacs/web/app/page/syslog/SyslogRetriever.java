@@ -2,8 +2,8 @@ package com.github.freeacs.web.app.page.syslog;
 
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.web.app.page.AbstractWebPage;
-import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.ACSLoader;
+import com.github.freeacs.web.app.util.SessionCache;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;

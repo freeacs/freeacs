@@ -6,7 +6,7 @@
  * 
  * @author Jarl Andre Hubenthal
  */
-xAPS.createModule("user",function($this, $super, $) {
+ACS.createModule("user",function($this, $super, $) {
 		$this.settings = {
 			//Hooks
 			contents : 				"#permissions-contents",

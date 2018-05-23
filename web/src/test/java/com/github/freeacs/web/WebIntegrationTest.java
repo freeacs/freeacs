@@ -21,6 +21,6 @@ public class WebIntegrationTest {
     @Test
     public void testStatusPage() {
         String body = this.restTemplate.getForObject("/web", String.class);
-        assertThat(body).contains("FreeACS Web Web | login");
+        assertThat(body).contains("FreeACS Web | login");
     }
 }
