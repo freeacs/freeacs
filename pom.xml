@@ -51,8 +51,6 @@
         <module>shell</module>
         <module>core</module>
         <module>web</module>
-        <module>wsc</module>
-        <module>ws</module>
         <module>webservice</module>
     </modules>
 
