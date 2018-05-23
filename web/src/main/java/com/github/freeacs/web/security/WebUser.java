@@ -1,4 +1,4 @@
-package com.github.freeacs.web.app.security;
+package com.github.freeacs.web.security;
 
 import com.github.freeacs.dbi.User;
 import com.github.freeacs.dbi.Users;

@@ -2,7 +2,7 @@ package com.github.freeacs.web.config;
 
 import com.github.freeacs.dbi.User;
 import com.github.freeacs.dbi.Users;
-import com.github.freeacs.web.app.security.WebUser;
+import com.github.freeacs.web.security.WebUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -7,8 +7,8 @@ import com.github.freeacs.dbi.SyslogEntry;
 import com.github.freeacs.dbi.SyslogFilter;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.report.*;
-import com.github.freeacs.web.app.security.LoginServlet;
-import com.github.freeacs.web.app.security.WebUser;
+import com.github.freeacs.web.security.AllowedUnittype;
+import com.github.freeacs.web.security.WebUser;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.sql.DataSource;
@@ -131,7 +131,7 @@ public class SessionCache {
 			SessionData sessionData = new SessionData();
             WebUser webUser = (WebUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             sessionData.setUser(webUser);
-			sessionData.setFilteredUnittypes(LoginServlet.retrieveAllowedUnittypes(webUser));
+			sessionData.setFilteredUnittypes(AllowedUnittype.retrieveAllowedUnittypes(webUser));
 			cache.put(key(sessionId, "sessionData"), new CacheValue(sessionData, Cache.SESSION, Long.MAX_VALUE));
 			return sessionData;
 		}
