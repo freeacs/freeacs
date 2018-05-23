@@ -58,8 +58,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             }
         };
     }
-
-    public static void main(String[] args) {
-        System.out.println(new SecurityConfig().encoder().encode("xaps"));
-    }
 }
