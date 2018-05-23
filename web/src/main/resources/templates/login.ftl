@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<title>Freeacs Web | login</title>
+		<title>FreeACS Web | login</title>
 		<#include "meta/basic.ftl">
         <script src="javascript/jquery-1.4.4.js"></script>
 	</head>
@@ -11,7 +11,7 @@
 				<form action="/login" id="loginForm" method="post" class="unit">
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 					<fieldset id="logondiv">
-						<legend>Freeacs</legend>
+						<legend>FreeACS</legend>
 						<table>
 							<tr>
 								<td align="right">
