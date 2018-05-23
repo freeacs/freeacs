@@ -2,8 +2,6 @@ package com.github.freeacs.ws;
 
 
 import com.github.freeacs.ws.impl.ACSWS_Impl;
-import com.github.freeacs.ws.impl.AddOrChangeUnit;
-import com.github.freeacs.ws.impl.DeleteProfile;
 import com.github.freeacs.ws.xml.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
