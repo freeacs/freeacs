@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,22 +57,7 @@ public class GetUnitIds {
 
 			/* Input is validated - now execute searches */
 			Map<String, Unit> unitMap = new TreeMap<String, Unit>();
-			if (unitWS.getUnitId() != null) { // Use-case 1
-				Unit unitXAPS = acsUnit.getUnitById(unitWS.getUnitId().getValue());
-				if (unitXAPS != null)
-					unitMap.put(unitWS.getUnitId().getValue(), unitXAPS);
-			} else if (useCase3) {// Use-case 3, expect parameters and unittype
-				List<Parameter> upList = validateParameters(unitWS, profilesXAPS);
-				Map<String, Unit> tmpMap = acsUnit.getUnits(unittypeXAPS, profilesXAPS, upList, 51);
-				for (Unit unitXAPS : tmpMap.values())
-					unitMap.put(unitXAPS.getId(), acsUnit.getUnitById(unitXAPS.getId()));
-			} else { // Use-case 2
-				Map<String, Unit> tmpMap = acsUnit.getUnits(unitWS.getSerialNumber().getValue(), profilesXAPS, 51);
-				for (Unit unitXAPS : tmpMap.values())
-					unitMap.put(unitXAPS.getId(), acsUnit.getUnitById(unitXAPS.getId()));
-			}
-
-			
+			getUnits(acsUnit, unitWS, unittypeXAPS, profilesXAPS, useCase3, unitMap);
 
 			String[] unitIdArray = new String[unitMap.size()];
 			unitMap.keySet().toArray(unitIdArray);
@@ -83,18 +69,31 @@ public class GetUnitIds {
 			ObjectFactory factory = new ObjectFactory();
 			response.setUnits(factory.createGetUnitIdsResponseUnits(unitIdList));
 			return response;
+		} catch (RemoteException re) {
+			throw re;
 		} catch (Throwable t) {
-			if (t instanceof RemoteException)
-				throw (RemoteException) t;
-			else {
-				String msg = "An exception occurred: " + t.getMessage();
-				logger.error(msg, t);
-				throw new RemoteException(msg, t);
-			}
+			throw ACSFactory.error(logger, t);
 		}
 	}
 
-	private Unittype getUnittypeForParameters(List<Profile> allowedProfiles) throws RemoteException {
+	public static void getUnits(ACSUnit acsUnit, com.github.freeacs.ws.xml.Unit unitWS, Unittype unittypeXAPS, List<Profile> profilesXAPS, boolean useCase3, Map<String, Unit> unitMap) throws SQLException, RemoteException {
+		if (unitWS.getUnitId() != null) { // Use-case 1
+			Unit unitXAPS = acsUnit.getUnitById(unitWS.getUnitId().getValue());
+			if (unitXAPS != null)
+				unitMap.put(unitWS.getUnitId().getValue(), unitXAPS);
+		} else if (useCase3) {// Use-case 3, expect parameters and unittype
+			List<Parameter> upList = validateParameters(unitWS, profilesXAPS);
+			Map<String, Unit> tmpMap = acsUnit.getUnits(unittypeXAPS, profilesXAPS, upList, 51);
+			for (Unit unitXAPS : tmpMap.values())
+				unitMap.put(unitXAPS.getId(), acsUnit.getUnitById(unitXAPS.getId()));
+		} else { // Use-case 2
+			Map<String, Unit> tmpMap = acsUnit.getUnits(unitWS.getSerialNumber().getValue(), profilesXAPS, 51);
+			for (Unit unitXAPS : tmpMap.values())
+				unitMap.put(unitXAPS.getId(), acsUnit.getUnitById(unitXAPS.getId()));
+		}
+	}
+
+	private static Unittype getUnittypeForParameters(List<Profile> allowedProfiles) throws RemoteException {
 		Unittype unittype = allowedProfiles.get(0).getUnittype();
 		for (Profile p : allowedProfiles) {
 			if (!p.getUnittype().getName().equals(unittype.getName()))
@@ -104,7 +103,7 @@ public class GetUnitIds {
 		return unittype;
 	}
 
-	private List<Parameter> validateParameters(com.github.freeacs.ws.xml.Unit unitWS, List<Profile> allowedProfiles) throws RemoteException {
+	private static List<Parameter> validateParameters(com.github.freeacs.ws.xml.Unit unitWS, List<Profile> allowedProfiles) throws RemoteException {
 		if (allowedProfiles == null || allowedProfiles.size() == 0)
 			throw ACSFactory.error(logger, "Unittype and profiles are not specified, not possible to make parameter-search");
 		List<Parameter> parameters = new ArrayList<Parameter>();
