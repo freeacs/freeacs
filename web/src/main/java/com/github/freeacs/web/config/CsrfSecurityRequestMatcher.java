@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 public class CsrfSecurityRequestMatcher implements RequestMatcher {
     private Pattern allowedMethods = Pattern.compile("^(GET|HEAD|TRACE|OPTIONS)$");
-    private RegexRequestMatcher unprotectedMatcher = new RegexRequestMatcher("^(?!/login*$).*", null);
+    private RegexRequestMatcher unprotectedMatcher = new RegexRequestMatcher("^(?!/(login|logout)*$).*", null);
 
     @Override
     public boolean matches(HttpServletRequest request) {

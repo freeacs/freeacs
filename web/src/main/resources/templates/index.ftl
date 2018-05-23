@@ -106,7 +106,7 @@
 									</#if>
 									<a href="javascript:IFRAMEDIALOGS.showHelpDialog('about','help?page=about');">About</a> | 
 									<a href="javascript:IFRAMEDIALOGS.showHelpDialog('${HELP_PAGE!}','help?page=${HELP_PAGE!}');">Help</a> | 
-									<a href="${URL_MAP.LOGIN}&amp;logoff=true">Logout</a> </center>
+									<a href="/logout">Logout</a> </center>
 							<b class="rbottom"><b class="r4"></b> <b class="r3"></b> <b class="r2"></b> <b class="r1"></b></b>
 						</div>
 					</div>
