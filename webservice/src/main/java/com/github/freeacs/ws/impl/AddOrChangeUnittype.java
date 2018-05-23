@@ -9,7 +9,6 @@ import com.github.freeacs.dbi.Unittypes;
 import com.github.freeacs.dbi.User;
 import com.github.freeacs.ws.xml.AddOrChangeUnittypeRequest;
 import com.github.freeacs.ws.xml.AddOrChangeUnittypeResponse;
-import com.github.freeacs.ws.xml.ObjectFactory;
 import com.github.freeacs.ws.xml.ParameterList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

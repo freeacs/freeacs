@@ -2,7 +2,11 @@ package com.github.freeacs.ws.impl;
 
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.ws.xml.*;
+import com.github.freeacs.ws.xml.ArrayOfProfile;
+import com.github.freeacs.ws.xml.GetProfilesRequest;
+import com.github.freeacs.ws.xml.GetProfilesResponse;
+import com.github.freeacs.ws.xml.ObjectFactory;
+import com.github.freeacs.ws.xml.ProfileList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

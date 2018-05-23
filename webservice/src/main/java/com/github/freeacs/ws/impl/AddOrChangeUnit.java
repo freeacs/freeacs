@@ -1,9 +1,14 @@
 package com.github.freeacs.ws.impl;
 
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.UnitParameter;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.ws.xml.*;
+import com.github.freeacs.dbi.UnittypeParameter;
+import com.github.freeacs.ws.xml.AddOrChangeUnitRequest;
+import com.github.freeacs.ws.xml.AddOrChangeUnitResponse;
+import com.github.freeacs.ws.xml.ObjectFactory;
 import com.github.freeacs.ws.xml.Parameter;
 import com.github.freeacs.ws.xml.Unit;
 import org.slf4j.Logger;
@@ -101,7 +106,7 @@ public class AddOrChangeUnit {
 			if (utp == null) {
 				throw ACSFactory.error(logger, "Unittype parameter " + p.getName() + " is not found in unittype " + unittype.getName());
 			} else {
-				if (p.getFlags() != null && p.getFlags().equals("D")) {
+				if (p.getFlags() != null && p.getFlags().getValue().equals("D")) {
 					unitParams.add(new UnitParameter(utp, unitWS.getUnitId().getValue(), p.getValue().getValue(), profile));
 				}
 			}
@@ -117,7 +122,7 @@ public class AddOrChangeUnit {
 			if (utp == null) {
 				throw ACSFactory.error(logger, "Unittype parameter " + p.getName() + " is not found in unittype " + unittype.getName());
 			} else {
-				if (p.getFlags() == null || p.getFlags().equals("AC")) {
+				if (p.getFlags() == null || p.getFlags().getValue().equals("AC")) {
 					unitParams.add(new UnitParameter(utp, unitWS.getUnitId().getValue(), p.getValue().getValue(), profile));
 				}
 			}
