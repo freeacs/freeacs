@@ -144,7 +144,7 @@
 									</tr>
 									
 									<script>
-										xAPS.search.initSettings({
+										ACS.search.initSettings({
 											addparameter: {
 												url: "app/${URL_MAP.UNITTYPEPARAMETERS.id}/list?unittype=${UNITTYPE_DROPDOWN.selected.name}"
 											}

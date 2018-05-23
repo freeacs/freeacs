@@ -1,6 +1,6 @@
 <script type="text/javascript" src="javascript/acs.module.report.js"></script>
 <script>
-	xAPS.report.initSettings({
+	ACS.report.initSettings({
     	type : '${pageType}',
     	realtime: {
     		enabled: <#if realtime>true<#else>false</#if>

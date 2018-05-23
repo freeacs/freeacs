@@ -16,7 +16,7 @@
  * 
  * @author Jarl Andre Hubenthal
  */
-xAPS.createModule("tabcomplete", function($this, $super, $, window) {
+ACS.createModule("tabcomplete", function($this, $super, $, window) {
 	/**
 	 * The configuration.
 	 */

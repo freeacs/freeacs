@@ -73,5 +73,5 @@ var CookieCollapser = (function(config,$){
 		execute: execute
 	};
 }({
-    timeout: xAPS.settings.session.timeout
+    timeout: ACS.settings.session.timeout
 },jQuery));

@@ -270,25 +270,16 @@ public class LoginServlet extends HttpServlet implements Filter {
 		name = name.toLowerCase();
 		logger.debug("Will check if " + name + "/" + passwd + " is authenticated using " + loginHandler.getClass() + " class");
 		WebUser user = loginHandler.authenticateUser(name, passwd, sessionId, xapsDataSource);
-		if (!user.isAuthenticated()) {
-			sessionData.setErrorMessage("Your login and password are invalid.");
-			return false;
-		} else {
-			sessionData.setUser(user);
-			sessionData.setFilteredUnittypes(retrieveAllowedUnittypes(sessionId));
-			return true;
-		}
+		return false;
 	}
 
 	/**
 	 * Retrieve allowed unittypes.
 	 *
-	 * @param sessionId the session id
 	 * @return the allowed unittype[]
 	 *  the no available connection exception
 	 */
-	private AllowedUnittype[] retrieveAllowedUnittypes(String sessionId) {
-		WebUser usr = SessionCache.getSessionData(sessionId).getUser();
+	public static AllowedUnittype[] retrieveAllowedUnittypes(WebUser usr) {
 		List<AllowedUnittype> uts = new ArrayList<AllowedUnittype>();
 		if (usr.getPermissions() != null) {
 			if (usr.getPermissions().getPermissions().length == 0)

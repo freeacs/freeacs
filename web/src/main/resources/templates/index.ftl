@@ -20,7 +20,7 @@
 		</#if>
 		<!-- initialization -->
 		<script type="text/javascript">
-			xAPS.initModule({
+			ACS.initModule({
 			     session: {
 			     	timeout: ${SESSION_TIMEOUT}
 			     },
@@ -54,7 +54,7 @@
 	    </noscript>
 		<input type="hidden" id="browser_id" />
 		<form id="searchForm" action="${URL_MAP.SEARCH}" method="POST">
-			<input type="hidden" name="profile" value="." />
+            <input type="hidden" name="profile" value="." />
 			<input type="hidden" name="unittype" value="." />
 			<input type="hidden" name="cmd" value="follow-single-unit" />
 			<input type="text" value="global search" class="searchField" style="width:320px;padding-left:5px;position:absolute;top:0;right:0;margin-right:15px;margin-top:4px;" autocomplete="off" id="unitparamvalue" name="unitparamvalue" />

@@ -65,14 +65,6 @@ public class App {
     }
 
     @Bean
-    ServletRegistrationBean<LoginServlet> loginServlet (@Qualifier("main") DataSource mainDataSource) {
-        ServletRegistrationBean<LoginServlet> srb = new ServletRegistrationBean<LoginServlet>();
-        srb.setServlet(new LoginServlet(mainDataSource));
-        srb.setUrlMappings(Collections.singletonList("/login"));
-        return srb;
-    }
-
-    @Bean
     ServletRegistrationBean<HelpServlet> helpServlet () {
         ServletRegistrationBean<HelpServlet> srb = new ServletRegistrationBean<HelpServlet>();
         srb.setServlet(new HelpServlet());
@@ -85,14 +77,6 @@ public class App {
         srb.setServlet(new MenuServlet());
         srb.setUrlMappings(Collections.singletonList("/menu"));
         return srb;
-    }
-
-    @Bean
-    FilterRegistrationBean<LoginServlet> loginFilter (@Qualifier("main") DataSource mainDataSource) {
-        FilterRegistrationBean<LoginServlet> frb = new FilterRegistrationBean<LoginServlet>();
-        frb.setFilter(new LoginServlet(mainDataSource));
-        frb.setServletNames(Collections.singletonList("main"));
-        return frb;
     }
 
     @Bean

@@ -63,8 +63,6 @@ public class LoginPage extends AbstractWebPage {
 	 */
 	public static void clearSession(ParameterParser req) {
 		HttpSession session = req.getSession();
-		SessionCache.putXAPSConnectionProperties(session.getId(), null);
-		SessionCache.putSyslogConnectionProperties(session.getId(), null);
 		SessionCache.removeSessionData(session.getId());
 		DBI dbi = SessionCache.getDBI(session.getId());
 		if (dbi != null) {

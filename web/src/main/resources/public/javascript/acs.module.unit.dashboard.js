@@ -13,7 +13,7 @@
  * 
  * @author Jarl Andre Hubenthal
  */
-xAPS.createModule("unit.dashboard", function($this, $super, $) {
+ACS.createModule("unit.dashboard", function($this, $super, $) {
 	/**
 	 * The configuration.
 	 */

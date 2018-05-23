@@ -8,7 +8,7 @@
 		<center>
 			<div class="center_box" id="bodylogon">
 				<form action="login" method="post" name="loginform" class="unit">
-					<fieldset id="logondiv">
+                    <fieldset id="logondiv">
 						<legend>Illegal access</legend>
 						<font color="red"><b><#if message??>${message}</#if></b></font>
 					</fieldset>

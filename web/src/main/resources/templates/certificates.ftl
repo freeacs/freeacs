@@ -1,5 +1,5 @@
 <form name="form1" method="post" action="${URL_MAP.CERTIFICATES}" class="unit" accept-charset="ISO-8859-1" enctype="multipart/form-data">
-	<input type="hidden" name="async" value="true" />
+    <input type="hidden" name="async" value="true" />
 	<input type="hidden" name="header" value="true" />
 	<#if async??><input type="hidden" name="async" value="${async?string}" /><input type="hidden" name="header" value="true" /></#if>
 	<fieldset>

@@ -32,10 +32,10 @@ public class DatabaseAuthenticator implements Authenticator {
 				logger.info("Found user with name " + username + ", password matched - login is accepted");
 			else
 				logger.warn("Found user with name " + username + ", password did not match");
-			dbUser = new WebUser(userObject, authenticated);
+			dbUser = new WebUser(userObject);
 		} else {
 			logger.warn("Did not find user with name " + username);
-			dbUser = new WebUser(userObject, false);
+			dbUser = new WebUser(userObject);
 		}
 		return dbUser;
 	}

@@ -5,14 +5,15 @@ import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.menu.MenuServlet;
 import com.github.freeacs.web.app.page.WebPage;
+import com.github.freeacs.web.app.security.WebUser;
 import com.github.freeacs.web.app.util.Freemarker;
 import com.github.freeacs.web.app.util.SessionCache;
-import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.WebProperties;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

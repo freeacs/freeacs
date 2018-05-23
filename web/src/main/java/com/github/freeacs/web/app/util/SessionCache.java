@@ -7,6 +7,9 @@ import com.github.freeacs.dbi.SyslogEntry;
 import com.github.freeacs.dbi.SyslogFilter;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.report.*;
+import com.github.freeacs.web.app.security.LoginServlet;
+import com.github.freeacs.web.app.security.WebUser;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -126,6 +129,9 @@ public class SessionCache {
 		CacheValue cv = cache.get(key(sessionId, "sessionData"));
 		if (cv == null) {
 			SessionData sessionData = new SessionData();
+            WebUser webUser = (WebUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            sessionData.setUser(webUser);
+			sessionData.setFilteredUnittypes(LoginServlet.retrieveAllowedUnittypes(webUser));
 			cache.put(key(sessionId, "sessionData"), new CacheValue(sessionData, Cache.SESSION, Long.MAX_VALUE));
 			return sessionData;
 		}
@@ -165,19 +171,6 @@ public class SessionCache {
 			cache.remove(key(sessionId, "xapsprops"));
 		else
 			cache.put(key(sessionId, "xapsprops"), new CacheValue(props, Cache.SESSION, Long.MAX_VALUE));
-	}
-
-	/**
-	 * Gets the connection properties.
-	 *
-	 * @param sessionId the session id
-	 * @return the connection properties
-	 */
-	public static DataSource getXAPSConnectionProperties(String sessionId) {
-		CacheValue cv = cache.get(key(sessionId, "xapsprops"));
-		if (cv == null)
-			return null;
-		return (DataSource) cv.getObject();
 	}
 
 	/**
