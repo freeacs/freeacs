@@ -23,7 +23,7 @@ For systemv (aka init.d, not tested)
     sudo update-rc.d freeacs-core defaults
     sudo service freeacs-core restart
 
-tail -f /var/freeacs/core/log/core.log
+tail -f /var/freeacs/core/logs/core.log
 
 To stop the service:
     sudo systemctl stop freeacs-core
