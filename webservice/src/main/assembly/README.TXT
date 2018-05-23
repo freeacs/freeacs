@@ -23,7 +23,7 @@ For systemv (aka init.d, not tested)
     sudo update-rc.d freeacs-webservice defaults
     sudo service freeacs-webservice restart
 
-tail -f /var/freeacs/webservice/log/webservice.log
+tail -f /var/freeacs/webservice/logs/webservice.log
 
 To stop the service:
     sudo systemctl stop freeacs-webservice

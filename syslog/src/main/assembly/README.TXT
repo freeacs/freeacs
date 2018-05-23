@@ -23,7 +23,7 @@ For systemv (aka init.d, not tested)
     sudo update-rc.d freeacs-syslog defaults
     sudo service freeacs-syslog restart
 
-tail -f /var/freeacs/syslog/log/syslog.log
+tail -f /var/freeacs/syslog/logs/syslog.log
 
 To stop the service:
     sudo systemctl stop freeacs-syslog
