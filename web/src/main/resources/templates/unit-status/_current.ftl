@@ -63,7 +63,7 @@
 				<td colspan="2" align="right">&nbsp;</td>
 			</tr>
 			<tr>
-				<td colspan="2" align="right"><a href="${URL_MAP.UNIT}&unit=${info.unit.id}" onclick="xAPS.unit_dashboard.abortLineUpdates();">Go to Unit configuration</a></td>
+				<td colspan="2" align="right"><a href="${URL_MAP.UNIT}&unit=${info.unit.id}" onclick="ACS.unit_dashboard.abortLineUpdates();">Go to Unit configuration</a></td>
 			</tr>
 		</tbody></table>
 		</fieldset>
@@ -206,7 +206,7 @@
 				<td colspan="3" align="right">&nbsp;</td>
 			</tr>
 			<tr>
-				<td colspan="3" align="right"><a href="${URL_MAP.UNITSTATUS}&history=true&current=false&unit=${info.unit.id}" onclick="xAPS.unit_dashboard.abortLineUpdates(this.href);">Go to Unit history</a></td>
+				<td colspan="3" align="right"><a href="${URL_MAP.UNITSTATUS}&history=true&current=false&unit=${info.unit.id}" onclick="ACS.unit_dashboard.abortLineUpdates(this.href);">Go to Unit history</a></td>
 			</tr>
 		</tbody></table>
 		</fieldset>
@@ -236,7 +236,7 @@
 	<img src="images/spinner.gif" id="overallstatus-speedometer" alt="Status pie" /><br />
 </td>
 <script>
-    xAPS.unit.dashboard.initSettings({
+    ACS.unit.dashboard.initSettings({
        start: '${start}',
        end: '${end}',
        unitId: '${info.unit.id}',

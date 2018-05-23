@@ -27,7 +27,7 @@
 	<script>
 		jQuery(document).ready(function(){
 			$("#syslog-table").tablesorter();
-			$(xAPS.settings.titlePopupClass).tipTip();
+			$(ACS.settings.titlePopupClass).tipTip();
 		});
 	</script>
 <#else>

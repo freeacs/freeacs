@@ -9,7 +9,7 @@
  * 
  * @author Jarl Andre Hubenthal
  */
-xAPS.createModule("unit.inspection",function($this,$super,$){
+ACS.createModule("unit.inspection",function($this, $super, $){
 	/**
 	 * The configuration.
 	 */

@@ -219,7 +219,7 @@
  * 
  * @requires jQuery, window
  */
-var xAPS = (function(mainModule, $, window) {
+var ACS = (function(mainModule, $, window) {
 	/**
 	 * FOR DEBUG PURPOSES ONLY (makes it easy to look at the modules in the xAPS object in for ex FireBug)
 	 * 
@@ -800,4 +800,4 @@ var xAPS = (function(mainModule, $, window) {
 	};
 
     return mainModule;
-}(xAPS || {}, jQuery, this)); // By referencing the window object with this we are absolutely sure to get the right object
+}(ACS || {}, jQuery, this)); // By referencing the window object with this we are absolutely sure to get the right object

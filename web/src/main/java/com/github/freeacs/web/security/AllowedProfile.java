@@ -1,4 +1,4 @@
-package com.github.freeacs.web.app.security;
+package com.github.freeacs.web.security;
 
 /**
  * Always connected to an AllowedUnittype.

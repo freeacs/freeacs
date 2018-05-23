@@ -1,6 +1,6 @@
 							<script src="javascript/acs.module.unit.inspection.js"></script>
 							<script>
-								xAPS.unit.inspection.initSettings({
+								ACS.unit.inspection.initSettings({
 									unitId: '${unit.id}',
 									inspectionPageId: '${URL_MAP.INSPECTION.id}',
 									unitPageId: '${URL_MAP.UNIT.id}'

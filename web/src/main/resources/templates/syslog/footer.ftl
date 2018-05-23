@@ -23,11 +23,11 @@
 															</td>
 														</tr>
 														<script type='text/javascript'>
-															xAPS.setupFromCalendar(null,{
+															ACS.setupFromCalendar(null,{
 																field: "fromDate",
 																button: "fromDate_img"
 															});
-															xAPS.setupFromCalendar(null,{
+															ACS.setupFromCalendar(null,{
 																field: "toDate",
 																button: "toDate_img"
 															});

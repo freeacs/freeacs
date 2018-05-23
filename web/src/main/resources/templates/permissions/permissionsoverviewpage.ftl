@@ -1,5 +1,5 @@
 									<form action="${URL_MAP.PERMISSIONS}" method="post" name="form1" class="unit" accept-charset="ISO-8859-1">
-										<input type="hidden" value="permissions" name="page" />
+                                        <input type="hidden" value="permissions" name="page" />
 										<#if async??>
 										<input type="hidden" name="async" value="${async?string}" />
 										<input type="hidden" name="header" value="true" />
