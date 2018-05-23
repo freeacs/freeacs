@@ -23,7 +23,7 @@ For systemv (aka init.d, not tested)
     sudo update-rc.d freeacs-stun defaults
     sudo service freeacs-stun restart
 
-tail -f /var/freeacs/stun/log/stun.log
+tail -f /var/freeacs/stun/logs/stun.log
 
 To stop the service:
     sudo systemctl stop freeacs-stun
