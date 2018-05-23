@@ -3,18 +3,15 @@ package com.github.freeacs.web;
 import com.github.freeacs.web.app.Main;
 import com.github.freeacs.web.app.Monitor;
 import com.github.freeacs.web.app.menu.MenuServlet;
-import com.github.freeacs.web.app.security.LoginServlet;
 import com.github.freeacs.web.app.util.Freemarker;
 import com.github.freeacs.web.help.HelpServlet;
 import com.zaxxer.hikari.HikariDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -60,15 +57,7 @@ public class App {
         ServletRegistrationBean<Main> srb = new ServletRegistrationBean<>();
         srb.setServlet(new Main(mainDataSource, syslogDataSource));
         srb.setName("main");
-        srb.setUrlMappings(Collections.singletonList("/web"));
-        return srb;
-    }
-
-    @Bean
-    ServletRegistrationBean<LoginServlet> loginServlet (@Qualifier("main") DataSource mainDataSource) {
-        ServletRegistrationBean<LoginServlet> srb = new ServletRegistrationBean<LoginServlet>();
-        srb.setServlet(new LoginServlet(mainDataSource));
-        srb.setUrlMappings(Collections.singletonList("/login"));
+        srb.setUrlMappings(Collections.singletonList(Main.servletMapping));
         return srb;
     }
 
@@ -85,14 +74,6 @@ public class App {
         srb.setServlet(new MenuServlet());
         srb.setUrlMappings(Collections.singletonList("/menu"));
         return srb;
-    }
-
-    @Bean
-    FilterRegistrationBean<LoginServlet> loginFilter (@Qualifier("main") DataSource mainDataSource) {
-        FilterRegistrationBean<LoginServlet> frb = new FilterRegistrationBean<LoginServlet>();
-        frb.setFilter(new LoginServlet(mainDataSource));
-        frb.setServletNames(Collections.singletonList("main"));
-        return frb;
     }
 
     @Bean

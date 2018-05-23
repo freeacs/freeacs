@@ -13,7 +13,6 @@ import com.github.freeacs.web.app.page.heartbeat.HeartbeatsPage;
 import com.github.freeacs.web.app.page.job.JobPage;
 import com.github.freeacs.web.app.page.job.JobsPage;
 import com.github.freeacs.web.app.page.job.UnitJobPage;
-import com.github.freeacs.web.app.page.login.LoginPage;
 import com.github.freeacs.web.app.page.monitor.MonitorPage;
 import com.github.freeacs.web.app.page.permissions.PermissionsPage;
 import com.github.freeacs.web.app.page.profile.ProfileCreatePage;
@@ -110,9 +109,6 @@ public enum Page {
 	 */
 	GETVALUE("getvalue", GetUnitTypeParameterFlagAndValuesPage.class), //
 	INSPECTION("inspection", InspectionPage.class), //
-	LOGIN("login", LoginPage.class), //
-	// MONITORHISTORY("history", MonitorPage.class), // old, removed
-	//	MONITORSTATUS("status", MonitorPage.class), //
 
 	/* Top left menu pages - some are empty pages, not possible to view/click */
 	DASHBOARD_SUPPORT("support-dashboard", SupportDashboardPage.class), //
@@ -410,7 +406,6 @@ public enum Page {
 	 * @param list the liist of Page enums
 	 */
 	public static void addRequiredPages(List<Page> list) {
-		list.add(LOGIN);
 		if (list.contains(TOPMENU_ADV)) {
 			list.add(CREATETRIGGER);
 			list.add(TRIGGEROVERVIEW);

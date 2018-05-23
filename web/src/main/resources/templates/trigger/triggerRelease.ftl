@@ -123,7 +123,7 @@
 	</#if></#if>
 	<script type='text/javascript'>
 		if (document.getElementById('tms') != null) {
-			xAPS.setupFromCalendar(null,{
+			ACS.setupFromCalendar(null,{
 				field: "tms",
 				button: "fromDate_img"
 			});

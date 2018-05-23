@@ -37,11 +37,11 @@
 								<td><input type="text" id="create_timestamp" name="softwaredate" size="20" <#if fileobj??>value="${fileobj.timestamp?string("yyyy-MM-dd")}"</#if> /> <img src="images/dateIMG.jpg" id="date_create" alt="date" /></td>
 								<script type="text/javascript">
 									jQuery(document).ready(function($){
-										xAPS.setupFromCalendar(null,{
+										ACS.setupFromCalendar(null,{
 								            field: "create_timestamp",
 								            button: "date_create",
 								            showsTime: false,
-								            dateFormat: xAPS.settings.calendar.dateFormatNoTime
+								            dateFormat: ACS.settings.calendar.dateFormatNoTime
 								        });
 									});
 								</script>
