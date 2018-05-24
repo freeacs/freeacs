@@ -1,14 +1,11 @@
 package com.github.freeacs.dbi;
 
-import org.jdbi.v3.core.mapper.reflect.JdbiConstructor;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UnittypeParameterFlag {
 	private String flag;
 
-	@JdbiConstructor
 	public UnittypeParameterFlag(String flag) {
 		this.setFlag(flag);
 	}
