@@ -1,4 +1,4 @@
-package com.github.freeacs.dao;
+package com.github.freeacs.vo;
 
 import com.github.freeacs.dbi.UnittypeParameterFlag;
 

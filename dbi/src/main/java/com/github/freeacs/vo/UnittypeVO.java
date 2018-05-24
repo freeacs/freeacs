@@ -1,5 +1,6 @@
-package com.github.freeacs.dao;
-import static com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+package com.github.freeacs.vo;
+
+import com.github.freeacs.dbi.ProvisioningProtocol;
 
 public class UnittypeVO {
     private Long unitTypeId;

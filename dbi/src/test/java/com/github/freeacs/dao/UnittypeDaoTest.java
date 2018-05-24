@@ -1,6 +1,7 @@
 package com.github.freeacs.dao;
 
-import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.ProvisioningProtocol;
+import com.github.freeacs.vo.UnittypeVO;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -24,7 +25,7 @@ public class UnittypeDaoTest extends BaseDaoTest {
         checkEquals(unittype, unittypeFromDB);
 
         // When:
-        unittype.setProtocol(Unittype.ProvisioningProtocol.HTTP);
+        unittype.setProtocol(ProvisioningProtocol.HTTP);
         unittypeDao.update(unittype);
 
         // Then:
@@ -44,7 +45,7 @@ public class UnittypeDaoTest extends BaseDaoTest {
         unittype.setDescription("Description");
         unittype.setUnitTypeName("Name");
         unittype.setMatcherId("MatcherId");
-        unittype.setProtocol(Unittype.ProvisioningProtocol.TR069);
+        unittype.setProtocol(ProvisioningProtocol.TR069);
         return unittype;
     }
 

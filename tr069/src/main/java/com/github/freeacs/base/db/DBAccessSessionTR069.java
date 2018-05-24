@@ -2,7 +2,7 @@ package com.github.freeacs.base.db;
 
 import com.github.freeacs.base.Log;
 import com.github.freeacs.dbi.*;
-import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.ProvisioningProtocol;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;

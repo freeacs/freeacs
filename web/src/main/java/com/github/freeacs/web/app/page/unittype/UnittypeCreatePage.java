@@ -2,7 +2,7 @@ package com.github.freeacs.web.app.page.unittype;
 
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.ProvisioningProtocol;
 import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.UnittypeParameters;
 import com.github.freeacs.web.Page;

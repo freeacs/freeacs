@@ -1,6 +1,7 @@
 package com.github.freeacs.dao;
 
 import com.github.freeacs.dbi.UnittypeParameterFlag;
+import com.github.freeacs.vo.UnittypeParameterVO;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

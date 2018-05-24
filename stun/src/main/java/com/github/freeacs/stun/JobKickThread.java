@@ -4,7 +4,7 @@ import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.Parameter.Operator;
 import com.github.freeacs.dbi.Parameter.ParameterDataType;
-import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.ProvisioningProtocol;
 import com.github.freeacs.dbi.util.SystemParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

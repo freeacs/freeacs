@@ -3,7 +3,7 @@ package com.github.freeacs.tr069;
 import com.github.freeacs.base.*;
 import com.github.freeacs.base.db.DBAccessSession;
 import com.github.freeacs.dbi.*;
-import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.ProvisioningProtocol;
 import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.xml.ParameterAttributeStruct;

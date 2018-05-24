@@ -1,8 +1,6 @@
 package com.github.freeacs.dao;
 
-import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.UnittypeParameter;
-import com.github.freeacs.dbi.UnittypeParameterFlag;
+import com.github.freeacs.vo.UnittypeParameterVO;
 import org.jdbi.v3.sqlobject.config.*;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;

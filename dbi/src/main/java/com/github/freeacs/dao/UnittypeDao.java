@@ -1,8 +1,6 @@
 package com.github.freeacs.dao;
 
-import com.github.freeacs.dbi.Group;
-import com.github.freeacs.dbi.Unittype;
-import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
+import com.github.freeacs.vo.UnittypeVO;
 import org.jdbi.v3.sqlobject.config.RegisterColumnMapper;
 import org.jdbi.v3.sqlobject.config.RegisterFieldMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
