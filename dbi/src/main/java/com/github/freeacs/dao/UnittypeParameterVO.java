@@ -6,7 +6,7 @@ public class UnittypeParameterVO {
     private Long unitTypeId;
     private Long unitTypeParamId;
     private String name;
-    private String flags;
+    private UnittypeParameterFlag flags;
 
     public Long getUnitTypeId() {
         return unitTypeId;
@@ -32,12 +32,12 @@ public class UnittypeParameterVO {
         this.name = name;
     }
 
-    public String getFlags() {
+    public UnittypeParameterFlag getFlags() {
         return flags;
     }
 
-    public void setFlags(String flags) {
-        this.flags = new UnittypeParameterFlag(flags).getFlag();
+    public void setFlags(UnittypeParameterFlag flags) {
+        this.flags = flags;
     }
 
     public String toString() {

@@ -7,7 +7,7 @@ public class UnittypeVO {
     private String unitTypeName;
     private String vendorName;
     private String description;
-    private String protocol;
+    private ProvisioningProtocol protocol;
 
     public Long getUnitTypeId() {
         return unitTypeId;
@@ -49,12 +49,12 @@ public class UnittypeVO {
         this.description = description;
     }
 
-    public String getProtocol() {
+    public ProvisioningProtocol getProtocol() {
         return protocol;
     }
 
-    public void setProtocol(String protocol) {
-        this.protocol = ProvisioningProtocol.toEnum(protocol).name();
+    public void setProtocol(ProvisioningProtocol protocol) {
+        this.protocol = protocol;
     }
 
     public String toString() {
