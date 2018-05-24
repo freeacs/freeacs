@@ -54,5 +54,6 @@ public class UnittypeDaoTest extends BaseDaoTest {
         assertEquals(unittype.getVendorName(), unittypeFromDB.getVendorName());
         assertEquals(unittype.getUnitTypeName(), unittypeFromDB.getUnitTypeName());
         assertEquals(unittype.getUnitTypeId(), unittypeFromDB.getUnitTypeId());
+        assertEquals(unittype.getMatcherId(), unittypeFromDB.getMatcherId());
     }
 }
