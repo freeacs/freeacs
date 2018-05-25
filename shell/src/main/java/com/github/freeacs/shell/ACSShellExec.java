@@ -13,6 +13,6 @@ public class ACSShellExec {
 		ACSShellReader acsShellReader = new ACSShellReader(new InputStreamReader(System.in), reader);
 		acsShellReader.setACSShell(acsShell);
 		acsShell.setReader(acsShellReader);
-		acsShell.mainImpl(args, acsShell.getHikariDataSource("xaps"), acsShell.getHikariDataSource("syslog"));
+		acsShell.mainImpl(args, ACSShell.getHikariDataSource("main"), ACSShell.getHikariDataSource("syslog"));
 	}
 }
