@@ -7,7 +7,7 @@ Create new directory to hold service and copy jar file and config
     sudo mkdir -p /var/freeacs/tr069
     sudo cp freeacs-tr069.jar /var/freeacs/tr069
     sudo cp freeacs-tr069.conf /var/freeacs/tr069
-    sudp cp application-config.properties /var/freeacs/tr069
+    sudo cp application-config.properties /var/freeacs/tr069
     sudo chown freeacs:freeacs -R /var/freeacs/tr069
 
 For systemd (suggested)

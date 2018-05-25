@@ -7,7 +7,7 @@ Create new directory to hold service and copy jar file and config
     sudo mkdir -p /var/freeacs/webservice
     sudo cp freeacs-webservice.jar /var/freeacs/webservice
     sudo cp freeacs-webservice.conf /var/freeacs/webservice
-    sudp cp application-config.properties /var/freeacs/webservice
+    sudo cp application-config.properties /var/freeacs/webservice
     sudo chown freeacs:freeacs -R /var/freeacs/webservice
 
 For systemd (suggested)
