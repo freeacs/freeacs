@@ -7,7 +7,7 @@ Create new directory to hold service and copy jar file and config
     sudo mkdir -p /var/freeacs/stun
     sudo cp freeacs-stun.jar /var/freeacs/stun
     sudo cp freeacs-stun.conf /var/freeacs/stun
-    sudp cp application-config.properties /var/freeacs/stun
+    sudo cp application-config.properties /var/freeacs/stun
     sudo chown freeacs:freeacs -R /var/freeacs/stun
 
 For systemd (suggested)
