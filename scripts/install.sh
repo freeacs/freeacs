@@ -16,7 +16,7 @@ install_basic() {
 check_java_installation() {
   javaok='n'
   java -version 2> .tmp
-  if grep -q "OpenJDK" .tmp -o grep -q "1.7" .tmp ; then
+  if grep -q "OpenJDK" .tmp -o grep -q "1.8" .tmp ; then
     javaok='y'
   fi
   if [ $javaok = 'n' ] ; then
