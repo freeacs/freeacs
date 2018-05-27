@@ -1,0 +1,2 @@
+#!/bin/sh
+chmod +x /var/freeacs/[[artifactId]]/freeacs-[[artifactId]].jar
