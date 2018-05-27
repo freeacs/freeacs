@@ -1,2 +1,5 @@
 #!/bin/sh
 chmod +x /var/freeacs/[[artifactId]]/freeacs-[[artifactId]].jar
+if [ -f /var/freeacs/[[artifactId]]/freeacs-[[artifactId]].sh ]; then
+chmod +x /var/freeacs/[[artifactId]]/freeacs-[[artifactId]].sh
+fi
