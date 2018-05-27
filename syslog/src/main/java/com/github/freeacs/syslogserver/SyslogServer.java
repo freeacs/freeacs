@@ -71,7 +71,7 @@ public class SyslogServer implements Runnable {
 				int maxSyslogDBThreads = Properties.MAX_SYSLOGDB_THREADS;
 				List<Syslog2DB> syslog2DBList = new ArrayList<Syslog2DB>();
 				for (int i = 0; i < maxSyslogDBThreads; i++) {
-					Syslog2DB syslog2DB = new Syslog2DB(i, xapsDataSource, syslogDataSoource);
+					Syslog2DB syslog2DB = new Syslog2DB(xapsDataSource, syslogDataSoource);
 					syslog2DBList.add(syslog2DB);
 					Thread syslog2DBThread = new Thread(syslog2DB);
 					syslog2DBThread.setName("Syslog2DB-" + i);
