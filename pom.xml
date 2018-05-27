@@ -46,7 +46,7 @@
                 <configuration>
                     <dataSet>
                         <data>
-                            <src>${project.basedir}/src/main/assembly</src>
+                            <src>${project.basedir}/src/deb/files</src>
                             <type>directory</type>
                             <mapper>
                                 <type>perm</type>
