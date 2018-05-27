@@ -8,6 +8,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>webservice</artifactId>
     <name>FreeACS Webservice</name>
+    <description>A webservice for connecting to and managing a Freeacs server</description>
 
     <dependencies>
         <dependency>
@@ -105,37 +106,6 @@
                 <artifactId>jdeb</artifactId>
                 <groupId>org.vafer</groupId>
                 <version>1.6</version>
-                <configuration>
-                    <dataSet>
-                        <data>
-                            <src>${project.basedir}/src/main/assembly</src>
-                            <type>directory</type>
-                            <mapper>
-                                <type>perm</type>
-                                <user>freeacs</user>
-                                <group>freeacs</group>
-                                <prefix>/var/freeacs/${project.artifactId}</prefix>
-                            </mapper>
-                        </data>
-                        <data>
-                            <src>${project.build.directory}/${project.build.finalName}.jar</src>
-                            <dst>freeacs-${project.artifactId}.jar</dst>
-                            <type>file</type>
-                            <mapper>
-                                <type>perm</type>
-                                <user>freeacs</user>
-                                <group>freeacs</group>
-                                <prefix>/var/freeacs/${project.artifactId}</prefix>
-                            </mapper>
-                        </data>
-                        <data>
-                            <type>link</type>
-                            <symlink>true</symlink>
-                            <linkName>/etc/systemd/system/freeacs-${project.artifactId}</linkName>
-                            <linkTarget>/var/freeacs/${project.artifactId}/freeacs-${project.artifactId}.service</linkTarget>
-                        </data>
-                    </dataSet>
-                </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>
