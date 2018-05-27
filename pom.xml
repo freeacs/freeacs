@@ -45,6 +45,7 @@
                 <version>1.6</version>
                 <configuration>
                     <controlDir>src/deb/control</controlDir>
+                    <deb>[[buildDir]]/freeacs-[[artifactId]].deb</deb>
                     <dataSet>
                         <data>
                             <src>${project.basedir}/src/deb/files</src>
