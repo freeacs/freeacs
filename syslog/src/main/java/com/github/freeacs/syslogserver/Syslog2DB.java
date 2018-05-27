@@ -232,7 +232,7 @@ public class Syslog2DB implements Runnable {
 				}
 				dbi = new DBI(Integer.MAX_VALUE, xapsCp, syslog);
 			} catch (Throwable t) {
-				throw new IllegalStateException("Syslog2DB Thread could not start due to failure in initialization", t);
+				logger.error("Syslog2DB Thread could not start due to failure in initialization", t);
 			}
 		}
 	}
