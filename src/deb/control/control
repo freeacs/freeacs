@@ -1,4 +1,4 @@
-Package: [[name]]
+Package: freeacs-[[artifactId]]
 Version: [[version]]
 Section: misc
 Priority: low
