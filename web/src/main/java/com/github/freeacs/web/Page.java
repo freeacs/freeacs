@@ -33,6 +33,7 @@ import com.github.freeacs.web.app.page.unit.UnitStatusRealTimeMosPage;
 import com.github.freeacs.web.app.page.unittype.*;
 import com.github.freeacs.web.app.page.window.WindowPage;
 import org.apache.commons.lang.StringUtils;
+import org.jdbi.v3.core.Jdbi;
 
 import java.util.*;
 
@@ -130,11 +131,6 @@ public enum Page {
 	private static Map<String, Page> pageMap;
 	private String id;
 	private Class<? extends WebPage> clazz;
-	private String iconURL;
-
-	public String getIconURL() {
-		return iconURL;
-	}
 
 	public String getTitle() {
 		return getTitle(id);
@@ -181,7 +177,6 @@ public enum Page {
 
 	private Page(String id, Class<? extends WebPage> clazz, String icon) {
 		this(id, clazz);
-		this.iconURL = icon;
 	}
 
 	public static Page getById(String id) {
@@ -218,20 +213,6 @@ public enum Page {
 		return clazz;
 	}
 
-	/**
-	 * A static helper method for retrieving a list of pages that can be assigned to a users access list.
-	 *
-	 * @return a list of page ids
-	 */
-	public static List<String> getPermissiblePagesAsString() {
-		List<Page> toConvert = Arrays.asList(SEARCH, UNIT, PROFILE, UNITTYPE, GROUP, JOB, SOFTWARE, SYSLOG, REPORT, MONITOR);
-		List<String> pages = new ArrayList<String>();
-		for (Page p : toConvert) {
-			pages.add(p.getId());
-		}
-		return pages;
-	}
-
 	private static Map<String, Page> permissiblePages = new LinkedHashMap<String, Page>();
 	static {
 		permissiblePages.put("support", DASHBOARD_SUPPORT);
@@ -258,29 +239,6 @@ public enum Page {
 		return pages;
 	}
 
-	/**
-	 * A static main method to generate code necessary in xAPS DBI.
-	 * 
-	 * @param args no arguments is necessary
-	 */
-	//	public static void main(String[] args) {
-	//		Set<String> pages = getPermissiblePageMap().keySet();
-	//		StringBuffer s = new StringBuffer();
-	//		s.append("// Generated " + new Date().toString() + "\n");
-	//		s.append("public static final String[] WEB_PAGES = {");
-	//		for (String p : pages) {
-	//			if (p != null) {
-	//				s.append("\"" + p + "\"");
-	//				s.append(",");
-	//			}
-	//		}
-	//		String toClose = s.toString();
-	//		if (toClose.endsWith(","))
-	//			toClose = toClose.substring(0, toClose.length() - 1);
-	//		toClose += "};";
-	//		System.out.println(toClose);
-	//	}
-	//
 	/**
 	 * A static helper method for retrieving the parent of a given page.
 	 * This makes it easier to find the correct selected pages in the menu.

@@ -9,8 +9,8 @@
 			</tr>
 			<#list unittypes as unittype>
 			<tr>
-				<td><a href="${urltodetails}&unittype=${unittype.name}">${unittype.name}</a></td>
-				<td>${unittype.vendor!}</td>
+				<td><a href="${urltodetails}&unittype=${unittype.unitTypeName}">${unittype.unitTypeName}</a></td>
+				<td>${unittype.vendorName!}</td>
 				<td>${unittype.description!}</td>
 				<td>${unittype.protocol}</td>
 			</tr>

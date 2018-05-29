@@ -6,6 +6,7 @@ import com.github.freeacs.web.app.menu.MenuServlet;
 import com.github.freeacs.web.app.util.Freemarker;
 import com.github.freeacs.web.help.HelpServlet;
 import com.zaxxer.hikari.HikariDataSource;
+import org.jdbi.v3.core.Jdbi;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -38,6 +39,11 @@ public class App {
     }
 
     @Bean
+    public Jdbi getJdbi(@Qualifier("main") DataSource mainDataSource) {
+        return Jdbi.create(mainDataSource).installPlugins();
+    }
+
+    @Bean
     @Qualifier("syslog")
     @ConfigurationProperties("syslog.datasource")
     public DataSource syslogDs() {
@@ -55,7 +61,7 @@ public class App {
     @Bean
     ServletRegistrationBean<Main> main (@Qualifier("main") DataSource mainDataSource, @Qualifier("syslog") DataSource syslogDataSource) {
         ServletRegistrationBean<Main> srb = new ServletRegistrationBean<>();
-        srb.setServlet(new Main(mainDataSource, syslogDataSource));
+        srb.setServlet(new Main(mainDataSource, syslogDataSource, getJdbi(mainDataSource)));
         srb.setName("main");
         srb.setUrlMappings(Collections.singletonList(Main.servletMapping));
         return srb;
