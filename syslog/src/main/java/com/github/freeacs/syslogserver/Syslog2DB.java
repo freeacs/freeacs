@@ -232,23 +232,27 @@ public class Syslog2DB implements Runnable {
 				}
 				dbi = new DBI(Integer.MAX_VALUE, xapsCp, syslog);
 			} catch (Throwable t) {
-				System.err.println("Syslog2DB Thread could not start due to failure in initialization:" + t);
+				logger.error("Syslog2DB Thread could not start due to failure in initialization", t);
 			}
 		}
 	}
 
-	Syslog2DB(int index, DataSource xapsDataSource, DataSource syslogDataSource) {
+	Syslog2DB(DataSource xapsDataSource, DataSource syslogDataSource) {
 		poulateDeviceIdPatterns();
 		init(xapsDataSource, syslogDataSource);
 		populateXAPS();
 	}
 
 	private static synchronized ACS populateXAPS() {
-		return dbi.getAcs();
+		if (dbi != null) {
+			return dbi.getAcs();
+		}
+		logger.warn("Cannot popuplate ACS object because dbi instance is null");
+		return null;
 	}
 
 	public void run() {
-		while (true) {
+		while (dbi != null) {
 			try {
 				if (pause) {
 					Thread.sleep(1000);
@@ -283,7 +287,7 @@ public class Syslog2DB implements Runnable {
 				logger.error("An error occurred in Syslog2DB.run()", t2);
 			}
 		}
-
+		logger.warn("Syslog thread " + Thread.currentThread().getName() + " exited due to missing dbi instance");
 	}
 
 	private SyslogEntry processSyslogEvent(SyslogEntry entry, SyslogEvent se, Unittype unittype, Unit unit) throws SQLException {

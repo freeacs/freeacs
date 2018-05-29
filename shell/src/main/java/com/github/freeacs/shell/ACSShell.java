@@ -222,6 +222,8 @@ public class ACSShell {
 		ds.setPassword(Optional.ofNullable(System.getProperty(password)).orElseGet(() -> Properties.pr.getProperty(password)));
 		String poolSize = prefix + ".datasource.maximum-pool-size";
 		ds.setMaximumPoolSize(Integer.parseInt(Optional.ofNullable(System.getProperty(poolSize)).orElseGet(() -> Properties.pr.getProperty(poolSize))));
+		String minimumIdle = prefix + ".datasource.minimum-idle";
+		ds.setMinimumIdle(Integer.parseInt(Optional.ofNullable(System.getProperty(minimumIdle)).orElseGet(() -> Properties.pr.getProperty(minimumIdle))));
 		String poolName = prefix + ".datasource.poolName";
 		ds.setPoolName(Optional.ofNullable(System.getProperty(poolName)).orElseGet(() -> Properties.pr.getProperty(poolName)));
 		return ds;
