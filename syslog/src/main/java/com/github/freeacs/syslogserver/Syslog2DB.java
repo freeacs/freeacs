@@ -5,7 +5,7 @@ import com.github.freeacs.common.util.CacheValue;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.SyslogEvent.StorePolicy;
-import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.ProvisioningProtocol;
 import com.github.freeacs.dbi.util.SystemParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,7 +1,7 @@
 package com.github.freeacs.shell.sync;
 
 import com.github.freeacs.dbi.*;
-import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.ProvisioningProtocol;
 import com.github.freeacs.shell.Session;
 import com.github.freeacs.shell.output.OutputHandler;
 

@@ -2,7 +2,7 @@ package com.github.freeacs.stun;
 
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.*;
-import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.ProvisioningProtocol;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemConstants;
 import com.github.freeacs.dbi.util.SystemParameters;

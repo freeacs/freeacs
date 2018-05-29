@@ -10,6 +10,7 @@ import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.WebProperties;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
+import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,14 +41,17 @@ public class Main extends HttpServlet {
 
 	public static final String servletMapping = "/web";
 
+	private final Jdbi jdbi;
+
 	/** The config. */
 	private Configuration config;
 
 	private final DataSource xapsDataSource, syslogDataSource;
 
-	public Main(DataSource xapsDataSource, DataSource syslogDataSource) {
+	public Main(DataSource xapsDataSource, DataSource syslogDataSource, Jdbi jdbi) {
 		this.xapsDataSource = xapsDataSource;
 		this.syslogDataSource = syslogDataSource;
+		this.jdbi = jdbi;
 	}
 
 	/**
@@ -149,6 +153,7 @@ public class Main extends HttpServlet {
 	public void doImpl(ParameterParser params, HttpServletResponse res, String pageStr) throws IOException, TemplateException, ServletException {
 
 		WebPage page = getWebPage(pageStr);
+		page.setJdbi(jdbi);
 
 		Output outputHandler = new Output(page, params, res, config, xapsDataSource, syslogDataSource);
 

@@ -12,6 +12,7 @@ import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import org.apache.commons.lang.StringUtils;
+import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -53,7 +54,17 @@ public abstract class AbstractWebPage implements WebPage {
     public String getTitle(String page){
     	return ResourceHandler.getProperties().getString("TITLE_DESCRIPTION")+(page!=null?" | "+Page.getTitle(page):"");
     }
-	
+
+	private Jdbi jdbi;
+
+	public void setJdbi(Jdbi jdbi) {
+		this.jdbi = jdbi;
+	}
+
+	public Jdbi getJdbi() {
+		return jdbi;
+	}
+
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.WebPage#getShortcutItems(com.owera.xaps.web.app.util.SessionData)
 	 */

@@ -4,6 +4,7 @@ import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.menu.MenuItem;
 import com.github.freeacs.web.app.util.SessionData;
+import org.jdbi.v3.core.Jdbi;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -63,6 +64,8 @@ public interface WebPage {
      * @return The page title
      */
     public String getTitle(String page);
+
+    public void setJdbi(Jdbi jdbi);
     
     /**
      * Returns the contents of the page.

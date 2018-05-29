@@ -1,7 +1,7 @@
 package com.github.freeacs.shell.menu;
 
 import com.github.freeacs.dbi.*;
-import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.ProvisioningProtocol;
 import com.github.freeacs.dbi.crypto.Crypto;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.shell.Session;

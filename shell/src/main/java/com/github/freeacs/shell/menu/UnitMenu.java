@@ -1,7 +1,7 @@
 package com.github.freeacs.shell.menu;
 
 import com.github.freeacs.dbi.*;
-import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.ProvisioningProtocol;
 import com.github.freeacs.dbi.tr069.Steps;
 import com.github.freeacs.dbi.tr069.TestCase;
 import com.github.freeacs.dbi.tr069.TestCase.TestCaseMethod;

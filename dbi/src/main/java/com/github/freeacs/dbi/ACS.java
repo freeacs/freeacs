@@ -1,7 +1,6 @@
 package com.github.freeacs.dbi;
 
 import com.github.freeacs.common.util.NumberComparator;
-import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.util.ACSVersionCheck;
 import com.github.freeacs.dbi.util.MapWrapper;
 import org.slf4j.Logger;
