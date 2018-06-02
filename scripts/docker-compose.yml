@@ -1,22 +1,31 @@
 version: '3'
 services:
+  web:
+    image: web
+    ports:
+      -   8081:8081
+    networks:
+      - mynetwork
+  tr069:
+    image: tr069
+    ports:
+      -   8085:8085
+    networks:
+      - mynetwork
   db:
     build: mysql
     ports:
       - 3306:3306
     volumes:
       - mysql-db:/var/lib/mysql
-  web:
-    image: web
-    ports:
-      -   8081:8081
-    links:
-      - db
-  tr069:
-    image: tr069
-    ports:
-      -   8085:8085
-    links:
-      - db
+    networks:
+      mynetwork:
+        aliases:
+          - db.main
+          - db.syslog
 volumes:
   mysql-db:
+
+networks:
+  mynetwork:
+    driver: bridge
