@@ -1,0 +1,22 @@
+version: '3'
+services:
+  db:
+    build: mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql-db:/var/lib/mysql
+  web:
+    image: web
+    ports:
+      -   8081:8081
+    links:
+      - db
+  tr069:
+    image: tr069
+    ports:
+      -   8085:8085
+    links:
+      - db
+volumes:
+  mysql-db:
