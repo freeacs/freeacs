@@ -12,7 +12,6 @@ import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition;
 import org.springframework.xml.xsd.SimpleXsdSchema;
 import org.springframework.xml.xsd.XsdSchema;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 @EnableWs
@@ -39,7 +38,7 @@ public class WebServiceConfig extends WsConfigurerAdapter {
     }
 
     @Bean
-    ServletRegistrationBean<Monitor> monitor () {
+    public ServletRegistrationBean<Monitor> monitor () {
         ServletRegistrationBean<Monitor> srb = new ServletRegistrationBean<>();
         srb.setServlet(new Monitor());
         srb.setUrlMappings(Collections.singletonList("/ok"));
