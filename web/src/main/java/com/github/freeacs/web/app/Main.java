@@ -38,7 +38,7 @@ public class Main extends HttpServlet {
 	/** The Constant version. */
 	public static final String version = "2.2.58";
 
-	public static final String servletMapping = "/web";
+	public static final String servletMapping = "/index";
 
 	/** The config. */
 	private Configuration config;

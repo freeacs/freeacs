@@ -1,8 +1,0 @@
-Package: freeacs-[[artifactId]]
-Version: [[version]]
-Section: misc
-Priority: low
-Architecture: all
-Description: [[description]]
-Maintainer: Jarl André Hübenthal <jarl.andre@gmail.com>
-Depends: default-jre
