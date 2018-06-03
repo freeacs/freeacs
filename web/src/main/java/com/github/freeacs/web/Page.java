@@ -212,7 +212,7 @@ public enum Page {
 	 * @return the generated url string
 	 */
 	public String getUrl(String params) {
-		return Main.servletMapping.substring(1) + "?page=" + getId() + (params != null && !params.equals("") ? "&amp;" + params : "");
+		return Main.servletMapping.substring(1) + "?page=" + getId() + (params != null && !"".equals(params) ? "&amp;" + params : "");
 	}
 
 	public Class<? extends WebPage> getClazz() {

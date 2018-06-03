@@ -15,8 +15,6 @@ services:
   web:
     image: web
     restart: always
-    ports:
-      -   8081:8081
     networks:
       - mynetwork
   tr069:
