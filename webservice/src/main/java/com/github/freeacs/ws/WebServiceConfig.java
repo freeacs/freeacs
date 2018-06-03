@@ -12,6 +12,8 @@ import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition;
 import org.springframework.xml.xsd.SimpleXsdSchema;
 import org.springframework.xml.xsd.XsdSchema;
 
+import java.util.Collections;
+
 @EnableWs
 @Configuration
 public class WebServiceConfig extends WsConfigurerAdapter {
@@ -33,6 +35,14 @@ public class WebServiceConfig extends WsConfigurerAdapter {
         wsdl11Definition.setTargetNamespace(NAMESPACE_URI);
         wsdl11Definition.setSchema(countriesSchema);
         return wsdl11Definition;
+    }
+
+    @Bean
+    public ServletRegistrationBean<Monitor> monitor () {
+        ServletRegistrationBean<Monitor> srb = new ServletRegistrationBean<>();
+        srb.setServlet(new Monitor());
+        srb.setUrlMappings(Collections.singletonList("/ok"));
+        return srb;
     }
 
     @Bean

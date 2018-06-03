@@ -8,7 +8,7 @@
 	<body>
 		<center>
 			<div class="center_box" id="bodylogon">
-				<form action="/login" id="loginForm" method="post" class="unit">
+				<form action="login" id="loginForm" method="post" class="unit">
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 					<fieldset id="logondiv">
 						<legend>FreeACS</legend>
