@@ -1,4 +1,4 @@
-FROM java
+FROM java:8-jre
 MAINTAINER jarl.andre@gmail.com
 ENV MAIN_DATASOURCE_HOST=db.main
 ENV MAIN_DATASOURCE_PORT=3306
