@@ -2,6 +2,7 @@ version: '3'
 services:
   nginx:
     image: nginx:latest
+    restart: always
     ports:
       - 80:80
     volumes:
@@ -13,16 +14,19 @@ services:
       - mynetwork
   web:
     image: web
+    restart: always
     ports:
       -   8081:8081
     networks:
       - mynetwork
   tr069:
     image: tr069
+    restart: always
     networks:
       - mynetwork
   db:
     build: mysql
+    restart: always
     volumes:
       - mysql-db:/var/lib/mysql
     networks:
