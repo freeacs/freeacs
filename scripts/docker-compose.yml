@@ -17,31 +17,55 @@ services:
     restart: always
     networks:
       - mynetwork
+    environment:
+      - SPRING_CONFIG_LOCATION=/usr/share/backend/config/web/application.properties
+    volumes:
+      - ./config:/usr/share/backend/config
   tr069:
     image: tr069
     restart: always
     networks:
       - mynetwork
+    environment:
+      - SPRING_CONFIG_LOCATION=/usr/share/backend/config/tr069/application.properties
+    volumes:
+      - ./config:/usr/share/backend/config
   syslog:
     image: syslog
     restart: always
     networks:
       - mynetwork
+    environment:
+      - SPRING_CONFIG_LOCATION=/usr/share/backend/config/syslog/application.properties
+    volumes:
+      - ./config:/usr/share/backend/config
   core:
     image: core
     restart: always
     networks:
       - mynetwork
+    environment:
+      - SPRING_CONFIG_LOCATION=/usr/share/backend/config/core/application.properties
+    volumes:
+      - ./config:/usr/share/backend/config
   stun:
     image: stun
     restart: always
     networks:
       - mynetwork
+    environment:
+      - SPRING_CONFIG_LOCATION=/usr/share/backend/config/stun/application.properties
+    volumes:
+      - ./config:/usr/share/backend/config
   webservice:
     image: webservice
     restart: always
     networks:
       - mynetwork
+    environment:
+      - SPRING_CONFIG_LOCATION=/usr/share/backend/config/webservice/application.properties
+    volumes:
+      - ./config:/usr/share/backend/config
   db:
     build: mysql
     restart: always
