@@ -1,5 +1,6 @@
 FROM java:8-jre
 MAINTAINER jarl.andre@gmail.com
+LABEL maintainer=jarl.andre@gmail.com
 ENV MAIN_DATASOURCE_HOST=db.main
 ENV MAIN_DATASOURCE_PORT=3306
 ENV MAIN_DATASOURCE_DB=acs
@@ -21,5 +22,6 @@ ENTRYPOINT /usr/bin/java \
     -Dsyslog.datasource.username=$SYSLOG_DATASOURCE_USER \
     -Dsyslog.datasource.password=$SYSLOG_DATASOURCE_PASS \
     -DLOG_PATH=$LOG_PATH \
-    -jar /usr/share/backend/backend.jar --spring.config.location=$SPRING_CONFIG_LOCATION
+    -jar /usr/share/backend/backend.jar \
+    --spring.config.location=$SPRING_CONFIG_LOCATION
 COPY *.jar /usr/share/backend/backend.jar
