@@ -84,7 +84,7 @@
                 <configuration>
                     <imageName>${project.artifactId}</imageName>
                     <baseImage>java</baseImage>
-                    <entryPoint>["java", "-Dmain.datasource.jdbcUrl=jdbc:mysql://db.main:3306/acs", "-Dsyslog.datasource.jdbcUrl=jdbc:mysql://db.syslog:3306/acs", "-jar", "/${project.build.finalName}.jar"]</entryPoint>
+                    <dockerDirectory>docker</dockerDirectory>
                     <resources>
                         <resource>
                             <targetPath>/</targetPath>
