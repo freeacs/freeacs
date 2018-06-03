@@ -22,6 +22,26 @@ services:
     restart: always
     networks:
       - mynetwork
+  syslog:
+    image: syslog
+    restart: always
+    networks:
+      - mynetwork
+  core:
+    image: core
+    restart: always
+    networks:
+      - mynetwork
+  stun:
+    image: stun
+    restart: always
+    networks:
+      - mynetwork
+  webservice:
+    image: webservice
+    restart: always
+    networks:
+      - mynetwork
   db:
     build: mysql
     restart: always
