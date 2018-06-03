@@ -1,4 +1,4 @@
-FROM java:8-jre
+FROM openjdk:8-jre-alpine
 MAINTAINER jarl.andre@gmail.com
 LABEL maintainer=jarl.andre@gmail.com
 ENV MAIN_DATASOURCE_HOST=db.main
@@ -22,6 +22,8 @@ ENTRYPOINT /usr/bin/java \
     -Dsyslog.datasource.username=$SYSLOG_DATASOURCE_USER \
     -Dsyslog.datasource.password=$SYSLOG_DATASOURCE_PASS \
     -DLOG_PATH=$LOG_PATH \
+    -XX:+UnlockExperimentalVMOptions \
+    -XX:+UseCGroupMemoryLimitForHeap \
     -jar /usr/share/backend/backend.jar \
     --spring.config.location=$SPRING_CONFIG_LOCATION
 COPY *.jar /usr/share/backend/backend.jar

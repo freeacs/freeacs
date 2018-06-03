@@ -1,7 +1,8 @@
-version: '3'
+version: '2.2'
 services:
   nginx:
     image: nginx:latest
+    mem_limit: 1000000000
     restart: always
     ports:
       - 80:80
@@ -15,6 +16,7 @@ services:
   web:
     image: web
     restart: always
+    mem_limit: 2048000000
     networks:
       - mynetwork
     environment:
@@ -33,6 +35,7 @@ services:
   tr069:
     image: tr069
     restart: always
+    mem_limit: 2048000000
     networks:
       - mynetwork
     environment:
@@ -51,6 +54,7 @@ services:
   syslog:
     image: syslog
     restart: always
+    mem_limit: 2048000000
     networks:
       - mynetwork
     environment:
@@ -69,6 +73,7 @@ services:
   core:
     image: core
     restart: always
+    mem_limit: 2048000000
     networks:
       - mynetwork
     environment:
@@ -87,6 +92,7 @@ services:
   stun:
     image: stun
     restart: always
+    mem_limit: 2048000000
     networks:
       - mynetwork
     environment:
@@ -105,6 +111,7 @@ services:
   webservice:
     image: webservice
     restart: always
+    mem_limit: 2048000000
     networks:
       - mynetwork
     environment:
@@ -123,6 +130,7 @@ services:
   db:
     build: mysql
     restart: always
+    mem_limit: 1000000000
     volumes:
       - ./mysql-data:/var/lib/mysql
     networks:
