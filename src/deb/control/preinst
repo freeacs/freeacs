@@ -1,4 +1,0 @@
-#!/bin/sh
-if [ -f /var/freeacs/[[artifactId]]/application-config.properties ]; then
-mv --backup=numbered /var/freeacs/[[artifactId]]/application-config.properties /var/freeacs/[[artifactId]]/application-config.properties.original
-fi

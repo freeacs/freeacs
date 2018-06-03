@@ -7,3 +7,4 @@
 .idea
 *.iml
 *.log
+/scripts/mysql-data

@@ -1,5 +1,6 @@
 package com.github.freeacs.web;
 
+import com.github.freeacs.web.app.Main;
 import com.github.freeacs.web.app.page.SupportDashboardPage;
 import com.github.freeacs.web.app.page.WebPage;
 import com.github.freeacs.web.app.page.certificates.CryptoPage;
@@ -211,7 +212,7 @@ public enum Page {
 	 * @return the generated url string
 	 */
 	public String getUrl(String params) {
-		return "web?page=" + getId() + (params != null && params != "" ? "&amp;" + params : "");
+		return Main.servletMapping.substring(1) + "?page=" + getId() + (params != null && !"".equals(params) ? "&amp;" + params : "");
 	}
 
 	public Class<? extends WebPage> getClazz() {
