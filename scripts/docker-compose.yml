@@ -18,54 +18,108 @@ services:
     networks:
       - mynetwork
     environment:
-      - SPRING_CONFIG_LOCATION=/usr/share/backend/config/web/application.properties
+      - SPRING_CONFIG_LOCATION=/usr/share/backend/config/application.properties
+      - MAIN_DATASOURCE_HOST=db.main
+      - MAIN_DATASOURCE_DB=acs
+      - MAIN_DATASOURCE_USER=acs
+      - MAIN_DATASOURCE_PASS=acs
+      - SYSLOG_DATASOURCE_HOST=db.syslog
+      - SYSLOG_DATASOURCE_DB=acs
+      - SYSLOG_DATASOURCE_USER=acs
+      - SYSLOG_DATASOURCE_PASS=acs
+      - LOG_PATH=/usr/share/backend/config/logs
     volumes:
-      - ./config:/usr/share/backend/config
+      - ./config/web:/usr/share/backend/config
   tr069:
     image: tr069
     restart: always
     networks:
       - mynetwork
     environment:
-      - SPRING_CONFIG_LOCATION=/usr/share/backend/config/tr069/application.properties
+      - SPRING_CONFIG_LOCATION=/usr/share/backend/config/application.properties
+      - MAIN_DATASOURCE_HOST=db.main
+      - MAIN_DATASOURCE_DB=acs
+      - MAIN_DATASOURCE_USER=acs
+      - MAIN_DATASOURCE_PASS=acs
+      - SYSLOG_DATASOURCE_HOST=db.syslog
+      - SYSLOG_DATASOURCE_DB=acs
+      - SYSLOG_DATASOURCE_USER=acs
+      - SYSLOG_DATASOURCE_PASS=acs
+      - LOG_PATH=/usr/share/backend/config/logs
     volumes:
-      - ./config:/usr/share/backend/config
+      - ./config/tr069:/usr/share/backend/config
   syslog:
     image: syslog
     restart: always
     networks:
       - mynetwork
     environment:
-      - SPRING_CONFIG_LOCATION=/usr/share/backend/config/syslog/application.properties
+      - SPRING_CONFIG_LOCATION=/usr/share/backend/config/application.properties
+      - MAIN_DATASOURCE_HOST=db.main
+      - MAIN_DATASOURCE_DB=acs
+      - MAIN_DATASOURCE_USER=acs
+      - MAIN_DATASOURCE_PASS=acs
+      - SYSLOG_DATASOURCE_HOST=db.syslog
+      - SYSLOG_DATASOURCE_DB=acs
+      - SYSLOG_DATASOURCE_USER=acs
+      - SYSLOG_DATASOURCE_PASS=acs
+      - LOG_PATH=/usr/share/backend/config/logs
     volumes:
-      - ./config:/usr/share/backend/config
+      - ./config/syslog:/usr/share/backend/config
   core:
     image: core
     restart: always
     networks:
       - mynetwork
     environment:
-      - SPRING_CONFIG_LOCATION=/usr/share/backend/config/core/application.properties
+      - SPRING_CONFIG_LOCATION=/usr/share/backend/config/application.properties
+      - MAIN_DATASOURCE_HOST=db.main
+      - MAIN_DATASOURCE_DB=acs
+      - MAIN_DATASOURCE_USER=acs
+      - MAIN_DATASOURCE_PASS=acs
+      - SYSLOG_DATASOURCE_HOST=db.syslog
+      - SYSLOG_DATASOURCE_DB=acs
+      - SYSLOG_DATASOURCE_USER=acs
+      - SYSLOG_DATASOURCE_PASS=acs
+      - LOG_PATH=/usr/share/backend/config/logs
     volumes:
-      - ./config:/usr/share/backend/config
+      - ./config/core:/usr/share/backend/config
   stun:
     image: stun
     restart: always
     networks:
       - mynetwork
     environment:
-      - SPRING_CONFIG_LOCATION=/usr/share/backend/config/stun/application.properties
+      - SPRING_CONFIG_LOCATION=/usr/share/backend/config/application.properties
+      - MAIN_DATASOURCE_HOST=db.main
+      - MAIN_DATASOURCE_DB=acs
+      - MAIN_DATASOURCE_USER=acs
+      - MAIN_DATASOURCE_PASS=acs
+      - SYSLOG_DATASOURCE_HOST=db.syslog
+      - SYSLOG_DATASOURCE_DB=acs
+      - SYSLOG_DATASOURCE_USER=acs
+      - SYSLOG_DATASOURCE_PASS=acs
+      - LOG_PATH=/usr/share/backend/config/logs
     volumes:
-      - ./config:/usr/share/backend/config
+      - ./config/stun:/usr/share/backend/config
   webservice:
     image: webservice
     restart: always
     networks:
       - mynetwork
     environment:
-      - SPRING_CONFIG_LOCATION=/usr/share/backend/config/webservice/application.properties
+      - SPRING_CONFIG_LOCATION=/usr/share/backend/config/application.properties
+      - MAIN_DATASOURCE_HOST=db.main
+      - MAIN_DATASOURCE_DB=acs
+      - MAIN_DATASOURCE_USER=acs
+      - MAIN_DATASOURCE_PASS=acs
+      - SYSLOG_DATASOURCE_HOST=db.syslog
+      - SYSLOG_DATASOURCE_DB=acs
+      - SYSLOG_DATASOURCE_USER=acs
+      - SYSLOG_DATASOURCE_PASS=acs
+      - LOG_PATH=/usr/share/backend/config/logs
     volumes:
-      - ./config:/usr/share/backend/config
+      - ./config/webservice:/usr/share/backend/config
   db:
     build: mysql
     restart: always
