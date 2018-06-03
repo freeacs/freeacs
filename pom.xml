@@ -44,7 +44,8 @@
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>1.1.1</version>
                 <configuration>
-                    <imageName>${project.artifactId}</imageName>
+                    <skipDocker>true</skipDocker>
+                    <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
                     <dockerDirectory>docker</dockerDirectory>
                     <resources>
                         <resource>
