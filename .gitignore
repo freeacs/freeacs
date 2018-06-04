@@ -8,3 +8,4 @@
 *.iml
 *.log
 /scripts/mysql-data
+/project/target

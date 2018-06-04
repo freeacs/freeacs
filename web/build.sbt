@@ -1,3 +1,4 @@
+autoScalaLibrary := false
 
 resolvers += Resolver.mavenLocal
 
@@ -30,9 +31,14 @@ libraryDependencies ++= List(
   "org.springframework.boot" %  "spring-boot-starter-security" % "2.0.2.RELEASE",
   "com.zaxxer" % "HikariCP" % "3.1.0",
   "org.springframework.boot" %  "spring-boot-starter-test" % "2.0.2.RELEASE" % "test",
-  "javax.servlet" % "servlet-api" % "2.5" % "provided"
+  "junit" % "junit" % "4.12",
+  "com.novocode" % "junit-interface" % "0.11" % "test",
+  "javax.servlet" % "servlet-api" % "2.5" % "provided",
+  "org.flywaydb" % "flyway-core" % "5.0.7",
+  "com.h2database" % "h2" % "1.4.197"
 )
 
 scriptClasspath := Seq("*")
 mainClass in Compile := Some("com.github.freeacs.web.App")
 enablePlugins(JavaAppPackaging)
+testOptions += Tests.Argument(TestFrameworks.JUnit)
