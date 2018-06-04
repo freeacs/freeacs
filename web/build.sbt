@@ -39,7 +39,6 @@ libraryDependencies ++= List(
 )
 
 scriptClasspath := Seq("*")
-mainClass in Compile := Some("com.github.freeacs.web.App")
 enablePlugins(JavaAppPackaging)
 testOptions += Tests.Argument(TestFrameworks.JUnit)
 fork in Test := true
