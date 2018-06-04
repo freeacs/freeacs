@@ -3,6 +3,7 @@ autoScalaLibrary := false
 resolvers += Resolver.mavenLocal
 
 libraryDependencies ++= List(
+  "mysql" % "mysql-connector-java" % "8.0.11",
   "com.github.freeacs" %  "dbi" % "2.0.1-SNAPSHOT",
   "com.typesafe" %  "config" % "1.3.3",
   "javax.mail" %  "javax.mail-api" % "1.6.1",
@@ -10,7 +11,6 @@ libraryDependencies ++= List(
   "commons-cli" %  "commons-cli" % "1.1",
   "commons-codec" %  "commons-codec" % "1.4",
   "commons-lang" %  "commons-lang" % "2.4",
-  "commons-io" %  "commons-io" % "1.3.2",
   "commons-logging" %  "commons-logging" % "1.0.4",
   "commons-net" %  "commons-net" % "2.2",
   "commons-httpclient" %  "commons-httpclient" % "3.1",
@@ -31,14 +31,16 @@ libraryDependencies ++= List(
   "org.springframework.boot" %  "spring-boot-starter-security" % "2.0.2.RELEASE",
   "com.zaxxer" % "HikariCP" % "3.1.0",
   "org.springframework.boot" %  "spring-boot-starter-test" % "2.0.2.RELEASE" % "test",
-  "junit" % "junit" % "4.12",
-  "com.novocode" % "junit-interface" % "0.11" % "test",
   "javax.servlet" % "servlet-api" % "2.5" % "provided",
-  "org.flywaydb" % "flyway-core" % "5.0.7",
-  "com.h2database" % "h2" % "1.4.197"
+  "junit" % "junit" % "4.12" % "test",
+  "com.novocode" % "junit-interface" % "0.11" % "test",
+  "org.flywaydb" % "flyway-core" % "5.0.7" % "test",
+  "com.h2database" % "h2" % "1.4.197" % "test"
 )
 
 scriptClasspath := Seq("*")
 mainClass in Compile := Some("com.github.freeacs.web.App")
 enablePlugins(JavaAppPackaging)
 testOptions += Tests.Argument(TestFrameworks.JUnit)
+
+fork in (Test) := true

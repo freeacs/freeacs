@@ -9,3 +9,4 @@
 *.log
 /scripts/mysql-data
 /project/target
+/project/project
