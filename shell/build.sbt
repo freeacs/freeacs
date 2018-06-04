@@ -6,7 +6,6 @@ libraryDependencies ++= List(
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "org.apache.httpcomponents" % "httpclient" % "4.5.5",
   "commons-io" % "commons-io" % "1.3.2",
-  "com.github.freeacs" %  "dbi" % "2.0.1-SNAPSHOT",
   "com.zaxxer" % "HikariCP" % "3.1.0",
   "javax.servlet" % "servlet-api" % "2.5" % "provided",
   "junit" % "junit" % "4.12" % "test",

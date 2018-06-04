@@ -5,7 +5,6 @@ resolvers += Resolver.mavenLocal
 libraryDependencies ++= List(
   "org.apache.commons" % "commons-lang3" % "3.7",
   "mysql" % "mysql-connector-java" % "8.0.11",
-  "com.github.freeacs" %  "dbi" % "2.0.1-SNAPSHOT",
   "org.springframework.boot" %  "spring-boot-starter-web" % "2.0.2.RELEASE" exclude("org.springframework.boot", "spring-boot-starter-tomcat"),
   "org.springframework.boot" %  "spring-boot-starter-jetty" % "2.0.2.RELEASE",
   "org.springframework.boot" %  "spring-boot-starter-jdbc" % "2.0.2.RELEASE",

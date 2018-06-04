@@ -4,7 +4,6 @@ resolvers += Resolver.mavenLocal
 
 libraryDependencies ++= List(
   "mysql" % "mysql-connector-java" % "8.0.11",
-  "com.github.freeacs" %  "dbi" % "2.0.1-SNAPSHOT",
   "com.typesafe" %  "config" % "1.3.3",
   "javax.mail" %  "javax.mail-api" % "1.6.1",
   "commons-fileupload" %  "commons-fileupload" % "1.3",

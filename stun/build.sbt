@@ -5,7 +5,6 @@ resolvers += Resolver.mavenLocal
 libraryDependencies ++= List(
   "org.apache.httpcomponents" % "httpclient" % "4.5.5",
   "commons-io" % "commons-io" % "1.3.2",
-  "com.github.freeacs" %  "dbi" % "2.0.1-SNAPSHOT",
   "org.springframework.boot" %  "spring-boot-starter-web" % "2.0.2.RELEASE",
   "org.springframework.boot" %  "spring-boot-starter-jdbc" % "2.0.2.RELEASE",
   "org.springframework.boot" %  "spring-boot-starter-actuator" % "2.0.2.RELEASE",
