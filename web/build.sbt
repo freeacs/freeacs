@@ -29,6 +29,7 @@ libraryDependencies ++= List(
   "org.springframework.boot" %  "spring-boot-starter-web" % "2.0.2.RELEASE",
   "org.springframework.boot" %  "spring-boot-starter-actuator" % "2.0.2.RELEASE",
   "org.springframework.boot" %  "spring-boot-starter-security" % "2.0.2.RELEASE",
+  "org.springframework.boot" %  "spring-boot-starter-jdbc" % "2.0.2.RELEASE",
   "com.zaxxer" % "HikariCP" % "3.1.0",
   "org.springframework.boot" %  "spring-boot-starter-test" % "2.0.2.RELEASE" % "test",
   "javax.servlet" % "servlet-api" % "2.5" % "provided",
