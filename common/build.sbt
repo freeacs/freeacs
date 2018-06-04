@@ -10,7 +10,5 @@ libraryDependencies ++= List(
   "mysql" % "mysql-connector-java" % "8.0.11"
 )
 
-scriptClasspath := Seq("*")
-enablePlugins(JavaAppPackaging)
 testOptions += Tests.Argument(TestFrameworks.JUnit)
 fork in Test := true

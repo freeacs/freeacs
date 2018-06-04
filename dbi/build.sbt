@@ -11,7 +11,5 @@ libraryDependencies ++= List(
   "org.jfree" %  "jfreechart" % "1.0.17"
 )
 
-scriptClasspath := Seq("*")
-enablePlugins(JavaAppPackaging)
 testOptions += Tests.Argument(TestFrameworks.JUnit)
 fork in Test := true
