@@ -1,3 +1,13 @@
+name := "FreeACS Stun"
+
+version := "2.0.1-SNAPSHOT"
+
+maintainer := "Jarl Andre Hubenthal <jarl.andre@gmail.com>"
+
+packageSummary := "FreeACS Stun"
+
+packageDescription := "FreeACS Stun"
+
 autoScalaLibrary := false
 
 resolvers += Resolver.mavenLocal
@@ -14,10 +24,12 @@ libraryDependencies ++= List(
   "com.h2database" % "h2" % "1.4.197" % "test",
   "mysql" % "mysql-connector-java" % "8.0.11",
   "jline" % "jline" % "0.9.5",
-  "dom4j" % "dom4j" % "1.6.1"
+  "dom4j" % "dom4j" % "1.6.1",
+  "org.vafer" % "jdeb" % "1.3" artifacts Artifact("jdeb", "jar", "jar")
 )
 
 scriptClasspath := Seq("*")
 enablePlugins(JavaAppPackaging)
+enablePlugins(JDebPackaging)
 testOptions += Tests.Argument(TestFrameworks.JUnit)
 fork in Test := true

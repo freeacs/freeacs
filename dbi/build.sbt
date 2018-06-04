@@ -1,3 +1,11 @@
+name := "FreeACS Dbi"
+
+normalizedName := "freeacs-dbi"
+
+version := "2.0.1-SNAPSHOT"
+
+maintainer := "Jarl Andre Hubenthal <jarl.andre@gmail.com>"
+
 autoScalaLibrary := false
 
 resolvers += Resolver.mavenLocal

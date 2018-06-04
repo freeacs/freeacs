@@ -1,3 +1,15 @@
+name := "FreeACS Webservice"
+
+normalizedName := "freeacs-webservice"
+
+version := "2.0.1-SNAPSHOT"
+
+maintainer := "Jarl Andre Hubenthal <jarl.andre@gmail.com>"
+
+packageSummary := "FreeACS Webservice"
+
+packageDescription := "FreeACS Webservice"
+
 xjcCommandLine += "-verbose"
 
 autoScalaLibrary := false
@@ -16,10 +28,12 @@ libraryDependencies ++= List(
   "junit" % "junit" % "4.12" % "test",
   "com.novocode" % "junit-interface" % "0.11" % "test",
   "org.flywaydb" % "flyway-core" % "5.0.7" % "test",
-  "com.h2database" % "h2" % "1.4.197" % "test"
+  "com.h2database" % "h2" % "1.4.197" % "test",
+  "org.vafer" % "jdeb" % "1.3" artifacts Artifact("jdeb", "jar", "jar")
 )
 
 scriptClasspath := Seq("*")
 enablePlugins(JavaAppPackaging)
+enablePlugins(JDebPackaging)
 testOptions += Tests.Argument(TestFrameworks.JUnit)
 fork in Test := true

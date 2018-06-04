@@ -1,3 +1,15 @@
+name := "FreeACS Core"
+
+normalizedName := "freeacs-core"
+
+version := "2.0.1-SNAPSHOT"
+
+maintainer := "Jarl Andre Hubenthal <jarl.andre@gmail.com>"
+
+packageSummary := "FreeACS Core"
+
+packageDescription := "FreeACS Core"
+
 autoScalaLibrary := false
 
 resolvers += Resolver.mavenLocal
@@ -15,10 +27,12 @@ libraryDependencies ++= List(
   "com.novocode" % "junit-interface" % "0.11" % "test",
   "org.flywaydb" % "flyway-core" % "5.0.7" % "test",
   "com.h2database" % "h2" % "1.4.197" % "test",
-  "mysql" % "mysql-connector-java" % "8.0.11"
+  "mysql" % "mysql-connector-java" % "8.0.11",
+  "org.vafer" % "jdeb" % "1.3" artifacts Artifact("jdeb", "jar", "jar")
 )
 
 scriptClasspath := Seq("*")
 enablePlugins(JavaAppPackaging)
+enablePlugins(JDebPackaging)
 testOptions += Tests.Argument(TestFrameworks.JUnit)
 fork in Test := true
