@@ -1,5 +1,6 @@
 package com.github.freeacs.web.app.page;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.freeacs.common.util.NaturalComparator;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.web.Page;
@@ -34,6 +35,15 @@ import java.util.regex.Pattern;
  *
  */
 public abstract class AbstractWebPage implements WebPage {
+
+	public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+	protected class ValueHolder {
+		public String value;
+		public ValueHolder(String value) {
+			this.value = value;
+		}
+	}
 	
 	/** The page processed. */
 	private boolean pageProcessed = false;

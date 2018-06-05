@@ -1,5 +1,6 @@
 package com.github.freeacs.web.app.page.unittype;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.Output;
@@ -10,9 +11,6 @@ import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.StackTraceFormatter;
 import com.github.freeacs.web.app.util.WebConstants;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,21 +58,20 @@ public class UnittypeParametersPage extends AbstractWebPage {
 	public @ResponseBody String getUnittypeParameters(
 			@RequestParam(required=true) String unittype,
 			@RequestParam(required=true) String term,
-			HttpSession session) throws SQLException, JSONException{
+			HttpSession session) throws SQLException, JsonProcessingException {
 		ACS acs = ACSLoader.getXAPS(session.getId(), mainDataSource, syslogDataSource);
 		List<Unittype> allowedUnittypes = Arrays.asList(acs.getUnittypes().getUnittypes());
 		Unittype unittypeFromRequest = acs.getUnittype(unittype);
 		if(allowedUnittypes.contains(unittypeFromRequest)){
 			UnittypeParameter[] utpArr = unittypeFromRequest.getUnittypeParameters().getUnittypeParameters();
-			JSONArray json = new JSONArray();
+			List<ValueHolder> values = new ArrayList<>();
 			for(UnittypeParameter utp: utpArr){
 				if(utp.getName().toLowerCase().contains(term.toLowerCase())){
-					JSONObject param = new JSONObject();
-					param.put("value", utp.getName());
-					json.put(param);
+					ValueHolder param = new ValueHolder(utp.getName());
+					values.add(param);
 				}
 			}
-			return json.toString();
+			return OBJECT_MAPPER.writeValueAsString(values);
 		}
 		return null;
 	}
