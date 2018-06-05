@@ -27,8 +27,21 @@ lazy val web = (project in file("web"))
   .dependsOn(dbi)
 lazy val webservice = (project in file("webservice"))
   .settings(
-    commonSettings
+    commonSettings,
+    name := "FreeACS Webservice",
+    normalizedName := "freeacs-webservice",
+    packageSummary := "FreeACS Webservice",
+    packageDescription := "FreeACS Webservice",
+    xjcCommandLine += "-verbose",
+    scriptClasspath := Seq("*"),
+    libraryDependencies ++= Dependencies.springBoot
+      ++ Seq(Dependencies.springBootWebservices)
+      ++ Dependencies.database
+      ++ Dependencies.testing
+      ++ Seq(Dependencies.jdeb)
+      ++ Seq("wsdl4j" % "wsdl4j" % "1.6.3")
   )
+  .enablePlugins(JavaAppPackaging, JDebPackaging)
   .dependsOn(dbi)
 lazy val tr069 = (project in file("tr069"))
   .settings(
