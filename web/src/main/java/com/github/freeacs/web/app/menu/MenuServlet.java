@@ -2,6 +2,7 @@ package com.github.freeacs.web.app.menu;
 
 import com.github.freeacs.dbi.Users;
 import com.github.freeacs.web.Page;
+import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.page.report.ReportType;
 import com.github.freeacs.web.app.util.Freemarker;
 import com.github.freeacs.web.app.util.SessionCache;
@@ -71,9 +72,8 @@ public class MenuServlet extends HttpServlet {
 			type = "html";
 		try {
 			if (type.equals("json")) {
-				flexjson.JSONSerializer serializer = new flexjson.JSONSerializer();
 				List<MenuItem> mainMenu = getMainMenu(req);
-				String json = serializer.deepSerialize(mainMenu);
+				String json = AbstractWebPage.OBJECT_MAPPER.writeValueAsString(mainMenu);
 				res.setContentType("application/json");
 				res.getWriter().println(json);
 				res.getWriter().close();
