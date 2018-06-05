@@ -1,8 +1,8 @@
 package com.github.freeacs.web.app.menu;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.freeacs.dbi.Users;
 import com.github.freeacs.web.Page;
-import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.page.report.ReportType;
 import com.github.freeacs.web.app.util.Freemarker;
 import com.github.freeacs.web.app.util.SessionCache;
@@ -23,8 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//import com.thoughtworks.xstream.XStream;
-
 /**
  * A menu servlet that generates different types of response based a type parameter.
  * 
@@ -32,6 +30,7 @@ import java.util.Map;
  *
  */
 public class MenuServlet extends HttpServlet {
+	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -1057185634997595190L;
@@ -73,7 +72,7 @@ public class MenuServlet extends HttpServlet {
 		try {
 			if (type.equals("json")) {
 				List<MenuItem> mainMenu = getMainMenu(req);
-				String json = AbstractWebPage.OBJECT_MAPPER.writeValueAsString(mainMenu);
+				String json = OBJECT_MAPPER.writeValueAsString(mainMenu);
 				res.setContentType("application/json");
 				res.getWriter().println(json);
 				res.getWriter().close();
