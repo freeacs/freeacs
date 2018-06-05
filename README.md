@@ -19,10 +19,10 @@ Freeacs requires Java and MySQL. It has been tested to work on Java 8 and latest
 
 ## Builds
 
-Freeacs is built with Maven:
+Freeacs is built with SBT:
 
 ```bash
-$ mvn clean install
+$ sbt clean compile test
 ```
 
 ## Contributing

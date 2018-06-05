@@ -1,0 +1,140 @@
+version: '2.2'
+services:
+  nginx:
+    image: nginx:latest
+    mem_limit: 1000000000
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - mynetwork
+  web:
+    image: freeacs/web
+    restart: always
+    mem_limit: 2048000000
+    networks:
+      - mynetwork
+    environment:
+      - SPRING_CONFIG_LOCATION=/usr/share/backend/data/application.properties
+      - MAIN_DATASOURCE_HOST=db.main
+      - MAIN_DATASOURCE_DB=acs
+      - MAIN_DATASOURCE_USER=acs
+      - MAIN_DATASOURCE_PASS=acs
+      - SYSLOG_DATASOURCE_HOST=db.syslog
+      - SYSLOG_DATASOURCE_DB=acs
+      - SYSLOG_DATASOURCE_USER=acs
+      - SYSLOG_DATASOURCE_PASS=acs
+      - LOG_PATH=/usr/share/backend/data/logs
+    volumes:
+      - ./data/web:/usr/share/backend/data
+  tr069:
+    image: freeacs/tr069
+    restart: always
+    mem_limit: 2048000000
+    networks:
+      - mynetwork
+    environment:
+      - SPRING_CONFIG_LOCATION=/usr/share/backend/data/application.properties
+      - MAIN_DATASOURCE_HOST=db.main
+      - MAIN_DATASOURCE_DB=acs
+      - MAIN_DATASOURCE_USER=acs
+      - MAIN_DATASOURCE_PASS=acs
+      - SYSLOG_DATASOURCE_HOST=db.syslog
+      - SYSLOG_DATASOURCE_DB=acs
+      - SYSLOG_DATASOURCE_USER=acs
+      - SYSLOG_DATASOURCE_PASS=acs
+      - LOG_PATH=/usr/share/backend/data/logs
+    volumes:
+      - ./data/tr069:/usr/share/backend/data
+  syslog:
+    image: freeacs/syslog
+    restart: always
+    mem_limit: 2048000000
+    networks:
+      - mynetwork
+    environment:
+      - SPRING_CONFIG_LOCATION=/usr/share/backend/data/application.properties
+      - MAIN_DATASOURCE_HOST=db.main
+      - MAIN_DATASOURCE_DB=acs
+      - MAIN_DATASOURCE_USER=acs
+      - MAIN_DATASOURCE_PASS=acs
+      - SYSLOG_DATASOURCE_HOST=db.syslog
+      - SYSLOG_DATASOURCE_DB=acs
+      - SYSLOG_DATASOURCE_USER=acs
+      - SYSLOG_DATASOURCE_PASS=acs
+      - LOG_PATH=/usr/share/backend/data/logs
+    volumes:
+      - ./data/syslog:/usr/share/backend/data
+  core:
+    image: freeacs/core
+    restart: always
+    mem_limit: 2048000000
+    networks:
+      - mynetwork
+    environment:
+      - SPRING_CONFIG_LOCATION=/usr/share/backend/data/application.properties
+      - MAIN_DATASOURCE_HOST=db.main
+      - MAIN_DATASOURCE_DB=acs
+      - MAIN_DATASOURCE_USER=acs
+      - MAIN_DATASOURCE_PASS=acs
+      - SYSLOG_DATASOURCE_HOST=db.syslog
+      - SYSLOG_DATASOURCE_DB=acs
+      - SYSLOG_DATASOURCE_USER=acs
+      - SYSLOG_DATASOURCE_PASS=acs
+      - LOG_PATH=/usr/share/backend/data/logs
+    volumes:
+      - ./data/core:/usr/share/backend/data
+  stun:
+    image: freeacs/stun
+    restart: always
+    mem_limit: 2048000000
+    networks:
+      - mynetwork
+    environment:
+      - SPRING_CONFIG_LOCATION=/usr/share/backend/data/application.properties
+      - MAIN_DATASOURCE_HOST=db.main
+      - MAIN_DATASOURCE_DB=acs
+      - MAIN_DATASOURCE_USER=acs
+      - MAIN_DATASOURCE_PASS=acs
+      - SYSLOG_DATASOURCE_HOST=db.syslog
+      - SYSLOG_DATASOURCE_DB=acs
+      - SYSLOG_DATASOURCE_USER=acs
+      - SYSLOG_DATASOURCE_PASS=acs
+      - LOG_PATH=/usr/share/backend/data/logs
+    volumes:
+      - ./data/stun:/usr/share/backend/data
+  webservice:
+    image: freeacs/webservice
+    restart: always
+    mem_limit: 2048000000
+    networks:
+      - mynetwork
+    environment:
+      - SPRING_CONFIG_LOCATION=/usr/share/backend/data/application.properties
+      - MAIN_DATASOURCE_HOST=db.main
+      - MAIN_DATASOURCE_DB=acs
+      - MAIN_DATASOURCE_USER=acs
+      - MAIN_DATASOURCE_PASS=acs
+      - SYSLOG_DATASOURCE_HOST=db.syslog
+      - SYSLOG_DATASOURCE_DB=acs
+      - SYSLOG_DATASOURCE_USER=acs
+      - SYSLOG_DATASOURCE_PASS=acs
+      - LOG_PATH=/usr/share/backend/data/logs
+    volumes:
+      - ./data/webservice:/usr/share/backend/data
+  db:
+    build: mysql
+    restart: always
+    mem_limit: 1000000000
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    networks:
+      mynetwork:
+        aliases:
+          - db.main
+          - db.syslog
+networks:
+  mynetwork:
+    driver: bridge

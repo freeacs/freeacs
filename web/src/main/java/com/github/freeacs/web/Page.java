@@ -1,5 +1,6 @@
 package com.github.freeacs.web;
 
+import com.github.freeacs.web.app.Main;
 import com.github.freeacs.web.app.page.SupportDashboardPage;
 import com.github.freeacs.web.app.page.WebPage;
 import com.github.freeacs.web.app.page.certificates.CryptoPage;
@@ -211,7 +212,7 @@ public enum Page {
 	 * @return the generated url string
 	 */
 	public String getUrl(String params) {
-		return "web?page=" + getId() + (params != null && params != "" ? "&amp;" + params : "");
+		return Main.servletMapping.substring(1) + "?page=" + getId() + (params != null && !"".equals(params) ? "&amp;" + params : "");
 	}
 
 	public Class<? extends WebPage> getClazz() {
@@ -258,29 +259,6 @@ public enum Page {
 		return pages;
 	}
 
-	/**
-	 * A static main method to generate code necessary in xAPS DBI.
-	 * 
-	 * @param args no arguments is necessary
-	 */
-	//	public static void main(String[] args) {
-	//		Set<String> pages = getPermissiblePageMap().keySet();
-	//		StringBuffer s = new StringBuffer();
-	//		s.append("// Generated " + new Date().toString() + "\n");
-	//		s.append("public static final String[] WEB_PAGES = {");
-	//		for (String p : pages) {
-	//			if (p != null) {
-	//				s.append("\"" + p + "\"");
-	//				s.append(",");
-	//			}
-	//		}
-	//		String toClose = s.toString();
-	//		if (toClose.endsWith(","))
-	//			toClose = toClose.substring(0, toClose.length() - 1);
-	//		toClose += "};";
-	//		System.out.println(toClose);
-	//	}
-	//
 	/**
 	 * A static helper method for retrieving the parent of a given page.
 	 * This makes it easier to find the correct selected pages in the menu.
