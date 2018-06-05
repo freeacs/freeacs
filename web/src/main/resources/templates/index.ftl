@@ -39,7 +39,7 @@
 			function timerIncrement() {
     			idleTime = idleTime + 1;
     			if (idleTime > idleMax) { 
-        			window.location="web?page=login&logoff=true"; // redirect to login page
+        			window.location="index?page=login&logoff=true"; // redirect to login page
     			}
 			}
 		</script>
