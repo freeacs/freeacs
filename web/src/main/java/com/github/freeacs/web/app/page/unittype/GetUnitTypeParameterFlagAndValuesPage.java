@@ -7,7 +7,6 @@ import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.ACSLoader;
-import org.json.JSONObject;
 
 import javax.sql.DataSource;
 
@@ -19,6 +18,15 @@ import javax.sql.DataSource;
  * @author Jarl Andre Hubenthal
  */
 public class GetUnitTypeParameterFlagAndValuesPage extends AbstractWebPage {
+
+	protected class FlagsHolder {
+		public Boolean hasValues;
+		public String flag;
+		public FlagsHolder(Boolean hasValues, String flag) {
+			this.hasValues = hasValues;
+			this.flag = flag;
+		}
+	}
 
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
@@ -35,12 +43,10 @@ public class GetUnitTypeParameterFlagAndValuesPage extends AbstractWebPage {
 				if(ut!=null){
 					UnittypeParameter utp = ut.getUnittypeParameters().getByName(name);
 					String flag = utp.getFlag().getFlag();
-					boolean hasValues = (utp.getValues()!=null&&utp.getValues().getValues().size()>0?true:false);
+					boolean hasValues = (utp.getValues() != null && utp.getValues().getValues().size() > 0);
 					if(flag!=null){
-						JSONObject toReturn = new JSONObject();
-						toReturn.put("hasValues", hasValues);
-						toReturn.put("flags", flag);
-						res.setDirectResponse(toReturn.toString());
+						FlagsHolder toReturn = new FlagsHolder(hasValues, flag);
+						res.setDirectResponse(OBJECT_MAPPER.writeValueAsString(toReturn));
 					}
 				}else
 					res.setDirectResponse("err: flag was not found");

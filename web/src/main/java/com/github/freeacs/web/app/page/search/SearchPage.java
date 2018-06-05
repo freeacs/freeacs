@@ -9,8 +9,6 @@ import com.github.freeacs.web.app.input.*;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.WebConstants;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import javax.sql.DataSource;
 import java.util.*;
@@ -35,7 +33,7 @@ public class SearchPage extends AbstractWebPage {
 
 	/** The group. */
 	private Group group;
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -125,15 +123,14 @@ public class SearchPage extends AbstractWebPage {
 			inputData.getUnitParamValue().setValue(params.getParameter("term"));
 			List<Unit> result = getSearchResults(limit, unittypes.getSelected(), profiles.getSelected(), params, xapsDataSource, syslogDataSource);
 			String out = null;
-			JSONArray json = new JSONArray();
+			List<ValueHolder> values = new ArrayList<>();
 			if (result != null && result.size() > 0) {
 				for (Unit u : result) {
-					JSONObject j = new JSONObject();
-					j.put("value", u.getId());
-					json.put(j);
+					ValueHolder j = new ValueHolder(u.getId());
+					values.add(j);
 				}
 			}
-			out = json.toString();
+			out = OBJECT_MAPPER.writeValueAsString(values);
 			outputHandler.setDirectResponse(out);
 			return;
 		} else {
