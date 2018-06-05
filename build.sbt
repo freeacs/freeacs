@@ -5,6 +5,7 @@ lazy val commonSettings = Seq(
   maintainer in Docker := "Jarl Andre Hubenthal <jarl.andre@gmail.com>",
   dockerRepository := Some("freeacs"),
   dockerUpdateLatest := true,
+  dockerExposedPorts := Seq(8080, 8080),
   organization := "com.github.freeacs",
   version := "2.0.1-SNAPSHOT",
   scalaVersion := "2.12.6",
