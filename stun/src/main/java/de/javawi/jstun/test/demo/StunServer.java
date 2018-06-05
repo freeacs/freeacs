@@ -334,32 +334,6 @@ public class StunServer {
 		}
 	}
 
-	/*
-	 * To invoke the STUN server two IP addresses and two ports are required.
-	 */
-	/*
-	 * To invoke the STUN server two IP addresses and two ports are required.
-	 */
-	public static void main(String args[]) {
-		try {
-			if (args.length != 4) {
-				System.out.println("usage: java de.javawi.jstun.test.demo.StunServer PORT1 IP1 PORT2 IP2");
-				System.out.println();
-				System.out.println(" PORT1 - the first port that should be used by the server");
-				System.out.println("   IP1 - the first ip address that should be used by the server");
-				System.out.println(" PORT2 - the second port that should be used by the server");
-				System.out.println("   IP2 - the second ip address that should be used by the server");
-				System.exit(0);
-			}
-			StunServer ss = new StunServer(Integer.parseInt(args[0]), InetAddress.getByName(args[1]), Integer.parseInt(args[2]), InetAddress.getByName(args[3]));
-			ss.start();
-		} catch (SocketException se) {
-			se.printStackTrace();
-		} catch (UnknownHostException uhe) {
-			uhe.printStackTrace();
-		}
-	}
-
 	public static boolean isStarted() {
 		return started;
 	}
