@@ -1,3 +1,6 @@
-language: java
+language: scala
 sudo: false
-script: mvn clean verify
+scala:
+   - 2.12.2
+script:
+   - sbt clean compile test

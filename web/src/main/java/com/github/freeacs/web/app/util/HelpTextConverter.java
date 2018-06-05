@@ -63,15 +63,6 @@ public class HelpTextConverter extends JFrame implements ActionListener,WindowLi
 		clipboard.setContents(data, data);
 		JOptionPane.showMessageDialog(this, "The text is now in the clipboard");
 	}
-	
-	/**
-	 * The main method.
-	 *
-	 * @param args the arguments
-	 */
-	public static void main(String[] args){
-		new HelpTextConverter();
-	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.WindowListener#windowActivated(java.awt.event.WindowEvent)

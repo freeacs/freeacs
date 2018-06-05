@@ -40,14 +40,6 @@ public class HistoryElement {
 	private String fileVersion;
 	private String errorMessage;
 
-	public static void main(String[] args) {
-		new HistoryElement(new Date(), "ProvMsg: PP:TR069, ST:OK, PO:CONFIG, SL:1791, PR:73, PW:4, PI:117320, EV:2, PM:REGULAR");
-		new HistoryElement(new Date(), "ProvMsg: PP:TR069, ST:OK, PO:CONFIG, SL:1791, PR:73, PW:4, PI:117320, JO:5, EV:2, PM:REGULAR");
-		new HistoryElement(new Date(), "ProvMsg: PP:TR069, ST:OK, PO:CONFIG, SL:1791, PR:73, PW:4, PI:117320, JO:5, EV:2, PM:REGULAR, EM:Helvete");
-		HistoryElement he = new HistoryElement(new Date(), "ProvMsg: PP:TR069, ST:OK, PO:CONFIG, SL:1791, PR:73, PW:4, PI:117320, JO:5, EV:2, PM:REGULAR, FV:1.0.1, EM:Helvete");
-		System.out.println(he);
-	}
-
 	public HistoryElement(Date timestamp, String syslogMessage) {
 
 		//Black magic below.
