@@ -2,6 +2,9 @@ import sbt.Keys.fork
 
 lazy val commonSettings = Seq(
   maintainer := "Jarl Andre Hubenthal <jarl.andre@gmail.com>",
+  maintainer in Docker := "Jarl Andre Hubenthal <jarl.andre@gmail.com>",
+  dockerRepository := Some("freeacs"),
+  dockerUpdateLatest := true,
   organization := "com.github.freeacs",
   version := "2.0.1-SNAPSHOT",
   scalaVersion := "2.12.6",
@@ -22,6 +25,7 @@ lazy val common = (project in file("common"))
     commonSettings,
     name := "FreeACS Common",
     normalizedName := "freeacs-common",
+    publish := {},
     libraryDependencies ++= Dependencies.database
       ++ Dependencies.testing
       ++ List(
@@ -35,11 +39,12 @@ lazy val dbi = (project in file("dbi"))
     commonSettings,
     name := "FreeACS Dbi",
     normalizedName := "freeacs-dbi",
+    publish := {},
     libraryDependencies ++= Dependencies.database
       ++ Dependencies.testing
       ++ List(
-      "org.jfree" %  "jcommon" % "1.0.17",
-      "org.jfree" %  "jfreechart" % "1.0.17"
+      "org.jfree" % "jcommon" % "1.0.17",
+      "org.jfree" % "jfreechart" % "1.0.17"
     )
   )
   .dependsOn(common)
@@ -52,6 +57,7 @@ lazy val web = (project in file("web"))
     packageSummary := "FreeACS Web",
     packageDescription := "FreeACS Web",
     scriptClasspath := Seq("*"),
+    packageName in Docker := "web",
     libraryDependencies ++= Dependencies.springBoot
       ++ Seq(Dependencies.springBootWebservices)
       ++ Dependencies.database
@@ -80,6 +86,7 @@ lazy val webservice = (project in file("webservice"))
     packageDescription := "FreeACS Webservice",
     xjcCommandLine += "-verbose",
     scriptClasspath := Seq("*"),
+    packageName in Docker := "webservice",
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
@@ -98,6 +105,7 @@ lazy val tr069 = (project in file("tr069"))
     packageSummary := "FreeACS Tr069",
     packageDescription := "FreeACS Tr069",
     scriptClasspath := Seq("*"),
+    packageName in Docker := "tr069",
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
@@ -115,6 +123,7 @@ lazy val syslog = (project in file("syslog"))
     packageSummary := "FreeACS Syslog",
     packageDescription := "FreeACS Syslog",
     scriptClasspath := Seq("*"),
+    packageName in Docker := "syslog",
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
@@ -132,6 +141,7 @@ lazy val stun = (project in file("stun"))
     packageSummary := "FreeACS Stun",
     packageDescription := "FreeACS Stun",
     scriptClasspath := Seq("*"),
+    packageName in Docker := "stun",
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
@@ -152,6 +162,7 @@ lazy val shell = (project in file("shell"))
     packageSummary := "FreeACS Shell",
     packageDescription := "FreeACS Shell",
     scriptClasspath := Seq("*"),
+    packageName in Docker := "shell",
     libraryDependencies ++= Dependencies.database
       ++ Dependencies.testing
       ++ Seq(Dependencies.jdeb)
@@ -173,6 +184,7 @@ lazy val core = (project in file("core"))
     packageSummary := "FreeACS Core",
     packageDescription := "FreeACS Core",
     scriptClasspath := Seq("*"),
+    packageName in Docker := "core",
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
@@ -185,5 +197,5 @@ lazy val core = (project in file("core"))
   .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
   .dependsOn(shell)
 
-lazy val root = (project in file("."))
+lazy val root = (project in file(".") settings (publish := {}))
   .aggregate(common, dbi, web, webservice, tr069, syslog, stun, shell, core)
