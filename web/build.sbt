@@ -47,4 +47,3 @@ libraryDependencies ++= List(
 scriptClasspath := Seq("*")
 enablePlugins(JavaAppPackaging)
 enablePlugins(JDebPackaging)
-linuxPackageMappings in Debian := linuxPackageMappings.value
