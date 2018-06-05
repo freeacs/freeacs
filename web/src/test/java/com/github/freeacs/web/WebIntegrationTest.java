@@ -5,6 +5,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -20,7 +23,8 @@ public class WebIntegrationTest {
 
     @Test
     public void testStatusPage() {
-        String body = this.restTemplate.getForObject("/web", String.class);
-        assertThat(body).contains("FreeACS Web | login");
+        ResponseEntity<String> body = this.restTemplate.exchange("/web", HttpMethod.GET, null, String.class);
+        assertThat(body.getStatusCode().value()).isEqualTo(HttpStatus.MOVED_TEMPORARILY.value());
+        assertThat(body.getHeaders().getFirst("Location")).endsWith("/web/login");
     }
 }
