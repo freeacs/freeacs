@@ -2,19 +2,11 @@ name := "FreeACS Webservice"
 
 normalizedName := "freeacs-webservice"
 
-version := "2.0.1-SNAPSHOT"
-
-maintainer := "Jarl Andre Hubenthal <jarl.andre@gmail.com>"
-
 packageSummary := "FreeACS Webservice"
 
 packageDescription := "FreeACS Webservice"
 
 xjcCommandLine += "-verbose"
-
-autoScalaLibrary := false
-
-resolvers += Resolver.mavenLocal
 
 libraryDependencies ++= List(
   "mysql" % "mysql-connector-java" % "8.0.11",
@@ -35,5 +27,3 @@ libraryDependencies ++= List(
 scriptClasspath := Seq("*")
 enablePlugins(JavaAppPackaging)
 enablePlugins(JDebPackaging)
-testOptions += Tests.Argument(TestFrameworks.JUnit)
-fork in Test := true

@@ -1,7 +1,14 @@
+import sbt.Keys.fork
+
 lazy val commonSettings = Seq(
+  maintainer := "Jarl Andre Hubenthal <jarl.andre@gmail.com>",
   organization := "com.github.freeacs",
-  version := "0.1.0-SNAPSHOT",
-  scalaVersion := "2.12.6"
+  version := "2.0.1-SNAPSHOT",
+  scalaVersion := "2.12.6",
+  resolvers += Resolver.mavenLocal,
+  autoScalaLibrary := false,
+  testOptions += Tests.Argument(TestFrameworks.JUnit),
+  fork in Test := true
 )
 
 lazy val common = (project in file("common"))

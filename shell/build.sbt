@@ -1,16 +1,8 @@
 name := "FreeACS Stun"
 
-version := "2.0.1-SNAPSHOT"
-
-maintainer := "Jarl Andre Hubenthal <jarl.andre@gmail.com>"
-
 packageSummary := "FreeACS Stun"
 
 packageDescription := "FreeACS Stun"
-
-autoScalaLibrary := false
-
-resolvers += Resolver.mavenLocal
 
 libraryDependencies ++= List(
   "ch.qos.logback" % "logback-classic" % "1.2.3",
@@ -31,5 +23,3 @@ libraryDependencies ++= List(
 scriptClasspath := Seq("*")
 enablePlugins(JavaAppPackaging)
 enablePlugins(JDebPackaging)
-testOptions += Tests.Argument(TestFrameworks.JUnit)
-fork in Test := true

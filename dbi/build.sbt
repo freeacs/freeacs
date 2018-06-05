@@ -2,14 +2,6 @@ name := "FreeACS Dbi"
 
 normalizedName := "freeacs-dbi"
 
-version := "2.0.1-SNAPSHOT"
-
-maintainer := "Jarl Andre Hubenthal <jarl.andre@gmail.com>"
-
-autoScalaLibrary := false
-
-resolvers += Resolver.mavenLocal
-
 libraryDependencies ++= List(
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "junit" % "junit" % "4.12" % "test",
@@ -18,6 +10,3 @@ libraryDependencies ++= List(
   "org.jfree" %  "jcommon" % "1.0.17",
   "org.jfree" %  "jfreechart" % "1.0.17"
 )
-
-testOptions += Tests.Argument(TestFrameworks.JUnit)
-fork in Test := true

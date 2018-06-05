@@ -2,17 +2,9 @@ name := "FreeACS Syslog"
 
 normalizedName := "freeacs-syslog"
 
-version := "2.0.1-SNAPSHOT"
-
-maintainer := "Jarl Andre Hubenthal <jarl.andre@gmail.com>"
-
 packageSummary := "FreeACS Syslog"
 
 packageDescription := "FreeACS Syslog"
-
-autoScalaLibrary := false
-
-resolvers += Resolver.mavenLocal
 
 libraryDependencies ++= List(
   "commons-io" % "commons-io" % "1.3.2",
@@ -33,5 +25,3 @@ libraryDependencies ++= List(
 scriptClasspath := Seq("*")
 enablePlugins(JavaAppPackaging)
 enablePlugins(JDebPackaging)
-testOptions += Tests.Argument(TestFrameworks.JUnit)
-fork in Test := true

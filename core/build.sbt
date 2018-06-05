@@ -2,17 +2,9 @@ name := "FreeACS Core"
 
 normalizedName := "freeacs-core"
 
-version := "2.0.1-SNAPSHOT"
-
-maintainer := "Jarl Andre Hubenthal <jarl.andre@gmail.com>"
-
 packageSummary := "FreeACS Core"
 
 packageDescription := "FreeACS Core"
-
-autoScalaLibrary := false
-
-resolvers += Resolver.mavenLocal
 
 libraryDependencies ++= List(
   "org.apache.httpcomponents" % "httpclient" % "4.5.5",
@@ -34,5 +26,3 @@ libraryDependencies ++= List(
 scriptClasspath := Seq("*")
 enablePlugins(JavaAppPackaging)
 enablePlugins(JDebPackaging)
-testOptions += Tests.Argument(TestFrameworks.JUnit)
-fork in Test := true
