@@ -20,9 +20,9 @@ import javax.sql.DataSource;
 public class GetUnitTypeParameterFlagAndValuesPage extends AbstractWebPage {
 
 	protected class FlagsHolder {
-		Boolean hasValues;
-		String flag;
-		FlagsHolder(Boolean hasValues, String flag) {
+		public Boolean hasValues;
+		public String flag;
+		public FlagsHolder(Boolean hasValues, String flag) {
 			this.hasValues = hasValues;
 			this.flag = flag;
 		}

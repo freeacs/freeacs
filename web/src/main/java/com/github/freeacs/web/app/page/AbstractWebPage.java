@@ -39,7 +39,7 @@ public abstract class AbstractWebPage implements WebPage {
 	public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
 	protected class ValueHolder {
-		String value;
+		public String value;
 		public ValueHolder(String value) {
 			this.value = value;
 		}
