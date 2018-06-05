@@ -17,18 +17,16 @@ services:
     networks:
       - mynetwork
     environment:
-      - SPRING_CONFIG_LOCATION=/usr/share/backend/data/application.properties
-      - MAIN_DATASOURCE_HOST=db.main
-      - MAIN_DATASOURCE_DB=acs
-      - MAIN_DATASOURCE_USER=acs
-      - MAIN_DATASOURCE_PASS=acs
-      - SYSLOG_DATASOURCE_HOST=db.syslog
-      - SYSLOG_DATASOURCE_DB=acs
-      - SYSLOG_DATASOURCE_USER=acs
-      - SYSLOG_DATASOURCE_PASS=acs
-      - LOG_PATH=/usr/share/backend/data/logs
+      - SPRING_CONFIG_LOCATION=/opt/docker/data/application.properties
+      - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs
+      - MAIN_DATASOURCE_USERNAME=acs
+      - MAIN_DATASOURCE_PASSWORD=acs
+      - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs
+      - SYSLOG_DATASOURCE_USERNAME=acs
+      - SYSLOG_DATASOURCE_PASSWORD=acs
+      - LOG_PATH=/opt/docker/data/logs
     volumes:
-      - ./data/web:/usr/share/backend/data
+      - ./data/web:/opt/docker/data
   tr069:
     image: freeacs/tr069
     restart: always
@@ -36,18 +34,16 @@ services:
     networks:
       - mynetwork
     environment:
-      - SPRING_CONFIG_LOCATION=/usr/share/backend/data/application.properties
-      - MAIN_DATASOURCE_HOST=db.main
-      - MAIN_DATASOURCE_DB=acs
-      - MAIN_DATASOURCE_USER=acs
-      - MAIN_DATASOURCE_PASS=acs
-      - SYSLOG_DATASOURCE_HOST=db.syslog
-      - SYSLOG_DATASOURCE_DB=acs
-      - SYSLOG_DATASOURCE_USER=acs
-      - SYSLOG_DATASOURCE_PASS=acs
-      - LOG_PATH=/usr/share/backend/data/logs
+      - SPRING_CONFIG_LOCATION=/opt/docker/data/application.properties
+      - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs
+      - MAIN_DATASOURCE_USERNAME=acs
+      - MAIN_DATASOURCE_PASSWORD=acs
+      - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs
+      - SYSLOG_DATASOURCE_USERNAME=acs
+      - SYSLOG_DATASOURCE_PASSWORD=acs
+      - LOG_PATH=/opt/docker/data/logs
     volumes:
-      - ./data/tr069:/usr/share/backend/data
+      - ./data/tr069:/opt/docker/data
   syslog:
     image: freeacs/syslog
     restart: always
@@ -55,18 +51,16 @@ services:
     networks:
       - mynetwork
     environment:
-      - SPRING_CONFIG_LOCATION=/usr/share/backend/data/application.properties
-      - MAIN_DATASOURCE_HOST=db.main
-      - MAIN_DATASOURCE_DB=acs
-      - MAIN_DATASOURCE_USER=acs
-      - MAIN_DATASOURCE_PASS=acs
-      - SYSLOG_DATASOURCE_HOST=db.syslog
-      - SYSLOG_DATASOURCE_DB=acs
-      - SYSLOG_DATASOURCE_USER=acs
-      - SYSLOG_DATASOURCE_PASS=acs
-      - LOG_PATH=/usr/share/backend/data/logs
+      - SPRING_CONFIG_LOCATION=/opt/docker/data/application.properties
+      - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs
+      - MAIN_DATASOURCE_USERNAME=acs
+      - MAIN_DATASOURCE_PASSWORD=acs
+      - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs
+      - SYSLOG_DATASOURCE_USERNAME=acs
+      - SYSLOG_DATASOURCE_PASSWORD=acs
+      - LOG_PATH=/opt/docker/data/logs
     volumes:
-      - ./data/syslog:/usr/share/backend/data
+      - ./data/syslog:/opt/docker/data
   core:
     image: freeacs/core
     restart: always
@@ -74,18 +68,16 @@ services:
     networks:
       - mynetwork
     environment:
-      - SPRING_CONFIG_LOCATION=/usr/share/backend/data/application.properties
-      - MAIN_DATASOURCE_HOST=db.main
-      - MAIN_DATASOURCE_DB=acs
-      - MAIN_DATASOURCE_USER=acs
-      - MAIN_DATASOURCE_PASS=acs
-      - SYSLOG_DATASOURCE_HOST=db.syslog
-      - SYSLOG_DATASOURCE_DB=acs
-      - SYSLOG_DATASOURCE_USER=acs
-      - SYSLOG_DATASOURCE_PASS=acs
-      - LOG_PATH=/usr/share/backend/data/logs
+      - SPRING_CONFIG_LOCATION=/opt/docker/data/application.properties
+      - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs
+      - MAIN_DATASOURCE_USERNAME=acs
+      - MAIN_DATASOURCE_PASSWORD=acs
+      - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs
+      - SYSLOG_DATASOURCE_USERNAME=acs
+      - SYSLOG_DATASOURCE_PASSWORD=acs
+      - LOG_PATH=/opt/docker/data/logs
     volumes:
-      - ./data/core:/usr/share/backend/data
+      - ./data/core:/opt/docker/data
   stun:
     image: freeacs/stun
     restart: always
@@ -93,18 +85,16 @@ services:
     networks:
       - mynetwork
     environment:
-      - SPRING_CONFIG_LOCATION=/usr/share/backend/data/application.properties
-      - MAIN_DATASOURCE_HOST=db.main
-      - MAIN_DATASOURCE_DB=acs
-      - MAIN_DATASOURCE_USER=acs
-      - MAIN_DATASOURCE_PASS=acs
-      - SYSLOG_DATASOURCE_HOST=db.syslog
-      - SYSLOG_DATASOURCE_DB=acs
-      - SYSLOG_DATASOURCE_USER=acs
-      - SYSLOG_DATASOURCE_PASS=acs
-      - LOG_PATH=/usr/share/backend/data/logs
+      - SPRING_CONFIG_LOCATION=/opt/docker/data/application.properties
+      - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs
+      - MAIN_DATASOURCE_USERNAME=acs
+      - MAIN_DATASOURCE_PASSWORD=acs
+      - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs
+      - SYSLOG_DATASOURCE_USERNAME=acs
+      - SYSLOG_DATASOURCE_PASSWORD=acs
+      - LOG_PATH=/opt/docker/data/logs
     volumes:
-      - ./data/stun:/usr/share/backend/data
+      - ./data/stun:/opt/docker/data
   webservice:
     image: freeacs/webservice
     restart: always
@@ -112,18 +102,16 @@ services:
     networks:
       - mynetwork
     environment:
-      - SPRING_CONFIG_LOCATION=/usr/share/backend/data/application.properties
-      - MAIN_DATASOURCE_HOST=db.main
-      - MAIN_DATASOURCE_DB=acs
-      - MAIN_DATASOURCE_USER=acs
-      - MAIN_DATASOURCE_PASS=acs
-      - SYSLOG_DATASOURCE_HOST=db.syslog
-      - SYSLOG_DATASOURCE_DB=acs
-      - SYSLOG_DATASOURCE_USER=acs
-      - SYSLOG_DATASOURCE_PASS=acs
-      - LOG_PATH=/usr/share/backend/data/logs
+      - SPRING_CONFIG_LOCATION=/opt/docker/data/application.properties
+      - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs
+      - MAIN_DATASOURCE_USERNAME=acs
+      - MAIN_DATASOURCE_PASSWORD=acs
+      - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs
+      - SYSLOG_DATASOURCE_USERNAME=acs
+      - SYSLOG_DATASOURCE_PASSWORD=acs
+      - LOG_PATH=/opt/docker/data/logs
     volumes:
-      - ./data/webservice:/usr/share/backend/data
+      - ./data/webservice:/opt/docker/data
   db:
     build: mysql
     restart: always
