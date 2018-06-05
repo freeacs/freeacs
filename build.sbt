@@ -13,12 +13,28 @@ lazy val commonSettings = Seq(
 
 lazy val common = (project in file("common"))
   .settings(
-    commonSettings
+    commonSettings,
+    name := "FreeACS Common",
+    normalizedName := "freeacs-common",
+    libraryDependencies ++= Dependencies.database
+      ++ Dependencies.testing
+      ++ List(
+      "org.apache.httpcomponents" % "httpclient" % "4.5.5",
+      "ch.qos.logback" % "logback-classic" % "1.2.3"
+    )
   )
 
 lazy val dbi = (project in file("dbi"))
   .settings(
-    commonSettings
+    commonSettings,
+    name := "FreeACS Dbi",
+    normalizedName := "freeacs-dbi",
+    libraryDependencies ++= Dependencies.database
+      ++ Dependencies.testing
+      ++ List(
+      "org.jfree" %  "jcommon" % "1.0.17",
+      "org.jfree" %  "jfreechart" % "1.0.17"
+    )
   )
   .dependsOn(common)
 
@@ -99,26 +115,80 @@ lazy val tr069 = (project in file("tr069"))
 
 lazy val syslog = (project in file("syslog"))
   .settings(
-    commonSettings
+    commonSettings,
+    name := "FreeACS Syslog",
+    normalizedName := "freeacs-syslog",
+    packageSummary := "FreeACS Syslog",
+    packageDescription := "FreeACS Syslog",
+    scriptClasspath := Seq("*"),
+    libraryDependencies ++= Dependencies.springBoot
+      ++ Dependencies.database
+      ++ Dependencies.testing
+      ++ Seq(Dependencies.jdeb)
+      ++ List("commons-io" % "commons-io" % "1.3.2")
   )
+  .enablePlugins(JavaAppPackaging, JDebPackaging)
   .dependsOn(dbi)
 
 lazy val stun = (project in file("stun"))
   .settings(
-    commonSettings
+    commonSettings,
+    name := "FreeACS Stun",
+    normalizedName := "freeacs-stun",
+    packageSummary := "FreeACS Stun",
+    packageDescription := "FreeACS Stun",
+    scriptClasspath := Seq("*"),
+    libraryDependencies ++= Dependencies.springBoot
+      ++ Dependencies.database
+      ++ Dependencies.testing
+      ++ Seq(Dependencies.jdeb)
+      ++ List(
+      "org.apache.httpcomponents" % "httpclient" % "4.5.5",
+      "commons-io" % "commons-io" % "1.3.2"
+    )
   )
+  .enablePlugins(JavaAppPackaging, JDebPackaging)
   .dependsOn(dbi)
 
 lazy val shell = (project in file("shell"))
   .settings(
-    commonSettings
+    commonSettings,
+    name := "FreeACS Shell",
+    normalizedName := "freeacs-shell",
+    packageSummary := "FreeACS Shell",
+    packageDescription := "FreeACS Shell",
+    scriptClasspath := Seq("*"),
+    libraryDependencies ++= Dependencies.database
+      ++ Dependencies.testing
+      ++ Seq(Dependencies.jdeb)
+      ++ List(
+      "org.apache.httpcomponents" % "httpclient" % "4.5.5",
+      "commons-io" % "commons-io" % "1.3.2",
+      "jline" % "jline" % "0.9.5",
+      "dom4j" % "dom4j" % "1.6.1"
+    )
   )
+  .enablePlugins(JavaAppPackaging, JDebPackaging)
   .dependsOn(dbi)
 
 lazy val core = (project in file("core"))
   .settings(
-    commonSettings
+    commonSettings,
+    name := "FreeACS Core",
+    normalizedName := "freeacs-core",
+    packageSummary := "FreeACS Core",
+    packageDescription := "FreeACS Core",
+    scriptClasspath := Seq("*"),
+    libraryDependencies ++= Dependencies.springBoot
+      ++ Dependencies.database
+      ++ Dependencies.testing
+      ++ Seq(Dependencies.jdeb)
+      ++ List(
+      "org.apache.httpcomponents" % "httpclient" % "4.5.5",
+      "commons-io" % "commons-io" % "1.3.2"
+    )
   )
+  .enablePlugins(JavaAppPackaging, JDebPackaging)
   .dependsOn(shell)
 
 lazy val root = (project in file("."))
