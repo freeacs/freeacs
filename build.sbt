@@ -8,7 +8,13 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   autoScalaLibrary := false,
   testOptions += Tests.Argument(TestFrameworks.JUnit),
-  fork in Test := true
+  fork in Test := true,
+  evictionWarningOptions in update := EvictionWarningOptions.default.withWarnTransitiveEvictions(false),
+  dependencyOverrides ++= Seq(
+    "com.zaxxer" % "HikariCP" % "3.1.0",
+    "commons-io" % "commons-io" % "2.4",
+    "org.springframework.boot" % "spring-boot-starter-web" % "2.0.2.RELEASE"
+  )
 )
 
 lazy val common = (project in file("common"))
@@ -62,6 +68,7 @@ lazy val web = (project in file("web"))
       "org.jfree" % "jfreechart" % "1.0.17"
     )
   )
+  .enablePlugins(JavaAppPackaging, JDebPackaging)
   .dependsOn(dbi)
 
 lazy val webservice = (project in file("webservice"))
