@@ -170,7 +170,7 @@ lazy val shell = (project in file("shell"))
     normalizedName := "freeacs-shell",
     packageSummary := "FreeACS Shell",
     packageDescription := "FreeACS Shell",
-    publish := {},
+    publish in Docker := {},
     libraryDependencies ++= Dependencies.database
       ++ Dependencies.testing
       ++ Dependencies.jdeb
@@ -181,6 +181,7 @@ lazy val shell = (project in file("shell"))
       "dom4j" % "dom4j" % "1.6.1"
     )
   )
+  .enablePlugins(JavaAppPackaging, JDebPackaging)
   .dependsOn(dbi)
 
 lazy val core = (project in file("core"))

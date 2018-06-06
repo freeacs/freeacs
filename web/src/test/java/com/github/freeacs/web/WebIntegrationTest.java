@@ -24,7 +24,7 @@ public class WebIntegrationTest {
     @Test
     public void testStatusPage() {
         ResponseEntity<String> body = this.restTemplate.exchange("/web", HttpMethod.GET, null, String.class);
-        assertThat(body.getStatusCode().value()).isEqualTo(HttpStatus.MOVED_TEMPORARILY.value());
+        assertThat(body.getStatusCode().value()).isEqualTo(302);
         assertThat(body.getHeaders().getFirst("Location")).endsWith("/web/login");
     }
 }
