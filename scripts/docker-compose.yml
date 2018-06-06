@@ -25,7 +25,7 @@ services:
       - SERVER_PORT=8080
     volumes:
       - web_logs:/opt/docker/logs
-      - ./conf/web:/opt/docker/conf
+      - ./conf/web:/opt/docker/conf:ro
   tr069:
     image: freeacs/tr069
     restart: always
@@ -43,7 +43,7 @@ services:
       - SERVER_PORT=8080
     volumes:
       - tr069_logs:/opt/docker/logs
-      - ./conf/tr069:/opt/docker/conf
+      - ./conf/tr069:/opt/docker/conf:ro
   syslog:
     image: freeacs/syslog
     restart: always
@@ -61,7 +61,7 @@ services:
       - SERVER_PORT=8080
     volumes:
       - syslog_logs:/opt/docker/logs
-      - ./conf/syslog:/opt/docker/conf
+      - ./conf/syslog:/opt/docker/conf:ro
   core:
     image: freeacs/core
     restart: always
@@ -79,7 +79,7 @@ services:
       - SERVER_PORT=8080
     volumes:
       - core_logs:/opt/docker/logs
-      - ./conf/core:/opt/docker/conf
+      - ./conf/core:/opt/docker/conf:ro
   stun:
     image: freeacs/stun
     restart: always
@@ -97,7 +97,7 @@ services:
       - SERVER_PORT=8080
     volumes:
       - stun_logs:/opt/docker/logs
-      - ./conf/stun:/opt/docker/conf
+      - ./conf/stun:/opt/docker/conf:ro
   webservice:
     image: freeacs/webservice
     restart: always
@@ -115,7 +115,7 @@ services:
       - SERVER_PORT=8080
     volumes:
       - webservice_logs:/opt/docker/logs
-      - ./conf/webservice:/opt/docker/conf
+      - ./conf/webservice:/opt/docker/conf:ro
   db:
     image: freeacs/mysql
     restart: always
