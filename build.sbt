@@ -4,7 +4,8 @@ lazy val dockerSettings = Seq(
   maintainer in Docker := "Jarl Andre Hubenthal <jarl.andre@gmail.com>",
   dockerRepository := Some("freeacs"),
   dockerUpdateLatest := true,
-  dockerExposedPorts := Seq(8080, 8080)
+  dockerExposedPorts := Seq(8080, 8080),
+  dockerExposedVolumes := Seq("/opt/docker/logs", "/opt/docker/conf")
 )
 
 lazy val commonSettings = Seq(
