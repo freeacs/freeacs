@@ -1,11 +1,14 @@
 import sbt.Keys.fork
 
-lazy val commonSettings = Seq(
-  maintainer := "Jarl Andre Hubenthal <jarl.andre@gmail.com>",
+lazy val dockerSettings = Seq(
   maintainer in Docker := "Jarl Andre Hubenthal <jarl.andre@gmail.com>",
   dockerRepository := Some("freeacs"),
   dockerUpdateLatest := true,
-  dockerExposedPorts := Seq(8080, 8080),
+  dockerExposedPorts := Seq(8080, 8080)
+)
+
+lazy val commonSettings = Seq(
+  maintainer := "Jarl Andre Hubenthal <jarl.andre@gmail.com>",
   organization := "com.github.freeacs",
   version := "2.0.1-SNAPSHOT",
   scalaVersion := "2.12.6",
@@ -53,6 +56,7 @@ lazy val dbi = (project in file("dbi"))
 lazy val web = (project in file("web"))
   .settings(
     commonSettings,
+    dockerSettings,
     name := "FreeACS Web",
     normalizedName := "freeacs-web",
     packageSummary := "FreeACS Web",
@@ -81,6 +85,7 @@ lazy val web = (project in file("web"))
 lazy val webservice = (project in file("webservice"))
   .settings(
     commonSettings,
+    dockerSettings,
     name := "FreeACS Webservice",
     normalizedName := "freeacs-webservice",
     packageSummary := "FreeACS Webservice",
@@ -101,6 +106,7 @@ lazy val webservice = (project in file("webservice"))
 lazy val tr069 = (project in file("tr069"))
   .settings(
     commonSettings,
+    dockerSettings,
     name := "FreeACS Tr069",
     normalizedName := "freeacs-tr069",
     packageSummary := "FreeACS Tr069",
@@ -119,6 +125,7 @@ lazy val tr069 = (project in file("tr069"))
 lazy val syslog = (project in file("syslog"))
   .settings(
     commonSettings,
+    dockerSettings,
     name := "FreeACS Syslog",
     normalizedName := "freeacs-syslog",
     packageSummary := "FreeACS Syslog",
@@ -137,6 +144,7 @@ lazy val syslog = (project in file("syslog"))
 lazy val stun = (project in file("stun"))
   .settings(
     commonSettings,
+    dockerSettings,
     name := "FreeACS Stun",
     normalizedName := "freeacs-stun",
     packageSummary := "FreeACS Stun",
@@ -158,6 +166,7 @@ lazy val stun = (project in file("stun"))
 lazy val shell = (project in file("shell"))
   .settings(
     commonSettings,
+    dockerSettings,
     name := "FreeACS Shell",
     normalizedName := "freeacs-shell",
     packageSummary := "FreeACS Shell",
@@ -180,6 +189,7 @@ lazy val shell = (project in file("shell"))
 lazy val core = (project in file("core"))
   .settings(
     commonSettings,
+    dockerSettings,
     name := "FreeACS Core",
     normalizedName := "freeacs-core",
     packageSummary := "FreeACS Core",
