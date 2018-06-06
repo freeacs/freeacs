@@ -1,13 +1,11 @@
 version: '2.2'
 services:
   nginx:
-    image: nginx:latest
+    image: freeacs/nginx
     mem_limit: 1000000000
     restart: always
     ports:
       - 80:80
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
     networks:
       - mynetwork
   web:
@@ -119,7 +117,7 @@ services:
       - webservice_logs:/opt/docker/logs
       - ./conf/webservice:/opt/docker/conf
   db:
-    build: mysql
+    image: freeacs/mysql
     restart: always
     mem_limit: 1000000000
     volumes:
