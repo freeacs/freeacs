@@ -64,10 +64,9 @@ lazy val web = (project in file("web"))
     scriptClasspath := Seq("*"),
     packageName in Docker := "web",
     libraryDependencies ++= Dependencies.springBoot
-      ++ Seq(Dependencies.springBootWebservices)
       ++ Dependencies.database
       ++ Dependencies.testing
-      ++ Seq(Dependencies.jdeb)
+      ++ Dependencies.jdeb
       ++ Seq(
       "org.springframework.boot" % "spring-boot-starter-security" % "2.0.2.RELEASE",
       "org.springframework" % "spring-context-support" % "5.0.6.RELEASE",
@@ -96,8 +95,8 @@ lazy val webservice = (project in file("webservice"))
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
-      ++ Seq(Dependencies.jdeb)
-      ++ Seq(Dependencies.springBootWebservices)
+      ++ Dependencies.jdeb
+      ++ Dependencies.springBootWebservices
       ++ Seq("wsdl4j" % "wsdl4j" % "1.6.3")
   )
   .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
@@ -116,7 +115,7 @@ lazy val tr069 = (project in file("tr069"))
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
-      ++ Seq(Dependencies.jdeb)
+      ++ Dependencies.jdeb
       ++ Seq("org.apache.commons" % "commons-lang3" % "3.7")
   )
   .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
@@ -135,7 +134,7 @@ lazy val syslog = (project in file("syslog"))
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
-      ++ Seq(Dependencies.jdeb)
+      ++ Dependencies.jdeb
       ++ List("commons-io" % "commons-io" % "1.3.2")
   )
   .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
@@ -154,7 +153,7 @@ lazy val stun = (project in file("stun"))
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
-      ++ Seq(Dependencies.jdeb)
+      ++ Dependencies.jdeb
       ++ List(
       "org.apache.httpcomponents" % "httpclient" % "4.5.5",
       "commons-io" % "commons-io" % "1.3.2"
@@ -171,11 +170,10 @@ lazy val shell = (project in file("shell"))
     normalizedName := "freeacs-shell",
     packageSummary := "FreeACS Shell",
     packageDescription := "FreeACS Shell",
-    scriptClasspath := Seq("*"),
-    packageName in Docker := "shell",
+    publish := {},
     libraryDependencies ++= Dependencies.database
       ++ Dependencies.testing
-      ++ Seq(Dependencies.jdeb)
+      ++ Dependencies.jdeb
       ++ List(
       "org.apache.httpcomponents" % "httpclient" % "4.5.5",
       "commons-io" % "commons-io" % "1.3.2",
@@ -183,7 +181,6 @@ lazy val shell = (project in file("shell"))
       "dom4j" % "dom4j" % "1.6.1"
     )
   )
-  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
   .dependsOn(dbi)
 
 lazy val core = (project in file("core"))
@@ -199,7 +196,7 @@ lazy val core = (project in file("core"))
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
-      ++ Seq(Dependencies.jdeb)
+      ++ Dependencies.jdeb
       ++ List(
       "org.apache.httpcomponents" % "httpclient" % "4.5.5",
       "commons-io" % "commons-io" % "1.3.2"
