@@ -46,7 +46,7 @@ public class MakeTestperfUnits {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void execute(String[] args) {
 		try {
 			int rangeLowerBound = new Integer(args[0]);
 			int rangeUpperBound = new Integer(args[1]);
