@@ -38,18 +38,6 @@ public class HelpDefinitions {
 		helpDef.put(CK_JOB, jobHelpBuilder());
 	}
 
-	public static void main(String[] args) {
-		HelpDefinitions helpDef = new HelpDefinitions();
-		System.out.println(helpDef.getHelpGroup(CK_GENERIC).toHTML());
-		System.out.println(helpDef.getHelpGroup(CK_ROOT).toHTML());
-		System.out.println(helpDef.getHelpGroup(CK_UNITTYPE).toHTML());
-		System.out.println(helpDef.getHelpGroup(CK_UNITTYPEPARAMETER).toHTML());
-		System.out.println(helpDef.getHelpGroup(CK_PROFILE).toHTML());
-		System.out.println(helpDef.getHelpGroup(CK_UNIT).toHTML());
-		System.out.println(helpDef.getHelpGroup(CK_GROUP).toHTML());
-		System.out.println(helpDef.getHelpGroup(CK_JOB).toHTML());
-	}
-
 	public HelpGroup getHelpGroup(String contextKey) {
 		return helpDef.get(contextKey);
 	}
