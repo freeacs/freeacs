@@ -9,25 +9,6 @@ import java.util.regex.Pattern;
 
 public class StringUtil {
 
-	public static void main(String[] args) {
-		
-		String[] foo = {"foo=bar", "eggs=\"bacon and eggs\"",
-				"spam-spam = \" bacon & bacon \""};
-		String[] bar = {"steps=GET tag=[READONLY]"};
-		Map<String, String> foomap = getOptionMap(foo);
-		Map<String, String> barmap = getOptionMap(bar);
-		System.out.println(foomap);
-		System.out.println(barmap);
-		
-		
-//		String str = "command1 arg1 arg2 \"arg ||\"||command2 | arg4";
-//		System.out.println("Splitting str on pipe: " + str);
-//		for (String s : splitOnPipe(str)) {
-//			System.out.println(s);
-//		}
-
-	}
-
 	public static Map<String,String> getOptionMap(String[] args) {
 		Map<String,String> options = new HashMap<>();
 		StringBuilder sb = new StringBuilder();
