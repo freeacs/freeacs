@@ -17,16 +17,17 @@ services:
     networks:
       - mynetwork
     environment:
-      - SPRING_CONFIG_LOCATION=/opt/docker/data/application.properties
+      - SPRING_PROFILES_ACTIVE=config
       - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs
       - MAIN_DATASOURCE_USERNAME=acs
       - MAIN_DATASOURCE_PASSWORD=acs
       - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs
       - SYSLOG_DATASOURCE_USERNAME=acs
       - SYSLOG_DATASOURCE_PASSWORD=acs
-      - LOG_PATH=/opt/docker/data/logs
+      - SERVER_PORT=8080
     volumes:
-      - ./data/web:/opt/docker/data
+      - web_logs:/opt/docker/logs
+      - ./conf/web:/opt/docker/conf
   tr069:
     image: freeacs/tr069
     restart: always
@@ -34,16 +35,17 @@ services:
     networks:
       - mynetwork
     environment:
-      - SPRING_CONFIG_LOCATION=/opt/docker/data/application.properties
+      - SPRING_PROFILES_ACTIVE=config
       - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs
       - MAIN_DATASOURCE_USERNAME=acs
       - MAIN_DATASOURCE_PASSWORD=acs
       - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs
       - SYSLOG_DATASOURCE_USERNAME=acs
       - SYSLOG_DATASOURCE_PASSWORD=acs
-      - LOG_PATH=/opt/docker/data/logs
+      - SERVER_PORT=8080
     volumes:
-      - ./data/tr069:/opt/docker/data
+      - tr069_logs:/opt/docker/logs
+      - ./conf/tr069:/opt/docker/conf
   syslog:
     image: freeacs/syslog
     restart: always
@@ -51,16 +53,17 @@ services:
     networks:
       - mynetwork
     environment:
-      - SPRING_CONFIG_LOCATION=/opt/docker/data/application.properties
+      - SPRING_PROFILES_ACTIVE=config
       - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs
       - MAIN_DATASOURCE_USERNAME=acs
       - MAIN_DATASOURCE_PASSWORD=acs
       - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs
       - SYSLOG_DATASOURCE_USERNAME=acs
       - SYSLOG_DATASOURCE_PASSWORD=acs
-      - LOG_PATH=/opt/docker/data/logs
+      - SERVER_PORT=8080
     volumes:
-      - ./data/syslog:/opt/docker/data
+      - syslog_logs:/opt/docker/logs
+      - ./conf/syslog:/opt/docker/conf
   core:
     image: freeacs/core
     restart: always
@@ -68,16 +71,17 @@ services:
     networks:
       - mynetwork
     environment:
-      - SPRING_CONFIG_LOCATION=/opt/docker/data/application.properties
+      - SPRING_PROFILES_ACTIVE=config
       - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs
       - MAIN_DATASOURCE_USERNAME=acs
       - MAIN_DATASOURCE_PASSWORD=acs
       - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs
       - SYSLOG_DATASOURCE_USERNAME=acs
       - SYSLOG_DATASOURCE_PASSWORD=acs
-      - LOG_PATH=/opt/docker/data/logs
+      - SERVER_PORT=8080
     volumes:
-      - ./data/core:/opt/docker/data
+      - core_logs:/opt/docker/logs
+      - ./conf/core:/opt/docker/conf
   stun:
     image: freeacs/stun
     restart: always
@@ -85,16 +89,17 @@ services:
     networks:
       - mynetwork
     environment:
-      - SPRING_CONFIG_LOCATION=/opt/docker/data/application.properties
+      - SPRING_PROFILES_ACTIVE=config
       - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs
       - MAIN_DATASOURCE_USERNAME=acs
       - MAIN_DATASOURCE_PASSWORD=acs
       - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs
       - SYSLOG_DATASOURCE_USERNAME=acs
       - SYSLOG_DATASOURCE_PASSWORD=acs
-      - LOG_PATH=/opt/docker/data/logs
+      - SERVER_PORT=8080
     volumes:
-      - ./data/stun:/opt/docker/data
+      - stun_logs:/opt/docker/logs
+      - ./conf/stun:/opt/docker/conf
   webservice:
     image: freeacs/webservice
     restart: always
@@ -102,27 +107,38 @@ services:
     networks:
       - mynetwork
     environment:
-      - SPRING_CONFIG_LOCATION=/opt/docker/data/application.properties
+      - SPRING_PROFILES_ACTIVE=config
       - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs
       - MAIN_DATASOURCE_USERNAME=acs
       - MAIN_DATASOURCE_PASSWORD=acs
       - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs
       - SYSLOG_DATASOURCE_USERNAME=acs
       - SYSLOG_DATASOURCE_PASSWORD=acs
-      - LOG_PATH=/opt/docker/data/logs
+      - SERVER_PORT=8080
     volumes:
-      - ./data/webservice:/opt/docker/data
+      - webservice_logs:/opt/docker/logs
+      - ./conf/webservice:/opt/docker/conf
   db:
     build: mysql
     restart: always
     mem_limit: 1000000000
     volumes:
-      - ./mysql-data:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
     networks:
       mynetwork:
         aliases:
           - db.main
           - db.syslog
+
+volumes:
+  mysql-data:
+  core_logs:
+  web_logs:
+  webservice_logs:
+  syslog_logs:
+  stun_logs:
+  tr069_logs:
+
 networks:
   mynetwork:
     driver: bridge
