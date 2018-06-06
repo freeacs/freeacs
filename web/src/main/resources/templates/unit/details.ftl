@@ -172,7 +172,7 @@
 										<td>
 											<fieldset>
 												<legend>
-													<a href="web?page=syslog&cmd=auto&unittype=${unittype}&profile=${unit.profile.name}&unit=^${unit.id}$&advancedView=True&message=^ProvMsg:&tmsstart=${historystarttms}">
+													<a href="index?page=syslog&cmd=auto&unittype=${unittype}&profile=${unit.profile.name}&unit=^${unit.id}$&advancedView=True&message=^ProvMsg:&tmsstart=${historystarttms}">
 														Provisioning history (last 48 hours)
 													</a>
 												</legend>

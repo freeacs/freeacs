@@ -482,7 +482,7 @@ public class RootMenu {
 			args[1] = "99";
 			args[2] = "internal/owera/groups/testperf.input";
 		}
-		MakeTestperfUnits.main(args);
+		MakeTestperfUnits.execute(args);
 	}
 
 	private void makeTCScript(String[] args) throws IOException {

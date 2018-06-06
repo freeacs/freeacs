@@ -1,5 +1,13 @@
 import sbt.Keys.fork
 
+lazy val dockerSettings = Seq(
+  maintainer in Docker := "Jarl Andre Hubenthal <jarl.andre@gmail.com>",
+  dockerRepository := Some("freeacs"),
+  dockerUpdateLatest := true,
+  dockerExposedPorts := Seq(8080, 8080),
+  dockerExposedVolumes := Seq("/opt/docker/logs", "/opt/docker/conf")
+)
+
 lazy val commonSettings = Seq(
   maintainer := "Jarl Andre Hubenthal <jarl.andre@gmail.com>",
   organization := "com.github.freeacs",
@@ -8,7 +16,13 @@ lazy val commonSettings = Seq(
   resolvers += Resolver.mavenLocal,
   autoScalaLibrary := false,
   testOptions += Tests.Argument(TestFrameworks.JUnit),
-  fork in Test := true
+  fork in Test := true,
+  evictionWarningOptions in update := EvictionWarningOptions.default.withWarnTransitiveEvictions(false),
+  dependencyOverrides ++= Seq(
+    "com.zaxxer" % "HikariCP" % "3.1.0",
+    "commons-io" % "commons-io" % "2.4",
+    "org.springframework.boot" % "spring-boot-starter-web" % "2.0.2.RELEASE"
+  )
 )
 
 lazy val common = (project in file("common"))
@@ -16,6 +30,7 @@ lazy val common = (project in file("common"))
     commonSettings,
     name := "FreeACS Common",
     normalizedName := "freeacs-common",
+    publish := {},
     libraryDependencies ++= Dependencies.database
       ++ Dependencies.testing
       ++ List(
@@ -29,11 +44,12 @@ lazy val dbi = (project in file("dbi"))
     commonSettings,
     name := "FreeACS Dbi",
     normalizedName := "freeacs-dbi",
+    publish := {},
     libraryDependencies ++= Dependencies.database
       ++ Dependencies.testing
       ++ List(
-      "org.jfree" %  "jcommon" % "1.0.17",
-      "org.jfree" %  "jfreechart" % "1.0.17"
+      "org.jfree" % "jcommon" % "1.0.17",
+      "org.jfree" % "jfreechart" % "1.0.17"
     )
   )
   .dependsOn(common)
@@ -41,126 +57,124 @@ lazy val dbi = (project in file("dbi"))
 lazy val web = (project in file("web"))
   .settings(
     commonSettings,
+    dockerSettings,
     name := "FreeACS Web",
     normalizedName := "freeacs-web",
     packageSummary := "FreeACS Web",
     packageDescription := "FreeACS Web",
     scriptClasspath := Seq("*"),
+    packageName in Docker := "web",
     libraryDependencies ++= Dependencies.springBoot
-      ++ Seq(Dependencies.springBootWebservices)
       ++ Dependencies.database
       ++ Dependencies.testing
-      ++ Seq(Dependencies.jdeb)
+      ++ Dependencies.jdeb
       ++ Seq(
       "org.springframework.boot" % "spring-boot-starter-security" % "2.0.2.RELEASE",
-      "javax.mail" % "javax.mail-api" % "1.6.1",
-      "commons-fileupload" % "commons-fileupload" % "1.3",
-      "commons-cli" % "commons-cli" % "1.1",
-      "commons-codec" % "commons-codec" % "1.4",
-      "commons-lang" % "commons-lang" % "2.4",
-      "commons-logging" % "commons-logging" % "1.0.4",
-      "commons-net" % "commons-net" % "2.2",
-      "commons-httpclient" % "commons-httpclient" % "3.1",
-      "dom4j" % "dom4j" % "1.6.1",
-      "net.sf.flexjson" % "flexjson" % "2.1",
-      "org.freemarker" % "freemarker" % "2.3.14",
       "org.springframework" % "spring-context-support" % "5.0.6.RELEASE",
-      "org.codehaus.jackson" % "jackson-core-asl" % "1.6.4",
-      "org.codehaus.jackson" % "jackson-mapper-asl" % "1.6.4",
-      "jaxen" % "jaxen" % "1.1.6",
-      "javax.xml" % "jaxrpc" % "1.1",
+      "commons-fileupload" % "commons-fileupload" % "1.3",
+      "commons-lang" % "commons-lang" % "2.4",
+      "commons-httpclient" % "commons-httpclient" % "3.1",
+      "org.freemarker" % "freemarker" % "2.3.14",
       "org.jfree" % "jcommon" % "1.0.17",
-      "org.jfree" % "jfreechart" % "1.0.17",
-      "com.metaparadigm" % "json-rpc" % "1.0",
-      "org.json" % "json" % "20140107"
+      "org.jfree" % "jfreechart" % "1.0.17"
     )
   )
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
   .dependsOn(dbi)
 
 lazy val webservice = (project in file("webservice"))
   .settings(
     commonSettings,
+    dockerSettings,
     name := "FreeACS Webservice",
     normalizedName := "freeacs-webservice",
     packageSummary := "FreeACS Webservice",
     packageDescription := "FreeACS Webservice",
     xjcCommandLine += "-verbose",
     scriptClasspath := Seq("*"),
+    packageName in Docker := "webservice",
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
-      ++ Seq(Dependencies.jdeb)
-      ++ Seq(Dependencies.springBootWebservices)
+      ++ Dependencies.jdeb
+      ++ Dependencies.springBootWebservices
       ++ Seq("wsdl4j" % "wsdl4j" % "1.6.3")
   )
-  .enablePlugins(JavaAppPackaging, JDebPackaging)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
   .dependsOn(dbi)
 
 lazy val tr069 = (project in file("tr069"))
   .settings(
     commonSettings,
+    dockerSettings,
     name := "FreeACS Tr069",
     normalizedName := "freeacs-tr069",
     packageSummary := "FreeACS Tr069",
     packageDescription := "FreeACS Tr069",
     scriptClasspath := Seq("*"),
+    packageName in Docker := "tr069",
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
-      ++ Seq(Dependencies.jdeb)
+      ++ Dependencies.jdeb
       ++ Seq("org.apache.commons" % "commons-lang3" % "3.7")
   )
-  .enablePlugins(JavaAppPackaging, JDebPackaging)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
   .dependsOn(dbi)
 
 lazy val syslog = (project in file("syslog"))
   .settings(
     commonSettings,
+    dockerSettings,
     name := "FreeACS Syslog",
     normalizedName := "freeacs-syslog",
     packageSummary := "FreeACS Syslog",
     packageDescription := "FreeACS Syslog",
     scriptClasspath := Seq("*"),
+    packageName in Docker := "syslog",
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
-      ++ Seq(Dependencies.jdeb)
+      ++ Dependencies.jdeb
       ++ List("commons-io" % "commons-io" % "1.3.2")
   )
-  .enablePlugins(JavaAppPackaging, JDebPackaging)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
   .dependsOn(dbi)
 
 lazy val stun = (project in file("stun"))
   .settings(
     commonSettings,
+    dockerSettings,
     name := "FreeACS Stun",
     normalizedName := "freeacs-stun",
     packageSummary := "FreeACS Stun",
     packageDescription := "FreeACS Stun",
     scriptClasspath := Seq("*"),
+    packageName in Docker := "stun",
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
-      ++ Seq(Dependencies.jdeb)
+      ++ Dependencies.jdeb
       ++ List(
       "org.apache.httpcomponents" % "httpclient" % "4.5.5",
       "commons-io" % "commons-io" % "1.3.2"
     )
   )
-  .enablePlugins(JavaAppPackaging, JDebPackaging)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
   .dependsOn(dbi)
 
 lazy val shell = (project in file("shell"))
   .settings(
     commonSettings,
+    dockerSettings,
     name := "FreeACS Shell",
     normalizedName := "freeacs-shell",
     packageSummary := "FreeACS Shell",
     packageDescription := "FreeACS Shell",
-    scriptClasspath := Seq("*"),
+    publish in Docker := {},
     libraryDependencies ++= Dependencies.database
       ++ Dependencies.testing
-      ++ Seq(Dependencies.jdeb)
+      ++ Dependencies.jdeb
       ++ List(
       "org.apache.httpcomponents" % "httpclient" % "4.5.5",
       "commons-io" % "commons-io" % "1.3.2",
@@ -174,22 +188,24 @@ lazy val shell = (project in file("shell"))
 lazy val core = (project in file("core"))
   .settings(
     commonSettings,
+    dockerSettings,
     name := "FreeACS Core",
     normalizedName := "freeacs-core",
     packageSummary := "FreeACS Core",
     packageDescription := "FreeACS Core",
     scriptClasspath := Seq("*"),
+    packageName in Docker := "core",
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
-      ++ Seq(Dependencies.jdeb)
+      ++ Dependencies.jdeb
       ++ List(
       "org.apache.httpcomponents" % "httpclient" % "4.5.5",
       "commons-io" % "commons-io" % "1.3.2"
     )
   )
-  .enablePlugins(JavaAppPackaging, JDebPackaging)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
   .dependsOn(shell)
 
-lazy val root = (project in file("."))
+lazy val root = (project in file(".") settings (publish := {}))
   .aggregate(common, dbi, web, webservice, tr069, syslog, stun, shell, core)

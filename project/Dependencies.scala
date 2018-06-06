@@ -10,7 +10,7 @@ object Dependencies {
 
   val springBoot = Seq(springBootActuator, springBootJdbc, springBootTest, springBootWeb, springBootJetty, servletApi)
 
-  val springBootWebservices = "org.springframework.boot" % "spring-boot-starter-web-services" % "2.0.1.RELEASE"
+  val springBootWebservices = Seq("org.springframework.boot" % "spring-boot-starter-web-services" % "2.0.1.RELEASE")
 
   val mysql = "mysql" % "mysql-connector-java" % "8.0.11"
   val hikari = "com.zaxxer" % "HikariCP" % "3.1.0"
@@ -24,6 +24,6 @@ object Dependencies {
 
   val testing = Seq(junit, junitInterface)
 
-  val jdeb = "org.vafer" % "jdeb" % "1.3" artifacts Artifact("jdeb", "jar", "jar")
+  val jdeb = Seq("org.vafer" % "jdeb" % "1.3" artifacts Artifact("jdeb", "jar", "jar"))
 
 }
