@@ -13,6 +13,7 @@ lazy val commonSettings = Seq(
   organization := "com.github.freeacs",
   version := "2.0.1-SNAPSHOT",
   scalaVersion := "2.12.6",
+  crossPaths := false,
   resolvers += Resolver.mavenLocal,
   autoScalaLibrary := false,
   testOptions += Tests.Argument(TestFrameworks.JUnit),
