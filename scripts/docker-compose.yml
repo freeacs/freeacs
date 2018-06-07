@@ -8,6 +8,13 @@ services:
       - 80:80
     networks:
       - mynetwork
+    links:
+      - web
+      - webservice
+      - tr069
+      - stun
+      - syslog
+      - core
   web:
     image: freeacs/web
     restart: always
