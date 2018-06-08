@@ -29,9 +29,9 @@
 					<a href="${URL_MAP.UNITSTATUS}&amp;unit=${wrapped.unit.id?url}&amp;profile=${wrapped.unit.profile.name?url}&amp;unittype=${wrapped.unit.unittype.name?url}">${wrapped.unit.id}</a>
 					<a href="${URL_MAP.UNIT}&amp;unit=${wrapped.unit.id?url}&amp;profile=${wrapped.unit.profile.name?url}&amp;unittype=${wrapped.unit.unittype.name?url}"><img src="images/edit.png" height="15px;" border="0" alt="configuration" /></a>
 					<a href="${URL_MAP.UNITSTATUS}&amp;unit=${wrapped.unit.id?url}&amp;profile=${wrapped.unit.profile.name?url}&amp;unittype=${wrapped.unit.unittype.name?url}&amp;current=false&amp;history=true"><img src="images/history.png" height="15px;" border="0" alt="history" /></a>
-					<a href="${URL_MAP.SYSLOG}&unit=^${wrapped.unit.id?url}$&cmd=auto&advancedView=true"><img src="images/list.png" height="15px;" border="0" alt="syslogentries" /></a>
+					<a href="${URL_MAP.SYSLOG}&unit=%5E${wrapped.unit.id?url}%24&cmd=auto&advancedView=true"><img src="images/list.png" height="15px;" border="0" alt="syslogentries" /></a>
 				<#else>
-					<a href="${URL_MAP.UNIT}&amp;unit=^${wrapped.unit.id?url}$&amp;profile=${wrapped.unit.profile.name?url}&amp;unittype=${wrapped.unit.unittype.name?url}">${wrapped.unit.id}</a>
+					<a href="${URL_MAP.UNIT}&amp;unit=%5E${wrapped.unit.id?url}%24&amp;profile=${wrapped.unit.profile.name?url}&amp;unittype=${wrapped.unit.unittype.name?url}">${wrapped.unit.id}</a>
 					<a href="${URL_MAP.SYSLOG}&unit=${wrapped.unit.id?url}&cmd=auto&advancedView=true"><img src="images/list.png" height="15px;" border="0" alt="syslogentries" /></a>
 				</#if>
 				</td>

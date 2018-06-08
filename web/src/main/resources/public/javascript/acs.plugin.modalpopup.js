@@ -424,12 +424,12 @@ function returnRefresh(returnVal) {
             var name = ModalUTP.ELEMENT_TO_UPDATE["name"];
             var element = document.getElementsByName("update::"+name)[0];
             if(element==null){
-                window.location.href="index?page=unittype";
+                window.location.href="?page=unittype";
                 return;
             }
             var profile = (ModalUTP.ELEMENT_TO_UPDATE["profile"]?"&profile="+encodeURIComponent(ModalUTP.ELEMENT_TO_UPDATE["profile"]):"");
             var unittype = (ModalUTP.ELEMENT_TO_UPDATE["unittype"]?"&unittype="+encodeURIComponent(ModalUTP.ELEMENT_TO_UPDATE["unittype"]):"");
-            var url = "index?page=getvalue&type="+ModalUTP.ELEMENT_TO_UPDATE["type"]+"&name="+name+unittype+profile+"&timestamp="+new Date().getMilliseconds();
+            var url = "?page=getvalue&type="+ModalUTP.ELEMENT_TO_UPDATE["type"]+"&name="+name+unittype+profile+"&timestamp="+new Date().getMilliseconds();
             $.getJSON(url,function(data){
                 if(data.flags && (typeof data.hasValues === "boolean")){
                     element.value=data.flags;

@@ -30,7 +30,7 @@
 														<#if entry.unitId??>
 														<a href="${URL_MAP.UNIT}&amp;unit=${entry.unitId?url}&amp;profile=${getprofile(entry)!?url}&amp;unittype=${getunittype(entry)!?url}">${entry.unitId}</a>
 														<a href="${URL_MAP.UNIT}&amp;unit=${entry.unitId?url}&amp;profile=${getprofile(entry)!?url}&amp;unittype=${getunittype(entry)!?url}"><img src="images/edit.png" height="15px;" border="0" alt="configuration" /></a>
-														<a href="${URL_MAP.SYSLOG}&unit=^${entry.unitId?url}$&cmd=auto&advancedView=true"><img src="images/list.png" height="15px;" border="0" alt="syslogentries" /></a>
+														<a href="${URL_MAP.SYSLOG}&unit=%5E${entry.unitId?url}%24&cmd=auto&advancedView=true"><img src="images/list.png" height="15px;" border="0" alt="syslogentries" /></a>
 														
 														</#if>
 													</font>
