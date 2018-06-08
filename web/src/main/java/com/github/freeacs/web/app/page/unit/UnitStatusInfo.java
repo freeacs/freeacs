@@ -248,9 +248,7 @@ public class UnitStatusInfo {
 	 *  the no available connection exception
 	 */
 	public boolean is2LinesHasProblems() throws SQLException {
-		if (((isLine2Configured() && !isLine2Registered()) || isLine2ConfiguredError()) && ((isLine1Configured() && !isLine1Registered()) || isLine1ConfiguredError()))
-			return true;
-		return false;
+		return ((isLine2Configured() && !isLine2Registered()) || isLine2ConfiguredError()) && ((isLine1Configured() && !isLine1Registered()) || isLine1ConfiguredError());
 	}
 
 	/**
