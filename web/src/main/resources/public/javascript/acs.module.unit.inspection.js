@@ -52,7 +52,7 @@ ACS.createModule("unit.inspection",function($this, $super, $){
 			var state = $($this.settings.stateSelector).val();
 
 			if (mode && state) {
-				var url = "index?page="+$this.settings.inspectionPageId+"&unit=" + $this.settings.unitId + "&mode=" + mode + "&state=" + state + "&timestamp="+new Date().getMilliseconds();
+				var url = "?page="+$this.settings.inspectionPageId+"&unit=" + $this.settings.unitId + "&mode=" + mode + "&state=" + state + "&timestamp="+new Date().getMilliseconds();
 				
 				var method = function(data) {
 	                var txt = data;
@@ -68,7 +68,7 @@ ACS.createModule("unit.inspection",function($this, $super, $){
 	                messageString = messageLabel.html().trim();
 
 	                if (cmd == "relo") {
-	                    url = "index?page="+$this.settings.unitPageId+"&unit=" + $this.settings.unitId;
+	                    url = "?page="+$this.settings.unitPageId+"&unit=" + $this.settings.unitId;
 	                    window.location.href = unescape(url);
 	                } else if (cmd == "wait" && value != null && value.trim().length>0) {
 	                    messageLabel.html(value);
