@@ -153,7 +153,7 @@ ACS.createModule("unit.history",function($this, $super, $){
      * If using it with POST, this url will not produce the expected response from the backend server.
      */
     var _makeGetUrl = function(){
-        var url = "index?";
+        var url = "?";
         for(var i=0;i<arguments.length;i++){
             if(arguments[i]!="")
                 url+=arguments[i].trim()+"&";

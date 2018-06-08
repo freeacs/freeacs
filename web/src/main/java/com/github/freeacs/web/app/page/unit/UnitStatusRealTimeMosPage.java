@@ -125,7 +125,7 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
 			params.getSession().setAttribute("realtime", image);
 			
 			if(isIELessThan7){
-				outputHandler.setDirectResponse("<img src='index?page=unit-status-realtime-mos&get-image-for-ie=true&t="+System.nanoTime()+"&unit="+unit.getId()+"' alt='chart' />");
+				outputHandler.setDirectResponse("<img src='?page=unit-status-realtime-mos&get-image-for-ie=true&t="+System.nanoTime()+"&unit="+unit.getId()+"' alt='chart' />");
 			}else{
 				String base64 = Base64.encodeBase64String(image); 
 				outputHandler.setDirectResponse("<img src='data:image/png;base64,"+(base64.replace("\n", "").replace("\r", ""))+"' alt='chart' />");
