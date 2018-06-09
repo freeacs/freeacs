@@ -1,6 +1,6 @@
 import sbt.Keys.fork
 
-publishTo := Some(Resolver.file("file",  new File(Path.userHome.absolutePath+"/.m2/repository")))
+publishTo in ThisBuild := Some(Resolver.file("file",  new File(Path.userHome.absolutePath+"/.m2/repository")))
 
 lazy val dockerSettings = Seq(
   maintainer in Docker := "Jarl Andre Hubenthal <jarl.andre@gmail.com>",
@@ -28,7 +28,6 @@ lazy val commonSettings = Seq(
   fork in Test := true,
   evictionWarningOptions in update := EvictionWarningOptions.default.withWarnTransitiveEvictions(false),
   releaseUseGlobalVersion := false,
-  publishTo := publishTo.value,
   dependencyOverrides ++= Seq(
     "com.zaxxer" % "HikariCP" % "3.1.0",
     "commons-io" % "commons-io" % "2.4",
