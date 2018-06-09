@@ -4,8 +4,6 @@ publishTo := Some(Resolver.file("file",  new File(Path.userHome.absolutePath+"/.
 
 version := "2.0.1-SNAPSHOT"
 
-val rootVersion = version.value
-
 lazy val dockerSettings = Seq(
   maintainer in Docker := "Jarl Andre Hubenthal <jarl.andre@gmail.com>",
   dockerRepository := Some("freeacs"),
@@ -24,7 +22,7 @@ lazy val packagingSettings = Seq(
 lazy val commonSettings = Seq(
   maintainer := "Jarl Andre Hubenthal <jarl.andre@gmail.com>",
   organization := "com.github.freeacs",
-  version := rootVersion,
+  version := version.value,
   scalaVersion := "2.12.6",
   crossPaths := false,
   resolvers += Resolver.mavenLocal,
