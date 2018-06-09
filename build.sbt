@@ -2,8 +2,6 @@ import sbt.Keys.fork
 
 publishTo := Some(Resolver.file("file",  new File(Path.userHome.absolutePath+"/.m2/repository")))
 
-version := "2.0.1-SNAPSHOT"
-
 lazy val dockerSettings = Seq(
   maintainer in Docker := "Jarl Andre Hubenthal <jarl.andre@gmail.com>",
   dockerRepository := Some("freeacs"),
@@ -22,7 +20,6 @@ lazy val packagingSettings = Seq(
 lazy val commonSettings = Seq(
   maintainer := "Jarl Andre Hubenthal <jarl.andre@gmail.com>",
   organization := "com.github.freeacs",
-  version := version.value,
   scalaVersion := "2.12.6",
   crossPaths := false,
   resolvers += Resolver.mavenLocal,
@@ -31,6 +28,7 @@ lazy val commonSettings = Seq(
   fork in Test := true,
   evictionWarningOptions in update := EvictionWarningOptions.default.withWarnTransitiveEvictions(false),
   releaseUseGlobalVersion := false,
+  publishTo := publishTo.value,
   dependencyOverrides ++= Seq(
     "com.zaxxer" % "HikariCP" % "3.1.0",
     "commons-io" % "commons-io" % "2.4",
