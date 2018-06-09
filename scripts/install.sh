@@ -47,7 +47,7 @@ download_freeacs() {
   echo ""
   echo "Downloads all necessary resources from freeacs.com:"
 
-  whattodownload="-bin|tables|shell"
+  whattodownload="deb|tables|pdf"
   curl -s https://api.github.com/repos/freeacs/freeacs/releases/latest | jq -r ".assets[] | select(.name | test(\"${whattodownload}\")) | .browser_download_url" > files.txt
   awk '{print $0;}' files.txt | xargs -l1 wget
   unzip "*.zip"
@@ -164,18 +164,9 @@ database_setup() {
 module_setup() {
   module="$1"
   echo "$module installation start"
-  cd $module-*
-  mkdir -p /var/freeacs/$module
-  cp freeacs-$module.jar /var/freeacs/$module
-  cp freeacs-$module.conf /var/freeacs/$module
-  cp application-config.properties /var/freeacs/$module
-  cp README.TXT /var/freeacs/$module
-  chown freeacs:freeacs -R /var/freeacs/$module
-  cp freeacs-$module.service /etc/systemd/system
-  systemctl enable freeacs-$module
-  systemctl restart freeacs-$module
+  systemctl disable freeacs-$module
+  dpkg -i freeacs-$module*.deb
   echo "$module installation complete"
-  cd ..
 }
 
 shell_setup() {
@@ -241,7 +232,6 @@ echo ""
 
 download_freeacs
 database_setup
-useradd freeacs
 module_setup core
 module_setup stun
 module_setup tr069
