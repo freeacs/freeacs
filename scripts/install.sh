@@ -6,10 +6,10 @@
 
 # Install the applications/programs need to run FreeACS
 install_basic() {
-  apt-get update && apt-get upgrade
-  apt-get install unzip zip curl wget jq gawk
-  apt-get install mysql-server-5.7
-  apt-get install default-jre
+  apt-get -y update && apt-get -y upgrade
+  apt-get -y install unzip zip curl wget jq gawk
+  apt-get -y install mysql-server-5.7
+  apt-get -y install default-jre
 }
 
 # Checks to see if installation is ok
@@ -46,6 +46,10 @@ download_freeacs() {
 
   echo ""
   echo "Downloads all necessary resources from freeacs.com:"
+
+  rm -rf freeacs-*.deb
+  rm -rf Fusion*.pdf
+  rm -rf tables.zip
 
   whattodownload="deb|tables|pdf"
   curl -s https://api.github.com/repos/freeacs/freeacs/releases/latest | jq -r ".assets[] | select(.name | test(\"${whattodownload}\")) | .browser_download_url" > files.txt
@@ -130,13 +134,8 @@ database_setup() {
   echo "the change of password into MySQL, but the configuration"
   echo "files will be changed - causing a password mismatch!!"
 
-  verified=""
-  while [[ $verified != 'y' ]] && [[ $verified != 'Y' ]]
-  do
-    read -p "Specify/create the password for the FreeACS MySQL user: " acsdbpw
-    read -p "Is [$acsdbpw] correct? (y/n) " verified
-  done
-  echo ""
+  acsdbpw="acs"
+
   create_freeacsdbuser
 
   tablepresent=`mysql -uacs -p$acsdbpw acs -e "SHOW TABLES LIKE 'unit_type'" 2> /dev/null  | wc -l`
