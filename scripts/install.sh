@@ -47,9 +47,7 @@ download_freeacs() {
   echo ""
   echo "Downloads all necessary resources from freeacs.com:"
 
-  rm -rf freeacs-*.deb
-  rm -rf Fusion*.pdf
-  rm -rf tables.zip
+  cleanup
 
   whattodownload="deb|tables|pdf"
   curl -s https://api.github.com/repos/freeacs/freeacs/releases/latest | jq -r ".assets[] | select(.name | test(\"${whattodownload}\")) | .browser_download_url" > files.txt
@@ -168,13 +166,11 @@ module_setup() {
   echo "$module installation complete"
 }
 
-shell_setup() {
-
-  echo "Fusion shell (TODO)"
-}
-
 cleanup() {
   rm .tmp
+  rm -rf freeacs-*.deb
+  rm -rf Fusion*.pdf
+  rm -rf tables.zip
 }
 
 #########################
@@ -237,7 +233,7 @@ module_setup tr069
 module_setup syslog
 module_setup web
 module_setup webservice
-shell_setup
+module_setup shell
 cleanup
 
 echo "NB! Installation is now 90% complete. Continue with the modifications"
