@@ -95,18 +95,13 @@ public class UnitStatusPage extends AbstractWebPage {
 	/** The current unit. */
 	private Unit currentUnit;
 
-	private final DataSource mainDataSource, syslogDataSource;
-
-	public UnitStatusPage() {
-		mainDataSource = null;
-		syslogDataSource = null;
-	}
-
 	@Autowired
-	public UnitStatusPage(@Qualifier("main") DataSource mainDataSource, @Qualifier("syslog") DataSource syslogDataSource) {
-		this.mainDataSource = mainDataSource;
-		this.syslogDataSource = syslogDataSource;
-	}
+	@Qualifier("main")
+	private DataSource mainDataSource;
+	
+	@Autowired
+	@Qualifier("syslog")
+	private DataSource syslogDataSource;
 
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.AbstractWebPage#getShortcutItems(com.owera.xaps.web.app.util.SessionData)
