@@ -14,7 +14,12 @@ lazy val packagingSettings = Seq(
   scriptClasspath := Seq("*"),
   defaultLinuxInstallLocation := "/opt",
   daemonUser := "freeacs",
-  daemonGroup := "freeacs"
+  daemonGroup := "freeacs",
+  rpmGroup := Some("Other"),
+  rpmRelease := "1",
+  rpmUrl := Some("https://github.com/freeacs/freeacs"),
+  rpmLicense := Some("The MIT License (MIT)"),
+  rpmVendor := "freeacs"
 )
 
 lazy val commonSettings = Seq(
@@ -87,7 +92,7 @@ lazy val web = (project in file("web"))
       "org.jfree" % "jfreechart" % "1.0.17"
     )
   )
-  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin)
   .dependsOn(dbi)
 
 lazy val webservice = (project in file("webservice"))
@@ -106,7 +111,7 @@ lazy val webservice = (project in file("webservice"))
       ++ Dependencies.springBootWebservices
       ++ Seq("wsdl4j" % "wsdl4j" % "1.6.3")
   )
-  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin)
   .dependsOn(dbi)
 
 lazy val tr069 = (project in file("tr069"))
@@ -123,7 +128,7 @@ lazy val tr069 = (project in file("tr069"))
       ++ Dependencies.jdeb
       ++ Seq("org.apache.commons" % "commons-lang3" % "3.7")
   )
-  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin)
   .dependsOn(dbi)
 
 lazy val syslog = (project in file("syslog"))
@@ -140,7 +145,7 @@ lazy val syslog = (project in file("syslog"))
       ++ Dependencies.jdeb
       ++ List("commons-io" % "commons-io" % "1.3.2")
   )
-  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin)
   .dependsOn(dbi)
 
 lazy val stun = (project in file("stun"))
@@ -160,7 +165,7 @@ lazy val stun = (project in file("stun"))
       "commons-io" % "commons-io" % "1.3.2"
     )
   )
-  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin)
   .dependsOn(dbi)
 
 lazy val shell = (project in file("shell"))
@@ -182,7 +187,7 @@ lazy val shell = (project in file("shell"))
       "dom4j" % "dom4j" % "1.6.1"
     )
   )
-  .enablePlugins(JavaAppPackaging, JDebPackaging)
+  .enablePlugins(JavaAppPackaging, JDebPackaging, RpmPlugin)
   .dependsOn(dbi)
 
 lazy val core = (project in file("core"))
@@ -202,7 +207,7 @@ lazy val core = (project in file("core"))
       "commons-io" % "commons-io" % "1.3.2"
     )
   )
-  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin)
   .dependsOn(shell)
 
 lazy val root = (project in file(".") settings (publish := {}))
