@@ -98,7 +98,7 @@ public class UnitStatusPage extends AbstractWebPage {
 	@Autowired
 	@Qualifier("main")
 	private DataSource mainDataSource;
-	
+
 	@Autowired
 	@Qualifier("syslog")
 	private DataSource syslogDataSource;
