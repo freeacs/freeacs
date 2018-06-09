@@ -8,6 +8,13 @@ lazy val dockerSettings = Seq(
   dockerExposedVolumes := Seq("/opt/docker/logs", "/opt/docker/conf")
 )
 
+lazy val packagingSettings = Seq(
+  scriptClasspath := Seq("*"),
+  defaultLinuxInstallLocation := "/opt",
+  daemonUser := "freeacs",
+  daemonGroup := "freeacs"
+)
+
 lazy val commonSettings = Seq(
   maintainer := "Jarl Andre Hubenthal <jarl.andre@gmail.com>",
   organization := "com.github.freeacs",
@@ -59,11 +66,10 @@ lazy val web = (project in file("web"))
   .settings(
     commonSettings,
     dockerSettings,
-    name := "Web",
+    packagingSettings,
+    name := "FreeACS Web",
     packageSummary := "FreeACS Web",
     packageDescription := "FreeACS Web",
-    scriptClasspath := Seq("*"),
-    defaultLinuxInstallLocation := "/opt/freeacs",
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
@@ -86,12 +92,11 @@ lazy val webservice = (project in file("webservice"))
   .settings(
     commonSettings,
     dockerSettings,
-    name := "Webservice",
+    packagingSettings,
+    name := "FreeACS Webservice",
     packageSummary := "FreeACS Webservice",
     packageDescription := "FreeACS Webservice",
     xjcCommandLine += "-verbose",
-    scriptClasspath := Seq("*"),
-    defaultLinuxInstallLocation := "/opt/freeacs",
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
@@ -106,11 +111,10 @@ lazy val tr069 = (project in file("tr069"))
   .settings(
     commonSettings,
     dockerSettings,
-    name := "Tr069",
+    packagingSettings,
+    name := "FreeACS Tr069",
     packageSummary := "FreeACS Tr069",
     packageDescription := "FreeACS Tr069",
-    scriptClasspath := Seq("*"),
-    defaultLinuxInstallLocation := "/opt/freeacs",
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
@@ -124,11 +128,10 @@ lazy val syslog = (project in file("syslog"))
   .settings(
     commonSettings,
     dockerSettings,
-    name := "Syslog",
+    packagingSettings,
+    name := "FreeACS Syslog",
     packageSummary := "FreeACS Syslog",
     packageDescription := "FreeACS Syslog",
-    scriptClasspath := Seq("*"),
-    defaultLinuxInstallLocation := "/opt/freeacs",
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
@@ -142,11 +145,10 @@ lazy val stun = (project in file("stun"))
   .settings(
     commonSettings,
     dockerSettings,
-    name := "Stun",
+    packagingSettings,
+    name := "FreeACS Stun",
     packageSummary := "FreeACS Stun",
     packageDescription := "FreeACS Stun",
-    scriptClasspath := Seq("*"),
-    defaultLinuxInstallLocation := "/opt/freeacs",
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
@@ -163,11 +165,11 @@ lazy val shell = (project in file("shell"))
   .settings(
     commonSettings,
     dockerSettings,
-    name := "Shell",
+    packagingSettings,
+    name := "FreeACS Shell",
     packageSummary := "FreeACS Shell",
     packageDescription := "FreeACS Shell",
     publish in Docker := {},
-    defaultLinuxInstallLocation := "/opt/freeacs",
     libraryDependencies ++= Dependencies.database
       ++ Dependencies.testing
       ++ Dependencies.jdeb
@@ -185,11 +187,10 @@ lazy val core = (project in file("core"))
   .settings(
     commonSettings,
     dockerSettings,
-    name := "core",
+    packagingSettings,
+    name := "FreeACS Core",
     packageSummary := "FreeACS Core",
     packageDescription := "FreeACS Core",
-    scriptClasspath := Seq("*"),
-    defaultLinuxInstallLocation := "/opt/freeacs",
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
