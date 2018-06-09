@@ -169,7 +169,6 @@ module_setup() {
 cleanup() {
   rm .tmp
   rm -rf freeacs-*.deb
-  rm -rf Fusion*.pdf
   rm -rf tables.zip
 }
 
