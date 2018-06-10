@@ -1,12 +1,12 @@
 # --- override application properties here ----
 # --- Main Database ---
-#MAIN_DATASOURCE_JDBCURL=jdbc:mysql://localhost:3306/acs
+#MAIN_DATASOURCE_JDBCURL=jdbc:mysql://localhost:3306/acs?autoReconnect=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&verifyServerCertificate=false&useSSL=false&requireSSL=false
 #MAIN_DATASOURCE_DRIVERCLASSNAME=com.mysql.jdbc.Driver
 #MAIN_DATASOURCE_USERNAME=acs
 #MAIN_DATASOURCE_PASSWORD=acs
 
 # --- Syslog Database ---
-#SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://localhost:3306/acs
+#SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://localhost:3306/acs?autoReconnect=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&verifyServerCertificate=false&useSSL=false&requireSSL=false
 #SYSLOG_DATASOURCE_DRIVERCLASSNAME=com.mysql.jdbc.Driver
 #SYSLOG_DATASOURCE_USERNAME=acs
 #SYSLOG_DATASOURCE_PASSWORD=acs
