@@ -68,7 +68,7 @@ create_freeacsdbuser() {
 load_database_tables() {
   echo ""
   echo "Loads all FreeACS table defintions into MySQL"
-  mysql -uacs -pacs acs < install.sql 2> .tmp
+  mysql -uacs -p$acsPass acs < install.sql 2> .tmp
   installtables=`wc -l .tmp | cut -b1-1`
   if [ "$installtables" != '1' ] ; then
     echo "The output from the installation of the tables indicate some"
