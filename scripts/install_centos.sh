@@ -126,10 +126,10 @@ cleanup() {
   rm -rf tables.zip
 }
 
+download_freeacs
 install_mysql
 create_freeacsdbuser
 load_database_tables
-download_freeacs
 module_setup core
 module_setup stun
 module_setup tr069
