@@ -8,8 +8,15 @@ services:
       - 80:80
     networks:
       - mynetwork
+    links:
+      - web
+      - webservice
+      - tr069
+      - stun
+      - syslog
+      - core
   web:
-    image: freeacs/web
+    image: freeacs/freeacs-web
     restart: always
     mem_limit: 2048000000
     networks:
@@ -27,7 +34,7 @@ services:
       - web_logs:/opt/docker/logs
       - ./conf/web:/opt/docker/conf:ro
   tr069:
-    image: freeacs/tr069
+    image: freeacs/freeacs-tr069
     restart: always
     mem_limit: 2048000000
     networks:
@@ -45,7 +52,7 @@ services:
       - tr069_logs:/opt/docker/logs
       - ./conf/tr069:/opt/docker/conf:ro
   syslog:
-    image: freeacs/syslog
+    image: freeacs/freeacs-syslog
     restart: always
     mem_limit: 2048000000
     networks:
@@ -63,7 +70,7 @@ services:
       - syslog_logs:/opt/docker/logs
       - ./conf/syslog:/opt/docker/conf:ro
   core:
-    image: freeacs/core
+    image: freeacs/freeacs-core
     restart: always
     mem_limit: 2048000000
     networks:
@@ -81,7 +88,7 @@ services:
       - core_logs:/opt/docker/logs
       - ./conf/core:/opt/docker/conf:ro
   stun:
-    image: freeacs/stun
+    image: freeacs/freeacs-stun
     restart: always
     mem_limit: 2048000000
     networks:
@@ -99,7 +106,7 @@ services:
       - stun_logs:/opt/docker/logs
       - ./conf/stun:/opt/docker/conf:ro
   webservice:
-    image: freeacs/webservice
+    image: freeacs/freeacs-webservice
     restart: always
     mem_limit: 2048000000
     networks:

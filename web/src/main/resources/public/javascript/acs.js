@@ -712,7 +712,7 @@ var ACS = (function(mainModule, $, window) {
 		if (mainModule.isNaN(page)) {
 			throw "makeUrl => Page variable is required but undefined.";
 		}
-		return [ "index?page=" + page, "async=" + async, params ].join("&");
+		return [ "?page=" + page, "async=" + async, params ].join("&");
 	};
 
 	/**

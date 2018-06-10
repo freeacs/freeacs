@@ -95,13 +95,13 @@ public class UnitStatusPage extends AbstractWebPage {
 	/** The current unit. */
 	private Unit currentUnit;
 
-	private final DataSource mainDataSource, syslogDataSource;
+	@Autowired
+	@Qualifier("main")
+	private DataSource mainDataSource;
 
 	@Autowired
-	public UnitStatusPage(@Qualifier("main") DataSource mainDataSource, @Qualifier("syslog") DataSource syslogDataSource) {
-		this.mainDataSource = mainDataSource;
-		this.syslogDataSource = syslogDataSource;
-	}
+	@Qualifier("syslog")
+	private DataSource syslogDataSource;
 
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.AbstractWebPage#getShortcutItems(com.owera.xaps.web.app.util.SessionData)
@@ -202,7 +202,7 @@ public class UnitStatusPage extends AbstractWebPage {
 		
 		String pageType = inputData.getGraphType().getString();
 		
-		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit,fromDate, toDate,sessionId);
+		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit,fromDate, toDate, sessionId, mainDataSource, syslogDataSource);
 		
 		templateMap.put("info", info);
 		
@@ -357,7 +357,7 @@ public class UnitStatusPage extends AbstractWebPage {
 		Date fromDate = DateUtils.parseDateDefault(startTms);
 		Date toDate = DateUtils.parseDateDefault(endTms);
 		Unit unit = ACSLoader.getACSUnit(session.getId(), mainDataSource, syslogDataSource).getUnitById(unitId);
-		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId());
+		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId(), mainDataSource, syslogDataSource);
 		PeriodType type = getPeriodType(periodType);
 		ReportType reportType = ReportType.getEnum(pageType);
 		String method = getReportMethod(reportType, requestMethod);
@@ -368,22 +368,22 @@ public class UnitStatusPage extends AbstractWebPage {
 		switch(reportType){
 			case VOIP:
 				long getVoipChart = System.nanoTime();
-				Report<?> report = SessionCache.convertVoipReport((Report<RecordVoip>) info.getVoipReport(mainDataSource, syslogDataSource), type);
+				Report<?> report = SessionCache.convertVoipReport((Report<RecordVoip>) info.getVoipReport(), type);
 				Chart<?> chartMaker = new Chart<RecordVoip>((Report<RecordVoip>) report, method, false, null);
 				image = getReportChartImageBytes(chartMaker,null,900,250);
 				logTimeElapsed(getVoipChart, "Retrieved Voip chart",logger);
 				break;
 			case HARDWARE:
 				long getHwChart = System.nanoTime();
-				report = SessionCache.convertHardwareReport((Report<RecordHardware>) info.getHardwareReport(mainDataSource, syslogDataSource), type);
+				report = SessionCache.convertHardwareReport((Report<RecordHardware>) info.getHardwareReport(), type);
 				chartMaker = new Chart<RecordHardware>((Report<RecordHardware>)report,method,false,null);
 				image = getReportChartImageBytes(chartMaker,null,900,250);
 				logTimeElapsed(getHwChart, "Retrieved Hardware chart",logger);
 				break;
 			case SYS:
 				long getSyslogChart = System.nanoTime();
-				report = SessionCache.convertSyslogReport((Report<RecordSyslog>) info.getSyslogReport(syslogFilter, mainDataSource, syslogDataSource), type);
-				List<String> keyNames = new ArrayList<String>(Arrays.asList(info.getSyslogReport(syslogFilter, mainDataSource, syslogDataSource).getKeyFactory().getKeyNames()));
+				report = SessionCache.convertSyslogReport((Report<RecordSyslog>) info.getSyslogReport(syslogFilter), type);
+				List<String> keyNames = new ArrayList<String>(Arrays.asList(info.getSyslogReport(syslogFilter).getKeyFactory().getKeyNames()));
 				String[] syslogAggregation = ReportPage.getSelectedAggregation(selectedAggregation, keyNames);
 				chartMaker = new Chart<RecordSyslog>((Report<RecordSyslog>)report,method,false,null,syslogAggregation);
 				image = getReportChartImageBytes(chartMaker,null,900,250);
@@ -425,7 +425,7 @@ public class UnitStatusPage extends AbstractWebPage {
 		Date fromDate = DateUtils.parseDateDefault(startTms);
 		Date toDate = DateUtils.parseDateDefault(endTms);
 		Unit unit = ACSLoader.getACSUnit(session.getId(), mainDataSource, syslogDataSource).getUnitById(unitId);
-		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId());
+		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId(), mainDataSource, syslogDataSource);
 		ReportType reportType = ReportType.getEnum(pageType);
 		String page = null;
 		List<?> records = null;
@@ -435,7 +435,7 @@ public class UnitStatusPage extends AbstractWebPage {
 		switch(reportType){
 			case VOIP:
 				long getVoipChart = System.nanoTime();
-				records = new ArrayList<RecordVoip>((Collection<? extends RecordVoip>) info.getVoipReport(mainDataSource, syslogDataSource).getMap().values());
+				records = new ArrayList<RecordVoip>((Collection<? extends RecordVoip>) info.getVoipReport().getMap().values());
 				Collections.sort((List<RecordVoip>)records, new RecordVoipComparator());
 				records = RecordUIDataVoip.convertRecords((List<RecordVoip>) records);
 				page = "calls";
@@ -443,7 +443,7 @@ public class UnitStatusPage extends AbstractWebPage {
 				break;
 			case HARDWARE:
 				long getHwChart = System.nanoTime();
-				records = new ArrayList<RecordHardware>((Collection<? extends RecordHardware>) info.getHardwareReport(mainDataSource, syslogDataSource).getMap().values());
+				records = new ArrayList<RecordHardware>((Collection<? extends RecordHardware>) info.getHardwareReport().getMap().values());
 				Collections.sort((List<RecordHardware>)records, new RecordHardwareComparator());
 				records = RecordUIDataHardware.convertRecords(unit,(List<RecordHardware>) records,new RecordUIDataHardwareFilter((UnitListData) InputDataRetriever.parseInto(new UnitListData(), new ParameterParser(servletRequest)),new HashMap<String,Object>()));
 				if(records.size()>100)
@@ -453,7 +453,7 @@ public class UnitStatusPage extends AbstractWebPage {
 				break;
 			case SYS:
 				long getSyslogChart = System.nanoTime();
-				records = RecordUIDataSyslog.convertRecords(info.getSyslogEntries(syslogFilter, mainDataSource, syslogDataSource));
+				records = RecordUIDataSyslog.convertRecords(info.getSyslogEntries());
 				page = "syslog";
 				logTimeElapsed(getSyslogChart, "Retrieved Syslog table",logger);
 				break;
@@ -497,8 +497,8 @@ public class UnitStatusPage extends AbstractWebPage {
 		Date fromDate = DateUtils.parseDateDefault(startTms);
 		Date toDate = DateUtils.parseDateDefault(endTms);
 		Unit unit = ACSLoader.getACSUnit(session.getId(), mainDataSource, syslogDataSource).getUnitById(unitId);
-		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId());
-		Double effect = info.getOverallStatus(mainDataSource, syslogDataSource).getTotalScoreEffect();
+		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId(), mainDataSource, syslogDataSource);
+		Double effect = info.getOverallStatus().getTotalScoreEffect();
 		DecimalUtils.Format df = DecimalUtils.Format.ONE_DECIMAL;
 		Map<String,Object> map = new HashMap<String,Object>();
 		if(effect>0.09){
@@ -531,8 +531,8 @@ public class UnitStatusPage extends AbstractWebPage {
 		Date fromDate = DateUtils.parseDateDefault(startTms);
 		Date toDate = DateUtils.parseDateDefault(endTms);
 		Unit unit = ACSLoader.getACSUnit(session.getId(), mainDataSource, syslogDataSource).getUnitById(unitId);
-		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId());
-		Double totalScore = info.getTotalScore(mainDataSource, syslogDataSource);
+		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId(), mainDataSource, syslogDataSource);
+		Double totalScore = info.getTotalScore();
 		DecimalUtils.Format df = DecimalUtils.Format.ONE_DECIMAL;
 		String totalScoreString = (totalScore!=null?""+df.format(totalScore):"No calls have been made");
 		boolean totalScoreIsNA = totalScoreString.equals("No calls have been made");
@@ -564,8 +564,8 @@ public class UnitStatusPage extends AbstractWebPage {
 		Date fromDate = DateUtils.parseDateDefault(startTms);
 		Date toDate = DateUtils.parseDateDefault(endTms);
 		Unit unit = ACSLoader.getACSUnit(session.getId(), mainDataSource, syslogDataSource).getUnitById(unitId);
-		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId());
-		JFreeChart chart = createStatusDialChart(null, "Overall status", new DefaultValueDataset(info.getOverallStatus(mainDataSource, syslogDataSource).getStatus()), UnitStatusInfo.OVERALL_STATUS_MIN, UnitStatusInfo.OVERALL_STATUS_MAX);
+		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId(), mainDataSource, syslogDataSource);
+		JFreeChart chart = createStatusDialChart(null, "Overall status", new DefaultValueDataset(info.getOverallStatus().getStatus()), UnitStatusInfo.OVERALL_STATUS_MIN, UnitStatusInfo.OVERALL_STATUS_MAX);
 		byte[] image = getReportChartImageBytes(null, chart,380,380);
 		Output.writeImageBytesToResponse(image,res);
 	}

@@ -1,5 +1,7 @@
 import sbt.Keys.fork
 
+publishTo in ThisBuild := Some(Resolver.file("file",  new File(Path.userHome.absolutePath+"/.m2/repository")))
+
 lazy val dockerSettings = Seq(
   maintainer in Docker := "Jarl Andre Hubenthal <jarl.andre@gmail.com>",
   dockerRepository := Some("freeacs"),
@@ -8,16 +10,29 @@ lazy val dockerSettings = Seq(
   dockerExposedVolumes := Seq("/opt/docker/logs", "/opt/docker/conf")
 )
 
+lazy val packagingSettings = Seq(
+  scriptClasspath := Seq("*"),
+  defaultLinuxInstallLocation := "/opt",
+  daemonUser := "freeacs",
+  daemonGroup := "freeacs",
+  rpmGroup := Some("Other"),
+  rpmRelease := "1",
+  rpmUrl := Some("https://github.com/freeacs/freeacs"),
+  rpmLicense := Some("The MIT License (MIT)"),
+  rpmVendor := "freeacs"
+)
+
 lazy val commonSettings = Seq(
   maintainer := "Jarl Andre Hubenthal <jarl.andre@gmail.com>",
   organization := "com.github.freeacs",
-  version := "2.0.1-SNAPSHOT",
   scalaVersion := "2.12.6",
+  crossPaths := false,
   resolvers += Resolver.mavenLocal,
   autoScalaLibrary := false,
   testOptions += Tests.Argument(TestFrameworks.JUnit),
   fork in Test := true,
   evictionWarningOptions in update := EvictionWarningOptions.default.withWarnTransitiveEvictions(false),
+  releaseUseGlobalVersion := false,
   dependencyOverrides ++= Seq(
     "com.zaxxer" % "HikariCP" % "3.1.0",
     "commons-io" % "commons-io" % "2.4",
@@ -58,12 +73,10 @@ lazy val web = (project in file("web"))
   .settings(
     commonSettings,
     dockerSettings,
+    packagingSettings,
     name := "FreeACS Web",
-    normalizedName := "freeacs-web",
     packageSummary := "FreeACS Web",
     packageDescription := "FreeACS Web",
-    scriptClasspath := Seq("*"),
-    packageName in Docker := "web",
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
@@ -79,20 +92,18 @@ lazy val web = (project in file("web"))
       "org.jfree" % "jfreechart" % "1.0.17"
     )
   )
-  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin)
   .dependsOn(dbi)
 
 lazy val webservice = (project in file("webservice"))
   .settings(
     commonSettings,
     dockerSettings,
+    packagingSettings,
     name := "FreeACS Webservice",
-    normalizedName := "freeacs-webservice",
     packageSummary := "FreeACS Webservice",
     packageDescription := "FreeACS Webservice",
     xjcCommandLine += "-verbose",
-    scriptClasspath := Seq("*"),
-    packageName in Docker := "webservice",
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
@@ -100,57 +111,51 @@ lazy val webservice = (project in file("webservice"))
       ++ Dependencies.springBootWebservices
       ++ Seq("wsdl4j" % "wsdl4j" % "1.6.3")
   )
-  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin)
   .dependsOn(dbi)
 
 lazy val tr069 = (project in file("tr069"))
   .settings(
     commonSettings,
     dockerSettings,
+    packagingSettings,
     name := "FreeACS Tr069",
-    normalizedName := "freeacs-tr069",
     packageSummary := "FreeACS Tr069",
     packageDescription := "FreeACS Tr069",
-    scriptClasspath := Seq("*"),
-    packageName in Docker := "tr069",
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
       ++ Dependencies.jdeb
       ++ Seq("org.apache.commons" % "commons-lang3" % "3.7")
   )
-  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin)
   .dependsOn(dbi)
 
 lazy val syslog = (project in file("syslog"))
   .settings(
     commonSettings,
     dockerSettings,
+    packagingSettings,
     name := "FreeACS Syslog",
-    normalizedName := "freeacs-syslog",
     packageSummary := "FreeACS Syslog",
     packageDescription := "FreeACS Syslog",
-    scriptClasspath := Seq("*"),
-    packageName in Docker := "syslog",
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
       ++ Dependencies.jdeb
       ++ List("commons-io" % "commons-io" % "1.3.2")
   )
-  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin)
   .dependsOn(dbi)
 
 lazy val stun = (project in file("stun"))
   .settings(
     commonSettings,
     dockerSettings,
+    packagingSettings,
     name := "FreeACS Stun",
-    normalizedName := "freeacs-stun",
     packageSummary := "FreeACS Stun",
     packageDescription := "FreeACS Stun",
-    scriptClasspath := Seq("*"),
-    packageName in Docker := "stun",
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
@@ -160,15 +165,15 @@ lazy val stun = (project in file("stun"))
       "commons-io" % "commons-io" % "1.3.2"
     )
   )
-  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin)
   .dependsOn(dbi)
 
 lazy val shell = (project in file("shell"))
   .settings(
     commonSettings,
     dockerSettings,
+    packagingSettings,
     name := "FreeACS Shell",
-    normalizedName := "freeacs-shell",
     packageSummary := "FreeACS Shell",
     packageDescription := "FreeACS Shell",
     publish in Docker := {},
@@ -182,19 +187,17 @@ lazy val shell = (project in file("shell"))
       "dom4j" % "dom4j" % "1.6.1"
     )
   )
-  .enablePlugins(JavaAppPackaging, JDebPackaging)
+  .enablePlugins(JavaAppPackaging, JDebPackaging, RpmPlugin)
   .dependsOn(dbi)
 
 lazy val core = (project in file("core"))
   .settings(
     commonSettings,
     dockerSettings,
+    packagingSettings,
     name := "FreeACS Core",
-    normalizedName := "freeacs-core",
     packageSummary := "FreeACS Core",
     packageDescription := "FreeACS Core",
-    scriptClasspath := Seq("*"),
-    packageName in Docker := "core",
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
@@ -204,7 +207,7 @@ lazy val core = (project in file("core"))
       "commons-io" % "commons-io" % "1.3.2"
     )
   )
-  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin)
   .dependsOn(shell)
 
 lazy val root = (project in file(".") settings (publish := {}))

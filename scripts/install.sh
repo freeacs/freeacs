@@ -6,10 +6,10 @@
 
 # Install the applications/programs need to run FreeACS
 install_basic() {
-  apt-get update && apt-get upgrade
-  apt-get install unzip zip curl wget jq gawk
-  apt-get install mysql-server-5.7
-  apt-get install default-jre
+  apt-get -y update && apt-get -y upgrade
+  apt-get -y install unzip zip curl wget jq gawk
+  apt-get -y install mysql-server-5.7
+  apt-get -y install default-jre
 }
 
 # Checks to see if installation is ok
@@ -47,7 +47,9 @@ download_freeacs() {
   echo ""
   echo "Downloads all necessary resources from freeacs.com:"
 
-  whattodownload="-bin|tables|shell"
+  cleanup
+
+  whattodownload="deb|tables|pdf"
   curl -s https://api.github.com/repos/freeacs/freeacs/releases/latest | jq -r ".assets[] | select(.name | test(\"${whattodownload}\")) | .browser_download_url" > files.txt
   awk '{print $0;}' files.txt | xargs -l1 wget
   unzip "*.zip"
@@ -130,13 +132,8 @@ database_setup() {
   echo "the change of password into MySQL, but the configuration"
   echo "files will be changed - causing a password mismatch!!"
 
-  verified=""
-  while [[ $verified != 'y' ]] && [[ $verified != 'Y' ]]
-  do
-    read -p "Specify/create the password for the FreeACS MySQL user: " acsdbpw
-    read -p "Is [$acsdbpw] correct? (y/n) " verified
-  done
-  echo ""
+  acsdbpw="acs"
+
   create_freeacsdbuser
 
   tablepresent=`mysql -uacs -p$acsdbpw acs -e "SHOW TABLES LIKE 'unit_type'" 2> /dev/null  | wc -l`
@@ -164,27 +161,15 @@ database_setup() {
 module_setup() {
   module="$1"
   echo "$module installation start"
-  cd $module-*
-  mkdir -p /var/freeacs/$module
-  cp freeacs-$module.jar /var/freeacs/$module
-  cp freeacs-$module.conf /var/freeacs/$module
-  cp application-config.properties /var/freeacs/$module
-  cp README.TXT /var/freeacs/$module
-  chown freeacs:freeacs -R /var/freeacs/$module
-  cp freeacs-$module.service /etc/systemd/system
-  systemctl enable freeacs-$module
-  systemctl restart freeacs-$module
+  systemctl disable freeacs-$module
+  dpkg -i freeacs-$module*.deb
   echo "$module installation complete"
-  cd ..
-}
-
-shell_setup() {
-
-  echo "Fusion shell (TODO)"
 }
 
 cleanup() {
   rm .tmp
+  rm -rf freeacs-*.deb
+  rm -rf tables.zip
 }
 
 #########################
@@ -241,14 +226,13 @@ echo ""
 
 download_freeacs
 database_setup
-useradd freeacs
 module_setup core
 module_setup stun
 module_setup tr069
 module_setup syslog
 module_setup web
 module_setup webservice
-shell_setup
+module_setup shell
 cleanup
 
 echo "NB! Installation is now 90% complete. Continue with the modifications"
