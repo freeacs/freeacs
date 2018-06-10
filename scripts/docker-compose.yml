@@ -23,10 +23,10 @@ services:
       - mynetwork
     environment:
       - SPRING_PROFILES_ACTIVE=config
-      - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs
+      - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs?autoReconnect=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&verifyServerCertificate=false&useSSL=false&requireSSL=false
       - MAIN_DATASOURCE_USERNAME=acs
       - MAIN_DATASOURCE_PASSWORD=acs
-      - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs
+      - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs?autoReconnect=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&verifyServerCertificate=false&useSSL=false&requireSSL=false
       - SYSLOG_DATASOURCE_USERNAME=acs
       - SYSLOG_DATASOURCE_PASSWORD=acs
       - SERVER_PORT=8080
@@ -41,10 +41,10 @@ services:
       - mynetwork
     environment:
       - SPRING_PROFILES_ACTIVE=config
-      - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs
+      - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs?autoReconnect=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&verifyServerCertificate=false&useSSL=false&requireSSL=false
       - MAIN_DATASOURCE_USERNAME=acs
       - MAIN_DATASOURCE_PASSWORD=acs
-      - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs
+      - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs?autoReconnect=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&verifyServerCertificate=false&useSSL=false&requireSSL=false
       - SYSLOG_DATASOURCE_USERNAME=acs
       - SYSLOG_DATASOURCE_PASSWORD=acs
       - SERVER_PORT=8080
@@ -59,10 +59,10 @@ services:
       - mynetwork
     environment:
       - SPRING_PROFILES_ACTIVE=config
-      - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs
+      - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs?autoReconnect=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&verifyServerCertificate=false&useSSL=false&requireSSL=false
       - MAIN_DATASOURCE_USERNAME=acs
       - MAIN_DATASOURCE_PASSWORD=acs
-      - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs
+      - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs?autoReconnect=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&verifyServerCertificate=false&useSSL=false&requireSSL=false
       - SYSLOG_DATASOURCE_USERNAME=acs
       - SYSLOG_DATASOURCE_PASSWORD=acs
       - SERVER_PORT=8080
@@ -77,10 +77,10 @@ services:
       - mynetwork
     environment:
       - SPRING_PROFILES_ACTIVE=config
-      - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs
+      - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs?autoReconnect=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&verifyServerCertificate=false&useSSL=false&requireSSL=false
       - MAIN_DATASOURCE_USERNAME=acs
       - MAIN_DATASOURCE_PASSWORD=acs
-      - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs
+      - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs?autoReconnect=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&verifyServerCertificate=false&useSSL=false&requireSSL=false
       - SYSLOG_DATASOURCE_USERNAME=acs
       - SYSLOG_DATASOURCE_PASSWORD=acs
       - SERVER_PORT=8080
@@ -95,10 +95,10 @@ services:
       - mynetwork
     environment:
       - SPRING_PROFILES_ACTIVE=config
-      - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs
+      - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs?autoReconnect=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&verifyServerCertificate=false&useSSL=false&requireSSL=false
       - MAIN_DATASOURCE_USERNAME=acs
       - MAIN_DATASOURCE_PASSWORD=acs
-      - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs
+      - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs?autoReconnect=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&verifyServerCertificate=false&useSSL=false&requireSSL=false
       - SYSLOG_DATASOURCE_USERNAME=acs
       - SYSLOG_DATASOURCE_PASSWORD=acs
       - SERVER_PORT=8080
@@ -113,10 +113,10 @@ services:
       - mynetwork
     environment:
       - SPRING_PROFILES_ACTIVE=config
-      - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs
+      - MAIN_DATASOURCE_JDBCURL=jdbc:mysql://db.main:3306/acs?autoReconnect=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&verifyServerCertificate=false&useSSL=false&requireSSL=false
       - MAIN_DATASOURCE_USERNAME=acs
       - MAIN_DATASOURCE_PASSWORD=acs
-      - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs
+      - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs?autoReconnect=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&verifyServerCertificate=false&useSSL=false&requireSSL=false
       - SYSLOG_DATASOURCE_USERNAME=acs
       - SYSLOG_DATASOURCE_PASSWORD=acs
       - SERVER_PORT=8080
