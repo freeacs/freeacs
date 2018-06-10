@@ -235,7 +235,7 @@ module_setup webservice
 module_setup shell
 if ! dpkg -l nginx | egrep 'îi.*nginx' > /dev/null 2>&1; then
 apt-get install nginx
-cat > $FILE <<- EOM
+cat > /etc/nginx/nginx.conf <<- EOM
 events {
   worker_connections  19000;
 }
@@ -244,7 +244,6 @@ http {
   server {
     listen       80;
     server_name  localhost;
-    proxy_set_header Host $host:$server_port;
 
     # For the geeks: "A man is not dead while his name is still spoken." -Terry Pratchett
     add_header X-Clacks-Overhead "GNU Terry Pratchett";
