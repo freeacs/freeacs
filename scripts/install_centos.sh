@@ -155,3 +155,5 @@ module_setup syslog
 module_setup web
 module_setup webservice
 module_setup shell
+echo "Generated mysql root pw: $mysqlRootPass"
+echo "Generated acs password is $acsPass"
