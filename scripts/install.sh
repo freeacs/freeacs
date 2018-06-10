@@ -234,7 +234,7 @@ module_setup web
 module_setup webservice
 module_setup shell
 if ! dpkg -l nginx | egrep 'îi.*nginx' > /dev/null 2>&1; then
-apt-get install nginx
+apt-get -y install nginx
 cat > /etc/nginx/nginx.conf <<- EOM
 events {
   worker_connections  19000;
