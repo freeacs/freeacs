@@ -130,6 +130,20 @@ cleanup() {
   rm -rf tables.zip
 }
 
+read -p "Do you run this script with (root) permission? (y/n) " yn
+case $yn in
+  [Yy]* ) echo "" ;;
+  *     ) echo "Installation must be run with root permission."
+          exit;;
+esac
+
+read -p "This script will remove any existing mysql server and reinstall it. Continue? (y/n) " yn
+case $yn in
+  [Yy]* ) echo "" ;;
+  *     ) echo "The script cannot continue."
+          exit;;
+esac
+
 download_freeacs
 install_mysql
 create_freeacsdbuser
