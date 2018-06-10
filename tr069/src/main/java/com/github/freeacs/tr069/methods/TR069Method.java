@@ -35,6 +35,8 @@ public class TR069Method {
 	
 	public static final String SET_PARAMETER_ATTRIBUTES = "SetParameterAttributes";
 
+	public static final String ADD_OBJECT = "AddObject";
+
 	/* Map of all (SOAP/HTTP-)request actions and what to do next */
 	public static Map<String, HTTPRequestAction> requestMap = new HashMap<String, HTTPRequestAction>();
 	/* Map of all (SOAP/HTTP-)response actions and what to return */
@@ -49,17 +51,17 @@ public class TR069Method {
 
 		abbrevMap.put(GET_RPC_METHODS, "GRM");
 		abbrevMap.put(GET_RPC_METHODS_RES, "GRM");
-		requestMap.put(GET_RPC_METHODS, new HTTPRequestAction(DoNotProcessReq::process, makeSimpleDecision(GET_RPC_METHODS_RES)));
-		requestMap.put(GET_RPC_METHODS_RES, new HTTPRequestAction(DoNotProcessReq::process, makeSimpleDecision(GET_PARAMETER_VALUES)));
+		requestMap.put(GET_RPC_METHODS, new HTTPRequestAction(DoNotProcessReq::process, process(GET_RPC_METHODS_RES)));
+		requestMap.put(GET_RPC_METHODS_RES, new HTTPRequestAction(DoNotProcessReq::process, process(GET_PARAMETER_VALUES)));
 		responseMap.put(GET_RPC_METHODS, new HTTPResponseAction(HTTPResponseCreator::buildGRMReq));
 		responseMap.put(GET_RPC_METHODS_RES, new HTTPResponseAction(HTTPResponseCreator::buildGRMRes));
 
 		abbrevMap.put(GET_PARAMETER_NAMES, "GPN");
-		requestMap.put(GET_PARAMETER_NAMES, new HTTPRequestAction(GPNres::process, makeSimpleDecision(GET_PARAMETER_VALUES)));
+		requestMap.put(GET_PARAMETER_NAMES, new HTTPRequestAction(GPNres::process, process(GET_PARAMETER_VALUES)));
 		responseMap.put(GET_PARAMETER_NAMES, new HTTPResponseAction(HTTPResponseCreator::buildGPN));
 
 		abbrevMap.put(INFORM, "IN");
-		requestMap.put(INFORM, new HTTPRequestAction(INreq::process, makeSimpleDecision(INFORM)));
+		requestMap.put(INFORM, new HTTPRequestAction(INreq::process, process(INFORM)));
 		responseMap.put(INFORM, new HTTPResponseAction(HTTPResponseCreator::buildIN));
 
 		abbrevMap.put(GET_PARAMETER_VALUES, "GPV");
@@ -83,26 +85,30 @@ public class TR069Method {
 		responseMap.put(TRANSFER_COMPLETE, new HTTPResponseAction(HTTPResponseCreator::buildTC));
 
 		abbrevMap.put(DOWNLOAD, "DO");
-		requestMap.put(DOWNLOAD, new HTTPRequestAction(DOres::process, makeSimpleDecision(EMPTY)));
+		requestMap.put(DOWNLOAD, new HTTPRequestAction(DOres::process, process(EMPTY)));
 		responseMap.put(DOWNLOAD, new HTTPResponseAction(HTTPResponseCreator::buildDO));
 
 		abbrevMap.put(FAULT, "FA");
 		requestMap.put(FAULT, new HTTPRequestAction(FAres::process, FADecision::process));
 
 		abbrevMap.put(REBOOT, "RE");
-		requestMap.put(REBOOT, new HTTPRequestAction(REres::process, makeSimpleDecision(EMPTY)));
+		requestMap.put(REBOOT, new HTTPRequestAction(REres::process, process(EMPTY)));
 		responseMap.put(REBOOT, new HTTPResponseAction(HTTPResponseCreator::buildRE));
 
 		abbrevMap.put(FACTORY_RESET, "FR");
-		requestMap.put(FACTORY_RESET, new HTTPRequestAction(FRres::process, makeSimpleDecision(EMPTY)));
+		requestMap.put(FACTORY_RESET, new HTTPRequestAction(FRres::process, process(EMPTY)));
 		responseMap.put(FACTORY_RESET, new HTTPResponseAction(HTTPResponseCreator::buildFR));
+
+		abbrevMap.put(ADD_OBJECT, "ADO");
+		requestMap.put(ADD_OBJECT, new HTTPRequestAction(ADOres::process, process(EMPTY)));
+		responseMap.put(ADD_OBJECT, new HTTPResponseAction(HTTPResponseCreator::buildADO));
 
 		abbrevMap.put(CUSTOM, "CU");
 		responseMap.put(CUSTOM, new HTTPResponseAction(HTTPResponseCreator::buildCU));
 	}
 
-	private static HTTPRequestAction.CheckedRequestFunction makeSimpleDecision(String getRpcMethodsRes) {
-		return (reqRes) -> reqRes.getResponse().setMethod(getRpcMethodsRes);
+	private static HTTPRequestAction.CheckedRequestFunction process(String method) {
+		return (reqRes) -> reqRes.getResponse().setMethod(method);
 	}
 
 }
