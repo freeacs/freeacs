@@ -6,6 +6,10 @@ download_freeacs() {
   echo ""
   echo "Downloads all necessary resources from freeacs.com:"
 
+  yum install epel-release -y
+  yum install jq -y
+  jq --version
+
   cleanup
 
   whattodownload="rpm|tables|pdf"
