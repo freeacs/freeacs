@@ -29,7 +29,7 @@ create_freeacsdbuser() {
     mysql -uroot -p$mysqlRootPass acs -e "CREATE USER 'acs'@'localhost' IDENTIFIED BY '$acsPass'" 2> /dev/null
     mysql -uroot -p$mysqlRootPass acs -e "GRANT ALL ON acs.* TO 'acs' IDENTIFIED BY '$acsPass'"  2> .tmp
     mysql -uroot -p$mysqlRootPass acs -e "GRANT ALL ON acs.* TO 'acs'@'localhost' IDENTIFIED BY '$acsPass'" 2>> .tmp
-    freeacsdbuserok=`mysql -uroot -p$mysqlRootPass -e "SELECT count(user) FROM mysql.user where user = '$acsPass'" 2> /dev/null | tail -n1`
+    freeacsdbuserok=`mysql -uroot -p$mysqlRootPass -e "SELECT count(user) FROM mysql.user where user = 'acs'" 2> /dev/null | tail -n1`
     if [ "$freeacsdbuserok" != '2' ] ; then
       echo "The FreeACS MySQL database users 'acs' and 'acs'@'localhost' is not found"
       echo "in the mysql.user table. Maybe you stated the wrong MySQL root password??"
