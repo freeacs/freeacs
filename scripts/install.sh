@@ -273,7 +273,7 @@ systemctl enable nginx
 systemctl restart nginx
 else
 echo "Ngninx is already installed. Add the following to http.server configuration in nginx or similar"
-echo <<- EOM
+echo "
     location /tr069/ {
       proxy_pass http://localhost:8085/tr069/;
     }
@@ -292,7 +292,7 @@ echo <<- EOM
     location /stun/ {
       proxy_pass http://localhost:8087/stun/;
     }
-EOM
+"
 fi
 cleanup
 

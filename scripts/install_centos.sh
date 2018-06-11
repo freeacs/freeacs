@@ -174,7 +174,7 @@ module_setup webservice
 module_setup shell
 if rpm -q nginx; then
 echo "Ngninx is already installed. If this is fresh install add the following to http.server configuration in nginx or similar"
-echo <<- EOM
+echo "
     location /tr069/ {
       proxy_pass http://localhost:8085/tr069/;
     }
@@ -193,7 +193,7 @@ echo <<- EOM
     location /stun/ {
       proxy_pass http://localhost:8087/stun/;
     }
-EOM
+"
 else
 echo "nginx is not installed, installing it now"
 yum install nginx -y
