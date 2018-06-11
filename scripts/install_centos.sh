@@ -121,6 +121,9 @@ module_setup() {
   echo "$module installation start"
   systemctl disable freeacs-$module
   rpm -Uvh freeacs-$module*.rpm
+  sed -i "s/\(MAIN_DATASOURCE_PASSWORD=\).*\$/\1${acsPass}/" /etc/default/freeacs-$module
+  sed -i "s/\(SYSLOG_DATASOURCE_PASSWORD=\).*\$/\1${acsPass}/" /etc/default/freeacs-$module
+  systemctl restart freeacs-$module
   echo "$module installation complete"
 }
 
