@@ -186,7 +186,7 @@ cleanup() {
 
 echo ""
 echo "              ***************************************** "
-echo "              * Fusion FreeACS Installation & Upgrade * "
+echo "              * FreeACS Installation & Upgrade *        "
 echo "              ***************************************** "
 echo ""
 echo "This script does 90% of the installation of Fusion FreeACS. The last 10% "
@@ -195,8 +195,8 @@ echo "of various files. Run the script again to download and install new release
 echo "or if something didn't work out the first time you installed. If default"
 echo "configuration changes in a new release, you will be duly notified."
 echo ""
-echo "The script is targeted at Ubuntu 14.04 64-bit, but may also work with other"
-echo "Ubuntu versions, like Ubuntu 12.04 LTS."
+echo "The script is targeted at Ubuntu 16.04 64-bit, but may also work with other"
+echo "Ubuntu versions."
 echo ""
 
 

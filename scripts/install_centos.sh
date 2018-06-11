@@ -130,6 +130,20 @@ cleanup() {
   rm -rf tables.zip
 }
 
+echo ""
+echo "              ***************************************** "
+echo "              * FreeACS Installation & Upgrade *        "
+echo "              ***************************************** "
+echo ""
+echo "This script does 90% of the installation of Fusion FreeACS. The last 10% "
+echo "must be done manually (see Fusion Instalation.pdf) by changing the contents"
+echo "of various files. Run the script again to download and install new releases"
+echo "or if something didn't work out the first time you installed. If default"
+echo "configuration changes in a new release, you will be duly notified."
+echo ""
+echo "The script is targeted at CentOS 7"
+echo ""
+
 read -p "Do you run this script with (root) permission? (y/n) " yn
 case $yn in
   [Yy]* ) echo "" ;;
@@ -155,5 +169,67 @@ module_setup syslog
 module_setup web
 module_setup webservice
 module_setup shell
+if rpm -q nginx; then
+echo "Ngninx is already installed. If this is fresh install add the following to http.server configuration in nginx or similar"
+echo <<- EOM
+    location /tr069/ {
+      proxy_pass http://localhost:8085/tr069/;
+    }
+    location /web/ {
+      proxy_pass http://localhost:8081/web/;
+    }
+    location /webservice/ {
+      proxy_pass http://localhost:8088/webservice/;
+    }
+    location /syslog/ {
+      proxy_pass http://localhost:8086/syslog/;
+    }
+    location /core/ {
+      proxy_pass http://localhost:8083/core/;
+    }
+    location /stun/ {
+      proxy_pass http://localhost:8087/stun/;
+    }
+EOM
+else
+echo "nginx is not installed, installing it now"
+yum install nginx -y
+cat > /etc/nginx/nginx.conf <<- EOM
+events {
+  worker_connections  19000;
+}
+
+http {
+  server {
+    listen       80;
+    server_name  localhost;
+
+    # For the geeks: "A man is not dead while his name is still spoken." -Terry Pratchett
+    add_header X-Clacks-Overhead "GNU Terry Pratchett";
+
+    location /tr069/ {
+      proxy_pass http://localhost:8085/tr069/;
+    }
+    location /web/ {
+      proxy_pass http://localhost:8081/web/;
+    }
+    location /webservice/ {
+      proxy_pass http://localhost:8088/webservice/;
+    }
+    location /syslog/ {
+      proxy_pass http://localhost:8086/syslog/;
+    }
+    location /core/ {
+      proxy_pass http://localhost:8083/core/;
+    }
+    location /stun/ {
+      proxy_pass http://localhost:8087/stun/;
+    }
+  }
+}
+EOM
+systemctl enable nginx
+systemctl restart nginx
+fi
 echo "Generated mysql root pw: $mysqlRootPass"
 echo "Generated acs password is $acsPass"
