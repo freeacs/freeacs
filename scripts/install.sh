@@ -163,7 +163,7 @@ module_setup() {
   echo "$module installation start"
   systemctl disable freeacs-$module
   dpkg -i freeacs-$module*.deb
-  systemctl start freeacs-$module
+  systemctl restart freeacs-$module
   echo "$module installation complete"
 }
 
