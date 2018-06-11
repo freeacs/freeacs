@@ -19,7 +19,8 @@ lazy val packagingSettings = Seq(
   rpmRelease := "1",
   rpmUrl := Some("https://github.com/freeacs/freeacs"),
   rpmLicense := Some("The MIT License (MIT)"),
-  rpmVendor := "freeacs"
+  rpmVendor := "freeacs",
+  serviceAutostart := false
 )
 
 lazy val commonSettings = Seq(
