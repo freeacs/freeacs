@@ -165,6 +165,7 @@ download_freeacs
 install_mysql
 create_freeacsdbuser
 load_database_tables
+yum install java-1.8.0-openjdk-headless -y
 module_setup core
 module_setup stun
 module_setup tr069
