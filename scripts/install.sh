@@ -21,7 +21,7 @@ check_java_installation() {
   fi
   if [ $javaok = 'n' ] ; then
     echo "The command 'java -version' doesn't seem to return the expected 'OpenJDK' and"
-    echo "'1.7' strings. One possible explanation is that OpenJDK is not the default"
+    echo "'1.8' strings. One possible explanation is that OpenJDK is not the default"
     echo "java of your system. Make sure this is corrected before you continue"
     exit
   else
@@ -32,7 +32,7 @@ check_java_installation() {
 check_mysql_installation() {
   mysqlok=`mysql --version | grep 5.7 | wc -l`
   if [ $mysqlok != '1' ] ; then
-    echo "The command 'mysql --version' doesn't seem to return the expected '5.6' string."
+    echo "The command 'mysql --version' doesn't seem to return the expected '5.7' string."
 	echo "One explanation is that you've installed the wrong version of MySQL. Please"
 	echo "correct this before you continue"
 	exit
