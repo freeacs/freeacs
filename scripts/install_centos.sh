@@ -98,10 +98,6 @@ install_mysql() {
     tempRootDBPass="`grep 'temporary.*root@localhost' /var/log/mysqld.log | tail -n 1 | sed 's/.*root@localhost: //'`"
 
     echo ' -> Setting up new mysql server root password'
-    systemctl stop mysqld.service
-    rm -rf /var/lib/mysql/*logfile*
-    wget -O /etc/my.cnf "https://my-site.com/downloads/mysql/512MB.cnf"
-    systemctl start mysqld.service
     mysqladmin -u root --password="$tempRootDBPass" password "$mysqlRootPass"
     mysql -u root --password="$mysqlRootPass" -e <<-EOSQL
         DELETE FROM mysql.user WHERE User='';
