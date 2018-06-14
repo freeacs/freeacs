@@ -88,16 +88,11 @@ create_freeacsdbuser() {
       echo "------------------------------------------------"
       echo ""
       exit
-    else
-      echo ""
-      echo "The FreeACS MySQL database user is OK. "
-  	  echo ""
     fi
-  else
-    echo ""
-    echo "The FreeACS MySQL database user is OK. "
-    echo ""
   fi
+  echo ""
+  echo "The FreeACS MySQL database user is OK. "
+  echo ""
 }
 
 load_database_tables() {
@@ -139,18 +134,18 @@ database_setup() {
   tablepresent=`mysql -uacs -p$acsdbpw acs -e "SHOW TABLES LIKE 'unit_type'" 2> /dev/null  | wc -l`
   if [ "$tablepresent" == "2" ] ; then
     echo "WARNING! An important FreeACS table is found in the database,"
-	echo "indicating that the database tables have already been loaded. "
-	echo "If you decide to load all table definitions, you will delete "
-	echo "ALL FreeACS data in the database, and start over."
+    echo "indicating that the database tables have already been loaded. "
+    echo "If you decide to load all table definitions, you will delete "
+    echo "ALL FreeACS data in the database, and start over."
     verified='n'
     until [ $verified == 'y' ] || [ $verified == 'Y' ]; do
       read -p "Load all table defintions (and overwriting all data)? (y/n): " yn
       read -p "Is [$yn] correct? (y/n) " verified
     done
-	echo
-	if [ "$yn" == 'y' ] ; then
-	  load_database_tables
-	fi
+    echo
+    if [ "$yn" == 'y' ] ; then
+      load_database_tables
+    fi
   else
     load_database_tables
   fi
