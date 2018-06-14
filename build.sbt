@@ -2,6 +2,8 @@ import sbt.Keys.fork
 
 publishTo in ThisBuild := Some(Resolver.file("file",  new File(Path.userHome.absolutePath+"/.m2/repository")))
 
+javacOptions in ThisBuild ++= Seq("-encoding", "UTF-8")
+
 lazy val dockerSettings = Seq(
   maintainer in Docker := "Jarl Andre Hubenthal <jarl.andre@gmail.com>",
   dockerRepository := Some("freeacs"),
