@@ -23,8 +23,9 @@ public class DataSourceConfig {
 
     @Bean
     @Qualifier("syslog")
-    @ConfigurationProperties("syslog.datasource")
+    //@ConfigurationProperties("syslog.datasource")
     public DataSource syslogDs() {
-        return DataSourceBuilder.create().type(HikariDataSource.class).build();
+        return mainDs();
+        //return DataSourceBuilder.create().type(HikariDataSource.class).build();
     }
 }
