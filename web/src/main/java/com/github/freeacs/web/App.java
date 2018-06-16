@@ -26,6 +26,7 @@ import java.util.Collections;
 public class App {
 
     public static void main(String[] args) {
+        System.getProperties().setProperty("org.eclipse.jetty.server.Request.maxFormKeys", "2000");
         SpringApplication.run(App.class, args);
     }
 
