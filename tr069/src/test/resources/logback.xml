@@ -13,7 +13,7 @@
     <logger name="com.zaxxer.hikari" level="WARN" />
     <logger name="com.github.freeacs.tr069" level="INFO" />
     <logger name="Conversation" level="INFO" />
-    <root level="DEBUG">
+    <root level="ERROR">
         <appender-ref ref="ASYNC_STDOUT" />
     </root>
 </configuration>
