@@ -1,6 +1,8 @@
 ![Freeacs Logo](https://github.com/freeacs/readme/blob/master/logo.png)
 
 [![Build Status](https://travis-ci.org/freeacs/freeacs.svg?branch=master)](https://travis-ci.org/freeacs/freeacs)
+[![Build Status](https://travis-ci.org/freeacs/mysql.svg?branch=master)](https://travis-ci.org/freeacs/mysql)
+[![Build Status](https://travis-ci.org/freeacs/nginx.svg?branch=master)](https://travis-ci.org/freeacs/nginx)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bbbaea0fbfd84abb9013ece867747e30)](https://www.codacy.com/app/Freeacs/freeacs?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=freeacs/freeacs&amp;utm_campaign=Badge_Grade)
 [![Gitter chat](https://badges.gitter.im/FreeACS-on-Gitter/Freeacs.png)](https://gitter.im/FreeACS-on-Gitter/Freeacs)
 [![Donate](https://img.shields.io/badge/Patreon-Donate-blue.svg)](https://www.patreon.com/freeacs)
