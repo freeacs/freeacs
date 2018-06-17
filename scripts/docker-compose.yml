@@ -125,6 +125,7 @@ services:
       - ./conf/webservice:/opt/docker/conf:ro
   db:
     image: freeacs/mysql
+    command: --max_allowed_packet=32M
     restart: always
     mem_limit: 1000000000
     volumes:
