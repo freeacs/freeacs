@@ -156,7 +156,7 @@ public class JobKickThread implements Runnable {
 					Unit unit = acsUnit.getUnitById(unitId);
 					if (unit != null) {
 						startUnitJob(unit, jobId, acs);
-						Kick.kick(unit);
+						new Kick().kick(unit);
 						iterator.remove();
 					} else {
 						log.error(unitId + " was not found in xAPS, not possible to kick");

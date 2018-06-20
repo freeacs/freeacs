@@ -60,7 +60,7 @@ public class Kick {
 	private static Logger log = LoggerFactory.getLogger("KickSingle");
 	private static Random random = new Random();
 
-	public static KickResponse kick(Unit unit) throws MalformedURLException, SQLException {
+	public KickResponse kick(Unit unit) throws MalformedURLException, SQLException {
 		CPEParameters cpeParams = new CPEParameters(getKeyroot(unit));
 		String udpCrUrl = unit.getParameterValue(cpeParams.UDP_CONNECTION_URL, false);
 		String crUrl = unit.getParameterValue(cpeParams.CONNECTION_URL, false);
@@ -71,17 +71,17 @@ public class Kick {
 		KickResponse kr = new KickResponse(false, "Neither a public ConnectionRequestURL nor any UDPConnectionRequestAddress was found");
 		// TCP-kick (HTTP)
 		if (crUrl != null && !crUrl.trim().equals("") && checkIfPublicIP(crUrl)) {
-			log.debug(unit.getId() + " will try TCP kick");
+			log.debug(unit.getId() + ": will try TCP kick on " + crUrl);
 			kr = kickUsingTCP(unit, crUrl, crPass, crUser);
 		}
 		// UDP-kick
 		if (!kr.isKicked() && udpCrUrl != null && !udpCrUrl.trim().equals("")) {
-			log.debug(unit.getId() + " will try UDP kick");
+			log.debug(unit.getId() + ": will try UDP kick on " + udpCrUrl);
 			kr = kickUsingUDP(unit, udpCrUrl, crPass, crUser);
 		} else if (Properties.EXPECT_PORT_FORWARDING && publicIP != null && crUrl != null) {
-			log.debug(unit.getId() + " will try TCP kick by expecting port forwarding");
-			crUrl = crUrl.replace(new URL(crUrl).getHost(), publicIP);
-			kr = kickUsingTCP(unit, crUrl, crPass, crUser);
+			String newCrUrl = crUrl.replace(new URL(crUrl).getHost(), publicIP);
+			log.debug(unit.getId() + ": will try TCP kick by expecting port forwarding on " + crUrl + " -> " + newCrUrl);
+			kr = kickUsingTCP(unit, newCrUrl, crPass, crUser);
 		}
 
 		return kr;
@@ -94,14 +94,14 @@ public class Kick {
 	 * @return a boolean if configured to check if ip is public, otherwise always true
 	 * @throws MalformedURLException if the ip is malformed
 	 */
-	static boolean checkIfPublicIP(String crUrl) throws MalformedURLException {
+	boolean checkIfPublicIP(String crUrl) throws MalformedURLException {
 		if (!Properties.CHECK_PUBLIC_IP) {
 			return true; // we don't check it and we allow it.
 		}
 		return IPAddress.isPublic(new URL(crUrl).getHost());
 	}
 
-	private static KickResponse kickUsingTCP(Unit unit, String crUrl, String crPass, String crUser) throws MalformedURLException {
+	protected KickResponse kickUsingTCP(Unit unit, String crUrl, String crPass, String crUser) throws MalformedURLException {
 		DefaultHttpClient client = new DefaultHttpClient();
 		HttpGet get = new HttpGet(crUrl);
 		get.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 20000);
@@ -135,7 +135,7 @@ public class Kick {
 		}
 	}
 
-	private static KickResponse kickUsingUDP(Unit unit, String udpCrUrl, String crPass, String crUser) {
+	private KickResponse kickUsingUDP(Unit unit, String udpCrUrl, String crPass, String crUser) {
 		try {
 			String id = "" + random.nextInt(100000);
 			String cn = "" + random.nextLong();
@@ -163,7 +163,7 @@ public class Kick {
 
 	/* KICK RELATED METHODS */
 
-	private static String getKeyroot(Unit u) {
+	private String getKeyroot(Unit u) {
 		for (String paramName : u.getParameters().keySet()) {
 			if (paramName.startsWith("Device."))
 				return "Device.";
@@ -173,7 +173,7 @@ public class Kick {
 		throw new RuntimeException("No keyroot found for unit " + u.getId() + ", probably because no parameters are defined");
 	}
 
-	private static HttpGet authenticate(DefaultHttpClient client, HttpGet get, String urlStr, String username, String password) throws MalformedURLException {
+	private HttpGet authenticate(DefaultHttpClient client, HttpGet get, String urlStr, String username, String password) throws MalformedURLException {
 		URL url = new URL(urlStr);
 		List<String> authPrefs = new ArrayList<String>(2);
 		authPrefs.add(AuthPolicy.DIGEST);
