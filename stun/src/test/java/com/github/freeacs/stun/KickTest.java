@@ -79,11 +79,11 @@ public class KickTest {
         Kick kick = mock(Kick.class);
         when(kick.kick(any(Unit.class))).thenCallRealMethod();
         when(kick.checkIfPublicIP(anyString())).thenCallRealMethod();
-        Kick.KickResponse successRes = new Kick.KickResponse(
-                true,
-                "TCP/HTTP-kick to http://localhost:8080/connect got HTTP response code 200, indicating success");
         when(kick.kickUsingTCP(any(Unit.class), anyString(), any(), any()))
-                .thenReturn(successRes);
+                .thenReturn(new Kick.KickResponse(
+                        true,
+                        "TCP/HTTP-kick to http://localhost:8080/connect " +
+                                "got HTTP response code 200, indicating success"));
 
         // When:
         Kick.KickResponse kr = kick.kick(unit);
