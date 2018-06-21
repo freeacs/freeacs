@@ -179,6 +179,7 @@ lazy val springShell = (project in file("springshell"))
     name := "FreeACS SpringShell",
     packageSummary := "FreeACS SpringShell",
     packageDescription := "FreeACS SpringShell",
+    mainClass in Compile := Some("com.github.freeacs.springshell.ShellApp"),
     publish in Docker := {},
     libraryDependencies ++= Dependencies.database
       ++ Dependencies.testing

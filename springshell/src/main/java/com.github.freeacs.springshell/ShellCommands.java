@@ -8,8 +8,6 @@ import org.springframework.shell.standard.ShellOption;
 
 import java.sql.SQLException;
 import java.util.Collections;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 @ShellComponent
 public class ShellCommands {
