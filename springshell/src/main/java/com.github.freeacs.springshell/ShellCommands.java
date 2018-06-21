@@ -55,7 +55,7 @@ public class ShellCommands {
         });
     }
 
-    private String doOnUnittype(Function<Unittype, String> func) {
+    private String doOnUnittype(CheckedFunction<Unittype, String> func) {
         return shellContext.getUnittype()
                 .map(func::apply)
                 .orElseGet(() -> "Unittype is not set");
@@ -73,15 +73,11 @@ public class ShellCommands {
         });
     }
 
-    private String doOnProfile(BiFunction<Unittype, Profile, String> func) {
+    private String doOnProfile(CheckedBiFunction<Unittype, Profile, String> func) {
         return shellContext.getUnittype()
-                .map(unittype -> {
-                    return shellContext.getProfile()
-                            .map(profile -> {
-                                return func.apply(unittype, profile);
-                            })
-                            .orElseGet(() -> "Profile is not set");
-                })
+                .map(unittype -> shellContext.getProfile()
+                        .map(profile -> func.apply(unittype, profile))
+                        .orElseGet(() -> "Profile is not set"))
                 .orElseGet(() -> "Unittype is not set");
     }
 
@@ -90,7 +86,7 @@ public class ShellCommands {
         Unittype unittype = dbi.getAcs().getUnittype(unittypeName);
         if (unittype != null) {
             shellContext.setUnitType(unittype);
-            return null;
+            return "Changed unittype to " + unittypeName;
         } else {
             return "Unittype " + unittypeName + " does not exist";
         }
@@ -101,10 +97,10 @@ public class ShellCommands {
         return doOnUnittype((unittype) -> {
             Profile profile = dbi.getAcs().getProfile(unittype.getName(), profileName);
             if (profile == null) {
-                return "Profile does not exist";
+                throw new IllegalArgumentException("Profile does not exist");
             }
             shellContext.setProfile(profile);
-            return null;
+            return "Changed profile to " + profileName;
         });
     }
 
@@ -114,14 +110,23 @@ public class ShellCommands {
             try {
                 Unit unit = acsUnit.getUnitById(unitId, unittype, profile);
                 if (unit == null) {
-                    return "Unit " + unitId + " does not exist";
+                    throw new IllegalArgumentException("Unit " + unitId + " does not exist");
                 }
                 shellContext.setUnit(unit);
-                return null;
+                return "Changed unit to " + unitId;
             } catch (SQLException e) {
-                throw new IllegalStateException("Failed to get unit", e);
+                throw new IllegalStateException("Failed to get unit " + unitId, e);
             }
         });
     }
 
+    @FunctionalInterface
+    public interface CheckedFunction<T1, R> {
+        R apply(T1 t1) throws IllegalArgumentException;
+    }
+
+    @FunctionalInterface
+    public interface CheckedBiFunction<T1, T2, R> {
+        R apply(T1 t1, T2 t2) throws IllegalArgumentException;
+    }
 }
