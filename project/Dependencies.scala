@@ -6,8 +6,9 @@ object Dependencies {
   val springBootTest = "org.springframework.boot" % "spring-boot-starter-test" % "2.0.2.RELEASE" % "test"
   val springBootWeb = "org.springframework.boot" % "spring-boot-starter-web" % "2.0.2.RELEASE" exclude("org.springframework.boot", "spring-boot-starter-tomcat")
   val springBootJetty = "org.springframework.boot" % "spring-boot-starter-jetty" % "2.0.2.RELEASE"
+  val springBootActiveMq = "org.springframework.boot" % "spring-boot-starter-activemq" % "2.0.2.RELEASE"
 
-  val springBoot = Seq(springBootActuator, springBootJdbc, springBootTest, springBootWeb, springBootJetty)
+  val springBoot = Seq(springBootActuator, springBootJdbc, springBootTest, springBootWeb, springBootJetty, springBootActiveMq)
 
   val springBootWebservices = Seq("org.springframework.boot" % "spring-boot-starter-web-services" % "2.0.1.RELEASE")
 
