@@ -9,27 +9,29 @@ public class ShellContext {
     private String profile;
     private String unit;
 
-    public String getUnitType() {
-        return unitType;
-    }
-
-    public void setUnitType(String unitType) {
+    void setUnitType(String unitType) {
         this.unitType = unitType;
     }
 
-    public String getProfile() {
-        return profile;
-    }
-
-    public void setProfile(String profile) {
+    void setProfile(String profile) {
         this.profile = profile;
     }
 
-    public String getUnit() {
-        return unit;
+    void setUnit(String unit) {
+        this.unit = unit;
     }
 
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (unitType != null) {
+            sb.append("(").append(unitType).append(":ut):");
+        }
+        if (profile != null) {
+            sb.append("(").append(profile).append(":pr):");
+        }
+        if (unit != null) {
+            sb.append("(").append(unit).append(":u):");
+        }
+        return sb.toString();
     }
 }

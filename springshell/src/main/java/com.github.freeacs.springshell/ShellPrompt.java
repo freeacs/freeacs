@@ -17,9 +17,6 @@ public class ShellPrompt implements PromptProvider {
 
     @Override
     public AttributedString getPrompt() {
-        if (shellContext.getUnitType() != null) {
-            return new AttributedString("freeacs-shell:(" + shellContext.getUnitType() + ":ut)>", AttributedStyle.DEFAULT.foreground(AttributedStyle.BLACK));
-        }
-        return new AttributedString("freeacs-shell:>", AttributedStyle.DEFAULT.foreground(AttributedStyle.BLACK));
+        return new AttributedString("freeacs-shell:" + shellContext.toString() + ">", AttributedStyle.DEFAULT.foreground(AttributedStyle.BLACK));
     }
 }
