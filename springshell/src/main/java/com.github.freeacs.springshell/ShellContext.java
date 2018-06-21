@@ -10,7 +10,7 @@ import java.net.URI;
 @Component
 public class ShellContext {
 
-    private final String db;
+    private final String dbHost;
     private final String user;
 
     private String unitType;
@@ -18,11 +18,11 @@ public class ShellContext {
     private String unit;
 
     @Autowired
-    public ShellContext(Identity identity, @Value("${main.datasource.jdbcUrl}") String db) {
+    public ShellContext(Identity identity, @Value("${main.datasource.jdbcUrl}") String jdbcUrl) {
         this.user = identity.getUser().getUsername();
-        String cleanedUrl = (db.contains("?") ? db.substring(0, db.indexOf("?")) : db).substring(5);
+        String cleanedUrl = cleanUrl(jdbcUrl);
         URI uri = URI.create(cleanedUrl);
-        this.db = uri.getHost();
+        this.dbHost = uri.getHost();
     }
 
     void setUnitType(String unitType) {
@@ -43,7 +43,7 @@ public class ShellContext {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("shell(").append(user).append("@" + db + "):");
+        sb.append("shell(").append(user).append("@").append(dbHost).append("):");
         if (unitType != null) {
             sb.append("(").append(unitType).append(":ut):");
         }
@@ -54,5 +54,11 @@ public class ShellContext {
             sb.append("(").append(unit).append(":u):");
         }
         return sb.toString();
+    }
+
+    private String cleanUrl(String jdbcUrl) {
+        return (jdbcUrl.contains("?")
+                ? jdbcUrl.substring(0, jdbcUrl.indexOf("?"))
+                : jdbcUrl).substring(5);
     }
 }
