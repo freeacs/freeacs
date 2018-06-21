@@ -14,12 +14,14 @@ public class ShellCommands {
     private final DBI dbi;
     private final ACSUnit acsUnit;
     private final UnitJobs unitJobs;
+    private final ShellContext shellContext;
 
     @Autowired
-    public ShellCommands(DBI dbi, ACSUnit acsUnit, UnitJobs unitJobs) {
+    public ShellCommands(DBI dbi, ACSUnit acsUnit, UnitJobs unitJobs, ShellContext shellContext) {
         this.dbi = dbi;
         this.acsUnit = acsUnit;
         this.unitJobs = unitJobs;
+        this.shellContext = shellContext;
     }
 
     @ShellMethod("Create unittype")
@@ -32,8 +34,29 @@ public class ShellCommands {
         if (acs.getUnittype(unittype) == null) {
             Unittype newUnitType = new Unittype(unittype, vendor, description, protocol);
             acs.getUnittypes().addOrChangeUnittype(newUnitType, acs);
-            return "Created " + unittype;
+            return null;
         }
         return "Unittype " + unittype + " exists";
     }
+
+    @ShellMethod("Set unittype")
+    public String setUnittype(@ShellOption String unittype) {
+        if (dbi.getAcs().getUnittype(unittype) != null) {
+            shellContext.setUnitType(unittype);
+            return null;
+        } else {
+            return "Unittype " + unittype + " does not exist";
+        }
+    }
+
+    @ShellMethod("Set profile")
+    public void setProfile(@ShellOption String profile) {
+        shellContext.setProfile(profile);
+    }
+
+    @ShellMethod("Set unit")
+    public void setUnit(@ShellOption String unit) {
+        shellContext.setUnit(unit);
+    }
+
 }

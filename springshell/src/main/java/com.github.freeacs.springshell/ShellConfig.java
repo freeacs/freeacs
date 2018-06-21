@@ -8,7 +8,6 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -21,7 +20,6 @@ public class ShellConfig {
     }
 
     @Bean
-    @Primary
     @ConfigurationProperties("main.datasource")
     public DataSource mainDs() {
         return DataSourceBuilder.create().type(HikariDataSource.class).build();
