@@ -7,6 +7,7 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 
 import java.sql.SQLException;
+import java.util.Collections;
 
 @ShellComponent
 public class ShellCommands {
@@ -39,24 +40,72 @@ public class ShellCommands {
         return "Unittype " + unittype + " exists";
     }
 
+    @ShellMethod("Create profile")
+    public String createProfile(@ShellOption String profileName) throws SQLException {
+        Unittype unittype = shellContext.getUnittype();
+        if (unittype == null) {
+            return "Unittype is not set";
+        }
+        Profile newProfile = new Profile(profileName, unittype);
+        unittype.getProfiles().addOrChangeProfile(newProfile, dbi.getAcs());
+        return null;
+    }
+
+    @ShellMethod("Create unit")
+    public String createUnit(@ShellOption String unitId) throws SQLException {
+        Unittype unittype = shellContext.getUnittype();
+        if (unittype == null) {
+            return "Unittype is not set";
+        }
+        Profile profile = shellContext.getProfile();
+        if (profile == null) {
+            return "Profile is not set";
+        }
+        acsUnit.addUnits(Collections.singletonList(unitId), profile);
+        return null;
+    }
+
     @ShellMethod("Set unittype")
-    public String setUnittype(@ShellOption String unittype) {
-        if (dbi.getAcs().getUnittype(unittype) != null) {
+    public String setUnittype(@ShellOption String unittypeName) {
+        Unittype unittype = dbi.getAcs().getUnittype(unittypeName);
+        if (unittype != null) {
             shellContext.setUnitType(unittype);
             return null;
         } else {
-            return "Unittype " + unittype + " does not exist";
+            return "Unittype " + unittypeName + " does not exist";
         }
     }
 
     @ShellMethod("Set profile")
-    public void setProfile(@ShellOption String profile) {
+    public String setProfile(@ShellOption String profileName) {
+        Unittype unittype = shellContext.getUnittype();
+        if (unittype == null) {
+            return "Unittype is not set";
+        }
+        Profile profile = dbi.getAcs().getProfile(unittype.getName(), profileName);
+        if (profile == null) {
+            return "Profile does not exist";
+        }
         shellContext.setProfile(profile);
+        return null;
     }
 
     @ShellMethod("Set unit")
-    public void setUnit(@ShellOption String unit) {
+    public String setUnit(@ShellOption String unitId) throws SQLException {
+        Unittype unittype = shellContext.getUnittype();
+        if (unittype == null) {
+            return "Unittype is not set";
+        }
+        Profile profile = shellContext.getProfile();
+        if (profile == null) {
+            return "Profile is not set";
+        }
+        Unit unit = acsUnit.getUnitById(unitId, unittype, profile);
+        if  (unit == null) {
+            return "Unit " + unitId + " does not exist";
+        }
         shellContext.setUnit(unit);
+        return null;
     }
 
 }

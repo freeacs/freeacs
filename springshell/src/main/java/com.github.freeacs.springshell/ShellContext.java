@@ -1,6 +1,9 @@
 package com.github.freeacs.springshell;
 
 import com.github.freeacs.dbi.Identity;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.Unittype;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,9 +16,9 @@ public class ShellContext {
     private final String dbHost;
     private final String user;
 
-    private String unitType;
-    private String profile;
-    private String unit;
+    private Unittype unitType;
+    private Profile profile;
+    private Unit unit;
 
     @Autowired
     public ShellContext(Identity identity, @Value("${main.datasource.jdbcUrl}") String jdbcUrl) {
@@ -25,33 +28,33 @@ public class ShellContext {
         this.dbHost = uri.getHost();
     }
 
-    void setUnitType(String unitType) {
+    void setUnitType(Unittype unitType) {
         this.unitType = unitType;
     }
 
-    void setProfile(String profile) {
+    void setProfile(Profile profile) {
         this.profile = profile;
     }
 
-    void setUnit(String unit) {
+    void setUnit(Unit unit) {
         this.unit = unit;
     }
 
-    public String getUser() {
-        return user;
+    public Unittype getUnittype() {
+        return unitType;
     }
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("shell(").append(user).append("@").append(dbHost).append("):");
         if (unitType != null) {
-            sb.append("(").append(unitType).append(":ut):");
+            sb.append("(").append(unitType.getName()).append(":ut):");
         }
         if (profile != null) {
-            sb.append("(").append(profile).append(":pr):");
+            sb.append("(").append(profile.getName()).append(":pr):");
         }
         if (unit != null) {
-            sb.append("(").append(unit).append(":u):");
+            sb.append("(").append(unit.getId()).append(":u):");
         }
         return sb.toString();
     }
@@ -60,5 +63,9 @@ public class ShellContext {
         return (jdbcUrl.contains("?")
                 ? jdbcUrl.substring(0, jdbcUrl.indexOf("?"))
                 : jdbcUrl).substring(5);
+    }
+
+    public Profile getProfile() {
+        return profile;
     }
 }
