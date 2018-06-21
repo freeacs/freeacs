@@ -17,6 +17,6 @@ public class ShellPrompt implements PromptProvider {
 
     @Override
     public AttributedString getPrompt() {
-        return new AttributedString("freeacs-shell:" + shellContext.toString() + ">", AttributedStyle.DEFAULT.foreground(AttributedStyle.BLACK));
+        return new AttributedString(shellContext.toString() + ">", AttributedStyle.DEFAULT.foreground(AttributedStyle.BLACK));
     }
 }
