@@ -1,8 +1,6 @@
 package com.github.freeacs.springshell;
 
-import com.github.freeacs.dbi.ACS;
-import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
@@ -13,8 +11,16 @@ import java.sql.SQLException;
 @ShellComponent
 public class ShellCommands {
 
+    private final DBI dbi;
+    private final ACSUnit acsUnit;
+    private final UnitJobs unitJobs;
+
     @Autowired
-    private DBI dbi;
+    public ShellCommands(DBI dbi, ACSUnit acsUnit, UnitJobs unitJobs) {
+        this.dbi = dbi;
+        this.acsUnit = acsUnit;
+        this.unitJobs = unitJobs;
+    }
 
     @ShellMethod("Create unittype")
     public String createUnittype(
