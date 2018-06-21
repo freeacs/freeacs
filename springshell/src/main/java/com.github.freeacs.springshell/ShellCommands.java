@@ -53,12 +53,6 @@ public class ShellCommands {
         });
     }
 
-    private String doOnUnittype(CheckedFunction<Unittype, String> func) {
-        return shellContext.getUnittype()
-                .map(func::apply)
-                .orElseGet(() -> "Unittype is not set");
-    }
-
     @ShellMethod("Create unit")
     public String createUnit(@ShellOption String unitId) throws SQLException {
         return doOnProfile((unittype, profile) -> {
@@ -69,14 +63,6 @@ public class ShellCommands {
             }
             return null;
         });
-    }
-
-    private String doOnProfile(CheckedBiFunction<Unittype, Profile, String> func) {
-        return shellContext.getUnittype()
-                .map(unittype -> shellContext.getProfile()
-                        .map(profile -> func.apply(unittype, profile))
-                        .orElseGet(() -> "Profile is not set"))
-                .orElseGet(() -> "Unittype is not set");
     }
 
     @ShellMethod("Set unittype")
@@ -116,6 +102,20 @@ public class ShellCommands {
                 throw new IllegalStateException("Failed to get unit " + unitId, e);
             }
         });
+    }
+
+    private String doOnProfile(CheckedBiFunction<Unittype, Profile, String> func) {
+        return shellContext.getUnittype()
+                .map(unittype -> shellContext.getProfile()
+                        .map(profile -> func.apply(unittype, profile))
+                        .orElseGet(() -> "Profile is not set"))
+                .orElseGet(() -> "Unittype is not set");
+    }
+
+    private String doOnUnittype(CheckedFunction<Unittype, String> func) {
+        return shellContext.getUnittype()
+                .map(func::apply)
+                .orElseGet(() -> "Unittype is not set");
     }
 
     @FunctionalInterface
