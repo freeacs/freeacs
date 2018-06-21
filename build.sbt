@@ -171,6 +171,23 @@ lazy val stun = (project in file("stun"))
   .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin)
   .dependsOn(dbi)
 
+lazy val springShell = (project in file("springshell"))
+  .settings(
+    commonSettings,
+    dockerSettings,
+    packagingSettings,
+    name := "FreeACS SpringShell",
+    packageSummary := "FreeACS SpringShell",
+    packageDescription := "FreeACS SpringShell",
+    publish in Docker := {},
+    libraryDependencies ++= Dependencies.database
+      ++ Dependencies.testing
+      ++ Dependencies.jdeb
+      ++ Seq("org.springframework.shell" % "spring-shell-starter" % "2.0.1.RELEASE")
+  )
+  .enablePlugins(JavaAppPackaging, JDebPackaging, RpmPlugin)
+  .dependsOn(shell)
+
 lazy val shell = (project in file("shell"))
   .settings(
     commonSettings,
