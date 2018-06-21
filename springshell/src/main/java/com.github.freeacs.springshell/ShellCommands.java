@@ -1,6 +1,14 @@
 package com.github.freeacs.springshell;
 
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.ACSUnit;
+import com.github.freeacs.dbi.DBI;
+import com.github.freeacs.dbi.Group;
+import com.github.freeacs.dbi.Job;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.UnitJobs;
+import com.github.freeacs.dbi.Unittype;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
@@ -101,6 +109,35 @@ public class ShellCommands {
             } catch (SQLException e) {
                 throw new IllegalStateException("Failed to get unit " + unitId, e);
             }
+        });
+    }
+
+    @ShellMethod("Set group")
+    public String setGroup(@ShellOption String groupName) throws SQLException {
+        return doOnUnittype((unittype) -> {
+            Group group = unittype.getGroups().getByName(groupName);
+            if (group == null) {
+                throw new IllegalArgumentException("Group " + groupName + " does not exist");
+            }
+            shellContext.setGroup(group);
+            shellContext.setUnit(null);
+            shellContext.setProfile(null);
+            return "Changed group to " + groupName;
+        });
+    }
+
+    @ShellMethod("Set job")
+    public String setJob(@ShellOption String jobName) throws SQLException {
+        return doOnUnittype((unittype) -> {
+            Job job = unittype.getJobs().getByName(jobName);
+            if (job == null) {
+                throw new IllegalArgumentException("Job " + jobName + " does not exist");
+            }
+            shellContext.setJob(job);
+            shellContext.setGroup(null);
+            shellContext.setUnit(null);
+            shellContext.setProfile(null);
+            return "Changed job to " + jobName;
         });
     }
 

@@ -1,6 +1,8 @@
 package com.github.freeacs.springshell;
 
+import com.github.freeacs.dbi.Group;
 import com.github.freeacs.dbi.Identity;
+import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.Unittype;
@@ -20,6 +22,8 @@ public class ShellContext {
     private Unittype unitType;
     private Profile profile;
     private Unit unit;
+    private Job job;
+    private Group group;
 
     @Autowired
     public ShellContext(Identity identity, @Value("${main.datasource.jdbcUrl}") String jdbcUrl) {
@@ -29,23 +33,31 @@ public class ShellContext {
         this.dbHost = uri.getHost();
     }
 
-    void setUnitType(Unittype unitType) {
+    protected void setUnitType(Unittype unitType) {
         this.unitType = unitType;
     }
 
-    void setProfile(Profile profile) {
+    protected void setProfile(Profile profile) {
         this.profile = profile;
     }
 
-    void setUnit(Unit unit) {
+    protected void setUnit(Unit unit) {
         this.unit = unit;
     }
 
-    Optional<Unittype> getUnittype() {
+    protected void setJob(Job job) {
+        this.job = job;
+    }
+
+    protected void setGroup(Group group) {
+        this.group = group;
+    }
+
+    protected Optional<Unittype> getUnittype() {
         return Optional.ofNullable(unitType);
     }
 
-    Optional<Profile> getProfile() {
+    protected Optional<Profile> getProfile() {
         return Optional.ofNullable(profile);
     }
 
@@ -60,6 +72,12 @@ public class ShellContext {
         }
         if (unit != null) {
             sb.append("(").append(unit.getId()).append(":u):");
+        }
+        if (group != null) {
+            sb.append("(").append(group.getName()).append(":g):");
+        }
+        if (job != null) {
+            sb.append("(").append(job.getName()).append(":j):");
         }
         return sb.toString();
     }
