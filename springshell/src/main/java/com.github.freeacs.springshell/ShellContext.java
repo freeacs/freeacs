@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
+import java.util.Optional;
 
 @Component
 public class ShellContext {
@@ -40,8 +41,12 @@ public class ShellContext {
         this.unit = unit;
     }
 
-    public Unittype getUnittype() {
-        return unitType;
+    Optional<Unittype> getUnittype() {
+        return Optional.ofNullable(unitType);
+    }
+
+    Optional<Profile> getProfile() {
+        return Optional.ofNullable(profile);
     }
 
     public String toString() {
@@ -63,9 +68,5 @@ public class ShellContext {
         return (jdbcUrl.contains("?")
                 ? jdbcUrl.substring(0, jdbcUrl.indexOf("?"))
                 : jdbcUrl).substring(5);
-    }
-
-    public Profile getProfile() {
-        return profile;
     }
 }

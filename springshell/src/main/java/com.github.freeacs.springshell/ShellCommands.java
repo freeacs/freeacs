@@ -8,6 +8,8 @@ import org.springframework.shell.standard.ShellOption;
 
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 @ShellComponent
 public class ShellCommands {
@@ -42,27 +44,45 @@ public class ShellCommands {
 
     @ShellMethod("Create profile")
     public String createProfile(@ShellOption String profileName) throws SQLException {
-        Unittype unittype = shellContext.getUnittype();
-        if (unittype == null) {
-            return "Unittype is not set";
-        }
-        Profile newProfile = new Profile(profileName, unittype);
-        unittype.getProfiles().addOrChangeProfile(newProfile, dbi.getAcs());
-        return null;
+        return doOnUnittype((unittype) -> {
+            Profile newProfile = new Profile(profileName, unittype);
+            try {
+                unittype.getProfiles().addOrChangeProfile(newProfile, dbi.getAcs());
+            } catch (SQLException e) {
+                throw new IllegalArgumentException("Failed to create profile", e);
+            }
+            return null;
+        });
+    }
+
+    private String doOnUnittype(Function<Unittype, String> func) {
+        return shellContext.getUnittype()
+                .map(func::apply)
+                .orElseGet(() -> "Unittype is not set");
     }
 
     @ShellMethod("Create unit")
     public String createUnit(@ShellOption String unitId) throws SQLException {
-        Unittype unittype = shellContext.getUnittype();
-        if (unittype == null) {
-            return "Unittype is not set";
-        }
-        Profile profile = shellContext.getProfile();
-        if (profile == null) {
-            return "Profile is not set";
-        }
-        acsUnit.addUnits(Collections.singletonList(unitId), profile);
-        return null;
+        return doOnProfile((unittype, profile) -> {
+            try {
+                acsUnit.addUnits(Collections.singletonList(unitId), profile);
+            } catch (SQLException e) {
+                throw new IllegalArgumentException("Failed to create unit", e);
+            }
+            return null;
+        });
+    }
+
+    private String doOnProfile(BiFunction<Unittype, Profile, String> func) {
+        return shellContext.getUnittype()
+                .map(unittype -> {
+                    return shellContext.getProfile()
+                            .map(profile -> {
+                                return func.apply(unittype, profile);
+                            })
+                            .orElseGet(() -> "Profile is not set");
+                })
+                .orElseGet(() -> "Unittype is not set");
     }
 
     @ShellMethod("Set unittype")
@@ -78,34 +98,30 @@ public class ShellCommands {
 
     @ShellMethod("Set profile")
     public String setProfile(@ShellOption String profileName) {
-        Unittype unittype = shellContext.getUnittype();
-        if (unittype == null) {
-            return "Unittype is not set";
-        }
-        Profile profile = dbi.getAcs().getProfile(unittype.getName(), profileName);
-        if (profile == null) {
-            return "Profile does not exist";
-        }
-        shellContext.setProfile(profile);
-        return null;
+        return doOnUnittype((unittype) -> {
+            Profile profile = dbi.getAcs().getProfile(unittype.getName(), profileName);
+            if (profile == null) {
+                return "Profile does not exist";
+            }
+            shellContext.setProfile(profile);
+            return null;
+        });
     }
 
     @ShellMethod("Set unit")
     public String setUnit(@ShellOption String unitId) throws SQLException {
-        Unittype unittype = shellContext.getUnittype();
-        if (unittype == null) {
-            return "Unittype is not set";
-        }
-        Profile profile = shellContext.getProfile();
-        if (profile == null) {
-            return "Profile is not set";
-        }
-        Unit unit = acsUnit.getUnitById(unitId, unittype, profile);
-        if  (unit == null) {
-            return "Unit " + unitId + " does not exist";
-        }
-        shellContext.setUnit(unit);
-        return null;
+        return doOnProfile((unittype, profile) -> {
+            try {
+                Unit unit = acsUnit.getUnitById(unitId, unittype, profile);
+                if (unit == null) {
+                    return "Unit " + unitId + " does not exist";
+                }
+                shellContext.setUnit(unit);
+                return null;
+            } catch (SQLException e) {
+                throw new IllegalStateException("Failed to get unit", e);
+            }
+        });
     }
 
 }
