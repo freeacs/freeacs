@@ -33,31 +33,46 @@ public class ShellContext {
         this.dbHost = uri.getHost();
     }
 
-    protected void setUnitType(Unittype unitType) {
+    public void setUnitType(Unittype unitType) {
         this.unitType = unitType;
+        this.unit = null;
+        this.profile = null;
+        this.group = null;
+        this.job = null;
     }
 
-    protected void setProfile(Profile profile) {
+    public void setProfile(Profile profile) {
         this.profile = profile;
+        this.group = null;
+        this.job = null;
+        this.unit = null;
     }
 
-    protected void setUnit(Unit unit) {
+    public void setUnit(Unit unit) {
         this.unit = unit;
+        this.group = null;
+        this.job = null;
     }
 
-    protected void setJob(Job job) {
+    public void setJob(Job job) {
         this.job = job;
+        this.unit = null;
+        this.profile = null;
+        this.group = null;
     }
 
-    protected void setGroup(Group group) {
+    public void setGroup(Group group) {
         this.group = group;
+        this.unit = null;
+        this.profile = null;
+        this.job = null;
     }
 
-    protected Optional<Unittype> getUnittype() {
+    public Optional<Unittype> getUnittype() {
         return Optional.ofNullable(unitType);
     }
 
-    protected Optional<Profile> getProfile() {
+    public Optional<Profile> getProfile() {
         return Optional.ofNullable(profile);
     }
 
