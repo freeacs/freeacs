@@ -82,7 +82,7 @@ public class KickTest {
         unit.setUnitParameters(parameters);
         unit.setParamsAvailable(true);
         Kick kick = mock(Kick.class);
-        when(kick.kick(any(Unit.class))).thenCallRealMethod();
+        when(kick.kickInternal(any(Unit.class))).thenCallRealMethod();
         when(kick.checkIfPublicIP(anyString())).thenCallRealMethod();
         when(kick.kickUsingTCP(any(Unit.class), anyString(), any(), any()))
                 .thenReturn(new Kick.KickResponse(
@@ -91,7 +91,7 @@ public class KickTest {
                                 "got HTTP response code 200, indicating success"));
 
         // When:
-        Kick.KickResponse kr = kick.kick(unit);
+        Kick.KickResponse kr = kick.kickInternal(unit);
 
         // Then:
         assertNotNull(kr);
