@@ -179,7 +179,7 @@ public class SingleKickThread implements Runnable {
 					reset(iterator, unit);
 				} else {
 					if (!lastIS.isKicked()) {
-						Kick.KickResponse kr = new Kick().kick(unit);
+						Kick.KickResponse kr = Kick.kick(unit);
 						if (kr.isKicked())
 							acsUnit.addOrChangeUnitParameter(unit, SystemParameters.INSPECTION_MESSAGE,
 									"Kick success at " + sdf.format(new Date()) + " - *MAY* expect provisioning response :: " + kr.getMessage());

@@ -57,10 +57,16 @@ public class Kick {
 
 	}
 
+	private static final Kick kickSingleton = new Kick();
+
+	public static KickResponse kick(Unit unit) throws MalformedURLException, SQLException {
+		return kickSingleton.kickInternal(unit);
+	}
+
 	private static Logger log = LoggerFactory.getLogger("KickSingle");
 	private static Random random = new Random();
 
-	public KickResponse kick(Unit unit) throws MalformedURLException, SQLException {
+	private KickResponse kickInternal(Unit unit) throws MalformedURLException, SQLException {
 		CPEParameters cpeParams = new CPEParameters(getKeyroot(unit));
 		String udpCrUrl = unit.getParameterValue(cpeParams.UDP_CONNECTION_URL, false);
 		String crUrl = unit.getParameterValue(cpeParams.CONNECTION_URL, false);
