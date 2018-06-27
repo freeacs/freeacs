@@ -364,6 +364,9 @@ public class Jobs {
 				rs.close();
 			if (ps != null)
 				ps.close();
+			if (c != null) {
+				c.close();
+			}
 		}
 
 	}
@@ -446,6 +449,9 @@ public class Jobs {
 		} finally {
 			if (pp != null)
 				pp.close();
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
@@ -503,6 +509,9 @@ public class Jobs {
 		} finally {
 			if (pp != null)
 				pp.close();
+			if (c != null) {
+				c.close();
+			}
 		}
 
 	}
@@ -580,6 +589,9 @@ public class Jobs {
 		} finally {
 			if (pp != null)
 				pp.close();
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 
@@ -673,6 +685,9 @@ public class Jobs {
 				rs.close();
 			if (s != null)
 				s.close();
+			if (c != null) {
+				c.close();
+			}
 		}
 	}
 

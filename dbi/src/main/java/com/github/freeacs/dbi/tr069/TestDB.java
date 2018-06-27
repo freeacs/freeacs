@@ -258,7 +258,7 @@ public class TestDB {
 		} finally {
 			if (ps != null)
 				ps.close();
-
+			c.close();
 		}
 
 	}
@@ -398,7 +398,7 @@ public class TestDB {
 		} finally {
 			if (ps != null)
 				ps.close();
-
+			c.close();
 		}
 	}
 
@@ -449,7 +449,7 @@ public class TestDB {
 		} finally {
 			if (ps != null)
 				ps.close();
-
+			c.close();
 		}
 	}
 
@@ -494,6 +494,7 @@ public class TestDB {
 		} finally {
 			if (ps != null)
 				ps.close();
+			c.close();
 		}
 
 	}
@@ -564,7 +565,7 @@ public class TestDB {
 		} finally {
 			if (ps != null)
 				ps.close();
-
+			c.close();
 		}
 	}
 
