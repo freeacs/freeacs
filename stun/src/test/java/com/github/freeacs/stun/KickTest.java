@@ -1,6 +1,11 @@
 package com.github.freeacs.stun;
 
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.UnitParameter;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.UnittypeParameterFlag;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
