@@ -6,6 +6,7 @@ import com.github.freeacs.web.app.menu.MenuServlet;
 import com.github.freeacs.web.app.util.Freemarker;
 import com.github.freeacs.web.help.HelpServlet;
 import com.zaxxer.hikari.HikariDataSource;
+import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,19 +16,33 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.jms.annotation.EnableJms;
+import org.springframework.jms.annotation.JmsListener;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
+import javax.jms.Queue;
 import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.Collections;
 
 @SpringBootApplication(exclude = FlywayAutoConfiguration.class)
+@EnableJms
 public class App {
 
     public static void main(String[] args) {
         System.getProperties().setProperty("org.eclipse.jetty.server.Request.maxFormKeys", "100000");
         SpringApplication.run(App.class, args);
+    }
+
+    @JmsListener(destination = "sample.queue")
+    public void receiveQueue(String text) {
+        System.out.println(text);
+    }
+
+    @Bean
+    public Queue queue() {
+        return new ActiveMQQueue("sample.queue");
     }
 
     @Bean
