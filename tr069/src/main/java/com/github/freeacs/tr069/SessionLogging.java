@@ -13,6 +13,7 @@ import com.github.freeacs.tr069.xml.ParameterValueStruct;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Responsible for logging to the tr069-event log
@@ -20,11 +21,11 @@ import java.util.List;
  *
  */
 public class SessionLogging {
-	public static void log(HTTPReqResData reqRes) {
+	public static void log(HTTPReqResData reqRes, Map<String, String> abbrevMap) {
 		try {
 			SessionData sessionData = reqRes.getSessionData();
 			// The old logging to eventlog
-			String methodsUsed = abbreviate(sessionData.getReqResList());
+			String methodsUsed = abbreviate(sessionData.getReqResList(), abbrevMap);
 			long diff = System.currentTimeMillis() - sessionData.getStartupTmsForSession();
 			String eventMsg = makeEventMsg(reqRes, diff, methodsUsed);
 			Log.event(eventMsg);
@@ -56,7 +57,7 @@ public class SessionLogging {
 		}
 	}
 
-	private static String abbreviate(List<HTTPReqResData> reqResList) {
+	private static String abbreviate(List<HTTPReqResData> reqResList, Map<String, String> abbrevMap) {
 		String methodsUsed = "";
 		for (int i = 0; i < reqResList.size(); i++) {
 			HTTPReqResData reqRes = reqResList.get(i);
@@ -66,7 +67,7 @@ public class SessionLogging {
 			if (reqMethod == null)
 				continue;
 			String resMethod = resData.getMethod();
-			String reqShortname = TR069Method.abbrevMap.get(reqMethod);
+			String reqShortname = abbrevMap.get(reqMethod);
 			if (i > 0) {
 				HTTPReqResData prevReqRes = reqResList.get(i - 1);
 				String prevResMethod = prevReqRes.getResponse().getMethod();
@@ -77,7 +78,7 @@ public class SessionLogging {
 			}
 			if (reqData.getFault() != null)
 				reqShortname += "(FC:" + reqData.getFault().getFaultCode() + ")";
-			String resShortname = TR069Method.abbrevMap.get(resMethod);
+			String resShortname = abbrevMap.get(resMethod);
 			if (!reqMethod.equals(TR069Method.EMPTY) && reqMethod.equals(resMethod))
 				resShortname += "r";
 			if (reqMethod.equals(TR069Method.SET_PARAMETER_VALUES) && !reqRes.getSessionData().isProvisioningAllowed())

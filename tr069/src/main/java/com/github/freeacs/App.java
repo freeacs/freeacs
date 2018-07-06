@@ -3,7 +3,9 @@ package com.github.freeacs;
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.http.FileServlet;
 import com.github.freeacs.base.http.OKServlet;
+import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.Provisioning;
+import com.github.freeacs.tr069.methods.TR069Method;
 import com.github.freeacs.tr069.test.system1.TestServlet;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,9 +52,9 @@ public class App {
     }
 
     @Bean
-    ServletRegistrationBean<Provisioning> provisioning(@Autowired DBAccess dbAccess) {
+    ServletRegistrationBean<Provisioning> provisioning(@Autowired DBAccess dbAccess, @Autowired TR069Method tr069Method, @Autowired Properties properties) {
         ServletRegistrationBean<Provisioning> srb = new ServletRegistrationBean<>();
-        srb.setServlet(new Provisioning(dbAccess));
+        srb.setServlet(new Provisioning(dbAccess, tr069Method, properties));
         srb.setLoadOnStartup(1);
         srb.setUrlMappings(Collections.singletonList("/*"));
         return srb;

@@ -2,7 +2,9 @@ package com.github.freeacs.tr069;
 
 import com.github.freeacs.base.Log;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,7 +21,9 @@ public class Properties {
 	public static String[] DISCOVERY_BLOCK;
 	public static String AUTH_METHOD;
 	public static int CONCURRENT_DOWNLOAD_LIMIT;
-	public static Map<String, String> QUIRKS;
+
+	@Autowired
+	private Environment environment;
 
 	@Value("${concurrent.download.limit:50}")
 	public void setConcurrentDownloadLimit(Integer concurrentDownloadLimit) {
@@ -56,36 +60,31 @@ public class Properties {
 		DISCOVERY_BLOCK = StringUtils.isEmpty(discoveryBlock) ? new String[0] : discoveryBlock.split("\\s*,\\s*");
 	}
 
-	@Value("#{'${quirks}'.split(';')}")
-	public void setQuirks(List<String> quirks) {
-		QUIRKS = quirks.stream().map(q -> q.split("=")).collect(Collectors.toMap(l -> l[0], l -> l[1], (oldValue, newValue) -> oldValue));
-	}
-
-	public static boolean isParameterkeyQuirk(SessionData sessionData) {
+	public boolean isParameterkeyQuirk(SessionData sessionData) {
 		return isQuirk("parameterkey", sessionData.getUnittypeName(), sessionData.getVersion());
 	}
 
-	public static boolean isUnitDiscovery(SessionData sessionData) {
+	public boolean isUnitDiscovery(SessionData sessionData) {
 		return isQuirk("unitdiscovery", sessionData.getUnittypeName(), sessionData.getVersion());
 	}
 
-	static boolean isTerminationQuirk(SessionData sessionData) {
+	public boolean isTerminationQuirk(SessionData sessionData) {
 		return isQuirk("termination", sessionData.getUnittypeName(), sessionData.getVersion());
 	}
 
-	public static boolean isPrettyPrintQuirk(SessionData sessionData) {
+	public boolean isPrettyPrintQuirk(SessionData sessionData) {
 		return isQuirk("prettyprint", sessionData.getUnittypeName(), sessionData.getVersion());
 	}
 
-	public static boolean isIgnoreVendorConfigFile(SessionData sessionData) {
+	public boolean isIgnoreVendorConfigFile(SessionData sessionData) {
 		return isQuirk("ignorevendorconfigfile", sessionData.getUnittypeName(), sessionData.getVersion());
 	}
 
-	public static boolean isNextLevel0InGPN(SessionData sessionData) {
+	public boolean isNextLevel0InGPN(SessionData sessionData) {
 		return isQuirk("nextlevel0ingpn", sessionData.getUnittypeName(), sessionData.getVersion());
 	}
 
-	private static boolean isQuirk(String quirkName, String unittypeName, String version) {
+	private boolean isQuirk(String quirkName, String unittypeName, String version) {
 		if (unittypeName == null) {
 			Log.debug(Properties.class, "The unittypename (null) could not be found. The quirk " + quirkName + " will return default false");
 			return false;
@@ -97,12 +96,12 @@ public class Properties {
 		return false;
 	}
 
-	private static String[] getQuirks(String unittypeName, String version) {
+	private String[] getQuirks(String unittypeName, String version) {
 		String quirks = null;
 		if (version != null)
-			quirks = QUIRKS.get("quirks." + unittypeName + "_" + version);
+			quirks = environment.getProperty("quirks." + unittypeName + "_" + version);
 		if (quirks == null)
-			quirks = QUIRKS.get("quirks." + unittypeName);
+			quirks = environment.getProperty("quirks." + unittypeName);
 		if (quirks == null)
 			return new String[0];
 		else
