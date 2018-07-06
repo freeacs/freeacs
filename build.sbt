@@ -199,8 +199,7 @@ lazy val shell = (project in file("shell"))
       "commons-io" % "commons-io" % "1.3.2",
       "jline" % "jline" % "0.9.5",
       "dom4j" % "dom4j" % "1.6.1"
-    ),
-    copyAppProps
+    )
   )
   .enablePlugins(JavaAppPackaging, JDebPackaging, RpmPlugin)
   .dependsOn(dbi)
