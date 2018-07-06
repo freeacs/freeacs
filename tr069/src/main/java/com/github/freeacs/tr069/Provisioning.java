@@ -49,9 +49,13 @@ public class Provisioning extends HttpServlet {
 
 	private static ScriptExecutions executions;
 	private final DBAccess dbAccess;
+	private final TR069Method tr069Method;
+	private final Properties properties;
 
-	public Provisioning(DBAccess dbAccess) {
+	public Provisioning(DBAccess dbAccess, TR069Method tr069Method, Properties properties) {
 		this.dbAccess = dbAccess;
+		this.tr069Method = tr069Method;
+		this.properties = properties;
 	}
 
 	public void init() {
@@ -155,11 +159,11 @@ public class Provisioning extends HttpServlet {
 			// 4. Read the request from the client - store in reqRes object
 			extractRequest(reqRes);
 			// 5.Process request (parsing xml/data)
-			HTTPRequestProcessor.processRequest(reqRes);
+			HTTPRequestProcessor.processRequest(reqRes, tr069Method.getRequestMap(), properties);
 			// 6. Decide next step in TR-069 session (sometimes trivial, sometimes complex)
-			DecisionMaker.process(reqRes);
+			DecisionMaker.process(reqRes, tr069Method.getRequestMap());
 			// 7. Create TR-069 response
-			HTTPResponseCreator.createResponse(reqRes);
+			HTTPResponseCreator.createResponse(reqRes, tr069Method.getResponseMap());
 			// 8. Set correct headers in response
 			if (reqRes.getResponse().getXml() != null && reqRes.getResponse().getXml().length() > 0) {
 				res.setHeader("SOAPAction", "");
@@ -197,7 +201,7 @@ public class Provisioning extends HttpServlet {
 					//					reqRes.getSessionData().getUnit().toWriteQueue(SystemParameters.PROVISIONING_STATE, ProvisioningState.READY.toString());
 					writeQueuedUnitParameters(reqRes);
 				}
-				SessionLogging.log(reqRes);
+				SessionLogging.log(reqRes, tr069Method.getAbbrevMap());
 				if (Util.testEnabled(reqRes, true))
 					initiateNewTestSession(reqRes);
 				else if (reqRes.getSessionData().isTestMode()) {
@@ -237,7 +241,7 @@ public class Provisioning extends HttpServlet {
 			Unit unit = reqRes.getSessionData().getUnit();
 			if (unit != null) {
 				ACS acs = reqRes.getSessionData().getDbAccessSession().getAcs();
-				ACSUnit acsUnit = dbAccess.getXAPSUnit(acs);
+				ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
 				acsUnit.addOrChangeQueuedUnitParameters(unit);
 			}
 		} catch (Throwable t) {
@@ -245,7 +249,7 @@ public class Provisioning extends HttpServlet {
 		}
 	}
 
-	private static boolean endOfSession(HTTPReqResData reqRes) {
+	private boolean endOfSession(HTTPReqResData reqRes) {
 		try {
 			SessionData sessionData = reqRes.getSessionData();
 			HTTPReqData reqData = reqRes.getRequest();
@@ -253,7 +257,7 @@ public class Provisioning extends HttpServlet {
 			if (reqRes.getThrowable() != null)
 				return true;
 			if (reqData.getMethod() != null && resData != null && resData.getMethod().equals(TR069Method.EMPTY)) {
-				boolean terminationQuirk = Properties.isTerminationQuirk(sessionData);
+				boolean terminationQuirk = properties.isTerminationQuirk(sessionData);
 				if (terminationQuirk && reqData.getMethod().equals(TR069Method.EMPTY))
 					return true;
 				if (!terminationQuirk)

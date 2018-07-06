@@ -128,6 +128,8 @@ services:
     command: --max_allowed_packet=32M
     restart: always
     mem_limit: 1000000000
+    ports:
+      - 3306:3306
     volumes:
       - mysql-data:/var/lib/mysql
     ports:
