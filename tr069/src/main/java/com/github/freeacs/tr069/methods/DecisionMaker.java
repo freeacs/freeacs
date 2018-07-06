@@ -10,13 +10,15 @@ import com.github.freeacs.tr069.test.system2.TestUnit;
 import com.github.freeacs.tr069.test.system2.TestUnitCache;
 import com.github.freeacs.tr069.test.system2.Util;
 
+import java.util.Map;
+
 /* This class is responsible for choosing the next response in the
  * TR-069 conversation. Depending upon the request, different logic
  * applies. 
  */
 public class DecisionMaker {
 
-	public static void process(HTTPReqResData reqRes) throws TR069Exception {
+	public static void process(HTTPReqResData reqRes, Map<String, HTTPRequestAction> requestMap) throws TR069Exception {
 		HTTPResData resData = reqRes.getResponse();
 		if (reqRes.getThrowable() != null) {
 			resData.setMethod(TR069Method.EMPTY);
@@ -47,7 +49,7 @@ public class DecisionMaker {
 				}
 			} else {
 				reqMethod = reqRes.getRequest().getMethod();
-				reqAction = TR069Method.requestMap.get(reqMethod);
+				reqAction = requestMap.get(reqMethod);
 				reqAction.getDecisionMakerMethod().apply(reqRes);
 			}
 		} catch (Throwable t) {

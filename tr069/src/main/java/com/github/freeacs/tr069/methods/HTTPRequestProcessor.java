@@ -430,9 +430,10 @@ public class HTTPRequestProcessor {
 	 * If in Testmode, then the request is processed and validated in an entirely different way than
 	 * normal provisioning! 
 	 * @param reqRes
+	 * @param properties
 	 * @throws TR069Exception
 	 */
-	public static void processRequest(HTTPReqResData reqRes) throws TR069Exception {
+	public static void processRequest(HTTPReqResData reqRes, Map<String, HTTPRequestAction> requestMap, Properties properties) throws TR069Exception {
 		try {
 			String requestMethodName = extractMethodName(reqRes.getRequest().getXml());
 			if (requestMethodName == null)
@@ -453,7 +454,7 @@ public class HTTPRequestProcessor {
 				}
 			} else {
 				Log.debug(HTTPRequestProcessor.class, "Will process method " + requestMethodName + " (incoming request/response from CPE)");
-				HTTPRequestAction reqAction = TR069Method.requestMap.get(requestMethodName);
+				HTTPRequestAction reqAction = requestMap.get(requestMethodName);
 				if (reqAction != null) {
 					reqRes.getRequest().setXml(HTTPReqData.XMLFormatter.filter(reqRes.getRequest().getXml()));
 					reqAction.getProcessRequestMethod().apply(reqRes);
@@ -479,7 +480,7 @@ public class HTTPRequestProcessor {
 			if (Log.isConversationLogEnabled()) {
 				String unitId = reqRes.getSessionData().getUnitId();
 				String xml = reqRes.getRequest().getXml();
-				if (Properties.isPrettyPrintQuirk(reqRes.getSessionData()))
+				if (properties.isPrettyPrintQuirk(reqRes.getSessionData()))
 					xml = HTTPReqData.XMLFormatter.prettyprint(reqRes.getRequest().getXml());
 				Log.conversation(reqRes.getSessionData(), "============== FROM CPE ( " + Optional.ofNullable(unitId).orElseGet(() -> "Unknown") + " ) TO ACS ===============\n" + xml);
 			}

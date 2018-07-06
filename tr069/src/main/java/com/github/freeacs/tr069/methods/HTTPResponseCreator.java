@@ -94,12 +94,12 @@ public interface HTTPResponseCreator {
     return new Response(header, body);
   }
 
-   static Response buildGPN(HTTPReqResData reqRes) {
+   static Response buildGPN(HTTPReqResData reqRes, Properties properties) {
     if (reqRes.getTR069TransactionID() == null)
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
     String keyRoot = reqRes.getSessionData().getKeyRoot();
-    Body body = new GPNreq(keyRoot, Properties.isNextLevel0InGPN(reqRes.getSessionData()));
+    Body body = new GPNreq(keyRoot, properties.isNextLevel0InGPN(reqRes.getSessionData()));
     return new Response(header, body);
   }
 
@@ -135,7 +135,7 @@ public interface HTTPResponseCreator {
     return false;
   }
 
-  static void addCPEParameters(SessionData sessionData) {
+  static void addCPEParameters(SessionData sessionData, Properties properties) {
     Map<String, ParameterValueStruct> paramValueMap = sessionData.getFromDB();
     CPEParameters cpeParams = sessionData.getCpeParameters();
     UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
@@ -143,7 +143,7 @@ public interface HTTPResponseCreator {
     // If device is not old Ping Communication device (NPA201E or RGW208EN) and
     // vendor config file is not explicitely turned off,
     // then we may ask for VendorConfigFile object.
-    boolean useVendorConfigFile = !isOldPingcomDevice(sessionData.getUnitId()) && !Properties.isIgnoreVendorConfigFile(sessionData);
+    boolean useVendorConfigFile = !isOldPingcomDevice(sessionData.getUnitId()) && !properties.isIgnoreVendorConfigFile(sessionData);
     if (useVendorConfigFile)
       Log.debug(HTTPResponseCreator.class, "VendorConfigFile object will be requested (default behavior)");
     else
@@ -170,7 +170,7 @@ public interface HTTPResponseCreator {
    *
    *
    */
-   static Response buildGPV(HTTPReqResData reqRes) {
+   static Response buildGPV(HTTPReqResData reqRes, Properties properties) {
     if (reqRes.getTR069TransactionID() == null)
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
@@ -196,14 +196,14 @@ public interface HTTPResponseCreator {
     } else { // mode == ProvisioningMode.PERIODIC
       // List<RequestResponseData> reqResList = sessionData.getReqResList();
       String previousMethod = sessionData.getPreviousResponseMethod();
-      if (Properties.isUnitDiscovery(sessionData) || previousMethod.equals(TR069Method.GET_PARAMETER_VALUES)) {
+      if (properties.isUnitDiscovery(sessionData) || previousMethod.equals(TR069Method.GET_PARAMETER_VALUES)) {
         Log.debug(HTTPResponseCreator.class, "Asks for all params (" + sessionData.getKeyRoot() + "), either because unitdiscovery-quirk or prev. GPV failed");
         ParameterValueStruct pvs = new ParameterValueStruct(sessionData.getKeyRoot(), "");
         parameterValueList.add(pvs);
       } else {
         Map<String, ParameterValueStruct> paramValueMap = sessionData.getFromDB();
         UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
-        addCPEParameters(sessionData);
+        addCPEParameters(sessionData, properties);
         for (Entry<String, ParameterValueStruct> entry : paramValueMap.entrySet()) {
           parameterValueList.add(entry.getValue());
         }
@@ -216,7 +216,7 @@ public interface HTTPResponseCreator {
     return new Response(header, body);
   }
 
-   static Response buildSPV(HTTPReqResData reqRes) throws NoSuchAlgorithmException, SQLException {
+   static Response buildSPV(HTTPReqResData reqRes, Properties properties) throws NoSuchAlgorithmException, SQLException {
     if (reqRes.getTR069TransactionID() == null)
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
@@ -242,7 +242,7 @@ public interface HTTPResponseCreator {
     }
     paramList = reqRes.getSessionData().getToCPE();
     ParameterKey pk = new ParameterKey();
-    if (!Properties.isParameterkeyQuirk(reqRes.getSessionData()))
+    if (!properties.isParameterkeyQuirk(reqRes.getSessionData()))
       pk.setServerKey(reqRes);
     body = new SPVreq(paramList.getParameterValueList(), pk.getServerKey());
     Log.notice(HTTPResponseCreator.class, "Sent to CPE: " + paramList.getParameterValueList().size() + " parameters.");
@@ -276,11 +276,11 @@ public interface HTTPResponseCreator {
     return new Response(header, body);
   }
 
-  static void createResponse(HTTPReqResData reqRes) throws TR069Exception {
+  static void createResponse(HTTPReqResData reqRes, Map<String, HTTPResponseAction> responseMap) throws TR069Exception {
     try {
       String methodName = reqRes.getResponse().getMethod();
       final Response response;
-      HTTPResponseAction resAction = TR069Method.responseMap.get(methodName);
+      HTTPResponseAction resAction = responseMap.get(methodName);
       if (resAction != null)
         response = resAction.getCreateResponseMethod().apply(reqRes);
       else {
