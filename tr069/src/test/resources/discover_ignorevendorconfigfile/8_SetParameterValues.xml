@@ -1,0 +1,18 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cwmp="urn:dslforum-org:cwmp-1-0">
+    <soapenv:Header>
+        <cwmp:ID soapenv:mustUnderstand="1">FREEACS-0</cwmp:ID>
+    </soapenv:Header>
+    <soapenv:Body>
+        <cwmp:SetParameterValues>
+            <ParameterList soapenc:arrayType="cwmp:ParameterValueStruct[1]">
+                <ParameterValueStruct>
+                    <Name>InternetGatewayDevice.ManagementServer.PeriodicInformInterval</Name>
+                    <Value xsi:type="xsd:unsignedInt">0</Value>
+                </ParameterValueStruct>
+            </ParameterList>
+            <ParameterKey>No data in DB</ParameterKey>
+        </cwmp:SetParameterValues>
+    </soapenv:Body>
+</soapenv:Envelope>
