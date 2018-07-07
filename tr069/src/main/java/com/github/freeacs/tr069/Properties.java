@@ -99,7 +99,7 @@ public class Properties {
 	private String[] getQuirks(String unittypeName, String version) {
 		String quirks = null;
 		if (version != null)
-			quirks = environment.getProperty("quirks." + unittypeName + "_" + version);
+			quirks = environment.getProperty("quirks." + unittypeName + "@" + version);
 		if (quirks == null)
 			quirks = environment.getProperty("quirks." + unittypeName);
 		if (quirks == null)

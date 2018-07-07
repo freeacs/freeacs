@@ -68,56 +68,31 @@ public class SessionLogging {
             if (reqMethod == null)
                 continue;
             String resMethod = resData.getMethod();
-            String reqShortName = getReqShortName(reqResList, abbrevMap, i, reqRes, reqData, reqMethod);
-            String resShortName = getResShortName(abbrevMap, reqMethod, resMethod);
-            methodsUsed = getMethodUsed(reqRes, reqShortName, resShortName);
-        }
-
-        return methodsUsed;
-    }
-
-    private static String getReqShortName(List<HTTPReqResData> reqResList, Map<String, String> abbrevMap, int i, HTTPReqResData reqRes, HTTPReqData reqData, String reqMethod) {
-        String reqShortName = getReqShortName(reqResList, abbrevMap, i, reqMethod);
-        if (reqData.getFault() != null) {
-            reqShortName += "(FC:" + reqData.getFault().getFaultCode() + ")";
-        }
-        if (reqMethod.equals(TR069Method.SET_PARAMETER_VALUES) && !reqRes.getSessionData().isProvisioningAllowed()) {
-            reqShortName += "lim";
-        }
-        if (reqMethod.equals(TR069Method.INFORM)) {
-            reqShortName += "(" + reqRes.getSessionData().getEventCodes() + ")";
-        }
-        return reqShortName;
-    }
-
-    private static String getReqShortName(List<HTTPReqResData> reqResList, Map<String, String> abbrevMap, int i, String reqMethod) {
-        String reqShortname = abbrevMap.get(reqMethod);
-        if (i > 0) {
-            HTTPReqResData prevReqRes = reqResList.get(i - 1);
-            String prevResMethod = prevReqRes.getResponse().getMethod();
-            if (prevResMethod != null) {
-                if (!reqMethod.equals(TR069Method.EMPTY) && prevResMethod.equals(reqMethod))
-                    reqShortname += "r";
+            String reqShortname = abbrevMap.get(reqMethod);
+            if (i > 0) {
+                HTTPReqResData prevReqRes = reqResList.get(i - 1);
+                String prevResMethod = prevReqRes.getResponse().getMethod();
+                if (prevResMethod != null) {
+                    if (!reqMethod.equals(TR069Method.EMPTY) && prevResMethod.equals(reqMethod))
+                        reqShortname += "r";
+                }
             }
+            if (reqData.getFault() != null)
+                reqShortname += "(FC:" + reqData.getFault().getFaultCode() + ")";
+            String resShortname = abbrevMap.get(resMethod);
+            if (!reqMethod.equals(TR069Method.EMPTY) && reqMethod.equals(resMethod))
+                resShortname += "r";
+            if (reqMethod.equals(TR069Method.SET_PARAMETER_VALUES) && !reqRes.getSessionData().isProvisioningAllowed())
+                reqShortname += "lim";
+            if (reqMethod.equals(TR069Method.INFORM))
+                reqShortname += "(" + reqRes.getSessionData().getEventCodes() + ")";
+            methodsUsed += "[" + reqShortname;
+            if (reqRes.getThrowable() != null)
+                methodsUsed += "-(F)" + resShortname + "] ";
+            else
+                methodsUsed += "-" + resShortname + "] ";
         }
-        return reqShortname;
-    }
 
-    private static String getResShortName(Map<String, String> abbrevMap, String reqMethod, String resMethod) {
-        String resShortname = abbrevMap.get(resMethod);
-        if (!reqMethod.equals(TR069Method.EMPTY) && reqMethod.equals(resMethod))
-            resShortname += "r";
-        return resShortname;
-    }
-
-    private static String getMethodUsed(HTTPReqResData reqRes, String reqShortname, String resShortname) {
-        String methodsUsed;
-        String tempMethodUsed = "[" + reqShortname;
-        if (reqRes.getThrowable() != null)
-            tempMethodUsed += "-(F)" + resShortname + "] ";
-        else
-            tempMethodUsed += "-" + resShortname + "] ";
-        methodsUsed = tempMethodUsed;
         return methodsUsed;
     }
 
