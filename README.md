@@ -43,7 +43,7 @@ nano /etc/config/easycwmp
 change:
     option url http://5.5.5.12/acs
 to
-    option url http://[your-lan-ip-on-host-machine]/tr069
+    option url http://[your-lan-ip-on-host-machine]:[tr069-port]/tr069
 Ctrl-X+y+Enter
 chmod +x startup.sh
 ./startup.sh
