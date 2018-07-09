@@ -9,7 +9,7 @@ install_basic() {
   apt-get -y update && apt-get -y upgrade
   apt-get -y install unzip zip curl wget jq gawk
   apt-get -y install mysql-server-5.7
-  apt-get -y install default-jre
+  apt-get -y install openjdk-8-jre-headless
 }
 
 # Checks to see if installation is ok
