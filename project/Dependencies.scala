@@ -14,7 +14,7 @@ object Dependencies {
   val mysql = "mysql" % "mysql-connector-java" % "8.0.11"
   val hikari = "com.zaxxer" % "HikariCP" % "3.1.0"
   val flyway = "org.flywaydb" % "flyway-core" % "5.0.7" % "test"
-  val h2 = "com.h2database" % "h2" % "1.4.197" % "test"
+  val h2 = "com.h2database" % "h2" % "1.4.197"
 
   val database = Seq(mysql, hikari, flyway, h2)
 

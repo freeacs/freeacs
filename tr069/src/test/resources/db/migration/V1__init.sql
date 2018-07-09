@@ -475,7 +475,7 @@ CREATE TABLE IF NOT EXISTS message (
 --
 -- Table Definition with Constraints
 --
-CREATE TABLE monitor_event
+CREATE TABLE IF NOT EXISTS monitor_event
 (
   event_id BIGINT NOT NULL AUTO_INCREMENT,
   module_name VARCHAR(32) NOT NULL,
