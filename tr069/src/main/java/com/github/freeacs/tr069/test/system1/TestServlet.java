@@ -13,7 +13,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.Optional;
 
 public class TestServlet extends HttpServlet {
 
@@ -65,7 +67,7 @@ public class TestServlet extends HttpServlet {
 		body.p();
 	}
 
-	private static TestDatabaseObject input(HttpServletRequest req, Element body, String username) throws Exception {
+	private TestDatabaseObject input(HttpServletRequest req, Element body, String username) throws Exception {
 		KillDatabase.refresh();
 		Element form = body.form("test", "post", "form1");
 		Element table = form.table();
@@ -93,12 +95,12 @@ public class TestServlet extends HttpServlet {
 		// Reset everything
 		if (req.getParameter("test-reset") != null) {
 			tdo = new TestDatabaseObject();
-			File dir = new File("tests/results");
+			File dir = getFileFromResource("tests/results");
 			File[] files = dir.listFiles();
 			for (File file : files) {
 				int pos = file.getName().indexOf(username);
 				String restOfName = file.getName().substring(pos + username.length() + 1);
-				File f = new File("tests/" + restOfName);
+				File f = getFileFromResource("tests/" + restOfName);
 				if (f.exists() && file.getName().startsWith(username)) {
 					file.delete();
 				}
@@ -177,7 +179,7 @@ public class TestServlet extends HttpServlet {
 			// Next step
 			tr = table.tr();
 			tr.td("Next test:");
-			File dir = new File("tests");
+			File dir = getFileFromResource("tests");
 			String[] files = dir.list();
 			Arrays.sort(files, new NaturalComparator());
 			String[] onlyFiles = new String[files.length - 2];
@@ -227,11 +229,11 @@ public class TestServlet extends HttpServlet {
 			// XML
 			tr = table.tr();
 			tr.td("XML:");
-			File orgTestFile = new File("tests/" + stepToShow);
+			File orgTestFile = getFileFromResource("tests/" + stepToShow);
 			String orgTestXml = getContent(orgTestFile, tdo.getDeviceType());
 			String xml = orgTestXml;
 			TextAreaElement tae = tr.td().textarea("xml", 60, 10, false);
-			File modTestFile = new File("tests/modified/" + username + "-" + stepToShow);
+			File modTestFile = getFileFromResource("tests/modified/" + username + "-" + stepToShow);
 			String modTestXml = null;
 			if (modTestFile.exists()) {
 				modTestXml = getContent(modTestFile, tdo.getDeviceType());
@@ -271,7 +273,7 @@ public class TestServlet extends HttpServlet {
 			}
 
 			// Result
-			File result = new File("tests/results/" + username + "-" + stepToShow);
+			File result = getFileFromResource("tests/results/" + username + "-" + stepToShow);
 			tr = table.tr();
 			tr.td("Result:");
 			tae = tr.td().textarea("xml", 60, 10, false);
@@ -296,6 +298,10 @@ public class TestServlet extends HttpServlet {
 
 		return tdo;
 
+	}
+
+	public static File getFileFromResource(String name) {
+		return Optional.ofNullable(TestServlet.class.getResource("/" + name)).map(URL::getFile).map(File::new).orElseGet(() -> new File(name));
 	}
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {

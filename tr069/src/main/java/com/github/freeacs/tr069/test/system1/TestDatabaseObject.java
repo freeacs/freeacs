@@ -78,7 +78,7 @@ public class TestDatabaseObject {
 	}
 
 	public String getStatus() {
-		File dir = new File("tests");
+		File dir = TestServlet.getFileFromResource("tests");
 		String[] files = dir.list();
 		Arrays.sort(files, new NaturalComparator());
 		String[] finished = status.split(":");
