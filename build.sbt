@@ -19,7 +19,6 @@ lazy val dockerSettings = Seq(
 )
 
 lazy val packagingSettings = Seq(
-  scriptClasspath := Seq("*"),
   defaultLinuxInstallLocation := "/opt",
   daemonUser := "freeacs",
   daemonGroup := "freeacs",
