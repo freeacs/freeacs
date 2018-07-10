@@ -224,7 +224,7 @@ public class CUreq extends Body {
 					try {
 						xml = TestServlet.getContent(new File("tests/modified/" + unitId + "-" + tdo.getStep()), tdo.getDeviceType());
 					} catch (IOException ioe2) {
-						xml = TestServlet.getContent(new File("tests/" + tdo.getStep()), tdo.getDeviceType());
+						xml = TestServlet.getContent(TestServlet.getFileFromResource("tests/" + tdo.getStep()), tdo.getDeviceType());
 					}
 				}
 			}

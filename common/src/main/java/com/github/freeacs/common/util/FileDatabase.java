@@ -72,20 +72,4 @@ public class FileDatabase {
 		return databaseMap.get(key);
 	}
 
-	public static void main(String[] args) {
-		try {
-			FileDatabase db = new FileDatabase("acs-TR069-Test.dat");
-			db.insert("Test", "Test");
-			db.insert("Test2", "Test2");
-			System.out.println(db.select("Test"));
-			db.insert("Test", "Test3");
-			System.out.println(db.select("Test"));
-			db.delete("Test");
-			System.out.println(db.select("Test"));
-		} catch (Throwable t) {
-			System.err.println("Error occured: " + t);
-		}
-
-	}
-
 }

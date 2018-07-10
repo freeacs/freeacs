@@ -386,6 +386,7 @@ public class HTTPRequestProcessor {
 			verifyKillResponse(xml, unitId);
 		else {
 			try {
+				new File("tests/results").mkdirs();
 				FileWriter fw = new FileWriter("tests/results/" + unitId + "-" + tdo.getStep());
 				fw.write(xml);
 				fw.close();
