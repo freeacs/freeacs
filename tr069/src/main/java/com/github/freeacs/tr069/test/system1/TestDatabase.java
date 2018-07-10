@@ -7,7 +7,7 @@ public class TestDatabase {
 	public static FileDatabase database;
 	static {
 		try {
-			database = new FileDatabase("xaps-tr069-test.dat");
+			database = new FileDatabase("acs-TR069-test.dat");
 		} catch (Throwable t) {
 			Log.error(TestDatabase.class, "Could not initiate database: " + t);
 		}

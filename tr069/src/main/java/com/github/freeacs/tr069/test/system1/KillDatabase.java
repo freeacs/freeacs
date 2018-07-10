@@ -7,7 +7,7 @@ public class KillDatabase {
 	public static FileDatabase database;
 	static {
 		try {
-			database = new FileDatabase("xaps-tr069-kill.dat");
+			database = new FileDatabase("acs-TR069-kill.dat");
 		} catch (Throwable t) {
 			Log.error(KillDatabase.class, "Could not initiate database: " + t);
 		}
@@ -15,7 +15,7 @@ public class KillDatabase {
 
 	public static void refresh() {
 		try {
-			database = new FileDatabase("xaps-tr069-kill.dat");
+			database = new FileDatabase("acs-TR069-kill.dat");
 		} catch (Throwable t) {
 			Log.error(KillDatabase.class, "Could not initiate database: " + t);
 		}
