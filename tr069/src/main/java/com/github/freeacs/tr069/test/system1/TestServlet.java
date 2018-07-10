@@ -233,6 +233,7 @@ public class TestServlet extends HttpServlet {
 			String orgTestXml = getContent(orgTestFile, tdo.getDeviceType());
 			String xml = orgTestXml;
 			TextAreaElement tae = tr.td().textarea("xml", 60, 10, false);
+			new File("tests/modified").mkdirs();
 			File modTestFile = getFileFromResource("tests/modified/" + username + "-" + stepToShow);
 			String modTestXml = null;
 			if (modTestFile.exists()) {
@@ -308,7 +309,7 @@ public class TestServlet extends HttpServlet {
 		try {
 			PrintWriter out = res.getWriter();
 			if (TestDatabase.database == null)
-				TestDatabase.database = new FileDatabase("xAPS-TR069-Test.dat");
+				TestDatabase.database = new FileDatabase("acs-TR069-test.dat");
 			Element html = new Element("html");
 			html.head().title("xAPS Test Verification Process");
 			Element body = html.body();
