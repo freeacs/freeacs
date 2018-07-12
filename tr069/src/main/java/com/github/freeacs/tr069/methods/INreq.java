@@ -192,7 +192,7 @@ public class INreq {
 				if (row != null) {
 					TestDatabaseObject tdo = new TestDatabaseObject(row);
 					if (tdo.getRun().equals("true") && sessionData.isBooted()) {
-						KillDatabaseObject kdo = new KillDatabaseObject(KillDatabase.database.select(sessionData.getUnitId()));
+						KillDatabaseObject kdo = new KillDatabaseObject(/*KillDatabase.database.select(sessionData.getUnitId())*/);
 						reportKill(sessionData.getUnitId(), !kdo.isTestRunning());
 					}
 				}
