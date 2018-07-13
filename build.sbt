@@ -1,7 +1,9 @@
 import sbt.Keys.fork
 
 publishTo in ThisBuild := Some(Resolver.file("file",  new File(Path.userHome.absolutePath+"/.m2/repository")))
-
+compileOrder := CompileOrder.JavaThenScala
+javacOptions in ThisBuild += "-parameters"
+javacOptions in (ThisBuild, Compile, doc) -= "-parameters"
 javacOptions in ThisBuild ++= Seq("-encoding", "UTF-8")
 
 lazy val copyAppProps = mappings in Universal ++= {
