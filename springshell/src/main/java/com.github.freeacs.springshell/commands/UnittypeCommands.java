@@ -1,9 +1,6 @@
 package com.github.freeacs.springshell.commands;
 
-import com.github.freeacs.dbi.ACS;
-import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.Unittypes;
+import com.github.freeacs.dbi.*;
 import com.github.freeacs.springshell.ShellContext;
 import org.springframework.shell.standard.ShellCommandGroup;
 import org.springframework.shell.standard.ShellComponent;
@@ -64,12 +61,32 @@ public class UnittypeCommands extends ShellCommands {
     public String deleteUnittype(@ShellOption String unittype, @ShellOption boolean cascade) {
         ACS acs = dbi.getAcs();
         Unittype unittypeToDelete = acs.getUnittype(unittype);
-        Unittypes unittypes = acs.getUnittypes();
         try {
-            unittypes.deleteUnittype(unittypeToDelete, acs, cascade);
+            acs.getUnittypes().deleteUnittype(unittypeToDelete, acs, cascade);
         } catch (SQLException ex) {
             return "Unittype " + unittype + " could not be deleted: " + ex.getLocalizedMessage();
         }
         return "Unittype " + unittype + " was deleted";
+    }
+
+    @ShellMethod("Add or change unittype parameter")
+    public String addUnittypeParam(
+            @ShellOption String name,
+            @ShellOption UnittypeParameterFlag flag) {
+        ACS acs = dbi.getAcs();
+        return doOnUnittype(unittype -> {
+            UnittypeParameter utp = unittype.getUnittypeParameters().getByName(name);
+            if (utp == null) {
+                utp = new UnittypeParameter(unittype, name, flag);
+            } else {
+                utp.setFlag(flag);
+            }
+            try {
+                unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, acs);
+                return "Succesfully updated unittype parameter " + name;
+            } catch (SQLException e) {
+                return "Failed to add or change unittype parameter " + name;
+            }
+        });
     }
 }
