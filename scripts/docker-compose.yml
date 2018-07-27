@@ -48,8 +48,6 @@ services:
       - SYSLOG_DATASOURCE_USERNAME=acs
       - SYSLOG_DATASOURCE_PASSWORD=acs
       - SERVER_PORT=8080
-    ports:
-      - 9999:8080
     volumes:
       - tr069_logs:/opt/docker/logs
       - ./conf/tr069:/opt/docker/config:ro
