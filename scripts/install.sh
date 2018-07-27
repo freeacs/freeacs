@@ -244,7 +244,10 @@ http {
     # For the geeks: "A man is not dead while his name is still spoken." -Terry Pratchett
     add_header X-Clacks-Overhead "GNU Terry Pratchett";
 
+
     location /tr069/ {
+      proxy_set_header        X-Real-IP       $remote_addr;
+      proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_pass http://localhost:8085/tr069/;
     }
     location /web/ {

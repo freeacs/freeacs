@@ -24,7 +24,6 @@ import com.github.freeacs.tr069.xml.ParameterValueStruct;
 
 import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * EMDecision has to decide what to do after an EM-request. The rules are:
