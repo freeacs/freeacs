@@ -24,10 +24,11 @@ import com.github.freeacs.tr069.xml.ParameterValueStruct;
 
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * EMDecision has to decide what to do after an EM-request. The rules are:
- * 
+ *
  * 1. If previous response from server was EM, then we are at the end of the conversation, thus return EM (only true if HoldRequests is set to 1)
  * 2. If the conversation was kicked and provisioning mode is not set accordingly, return EM (end conv.)
  * 3. If the conversation was not kicked and provisioning mode is not AUTO, return EM (end. conv.)
@@ -110,16 +111,14 @@ public class EMDecision {
 		toDB.add(new ParameterValueStruct(SystemParameters.LAST_CONNECT_TMS, timestamp));
 		if (sessionData.getAcsParameters().getValue(SystemParameters.FIRST_CONNECT_TMS) == null)
 			toDB.add(new ParameterValueStruct(SystemParameters.FIRST_CONNECT_TMS, timestamp));
-		String ipAddress = sessionData.getUnit().getParameters().get(SystemParameters.IP_ADDRESS);
-		if (ipAddress == null || !ipAddress.equals(reqRes.getReq().getRemoteHost()))
-			toDB.add(new ParameterValueStruct(SystemParameters.IP_ADDRESS, reqRes.getReq().getRemoteHost()));
+		String currentIPAddress = sessionData.getUnit().getParameters().get(SystemParameters.IP_ADDRESS);
+		String actualIPAddress = reqRes.getRealIPAddress();
+		if (currentIPAddress == null || !currentIPAddress.equals(actualIPAddress)) {
+			toDB.add(new ParameterValueStruct(SystemParameters.IP_ADDRESS, actualIPAddress));
+		}
 		String swVersion = sessionData.getUnit().getParameters().get(SystemParameters.SOFTWARE_VERSION);
 		if (swVersion == null || !swVersion.equals(reqRes.getSessionData().getSoftwareVersion()))
 			toDB.add(new ParameterValueStruct(SystemParameters.SOFTWARE_VERSION, reqRes.getSessionData().getSoftwareVersion()));
-		//		String serialNumber = sessionData.getUnitId().substring(sessionData.getUnitId().lastIndexOf("-") + 1);
-		//		String mac = sessionData.getUnit().getParameters().get(SystemParameters.MAC);
-		//		if (mac == null || !mac.equals(serialNumber))
-		//		toDB.add(new ParameterValueStruct(SystemParameters.MAC, serialNumber));
 		String sn = sessionData.getUnit().getParameters().get(SystemParameters.SERIAL_NUMBER);
 		if (sn == null || !sn.equals(sessionData.getSerialNumber()))
 			toDB.add(new ParameterValueStruct(SystemParameters.SERIAL_NUMBER, sessionData.getSerialNumber()));
