@@ -361,7 +361,7 @@ public class ACSUnit {
 		while (iterator.hasNext()) {
 			UnitParameter queuedUp = iterator.next();
 			UnitParameter storedUp = unit.getUnitParameters().get(queuedUp.getParameter().getUnittypeParameter().getName());
-			if (storedUp != null && storedUp.getValue() != null && storedUp.equals(queuedUp.getValue())) {
+			if (storedUp != null && storedUp.getValue() != null && storedUp.getValue().equals(queuedUp.getValue())) {
 				iterator.remove(); // don't write the queued Unit Parameter if it has the same value as already stored
 			}
 		}
