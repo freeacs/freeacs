@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -74,7 +75,7 @@ public class SyslogClient {
 
 	public static void send(String msg) throws IOException {
 		DatagramSocket socket = new DatagramSocket();
-		byte[] message = msg.getBytes("UTF-8");
+		byte[] message = msg.getBytes(StandardCharsets.UTF_8);
 		DatagramPacket packet = new DatagramPacket(message, message.length);
 		InetAddress address = InetAddress.getByName("localhost");
 		packet.setPort(9116);

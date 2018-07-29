@@ -177,7 +177,7 @@ public class Unit {
 		Iterator<UnitParameter> queueIterator = writeQueue.iterator();
 		if (queueIterator.hasNext()) {
 			UnitParameter tmp = queueIterator.next();
-			if (tmp.getParameter().getUnittypeParameter().getId() == up.getParameter().getUnittypeParameter().getId())
+			if (tmp.getParameter().getUnittypeParameter().getId().equals(up.getParameter().getUnittypeParameter().getId()))
 				queueIterator.remove();
 		}
 		writeQueue.add(up);
@@ -203,7 +203,7 @@ public class Unit {
 		Iterator<UnitParameter> queueIterator = deleteQueue.iterator();
 		if (queueIterator.hasNext()) {
 			UnitParameter tmp = queueIterator.next();
-			if (tmp.getParameter().getUnittypeParameter().getId() == up.getParameter().getUnittypeParameter().getId())
+			if (tmp.getParameter().getUnittypeParameter().getId().equals(up.getParameter().getUnittypeParameter().getId()))
 				queueIterator.remove();
 		}
 		deleteQueue.add(up);

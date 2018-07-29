@@ -10,15 +10,14 @@ import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069AuthenticationException;
 import org.apache.commons.codec.digest.DigestUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 
 public class DigestAuthenticator {
 
-	private static void sendChallenge(HttpServletRequest req, HttpServletResponse res) {
+	private static void sendChallenge(String remoteAddr, HttpServletResponse res) {
 		long now = System.currentTimeMillis();
-		setAuthenticateHeader(res, DigestUtils.md5Hex(req.getRemoteAddr() + ":" + now + ":" + Properties.DIGEST_SECRET));
+		setAuthenticateHeader(res, DigestUtils.md5Hex(remoteAddr + ":" + now + ":" + Properties.DIGEST_SECRET));
 		res.setStatus(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
 	}
 
@@ -27,7 +26,7 @@ public class DigestAuthenticator {
 		String authorization = reqRes.getReq().getHeader("authorization");
 		if (authorization == null) {
 			Log.notice(DigestAuthenticator.class, "Send challenge to CPE, located on IP-address " + reqRes.getReq().getRemoteHost());
-			sendChallenge(reqRes.getReq(), reqRes.getRes());
+			sendChallenge(reqRes.getRealIPAddress(), reqRes.getRes());
 			return false;
 		} else {
 			return (verify(reqRes, authorization));
