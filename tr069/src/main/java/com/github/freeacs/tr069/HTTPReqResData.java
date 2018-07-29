@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
+import java.util.Optional;
 
 public class HTTPReqResData {
 	private final DBAccess dbAccess;
@@ -89,5 +90,9 @@ public class HTTPReqResData {
 
 	public DBAccess getDbAccess() {
 		return dbAccess;
+	}
+
+	public String getRealIPAddress() {
+		return Optional.ofNullable(req.getHeader("X-Real-IP")).orElseGet(() -> req.getRemoteAddr());
 	}
 }
