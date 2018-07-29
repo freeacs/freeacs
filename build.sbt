@@ -1,4 +1,5 @@
 import sbt.Keys.fork
+import DebianConstants._
 
 publishTo in ThisBuild := Some(Resolver.file("file",  new File(Path.userHome.absolutePath+"/.m2/repository")))
 
@@ -22,6 +23,13 @@ lazy val packagingSettings = Seq(
   defaultLinuxInstallLocation := "/opt",
   daemonUser := "freeacs",
   daemonGroup := "freeacs",
+  maintainerScripts in Debian := maintainerScriptsAppend((maintainerScripts in Debian).value)(
+    Conffiles ->
+      s"""/opt/${normalizedName.value}/config/application-config.properties
+         |/etc/default/${normalizedName.value}
+         |/lib/systemd/system/${normalizedName.value}.service
+      """.stripMargin,
+  ),
   rpmGroup := Some("Other"),
   rpmRelease := "1",
   rpmUrl := Some("https://github.com/freeacs/freeacs"),
