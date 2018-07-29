@@ -70,27 +70,53 @@ public class Kick {
 		CPEParameters cpeParams = new CPEParameters(getKeyroot(unit));
 		String udpCrUrl = unit.getParameterValue(cpeParams.UDP_CONNECTION_URL, false);
 		String crUrl = unit.getParameterValue(cpeParams.CONNECTION_URL, false);
-		String crPass = unit.getParameterValue(cpeParams.CONNECTION_PASSWORD);
 		String crUser = unit.getParameterValue(cpeParams.CONNECTION_USERNAME);
+		String crPass = unit.getParameterValue(cpeParams.CONNECTION_PASSWORD);
+		if (crPass == null) {
+			crPass = crUser;
+		}
 		String publicIP = unit.getParameterValue(SystemParameters.IP_ADDRESS);
+		String publicProtocol = unit.getParameterValue(SystemParameters.PROTOCOL);
+		Integer publicPort = getPublicPort(unit);
+
 		// default response
 		KickResponse kr = new KickResponse(false, "Neither a public ConnectionRequestURL nor any UDPConnectionRequestAddress was found");
+
 		// TCP-kick (HTTP)
 		if (crUrl != null && !crUrl.trim().equals("") && checkIfPublicIP(crUrl)) {
 			log.debug(unit.getId() + ": will try TCP kick on " + crUrl);
-			kr = kickUsingTCP(unit, crUrl, crPass, crUser);
+			return kickUsingTCP(unit, crUrl, crPass, crUser);
 		}
+
 		// UDP-kick
 		if (!kr.isKicked() && udpCrUrl != null && !udpCrUrl.trim().equals("")) {
 			log.debug(unit.getId() + ": will try UDP kick on " + udpCrUrl);
-			kr = kickUsingUDP(unit, udpCrUrl, crPass, crUser);
-		} else if (Properties.EXPECT_PORT_FORWARDING && publicIP != null && crUrl != null) {
+			return kickUsingUDP(unit, udpCrUrl, crPass, crUser);
+		}
+
+		// TCP-kick with port forwarding
+		if (Properties.EXPECT_PORT_FORWARDING && publicIP != null && crUrl != null) {
 			String newCrUrl = crUrl.replace(new URL(crUrl).getHost(), publicIP);
 			log.debug(unit.getId() + ": will try TCP kick by expecting port forwarding on " + crUrl + " -> " + newCrUrl);
-			kr = kickUsingTCP(unit, newCrUrl, crPass, crUser);
+			return kickUsingTCP(unit, newCrUrl, crPass, crUser);
+		}
+
+		// Dynamic TCP-kick
+		if (crUrl == null && publicIP != null && publicProtocol != null && publicPort != null) {
+			crUrl = String.format("%s://%s:%d", publicProtocol, publicIP, publicPort);
+			log.debug(unit.getId() + ": will try dynamic TCP kick on " + crUrl);
+			return kickUsingTCP(unit, crUrl, crPass, crUser);
 		}
 
 		return kr;
+	}
+
+	private Integer getPublicPort(Unit unit) {
+		try {
+			return Integer.parseInt(unit.getParameterValue(SystemParameters.PORT));
+		} catch (NumberFormatException ex) {
+			return null;
+		}
 	}
 
 	/**

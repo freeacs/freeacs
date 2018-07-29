@@ -51,7 +51,7 @@ public class ParameterListHandler extends DefaultHandler {
 			pas = new ParameterAttributeStruct();
 		} else if (VALUE_TAG.equals(localName) && pvs != null && attributes != null) {
 			for (int i = 0; i < attributes.getLength(); i++) {
-				if (attributes.getQName(i).indexOf(":type") > -1) {
+				if (attributes.getQName(i).contains(":type")) {
 					pvs.setType(attributes.getValue(i));
 					break;
 				}
@@ -80,7 +80,7 @@ public class ParameterListHandler extends DefaultHandler {
 			pvs.setValue(new String(currTextContent));
 		} else if (WRITABLE_TAG.equals(localName)) {
 			String ct = new String(currTextContent);
-			pis.setWritable((ct.equals("0") || ct.equals("false")) ? false : true);
+			pis.setWritable(!ct.equals("0") && !ct.equals("false"));
 		} else if (NOTIFICATION_TAG.equals(localName)) {
 			String ct = new String(currTextContent);
 			try {
