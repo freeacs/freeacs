@@ -102,6 +102,8 @@ public class SystemParameters {
 	public static final String SOFTWARE_VERSION = "System.X_FREEACS-COM.Device.SoftwareVersion";
 	public static final String PERIODIC_INTERVAL = "System.X_FREEACS-COM.Device.PeriodicInterval";
 	public static final String IP_ADDRESS = "System.X_FREEACS-COM.Device.PublicIPAddress";
+	public static final String PROTOCOL = "System.X_FREEACS-COM.Device.PublicProtocol";
+	public static final String PORT = "System.X_FREEACS-COM.Device.PublicPort";
 	public static final String GUI_URL = "System.X_FREEACS-COM.Device.GUIURL";
 
 	/**
@@ -168,6 +170,8 @@ public class SystemParameters {
 		commonParameters.put(SOFTWARE_VERSION, X);
 		commonParameters.put(PERIODIC_INTERVAL, X);
 		commonParameters.put(IP_ADDRESS, X);
+		commonParameters.put(PROTOCOL, X);
+		commonParameters.put(PORT, X);
 		commonParameters.put(GUI_URL, X);
 		commonParameters.put(TELNET_IP, X);
 		commonParameters.put(TELNET_PASSWORD, XC);
