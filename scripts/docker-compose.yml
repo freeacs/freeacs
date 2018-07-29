@@ -32,7 +32,7 @@ services:
       - SERVER_PORT=8080
     volumes:
       - web_logs:/opt/docker/logs
-      - ./conf/web:/opt/docker/conf:ro
+      - ./conf/web:/opt/docker/config:ro
   tr069:
     image: freeacs/freeacs-tr069
     restart: always
@@ -50,7 +50,7 @@ services:
       - SERVER_PORT=8080
     volumes:
       - tr069_logs:/opt/docker/logs
-      - ./conf/tr069:/opt/docker/conf:ro
+      - ./conf/tr069:/opt/docker/config:ro
   syslog:
     image: freeacs/freeacs-syslog
     restart: always
@@ -68,7 +68,7 @@ services:
       - SERVER_PORT=8080
     volumes:
       - syslog_logs:/opt/docker/logs
-      - ./conf/syslog:/opt/docker/conf:ro
+      - ./conf/syslog:/opt/docker/config:ro
   core:
     image: freeacs/freeacs-core
     restart: always
@@ -86,7 +86,7 @@ services:
       - SERVER_PORT=8080
     volumes:
       - core_logs:/opt/docker/logs
-      - ./conf/core:/opt/docker/conf:ro
+      - ./conf/core:/opt/docker/config:ro
   stun:
     image: freeacs/freeacs-stun
     restart: always
@@ -104,7 +104,7 @@ services:
       - SERVER_PORT=8080
     volumes:
       - stun_logs:/opt/docker/logs
-      - ./conf/stun:/opt/docker/conf:ro
+      - ./conf/stun:/opt/docker/config:ro
   webservice:
     image: freeacs/freeacs-webservice
     restart: always
@@ -122,7 +122,7 @@ services:
       - SERVER_PORT=8080
     volumes:
       - webservice_logs:/opt/docker/logs
-      - ./conf/webservice:/opt/docker/conf:ro
+      - ./conf/webservice:/opt/docker/config:ro
   db:
     image: freeacs/mysql
     command: --max_allowed_packet=32M
