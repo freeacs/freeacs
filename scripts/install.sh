@@ -245,6 +245,7 @@ http {
     add_header X-Clacks-Overhead "GNU Terry Pratchett";
 
     location /tr069/ {
+      proxy_set_header        X-Real-IP       $remote_addr;
       proxy_pass http://localhost:8085/tr069/;
     }
     location /web/ {
@@ -271,6 +272,7 @@ else
 echo "Ngninx is already installed. Add the following to http.server configuration in nginx or similar"
 echo "
     location /tr069/ {
+      proxy_set_header        X-Real-IP       $remote_addr;
       proxy_pass http://localhost:8085/tr069/;
     }
     location /web/ {
