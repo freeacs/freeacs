@@ -112,6 +112,27 @@ lazy val web = (project in file("web"))
   .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin)
   .dependsOn(dbi)
 
+lazy val monitor = (project in file("monitor"))
+  .settings(
+    commonSettings,
+    dockerSettings,
+    packagingSettings,
+    name := "FreeACS Monitor",
+    packageSummary := "FreeACS Monitor",
+    packageDescription := "FreeACS Monitor",
+    libraryDependencies ++= Dependencies.springBoot
+      ++ Dependencies.database
+      ++ Dependencies.testing
+      ++ Dependencies.jdeb
+      ++ Seq(
+      "org.freemarker" % "freemarker" % "2.3.14",
+      "commons-httpclient" % "commons-httpclient" % "3.1"
+    ),
+    copyAppProps
+  )
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin)
+  .dependsOn(dbi)
+
 lazy val webservice = (project in file("webservice"))
   .settings(
     commonSettings,
