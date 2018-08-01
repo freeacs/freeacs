@@ -29,6 +29,7 @@ services:
       - MONITOR_LOCATION
       - SYSLOG_SERVER_HOST
       - SERVER_PORT
+      - TZ
     volumes:
       - web_logs:/opt/docker/logs
       - ./conf/web:/opt/docker/config:ro
@@ -48,6 +49,7 @@ services:
       - MONITOR_URL_STUN
       - SYSLOG_SERVER_HOST
       - SERVER_PORT
+      - TZ
     volumes:
       - web_logs:/opt/docker/logs
       - ./conf/web:/opt/docker/config:ro
@@ -64,6 +66,7 @@ services:
       - MAIN_DATASOURCE_PASSWORD
       - SYSLOG_SERVER_HOST
       - SERVER_PORT
+      - TZ
     volumes:
       - tr069_logs:/opt/docker/logs
       - ./conf/tr069:/opt/docker/config:ro
@@ -80,6 +83,7 @@ services:
       - MAIN_DATASOURCE_PASSWORD
       - SYSLOG_SERVER_HOST
       - SERVER_PORT
+      - TZ
     volumes:
       - syslog_logs:/opt/docker/logs
       - ./conf/syslog:/opt/docker/config:ro
@@ -96,6 +100,7 @@ services:
       - MAIN_DATASOURCE_PASSWORD
       - SYSLOG_SERVER_HOST
       - SERVER_PORT
+      - TZ
     volumes:
       - core_logs:/opt/docker/logs
       - ./conf/core:/opt/docker/config:ro
@@ -112,6 +117,7 @@ services:
       - MAIN_DATASOURCE_PASSWORD
       - SYSLOG_SERVER_HOST
       - SERVER_PORT
+      - TZ
     volumes:
       - stun_logs:/opt/docker/logs
       - ./conf/stun:/opt/docker/config:ro
@@ -128,6 +134,7 @@ services:
       - MAIN_DATASOURCE_PASSWORD
       - SYSLOG_SERVER_HOST
       - SERVER_PORT
+      - TZ
     volumes:
       - webservice_logs:/opt/docker/logs
       - ./conf/webservice:/opt/docker/config:ro
@@ -136,6 +143,8 @@ services:
     command: --max_allowed_packet=32M
     restart: always
     mem_limit: 1000000000
+    environment:
+      - TZ
     ports:
       - 3306:3306
     volumes:
