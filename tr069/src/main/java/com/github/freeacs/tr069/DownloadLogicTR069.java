@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Function;
 
 public class DownloadLogicTR069 {
 
@@ -68,19 +69,15 @@ public class DownloadLogicTR069 {
       if (oweraParams.getValue(scriptURLName) != null)
         downloadURL = oweraParams.getValue(scriptURLName);
       else {
-        StringBuffer reqURL = reqRes.getReq().getRequestURL();
-        int port = reqRes.getReq().getLocalPort();
-        String contextPath = reqRes.getReq().getContextPath();
-        int hostEndPos = reqURL.indexOf(contextPath);
-        downloadURL = reqURL.substring(0, hostEndPos);
-        if (downloadURL.lastIndexOf(":") <= 6)
-          downloadURL += ":" + port;
-        downloadURL += contextPath;
-        downloadURL += "/file/" + FileType.TR069_SCRIPT + "/" + scriptVersionFromDB + "/" + sessionData.getUnittype().getName();
-        if (sessionData.getUnitId() != null)
-          downloadURL += "/" + sessionData.getUnitId();
-        downloadURL += "/" + file.getName();
-        downloadURL = downloadURL.replaceAll(" ", "--");
+        downloadURL = getDownloadUrl(
+                scriptVersionFromDB,
+                reqRes.getReq().getContextPath(),
+                sessionData.getUnittype().getName(),
+                sessionData.getUnitId(),
+                file.getName(),
+                FileType.TR069_SCRIPT,
+                Properties.PUBLIC_URL
+        );
       }
       Log.debug(DownloadLogic.class, "Download script/config URL found (" + downloadURL + "), may trigger a Download");
       sessionData.getUnit().toWriteQueue(SystemParameters.JOB_CURRENT_KEY, scriptVersionFromDB);
@@ -88,6 +85,19 @@ public class DownloadLogicTR069 {
       return true;
     }
     return false;
+  }
+
+  private static String getDownloadUrl(String version, String contextPath, String unitTypeName, String unitId, String fileName, FileType type, String publicUrl) {
+    String downloadURL;
+    downloadURL = publicUrl;
+    downloadURL += contextPath;
+    downloadURL += "/file/" + type + "/" + version + "/" + unitTypeName;
+    if (unitId != null)
+      downloadURL += "/" + unitId;
+    if (fileName != null)
+      downloadURL += "/" + fileName;
+    downloadURL = downloadURL.replaceAll(" ", "--");
+    return downloadURL;
   }
 
   public static boolean isSoftwareDownloadSetup(HTTPReqResData reqRes, Job job) {
@@ -114,18 +124,15 @@ public class DownloadLogicTR069 {
         downloadURL = jobParams.get(SystemParameters.SOFTWARE_URL).getParameter().getValue();
     }
     if (downloadURL == null) {
-      StringBuffer reqURL = reqRes.getReq().getRequestURL();
-      int port = reqRes.getReq().getLocalPort();
-      String contextPath = reqRes.getReq().getContextPath();
-      int hostEndPos = reqURL.indexOf(contextPath);
-      downloadURL = reqURL.substring(0, hostEndPos);
-      if (downloadURL.lastIndexOf(":") <= 6)
-        downloadURL += ":" + port;
-      downloadURL += contextPath;
-      downloadURL += "/file/" + FileType.SOFTWARE + "/" + softwareVersionFromDB + "/" + sessionData.getUnittype().getName();
-      if (sessionData.getUnitId() != null)
-        downloadURL += "/" + sessionData.getUnitId();
-      downloadURL = downloadURL.replaceAll(" ", "--");
+      downloadURL = getDownloadUrl(
+              softwareVersionFromDB,
+              reqRes.getReq().getContextPath(),
+              sessionData.getUnittype().getName(),
+              sessionData.getUnitId(),
+              null,
+              FileType.SOFTWARE,
+              Properties.PUBLIC_URL
+      );
     }
 
     if (softwareVersionFromDB != null && !softwareVersionFromDB.trim().equals("") && !softwareVersionFromDB.equals(softwareVersionFromCPE)) {

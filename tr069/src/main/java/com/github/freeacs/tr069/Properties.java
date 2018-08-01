@@ -21,6 +21,7 @@ public class Properties {
 	public static String[] DISCOVERY_BLOCK;
 	public static String AUTH_METHOD;
 	public static int CONCURRENT_DOWNLOAD_LIMIT;
+	public static String PUBLIC_URL;
 
 	@Autowired
 	private Environment environment;
@@ -43,6 +44,11 @@ public class Properties {
 	@Value("${auth.method}")
 	public void setAuthMethod(String authMethod) {
 		AUTH_METHOD = authMethod;
+	}
+
+	@Value("${public.url}")
+	public void setPublicUrl(String url) {
+        PUBLIC_URL = url;
 	}
 
 	@Value("${digest.secret}")
