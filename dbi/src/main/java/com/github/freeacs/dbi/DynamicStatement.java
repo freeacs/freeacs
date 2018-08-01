@@ -3,13 +3,9 @@ package com.github.freeacs.dbi;
 import java.io.ByteArrayInputStream;
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 public class DynamicStatement {
@@ -113,22 +109,9 @@ public class DynamicStatement {
 				pp.setInt(i + 1, ((Long) o).intValue());
 			else if (o instanceof Timestamp)
 				pp.setTimestamp(i + 1, (Timestamp) o);
-			else if (o instanceof java.util.Date) {
-				java.util.Date date = (java.util.Date) o;
-				Calendar now = Calendar.getInstance();
-				now.setTime(date);
-				int year = now.get(Calendar.YEAR);
-				int month = now.get(Calendar.MONTH) + 1; // Note: zero based!
-				int day = now.get(Calendar.DAY_OF_MONTH);
-				int hour = now.get(Calendar.HOUR_OF_DAY);
-				int minute = now.get(Calendar.MINUTE);
-				int second = now.get(Calendar.SECOND);
-				Timestamp utc = new Timestamp(
-						ZonedDateTime.of(year, month, day, hour, minute, second, 0, ZoneId.of("UTC")
-						).toInstant().toEpochMilli()
-				);
-				pp.setTimestamp(i + 1, utc);
-			} else if (o instanceof Date)
+			else if (o instanceof java.util.Date)
+				pp.setTimestamp(i + 1, new Timestamp(((java.util.Date) o).getTime()));
+			else if (o instanceof Date)
 				pp.setDate(i + 1, (Date) o);
 			else if (o instanceof Boolean) // We always convert boolean to ant Int-column!!
 				pp.setInt(i + 1, ((Boolean) o) ? 1 : 0);
