@@ -251,6 +251,9 @@ http {
     location /web/ {
       proxy_pass http://localhost:8081/web/;
     }
+    location /monitor/ {
+      proxy_pass http://localhost:8090/monitor/;
+    }
     location /webservice/ {
       proxy_pass http://localhost:8088/webservice/;
     }
@@ -277,6 +280,9 @@ echo "
     }
     location /web/ {
       proxy_pass http://localhost:8081/web/;
+    }
+    location /monitor/ {
+      proxy_pass http://localhost:8090/monitor/;
     }
     location /webservice/ {
       proxy_pass http://localhost:8088/webservice/;
