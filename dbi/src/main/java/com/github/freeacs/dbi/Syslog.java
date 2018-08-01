@@ -212,131 +212,12 @@ public class Syslog {
     return ds.makePreparedStatement(c);
   }
 
-  private String getTmsArg(SyslogEntry entry) {
-    if (simulationMode || (entry.getFacility() != null && entry.getFacility() >= 50)) {
-      if (entry.getDeviceTimestamp() != null && !entry.getDeviceTimestamp().trim().equals("Jan 1 00:00:00")) {
-        try {
-          Date deviceTms = deviceTmsFormat.parse(yearCal.get(Calendar.YEAR) + " " + entry.getDeviceTimestamp());
-          // Around midnight on new year's eve, one might have date-tms combined
-          // with the wrong year, since we set the year on server side. To avoid
-          // this, we must check if the device-tms is too far off from the now-tms.
-          // If it is, we adjust the yearCal and force deviceTms to now-tms
-          if (Math.abs(System.currentTimeMillis() - deviceTms.getTime()) > 3600 * 1000 * 24 * 30) {
-            deviceTms = new Date();
-            yearCal.setTime(deviceTms);
-          }
-          return "'" + dbDateFormat.format(deviceTms) + "'";
-        } catch (ParseException e) {
-          logger.error("Device timestamp (" + entry.getDeviceTimestamp() + ") could not be parsed into a date, using NOW tms instead", e);
-          return "'" + dbDateFormat.format(new Date()) + "'";
-        }
-      }
-      return "'" + dbDateFormat.format(new Date()) + "'";
-    } else if (entry.getCollectorTimestamp() != null) {
-      return "'" + dbDateFormat.format(entry.getCollectorTimestamp()) + "'";
-    } else {
-      return "'" + dbDateFormat.format(new Date()) + "'";
-    }
-  }
-
-  private String makeInsertColumnSQL() {
-    return "INSERT INTO syslog (collector_timestamp, syslog_event_id, facility, facility_version, severity, device_timestamp, hostname, tag, unit_id, profile_name, unit_type_name, user_id, content, flags, ipaddress) VALUES ";
-  }
-
-  private String makeInsertValueSQL(SyslogEntry entry) {
-    StringBuilder sb = new StringBuilder();
-    sb.append("(");
-
-    sb.append(getTmsArg(entry)); // collector_timestamp, can be NOW() or a
-                                 // 'timestamp'
-    sb.append(",");
-
-    if (entry.getEventId() != null)
-      sb.append(entry.getEventId()); // syslog_event_id
-    else
-      sb.append(0); // syslog_event_id - default
-    sb.append(",");
-
-    if (entry.getFacility() != null)
-      sb.append(entry.getFacility()); // facility - set explicitely
-    else
-      sb.append(id.getFacility()); // facility - retrieve via Identify
-    sb.append(",");
-
-    if (entry.getFacilityVersion() != null)
-      sb.append("'" + entry.getFacilityVersion() + "'");
-    else
-      sb.append("NULL");
-    sb.append(",");
-
-    sb.append(entry.getSeverity());
-    sb.append(",");
-
-    if (entry.getDeviceTimestamp() != null)
-      sb.append("'" + entry.getDeviceTimestamp() + "'");
-    else
-      sb.append("NULL");
-    sb.append(",");
-
-    if (entry.getHostname() != null)
-      sb.append("'" + entry.getHostname() + "'");
-    else
-      sb.append("NULL");
-    sb.append(",");
-
-    if (entry.getTag() != null)
-      sb.append("'" + entry.getTag() + "'");
-    else
-      sb.append("NULL");
-    sb.append(",");
-
-    if (entry.getUnitId() != null)
-      sb.append("'" + entry.getUnitId() + "'");
-    else
-      sb.append("NULL");
-    sb.append(",");
-
-    if (entry.getProfileName() != null)
-      sb.append("'" + entry.getProfileName() + "'");
-    else
-      sb.append("NULL");
-    sb.append(",");
-
-    if (entry.getUnittypeName() != null)
-      sb.append("'" + entry.getUnittypeName() + "'");
-    else
-      sb.append("NULL");
-    sb.append(",");
-
-    if (id.getUser() != null)
-      sb.append("'" + id.getUser().getUsername() + "'");
-    else
-      sb.append("NULL");
-    sb.append(",");
-
-    if (entry.getContent() != null) {
-      if (entry.getContent().length() > 1024)
-        entry.setContent(entry.getContent().substring(0, 1020) + "....");
-      if (entry.getContent().contains("'"))
-        entry.setContent(entry.getContent().replace("'", "\\'"));
-      sb.append("'" + entry.getContent() + "'");
-    } else
-      sb.append("NULL");
-    sb.append(",");
-
-    if (entry.getFlags() != null)
-      sb.append("'" + entry.getFlags() + "'");
-    else
-      sb.append("NULL");
-    sb.append(",");
-
-    if (entry.getIpAddress() != null)
-      sb.append("'" + entry.getIpAddress() + "'");
-    else
-      sb.append("NULL");
-
-    sb.append(")");
-    return sb.toString();
+  private String getContent(String content) {
+    if (content.length() > 1024)
+      return content.substring(0, 1020) + "....";
+    if (content.contains("'"))
+      return content.replace("'", "\\'");
+    return content;
   }
 
   private List<SyslogEntry> makeSyslogEntries(ResultSet rs) throws SQLException {
@@ -500,33 +381,56 @@ public class Syslog {
     }
   }
 
+  private Date getTmsArg(SyslogEntry entry) {
+    if (simulationMode || (entry.getFacility() != null && entry.getFacility() >= 50)) {
+      if (entry.getDeviceTimestamp() != null && !entry.getDeviceTimestamp().trim().equals("Jan 1 00:00:00")) {
+        try {
+          Date deviceTms = deviceTmsFormat.parse(yearCal.get(Calendar.YEAR) + " " + entry.getDeviceTimestamp());
+          // Around midnight on new year's eve, one might have date-tms combined
+          // with the wrong year, since we set the year on server side. To avoid
+          // this, we must check if the device-tms is too far off from the now-tms.
+          // If it is, we adjust the yearCal and force deviceTms to now-tms
+          if (Math.abs(System.currentTimeMillis() - deviceTms.getTime()) > 3600 * 1000 * 24 * 30) {
+            deviceTms = new Date();
+            yearCal.setTime(deviceTms);
+          }
+          return deviceTms;
+        } catch (ParseException e) {
+          logger.error("Device timestamp (" + entry.getDeviceTimestamp() + ") could not be parsed into a date, using NOW tms instead", e);
+          return new Date();
+        }
+      }
+      return new Date();
+    } else if (entry.getCollectorTimestamp() != null) {
+      return entry.getCollectorTimestamp();
+    } else {
+      return new Date();
+    }
+  }
+
+
   // Returns syslog id
   public void write(SyslogEntry entry) throws SQLException {
-    Connection c = null;
-    Statement s = null;
-    try {
-      insertValues.append(makeInsertValueSQL(entry));
-      insertCount++;
-      if (insertCount > maxInsertCount || System.currentTimeMillis() > insertTms + minTmsDelay) {
-        String sql = makeInsertColumnSQL() + insertValues.toString();
-        c = getDataSource().getConnection();
-        s = c.createStatement();
-        s.executeUpdate(sql);
-        insertCount = 0;
-        insertTms = System.currentTimeMillis();
-        insertValues = new StringBuilder();
-      } else
-        insertValues.append(", ");
-
-    } catch (SQLException sqle) {
-      insertValues = new StringBuilder();
-      throw sqle;
-    } finally {
-      if (s != null)
-        s.close();
-      if (c != null) {
-        c.close();
-      }
+    try (Connection c = getDataSource().getConnection();
+         PreparedStatement s = c.prepareStatement(
+                 "INSERT INTO syslog (collector_timestamp, syslog_event_id, facility, facility_version, severity, device_timestamp, hostname, tag, unit_id, profile_name, unit_type_name, user_id, content, flags, ipaddress) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+      s.setTimestamp(1, new Timestamp(getTmsArg(entry).getTime()));
+      s.setInt(2, Optional.ofNullable(entry.getEventId()).orElse(0));
+      s.setInt(3, Optional.ofNullable(entry.getFacility()).orElse(id.getFacility()));
+      s.setString(4, entry.getFacilityVersion());
+      s.setInt(5, entry.getSeverity());
+      s.setString(6, entry.getDeviceTimestamp());
+      s.setString(7, entry.getHostname());
+      s.setString(8, entry.getTag());
+      s.setString(9, entry.getUnitId());
+      s.setString(10, entry.getProfileName());
+      s.setString(11, entry.getUnittypeName());
+      s.setString(12, entry.getUserId());
+      s.setString(13, Optional.ofNullable(entry.getContent()).map(this::getContent).orElse(null));
+      s.setString(14, entry.getFlags());
+      s.setString(15, entry.getIpAddress());
+      s.executeUpdate();
     }
   }
 
