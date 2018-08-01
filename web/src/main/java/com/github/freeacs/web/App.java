@@ -1,5 +1,6 @@
 package com.github.freeacs.web;
 
+import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.web.app.Main;
 import com.github.freeacs.web.app.Monitor;
 import com.github.freeacs.web.app.menu.MenuServlet;
@@ -7,6 +8,7 @@ import com.github.freeacs.web.app.util.Freemarker;
 import com.github.freeacs.web.help.HelpServlet;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
@@ -39,14 +41,6 @@ public class App {
     }
 
     @Bean
-    @Qualifier("syslog")
-    //@ConfigurationProperties("syslog.datasource")
-    public DataSource syslogDs() {
-        return mainDs();
-        //return DataSourceBuilder.create().type(HikariDataSource.class).build();
-    }
-
-    @Bean
     ServletRegistrationBean<Monitor> monitor () {
         ServletRegistrationBean<Monitor> srb = new ServletRegistrationBean<>();
         srb.setServlet(new Monitor());
@@ -55,9 +49,10 @@ public class App {
     }
 
     @Bean
-    ServletRegistrationBean<Main> main (@Qualifier("main") DataSource mainDataSource, @Qualifier("syslog") DataSource syslogDataSource) {
+    ServletRegistrationBean<Main> main (@Qualifier("main") DataSource mainDataSource, @Value("${syslog.server.host}") String syslogServerHost) {
+        SyslogClient.SYSLOG_SERVER_HOST = syslogServerHost;
         ServletRegistrationBean<Main> srb = new ServletRegistrationBean<>();
-        srb.setServlet(new Main(mainDataSource, syslogDataSource));
+        srb.setServlet(new Main(mainDataSource, mainDataSource));
         srb.setName("main");
         srb.setUrlMappings(Collections.singletonList(Main.servletMapping));
         return srb;

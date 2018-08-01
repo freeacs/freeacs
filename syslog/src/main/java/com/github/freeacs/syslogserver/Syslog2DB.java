@@ -238,6 +238,8 @@ public class Syslog2DB implements Runnable {
 	}
 
 	Syslog2DB(DataSource xapsDataSource, DataSource syslogDataSource) {
+		this.xapsCp = xapsDataSource;
+		this.syslogCp = syslogDataSource;
 		poulateDeviceIdPatterns();
 		init(xapsDataSource, syslogDataSource);
 		populateXAPS();
