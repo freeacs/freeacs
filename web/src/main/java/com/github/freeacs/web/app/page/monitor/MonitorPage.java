@@ -89,8 +89,6 @@ public class MonitorPage extends AbstractWebPage {
 			outputHandlerString = outputHandler.compileTemplate("/exception.ftl");
 		}
 
-		outputHandlerString = "<script src='javascript/xaps.module.monitor.js'></script>"+outputHandlerString;
-		
 		outputHandler.setDirectResponse(outputHandlerString);
 	}
 

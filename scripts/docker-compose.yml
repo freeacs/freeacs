@@ -29,6 +29,25 @@ services:
       - SYSLOG_DATASOURCE_JDBCURL=jdbc:mysql://db.syslog:3306/acs?autoReconnect=true&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&verifyServerCertificate=false&useSSL=false&requireSSL=false
       - SYSLOG_DATASOURCE_USERNAME=acs
       - SYSLOG_DATASOURCE_PASSWORD=acs
+      - MONITOR_LOCATION=http://monitor:8080
+      - SERVER_PORT=8080
+    volumes:
+      - web_logs:/opt/docker/logs
+      - ./conf/web:/opt/docker/config:ro
+  monitor:
+    image: freeacs/freeacs-monitor
+    restart: always
+    mem_limit: 2048000000
+    networks:
+      - mynetwork
+    environment:
+      - SPRING_PROFILES_ACTIVE=config
+      - MONITOR_URL_CORE=http://core:8080/core/ok
+      - MONITOR_URL_SYSLOG=http://syslog:8080/syslog/ok
+      - MONITOR_URL_TR069=http://tr069:8080/tr069/ok
+      - MONITOR_URL_WEB=http://web:8080/web/ok
+      - MONITOR_URL_WEBSERVICE=http://webservice:8080/webservice/ok
+      - MONITOR_URL_STUN=http://stun:8080/stun/ok
       - SERVER_PORT=8080
     volumes:
       - web_logs:/opt/docker/logs
