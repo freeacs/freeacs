@@ -16,6 +16,7 @@ import com.github.freeacs.shell.util.Validation;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import javax.sql.DataSource;
 import java.io.*;
 import java.io.File;
 import java.sql.SQLException;
@@ -86,7 +87,8 @@ public class GenericMenu {
 			session.getDbi().setLifetimeSec(0); // kill the old DBI
 			ACSShell acsShell = session.getACSShell();
 			acsShell.setSession(new Session(session.getOriginalOptionArgs(), acsShell));
-			acsShell.init(ACSShell.getHikariDataSource("xaps"), ACSShell.getHikariDataSource("syslog"));
+			DataSource ds = ACSShell.getHikariDataSource("main");
+			acsShell.init(ds, ds);
 			return true;
 		} else if (input.startsWith("userin")) {
 			session.println("Logged in as " + session.getVerifiedFusionUser().getUsername());

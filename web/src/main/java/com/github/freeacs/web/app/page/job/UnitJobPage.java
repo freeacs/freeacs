@@ -27,7 +27,6 @@ public class UnitJobPage extends AbstractWebPage {
 	private JobData inputData;
 
 	@Qualifier("main") DataSource mainDataSource;
-	@Qualifier("syslog") DataSource syslogDataSource;
 
 	private ACS acs;
 	//	private Unittype unittype;
@@ -167,7 +166,7 @@ public class UnitJobPage extends AbstractWebPage {
 
 	private void getCompletedUnitJobs(Job job, Output res, Unittype unittype) throws SQLException, IOException, TemplateException {
 		res.setTemplatePath("unit-job/completed");
-		ACSUnit acsUnit = ACSLoader.getACSUnit(sessionId, mainDataSource, syslogDataSource);
+		ACSUnit acsUnit = ACSLoader.getACSUnit(sessionId, mainDataSource, mainDataSource);
 		Profile profile = job.getGroup().getProfile();
 		UnittypeParameter historyParameterUtp = job.getGroup().getUnittype().getUnittypeParameters().getByName(SystemParameters.JOB_HISTORY);
 		Parameter historyParameter = new Parameter(historyParameterUtp, "%," + job.getId() + ":%");

@@ -30,17 +30,9 @@ public class App {
     }
 
     @Bean
-    @Qualifier("syslog")
-    //@ConfigurationProperties("syslog.datasource")
-    public DataSource syslogDs() {
-        return mainDs();
-        //return DataSourceBuilder.create().type(HikariDataSource.class).build();
-    }
-
-    @Bean
-    ServletRegistrationBean<SyslogServlet> provisioning(@Qualifier("main") DataSource mainDataSource, @Qualifier("syslog") DataSource syslogDataSource) {
+    ServletRegistrationBean<SyslogServlet> provisioning(@Qualifier("main") DataSource mainDataSource) {
         ServletRegistrationBean<SyslogServlet> srb = new ServletRegistrationBean<>();
-        srb.setServlet(new SyslogServlet(mainDataSource, syslogDataSource));
+        srb.setServlet(new SyslogServlet(mainDataSource, mainDataSource));
         srb.setLoadOnStartup(1);
         srb.setUrlMappings(Collections.singletonList("/*"));
         return srb;

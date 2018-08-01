@@ -3,6 +3,7 @@ package com.github.freeacs;
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.http.FileServlet;
 import com.github.freeacs.base.http.OKServlet;
+import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.Provisioning;
 import com.github.freeacs.tr069.methods.TR069Method;
@@ -10,6 +11,7 @@ import com.github.freeacs.tr069.test.system1.TestServlet;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
@@ -39,20 +41,13 @@ public class App {
     }
 
     @Bean
-    @Qualifier("syslog")
-    //@ConfigurationProperties("syslog.datasource")
-    public DataSource syslogDs() {
-        return mainDs();
-        //return DataSourceBuilder.create().type(HikariDataSource.class).build();
+    public DBAccess getDBAccess(@Qualifier("main") DataSource mainDataSource) {
+        return new DBAccess(FACILITY_TR069, VERSION, mainDataSource, mainDataSource);
     }
 
     @Bean
-    public DBAccess getDBAccess(@Qualifier("main") DataSource mainDataSource, @Qualifier("syslog") DataSource syslogDataSource) {
-        return new DBAccess(FACILITY_TR069, VERSION, mainDataSource, syslogDataSource);
-    }
-
-    @Bean
-    ServletRegistrationBean<Provisioning> provisioning(@Autowired DBAccess dbAccess, @Autowired TR069Method tr069Method, @Autowired Properties properties) {
+    ServletRegistrationBean<Provisioning> provisioning(@Autowired DBAccess dbAccess, @Autowired TR069Method tr069Method, @Autowired Properties properties, @Value("${syslog.server.host}") String syslogServerHost) {
+        SyslogClient.SYSLOG_SERVER_HOST = syslogServerHost;
         ServletRegistrationBean<Provisioning> srb = new ServletRegistrationBean<>();
         srb.setServlet(new Provisioning(dbAccess, tr069Method, properties));
         srb.setLoadOnStartup(1);

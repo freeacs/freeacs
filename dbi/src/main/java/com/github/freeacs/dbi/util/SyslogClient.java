@@ -19,6 +19,8 @@ public class SyslogClient {
 
 	private static SimpleDateFormat sdf = new SimpleDateFormat("MMM d HH:mm:ss", Locale.US);
 
+	public static String SYSLOG_SERVER_HOST = "localhost";
+
 	private static Logger logger = LoggerFactory.getLogger(SyslogClient.class);
 
 	public static void info(String unitId, String content, int facility, String facilityVersion, String user) {
@@ -77,7 +79,7 @@ public class SyslogClient {
 		DatagramSocket socket = new DatagramSocket();
 		byte[] message = msg.getBytes(StandardCharsets.UTF_8);
 		DatagramPacket packet = new DatagramPacket(message, message.length);
-		InetAddress address = InetAddress.getByName("localhost");
+		InetAddress address = InetAddress.getByName(SYSLOG_SERVER_HOST);
 		packet.setPort(9116);
 		packet.setAddress(address);
 		socket.send(packet);
@@ -106,7 +108,7 @@ public class SyslogClient {
 		String tmsStr = sdf.format(date);
 		StringBuilder sb = new StringBuilder();
 		sb.append("<" + PRI + ">" + tmsStr + " ");
-		if (ipAddress == null)
+		if (ipAddress != null)
 			sb.append(ipAddress);
 		else
 			sb.append("server");
