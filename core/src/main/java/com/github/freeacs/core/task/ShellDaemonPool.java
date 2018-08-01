@@ -30,7 +30,7 @@ public class ShellDaemonPool {
 	private static ACSShellDaemon createNewShellDaemon(DataSource mainDataSource, DataSource syslogDataSource, int index, String fusionUser) throws Throwable {
 		ACSShellDaemon acsShellDaemon = new ACSShellDaemon(mainDataSource, syslogDataSource, fusionUser);
 		acsShellDaemon.setIndex(index);
-		ACSShell ACSShell = acsShellDaemon.getACSShell();
+		ACSShell ACSShell = acsShellDaemon.getAcsShell();
 		try {
 			ACSShell.setPrinter(new PrintWriter(new FileWriter("fusion-core-shell-daemon-for-" + fusionUser + "-" + index + ".log")));
 		} catch (IOException e) {

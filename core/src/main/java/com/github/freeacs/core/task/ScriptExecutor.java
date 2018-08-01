@@ -33,7 +33,7 @@ public class ScriptExecutor extends DBIShare {
 		@Override
 		public void run() {
 			try {
-				Session session = acsShellDaemon.getACSShell().getSession();
+				Session session = acsShellDaemon.getAcsShell().getSession();
 				Processor proc = session.getProcessor();
 				String logPrefix = "ScriptExecutor: " + session.getFusionUser() + "-" + acsShellDaemon.getIndex() + ":  ";
 

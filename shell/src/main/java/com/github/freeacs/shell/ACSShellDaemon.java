@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ACSShellDaemon implements Runnable {
-	private ACSShell ACSShell = new ACSShell();
+	private ACSShell acsShell = new ACSShell();
 	private final DataSource mainDataSource;
 	private final DataSource syslogDataSource;
 	private String fusionUser;
@@ -19,35 +19,35 @@ public class ACSShellDaemon implements Runnable {
 	}
 
 	public int getCommandsNotRunYet() {
-		return ACSShell.getSession().getProcessor().getDaemonCommandSize();
+		return acsShell.getSession().getProcessor().getDaemonCommandSize();
 	}
 
 	public void addToRunList(String command) {
-		ACSShell.getSession().getProcessor().addDaemonCommand(command);
+		acsShell.getSession().getProcessor().addDaemonCommand(command);
 	}
 
 	@Override
 	public void run() {
-		ACSShell.mainImpl(new String[] { "-daemon", "-fusionuser", fusionUser }, mainDataSource, syslogDataSource);
+		acsShell.mainImpl(new String[] { "-daemon", "-fusionuser", fusionUser }, mainDataSource, syslogDataSource);
 	}
 
 	public List<Throwable> getAndResetThrowables() {
-		List<Throwable> throwables = ACSShell.getThrowables();
+		List<Throwable> throwables = acsShell.getThrowables();
 		if (throwables.size() > 0)
-			ACSShell.setThrowables(new ArrayList<Throwable>());
+			acsShell.setThrowables(new ArrayList<Throwable>());
 		return throwables;
 	}
 
-	public ACSShell getACSShell() {
-		return ACSShell;
+	public ACSShell getAcsShell() {
+		return acsShell;
 	}
 
 	public Object getMonitor() {
-		return ACSShell.getSession().getProcessor().getMonitor();
+		return acsShell.getSession().getProcessor().getMonitor();
 	}
 
 	public boolean isInitialized() {
-		return ACSShell.isInitialized();
+		return acsShell.isInitialized();
 	}
 
 	public boolean isIdle() {
