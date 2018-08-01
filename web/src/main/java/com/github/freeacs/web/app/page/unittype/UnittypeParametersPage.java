@@ -42,8 +42,6 @@ public class UnittypeParametersPage extends AbstractWebPage {
 
 	@Qualifier("main") DataSource mainDataSource;
 
-    @Qualifier("syslog") DataSource syslogDataSource;
-
     /**
 	 * For use by jQuery on the search page for the "Add new parameter" in advanced mode.
 	 * 
@@ -59,7 +57,7 @@ public class UnittypeParametersPage extends AbstractWebPage {
 			@RequestParam(required=true) String unittype,
 			@RequestParam(required=true) String term,
 			HttpSession session) throws SQLException, JsonProcessingException {
-		ACS acs = ACSLoader.getXAPS(session.getId(), mainDataSource, syslogDataSource);
+		ACS acs = ACSLoader.getXAPS(session.getId(), mainDataSource, mainDataSource);
 		List<Unittype> allowedUnittypes = Arrays.asList(acs.getUnittypes().getUnittypes());
 		Unittype unittypeFromRequest = acs.getUnittype(unittype);
 		if(allowedUnittypes.contains(unittypeFromRequest)){

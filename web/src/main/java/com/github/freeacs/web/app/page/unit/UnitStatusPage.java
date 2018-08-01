@@ -99,10 +99,6 @@ public class UnitStatusPage extends AbstractWebPage {
 	@Qualifier("main")
 	private DataSource mainDataSource;
 
-	@Autowired
-	@Qualifier("syslog")
-	private DataSource syslogDataSource;
-
 	/* (non-Javadoc)
 	 * @see com.owera.xaps.web.app.page.AbstractWebPage#getShortcutItems(com.owera.xaps.web.app.util.SessionData)
 	 */
@@ -313,7 +309,7 @@ public class UnitStatusPage extends AbstractWebPage {
 		cal.setTimeInMillis(System.currentTimeMillis());
 		cal.add(Calendar.SECOND, -30);
 		Date start = cal.getTime();
-		ACSUnit acsUnit = ACSLoader.getACSUnit(session.getId(), mainDataSource, syslogDataSource);
+		ACSUnit acsUnit = ACSLoader.getACSUnit(session.getId(), mainDataSource, mainDataSource);
 		if(acsUnit == null)
 			throw new NotLoggedInException();
 		Unit unit = acsUnit.getUnitById(unitId);
@@ -356,8 +352,8 @@ public class UnitStatusPage extends AbstractWebPage {
 		
 		Date fromDate = DateUtils.parseDateDefault(startTms);
 		Date toDate = DateUtils.parseDateDefault(endTms);
-		Unit unit = ACSLoader.getACSUnit(session.getId(), mainDataSource, syslogDataSource).getUnitById(unitId);
-		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId(), mainDataSource, syslogDataSource);
+		Unit unit = ACSLoader.getACSUnit(session.getId(), mainDataSource, mainDataSource).getUnitById(unitId);
+		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId(), mainDataSource, mainDataSource);
 		PeriodType type = getPeriodType(periodType);
 		ReportType reportType = ReportType.getEnum(pageType);
 		String method = getReportMethod(reportType, requestMethod);
@@ -424,8 +420,8 @@ public class UnitStatusPage extends AbstractWebPage {
 		
 		Date fromDate = DateUtils.parseDateDefault(startTms);
 		Date toDate = DateUtils.parseDateDefault(endTms);
-		Unit unit = ACSLoader.getACSUnit(session.getId(), mainDataSource, syslogDataSource).getUnitById(unitId);
-		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId(), mainDataSource, syslogDataSource);
+		Unit unit = ACSLoader.getACSUnit(session.getId(), mainDataSource, mainDataSource).getUnitById(unitId);
+		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId(), mainDataSource, mainDataSource);
 		ReportType reportType = ReportType.getEnum(pageType);
 		String page = null;
 		List<?> records = null;
@@ -496,8 +492,8 @@ public class UnitStatusPage extends AbstractWebPage {
 			HttpSession session) throws IllegalArgumentException, SecurityException, ParseException, SQLException, IOException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		Date fromDate = DateUtils.parseDateDefault(startTms);
 		Date toDate = DateUtils.parseDateDefault(endTms);
-		Unit unit = ACSLoader.getACSUnit(session.getId(), mainDataSource, syslogDataSource).getUnitById(unitId);
-		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId(), mainDataSource, syslogDataSource);
+		Unit unit = ACSLoader.getACSUnit(session.getId(), mainDataSource, mainDataSource).getUnitById(unitId);
+		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId(), mainDataSource, mainDataSource);
 		Double effect = info.getOverallStatus().getTotalScoreEffect();
 		DecimalUtils.Format df = DecimalUtils.Format.ONE_DECIMAL;
 		Map<String,Object> map = new HashMap<String,Object>();
@@ -530,8 +526,8 @@ public class UnitStatusPage extends AbstractWebPage {
 			HttpSession session) throws SQLException, IOException, TemplateModelException, ParseException {
 		Date fromDate = DateUtils.parseDateDefault(startTms);
 		Date toDate = DateUtils.parseDateDefault(endTms);
-		Unit unit = ACSLoader.getACSUnit(session.getId(), mainDataSource, syslogDataSource).getUnitById(unitId);
-		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId(), mainDataSource, syslogDataSource);
+		Unit unit = ACSLoader.getACSUnit(session.getId(), mainDataSource, mainDataSource).getUnitById(unitId);
+		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId(), mainDataSource, mainDataSource);
 		Double totalScore = info.getTotalScore();
 		DecimalUtils.Format df = DecimalUtils.Format.ONE_DECIMAL;
 		String totalScoreString = (totalScore!=null?""+df.format(totalScore):"No calls have been made");
@@ -563,8 +559,8 @@ public class UnitStatusPage extends AbstractWebPage {
 			HttpSession session) throws Exception {
 		Date fromDate = DateUtils.parseDateDefault(startTms);
 		Date toDate = DateUtils.parseDateDefault(endTms);
-		Unit unit = ACSLoader.getACSUnit(session.getId(), mainDataSource, syslogDataSource).getUnitById(unitId);
-		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId(), mainDataSource, syslogDataSource);
+		Unit unit = ACSLoader.getACSUnit(session.getId(), mainDataSource, mainDataSource).getUnitById(unitId);
+		UnitStatusInfo info = UnitStatusInfo.getUnitStatusInfo(unit, fromDate, toDate, session.getId(), mainDataSource, mainDataSource);
 		JFreeChart chart = createStatusDialChart(null, "Overall status", new DefaultValueDataset(info.getOverallStatus().getStatus()), UnitStatusInfo.OVERALL_STATUS_MIN, UnitStatusInfo.OVERALL_STATUS_MAX);
 		byte[] image = getReportChartImageBytes(null, chart,380,380);
 		Output.writeImageBytesToResponse(image,res);
@@ -689,7 +685,7 @@ public class UnitStatusPage extends AbstractWebPage {
 	 *  the no available connection exception
 	 */
 	public boolean isCallOngoing(String sessionId, UnitStatusInfo.VoipLine line, Unit unit, Date start, Date end, DataSource xapsDataSource) throws SQLException {
-		Syslog syslog = new Syslog(syslogDataSource, ACSLoader.getIdentity(sessionId, xapsDataSource));
+		Syslog syslog = new Syslog(mainDataSource, ACSLoader.getIdentity(sessionId, xapsDataSource));
 		SyslogFilter filter = new SyslogFilter();
 		filter.setMaxRows(1);
 		String keyToFind = "MOS Report: Channel "+(line!=null?line.toString():"")+"|ua"+(line!=null?line.toString():"")+": session connected";
@@ -698,10 +694,10 @@ public class UnitStatusPage extends AbstractWebPage {
 		filter.setCollectorTmsEnd(end);
 		filter.setUnitId("^" + unit.getId() + "$");
 		long isCallOngoingMs = System.nanoTime();
-		List<SyslogEntry> mosEntry = syslog.read(filter, ACSLoader.getXAPS(sessionId, this.mainDataSource, syslogDataSource));
+		List<SyslogEntry> mosEntry = syslog.read(filter, ACSLoader.getXAPS(sessionId, this.mainDataSource, mainDataSource));
 		logTimeElapsed(isCallOngoingMs, "Retrieved last MOS report from Syslog. Result size: "+mosEntry.size(), logger);
 		long getQoS = System.nanoTime();
-		Date lastQoS = UnitStatusRealTimeMosPage.getLastQoSTimestamp(sessionId, unit, start, line.toString(), ACSLoader.getXAPS(sessionId, this.mainDataSource, syslogDataSource));
+		Date lastQoS = UnitStatusRealTimeMosPage.getLastQoSTimestamp(sessionId, unit, start, line.toString(), ACSLoader.getXAPS(sessionId, this.mainDataSource, mainDataSource));
 		logTimeElapsed(getQoS, "Retrieved last QoS report from Syslog. QoS timestamp: "+(lastQoS!=null?lastQoS.toString():"n/a"), logger);
 		if(mosEntry.size()>0 && lastQoS!=null){
 			SyslogEntry mosSyslogEntry = mosEntry.get(0);

@@ -1,8 +1,10 @@
 package com.github.freeacs.stun;
 
+import com.github.freeacs.dbi.util.SyslogClient;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
@@ -31,17 +33,10 @@ public class App {
     }
 
     @Bean
-    @Qualifier("syslog")
-    //@ConfigurationProperties("syslog.datasource")
-    public DataSource syslogDs() {
-        return mainDs();
-        //return DataSourceBuilder.create().type(HikariDataSource.class).build();
-    }
-
-    @Bean
-    ServletRegistrationBean<StunServlet> stun(@Qualifier("main") DataSource mainDataSource, @Qualifier("syslog") DataSource syslogDataSource) {
+    ServletRegistrationBean<StunServlet> stun(@Qualifier("main") DataSource mainDataSource, @Value("${syslog.server.host}") String syslogServerHost) {
+        SyslogClient.SYSLOG_SERVER_HOST = syslogServerHost;
         ServletRegistrationBean<StunServlet> srb = new ServletRegistrationBean<>();
-        srb.setServlet(new StunServlet(mainDataSource, syslogDataSource));
+        srb.setServlet(new StunServlet(mainDataSource, mainDataSource));
         srb.setLoadOnStartup(1);
         srb.setUrlMappings(Collections.singletonList("/*"));
         return srb;
