@@ -13,6 +13,7 @@ lazy val copyAppProps = mappings in Universal ++= {
 
 lazy val dockerSettings = Seq(
   maintainer in Docker := "Jarl Andre Hubenthal <jarl.andre@gmail.com>",
+  dockerBaseImage := "openjdk:8-jdk",
   dockerRepository := Some("freeacs"),
   dockerUpdateLatest := true,
   dockerExposedPorts := Seq(8080, 8080),
@@ -254,4 +255,4 @@ lazy val core = (project in file("core"))
   .dependsOn(shell)
 
 lazy val root = (project in file(".") settings (publish := {}))
-  .aggregate(common, dbi, web, webservice, tr069, syslog, stun, shell, core)
+  .aggregate(common, dbi, web, monitor, webservice, tr069, syslog, stun, shell, core)

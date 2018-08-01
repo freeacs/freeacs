@@ -3,10 +3,9 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
 		<title>xAPS Monitor Server</title>
-		<link type="text/css" href="../xapsweb/css/xapsweb.css" rel="stylesheet" />
+		<link type="text/css" href="../web/css/xapsweb.css" rel="stylesheet" />
 	</head>
 	<body style="margin-right:25px">
 			<#include main >
-			<script type="text/javascript" src="javascript/wz_tooltip.js"></script>
 	</body>
 </html>

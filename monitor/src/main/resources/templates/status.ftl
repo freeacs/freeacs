@@ -1,4 +1,3 @@
-			<script type="text/javascript" src="javascript/monitor.js"></script>
 			<table style="width:100%;margin-top:10px">
 				<tr>
 					<th align="left" class="tableheader">Module</th>
@@ -12,7 +11,7 @@
 						<td style="background:white">${event.module}</td>
 						<td style="background:white" onmouseover="Tip('${event.errorMessage!}')">${event.status!}</td>
 						<td style="background:white">${event.version!}</td>
-						<td style="background:white"><a href="${event.url!}">${event.url!}</a></td>
+						<td style="background:white">${event.url!}</td>
 					</tr>
 					</#list>
 				</#if>
