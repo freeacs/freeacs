@@ -169,6 +169,7 @@ module_setup syslog
 module_setup web
 module_setup webservice
 module_setup shell
+module_setup monitor
 if rpm -q nginx; then
 echo "Ngninx is already installed. If this is fresh install add the following to http.server configuration in nginx or similar"
 echo "
