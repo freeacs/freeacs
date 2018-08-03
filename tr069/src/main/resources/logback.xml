@@ -70,7 +70,8 @@
         <appender-ref ref="ASYNC_EVENT_FILE"/>
     </logger>
     <logger name="org.eclipse.jetty" level="WARN" />
-    <root level="INFO">
+    <logger name="com.github.freeacs" level="DEBUG" />
+    <root level="WARN">
         <appender-ref ref="ASYNC_FILE"/>
         <appender-ref ref="ASYNC_STDOUT" />
     </root>
