@@ -110,7 +110,7 @@ lazy val web = (project in file("web"))
     ),
     copyAppProps
   )
-  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin, DockerPlugin)
   .dependsOn(dbi)
 
 lazy val monitor = (project in file("monitor"))
@@ -131,7 +131,7 @@ lazy val monitor = (project in file("monitor"))
     ),
     copyAppProps
   )
-  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin, DockerPlugin)
   .dependsOn(dbi)
 
 lazy val webservice = (project in file("webservice"))
@@ -151,7 +151,7 @@ lazy val webservice = (project in file("webservice"))
       ++ Seq("wsdl4j" % "wsdl4j" % "1.6.3"),
     copyAppProps
   )
-  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin, DockerPlugin)
   .dependsOn(dbi)
 
 lazy val tr069 = (project in file("tr069"))
@@ -169,7 +169,7 @@ lazy val tr069 = (project in file("tr069"))
       ++ Seq("org.apache.commons" % "commons-lang3" % "3.7"),
     copyAppProps
   )
-  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin, DockerPlugin)
   .dependsOn(dbi)
 
 lazy val syslog = (project in file("syslog"))
@@ -187,7 +187,7 @@ lazy val syslog = (project in file("syslog"))
       ++ List("commons-io" % "commons-io" % "1.3.2"),
     copyAppProps
   )
-  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin, DockerPlugin)
   .dependsOn(dbi)
 
 lazy val stun = (project in file("stun"))
@@ -208,7 +208,7 @@ lazy val stun = (project in file("stun"))
     ),
     copyAppProps
   )
-  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin, DockerPlugin)
   .dependsOn(dbi)
 
 lazy val shell = (project in file("shell"))
@@ -251,7 +251,7 @@ lazy val core = (project in file("core"))
     ),
     copyAppProps
   )
-  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin)
+  .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin, DockerPlugin)
   .dependsOn(shell)
 
 lazy val root = (project in file(".") settings (publish := {}))
