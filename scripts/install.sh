@@ -229,6 +229,7 @@ module_setup syslog
 module_setup web
 module_setup webservice
 module_setup shell
+module_setup monitor
 if ! dpkg -l nginx | egrep 'îi.*nginx' > /dev/null 2>&1; then
 apt-get -y install nginx
 cat > /etc/nginx/nginx.conf <<- EOM
