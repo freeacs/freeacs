@@ -11,6 +11,18 @@ lazy val copyAppProps = mappings in Universal ++= {
   }
 }
 
+lazy val copyLogProps = mappings in Universal ++= {
+  ((sourceDirectory in Compile).value / "resources" * "logback.xml").get.map { f =>
+    f -> "config/logback.xml"
+  }
+}
+
+lazy val copyAppIni = mappings in Universal ++= {
+  ((sourceDirectory in Compile).value / "resources" * "application.ini").get.map { f =>
+    f -> "conf/application.ini"
+  }
+}
+
 lazy val dockerSettings = Seq(
   maintainer in Docker := "Jarl Andre Hubenthal <jarl.andre@gmail.com>",
   dockerBaseImage := "openjdk:8-jdk",
@@ -108,7 +120,9 @@ lazy val web = (project in file("web"))
       "org.jfree" % "jcommon" % "1.0.17",
       "org.jfree" % "jfreechart" % "1.0.17"
     ),
-    copyAppProps
+    copyAppProps,
+    copyLogProps,
+    copyAppIni
   )
   .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin, DockerPlugin)
   .dependsOn(dbi)
@@ -129,7 +143,9 @@ lazy val monitor = (project in file("monitor"))
       "org.freemarker" % "freemarker" % "2.3.14",
       "commons-httpclient" % "commons-httpclient" % "3.1"
     ),
-    copyAppProps
+    copyAppProps,
+    copyLogProps,
+    copyAppIni
   )
   .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin, DockerPlugin)
   .dependsOn(dbi)
@@ -149,7 +165,9 @@ lazy val webservice = (project in file("webservice"))
       ++ Dependencies.jdeb
       ++ Dependencies.springBootWebservices
       ++ Seq("wsdl4j" % "wsdl4j" % "1.6.3"),
-    copyAppProps
+    copyAppProps,
+    copyLogProps,
+    copyAppIni
   )
   .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin, DockerPlugin)
   .dependsOn(dbi)
@@ -167,7 +185,9 @@ lazy val tr069 = (project in file("tr069"))
       ++ Dependencies.testing
       ++ Dependencies.jdeb
       ++ Seq("org.apache.commons" % "commons-lang3" % "3.7"),
-    copyAppProps
+    copyAppProps,
+    copyLogProps,
+    copyAppIni
   )
   .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin, DockerPlugin)
   .dependsOn(dbi)
@@ -185,7 +205,9 @@ lazy val syslog = (project in file("syslog"))
       ++ Dependencies.testing
       ++ Dependencies.jdeb
       ++ List("commons-io" % "commons-io" % "1.3.2"),
-    copyAppProps
+    copyAppProps,
+    copyLogProps,
+    copyAppIni
   )
   .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin, DockerPlugin)
   .dependsOn(dbi)
@@ -206,7 +228,9 @@ lazy val stun = (project in file("stun"))
       "org.apache.httpcomponents" % "httpclient" % "4.5.5",
       "commons-io" % "commons-io" % "1.3.2"
     ),
-    copyAppProps
+    copyAppProps,
+    copyLogProps,
+    copyAppIni
   )
   .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin, DockerPlugin)
   .dependsOn(dbi)
@@ -228,7 +252,9 @@ lazy val shell = (project in file("shell"))
       "commons-io" % "commons-io" % "1.3.2",
       "jline" % "jline" % "0.9.5",
       "dom4j" % "dom4j" % "1.6.1"
-    )
+    ),
+    copyLogProps,
+    copyAppIni
   )
   .enablePlugins(JavaAppPackaging, JDebPackaging, RpmPlugin)
   .dependsOn(dbi)
@@ -249,7 +275,9 @@ lazy val core = (project in file("core"))
       "org.apache.httpcomponents" % "httpclient" % "4.5.5",
       "commons-io" % "commons-io" % "1.3.2"
     ),
-    copyAppProps
+    copyAppProps,
+    copyLogProps,
+    copyAppIni
   )
   .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin, DockerPlugin)
   .dependsOn(shell)
