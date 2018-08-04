@@ -34,7 +34,7 @@ services:
       - TZ
     volumes:
       - web_logs:/opt/docker/logs
-      - ./conf/web:/opt/docker/config:ro
+      - ./conf/web:/opt/docker/config
   monitor:
     image: freeacs/freeacs-monitor
     restart: always
@@ -55,8 +55,8 @@ services:
       - SERVER_PORT
       - TZ
     volumes:
-      - web_logs:/opt/docker/logs
-      - ./conf/web:/opt/docker/config:ro
+      - monitor_logs:/opt/docker/logs
+      - ./conf/monitor:/opt/docker/config
   tr069:
     image: freeacs/freeacs-tr069
     restart: always
@@ -75,7 +75,7 @@ services:
       - TZ
     volumes:
       - tr069_logs:/opt/docker/logs
-      - ./conf/tr069:/opt/docker/config:ro
+      - ./conf/tr069:/opt/docker/config
   syslog:
     image: freeacs/freeacs-syslog
     restart: always
@@ -94,7 +94,7 @@ services:
       - TZ
     volumes:
       - syslog_logs:/opt/docker/logs
-      - ./conf/syslog:/opt/docker/config:ro
+      - ./conf/syslog:/opt/docker/config
   core:
     image: freeacs/freeacs-core
     restart: always
@@ -113,7 +113,7 @@ services:
       - TZ
     volumes:
       - core_logs:/opt/docker/logs
-      - ./conf/core:/opt/docker/config:ro
+      - ./conf/core:/opt/docker/config
   stun:
     image: freeacs/freeacs-stun
     restart: always
@@ -132,7 +132,7 @@ services:
       - TZ
     volumes:
       - stun_logs:/opt/docker/logs
-      - ./conf/stun:/opt/docker/config:ro
+      - ./conf/stun:/opt/docker/config
   webservice:
     image: freeacs/freeacs-webservice
     restart: always
@@ -151,7 +151,7 @@ services:
       - TZ
     volumes:
       - webservice_logs:/opt/docker/logs
-      - ./conf/webservice:/opt/docker/config:ro
+      - ./conf/webservice:/opt/docker/config
   db:
     image: freeacs/mysql
     command: --max_allowed_packet=32M
@@ -177,6 +177,7 @@ volumes:
   syslog_logs:
   stun_logs:
   tr069_logs:
+  monitor_logs:
 
 networks:
   mynetwork:
