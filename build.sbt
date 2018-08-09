@@ -29,7 +29,7 @@ lazy val dockerSettings = Seq(
   dockerRepository := Some("freeacs"),
   dockerUpdateLatest := true,
   dockerExposedPorts := Seq(8080, 8080),
-  dockerExposedVolumes := Seq("/opt/docker/logs", "/opt/docker/conf")
+  dockerExposedVolumes := Seq("/opt/docker/logs", "/opt/docker/config")
 )
 
 lazy val packagingSettings = Seq(
