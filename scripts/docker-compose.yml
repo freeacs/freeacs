@@ -34,7 +34,8 @@ services:
       - TZ
     volumes:
       - web_logs:/opt/docker/logs
-      - ./conf/web:/opt/docker/config
+#     - ./conf/web/application-config.properties:/opt/docker/config/application-config.properties
+#     - ./conf/web/logback.xml:/opt/docker/config/logback.xml
   monitor:
     image: freeacs/freeacs-monitor
     restart: always
@@ -56,7 +57,8 @@ services:
       - TZ
     volumes:
       - monitor_logs:/opt/docker/logs
-      - ./conf/monitor:/opt/docker/config
+#     - ./conf/monitor/application-config.properties:/opt/docker/config/application-config.properties
+#     - ./conf/monitor/logback.xml:/opt/docker/config/logback.xml
   tr069:
     image: freeacs/freeacs-tr069
     restart: always
@@ -75,7 +77,8 @@ services:
       - TZ
     volumes:
       - tr069_logs:/opt/docker/logs
-      - ./conf/tr069:/opt/docker/config
+#     - ./conf/tr069/application-config.properties:/opt/docker/config/application-config.properties
+#     - ./conf/tr069/logback.xml:/opt/docker/config/logback.xml
   syslog:
     image: freeacs/freeacs-syslog
     restart: always
@@ -94,7 +97,8 @@ services:
       - TZ
     volumes:
       - syslog_logs:/opt/docker/logs
-      - ./conf/syslog:/opt/docker/config
+#     - ./conf/syslog/application-config.properties:/opt/docker/config/application-config.properties
+#     - ./conf/syslog/logback.xml:/opt/docker/config/logback.xml
   core:
     image: freeacs/freeacs-core
     restart: always
@@ -113,7 +117,8 @@ services:
       - TZ
     volumes:
       - core_logs:/opt/docker/logs
-      - ./conf/core:/opt/docker/config
+#     - ./conf/core/application-config.properties:/opt/docker/config/application-config.properties
+#     - ./conf/core/logback.xml:/opt/docker/config/logback.xml
   stun:
     image: freeacs/freeacs-stun
     restart: always
@@ -132,7 +137,8 @@ services:
       - TZ
     volumes:
       - stun_logs:/opt/docker/logs
-      - ./conf/stun:/opt/docker/config
+#     - ./conf/stun/application-config.properties:/opt/docker/config/application-config.properties
+#     - ./conf/stun/logback.xml:/opt/docker/config/logback.xml
   webservice:
     image: freeacs/freeacs-webservice
     restart: always
@@ -151,7 +157,8 @@ services:
       - TZ
     volumes:
       - webservice_logs:/opt/docker/logs
-      - ./conf/webservice:/opt/docker/config
+#     - ./conf/webservice/application-config.properties:/opt/docker/config/application-config.properties
+#     - ./conf/webservice/logback.xml:/opt/docker/config/logback.xml
   db:
     image: freeacs/mysql
     command: --max_allowed_packet=32M
