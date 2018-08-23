@@ -5,11 +5,8 @@ import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Inbox;
 import com.github.freeacs.dbi.Message;
 import com.github.freeacs.dbi.SyslogConstants;
-import com.github.freeacs.tr069.test.system2.TestUnitCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 public class MessageListenerTask extends TaskDefaultImpl {
 
@@ -23,15 +20,7 @@ public class MessageListenerTask extends TaskDefaultImpl {
 	}
 
 	@Override
-	public void runImpl() throws Throwable {
-		List<Message> messages = tr069ServerListenerInbox.getUnreadMessages();
-		for (Message message : messages) {
-			if (message.getMessageType().equals(Message.MTYPE_PUB_TR069_TEST_END) && message.getObjectType().equals(Message.OTYPE_UNIT)) {
-				logger.debug("Message signals end to Test, remove TestUnit from TestUnitCahe (unitId: " + message.getObjectId() + ")");
-				TestUnitCache.remove(message.getObjectId());
-				message.setProcessed(true);
-			}
-		}
+	public void runImpl() {
 		tr069ServerListenerInbox.deleteReadMessage();
 	}
 

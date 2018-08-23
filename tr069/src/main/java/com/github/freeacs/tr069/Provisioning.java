@@ -18,9 +18,6 @@ import com.github.freeacs.tr069.methods.DecisionMaker;
 import com.github.freeacs.tr069.methods.HTTPRequestProcessor;
 import com.github.freeacs.tr069.methods.HTTPResponseCreator;
 import com.github.freeacs.tr069.methods.TR069Method;
-import com.github.freeacs.tr069.test.system1.TestDatabase;
-import com.github.freeacs.tr069.test.system1.TestDatabaseObject;
-import com.github.freeacs.tr069.test.system2.Util;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -202,13 +199,6 @@ public class Provisioning extends HttpServlet {
 					writeQueuedUnitParameters(reqRes);
 				}
 				SessionLogging.log(reqRes, tr069Method.getAbbrevMap());
-				if (Util.testEnabled(reqRes, true))
-					initiateNewTestSession(reqRes);
-				else if (reqRes.getSessionData().isTestMode()) {
-					String row = TestDatabase.database.select(reqRes.getSessionData().getUnitId());
-					if (row != null && new TestDatabaseObject(row).getRun().equals("true"))
-						initiateNewTestSession(reqRes);
-				}
 				BaseCache.removeSessionData(reqRes.getSessionData().getUnitId());
 				BaseCache.removeSessionData(reqRes.getSessionData().getId());
 				res.setHeader("Connection", "close");
