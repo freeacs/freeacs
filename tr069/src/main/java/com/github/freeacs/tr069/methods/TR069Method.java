@@ -26,19 +26,11 @@ public class TR069Method {
 
 	public static final String GET_PARAMETER_NAMES = "GetParameterNames";
 
-	public static final String GET_RPC_METHODS = "GetRPCMethods";
-
 	public static final String GET_RPC_METHODS_RES = "GetRPCMethodsResponse";
 
 	public static final String REBOOT = "Reboot";
 
-	public static final String CUSTOM = "Custom";
-
 	public static final String FACTORY_RESET = "FactoryReset";
-	
-	public static final String GET_PARAMETER_ATTRIBUTES = "GetParameterAttributes";
-	
-	public static final String SET_PARAMETER_ATTRIBUTES = "SetParameterAttributes";
 
 	/* Map of all (SOAP/HTTP-)request actions and what to do next */
 	private final Map<String, HTTPRequestAction> requestMap = new HashMap<>();
@@ -52,13 +44,6 @@ public class TR069Method {
 		getAbbrevMap().put(EMPTY, "EM");
 		getRequestMap().put(EMPTY, new HTTPRequestAction(DoNotProcessReq::process, EMDecision::process));
 		getResponseMap().put(EMPTY, new HTTPResponseAction(HTTPResponseCreator::buildEM));
-
-		getAbbrevMap().put(GET_RPC_METHODS, "GRM");
-		getAbbrevMap().put(GET_RPC_METHODS_RES, "GRM");
-		getRequestMap().put(GET_RPC_METHODS, new HTTPRequestAction(DoNotProcessReq::process, makeSimpleDecision(GET_RPC_METHODS_RES)));
-		getRequestMap().put(GET_RPC_METHODS_RES, new HTTPRequestAction(DoNotProcessReq::process, makeSimpleDecision(GET_PARAMETER_VALUES)));
-		getResponseMap().put(GET_RPC_METHODS, new HTTPResponseAction(HTTPResponseCreator::buildGRMReq));
-		getResponseMap().put(GET_RPC_METHODS_RES, new HTTPResponseAction(HTTPResponseCreator::buildGRMRes));
 
 		getAbbrevMap().put(GET_PARAMETER_NAMES, "GPN");
 		getRequestMap().put(GET_PARAMETER_NAMES, new HTTPRequestAction(GPNres::process, makeSimpleDecision(GET_PARAMETER_VALUES)));
@@ -75,14 +60,6 @@ public class TR069Method {
 		getAbbrevMap().put(SET_PARAMETER_VALUES, "SPV");
 		getRequestMap().put(SET_PARAMETER_VALUES, new HTTPRequestAction(SPVres::process, (reqResData) -> SPVDecision.process(reqResData, properties)));
 		getResponseMap().put(SET_PARAMETER_VALUES, new HTTPResponseAction((reqResData) -> HTTPResponseCreator.buildSPV(reqResData, properties)));
-
-		getAbbrevMap().put(GET_PARAMETER_ATTRIBUTES, "GPA");
-		getRequestMap().put(GET_PARAMETER_ATTRIBUTES, new HTTPRequestAction(GPAres::process, GPADecision::process));
-		getResponseMap().put(GET_PARAMETER_ATTRIBUTES, new HTTPResponseAction(HTTPResponseCreator::buildGPA));
-
-		getAbbrevMap().put(SET_PARAMETER_ATTRIBUTES, "SPA");
-		getRequestMap().put(SET_PARAMETER_ATTRIBUTES, new HTTPRequestAction(SPAres::process, SPADecision::process));
-		getResponseMap().put(SET_PARAMETER_ATTRIBUTES, new HTTPResponseAction(HTTPResponseCreator::buildSPA));
 
 		getAbbrevMap().put(TRANSFER_COMPLETE, "TC");
 		getRequestMap().put(TRANSFER_COMPLETE, new HTTPRequestAction(TCreq::process, TCDecision::process));
@@ -102,9 +79,6 @@ public class TR069Method {
 		getAbbrevMap().put(FACTORY_RESET, "FR");
 		getRequestMap().put(FACTORY_RESET, new HTTPRequestAction(FRres::process, makeSimpleDecision(EMPTY)));
 		getResponseMap().put(FACTORY_RESET, new HTTPResponseAction(HTTPResponseCreator::buildFR));
-
-		getAbbrevMap().put(CUSTOM, "CU");
-		getResponseMap().put(CUSTOM, new HTTPResponseAction(HTTPResponseCreator::buildCU));
 	}
 
 	private HTTPRequestAction.CheckedRequestFunction makeSimpleDecision(String getRpcMethodsRes) {
