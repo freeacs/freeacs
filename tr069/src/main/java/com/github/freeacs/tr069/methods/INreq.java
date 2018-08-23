@@ -12,10 +12,6 @@ import com.github.freeacs.tr069.background.ScheduledKickTask;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
-import com.github.freeacs.tr069.test.system1.KillDatabase;
-import com.github.freeacs.tr069.test.system1.KillDatabaseObject;
-import com.github.freeacs.tr069.test.system1.TestDatabase;
-import com.github.freeacs.tr069.test.system1.TestDatabaseObject;
 import com.github.freeacs.tr069.xml.*;
 import org.apache.commons.lang3.StringUtils;
 
@@ -187,16 +183,6 @@ public class INreq {
 			sessionData.updateParametersFromDB(unitId); // Unit-object is read and populated in SessionData
 			logPeriodicInformTiming(sessionData);
 			ScheduledKickTask.removeUnit(unitId);
-			if (Properties.DEBUG_TEST_MODE) {
-				String row = TestDatabase.database.select(sessionData.getUnitId());
-				if (row != null) {
-					TestDatabaseObject tdo = new TestDatabaseObject(row);
-					if (tdo.getRun().equals("true") && sessionData.isBooted()) {
-						KillDatabaseObject kdo = new KillDatabaseObject(/*KillDatabase.database.select(sessionData.getUnitId())*/);
-						reportKill(sessionData.getUnitId(), !kdo.isTestRunning());
-					}
-				}
-			}
 			if (Properties.DISCOVERY_MODE && sessionData.isFirstConnect()) {
 				DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(reqRes.getDbAccess().getDBI().getAcs(), sessionData.getDbAccessSession());
 				dbAccessSessionTR069.writeUnittypeProfileUnit(sessionData, deviceIdStruct.getProductClass(), unitId);

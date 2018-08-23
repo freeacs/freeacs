@@ -3,8 +3,6 @@ package com.github.freeacs.tr069.methods;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.dbi.FileType;
 import com.github.freeacs.dbi.UnittypeParameters;
-import com.github.freeacs.dbi.tr069.TestCaseParameter;
-import com.github.freeacs.dbi.tr069.TestCaseParameter.TestCaseParameterType;
 import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ProvOutput;
 import com.github.freeacs.dbi.util.ProvisioningMode;
@@ -13,9 +11,6 @@ import com.github.freeacs.tr069.*;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
-import com.github.freeacs.tr069.test.system2.TestUnit;
-import com.github.freeacs.tr069.test.system2.TestUnitCache;
-import com.github.freeacs.tr069.test.system2.Util;
 import com.github.freeacs.tr069.xml.*;
 
 import java.security.NoSuchAlgorithmException;
@@ -68,33 +63,7 @@ public interface HTTPResponseCreator {
     return new Response(header, body);
   }
 
-   static Response buildGRMReq(HTTPReqResData reqRes) {
-    TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
-    Header header = new Header(tr069ID, null, null);
-    Body body = new GRMreq();
-    return new Response(header, body);
-  }
-
-   static Response buildGRMRes(HTTPReqResData reqRes) {
-    TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
-    Header header = new Header(tr069ID, null, null);
-    Body body = new GRMres();
-    return new Response(header, body);
-  }
-
-   static Response buildCU(HTTPReqResData reqRes) {
-    TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
-    if (reqRes.getTR069TransactionID() == null)
-      reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
-    Header header = new Header(reqRes.getTR069TransactionID(), null, null);
-    SessionData sessionData = reqRes.getSessionData();
-    String keyRoot = sessionData.getKeyRoot();
-    String unitId = sessionData.getUnitId();
-    Body body = new CUreq(keyRoot, unitId);
-    return new Response(header, body);
-  }
-
-   static Response buildGPN(HTTPReqResData reqRes, Properties properties) {
+    static Response buildGPN(HTTPReqResData reqRes, Properties properties) {
     if (reqRes.getTR069TransactionID() == null)
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
@@ -103,29 +72,7 @@ public interface HTTPResponseCreator {
     return new Response(header, body);
   }
 
-   static Response buildGPA(HTTPReqResData reqRes) {
-    if (reqRes.getTR069TransactionID() == null)
-      reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
-    Header header = new Header(reqRes.getTR069TransactionID(), null, null);
-    String keyRoot = reqRes.getSessionData().getKeyRoot();
-    List<ParameterAttributeStruct> parameterAttributeList = new ArrayList<ParameterAttributeStruct>();
-    if (Util.testEnabled(reqRes, false)) {
-      // TODO:TF - build GPA - completed
-      TestUnit tu = TestUnitCache.get(reqRes.getSessionData().getUnitId());
-      if (tu != null) {
-        List<TestCaseParameter> params = tu.getCurrentCase().getParams();
-        for (TestCaseParameter param : params) {
-          if (param.getType() == TestCaseParameterType.GET) {
-            parameterAttributeList.add(new ParameterAttributeStruct(param.getUnittypeParameter().getName(), param.getNotification()));
-          }
-        }
-      }
-    }
-    Body body = new GPAreq(parameterAttributeList);
-    return new Response(header, body);
-  }
-
-  static boolean isOldPingcomDevice(String unitId) {
+    static boolean isOldPingcomDevice(String unitId) {
     if (unitId.contains("NPA201E"))
       return true;
     if (unitId.contains("RGW208EN"))
@@ -177,19 +124,7 @@ public interface HTTPResponseCreator {
     SessionData sessionData = reqRes.getSessionData();
     ProvisioningMode mode = sessionData.getUnit().getProvisioningMode();
     List<ParameterValueStruct> parameterValueList = new ArrayList<ParameterValueStruct>();
-    if (Util.testEnabled(reqRes, false)) {
-      // TODO:TF - build GPV - completed
-      TestUnit tu = TestUnitCache.get(sessionData.getUnitId());
-      if (tu != null) {
-        List<TestCaseParameter> params = tu.getCurrentCase().getParams();
-        for (TestCaseParameter param : params) {
-          if (param.getType() == TestCaseParameterType.GET) {
-            ParameterValueStruct pvs = new ParameterValueStruct(param.getUnittypeParameter().getName(), "");
-            parameterValueList.add(pvs);
-          }
-        }
-      }
-    } else if (mode == ProvisioningMode.READALL) {
+    if (mode == ProvisioningMode.READALL) {
       Log.debug(HTTPResponseCreator.class, "Asks for all params (" + sessionData.getKeyRoot() + "), since in " + ProvisioningMode.READALL.toString() + " mode");
       ParameterValueStruct pvs = new ParameterValueStruct(sessionData.getKeyRoot(), "");
       parameterValueList.add(pvs);
@@ -220,27 +155,8 @@ public interface HTTPResponseCreator {
     if (reqRes.getTR069TransactionID() == null)
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
-    Body body = null;
-    ParameterList paramList = new ParameterList();
-    if (Util.testEnabled(reqRes, false)) {
-      // TODO:TF - build SPV - completed
-      TestUnit tu = TestUnitCache.get(reqRes.getSessionData().getUnitId());
-      if (tu != null) {
-        List<TestCaseParameter> params = tu.getCurrentCase().getParams();
-        for (TestCaseParameter param : params) {
-          if (param.getType() == TestCaseParameterType.SET) {
-            ParameterValueStruct pvs = new ParameterValueStruct(param.getUnittypeParameter().getName(), param.getValue());
-            if (param.getDataModelParameter() == null)
-              Log.error(HTTPResponseCreator.class, "Could not find datamodel parameter for " + param.getUnittypeParameter().getName());
-            else
-              pvs.setType(param.getDataModelParameter().getDatatype().getXsdType());
-            paramList.addParameterValueStruct(pvs);
-          }
-        }
-        reqRes.getSessionData().setToCPE(paramList);
-      }
-    }
-    paramList = reqRes.getSessionData().getToCPE();
+    Body body;
+    ParameterList paramList = reqRes.getSessionData().getToCPE();
     ParameterKey pk = new ParameterKey();
     if (!properties.isParameterkeyQuirk(reqRes.getSessionData()))
       pk.setServerKey(reqRes);
@@ -294,32 +210,5 @@ public interface HTTPResponseCreator {
     } catch (Throwable t) {
       throw new TR069Exception("Not possible to create HTTP-response (to the TR-069 client)", TR069ExceptionShortMessage.MISC, t);
     }
-  }
-
-   static Response buildSPA(HTTPReqResData reqRes) {
-    if (reqRes.getTR069TransactionID() == null)
-      reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
-    Header header = new Header(reqRes.getTR069TransactionID(), null, null);
-    Body body = null;
-    List<ParameterAttributeStruct> attributes = new ArrayList<ParameterAttributeStruct>();
-    if (Util.testEnabled(reqRes, false)) {
-      // TODO:TF - build SPA - completed
-      TestUnit tu = TestUnitCache.get(reqRes.getSessionData().getUnitId());
-      if (tu != null) {
-        List<TestCaseParameter> params = tu.getCurrentCase().getParams();
-        for (TestCaseParameter param : params) {
-          if (param.getType() == TestCaseParameterType.SET) {
-            attributes.add(new ParameterAttributeStruct(param.getUnittypeParameter().getName(), param.getNotification()));
-          }
-        }
-        reqRes.getSessionData().setAttributesToCPE(attributes);
-      }
-    }
-    attributes = reqRes.getSessionData().getAttributesToCPE();
-    body = new SPAreq(attributes);
-    Log.notice(HTTPResponseCreator.class, "Sent to CPE: " + attributes.size() + " attributes.");
-    for (ParameterAttributeStruct pvs : attributes)
-      Log.notice(HTTPResponseCreator.class, "\t" + pvs.getName() + " : " + pvs.getNotifcation());
-    return new Response(header, body);
   }
 }
