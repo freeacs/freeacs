@@ -159,11 +159,7 @@ public class GPVDecision {
       // group-matching in job-search
       // will not affect the comparison in populateToCollections()
       updateUnitParameters(sessionData);
-      try {
-        uj = JobLogic.checkNewJob(sessionData, Properties.CONCURRENT_DOWNLOAD_LIMIT); // may find a new job
-      } catch (SQLException sqle) {
-        throw new TR069DatabaseException(sqle);
-      }
+      uj = JobLogic.checkNewJob(sessionData, Properties.CONCURRENT_DOWNLOAD_LIMIT); // may find a new job
     }
     Job job = sessionData.getJob();
     if (job == null) { // No job is present - process according to
