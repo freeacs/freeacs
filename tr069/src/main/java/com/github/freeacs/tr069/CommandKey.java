@@ -17,9 +17,7 @@ public class CommandKey {
 	public boolean isEqual() {
 		if (serverKey == null || serverKey.trim().equals(""))
 			return true; // no command key specified  - only used for TR069_SCRIPT download
-		else if (cpeKey != null && cpeKey.equals(serverKey))
-			return true;
-		return false;
+		else return cpeKey != null && cpeKey.equals(serverKey);
 	}
 
 }

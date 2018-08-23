@@ -11,15 +11,15 @@ public class SOAPErrorHandler implements ErrorHandler {
 	public SOAPErrorHandler() {
 	}
 
-	public void error(org.xml.sax.SAXParseException sAXParseException) throws org.xml.sax.SAXException {
+	public void error(org.xml.sax.SAXParseException sAXParseException) {
 		log.error(sAXParseException.getLocalizedMessage());
 	}
 
-	public void fatalError(org.xml.sax.SAXParseException sAXParseException) throws org.xml.sax.SAXException {
+	public void fatalError(org.xml.sax.SAXParseException sAXParseException) {
 		log.error(sAXParseException.getLocalizedMessage());
 	}
 
-	public void warning(org.xml.sax.SAXParseException sAXParseException) throws org.xml.sax.SAXException {
+	public void warning(org.xml.sax.SAXParseException sAXParseException) {
 		log.warn(sAXParseException.getLocalizedMessage());
 	}
 

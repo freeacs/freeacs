@@ -51,10 +51,9 @@ public class UnitJob {
 	 * Specifically it updates:
 	 * 		oweraparameters: job-current
 	 * 		fromDB : all job-parameters (except job-current/job-history)
-	 * @throws SQLException
 	 *
 	 */
-	private void updateSessionWithJobParams(boolean verification) throws SQLException {
+	private void updateSessionWithJobParams(boolean verification) {
 		Map<String, JobParameter> jobParams = job.getDefaultParameters();
 		sessionData.setJobParams(jobParams);
 	}
@@ -69,7 +68,7 @@ public class UnitJob {
 	 * jobId to the front of the parameter. Job id which refer to a no longer
 	 * existing job will be removed from the comma-separated list.
 	 */
-	private UnitParameter makeHistoryParameter(Integer jobId) throws SQLException {
+	private UnitParameter makeHistoryParameter(Integer jobId) {
 		Unittype unittype = sessionData.getUnittype();
 		Unit unit = sessionData.getUnit();
 		Map<String, UnitParameter> upMap = unit.getUnitParameters();

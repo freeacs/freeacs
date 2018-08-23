@@ -26,14 +26,14 @@ public class DeviceIdHandler extends DefaultHandler {
 		this.owner = owner;
 	}
 
-	public void startElement(String namespaceURI, String localName, String qualifiedName, Attributes attributes) throws SAXException {
+	public void startElement(String namespaceURI, String localName, String qualifiedName, Attributes attributes) {
 		currTextContent = new StringBuilder();
 		if (DEVICE_ID_TAG.equals(localName)) {
 			didStruct = new DeviceIdStruct();
 		}
 	}
 
-	public void endElement(String namespaceURI, String localName, String qualifiedName) throws SAXException {
+	public void endElement(String namespaceURI, String localName, String qualifiedName) {
 		if (DEVICE_ID_TAG.equals(localName)) {
 			owner.getXMLReader().setContentHandler(owner);
 		} else if (MANUFACTURER_TAG.equals(localName)) {
@@ -63,7 +63,7 @@ public class DeviceIdHandler extends DefaultHandler {
 		}
 	}
 
-	public void characters(char[] ch, int start, int length) throws SAXException {
+	public void characters(char[] ch, int start, int length) {
 		String content = String.valueOf(ch).substring(start, (start + length));
 		currTextContent.append(content.trim());
 	}

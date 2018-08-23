@@ -59,7 +59,7 @@ public class BasicAuthenticator {
 			username = userpass;
 		} else {
 			username = userpass.substring(0, colon);
-			password = userpass.substring(colon + 1, userpass.length());
+			password = userpass.substring(colon + 1);
 		}
 
 		// Do database read parameters and then perform verification

@@ -39,7 +39,7 @@ public class StabilityTask extends TaskDefaultImpl {
 	}
 
 	@Override
-	public void runImpl() throws Throwable {
+	public void runImpl() {
 		if (serverStart) {
 			log.error("The server starts...");
 			serverStart = false;

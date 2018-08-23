@@ -19,7 +19,6 @@ import com.github.freeacs.tr069.methods.HTTPRequestProcessor;
 import com.github.freeacs.tr069.methods.HTTPResponseCreator;
 import com.github.freeacs.tr069.methods.TR069Method;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,8 +26,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.List;
-
 
 /**
  * This is the "main-class" of TR069 Provisioning. It receives the HTTP-request
@@ -72,7 +69,7 @@ public class Provisioning extends HttpServlet {
 	/**
 	 * doGet prints some information about the server, focus on database connections and memory usage
 	 */
-	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
 		if (req.getParameter("clearCache") != null)
 			BaseCache.clearCache();
 		PrintWriter pw = res.getWriter();
@@ -208,24 +205,6 @@ public class Provisioning extends HttpServlet {
 			ThreadCounter.responseDelivered(reqRes.getSessionData());
 	}
 
-	private static void initiateNewTestSession(HTTPReqResData reqRes) {
-		try {
-			List<HTTPReqResData> reqResList = reqRes.getSessionData().getReqResList();
-			boolean deviceHasAlreadyBooted = false;
-			for (HTTPReqResData rr : reqResList) {
-				String method = rr.getResponse().getMethod();
-				// No need to kick device if a reboot or reset has been part of the test-flow 
-				if (method != null && (method.equals(TR069Method.FACTORY_RESET) || method.equals(TR069Method.REBOOT)))
-					deviceHasAlreadyBooted = true;
-			}
-			if (!deviceHasAlreadyBooted) {
-				ScheduledKickTask.addUnit(reqRes.getSessionData().getUnit());
-			}
-		} catch (Throwable t) {
-			Log.warn(Provisioning.class, "Could not initiate kick after completed session in test mode", t);
-		}
-	}
-
 	private void writeQueuedUnitParameters(HTTPReqResData reqRes) {
 		try {
 			Unit unit = reqRes.getSessionData().getUnit();
@@ -250,8 +229,7 @@ public class Provisioning extends HttpServlet {
 				boolean terminationQuirk = properties.isTerminationQuirk(sessionData);
 				if (terminationQuirk && reqData.getMethod().equals(TR069Method.EMPTY))
 					return true;
-				if (!terminationQuirk)
-					return true;
+				return !terminationQuirk;
 			}
 			return false;
 		} catch (Throwable t) {

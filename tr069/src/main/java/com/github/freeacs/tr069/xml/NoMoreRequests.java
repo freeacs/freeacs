@@ -6,10 +6,7 @@ public class NoMoreRequests {
 	private boolean noMoreRequests;
 
 	public NoMoreRequests(String noMoreRequests) {
-		if (noMoreRequests == "0")
-			this.noMoreRequests = false;
-		else
-			this.noMoreRequests = true;
+        this.noMoreRequests = noMoreRequests != "0";
 	}
 
 	public String toXml() {
@@ -24,10 +21,7 @@ public class NoMoreRequests {
 	}
 
 	public void setNoMoreRequestsFlag(String flag) {
-		if (flag == "0")
-			noMoreRequests = false;
-		else
-			noMoreRequests = true;
+        noMoreRequests = flag != "0";
 	}
 
 	public boolean getNoMoreRequestFlag() {
