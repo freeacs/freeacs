@@ -19,7 +19,7 @@ public class Util {
 
 	public static String removePrefix(String str, String prefix) {
 		if (startsWithIgnoreCase(str, prefix))
-			return str.substring(prefix.length(), str.length());
+			return str.substring(prefix.length());
 		else
 			return null;
 	}

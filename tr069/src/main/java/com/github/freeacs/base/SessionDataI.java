@@ -10,47 +10,47 @@ import java.util.Map;
 
 public interface SessionDataI {
 
-	public ACSParameters getAcsParameters();
+	ACSParameters getAcsParameters();
 
-	public void setAcsParameters(ACSParameters acsParameters);
+	void setAcsParameters(ACSParameters acsParameters);
 
-	public Unittype getUnittype();
+	Unittype getUnittype();
 
-	public void setUnittype(Unittype unittype);
+	void setUnittype(Unittype unittype);
 
-	public Profile getProfile();
+	Profile getProfile();
 
-	public void setProfile(Profile profile);
+	void setProfile(Profile profile);
 
-	public Unit getUnit();
+	Unit getUnit();
 
-	public void setUnit(Unit unit);
+	void setUnit(Unit unit);
 
-	public String getUnitId();
+	String getUnitId();
 
-	public void setUnitId(String unitId);
+	void setUnitId(String unitId);
 
-	public DBAccessSession getDbAccessSession();
+	DBAccessSession getDbAccessSession();
 
-	public Job getJob();
+	Job getJob();
 
-	public void setJob(Job job);
+	void setJob(Job job);
 
-	public Map<String, JobParameter> getJobParams();
+	Map<String, JobParameter> getJobParams();
 
-	public void setJobParams(Map<String, JobParameter> jobParams);
+	void setJobParams(Map<String, JobParameter> jobParams);
 
-	public String getSoftwareVersion();
+	String getSoftwareVersion();
 
-	public void setSoftwareVersion(String softwareVersion);
+	void setSoftwareVersion(String softwareVersion);
 
-	public Map<String, ParameterValueStruct> getFromDB();
+	Map<String, ParameterValueStruct> getFromDB();
 
-	public void updateParametersFromDB(String unitId) throws SQLException, NoDataAvailableException;
+	void updateParametersFromDB(String unitId) throws SQLException, NoDataAvailableException;
 
-	public void setFromDB(Map<String, ParameterValueStruct> fromDB);
+	void setFromDB(Map<String, ParameterValueStruct> fromDB);
 
-	public boolean lastProvisioningOK();
+	boolean lastProvisioningOK();
 
 	//	public CPEParameters getCpeParameters();
 
@@ -60,14 +60,14 @@ public interface SessionDataI {
 	 * the javadoc for that class. Make sure the method never return null!!
 	 * @return
 	 */
-	public PIIDecision getPIIDecision();
+	PIIDecision getPIIDecision();
 
-	public void setSerialNumber(String serialNumber);
+	void setSerialNumber(String serialNumber);
 
-	public String getSerialNumber();
+	String getSerialNumber();
 
-	public ProvisioningMessage getProvisioningMessage();
+	ProvisioningMessage getProvisioningMessage();
 
-	public Long getStartupTmsForSession();
+	Long getStartupTmsForSession();
 
 }

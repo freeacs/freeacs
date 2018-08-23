@@ -28,14 +28,14 @@ public class EventHandler extends DefaultHandler {
 		this.owner = owner;
 	}
 
-	public void startElement(String namespaceURI, String localName, String qualifiedName, Attributes attributes) throws SAXException {
+	public void startElement(String namespaceURI, String localName, String qualifiedName, Attributes attributes) {
 		currTextContent = new StringBuilder();
 		if (EVENT_STRUCT_TAG.equals(localName)) {
 			currEvent = new EventStruct();
 		}
 	}
 
-	public void endElement(String namespaceURI, String localName, String qualifiedName) throws SAXException {
+	public void endElement(String namespaceURI, String localName, String qualifiedName) {
 		if (EVENT_TAG.equals(localName)) {
 			owner.getXMLReader().setContentHandler(owner);
 		} else if (EVENT_STRUCT_TAG.equals(localName)) {
@@ -54,7 +54,7 @@ public class EventHandler extends DefaultHandler {
 		}
 	}
 
-	public void characters(char[] ch, int start, int length) throws SAXException {
+	public void characters(char[] ch, int start, int length) {
 		String content = String.valueOf(ch).substring(start, (start + length));
 		currTextContent.append(content.trim());
 	}

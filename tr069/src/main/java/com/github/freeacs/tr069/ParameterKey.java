@@ -31,14 +31,12 @@ public class ParameterKey {
 		return serverKey;
 	}
 
-	public void setServerKey(HTTPReqResData reqRes) throws NoSuchAlgorithmException, SQLException {
+	public void setServerKey(HTTPReqResData reqRes) throws NoSuchAlgorithmException {
 		this.serverKey = calculateParameterKey(reqRes);
 	}
 
 	public boolean isEqual() {
-		if (cpeKey != null && serverKey != null && cpeKey.equals(serverKey))
-			return true;
-		return false;
+		return cpeKey != null && serverKey != null && cpeKey.equals(serverKey);
 	}
 
 	private static String calculateParameterKey(HTTPReqResData reqRes) throws NoSuchAlgorithmException {

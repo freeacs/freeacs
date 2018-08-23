@@ -11,7 +11,7 @@ import com.github.freeacs.tr069.SessionData;
 import java.sql.SQLException;
 
 public class SPVDecision {
-	public static void process(HTTPReqResData reqRes, Properties properties) throws SQLException {
+	public static void process(HTTPReqResData reqRes, Properties properties) {
 		SessionData sessionData = reqRes.getSessionData();
 		if (sessionData.getUnit().getProvisioningMode() == ProvisioningMode.REGULAR) {
 			if (properties.isParameterkeyQuirk(sessionData) && sessionData.isProvisioningAllowed()) {
