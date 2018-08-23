@@ -66,9 +66,7 @@ public class Log {
 	}
 
 	public static boolean isConversationLogEnabled() {
-		if (convLog.isDebugEnabled() || convLog.isInfoEnabled())
-			return true;
-		return false;
+		return convLog.isDebugEnabled() || convLog.isInfoEnabled();
 	}
 
 	public static void event(String message) {

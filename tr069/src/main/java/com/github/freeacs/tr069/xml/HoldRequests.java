@@ -6,10 +6,7 @@ public class HoldRequests {
 	private boolean holdRequests;
 
 	public HoldRequests(String holdRequests) {
-		if (holdRequests == "0")
-			this.holdRequests = false;
-		else
-			this.holdRequests = true;
+        this.holdRequests = holdRequests != "0";
 	}
 
 	public String toXml() {
@@ -24,10 +21,7 @@ public class HoldRequests {
 	}
 
 	public void setHoldRequestsFlag(String flag) {
-		if (flag == "0")
-			holdRequests = false;
-		else
-			holdRequests = true;
+        holdRequests = flag != "0";
 	}
 
 }

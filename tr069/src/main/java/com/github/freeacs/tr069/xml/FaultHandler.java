@@ -71,7 +71,7 @@ public class FaultHandler extends DefaultHandler {
 	private String faultString = null;
 	private String parameterName = null;
 
-	public void startElement(String namespaceURI, String localName, String qualifiedName, Attributes attributes) throws SAXException {
+	public void startElement(String namespaceURI, String localName, String qualifiedName, Attributes attributes) {
 		currTextContent = new StringBuilder();
 		if (SOAP_ENV_NS.equals(namespaceURI) && FAULT_TAG.equals(localName)) {
 			this.fault = new Fault();
@@ -124,7 +124,7 @@ public class FaultHandler extends DefaultHandler {
 		}
 	}
 
-	public void characters(char[] ch, int start, int length) throws SAXException {
+	public void characters(char[] ch, int start, int length) {
 		String content = String.valueOf(ch).substring(start, (start + length));
 		currTextContent.append(content.trim());
 	}

@@ -167,7 +167,7 @@ public class Parser extends DefaultHandler {
 		return null;
 	}
 
-	public void startElement(String namespaceURI, String localName, String qualifiedName, Attributes attributes) throws SAXException {
+	public void startElement(String namespaceURI, String localName, String qualifiedName, Attributes attributes) {
 		currTextContent = new StringBuilder();
 		if (getHandlerMap().containsKey(localName)) {
 			reader.setContentHandler(getHandlerMap().get(localName));
@@ -196,7 +196,7 @@ public class Parser extends DefaultHandler {
 		}
 	}
 
-	public void characters(char[] ch, int start, int length) throws SAXException {
+	public void characters(char[] ch, int start, int length) {
 		String content = String.valueOf(ch).substring(start, (start + length));
 		currTextContent.append(content.trim());
 	}

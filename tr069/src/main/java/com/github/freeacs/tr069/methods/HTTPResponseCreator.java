@@ -77,10 +77,8 @@ public interface HTTPResponseCreator {
       return true;
     if (unitId.contains("RGW208EN"))
       return true;
-    if (unitId.contains("NPA101E"))
-      return true;
-    return false;
-  }
+        return unitId.contains("NPA101E");
+    }
 
   static void addCPEParameters(SessionData sessionData, Properties properties) {
     Map<String, ParameterValueStruct> paramValueMap = sessionData.getFromDB();

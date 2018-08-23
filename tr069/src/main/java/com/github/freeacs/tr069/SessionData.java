@@ -123,7 +123,7 @@ public class SessionData implements SessionDataI {
 	// An object to store data about a download
 	private Download download;
 
-	public SessionData(String id, ACS acs) throws SQLException {
+	public SessionData(String id, ACS acs) {
 		this.id = id;
 		this.dbAccess = new DBAccessSession(acs);
 		provisioningMessage.setProvProtocol(ProvisioningProtocol.TR069);

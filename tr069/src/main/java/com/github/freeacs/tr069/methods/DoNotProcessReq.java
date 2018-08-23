@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DoNotProcessReq {
 
-    public static void process(HTTPReqResData reqRes) throws SQLException {
+    public static void process(HTTPReqResData reqRes) {
 		// Nothing needs to be processed, because there is nothing in the request to process (for example if the request is EMPTY
 	}
 }

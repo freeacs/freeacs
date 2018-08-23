@@ -12,8 +12,8 @@ import org.xml.sax.helpers.DefaultHandler;
 public class ParameterListHandler extends DefaultHandler {
 
 	private enum ParameterType {
-		VALUE, INFO, ATTRIBUTE;
-	}
+		VALUE, INFO, ATTRIBUTE
+    }
 
 	public static final String PARAMETER_LIST_TAG = "ParameterList";
 	public static final String PARAMETER_VALUE_STRUCT_TAG = "ParameterValueStruct";
@@ -38,7 +38,7 @@ public class ParameterListHandler extends DefaultHandler {
 		this.params = params;
 	}
 
-	public void startElement(String namespaceURI, String localName, String qualifiedName, Attributes attributes) throws SAXException {
+	public void startElement(String namespaceURI, String localName, String qualifiedName, Attributes attributes) {
 		currTextContent = new StringBuilder();
 		if (PARAMETER_VALUE_STRUCT_TAG.equals(localName)) {
 			parameterType = ParameterType.VALUE;
@@ -91,7 +91,7 @@ public class ParameterListHandler extends DefaultHandler {
 		}
 	}
 
-	public void characters(char[] ch, int start, int length) throws SAXException {
+	public void characters(char[] ch, int start, int length) {
 		String content = String.valueOf(ch).substring(start, (start + length));
 		currTextContent.append(content.trim());
 	}

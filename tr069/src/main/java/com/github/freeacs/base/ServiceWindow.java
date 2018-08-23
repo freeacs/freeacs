@@ -28,9 +28,7 @@ public class ServiceWindow {
 
 	private boolean isEnabled() {
 		String enable = ACSParameters.getValue(SystemParameters.SERVICE_WINDOW_ENABLE);
-		if (enable != null && (enable.equals("0") || enable.equalsIgnoreCase("false")))
-			return false;
-		return true;
+		return enable == null || (!enable.equals("0") && !enable.equalsIgnoreCase("false"));
 	}
 
 	/* Return the number of provisionings per week. Default value is once per day.  */
@@ -203,7 +201,7 @@ public class ServiceWindow {
 			}
 			// Find the nextInterval (calculations are all in seconds)
 			long nextPII = (long) ((float) (7 * 24 * 3600) / freqFloat);
-			long nextPIITms = (currentTms + (long) nextPII * 1000l) / 1000;
+			long nextPIITms = (currentTms + nextPII * 1000l) / 1000;
 			Log.debug(ServiceWindow.class, "Standard PeriodicInformInterval (SW disabled) calculated to " + nextPII + "(" + convert(nextPIITms) + ") (TimeWindow is : " + timeWindow + ")");
 			// make sure it is above 30 seconds
 			if (nextPII < PIIDecision.MINIMUM_PII) {

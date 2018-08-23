@@ -10,7 +10,7 @@ public class HTTPReqData {
 	private Fault fault;
 
 	public enum NodeType {
-		CONTENT, STARTTAG, ENDTAG;
+		CONTENT, STARTTAG, ENDTAG
 	}
 
 	public static class Node {

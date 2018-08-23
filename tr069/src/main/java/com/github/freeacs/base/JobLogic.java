@@ -84,7 +84,7 @@ public class JobLogic {
 		}
 	}
 
-	public static UnitJob checkNewJob(SessionDataI sessionData, int downloadLimit) throws SQLException {
+	public static UnitJob checkNewJob(SessionDataI sessionData, int downloadLimit) {
 		if (sessionData.getUnit().getProvisioningMode() == ProvisioningMode.REGULAR) {
 			Job job = JobLogic.getJob(sessionData, downloadLimit);
 			if (job != null) {
