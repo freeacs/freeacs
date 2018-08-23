@@ -7,7 +7,6 @@ import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.Provisioning;
 import com.github.freeacs.tr069.methods.TR069Method;
-import com.github.freeacs.tr069.test.system1.TestServlet;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -68,14 +67,6 @@ public class App {
         ServletRegistrationBean<OKServlet> srb = new ServletRegistrationBean<>();
         srb.setServlet(new OKServlet(dbAccess));
         srb.setUrlMappings(Collections.singletonList("/ok"));
-        return srb;
-    }
-
-    @Bean
-    ServletRegistrationBean<TestServlet> testServlet() {
-        ServletRegistrationBean<TestServlet> srb = new ServletRegistrationBean<>();
-        srb.setServlet(new TestServlet());
-        srb.setUrlMappings(Collections.singletonList("/test"));
         return srb;
     }
 }
