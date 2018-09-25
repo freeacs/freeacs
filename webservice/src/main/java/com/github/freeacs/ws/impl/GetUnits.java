@@ -63,7 +63,7 @@ public class GetUnits {
             int ucount = 0;
             for (Unit unit : unitMap.values()) {
                 Unittype utXAPS = unit.getUnittype();
-                com.github.freeacs.ws.xml.Unittype utWS = new com.github.freeacs.ws.xml.Unittype(); //(utXAPS.getName(), null, utXAPS.getVendor(), utXAPS.getDescription(), utXAPS.getProtocol().toString(), null);
+                com.github.freeacs.ws.xml.Unittype utWS = new com.github.freeacs.ws.xml.Unittype();
                 utWS.setName(utXAPS.getName());
                 com.github.freeacs.ws.xml.Profile profileWs = new com.github.freeacs.ws.xml.Profile();
                 profileWs.setName(unit.getProfile().getName());
