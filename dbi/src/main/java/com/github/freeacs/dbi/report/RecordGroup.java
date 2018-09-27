@@ -3,68 +3,66 @@ package com.github.freeacs.dbi.report;
 import java.util.Date;
 
 public class RecordGroup extends Record<RecordGroup> {
-	private static KeyFactory keyFactory = new KeyFactory("Unittype", "Group");
-	private Key key;
+  private static KeyFactory keyFactory = new KeyFactory("Unittype", "Group");
+  private Key key;
 
-	private Date tms;
-	private PeriodType periodType;
-	private String unittypeName;
-	private String groupName;
-	private Counter unitCount = new Counter();
+  private Date tms;
+  private PeriodType periodType;
+  private String unittypeName;
+  private String groupName;
+  private Counter unitCount = new Counter();
 
-	protected RecordGroup() {
-		
-	}
-	
-	public RecordGroup(Date tms, PeriodType periodType, String unittypeName, String groupName) {
-		this.tms = tms;
-		this.periodType = periodType;
-		this.unittypeName = unittypeName;
-		this.groupName = groupName;
-		this.key = keyFactory.makeKey(tms, periodType, unittypeName, groupName);
-	}
+  protected RecordGroup() {}
 
-	public Key getKey() {
-		return key;
-	}
+  public RecordGroup(Date tms, PeriodType periodType, String unittypeName, String groupName) {
+    this.tms = tms;
+    this.periodType = periodType;
+    this.unittypeName = unittypeName;
+    this.groupName = groupName;
+    this.key = keyFactory.makeKey(tms, periodType, unittypeName, groupName);
+  }
 
-	public Date getTms() {
-		return tms;
-	}
+  public Key getKey() {
+    return key;
+  }
 
-	public PeriodType getPeriodType() {
-		return periodType;
-	}
+  public Date getTms() {
+    return tms;
+  }
 
-	public String getUnittypeName() {
-		return unittypeName;
-	}
+  public PeriodType getPeriodType() {
+    return periodType;
+  }
 
-	public String getGroupName() {
-		return groupName;
-	}
+  public String getUnittypeName() {
+    return unittypeName;
+  }
 
-	public Counter getUnitCount() {
-		return unitCount;
-	}
+  public String getGroupName() {
+    return groupName;
+  }
 
-	public void setUnitCount(Counter unitCount) {
-		this.unitCount = unitCount;
-	}
+  public Counter getUnitCount() {
+    return unitCount;
+  }
 
-	@Override
-	public void add(RecordGroup record) {
-		this.getUnitCount().add(record.getUnitCount());
-	}
+  public void setUnitCount(Counter unitCount) {
+    this.unitCount = unitCount;
+  }
 
-	@Override
-	public RecordGroup clone() {
-		RecordGroup clone = new RecordGroup(tms, periodType, unittypeName, groupName);
-		clone.setUnitCount(this.getUnitCount().clone());
-		return clone;
-	}
-	
-	public KeyFactory getKeyFactory() {
-		return keyFactory;
-	}
+  @Override
+  public void add(RecordGroup record) {
+    this.getUnitCount().add(record.getUnitCount());
+  }
+
+  @Override
+  public RecordGroup clone() {
+    RecordGroup clone = new RecordGroup(tms, periodType, unittypeName, groupName);
+    clone.setUnitCount(this.getUnitCount().clone());
+    return clone;
+  }
+
+  public KeyFactory getKeyFactory() {
+    return keyFactory;
+  }
 }

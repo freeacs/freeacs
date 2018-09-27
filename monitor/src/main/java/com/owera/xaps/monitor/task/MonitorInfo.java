@@ -1,62 +1,59 @@
 package com.owera.xaps.monitor.task;
 
-
 public class MonitorInfo implements Comparable<MonitorInfo> {
-	private String module;
-	private String status;
-	private String url;
-	private String version;
-	private String errorMessage;
+  private String module;
+  private String status;
+  private String url;
+  private String version;
+  private String errorMessage;
 
-	public MonitorInfo(String module) {
-		this.module = module;
-	}
-	
-	public String getModule() {
-		return module;
-	}
+  public MonitorInfo(String module) {
+    this.module = module;
+  }
 
-	public String getStatus() {
-		return status;
-	}
+  public String getModule() {
+    return module;
+  }
 
-	public String getUrl() {
-		return url;
-	}
-	
-	public String getVersion() {
-		return version;
-	}
-	
-	public String getErrorMessage() {
-		return errorMessage;
-	}
+  public String getStatus() {
+    return status;
+  }
 
-	public void setModule(String module) {
-		this.module = module;
-	}
+  public String getUrl() {
+    return url;
+  }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+  public String getVersion() {
+    return version;
+  }
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+  public String getErrorMessage() {
+    return errorMessage;
+  }
 
-	public void setVersion(String version) {
-		this.version = version;
-	}
+  public void setModule(String module) {
+    this.module = module;
+  }
 
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
-	}
+  public void setStatus(String status) {
+    this.status = status;
+  }
 
-	@Override
-	public int compareTo(MonitorInfo o) {
-		if (o == null)
-			return 0;
-		return this.getModule().compareTo(o.getModule());
-	}
+  public void setUrl(String url) {
+    this.url = url;
+  }
 
+  public void setVersion(String version) {
+    this.version = version;
+  }
+
+  public void setErrorMessage(String errorMessage) {
+    this.errorMessage = errorMessage;
+  }
+
+  @Override
+  public int compareTo(MonitorInfo o) {
+    if (o == null) return 0;
+    return this.getModule().compareTo(o.getModule());
+  }
 }

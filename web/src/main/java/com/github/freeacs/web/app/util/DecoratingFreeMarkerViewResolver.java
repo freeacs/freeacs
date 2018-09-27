@@ -3,12 +3,12 @@ package com.github.freeacs.web.app.util;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
-
 /**
  * Subclass of {@link FreeMarkerViewResolver} that supports.
  *
- * {@link DecoratingFreeMarkerView}, i.e. FreeMarker templates that can be
- * decorated with a layout template.
+ * <p>{@link DecoratingFreeMarkerView}, i.e. FreeMarker templates that can be decorated with a
+ * layout template.
+ *
  * @author Stefan Haberl
  * @since 1.0
  */
@@ -17,20 +17,17 @@ public class DecoratingFreeMarkerViewResolver extends FreeMarkerViewResolver {
   /** The decorating template. */
   private String decoratingTemplate;
 
-  /**
-   * JavaBean constructor.
-   */
+  /** JavaBean constructor. */
   public DecoratingFreeMarkerViewResolver() {
     setViewClass(requiredViewClass());
     setExposeSpringMacroHelpers(true);
   }
 
   /**
-   * Sets the name of the layout template which will be used to decorate the
-   * single Freemarker pages.
-   * 
-   * @param decoratingTemplate
-   *          The name of the decorating template
+   * Sets the name of the layout template which will be used to decorate the single Freemarker
+   * pages.
+   *
+   * @param decoratingTemplate The name of the decorating template
    */
   public void setDecoratingTemplate(String decoratingTemplate) {
     this.decoratingTemplate = decoratingTemplate;
@@ -55,5 +52,4 @@ public class DecoratingFreeMarkerViewResolver extends FreeMarkerViewResolver {
     view.setDecoratingTemplate(this.decoratingTemplate);
     return view;
   }
-
 }

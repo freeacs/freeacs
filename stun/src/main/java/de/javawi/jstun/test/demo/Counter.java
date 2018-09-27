@@ -2,165 +2,164 @@ package de.javawi.jstun.test.demo;
 
 public class Counter {
 
-	int request = 0;
-	int requestBinding = 0;
-	int requestBindingNoChange = 0;
-	int requestBindingIPChange = 0;
-	int requestBindingPortChange = 0;
-	int requestBindingIPPortChange = 0;
-	int requestBindingConnection = 0;
-	int requestUnknown = 0;
-	int messageAttributeChangeRequest = 0;
-	int kick = 0;
-	int idle = 0;
-	long receiveTimeNs = 0;
-	long processTimeMs = 0;
-	int error = 0;
+  int request = 0;
+  int requestBinding = 0;
+  int requestBindingNoChange = 0;
+  int requestBindingIPChange = 0;
+  int requestBindingPortChange = 0;
+  int requestBindingIPPortChange = 0;
+  int requestBindingConnection = 0;
+  int requestUnknown = 0;
+  int messageAttributeChangeRequest = 0;
+  int kick = 0;
+  int idle = 0;
+  long receiveTimeNs = 0;
+  long processTimeMs = 0;
+  int error = 0;
 
-	public Counter cloneAndReset() {
-		Counter clone = new Counter();
-		clone.request = this.request;
-		clone.requestBinding = this.requestBinding;
-		clone.requestBindingNoChange = this.requestBindingNoChange;
-		clone.requestBindingIPChange = this.requestBindingIPChange;
-		clone.requestBindingPortChange = this.requestBindingPortChange;
-		clone.requestBindingIPPortChange = this.requestBindingIPPortChange;
-		clone.requestBindingConnection = this.requestBindingConnection;
-		clone.requestUnknown = this.requestUnknown;
-		clone.messageAttributeChangeRequest = this.messageAttributeChangeRequest;
-		clone.kick = this.kick;
-		clone.idle = this.idle;
-		clone.receiveTimeNs = this.receiveTimeNs;
-		clone.processTimeMs = this.processTimeMs;
-		clone.error = this.error;
-		this.request = 0;
-		this.requestBinding = 0;
-		this.requestBindingNoChange = 0;
-		this.requestBindingIPChange = 0;
-		this.requestBindingPortChange = 0;
-		this.requestBindingIPPortChange = 0;
-		this.requestBindingConnection = 0;
-		this.requestUnknown = 0;
-		this.messageAttributeChangeRequest = 0;
-		this.kick = 0;
-		this.idle = 0;
-		this.receiveTimeNs = 0;
-		this.processTimeMs = 0;
-		this.error = 0;
-		
-		return clone;
-	}
-	
-	public void incRequest() {
-		request++;
-	}
+  public Counter cloneAndReset() {
+    Counter clone = new Counter();
+    clone.request = this.request;
+    clone.requestBinding = this.requestBinding;
+    clone.requestBindingNoChange = this.requestBindingNoChange;
+    clone.requestBindingIPChange = this.requestBindingIPChange;
+    clone.requestBindingPortChange = this.requestBindingPortChange;
+    clone.requestBindingIPPortChange = this.requestBindingIPPortChange;
+    clone.requestBindingConnection = this.requestBindingConnection;
+    clone.requestUnknown = this.requestUnknown;
+    clone.messageAttributeChangeRequest = this.messageAttributeChangeRequest;
+    clone.kick = this.kick;
+    clone.idle = this.idle;
+    clone.receiveTimeNs = this.receiveTimeNs;
+    clone.processTimeMs = this.processTimeMs;
+    clone.error = this.error;
+    this.request = 0;
+    this.requestBinding = 0;
+    this.requestBindingNoChange = 0;
+    this.requestBindingIPChange = 0;
+    this.requestBindingPortChange = 0;
+    this.requestBindingIPPortChange = 0;
+    this.requestBindingConnection = 0;
+    this.requestUnknown = 0;
+    this.messageAttributeChangeRequest = 0;
+    this.kick = 0;
+    this.idle = 0;
+    this.receiveTimeNs = 0;
+    this.processTimeMs = 0;
+    this.error = 0;
 
-	public void incRequestBinding() {
-		requestBinding++;
-	}
+    return clone;
+  }
 
-	public void incRequestBindingNoChange() {
-		requestBindingNoChange++;
-	}
+  public void incRequest() {
+    request++;
+  }
 
-	public void incRequestBindingIPChange() {
-		requestBindingIPChange++;
-	}
+  public void incRequestBinding() {
+    requestBinding++;
+  }
 
-	public void incRequestBindingPortChange() {
-		requestBindingPortChange++;
-	}
+  public void incRequestBindingNoChange() {
+    requestBindingNoChange++;
+  }
 
-	public void incRequestBindingIPPortChange() {
-		requestBindingIPPortChange++;
-	}
+  public void incRequestBindingIPChange() {
+    requestBindingIPChange++;
+  }
 
-	public void incRequestBindingConnection() {
-		requestBindingConnection++;
-	}
+  public void incRequestBindingPortChange() {
+    requestBindingPortChange++;
+  }
 
-	public void incMessageAttributeChangeRequest() {
-		messageAttributeChangeRequest++;
-	}
+  public void incRequestBindingIPPortChange() {
+    requestBindingIPPortChange++;
+  }
 
-	public void incRequestUnknown() {
-		requestUnknown++;
-	}
+  public void incRequestBindingConnection() {
+    requestBindingConnection++;
+  }
 
-	public void incError() {
-		error++;
-	}
+  public void incMessageAttributeChangeRequest() {
+    messageAttributeChangeRequest++;
+  }
 
-	public void incKick() {
-		kick++;
-	}
+  public void incRequestUnknown() {
+    requestUnknown++;
+  }
 
-	public void incIdle() {
-		idle++;
-	}
+  public void incError() {
+    error++;
+  }
 
-	public void incReceiveTime(long ns) {
-		receiveTimeNs += ns;
-	}
+  public void incKick() {
+    kick++;
+  }
 
-	public void incProcessTimeMs(long ms) {
-		processTimeMs += ms;
-	}
+  public void incIdle() {
+    idle++;
+  }
 
-	public int getRequest() {
-		return request;
-	}
+  public void incReceiveTime(long ns) {
+    receiveTimeNs += ns;
+  }
 
-	public int getRequestBinding() {
-		return requestBinding;
-	}
+  public void incProcessTimeMs(long ms) {
+    processTimeMs += ms;
+  }
 
-	public int getRequestBindingNoChange() {
-		return requestBindingNoChange;
-	}
+  public int getRequest() {
+    return request;
+  }
 
-	public int getRequestBindingIPChange() {
-		return requestBindingIPChange;
-	}
+  public int getRequestBinding() {
+    return requestBinding;
+  }
 
-	public int getRequestBindingPortChange() {
-		return requestBindingPortChange;
-	}
+  public int getRequestBindingNoChange() {
+    return requestBindingNoChange;
+  }
 
-	public int getRequestBindingIPPortChange() {
-		return requestBindingIPPortChange;
-	}
+  public int getRequestBindingIPChange() {
+    return requestBindingIPChange;
+  }
 
-	public int getRequestBindingConnection() {
-		return requestBindingConnection;
-	}
+  public int getRequestBindingPortChange() {
+    return requestBindingPortChange;
+  }
 
-	public int getRequestUnknown() {
-		return requestUnknown;
-	}
+  public int getRequestBindingIPPortChange() {
+    return requestBindingIPPortChange;
+  }
 
-	public int getMessageAttributeChangeRequest() {
-		return messageAttributeChangeRequest;
-	}
+  public int getRequestBindingConnection() {
+    return requestBindingConnection;
+  }
 
-	public int getKick() {
-		return kick;
-	}
+  public int getRequestUnknown() {
+    return requestUnknown;
+  }
 
-	public int getIdle() {
-		return idle;
-	}
+  public int getMessageAttributeChangeRequest() {
+    return messageAttributeChangeRequest;
+  }
 
-	public long getReceiveTimeNs() {
-		return receiveTimeNs;
-	}
+  public int getKick() {
+    return kick;
+  }
 
-	public long getProcessTimeMs() {
-		return processTimeMs;
-	}
+  public int getIdle() {
+    return idle;
+  }
 
-	public int getError() {
-		return error;
-	}
+  public long getReceiveTimeNs() {
+    return receiveTimeNs;
+  }
 
+  public long getProcessTimeMs() {
+    return processTimeMs;
+  }
+
+  public int getError() {
+    return error;
+  }
 }

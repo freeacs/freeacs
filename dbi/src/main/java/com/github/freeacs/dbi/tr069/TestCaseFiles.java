@@ -4,43 +4,42 @@ import com.github.freeacs.dbi.File;
 
 public class TestCaseFiles {
 
-	private Integer id;
-	private File inputFile;
-	private File outputFile;
-	
-	public TestCaseFiles() {
-		this(null, null, null);
-	}
-	
-	public TestCaseFiles(Integer id, File inputFile, File outputFile) {
-		super();
-		this.id = id;
-		this.inputFile = inputFile;
-		this.outputFile = outputFile;
-	}
+  private Integer id;
+  private File inputFile;
+  private File outputFile;
 
-	public Integer getId() {
-		return id;
-	}
+  public TestCaseFiles() {
+    this(null, null, null);
+  }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+  public TestCaseFiles(Integer id, File inputFile, File outputFile) {
+    super();
+    this.id = id;
+    this.inputFile = inputFile;
+    this.outputFile = outputFile;
+  }
 
-	public File getInputFile() {
-		return inputFile;
-	}
+  public Integer getId() {
+    return id;
+  }
 
-	public void setInputFile(File inputFile) {
-		this.inputFile = inputFile;
-	}
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-	public File getOutputFile() {
-		return outputFile;
-	}
+  public File getInputFile() {
+    return inputFile;
+  }
 
-	public void setOutputFile(File outputFile) {
-		this.outputFile = outputFile;
-	}
-	
+  public void setInputFile(File inputFile) {
+    this.inputFile = inputFile;
+  }
+
+  public File getOutputFile() {
+    return outputFile;
+  }
+
+  public void setOutputFile(File outputFile) {
+    this.outputFile = outputFile;
+  }
 }

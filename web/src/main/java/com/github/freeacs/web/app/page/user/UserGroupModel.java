@@ -2,81 +2,78 @@ package com.github.freeacs.web.app.page.user;
 
 import com.github.freeacs.dbi.Permission;
 
+/** The Class UserGroupModel. */
+public class UserGroupModel {
 
-/**
- * The Class UserGroupModel.
- */
-public class UserGroupModel{
-	
-	/** The id. */
-	private Integer id;
-	
-	/** The name. */
-	private String name;
-	
-	/** The permissions. */
-	private Permission[] permissions;
-	
-	/**
-	 * Instantiates a new user group model.
-	 *
-	 * @param name the name
-	 */
-	public UserGroupModel(String name) {
-		this.name = name;
-	}
+  /** The id. */
+  private Integer id;
 
-	/**
-	 * Gets the permissions.
-	 *
-	 * @return the permissions
-	 */
-	public Permission[] getPermissions() {
-		return permissions;
-	}
+  /** The name. */
+  private String name;
 
-	/**
-	 * Sets the permissions.
-	 *
-	 * @param permissions the new permissions
-	 */
-	public void setPermissions(Permission[] permissions) {
-		this.permissions = permissions;
-	}
+  /** The permissions. */
+  private Permission[] permissions;
 
-	/**
-	 * Gets the id.
-	 *
-	 * @return the id
-	 */
-	public Integer getId() {
-		return id;
-	}
+  /**
+   * Instantiates a new user group model.
+   *
+   * @param name the name
+   */
+  public UserGroupModel(String name) {
+    this.name = name;
+  }
 
-	/**
-	 * Sets the id.
-	 *
-	 * @param id the new id
-	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
+  /**
+   * Gets the permissions.
+   *
+   * @return the permissions
+   */
+  public Permission[] getPermissions() {
+    return permissions;
+  }
 
-	/**
-	 * Gets the name.
-	 *
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+  /**
+   * Sets the permissions.
+   *
+   * @param permissions the new permissions
+   */
+  public void setPermissions(Permission[] permissions) {
+    this.permissions = permissions;
+  }
 
-	/**
-	 * Sets the name.
-	 *
-	 * @param name the new name
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
+  public Integer getId() {
+    return id;
+  }
+
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
+  public void setId(Integer id) {
+    this.id = id;
+  }
+
+  /**
+   * Gets the name.
+   *
+   * @return the name
+   */
+  public String getName() {
+    return name;
+  }
+
+  /**
+   * Sets the name.
+   *
+   * @param name the new name
+   */
+  public void setName(String name) {
+    this.name = name;
+  }
 }

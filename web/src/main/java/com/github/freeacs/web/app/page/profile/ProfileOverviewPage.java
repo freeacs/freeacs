@@ -11,51 +11,61 @@ import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
-
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+import javax.sql.DataSource;
 
 /**
  * The profile overview page.
- * 
- * @author Jarl Andre Hubenthal
  *
+ * @author Jarl Andre Hubenthal
  */
 public class ProfileOverviewPage extends AbstractWebPage {
 
-	public List<MenuItem> getShortcutItems(SessionData sessionData){
-		List<MenuItem> list = new ArrayList<MenuItem>();
-		list.addAll(super.getShortcutItems(sessionData));
-		list.add(new MenuItem("Create new Profile",Page.PROFILECREATE));
-		return list;
-	}
+  public List<MenuItem> getShortcutItems(SessionData sessionData) {
+    List<MenuItem> list = new ArrayList<MenuItem>();
+    list.addAll(super.getShortcutItems(sessionData));
+    list.add(new MenuItem("Create new Profile", Page.PROFILECREATE));
+    return list;
+  }
 
-	@Override
-	public void process(ParameterParser params, Output outputHandler, DataSource xapsDataSource, DataSource syslogDataSource) throws Exception {
-		ProfileData inputData = (ProfileData) InputDataRetriever.parseInto(new ProfileData(), params);
-		String sessionId = params.getSession().getId();
+  @Override
+  public void process(
+      ParameterParser params,
+      Output outputHandler,
+      DataSource xapsDataSource,
+      DataSource syslogDataSource)
+      throws Exception {
+    ProfileData inputData = (ProfileData) InputDataRetriever.parseInto(new ProfileData(), params);
+    String sessionId = params.getSession().getId();
 
-		ACS acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
+    ACS acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
 
-		if (acs == null) {
-			outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
-			return;
-		}
-		
-		InputDataIntegrity.loadAndStoreSession(params,outputHandler,inputData, inputData.getUnittype(), inputData.getProfile(), inputData.getUnit());
-		
-		DropDownSingleSelect<Unittype> unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
-		DropDownSingleSelect<Profile> profiles = InputSelectionFactory.getProfileSelection(inputData.getProfile(),inputData.getUnittype(), acs);
+    if (acs == null) {
+      outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
+      return;
+    }
 
-		Map<String,Object> map = outputHandler.getTemplateMap();
-		
-		map.put("unittypes", unittypes);
-		map.put("profiles", profiles);
-		
-		outputHandler.setTemplatePath("/profile/index");
-	}
+    InputDataIntegrity.loadAndStoreSession(
+        params,
+        outputHandler,
+        inputData,
+        inputData.getUnittype(),
+        inputData.getProfile(),
+        inputData.getUnit());
 
+    DropDownSingleSelect<Unittype> unittypes =
+        InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
+    DropDownSingleSelect<Profile> profiles =
+        InputSelectionFactory.getProfileSelection(
+            inputData.getProfile(), inputData.getUnittype(), acs);
+
+    Map<String, Object> map = outputHandler.getTemplateMap();
+
+    map.put("unittypes", unittypes);
+    map.put("profiles", profiles);
+
+    outputHandler.setTemplatePath("/profile/index");
+  }
 }
