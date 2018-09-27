@@ -170,7 +170,7 @@ public class ActiveDeviceDetection extends TaskDefaultImpl {
     TimestampMap activeDevices = StunServer.getActiveStunClients();
     logInactiveDevices(
         activeDevices); // will clean out old and inactive devices from activeDevices map (and log
-                        // new inactive devices)
+    // new inactive devices)
     logActiveDevices(
         activeDevices,
         activeDevicesLogged); // will update list of devices logged to syslog (and log new ones)

@@ -390,8 +390,8 @@ public class ReportSyslogGenerator extends ReportGenerator {
             if (p.getId().equals(profile.getId())) alreadyTreated = true;
           }
           if (!alreadyTreated) // To avoid repeating "unit_type_name = ?" with the same arguments
-                               // many times - the SQL becomes ugly
-          ds.addSqlAndArguments("unit_type_name = ? OR ", profile.getUnittype().getName());
+            // many times - the SQL becomes ugly
+            ds.addSqlAndArguments("unit_type_name = ? OR ", profile.getUnittype().getName());
         } else
           // have to specify profiles since not all are specified or we do not know of all profile
           // (not UnittypeAdmin)

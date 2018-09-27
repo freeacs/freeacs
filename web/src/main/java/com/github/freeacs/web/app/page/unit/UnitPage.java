@@ -332,7 +332,7 @@ public class UnitPage extends AbstractWebPage {
           }
           if (secCount
               == waitSec) { // Timed out - very likely that nothing happened - even though kick
-                            // indicated success
+            // indicated success
             root.put("kick_message", "Reboot to initate provisioning");
             root.put("kick_mouseover", "Kick response: " + currentKickResponse);
           } else if (currentKickResponse != null
@@ -528,7 +528,7 @@ public class UnitPage extends AbstractWebPage {
       outputHandler.setTemplatePath("/unit/details.ftl");
       if (unit != null) {
         if (inputData.getInitRefreshPage().getValue() == null) {
-            /*If we got a simple refresh, do absolutely nothing. */
+          /*If we got a simple refresh, do absolutely nothing. */
           if (inputData.getFormSubmit().hasValue(WebConstants.UPDATE_PARAMS))
             actionCUDParameters(params);
           else if (inputData.getUnitMove().hasValue("Move to profile")) actionMoveUnit(params);

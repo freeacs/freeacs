@@ -222,9 +222,8 @@ public class GenericMenu {
                       parentScript.getContext(),
                       Script.WHILE,
                       parentScript.getVariables());
-              whileScript
-                  .incLinePointer(); // skip the first while-statement, since that is being
-                                     // processed in now
+              whileScript.incLinePointer(); // skip the first while-statement, since that is being
+              // processed in now
               session.getScriptStack().push(whileScript);
               whileScript.setWhilePath(getWhilePath(session));
               break;
@@ -330,7 +329,7 @@ public class GenericMenu {
                     scriptLines, parentScript.getContext(), Script.IF, parentScript.getVariables());
             ifScript
                 .incLinePointer(); // skip the first if-statement, since that is being processed in
-                                   // now
+            // now
             session.getScriptStack().push(ifScript);
             break;
           } else ifCounter--;

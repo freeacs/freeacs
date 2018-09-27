@@ -256,7 +256,7 @@ public class JobLogic {
         long nextPII = convertToPII(serviceWindow, NRT);
         job.setNextPII(
             nextPII); // important for PIIDecision, must be removed in PIIDecision (must not leak
-                      // over to another thread/session)
+        // over to another thread/session)
         if (nextPII > PIIDecision.MINIMUM_PII) {
           i.remove();
           Log.debug(
@@ -286,7 +286,7 @@ public class JobLogic {
                 + " seconds");
         job.setNextPII(
             nextPII); // important for PIIDecision, must be removed in PIIDecision (must not leak
-                      // over to another thread/session)
+        // over to another thread/session)
       } else {
         Log.debug(
             JobLogic.class,

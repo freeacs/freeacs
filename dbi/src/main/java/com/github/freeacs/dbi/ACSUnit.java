@@ -355,7 +355,7 @@ public class ACSUnit {
           && storedUp.getValue().equals(queuedUp.getValue())) {
         iterator
             .remove(); // don't write the queued Unit Parameter if it has the same value as already
-                       // stored
+        // stored
       }
     }
     addOrChangeUnitParameters(queuedParameters, unit.getProfile());

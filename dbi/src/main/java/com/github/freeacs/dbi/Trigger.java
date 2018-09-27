@@ -93,7 +93,7 @@ public class Trigger {
   // may be implemented in future
   private boolean
       oppositeRelease; // If set to true, the release will happen if too few events have been
-                       // registered
+  // registered
 
   // Makes a Trigger-placeholder. Meant to be used in conjunction with the various set-methods,
   // instead

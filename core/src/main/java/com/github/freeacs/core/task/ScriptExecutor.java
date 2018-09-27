@@ -130,9 +130,8 @@ public class ScriptExecutor extends DBIShare {
     Map<String, List<ScriptExecution>> userMap = new HashMap<String, List<ScriptExecution>>();
     for (ScriptExecution se : executionList) {
       String fusionUser =
-          Users
-              .USER_ADMIN; // This will only happen if no users are defined, then only admin is
-                           // available
+          Users.USER_ADMIN; // This will only happen if no users are defined, then only admin is
+      // available
       if (se.getScriptFile().getOwner() != null)
         fusionUser = se.getScriptFile().getOwner().getUsername();
       List<ScriptExecution> list = userMap.computeIfAbsent(fusionUser, k -> new ArrayList<>());

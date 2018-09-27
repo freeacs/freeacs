@@ -44,7 +44,7 @@ public class DiskSpaceCheck extends TaskDefaultImpl {
       try {
         Thread.sleep(
             100); // may sleep for a short while until disk space has been calculated the first time
-                  // after server start
+        // after server start
       } catch (InterruptedException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();

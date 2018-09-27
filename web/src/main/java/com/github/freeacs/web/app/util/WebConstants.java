@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.util;
 
-
 /**
  * Static and contant web properties and variables.
  *

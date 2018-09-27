@@ -151,7 +151,7 @@ class UnitQueryCrossUnittype {
         Profile profile = unittype.getProfiles().getById(profileId);
         if (profile == null)
           break; // can happen if user has no profiles allowed, although expect the previous break
-                 // to hit first
+        // to hit first
         units.put(unitId, new Unit(unitId, unittype, profile));
         if (limit != null && limit > 0 && units.size() == limit) break;
       }
@@ -177,7 +177,7 @@ class UnitQueryCrossUnittype {
       boolean likeness =
           (searchStr.indexOf("%") > -1)
               || (searchStr.indexOf("_") > -1); // Can search for equality or likeness
-      boolean equalValue = true; // Can search for negated values	
+      boolean equalValue = true; // Can search for negated values
       if (searchStr.startsWith("!")) {
         searchStr = searchStr.substring(1);
         equalValue = false;

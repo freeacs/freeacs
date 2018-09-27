@@ -100,9 +100,8 @@ public class HeartbeatDetection extends DBIShare {
                   + heartbeat.getExpression());
           SyslogMessageMapContainer.SyslogMessageMap smm =
               smmc.getSyslogMessageMap(heartbeat.getId());
-          if (smm
-              == null) { // The heartbeat is new - happens at server-startup and if there's been
-                         // detected some change to it (group/expression/etc)
+          if (smm == null) { // The heartbeat is new - happens at server-startup and if there's been
+            // detected some change to it (group/expression/etc)
             logger.debug(
                 "HeartbeatDetection: FindHeartbeats: Creating new syslog message map - because server-startup or heartbeat-change");
             smm = smmc.createSyslogMessageMap(heartbeat);
@@ -111,7 +110,7 @@ public class HeartbeatDetection extends DBIShare {
           }
           while (to
               <= orgTo) { // Loop will only run more than once after server-startup, when we try to
-                          // "catch up" (memory-structures are empty)
+            // "catch up" (memory-structures are empty)
             ds = new DynamicStatement();
             ds.addSql("SELECT distinct(unit_id) FROM syslog WHERE ");
             //						if (from == 0)

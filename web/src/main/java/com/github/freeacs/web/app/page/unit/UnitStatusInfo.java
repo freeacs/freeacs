@@ -402,7 +402,7 @@ public class UnitStatusInfo {
         "^"
             + currentUnit.getId()
             + "$"); // The unit object can never become NULL since this is checked in UnitStatusPage
-                    // very early.
+    // very early.
     List<SyslogEntry> entries =
         syslog.read(filter, ACSLoader.getXAPS(sessionId, mainDataSource, syslogDataSource));
     if (entries != null) {

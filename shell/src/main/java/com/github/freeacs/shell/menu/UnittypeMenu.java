@@ -398,7 +398,7 @@ public class UnittypeMenu {
     boolean fusion2012 = false;
     if (args.length == 6) fusion2012 = true;
     if (fusion2012) { // This logic is created to read 2012R1 files output and import into into
-                      // 2013R1
+      // 2013R1
       desc = args[3];
       ver = args[4];
       String dateStr = args[5];

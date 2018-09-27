@@ -65,9 +65,8 @@ public class Listing {
     if (command
         .getOptions()
         .containsKey(
-            Option
-                .OPTION_LIST_CONTEXT)) { // insert context-headings, make sure to avoid duplicate
-                                         // headings
+            Option.OPTION_LIST_CONTEXT)) { // insert context-headings, make sure to avoid duplicate
+      // headings
       if (context.getUnittypeParameter() != null)
         insertIntoList(HEADER_UNITTYPE_PARAMETER, heading.getLine());
       if (context.getJob() != null) insertIntoList(HEADER_JOB, heading.getLine());

@@ -82,7 +82,7 @@ public class ContextElement implements Substitute {
     }
     String[] slashSplitArr = s.split("/");
     for (String contextStr : slashSplitArr) {
-      if (contextStr.indexOf(":") == 2) { // matches context-pattern			
+      if (contextStr.indexOf(":") == 2) { // matches context-pattern	
         String type = contextStr.substring(0, 2);
         if (types.contains(type))
           cc.overwriteOrAppend(new ContextElement(type, contextStr.substring(3)));
@@ -118,7 +118,7 @@ public class ContextElement implements Substitute {
     }
     String[] slashSplitArr = s.split("/");
     for (String contextStr : slashSplitArr) {
-      if (contextStr.indexOf(":") == 2) { // matches context-pattern			
+      if (contextStr.indexOf(":") == 2) { // matches context-pattern	
         String type = contextStr.substring(0, 2);
         if (types.contains(type))
           contextMap.put(type, new ContextElement(type, contextStr.substring(3)));

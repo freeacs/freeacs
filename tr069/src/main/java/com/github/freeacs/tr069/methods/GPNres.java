@@ -43,12 +43,12 @@ public class GPNres {
         if (utp == null)
           utp = new UnittypeParameter(ut, pis.getName(), new UnittypeParameterFlag(newFlag));
         else { // modify existing flag - only change (if necessary) R->RW or RW->R, leave other
-               // flags untouched!
+          // flags untouched!
           String existingFlag = utp.getFlag().getFlag();
           if (newFlag.equals("R")) { // delete W from existsingFlag if necessary
             newFlag = existingFlag.replace("W", "");
           } else { // newFlag == 'RW' - remove W and then replace R with RW (make the flag easier to
-                   // read for humans)
+            // read for humans)
             newFlag = existingFlag.replace("W", "");
             newFlag = newFlag.replace("R", "RW");
           }
