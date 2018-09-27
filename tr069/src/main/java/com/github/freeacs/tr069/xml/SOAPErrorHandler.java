@@ -6,21 +6,19 @@ import org.xml.sax.ErrorHandler;
 
 public class SOAPErrorHandler implements ErrorHandler {
 
-	private static final transient Logger log = LoggerFactory.getLogger(SOAPErrorHandler.class);
+  private static final transient Logger log = LoggerFactory.getLogger(SOAPErrorHandler.class);
 
-	public SOAPErrorHandler() {
-	}
+  public SOAPErrorHandler() {}
 
-	public void error(org.xml.sax.SAXParseException sAXParseException) {
-		log.error(sAXParseException.getLocalizedMessage());
-	}
+  public void error(org.xml.sax.SAXParseException sAXParseException) {
+    log.error(sAXParseException.getLocalizedMessage());
+  }
 
-	public void fatalError(org.xml.sax.SAXParseException sAXParseException) {
-		log.error(sAXParseException.getLocalizedMessage());
-	}
+  public void fatalError(org.xml.sax.SAXParseException sAXParseException) {
+    log.error(sAXParseException.getLocalizedMessage());
+  }
 
-	public void warning(org.xml.sax.SAXParseException sAXParseException) {
-		log.warn(sAXParseException.getLocalizedMessage());
-	}
-
+  public void warning(org.xml.sax.SAXParseException sAXParseException) {
+    log.warn(sAXParseException.getLocalizedMessage());
+  }
 }

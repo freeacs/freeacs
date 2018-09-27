@@ -1,27 +1,27 @@
 package com.github.freeacs.web.app.page.trigger;
 
 public class NotifyIntervalHour {
-    private Integer id;
-    private String name;
-    
-    public NotifyIntervalHour(Integer id, String name){
-        this.id = id;
-        this.name = name;
-    }
+  private Integer id;
+  private String name;
 
-    public Integer getId() {
-        return id;
-    }
+  public NotifyIntervalHour(Integer id, String name) {
+    this.id = id;
+    this.name = name;
+  }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  public Integer getId() {
+    return id;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
 }
