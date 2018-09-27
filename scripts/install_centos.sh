@@ -7,7 +7,9 @@ download_freeacs() {
   echo "Downloads all necessary resources from freeacs.com:"
 
   yum install epel-release -y
-  yum install jq -y
+  rpm --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
+  rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm
+  yum update && yum install alien jq -y
   jq --version
 
   cleanup
@@ -116,6 +118,7 @@ module_setup() {
   module="$1"
   echo "$module installation start"
   systemctl disable freeacs-$module
+  alien --to-rpm --scripts –keep-version freeacs-$module*.deb
   rpm -Uvh freeacs-$module*.rpm
   sed -i "s/\(MAIN_DATASOURCE_PASSWORD=\).*\$/\1${acsPass}/" /etc/default/freeacs-$module
   sed -i "s/\(SYSLOG_DATASOURCE_PASSWORD=\).*\$/\1${acsPass}/" /etc/default/freeacs-$module
