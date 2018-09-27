@@ -2,150 +2,147 @@ package com.github.freeacs.web.app.page.unittype;
 
 import com.github.freeacs.web.app.input.Input;
 import com.github.freeacs.web.app.input.InputData;
-
 import java.util.Map;
 
 public class UnittypeCreateData extends InputData {
-	
-	/** The new description. */
-	private Input newDescription = Input.getStringInput("new_description");
-	
-	/** The new modelname. */
-	private Input newModelname = Input.getStringInput("new_modelname");
-	
-	/** The new protocol. */
-	private Input newProtocol = Input.getStringInput("new_protocol");
-	
-	/** The new vendor. */
-	private Input newVendor = Input.getStringInput("new_vendor");
-	
-	/** The new matcherid. */
-	private Input newMatcherid = Input.getStringInput("new_matcherid");
-	
-	/** The unittype to copy from. */
-	private Input unittypeToCopyFrom = Input.getStringInput("unittypeToCopyFrom");
-	
-	/* (non-Javadoc)
-	 * @see com.owera.xaps.web.app.input.InputData#bindForm(java.util.Map)
-	 */
-	@Override
-	protected void bindForm(Map<String, Object> root) {
-	}
 
-	/* (non-Javadoc)
-	 * @see com.owera.xaps.web.app.input.InputData#validateForm()
-	 */
-	@Override
-	protected boolean validateForm() {
-		return false;
-	}
+  /** The new description. */
+  private Input newDescription = Input.getStringInput("new_description");
 
-	/**
-	 * Gets the new description.
-	 *
-	 * @return the new description
-	 */
-	public Input getNewDescription() {
-		return newDescription;
-	}
+  /** The new modelname. */
+  private Input newModelname = Input.getStringInput("new_modelname");
 
-	/**
-	 * Sets the new description.
-	 *
-	 * @param newDescription the new new description
-	 */
-	public void setNewDescription(Input newDescription) {
-		this.newDescription = newDescription;
-	}
+  /** The new protocol. */
+  private Input newProtocol = Input.getStringInput("new_protocol");
 
-	/**
-	 * Gets the new modelname.
-	 *
-	 * @return the new modelname
-	 */
-	public Input getNewModelname() {
-		return newModelname;
-	}
+  /** The new vendor. */
+  private Input newVendor = Input.getStringInput("new_vendor");
 
-	/**
-	 * Sets the new modelname.
-	 *
-	 * @param newModelname the new new modelname
-	 */
-	public void setNewModelname(Input newModelname) {
-		this.newModelname = newModelname;
-	}
+  /** The new matcherid. */
+  private Input newMatcherid = Input.getStringInput("new_matcherid");
 
-	/**
-	 * Gets the new protocol.
-	 *
-	 * @return the new protocol
-	 */
-	public Input getNewProtocol() {
-		return newProtocol;
-	}
+  /** The unittype to copy from. */
+  private Input unittypeToCopyFrom = Input.getStringInput("unittypeToCopyFrom");
 
-	/**
-	 * Sets the new protocol.
-	 *
-	 * @param newProtocol the new new protocol
-	 */
-	public void setNewProtocol(Input newProtocol) {
-		this.newProtocol = newProtocol;
-	}
+  /* (non-Javadoc)
+   * @see com.owera.xaps.web.app.input.InputData#bindForm(java.util.Map)
+   */
+  @Override
+  protected void bindForm(Map<String, Object> root) {}
 
-	/**
-	 * Gets the new vendor.
-	 *
-	 * @return the new vendor
-	 */
-	public Input getNewVendor() {
-		return newVendor;
-	}
+  /* (non-Javadoc)
+   * @see com.owera.xaps.web.app.input.InputData#validateForm()
+   */
+  @Override
+  protected boolean validateForm() {
+    return false;
+  }
 
-	/**
-	 * Sets the new vendor.
-	 *
-	 * @param newVendor the new new vendor
-	 */
-	public void setNewVendor(Input newVendor) {
-		this.newVendor = newVendor;
-	}
+  /**
+   * Gets the new description.
+   *
+   * @return the new description
+   */
+  public Input getNewDescription() {
+    return newDescription;
+  }
 
-	/**
-	 * Gets the new matcherid.
-	 *
-	 * @return the new matcherid
-	 */
-	public Input getNewMatcherid() {
-		return newMatcherid;
-	}
+  /**
+   * Sets the new description.
+   *
+   * @param newDescription the new new description
+   */
+  public void setNewDescription(Input newDescription) {
+    this.newDescription = newDescription;
+  }
 
-	/**
-	 * Sets the new matcherid.
-	 *
-	 * @param newMatcherid the new new matcherid
-	 */
-	public void setNewMatcherid(Input newMatcherid) {
-		this.newMatcherid = newMatcherid;
-	}
+  /**
+   * Gets the new modelname.
+   *
+   * @return the new modelname
+   */
+  public Input getNewModelname() {
+    return newModelname;
+  }
 
-	/**
-	 * Gets the unittype to copy from.
-	 *
-	 * @return the unittype to copy from
-	 */
-	public Input getUnittypeToCopyFrom() {
-		return unittypeToCopyFrom;
-	}
+  /**
+   * Sets the new modelname.
+   *
+   * @param newModelname the new new modelname
+   */
+  public void setNewModelname(Input newModelname) {
+    this.newModelname = newModelname;
+  }
 
-	/**
-	 * Sets the unittype to copy from.
-	 *
-	 * @param unittypeToCopyFrom the new unittype to copy from
-	 */
-	public void setUnittypeToCopyFrom(Input unittypeToCopyFrom) {
-		this.unittypeToCopyFrom = unittypeToCopyFrom;
-	}
+  /**
+   * Gets the new protocol.
+   *
+   * @return the new protocol
+   */
+  public Input getNewProtocol() {
+    return newProtocol;
+  }
 
+  /**
+   * Sets the new protocol.
+   *
+   * @param newProtocol the new new protocol
+   */
+  public void setNewProtocol(Input newProtocol) {
+    this.newProtocol = newProtocol;
+  }
+
+  /**
+   * Gets the new vendor.
+   *
+   * @return the new vendor
+   */
+  public Input getNewVendor() {
+    return newVendor;
+  }
+
+  /**
+   * Sets the new vendor.
+   *
+   * @param newVendor the new new vendor
+   */
+  public void setNewVendor(Input newVendor) {
+    this.newVendor = newVendor;
+  }
+
+  /**
+   * Gets the new matcherid.
+   *
+   * @return the new matcherid
+   */
+  public Input getNewMatcherid() {
+    return newMatcherid;
+  }
+
+  /**
+   * Sets the new matcherid.
+   *
+   * @param newMatcherid the new new matcherid
+   */
+  public void setNewMatcherid(Input newMatcherid) {
+    this.newMatcherid = newMatcherid;
+  }
+
+  /**
+   * Gets the unittype to copy from.
+   *
+   * @return the unittype to copy from
+   */
+  public Input getUnittypeToCopyFrom() {
+    return unittypeToCopyFrom;
+  }
+
+  /**
+   * Sets the unittype to copy from.
+   *
+   * @param unittypeToCopyFrom the new unittype to copy from
+   */
+  public void setUnittypeToCopyFrom(Input unittypeToCopyFrom) {
+    this.unittypeToCopyFrom = unittypeToCopyFrom;
+  }
 }

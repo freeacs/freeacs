@@ -1,23 +1,20 @@
 package com.github.freeacs.dbi;
 
 import com.github.freeacs.dbi.util.SQLUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.sql.DataSource;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
+import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * This class handles all write/read to the syslog-table. Now it also supports
- * the Syslog-server. The only source of writing to the syslog table not going
- * through here is from the OPP-server.
- * 
+ * This class handles all write/read to the syslog-table. Now it also supports the Syslog-server.
+ * The only source of writing to the syslog table not going through here is from the OPP-server.
+ *
  * @author Morten
- * 
  */
 public class Syslog {
 
@@ -31,15 +28,16 @@ public class Syslog {
   private int insertCount = 0;
   private long insertTms = System.currentTimeMillis();
   private int maxInsertCount; // The max number of insert commands in the commit
-                              // queue, default below
+  // queue, default below
   private int minTmsDelay; // The least number of milliseconds to pass between
-                           // commit, default below
+  // commit, default below
   public static final int defaultMaxInsertCount = 1000;
   public static final int defaultMinTmsDelay = 5000;
 
   // Only necessary in simulation-mode fields:
   private boolean simulationMode = false;
-  private static SimpleDateFormat deviceTmsFormat = new SimpleDateFormat("yyyy MMM dd HH:mm:ss", new Locale("EN"));
+  private static SimpleDateFormat deviceTmsFormat =
+      new SimpleDateFormat("yyyy MMM dd HH:mm:ss", new Locale("EN"));
   private static SimpleDateFormat dbDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
   private static Calendar yearCal = Calendar.getInstance();
 
@@ -55,29 +53,26 @@ public class Syslog {
   }
 
   /**
-   * 
    * @param dataSource
-   * @param id
-   *          The {@link Identity} for this syslog instance
-   * @param maxInsertCount
-   *          The max number of insert messages (SQL) in the commit buffer
-   * @param minTmsDelay
-   *          The min milliseconds between inserts into the DB
+   * @param id The {@link Identity} for this syslog instance
+   * @param maxInsertCount The max number of insert messages (SQL) in the commit buffer
+   * @param minTmsDelay The min milliseconds between inserts into the DB
    */
   public Syslog(DataSource dataSource, Identity id, int maxInsertCount, int minTmsDelay) {
     this.dataSource = dataSource;
     this.id = id;
     this.maxInsertCount = maxInsertCount; // The max number of insert commands
-                                          // in the commit queue
+    // in the commit queue
     this.minTmsDelay = minTmsDelay; // The least number of milliseconds to pass
-                                    // between commit
+    // between commit
   }
 
   public Identity getIdentity() {
     return id;
   }
 
-  private boolean allUnittypesSpecified(SyslogFilter filter, Map<Integer, Set<Profile>> unittypesWithSomeProfilesSpecified) {
+  private boolean allUnittypesSpecified(
+      SyslogFilter filter, Map<Integer, Set<Profile>> unittypesWithSomeProfilesSpecified) {
     Set<Integer> unittypesWithAllProfilesSpecified = new HashSet<Integer>();
     boolean allUnittypesSpecified = false;
     ACS acs = filter.getProfiles().get(0).getUnittype().getAcs();
@@ -85,11 +80,9 @@ public class Syslog {
     for (Profile profile : filter.getProfiles()) {
       Integer unittypeId = profile.getUnittype().getId();
       Set<Profile> profilesInUnittype = unittypesWithSomeProfilesSpecified.get(unittypeId);
-      if (profilesInUnittype == null)
-        profilesInUnittype = new HashSet<Profile>();
+      if (profilesInUnittype == null) profilesInUnittype = new HashSet<Profile>();
       profilesInUnittype.add(profile);
-      if (unittypesWithAllProfilesSpecified.contains(unittypeId))
-        continue;
+      if (unittypesWithAllProfilesSpecified.contains(unittypeId)) continue;
       unittypesWithSomeProfilesSpecified.put(unittypeId, profilesInUnittype);
       int noProfiles = profile.getUnittype().getProfiles().getProfiles().length;
       // populate and delete (logically: move from "someSpecified" to
@@ -99,38 +92,41 @@ public class Syslog {
         unittypesWithSomeProfilesSpecified.remove(unittypeId);
       }
     }
-    if (noUnittypes == unittypesWithAllProfilesSpecified.size())
-      allUnittypesSpecified = true;
+    if (noUnittypes == unittypesWithAllProfilesSpecified.size()) allUnittypesSpecified = true;
     return allUnittypesSpecified;
   }
 
   private DynamicStatement addUnittypeOrProfileCriteria(DynamicStatement ds, SyslogFilter filter) {
     User user = id.getUser();
     if (filter.getProfiles() != null && filter.getProfiles().size() > 0) {
-      Map<Integer, Set<Profile>> unittypesWithSomeProfilesSpecified = new HashMap<Integer, Set<Profile>>();
-      boolean allUnittypesSpecified = allUnittypesSpecified(filter, unittypesWithSomeProfilesSpecified);
-      if (user.isAdmin() && allUnittypesSpecified)
-        return ds;
+      Map<Integer, Set<Profile>> unittypesWithSomeProfilesSpecified =
+          new HashMap<Integer, Set<Profile>>();
+      boolean allUnittypesSpecified =
+          allUnittypesSpecified(filter, unittypesWithSomeProfilesSpecified);
+      if (user.isAdmin() && allUnittypesSpecified) return ds;
       ds.addSql("(");
       for (int i = 0; i < filter.getProfiles().size(); i++) {
         Profile profile = filter.getProfiles().get(i);
-        boolean allProfilesSpecified = unittypesWithSomeProfilesSpecified.get(profile.getUnittype().getId()) == null;
+        boolean allProfilesSpecified =
+            unittypesWithSomeProfilesSpecified.get(profile.getUnittype().getId()) == null;
         // all profiles in unittype are specified, we can skip profiles criteria
         if (allProfilesSpecified && user.isUnittypeAdmin(profile.getUnittype().getId())) {
           boolean alreadyTreated = false;
           for (int j = 0; j < i; j++) {
             Profile p = filter.getProfiles().get(j);
-            if (p.getId().equals(profile.getId()))
-              alreadyTreated = true;
+            if (p.getId().equals(profile.getId())) alreadyTreated = true;
           }
           if (!alreadyTreated) // To avoid repeating "unit_type_name = ?" with
-                               // the same arguments many times - the SQL
-                               // becomes ugly
+            // the same arguments many times - the SQL
+            // becomes ugly
             ds.addSqlAndArguments("unit_type_name = ? OR ", profile.getUnittype().getName());
         } else
           // have to specify profiles since not all are specified or we do not
           // know of all profile (not UnittypeAdmin)
-          ds.addSqlAndArguments("(profile_name = ? AND unit_type_name = ?) OR ", profile.getName(), profile.getUnittype().getName());
+          ds.addSqlAndArguments(
+              "(profile_name = ? AND unit_type_name = ?) OR ",
+              profile.getName(),
+              profile.getUnittype().getName());
       }
       ds.cleanupSQLTail();
       ds.addSql(") AND ");
@@ -145,19 +141,17 @@ public class Syslog {
         }
         ds.cleanupSQLTail();
         ds.addSql(") AND ");
-      }  // no criteria added, all unittypes are specified and user isAdmin
-
+      } // no criteria added, all unittypes are specified and user isAdmin
     }
     return ds;
   }
 
   /**
-   * Criteria will be changed according to these rules: contains | -> split
-   * criteria-string, use AND or OR depending on negation (see next test)
-   * startswith ! -> negation of search, ! is removed before next test contains
-   * * -> replaced by % startswith ^ -> no leading % and ^ is removed endswith $
-   * -> no trailing % and $ is removed
-   * 
+   * Criteria will be changed according to these rules: contains | -> split criteria-string, use AND
+   * or OR depending on negation (see next test) startswith ! -> negation of search, ! is removed
+   * before next test contains * -> replaced by % startswith ^ -> no leading % and ^ is removed
+   * endswith $ -> no trailing % and $ is removed
+   *
    * @param criteriaName
    * @param ds
    * @param criteria
@@ -166,8 +160,7 @@ public class Syslog {
   private void addCriteria(String criteriaName, DynamicStatement ds, String criteria) {
     int dsLength = ds.getSql().length();
     SQLUtil.input2SQLCriteria(ds, criteriaName, criteria);
-    if (ds.getSql().length() > dsLength)
-      ds.addSql(" AND ");
+    if (ds.getSql().length() > dsLength) ds.addSql(" AND ");
   }
 
   private DynamicStatement addSeverityCriteria(DynamicStatement ds, Integer[] severities) {
@@ -181,7 +174,8 @@ public class Syslog {
     return ds;
   }
 
-  private PreparedStatement makeReadSQL(Connection c, DynamicStatement ds, SyslogFilter filter) throws SQLException {
+  private PreparedStatement makeReadSQL(Connection c, DynamicStatement ds, SyslogFilter filter)
+      throws SQLException {
     ds.addSql("SELECT * FROM syslog WHERE ");
     addCriteria("content", ds, filter.getMessage());
     addCriteria("facility_version", ds, filter.getFacilityVersion());
@@ -200,8 +194,7 @@ public class Syslog {
       ds.addSqlAndArguments("collector_timestamp < ? AND ", filter.getCollectorTmsEnd());
     if (filter.getFacility() != null)
       ds.addSqlAndArguments("facility = ? AND ", filter.getFacility());
-    if (filter.getFlags() != null)
-      ds.addSqlAndArguments("flags = ? AND ", filter.getFlags());
+    if (filter.getFlags() != null) ds.addSqlAndArguments("flags = ? AND ", filter.getFlags());
     ds.cleanupSQLTail();
     ds.addSql("ORDER BY collector_timestamp DESC ");
     if (filter.getMaxRows() != null && filter.getMaxRows() < Integer.MAX_VALUE) {
@@ -213,10 +206,8 @@ public class Syslog {
   }
 
   private String getContent(String content) {
-    if (content.length() > 1024)
-      return content.substring(0, 1020) + "....";
-    if (content.contains("'"))
-      return content.replace("'", "\\'");
+    if (content.length() > 1024) return content.substring(0, 1020) + "....";
+    if (content.contains("'")) return content.replace("'", "\\'");
     return content;
   }
 
@@ -245,7 +236,8 @@ public class Syslog {
     return result;
   }
 
-  public void updateContent(long tms, String oldContent, String newContent, String unitId) throws SQLException {
+  public void updateContent(long tms, String oldContent, String newContent, String unitId)
+      throws SQLException {
     Connection c = getDataSource().getConnection();
     PreparedStatement pp = null;
     try {
@@ -254,30 +246,27 @@ public class Syslog {
       ds.addSqlAndArguments("collector_timestamp >= ? AND ", new Timestamp(tms));
       ds.addSqlAndArguments("collector_timestamp <= ? AND ", new Timestamp(tms + 10000));
       ds.addSqlAndArguments("content = ? AND ", oldContent);
-      if (unitId != null)
-        ds.addSqlAndArguments("unit_id = ?", unitId);
-      else
-        ds.cleanupSQLTail();
+      if (unitId != null) ds.addSqlAndArguments("unit_id = ?", unitId);
+      else ds.cleanupSQLTail();
       pp = ds.makePreparedStatement(c);
       pp.executeUpdate();
       logger.debug(ds.getDebugMessage());
     } finally {
-      if (pp != null)
-        pp.close();
+      if (pp != null) pp.close();
       c.close();
     }
   }
 
   // Delete entries with a specific event, unless it has some a severity level
-  public int deleteOldEventsEntries(Calendar fromCal, Calendar toCal, SyslogEvent event, int limit) throws SQLException {
+  public int deleteOldEventsEntries(Calendar fromCal, Calendar toCal, SyslogEvent event, int limit)
+      throws SQLException {
     Connection c = getDataSource().getConnection();
     PreparedStatement pp = null;
     DynamicStatement ds = new DynamicStatement();
     try {
       ds.addSql("DELETE FROM syslog WHERE ");
       ds.addSqlAndArguments("syslog_event_id = ? and ", event.getId());
-      if (fromCal != null)
-        ds.addSqlAndArguments("collector_timestamp >= ? and ", fromCal);
+      if (fromCal != null) ds.addSqlAndArguments("collector_timestamp >= ? and ", fromCal);
       ds.addSqlAndArguments("collector_timestamp < ? ", toCal);
       ds.addSql(" LIMIT " + limit);
       pp = ds.makePreparedStatement(c);
@@ -288,7 +277,11 @@ public class Syslog {
       // This happens if MYSQL database is busy, perhaps running a backup
       if (sqle.getMessage().contains("Lock wait timeout exceeded")) {
 
-        logger.warn("The database is busy (perhaps running a backup?), we'll wait 10 minutes and try again. SQLError: " + sqle.getErrorCode() + ", " + sqle.getMessage());
+        logger.warn(
+            "The database is busy (perhaps running a backup?), we'll wait 10 minutes and try again. SQLError: "
+                + sqle.getErrorCode()
+                + ", "
+                + sqle.getMessage());
         try {
           Thread.sleep(1000 * 600);
         } catch (InterruptedException e) {
@@ -303,14 +296,15 @@ public class Syslog {
         throw sqle;
       }
     } finally {
-      if (pp != null)
-        pp.close();
+      if (pp != null) pp.close();
       c.close();
     }
   }
 
   // Delete entries with a specific severity, unless it has a specified event id
-  public int deleteOldSeverityEntries(Calendar fromCal, Calendar toCal, int severity, List<SyslogEvent> events, int limit) throws SQLException {
+  public int deleteOldSeverityEntries(
+      Calendar fromCal, Calendar toCal, int severity, List<SyslogEvent> events, int limit)
+      throws SQLException {
     Connection c = getDataSource().getConnection();
     PreparedStatement pp = null;
     DynamicStatement ds = new DynamicStatement();
@@ -319,8 +313,7 @@ public class Syslog {
       ds.addSqlAndArguments("severity = ? and ", severity);
       for (SyslogEvent event : events)
         ds.addSqlAndArguments("syslog_event_id <> ? and ", event.getId());
-      if (fromCal != null)
-        ds.addSqlAndArguments("collector_timestamp >= ? and ", fromCal);
+      if (fromCal != null) ds.addSqlAndArguments("collector_timestamp >= ? and ", fromCal);
       ds.addSqlAndArguments("collector_timestamp < ? ", toCal);
       ds.addSql(" LIMIT " + limit);
       pp = ds.makePreparedStatement(c);
@@ -331,7 +324,11 @@ public class Syslog {
       // This happens if MYSQL database is busy, perhaps running a backup
       if (sqle.getMessage().contains("Lock wait timeout exceeded")) {
 
-        logger.warn("The database is busy (perhaps running a backup?), we'll wait 10 minutes and try again. SQLError: " + sqle.getErrorCode() + ", " + sqle.getMessage());
+        logger.warn(
+            "The database is busy (perhaps running a backup?), we'll wait 10 minutes and try again. SQLError: "
+                + sqle.getErrorCode()
+                + ", "
+                + sqle.getMessage());
         try {
           Thread.sleep(1000 * 600);
         } catch (InterruptedException e) {
@@ -345,8 +342,7 @@ public class Syslog {
         throw sqle;
       }
     } finally {
-      if (pp != null)
-        pp.close();
+      if (pp != null) pp.close();
       c.close();
     }
   }
@@ -373,19 +369,19 @@ public class Syslog {
       syslogEntryList.sort(new SyslogEntryComparator());
       return syslogEntryList;
     } finally {
-      if (rs != null)
-        rs.close();
-      if (pp != null)
-        pp.close();
+      if (rs != null) rs.close();
+      if (pp != null) pp.close();
       c.close();
     }
   }
 
   private Date getTmsArg(SyslogEntry entry) {
     if (simulationMode || (entry.getFacility() != null && entry.getFacility() >= 50)) {
-      if (entry.getDeviceTimestamp() != null && !entry.getDeviceTimestamp().trim().equals("Jan 1 00:00:00")) {
+      if (entry.getDeviceTimestamp() != null
+          && !entry.getDeviceTimestamp().trim().equals("Jan 1 00:00:00")) {
         try {
-          Date deviceTms = deviceTmsFormat.parse(yearCal.get(Calendar.YEAR) + " " + entry.getDeviceTimestamp());
+          Date deviceTms =
+              deviceTmsFormat.parse(yearCal.get(Calendar.YEAR) + " " + entry.getDeviceTimestamp());
           // Around midnight on new year's eve, one might have date-tms combined
           // with the wrong year, since we set the year on server side. To avoid
           // this, we must check if the device-tms is too far off from the now-tms.
@@ -396,7 +392,11 @@ public class Syslog {
           }
           return deviceTms;
         } catch (ParseException e) {
-          logger.error("Device timestamp (" + entry.getDeviceTimestamp() + ") could not be parsed into a date, using NOW tms instead", e);
+          logger.error(
+              "Device timestamp ("
+                  + entry.getDeviceTimestamp()
+                  + ") could not be parsed into a date, using NOW tms instead",
+              e);
           return new Date();
         }
       }
@@ -408,13 +408,13 @@ public class Syslog {
     }
   }
 
-
   // Returns syslog id
   public void write(SyslogEntry entry) throws SQLException {
     try (Connection c = getDataSource().getConnection();
-         PreparedStatement s = c.prepareStatement(
-                 "INSERT INTO syslog (collector_timestamp, syslog_event_id, facility, facility_version, severity, device_timestamp, hostname, tag, unit_id, profile_name, unit_type_name, user_id, content, flags, ipaddress) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+        PreparedStatement s =
+            c.prepareStatement(
+                "INSERT INTO syslog (collector_timestamp, syslog_event_id, facility, facility_version, severity, device_timestamp, hostname, tag, unit_id, profile_name, unit_type_name, user_id, content, flags, ipaddress) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
       s.setTimestamp(1, new Timestamp(getTmsArg(entry).getTime()));
       s.setInt(2, Optional.ofNullable(entry.getEventId()).orElse(0));
       s.setInt(3, Optional.ofNullable(entry.getFacility()).orElse(id.getFacility()));

@@ -7,7 +7,6 @@ import com.github.freeacs.tr069.HTTPReqResData;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069AuthenticationException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,19 +18,16 @@ public class Authenticator {
   private static String computeBlockedClientKey(HttpServletRequest req) {
     String remoteHost = req.getRemoteHost();
     String authorization = req.getHeader("authorization");
-    if (authorization == null)
-      return null; // probably a challenge - no blocking at that stage
+    if (authorization == null) return null; // probably a challenge - no blocking at that stage
     String username = authorization; // use raw header if basic auth, since the
-                                     // header is always the same
+    // header is always the same
     int startPos = authorization.indexOf("username=") + 9;
 
     if (startPos > 8) { // digest auth, must extract username, since header
-                        // varies in every request
+      // varies in every request
       int endPos = authorization.indexOf("=", startPos);
-      if (endPos > -1)
-        username = authorization.substring(startPos, endPos);
-      else
-        username = authorization.substring(startPos);
+      if (endPos > -1) username = authorization.substring(startPos, endPos);
+      else username = authorization.substring(startPos);
     }
     return remoteHost + username;
   }
@@ -85,8 +81,7 @@ public class Authenticator {
     // device to be allowed into verification is to be silent for more than 5
     // minutes.
     String bcKey = computeBlockedClientKey(reqRes.getReq());
-    if (block(reqRes, bcKey))
-      return false;
+    if (block(reqRes, bcKey)) return false;
 
     // Start of normal authentication procedure
     boolean authenticated = true; // default
@@ -103,8 +98,14 @@ public class Authenticator {
           authenticated = true;
           Log.debug(Authenticator.class, "No authentication method was required");
         } else {
-          throw new TR069AuthenticationException("The authentication method is " + auth_method + ", but no impl. exist for this method (CPE IP address: " + reqRes.getReq().getRemoteHost() + ")",
-              null, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+          throw new TR069AuthenticationException(
+              "The authentication method is "
+                  + auth_method
+                  + ", but no impl. exist for this method (CPE IP address: "
+                  + reqRes.getReq().getRemoteHost()
+                  + ")",
+              null,
+              HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
       }
     } catch (TR069AuthenticationException ex) {
