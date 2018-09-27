@@ -14,7 +14,7 @@ download_freeacs() {
 
   cleanup
 
-  whattodownload="rpm|tables|pdf"
+  whattodownload="deb|tables|pdf"
   curl -s https://api.github.com/repos/freeacs/freeacs/releases/latest | jq -r ".assets[] | select(.name | test(\"${whattodownload}\")) | .browser_download_url" > files.txt
   awk '{print $0;}' files.txt | xargs -l1 wget
   unzip "*.zip"
