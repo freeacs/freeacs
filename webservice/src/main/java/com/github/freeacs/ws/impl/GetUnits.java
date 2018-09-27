@@ -71,7 +71,7 @@ public class GetUnits {
                 unitWs.setUnitId(factory.createUnitUnitId(unit.getId()));
                 unitWs.setUnittype(factory.createUnitUnittype(utWS));
                 unitWs.setProfile(factory.createUnitProfile(profileWs));
-                com.github.freeacs.ws.xml.ParameterList unitParams = new com.github.freeacs.ws.xml.ParameterList();
+                ParameterList unitParams = new ParameterList();
                 ArrayOfParameter unitParamsArray = new ArrayOfParameter();
                 unitParamsArray.getItem().addAll(unit.getParameters().entrySet().stream().map(entry -> {
                     com.github.freeacs.ws.xml.Parameter p = new com.github.freeacs.ws.xml.Parameter();
