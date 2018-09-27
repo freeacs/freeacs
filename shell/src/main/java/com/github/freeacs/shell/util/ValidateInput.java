@@ -1,5 +1,5 @@
 package com.github.freeacs.shell.util;
 
 public interface ValidateInput {
-	public boolean validate(String input); 
+  public boolean validate(String input);
 }

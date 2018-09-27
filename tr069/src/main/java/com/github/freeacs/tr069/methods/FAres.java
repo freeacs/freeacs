@@ -6,10 +6,9 @@ import com.github.freeacs.tr069.xml.Parser;
 
 public class FAres {
 
-	public static void process(HTTPReqResData reqRes) throws TR069Exception {
-		reqRes.getRequest().setMethod(TR069Method.FAULT);
-		Parser parser = new Parser(reqRes.getRequest().getXml());
-		reqRes.getRequest().setFault(parser.getFault());
-
-	}
+  public static void process(HTTPReqResData reqRes) throws TR069Exception {
+    reqRes.getRequest().setMethod(TR069Method.FAULT);
+    Parser parser = new Parser(reqRes.getRequest().getXml());
+    reqRes.getRequest().setFault(parser.getFault());
+  }
 }

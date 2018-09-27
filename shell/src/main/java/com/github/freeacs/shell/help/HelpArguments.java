@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HelpArguments {
-	private List<HelpArgument> arguments = new ArrayList<HelpArgument>();
+  private List<HelpArgument> arguments = new ArrayList<HelpArgument>();
 
-	public void addArgument(HelpArgument helpArgument) {
-		arguments.add(helpArgument);
-	}
+  public void addArgument(HelpArgument helpArgument) {
+    arguments.add(helpArgument);
+  }
 
-	public List<HelpArgument> getArguments() {
-		return arguments;
-	}
-
+  public List<HelpArgument> getArguments() {
+    return arguments;
+  }
 }

@@ -28,12 +28,9 @@ public class GPNreq extends Body {
     sb.append(PARAMETER_PATH_START);
     sb.append(parameter);
     sb.append(PARAMETER_PATH_END);
-    if (nextLevel0)
-      sb.append(NEXTLEVEL_0);
-    else
-      sb.append(NEXTLEVEL_F);
+    if (nextLevel0) sb.append(NEXTLEVEL_0);
+    else sb.append(NEXTLEVEL_F);
     sb.append(END);
     return sb.toString();
   }
-
 }

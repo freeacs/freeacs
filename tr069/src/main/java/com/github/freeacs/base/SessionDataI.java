@@ -4,70 +4,69 @@ import com.github.freeacs.base.db.DBAccessSession;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
-
 import java.sql.SQLException;
 import java.util.Map;
 
 public interface SessionDataI {
 
-	ACSParameters getAcsParameters();
+  ACSParameters getAcsParameters();
 
-	void setAcsParameters(ACSParameters acsParameters);
+  void setAcsParameters(ACSParameters acsParameters);
 
-	Unittype getUnittype();
+  Unittype getUnittype();
 
-	void setUnittype(Unittype unittype);
+  void setUnittype(Unittype unittype);
 
-	Profile getProfile();
+  Profile getProfile();
 
-	void setProfile(Profile profile);
+  void setProfile(Profile profile);
 
-	Unit getUnit();
+  Unit getUnit();
 
-	void setUnit(Unit unit);
+  void setUnit(Unit unit);
 
-	String getUnitId();
+  String getUnitId();
 
-	void setUnitId(String unitId);
+  void setUnitId(String unitId);
 
-	DBAccessSession getDbAccessSession();
+  DBAccessSession getDbAccessSession();
 
-	Job getJob();
+  Job getJob();
 
-	void setJob(Job job);
+  void setJob(Job job);
 
-	Map<String, JobParameter> getJobParams();
+  Map<String, JobParameter> getJobParams();
 
-	void setJobParams(Map<String, JobParameter> jobParams);
+  void setJobParams(Map<String, JobParameter> jobParams);
 
-	String getSoftwareVersion();
+  String getSoftwareVersion();
 
-	void setSoftwareVersion(String softwareVersion);
+  void setSoftwareVersion(String softwareVersion);
 
-	Map<String, ParameterValueStruct> getFromDB();
+  Map<String, ParameterValueStruct> getFromDB();
 
-	void updateParametersFromDB(String unitId) throws SQLException, NoDataAvailableException;
+  void updateParametersFromDB(String unitId) throws SQLException, NoDataAvailableException;
 
-	void setFromDB(Map<String, ParameterValueStruct> fromDB);
+  void setFromDB(Map<String, ParameterValueStruct> fromDB);
 
-	boolean lastProvisioningOK();
+  boolean lastProvisioningOK();
 
-	//	public CPEParameters getCpeParameters();
+  //	public CPEParameters getCpeParameters();
 
-	/**
-	 * The PIIDecision object contains information need to calculate the next
-	 * periodic inform. The information needed in this object is listed in
-	 * the javadoc for that class. Make sure the method never return null!!
-	 * @return
-	 */
-	PIIDecision getPIIDecision();
+  /**
+   * The PIIDecision object contains information need to calculate the next periodic inform. The
+   * information needed in this object is listed in the javadoc for that class. Make sure the method
+   * never return null!!
+   *
+   * @return
+   */
+  PIIDecision getPIIDecision();
 
-	void setSerialNumber(String serialNumber);
+  void setSerialNumber(String serialNumber);
 
-	String getSerialNumber();
+  String getSerialNumber();
 
-	ProvisioningMessage getProvisioningMessage();
+  ProvisioningMessage getProvisioningMessage();
 
-	Long getStartupTmsForSession();
-
+  Long getStartupTmsForSession();
 }

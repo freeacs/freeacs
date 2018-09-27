@@ -5,14 +5,13 @@ import java.util.List;
 
 public class HelpExamples {
 
-	private List<String> examples = new ArrayList<String>();
+  private List<String> examples = new ArrayList<String>();
 
-	public void addExample(String example) {
-		examples.add(example);
-	}
+  public void addExample(String example) {
+    examples.add(example);
+  }
 
-	public List<String> getExamples() {
-		return examples;
-	}
-
+  public List<String> getExamples() {
+    return examples;
+  }
 }
