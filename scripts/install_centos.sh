@@ -30,6 +30,7 @@ create_freeacsdbuser() {
   freeacsdbuserok=`mysql -uroot -p$mysqlRootPass -e "SELECT count(user) FROM mysql.user where user = 'acs'" 2> /dev/null | tail -n1`
   if [ "$freeacsdbuserok" != '2' ] ; then
     mysql -uroot -p$mysqlRootPass -e "CREATE DATABASE acs" 2> /dev/null
+    mysql -uroot -p$mysqlRootPass -e "uninstall plugin validate_password" 2> /dev/null
     mysql -uroot -p$mysqlRootPass acs -e "CREATE USER 'acs'@'localhost' IDENTIFIED BY '$acsPass'" 2> /dev/null
     mysql -uroot -p$mysqlRootPass acs -e "GRANT ALL ON acs.* TO 'acs' IDENTIFIED BY '$acsPass'"  2> .tmp
     mysql -uroot -p$mysqlRootPass acs -e "GRANT ALL ON acs.* TO 'acs'@'localhost' IDENTIFIED BY '$acsPass'" 2>> .tmp
