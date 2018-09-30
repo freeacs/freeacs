@@ -4,6 +4,8 @@ import com.github.freeacs.dbi.util.ACSVersionCheck;
 import java.sql.*;
 import java.util.*;
 import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Permission status: Fully protected - apart from two methods which intentionally allows access
@@ -12,6 +14,8 @@ import javax.sql.DataSource;
  * @author Morten
  */
 public class Users {
+  private static final Logger LOGGER = LoggerFactory.getLogger(Users.class);
+
   /**
    * We return a default root-user if it's not defined. Default password is freeacs
    *
@@ -21,7 +25,8 @@ public class Users {
   public static String USER_ADMIN = "admin";
 
   public static String ACCESS_ADMIN = "Admin";
-  public static String ADMIN_DEFAULT_PASSWORD = "freeacs";
+
+  private static String ADMIN_DEFAULT_PASSWORD = null;
 
   private final DataSource dataSource;
   private Map<Integer, User> idMap = new HashMap<Integer, User>();
@@ -332,6 +337,10 @@ public class Users {
       if (tmpNameMap.get("admin") == null) {
         // make an admin account with 'freeacs' as password
         User adminUser = new User(USER_ADMIN, "Admin user", ACCESS_ADMIN, true, this);
+        if (ADMIN_DEFAULT_PASSWORD == null) {
+          ADMIN_DEFAULT_PASSWORD = UUID.randomUUID().toString();
+          LOGGER.info("Generated random admin password: " + ADMIN_DEFAULT_PASSWORD);
+        }
         adminUser.setSecretClearText(ADMIN_DEFAULT_PASSWORD);
         tmpNameMap.put(USER_ADMIN, adminUser);
       }
