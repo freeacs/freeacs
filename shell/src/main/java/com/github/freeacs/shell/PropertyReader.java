@@ -46,14 +46,16 @@ public class PropertyReader {
           }
         }
       }
-      ClassLoader cl = PropertyReader.class.getClassLoader();
-      stream = cl.getResourceAsStream(searchName);
-      while (stream == null) {
-        cl = cl.getParent();
-        if (cl == null) break;
+      if (stream == null) {
+        ClassLoader cl = PropertyReader.class.getClassLoader();
+        stream = cl.getResourceAsStream(searchName);
+        while (stream == null) {
+          cl = cl.getParent();
+          if (cl == null) break;
           stream = cl.getResourceAsStream(searchName);
+        }
       }
-      Map<String, String> keys = new TreeMap<String, String>();
+      Map<String, String> keys = new TreeMap<>();
       if (stream != null) {
         stream = new java.io.BufferedInputStream(stream);
         InputStreamReader is = new InputStreamReader(stream);
