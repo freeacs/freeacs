@@ -1,8 +1,8 @@
 package com.github.freeacs.tr069.xml;
 
-import java.util.Optional;
-
 import static com.github.freeacs.tr069.xml.DeviceIdStructHelper.parseProductClass;
+
+import java.util.Optional;
 
 public class DeviceIdStruct {
 
