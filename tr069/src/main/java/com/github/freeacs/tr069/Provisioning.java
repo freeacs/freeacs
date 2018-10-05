@@ -20,7 +20,6 @@ import com.github.freeacs.tr069.methods.TR069Method;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -68,34 +67,11 @@ public class Provisioning extends HttpServlet {
   /**
    * doGet prints some information about the server, focus on database connections and memory usage
    */
-  protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
+  protected void doGet(HttpServletRequest req, HttpServletResponse res) {
     if (req.getParameter("clearCache") != null) BaseCache.clearCache();
-    PrintWriter pw = res.getWriter();
-    String html = "";
-    html += "<title>xAPS TR-069 Server Monitoring Page</title>";
-    html += "<h1>Monitoring of the TR-069 Server v. " + VERSION + "</h1>";
-    long total = Runtime.getRuntime().totalMemory();
-    long free = Runtime.getRuntime().freeMemory();
-    long used = total - free;
-    html += "<h1>Memory Usage</h1>\n";
-    html +=
-        "The JVM uses "
-            + getBytesFormatted(used)
-            + " of memory. "
-            + getBytesFormatted(free)
-            + " of memory available on the heap.<br>";
-    pw.print(html);
   }
 
-  /**
-   * Reads the XML input into a string and store it in the SessionData object
-   *
-   * @param reqRes
-   * @return
-   * @throws TR069Exception
-   * @throws IOException
-   */
-  private static long extractRequest(HTTPReqResData reqRes) throws TR069Exception {
+  private static void extractRequest(HTTPReqResData reqRes) throws TR069Exception {
     try {
       long tms = System.currentTimeMillis();
       InputStreamReader isr = new InputStreamReader(reqRes.getReq().getInputStream());
@@ -107,7 +83,7 @@ public class Provisioning extends HttpServlet {
         requestSB.append(line).append("\n");
       }
       reqRes.getRequest().setXml(requestSB.toString());
-      return System.currentTimeMillis() - tms;
+      System.currentTimeMillis();
     } catch (IOException e) {
       throw new TR069Exception(
           "TR-069 client aborted (not possible to read more input)",
@@ -247,13 +223,6 @@ public class Provisioning extends HttpServlet {
           t);
       return false;
     }
-  }
-
-  private static String getBytesFormatted(long bytes) {
-    if (bytes > 1024 * 1024 * 1024) return bytes / (1024 * 1024 * 1024) + " GB";
-    else if (bytes > 1024 * 1024) return bytes / (1024 * 1024) + " MB";
-    else if (bytes > 1024) return bytes / (1024) + " KB";
-    return bytes + " B";
   }
 
   public void destroy() {
