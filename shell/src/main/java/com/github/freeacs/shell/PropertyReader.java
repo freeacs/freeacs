@@ -31,7 +31,7 @@ public class PropertyReader {
       if (files != null) {
         for (String filename : files) {
           if (filename.equals(searchName)) {
-            stream = new FileInputStream(filename);
+            stream = new FileInputStream("config/" + filename);
           }
         }
       }
