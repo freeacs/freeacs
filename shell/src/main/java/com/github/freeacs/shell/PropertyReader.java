@@ -74,7 +74,7 @@ public class PropertyReader {
             key = key.trim();
             String value = line.substring(line.indexOf('=') + 1);
             value = value.trim();
-            if (key.length() > 0) keys.put(key, (value.equals("") ? null : value));
+            if (key.length() > 0) keys.put(key, ("".equals(value) ? null : value));
           } else {
             String key = line.trim();
             keys.put(key, null);
