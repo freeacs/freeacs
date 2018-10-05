@@ -26,16 +26,18 @@ public class PropertyReader {
     String searchName = propertyfile;
     InputStream stream = null;
     try {
-      ClassLoader cl = PropertyReader.class.getClassLoader();
-      stream = cl.getResourceAsStream(searchName);
-      while (stream == null) {
-        cl = cl.getParent();
-        if (cl == null) break;
-        stream = cl.getResourceAsStream(searchName);
+      File f = new File("config");
+      String[] files = f.list();
+      if (files != null) {
+        for (String filename : files) {
+          if (filename.equals(searchName)) {
+            stream = new FileInputStream(filename);
+          }
+        }
       }
       if (stream == null) {
-        File f = new File(".");
-        String[] files = f.list();
+        f = new File(".");
+        files = f.list();
         if (files != null) {
           for (String filename : files) {
             if (filename.equals(searchName)) {
@@ -43,6 +45,13 @@ public class PropertyReader {
             }
           }
         }
+      }
+      ClassLoader cl = PropertyReader.class.getClassLoader();
+      stream = cl.getResourceAsStream(searchName);
+      while (stream == null) {
+        cl = cl.getParent();
+        if (cl == null) break;
+          stream = cl.getResourceAsStream(searchName);
       }
       Map<String, String> keys = new TreeMap<String, String>();
       if (stream != null) {
