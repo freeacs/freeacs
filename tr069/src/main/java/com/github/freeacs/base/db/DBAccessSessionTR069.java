@@ -12,7 +12,6 @@ import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class DBAccessSessionTR069 {
   private ACS acs;
@@ -27,10 +26,9 @@ public class DBAccessSessionTR069 {
     Log.debug(DBAccessSessionTR069.class, message);
   }
 
-  public void writeUnittypeProfileUnit(
-      SessionData sessionData, String unittypeNameStr, String unitId) throws TR069Exception {
-    String unittypeName = parseUnittypeName(unittypeNameStr);
-    // If no valid product class is specified in the inform:
+  public void writeUnittypeProfileUnit(SessionData sessionData, String unittypeName, String unitId)
+      throws TR069Exception {
+    // If no product class is specified in the inform:
     if (unittypeName == null || unittypeName.trim().equals(""))
       unittypeName = "OUI-" + unitId.substring(0, 6);
     try {
@@ -76,12 +74,6 @@ public class DBAccessSessionTR069 {
         throw new TR069Exception(errorMsg, TR069ExceptionShortMessage.MISC, t);
       }
     }
-  }
-
-  protected static String parseUnittypeName(String unittypeNameStr) {
-    return Optional.ofNullable(unittypeNameStr)
-        .map(s -> s.replaceAll("\\\\", "-").replaceAll("/", "-"))
-        .orElse(unittypeNameStr);
   }
 
   public void writeUnitSessionParams(SessionData sessionData) throws TR069DatabaseException {
