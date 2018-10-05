@@ -1,7 +1,5 @@
 package com.github.freeacs.tr069.xml;
 
-import static com.github.freeacs.tr069.xml.DeviceIdStructHelper.parseProductClass;
-
 import java.util.Optional;
 
 public class DeviceIdStruct {
@@ -41,7 +39,7 @@ public class DeviceIdStruct {
   }
 
   public void setProductClass(String productClass) {
-    this.productClass = parseProductClass(productClass);
+    this.productClass = DeviceIdStructHelper.parseProductClass(productClass);
   }
 
   public String getSerialNumber() {
@@ -51,12 +49,12 @@ public class DeviceIdStruct {
   public void setSerialNumber(String serialNumber) {
     this.serialNumber = serialNumber;
   }
-}
 
-interface DeviceIdStructHelper {
-  static String parseProductClass(String productClass) {
-    return Optional.ofNullable(productClass)
-        .map(s -> s.replaceAll("\\\\", "-").replaceAll("/", "-"))
-        .orElse(productClass);
+  private interface DeviceIdStructHelper {
+    static String parseProductClass(String productClass) {
+      return Optional.ofNullable(productClass)
+          .map(s -> s.replaceAll("\\\\", "-").replaceAll("/", "-"))
+          .orElse(productClass);
+    }
   }
 }
