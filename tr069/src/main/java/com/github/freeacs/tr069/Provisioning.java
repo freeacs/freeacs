@@ -68,7 +68,6 @@ public class Provisioning extends HttpServlet {
    * doGet prints some information about the server, focus on database connections and memory usage
    */
   protected void doGet(HttpServletRequest req, HttpServletResponse res) {
-    if (req.getParameter("clearCache") != null) BaseCache.clearCache();
   }
 
   private static void extractRequest(HTTPReqResData reqRes) throws TR069Exception {

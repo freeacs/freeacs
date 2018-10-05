@@ -22,7 +22,7 @@ import java.util.Calendar;
  * @author Morten Simonsen
  */
 public class CacheValue {
-  private int type = Cache.SESSION;
+  private int type;
   private Object object;
   private long created;
   private long accessed;
