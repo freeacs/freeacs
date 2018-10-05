@@ -1,11 +1,13 @@
 package com.github.freeacs.shell;
 
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Properties {
 
-  private static String propertyfile = "xaps-shell.properties";
+  private static String propertyfile =
+      Optional.ofNullable(System.getProperty("config.name")).orElse("application") + ".properties";
 
   public static PropertyReader pr;
 
