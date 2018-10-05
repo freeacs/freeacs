@@ -9,7 +9,6 @@ import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +27,8 @@ public class DBAccessSessionTR069 {
     Log.debug(DBAccessSessionTR069.class, message);
   }
 
-  public void writeUnittypeProfileUnit(SessionData sessionData, String unittypeNameStr, String unitId)
-      throws TR069Exception {
+  public void writeUnittypeProfileUnit(
+      SessionData sessionData, String unittypeNameStr, String unitId) throws TR069Exception {
     String unittypeName = parseUnittypeName(unittypeNameStr);
     // If no valid product class is specified in the inform:
     if (unittypeName == null || unittypeName.trim().equals(""))
