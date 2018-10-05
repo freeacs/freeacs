@@ -3,21 +3,21 @@ package com.github.freeacs.base;
 import com.github.freeacs.dbi.File;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import java.util.concurrent.TimeUnit;
 
 public class BaseCache {
 
-  private static final Cache<String, SessionDataI> sessionDataCache = CacheBuilder.newBuilder()
-      .maximumSize(10000)
-      .expireAfterAccess(3 * 60 * 1000, TimeUnit.MILLISECONDS)
-      .build();
+  private static final Cache<String, SessionDataI> sessionDataCache =
+      CacheBuilder.newBuilder()
+          .maximumSize(10000)
+          .expireAfterAccess(3 * 60 * 1000, TimeUnit.MILLISECONDS)
+          .build();
 
-  private static final Cache<String, File> firmwareImageCache = CacheBuilder.newBuilder()
-      .maximumSize(10000)
-      .expireAfterAccess(10 * 60 * 1000, TimeUnit.MILLISECONDS)
-      .build();
+  private static final Cache<String, File> firmwareImageCache =
+      CacheBuilder.newBuilder()
+          .maximumSize(10000)
+          .expireAfterAccess(10 * 60 * 1000, TimeUnit.MILLISECONDS)
+          .build();
 
   private static final String SESSION_KEY = "SESSION";
 
@@ -31,7 +31,7 @@ public class BaseCache {
    */
   public static SessionDataI getSessionData(String unitKey) {
     String key = unitKey + SESSION_KEY;
-    @Nullable SessionDataI cv = sessionDataCache.getIfPresent(key);
+    SessionDataI cv = sessionDataCache.getIfPresent(key);
     if (cv != null) return cv;
     else throw new BaseCacheException(key);
   }
@@ -56,7 +56,7 @@ public class BaseCache {
 
   public static File getFirmware(String firmwareName, String unittypeName) {
     String key = firmwareName + unittypeName + FIRMWAREIMAGE_KEY;
-    @Nullable File cv = firmwareImageCache.getIfPresent(key);
+    File cv = firmwareImageCache.getIfPresent(key);
     if (cv != null) return cv;
     else return null;
   }
@@ -67,5 +67,4 @@ public class BaseCache {
       firmwareImageCache.put(key, firmware);
     }
   }
-
 }

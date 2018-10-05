@@ -67,8 +67,7 @@ public class Provisioning extends HttpServlet {
   /**
    * doGet prints some information about the server, focus on database connections and memory usage
    */
-  protected void doGet(HttpServletRequest req, HttpServletResponse res) {
-  }
+  protected void doGet(HttpServletRequest req, HttpServletResponse res) {}
 
   private static void extractRequest(HTTPReqResData reqRes) throws TR069Exception {
     try {
