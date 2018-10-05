@@ -35,9 +35,12 @@ public class PropertyReader {
       }
       if (stream == null) {
         File f = new File(".");
-        for (String filename : f.list()) {
-          if (filename.equals(searchName)) {
-            stream = new FileInputStream(filename);
+        String[] files = f.list();
+        if (files != null) {
+          for (String filename : files) {
+            if (filename.equals(searchName)) {
+              stream = new FileInputStream(filename);
+            }
           }
         }
       }
@@ -45,7 +48,7 @@ public class PropertyReader {
       if (stream != null) {
         stream = new java.io.BufferedInputStream(stream);
         InputStreamReader is = new InputStreamReader(stream);
-        BufferedReader br = new BufferedReader((Reader) is);
+        BufferedReader br = new BufferedReader(is);
         String line;
         while (true) {
           try {
@@ -60,14 +63,13 @@ public class PropertyReader {
             key = key.trim();
             String value = line.substring(line.indexOf('=') + 1);
             value = value.trim();
-            if (key.length() > 0 && !key.equals(""))
-              keys.put(key, (value.equals("") ? null : value));
+            if (key.length() > 0) keys.put(key, (value.equals("") ? null : value));
           } else {
             String key = line.trim();
             keys.put(key, null);
           }
         }
-        properties.put(propertyfile + "REFRESH", new Long(System.currentTimeMillis()));
+        properties.put(propertyfile + "REFRESH", System.currentTimeMillis());
         properties.put(propertyfile, keys);
       } else {
         properties.remove(propertyfile);
@@ -75,7 +77,7 @@ public class PropertyReader {
         throw new PropertyReaderException(searchName);
       }
     } catch (Throwable t) {
-      properties.put(propertyfile + "REFRESH", new Long(System.currentTimeMillis()));
+      properties.put(propertyfile + "REFRESH", System.currentTimeMillis());
       if (t instanceof PropertyReaderException) {
         throw (PropertyReaderException) t;
       } else {
@@ -87,22 +89,6 @@ public class PropertyReader {
       } catch (Throwable t) {
         // do nothing
       }
-    }
-  }
-
-  public static boolean isPropertyFileLoaded(String propertyfile) {
-    if (properties.get(propertyfile) == null) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  public static synchronized void refreshCache() {
-    Object[] propertyfiles = properties.keySet().toArray();
-    for (int i = 0; propertyfiles != null && i < propertyfiles.length; i++) {
-      String propertyfile = (String) propertyfiles[i];
-      if (!propertyfile.endsWith("REFRESH")) refreshCache(propertyfile);
     }
   }
 
@@ -131,39 +117,21 @@ public class PropertyReader {
     else return prop;
   }
 
-  public String[] getPropertyArray(String propertykey, String delimiter) {
-    String propertyValue = getProperty(propertykey);
-    if (propertyValue != null) return propertyValue.split(delimiter);
-    else return null;
-  }
-
-  @SuppressWarnings({"rawtypes", "unchecked"})
-  public Map<String, Object> getPropertyMap() {
-    if (properties.get(propertyfile) != null) {
-      TreeMap hm = (TreeMap) properties.get(propertyfile);
-      // Kloner objektet for å sikre at ingen kan endre properties ved et
-      // "uhell"
-      return (Map) hm.clone();
-    } else return null;
-  }
-
   // Should return ms interval
   private Long getReloadInterval() {
-    Long reloadIntervalL = RELOAD_INTERVAL_DEFAULT;
+    long reloadIntervalL = RELOAD_INTERVAL_DEFAULT;
     String reloadInterval = getProperty(RELOAD_INTERVAL_MIN);
     if (reloadInterval != null) {
       try {
         reloadIntervalL = Long.parseLong(reloadInterval) * 60 * 1000;
-      } catch (NumberFormatException nfe) {
-        reloadIntervalL = RELOAD_INTERVAL_DEFAULT;
+      } catch (NumberFormatException ignored) {
       }
     } else {
       reloadInterval = getProperty(RELOAD_INTERVAL_SEC);
       if (reloadInterval != null) {
         try {
           reloadIntervalL = Long.parseLong(reloadInterval) * 1000;
-        } catch (NumberFormatException nfe) {
-          reloadIntervalL = RELOAD_INTERVAL_DEFAULT;
+        } catch (NumberFormatException ignored) {
         }
       }
     }
@@ -174,13 +142,8 @@ public class PropertyReader {
     if (properties.get(propertyfile) != null) {
       Long reloadIntervalL = getReloadInterval();
       Long tmsL = (Long) properties.get(propertyfile + "REFRESH");
-      if (tmsL != null && tmsL.longValue() + reloadIntervalL < System.currentTimeMillis())
-        return true;
+      return tmsL != null && tmsL + reloadIntervalL < System.currentTimeMillis();
     }
     return false;
-  }
-
-  public String getPropertyfile() {
-    return propertyfile;
   }
 }
