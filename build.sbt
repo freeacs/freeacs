@@ -185,7 +185,10 @@ lazy val tr069 = (project in file("tr069"))
       ++ Dependencies.database
       ++ Dependencies.testing
       ++ Dependencies.jdeb
-      ++ Seq("org.apache.commons" % "commons-lang3" % "3.7"),
+      ++ Seq(
+        "org.apache.commons" % "commons-lang3" % "3.7",
+        "com.google.guava" % "guava" % "26.0-jre"
+      ),
     copyAppProps,
     copyLogProps,
     copyAppIni
