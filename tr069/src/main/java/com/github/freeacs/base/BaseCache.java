@@ -4,7 +4,6 @@ import com.github.freeacs.dbi.File;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import java.util.concurrent.TimeUnit;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class BaseCache {
 
@@ -32,7 +31,7 @@ public class BaseCache {
    */
   public static SessionDataI getSessionData(String unitKey) {
     String key = unitKey + SESSION_KEY;
-    @Nullable SessionDataI cv = sessionDataCache.getIfPresent(key);
+    SessionDataI cv = sessionDataCache.getIfPresent(key);
     if (cv != null) return cv;
     else throw new BaseCacheException(key);
   }
@@ -57,7 +56,7 @@ public class BaseCache {
 
   public static File getFirmware(String firmwareName, String unittypeName) {
     String key = firmwareName + unittypeName + FIRMWAREIMAGE_KEY;
-    @Nullable File cv = firmwareImageCache.getIfPresent(key);
+    File cv = firmwareImageCache.getIfPresent(key);
     if (cv != null) return cv;
     else return null;
   }
