@@ -3,21 +3,22 @@ package com.github.freeacs.base;
 import com.github.freeacs.dbi.File;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import java.util.concurrent.TimeUnit;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class BaseCache {
 
-  private static final Cache<String, SessionDataI> sessionDataCache = CacheBuilder.newBuilder()
-      .maximumSize(10000)
-      .expireAfterAccess(3 * 60 * 1000, TimeUnit.MILLISECONDS)
-      .build();
+  private static final Cache<String, SessionDataI> sessionDataCache =
+      CacheBuilder.newBuilder()
+          .maximumSize(10000)
+          .expireAfterAccess(3 * 60 * 1000, TimeUnit.MILLISECONDS)
+          .build();
 
-  private static final Cache<String, File> firmwareImageCache = CacheBuilder.newBuilder()
-      .maximumSize(10000)
-      .expireAfterAccess(10 * 60 * 1000, TimeUnit.MILLISECONDS)
-      .build();
+  private static final Cache<String, File> firmwareImageCache =
+      CacheBuilder.newBuilder()
+          .maximumSize(10000)
+          .expireAfterAccess(10 * 60 * 1000, TimeUnit.MILLISECONDS)
+          .build();
 
   private static final String SESSION_KEY = "SESSION";
 
@@ -67,5 +68,4 @@ public class BaseCache {
       firmwareImageCache.put(key, firmware);
     }
   }
-
 }
