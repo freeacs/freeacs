@@ -1,16 +1,17 @@
 package com.github.freeacs.tr069.xml;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MethodList {
 
-  private ArrayList<String> methods;
+  private List<String> methods;
 
   public MethodList() {
-    this.methods = new ArrayList<String>();
+    this.methods = new ArrayList<>();
   }
 
-  public ArrayList<String> getMethods() {
+  public List<String> getMethods() {
     return methods;
   }
 
@@ -18,7 +19,7 @@ public class MethodList {
     return methods.get(index);
   }
 
-  public void setMethods(ArrayList<String> methods) {
+  public void setMethods(List<String> methods) {
     this.methods = methods;
   }
 

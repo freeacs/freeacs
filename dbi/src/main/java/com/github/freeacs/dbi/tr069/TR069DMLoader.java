@@ -2,11 +2,8 @@ package com.github.freeacs.dbi.tr069;
 
 import com.github.freeacs.dbi.tr069.TR069DMParameter.StringType;
 import java.io.InputStream;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TreeMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,46 +15,9 @@ import org.w3c.dom.NodeList;
 
 public class TR069DMLoader {
 
-  public static void main(String[] args) {
-    try {
-      TR069DMParameterMap map = load();
-      printParameterHelpForUseInWeb(map);
-
-    } catch (Throwable t) {
-      System.err.println("Unexpected error: " + t);
-    }
-  }
-
-  public static void printParameterHelpForUseInWeb(TR069DMParameterMap map) {
-
-    Set<String> printedEntries = new HashSet<String>();
-    for (Entry<String, TR069DMParameter> entry : map.getMap().entrySet()) {
-      String parameterName = entry.getKey();
-      if (entry.getKey().startsWith("Device")) parameterName = "InternetGateway" + entry.getKey();
-      else if (entry.getKey().startsWith("VoiceService"))
-        parameterName = "InternetGatewayDevice.Services." + entry.getKey();
-      parameterName = parameterName.replace("{i}", "1");
-      if (printedEntries.contains(parameterName)) continue;
-      printedEntries.add(parameterName);
-
-      System.out.println("<Parameter>");
-      System.out.println("\t<Name>" + parameterName + "</Name>");
-      System.out.println(
-          "\t<Heading>"
-              + entry.getKey().substring(entry.getKey().lastIndexOf(".") + 1)
-              + "</Heading>");
-      System.out.print("\t<Help>");
-      //			System.out.print(entry.getValue().getDescription().replace("{i}", "1").replace("’",
-      // "'").replace("<", "&lt;").replace(">", "&gt;").replace("”","\"").replace("“", "\""));
-      System.out.println("\t</Help>");
-      System.out.println("</Parameter>");
-    }
-  }
-
   private static void updateParameters(
       Map<String, TR069DMParameter> map, String objectName, NodeList nList) throws Exception {
 
-    //		System.out.println("Found " + nList.getLength() + " parameter nodes");
     for (int i = 0; i < nList.getLength(); i++) {
       Node n = nList.item(i);
       TR069DMParameter parameter = new TR069DMParameter();
@@ -67,14 +27,8 @@ public class TR069DMLoader {
       for (int j = 0; j < nnm.getLength(); j++) {
         Node attribute = nnm.item(j);
         if (attribute.getNodeName().equals("name")) {
-          //					if (map.get(objectName + attribute.getNodeValue()) == null) {
           parameter.setName(objectName + attribute.getNodeValue());
           map.put(parameter.getName(), parameter);
-          //					}
-          //					else {
-          //						System.out.println("Already made: " + objectName + attribute.getNodeValue());
-          //						parameter = map.get(objectName + attribute.getNodeValue());
-          //					}
         }
         if (attribute.getNodeName().equals("access"))
           parameter.setReadOnly(attribute.getNodeValue().equals("readOnly"));
@@ -123,27 +77,25 @@ public class TR069DMLoader {
                       && !rangeElement.getAttribute("minInclusive").equals(""))
                     parameter
                         .getRange()
-                        .setMin(new Long(rangeElement.getAttribute("minInclusive")));
+                        .setMin(Long.valueOf(rangeElement.getAttribute("minInclusive")));
                   if (rangeElement.getAttribute("maxInclusive") != null
                       && !rangeElement.getAttribute("maxInclusive").equals(""))
                     parameter
                         .getRange()
-                        .setMax(new Long(rangeElement.getAttribute("maxInclusive")));
-                  //	System.out.println("Found range for " + parameter.getName() + ": [" +
-                  // rangeElement.getAttribute("minInclusive") + "," +
-                  // rangeElement.getAttribute("maxInclusive") + "]");
+                        .setMax(Long.valueOf(rangeElement.getAttribute("maxInclusive")));
                 }
                 if (datatypeChild.getNodeName().equals("size")) {
                   Element sizeElement = (Element) datatypeChild;
                   if (sizeElement.getAttribute("minLength") != null
                       && !sizeElement.getAttribute("minLength").equals(""))
-                    parameter.getRange().setMin(new Long(sizeElement.getAttribute("minLength")));
+                    parameter
+                        .getRange()
+                        .setMin(Long.valueOf(sizeElement.getAttribute("minLength")));
                   if (sizeElement.getAttribute("maxLength") != null
                       && !sizeElement.getAttribute("maxLength").equals(""))
-                    parameter.getRange().setMax(new Long(sizeElement.getAttribute("maxLength")));
-                  //	System.out.println("Found size for " + parameter.getName() + ": [" +
-                  // sizeElement.getAttribute("minLength") + "," +
-                  // sizeElement.getAttribute("maxLength") + "]");
+                    parameter
+                        .getRange()
+                        .setMax(Long.valueOf(sizeElement.getAttribute("maxLength")));
                 }
                 if (datatypeChild.getNodeName().equals("pattern")) {
                   Element patternElement = (Element) datatypeChild;
@@ -161,8 +113,6 @@ public class TR069DMLoader {
                     st = new StringType(null, patternElement.getAttribute("value"));
                     enums.add(st);
                   }
-                  //	System.out.println("Found pattern for " + parameter.getName() + " enum-size: "
-                  // + parameter.getEnumeration().size());
                 }
                 if (datatypeChild.getNodeName().equals("enumeration")) {
                   Element enumeration = (Element) datatypeChild;
@@ -179,17 +129,9 @@ public class TR069DMLoader {
                     st = new StringType(enumeration.getAttribute("value"), null);
                     enums.add(st);
                   }
-                  //	System.out.println("Found enumeration for " + parameter.getName() + "
-                  // enum-size: " + parameter.getEnumeration().size());
-                  //	System.out.println("Found enumeration for " + parameter.getName() + ": " +
-                  // enumeration.getAttribute("value"));
                 }
               }
             }
-            //	if (!name.equals("string") && !name.equals("list") && !name.equals("int") &&
-            // !name.equals("unsignedInt") && !name.equals("base64") && !name.equals("hexBinary"))
-            //		System.out.println("Parameter " + parameter.getName() + " has syntaxChild " +
-            // syntaxChild.getNodeName());
           }
         }
       }

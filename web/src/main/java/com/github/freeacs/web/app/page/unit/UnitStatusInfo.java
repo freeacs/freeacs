@@ -425,23 +425,23 @@ public class UnitStatusInfo {
     if (entries != null) {
       Date lastFailed = null;
       Date lastRegged = null;
-      for (int i = 0; i < entries.size(); i++) {
-        String content = entries.get(i).getContent();
+      for (SyslogEntry entry : entries) {
+        String content = entry.getContent();
         if (content != null
             && content.contains(keyToFind.replace("_", line.toString()) + "reg ok")) {
-          if (lastRegged == null || lastRegged.before(entries.get(i).getCollectorTimestamp()))
-            lastRegged = entries.get(i).getCollectorTimestamp();
+          if (lastRegged == null || lastRegged.before(entry.getCollectorTimestamp())) {
+            lastRegged = entry.getCollectorTimestamp();
+          }
         } else if (content != null
             && (content.contains(keyToFind.replace("_", line.toString()) + "reg failed")
                 || content.contains(keyToFind.replace("_", line.toString()) + "unreg failed")
-                || content.contains(keyToFind.replace("_", line.toString()) + "unreg ok"))) {
-          if (lastFailed == null || lastFailed.before(entries.get(i).getCollectorTimestamp()))
-            lastFailed = entries.get(i).getCollectorTimestamp();
+                || content.contains(keyToFind.replace("_", line.toString()) + "unreg ok"))
+            && (lastFailed == null || lastFailed.before(entry.getCollectorTimestamp()))) {
+          lastFailed = entry.getCollectorTimestamp();
         }
       }
-      if ((lastFailed == null && lastRegged != null)
-          || (lastFailed != null && lastRegged != null && lastFailed.before(lastRegged)))
-        return true;
+      return (lastFailed == null && lastRegged != null)
+          || (lastFailed != null && lastRegged != null && lastFailed.before(lastRegged));
     }
     return false;
   }

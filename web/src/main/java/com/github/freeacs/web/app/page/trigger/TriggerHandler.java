@@ -18,7 +18,6 @@ import com.github.freeacs.web.app.util.SessionCache;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import javax.sql.DataSource;
 
@@ -138,19 +137,16 @@ public class TriggerHandler {
 
   public DropDownSingleSelect<Trigger> getTriggerParentDropdown(Trigger trigger) {
     if (getUnittype() == null) return null;
-    ArrayList<Trigger> triggerList = createFilteredList(trigger);
+    List<Trigger> triggerList = createFilteredList(trigger);
     Trigger parentTrigger = trigger == null ? null : trigger.getParent();
     return InputSelectionFactory.getDropDownSingleSelect(
         inputData.getParentTrigger(), parentTrigger, triggerList);
   }
 
-  private ArrayList<Trigger> createFilteredList(Trigger selectedTrigger) {
+  private List<Trigger> createFilteredList(Trigger selectedTrigger) {
     ArrayList<Trigger> allTriggersList =
         new ArrayList<Trigger>(Arrays.asList(getUnittype().getTriggers().getTriggers()));
-    Iterator<Trigger> i = allTriggersList.iterator();
-    while (i.hasNext()) {
-      if (i.next().getTriggerType() == Trigger.TRIGGER_TYPE_BASIC) i.remove();
-    }
+    allTriggersList.removeIf(trigger -> trigger.getTriggerType() == Trigger.TRIGGER_TYPE_BASIC);
     if (selectedTrigger == null) {
       return allTriggersList;
     }
@@ -174,8 +170,8 @@ public class TriggerHandler {
 
   public DropDownSingleSelect<TriggerType> getTriggertypeDropdown(Integer selectedTriggertypeId) {
     List<TriggerType> triggerTypes = new ArrayList<TriggerType>();
-    triggerTypes.add(new TriggerType(new Integer(0), "BASIC"));
-    triggerTypes.add(new TriggerType(new Integer(1), "COMPOSITE"));
+    triggerTypes.add(new TriggerType(0, "BASIC"));
+    triggerTypes.add(new TriggerType(1, "COMPOSITE"));
     TriggerType selectedTriggerType =
         selectedTriggertypeId == null
             ? triggerTypes.get(0)

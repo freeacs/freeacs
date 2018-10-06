@@ -82,9 +82,9 @@ public class JobRuleEnforcer extends DBIOwner {
             UnitResultMap<String, UnitJobResult> newUnitJobResults = newFsrc.getUnitJobResults();
             String[] unitIds = new String[unitJobResults.size()];
             unitJobResults.keySet().toArray(unitIds);
-            for (int i = 0; i < unitIds.length; i++) {
-              UnitJobResult ujr = unitJobResults.get(unitIds[i]);
-              newUnitJobResults.put(unitIds[i], unitJobResults.get(unitIds[i]));
+            for (String unitId : unitIds) {
+              UnitJobResult ujr = unitJobResults.get(unitId);
+              newUnitJobResults.put(unitId, unitJobResults.get(unitId));
               newFsrc.addResult(ujr);
             }
             logger.info(

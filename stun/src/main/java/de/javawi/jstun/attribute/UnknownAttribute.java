@@ -13,7 +13,7 @@ package de.javawi.jstun.attribute;
 
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 public class UnknownAttribute extends MessageAttribute {
@@ -27,7 +27,7 @@ public class UnknownAttribute extends MessageAttribute {
    * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    */
 
-  Vector<MessageAttributeType> unkown = new Vector<MessageAttributeType>();
+  private List<MessageAttributeType> unkown = new Vector<>();
 
   public UnknownAttribute() {
     super(MessageAttribute.MessageAttributeType.UnknownAttribute);
@@ -52,15 +52,12 @@ public class UnknownAttribute extends MessageAttribute {
     System.arraycopy(Utility.integerToTwoBytes(length - 4), 0, result, 2, 2);
 
     // unkown attribute header
-    Iterator<MessageAttributeType> it = unkown.iterator();
-    while (it.hasNext()) {
-      MessageAttributeType attri = it.next();
+    for (MessageAttributeType attri : unkown) {
       System.arraycopy(Utility.integerToTwoBytes(typeToInteger(attri)), 0, result, 4, 2);
     }
     // padding
     if (unkown.size() % 2 == 1) {
-      System.arraycopy(
-          Utility.integerToTwoBytes(typeToInteger(unkown.elementAt(1))), 0, result, 4, 2);
+      System.arraycopy(Utility.integerToTwoBytes(typeToInteger(unkown.get(1))), 0, result, 4, 2);
     }
     return result;
   }

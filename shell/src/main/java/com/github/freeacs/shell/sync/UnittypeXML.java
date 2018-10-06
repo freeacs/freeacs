@@ -57,9 +57,9 @@ public class UnittypeXML {
     @SuppressWarnings("rawtypes")
     public void load(Node node) throws Exception {
       List entry_nodes = node.selectNodes("entry");
-      for (int i = 0; i < entry_nodes.size(); i++) {
+      for (Object entry_node : entry_nodes) {
         EnumEntry enumEntry = new EnumEntry();
-        enumEntry.load((Node) entry_nodes.get(i));
+        enumEntry.load((Node) entry_node);
         list.add(enumEntry);
       }
     }
@@ -95,20 +95,6 @@ public class UnittypeXML {
       }
       return values;
     }
-
-    public String xapsshell_setvalues(String parameter_default_value) {
-      String use_default_value = get_default_value(parameter_default_value);
-      String str = "";
-      if (use_default_value.length() != 0) str = "\"" + use_default_value + "\"";
-      for (int i = 0; i < enumEntries.list.size(); i++) {
-        EnumEntry enumEntry = enumEntries.list.get(i);
-        if (!enumEntry.value.equals(use_default_value)) {
-          if (str.length() != 0) str += " ";
-          str += "\"" + enumEntry.value + "\"";
-        }
-      }
-      return str;
-    }
   }
 
   public class Enums {
@@ -119,23 +105,24 @@ public class UnittypeXML {
     @SuppressWarnings("rawtypes")
     public void load(Node node) throws Exception {
       List enum_nodes = node.selectNodes("enum");
-      for (int i = 0; i < enum_nodes.size(); i++) {
+      for (Object enum_node : enum_nodes) {
         Enum enum_ = new Enum();
-        enum_.load((Node) enum_nodes.get(i));
+        enum_.load((Node) enum_node);
         list.add(enum_);
       }
     }
 
     public Enum find(String name) {
-      for (int i = 0; i < list.size(); i++) {
-        Enum enum_ = list.get(i);
-        if (enum_.name.equals(name)) return enum_;
+      for (Enum enum_ : list) {
+        if (enum_.name.equals(name)) {
+          return enum_;
+        }
       }
       return null;
     }
   }
 
-  public static int myCompare(String a, String b) {
+  private static int myCompare(String a, String b) {
     try {
       Integer av = Integer.parseInt(a);
       Integer bv = Integer.parseInt(b);
@@ -145,7 +132,7 @@ public class UnittypeXML {
     }
   }
 
-  public static int myCompare(String[] a, String[] b) {
+  private static int myCompare(String[] a, String[] b) {
     int i = 0;
     while (true) {
       if ((a.length <= i) && (b.length <= i)) return 0;
@@ -157,7 +144,7 @@ public class UnittypeXML {
     }
   }
 
-  public static int dottedNameCompare(String a, String b) {
+  private static int dottedNameCompare(String a, String b) {
     String a1[] = a.split("\\.");
     String b1[] = b.split("\\.");
     return myCompare(a1, b1);
@@ -208,11 +195,6 @@ public class UnittypeXML {
         enum_ = enums.find(enum_name);
       }
     }
-
-    public boolean isSystemParam() {
-      if (name.contains(("System."))) return true;
-      else return false;
-    }
   };
 
   public class Parameters {
@@ -223,24 +205,24 @@ public class UnittypeXML {
     @SuppressWarnings("rawtypes")
     public void load(Node node, Enums enums) throws Exception {
       List parameter_nodes = node.selectNodes("parameter");
-      for (int i = 0; i < parameter_nodes.size(); i++) {
+      for (Object parameter_node : parameter_nodes) {
         Parameter parameter = new Parameter();
-        parameter.load((Node) parameter_nodes.get(i), enums);
+        parameter.load((Node) parameter_node, enums);
         list.add(parameter);
       }
     }
 
     public Parameter find(String name) {
-      for (int i = 0; i < list.size(); i++) {
-        Parameter parameter = list.get(i);
-        if (parameter.name.equals(name)) return parameter;
+      for (Parameter parameter : list) {
+        if (parameter.name.equals(name)) {
+          return parameter;
+        }
       }
       return null;
     }
   }
 
   Info info = new Info();
-  Enums enums = new Enums();
   Parameters parameters = new Parameters();
 
   UnittypeXML() {}
@@ -258,24 +240,16 @@ public class UnittypeXML {
     Document document = reader.read(file_input);
 
     info = new Info();
-    info.load((Node) document.selectSingleNode("//unittype/info"));
+    info.load(document.selectSingleNode("//unittype/info"));
 
-    enums = new Enums();
-    enums.load((Node) document.selectSingleNode("//unittype/parameters/enums"));
+    Enums enums = new Enums();
+    enums.load(document.selectSingleNode("//unittype/parameters/enums"));
 
     parameters = new Parameters();
     List parameters_nodes = document.selectNodes("//unittype/parameters");
-    for (int i = 0; i < parameters_nodes.size(); i++) {
-      Node parameter_node = (Node) parameters_nodes.get(i);
+    for (Object parameters_node : parameters_nodes) {
+      Node parameter_node = (Node) parameters_node;
       parameters.load(parameter_node, enums);
     }
-  }
-
-  public static boolean protocolValid(String protocol) throws Exception {
-    if (protocol.equals("TFTP")) return true;
-    if (protocol.equals("OPP")) return true;
-    if (protocol.equals("TR-069")) return true;
-    if (protocol.equals("ALL")) return true;
-    return false;
   }
 }

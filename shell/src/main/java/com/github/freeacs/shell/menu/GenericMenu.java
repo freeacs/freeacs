@@ -1,12 +1,10 @@
 package com.github.freeacs.shell.menu;
 
-import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Syslog;
 import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.dbi.SyslogEntry;
 import com.github.freeacs.dbi.SyslogFilter;
 import com.github.freeacs.dbi.Unit;
-import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.shell.ACSShell;
 import com.github.freeacs.shell.Context;
 import com.github.freeacs.shell.Script;
@@ -31,7 +29,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -503,10 +501,10 @@ public class GenericMenu {
         rm.executescript();
         Thread.sleep(sleepTimeLong);
       } catch (Throwable t) {
-        System.err.println("Something went wrong : " + t);
+        t.printStackTrace();
       }
-    } catch (Throwable ignored) {
-      ignored.printStackTrace();
+    } catch (Throwable t) {
+      t.printStackTrace();
       // cannot happen
     }
   }
@@ -549,9 +547,9 @@ public class GenericMenu {
     Context context = session.getContext();
     if (context.getUnit() != null) sf.setUnitId(context.getUnit().getId());
     if (context.getProfile() != null)
-      sf.setProfiles(Arrays.asList(new Profile[] {context.getProfile()}));
+      sf.setProfiles(Collections.singletonList(context.getProfile()));
     if (context.getUnittype() != null)
-      sf.setUnittypes(Arrays.asList(new Unittype[] {context.getUnittype()}));
+      sf.setUnittypes(Collections.singletonList(context.getUnittype()));
     String listOptionStr = "t,s,fn,ev,m,ip,un,pr,ut";
     for (int i = 1; i < 3; i++) {
       if (args.length > i && args[i].startsWith("s") && args[i].length() > 1) {

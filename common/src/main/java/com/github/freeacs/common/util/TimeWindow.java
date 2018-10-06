@@ -82,36 +82,6 @@ public class TimeWindow {
     orgStr = s;
   }
 
-  public static void main(String[] args) {
-    printInfo(new TimeWindow(null));
-    printInfo(new TimeWindow("tu-tu:2300-2300"));
-    printInfo(new TimeWindow("mo-mo:0700-0100"));
-  }
-
-  private static void printInfo(TimeWindow tw) {
-    long dailyLength = tw.getDailyLength();
-    long nextStartTms = tw.getNextStartTms(System.currentTimeMillis());
-    long prevStartTms = tw.getPreviousStartTms(System.currentTimeMillis());
-    System.out.println(
-        "[" + tw + "] Is inside tw:         " + tw.isWithinTimeWindow(System.currentTimeMillis()));
-    System.out.println(
-        "[" + tw + "] Next startTms:        " + String.format("%1$tF %1$tR", nextStartTms));
-    System.out.println(
-        "["
-            + tw
-            + "] Next endTms  :        "
-            + String.format("%1$tF %1$tR", nextStartTms + dailyLength));
-    System.out.println(
-        "[" + tw + "] Previous startTms:    " + String.format("%1$tF %1$tR", prevStartTms));
-    System.out.println(
-        "["
-            + tw
-            + "] Previous endTms  :    "
-            + String.format("%1$tF %1$tR", prevStartTms + dailyLength));
-    System.out.println("[" + tw + "] Length of tw (daily): " + dailyLength / 1000);
-    System.out.println("[" + tw + "] Length of tw (weekly):" + tw.getWeeklyLength() / 1000 + "\n");
-  }
-
   public long getDailyLength() {
     int hour = timeSpan / 100;
     int minute = timeSpan % 100;

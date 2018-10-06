@@ -126,24 +126,6 @@ public class Crypto {
     return cert;
   }
 
-  /**
-   * Test
-   *
-   * @param args
-   * @throws Exception
-   */
-  public static void main(String[] args) throws Exception {
-    CertificateDetails cert1 =
-        new CertificateDetails(
-            com.github.freeacs.dbi.Certificate.CERT_TYPE_REPORT, null, null, null);
-    String cert1Str = computeCertificateFromObject(cert1);
-    //		CertificateDetails cert2 = new CertificateDetails(Certificate.CERT_TYPE_REPORT, null, null,
-    // null);
-    //		String cert2Str = computeCertificateFromObject(cert2);
-    System.out.println("Cert: " + cert1Str);
-    System.out.println("Decrypted: " + decryptUsingRSAPublicKey(cert1Str));
-  }
-
   public static String computeCertificateFromObject(CertificateDetails cert) throws Exception {
     try {
       String s = null;
@@ -174,12 +156,7 @@ public class Crypto {
     }
   }
 
-  /**
-   * Turns array of bytes into string
-   *
-   * @param buf Array of bytes to convert to hex string
-   * @return Generated hex string
-   */
+  /** Turns array of bytes into string */
   private static String computeRSACertificateOfChunk(String s) throws Exception {
     if (s == null) System.out.println("Must specify a string to generate certificate of");
     FileReader fr = new FileReader(Crypto.PK_PATH);
@@ -203,8 +180,7 @@ public class Crypto {
     // Encrypt that message using a new SealedObject and the Cipher we
     // created before
     byte[] encryptedText = c.doFinal(s.getBytes());
-    String textToSendToCustomers = convertByte2HexUpperCase(encryptedText);
 
-    return textToSendToCustomers;
+    return convertByte2HexUpperCase(encryptedText);
   }
 }

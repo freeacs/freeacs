@@ -43,7 +43,6 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -58,15 +57,11 @@ public class UnittypeMenu {
     this.context = session.getContext();
   }
 
-  public boolean execute(String[] args, OutputHandler oh) throws Exception {
-    return execute(args, oh, true);
-  }
-
   /*
    * Returns true : has processed a cd-command Returns false : has processed
    * another command (everything else)
    */
-  private boolean execute(String[] args, OutputHandler oh, boolean allowAll) throws Exception {
+  public boolean execute(String[] args, OutputHandler oh) throws Exception {
     if (args[0].startsWith("delf")) {
       delfile(args);
     } else if (args[0].startsWith("delg")) {
@@ -167,11 +162,12 @@ public class UnittypeMenu {
     Profile[] profiles = context.getUnittype().getProfiles().getProfiles();
     Listing listing = oh.getListing();
     listing.setHeading(Listing.HEADER_PROFILE, "Parameter-Count");
-    for (int i = 0; i < profiles.length; i++) {
-      if (!Validation.matches(args.length > 1 ? args[1] : null, profiles[i].getName())) continue;
+    for (Profile profile : profiles) {
+      if (!Validation.matches(args.length > 1 ? args[1] : null, profile.getName())) {
+        continue;
+      }
       listing.addLine(
-          profiles[i].getName(),
-          "" + profiles[i].getProfileParameters().getProfileParameters().length);
+          profile.getName(), "" + profile.getProfileParameters().getProfileParameters().length);
     }
   }
 
@@ -220,20 +216,49 @@ public class UnittypeMenu {
         matchArg = args[i];
       }
     }
-    for (int i = 0; i < unittypeParameters.length; i++) {
+    int i = 0;
+    while (i < unittypeParameters.length) {
       if (flagArg != null) {
         UnittypeParameterFlag utpFlag = unittypeParameters[i].getFlag();
-        if (flagArg.contains("R") && flagArg.contains("W") && !utpFlag.isReadWrite()) continue;
-        if (flagArg.contains("R") && !flagArg.contains("W") && !utpFlag.isReadOnly()) continue;
-        if (flagArg.contains("C") && !utpFlag.isConfidential()) continue;
-        if (flagArg.contains("A") && !utpFlag.isAlwaysRead()) continue;
-        if (flagArg.contains("B") && !utpFlag.isBootRequired()) continue;
-        if (flagArg.contains("D") && !utpFlag.isDisplayable()) continue;
-        if (flagArg.contains("S") && !utpFlag.isSearchable()) continue;
-        if (flagArg.contains("X") && !utpFlag.isSystem()) continue;
+        if (flagArg.contains("R") && flagArg.contains("W") && !utpFlag.isReadWrite()) {
+          i++;
+          continue;
+        }
+        if (flagArg.contains("R") && !flagArg.contains("W") && !utpFlag.isReadOnly()) {
+          i++;
+          continue;
+        }
+        if (flagArg.contains("C") && !utpFlag.isConfidential()) {
+          i++;
+          continue;
+        }
+        if (flagArg.contains("A") && !utpFlag.isAlwaysRead()) {
+          i++;
+          continue;
+        }
+        if (flagArg.contains("B") && !utpFlag.isBootRequired()) {
+          i++;
+          continue;
+        }
+        if (flagArg.contains("D") && !utpFlag.isDisplayable()) {
+          i++;
+          continue;
+        }
+        if (flagArg.contains("S") && !utpFlag.isSearchable()) {
+          i++;
+          continue;
+        }
+        if (flagArg.contains("X") && !utpFlag.isSystem()) {
+          i++;
+          continue;
+        }
       }
-      if (!Validation.matches(matchArg, unittypeParameters[i].getName())) continue;
+      if (!Validation.matches(matchArg, unittypeParameters[i].getName())) {
+        i++;
+        continue;
+      }
       listing.addLine(unittypeParameters[i].getName(), unittypeParameters[i].getFlag().toString());
+      i++;
     }
   }
 
@@ -356,8 +381,7 @@ public class UnittypeMenu {
     Listing listing = oh.getListing();
     listing.setHeading("Name", "Type", "Version", "Date", "TargetName", "Owner", "Description");
 
-    for (int i = 0; i < files.length; i++) {
-      com.github.freeacs.dbi.File f = files[i];
+    for (com.github.freeacs.dbi.File f : files) {
       String owner = f.getOwner() == null ? "NULL" : f.getOwner().getUsername();
       if (!Validation.matches(
           args.length > 1 ? args[1] : null,
@@ -366,7 +390,9 @@ public class UnittypeMenu {
           f.getVersion(),
           f.getTargetName(),
           owner,
-          f.getDescription())) continue;
+          f.getDescription())) {
+        continue;
+      }
       listing.addLine(
           f.getName(),
           f.getType().toString(),
@@ -382,7 +408,7 @@ public class UnittypeMenu {
     Validation.numberOfArgs(args, 2);
     String name = args[1];
     String filename = name;
-    if (name.indexOf(File.separator) > -1) {
+    if (name.contains(File.separator)) {
       name = name.substring(name.lastIndexOf(File.separator) + 1);
     }
     com.github.freeacs.dbi.File f = context.getUnittype().getFiles().getByName(name);
@@ -414,10 +440,10 @@ public class UnittypeMenu {
     Validation.numberOfArgs(args, 6);
     String name = args[1];
     String filename = args[1];
-    if (name.indexOf("/") > -1) {
+    if (name.contains("/")) {
       name = name.substring(name.lastIndexOf("/") + 1);
     }
-    if (name.indexOf("\\") > -1) {
+    if (name.contains("\\")) {
       name = name.substring(name.lastIndexOf("\\") + 1);
     }
     FileType type = FileType.valueOf(args[2]);
@@ -542,7 +568,7 @@ public class UnittypeMenu {
     SyslogEvent syslogEvent = null;
     Integer eventId = null;
     try {
-      eventId = new Integer(args[1]);
+      eventId = Integer.valueOf(args[1]);
     } catch (NumberFormatException nfe) {
       throw new IllegalArgumentException(
           "The syslogevent id must be a number (instead of " + args[1] + ")");
@@ -570,7 +596,7 @@ public class UnittypeMenu {
     Integer deleteLimit = autoboxInteger(args[7]);
     String desc = args[8];
     String action = "changed";
-    syslogEvent = syslogEvents.getByEventId(new Integer(args[1]));
+    syslogEvent = syslogEvents.getByEventId(Integer.valueOf(args[1]));
     if (syslogEvent == null) {
       action = "added";
       syslogEvent = new SyslogEvent();
@@ -597,7 +623,7 @@ public class UnittypeMenu {
     SyslogEvent syslogEvent = null;
     Integer eventId = null;
     try {
-      eventId = new Integer(args[1]);
+      eventId = Integer.valueOf(args[1]);
     } catch (NumberFormatException nfe) {
       throw new IllegalArgumentException("The syslogevent id must be a number");
     }
@@ -648,18 +674,29 @@ public class UnittypeMenu {
     Listing listing = oh.getListing();
     listing.setHeading(
         "Id", "Name", "Group", "Expression", "StorePolicy", "Script", "DeleteLim", "Description");
-    for (int i = 0; i < syslogEvents.length; i++) {
-      SyslogEvent se = syslogEvents[i];
+    for (SyslogEvent se : syslogEvents) {
       Line line = new Line("" + se.getEventId(), se.getName());
-      if (se.getGroup() != null) line.addValue(se.getGroup().getName());
-      else line.addValue("NULL");
-      if (se.getExpression() != null) line.addValue(se.getExpression().toString());
-      else line.addValue("NULL");
+      if (se.getGroup() != null) {
+        line.addValue(se.getGroup().getName());
+      } else {
+        line.addValue("NULL");
+      }
+      if (se.getExpression() != null) {
+        line.addValue(se.getExpression().toString());
+      } else {
+        line.addValue("NULL");
+      }
       line.addValue(se.getStorePolicy().toString());
-      if (se.getScript() != null) line.addValue(se.getScript().getName());
-      else line.addValue("NULL");
-      if (se.getDeleteLimit() != null) line.addValue("" + se.getDeleteLimit());
-      else line.addValue("NULL");
+      if (se.getScript() != null) {
+        line.addValue(se.getScript().getName());
+      } else {
+        line.addValue("NULL");
+      }
+      if (se.getDeleteLimit() != null) {
+        line.addValue("" + se.getDeleteLimit());
+      } else {
+        line.addValue("NULL");
+      }
       line.addValue(se.getDescription());
       listing.addLine(line);
     }
@@ -670,8 +707,7 @@ public class UnittypeMenu {
     Heartbeat[] heartbeats = unittype.getHeartbeats().getHeartbeats();
     Listing listing = oh.getListing();
     listing.setHeading("Name", "Group", "Expression", "TimeoutHours");
-    for (int i = 0; i < heartbeats.length; i++) {
-      Heartbeat heartbeat = heartbeats[i];
+    for (Heartbeat heartbeat : heartbeats) {
       Line line =
           new Line(
               heartbeat.getName(),
@@ -758,8 +794,6 @@ public class UnittypeMenu {
 
     if (job != null) {
       job.setDescription(desc);
-      //			if (!group.getName().equals(job.getGroup().getName()))
-      //				throw new IllegalArgumentException("Group " + group.getName() + " cannot be changed");
       job.setUnconfirmedTimeout(unconfirmedTimeout);
       job.setStopRules(stopRules);
       job.setFile(file);
@@ -789,9 +823,6 @@ public class UnittypeMenu {
               dependency,
               repeat,
               repeatInterval);
-      //			job.setMoveToProfile(moveToProfile);
-      //			job.setRepeatCount(repeat);
-      //			job.setRepeatInterval(repeatInterval);
       context.getUnittype().getJobs().add(job, session.getAcs());
       context.println("[" + session.getCounter() + "] The job " + job.getName() + " is added");
       session.incCounter();
@@ -812,8 +843,6 @@ public class UnittypeMenu {
 
   private void listjobs(String[] args, OutputHandler oh) throws Exception {
     String jobname = null;
-    //		if (args.length > 1)
-    //			jobname = args[1].toUpperCase();
     Job[] jobs = context.getUnittype().getJobs().getJobs();
     List<Job> filteredJobs = new ArrayList<Job>();
     for (Job job : jobs) {
@@ -822,15 +851,11 @@ public class UnittypeMenu {
     }
     if (args.length > 2) {
       jobname = args[1];
-      if (args[2].equalsIgnoreCase("DEP-FIRST"))
-        Collections.sort(filteredJobs, new JobComparator(true));
-      else if (args[2].equalsIgnoreCase("DEP-LAST"))
-        Collections.sort(filteredJobs, new JobComparator(false));
+      if (args[2].equalsIgnoreCase("DEP-FIRST")) filteredJobs.sort(new JobComparator(true));
+      else if (args[2].equalsIgnoreCase("DEP-LAST")) filteredJobs.sort(new JobComparator(false));
     } else if (args.length > 1) {
-      if (args[1].equalsIgnoreCase("DEP-FIRST"))
-        Collections.sort(filteredJobs, new JobComparator(true));
-      else if (args[1].equalsIgnoreCase("DEP-LAST"))
-        Collections.sort(filteredJobs, new JobComparator(false));
+      if (args[1].equalsIgnoreCase("DEP-FIRST")) filteredJobs.sort(new JobComparator(true));
+      else if (args[1].equalsIgnoreCase("DEP-LAST")) filteredJobs.sort(new JobComparator(false));
       else jobname = args[1];
     }
 
@@ -847,8 +872,7 @@ public class UnittypeMenu {
         "Stop-rules",
         "Repeat-counter",
         "Repeat-interval");
-    for (int i = 0; i < filteredJobs.size(); i++) {
-      Job job = filteredJobs.get(i);
+    for (Job job : filteredJobs) {
       if (jobname != null
           && !Validation.matches(
               jobname,
@@ -856,29 +880,42 @@ public class UnittypeMenu {
               job.getFlags().getType().toString(),
               job.getFlags().getServiceWindow().toString(),
               job.getDescription(),
-              job.getFile().getVersion())) continue;
+              job.getFile().getVersion())) {
+        continue;
+      }
       Line line = new Line();
 
       line.addValue(job.getName());
       line.addValue(job.getFlags().getType().toString());
       line.addValue(job.getFlags().getServiceWindow().toString());
       line.addValue(job.getGroup().getName());
-      if (job.getDependency() == null) line.addValue("NULL");
-      else line.addValue(job.getDependency().getName());
+      if (job.getDependency() == null) {
+        line.addValue("NULL");
+      } else {
+        line.addValue(job.getDependency().getName());
+      }
       line.addValue(job.getDescription());
-      if (job.getFile() == null) line.addValue("NULL");
-      else line.addValue(job.getFile().getVersion());
+      if (job.getFile() == null) {
+        line.addValue("NULL");
+      } else {
+        line.addValue(job.getFile().getVersion());
+      }
       line.addValue("" + job.getUnconfirmedTimeout());
-      //			if (job.getMoveToProfile() == null)
-      //				line.addValue("NULL");
-      //			else
-      //				line.addValue(job.getMoveToProfile().getName());
-      if (job.getStopRules() == null || job.getStopRules().size() == 0) line.addValue("NULL");
-      else line.addValue(job.getStopRulesSerialized());
-      if (job.getRepeatCount() == null) line.addValue("NULL");
-      else line.addValue("" + job.getRepeatCount());
-      if (job.getRepeatInterval() == null) line.addValue("NULL");
-      else line.addValue("" + job.getRepeatInterval());
+      if (job.getStopRules() == null || job.getStopRules().size() == 0) {
+        line.addValue("NULL");
+      } else {
+        line.addValue(job.getStopRulesSerialized());
+      }
+      if (job.getRepeatCount() == null) {
+        line.addValue("NULL");
+      } else {
+        line.addValue("" + job.getRepeatCount());
+      }
+      if (job.getRepeatInterval() == null) {
+        line.addValue("NULL");
+      } else {
+        line.addValue("" + job.getRepeatInterval());
+      }
       listing.addLine(line);
     }
   }
@@ -918,19 +955,20 @@ public class UnittypeMenu {
         "NoEvents",
         "NoEventsPrUnit",
         "NoUnits");
-    for (int i = 0; i < triggers.length; i++) {
-      Trigger trigger = triggers[i];
+    for (Trigger trigger : triggers) {
       Line line = new Line();
-      //			String groupName = null;
-      //			if (trigger.getGroup() != null)
-      //				groupName = trigger.getGroup().getName();
       String scriptName = null;
-      if (trigger.getScript() != null) scriptName = trigger.getScript().getName();
+      if (trigger.getScript() != null) {
+        scriptName = trigger.getScript().getName();
+      }
       String syslogEventId = null;
-      if (trigger.getSyslogEvent() != null)
+      if (trigger.getSyslogEvent() != null) {
         syslogEventId = "" + trigger.getSyslogEvent().getEventId();
+      }
       String parentTriggerName = null;
-      if (trigger.getParent() != null) parentTriggerName = trigger.getParent().getName();
+      if (trigger.getParent() != null) {
+        parentTriggerName = trigger.getParent().getName();
+      }
       if (!Validation.matches(
           searchStr,
           trigger.getName(),
@@ -940,7 +978,9 @@ public class UnittypeMenu {
           "" + trigger.isActive(),
           scriptName,
           syslogEventId,
-          parentTriggerName)) continue;
+          parentTriggerName)) {
+        continue;
+      }
       line.addValue(trigger.getName());
       line.addValue(trigger.getDescription());
       line.addValue(trigger.getTriggerTypeStr());
@@ -951,8 +991,11 @@ public class UnittypeMenu {
       line.addValue(trigger.getNotifyIntervalHours());
       line.addValue(scriptName);
       line.addValue(parentTriggerName);
-      if (trigger.getToList() == null) line.addValue("NULL");
-      else line.addValue("" + trigger.getToList());
+      if (trigger.getToList() == null) {
+        line.addValue("NULL");
+      } else {
+        line.addValue("" + trigger.getToList());
+      }
       line.addValue(syslogEventId);
       line.addValue(trigger.getNoEvents());
       line.addValue(trigger.getNoEventsPrUnit());
@@ -977,34 +1020,29 @@ public class UnittypeMenu {
     }
     Listing listing = oh.getListing();
     listing.setHeading(Listing.HEADER_GROUP, "Parent", "Description", "Profile", "Last Count");
-    for (int i = 0; i < groups.length; i++) {
-      Group group = groups[i];
+    for (Group group : groups) {
       Line line = new Line();
       if (searchStr != null
-          && !Validation.matches(searchStr, group.getName(), group.getDescription())) continue;
+          && !Validation.matches(searchStr, group.getName(), group.getDescription())) {
+        continue;
+      }
       line.addValue(group.getName());
-      if (group.getParent() == null) line.addValue("NULL");
-      else line.addValue(group.getParent().getName());
+      if (group.getParent() == null) {
+        line.addValue("NULL");
+      } else {
+        line.addValue(group.getParent().getName());
+      }
       line.addValue(group.getDescription());
-      if (group.getTopParent().getProfile() == null) line.addValue("NULL");
-      else line.addValue(group.getTopParent().getProfile().getName());
-      //			if (group.getTimeParameter() == null)
-      //				line.addValue("NULL");
-      //			else
-      //				line.addValue(group.getTimeParameter().getName());
-      //
-      //			if (group.getTimeRollingRule() == null)
-      //				line.addValue("NULL");
-      //			else
-      //				line.addValue(group.getTimeRollingFormat());
-      //
-      //			if (group.getTimeRollingRule() == null)
-      //				line.addValue("NULL");
-      //			else
-      //				line.addValue("" + group.getTimeRollingOffset());
-
-      if (group.getCount() != null) line.addValue("" + group.getCount());
-      else line.addValue("Not counted yet");
+      if (group.getTopParent().getProfile() == null) {
+        line.addValue("NULL");
+      } else {
+        line.addValue(group.getTopParent().getProfile().getName());
+      }
+      if (group.getCount() != null) {
+        line.addValue("" + group.getCount());
+      } else {
+        line.addValue("Not counted yet");
+      }
       listing.addLine(line);
     }
   }
@@ -1017,7 +1055,7 @@ public class UnittypeMenu {
   private Integer autoboxInteger(String arg) {
     try {
       if (arg != null && arg.equals("NULL")) return null;
-      else return new Integer(arg);
+      else return arg != null ? Integer.valueOf(arg) : null;
     } catch (NumberFormatException nfe) {
       throw new IllegalArgumentException("The argument " + arg + " was not a number (as expected)");
     }
@@ -1044,10 +1082,6 @@ public class UnittypeMenu {
     }
     thisTrigger.setDescription(autoboxString(args[2]));
     thisTrigger.setActive(args[5].equalsIgnoreCase("true"));
-    //		if (args[6].equals("NULL"))
-    //			thisTrigger.setGroup(null);
-    //		else
-    //			thisTrigger.setGroup(unittype.getGroups().getByName(args[6]));
     thisTrigger.setEvalPeriodMinutes(autoboxInteger(args[6]));
     thisTrigger.setNotifyIntervalHours(autoboxInteger(args[7]));
     thisTrigger.setScript(unittype.getFiles().getByName(args[8]));
@@ -1118,33 +1152,6 @@ public class UnittypeMenu {
       }
       thisGroup.setProfile(profile);
     }
-    //		if (args[5].equals("NULL")) {
-    //			thisGroup.setTimeParameter(null);
-    //		} else {
-    //			UnittypeParameter timeParameter =
-    // context.getUnittype().getUnittypeParameters().getByName(args[5]);
-    //			if (timeParameter == null)
-    //				throw new IllegalArgumentException("[" + session.getCounter() + "] Time parameter
-    // specified is not a unittype parameter");
-    //			else
-    //				thisGroup.setTimeParameter(timeParameter);
-    //		}
-    //		if (args[6].equals("NULL")) {
-    //			thisGroup.setTimeRollingFormat(null);
-    //		} else {
-    //			thisGroup.setTimeRollingFormat(args[6]);
-    //		}
-    //
-    //		if (args[7].equals("NULL")) {
-    //			thisGroup.setTimeRollingOffset(0);
-    //		} else {
-    //			try {
-    //				thisGroup.setTimeRollingOffset(new Integer(args[7]));
-    //			} catch (NumberFormatException nfe) {
-    //				throw new IllegalArgumentException("[" + session.getCounter() + "] Time offset is not a
-    // number");
-    //			}
-    //		}
 
     groups.addOrChangeGroup(thisGroup, session.getAcs());
     context.println(

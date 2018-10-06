@@ -1,17 +1,18 @@
 package com.github.freeacs.tr069.xml;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ParameterList {
 
-  private ArrayList<ParameterValueStruct> params;
-  private ArrayList<ParameterInfoStruct> info;
-  private ArrayList<ParameterAttributeStruct> attributes;
+  private List<ParameterValueStruct> params;
+  private List<ParameterInfoStruct> info;
+  private List<ParameterAttributeStruct> attributes;
 
   public ParameterList() {
-    this.params = new ArrayList<ParameterValueStruct>();
-    this.info = new ArrayList<ParameterInfoStruct>();
-    this.attributes = new ArrayList<ParameterAttributeStruct>();
+    this.params = new ArrayList<>();
+    this.info = new ArrayList<>();
+    this.attributes = new ArrayList<>();
   }
 
   public void addParameterValueStruct(ParameterValueStruct param) {
@@ -26,16 +27,12 @@ public class ParameterList {
     this.attributes.add(attr);
   }
 
-  public ArrayList<ParameterValueStruct> getParameterValueList() {
+  public List<ParameterValueStruct> getParameterValueList() {
     return this.params;
   }
 
-  public ArrayList<ParameterInfoStruct> getParameterInfoList() {
+  public List<ParameterInfoStruct> getParameterInfoList() {
     return this.info;
-  }
-
-  public ArrayList<ParameterAttributeStruct> getParameterAttributeList() {
-    return this.attributes;
   }
 
   public void addOrChangeParameterValueStruct(String key, String value, String type) {

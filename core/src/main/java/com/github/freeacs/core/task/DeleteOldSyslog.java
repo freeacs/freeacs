@@ -76,13 +76,15 @@ public class DeleteOldSyslog extends DBIShare {
         int days = 0;
         int rowsDeleted = 0;
         int loopCounter = 0;
-        logger.info(
-            "DeleteOldSyslog: Will delete all syslog rows older than "
-                + limitCal.getTime()
-                + " with eventId "
-                + event.getEventId()
-                + ", unittype "
-                + event.getUnittype().getName());
+        if (logger.isInfoEnabled()) {
+          logger.info(
+              "DeleteOldSyslog: Will delete all syslog rows older than "
+                  + limitCal.getTime()
+                  + " with eventId "
+                  + event.getEventId()
+                  + ", unittype "
+                  + event.getUnittype().getName());
+        }
         do {
           if (fromCal != null
               && toCal.getTime().getTime() - fromCal.getTime().getTime() >= 7 * 86400 * 1000) {
@@ -91,20 +93,25 @@ public class DeleteOldSyslog extends DBIShare {
             fromCal = null;
           }
           rowsDeleted = getSyslog().deleteOldEventsEntries(fromCal, toCal, event, 500000);
-          if (fromCal != null)
-            logger.info(
-                "DeleteOldSyslog: "
-                    + rowsDeleted
-                    + " rows were deleted from the syslog table for the period "
-                    + fromCal.getTime()
-                    + " - "
-                    + toCal.getTime());
-          else
-            logger.info(
-                "DeleteOldSyslog: "
-                    + rowsDeleted
-                    + " rows were deleted from the syslog table from beginning - "
-                    + toCal.getTime());
+          if (fromCal != null) {
+            if (logger.isInfoEnabled()) {
+              logger.info(
+                  "DeleteOldSyslog: "
+                      + rowsDeleted
+                      + " rows were deleted from the syslog table for the period "
+                      + fromCal.getTime()
+                      + " - "
+                      + toCal.getTime());
+            }
+          } else {
+            if (logger.isInfoEnabled()) {
+              logger.info(
+                  "DeleteOldSyslog: "
+                      + rowsDeleted
+                      + " rows were deleted from the syslog table from beginning - "
+                      + toCal.getTime());
+            }
+          }
           if (rowsDeleted == 500000) {
             loopCounter++;
           } else if (fromCal != null) {
@@ -178,30 +185,39 @@ public class DeleteOldSyslog extends DBIShare {
       int days = 0;
       int rowsDeleted = 0;
       int loopCounter = 0;
-      logger.info("DeleteOldSyslog: " + logMsg);
+      if (logger.isInfoEnabled()) {
+        logger.info("DeleteOldSyslog: " + logMsg);
+      }
       do {
         if (fromCal != null
             && toCal.getTime().getTime() - fromCal.getTime().getTime() >= 7 * 86400 * 1000) {
-          logger.debug(
-              "DeleteOldSyslog: Period is now one week - setting from-tms to null => ask for all remaining entries");
+          if (logger.isDebugEnabled()) {
+            logger.debug(
+                "DeleteOldSyslog: Period is now one week - setting from-tms to null => ask for all remaining entries");
+          }
           fromCal = null;
         }
         rowsDeleted =
             getSyslog().deleteOldSeverityEntries(fromCal, toCal, severity, eventList, 500000);
-        if (fromCal != null)
-          logger.info(
-              "DeleteOldSyslog: "
-                  + rowsDeleted
-                  + " rows were deleted from the syslog table for the period "
-                  + fromCal.getTime()
-                  + " - "
-                  + toCal.getTime());
-        else
-          logger.info(
-              "DeleteOldSyslog: "
-                  + rowsDeleted
-                  + " rows were deleted from the syslog table from beginning - "
-                  + toCal.getTime());
+        if (fromCal != null) {
+          if (logger.isInfoEnabled()) {
+            logger.info(
+                "DeleteOldSyslog: "
+                    + rowsDeleted
+                    + " rows were deleted from the syslog table for the period "
+                    + fromCal.getTime()
+                    + " - "
+                    + toCal.getTime());
+          }
+        } else {
+          if (logger.isInfoEnabled()) {
+            logger.info(
+                "DeleteOldSyslog: "
+                    + rowsDeleted
+                    + " rows were deleted from the syslog table from beginning - "
+                    + toCal.getTime());
+          }
+        }
         if (rowsDeleted == 500000) {
           loopCounter++;
         } else if (fromCal != null) {

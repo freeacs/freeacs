@@ -181,7 +181,7 @@ public class Jobs {
       s.setQueryTimeout(60);
       s.executeUpdate(sql);
       Job j = getById(job.getId());
-      j.setDefaultParameters(null);
+      j.setDefaultParameters();
 
       logger.info("Deleted all job parameters for job " + job.getId());
       if (acs.getDbi() != null) acs.getDbi().publishChange(job, job.getGroup().getUnittype());

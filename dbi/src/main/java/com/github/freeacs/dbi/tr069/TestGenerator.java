@@ -90,13 +90,6 @@ public class TestGenerator {
                     stcParam.getNotification()));
       }
       generatedTc.add(tc);
-      /* This code causes an extra (broken) TC, found this when Morten was in India. I think it's safe to remove.
-       *
-      tc = new TestCase(unittype, TestCaseMethod.VALUE, masterTc.getTags() + " [SET-1] [" + dmp.getDatatype().getXsdType() + "]", true);
-      tc.getParams().add(tcp);
-      tc.getParams().add(new TestCaseParameter(TestCaseParameterType.GET, tcp.getUnittypeParameter(), tcp.getDataModelParameter(), null, tcp.getNotification()));
-      generatedTc.add(tc);
-      */
     }
 
     return generatedTc;

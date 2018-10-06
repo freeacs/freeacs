@@ -9,7 +9,7 @@ public class ScheduleList {
 
   // This list orders the Schedule objects so that first in the list
   // are first to run.
-  private LinkedList<Schedule> list = new LinkedList<Schedule>();
+  private LinkedList<Schedule> list = new LinkedList<>();
 
   public synchronized void add(Schedule newSchedule) {
     newSchedule.setAddedToQueueTms(System.currentTimeMillis());
@@ -41,8 +41,6 @@ public class ScheduleList {
   }
 
   public synchronized List<Schedule> getSchedules() {
-    List<Schedule> tmp = new ArrayList<Schedule>();
-    for (int i = 0; i < list.size(); i++) tmp.add(list.get(i));
-    return tmp;
+    return new ArrayList<>(list);
   }
 }

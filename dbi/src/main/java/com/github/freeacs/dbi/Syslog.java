@@ -178,8 +178,9 @@ public class Syslog {
   private DynamicStatement addSeverityCriteria(DynamicStatement ds, Integer[] severities) {
     if (severities != null && severities.length > 0) {
       ds.addSql("(");
-      for (int i = 0; i < severities.length; i++)
-        ds.addSqlAndArguments("severity = ? OR ", severities[i]);
+      for (Integer severity : severities) {
+        ds.addSqlAndArguments("severity = ? OR ", severity);
+      }
       ds.cleanupSQLTail();
       ds.addSql(") AND ");
     }
