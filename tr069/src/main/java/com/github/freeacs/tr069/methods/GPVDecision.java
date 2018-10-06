@@ -1,10 +1,19 @@
 package com.github.freeacs.tr069.methods;
 
-import com.github.freeacs.base.*;
+import com.github.freeacs.base.DownloadLogic;
+import com.github.freeacs.base.JobLogic;
+import com.github.freeacs.base.Log;
+import com.github.freeacs.base.ServiceWindow;
 import com.github.freeacs.base.UnitJob;
+import com.github.freeacs.base.Util;
 import com.github.freeacs.base.db.DBAccessSessionTR069;
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.JobFlag.JobType;
+import com.github.freeacs.dbi.JobParameter;
+import com.github.freeacs.dbi.Parameter;
+import com.github.freeacs.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.UnittypeParameterFlag;
+import com.github.freeacs.dbi.UnittypeParameters;
 import com.github.freeacs.dbi.tr069.TR069DMParameter;
 import com.github.freeacs.dbi.tr069.TR069DMParameterMap;
 import com.github.freeacs.dbi.util.ProvisioningMessage;

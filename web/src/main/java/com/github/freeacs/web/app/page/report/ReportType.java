@@ -1,6 +1,16 @@
 package com.github.freeacs.web.app.page.report;
 
-import com.github.freeacs.dbi.report.*;
+import com.github.freeacs.dbi.report.Record;
+import com.github.freeacs.dbi.report.RecordGatewayTR;
+import com.github.freeacs.dbi.report.RecordGroup;
+import com.github.freeacs.dbi.report.RecordHardware;
+import com.github.freeacs.dbi.report.RecordHardwareTR;
+import com.github.freeacs.dbi.report.RecordJob;
+import com.github.freeacs.dbi.report.RecordProvisioning;
+import com.github.freeacs.dbi.report.RecordSyslog;
+import com.github.freeacs.dbi.report.RecordUnit;
+import com.github.freeacs.dbi.report.RecordVoip;
+import com.github.freeacs.dbi.report.RecordVoipTR;
 import java.util.Arrays;
 import java.util.List;
 

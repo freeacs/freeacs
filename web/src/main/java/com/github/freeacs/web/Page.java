@@ -31,9 +31,18 @@ import com.github.freeacs.web.app.page.unit.InspectionPage;
 import com.github.freeacs.web.app.page.unit.UnitPage;
 import com.github.freeacs.web.app.page.unit.UnitStatusPage;
 import com.github.freeacs.web.app.page.unit.UnitStatusRealTimeMosPage;
-import com.github.freeacs.web.app.page.unittype.*;
+import com.github.freeacs.web.app.page.unittype.GetUnitTypeParameterFlagAndValuesPage;
+import com.github.freeacs.web.app.page.unittype.UnittypeCreatePage;
+import com.github.freeacs.web.app.page.unittype.UnittypeOverviewPage;
+import com.github.freeacs.web.app.page.unittype.UnittypePage;
+import com.github.freeacs.web.app.page.unittype.UnittypeParametersPage;
 import com.github.freeacs.web.app.page.window.WindowPage;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 /**
