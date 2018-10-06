@@ -3,6 +3,10 @@ package com.github.freeacs.core.task;
 import com.github.freeacs.core.Properties;
 import com.github.freeacs.shell.ACSShell;
 import com.github.freeacs.shell.ACSShellDaemon;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,9 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.sql.DataSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Provide a container for all the shell daemons available within TR-069 server.

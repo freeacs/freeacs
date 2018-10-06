@@ -9,6 +9,10 @@ import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,9 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.sql.DataSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ReportSyslogGenerator extends ReportGenerator {
 

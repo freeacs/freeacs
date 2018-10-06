@@ -1,6 +1,5 @@
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
-                  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cwmp="urn:dslforum-org:cwmp-1-0">
+                  xmlns:cwmp="urn:dslforum-org:cwmp-1-0">
     <soapenv:Header>
         <cwmp:ID soapenv:mustUnderstand="1">1</cwmp:ID>
     </soapenv:Header>

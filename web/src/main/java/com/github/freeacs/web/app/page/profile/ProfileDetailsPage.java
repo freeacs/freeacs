@@ -18,10 +18,11 @@ import com.github.freeacs.web.app.table.TableElementMaker;
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
+
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.sql.DataSource;
 
 /**
  * This is the profile configuration page, or earlier known as the profile details page.

@@ -4,14 +4,15 @@ import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.web.app.util.DateUtils;
 import com.github.freeacs.web.app.util.WebConstants;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * The most fundamental class in the input data retrieval system, and effectively defines a request

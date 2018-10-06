@@ -1,6 +1,9 @@
 package com.github.freeacs.dbi;
 
 import com.github.freeacs.common.util.NaturalComparator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,8 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class UnittypeParameters {
   private static Logger logger = LoggerFactory.getLogger(UnittypeParameters.class);

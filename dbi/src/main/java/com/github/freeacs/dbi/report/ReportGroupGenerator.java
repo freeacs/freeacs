@@ -5,6 +5,10 @@ import com.github.freeacs.dbi.DynamicStatement;
 import com.github.freeacs.dbi.Group;
 import com.github.freeacs.dbi.Identity;
 import com.github.freeacs.dbi.Unittype;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,9 +16,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-import javax.sql.DataSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ReportGroupGenerator extends ReportGenerator {
 

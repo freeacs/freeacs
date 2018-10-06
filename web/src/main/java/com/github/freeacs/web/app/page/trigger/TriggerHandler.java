@@ -15,12 +15,12 @@ import com.github.freeacs.web.app.table.TableElement;
 import com.github.freeacs.web.app.table.TableElementMaker;
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.SessionCache;
+
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import javax.sql.DataSource;
 
 public class TriggerHandler {
   private ACS acs;

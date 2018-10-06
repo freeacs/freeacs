@@ -14,6 +14,7 @@ import com.github.freeacs.shell.output.Line;
 import com.github.freeacs.shell.output.Listing;
 import com.github.freeacs.shell.output.OutputHandler;
 import com.github.freeacs.shell.util.Validation;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,13 +34,15 @@ public class ProfileMenu {
         context.getProfile().getProfileParameters().getProfileParameters();
     Listing listing = oh.getListing();
     listing.setHeading("Unittype parameter name", "Value");
-    for (int i = 0; i < profileParameters.length; i++) {
+    for (ProfileParameter profileParameter : profileParameters) {
       if (!Validation.matches(
           inputArr.length > 1 ? inputArr[1] : null,
-          profileParameters[i].getUnittypeParameter().getName(),
-          profileParameters[i].getValue())) continue;
+          profileParameter.getUnittypeParameter().getName(),
+          profileParameter.getValue())) {
+        continue;
+      }
       listing.addLine(
-          profileParameters[i].getUnittypeParameter().getName(), profileParameters[i].getValue());
+          profileParameter.getUnittypeParameter().getName(), profileParameter.getValue());
     }
   }
 

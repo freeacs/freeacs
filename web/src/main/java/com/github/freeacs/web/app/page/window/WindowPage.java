@@ -19,6 +19,8 @@ import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.WebConstants;
+
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -27,7 +29,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.sql.DataSource;
 
 /**
  * This class handles the service window for the two use cases: unit, profile.
@@ -146,14 +147,14 @@ public class WindowPage extends AbstractWebPage {
 
   static {
     int count = 0;
-    for (int i = 0; i < hours.length; i++) {
-      if (hours[i].equals("24")) {
-        hourMinuteStrings[count] = hours[i] + "00";
+    for (String hour : hours) {
+      if (hour.equals("24")) {
+        hourMinuteStrings[count] = hour + "00";
         count++;
         continue;
       }
-      for (int h = 0; h < minutes.length; h++) {
-        hourMinuteStrings[count] = hours[i] + minutes[h];
+      for (String minute : minutes) {
+        hourMinuteStrings[count] = hour + minute;
         count++;
       }
     }

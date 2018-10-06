@@ -8,9 +8,10 @@ import com.github.freeacs.dbi.Identity;
 import com.github.freeacs.dbi.Syslog;
 import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.dbi.Users;
-import java.sql.SQLException;
-import javax.sql.DataSource;
 import org.slf4j.Logger;
+
+import javax.sql.DataSource;
+import java.sql.SQLException;
 
 /**
  * You can extend this object if you need to manipulate the state of the ACS object, then you will

@@ -118,12 +118,12 @@ public class DynamicStatement {
   }
 
   public String getQuestionMarks() {
-    String qm = "";
-    for (int i = 0; i < arguments.size(); i++) {
-      qm += "?,";
+    StringBuilder qm = new StringBuilder();
+    for (Object o: arguments) {
+      qm.append("?,");
     }
-    if (qm.endsWith(",")) qm = qm.substring(0, qm.length() - 1);
-    return qm;
+    if (qm.toString().endsWith(",")) qm = new StringBuilder(qm.substring(0, qm.length() - 1));
+    return qm.toString();
   }
 
   // Is useful to cleanup the SQL if there are leftovers
@@ -169,7 +169,7 @@ public class DynamicStatement {
       else if (arg.equalsIgnoreCase("log_id_seq.nextval")) return arg;
       else return "'" + arg + "'";
     }
-    return "'" + (String) o + "'";
+    return "'" + o + "'";
   }
 
   /*
@@ -188,13 +188,6 @@ public class DynamicStatement {
       double milli = (System.nanoTime() - startTms) / 1000000d;
       return "[" + String.format("%10.2f", milli) + " ms] " + getSqlQuestionMarksSubstituted();
     }
-  }
-
-  public static void main(String[] args) {
-    DynamicStatement ds = new DynamicStatement();
-    ds.setSql("SELECT * FROM unit AND");
-    ds.cleanupSQLTail();
-    System.out.println(ds.getSql());
   }
 
   public String toString() {

@@ -9,8 +9,9 @@ import com.github.freeacs.dbi.Identity;
 import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.Syslog;
 import com.github.freeacs.dbi.Users;
-import java.sql.SQLException;
+
 import javax.sql.DataSource;
+import java.sql.SQLException;
 
 public class DBAccess {
 

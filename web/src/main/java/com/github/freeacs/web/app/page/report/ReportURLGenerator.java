@@ -1,11 +1,12 @@
 package com.github.freeacs.web.app.page.report;
 
 import com.github.freeacs.web.app.util.WebConstants;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.xy.XYDataset;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.jfree.chart.JFreeChart;
-import org.jfree.data.xy.XYDataset;
 
 /**
  * Used to generate links for url postback (zooming requests).
@@ -40,12 +41,11 @@ final class ReportURLGenerator extends org.jfree.chart.urls.CustomXYURLGenerator
     this.chart = chart;
     this.aggregation = aggregation;
     if (aggregation == null) throw new IllegalArgumentException("Aggregation key list is null");
-    String aggregateKeysAndValuesPointers = "";
-    for (int i = 0; i < aggregation.size(); i++) {
-      String aggr = aggregation.get(i);
-      aggregateKeysAndValuesPointers += ("&" + aggr.toLowerCase() + "=%s");
+    StringBuilder aggregateKeysAndValuesPointers = new StringBuilder();
+    for (String aggr : aggregation) {
+      aggregateKeysAndValuesPointers.append("&").append(aggr.toLowerCase()).append("=%s");
     }
-    this.format = this.format.replace("%AGGREGATION%", aggregateKeysAndValuesPointers);
+    this.format = this.format.replace("%AGGREGATION%", aggregateKeysAndValuesPointers.toString());
   }
 
   /**
@@ -58,8 +58,7 @@ final class ReportURLGenerator extends org.jfree.chart.urls.CustomXYURLGenerator
    */
   public String generateURL(XYDataset dataset, int series, int item) {
     Object[] os = getObjects(series, item);
-    String toReturn = String.format(format, os);
-    return toReturn;
+    return String.format(format, os);
   }
 
   /**

@@ -7,11 +7,12 @@ import com.github.freeacs.ws.xml.DeleteUnitRequest;
 import com.github.freeacs.ws.xml.DeleteUnitResponse;
 import com.github.freeacs.ws.xml.ObjectFactory;
 import com.github.freeacs.ws.xml.Unit;
-import java.rmi.RemoteException;
-import java.sql.SQLException;
-import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
+import java.rmi.RemoteException;
+import java.sql.SQLException;
 
 public class DeleteUnit {
   private static final Logger logger = LoggerFactory.getLogger(DeleteUnit.class);

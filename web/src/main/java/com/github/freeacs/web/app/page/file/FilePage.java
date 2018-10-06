@@ -15,6 +15,9 @@ import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.WebConstants;
+import org.apache.commons.fileupload.FileItem;
+
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -25,8 +28,6 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-import javax.sql.DataSource;
-import org.apache.commons.fileupload.FileItem;
 
 /**
  * Handles add/delete and update of firmwares.

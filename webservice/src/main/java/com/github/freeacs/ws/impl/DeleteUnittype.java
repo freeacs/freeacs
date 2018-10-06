@@ -4,10 +4,11 @@ import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.ws.xml.DeleteUnittypeRequest;
 import com.github.freeacs.ws.xml.DeleteUnittypeResponse;
-import java.rmi.RemoteException;
-import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
+import java.rmi.RemoteException;
 
 public class DeleteUnittype {
 

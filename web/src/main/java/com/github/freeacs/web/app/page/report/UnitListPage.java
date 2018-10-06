@@ -37,6 +37,8 @@ import com.github.freeacs.web.app.util.DateUtils;
 import com.github.freeacs.web.app.util.WebConstants;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
+
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -50,7 +52,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.sql.DataSource;
 
 /**
  * This page represents the unit list page that you will land on after zooming down into a syslog

@@ -1,6 +1,9 @@
 package com.github.freeacs.dbi;
 
 import com.github.freeacs.dbi.DynamicStatement.NullInteger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,8 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Groups {
   private static Logger logger = LoggerFactory.getLogger(Groups.class);

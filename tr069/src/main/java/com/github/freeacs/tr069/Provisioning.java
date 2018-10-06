@@ -17,12 +17,13 @@ import com.github.freeacs.tr069.methods.DecisionMaker;
 import com.github.freeacs.tr069.methods.HTTPRequestProcessor;
 import com.github.freeacs.tr069.methods.HTTPResponseCreator;
 import com.github.freeacs.tr069.methods.TR069Method;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * This is the "main-class" of TR069 Provisioning. It receives the HTTP-request from the CPE and

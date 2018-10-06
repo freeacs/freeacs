@@ -37,13 +37,14 @@ import com.github.freeacs.web.app.page.unittype.UnittypeOverviewPage;
 import com.github.freeacs.web.app.page.unittype.UnittypePage;
 import com.github.freeacs.web.app.page.unittype.UnittypeParametersPage;
 import com.github.freeacs.web.app.page.window.WindowPage;
+import org.apache.commons.lang.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * An enumeration of all defined pages in xAPS Web with their request id, page class and icon url.

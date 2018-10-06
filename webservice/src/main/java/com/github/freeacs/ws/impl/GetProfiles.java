@@ -7,11 +7,12 @@ import com.github.freeacs.ws.xml.GetProfilesRequest;
 import com.github.freeacs.ws.xml.GetProfilesResponse;
 import com.github.freeacs.ws.xml.ObjectFactory;
 import com.github.freeacs.ws.xml.ProfileList;
-import java.rmi.RemoteException;
-import java.util.Arrays;
-import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
+import java.rmi.RemoteException;
+import java.util.Arrays;
 
 public class GetProfiles {
 

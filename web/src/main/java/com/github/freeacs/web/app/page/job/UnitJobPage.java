@@ -25,6 +25,9 @@ import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
 import freemarker.template.TemplateException;
+import org.springframework.beans.factory.annotation.Qualifier;
+
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -33,8 +36,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 public class UnitJobPage extends AbstractWebPage {
   // Do NOT static this variable, contains singletons that should NOT be shared by different views

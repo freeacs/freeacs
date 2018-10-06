@@ -1,6 +1,10 @@
 package com.github.freeacs.dbi;
 
 import com.github.freeacs.dbi.util.SQLUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,9 +22,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import javax.sql.DataSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class handles all write/read to the syslog-table. Now it also supports the Syslog-server.
@@ -178,8 +179,9 @@ public class Syslog {
   private DynamicStatement addSeverityCriteria(DynamicStatement ds, Integer[] severities) {
     if (severities != null && severities.length > 0) {
       ds.addSql("(");
-      for (int i = 0; i < severities.length; i++)
-        ds.addSqlAndArguments("severity = ? OR ", severities[i]);
+      for (Integer severity : severities) {
+        ds.addSqlAndArguments("severity = ? OR ", severity);
+      }
       ds.cleanupSQLTail();
       ds.addSql(") AND ");
     }

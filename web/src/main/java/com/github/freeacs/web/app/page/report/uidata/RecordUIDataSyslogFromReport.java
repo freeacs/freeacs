@@ -4,6 +4,7 @@ import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.report.RecordSyslog;
 import com.github.freeacs.web.app.page.syslog.SyslogUtil;
 import freemarker.template.TemplateModelException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;

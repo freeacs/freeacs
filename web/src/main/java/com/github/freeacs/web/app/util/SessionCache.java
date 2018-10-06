@@ -17,14 +17,15 @@ import com.github.freeacs.dbi.report.ReportSyslogGenerator;
 import com.github.freeacs.dbi.report.ReportVoipGenerator;
 import com.github.freeacs.web.security.AllowedUnittype;
 import com.github.freeacs.web.security.WebUser;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import javax.sql.DataSource;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * The Session Store for xAPS Web. Uses session id as unique identifier.

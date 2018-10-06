@@ -41,8 +41,8 @@ public class MakeTestperfUnits {
 
   public static void execute(String[] args) {
     try {
-      int rangeLowerBound = new Integer(args[0]);
-      int rangeUpperBound = new Integer(args[1]);
+      int rangeLowerBound = Integer.valueOf(args[0]);
+      int rangeUpperBound = Integer.valueOf(args[1]);
       File file = new File(args[2]);
       File outputFile1 = new File("internal/owera/units/testperf1.u");
       File outputFile2 = new File("internal/owera/units/testperf2.u");
@@ -67,18 +67,16 @@ public class MakeTestperfUnits {
 
       for (int i = rangeLowerBound; i <= rangeUpperBound; i++) {
         String mac = String.format("%012d", i);
-        String output = String.format("000000-TR069TestClient-" + mac, i);
+        StringBuilder output = new StringBuilder(String.format("000000-TR069TestClient-" + mac, i));
         int prevExcUpperLimitCountry = rangeLowerBound;
-        for (int j = 0; j < countries.size(); j++) {
-          Country country = countries.get(j);
+        for (Country country : countries) {
           if (country.getExcUpperLimit() == 0) {
             country.setIncLowerLimit(prevExcUpperLimitCountry);
             country.setExcUpperLimit(prevExcUpperLimitCountry + multiple * country.getPercent());
             prevExcUpperLimitCountry = country.getExcUpperLimit();
             City[] cities = country.getCities();
             int prevExcUpperLimitCity = country.getIncLowerLimit();
-            for (int k = 0; k < cities.length; k++) {
-              City city = cities[k];
+            for (City city : cities) {
               city.setIncLowerLimit(prevExcUpperLimitCity);
               city.setExcUpperLimit(
                   prevExcUpperLimitCity
@@ -90,21 +88,20 @@ public class MakeTestperfUnits {
             System.out.println(country);
           }
           if (i >= country.getIncLowerLimit() && i < country.getExcUpperLimit()) {
-            output += String.format(" %-15s", country.getName());
+            output.append(String.format(" %-15s", country.getName()));
             City[] cities = country.getCities();
-            for (int k = 0; k < cities.length; k++) {
-              City city = cities[k];
+            for (City city : cities) {
               if (i >= city.getIncLowerLimit() && i < city.getExcUpperLimit()) {
-                output += String.format("%-15s", city.getName());
+                output.append(String.format("%-15s", city.getName()));
               }
             }
           }
         }
         if (i % 2 == 0) {
-          output += "\"Voip 2-line\"";
+          output.append("\"Voip 2-line\"");
           fw1.write(output + " " + mac + "\n");
         } else {
-          output += "\"Voip 1-line\"";
+          output.append("\"Voip 1-line\"");
           fw2.write(output + " " + mac + "\n");
         }
       }

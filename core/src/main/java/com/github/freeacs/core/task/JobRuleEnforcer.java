@@ -12,15 +12,16 @@ import com.github.freeacs.dbi.UnitJob;
 import com.github.freeacs.dbi.UnitJobStatus;
 import com.github.freeacs.dbi.UnitJobs;
 import com.github.freeacs.dbi.Unittype;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.sql.DataSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class JobRuleEnforcer extends DBIOwner {
 
@@ -82,9 +83,9 @@ public class JobRuleEnforcer extends DBIOwner {
             UnitResultMap<String, UnitJobResult> newUnitJobResults = newFsrc.getUnitJobResults();
             String[] unitIds = new String[unitJobResults.size()];
             unitJobResults.keySet().toArray(unitIds);
-            for (int i = 0; i < unitIds.length; i++) {
-              UnitJobResult ujr = unitJobResults.get(unitIds[i]);
-              newUnitJobResults.put(unitIds[i], unitJobResults.get(unitIds[i]));
+            for (String unitId : unitIds) {
+              UnitJobResult ujr = unitJobResults.get(unitId);
+              newUnitJobResults.put(unitId, unitJobResults.get(unitId));
               newFsrc.addResult(ujr);
             }
             logger.info(

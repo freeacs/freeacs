@@ -1,11 +1,12 @@
 package com.github.freeacs.base.http;
 
 import com.github.freeacs.base.SessionDataI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A class which matches incoming requests with outgoing responses. If a second request from the

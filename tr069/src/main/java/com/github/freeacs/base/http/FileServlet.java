@@ -10,11 +10,12 @@ import com.github.freeacs.dbi.FileType;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.tr069.HTTPReqResData;
 import com.github.freeacs.tr069.Properties;
-import java.io.IOException;
-import java.io.OutputStream;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class FileServlet extends HttpServlet {
 

@@ -1,15 +1,16 @@
 package com.github.freeacs.shell;
 
 import com.github.freeacs.shell.util.FileUtil;
+import jline.ArgumentCompletor;
+import jline.ConsoleReader;
+import jline.SimpleCompletor;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-import jline.ArgumentCompletor;
-import jline.ConsoleReader;
-import jline.SimpleCompletor;
 
 public class ACSShellReader extends BufferedReader {
 
@@ -48,9 +49,11 @@ public class ACSShellReader extends BufferedReader {
 
     File folder = new File(System.getProperty("user.dir"));
     File[] listOfFiles = folder.listFiles();
-    for (int i = 0; i < listOfFiles.length; i++) {
-      if (listOfFiles[i].isFile()) {
-        completions.add(listOfFiles[i].getName());
+    if (listOfFiles != null) {
+      for (File listOfFile : listOfFiles) {
+        if (listOfFile.isFile()) {
+          completions.add(listOfFile.getName());
+        }
       }
     }
 
@@ -63,40 +66,8 @@ public class ACSShellReader extends BufferedReader {
     ACSShell.println(s);
   }
 
-  public ACSShell getACSShell() {
-    return ACSShell;
-  }
-
   public void setACSShell(ACSShell ACSShell) {
     this.ACSShell = ACSShell;
   }
 
-  //	private void listFiles() {
-  //		File folder = new File(System.getProperty("user.dir"));
-  //		File[] listOfFiles = folder.listFiles();
-  //
-  //		for (int i = 0; i < listOfFiles.length; i++) {
-  //			if (listOfFiles[i].isFile()) {
-  //				println(listOfFiles[i].getName());
-  //			}
-  //		}
-  //	}
-  //
-  //	private void listFile(String string) throws IOException {
-  //		BufferedReader br = new BufferedReader(new FileReader(string));
-  //		while (br.ready()) {
-  //			println(br.readLine());
-  //		}
-  //		br.close();
-  //	}
-  //
-  //	private String getString(String[] arr, int i) {
-  //		String s = "";
-  //		for (int x = i; x < arr.length; x++) {
-  //			s += arr[x];
-  //			if ((x + 1) < arr.length)
-  //				s += " ";
-  //		}
-  //		return s;
-  //	}
 }

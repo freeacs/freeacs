@@ -1,6 +1,7 @@
 package com.github.freeacs.dbi;
 
 import com.github.freeacs.dbi.util.TimestampWrapper;
+
 import java.util.Date;
 
 public class SyslogEntry {

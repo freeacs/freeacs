@@ -10,8 +10,9 @@ import com.github.freeacs.dbi.User;
 import com.github.freeacs.dbi.Users;
 import com.github.freeacs.web.app.Main;
 import com.github.freeacs.web.app.Monitor;
-import java.sql.SQLException;
+
 import javax.sql.DataSource;
+import java.sql.SQLException;
 
 /**
  * This class contains code for loading xaps objects from cache and storing them to cache. Even

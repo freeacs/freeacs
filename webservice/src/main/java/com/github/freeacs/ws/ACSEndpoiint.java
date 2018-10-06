@@ -1,7 +1,5 @@
 package com.github.freeacs.ws;
 
-import static com.github.freeacs.ws.WebServiceConfig.NAMESPACE_URI;
-
 import com.github.freeacs.ws.impl.ACSWS_Impl;
 import com.github.freeacs.ws.xml.AddOrChangeProfileRequest;
 import com.github.freeacs.ws.xml.AddOrChangeProfileResponse;
@@ -23,12 +21,15 @@ import com.github.freeacs.ws.xml.GetUnitsRequest;
 import com.github.freeacs.ws.xml.GetUnitsResponse;
 import com.github.freeacs.ws.xml.GetUnittypesRequest;
 import com.github.freeacs.ws.xml.GetUnittypesResponse;
-import java.rmi.RemoteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
+
+import java.rmi.RemoteException;
+
+import static com.github.freeacs.ws.WebServiceConfig.NAMESPACE_URI;
 
 @Endpoint
 public class ACSEndpoiint {

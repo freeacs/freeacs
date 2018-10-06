@@ -4,9 +4,9 @@ import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.shell.Context;
 import com.github.freeacs.shell.command.Command;
 import com.github.freeacs.shell.command.Option;
+
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -175,11 +175,10 @@ public class Listing {
           context.println(
               "WARN: The o-option arguments contain errors, ordering may not be applied");
         if (lineComparatorColumns.size() > 0)
-          Collections.sort(lines, new LineComparator(lineComparatorColumns));
+          lines.sort(new LineComparator(lineComparatorColumns));
       }
-      for (int i = 0; i < lines.size(); i++) {
-        Line line = lines.get(i);
-        StringBuffer lineSb = new StringBuffer();
+      for (Line line : lines) {
+        StringBuilder lineSb = new StringBuilder();
         for (int j = 0; j < line.getValues().size(); j++) {
           String value = line.getValues().get(j);
           if (columns.size() > j) {

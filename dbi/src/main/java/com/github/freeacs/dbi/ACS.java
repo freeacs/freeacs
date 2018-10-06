@@ -4,6 +4,10 @@ import com.github.freeacs.common.util.NumberComparator;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.util.ACSVersionCheck;
 import com.github.freeacs.dbi.util.MapWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,9 +16,6 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-import javax.sql.DataSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The ACS class is the main interface for the following tables/concepts in the ACS database:
@@ -1032,10 +1033,11 @@ public class ACS {
 
   public UnittypeParameter getUnittypeParameter(Integer unittypeParameterId) {
     Unittype[] unittypeArr = unittypes.getUnittypes();
-    for (int i = 0; i < unittypeArr.length; i++) {
-      UnittypeParameters unittypeParameters = unittypeArr[i].getUnittypeParameters();
-      if (unittypeParameters.getById(unittypeParameterId) != null)
+    for (Unittype anUnittypeArr : unittypeArr) {
+      UnittypeParameters unittypeParameters = anUnittypeArr.getUnittypeParameters();
+      if (unittypeParameters.getById(unittypeParameterId) != null) {
         return unittypeParameters.getById(unittypeParameterId);
+      }
     }
     return null;
   }
@@ -1056,9 +1058,11 @@ public class ACS {
 
   public Profile getProfile(Integer profileId) {
     Unittype[] unittypeArr = unittypes.getUnittypes();
-    for (int i = 0; i < unittypeArr.length; i++) {
-      Profiles profiles = unittypeArr[i].getProfiles();
-      if (profiles.getById(profileId) != null) return profiles.getById(profileId);
+    for (Unittype anUnittypeArr : unittypeArr) {
+      Profiles profiles = anUnittypeArr.getProfiles();
+      if (profiles.getById(profileId) != null) {
+        return profiles.getById(profileId);
+      }
     }
     return null;
   }

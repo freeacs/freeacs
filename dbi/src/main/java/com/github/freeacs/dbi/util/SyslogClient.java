@@ -3,6 +3,9 @@ package com.github.freeacs.dbi.util;
 import com.github.freeacs.dbi.Identity;
 import com.github.freeacs.dbi.Syslog;
 import com.github.freeacs.dbi.SyslogConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -11,8 +14,6 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SyslogClient {
 

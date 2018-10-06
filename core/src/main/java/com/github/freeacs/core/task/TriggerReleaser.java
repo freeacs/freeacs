@@ -12,6 +12,10 @@ import com.github.freeacs.dbi.TriggerComparator;
 import com.github.freeacs.dbi.TriggerRelease;
 import com.github.freeacs.dbi.Triggers;
 import com.github.freeacs.dbi.Unittype;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -23,9 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.sql.DataSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TriggerReleaser extends DBIShare {
 

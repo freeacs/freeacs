@@ -21,11 +21,12 @@ import com.github.freeacs.ws.xml.GetUnitsRequest;
 import com.github.freeacs.ws.xml.GetUnitsResponse;
 import com.github.freeacs.ws.xml.GetUnittypesRequest;
 import com.github.freeacs.ws.xml.GetUnittypesResponse;
-import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import javax.sql.DataSource;
 
 /**
  * This class i simply a placeholde for code which is overwritten each time this class is re-

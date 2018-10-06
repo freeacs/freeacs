@@ -11,6 +11,7 @@ import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.web.app.page.job.JobFilter;
 import com.github.freeacs.web.app.util.WebConstants;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -332,9 +333,11 @@ public class TableElementMaker {
     for (Object[] list : inputs) {
       if (list instanceof GroupParameter[]) {
         List<GroupParameter> arr = new ArrayList<GroupParameter>();
-        for (int i = 0; i < list.length; i++) {
-          GroupParameter groupParam = (GroupParameter) list[i];
-          if (groupParam.getId() != null) arr.add(groupParam);
+        for (Object aList : list) {
+          GroupParameter groupParam = (GroupParameter) aList;
+          if (groupParam.getId() != null) {
+            arr.add(groupParam);
+          }
         }
         return arr.toArray(new GroupParameter[] {});
       }

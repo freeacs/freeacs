@@ -1,9 +1,10 @@
 package com.github.freeacs.shell;
 
 import com.github.freeacs.dbi.util.SyslogClient;
-import java.io.InputStreamReader;
-import javax.sql.DataSource;
 import jline.ConsoleReader;
+
+import javax.sql.DataSource;
+import java.io.InputStreamReader;
 
 public class ACSShellExec {
 
