@@ -13,10 +13,6 @@ import com.github.freeacs.ws.xml.GetUnitsResponse;
 import com.github.freeacs.ws.xml.ObjectFactory;
 import com.github.freeacs.ws.xml.ParameterList;
 import com.github.freeacs.ws.xml.UnitList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.sql.DataSource;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +21,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GetUnits {
   private static final Logger logger = LoggerFactory.getLogger(GetUnits.class);

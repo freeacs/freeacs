@@ -6,12 +6,11 @@ import com.github.freeacs.ws.xml.GetUnittypesRequest;
 import com.github.freeacs.ws.xml.GetUnittypesResponse;
 import com.github.freeacs.ws.xml.ObjectFactory;
 import com.github.freeacs.ws.xml.UnittypeList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.sql.DataSource;
 import java.rmi.RemoteException;
 import java.util.Arrays;
+import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GetUnittypes {
 

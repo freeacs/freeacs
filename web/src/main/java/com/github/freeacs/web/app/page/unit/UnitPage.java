@@ -36,10 +36,6 @@ import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.TimeFormatter;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.WebProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.sql.DataSource;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -50,6 +46,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** The Class UnitPage. */
 public class UnitPage extends AbstractWebPage {

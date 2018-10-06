@@ -4,7 +4,6 @@ import com.github.freeacs.shell.Context;
 import com.github.freeacs.shell.Properties;
 import com.github.freeacs.shell.command.Command;
 import com.github.freeacs.shell.util.FileUtil;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;

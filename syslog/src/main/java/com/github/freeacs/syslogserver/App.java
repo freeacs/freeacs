@@ -1,6 +1,8 @@
 package com.github.freeacs.syslogserver;
 
 import com.zaxxer.hikari.HikariDataSource;
+import java.util.Collections;
+import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,9 +12,6 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
-
-import javax.sql.DataSource;
-import java.util.Collections;
 
 @SpringBootApplication(exclude = FlywayAutoConfiguration.class)
 public class App {

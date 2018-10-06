@@ -4,10 +4,9 @@ import com.github.freeacs.dbi.User;
 import com.github.freeacs.dbi.Users;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
-
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.Arrays;
+import javax.sql.DataSource;
 
 /** The Class PermissionController. */
 public abstract class PermissionController {

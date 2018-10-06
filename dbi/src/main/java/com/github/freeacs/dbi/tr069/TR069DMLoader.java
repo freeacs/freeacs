@@ -1,18 +1,17 @@
 package com.github.freeacs.dbi.tr069;
 
 import com.github.freeacs.dbi.tr069.TR069DMParameter.StringType;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 public class TR069DMLoader {
 
@@ -89,10 +88,14 @@ public class TR069DMLoader {
                   Element sizeElement = (Element) datatypeChild;
                   if (sizeElement.getAttribute("minLength") != null
                       && !sizeElement.getAttribute("minLength").equals(""))
-                    parameter.getRange().setMin(Long.valueOf(sizeElement.getAttribute("minLength")));
+                    parameter
+                        .getRange()
+                        .setMin(Long.valueOf(sizeElement.getAttribute("minLength")));
                   if (sizeElement.getAttribute("maxLength") != null
                       && !sizeElement.getAttribute("maxLength").equals(""))
-                    parameter.getRange().setMax(Long.valueOf(sizeElement.getAttribute("maxLength")));
+                    parameter
+                        .getRange()
+                        .setMax(Long.valueOf(sizeElement.getAttribute("maxLength")));
                 }
                 if (datatypeChild.getNodeName().equals("pattern")) {
                   Element patternElement = (Element) datatypeChild;

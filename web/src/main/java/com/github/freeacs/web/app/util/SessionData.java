@@ -4,7 +4,6 @@ import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.UnitJob;
 import com.github.freeacs.web.security.AllowedUnittype;
 import com.github.freeacs.web.security.WebUser;
-
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;

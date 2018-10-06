@@ -1,7 +1,6 @@
 package com.github.freeacs.dbi.util;
 
 import com.github.freeacs.common.util.NaturalComparator;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;

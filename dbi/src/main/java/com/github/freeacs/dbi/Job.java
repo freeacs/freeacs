@@ -3,7 +3,6 @@ package com.github.freeacs.dbi;
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
 import com.github.freeacs.dbi.JobFlag.JobType;
 import com.github.freeacs.dbi.util.MapWrapper;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

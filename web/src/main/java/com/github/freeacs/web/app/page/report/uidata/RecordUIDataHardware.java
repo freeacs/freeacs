@@ -5,7 +5,6 @@ import com.github.freeacs.dbi.report.RecordHardware;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.DateUtils;
 import freemarker.template.TemplateModelException;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

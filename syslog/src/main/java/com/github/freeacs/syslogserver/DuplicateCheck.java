@@ -2,14 +2,13 @@ package com.github.freeacs.syslogserver;
 
 import com.github.freeacs.dbi.SyslogEntry;
 import com.github.freeacs.dbi.SyslogEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DuplicateCheck {
   private static Map<String, Duplicate> duplicateMap = new HashMap<String, Duplicate>();

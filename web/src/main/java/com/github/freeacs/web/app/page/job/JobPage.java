@@ -32,14 +32,13 @@ import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
-
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import javax.sql.DataSource;
 
 public class JobPage extends AbstractWebPage {
   // Do NOT static this variable, contains singletons that should NOT be shared by different views

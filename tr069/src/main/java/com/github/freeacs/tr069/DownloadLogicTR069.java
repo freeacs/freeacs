@@ -10,11 +10,10 @@ import com.github.freeacs.dbi.JobParameter;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.SystemParameters.TR069ScriptType;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Map;
 import java.util.Map.Entry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DownloadLogicTR069 {
 

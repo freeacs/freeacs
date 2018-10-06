@@ -3,7 +3,6 @@ package com.github.freeacs.tr069.methods;
 import com.github.freeacs.tr069.Namespace;
 import com.github.freeacs.tr069.xml.Body;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
-
 import java.util.List;
 
 public class SPVreq extends Body {

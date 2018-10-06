@@ -3,7 +3,6 @@ package com.github.freeacs.web.app.page.report.uidata;
 import com.github.freeacs.dbi.SyslogEntry;
 import com.github.freeacs.web.app.page.syslog.SyslogUtil;
 import freemarker.template.TemplateModelException;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

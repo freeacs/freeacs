@@ -4,7 +4,6 @@ import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.context.ContextItem;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
-
 import java.sql.SQLException;
 
 /**

@@ -1,9 +1,9 @@
 package com.github.freeacs.tr069.methods;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+
+import org.junit.Test;
 
 public class HttpRequestProcessorTest {
 

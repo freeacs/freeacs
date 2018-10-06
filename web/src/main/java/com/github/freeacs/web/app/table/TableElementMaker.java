@@ -11,7 +11,6 @@ import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.web.app.page.job.JobFilter;
 import com.github.freeacs.web.app.util.WebConstants;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;

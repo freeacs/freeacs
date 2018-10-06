@@ -1,11 +1,6 @@
 package com.github.freeacs.dbi.crypto;
 
 import com.github.freeacs.dbi.Certificate;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.math.BigInteger;
@@ -18,6 +13,10 @@ import java.security.PublicKey;
 import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.Calendar;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 /*
  * This class should handle all crypto and crypto-like operations for ACS. There are currently X
@@ -157,10 +156,7 @@ public class Crypto {
     }
   }
 
-  /**
-   * Turns array of bytes into string
-   *
-   */
+  /** Turns array of bytes into string */
   private static String computeRSACertificateOfChunk(String s) throws Exception {
     if (s == null) System.out.println("Must specify a string to generate certificate of");
     FileReader fr = new FileReader(Crypto.PK_PATH);

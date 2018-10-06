@@ -1,16 +1,15 @@
 package com.github.freeacs.shell;
 
 import com.github.freeacs.shell.util.FileUtil;
-import jline.ArgumentCompletor;
-import jline.ConsoleReader;
-import jline.SimpleCompletor;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+import jline.ArgumentCompletor;
+import jline.ConsoleReader;
+import jline.SimpleCompletor;
 
 public class ACSShellReader extends BufferedReader {
 
@@ -69,5 +68,4 @@ public class ACSShellReader extends BufferedReader {
   public void setACSShell(ACSShell ACSShell) {
     this.ACSShell = ACSShell;
   }
-
 }

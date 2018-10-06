@@ -37,7 +37,6 @@ import com.github.freeacs.shell.output.Line;
 import com.github.freeacs.shell.output.Listing;
 import com.github.freeacs.shell.output.OutputHandler;
 import com.github.freeacs.shell.util.Validation;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -168,8 +167,7 @@ public class UnittypeMenu {
         continue;
       }
       listing.addLine(
-          profile.getName(),
-          "" + profile.getProfileParameters().getProfileParameters().length);
+          profile.getName(), "" + profile.getProfileParameters().getProfileParameters().length);
     }
   }
 
@@ -853,15 +851,11 @@ public class UnittypeMenu {
     }
     if (args.length > 2) {
       jobname = args[1];
-      if (args[2].equalsIgnoreCase("DEP-FIRST"))
-        filteredJobs.sort(new JobComparator(true));
-      else if (args[2].equalsIgnoreCase("DEP-LAST"))
-        filteredJobs.sort(new JobComparator(false));
+      if (args[2].equalsIgnoreCase("DEP-FIRST")) filteredJobs.sort(new JobComparator(true));
+      else if (args[2].equalsIgnoreCase("DEP-LAST")) filteredJobs.sort(new JobComparator(false));
     } else if (args.length > 1) {
-      if (args[1].equalsIgnoreCase("DEP-FIRST"))
-        filteredJobs.sort(new JobComparator(true));
-      else if (args[1].equalsIgnoreCase("DEP-LAST"))
-        filteredJobs.sort(new JobComparator(false));
+      if (args[1].equalsIgnoreCase("DEP-FIRST")) filteredJobs.sort(new JobComparator(true));
+      else if (args[1].equalsIgnoreCase("DEP-LAST")) filteredJobs.sort(new JobComparator(false));
       else jobname = args[1];
     }
 
@@ -881,12 +875,12 @@ public class UnittypeMenu {
     for (Job job : filteredJobs) {
       if (jobname != null
           && !Validation.matches(
-          jobname,
-          job.getName(),
-          job.getFlags().getType().toString(),
-          job.getFlags().getServiceWindow().toString(),
-          job.getDescription(),
-          job.getFile().getVersion())) {
+              jobname,
+              job.getName(),
+              job.getFlags().getType().toString(),
+              job.getFlags().getServiceWindow().toString(),
+              job.getDescription(),
+              job.getFile().getVersion())) {
         continue;
       }
       Line line = new Line();

@@ -1,10 +1,9 @@
 package com.github.freeacs.shell;
 
 import com.github.freeacs.dbi.util.SyslogClient;
-import jline.ConsoleReader;
-
-import javax.sql.DataSource;
 import java.io.InputStreamReader;
+import javax.sql.DataSource;
+import jline.ConsoleReader;
 
 public class ACSShellExec {
 

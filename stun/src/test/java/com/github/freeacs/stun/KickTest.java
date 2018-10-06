@@ -1,20 +1,5 @@
 package com.github.freeacs.stun;
 
-import com.github.freeacs.dbi.Profile;
-import com.github.freeacs.dbi.Unit;
-import com.github.freeacs.dbi.UnitParameter;
-import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.UnittypeParameter;
-import com.github.freeacs.dbi.UnittypeParameterFlag;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.net.MalformedURLException;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -22,6 +7,20 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.UnitParameter;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.UnittypeParameterFlag;
+import java.net.MalformedURLException;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class KickTest {
 

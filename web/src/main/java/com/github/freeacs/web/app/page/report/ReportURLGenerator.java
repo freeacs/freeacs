@@ -1,12 +1,11 @@
 package com.github.freeacs.web.app.page.report;
 
 import com.github.freeacs.web.app.util.WebConstants;
-import org.jfree.chart.JFreeChart;
-import org.jfree.data.xy.XYDataset;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.xy.XYDataset;
 
 /**
  * Used to generate links for url postback (zooming requests).

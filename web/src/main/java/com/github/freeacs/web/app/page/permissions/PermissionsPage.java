@@ -21,9 +21,6 @@ import com.github.freeacs.web.security.WebUser;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
-import org.apache.commons.lang.StringUtils;
-
-import javax.sql.DataSource;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -32,6 +29,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.sql.DataSource;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Manages users and their permissions.

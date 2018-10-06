@@ -11,14 +11,13 @@ import com.github.freeacs.ws.xml.AddOrChangeUnitResponse;
 import com.github.freeacs.ws.xml.ObjectFactory;
 import com.github.freeacs.ws.xml.Parameter;
 import com.github.freeacs.ws.xml.Unit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.sql.DataSource;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AddOrChangeUnit {
   private static final Logger logger = LoggerFactory.getLogger(AddOrChangeUnit.class);

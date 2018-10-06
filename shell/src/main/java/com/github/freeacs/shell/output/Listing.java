@@ -4,7 +4,6 @@ import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.shell.Context;
 import com.github.freeacs.shell.command.Command;
 import com.github.freeacs.shell.command.Option;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -174,8 +173,7 @@ public class Listing {
         if (lastEnd + 1 < orderOption.getOptionArgs().length())
           context.println(
               "WARN: The o-option arguments contain errors, ordering may not be applied");
-        if (lineComparatorColumns.size() > 0)
-          lines.sort(new LineComparator(lineComparatorColumns));
+        if (lineComparatorColumns.size() > 0) lines.sort(new LineComparator(lineComparatorColumns));
       }
       for (Line line : lines) {
         StringBuilder lineSb = new StringBuilder();

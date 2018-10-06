@@ -1,13 +1,12 @@
 package com.github.freeacs.common.util;
 
-import org.junit.Test;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import org.junit.Test;
 
 public class NaturalComparatorTest {
 

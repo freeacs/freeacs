@@ -8,7 +8,6 @@ import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.tr069.HTTPReqResData;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.xml.Fault;
-
 import java.util.List;
 
 public class FADecision {

@@ -11,14 +11,13 @@ import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.WebConstants;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpSession;
-import javax.sql.DataSource;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpSession;
+import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Certificates page class.

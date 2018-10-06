@@ -21,9 +21,6 @@ import com.github.freeacs.shell.menu.UnittypeMenu;
 import com.github.freeacs.shell.menu.UnittypeParameterMenu;
 import com.github.freeacs.shell.output.OutputHandler;
 import com.github.freeacs.shell.util.StringUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -32,6 +29,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Processor {
 

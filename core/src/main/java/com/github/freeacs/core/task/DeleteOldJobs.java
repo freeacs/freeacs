@@ -6,15 +6,14 @@ import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.JobStatus;
 import com.github.freeacs.dbi.UnitJobs;
 import com.github.freeacs.dbi.Unittype;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DeleteOldJobs extends DBIOwner {
 
@@ -64,11 +63,13 @@ public class DeleteOldJobs extends DBIOwner {
         if (job.getChildren().size() == 0) {
           unitJobs.delete(job);
           if (logger.isInfoEnabled()) {
-            logger.info("DeleteOldJobs: \tDeleted all rows in unit_job with jobId = " + job.getId());
+            logger.info(
+                "DeleteOldJobs: \tDeleted all rows in unit_job with jobId = " + job.getId());
           }
           job.getGroup().getUnittype().getJobs().deleteJobParameters(job, acs);
           if (logger.isInfoEnabled()) {
-            logger.info("DeleteOldJobs: \tDeleted all rows in job_param with jobId = " + job.getId());
+            logger.info(
+                "DeleteOldJobs: \tDeleted all rows in job_param with jobId = " + job.getId());
           }
           job.getGroup().getUnittype().getJobs().delete(job, acs);
           if (logger.isInfoEnabled()) {
@@ -77,7 +78,8 @@ public class DeleteOldJobs extends DBIOwner {
           removeFromJCMap.add(job);
         } else {
           if (logger.isInfoEnabled()) {
-            logger.info("DeleteOldJobs: \tCould not delete job, since some children job still exist");
+            logger.info(
+                "DeleteOldJobs: \tCould not delete job, since some children job still exist");
           }
         }
       }

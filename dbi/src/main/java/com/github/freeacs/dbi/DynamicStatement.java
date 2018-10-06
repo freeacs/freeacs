@@ -119,7 +119,7 @@ public class DynamicStatement {
 
   public String getQuestionMarks() {
     StringBuilder qm = new StringBuilder();
-    for (Object o: arguments) {
+    for (Object o : arguments) {
       qm.append("?,");
     }
     if (qm.toString().endsWith(",")) qm = new StringBuilder(qm.substring(0, qm.length() - 1));

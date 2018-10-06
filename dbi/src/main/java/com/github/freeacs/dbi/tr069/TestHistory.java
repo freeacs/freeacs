@@ -1,7 +1,6 @@
 package com.github.freeacs.dbi.tr069;
 
 import com.github.freeacs.dbi.Unittype;
-
 import java.util.Date;
 
 public class TestHistory {

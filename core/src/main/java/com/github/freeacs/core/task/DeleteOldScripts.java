@@ -2,12 +2,11 @@ package com.github.freeacs.core.task;
 
 import com.github.freeacs.core.Properties;
 import com.github.freeacs.dbi.ScriptExecutions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.Calendar;
+import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DeleteOldScripts extends DBIShare {
 
@@ -36,7 +35,7 @@ public class DeleteOldScripts extends DBIShare {
     int rowsDeleted = executions.deleteExecutions(c.getTime());
     if (rowsDeleted == 0 && logger.isDebugEnabled()) {
       logger.debug("DeleteOldScripts: No old script executions deleted");
-    } else if(logger.isInfoEnabled()) {
+    } else if (logger.isInfoEnabled()) {
       logger.info("DeleteOldScripts: " + rowsDeleted + " old script executions deleted");
     }
   }

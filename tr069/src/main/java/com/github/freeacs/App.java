@@ -1,5 +1,8 @@
 package com.github.freeacs;
 
+import static com.github.freeacs.dbi.SyslogConstants.FACILITY_TR069;
+import static com.github.freeacs.tr069.Provisioning.VERSION;
+
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.http.FileServlet;
 import com.github.freeacs.base.http.OKServlet;
@@ -8,6 +11,8 @@ import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.Provisioning;
 import com.github.freeacs.tr069.methods.TR069Method;
 import com.zaxxer.hikari.HikariDataSource;
+import java.util.Collections;
+import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,12 +23,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
-
-import javax.sql.DataSource;
-import java.util.Collections;
-
-import static com.github.freeacs.dbi.SyslogConstants.FACILITY_TR069;
-import static com.github.freeacs.tr069.Provisioning.VERSION;
 
 @SpringBootApplication(exclude = FlywayAutoConfiguration.class)
 public class App {

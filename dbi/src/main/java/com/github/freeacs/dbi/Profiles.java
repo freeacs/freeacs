@@ -1,13 +1,12 @@
 package com.github.freeacs.dbi;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Profiles {
   private static Logger logger = LoggerFactory.getLogger(Profiles.class);

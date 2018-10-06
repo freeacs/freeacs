@@ -1,12 +1,10 @@
 package com.github.freeacs.syslogserver;
 
 import com.github.freeacs.common.util.Sleep;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.LinkedList;
 import java.util.List;
-import java.util.NoSuchElementException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SyslogPackets {
 
@@ -94,7 +92,7 @@ public class SyslogPackets {
           if (packet.isFailoverPacket()) counter.decFailoverPackets();
         }
         break;
-      } catch (NoSuchElementException nsee) {
+      } catch (IndexOutOfBoundsException ignored) {
         try {
           Thread.sleep(100);
           if (Sleep.isTerminated()) return null;

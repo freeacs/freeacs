@@ -14,10 +14,6 @@ import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.util.SQLUtil;
 import com.github.freeacs.dbi.util.SyslogClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -31,6 +27,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HeartbeatDetection extends DBIShare {
 
@@ -129,7 +128,8 @@ public class HeartbeatDetection extends DBIShare {
             from = new Date(to - (long) heartbeat.getTimeoutHours() * HOUR_MS).getTime();
             to = from + 5 * 60000;
           }
-          while (to <= orgTo) { // Loop will only run more than once after server-startup, when we try to
+          while (to
+              <= orgTo) { // Loop will only run more than once after server-startup, when we try to
             // "catch up" (memory-structures are empty)
             ds = new DynamicStatement();
             ds.addSql("SELECT distinct(unit_id) FROM syslog WHERE ");
@@ -310,8 +310,7 @@ public class HeartbeatDetection extends DBIShare {
     }
   }
 
-  private void sendHeartbeat(Heartbeat heartbeat, String unitId, long tms)
-      throws IOException {
+  private void sendHeartbeat(Heartbeat heartbeat, String unitId, long tms) throws IOException {
     String expression = heartbeat.getExpression();
     if (heartbeat.getExpression().startsWith("^")) expression = expression.substring(1);
     if (heartbeat.getExpression().endsWith("$"))

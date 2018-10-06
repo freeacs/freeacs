@@ -15,7 +15,6 @@ import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;

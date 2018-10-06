@@ -5,11 +5,10 @@ import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.ws.xml.DeleteProfileRequest;
 import com.github.freeacs.ws.xml.DeleteProfileResponse;
+import java.rmi.RemoteException;
+import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.sql.DataSource;
-import java.rmi.RemoteException;
 
 public class DeleteProfile {
 
