@@ -6,11 +6,12 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DuplicateCheck {
-  private static HashMap<String, Duplicate> duplicateMap = new HashMap<String, Duplicate>();
+  private static Map<String, Duplicate> duplicateMap = new HashMap<String, Duplicate>();
   private static int counter = 0;
   private static Logger logger = LoggerFactory.getLogger(DuplicateCheck.class);
 
@@ -96,14 +97,7 @@ public class DuplicateCheck {
     return true;
   }
 
-  /**
-   * Will add a message to the duplicate map if no duplicate is found or if duplicate is too old
-   *
-   * @param key
-   * @param entry
-   * @return
-   * @throws SQLException
-   */
+  /** Will add a message to the duplicate map if no duplicate is found or if duplicate is too old */
   public static synchronized boolean addMessage(
       String key, SyslogEntry entry, int duplicateTimeoutMinutes) throws SQLException {
     Duplicate duplicate =

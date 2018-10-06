@@ -108,28 +108,46 @@ public class DigestAuthenticator {
     String response = null;
     String method = reqRes.getReq().getMethod();
 
-    for (int i = 0; i < tokens.length; i++) {
-      String currentToken = tokens[i];
-      if (currentToken.length() == 0) continue;
+    for (String currentToken : tokens) {
+      if (currentToken.length() == 0) {
+        continue;
+      }
 
       int equalSign = currentToken.indexOf('=');
-      if (equalSign < 0)
+      if (equalSign < 0) {
         throw new TR069AuthenticationException(
             "Digest challenge response has incorrect format (CPE IP address: "
                 + reqRes.getReq().getRemoteHost()
                 + ")",
             null,
             HttpServletResponse.SC_FORBIDDEN);
+      }
       String currentTokenName = currentToken.substring(0, equalSign).trim();
       String currentTokenValue = currentToken.substring(equalSign + 1).trim();
-      if ("username".equals(currentTokenName)) username = Util.removeQuotes(currentTokenValue);
-      if ("realm".equals(currentTokenName)) realm = Util.removeQuotes(currentTokenValue, true);
-      if ("nonce".equals(currentTokenName)) nonce = Util.removeQuotes(currentTokenValue);
-      if ("nc".equals(currentTokenName)) nc = Util.removeQuotes(currentTokenValue);
-      if ("cnonce".equals(currentTokenName)) cnonce = Util.removeQuotes(currentTokenValue);
-      if ("qop".equals(currentTokenName)) qop = Util.removeQuotes(currentTokenValue);
-      if ("uri".equals(currentTokenName)) uri = Util.removeQuotes(currentTokenValue);
-      if ("response".equals(currentTokenName)) response = Util.removeQuotes(currentTokenValue);
+      if ("username".equals(currentTokenName)) {
+        username = Util.removeQuotes(currentTokenValue);
+      }
+      if ("realm".equals(currentTokenName)) {
+        realm = Util.removeQuotes(currentTokenValue, true);
+      }
+      if ("nonce".equals(currentTokenName)) {
+        nonce = Util.removeQuotes(currentTokenValue);
+      }
+      if ("nc".equals(currentTokenName)) {
+        nc = Util.removeQuotes(currentTokenValue);
+      }
+      if ("cnonce".equals(currentTokenName)) {
+        cnonce = Util.removeQuotes(currentTokenValue);
+      }
+      if ("qop".equals(currentTokenName)) {
+        qop = Util.removeQuotes(currentTokenValue);
+      }
+      if ("uri".equals(currentTokenName)) {
+        uri = Util.removeQuotes(currentTokenValue);
+      }
+      if ("response".equals(currentTokenName)) {
+        response = Util.removeQuotes(currentTokenValue);
+      }
     }
 
     if ((username == null)

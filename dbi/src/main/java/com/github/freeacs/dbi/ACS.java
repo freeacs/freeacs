@@ -1032,10 +1032,11 @@ public class ACS {
 
   public UnittypeParameter getUnittypeParameter(Integer unittypeParameterId) {
     Unittype[] unittypeArr = unittypes.getUnittypes();
-    for (int i = 0; i < unittypeArr.length; i++) {
-      UnittypeParameters unittypeParameters = unittypeArr[i].getUnittypeParameters();
-      if (unittypeParameters.getById(unittypeParameterId) != null)
+    for (Unittype anUnittypeArr : unittypeArr) {
+      UnittypeParameters unittypeParameters = anUnittypeArr.getUnittypeParameters();
+      if (unittypeParameters.getById(unittypeParameterId) != null) {
         return unittypeParameters.getById(unittypeParameterId);
+      }
     }
     return null;
   }
@@ -1056,9 +1057,11 @@ public class ACS {
 
   public Profile getProfile(Integer profileId) {
     Unittype[] unittypeArr = unittypes.getUnittypes();
-    for (int i = 0; i < unittypeArr.length; i++) {
-      Profiles profiles = unittypeArr[i].getProfiles();
-      if (profiles.getById(profileId) != null) return profiles.getById(profileId);
+    for (Unittype anUnittypeArr : unittypeArr) {
+      Profiles profiles = anUnittypeArr.getProfiles();
+      if (profiles.getById(profileId) != null) {
+        return profiles.getById(profileId);
+      }
     }
     return null;
   }

@@ -88,18 +88,19 @@ public class Key implements Comparable<Key> {
       sb.append(periodTypeStr);
       sb.append("|");
     }
-    for (int i = 0; i < keys.length; i++) {
+    for (String key : keys) {
       boolean match = false;
-      for (int j = 0; j < additionalKeys.size(); j++) {
-        if (additionalKeys.get(j).getName().equals(keys[i])) {
+      for (KeyElement additionalKey : additionalKeys) {
+        if (additionalKey.getName().equals(key)) {
           match = true;
-          sb.append(additionalKeys.get(j).getValue());
+          sb.append(additionalKey.getValue());
           sb.append("|");
         }
       }
-      if (!match)
+      if (!match) {
         throw new IllegalArgumentException(
-            "The keyName " + keys[i] + " was not recognized in this key");
+            "The keyName " + key + " was not recognized in this key");
+      }
     }
     String s = sb.toString();
     if (s.equals("")) return "Total (" + method + ")";
@@ -115,18 +116,19 @@ public class Key implements Comparable<Key> {
       sb.append(periodTypeStr);
       sb.append("|");
     }
-    for (int i = 0; i < keys.length; i++) {
+    for (String key : keys) {
       boolean match = false;
-      for (int j = 0; j < additionalKeys.size(); j++) {
-        if (additionalKeys.get(j).getName().equals(keys[i])) {
+      for (KeyElement additionalKey : additionalKeys) {
+        if (additionalKey.getName().equals(key)) {
           match = true;
-          sb.append(additionalKeys.get(j).getValue());
+          sb.append(additionalKey.getValue());
           sb.append("|");
         }
       }
-      if (!match)
+      if (!match) {
         throw new IllegalArgumentException(
-            "The keyName " + keys[i] + " was not recognized in this key");
+            "The keyName " + key + " was not recognized in this key");
+      }
     }
     String s = sb.toString();
     if (s.equals("")) return "Total";
@@ -153,8 +155,7 @@ public class Key implements Comparable<Key> {
     for (int i = 0; i < keyNames.length; i++) {
       String keyName = keyNames[i];
       boolean match = false;
-      for (int j = 0; j < additionalKeys.size(); j++) {
-        KeyElement keyElement = additionalKeys.get(j);
+      for (KeyElement keyElement : additionalKeys) {
         if (keyName.equals(keyElement.getName())) {
           match = true;
           transformedKeys[i] = keyElement;

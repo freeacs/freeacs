@@ -2,11 +2,70 @@ package com.github.freeacs.syslogserver;
 
 import com.github.freeacs.common.util.Sleep;
 import java.util.LinkedList;
-import java.util.NoSuchElementException;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SyslogPackets {
+
+  public static List<SyslogPacket> packets = new LinkedList<>();
+
+  private static BufferCounter counter = new BufferCounter();
+
+  private static Logger messages = LoggerFactory.getLogger("Messages");
+
+  private static Logger logger = LoggerFactory.getLogger(SyslogPackets.class);
+
+  private static int MAX_MESSAGES = Properties.MAX_MESSAGES_IN_BUFFER;
+
+  private static final Object monitor = new Object();
+
+  public static void add(SyslogPacket syslogPacket) {
+    if (packets.size() < MAX_MESSAGES) {
+      synchronized (monitor) {
+        packets.add(syslogPacket);
+        if (syslogPacket.isFailoverPacket()) counter.incFailoverPackets();
+      }
+      if (logger.isDebugEnabled())
+        logger.debug(
+            "Packet added to message buffer. Buffer size is "
+                + packets.size()
+                + ". Packet content: "
+                + syslogPacket.getSyslogStr());
+    } else {
+      counter.incBufferOverflow();
+    }
+    if (messages.isDebugEnabled()) messages.debug(syslogPacket.toString());
+  }
+
+  public static SyslogPacket get() {
+    SyslogPacket packet = null;
+    while (true) {
+      try {
+        if (packets == null) return null;
+        synchronized (monitor) {
+          packet = packets.remove(0);
+          if (packet.isFailoverPacket()) counter.decFailoverPackets();
+        }
+        break;
+      } catch (IndexOutOfBoundsException ignored) {
+        try {
+          Thread.sleep(100);
+          if (Sleep.isTerminated()) return null;
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+    if (logger.isDebugEnabled()) {
+      logger.debug("Returns a packet from buffer. Buffer size is " + packets.size() + ".");
+    }
+    return packet;
+  }
+
+  public static BufferCounter getCounter() {
+    return counter;
+  }
 
   public static class BufferCounter {
 
@@ -43,10 +102,6 @@ public class SyslogPackets {
       return c;
     }
 
-    public int getFailoverPackets() {
-      return failoverPackets;
-    }
-
     public int getBufferOverflow() {
       return bufferOverflow;
     }
@@ -55,107 +110,4 @@ public class SyslogPackets {
       return size;
     }
   }
-
-  public static LinkedList<SyslogPacket> packets = new LinkedList<SyslogPacket>();
-
-  private static BufferCounter counter = new BufferCounter();
-
-  private static Logger messages = LoggerFactory.getLogger("Messages");
-
-  private static Logger logger = LoggerFactory.getLogger(SyslogPackets.class);
-
-  //	private static FailoverFile ff = FailoverFile.getInstance();
-
-  private static int MAX_MESSAGES = Properties.MAX_MESSAGES_IN_BUFFER;
-
-  private static Object monitor = new Object();
-
-  //	private static boolean highReceiveLoad = false;
-
-  //	private static int highLoadCounter = 0;
-
-  public static void add(SyslogPacket syslogPacket) {
-    if (packets.size() < MAX_MESSAGES) {
-      synchronized (monitor) {
-        packets.add(syslogPacket);
-        if (syslogPacket.isFailoverPacket()) counter.incFailoverPackets();
-      }
-      //			if (highLoadCounter > 0)
-      //				highLoadCounter--;
-      //			if (highLoadCounter == 0 && highReceiveLoad) {
-      //				String mbsStr = " (message-in-buffer: " + SyslogPackets.packets.size() + ")";
-      //				logger.info("High priority on database storage, failover logging has ceased" + mbsStr);
-      //				highReceiveLoad = false;
-      //			}
-      if (logger.isDebugEnabled())
-        logger.debug(
-            "Packet added to message buffer. Buffer size is "
-                + packets.size()
-                + ". Packet content: "
-                + syslogPacket.getSyslogStr());
-      //		} else if (packets.size() < MAX_MESSAGES) {
-      //			packets.add(syslogPacket);
-      //			if (!highReceiveLoad) {
-      //				String mbsStr = " (message-in-buffer: " + SyslogPackets.packets.size() + ")";
-      //				logger.info("High priority on receive message, failover logging activated" + mbsStr);
-      //				highReceiveLoad = true;
-      //			}
-      //			highLoadCounter = 1000;
-    } else {
-      //			ff.write(syslogPacket + "Too many messages in buffer (" + packets.size() + ").\n");
-      //			if (logger.isDebugEnabled())
-      //				logger.debug("Packet written to failover log. Buffer size is " + packets.size() + ".
-      // Packet content: " + syslogPacket.getSyslogStr());
-      counter.incBufferOverflow();
-    }
-    if (messages.isDebugEnabled()) messages.debug(syslogPacket.toString());
-  }
-
-  public static SyslogPacket get() {
-    SyslogPacket packet = null;
-    while (true) {
-      try {
-        if (packets == null) return null;
-        synchronized (monitor) {
-          packet = packets.removeFirst();
-          if (packet.isFailoverPacket()) counter.decFailoverPackets();
-        }
-        //				if (packets.size() == 0 && highReceiveLoad) {
-        //					String mbsStr = " (message-in-buffer: " + SyslogPackets.packets.size() + ")";
-        //					logger.info("High priority on database storage" + mbsStr);
-        //					highReceiveLoad = false;
-        //				}
-        //				if (highLoadCounter > 0)
-        //					highLoadCounter--;
-        //				if (highLoadCounter == 0 && highReceiveLoad) {
-        //					String mbsStr = " (message-in-buffer: " + SyslogPackets.packets.size() + ")";
-        //					logger.info("High priority on database storage, failover logging has ceased" +
-        // mbsStr);
-        //					highReceiveLoad = false;
-        //				}
-
-        break;
-      } catch (NoSuchElementException nsee) {
-        try {
-          //					Syslog2DB.incSleep(100);
-          Thread.sleep(100);
-          if (Sleep.isTerminated()) return null;
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-      }
-    }
-    if (logger.isDebugEnabled()) {
-      logger.debug("Returns a packet from buffer. Buffer size is " + packets.size() + ".");
-    }
-    return packet;
-  }
-
-  public static BufferCounter getCounter() {
-    return counter;
-  }
-
-  //	public static boolean isHighReceiveLoad() {
-  //		return highReceiveLoad;
-  //	}
 }

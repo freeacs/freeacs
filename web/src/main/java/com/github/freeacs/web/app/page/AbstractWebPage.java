@@ -522,15 +522,17 @@ public abstract class AbstractWebPage implements WebPage {
           && sessionData.getFilteredUnittypes()[0].getName().equals("*"))
         return (unittypesList = Arrays.asList(xAPSUnittypes));
 
-      for (int i = 0; i < xAPSUnittypes.length; i++) {
+      for (Unittype xAPSUnittype : xAPSUnittypes) {
         for (AllowedUnittype ut : sessionData.getFilteredUnittypes()) {
-          if (ut.getName() != null && ut.getName().trim().equals(xAPSUnittypes[i].getName())) {
-            unittypes.add(xAPSUnittypes[i]);
+          if (ut.getName() != null && ut.getName().trim().equals(xAPSUnittype.getName())) {
+            unittypes.add(xAPSUnittype);
           } else if (ut.getId() != null) {
             Unittype unittype = acs.getUnittype(ut.getId());
             if (unittype != null
-                && unittype.getName().equals(xAPSUnittypes[i].getName())
-                && !unittypes.contains(xAPSUnittypes[i])) unittypes.add(xAPSUnittypes[i]);
+                && unittype.getName().equals(xAPSUnittype.getName())
+                && !unittypes.contains(xAPSUnittype)) {
+              unittypes.add(xAPSUnittype);
+            }
           }
         }
       }

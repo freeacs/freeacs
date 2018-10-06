@@ -10,6 +10,7 @@ import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -46,7 +47,7 @@ public class DynamicStatement {
   }
 
   public void addArguments(Object... oos) {
-    for (Object o : oos) arguments.add(o);
+    Collections.addAll(arguments, oos);
   }
 
   /*
@@ -60,7 +61,7 @@ public class DynamicStatement {
    */
   public void addSqlAndArguments(String sql, Object... oos) {
     this.sql.append(sql);
-    for (Object o : oos) arguments.add(o);
+    Collections.addAll(arguments, oos);
   }
 
   public void addSqlAndStringArgs(String sql, String... strs) {
@@ -118,12 +119,10 @@ public class DynamicStatement {
   }
 
   public String getQuestionMarks() {
-    String qm = "";
-    for (int i = 0; i < arguments.size(); i++) {
-      qm += "?,";
-    }
-    if (qm.endsWith(",")) qm = qm.substring(0, qm.length() - 1);
-    return qm;
+    final StringBuilder qm = new StringBuilder();
+    arguments.forEach(ignore -> qm.append("?,"));
+    if (qm.toString().endsWith(",")) return qm.substring(0, qm.length() - 1);
+    return qm.toString();
   }
 
   // Is useful to cleanup the SQL if there are leftovers
@@ -169,7 +168,7 @@ public class DynamicStatement {
       else if (arg.equalsIgnoreCase("log_id_seq.nextval")) return arg;
       else return "'" + arg + "'";
     }
-    return "'" + (String) o + "'";
+    return "'" + o + "'";
   }
 
   /*
@@ -188,13 +187,6 @@ public class DynamicStatement {
       double milli = (System.nanoTime() - startTms) / 1000000d;
       return "[" + String.format("%10.2f", milli) + " ms] " + getSqlQuestionMarksSubstituted();
     }
-  }
-
-  public static void main(String[] args) {
-    DynamicStatement ds = new DynamicStatement();
-    ds.setSql("SELECT * FROM unit AND");
-    ds.cleanupSQLTail();
-    System.out.println(ds.getSql());
   }
 
   public String toString() {

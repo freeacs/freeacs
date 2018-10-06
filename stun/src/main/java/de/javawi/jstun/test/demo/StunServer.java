@@ -36,6 +36,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,7 @@ public class StunServer {
   private static boolean started = false;
   private static Logger logger = LoggerFactory.getLogger(StunServer.class);
   private static Counter counter = new Counter();
-  private Vector<DatagramSocket> sockets;
+  private List<DatagramSocket> sockets;
   private static TimestampMap activeStunClients = new TimestampMap();
 
   /*
@@ -101,17 +102,13 @@ public class StunServer {
             DatagramPacket packet = null;
             while ((packet = MessageStack.pop()) != null) {
               counter.incKick();
-              if (packet != null) {
-                receiverSocket.send(packet);
-              }
+              receiverSocket.send(packet);
             }
           }
         } catch (SocketTimeoutException ste) {
           DatagramPacket packet = null;
           while ((packet = MessageStack.pop()) != null) {
-            if (packet != null) {
-              receiverSocket.send(packet);
-            }
+            receiverSocket.send(packet);
           }
           receive = null;
         }

@@ -29,7 +29,7 @@ public class SyslogEvents {
   private Map<Integer, SyslogEvent> eventIdMap;
   private Unittype unittype;
 
-  public SyslogEvents(TreeMap<Integer, SyslogEvent> eventIdMap, Unittype unittype) {
+  public SyslogEvents(Map<Integer, SyslogEvent> eventIdMap, Unittype unittype) {
     this.eventIdMap = eventIdMap;
     for (SyslogEvent event : eventIdMap.values()) idMap.put(event.getId(), event);
     this.unittype = unittype;

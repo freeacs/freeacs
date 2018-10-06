@@ -19,7 +19,6 @@ import java.util.Map.Entry;
 
 public class Transform {
 
-  /** @param args */
   public static void transform(Session session, String unitFile, String paramFile)
       throws Exception {
     ACS acs = session.getAcs();
