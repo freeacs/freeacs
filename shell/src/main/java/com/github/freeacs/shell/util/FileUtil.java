@@ -22,7 +22,7 @@ public class FileUtil {
 
   private static String[] protectedFilePatterns =
       new String[] {
-        "xaps-shell.properties",
+        "application.properties",
         "xaps-shell-logs.properties",
         "xaps-shell.*log",
         "xapsshell.sh",
@@ -63,20 +63,8 @@ public class FileUtil {
     return true;
   }
 
-  public static void store(List<String> lines, String filename) throws IOException {
-    // try {
-    FileWriter fw = new FileWriter(new File(filename));
-    for (int i = 0; i < lines.size(); i++) {
-      fw.write(lines.get(i) + "\n");
-    }
-    fw.close();
-    // } catch (Throwable t) {
-    // throw new IOException("Could not write to file " + filename);
-    // }
-  }
-
   public static List<String> getLines(String filename) {
-    List<String> lines = new ArrayList<String>();
+    List<String> lines = new ArrayList<>();
     BufferedReader br = null;
     try {
       br = new BufferedReader(new FileReader(filename));
@@ -104,7 +92,7 @@ public class FileUtil {
     }
   }
 
-  public static List<String> getCompletions(Session session) throws IOException {
+  public static List<String> getCompletions(Session session) {
     Context context = session.getContext();
     List<String> completions = context.getCommands();
     if (context.getUnit() != null) {
