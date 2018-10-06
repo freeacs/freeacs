@@ -19,7 +19,6 @@ import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.github.freeacs.tr069.xml.ParameterAttributeStruct;
 import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import java.sql.SQLException;
@@ -29,8 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SessionData implements SessionDataI {
+  private static final Logger LOGGER = LoggerFactory.getLogger(SessionData.class);
 
   /* The session-id */
   private String id;
@@ -50,16 +52,8 @@ public class SessionData implements SessionDataI {
 
   /* Tells whether the CPE is authenticated or not */
   private boolean authenticated;
-  /* Tells whether the CPE is factory reset or not */
-  private boolean factoryReset;
-  /* Tells whether the CPE is booted or not */
-  private boolean booted;
   /* Tells whether the CPE is doing a periodic inform or not */
   private boolean periodic;
-  /* Tells whether the CPE is doing a value change inform or not */
-  private boolean valueChange;
-  /* Tells whether the CPE is kicked or not */
-  private boolean kicked;
   /* Tells whether a job is under execution - important not to start on another job */
   private boolean jobUnderExecution;
   /* The event code of the inform */
@@ -76,10 +70,6 @@ public class SessionData implements SessionDataI {
   private Map<String, ParameterValueStruct> fromDB;
   /* All parameters read from the CPE */
   private List<ParameterValueStruct> valuesFromCPE;
-  /* All attributes read from the CPE */
-  private List<ParameterAttributeStruct> attributesFromCPE;
-  /* All attributes that shall be written to the CPE */
-  private List<ParameterAttributeStruct> attributesToCPE;
   /* All parameters that shall be written to the CPE */
   private ParameterList toCPE;
   /* All parameters that shall be written to the DB */
@@ -105,8 +95,6 @@ public class SessionData implements SessionDataI {
   private boolean firstConnect = false;
   /* Unittype has been created, but unitId remains unknown, only for discovery-mode */
   private boolean unittypeCreated = true;
-  /* Session is in test-mode */
-  private boolean testMode = false;
 
   /* PIIDecision is important to decide the final outcome of the next Periodic Inform Interval */
   private PIIDecision piiDecision;
@@ -201,7 +189,9 @@ public class SessionData implements SessionDataI {
     this.authenticated = authenticated;
   }
 
-  public void setNoMoreRequests(boolean noMoreRequests) {}
+  public void setNoMoreRequests(boolean noMoreRequests) {
+    LOGGER.warn("Setting unused noMoreRequests field to " + noMoreRequests);
+  }
 
   public CPEParameters getCpeParameters() {
     return cpeParameters;
@@ -227,14 +217,6 @@ public class SessionData implements SessionDataI {
     this.valuesFromCPE = fromCPE;
   }
 
-  public List<ParameterAttributeStruct> getAttributesFromCPE() {
-    return attributesFromCPE;
-  }
-
-  public void setAttributesFromCPE(List<ParameterAttributeStruct> attributesFromCPE) {
-    this.attributesFromCPE = attributesFromCPE;
-  }
-
   public ParameterList getToCPE() {
     return toCPE;
   }
@@ -243,20 +225,12 @@ public class SessionData implements SessionDataI {
     this.toCPE = toCPE;
   }
 
-  public void setAttributesToCPE(List<ParameterAttributeStruct> attributes) {
-    this.attributesToCPE = attributes;
-  }
-
-  public List<ParameterAttributeStruct> getAttributesToCPE() {
-    return this.attributesToCPE;
-  }
-
   public List<ParameterValueStruct> getToDB() {
     return toDB;
   }
 
   public void setToDB(List<ParameterValueStruct> toDB) {
-    if (toDB == null) toDB = new ArrayList<ParameterValueStruct>();
+    if (toDB == null) toDB = new ArrayList<>();
     this.toDB = toDB;
   }
 
@@ -310,38 +284,6 @@ public class SessionData implements SessionDataI {
 
   public void setUnittype(Unittype unittype) {
     this.unittype = unittype;
-  }
-
-  public boolean isFactoryReset() {
-    return factoryReset;
-  }
-
-  public void setFactoryReset(boolean factoryReset) {
-    this.factoryReset = factoryReset;
-  }
-
-  public boolean isBooted() {
-    return booted;
-  }
-
-  public void setBooted(boolean booted) {
-    this.booted = booted;
-  }
-
-  public boolean isValueChange() {
-    return valueChange;
-  }
-
-  public void setValueChange(boolean valueChange) {
-    this.valueChange = valueChange;
-  }
-
-  public boolean isKicked() {
-    return kicked;
-  }
-
-  public void setKicked(boolean kicked) {
-    this.kicked = kicked;
   }
 
   public boolean isPeriodic() {
@@ -415,14 +357,6 @@ public class SessionData implements SessionDataI {
 
   public void setJobParams(Map<String, JobParameter> jobParams) {
     this.jobParams = jobParams;
-  }
-
-  public boolean isTestMode() {
-    return testMode;
-  }
-
-  public void setTestMode(boolean testMode) {
-    this.testMode = testMode;
   }
 
   public DBAccessSession getDbAccessSession() {
