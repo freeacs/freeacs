@@ -1,11 +1,21 @@
 package com.github.freeacs.dbi;
 
 import com.github.freeacs.dbi.util.ACSVersionCheck;
-import java.sql.*;
-import java.util.*;
-import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.UUID;
 
 /**
  * Permission status: Fully protected - apart from two methods which intentionally allows access

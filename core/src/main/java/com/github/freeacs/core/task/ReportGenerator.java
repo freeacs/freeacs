@@ -2,19 +2,46 @@ package com.github.freeacs.core.task;
 
 import com.github.freeacs.common.scheduler.ScheduleType;
 import com.github.freeacs.core.Properties;
-import com.github.freeacs.dbi.*;
-import com.github.freeacs.dbi.report.*;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.ACSUnit;
+import com.github.freeacs.dbi.DynamicStatement;
+import com.github.freeacs.dbi.Group;
+import com.github.freeacs.dbi.Job;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.report.Key;
+import com.github.freeacs.dbi.report.PeriodType;
+import com.github.freeacs.dbi.report.RecordGroup;
+import com.github.freeacs.dbi.report.RecordHardware;
+import com.github.freeacs.dbi.report.RecordJob;
+import com.github.freeacs.dbi.report.RecordProvisioning;
+import com.github.freeacs.dbi.report.RecordSyslog;
+import com.github.freeacs.dbi.report.RecordUnit;
+import com.github.freeacs.dbi.report.RecordVoip;
+import com.github.freeacs.dbi.report.Report;
+import com.github.freeacs.dbi.report.ReportConverter;
+import com.github.freeacs.dbi.report.ReportHardwareGenerator;
+import com.github.freeacs.dbi.report.ReportProvisioningGenerator;
+import com.github.freeacs.dbi.report.ReportSyslogGenerator;
+import com.github.freeacs.dbi.report.ReportVoipGenerator;
+import com.github.freeacs.dbi.report.TmsConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.sql.DataSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ReportGenerator extends DBIOwner {
 

@@ -1,10 +1,19 @@
 package com.github.freeacs.shell.command;
 
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.GroupParameter;
+import com.github.freeacs.dbi.JobParameter;
+import com.github.freeacs.dbi.ProfileParameter;
+import com.github.freeacs.dbi.UnitParameter;
+import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.shell.Context;
 import com.github.freeacs.shell.Session;
 import com.github.freeacs.shell.util.StringUtil;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

@@ -8,9 +8,10 @@ import com.github.freeacs.tr069.HTTPReqResData;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069AuthenticationException;
-import java.sql.SQLException;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.digest.DigestUtils;
+
+import javax.servlet.http.HttpServletResponse;
+import java.sql.SQLException;
 
 public class DigestAuthenticator {
 

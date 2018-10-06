@@ -1,6 +1,19 @@
 package com.github.freeacs.dbi.report;
 
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.DynamicStatement;
+import com.github.freeacs.dbi.Group;
+import com.github.freeacs.dbi.Identity;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.Syslog;
+import com.github.freeacs.dbi.SyslogEntry;
+import com.github.freeacs.dbi.SyslogFilter;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.Unittype;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,9 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.sql.DataSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ReportVoipGenerator extends ReportGenerator {
 

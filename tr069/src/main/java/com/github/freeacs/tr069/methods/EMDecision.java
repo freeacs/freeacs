@@ -12,6 +12,7 @@ import com.github.freeacs.tr069.InformParameters;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;

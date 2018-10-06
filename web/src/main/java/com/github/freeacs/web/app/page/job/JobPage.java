@@ -1,11 +1,26 @@
 package com.github.freeacs.web.app.page.job;
 
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.File;
+import com.github.freeacs.dbi.FileType;
+import com.github.freeacs.dbi.Group;
+import com.github.freeacs.dbi.Job;
+import com.github.freeacs.dbi.JobFlag;
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
 import com.github.freeacs.dbi.JobFlag.JobType;
+import com.github.freeacs.dbi.JobParameter;
+import com.github.freeacs.dbi.Jobs;
+import com.github.freeacs.dbi.Parameter;
+import com.github.freeacs.dbi.UnitJobs;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.Output;
-import com.github.freeacs.web.app.input.*;
+import com.github.freeacs.web.app.input.DropDownSingleSelect;
+import com.github.freeacs.web.app.input.InputDataIntegrity;
+import com.github.freeacs.web.app.input.InputDataRetriever;
+import com.github.freeacs.web.app.input.InputSelectionFactory;
+import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.menu.MenuItem;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.page.file.FileComparator;
@@ -17,9 +32,14 @@ import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
-import java.sql.SQLException;
-import java.util.*;
+
 import javax.sql.DataSource;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class JobPage extends AbstractWebPage {
   // Do NOT static this variable, contains singletons that should NOT be shared by different views

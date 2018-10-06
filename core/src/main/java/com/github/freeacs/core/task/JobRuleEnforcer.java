@@ -4,13 +4,24 @@ import com.github.freeacs.core.Properties;
 import com.github.freeacs.core.util.FractionStopRuleCounter;
 import com.github.freeacs.core.util.UnitJobResult;
 import com.github.freeacs.core.util.UnitResultMap;
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.Job.StopRule;
-import java.sql.SQLException;
-import java.util.*;
-import javax.sql.DataSource;
+import com.github.freeacs.dbi.JobStatus;
+import com.github.freeacs.dbi.UnitJob;
+import com.github.freeacs.dbi.UnitJobStatus;
+import com.github.freeacs.dbi.UnitJobs;
+import com.github.freeacs.dbi.Unittype;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class JobRuleEnforcer extends DBIOwner {
 

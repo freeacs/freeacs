@@ -2,8 +2,14 @@ package com.github.freeacs.core.util;
 
 import com.github.freeacs.common.util.TimestampMap;
 import com.github.freeacs.dbi.Heartbeat;
+
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 public class SyslogMessageMapContainer {
 

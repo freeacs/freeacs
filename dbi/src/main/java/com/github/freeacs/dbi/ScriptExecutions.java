@@ -2,6 +2,8 @@ package com.github.freeacs.dbi;
 
 import com.github.freeacs.dbi.InsertOrUpdateStatement.Field;
 import com.github.freeacs.dbi.util.ACSVersionCheck;
+
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,7 +11,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.sql.DataSource;
 
 public class ScriptExecutions {
 

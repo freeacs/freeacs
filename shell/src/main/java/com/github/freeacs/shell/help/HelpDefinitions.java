@@ -1,6 +1,7 @@
 package com.github.freeacs.shell.help;
 
 import com.github.freeacs.dbi.util.ACSVersionCheck;
+
 import java.util.HashMap;
 import java.util.Map;
 

@@ -2,12 +2,17 @@ package com.github.freeacs.tr069.methods;
 
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.NoDataAvailableException;
-import com.github.freeacs.dbi.tr069.*;
-import com.github.freeacs.tr069.*;
+import com.github.freeacs.dbi.tr069.TR069DMLoader;
+import com.github.freeacs.dbi.tr069.TR069DMParameterMap;
+import com.github.freeacs.tr069.HTTPReqData;
+import com.github.freeacs.tr069.HTTPReqResData;
 import com.github.freeacs.tr069.Properties;
+import com.github.freeacs.tr069.UnknownMethodException;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
-import java.util.*;
+
+import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

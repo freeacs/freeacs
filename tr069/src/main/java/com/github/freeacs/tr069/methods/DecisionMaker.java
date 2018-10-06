@@ -4,6 +4,7 @@ import com.github.freeacs.tr069.HTTPReqResData;
 import com.github.freeacs.tr069.HTTPResData;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
+
 import java.util.Map;
 
 /* This class is responsible for choosing the next response in the

@@ -1,6 +1,7 @@
 package com.github.freeacs.web.security;
 
 import com.github.freeacs.dbi.Permission;
+
 import java.util.ArrayList;
 import java.util.List;
 

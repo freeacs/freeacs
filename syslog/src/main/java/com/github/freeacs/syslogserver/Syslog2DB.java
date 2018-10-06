@@ -3,19 +3,37 @@ package com.github.freeacs.syslogserver;
 import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.common.util.CacheValue;
 import com.github.freeacs.common.util.Sleep;
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.ACSUnit;
+import com.github.freeacs.dbi.DBI;
+import com.github.freeacs.dbi.Identity;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.ScriptExecutions;
+import com.github.freeacs.dbi.Syslog;
+import com.github.freeacs.dbi.SyslogConstants;
+import com.github.freeacs.dbi.SyslogEntry;
+import com.github.freeacs.dbi.SyslogEvent;
 import com.github.freeacs.dbi.SyslogEvent.StorePolicy;
+import com.github.freeacs.dbi.Trigger;
+import com.github.freeacs.dbi.TriggerEvent;
+import com.github.freeacs.dbi.Triggers;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.UnitParameter;
+import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
+import com.github.freeacs.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.Users;
 import com.github.freeacs.dbi.util.SystemParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.sql.DataSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Syslog2DB implements Runnable {
 

@@ -7,9 +7,6 @@ import com.github.freeacs.web.app.menu.MenuServlet;
 import com.github.freeacs.web.app.util.Freemarker;
 import com.github.freeacs.web.help.HelpServlet;
 import com.zaxxer.hikari.HikariDataSource;
-import java.util.Arrays;
-import java.util.Collections;
-import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -22,6 +19,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
+
+import javax.sql.DataSource;
+import java.util.Arrays;
+import java.util.Collections;
 
 @SpringBootApplication(exclude = FlywayAutoConfiguration.class)
 public class App {

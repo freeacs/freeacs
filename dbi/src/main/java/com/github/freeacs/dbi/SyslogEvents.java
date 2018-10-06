@@ -3,14 +3,15 @@ package com.github.freeacs.dbi;
 import com.github.freeacs.dbi.InsertOrUpdateStatement.Field;
 import com.github.freeacs.dbi.SyslogEvent.StorePolicy;
 import com.github.freeacs.dbi.util.ACSVersionCheck;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.TreeMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SyslogEvents {
   private static Logger logger = LoggerFactory.getLogger(SyslogEvents.class);

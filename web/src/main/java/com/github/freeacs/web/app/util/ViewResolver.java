@@ -1,8 +1,9 @@
 package com.github.freeacs.web.app.util;
 
 import com.github.freeacs.web.Page;
-import java.util.Map;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
+
+import java.util.Map;
 
 /**
  * Used by app.xml for the Spring MVC view resolve

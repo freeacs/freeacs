@@ -6,17 +6,26 @@ import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.SyslogEntry;
 import com.github.freeacs.dbi.SyslogFilter;
 import com.github.freeacs.dbi.Unit;
-import com.github.freeacs.dbi.report.*;
+import com.github.freeacs.dbi.report.PeriodType;
+import com.github.freeacs.dbi.report.RecordHardware;
+import com.github.freeacs.dbi.report.RecordSyslog;
+import com.github.freeacs.dbi.report.RecordVoip;
+import com.github.freeacs.dbi.report.Report;
+import com.github.freeacs.dbi.report.ReportConverter;
+import com.github.freeacs.dbi.report.ReportHardwareGenerator;
+import com.github.freeacs.dbi.report.ReportSyslogGenerator;
+import com.github.freeacs.dbi.report.ReportVoipGenerator;
 import com.github.freeacs.web.security.AllowedUnittype;
 import com.github.freeacs.web.security.WebUser;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import javax.sql.DataSource;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * The Session Store for xAPS Web. Uses session id as unique identifier.

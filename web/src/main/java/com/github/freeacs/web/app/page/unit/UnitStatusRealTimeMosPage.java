@@ -1,7 +1,18 @@
 package com.github.freeacs.web.app.page.unit;
 
-import com.github.freeacs.dbi.*;
-import com.github.freeacs.dbi.report.*;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.ACSUnit;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.Syslog;
+import com.github.freeacs.dbi.SyslogEntry;
+import com.github.freeacs.dbi.SyslogFilter;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.report.Chart;
+import com.github.freeacs.dbi.report.PeriodType;
+import com.github.freeacs.dbi.report.RecordVoipCall;
+import com.github.freeacs.dbi.report.Report;
+import com.github.freeacs.dbi.report.ReportVoipCallGenerator;
 import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.InputDataRetriever;
 import com.github.freeacs.web.app.input.ParameterParser;
@@ -11,12 +22,17 @@ import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.BrowserDetect;
 import com.github.freeacs.web.app.util.UserAgent;
 import com.github.freeacs.web.app.util.WebConstants;
-import java.sql.SQLException;
-import java.util.*;
-import javax.sql.DataSource;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /** The Class UnitStatusRealTimeMosPage. */
 public class UnitStatusRealTimeMosPage extends AbstractWebPage {

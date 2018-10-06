@@ -1,13 +1,14 @@
 package com.github.freeacs.shell.sync;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UnittypeXML {
 

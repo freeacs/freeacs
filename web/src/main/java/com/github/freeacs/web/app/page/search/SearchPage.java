@@ -1,17 +1,37 @@
 package com.github.freeacs.web.app.page.search;
 
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.ACSUnit;
+import com.github.freeacs.dbi.Group;
+import com.github.freeacs.dbi.GroupParameter;
+import com.github.freeacs.dbi.Parameter;
 import com.github.freeacs.dbi.Parameter.Operator;
 import com.github.freeacs.dbi.Parameter.ParameterDataType;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.UnitParameter;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.Output;
-import com.github.freeacs.web.app.input.*;
+import com.github.freeacs.web.app.input.DropDownSingleSelect;
+import com.github.freeacs.web.app.input.InputDataIntegrity;
+import com.github.freeacs.web.app.input.InputDataRetriever;
+import com.github.freeacs.web.app.input.InputSelectionFactory;
+import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.WebConstants;
-import java.util.*;
-import java.util.Map.Entry;
+
 import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * The search page.

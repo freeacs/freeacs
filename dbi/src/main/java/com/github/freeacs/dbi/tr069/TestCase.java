@@ -2,6 +2,7 @@ package com.github.freeacs.dbi.tr069;
 
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.tr069.TestCaseParameter.TestCaseParameterType;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

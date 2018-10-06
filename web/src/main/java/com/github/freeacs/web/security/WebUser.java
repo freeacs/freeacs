@@ -5,10 +5,15 @@ import com.github.freeacs.dbi.Users;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.WebConstants;
-import java.util.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /** The Class WebUser. */
 public class WebUser extends User implements UserDetails {

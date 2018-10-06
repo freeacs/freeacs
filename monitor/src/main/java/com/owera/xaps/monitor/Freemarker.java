@@ -6,10 +6,11 @@ import freemarker.template.ObjectWrapper;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
+
+import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import javax.servlet.ServletContext;
 
 public final class Freemarker {
   public Configuration initFreemarker(ServletContext context) {

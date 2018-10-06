@@ -1,6 +1,12 @@
 package com.github.freeacs.web.app.page.permissions;
 
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.Permission;
+import com.github.freeacs.dbi.Permissions;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.User;
+import com.github.freeacs.dbi.Users;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.InputDataIntegrity;
@@ -15,12 +21,17 @@ import com.github.freeacs.web.security.WebUser;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
+import org.apache.commons.lang.StringUtils;
+
+import javax.sql.DataSource;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-import javax.sql.DataSource;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Manages users and their permissions.

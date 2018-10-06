@@ -6,6 +6,7 @@
 package com.github.freeacs.web.app.table;
 
 import com.github.freeacs.common.util.NaturalComparator;
+
 import java.util.Comparator;
 
 /**

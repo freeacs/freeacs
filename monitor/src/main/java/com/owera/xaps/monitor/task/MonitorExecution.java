@@ -2,13 +2,14 @@ package com.owera.xaps.monitor.task;
 
 import com.owera.xaps.monitor.Properties;
 import com.owera.xaps.monitor.https.HTTPSManager;
-import java.io.IOException;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 /*
  * Http check implementation

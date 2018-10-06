@@ -1,6 +1,13 @@
 package com.github.freeacs.web.app.page.trigger;
 
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.File;
+import com.github.freeacs.dbi.FileType;
+import com.github.freeacs.dbi.SyslogEvent;
+import com.github.freeacs.dbi.SyslogEvents;
+import com.github.freeacs.dbi.Trigger;
+import com.github.freeacs.dbi.Triggers;
+import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.web.app.input.DropDownSingleSelect;
 import com.github.freeacs.web.app.input.Input;
 import com.github.freeacs.web.app.input.InputSelectionFactory;
@@ -8,12 +15,13 @@ import com.github.freeacs.web.app.table.TableElement;
 import com.github.freeacs.web.app.table.TableElementMaker;
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.SessionCache;
+
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import javax.sql.DataSource;
 
 public class TriggerHandler {
   private ACS acs;

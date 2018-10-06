@@ -2,6 +2,7 @@ package com.github.freeacs.web.app.page.trigger;
 
 import com.github.freeacs.web.app.input.Input;
 import com.github.freeacs.web.app.input.InputData;
+
 import java.util.Map;
 
 public class TriggerData extends InputData {

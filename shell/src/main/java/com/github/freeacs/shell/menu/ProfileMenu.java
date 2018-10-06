@@ -1,6 +1,10 @@
 package com.github.freeacs.shell.menu;
 
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.Parameter;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.ProfileParameter;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.shell.Context;
 import com.github.freeacs.shell.Session;
 import com.github.freeacs.shell.UnitTempStorage;
@@ -10,6 +14,7 @@ import com.github.freeacs.shell.output.Line;
 import com.github.freeacs.shell.output.Listing;
 import com.github.freeacs.shell.output.OutputHandler;
 import com.github.freeacs.shell.util.Validation;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

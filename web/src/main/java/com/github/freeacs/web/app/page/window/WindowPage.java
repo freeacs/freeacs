@@ -1,6 +1,14 @@
 package com.github.freeacs.web.app.page.window;
 
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.ACSUnit;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.ProfileParameter;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.UnitParameter;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.UnittypeParameterFlag;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.Output;
@@ -11,11 +19,16 @@ import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.WebConstants;
+
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.util.*;
-import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class handles the service window for the two use cases: unit, profile.

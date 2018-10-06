@@ -1,9 +1,10 @@
 package com.github.freeacs.web.config;
 
-import java.util.regex.Pattern;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.regex.Pattern;
 
 public class CsrfSecurityRequestMatcher implements RequestMatcher {
   private Pattern allowedMethods = Pattern.compile("^(GET|HEAD|TRACE|OPTIONS)$");

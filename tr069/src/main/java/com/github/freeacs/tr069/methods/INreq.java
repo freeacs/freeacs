@@ -7,12 +7,26 @@ import com.github.freeacs.base.db.DBAccessSessionTR069;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.TimestampWrapper;
-import com.github.freeacs.tr069.*;
+import com.github.freeacs.tr069.CPEParameters;
+import com.github.freeacs.tr069.CommandKey;
+import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.InformParameters;
+import com.github.freeacs.tr069.ParameterKey;
+import com.github.freeacs.tr069.Properties;
+import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.background.ScheduledKickTask;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
-import com.github.freeacs.tr069.xml.*;
+import com.github.freeacs.tr069.xml.DeviceIdStruct;
+import com.github.freeacs.tr069.xml.EventList;
+import com.github.freeacs.tr069.xml.EventStruct;
+import com.github.freeacs.tr069.xml.Header;
+import com.github.freeacs.tr069.xml.ParameterList;
+import com.github.freeacs.tr069.xml.ParameterValueStruct;
+import com.github.freeacs.tr069.xml.Parser;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.FileWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -22,7 +36,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import org.apache.commons.lang3.StringUtils;
 
 public class INreq {
 

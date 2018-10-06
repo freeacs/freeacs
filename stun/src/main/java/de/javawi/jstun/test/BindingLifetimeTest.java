@@ -11,16 +11,28 @@
 
 package de.javawi.jstun.test;
 
-import de.javawi.jstun.attribute.*;
+import de.javawi.jstun.attribute.ChangeRequest;
+import de.javawi.jstun.attribute.ErrorCode;
+import de.javawi.jstun.attribute.MappedAddress;
+import de.javawi.jstun.attribute.MessageAttribute;
+import de.javawi.jstun.attribute.MessageAttributeException;
+import de.javawi.jstun.attribute.MessageAttributeParsingException;
+import de.javawi.jstun.attribute.ResponseAddress;
 import de.javawi.jstun.header.MessageHeader;
 import de.javawi.jstun.header.MessageHeaderParsingException;
 import de.javawi.jstun.util.UtilityException;
-import java.io.IOException;
-import java.net.*;
-import java.util.Timer;
-import java.util.TimerTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class BindingLifetimeTest {
   private static Logger LOGGER = LoggerFactory.getLogger(BindingLifetimeTest.class);

@@ -4,7 +4,12 @@ import com.github.freeacs.dbi.report.RecordVoip;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.TimeFormatter;
 import freemarker.template.TemplateModelException;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * This is a wrapper class for RecordVoip. Calculates numbers and percents for the voip status.

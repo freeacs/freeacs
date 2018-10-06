@@ -7,9 +7,10 @@ package com.github.freeacs.web.app.page.job;
 import com.github.freeacs.dbi.JobStatus;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
+import org.apache.commons.lang.ArrayUtils;
+
 import java.util.Arrays;
 import java.util.List;
-import org.apache.commons.lang.ArrayUtils;
 
 public class JobStatusMethods {
   private final GetNextAvailableStatusCodesMethod allowedStatusVerificator =

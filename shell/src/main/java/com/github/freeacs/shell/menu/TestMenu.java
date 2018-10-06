@@ -4,9 +4,17 @@ import com.github.freeacs.dbi.Message;
 import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.UnittypeParameter;
-import com.github.freeacs.dbi.tr069.*;
+import com.github.freeacs.dbi.tr069.TR069DMLoader;
+import com.github.freeacs.dbi.tr069.TR069DMParameter;
+import com.github.freeacs.dbi.tr069.TR069DMParameterMap;
+import com.github.freeacs.dbi.tr069.TestCase;
 import com.github.freeacs.dbi.tr069.TestCase.TestCaseMethod;
+import com.github.freeacs.dbi.tr069.TestCaseFileHandler;
+import com.github.freeacs.dbi.tr069.TestCaseParameter;
 import com.github.freeacs.dbi.tr069.TestCaseParameter.TestCaseParameterType;
+import com.github.freeacs.dbi.tr069.TestDB;
+import com.github.freeacs.dbi.tr069.TestGenerator;
+import com.github.freeacs.dbi.tr069.TestHistory;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.shell.Context;
 import com.github.freeacs.shell.Session;
@@ -15,9 +23,14 @@ import com.github.freeacs.shell.output.Line;
 import com.github.freeacs.shell.output.Listing;
 import com.github.freeacs.shell.output.OutputHandler;
 import com.github.freeacs.shell.util.Validation;
+
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class TestMenu {

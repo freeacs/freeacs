@@ -1,7 +1,18 @@
 package com.github.freeacs.shell.menu;
 
-import com.github.freeacs.dbi.*;
-import com.github.freeacs.shell.*;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.Syslog;
+import com.github.freeacs.dbi.SyslogConstants;
+import com.github.freeacs.dbi.SyslogEntry;
+import com.github.freeacs.dbi.SyslogFilter;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.shell.ACSShell;
+import com.github.freeacs.shell.Context;
+import com.github.freeacs.shell.Script;
+import com.github.freeacs.shell.ScriptMaker;
+import com.github.freeacs.shell.Session;
+import com.github.freeacs.shell.Variable;
 import com.github.freeacs.shell.command.ContextContainer;
 import com.github.freeacs.shell.command.ContextElement;
 import com.github.freeacs.shell.output.Heading;
@@ -12,15 +23,24 @@ import com.github.freeacs.shell.util.FileUtil;
 import com.github.freeacs.shell.util.StringUtil;
 import com.github.freeacs.shell.util.ValidateInteger;
 import com.github.freeacs.shell.util.Validation;
-import java.io.*;
-import java.io.File;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.Map.Entry;
+
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.sql.DataSource;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class GenericMenu {
 

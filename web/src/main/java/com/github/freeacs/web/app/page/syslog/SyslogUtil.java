@@ -1,12 +1,27 @@
 package com.github.freeacs.web.app.page.syslog;
 
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.SyslogConstants;
+import com.github.freeacs.dbi.SyslogEvent;
+import com.github.freeacs.dbi.SyslogEvents;
+import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.web.app.table.TableColor;
 import com.github.freeacs.web.app.util.DateUtils;
-import freemarker.template.*;
-import java.util.*;
-import java.util.Map.Entry;
+import freemarker.template.SimpleObjectWrapper;
+import freemarker.template.SimpleScalar;
+import freemarker.template.TemplateMethodModel;
+import freemarker.template.TemplateModel;
+import freemarker.template.TemplateModelException;
+
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /** The Class SyslogUtil. */
 @SuppressWarnings({"rawtypes"})

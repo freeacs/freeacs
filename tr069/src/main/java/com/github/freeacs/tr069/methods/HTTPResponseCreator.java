@@ -7,15 +7,30 @@ import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ProvOutput;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.github.freeacs.tr069.*;
+import com.github.freeacs.tr069.CPEParameters;
+import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.ParameterKey;
 import com.github.freeacs.tr069.Properties;
+import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
-import com.github.freeacs.tr069.xml.*;
+import com.github.freeacs.tr069.xml.Body;
+import com.github.freeacs.tr069.xml.EmptyResponse;
+import com.github.freeacs.tr069.xml.Header;
+import com.github.freeacs.tr069.xml.ParameterList;
+import com.github.freeacs.tr069.xml.ParameterValueStruct;
+import com.github.freeacs.tr069.xml.ParameterValueStructComparator;
+import com.github.freeacs.tr069.xml.Response;
+import com.github.freeacs.tr069.xml.TR069TransactionID;
+
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 /**
  * The class is responsible for creating a suitable response to the CPE. This response could be a

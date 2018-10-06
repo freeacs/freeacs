@@ -2,8 +2,19 @@ package com.github.freeacs.web.app.page.unit;
 
 import com.github.freeacs.common.util.IPAddress;
 import com.github.freeacs.common.util.TimeWindow;
-import com.github.freeacs.dbi.*;
-import com.github.freeacs.dbi.report.*;
+import com.github.freeacs.dbi.Syslog;
+import com.github.freeacs.dbi.SyslogEntry;
+import com.github.freeacs.dbi.SyslogFilter;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.UnitParameter;
+import com.github.freeacs.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.report.Key;
+import com.github.freeacs.dbi.report.PeriodType;
+import com.github.freeacs.dbi.report.RecordHardware;
+import com.github.freeacs.dbi.report.RecordSyslog;
+import com.github.freeacs.dbi.report.RecordVoip;
+import com.github.freeacs.dbi.report.Report;
+import com.github.freeacs.dbi.report.ReportConverter;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.web.app.page.report.UnitListData;
 import com.github.freeacs.web.app.page.report.uidata.RecordUIDataHardware;
@@ -11,15 +22,22 @@ import com.github.freeacs.web.app.page.report.uidata.RecordUIDataHardwareFilter;
 import com.github.freeacs.web.app.page.syslog.SyslogRetriever;
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.SessionCache;
+
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
-import javax.sql.DataSource;
 
 /**
  * A place holder for data and logic related to a specific time window.

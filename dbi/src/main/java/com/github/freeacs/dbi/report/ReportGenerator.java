@@ -1,13 +1,31 @@
 package com.github.freeacs.dbi.report;
 
-import com.github.freeacs.dbi.*;
-import java.io.IOException;
-import java.sql.*;
-import java.util.*;
-import java.util.Date;
-import javax.sql.DataSource;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.ACSUnit;
+import com.github.freeacs.dbi.DynamicStatement;
+import com.github.freeacs.dbi.Group;
+import com.github.freeacs.dbi.Identity;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.SyslogFilter;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.Users;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ReportGenerator {
 
