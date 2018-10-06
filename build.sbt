@@ -43,6 +43,13 @@ lazy val packagingSettings = Seq(
          |/lib/systemd/system/${normalizedName.value}.service
       """.stripMargin,
   ),
+  maintainerScripts in Rpm := maintainerScriptsAppend((maintainerScripts in Rpm).value)(
+    Conffiles ->
+      s"""/opt/${normalizedName.value}/config/application-config.properties
+         |/etc/default/${normalizedName.value}
+         |/lib/systemd/system/${normalizedName.value}.service
+      """.stripMargin,
+  ),
   rpmGroup := Some("Other"),
   rpmRelease := "1",
   rpmUrl := Some("https://github.com/freeacs/freeacs"),
