@@ -2,7 +2,12 @@ package com.github.freeacs.core.task;
 
 import com.github.freeacs.common.scheduler.Task;
 import com.github.freeacs.core.CoreServlet;
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.DBI;
+import com.github.freeacs.dbi.Identity;
+import com.github.freeacs.dbi.Syslog;
+import com.github.freeacs.dbi.SyslogConstants;
+import com.github.freeacs.dbi.Users;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
