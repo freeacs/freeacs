@@ -32,24 +32,6 @@ import java.util.TreeMap;
 
 public class SessionData implements SessionDataI {
 
-  public static class Download {
-    private String url;
-    private File file;
-
-    public Download(String url, File file) {
-      this.url = url;
-      this.file = file;
-    }
-
-    public String getUrl() {
-      return url;
-    }
-
-    public File getFile() {
-      return file;
-    }
-  }
-
   /* The session-id */
   private String id;
   /* Access to all database operations */
@@ -66,8 +48,6 @@ public class SessionData implements SessionDataI {
   private String mac;
   private String serialNumber;
 
-  /* Tells whether the noMoreRequests flag has been set by the CPE or not. */
-  private boolean noMoreRequests;
   /* Tells whether the CPE is authenticated or not */
   private boolean authenticated;
   /* Tells whether the CPE is factory reset or not */
@@ -80,8 +60,6 @@ public class SessionData implements SessionDataI {
   private boolean valueChange;
   /* Tells whether the CPE is kicked or not */
   private boolean kicked;
-  /* Tells whether the CPE has completed a diagnostics or not */
-  private boolean diagnosticsComplete;
   /* Tells whether a job is under execution - important not to start on another job */
   private boolean jobUnderExecution;
   /* The event code of the inform */
@@ -223,9 +201,7 @@ public class SessionData implements SessionDataI {
     this.authenticated = authenticated;
   }
 
-  public void setNoMoreRequests(boolean noMoreRequests) {
-    this.noMoreRequests = noMoreRequests;
-  }
+  public void setNoMoreRequests(boolean noMoreRequests) {}
 
   public CPEParameters getCpeParameters() {
     return cpeParameters;
@@ -524,10 +500,6 @@ public class SessionData implements SessionDataI {
     return getParameterKey().isEqual() && getCommandKey().isEqual();
   }
 
-  public void setDiagnosticsComplete(boolean diagnosticsComplete) {
-    this.diagnosticsComplete = diagnosticsComplete;
-  }
-
   public InformParameters getInformParameters() {
     return informParameters;
   }
@@ -610,5 +582,23 @@ public class SessionData implements SessionDataI {
     String version = null;
     if (cpeParameters != null) version = cpeParameters.getValue(cpeParameters.SOFTWARE_VERSION);
     return version;
+  }
+
+  public static class Download {
+    private String url;
+    private File file;
+
+    public Download(String url, File file) {
+      this.url = url;
+      this.file = file;
+    }
+
+    public String getUrl() {
+      return url;
+    }
+
+    public File getFile() {
+      return file;
+    }
   }
 }

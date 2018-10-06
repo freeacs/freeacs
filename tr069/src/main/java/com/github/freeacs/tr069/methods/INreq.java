@@ -57,7 +57,7 @@ public class INreq {
       if (es.getEventCode().startsWith("2")) sessionData.setPeriodic(true);
       if (es.getEventCode().startsWith("4")) sessionData.setValueChange(true);
       if (es.getEventCode().startsWith("6")) sessionData.setKicked(true);
-      if (es.getEventCode().startsWith("8")) sessionData.setDiagnosticsComplete(true);
+      // if (es.getEventCode().startsWith("8")) sessionData.setDiagnosticsComplete(true);
       // This is a quick-and-easy impl. since, there can potentially be more than
       // one CommandKey. However, I don't think this will be the case in practice. (Morten May 2012)
       // TODO: This is surely not correct - Morten Jul 2012
