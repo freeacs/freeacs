@@ -1,7 +1,9 @@
 package com.github.freeacs.common.util;
 
-import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,17 +32,15 @@ import org.slf4j.LoggerFactory;
  */
 public class Cache {
 
-  public static int SINCE_ACCESSED = 1;
   public static int SESSION = 1;
 
-  public static int SINCE_CREATED = 2;
   public static int ABSOLUTE = 2;
 
-  public static int SINCE_MODIFIED = 3;
+  private static int SINCE_MODIFIED = 3;
 
-  public static long STANDARDTIMEOUT = 30 * 60 * 1000;
+  static long STANDARDTIMEOUT = 30 * 60 * 1000;
 
-  private Hashtable<Object, CacheValue> map = new Hashtable<Object, CacheValue>();
+  private Map<Object, CacheValue> map = new Hashtable<>();
   private long cleanupFrequence = 60 * 1000;
   private long lastCleanup = System.currentTimeMillis();
 
@@ -53,37 +53,43 @@ public class Cache {
       if (lastCleanup + cleanupFrequence < now) {
         lastCleanup = System.currentTimeMillis();
         log.debug("Cache.Cleanup.run() starts");
-        Enumeration<Object> keys = map.keys();
-        Vector<Object> keysToRemove = new Vector<Object>();
-        while (keys.hasMoreElements()) {
-          Object key = keys.nextElement();
-          CacheValue value = (CacheValue) map.get(key);
+        Iterator<Object> keys = map.keySet().iterator();
+        List<Object> keysToRemove = new Vector<>();
+        while (keys.hasNext()) {
+          Object key = keys.next();
+          CacheValue value = map.get(key);
           boolean remove = false;
           if (value == null) remove = true;
           else {
             remove = toBeRemoved(value, now);
           }
           if (remove) {
-            log.debug("Key " + key + " with CacheValue " + value + " is to be removed");
+            if (log.isDebugEnabled()) {
+              log.debug("Key " + key + " with CacheValue " + value + " is to be removed");
+            }
             if (value != null && value.getCleanupNotifier() != null) {
-              log.debug("CacheValue has a cleanupnotifier-class which will be executed");
+              if (log.isDebugEnabled()) {
+                log.debug("CacheValue has a cleanupnotifier-class which will be executed");
+              }
               value.getCleanupNotifier().execute();
             }
-            keysToRemove.addElement(key);
+            keysToRemove.add(key);
           }
         }
-        keys = keysToRemove.elements();
-        while (keys.hasMoreElements()) {
-          map.remove(keys.nextElement());
+        keys = keysToRemove.iterator();
+        while (keys.hasNext()) {
+          map.remove(keys.next());
         }
-        log.debug(
-            "Cache removed "
-                + keysToRemove.size()
-                + " elements out of "
-                + map.size()
-                + " in "
-                + (System.currentTimeMillis() - lastCleanup)
-                + " ms.");
+        if (log.isDebugEnabled()) {
+          log.debug(
+              "Cache removed "
+                  + keysToRemove.size()
+                  + " elements out of "
+                  + map.size()
+                  + " in "
+                  + (System.currentTimeMillis() - lastCleanup)
+                  + " ms.");
+        }
       }
     }
   }
@@ -102,13 +108,15 @@ public class Cache {
     map.put(key, value);
   }
 
-  public Hashtable<Object, CacheValue> getMap() {
+  public Map<Object, CacheValue> getMap() {
     return map;
   }
 
   public void remove(Object key) {
-    log.debug(
-        "Key " + key + " will be removed from Cache (explicitely - not by Cache.Cleanup.run())");
+    if (log.isDebugEnabled()) {
+      log.debug(
+          "Key " + key + " will be removed from Cache (explicitely - not by Cache.Cleanup.run())");
+    }
     if (key != null) {
       map.remove(key);
     }
@@ -116,7 +124,7 @@ public class Cache {
 
   public CacheValue get(Object key) {
     cleanup();
-    CacheValue value = (CacheValue) map.get(key);
+    CacheValue value = map.get(key);
     if (value != null) {
       if (toBeRemoved(value, System.currentTimeMillis())) {
         map.remove(key);

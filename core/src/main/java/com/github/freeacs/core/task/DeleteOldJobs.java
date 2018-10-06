@@ -52,28 +52,40 @@ public class DeleteOldJobs extends DBIOwner {
     for (Job job : jobMap.values()) {
       if (System.currentTimeMillis() - job.getEndTimestamp().getTime()
           > Properties.COMPLETED_JOB_LIMIT * 3600 * 1000) {
-        logger.info(
-            "DeleteOldJobs: Found an old job ("
-                + job.getName()
-                + ")(ended at "
-                + job.getEndTimestamp()
-                + "), will try to delete it");
+        if (logger.isInfoEnabled()) {
+          logger.info(
+              "DeleteOldJobs: Found an old job ("
+                  + job.getName()
+                  + ")(ended at "
+                  + job.getEndTimestamp()
+                  + "), will try to delete it");
+        }
         if (job.getChildren().size() == 0) {
           unitJobs.delete(job);
-          logger.info("DeleteOldJobs: \tDeleted all rows in unit_job with jobId = " + job.getId());
+          if (logger.isInfoEnabled()) {
+            logger.info("DeleteOldJobs: \tDeleted all rows in unit_job with jobId = " + job.getId());
+          }
           job.getGroup().getUnittype().getJobs().deleteJobParameters(job, acs);
-          logger.info("DeleteOldJobs: \tDeleted all rows in job_param with jobId = " + job.getId());
+          if (logger.isInfoEnabled()) {
+            logger.info("DeleteOldJobs: \tDeleted all rows in job_param with jobId = " + job.getId());
+          }
           job.getGroup().getUnittype().getJobs().delete(job, acs);
-          logger.info("DeleteOldJobs: \tDeleted row in job with jobId = " + job.getId());
+          if (logger.isInfoEnabled()) {
+            logger.info("DeleteOldJobs: \tDeleted row in job with jobId = " + job.getId());
+          }
           removeFromJCMap.add(job);
         } else {
-          logger.info("DeleteOldJobs: \tCould not delete job, since some children job still exist");
+          if (logger.isInfoEnabled()) {
+            logger.info("DeleteOldJobs: \tCould not delete job, since some children job still exist");
+          }
         }
       }
     }
     for (Job job : removeFromJCMap) {
       jobMap.remove(job.getId());
-      logger.info("DeleteOldJobs: \tDeleted job from jobControlMap (memory-structure)");
+      if (logger.isInfoEnabled()) {
+        logger.info("DeleteOldJobs: \tDeleted job from jobControlMap (memory-structure)");
+      }
     }
   }
 }

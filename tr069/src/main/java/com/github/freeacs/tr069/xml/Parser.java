@@ -4,6 +4,7 @@ import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import java.io.StringReader;
 import java.util.HashMap;
+import java.util.Map;
 import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -16,18 +17,18 @@ import org.xml.sax.helpers.DefaultHandler;
  * TR-069 request or a TR-069 response.
  */
 public class Parser extends DefaultHandler {
-  public static final String MAX_ENVELOPES_TAG = "MaxEnvelopes";
-  public static final String CURRENT_TIME_TAG = "CurrentTime";
-  public static final String RETRY_COUNT_TAG = "RetryCount";
-  public static final String STATUS_TAG = "Status";
-  public static final String START_TIME_TAG = "StartTime";
-  public static final String COMPLETE_TIME_TAG = "CompleteTime";
-  public static final String COMMAND_KEY_TAG = "CommandKey";
-  public static final String FAULT_STRUCT_TAG = "FaultStruct";
+  private static final String MAX_ENVELOPES_TAG = "MaxEnvelopes";
+  private static final String CURRENT_TIME_TAG = "CurrentTime";
+  private static final String RETRY_COUNT_TAG = "RetryCount";
+  private static final String STATUS_TAG = "Status";
+  private static final String START_TIME_TAG = "StartTime";
+  private static final String COMPLETE_TIME_TAG = "CompleteTime";
+  private static final String COMMAND_KEY_TAG = "CommandKey";
+  private static final String FAULT_STRUCT_TAG = "FaultStruct";
 
   protected SAXParserFactory factory;
-  protected XMLReader reader;
-  protected HashMap<String, ContentHandler> parsers;
+  private XMLReader reader;
+  private Map<String, ContentHandler> parsers;
   private StringBuilder currTextContent = new StringBuilder();
 
   private Header headers;
@@ -95,12 +96,12 @@ public class Parser extends DefaultHandler {
     return factory;
   }
 
-  public XMLReader getXMLReader() {
+  XMLReader getXMLReader() {
     return this.reader;
   }
 
   /** @return the map of handlers (ContentHandlers) available */
-  public HashMap<String, ContentHandler> getHandlerMap() {
+  private Map<String, ContentHandler> getHandlerMap() {
     return this.parsers;
   }
 

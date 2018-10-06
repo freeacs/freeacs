@@ -6,8 +6,7 @@ import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.web.app.util.SessionCache;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Hashtable;
-import javax.servlet.ServletException;
+import java.util.Map;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,12 +26,11 @@ public class Monitor extends HttpServlet {
   /* (non-Javadoc)
    * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
    */
-  protected void doGet(HttpServletRequest req, HttpServletResponse res)
-      throws ServletException, IOException {
+  protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
     PrintWriter out = res.getWriter();
     Cache cache = SessionCache.getCache();
-    Hashtable<Object, CacheValue> map = cache.getMap();
-    String status = "FREEACSOK " + Main.version;
+    Map<Object, CacheValue> map = cache.getMap();
+    StringBuilder status = new StringBuilder("FREEACSOK " + Main.version);
     for (Object o : map.keySet()) {
       if (o instanceof String) {
         String s = (String) o;
@@ -40,18 +38,19 @@ public class Monitor extends HttpServlet {
           // We've found a DBI-object in the cache
           DBI dbi = (DBI) map.get(o).getObject();
           if (dbi != null && dbi.getDbiThrowable() != null) {
-            status = "ERROR: DBI reported error:\n" + dbi.getDbiThrowable() + "\n";
+            status =
+                new StringBuilder("ERROR: DBI reported error:\n" + dbi.getDbiThrowable() + "\n");
             for (StackTraceElement ste : dbi.getDbiThrowable().getStackTrace())
-              status += ste.toString();
+              status.append(ste.toString());
           }
         }
       }
     }
     if (lastDBILogin != null) {
-      status = "ERROR: DBI reported error:\n" + lastDBILogin + "\n";
-      for (StackTraceElement ste : lastDBILogin.getStackTrace()) status += ste.toString();
+      status = new StringBuilder("ERROR: DBI reported error:\n" + lastDBILogin + "\n");
+      for (StackTraceElement ste : lastDBILogin.getStackTrace()) status.append(ste.toString());
     }
-    out.println(status);
+    out.println(status.toString());
     out.close();
   }
 

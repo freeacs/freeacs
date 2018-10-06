@@ -16,6 +16,7 @@ import de.javawi.jstun.attribute.MessageAttributeParsingException;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,10 +38,10 @@ public class MessageHeader implements MessageHeaderInterface {
    * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    */
   private static Logger LOGGER = LoggerFactory.getLogger(MessageHeader.class);
-  MessageHeaderType type;
-  byte[] id = new byte[16];
+  private MessageHeaderType type;
+  private byte[] id = new byte[16];
 
-  TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute> ma =
+  Map<MessageAttribute.MessageAttributeType, MessageAttribute> ma =
       new TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute>();
 
   public MessageHeader() {
