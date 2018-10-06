@@ -2,7 +2,6 @@ package com.github.freeacs.web.app.page.unittype;
 
 import com.github.freeacs.web.app.input.Input;
 import com.github.freeacs.web.app.input.InputData;
-
 import java.util.Map;
 
 public class UnittypeCreateData extends InputData {

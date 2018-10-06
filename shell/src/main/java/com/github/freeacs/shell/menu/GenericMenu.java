@@ -23,11 +23,6 @@ import com.github.freeacs.shell.util.FileUtil;
 import com.github.freeacs.shell.util.StringUtil;
 import com.github.freeacs.shell.util.ValidateInteger;
 import com.github.freeacs.shell.util.Validation;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-import javax.sql.DataSource;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -41,6 +36,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import javax.sql.DataSource;
 
 public class GenericMenu {
 

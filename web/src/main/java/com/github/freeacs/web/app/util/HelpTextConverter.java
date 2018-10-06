@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.util;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -10,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import javax.swing.*;
 
 /**
  * A Swing dialog that helps converting normal html to XML encoded data.

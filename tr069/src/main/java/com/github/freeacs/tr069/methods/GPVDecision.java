@@ -33,7 +33,6 @@ import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

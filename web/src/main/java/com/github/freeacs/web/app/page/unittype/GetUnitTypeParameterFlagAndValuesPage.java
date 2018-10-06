@@ -7,7 +7,6 @@ import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.ACSLoader;
-
 import javax.sql.DataSource;
 
 /**

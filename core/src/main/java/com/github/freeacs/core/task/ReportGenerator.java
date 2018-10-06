@@ -26,10 +26,6 @@ import com.github.freeacs.dbi.report.ReportProvisioningGenerator;
 import com.github.freeacs.dbi.report.ReportSyslogGenerator;
 import com.github.freeacs.dbi.report.ReportVoipGenerator;
 import com.github.freeacs.dbi.report.TmsConverter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -42,6 +38,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReportGenerator extends DBIOwner {
 

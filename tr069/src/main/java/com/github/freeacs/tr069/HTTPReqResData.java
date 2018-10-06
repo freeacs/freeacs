@@ -5,12 +5,11 @@ import com.github.freeacs.base.BaseCacheException;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.tr069.xml.TR069TransactionID;
-
+import java.sql.SQLException;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.sql.SQLException;
-import java.util.Optional;
 
 public class HTTPReqResData {
   private final DBAccess dbAccess;

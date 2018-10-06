@@ -22,7 +22,6 @@ import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.xml.ParameterAttributeStruct;
 import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;

@@ -11,7 +11,6 @@ import com.github.freeacs.dbi.report.ReportGenerator;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.report.ReportData;
 import com.github.freeacs.web.app.util.ACSLoader;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;

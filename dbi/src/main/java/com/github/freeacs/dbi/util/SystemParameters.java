@@ -4,7 +4,6 @@ import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.UnittypeParameterFlag;
-
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.TreeMap;

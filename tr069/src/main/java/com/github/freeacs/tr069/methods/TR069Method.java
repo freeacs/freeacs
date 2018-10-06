@@ -1,11 +1,10 @@
 package com.github.freeacs.tr069.methods;
 
 import com.github.freeacs.tr069.Properties;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class TR069Method {

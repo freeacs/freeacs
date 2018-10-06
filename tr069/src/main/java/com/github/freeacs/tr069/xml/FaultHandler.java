@@ -1,11 +1,10 @@
 package com.github.freeacs.tr069.xml;
 
+import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
-
-import javax.xml.parsers.SAXParserFactory;
 
 /** The class is responsible for parsing the SOAP Fault entity received from the CPE. */
 public class FaultHandler extends DefaultHandler {

@@ -22,8 +22,6 @@ import com.github.freeacs.web.app.page.report.uidata.RecordUIDataHardwareFilter;
 import com.github.freeacs.web.app.page.syslog.SyslogRetriever;
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.SessionCache;
-
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -38,6 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
+import javax.sql.DataSource;
 
 /**
  * A place holder for data and logic related to a specific time window.

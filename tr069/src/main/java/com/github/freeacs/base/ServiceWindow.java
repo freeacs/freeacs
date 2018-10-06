@@ -3,7 +3,6 @@ package com.github.freeacs.base;
 import com.github.freeacs.common.util.TimeWindow;
 import com.github.freeacs.dbi.util.SystemConstants;
 import com.github.freeacs.dbi.util.SystemParameters;
-
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Random;

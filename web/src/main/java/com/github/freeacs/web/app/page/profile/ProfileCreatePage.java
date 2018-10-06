@@ -14,11 +14,10 @@ import com.github.freeacs.web.app.menu.MenuItem;
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
-
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.sql.DataSource;
 
 /**
  * What the name implies, a page for creating a profile.

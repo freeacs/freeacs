@@ -10,10 +10,9 @@ import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.tr069.methods.TR069Method;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Responsible for logging to the tr069-event log

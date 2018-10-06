@@ -6,7 +6,6 @@ import com.github.freeacs.web.app.util.Freemarker;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

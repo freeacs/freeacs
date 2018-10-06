@@ -1,7 +1,6 @@
 package com.github.freeacs.base;
 
 import com.github.freeacs.dbi.Job;
-
 import java.util.LinkedList;
 
 public class DownloadLogic {

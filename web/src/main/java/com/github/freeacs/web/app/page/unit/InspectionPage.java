@@ -16,10 +16,9 @@ import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.SessionCache;
-
-import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.Map;
+import javax.sql.DataSource;
 
 /**
  * Used by the {@link UnitPage} to continuously poll for changes in the inspection mode and state.

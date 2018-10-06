@@ -1,7 +1,6 @@
 package com.github.freeacs.dbi;
 
 import com.github.freeacs.dbi.crypto.Crypto;
-
 import java.sql.SQLException;
 
 public class User {

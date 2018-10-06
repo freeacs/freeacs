@@ -1,7 +1,6 @@
 package com.github.freeacs.shell.help;
 
 import com.github.freeacs.shell.Context;
-
 import java.util.List;
 
 public class HelpProcess {

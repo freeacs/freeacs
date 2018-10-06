@@ -4,7 +4,6 @@ import com.github.freeacs.dbi.report.RecordVoip;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.TimeFormatter;
 import freemarker.template.TemplateModelException;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;

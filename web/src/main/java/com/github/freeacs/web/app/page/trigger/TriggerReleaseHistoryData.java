@@ -3,7 +3,6 @@ package com.github.freeacs.web.app.page.trigger;
 import com.github.freeacs.web.app.input.Input;
 import com.github.freeacs.web.app.input.InputData;
 import com.github.freeacs.web.app.util.DateUtils;
-
 import java.util.Map;
 
 public class TriggerReleaseHistoryData extends InputData {

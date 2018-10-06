@@ -6,7 +6,6 @@ import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.web.app.input.DropDownSingleSelect;
 import com.github.freeacs.web.app.input.Input;
 import com.github.freeacs.web.app.input.InputSelectionFactory;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;

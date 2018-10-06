@@ -1,10 +1,9 @@
 package com.github.freeacs.web.app.util;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import java.util.Collections;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  * Takes care of retrieving properties from a property file. If the same property file is requested

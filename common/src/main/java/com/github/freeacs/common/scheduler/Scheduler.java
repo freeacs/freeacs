@@ -1,7 +1,6 @@
 package com.github.freeacs.common.scheduler;
 
 import com.github.freeacs.common.util.Sleep;
-
 import java.util.Calendar;
 
 /**

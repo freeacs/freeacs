@@ -2,9 +2,6 @@ package com.github.freeacs.dbi;
 
 import com.github.freeacs.dbi.DynamicStatement.NullInteger;
 import com.github.freeacs.dbi.util.SystemParameters;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,6 +12,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This interface is only for reading the following tables/concepts:

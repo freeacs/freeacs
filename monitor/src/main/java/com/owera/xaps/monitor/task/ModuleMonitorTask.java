@@ -2,14 +2,13 @@ package com.owera.xaps.monitor.task;
 
 import com.github.freeacs.common.scheduler.TaskDefaultImpl;
 import com.owera.xaps.monitor.Properties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Responsible for monitoring a set of URLs.

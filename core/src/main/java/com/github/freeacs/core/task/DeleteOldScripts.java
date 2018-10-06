@@ -2,12 +2,11 @@ package com.github.freeacs.core.task;
 
 import com.github.freeacs.core.Properties;
 import com.github.freeacs.dbi.ScriptExecutions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.Calendar;
+import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DeleteOldScripts extends DBIShare {
 

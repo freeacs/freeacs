@@ -1,7 +1,6 @@
 package com.github.freeacs.web.app.page.group;
 
 import com.github.freeacs.web.app.input.InputData;
-
 import java.util.Map;
 
 /**

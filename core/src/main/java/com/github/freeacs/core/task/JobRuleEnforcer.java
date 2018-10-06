@@ -12,16 +12,15 @@ import com.github.freeacs.dbi.UnitJob;
 import com.github.freeacs.dbi.UnitJobStatus;
 import com.github.freeacs.dbi.UnitJobs;
 import com.github.freeacs.dbi.Unittype;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JobRuleEnforcer extends DBIOwner {
 

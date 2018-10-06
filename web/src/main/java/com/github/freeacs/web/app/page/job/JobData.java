@@ -3,7 +3,6 @@ package com.github.freeacs.web.app.page.job;
 import com.github.freeacs.dbi.JobFlag.JobType;
 import com.github.freeacs.web.app.input.Input;
 import com.github.freeacs.web.app.input.InputData;
-
 import java.util.Map;
 
 public class JobData extends InputData {
