@@ -38,7 +38,7 @@ public class Cache {
 
   private static int SINCE_MODIFIED = 3;
 
-  static long STANDARDTIMEOUT = 30 * 60 * 1000;
+  protected static long STANDARDTIMEOUT = 30 * 60 * 1000;
 
   private Map<Object, CacheValue> map = new Hashtable<>();
   private long cleanupFrequence = 60 * 1000;

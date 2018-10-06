@@ -96,7 +96,7 @@ public class Parser extends DefaultHandler {
     return factory;
   }
 
-  XMLReader getXMLReader() {
+  protected XMLReader getXMLReader() {
     return this.reader;
   }
 

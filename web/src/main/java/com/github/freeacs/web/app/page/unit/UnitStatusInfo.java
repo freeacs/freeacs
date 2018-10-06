@@ -435,10 +435,9 @@ public class UnitStatusInfo {
         } else if (content != null
             && (content.contains(keyToFind.replace("_", line.toString()) + "reg failed")
                 || content.contains(keyToFind.replace("_", line.toString()) + "unreg failed")
-                || content.contains(keyToFind.replace("_", line.toString()) + "unreg ok"))) {
-          if (lastFailed == null || lastFailed.before(entry.getCollectorTimestamp())) {
-            lastFailed = entry.getCollectorTimestamp();
-          }
+                || content.contains(keyToFind.replace("_", line.toString()) + "unreg ok"))
+            && (lastFailed == null || lastFailed.before(entry.getCollectorTimestamp()))) {
+          lastFailed = entry.getCollectorTimestamp();
         }
       }
       return (lastFailed == null && lastRegged != null)

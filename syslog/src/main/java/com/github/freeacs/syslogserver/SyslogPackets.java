@@ -8,50 +8,6 @@ import org.slf4j.LoggerFactory;
 
 public class SyslogPackets {
 
-  public static class BufferCounter {
-
-    private int failoverPackets;
-    private int bufferOverflow;
-    private int size;
-
-    public BufferCounter() {}
-
-    public BufferCounter(int failoverPackets, int bufferOverflow, int size) {
-      super();
-      this.failoverPackets = failoverPackets;
-      this.bufferOverflow = bufferOverflow;
-      this.size = size;
-    }
-
-    public synchronized void incFailoverPackets() {
-      failoverPackets++;
-    }
-
-    public synchronized void decFailoverPackets() {
-      failoverPackets--;
-    }
-
-    public synchronized void incBufferOverflow() {
-      bufferOverflow++;
-    }
-
-    public synchronized BufferCounter resetCounters() {
-      BufferCounter c = new BufferCounter(failoverPackets, bufferOverflow, packets.size());
-      this.failoverPackets = 0;
-      this.bufferOverflow = 0;
-      this.size = 0;
-      return c;
-    }
-
-    public int getBufferOverflow() {
-      return bufferOverflow;
-    }
-
-    public int getSize() {
-      return size;
-    }
-  }
-
   public static List<SyslogPacket> packets = new LinkedList<>();
 
   private static BufferCounter counter = new BufferCounter();
@@ -109,5 +65,49 @@ public class SyslogPackets {
 
   public static BufferCounter getCounter() {
     return counter;
+  }
+
+  public static class BufferCounter {
+
+    private int failoverPackets;
+    private int bufferOverflow;
+    private int size;
+
+    public BufferCounter() {}
+
+    public BufferCounter(int failoverPackets, int bufferOverflow, int size) {
+      super();
+      this.failoverPackets = failoverPackets;
+      this.bufferOverflow = bufferOverflow;
+      this.size = size;
+    }
+
+    public synchronized void incFailoverPackets() {
+      failoverPackets++;
+    }
+
+    public synchronized void decFailoverPackets() {
+      failoverPackets--;
+    }
+
+    public synchronized void incBufferOverflow() {
+      bufferOverflow++;
+    }
+
+    public synchronized BufferCounter resetCounters() {
+      BufferCounter c = new BufferCounter(failoverPackets, bufferOverflow, packets.size());
+      this.failoverPackets = 0;
+      this.bufferOverflow = 0;
+      this.size = 0;
+      return c;
+    }
+
+    public int getBufferOverflow() {
+      return bufferOverflow;
+    }
+
+    public int getSize() {
+      return size;
+    }
   }
 }

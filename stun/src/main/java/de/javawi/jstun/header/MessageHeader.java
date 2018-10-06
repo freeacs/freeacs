@@ -41,7 +41,7 @@ public class MessageHeader implements MessageHeaderInterface {
   private MessageHeaderType type;
   private byte[] id = new byte[16];
 
-  Map<MessageAttribute.MessageAttributeType, MessageAttribute> ma =
+  protected Map<MessageAttribute.MessageAttributeType, MessageAttribute> ma =
       new TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute>();
 
   public MessageHeader() {

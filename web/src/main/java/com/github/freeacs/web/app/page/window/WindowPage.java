@@ -147,7 +147,7 @@ public class WindowPage extends AbstractWebPage {
   static {
     int count = 0;
     for (String hour : hours) {
-      if (hour.equals("24")) {
+      if ("24".equals(hour)) {
         hourMinuteStrings[count] = hour + "00";
         count++;
         continue;
