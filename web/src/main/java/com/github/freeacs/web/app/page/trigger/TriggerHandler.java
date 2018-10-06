@@ -1,6 +1,13 @@
 package com.github.freeacs.web.app.page.trigger;
 
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.File;
+import com.github.freeacs.dbi.FileType;
+import com.github.freeacs.dbi.SyslogEvent;
+import com.github.freeacs.dbi.SyslogEvents;
+import com.github.freeacs.dbi.Trigger;
+import com.github.freeacs.dbi.Triggers;
+import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.web.app.input.DropDownSingleSelect;
 import com.github.freeacs.web.app.input.Input;
 import com.github.freeacs.web.app.input.InputSelectionFactory;

@@ -1,6 +1,11 @@
 package com.github.freeacs.shell.menu;
 
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.Group;
+import com.github.freeacs.dbi.GroupParameter;
+import com.github.freeacs.dbi.GroupParameters;
+import com.github.freeacs.dbi.Parameter;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.shell.Context;
 import com.github.freeacs.shell.Session;
 import com.github.freeacs.shell.command.Option;

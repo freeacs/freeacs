@@ -7,12 +7,24 @@ import com.github.freeacs.base.db.DBAccessSessionTR069;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.TimestampWrapper;
-import com.github.freeacs.tr069.*;
+import com.github.freeacs.tr069.CPEParameters;
+import com.github.freeacs.tr069.CommandKey;
+import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.InformParameters;
+import com.github.freeacs.tr069.ParameterKey;
+import com.github.freeacs.tr069.Properties;
+import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.background.ScheduledKickTask;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
-import com.github.freeacs.tr069.xml.*;
+import com.github.freeacs.tr069.xml.DeviceIdStruct;
+import com.github.freeacs.tr069.xml.EventList;
+import com.github.freeacs.tr069.xml.EventStruct;
+import com.github.freeacs.tr069.xml.Header;
+import com.github.freeacs.tr069.xml.ParameterList;
+import com.github.freeacs.tr069.xml.ParameterValueStruct;
+import com.github.freeacs.tr069.xml.Parser;
 import java.io.FileWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -40,12 +52,12 @@ public class INreq {
       } catch (NumberFormatException nfe) {
         eventCodeStrSet.add(tmpArr[0]);
       }
-      if (es.getEventCode().startsWith("0")) sessionData.setFactoryReset(true);
-      if (es.getEventCode().startsWith("1")) sessionData.setBooted(true);
+      // if (es.getEventCode().startsWith("0")) sessionData.setFactoryReset(true);
+      // if (es.getEventCode().startsWith("1")) sessionData.setBooted(true);
       if (es.getEventCode().startsWith("2")) sessionData.setPeriodic(true);
-      if (es.getEventCode().startsWith("4")) sessionData.setValueChange(true);
-      if (es.getEventCode().startsWith("6")) sessionData.setKicked(true);
-      if (es.getEventCode().startsWith("8")) sessionData.setDiagnosticsComplete(true);
+      // if (es.getEventCode().startsWith("4")) sessionData.setValueChange(true);
+      // if (es.getEventCode().startsWith("6")) sessionData.setKicked(true);
+      // if (es.getEventCode().startsWith("8")) sessionData.setDiagnosticsComplete(true);
       // This is a quick-and-easy impl. since, there can potentially be more than
       // one CommandKey. However, I don't think this will be the case in practice. (Morten May 2012)
       // TODO: This is surely not correct - Morten Jul 2012

@@ -1,7 +1,11 @@
 package com.github.freeacs.core.task;
 
 import com.github.freeacs.core.Properties;
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.Job;
+import com.github.freeacs.dbi.JobStatus;
+import com.github.freeacs.dbi.UnitJobs;
+import com.github.freeacs.dbi.Unittype;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
