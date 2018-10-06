@@ -1,6 +1,10 @@
 package com.github.freeacs.dbi;
 
-import java.sql.*;
+import java.sql.Blob;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 import javax.sql.DataSource;
 

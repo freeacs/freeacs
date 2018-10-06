@@ -1,6 +1,11 @@
 package com.github.freeacs.web.app;
 
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.ACS;
+import com.github.freeacs.dbi.ACSUnit;
+import com.github.freeacs.dbi.Job;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.context.ContextItem;
 import com.github.freeacs.web.app.input.Input;

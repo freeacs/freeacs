@@ -4,7 +4,11 @@ import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.Group;
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.report.*;
+import com.github.freeacs.dbi.report.PeriodType;
+import com.github.freeacs.dbi.report.RecordGroup;
+import com.github.freeacs.dbi.report.Report;
+import com.github.freeacs.dbi.report.ReportGenerator;
+import com.github.freeacs.dbi.report.ReportGroupGenerator;
 import com.github.freeacs.web.app.input.DropDownSingleSelect;
 import com.github.freeacs.web.app.input.InputSelectionFactory;
 import com.github.freeacs.web.app.input.ParameterParser;
@@ -12,7 +16,11 @@ import com.github.freeacs.web.app.page.report.ReportData;
 import com.github.freeacs.web.app.util.ACSLoader;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /** The Class GroupInterface. */
 public class GroupRetriever extends ReportRetriever {

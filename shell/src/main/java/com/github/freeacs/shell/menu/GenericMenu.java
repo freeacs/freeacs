@@ -1,7 +1,18 @@
 package com.github.freeacs.shell.menu;
 
-import com.github.freeacs.dbi.*;
-import com.github.freeacs.shell.*;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.Syslog;
+import com.github.freeacs.dbi.SyslogConstants;
+import com.github.freeacs.dbi.SyslogEntry;
+import com.github.freeacs.dbi.SyslogFilter;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.shell.ACSShell;
+import com.github.freeacs.shell.Context;
+import com.github.freeacs.shell.Script;
+import com.github.freeacs.shell.ScriptMaker;
+import com.github.freeacs.shell.Session;
+import com.github.freeacs.shell.Variable;
 import com.github.freeacs.shell.command.ContextContainer;
 import com.github.freeacs.shell.command.ContextElement;
 import com.github.freeacs.shell.output.Heading;
@@ -12,10 +23,18 @@ import com.github.freeacs.shell.util.FileUtil;
 import com.github.freeacs.shell.util.StringUtil;
 import com.github.freeacs.shell.util.ValidateInteger;
 import com.github.freeacs.shell.util.Validation;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -35,21 +54,21 @@ public class GenericMenu {
 
   public boolean execute(String[] inputArr, OutputHandler oh) throws Exception {
     String input = inputArr[0];
-    if (input.equals("cc")) {
+    if ("cc".equals(input)) {
       cc(inputArr);
       return true;
-    } else if (input.equals("pausescript")) {
+    } else if ("pausescript".equals(input)) {
       session.print("Press RETURN to continue");
       InputStreamReader isr = new InputStreamReader(System.in);
       char[] cbuf = new char[2];
       isr.read(cbuf);
       String s = new String(cbuf);
-      if (s.indexOf("\n") == -1) session.println("");
+      if (!s.contains("\n")) session.println("");
       return true;
-    } else if (input.equals("syslog")) {
+    } else if ("syslog".equals(input)) {
       syslog(inputArr, oh);
       return true;
-    } else if (input.equals("exit")) {
+    } else if ("exit".equals(input)) {
       session.exitShell(0);
       return true;
     } else if (input.startsWith("echo")) {
@@ -103,32 +122,32 @@ public class GenericMenu {
     } else if (input.startsWith("delosf")) {
       delfile(inputArr);
       return true;
-    } else if (input.equals("unit")) {
+    } else if ("unit".equals(input)) {
       unit(inputArr, oh);
       return true;
-    } else if (input.equals("if")
-        || input.equals("elseif")
-        || input.equals("else")
-        || input.equals("fi")) {
+    } else if ("if".equals(input)
+        || "elseif".equals(input)
+        || "else".equals(input)
+        || "fi".equals(input)) {
       ifelse(inputArr, session);
       return true;
-    } else if (input.equals("while") || input.equals("done")) {
+    } else if ("while".equals(input) || "done".equals(input)) {
       whiledone(inputArr, session);
       return true;
-    } else if (input.equals("break") || input.equals("continue")) {
+    } else if ("break".equals(input) || "continue".equals(input)) {
       breakcontinue(inputArr, session);
       return true;
-    } else if (input.equals("scriptstatus")) {
+    } else if ("scriptstatus".equals(input)) {
       scriptstatus();
       return true;
-    } else if (input.equals("unittypeexport") || input.equals("unittypeimport")) {
+    } else if ("unittypeexport".equals(input) || "unittypeimport".equals(input)) {
       session
           .getScriptStack()
           .push(
               new Script(
                   ScriptMaker.getMigrateScript(0, inputArr), new Context(session), Script.SCRIPT));
       return true;
-    } else if (input.equals("unittypecompletedelete")) {
+    } else if ("unittypecompletedelete".equals(input)) {
       session
           .getScriptStack()
           .push(
@@ -169,8 +188,8 @@ public class GenericMenu {
         throw new IllegalArgumentException(
             "Script terminated because of '" + args[0] + "' not within a while-done loop");
     }
-    if (args[0].equals("break")) session.getScriptStack().pop();
-    if (args[0].equals("continue")) session.getScript().reset();
+    if ("break".equals(args[0])) session.getScriptStack().pop();
+    if ("continue".equals(args[0])) session.getScript().reset();
   }
 
   private static final String IF = "if";
@@ -188,9 +207,9 @@ public class GenericMenu {
   }
 
   private String getWhilePath(Session session) {
-    String path = "";
+    StringBuilder path = new StringBuilder();
     for (Script script : session.getScriptStack()) {
-      path += script.getLinePointer() + "-";
+      path.append(script.getLinePointer()).append("-");
     }
     return path.substring(0, path.length() - 1);
   }
@@ -348,7 +367,7 @@ public class GenericMenu {
       } else {
         StringBuilder sb = new StringBuilder();
         for (int i = 1; i < args.length; i++) {
-          sb.append(args[i] + " ");
+          sb.append(args[i]).append(" ");
         }
         boolean eval = evalBoolean(sb.toString());
         if (!eval) {
@@ -369,7 +388,7 @@ public class GenericMenu {
   }
 
   private boolean evalBoolean(String evalStr) {
-    return eval(evalStr).equals("true");
+    return "true".equals(eval(evalStr));
   }
 
   public static String eval(String evalStr) {
@@ -441,8 +460,10 @@ public class GenericMenu {
     if (f.exists()) {
       if (f.isDirectory()) {
         File[] files = f.listFiles();
-        for (File f1 : files) {
-          printFileInfo(f1, oh);
+        if (files != null) {
+          for (File f1 : files) {
+            printFileInfo(f1, oh);
+          }
         }
       } else {
         printFileInfo(f, oh);
@@ -463,7 +484,7 @@ public class GenericMenu {
       throw new IllegalArgumentException("The variable name cannot start with an underscore.");
     StringBuilder sb = new StringBuilder();
     for (int i = 2; i < args.length; i++) {
-      sb.append(args[i] + " ");
+      sb.append(args[i]).append(" ");
     }
     script.addVariable(args[1], eval(sb.toString()));
   }
@@ -484,18 +505,17 @@ public class GenericMenu {
       } catch (Throwable t) {
         System.err.println("Something went wrong : " + t);
       }
-    } catch (Throwable t) {
+    } catch (Throwable ignored) {
+      ignored.printStackTrace();
       // cannot happen
     }
   }
 
   private void printFileInfo(File f, OutputHandler oh) {
     Listing listing = oh.getListing();
-
     String dirStr = "";
     if (f.isDirectory()) dirStr = "<DIR>";
     listing.addLine(dirStr, "" + f.length(), "" + f.getName());
-    //		session.println(String.format("%1$5s %2$10d  %3$-30s", dirStr, f.length(), f.getName()));
   }
 
   private Map<String, Unit> getUnits(String[] args, Context context) throws Exception {
@@ -520,37 +540,6 @@ public class GenericMenu {
       throw new IllegalArgumentException(
           "The argument " + cc + " could not be parsed into a context switch");
     session.getProcessor().changeContext(cc, context, session);
-
-    /*
-    if (ccArg.equals("/"))
-    	context.resetToNull();
-    else {
-    	String[] ccArr = ccArg.split("/");
-    	for (String cc : ccArr) {
-    		if (cc.equals("..")) {
-    			if (context.getUnit() != null)
-    				context.setUnit(null);
-    			else if (context.getUnittypeParameter() != null)
-    				context.setUnittypeParameter(null);
-    			else if (context.getGroup() != null)
-    				context.setGroup(null);
-    			else if (context.getJob() != null)
-    				context.setJob(null);
-    			else if (context.getProfile() != null)
-    				context.setProfile(null);
-    			else if (context.getUnittype() != null)
-    				context.setUnittype(null);
-    		} else if (cc.equals("")) {
-    			context.resetToNull();
-    		} else {
-    			Map<String, ContextElement> ceMap = ContextElement.parseContextElements(cc);
-    			if (ceMap == null || ceMap.size() == 0)
-    				throw new IllegalArgumentException("The argument " + cc + " could not be parsed into a context switch");
-    			session.getProcessor().changeContext(ceMap, context, session);
-    		}
-    	}
-    }
-    	*/
   }
 
   private void syslog(String[] args, OutputHandler oh) throws Exception {
@@ -593,17 +582,17 @@ public class GenericMenu {
     Line headingLine = new Line();
     for (String listOption : listOptions) {
       if (listOption.trim().length() == 0) continue;
-      if (listOption.equals("t")) headingLine.addValue("Timestamp");
-      if (listOption.equals("ev")) headingLine.addValue("Event Id");
-      if (listOption.equals("fn")) headingLine.addValue("Facility");
-      if (listOption.equals("fv")) headingLine.addValue("Facility-ver.");
-      if (listOption.equals("ip")) headingLine.addValue("Ip address");
-      if (listOption.equals("m")) headingLine.addValue("Message");
-      if (listOption.equals("s")) headingLine.addValue("Severity");
-      if (listOption.equals("us")) headingLine.addValue("User");
-      if (listOption.equals("un")) headingLine.addValue("Unit Id");
-      if (listOption.equals("pr")) headingLine.addValue("Profile");
-      if (listOption.equals("ut")) headingLine.addValue("Unit Type");
+      if ("t".equals(listOption)) headingLine.addValue("Timestamp");
+      if ("ev".equals(listOption)) headingLine.addValue("Event Id");
+      if ("fn".equals(listOption)) headingLine.addValue("Facility");
+      if ("fv".equals(listOption)) headingLine.addValue("Facility-ver.");
+      if ("ip".equals(listOption)) headingLine.addValue("Ip address");
+      if ("m".equals(listOption)) headingLine.addValue("Message");
+      if ("s".equals(listOption)) headingLine.addValue("Severity");
+      if ("us".equals(listOption)) headingLine.addValue("User");
+      if ("un".equals(listOption)) headingLine.addValue("Unit Id");
+      if ("pr".equals(listOption)) headingLine.addValue("Profile");
+      if ("ut".equals(listOption)) headingLine.addValue("Unit Type");
       if (headingLine.getValues().size() == 0)
         throw new IllegalArgumentException(
             "List option " + listOption + " was not specified correctly");
@@ -613,20 +602,20 @@ public class GenericMenu {
       Line line = new Line();
       for (String listOption : listOptions) {
         if (listOption.trim().length() == 0) continue;
-        if (listOption.equals("t"))
+        if ("t".equals(listOption))
           line.addValue(Util.outputFormatExtended.format(entry.getCollectorTimestamp()));
-        if (listOption.equals("ev")) line.addValue("" + entry.getEventId());
-        if (listOption.equals("fn"))
+        if ("ev".equals(listOption)) line.addValue("" + entry.getEventId());
+        if ("fn".equals(listOption))
           line.addValue(SyslogConstants.getFacilityName(entry.getFacility()));
-        if (listOption.equals("fv")) line.addValue(entry.getFacilityVersion());
-        if (listOption.equals("ip")) line.addValue(entry.getIpAddress());
-        if (listOption.equals("m")) line.addValue(entry.getContent());
-        if (listOption.equals("s"))
+        if ("fv".equals(listOption)) line.addValue(entry.getFacilityVersion());
+        if ("ip".equals(listOption)) line.addValue(entry.getIpAddress());
+        if ("m".equals(listOption)) line.addValue(entry.getContent());
+        if ("s".equals(listOption))
           line.addValue(SyslogConstants.getSeverityName(entry.getSeverity()));
-        if (listOption.equals("us")) line.addValue(entry.getUserId());
-        if (listOption.equals("un")) line.addValue(entry.getUnitId());
-        if (listOption.equals("pr")) line.addValue(entry.getProfileName());
-        if (listOption.equals("ut")) line.addValue(entry.getUnittypeName());
+        if ("us".equals(listOption)) line.addValue(entry.getUserId());
+        if ("un".equals(listOption)) line.addValue(entry.getUnitId());
+        if ("pr".equals(listOption)) line.addValue(entry.getProfileName());
+        if ("ut".equals(listOption)) line.addValue(entry.getUnittypeName());
       }
       listing.addLine(line);
     }
@@ -764,64 +753,4 @@ public class GenericMenu {
       else throw new IOException("The file " + filename + " could not be deleted");
     }
   }
-
-  //	private String[] findArgs(String[] args, String option, String otherOption) {
-  //		List<String> retArgsList = new ArrayList<String>();
-  //		boolean match = false;
-  //		for (String str : args) {
-  //			if (str.equals("-" + otherOption))
-  //				match = false;
-  //			if (match)
-  //				retArgsList.add(str);
-  //			if (str.equals("-" + option))
-  //				match = true;
-  //		}
-  //		return retArgsList.toArray(new String[] {});
-  //	}
-
-  //	private Context parseContext(Context context, String[] args, int index) {
-  //		for (int i = index; i < args.length; i++) {
-  //			if (context.getUnittype() == null) {
-  //				Unittype unittype = session.getXaps().getUnittype(args[i]);
-  //				if (unittype == null)
-  //					throwIllegalArgumentException("unittype", args[i]);
-  //				context.setUnittype(unittype);
-  //				continue;
-  //			}
-  //			Unittype unittype = context.getUnittype();
-  //			if (args[i].startsWith("J-")) {
-  //				Job job = unittype.getJobs().getByName(args[i].substring(2));
-  //				if (job == null)
-  //					throwIllegalArgumentException("job", args[i].substring(2));
-  //				context.setJob(job);
-  //			} else if (args[i].startsWith("G-")) {
-  //				Group group = unittype.getGroups().getByName(args[i].substring(2));
-  //				if (group == null)
-  //					throwIllegalArgumentException("group", args[i].substring(2));
-  //				context.setGroup(group);
-  //			} else if (args[i].startsWith("V-")) {
-  //				UnittypeParameter unittypeParameter =
-  // unittype.getUnittypeParameters().getByName(args[i].substring(2));
-  //				if (unittypeParameter == null)
-  //					throwIllegalArgumentException("unittypeparameter", args[i].substring(2));
-  //				context.setUnittypeParameter(unittypeParameter);
-  //			} else if (context.getProfile() == null) {
-  //				Profile profile = unittype.getProfiles().getByName(args[i]);
-  //				if (profile == null)
-  //					throwIllegalArgumentException("profile", args[i]);
-  //				context.setProfile(profile);
-  //			} else if (context.getUnit() == null) {
-  //				Unit unit = new Unit(args[i], context.getUnittype(), context.getProfile());
-  //				context.setUnit(unit);
-  //			}
-  //		}
-  //		return context;
-  //
-  //	}
-
-  //	private void throwIllegalArgumentException(String type, String name) {
-  //		throw new IllegalArgumentException("The context " + name + " was interpreted as a " + type +
-  // ", but the it did not exist.");
-  //	}
-
 }

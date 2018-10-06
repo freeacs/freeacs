@@ -1,6 +1,10 @@
 package com.github.freeacs.shell.menu;
 
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.dbi.Parameter;
+import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.ProfileParameter;
+import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.shell.Context;
 import com.github.freeacs.shell.Session;
 import com.github.freeacs.shell.UnitTempStorage;

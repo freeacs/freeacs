@@ -2,11 +2,19 @@ package com.github.freeacs.dbi.tr069;
 
 import com.github.freeacs.dbi.tr069.TR069DMParameter.StringType;
 import java.io.InputStream;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class TR069DMLoader {
 
