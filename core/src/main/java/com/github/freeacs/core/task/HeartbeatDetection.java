@@ -33,8 +33,6 @@ import org.slf4j.LoggerFactory;
 
 public class HeartbeatDetection extends DBIShare {
 
-  public static int ACTIVE_DEVICE = -1; // Will not be at conflict with any Heartbeat-Id
-
   private static long MINUTE_MS = 60 * 1000;
   private static long HOUR_MS = 60 * MINUTE_MS;
   private static long OFFSET = MINUTE_MS;
@@ -80,16 +78,21 @@ public class HeartbeatDetection extends DBIShare {
   private void findHeartbeats(long from, long to) throws SQLException {
     long orgTo = to;
     long orgFrom = from;
-    if (from == 0)
-      logger.info(
-          "HeartbeatDetection: FindHeartbeats: Parse syslog from the last hours (depending on heartbeat timeout) up to "
-              + sdf.format(new Date(to)));
-    else
-      logger.info(
-          "HeartbeatDetection: FindHeartbeats: Parse syslog in the timespan "
-              + sdf.format(new Date(from))
-              + " to "
-              + sdf.format(new Date(to)));
+    if (from == 0) {
+      if (logger.isInfoEnabled()) {
+        logger.info(
+            "HeartbeatDetection: FindHeartbeats: Parse syslog from the last hours (depending on heartbeat timeout) up to "
+                + sdf.format(new Date(to)));
+      }
+    } else {
+      if (logger.isInfoEnabled()) {
+        logger.info(
+            "HeartbeatDetection: FindHeartbeats: Parse syslog in the timespan "
+                + sdf.format(new Date(from))
+                + " to "
+                + sdf.format(new Date(to)));
+      }
+    }
     Connection c = null;
     ResultSet rs = null;
     PreparedStatement ps = null;
@@ -102,21 +105,25 @@ public class HeartbeatDetection extends DBIShare {
         for (Heartbeat heartbeat : heartbeats) {
           to = orgTo;
           from = orgFrom;
-          logger.debug(
-              "HeartbeatDetection: FindHeartbeats: Process unittype "
-                  + unittype.getName()
-                  + " and heartbeat "
-                  + heartbeat.getName()
-                  + " ["
-                  + heartbeat.getId()
-                  + "] with expression "
-                  + heartbeat.getExpression());
+          if (logger.isDebugEnabled()) {
+            logger.debug(
+                "HeartbeatDetection: FindHeartbeats: Process unittype "
+                    + unittype.getName()
+                    + " and heartbeat "
+                    + heartbeat.getName()
+                    + " ["
+                    + heartbeat.getId()
+                    + "] with expression "
+                    + heartbeat.getExpression());
+          }
           SyslogMessageMapContainer.SyslogMessageMap smm =
               smmc.getSyslogMessageMap(heartbeat.getId());
           if (smm == null) { // The heartbeat is new - happens at server-startup and if there's been
             // detected some change to it (group/expression/etc)
-            logger.debug(
-                "HeartbeatDetection: FindHeartbeats: Creating new syslog message map - because server-startup or heartbeat-change");
+            if (logger.isDebugEnabled()) {
+              logger.debug(
+                  "HeartbeatDetection: FindHeartbeats: Creating new syslog message map - because server-startup or heartbeat-change");
+            }
             smm = smmc.createSyslogMessageMap(heartbeat);
             from = new Date(to - (long) heartbeat.getTimeoutHours() * HOUR_MS).getTime();
             to = from + 5 * 60000;
@@ -126,10 +133,6 @@ public class HeartbeatDetection extends DBIShare {
             // "catch up" (memory-structures are empty)
             ds = new DynamicStatement();
             ds.addSql("SELECT distinct(unit_id) FROM syslog WHERE ");
-            //						if (from == 0)
-            //							ds.addSqlAndArguments("collector_timestamp >= ? AND ", new Date(to - (long)
-            // heartbeat.getTimeoutHours() * HOUR_MS));
-            //						else
             ds.addSqlAndArguments("collector_timestamp >= ? AND ", new Date(from));
             ds.addSqlAndArguments("collector_timestamp < ? AND ", new Date(to));
             ds.addSqlAndArguments("unit_type_name = ? AND ", unittype.getName());
@@ -138,7 +141,9 @@ public class HeartbeatDetection extends DBIShare {
                 " AND content NOT LIKE ?", "%" + Heartbeat.MISSING_HEARTBEAT_ID + "%");
             ps = ds.makePreparedStatement(c);
             rs = ps.executeQuery();
-            logger.debug("HeartbeatDetection: FindHeartbeats: " + ds.getDebugMessage());
+            if (logger.isDebugEnabled()) {
+              logger.debug("HeartbeatDetection: FindHeartbeats: " + ds.getDebugMessage());
+            }
             int counter = 0;
             Map<String, Unit> unitsInGroupMap = null;
             if (heartbeat.getGroup() != null) {
@@ -152,24 +157,28 @@ public class HeartbeatDetection extends DBIShare {
                 smm.append(unitId, to);
               counter++;
             }
-            logger.debug(
-                "HeartbeatDetection: FindHeartbeats: "
-                    + counter
-                    + " devices matching "
-                    + heartbeat.getExpression()
-                    + " ["
-                    + smm
-                    + "]");
+            if (logger.isDebugEnabled()) {
+              logger.debug(
+                  "HeartbeatDetection: FindHeartbeats: "
+                      + counter
+                      + " devices matching "
+                      + heartbeat.getExpression()
+                      + " ["
+                      + smm
+                      + "]");
+            }
             to += 5 * 60000;
             from += 5 * 60000;
           }
         }
       }
     } catch (SQLException sqlex) {
-      logger.error(
-          "HeartbeatDetection: FindHeartbeats: SQL that failed: "
-              + ds.getSqlQuestionMarksSubstituted(),
-          sqlex);
+      if (logger.isErrorEnabled()) {
+        logger.error(
+            "HeartbeatDetection: FindHeartbeats: SQL that failed: "
+                + (ds != null ? ds.getSqlQuestionMarksSubstituted() : null),
+            sqlex);
+      }
       throw sqlex;
     } finally {
       if (rs != null) rs.close();
@@ -181,11 +190,13 @@ public class HeartbeatDetection extends DBIShare {
   }
 
   private void findActiveDevices(long from, long to) throws SQLException {
-    logger.info(
-        "HeartbeatDetection: FindActiveDevices: Parse syslog in the timespan "
-            + sdf.format(new Date(from))
-            + " to "
-            + sdf.format(new Date(to)));
+    if (logger.isInfoEnabled()) {
+      logger.info(
+          "HeartbeatDetection: FindActiveDevices: Parse syslog in the timespan "
+              + sdf.format(new Date(from))
+              + " to "
+              + sdf.format(new Date(to)));
+    }
     Connection c = null;
     ResultSet rs = null;
     PreparedStatement ps = null;
@@ -200,23 +211,29 @@ public class HeartbeatDetection extends DBIShare {
       ds.addSqlAndArguments("facility < ?", SyslogConstants.FACILITY_SHELL);
       ps = ds.makePreparedStatement(c);
       rs = ps.executeQuery();
-      logger.debug("- " + ds.getDebugMessage());
+      if (logger.isDebugEnabled()) {
+        logger.debug("- " + ds.getDebugMessage());
+      }
       while (rs.next()) {
         String unitId = rs.getString("unit_id");
         activeDevices.put(unitId, to);
         counter++;
       }
-      logger.debug(
-          "HeartbeatDetection: FindActiveDevices: Found "
-              + counter
-              + " devices (total number of active: "
-              + activeDevices.size()
-              + ")");
+      if (logger.isDebugEnabled()) {
+        logger.debug(
+            "HeartbeatDetection: FindActiveDevices: Found "
+                + counter
+                + " devices (total number of active: "
+                + activeDevices.size()
+                + ")");
+      }
     } catch (SQLException sqlex) {
-      logger.error(
-          "HeartbeatDetection: FindActiveDevices: SQL that failed: "
-              + ds.getSqlQuestionMarksSubstituted(),
-          sqlex);
+      if (logger.isErrorEnabled()) {
+        logger.error(
+            "HeartbeatDetection: FindActiveDevices: SQL that failed: "
+                + (ds != null ? ds.getSqlQuestionMarksSubstituted() : null),
+            sqlex);
+      }
       throw sqlex;
     } finally {
       if (rs != null) rs.close();
@@ -232,7 +249,9 @@ public class HeartbeatDetection extends DBIShare {
     // missing and build a list of missing events from units
     ACSUnit acsUnit = new ACSUnit(getMainDataSource(), acs, getSyslog());
     for (SyslogMessageMapContainer.SyslogMessageMap smm : smmc.getContainerValues()) {
-      logger.debug("HeartbeatDetection: FilterHeartbeats: Process " + smm);
+      if (logger.isDebugEnabled()) {
+        logger.debug("HeartbeatDetection: FilterHeartbeats: Process " + smm);
+      }
       // The list contains the units in the group without the heartbeat message
       List<String> unitIdsAbsent = new ArrayList<String>();
       Heartbeat heartbeat = smm.getHeartbeat();
@@ -243,23 +262,26 @@ public class HeartbeatDetection extends DBIShare {
             && sentMessages.get(heartbeat.getId() + ":" + unitId) == null)
           unitIdsAbsent.add(unitId);
       }
-      logger.debug(
-          "HeartbeatDetection: FilterHeartbeats: Have found "
-              + unitIdsAbsent.size()
-              + " units for heartbeat "
-              + heartbeat
-              + " with missing heartbeats");
-
+      if (logger.isDebugEnabled()) {
+        logger.debug(
+            "HeartbeatDetection: FilterHeartbeats: Have found "
+                + unitIdsAbsent.size()
+                + " units for heartbeat "
+                + heartbeat
+                + " with missing heartbeats");
+      }
       int noHeartbeatNotActiveCounter = 0;
       int missingHeartbeatCounter = 0;
       int unitNotFoundCounter = 0;
       for (String unitIdMissing : unitIdsAbsent) {
         Unit unit = acsUnit.getUnitById(unitIdMissing);
         if (unit == null) {
-          logger.debug(
-              "HeartbeatDetection: FilterHeartbeats: Unit "
-                  + unitIdMissing
-                  + " was not found in Fusion, will not generate syslog message for this unit");
+          if (logger.isDebugEnabled()) {
+            logger.debug(
+                "HeartbeatDetection: FilterHeartbeats: Unit "
+                    + unitIdMissing
+                    + " was not found in Fusion, will not generate syslog message for this unit");
+          }
           unitNotFoundCounter++;
           continue;
         }
@@ -269,23 +291,26 @@ public class HeartbeatDetection extends DBIShare {
           missingHeartbeatCounter++;
         } else noHeartbeatNotActiveCounter++;
       }
-      logger.debug(
-          "HeartbeatDetection: SendHeartbeats: Found "
-              + unitNotFoundCounter
-              + " units not defined in Fusion with missing heartbeats (no missing heartbeat message created)");
-      logger.debug(
-          "HeartbeatDetection: SendHeartbeats: Found "
-              + noHeartbeatNotActiveCounter
-              + " inactive units with missing heartbeats (no missing heartbeat message created)");
-      logger.info(
-          "HeartbeatDetection: SendHeartbeats: Created "
-              + missingHeartbeatCounter
-              + " missing heartbeat syslog entries");
+      if (logger.isDebugEnabled()) {
+        logger.debug(
+            "HeartbeatDetection: SendHeartbeats: Found "
+                + unitNotFoundCounter
+                + " units not defined in Fusion with missing heartbeats (no missing heartbeat message created)");
+        logger.debug(
+            "HeartbeatDetection: SendHeartbeats: Found "
+                + noHeartbeatNotActiveCounter
+                + " inactive units with missing heartbeats (no missing heartbeat message created)");
+      }
+      if (logger.isInfoEnabled()) {
+        logger.info(
+            "HeartbeatDetection: SendHeartbeats: Created "
+                + missingHeartbeatCounter
+                + " missing heartbeat syslog entries");
+      }
     }
   }
 
-  private void sendHeartbeat(Heartbeat heartbeat, String unitId, long tms)
-      throws SQLException, IOException {
+  private void sendHeartbeat(Heartbeat heartbeat, String unitId, long tms) throws IOException {
     String expression = heartbeat.getExpression();
     if (heartbeat.getExpression().startsWith("^")) expression = expression.substring(1);
     if (heartbeat.getExpression().endsWith("$"))
@@ -307,11 +332,13 @@ public class HeartbeatDetection extends DBIShare {
             content,
             getSyslog());
     SyslogClient.send(msg);
-    logger.debug(
-        "HeartbeatDetection: SendHeartbeats: Missing heartbeat registered for "
-            + unitId
-            + " : "
-            + content);
+    if (logger.isDebugEnabled()) {
+      logger.debug(
+          "HeartbeatDetection: SendHeartbeats: Missing heartbeat registered for "
+              + unitId
+              + " : "
+              + content);
+    }
 
     // Insert message into a map -> avoid resending heartbeat missing on every run of the heartbeat
     // task
@@ -327,10 +354,12 @@ public class HeartbeatDetection extends DBIShare {
     long tooOldTms = to - HOUR_MS;
     TimestampMap unitIdTmsMap = activeDevices;
     Map<String, Long> removedMap = unitIdTmsMap.removeOld(tooOldTms);
-    logger.debug(
-        "HeartbeatDetection: RemoveOldEntries: Have removed "
-            + removedMap.size()
-            + " devices from active devices map");
+    if (logger.isDebugEnabled()) {
+      logger.debug(
+          "HeartbeatDetection: RemoveOldEntries: Have removed "
+              + removedMap.size()
+              + " devices from active devices map");
+    }
   }
 
   private void removeOldEntriesFromSyslogMaps(long to) {
@@ -340,13 +369,15 @@ public class HeartbeatDetection extends DBIShare {
       long tooOldTms = to - smm.getHeartbeat().getTimeoutHours() * HOUR_MS;
       TimestampMap unitIdTmsMap = smm.getUnitIdTmsMap();
       Map<String, Long> removedMap = unitIdTmsMap.removeOld(tooOldTms);
-      logger.debug(
-          "HeartbeatDetection: RemoveOldEntries: Have removed "
-              + removedMap.size()
-              + " devices from syslog map ["
-              + smm
-              + "], entries were older than "
-              + new Date(tooOldTms));
+      if (logger.isDebugEnabled()) {
+        logger.debug(
+            "HeartbeatDetection: RemoveOldEntries: Have removed "
+                + removedMap.size()
+                + " devices from syslog map ["
+                + smm
+                + "], entries were older than "
+                + new Date(tooOldTms));
+      }
     }
   }
 
@@ -363,38 +394,46 @@ public class HeartbeatDetection extends DBIShare {
       Unittype unittypeACS = acs.getUnittype(heartbeat.getUnittype().getId());
       if (unittypeACS == null) {
         keyIterator.remove();
-        logger.debug(
-            "HeartbeatDetection: UpdateSyslogMessageMap: Unittype "
-                + heartbeat.getUnittype().getName()
-                + " could not be found, syslog message map is removed");
+        if (logger.isDebugEnabled()) {
+          logger.debug(
+              "HeartbeatDetection: UpdateSyslogMessageMap: Unittype "
+                  + heartbeat.getUnittype().getName()
+                  + " could not be found, syslog message map is removed");
+        }
         continue;
       }
       Heartbeat heartbeatACS = unittypeACS.getHeartbeats().getById(heartbeatId);
       if (heartbeatACS == null) {
         keyIterator.remove();
-        logger.debug(
-            "HeartbeatDetection: UpdateSyslogMessageMap: Heartbeat "
-                + heartbeat.getId()
-                + " could not be found, syslog message map is removed");
+        if (logger.isDebugEnabled()) {
+          logger.debug(
+              "HeartbeatDetection: UpdateSyslogMessageMap: Heartbeat "
+                  + heartbeat.getId()
+                  + " could not be found, syslog message map is removed");
+        }
         continue;
       }
       Group groupACS = unittypeACS.getGroups().getById(heartbeat.getGroup().getId());
       if (groupACS == null) {
         keyIterator.remove();
-        logger.debug(
-            "HeartbeatDetection: UpdateSyslogMessageMap: Group "
-                + heartbeat.getGroup().getName()
-                + " could not be found, syslog message map is removed");
+        if (logger.isDebugEnabled()) {
+          logger.debug(
+              "HeartbeatDetection: UpdateSyslogMessageMap: Group "
+                  + heartbeat.getGroup().getName()
+                  + " could not be found, syslog message map is removed");
+        }
         continue;
       }
       if (!heartbeat.getExpression().equals(heartbeatACS.getExpression())) {
         keyIterator.remove();
-        logger.debug(
-            "HeartbeatDetection: UpdateSyslogMessageMap: Heartbeat expression "
-                + heartbeat.getExpression()
-                + " has changed to "
-                + heartbeatACS.getExpression()
-                + ", we'll remove this syslog message map and start over");
+        if (logger.isDebugEnabled()) {
+          logger.debug(
+              "HeartbeatDetection: UpdateSyslogMessageMap: Heartbeat expression "
+                  + heartbeat.getExpression()
+                  + " has changed to "
+                  + heartbeatACS.getExpression()
+                  + ", we'll remove this syslog message map and start over");
+        }
         continue;
       }
       smm.setHeartbeat(heartbeatACS);

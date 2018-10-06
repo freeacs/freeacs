@@ -1,49 +1,12 @@
 package com.github.freeacs.common.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class NaturalComparator implements Comparator<String> {
 
-  Pattern numberPattern = Pattern.compile("\\d+");
-
-  public static void main(String[] args) {
-    List<String> list = new ArrayList<String>();
-    list.add("Hei");
-    list.add("Hei");
-    list.add("Pa");
-    list.add("Deg");
-    list.add("Hei.10");
-    list.add("Pa.20");
-    list.add("Deg.101");
-    list.add("Deg.000101");
-    list.add("Deg.1010");
-    list.add("Deg.0999");
-    list.add("Hei.10.Pa.2.Deg");
-    list.add("Hei.10.Pa.2");
-    list.add("Hei.10.Pa.Deg");
-    list.add("Hei.10.Pa.20.Deg");
-    list.add("Hei.10.Pa.101.Deg");
-    list.add("10.20.30.40");
-    list.add("20.20.30.40");
-    list.add("101.20.30.40");
-    list.add("1.201.301.401");
-    list.add("version-1.0.1");
-    list.add("version-1.9.1");
-    list.add("version-1.70.1");
-    List<String> copy = new ArrayList<String>(list);
-    Collections.sort(list, new NaturalComparator());
-    Collections.sort(copy); // regular string-sort
-    System.out.println(String.format("%30s", "NaturalComparator") + "\t" + "StringComparator");
-    System.out.println(String.format("%30s", "-----------------") + "--" + "----------------");
-    for (int i = 0; i < list.size(); i++) {
-      System.out.println(String.format("%30s", list.get(i)) + "\t" + copy.get(i));
-    }
-  }
+  private Pattern numberPattern = Pattern.compile("\\d+");
 
   public int compare(String s1, String s2) {
     if (s1 != null) {
@@ -122,13 +85,11 @@ public class NaturalComparator implements Comparator<String> {
         lastMatchEndPos1 = matcher1.end();
         lastMatchEndPos2 = matcher2.end();
       } else {
-        int result = i1 - i2;
-        return result;
+        return i1 - i2;
       }
     }
     String restOfStr1 = str1.substring(lastMatchEndPos1);
     String restOfStr2 = str2.substring(lastMatchEndPos2);
-    int result = restOfStr1.compareTo(restOfStr2);
-    return result;
+    return restOfStr1.compareTo(restOfStr2);
   }
 }

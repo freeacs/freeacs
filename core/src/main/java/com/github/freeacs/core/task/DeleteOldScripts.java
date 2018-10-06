@@ -33,7 +33,10 @@ public class DeleteOldScripts extends DBIShare {
     Calendar c = Calendar.getInstance();
     c.add(Calendar.DAY_OF_MONTH, -days);
     int rowsDeleted = executions.deleteExecutions(c.getTime());
-    if (rowsDeleted == 0) logger.debug("DeleteOldScripts: No old script executions deleted");
-    else logger.info("DeleteOldScripts: " + rowsDeleted + " old script executions deleted");
+    if (rowsDeleted == 0 && logger.isDebugEnabled()) {
+      logger.debug("DeleteOldScripts: No old script executions deleted");
+    } else if (logger.isInfoEnabled()) {
+      logger.info("DeleteOldScripts: " + rowsDeleted + " old script executions deleted");
+    }
   }
 }

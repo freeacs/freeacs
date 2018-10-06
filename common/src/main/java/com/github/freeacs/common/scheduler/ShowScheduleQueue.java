@@ -29,7 +29,11 @@ public class ShowScheduleQueue implements Task {
   public void run() {
     running = true;
     List<Schedule> list = scheduler.getScheduleList().getSchedules();
-    for (int i = 0; i < list.size(); i++) logger.debug("[" + i + "] " + list.get(i));
+    for (int i = 0; i < list.size(); i++) {
+      if (logger.isDebugEnabled()) {
+        logger.debug("[" + i + "] " + list.get(i));
+      }
+    }
     running = false;
   }
 

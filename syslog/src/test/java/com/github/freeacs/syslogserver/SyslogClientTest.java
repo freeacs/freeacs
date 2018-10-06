@@ -4,7 +4,9 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Random;
 
 public class SyslogClientTest {
 
@@ -15,7 +17,7 @@ public class SyslogClientTest {
 
   protected boolean realtime = false;
   protected boolean initiallyRealtime = false;
-  protected int counter = 0;
+  private int counter = 0;
 
   public void send(String msg, String hostname) {
     try {
@@ -52,64 +54,6 @@ public class SyslogClientTest {
     SINGLE_MSG;
   }
 
-  /** @param args */
-  public static void main(String[] args) throws Exception {
-
-    try {
-      // Controlling the test
-      TestType testType = TestType.SINGLE_MSG;
-      int MESSAGES_PR_MAC = 1000;
-
-      System.out.println("SyslogClientTest starts");
-      List<String> macs = new ArrayList<String>();
-      for (int i = 0; i < 1000000; i++) {
-        macs.add(String.format("%012x", i));
-      }
-      String hostname = "localhost";
-      InetAddress address = InetAddress.getByName(hostname);
-      DatagramSocket socket = new DatagramSocket();
-      if (testType == TestType.SINGLE_MSG) {
-        String msg = makeSingleMessage();
-        byte[] message = msg.getBytes();
-        DatagramPacket packet = new DatagramPacket(message, message.length);
-        packet.setPort(9116);
-        packet.setAddress(address);
-        socket.send(packet);
-      } else {
-        System.out.println(
-            macs.size()
-                + " MAC generated. "
-                + (MESSAGES_PR_MAC * macs.size())
-                + " messages will be generated, approx 2000 msg/sec");
-        for (int i = 0; i < macs.size(); i++) {
-          for (int j = 0; j < MESSAGES_PR_MAC; j++) {
-            //					String msg = makeSyslogMessage(i);
-
-            String msg = makeMessage(macs.get(i));
-            byte[] message = msg.getBytes();
-            DatagramPacket packet = new DatagramPacket(message, message.length);
-            packet.setPort(9116);
-            packet.setAddress(address);
-            socket.send(packet);
-
-            msg = makeDNSMessage(macs.get(i));
-            message = msg.getBytes();
-            packet = new DatagramPacket(message, message.length);
-            packet.setPort(9116);
-            packet.setAddress(address);
-            socket.send(packet);
-
-            Thread.sleep(1);
-          }
-        }
-      }
-      System.out.println("SyslogClientTest ends");
-      socket.close();
-    } catch (Throwable t) {
-      System.err.println("An error occured: " + t);
-    }
-  }
-
   private static String makeDNSMessage(String mac) {
     return "<133>Jan  1 00:00:00 cpe [" + mac + "]: DNS failed";
   }
@@ -127,14 +71,13 @@ public class SyslogClientTest {
     int severity = random.nextInt(7);
     String timestamp = deviceTmsFormat.format(new Date());
     String hostname = "foo";
-    //		String unitId = "000000-TR069TestClient-" + String.format("%012d", serialNumber);
     StringBuilder sb = new StringBuilder();
-    sb.append("<" + (20 * 6 + severity) + ">");
+    sb.append("<").append(20 * 6 + severity).append(">");
     sb.append(timestamp);
     sb.append(" ");
-    if (hostname != null) sb.append(hostname + " ");
+    sb.append(hostname).append(" ");
     sb.append("syslogclient");
-    sb.append("[" + mac + "]:");
+    sb.append("[").append(mac).append("]:");
     if (random.nextBoolean()) sb.append("A message");
     else sb.append("Another message");
     return sb.toString();

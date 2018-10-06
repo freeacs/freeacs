@@ -6,20 +6,19 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class FileDatabase {
 
   private File database;
-  private HashMap<String, String> databaseMap = new HashMap<String, String>();
+  private Map<String, String> databaseMap = new HashMap<String, String>();
 
   /**
    * Super simple database based on one file. The operation works like this: You can only do row
    * based operations (insert/change/delete row) A row consists of two Strings: Key and Value
    * Synchronized access - cannot read/write at the same time - hampers performance File will be
    * written all over for every write File will be read once, then only read if IOException occurs
-   *
-   * @param args
    */
   public FileDatabase(String filename) throws IOException {
     database = new File(filename);
@@ -36,7 +35,7 @@ public class FileDatabase {
         String[] array = line.split("¤¤¤¤");
         tmp.put(array[0], array[1]);
       }
-      if (br != null) br.close();
+      br.close();
     }
     databaseMap = tmp;
   }

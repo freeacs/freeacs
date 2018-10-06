@@ -1,6 +1,7 @@
 package com.github.freeacs.tr069.xml;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Fault {
 
@@ -8,14 +9,14 @@ public class Fault {
   private String soapFaultString;
   private String faultCode;
   private String faultString;
-  private ArrayList<SetParameterValuesFault> parameterFaults;
+  private List<SetParameterValuesFault> parameterFaults;
 
   public Fault() {
     this.soapFaultCode = null;
     this.soapFaultString = null;
     this.faultCode = null;
     this.faultString = null;
-    this.parameterFaults = new ArrayList<SetParameterValuesFault>();
+    this.parameterFaults = new ArrayList<>();
   }
 
   public Fault(String soapFaultCode, String soapFaultString, String faultCode, String faultString) {
@@ -23,7 +24,7 @@ public class Fault {
     this.soapFaultString = soapFaultString;
     this.faultCode = faultCode;
     this.faultString = faultString;
-    this.parameterFaults = new ArrayList<SetParameterValuesFault>();
+    this.parameterFaults = new ArrayList<>();
   }
 
   public Fault(
@@ -31,7 +32,7 @@ public class Fault {
       String soapFaultString,
       String faultCode,
       String faultString,
-      ArrayList<SetParameterValuesFault> parameterFaults) {
+      List<SetParameterValuesFault> parameterFaults) {
     this.soapFaultCode = soapFaultCode;
     this.soapFaultString = soapFaultString;
     this.faultCode = faultCode;
@@ -39,16 +40,8 @@ public class Fault {
     this.parameterFaults = parameterFaults;
   }
 
-  public String getSoapFaultCode() {
-    return soapFaultCode;
-  }
-
   public void setSoapFaultCode(String soapFaultCode) {
     this.soapFaultCode = soapFaultCode;
-  }
-
-  public String getSoapFaultString() {
-    return soapFaultString;
   }
 
   public void setSoapFaultString(String soapFaultString) {
@@ -78,16 +71,16 @@ public class Fault {
   public String toString() {
     StringBuilder str = new StringBuilder();
     if (this.soapFaultCode != null) {
-      str.append("SOAP FaultCode       :  " + this.soapFaultCode + "\n");
-      str.append("SOAP FaultString     :  " + this.soapFaultString + "\n");
+      str.append("SOAP FaultCode       :  ").append(this.soapFaultCode).append("\n");
+      str.append("SOAP FaultString     :  ").append(this.soapFaultString).append("\n");
     }
     if (this.faultCode != null) {
-      str.append("FaultCode            :  " + this.faultCode + "\n");
-      str.append("FaultString          :  " + this.faultString + "\n");
+      str.append("FaultCode            :  ").append(this.faultCode).append("\n");
+      str.append("FaultString          :  ").append(this.faultString).append("\n");
     }
     if (this.parameterFaults != null && this.parameterFaults.size() > 0) {
       for (SetParameterValuesFault paramFault : this.parameterFaults) {
-        str.append(paramFault.toString() + "\n");
+        str.append(paramFault.toString()).append("\n");
       }
     }
     return str.toString();

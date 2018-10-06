@@ -21,7 +21,6 @@ import com.github.freeacs.shell.menu.UnittypeMenu;
 import com.github.freeacs.shell.menu.UnittypeParameterMenu;
 import com.github.freeacs.shell.output.OutputHandler;
 import com.github.freeacs.shell.util.StringUtil;
-import com.github.freeacs.shell.util.ValidateInput;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -35,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 public class Processor {
 
-  private static Logger logger = LoggerFactory.getLogger(Processor.class);
+  private Logger logger = LoggerFactory.getLogger(Processor.class);
 
   private String logPrefix = "";
 
@@ -43,7 +42,7 @@ public class Processor {
 
   private Echo echo;
 
-  private LinkedList<String> daemonCommands = new LinkedList<String>();
+  private List<String> daemonCommands = new LinkedList<String>();
   private List<String> processedCommands = new ArrayList<String>();
 
   // Used to send notify between Shell-thread and
@@ -51,7 +50,7 @@ public class Processor {
   //    1. Daemon-command is added to the shell-thread
   //	  2. Daemon-command is processed in the shell-thread
   // Used to grant exclusive right to add/remove from daemon-commands
-  private Object monitor = new Object();
+  private final Object monitor = new Object();
 
   public Processor(Session session) {
     this.session = session;
@@ -67,25 +66,7 @@ public class Processor {
     processedCommands.add(input);
   }
 
-  public String questionProcessing(String question, ValidateInput valInput) throws IOException {
-    while (true) {
-      if (question != null) session.println(question);
-      String input = retrieveInput();
-      if (input == null
-          || input.length() == 0
-          || input.equals("")
-          || (valInput != null && !valInput.validate(input))) {
-        if (session.getMode() == SessionMode.SCRIPT) {
-          session.println("Not a valid input. Terminating the script.");
-          session.exitShell(1);
-        } else session.println("Not a valid input. Try again.");
-      } else {
-        return input;
-      }
-    }
-  }
-
-  public IllegalArgumentException makeContextSwitchException(ContextElement ce) {
+  private IllegalArgumentException makeContextSwitchException(ContextElement ce) {
     return new IllegalArgumentException("The context switch to " + ce + " was not possible");
   }
 
@@ -321,7 +302,7 @@ public class Processor {
           //					for (String cmd : session.getCommandHistory()) {
           for (int i = session.getCommandHistory().size() - 1; i >= 0; i--) {
             String cmd = session.getCommandHistory().get(i);
-            if (cmd.indexOf(input.substring(1)) > -1) command = cmd;
+            if (cmd.contains(input.substring(1))) command = cmd;
           }
           if (command == null)
             throw new IllegalArgumentException("The history search did not match any command");
@@ -430,7 +411,7 @@ public class Processor {
     while (true) {
       // Will wait forever if no daemon command is added to the shell
       synchronized (monitor) {
-        if (daemonCommands.size() > 0) return daemonCommands.remove();
+        if (daemonCommands.size() > 0) return daemonCommands.remove(0);
         // Wait one second each loop. If a notify has been sent
         // from the TR-069 Server/Syslog server (indicating a command
         // has been added), then the wait() will return immediately
@@ -448,8 +429,6 @@ public class Processor {
   /**
    * This function is always called from another thread than the shell/processor-thread. Thus the
    * need for synchronizing.
-   *
-   * @param command
    */
   public void addDaemonCommand(String command) {
     synchronized (monitor) {
@@ -460,15 +439,6 @@ public class Processor {
 
   public int getDaemonCommandSize() {
     return daemonCommands.size();
-  }
-
-  public List<String> getProcessedCommands() {
-    return processedCommands;
-  }
-
-  public String getLastProcessedCommand() {
-    if (processedCommands.size() > 0) return processedCommands.get(processedCommands.size() - 1);
-    return null;
   }
 
   private void call(Command command) throws SQLException {

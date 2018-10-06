@@ -16,15 +16,14 @@ public class GPVreq extends Body {
   public String toXmlImpl() {
     StringBuilder sb = new StringBuilder(3);
     sb.append("\t\t<cwmp:GetParameterValues>\n");
-    sb.append(
-        "\t\t\t<ParameterNames "
-            + Namespace.getSoapEncNS()
-            + ":arrayType=\"xsd:string["
-            + parameters.size()
-            + "]\">\n");
+    sb.append("\t\t\t<ParameterNames ")
+        .append(Namespace.getSoapEncNS())
+        .append(":arrayType=\"xsd:string[")
+        .append(parameters.size())
+        .append("]\">\n");
 
-    for (int i = 0; i < parameters.size(); i++) {
-      sb.append("\t\t\t\t<string>" + parameters.get(i).getName() + "</string>\n");
+    for (ParameterValueStruct parameter : parameters) {
+      sb.append("\t\t\t\t<string>").append(parameter.getName()).append("</string>\n");
     }
     sb.append("\t\t\t</ParameterNames>\n");
     sb.append("\t\t</cwmp:GetParameterValues>\n");

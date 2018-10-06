@@ -169,24 +169,25 @@ public class RootMenu {
     Listing listing = oh.getListing();
     if (oh.getCommand().getOptions().containsKey(Option.OPTION_LIST_ALL_COLUMNS)) {
       listing.setHeading(Listing.HEADER_UNITTYPE, "Protocol", "Vendor", "Description");
-      for (int i = 0; i < unittypes.length; i++) {
-        Unittype ut = unittypes[i];
+      for (Unittype ut : unittypes) {
         if (!Validation.matches(
-            args.length > 1 ? args[1] : null, ut.getName(), ut.getVendor(), ut.getDescription()))
+            args.length > 1 ? args[1] : null, ut.getName(), ut.getVendor(), ut.getDescription())) {
           continue;
+        }
         Line line = new Line();
-        line.addValue(unittypes[i].getName());
-        line.addValue(unittypes[i].getProtocol().toString());
-        line.addValue(unittypes[i].getVendor());
-        line.addValue(unittypes[i].getDescription());
+        line.addValue(ut.getName());
+        line.addValue(ut.getProtocol().toString());
+        line.addValue(ut.getVendor());
+        line.addValue(ut.getDescription());
         listing.addLine(line);
       }
     } else {
       listing.setHeading(Listing.HEADER_UNITTYPE);
-      for (int i = 0; i < unittypes.length; i++) {
-        Unittype ut = unittypes[i];
-        if (!Validation.matches(args.length > 1 ? args[1] : null, ut.getName())) continue;
-        listing.addLine(unittypes[i].getName());
+      for (Unittype ut : unittypes) {
+        if (!Validation.matches(args.length > 1 ? args[1] : null, ut.getName())) {
+          continue;
+        }
+        listing.addLine(ut.getName());
       }
     }
   }

@@ -38,7 +38,6 @@ public class ACSVersionCheck {
         }
       }
     } catch (Throwable t) {
-      System.err.println("An error occurred in existsColumn " + t);
       t.printStackTrace();
       return false;
     }

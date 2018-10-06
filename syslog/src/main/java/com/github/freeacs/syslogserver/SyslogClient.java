@@ -6,21 +6,20 @@ import java.net.InetAddress;
 
 public class SyslogClient {
 
-  /** @param args */
   public static void send(String host, SyslogPacket receivedPacket) {
 
     try {
 
       String hostname = host;
       int port = Properties.PORT;
-      if (host.indexOf(":") > -1) {
+      if (host.contains(":")) {
         hostname = host.substring(0, host.indexOf(":"));
-        port = new Integer(host.substring(host.indexOf(":") + 1));
+        port = Integer.valueOf(host.substring(host.indexOf(":") + 1));
       }
       InetAddress address = InetAddress.getByName(hostname);
       DatagramSocket socket = new DatagramSocket();
       String msg = receivedPacket.getSyslogStr();
-      if (msg.indexOf("|||") == -1) msg += "|||" + receivedPacket.getAddress();
+      if (!msg.contains("|||")) msg += "|||" + receivedPacket.getAddress();
       byte[] message = msg.getBytes();
       DatagramPacket packet = new DatagramPacket(message, message.length);
       packet.setPort(port);

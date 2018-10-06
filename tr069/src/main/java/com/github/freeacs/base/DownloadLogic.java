@@ -2,10 +2,11 @@ package com.github.freeacs.base;
 
 import com.github.freeacs.dbi.Job;
 import java.util.LinkedList;
+import java.util.List;
 
 public class DownloadLogic {
 
-  private static LinkedList<Long> downloadList = new LinkedList<Long>();
+  private static List<Long> downloadList = new LinkedList<Long>();
 
   public static void add() {
     downloadList.add(System.currentTimeMillis());
@@ -14,24 +15,24 @@ public class DownloadLogic {
 
   public static void removeOldest() {
     try {
-      downloadList.remove();
+      downloadList.remove(0);
       Log.debug(
           DownloadLogic.class,
           "Download counter reduced (size: " + size() + ") - because of a download was completed");
-    } catch (Throwable t) {
+    } catch (Throwable ignored) {
 
     }
   }
 
-  public static void removeOlderThan(long maxTimeout) {
+  private static void removeOlderThan(long maxTimeout) {
     try {
       long now = System.currentTimeMillis();
-      long tms = downloadList.getFirst();
-      if (now - tms > maxTimeout) downloadList.removeFirst();
+      long tms = downloadList.get(0);
+      if (now - tms > maxTimeout) downloadList.remove(0);
       Log.debug(
           DownloadLogic.class,
           "Download counter reduced (size: " + size() + ") - because of timeout");
-    } catch (Throwable t) {
+    } catch (Throwable ignored) {
 
     }
   }
