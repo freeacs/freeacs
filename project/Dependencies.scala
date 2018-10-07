@@ -14,7 +14,7 @@ object Dependencies {
   val mysql = "mysql" % "mysql-connector-java" % "8.0.11"
   val hikari = "com.zaxxer" % "HikariCP" % "3.1.0"
   val flyway = "org.flywaydb" % "flyway-core" % "5.0.7" % "test"
-  val h2 = "com.h2database" % "h2" % "1.4.197"
+  val h2 = "com.h2database" % "h2" % "1.4.197" % "test"
 
   val database = Seq(mysql, hikari, flyway, h2)
 
@@ -23,6 +23,6 @@ object Dependencies {
 
   val testing = Seq(junit, junitInterface)
 
-  val jdeb = Seq("org.vafer" % "jdeb" % "1.3" artifacts Artifact("jdeb", "jar", "jar"))
+  val jdeb = Seq("org.vafer" % "jdeb" % "1.3" % "provided" artifacts Artifact("jdeb", "jar", "jar"))
 
 }

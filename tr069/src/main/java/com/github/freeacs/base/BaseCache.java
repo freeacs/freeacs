@@ -1,27 +1,37 @@
 package com.github.freeacs.base;
 
+import com.github.freeacs.common.util.Cache;
+import com.github.freeacs.common.util.CacheValue;
 import com.github.freeacs.dbi.File;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BaseCache {
+  private static Cache cache = new Cache();
 
-  private static final Cache<String, SessionDataI> sessionDataCache =
-      CacheBuilder.newBuilder()
-          .maximumSize(10000)
-          .expireAfterAccess(3 * 60 * 1000, TimeUnit.MILLISECONDS)
-          .build();
+  // 2 minutes
+  private static final int SESSIONDATA_CACHE_TIMEOUT = 3 * 60 * 1000;
 
-  private static final Cache<String, File> firmwareImageCache =
-      CacheBuilder.newBuilder()
-          .maximumSize(10000)
-          .expireAfterAccess(10 * 60 * 1000, TimeUnit.MILLISECONDS)
-          .build();
+  // 10 minutes
+  private static final int FIRMWAREIMAGE_CACHE_TIMEOUT = 10 * 60 * 1000;
 
   private static final String SESSION_KEY = "SESSION";
 
   private static final String FIRMWAREIMAGE_KEY = "FIRMWARE";
+
+  /* Clears all parts of the cache, except for sessiondata */
+  public static void clearCache() {
+    List<String> keyRemoveList = new ArrayList<String>();
+    for (Object key : cache.getMap().keySet()) {
+      String keyStr = (String) key;
+      if (!keyStr.contains(SESSION_KEY)) {
+        keyRemoveList.add(keyStr);
+      }
+    }
+    for (String key : keyRemoveList) {
+      cache.remove(key);
+    }
+  }
 
   /**
    * Retrieves the current session data from the cache based on a key that identifies the client.
@@ -31,8 +41,8 @@ public class BaseCache {
    */
   public static SessionDataI getSessionData(String unitKey) {
     String key = unitKey + SESSION_KEY;
-    SessionDataI cv = sessionDataCache.getIfPresent(key);
-    if (cv != null) return cv;
+    CacheValue cv = cache.get(key);
+    if (cv != null) return (SessionDataI) cv.getObject();
     else throw new BaseCacheException(key);
   }
 
@@ -45,26 +55,29 @@ public class BaseCache {
   public static void putSessionData(String unitKey, SessionDataI sessionData) {
     if (sessionData != null) {
       String key = unitKey + SESSION_KEY;
-      sessionDataCache.put(key, sessionData);
+      CacheValue cv = new CacheValue(sessionData, Cache.SESSION, SESSIONDATA_CACHE_TIMEOUT);
+      cv.setCleanupNotifier(new SessionDataCacheCleanup(unitKey, sessionData));
+      cache.put(key, cv);
     }
   }
 
   public static void removeSessionData(String unitKey) {
     String key = unitKey + SESSION_KEY;
-    sessionDataCache.invalidate(key);
+    cache.remove(key);
   }
 
   public static File getFirmware(String firmwareName, String unittypeName) {
     String key = firmwareName + unittypeName + FIRMWAREIMAGE_KEY;
-    File cv = firmwareImageCache.getIfPresent(key);
-    if (cv != null) return cv;
+    CacheValue cv = cache.get(key);
+    if (cv != null) return (File) cv.getObject();
     else return null;
   }
 
   public static void putFirmware(String firmwareName, String unittypeName, File firmware) {
     String key = firmwareName + unittypeName + FIRMWAREIMAGE_KEY;
     if (firmware != null) {
-      firmwareImageCache.put(key, firmware);
+      CacheValue cv = new CacheValue(firmware, Cache.ABSOLUTE, FIRMWAREIMAGE_CACHE_TIMEOUT);
+      cache.put(key, cv);
     }
   }
 }
