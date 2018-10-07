@@ -66,6 +66,7 @@ lazy val commonSettings = Seq(
   dependencyOverrides ++= Seq(
     "com.zaxxer" % "HikariCP" % "3.1.0",
     "commons-io" % "commons-io" % "2.4",
+    "org.springframework.boot" % "spring-boot-starter-web" % "2.0.2.RELEASE",
     "org.bouncycastle" % "bcprov-jdk15on" % "1.51" % "provided"
   )
 )
@@ -185,9 +186,11 @@ lazy val tr069 = (project in file("tr069"))
       ++ Dependencies.testing
       ++ Dependencies.jdeb
       ++ Seq(
+        "com.mashape.unirest" % "unirest-java" % "1.4.9" % "test",
         "org.apache.commons" % "commons-lang3" % "3.7",
         "com.sparkjava" % "spark-core" % "2.8.0",
-        "com.typesafe" % "config" % "1.3.3"
+        "com.typesafe" % "config" % "1.3.3",
+        "junit" % "junit" % "4.12" % Test
       ),
     copyAppProps,
     copyLogProps,

@@ -30,6 +30,10 @@ public class App {
   public static void main(String[] args) {
     Config config = ConfigFactory.load();
     DataSource mainDs = dataSource(config.getConfig("main"));
+    routes(config, mainDs);
+  }
+
+  public static void routes(Config config, DataSource mainDs) {
     DBAccess dbAccess = new DBAccess(FACILITY_TR069, VERSION, mainDs, mainDs);
     Properties properties = new Properties(config);
     TR069Method tr069Method = new TR069Method(properties);
