@@ -66,7 +66,8 @@ lazy val commonSettings = Seq(
   dependencyOverrides ++= Seq(
     "com.zaxxer" % "HikariCP" % "3.1.0",
     "commons-io" % "commons-io" % "2.4",
-    "org.springframework.boot" % "spring-boot-starter-web" % "2.0.2.RELEASE"
+    "org.springframework.boot" % "spring-boot-starter-web" % "2.0.2.RELEASE",
+    "org.bouncycastle" % "bcprov-jdk15on" % "1.51" % "provided"
   )
 )
 
@@ -93,8 +94,8 @@ lazy val dbi = (project in file("dbi"))
     libraryDependencies ++= Dependencies.database
       ++ Dependencies.testing
       ++ List(
-      "org.jfree" % "jcommon" % "1.0.17",
-      "org.jfree" % "jfreechart" % "1.0.17"
+      "org.jfree" % "jcommon" % "1.0.17" % "provided",
+      "org.jfree" % "jfreechart" % "1.0.17" % "provided"
     )
   )
   .dependsOn(common)
@@ -181,13 +182,15 @@ lazy val tr069 = (project in file("tr069"))
     name := "FreeACS Tr069",
     packageSummary := "FreeACS Tr069",
     packageDescription := "FreeACS Tr069",
-    libraryDependencies ++= Dependencies.springBoot
-      ++ Dependencies.database
+    libraryDependencies ++= Dependencies.database
       ++ Dependencies.testing
       ++ Dependencies.jdeb
       ++ Seq(
+        "com.mashape.unirest" % "unirest-java" % "1.4.9" % "test",
         "org.apache.commons" % "commons-lang3" % "3.7",
-        "com.google.guava" % "guava" % "26.0-jre"
+        "com.sparkjava" % "spark-core" % "2.8.0",
+        "com.typesafe" % "config" % "1.3.3",
+        "junit" % "junit" % "4.12" % Test
       ),
     copyAppProps,
     copyLogProps,

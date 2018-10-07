@@ -93,7 +93,7 @@ public class INreq {
       throws TR069Exception {
     ParameterList parameterList = parser.getParameterList();
     List<ParameterValueStruct> parameterValues = parameterList.getParameterValueList();
-    String keyRoot = null;
+    String keyRoot = sessionData.getKeyRoot();
     CPEParameters cpeParams = null;
     InformParameters informParams = null;
     ParameterKey pk = new ParameterKey();

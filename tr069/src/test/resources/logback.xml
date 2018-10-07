@@ -8,13 +8,7 @@
     <appender name="ASYNC_STDOUT" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="STDOUT" />
     </appender>
-    <logger name="org.eclipse.jetty" level="WARN" />
-    <logger name="org.flywaydb.core" level="WARN" />
-    <logger name="com.zaxxer.hikari" level="WARN" />
-    <logger name="com.github.freeacs.tr069" level="WARN" />
-    <logger name="com.github.freeacs.dbi.UnittypeParameters" level="WARN" />
-    <logger name="Conversation" level="WARN" />
-    <root level="WARN">
+    <root level="INFO">
         <appender-ref ref="ASYNC_STDOUT" />
     </root>
 </configuration>

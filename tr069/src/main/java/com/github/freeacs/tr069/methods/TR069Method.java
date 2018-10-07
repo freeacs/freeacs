@@ -3,10 +3,7 @@ package com.github.freeacs.tr069.methods;
 import com.github.freeacs.tr069.Properties;
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
 public class TR069Method {
   public static final String EMPTY = "Empty";
 
@@ -37,7 +34,6 @@ public class TR069Method {
   /* Map of all abbreviations - only used in event-logging */
   private final Map<String, String> abbrevMap = new HashMap<>();
 
-  @Autowired
   public TR069Method(Properties properties) {
     getAbbrevMap().put(EMPTY, "EM");
     getRequestMap()

@@ -67,7 +67,9 @@ public class Provisioning extends HttpServlet {
   /**
    * doGet prints some information about the server, focus on database connections and memory usage
    */
-  protected void doGet(HttpServletRequest req, HttpServletResponse res) {}
+  protected void doGet(HttpServletRequest req, HttpServletResponse res) {
+    if (req.getParameter("clearCache") != null) BaseCache.clearCache();
+  }
 
   private static void extractRequest(HTTPReqResData reqRes) throws TR069Exception {
     try {
@@ -157,7 +159,10 @@ public class Provisioning extends HttpServlet {
           Log.warn(Provisioning.class, t.getMessage());
         else Log.error(Provisioning.class, t.getMessage()); // No stacktrace printed to log
       }
-      if (reqRes != null) reqRes.setThrowable(t);
+      if (reqRes != null) {
+        reqRes.setThrowable(t);
+        Log.error(Provisioning.class, "Something went wrong", t);
+      }
       res.setStatus(HttpServletResponse.SC_NO_CONTENT);
       res.getWriter().print("");
     } finally {
