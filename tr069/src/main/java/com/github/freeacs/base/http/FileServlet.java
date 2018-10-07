@@ -21,9 +21,11 @@ public class FileServlet extends HttpServlet {
   private static final long serialVersionUID = -9027563648829505599L;
 
   private final DBAccess dbAccess;
+  private final String context;
 
-  public FileServlet(DBAccess dbAccess) {
+  public FileServlet(DBAccess dbAccess, String s) {
     this.dbAccess = dbAccess;
+    this.context = s;
   }
 
   protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
@@ -47,7 +49,7 @@ public class FileServlet extends HttpServlet {
 
       ACS acs = dbAccess.getDBI().getAcs();
       File firmware = null;
-      String pathInfo = req.getPathInfo().substring(1);
+      String pathInfo = req.getPathInfo().substring(this.context.length());
       pathInfo = pathInfo.replaceAll("--", " ");
       String[] pathInfoArr = pathInfo.split("/");
       FileType fileType = FileType.valueOf(pathInfoArr[0]); // Expect it to be a

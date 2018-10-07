@@ -66,7 +66,7 @@ lazy val commonSettings = Seq(
   dependencyOverrides ++= Seq(
     "com.zaxxer" % "HikariCP" % "3.1.0",
     "commons-io" % "commons-io" % "2.4",
-    "org.springframework.boot" % "spring-boot-starter-web" % "2.0.2.RELEASE"
+    "org.bouncycastle" % "bcprov-jdk15on" % "1.51" % "provided"
   )
 )
 
@@ -181,13 +181,13 @@ lazy val tr069 = (project in file("tr069"))
     name := "FreeACS Tr069",
     packageSummary := "FreeACS Tr069",
     packageDescription := "FreeACS Tr069",
-    libraryDependencies ++= Dependencies.springBoot
-      ++ Dependencies.database
+    libraryDependencies ++= Dependencies.database
       ++ Dependencies.testing
       ++ Dependencies.jdeb
       ++ Seq(
         "org.apache.commons" % "commons-lang3" % "3.7",
-        "com.google.guava" % "guava" % "26.0-jre"
+        "com.sparkjava" % "spark-core" % "2.8.0",
+        "com.typesafe" % "config" % "1.3.3"
       ),
     copyAppProps,
     copyLogProps,
