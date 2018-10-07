@@ -18,7 +18,9 @@ public class FileResponse extends ServletOutputStream {
   }
 
   @Override
-  public void setWriteListener(WriteListener writeListener) {}
+  public void setWriteListener(WriteListener writeListener) {
+    throw new RuntimeException("Not implemented");
+  }
 
   @Override
   public void write(int i) {

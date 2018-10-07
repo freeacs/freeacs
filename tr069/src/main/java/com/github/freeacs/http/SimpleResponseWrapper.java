@@ -28,7 +28,9 @@ public class SimpleResponseWrapper implements HttpServletResponse {
   }
 
   @Override
-  public void addCookie(Cookie cookie) {}
+  public void addCookie(Cookie cookie) {
+    throw new RuntimeException("Not implemented");
+  }
 
   @Override
   public boolean containsHeader(String name) {
@@ -56,19 +58,29 @@ public class SimpleResponseWrapper implements HttpServletResponse {
   }
 
   @Override
-  public void sendError(int sc, String msg) {}
+  public void sendError(int sc, String msg) {
+    throw new RuntimeException("Not implemented");
+  }
 
   @Override
-  public void sendError(int sc) {}
+  public void sendError(int sc) {
+    throw new RuntimeException("Not implemented");
+  }
 
   @Override
-  public void sendRedirect(String location) {}
+  public void sendRedirect(String location) {
+    throw new RuntimeException("Not implemented");
+  }
 
   @Override
-  public void setDateHeader(String name, long date) {}
+  public void setDateHeader(String name, long date) {
+    throw new RuntimeException("Not implemented");
+  }
 
   @Override
-  public void addDateHeader(String name, long date) {}
+  public void addDateHeader(String name, long date) {
+    throw new RuntimeException("Not implemented");
+  }
 
   @Override
   public void setHeader(String name, String value) {
@@ -81,10 +93,14 @@ public class SimpleResponseWrapper implements HttpServletResponse {
   }
 
   @Override
-  public void setIntHeader(String name, int value) {}
+  public void setIntHeader(String name, int value) {
+    throw new RuntimeException("Not implemented");
+  }
 
   @Override
-  public void addIntHeader(String name, int value) {}
+  public void addIntHeader(String name, int value) {
+    throw new RuntimeException("Not implemented");
+  }
 
   public void setStatus(int sc) {
     this.status = sc;
@@ -145,13 +161,19 @@ public class SimpleResponseWrapper implements HttpServletResponse {
   }
 
   @Override
-  public void setCharacterEncoding(String charset) {}
+  public void setCharacterEncoding(String charset) {
+    throw new RuntimeException("Not implemented");
+  }
 
   @Override
-  public void setContentLength(int len) {}
+  public void setContentLength(int len) {
+    throw new RuntimeException("Not implemented");
+  }
 
   @Override
-  public void setContentLengthLong(long len) {}
+  public void setContentLengthLong(long len) {
+    throw new RuntimeException("Not implemented");
+  }
 
   @Override
   public void setContentType(String type) {
@@ -159,7 +181,9 @@ public class SimpleResponseWrapper implements HttpServletResponse {
   }
 
   @Override
-  public void setBufferSize(int size) {}
+  public void setBufferSize(int size) {
+    throw new RuntimeException("Not implemented");
+  }
 
   @Override
   public int getBufferSize() {
@@ -167,10 +191,14 @@ public class SimpleResponseWrapper implements HttpServletResponse {
   }
 
   @Override
-  public void flushBuffer() {}
+  public void flushBuffer() {
+    throw new RuntimeException("Not implemented");
+  }
 
   @Override
-  public void resetBuffer() {}
+  public void resetBuffer() {
+    throw new RuntimeException("Not implemented");
+  }
 
   @Override
   public boolean isCommitted() {
@@ -178,10 +206,14 @@ public class SimpleResponseWrapper implements HttpServletResponse {
   }
 
   @Override
-  public void reset() {}
+  public void reset() {
+    throw new RuntimeException("Not implemented");
+  }
 
   @Override
-  public void setLocale(Locale loc) {}
+  public void setLocale(Locale loc) {
+    throw new RuntimeException("Not implemented");
+  }
 
   @Override
   public Locale getLocale() {
