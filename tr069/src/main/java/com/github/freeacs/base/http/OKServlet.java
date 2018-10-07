@@ -79,7 +79,7 @@ public class OKServlet extends HttpServlet {
     } else {
       currentConnectionTmsMap = new HashMap<String, Long>();
     }
-    out.println(status);
+    out.print(status);
     out.close();
   }
 }

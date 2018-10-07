@@ -1,63 +1,65 @@
 package com.github.freeacs.tr069;
 
 import com.github.freeacs.base.Log;
+import com.typesafe.config.Config;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
-@Component
 public class Properties {
 
   public static String DIGEST_SECRET;
   public static boolean FILE_AUTH_USED;
-  public static boolean DEBUG_TEST_MODE;
   public static boolean DISCOVERY_MODE;
   public static String[] DISCOVERY_BLOCK;
   public static String AUTH_METHOD;
   public static int CONCURRENT_DOWNLOAD_LIMIT;
   public static String PUBLIC_URL;
 
-  @Autowired private Environment environment;
+  private Config environment;
 
-  @Value("${concurrent.download.limit:50}")
-  public void setConcurrentDownloadLimit(Integer concurrentDownloadLimit) {
+  public Properties(Config config) {
+    this.environment = config;
+    setAuthMethod(config.getString("auth.method"));
+    setFileAuthUsed(config.getBoolean("file.auth.used"));
+    setPublicUrl(config.getString("public.url"));
+    setDigestSecret(config.getString("digest.secret"));
+    setDiscoveryMode(config.getBoolean("discovery.mode"));
+    setDiscoveryBlock(getOrDefault("discovery.block", null));
+    setConcurrentDownloadLimit(Integer.parseInt(getOrDefault("concurrent.download.limit", "50")));
+  }
+
+  private <T> T getOrDefault(String key, T defaultValue) {
+    Object obj = environment.hasPath(key) ? environment.getAnyRef(key) : null;
+    if (obj == null) {
+      return defaultValue;
+    }
+    return (T) obj;
+  }
+
+  private void setConcurrentDownloadLimit(Integer concurrentDownloadLimit) {
     CONCURRENT_DOWNLOAD_LIMIT = concurrentDownloadLimit;
   }
 
-  @Value("${file.auth.used}")
-  public void setFileAuthUsed(Boolean fileAuthUsed) {
+  private void setFileAuthUsed(Boolean fileAuthUsed) {
     FILE_AUTH_USED = fileAuthUsed;
   }
 
-  @Value("${debug.test.mode}")
-  public void setDebugTestMode(Boolean testMode) {
-    DEBUG_TEST_MODE = testMode;
-  }
-
-  @Value("${auth.method}")
-  public void setAuthMethod(String authMethod) {
+  private void setAuthMethod(String authMethod) {
     AUTH_METHOD = authMethod;
   }
 
-  @Value("${public.url}")
-  public void setPublicUrl(String url) {
+  private void setPublicUrl(String url) {
     PUBLIC_URL = url;
   }
 
-  @Value("${digest.secret}")
-  public void setDigestSecret(String digestSecret) {
+  private void setDigestSecret(String digestSecret) {
     DIGEST_SECRET = digestSecret;
   }
 
-  @Value("${discovery.mode}")
-  public void setDiscoveryMode(Boolean discoveryMode) {
+  private void setDiscoveryMode(Boolean discoveryMode) {
     DISCOVERY_MODE = discoveryMode;
   }
 
-  @Value("${discovery.block:}")
-  public void setDiscoveryBlock(String discoveryBlock) {
+  private void setDiscoveryBlock(String discoveryBlock) {
     DISCOVERY_BLOCK =
         StringUtils.isEmpty(discoveryBlock) ? new String[0] : discoveryBlock.split("\\s*,\\s*");
   }
@@ -104,9 +106,14 @@ public class Properties {
 
   private String[] getQuirks(String unittypeName, String version) {
     String quirks = null;
-    if (version != null) quirks = environment.getProperty("quirks." + unittypeName + "@" + version);
-    if (quirks == null) quirks = environment.getProperty("quirks." + unittypeName);
-    if (quirks == null) return new String[0];
-    else return quirks.split("\\s*,\\s*");
+    if (version != null && environment.hasPath("quirks." + unittypeName + "." + version)) {
+      quirks = environment.getString("quirks." + unittypeName + "." + version);
+    }
+    if (quirks == null && environment.hasPath("quirks." + unittypeName)) {
+      quirks = environment.getString("quirks." + unittypeName);
+    }
+    if (quirks == null) {
+      return new String[0];
+    } else return quirks.split("\\s*,\\s*");
   }
 }
