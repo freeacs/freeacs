@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.sql.DataSource;
 
-public class ValueInserter {
+public class ValueInsertHelper {
 
   public static void insert(DataSource ds) throws SQLException {
     Connection connection = ds.getConnection();
