@@ -29,7 +29,7 @@ public class SimpleResponseWrapper implements HttpServletResponse {
 
   @Override
   public void addCookie(Cookie cookie) {
-    throw new RuntimeException("Not implemented");
+    throw new UnsupportedOperationException("Not implemented");
   }
 
   @Override
@@ -59,27 +59,27 @@ public class SimpleResponseWrapper implements HttpServletResponse {
 
   @Override
   public void sendError(int sc, String msg) {
-    throw new RuntimeException("Not implemented");
+    throw new UnsupportedOperationException("Not implemented");
   }
 
   @Override
   public void sendError(int sc) {
-    throw new RuntimeException("Not implemented");
+    throw new UnsupportedOperationException("Not implemented");
   }
 
   @Override
   public void sendRedirect(String location) {
-    throw new RuntimeException("Not implemented");
+    throw new UnsupportedOperationException("Not implemented");
   }
 
   @Override
   public void setDateHeader(String name, long date) {
-    throw new RuntimeException("Not implemented");
+    throw new UnsupportedOperationException("Not implemented");
   }
 
   @Override
   public void addDateHeader(String name, long date) {
-    throw new RuntimeException("Not implemented");
+    throw new UnsupportedOperationException("Not implemented");
   }
 
   @Override
@@ -94,12 +94,12 @@ public class SimpleResponseWrapper implements HttpServletResponse {
 
   @Override
   public void setIntHeader(String name, int value) {
-    throw new RuntimeException("Not implemented");
+    throw new UnsupportedOperationException("Not implemented");
   }
 
   @Override
   public void addIntHeader(String name, int value) {
-    throw new RuntimeException("Not implemented");
+    throw new UnsupportedOperationException("Not implemented");
   }
 
   public void setStatus(int sc) {
@@ -162,17 +162,17 @@ public class SimpleResponseWrapper implements HttpServletResponse {
 
   @Override
   public void setCharacterEncoding(String charset) {
-    throw new RuntimeException("Not implemented");
+    throw new UnsupportedOperationException("Not implemented");
   }
 
   @Override
   public void setContentLength(int len) {
-    throw new RuntimeException("Not implemented");
+    throw new UnsupportedOperationException("Not implemented");
   }
 
   @Override
   public void setContentLengthLong(long len) {
-    throw new RuntimeException("Not implemented");
+    throw new UnsupportedOperationException("Not implemented");
   }
 
   @Override
@@ -182,7 +182,7 @@ public class SimpleResponseWrapper implements HttpServletResponse {
 
   @Override
   public void setBufferSize(int size) {
-    throw new RuntimeException("Not implemented");
+    throw new UnsupportedOperationException("Not implemented");
   }
 
   @Override
@@ -192,12 +192,12 @@ public class SimpleResponseWrapper implements HttpServletResponse {
 
   @Override
   public void flushBuffer() {
-    throw new RuntimeException("Not implemented");
+    throw new UnsupportedOperationException("Not implemented");
   }
 
   @Override
   public void resetBuffer() {
-    throw new RuntimeException("Not implemented");
+    throw new UnsupportedOperationException("Not implemented");
   }
 
   @Override
@@ -207,12 +207,12 @@ public class SimpleResponseWrapper implements HttpServletResponse {
 
   @Override
   public void reset() {
-    throw new RuntimeException("Not implemented");
+    throw new UnsupportedOperationException("Not implemented");
   }
 
   @Override
   public void setLocale(Locale loc) {
-    throw new RuntimeException("Not implemented");
+    throw new UnsupportedOperationException("Not implemented");
   }
 
   @Override

@@ -94,8 +94,8 @@ lazy val dbi = (project in file("dbi"))
     libraryDependencies ++= Dependencies.database
       ++ Dependencies.testing
       ++ List(
-      "org.jfree" % "jcommon" % "1.0.17",
-      "org.jfree" % "jfreechart" % "1.0.17"
+      "org.jfree" % "jcommon" % "1.0.17" % "provided",
+      "org.jfree" % "jfreechart" % "1.0.17" % "provided"
     )
   )
   .dependsOn(common)
