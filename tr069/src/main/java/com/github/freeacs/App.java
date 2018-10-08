@@ -42,6 +42,10 @@ public class App {
   public static void main(String[] args) {
     Config config = ConfigFactory.load();
     Spark.port(config.getInt("server.port"));
+    int maxThreads = config.getInt("server.jetty.threadpool.maxThreads");
+    int minThreads = config.getInt("server.jetty.threadpool.minThreads");
+    int timeOutMillis = config.getInt("server.jetty.threadpool.timeOutMillis");
+    Spark.threadPool(maxThreads, minThreads, timeOutMillis);
     EmbeddedServers.add(
         EmbeddedServers.Identifiers.JETTY,
         (Routes routeMatcher,
