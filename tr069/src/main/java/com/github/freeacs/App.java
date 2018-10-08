@@ -22,23 +22,60 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.eclipse.jetty.util.thread.ThreadPool;
+import spark.ExceptionMapper;
 import spark.Request;
 import spark.Response;
+import spark.Spark;
+import spark.embeddedserver.EmbeddedServers;
+import spark.embeddedserver.jetty.EmbeddedJettyServer;
+import spark.embeddedserver.jetty.JettyHandler;
+import spark.embeddedserver.jetty.JettyServerFactory;
+import spark.http.matching.MatcherFilter;
+import spark.route.Routes;
+import spark.staticfiles.StaticFilesConfiguration;
 
 public class App {
 
   public static void main(String[] args) {
     Config config = ConfigFactory.load();
+    Spark.port(config.getInt("server.port"));
+    int maxThreads = config.getInt("server.jetty.threadpool.maxThreads");
+    int minThreads = config.getInt("server.jetty.threadpool.minThreads");
+    int timeOutMillis = config.getInt("server.jetty.threadpool.timeOutMillis");
+    Spark.threadPool(maxThreads, minThreads, timeOutMillis);
+    EmbeddedServers.add(
+        EmbeddedServers.Identifiers.JETTY,
+        (Routes routeMatcher,
+            StaticFilesConfiguration staticFilesConfiguration,
+            ExceptionMapper exceptionMapper,
+            boolean hasMultipleHandler) -> {
+          MatcherFilter matcherFilter =
+              new MatcherFilter(
+                  routeMatcher,
+                  staticFilesConfiguration,
+                  exceptionMapper,
+                  false,
+                  hasMultipleHandler);
+          matcherFilter.init(null);
+          JettyHandler handler = new JettyHandler(matcherFilter);
+          handler
+              .getSessionCookieConfig()
+              .setHttpOnly(config.getBoolean("server.servlet.session.cookie.http-only"));
+          return new EmbeddedJettyServer(
+              new JettyServer(config.getInt("server.jetty.max-http-post-size")), handler);
+        });
     DataSource mainDs = dataSource(config.getConfig("main"));
-    routes(config, mainDs);
+    routes(mainDs, new Properties(config));
   }
 
-  public static void routes(Config config, DataSource mainDs) {
+  public static void routes(DataSource mainDs, Properties properties) {
     DBAccess dbAccess = new DBAccess(FACILITY_TR069, VERSION, mainDs, mainDs);
-    Properties properties = new Properties(config);
     TR069Method tr069Method = new TR069Method(properties);
     path(
-        "/tr069",
+        properties.getContextPath(),
         () -> {
           Provisioning provisioning = new Provisioning(dbAccess, tr069Method, properties);
           provisioning.init();
@@ -48,7 +85,8 @@ public class App {
                 SimpleResponseWrapper response = new SimpleResponseWrapper(200, "text/xml");
                 return process(provisioning::service, req, res, response);
               });
-          FileServlet fileServlet = new FileServlet(dbAccess, "/tr069/file/");
+          FileServlet fileServlet =
+              new FileServlet(dbAccess, properties.getContextPath() + "/file/");
           get(
               "/file/*",
               (req, res) -> {
@@ -80,7 +118,7 @@ public class App {
     service.apply(request.raw(), responseWrapper);
     response.status(responseWrapper.getStatus());
     response.type(responseWrapper.getContentType());
-    responseWrapper.getHeaders().forEach(response::header);
+    responseWrapper.getHeaders().forEach((k, v) -> response.header(k, v.toString()));
     return responseWrapper.getResponseAsBytes();
   }
 
@@ -102,5 +140,50 @@ public class App {
     hikariConfig.addDataSourceProperty("dataSource.useServerPrepStmts", "true");
 
     return new HikariDataSource(hikariConfig);
+  }
+
+  /** Creates Jetty Server instances. */
+  static class JettyServer implements JettyServerFactory {
+
+    private final int maxPostSize;
+
+    public JettyServer(int anInt) {
+      this.maxPostSize = anInt;
+    }
+
+    /**
+     * Creates a Jetty server.
+     *
+     * @param maxThreads maxThreads
+     * @param minThreads minThreads
+     * @param threadTimeoutMillis threadTimeoutMillis
+     * @return a new jetty server instance
+     */
+    public Server create(int maxThreads, int minThreads, int threadTimeoutMillis) {
+      Server server;
+      if (maxThreads > 0) {
+        int min = (minThreads > 0) ? minThreads : 8;
+        int idleTimeout = (threadTimeoutMillis > 0) ? threadTimeoutMillis : 60000;
+
+        server = new Server(new QueuedThreadPool(maxThreads, min, idleTimeout));
+      } else {
+        server = new Server();
+      }
+      server.setAttribute("org.eclipse.jetty.server.Request.maxFormContentSize", maxPostSize);
+      return server;
+    }
+
+    /**
+     * Creates a Jetty server with supplied thread pool
+     *
+     * @param threadPool thread pool
+     * @return a new jetty server instance
+     */
+    @Override
+    public Server create(ThreadPool threadPool) {
+      Server server = threadPool != null ? new Server(threadPool) : new Server();
+      server.setAttribute("org.eclipse.jetty.server.Request.maxFormContentSize", maxPostSize);
+      return server;
+    }
   }
 }

@@ -15,6 +15,7 @@ public class Properties {
   public static String PUBLIC_URL;
 
   private Config environment;
+  private String contextPath;
 
   public Properties(Config config) {
     this.environment = config;
@@ -25,6 +26,7 @@ public class Properties {
     setDiscoveryMode(config.getBoolean("discovery.mode"));
     setDiscoveryBlock(getOrDefault("discovery.block", null));
     setConcurrentDownloadLimit(Integer.parseInt(getOrDefault("concurrent.download.limit", "50")));
+    setContextPath(getOrDefault("server.servlet.context-path", "/"));
   }
 
   private <T> T getOrDefault(String key, T defaultValue) {
@@ -33,6 +35,10 @@ public class Properties {
       return defaultValue;
     }
     return (T) obj;
+  }
+
+  private void setContextPath(String contextPath) {
+    this.contextPath = contextPath;
   }
 
   private void setConcurrentDownloadLimit(Integer concurrentDownloadLimit) {
@@ -115,5 +121,9 @@ public class Properties {
     if (quirks == null) {
       return new String[0];
     } else return quirks.split("\\s*,\\s*");
+  }
+
+  public String getContextPath() {
+    return contextPath;
   }
 }
