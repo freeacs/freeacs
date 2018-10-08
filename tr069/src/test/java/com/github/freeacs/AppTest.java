@@ -2,6 +2,8 @@ package com.github.freeacs;
 
 import static org.junit.Assert.*;
 
+import com.github.freeacs.common.util.Sleep;
+import com.github.freeacs.tr069.Properties;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -134,13 +136,14 @@ public class AppTest {
     DataSource ds = dataSource();
     ValueInsertHelper.insert(ds);
     Config baseConfig = ConfigFactory.load("application.properties");
-    App.routes(baseConfig, ds);
+    App.routes(ds, new Properties(baseConfig));
     Spark.awaitInitialization();
   }
 
   @AfterClass
   public static void after() {
     Spark.stop();
+    Sleep.terminateApplication();
   }
 
   @Test
