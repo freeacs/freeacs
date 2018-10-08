@@ -42,10 +42,15 @@ public class App {
   public static void main(String[] args) {
     Config config = ConfigFactory.load();
     Spark.port(config.getInt("server.port"));
+    /* THREADPOOL BEGIN */
+    // Possible to add a new property server.jetty.threadpool.type? could be standard and custom.
+    // My thought is that custom thread pool is ExecutorThreadPool, while standard is .. well,
+    // standard ;) Queued.
     int maxThreads = getInt(config, "server.jetty.threadpool.maxThreads");
     int minThreads = getInt(config, "server.jetty.threadpool.minThreads");
     int timeOutMillis = getInt(config, "server.jetty.threadpool.timeOutMillis");
     Spark.threadPool(maxThreads, minThreads, timeOutMillis);
+    /* THREADPOOL END */
     EmbeddedServers.add(
         EmbeddedServers.Identifiers.JETTY,
         (Routes routeMatcher,
@@ -77,10 +82,10 @@ public class App {
 
   public static void routes(DataSource mainDs, Properties properties) {
     DBAccess dbAccess = new DBAccess(FACILITY_TR069, VERSION, mainDs, mainDs);
-    TR069Method tr069Method = new TR069Method(properties);
     path(
         properties.getContextPath(),
         () -> {
+          TR069Method tr069Method = new TR069Method(properties);
           Provisioning provisioning = new Provisioning(dbAccess, tr069Method, properties);
           provisioning.init();
           post(
@@ -151,7 +156,7 @@ public class App {
 
     private final int maxPostSize;
 
-    public JettyServer(int anInt) {
+    private JettyServer(int anInt) {
       this.maxPostSize = anInt;
     }
 
