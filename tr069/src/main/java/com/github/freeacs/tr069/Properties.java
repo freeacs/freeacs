@@ -25,7 +25,7 @@ public class Properties {
     setDigestSecret(config.getString("digest.secret"));
     setDiscoveryMode(config.getBoolean("discovery.mode"));
     setDiscoveryBlock(getOrDefault("discovery.block", null));
-    setConcurrentDownloadLimit(getOrDefault("concurrent.download.limit", 50));
+    setConcurrentDownloadLimit(Integer.parseInt(getOrDefault("concurrent.download.limit", "50")));
     setContextPath(getOrDefault("server.servlet.context-path", "/"));
   }
 
