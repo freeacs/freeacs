@@ -42,9 +42,9 @@ public class App {
   public static void main(String[] args) {
     Config config = ConfigFactory.load();
     Spark.port(config.getInt("server.port"));
-    int maxThreads = config.getInt("server.jetty.threadpool.maxThreads");
-    int minThreads = config.getInt("server.jetty.threadpool.minThreads");
-    int timeOutMillis = config.getInt("server.jetty.threadpool.timeOutMillis");
+    int maxThreads = getInt(config, "server.jetty.threadpool.maxThreads");
+    int minThreads = getInt(config, "server.jetty.threadpool.minThreads");
+    int timeOutMillis = getInt(config, "server.jetty.threadpool.timeOutMillis");
     Spark.threadPool(maxThreads, minThreads, timeOutMillis);
     EmbeddedServers.add(
         EmbeddedServers.Identifiers.JETTY,
@@ -65,10 +65,14 @@ public class App {
               .getSessionCookieConfig()
               .setHttpOnly(config.getBoolean("server.servlet.session.cookie.http-only"));
           return new EmbeddedJettyServer(
-              new JettyServer(config.getInt("server.jetty.max-http-post-size")), handler);
+              new JettyServer(getInt(config, "server.jetty.max-http-post-size")), handler);
         });
     DataSource mainDs = dataSource(config.getConfig("main"));
     routes(mainDs, new Properties(config));
+  }
+
+  private static int getInt(Config config, String s) {
+    return config.hasPath(s) ? config.getInt(s) : -1;
   }
 
   public static void routes(DataSource mainDs, Properties properties) {
