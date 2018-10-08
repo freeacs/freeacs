@@ -11,6 +11,12 @@ lazy val copyAppProps = mappings in Universal ++= {
   }
 }
 
+lazy val copyAppConfig = mappings in Universal ++= {
+  ((sourceDirectory in Compile).value / "resources" * "application.conf").get.map { f =>
+    f -> s"config/application-config.conf"
+  }
+}
+
 lazy val copyLogProps = mappings in Universal ++= {
   ((sourceDirectory in Compile).value / "resources" * "logback.xml").get.map { f =>
     f -> "config/logback.xml"
@@ -138,8 +144,6 @@ lazy val monitor = (project in file("monitor"))
     packageSummary := "FreeACS Monitor",
     packageDescription := "FreeACS Monitor",
     libraryDependencies ++= Dependencies.springBoot
-      ++ Dependencies.database
-      ++ Dependencies.testing
       ++ Dependencies.jdeb
       ++ Seq(
       "org.freemarker" % "freemarker" % "2.3.14",
@@ -192,7 +196,7 @@ lazy val tr069 = (project in file("tr069"))
         "com.typesafe" % "config" % "1.3.3",
         "junit" % "junit" % "4.12" % Test
       ),
-    copyAppProps,
+    copyAppConfig,
     copyLogProps,
     copyAppIni
   )
