@@ -13,11 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 public class SimpleResponseWrapper implements HttpServletResponse {
 
   private final StringWriter stringResponse;
-  private final HashMap<String, String> headers;
+  private final HashMap<String, Object> headers;
   private final FileResponse fileResponse;
 
   private int status;
   private String contentType;
+  private long contentLength;
 
   public SimpleResponseWrapper(int sc, String contentType) {
     this.status = sc;
@@ -29,7 +30,7 @@ public class SimpleResponseWrapper implements HttpServletResponse {
 
   @Override
   public void addCookie(Cookie cookie) {
-    throw new UnsupportedOperationException("Not implemented");
+    // Not implemented
   }
 
   @Override
@@ -59,27 +60,30 @@ public class SimpleResponseWrapper implements HttpServletResponse {
 
   @Override
   public void sendError(int sc, String msg) {
-    throw new UnsupportedOperationException("Not implemented");
+    this.status = sc;
+    PrintWriter writer = getWriter();
+    writer.print(msg);
+    writer.close();
   }
 
   @Override
   public void sendError(int sc) {
-    throw new UnsupportedOperationException("Not implemented");
+    this.status = sc;
   }
 
   @Override
   public void sendRedirect(String location) {
-    throw new UnsupportedOperationException("Not implemented");
+    // Not implemented
   }
 
   @Override
   public void setDateHeader(String name, long date) {
-    throw new UnsupportedOperationException("Not implemented");
+    // Not implemented
   }
 
   @Override
   public void addDateHeader(String name, long date) {
-    throw new UnsupportedOperationException("Not implemented");
+    // Not implemented
   }
 
   @Override
@@ -94,12 +98,12 @@ public class SimpleResponseWrapper implements HttpServletResponse {
 
   @Override
   public void setIntHeader(String name, int value) {
-    throw new UnsupportedOperationException("Not implemented");
+    headers.put(name, value);
   }
 
   @Override
   public void addIntHeader(String name, int value) {
-    throw new UnsupportedOperationException("Not implemented");
+    headers.put(name, value);
   }
 
   public void setStatus(int sc) {
@@ -162,17 +166,17 @@ public class SimpleResponseWrapper implements HttpServletResponse {
 
   @Override
   public void setCharacterEncoding(String charset) {
-    throw new UnsupportedOperationException("Not implemented");
+    // Not implemented
   }
 
   @Override
   public void setContentLength(int len) {
-    throw new UnsupportedOperationException("Not implemented");
+    this.contentLength = len;
   }
 
   @Override
   public void setContentLengthLong(long len) {
-    throw new UnsupportedOperationException("Not implemented");
+    this.contentLength = len;
   }
 
   @Override
@@ -182,7 +186,7 @@ public class SimpleResponseWrapper implements HttpServletResponse {
 
   @Override
   public void setBufferSize(int size) {
-    throw new UnsupportedOperationException("Not implemented");
+    // Not implemented
   }
 
   @Override
@@ -192,12 +196,12 @@ public class SimpleResponseWrapper implements HttpServletResponse {
 
   @Override
   public void flushBuffer() {
-    throw new UnsupportedOperationException("Not implemented");
+    // Not implemented
   }
 
   @Override
   public void resetBuffer() {
-    throw new UnsupportedOperationException("Not implemented");
+    // Not implemented
   }
 
   @Override
@@ -207,12 +211,12 @@ public class SimpleResponseWrapper implements HttpServletResponse {
 
   @Override
   public void reset() {
-    throw new UnsupportedOperationException("Not implemented");
+    // Not implemented
   }
 
   @Override
   public void setLocale(Locale loc) {
-    throw new UnsupportedOperationException("Not implemented");
+    // Not implemented
   }
 
   @Override
@@ -220,7 +224,11 @@ public class SimpleResponseWrapper implements HttpServletResponse {
     return null;
   }
 
-  public Map<String, String> getHeaders() {
+  public Map<String, Object> getHeaders() {
     return this.headers;
+  }
+
+  public long getContentLength() {
+    return contentLength;
   }
 }
