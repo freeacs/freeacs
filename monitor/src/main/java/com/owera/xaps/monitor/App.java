@@ -1,6 +1,6 @@
 package com.owera.xaps.monitor;
 
-import static com.github.freeacs.common.spark.RequestProcessor.process;
+import static com.github.freeacs.common.spark.ResponseHelper.process;
 import static spark.Spark.path;
 
 import com.github.freeacs.common.http.SimpleResponseWrapper;

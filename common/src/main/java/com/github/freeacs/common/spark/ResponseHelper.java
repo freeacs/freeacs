@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import spark.Request;
 import spark.Response;
 
-public class RequestProcessor {
+public class ResponseHelper {
   @FunctionalInterface
   public interface CheckedConsumer<L, R> {
     void apply(L l, R r) throws ServletException, IOException;

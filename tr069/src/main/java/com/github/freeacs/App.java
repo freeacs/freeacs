@@ -1,6 +1,6 @@
 package com.github.freeacs;
 
-import static com.github.freeacs.common.spark.RequestProcessor.process;
+import static com.github.freeacs.common.spark.ResponseHelper.process;
 import static com.github.freeacs.dbi.SyslogConstants.FACILITY_TR069;
 import static com.github.freeacs.tr069.Provisioning.VERSION;
 import static spark.Spark.get;
@@ -10,7 +10,7 @@ import static spark.Spark.post;
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.http.FileServlet;
 import com.github.freeacs.base.http.OKServlet;
-import com.github.freeacs.common.hikari.HikariDataSourceFactory;
+import com.github.freeacs.common.hikari.HikariDataSourceHelper;
 import com.github.freeacs.common.http.SimpleResponseWrapper;
 import com.github.freeacs.common.jetty.JettyFactory;
 import com.github.freeacs.common.util.Sleep;
@@ -43,7 +43,7 @@ public class App {
     EmbeddedServers.add(
         EmbeddedServers.Identifiers.JETTY,
         new JettyFactory(httpOnly, maxHttpPostSize, maxFormKeys));
-    DataSource mainDs = HikariDataSourceFactory.dataSource(config.getConfig("main"));
+    DataSource mainDs = HikariDataSourceHelper.dataSource(config.getConfig("main"));
     routes(mainDs, new Properties(config));
     Runtime.getRuntime()
         .addShutdownHook(
