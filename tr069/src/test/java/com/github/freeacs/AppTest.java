@@ -135,7 +135,7 @@ public class AppTest {
   public static void init() throws SQLException {
     DataSource ds = dataSource();
     ValueInsertHelper.insert(ds);
-    Config baseConfig = ConfigFactory.load("application.properties");
+    Config baseConfig = ConfigFactory.load("application.conf");
     App.routes(ds, new Properties(baseConfig));
     Spark.awaitInitialization();
   }
