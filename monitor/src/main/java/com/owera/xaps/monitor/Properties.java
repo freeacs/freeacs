@@ -1,26 +1,22 @@
 package com.owera.xaps.monitor;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
+import com.typesafe.config.Config;
 
-@Component
 public class Properties {
 
   public static Long RETRY_SECS = null;
   public static String URL_BASE = null;
 
-  private final Environment environment;
+  private final Config config;
 
-  @Autowired
-  public Properties(Environment environment) {
-    this.environment = environment;
+  public Properties(Config config) {
+    this.config = config;
     URL_BASE = getMonitorURLBase();
     RETRY_SECS = getRetrySeconds();
   }
 
   public String getMonitorURLBase() {
-    String urlBase = environment.getProperty("monitor.urlbase");
+    String urlBase = get("monitor.urlbase");
     if (urlBase == null) {
       return "http://localhost/";
     }
@@ -29,7 +25,7 @@ public class Properties {
   }
 
   public long getRetrySeconds() {
-    String prop = environment.getProperty("monitor.retrysec");
+    String prop = get("monitor.retrysec");
     try {
       return Long.parseLong(prop);
     } catch (Throwable t) {
@@ -37,7 +33,15 @@ public class Properties {
     }
   }
 
-  public String get(String s) {
-    return environment.getProperty(s);
+  public String getContextPath() {
+    return config.getString("server.servlet.context-path");
+  }
+
+  public int getServerPort() {
+    return config.getInt("server.port");
+  }
+
+  public String get(String key) {
+    return config.hasPath(key) ? config.getString(key) : null;
   }
 }

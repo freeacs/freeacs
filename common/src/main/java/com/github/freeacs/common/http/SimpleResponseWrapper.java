@@ -1,4 +1,4 @@
-package com.github.freeacs.http;
+package com.github.freeacs.common.http;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
