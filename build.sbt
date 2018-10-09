@@ -45,6 +45,7 @@ lazy val packagingSettings = Seq(
   maintainerScripts in Debian := maintainerScriptsAppend((maintainerScripts in Debian).value)(
     Conffiles ->
       s"""/opt/${normalizedName.value}/config/application-config.properties
+         |/opt/${normalizedName.value}/config/application-config.conf
          |/etc/default/${normalizedName.value}
          |/lib/systemd/system/${normalizedName.value}.service
       """.stripMargin,
@@ -83,11 +84,12 @@ lazy val common = (project in file("common"))
     name := "FreeACS Common",
     normalizedName := "freeacs-common",
     publish := {},
-    libraryDependencies ++= Dependencies.database
-      ++ Dependencies.testing
+    libraryDependencies ++= Dependencies.testing
       ++ List(
       "org.apache.httpcomponents" % "httpclient" % "4.5.5",
-      "ch.qos.logback" % "logback-classic" % "1.2.3"
+      "ch.qos.logback" % "logback-classic" % "1.2.3",
+      "com.sparkjava" % "spark-core" % "2.8.0",
+      "com.typesafe" % "config" % "1.3.3"
     )
   )
 
@@ -143,13 +145,11 @@ lazy val monitor = (project in file("monitor"))
     name := "FreeACS Monitor",
     packageSummary := "FreeACS Monitor",
     packageDescription := "FreeACS Monitor",
-    libraryDependencies ++= Dependencies.springBoot
-      ++ Dependencies.jdeb
-      ++ Seq(
+    libraryDependencies ++= Seq(
       "org.freemarker" % "freemarker" % "2.3.14",
       "commons-httpclient" % "commons-httpclient" % "3.1"
     ),
-    copyAppProps,
+    copyAppConfig,
     copyLogProps,
     copyAppIni
   )
@@ -188,13 +188,9 @@ lazy val tr069 = (project in file("tr069"))
     packageDescription := "FreeACS Tr069",
     libraryDependencies ++= Dependencies.database
       ++ Dependencies.testing
-      ++ Dependencies.jdeb
       ++ Seq(
-        "com.mashape.unirest" % "unirest-java" % "1.4.9" % "test",
         "org.apache.commons" % "commons-lang3" % "3.7",
-        "com.sparkjava" % "spark-core" % "2.8.0",
-        "com.typesafe" % "config" % "1.3.3",
-        "junit" % "junit" % "4.12" % Test
+        "com.mashape.unirest" % "unirest-java" % "1.4.9" % "test"
       ),
     copyAppConfig,
     copyLogProps,

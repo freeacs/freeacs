@@ -1,5 +1,6 @@
 package com.github.freeacs;
 
+import static com.github.freeacs.common.spark.RequestProcessor.process;
 import static com.github.freeacs.dbi.SyslogConstants.FACILITY_TR069;
 import static com.github.freeacs.tr069.Provisioning.VERSION;
 import static spark.Spark.get;
@@ -9,7 +10,9 @@ import static spark.Spark.post;
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.http.FileServlet;
 import com.github.freeacs.base.http.OKServlet;
-import com.github.freeacs.http.SimpleResponseWrapper;
+import com.github.freeacs.common.http.SimpleResponseWrapper;
+import com.github.freeacs.common.jetty.JettyFactory;
+import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.Provisioning;
 import com.github.freeacs.tr069.methods.TR069Method;
@@ -17,25 +20,9 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.util.thread.QueuedThreadPool;
-import org.eclipse.jetty.util.thread.ThreadPool;
-import spark.ExceptionMapper;
-import spark.Request;
-import spark.Response;
 import spark.Spark;
 import spark.embeddedserver.EmbeddedServers;
-import spark.embeddedserver.jetty.EmbeddedJettyServer;
-import spark.embeddedserver.jetty.JettyHandler;
-import spark.embeddedserver.jetty.JettyServerFactory;
-import spark.http.matching.MatcherFilter;
-import spark.route.Routes;
-import spark.staticfiles.StaticFilesConfiguration;
 
 public class App {
 
@@ -51,29 +38,22 @@ public class App {
     int timeOutMillis = getInt(config, "server.jetty.threadpool.timeOutMillis");
     Spark.threadPool(maxThreads, minThreads, timeOutMillis);
     /* THREADPOOL END */
+    boolean httpOnly = config.getBoolean("server.servlet.session.cookie.http-only");
+    int maxHttpPostSize = getInt(config, "server.jetty.max-http-post-size");
+    int maxFormKeys = getInt(config, "server.jetty.max-form-keys");
     EmbeddedServers.add(
         EmbeddedServers.Identifiers.JETTY,
-        (Routes routeMatcher,
-            StaticFilesConfiguration staticFilesConfiguration,
-            ExceptionMapper exceptionMapper,
-            boolean hasMultipleHandler) -> {
-          MatcherFilter matcherFilter =
-              new MatcherFilter(
-                  routeMatcher,
-                  staticFilesConfiguration,
-                  exceptionMapper,
-                  false,
-                  hasMultipleHandler);
-          matcherFilter.init(null);
-          JettyHandler handler = new JettyHandler(matcherFilter);
-          handler
-              .getSessionCookieConfig()
-              .setHttpOnly(config.getBoolean("server.servlet.session.cookie.http-only"));
-          return new EmbeddedJettyServer(
-              new JettyServer(getInt(config, "server.jetty.max-http-post-size")), handler);
-        });
+        new JettyFactory(httpOnly, maxHttpPostSize, maxFormKeys));
     DataSource mainDs = dataSource(config.getConfig("main"));
     routes(mainDs, new Properties(config));
+    Runtime.getRuntime()
+        .addShutdownHook(
+            new Thread(
+                () -> {
+                  System.out.println("Shutdown Hook is running !");
+                  Sleep.terminateApplication();
+                }));
+    System.out.println("Application Terminating ...");
   }
 
   private static int getInt(Config config, String s) {
@@ -113,24 +93,6 @@ public class App {
         });
   }
 
-  @FunctionalInterface
-  public interface CheckedConsumer<L, R> {
-    void apply(L l, R r) throws ServletException, IOException;
-  }
-
-  private static byte[] process(
-      CheckedConsumer<HttpServletRequest, HttpServletResponse> service,
-      Request request,
-      Response response,
-      SimpleResponseWrapper responseWrapper)
-      throws ServletException, IOException {
-    service.apply(request.raw(), responseWrapper);
-    response.status(responseWrapper.getStatus());
-    response.type(responseWrapper.getContentType());
-    responseWrapper.getHeaders().forEach((k, v) -> response.header(k, v.toString()));
-    return responseWrapper.getResponseAsBytes();
-  }
-
   private static DataSource dataSource(Config config) {
     HikariConfig hikariConfig = new HikariConfig();
     hikariConfig.setDriverClassName(config.getString("datasource.driverClassName"));
@@ -149,50 +111,5 @@ public class App {
     hikariConfig.addDataSourceProperty("dataSource.useServerPrepStmts", "true");
 
     return new HikariDataSource(hikariConfig);
-  }
-
-  /** Creates Jetty Server instances. */
-  static class JettyServer implements JettyServerFactory {
-
-    private final int maxPostSize;
-
-    private JettyServer(int anInt) {
-      this.maxPostSize = anInt;
-    }
-
-    /**
-     * Creates a Jetty server.
-     *
-     * @param maxThreads maxThreads
-     * @param minThreads minThreads
-     * @param threadTimeoutMillis threadTimeoutMillis
-     * @return a new jetty server instance
-     */
-    public Server create(int maxThreads, int minThreads, int threadTimeoutMillis) {
-      Server server;
-      if (maxThreads > 0) {
-        int min = (minThreads > 0) ? minThreads : 8;
-        int idleTimeout = (threadTimeoutMillis > 0) ? threadTimeoutMillis : 60000;
-
-        server = new Server(new QueuedThreadPool(maxThreads, min, idleTimeout));
-      } else {
-        server = new Server();
-      }
-      server.setAttribute("org.eclipse.jetty.server.Request.maxFormContentSize", maxPostSize);
-      return server;
-    }
-
-    /**
-     * Creates a Jetty server with supplied thread pool
-     *
-     * @param threadPool thread pool
-     * @return a new jetty server instance
-     */
-    @Override
-    public Server create(ThreadPool threadPool) {
-      Server server = threadPool != null ? new Server(threadPool) : new Server();
-      server.setAttribute("org.eclipse.jetty.server.Request.maxFormContentSize", maxPostSize);
-      return server;
-    }
   }
 }

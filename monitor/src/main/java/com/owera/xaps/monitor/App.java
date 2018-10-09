@@ -1,27 +1,46 @@
 package com.owera.xaps.monitor;
 
-import java.util.Collections;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
-import org.springframework.context.annotation.Bean;
+import static com.github.freeacs.common.spark.RequestProcessor.process;
+import static spark.Spark.path;
 
-@SpringBootApplication(exclude = {FlywayAutoConfiguration.class, DataSourceAutoConfiguration.class})
+import com.github.freeacs.common.http.SimpleResponseWrapper;
+import com.github.freeacs.common.jetty.JettyFactory;
+import com.github.freeacs.common.util.Sleep;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import javax.servlet.ServletException;
+import spark.Spark;
+import spark.embeddedserver.EmbeddedServers;
+
 public class App {
 
-  public static void main(String[] args) {
-    System.getProperties().setProperty("org.eclipse.jetty.server.Request.maxFormKeys", "100000");
-    SpringApplication.run(App.class, args);
+  public static void main(String[] args) throws ServletException {
+    Config config = ConfigFactory.load();
+    Spark.port(config.getInt("server.port"));
+    EmbeddedServers.add(EmbeddedServers.Identifiers.JETTY, new JettyFactory(true, -1, -1));
+    routes(new Properties(config));
+    Runtime.getRuntime()
+        .addShutdownHook(
+            new Thread(
+                () -> {
+                  System.out.println("Shutdown Hook is running !");
+                  Sleep.terminateApplication();
+                }));
+    System.out.println("Application Terminating ...");
   }
 
-  @Bean
-  ServletRegistrationBean<MonitorServlet> monitor(@Autowired Properties properties) {
-    ServletRegistrationBean<MonitorServlet> srb = new ServletRegistrationBean<>();
-    srb.setServlet(new MonitorServlet(properties));
-    srb.setUrlMappings(Collections.singletonList("/web"));
-    return srb;
+  public static void routes(Properties properties) throws ServletException {
+    MonitorServlet servlet = new MonitorServlet(properties);
+    servlet.init(null);
+    path(
+        properties.getContextPath(),
+        () -> {
+          Spark.get(
+              "/web",
+              (req, res) -> {
+                SimpleResponseWrapper response = new SimpleResponseWrapper(200, "text/html");
+                return process(servlet::service, req, res, response);
+              });
+        });
   }
 }

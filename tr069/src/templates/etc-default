@@ -1,3 +1,2 @@
 # --- override application properties here ----
 
-SPRING_PROFILES_ACTIVE=config

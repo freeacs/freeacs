@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,10 +26,9 @@ import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** Servlet implementation class Welcome */
 public class MonitorServlet extends HttpServlet {
 
-  private static String VERSION = "1.3.9";
+  private static final String VERSION = "1.3.9";
 
   private static final long serialVersionUID = 3051630277238752841L;
 
@@ -38,23 +36,19 @@ public class MonitorServlet extends HttpServlet {
 
   private Configuration config;
 
-  static {
+  private static Logger log = LoggerFactory.getLogger(MonitorServlet.class);
+
+  public MonitorServlet(Properties properties) {
+    this.properties = properties;
     ProtocolSocketFactory socketFactory = new EasySSLProtocolSocketFactory();
     Protocol https = new Protocol("https", socketFactory, 443);
     Protocol.registerProtocol("https", https);
   }
 
-  private static Logger log = LoggerFactory.getLogger(MonitorServlet.class);
-
-  public MonitorServlet(Properties properties) {
-    this.properties = properties;
-  }
-
   @Override
   public void init(ServletConfig serlvetConfig) throws ServletException {
     try {
-      ServletContext context = serlvetConfig.getServletContext();
-      config = new Freemarker().initFreemarker(context);
+      config = new Freemarker().initFreemarker();
 
       Scheduler scheduler = new Scheduler();
       Thread t = new Thread(scheduler);
@@ -83,12 +77,11 @@ public class MonitorServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+      throws IOException {
     processRequest(request, response);
   }
 
-  private void processRequest(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
     PrintWriter out = response.getWriter();
     Template page = config.getTemplate("main.ftl");
     Map<String, Object> rootMap = new HashMap<String, Object>();
@@ -117,7 +110,7 @@ public class MonitorServlet extends HttpServlet {
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+      throws IOException {
     processRequest(request, response);
   }
 }
