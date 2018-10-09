@@ -81,7 +81,7 @@ public class MonitorServlet extends HttpServlet {
     processRequest(request, response);
   }
 
-  void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
     PrintWriter out = response.getWriter();
     Template page = config.getTemplate("main.ftl");
     Map<String, Object> rootMap = new HashMap<String, Object>();

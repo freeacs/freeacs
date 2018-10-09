@@ -1,15 +1,9 @@
 package com.github.freeacs;
 
-import static com.github.freeacs.common.spark.RequestProcessor.process;
-import static com.github.freeacs.dbi.SyslogConstants.FACILITY_TR069;
-import static com.github.freeacs.tr069.Provisioning.VERSION;
-import static spark.Spark.get;
-import static spark.Spark.path;
-import static spark.Spark.post;
-
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.http.FileServlet;
 import com.github.freeacs.base.http.OKServlet;
+import com.github.freeacs.common.hikari.HikariDataSourceFactory;
 import com.github.freeacs.common.http.SimpleResponseWrapper;
 import com.github.freeacs.common.jetty.JettyFactory;
 import com.github.freeacs.common.util.Sleep;
@@ -18,11 +12,17 @@ import com.github.freeacs.tr069.Provisioning;
 import com.github.freeacs.tr069.methods.TR069Method;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-import javax.sql.DataSource;
 import spark.Spark;
 import spark.embeddedserver.EmbeddedServers;
+
+import javax.sql.DataSource;
+
+import static com.github.freeacs.common.spark.RequestProcessor.process;
+import static com.github.freeacs.dbi.SyslogConstants.FACILITY_TR069;
+import static com.github.freeacs.tr069.Provisioning.VERSION;
+import static spark.Spark.get;
+import static spark.Spark.path;
+import static spark.Spark.post;
 
 public class App {
 
@@ -44,7 +44,7 @@ public class App {
     EmbeddedServers.add(
         EmbeddedServers.Identifiers.JETTY,
         new JettyFactory(httpOnly, maxHttpPostSize, maxFormKeys));
-    DataSource mainDs = dataSource(config.getConfig("main"));
+    DataSource mainDs = HikariDataSourceFactory.dataSource(config.getConfig("main"));
     routes(mainDs, new Properties(config));
     Runtime.getRuntime()
         .addShutdownHook(
@@ -91,25 +91,5 @@ public class App {
                 return process(okServlet::service, req, res, response);
               });
         });
-  }
-
-  private static DataSource dataSource(Config config) {
-    HikariConfig hikariConfig = new HikariConfig();
-    hikariConfig.setDriverClassName(config.getString("datasource.driverClassName"));
-    hikariConfig.setJdbcUrl(config.getString("datasource.jdbcUrl"));
-    hikariConfig.setUsername(config.getString("datasource.username"));
-    hikariConfig.setPassword(config.getString("datasource.password"));
-
-    hikariConfig.setMinimumIdle(config.getInt("datasource.minimum-idle"));
-    hikariConfig.setMaximumPoolSize(config.getInt("datasource.maximum-pool-size"));
-    hikariConfig.setConnectionTestQuery("SELECT 1");
-    hikariConfig.setPoolName(config.getString("datasource.poolName"));
-
-    hikariConfig.addDataSourceProperty("dataSource.cachePrepStmts", "true");
-    hikariConfig.addDataSourceProperty("dataSource.prepStmtCacheSize", "250");
-    hikariConfig.addDataSourceProperty("dataSource.prepStmtCacheSqlLimit", "2048");
-    hikariConfig.addDataSourceProperty("dataSource.useServerPrepStmts", "true");
-
-    return new HikariDataSource(hikariConfig);
   }
 }

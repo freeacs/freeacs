@@ -86,6 +86,7 @@ lazy val common = (project in file("common"))
     publish := {},
     libraryDependencies ++= Dependencies.testing
       ++ List(
+      "com.zaxxer" % "HikariCP" % "3.1.0",
       "org.apache.httpcomponents" % "httpclient" % "4.5.5",
       "ch.qos.logback" % "logback-classic" % "1.2.3",
       "com.sparkjava" % "spark-core" % "2.8.0",
