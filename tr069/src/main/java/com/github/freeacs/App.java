@@ -1,5 +1,12 @@
 package com.github.freeacs;
 
+import static com.github.freeacs.common.spark.RequestProcessor.process;
+import static com.github.freeacs.dbi.SyslogConstants.FACILITY_TR069;
+import static com.github.freeacs.tr069.Provisioning.VERSION;
+import static spark.Spark.get;
+import static spark.Spark.path;
+import static spark.Spark.post;
+
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.http.FileServlet;
 import com.github.freeacs.base.http.OKServlet;
@@ -12,17 +19,9 @@ import com.github.freeacs.tr069.Provisioning;
 import com.github.freeacs.tr069.methods.TR069Method;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import javax.sql.DataSource;
 import spark.Spark;
 import spark.embeddedserver.EmbeddedServers;
-
-import javax.sql.DataSource;
-
-import static com.github.freeacs.common.spark.RequestProcessor.process;
-import static com.github.freeacs.dbi.SyslogConstants.FACILITY_TR069;
-import static com.github.freeacs.tr069.Provisioning.VERSION;
-import static spark.Spark.get;
-import static spark.Spark.path;
-import static spark.Spark.post;
 
 public class App {
 
