@@ -23,8 +23,8 @@ public class User {
       this.users = copyMe.getUsers();
       this.permissions = copyMe.getPermissions();
       this.id = copyMe.getId();
-    } else {
-      // Do we need something here?
+      this.secret = copyMe.getSecret();
+      this.oldUsername = copyMe.getOldUsername();
     }
   }
 

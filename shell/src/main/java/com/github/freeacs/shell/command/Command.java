@@ -167,21 +167,21 @@ public class Command {
   }
 
   public String toString() {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     for (ContextElement ce : contextContainer.getContextList()) {
       sb.append(ce);
     }
     if (sb.length() > 0) sb.append("/");
-    if (commandAndArguments.size() > 0) sb.append(commandAndArguments.get(0) + " ");
+    if (commandAndArguments.size() > 0) sb.append(commandAndArguments.get(0)).append(" ");
     for (Option o : options.values()) {
-      sb.append(o + " ");
+      sb.append(o).append(" ");
     }
     if (commandAndArguments.size() > 1) {
       for (int i = 1; i < commandAndArguments.size(); i++) {
         CommandAndArgument caa = commandAndArguments.get(i);
-        if (caa.toString().indexOf(" ") > -1 || caa.toString().indexOf("\t") > -1)
-          sb.append("\"" + caa + "\" ");
-        else sb.append(caa + " ");
+        if (caa.toString().contains(" ") || caa.toString().contains("\t"))
+          sb.append("\"").append(caa).append("\" ");
+        else sb.append(caa).append(" ");
       }
     }
     return sb.toString();
@@ -264,8 +264,6 @@ public class Command {
       } else if (!variableValueFound) {
         substStr = "NULL";
       }
-    } else {
-      // use default value - simply the variable value
     }
 
     return substStr;
@@ -274,49 +272,48 @@ public class Command {
   public static void varArgSubst(Substitute subst, Session session) {
     String orgStr = subst.getStringToSubstitute();
     Matcher m = varPattern.matcher(orgStr);
-    String modStr = "";
+    StringBuilder modStr = new StringBuilder();
     int previousEnd = 0;
     while (m.find()) {
       String varName = m.group(2);
-      modStr += orgStr.substring(previousEnd, m.start());
+      modStr.append(orgStr.substring(previousEnd, m.start()));
       if (session.getScript().getVariable(varName) != null) { // Variable exists
         // Check if variable value is to be used directly - or interpreted as a parameter
-        modStr +=
-            varArgSubstParam(session.getScript().getVariable(varName).getValue(), session, true);
+        modStr.append(varArgSubstParam(session.getScript().getVariable(varName).getValue(), session, true));
       } else if (varName.startsWith("_")) { // Special variable name is used
         if (varName.length() > 1) {
           String type = varName.substring(1);
           if (ContextElement.types.contains(type)) {
             if (type.equals(ContextElement.TYPE_UNITTYPE)
                 && session.getContext().getUnittype() != null)
-              modStr += session.getContext().getUnittype().getName();
+              modStr.append(session.getContext().getUnittype().getName());
             else if (type.equals(ContextElement.TYPE_UNITTYPE_PARAMS)
                 && session.getContext().getUnittypeParameter() != null)
-              modStr += session.getContext().getUnittypeParameter().getName();
+              modStr.append(session.getContext().getUnittypeParameter().getName());
             else if (type.equals(ContextElement.TYPE_PROFILE)
                 && session.getContext().getProfile() != null)
-              modStr += session.getContext().getProfile().getName();
+              modStr.append(session.getContext().getProfile().getName());
             else if (type.equals(ContextElement.TYPE_GROUP)
                 && session.getContext().getGroup() != null)
-              modStr += session.getContext().getGroup().getName();
+              modStr.append(session.getContext().getGroup().getName());
             else if (type.equals(ContextElement.TYPE_JOB) && session.getContext().getJob() != null)
-              modStr += session.getContext().getJob().getName();
+              modStr.append(session.getContext().getJob().getName());
             else if (type.equals(ContextElement.TYPE_UNIT)
                 && session.getContext().getUnit() != null)
-              modStr += session.getContext().getUnit().getId();
+              modStr.append(session.getContext().getUnit().getId());
           } else {
-            modStr += varArgSubstParam(varName, session, false);
+            modStr.append(varArgSubstParam(varName, session, false));
           }
         } else {
           throw new IllegalArgumentException("The variable name '_' is not allowed");
         }
       } else { // Check if variable name can be interpreted as a parameter
-        modStr += varArgSubstParam(varName, session, false);
+        modStr.append(varArgSubstParam(varName, session, false));
       }
       previousEnd = m.end();
     }
-    if (previousEnd < orgStr.length()) modStr += orgStr.substring(previousEnd);
-    subst.setSubstitutedString(modStr);
+    if (previousEnd < orgStr.length()) modStr.append(orgStr.substring(previousEnd));
+    subst.setSubstitutedString(modStr.toString());
   }
 
   public void processFileArgs(String[] fileArgs) {

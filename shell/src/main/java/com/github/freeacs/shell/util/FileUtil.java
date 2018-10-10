@@ -122,8 +122,6 @@ public class FileUtil {
       for (UnittypeParameter utp : unittype.getUnittypeParameters().getUnittypeParameters()) {
         completions.add(utp.getName());
       }
-    } else if (context.getUnittypeParameter() != null) {
-      // add nothing
     } else if (context.getUnittype() != null) {
       Unittype unittype = context.getUnittype();
       for (Profile p : unittype.getProfiles().getProfiles()) {

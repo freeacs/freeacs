@@ -13,12 +13,8 @@ public class TCDecision {
         String errormsg = "TC request reports a faultcode (" + fault.getFaultCode();
         errormsg += ") with faultstring (" + fault.getFaultString() + ")";
         Log.error(TCDecision.class, errormsg);
-        //				UnitJob.stop(reqRes.getSessionData(), UnitJobStatus.CONFIRMED_FAILED);
-      } else {
-        //				UnitJob.stop(reqRes.getSessionData(), UnitJobStatus.COMPLETED_OK);
       }
     } finally {
-      //			DownloadLogic.removeOldest();
       reqRes.getResponse().setMethod(TR069Method.TRANSFER_COMPLETE);
     }
   }
