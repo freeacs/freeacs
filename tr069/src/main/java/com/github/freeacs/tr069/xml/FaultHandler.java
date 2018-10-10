@@ -1,8 +1,6 @@
 package com.github.freeacs.tr069.xml;
 
-import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -22,7 +20,6 @@ public class FaultHandler extends DefaultHandler {
   public static final String PARAMETER_NAME_TAG = "ParameterName";
   public static final String FAULT_STRUCT_TAG = "FaultStruct";
 
-  private SAXParserFactory factory;
   private XMLReader reader;
   private Fault fault;
   private Parser owner;
@@ -31,34 +28,6 @@ public class FaultHandler extends DefaultHandler {
   public FaultHandler(Fault fault, Parser owner) {
     this.fault = fault;
     this.owner = owner;
-  }
-
-  public FaultHandler(InputSource xmlSource) {
-    this.fault = null;
-    try {
-      SAXParserFactory factory = getParserFactory();
-      factory.setNamespaceAware(true);
-
-      reader = factory.newSAXParser().getXMLReader();
-      reader.setContentHandler(this);
-      reader.setErrorHandler(new SOAPErrorHandler());
-      reader.parse(xmlSource);
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
-
-  private SAXParserFactory getParserFactory() {
-    if (factory == null) {
-      factory = SAXParserFactory.newInstance();
-      factory.setNamespaceAware(true);
-    }
-
-    return factory;
-  }
-
-  public Fault getFault() {
-    return this.fault;
   }
 
   private boolean isParameterFault = false;
@@ -71,20 +40,12 @@ public class FaultHandler extends DefaultHandler {
     currTextContent = new StringBuilder();
     if (SOAP_ENV_NS.equals(namespaceURI) && FAULT_TAG.equals(localName)) {
       this.fault = new Fault();
-    } else if (SOAP_FAULT_CODE_TAG.equals(localName)) {
-    } else if (SOAP_FAULT_STRING_TAG.equals(localName)) {
-    } else if (SOAP_DETAIL_TAG.equals(localName)) {
-    } else if (DSLFORUM_NS.equals(namespaceURI) && FAULT_TAG.equals(localName)) {
-    } else if (FAULT_CODE_TAG.equals(localName)) {
-    } else if (FAULT_STRING_TAG.equals(localName)) {
     } else if (SET_PARAMETER_VALUES_FAULT_TAG.equals(localName)) {
       isParameterFault = true;
-    } else if (PARAMETER_NAME_TAG.equals(localName)) {
     }
   }
 
   public void endElement(String namespaceURI, String localName, String qualifiedName) {
-    if (SOAP_ENV_NS.equals(namespaceURI) && FAULT_TAG.equals(localName)) {}
     if (FAULT_STRUCT_TAG.equals(localName)) {
       if (owner != null) {
         owner.getXMLReader().setContentHandler(owner);
@@ -97,9 +58,6 @@ public class FaultHandler extends DefaultHandler {
       if (this.fault != null) {
         this.fault.setSoapFaultString(new String(currTextContent));
       }
-    } else if (SOAP_DETAIL_TAG.equals(localName)) {
-    } else if (DSLFORUM_NS.equals(namespaceURI) && FAULT_TAG.equals(localName)) {
-
     } else if (FAULT_CODE_TAG.equals(localName)) {
       this.faultCode = new String(currTextContent);
       if (!isParameterFault) {

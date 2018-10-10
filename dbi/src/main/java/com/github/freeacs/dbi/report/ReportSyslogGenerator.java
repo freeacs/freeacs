@@ -373,28 +373,21 @@ public class ReportSyslogGenerator extends ReportGenerator {
     return allUnittypesSpecified;
   }
 
-  private DynamicStatement addUnittypeOrProfileCriteria(
+  private void addUnittypeOrProfileCriteria(
       DynamicStatement ds, List<Unittype> unittypes, List<Profile> profiles) {
     User user = id.getUser();
-    //		Permissions permissionsObj = user.getPermissions();
-    //		if (filter.getProfile() != null) {
-    //			ds.addSqlAndArguments("profile_name = ? AND unit_type_name = ? AND ",
-    // filter.getProfile().getName(), filter.getProfile().getUnittype().getName());
-    //		} else
     if (profiles != null && profiles.size() > 0) {
       Map<Integer, Set<Profile>> unittypesWithSomeProfilesSpecified =
           new HashMap<Integer, Set<Profile>>();
       boolean allUnittypesSpecified =
           allUnittypesSpecified(profiles, unittypesWithSomeProfilesSpecified);
       if (user.isAdmin() && allUnittypesSpecified)
-        return ds; // no criteria added -> quicker search,  will search for all unittypes/profiles
+        return; // no criteria added -> quicker search,  will search for all unittypes/profiles
       ds.addSql("(");
       for (int i = 0; i < profiles.size(); i++) {
         Profile profile = profiles.get(i);
         boolean allProfilesSpecified =
-            (unittypesWithSomeProfilesSpecified.get(profile.getUnittype().getId()) == null
-                ? true
-                : false);
+            (unittypesWithSomeProfilesSpecified.get(profile.getUnittype().getId()) == null);
         // all profiles in unittype are specified, we can skip profiles criteria
         if (allProfilesSpecified && user.isUnittypeAdmin(profile.getUnittype().getId())) {
           boolean alreadyTreated = false;
@@ -426,10 +419,7 @@ public class ReportSyslogGenerator extends ReportGenerator {
         }
         ds.cleanupSQLTail();
         ds.addSql(") AND ");
-      } else {
-        // no criteria added, all unittypes are specified and user isAdmin
       }
     }
-    return ds;
   }
 }

@@ -157,13 +157,11 @@ public class Context {
     // The unit object may be renewed (not updated) in one of the commands, but it may still be
     // the same unit. So if unit-id is the same, we do not reset the context with the old unit,
     // since we then might miss the changes (like setparam/delparam) on the unit.
-    if (this.unit != null
+    if (!(this.unit != null
         && this.unit.getId() != null
         && context.getUnit() != null
         && context.getUnit().getId() != null
-        && this.getUnit().getId().equals(context.getUnit().getId())) {
-      // skip reset
-    } else {
+        && this.getUnit().getId().equals(context.getUnit().getId()))) {
       this.setUnit(context.getUnit());
     }
     this.setGroup(context.getGroup());
@@ -201,17 +199,6 @@ public class Context {
     if (context.getJob() != this.getJob()) return false;
     if (context.getUnittypeParameter() != this.getUnittypeParameter()) return false;
     return true;
-  }
-
-  public String getCommandCounterContext() {
-    return "["
-        + commandCounterContext[0]
-        + commandCounterContext[1]
-        + commandCounterContext[2]
-        + commandCounterContext[3]
-        + commandCounterContext[4]
-        + commandCounterContext[5]
-        + "]";
   }
 
   public Session getSession() {
