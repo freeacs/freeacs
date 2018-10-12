@@ -85,8 +85,11 @@ public class TR069Method {
 
     getAbbrevMap().put(AUTONOMOUS_TRANSFER_COMPLETE, "ATC");
     getRequestMap()
-            .put(AUTONOMOUS_TRANSFER_COMPLETE, new HTTPRequestAction(TCreq::process, ATCDecision::process));
-    getResponseMap().put(AUTONOMOUS_TRANSFER_COMPLETE, new HTTPResponseAction(HTTPResponseCreator::buildATC));
+        .put(
+            AUTONOMOUS_TRANSFER_COMPLETE,
+            new HTTPRequestAction(TCreq::process, ATCDecision::process));
+    getResponseMap()
+        .put(AUTONOMOUS_TRANSFER_COMPLETE, new HTTPResponseAction(HTTPResponseCreator::buildATC));
 
     getAbbrevMap().put(DOWNLOAD, "DO");
     getRequestMap().put(DOWNLOAD, new HTTPRequestAction(DOres::process, makeSimpleDecision(EMPTY)));
