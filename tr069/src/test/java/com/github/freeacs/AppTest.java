@@ -23,7 +23,7 @@ public class AppTest {
       "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n"
           + "                   xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\"\n"
           + "                   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n"
-          + "                   xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">\n"
+          + "                   xmlns:cwmp=\"urn:dslforum-org:cwmp-1-2\">\n"
           + "    <SOAP-ENV:Header>\n"
           + "        <cwmp:ID SOAP-ENV:mustUnderstand=\"1\">1</cwmp:ID>\n"
           + "    </SOAP-ENV:Header>\n"
@@ -78,7 +78,7 @@ public class AppTest {
   private final String getParameterNamesResponse =
       "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n"
           + "                   xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\"\n"
-          + "                   xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">\n"
+          + "                   xmlns:cwmp=\"urn:dslforum-org:cwmp-1-2\">\n"
           + "    <SOAP-ENV:Header>\n"
           + "        <cwmp:ID SOAP-ENV:mustUnderstand=\"1\">FREEACS-0</cwmp:ID>\n"
           + "    </SOAP-ENV:Header>\n"
@@ -98,7 +98,7 @@ public class AppTest {
           + "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n"
           + "                   xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\"\n"
           + "                   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n"
-          + "                   xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">\n"
+          + "                   xmlns:cwmp=\"urn:dslforum-org:cwmp-1-2\">\n"
           + "    <SOAP-ENV:Header>\n"
           + "        <cwmp:ID SOAP-ENV:mustUnderstand=\"1\">FREEACS-0</cwmp:ID>\n"
           + "    </SOAP-ENV:Header>\n"
@@ -120,7 +120,7 @@ public class AppTest {
   private final String setParameterValuesResponse =
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
           + "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n"
-          + "                   xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">\n"
+          + "                   xmlns:cwmp=\"urn:dslforum-org:cwmp-1-2\">\n"
           + "    <SOAP-ENV:Header>\n"
           + "        <cwmp:ID SOAP-ENV:mustUnderstand=\"1\">FREEACS-0</cwmp:ID>\n"
           + "    </SOAP-ENV:Header>\n"
@@ -177,7 +177,7 @@ public class AppTest {
             .body(inform)
             .asString();
     assertEquals(
-        "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soapenc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">\n"
+        "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soapenc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:cwmp=\"urn:dslforum-org:cwmp-1-2\">\n"
             + "<soapenv:Header>\n"
             + "\t<cwmp:ID soapenv:mustUnderstand=\"1\">1</cwmp:ID>\n"
             + "</soapenv:Header>\n"
