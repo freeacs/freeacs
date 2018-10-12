@@ -52,7 +52,6 @@ public class App {
                   System.out.println("Shutdown Hook is running !");
                   Sleep.terminateApplication();
                 }));
-    System.out.println("Application Terminating ...");
   }
 
   private static int getInt(Config config, String s) {
