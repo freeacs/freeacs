@@ -25,7 +25,7 @@ public class Response {
         "xmlns:" + Namespace.getSoapEncNS() + "=\"http://schemas.xmlsoap.org/soap/encoding/\" ");
     sb.append("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" ");
     sb.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
-    sb.append("xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">\n");
+    sb.append("xmlns:cwmp=\"urn:dslforum-org:cwmp-1-2\">\n");
     sb.append(header.toXml());
     sb.append(body.toXml());
     sb.append("</" + Namespace.getSoapEnvNS() + ":Envelope>\n");
