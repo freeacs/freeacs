@@ -68,6 +68,13 @@ public interface HTTPResponseCreator {
     return new Response(header, body);
   }
 
+  static Response buildATC(HTTPReqResData reqRes) {
+    TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
+    Header header = new Header(tr069ID, null, null);
+    Body body = new ATCres();
+    return new Response(header, body);
+  }
+
   static Response buildIN(HTTPReqResData reqRes) {
     TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
     Header header = new Header(tr069ID, null, null);

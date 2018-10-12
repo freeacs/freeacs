@@ -15,6 +15,8 @@ public class TR069Method {
 
   public static final String TRANSFER_COMPLETE = "TransferComplete";
 
+  public static final String AUTONOMOUS_TRANSFER_COMPLETE = "AutonomousTransferComplete";
+
   public static final String DOWNLOAD = "Download";
 
   public static final String FAULT = "Fault";
@@ -80,6 +82,11 @@ public class TR069Method {
     getRequestMap()
         .put(TRANSFER_COMPLETE, new HTTPRequestAction(TCreq::process, TCDecision::process));
     getResponseMap().put(TRANSFER_COMPLETE, new HTTPResponseAction(HTTPResponseCreator::buildTC));
+
+    getAbbrevMap().put(AUTONOMOUS_TRANSFER_COMPLETE, "ATC");
+    getRequestMap()
+            .put(AUTONOMOUS_TRANSFER_COMPLETE, new HTTPRequestAction(TCreq::process, ATCDecision::process));
+    getResponseMap().put(AUTONOMOUS_TRANSFER_COMPLETE, new HTTPResponseAction(HTTPResponseCreator::buildATC));
 
     getAbbrevMap().put(DOWNLOAD, "DO");
     getRequestMap().put(DOWNLOAD, new HTTPRequestAction(DOres::process, makeSimpleDecision(EMPTY)));
