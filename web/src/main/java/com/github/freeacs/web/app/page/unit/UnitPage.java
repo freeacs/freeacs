@@ -113,7 +113,7 @@ public class UnitPage extends AbstractWebPage {
               .addCommand("auto") // automatically hit the Search button
               .addParameter("unittype", unit.getUnittype().getName())
               .addParameter("profile", unit.getProfile().getName())
-              .addParameter("unit", "^" + unit.getId() + "$"));
+              .addParameter("unit", unit.getId()));
       list.add(
           new MenuItem("Service window", Page.WINDOWUNIT)
               .addParameter("unittype", unit.getUnittype().getName())
