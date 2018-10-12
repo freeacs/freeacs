@@ -83,7 +83,7 @@ public class RootMenu {
         uts = session.getBatchStorage().getDeleteUnits();
         boolean unitsDeleted = false;
         for (Entry<Profile, List<String>> entry : uts.getUnits().entrySet()) {
-          session.getAcsUnit().deleteUnits(entry.getValue(), entry.getKey());
+          session.getAcsUnit().deleteUnits(entry.getValue());
           unitsDeleted = true;
         }
         if (unitsDeleted) session.println("The units scheduled for deletion are deleted");

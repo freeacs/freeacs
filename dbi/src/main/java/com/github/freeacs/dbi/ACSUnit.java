@@ -72,7 +72,7 @@ public class ACSUnit {
       wasAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
       UnitQueryCrossUnittype uqcu =
-          new UnitQueryCrossUnittype(connection, acs, (Unittype) null, (Profile) null);
+          new UnitQueryCrossUnittype(connection, acs, null, (Profile) null);
       return uqcu.getLimitedUnitByValue(value);
     } finally {
       if (connection != null) {
@@ -504,16 +504,6 @@ public class ACSUnit {
     }
   }
 
-  /** See comment on deleteUnits(Profile) */
-  public int deleteUnits(Unittype unittype) throws SQLException {
-    Profile[] profiles = unittype.getProfiles().getProfiles();
-    int rowsDeleted = 0;
-    for (Profile profile : profiles) {
-      rowsDeleted += deleteUnits(profile);
-    }
-    return rowsDeleted;
-  }
-
   public void deleteUnitParameters(Unit unit) throws SQLException {
     deleteUnitParameters(unit.flushDeleteQueue());
   }
@@ -603,7 +593,7 @@ public class ACSUnit {
    *
    * @throws SQLException
    */
-  public int deleteUnits(List<String> unitIds, Profile profile) throws SQLException {
+  public int deleteUnits(List<String> unitIds) throws SQLException {
     Connection connection = null;
     Statement s = null;
     String sql = null;
@@ -635,36 +625,12 @@ public class ACSUnit {
       return rowsDeleted;
     } catch (SQLException sqle) {
       // We will rollback that which is not yet commited.
-      connection.rollback();
+      if (connection != null) {
+        connection.rollback();
+      }
       throw sqle;
     } finally {
       if (s != null) s.close();
-      if (connection != null) {
-        connection.setAutoCommit(wasAutoCommit);
-        connection.close();
-      }
-    }
-  }
-
-  /**
-   * This method will return a list of units where only unit-id is populated. To retrieve all
-   * parameters of the unit, run getUnitsWithParameters(Unittype,Profile,List<Unit>)
-   *
-   * @param values
-   * @return
-   * @throws SQLException
-   */
-  public List<Unit> getLimitedUnitsByValues(List<String> values) throws SQLException {
-    Connection connection = null;
-    boolean wasAutoCommit = false;
-    try {
-      connection = dataSource.getConnection();
-      wasAutoCommit = connection.getAutoCommit();
-      connection.setAutoCommit(false);
-      UnitQueryCrossUnittype uqcu =
-          new UnitQueryCrossUnittype(connection, acs, (Unittype) null, (Profile) null);
-      return uqcu.getLimitedUnitsByValue(values);
-    } finally {
       if (connection != null) {
         connection.setAutoCommit(wasAutoCommit);
         connection.close();
@@ -860,5 +826,9 @@ public class ACSUnit {
     List<Parameter> parameters = new ArrayList<Parameter>();
     if (parameter != null) parameters.add(parameter);
     return getUnitCount(unittype, profiles, parameters);
+  }
+
+  public ACS getAcs() {
+    return acs;
   }
 }
