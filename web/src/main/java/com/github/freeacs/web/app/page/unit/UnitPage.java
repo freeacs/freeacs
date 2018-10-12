@@ -333,7 +333,7 @@ public class UnitPage extends AbstractWebPage {
         if (initialKickResponse == null)
           initialKickResponse = SystemConstants.DEFAULT_INSPECTION_MESSAGE;
         String currentKickResponse = initialKickResponse;
-        publishInspectionMode(unittype, unit, sessionId);
+        publishInspectionMode(unit, sessionId);
         // Code to hang around and see if unit is updated automatically through kick
         try {
           int waitSec = 30;
@@ -376,30 +376,17 @@ public class UnitPage extends AbstractWebPage {
   /**
    * Publish inspection mode.
    *
-   * @param unittype the unittype
    * @param unit the unit
    * @param sessionId the session id
    */
-  public static void publishInspectionMode(Unittype unittype, Unit unit, String sessionId) {
-
-    //		System.out.println("Published kick!");
-    //		if (UnittypePage.isProtocol(unittype, SystemConstants.TR069)) {
+  public static void publishInspectionMode(Unit unit, String sessionId) {
     SessionCache.getDBI(sessionId).publishKick(unit, SyslogConstants.FACILITY_STUN);
-    //		} else if (UnittypePage.isProtocol(unittype,SystemConstants.OPP)) {
-    //			SessionCache.getDBI(sessionId).publishInspectionMode(unit, SyslogConstants.FACILITY_OPP);
-    //		}
   }
 
   private boolean isRegularMode() {
     if (unit != null) return unit.getProvisioningMode() == ProvisioningMode.REGULAR;
     return false;
   }
-
-  //	private boolean isReadAllMode() {
-  //		if (unit != null)
-  //			return unit.getProvisioningMode() == ProvisioningMode.READALL;
-  //		return false;
-  //	}
 
   private boolean displayProvisioningTimestamps() {
     String lctms = unit.getParameterValue(SystemParameters.LAST_CONNECT_TMS);
