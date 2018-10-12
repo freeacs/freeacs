@@ -166,7 +166,7 @@ public class ProfileMenu {
         "[" + session.getCounter() + "] The unit " + args[1] + " is scheduled for deletion");
     if (uts.size() == 1000) {
       for (Entry<Profile, List<String>> entry : uts.getUnits().entrySet()) {
-        session.getAcsUnit().deleteUnits(entry.getValue(), entry.getKey());
+        session.getAcsUnit().deleteUnits(entry.getValue());
       }
       context.println("The units scheduled for deletion are deleted");
       uts.reset();

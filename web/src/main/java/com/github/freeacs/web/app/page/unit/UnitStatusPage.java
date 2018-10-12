@@ -48,7 +48,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -151,7 +150,7 @@ public class UnitStatusPage extends AbstractWebPage {
               .addCommand("auto") // automatically hit the Search button
               .addParameter("unittype", currentUnit.getUnittype().getName())
               .addParameter("profile", currentUnit.getProfile().getName())
-              .addParameter("unit", "^" + currentUnit.getId() + "$"));
+              .addParameter("unit", currentUnit.getId()));
       list.add(
           new MenuItem("Unit configuration", Page.UNIT)
               .addParameter("unittype", currentUnit.getUnittype().getName())
@@ -495,7 +494,6 @@ public class UnitStatusPage extends AbstractWebPage {
    * @param startTms the start tms
    * @param endTms the end tms
    * @param unitId the unit id
-   * @param servletResponseChannel the servlet outputHandler channel
    * @param servletRequest the servlet request
    * @param session the session
    * @return the chart table
@@ -509,30 +507,27 @@ public class UnitStatusPage extends AbstractWebPage {
       @RequestParam(value = "end") String endTms,
       @RequestParam(value = "unitId") String unitId,
       @RequestParam(value = "syslogFilter", required = false) String syslogFilter,
-      HttpServletResponse servletResponseChannel,
       HttpServletRequest servletRequest,
       HttpSession session)
       throws Exception {
 
     Date fromDate = DateUtils.parseDateDefault(startTms);
     Date toDate = DateUtils.parseDateDefault(endTms);
-    Unit unit =
-        ACSLoader.getACSUnit(session.getId(), mainDataSource, mainDataSource).getUnitById(unitId);
+    ACSUnit acsUnit = ACSLoader.getACSUnit(session.getId(), mainDataSource, mainDataSource);
+    Unit unit = acsUnit.getUnitById(unitId);
     UnitStatusInfo info =
         UnitStatusInfo.getUnitStatusInfo(
             unit, fromDate, toDate, session.getId(), mainDataSource, mainDataSource);
     ReportType reportType = ReportType.getEnum(pageType);
-    String page = null;
-    List<?> records = null;
+    String page;
+    List<?> records;
 
-    Map<String, Object> root = new HashMap<String, Object>();
+    Map<String, Object> root = new HashMap<>();
 
     switch (reportType) {
       case VOIP:
         long getVoipChart = System.nanoTime();
-        records =
-            new ArrayList<RecordVoip>(
-                (Collection<? extends RecordVoip>) info.getVoipReport().getMap().values());
+        records = new ArrayList<>(info.getVoipReport().getMap().values());
         Collections.sort((List<RecordVoip>) records, new RecordVoipComparator());
         records = RecordUIDataVoip.convertRecords((List<RecordVoip>) records);
         page = "calls";
@@ -540,10 +535,8 @@ public class UnitStatusPage extends AbstractWebPage {
         break;
       case HARDWARE:
         long getHwChart = System.nanoTime();
-        records =
-            new ArrayList<RecordHardware>(
-                (Collection<? extends RecordHardware>) info.getHardwareReport().getMap().values());
-        Collections.sort((List<RecordHardware>) records, new RecordHardwareComparator());
+        records = new ArrayList<>(info.getHardwareReport().getMap().values());
+        ((List<RecordHardware>) records).sort(new RecordHardwareComparator());
         records =
             RecordUIDataHardware.convertRecords(
                 unit,
@@ -552,14 +545,14 @@ public class UnitStatusPage extends AbstractWebPage {
                     (UnitListData)
                         InputDataRetriever.parseInto(
                             new UnitListData(), new ParameterParser(servletRequest)),
-                    new HashMap<String, Object>()));
+                    new HashMap<>()));
         if (records.size() > 100) records = records.subList(0, 100);
         page = "memory";
         logTimeElapsed(getHwChart, "Retrieved Hardware table", logger);
         break;
       case SYS:
         long getSyslogChart = System.nanoTime();
-        records = RecordUIDataSyslog.convertRecords(info.getSyslogEntries());
+        records = RecordUIDataSyslog.convertRecords(info.getSyslogEntries(), acsUnit.getAcs());
         page = "syslog";
         logTimeElapsed(getSyslogChart, "Retrieved Syslog table", logger);
         break;
@@ -572,6 +565,7 @@ public class UnitStatusPage extends AbstractWebPage {
     root.put("syslogFilter", syslogFilter);
     root.put("records", records);
     root.put("info", info);
+    root.put("URL_MAP", Page.getPageURLMap());
 
     return new ModelAndView("unit-status/" + page, root);
   }
