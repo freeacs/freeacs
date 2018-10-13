@@ -20,8 +20,6 @@ public class SyslogServlet extends HttpServlet {
 
   public static SyslogServer server = null;
 
-  public static String version = "1.4.32";
-
   private static Logger logger = LoggerFactory.getLogger(SyslogServlet.class);
   private final DataSource xapsDataSource;
   private final DataSource syslogDataSource;
@@ -64,30 +62,29 @@ public class SyslogServlet extends HttpServlet {
     doGet(req, res);
   }
 
-  public void doGet(HttpServletRequest req, HttpServletResponse res)
-      throws ServletException, IOException {
+  public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
     PrintWriter out = res.getWriter();
-    String status = "";
+    StringBuilder status = new StringBuilder();
     if (!FailoverFileReader.isOk()) {
-      status = FailoverFileReader.getThrowable() + "\n";
+      status = new StringBuilder(FailoverFileReader.getThrowable() + "\n");
       for (StackTraceElement ste : FailoverFileReader.getThrowable().getStackTrace())
-        status += ste.toString() + "\n\n";
-      status += "\n";
+        status.append(ste.toString()).append("\n\n");
+      status.append("\n");
     }
 
     if (!Syslog2DB.isOk()) {
-      status += Syslog2DB.getThrowable() + "\n";
+      status.append(Syslog2DB.getThrowable()).append("\n");
       for (StackTraceElement ste : Syslog2DB.getThrowable().getStackTrace())
-        status += ste.toString() + "\n";
-      status += "\n";
+        status.append(ste.toString()).append("\n");
+      status.append("\n");
     }
     if (!SyslogServer.isOk()) {
-      status += SyslogServer.getThrowable() + "\n";
+      status.append(SyslogServer.getThrowable()).append("\n");
       for (StackTraceElement ste : SyslogServer.getThrowable().getStackTrace())
-        status += ste.toString() + "\n";
-      status += "\n";
+        status.append(ste.toString()).append("\n");
+      status.append("\n");
     }
-    if (status.equals("")) status = "FREEACSOK " + version;
+    if (status.toString().equals("")) status = new StringBuilder("FREEACSOK");
     out.println(status);
     out.close();
   }

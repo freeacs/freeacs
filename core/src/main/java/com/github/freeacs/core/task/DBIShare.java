@@ -44,7 +44,7 @@ public abstract class DBIShare implements Task {
       id =
           new Identity(
               SyslogConstants.FACILITY_CORE,
-              CoreServlet.version,
+              "latest",
               users.getUnprotected(Users.USER_ADMIN));
     if (dbi == null) {
       syslog = new Syslog(this.syslogDataSource, id);
