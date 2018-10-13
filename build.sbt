@@ -232,7 +232,8 @@ lazy val stun = (project in file("stun"))
       ++ Dependencies.testing
       ++ List(
       "org.apache.httpcomponents" % "httpclient" % "4.5.5",
-      "commons-io" % "commons-io" % "1.3.2"
+      "commons-io" % "commons-io" % "1.3.2",
+      "org.mockito" % "mockito-core" % "2.21.0" % Test
     ),
     copyAppConfig,
     copyLogProps,
