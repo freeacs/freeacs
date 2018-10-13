@@ -23,19 +23,27 @@ public class FailoverFile {
 
   private static Logger logger = LoggerFactory.getLogger(FailoverFile.class);
 
-  private static FailoverFile instance = new FailoverFile();
+  private static FailoverFile instance;
 
   private static Long created;
 
   private static long lastFlushed = System.currentTimeMillis();
+  private final Properties properties;
 
-  static FailoverFile getInstance() {
+  public FailoverFile(Properties properties) {
+    this.properties = properties;
+  }
+
+  static FailoverFile getInstance(Properties properties) {
+    if (instance == null) {
+      instance = new FailoverFile(properties);
+    }
     return instance;
   }
 
   long createdTms() {
     if (created == null) {
-      created = System.currentTimeMillis() - Properties.FAILOVER_PROCESS_INTERVAL * 60 * 1000;
+      created = System.currentTimeMillis() - properties.getFailoverProcessInterval() * 60 * 1000;
     }
     return created;
   }

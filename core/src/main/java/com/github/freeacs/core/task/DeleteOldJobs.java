@@ -17,15 +17,21 @@ import org.slf4j.LoggerFactory;
 
 public class DeleteOldJobs extends DBIOwner {
 
-  public DeleteOldJobs(String taskName, DataSource mainDataSource, DataSource syslogDataSource)
+  private final Properties properties;
+
+  public DeleteOldJobs(
+      String taskName,
+      DataSource mainDataSource,
+      DataSource syslogDataSource,
+      Properties properties)
       throws SQLException {
     super(taskName, mainDataSource, syslogDataSource);
+    this.properties = properties;
   }
 
   private static Logger logger = LoggerFactory.getLogger(DeleteOldJobs.class);
 
   private ACS acs;
-  private Map<Integer, Job> jobMap;
 
   @Override
   public void runImpl() throws Exception {
@@ -40,7 +46,7 @@ public class DeleteOldJobs extends DBIOwner {
 
   private void removeOldJobs() throws Exception {
     UnitJobs unitJobs = new UnitJobs(getMainDataSource());
-    jobMap = new HashMap<Integer, Job>();
+    Map<Integer, Job> jobMap = new HashMap<Integer, Job>();
     Unittype[] unittypeArr = acs.getUnittypes().getUnittypes();
     for (Unittype unittype : unittypeArr) {
       Job[] jobList = unittype.getJobs().getJobs();
@@ -51,7 +57,7 @@ public class DeleteOldJobs extends DBIOwner {
     List<Job> removeFromJCMap = new ArrayList<Job>();
     for (Job job : jobMap.values()) {
       if (System.currentTimeMillis() - job.getEndTimestamp().getTime()
-          > Properties.COMPLETED_JOB_LIMIT * 3600 * 1000) {
+          > properties.getCompletedJobLimit() * 3600 * 1000) {
         if (logger.isInfoEnabled()) {
           logger.info(
               "DeleteOldJobs: Found an old job ("

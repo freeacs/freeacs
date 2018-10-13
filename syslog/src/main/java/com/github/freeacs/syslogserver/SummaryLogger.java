@@ -6,8 +6,11 @@ import org.slf4j.LoggerFactory;
 
 public class SummaryLogger extends TaskDefaultImpl {
 
-  public SummaryLogger(String taskName) {
+  private final Properties properties;
+
+  public SummaryLogger(String taskName, Properties properties) {
     super(taskName);
+    this.properties = properties;
   }
 
   private static Logger logger = LoggerFactory.getLogger(SummaryLogger.class);
@@ -16,22 +19,22 @@ public class SummaryLogger extends TaskDefaultImpl {
   private static boolean firstTime = true;
   private static Integer maxMessagesPrMinute;
 
-  public static int getMaxMessagesPrMinute() {
+  public static int getMaxMessagesPrMinute(Properties properties) {
     if (maxMessagesPrMinute == null) {
-      maxMessagesPrMinute = Properties.MAX_MESSAGES_PER_MINUTE;
+      maxMessagesPrMinute = properties.getMaxMessagesPerMinute();
     }
     return maxMessagesPrMinute;
   }
 
   private void updateProperties() {
-    maxMessagesPrMinute = Properties.MAX_MESSAGES_PER_MINUTE;
+    maxMessagesPrMinute = properties.getMaxMessagesPerMinute();
   }
 
   @Override
   public void runImpl() throws Throwable {
     updateProperties();
     if (summaryHeaderCount == 0) {
-      String uua = Properties.UNKNOWN_UNITS_ACTION;
+      String uua = properties.getUnknownUnitsAction();
       if (uua.equals("allow")) uua = "    Allow";
       else if (uua.equals("discard")) uua = "  Discard";
       else if (uua.equals("allow-create")) uua = "   Create";

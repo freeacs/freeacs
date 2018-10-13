@@ -16,12 +16,10 @@ public class SyslogPackets {
 
   private static Logger logger = LoggerFactory.getLogger(SyslogPackets.class);
 
-  private static int MAX_MESSAGES = Properties.MAX_MESSAGES_IN_BUFFER;
-
   private static final Object monitor = new Object();
 
-  public static void add(SyslogPacket syslogPacket) {
-    if (packets.size() < MAX_MESSAGES) {
+  public static void add(SyslogPacket syslogPacket, Properties properties) {
+    if (packets.size() < properties.getMaxMessagesInBuffer()) {
       synchronized (monitor) {
         packets.add(syslogPacket);
         if (syslogPacket.isFailoverPacket()) counter.incFailoverPackets();

@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 
 public class JobRuleEnforcer extends DBIOwner {
 
+  private final Properties properties;
+
   public class JobControl {
     private List<FractionStopRuleCounter> fractionStopRuleCounters =
         new ArrayList<FractionStopRuleCounter>();
@@ -163,9 +165,14 @@ public class JobRuleEnforcer extends DBIOwner {
   private UnitJobs unitJobs;
   private Map<Integer, JobControl> jobControlMap = new HashMap<Integer, JobControl>();
 
-  public JobRuleEnforcer(String taskName, DataSource mainDataSource, DataSource syslogDataSource)
+  public JobRuleEnforcer(
+      String taskName,
+      DataSource mainDataSource,
+      DataSource syslogDataSource,
+      Properties properties)
       throws SQLException {
     super(taskName, mainDataSource, syslogDataSource);
+    this.properties = properties;
   }
 
   @Override
@@ -243,7 +250,7 @@ public class JobRuleEnforcer extends DBIOwner {
   private void process() throws Exception {
     for (JobControl jc : jobControlMap.values()) {
       Job job = jc.getJob();
-      if (Properties.STAGING) {
+      if (properties.isStaging()) {
         int countCompleted = unitJobs.markAsCompleted(job);
         if (countCompleted > 0)
           logger.info(

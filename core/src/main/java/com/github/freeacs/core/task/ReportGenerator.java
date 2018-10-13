@@ -50,6 +50,7 @@ public class ReportGenerator extends DBIOwner {
   private static long MONTH_MS = 31 * DAY_MS;
 
   private static Logger logger = LoggerFactory.getLogger(ReportGenerator.class);
+  private final Properties properties;
   private ACS acs;
   private ScheduleType scheduleType;
   private TmsConverter converter = new TmsConverter();
@@ -58,10 +59,12 @@ public class ReportGenerator extends DBIOwner {
       String taskName,
       ScheduleType scheduleType,
       DataSource mainDataSource,
-      DataSource syslogDataSource)
+      DataSource syslogDataSource,
+      Properties properties)
       throws SQLException {
     super(taskName, mainDataSource, syslogDataSource);
     this.scheduleType = scheduleType;
+    this.properties = properties;
   }
 
   @Override
@@ -781,7 +784,7 @@ public class ReportGenerator extends DBIOwner {
   private void dailyJobs() throws SQLException, IOException, ParseException {
     logger.info("ReportGenerator: Daily report processing starts...");
     logger.info("ReportGenerator: Generate reports start");
-    String reports = Properties.REPORTS;
+    String reports = properties.getReports();
     if (reports == null) reports = "Unit";
     else if (!reports.contains("Unit")) reports = "Unit, " + reports;
 
@@ -792,7 +795,7 @@ public class ReportGenerator extends DBIOwner {
   private void hourlyJobs() throws SQLException, IOException, ParseException {
     logger.info("ReportGenerator: Hourly report processing starts...");
     logger.info("ReportGenerator: Generate reports start");
-    String reports = Properties.REPORTS;
+    String reports = properties.getReports();
     if (reports == null) reports = "Unit";
     else if (!reports.contains("Unit")) reports = "Unit, " + reports;
     runReports(reports, PeriodType.HOUR);
