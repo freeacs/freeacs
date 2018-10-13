@@ -155,7 +155,7 @@ public abstract class HelpPage {
       String contents = scanner.next();
       scanner.close();
       if (contents != null) {
-        contents = contents.replace("%VERSION%", Main.version);
+        contents = contents.replace("%VERSION%", "latest");
         return contents;
       }
     }

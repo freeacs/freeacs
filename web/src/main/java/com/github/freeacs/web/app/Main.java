@@ -34,9 +34,6 @@ public class Main extends HttpServlet {
   /** The logger. */
   private static Logger logger = LoggerFactory.getLogger(Main.class);
 
-  /** The Constant version. */
-  public static final String version = "2.2.58";
-
   public static final String servletMapping = "/index";
 
   /** The config. */
