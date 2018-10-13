@@ -4,78 +4,40 @@ import com.github.freeacs.common.util.Sleep;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FailoverFileReader implements Runnable {
-
-  public static class FailoverCounter {
-
-    private int recycled;
-    private int tooOld;
-
-    public FailoverCounter() {}
-
-    public FailoverCounter(int recycled, int tooOld) {
-      super();
-      this.recycled = recycled;
-      this.tooOld = tooOld;
-    }
-
-    public synchronized void incRecycled() {
-      recycled++;
-    }
-
-    public synchronized void incTooOld() {
-      tooOld++;
-    }
-
-    public synchronized FailoverCounter resetCounters() {
-      FailoverCounter c = new FailoverCounter(recycled, tooOld);
-      this.recycled = 0;
-      this.tooOld = 0;
-      return c;
-    }
-
-    public int getRecycled() {
-      return recycled;
-    }
-
-    public int getTooOld() {
-      return tooOld;
-    }
-  }
 
   private static FailoverCounter counter = new FailoverCounter();
 
   private static Logger logger = LoggerFactory.getLogger(FailoverFileReader.class);
 
   private static Logger failedMessages = LoggerFactory.getLogger("FAILED");
+  private final Properties properties;
 
-  private long MAX_AGE = Properties.MAX_FAILOVER_MESSAGE_AGE * 60 * 60 * 1000;
+  private Function<Properties, Long> MAX_AGE =
+      (properties) -> properties.getMaxFailoverMessageAge().longValue() * 60 * 60 * 1000;
 
-  private long PROCESS_INTERVAL = Properties.FAILOVER_PROCESS_INTERVAL * 60 * 1000;
-
-  //	private static boolean stop;
+  private Function<Properties, Long> PROCESS_INTERVAL =
+      (properties) -> properties.getFailoverProcessInterval().longValue() * 60 * 1000;
 
   private static boolean ok = true;
 
   private static Throwable throwable;
 
-  private static FailoverFile ff = FailoverFile.getInstance();
-
-  //	private static int recycledCounter = 0;
-
-  //	public static void stop() {
-  //		stop = true;
-  //	}
+  public FailoverFileReader(Properties properties) {
+    this.properties = properties;
+  }
 
   public void run() {
+    FailoverFile ff = FailoverFile.getInstance(properties);
     while (true) {
       try {
         Thread.sleep(1000);
         if (Sleep.isTerminated()) return;
-        if ((System.currentTimeMillis() - ff.createdTms()) > PROCESS_INTERVAL
+        if ((System.currentTimeMillis() - ff.createdTms()) > PROCESS_INTERVAL.apply(properties)
             && FailoverFile.getFailoverCount(true) > 0) {
           logger.info("Will process failover messages - that is to add them back into the system");
           File processFile = ff.rotate();
@@ -86,27 +48,21 @@ public class FailoverFileReader implements Runnable {
             int lineCounter = 0;
             while (true) {
               if (Sleep.isTerminated()) break;
-              //							if (SyslogPackets.isHighReceiveLoad()) {
-              //								Thread.sleep(1000);
-              //								continue;
-              //							} else {
               int size = SyslogPackets.packets.size();
               if (size > 0) Thread.sleep(SyslogPackets.packets.size() / 10 + 1);
-              //							}
               String line = br.readLine();
               if (line == null) break;
               lineCounter++;
               String[] args = line.split("#@@#");
               long tms = Long.parseLong(args[1]);
               SyslogPacket packet = new SyslogPacket(args[3], args[2], tms, true);
-              if ((System.currentTimeMillis() - tms) > MAX_AGE) {
+              if ((System.currentTimeMillis() - tms) > MAX_AGE.apply(properties)) {
                 failedMessages.error(packet + "Message was too old to retry");
                 counter.incTooOld();
                 continue;
               }
-              SyslogPackets.add(packet);
+              SyslogPackets.add(packet, properties);
               counter.incRecycled();
-              //							incRecycledCounter();
             }
             br.close();
             fr.close();
@@ -156,5 +112,42 @@ public class FailoverFileReader implements Runnable {
 
   public static FailoverCounter getCounter() {
     return counter;
+  }
+
+  public static class FailoverCounter {
+
+    private int recycled;
+    private int tooOld;
+
+    public FailoverCounter() {}
+
+    public FailoverCounter(int recycled, int tooOld) {
+      super();
+      this.recycled = recycled;
+      this.tooOld = tooOld;
+    }
+
+    public synchronized void incRecycled() {
+      recycled++;
+    }
+
+    public synchronized void incTooOld() {
+      tooOld++;
+    }
+
+    public synchronized FailoverCounter resetCounters() {
+      FailoverCounter c = new FailoverCounter(recycled, tooOld);
+      this.recycled = 0;
+      this.tooOld = 0;
+      return c;
+    }
+
+    public int getRecycled() {
+      return recycled;
+    }
+
+    public int getTooOld() {
+      return tooOld;
+    }
   }
 }

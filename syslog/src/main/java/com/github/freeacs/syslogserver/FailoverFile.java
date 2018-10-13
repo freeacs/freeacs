@@ -23,35 +23,36 @@ public class FailoverFile {
 
   private static Logger logger = LoggerFactory.getLogger(FailoverFile.class);
 
-  private static FailoverFile instance = new FailoverFile();
+  private static FailoverFile instance;
 
   private static Long created;
 
   private static long lastFlushed = System.currentTimeMillis();
+  private final Properties properties;
 
-  static FailoverFile getInstance() {
+  public FailoverFile(Properties properties) {
+    this.properties = properties;
+  }
+
+  protected static FailoverFile getInstance(Properties properties) {
+    if (instance == null) {
+      instance = new FailoverFile(properties);
+    }
     return instance;
   }
 
-  long createdTms() {
+  protected long createdTms() {
     if (created == null) {
-      created = System.currentTimeMillis() - Properties.FAILOVER_PROCESS_INTERVAL * 60 * 1000;
+      created = System.currentTimeMillis() - properties.getFailoverProcessInterval() * 60 * 1000;
     }
     return created;
-  }
-
-  public File getFile() {
-    return f;
   }
 
   public synchronized void write(String s) {
     try {
       long tms = System.currentTimeMillis();
-      //			long diff = tms - tmsSinceLastWrite;
-      //			noWriteMs += diff;
       getBufferedWriter().write(s);
       failoverCount++;
-      //			tmsSinceLastWrite = tms;
       if (tms > lastFlushed + 60000) {
         getBufferedWriter().flush();
         lastFlushed = tms;
@@ -66,7 +67,7 @@ public class FailoverFile {
     return bw;
   }
 
-  static long getFailoverCount(boolean checkStorage) {
+  protected static long getFailoverCount(boolean checkStorage) {
     if (checkStorage && f.exists()) {
       try {
         BufferedReader br = new BufferedReader(new FileReader(f));
@@ -85,7 +86,7 @@ public class FailoverFile {
     return failoverCount;
   }
 
-  synchronized File rotate() throws IOException {
+  protected synchronized File rotate() throws IOException {
     try {
       created = System.currentTimeMillis();
       File tmp = f;

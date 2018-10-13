@@ -1,92 +1,77 @@
 package com.github.freeacs.core;
 
+import com.typesafe.config.Config;
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
-@Component
 public class Properties {
 
-  public static String REPORTS;
-  public static boolean STAGING;
-  public static Integer SHELL_SCRIPT_LIMIT;
-  public static Integer COMPLETED_JOB_LIMIT;
-  public static Integer SHELL_SCRIPT_POOL_SIZE;
-  public static String SYSLOG_CLEANUP;
-  private static final Map<Integer, Integer> SYSLOG_SEVERITY_LIMIT = new HashMap<>();
+  private final String reports;
+  private final boolean staging;
+  private final Integer shellScriptLimit;
+  private final Integer completedJobLimit;
+  private final Integer shellScriptPoolSize;
+  private final String syslogCleanup;
+  private final Config environment;
+  private final String contextPath;
+  private final Map<Integer, Integer> syslogSeverityLimit;
 
-  @Value("${syslog.cleanup:normal}")
-  public void setSyslogCleanup(String syslogCleanup) {
-    SYSLOG_CLEANUP = syslogCleanup;
+  public Properties(Config config) {
+    this.environment = config;
+    this.contextPath = getOrDefault("server.servlet.context-path", "/");
+    this.syslogCleanup = getOrDefault("syslog.cleanup", "normal");
+    this.completedJobLimit = getOrDefault("completed.job.limit", 40);
+    this.shellScriptPoolSize = getOrDefault("shellscript.poolsize", 4);
+    this.shellScriptLimit = getOrDefault("shellscript.limit", 7);
+    this.reports = getOrDefault("reports", "Basic");
+    this.staging = getOrDefault("staging", false);
+    this.syslogSeverityLimit = new HashMap<>();
+    Config syslogConfig = environment.getConfig("syslog.severity");
+    for (Integer i = 0;
+        (syslogConfig.hasPath(i + ".limit") ? syslogConfig.getInt(i + ".limit") : null) != null;
+        i++) {
+      syslogSeverityLimit.put(i, syslogConfig.getInt(i + ".limit"));
+    }
   }
 
-  @Value("${completed.job.limit:40}")
-  public void setCompletedJobLimit(Integer completedJobLimit) {
-    COMPLETED_JOB_LIMIT = completedJobLimit;
+  @SuppressWarnings("unchecked")
+  private <T> T getOrDefault(String key, T defaultValue) {
+    Object obj = environment.hasPath(key) ? environment.getAnyRef(key) : null;
+    if (obj == null) {
+      return defaultValue;
+    }
+    return (T) obj;
   }
 
-  @Value("${reports:Basic}")
-  public void setReports(String reports) {
-    REPORTS = reports;
+  public Integer getSyslogSeverityLimit(int severity) {
+    return syslogSeverityLimit.get(severity);
   }
 
-  @Value("${staging:false}")
-  public void setStaging(Boolean staging) {
-    STAGING = staging;
+  public String getContextPath() {
+    return contextPath;
   }
 
-  @Value("${shellscript.limit:7}")
-  public void setShellScriptLimit(Integer shellScriptLimit) {
-    SHELL_SCRIPT_LIMIT = shellScriptLimit;
+  public String getReports() {
+    return reports;
   }
 
-  @Value("${shellscript.poolsize:4}")
-  public void setShellScriptPoolSize(Integer shellScriptPoolSize) {
-    SHELL_SCRIPT_POOL_SIZE = shellScriptPoolSize;
+  public boolean isStaging() {
+    return staging;
   }
 
-  @Value("${syslog.severity.0.limit:90}")
-  public void setSyslogSeverity0Limit(Integer severityLimit) {
-    SYSLOG_SEVERITY_LIMIT.put(0, severityLimit);
+  public Integer getShellScriptLimit() {
+    return shellScriptLimit;
   }
 
-  @Value("${syslog.severity.1.limit:90}")
-  public void setSyslogSeverity1Limit(Integer severityLimit) {
-    SYSLOG_SEVERITY_LIMIT.put(1, severityLimit);
+  public Integer getCompletedJobLimit() {
+    return completedJobLimit;
   }
 
-  @Value("${syslog.severity.2.limit:90}")
-  public void setSyslogSeverity2Limit(Integer severityLimit) {
-    SYSLOG_SEVERITY_LIMIT.put(2, severityLimit);
+  public Integer getShellScriptPoolSize() {
+    return shellScriptPoolSize;
   }
 
-  @Value("${syslog.severity.3.limit:90}")
-  public void setSyslogSeverity3Limit(Integer severityLimit) {
-    SYSLOG_SEVERITY_LIMIT.put(3, severityLimit);
-  }
-
-  @Value("${syslog.severity.4.limit:60}")
-  public void setSyslogSeverity4Limit(Integer severityLimit) {
-    SYSLOG_SEVERITY_LIMIT.put(4, severityLimit);
-  }
-
-  @Value("${syslog.severity.5.limit:30}")
-  public void setSyslogSeverity5Limit(Integer severityLimit) {
-    SYSLOG_SEVERITY_LIMIT.put(5, severityLimit);
-  }
-
-  @Value("${syslog.severity.6.limit:7}")
-  public void setSyslogSeverity6Limit(Integer severityLimit) {
-    SYSLOG_SEVERITY_LIMIT.put(6, severityLimit);
-  }
-
-  @Value("${syslog.severity.7.limit:4}")
-  public void setSyslogSeverity7Limit(Integer severityLimit) {
-    SYSLOG_SEVERITY_LIMIT.put(7, severityLimit);
-  }
-
-  public static Integer getSyslogSeverityLimit(int severity) {
-    return SYSLOG_SEVERITY_LIMIT.get(severity);
+  public String getSyslogCleanup() {
+    return syslogCleanup;
   }
 }

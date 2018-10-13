@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 
 public class ScriptExecutor extends DBIShare {
 
+  private final Properties properties;
+
   public static class ScriptDaemonRunnable implements Runnable {
 
     private ScriptExecution se;
@@ -100,9 +102,14 @@ public class ScriptExecutor extends DBIShare {
     }
   }
 
-  public ScriptExecutor(String taskName, DataSource mainDataSource, DataSource syslogDataSource)
+  public ScriptExecutor(
+      String taskName,
+      DataSource mainDataSource,
+      DataSource syslogDataSource,
+      Properties properties)
       throws SQLException {
     super(taskName, mainDataSource, syslogDataSource);
+    this.properties = properties;
   }
 
   private static Logger logger = LoggerFactory.getLogger(ScriptExecutor.class);
@@ -127,7 +134,7 @@ public class ScriptExecutor extends DBIShare {
   private void processScripts() throws Throwable {
     ScriptExecutions executions = new ScriptExecutions(getMainDataSource());
     List<ScriptExecution> executionList =
-        executions.getNotStartedExecutions(getLatestACS(), Properties.SHELL_SCRIPT_POOL_SIZE);
+        executions.getNotStartedExecutions(getLatestACS(), properties.getShellScriptPoolSize());
 
     // Organize all script-executions pr fusion-user - they must be executed in separate
     // shell-deamons
@@ -156,7 +163,7 @@ public class ScriptExecutor extends DBIShare {
         } else {
           ACSShellDaemon shellDaemon =
               ShellDaemonPool.getShellDaemon(
-                  getMainDataSource(), getSyslogDataSource(), entry.getKey());
+                  getMainDataSource(), getSyslogDataSource(), entry.getKey(), properties);
           if (shellDaemon == null) {
             logger.debug(
                 "No shell daemon available within pool size limit, will try again in 100 ms");

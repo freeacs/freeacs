@@ -10,9 +10,16 @@ import org.slf4j.LoggerFactory;
 
 public class DeleteOldScripts extends DBIShare {
 
-  public DeleteOldScripts(String taskName, DataSource mainDataSource, DataSource syslogDataSource)
+  private final Properties properties;
+
+  public DeleteOldScripts(
+      String taskName,
+      DataSource mainDataSource,
+      DataSource syslogDataSource,
+      Properties properties)
       throws SQLException {
     super(taskName, mainDataSource, syslogDataSource);
+    this.properties = properties;
   }
 
   private static Logger logger = LoggerFactory.getLogger(DeleteOldScripts.class);
@@ -29,7 +36,7 @@ public class DeleteOldScripts extends DBIShare {
 
   private void deleteOldScripts() throws SQLException {
     ScriptExecutions executions = new ScriptExecutions(getMainDataSource());
-    int days = Properties.SHELL_SCRIPT_LIMIT;
+    int days = properties.getShellScriptLimit();
     Calendar c = Calendar.getInstance();
     c.add(Calendar.DAY_OF_MONTH, -days);
     int rowsDeleted = executions.deleteExecutions(c.getTime());
