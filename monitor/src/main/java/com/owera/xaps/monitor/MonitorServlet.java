@@ -28,8 +28,6 @@ import org.slf4j.LoggerFactory;
 
 public class MonitorServlet extends HttpServlet {
 
-  private static final String VERSION = "1.3.9";
-
   private static final long serialVersionUID = 3051630277238752841L;
 
   private final Properties properties;
@@ -88,7 +86,6 @@ public class MonitorServlet extends HttpServlet {
     Map<String, Object> rootMap = new HashMap<String, Object>();
     String async = request.getParameter("async");
     if (async != null) rootMap.put("async", async);
-    rootMap.put("version", VERSION);
     List<MonitorInfo> events = new ArrayList<MonitorInfo>();
     for (MonitorInfo mi : ModuleMonitorTask.getMonitorInfoSet()) {
       if (mi.getModule().equals("monitor")) continue;

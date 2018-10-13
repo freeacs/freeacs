@@ -2,7 +2,6 @@
 				<tr>
 					<th align="left" class="tableheader">Module</th>
 					<th align="left" class="tableheader">Status</th>
-					<th align="left" class="tableheader">Version</th>
 					<th align="left" class="tableheader">URL</th>
 				</tr>
 				<#if events??>
@@ -10,7 +9,6 @@
 					<tr>
 						<td style="background:white">${event.module}</td>
 						<td style="background:white" onmouseover="Tip('${event.errorMessage!}')">${event.status!}</td>
-						<td style="background:white">${event.version!}</td>
 						<td style="background:white">${event.url!}</td>
 					</tr>
 					</#list>
