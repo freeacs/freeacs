@@ -333,44 +333,66 @@ public class UnitPage extends AbstractWebPage {
     }
   }
 
+  // Code to hang around and see if unit is updated automatically through kick
   private void waitForStunServer(Map<String, Object> root, ProvisioningMode mode, Unit unit) {
     String lct = unit.getParameterValue(SystemParameters.LAST_CONNECT_TMS);
     String initialKickResponse = unit.getParameterValue(SystemParameters.INSPECTION_MESSAGE);
-    if (initialKickResponse == null)
+    if (initialKickResponse == null) {
       initialKickResponse = SystemConstants.DEFAULT_INSPECTION_MESSAGE;
+    }
     String currentKickResponse = initialKickResponse;
-    // Code to hang around and see if unit is updated automatically through kick
-    try {
-      int waitSec = 30;
-      if (mode == ProvisioningMode.READALL) waitSec = 60;
-      int secCount = 0;
-      while (secCount < waitSec) {
+    int waitSec = 30;
+    if (mode == ProvisioningMode.READALL) waitSec = 60;
+    int secCount = 0;
+    while (secCount < waitSec) {
+      try {
         Thread.sleep(1000);
-        unit = acsUnit.getUnitById(unit.getId());
-        currentKickResponse = unit.getParameterValue(SystemParameters.INSPECTION_MESSAGE);
+      } catch (InterruptedException ignored) {
+        // ignore this exception
+      }
+      Unit possiblyUpdatedUnit;
+      try {
+        possiblyUpdatedUnit = acsUnit.getUnitById(unit.getId());
+        currentKickResponse =
+            possiblyUpdatedUnit.getParameterValue(SystemParameters.INSPECTION_MESSAGE);
         if (!initialKickResponse.equals(currentKickResponse)
             && currentKickResponse != null
             && !currentKickResponse.contains("success")) break; // if kick failed - fail fast
-        if (lct != null && !lct.equals(unit.getParameterValue(SystemParameters.LAST_CONNECT_TMS))) {
+        if (lct != null
+            && !lct.equals(
+                possiblyUpdatedUnit.getParameterValue(SystemParameters.LAST_CONNECT_TMS))) {
           break;
         }
+      } catch (SQLException e) {
+        logger.error("Failed to retrieve unit " + unit.getId(), e);
+        break;
+      } finally {
         secCount++;
       }
-      if (secCount == waitSec) { // Timed out - very likely that nothing happened - even though kick
-        // indicated success
-        root.put("kick_message", "Reboot to initate provisioning");
-        root.put("kick_mouseover", "Kick response: " + currentKickResponse);
-      } else if (currentKickResponse != null
-          && currentKickResponse.contains("success")) { // LCT is updated - a successful kick
-        Thread.sleep(5000); // to allow syslog to be updated assuming kick was successful
+    }
+    boolean timedOut = secCount == waitSec;
+    boolean success = currentKickResponse != null && currentKickResponse.contains("success");
+    addKickMessages(root, currentKickResponse, timedOut, success);
+  }
+
+  private void addKickMessages(
+      Map<String, Object> root, String currentKickResponse, boolean timedOut, boolean success) {
+    if (timedOut) { // Timed out - very likely that nothing happened
+      root.put("kick_message", "Reboot to initate provisioning");
+      root.put("kick_mouseover", "Kick response: " + currentKickResponse);
+    } else {
+      if (success) { // LCT is updated - a successful kick
+        try {
+          Thread.sleep(5000); // to allow syslog to be updated assuming kick was successful
+        } catch (InterruptedException ignored) {
+          // ignore this exception
+        }
         root.put("kick_message", "Provisioning was initiated");
         root.put("kick_mouseover", "Kick response: " + currentKickResponse);
       } else { // LCT may or may not be updated, but kick response contains error
         root.put("kick_message", "Reboot to initate provisioning");
         root.put("kick_mouseover", "Kick response: " + currentKickResponse);
       }
-    } catch (Throwable t) {
-      // ignore
     }
   }
 
