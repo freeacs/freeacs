@@ -28,8 +28,6 @@ public class CoreServlet extends HttpServlet {
 
   private static final long serialVersionUID = -3217484543967391741L;
 
-  public static String version = "1.5.44";
-
   private static Scheduler scheduler = null;
 
   private static Logger log = LoggerFactory.getLogger(CoreServlet.class);
@@ -147,8 +145,7 @@ public class CoreServlet extends HttpServlet {
     doGet(req, res);
   }
 
-  public void doGet(HttpServletRequest req, HttpServletResponse res)
-      throws ServletException, IOException {
+  public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
     PrintWriter out = res.getWriter();
 
     if (req.getParameterMap().size() > 0) {
@@ -163,7 +160,7 @@ public class CoreServlet extends HttpServlet {
         }
       }
     }
-    out.println("FREEACSOK " + version);
+    out.println("FREEACSOK");
     out.close();
   }
 }

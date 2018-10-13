@@ -5,7 +5,6 @@ import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.dbi.DBI;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -32,30 +31,17 @@ public class OKServlet extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
 
     PrintWriter out = res.getWriter();
-    String status = "FREEACSOK";
-    try {
-      Class tr069ProvClass = Class.forName("com.owera.xaps.tr069.Provisioning");
-      Field field = tr069ProvClass.getField("VERSION");
-      status += " " + field.get(null);
-    } catch (Throwable t) {
-      try {
-        Class sppProvClass = Class.forName("com.owera.xaps.spp.HTTPProvisioning");
-        Field field = sppProvClass.getField("VERSION");
-        status += " " + field.get(null);
-      } catch (Throwable ignored) {
-      }
-    }
-
+    StringBuilder status = new StringBuilder("FREEACSOK");
     try {
       DBI dbi = dbAccess.getDBI();
       if (dbi != null && dbi.getDbiThrowable() != null) {
-        status = "ERROR: DBI reported error:\n" + dbi.getDbiThrowable() + "\n";
+        status = new StringBuilder("ERROR: DBI reported error:\n" + dbi.getDbiThrowable() + "\n");
         for (StackTraceElement ste : dbi.getDbiThrowable().getStackTrace())
-          status += ste.toString();
+          status.append(ste.toString());
       }
     } catch (Throwable ignored) {
     }
-    if (!status.contains("ERROR") && ThreadCounter.currentSessionsCount() > 0) {
+    if (!status.toString().contains("ERROR") && ThreadCounter.currentSessionsCount() > 0) {
       Map<String, Long> currentSessions = ThreadCounter.cloneCurrentSessions();
       Iterator<String> cctmIterator = currentConnectionTmsMap.keySet().iterator();
       while (cctmIterator.hasNext()) {
@@ -63,11 +49,12 @@ public class OKServlet extends HttpServlet {
         if (currentSessions.get(uId) == null) { // the process has been completed
           cctmIterator.remove();
         } else {
-          Long sessionTime = (System.currentTimeMillis() - currentConnectionTmsMap.get(uId)) / 1000;
+          long sessionTime = (System.currentTimeMillis() - currentConnectionTmsMap.get(uId)) / 1000;
           if (sessionTime > 600) { // if a process has not been completed in 600 sec -> problem
             status =
-                "ERROR: A session may not have been completed for more than 600 seconds. May indicate a hang-situation. Consider restart Tomcat on Fusion server";
-            Log.fatal(OKServlet.class, status);
+                new StringBuilder(
+                    "ERROR: A session may not have been completed for more than 600 seconds. May indicate a hang-situation. Consider restart Tomcat on Fusion server");
+            Log.fatal(OKServlet.class, status.toString());
             break;
           }
         }
