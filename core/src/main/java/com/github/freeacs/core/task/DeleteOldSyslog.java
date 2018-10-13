@@ -14,13 +14,19 @@ import org.slf4j.LoggerFactory;
 
 public class DeleteOldSyslog extends DBIShare {
 
+  private final Properties properties;
   private ACS acs;
 
   private static Logger logger = LoggerFactory.getLogger(DeleteOldSyslog.class);
 
-  public DeleteOldSyslog(String taskName, DataSource mainDataSource, DataSource syslogDataSource)
+  public DeleteOldSyslog(
+      String taskName,
+      DataSource mainDataSource,
+      DataSource syslogDataSource,
+      Properties properties)
       throws SQLException {
     super(taskName, mainDataSource, syslogDataSource);
+    this.properties = properties;
   }
 
   @Override
@@ -115,7 +121,7 @@ public class DeleteOldSyslog extends DBIShare {
           if (rowsDeleted == 500000) {
             loopCounter++;
           } else if (fromCal != null) {
-            if (!"comprehensive".equals(Properties.SYSLOG_CLEANUP) && rowsDeleted == 0) {
+            if (!"comprehensive".equals(properties.getSyslogCleanup()) && rowsDeleted == 0) {
               logger.debug(
                   "DeleteOldSyslog: Assuming no more dates need to be checked for deletion. Set to syslog.cleanup = comprehensive (in config) to check all dates");
               fromCal = null;
@@ -146,7 +152,7 @@ public class DeleteOldSyslog extends DBIShare {
   private void removeOldSyslogEntriesSeverityBased(List<SyslogEvent> events) throws SQLException {
     // 2.
     for (int severity = 0; severity <= 7; severity++) {
-      int severityLimit = Properties.getSyslogSeverityLimit(severity);
+      int severityLimit = properties.getSyslogSeverityLimit(severity);
       Calendar limitCal = Calendar.getInstance();
       limitCal.set(Calendar.DATE, limitCal.get(Calendar.DATE) - severityLimit);
       limitCal.set(Calendar.HOUR_OF_DAY, 0);
@@ -221,7 +227,7 @@ public class DeleteOldSyslog extends DBIShare {
         if (rowsDeleted == 500000) {
           loopCounter++;
         } else if (fromCal != null) {
-          if (!"comprehensive".equals(Properties.SYSLOG_CLEANUP) && rowsDeleted == 0) {
+          if (!"comprehensive".equals(properties.getSyslogCleanup()) && rowsDeleted == 0) {
             logger.debug(
                 "DeleteOldSyslog: Assuming no more dates need to be checked for deletion. Set to comprehensive mode to check all dates");
             fromCal = null;

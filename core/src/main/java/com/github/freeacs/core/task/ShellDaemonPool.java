@@ -70,9 +70,13 @@ public class ShellDaemonPool {
   }
 
   public static synchronized ACSShellDaemon getShellDaemon(
-      DataSource mainDataSource, DataSource syslogDataSource, String fusionUser) throws Throwable {
+      DataSource mainDataSource,
+      DataSource syslogDataSource,
+      String fusionUser,
+      Properties properties)
+      throws Throwable {
     List<ACSShellDaemon> shellDaemonPool = getShellDaemonPool(fusionUser);
-    int poolsize = Properties.SHELL_SCRIPT_POOL_SIZE;
+    int poolsize = properties.getShellScriptPoolSize();
     ACSShellDaemon acsShellDaemon = null;
     // Check if any shell daemon is available. If not create a new one within poolsize-limit
     for (int i = 0; i < poolsize; i++) {

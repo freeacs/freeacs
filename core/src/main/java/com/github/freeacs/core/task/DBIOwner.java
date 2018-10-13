@@ -23,10 +23,8 @@ public abstract class DBIOwner implements Task {
   private final DataSource mainDataSource;
   private final DataSource syslogDataSource;
 
-  private Users users;
   private DBI dbi;
   private Syslog syslog;
-  private Identity id;
 
   private String taskName;
   private long launchTms;
@@ -39,15 +37,12 @@ public abstract class DBIOwner implements Task {
     this.mainDataSource = mainDataSource;
     this.syslogDataSource = syslogDataSource;
     this.taskName = taskName;
-    if (users == null) users = new Users(mainDataSource);
-    if (id == null)
-      id =
-          new Identity(
-              SyslogConstants.FACILITY_CORE, "latest", users.getUnprotected(Users.USER_ADMIN));
-    if (dbi == null) {
-      syslog = new Syslog(syslogDataSource, id);
-      dbi = new DBI(Integer.MAX_VALUE, mainDataSource, syslog);
-    }
+    Users users = new Users(mainDataSource);
+    Identity id =
+        new Identity(
+            SyslogConstants.FACILITY_CORE, "latest", users.getUnprotected(Users.USER_ADMIN));
+    syslog = new Syslog(syslogDataSource, id);
+    dbi = new DBI(Integer.MAX_VALUE, mainDataSource, syslog);
   }
 
   protected ACS getLatestACS() {

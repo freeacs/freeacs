@@ -15,16 +15,16 @@ public class DuplicateCheck {
   private static int counter = 0;
   private static Logger logger = LoggerFactory.getLogger(DuplicateCheck.class);
 
-  private static int getMaxSize() {
-    return Properties.MAX_MESSAGES_IN_DUPLICATE_BUFFER;
+  private static int getMaxSize(Properties properties) {
+    return properties.getMaxMessagesInDuplicateBuffer();
   }
 
-  private static int getCleanupLimitCounter() {
-    return getMaxSize() / 4;
+  private static int getCleanupLimitCounter(Properties properties) {
+    return getMaxSize(properties) / 4;
   }
 
-  private static int getCleanupLimitSize() {
-    return 3 * getMaxSize() / 4;
+  private static int getCleanupLimitSize(Properties properties) {
+    return 3 * getMaxSize(properties) / 4;
   }
 
   static int getDuplicateSize() {
@@ -52,8 +52,9 @@ public class DuplicateCheck {
     }
   }
 
-  private static void cleanup(int counter) throws SQLException {
-    if (counter <= getCleanupLimitCounter() || duplicateMap.size() <= getCleanupLimitSize()) return;
+  private static void cleanup(int counter, Properties properties) throws SQLException {
+    if (counter <= getCleanupLimitCounter(properties)
+        || duplicateMap.size() <= getCleanupLimitSize(properties)) return;
     logger.info(
         "Duplicate Message Buffer cleanup initiated (counter:"
             + counter
@@ -99,16 +100,18 @@ public class DuplicateCheck {
 
   /** Will add a message to the duplicate map if no duplicate is found or if duplicate is too old */
   public static synchronized boolean addMessage(
-      String key, SyslogEntry entry, int duplicateTimeoutMinutes) throws SQLException {
+      String key, SyslogEntry entry, int duplicateTimeoutMinutes, Properties properties)
+      throws SQLException {
     Duplicate duplicate =
         new Duplicate(entry, System.currentTimeMillis() + duplicateTimeoutMinutes * 60000);
-    if (duplicateMap.size() <= getMaxSize() && !duplicate(key)) {
+    if (duplicateMap.size() <= getMaxSize(properties) && !duplicate(key)) {
       counter++;
-      if (counter > getCleanupLimitCounter() && duplicateMap.size() > getCleanupLimitSize()) {
+      if (counter > getCleanupLimitCounter(properties)
+          && duplicateMap.size() > getCleanupLimitSize(properties)) {
         counter = 0;
-        cleanup(counter);
+        cleanup(counter, properties);
       }
-      if (duplicateMap.size() < getMaxSize()) {
+      if (duplicateMap.size() < getMaxSize(properties)) {
         duplicateMap.put(key, duplicate);
         return true; // can only happen if no duplicate was found
       }
