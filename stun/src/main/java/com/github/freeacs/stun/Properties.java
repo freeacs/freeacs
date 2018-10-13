@@ -13,11 +13,13 @@ public class Properties {
   private final Integer kickInterval;
   private final boolean checkPublicIp;
   private final Integer kickRescan;
+  private final String contextPath;
 
   private final Config environment;
 
   public Properties(Config config) {
     this.environment = config;
+    contextPath = getOrDefault("server.servlet.context-path", "/");
     kickRescan = getOrDefault("kick.rescan", 60);
     checkPublicIp = getOrDefault("kick.check-public-ip", false);
     kickInterval = getOrDefault("kick.interval", 1000);
@@ -76,5 +78,9 @@ public class Properties {
 
   public Config getEnvironment() {
     return environment;
+  }
+
+  public String getContextPath() {
+    return contextPath;
   }
 }

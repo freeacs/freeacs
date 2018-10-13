@@ -20,7 +20,7 @@ public class App {
     Properties properties = new Properties(config);
     StunServlet stunServlet = new StunServlet(mainDs, properties);
     stunServlet.init();
-    get("/health", (req, res) -> "FREEACSOK");
+    get(properties.getContextPath() + "/health", (req, res) -> "FREEACSOK");
     Runtime.getRuntime()
         .addShutdownHook(
             new Thread(

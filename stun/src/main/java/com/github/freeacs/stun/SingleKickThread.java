@@ -37,36 +37,15 @@ import org.slf4j.LoggerFactory;
  */
 public class SingleKickThread implements Runnable {
 
-  public class InspectionState {
-
-    private long tmsOfLastChange;
-    private boolean kicked = false;
-
-    public long getTmsOfLastChange() {
-      return tmsOfLastChange;
-    }
-
-    public void setTmsOfLastChange(long tmsOfLastChange) {
-      this.tmsOfLastChange = tmsOfLastChange;
-    }
-
-    public boolean isKicked() {
-      return kicked;
-    }
-
-    public void setKicked(boolean kicked) {
-      this.kicked = kicked;
-    }
-  }
-
-  private static Logger log = LoggerFactory.getLogger("KickSingle");
+  private static final Logger LOG = LoggerFactory.getLogger("KickSingle");
 
   private final DBI dbi;
   private final DataSource xapsCp;
   private final Properties properties;
 
   private ACSUnit acsUnit;
-  private Map<String, InspectionState> unitWatch = new HashMap<String, InspectionState>();
+
+  private Map<String, InspectionState> unitWatch = new HashMap<>();
   private Inbox inbox = new Inbox();
   private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
@@ -77,7 +56,6 @@ public class SingleKickThread implements Runnable {
   }
 
   /* METHODS FOR DETECTING UNITS WHICH SHOULD BE KICKED */
-
   /**
    * The standard way of detecting change, a message is sent from Shell, Web or WS directly to this
    * module.
@@ -90,18 +68,18 @@ public class SingleKickThread implements Runnable {
       if (unitWatch.get(unitId) == null) {
         Unit unit = acsUnit.getUnitById(unitId);
         if (unit == null) {
-          log.debug(unitId + " was not found in the database, no kick performed");
+          LOG.debug(unitId + " was not found in the database, no kick performed");
           continue;
         }
         if (unit.getUnittype().getProtocol() != ProvisioningProtocol.TR069) {
-          log.debug(
+          LOG.debug(
               unitId
                   + " is not a TR069 unit, leaving it alone for another protocol server to handle");
           continue;
         }
         InspectionState is = new InspectionState();
         is.setTmsOfLastChange(System.currentTimeMillis());
-        log.debug(unitId + " is added to the watch list (from messages), will now be processed.");
+        LOG.debug(unitId + " is added to the watch list (from messages), will now be processed.");
         unitWatch.put(unitId, is);
         inbox.markMessageAsRead(m);
       } else {
@@ -128,7 +106,7 @@ public class SingleKickThread implements Runnable {
         InspectionState is = new InspectionState();
         is.setTmsOfLastChange(System.currentTimeMillis());
         is.setKicked(true); // do not kick it again
-        log.debug(
+        LOG.debug(
             unitId + " is added to the watch list (from session params), will now be processed.");
         unitWatch.put(unitId, is);
       }
@@ -151,7 +129,7 @@ public class SingleKickThread implements Runnable {
           InspectionState is = new InspectionState();
           is.setTmsOfLastChange(System.currentTimeMillis());
           is.setKicked(true); // do not kick it again
-          log.debug(
+          LOG.debug(
               unitId + " is added to the watch list (from prov-mode), will now be processed.");
           unitWatch.put(unitId, is);
         }
@@ -162,7 +140,6 @@ public class SingleKickThread implements Runnable {
   /* KICK RELATED METHODS */
 
   /* CLEAN UP */
-
   private void reset(
       Iterator<String> watchListIterator,
       Unit unit /*, UnitParameter stateUp, UnitParameter modeUp*/)
@@ -178,7 +155,6 @@ public class SingleKickThread implements Runnable {
   }
 
   /* MAIN LOOP */
-
   private void processUnitWatchList() throws SQLException {
     Iterator<String> iterator = unitWatch.keySet().iterator();
     while (iterator.hasNext()) {
@@ -193,13 +169,13 @@ public class SingleKickThread implements Runnable {
         unit = acsUnit.getUnitById(unitId);
         long timeSinceLastChange = System.currentTimeMillis() - lastIS.getTmsOfLastChange();
         if (timeSinceLastChange > 15 * 60 * 1000) {
-          log.debug(
+          LOG.debug(
               unitId
                   + " is reset (inspection-params deleted, mode/state reset, removed from watchList) because it's been 15 min. since provisioning mode change.");
           reset(iterator, unit);
         } else if (unit.getProvisioningMode() == ProvisioningMode.REGULAR
             && timeSinceLastChange > 60 * 1000) {
-          log.debug(
+          LOG.debug(
               unitId
                   + " is reset (inspection-params deleted, mode/state reset, removed from watchList) because the mode has been "
                   + ProvisioningMode.REGULAR
@@ -224,7 +200,7 @@ public class SingleKickThread implements Runnable {
                       + sdf.format(new Date())
                       + " - require reboot to initiate provisioning :: "
                       + kr.getMessage());
-            log.debug(
+            LOG.debug(
                 unit.getId()
                     + " was kicked (response = "
                     + kr.isKicked()
@@ -236,7 +212,7 @@ public class SingleKickThread implements Runnable {
         }
       } catch (Throwable t) {
         if (unit != null) reset(iterator, unit);
-        log.error(
+        LOG.error(
             "An error occurred in processUnitWatchList() with unit "
                 + unitId
                 + ", continues with next unit (if any)",
@@ -246,7 +222,6 @@ public class SingleKickThread implements Runnable {
   }
 
   /* MAIN METHOD */
-
   public void run() {
     Thread.currentThread().setName("KickRunnable");
     try {
@@ -268,13 +243,35 @@ public class SingleKickThread implements Runnable {
           }
           processUnitWatchList();
         } catch (Throwable tInner) {
-          if (log != null) log.error("An error ocurred, SingleKickThread.run() continues", tInner);
+          if (LOG != null) LOG.error("An error ocurred, SingleKickThread.run() continues", tInner);
         }
       }
     } catch (Throwable tOuter) {
-      log.error(
+      LOG.error(
           "An error ocurred, SingleKickThread.run() exits - server is not able to process Extraction/Inspection/Kick Mode anymore!!!",
           tOuter);
+    }
+  }
+
+  public class InspectionState {
+
+    private long tmsOfLastChange;
+    private boolean kicked = false;
+
+    public long getTmsOfLastChange() {
+      return tmsOfLastChange;
+    }
+
+    public void setTmsOfLastChange(long tmsOfLastChange) {
+      this.tmsOfLastChange = tmsOfLastChange;
+    }
+
+    public boolean isKicked() {
+      return kicked;
+    }
+
+    public void setKicked(boolean kicked) {
+      this.kicked = kicked;
     }
   }
 }

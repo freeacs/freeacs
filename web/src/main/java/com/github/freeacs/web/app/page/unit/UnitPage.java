@@ -328,49 +328,49 @@ public class UnitPage extends AbstractWebPage {
       /* Initiate the kick and Wait for changes... */
       unit.toWriteQueue(SystemParameters.PROVISIONING_MODE, mode.toString());
       acsUnit.addOrChangeUnitParameters(unit.flushWriteQueue(), unit.getProfile());
-      if (publish) {
-        String lct = unit.getParameterValue(SystemParameters.LAST_CONNECT_TMS);
-        String initialKickResponse = unit.getParameterValue(SystemParameters.INSPECTION_MESSAGE);
-        if (initialKickResponse == null)
-          initialKickResponse = SystemConstants.DEFAULT_INSPECTION_MESSAGE;
-        String currentKickResponse = initialKickResponse;
-        publishInspectionMode(unit, sessionId);
-        // Code to hang around and see if unit is updated automatically through kick
-        try {
-          int waitSec = 30;
-          if (mode == ProvisioningMode.READALL) waitSec = 60;
-          int secCount = 0;
-          while (secCount < waitSec) {
-            Thread.sleep(1000);
-            unit = acsUnit.getUnitById(unit.getId());
-            currentKickResponse = unit.getParameterValue(SystemParameters.INSPECTION_MESSAGE);
-            if (!initialKickResponse.equals(currentKickResponse)
-                && currentKickResponse != null
-                && !currentKickResponse.contains("success")) break; // if kick failed - fail fast
-            if (lct != null
-                && !lct.equals(unit.getParameterValue(SystemParameters.LAST_CONNECT_TMS))) {
-              break;
-            }
-            secCount++;
-          }
-          if (secCount
-              == waitSec) { // Timed out - very likely that nothing happened - even though kick
-            // indicated success
-            root.put("kick_message", "Reboot to initate provisioning");
-            root.put("kick_mouseover", "Kick response: " + currentKickResponse);
-          } else if (currentKickResponse != null
-              && currentKickResponse.contains("success")) { // LCT is updated - a successful kick
-            Thread.sleep(5000); // to allow syslog to be updated assuming kick was successful
-            root.put("kick_message", "Provisioning was initiated");
-            root.put("kick_mouseover", "Kick response: " + currentKickResponse);
-          } else { // LCT may or may not be updated, but kick response contains error
-            root.put("kick_message", "Reboot to initate provisioning");
-            root.put("kick_mouseover", "Kick response: " + currentKickResponse);
-          }
-        } catch (Throwable t) {
-          // ignore
+      publishInspectionMode(unit, sessionId);
+      waitForStunServer(root, mode, unit);
+    }
+  }
+
+  private void waitForStunServer(Map<String, Object> root, ProvisioningMode mode, Unit unit) {
+    String lct = unit.getParameterValue(SystemParameters.LAST_CONNECT_TMS);
+    String initialKickResponse = unit.getParameterValue(SystemParameters.INSPECTION_MESSAGE);
+    if (initialKickResponse == null)
+      initialKickResponse = SystemConstants.DEFAULT_INSPECTION_MESSAGE;
+    String currentKickResponse = initialKickResponse;
+    // Code to hang around and see if unit is updated automatically through kick
+    try {
+      int waitSec = 30;
+      if (mode == ProvisioningMode.READALL) waitSec = 60;
+      int secCount = 0;
+      while (secCount < waitSec) {
+        Thread.sleep(1000);
+        unit = acsUnit.getUnitById(unit.getId());
+        currentKickResponse = unit.getParameterValue(SystemParameters.INSPECTION_MESSAGE);
+        if (!initialKickResponse.equals(currentKickResponse)
+            && currentKickResponse != null
+            && !currentKickResponse.contains("success")) break; // if kick failed - fail fast
+        if (lct != null && !lct.equals(unit.getParameterValue(SystemParameters.LAST_CONNECT_TMS))) {
+          break;
         }
+        secCount++;
       }
+      if (secCount == waitSec) { // Timed out - very likely that nothing happened - even though kick
+        // indicated success
+        root.put("kick_message", "Reboot to initate provisioning");
+        root.put("kick_mouseover", "Kick response: " + currentKickResponse);
+      } else if (currentKickResponse != null
+          && currentKickResponse.contains("success")) { // LCT is updated - a successful kick
+        Thread.sleep(5000); // to allow syslog to be updated assuming kick was successful
+        root.put("kick_message", "Provisioning was initiated");
+        root.put("kick_mouseover", "Kick response: " + currentKickResponse);
+      } else { // LCT may or may not be updated, but kick response contains error
+        root.put("kick_message", "Reboot to initate provisioning");
+        root.put("kick_mouseover", "Kick response: " + currentKickResponse);
+      }
+    } catch (Throwable t) {
+      // ignore
     }
   }
 
