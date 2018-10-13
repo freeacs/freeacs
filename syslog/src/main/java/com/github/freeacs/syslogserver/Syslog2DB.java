@@ -262,8 +262,7 @@ public class Syslog2DB implements Runnable {
     if (dbi == null) {
       try {
         Users users = new Users(xapsCp);
-        Identity id =
-            new Identity(5, "latest", users.getUnprotected(Users.USER_ADMIN));
+        Identity id = new Identity(5, "latest", users.getUnprotected(Users.USER_ADMIN));
         syslog =
             new Syslog(
                 syslogCp,
