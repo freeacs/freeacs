@@ -8,7 +8,6 @@ import com.github.freeacs.dbi.Syslog;
 import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.dbi.User;
 import com.github.freeacs.dbi.Users;
-import com.github.freeacs.web.app.Main;
 import com.github.freeacs.web.app.Monitor;
 import java.sql.SQLException;
 import javax.sql.DataSource;
