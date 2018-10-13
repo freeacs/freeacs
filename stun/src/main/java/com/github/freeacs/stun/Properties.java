@@ -4,29 +4,29 @@ import com.typesafe.config.Config;
 
 public class Properties {
 
-  public static boolean EXPECT_PORT_FORWARDING;
-  public static boolean RUN_WITH_STUN;
-  public static String SECONDARY_IP;
-  public static String PRIMARY_IP;
-  public static Integer SECONDARY_PORT;
-  public static Integer PRIMARY_PORT;
-  public static Integer KICK_INTERVAL;
-  public static boolean CHECK_PUBLIC_IP;
-  public static Integer KICK_RESCAN;
+  private final boolean expectPortForwarding;
+  private final boolean runWithStun;
+  private final String secondaryIp;
+  private final String primaryIp;
+  private final Integer secondaryPort;
+  private final Integer primaryPort;
+  private final Integer kickInterval;
+  private final boolean checkPublicIp;
+  private final Integer kickRescan;
 
   private final Config environment;
 
   public Properties(Config config) {
     this.environment = config;
-    KICK_RESCAN = getOrDefault("kick.rescan", 60);
-    CHECK_PUBLIC_IP = getOrDefault("kick.check-public-ip", false);
-    KICK_INTERVAL = getOrDefault("kick.interval", 1000);
-    PRIMARY_PORT = getOrDefault("primary.port", 3478);
-    SECONDARY_PORT = getOrDefault("secondary.port", 3478);
-    PRIMARY_IP = getOrDefault("primary.ip", null);
-    SECONDARY_IP = getOrDefault("secondary.ip", null);
-    RUN_WITH_STUN = getOrDefault("test.runwithstun", false);
-    EXPECT_PORT_FORWARDING = getOrDefault("kick.expect-port-forwarding", false);
+    kickRescan = getOrDefault("kick.rescan", 60);
+    checkPublicIp = getOrDefault("kick.check-public-ip", false);
+    kickInterval = getOrDefault("kick.interval", 1000);
+    primaryPort = getOrDefault("primary.port", 3478);
+    secondaryPort = getOrDefault("secondary.port", 3478);
+    primaryIp = getOrDefault("primary.ip", null);
+    secondaryIp = getOrDefault("secondary.ip", null);
+    runWithStun = getOrDefault("test.runwithstun", false);
+    expectPortForwarding = getOrDefault("kick.expect-port-forwarding", false);
   }
 
   @SuppressWarnings("unchecked")
@@ -36,5 +36,45 @@ public class Properties {
       return defaultValue;
     }
     return (T) obj;
+  }
+
+  public boolean isExpectPortForwarding() {
+    return expectPortForwarding;
+  }
+
+  public boolean isRunWithStun() {
+    return runWithStun;
+  }
+
+  public String getSecondaryIp() {
+    return secondaryIp;
+  }
+
+  public String getPrimaryIp() {
+    return primaryIp;
+  }
+
+  public Integer getSecondaryPort() {
+    return secondaryPort;
+  }
+
+  public Integer getPrimaryPort() {
+    return primaryPort;
+  }
+
+  public Integer getKickInterval() {
+    return kickInterval;
+  }
+
+  public boolean isCheckPublicIp() {
+    return checkPublicIp;
+  }
+
+  public Integer getKickRescan() {
+    return kickRescan;
+  }
+
+  public Config getEnvironment() {
+    return environment;
   }
 }

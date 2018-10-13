@@ -25,10 +25,12 @@ public class StunServlet {
   private static Logger logger = LoggerFactory.getLogger(StunServlet.class);
   private final DataSource xapsCp;
   private final DataSource sysCp;
+  private final Properties properties;
 
-  public StunServlet(DataSource xapsCp, DataSource sysCp) {
+  public StunServlet(DataSource xapsCp, DataSource sysCp, Properties properties) {
     this.xapsCp = xapsCp;
     this.sysCp = sysCp;
+    this.properties = properties;
   }
 
   public static void destroy() {
@@ -52,12 +54,12 @@ public class StunServlet {
     try {
       DBI dbi = initializeDBI(xapsCp, sysCp);
 
-      if (Properties.RUN_WITH_STUN) {
+      if (properties.isRunWithStun()) {
         if (server == null) {
-          int pPort = Properties.PRIMARY_PORT;
-          String pIp = Properties.PRIMARY_IP;
-          int sPort = Properties.SECONDARY_PORT;
-          String sIp = Properties.SECONDARY_IP;
+          int pPort = properties.getPrimaryPort();
+          String pIp = properties.getPrimaryIp();
+          int sPort = properties.getSecondaryPort();
+          String sIp = properties.getSecondaryIp();
           server =
               new StunServer(pPort, InetAddress.getByName(pIp), sPort, InetAddress.getByName(sIp));
         }
@@ -83,7 +85,7 @@ public class StunServlet {
       schedulerThread.start();
 
       logger.info("Starting Job Kick Thread");
-      Thread kickThread = new Thread(new JobKickThread(xapsCp, dbi));
+      Thread kickThread = new Thread(new JobKickThread(xapsCp, dbi, properties));
       kickThread.setName("STUN Job Kick Thread");
       kickThread.start();
 

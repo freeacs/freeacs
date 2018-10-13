@@ -17,8 +17,8 @@ public class App {
     Spark.port(config.getInt("server.port"));
     EmbeddedServers.add(EmbeddedServers.Identifiers.JETTY, new JettyFactory(true, -1, -1));
     DataSource mainDs = HikariDataSourceHelper.dataSource(config.getConfig("main"));
-    new Properties(config);
-    StunServlet stunServlet = new StunServlet(mainDs, mainDs);
+    Properties properties = new Properties(config);
+    StunServlet stunServlet = new StunServlet(mainDs, mainDs, properties);
     stunServlet.init();
     get("/health", (req, res) -> "FREEACSOK");
     Runtime.getRuntime()

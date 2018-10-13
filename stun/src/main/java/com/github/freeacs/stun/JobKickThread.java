@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 public class JobKickThread implements Runnable {
 
   private static Logger log = LoggerFactory.getLogger("KickJob");
+  private final Properties properties;
   private DBI dbi;
   private DataSource xapsCp;
   // Key: jobId
@@ -49,9 +50,10 @@ public class JobKickThread implements Runnable {
   // This inbox listens for changes on job (from other modules in xAPS)
   private Inbox jobChangeInbox = new Inbox();
 
-  public JobKickThread(DataSource xapsCp, DBI dbi) {
+  public JobKickThread(DataSource xapsCp, DBI dbi, Properties properties) {
     this.xapsCp = xapsCp;
     this.dbi = dbi;
+    this.properties = properties;
     jobChangeInbox.addFilter(new Message(null, Message.MTYPE_PUB_CHG, null, Message.OTYPE_JOB));
     dbi.registerInbox("jobChangeInbox", jobChangeInbox);
   }
@@ -168,7 +170,7 @@ public class JobKickThread implements Runnable {
               populateJobKickMapForOneJob(job, acs, unittype);
             } else {
               long lastRefresh = jobRefreshMap.get(job.getId());
-              if (lastRefresh + Properties.KICK_RESCAN * 60000 < System.currentTimeMillis()) {
+              if (lastRefresh + properties.getKickRescan() * 60000 < System.currentTimeMillis()) {
                 log.info("Job " + job.getId() + " is STARTED and refreshed.");
                 jobRefreshMap.put(job.getId(), System.currentTimeMillis());
                 populateJobKickMapForOneJob(job, acs, unittype);
@@ -199,7 +201,7 @@ public class JobKickThread implements Runnable {
   }
 
   private void kickJobs(ACS acs) {
-    int kickInterval = Properties.KICK_INTERVAL;
+    int kickInterval = properties.getKickInterval();
     Sleep kickSleep = new Sleep(kickInterval, kickInterval / 10, false);
     for (Integer jobId : jobKickMap.keySet()) {
       Job job = findJobById(jobId);
@@ -216,7 +218,7 @@ public class JobKickThread implements Runnable {
           Unit unit = acsUnit.getUnitById(unitId);
           if (unit != null) {
             startUnitJob(unit, jobId, acs);
-            Kick.kick(unit);
+            Kick.kick(unit, properties);
             iterator.remove();
           } else {
             log.error(unitId + " was not found in xAPS, not possible to kick");
@@ -255,7 +257,7 @@ public class JobKickThread implements Runnable {
     UnittypeParameter currentUtp =
         unittype.getUnittypeParameters().getByName(SystemParameters.JOB_CURRENT);
     UnitParameter currentUp = new UnitParameter(currentUtp, u.getId(), "" + jobId, u.getProfile());
-    List<UnitParameter> upList = new ArrayList<UnitParameter>();
+    List<UnitParameter> upList = new ArrayList<>();
     upList.add(currentUp);
     acsUnit.addOrChangeUnitParameters(upList, u.getProfile());
     UnitJobs unitJobs = new UnitJobs(xapsCp);
@@ -280,7 +282,7 @@ public class JobKickThread implements Runnable {
       List<Message> dbiMessages = dbiInbox.getAllMessages();
       String jcM = jcMessage.getMessageType() + jcMessage.getObjectType() + jcMessage.getObjectId();
       log.debug("Job change inbox reported that job " + jcMessage.getObjectId() + " has changed");
-      boolean messageProcessed = true;
+      boolean messageProcessed;
       while (true) {
         messageProcessed = true;
         for (Message dbiMessage : dbiMessages) {
