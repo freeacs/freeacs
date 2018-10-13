@@ -1,7 +1,6 @@
 package com.github.freeacs.core.task;
 
 import com.github.freeacs.common.scheduler.Task;
-import com.github.freeacs.core.CoreServlet;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Identity;
@@ -44,9 +43,7 @@ public abstract class DBIOwner implements Task {
     if (id == null)
       id =
           new Identity(
-              SyslogConstants.FACILITY_CORE,
-              "latest",
-              users.getUnprotected(Users.USER_ADMIN));
+              SyslogConstants.FACILITY_CORE, "latest", users.getUnprotected(Users.USER_ADMIN));
     if (dbi == null) {
       syslog = new Syslog(syslogDataSource, id);
       dbi = new DBI(Integer.MAX_VALUE, mainDataSource, syslog);
