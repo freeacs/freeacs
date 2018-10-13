@@ -29,6 +29,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -236,35 +237,42 @@ public class UnitPage extends AbstractWebPage {
    * the page a number of times, this method will sleep until some changes or error message have
    * been detected.
    */
-  private void actionKickAndExecute(Map<String, Object> root) throws Exception {
+  private void actionKickAndExecute(Map<String, Object> root)
+      throws Exception {
 
     ProvisioningMode mode = null;
+    boolean publish = false;
 
     /* If we're in REGULAR mode, but is told to read all,
      *  put us in READALL mode and publish. */
     if (isRegularMode() && inputData.getInitReadAll().getValue() != null) {
+      publish = true;
       mode = ProvisioningMode.READALL;
     }
 
     /*If we're to initiate provisioning, set mode to REGULAR and publish. */
     else if (inputData.getInitProvisioning().getValue() != null) {
+      publish = true;
       mode = ProvisioningMode.REGULAR;
     }
 
     /* Set restart-flag and initiate provisioning in REGULAR mode */
     else if (inputData.getInitRestart().getValue() != null) {
+      publish = true;
       mode = ProvisioningMode.REGULAR;
       unit.toWriteQueue(SystemParameters.RESTART, "1");
     }
 
     /* Set reset-flag and initiate provisioning in REGULAR mode */
     else if (inputData.getInitReset().getValue() != null) {
+      publish = true;
       mode = ProvisioningMode.REGULAR;
       unit.toWriteQueue(SystemParameters.RESET, "1");
     }
 
     /* Change frequency/spread in REGULAR mode */
     else if (inputData.getChangeFreqSpread().getValue() != null) {
+      publish = true;
       mode = ProvisioningMode.REGULAR;
       try {
         int freq = Integer.parseInt(inputData.getFrequency().getString());
@@ -292,6 +300,7 @@ public class UnitPage extends AbstractWebPage {
       }
     } else if (inputData.getUnitUpgrade().getString() != null
         && inputData.getUnitUpgrade().getString().endsWith("Upgrade")) {
+      publish = true;
       mode = ProvisioningMode.REGULAR;
       /* Ett horribelt jävla fulhack här, men det får duga tills vidare.
        * Problemet är att "getUnitUpgrade().getString()" returnerar filnamnet
@@ -307,9 +316,49 @@ public class UnitPage extends AbstractWebPage {
       /* Initiate the kick and Wait for changes... */
       unit.toWriteQueue(SystemParameters.PROVISIONING_MODE, mode.toString());
       acsUnit.addOrChangeUnitParameters(unit.flushWriteQueue(), unit.getProfile());
-      publishInspectionMode(unit, sessionId);
-      String modeText = CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, mode.name());
-      root.put("kick_message", modeText + " initiated");
+      if (publish) {
+        String lct = unit.getParameterValue(SystemParameters.LAST_CONNECT_TMS);
+        String initialKickResponse = unit.getParameterValue(SystemParameters.INSPECTION_MESSAGE);
+        if (initialKickResponse == null)
+          initialKickResponse = SystemConstants.DEFAULT_INSPECTION_MESSAGE;
+        String currentKickResponse = initialKickResponse;
+        publishInspectionMode(unit, sessionId);
+        // Code to hang around and see if unit is updated automatically through kick
+        try {
+          int waitSec = 30;
+          if (mode == ProvisioningMode.READALL) waitSec = 60;
+          int secCount = 0;
+          while (secCount < waitSec) {
+            Thread.sleep(1000);
+            unit = acsUnit.getUnitById(unit.getId());
+            currentKickResponse = unit.getParameterValue(SystemParameters.INSPECTION_MESSAGE);
+            if (!initialKickResponse.equals(currentKickResponse)
+                && currentKickResponse != null
+                && !currentKickResponse.contains("success")) break; // if kick failed - fail fast
+            if (lct != null
+                && !lct.equals(unit.getParameterValue(SystemParameters.LAST_CONNECT_TMS))) {
+              break;
+            }
+            secCount++;
+          }
+          if (secCount
+              == waitSec) { // Timed out - very likely that nothing happened - even though kick
+            // indicated success
+            root.put("kick_message", "Reboot to initate provisioning");
+            root.put("kick_mouseover", "Kick response: " + currentKickResponse);
+          } else if (currentKickResponse != null
+              && currentKickResponse.contains("success")) { // LCT is updated - a successful kick
+            Thread.sleep(5000); // to allow syslog to be updated assuming kick was successful
+            root.put("kick_message", "Provisioning was initiated");
+            root.put("kick_mouseover", "Kick response: " + currentKickResponse);
+          } else { // LCT may or may not be updated, but kick response contains error
+            root.put("kick_message", "Reboot to initate provisioning");
+            root.put("kick_mouseover", "Kick response: " + currentKickResponse);
+          }
+        } catch (Throwable t) {
+          // ignore
+        }
+      }
     }
   }
 
@@ -501,12 +550,11 @@ public class UnitPage extends AbstractWebPage {
 
         displayUnit(root, xapsDataSource, syslogDataSource);
 
-      } else if (unit == null && inputData.getUnit().notNullNorValue("")) {
+      } else if (inputData.getUnit().notNullNorValue("")) {
         root.put("unitId", inputData.getUnit().getString());
         outputHandler.setTemplatePath("/unit-status/notfound.ftl");
       } else {
         outputHandler.setDirectToPage(Page.UNIT, "cmd=create");
-        return;
       }
     }
   }
@@ -608,8 +656,8 @@ public class UnitPage extends AbstractWebPage {
    * Decides and prepares to display the unit page.
    *
    * @param root The template map
-   * @param xapsDataSource
-   * @param syslogDataSource
+   * @param xapsDataSource mainds
+   * @param syslogDataSource syslogds
    * @throws Exception the exception
    */
   private void displayUnit(
@@ -672,9 +720,7 @@ public class UnitPage extends AbstractWebPage {
     List<FileElement> fileElements = new ArrayList<>();
     List<File> files = new ArrayList<>();
     // We need this "raw" list later on to check version membership
-    for (File f : unittype.getFiles().getFiles(FileType.SOFTWARE)) {
-      files.add(f);
-    }
+    files.addAll(Arrays.asList(unittype.getFiles().getFiles(FileType.SOFTWARE)));
     // Create a list of FileElements from our filelist.
     for (File f : files) {
       fileElements.add(new FileElement(f.getVersion(), f));
