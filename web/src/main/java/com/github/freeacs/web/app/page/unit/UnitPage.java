@@ -2,6 +2,7 @@ package com.github.freeacs.web.app.page.unit;
 
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
+import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.File;
 import com.github.freeacs.dbi.FileType;
 import com.github.freeacs.dbi.Profile;
@@ -41,6 +42,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -248,8 +250,7 @@ public class UnitPage extends AbstractWebPage {
    * the page a number of times, this method will sleep until some changes or error message have
    * been detected.
    */
-  private void actionKickAndExecute(ParameterParser req, Map<String, Object> root)
-      throws Exception {
+  private void actionKickAndExecute(Map<String, Object> root) throws Exception {
 
     ProvisioningMode mode = null;
     boolean publish = false;
@@ -327,48 +328,70 @@ public class UnitPage extends AbstractWebPage {
       /* Initiate the kick and Wait for changes... */
       unit.toWriteQueue(SystemParameters.PROVISIONING_MODE, mode.toString());
       acsUnit.addOrChangeUnitParameters(unit.flushWriteQueue(), unit.getProfile());
-      if (publish) {
-        String lct = unit.getParameterValue(SystemParameters.LAST_CONNECT_TMS);
-        String initialKickResponse = unit.getParameterValue(SystemParameters.INSPECTION_MESSAGE);
-        if (initialKickResponse == null)
-          initialKickResponse = SystemConstants.DEFAULT_INSPECTION_MESSAGE;
-        String currentKickResponse = initialKickResponse;
-        publishInspectionMode(unit, sessionId);
-        // Code to hang around and see if unit is updated automatically through kick
-        try {
-          int waitSec = 30;
-          if (mode == ProvisioningMode.READALL) waitSec = 60;
-          int secCount = 0;
-          while (secCount < waitSec) {
-            Thread.sleep(1000);
-            unit = acsUnit.getUnitById(unit.getId());
-            currentKickResponse = unit.getParameterValue(SystemParameters.INSPECTION_MESSAGE);
-            if (!initialKickResponse.equals(currentKickResponse)
-                && currentKickResponse != null
-                && !currentKickResponse.contains("success")) break; // if kick failed - fail fast
-            if (lct != null
-                && !lct.equals(unit.getParameterValue(SystemParameters.LAST_CONNECT_TMS))) {
-              break;
-            }
-            secCount++;
-          }
-          if (secCount
-              == waitSec) { // Timed out - very likely that nothing happened - even though kick
-            // indicated success
-            root.put("kick_message", "Reboot to initate provisioning");
-            root.put("kick_mouseover", "Kick response: " + currentKickResponse);
-          } else if (currentKickResponse != null
-              && currentKickResponse.contains("success")) { // LCT is updated - a successful kick
-            Thread.sleep(5000); // to allow syslog to be updated assuming kick was successful
-            root.put("kick_message", "Provisioning was initiated");
-            root.put("kick_mouseover", "Kick response: " + currentKickResponse);
-          } else { // LCT may or may not be updated, but kick response contains error
-            root.put("kick_message", "Reboot to initate provisioning");
-            root.put("kick_mouseover", "Kick response: " + currentKickResponse);
-          }
-        } catch (Throwable t) {
-          // ignore
+      publishInspectionMode(unit, sessionId);
+      waitForStunServer(root, mode, unit);
+    }
+  }
+
+  // Code to hang around and see if unit is updated automatically through kick
+  private void waitForStunServer(Map<String, Object> root, ProvisioningMode mode, Unit unit) {
+    String lct = unit.getParameterValue(SystemParameters.LAST_CONNECT_TMS);
+    String initialKickResponse = unit.getParameterValue(SystemParameters.INSPECTION_MESSAGE);
+    if (initialKickResponse == null) {
+      initialKickResponse = SystemConstants.DEFAULT_INSPECTION_MESSAGE;
+    }
+    String currentKickResponse = initialKickResponse;
+    int waitSec = 30;
+    if (mode == ProvisioningMode.READALL) waitSec = 60;
+    int secCount = 0;
+    while (secCount < waitSec) {
+      try {
+        Thread.sleep(1000);
+      } catch (InterruptedException ignored) {
+        // ignore this exception
+      }
+      Unit possiblyUpdatedUnit;
+      try {
+        possiblyUpdatedUnit = acsUnit.getUnitById(unit.getId());
+        currentKickResponse =
+            possiblyUpdatedUnit.getParameterValue(SystemParameters.INSPECTION_MESSAGE);
+        if (!initialKickResponse.equals(currentKickResponse)
+            && currentKickResponse != null
+            && !currentKickResponse.contains("success")) break; // if kick failed - fail fast
+        if (lct != null
+            && !lct.equals(
+                possiblyUpdatedUnit.getParameterValue(SystemParameters.LAST_CONNECT_TMS))) {
+          break;
         }
+      } catch (SQLException e) {
+        logger.error("Failed to retrieve unit " + unit.getId(), e);
+        break;
+      } finally {
+        secCount++;
+      }
+    }
+    boolean timedOut = secCount == waitSec;
+    boolean success = currentKickResponse != null && currentKickResponse.contains("success");
+    addKickMessages(root, currentKickResponse, timedOut, success);
+  }
+
+  private void addKickMessages(
+      Map<String, Object> root, String currentKickResponse, boolean timedOut, boolean success) {
+    if (timedOut) { // Timed out - very likely that nothing happened
+      root.put("kick_message", "Reboot to initate provisioning");
+      root.put("kick_mouseover", "Kick response: " + currentKickResponse);
+    } else {
+      if (success) { // LCT is updated - a successful kick
+        try {
+          Thread.sleep(5000); // to allow syslog to be updated assuming kick was successful
+        } catch (InterruptedException ignored) {
+          // ignore this exception
+        }
+        root.put("kick_message", "Provisioning was initiated");
+        root.put("kick_mouseover", "Kick response: " + currentKickResponse);
+      } else { // LCT may or may not be updated, but kick response contains error
+        root.put("kick_message", "Reboot to initate provisioning");
+        root.put("kick_mouseover", "Kick response: " + currentKickResponse);
       }
     }
   }
@@ -380,7 +403,10 @@ public class UnitPage extends AbstractWebPage {
    * @param sessionId the session id
    */
   public static void publishInspectionMode(Unit unit, String sessionId) {
-    SessionCache.getDBI(sessionId).publishKick(unit, SyslogConstants.FACILITY_STUN);
+    DBI dbi = SessionCache.getDBI(sessionId);
+    if (dbi != null) {
+      dbi.publishKick(unit, SyslogConstants.FACILITY_STUN);
+    }
   }
 
   private boolean isRegularMode() {
@@ -547,7 +573,7 @@ public class UnitPage extends AbstractWebPage {
             outputHandler.setDirectToPage(Page.SEARCH);
             return;
           } else {
-            actionKickAndExecute(params, root);
+            actionKickAndExecute(root);
             if (inputData.getInitReadAll().getValue() != null) {
               root.put("mode_readall", true);
             }
@@ -558,12 +584,11 @@ public class UnitPage extends AbstractWebPage {
 
         displayUnit(root, xapsDataSource, syslogDataSource);
 
-      } else if (unit == null && inputData.getUnit().notNullNorValue("")) {
+      } else if (inputData.getUnit().notNullNorValue("")) {
         root.put("unitId", inputData.getUnit().getString());
         outputHandler.setTemplatePath("/unit-status/notfound.ftl");
       } else {
         outputHandler.setDirectToPage(Page.UNIT, "cmd=create");
-        return;
       }
     }
   }
@@ -665,8 +690,8 @@ public class UnitPage extends AbstractWebPage {
    * Decides and prepares to display the unit page.
    *
    * @param root The template map
-   * @param xapsDataSource
-   * @param syslogDataSource
+   * @param xapsDataSource mainds
+   * @param syslogDataSource syslogds
    * @throws Exception the exception
    */
   private void displayUnit(
@@ -729,9 +754,7 @@ public class UnitPage extends AbstractWebPage {
     List<FileElement> fileElements = new ArrayList<>();
     List<File> files = new ArrayList<>();
     // We need this "raw" list later on to check version membership
-    for (File f : unittype.getFiles().getFiles(FileType.SOFTWARE)) {
-      files.add(f);
-    }
+    files.addAll(Arrays.asList(unittype.getFiles().getFiles(FileType.SOFTWARE)));
     // Create a list of FileElements from our filelist.
     for (File f : files) {
       fileElements.add(new FileElement(f.getVersion(), f));
