@@ -30,7 +30,7 @@ public class Monitor extends HttpServlet {
     PrintWriter out = res.getWriter();
     Cache cache = SessionCache.getCache();
     Map<Object, CacheValue> map = cache.getMap();
-    StringBuilder status = new StringBuilder("FREEACSOK " + Main.version);
+    StringBuilder status = new StringBuilder("FREEACSOK");
     for (Object o : map.keySet()) {
       if (o instanceof String) {
         String s = (String) o;
