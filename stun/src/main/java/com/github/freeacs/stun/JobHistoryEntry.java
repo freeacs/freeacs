@@ -33,5 +33,4 @@ public class JobHistoryEntry {
   public Long getLastRunTms() {
     return lastRunTms;
   }
-
 }

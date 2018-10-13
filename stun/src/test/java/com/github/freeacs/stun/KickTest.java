@@ -1,13 +1,12 @@
 package com.github.freeacs.stun;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.net.MalformedURLException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.net.MalformedURLException;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class KickTest {
 
@@ -48,5 +47,4 @@ public class KickTest {
     // Then:
     assertTrue(isPublic);
   }
-
 }

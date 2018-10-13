@@ -43,5 +43,4 @@ public class CPEParameters {
     // Optional - only for TR-111
     UDP_CONNECTION_URL = keyRoot + "ManagementServer.UDPConnectionRequestAddress";
   }
-
 }
