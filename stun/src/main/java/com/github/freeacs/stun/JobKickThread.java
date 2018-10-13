@@ -244,7 +244,6 @@ public class JobKickThread implements Runnable {
         kickJobs(acs);
       }
     } catch (Throwable t) {
-      OKServlet.setJobKickError(t);
       log.error(
           "An error ocurred, JobKickSpawner exits - server is not able to process job-kick anymore!!!",
           t);

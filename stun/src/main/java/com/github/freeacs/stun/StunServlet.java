@@ -84,13 +84,17 @@ public class StunServlet {
       schedulerThread.setName("Scheduler STUN");
       schedulerThread.start();
 
+      logger.info("Starting Single Kick Thread");
+      Thread kickThread = new Thread(new SingleKickThread(xapsCp, dbi, properties));
+      kickThread.setName("STUN Single Kick Thread");
+      kickThread.start();
+
       logger.info("Starting Job Kick Thread");
-      Thread kickThread = new Thread(new JobKickThread(xapsCp, dbi, properties));
+      kickThread = new Thread(new JobKickThread(xapsCp, dbi, properties));
       kickThread.setName("STUN Job Kick Thread");
       kickThread.start();
 
     } catch (Throwable t) {
-      OKServlet.setStartupError(t);
       logger.error("An error occurred while starting Stun Server", t);
     }
   }
