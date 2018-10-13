@@ -169,7 +169,6 @@ lazy val webservice = (project in file("webservice"))
     libraryDependencies ++= Dependencies.springBoot
       ++ Dependencies.database
       ++ Dependencies.testing
-      ++ Dependencies.jdeb
       ++ Dependencies.springBootWebservices
       ++ Seq("wsdl4j" % "wsdl4j" % "1.6.3"),
     copyAppProps,
@@ -208,12 +207,10 @@ lazy val syslog = (project in file("syslog"))
     name := "FreeACS Syslog",
     packageSummary := "FreeACS Syslog",
     packageDescription := "FreeACS Syslog",
-    libraryDependencies ++= Dependencies.springBoot
-      ++ Dependencies.database
+    libraryDependencies ++= Dependencies.database
       ++ Dependencies.testing
-      ++ Dependencies.jdeb
       ++ List("commons-io" % "commons-io" % "1.3.2"),
-    copyAppProps,
+    copyAppConfig,
     copyLogProps,
     copyAppIni
   )
@@ -274,15 +271,13 @@ lazy val core = (project in file("core"))
     name := "FreeACS Core",
     packageSummary := "FreeACS Core",
     packageDescription := "FreeACS Core",
-    libraryDependencies ++= Dependencies.springBoot
-      ++ Dependencies.database
+    libraryDependencies ++= Dependencies.database
       ++ Dependencies.testing
-      ++ Dependencies.jdeb
       ++ List(
       "org.apache.httpcomponents" % "httpclient" % "4.5.5",
       "commons-io" % "commons-io" % "1.3.2"
     ),
-    copyAppProps,
+    copyAppConfig,
     copyLogProps,
     copyAppIni
   )

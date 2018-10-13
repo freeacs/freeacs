@@ -9,13 +9,15 @@ import org.slf4j.LoggerFactory;
 public class DiskSpaceCheck extends TaskDefaultImpl {
 
   private static long freeSpace = Long.MAX_VALUE;
+  private final Properties properties;
 
-  DiskSpaceCheck(String taskName) {
+  DiskSpaceCheck(String taskName, Properties properties) {
     super(taskName);
+    this.properties = properties;
   }
 
   private int getMinFreeDiskSpace() {
-    return Properties.MIN_FREE_DISK_SPACE * 1024;
+    return properties.getMinFreeDiskSpace() * 1024;
   }
 
   private static Logger logger = LoggerFactory.getLogger(DiskSpaceCheck.class);
