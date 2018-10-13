@@ -20,12 +20,10 @@ public class SyslogServer implements Runnable {
 
   private static int packetCount;
   private final DataSource xapsDataSource;
-  private final DataSource syslogDataSource;
   private final Properties properties;
 
   public SyslogServer(DataSource xapsDataSource, Properties properties) {
     this.xapsDataSource = xapsDataSource;
-    this.syslogDataSource = xapsDataSource;
     this.properties = properties;
   }
 
