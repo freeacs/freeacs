@@ -16,19 +16,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.sql.SQLException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StunServlet extends HttpServlet {
-
-  public static String VERSION = "1.3.23";
-
-  private static final long serialVersionUID = 3972885964801548360L;
+public class StunServlet  {
 
   public static StunServer server = null;
 
@@ -41,7 +35,7 @@ public class StunServlet extends HttpServlet {
     this.sysCp = sysCp;
   }
 
-  public void destroy() {
+  public static void destroy() {
     Sleep.terminateApplication();
     server.shutdown();
   }
@@ -50,22 +44,10 @@ public class StunServlet extends HttpServlet {
     trigger();
   }
 
-  public void doPost(HttpServletRequest req, HttpServletResponse res)
-      throws ServletException, IOException {
-    doGet(req, res);
-  }
-
-  public void doGet(HttpServletRequest req, HttpServletResponse res)
-      throws ServletException, IOException {
-    PrintWriter out = res.getWriter();
-    out.println("Fusion STUN Server v" + VERSION);
-    out.close();
-  }
-
-  public static DBI initializeDBI(DataSource xapsCp, DataSource sysCp) throws SQLException {
+  private static DBI initializeDBI(DataSource xapsCp, DataSource sysCp) throws SQLException {
     Users users = new Users(xapsCp);
     User user = users.getUnprotected(Users.USER_ADMIN);
-    Identity id = new Identity(SyslogConstants.FACILITY_STUN, StunServlet.VERSION, user);
+    Identity id = new Identity(SyslogConstants.FACILITY_STUN, "N/A", user);
     Syslog syslog = new Syslog(sysCp, id);
     return new DBI(Integer.MAX_VALUE, xapsCp, syslog);
   }
@@ -104,13 +86,8 @@ public class StunServlet extends HttpServlet {
       schedulerThread.setName("Scheduler STUN");
       schedulerThread.start();
 
-      logger.info("Starting Single Kick Thread");
-      Thread kickThread = new Thread(new SingleKickThread(xapsCp, dbi));
-      kickThread.setName("STUN Single Kick Thread");
-      kickThread.start();
-
       logger.info("Starting Job Kick Thread");
-      kickThread = new Thread(new JobKickThread(xapsCp, dbi));
+      Thread kickThread = new Thread(new JobKickThread(xapsCp, dbi));
       kickThread.setName("STUN Job Kick Thread");
       kickThread.start();
 

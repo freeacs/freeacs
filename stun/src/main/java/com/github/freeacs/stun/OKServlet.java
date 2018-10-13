@@ -16,15 +16,13 @@ public class OKServlet extends HttpServlet {
   private static Throwable singleKickError = null;
   private static Throwable jobKickError = null;
 
-  public void doPost(HttpServletRequest req, HttpServletResponse res)
-      throws ServletException, IOException {
+  public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
     doGet(req, res);
   }
 
-  public void doGet(HttpServletRequest req, HttpServletResponse res)
-      throws ServletException, IOException {
+  public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
     PrintWriter out = res.getWriter();
-    String status = "FREEACSOK " + StunServlet.VERSION;
+    String status = "FREEACSOK";
     if (startupError != null) {
       status = "ERROR: Server did not start properly :" + startupError + "<br>\n";
       for (StackTraceElement ste : startupError.getStackTrace()) status += ste.toString() + "<br>";
@@ -51,10 +49,6 @@ public class OKServlet extends HttpServlet {
 
   public static void setStunServerError(Throwable stunServerError) {
     OKServlet.stunServerError = stunServerError;
-  }
-
-  public static void setSingleKickError(Throwable singleKickError) {
-    OKServlet.singleKickError = singleKickError;
   }
 
   public static void setJobKickError(Throwable jobKickError) {

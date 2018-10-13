@@ -1,19 +1,6 @@
 package com.github.freeacs.web.app.page.unit;
 
-import com.github.freeacs.dbi.ACS;
-import com.github.freeacs.dbi.ACSUnit;
-import com.github.freeacs.dbi.File;
-import com.github.freeacs.dbi.FileType;
-import com.github.freeacs.dbi.Profile;
-import com.github.freeacs.dbi.ProfileParameter;
-import com.github.freeacs.dbi.Syslog;
-import com.github.freeacs.dbi.SyslogConstants;
-import com.github.freeacs.dbi.SyslogEntry;
-import com.github.freeacs.dbi.SyslogFilter;
-import com.github.freeacs.dbi.Unit;
-import com.github.freeacs.dbi.UnitParameter;
-import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemConstants;
 import com.github.freeacs.dbi.util.SystemParameters;
@@ -47,6 +34,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.sql.DataSource;
+
+import com.google.common.base.CaseFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -248,42 +237,36 @@ public class UnitPage extends AbstractWebPage {
    * the page a number of times, this method will sleep until some changes or error message have
    * been detected.
    */
-  private void actionKickAndExecute(ParameterParser req, Map<String, Object> root)
+  private void actionKickAndExecute(Map<String, Object> root)
       throws Exception {
 
     ProvisioningMode mode = null;
-    boolean publish = false;
 
     /* If we're in REGULAR mode, but is told to read all,
      *  put us in READALL mode and publish. */
     if (isRegularMode() && inputData.getInitReadAll().getValue() != null) {
-      publish = true;
       mode = ProvisioningMode.READALL;
     }
 
     /*If we're to initiate provisioning, set mode to REGULAR and publish. */
     else if (inputData.getInitProvisioning().getValue() != null) {
-      publish = true;
       mode = ProvisioningMode.REGULAR;
     }
 
     /* Set restart-flag and initiate provisioning in REGULAR mode */
     else if (inputData.getInitRestart().getValue() != null) {
-      publish = true;
       mode = ProvisioningMode.REGULAR;
       unit.toWriteQueue(SystemParameters.RESTART, "1");
     }
 
     /* Set reset-flag and initiate provisioning in REGULAR mode */
     else if (inputData.getInitReset().getValue() != null) {
-      publish = true;
       mode = ProvisioningMode.REGULAR;
       unit.toWriteQueue(SystemParameters.RESET, "1");
     }
 
     /* Change frequency/spread in REGULAR mode */
     else if (inputData.getChangeFreqSpread().getValue() != null) {
-      publish = true;
       mode = ProvisioningMode.REGULAR;
       try {
         int freq = Integer.parseInt(inputData.getFrequency().getString());
@@ -311,7 +294,6 @@ public class UnitPage extends AbstractWebPage {
       }
     } else if (inputData.getUnitUpgrade().getString() != null
         && inputData.getUnitUpgrade().getString().endsWith("Upgrade")) {
-      publish = true;
       mode = ProvisioningMode.REGULAR;
       /* Ett horribelt jävla fulhack här, men det får duga tills vidare.
        * Problemet är att "getUnitUpgrade().getString()" returnerar filnamnet
@@ -327,49 +309,9 @@ public class UnitPage extends AbstractWebPage {
       /* Initiate the kick and Wait for changes... */
       unit.toWriteQueue(SystemParameters.PROVISIONING_MODE, mode.toString());
       acsUnit.addOrChangeUnitParameters(unit.flushWriteQueue(), unit.getProfile());
-      if (publish) {
-        String lct = unit.getParameterValue(SystemParameters.LAST_CONNECT_TMS);
-        String initialKickResponse = unit.getParameterValue(SystemParameters.INSPECTION_MESSAGE);
-        if (initialKickResponse == null)
-          initialKickResponse = SystemConstants.DEFAULT_INSPECTION_MESSAGE;
-        String currentKickResponse = initialKickResponse;
-        publishInspectionMode(unit, sessionId);
-        // Code to hang around and see if unit is updated automatically through kick
-        try {
-          int waitSec = 30;
-          if (mode == ProvisioningMode.READALL) waitSec = 60;
-          int secCount = 0;
-          while (secCount < waitSec) {
-            Thread.sleep(1000);
-            unit = acsUnit.getUnitById(unit.getId());
-            currentKickResponse = unit.getParameterValue(SystemParameters.INSPECTION_MESSAGE);
-            if (!initialKickResponse.equals(currentKickResponse)
-                && currentKickResponse != null
-                && !currentKickResponse.contains("success")) break; // if kick failed - fail fast
-            if (lct != null
-                && !lct.equals(unit.getParameterValue(SystemParameters.LAST_CONNECT_TMS))) {
-              break;
-            }
-            secCount++;
-          }
-          if (secCount
-              == waitSec) { // Timed out - very likely that nothing happened - even though kick
-            // indicated success
-            root.put("kick_message", "Reboot to initate provisioning");
-            root.put("kick_mouseover", "Kick response: " + currentKickResponse);
-          } else if (currentKickResponse != null
-              && currentKickResponse.contains("success")) { // LCT is updated - a successful kick
-            Thread.sleep(5000); // to allow syslog to be updated assuming kick was successful
-            root.put("kick_message", "Provisioning was initiated");
-            root.put("kick_mouseover", "Kick response: " + currentKickResponse);
-          } else { // LCT may or may not be updated, but kick response contains error
-            root.put("kick_message", "Reboot to initate provisioning");
-            root.put("kick_mouseover", "Kick response: " + currentKickResponse);
-          }
-        } catch (Throwable t) {
-          // ignore
-        }
-      }
+      publishInspectionMode(unit, sessionId);
+      String modeText = CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, mode.name());
+      root.put("kick_message", modeText + " initiated");
     }
   }
 
@@ -380,7 +322,10 @@ public class UnitPage extends AbstractWebPage {
    * @param sessionId the session id
    */
   public static void publishInspectionMode(Unit unit, String sessionId) {
-    SessionCache.getDBI(sessionId).publishKick(unit, SyslogConstants.FACILITY_STUN);
+    DBI dbi = SessionCache.getDBI(sessionId);
+    if (dbi != null) {
+      dbi.publishKick(unit, SyslogConstants.FACILITY_STUN);
+    }
   }
 
   private boolean isRegularMode() {
@@ -547,7 +492,7 @@ public class UnitPage extends AbstractWebPage {
             outputHandler.setDirectToPage(Page.SEARCH);
             return;
           } else {
-            actionKickAndExecute(params, root);
+            actionKickAndExecute(root);
             if (inputData.getInitReadAll().getValue() != null) {
               root.put("mode_readall", true);
             }

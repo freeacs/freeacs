@@ -1,9 +1,7 @@
 package com.github.freeacs.stun;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import com.typesafe.config.Config;
 
-@Component
 public class Properties {
 
   public static boolean EXPECT_PORT_FORWARDING;
@@ -16,48 +14,27 @@ public class Properties {
   public static boolean CHECK_PUBLIC_IP;
   public static Integer KICK_RESCAN;
 
-  @Value("${kick.rescan:60}")
-  public void setKickRescan(Integer kickRescan) {
-    KICK_RESCAN = kickRescan;
+  private final Config environment;
+
+  public Properties(Config config) {
+    this.environment = config;
+    KICK_RESCAN = getOrDefault("kick.rescan", 60);
+    CHECK_PUBLIC_IP = getOrDefault("kick.check-public-ip", false);
+    KICK_INTERVAL = getOrDefault("kick.interval", 1000);
+    PRIMARY_PORT = getOrDefault("primary.port", 3478);
+    SECONDARY_PORT = getOrDefault("secondary.port", 3478);
+    PRIMARY_IP = getOrDefault("primary.ip", null);
+    SECONDARY_IP = getOrDefault("secondary.ip", null);
+    RUN_WITH_STUN = getOrDefault("test.runwithstun", false);
+    EXPECT_PORT_FORWARDING = getOrDefault("kick.expect-port-forwarding", false);
   }
 
-  @Value("${kick.check-public-ip:false}")
-  public void setCheckPublicIp(Boolean checkPublicIp) {
-    CHECK_PUBLIC_IP = checkPublicIp;
-  }
-
-  @Value("${kick.interval:1000}")
-  public void setKickInterval(Integer kickInterval) {
-    KICK_INTERVAL = kickInterval;
-  }
-
-  @Value("${primary.port:3478}")
-  public void setPrimaryPort(Integer port) {
-    PRIMARY_PORT = port;
-  }
-
-  @Value("${secondary.port:3479}")
-  public void setSecondaryPort(Integer port) {
-    SECONDARY_PORT = port;
-  }
-
-  @Value("${primary.ip:#{null}}")
-  public void setPrimaryIp(String ip) {
-    PRIMARY_IP = ip;
-  }
-
-  @Value("${secondary.ip:#{null}}")
-  public void setSecondaryIp(String ip) {
-    SECONDARY_IP = ip;
-  }
-
-  @Value("${test.runwithstun:true}")
-  public void setRunWithStun(Boolean runWithStun) {
-    RUN_WITH_STUN = runWithStun;
-  }
-
-  @Value("${kick.expect-port-forwarding:false}")
-  public void setExpectPortForwarding(Boolean expectPortForwarding) {
-    EXPECT_PORT_FORWARDING = expectPortForwarding;
+  @SuppressWarnings("unchecked")
+  private <T> T getOrDefault(String key, T defaultValue) {
+    Object obj = environment.hasPath(key) ? environment.getAnyRef(key) : null;
+    if (obj == null) {
+      return defaultValue;
+    }
+    return (T) obj;
   }
 }

@@ -34,8 +34,4 @@ public class JobHistoryEntry {
     return lastRunTms;
   }
 
-  public String incEntry(long tms) {
-    if (repeatedCount != null) return jobId + ":" + (repeatedCount + 1) + ":" + tms;
-    else return jobId + ":0:" + tms;
-  }
 }
