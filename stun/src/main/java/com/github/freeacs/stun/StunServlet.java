@@ -12,36 +12,27 @@ import com.github.freeacs.dbi.User;
 import com.github.freeacs.dbi.Users;
 import de.javawi.jstun.test.demo.StabilityLogger;
 import de.javawi.jstun.test.demo.StunServer;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.sql.SQLException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StunServlet extends HttpServlet {
-
-  public static String VERSION = "1.3.23";
-
-  private static final long serialVersionUID = 3972885964801548360L;
+public class StunServlet {
 
   public static StunServer server = null;
 
   private static Logger logger = LoggerFactory.getLogger(StunServlet.class);
-  private final DataSource xapsCp;
-  private final DataSource sysCp;
 
-  public StunServlet(DataSource xapsCp, DataSource sysCp) {
-    this.xapsCp = xapsCp;
-    this.sysCp = sysCp;
+  private final DataSource mainDs;
+  private final Properties properties;
+
+  public StunServlet(DataSource mainDs, Properties properties) {
+    this.mainDs = mainDs;
+    this.properties = properties;
   }
 
-  public void destroy() {
+  public static void destroy() {
     Sleep.terminateApplication();
     server.shutdown();
   }
@@ -50,36 +41,24 @@ public class StunServlet extends HttpServlet {
     trigger();
   }
 
-  public void doPost(HttpServletRequest req, HttpServletResponse res)
-      throws ServletException, IOException {
-    doGet(req, res);
-  }
-
-  public void doGet(HttpServletRequest req, HttpServletResponse res)
-      throws ServletException, IOException {
-    PrintWriter out = res.getWriter();
-    out.println("Fusion STUN Server v" + VERSION);
-    out.close();
-  }
-
-  public static DBI initializeDBI(DataSource xapsCp, DataSource sysCp) throws SQLException {
-    Users users = new Users(xapsCp);
+  private static DBI initializeDBI(DataSource mainDs) throws SQLException {
+    Users users = new Users(mainDs);
     User user = users.getUnprotected(Users.USER_ADMIN);
-    Identity id = new Identity(SyslogConstants.FACILITY_STUN, StunServlet.VERSION, user);
-    Syslog syslog = new Syslog(sysCp, id);
-    return new DBI(Integer.MAX_VALUE, xapsCp, syslog);
+    Identity id = new Identity(SyslogConstants.FACILITY_STUN, "latest", user);
+    Syslog syslog = new Syslog(mainDs, id);
+    return new DBI(Integer.MAX_VALUE, mainDs, syslog);
   }
 
   private synchronized void trigger() {
     try {
-      DBI dbi = initializeDBI(xapsCp, sysCp);
+      DBI dbi = initializeDBI(mainDs);
 
-      if (Properties.RUN_WITH_STUN) {
+      if (properties.isRunWithStun()) {
         if (server == null) {
-          int pPort = Properties.PRIMARY_PORT;
-          String pIp = Properties.PRIMARY_IP;
-          int sPort = Properties.SECONDARY_PORT;
-          String sIp = Properties.SECONDARY_IP;
+          int pPort = properties.getPrimaryPort();
+          String pIp = properties.getPrimaryIp();
+          int sPort = properties.getSecondaryPort();
+          String sIp = properties.getSecondaryIp();
           server =
               new StunServer(pPort, InetAddress.getByName(pIp), sPort, InetAddress.getByName(sIp));
         }
@@ -99,23 +78,22 @@ public class StunServlet extends HttpServlet {
               60000,
               true,
               ScheduleType.INTERVAL,
-              new ActiveDeviceDetection(xapsCp, dbi, "ActiveDeviceDetection")));
+              new ActiveDeviceDetection(mainDs, dbi, "ActiveDeviceDetection")));
       Thread schedulerThread = new Thread(scheduler);
       schedulerThread.setName("Scheduler STUN");
       schedulerThread.start();
 
       logger.info("Starting Single Kick Thread");
-      Thread kickThread = new Thread(new SingleKickThread(xapsCp, dbi));
+      Thread kickThread = new Thread(new SingleKickThread(mainDs, dbi, properties));
       kickThread.setName("STUN Single Kick Thread");
       kickThread.start();
 
       logger.info("Starting Job Kick Thread");
-      kickThread = new Thread(new JobKickThread(xapsCp, dbi));
+      kickThread = new Thread(new JobKickThread(mainDs, dbi, properties));
       kickThread.setName("STUN Job Kick Thread");
       kickThread.start();
 
     } catch (Throwable t) {
-      OKServlet.setStartupError(t);
       logger.error("An error occurred while starting Stun Server", t);
     }
   }

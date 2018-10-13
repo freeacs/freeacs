@@ -14,7 +14,6 @@ package de.javawi.jstun.test.demo;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.common.util.TimestampMap;
 import com.github.freeacs.stun.MessageStack;
-import com.github.freeacs.stun.OKServlet;
 import de.javawi.jstun.attribute.ChangeRequest;
 import de.javawi.jstun.attribute.ChangedAddress;
 import de.javawi.jstun.attribute.ConnectionRequestBinding;
@@ -360,10 +359,8 @@ public class StunServer {
                       + send.getPort());
           }
           counter.incProcessTimeMs(System.currentTimeMillis() - processStart);
-          OKServlet.setStunServerError(null);
         } catch (Throwable t) {
           counter.incError();
-          OKServlet.setStunServerError(t);
           logger.error("Error occurred in ReceiverThread:", t);
         }
       }

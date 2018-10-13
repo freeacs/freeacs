@@ -506,10 +506,6 @@ public class DBI implements Runnable {
     addMessage(null, Message.MTYPE_PUB_IM, Message.OTYPE_UNIT, u.getId(), receiver);
   }
 
-  public synchronized void publishProvisioningStatus(Unit u, String status) {
-    addMessage(status, Message.MTYPE_PUB_PS, Message.OTYPE_UNIT, u.getId(), null);
-  }
-
   public synchronized void publishTriggerReleased(Trigger trigger, int receiver) {
     addMessage(
         "" + trigger.getId(),

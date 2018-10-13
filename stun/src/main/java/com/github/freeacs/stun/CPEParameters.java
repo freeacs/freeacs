@@ -1,8 +1,5 @@
 package com.github.freeacs.stun;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * These parameters holds a special meaning for the TR-069 Server. The server MUST know the value of
  * these CPE-parameters, regardless of what configuration is found in the database. If the database
@@ -16,8 +13,6 @@ import java.util.Map;
  * @author Morten
  */
 public class CPEParameters {
-  // The keyroot of the CPE, must be set by the constuctor;
-  private String keyRoot;
   // The config version of the CPE
   public String CONFIG_VERSION;
   // The software/firmware version of the CPE
@@ -39,7 +34,6 @@ public class CPEParameters {
   //	public String VOICE_ENABLED;
 
   public CPEParameters(String keyRoot) {
-    this.keyRoot = keyRoot;
     CONFIG_VERSION = keyRoot + "DeviceInfo.VendorConfigFile.1.Version";
     SOFTWARE_VERSION = keyRoot + "DeviceInfo.SoftwareVersion";
     PERIODIC_INFORM_INTERVAL = keyRoot + "ManagementServer.PeriodicInformInterval";
@@ -48,35 +42,5 @@ public class CPEParameters {
     CONNECTION_USERNAME = keyRoot + "ManagementServer.ConnectionRequestUsername";
     // Optional - only for TR-111
     UDP_CONNECTION_URL = keyRoot + "ManagementServer.UDPConnectionRequestAddress";
-    //		PHONE_NUMBER = keyRoot + "Services.VoiceService.1.VoiceProfile.1.Line.1.SIP.URI";
-    //		VOICE_ENABLED = keyRoot + "Services.VoiceService.1.VoiceProfile.1.Enable";
-    cpeParams.put(CONFIG_VERSION, null);
-    cpeParams.put(SOFTWARE_VERSION, null);
-    cpeParams.put(PERIODIC_INFORM_INTERVAL, null);
-    cpeParams.put(CONNECTION_URL, null);
-    cpeParams.put(CONNECTION_USERNAME, null);
-    cpeParams.put(CONNECTION_PASSWORD, null);
-    //		cpeParams.put(PHONE_NUMBER, null);
-    //		cpeParams.put(VOICE_ENABLED, null);
-  }
-
-  public Map<String, ParameterValueStruct> cpeParams = new HashMap<String, ParameterValueStruct>();
-
-  public String getValue(String param) {
-    ParameterValueStruct pvs = cpeParams.get(param);
-    if (pvs != null && pvs.getValue() != null) return pvs.getValue();
-    else return null;
-  }
-
-  public ParameterValueStruct getPvs(String param) {
-    return cpeParams.get(param);
-  }
-
-  public void putPvs(String param, ParameterValueStruct pvs) {
-    cpeParams.put(param, pvs);
-  }
-
-  public String getKeyRoot() {
-    return keyRoot;
   }
 }
