@@ -18,7 +18,7 @@ public class App {
     EmbeddedServers.add(EmbeddedServers.Identifiers.JETTY, new JettyFactory(true, -1, -1));
     DataSource mainDs = HikariDataSourceHelper.dataSource(config.getConfig("main"));
     Properties properties = new Properties(config);
-    StunServlet stunServlet = new StunServlet(mainDs, mainDs, properties);
+    StunServlet stunServlet = new StunServlet(mainDs, properties);
     stunServlet.init();
     get("/health", (req, res) -> "FREEACSOK");
     Runtime.getRuntime()

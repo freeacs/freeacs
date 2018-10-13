@@ -23,13 +23,12 @@ public class StunServlet {
   public static StunServer server = null;
 
   private static Logger logger = LoggerFactory.getLogger(StunServlet.class);
-  private final DataSource xapsCp;
-  private final DataSource sysCp;
+
+  private final DataSource mainDs;
   private final Properties properties;
 
-  public StunServlet(DataSource xapsCp, DataSource sysCp, Properties properties) {
-    this.xapsCp = xapsCp;
-    this.sysCp = sysCp;
+  public StunServlet(DataSource mainDs, Properties properties) {
+    this.mainDs = mainDs;
     this.properties = properties;
   }
 
@@ -42,17 +41,17 @@ public class StunServlet {
     trigger();
   }
 
-  private static DBI initializeDBI(DataSource xapsCp, DataSource sysCp) throws SQLException {
-    Users users = new Users(xapsCp);
+  private static DBI initializeDBI(DataSource mainDs) throws SQLException {
+    Users users = new Users(mainDs);
     User user = users.getUnprotected(Users.USER_ADMIN);
-    Identity id = new Identity(SyslogConstants.FACILITY_STUN, "N/A", user);
-    Syslog syslog = new Syslog(sysCp, id);
-    return new DBI(Integer.MAX_VALUE, xapsCp, syslog);
+    Identity id = new Identity(SyslogConstants.FACILITY_STUN, "latest", user);
+    Syslog syslog = new Syslog(mainDs, id);
+    return new DBI(Integer.MAX_VALUE, mainDs, syslog);
   }
 
   private synchronized void trigger() {
     try {
-      DBI dbi = initializeDBI(xapsCp, sysCp);
+      DBI dbi = initializeDBI(mainDs);
 
       if (properties.isRunWithStun()) {
         if (server == null) {
@@ -79,18 +78,18 @@ public class StunServlet {
               60000,
               true,
               ScheduleType.INTERVAL,
-              new ActiveDeviceDetection(xapsCp, dbi, "ActiveDeviceDetection")));
+              new ActiveDeviceDetection(mainDs, dbi, "ActiveDeviceDetection")));
       Thread schedulerThread = new Thread(scheduler);
       schedulerThread.setName("Scheduler STUN");
       schedulerThread.start();
 
       logger.info("Starting Single Kick Thread");
-      Thread kickThread = new Thread(new SingleKickThread(xapsCp, dbi, properties));
+      Thread kickThread = new Thread(new SingleKickThread(mainDs, dbi, properties));
       kickThread.setName("STUN Single Kick Thread");
       kickThread.start();
 
       logger.info("Starting Job Kick Thread");
-      kickThread = new Thread(new JobKickThread(xapsCp, dbi, properties));
+      kickThread = new Thread(new JobKickThread(mainDs, dbi, properties));
       kickThread.setName("STUN Job Kick Thread");
       kickThread.start();
 
