@@ -37,7 +37,6 @@ import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.TimeFormatter;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.WebProperties;
-import com.google.common.base.CaseFormat;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -251,8 +250,7 @@ public class UnitPage extends AbstractWebPage {
    * the page a number of times, this method will sleep until some changes or error message have
    * been detected.
    */
-  private void actionKickAndExecute(Map<String, Object> root)
-      throws Exception {
+  private void actionKickAndExecute(Map<String, Object> root) throws Exception {
 
     ProvisioningMode mode = null;
     boolean publish = false;
