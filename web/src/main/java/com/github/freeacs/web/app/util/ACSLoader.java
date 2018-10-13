@@ -89,7 +89,7 @@ public class ACSLoader {
   public static Identity getIdentity(String sessionId, DataSource dataSource) throws SQLException {
     User user = SessionCache.getSessionData(sessionId).getUser();
     if (user == null) user = getDefaultUser(sessionId, dataSource);
-    return new Identity(SyslogConstants.FACILITY_WEB, Main.version, user);
+    return new Identity(SyslogConstants.FACILITY_WEB, "latest", user);
   }
 
   /**
