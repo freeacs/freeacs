@@ -63,7 +63,7 @@ public class SyslogServer implements Runnable {
     return null; // unreachable code
   }
 
-  private void initDBThreads(DataSource xapsDataSource, DataSource syslogDataSoource) {
+  private void initDBThreads(DataSource xapsDataSource) {
     while (true) {
       logger.info("Will try to start Syslog2DB threads");
       try {
@@ -97,7 +97,7 @@ public class SyslogServer implements Runnable {
     DatagramPacket packet = null;
     try {
       packet = initServer();
-      initDBThreads(xapsDataSource, syslogDataSource);
+      initDBThreads(xapsDataSource);
       logger.info("Server startup completed - will start to receive syslog packets");
       while (true) {
         try {

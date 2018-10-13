@@ -14,6 +14,7 @@ import com.github.freeacs.core.task.ReportGenerator;
 import com.github.freeacs.core.task.ScriptExecutor;
 import com.github.freeacs.core.task.TriggerReleaser;
 import com.github.freeacs.dbi.util.ACSVersionCheck;
+import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,104 +47,106 @@ public class CoreServlet {
       Thread t = new Thread(scheduler);
       t.setName("Core (Scheduler)");
       t.start();
-
-      // only to test: scheduler.registerTask(new Schedule(60 * 60000, false, ScheduleType.INTERVAL,
-      // new ReportGenerator("ReportGeneratorHourly", ScheduleType.INTERVAL)));
-      // Run at 00 every hour - heavy task
-      scheduler.registerTask(
-          new Schedule(
-              0,
-              false,
-              ScheduleType.HOURLY,
-              new ReportGenerator(
-                  "ReportGeneratorHourly",
-                  ScheduleType.HOURLY,
-                  mainDataSource,
-                  syslogDataSource,
-                  properties)));
-      // Run at 0015 every night - very heavy task
-      scheduler.registerTask(
-          new Schedule(
-              15 * 60000,
-              false,
-              ScheduleType.DAILY,
-              new ReportGenerator(
-                  "ReportGeneratorDaily",
-                  ScheduleType.DAILY,
-                  mainDataSource,
-                  syslogDataSource,
-                  properties)));
-      // Run at 0500 every night - very heavy task
-      scheduler.registerTask(
-          new Schedule(
-              5 * 60 * 60000,
-              false,
-              ScheduleType.DAILY,
-              new DeleteOldSyslog(
-                  "DeleteOldSyslogEntries", mainDataSource, syslogDataSource, properties)));
-      // Run at 0530 every night - light task
-      scheduler.registerTask(
-          new Schedule(
-              (5 * 60 + 30) * 60000,
-              false,
-              ScheduleType.DAILY,
-              new DeleteOldJobs("DeleteOldJobs", mainDataSource, syslogDataSource, properties)));
-
-      // Run every second - light task
-      scheduler.registerTask(
-          new Schedule(
-              1000,
-              false,
-              ScheduleType.INTERVAL,
-              new JobRuleEnforcer(
-                  "JobRuleEnforcer", mainDataSource, syslogDataSource, properties)));
-      if (ACSVersionCheck.triggerSupported) {
-        // Run at 30(sec) every minute - light task
-        scheduler.registerTask(
-            new Schedule(
-                30000,
-                false,
-                ScheduleType.MINUTELY,
-                new TriggerReleaser("TriggerReleaser", mainDataSource, syslogDataSource)));
-      }
-      if (ACSVersionCheck.scriptExecutionSupported) {
-        // Run every 100 ms - very light task
-        scheduler.registerTask(
-            new Schedule(
-                100,
-                false,
-                ScheduleType.INTERVAL,
-                new ScriptExecutor(
-                    "ScriptExecutor", mainDataSource, syslogDataSource, properties)));
-        // Run at 45 every hour - light task
-        scheduler.registerTask(
-            new Schedule(
-                45 * 1000,
-                false,
-                ScheduleType.MINUTELY,
-                new DeleteOldScripts(
-                    "DeleteOldScripts", mainDataSource, syslogDataSource, properties)));
-      }
-      if (ACSVersionCheck.heartbeatSupported) {
-        // Run every 5 minute - moderate task
-        scheduler.registerTask(
-            new Schedule(
-                5 * 60000,
-                false,
-                ScheduleType.INTERVAL,
-                new HeartbeatDetection("HeartbeatDetection", mainDataSource, syslogDataSource)));
-      }
-      // Run at 59 every hour - very light task
-      scheduler.registerTask(
-          new Schedule(
-              60000,
-              false,
-              ScheduleType.HOURLY,
-              new ShowScheduleQueue("ShowScheduleQueue", scheduler)));
-
+      bootHeavyTasks();
+      bootLightTasks();
     } catch (Throwable t) {
       log.error("Error occured in init(), some daemons may not have been started", t);
     }
+  }
+
+  private void bootLightTasks() throws SQLException {
+    // Run at 0530 every night - light task
+    scheduler.registerTask(
+        new Schedule(
+            (5 * 60 + 30) * 60000,
+            false,
+            ScheduleType.DAILY,
+            new DeleteOldJobs("DeleteOldJobs", mainDataSource, syslogDataSource, properties)));
+
+    // Run every second - light task
+    scheduler.registerTask(
+        new Schedule(
+            1000,
+            false,
+            ScheduleType.INTERVAL,
+            new JobRuleEnforcer("JobRuleEnforcer", mainDataSource, syslogDataSource, properties)));
+    if (ACSVersionCheck.triggerSupported) {
+      // Run at 30(sec) every minute - light task
+      scheduler.registerTask(
+          new Schedule(
+              30000,
+              false,
+              ScheduleType.MINUTELY,
+              new TriggerReleaser("TriggerReleaser", mainDataSource, syslogDataSource)));
+    }
+    if (ACSVersionCheck.scriptExecutionSupported) {
+      // Run every 100 ms - very light task
+      scheduler.registerTask(
+          new Schedule(
+              100,
+              false,
+              ScheduleType.INTERVAL,
+              new ScriptExecutor("ScriptExecutor", mainDataSource, syslogDataSource, properties)));
+      // Run at 45 every hour - light task
+      scheduler.registerTask(
+          new Schedule(
+              45 * 1000,
+              false,
+              ScheduleType.MINUTELY,
+              new DeleteOldScripts(
+                  "DeleteOldScripts", mainDataSource, syslogDataSource, properties)));
+    }
+    if (ACSVersionCheck.heartbeatSupported) {
+      // Run every 5 minute - moderate task
+      scheduler.registerTask(
+          new Schedule(
+              5 * 60000,
+              false,
+              ScheduleType.INTERVAL,
+              new HeartbeatDetection("HeartbeatDetection", mainDataSource, syslogDataSource)));
+    }
+    // Run at 59 every hour - very light task
+    scheduler.registerTask(
+        new Schedule(
+            60000,
+            false,
+            ScheduleType.HOURLY,
+            new ShowScheduleQueue("ShowScheduleQueue", scheduler)));
+  }
+
+  private void bootHeavyTasks() throws SQLException {
+    // Run at 00 every hour - heavy task
+    scheduler.registerTask(
+        new Schedule(
+            0,
+            false,
+            ScheduleType.HOURLY,
+            new ReportGenerator(
+                "ReportGeneratorHourly",
+                ScheduleType.HOURLY,
+                mainDataSource,
+                syslogDataSource,
+                properties)));
+    // Run at 0015 every night - very heavy task
+    scheduler.registerTask(
+        new Schedule(
+            15 * 60000,
+            false,
+            ScheduleType.DAILY,
+            new ReportGenerator(
+                "ReportGeneratorDaily",
+                ScheduleType.DAILY,
+                mainDataSource,
+                syslogDataSource,
+                properties)));
+    // Run at 0500 every night - very heavy task
+    scheduler.registerTask(
+        new Schedule(
+            5 * 60 * 60000,
+            false,
+            ScheduleType.DAILY,
+            new DeleteOldSyslog(
+                "DeleteOldSyslogEntries", mainDataSource, syslogDataSource, properties)));
   }
 
   public String health() {

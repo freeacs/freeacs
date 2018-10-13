@@ -6,10 +6,10 @@ import java.net.InetAddress;
 
 public class SyslogClient {
 
-  public static void send(String host, SyslogPacket receivedPacket, int port) {
+  public static void send(String host, SyslogPacket receivedPacket, int defaultPort) {
 
     try {
-
+      int port = defaultPort;
       String hostname = host;
       if (host.contains(":")) {
         hostname = host.substring(0, host.indexOf(":"));

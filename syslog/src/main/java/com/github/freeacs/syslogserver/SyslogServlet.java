@@ -14,12 +14,10 @@ public class SyslogServlet {
 
   private static Logger logger = LoggerFactory.getLogger(SyslogServlet.class);
   private final DataSource xapsDataSource;
-  private final DataSource syslogDataSource;
   private final Properties properties;
 
   public SyslogServlet(DataSource xapsDataSource, Properties properties) {
     this.xapsDataSource = xapsDataSource;
-    this.syslogDataSource = xapsDataSource;
     this.properties = properties;
   }
 
