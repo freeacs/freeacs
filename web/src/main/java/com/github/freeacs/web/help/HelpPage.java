@@ -1,7 +1,6 @@
 package com.github.freeacs.web.help;
 
 import com.github.freeacs.web.Page;
-import com.github.freeacs.web.app.Main;
 import com.github.freeacs.web.app.util.Freemarker;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
