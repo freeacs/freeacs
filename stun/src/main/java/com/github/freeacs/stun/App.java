@@ -18,7 +18,9 @@ public class App {
     EmbeddedServers.add(EmbeddedServers.Identifiers.JETTY, new JettyFactory(true, -1, -1));
     DataSource mainDs = HikariDataSourceHelper.dataSource(config.getConfig("main"));
     new Properties(config);
-    routes(mainDs);
+    StunServlet stunServlet = new StunServlet(mainDs, mainDs);
+    stunServlet.init();
+    get("/health", (req, res) -> "FREEACSOK");
     Runtime.getRuntime()
         .addShutdownHook(
             new Thread(
@@ -26,11 +28,5 @@ public class App {
                   System.out.println("Shutdown Hook is running !");
                   StunServlet.destroy();
                 }));
-  }
-
-  private static void routes(DataSource ds) {
-    StunServlet stunServlet = new StunServlet(ds, ds);
-    stunServlet.init();
-    get("/health", (req, res) -> "FREEACSOK");
   }
 }
