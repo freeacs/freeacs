@@ -19,11 +19,16 @@ import com.github.freeacs.tr069.Provisioning;
 import com.github.freeacs.tr069.methods.TR069Method;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import java.util.Arrays;
+import java.util.List;
 import javax.sql.DataSource;
+import spark.Route;
 import spark.Spark;
 import spark.embeddedserver.EmbeddedServers;
 
 public class App {
+  private static final List<String> ALLOWED_CONTENT_TYPES =
+      Arrays.asList("application/soap+xml", "application/xml", "text/xml");
 
   public static void main(String[] args) {
     Config config = ConfigFactory.load();
@@ -66,12 +71,7 @@ public class App {
           TR069Method tr069Method = new TR069Method(properties);
           Provisioning provisioning = new Provisioning(dbAccess, tr069Method, properties);
           provisioning.init();
-          post(
-              "/prov",
-              (req, res) -> {
-                SimpleResponseWrapper response = new SimpleResponseWrapper(200, "text/xml");
-                return process(provisioning::service, req, res, response);
-              });
+          post("/prov", processRequest(provisioning));
           FileServlet fileServlet =
               new FileServlet(dbAccess, properties.getContextPath() + "/file/");
           get(
@@ -89,5 +89,16 @@ public class App {
                 return process(okServlet::service, req, res, response);
               });
         });
+  }
+
+  private static Route processRequest(Provisioning provisioning) {
+    return (req, res) -> {
+      if (ALLOWED_CONTENT_TYPES.contains(req.contentType())) {
+        SimpleResponseWrapper response = new SimpleResponseWrapper(200, "text/xml");
+        return process(provisioning::service, req, res, response);
+      }
+      res.status(415);
+      return "";
+    };
   }
 }
