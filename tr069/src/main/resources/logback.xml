@@ -62,12 +62,15 @@
     </appender>
     <logger name="Conversation" level="INFO" additivity="false">
         <appender-ref ref="ASYNC_CONVERSATION_FILE"/>
+        <appender-ref ref="ASYNC_STDOUT"/>
     </logger>
     <logger name="Stability" level="INFO" additivity="false">
         <appender-ref ref="ASYNC_STABILITY_FILE"/>
+        <appender-ref ref="ASYNC_STDOUT"/>
     </logger>
     <logger name="Event" level="INFO" additivity="false">
         <appender-ref ref="ASYNC_EVENT_FILE"/>
+        <appender-ref ref="ASYNC_STDOUT"/>
     </logger>
     <logger name="org.eclipse.jetty" level="WARN" />
     <logger name="com.github.freeacs" level="DEBUG" />
