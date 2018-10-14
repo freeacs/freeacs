@@ -7,6 +7,7 @@ import static spark.Spark.get;
 import static spark.Spark.path;
 import static spark.Spark.post;
 
+import com.github.freeacs.base.Log;
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.http.FileServlet;
 import com.github.freeacs.base.http.OKServlet;
@@ -98,6 +99,7 @@ public class App {
         SimpleResponseWrapper response = new SimpleResponseWrapper(200, "text/xml");
         return process(provisioning::service, req, res, response);
       }
+      Log.warn(App.class, "Got unexpected content type: " + req.contentType());
       res.status(415);
       return "";
     };
