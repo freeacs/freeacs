@@ -28,9 +28,7 @@ public class SyslogFilter {
   private Date collectorTmsEnd;
   private String flags;
   private String ipAddress;
-  //	private Unittype unittype;
   private List<Unittype> unittypes;
-  //	private Profile profile;
   private List<Profile> profiles;
   private String unitId;
   private String userId;
@@ -123,22 +121,6 @@ public class SyslogFilter {
   public Integer[] getSeverity() {
     return severity;
   }
-
-  //	public void setUnittype(Unittype unittype) {
-  //		this.unittype = unittype;
-  //	}
-
-  //	public void setProfile(Profile profile) {
-  //		this.profile = profile;
-  //	}
-
-  //	public Unittype getUnittype() {
-  //		return unittype;
-  //	}
-
-  //	public Profile getProfile() {
-  //		return profile;
-  //	}
 
   public List<Unittype> getUnittypes() {
     return unittypes;
