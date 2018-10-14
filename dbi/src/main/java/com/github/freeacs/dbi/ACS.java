@@ -228,7 +228,7 @@ public class ACS {
         ProfileParameter profileParameter = new ProfileParameter(profile, unittypeParameter, value);
         if (lastProfile == null || lastProfile != profile) {
           nameMap = new MapWrapper<ProfileParameter>(isStrictOrder()).getMap();
-          idMap = new HashMap<Integer, ProfileParameter>();
+          idMap = new HashMap<>();
           profile.setProfileParameters(new ProfileParameters(idMap, nameMap, profile));
           lastProfile = profile;
         }
@@ -330,7 +330,7 @@ public class ACS {
             new UnittypeParameter(unittype, name, unittypeParameterFlag);
         unittypeParameter.setId(unittypeParamId);
         if (lastUnittype == null || lastUnittype != unittype) {
-          idMap = new HashMap<Integer, UnittypeParameter>();
+          idMap = new HashMap<>();
           nameMap = new MapWrapper<UnittypeParameter>(isStrictOrder()).getMap();
           unittype.setUnittypeParameters(new UnittypeParameters(idMap, nameMap, unittype));
           lastUnittype = unittype;
@@ -478,7 +478,7 @@ public class ACS {
         hb.validateInput(true);
         if (lastUnittype == null || lastUnittype != unittype) {
           nameMap = new MapWrapper<Heartbeat>(isStrictOrder()).getMap();
-          idMap = new HashMap<Integer, Heartbeat>();
+          idMap = new HashMap<>();
           unittype.setHeartbeats(new Heartbeats(idMap, nameMap, unittype));
           lastUnittype = unittype;
         }
@@ -619,12 +619,6 @@ public class ACS {
         String profileIdStr = rs.getString("profile_id");
         Integer count = null;
         count = rs.getInt("count");
-        //				UnittypeParameter timeParameter = null;
-        //				String timeRollingRule = null;
-        //				Integer timeParamId = rs.getInt("time_param_id");
-        //				if (timeParamId != null)
-        //					timeParameter = unittype.getUnittypeParameters().getById(timeParamId);
-        //				timeRollingRule = rs.getString("time_rolling_rule");
 
         // Make maps
         if (lastUnittype == null || lastUnittype != unittype) {
@@ -708,7 +702,7 @@ public class ACS {
         profile.setId(profileId);
         if (lastUnittype == null || lastUnittype != unittype) {
           nameMap = new MapWrapper<Profile>(isStrictOrder()).getMap();
-          idMap = new HashMap<Integer, Profile>();
+          idMap = new HashMap<>();
           unittype.setProfiles(new Profiles(idMap, nameMap));
           lastUnittype = unittype;
         }
@@ -833,9 +827,9 @@ public class ACS {
         file.setConnectionProperties(getDataSource());
         file.resetContentToNull();
         if (lastUnittype == null || lastUnittype != unittype) {
-          idMap = new HashMap<Integer, File>();
+          idMap = new HashMap<>();
           nameMap = new MapWrapper<File>(isStrictOrder()).getMap();
-          versionTypeMap = new TreeMap<String, File>();
+          versionTypeMap = new TreeMap<>();
           unittype.setFiles(new Files(idMap, nameMap, versionTypeMap, unittype));
           lastUnittype = unittype;
         }
@@ -864,9 +858,9 @@ public class ACS {
     boolean wasAutoCommit = false;
     Connection connection = null;
     try {
-      MapWrapper<Unittype> mw = new MapWrapper<Unittype>(isStrictOrder());
+      MapWrapper<Unittype> mw = new MapWrapper<>(isStrictOrder());
       Map<String, Unittype> unittypeMap = mw.getMap();
-      Map<Integer, Unittype> idMap = new HashMap<Integer, Unittype>();
+      Map<Integer, Unittype> idMap = new HashMap<>();
       sql = "SELECT * FROM unit_type";
       connection = getDataSource().getConnection();
       wasAutoCommit = connection.getAutoCommit();
