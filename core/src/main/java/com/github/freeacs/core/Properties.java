@@ -27,9 +27,7 @@ public class Properties {
     this.staging = getOrDefault("staging", false);
     this.syslogSeverityLimit = new HashMap<>();
     Config syslogConfig = environment.getConfig("syslog.severity");
-    for (Integer i = 0;
-        (syslogConfig.hasPath(i + ".limit") ? syslogConfig.getInt(i + ".limit") : null) != null;
-        i++) {
+    for (int i = 0; syslogConfig.hasPath(i + ".limit"); i++) {
       syslogSeverityLimit.put(i, syslogConfig.getInt(i + ".limit"));
     }
   }
