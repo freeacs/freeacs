@@ -95,7 +95,8 @@ public class App {
 
   private static Route processRequest(Provisioning provisioning) {
     return (req, res) -> {
-      if (ALLOWED_CONTENT_TYPES.contains(Optional.ofNullable(req.contentType()).orElse(""))) {
+      if (ALLOWED_CONTENT_TYPES.contains(
+          Optional.ofNullable(req.contentType()).map(s -> s.split(";")[0]).orElse(""))) {
         SimpleResponseWrapper response = new SimpleResponseWrapper(200, "text/xml");
         return process(provisioning::service, req, res, response);
       }
