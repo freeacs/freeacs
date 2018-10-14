@@ -154,7 +154,10 @@ public class AppTest {
 
   @Test
   public void fails() throws UnirestException {
-    HttpResponse<String> response = Unirest.post("http://localhost:4567/tr069/prov").asString();
+    HttpResponse<String> response =
+        Unirest.post("http://localhost:4567/tr069/prov")
+            .header("Content-type", "text/xml")
+            .asString();
     assertEquals("Unauthorized", response.getBody());
     assertEquals(401, response.getStatus());
   }
@@ -164,6 +167,7 @@ public class AppTest {
     HttpResponse<String> response =
         Unirest.post("http://localhost:4567/tr069/prov")
             .basicAuth("test123", "password")
+            .header("Content-type", "text/xml")
             .asString();
     assertNull(response.getBody());
     assertEquals(204, response.getStatus());
@@ -174,6 +178,7 @@ public class AppTest {
     HttpResponse<String> response =
         Unirest.post("http://localhost:4567/tr069/prov")
             .basicAuth("test123", "password")
+            .header("Content-type", "text/xml")
             .body(inform)
             .asString();
     assertEquals(
@@ -192,6 +197,7 @@ public class AppTest {
     response =
         Unirest.post("http://localhost:4567/tr069/prov")
             .basicAuth("test123", "password")
+            .header("Content-type", "text/xml")
             .asString();
     assertTrue(
         response
@@ -210,6 +216,7 @@ public class AppTest {
     response =
         Unirest.post("http://localhost:4567/tr069/prov")
             .basicAuth("test123", "password")
+            .header("Content-type", "text/xml")
             .body(getParameterNamesResponse)
             .asString();
     assertTrue(
@@ -228,6 +235,7 @@ public class AppTest {
     response =
         Unirest.post("http://localhost:4567/tr069/prov")
             .basicAuth("test123", "password")
+            .header("Content-type", "text/xml")
             .body(getParameterValuesResponse)
             .asString();
     assertTrue(
@@ -253,6 +261,7 @@ public class AppTest {
     response =
         Unirest.post("http://localhost:4567/tr069/prov")
             .basicAuth("test123", "password")
+            .header("Content-type", "text/xml")
             .body(setParameterValuesResponse)
             .asString();
     assertNull(response.getBody());
