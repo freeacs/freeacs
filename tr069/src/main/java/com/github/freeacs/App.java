@@ -66,31 +66,34 @@ public class App {
   }
 
   public static void routes(DataSource mainDs, Properties properties) {
+    String ctxPath = properties.getContextPath();
     DBAccess dbAccess = new DBAccess(FACILITY_TR069, VERSION, mainDs, mainDs);
+    TR069Method tr069Method = new TR069Method(properties);
+    Provisioning provisioning = new Provisioning(dbAccess, tr069Method, properties);
+    provisioning.init();
+    FileServlet fileServlet = new FileServlet(dbAccess, ctxPath + "/file/");
+    OKServlet okServlet = new OKServlet(dbAccess);
     path(
-        properties.getContextPath(),
+        ctxPath,
         () -> {
-          TR069Method tr069Method = new TR069Method(properties);
-          Provisioning provisioning = new Provisioning(dbAccess, tr069Method, properties);
-          provisioning.init();
           post("/prov", processRequest(provisioning));
-          FileServlet fileServlet =
-              new FileServlet(dbAccess, properties.getContextPath() + "/file/");
-          get(
-              "/file/*",
-              (req, res) -> {
-                SimpleResponseWrapper response =
-                    new SimpleResponseWrapper(200, "application/octet-stream");
-                return process(fileServlet::service, req, res, response);
-              });
-          OKServlet okServlet = new OKServlet(dbAccess);
-          get(
-              "/ok",
-              (req, res) -> {
-                SimpleResponseWrapper response = new SimpleResponseWrapper(200, "text/html");
-                return process(okServlet::service, req, res, response);
-              });
+          get("/file/*", processFile(fileServlet));
+          get("/ok", processHealth(okServlet));
         });
+  }
+
+  private static Route processHealth(OKServlet okServlet) {
+    return (req, res) -> {
+      SimpleResponseWrapper response = new SimpleResponseWrapper(200, "text/html");
+      return process(okServlet::service, req, res, response);
+    };
+  }
+
+  private static Route processFile(FileServlet fileServlet) {
+    return (req, res) -> {
+      SimpleResponseWrapper response = new SimpleResponseWrapper(200, "application/octet-stream");
+      return process(fileServlet::service, req, res, response);
+    };
   }
 
   private static Route processRequest(Provisioning provisioning) {
