@@ -21,6 +21,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import javax.sql.DataSource;
 import spark.Route;
 import spark.Spark;
@@ -28,7 +29,7 @@ import spark.embeddedserver.EmbeddedServers;
 
 public class App {
   private static final List<String> ALLOWED_CONTENT_TYPES =
-      Arrays.asList("application/soap+xml", "application/xml", "text/xml");
+      Arrays.asList("application/soap+xml", "application/xml", "text/xml", "");
 
   public static void main(String[] args) {
     Config config = ConfigFactory.load();
@@ -93,7 +94,7 @@ public class App {
 
   private static Route processRequest(Provisioning provisioning) {
     return (req, res) -> {
-      if (ALLOWED_CONTENT_TYPES.contains(req.contentType())) {
+      if (ALLOWED_CONTENT_TYPES.contains(Optional.ofNullable(req.contentType()).orElse(""))) {
         SimpleResponseWrapper response = new SimpleResponseWrapper(200, "text/xml");
         return process(provisioning::service, req, res, response);
       }
