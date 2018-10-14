@@ -30,7 +30,7 @@ import spark.embeddedserver.EmbeddedServers;
 
 public class App {
   private static final List<String> ALLOWED_CONTENT_TYPES =
-      Arrays.asList("application/soap+xml", "application/xml", "text/xml", "");
+      Arrays.asList("application/soap+xml", "application/xml", "text/xml", "text/html", "");
 
   public static void main(String[] args) {
     Config config = ConfigFactory.load();
