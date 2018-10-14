@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
+import spark.Request;
 import spark.Route;
 import spark.Spark;
 import spark.embeddedserver.EmbeddedServers;
@@ -98,8 +99,7 @@ public class App {
 
   private static Route processRequest(Provisioning provisioning) {
     return (req, res) -> {
-      if (ALLOWED_CONTENT_TYPES.contains(
-          Optional.ofNullable(req.contentType()).map(s -> s.split(";")[0]).orElse(""))) {
+      if (ALLOWED_CONTENT_TYPES.contains(getContentType(req))) {
         SimpleResponseWrapper response = new SimpleResponseWrapper(200, "text/xml");
         return process(provisioning::service, req, res, response);
       }
@@ -107,5 +107,11 @@ public class App {
       res.status(415);
       return "";
     };
+  }
+
+  private static String getContentType(Request req) {
+    return Optional.ofNullable(req.contentType())
+        .map(s -> s.toLowerCase().split(";")[0])
+        .orElse("");
   }
 }
