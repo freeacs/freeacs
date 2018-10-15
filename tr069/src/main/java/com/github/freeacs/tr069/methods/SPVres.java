@@ -4,7 +4,6 @@ import com.github.freeacs.base.Log;
 import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.tr069.HTTPReqResData;
-import com.github.freeacs.tr069.Provisioning;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.xml.ParameterList;
