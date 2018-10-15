@@ -95,8 +95,7 @@ public class Jobs {
       throw new IllegalArgumentException("Not allowed action for this user");
     Connection connection = null;
     PreparedStatement pp = null;
-    String sql = null;
-    SQLException sqle = null;
+    String sql;
     boolean wasAutoCommit = false;
     try {
       checkParameters(jobParameters);
@@ -110,7 +109,6 @@ public class Jobs {
         if (parameter.getValue() != null && parameter.getValue().length() > 250)
           parameter.setValue(parameter.getValue().substring(0, 250) + "...");
         String action = "Inserted";
-        //				Unittype unittype = jobParameter.getJob().getGroup().getUnittype();
         try {
           sql =
               "INSERT INTO job_param (job_id, unit_id, unit_type_param_id, value) VALUES (?, ?, ?, ?)";
@@ -155,8 +153,9 @@ public class Jobs {
                 jobParameters.get(0).getJob(),
                 jobParameters.get(0).getJob().getGroup().getUnittype());
     } catch (SQLException sqlex) {
-      connection.rollback();
-      sqle = sqlex;
+      if (connection != null) {
+        connection.rollback();
+      }
       throw sqlex;
     } finally {
       if (pp != null) pp.close();
@@ -172,8 +171,8 @@ public class Jobs {
       throw new IllegalArgumentException("Not allowed action for this user");
     Connection connection = null;
     Statement s = null;
-    String sql = null;
-    SQLException sqle = null;
+    String sql;
+    SQLException sqle;
     try {
       connection = acs.getDataSource().getConnection();
       s = connection.createStatement();
@@ -201,8 +200,8 @@ public class Jobs {
       throw new IllegalArgumentException("Not allowed action for this user");
     Connection connection = null;
     Statement s = null;
-    String sql = null;
-    SQLException sqle = null;
+    String sql;
+    SQLException sqle;
     boolean wasAutoCommit = false;
     try {
       connection = acs.getDataSource().getConnection();
@@ -251,7 +250,9 @@ public class Jobs {
       return rowsDeleted;
     } catch (SQLException sqlex) {
       sqle = sqlex;
-      connection.rollback();
+      if (connection != null) {
+        connection.rollback();
+      }
       throw sqle;
     } finally {
       if (s != null) s.close();
@@ -274,7 +275,7 @@ public class Jobs {
     deleteJobParameters(job, acs);
     Connection c = null;
     PreparedStatement pp = null;
-    SQLException sqle = null;
+    SQLException sqle;
     try {
       c = acs.getDataSource().getConnection();
       String sql = "DELETE FROM job WHERE job_id = ?";
@@ -314,12 +315,18 @@ public class Jobs {
     return allowed;
   }
 
-  public boolean isDependencyLoop(Job job, Job dep) {
+  private boolean isDependencyLoop(Job job, Job dep) {
     Job dependency = dep;
-    if (dependency == null) return false;
-    if (job == null) return false;
+    if (dependency == null) {
+      return false;
+    }
+    if (job == null) {
+      return false;
+    }
 
-    if (job.getId() == dependency.getId()) return true;
+    if (job.getId().equals(dependency.getId())) {
+      return true;
+    }
 
     while (dependency != null) {
       if (dependency.getDependency() != null && dependency.getDependency().getId() == job.getId())
@@ -336,8 +343,6 @@ public class Jobs {
     job.validate();
     Connection c = null;
     PreparedStatement ps = null;
-    ResultSet rs = null;
-    SQLException sqle = null;
     try {
       if (nameMap.get(job.getName()) != null)
         throw new IllegalArgumentException("The job name already exists, choose another name");
@@ -378,11 +383,7 @@ public class Jobs {
       updateMandatoryJobParameters(job, acs);
       logger.info("Inserted job " + job.getId());
       if (acs.getDbi() != null) acs.getDbi().publishAdd(job, job.getGroup().getUnittype());
-    } catch (SQLException sqlex) {
-      sqle = sqlex;
-      throw sqlex;
     } finally {
-      if (rs != null) rs.close();
       if (ps != null) ps.close();
       if (c != null) {
         c.close();
@@ -430,8 +431,7 @@ public class Jobs {
   }
 
   /* Decided to skip unit-specific job parameters. Cause extra work/SQL in TR-069 server, has never been used in 5 years. */
-  public Map<String, JobParameter> readJobParameters(Job job, Unit unit, ACS acs)
-      throws SQLException {
+  public Map<String, JobParameter> readJobParameters(Job job, Unit unit, ACS acs) {
     return job.getDefaultParameters();
   }
 
@@ -502,8 +502,6 @@ public class Jobs {
     if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
       throw new IllegalArgumentException("Not allowed action for this user");
     Connection c = null;
-    PreparedStatement pp = null;
-    SQLException sqle = null;
     try {
       c = acs.getDataSource().getConnection();
       DynamicStatement ds = new DynamicStatement();
@@ -545,11 +543,7 @@ public class Jobs {
         msg += "(but could also happen because the job was deleted).";
         throw new SQLException(msg);
       }
-    } catch (SQLException sqlex) {
-      sqle = sqlex;
-      throw sqlex;
     } finally {
-      if (pp != null) pp.close();
       if (c != null) {
         c.close();
       }
@@ -567,8 +561,6 @@ public class Jobs {
       throw new IllegalArgumentException("Not allowed action for this user");
     job.validate();
     Connection c = null;
-    PreparedStatement pp = null;
-    SQLException sqle = null;
     try {
       c = acs.getDataSource().getConnection();
       if (isDependencyLoop(job, job.getDependency()))
@@ -622,11 +614,7 @@ public class Jobs {
         throw new SQLException(msg);
       }
       return rowsUpdated;
-    } catch (SQLException sqlex) {
-      sqle = sqlex;
-      throw sqlex;
     } finally {
-      if (pp != null) pp.close();
       if (c != null) {
         c.close();
       }
@@ -637,7 +625,6 @@ public class Jobs {
     Connection c = null;
     Statement s = null;
     ResultSet rs = null;
-    SQLException sqle = null;
     try {
       c = acs.getDataSource().getConnection();
       s = c.createStatement();
@@ -683,11 +670,6 @@ public class Jobs {
         String depIdStr = rs.getString("job_id_dependency");
         if (depIdStr != null)
           newJob.setDependency(unittype.getJobs().getById(new Integer(depIdStr)));
-        //				String profileIdStr = rs.getString("profile_id");
-        //				if (profileIdStr != null) {
-        //					int profileId = Integer.parseInt(profileIdStr);
-        //					j.setMoveToProfile(unittype.getProfiles().getById(profileId));
-        //				}
         String repeatCountStr = rs.getString("repeat_count");
         if (repeatCountStr != null) newJob.setRepeatCount(Integer.parseInt(repeatCountStr));
         String repeatIntervalStr = rs.getString("repeat_interval");
@@ -741,19 +723,8 @@ public class Jobs {
     return groupJobs.toArray(new Job[groupJobs.size()]);
   }
 
-  public boolean isGroupInvolvedInJob(Group group) throws Exception {
-    List<Group> childrenGroups = group.getAllChildren();
-    childrenGroups.add(group);
-    for (Job j : idMap.values()) {
-      for (Group child : childrenGroups) {
-        if (j.getGroup().getId() == child.getId()) return true;
-      }
-    }
-    return false;
-  }
-
   public Job[] getJobs() {
-    if (idMap == null) idMap = new HashMap<Integer, Job>();
+    if (idMap == null) idMap = new HashMap<>();
     return idMap.values().toArray(new Job[idMap.size()]);
   }
 

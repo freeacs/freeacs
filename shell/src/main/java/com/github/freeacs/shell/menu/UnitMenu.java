@@ -1,6 +1,5 @@
 package com.github.freeacs.shell.menu;
 
-import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.ProfileParameter;
@@ -9,9 +8,6 @@ import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.UnitParameter;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.UnittypeParameter;
-import com.github.freeacs.dbi.tr069.Steps;
-import com.github.freeacs.dbi.tr069.TestCase;
-import com.github.freeacs.dbi.tr069.TestCase.TestCaseMethod;
 import com.github.freeacs.dbi.util.ACSVersionCheck;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemConstants;
@@ -23,10 +19,7 @@ import com.github.freeacs.shell.output.Heading;
 import com.github.freeacs.shell.output.Line;
 import com.github.freeacs.shell.output.Listing;
 import com.github.freeacs.shell.output.OutputHandler;
-import com.github.freeacs.shell.util.StringUtil;
 import com.github.freeacs.shell.util.Validation;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -154,113 +147,13 @@ public class UnitMenu {
     session.incCounter();
   }
 
-  private void testSetup(String[] args, OutputHandler oh) throws IOException, SQLException {
-
-    // Provide sensible defaults for every option.
-    Map<String, String> argMap = StringUtil.getOptionMap(args);
-    Steps steps = new Steps("GET");
-    boolean reset = false;
-    TestCaseMethod method = TestCaseMethod.VALUE;
-    String paramFilter = null, tagFilter = null;
-
-    // We'd like to keep track of whether steps and method were set manually.
-    boolean stepSet = false, methodSet = false;
-
-    // Parse the argument map
-    for (String key : argMap.keySet()) {
-      if (key.contains("step")) {
-        steps = new Steps(argMap.get(key));
-        stepSet = true;
-      } else if (key.contains("reset")) {
-        reset = argMap.get(key).equals("1") || Boolean.parseBoolean(argMap.get(key));
-      } else if (key.contains("method")) {
-        method = TestCaseMethod.valueOf(argMap.get(key));
-        methodSet = true;
-      } else if (key.contains("param")) {
-        paramFilter = argMap.get(key);
-      } else if (key.contains("tag")) {
-        tagFilter = argMap.get(key);
-      }
-    }
-
-    if (stepSet && method == TestCaseMethod.FILE && !steps.toString().equals("EXECUTE")) {
-      // We don't allow stuff like "steps=SET,GET method=FILE"
-      session.println("Cannot use those test steps when method is FILE.");
-      return;
-    } else if (methodSet && steps.toString().contains("EXECUTE") && method != TestCaseMethod.FILE) {
-      // Not stuff like "step=EXEC method=VALUE" either.
-      session.println("Cannot use test step EXECUTE on non-FILE method.");
-      return;
-    } else if (!stepSet && method == TestCaseMethod.FILE) {
-      // If we didn't specify "step=EXECUTE" when doing "method=FILE", set step now.
-      steps = new Steps("EXECUTE");
-    } else if (!methodSet && steps.toString().equals("EXECUTE")) {
-      // Similar treatment if we specified "step=EXECUTE" but forgot "method=FILE".
-      method = TestCaseMethod.FILE;
-    }
-
-    // Fetch testcases matching our parameters
-    List<TestCase> testCases =
-        TestMenu.listTestCases(context.getUnittype(), method, paramFilter, tagFilter);
-    if (testCases == null || testCases.size() == 0) {
-      session.println("Parameters did not match any test cases - no test is setup");
-      return;
-    }
-
-    // Set the relevant System parameters used for testing.
-    try {
-      ACSUnit acsUnit = session.getAcsUnit();
-      Unit unit = context.getUnit();
-      acsUnit.addOrChangeUnitParameter(unit, SystemParameters.TEST_METHOD, method.toString());
-      acsUnit.addOrChangeUnitParameter(unit, SystemParameters.TEST_STEPS, steps.toString());
-      acsUnit.addOrChangeUnitParameter(
-          unit, SystemParameters.TEST_RESET_ON_STARTUP, Boolean.toString(reset));
-      acsUnit.addOrChangeUnitParameter(unit, SystemParameters.TEST_PARAM_FILTER, paramFilter);
-      acsUnit.addOrChangeUnitParameter(unit, SystemParameters.TEST_TAG_FILTER, tagFilter);
-    } catch (Throwable t) {
-      throw new IllegalArgumentException(
-          "Some system parameters were not found in the unit-type - not possible to setup test");
-    }
-
-    session.println(
-        "Test setup completed with "
-            + testCases.size()
-            + " Test Cases - start the test by running the 'enabletest' command");
-  }
-
   public boolean execute(String[] args, OutputHandler oh) throws Exception {
     if (args[0].startsWith("delp")) {
       delparam(args);
-    } else if (args[0].equals("deltc")) {
-      (new TestMenu(session)).deltc(args);
-    } else if (args[0].startsWith("delte")) {
-      (new TestMenu(session)).deltesthistory(args);
-    } else if (args[0].startsWith("deltcdup")) {
-      (new TestMenu(session)).deltcduplicates(args);
-    } else if (args[0].startsWith("disa")) {
-      (new TestMenu(session)).testModeChange(false);
-    } else if (args[0].startsWith("enab")) {
-      (new TestMenu(session)).testModeChange(true);
-    } else if (args[0].equals("exporttcdir")) {
-      (new TestMenu(session)).exporttcdir(args);
-    } else if (args[0].equals("exporttcfile")) {
-      (new TestMenu(session)).exporttcfile(args);
-    } else if (args[0].startsWith("gene")) {
-      (new TestMenu(session)).generatetc(args);
-    } else if (args[0].equals("importtcdir")) {
-      (new TestMenu(session)).importtcdir(args);
-    } else if (args[0].equals("importtcfile")) {
-      (new TestMenu(session)).importtcfile(args);
     } else if (args[0].startsWith("kick")) {
       modeChange(args);
     } else if (args[0].startsWith("lista")) {
       listparamsImpl(args, oh, PrintLevel.ALL);
-    } else if (args[0].equals("listtc")) {
-      (new TestMenu(session)).listtc(args, oh);
-    } else if (args[0].equals("listtctags")) {
-      (new TestMenu(session)).listtctags(args, oh);
-    } else if (args[0].startsWith("listte")) {
-      (new TestMenu(session)).listTestHistory(args, oh);
     } else if (args[0].startsWith("listu")) {
       listparamsImpl(args, oh, PrintLevel.UNIT);
     } else if (args[0].startsWith("regu")) {
@@ -275,10 +168,6 @@ public class UnitMenu {
       setparam(args);
     } else if (args[0].startsWith("setse")) {
       setsessionparam(args);
-    } else if (args[0].startsWith("showtc")) {
-      (new TestMenu(session)).showtc(args, oh);
-    } else if (args[0].startsWith("test")) {
-      testSetup(args, oh);
     } else {
       throw new IllegalArgumentException("The command " + args[0] + " was not recognized.");
     }

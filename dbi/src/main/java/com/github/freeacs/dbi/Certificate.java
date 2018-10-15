@@ -17,7 +17,6 @@ public class Certificate {
 
   private static Pattern datePattern = Pattern.compile("until (\\d{4}-\\d{2}-\\d{2})");
   private static Pattern countPattern = Pattern.compile("maximum level (\\d+)");
-  private static Pattern issuePattern = Pattern.compile("issued to ([^,]+)");
 
   private Integer id;
   private String name;
@@ -25,16 +24,11 @@ public class Certificate {
   private boolean trial;
   private boolean decrypted;
 
-  @SuppressWarnings("unused")
-  private String decryptedString;
-
-  private String trialType;
   private String certType;
   private Integer maxCount;
   private Date dateLimit;
   private String oldName;
   private boolean processed;
-  private String issuedTo;
 
   public Certificate(String name, String certificate) {
     setName(name);
@@ -60,31 +54,29 @@ public class Certificate {
   public void process() {
     try {
       String dec = getCertificateDecrypted();
-      decryptedString = dec;
-      if (dec == null || dec.indexOf("not possible to decrypt") > -1) {
+      if (dec == null || dec.contains("not possible to decrypt")) {
         decrypted = false;
         trial = false;
-        trialType = null;
         certType = null;
-      } else decrypted = true;
-      if (dec.indexOf(CERT_TYPE_PROVISIONING) > -1) certType = CERT_TYPE_PROVISIONING;
-      if (dec.indexOf(CERT_TYPE_REPORT) > -1) certType = CERT_TYPE_REPORT;
+      } else {
+        decrypted = true;
+      }
+      if (dec.contains(CERT_TYPE_PROVISIONING)) {
+        certType = CERT_TYPE_PROVISIONING;
+      }
+      if (dec.contains(CERT_TYPE_REPORT)) {
+        certType = CERT_TYPE_REPORT;
+      }
       Matcher m = datePattern.matcher(dec);
       if (m.find()) {
         trial = true;
-        trialType = TRIAL_TYPE_DAYS;
         String dateStr = m.group(1);
         dateLimit = dateFormat.parse(dateStr);
       }
       m = countPattern.matcher(dec);
       if (m.find()) {
         trial = true;
-        trialType = TRIAL_TYPE_COUNT;
         maxCount = new Integer(m.group(1));
-      }
-      m = issuePattern.matcher(dec);
-      if (m.find()) {
-        issuedTo = m.group(1).trim();
       }
 
     } catch (Throwable t) {
@@ -131,11 +123,6 @@ public class Certificate {
     return trial;
   }
 
-  public String getTrialType() {
-    if (!processed) process();
-    return trialType;
-  }
-
   public String getCertType() {
     if (!processed) process();
     return certType;
@@ -152,30 +139,7 @@ public class Certificate {
     } else return false;
   }
 
-  public boolean isProductionAndValid() {
-    if (decrypted && !trial) return true;
-    return false;
-  }
-
   public boolean isProcessed() {
     return processed;
-  }
-
-  public Integer getMaxCount() {
-    if (!processed) process();
-    return maxCount;
-  }
-
-  public Date getDateLimit() {
-    if (!processed) process();
-    return dateLimit;
-  }
-
-  public boolean isDecrypted() {
-    return decrypted;
-  }
-
-  public String getIssuedTo() {
-    return issuedTo;
   }
 }

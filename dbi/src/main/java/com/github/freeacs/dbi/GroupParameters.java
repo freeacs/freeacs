@@ -120,9 +120,6 @@ public class GroupParameters {
   public void addOrChangeGroupParameter(GroupParameter groupParameter, ACS acs)
       throws SQLException {
     Groups.checkPermission(group, acs);
-    //		if (groupParameter.getParameter().getUnittypeParameter().getFlag().isInspection())
-    //			throw new IllegalArgumentException("The unit type parameter is an inspection parameter -
-    // cannot be set on a group");
     if (groupParameter.getId() == null) {
       // The group parameter may still already exist. This situation may occur if
       // listparamsforexport is invoked by shell
@@ -149,7 +146,7 @@ public class GroupParameters {
   private void deleteGroupParameterImpl(GroupParameter groupParameter, Group group, ACS acs)
       throws SQLException {
     Statement s = null;
-    String sql = null;
+    String sql;
     Connection c = acs.getDataSource().getConnection();
     try {
       s = c.createStatement();

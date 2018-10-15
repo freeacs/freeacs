@@ -9,7 +9,6 @@ public class GroupParameter {
 
   public GroupParameter(Parameter parameter, Group group) {
     this.group = group;
-    //		this.id = parameter.getUnittypeParameter().getId();
     this.parameter = parameter;
   }
 

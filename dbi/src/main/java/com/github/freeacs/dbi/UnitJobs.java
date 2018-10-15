@@ -106,7 +106,6 @@ public class UnitJobs {
   public boolean stop(UnitJob uj) throws SQLException {
     Connection c = null;
     PreparedStatement pp = null;
-    SQLException sqle = null;
     boolean finished = false;
     int rowsUpdated = 0;
     while (!finished) { // will loop if MySQLTransactionRollbackException occurs
@@ -137,9 +136,6 @@ public class UnitJobs {
           rowsUpdated = pp.executeUpdate();
         }
         finished = true;
-      } catch (SQLException sqlex) {
-        sqle = sqlex;
-        throw sqlex;
       } finally {
         if (pp != null) pp.close();
         if (c != null) {
@@ -147,15 +143,13 @@ public class UnitJobs {
         }
       }
     }
-    if (rowsUpdated > 0) return true;
-    return false;
+    return rowsUpdated > 0;
   }
 
   // added 2010-04-08 (see comment above)
   public int markAsCompleted(Job job) throws SQLException {
     Connection c = null;
     PreparedStatement pp = null;
-    SQLException sqle = null;
     boolean finished = false;
     int rowsUpdated = 0;
     while (!finished) { // will loop if MySQLTransactionRollbackException occurs
@@ -175,9 +169,6 @@ public class UnitJobs {
         pp.setQueryTimeout(60);
         rowsUpdated = pp.executeUpdate();
         finished = true;
-      } catch (SQLException sqlex) {
-        sqle = sqlex;
-        throw sqlex;
       } finally {
         if (pp != null) pp.close();
         if (c != null) {
@@ -192,7 +183,6 @@ public class UnitJobs {
   public int markAsUnconfirmed(Job job) throws SQLException {
     Connection c = null;
     PreparedStatement pp = null;
-    SQLException sqle = null;
     boolean finished = false;
     int rowsUpdated = 0;
     while (!finished) { // will loop if MySQLTransactionRollbackException occurs
@@ -210,9 +200,6 @@ public class UnitJobs {
         pp.setQueryTimeout(60);
         rowsUpdated = pp.executeUpdate();
         finished = true;
-      } catch (SQLException sqlex) {
-        sqle = sqlex;
-        throw sqlex;
       } finally {
         if (pp != null) pp.close();
         if (c != null) {
@@ -229,34 +216,23 @@ public class UnitJobs {
   }
 
   // 2.3
-  public int markAsProcessed(UnitJob uj) throws SQLException {
+  public void markAsProcessed(UnitJob uj) throws SQLException {
     Connection c = null;
     PreparedStatement pp = null;
-    SQLException sqle = null;
-    boolean finished = false;
-    int rowsUpdated = 0;
-    while (!finished) { // will loop if MySQLTransactionRollbackException occurs
-      try {
-        c = connectionProperties.getConnection();
-        String sql = "UPDATE unit_job SET processed = 1 WHERE unit_id = ? AND job_id = ?";
-        pp = c.prepareStatement(sql);
-        pp.setString(1, uj.getUnitId());
-        pp.setInt(2, uj.getJobId());
-        pp.setQueryTimeout(60);
-        rowsUpdated = pp.executeUpdate();
-        finished = true;
-        return rowsUpdated;
-      } catch (SQLException sqlex) {
-        sqle = sqlex;
-        throw sqlex;
-      } finally {
-        if (pp != null) pp.close();
-        if (c != null) {
-          c.close();
-        }
+    try {
+      c = connectionProperties.getConnection();
+      String sql = "UPDATE unit_job SET processed = 1 WHERE unit_id = ? AND job_id = ?";
+      pp = c.prepareStatement(sql);
+      pp.setString(1, uj.getUnitId());
+      pp.setInt(2, uj.getJobId());
+      pp.setQueryTimeout(60);
+      pp.executeUpdate();
+    } finally {
+      if (pp != null) pp.close();
+      if (c != null) {
+        c.close();
       }
     }
-    return rowsUpdated;
   }
 
   // 2.4

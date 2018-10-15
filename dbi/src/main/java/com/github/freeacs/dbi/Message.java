@@ -122,14 +122,14 @@ public class Message {
   }
 
   public String toString() {
-    StringBuffer sb = new StringBuffer();
-    sb.append("MTYPE: " + messageType);
-    sb.append(", OTYPE: " + objectType);
-    sb.append(", FROM: " + SyslogConstants.getFacilityName(sender));
-    if (receiver != null) sb.append(", TO: " + SyslogConstants.getFacilityName(receiver));
+    StringBuilder sb = new StringBuilder();
+    sb.append("MTYPE: ").append(messageType);
+    sb.append(", OTYPE: ").append(objectType);
+    sb.append(", FROM: ").append(SyslogConstants.getFacilityName(sender));
+    if (receiver != null) sb.append(", TO: ").append(SyslogConstants.getFacilityName(receiver));
     else sb.append(", TO: ALL");
-    if (objectId != null) sb.append(", OBJECTID: " + objectId);
-    if (content != null) sb.append(", CONTENT: " + content);
+    if (objectId != null) sb.append(", OBJECTID: ").append(objectId);
+    if (content != null) sb.append(", CONTENT: ").append(content);
     return sb.toString();
   }
 
