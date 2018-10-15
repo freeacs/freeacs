@@ -2,7 +2,6 @@ package com.github.freeacs;
 
 import static com.github.freeacs.common.spark.ResponseHelper.process;
 import static com.github.freeacs.dbi.SyslogConstants.FACILITY_TR069;
-import static com.github.freeacs.tr069.Provisioning.VERSION;
 import static spark.Spark.get;
 import static spark.Spark.path;
 import static spark.Spark.post;
@@ -15,6 +14,7 @@ import com.github.freeacs.common.hikari.HikariDataSourceHelper;
 import com.github.freeacs.common.http.SimpleResponseWrapper;
 import com.github.freeacs.common.jetty.JettyFactory;
 import com.github.freeacs.common.util.Sleep;
+import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.Provisioning;
 import com.github.freeacs.tr069.methods.TR069Method;
@@ -35,6 +35,7 @@ public class App {
 
   public static void main(String[] args) {
     Config config = ConfigFactory.load();
+    SyslogClient.SYSLOG_SERVER_HOST = config.getString("syslog.server.host");
     Spark.port(config.getInt("server.port"));
     /* THREADPOOL BEGIN */
     // Possible to add a new property server.jetty.threadpool.type? could be standard and custom.
@@ -68,7 +69,7 @@ public class App {
 
   public static void routes(DataSource mainDs, Properties properties) {
     String ctxPath = properties.getContextPath();
-    DBAccess dbAccess = new DBAccess(FACILITY_TR069, VERSION, mainDs, mainDs);
+    DBAccess dbAccess = new DBAccess(FACILITY_TR069, "latest", mainDs, mainDs);
     TR069Method tr069Method = new TR069Method(properties);
     Provisioning provisioning = new Provisioning(dbAccess, tr069Method, properties);
     provisioning.init();

@@ -34,8 +34,6 @@ public class Provisioning extends HttpServlet {
 
   private static final long serialVersionUID = -3020450686422484143L;
 
-  public static final String VERSION = "3.1.2";
-
   private static ScriptExecutions executions;
   private final DBAccess dbAccess;
   private final TR069Method tr069Method;

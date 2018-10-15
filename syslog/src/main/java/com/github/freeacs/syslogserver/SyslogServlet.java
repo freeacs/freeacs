@@ -27,7 +27,9 @@ public class SyslogServlet {
   }
 
   public void init() {
-    if (server == null) server = new SyslogServer(xapsDataSource, properties);
+    if (server == null) {
+      server = new SyslogServer(xapsDataSource, properties);
+    }
     if (!SyslogServer.isStarted()) {
       logger.info("Server startup...");
       Thread serverThread = new Thread(server);

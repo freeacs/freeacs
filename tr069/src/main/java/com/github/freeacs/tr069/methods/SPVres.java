@@ -35,7 +35,7 @@ public class SPVres {
           sessionData.getUnitId(),
           "ProvMsg: Written to CPE: " + pvs.getName() + " = " + pvs.getValue(),
           SyslogConstants.FACILITY_TR069,
-          Provisioning.VERSION,
+          "latest",
           user);
     }
   }
