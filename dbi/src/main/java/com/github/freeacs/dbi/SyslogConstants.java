@@ -139,5 +139,4 @@ public class SyslogConstants {
     if (name != null) return name;
     return "UNKNOWN";
   }
-
 }

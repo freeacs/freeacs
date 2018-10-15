@@ -166,5 +166,4 @@ public class InsertOrUpdateStatement {
   public boolean isInsert() {
     return insert;
   }
-
 }

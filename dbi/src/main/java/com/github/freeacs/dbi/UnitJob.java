@@ -99,5 +99,4 @@ public class UnitJob {
   public void setUnconfirmedFailed(Integer unconfirmedFailed) {
     this.unconfirmedFailed = unconfirmedFailed;
   }
-
 }

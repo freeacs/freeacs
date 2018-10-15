@@ -112,7 +112,8 @@ public class Groups {
         Integer groupParamId;
         groupParamId = rs.getInt("id");
         Parameter.Operator op = Parameter.Operator.getOperator(rs.getString("operator"));
-        Parameter.ParameterDataType pdt = Parameter.ParameterDataType.getDataType(rs.getString("data_type"));
+        Parameter.ParameterDataType pdt =
+            Parameter.ParameterDataType.getDataType(rs.getString("data_type"));
         groupParamIdSet.add(groupParamId);
         Parameter parameter = new Parameter(utp, value, op, pdt);
         GroupParameter groupParameter = new GroupParameter(parameter, group);

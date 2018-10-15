@@ -128,8 +128,7 @@ public class ScriptExecutions {
       se.setStartTms(rs.getTimestamp("start_timestamp"));
       se.setEndTms(rs.getTimestamp("end_timestamp"));
       se.setErrorMessage(rs.getString("error_message"));
-      if (rs.getString("exit_status") != null)
-        se.setExitStatus(rs.getInt("exit_status") == 1);
+      if (rs.getString("exit_status") != null) se.setExitStatus(rs.getInt("exit_status") == 1);
       scriptExecutionList.add(se);
     }
     return scriptExecutionList;

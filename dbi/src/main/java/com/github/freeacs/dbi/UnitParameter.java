@@ -49,5 +49,4 @@ public class UnitParameter {
   public void setValue(String value) {
     if (parameter != null) parameter.setValue(value);
   }
-
 }

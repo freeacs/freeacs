@@ -173,7 +173,8 @@ public class ACS {
             group.getUnittype().getUnittypeParameters().getById(unittypeParamId);
         String value = rs.getString("gp.value");
         Parameter.Operator op = Parameter.Operator.getOperator(rs.getString("operator"));
-        Parameter.ParameterDataType pdt = Parameter.ParameterDataType.getDataType(rs.getString("data_type"));
+        Parameter.ParameterDataType pdt =
+            Parameter.ParameterDataType.getDataType(rs.getString("data_type"));
         Parameter parameter = new Parameter(utp, value, op, pdt);
         GroupParameter groupParameter = new GroupParameter(parameter, group);
         groupParameter.setId(rs.getInt("gp.id"));

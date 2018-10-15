@@ -84,7 +84,7 @@ public class UnittypeMenu {
       importfile(args);
     } else if (args[0].startsWith("listex")) {
       listexecutions(args, oh);
-    }  else if (args[0].startsWith("listf")) {
+    } else if (args[0].startsWith("listf")) {
       listfiles(args, oh);
     } else if (args[0].startsWith("listg")) {
       listgroups(args, oh);
