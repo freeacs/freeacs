@@ -84,14 +84,6 @@ public class UnitJob {
         + unconfirmedFailed;
   }
 
-  //	public Integer getComplete() {
-  //		return complete;
-  //	}
-  //
-  //	public void setComplete(Integer complete) {
-  //		this.complete = complete;
-  //	}
-
   public Integer getConfirmedFailed() {
     return confirmedFailed;
   }
@@ -108,19 +100,4 @@ public class UnitJob {
     this.unconfirmedFailed = unconfirmedFailed;
   }
 
-  //	public void incComplete() {
-  //		if (complete == null)
-  //			complete = new Integer(0);
-  //		this.complete++;
-  //	}
-
-  public void incConfirmedFailed() {
-    if (confirmedFailed == null) confirmedFailed = new Integer(0);
-    this.confirmedFailed++;
-  }
-
-  public void incUnconfirmedFailed() {
-    if (unconfirmedFailed == null) unconfirmedFailed = new Integer(0);
-    this.unconfirmedFailed++;
-  }
 }

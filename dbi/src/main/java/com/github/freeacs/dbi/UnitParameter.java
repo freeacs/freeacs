@@ -7,8 +7,6 @@ public class UnitParameter {
 
   private Parameter parameter;
 
-  //	private String sessionValue;
-
   public UnitParameter(
       UnittypeParameter unittypeParameter, String unitId, String value, Profile profile) {
     this.parameter = new Parameter(unittypeParameter, value);
@@ -21,17 +19,6 @@ public class UnitParameter {
     this.unitId = unitId;
     this.profile = profile;
   }
-
-  //	public UnitParameter(Parameter parameter, String unitId, Profile profile) {
-  //		this(parameter, unitId, profile);
-  //		//		this.sessionValue = sessionValue;
-  //	}
-
-  //	public UnitParameter(UnittypeParameter unittypeParameter, String unitId, String value, Profile
-  // profile) {
-  //		this(unittypeParameter, unitId, value, profile);
-  //		//		this.sessionValue = sessionValue;
-  //	}
 
   public String getUnitId() {
     return unitId;
@@ -62,13 +49,5 @@ public class UnitParameter {
   public void setValue(String value) {
     if (parameter != null) parameter.setValue(value);
   }
-
-  //	public String getSessionValue() {
-  //		return sessionValue;
-  //	}
-  //
-  //	public void setSessionValue(String sessionValue) {
-  //		this.sessionValue = sessionValue;
-  //	}
 
 }

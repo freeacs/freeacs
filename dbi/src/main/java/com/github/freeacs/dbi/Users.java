@@ -62,19 +62,6 @@ public class Users {
   /**
    * Permission status: Fully protected
    *
-   * @param id
-   * @param requestedBy
-   * @return
-   */
-  public User getProtected(Integer id, User requestedBy) {
-    User user = getUnprotected(id);
-    if (allowAccessTo(user, requestedBy)) return user;
-    else return null;
-  }
-
-  /**
-   * Permission status: Fully protected
-   *
    * @param name
    * @param requestedBy
    * @return
@@ -120,7 +107,6 @@ public class Users {
     for (Permission p : permissions) delete.getPermissions().delete(p);
     Connection c = null;
     PreparedStatement ps = null;
-    SQLException sqle = null;
     try {
       c = dataSource.getConnection();
       DynamicStatement ds = new DynamicStatement();
@@ -129,9 +115,6 @@ public class Users {
       ps.executeUpdate();
       nameMap.remove(delete.getUsername());
       idMap.remove(delete.getId());
-    } catch (SQLException sqlex) {
-      sqle = sqlex;
-      throw sqlex;
     } finally {
       if (ps != null) ps.close();
       if (c != null) {
@@ -171,7 +154,6 @@ public class Users {
     }
     Connection c = null;
     PreparedStatement ps = null;
-    SQLException sqle = null;
     try {
       c = dataSource.getConnection();
       DynamicStatement ds = new DynamicStatement();
@@ -235,9 +217,6 @@ public class Users {
               "Not allowed to modify user " + addOrChange.getUsername());
         }
       }
-    } catch (SQLException sqlex) {
-      sqle = sqlex;
-      throw sqlex;
     } finally {
       if (ps != null) ps.close();
       if (c != null) {
@@ -303,7 +282,6 @@ public class Users {
   private void readAllUsers() throws SQLException {
     Connection c = null;
     Statement s = null;
-    SQLException sqle = null;
     try {
       c = dataSource.getConnection();
       s = c.createStatement();
@@ -355,9 +333,6 @@ public class Users {
       }
       idMap = tmpIdMap;
       nameMap = tmpNameMap;
-    } catch (SQLException sqlex) {
-      sqle = sqlex;
-      throw sqlex;
     } finally {
       if (s != null) s.close();
       if (c != null) {

@@ -42,16 +42,9 @@ public class ScriptExecutions {
       ious.addField(new Field("request_timestamp", new Date()));
       ious.addField(new Field("request_id", requestId));
 
-      //			System.out.println(scriptFile.getUnittype().getId());
-      //			System.out.println(scriptFile.getId());
-      //			System.out.println(scriptArgs);
-      //			System.out.println(requestId);
-
       ps = ious.makePreparedStatement(connection);
       ps.setQueryTimeout(5);
       ps.executeUpdate();
-    } catch (SQLException sqle) {
-      throw sqle;
     } finally {
       if (ps != null) ps.close();
       if (connection != null) {
@@ -81,8 +74,6 @@ public class ScriptExecutions {
       ps = ious.makePreparedStatement(connection);
       ps.setQueryTimeout(5);
       ps.executeUpdate();
-    } catch (SQLException sqle) {
-      throw sqle;
     } finally {
       if (ps != null) ps.close();
       if (connection != null) {
@@ -112,8 +103,6 @@ public class ScriptExecutions {
       ps.setQueryTimeout(60);
       rs = ps.executeQuery();
       return getExecutionList(rs, acs);
-    } catch (SQLException sqle) {
-      throw sqle;
     } finally {
       if (rs != null) rs.close();
       if (ps != null) ps.close();
@@ -140,7 +129,7 @@ public class ScriptExecutions {
       se.setEndTms(rs.getTimestamp("end_timestamp"));
       se.setErrorMessage(rs.getString("error_message"));
       if (rs.getString("exit_status") != null)
-        se.setExitStatus(rs.getInt("exit_status") == 1 ? true : false);
+        se.setExitStatus(rs.getInt("exit_status") == 1);
       scriptExecutionList.add(se);
     }
     return scriptExecutionList;
@@ -208,8 +197,6 @@ public class ScriptExecutions {
       List<ScriptExecution> list = getExecutionList(rs, acs);
       if (list.size() > 0) return list.get(0);
       else return null;
-    } catch (SQLException sqle) {
-      throw sqle;
     } finally {
       if (rs != null) rs.close();
       if (ps != null) ps.close();
@@ -246,8 +233,6 @@ public class ScriptExecutions {
       List<ScriptExecution> list = getExecutionList(rs, acs);
       if (list.size() > 0) return list.get(0);
       else return null;
-    } catch (SQLException sqle) {
-      throw sqle;
     } finally {
       if (rs != null) rs.close();
       if (ps != null) ps.close();

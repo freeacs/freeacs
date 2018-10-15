@@ -9,7 +9,6 @@ import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.User;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -41,11 +40,10 @@ public class ReportSyslogGenerator extends ReportGenerator {
 
   public Report<RecordSyslog> generateFromReport(
       PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs)
-      throws SQLException, IOException {
+      throws SQLException {
     Connection connection = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    SQLException sqle = null;
     try {
       boolean foundDataInReportTable = false;
       Report<RecordSyslog> report = new Report<RecordSyslog>(RecordSyslog.class, periodType);
@@ -86,9 +84,6 @@ public class ReportSyslogGenerator extends ReportGenerator {
                 + report.getMap().size()
                 + " entries");
       return report;
-    } catch (SQLException sqlex) {
-      sqle = sqlex;
-      throw sqlex;
     } finally {
       if (rs != null) rs.close();
       if (ps != null) ps.close();
@@ -99,7 +94,7 @@ public class ReportSyslogGenerator extends ReportGenerator {
   }
 
   public Report<RecordSyslog> generateFromSyslog(Date start, Date end, String unitId)
-      throws SQLException, IOException, ParseException {
+      throws SQLException, ParseException {
     return generateFromSyslog(PeriodType.SECOND, start, end, null, null, unitId, null);
   }
 
@@ -110,7 +105,7 @@ public class ReportSyslogGenerator extends ReportGenerator {
       List<Unittype> uts,
       List<Profile> prs,
       Group group)
-      throws SQLException, IOException, ParseException {
+      throws SQLException, ParseException {
     Connection c = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
@@ -218,11 +213,10 @@ public class ReportSyslogGenerator extends ReportGenerator {
       List<Profile> prs,
       String unitId,
       Group group)
-      throws SQLException, IOException, ParseException {
+      throws SQLException, ParseException {
     Connection c = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    SQLException sqle = null;
     try {
       Report<RecordSyslog> report = new Report<RecordSyslog>(RecordSyslog.class, periodType);
       logInfo("SyslogReport", unitId, uts, prs, start, end);
@@ -337,9 +331,6 @@ public class ReportSyslogGenerator extends ReportGenerator {
       logger.info(logPrefix + "SyslogReport: Have read " + entries + " rows from syslog");
 
       return report;
-    } catch (SQLException sqlex) {
-      sqle = sqlex;
-      throw sqlex;
     } finally {
       if (rs != null) rs.close();
       if (ps != null) ps.close();
@@ -376,11 +367,6 @@ public class ReportSyslogGenerator extends ReportGenerator {
   private DynamicStatement addUnittypeOrProfileCriteria(
       DynamicStatement ds, List<Unittype> unittypes, List<Profile> profiles) {
     User user = id.getUser();
-    //		Permissions permissionsObj = user.getPermissions();
-    //		if (filter.getProfile() != null) {
-    //			ds.addSqlAndArguments("profile_name = ? AND unit_type_name = ? AND ",
-    // filter.getProfile().getName(), filter.getProfile().getUnittype().getName());
-    //		} else
     if (profiles != null && profiles.size() > 0) {
       Map<Integer, Set<Profile>> unittypesWithSomeProfilesSpecified =
           new HashMap<Integer, Set<Profile>>();
@@ -392,9 +378,7 @@ public class ReportSyslogGenerator extends ReportGenerator {
       for (int i = 0; i < profiles.size(); i++) {
         Profile profile = profiles.get(i);
         boolean allProfilesSpecified =
-            (unittypesWithSomeProfilesSpecified.get(profile.getUnittype().getId()) == null
-                ? true
-                : false);
+            unittypesWithSomeProfilesSpecified.get(profile.getUnittype().getId()) == null;
         // all profiles in unittype are specified, we can skip profiles criteria
         if (allProfilesSpecified && user.isUnittypeAdmin(profile.getUnittype().getId())) {
           boolean alreadyTreated = false;
@@ -426,8 +410,6 @@ public class ReportSyslogGenerator extends ReportGenerator {
         }
         ds.cleanupSQLTail();
         ds.addSql(") AND ");
-      } else {
-        // no criteria added, all unittypes are specified and user isAdmin
       }
     }
     return ds;

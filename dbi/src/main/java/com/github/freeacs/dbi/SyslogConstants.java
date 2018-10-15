@@ -140,9 +140,4 @@ public class SyslogConstants {
     return "UNKNOWN";
   }
 
-  public static String getEventName(int event) {
-    String name = eventMap.get(event);
-    if (name != null) return name;
-    return "UNKNOWN";
-  }
 }

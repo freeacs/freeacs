@@ -30,24 +30,6 @@ public class JobFlag {
     REGULAR;
   }
 
-  // Type
-  //	public static String CONFIG = "CONFIG";
-  //	public static String SCRIPT = "SCRIPT";
-  //	public static String SOFTWARE = "SOFTWARE";
-  //	public static String RESTART = "RESTART";
-  //	public static String KICK = "KICK";
-  //	public static String TELNET = "TELNET";
-  //	public static String SHELL = "SHELL";
-  //	public static String RESET = "RESET";
-
-  // ServiceWindow
-  //	public static String DISRUPTIVE = "DISRUPTIVE";
-  //	public static String REGULAR = "REGULAR";
-
-  //	private static String[] typeFlagArr = new String[] { CONFIG, SCRIPT, SOFTWARE, RESTART, KICK,
-  // TELNET, SHELL, RESET };
-  //	private static String[] swFlagArr = new String[] { DISRUPTIVE, REGULAR };
-
   private JobType type;
   private JobServiceWindow serviceWindow;
 
@@ -76,10 +58,6 @@ public class JobFlag {
 
   public JobServiceWindow getServiceWindow() {
     return serviceWindow;
-  }
-
-  public void setServiceWindow(JobServiceWindow serviceWindow) {
-    this.serviceWindow = serviceWindow;
   }
 
   public String toString() {

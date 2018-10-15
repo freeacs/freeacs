@@ -4,5 +4,5 @@ public enum JobStatus {
   READY,
   STARTED,
   PAUSED,
-  COMPLETED;
+  COMPLETED
 }

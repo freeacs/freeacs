@@ -117,7 +117,6 @@ public class Permissions {
         permission); // can throw IllegalArgumentException containg error message
     Connection c = null;
     PreparedStatement ps = null;
-    SQLException sqle = null;
     try {
       c = dataSource.getConnection();
       DynamicStatement ds = new DynamicStatement();
@@ -142,9 +141,6 @@ public class Permissions {
         int rowsUpdated = ps.executeUpdate();
         if (rowsUpdated > 0) add(permission);
       }
-    } catch (SQLException sqlex) {
-      sqle = sqlex;
-      throw sqlex;
     } finally {
       if (ps != null) ps.close();
       if (c != null) {
@@ -152,41 +148,5 @@ public class Permissions {
       }
     }
   }
-
-  //	public boolean allowed(Unittype unittype) {
-  //		Set<Integer> permissionIdSet = unittypeIdMap.get(unittype.getId());
-  //		if (permissionIdSet == null || permissionIdSet.size() == 0)
-  //			return true;
-  //		for (Integer permissionId : permissionIdSet) {
-  //			Permission permission = getById(permissionId);
-  //			if (permission.getUnittypeId().intValue() == unittype.getId() && permission.getProfileId() ==
-  // null)
-  //				return true;
-  //		}
-  //		return false;
-  //	}
-
-  //	public boolean allowed(Profile profile) {
-  //		Unittype unittype = profile.getUnittype();
-  //		Set<Integer> permissionIdSet = unittypeIdMap.get(unittype.getId());
-  //		if (permissionIdSet == null || permissionIdSet.size() == 0)
-  //			return true;
-  //		boolean unittypeExists = false;
-  //		boolean profileExists = false;
-  //		for (Integer permissionId : permissionIdSet) {
-  //			Permission permission = getById(permissionId);
-  //			if (permission.getUnittypeId().intValue() == unittype.getId()) {
-  //				unittypeExists = true;
-  //				if (permission.getProfileId() != null) {
-  //					profileExists = true;
-  //					if (permission.getProfileId().intValue() == profile.getId())
-  //						return true;
-  //				}
-  //			}
-  //		}
-  //		if (unittypeExists && !profileExists)
-  //			return true;
-  //		return false;
-  //	}
 
 }
