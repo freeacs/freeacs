@@ -82,7 +82,7 @@ public class Groups {
   }
 
   /* only used to refresh the cache, used from DBI */
-  protected static void refreshGroupParameter(Group group, Connection c) throws SQLException {
+  private static void refreshGroupParameter(Group group, Connection c) throws SQLException {
     Statement s = null;
     ResultSet rs = null;
     String sql = null;
@@ -109,12 +109,11 @@ public class Groups {
         UnittypeParameter utp =
             group.getUnittype().getUnittypeParameters().getById(unittypeParamId);
         String value = rs.getString("value");
-        Parameter.ParameterDataType pdt = Parameter.ParameterDataType.TEXT;
-        Parameter.Operator op = Parameter.Operator.EQ;
-        Integer groupParamId = null;
+        Integer groupParamId;
         groupParamId = rs.getInt("id");
-        op = Parameter.Operator.getOperator(rs.getString("operator"));
-        pdt = Parameter.ParameterDataType.getDataType(rs.getString("data_type"));
+        Parameter.Operator op = Parameter.Operator.getOperator(rs.getString("operator"));
+        Parameter.ParameterDataType pdt =
+            Parameter.ParameterDataType.getDataType(rs.getString("data_type"));
         groupParamIdSet.add(groupParamId);
         Parameter parameter = new Parameter(utp, value, op, pdt);
         GroupParameter groupParameter = new GroupParameter(parameter, group);
@@ -146,14 +145,13 @@ public class Groups {
       ps = ds.makePreparedStatement(c);
       rs = ps.executeQuery();
       if (rs.next()) {
-        //				boolean makeNewGroup = false;
         Unittype unittype = acs.getUnittype(rs.getInt(1));
-        if (unittype == null) return; // The unittype is not accessible for this user
+        if (unittype == null) {
+          return; // The unittype is not accessible for this user
+        }
         Group group = unittype.getGroups().getById(groupId);
         if (group == null) {
           return; // The group is not accessible for this user
-          //					group = new Group(groupId);
-          //					makeNewGroup = true;
         }
         group.setName(rs.getString("group_name"));
         group.setDescription(rs.getString("description"));
@@ -178,7 +176,7 @@ public class Groups {
 
   private void deleteGroupImpl(Group group, ACS acs) throws SQLException {
     PreparedStatement s = null;
-    String sql = null;
+    String sql;
     Connection c = acs.getDataSource().getConnection();
     try {
       sql = "UPDATE group_ SET parent_group_id = ?, profile_id = ? WHERE parent_group_id = ?";

@@ -146,20 +146,9 @@ public class Unit {
     }
   }
 
-  //	public ProvisioningState getProvisioningState() {
-  //		try {
-  //			return ProvisioningState.valueOf(getParameterValue(SystemParameters.PROVISIONING_STATE,
-  // false));
-  //		} catch (Throwable t) {
-  //			return ProvisioningState.READY;
-  //		}
-  //	}
-
   public boolean isSessionMode() {
     ProvisioningMode mode = getProvisioningMode();
-    //		if (mode == ProvisioningMode.EXTRACTION || mode == ProvisioningMode.INSPECTION)
-    if (mode == ProvisioningMode.READALL) return true;
-    return false;
+    return mode == ProvisioningMode.READALL;
   }
 
   // Queue unit parameters here for future add/Change operation on the
@@ -226,9 +215,5 @@ public class Unit {
       sessionParameters = mw.getMap();
     }
     return sessionParameters;
-  }
-
-  public void setSessionParameters(Map<String, UnitParameter> sessionParameters) {
-    this.sessionParameters = sessionParameters;
   }
 }

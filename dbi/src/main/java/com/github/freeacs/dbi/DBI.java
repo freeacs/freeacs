@@ -515,12 +515,6 @@ public class DBI implements Runnable {
         receiver);
   }
 
-  /* Generic publish message, instead of using the publish-helper-methods above */
-  public synchronized void publishMessage(
-      String content, String messageType, String objectType, String objectId, Integer receiver) {
-    addMessage(content, messageType, objectType, objectId, receiver);
-  }
-
   private void addToPublish(String messageType, Object object, Unittype unittype) {
     UnittypePublish up = publishUnittypes.get(unittype.getId());
     if (up == null) {

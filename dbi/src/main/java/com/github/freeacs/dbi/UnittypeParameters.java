@@ -255,12 +255,10 @@ public class UnittypeParameters {
     try {
       for (UnittypeParameter unittypeParameter : unittypeParameters) {
         DynamicStatement ds = new DynamicStatement();
-        //				long start = System.currentTimeMillis();
         if (unittypeParameter.getFlag() == null)
           throw new IllegalArgumentException(
               "The flag of unittypeParameter " + unittypeParameter + " is not correct.");
 
-        //				long tms1 = System.currentTimeMillis();
         if (unittypeParameter.getId() == null) {
           ds.addSql("INSERT INTO unit_type_param (unit_type_id, name, flags) VALUES (?,?,?)");
           ds.addArguments(
@@ -272,7 +270,6 @@ public class UnittypeParameters {
           if (gk.next()) unittypeParameter.setId(gk.getInt(1));
 
           logger.info("Added unittype parameter " + unittypeParameter.getName());
-          //					tms1 = System.currentTimeMillis();
         } else {
           ds.addSql("UPDATE unit_type_param SET ");
           ds.addSqlAndArguments("flags = ?, ", unittypeParameter.getFlag().getFlag());
@@ -282,17 +279,11 @@ public class UnittypeParameters {
           ps = ds.makePreparedStatement(c);
           ps.setQueryTimeout(60);
           ps.executeUpdate();
-
-          //					logger.info("Updated unittype parameter " + unittypeParameter.getName());
-          //					tms1 = System.currentTimeMillis();
         }
         if (unittypeParameter.getValues() != null)
           if (unittypeParameter.getValues().getValues().size() > 0)
             addOrChangeUnittypeParameterValues(unittypeParameter, ps);
           else deleteUnittypeParameterValues(unittypeParameter, ps);
-        //				long tms2 = System.currentTimeMillis();
-        //				logger.debug("addOrChangeUnittypeParameterImpl, insert/update: " + (tms1 - start) +
-        // "ms, add/change/delete values: " + (tms2 - tms1) + "ms");
       }
       logger.info("Added/changed " + unittypeParameters.size() + " unittype parameters");
       c.commit();
@@ -316,7 +307,6 @@ public class UnittypeParameters {
 
       logger.info("Deleted all unittype parameter values for utp:" + unittypeParameter.getName());
     }
-    //		connection.commit();
     UnittypeParameterValues values = unittypeParameter.getValues();
     if (values.getType().equals(UnittypeParameterValues.REGEXP) && values.getPattern() != null) {
       sql = "INSERT INTO unit_type_param_value ";
@@ -363,12 +353,5 @@ public class UnittypeParameters {
       displayableNameMap = getUnittypeParameterNamesShort(displayableMap.values());
     }
     return displayableNameMap;
-  }
-
-  public Map<String, String> getSearchableNameMap() {
-    if (searchableNameMap == null) {
-      searchableNameMap = getUnittypeParameterNamesShort(searchableMap.values());
-    }
-    return searchableNameMap;
   }
 }

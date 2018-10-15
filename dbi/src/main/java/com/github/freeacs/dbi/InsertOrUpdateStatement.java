@@ -147,7 +147,6 @@ public class InsertOrUpdateStatement {
       ds.cleanupSQLTail();
       ds.addSql(") VALUES (" + ds.getQuestionMarks() + ")");
       String[] primaryKeyStrArr = autoGeneratePK.toArray(new String[] {});
-      //			System.out.println(ds);
       return ds.makePreparedStatement(c, primaryKeyStrArr);
     } else { // update
       ds.setSql("UPDATE " + table + " SET ");
@@ -160,16 +159,11 @@ public class InsertOrUpdateStatement {
       for (Field field : updateKeys)
         ds.addSqlAndArguments(field.getColumn() + " = ?, ", field.getValue());
       ds.cleanupSQLTail();
-      //			System.out.println(ds);
       return ds.makePreparedStatement(c);
     }
   }
 
   public boolean isInsert() {
     return insert;
-  }
-
-  public void forceInsert() {
-    insert = true;
   }
 }

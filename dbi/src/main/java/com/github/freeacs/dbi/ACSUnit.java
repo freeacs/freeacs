@@ -162,7 +162,9 @@ public class ACSUnit {
       }
       connection.commit();
     } catch (SQLException sqle) {
-      connection.rollback();
+      if (connection != null) {
+        connection.rollback();
+      }
       throw sqle;
     } finally {
       if (ps != null) ps.close();
@@ -206,7 +208,9 @@ public class ACSUnit {
       }
       connection.commit();
     } catch (SQLException sqle) {
-      connection.rollback();
+      if (connection != null) {
+        connection.rollback();
+      }
       throw sqle;
     } finally {
       if (ps != null) ps.close();
@@ -233,7 +237,7 @@ public class ACSUnit {
   public List<String> getUnitIdsFromSessionUnitParameters() throws SQLException {
     Connection connection = null;
     PreparedStatement ps = null;
-    ResultSet rs = null;
+    ResultSet rs;
     boolean wasAutoCommit = false;
     try {
       connection = dataSource.getConnection();
@@ -262,7 +266,7 @@ public class ACSUnit {
       List<UnitParameter> unitParameters, Profile prof, boolean session) throws SQLException {
     Connection connection = null;
     PreparedStatement pp = null;
-    String sql = null;
+    String sql;
     boolean updateFirst = true;
     String tableName = "unit_param";
     if (session) tableName += "_session";
@@ -323,7 +327,7 @@ public class ACSUnit {
             insertCounter = 1;
           }
         }
-        String msg = null;
+        String msg;
         if (tableName.contains("session")) msg = action + " temporary unit parameter " + utpName;
         else msg = action + " unit parameter " + utpName;
         if (parameter.getUnittypeParameter().getFlag().isConfidential())
@@ -434,7 +438,9 @@ public class ACSUnit {
       }
       return rowsDeleted;
     } catch (SQLException sqle) {
-      connection.rollback();
+      if (connection != null) {
+        connection.rollback();
+      }
       throw sqle;
     } finally {
       if (ps != null) ps.close();
@@ -493,7 +499,9 @@ public class ACSUnit {
       connection.commit();
       return rowsDeleted;
     } catch (SQLException sqle) {
-      connection.rollback();
+      if (connection != null) {
+        connection.rollback();
+      }
       throw sqle;
     } finally {
       if (s != null) s.close();
@@ -516,7 +524,7 @@ public class ACSUnit {
   public int deleteUnitParameters(List<UnitParameter> unitParameters) throws SQLException {
     Connection connection = null;
     Statement s = null;
-    String sql = null;
+    String sql;
     boolean wasAutoCommit = false;
     try {
       connection = dataSource.getConnection();
@@ -546,7 +554,9 @@ public class ACSUnit {
       connection.commit();
       return rowsDeleted;
     } catch (SQLException sqle) {
-      connection.rollback();
+      if (connection != null) {
+        connection.rollback();
+      }
       throw sqle;
     } finally {
       if (s != null) s.close();
@@ -561,7 +571,7 @@ public class ACSUnit {
     if (!ACSVersionCheck.unitParamSessionSupported) return 0;
     Connection connection = null;
     Statement s = null;
-    String sql = null;
+    String sql;
     boolean wasAutoCommit = false;
     try {
       connection = dataSource.getConnection();
@@ -575,8 +585,6 @@ public class ACSUnit {
       if (rowsDeleted > 0) logger.info("Deleted " + rowsDeleted + " unit session parameters");
       connection.commit();
       return rowsDeleted;
-    } catch (SQLException sqle) {
-      throw sqle;
     } finally {
       if (s != null) s.close();
       if (connection != null) {
@@ -596,7 +604,7 @@ public class ACSUnit {
   public int deleteUnits(List<String> unitIds) throws SQLException {
     Connection connection = null;
     Statement s = null;
-    String sql = null;
+    String sql;
     boolean wasAutoCommit = false;
     try {
       connection = dataSource.getConnection();

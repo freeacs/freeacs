@@ -137,8 +137,6 @@ public class Unittypes {
     if (cascade) {
       UnittypeParameters utParams = unittype.getUnittypeParameters();
       UnittypeParameter[] utParamsArr = utParams.getUnittypeParameters();
-      //			System.out.println("Will delete " + utParamsArr.length + " unittype parameters from
-      // unittype " + unittype.getName());
       Profile defaultProfile = unittype.getProfiles().getByName("Default");
       // Delete the defaultProfile if this is the only profile in existence and if the profile has
       // no profile parameters

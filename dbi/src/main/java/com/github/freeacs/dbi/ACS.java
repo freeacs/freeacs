@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
  */
 public class ACS {
 
-  public static String version = "1.74";
   private static Logger logger = LoggerFactory.getLogger(ACS.class);
   private static boolean strictOrder = true;
 
@@ -146,7 +145,7 @@ public class ACS {
   private void readGroupParameters(Unittypes unittypes) throws SQLException {
     Statement s = null;
     ResultSet rs = null;
-    String sql = null;
+    String sql;
     boolean wasAutoCommit = false;
     Connection connection = null;
     try {
@@ -173,10 +172,9 @@ public class ACS {
         UnittypeParameter utp =
             group.getUnittype().getUnittypeParameters().getById(unittypeParamId);
         String value = rs.getString("gp.value");
-        Parameter.ParameterDataType pdt = Parameter.ParameterDataType.TEXT;
-        Parameter.Operator op = Parameter.Operator.EQ;
-        op = Parameter.Operator.getOperator(rs.getString("operator"));
-        pdt = Parameter.ParameterDataType.getDataType(rs.getString("data_type"));
+        Parameter.Operator op = Parameter.Operator.getOperator(rs.getString("operator"));
+        Parameter.ParameterDataType pdt =
+            Parameter.ParameterDataType.getDataType(rs.getString("data_type"));
         Parameter parameter = new Parameter(utp, value, op, pdt);
         GroupParameter groupParameter = new GroupParameter(parameter, group);
         groupParameter.setId(rs.getInt("gp.id"));
@@ -184,7 +182,6 @@ public class ACS {
         groupParams.addOrChangeGroupParameter(groupParameter);
       }
       if (logger.isDebugEnabled()) {
-
         logger.debug("Read " + counter + " group parameters");
       }
     } finally {
@@ -200,7 +197,7 @@ public class ACS {
   private void readProfileParameters(Unittypes unittypes) throws SQLException {
     Statement s = null;
     ResultSet rs = null;
-    String sql = null;
+    String sql;
     boolean wasAutoCommit = false;
     Connection connection = null;
     try {
@@ -236,7 +233,6 @@ public class ACS {
         idMap.put(unittypeParamId, profileParameter);
       }
       if (logger.isDebugEnabled()) {
-
         logger.debug("Read " + counter + " profile parameters");
       }
     } finally {
@@ -252,7 +248,7 @@ public class ACS {
   private void readUnittypeParameterValues(Unittypes unittypes) throws SQLException {
     Statement s = null;
     ResultSet rs = null;
-    String sql = null;
+    String sql;
     boolean wasAutoCommit = false;
     Connection connection = null;
     try {
@@ -286,7 +282,6 @@ public class ACS {
         else if (type.equals(UnittypeParameterValues.ENUM)) values.getValues().add(value);
       }
       if (logger.isDebugEnabled()) {
-
         logger.debug("Read " + counter + " unittype parameter values");
       }
 
@@ -303,7 +298,7 @@ public class ACS {
   private void readUnittypeParameters(Unittypes unittypes) throws SQLException {
     Statement s = null;
     ResultSet rs = null;
-    String sql = null;
+    String sql;
     boolean wasAutoCommit = false;
     Connection connection = null;
     try {
@@ -340,7 +335,6 @@ public class ACS {
         unittype.getUnittypeParameters().updateInternalMaps(unittypeParameter);
       }
       if (logger.isDebugEnabled()) {
-
         logger.debug("Read " + counter + " unittype params");
       }
     } finally {
@@ -363,7 +357,7 @@ public class ACS {
   private void readSyslogEvents(Unittypes unittypes) throws SQLException {
     Statement s = null;
     ResultSet rs = null;
-    String sql = null;
+    String sql;
     boolean wasAutoCommit = false;
     Connection connection = null;
     try {
@@ -381,7 +375,7 @@ public class ACS {
       int counter = 0;
       while (rs.next()) {
         counter++;
-        Unittype unittype = null;
+        Unittype unittype;
         if (ACSVersionCheck.syslogEventReworkSupported)
           unittype = unittypes.getById(rs.getInt("unit_type_id"));
         else unittype = unittypes.getByName(rs.getString("unit_type_name"));
@@ -418,14 +412,12 @@ public class ACS {
               fileName = fileName.substring(0, varPos);
             }
             syslogEvent.setScript(unittype.getFiles().getByName(fileName));
-          } else {
-            // ignore GROUPSYNC tasks - they are not converted
           }
         }
         syslogEvent.validateInput(true);
 
         if (lastUnittype == null || lastUnittype != unittype) {
-          syslogIdMap = new TreeMap<Integer, SyslogEvent>(new NumberComparator());
+          syslogIdMap = new TreeMap<>(new NumberComparator());
           unittype.setSyslogEvents(new SyslogEvents(syslogIdMap, unittype));
           lastUnittype = unittype;
         }
@@ -433,7 +425,6 @@ public class ACS {
         SyslogEvents.updateIdMap(syslogEvent);
       }
       if (logger.isDebugEnabled()) {
-
         logger.debug("Read " + counter + " syslog events");
       }
     } finally {
@@ -486,7 +477,6 @@ public class ACS {
         nameMap.put(hb.getName(), hb);
       }
       if (logger.isDebugEnabled()) {
-
         logger.debug("Read " + counter + " heartbeats");
       }
     } finally {
@@ -555,7 +545,7 @@ public class ACS {
 
         if (lastUnittype == null || lastUnittype != unittype) {
           nameMap = new MapWrapper<Trigger>(isStrictOrder()).getMap();
-          idMap = new HashMap<Integer, Trigger>();
+          idMap = new HashMap<>();
           unittype.setTriggers(new Triggers(idMap, nameMap, unittype));
           lastUnittype = unittype;
         }
@@ -575,7 +565,6 @@ public class ACS {
         }
       }
       if (logger.isDebugEnabled()) {
-
         logger.debug("Read " + counter + " triggers");
       }
     } finally {
@@ -591,7 +580,7 @@ public class ACS {
   private void readGroups(Unittypes unittypes) throws SQLException {
     Statement s = null;
     ResultSet rs = null;
-    String sql = null;
+    String sql;
     boolean wasAutoCommit = false;
     Connection connection = null;
     try {
@@ -623,7 +612,7 @@ public class ACS {
         // Make maps
         if (lastUnittype == null || lastUnittype != unittype) {
           nameMap = new MapWrapper<Group>(isStrictOrder()).getMap();
-          idMap = new HashMap<Integer, Group>();
+          idMap = new HashMap<>();
           unittype.setGroups(new Groups(idMap, nameMap, unittype));
           lastUnittype = unittype;
         }
@@ -654,13 +643,10 @@ public class ACS {
         }
         thisGroup.setParent(parent);
         if (parent != null) parent.addChild(thisGroup);
-        //				thisGroup.setTimeRollingRule(timeRollingRule);
-        //				thisGroup.setTimeParameter(timeParameter);
 
         nameMap.put(groupName, thisGroup);
       }
       if (logger.isDebugEnabled()) {
-
         logger.debug("Read " + counter + " groups");
       }
     } finally {
@@ -676,7 +662,7 @@ public class ACS {
   private void readProfiles(Unittypes unittypes) throws SQLException {
     Statement s = null;
     ResultSet rs = null;
-    String sql = null;
+    String sql;
     boolean wasAutoCommit = false;
     Connection connection = null;
     try {
@@ -710,7 +696,6 @@ public class ACS {
         idMap.put(profileId, profile);
       }
       if (logger.isDebugEnabled()) {
-
         logger.debug("Read " + counter + " profiles");
       }
     } finally {
@@ -726,12 +711,12 @@ public class ACS {
   private Certificates readCertificates() throws SQLException {
     Statement s = null;
     ResultSet rs = null;
-    String sql = null;
+    String sql;
     boolean wasAutoCommit = false;
     Connection connection = null;
     try {
-      Map<Integer, Certificate> idMap = new HashMap<Integer, Certificate>();
-      MapWrapper<Certificate> mw = new MapWrapper<Certificate>(isStrictOrder());
+      Map<Integer, Certificate> idMap = new HashMap<>();
+      MapWrapper<Certificate> mw = new MapWrapper<>(isStrictOrder());
       Map<String, Certificate> nameMap = mw.getMap();
       connection = getDataSource().getConnection();
       wasAutoCommit = connection.getAutoCommit();
@@ -750,10 +735,8 @@ public class ACS {
         idMap.put(id, cert);
       }
       if (logger.isDebugEnabled()) {
-
         logger.debug("Read " + nameMap.size() + " certificates");
       }
-      // }
       return new Certificates(idMap, nameMap);
     } finally {
       if (rs != null) rs.close();
@@ -816,7 +799,7 @@ public class ACS {
           if (userIdStr != null) {
             try {
               owner = unittype.getAcs().getUser().getUsers().getUnprotected(new Integer(userIdStr));
-            } catch (NumberFormatException nfe) {
+            } catch (NumberFormatException ignored) {
               // ignore
             }
           }
@@ -838,7 +821,6 @@ public class ACS {
         versionTypeMap.put(file.getVersion() + typeStr, file);
       }
       if (logger.isDebugEnabled()) {
-
         logger.debug("Read " + counter + " files");
       }
     } finally {
@@ -854,7 +836,7 @@ public class ACS {
   private Unittypes readUnittypes() throws SQLException {
     Statement s = null;
     ResultSet rs = null;
-    String sql = null;
+    String sql;
     boolean wasAutoCommit = false;
     Connection connection = null;
     try {
@@ -882,7 +864,6 @@ public class ACS {
         idMap.put(id, unittype);
       }
       if (logger.isDebugEnabled()) {
-
         logger.debug("Read " + idMap.size() + " unittypes");
       }
       return new Unittypes(unittypeMap, idMap);
@@ -957,7 +938,7 @@ public class ACS {
 
         // The job has been retrieved. put it in the map
         if (lastUnittype == null || lastUnittype != unittype) {
-          idMap = new TreeMap<Integer, Job>();
+          idMap = new TreeMap<>();
           nameMap = new MapWrapper<Job>(ACS.isStrictOrder()).getMap();
           unittype.setJobs(new Jobs(idMap, nameMap, unittype));
           lastUnittype = unittype;
@@ -1075,7 +1056,7 @@ public class ACS {
   }
 
   public String toString() {
-    return version;
+    return "ACS";
   }
 
   public static boolean isStrictOrder() {

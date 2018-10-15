@@ -45,7 +45,7 @@ public class ProfileParameters {
       ProfileParameter profileParameter, Profile profile, ACS acs) throws SQLException {
     Connection c = acs.getDataSource().getConnection();
     Statement s = null;
-    String sql = null;
+    String sql;
     try {
       s = c.createStatement();
       String logMsg = "profile parameter " + profileParameter.getUnittypeParameter().getName();
