@@ -53,14 +53,6 @@ public class User {
     this.username = username;
   }
 
-  protected String getOldUsername() {
-    return oldUsername;
-  }
-
-  protected void setOldUsername(String oldUsername) {
-    this.oldUsername = oldUsername;
-  }
-
   public String getSecret() {
     return secret;
   }
@@ -135,20 +127,17 @@ public class User {
 
   public boolean isAdmin() {
     if (username.equals(Users.USER_ADMIN)) return true;
-    if (admin != null && admin == true) return true;
-    return false;
+    return admin != null && admin;
   }
 
   public boolean isUnittypeAdmin(Integer unittypeId) {
-    if (isAdmin() || permissions.getByUnittypeProfile(unittypeId, null) != null) return true;
-    return false;
+    return isAdmin() || permissions.getByUnittypeProfile(unittypeId, null) != null;
   }
 
   public boolean isProfileAdmin(Integer unittypeId, Integer profileId) {
     if (isAdmin()) return true;
     if (isUnittypeAdmin(unittypeId)) return true;
-    if (permissions.getByUnittypeProfile(unittypeId, profileId) != null) return true;
-    return false;
+    return permissions.getByUnittypeProfile(unittypeId, profileId) != null;
   }
 
   public Boolean getAdmin() {

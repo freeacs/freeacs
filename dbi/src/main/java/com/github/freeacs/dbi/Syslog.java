@@ -30,18 +30,12 @@ import org.slf4j.LoggerFactory;
  */
 public class Syslog {
 
-  private DataSource dataSource = null;
+  private DataSource dataSource;
 
   private Identity id;
 
   private static Logger logger = LoggerFactory.getLogger(Syslog.class);
 
-  private StringBuilder insertValues = new StringBuilder(1000);
-  private int insertCount = 0;
-  private long insertTms = System.currentTimeMillis();
-  private int maxInsertCount; // The max number of insert commands in the commit
-  // queue, default below
-  private int minTmsDelay; // The least number of milliseconds to pass between
   // commit, default below
   public static final int defaultMaxInsertCount = 1000;
   public static final int defaultMinTmsDelay = 5000;
@@ -50,15 +44,7 @@ public class Syslog {
   private boolean simulationMode = false;
   private static SimpleDateFormat deviceTmsFormat =
       new SimpleDateFormat("yyyy MMM dd HH:mm:ss", new Locale("EN"));
-  private static SimpleDateFormat dbDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
   private static Calendar yearCal = Calendar.getInstance();
-
-  // private static Map<Connection, Long> connectionMap = new
-  // HashMap<Connection, Long>();
-
-  // The unit may have a unit-parameter which overrides the loglevel
-  // suppression. Requires loggingEnabled=true
-  // private Unit unit;
 
   public Syslog(DataSource dataSource, Identity id) {
     this(dataSource, id, defaultMaxInsertCount, defaultMinTmsDelay); // Default values.
@@ -73,10 +59,6 @@ public class Syslog {
   public Syslog(DataSource dataSource, Identity id, int maxInsertCount, int minTmsDelay) {
     this.dataSource = dataSource;
     this.id = id;
-    this.maxInsertCount = maxInsertCount; // The max number of insert commands
-    // in the commit queue
-    this.minTmsDelay = minTmsDelay; // The least number of milliseconds to pass
-    // between commit
   }
 
   public Identity getIdentity() {

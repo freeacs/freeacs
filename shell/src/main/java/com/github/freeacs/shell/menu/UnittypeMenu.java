@@ -76,38 +76,14 @@ public class UnittypeMenu {
       delprofile(args);
     } else if (args[0].startsWith("delsy")) {
       delsyslogevent(args);
-    } else if (args[0].equals("deltc")) {
-      (new TestMenu(session)).deltc(args);
-    } else if (args[0].startsWith("deltcdup")) {
-      (new TestMenu(session)).deltcduplicates(args);
-    } else if (args[0].startsWith("delte")) {
-      (new TestMenu(session)).deltesthistory(args);
     } else if (args[0].startsWith("deltr")) {
       deltrigger(args);
-      //		} else if (args[0].startsWith("enab")) {
-      //			enabletr069report(args);
     } else if (args[0].equals("exportfile")) {
       exportfile(args);
-    } else if (args[0].equals("exporttcdir")) {
-      (new TestMenu(session)).exporttcdir(args);
-    } else if (args[0].equals("exporttcfile")) {
-      (new TestMenu(session)).exporttcfile(args);
-    } else if (args[0].startsWith("gene")) {
-      (new TestMenu(session)).generatetc(args);
     } else if (args[0].equals("importfile")) {
       importfile(args);
-    } else if (args[0].equals("importtcdir")) {
-      (new TestMenu(session)).importtcdir(args);
-    } else if (args[0].equals("importtcfile")) {
-      (new TestMenu(session)).importtcfile(args);
     } else if (args[0].startsWith("listex")) {
       listexecutions(args, oh);
-    } else if (args[0].equals("listtc")) {
-      (new TestMenu(session)).listtc(args, oh);
-    } else if (args[0].equals("listtctags")) {
-      (new TestMenu(session)).listtctags(args, oh);
-    } else if (args[0].startsWith("listte")) {
-      (new TestMenu(session)).listTestHistory(args, oh);
     } else if (args[0].startsWith("listf")) {
       listfiles(args, oh);
     } else if (args[0].startsWith("listg")) {
@@ -126,8 +102,6 @@ public class UnittypeMenu {
       listtriggers(args, oh);
     } else if (args[0].startsWith("listu")) {
       listunits(args, oh);
-      //		} else if (args[0].startsWith("makeg")) {
-      //			makegroupmonitor(args);
     } else if (args[0].startsWith("move")) {
       moveunit(args, oh);
     } else if (args[0].startsWith("sete")) {
@@ -146,10 +120,6 @@ public class UnittypeMenu {
       setsyslogevent(args);
     } else if (args[0].startsWith("settr")) {
       settrigger(args);
-    } else if (args[0].startsWith("showtc")) {
-      (new TestMenu(session)).showtc(args, oh);
-    } else if (args[0].startsWith("validateflags")) {
-      (new TestMenu(session)).validateFlags(oh);
     } else if (args[0].equals("systemparameterscleanup")) {
       systemparameterscleanup(args);
     } else {

@@ -156,14 +156,6 @@ public class Unittype implements Comparable<Unittype> {
     this.id = id;
   }
 
-  public boolean isToBeDeleted() {
-    return toBeDeleted;
-  }
-
-  protected void setToBeDeleted(boolean toBeDeleted) {
-    this.toBeDeleted = toBeDeleted;
-  }
-
   protected String getOldName() {
     return oldName;
   }

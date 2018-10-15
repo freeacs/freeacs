@@ -27,8 +27,7 @@ public class Profiles {
   }
 
   public Profile[] getProfiles() {
-    Profile[] profiles = nameMap.values().toArray(new Profile[] {});
-    return profiles;
+    return nameMap.values().toArray(new Profile[] {});
   }
 
   @Override
@@ -92,7 +91,7 @@ public class Profiles {
 
   private void addOrChangeProfileImpl(Profile profile, ACS acs) throws SQLException {
     Statement s = null;
-    String sql = null;
+    String sql;
     Connection c = acs.getDataSource().getConnection();
     try {
       s = c.createStatement();

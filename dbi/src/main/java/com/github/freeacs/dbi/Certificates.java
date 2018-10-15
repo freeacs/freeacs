@@ -43,17 +43,6 @@ public class Certificates {
     return null;
   }
 
-  /**
-   * This method is only to be used by UnitQuery2 - because that class needs a structure of Unittype
-   * and Certificates to store it's query parameters
-   *
-   * @param certificate
-   */
-  protected void addCertificate(Certificate certificate) {
-    idMap.put(certificate.getId(), certificate);
-    nameMap.put(certificate.getName(), certificate);
-  }
-
   public void addOrChangeCertificate(Certificate certificate, ACS acs) throws SQLException {
     if (!acs.getUser().isAdmin())
       throw new IllegalArgumentException("Not allowed action for this user");
@@ -82,7 +71,7 @@ public class Certificates {
 
   private int deleteCertificateImpl(Certificate certificate, ACS acs) throws SQLException {
     Statement s = null;
-    String sql = null;
+    String sql;
     Connection c = acs.getDataSource().getConnection();
     try {
       s = c.createStatement();
@@ -106,13 +95,12 @@ public class Certificates {
    *
    * @throws SQLException
    */
-  public int deleteCertificate(Certificate certificate, ACS acs) throws SQLException {
+  public void deleteCertificate(Certificate certificate, ACS acs) throws SQLException {
     if (!acs.getUser().isAdmin())
       throw new IllegalArgumentException("Not allowed action for this user");
-    int rowsDeleted = deleteCertificateImpl(certificate, acs);
+    deleteCertificateImpl(certificate, acs);
     nameMap.remove(certificate.getName());
     idMap.remove(certificate.getId());
-    return rowsDeleted;
   }
 
   private void addOrChangeCertificateImpl(Certificate certificate, ACS acs) throws SQLException {

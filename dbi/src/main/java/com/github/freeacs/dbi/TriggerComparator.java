@@ -38,10 +38,8 @@ public class TriggerComparator implements Comparator<Trigger> {
      */
     int result = tmp1.getName().compareTo(tmp2.getName());
     if (result > 0) {
-      //			System.out.println("TOP  DOWN : " + t1.getName() + " compared to " + t2.getName());
       return result;
     } else if (result < 0) {
-      //			System.out.println("TOP  UP   : " + t1.getName() + " compared to " + t2.getName());
       return result;
     }
 
@@ -58,19 +56,15 @@ public class TriggerComparator implements Comparator<Trigger> {
        * compare based on length, the shortest list first. Else continue investigation.
        */
       if (triggerIdList1.size() < triggerIdList2.size()) {
-        //				System.out.println("DEP  DOWN : " + t1.getName() + " compared to " + t2.getName());
         return 1;
       } else if (triggerIdList2.size() > triggerIdList1.size()) {
-        //				System.out.println("DEP  UP   : " + t1.getName() + " compared to " + t2.getName());
         return -1;
       }
     } else {
       /* No match, the Triggers are totally unrelated. The order assigned is therefore rather arbitrary */
       if (triggerIdList1.size() == 0) {
-        //				System.out.println("NULL DOWN : " + t1.getName() + " compared to " + t2.getName());
         return 1;
       } else {
-        //				System.out.println("NULL UP   : " + t1.getName() + " compared to " + t2.getName());
         return -1;
       }
     }
@@ -80,10 +74,8 @@ public class TriggerComparator implements Comparator<Trigger> {
      */
     result = t1.getName().compareTo(t2.getName());
     if (result >= 0) {
-      //			System.out.println("ALFA DOWN : " + t1.getName() + " compared to " + t2.getName());
       return result;
     } else {
-      //			System.out.println("ALFA UP   : " + t1.getName() + " compared to " + t2.getName());
       return result;
     }
   }

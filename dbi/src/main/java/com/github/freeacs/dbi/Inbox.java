@@ -22,7 +22,7 @@ public class Inbox {
    * Supports the following filters: o) Sender o) MessageType o) ObjectType o) Receiver Setting a
    * field to NULL is like matching every message on that field Negative matches is not supported
    */
-  public synchronized boolean addToInbox(Message m) {
+  public synchronized void addToInbox(Message m) {
     boolean added = false;
     for (Message filter : filters) {
       if (filter.getSender() != null && !filter.getSender().equals(m.getSender())) continue;
@@ -37,7 +37,6 @@ public class Inbox {
       }
       map.put(m.getId(), m);
     }
-    return added;
   }
 
   public synchronized List<Message> getUnreadMessages() {
@@ -53,11 +52,7 @@ public class Inbox {
   }
 
   public synchronized List<Message> getAllMessages() {
-    List<Message> list = new ArrayList<Message>();
-    for (Message m : map.values()) {
-      list.add(m);
-    }
-    return list;
+    return new ArrayList<>(map.values());
   }
 
   public synchronized void deleteReadMessage() {

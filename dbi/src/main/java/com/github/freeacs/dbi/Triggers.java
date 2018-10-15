@@ -186,31 +186,6 @@ public class Triggers {
     }
   }
 
-  public int deleteHistory(Date upUntil, ACS acs) throws SQLException {
-    return deleteHistory(null, upUntil, acs);
-  }
-
-  public int deleteHistory(Integer triggerId, Date upUntil, ACS acs) throws SQLException {
-    PreparedStatement ps = null;
-    Connection c = acs.getDataSource().getConnection();
-    try {
-      DynamicStatement ds = new DynamicStatement();
-      if (triggerId == null)
-        ds.addSqlAndArguments("DELETE FROM trigger_release WHERE release_timestamp < ?", upUntil);
-      else
-        ds.addSqlAndArguments(
-            "DELETE FROM trigger_release WHERE trigger_id = ? and release_timestamp < ?",
-            triggerId,
-            upUntil);
-      ps = ds.makePreparedStatement(c);
-      ps.setQueryTimeout(60);
-      return ps.executeUpdate();
-    } finally {
-      if (ps != null) ps.close();
-      c.close();
-    }
-  }
-
   public int deleteEvents(Date upUntil, ACS acs) throws SQLException {
     return deleteEvents(null, upUntil, acs);
   }
@@ -258,7 +233,7 @@ public class Triggers {
    */
   public Map<String, Integer> countEventsPrUnit(Integer triggerId, Date from, Date to, ACS acs)
       throws SQLException {
-    ResultSet rs = null;
+    ResultSet rs;
     PreparedStatement ps = null;
     Connection c = acs.getDataSource().getConnection();
     Map<String, Integer> unitMap = new HashMap<String, Integer>();
@@ -303,38 +278,6 @@ public class Triggers {
       rs = ps.executeQuery();
       if (rs.next()) return rs.getTimestamp("timestamp_");
       else return null;
-    } finally {
-      if (ps != null) ps.close();
-      c.close();
-    }
-  }
-
-  /**
-   * Count number of unique unit ids for a trigger within a time frame.
-   *
-   * @param triggerId
-   * @param from
-   * @param to
-   * @param acs
-   * @return
-   * @throws SQLException
-   */
-  public Integer countUnits(Integer triggerId, Date from, Date to, ACS acs) throws SQLException {
-    ResultSet rs = null;
-    PreparedStatement ps = null;
-    Connection c = acs.getDataSource().getConnection();
-    try {
-      DynamicStatement ds = new DynamicStatement();
-      ds.addSqlAndArguments(
-          "SELECT COUNT(DISTINCT(unit_id)) FROM trigger_event WHERE trigger_id = ? AND timestamp_ >= ? AND timestamp_ < ?",
-          triggerId,
-          from,
-          to);
-      ps = ds.makePreparedStatement(c);
-      ps.setQueryTimeout(60);
-      rs = ps.executeQuery();
-      if (rs.next()) return rs.getInt(1);
-      else return 0;
     } finally {
       if (ps != null) ps.close();
       c.close();
@@ -394,7 +337,7 @@ public class Triggers {
    *
    * @throws java.sql.SQLException
    */
-  public int deleteTrigger(Trigger trigger, ACS acs) throws SQLException {
+  public void deleteTrigger(Trigger trigger, ACS acs) throws SQLException {
     if (trigger.getChildren().size() > 0)
       throw new IllegalArgumentException(
           "This trigger is a composite trigger with \"child\" triggers. Remove child triggers before deleting this trigger");
@@ -404,7 +347,6 @@ public class Triggers {
     nameMap.remove(trigger.getName());
     idMap.remove(trigger.getId());
     if (trigger.getParent() != null) trigger.getParent().removeChild(trigger);
-    return rowsDeleted;
   }
 
   private void addOrChangeTriggerImpl(Trigger trigger, ACS acs) throws SQLException {

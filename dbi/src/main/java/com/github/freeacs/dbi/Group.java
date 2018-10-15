@@ -25,10 +25,6 @@ public class Group {
 
   private Integer count;
 
-  //	private UnittypeParameter timeParameter;
-  //
-  //	private String timeRollingRule;
-
   private GroupParameters parameters;
 
   protected Group(Integer id) {
@@ -192,10 +188,6 @@ public class Group {
     return profile;
   }
 
-  public void setGroupParameters(GroupParameters parameters) {
-    this.parameters = parameters;
-  }
-
   public GroupParameters getGroupParameters() {
     if (parameters == null) {
       Map<Integer, GroupParameter> idMap = new HashMap<Integer, GroupParameter>();
@@ -217,87 +209,6 @@ public class Group {
   public void setCount(Integer count) {
     this.count = count;
   }
-
-  //	public List<SyslogEvent> getGroupSyncEvents() {
-  //		SyslogEvent[] syslogEvents = unittype.getSyslogEvents().getSyslogEvents();
-  //		List<SyslogEvent> syslogEventList = new ArrayList<SyslogEvent>();
-  //		for (SyslogEvent se : syslogEvents) {
-  //			if (se.getTask().getTaskType() == SyslogEventTaskType.GROUPSYNC &&
-  // se.getTask().getSyncGroup().getName().equals(name)) {
-  //				syslogEventList.add(se);
-  //			}
-  //		}
-  //		return syslogEventList;
-  //	}
-  //
-  //	public UnittypeParameter getTimeParameter() {
-  //		return timeParameter;
-  //	}
-
-  //	public void setTimeParameter(UnittypeParameter timeParameter) {
-  //		this.timeParameter = timeParameter;
-  //	}
-  //
-  //	public String getTimeRollingRule() {
-  //		return timeRollingRule;
-  //	}
-  //
-  //	public Integer getTimeRollingOffset() {
-  //		if (timeRollingRule != null) {
-  //			String[] arr = timeRollingRule.split("#");
-  //			if (arr.length < 2)
-  //				return 0;
-  //			else {
-  //				try {
-  //					return new Integer(arr[1]);
-  //				} catch (NumberFormatException nfe) {
-  //					return 0;
-  //				}
-  //			}
-  //		} else
-  //			return null;
-  //	}
-  //
-  //	public String getTimeRollingFormat() {
-  //		if (timeRollingRule != null) {
-  //			String[] arr = timeRollingRule.split("#");
-  //			if (arr[0].trim().equals(""))
-  //				return "yyyyMMdd";
-  //			else
-  //				return arr[0];
-  //		} else
-  //			return null;
-  //	}
-  //
-  //	public void setTimeRollingRule(String timeRollingRule) {
-  //		this.timeRollingRule = timeRollingRule;
-  //	}
-  //
-  //	public void setTimeRollingFormat(String timeFormat) {
-  //		if (timeFormat == null)
-  //			timeFormat = "yyyyMMdd";
-  //		if (this.timeRollingRule != null) {
-  //			String[] arr = timeRollingRule.split("#");
-  //			if (arr.length < 2)
-  //				this.timeRollingRule = timeFormat + "#0";
-  //			else
-  //				this.timeRollingRule = timeFormat + "#" + arr[1];
-  //		} else {
-  //			this.timeRollingRule = timeFormat + "#0";
-  //		}
-  //	}
-  //
-  //	public void setTimeRollingOffset(int seconds) {
-  //		if (this.timeRollingRule != null) {
-  //			String[] arr = timeRollingRule.split("#");
-  //			if (arr.length < 2)
-  //				this.timeRollingRule += ("#" + seconds);
-  //			else
-  //				this.timeRollingRule = arr[0] + "#" + seconds;
-  //		} else {
-  //			this.timeRollingRule = "yyyyMMdd#" + seconds;
-  //		}
-  //	}
 
   public boolean match(Unit unit) {
     Map<String, String> upMap = unit.getParameters();

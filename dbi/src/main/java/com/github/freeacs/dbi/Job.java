@@ -279,11 +279,7 @@ public class Job {
     this.unconfirmedTimeout = unconfirmedTimeout;
   }
 
-  //	public void setSRules(String stopRules) {
-  //		sRules = stopRules;
-  //	}
-  //
-  public void setStopRules(List<StopRule> stopRules) {
+  private void setStopRules(List<StopRule> stopRules) {
     this.stopRules = stopRules;
   }
 
@@ -449,19 +445,6 @@ public class Job {
 
   protected void removeChild(Job child) {
     if (children != null) children.remove(child);
-  }
-
-  public List<Job> getAllChildren() {
-    return getAllChildrenRec(this);
-  }
-
-  private List<Job> getAllChildrenRec(Job j) {
-    List<Job> groups = new ArrayList<Job>();
-    for (Job childrenJob : j.getChildren()) {
-      groups.add(childrenJob);
-      groups.addAll(getAllChildrenRec(childrenJob));
-    }
-    return groups;
   }
 
   public List<Job> getChildren() {

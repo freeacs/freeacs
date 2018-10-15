@@ -81,7 +81,7 @@ public class Files {
 
   private void deleteFileImpl(Unittype unittype, File file, ACS acs) throws SQLException {
     Statement s = null;
-    String sql = null;
+    String sql;
     Connection c = acs.getDataSource().getConnection();
     try {
       s = c.createStatement();
