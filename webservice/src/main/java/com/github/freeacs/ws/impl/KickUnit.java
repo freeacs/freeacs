@@ -8,6 +8,7 @@ import com.github.freeacs.ws.xml.KickUnitRequest;
 import com.github.freeacs.ws.xml.KickUnitResponse;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import java.util.Objects;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +24,8 @@ public class KickUnit {
     final String unitId = gur.getUnitId();
     final Unit unit;
     try {
-      unit = acsUnit.getUnitById(unitId);
-    } catch (SQLException e) {
+      unit = Objects.requireNonNull(acsUnit.getUnitById(unitId));
+    } catch (final SQLException|NullPointerException e) {
       LOG.error("Failed to find unit " + unitId, e);
       throw new RemoteException("Failed to find unit " + unitId);
     }
