@@ -26,7 +26,6 @@ import com.github.freeacs.ws.xml.GetUnittypesResponse;
 import com.github.freeacs.ws.xml.KickUnitRequest;
 import com.github.freeacs.ws.xml.KickUnitResponse;
 import java.rmi.RemoteException;
-import java.sql.SQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
