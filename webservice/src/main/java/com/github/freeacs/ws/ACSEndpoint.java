@@ -115,7 +115,7 @@ public class ACSEndpoint {
   @PayloadRoot(namespace = NAMESPACE_URI, localPart = "KickUnitRequest")
   @ResponsePayload
   public KickUnitResponse deleteUnit(@RequestPayload KickUnitRequest request)
-      throws RemoteException, SQLException {
+      throws RemoteException {
     return acsws.kickUnit(request);
   }
 }
