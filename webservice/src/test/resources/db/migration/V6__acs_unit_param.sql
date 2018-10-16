@@ -1,0 +1,14 @@
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 120, '');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 121, '');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 112, '192.168.0.8');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 118, '2018-10-14 13:08:44');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 124, '2018-10-16 19:39:29');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 111, '70896');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 163, '70896');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 113, '7547');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 128, 'easycwmp');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 159, 'easycwmp');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 115, 'FFFFFF123456');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 114, 'http');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 116, 'r47745');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 125, 'REGULAR');

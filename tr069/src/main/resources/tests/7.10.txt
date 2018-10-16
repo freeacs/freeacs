@@ -1,3 +1,0 @@
-<cwmp:Reboot>
-<CommandKey></CommandKey>
-</cwmp:Reboot>
