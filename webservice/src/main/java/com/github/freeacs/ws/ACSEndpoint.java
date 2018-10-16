@@ -23,6 +23,8 @@ import com.github.freeacs.ws.xml.GetUnitsRequest;
 import com.github.freeacs.ws.xml.GetUnitsResponse;
 import com.github.freeacs.ws.xml.GetUnittypesRequest;
 import com.github.freeacs.ws.xml.GetUnittypesResponse;
+import com.github.freeacs.ws.xml.KickUnitRequest;
+import com.github.freeacs.ws.xml.KickUnitResponse;
 import java.rmi.RemoteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
@@ -31,12 +33,12 @@ import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 @Endpoint
-public class ACSEndpoiint {
+public class ACSEndpoint {
 
   private final ACSWS_Impl acsws;
 
   @Autowired
-  public ACSEndpoiint(ACSWS_Impl acsws) {
+  public ACSEndpoint(ACSWS_Impl acsws) {
     this.acsws = acsws;
   }
 
@@ -107,5 +109,12 @@ public class ACSEndpoiint {
   public DeleteUnittypeResponse deleteUnit(@RequestPayload DeleteUnittypeRequest request)
       throws RemoteException {
     return acsws.deleteUnittype(request);
+  }
+
+  @PayloadRoot(namespace = NAMESPACE_URI, localPart = "KickUnitRequest")
+  @ResponsePayload
+  public KickUnitResponse deleteUnit(@RequestPayload KickUnitRequest request)
+      throws RemoteException {
+    return acsws.kickUnit(request);
   }
 }

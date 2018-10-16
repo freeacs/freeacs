@@ -1,2 +1,0 @@
-<cwmp:GetRPCMethods>
-</cwmp:GetRPCMethods>

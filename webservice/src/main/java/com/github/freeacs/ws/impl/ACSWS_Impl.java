@@ -21,6 +21,8 @@ import com.github.freeacs.ws.xml.GetUnitsRequest;
 import com.github.freeacs.ws.xml.GetUnitsResponse;
 import com.github.freeacs.ws.xml.GetUnittypesRequest;
 import com.github.freeacs.ws.xml.GetUnittypesResponse;
+import com.github.freeacs.ws.xml.KickUnitRequest;
+import com.github.freeacs.ws.xml.KickUnitResponse;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -101,5 +103,10 @@ public class ACSWS_Impl {
   public GetUnitIdsResponse getUnitIds(GetUnitIdsRequest wsm1) throws java.rmi.RemoteException {
     GetUnitIds getUnitIds = new GetUnitIds();
     return getUnitIds.getUnits(wsm1, xapsDs, xapsDs);
+  }
+
+  public KickUnitResponse kickUnit(KickUnitRequest request) throws java.rmi.RemoteException {
+    KickUnit kickUnit = new KickUnit();
+    return kickUnit.kickUnit(request, xapsDs, xapsDs);
   }
 }

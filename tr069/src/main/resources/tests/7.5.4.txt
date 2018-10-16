@@ -1,4 +1,0 @@
-<cwmp:GetParameterNames>
- <ParameterPath>InvalidParameterPath</ParameterPath>
- <NextLevel>false</NextLevel>
-</cwmp:GetParameterNames>
