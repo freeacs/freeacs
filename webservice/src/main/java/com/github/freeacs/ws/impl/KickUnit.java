@@ -16,12 +16,12 @@ import org.slf4j.LoggerFactory;
 public class KickUnit {
   private static final Logger LOG = LoggerFactory.getLogger(KickUnit.class);
 
-  public KickUnitResponse kickUnit(KickUnitRequest gur, DataSource xapsDs, DataSource syslogDs)
+  public KickUnitResponse kickUnit(KickUnitRequest request, DataSource xapsDs, DataSource syslogDs)
       throws RemoteException {
-    final ACSFactory acsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
+    final ACSFactory acsWS = ACSWSFactory.getXAPSWS(request.getLogin(), xapsDs, syslogDs);
     final ACS acs = acsWS.getAcs();
     final ACSUnit acsUnit = acsWS.getXAPSUnit(acs);
-    final String unitId = gur.getUnitId();
+    final String unitId = request.getUnitId();
     final Unit unit;
     try {
       unit = Objects.requireNonNull(acsUnit.getUnitById(unitId));
