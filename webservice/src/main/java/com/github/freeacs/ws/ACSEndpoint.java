@@ -3,10 +3,6 @@ package com.github.freeacs.ws;
 import static com.github.freeacs.ws.WebServiceConfig.NAMESPACE_URI;
 
 import com.github.freeacs.ws.impl.ACSWS_Impl;
-
-import java.rmi.RemoteException;
-import java.sql.SQLException;
-
 import com.github.freeacs.ws.xml.AddOrChangeProfileRequest;
 import com.github.freeacs.ws.xml.AddOrChangeProfileResponse;
 import com.github.freeacs.ws.xml.AddOrChangeUnitRequest;
@@ -29,6 +25,8 @@ import com.github.freeacs.ws.xml.GetUnittypesRequest;
 import com.github.freeacs.ws.xml.GetUnittypesResponse;
 import com.github.freeacs.ws.xml.KickUnitRequest;
 import com.github.freeacs.ws.xml.KickUnitResponse;
+import java.rmi.RemoteException;
+import java.sql.SQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -117,7 +115,7 @@ public class ACSEndpoint {
   @PayloadRoot(namespace = NAMESPACE_URI, localPart = "KickUnitRequest")
   @ResponsePayload
   public KickUnitResponse deleteUnit(@RequestPayload KickUnitRequest request)
-          throws RemoteException, SQLException {
+      throws RemoteException, SQLException {
     return acsws.kickUnit(request);
   }
 }

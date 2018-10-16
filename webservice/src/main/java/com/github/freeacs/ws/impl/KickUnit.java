@@ -6,18 +6,17 @@ import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.ws.xml.KickUnitRequest;
 import com.github.freeacs.ws.xml.KickUnitResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.sql.DataSource;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
+import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class KickUnit {
   private static final Logger LOG = LoggerFactory.getLogger(KickUnit.class);
 
   public KickUnitResponse kickUnit(KickUnitRequest gur, DataSource xapsDs, DataSource syslogDs)
-          throws RemoteException {
+      throws RemoteException {
     final ACSFactory acsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
     final ACS acs = acsWS.getAcs();
     final ACSUnit acsUnit = acsWS.getXAPSUnit(acs);
