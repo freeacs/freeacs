@@ -25,7 +25,7 @@ public class KickUnit {
     final Unit unit;
     try {
       unit = Objects.requireNonNull(acsUnit.getUnitById(unitId));
-    } catch (final SQLException|NullPointerException e) {
+    } catch (final SQLException | NullPointerException e) {
       LOG.error("Failed to find unit " + unitId, e);
       throw new RemoteException("Failed to find unit " + unitId);
     }

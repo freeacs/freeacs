@@ -30,8 +30,8 @@ public class WebserviceIntegrationTest {
   @Test
   public void testKick() {
     String xml =
-        "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" " +
-                "xmlns:x.=\"http://xml.ws.freeacs.github.com/\">\n"
+        "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" "
+            + "xmlns:x.=\"http://xml.ws.freeacs.github.com/\">\n"
             + "   <soapenv:Header/>\n"
             + "   <soapenv:Body>\n"
             + "      <x.:KickUnitRequest>\n"
