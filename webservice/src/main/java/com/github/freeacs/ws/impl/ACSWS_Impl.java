@@ -1,31 +1,16 @@
 package com.github.freeacs.ws.impl;
 
 import com.github.freeacs.dbi.util.SyslogClient;
-import com.github.freeacs.ws.xml.AddOrChangeProfileRequest;
-import com.github.freeacs.ws.xml.AddOrChangeProfileResponse;
-import com.github.freeacs.ws.xml.AddOrChangeUnitRequest;
-import com.github.freeacs.ws.xml.AddOrChangeUnitResponse;
-import com.github.freeacs.ws.xml.AddOrChangeUnittypeRequest;
-import com.github.freeacs.ws.xml.AddOrChangeUnittypeResponse;
-import com.github.freeacs.ws.xml.DeleteProfileRequest;
-import com.github.freeacs.ws.xml.DeleteProfileResponse;
-import com.github.freeacs.ws.xml.DeleteUnitRequest;
-import com.github.freeacs.ws.xml.DeleteUnitResponse;
-import com.github.freeacs.ws.xml.DeleteUnittypeRequest;
-import com.github.freeacs.ws.xml.DeleteUnittypeResponse;
-import com.github.freeacs.ws.xml.GetProfilesRequest;
-import com.github.freeacs.ws.xml.GetProfilesResponse;
-import com.github.freeacs.ws.xml.GetUnitIdsRequest;
-import com.github.freeacs.ws.xml.GetUnitIdsResponse;
-import com.github.freeacs.ws.xml.GetUnitsRequest;
-import com.github.freeacs.ws.xml.GetUnitsResponse;
-import com.github.freeacs.ws.xml.GetUnittypesRequest;
-import com.github.freeacs.ws.xml.GetUnittypesResponse;
+import com.github.freeacs.ws.xml.*;
+
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.rmi.RemoteException;
+import java.sql.SQLException;
 
 /**
  * This class i simply a placeholde for code which is overwritten each time this class is re-
@@ -101,5 +86,10 @@ public class ACSWS_Impl {
   public GetUnitIdsResponse getUnitIds(GetUnitIdsRequest wsm1) throws java.rmi.RemoteException {
     GetUnitIds getUnitIds = new GetUnitIds();
     return getUnitIds.getUnits(wsm1, xapsDs, xapsDs);
+  }
+
+  public KickUnitResponse kickUnit(KickUnitRequest request) throws java.rmi.RemoteException {
+    KickUnit kickUnit = new KickUnit();
+    return kickUnit.kickUnit(request, xapsDs, xapsDs);
   }
 }
