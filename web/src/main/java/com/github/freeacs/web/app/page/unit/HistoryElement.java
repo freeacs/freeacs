@@ -8,10 +8,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/* This class represents a single row in the "provisioning history" table
- * found on the unit configuration page. */
+/**
+ * This class represents a single row in the "provisioning history" table found on the unit
+ * configuration page.
+ */
 public class HistoryElement {
-
   private enum EventCode {
     BOOTSTRAP(0),
     BOOT(1),
@@ -30,9 +31,11 @@ public class HistoryElement {
       code = c;
     }
 
-    public static EventCode fromCode(int c) throws IllegalArgumentException {
+    public static EventCode fromCode(int c) {
       for (EventCode eventcode : EventCode.values()) {
-        if (eventcode.code == c) return eventcode;
+        if (eventcode.code == c) {
+          return eventcode;
+        }
       }
       throw new IllegalArgumentException(c + " is not a valid EventCode");
     }
@@ -49,7 +52,6 @@ public class HistoryElement {
   private String errorMessage;
 
   public HistoryElement(Date timestamp, String syslogMessage) {
-
     // Black magic below.
     String regex =
         "ProvMsg: PP:\\w+, ST:(?<ST>\\w+), PO:(?<PO>\\w+), SL:\\d+"
@@ -68,16 +70,17 @@ public class HistoryElement {
     if (matcher.matches()) {
       setStatus(matcher.group("ST"));
       setOutput(matcher.group("PO"));
-      if (matcher.group("PW") == null) setParamsWritten("0");
-      else setParamsWritten(matcher.group("PW"));
+      if (matcher.group("PW") != null) {
+        setParamsWritten(matcher.group("PW"));
+      } else {
+        setParamsWritten("0");
+      }
       String events = matcher.group("EV");
       if (events != null) {
         String[] eventParts = events.split(",");
         for (String event : eventParts) {
           try {
             eventCodes.add(EventCode.fromCode(Integer.parseInt(event)));
-          } catch (NumberFormatException ignore) {
-            continue;
           } catch (IllegalArgumentException ignore) {
             continue;
           }
@@ -149,7 +152,9 @@ public class HistoryElement {
 
   public String toString() {
     String events = "";
-    for (EventCode event : eventCodes) events += event.toString() + ",";
+    for (EventCode event : eventCodes) {
+      events += event + ",";
+    }
     System.out.println(events);
     events = events.substring(0, events.length() - 1);
     return "EventCode: "

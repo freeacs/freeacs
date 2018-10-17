@@ -10,7 +10,6 @@ import java.util.Calendar;
  * @author Morten
  */
 public class Scheduler implements Runnable {
-
   private static Calendar calendar = Calendar.getInstance();
   private ScheduleList scheduleList = new ScheduleList();
 
@@ -19,10 +18,15 @@ public class Scheduler implements Runnable {
     c.set(Calendar.MILLISECOND, 0);
     if (scheduleType == ScheduleType.DAILY
         || scheduleType == ScheduleType.HOURLY
-        || scheduleType == ScheduleType.MINUTELY) c.set(Calendar.SECOND, 0);
-    if (scheduleType == ScheduleType.DAILY || scheduleType == ScheduleType.HOURLY)
+        || scheduleType == ScheduleType.MINUTELY) {
+      c.set(Calendar.SECOND, 0);
+    }
+    if (scheduleType == ScheduleType.DAILY || scheduleType == ScheduleType.HOURLY) {
       c.set(Calendar.MINUTE, 0);
-    if (scheduleType == ScheduleType.DAILY) c.set(Calendar.HOUR_OF_DAY, 0);
+    }
+    if (scheduleType == ScheduleType.DAILY) {
+      c.set(Calendar.HOUR_OF_DAY, 0);
+    }
   }
 
   private void computeNextTms(Schedule schedule) {
@@ -46,20 +50,29 @@ public class Scheduler implements Runnable {
       reset(calendar, now, schedule.getScheduleType());
       calendar.add(Calendar.MILLISECOND, (int) schedule.getMs());
       if (schedule.getScheduleType() == ScheduleType.MINUTELY) {
-        if (calendar.getTimeInMillis() < now) calendar.add(Calendar.MINUTE, 1);
-        if (schedule.getPreviousLaunch() == calendar.getTimeInMillis()
-            || (schedule.getPreviousLaunch() == 0 && schedule.isDelayStart()))
+        if (calendar.getTimeInMillis() < now) {
           calendar.add(Calendar.MINUTE, 1);
+        }
+        if (schedule.getPreviousLaunch() == calendar.getTimeInMillis()
+            || (schedule.getPreviousLaunch() == 0 && schedule.isDelayStart())) {
+          calendar.add(Calendar.MINUTE, 1);
+        }
       } else if (schedule.getScheduleType() == ScheduleType.HOURLY) {
-        if (calendar.getTimeInMillis() < now) calendar.add(Calendar.HOUR_OF_DAY, 1);
-        if (schedule.getPreviousLaunch() == calendar.getTimeInMillis()
-            || (schedule.getPreviousLaunch() == 0 && schedule.isDelayStart()))
+        if (calendar.getTimeInMillis() < now) {
           calendar.add(Calendar.HOUR_OF_DAY, 1);
-      } else if (schedule.getScheduleType() == ScheduleType.DAILY) {
-        if (calendar.getTimeInMillis() < now) calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
         if (schedule.getPreviousLaunch() == calendar.getTimeInMillis()
-            || (schedule.getPreviousLaunch() == 0 && schedule.isDelayStart()))
+            || (schedule.getPreviousLaunch() == 0 && schedule.isDelayStart())) {
+          calendar.add(Calendar.HOUR_OF_DAY, 1);
+        }
+      } else if (schedule.getScheduleType() == ScheduleType.DAILY) {
+        if (calendar.getTimeInMillis() < now) {
           calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        if (schedule.getPreviousLaunch() == calendar.getTimeInMillis()
+            || (schedule.getPreviousLaunch() == 0 && schedule.isDelayStart())) {
+          calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
       }
       schedule.setNextLaunch(calendar.getTimeInMillis());
     }
@@ -80,9 +93,11 @@ public class Scheduler implements Runnable {
 
   @Override
   public void run() {
-    while (true) {
+    do {
       try {
-        if (Sleep.isTerminated()) return;
+        if (Sleep.isTerminated()) {
+          return;
+        }
 
         Schedule schedule = scheduleList.peek();
         if (schedule == null) {
@@ -106,14 +121,15 @@ public class Scheduler implements Runnable {
         schedule.setPreviousLaunch(thisLaunch);
         computeNextTms(schedule);
         scheduleList.add(schedule);
-        if (schedule.getTask().isRunning()) continue;
+        if (schedule.getTask().isRunning()) {
+          continue;
+        }
         schedule.getTask().setThisLaunchTms(thisLaunch);
         Thread t = new Thread(schedule.getTask());
         t.setName(schedule.getTask().getTaskName());
         t.start();
       } catch (Throwable t) {
-
       }
-    }
+    } while (true);
   }
 }

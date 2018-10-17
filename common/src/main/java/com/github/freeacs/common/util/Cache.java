@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
  * @author Morten Simonsen
  */
 public class Cache {
-
   public static int SESSION = 1;
 
   public static int ABSOLUTE = 2;
@@ -47,7 +46,6 @@ public class Cache {
   private static Logger log = LoggerFactory.getLogger(Cache.class);
 
   class Cleanup extends Cache implements Runnable {
-
     public void run() {
       long now = System.currentTimeMillis();
       if (lastCleanup + cleanupFrequence < now) {
@@ -59,9 +57,10 @@ public class Cache {
           Object key = keys.next();
           CacheValue value = map.get(key);
           boolean remove = false;
-          if (value == null) remove = true;
-          else {
+          if (value != null) {
             remove = toBeRemoved(value, now);
+          } else {
+            remove = true;
           }
           if (remove) {
             if (log.isDebugEnabled()) {
@@ -96,11 +95,14 @@ public class Cache {
 
   private boolean toBeRemoved(CacheValue value, long now) {
     long timeoutMs = 0;
-    if (value.getType() == Cache.SESSION) timeoutMs = value.getLastAccess() + value.getTimeout();
-    else if (value.getType() == Cache.ABSOLUTE) timeoutMs = value.getCreated() + value.getTimeout();
-    else if (value.getType() == Cache.SINCE_MODIFIED) timeoutMs = value.getModified();
-    if (timeoutMs > 0 && timeoutMs < now) return true;
-    return false;
+    if (value.getType() == SESSION) {
+      timeoutMs = value.getLastAccess() + value.getTimeout();
+    } else if (value.getType() == ABSOLUTE) {
+      timeoutMs = value.getCreated() + value.getTimeout();
+    } else if (value.getType() == SINCE_MODIFIED) {
+      timeoutMs = value.getModified();
+    }
+    return timeoutMs > 0 && timeoutMs < now;
   }
 
   public void put(Object key, CacheValue value) {
@@ -125,18 +127,16 @@ public class Cache {
   public CacheValue get(Object key) {
     cleanup();
     CacheValue value = map.get(key);
-    if (value != null) {
-      if (toBeRemoved(value, System.currentTimeMillis())) {
-        map.remove(key);
-        return null;
-      }
+    if (value != null && toBeRemoved(value, System.currentTimeMillis())) {
+      map.remove(key);
+      return null;
     }
     return value;
   }
 
   private void cleanup() {
     if (lastCleanup + cleanupFrequence < System.currentTimeMillis()) {
-      synchronized (this.getMap()) {
+      synchronized (getMap()) {
         Thread t = new Thread(new Cleanup());
         t.setName("Cache Cleanup");
         t.start();

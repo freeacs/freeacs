@@ -22,7 +22,9 @@ public class TriggerEvent {
   }
 
   public void setTrigger(Trigger trigger) {
-    if (trigger == null) throw new IllegalArgumentException("TriggerEvent trigger cannot be null");
+    if (trigger == null) {
+      throw new IllegalArgumentException("TriggerEvent trigger cannot be null");
+    }
     this.trigger = trigger;
   }
 
@@ -31,7 +33,9 @@ public class TriggerEvent {
   }
 
   public void setTms(Date tms) {
-    if (tms == null) throw new IllegalArgumentException("TriggerEvent tms cannot be null");
+    if (tms == null) {
+      throw new IllegalArgumentException("TriggerEvent tms cannot be null");
+    }
     this.tms = tms;
   }
 
@@ -40,7 +44,9 @@ public class TriggerEvent {
   }
 
   public void setUnitId(String unitId) {
-    if (unitId == null) throw new IllegalArgumentException("TriggerEvent Unitid cannot be null");
+    if (unitId == null) {
+      throw new IllegalArgumentException("TriggerEvent Unitid cannot be null");
+    }
     this.unitId = unitId;
   }
 }

@@ -8,7 +8,6 @@
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
  */
-
 package de.javawi.jstun.attribute;
 
 public interface MessageAttributeInterface {
@@ -27,20 +26,20 @@ public interface MessageAttributeInterface {
     ConnectionRequestBinding,
     BindingChange,
     Dummy
-  };
+  }
 
-  static final int MAPPEDADDRESS = 0x0001;
-  static final int RESPONSEADDRESS = 0x0002;
-  static final int CHANGEREQUEST = 0x0003;
-  static final int SOURCEADDRESS = 0x0004;
-  static final int CHANGEDADDRESS = 0x0005;
-  static final int USERNAME = 0x0006;
-  static final int PASSWORD = 0x0007;
-  static final int MESSAGEINTEGRITY = 0x0008;
-  static final int ERRORCODE = 0x0009;
-  static final int UNKNOWNATTRIBUTE = 0x000a;
-  static final int REFLECTEDFROM = 0x000b;
-  static final int CONNECTIONREQUESTBINDING = 0xC001;
-  static final int BINDINGCHANGE = 0xC002;
-  static final int DUMMY = 0x0000;
+  int MAPPEDADDRESS = 0x0001;
+  int RESPONSEADDRESS = 0x0002;
+  int CHANGEREQUEST = 0x0003;
+  int SOURCEADDRESS = 0x0004;
+  int CHANGEDADDRESS = 0x0005;
+  int USERNAME = 0x0006;
+  int PASSWORD = 0x0007;
+  int MESSAGEINTEGRITY = 0x0008;
+  int ERRORCODE = 0x0009;
+  int UNKNOWNATTRIBUTE = 0x000a;
+  int REFLECTEDFROM = 0x000b;
+  int CONNECTIONREQUESTBINDING = 0xC001;
+  int BINDINGCHANGE = 0xC002;
+  int DUMMY = 0x0000;
 }

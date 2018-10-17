@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class WebProperties {
-
   public static String KEYSTORE_PASS;
   public static String MONITOR_LOCATION;
   public static String LOCALE;
@@ -42,7 +41,7 @@ public class WebProperties {
   }
 
   /**
-   * Returns an indicator for if hardware syslog should be available
+   * Returns an indicator for if hardware syslog should be available.
    *
    * @return
    */
@@ -52,7 +51,7 @@ public class WebProperties {
   }
 
   /**
-   * Returns an indicator for if voip syslog should be available
+   * Returns an indicator for if voip syslog should be available.
    *
    * @return
    */

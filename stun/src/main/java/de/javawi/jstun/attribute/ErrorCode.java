@@ -8,24 +8,20 @@
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
  */
-
 package de.javawi.jstun.attribute;
 
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 
 public class ErrorCode extends MessageAttribute {
-  /*
-   *  0                   1                   2                   3
-   *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-   * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   * |                   0                     |Class|     Number    |
-   * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   * |      Reason Phrase (variable)                                ..
+  /**
+   * 0 1 2 3 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ | 0 |Class| Number |
+   * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ | Reason Phrase (variable) ..
    * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    */
-
   int responseCode;
+
   String reason;
 
   public ErrorCode() {
@@ -78,8 +74,8 @@ public class ErrorCode extends MessageAttribute {
   public byte[] getBytes() throws UtilityException {
     int length = reason.length();
     // length adjustment
-    if ((length % 4) != 0) {
-      length += 4 - (length % 4);
+    if (length % 4 != 0) {
+      length += 4 - length % 4;
     }
     // message attribute header
     length += 4;
@@ -91,7 +87,7 @@ public class ErrorCode extends MessageAttribute {
     System.arraycopy(Utility.integerToTwoBytes(length - 4), 0, result, 2, 2);
 
     // error code header
-    int classHeader = (int) Math.floor(((double) responseCode) / 100);
+    int classHeader = (int) Math.floor((double) responseCode / 100);
     result[6] = Utility.integerToOneByte(classHeader);
     result[7] = Utility.integerToOneByte(responseCode % 100);
     byte[] reasonArray = reason.getBytes();
@@ -106,19 +102,19 @@ public class ErrorCode extends MessageAttribute {
       }
       byte classHeaderByte = data[3];
       int classHeader = Utility.oneByteToInteger(classHeaderByte);
-      if ((classHeader < 1) || (classHeader > 6))
+      if (classHeader < 1 || classHeader > 6) {
         throw new MessageAttributeParsingException("Class parsing error");
+      }
       byte numberByte = data[4];
       int number = Utility.oneByteToInteger(numberByte);
-      if ((number < 0) || (number > 99))
+      if (number < 0 || number > 99) {
         throw new MessageAttributeParsingException("Number parsing error");
-      int responseCode = (classHeader * 100) + number;
+      }
+      int responseCode = classHeader * 100 + number;
       ErrorCode result = new ErrorCode();
       result.setResponseCode(responseCode);
       return result;
-    } catch (UtilityException ue) {
-      throw new MessageAttributeParsingException("Parsing error");
-    } catch (MessageAttributeException mae) {
+    } catch (UtilityException | MessageAttributeException mae) {
       throw new MessageAttributeParsingException("Parsing error");
     }
   }

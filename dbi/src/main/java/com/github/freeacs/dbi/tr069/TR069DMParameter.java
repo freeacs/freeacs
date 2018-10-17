@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TR069DMParameter {
-
   public class Range {
     private Long min;
     private Long max;
@@ -17,8 +16,10 @@ public class TR069DMParameter {
     }
 
     public Long getMin() {
-      if (min == null) return datatype.getMin();
-      return min;
+      if (min != null) {
+        return min;
+      }
+      return datatype.getMin();
     }
 
     public void setMin(Long min) {
@@ -26,8 +27,10 @@ public class TR069DMParameter {
     }
 
     public Long getMax() {
-      if (max == null) return datatype.getMax();
-      return max;
+      if (max != null) {
+        return max;
+      }
+      return datatype.getMax();
     }
 
     public void setMax(Long max) {
@@ -40,7 +43,6 @@ public class TR069DMParameter {
   }
 
   public static class StringType {
-
     private String value;
     private String pattern;
 
@@ -66,26 +68,35 @@ public class TR069DMParameter {
     }
   }
 
-  private String name; // covered
-  private String notification; // covered
-  private boolean forcedInform; // covered
-  private boolean readOnly; // covered
-  private boolean list;
-  private TR069DMType datatype = TR069DMType.STRING; // default is string // covered
+  /** Covered. */
+  private String name;
+  /** Covered. */
+  private String notification;
+  /** Covered. */
+  private boolean forcedInform;
+  /** Covered. */
+  private boolean readOnly;
 
-  // types:
-  // boolean
-  // datetime
-  // string, base64, hexBinary (string types)
-  // 	Facets: size, enumeration, pattern,
-  // int, long, unsignedInt, unsignedLong (numerical types)
-  // 	Facets: range
-  private Range range = new Range(); // covers both size and range // covered
-  private List<StringType> enumeration = new ArrayList<StringType>(); // covered
-  private String description; // covered
-  private String dataModelVersion; // covered
-  private String dataModelStatus; // covered
-  private boolean command; // covered
+  private boolean list;
+  /** Default is string // covered. */
+  private TR069DMType datatype = TR069DMType.STRING;
+
+  /**
+   * Types: boolean datetime string, base64, hexBinary (string types) Facets: size, enumeration,
+   * pattern, int, long, unsignedInt, unsignedLong (numerical types) Facets: range covers both size
+   * and range // covered
+   */
+  private Range range = new Range();
+  /** Covered. */
+  private List<StringType> enumeration = new ArrayList<>();
+  /** Covered. */
+  private String description;
+  /** Covered. */
+  private String dataModelVersion;
+  /** Covered. */
+  private String dataModelStatus;
+  /** Covered. */
+  private boolean command;
 
   public String getDataModelStatus() {
     return dataModelStatus;
@@ -144,23 +155,32 @@ public class TR069DMParameter {
   }
 
   public String toString() {
-    StringBuffer output = new StringBuffer();
+    StringBuilder output = new StringBuilder();
     output.append(String.format("%-12s", datatype.toString()));
-    output.append(String.format("%-10s", (isReadOnly() ? "ReadOnly" : "ReadWrite")));
+    output.append(String.format("%-10s", isReadOnly() ? "ReadOnly" : "ReadWrite"));
     output.append(String.format("%-25s", range.toString()));
     String enumStr = "";
-    if (enumeration == null || enumeration.size() == 0) enumStr += "NO-ENUM/PATTERN";
-    else if (enumeration.size() == 1) {
+    if (enumeration == null || enumeration.isEmpty()) {
+      enumStr += "NO-ENUM/PATTERN";
+    } else if (enumeration.size() == 1) {
       StringType st = enumeration.get(0);
-      if (st.getPattern() != null) enumStr += "PAT:" + st.getPattern();
-      if (st.getValue() != null) enumStr += "VAL:" + st.getValue();
+      if (st.getPattern() != null) {
+        enumStr += "PAT:" + st.getPattern();
+      }
+      if (st.getValue() != null) {
+        enumStr += "VAL:" + st.getValue();
+      }
     } else {
       StringType st = enumeration.get(0);
-      if (st.getPattern() != null) enumStr += enumeration.size() + " PATTERNS";
-      if (st.getValue() != null) enumStr += enumeration.size() + " VALUES";
+      if (st.getPattern() != null) {
+        enumStr += enumeration.size() + " PATTERNS";
+      }
+      if (st.getValue() != null) {
+        enumStr += enumeration.size() + " VALUES";
+      }
     }
     output.append(String.format("%-25s", enumStr));
-    output.append(String.format("%-7s", (isList() ? "LIST" : "")));
+    output.append(String.format("%-7s", isList() ? "LIST" : ""));
     output.append(String.format("%-100s", name));
     return output.toString();
     //		return "name:" + name + ", ro:" + readOnly + ", dmv:" + dataModelVersion + ", no:" +
@@ -208,7 +228,6 @@ public class TR069DMParameter {
   }
 
   public boolean hasSpecificRange() {
-    if (range.getMin() != null || range.getMax() != null) return true;
-    return false;
+    return range.getMin() != null || range.getMax() != null;
   }
 }

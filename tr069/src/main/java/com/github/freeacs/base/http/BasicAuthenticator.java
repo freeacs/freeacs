@@ -12,14 +12,12 @@ import java.sql.SQLException;
 import javax.servlet.http.HttpServletResponse;
 
 public class BasicAuthenticator {
-
   private static void sendChallenge(HttpServletResponse res) {
     res.setHeader("WWW-Authenticate", "Basic realm=\"" + Util.getRealm() + "\"");
     res.setStatus(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
   }
 
   public static boolean authenticate(HTTPReqResData reqRes) throws TR069AuthenticationException {
-
     String authorization = reqRes.getReq().getHeader("authorization");
     if (authorization == null) {
       Log.notice(
@@ -28,12 +26,12 @@ public class BasicAuthenticator {
       sendChallenge(reqRes.getRes());
       return false;
     } else {
-      return (verify(reqRes, authorization));
+      return verify(reqRes, authorization);
     }
   }
 
   /**
-   * Verifies login against database
+   * Verifies login against database.
    *
    * @param reqRes HTTP servlet request
    * @param authorization Authorization credentials from this request
@@ -41,7 +39,6 @@ public class BasicAuthenticator {
    */
   private static boolean verify(HTTPReqResData reqRes, String authorization)
       throws TR069AuthenticationException {
-
     Log.debug(
         BasicAuthenticator.class,
         "Basic verification of CPE starts, located on IP-address "
@@ -79,11 +76,12 @@ public class BasicAuthenticator {
       String secret = null;
       if (sessionData.isFirstConnect() && Properties.DISCOVERY_MODE) {
         for (String blocked : Properties.DISCOVERY_BLOCK) {
-          if (unitId.contains(blocked))
+          if (unitId.contains(blocked)) {
             throw new TR069AuthenticationException(
                 "ACS Username is blocked by \"" + blocked + "\" in discovery mode. Access denied",
                 null,
                 HttpServletResponse.SC_FORBIDDEN);
+          }
         }
         secret = password;
         sessionData.setSecret(secret);
@@ -94,8 +92,9 @@ public class BasicAuthenticator {
       BaseCache.putSessionData(unitId, sessionData);
       if (secret == null) {
         secret = sessionData.getAcsParameters().getValue(SystemParameters.SECRET);
-        if (secret != null && !secret.equals(password) && secret.length() > 16)
+        if (secret != null && !secret.equals(password) && secret.length() > 16) {
           secret = secret.substring(0, 16);
+        }
       }
       if (secret == null) {
         throw new TR069AuthenticationException(

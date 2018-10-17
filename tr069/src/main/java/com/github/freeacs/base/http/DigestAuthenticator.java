@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.digest.DigestUtils;
 
 public class DigestAuthenticator {
-
   private static void sendChallenge(String remoteAddr, HttpServletResponse res) {
     long now = System.currentTimeMillis();
     setAuthenticateHeader(
@@ -22,7 +21,6 @@ public class DigestAuthenticator {
   }
 
   public static boolean authenticate(HTTPReqResData reqRes) throws TR069AuthenticationException {
-
     String authorization = reqRes.getReq().getHeader("authorization");
     if (authorization == null) {
       Log.notice(
@@ -31,7 +29,7 @@ public class DigestAuthenticator {
       sendChallenge(reqRes.getRealIPAddress(), reqRes.getRes());
       return false;
     } else {
-      return (verify(reqRes, authorization));
+      return verify(reqRes, authorization);
     }
   }
 
@@ -42,7 +40,6 @@ public class DigestAuthenticator {
    * @param nonce nonce token
    */
   private static void setAuthenticateHeader(HttpServletResponse res, String nonce) {
-
     String realm = Util.getRealm();
 
     String authenticateHeader =
@@ -73,13 +70,11 @@ public class DigestAuthenticator {
     String a2 = method + ":" + uri;
     String md5a2 = DigestUtils.md5Hex(a2);
     String a3 = md5a1 + ":" + nonce + ":" + nc + ":" + cnonce + ":" + qop + ":" + md5a2;
-    String md5a3 = DigestUtils.md5Hex(a3);
-
-    return md5a3;
+    return DigestUtils.md5Hex(a3);
   }
 
   /**
-   * Verifies login against database
+   * Verifies login against database.
    *
    * @param reqRes HTTP servlet request
    * @param authorization Authorization credentials from this request
@@ -87,7 +82,6 @@ public class DigestAuthenticator {
    */
   private static boolean verify(HTTPReqResData reqRes, String authorization)
       throws TR069AuthenticationException {
-
     Log.debug(
         DigestAuthenticator.class,
         "Digest verification of CPE starts, located on IP-address "
@@ -109,7 +103,7 @@ public class DigestAuthenticator {
     String method = reqRes.getReq().getMethod();
 
     for (String currentToken : tokens) {
-      if (currentToken.length() == 0) {
+      if (currentToken.isEmpty()) {
         continue;
       }
 
@@ -150,12 +144,12 @@ public class DigestAuthenticator {
       }
     }
 
-    if ((username == null)
+    if (username == null
         || username.length() < 6
-        || (realm == null)
-        || (nonce == null)
-        || (uri == null)
-        || (response == null))
+        || realm == null
+        || nonce == null
+        || uri == null
+        || response == null) {
       throw new TR069AuthenticationException(
           "Digest challenge response does not contain all necessary parameters (CPE IP address: "
               + reqRes.getReq().getRemoteHost()
@@ -164,6 +158,7 @@ public class DigestAuthenticator {
               + ")",
           null,
           HttpServletResponse.SC_FORBIDDEN);
+    }
 
     // Do database read parameters and then perform verification
     String unitId = Util.username2unitId(username);
@@ -181,8 +176,9 @@ public class DigestAuthenticator {
       String secret = sessionData.getAcsParameters().getValue(SystemParameters.SECRET);
       if (secret != null
           && secret.length() > 16
-          && !passwordMd5(username, secret, method, uri, nonce, nc, cnonce, qop).equals(response))
+          && !passwordMd5(username, secret, method, uri, nonce, nc, cnonce, qop).equals(response)) {
         secret = secret.substring(0, 16);
+      }
       if (secret == null) {
         throw new TR069AuthenticationException(
             "No ACS Password found in database (CPE IP address: "

@@ -18,12 +18,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ActiveDeviceDetectionTask extends TaskDefaultImpl {
-
   private static Logger logger = LoggerFactory.getLogger(ActiveDeviceDetectionTask.class);
 
   private DBI dbi;
 
-  public static Map<String, Long> activeDevicesMap = new HashMap<String, Long>();
+  public static Map<String, Long> activeDevicesMap = new HashMap<>();
 
   public ActiveDeviceDetectionTask(String taskName, DBI dbi) {
     super(taskName);
@@ -101,7 +100,7 @@ public class ActiveDeviceDetectionTask extends TaskDefaultImpl {
 
   private static synchronized Map<String, Long> cleanOld(long tms) {
     Iterator<String> iterator = activeDevicesMap.keySet().iterator();
-    Map<String, Long> removedUnitsMap = new HashMap<String, Long>();
+    Map<String, Long> removedUnitsMap = new HashMap<>();
     while (iterator.hasNext()) {
       String unitId = iterator.next();
       Long nextInformTms = activeDevicesMap.get(unitId);

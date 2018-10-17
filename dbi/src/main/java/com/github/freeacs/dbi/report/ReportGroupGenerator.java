@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ReportGroupGenerator extends ReportGenerator {
-
   private static Logger logger = LoggerFactory.getLogger(ReportGroupGenerator.class);
 
   public ReportGroupGenerator(
@@ -56,7 +55,9 @@ public class ReportGroupGenerator extends ReportGenerator {
         RecordGroup recordTmp = new RecordGroup(start, periodType, unittypeName, groupName);
         Key key = recordTmp.getKey();
         RecordGroup record = report.getRecord(key);
-        if (record == null) record = recordTmp;
+        if (record == null) {
+          record = recordTmp;
+        }
         record.getUnitCount().set(rs.getInt("unit_count"));
         report.setRecord(key, record);
       }
@@ -74,8 +75,12 @@ public class ReportGroupGenerator extends ReportGenerator {
       sqle = sqlex;
       throw sqlex;
     } finally {
-      if (rs != null) rs.close();
-      if (ps != null) ps.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.close();
       }

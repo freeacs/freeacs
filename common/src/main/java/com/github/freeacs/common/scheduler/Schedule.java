@@ -6,10 +6,13 @@ import java.util.Date;
 public class Schedule {
   private long ms;
   private ScheduleType scheduleType;
-  // If true, the task will wait minimum "ms" (if type is INTERVAL) or an
-  // hour (if type is HOUR) or a day (if type is DAY) before launching task
-  // If false, the task will start as soon as possible - according to the rules
+  /**
+   * If true, the task will wait minimum "ms" (if type is INTERVAL) or an hour (if type is HOUR) or
+   * a day (if type is DAY) before launching task If false, the task will start as soon as possible
+   * - according to the rules.
+   */
   private boolean delayStart;
+
   private long previousLaunch;
   private long nextLaunch;
   private Task task;
@@ -42,11 +45,11 @@ public class Schedule {
   }
 
   public boolean equals(Object o) {
-    if (o == null) return false;
-    if (!(o instanceof Schedule)) return false;
+    if (o == null || !(o instanceof Schedule)) {
+      return false;
+    }
     Schedule s = (Schedule) o;
-    if (s.getTask().getTaskName().equals(this.getTask().getTaskName())) return true;
-    else return false;
+    return s.getTask().getTaskName().equals(getTask().getTaskName());
   }
 
   private static SimpleDateFormat sdf = new SimpleDateFormat("MMM-dd HH:mm:ss.SSS");
@@ -54,13 +57,22 @@ public class Schedule {
   public String toString() {
     String type = null;
     if (scheduleType == ScheduleType.INTERVAL) {
-      if (ms < 1000) type = "Run every " + ms + " milliseconds";
-      else if (ms < 60000) type = "Run every " + ms / 1000 + " seconds";
-      else if (ms < 60 * 60000) type = "Run every " + ms / 60000 + " minutes";
-      else type = "Run every " + ms / (60 * 60000) + " hours";
-    } else if (scheduleType == ScheduleType.MINUTELY) type = "Run every minute";
-    else if (scheduleType == ScheduleType.HOURLY) type = "Run every hour";
-    else if (scheduleType == ScheduleType.DAILY) type = "Run every day";
+      if (ms < 1000) {
+        type = "Run every " + ms + " milliseconds";
+      } else if (ms < 60000) {
+        type = "Run every " + ms / 1000 + " seconds";
+      } else if (ms < 60 * 60000) {
+        type = "Run every " + ms / 60000 + " minutes";
+      } else {
+        type = "Run every " + ms / (60 * 60000) + " hours";
+      }
+    } else if (scheduleType == ScheduleType.MINUTELY) {
+      type = "Run every minute";
+    } else if (scheduleType == ScheduleType.HOURLY) {
+      type = "Run every hour";
+    } else if (scheduleType == ScheduleType.DAILY) {
+      type = "Run every day";
+    }
     return "Next launch: "
         + sdf.format(new Date(nextLaunch))
         + " for task "

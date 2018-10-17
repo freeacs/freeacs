@@ -14,7 +14,6 @@ import java.io.InputStreamReader;
 import java.sql.SQLException;
 
 public class InputHandler {
-
   private BufferedReader br;
 
   public InputHandler(String filename, OutputHandler oh, Unittype unittype)
@@ -41,24 +40,25 @@ public class InputHandler {
   }
 
   public boolean isInput() {
-    if (br != null) return true;
-    else return false;
+    return br != null;
   }
 
   public String[] read() throws Exception {
     if (br != null) {
       String fileLine = br.readLine();
       if (fileLine != null) {
-        if (fileLine.trim().equals("")) return read();
-        if (fileLine.startsWith("#")) return read();
+        if ("".equals(fileLine.trim()) || fileLine.startsWith("#")) {
+          return read();
+        }
         return StringUtil.split(fileLine);
       }
-      return null;
     }
     return null;
   }
 
   public void close() throws IOException {
-    if (br != null) br.close();
+    if (br != null) {
+      br.close();
+    }
   }
 }

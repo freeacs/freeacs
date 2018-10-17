@@ -27,7 +27,6 @@ package com.owera.xaps.monitor.https;
  * individuals on behalf of the Apache Software Foundation.  For more
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
- *
  */
 
 import java.io.IOException;
@@ -83,14 +82,8 @@ import org.apache.commons.httpclient.protocol.SecureProtocolSocketFactory;
  *     customization.
  */
 public class EasySSLProtocolSocketFactory implements SecureProtocolSocketFactory {
-
   /** The sslcontext. */
-  private SSLContext sslcontext = null;
-
-  /** Constructor for EasySSLProtocolSocketFactory. */
-  public EasySSLProtocolSocketFactory() {
-    super();
-  }
+  private SSLContext sslcontext;
 
   /**
    * Creates a new EasySSLProtocolSocket object.
@@ -133,7 +126,6 @@ public class EasySSLProtocolSocketFactory implements SecureProtocolSocketFactory
    */
   public Socket createSocket(String host, int port, InetAddress clientHost, int clientPort)
       throws IOException, UnknownHostException {
-
     return getSSLContext().getSocketFactory().createSocket(host, port, clientHost, clientPort);
   }
 
@@ -210,16 +202,10 @@ public class EasySSLProtocolSocketFactory implements SecureProtocolSocketFactory
     return getSSLContext().getSocketFactory().createSocket(socket, host, port, autoClose);
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
   public boolean equals(Object obj) {
-    return ((obj != null) && obj.getClass().equals(EasySSLProtocolSocketFactory.class));
+    return obj != null && obj.getClass().equals(EasySSLProtocolSocketFactory.class);
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#hashCode()
-   */
   public int hashCode() {
     return EasySSLProtocolSocketFactory.class.hashCode();
   }

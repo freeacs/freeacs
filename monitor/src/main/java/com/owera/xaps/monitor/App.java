@@ -11,7 +11,6 @@ import javax.servlet.ServletException;
 import spark.Spark;
 
 public class App {
-
   public static void main(String[] args) throws ServletException {
     Config config = ConfigFactory.load();
     Spark.port(config.getInt("server.port"));

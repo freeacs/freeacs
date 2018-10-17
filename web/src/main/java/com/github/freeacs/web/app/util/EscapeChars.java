@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
  * escaping special characters automatically in its <tt>toString()</tt> method.
  */
 public final class EscapeChars {
-
   /**
    * Escape characters for text appearing in HTML markup.
    *
@@ -82,76 +81,111 @@ public final class EscapeChars {
     final StringCharacterIterator iterator = new StringCharacterIterator(aText);
     char character = iterator.current();
     while (character != CharacterIterator.DONE) {
-      if (character == '<') {
-        result.append("&lt;");
-      } else if (character == '>') {
-        result.append("&gt;");
-      } else if (character == '&') {
-        result.append("&amp;");
-      } else if (character == '\"') {
-        result.append("&quot;");
-      } else if (character == '\t') {
-        addCharEntity(9, result);
-      } else if (character == '!') {
-        addCharEntity(33, result);
-      } else if (character == '#') {
-        addCharEntity(35, result);
-      } else if (character == '$') {
-        addCharEntity(36, result);
-      } else if (character == '%') {
-        addCharEntity(37, result);
-      } else if (character == '\'') {
-        addCharEntity(39, result);
-      } else if (character == '(') {
-        addCharEntity(40, result);
-      } else if (character == ')') {
-        addCharEntity(41, result);
-      } else if (character == '*') {
-        addCharEntity(42, result);
-      } else if (character == '+') {
-        addCharEntity(43, result);
-      } else if (character == ',') {
-        addCharEntity(44, result);
-      } else if (character == '-') {
-        addCharEntity(45, result);
-      } else if (character == '.') {
-        addCharEntity(46, result);
-      } else if (character == '/') {
-        addCharEntity(47, result);
-      } else if (character == ':') {
-        addCharEntity(58, result);
-      } else if (character == ';') {
-        addCharEntity(59, result);
-      } else if (character == '=') {
-        addCharEntity(61, result);
-      } else if (character == '?') {
-        addCharEntity(63, result);
-      } else if (character == '@') {
-        addCharEntity(64, result);
-      } else if (character == '[') {
-        addCharEntity(91, result);
-      } else if (character == '\\') {
-        addCharEntity(92, result);
-      } else if (character == ']') {
-        addCharEntity(93, result);
-      } else if (character == '^') {
-        addCharEntity(94, result);
-      } else if (character == '_') {
-        addCharEntity(95, result);
-      } else if (character == '`') {
-        addCharEntity(96, result);
-      } else if (character == '{') {
-        addCharEntity(123, result);
-      } else if (character == '|') {
-        addCharEntity(124, result);
-      } else if (character == '}') {
-        addCharEntity(125, result);
-      } else if (character == '~') {
-        addCharEntity(126, result);
-      } else {
-        // the char is not a special one
-        // add it to the result as is
-        result.append(character);
+      switch (character) {
+        case '<':
+          result.append("&lt;");
+          break;
+        case '>':
+          result.append("&gt;");
+          break;
+        case '&':
+          result.append("&amp;");
+          break;
+        case '\"':
+          result.append("&quot;");
+          break;
+        case '\t':
+          addCharEntity(9, result);
+          break;
+        case '!':
+          addCharEntity(33, result);
+          break;
+        case '#':
+          addCharEntity(35, result);
+          break;
+        case '$':
+          addCharEntity(36, result);
+          break;
+        case '%':
+          addCharEntity(37, result);
+          break;
+        case '\'':
+          addCharEntity(39, result);
+          break;
+        case '(':
+          addCharEntity(40, result);
+          break;
+        case ')':
+          addCharEntity(41, result);
+          break;
+        case '*':
+          addCharEntity(42, result);
+          break;
+        case '+':
+          addCharEntity(43, result);
+          break;
+        case ',':
+          addCharEntity(44, result);
+          break;
+        case '-':
+          addCharEntity(45, result);
+          break;
+        case '.':
+          addCharEntity(46, result);
+          break;
+        case '/':
+          addCharEntity(47, result);
+          break;
+        case ':':
+          addCharEntity(58, result);
+          break;
+        case ';':
+          addCharEntity(59, result);
+          break;
+        case '=':
+          addCharEntity(61, result);
+          break;
+        case '?':
+          addCharEntity(63, result);
+          break;
+        case '@':
+          addCharEntity(64, result);
+          break;
+        case '[':
+          addCharEntity(91, result);
+          break;
+        case '\\':
+          addCharEntity(92, result);
+          break;
+        case ']':
+          addCharEntity(93, result);
+          break;
+        case '^':
+          addCharEntity(94, result);
+          break;
+        case '_':
+          addCharEntity(95, result);
+          break;
+        case '`':
+          addCharEntity(96, result);
+          break;
+        case '{':
+          addCharEntity(123, result);
+          break;
+        case '|':
+          addCharEntity(124, result);
+          break;
+        case '}':
+          addCharEntity(125, result);
+          break;
+        case '~':
+          addCharEntity(126, result);
+          break;
+        default:
+          // the char is not a special one
+          // add it to the result as is
+          result.append(character);
+          break;
       }
       character = iterator.next();
     }
@@ -228,20 +262,27 @@ public final class EscapeChars {
     final StringCharacterIterator iterator = new StringCharacterIterator(aText);
     char character = iterator.current();
     while (character != CharacterIterator.DONE) {
-      if (character == '<') {
-        result.append("&lt;");
-      } else if (character == '>') {
-        result.append("&gt;");
-      } else if (character == '\"') {
-        result.append("&quot;");
-      } else if (character == '\'') {
-        result.append("&#039;");
-      } else if (character == '&') {
-        result.append("&amp;");
-      } else {
-        // the char is not a special one
-        // add it to the result as is
-        result.append(character);
+      switch (character) {
+        case '<':
+          result.append("&lt;");
+          break;
+        case '>':
+          result.append("&gt;");
+          break;
+        case '\"':
+          result.append("&quot;");
+          break;
+        case '\'':
+          result.append("&#039;");
+          break;
+        case '&':
+          result.append("&amp;");
+          break;
+        default:
+          // the char is not a special one
+          // add it to the result as is
+          result.append(character);
+          break;
       }
       character = iterator.next();
     }
@@ -276,26 +317,36 @@ public final class EscapeChars {
     StringCharacterIterator iterator = new StringCharacterIterator(aText);
     char character = iterator.current();
     while (character != StringCharacterIterator.DONE) {
-      if (character == '\"') {
-        result.append("\\\"");
-      } else if (character == '\\') {
-        result.append("\\\\");
-      } else if (character == '/') {
-        result.append("\\/");
-      } else if (character == '\b') {
-        result.append("\\b");
-      } else if (character == '\f') {
-        result.append("\\f");
-      } else if (character == '\n') {
-        result.append("\\n");
-      } else if (character == '\r') {
-        result.append("\\r");
-      } else if (character == '\t') {
-        result.append("\\t");
-      } else {
-        // the char is not a special one
-        // add it to the result as is
-        result.append(character);
+      switch (character) {
+        case '\"':
+          result.append("\\\"");
+          break;
+        case '\\':
+          result.append("\\\\");
+          break;
+        case '/':
+          result.append("\\/");
+          break;
+        case '\b':
+          result.append("\\b");
+          break;
+        case '\f':
+          result.append("\\f");
+          break;
+        case '\n':
+          result.append("\\n");
+          break;
+        case '\r':
+          result.append("\\r");
+          break;
+        case '\t':
+          result.append("\\t");
+          break;
+        default:
+          // the char is not a special one
+          // add it to the result as is
+          result.append(character);
+          break;
       }
       character = iterator.next();
     }
@@ -314,14 +365,18 @@ public final class EscapeChars {
     final StringCharacterIterator iterator = new StringCharacterIterator(aText);
     char character = iterator.current();
     while (character != CharacterIterator.DONE) {
-      if (character == '<') {
-        result.append("&lt;");
-      } else if (character == '>') {
-        result.append("&gt;");
-      } else {
-        // the char is not a special one
-        // add it to the result as is
-        result.append(character);
+      switch (character) {
+        case '<':
+          result.append("&lt;");
+          break;
+        case '>':
+          result.append("&gt;");
+          break;
+        default:
+          // the char is not a special one
+          // add it to the result as is
+          result.append(character);
+          break;
       }
       character = iterator.next();
     }
@@ -355,43 +410,58 @@ public final class EscapeChars {
     final StringCharacterIterator iterator = new StringCharacterIterator(aRegexFragment);
     char character = iterator.current();
     while (character != CharacterIterator.DONE) {
-      /*
-       All literals need to have backslashes doubled.
-      */
-      if (character == '.') {
-        result.append("\\.");
-      } else if (character == '\\') {
-        result.append("\\\\");
-      } else if (character == '?') {
-        result.append("\\?");
-      } else if (character == '*') {
-        result.append("\\*");
-      } else if (character == '+') {
-        result.append("\\+");
-      } else if (character == '&') {
-        result.append("\\&");
-      } else if (character == ':') {
-        result.append("\\:");
-      } else if (character == '{') {
-        result.append("\\{");
-      } else if (character == '}') {
-        result.append("\\}");
-      } else if (character == '[') {
-        result.append("\\[");
-      } else if (character == ']') {
-        result.append("\\]");
-      } else if (character == '(') {
-        result.append("\\(");
-      } else if (character == ')') {
-        result.append("\\)");
-      } else if (character == '^') {
-        result.append("\\^");
-      } else if (character == '$') {
-        result.append("\\$");
-      } else {
-        // the char is not a special one
-        // add it to the result as is
-        result.append(character);
+      /* All literals need to have backslashes doubled. */
+      switch (character) {
+        case '.':
+          result.append("\\.");
+          break;
+        case '\\':
+          result.append("\\\\");
+          break;
+        case '?':
+          result.append("\\?");
+          break;
+        case '*':
+          result.append("\\*");
+          break;
+        case '+':
+          result.append("\\+");
+          break;
+        case '&':
+          result.append("\\&");
+          break;
+        case ':':
+          result.append("\\:");
+          break;
+        case '{':
+          result.append("\\{");
+          break;
+        case '}':
+          result.append("\\}");
+          break;
+        case '[':
+          result.append("\\[");
+          break;
+        case ']':
+          result.append("\\]");
+          break;
+        case '(':
+          result.append("\\(");
+          break;
+        case ')':
+          result.append("\\)");
+          break;
+        case '^':
+          result.append("\\^");
+          break;
+        case '$':
+          result.append("\\$");
+          break;
+        default:
+          // the char is not a special one
+          // add it to the result as is
+          result.append(character);
+          break;
       }
       character = iterator.next();
     }
@@ -431,12 +501,11 @@ public final class EscapeChars {
    * @return the string
    */
   public static String forScriptTagsOnly(String aText) {
-    String result = null;
+    String result;
     Matcher matcher = SCRIPT.matcher(aText);
     result = matcher.replaceAll("&lt;SCRIPT>");
     matcher = SCRIPT_END.matcher(result);
-    result = matcher.replaceAll("&lt;/SCRIPT>");
-    return result;
+    return matcher.replaceAll("&lt;/SCRIPT>");
   }
 
   // PRIVATE //
@@ -465,7 +534,7 @@ public final class EscapeChars {
     } else if (aIdx <= 99) {
       padding = "0";
     }
-    String number = padding + aIdx.toString();
-    aBuilder.append("&#" + number + ";");
+    String number = padding + aIdx;
+    aBuilder.append("&#").append(number).append(";");
   }
 }

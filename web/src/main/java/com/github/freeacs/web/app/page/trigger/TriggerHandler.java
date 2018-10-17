@@ -90,7 +90,9 @@ public class TriggerHandler {
       trigger.setEvalPeriodMinutes(nullsafeInteger(inputData.getEvalPeriodMinutes()));
       trigger.setNotifyType(nullsafeInteger(inputData.getNotifyType()));
       Integer syslogEventId = nullsafeInteger(inputData.getSyslogEventId());
-      if (syslogEventId != null) trigger.setSyslogEvent(SyslogEvents.getById(syslogEventId));
+      if (syslogEventId != null) {
+        trigger.setSyslogEvent(SyslogEvents.getById(syslogEventId));
+      }
       trigger.setToList(nullsafeString(inputData.getToList()));
       trigger.setNoEvents(nullsafeInteger(inputData.getNumberTotal()));
       trigger.setNoEventPrUnit(nullsafeInteger(inputData.getNumberPerUnit()));
@@ -112,7 +114,9 @@ public class TriggerHandler {
   }
 
   public DropDownSingleSelect<SyslogEvent> getSyslogEventDropdown(SyslogEvent selectedSyslogEvent) {
-    if (getUnittype() == null) return null;
+    if (getUnittype() == null) {
+      return null;
+    }
     List<SyslogEvent> syslogEventList =
         Arrays.asList(getUnittype().getSyslogEvents().getSyslogEvents());
     return InputSelectionFactory.getDropDownSingleSelect(
@@ -120,7 +124,9 @@ public class TriggerHandler {
   }
 
   public DropDownSingleSelect<File> getScriptFileDropdown(File selectedFile) {
-    if (getUnittype() == null) return null;
+    if (getUnittype() == null) {
+      return null;
+    }
     List<File> fileList = Arrays.asList(getUnittype().getFiles().getFiles(FileType.SHELL_SCRIPT));
     return InputSelectionFactory.getDropDownSingleSelect(
         inputData.getScriptFileId(), selectedFile, fileList);
@@ -136,7 +142,9 @@ public class TriggerHandler {
   }
 
   public DropDownSingleSelect<Trigger> getTriggerParentDropdown(Trigger trigger) {
-    if (getUnittype() == null) return null;
+    if (getUnittype() == null) {
+      return null;
+    }
     List<Trigger> triggerList = createFilteredList(trigger);
     Trigger parentTrigger = trigger == null ? null : trigger.getParent();
     return InputSelectionFactory.getDropDownSingleSelect(
@@ -145,7 +153,7 @@ public class TriggerHandler {
 
   private List<Trigger> createFilteredList(Trigger selectedTrigger) {
     ArrayList<Trigger> allTriggersList =
-        new ArrayList<Trigger>(Arrays.asList(getUnittype().getTriggers().getTriggers()));
+        new ArrayList<>(Arrays.asList(getUnittype().getTriggers().getTriggers()));
     allTriggersList.removeIf(trigger -> trigger.getTriggerType() == Trigger.TRIGGER_TYPE_BASIC);
     if (selectedTrigger == null) {
       return allTriggersList;
@@ -156,7 +164,7 @@ public class TriggerHandler {
   }
 
   public DropDownSingleSelect<NotifyType> getNotifyTypeDropdown(Integer selectedActionType) {
-    List<NotifyType> triggerNotifyTypes = new ArrayList<NotifyType>();
+    List<NotifyType> triggerNotifyTypes = new ArrayList<>();
     triggerNotifyTypes.add(new NotifyType(0, "ALARM"));
     triggerNotifyTypes.add(new NotifyType(1, "REPORT"));
     triggerNotifyTypes.add(new NotifyType(2, "SILENT"));
@@ -169,7 +177,7 @@ public class TriggerHandler {
   }
 
   public DropDownSingleSelect<TriggerType> getTriggertypeDropdown(Integer selectedTriggertypeId) {
-    List<TriggerType> triggerTypes = new ArrayList<TriggerType>();
+    List<TriggerType> triggerTypes = new ArrayList<>();
     triggerTypes.add(new TriggerType(0, "BASIC"));
     triggerTypes.add(new TriggerType(1, "COMPOSITE"));
     TriggerType selectedTriggerType =
@@ -181,8 +189,10 @@ public class TriggerHandler {
   }
 
   public DropDownSingleSelect<String> getNewEvalPeriodDropdown(Integer selectedEvalPeriod) {
-    List<String> periods = new ArrayList<String>();
-    for (int i = 15; i <= 120; i += 15) periods.add(String.valueOf(i));
+    List<String> periods = new ArrayList<>();
+    for (int i = 15; i <= 120; i += 15) {
+      periods.add(String.valueOf(i));
+    }
     int selectedIndex =
         selectedEvalPeriod == null ? 0 : periods.indexOf(String.valueOf(selectedEvalPeriod));
     return InputSelectionFactory.getDropDownSingleSelect(
@@ -191,7 +201,7 @@ public class TriggerHandler {
 
   public DropDownSingleSelect<NotifyIntervalHour> getNotifyIntervalHoursDropdown(
       Integer selectedNotifyIntervalHourId) {
-    List<NotifyIntervalHour> intervals = new ArrayList<NotifyIntervalHour>();
+    List<NotifyIntervalHour> intervals = new ArrayList<>();
     intervals.add(new NotifyIntervalHour(1, "one hour"));
     intervals.add(new NotifyIntervalHour(2, "two hours"));
     intervals.add(new NotifyIntervalHour(4, "four hours"));
@@ -214,14 +224,18 @@ public class TriggerHandler {
       List<NotifyIntervalHour> intervals, Integer selectedNotifyIntervalHourId) {
     if (selectedNotifyIntervalHourId != null) {
       for (NotifyIntervalHour element : intervals) {
-        if (element.getId().intValue() == selectedNotifyIntervalHourId) return element;
+        if (element.getId().intValue() == selectedNotifyIntervalHourId) {
+          return element;
+        }
       }
     }
     return intervals.get(0);
   }
 
   private void resetUnitTypeInSessionCacheIfNecessary() {
-    if (unittype == null) SessionCache.getSessionData(sessionId).setUnittypeName(null);
+    if (unittype == null) {
+      SessionCache.getSessionData(sessionId).setUnittypeName(null);
+    }
   }
 
   private Integer nullsafeInteger(Input input) {

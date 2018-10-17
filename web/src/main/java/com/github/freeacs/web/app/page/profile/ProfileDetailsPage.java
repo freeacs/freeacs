@@ -29,13 +29,9 @@ import javax.sql.DataSource;
  * @author Jarl Andre Hubenthal
  */
 public class ProfileDetailsPage extends ProfileActions {
-
   /** The current profile. */
   private Profile currentProfile;
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.AbstractWebPage#getTitle(java.lang.String)
-   */
   public String getTitle(String page) {
     return super.getTitle(page)
         + (currentProfile != null
@@ -43,12 +39,8 @@ public class ProfileDetailsPage extends ProfileActions {
             : "");
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.AbstractWebPage#getShortcutItems(com.owera.xaps.web.app.util.SessionData)
-   */
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
-    List<MenuItem> list = new ArrayList<MenuItem>();
-    list.addAll(super.getShortcutItems(sessionData));
+    List<MenuItem> list = new ArrayList<>(super.getShortcutItems(sessionData));
     list.add(new MenuItem("Create new profile", Page.PROFILECREATE));
     list.add(new MenuItem("Profile overview", Page.PROFILEOVERVIEW));
     if (currentProfile != null) { // just to avoid problems on disruptive changes
@@ -70,9 +62,6 @@ public class ProfileDetailsPage extends ProfileActions {
     return list;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
-   */
   public void process(
       ParameterParser params,
       Output outputHandler,
@@ -110,9 +99,9 @@ public class ProfileDetailsPage extends ProfileActions {
     root.put("profiles", profiles);
 
     ProfileStatus status = null;
-    if (inputData.getFormSubmit().isValue(WebConstants.DELETE))
+    if (inputData.getFormSubmit().isValue(WebConstants.DELETE)) {
       status = actionDeleteProfile(sessionId, acs, unittypes, profiles);
-    else if (inputData.getFormSubmit().isValue(WebConstants.UPDATE_PARAMS)) {
+    } else if (inputData.getFormSubmit().isValue(WebConstants.UPDATE_PARAMS)) {
       status = actionCUDParameters(params, acs, unittypes, profiles);
     }
 

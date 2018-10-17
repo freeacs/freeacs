@@ -9,7 +9,6 @@ import java.util.Date;
 import javax.sql.DataSource;
 
 public class File {
-
   private Unittype unittype;
   private Integer id;
   private String name;
@@ -27,7 +26,7 @@ public class File {
 
   private DataSource dataSource;
 
-  // code-order: id, unittype, name, type, desc, version, timestamp, targetname, (content)
+  /** Code-order: id, unittype, name, type, desc, version, timestamp, targetname, (content) */
   public File() {}
 
   public File(
@@ -50,8 +49,7 @@ public class File {
   }
 
   /* GET methods */
-  // code-order: id, unittype, name, type, desc, version, timestamp, targetname, (content)
-
+  /** Code-order: id, unittype, name, type, desc, version, timestamp, targetname, (content) */
   public Integer getId() {
     return id;
   }
@@ -111,13 +109,19 @@ public class File {
           content = blob.getBytes(1, (int) blob.length());
         }
       } finally {
-        if (rs != null) rs.close();
-        if (s != null) s.close();
+        if (rs != null) {
+          rs.close();
+        }
+        if (s != null) {
+          s.close();
+        }
         if (c != null) {
           c.close();
         }
       }
-      if (content == null) content = new byte[0];
+      if (content == null) {
+        content = new byte[0];
+      }
     }
     return content;
   }
@@ -127,20 +131,25 @@ public class File {
   }
 
   /* SET methods */
-  // code-order: id, unittype, name, type, desc, version, timestamp, targetname, (content)
-
+  /** Code-order: id, unittype, name, type, desc, version, timestamp, targetname, (content) */
   protected void setId(Integer id) {
     this.id = id;
   }
 
   public void setUnittype(Unittype unittype) {
-    if (unittype == null) throw new IllegalArgumentException("Unittype cannot be null");
+    if (unittype == null) {
+      throw new IllegalArgumentException("Unittype cannot be null");
+    }
     this.unittype = unittype;
   }
 
   public void setName(String name) {
-    if (name == null) throw new IllegalArgumentException("File name cannot be null");
-    if (!name.equals(this.name)) this.oldName = this.name;
+    if (name == null) {
+      throw new IllegalArgumentException("File name cannot be null");
+    }
+    if (!name.equals(this.name)) {
+      this.oldName = this.name;
+    }
     this.name = name;
   }
 
@@ -149,8 +158,9 @@ public class File {
   }
 
   public void setType(FileType type) {
-    if (validateInput && type == null)
+    if (validateInput && type == null) {
       throw new IllegalArgumentException("File type cannot be null");
+    }
     this.type = type;
   }
 
@@ -159,21 +169,28 @@ public class File {
   }
 
   public void setTimestamp(Date created) {
-    if (created == null) this.timestamp = new Date();
-    else this.timestamp = created;
+    if (created != null) {
+      this.timestamp = created;
+    } else {
+      this.timestamp = new Date();
+    }
   }
 
   public void setVersion(String version) {
-    if (validateInput && version == null)
+    if (validateInput && version == null) {
       throw new IllegalArgumentException("File version cannot be null");
+    }
     this.version = version;
   }
 
   public void setTargetName(String targetName) {
-    if (validateInput && type == FileType.TR069_SCRIPT && targetName == null)
+    if (validateInput && type == FileType.TR069_SCRIPT && targetName == null) {
       throw new IllegalArgumentException(
           "File target name cannot be null if File type is " + FileType.TR069_SCRIPT);
-    if (type == FileType.TR069_SCRIPT && targetName == null) targetName = name;
+    }
+    if (type == FileType.TR069_SCRIPT && targetName == null) {
+      targetName = name;
+    }
     this.targetName = targetName;
   }
 
@@ -187,18 +204,20 @@ public class File {
   }
 
   protected void setLength(int length) {
-    if (length < 0) length = 0;
+    if (length < 0) {
+      length = 0;
+    }
     this.length = length;
   }
 
   /* MISC methods */
 
-  // Necessary to retrieve content - we do not cache content as default action
+  /** Necessary to retrieve content - we do not cache content as default action. */
   protected void setConnectionProperties(DataSource dataSource) {
     this.dataSource = dataSource;
   }
 
-  // Used by Web
+  /** Used by Web. */
   public String getNameAndVersion() {
     return name + " (ver: " + version + ")";
   }
@@ -217,7 +236,7 @@ public class File {
     this.validateInput = validateInput;
   }
 
-  // To avoid storing file content in ACS-object - this must always be used with care!
+  /** To avoid storing file content in ACS-object - this must always be used with care! */
   public void resetContentToNull() {
     content = null;
   }

@@ -19,7 +19,6 @@ import javax.sql.DataSource;
 import org.slf4j.LoggerFactory;
 
 public class AddOrChangeProfile {
-
   private static org.slf4j.Logger logger = LoggerFactory.getLogger(AddOrChangeProfile.class);
 
   private ACS acs;
@@ -27,21 +26,22 @@ public class AddOrChangeProfile {
   private void addOrChangeProfileImpl(Profile profileXAPS, AddOrChangeProfileRequest gur)
       throws SQLException, RemoteException {
     ParameterList parameterList = gur.getProfile().getParameters().getValue();
-    List<ProfileParameter> acPpList = new ArrayList<ProfileParameter>();
-    List<ProfileParameter> dPpList = new ArrayList<ProfileParameter>();
+    List<ProfileParameter> acPpList = new ArrayList<>();
+    List<ProfileParameter> dPpList = new ArrayList<>();
     Unittype unittypeXAPS = profileXAPS.getUnittype();
     if (parameterList != null && parameterList.getParameterArray() != null) {
       for (Parameter param : parameterList.getParameterArray().getItem()) {
         UnittypeParameter utp = unittypeXAPS.getUnittypeParameters().getByName(param.getName());
-        if (utp == null)
+        if (utp == null) {
           throw ACSFactory.error(
               logger,
               "The unittype parameter "
                   + param.getName()
                   + " does not exist, hence cannot add profile parameter");
+        }
         if (param.getFlags() != null
-            && !param.getFlags().getValue().equals("D")
-            && !param.getFlags().getValue().equals("AC"))
+            && !"D".equals(param.getFlags().getValue())
+            && !"AC".equals(param.getFlags().getValue())) {
           throw ACSFactory.error(
               logger,
               "Flag for parameter "
@@ -49,41 +49,46 @@ public class AddOrChangeProfile {
                   + " had value "
                   + param.getFlags()
                   + ", but must be either D or AC");
+        }
         ProfileParameter pp = profileXAPS.getProfileParameters().getByName(param.getName());
-        if (param.getFlags() == null || param.getFlags().getValue().equals("AC")) {
-          if (pp == null)
+        if (param.getFlags() == null || "AC".equals(param.getFlags().getValue())) {
+          if (pp == null) {
             acPpList.add(new ProfileParameter(profileXAPS, utp, param.getValue().getValue()));
-          else {
+          } else {
             pp.setValue(param.getValue().getValue());
             acPpList.add(pp);
           }
-        } else if (param.getFlags().getValue().equals("D") && pp != null) {
+        } else if ("D".equals(param.getFlags().getValue()) && pp != null) {
           dPpList.add(pp);
         }
       }
     }
     unittypeXAPS.getProfiles().addOrChangeProfile(profileXAPS, acs);
-    for (ProfileParameter pp : dPpList)
+    for (ProfileParameter pp : dPpList) {
       profileXAPS.getProfileParameters().deleteProfileParameter(pp, acs);
-    for (ProfileParameter pp : acPpList)
+    }
+    for (ProfileParameter pp : acPpList) {
       profileXAPS.getProfileParameters().addOrChangeProfileParameter(pp, acs);
+    }
   }
 
   public AddOrChangeProfileResponse addOrChangeProfile(
       AddOrChangeProfileRequest gur, DataSource xapsDs, DataSource syslogDs)
       throws RemoteException {
     try {
-
       ACSFactory acsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
       acs = acsWS.getAcs();
-      if (gur.getUnittype() == null || gur.getProfile() == null)
+      if (gur.getUnittype() == null || gur.getProfile() == null) {
         throw ACSFactory.error(logger, "No unittype or profile specified");
+      }
       Unittype unittype = acs.getUnittype(gur.getUnittype().getName());
       User user = acsWS.getId().getUser();
       boolean isAllowedToMakeProfile = user.getPermissions().getPermissions().length == 0;
       if (!isAllowedToMakeProfile) {
         Permission perm = user.getPermissions().getByUnittypeProfile(unittype.getId(), null);
-        if (perm != null) isAllowedToMakeProfile = true;
+        if (perm != null) {
+          isAllowedToMakeProfile = true;
+        }
       }
 
       Profile profileXAPS = null;
@@ -108,8 +113,9 @@ public class AddOrChangeProfile {
       response.setProfile(ConvertACS2WS.convert(profileXAPS));
       return response;
     } catch (Throwable t) {
-      if (t instanceof RemoteException) throw (RemoteException) t;
-      else {
+      if (t instanceof RemoteException) {
+        throw (RemoteException) t;
+      } else {
         throw ACSFactory.error(logger, t);
       }
     }

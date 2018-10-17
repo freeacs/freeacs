@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * This class is custom-tailored to display data on the TriggerRelease-page
+ * This class is custom-tailored to display data on the TriggerRelease-page.
  *
  * @author Morten
  */
@@ -56,7 +56,6 @@ public class ReleaseTrigger {
   }
 
   private String formatDateForDisplay(Date d) {
-
     if (d != null) {
       Calendar midnight = Calendar.getInstance();
       midnight.set(Calendar.HOUR_OF_DAY, 0);
@@ -77,18 +76,27 @@ public class ReleaseTrigger {
   }
 
   public String getDisplayScriptFinished() {
-    if (scriptExecution != null) return formatDateForDisplay(scriptExecution.getEndTms());
-    else return "";
+    if (scriptExecution != null) {
+      return formatDateForDisplay(scriptExecution.getEndTms());
+    } else {
+      return "";
+    }
   }
 
   public String getDisplayScriptStarted() {
-    if (scriptExecution != null) return formatDateForDisplay(scriptExecution.getStartTms());
-    else return "";
+    if (scriptExecution != null) {
+      return formatDateForDisplay(scriptExecution.getStartTms());
+    } else {
+      return "";
+    }
   }
 
   public String getDisplayScriptRequested() {
-    if (scriptExecution != null) return formatDateForDisplay(scriptExecution.getRequestTms());
-    else return "";
+    if (scriptExecution != null) {
+      return formatDateForDisplay(scriptExecution.getRequestTms());
+    } else {
+      return "";
+    }
   }
 
   public String getDisplayFirstEvent() {

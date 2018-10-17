@@ -7,7 +7,6 @@ import java.util.Map;
 
 /** The Class SyslogData. */
 public class SyslogData extends InputData {
-
   /** The severity. */
   private Input severity = Input.getStringArrayInput("severity");
 
@@ -176,7 +175,9 @@ public class SyslogData extends InputData {
    * @return the max rows
    */
   public Input getMaxRows() {
-    if (maxRows.getValue() == null) maxRows.setValue("100");
+    if (maxRows.getValue() == null) {
+      maxRows.setValue("100");
+    }
     return maxRows;
   }
 
@@ -369,21 +370,11 @@ public class SyslogData extends InputData {
     this.tom = tom;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.input.InputData#bindForm(java.util.Map)
-   */
   @Override
-  public void bindForm(Map<String, Object> root) {
-    // TODO Auto-generated method stub
+  public void bindForm(Map<String, Object> root) {}
 
-  }
-
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.input.InputData#validateForm()
-   */
   @Override
   public boolean validateForm() {
-    // TODO Auto-generated method stub
     return false;
   }
 

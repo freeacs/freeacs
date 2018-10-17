@@ -8,7 +8,6 @@ package com.github.freeacs.web.app.page.report.uidata;
  * @author Jarl Andre Hubenthal
  */
 final class RecordUIDataMethods {
-
   /** The Constant BYTES_TO_KILOBYTES. */
   private static final int BYTES_TO_KILOBYTES = 1024;
 
@@ -24,13 +23,15 @@ final class RecordUIDataMethods {
    * @param bytes the bytes
    * @return the kilo byte presentation
    */
-  protected static String getKiloBytePresentation(Long bytes) {
-    if (bytes == null) return "&nbsp;";
-    if (bytes > BYTES_TO_KILOBYTES)
-      return RecordUIDataConstants.TWO_DECIMALS_FORMAT.format(
-              ((double) bytes / (double) KILOBYTES_DIVIDEND))
+  static String getKiloBytePresentation(Long bytes) {
+    if (bytes == null) {
+      return "&nbsp;";
+    }
+    if (bytes > BYTES_TO_KILOBYTES) {
+      return RecordUIDataConstants.TWO_DECIMALS_FORMAT.format((double) bytes / KILOBYTES_DIVIDEND)
           + "&nbsp;KB";
-    return bytes.toString() + "&nbsp;B";
+    }
+    return bytes + "&nbsp;B";
   }
 
   /**
@@ -39,13 +40,15 @@ final class RecordUIDataMethods {
    * @param bytes the bytes
    * @return the mega byte presentation
    */
-  protected static String getMegaBytePresentation(Long bytes) {
-    if (bytes == null) return "&nbsp;";
-    if (bytes > BYTES_TO_KILOBYTES)
-      return RecordUIDataConstants.TWO_DECIMALS_FORMAT.format(
-              ((double) bytes / (double) KILOBYTES_DIVIDEND))
+  static String getMegaBytePresentation(Long bytes) {
+    if (bytes == null) {
+      return "&nbsp;";
+    }
+    if (bytes > BYTES_TO_KILOBYTES) {
+      return RecordUIDataConstants.TWO_DECIMALS_FORMAT.format((double) bytes / KILOBYTES_DIVIDEND)
           + "&nbsp;MB";
-    return bytes.toString() + "&nbsp;KB";
+    }
+    return bytes + "&nbsp;KB";
   }
 
   /**
@@ -55,9 +58,10 @@ final class RecordUIDataMethods {
    * @param toAppend the to append
    * @return the string
    */
-  protected static String appendStringIfNotNonBreaking(String value, String toAppend) {
-    if (value != null && !value.equals(NON_BREAKING) && toAppend != null)
+  static String appendStringIfNotNonBreaking(String value, String toAppend) {
+    if (value != null && !NON_BREAKING.equals(value) && toAppend != null) {
       return value += NON_BREAKING + toAppend;
+    }
     return value;
   }
 
@@ -67,9 +71,11 @@ final class RecordUIDataMethods {
    * @param bytes the bytes
    * @return the to string or non breaking space
    */
-  protected static String getToStringOrNonBreakingSpace(Long bytes) {
-    if (bytes == null) return NON_BREAKING;
-    return bytes.toString();
+  static String getToStringOrNonBreakingSpace(Long bytes) {
+    if (bytes != null) {
+      return bytes.toString();
+    }
+    return NON_BREAKING;
   }
 
   /**
@@ -79,8 +85,10 @@ final class RecordUIDataMethods {
    * @param pool the pool
    * @return the percent
    */
-  protected static double getPercent(Long current, Long pool) {
-    if (current == null || pool == null) return 0;
-    return (double) current / (double) pool * 100d;
+  static double getPercent(Long current, Long pool) {
+    if (current == null || pool == null) {
+      return 0;
+    }
+    return (double) current / pool * 100d;
   }
 }

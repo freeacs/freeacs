@@ -18,7 +18,6 @@ import java.util.List;
  * @author Jarl Andre Hubenthal
  */
 public class RecordUIDataSyslog {
-
   private final ACS acs;
 
   /** The entry. */
@@ -73,7 +72,7 @@ public class RecordUIDataSyslog {
    * @return the list
    */
   public static List<RecordUIDataSyslog> convertRecords(List<SyslogEntry> records, ACS acs) {
-    List<RecordUIDataSyslog> list = new ArrayList<RecordUIDataSyslog>();
+    List<RecordUIDataSyslog> list = new ArrayList<>();
     for (SyslogEntry record : records) {
       list.add(new RecordUIDataSyslog(record, acs));
     }
@@ -87,8 +86,9 @@ public class RecordUIDataSyslog {
    */
   @SuppressWarnings("unused")
   public String getMessageExcerpt() {
-    if (entry.getContent() == null || entry.getContent().length() > 90)
+    if (entry.getContent() == null || entry.getContent().length() > 90) {
       return entry.getContent().substring(0, 90);
+    }
     return entry.getContent();
   }
 
@@ -112,9 +112,11 @@ public class RecordUIDataSyslog {
     if (unittype != null) {
       @SuppressWarnings("static-access")
       SyslogEvent event = unittype.getSyslogEvents().getById(entry.getEventId());
-      if (event != null) return entry.getEventId() + "(" + event.getName() + ")";
+      if (event != null) {
+        return entry.getEventId() + "(" + event.getName() + ")";
+      }
     }
-    return "" + entry.getEventId();
+    return String.valueOf(entry.getEventId());
   }
 
   /**

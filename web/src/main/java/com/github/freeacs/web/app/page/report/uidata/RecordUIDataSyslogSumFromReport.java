@@ -20,7 +20,6 @@ import java.util.List;
  */
 public class RecordUIDataSyslogSumFromReport
     implements Comparable<RecordUIDataSyslogSumFromReport> {
-
   /**
    * Gets the warnings.
    *
@@ -49,13 +48,13 @@ public class RecordUIDataSyslogSumFromReport
   }
 
   /** The warnings. */
-  private int warnings = 0;
+  private int warnings;
 
   /** The errors. */
-  private int errors = 0;
+  private int errors;
 
   /** The total. */
-  private int total = 0;
+  private int total;
 
   /** The unit. */
   private Unit unit;
@@ -79,8 +78,7 @@ public class RecordUIDataSyslogSumFromReport
   }
 
   /** The records. */
-  private List<RecordUIDataSyslogFromReport> records =
-      new ArrayList<RecordUIDataSyslogFromReport>();
+  private List<RecordUIDataSyslogFromReport> records = new ArrayList<>();
 
   /** The row background style. */
   private String rowBackgroundStyle;
@@ -102,10 +100,12 @@ public class RecordUIDataSyslogSumFromReport
    */
   public void addRecord(RecordUIDataSyslogFromReport record) {
     Integer severity = SyslogConstants.getSeverityInt(record.getEntry().getSeverity());
-    if (severity == SyslogConstants.SEVERITY_WARNING)
+    if (severity == SyslogConstants.SEVERITY_WARNING) {
       warnings += record.getEntry().getMessageCount().get();
-    if (severity <= SyslogConstants.SEVERITY_ERROR)
+    }
+    if (severity <= SyslogConstants.SEVERITY_ERROR) {
       errors += record.getEntry().getMessageCount().get();
+    }
     total += record.getEntry().getMessageCount().get();
     this.records.add(record);
   }
@@ -118,10 +118,14 @@ public class RecordUIDataSyslogSumFromReport
   public String getRowBackgroundStyle() {
     try {
       int score = 100;
-      if (errors > 0) score = score - 40;
-      if (warnings > 0) score = score - 30;
+      if (errors > 0) {
+        score = score - 40;
+      }
+      if (warnings > 0) {
+        score = score - 30;
+      }
       rowBackgroundStyle =
-          new AbstractWebPage.RowBackgroundColorMethod().exec(Arrays.asList(score + ""));
+          new AbstractWebPage.RowBackgroundColorMethod().exec(Arrays.asList(String.valueOf(score)));
     } catch (TemplateModelException e) {
       rowBackgroundStyle = "";
     }
@@ -130,6 +134,6 @@ public class RecordUIDataSyslogSumFromReport
 
   @Override
   public int compareTo(RecordUIDataSyslogSumFromReport o) {
-    return new Integer(o.getTotal()).compareTo(new Integer(this.getTotal()));
+    return Integer.valueOf(o.getTotal()).compareTo(Integer.valueOf(getTotal()));
   }
 }

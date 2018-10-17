@@ -44,7 +44,6 @@ import javax.sql.DataSource;
  * @author Jarl Andre Hubenthal
  */
 public class UnitStatusInfo {
-
   /** The Constant OVERALL_STATUS_MAX. */
   public static final Integer OVERALL_STATUS_MAX = 10;
 
@@ -73,13 +72,13 @@ public class UnitStatusInfo {
   private final DataSource syslogDataSource;
 
   /** The first connect timestamp. */
-  private String firstConnectTimestamp = null;
+  private String firstConnectTimestamp;
 
   /** The last connect timestamp. */
-  private String lastConnectTimestamp = null;
+  private String lastConnectTimestamp;
 
   /** The next connect timestamp. */
-  private String nextConnectTimestamp = null;
+  private String nextConnectTimestamp;
 
   /** The line1 configured. */
   private VoipConfigured line1Configured = VoipConfigured.NOT_CONFIGURED;
@@ -88,28 +87,28 @@ public class UnitStatusInfo {
   private VoipConfigured line2Configured = VoipConfigured.NOT_CONFIGURED;
 
   /** The has connected. */
-  private boolean hasConnected = false;
+  private boolean hasConnected;
 
   /** The session id. */
-  private String sessionId = null;
+  private String sessionId;
 
   /** The from date. */
-  private Date fromDate = null;
+  private Date fromDate;
 
   /** The to date. */
-  private Date toDate = null;
+  private Date toDate;
 
   /** The voip report. */
-  private Report<RecordVoip> voipReport = null;
+  private Report<RecordVoip> voipReport;
 
   /** The hardware report. */
-  private Report<RecordHardware> hardwareReport = null;
+  private Report<RecordHardware> hardwareReport;
 
   /** The syslog entries. */
-  private List<SyslogEntry> syslogEntries = null;
+  private List<SyslogEntry> syslogEntries;
 
   /** The total score. */
-  private Double totalScore = null;
+  private Double totalScore;
 
   private Report<RecordSyslog> syslogReport;
 
@@ -137,7 +136,7 @@ public class UnitStatusInfo {
       String sessionId,
       DataSource mainDataSource,
       DataSource syslogDataSource)
-      throws ParseException, NumberFormatException, SQLException {
+      throws ParseException, SQLException {
     UnitStatusInfo info = new UnitStatusInfo(unit, mainDataSource, syslogDataSource);
     info.fromDate = fromDate;
     info.toDate = toDate;
@@ -169,12 +168,13 @@ public class UnitStatusInfo {
             .getUnittype()
             .getUnittypeParameters()
             .getByName("Device.DeviceInfo.SerialNumber");
-    if (serialUtp == null)
+    if (serialUtp == null) {
       serialUtp =
           currentUnit
               .getUnittype()
               .getUnittypeParameters()
               .getByName("InternetGatewayDevice.DeviceInfo.SerialNumber");
+    }
     if (serialUtp != null) {
       UnitParameter param = currentUnit.getUnitParameters().get(serialUtp.getName());
       return param != null ? param.getValue() : null;
@@ -193,18 +193,20 @@ public class UnitStatusInfo {
             .getUnittype()
             .getUnittypeParameters()
             .getByName(SystemParameters.SOFTWARE_VERSION);
-    if (serialUtp == null)
+    if (serialUtp == null) {
       serialUtp =
           currentUnit
               .getUnittype()
               .getUnittypeParameters()
               .getByName("Device.DeviceInfo.SoftwareVersion");
-    if (serialUtp == null)
+    }
+    if (serialUtp == null) {
       serialUtp =
           currentUnit
               .getUnittype()
               .getUnittypeParameters()
               .getByName("InternetGatewayDevice.DeviceInfo.SoftwareVersion");
+    }
     if (serialUtp != null) {
       UnitParameter param = currentUnit.getUnitParameters().get(serialUtp.getName());
       return param != null ? param.getValue() : null;
@@ -241,14 +243,16 @@ public class UnitStatusInfo {
     if (totalScore == null) {
       Report<RecordVoip> report = getVoipReport();
       report = ReportConverter.convertVoipReport(report, PeriodType.ETERNITY);
-      if (getNumberOfCallsFromReport(report) == 0) return null;
+      if (getNumberOfCallsFromReport(report) == 0) {
+        return null;
+      }
       Iterator<Entry<Key, RecordVoip>> reportIterator = report.getMap().entrySet().iterator();
       Double newTotalScore = null;
       if (reportIterator.hasNext()) {
-        RecordVoip monthReport = (RecordVoip) reportIterator.next().getValue();
+        RecordVoip monthReport = reportIterator.next().getValue();
         if (monthReport.getVoIPQuality() != null && monthReport.getVoIPQuality().get() != null) {
-          double ts = (double) monthReport.getVoIPQuality().get();
-          double div = (double) monthReport.getVoIPQuality().getDividend();
+          double ts = monthReport.getVoIPQuality().get();
+          double div = monthReport.getVoIPQuality().getDividend();
           newTotalScore = ts / div;
         }
       }
@@ -266,7 +270,9 @@ public class UnitStatusInfo {
   public int getNumberOfCallsFromReport(Report<RecordVoip> report) {
     int number = 0;
     for (RecordVoip record : report.getMap().values()) {
-      if (record.getVoIPQuality() != null && record.getVoIPQuality().get() > 0) number++;
+      if (record.getVoIPQuality() != null && record.getVoIPQuality().get() > 0) {
+        number++;
+      }
     }
     return number;
   }
@@ -278,9 +284,10 @@ public class UnitStatusInfo {
    * @throws SQLException the sQL exception the no available connection exception
    */
   public boolean is1LinesHasProblems() throws SQLException {
-    if (((isLine2Configured() && !isLine2Registered()) || isLine2ConfiguredError())
-        || ((isLine1Configured() && !isLine1Registered()) || isLine1ConfiguredError())) return true;
-    return false;
+    return (isLine2Configured() && !isLine2Registered())
+        || isLine2ConfiguredError()
+        || (isLine1Configured() && !isLine1Registered())
+        || isLine1ConfiguredError();
   }
 
   /**
@@ -317,8 +324,12 @@ public class UnitStatusInfo {
    * @return the integer or default
    */
   public Integer getIntegerOrDefault(String string, Integer defInt) {
-    if (string == null) return defInt;
-    if (Pattern.matches("[0-9]+", string)) return Integer.parseInt(string);
+    if (string == null) {
+      return defInt;
+    }
+    if (Pattern.matches("[0-9]+", string)) {
+      return Integer.parseInt(string);
+    }
     return defInt;
   }
 
@@ -330,8 +341,12 @@ public class UnitStatusInfo {
    * @return the float or default
    */
   public Float getFloatOrDefault(String string, Float defFloat) {
-    if (string == null) return defFloat;
-    if (Pattern.matches("[0-9]+", string)) return Float.parseFloat(string);
+    if (string == null) {
+      return defFloat;
+    }
+    if (Pattern.matches("[0-9]+", string)) {
+      return Float.parseFloat(string);
+    }
     return defFloat;
   }
 
@@ -343,8 +358,7 @@ public class UnitStatusInfo {
    * @throws NumberFormatException the number format exception
    * @throws SQLException the sQL exception the no available connection exception
    */
-  public VoipConfigured isLineConfigured(VoipLine index)
-      throws NumberFormatException, SQLException {
+  public VoipConfigured isLineConfigured(VoipLine index) throws SQLException {
     String line = "Services.VoiceService.1.VoiceProfile." + index.toNonZero() + ".Line.1";
     String voiceEnabled = Parameters.getUnitParameterValue(currentUnit, line + ".Enable");
     String user = Parameters.getUnitParameterValue(currentUnit, line + ".SIP.AuthUserName");
@@ -352,15 +366,19 @@ public class UnitStatusInfo {
     String uri = Parameters.getUnitParameterValue(currentUnit, line + ".SIP.URI");
     boolean basicConfiguration =
         user != null
-            && user.length() > 0
+            && !user.isEmpty()
             && pass != null
-            && pass.length() > 0
+            && !pass.isEmpty()
             && uri != null
-            && uri.length() > 0;
-    if (voiceEnabled != null && voiceEnabled.equals("1")) {
-      if (basicConfiguration) return VoipConfigured.CONFIGURED;
+            && !uri.isEmpty();
+    if ("1".equals(voiceEnabled)) {
+      if (basicConfiguration) {
+        return VoipConfigured.CONFIGURED;
+      }
       return VoipConfigured.CONFIGURE_ERROR;
-    } else if (basicConfiguration) return VoipConfigured.CONFIGURED_NOT_ENABLED;
+    } else if (basicConfiguration) {
+      return VoipConfigured.CONFIGURED_NOT_ENABLED;
+    }
     return VoipConfigured.NOT_CONFIGURED;
   }
 
@@ -375,15 +393,11 @@ public class UnitStatusInfo {
 
   /** The Enum VoipLine. */
   public enum VoipLine {
-
     /** The LIN e_0. */
     LINE_0,
     /** The LIN e_1. */
     LINE_1;
 
-    /* (non-Javadoc)
-     * @see java.lang.Enum#toString()
-     */
     public String toString() {
       return name().substring(name().length() - 1);
     }
@@ -394,8 +408,12 @@ public class UnitStatusInfo {
      * @return the string
      */
     public String toNonZero() {
-      if (name().endsWith("0")) return "1";
-      if (name().endsWith("1")) return "2";
+      if (name().endsWith("0")) {
+        return "1";
+      }
+      if (name().endsWith("1")) {
+        return "2";
+      }
       return name();
     }
   }
@@ -454,8 +472,7 @@ public class UnitStatusInfo {
   private int getMaxSipRegisterInterval() {
     int line1seconds = getSipRegisterInterval(1);
     int line2seconds = getSipRegisterInterval(2);
-    int maxSeconds = Math.max(line1seconds, line2seconds);
-    return maxSeconds;
+    return Math.max(line1seconds, line2seconds);
   }
 
   /**
@@ -484,12 +501,12 @@ public class UnitStatusInfo {
                 "InternetGatewayDevice.Services.VoiceService.2.VoiceProfile."
                     + line
                     + ".SIP.RegistrationPeriod");
-    if (lineValue != null && lineValue.trim().length() > 0)
+    if (lineValue != null && !lineValue.trim().isEmpty()) {
       try {
         lineSeconds = Integer.parseInt(lineValue);
       } catch (NumberFormatException e) {
-
       }
+    }
     return lineSeconds;
   }
 
@@ -500,7 +517,9 @@ public class UnitStatusInfo {
    * @throws ParseException the parse exception
    */
   private String getNextConnect() throws ParseException {
-    if (getLastConnectTimestamp() == null) return nextConnectTimestamp = null;
+    if (getLastConnectTimestamp() == null) {
+      return nextConnectTimestamp = null;
+    }
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     Calendar lastConnected = Calendar.getInstance();
     lastConnected.setTime(sdf.parse(getLastConnectTimestamp()));
@@ -565,7 +584,7 @@ public class UnitStatusInfo {
    * @return true, if is line1 configured
    */
   public boolean isLine1Configured() {
-    return line1Configured.equals(VoipConfigured.CONFIGURED);
+    return VoipConfigured.CONFIGURED.equals(line1Configured);
   }
 
   /**
@@ -574,7 +593,7 @@ public class UnitStatusInfo {
    * @return true, if is line1 configured error
    */
   public boolean isLine1ConfiguredError() {
-    return line1Configured.equals(VoipConfigured.CONFIGURE_ERROR);
+    return VoipConfigured.CONFIGURE_ERROR.equals(line1Configured);
   }
 
   /**
@@ -583,7 +602,7 @@ public class UnitStatusInfo {
    * @return true, if is line1 configured not enabled
    */
   public boolean isLine1ConfiguredNotEnabled() {
-    return line1Configured.equals(VoipConfigured.CONFIGURED_NOT_ENABLED);
+    return VoipConfigured.CONFIGURED_NOT_ENABLED.equals(line1Configured);
   }
 
   /**
@@ -610,7 +629,7 @@ public class UnitStatusInfo {
    * @return true, if is line2 configured
    */
   public boolean isLine2Configured() {
-    return line2Configured.equals(VoipConfigured.CONFIGURED);
+    return VoipConfigured.CONFIGURED.equals(line2Configured);
   }
 
   /**
@@ -619,7 +638,7 @@ public class UnitStatusInfo {
    * @return true, if is line2 configured error
    */
   public boolean isLine2ConfiguredError() {
-    return line2Configured.equals(VoipConfigured.CONFIGURE_ERROR);
+    return VoipConfigured.CONFIGURE_ERROR.equals(line2Configured);
   }
 
   /**
@@ -628,7 +647,7 @@ public class UnitStatusInfo {
    * @return true, if is line2 configured not enabled
    */
   public boolean isLine2ConfiguredNotEnabled() {
-    return line2Configured.equals(VoipConfigured.CONFIGURED_NOT_ENABLED);
+    return VoipConfigured.CONFIGURED_NOT_ENABLED.equals(line2Configured);
   }
 
   /**
@@ -648,7 +667,9 @@ public class UnitStatusInfo {
    */
   public boolean isWithinServiceWindow() throws ParseException {
     String serviceWindow = currentUnit.getParameters().get(SystemParameters.SERVICE_WINDOW_REGULAR);
-    if (serviceWindow == null) serviceWindow = DEFAULT_SERVICE_WINDOW;
+    if (serviceWindow == null) {
+      serviceWindow = DEFAULT_SERVICE_WINDOW;
+    }
 
     TimeWindow timeWindow = new TimeWindow(serviceWindow);
 
@@ -667,9 +688,11 @@ public class UnitStatusInfo {
       Date lastConnect = sdf.parse(lastConnectTimestamp);
       Date nextConnectNoSpread = new Date(lastConnect.getTime() + msPerInterval);
       Date nextConnectUpperBound =
-          new Date((long) (nextConnectNoSpread.getTime() + (spread * msPerInterval)));
+          new Date((long) (nextConnectNoSpread.getTime() + spread * msPerInterval));
       Date currentTime = new Date(System.currentTimeMillis());
-      if (currentTime.before(nextConnectUpperBound)) return true;
+      if (currentTime.before(nextConnectUpperBound)) {
+        return true;
+      }
     }
 
     return false;
@@ -765,8 +788,8 @@ public class UnitStatusInfo {
    * @throws NoSuchMethodException the no such method exception
    */
   public UnitStatusScore getOverallStatus()
-      throws ParseException, SQLException, IOException, IllegalArgumentException, SecurityException,
-          IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+      throws ParseException, SQLException, IOException, IllegalAccessException,
+          InvocationTargetException, NoSuchMethodException {
     return getOverallStatus(getTotalScore());
   }
 
@@ -782,8 +805,7 @@ public class UnitStatusInfo {
    * @throws SecurityException the security exception
    */
   private UnitStatusScore getOverallStatus(Double totalScore)
-      throws ParseException, SQLException, IOException, IllegalArgumentException,
-          SecurityException {
+      throws ParseException, SQLException, IOException {
     return new UnitStatusScore(
         totalScore,
         getHardwareRecords(),
@@ -805,8 +827,9 @@ public class UnitStatusInfo {
       Report<RecordHardware> hardwareReport =
           SessionCache.getHardwareReport(
               sessionId, currentUnit.getId(), fromDate, toDate, mainDataSource, syslogDataSource);
-      if (hardwareReport == null) // Generated report is empty or reports is not supported
-      hardwareReport = new Report<RecordHardware>(RecordHardware.class, PeriodType.ETERNITY);
+      if (hardwareReport == null) {
+        hardwareReport = new Report<RecordHardware>(RecordHardware.class, PeriodType.ETERNITY);
+      }
       this.hardwareReport = hardwareReport;
     }
     return this.hardwareReport;
@@ -836,8 +859,7 @@ public class UnitStatusInfo {
    * @throws SecurityException the security exception the no available connection exception
    * @throws SQLException the sQL exception
    */
-  public synchronized List<SyslogEntry> getSyslogEntries()
-      throws IllegalArgumentException, SecurityException, SQLException {
+  public synchronized List<SyslogEntry> getSyslogEntries() throws SQLException {
     return SyslogRetriever.getInstance()
         .getSyslogEntries(
             currentUnit, fromDate, toDate, 100, sessionId, mainDataSource, syslogDataSource);
@@ -851,14 +873,14 @@ public class UnitStatusInfo {
    * @throws SecurityException the security exception the no available connection exception
    * @throws SQLException the sQL exception
    */
-  public synchronized List<SyslogEntry> getSyslogEntriesFromCache()
-      throws IllegalArgumentException, SecurityException, SQLException {
-    if (this.syslogEntries == null)
-      return (this.syslogEntries =
-          SyslogRetriever.getInstance()
-              .getSyslogEntries(
-                  currentUnit, fromDate, toDate, 100, sessionId, mainDataSource, syslogDataSource));
-    return this.syslogEntries;
+  public synchronized List<SyslogEntry> getSyslogEntriesFromCache() throws SQLException {
+    if (this.syslogEntries != null) {
+      return this.syslogEntries;
+    }
+    return this.syslogEntries =
+        SyslogRetriever.getInstance()
+            .getSyslogEntries(
+                currentUnit, fromDate, toDate, 100, sessionId, mainDataSource, syslogDataSource);
   }
 
   /**
@@ -873,7 +895,7 @@ public class UnitStatusInfo {
   public synchronized Report<RecordSyslog> getSyslogReport(String syslogFilter)
       throws SQLException, IOException, ParseException {
     if (this.syslogReport == null) {
-      String toUseAsFilter = (syslogFilter != null ? ("%" + syslogFilter + "%") : null);
+      String toUseAsFilter = syslogFilter != null ? ("%" + syslogFilter + "%") : null;
       Report<RecordSyslog> _syslogReport =
           SessionCache.getSyslogReport(
               sessionId,
@@ -883,8 +905,9 @@ public class UnitStatusInfo {
               toUseAsFilter,
               mainDataSource,
               syslogDataSource);
-      if (_syslogReport == null) // Generated report is empty or reports is not supported
-      _syslogReport = new Report<RecordSyslog>(RecordSyslog.class, PeriodType.ETERNITY);
+      if (_syslogReport == null) {
+        _syslogReport = new Report<RecordSyslog>(RecordSyslog.class, PeriodType.ETERNITY);
+      }
       this.syslogReport = _syslogReport;
     }
     return this.syslogReport;
@@ -902,8 +925,9 @@ public class UnitStatusInfo {
       Report<RecordVoip> voipReport =
           SessionCache.getVoipReport(
               sessionId, currentUnit.getId(), fromDate, toDate, mainDataSource, syslogDataSource);
-      if (voipReport == null) // Generated report is empty or reports is not supported
-      voipReport = new Report<RecordVoip>(RecordVoip.class, PeriodType.ETERNITY);
+      if (voipReport == null) {
+        voipReport = new Report<RecordVoip>(RecordVoip.class, PeriodType.ETERNITY);
+      }
       this.voipReport = voipReport;
     }
     return this.voipReport;
@@ -931,21 +955,23 @@ public class UnitStatusInfo {
     String udpcra =
         Parameters.getUnitParameterValue(
             currentUnit, "InternetGatewayDevice.ManagementServer.UDPConnectionRequestAddress");
-    if (udpcra != null && udpcra.length() > 0) return true;
-    return false;
+    return udpcra != null && !udpcra.isEmpty();
   }
 
   public boolean isBehindNat() {
     String cru =
         Parameters.getUnitParameterValue(
             currentUnit, "InternetGatewayDevice.ManagementServer.ConnectionRequestURL");
-    if (cru != null) return !IPAddress.isPublic(getBaseAddress(cru));
-    else return false;
+    return cru != null && !IPAddress.isPublic(getBaseAddress(cru));
   }
 
   private String getBaseAddress(String addr) {
-    if (addr.indexOf("http://") > -1) addr = addr.substring(addr.indexOf("http://") + 7);
-    if (addr.indexOf("/") > -1) addr = addr.substring(0, addr.indexOf("/"));
+    if (addr.indexOf("http://") > -1) {
+      addr = addr.substring(addr.indexOf("http://") + 7);
+    }
+    if (addr.indexOf('/') > -1) {
+      addr = addr.substring(0, addr.indexOf('/'));
+    }
     return addr;
   }
 }

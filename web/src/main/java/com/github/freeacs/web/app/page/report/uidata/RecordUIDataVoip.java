@@ -19,7 +19,6 @@ import java.util.List;
  * @author Jarl Andre Hubenthal
  */
 public class RecordUIDataVoip extends RecordVoip {
-
   /** The mos avg. */
   private Double mosAvg;
 
@@ -58,23 +57,30 @@ public class RecordUIDataVoip extends RecordVoip {
         record.getSoftwareVersion(),
         record.getLine());
     add(record);
-    if (getMosAvg().get() != null)
-      mosAvg = (double) getMosAvg().get() / (double) getMosAvg().getDividend();
-    if (getJitterAvg().get() != null)
-      jitterAvg = (double) getJitterAvg().get() / (double) getJitterAvg().getDividend();
-    if (getJitterMax().get() != null)
-      jitterMax = (double) getJitterMax().get() / (double) getJitterMax().getDividend();
-    if (getPercentLossAvg().get() != null)
-      percentLossAvg =
-          (double) getPercentLossAvg().get() / (double) getPercentLossAvg().getDividend();
-    if (getCallLengthTotal().get() != null) callLengthTotalInSeconds = getCallLengthTotal().get();
-    if (getVoIPQuality() != null && getVoIPQuality().get() != null)
-      totalScore = (double) getVoIPQuality().get() / (double) getVoIPQuality().getDividend();
+    if (getMosAvg().get() != null) {
+      mosAvg = (double) getMosAvg().get() / getMosAvg().getDividend();
+    }
+    if (getJitterAvg().get() != null) {
+      jitterAvg = (double) getJitterAvg().get() / getJitterAvg().getDividend();
+    }
+    if (getJitterMax().get() != null) {
+      jitterMax = (double) getJitterMax().get() / getJitterMax().getDividend();
+    }
+    if (getPercentLossAvg().get() != null) {
+      percentLossAvg = (double) getPercentLossAvg().get() / getPercentLossAvg().getDividend();
+    }
+    if (getCallLengthTotal().get() != null) {
+      callLengthTotalInSeconds = getCallLengthTotal().get();
+    }
+    if (getVoIPQuality() != null && getVoIPQuality().get() != null) {
+      totalScore = (double) getVoIPQuality().get() / getVoIPQuality().getDividend();
+    }
     try {
-      if (totalScore != null)
+      if (totalScore != null) {
         rowBackgroundStyle =
             new AbstractWebPage.RowBackgroundColorMethod()
                 .exec(Arrays.asList(totalScore.toString()));
+      }
     } catch (TemplateModelException e) {
     }
   }
@@ -86,7 +92,7 @@ public class RecordUIDataVoip extends RecordVoip {
    */
   public String getCallStartAsString() {
     Calendar cal = Calendar.getInstance();
-    cal.setTime(this.getTms());
+    cal.setTime(getTms());
     cal.add(Calendar.MILLISECOND, -(this.callLengthTotalInSeconds.intValue() * 1000));
     Date d = cal.getTime();
     return getTmsAsStringInternal(d);
@@ -99,7 +105,7 @@ public class RecordUIDataVoip extends RecordVoip {
    * @return the list
    */
   public static List<RecordUIDataVoip> convertRecords(List<RecordVoip> records) {
-    List<RecordUIDataVoip> list = new ArrayList<RecordUIDataVoip>();
+    List<RecordUIDataVoip> list = new ArrayList<>();
     for (RecordVoip record : records) {
       list.add(new RecordUIDataVoip(record));
     }
@@ -112,7 +118,7 @@ public class RecordUIDataVoip extends RecordVoip {
    * @return true, if is telephone call
    */
   public boolean isTelephoneCall() {
-    return this.getMosAvg().get() != null;
+    return getMosAvg().get() != null;
   }
 
   /**

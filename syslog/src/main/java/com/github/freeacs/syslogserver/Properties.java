@@ -3,7 +3,6 @@ package com.github.freeacs.syslogserver;
 import com.typesafe.config.Config;
 
 public class Properties {
-
   private final Integer minSyslogdbCommitDelay;
   private final Integer maxSyslogdbCommitQueue;
   private final Integer maxMessagesPerMinute;
@@ -41,10 +40,10 @@ public class Properties {
   @SuppressWarnings("unchecked")
   private <T> T getOrDefault(String key, T defaultValue) {
     Object obj = environment.hasPath(key) ? environment.getAnyRef(key) : null;
-    if (obj == null) {
-      return defaultValue;
+    if (obj != null) {
+      return (T) obj;
     }
-    return (T) obj;
+    return defaultValue;
   }
 
   public static String getDeviceIdPattern(int index) {

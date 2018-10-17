@@ -53,7 +53,9 @@ public class MonitorInfo implements Comparable<MonitorInfo> {
 
   @Override
   public int compareTo(MonitorInfo o) {
-    if (o == null) return 0;
-    return this.getModule().compareTo(o.getModule());
+    if (o != null) {
+      return getModule().compareTo(o.getModule());
+    }
+    return 0;
   }
 }

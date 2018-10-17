@@ -23,8 +23,12 @@ public class Parameters {
     String value = unit.getParameters().get(key);
     if (value == null) {
       value = unit.getParameters().get(WebConstants.KEYROOT_INTERNET_GATEWAY_DEVICE + key);
-      if (value == null) value = unit.getParameters().get(WebConstants.KEYROOT_DEVICE + key);
-      if (value == null) value = unit.getParameters().get(WebConstants.KEYROOT_SYSTEM + key);
+      if (value == null) {
+        value = unit.getParameters().get(WebConstants.KEYROOT_DEVICE + key);
+      }
+      if (value == null) {
+        value = unit.getParameters().get(WebConstants.KEYROOT_SYSTEM + key);
+      }
     }
     return value;
   }

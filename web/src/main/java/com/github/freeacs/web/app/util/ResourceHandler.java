@@ -9,9 +9,8 @@ import java.util.ResourceBundle;
  * @author Jarl Andre Hubenthal
  */
 public abstract class ResourceHandler {
-
   /** The locale properties. */
-  private static ResourceBundle localeProperties = null;
+  private static ResourceBundle localeProperties;
 
   /**
    * Gets the properties.
@@ -32,7 +31,9 @@ public abstract class ResourceHandler {
    * @return the string
    */
   public static String getString(String key) {
-    if (localeProperties == null) getProperties();
+    if (localeProperties == null) {
+      getProperties();
+    }
     return localeProperties.getString(key);
   }
 
@@ -43,7 +44,9 @@ public abstract class ResourceHandler {
    */
   private static Locale getLocale() {
     String locale = WebProperties.LOCALE;
-    if (locale != null) return new Locale(locale);
+    if (locale != null) {
+      return new Locale(locale);
+    }
     return Locale.getDefault();
   }
 }

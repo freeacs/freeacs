@@ -8,14 +8,12 @@
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
  */
-
 package de.javawi.jstun.attribute;
 
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 
 public class BindingChange extends MappedResponseChangedSourceAddressReflectedFrom {
-
   private byte[] data;
 
   public BindingChange() {
@@ -31,8 +29,8 @@ public class BindingChange extends MappedResponseChangedSourceAddressReflectedFr
   @Override
   public byte[] getBytes() throws UtilityException {
     int length = data.length;
-    if ((length % 4) != 0) {
-      length += 4 - (length % 4);
+    if (length % 4 != 0) {
+      length += 4 - length % 4;
     }
     length += 4;
     byte[] result = new byte[length];

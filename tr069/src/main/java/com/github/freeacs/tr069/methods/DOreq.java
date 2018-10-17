@@ -4,14 +4,12 @@ import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.xml.Body;
 
 public class DOreq extends Body {
-
   private static final String START =
       "\t\t<cwmp:Download xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">\n";
 
   private static final String COMMAND_KEY_START = "\t\t\t<CommandKey>";
 
-  //	private static final String COMMAND = "Download_To_CPE";
-
+  /** Private static final String COMMAND = "Download_To_CPE";. */
   private static final String COMMAND_KEY_END = "</CommandKey>\n";
 
   private static final String FILE_TYPE_START = "\t\t\t<FileType>";
@@ -73,12 +71,14 @@ public class DOreq extends Body {
 
   @Override
   public String toXmlImpl() {
-
     StringBuilder sb = new StringBuilder(3);
     sb.append(START);
     sb.append(COMMAND_KEY_START);
-    if (commandKey != null) sb.append(commandKey);
-    else sb.append("Download_To_CPE");
+    if (commandKey != null) {
+      sb.append(commandKey);
+    } else {
+      sb.append("Download_To_CPE");
+    }
     sb.append(COMMAND_KEY_END);
     sb.append(FILE_TYPE_START);
     sb.append(type);
@@ -88,15 +88,21 @@ public class DOreq extends Body {
     sb.append(URL_END);
 
     sb.append(USERNAME_START);
-    if (Properties.FILE_AUTH_USED) sb.append(username);
+    if (Properties.FILE_AUTH_USED) {
+      sb.append(username);
+    }
     sb.append(USERNAME_END);
     sb.append(PASSWORD_START);
-    if (Properties.FILE_AUTH_USED) sb.append(password);
+    if (Properties.FILE_AUTH_USED) {
+      sb.append(password);
+    }
     sb.append(PASSWORD_END);
-    sb.append("\t\t\t<FileSize>" + filesize + "</FileSize>\n");
-    if (targetFilename != null)
-      sb.append("\t\t\t<TargetFileName>" + targetFilename + "</TargetFileName>\n");
-    else sb.append("\t\t\t<TargetFileName></TargetFileName>\n");
+    sb.append("\t\t\t<FileSize>").append(filesize).append("</FileSize>\n");
+    if (targetFilename != null) {
+      sb.append("\t\t\t<TargetFileName>").append(targetFilename).append("</TargetFileName>\n");
+    } else {
+      sb.append("\t\t\t<TargetFileName></TargetFileName>\n");
+    }
     sb.append(DELAY_SECONDS_START);
     sb.append(DELAY_SECONDS);
     sb.append(DELAY_SECONDS_END);

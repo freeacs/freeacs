@@ -3,7 +3,6 @@ package com.github.freeacs.dbi.report;
 import java.util.Date;
 
 public class RecordVoipTR extends Record<RecordVoipTR> {
-
   public static KeyFactory keyFactory =
       new KeyFactory("Unittype", "Profile", "SoftwareVersion", "Line", "LineStatus");
   private Key key;
@@ -70,7 +69,9 @@ public class RecordVoipTR extends Record<RecordVoipTR> {
   }
 
   public Average getPercentLossAvg() {
-    if (callLengthTotal.get() == 0) return new Average();
+    if (callLengthTotal.get() == 0) {
+      return new Average();
+    }
     return percentLossAvg;
   }
 
@@ -79,7 +80,9 @@ public class RecordVoipTR extends Record<RecordVoipTR> {
   }
 
   public Average getCallLengthAvg() {
-    if (callLengthTotal.get() == 0) return new Average(60 * 1000);
+    if (callLengthTotal.get() == 0) {
+      return new Average(60 * 1000);
+    }
     return callLengthAvg;
   }
 
@@ -162,7 +165,7 @@ public class RecordVoipTR extends Record<RecordVoipTR> {
     // formula: 4.36 - 3.36*(underruns + overruns + calllengthtotal * 50 *
     // percentloss/100)/(calllengthtotal * 50)
 
-    if (callLengthTotal.get() != null)
+    if (callLengthTotal.get() != null) {
       mos =
           4.36d
               - 3.36d
@@ -170,11 +173,12 @@ public class RecordVoipTR extends Record<RecordVoipTR> {
                       + overruns.get()
                       + callLengthTotal.get() * 2 * percentLossAvg.get())
                   / (callLengthTotal.get() * 50);
+    }
 
     if (missedCalls != 0 || aborted != 0 || incoming != 0 || outgoing != 0 || mos != 0) {
       double totalMos =
-          ((missedCalls + aborted + (incoming + outgoing) * mos)
-                  / (missedCalls + aborted + incoming + outgoing))
+          (missedCalls + aborted + (incoming + outgoing) * mos)
+                  / (missedCalls + aborted + incoming + outgoing)
               - 1;
       Counter totalScore = new Counter(10);
       totalScore.set((long) (totalMos * 1000 / 3.38d));
@@ -188,30 +192,30 @@ public class RecordVoipTR extends Record<RecordVoipTR> {
     RecordVoipTR clone =
         new RecordVoipTR(
             tms, periodType, unittypeName, profileName, softwareVersion, line, lineStatus);
-    clone.setOverruns(this.getOverruns().clone());
-    clone.setUnderruns(this.getUnderruns().clone());
-    clone.setCallLengthTotal(this.getCallLengthTotal().clone());
-    clone.setAbortedCallCount(this.getAbortedCallCount().clone());
-    clone.setCallLengthAvg(this.getCallLengthAvg().clone());
-    clone.setIncomingCallCount(this.getIncomingCallCount().clone());
-    clone.setOutgoingCallCount(this.getOutgoingCallCount().clone());
-    clone.setOutgoingCallFailedCount(this.getOutgoingCallFailedCount().clone());
-    clone.setPercentLossAvg(this.getPercentLossAvg().clone());
-    clone.setNoSipServiceTime(this.getNoSipServiceTime().clone());
+    clone.setOverruns(getOverruns().clone());
+    clone.setUnderruns(getUnderruns().clone());
+    clone.setCallLengthTotal(getCallLengthTotal().clone());
+    clone.setAbortedCallCount(getAbortedCallCount().clone());
+    clone.setCallLengthAvg(getCallLengthAvg().clone());
+    clone.setIncomingCallCount(getIncomingCallCount().clone());
+    clone.setOutgoingCallCount(getOutgoingCallCount().clone());
+    clone.setOutgoingCallFailedCount(getOutgoingCallFailedCount().clone());
+    clone.setPercentLossAvg(getPercentLossAvg().clone());
+    clone.setNoSipServiceTime(getNoSipServiceTime().clone());
     return clone;
   }
 
   public void add(RecordVoipTR record) {
-    this.getOverruns().add(record.getOverruns());
-    this.getUnderruns().add(record.getUnderruns());
-    this.getCallLengthTotal().add(record.getCallLengthTotal());
-    this.getAbortedCallCount().add(record.getAbortedCallCount());
-    this.getCallLengthAvg().add(record.getCallLengthAvg());
-    this.getIncomingCallCount().add(record.getIncomingCallCount());
-    this.getOutgoingCallCount().add(record.getOutgoingCallCount());
-    this.getOutgoingCallFailedCount().add(record.getOutgoingCallFailedCount());
-    this.getPercentLossAvg().add(record.getPercentLossAvg());
-    this.getNoSipServiceTime().add(record.getNoSipServiceTime());
+    getOverruns().add(record.getOverruns());
+    getUnderruns().add(record.getUnderruns());
+    getCallLengthTotal().add(record.getCallLengthTotal());
+    getAbortedCallCount().add(record.getAbortedCallCount());
+    getCallLengthAvg().add(record.getCallLengthAvg());
+    getIncomingCallCount().add(record.getIncomingCallCount());
+    getOutgoingCallCount().add(record.getOutgoingCallCount());
+    getOutgoingCallFailedCount().add(record.getOutgoingCallFailedCount());
+    getPercentLossAvg().add(record.getPercentLossAvg());
+    getNoSipServiceTime().add(record.getNoSipServiceTime());
   }
 
   public KeyFactory getKeyFactory() {

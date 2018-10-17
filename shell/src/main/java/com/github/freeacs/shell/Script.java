@@ -16,13 +16,15 @@ public class Script {
 
   private int type;
   private Context context;
-  private Map<String, Variable> variables = new HashMap<String, Variable>();
+  private Map<String, Variable> variables = new HashMap<>();
   private List<String> scriptLines;
-  private int linePointer = 0;
-  private boolean skipOnNextIfElseWord = false;
-  private String filename; // Name of script-file (if used)
-  private BufferedReader whileInput; // File-args when iterating over a file
-  // Sequence of linepointer-numbers going back to root-script. Gives a unique while-id
+  private int linePointer;
+  private boolean skipOnNextIfElseWord;
+  /** Name of script-file (if used). */
+  private String filename;
+  /** File-args when iterating over a file. */
+  private BufferedReader whileInput;
+  /** Sequence of linepointer-numbers going back to root-script. Gives a unique while-id */
   private String whilePath;
 
   public Script(List<String> scriptLines, Context context, int type) {
@@ -34,7 +36,9 @@ public class Script {
     this.scriptLines = scriptLines;
     this.context = context;
     this.type = type;
-    if (variables != null) this.variables = variables;
+    if (variables != null) {
+      this.variables = variables;
+    }
     this.filename = "N/A";
   }
 
@@ -50,9 +54,11 @@ public class Script {
       if (context.getUnittype() != null) {
         File script = context.getUnittype().getFiles().getByName(filename);
         if (script != null) {
-          scriptLines = new ArrayList<String>();
+          scriptLines = new ArrayList<>();
           for (String line : new String(script.getContent()).split("\n")) {
-            if (line == null || line.trim().length() == 0 || line.trim().startsWith("#")) continue;
+            if (line == null || line.trim().isEmpty() || line.trim().startsWith("#")) {
+              continue;
+            }
             scriptLines.add(line.trim());
           }
           this.context = context;
@@ -63,8 +69,9 @@ public class Script {
         this.context = context;
         scriptLines = FileUtil.getLines(filename);
         fileFound = true;
-      } else if (!fileFound)
+      } else if (!fileFound) {
         throw new IllegalArgumentException("The script file " + filename + " does not exist");
+      }
       this.variables = variables;
     } catch (SQLException nce) {
       throw new IllegalArgumentException(
@@ -74,32 +81,31 @@ public class Script {
 
   private String getCommand(String s) {
     s = s.trim();
-    int spacePos = s.indexOf(" ");
-    if (spacePos > -1) s = s.substring(0, spacePos);
+    int spacePos = s.indexOf(' ');
+    if (spacePos > -1) {
+      s = s.substring(0, spacePos);
+    }
     return s;
   }
 
-  //	public String getNextScriptLineWithCommand(String... cmdList) {
-  //		String s = null;
-  //		if ((s = getNextScriptLine()) != null) {
-  //			String word = getCommand(s);
-  //			for (String w : cmdList) {
-  //				if (word.equals(w)) {
-  //					return s;
-  //				}
-  //			}
-  //		}
-  //		return null;
-  //	}
-
+  /**
+   * Public String getNextScriptLineWithCommand(String... cmdList) { String s = null; if ((s =
+   * getNextScriptLine()) != null) { String word = getCommand(s); for (String w : cmdList) { if
+   * (word.equals(w)) { return s; } } } return null; }
+   */
   public void moveUpUntilCommand(String... cmdList) {
     String s = null;
     int skipAhead = 0;
     while ((s = getNextScriptLine()) != null) {
       String word = getCommand(s);
-      if (word.equals("if")) skipAhead++;
-      else if (word.equals("fi")) skipAhead--;
-      if (skipAhead > 0) continue;
+      if ("if".equals(word)) {
+        skipAhead++;
+      } else if ("fi".equals(word)) {
+        skipAhead--;
+      }
+      if (skipAhead > 0) {
+        continue;
+      }
       boolean match = false;
       for (String w : cmdList) {
         if (word.equals(w)) {
@@ -142,8 +148,7 @@ public class Script {
   }
 
   public boolean endOfScript() {
-    if (linePointer >= scriptLines.size()) return true;
-    else return false;
+    return linePointer >= scriptLines.size();
   }
 
   public String getPreviousScriptLine() {
@@ -170,14 +175,10 @@ public class Script {
     }
   }
 
-  //	public String getLastRetrievedScriptLine() {
-  //		if (linePointer == 0 || linePointer >= scriptLines.size() - 1) {
-  //			return null;
-  //		} else {
-  //			return scriptLines.get(linePointer - 1);
-  //		}
-  //	}
-
+  /**
+   * Public String getLastRetrievedScriptLine() { if (linePointer == 0 || linePointer >=
+   * scriptLines.size() - 1) { return null; } else { return scriptLines.get(linePointer - 1); } }
+   */
   public Context getContext() {
     return context;
   }
@@ -211,25 +212,30 @@ public class Script {
   }
 
   public String toString() {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     String typeStr = "SCRIPT";
-    if (type == IF) typeStr = "IF";
-    else if (type == WHILE) typeStr = "WHILE";
-    sb.append(
-        "Context: "
-            + context.toString()
-            + ", Type: "
-            + typeStr
-            + ", Size: "
-            + scriptLines.size()
-            + ", Position: "
-            + linePointer
-            + ", Filename: "
-            + filename
-            + "\n");
+    if (type == IF) {
+      typeStr = "IF";
+    } else if (type == WHILE) {
+      typeStr = "WHILE";
+    }
+    sb.append("Context: ")
+        .append(context)
+        .append(", Type: ")
+        .append(typeStr)
+        .append(", Size: ")
+        .append(scriptLines.size())
+        .append(", Position: ")
+        .append(linePointer)
+        .append(", Filename: ")
+        .append(filename)
+        .append("\n");
     for (int i = 0; i < scriptLines.size(); i++) {
-      if (linePointer == i) sb.append(" ====> " + scriptLines.get(i) + "\n");
-      else sb.append("       " + scriptLines.get(i) + "\n");
+      if (linePointer == i) {
+        sb.append(" ====> ").append(scriptLines.get(i)).append("\n");
+      } else {
+        sb.append("       ").append(scriptLines.get(i)).append("\n");
+      }
     }
     return sb.toString();
   }

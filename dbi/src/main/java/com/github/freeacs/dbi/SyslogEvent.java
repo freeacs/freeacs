@@ -27,7 +27,6 @@ import java.util.regex.PatternSyntaxException;
  * @author Morten
  */
 public class SyslogEvent implements Comparable<SyslogEvent> {
-
   public enum StorePolicy {
     STORE,
     DUPLICATE,
@@ -89,7 +88,9 @@ public class SyslogEvent implements Comparable<SyslogEvent> {
     setName(name);
     setDescription(description);
     setGroup(group);
-    if (expression != null) setExpression(expression);
+    if (expression != null) {
+      setExpression(expression);
+    }
     setStorePolicy(storePolicy);
     setScript(script);
     setDeleteLimit(deleteLimit);
@@ -97,18 +98,18 @@ public class SyslogEvent implements Comparable<SyslogEvent> {
 
   @Override
   public int compareTo(SyslogEvent o) {
-    return this.getEventId() - o.getEventId();
+    return getEventId() - o.getEventId();
   }
 
-  /* Only to be used by ACS object - to read from database.
-   * The idea is that data corruption in database should not make it
-   * impossible to start Fusion */
+  /**
+   * Only to be used by ACS object - to read from database. The idea is that data corruption in
+   * database should not make it impossible to start Fusion
+   */
   protected void validateInput(boolean validateInput) {
     this.validateInput = validateInput;
   }
 
-  /* GET-methods */
-
+  /** GET-methods. */
   public Unittype getUnittype() {
     return unittype;
   }
@@ -153,11 +154,11 @@ public class SyslogEvent implements Comparable<SyslogEvent> {
     return deleteLimit;
   }
 
-  /* SET-methods */
-
+  /** SET-methods. */
   public void setUnittype(Unittype unittype) {
-    if (validateInput && unittype == null)
+    if (validateInput && unittype == null) {
       throw new IllegalArgumentException("SyslogEvent unittype cannot be null");
+    }
     this.unittype = unittype;
   }
 
@@ -167,17 +168,24 @@ public class SyslogEvent implements Comparable<SyslogEvent> {
 
   public void setEventId(Integer eventId) {
     if (validateInput) {
-      if (eventId == null) throw new IllegalArgumentException("SyslogEvent id cannot be null");
-      if (eventId < 1000)
+      if (eventId == null) {
+        throw new IllegalArgumentException("SyslogEvent id cannot be null");
+      }
+      if (eventId < 1000) {
         throw new IllegalArgumentException(
             "Cannot add syslog events with id 0-999, they are restricted to Fusion");
+      }
     }
-    if (eventId == null) eventId = 0;
+    if (eventId == null) {
+      eventId = 0;
+    }
     this.eventId = eventId;
   }
 
   public void setName(String name) {
-    if (name == null) throw new IllegalArgumentException("SyslogEvent name cannot be null");
+    if (name == null) {
+      throw new IllegalArgumentException("SyslogEvent name cannot be null");
+    }
     this.name = name;
   }
 
@@ -190,9 +198,12 @@ public class SyslogEvent implements Comparable<SyslogEvent> {
   }
 
   public void setExpression(String expression) {
-    if (validateInput && expression == null)
+    if (validateInput && expression == null) {
       throw new IllegalArgumentException("SyslogEvent expression cannot be null");
-    if (expression == null) expression = "Specify an expression";
+    }
+    if (expression == null) {
+      expression = "Specify an expression";
+    }
     String expressionPatternStr = null;
     try {
       expressionPatternStr = expression.replace("*", ".*");
@@ -201,13 +212,13 @@ public class SyslogEvent implements Comparable<SyslogEvent> {
       this.expression = expression;
       this.expressionPattern = Pattern.compile(expressionPatternStr);
     } catch (PatternSyntaxException pse) {
-      if (expressionPatternStr.equals(expression))
+      if (expressionPatternStr.equals(expression)) {
         throw new IllegalArgumentException(
             "SyslogEvent expression "
                 + expression
                 + " could not be parsed into a regular expression: "
                 + pse);
-      else
+      } else {
         throw new IllegalArgumentException(
             "SyslogEvent expression "
                 + expression
@@ -215,6 +226,7 @@ public class SyslogEvent implements Comparable<SyslogEvent> {
                 + expressionPatternStr
                 + ") could not be parsed into a regular expression: "
                 + pse);
+      }
     }
   }
 
@@ -223,16 +235,20 @@ public class SyslogEvent implements Comparable<SyslogEvent> {
   }
 
   public void setScript(File script) {
-    if (validateInput && script != null && script.getType() != FileType.SHELL_SCRIPT)
+    if (validateInput && script != null && script.getType() != FileType.SHELL_SCRIPT) {
       throw new IllegalArgumentException(
           "The script file " + script.getName() + " must be of type SHELL_SCRIPT");
+    }
     this.script = script;
   }
 
   public void setDeleteLimit(Integer deleteLimit) {
-    if (validateInput && deleteLimit != null && deleteLimit < 0)
+    if (validateInput && deleteLimit != null && deleteLimit < 0) {
       throw new IllegalArgumentException("Cannot set syslog limit to less than 0");
-    if (deleteLimit != null && deleteLimit < 0) deleteLimit = null;
+    }
+    if (deleteLimit != null && deleteLimit < 0) {
+      deleteLimit = null;
+    }
     this.deleteLimit = deleteLimit;
   }
 }

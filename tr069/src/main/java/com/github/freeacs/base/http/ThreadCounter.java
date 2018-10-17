@@ -18,13 +18,12 @@ import org.slf4j.LoggerFactory;
  * @author Morten
  */
 public class ThreadCounter {
-
-  private static Map<String, Long> currentSessions = new HashMap<String, Long>();
+  private static Map<String, Long> currentSessions = new HashMap<>();
 
   private static Logger logger = LoggerFactory.getLogger(ThreadCounter.class);
 
   /**
-   * Returns false if a request has not been responded to, and a second request is "counted"
+   * Returns false if a request has not been responded to, and a second request is "counted".
    *
    * @param sessionData
    * @return
@@ -33,9 +32,10 @@ public class ThreadCounter {
     if (sessionData.getUnitId() != null) {
       String unitId = sessionData.getUnitId();
       Long tms = currentSessions.get(unitId);
-      if (tms == null) currentSessions.put(unitId, System.currentTimeMillis());
-      else {
-        long diff = (System.currentTimeMillis() - tms) / 1000l;
+      if (tms == null) {
+        currentSessions.put(unitId, System.currentTimeMillis());
+      } else {
+        long diff = (System.currentTimeMillis() - tms) / 1000L;
         if (diff > 300) { // 5 minutes
           currentSessions.put(unitId, System.currentTimeMillis());
           logger.warn(
@@ -59,13 +59,16 @@ public class ThreadCounter {
   }
 
   public static synchronized void responseDelivered(SessionDataI sessionData) {
-    if (sessionData.getUnitId() != null) currentSessions.remove(sessionData.getUnitId());
+    if (sessionData.getUnitId() != null) {
+      currentSessions.remove(sessionData.getUnitId());
+    }
   }
 
   public static synchronized Map<String, Long> cloneCurrentSessions() {
-    Map<String, Long> currentSessionsClone = new HashMap<String, Long>();
-    for (Entry<String, Long> entry : currentSessions.entrySet())
+    Map<String, Long> currentSessionsClone = new HashMap<>();
+    for (Entry<String, Long> entry : currentSessions.entrySet()) {
       currentSessionsClone.put(entry.getKey(), entry.getValue());
+    }
     return currentSessionsClone;
   }
 

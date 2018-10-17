@@ -12,24 +12,23 @@ import com.github.freeacs.web.app.input.ParameterParser;
  * @author Jarl Andre Hubenthal
  */
 public class ContextItem {
-
   /** The current page. */
   private Page currentPage = Page.NONE;
 
   /** The unit type name. */
-  private String unitTypeName = null;
+  private String unitTypeName;
 
   /** The profile name. */
-  private String profileName = null;
+  private String profileName;
 
   /** The unit id. */
-  private String unitId = null;
+  private String unitId;
 
   /** The group name. */
-  private String groupName = null;
+  private String groupName;
 
   /** The job name. */
-  private String jobName = null;
+  private String jobName;
 
   /** The context unit type editable. */
   private boolean contextUnitTypeEditable = true;
@@ -173,16 +172,26 @@ public class ContextItem {
       case UNIT:
       case UNITSTATUS:
       case WINDOWUNIT:
-        if (unitId != null) return true;
+        if (unitId != null) {
+          return true;
+        }
       case GROUP:
-        if (groupName != null && unitTypeName != null) return true;
+        if (groupName != null && unitTypeName != null) {
+          return true;
+        }
       case JOB:
-        if (jobName != null && unitTypeName != null) return true;
+        if (jobName != null && unitTypeName != null) {
+          return true;
+        }
       case UNITTYPE:
-        if (unitTypeName != null) return true;
+        if (unitTypeName != null) {
+          return true;
+        }
       case WINDOWPROFILE:
       case PROFILE:
-        if (unitTypeName != null && profileName != null) return true;
+        if (unitTypeName != null && profileName != null) {
+          return true;
+        }
       default:
         return false;
     }
@@ -351,9 +360,6 @@ public class ContextItem {
     this.jobName = jobName;
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#equals(java.lang.Object)
-   */
   @Override
   public boolean equals(Object obj) {
     throw new IllegalArgumentException("ContextItem.equals() was not expected to be in use");

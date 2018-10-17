@@ -48,7 +48,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author Jarl Andre Hubenthal
  */
 public abstract class AbstractWebPage implements WebPage {
-
   public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
   protected class ValueHolder {
@@ -60,31 +59,22 @@ public abstract class AbstractWebPage implements WebPage {
   }
 
   /** The page processed. */
-  private boolean pageProcessed = false;
+  private boolean pageProcessed;
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.WebPage#isPageProcessed()
-   */
   @Override
   public boolean isPageProcessed() {
     return pageProcessed;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.WebPage#getTitle(java.lang.String)
-   */
   @Override
   public String getTitle(String page) {
     return ResourceHandler.getProperties().getString("TITLE_DESCRIPTION")
         + (page != null ? " | " + Page.getTitle(page) : "");
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.WebPage#getShortcutItems(com.owera.xaps.web.app.util.SessionData)
-   */
   @Override
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
-    List<MenuItem> list = new ArrayList<MenuItem>();
+    List<MenuItem> list = new ArrayList<>();
     if (StringUtils.isNotEmpty(sessionData.getUnittypeName())) {
       list.add(
           new MenuItem("Go to Unit Type", Page.UNITTYPE)
@@ -106,17 +96,11 @@ public abstract class AbstractWebPage implements WebPage {
     return list;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.WebPage#useWrapping()
-   */
   @Override
   public boolean useWrapping() {
     return false;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.WebPage#requiresNoCache()
-   */
   @Override
   public boolean requiresNoCache() {
     return false;
@@ -150,7 +134,9 @@ public abstract class AbstractWebPage implements WebPage {
   public boolean isProfilesLimited(
       Unittype unittype, String sessionId, DataSource xapsDataSource, DataSource syslogDataSource)
       throws SQLException {
-    if (unittype == null) return false;
+    if (unittype == null) {
+      return false;
+    }
     List<Profile> list = getAllowedProfiles(sessionId, unittype, xapsDataSource, syslogDataSource);
     return list.size() != unittype.getProfiles().getProfiles().length;
   }
@@ -166,8 +152,11 @@ public abstract class AbstractWebPage implements WebPage {
     char[] charArr = string.toCharArray();
     int matchCount = 0;
     for (char c : charArr) {
-      if (c == match) matchCount++;
-      else break;
+      if (c == match) {
+        matchCount++;
+      } else {
+        break;
+      }
     }
     return string.substring(matchCount);
   }
@@ -180,9 +169,11 @@ public abstract class AbstractWebPage implements WebPage {
    * @return the time elapsed
    */
   public static String getTimeElapsed(long start, String msg) {
-    if (msg == null) return null;
+    if (msg == null) {
+      return null;
+    }
     long estimatedTime = System.nanoTime() - start;
-    long ms = estimatedTime / 1000000l;
+    long ms = estimatedTime / 1000000L;
     StringBuilder sb = new StringBuilder();
     Formatter formatter = new Formatter(sb, Locale.US);
     return formatter.format("%s in %d ms", msg, ms).toString();
@@ -221,7 +212,9 @@ public abstract class AbstractWebPage implements WebPage {
         utpNamePart = "." + utpNameArr[i] + utpNamePart;
         for (Entry<Integer, UnittypeParameter> innerEntry : map.entrySet()) {
           String utpName = "." + innerEntry.getValue().getName();
-          if (utpName.endsWith(utpNamePart)) counter++;
+          if (utpName.endsWith(utpNamePart)) {
+            counter++;
+          }
         }
         if (counter == 1) {
           resultMap.put(utpNamePart.substring(1), outerEntry.getValue());
@@ -250,7 +243,9 @@ public abstract class AbstractWebPage implements WebPage {
         utpNamePart = "." + utpNameArr[i] + utpNamePart;
         for (UnittypeParameter innerEntry : map) {
           String utpName = "." + innerEntry.getName();
-          if (utpName.endsWith(utpNamePart)) counter++;
+          if (utpName.endsWith(utpNamePart)) {
+            counter++;
+          }
         }
         if (counter == 1) {
           resultMap.put(utpNamePart.substring(1), outerEntry);
@@ -273,10 +268,6 @@ public abstract class AbstractWebPage implements WebPage {
    * @author Jarl Andre Hubenthal
    */
   public static class LastIndexOfMethod implements TemplateMethodModel {
-
-    /* (non-Javadoc)
-     * @see freemarker.template.TemplateMethodModel#exec(java.util.List)
-     */
     @SuppressWarnings("rawtypes")
     public TemplateModel exec(List args) throws TemplateModelException {
       if (args.size() != 2) {
@@ -286,11 +277,13 @@ public abstract class AbstractWebPage implements WebPage {
       String text = (String) args.get(0);
       String toFind = (String) args.get(1);
 
-      if (toFind.equals(".")) toFind = "\\.";
+      if (".".equals(toFind)) {
+        toFind = "\\.";
+      }
 
       String[] arr = text.split(toFind);
 
-      String result = (arr.length > 1 ? arr[arr.length - 1] : arr[0]);
+      String result = arr.length > 1 ? arr[arr.length - 1] : arr[0];
 
       return new SimpleScalar(result);
     }
@@ -298,7 +291,6 @@ public abstract class AbstractWebPage implements WebPage {
 
   /** The Class GetParameterValue. */
   public static class GetParameterValue implements TemplateMethodModel {
-
     /** The xaps unit. */
     private ACSUnit acsUnit;
 
@@ -312,14 +304,13 @@ public abstract class AbstractWebPage implements WebPage {
     }
 
     /** The units. */
-    Map<String, Unit> units = new HashMap<String, Unit>();
+    Map<String, Unit> units = new HashMap<>();
 
-    /* (non-Javadoc)
-     * @see freemarker.template.TemplateMethodModel#exec(java.util.List)
-     */
     @SuppressWarnings("rawtypes")
     public TemplateModel exec(List args) throws TemplateModelException {
-      if (args.size() < 2) throw new TemplateModelException("Wrong number of arguments");
+      if (args.size() < 2) {
+        throw new TemplateModelException("Wrong number of arguments");
+      }
       String id = (String) args.get(0);
       String name = (String) args.get(1);
       Unit unit = units.get(id);
@@ -332,10 +323,9 @@ public abstract class AbstractWebPage implements WebPage {
         }
       }
       String up = unit.getParameters().get(name);
-      if (up != null && up.trim().length() == 0) {
-        if (unit.getUnitParameters().get(name) != null)
-          return new SimpleScalar(
-              "<span class=\"requiresTitlePopup\" title=\"The unit has overridden the profile value with a blank string\">[blank&nbsp;unit&nbsp;parameter]</span>");
+      if (up != null && up.trim().isEmpty() && unit.getUnitParameters().get(name) != null) {
+        return new SimpleScalar(
+            "<span class=\"requiresTitlePopup\" title=\"The unit has overridden the profile value with a blank string\">[blank&nbsp;unit&nbsp;parameter]</span>");
       }
       return new SimpleScalar(up);
     }
@@ -343,10 +333,6 @@ public abstract class AbstractWebPage implements WebPage {
 
   /** The Class FirstIndexOfMethod. */
   public static class FirstIndexOfMethod implements TemplateMethodModel {
-
-    /* (non-Javadoc)
-     * @see freemarker.template.TemplateMethodModel#exec(java.util.List)
-     */
     @SuppressWarnings("rawtypes")
     public TemplateModel exec(List args) throws TemplateModelException {
       if (args.size() != 2) {
@@ -362,7 +348,6 @@ public abstract class AbstractWebPage implements WebPage {
 
   /** The Class RowBackgroundColorMethod. */
   public static class RowBackgroundColorMethod implements TemplateMethodModel {
-
     /** The GOOD. */
     private String GOOD = TableColor.GREEN.toString();
 
@@ -372,9 +357,6 @@ public abstract class AbstractWebPage implements WebPage {
     /** The CRITICAL. */
     private String CRITICAL = TableColor.RED.toString();
 
-    /* (non-Javadoc)
-     * @see freemarker.template.TemplateMethodModel#exec(java.util.List)
-     */
     @SuppressWarnings("rawtypes")
     public String exec(List arg0) throws TemplateModelException {
       return getStyle(arg0, "background-color:#%s;");
@@ -403,25 +385,29 @@ public abstract class AbstractWebPage implements WebPage {
      * @throws TemplateModelException the template model exception
      */
     private String getStyle(List<?> arg0, String toFormat) throws TemplateModelException {
-      if (arg0.size() < 1) throw new TemplateModelException("Specify total");
+      if (arg0.isEmpty()) {
+        throw new TemplateModelException("Specify total");
+      }
       String totalString = (String) arg0.get(0);
       Float total = Float.parseFloat(totalString);
-      if (total > 80) toFormat = String.format(toFormat, GOOD);
-      else if (total >= 70) toFormat = String.format(toFormat, MEDIUM);
-      else if (total < 70) toFormat = String.format(toFormat, CRITICAL);
+      if (total > 80) {
+        toFormat = String.format(toFormat, GOOD);
+      } else if (total >= 70) {
+        toFormat = String.format(toFormat, MEDIUM);
+      } else if (total < 70) {
+        toFormat = String.format(toFormat, CRITICAL);
+      }
       return toFormat;
     }
   }
 
   /** The Class DivideBy. */
   public static class DivideBy implements TemplateMethodModel {
-
-    /* (non-Javadoc)
-     * @see freemarker.template.TemplateMethodModel#exec(java.util.List)
-     */
     @SuppressWarnings("rawtypes")
     public Float exec(List arg) throws TemplateModelException {
-      if (arg.size() < 2) throw new TemplateModelException("Specify the number and the dividend");
+      if (arg.size() < 2) {
+        throw new TemplateModelException("Specify the number and the dividend");
+      }
       String number = (String) arg.get(0);
       String dividend = (String) arg.get(1);
       if (isNumber(number) && isNumber(dividend)) {
@@ -433,14 +419,11 @@ public abstract class AbstractWebPage implements WebPage {
 
   /** The Class FriendlyTimeRepresentationMethod. */
   public static class FriendlyTimeRepresentationMethod implements TemplateMethodModel {
-
-    /* (non-Javadoc)
-     * @see freemarker.template.TemplateMethodModel#exec(java.util.List)
-     */
     @SuppressWarnings("rawtypes")
     public String exec(List arg) throws TemplateModelException {
-      if (arg.size() < 1)
+      if (arg.isEmpty()) {
         throw new TemplateModelException("Wrong number of arguments given. Seconds needed.");
+      }
       if (isNumber((String) arg.get(0))) {
         int milliseconds = Integer.parseInt((String) arg.get(0)) * 1000;
         return TimeFormatter.convertMs2HourMinSecString(milliseconds);
@@ -457,7 +440,7 @@ public abstract class AbstractWebPage implements WebPage {
    * @return true, if is valid string
    */
   public boolean isValidString(String s) {
-    return s != null && (s = s.trim()).length() > 0 && !s.equals(WebConstants.ALL_ITEMS_OR_DEFAULT);
+    return s != null && !(s = s.trim()).isEmpty() && !WebConstants.ALL_ITEMS_OR_DEFAULT.equals(s);
   }
 
   /**
@@ -467,8 +450,7 @@ public abstract class AbstractWebPage implements WebPage {
    * @return true, if is number
    */
   public static boolean isNumber(String string) {
-    if (string == null) return false;
-    return Pattern.matches("[0-9]+", string);
+    return string != null && Pattern.matches("[0-9]+", string);
   }
 
   /**
@@ -514,13 +496,14 @@ public abstract class AbstractWebPage implements WebPage {
     SessionData sessionData = SessionCache.getSessionData(sessionId);
     List<Unittype> unittypesList = null;
     if (sessionData.getFilteredUnittypes() != null) {
-      List<Unittype> unittypes = new ArrayList<Unittype>();
+      List<Unittype> unittypes = new ArrayList<>();
       Unittype[] xAPSUnittypes = acs.getUnittypes().getUnittypes();
 
       if (sessionData.getFilteredUnittypes().length == 1
           && sessionData.getFilteredUnittypes()[0].getName() != null
-          && sessionData.getFilteredUnittypes()[0].getName().equals("*"))
-        return (unittypesList = Arrays.asList(xAPSUnittypes));
+          && "*".equals(sessionData.getFilteredUnittypes()[0].getName())) {
+        return unittypesList = Arrays.asList(xAPSUnittypes);
+      }
 
       for (Unittype xAPSUnittype : xAPSUnittypes) {
         for (AllowedUnittype ut : sessionData.getFilteredUnittypes()) {
@@ -554,7 +537,9 @@ public abstract class AbstractWebPage implements WebPage {
   public static List<Profile> getAllowedProfiles(
       String sessionId, Unittype unittype, DataSource xapsDataSource, DataSource syslogDataSource)
       throws SQLException {
-    if (unittype == null) return getAllAllowedProfiles(sessionId, xapsDataSource, syslogDataSource);
+    if (unittype == null) {
+      return getAllAllowedProfiles(sessionId, xapsDataSource, syslogDataSource);
+    }
 
     SessionData sessionData = SessionCache.getSessionData(sessionId);
 
@@ -562,22 +547,23 @@ public abstract class AbstractWebPage implements WebPage {
 
     List<Profile> profilesList = null;
     if (sessionData.getFilteredUnittypes() != null) {
-      List<Profile> profiles = new ArrayList<Profile>();
+      List<Profile> profiles = new ArrayList<>();
 
       for (AllowedUnittype ut : sessionData.getFilteredUnittypes()) {
-        if (ut.getId() != null && ut.getId().intValue() != unittype.getId().intValue()) continue;
-        else if (ut.getName() != null && !ut.getName().trim().equals(unittype.getName())) continue;
-        else {
-          if (ut.getProfile() == null) continue;
+        if ((ut.getId() != null && ut.getId().intValue() != unittype.getId().intValue())
+            || (ut.getName() != null && !ut.getName().trim().equals(unittype.getName()))) {
+          continue;
+        } else {
+          if (ut.getProfile() == null) {
+            continue;
+          }
           for (Profile profile : allProfiles) {
-            if (ut.getProfile().getId() != null
-                && ut.getProfile().getId().intValue() == profile.getId().intValue()
-                && !profiles.contains(profile)) {
-              profiles.add(profile);
-              break;
-            } else if (ut.getProfile().getName() != null
-                && ut.getProfile().getName().trim().equals(profile.getName())
-                && !profiles.contains(profile)) {
+            if ((ut.getProfile().getId() != null
+                    && ut.getProfile().getId().intValue() == profile.getId().intValue()
+                    && !profiles.contains(profile))
+                || (ut.getProfile().getName() != null
+                    && ut.getProfile().getName().trim().equals(profile.getName())
+                    && !profiles.contains(profile))) {
               profiles.add(profile);
               break;
             }
@@ -589,7 +575,9 @@ public abstract class AbstractWebPage implements WebPage {
       profilesList = Arrays.asList(unittype.getProfiles().getProfiles());
     }
 
-    if (profilesList.size() == 0) return Arrays.asList(allProfiles);
+    if (profilesList.isEmpty()) {
+      return Arrays.asList(allProfiles);
+    }
     return profilesList;
   }
 
@@ -606,11 +594,13 @@ public abstract class AbstractWebPage implements WebPage {
       String sessionId, DataSource xapsDataSource, DataSource syslogDataSource)
       throws SQLException {
     List<Unittype> unittypes = getAllowedUnittypes(sessionId, xapsDataSource, syslogDataSource);
-    List<Profile> filteredProfiles = new ArrayList<Profile>();
+    List<Profile> filteredProfiles = new ArrayList<>();
     for (Unittype unittype : unittypes) {
       List<Profile> profiles =
           getAllowedProfiles(sessionId, unittype, xapsDataSource, syslogDataSource);
-      if (profiles != null) filteredProfiles.addAll(profiles);
+      if (profiles != null) {
+        filteredProfiles.addAll(profiles);
+      }
     }
     return filteredProfiles;
   }

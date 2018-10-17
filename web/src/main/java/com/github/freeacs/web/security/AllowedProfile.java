@@ -13,7 +13,7 @@ public class AllowedProfile {
   /** The id. */
   private Integer id;
 
-  /** OR */
+  /** OR. */
 
   /** The name. */
   private String name;

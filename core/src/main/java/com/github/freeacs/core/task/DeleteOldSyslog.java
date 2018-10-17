@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DeleteOldSyslog extends DBIShare {
-
   private final Properties properties;
   private ACS acs;
 
@@ -35,24 +34,25 @@ public class DeleteOldSyslog extends DBIShare {
     removeOldSyslogEntries();
   }
 
-  /*
-   * 1. Find all eventIdLimits longer than 0 (which is default)
-   * 2. Iterate through severities (0-7), for each severity
-   * 2.1. Find all eventIdLimits longer than severityLimit -> put eventId in a list
-   * 2.2. Delete appropriate syslog statements
-   * 3. Iterate trough evetIds, for each eventId
-   * 3.1. Find all severityLimits longer than eventIdLimits -> put severity in a list
-   * 3.2. Delete appropriate syslog statments
+  /**
+   * 1. Find all eventIdLimits longer than 0 (which is default) 2. Iterate through severities (0-7),
+   * for each severity 2.1. Find all eventIdLimits longer than severityLimit -> put eventId in a
+   * list 2.2. Delete appropriate syslog statements 3. Iterate trough evetIds, for each eventId 3.1.
+   * Find all severityLimits longer than eventIdLimits -> put severity in a list 3.2. Delete
+   * appropriate syslog statments
    */
   private void removeOldSyslogEntries() throws SQLException {
     // 1.
     Unittype[] unittypeArr = acs.getUnittypes().getUnittypes();
-    List<SyslogEvent> events = new ArrayList<SyslogEvent>();
+    List<SyslogEvent> events = new ArrayList<>();
     for (Unittype ut : unittypeArr) {
       SyslogEvent[] eventArr = ut.getSyslogEvents().getSyslogEvents();
       for (SyslogEvent event : eventArr) {
-        if (event.getEventId() < 1000) continue;
-        else events.add(event);
+        if (event.getEventId() < 1000) {
+          continue;
+        } else {
+          events.add(event);
+        }
       }
     }
     // 2.
@@ -109,14 +109,12 @@ public class DeleteOldSyslog extends DBIShare {
                       + " - "
                       + toCal.getTime());
             }
-          } else {
-            if (logger.isInfoEnabled()) {
-              logger.info(
-                  "DeleteOldSyslog: "
-                      + rowsDeleted
-                      + " rows were deleted from the syslog table from beginning - "
-                      + toCal.getTime());
-            }
+          } else if (logger.isInfoEnabled()) {
+            logger.info(
+                "DeleteOldSyslog: "
+                    + rowsDeleted
+                    + " rows were deleted from the syslog table from beginning - "
+                    + toCal.getTime());
           }
           if (rowsDeleted == 500000) {
             loopCounter++;
@@ -141,13 +139,13 @@ public class DeleteOldSyslog extends DBIShare {
     }
   }
 
-  /*
+  /**
    * This method has been a lot more complex than initially intended. The reason is that deleting
    * rows in MySQL seems to be a major hassle. In an attempt to be nice to the database, we will not
    * delete all rows in one go. That why we delete only 10K or 100K rows at a time. However, to
    * match the indexes properly, we have put in a time frame (period) which makes the queries
-   * (somewhat surprisingly) faster. The whole logic attempts to work it's way through the
-   * syslog database back until there's is no more data.
+   * (somewhat surprisingly) faster. The whole logic attempts to work it's way through the syslog
+   * database back until there's is no more data.
    */
   private void removeOldSyslogEntriesSeverityBased(List<SyslogEvent> events) throws SQLException {
     // 2.
@@ -168,7 +166,7 @@ public class DeleteOldSyslog extends DBIShare {
       fromCal.roll(Calendar.DAY_OF_MONTH, -1);
 
       // 2.1.
-      List<SyslogEvent> eventList = new ArrayList<SyslogEvent>();
+      List<SyslogEvent> eventList = new ArrayList<>();
       String eventListStr = "";
       for (SyslogEvent event : events) {
         // limit for the eventId is longer than the severity limit - add event id to list
@@ -215,14 +213,12 @@ public class DeleteOldSyslog extends DBIShare {
                     + " - "
                     + toCal.getTime());
           }
-        } else {
-          if (logger.isInfoEnabled()) {
-            logger.info(
-                "DeleteOldSyslog: "
-                    + rowsDeleted
-                    + " rows were deleted from the syslog table from beginning - "
-                    + toCal.getTime());
-          }
+        } else if (logger.isInfoEnabled()) {
+          logger.info(
+              "DeleteOldSyslog: "
+                  + rowsDeleted
+                  + " rows were deleted from the syslog table from beginning - "
+                  + toCal.getTime());
         }
         if (rowsDeleted == 500000) {
           loopCounter++;

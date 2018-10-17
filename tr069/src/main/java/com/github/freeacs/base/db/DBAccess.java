@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 public class DBAccess {
-
   private final DataSource mainDataSource;
   private final DataSource syslogDataSource;
   private final String facilityVersion;
@@ -56,7 +55,7 @@ public class DBAccess {
   }
 
   public static Job getJob(SessionDataI sessionData, String id) {
-    return sessionData.getUnittype().getJobs().getById(new Integer(id));
+    return sessionData.getUnittype().getJobs().getById(Integer.valueOf(id));
   }
 
   static void handleError(String method, Throwable t) throws SQLException {

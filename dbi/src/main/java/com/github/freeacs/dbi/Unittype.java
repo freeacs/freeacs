@@ -12,7 +12,6 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 public class Unittype implements Comparable<Unittype> {
-
   public enum ProvisioningProtocol {
     TR069,
     HTTP,
@@ -21,8 +20,12 @@ public class Unittype implements Comparable<Unittype> {
     TFTP;
 
     public static ProvisioningProtocol toEnum(String s) {
-      if (s == null || s.equals("TR-069")) return TR069;
-      if (s.equals("N/A")) return NA;
+      if (s == null || "TR-069".equals(s)) {
+        return TR069;
+      }
+      if ("N/A".equals(s)) {
+        return NA;
+      }
       return valueOf(s);
     }
   }
@@ -45,7 +48,7 @@ public class Unittype implements Comparable<Unittype> {
 
   private Files files;
 
-  private boolean toBeDeleted = false;
+  private boolean toBeDeleted;
 
   private Groups groups;
 
@@ -60,8 +63,9 @@ public class Unittype implements Comparable<Unittype> {
   private ACS acs;
 
   public Unittype(String name, String vendor, String desc, ProvisioningProtocol protocol) {
-    if (name == null || name.trim().equals(""))
+    if (name == null || "".equals(name.trim())) {
       throw new IllegalArgumentException("Unittype name cannot be null or an empty string");
+    }
     this.name = name;
     this.vendor = vendor;
     this.description = desc;
@@ -69,7 +73,7 @@ public class Unittype implements Comparable<Unittype> {
   }
 
   /**
-   * Only to be used internally (to shape ACS object according to permissions)
+   * Only to be used internally (to shape ACS object according to permissions).
    *
    * @param p
    * @return
@@ -80,8 +84,9 @@ public class Unittype implements Comparable<Unittype> {
 
     for (Group group : getGroups().getGroups()) {
       if (group.getTopParent().getProfile() == null
-          || !group.getTopParent().getProfile().getId().equals(p.getId()))
+          || !group.getTopParent().getProfile().getId().equals(p.getId())) {
         groups.removeGroupFromDataModel(group);
+      }
     }
 
     for (Job job : getJobs().getJobs()) {
@@ -113,7 +118,7 @@ public class Unittype implements Comparable<Unittype> {
 
   public Profiles getProfiles() {
     if (profiles == null) {
-      Map<Integer, Profile> idMap = new HashMap<Integer, Profile>();
+      Map<Integer, Profile> idMap = new HashMap<>();
       MapWrapper<Profile> mw = new MapWrapper<Profile>(acs.isStrictOrder());
       Map<String, Profile> nameMap = mw.getMap();
       profiles = new Profiles(idMap, nameMap);
@@ -136,7 +141,7 @@ public class Unittype implements Comparable<Unittype> {
 
   public UnittypeParameters getUnittypeParameters() {
     if (unittypeParameters == null) {
-      Map<Integer, UnittypeParameter> idMap = new HashMap<Integer, UnittypeParameter>();
+      Map<Integer, UnittypeParameter> idMap = new HashMap<>();
       MapWrapper<UnittypeParameter> mw = new MapWrapper<UnittypeParameter>(acs.isStrictOrder());
       Map<String, UnittypeParameter> nameMap = mw.getMap();
       unittypeParameters = new UnittypeParameters(idMap, nameMap, this);
@@ -185,7 +190,7 @@ public class Unittype implements Comparable<Unittype> {
 
   public Heartbeats getHeartbeats() {
     if (heartbeats == null) {
-      Map<Integer, Heartbeat> idMap = new HashMap<Integer, Heartbeat>();
+      Map<Integer, Heartbeat> idMap = new HashMap<>();
       MapWrapper<Heartbeat> mw = new MapWrapper<Heartbeat>(acs.isStrictOrder());
       Map<String, Heartbeat> nameMap = mw.getMap();
       heartbeats = new Heartbeats(idMap, nameMap, this);
@@ -199,7 +204,7 @@ public class Unittype implements Comparable<Unittype> {
 
   public Triggers getTriggers() {
     if (triggers == null) {
-      Map<Integer, Trigger> idMap = new HashMap<Integer, Trigger>();
+      Map<Integer, Trigger> idMap = new HashMap<>();
       MapWrapper<Trigger> mw = new MapWrapper<Trigger>(acs.isStrictOrder());
       Map<String, Trigger> nameMap = mw.getMap();
       triggers = new Triggers(idMap, nameMap, this);
@@ -213,7 +218,7 @@ public class Unittype implements Comparable<Unittype> {
 
   public Groups getGroups() {
     if (groups == null) {
-      Map<Integer, Group> idMap = new HashMap<Integer, Group>();
+      Map<Integer, Group> idMap = new HashMap<>();
       MapWrapper<Group> mw = new MapWrapper<Group>(acs.isStrictOrder());
       Map<String, Group> nameMap = mw.getMap();
       groups = new Groups(idMap, nameMap, this);
@@ -243,7 +248,9 @@ public class Unittype implements Comparable<Unittype> {
   }
 
   public void setName(String name) {
-    if (!name.equals(this.name)) this.oldName = this.name;
+    if (!name.equals(this.name)) {
+      this.oldName = this.name;
+    }
     this.name = name;
   }
 
@@ -252,7 +259,9 @@ public class Unittype implements Comparable<Unittype> {
   }
 
   public void setProtocol(ProvisioningProtocol protocol) {
-    if (protocol == null) throw new IllegalArgumentException("Unittype must specify protocol");
+    if (protocol == null) {
+      throw new IllegalArgumentException("Unittype must specify protocol");
+    }
     this.protocol = protocol;
   }
 
@@ -262,7 +271,7 @@ public class Unittype implements Comparable<Unittype> {
 
   public Jobs getJobs() {
     if (jobs == null) {
-      Map<Integer, Job> idMap = new HashMap<Integer, Job>();
+      Map<Integer, Job> idMap = new HashMap<>();
       MapWrapper<Job> mw = new MapWrapper<Job>(acs.isStrictOrder());
       Map<String, Job> nameMap = mw.getMap();
       jobs = new Jobs(idMap, nameMap, this);
@@ -275,17 +284,19 @@ public class Unittype implements Comparable<Unittype> {
   }
 
   public int compareTo(Unittype o) {
-    if (o != null) return this.getName().compareTo(o.getName());
+    if (o != null) {
+      return getName().compareTo(o.getName());
+    }
     return 0;
   }
 
   protected int ensureValidSystemParameters(ACS acs) throws SQLException {
     int changedParams = 0;
     if (acs.getDbi() != null) { // Will not run on startup (initialization case)
-      List<UnittypeParameter> utpList = new ArrayList<UnittypeParameter>();
+      List<UnittypeParameter> utpList = new ArrayList<>();
       for (Entry<String, UnittypeParameterFlag> entry :
           SystemParameters.commonParameters.entrySet()) {
-        UnittypeParameter utp = this.getUnittypeParameters().getByName(entry.getKey());
+        UnittypeParameter utp = getUnittypeParameters().getByName(entry.getKey());
         UnittypeParameterFlag newFlag = entry.getValue();
         if (utp == null) {
           utpList.add(new UnittypeParameter(this, entry.getKey(), entry.getValue()));
@@ -296,7 +307,7 @@ public class Unittype implements Comparable<Unittype> {
           changedParams++;
         }
       }
-      this.getUnittypeParameters().addOrChangeUnittypeParameters(utpList, acs);
+      getUnittypeParameters().addOrChangeUnittypeParameters(utpList, acs);
     }
     return changedParams;
   }

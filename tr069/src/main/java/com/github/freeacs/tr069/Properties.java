@@ -5,7 +5,6 @@ import com.typesafe.config.Config;
 import org.apache.commons.lang3.StringUtils;
 
 public class Properties {
-
   public static String DIGEST_SECRET;
   public static boolean FILE_AUTH_USED;
   public static boolean DISCOVERY_MODE;
@@ -31,10 +30,10 @@ public class Properties {
 
   private <T> T getOrDefault(String key, T defaultValue) {
     Object obj = environment.hasPath(key) ? environment.getAnyRef(key) : null;
-    if (obj == null) {
-      return defaultValue;
+    if (obj != null) {
+      return (T) obj;
     }
-    return (T) obj;
+    return defaultValue;
   }
 
   private void setContextPath(String contextPath) {
@@ -105,7 +104,9 @@ public class Properties {
       return false;
     }
     for (String quirk : getQuirks(unittypeName, version)) {
-      if (quirk.equals(quirkName)) return true;
+      if (quirk.equals(quirkName)) {
+        return true;
+      }
     }
     return false;
   }
@@ -118,9 +119,11 @@ public class Properties {
     if (quirks == null && environment.hasPath("quirks." + unittypeName)) {
       quirks = environment.getString("quirks." + unittypeName);
     }
-    if (quirks == null) {
+    if (quirks != null) {
+      return quirks.split("\\s*,\\s*");
+    } else {
       return new String[0];
-    } else return quirks.split("\\s*,\\s*");
+    }
   }
 
   public String getContextPath() {

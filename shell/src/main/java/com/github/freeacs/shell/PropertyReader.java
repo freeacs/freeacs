@@ -13,21 +13,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PropertyReader {
-
   private static final String RELOAD_INTERVAL_MIN = "reload.interval-minutes";
   private static final String RELOAD_INTERVAL_SEC = "reload.interval-seconds";
   private static final long RELOAD_INTERVAL_DEFAULT = 30 * 1000;
 
-  private static Map<String, Object> properties = new HashMap<String, Object>();
+  private static Map<String, Object> properties = new HashMap<>();
   private static Logger logger = LoggerFactory.getLogger(PropertyReader.class);
   private String propertyfile;
 
-  public PropertyReader(String propertyfile) throws PropertyReaderException {
+  public PropertyReader(String propertyfile) {
     this.propertyfile = propertyfile;
-    if (properties.get(propertyfile) == null) readProperties();
+    if (properties.get(propertyfile) == null) {
+      readProperties();
+    }
   }
 
-  private synchronized void readProperties() throws PropertyReaderException {
+  private synchronized void readProperties() {
     String searchName = propertyfile;
     InputStream stream = null;
     try {
@@ -56,7 +57,9 @@ public class PropertyReader {
         stream = cl.getResourceAsStream(searchName);
         while (stream == null) {
           cl = cl.getParent();
-          if (cl == null) break;
+          if (cl == null) {
+            break;
+          }
           stream = cl.getResourceAsStream(searchName);
         }
       }
@@ -66,25 +69,31 @@ public class PropertyReader {
         InputStreamReader is = new InputStreamReader(stream);
         BufferedReader br = new BufferedReader(is);
         String line;
-        while (true) {
+        do {
           try {
             line = br.readLine();
           } catch (IOException ioe) {
             break;
           }
-          if (line == null) break;
-          if (line.startsWith("#")) continue;
+          if (line == null) {
+            break;
+          }
+          if (line.startsWith("#")) {
+            continue;
+          }
           if (line.indexOf('=') > 0) {
             String key = line.substring(0, line.indexOf('='));
             key = key.trim();
             String value = line.substring(line.indexOf('=') + 1);
             value = value.trim();
-            if (key.length() > 0) keys.put(key, ("".equals(value) ? null : value));
+            if (!key.isEmpty()) {
+              keys.put(key, "".equals(value) ? null : value);
+            }
           } else {
             String key = line.trim();
             keys.put(key, null);
           }
-        }
+        } while (true);
         properties.put(propertyfile + "REFRESH", System.currentTimeMillis());
         properties.put(propertyfile, keys);
       } else {
@@ -101,7 +110,9 @@ public class PropertyReader {
       }
     } finally {
       try {
-        if (stream != null) stream.close();
+        if (stream != null) {
+          stream.close();
+        }
       } catch (Throwable t) {
         // do nothing
       }
@@ -113,27 +124,33 @@ public class PropertyReader {
       PropertyReader pr = new PropertyReader(propertyfile);
       pr.readProperties();
     } catch (PropertyReaderException pre) {
-      if (properties.size() > 0)
+      if (!properties.isEmpty()) {
         logger.warn(
             "Could not refresh "
                 + propertyfile
                 + ", possibly the file was deleted. Continue using old data");
-      else logger.error("Could not refresh " + propertyfile);
+      } else {
+        logger.error("Could not refresh " + propertyfile);
+      }
     }
   }
 
   @SuppressWarnings("rawtypes")
   public String getProperty(String propertykey) {
-    if (!(propertykey.equals(RELOAD_INTERVAL_MIN) || propertykey.equals(RELOAD_INTERVAL_SEC))) {
-      if (isRefreshRequired()) refreshCache(propertyfile);
+    if (!RELOAD_INTERVAL_MIN.equals(propertykey)
+        && !RELOAD_INTERVAL_SEC.equals(propertykey)
+        && isRefreshRequired()) {
+      refreshCache(propertyfile);
     }
     Map hm = (Map) properties.get(propertyfile);
     String prop = (String) hm.get(propertykey);
-    if (prop != null && !prop.equals("")) return prop;
-    else return prop;
+    if (prop != null && !"".equals(prop)) {
+      return prop;
+    }
+    return prop;
   }
 
-  // Should return ms interval
+  /** Should return ms interval. */
   private Long getReloadInterval() {
     long reloadIntervalL = RELOAD_INTERVAL_DEFAULT;
     String reloadInterval = getProperty(RELOAD_INTERVAL_MIN);

@@ -25,20 +25,12 @@ import javax.sql.DataSource;
  * @author Jarl Andre Hubenthal
  */
 public class JobsPage extends AbstractWebPage {
-
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.AbstractWebPage#getShortcutItems(com.owera.xaps.web.app.util.SessionData)
-   */
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
-    List<MenuItem> list = new ArrayList<MenuItem>();
-    list.addAll(super.getShortcutItems(sessionData));
+    List<MenuItem> list = new ArrayList<>(super.getShortcutItems(sessionData));
     list.add(new MenuItem("Create new Job", Page.JOB).addCommand("create"));
     return list;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
-   */
   public void process(
       ParameterParser req,
       Output outputHandler,
@@ -67,9 +59,12 @@ public class JobsPage extends AbstractWebPage {
     root.put("unittypes", InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs));
 
     Unittype unittype = null;
-    if (inputData.getUnittype().notNullNorValue(WebConstants.ALL_ITEMS_OR_DEFAULT))
+    if (inputData.getUnittype().notNullNorValue(WebConstants.ALL_ITEMS_OR_DEFAULT)) {
       unittype = acs.getUnittype(inputData.getUnittype().getString());
-    if (unittype != null) root.put("params", new TableElementMaker().getJobs(unittype));
+    }
+    if (unittype != null) {
+      root.put("params", new TableElementMaker().getJobs(unittype));
+    }
 
     outputHandler.setTemplatePath("job/list");
   }

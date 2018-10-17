@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ReportGenerator {
-
   private static Logger logger = LoggerFactory.getLogger(ReportGenerator.class);
 
   protected TmsConverter converter = new TmsConverter();
@@ -37,15 +36,16 @@ public class ReportGenerator {
   protected Identity id;
   protected String logPrefix = "";
 
-  /* report filters - make report based on these parameters (if possible) */
-  protected PeriodType periodType = null;
-  protected Date start = null;
-  protected Date end = null;
-  protected List<Unittype> unittypes = null;
-  protected List<Profile> profiles = null;
-  protected Group group = null;
-  protected String swVersion = null;
-  protected SyslogFilter syslogFilter = null;
+  /** Report filters - make report based on these parameters (if possible). */
+  protected PeriodType periodType;
+
+  protected Date start;
+  protected Date end;
+  protected List<Unittype> unittypes;
+  protected List<Profile> profiles;
+  protected Group group;
+  protected String swVersion;
+  protected SyslogFilter syslogFilter;
 
   public void resetFilters() {
     periodType = null;
@@ -67,7 +67,9 @@ public class ReportGenerator {
     this.mainDataSource = mainDataSource;
     this.acs = acs;
     this.id = id;
-    if (logPrefix != null) this.logPrefix = logPrefix;
+    if (logPrefix != null) {
+      this.logPrefix = logPrefix;
+    }
   }
 
   protected DynamicStatement selectReportSQL(
@@ -78,14 +80,15 @@ public class ReportGenerator {
       List<Unittype> uts,
       List<Profile> prs) {
     DynamicStatement ds = new DynamicStatement();
-    if (pt == PeriodType.MONTH)
+    if (pt == PeriodType.MONTH) {
       ds.addSqlAndArguments(
           "select * from " + tableName + " where period_type = ? and ",
           PeriodType.DAY.getTypeInt());
-    else
+    } else {
       ds.addSqlAndArguments(
           "select * from " + tableName + " where period_type = ? and ", pt.getTypeInt());
-    if (prs != null && prs.size() > 0) {
+    }
+    if (prs != null && !prs.isEmpty()) {
       ds.addSql("(");
       for (Profile p : prs) {
         ds.addSqlAndArguments(
@@ -95,20 +98,25 @@ public class ReportGenerator {
       }
       if (id.getUser().getUsername().equals(Users.USER_ADMIN)) {
         int numberOfProfiles = 0;
-        for (Unittype ut : acs.getUnittypes().getUnittypes())
+        for (Unittype ut : acs.getUnittypes().getUnittypes()) {
           numberOfProfiles += ut.getProfiles().getProfiles().length;
-        if (prs.size() >= numberOfProfiles)
+        }
+        if (prs.size() >= numberOfProfiles) {
           ds.addSqlAndArguments(
               "(unit_type_name = ? and profile_name = ?) or ", "Unknown", "Unknown");
+        }
       }
       ds.cleanupSQLTail();
       ds.addSql(") and ");
-    } else if (uts != null && uts.size() > 0) {
+    } else if (uts != null && !uts.isEmpty()) {
       ds.addSql("(");
-      for (Unittype ut : uts) ds.addSqlAndArguments("unit_type_name = ? or ", ut.getName());
+      for (Unittype ut : uts) {
+        ds.addSqlAndArguments("unit_type_name = ? or ", ut.getName());
+      }
       if (id.getUser().getUsername().equals(Users.USER_ADMIN)
-          && uts.size() >= acs.getUnittypes().getUnittypes().length)
+          && uts.size() >= acs.getUnittypes().getUnittypes().length) {
         ds.addSqlAndArguments("unit_type_name = ? or ", "Unknown");
+      }
       ds.cleanupSQLTail();
       ds.addSql(") and ");
     }
@@ -128,8 +136,12 @@ public class ReportGenerator {
       }
       ds.addSqlAndArguments("timestamp_ >= ?  and ", cal.getTime());
     }
-    if (end != null) ds.addSqlAndArguments("timestamp_ < ? and ", end);
-    if (swVersion != null) ds.addSqlAndArguments("software_version = ?", swVersion);
+    if (end != null) {
+      ds.addSqlAndArguments("timestamp_ < ? and ", end);
+    }
+    if (swVersion != null) {
+      ds.addSqlAndArguments("software_version = ?", swVersion);
+    }
     ds.cleanupSQLTail();
     return ds;
   }
@@ -141,7 +153,7 @@ public class ReportGenerator {
     PreparedStatement ps = null;
     ResultSet rs = null;
     SQLException sqle = null;
-    List<String> swVersionList = new ArrayList<String>();
+    List<String> swVersionList = new ArrayList<>();
     try {
       connection = mainDataSource.getConnection();
       DynamicStatement ds = new DynamicStatement();
@@ -155,20 +167,30 @@ public class ReportGenerator {
       startCal.set(Calendar.MILLISECOND, 0);
       endCal.set(Calendar.HOUR_OF_DAY, endCal.get(Calendar.HOUR_OF_DAY) + 1);
       ds.addSqlAndArguments("timestamp_ >= ? and timestamp_ < ? ", startCal, endCal);
-      if (unittype != null) ds.addSqlAndArguments("and unit_type_name = ? ", unittype.getName());
-      if (profile != null) ds.addSqlAndArguments("and profile_name = ? ", profile.getName());
+      if (unittype != null) {
+        ds.addSqlAndArguments("and unit_type_name = ? ", unittype.getName());
+      }
+      if (profile != null) {
+        ds.addSqlAndArguments("and profile_name = ? ", profile.getName());
+      }
       ds.addSql(" order by software_version asc");
       ps = ds.makePreparedStatement(connection);
       ps.setFetchSize(1);
       rs = ps.executeQuery();
-      while (rs.next()) swVersionList.add(rs.getString("software_version"));
+      while (rs.next()) {
+        swVersionList.add(rs.getString("software_version"));
+      }
       return swVersionList;
     } catch (SQLException sqlex) {
       sqle = sqlex;
       throw sqlex;
     } finally {
-      if (rs != null) rs.close();
-      if (ps != null) ps.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.close();
       }
@@ -192,7 +214,7 @@ public class ReportGenerator {
     SQLException sqle = null;
     try {
       long now = System.currentTimeMillis();
-      long twoDaysAgo = now - 2l * 86400l * 1000l;
+      long twoDaysAgo = now - 2L * 86400L * 1000L;
       connection = mainDataSource.getConnection();
       DynamicStatement ds = new DynamicStatement();
       ds.addSqlAndArguments(
@@ -220,8 +242,12 @@ public class ReportGenerator {
       sqle = sqlex;
       throw sqlex;
     } finally {
-      if (rs != null) rs.close();
-      if (ps != null) ps.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.close();
       }
@@ -229,7 +255,7 @@ public class ReportGenerator {
   }
 
   public Map<String, Unit> getUnitsInGroup(Group group) throws SQLException {
-    Map<String, Unit> unitsInGroup = new HashMap<String, Unit>();
+    Map<String, Unit> unitsInGroup = new HashMap<>();
     if (group != null) {
       ACSUnit acsUnit = new ACSUnit(mainDataSource, acs, acs.getSyslog());
       unitsInGroup = acsUnit.getUnits(group);
@@ -264,7 +290,9 @@ public class ReportGenerator {
             new RecordUnit(start, periodType, unittypeName, profileName, softwareVersion, status);
         Key key = recordTmp.getKey();
         RecordUnit record = report.getRecord(key);
-        if (record == null) record = recordTmp;
+        if (record == null) {
+          record = recordTmp;
+        }
         record.getUnitCount().set(rs.getInt("unit_count"));
         report.setRecord(key, record);
       }
@@ -282,8 +310,12 @@ public class ReportGenerator {
       sqle = sqlex;
       throw sqlex;
     } finally {
-      if (rs != null) rs.close();
-      if (ps != null) ps.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.close();
       }
@@ -315,7 +347,9 @@ public class ReportGenerator {
         RecordJob recordTmp = new RecordJob(start, periodType, unittypeName, jobName, groupName);
         Key key = recordTmp.getKey();
         RecordJob record = report.getRecord(key);
-        if (record == null) record = recordTmp;
+        if (record == null) {
+          record = recordTmp;
+        }
         record.getCompleted().set(rs.getInt("completed"));
         record.getGroupSize().set(rs.getInt("group_size"));
         record.getConfirmedFailed().set(rs.getInt("confirmed_failed"));
@@ -336,8 +370,12 @@ public class ReportGenerator {
       sqle = sqlex;
       throw sqlex;
     } finally {
-      if (rs != null) rs.close();
-      if (ps != null) ps.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.close();
       }
@@ -352,9 +390,15 @@ public class ReportGenerator {
       Date start,
       Date end) {
     String msg = logPrefix + reportType + ": Will generate from syslog (";
-    if (unitId != null) msg += "unitId: " + unitId + ", ";
-    if (uts != null) msg += "unittypes: " + uts.size() + ", ";
-    if (prs != null) msg += "profile: " + prs.size() + ", ";
+    if (unitId != null) {
+      msg += "unitId: " + unitId + ", ";
+    }
+    if (uts != null) {
+      msg += "unittypes: " + uts.size() + ", ";
+    }
+    if (prs != null) {
+      msg += "profile: " + prs.size() + ", ";
+    }
     msg += start + " - " + end + ")";
 
     logger.info(msg);

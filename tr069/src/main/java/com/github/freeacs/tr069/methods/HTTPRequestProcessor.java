@@ -22,8 +22,7 @@ import java.util.regex.Pattern;
  * @author Morten
  */
 public class HTTPRequestProcessor {
-
-  private static TR069DMParameterMap tr069ParameterMap = null;
+  private static TR069DMParameterMap tr069ParameterMap;
 
   public static TR069DMParameterMap getTR069ParameterMap() throws Exception {
     if (tr069ParameterMap == null) {
@@ -49,7 +48,9 @@ public class HTTPRequestProcessor {
       throws TR069Exception {
     try {
       String requestMethodName = extractMethodName(reqRes.getRequest().getXml());
-      if (requestMethodName == null) requestMethodName = TR069Method.EMPTY;
+      if (requestMethodName == null) {
+        requestMethodName = TR069Method.EMPTY;
+      }
       reqRes.getRequest().setMethod(requestMethodName);
       Log.debug(
           HTTPRequestProcessor.class,
@@ -62,16 +63,19 @@ public class HTTPRequestProcessor {
         throw new UnknownMethodException(requestMethodName);
       }
     } catch (Throwable t) {
-      if (t instanceof TR069Exception) throw (TR069Exception) t;
-      if (t instanceof NoDataAvailableException)
+      if (t instanceof TR069Exception) {
+        throw (TR069Exception) t;
+      }
+      if (t instanceof NoDataAvailableException) {
         throw new TR069Exception(
             "Device was not found in database - can only provision device if in server is in discovery mode and device supports basic authentication",
             TR069ExceptionShortMessage.NODATA);
-      else
+      } else {
         throw new TR069Exception(
             "Could not process HTTP-request (from TR-069 client)",
             TR069ExceptionShortMessage.MISC,
             t);
+      }
     } finally {
       if (reqRes.getRequest().getMethod() == null) {
         reqRes.getRequest().setMethod(TR069Method.EMPTY);
@@ -80,8 +84,9 @@ public class HTTPRequestProcessor {
       if (Log.isConversationLogEnabled()) {
         String unitId = reqRes.getSessionData().getUnitId();
         String xml = reqRes.getRequest().getXml();
-        if (properties.isPrettyPrintQuirk(reqRes.getSessionData()))
+        if (properties.isPrettyPrintQuirk(reqRes.getSessionData())) {
           xml = HTTPReqData.XMLFormatter.prettyprint(reqRes.getRequest().getXml());
+        }
         Log.conversation(
             reqRes.getSessionData(),
             "============== FROM CPE ( "
@@ -106,8 +111,9 @@ public class HTTPRequestProcessor {
    */
   static String extractMethodName(String reqStr) {
     String methodStr = getMethodStr(reqStr);
-    if (methodStr != null && methodStr.endsWith("Response"))
+    if (methodStr != null && methodStr.endsWith("Response")) {
       methodStr = methodStr.substring(0, methodStr.length() - 8);
+    }
     return methodStr;
   }
 

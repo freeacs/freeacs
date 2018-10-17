@@ -8,7 +8,6 @@
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
  */
-
 package de.javawi.jstun.attribute;
 
 import de.javawi.jstun.util.Address;
@@ -19,17 +18,13 @@ public class MappedResponseChangedSourceAddressReflectedFrom extends MessageAttr
   int port;
   Address address;
 
-  /*
-   *  0                   1                   2                   3
-   *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-   * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   * |x x x x x x x x|    Family     |           Port                |
-   * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   * |                             Address                           |
-   * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  /**
+   * 0 1 2 3 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |x x x x x x x x| Family |
+   * Port | +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ | Address |
+   * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+.
    */
   public MappedResponseChangedSourceAddressReflectedFrom() {
-    super();
     try {
       port = 0;
       address = new Address("0.0.0.0");
@@ -53,7 +48,7 @@ public class MappedResponseChangedSourceAddressReflectedFrom extends MessageAttr
   }
 
   public void setPort(int port) throws MessageAttributeException {
-    if ((port > 65536) || (port < 0)) {
+    if (port > 65536 || port < 0) {
       throw new MessageAttributeException("Port value " + port + " out of range.");
     }
     this.port = port;
@@ -89,8 +84,9 @@ public class MappedResponseChangedSourceAddressReflectedFrom extends MessageAttr
         throw new MessageAttributeParsingException("Data array too short");
       }
       int family = Utility.oneByteToInteger(data[1]);
-      if (family != 0x01)
+      if (family != 0x01) {
         throw new MessageAttributeParsingException("Family " + family + " is not supported");
+      }
       byte[] portArray = new byte[2];
       System.arraycopy(data, 2, portArray, 0, 2);
       ma.setPort(Utility.twoBytesToInteger(portArray));
@@ -108,6 +104,6 @@ public class MappedResponseChangedSourceAddressReflectedFrom extends MessageAttr
   }
 
   public String toString() {
-    return "Address " + address.toString() + ", Port " + port;
+    return "Address " + address + ", Port " + port;
   }
 }

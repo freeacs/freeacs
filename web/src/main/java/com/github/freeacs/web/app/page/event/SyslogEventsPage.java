@@ -29,7 +29,6 @@ import javax.sql.DataSource;
 
 /** The Class SyslogEventsPage. */
 public class SyslogEventsPage extends AbstractWebPage {
-
   /** The input data. */
   private SyslogEventsData inputData;
 
@@ -42,7 +41,6 @@ public class SyslogEventsPage extends AbstractWebPage {
       DataSource xapsDataSource,
       DataSource syslogDataSource)
       throws Exception {
-
     /* Parse input data to the servlet */
     inputData = (SyslogEventsData) InputDataRetriever.parseInto(new SyslogEventsData(), params);
 
@@ -71,8 +69,9 @@ public class SyslogEventsPage extends AbstractWebPage {
     outputHandler.setTemplatePath("events/events.ftl");
   }
 
-  /* Should output an event, if an event is chosen. If not a default "blank" event must be the output
-   * Will always output a list of all possible events within this unittype.
+  /**
+   * Should output an event, if an event is chosen. If not a default "blank" event must be the
+   * output Will always output a list of all possible events within this unittype.
    */
   private void output(Output outputHandler, Unittype unittype, SyslogEvent event) {
     Map<String, Object> fmMap = outputHandler.getTemplateMap();
@@ -81,33 +80,33 @@ public class SyslogEventsPage extends AbstractWebPage {
     SyslogEvents events = unittype.getSyslogEvents();
 
     /* Output for the configuration */
-    if (event != null) // Get the syslog-event part of the action()
-    fmMap.put("event", event);
-    else { // Get the syslog-event from URL
-      if (inputData.getEventId().getInteger() != null) {
-        event = events.getByEventId(inputData.getEventId().getInteger());
-        fmMap.put("event", event);
-      }
+    if (event != null) {
+      fmMap.put("event", event);
+    } else if (inputData.getEventId().getInteger() != null) {
+      event = events.getByEventId(inputData.getEventId().getInteger());
+      fmMap.put("event", event);
     }
 
-    Group selectedGroup = (event != null ? event.getGroup() : null);
+    Group selectedGroup = event != null ? event.getGroup() : null;
     DropDownSingleSelect<Group> groups =
         InputSelectionFactory.getDropDownSingleSelect(
             inputData.getGroupId(), selectedGroup, Arrays.asList(unittype.getGroups().getGroups()));
     fmMap.put("groups", groups);
 
-    StorePolicy selectedSP = (event != null ? event.getStorePolicy() : null);
+    StorePolicy selectedSP = event != null ? event.getStorePolicy() : null;
     DropDownSingleSelect<StorePolicy> storePolicies =
         InputSelectionFactory.getDropDownSingleSelect(
             inputData.getStorePolicy(), selectedSP, Arrays.asList(StorePolicy.values()));
     fmMap.put("storepolicies", storePolicies);
 
     List<File> allFiles = Arrays.asList(unittype.getFiles().getFiles());
-    List<File> scriptFiles = new ArrayList<File>();
+    List<File> scriptFiles = new ArrayList<>();
     for (File f : allFiles) {
-      if (f.getType() == FileType.SHELL_SCRIPT) scriptFiles.add(f);
+      if (f.getType() == FileType.SHELL_SCRIPT) {
+        scriptFiles.add(f);
+      }
     }
-    File selectedScript = (event != null ? event.getScript() : null);
+    File selectedScript = event != null ? event.getScript() : null;
     fmMap.put(
         "scripts",
         InputSelectionFactory.getDropDownSingleSelect(
@@ -117,12 +116,13 @@ public class SyslogEventsPage extends AbstractWebPage {
     fmMap.put("events", events.getSyslogEvents());
   }
 
-  /*
-   * Will delete, add or edit a syslog event. Will only update fmMap with error/info in the fmMap
-   * If a syslogEvent is returned, it is part of an add/update action and should be displayed in the output
+  /**
+   * Will delete, add or edit a syslog event. Will only update fmMap with error/info in the fmMap If
+   * a syslogEvent is returned, it is part of an add/update action and should be displayed in the
+   * output
    */
   private SyslogEvent action(ParameterParser params, Output outputHandler, Unittype unittype)
-      throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+      throws IllegalAccessException, InvocationTargetException {
     Map<String, Object> fmMap = outputHandler.getTemplateMap();
     SyslogEvents events = unittype.getSyslogEvents();
 
@@ -144,14 +144,18 @@ public class SyslogEventsPage extends AbstractWebPage {
           // add or update
           syslogEvent.setName(inputData.getName().getString());
           syslogEvent.setDescription(inputData.getDescription().getString());
-          if (inputData.getGroupId().getValue() != null)
+          if (inputData.getGroupId().getValue() != null) {
             syslogEvent.setGroup(unittype.getGroups().getById(inputData.getGroupId().getInteger()));
-          else syslogEvent.setGroup(null);
+          } else {
+            syslogEvent.setGroup(null);
+          }
           syslogEvent.setExpression(inputData.getExpression().getString());
           syslogEvent.setStorePolicy(StorePolicy.valueOf(inputData.getStorePolicy().getString()));
-          if (inputData.getScript().getValue() != null)
+          if (inputData.getScript().getValue() != null) {
             syslogEvent.setScript(unittype.getFiles().getById(inputData.getScript().getInteger()));
-          else syslogEvent.setScript(null);
+          } else {
+            syslogEvent.setScript(null);
+          }
           syslogEvent.setDeleteLimit(inputData.getLimit().getInteger());
           events.addOrChangeSyslogEvent(syslogEvent, acs);
           return syslogEvent;
@@ -166,8 +170,7 @@ public class SyslogEventsPage extends AbstractWebPage {
   }
 
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
-    List<MenuItem> list = new ArrayList<MenuItem>();
-    list.addAll(super.getShortcutItems(sessionData));
+    List<MenuItem> list = new ArrayList<>(super.getShortcutItems(sessionData));
     list.add(new MenuItem("Unit type overview", Page.UNITTYPEOVERVIEW));
     list.add(
         new MenuItem("Trigger overview", Page.TRIGGEROVERVIEW)

@@ -13,9 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class OKServlet extends HttpServlet {
-
   private static final long serialVersionUID = -3217484543967391741L;
-  private static Map<String, Long> currentConnectionTmsMap = new HashMap<String, Long>();
+  private static Map<String, Long> currentConnectionTmsMap = new HashMap<>();
 
   private final DBAccess dbAccess;
 
@@ -29,15 +28,18 @@ public class OKServlet extends HttpServlet {
 
   @SuppressWarnings("rawtypes")
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
-
     PrintWriter out = res.getWriter();
     StringBuilder status = new StringBuilder("FREEACSOK");
     try {
       DBI dbi = dbAccess.getDBI();
       if (dbi != null && dbi.getDbiThrowable() != null) {
-        status = new StringBuilder("ERROR: DBI reported error:\n" + dbi.getDbiThrowable() + "\n");
-        for (StackTraceElement ste : dbi.getDbiThrowable().getStackTrace())
-          status.append(ste.toString());
+        status =
+            new StringBuilder("ERROR: DBI reported error:\n")
+                .append(dbi.getDbiThrowable())
+                .append("\n");
+        for (StackTraceElement ste : dbi.getDbiThrowable().getStackTrace()) {
+          status.append(ste);
+        }
       }
     } catch (Throwable ignored) {
     }
@@ -60,11 +62,12 @@ public class OKServlet extends HttpServlet {
         }
       }
       for (String uId : currentSessions.keySet()) {
-        if (currentConnectionTmsMap.get(uId) == null) // new process has been added
-        currentConnectionTmsMap.put(uId, System.currentTimeMillis());
+        if (currentConnectionTmsMap.get(uId) == null) {
+          currentConnectionTmsMap.put(uId, System.currentTimeMillis());
+        }
       }
     } else {
-      currentConnectionTmsMap = new HashMap<String, Long>();
+      currentConnectionTmsMap = new HashMap<>();
     }
     out.print(status);
     out.close();

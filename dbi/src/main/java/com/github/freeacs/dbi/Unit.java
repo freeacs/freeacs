@@ -19,10 +19,10 @@ public class Unit {
   private Map<String, UnitParameter> unitParameters;
   private Map<String, UnitParameter> sessionParameters;
 
-  private boolean paramsAvailable = false;
+  private boolean paramsAvailable;
 
-  private List<UnitParameter> writeQueue = new ArrayList<UnitParameter>();
-  private List<UnitParameter> deleteQueue = new ArrayList<UnitParameter>();
+  private List<UnitParameter> writeQueue = new ArrayList<>();
+  private List<UnitParameter> deleteQueue = new ArrayList<>();
 
   public Unit(String id, Unittype unittype, Profile profile) {
     this.id = id;
@@ -31,8 +31,9 @@ public class Unit {
   }
 
   public Unit(String id) {
-    if (id == null)
+    if (id == null) {
       throw new IllegalArgumentException("Cannot make a unit if unitId is not defined");
+    }
     this.id = id;
     this.unittype = null;
     this.profile = null;
@@ -57,7 +58,9 @@ public class Unit {
       ProfileParameter[] pparams = profile.getProfileParameters().getProfileParameters();
       for (int i = 0; pparams != null && i < pparams.length; i++) {
         if (unitParameters != null
-            && unitParameters.get(pparams[i].getUnittypeParameter().getName()) != null) continue;
+            && unitParameters.get(pparams[i].getUnittypeParameter().getName()) != null) {
+          continue;
+        }
         map.put(pparams[i].getUnittypeParameter().getName(), pparams[i].getValue());
       }
     }
@@ -88,12 +91,7 @@ public class Unit {
 
   @Override
   public boolean equals(Object o) {
-    if (o == null) return false;
-    if (o instanceof Unit) {
-      return this.id.equals(((Unit) o).getId());
-    } else {
-      return false;
-    }
+    return o instanceof Unit && this.id.equals(((Unit) o).getId());
   }
 
   @Override
@@ -118,16 +116,17 @@ public class Unit {
   }
 
   public String getParameterValue(String unittypeParameterName, boolean useProfileIfNecessary) {
-    if (!paramsAvailable)
+    if (!paramsAvailable) {
       throw new IllegalArgumentException(
           "Cannot ask for parameter values from unit before loading parameters");
+    }
     if (unitParameters != null) {
       UnitParameter up = unitParameters.get(unittypeParameterName);
-      if (up != null) {
-        if (!up.getParameter().valueWasNull()) return up.getValue();
-        // else
-        // return null;
+      if (up != null && !up.getParameter().valueWasNull()) {
+        return up.getValue();
       }
+      // else
+      // return null;
     }
     if (useProfileIfNecessary && profile != null) {
       ProfileParameter pp = profile.getProfileParameters().getByName(unittypeParameterName);
@@ -151,12 +150,15 @@ public class Unit {
     return mode == ProvisioningMode.READALL;
   }
 
-  // Queue unit parameters here for future add/Change operation on the
-  // database - reduces number of commits
+  /**
+   * Queue unit parameters here for future add/Change operation on the database - reduces number of
+   * commits.
+   */
   public synchronized void toWriteQueue(String unittypeParameterName, String value) {
-    if (unittype == null || profile == null)
+    if (unittype == null || profile == null) {
       throw new IllegalArgumentException(
           "Cannot add to write queue in Unit because Unittype or Profile object is null");
+    }
     UnittypeParameter utp = unittype.getUnittypeParameters().getByName(unittypeParameterName);
     toWriteQueue(new UnitParameter(new Parameter(utp, value), id, profile));
   }
@@ -168,24 +170,29 @@ public class Unit {
       if (tmp.getParameter()
           .getUnittypeParameter()
           .getId()
-          .equals(up.getParameter().getUnittypeParameter().getId())) queueIterator.remove();
+          .equals(up.getParameter().getUnittypeParameter().getId())) {
+        queueIterator.remove();
+      }
     }
     writeQueue.add(up);
   }
 
-  // Upon read, the queue will be deleted and a new one created
+  /** Upon read, the queue will be deleted and a new one created. */
   public synchronized List<UnitParameter> flushWriteQueue() {
     List<UnitParameter> tmp = writeQueue;
-    writeQueue = new ArrayList<UnitParameter>();
+    writeQueue = new ArrayList<>();
     return tmp;
   }
 
-  // Queue unit parameters here for future delete operation on the database -
-  // reduces number of commits
+  /**
+   * Queue unit parameters here for future delete operation on the database - reduces number of
+   * commits.
+   */
   public synchronized void toDeleteQueue(String unittypeParameterName) {
-    if (unittype == null || profile == null)
+    if (unittype == null || profile == null) {
       throw new IllegalArgumentException(
           "Cannot add to delete queue in Unit because Unittype or Profile object is null");
+    }
     UnittypeParameter utp = unittype.getUnittypeParameters().getByName(unittypeParameterName);
     toDeleteQueue(new UnitParameter(new Parameter(utp, null), id, profile));
   }
@@ -197,15 +204,17 @@ public class Unit {
       if (tmp.getParameter()
           .getUnittypeParameter()
           .getId()
-          .equals(up.getParameter().getUnittypeParameter().getId())) queueIterator.remove();
+          .equals(up.getParameter().getUnittypeParameter().getId())) {
+        queueIterator.remove();
+      }
     }
     deleteQueue.add(up);
   }
 
-  // Upon read, the *queue* will be deleted and a new one created
+  /** Upon read, the *queue* will be deleted and a new one created. */
   public synchronized List<UnitParameter> flushDeleteQueue() {
     List<UnitParameter> tmp = deleteQueue;
-    deleteQueue = new ArrayList<UnitParameter>();
+    deleteQueue = new ArrayList<>();
     return tmp;
   }
 

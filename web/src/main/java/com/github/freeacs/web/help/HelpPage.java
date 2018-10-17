@@ -21,7 +21,6 @@ import java.util.Scanner;
  * @author Jarl Andre Hubenthal
  */
 public abstract class HelpPage {
-
   /** The Constant config. */
   private static final Configuration config = Freemarker.initFreemarker();
 
@@ -56,7 +55,7 @@ public abstract class HelpPage {
   public static String getHTMLForPageByString(String page) throws IOException, TemplateException {
     Template template = config.getTemplate("HelpPage.ftl");
 
-    Map<String, Object> map = new HashMap<String, Object>();
+    Map<String, Object> map = new HashMap<>();
 
     String className = camelCase(page);
 
@@ -99,7 +98,7 @@ public abstract class HelpPage {
   public static String getHTMLForPage(Page page) throws IOException, TemplateException {
     Template template = config.getTemplate("HelpPage.ftl");
 
-    Map<String, Object> map = new HashMap<String, Object>();
+    Map<String, Object> map = new HashMap<>();
 
     map.put("title", page.getTitle());
 
@@ -112,7 +111,9 @@ public abstract class HelpPage {
       String contents = getBodyContents(html);
       map.put("content", contents);
       br.close();
-    } else map.put("content", NO_DATA);
+    } else {
+      map.put("content", NO_DATA);
+    }
 
     map.put("time", new Date());
 
@@ -128,7 +129,7 @@ public abstract class HelpPage {
   private static String getBodyContents(String html) {
     int start = html.indexOf("<body");
     if (start > -1) {
-      start = html.indexOf(">", start);
+      start = html.indexOf('>', start);
       if (start > -1) {
         start += 1;
         int end = html.indexOf("</body>", start);
@@ -154,8 +155,7 @@ public abstract class HelpPage {
       String contents = scanner.next();
       scanner.close();
       if (contents != null) {
-        contents = contents.replace("%VERSION%", "latest");
-        return contents;
+        return contents.replace("%VERSION%", "latest");
       }
     }
     return def;
@@ -174,13 +174,13 @@ public abstract class HelpPage {
       throws IOException, TemplateException {
     Template template = config.getTemplate("HelpPage.ftl");
 
-    Map<String, Object> map = new HashMap<String, Object>();
+    Map<String, Object> map = new HashMap<>();
 
-    String shortName = path.substring(path.lastIndexOf("/") + 1, path.length());
+    String shortName = path.substring(path.lastIndexOf('/') + 1, path.length());
 
     String fileName = camelCase(!shortName.endsWith("Page") ? shortName + "Page" : shortName);
 
-    path = path.substring(0, path.lastIndexOf("/"));
+    path = path.substring(0, path.lastIndexOf('/'));
 
     map.put("title", shortName);
 

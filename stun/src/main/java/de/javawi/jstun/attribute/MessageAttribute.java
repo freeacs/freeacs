@@ -8,7 +8,6 @@
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
  */
-
 package de.javawi.jstun.attribute;
 
 import de.javawi.jstun.util.Utility;
@@ -35,48 +34,104 @@ public abstract class MessageAttribute implements MessageAttributeInterface {
   }
 
   public static int typeToInteger(MessageAttributeType type) {
-    if (type == MessageAttributeType.MappedAddress) return MAPPEDADDRESS;
-    if (type == MessageAttributeType.ResponseAddress) return RESPONSEADDRESS;
-    if (type == MessageAttributeType.ChangeRequest) return CHANGEREQUEST;
-    if (type == MessageAttributeType.SourceAddress) return SOURCEADDRESS;
-    if (type == MessageAttributeType.ChangedAddress) return CHANGEDADDRESS;
-    if (type == MessageAttributeType.Username) return USERNAME;
-    if (type == MessageAttributeType.Password) return PASSWORD;
-    if (type == MessageAttributeType.MessageIntegrity) return MESSAGEINTEGRITY;
-    if (type == MessageAttributeType.ErrorCode) return ERRORCODE;
-    if (type == MessageAttributeType.UnknownAttribute) return UNKNOWNATTRIBUTE;
-    if (type == MessageAttributeType.ReflectedFrom) return REFLECTEDFROM;
-    if (type == MessageAttributeType.ConnectionRequestBinding) return CONNECTIONREQUESTBINDING;
-    if (type == MessageAttributeType.BindingChange) return BINDINGCHANGE;
-    if (type == MessageAttributeType.Dummy) return DUMMY;
+    if (type == MessageAttributeType.MappedAddress) {
+      return MAPPEDADDRESS;
+    }
+    if (type == MessageAttributeType.ResponseAddress) {
+      return RESPONSEADDRESS;
+    }
+    if (type == MessageAttributeType.ChangeRequest) {
+      return CHANGEREQUEST;
+    }
+    if (type == MessageAttributeType.SourceAddress) {
+      return SOURCEADDRESS;
+    }
+    if (type == MessageAttributeType.ChangedAddress) {
+      return CHANGEDADDRESS;
+    }
+    if (type == MessageAttributeType.Username) {
+      return USERNAME;
+    }
+    if (type == MessageAttributeType.Password) {
+      return PASSWORD;
+    }
+    if (type == MessageAttributeType.MessageIntegrity) {
+      return MESSAGEINTEGRITY;
+    }
+    if (type == MessageAttributeType.ErrorCode) {
+      return ERRORCODE;
+    }
+    if (type == MessageAttributeType.UnknownAttribute) {
+      return UNKNOWNATTRIBUTE;
+    }
+    if (type == MessageAttributeType.ReflectedFrom) {
+      return REFLECTEDFROM;
+    }
+    if (type == MessageAttributeType.ConnectionRequestBinding) {
+      return CONNECTIONREQUESTBINDING;
+    }
+    if (type == MessageAttributeType.BindingChange) {
+      return BINDINGCHANGE;
+    }
+    if (type == MessageAttributeType.Dummy) {
+      return DUMMY;
+    }
     return -1;
   }
 
   public static MessageAttributeType intToType(long type) {
-    if (type == MAPPEDADDRESS) return MessageAttributeType.MappedAddress;
-    if (type == RESPONSEADDRESS) return MessageAttributeType.ResponseAddress;
-    if (type == CHANGEREQUEST) return MessageAttributeType.ChangeRequest;
-    if (type == SOURCEADDRESS) return MessageAttributeType.SourceAddress;
-    if (type == CHANGEDADDRESS) return MessageAttributeType.ChangedAddress;
-    if (type == USERNAME) return MessageAttributeType.Username;
-    if (type == PASSWORD) return MessageAttributeType.Password;
-    if (type == MESSAGEINTEGRITY) return MessageAttributeType.MessageIntegrity;
-    if (type == ERRORCODE) return MessageAttributeType.ErrorCode;
-    if (type == UNKNOWNATTRIBUTE) return MessageAttributeType.UnknownAttribute;
-    if (type == REFLECTEDFROM) return MessageAttributeType.ReflectedFrom;
-    if (type == CONNECTIONREQUESTBINDING) return MessageAttributeType.ConnectionRequestBinding;
-    if (type == BINDINGCHANGE) return MessageAttributeType.BindingChange;
-    if (type == DUMMY) return MessageAttributeType.Dummy;
+    if (type == MAPPEDADDRESS) {
+      return MessageAttributeType.MappedAddress;
+    }
+    if (type == RESPONSEADDRESS) {
+      return MessageAttributeType.ResponseAddress;
+    }
+    if (type == CHANGEREQUEST) {
+      return MessageAttributeType.ChangeRequest;
+    }
+    if (type == SOURCEADDRESS) {
+      return MessageAttributeType.SourceAddress;
+    }
+    if (type == CHANGEDADDRESS) {
+      return MessageAttributeType.ChangedAddress;
+    }
+    if (type == USERNAME) {
+      return MessageAttributeType.Username;
+    }
+    if (type == PASSWORD) {
+      return MessageAttributeType.Password;
+    }
+    if (type == MESSAGEINTEGRITY) {
+      return MessageAttributeType.MessageIntegrity;
+    }
+    if (type == ERRORCODE) {
+      return MessageAttributeType.ErrorCode;
+    }
+    if (type == UNKNOWNATTRIBUTE) {
+      return MessageAttributeType.UnknownAttribute;
+    }
+    if (type == REFLECTEDFROM) {
+      return MessageAttributeType.ReflectedFrom;
+    }
+    if (type == CONNECTIONREQUESTBINDING) {
+      return MessageAttributeType.ConnectionRequestBinding;
+    }
+    if (type == BINDINGCHANGE) {
+      return MessageAttributeType.BindingChange;
+    }
+    if (type == DUMMY) {
+      return MessageAttributeType.Dummy;
+    }
     return null;
   }
 
   public abstract byte[] getBytes() throws UtilityException;
 
-  // abstract public MessageAttribute parse(byte[] data) throws MessageAttributeParsingException;
-
+  /**
+   * Abstract public MessageAttribute parse(byte[] data) throws MessageAttributeParsingException;.
+   */
   public int getLength() throws UtilityException {
-    int length = getBytes().length;
-    return length;
+    return getBytes().length;
   }
 
   public static MessageAttribute parseCommonHeader(byte[] data)

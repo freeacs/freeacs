@@ -10,10 +10,8 @@ import java.util.Date;
  * @author Jarl Andre Hubenthal
  */
 public abstract class DateUtils {
-
   /** The Enum Format. */
   public enum Format {
-
     /** The DAT e_ only. */
     DATE_ONLY(ResourceHandler.getString("DATE_FORMAT_NOTIME")),
 
@@ -42,7 +40,7 @@ public abstract class DateUtils {
      * @return the string
      */
     public String format(Date d) {
-      return DateUtils.formatDate(this, d);
+      return formatDate(this, d);
     }
 
     /**
@@ -53,7 +51,7 @@ public abstract class DateUtils {
      * @throws ParseException the parse exception
      */
     public Date parse(String d) throws ParseException {
-      return DateUtils.parseDate(this, d);
+      return parseDate(this, d);
     }
   }
 
@@ -148,12 +146,18 @@ public abstract class DateUtils {
   public static String getUpTime(long min) {
     int days = (int) (min / 60 / 24);
     int hours = (int) (min / 60) - days * 24;
-    int minutes = (int) (min) - (hours + (days * 24)) * 60;
+    int minutes = (int) min - (hours + days * 24) * 60;
 
     String upTime = "";
-    if (days != 0) upTime += days + "d ";
-    if (hours != 0) upTime += hours + "h ";
-    if (minutes != 0) upTime += min + "m ";
+    if (days != 0) {
+      upTime += days + "d ";
+    }
+    if (hours != 0) {
+      upTime += hours + "h ";
+    }
+    if (minutes != 0) {
+      upTime += min + "m ";
+    }
 
     return upTime;
   }

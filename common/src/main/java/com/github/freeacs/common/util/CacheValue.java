@@ -31,8 +31,11 @@ public class CacheValue {
   private CleanupNotifier cleanupNotifier;
 
   public CacheValue(Object object, int type, long timeout) {
-    if (type == Cache.SESSION || type == Cache.ABSOLUTE) this.type = type;
-    else this.type = Cache.SESSION;
+    if (type == Cache.SESSION || type == Cache.ABSOLUTE) {
+      this.type = type;
+    } else {
+      this.type = Cache.SESSION;
+    }
     this.object = object;
     this.timeout = timeout;
     this.created = System.currentTimeMillis();

@@ -14,7 +14,6 @@ import java.util.List;
  * @author Jarl Andre Hubenthal
  */
 public class SessionData {
-
   /** The name. */
   private String name;
 
@@ -216,8 +215,7 @@ public class SessionData {
    * @return true, if is unittypes filtered
    */
   public boolean isUnittypesFiltered() {
-    if (filteredUnittypes != null) return true;
-    return false;
+    return filteredUnittypes != null;
   }
 
   /**

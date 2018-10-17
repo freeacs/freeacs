@@ -19,7 +19,6 @@ import org.slf4j.Logger;
  * @author Morten
  */
 public abstract class DBIOwner implements Task {
-
   private final DataSource mainDataSource;
   private final DataSource syslogDataSource;
 
@@ -28,7 +27,7 @@ public abstract class DBIOwner implements Task {
 
   private String taskName;
   private long launchTms;
-  private boolean running = false;
+  private boolean running;
 
   private Throwable throwable;
 

@@ -12,7 +12,6 @@ import java.util.List;
 import javax.sql.DataSource;
 
 public class ScriptExecutions {
-
   private DataSource dataSource;
 
   public ScriptExecutions(DataSource dataSource) {
@@ -20,7 +19,7 @@ public class ScriptExecutions {
   }
 
   /**
-   * Used by Syslog/Core server to initiate syslog-event og trigger scripts
+   * Used by Syslog/Core server to initiate syslog-event og trigger scripts.
    *
    * @param scriptFile
    * @param scriptArgs
@@ -30,8 +29,9 @@ public class ScriptExecutions {
       throws SQLException {
     Connection connection = null;
     PreparedStatement ps = null;
-    if (scriptFile.getType() != FileType.SHELL_SCRIPT)
+    if (scriptFile.getType() != FileType.SHELL_SCRIPT) {
       throw new IllegalArgumentException("The file type is not " + FileType.SHELL_SCRIPT);
+    }
     try {
       connection = dataSource.getConnection();
       InsertOrUpdateStatement ious =
@@ -46,7 +46,9 @@ public class ScriptExecutions {
       ps.setQueryTimeout(5);
       ps.executeUpdate();
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.close();
       }
@@ -69,13 +71,16 @@ public class ScriptExecutions {
       ious.addField(new Field("start_timestamp", se.getStartTms()));
       ious.addField(new Field("end_timestamp", se.getEndTms()));
       ious.addField(new Field("error_message", se.getErrorMessage()));
-      if (se.getEndTms() != null)
+      if (se.getEndTms() != null) {
         ious.addField(new Field("exit_status", se.getErrorMessage() == null ? 0 : 1));
+      }
       ps = ious.makePreparedStatement(connection);
       ps.setQueryTimeout(5);
       ps.executeUpdate();
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.close();
       }
@@ -83,15 +88,17 @@ public class ScriptExecutions {
   }
 
   /**
-   * Only to be used from Core (Script Daemon)
+   * Only to be used from Core (Script Daemon).
    *
    * @param acs
    * @return
    * @throws SQLException
    */
   public List<ScriptExecution> getNotStartedExecutions(ACS acs, int poolsize) throws SQLException {
-    List<ScriptExecution> scriptExecutionList = new ArrayList<ScriptExecution>();
-    if (!ACSVersionCheck.scriptExecutionSupported) return scriptExecutionList;
+    List<ScriptExecution> scriptExecutionList = new ArrayList<>();
+    if (!ACSVersionCheck.scriptExecutionSupported) {
+      return scriptExecutionList;
+    }
     Connection connection = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
@@ -104,8 +111,12 @@ public class ScriptExecutions {
       rs = ps.executeQuery();
       return getExecutionList(rs, acs);
     } finally {
-      if (rs != null) rs.close();
-      if (ps != null) ps.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.close();
       }
@@ -113,7 +124,7 @@ public class ScriptExecutions {
   }
 
   private List<ScriptExecution> getExecutionList(ResultSet rs, ACS acs) throws SQLException {
-    List<ScriptExecution> scriptExecutionList = new ArrayList<ScriptExecution>();
+    List<ScriptExecution> scriptExecutionList = new ArrayList<>();
     while (rs.next()) {
       ScriptExecution se = new ScriptExecution();
       se.setArguments(rs.getString("arguments"));
@@ -128,14 +139,16 @@ public class ScriptExecutions {
       se.setStartTms(rs.getTimestamp("start_timestamp"));
       se.setEndTms(rs.getTimestamp("end_timestamp"));
       se.setErrorMessage(rs.getString("error_message"));
-      if (rs.getString("exit_status") != null) se.setExitStatus(rs.getInt("exit_status") == 1);
+      if (rs.getString("exit_status") != null) {
+        se.setExitStatus(rs.getInt("exit_status") == 1);
+      }
       scriptExecutionList.add(se);
     }
     return scriptExecutionList;
   }
 
   /**
-   * Meant to be used from Web/Shell to list ongoing executions
+   * Meant to be used from Web/Shell to list ongoing executions.
    *
    * @param unittype
    * @param requestTmsFrom
@@ -144,8 +157,10 @@ public class ScriptExecutions {
    */
   public List<ScriptExecution> getExecutions(
       Unittype unittype, Date requestTmsFrom, String requestId) throws SQLException {
-    List<ScriptExecution> scriptExecutionList = new ArrayList<ScriptExecution>();
-    if (!ACSVersionCheck.scriptExecutionSupported) return scriptExecutionList;
+    List<ScriptExecution> scriptExecutionList = new ArrayList<>();
+    if (!ACSVersionCheck.scriptExecutionSupported) {
+      return scriptExecutionList;
+    }
     ACS acs = unittype.getAcs();
     Connection connection = null;
     PreparedStatement ps = null;
@@ -155,12 +170,15 @@ public class ScriptExecutions {
       DynamicStatement ds = new DynamicStatement();
       ds.addSqlAndArguments(
           "SELECT * from script_execution WHERE unit_type_id = ? ", unittype.getId());
-      if (requestTmsFrom != null)
+      if (requestTmsFrom != null) {
         ds.addSqlAndArguments("AND request_timestamp >= ? ", requestTmsFrom);
+      }
       if (requestId != null) {
-        if (requestId.contains("$") || requestId.contains("_"))
+        if (requestId.contains("$") || requestId.contains("_")) {
           ds.addSqlAndArguments("AND request_id LIKE ?", requestId);
-        else ds.addSqlAndArguments("AND request_id = ?", requestId);
+        } else {
+          ds.addSqlAndArguments("AND request_id = ?", requestId);
+        }
       }
       ps = ds.makePreparedStatement(connection);
       ps.setQueryTimeout(60);
@@ -170,8 +188,12 @@ public class ScriptExecutions {
       sqle.printStackTrace();
       throw sqle;
     } finally {
-      if (rs != null) rs.close();
-      if (ps != null) ps.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.close();
       }
@@ -179,7 +201,9 @@ public class ScriptExecutions {
   }
 
   public ScriptExecution getById(Unittype unittype, Integer id) throws SQLException {
-    if (!ACSVersionCheck.scriptExecutionSupported) return null;
+    if (!ACSVersionCheck.scriptExecutionSupported) {
+      return null;
+    }
     ACS acs = unittype.getAcs();
     Connection connection = null;
     PreparedStatement ps = null;
@@ -194,11 +218,18 @@ public class ScriptExecutions {
       ps.setQueryTimeout(60);
       rs = ps.executeQuery();
       List<ScriptExecution> list = getExecutionList(rs, acs);
-      if (list.size() > 0) return list.get(0);
-      else return null;
+      if (!list.isEmpty()) {
+        return list.get(0);
+      } else {
+        return null;
+      }
     } finally {
-      if (rs != null) rs.close();
-      if (ps != null) ps.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.close();
       }
@@ -207,7 +238,7 @@ public class ScriptExecutions {
 
   /**
    * Used by Web to identify one single ScriptExecution trigger by a trigger-release Used by TR069
-   * to check if the script-execution is finished
+   * to check if the script-execution is finished.
    *
    * @param unittype
    * @param requestId
@@ -215,7 +246,9 @@ public class ScriptExecutions {
    * @throws SQLException
    */
   public ScriptExecution getExecution(Unittype unittype, String requestId) throws SQLException {
-    if (!ACSVersionCheck.scriptExecutionSupported) return null;
+    if (!ACSVersionCheck.scriptExecutionSupported) {
+      return null;
+    }
     ACS acs = unittype.getAcs();
     Connection connection = null;
     PreparedStatement ps = null;
@@ -225,16 +258,25 @@ public class ScriptExecutions {
       DynamicStatement ds = new DynamicStatement();
       ds.addSqlAndArguments(
           "SELECT * from script_execution WHERE unit_type_id = ? ", unittype.getId());
-      if (requestId != null) ds.addSqlAndArguments("AND request_id = ?", requestId);
+      if (requestId != null) {
+        ds.addSqlAndArguments("AND request_id = ?", requestId);
+      }
       ps = ds.makePreparedStatement(connection);
       ps.setQueryTimeout(60);
       rs = ps.executeQuery();
       List<ScriptExecution> list = getExecutionList(rs, acs);
-      if (list.size() > 0) return list.get(0);
-      else return null;
+      if (!list.isEmpty()) {
+        return list.get(0);
+      } else {
+        return null;
+      }
     } finally {
-      if (rs != null) rs.close();
-      if (ps != null) ps.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.close();
       }
@@ -242,14 +284,16 @@ public class ScriptExecutions {
   }
 
   /**
-   * Used by Core to delete old executions
+   * Used by Core to delete old executions.
    *
    * @param upUntil
    * @return
    * @throws SQLException
    */
   public int deleteExecutions(Date upUntil) throws SQLException {
-    if (!ACSVersionCheck.scriptExecutionSupported) return 0;
+    if (!ACSVersionCheck.scriptExecutionSupported) {
+      return 0;
+    }
     Connection connection = null;
     PreparedStatement ps = null;
     try {
@@ -260,7 +304,9 @@ public class ScriptExecutions {
       ps.setQueryTimeout(60);
       return ps.executeUpdate();
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.close();
       }

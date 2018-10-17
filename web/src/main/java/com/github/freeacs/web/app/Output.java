@@ -43,25 +43,24 @@ import org.slf4j.LoggerFactory;
  * @author Jarl Andre Hubenthal
  */
 public class Output {
-
   private static final String INCLUDE_TEMPLATE_KEY = "INCLUDED_TEMPLATE";
   private final DataSource xapsDataSource;
   private final DataSource syslogDataSource;
-  private HttpServletResponse servletResponseChannel = null;
-  private Configuration freemarkerConfig = null;
+  private HttpServletResponse servletResponseChannel;
+  private Configuration freemarkerConfig;
   private static final String defaultTemplatePath = "/index.ftl";
-  private String templatePathString = null;
+  private String templatePathString;
   private Boolean templatePathSet = false;
-  private Map<String, Object> templateMap = new HashMap<String, Object>();
-  private WebPage currentPage = null;
-  private ParameterParser inputParameters = null;
+  private Map<String, Object> templateMap = new HashMap<>();
+  private WebPage currentPage;
+  private ParameterParser inputParameters;
   private static final Logger logger = LoggerFactory.getLogger(Output.class);
-  private String redirectToUrl = null;
-  private String directResponseString = null;
+  private String redirectToUrl;
+  private String directResponseString;
   private String contentType = "text/html";
   private Boolean responseCommitted = false;
   private Boolean delivered = false;
-  private ContextItem trailPoint = null;
+  private ContextItem trailPoint;
 
   /**
    * Instantiates a new output handler.
@@ -97,7 +96,9 @@ public class Output {
    */
   public void deliverResponse() throws IOException, ServletException {
     synchronized (this) {
-      if (this.delivered) return;
+      if (this.delivered) {
+        return;
+      }
 
       this.delivered = true;
 
@@ -113,13 +114,17 @@ public class Output {
 
         currentPage.process(inputParameters, this, xapsDataSource, syslogDataSource);
 
-        if (isResponseCommitted()) return;
+        if (isResponseCommitted()) {
+          return;
+        }
 
         if (redirectToUrl != null) {
           redirect(redirectToUrl, servletResponseChannel);
           return;
         }
-        if (currentPage.requiresNoCache()) addNoCacheToResponse();
+        if (currentPage.requiresNoCache()) {
+          addNoCacheToResponse();
+        }
 
         if (getDirectResponseString() != null) {
           printPartialPage(
@@ -162,12 +167,16 @@ public class Output {
     Unittype currentUnittype =
         acs.getUnittype(trailPoint != null ? trailPoint.getUnitTypeName() : null);
     Input utInput = Input.getStringInput("unittype");
-    if (currentUnittype != null) utInput.setValue(currentUnittype.getName());
+    if (currentUnittype != null) {
+      utInput.setValue(currentUnittype.getName());
+    }
     templateMap.put("UNITTYPE_DROPDOWN", InputSelectionFactory.getUnittypeSelection(utInput, acs));
     Input prInput = Input.getStringInput("profile");
     if (currentUnittype != null && trailPoint != null && trailPoint.getProfileName() != null) {
       Profile currentProfile = currentUnittype.getProfiles().getByName(trailPoint.getProfileName());
-      if (currentProfile != null) prInput.setValue(currentProfile.getName());
+      if (currentProfile != null) {
+        prInput.setValue(currentProfile.getName());
+      }
     }
     templateMap.put(
         "PROFILE_DROPDOWN", InputSelectionFactory.getProfileSelection(prInput, utInput, acs));
@@ -198,7 +207,7 @@ public class Output {
   }
 
   /**
-   * Processes the requested changes from the context bar
+   * Processes the requested changes from the context bar.
    *
    * @throws IOException
    * @throws SQLException
@@ -206,14 +215,18 @@ public class Output {
   private void processContextBarUpdates() throws IOException, SQLException {
     String cUT = inputParameters.getStringParameter("contextunittype");
     if (cUT != null) {
-      if (cUT.equals("All")) cUT = null;
+      if ("All".equals(cUT)) {
+        cUT = null;
+      }
       inputParameters.getSessionData().setUnittypeName(cUT);
       inputParameters.getSessionData().setProfileName(null);
       inputParameters.getHttpServletRequest().ignoreParameter("unittype");
     }
     String cPR = inputParameters.getStringParameter("contextprofile");
     if (cPR != null) {
-      if (cPR.equals("All")) cPR = null;
+      if ("All".equals(cPR)) {
+        cPR = null;
+      }
       inputParameters.getSessionData().setProfileName(cPR);
       inputParameters.getHttpServletRequest().ignoreParameter("profile");
     }
@@ -225,8 +238,8 @@ public class Output {
       ACSUnit xaps =
           ACSLoader.getACSUnit(
               inputParameters.getSession().getId(), xapsDataSource, syslogDataSource);
-      Unit unit = null;
-      if ((unit = xaps.getUnitById(newValue)) != null) {
+      Unit unit = xaps.getUnitById(newValue);
+      if (unit != null) {
         redirect(
             Page.UNITSTATUS.getUrl(
                 "unit="
@@ -236,23 +249,26 @@ public class Output {
                     + "&profile="
                     + unit.getProfile().getName()),
             servletResponseChannel);
-        return;
       } else {
         redirect(
             Page.SEARCH.getUrl("unitparamvalue=" + cU + "&formsubmit=Search"),
             servletResponseChannel);
-        return;
       }
+      return;
     }
     if (inputParameters.getStringParameter("contextgroup") != null) {
       String cGR = inputParameters.getStringParameter("contextgroup");
-      if (cGR != null && cGR.equals("All")) cGR = null;
+      if ("All".equals(cGR)) {
+        cGR = null;
+      }
       inputParameters.getSessionData().setGroup(cGR);
       inputParameters.getHttpServletRequest().ignoreParameter("group");
     }
     if (inputParameters.getStringParameter("contextjob") != null) {
       String cJB = inputParameters.getStringParameter("contextjob");
-      if (cJB != null && cJB.equals("All")) cJB = null;
+      if ("All".equals(cJB)) {
+        cJB = null;
+      }
       inputParameters.getSessionData().setJobname(cJB);
       inputParameters.getHttpServletRequest().ignoreParameter("job");
     }
@@ -400,7 +416,9 @@ public class Output {
   public void redirect(String url, ParameterParser params, HttpServletResponse res)
       throws IOException {
     if (url != null) {
-      if (params != null && params.getBooleanParameter("async")) url += "&async=true&header=true";
+      if (params != null && params.getBooleanParameter("async")) {
+        url += "&async=true&header=true";
+      }
       res.sendRedirect(url.replace("&amp;", "&"));
     } else {
       res.sendRedirect(Page.SEARCH.getUrl());
@@ -443,9 +461,11 @@ public class Output {
   private String processExceptionTemplate(Exception e, boolean debug) throws IOException {
     String pageContents = null;
     String error = e.toString();
-    if (debug) error += StackTraceFormatter.getStackTraceAsHTML(e);
+    if (debug) {
+      error += StackTraceFormatter.getStackTraceAsHTML(e);
+    }
     Template t = freemarkerConfig.getTemplate("exception.ftl");
-    Map<String, String> root = new HashMap<String, String>();
+    Map<String, String> root = new HashMap<>();
     root.put("message", error);
     try {
       pageContents = Freemarker.parseTemplate(root, t);
@@ -513,10 +533,7 @@ public class Output {
    */
   private boolean isGZIPSupported(ParameterParser params) {
     String encoding = params.getHttpServletRequest().getHeader("Accept-Encoding");
-    if (encoding != null) {
-      if (encoding.toLowerCase().contains("gzip")) return true;
-    }
-    return false;
+    return encoding != null && encoding.toLowerCase().contains("gzip");
   }
 
   /**
@@ -536,8 +553,12 @@ public class Output {
    * @param path the path to be prepended to the default templatePathString
    */
   public void setTemplatePathWithIndex(String path) {
-    if (path == null) throw new IllegalArgumentException("Path variable cannot be null.");
-    if (!path.startsWith("/")) path = "/" + path;
+    if (path == null) {
+      throw new IllegalArgumentException("Path variable cannot be null.");
+    }
+    if (!path.startsWith("/")) {
+      path = "/" + path;
+    }
     this.templatePathString = path + defaultTemplatePath;
     this.templatePathSet = true;
   }
@@ -549,9 +570,15 @@ public class Output {
    * @param path the path to be set
    */
   public void setTemplatePath(String path) {
-    if (path == null) throw new IllegalArgumentException("Path variable cannot be null.");
-    if (!path.endsWith(".ftl")) path = path + ".ftl";
-    if (!path.startsWith("/")) path = "/" + path;
+    if (path == null) {
+      throw new IllegalArgumentException("Path variable cannot be null.");
+    }
+    if (!path.endsWith(".ftl")) {
+      path = path + ".ftl";
+    }
+    if (!path.startsWith("/")) {
+      path = "/" + path;
+    }
     this.templatePathString = path;
     this.templatePathSet = true;
   }

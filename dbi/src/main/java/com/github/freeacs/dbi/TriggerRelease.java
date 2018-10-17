@@ -53,8 +53,9 @@ public class TriggerRelease {
   }
 
   public void setTrigger(Trigger trigger) {
-    if (trigger == null)
+    if (trigger == null) {
       throw new IllegalArgumentException("TriggerRelease Trigger cannot be null");
+    }
     this.trigger = trigger;
   }
 
@@ -63,7 +64,9 @@ public class TriggerRelease {
   }
 
   public void setNoEvents(int noEvents) {
-    if (noEvents < 0) throw new IllegalArgumentException("TriggerRelease noEvent cannot be < 0");
+    if (noEvents < 0) {
+      throw new IllegalArgumentException("TriggerRelease noEvent cannot be < 0");
+    }
     this.noEvents = noEvents;
   }
 
@@ -72,8 +75,9 @@ public class TriggerRelease {
   }
 
   public void setNoEventsPrUnit(int noEventsPrUnit) {
-    if (noEventsPrUnit < 0)
+    if (noEventsPrUnit < 0) {
       throw new IllegalArgumentException("TriggerRelease noEventsPrUnit cannot be < 0");
+    }
     this.noEventsPrUnit = noEventsPrUnit;
   }
 
@@ -82,7 +86,9 @@ public class TriggerRelease {
   }
 
   public void setNoUnits(int noUnits) {
-    if (noUnits < 0) throw new IllegalArgumentException("TriggerRelease noUnits cannot be < 0");
+    if (noUnits < 0) {
+      throw new IllegalArgumentException("TriggerRelease noUnits cannot be < 0");
+    }
     this.noUnits = noUnits;
   }
 
@@ -91,8 +97,9 @@ public class TriggerRelease {
   }
 
   public void setReleaseTms(Date releaseTms) {
-    if (releaseTms == null)
+    if (releaseTms == null) {
       throw new IllegalArgumentException("TriggerRelease ReleaseTms cannot be null");
+    }
     this.releaseTms = releaseTms;
   }
 
@@ -109,8 +116,9 @@ public class TriggerRelease {
   }
 
   public void setFirstEventTms(Date firstEventTms) {
-    if (firstEventTms == null)
+    if (firstEventTms == null) {
       throw new IllegalArgumentException("TriggerRelease FirstEventTms cannot be null");
+    }
     this.firstEventTms = firstEventTms;
   }
 }

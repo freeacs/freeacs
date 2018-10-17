@@ -20,35 +20,37 @@ import javax.servlet.http.HttpServletResponse;
  */
 @SuppressWarnings("serial")
 public class Monitor extends HttpServlet {
+  private static Throwable lastDBILogin;
 
-  private static Throwable lastDBILogin = null;
-
-  /* (non-Javadoc)
-   * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-   */
   protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
     PrintWriter out = res.getWriter();
     Cache cache = SessionCache.getCache();
     Map<Object, CacheValue> map = cache.getMap();
     StringBuilder status = new StringBuilder("FREEACSOK");
-    for (Object o : map.keySet()) {
+    for (Map.Entry<Object, CacheValue> entry : map.entrySet()) {
+      Object o = entry.getKey();
       if (o instanceof String) {
         String s = (String) o;
         if (s.endsWith("dbi")) {
           // We've found a DBI-object in the cache
-          DBI dbi = (DBI) map.get(o).getObject();
+          DBI dbi = (DBI) entry.getValue().getObject();
           if (dbi != null && dbi.getDbiThrowable() != null) {
             status =
-                new StringBuilder("ERROR: DBI reported error:\n" + dbi.getDbiThrowable() + "\n");
-            for (StackTraceElement ste : dbi.getDbiThrowable().getStackTrace())
-              status.append(ste.toString());
+                new StringBuilder("ERROR: DBI reported error:\n")
+                    .append(dbi.getDbiThrowable())
+                    .append("\n");
+            for (StackTraceElement ste : dbi.getDbiThrowable().getStackTrace()) {
+              status.append(ste);
+            }
           }
         }
       }
     }
     if (lastDBILogin != null) {
-      status = new StringBuilder("ERROR: DBI reported error:\n" + lastDBILogin + "\n");
-      for (StackTraceElement ste : lastDBILogin.getStackTrace()) status.append(ste.toString());
+      status = new StringBuilder("ERROR: DBI reported error:\n").append(lastDBILogin).append("\n");
+      for (StackTraceElement ste : lastDBILogin.getStackTrace()) {
+        status.append(ste);
+      }
     }
     out.println(status.toString());
     out.close();

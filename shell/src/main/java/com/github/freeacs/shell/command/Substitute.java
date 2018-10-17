@@ -1,18 +1,13 @@
 package com.github.freeacs.shell.command;
 
 public interface Substitute {
+  /**
+   * Public boolean isProcessed(); public void setProcessed(boolean processed); public boolean
+   * isChanged(); public void setChanged(boolean changed);.
+   */
+  void resetToOriginalState();
 
-  //	public boolean isProcessed();
-  //
-  //	public void setProcessed(boolean processed);
-  //
-  //	public boolean isChanged();
-  //
-  //	public void setChanged(boolean changed);
+  String getStringToSubstitute();
 
-  public void resetToOriginalState();
-
-  public String getStringToSubstitute();
-
-  public void setSubstitutedString(String s);
+  void setSubstitutedString(String s);
 }

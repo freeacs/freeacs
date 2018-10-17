@@ -84,7 +84,9 @@ public class ProvisioningMessage {
   }
 
   public void setErrorMessage(String em) {
-    if (em != null && em.length() > 250) em = em.substring(0, 250);
+    if (em != null && em.length() > 250) {
+      em = em.substring(0, 250);
+    }
     this.errorMessage = em;
   }
 
@@ -98,7 +100,7 @@ public class ProvisioningMessage {
       StackTraceElement[] steArr = t.getStackTrace();
       for (StackTraceElement ste : steArr) {
         message.append("\t");
-        message.append(ste.toString());
+        message.append(ste);
         message.append("\n");
       }
       em += " " + message;
@@ -215,42 +217,67 @@ public class ProvisioningMessage {
 
   public String syslogMsg(int facility, String facilityVersion, String user) {
     int severity = SyslogConstants.SEVERITY_NOTICE;
-    if (provStatus == ProvStatus.ERROR) severity = SyslogConstants.SEVERITY_ERROR;
-    else if (provStatus == ProvStatus.DELAYED) severity = SyslogConstants.SEVERITY_WARNING;
+    if (provStatus == ProvStatus.ERROR) {
+      severity = SyslogConstants.SEVERITY_ERROR;
+    } else if (provStatus == ProvStatus.DELAYED) {
+      severity = SyslogConstants.SEVERITY_WARNING;
+    }
     return SyslogClient.makeMessage(
         severity,
         new Date(),
         ipAddress,
         uniqueId,
-        "ProvMsg: " + toString(),
+        "ProvMsg: " + this,
         facility,
         facilityVersion,
         user);
   }
 
-  // Sent to log-file
+  /** Sent to log-file. */
   public String logMsg() {
     return toString();
   }
 
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("PP:" + provProtocol + ", ");
-    sb.append("ST:" + provStatus.getStr() + ", ");
-    sb.append("PO:" + provOutput + ", ");
-    sb.append("SL:" + sessionLength + ", ");
-    if (paramsRead != null) sb.append("PR:" + paramsRead + ", ");
-    if (paramsWritten != null) sb.append("PW:" + paramsWritten + ", ");
-    if (periodicInformInterval != null) sb.append("PI:" + periodicInformInterval + ", ");
-    if (jobId != null) sb.append("JO:" + jobId + ", ");
-    if (eventCodes != null) sb.append("EV:" + eventCodes + ", ");
-    if (provMode != null) sb.append("PM:" + provMode + ", ");
-    if (fileVersion != null) sb.append("FV:" + fileVersion + ", ");
-    if (errorResponsibility != null) sb.append("ER:" + errorResponsibility + ", ");
-    if (errorCode != null) sb.append("EC:" + errorCode + ", ");
-    if (errorMessage != null) sb.append("EM:" + errorMessage);
+    sb.append("PP:").append(provProtocol).append(", ");
+    sb.append("ST:").append(provStatus.getStr()).append(", ");
+    sb.append("PO:").append(provOutput).append(", ");
+    sb.append("SL:").append(sessionLength).append(", ");
+    if (paramsRead != null) {
+      sb.append("PR:").append(paramsRead).append(", ");
+    }
+    if (paramsWritten != null) {
+      sb.append("PW:").append(paramsWritten).append(", ");
+    }
+    if (periodicInformInterval != null) {
+      sb.append("PI:").append(periodicInformInterval).append(", ");
+    }
+    if (jobId != null) {
+      sb.append("JO:").append(jobId).append(", ");
+    }
+    if (eventCodes != null) {
+      sb.append("EV:").append(eventCodes).append(", ");
+    }
+    if (provMode != null) {
+      sb.append("PM:").append(provMode).append(", ");
+    }
+    if (fileVersion != null) {
+      sb.append("FV:").append(fileVersion).append(", ");
+    }
+    if (errorResponsibility != null) {
+      sb.append("ER:").append(errorResponsibility).append(", ");
+    }
+    if (errorCode != null) {
+      sb.append("EC:").append(errorCode).append(", ");
+    }
+    if (errorMessage != null) {
+      sb.append("EM:").append(errorMessage);
+    }
     String str = sb.toString().trim();
-    if (str.endsWith(",")) str = str.substring(0, str.length() - 1);
+    if (str.endsWith(",")) {
+      str = str.substring(0, str.length() - 1);
+    }
     return str;
   }
 }

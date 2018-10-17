@@ -39,9 +39,8 @@ import org.apache.commons.lang.StringUtils;
  */
 @SuppressWarnings("rawtypes")
 public class PermissionsPage extends AbstractWebPage {
-
   /** The user. */
-  private User user = null;
+  private User user;
 
   /** The users. */
   private Users users;
@@ -55,9 +54,6 @@ public class PermissionsPage extends AbstractWebPage {
   /** The session id. */
   private String sessionId;
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
-   */
   public void process(
       ParameterParser req,
       Output outputHandler,
@@ -84,35 +80,45 @@ public class PermissionsPage extends AbstractWebPage {
 
     users = new Users(xapsDataSource);
 
-    if (inputData.getUser().getString() != null)
+    if (inputData.getUser().getString() != null) {
       user = users.getProtected(inputData.getUser().getString(), loggedInUser);
+    }
 
     String button = inputData.getDetailSubmit().getString();
     if (button != null) {
-      if (button.equals("Update user") && user != null) {
+      if ("Update user".equals(button) && user != null) {
         String username = inputData.getUsername().getString();
         String fullname = inputData.getFullname().getString();
         String password = inputData.getPassword().getString();
-        if (isValidString(username)) user.setUsername(username);
-        if (isValidString(fullname)) user.setFullname(fullname);
-        if (isValidString(password)) user.setSecretClearText(password);
+        if (isValidString(username)) {
+          user.setUsername(username);
+        }
+        if (isValidString(fullname)) {
+          user.setFullname(fullname);
+        }
+        if (isValidString(password)) {
+          user.setSecretClearText(password);
+        }
         user.setAdmin(inputData.getAdmin().getBoolean());
         String configure = req.getParameter("configure");
-        if (configure != null && configure.equals("true")) user.setAccess(getModules());
-        else if (user.isAdmin()) user.setAccess(Users.ACCESS_ADMIN);
+        if ("true".equals(configure)) {
+          user.setAccess(getModules());
+        } else if (user.isAdmin()) {
+          user.setAccess(Users.ACCESS_ADMIN);
+        }
         users.addOrChange(user, loggedInUser);
         setPermissions(user, true);
         root.put("message", "Successfully updated user");
         root.put("submitted", true);
-      } else if (button.equals("Create new user")) {
+      } else if ("Create new user".equals(button)) {
         String username = inputData.getUsername().getString();
         String fullname = inputData.getFullname().getString();
         String password = inputData.getPassword().getString();
         boolean isAdmin = inputData.getAdmin().getBoolean();
         String modules = getModules();
         if (username != null && fullname != null && password != null && modules != null) {
-          User userExists = null;
-          if ((userExists = users.getUnprotected(username)) == null || username.equals("admin")) {
+          User userExists = users.getUnprotected(username);
+          if (userExists == null || "admin".equals(username)) {
             User newUser = new User(username, fullname, modules, isAdmin, users);
             newUser.setSecretClearText(password);
             users.addOrChange(newUser, loggedInUser);
@@ -154,19 +160,17 @@ public class PermissionsPage extends AbstractWebPage {
     root.put("async", req.getParameter("async"));
 
     if (user != null) {
-      template = ("/permissions/permissionsdetailspage.ftl");
+      template = "/permissions/permissionsdetailspage.ftl";
       root.put("user", user);
       root.put("permissions", user.getPermissions().getPermissions());
       root.put("usr_pages", getWebAccess());
+    } else if (inputData.getCmd().hasValue("create")) {
+      template = "/permissions/permissionscreatepage.ftl";
+      root.put("usr_pages", inputData.getWebAccess().getStringArray());
     } else {
-      if (inputData.getCmd().hasValue("create")) {
-        template = ("/permissions/permissionscreatepage.ftl");
-        root.put("usr_pages", inputData.getWebAccess().getStringArray());
-      } else {
-        template = ("/permissions/permissionsoverviewpage.ftl");
-        root.put("users", users.getUsers(loggedInUser));
-        root.put("ACCESS_ADMIN", Users.ACCESS_ADMIN);
-      }
+      template = "/permissions/permissionsoverviewpage.ftl";
+      root.put("users", users.getUsers(loggedInUser));
+      root.put("ACCESS_ADMIN", Users.ACCESS_ADMIN);
     }
 
     root.put("username", inputData.getUsername().getString());
@@ -179,8 +183,7 @@ public class PermissionsPage extends AbstractWebPage {
       root.put("permissions", getTemporaryPermissions());
     } else {
       Permission[] userPerms = (Permission[]) root.get("permissions");
-      List<Permission> userPermsList = new ArrayList<Permission>();
-      userPermsList.addAll(Arrays.asList(userPerms));
+      List<Permission> userPermsList = new ArrayList<>(Arrays.asList(userPerms));
       Permission[] tempPerms = getTemporaryPermissions();
       if (tempPerms != null) {
         for (Permission perm : tempPerms) {
@@ -191,7 +194,9 @@ public class PermissionsPage extends AbstractWebPage {
               break;
             }
           }
-          if (!found) userPermsList.add(perm);
+          if (!found) {
+            userPermsList.add(perm);
+          }
         }
       }
       root.put("permissions", userPermsList);
@@ -222,9 +227,13 @@ public class PermissionsPage extends AbstractWebPage {
     String[] pages = inputData.getWebAccess().getStringArray();
 
     String modules = "";
-    if (pages != null && pages.length > 0) modules = "WEB[" + StringUtils.join(pages, ",") + "]";
+    if (pages != null && pages.length > 0) {
+      modules = "WEB[" + StringUtils.join(pages, ",") + "]";
+    }
 
-    if (modules.equals("")) modules = Users.ACCESS_ADMIN;
+    if ("".equals(modules)) {
+      modules = Users.ACCESS_ADMIN;
+    }
 
     return modules;
   }
@@ -237,14 +246,16 @@ public class PermissionsPage extends AbstractWebPage {
   private String[] getWebAccess() {
     String access = user.getAccess() != null ? user.getAccess().split(";")[0] : "";
     if (access.startsWith("WEB[") && access.endsWith("]")) {
-      access = access.substring(access.indexOf("[") + 1);
+      access = access.substring(access.indexOf('[') + 1);
       access = access.substring(0, access.length() - 1);
       String[] arr = access.split(",");
       List<Page> pages = Page.getPageValuesFromList(Arrays.asList(arr));
-      List<String> friendly = new ArrayList<String>();
+      List<String> friendly = new ArrayList<>();
       for (Page p : pages) {
         for (Entry<String, Page> entry : Page.getPermissiblePageMap().entrySet()) {
-          if (entry.getValue() == p) friendly.add(entry.getKey());
+          if (entry.getValue() == p) {
+            friendly.add(entry.getKey());
+          }
         }
       }
       return friendly.toArray(new String[] {});
@@ -254,7 +265,6 @@ public class PermissionsPage extends AbstractWebPage {
 
   /** The Class PagePermission. */
   public class PagePermission {
-
     /**
      * Gets the key.
      *
@@ -304,7 +314,7 @@ public class PermissionsPage extends AbstractWebPage {
    * @return the all permissible pages
    */
   private List<PagePermission> getAllPermissiblePages() {
-    List<PagePermission> pagesList = new ArrayList<PagePermission>();
+    List<PagePermission> pagesList = new ArrayList<>();
     Collection<String> defaultPages = Page.getPermissiblePageMap().keySet();
     for (String page : defaultPages) {
       PagePermission pageObject = new PagePermission();
@@ -326,22 +336,28 @@ public class PermissionsPage extends AbstractWebPage {
    * @throws NoSuchMethodException the no such method exception
    */
   private Permission[] getTemporaryPermissions()
-      throws IllegalArgumentException, SecurityException, IllegalAccessException,
-          InvocationTargetException, NoSuchMethodException {
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
     String[] permissions = inputData.getPermission().getStringArray();
-    if (permissions == null) return null;
-    List<Permission> perms = new ArrayList<Permission>();
+    if (permissions == null) {
+      return null;
+    }
+    List<Permission> perms = new ArrayList<>();
     for (String permission : permissions) {
-      if (permission == null) continue;
+      if (permission == null) {
+        continue;
+      }
       String[] permDetails = permission.split("\\\\");
       if (permDetails.length > 1) {
         Unittype unittype = acs.getUnittype(permDetails[0]);
         Profile profile = unittype.getProfiles().getByName(permDetails[1]);
-        if (unittype != null && profile != null)
+        if (unittype != null && profile != null) {
           perms.add(new Permission(null, unittype.getId(), profile.getId()));
+        }
       } else if (permDetails.length > 0) {
         Unittype unittype = acs.getUnittype(permDetails[0]);
-        if (unittype != null) perms.add(new Permission(null, unittype.getId(), null));
+        if (unittype != null) {
+          perms.add(new Permission(null, unittype.getId(), null));
+        }
       }
     }
     return perms.toArray(new Permission[] {});
@@ -349,12 +365,10 @@ public class PermissionsPage extends AbstractWebPage {
 
   /** The Class GetUnittypeName. */
   public class GetUnittypeName implements TemplateMethodModel {
-
-    /* (non-Javadoc)
-     * @see freemarker.template.TemplateMethodModel#exec(java.util.List)
-     */
     public Object exec(List args) throws TemplateModelException {
-      if (args.size() < 1) throw new TemplateModelException("Specify Unit Type Id");
+      if (args.isEmpty()) {
+        throw new TemplateModelException("Specify Unit Type Id");
+      }
       Integer unittypeId = Integer.parseInt((String) args.get(0));
       Unittype unittype = acs.getUnittype(unittypeId);
       return new SimpleScalar(unittype.getName());
@@ -363,17 +377,17 @@ public class PermissionsPage extends AbstractWebPage {
 
   /** The Class GetProfileName. */
   public class GetProfileName implements TemplateMethodModel {
-
-    /* (non-Javadoc)
-     * @see freemarker.template.TemplateMethodModel#exec(java.util.List)
-     */
     public Object exec(List args) throws TemplateModelException {
-      if (args.size() < 2) throw new TemplateModelException("Specify Unit Type Id and Profile Id");
+      if (args.size() < 2) {
+        throw new TemplateModelException("Specify Unit Type Id and Profile Id");
+      }
       Integer unittypeId = Integer.parseInt((String) args.get(1));
       Integer profileId = Integer.parseInt((String) args.get(0));
       Unittype unittype = acs.getUnittype(unittypeId);
       Profile profile = unittype.getProfiles().getById(profileId);
-      if (profile != null) return new SimpleScalar(profile.getName());
+      if (profile != null) {
+        return new SimpleScalar(profile.getName());
+      }
       return new SimpleScalar("N/A (id: " + profileId + ")");
     }
   }
@@ -391,11 +405,10 @@ public class PermissionsPage extends AbstractWebPage {
    * @throws SQLException the sQL exception
    */
   private void setPermissions(User newUser, boolean update)
-      throws IllegalArgumentException, SecurityException, IllegalAccessException,
-          InvocationTargetException, SQLException {
+      throws IllegalAccessException, InvocationTargetException, SQLException {
     Permissions perms = newUser.getPermissions();
 
-    List<Permission> toAdd = new ArrayList<Permission>();
+    List<Permission> toAdd = new ArrayList<>();
     SessionData sessionData = SessionCache.getSessionData(sessionId);
     WebUser loggedInUser = sessionData.getUser();
 
@@ -406,12 +419,14 @@ public class PermissionsPage extends AbstractWebPage {
         if (permDetails.length > 1) {
           Unittype unittype = acs.getUnittype(permDetails[0]);
           Profile profile = unittype.getProfiles().getByName(permDetails[1]);
-          if (newUser.getId() != null && unittype != null && profile != null)
+          if (newUser.getId() != null && unittype != null && profile != null) {
             toAdd.add(new Permission(newUser, unittype.getId(), profile.getId()));
+          }
         } else if (permDetails.length > 0) {
           Unittype unittype = acs.getUnittype(permDetails[0]);
-          if (newUser.getId() != null && unittype != null)
+          if (newUser.getId() != null && unittype != null) {
             toAdd.add(new Permission(newUser, unittype.getId(), null));
+          }
         }
       }
     }
@@ -421,17 +436,25 @@ public class PermissionsPage extends AbstractWebPage {
       for (Permission old : perms.getPermissions()) {
         boolean amongToBeAdded = false;
         for (Permission newPerm : toAdd) {
-          if ((amongToBeAdded = isPermissionsEqual(newPerm, old))) break;
+          if (amongToBeAdded = isPermissionsEqual(newPerm, old)) {
+            break;
+          }
         }
-        if (amongToBeAdded == false) newUser.deletePermission(old);
+        if (!amongToBeAdded) {
+          newUser.deletePermission(old);
+        }
       }
       // Add permissions, if they are not already present
       for (Permission newPerm : toAdd) {
         boolean alreadyPresent = false;
         for (Permission old : perms.getPermissions()) {
-          if ((alreadyPresent = isPermissionsEqual(newPerm, old))) break;
+          if (alreadyPresent = isPermissionsEqual(newPerm, old)) {
+            break;
+          }
         }
-        if (!alreadyPresent) newUser.addOrChangePermission(newPerm, loggedInUser);
+        if (!alreadyPresent) {
+          newUser.addOrChangePermission(newPerm, loggedInUser);
+        }
       }
     } else {
       for (Permission permissionToAdd : toAdd) {

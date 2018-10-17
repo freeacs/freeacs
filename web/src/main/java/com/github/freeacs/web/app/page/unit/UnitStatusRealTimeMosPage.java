@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
 
 /** The Class UnitStatusRealTimeMosPage. */
 public class UnitStatusRealTimeMosPage extends AbstractWebPage {
-
   /** The input data. */
   private UnitStatusRealTimeMosData inputData;
 
@@ -45,17 +44,11 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
   /** The logger. */
   private static final Logger logger = LoggerFactory.getLogger(UnitStatusRealTimeMosPage.class);
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.AbstractWebPage#requiresNoCache()
-   */
   @Override
   public boolean requiresNoCache() {
     return true;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
-   */
   public void process(
       ParameterParser params,
       Output outputHandler,
@@ -87,12 +80,14 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
     */
 
     Unittype unittype = null;
-    if (inputData.getUnittype().notNullNorValue(""))
+    if (inputData.getUnittype().notNullNorValue("")) {
       unittype = acs.getUnittype(inputData.getUnittype().getString());
+    }
 
     Profile profile = null;
-    if (inputData.getProfile().notNullNorValue("") && unittype != null)
+    if (inputData.getProfile().notNullNorValue("") && unittype != null) {
       profile = unittype.getProfiles().getByName(inputData.getProfile().getString());
+    }
 
     Unit unit = null;
 
@@ -106,14 +101,20 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
       cal.add(Calendar.MINUTE, -5);
       start = cal.getTime();
       Date start_old = (Date) start.clone();
-      if (unit != null) start = getLastQoSTimestamp(sessionId, unit, start);
-      if (start == null) start = start_old;
+      if (unit != null) {
+        start = getLastQoSTimestamp(sessionId, unit, start);
+      }
+      if (start == null) {
+        start = start_old;
+      }
     } else {
       root.put("start", inputData.getStart().getDateFormat().format(start));
     }
 
     Date end = inputData.getEnd().getDate();
-    if (end != null) root.put("end", inputData.getEnd().getDateFormat().format(end));
+    if (end != null) {
+      root.put("end", inputData.getEnd().getDateFormat().format(end));
+    }
 
     boolean shouldContinueToReload = shouldContinueToReload(params);
 
@@ -150,7 +151,7 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
           "Found "
               + report.getMap().size()
               + " record voip call entries. From: "
-              + start.toString()
+              + start
               + ". To: "
               + (end != null ? end.toString() : "N/A"));
       Chart<RecordVoipCall> chartMaker =
@@ -171,7 +172,7 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
         String base64 = Base64.encodeBase64String(image);
         outputHandler.setDirectResponse(
             "<img src='data:image/png;base64,"
-                + (base64.replace("\n", "").replace("\r", ""))
+                + base64.replace("\n", "").replace("\r", "")
                 + "' alt='chart' />");
       }
     }
@@ -208,7 +209,9 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
     filter.setCollectorTmsStart(start);
     filter.setUnitId("^" + unit.getId() + "$");
     List<SyslogEntry> qosEntry = syslog.read(filter, acs);
-    if (qosEntry.size() > 0) return qosEntry.get(0).getCollectorTimestamp();
+    if (!qosEntry.isEmpty()) {
+      return qosEntry.get(0).getCollectorTimestamp();
+    }
     return null;
   }
 
@@ -234,8 +237,8 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
   private boolean shouldContinueToReload(ParameterParser params) {
     boolean reload = params.getBoolean("reload");
     Date endDate = inputData.getEnd().getDate();
-    if (reload && endDate == null && params.getSession().getAttribute("activetooldialog") != null)
-      return true;
-    return false;
+    return reload
+        && endDate == null
+        && params.getSession().getAttribute("activetooldialog") != null;
   }
 }

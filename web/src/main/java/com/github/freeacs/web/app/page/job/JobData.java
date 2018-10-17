@@ -6,9 +6,9 @@ import com.github.freeacs.web.app.input.InputData;
 import java.util.Map;
 
 public class JobData extends InputData {
-
-  // code-order: unty, id, name, flag, desc, group, unct, rules, file, dep, repc, repi
+  /** Code-order: unty, id, name, flag, desc, group, unct, rules, file, dep, repc, repi */
   private Input name = Input.getStringInput("name");
+
   private Input type = Input.getStringInput("type");
   private Input serviceWindow = Input.getStringInput("servicewindow");
   private Input description = Input.getStringInput("description");
@@ -26,9 +26,7 @@ public class JobData extends InputData {
   public void bindForm(Map<String, Object> root) {}
 
   // code-order: unty, id, name, flag, desc, group, unct, rules, file, dep, repc, repi
-  /*
-   * This method is only called in the event of add/change job-details
-   */
+  /** This method is only called in the event of add/change job-details. */
   @Override
   public boolean validateForm() {
     boolean valid = true;
@@ -53,7 +51,7 @@ public class JobData extends InputData {
         fileId.setError("Software/script file must be specified");
         valid = false;
       }
-      if (!repeatCount.getString().equals("")) {
+      if (!"".equals(repeatCount.getString())) {
         if (repeatCount.getInteger() == null) {
           repeatCount.setError("Repeat count must, if specified, be a number");
           valid = false;
@@ -64,7 +62,7 @@ public class JobData extends InputData {
       } else {
         repeatCount.setError(null);
       }
-      if (!repeatInterval.getString().equals("")) {
+      if (!"".equals(repeatInterval.getString())) {
         if (repeatInterval.getInteger() == null) {
           repeatInterval.setError("Repeat interval must, if specified, be a number");
           valid = false;

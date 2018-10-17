@@ -44,7 +44,7 @@ public class ParameterKey {
     Map<String, ParameterValueStruct> fromDB = sessionData.getFromDB();
     if (sessionData.getJobParams() == null) { // already populated job params in fromDB.
       String jobId = sessionData.getAcsParameters().getValue(SystemParameters.JOB_CURRENT);
-      if (jobId != null && !jobId.trim().equals("")) {
+      if (jobId != null && !"".equals(jobId.trim())) {
         Job job = DBAccess.getJob(sessionData, jobId);
         if (job != null) {
           Log.debug(
@@ -76,12 +76,14 @@ public class ParameterKey {
       UnittypeParameter utp = utps.getByName(utpName);
       //			if (pis != null && pis.isWritable()) {
       if (utp != null && utp.getFlag().isReadWrite()) {
-        if (utpName.contains("PeriodicInformInterval")) continue;
-        if (entry.getValue().getValue().equals("ExtraCPEParam")) continue;
+        if (utpName.contains("PeriodicInformInterval")
+            || "ExtraCPEParam".equals(entry.getValue().getValue())) {
+          continue;
+        }
         values += entry.getValue().getValue();
       }
     }
-    if (values.equals("")) {
+    if ("".equals(values)) {
       Log.debug(
           ParameterKey.class,
           "No device parameter values found, ACS parameterkey = \"No data in DB\"");
@@ -92,7 +94,9 @@ public class ParameterKey {
       String parameterKey = "";
       for (byte b : hash) {
         String hex = Integer.toHexString(b + 128);
-        if (hex.length() == 1) hex = "0" + hex;
+        if (hex.length() == 1) {
+          hex = "0" + hex;
+        }
         parameterKey += hex;
       }
       String pk = parameterKey.substring(0, 32);

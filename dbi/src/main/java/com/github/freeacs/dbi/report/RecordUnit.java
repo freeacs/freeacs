@@ -3,7 +3,6 @@ package com.github.freeacs.dbi.report;
 import java.util.Date;
 
 public class RecordUnit extends Record<RecordUnit> {
-
   private static KeyFactory keyFactory =
       new KeyFactory("Unittype", "Profile", "SoftwareVersion", "Status");
   private Key key;
@@ -70,14 +69,14 @@ public class RecordUnit extends Record<RecordUnit> {
 
   @Override
   public void add(RecordUnit record) {
-    this.getUnitCount().add(record.getUnitCount());
+    getUnitCount().add(record.getUnitCount());
   }
 
   @Override
   public RecordUnit clone() {
     RecordUnit clone =
         new RecordUnit(tms, periodType, unittypeName, profileName, softwareVersion, status);
-    clone.setUnitCount(this.getUnitCount().clone());
+    clone.setUnitCount(getUnitCount().clone());
     return clone;
   }
 

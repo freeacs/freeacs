@@ -9,7 +9,7 @@ public class Country {
 
   public Country(String countryLine) {
     this.name = countryLine.split(":")[0].split("\\s+")[0];
-    this.percent = new Integer(countryLine.split(":")[0].split("\\s+")[1].trim());
+    this.percent = Integer.parseInt(countryLine.split(":")[0].split("\\s+")[1].trim());
     String[] cityArr = countryLine.split(":")[1].split(",");
     cities = new City[cityArr.length];
     for (int i = 0; i < cityArr.length; i++) {

@@ -8,7 +8,6 @@
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
  */
-
 package de.javawi.jstun.util;
 
 import java.net.InetAddress;
@@ -23,14 +22,14 @@ public class Address {
 
   public Address(int firstOctet, int secondOctet, int thirdOctet, int fourthOctet)
       throws UtilityException {
-    if ((firstOctet < 0)
-        || (firstOctet > 255)
-        || (secondOctet < 0)
-        || (secondOctet > 255)
-        || (thirdOctet < 0)
-        || (thirdOctet > 255)
-        || (fourthOctet < 0)
-        || (fourthOctet > 255)) {
+    if (firstOctet < 0
+        || firstOctet > 255
+        || secondOctet < 0
+        || secondOctet > 255
+        || thirdOctet < 0
+        || thirdOctet > 255
+        || fourthOctet < 0
+        || fourthOctet > 255) {
       throw new UtilityException("Address is malformed.");
     }
     this.firstOctet = firstOctet;
@@ -47,7 +46,7 @@ public class Address {
     int i = 0;
     while (st.hasMoreTokens()) {
       int temp = Integer.parseInt(st.nextToken());
-      if ((temp < 0) || (temp > 255)) {
+      if (temp < 0 || temp > 255) {
         throw new UtilityException("Address is in incorrect format.");
       }
       switch (i) {
@@ -104,15 +103,16 @@ public class Address {
   }
 
   public boolean equals(Object obj) {
-    if (obj == null) return false;
-    try {
-      byte[] data1 = this.getBytes();
-      byte[] data2 = ((Address) obj).getBytes();
-      if ((data1[0] == data2[0])
-          && (data1[1] == data2[1])
-          && (data1[2] == data2[2])
-          && (data1[3] == data2[3])) return true;
+    if (obj == null) {
       return false;
+    }
+    try {
+      byte[] data1 = getBytes();
+      byte[] data2 = ((Address) obj).getBytes();
+      return data1[0] == data2[0]
+          && data1[1] == data2[1]
+          && data1[2] == data2[2]
+          && data1[3] == data2[3];
     } catch (UtilityException ue) {
       return false;
     }

@@ -35,11 +35,11 @@ public class Users {
 
   public static String ACCESS_ADMIN = "Admin";
 
-  private static String ADMIN_DEFAULT_PASSWORD = null;
+  private static String ADMIN_DEFAULT_PASSWORD;
 
   private final DataSource dataSource;
-  private Map<Integer, User> idMap = new HashMap<Integer, User>();
-  private Map<String, User> nameMap = new TreeMap<String, User>();
+  private Map<Integer, User> idMap = new HashMap<>();
+  private Map<String, User> nameMap = new TreeMap<>();
 
   public Users(DataSource dataSource) throws SQLException {
     ACSVersionCheck.versionCheck(dataSource);
@@ -68,8 +68,11 @@ public class Users {
    */
   public User getProtected(String name, User requestedBy) {
     User user = getUnprotected(name);
-    if (allowAccessTo(user, requestedBy)) return user;
-    else return null;
+    if (allowAccessTo(user, requestedBy)) {
+      return user;
+    } else {
+      return null;
+    }
   }
 
   /**
@@ -87,7 +90,9 @@ public class Users {
       User adminUser = new User(USER_ADMIN, "Admin user", ACCESS_ADMIN, true, this);
       adminUser.setSecretClearText(ADMIN_DEFAULT_PASSWORD);
       return adminUser;
-    } else return user;
+    } else {
+      return user;
+    }
   }
 
   /**
@@ -98,13 +103,17 @@ public class Users {
    * @throws SQLException
    */
   public void delete(User delete, User requestedBy) throws SQLException {
-    if (!allowAccessTo(delete, requestedBy))
+    if (!allowAccessTo(delete, requestedBy)) {
       throw new IllegalArgumentException("Not allowed to delete user " + delete.getUsername());
-    if (delete.getUsername().equals(USER_ADMIN) && !requestedBy.getUsername().equals(USER_ADMIN))
+    }
+    if (delete.getUsername().equals(USER_ADMIN) && !requestedBy.getUsername().equals(USER_ADMIN)) {
       throw new IllegalArgumentException(
           "Not allowed to delete admin user without being logged in as admin. If admin password is lost, reset it by deleting the admin user from the freeacs.user_ table (default password is 'freeacs')");
+    }
     Permission[] permissions = delete.getPermissions().getPermissions();
-    for (Permission p : permissions) delete.getPermissions().delete(p);
+    for (Permission p : permissions) {
+      delete.getPermissions().delete(p);
+    }
     Connection c = null;
     PreparedStatement ps = null;
     try {
@@ -116,7 +125,9 @@ public class Users {
       nameMap.remove(delete.getUsername());
       idMap.remove(delete.getId());
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       if (c != null) {
         c.close();
       }
@@ -135,15 +146,19 @@ public class Users {
   public void addOrChange(User addOrChange, User requestedBy) throws SQLException {
     boolean unittypeAdmin = false;
     for (Permission p : requestedBy.getPermissions().getPermissions()) {
-      if (p.getProfileId() == null) unittypeAdmin = true;
+      if (p.getProfileId() == null) {
+        unittypeAdmin = true;
+      }
     }
-    if (!requestedBy.isAdmin() && !unittypeAdmin)
+    if (!requestedBy.isAdmin() && !unittypeAdmin) {
       throw new IllegalArgumentException(
           "Not allowed to add or change user for this user (must be unittype admin or admin)");
+    }
     if (addOrChange.getUsername().equals(USER_ADMIN)
-        && !requestedBy.getUsername().equals(USER_ADMIN))
+        && !requestedBy.getUsername().equals(USER_ADMIN)) {
       throw new IllegalArgumentException(
           "Not allowed to change admin user without being logged in as admin. If admin password is lost, reset it by deleting the admin user from the freeacs.user_ table (default password is 'freeacs')");
+    }
     if (addOrChange.getAdmin() && !requestedBy.getAdmin()) {
       throw new IllegalArgumentException(
           "Not allowed to make an admin user if you're not an admin yourself");
@@ -166,7 +181,7 @@ public class Users {
             addOrChange.getAccess());
         if (ACSVersionCheck.adminSupported) {
           Integer adminInt = 0;
-          if (addOrChange.getAdmin() != null && addOrChange.getAdmin() == true) {
+          if (addOrChange.getAdmin() != null && addOrChange.getAdmin()) {
             if (requestedBy.isAdmin()) {
               adminInt = 1;
             } else {
@@ -180,7 +195,9 @@ public class Users {
         ps = ds.makePreparedStatement(c, "id");
         ps.executeUpdate();
         ResultSet gk = ps.getGeneratedKeys();
-        if (gk.next()) addOrChange.setId(gk.getInt(1));
+        if (gk.next()) {
+          addOrChange.setId(gk.getInt(1));
+        }
         // Copy permissions from requestedBy and use them for addOrChange user
         if (!requestedBy.isAdmin()) {
           for (Permission p : requestedBy.getPermissions().getPermissions()) {
@@ -190,35 +207,35 @@ public class Users {
         }
         nameMap.put(addOrChange.getUsername(), addOrChange);
         idMap.put(addOrChange.getId(), addOrChange);
-      } else {
-        if (allowAccessTo(addOrChange, requestedBy)) {
-          ds.addSqlAndArguments(
-              "UPDATE user_ SET username = ?, secret = ?, ",
-              addOrChange.getUsername(),
-              addOrChange.getSecret());
-          ds.addSqlAndArguments(
-              "fullname = ?, accesslist = ?", addOrChange.getFullname(), addOrChange.getAccess());
-          if (ACSVersionCheck.adminSupported) {
-            Integer adminInt = 0;
-            if (addOrChange.getAdmin() != null && addOrChange.getAdmin()) {
-              adminInt = 1;
-            }
-            ds.addSqlAndArguments(", is_admin = ?", adminInt);
+      } else if (allowAccessTo(addOrChange, requestedBy)) {
+        ds.addSqlAndArguments(
+            "UPDATE user_ SET username = ?, secret = ?, ",
+            addOrChange.getUsername(),
+            addOrChange.getSecret());
+        ds.addSqlAndArguments(
+            "fullname = ?, accesslist = ?", addOrChange.getFullname(), addOrChange.getAccess());
+        if (ACSVersionCheck.adminSupported) {
+          Integer adminInt = 0;
+          if (addOrChange.getAdmin() != null && addOrChange.getAdmin()) {
+            adminInt = 1;
           }
-          ds.addSqlAndArguments(" WHERE id = ?", addOrChange.getId());
-          ps = ds.makePreparedStatement(c);
-          int rowsUpdated = ps.executeUpdate();
-          if (rowsUpdated > 0) {
-            nameMap.put(addOrChange.getUsername(), addOrChange);
-            idMap.put(addOrChange.getId(), addOrChange);
-          }
-        } else {
-          throw new IllegalArgumentException(
-              "Not allowed to modify user " + addOrChange.getUsername());
+          ds.addSqlAndArguments(", is_admin = ?", adminInt);
         }
+        ds.addSqlAndArguments(" WHERE id = ?", addOrChange.getId());
+        ps = ds.makePreparedStatement(c);
+        int rowsUpdated = ps.executeUpdate();
+        if (rowsUpdated > 0) {
+          nameMap.put(addOrChange.getUsername(), addOrChange);
+          idMap.put(addOrChange.getId(), addOrChange);
+        }
+      } else {
+        throw new IllegalArgumentException(
+            "Not allowed to modify user " + addOrChange.getUsername());
       }
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       if (c != null) {
         c.close();
       }
@@ -238,11 +255,13 @@ public class Users {
       nameMap.values().toArray(users);
       return users;
     } else {
-      List<User> permittedUsers = new ArrayList<User>();
+      List<User> permittedUsers = new ArrayList<>();
       // This loop will also check requestedBy itself and add it to permittedUsers (if it is
       // unittypeAdmin)
       for (User accessTo : nameMap.values()) {
-        if (allowAccessTo(accessTo, requestedBy)) permittedUsers.add(accessTo);
+        if (allowAccessTo(accessTo, requestedBy)) {
+          permittedUsers.add(accessTo);
+        }
       }
       return permittedUsers.toArray(new User[] {});
     }
@@ -257,12 +276,17 @@ public class Users {
    * @return
    */
   private boolean allowAccessTo(User accessTo, User requestedBy) {
-    if (requestedBy == null || accessTo == null) return false;
-    if (accessTo.getUsername().equals(requestedBy.getUsername())) return true;
-    if (requestedBy.isAdmin()) return true;
-    if (accessTo.isAdmin()) return false;
-    if (requestedBy.getPermissions().getPermissions().length == 0) return false;
-    if (accessTo.getAccess().equals("Admin")) return false;
+    if (requestedBy == null || accessTo == null) {
+      return false;
+    }
+    if (accessTo.getUsername().equals(requestedBy.getUsername()) || requestedBy.isAdmin()) {
+      return true;
+    }
+    if (accessTo.isAdmin()
+        || requestedBy.getPermissions().getPermissions().length == 0
+        || "Admin".equals(accessTo.getAccess())) {
+      return false;
+    }
     boolean userPermitted = true;
     for (Permission checkUserPerm : accessTo.getPermissions().getPermissions()) {
       if (requestedBy.getPermissions().getByUnittypeProfile(checkUserPerm.getUnittypeId(), null)
@@ -275,7 +299,7 @@ public class Users {
   }
 
   /**
-   * Raw read from the database
+   * Raw read from the database.
    *
    * @throws SQLException
    */
@@ -286,8 +310,8 @@ public class Users {
       c = dataSource.getConnection();
       s = c.createStatement();
       ResultSet rs = s.executeQuery("SELECT * FROM user_");
-      Map<Integer, User> tmpIdMap = new HashMap<Integer, User>();
-      Map<String, User> tmpNameMap = new TreeMap<String, User>();
+      Map<Integer, User> tmpIdMap = new HashMap<>();
+      Map<String, User> tmpNameMap = new TreeMap<>();
       while (rs.next()) {
         Integer id = rs.getInt("id");
         String username = rs.getString("username");
@@ -295,8 +319,11 @@ public class Users {
         String fullname = rs.getString("fullname");
         String access = rs.getString("accesslist");
         Boolean isAdmin = null;
-        if (username.equals(USER_ADMIN)) isAdmin = true;
-        else if (ACSVersionCheck.adminSupported) isAdmin = (rs.getInt("is_admin") == 1);
+        if (username.equals(USER_ADMIN)) {
+          isAdmin = true;
+        } else if (ACSVersionCheck.adminSupported) {
+          isAdmin = rs.getInt("is_admin") == 1;
+        }
         User user = new User(username, fullname, access, isAdmin, this);
         user.setSecretHashed(secret);
         user.setId(id);
@@ -310,15 +337,18 @@ public class Users {
         Integer unittypeId = rs.getInt("unit_type_id");
         Integer profileId = null;
         String profileIdStr = rs.getString("profile_id");
-        if (profileIdStr != null) profileId = new Integer(profileIdStr);
+        if (profileIdStr != null) {
+          profileId = Integer.valueOf(profileIdStr);
+        }
         User user = tmpIdMap.get(userId);
         if (user != null) {
           Permissions permissions = user.getPermissions();
           Permission permission = new Permission(user, unittypeId, profileId);
           permission.setId(id);
           permissions.add(permission);
-        } else
+        } else {
           throw new SQLException("The user defined in permission table is not found in user table");
+        }
       }
 
       if (tmpNameMap.get("admin") == null) {
@@ -334,7 +364,9 @@ public class Users {
       idMap = tmpIdMap;
       nameMap = tmpNameMap;
     } finally {
-      if (s != null) s.close();
+      if (s != null) {
+        s.close();
+      }
       if (c != null) {
         c.close();
       }

@@ -25,10 +25,8 @@ import java.util.List;
  * @author Jarl Andre Hubenthal
  */
 public class TableElementMaker {
-  public TableElementMaker() {}
-
   public List<TableElement> getGroups(Unittype unittype) throws Exception {
-    List<TableElement> list = new ArrayList<TableElement>();
+    List<TableElement> list = new ArrayList<>();
     List<String> topLevelGroupnames =
         convertGroupsToNames(unittype.getGroups().getTopLevelGroups());
     Collections.sort(topLevelGroupnames, String.CASE_INSENSITIVE_ORDER);
@@ -40,7 +38,7 @@ public class TableElementMaker {
   }
 
   public List<TableElement> getTriggers(Unittype unittype) throws Exception {
-    List<TableElement> list = new ArrayList<TableElement>();
+    List<TableElement> list = new ArrayList<>();
     List<String> topLevelTriggerNames =
         convertTriggersToNames(unittype.getTriggers().getTopLevelTriggers());
     Collections.sort(topLevelTriggerNames, String.CASE_INSENSITIVE_ORDER);
@@ -52,11 +50,10 @@ public class TableElementMaker {
   }
 
   private void getTrigger(Unittype unittype, List<TableElement> list, Trigger trigger, Integer nbsp)
-      throws IllegalArgumentException, SecurityException, IllegalAccessException,
-          InvocationTargetException, NoSuchMethodException {
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
     String tableTriggerId = getTableTriggerId(trigger);
     Integer str = nbsp;
-    if (trigger != null && trigger.getChildren().size() > 0) {
+    if (trigger != null && !trigger.getChildren().isEmpty()) {
       list.add(new TableElement(tableTriggerId, str, trigger, true));
       List<String> childrenTriggernames = convertTriggersToNames(trigger.getChildren());
       Collections.sort(childrenTriggernames, String.CASE_INSENSITIVE_ORDER);
@@ -64,15 +61,16 @@ public class TableElementMaker {
         Trigger g = unittype.getTriggers().getByName(childrenTriggername);
         getTrigger(unittype, list, g, nbsp + WebConstants.PARAMETERS_NEXT_INDENTATION);
       }
-    } else list.add(new TableElement(tableTriggerId, str, trigger, false));
+    } else {
+      list.add(new TableElement(tableTriggerId, str, trigger, false));
+    }
   }
 
   private void getGroup(Unittype unittype, List<TableElement> list, Group group, Integer nbsp)
-      throws IllegalArgumentException, SecurityException, IllegalAccessException,
-          InvocationTargetException, NoSuchMethodException {
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
     String tableGroupId = getTableGroupId(group);
     Integer str = nbsp;
-    if (group != null && group.getChildren().size() > 0) {
+    if (group != null && !group.getChildren().isEmpty()) {
       list.add(new TableElement(tableGroupId, str, group, true));
       List<String> childrenGroupnames = convertGroupsToNames(group.getChildren());
       Collections.sort(childrenGroupnames, String.CASE_INSENSITIVE_ORDER);
@@ -80,11 +78,13 @@ public class TableElementMaker {
         Group g = unittype.getGroups().getByName(childrenGroupname);
         getGroup(unittype, list, g, nbsp + WebConstants.PARAMETERS_NEXT_INDENTATION);
       }
-    } else list.add(new TableElement(tableGroupId, str, group, false));
+    } else {
+      list.add(new TableElement(tableGroupId, str, group, false));
+    }
   }
 
   private List<String> convertGroupsToNames(List<Group> groups) {
-    List<String> names = new ArrayList<String>();
+    List<String> names = new ArrayList<>();
     for (Group g : groups) {
       names.add(g.getName());
     }
@@ -92,7 +92,7 @@ public class TableElementMaker {
   }
 
   private List<String> convertTriggersToNames(List<Trigger> triggers) {
-    List<String> names = new ArrayList<String>();
+    List<String> names = new ArrayList<>();
     for (Trigger t : triggers) {
       names.add(t.getName());
     }
@@ -100,7 +100,9 @@ public class TableElementMaker {
   }
 
   private String getTableGroupId(Group g) {
-    if (g == null) return null;
+    if (g == null) {
+      return null;
+    }
     String id = g.getName().replace(".", "-");
     Group group = g;
     while ((group = group.getParent()) != null) {
@@ -110,7 +112,9 @@ public class TableElementMaker {
   }
 
   private String getTableTriggerId(Trigger g) {
-    if (g == null) return null;
+    if (g == null) {
+      return null;
+    }
     String id = g.getName().replace(".", "-");
     Trigger group = g;
     while ((group = group.getParent()) != null) {
@@ -120,9 +124,9 @@ public class TableElementMaker {
   }
 
   public List<TableElement> getJobs(Unittype unittype) throws Exception {
-    List<TableElement> list = new ArrayList<TableElement>();
+    List<TableElement> list = new ArrayList<>();
     List<Job> topLevelJobs = findTopLevelJobs(unittype);
-    if (topLevelJobs.size() > 0) {
+    if (!topLevelJobs.isEmpty()) {
       List<String> topLevelJobnames = convertJobsToNames(topLevelJobs);
       Collections.sort(topLevelJobnames, String.CASE_INSENSITIVE_ORDER);
       for (String jobname : topLevelJobnames) {
@@ -148,11 +152,10 @@ public class TableElementMaker {
    * @throws NoSuchMethodException the no such method exception
    */
   private void getJob(Unittype unittype, List<TableElement> list, Job job, Integer nbsp)
-      throws IllegalArgumentException, SecurityException, IllegalAccessException,
-          InvocationTargetException, NoSuchMethodException {
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
     String id = getTableJobId(job);
     Integer str = nbsp;
-    if (getChildren(job).size() > 0) {
+    if (!getChildren(job).isEmpty()) {
       list.add(new TableElement(id, str, job, true));
       List<String> childrenJobnames = convertJobsToNames(getChildren(job));
       Collections.sort(childrenJobnames, String.CASE_INSENSITIVE_ORDER);
@@ -160,7 +163,9 @@ public class TableElementMaker {
         Job childrenJob = unittype.getJobs().getByName(childrenJobname);
         getJob(unittype, list, childrenJob, nbsp + WebConstants.PARAMETERS_NEXT_INDENTATION);
       }
-    } else list.add(new TableElement(id, str, job, false));
+    } else {
+      list.add(new TableElement(id, str, job, false));
+    }
   }
 
   /**
@@ -171,9 +176,11 @@ public class TableElementMaker {
    */
   private List<Job> findTopLevelJobs(Unittype unittype) {
     Job[] jobs = unittype.getJobs().getJobs();
-    List<Job> topLevel = new ArrayList<Job>();
+    List<Job> topLevel = new ArrayList<>();
     for (Job j : jobs) {
-      if (j.getDependency() == null) topLevel.add(j);
+      if (j.getDependency() == null) {
+        topLevel.add(j);
+      }
     }
     return topLevel;
   }
@@ -185,8 +192,7 @@ public class TableElementMaker {
    * @return the children
    */
   private List<Job> getChildren(Job j) {
-    List<Job> jobs = j.getChildren();
-    return jobs;
+    return j.getChildren();
   }
 
   /**
@@ -196,7 +202,7 @@ public class TableElementMaker {
    * @return the list
    */
   private List<String> convertJobsToNames(List<Job> jobs) {
-    List<String> names = new ArrayList<String>();
+    List<String> names = new ArrayList<>();
     for (Job j : jobs) {
       names.add(j.getName());
     }
@@ -217,7 +223,7 @@ public class TableElementMaker {
   }
 
   public List<TableElement> getParameters(JobFilter jobFilter, Object[]... inputs) {
-    List<TableElement> tableElements = new ArrayList<TableElement>();
+    List<TableElement> tableElements = new ArrayList<>();
     UnittypeParameter[] params = getUnittypeParams(inputs);
     UnitParameter[] uParams = getUnitParams(inputs);
     UnitParameter[] uSessionParams = getUnitSessionParams(inputs);
@@ -225,19 +231,22 @@ public class TableElementMaker {
     GroupParameter[] gParams = getGroupParams(inputs);
     JobParameter[] jParams = getJobParams(inputs);
     for (int i = 0; i < params.length; i++) {
-      if (parameterShouldNotBeListed(jobFilter, params, i)) continue;
+      if (parameterShouldNotBeListed(jobFilter, params, i)) {
+        continue;
+      }
       String param = params[i].getName();
       String[] names = param.split("\\.");
       String id = "";
       Integer tab = WebConstants.PARAMETERS_START_INDENTATION;
       for (int j = 0; j < names.length; j++) {
-        UnittypeParameter utp = (j == (names.length - 1) ? params[i] : null);
+        UnittypeParameter utp = j == (names.length - 1) ? params[i] : null;
         String name = names[j];
-        if (id.length() > 0) id += ".";
+        if (!id.isEmpty()) {
+          id += ".";
+        }
         id += name;
-        if (tableElements.size() > 0) {
-          List<TableElement> copy = new ArrayList<TableElement>();
-          copy.addAll(tableElements);
+        if (!tableElements.isEmpty()) {
+          List<TableElement> copy = new ArrayList<>(tableElements);
           boolean isThere = false;
           for (TableElement element : copy) {
             if (element.getName().equals(id)) {
@@ -245,8 +254,12 @@ public class TableElementMaker {
               break;
             }
           }
-          if (!isThere) tableElements.add(new TableElement(id, tab, utp));
-        } else tableElements.add(new TableElement(id, tab, utp));
+          if (!isThere) {
+            tableElements.add(new TableElement(id, tab, utp));
+          }
+        } else {
+          tableElements.add(new TableElement(id, tab, utp));
+        }
         tab += WebConstants.PARAMETERS_NEXT_INDENTATION;
       }
     }
@@ -286,7 +299,9 @@ public class TableElementMaker {
         for (TableElement te : tableElements) {
           if (te.getUnittypeParameter() != null
               && te.getUnittypeParameter().equals(gParam.getParameter().getUnittypeParameter())
-              && gParam.getId() != null) te.addGroupParameter(gParam);
+              && gParam.getId() != null) {
+            te.addGroupParameter(gParam);
+          }
         }
       }
     }
@@ -306,7 +321,7 @@ public class TableElementMaker {
 
   private boolean parameterShouldNotBeListed(
       JobFilter jobFilter, UnittypeParameter[] params, int i) {
-    return (jobFilter != null && !jobFilter.listParameter(params[i]));
+    return jobFilter != null && !jobFilter.listParameter(params[i]);
   }
 
   //	private boolean parameterFlagIsInspection(UnittypeParameter[] params, int i) {
@@ -331,7 +346,7 @@ public class TableElementMaker {
   private GroupParameter[] getGroupParams(Object[][] inputs) {
     for (Object[] list : inputs) {
       if (list instanceof GroupParameter[]) {
-        List<GroupParameter> arr = new ArrayList<GroupParameter>();
+        List<GroupParameter> arr = new ArrayList<>();
         for (Object aList : list) {
           GroupParameter groupParam = (GroupParameter) aList;
           if (groupParam.getId() != null) {

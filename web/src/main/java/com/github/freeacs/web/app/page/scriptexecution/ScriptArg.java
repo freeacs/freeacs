@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ScriptArg {
-
   public enum ArgType {
     STRING,
     INTEGER,
@@ -38,8 +37,7 @@ public class ScriptArg {
   private String value;
   private String error;
 
-  //	private String defValue;
-
+  /** Private String defValue;. */
   private Input retrieveInput(ScriptExecutionData inputData, int index) throws Exception {
     Method m = ScriptExecutionData.class.getMethod("getArgument" + index);
     return (Input) m.invoke(inputData, (Object[]) null);
@@ -76,13 +74,15 @@ public class ScriptArg {
                 Arrays.asList(unittype.getFiles().getFiles()));
       } else if (type.startsWith("int") || type.startsWith("number")) {
         this.type = ArgType.INTEGER;
-        if (type.split(" ").length > 1) this.validationRule = type.split(" ")[1].trim();
+        if (type.split(" ").length > 1) {
+          this.validationRule = type.split(" ")[1].trim();
+        }
       } else if (type.startsWith("string")) {
         this.type = ArgType.STRING;
       } else if (type.startsWith("enum")) {
         this.type = ArgType.ENUM;
-        List<String> options = new ArrayList<String>(Arrays.asList(type.split(" ")[1].split(",")));
-        List<Enumeration> optionsWrapped = new ArrayList<Enumeration>();
+        List<String> options = new ArrayList<>(Arrays.asList(type.split(" ")[1].split(",")));
+        List<Enumeration> optionsWrapped = new ArrayList<>();
         for (String s : options) {
           optionsWrapped.add(new Enumeration(s, s));
         }
@@ -131,8 +131,12 @@ public class ScriptArg {
   }
 
   public void setValue(String value) {
-    if (value != null && value.startsWith("\"")) value = value.substring(1);
-    if (value != null && value.endsWith("\"")) value = value.substring(0, value.length() - 1);
+    if (value != null && value.startsWith("\"")) {
+      value = value.substring(1);
+    }
+    if (value != null && value.endsWith("\"")) {
+      value = value.substring(0, value.length() - 1);
+    }
     this.value = value;
   }
 

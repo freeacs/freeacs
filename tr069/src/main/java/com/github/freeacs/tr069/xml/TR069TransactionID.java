@@ -8,7 +8,6 @@ import com.github.freeacs.tr069.Namespace;
  * @author morten
  */
 public class TR069TransactionID {
-
   private String id;
 
   public TR069TransactionID(String id) {
@@ -17,7 +16,7 @@ public class TR069TransactionID {
 
   public String toXml() {
     StringBuilder sb = new StringBuilder(3);
-    sb.append("\t<cwmp:ID " + Namespace.getSoapEnvNS() + ":mustUnderstand=\"1\">");
+    sb.append("\t<cwmp:ID ").append(Namespace.getSoapEnvNS()).append(":mustUnderstand=\"1\">");
     sb.append(id);
     sb.append("</cwmp:ID>\n");
     return sb.toString();

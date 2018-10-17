@@ -10,17 +10,22 @@ import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
 public class UnittypeXML {
-
   public static String getAttr(Node node, String attrName) throws Exception {
     Attribute attr = (Attribute) node.selectSingleNode("@" + attrName);
-    if (attr != null) return attr.getValue();
-    else return "";
+    if (attr != null) {
+      return attr.getValue();
+    } else {
+      return "";
+    }
   }
 
   public static String getNodeText(Node node, String nodeName) throws Exception {
     Node subnode = node.selectSingleNode(nodeName);
-    if (subnode != null) return subnode.getText().trim();
-    else return "";
+    if (subnode != null) {
+      return subnode.getText().trim();
+    } else {
+      return "";
+    }
   }
 
   public class Info {
@@ -50,7 +55,7 @@ public class UnittypeXML {
   }
 
   public class EnumEntries {
-    List<EnumEntry> list = new ArrayList<EnumEntry>();
+    List<EnumEntry> list = new ArrayList<>();
 
     EnumEntries() {}
 
@@ -71,8 +76,11 @@ public class UnittypeXML {
     EnumEntries enumEntries = new EnumEntries();
 
     public String get_default_value(String parameter_default_value) {
-      if (parameter_default_value.length() != 0) return parameter_default_value;
-      else return default_value;
+      if (!parameter_default_value.isEmpty()) {
+        return parameter_default_value;
+      } else {
+        return default_value;
+      }
     }
 
     Enum() {}
@@ -85,8 +93,10 @@ public class UnittypeXML {
 
     public List<String> getValues(String parameter_default_value) {
       String use_default_value = get_default_value(parameter_default_value);
-      List<String> values = new ArrayList<String>();
-      if (use_default_value.length() != 0) values.add(use_default_value);
+      List<String> values = new ArrayList<>();
+      if (!use_default_value.isEmpty()) {
+        values.add(use_default_value);
+      }
       for (int i = 0; i < enumEntries.list.size(); i++) {
         EnumEntry enumEntry = enumEntries.list.get(i);
         if (!enumEntry.value.equals(use_default_value)) {
@@ -98,7 +108,7 @@ public class UnittypeXML {
   }
 
   public class Enums {
-    List<Enum> list = new ArrayList<Enum>();
+    List<Enum> list = new ArrayList<>();
 
     Enums() {}
 
@@ -134,14 +144,22 @@ public class UnittypeXML {
 
   private static int myCompare(String[] a, String[] b) {
     int i = 0;
-    while (true) {
-      if ((a.length <= i) && (b.length <= i)) return 0;
-      if (a.length <= i) return -1;
-      if (b.length <= i) return +1;
+    do {
+      if (a.length <= i && b.length <= i) {
+        return 0;
+      }
+      if (a.length <= i) {
+        return -1;
+      }
+      if (b.length <= i) {
+        return +1;
+      }
       int c = myCompare(a[i], b[i]);
-      if (c != 0) return c;
+      if (c != 0) {
+        return c;
+      }
       i++;
-    }
+    } while (true);
   }
 
   private static int dottedNameCompare(String a, String b) {
@@ -170,13 +188,11 @@ public class UnittypeXML {
     }
 
     public boolean equals(Object other) {
-      return (compareTo(other) == 0);
+      return compareTo(other) == 0;
     }
 
     public boolean protocol_match(String use_protocol) {
-      if (protocol.contains("ALL")) return true;
-      if (protocol.contains(use_protocol)) return true;
-      return false;
+      return protocol.contains("ALL") || protocol.contains(use_protocol);
     }
 
     public void load(Node node, Enums enums) throws Exception {
@@ -195,10 +211,10 @@ public class UnittypeXML {
         enum_ = enums.find(enum_name);
       }
     }
-  };
+  }
 
   public class Parameters {
-    List<Parameter> list = new ArrayList<Parameter>();
+    List<Parameter> list = new ArrayList<>();
 
     Parameters() {}
 

@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class InformParameters {
-  // The connection udp-url (for kick, ip-address)
+  /** The connection udp-url (for kick, ip-address). */
   public String UDP_CONNECTION_URL;
 
-  public Map<String, ParameterValueStruct> cpeParams = new HashMap<String, ParameterValueStruct>();
+  public Map<String, ParameterValueStruct> cpeParams = new HashMap<>();
 
   public InformParameters(String keyRoot) {
     UDP_CONNECTION_URL = keyRoot + "ManagementServer.UDPConnectionRequestAddress";
@@ -17,8 +17,11 @@ public class InformParameters {
 
   public String getValue(String param) {
     ParameterValueStruct pvs = cpeParams.get(param);
-    if (pvs != null && pvs.getValue() != null) return pvs.getValue();
-    else return null;
+    if (pvs != null && pvs.getValue() != null) {
+      return pvs.getValue();
+    } else {
+      return null;
+    }
   }
 
   public ParameterValueStruct getPvs(String param) {

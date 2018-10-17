@@ -31,14 +31,15 @@ public class Command {
       Pattern.compile(
           "(\\.\\./)|(ut:[^/]+/)|(pr:[^/]+/)|(un:[^/]+/)|(up:[^/]+/)|(gr:[^/]+/)|(jo:[^/]+/)");
 
-  //	private Map<String, ContextElement> contextMap = new HashMap<String, ContextElement>();
+  /** Private Map<String, ContextElement> contextMap = new HashMap<String, ContextElement>();. */
   private ContextContainer contextContainer = new ContextContainer();
-  private List<CommandAndArgument> commandAndArguments = new ArrayList<CommandAndArgument>();
-  private Map<Character, Option> options = new HashMap<Character, Option>();
+
+  private List<CommandAndArgument> commandAndArguments = new ArrayList<>();
+  private Map<Character, Option> options = new HashMap<>();
 
   private String inputFilename;
   private String outputFilename;
-  private boolean appendToOutput = false;
+  private boolean appendToOutput;
   private Context context;
 
   /**
@@ -54,11 +55,15 @@ public class Command {
     int startPos = 0;
     while (m.find()) {
       startPos = m.start();
-      if (startPos - 2 > endPos) break;
+      if (startPos - 2 > endPos) {
+        break;
+      }
       endPos = m.end();
     }
     while (commandEFR.length() >= endPos + 1
-        && commandEFR.substring(endPos, endPos + 1).equals("/")) endPos += 1;
+        && "/".equals(commandEFR.substring(endPos, endPos + 1))) {
+      endPos += 1;
+    }
     return endPos;
   }
 
@@ -69,27 +74,40 @@ public class Command {
     if (m.matches()) {
       commandExclusiveFileRedirection = m.group(1);
       inputFilename = m.group(3);
-      if (inputFilename != null) inputFilename = inputFilename.trim();
+      if (inputFilename != null) {
+        inputFilename = inputFilename.trim();
+      }
       String outputRedirect = m.group(5);
-      if (outputRedirect != null && outputRedirect.equals(">>")) appendToOutput = true;
+      if (">>".equals(outputRedirect)) {
+        appendToOutput = true;
+      }
       outputFilename = m.group(6);
-      if (outputFilename != null) outputFilename = outputFilename.trim();
+      if (outputFilename != null) {
+        outputFilename = outputFilename.trim();
+      }
     }
     int contextEndPos = getContextEndPos(commandExclusiveFileRedirection);
     String contextStr = "";
-    if (contextEndPos > 0) contextStr = commandExclusiveFileRedirection.substring(0, contextEndPos);
-    if (commandExclusiveFileRedirection.length() > contextEndPos)
+    if (contextEndPos > 0) {
+      contextStr = commandExclusiveFileRedirection.substring(0, contextEndPos);
+    }
+    if (commandExclusiveFileRedirection.length() > contextEndPos) {
       commandExclusiveFileRedirection = commandExclusiveFileRedirection.substring(contextEndPos);
+    }
 
     String[] strArr = StringUtil.split(commandExclusiveFileRedirection);
     for (String s : strArr) {
       Option o = Option.parseOption(s);
-      if (o == null) commandAndArguments.add(new CommandAndArgument(s));
-      else options.put(o.getType(), o);
+      if (o != null) {
+        options.put(o.getType(), o);
+      } else {
+        commandAndArguments.add(new CommandAndArgument(s));
+      }
     }
     Option uOption = options.get(Option.OPTION_USE_CONTEXT);
-    if (uOption != null && uOption.getOptionArgs() != null)
+    if (uOption != null && uOption.getOptionArgs() != null) {
       contextContainer = ContextElement.parseContextElements(uOption.getOptionArgs());
+    }
     // The u-option context takes precendce over command-context. The main idea is
     // to allowe the command-context to be appended to u-option context, but in case
     // there is an overlap, the command-context-element is skipped
@@ -97,19 +115,19 @@ public class Command {
   }
 
   public boolean contextChangeOnly() {
-    if (contextContainer.size() > 0 && commandAndArguments.size() == 0) return true;
-    if (commandAndArguments.size() > 0) {
+    if (contextContainer.size() > 0 && commandAndArguments.isEmpty()) {
+      return true;
+    }
+    if (!commandAndArguments.isEmpty()) {
       CommandAndArgument caa = commandAndArguments.get(0);
-      if (caa.getCommandAndArgument().equals("unit") || caa.getCommandAndArgument().equals("cc"))
+      if ("unit".equals(caa.getCommandAndArgument()) || "cc".equals(caa.getCommandAndArgument())) {
         return true;
+      }
     }
     return false;
   }
 
-  //	public Map<String, ContextElement> getContextElementMap() {
-  //		return contextMap;
-  //	}
-
+  /** Public Map<String, ContextElement> getContextElementMap() { return contextMap; }. */
   public ContextContainer getContextContainer() {
     return contextContainer;
   }
@@ -127,7 +145,9 @@ public class Command {
   }
 
   public String getInputFilename() {
-    if (inputFilename == null) return null;
+    if (inputFilename == null) {
+      return null;
+    }
 
     String orgStr = inputFilename;
     Matcher m = varPattern.matcher(orgStr);
@@ -137,17 +157,22 @@ public class Command {
     while (m.find()) {
       String varName = m.group(2);
       modStr += orgStr.substring(previousEnd, m.start());
-      if (session.getScript().getVariable(varName) != null)
+      if (session.getScript().getVariable(varName) != null) {
         modStr +=
             varArgSubstParam(session.getScript().getVariable(varName).getValue(), session, true);
+      }
       previousEnd = m.end();
     }
-    if (previousEnd < orgStr.length()) modStr += orgStr.substring(previousEnd);
+    if (previousEnd < orgStr.length()) {
+      modStr += orgStr.substring(previousEnd);
+    }
     return modStr;
   }
 
   public String getOutputFilename() {
-    if (outputFilename == null) return null;
+    if (outputFilename == null) {
+      return null;
+    }
 
     String orgStr = outputFilename;
     Matcher m = varPattern.matcher(orgStr);
@@ -157,31 +182,40 @@ public class Command {
     while (m.find()) {
       String varName = m.group(2);
       modStr += orgStr.substring(previousEnd, m.start());
-      if (session.getScript().getVariable(varName) != null)
+      if (session.getScript().getVariable(varName) != null) {
         modStr +=
             varArgSubstParam(session.getScript().getVariable(varName).getValue(), session, true);
+      }
       previousEnd = m.end();
     }
-    if (previousEnd < orgStr.length()) modStr += orgStr.substring(previousEnd);
+    if (previousEnd < orgStr.length()) {
+      modStr += orgStr.substring(previousEnd);
+    }
     return modStr;
   }
 
   public String toString() {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     for (ContextElement ce : contextContainer.getContextList()) {
       sb.append(ce);
     }
-    if (sb.length() > 0) sb.append("/");
-    if (commandAndArguments.size() > 0) sb.append(commandAndArguments.get(0) + " ");
+    if (sb.length() > 0) {
+      sb.append("/");
+    }
+    if (!commandAndArguments.isEmpty()) {
+      sb.append(commandAndArguments.get(0)).append(" ");
+    }
     for (Option o : options.values()) {
-      sb.append(o + " ");
+      sb.append(o).append(" ");
     }
     if (commandAndArguments.size() > 1) {
       for (int i = 1; i < commandAndArguments.size(); i++) {
         CommandAndArgument caa = commandAndArguments.get(i);
-        if (caa.toString().indexOf(" ") > -1 || caa.toString().indexOf("\t") > -1)
-          sb.append("\"" + caa + "\" ");
-        else sb.append(caa + " ");
+        if (caa.toString().indexOf(' ') > -1 || caa.toString().indexOf('\t') > -1) {
+          sb.append("\"").append(caa).append("\" ");
+        } else {
+          sb.append(caa).append(" ");
+        }
       }
     }
     return sb.toString();
@@ -208,7 +242,7 @@ public class Command {
     }
   }
 
-  /* reset substitutions and remove appended file-args */
+  /** Reset substitutions and remove appended file-args. */
   public void reset() {
     for (ContextElement ce : getContextContainer().getContextList()) {
       ce.resetToOriginalState();
@@ -216,8 +250,11 @@ public class Command {
     Iterator<CommandAndArgument> iterator = getCommandAndArguments().iterator();
     while (iterator.hasNext()) {
       CommandAndArgument caa = iterator.next();
-      if (caa.isAppendedFromFile()) iterator.remove();
-      else caa.resetToOriginalState();
+      if (caa.isAppendedFromFile()) {
+        iterator.remove();
+      } else {
+        caa.resetToOriginalState();
+      }
     }
 
     for (Option o : getOptions().values()) {
@@ -237,24 +274,34 @@ public class Command {
         if (unittype.getUnittypeParameters().getByName(varValue) != null) {
           if (session.getContext().getUnit() != null) {
             UnitParameter up = session.getContext().getUnit().getUnitParameters().get(varValue);
-            if (up != null && up.getValue() != null) substStr = up.getValue();
-            else substStr = "NULL";
+            if (up != null && up.getValue() != null) {
+              substStr = up.getValue();
+            } else {
+              substStr = "NULL";
+            }
           } else if (session.getContext().getProfile() != null) {
             ProfileParameter pp =
                 session.getContext().getProfile().getProfileParameters().getByName(varValue);
-            if (pp != null && pp.getValue() != null) substStr = pp.getValue();
-            else substStr = "NULL";
+            if (pp != null && pp.getValue() != null) {
+              substStr = pp.getValue();
+            } else {
+              substStr = "NULL";
+            }
           } else if (session.getContext().getGroup() != null) {
             GroupParameter gp =
                 session.getContext().getGroup().getGroupParameters().getByName(varValue);
-            if (gp != null && gp.getParameter() != null && gp.getParameter().getValue() != null)
+            if (gp != null && gp.getParameter() != null && gp.getParameter().getValue() != null) {
               substStr = gp.getParameter().getValue();
-            else substStr = "NULL";
+            } else {
+              substStr = "NULL";
+            }
           } else if (session.getContext().getJob() != null) {
             JobParameter jp = session.getContext().getJob().getDefaultParameters().get(varValue);
-            if (jp != null && jp.getParameter() != null && jp.getParameter().getValue() != null)
+            if (jp != null && jp.getParameter() != null && jp.getParameter().getValue() != null) {
               substStr = jp.getParameter().getValue();
-            else substStr = "NULL";
+            } else {
+              substStr = "NULL";
+            }
           } else { // Unittype
             substStr = unittype.getUnittypeParameters().getByName(varValue).getFlag().getFlag();
           }
@@ -264,8 +311,6 @@ public class Command {
       } else if (!variableValueFound) {
         substStr = "NULL";
       }
-    } else {
-      // use default value - simply the variable value
     }
 
     return substStr;
@@ -288,22 +333,24 @@ public class Command {
           String type = varName.substring(1);
           if (ContextElement.types.contains(type)) {
             if (type.equals(ContextElement.TYPE_UNITTYPE)
-                && session.getContext().getUnittype() != null)
+                && session.getContext().getUnittype() != null) {
               modStr += session.getContext().getUnittype().getName();
-            else if (type.equals(ContextElement.TYPE_UNITTYPE_PARAMS)
-                && session.getContext().getUnittypeParameter() != null)
+            } else if (type.equals(ContextElement.TYPE_UNITTYPE_PARAMS)
+                && session.getContext().getUnittypeParameter() != null) {
               modStr += session.getContext().getUnittypeParameter().getName();
-            else if (type.equals(ContextElement.TYPE_PROFILE)
-                && session.getContext().getProfile() != null)
+            } else if (type.equals(ContextElement.TYPE_PROFILE)
+                && session.getContext().getProfile() != null) {
               modStr += session.getContext().getProfile().getName();
-            else if (type.equals(ContextElement.TYPE_GROUP)
-                && session.getContext().getGroup() != null)
+            } else if (type.equals(ContextElement.TYPE_GROUP)
+                && session.getContext().getGroup() != null) {
               modStr += session.getContext().getGroup().getName();
-            else if (type.equals(ContextElement.TYPE_JOB) && session.getContext().getJob() != null)
+            } else if (type.equals(ContextElement.TYPE_JOB)
+                && session.getContext().getJob() != null) {
               modStr += session.getContext().getJob().getName();
-            else if (type.equals(ContextElement.TYPE_UNIT)
-                && session.getContext().getUnit() != null)
+            } else if (type.equals(ContextElement.TYPE_UNIT)
+                && session.getContext().getUnit() != null) {
               modStr += session.getContext().getUnit().getId();
+            }
           } else {
             modStr += varArgSubstParam(varName, session, false);
           }
@@ -315,7 +362,9 @@ public class Command {
       }
       previousEnd = m.end();
     }
-    if (previousEnd < orgStr.length()) modStr += orgStr.substring(previousEnd);
+    if (previousEnd < orgStr.length()) {
+      modStr += orgStr.substring(previousEnd);
+    }
     subst.setSubstitutedString(modStr);
   }
 
@@ -332,9 +381,14 @@ public class Command {
           // thus appending context to the container is suitable
           fileargCC.skipOrAppend(oneArgCC);
           String uOptArg = uOption.getStringToSubstitute();
-          if (uOptArg == null) uOption.setSubstitutedString(fileArgs[i]);
-          else uOption.setSubstitutedString(uOptArg + fileArgs[i]);
-        } else break;
+          if (uOptArg != null) {
+            uOption.setSubstitutedString(uOptArg + fileArgs[i]);
+          } else {
+            uOption.setSubstitutedString(fileArgs[i]);
+          }
+        } else {
+          break;
+        }
       }
       // getContextContainer() contains already parsed/read context
       // File args context will overwrite/insert the already read context
@@ -348,18 +402,24 @@ public class Command {
     boolean change = false;
     // Then substitute parts of context with fileArg (if necessary)
     for (ContextElement ce : getContextContainer().getContextList()) {
-      if (fileArgSubst(ce, fileArgsWithoutContext)) change = true;
+      if (fileArgSubst(ce, fileArgsWithoutContext)) {
+        change = true;
+      }
     }
 
     // Then substitute parts of commandAndArguments with fileArg (if necessary)
     for (CommandAndArgument caa : getCommandAndArguments()) {
-      if (fileArgSubst(caa, fileArgsWithoutContext)) change = true;
+      if (fileArgSubst(caa, fileArgsWithoutContext)) {
+        change = true;
+      }
     }
 
     // Then substitute parts of variable options with fileArg (if necessary)
     if (getOptions().containsKey(Option.OPTION_VARIABLES)) {
       Option varOption = getOptions().get(Option.OPTION_VARIABLES);
-      if (fileArgSubst(varOption, fileArgsWithoutContext)) change = true;
+      if (fileArgSubst(varOption, fileArgsWithoutContext)) {
+        change = true;
+      }
     }
 
     // if no change using substitution, append
@@ -377,11 +437,11 @@ public class Command {
       while (iterator.hasNext()) {
         CommandAndArgument caa = iterator.next();
         ContextContainer cc = ContextElement.parseContextElements(caa.getStringToSubstitute());
-        if (!cc.toString().equals("")) {
+        if (!"".equals(cc.toString())) {
           getContextContainer().overwriteOrInsert(cc);
           caa.setSubstitutedString(
               caa.getStringToSubstitute()
-                  .substring(caa.getStringToSubstitute().lastIndexOf("/") + 1));
+                  .substring(caa.getStringToSubstitute().lastIndexOf('/') + 1));
         }
       }
     }
@@ -396,16 +456,20 @@ public class Command {
     while (m.find()) {
       int fileArgIndex = Integer.parseInt(m.group(2));
       modStr += orgStr.substring(previousEnd, m.start());
-      if (fileArgIndex <= 0 || fileArgIndex > fileArgs.length)
+      if (fileArgIndex <= 0 || fileArgIndex > fileArgs.length) {
         throw new IllegalArgumentException(
             "The file argument index "
                 + fileArgIndex
                 + " does not match any column in the file input");
-      else modStr += fileArgs[fileArgIndex - 1];
+      } else {
+        modStr += fileArgs[fileArgIndex - 1];
+      }
       previousEnd = m.end();
       changed = true;
     }
-    if (previousEnd < orgStr.length()) modStr += orgStr.substring(previousEnd);
+    if (previousEnd < orgStr.length()) {
+      modStr += orgStr.substring(previousEnd);
+    }
     subst.setSubstitutedString(modStr);
     return changed;
   }

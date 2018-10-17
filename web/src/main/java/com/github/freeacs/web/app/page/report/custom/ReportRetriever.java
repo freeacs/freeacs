@@ -21,7 +21,6 @@ import java.util.Map;
  * @author Jarl Andre Hubenthal
  */
 public abstract class ReportRetriever {
-
   /**
    * Gets the input data.
    *

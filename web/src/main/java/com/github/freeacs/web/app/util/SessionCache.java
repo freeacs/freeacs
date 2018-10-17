@@ -32,7 +32,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
  * @author Jarl Andre Hubenthal
  */
 public class SessionCache {
-
   /** The cache. */
   private static Cache cache = new Cache();
 
@@ -91,8 +90,9 @@ public class SessionCache {
    * @return the dBI
    */
   public static DBI getDBI(String sessionId) {
-    if (cache.get(key(sessionId, "dbi")) != null)
+    if (cache.get(key(sessionId, "dbi")) != null) {
       return (DBI) cache.get(key(sessionId, "dbi")).getObject();
+    }
     return null;
   }
 
@@ -117,8 +117,9 @@ public class SessionCache {
    * @return the unit
    */
   public static Unit getUnit(String sessionId, String unitId) {
-    if (cache.get(key(sessionId, unitId)) != null)
+    if (cache.get(key(sessionId, unitId)) != null) {
       return (Unit) cache.get(key(sessionId, unitId)).getObject();
+    }
     return null;
   }
 
@@ -160,10 +161,12 @@ public class SessionCache {
    * @param props the props
    */
   public static void putSyslogConnectionProperties(String sessionId, DataSource props) {
-    if (props == null) cache.remove(key(sessionId, "syslogprops"));
-    else
+    if (props != null) {
       cache.put(
           key(sessionId, "syslogprops"), new CacheValue(props, Cache.SESSION, Long.MAX_VALUE));
+    } else {
+      cache.remove(key(sessionId, "syslogprops"));
+    }
   }
 
   /**
@@ -173,9 +176,11 @@ public class SessionCache {
    * @param props the props
    */
   public static void putXAPSConnectionProperties(String sessionId, DataSource props) {
-    if (props == null) cache.remove(key(sessionId, "xapsprops"));
-    else
+    if (props != null) {
       cache.put(key(sessionId, "xapsprops"), new CacheValue(props, Cache.SESSION, Long.MAX_VALUE));
+    } else {
+      cache.remove(key(sessionId, "xapsprops"));
+    }
   }
 
   /**
@@ -185,11 +190,13 @@ public class SessionCache {
    * @param entries the entries
    */
   public static void putSyslogEntries(String sessionId, List<SyslogEntry> entries) {
-    if (entries == null) cache.remove(key(sessionId, "syslogresults"));
-    else
+    if (entries != null) {
       cache.put(
           key(sessionId, "syslogresults"),
           new CacheValue(entries, Cache.SESSION, SYSLOG_EXPORT_TIMEOUT));
+    } else {
+      cache.remove(key(sessionId, "syslogresults"));
+    }
   }
 
   /**
@@ -201,9 +208,10 @@ public class SessionCache {
   @SuppressWarnings("unchecked")
   public static List<SyslogEntry> getSyslogEntries(String sessionId) {
     CacheValue cv = cache.get(key(sessionId, "syslogresults"));
-    if (cv == null) return null;
-    List<SyslogEntry> object = (List<SyslogEntry>) cv.getObject();
-    return object;
+    if (cv != null) {
+      return (List<SyslogEntry>) cv.getObject();
+    }
+    return null;
   }
 
   /**
@@ -283,8 +291,9 @@ public class SessionCache {
    * @return The changed report if period type is different, or the same report unchanged.
    */
   public static Report<RecordVoip> convertVoipReport(Report<RecordVoip> report, PeriodType type) {
-    if (type != null && report.getPeriodType().getTypeInt() != type.getTypeInt())
+    if (type != null && report.getPeriodType().getTypeInt() != type.getTypeInt()) {
       report = ReportConverter.convertVoipReport(report, type);
+    }
     return report;
   }
 
@@ -338,8 +347,9 @@ public class SessionCache {
    */
   public static Report<RecordHardware> convertHardwareReport(
       Report<RecordHardware> report, PeriodType type) {
-    if (type != null && report.getPeriodType().getTypeInt() != type.getTypeInt())
+    if (type != null && report.getPeriodType().getTypeInt() != type.getTypeInt()) {
       report = ReportConverter.convertHardwareReport(report, type);
+    }
     return report;
   }
 
@@ -399,8 +409,9 @@ public class SessionCache {
    */
   public static Report<RecordSyslog> convertSyslogReport(
       Report<RecordSyslog> report, PeriodType type) {
-    if (type != null && report.getPeriodType().getTypeInt() != type.getTypeInt())
+    if (type != null && report.getPeriodType().getTypeInt() != type.getTypeInt()) {
       report = ReportConverter.convertSyslogReport(report, type);
+    }
     return report;
   }
 

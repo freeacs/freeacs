@@ -9,10 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Inbox {
-
   private static Logger logger = LoggerFactory.getLogger(Inbox.class);
-  private Map<Integer, Message> map = new TreeMap<Integer, Message>();
-  private List<Message> filters = new ArrayList<Message>();
+  private Map<Integer, Message> map = new TreeMap<>();
+  private List<Message> filters = new ArrayList<>();
 
   public void addFilter(Message m) {
     filters.add(m);
@@ -25,12 +24,13 @@ public class Inbox {
   public synchronized void addToInbox(Message m) {
     boolean added = false;
     for (Message filter : filters) {
-      if (filter.getSender() != null && !filter.getSender().equals(m.getSender())) continue;
-      if (filter.getMessageType() != null && !filter.getMessageType().equals(m.getMessageType()))
+      if ((filter.getSender() != null && !filter.getSender().equals(m.getSender()))
+          || (filter.getMessageType() != null
+              && !filter.getMessageType().equals(m.getMessageType()))
+          || (filter.getObjectType() != null && !filter.getObjectType().equals(m.getObjectType()))
+          || (filter.getReceiver() != null && !filter.getReceiver().equals(m.getReceiver()))) {
         continue;
-      if (filter.getObjectType() != null && !filter.getObjectType().equals(m.getObjectType()))
-        continue;
-      if (filter.getReceiver() != null && !filter.getReceiver().equals(m.getReceiver())) continue;
+      }
       added = true;
       if (logger.isDebugEnabled()) {
         logger.debug("Message: [" + m + "] was added to an inbox");
@@ -40,9 +40,11 @@ public class Inbox {
   }
 
   public synchronized List<Message> getUnreadMessages() {
-    List<Message> list = new ArrayList<Message>();
+    List<Message> list = new ArrayList<>();
     for (Message m : map.values()) {
-      if (!m.isProcessed()) list.add(m);
+      if (!m.isProcessed()) {
+        list.add(m);
+      }
     }
     return list;
   }
@@ -59,7 +61,9 @@ public class Inbox {
     Iterator<Integer> iterator = map.keySet().iterator();
     while (iterator.hasNext()) {
       Message m = map.get(iterator.next());
-      if (m.isProcessed()) iterator.remove();
+      if (m.isProcessed()) {
+        iterator.remove();
+      }
     }
   }
 }

@@ -10,9 +10,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class FileDatabase {
-
   private File database;
-  private Map<String, String> databaseMap = new HashMap<String, String>();
+  private Map<String, String> databaseMap = new HashMap<>();
 
   /**
    * Super simple database based on one file. The operation works like this: You can only do row
@@ -26,7 +25,7 @@ public class FileDatabase {
   }
 
   private void read() throws IOException {
-    HashMap<String, String> tmp = new HashMap<String, String>();
+    HashMap<String, String> tmp = new HashMap<>();
     if (database.exists()) {
       FileReader fr = new FileReader(database);
       BufferedReader br = new BufferedReader(fr);

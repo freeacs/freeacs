@@ -11,13 +11,13 @@ import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import com.github.freeacs.tr069.xml.Parser;
 
 public class SPVres {
-
   public static void process(HTTPReqResData reqRes) throws TR069Exception {
     reqRes.getRequest().setMethod(TR069Method.SET_PARAMETER_VALUES);
     Parser parser = new Parser(reqRes.getRequest().getXml());
     if (parser.getHeader().getNoMoreRequests() != null
-        && parser.getHeader().getNoMoreRequests().getNoMoreRequestFlag())
+        && parser.getHeader().getNoMoreRequests().getNoMoreRequestFlag()) {
       reqRes.getSessionData().setNoMoreRequests(true);
+    }
     SessionData sessionData = reqRes.getSessionData();
     ParameterList paramList = sessionData.getToCPE();
     for (ParameterValueStruct pvs : paramList.getParameterValueList()) {

@@ -44,7 +44,7 @@ public class SyslogRetriever {
       String sessionId,
       DataSource xapsDataSource,
       DataSource syslogDataSource)
-      throws IllegalArgumentException, SecurityException, SQLException {
+      throws SQLException {
     inputData.getTimestampStart().setValue(fromDate);
     inputData.getTimestampEnd().setValue(endDate);
     inputData.getUnit().setValue("^" + unit.getId() + "$");
@@ -59,40 +59,51 @@ public class SyslogRetriever {
       String sessionId,
       DataSource xapsDataSource,
       DataSource syslogDataSource)
-      throws SQLException, IllegalArgumentException, SecurityException {
+      throws SQLException {
     Syslog syslog = new Syslog(syslogDataSource, ACSLoader.getIdentity(sessionId, xapsDataSource));
     SyslogFilter filter = new SyslogFilter();
-    if (maxrows != null) filter.setMaxRows(maxrows + 1);
+    if (maxrows != null) {
+      filter.setMaxRows(maxrows + 1);
+    }
     filter.setMessage(inputData.getMessage().getString());
     filter.setFacilityVersion(inputData.getFacilityVersion().getString());
-    if (unittype != null) filter.setUnittypes(Collections.singletonList(unittype));
-    else if (AbstractWebPage.isUnittypesLimited(sessionId, xapsDataSource, syslogDataSource)) {
+    if (unittype != null) {
+      filter.setUnittypes(Collections.singletonList(unittype));
+    } else if (AbstractWebPage.isUnittypesLimited(sessionId, xapsDataSource, syslogDataSource)) {
       List<Unittype> uts =
           AbstractWebPage.getAllowedUnittypes(sessionId, xapsDataSource, syslogDataSource);
-      if (uts.size() == 0) return new ArrayList<SyslogEntry>();
+      if (uts.isEmpty()) {
+        return new ArrayList<>();
+      }
       filter.setUnittypes(uts);
     }
-    if (profile != null) filter.setProfiles(Collections.singletonList(profile));
-    else {
+    if (profile != null) {
+      filter.setProfiles(Collections.singletonList(profile));
+    } else {
       List<Profile> profiles =
           AbstractWebPage.getAllowedProfiles(sessionId, unittype, xapsDataSource, syslogDataSource);
-      if (profiles != null && profiles.size() > 0) {
+      if (profiles != null && !profiles.isEmpty()) {
         filter.setProfiles(profiles);
       }
     }
-    if (inputData.getSeverity().getStringArray() != null)
+    if (inputData.getSeverity().getStringArray() != null) {
       filter.setSeverity(
           (Integer[]) SyslogUtil.translateSeverityLevel(inputData.getSeverity().getStringArray()));
-    if (inputData.getEvent().getInteger() != null)
+    }
+    if (inputData.getEvent().getInteger() != null) {
       filter.setEventId(inputData.getEvent().getInteger());
+    }
     if (inputData.getIpaddress().getString() != null
-        && inputData.getIpaddress().getString().length() > 0)
+        && !inputData.getIpaddress().getString().isEmpty()) {
       filter.setIpAddress(inputData.getIpaddress().getString());
-    if (inputData.getUserId().getString() != null && inputData.getUserId().getString().length() > 0)
+    }
+    if (inputData.getUserId().getString() != null && !inputData.getUserId().getString().isEmpty()) {
       filter.setUserId(inputData.getUserId().getString());
+    }
     if (inputData.getFacility().getString() != null
-        && !inputData.getFacility().getString().equals("All"))
+        && !"All".equals(inputData.getFacility().getString())) {
       filter.setFacility(Integer.parseInt(inputData.getFacility().getString()));
+    }
     filter.setCollectorTmsStart(
         inputData.getTimestampStart().getDateOrDefault(SyslogUtil.getDate()));
     filter.setCollectorTmsEnd(inputData.getTimestampEnd().getDateOrDefault(new Date()));

@@ -35,8 +35,9 @@ public class DBAccessSessionTR069 {
   public void writeUnittypeProfileUnit(SessionData sessionData, String unittypeName, String unitId)
       throws TR069Exception {
     // If no product class is specified in the inform:
-    if (unittypeName == null || unittypeName.trim().equals(""))
+    if (unittypeName == null || "".equals(unittypeName.trim())) {
       unittypeName = "OUI-" + unitId.substring(0, 6);
+    }
     try {
       Unittype ut = acs.getUnittype(unittypeName);
       if (ut == null) {
@@ -61,10 +62,10 @@ public class DBAccessSessionTR069 {
       sessionData.setProfile(pr);
 
       ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
-      List<String> unitIds = new ArrayList<String>();
+      List<String> unitIds = new ArrayList<>();
       unitIds.add(unitId);
       acsUnit.addUnits(unitIds, pr);
-      List<UnitParameter> unitParameters = new ArrayList<UnitParameter>();
+      List<UnitParameter> unitParameters = new ArrayList<>();
       UnittypeParameter secretUtp = ut.getUnittypeParameters().getByName(SystemParameters.SECRET);
       UnitParameter up = new UnitParameter(secretUtp, unitId, sessionData.getSecret(), pr);
       unitParameters.add(up);
@@ -87,23 +88,26 @@ public class DBAccessSessionTR069 {
       List<ParameterValueStruct> parameterValuesToDB = sessionData.getToDB();
       Unittype unittype = sessionData.getUnittype();
       Profile profile = sessionData.getProfile();
-      List<UnitParameter> unitSessionParameters = new ArrayList<UnitParameter>();
+      List<UnitParameter> unitSessionParameters = new ArrayList<>();
       for (ParameterValueStruct pvs : parameterValuesToDB) {
         UnittypeParameter utp = unittype.getUnittypeParameters().getByName(pvs.getName());
         if (utp != null) {
           UnitParameter up =
               new UnitParameter(utp, sessionData.getUnitId(), pvs.getValue(), profile);
           if (utp.getName().startsWith("Device.")
-              || utp.getName().startsWith("InternetGatewayDevice.")) unitSessionParameters.add(up);
-        } else
+              || utp.getName().startsWith("InternetGatewayDevice.")) {
+            unitSessionParameters.add(up);
+          }
+        } else {
           Log.warn(
               DBAccessSession.class,
               "\t"
                   + pvs.getName()
                   + " : does not exist, cannot write session value "
                   + pvs.getValue());
+        }
       }
-      if (unitSessionParameters.size() > 0) {
+      if (!unitSessionParameters.isEmpty()) {
         ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
         acsUnit.addOrChangeSessionUnitParameters(unitSessionParameters, profile);
       }
@@ -115,7 +119,7 @@ public class DBAccessSessionTR069 {
 
   public static void writeUnitParams(SessionData sessionData) {
     List<ParameterValueStruct> parameterValuesToDB = sessionData.getToDB();
-    List<UnitParameter> unitParameters = new ArrayList<UnitParameter>();
+    List<UnitParameter> unitParameters = new ArrayList<>();
     Unittype unittype = sessionData.getUnittype();
     Profile profile = sessionData.getProfile();
     Unit unit = sessionData.getUnit();
@@ -124,10 +128,11 @@ public class DBAccessSessionTR069 {
       if (utp != null) {
         unitParameters.add(
             new UnitParameter(utp, sessionData.getUnitId(), pvs.getValue(), profile));
-      } else
+      } else {
         Log.warn(
             DBAccessSession.class,
             "\t" + pvs.getName() + " : does not exist, cannot write value " + pvs.getValue());
+      }
     }
     DBAccessStatic.queueUnitParameters(unit, unitParameters, profile);
   }

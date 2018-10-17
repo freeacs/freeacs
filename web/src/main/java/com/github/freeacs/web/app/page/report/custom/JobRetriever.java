@@ -19,7 +19,6 @@ import java.util.Map;
 
 /** The Class JobInterface. */
 public class JobRetriever extends ReportRetriever {
-
   /** The generator. */
   private ReportGenerator generator;
 
@@ -42,9 +41,6 @@ public class JobRetriever extends ReportRetriever {
             ACSLoader.getIdentity(params.getSession().getId(), acs.getDataSource()));
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.report.custom.ReportRetriever#generateReport(com.owera.xaps.dbi.report.PeriodType, java.util.Date, java.util.Date, java.util.List, java.util.List)
-   */
   @Override
   public Report<RecordJob> generateReport(
       PeriodType periodType,
@@ -57,14 +53,8 @@ public class JobRetriever extends ReportRetriever {
     return generator.generateJobReport(periodType, start, end, unittypes);
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.report.custom.ReportRetriever#applyObjects(java.util.Map)
-   */
   @Override
-  public void applyObjects(Map<String, Object> root) {
-    // TODO Auto-generated method stub
-
-  }
+  public void applyObjects(Map<String, Object> root) {}
 
   @Override
   public ReportGenerator getReportGenerator() {

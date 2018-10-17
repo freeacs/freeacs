@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ParameterList {
-
   private List<ParameterValueStruct> params;
   private List<ParameterInfoStruct> info;
   private List<ParameterAttributeStruct> attributes;
@@ -44,6 +43,8 @@ public class ParameterList {
         break;
       }
     }
-    if (!changed) this.params.add(new ParameterValueStruct(key, value, type));
+    if (!changed) {
+      this.params.add(new ParameterValueStruct(key, value, type));
+    }
   }
 }

@@ -1,7 +1,6 @@
 package com.github.freeacs.dbi;
 
 public class UnitJobStatus {
-
   public static String STARTED = "STARTED";
 
   public static String COMPLETED_OK = "COMPLETED_OK";

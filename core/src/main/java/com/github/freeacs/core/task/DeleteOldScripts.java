@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DeleteOldScripts extends DBIShare {
-
   private final Properties properties;
 
   public DeleteOldScripts(

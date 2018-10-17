@@ -63,21 +63,21 @@ public class RecordProvisioning extends Record<RecordProvisioning> {
   public RecordProvisioning clone() {
     RecordProvisioning clone =
         new RecordProvisioning(tms, periodType, unittypeName, profileName, softwareVersion, output);
-    clone.setProvisioningOkCount(this.getProvisioningOkCount());
-    clone.setProvisioningRescheduledCount(this.getProvisioningRescheduledCount());
-    clone.setProvisioningErrorCount(this.getProvisioningErrorCount());
-    clone.setProvisioningMissingCount(this.getProvisioningMissingCount());
-    clone.setSessionLengthAvg(this.getSessionLengthAvg());
+    clone.setProvisioningOkCount(getProvisioningOkCount());
+    clone.setProvisioningRescheduledCount(getProvisioningRescheduledCount());
+    clone.setProvisioningErrorCount(getProvisioningErrorCount());
+    clone.setProvisioningMissingCount(getProvisioningMissingCount());
+    clone.setSessionLengthAvg(getSessionLengthAvg());
     return clone;
   }
 
   @Override
   public void add(RecordProvisioning record) {
-    this.getProvisioningOkCount().add(record.getProvisioningOkCount());
-    this.getProvisioningRescheduledCount().add(record.getProvisioningRescheduledCount());
-    this.getProvisioningErrorCount().add(record.getProvisioningErrorCount());
-    this.getProvisioningMissingCount().add(record.getProvisioningMissingCount());
-    this.getSessionLengthAvg().add(record.getSessionLengthAvg());
+    getProvisioningOkCount().add(record.getProvisioningOkCount());
+    getProvisioningRescheduledCount().add(record.getProvisioningRescheduledCount());
+    getProvisioningErrorCount().add(record.getProvisioningErrorCount());
+    getProvisioningMissingCount().add(record.getProvisioningMissingCount());
+    getSessionLengthAvg().add(record.getSessionLengthAvg());
   }
 
   public Average getProvisioningQuality() {
@@ -112,7 +112,7 @@ public class RecordProvisioning extends Record<RecordProvisioning> {
   }
 
   public String toString() {
-    return getKey().toString()
+    return getKey()
         + ": "
         + getProvisioningOkCount().get()
         + ", "

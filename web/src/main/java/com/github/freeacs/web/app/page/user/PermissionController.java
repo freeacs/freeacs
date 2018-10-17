@@ -10,7 +10,6 @@ import javax.sql.DataSource;
 
 /** The Class PermissionController. */
 public abstract class PermissionController {
-
   /**
    * Gets the users.
    *

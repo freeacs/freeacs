@@ -25,20 +25,12 @@ import javax.sql.DataSource;
  * @author Jarl Andre Hubenthal
  */
 public class ProfileCreatePage extends ProfileActions {
-
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.AbstractWebPage#getShortcutItems(com.owera.xaps.web.app.util.SessionData)
-   */
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
-    List<MenuItem> list = new ArrayList<MenuItem>();
-    list.addAll(super.getShortcutItems(sessionData));
+    List<MenuItem> list = new ArrayList<>(super.getShortcutItems(sessionData));
     list.add(new MenuItem("Profile overview", Page.PROFILEOVERVIEW));
     return list;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
-   */
   public void process(
       ParameterParser params,
       Output outputHandler,
@@ -79,7 +71,9 @@ public class ProfileCreatePage extends ProfileActions {
 
     root.put("unittypes", unittypes);
 
-    if (unittypes.getSelected() != null) root.put("profilestocopyfrom", profilestocopyfrom);
+    if (unittypes.getSelected() != null) {
+      root.put("profilestocopyfrom", profilestocopyfrom);
+    }
 
     if (inputData.getFormSubmit().isValue("Create profile")) {
       if (isProfilesLimited(unittypes.getSelected(), sessionId, xapsDataSource, syslogDataSource)) {
@@ -95,9 +89,10 @@ public class ProfileCreatePage extends ProfileActions {
         } else if (status == ProfileStatus.PROFILE_NAME_UNSPECIFIED) {
           root.put("error", "The profile name was not specified");
         }
-      } else
+      } else {
         root.put(
             "error", "The profile " + inputData.getProfilename().getString() + " already exists.");
+      }
     }
 
     outputHandler.setTemplatePath("/profile/create");

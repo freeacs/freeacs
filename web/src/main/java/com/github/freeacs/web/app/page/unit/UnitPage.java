@@ -54,7 +54,6 @@ import org.slf4j.LoggerFactory;
 
 /** The Class UnitPage. */
 public class UnitPage extends AbstractWebPage {
-
   private static final Logger logger = LoggerFactory.getLogger(UnitPage.class);
   private static final Logger accessLogger = LoggerFactory.getLogger("Access");
   private static DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -74,9 +73,6 @@ public class UnitPage extends AbstractWebPage {
   private boolean lateConnect;
   private boolean confidentialsRestricted = WebProperties.CONFIDENTIALS_RESTRICTED;
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.AbstractWebPage#getTitle(java.lang.String)
-   */
   public String getTitle(String page) {
     return super.getTitle(page)
         + (unit != null
@@ -89,9 +85,6 @@ public class UnitPage extends AbstractWebPage {
             : "");
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.AbstractWebPage#getShortcutItems(com.owera.xaps.web.app.util.SessionData)
-   */
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
     List<MenuItem> list = new ArrayList<MenuItem>();
     list.addAll(super.getShortcutItems(sessionData));
@@ -262,7 +255,7 @@ public class UnitPage extends AbstractWebPage {
       mode = ProvisioningMode.READALL;
     }
 
-    /*If we're to initiate provisioning, set mode to REGULAR and publish. */
+    /* If we're to initiate provisioning, set mode to REGULAR and publish. */
     else if (inputData.getInitProvisioning().getValue() != null) {
       publish = true;
       mode = ProvisioningMode.REGULAR;
@@ -333,7 +326,7 @@ public class UnitPage extends AbstractWebPage {
     }
   }
 
-  // Code to hang around and see if unit is updated automatically through kick
+  /** Code to hang around and see if unit is updated automatically through kick */
   private void waitForStunServer(Map<String, Object> root, ProvisioningMode mode, Unit unit) {
     String lct = unit.getParameterValue(SystemParameters.LAST_CONNECT_TMS);
     String initialKickResponse = unit.getParameterValue(SystemParameters.INSPECTION_MESSAGE);
@@ -496,9 +489,6 @@ public class UnitPage extends AbstractWebPage {
     }
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
-   */
   public void process(
       ParameterParser params,
       Output outputHandler,
@@ -563,7 +553,7 @@ public class UnitPage extends AbstractWebPage {
       outputHandler.setTemplatePath("/unit/details.ftl");
       if (unit != null) {
         if (inputData.getInitRefreshPage().getValue() == null) {
-          /*If we got a simple refresh, do absolutely nothing. */
+          /* If we got a simple refresh, do absolutely nothing. */
           if (inputData.getFormSubmit().hasValue(WebConstants.UPDATE_PARAMS))
             actionCUDParameters(params);
           else if (inputData.getUnitMove().hasValue("Move to profile")) actionMoveUnit(params);

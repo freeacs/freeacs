@@ -37,20 +37,19 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 public class UnitJobPage extends AbstractWebPage {
-  // Do NOT static this variable, contains singletons that should NOT be shared by different views
-  //	private final JobStatusMethods jobStatusMethods = new JobStatusMethods();
-
-  // FIXME Why are we using class variables? What are the problem we are solving with this?
+  /**
+   * Do NOT static this variable, contains singletons that should NOT be shared by different views
+   * private final JobStatusMethods jobStatusMethods = new JobStatusMethods();
+   *
+   * <p>FIXME Why are we using class variables? What are the problem we are solving with this?
+   */
   private JobData inputData;
 
   @Qualifier("main")
   DataSource mainDataSource;
 
   private ACS acs;
-  //	private Unittype unittype;
-  //	private Group group;
-  //	private Job job;
-
+  /** Private Unittype unittype; private Group group; private Job job;. */
   private String sessionId;
 
   public void process(
@@ -100,8 +99,7 @@ public class UnitJobPage extends AbstractWebPage {
   }
 
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
-    List<MenuItem> list = new ArrayList<MenuItem>();
-    list.addAll(super.getShortcutItems(sessionData));
+    List<MenuItem> list = new ArrayList<>(super.getShortcutItems(sessionData));
     if (sessionData.getUnittypeName() != null) {
       list.add(new MenuItem("Create new Job", Page.JOB).addCommand("create"));
       list.add(new MenuItem("Job overwiew", Page.JOBSOVERVIEW));
@@ -129,12 +127,11 @@ public class UnitJobPage extends AbstractWebPage {
     return list;
   }
 
-  /* Unit Job pages */
-
+  /** Unit Job pages. */
   private void exportFailedUnitJobs(Output res, String jobName) throws IOException {
     List<UnitJob> failedjobs = SessionCache.getSessionData(sessionId).getFailedUnitJobsList();
     StringBuilder string = new StringBuilder();
-    if (failedjobs != null && failedjobs.size() > 0) {
+    if (failedjobs != null && !failedjobs.isEmpty()) {
       string.append("UnitId\t");
       string.append("Status\t");
       string.append("Started\t");
@@ -145,8 +142,8 @@ public class UnitJobPage extends AbstractWebPage {
       for (UnitJob unitJob : failedjobs) {
         string.append(unitJob.getUnitId()).append("\t");
         string.append(unitJob.getStatus()).append("\t");
-        string.append(unitJob.getStartTimestamp().toString()).append("\t");
-        string.append(unitJob.getEndTimestamp().toString()).append("\t");
+        string.append(unitJob.getStartTimestamp()).append("\t");
+        string.append(unitJob.getEndTimestamp()).append("\t");
         string.append(unitJob.getUnconfirmedFailed()).append("\t");
         string.append(unitJob.getConfirmedFailed()).append("\t");
         string.append("\n");
@@ -162,7 +159,7 @@ public class UnitJobPage extends AbstractWebPage {
     Collection<Unit> completedjobs =
         SessionCache.getSessionData(sessionId).getCompletedUnitJobsList();
     StringBuilder string = new StringBuilder();
-    if (completedjobs != null && completedjobs.size() > 0) {
+    if (completedjobs != null && !completedjobs.isEmpty()) {
       string.append("UnitId");
       string.append("\n");
       for (Unit unitJob : completedjobs) {
@@ -180,7 +177,7 @@ public class UnitJobPage extends AbstractWebPage {
   private void getFailedUnitJobs(Job job, Output res)
       throws SQLException, IOException, TemplateException {
     res.setTemplatePath("unit-job/failed");
-    Map<String, Object> rootMap = new HashMap<String, Object>();
+    Map<String, Object> rootMap = new HashMap<>();
     UnitJobs unitJobs = new UnitJobs(mainDataSource);
     List<UnitJob> unitJobsList = unitJobs.readAllProcessed(job);
     //		List<UnitJob> list = new ArrayList<UnitJob>();
@@ -191,7 +188,7 @@ public class UnitJobPage extends AbstractWebPage {
     //			unitJobsList = list;
     //		}
     SessionCache.getSessionData(sessionId).setFailedUnitJobsList(null);
-    if (unitJobsList.size() > 0) {
+    if (!unitJobsList.isEmpty()) {
       rootMap.put("unitJobs", unitJobsList);
       SessionCache.getSessionData(sessionId).setFailedUnitJobsList(unitJobsList);
     }
@@ -214,9 +211,9 @@ public class UnitJobPage extends AbstractWebPage {
     Parameter historyParameter = new Parameter(historyParameterUtp, "%," + job.getId() + ":%");
     Collection<Unit> units =
         acsUnit.getUnits(unittype, profile, Arrays.asList(historyParameter), null).values();
-    Map<String, Object> rootMap = new HashMap<String, Object>();
+    Map<String, Object> rootMap = new HashMap<>();
     SessionCache.getSessionData(sessionId).setFailedUnitJobsList(null);
-    if (units.size() > 0) {
+    if (!units.isEmpty()) {
       rootMap.put("completedUnitJobs", units);
       rootMap.put("lastindexof", new LastIndexOfMethod());
       rootMap.put("getparamvalue", new GetParameterValue(acsUnit));

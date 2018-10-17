@@ -22,7 +22,6 @@ import java.util.Map;
  * @author Morten
  */
 public class TimeWindow {
-
   private int weekdayStart;
 
   private int weekdayEnd;
@@ -37,7 +36,7 @@ public class TimeWindow {
 
   private String orgStr;
 
-  private static Map<String, Integer> weekDayMap = new HashMap<String, Integer>();
+  private static Map<String, Integer> weekDayMap = new HashMap<>();
 
   static {
     weekDayMap.put("su", 1);
@@ -54,20 +53,25 @@ public class TimeWindow {
   }
 
   public TimeWindow(String s) {
-    if (s == null) s = "mo-su:0000-2400";
+    if (s == null) {
+      s = "mo-su:0000-2400";
+    }
 
     String regexp = "(mo|tu|we|th|fr|sa|su)(-(mo|tu|we|th|fr|sa|su))?:\\d{4}-\\d{4}";
     boolean match = s.matches(regexp);
-    if (!match)
+    if (!match) {
       throw new IllegalArgumentException(
           "The TimeWindow argument does not match this regexp:" + regexp);
+    }
 
     weekdayStart = weekDayMap.get(s.substring(0, 2));
     int offset = 0;
-    if (s.indexOf("-") == 2) {
+    if (s.indexOf('-') == 2) {
       weekdayEnd = weekDayMap.get(s.substring(3, 5));
       offset = 3;
-    } else weekdayEnd = weekdayStart;
+    } else {
+      weekdayEnd = weekdayStart;
+    }
     timeStart = Integer.parseInt(s.substring(3 + offset, 7 + offset));
     timeEnd = Integer.parseInt(s.substring(8 + offset, 12 + offset));
     if (timeStart == timeEnd) {
@@ -102,12 +106,14 @@ public class TimeWindow {
     c.set(Calendar.MINUTE, minuteStart);
     c.set(Calendar.SECOND, 0);
 
-    while (true) {
+    do {
       long checkTms = c.getTimeInMillis();
       //			System.out.println(String.format("-- Checking %1$tF %1$tR", checkTms));
-      if (isWithinTimeWindow(checkTms) && c.getTimeInMillis() <= tms) return checkTms;
+      if (isWithinTimeWindow(checkTms) && c.getTimeInMillis() <= tms) {
+        return checkTms;
+      }
       c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) - 1);
-    }
+    } while (true);
   }
 
   public long getNextStartTms(long tms) {
@@ -119,24 +125,32 @@ public class TimeWindow {
     c.set(Calendar.MINUTE, minuteStart);
     c.set(Calendar.SECOND, 0);
 
-    while (true) {
+    do {
       long checkTms = c.getTimeInMillis();
       //			System.out.println(String.format("-- Checking %1$tF %1$tR", checkTms));
-      if (isWithinTimeWindow(checkTms) && c.getTimeInMillis() > tms) return checkTms;
+      if (isWithinTimeWindow(checkTms) && c.getTimeInMillis() > tms) {
+        return checkTms;
+      }
       c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) + 1);
-    }
+    } while (true);
   }
 
   private int calculateWeekdaySpan(int day1, int day2) {
     int suggestedDiff = day2 - day1;
-    if (suggestedDiff >= 0) return suggestedDiff + 1;
-    else return day2 + 7 - day1 + 1;
+    if (suggestedDiff >= 0) {
+      return suggestedDiff + 1;
+    } else {
+      return day2 + 7 - day1 + 1;
+    }
   }
 
   private int calculateTimeSpan(int time1, int time2) {
     int suggestedDiff = time2 - time1;
-    if (suggestedDiff >= 0) return suggestedDiff;
-    else return time2 + 2400 - time1;
+    if (suggestedDiff >= 0) {
+      return suggestedDiff;
+    } else {
+      return time2 + 2400 - time1;
+    }
   }
 
   public boolean isWithinTimeWindow(long tms) {
@@ -148,12 +162,7 @@ public class TimeWindow {
     int currentTime = 100 * currentHour + currentMinute;
 
     int currentDayToWeekdayEndSpan = calculateWeekdaySpan(currentDay, weekdayEnd);
-    boolean withinWeekday = false;
-    if (currentDayToWeekdayEndSpan <= weekdaySpan) withinWeekday = true;
-
-    if (withinWeekday) {
-      if (calculateTimeSpan(currentTime, timeEnd) <= timeSpan) return true;
-    }
-    return false;
+    boolean withinWeekday = currentDayToWeekdayEndSpan <= weekdaySpan;
+    return withinWeekday && calculateTimeSpan(currentTime, timeEnd) <= timeSpan;
   }
 }

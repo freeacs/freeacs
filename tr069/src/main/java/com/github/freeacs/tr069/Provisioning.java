@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServletResponse;
  * @author morten
  */
 public class Provisioning extends HttpServlet {
-
   private static final long serialVersionUID = -3020450686422484143L;
 
   private static ScriptExecutions executions;
@@ -63,10 +62,12 @@ public class Provisioning extends HttpServlet {
   }
 
   /**
-   * doGet prints some information about the server, focus on database connections and memory usage
+   * DoGet prints some information about the server, focus on database connections and memory usage.
    */
   protected void doGet(HttpServletRequest req, HttpServletResponse res) {
-    if (req.getParameter("clearCache") != null) BaseCache.clearCache();
+    if (req.getParameter("clearCache") != null) {
+      BaseCache.clearCache();
+    }
   }
 
   private static void extractRequest(HTTPReqResData reqRes) throws TR069Exception {
@@ -75,11 +76,13 @@ public class Provisioning extends HttpServlet {
       InputStreamReader isr = new InputStreamReader(reqRes.getReq().getInputStream());
       BufferedReader br = new BufferedReader(isr);
       StringBuilder requestSB = new StringBuilder(1000);
-      while (true) {
+      do {
         String line = br.readLine();
-        if (line == null) break;
+        if (line == null) {
+          break;
+        }
         requestSB.append(line).append("\n");
-      }
+      } while (true);
       reqRes.getRequest().setXml(requestSB.toString());
       System.currentTimeMillis();
     } catch (IOException e) {
@@ -121,11 +124,11 @@ public class Provisioning extends HttpServlet {
       // session. This object also contains the SessionData object
       reqRes = new HTTPReqResData(req, res, dbAccess);
       // 2. Authenticate the client (first issue challenge, then authenticate)
-      if (!Authenticator.authenticate(reqRes)) return;
-      // 3. Do not continue if concurrent sessions from the same unit is on going
-      if (reqRes.getSessionData() != null
-          && !ThreadCounter.isRequestAllowed(reqRes.getSessionData())) return;
-
+      if (!Authenticator.authenticate(reqRes)
+          || (reqRes.getSessionData() != null
+              && !ThreadCounter.isRequestAllowed(reqRes.getSessionData()))) {
+        return;
+      }
       // 4. Read the request from the client - store in reqRes object
       extractRequest(reqRes);
       // 5.Process request (parsing xml/data)
@@ -135,13 +138,14 @@ public class Provisioning extends HttpServlet {
       // 7. Create TR-069 response
       HTTPResponseCreator.createResponse(reqRes, tr069Method.getResponseMap());
       // 8. Set correct headers in response
-      if (reqRes.getResponse().getXml() != null && reqRes.getResponse().getXml().length() > 0) {
+      if (reqRes.getResponse().getXml() != null && !reqRes.getResponse().getXml().isEmpty()) {
         res.setHeader("SOAPAction", "");
         res.setContentType("text/xml");
       }
       // 8. No need to send Content-length as it will only be informational for 204 HTTP messages
-      if (reqRes.getResponse().getMethod().equals("Empty"))
+      if ("Empty".equals(reqRes.getResponse().getMethod())) {
         res.setStatus(HttpServletResponse.SC_NO_CONTENT);
+      }
       // 9. Print response to output
       res.getWriter().print(reqRes.getResponse().getXml());
     } catch (Throwable t) {
@@ -149,13 +153,18 @@ public class Provisioning extends HttpServlet {
       if (t instanceof TR069Exception) {
         TR069Exception tex = (TR069Exception) t;
         Throwable stacktraceThrowable = t;
-        if (tex.getCause() != null) stacktraceThrowable = tex.getCause();
+        if (tex.getCause() != null) {
+          stacktraceThrowable = tex.getCause();
+        }
         if (tex.getShortMsg() == TR069ExceptionShortMessage.MISC
-            || tex.getShortMsg() == TR069ExceptionShortMessage.DATABASE)
+            || tex.getShortMsg() == TR069ExceptionShortMessage.DATABASE) {
           Log.error(Provisioning.class, "An error ocurred: " + t.getMessage(), stacktraceThrowable);
-        if (tex.getShortMsg() == TR069ExceptionShortMessage.IOABORTED)
+        }
+        if (tex.getShortMsg() == TR069ExceptionShortMessage.IOABORTED) {
           Log.warn(Provisioning.class, t.getMessage());
-        else Log.error(Provisioning.class, t.getMessage()); // No stacktrace printed to log
+        } else {
+          Log.error(Provisioning.class, t.getMessage());
+        } // No stacktrace printed to log
       }
       if (reqRes != null) {
         reqRes.setThrowable(t);
@@ -183,8 +192,9 @@ public class Provisioning extends HttpServlet {
         res.setHeader("Connection", "close");
       }
     }
-    if (reqRes != null && reqRes.getSessionData() != null)
+    if (reqRes != null && reqRes.getSessionData() != null) {
       ThreadCounter.responseDelivered(reqRes.getSessionData());
+    }
   }
 
   private void writeQueuedUnitParameters(HTTPReqResData reqRes) {
@@ -208,13 +218,15 @@ public class Provisioning extends HttpServlet {
       SessionData sessionData = reqRes.getSessionData();
       HTTPReqData reqData = reqRes.getRequest();
       HTTPResData resData = reqRes.getResponse();
-      if (reqRes.getThrowable() != null) return true;
+      if (reqRes.getThrowable() != null) {
+        return true;
+      }
       if (reqData.getMethod() != null
           && resData != null
-          && resData.getMethod().equals(TR069Method.EMPTY)) {
+          && TR069Method.EMPTY.equals(resData.getMethod())) {
         boolean terminationQuirk = properties.isTerminationQuirk(sessionData);
-        if (terminationQuirk && reqData.getMethod().equals(TR069Method.EMPTY)) return true;
-        return !terminationQuirk;
+        return (terminationQuirk && TR069Method.EMPTY.equals(reqData.getMethod()))
+            || !terminationQuirk;
       }
       return false;
     } catch (Throwable t) {

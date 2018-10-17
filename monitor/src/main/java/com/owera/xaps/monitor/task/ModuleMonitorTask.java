@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
  * @author Morten
  */
 public class ModuleMonitorTask extends TaskDefaultImpl {
-
   private static Logger log = LoggerFactory.getLogger(ModuleMonitorTask.class);
 
   /**
@@ -30,8 +29,9 @@ public class ModuleMonitorTask extends TaskDefaultImpl {
    * monitor-urlbase+xaps+<module>+/ok Example: https://localhost:8443/xapsspp/ok
    */
   static {
-    for (String module : new String[] {"core", "stun", "syslog", "tr069", "web", "webservice"})
+    for (String module : new String[] {"core", "stun", "syslog", "tr069", "web", "webservice"}) {
       monitorInfoSet.add(new MonitorInfo(module));
+    }
   }
 
   private final Properties properties;
@@ -43,7 +43,6 @@ public class ModuleMonitorTask extends TaskDefaultImpl {
 
   @Override
   public void runImpl() throws Throwable {
-
     /* Update urlBase from config for every time we run monitoring */
     String urlBase = Properties.URL_BASE;
 
@@ -52,14 +51,16 @@ public class ModuleMonitorTask extends TaskDefaultImpl {
 
     for (MonitorInfo mi : monitorInfoSet) {
       String moduleUrl = properties.get("monitor.url." + mi.getModule());
-      if (moduleUrl == null) moduleUrl = urlBase + mi.getModule() + "/ok";
+      if (moduleUrl == null) {
+        moduleUrl = urlBase + mi.getModule() + "/ok";
+      }
       MonitorExecution me = new MonitorExecution(moduleUrl);
       mapInfo2Execution.put(mi, me);
-      (new Thread(me)).start();
+      new Thread(me).start();
     }
 
     /* Check that mapInfo2Execution is updated with results from all MonitorExecutions */
-    while (true) {
+    do {
       boolean allResultsReady = true;
       for (Entry<MonitorInfo, MonitorExecution> entry : mapInfo2Execution.entrySet()) {
         if (entry.getValue().getStatus() == null) {
@@ -70,13 +71,15 @@ public class ModuleMonitorTask extends TaskDefaultImpl {
           entry.getKey().setStatus(entry.getValue().getStatus());
           entry.getKey().setVersion(entry.getValue().getVersion());
           entry.getKey().setUrl(entry.getValue().getUrl());
-          if (entry.getKey().getErrorMessage() != null && entry.getKey().getStatus().equals("OK")) {
+          if (entry.getKey().getErrorMessage() != null && "OK".equals(entry.getKey().getStatus())) {
             log.warn("Monitoring: ModuleMonitorTask: ErrorMessage is not null and status is OK!!");
           }
         }
       }
-      if (allResultsReady) break;
-    }
+      if (allResultsReady) {
+        break;
+      }
+    } while (true);
   }
 
   @Override

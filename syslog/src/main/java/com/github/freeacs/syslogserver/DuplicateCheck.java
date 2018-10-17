@@ -11,8 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DuplicateCheck {
-  private static Map<String, Duplicate> duplicateMap = new HashMap<String, Duplicate>();
-  private static int counter = 0;
+  private static Map<String, Duplicate> duplicateMap = new HashMap<>();
+  private static int counter;
   private static Logger logger = LoggerFactory.getLogger(DuplicateCheck.class);
 
   private static int getMaxSize(Properties properties) {
@@ -54,7 +54,9 @@ public class DuplicateCheck {
 
   private static void cleanup(int counter, Properties properties) throws SQLException {
     if (counter <= getCleanupLimitCounter(properties)
-        || duplicateMap.size() <= getCleanupLimitSize(properties)) return;
+        || duplicateMap.size() <= getCleanupLimitSize(properties)) {
+      return;
+    }
     logger.info(
         "Duplicate Message Buffer cleanup initiated (counter:"
             + counter
@@ -82,14 +84,16 @@ public class DuplicateCheck {
   private static boolean duplicate(String msg) throws SQLException {
     Duplicate duplicate = duplicateMap.get(msg);
     if (logger.isDebugEnabled()) {
-      if (duplicate == null) logger.debug("No duplicate found for message " + msg);
-      else
+      if (duplicate != null) {
         logger.debug(
             "Duplicate found, tms " + new Date(duplicate.getTimeout()) + " for message " + msg);
+      } else {
+        logger.debug("No duplicate found for message " + msg);
+      }
     }
-    if (duplicate == null) // no duplicate
-    return false;
-    else if (System.currentTimeMillis() > duplicate.getTimeout()) { // duplicate is too old
+    if (duplicate == null) {
+      return false;
+    } else if (System.currentTimeMillis() > duplicate.getTimeout()) { // duplicate is too old
       updateSyslogEntry(duplicate);
       duplicateMap.remove(msg);
       return false;
@@ -98,7 +102,9 @@ public class DuplicateCheck {
     return true;
   }
 
-  /** Will add a message to the duplicate map if no duplicate is found or if duplicate is too old */
+  /**
+   * Will add a message to the duplicate map if no duplicate is found or if duplicate is too old.
+   */
   public static synchronized boolean addMessage(
       String key, SyslogEntry entry, int duplicateTimeoutMinutes, Properties properties)
       throws SQLException {
@@ -116,8 +122,9 @@ public class DuplicateCheck {
         return true; // can only happen if no duplicate was found
       }
     }
-    if (logger.isDebugEnabled())
+    if (logger.isDebugEnabled()) {
       logger.debug("Message " + entry.getContent() + " was a duplicate.");
+    }
     return false; // duplicate was found or duplicate-map is too big
   }
 }

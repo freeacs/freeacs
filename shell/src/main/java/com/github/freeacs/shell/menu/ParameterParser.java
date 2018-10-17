@@ -10,21 +10,24 @@ import java.util.List;
 
 public class ParameterParser {
   public static List<Parameter> parse(Context context, String[] args) {
-    List<Parameter> params = new ArrayList<Parameter>();
+    List<Parameter> params = new ArrayList<>();
     int i = 1; // Parameter-parsing always start from index 1, index 0 is the "setparam" command
-    while (true) {
+    do {
       try {
         String[] utpArgArr = args[i].split("#");
         UnittypeParameter utp =
             context.getUnittype().getUnittypeParameters().getByName(utpArgArr[0]);
-        if (utp == null)
+        if (utp == null) {
           throw new IllegalArgumentException(
               "The unittype parameter " + args[i] + " does not exist.");
+        }
         i++;
         Operator op = Operator.getOperatorFromLiteral(args[i]);
         i++;
         String value = args[i];
-        if (value.equals("NULL")) value = null;
+        if ("NULL".equals(value)) {
+          value = null;
+        }
         i++;
         ParameterDataType type = null;
         Parameter p = null;
@@ -32,18 +35,17 @@ public class ParameterParser {
           type = ParameterDataType.getDataType(args[i]);
           p = new Parameter(utp, value, op, type);
           i++;
-        } catch (IllegalArgumentException iae) {
-          p = new Parameter(utp, value, op, ParameterDataType.TEXT);
-        } catch (ArrayIndexOutOfBoundsException aioobeInner) {
+        } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException aioobeInner) {
           p = new Parameter(utp, value, op, ParameterDataType.TEXT);
         }
-        if (utpArgArr.length == 2 && !utpArgArr[1].equals("null"))
-          p.setGroupParameterId(new Integer(utpArgArr[1]));
+        if (utpArgArr.length == 2 && !"null".equals(utpArgArr[1])) {
+          p.setGroupParameterId(Integer.valueOf(utpArgArr[1]));
+        }
         params.add(p);
       } catch (ArrayIndexOutOfBoundsException aioobe) {
         break;
       }
-    }
+    } while (true);
     return params;
   }
 }

@@ -20,8 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CoreServlet {
-
-  private static Scheduler scheduler = null;
+  private static Scheduler scheduler;
 
   private static Logger log = LoggerFactory.getLogger(CoreServlet.class);
   private final DataSource mainDataSource;
@@ -156,7 +155,7 @@ public class CoreServlet {
       if (t != null) {
         out.append(t).append("\n");
         for (StackTraceElement ste : t.getStackTrace()) {
-          out.append(ste.toString()).append("\n");
+          out.append(ste).append("\n");
         }
         s.getTask().setThrowable(null);
         return out.toString();

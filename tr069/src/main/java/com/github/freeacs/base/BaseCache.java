@@ -9,19 +9,19 @@ import java.util.List;
 public class BaseCache {
   private static Cache cache = new Cache();
 
-  // 2 minutes
+  /** 2 minutes. */
   private static final int SESSIONDATA_CACHE_TIMEOUT = 3 * 60 * 1000;
 
-  // 10 minutes
+  /** 10 minutes. */
   private static final int FIRMWAREIMAGE_CACHE_TIMEOUT = 10 * 60 * 1000;
 
   private static final String SESSION_KEY = "SESSION";
 
   private static final String FIRMWAREIMAGE_KEY = "FIRMWARE";
 
-  /* Clears all parts of the cache, except for sessiondata */
+  /** Clears all parts of the cache, except for sessiondata. */
   public static void clearCache() {
-    List<String> keyRemoveList = new ArrayList<String>();
+    List<String> keyRemoveList = new ArrayList<>();
     for (Object key : cache.getMap().keySet()) {
       String keyStr = (String) key;
       if (!keyStr.contains(SESSION_KEY)) {
@@ -42,8 +42,11 @@ public class BaseCache {
   public static SessionDataI getSessionData(String unitKey) {
     String key = unitKey + SESSION_KEY;
     CacheValue cv = cache.get(key);
-    if (cv != null) return (SessionDataI) cv.getObject();
-    else throw new BaseCacheException(key);
+    if (cv != null) {
+      return (SessionDataI) cv.getObject();
+    } else {
+      throw new BaseCacheException(key);
+    }
   }
 
   /**
@@ -69,8 +72,11 @@ public class BaseCache {
   public static File getFirmware(String firmwareName, String unittypeName) {
     String key = firmwareName + unittypeName + FIRMWAREIMAGE_KEY;
     CacheValue cv = cache.get(key);
-    if (cv != null) return (File) cv.getObject();
-    else return null;
+    if (cv != null) {
+      return (File) cv.getObject();
+    } else {
+      return null;
+    }
   }
 
   public static void putFirmware(String firmwareName, String unittypeName, File firmware) {

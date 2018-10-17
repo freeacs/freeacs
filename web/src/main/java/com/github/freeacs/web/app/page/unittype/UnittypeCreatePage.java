@@ -26,20 +26,12 @@ import javax.sql.DataSource;
 
 /** The Class UnittypeCreatePage. */
 public class UnittypeCreatePage extends AbstractWebPage {
-
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.AbstractWebPage#getShortcutItems(com.owera.xaps.web.app.util.SessionData)
-   */
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
-    List<MenuItem> list = new ArrayList<MenuItem>();
-    list.addAll(super.getShortcutItems(sessionData));
+    List<MenuItem> list = new ArrayList<>(super.getShortcutItems(sessionData));
     list.add(new MenuItem("Unit Type overview", Page.UNITTYPEOVERVIEW));
     return list;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
-   */
   @Override
   public void process(
       ParameterParser params,
@@ -86,17 +78,16 @@ public class UnittypeCreatePage extends AbstractWebPage {
       //				matcherId = inputData.getNewMatcherid().getString();
 
       if (vendor != null && modelName != null) {
-
         String copyFrom = inputData.getUnittypeToCopyFrom().getString();
         Unittype unittypeToCopyFrom = null;
-        if (copyFrom != null) unittypeToCopyFrom = acs.getUnittype(copyFrom);
+        if (copyFrom != null) {
+          unittypeToCopyFrom = acs.getUnittype(copyFrom);
+        }
 
-        if (unittypeToCopyFrom != null) {
-          if (!unittypeToCopyFrom.getProtocol().equals(protocol)) {
-            outputHandler.setDirectResponse(
-                "Cannot copy parameters from a unittype of different protocol.");
-            return;
-          }
+        if (unittypeToCopyFrom != null && !unittypeToCopyFrom.getProtocol().equals(protocol)) {
+          outputHandler.setDirectResponse(
+              "Cannot copy parameters from a unittype of different protocol.");
+          return;
         }
 
         Unittype unittype =
@@ -109,7 +100,9 @@ public class UnittypeCreatePage extends AbstractWebPage {
             if (unittype.getUnittypeParameters().getByName(utp.getName()) == null) {
               UnittypeParameter newUtp =
                   new UnittypeParameter(unittype, utp.getName(), utp.getFlag());
-              if (utp.getValues() != null) newUtp.setValues(utp.getValues());
+              if (utp.getValues() != null) {
+                newUtp.setValues(utp.getValues());
+              }
               unittype.getUnittypeParameters().addOrChangeUnittypeParameter(newUtp, acs);
             }
           }
@@ -141,9 +134,10 @@ public class UnittypeCreatePage extends AbstractWebPage {
    * @return the parameters from unittype
    */
   private UnittypeParameters getParametersFromUnittype(Unittype unittypeToCopyFrom) {
-    if (unittypeToCopyFrom == null) return null;
-    UnittypeParameters unittypeParameters = unittypeToCopyFrom.getUnittypeParameters();
-    return unittypeParameters;
+    if (unittypeToCopyFrom != null) {
+      return unittypeToCopyFrom.getUnittypeParameters();
+    }
+    return null;
   }
 
   /**
@@ -160,10 +154,11 @@ public class UnittypeCreatePage extends AbstractWebPage {
       String sessionId, String protocol, DataSource xapsDataSource, DataSource syslogDataSource)
       throws SQLException {
     List<Unittype> unittypes = getAllowedUnittypes(sessionId, xapsDataSource, syslogDataSource);
-    List<Unittype> allowedUnittypes = new ArrayList<Unittype>();
+    List<Unittype> allowedUnittypes = new ArrayList<>();
     for (Unittype ut : unittypes) {
-      if (ut.getProtocol().equals(protocol == null ? UnittypePage.NA_PROTOCOL : protocol))
+      if (ut.getProtocol().equals(protocol == null ? UnittypePage.NA_PROTOCOL : protocol)) {
         allowedUnittypes.add(ut);
+      }
     }
     return allowedUnittypes;
   }

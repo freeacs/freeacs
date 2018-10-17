@@ -48,7 +48,6 @@ import javax.servlet.http.HttpServletRequest;
  * @author Joe Walker [joe at getahead dot ltd dot uk]
  */
 public class BrowserDetect {
-
   /**
    * Less than.
    *
@@ -60,8 +59,7 @@ public class BrowserDetect {
   public static boolean lessThan(
       HttpServletRequest request, UserAgent requiredUserAgent, int requiredVersion) {
     int realVersion = getRealVersion(request, requiredUserAgent);
-    if (realVersion == -1) return false; // Not IE or not applicable
-    return realVersion <= requiredVersion;
+    return realVersion != -1 && realVersion <= requiredVersion; // Not IE or not applicable
   }
 
   /**
@@ -159,7 +157,7 @@ public class BrowserDetect {
    * @return the int
    */
   private static int parseNumberAtStart(String numberString) {
-    if (numberString == null || numberString.length() == 0) {
+    if (numberString == null || numberString.isEmpty()) {
       return -1;
     }
 

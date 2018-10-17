@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UnittypeParameterValues {
-
   public static String ENUM = "enum";
   public static String REGEXP = "regexp";
 
@@ -29,7 +28,9 @@ public class UnittypeParameterValues {
   }
 
   public List<String> getValues() {
-    if (values == null) values = new ArrayList<String>();
+    if (values == null) {
+      values = new ArrayList<>();
+    }
     return values;
   }
 
@@ -46,11 +47,11 @@ public class UnittypeParameterValues {
   public boolean match(String str) {
     if (type.equals(REGEXP)) {
       Matcher mathcer = pattern.matcher(str);
-      if (mathcer.matches()) return true;
-    } else if (type.equals(ENUM)) {
-      for (String v : values) {
-        if (v.equals(str)) return true;
+      if (mathcer.matches()) {
+        return true;
       }
+    } else if (type.equals(ENUM)) {
+      return values.contains(str);
     }
     return false;
   }

@@ -3,14 +3,13 @@ package com.github.freeacs.syslogserver;
 import java.net.DatagramPacket;
 
 public class SyslogPacket {
-
   private String syslogStr;
 
   private String address;
 
   private long tms;
 
-  private boolean failoverPacket = false;
+  private boolean failoverPacket;
 
   public SyslogPacket(String syslogStr, String address, long tms) {
     this.syslogStr = syslogStr;
@@ -29,7 +28,9 @@ public class SyslogPacket {
     char[] charArray = s.toCharArray();
     StringBuilder sb = new StringBuilder();
     for (char c : charArray) {
-      if (c >= 32 && c < 127) sb.append(c);
+      if (c >= 32 && c < 127) {
+        sb.append(c);
+      }
     }
     return sb.toString();
   }
@@ -37,7 +38,9 @@ public class SyslogPacket {
   public SyslogPacket(DatagramPacket packet) {
     this.syslogStr = removeSpecialChar(new String(packet.getData(), 0, packet.getLength()));
     this.address = packet.getAddress().toString();
-    if (this.address.startsWith("/")) this.address = this.address.substring(1);
+    if (this.address.startsWith("/")) {
+      this.address = this.address.substring(1);
+    }
     this.tms = System.currentTimeMillis();
   }
 

@@ -4,10 +4,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class UnitResultMap<K, V> extends LinkedHashMap<K, V> {
-
   private static final long serialVersionUID = 1911267205492200962L;
 
-  private int maxSize = 0;
+  private int maxSize;
 
   private Map.Entry<K, V> eldestEntry;
 

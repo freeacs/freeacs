@@ -28,7 +28,6 @@ public class AddOrChangeUnit {
   public AddOrChangeUnitResponse addOrChangeUnit(
       AddOrChangeUnitRequest aocur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
     try {
-
       acsWS = ACSWSFactory.getXAPSWS(aocur.getLogin(), xapsDs, syslogDs);
       ACS acs = acsWS.getAcs();
       acsUnit = acsWS.getXAPSUnit(acs);
@@ -60,13 +59,14 @@ public class AddOrChangeUnit {
        * 3. If a unit id is specified it must adhere to the protocol pattern
        */
       Unit unitWS = aocur.getUnit();
-      if (unitWS.getUnittype() == null || unitWS.getProfile() == null)
+      if (unitWS.getUnittype() == null || unitWS.getProfile() == null) {
         throw ACSFactory.error(logger, "Unittype and/or Profile object are missing");
+      }
       Profile profile =
           acsWS.getProfileFromXAPS(
               unitWS.getUnittype().getValue().getName(), unitWS.getProfile().getValue().getName());
       String unitId = validateUnitId(unitWS, profile.getUnittype(), profile);
-      List<String> unitIds = new ArrayList<String>();
+      List<String> unitIds = new ArrayList<>();
       unitIds.add(unitId);
       List<UnitParameter> acParams =
           validateAddOrChangeUnitParameters(unitWS, profile.getUnittype(), profile);
@@ -79,8 +79,9 @@ public class AddOrChangeUnit {
       response.setUnit(unitWS);
       return response;
     } catch (Throwable t) {
-      if (t instanceof RemoteException) throw (RemoteException) t;
-      else {
+      if (t instanceof RemoteException) {
+        throw (RemoteException) t;
+      } else {
         throw ACSFactory.error(logger, t);
       }
     }
@@ -97,15 +98,16 @@ public class AddOrChangeUnit {
           unitWS.setUnitId(factory.createUnitUnitId(unitXAPS.getId()));
         }
       }
-      if (unitWS.getUnitId() == null)
+      if (unitWS.getUnitId() == null) {
         throw ACSFactory.error(logger, "No unitId or serial number is supplied to the service");
+      }
     }
     return unitWS.getUnitId().getValue();
   }
 
   private List<UnitParameter> validateDeleteUnitParameters(
       Unit unitWS, Unittype unittype, Profile profile) throws RemoteException {
-    List<UnitParameter> unitParams = new ArrayList<UnitParameter>();
+    List<UnitParameter> unitParams = new ArrayList<>();
     List<Parameter> parameters = unitWS.getParameters().getValue().getParameterArray().getItem();
     for (Parameter p : parameters) {
       UnittypeParameter utp = unittype.getUnittypeParameters().getByName(p.getName());
@@ -116,12 +118,10 @@ public class AddOrChangeUnit {
                 + p.getName()
                 + " is not found in unittype "
                 + unittype.getName());
-      } else {
-        if (p.getFlags() != null && p.getFlags().getValue().equals("D")) {
-          unitParams.add(
-              new UnitParameter(
-                  utp, unitWS.getUnitId().getValue(), p.getValue().getValue(), profile));
-        }
+      } else if (p.getFlags() != null && "D".equals(p.getFlags().getValue())) {
+        unitParams.add(
+            new UnitParameter(
+                utp, unitWS.getUnitId().getValue(), p.getValue().getValue(), profile));
       }
     }
     return unitParams;
@@ -129,7 +129,7 @@ public class AddOrChangeUnit {
 
   private List<UnitParameter> validateAddOrChangeUnitParameters(
       Unit unitWS, Unittype unittype, Profile profile) throws RemoteException {
-    List<UnitParameter> unitParams = new ArrayList<UnitParameter>();
+    List<UnitParameter> unitParams = new ArrayList<>();
     List<Parameter> parameters = unitWS.getParameters().getValue().getParameterArray().getItem();
     for (Parameter p : parameters) {
       UnittypeParameter utp = unittype.getUnittypeParameters().getByName(p.getName());
@@ -140,12 +140,10 @@ public class AddOrChangeUnit {
                 + p.getName()
                 + " is not found in unittype "
                 + unittype.getName());
-      } else {
-        if (p.getFlags() == null || p.getFlags().getValue().equals("AC")) {
-          unitParams.add(
-              new UnitParameter(
-                  utp, unitWS.getUnitId().getValue(), p.getValue().getValue(), profile));
-        }
+      } else if (p.getFlags() == null || "AC".equals(p.getFlags().getValue())) {
+        unitParams.add(
+            new UnitParameter(
+                utp, unitWS.getUnitId().getValue(), p.getValue().getValue(), profile));
       }
     }
     return unitParams;

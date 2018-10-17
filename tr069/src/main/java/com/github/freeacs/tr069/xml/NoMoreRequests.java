@@ -11,9 +11,14 @@ public class NoMoreRequests {
 
   public String toXml() {
     StringBuilder sb = new StringBuilder(3);
-    sb.append("\t<cwmp:NoMoreRequests " + Namespace.getSoapEnvNS() + ":mustUnderstand=\"1\">");
-    if (noMoreRequests) sb.append("1");
-    else sb.append("0");
+    sb.append("\t<cwmp:NoMoreRequests ")
+        .append(Namespace.getSoapEnvNS())
+        .append(":mustUnderstand=\"1\">");
+    if (noMoreRequests) {
+      sb.append("1");
+    } else {
+      sb.append("0");
+    }
     sb.append("</cwmp:NoMoreRequests>\n");
     return sb.toString();
   }

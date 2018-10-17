@@ -38,21 +38,21 @@ public class Chart<R extends Record> {
   public static final String SET_TYPE_SHOW = "SHOW";
   public static final String SET_TYPE_HIDE = "HIDE";
 
-  /* Add to set to show in strategy mode STRATEGY_HIDE_SELECTED */
+  /** Add to set to show in strategy mode STRATEGY_HIDE_SELECTED. */
   public static final String STRATEGY_HIDE_SELECTED = "HIDE";
-  /* Add to set to show in strategy mode STRATEGY_SHOW_SELECTED */
+  /** Add to set to show in strategy mode STRATEGY_SHOW_SELECTED. */
   public static final String STRATEGY_SHOW_SELECTED = "SHOW";
 
   private static Logger logger = LoggerFactory.getLogger(Chart.class);
 
-  private long NINTY_DAYS = 90l * 24l * 3600l * 1000l;
-  private long TWO_DAYS = 2l * 24l * 3600l * 1000l;
-  private long TWO_MINUTES = 2l * 60l * 1000l;
+  private long NINTY_DAYS = 90L * 24L * 3600L * 1000L;
+  private long TWO_DAYS = 2L * 24L * 3600L * 1000L;
+  private long TWO_MINUTES = 2L * 60L * 1000L;
 
-  /* Set to true to use showMap-logic, set to false to use hideMap-logic */
+  /** Set to true to use showMap-logic, set to false to use hideMap-logic. */
   private String strategy = STRATEGY_HIDE_SELECTED;
-  /* The map which contains all the sets */
-  private Map<String, Set<String>> setMap = new HashMap<String, Set<String>>();
+  /** The map which contains all the sets. */
+  private Map<String, Set<String>> setMap = new HashMap<>();
 
   private Report<R> report;
   private PeriodType periodType;
@@ -78,7 +78,7 @@ public class Chart<R extends Record> {
   }
 
   /**
-   * Use the SET_TYPE-constants
+   * Use the SET_TYPE-constants.
    *
    * @param setType
    * @return
@@ -91,7 +91,7 @@ public class Chart<R extends Record> {
     }
     Set set = setMap.get(mapKey);
     if (set == null) {
-      set = new HashSet<String>();
+      set = new HashSet<>();
       setMap.put(mapKey, set);
     }
     return set;
@@ -100,22 +100,24 @@ public class Chart<R extends Record> {
   @SuppressWarnings("unchecked")
   private boolean show(String keyStr) {
     boolean show = true;
-    if (keyStr.startsWith("Total")) show = true;
-    else {
+    if (keyStr.startsWith("Total")) {
+      show = true;
+    } else {
       Set allSet = getSet(SET_TYPE_ALL);
       allSet.add(keyStr);
-      if (strategy == null || strategy.equals(STRATEGY_HIDE_SELECTED)) {
+      if (strategy == null || STRATEGY_HIDE_SELECTED.equals(strategy)) {
         show = true;
         Set hideSet = getSet(SET_TYPE_HIDE);
         if (hideSet.contains(keyStr)) {
           show = false;
           //					System.out.println(keyStr + " was not shown since it's in the hide-set");
         }
-
-      } else if (strategy.equals(STRATEGY_SHOW_SELECTED)) {
+      } else if (STRATEGY_SHOW_SELECTED.equals(strategy)) {
         show = false;
         Set showSet = getSet(SET_TYPE_SHOW);
-        if (showSet.contains(keyStr)) show = true;
+        if (showSet.contains(keyStr)) {
+          show = true;
+        }
         //				else
         //					System.out.println(keyStr + " was not shown since it's not in the show-set");
       }
@@ -125,14 +127,17 @@ public class Chart<R extends Record> {
 
   private Map<String, TimeSeries> makeTimeSeriesMap(
       String method, Map<Key, R> recordMap, String... keyNames) throws Exception {
-
     logger.debug(
         "Will create a time series map using a record map with " + recordMap.size() + " entries");
-    Map<String, TimeSeries> timeSeriesMap = new HashMap<String, TimeSeries>();
+    Map<String, TimeSeries> timeSeriesMap = new HashMap<>();
     for (Entry<Key, R> entry : recordMap.entrySet()) {
       Key key = entry.getKey();
-      if (key.getTms().getTime() < startTms) startTms = key.getTms().getTime();
-      if (key.getTms().getTime() > endTms) endTms = key.getTms().getTime();
+      if (key.getTms().getTime() < startTms) {
+        startTms = key.getTms().getTime();
+      }
+      if (key.getTms().getTime() > endTms) {
+        endTms = key.getTms().getTime();
+      }
       Record record = entry.getValue();
       String keyStr = key.getKeyStringFallbackOnMethodName(false, method, keyNames);
       if (show(keyStr)) {
@@ -150,16 +155,21 @@ public class Chart<R extends Record> {
             double numberD = number.doubleValue();
             m = obj.getClass().getMethod("getDividend", (Class[]) null);
             Long dividend = (Long) m.invoke(obj, (Object[]) null);
-            if (dividend != 1) numberD = numberD / dividend.doubleValue();
+            if (dividend != 1) {
+              numberD = numberD / dividend.doubleValue();
+            }
             //						System.out.println(numberD + "\t" + keyStr + "\t" + key.getTms());
-            if (periodType == PeriodType.HOUR) timeseries.add(new Hour(key.getTms()), numberD);
-            else if (periodType == PeriodType.DAY) timeseries.add(new Day(key.getTms()), numberD);
-            else if (periodType == PeriodType.MONTH)
+            if (periodType == PeriodType.HOUR) {
+              timeseries.add(new Hour(key.getTms()), numberD);
+            } else if (periodType == PeriodType.DAY) {
+              timeseries.add(new Day(key.getTms()), numberD);
+            } else if (periodType == PeriodType.MONTH) {
               timeseries.add(new Month(key.getTms()), numberD);
-            else if (periodType == PeriodType.MINUTE)
+            } else if (periodType == PeriodType.MINUTE) {
               timeseries.add(new Minute(key.getTms()), numberD);
-            else if (periodType == PeriodType.SECOND)
+            } else if (periodType == PeriodType.SECOND) {
               timeseries.add(new Second(key.getTms()), numberD);
+            }
           }
         }
       }
@@ -189,22 +199,31 @@ public class Chart<R extends Record> {
     XYBarRenderer.setDefaultShadowsVisible(false);
     TimeSeriesCollection data = new TimeSeriesCollection();
     Map<String, TimeSeries> timeSeriesMap = makeTimeSeriesMap(method, recordMap, keyNames);
-    for (TimeSeries timeSeries : timeSeriesMap.values()) data.addSeries(timeSeries);
+    for (TimeSeries timeSeries : timeSeriesMap.values()) {
+      data.addSeries(timeSeries);
+    }
     String yAxisLabel = method;
     String denominator = Record.getDenominator(report.getRecordClass(), method.toLowerCase());
-    if (denominator != null) yAxisLabel += " (" + denominator + ")";
+    if (denominator != null) {
+      yAxisLabel += " (" + denominator + ")";
+    }
     chart = ChartFactory.createTimeSeriesChart(title, "Time", yAxisLabel, data, true, true, true);
     XYPlot plot = (XYPlot) chart.getPlot();
     if (method2 != null) {
       Map<Key, R> recordMap2 = recordMap;
       TimeSeriesCollection data2 = new TimeSeriesCollection();
-      if (keyNames.length > 0) recordMap2 = report.getMapAggregatedOn();
+      if (keyNames.length > 0) {
+        recordMap2 = report.getMapAggregatedOn();
+      }
       Map<String, TimeSeries> timeSeriesMap2 = makeTimeSeriesMap(method2, recordMap2);
-      if (timeSeriesMap2.get("Total (" + method2 + ")") != null)
+      if (timeSeriesMap2.get("Total (" + method2 + ")") != null) {
         data2.addSeries(timeSeriesMap2.get("Total (" + method2 + ")"));
+      }
       String y2AxisLabel = method2;
       String demoninator2 = Record.getDenominator(report.getRecordClass(), method2.toLowerCase());
-      if (demoninator2 != null) y2AxisLabel += " (" + demoninator2 + ")";
+      if (demoninator2 != null) {
+        y2AxisLabel += " (" + demoninator2 + ")";
+      }
       NumberAxis axis2 = new NumberAxis(y2AxisLabel);
       XYBarRenderer renderer2 = new XYBarRenderer(0.20);
       plot.setRangeAxis(1, axis2);
@@ -215,10 +234,13 @@ public class Chart<R extends Record> {
       renderer2.setBarPainter(new StandardXYBarPainter());
       plot.setDatasetRenderingOrder(DatasetRenderingOrder.REVERSE);
     }
-    if (min != null && max != null) plot.getRangeAxis(0).setRange(min, max);
+    if (min != null && max != null) {
+      plot.getRangeAxis(0).setRange(min, max);
+    }
 
-    if (highLightIndex != null)
+    if (highLightIndex != null) {
       chart.getXYPlot().getRenderer().setSeriesStroke(highLightIndex, new BasicStroke(5f));
+    }
 
     XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
     renderer.setBaseShapesVisible(true);
@@ -227,10 +249,15 @@ public class Chart<R extends Record> {
 
     long diff = endTms - startTms;
     String format = "HH:mm";
-    if (diff > NINTY_DAYS) format = "MMM-yyyy";
-    else if (diff > TWO_DAYS) format = "dd-MMM";
-    else if (diff > TWO_MINUTES) format = "HH:mm";
-    else format = "HH:mm:ss";
+    if (diff > NINTY_DAYS) {
+      format = "MMM-yyyy";
+    } else if (diff > TWO_DAYS) {
+      format = "dd-MMM";
+    } else if (diff > TWO_MINUTES) {
+      format = "HH:mm";
+    } else {
+      format = "HH:mm:ss";
+    }
     DateAxis axis = (DateAxis) plot.getDomainAxis();
     axis.setDateFormatOverride(new SimpleDateFormat(format));
 

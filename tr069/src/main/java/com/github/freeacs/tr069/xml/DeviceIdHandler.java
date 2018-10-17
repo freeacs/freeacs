@@ -35,34 +35,26 @@ public class DeviceIdHandler extends DefaultHandler {
     if (DEVICE_ID_TAG.equals(localName)) {
       owner.getXMLReader().setContentHandler(owner);
     } else if (MANUFACTURER_TAG.equals(localName)) {
-      if (didStruct != null) {
-        if (currTextContent != null) {
-          didStruct.setManufacturer(new String(currTextContent));
-        }
+      if (didStruct != null && currTextContent != null) {
+        didStruct.setManufacturer(new String(currTextContent));
       }
     } else if (OUI_TAG.equals(localName)) {
-      if (didStruct != null) {
-        if (currTextContent != null) {
-          didStruct.setOui(new String(currTextContent));
-        }
+      if (didStruct != null && currTextContent != null) {
+        didStruct.setOui(new String(currTextContent));
       }
     } else if (PRODUCT_CLASS_TAG.equals(localName)) {
-      if (didStruct != null) {
-        if (currTextContent != null) {
-          didStruct.setProductClass(new String(currTextContent));
-        }
+      if (didStruct != null && currTextContent != null) {
+        didStruct.setProductClass(new String(currTextContent));
       }
-    } else if (SERIAL_NUMBER_TAG.equals(localName)) {
-      if (didStruct != null) {
-        if (currTextContent != null) {
-          didStruct.setSerialNumber(new String(currTextContent));
-        }
-      }
+    } else if (SERIAL_NUMBER_TAG.equals(localName)
+        && didStruct != null
+        && currTextContent != null) {
+      didStruct.setSerialNumber(new String(currTextContent));
     }
   }
 
   public void characters(char[] ch, int start, int length) {
-    String content = String.valueOf(ch).substring(start, (start + length));
+    String content = String.valueOf(ch).substring(start, start + length);
     currTextContent.append(content.trim());
   }
 }

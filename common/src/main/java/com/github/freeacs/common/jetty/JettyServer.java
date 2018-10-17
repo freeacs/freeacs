@@ -7,7 +7,6 @@ import spark.embeddedserver.jetty.JettyServerFactory;
 
 /** Creates Jetty Server instances. */
 public class JettyServer implements JettyServerFactory {
-
   private final int maxPostSize;
   private final int maxFormKeys;
 
@@ -40,7 +39,7 @@ public class JettyServer implements JettyServerFactory {
   }
 
   /**
-   * Creates a Jetty server with supplied thread pool
+   * Creates a Jetty server with supplied thread pool.
    *
    * @param threadPool thread pool
    * @return a new jetty server instance

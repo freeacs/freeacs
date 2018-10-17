@@ -33,7 +33,6 @@ public class Counter {
       try {
         counter += Long.parseLong(str);
       } catch (NumberFormatException nfe) {
-
       }
     }
   }
@@ -47,7 +46,7 @@ public class Counter {
   }
 
   public String toString() {
-    return "" + counter;
+    return String.valueOf(counter);
   }
 
   public Counter clone() {

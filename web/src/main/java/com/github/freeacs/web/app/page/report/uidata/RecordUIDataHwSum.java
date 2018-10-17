@@ -22,25 +22,25 @@ public class RecordUIDataHwSum {
   private Unit unit;
 
   /** The boot counts. */
-  private Long bootCount = 0l;
+  private Long bootCount = 0L;
 
-  private Long bootMisc = 0l;
+  private Long bootMisc = 0L;
 
-  private Long bootPower = 0l;
+  private Long bootPower = 0L;
 
-  private Long bootProv = 0l;
+  private Long bootProv = 0L;
 
   /** The heap ddr bad. */
-  private double heapDdrMaxPercent = 0d;
+  private double heapDdrMaxPercent;
 
   /** The heap ocm bad. */
-  private double heapOcmMaxPercent = 0d;
+  private double heapOcmMaxPercent;
 
   /** The row background style. */
   private String rowBackgroundStyle = "";
 
   /** The records. */
-  private List<RecordUIDataHardware> records = new ArrayList<RecordUIDataHardware>();
+  private List<RecordUIDataHardware> records = new ArrayList<>();
 
   /** Instantiates a new record ui data hw sum. */
   RecordUIDataHwSum() {}
@@ -63,7 +63,7 @@ public class RecordUIDataHwSum {
     if (record.isRecordRelevant()) {
       heapDdrMaxPercent = Math.max(record.getMemoryHeapDdrUsagePercent(), heapDdrMaxPercent);
       heapOcmMaxPercent = Math.max(record.getMemoryHeapOcmUsagePercent(), heapOcmMaxPercent);
-      Long bootTotal = record.getBootMisc() + record.getBootPower() + record.getBootProv();
+      long bootTotal = record.getBootMisc() + record.getBootPower() + record.getBootProv();
       this.bootCount += bootTotal;
       this.bootMisc += record.getBootMisc();
       this.bootPower += record.getBootPower();
@@ -74,27 +74,33 @@ public class RecordUIDataHwSum {
 
   public boolean isMemoryRelevant() {
     for (RecordUIDataHardware rec : records) {
-      if (rec.isMemoryRelevant()) return true;
+      if (rec.isMemoryRelevant()) {
+        return true;
+      }
     }
     return false;
   }
 
   public boolean isUptimeRelevant() {
     for (RecordUIDataHardware rec : records) {
-      if (rec.isUptimeRelevant()) return true;
+      if (rec.isUptimeRelevant()) {
+        return true;
+      }
     }
     return false;
   }
 
   public boolean isBootRelevant() {
     for (RecordUIDataHardware rec : records) {
-      if (rec.isBootsRelevant()) return true;
+      if (rec.isBootsRelevant()) {
+        return true;
+      }
     }
     return false;
   }
 
   public Long getCpeUptimeAvg() {
-    long millis = 0l;
+    long millis = 0L;
     RecordUIDataHardware record = null;
     for (RecordUIDataHardware rec : records) {
       if (rec.getTms().getTime() > millis
@@ -200,7 +206,9 @@ public class RecordUIDataHwSum {
   public String getRowBackgroundStyle() {
     try {
       String score = "100";
-      if (getBoots() > 0) score = "70";
+      if (getBoots() > 0) {
+        score = "70";
+      }
       rowBackgroundStyle =
           new AbstractWebPage.RowBackgroundColorMethod().exec(Arrays.asList(score));
     } catch (TemplateModelException e) {

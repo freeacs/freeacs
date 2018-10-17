@@ -6,7 +6,6 @@ import java.util.List;
 
 /** The Class UnitStatusScore. */
 public class UnitStatusScore {
-
   /** The Constant TOP_STATUS. */
   private static final int TOP_STATUS = 10;
 
@@ -56,14 +55,19 @@ public class UnitStatusScore {
       boolean is2LinesHasProblems) {
     if (!isWithinServiceWindow) {
       serviceWindowEffect = 7;
-      if (is1LinesHasProblems) voipLineEffect = 2;
-      else if (is2LinesHasProblems) voipLineEffect = 3;
+      if (is1LinesHasProblems) {
+        voipLineEffect = 2;
+      } else if (is2LinesHasProblems) {
+        voipLineEffect = 3;
+      }
       setSyslogEffect(entries, SYSLOG_SEVERITY_HIGH_OUTSIDE_SERVICE_WINDOW_PENALTY);
     } else {
-      if (is1LinesHasProblems) voipLineEffect = 4;
-      else if (is2LinesHasProblems) voipLineEffect = 6;
-      else if (totalScore != null) {
-        double totalScoreEffect = (double) ((1f - (totalScore / 100f)) * 6);
+      if (is1LinesHasProblems) {
+        voipLineEffect = 4;
+      } else if (is2LinesHasProblems) {
+        voipLineEffect = 6;
+      } else if (totalScore != null) {
+        double totalScoreEffect = (1f - totalScore / 100f) * 6;
         this.totalScoreEffect = totalScoreEffect;
       }
       setSyslogEffect(entries, SYSLOG_SEVERITY_HIGH_WITHIN_SERVICE_WINDOW_PENALTY);
@@ -91,16 +95,17 @@ public class UnitStatusScore {
       List<RecordUIDataHardware> hardwareReport, boolean isWithinServiceWindow) {
     for (RecordUIDataHardware uiDataRecord : hardwareReport) {
       if (uiDataRecord.getBootTotal() > 0) {
-        if (uiDataRecord.getBootWatchdogCount().get() > 0)
+        if (uiDataRecord.getBootWatchdogCount().get() > 0) {
           this.hardwareEffect +=
-              (isWithinServiceWindow
+              isWithinServiceWindow
                   ? HARDWARE_WITHIN_SERVICE_WINDOW_PENALTY
-                  : HARDWARE_OUTSIDE_SERVICE_WINDOW_PENALTY);
+                  : HARDWARE_OUTSIDE_SERVICE_WINDOW_PENALTY;
+        }
       } else if (uiDataRecord.isMemoryRelevant()) {
         this.hardwareEffect +=
-            (isWithinServiceWindow
+            isWithinServiceWindow
                 ? HARDWARE_WITHIN_SERVICE_WINDOW_PENALTY
-                : HARDWARE_OUTSIDE_SERVICE_WINDOW_PENALTY);
+                : HARDWARE_OUTSIDE_SERVICE_WINDOW_PENALTY;
       }
     }
   }
@@ -122,7 +127,9 @@ public class UnitStatusScore {
    */
   public void setSyslogEffect(List<SyslogEntry> entries, double penalty) {
     for (SyslogEntry entry : entries) {
-      if (entry.getSeverity() <= 3) this.syslogEffect += penalty;
+      if (entry.getSeverity() <= 3) {
+        this.syslogEffect += penalty;
+      }
     }
   }
 
@@ -134,12 +141,14 @@ public class UnitStatusScore {
   public Double getStatus() {
     double status =
         (double) TOP_STATUS
-            - this.getServiceWindowEffect()
-            - this.getTotalScoreEffect()
-            - this.getVoipLineEffect()
+            - getServiceWindowEffect()
+            - getTotalScoreEffect()
+            - getVoipLineEffect()
             - hardwareEffect
             - syslogEffect;
-    if (status < 0) return 0d;
+    if (status < 0) {
+      return 0d;
+    }
     return status;
   }
 

@@ -17,43 +17,35 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/*
+/**
  * Jun 2011
  *
- * UnitQueryWithinUnittype is an attempt to resolve a query which we have not been able to
- * "get through" UnitQueryCrossUnittype. The following things are new abilities for ACS:
- * 	1. Possible to return unit-object + certain unit parameters for all units, previously only
- * the unit object was returned, and it required another query to retrieve the set of
- * unit parameters. Granted, this query only returns the parameters searched for, but this can be
- * very useful. The use-case which triggered this development was the TelnetController
- * which wants to run repeating jobs. In order to do so it must be able to retrieve
- * the Job.History-parameter for all devices in the job, and then check the time stamp.
- * Since this operation was to be repeated every hour, it would be a bad idea to run
- * one SQL for each unit to retrieve Job.History parameter.
- *  2. Possible to search with operands like <, <=, >= and >. This has never been
- * deemed interesting before, since all unit parameters were treated like VARCHAR. This
- * class offers a way to specify the type of the column, and convert to the type
- * upon query execution.
- *  3. Possible to search for NULL (non-existence). The UnitQueryCrossUnittype class can only handle
- * searches for existing values, primarily because handling NULL also meant being able
- * to handle 4.
- *  4. Possible to take non-existent unit parameters into account. Searching for
- * a value should (in case of a profile-match) return all non-existing unit parameters.
- * If a profile does not match and the query search for non-matching values, again
+ * <p>UnitQueryWithinUnittype is an attempt to resolve a query which we have not been able to "get
+ * through" UnitQueryCrossUnittype. The following things are new abilities for ACS: 1. Possible to
+ * return unit-object + certain unit parameters for all units, previously only the unit object was
+ * returned, and it required another query to retrieve the set of unit parameters. Granted, this
+ * query only returns the parameters searched for, but this can be very useful. The use-case which
+ * triggered this development was the TelnetController which wants to run repeating jobs. In order
+ * to do so it must be able to retrieve the Job.History-parameter for all devices in the job, and
+ * then check the time stamp. Since this operation was to be repeated every hour, it would be a bad
+ * idea to run one SQL for each unit to retrieve Job.History parameter. 2. Possible to search with
+ * operands like <, <=, >= and >. This has never been deemed interesting before, since all unit
+ * parameters were treated like VARCHAR. This class offers a way to specify the type of the column,
+ * and convert to the type upon query execution. 3. Possible to search for NULL (non-existence). The
+ * UnitQueryCrossUnittype class can only handle searches for existing values, primarily because
+ * handling NULL also meant being able to handle 4. 4. Possible to take non-existent unit parameters
+ * into account. Searching for a value should (in case of a profile-match) return all non-existing
+ * unit parameters. If a profile does not match and the query search for non-matching values, again
  * the query should return all non-existing unit-parameters.
  *
- * So is UnitQueryWithinUnittype (UQWU) always better than UnitQueryCrossUnittype (UQCU)?
- * The answer is: no. Or maybe: not yet:
- *  a. UQWU cannot answer queries like "give me all units with a parameter value like X, since
- * UQWU needs to know *which* parameter you're asking for. UQCU handles this. This kind of query
- * will also invariably crash (or at least be extremely slow and complicated) with the idea of
- * unit parameter inheriting the profile parameter.
- *  b. Because of a. UQWU cannot search across unittypes.
- *
- *
+ * <p>So is UnitQueryWithinUnittype (UQWU) always better than UnitQueryCrossUnittype (UQCU)? The
+ * answer is: no. Or maybe: not yet: a. UQWU cannot answer queries like "give me all units with a
+ * parameter value like X, since UQWU needs to know *which* parameter you're asking for. UQCU
+ * handles this. This kind of query will also invariably crash (or at least be extremely slow and
+ * complicated) with the idea of unit parameter inheriting the profile parameter. b. Because of a.
+ * UQWU cannot search across unittypes.
  */
 public class UnitQueryWithinUnittype {
-
   private static Logger logger = LoggerFactory.getLogger(UnitQueryWithinUnittype.class);
   public static Cache patternCache = new Cache();
   private Connection connection;
@@ -65,20 +57,23 @@ public class UnitQueryWithinUnittype {
   public UnitQueryWithinUnittype(Connection c, ACS acs, Unittype unittype, List<Profile> profiles) {
     this.connection = c;
     this.acs = acs;
-    if (unittype != null) this.unittype = unittype;
-    else if (profiles != null && profiles.size() > 0 && profiles.get(0).getUnittype() != null)
+    if (unittype != null) {
+      this.unittype = unittype;
+    } else if (profiles != null && !profiles.isEmpty() && profiles.get(0).getUnittype() != null) {
       this.unittype = profiles.get(0).getUnittype();
-    else
+    } else {
       throw new IllegalArgumentException(
           "UnitQueryWithinUnittype requires a unittype - not found explicitly nor implicitly");
+    }
 
-    if (profiles == null || profiles.size() == 0)
+    if (profiles == null || profiles.isEmpty()) {
       this.profiles = Arrays.asList(unittype.getProfiles().getProfiles());
-    else {
+    } else {
       for (Profile p : profiles) {
-        if (this.unittype.getProfiles().getById(p.getId()) == null)
+        if (this.unittype.getProfiles().getById(p.getId()) == null) {
           throw new IllegalArgumentException(
               "UnitQueryWithinUnittype requires that profiles must be within the unittype specified");
+        }
       }
       this.profiles = profiles;
     }
@@ -87,80 +82,83 @@ public class UnitQueryWithinUnittype {
   public UnitQueryWithinUnittype(Connection c, ACS acs, Unittype unittype, Profile profile) {
     this.connection = c;
     this.acs = acs;
-    if (unittype != null) this.unittype = unittype;
-    else if (profiles != null && profiles.size() > 0 && profiles.get(0).getUnittype() != null)
+    if (unittype != null) {
+      this.unittype = unittype;
+    } else if (profiles != null && !profiles.isEmpty() && profiles.get(0).getUnittype() != null) {
       this.unittype = profiles.get(0).getUnittype();
-    else
+    } else {
       throw new IllegalArgumentException(
           "UnitQueryWithinUnittype requires a unittype - not found explicitly nor implicitly");
+    }
 
-    if (profile == null) this.profiles = Arrays.asList(unittype.getProfiles().getProfiles());
-    else {
-      if (this.unittype.getProfiles().getById(profile.getId()) == null)
+    if (profile == null) {
+      this.profiles = Arrays.asList(unittype.getProfiles().getProfiles());
+    } else {
+      if (this.unittype.getProfiles().getById(profile.getId()) == null) {
         throw new IllegalArgumentException(
             "UnitQueryWithinUnittype requires that profiles must be within the unittype specified");
-      this.profiles = new ArrayList<Profile>();
+      }
+      this.profiles = new ArrayList<>();
       this.profiles.add(profile);
     }
   }
 
-  /*
-   * Matches two strings. FixedOp may be a string without wildchar (% or _). Typically
-   * this string is a profile-parameter (used in profile-matching) or a unit/profile-parameter (used in
-   * group-matching).
-   * VarOp is the search-string, and may contain % or _. Typically this is the searched
-   * for string in group-search or unit-query-search. Usage of % or _ is only possible for
+  /**
+   * Matches two strings. FixedOp may be a string without wildchar (% or _). Typically this string
+   * is a profile-parameter (used in profile-matching) or a unit/profile-parameter (used in
+   * group-matching). VarOp is the search-string, and may contain % or _. Typically this is the
+   * searched for string in group-search or unit-query-search. Usage of % or _ is only possible for
    * TEXT matching, not for NUMBER matching
    */
   public static boolean match(
       String fixedOp, String varOp, Parameter.Operator op, Parameter.ParameterDataType type) {
     // If fixedOp == null, varOp can match only if null and operator is EQ, or the opposite.
     if (fixedOp == null) {
-      if (op.equals(Parameter.Operator.EQ) && varOp == null) return true;
-      else if (op.equals(Parameter.Operator.EQ) && varOp != null) return false;
-      else if (op.equals(Parameter.Operator.NE) && varOp == null) return false;
-      else if (op.equals(Parameter.Operator.NE) && varOp != null) return true;
-      return false; // can hit here if operator is not EQ nor NE
+      return (Parameter.Operator.EQ.equals(op) && varOp == null)
+          || ((!Parameter.Operator.EQ.equals(op) || varOp == null)
+              && (!Parameter.Operator.NE.equals(op) || varOp != null)
+              && Parameter.Operator.NE.equals(op)
+              && varOp != null);
     }
     // If varOp == null, fixedOp can match only if operator is NE (since fixedOp cannot be null).
     if (varOp == null) {
-      if (op.equals(Parameter.Operator.NE) && fixedOp != null) return true;
-      return false; // can hit here if operator is not EQ nor NE
+      return Parameter.Operator.NE.equals(op) && fixedOp != null;
     }
     // Neither varOp nor fixedOp can be NULL here.
-    if (type.equals(Parameter.ParameterDataType.NUMBER)) {
+    if (Parameter.ParameterDataType.NUMBER.equals(type)) {
       try {
-        Long operandL = new Long(varOp);
-        Long ppL = new Long(fixedOp);
-        if (op.equals(Parameter.Operator.EQ) && ppL.longValue() == operandL.longValue())
-          return true;
-        if (op.equals(Parameter.Operator.NE) && ppL.longValue() != operandL.longValue())
-          return true;
-        if (op.equals(Parameter.Operator.LT) && ppL.longValue() < operandL.longValue()) return true;
-        if (op.equals(Parameter.Operator.LE) && ppL.longValue() <= operandL.longValue())
-          return true;
-        if (op.equals(Parameter.Operator.GE) && ppL.longValue() >= operandL.longValue())
-          return true;
-        if (op.equals(Parameter.Operator.GT) && ppL.longValue() > operandL.longValue()) return true;
-        return false;
+        Long operandL = Long.valueOf(varOp);
+        Long ppL = Long.valueOf(fixedOp);
+        return (Parameter.Operator.EQ.equals(op) && ppL.longValue() == operandL.longValue())
+            || (Parameter.Operator.NE.equals(op) && ppL.longValue() != operandL.longValue())
+            || (Parameter.Operator.LT.equals(op) && ppL.longValue() < operandL.longValue())
+            || (Parameter.Operator.LE.equals(op) && ppL.longValue() <= operandL.longValue())
+            || (Parameter.Operator.GE.equals(op) && ppL.longValue() >= operandL.longValue())
+            || (Parameter.Operator.GT.equals(op) && ppL.longValue() > operandL.longValue());
       } catch (NumberFormatException nfe) {
         return false;
       }
-    } else if (type.equals(Parameter.ParameterDataType.TEXT)) {
-      if (op.equals(Parameter.Operator.EQ)) {
-        if (varOp.indexOf("_") > -1 || varOp.indexOf("%") > -1)
+    } else if (Parameter.ParameterDataType.TEXT.equals(type)) {
+      if (Parameter.Operator.EQ.equals(op)) {
+        if (varOp.indexOf('_') > -1 || varOp.indexOf('%') > -1) {
           return matchWildcardString(fixedOp, varOp);
-        else return fixedOp.equals(varOp);
-      } else if (op.equals(Parameter.Operator.NE)) {
-        if (varOp.indexOf("_") > -1 || varOp.indexOf("%") > -1)
+        } else {
+          return fixedOp.equals(varOp);
+        }
+      } else if (Parameter.Operator.NE.equals(op)) {
+        if (varOp.indexOf('_') > -1 || varOp.indexOf('%') > -1) {
           return !matchWildcardString(fixedOp, varOp);
-        else return !fixedOp.equalsIgnoreCase(varOp);
+        } else {
+          return !fixedOp.equalsIgnoreCase(varOp);
+        }
       } else {
         int compareInt = fixedOp.compareToIgnoreCase(varOp);
-        if (op.equals(Parameter.Operator.LT) && compareInt < 0) return true;
-        if (op.equals(Parameter.Operator.LE) && compareInt <= 0) return true;
-        if (op.equals(Parameter.Operator.GE) && compareInt >= 0) return true;
-        if (op.equals(Parameter.Operator.GT) && compareInt > 0) return true;
+        if ((Parameter.Operator.LT.equals(op) && compareInt < 0)
+            || (Parameter.Operator.LE.equals(op) && compareInt <= 0)
+            || (Parameter.Operator.GE.equals(op) && compareInt >= 0)
+            || (Parameter.Operator.GT.equals(op) && compareInt > 0)) {
+          return true;
+        }
       }
     }
     return false; // should never happen
@@ -183,27 +181,34 @@ public class UnitQueryWithinUnittype {
     return retVal;
   }
 
-  /*
-   * The setting of the operator and the value argument is dependent upon the search
-   * phrase (contains wildcards?), the matching against the corresponding profile value and the chosen
-   * operator (eq, ne, gt, lt, ge, le).
-   * The responsibility of this method is simply to return a string like "up.value = 'value'"
+  /**
+   * The setting of the operator and the value argument is dependent upon the search phrase
+   * (contains wildcards?), the matching against the corresponding profile value and the chosen
+   * operator (eq, ne, gt, lt, ge, le). The responsibility of this method is simply to return a
+   * string like "up.value = 'value'"
    */
   private void addUnitParameterClause(
       String table, Profile p, DynamicStatement ds, Parameter parameter) {
     UnittypeParameter utp = parameter.getUnittypeParameter();
     String operand = parameter.getValue();
-    if (parameter.valueWasNull()) operand = null;
-    else {
+    if (parameter.valueWasNull()) {
+      operand = null;
+    } else {
       operand = operand.replace('*', '%');
-      if (operand.startsWith("^")) operand = operand.substring(1);
-      if (operand.endsWith("$")) operand = operand.substring(0, operand.length() - 1);
+      if (operand.startsWith("^")) {
+        operand = operand.substring(1);
+      }
+      if (operand.endsWith("$")) {
+        operand = operand.substring(0, operand.length() - 1);
+      }
     }
     Parameter.Operator op = parameter.getOp();
     Parameter.ParameterDataType type = parameter.getType();
     String profileParameterValue = null;
     ProfileParameter pp = p.getProfileParameters().getById(utp.getId());
-    if (pp != null) profileParameterValue = pp.getValue();
+    if (pp != null) {
+      profileParameterValue = pp.getValue();
+    }
     boolean profileMatch =
         match(profileParameterValue, operand, parameter.getOp(), parameter.getType());
     /*
@@ -235,7 +240,9 @@ public class UnitQueryWithinUnittype {
      */
     if (profileMatch) {
       if (operand == null) {
-        if (op.equals(Parameter.Operator.EQ)) ds.addSqlAndArguments(table + ".value IS NULL");
+        if (Parameter.Operator.EQ.equals(op)) {
+          ds.addSqlAndArguments(table + ".value IS NULL");
+        }
       } else {
         ds.addSqlAndArguments(
             "("
@@ -249,14 +256,15 @@ public class UnitQueryWithinUnittype {
                 + ".value IS NULL)",
             operand);
       }
+    } else if (operand == null) {
+      if (Parameter.Operator.NE.equals(op)) {
+        ds.addSqlAndArguments(table + ".value IS NOT NULL");
+      }
+      if (Parameter.Operator.EQ.equals(op)) {
+        ds.addSqlAndArguments(table + ".value IS NULL");
+      }
     } else {
-      if (operand == null) {
-        if (op.equals(Parameter.Operator.NE)) ds.addSqlAndArguments(table + ".value IS NOT NULL");
-        if (op.equals(Parameter.Operator.EQ)) ds.addSqlAndArguments(table + ".value IS NULL");
-
-      } else
-        ds.addSqlAndArguments(
-            table + ".value " + op.getSQL(operand) + " " + type.getSQL(), operand);
+      ds.addSqlAndArguments(table + ".value " + op.getSQL(operand) + " " + type.getSQL(), operand);
     }
   }
 
@@ -264,10 +272,14 @@ public class UnitQueryWithinUnittype {
     // does not actually use this statement to make SQL, but uses
     // it to determine which computeSQL to be used
     DynamicStatement ds = new DynamicStatement();
-    for (Parameter parameter : parameters) addUnitParameterClause("dummy", p, ds, parameter);
-    if (ds.getSql().contains("IS NULL"))
+    for (Parameter parameter : parameters) {
+      addUnitParameterClause("dummy", p, ds, parameter);
+    }
+    if (ds.getSql().contains("IS NULL")) {
       return computeSQLForNullParamValues(parameters, p, countSQL);
-    else return computeSQLForNonNullParamValues(parameters, p, countSQL);
+    } else {
+      return computeSQLForNonNullParamValues(parameters, p, countSQL);
+    }
   }
 
   /**
@@ -309,15 +321,19 @@ public class UnitQueryWithinUnittype {
      * WHERE u.profile_id = 12 AND u.unit_id = up1.unit_id AND u.unit_id = up2.unit_id AND u.unit_id = up3.unit_id
      */
 
-    if (countSQL) ds.addSql("SELECT count(u.unit_id) ");
-    else {
+    if (countSQL) {
+      ds.addSql("SELECT count(u.unit_id) ");
+    } else {
       ds.addSql("SELECT u.unit_id, u.profile_id, u.unit_type_id, ");
-      for (int i = 0; i < parameters.size(); i++) ds.addSql("up" + (i + 1) + ".value, ");
+      for (int i = 0; i < parameters.size(); i++) {
+        ds.addSql("up" + (i + 1) + ".value, ");
+      }
       ds.trim(2); // remove last ", ".
     }
     ds.addSql(" FROM unit u, ");
-    if (parameters.size() == 1) ds.addSql("unit_param up1 ");
-    else if (parameters.size() > 1) {
+    if (parameters.size() == 1) {
+      ds.addSql("unit_param up1 ");
+    } else if (parameters.size() > 1) {
       for (int i = 0; i < parameters.size(); i++) {
         Parameter parameter = parameters.get(i);
         ds.addSql(
@@ -333,10 +349,11 @@ public class UnitQueryWithinUnittype {
     ds.addSqlAndArguments(
         "WHERE u.unit_type_id = ? AND u.profile_id = ? AND ", p.getUnittype().getId(), p.getId());
 
-    if (parameters.size() > 1)
-      for (int i = 0; i < parameters.size(); i++)
+    if (parameters.size() > 1) {
+      for (int i = 0; i < parameters.size(); i++) {
         ds.addSql("u.unit_id = up" + (i + 1) + ".unit_id AND ");
-    else if (parameters.size() == 1) {
+      }
+    } else if (parameters.size() == 1) {
       ds.addSql("u.unit_id = up1.unit_id AND ");
       ds.addSqlAndArguments(
           "up1.unit_type_param_id = ? AND ", parameters.get(0).getUnittypeParameter().getId());
@@ -389,8 +406,9 @@ public class UnitQueryWithinUnittype {
      */
 
     // 1.
-    if (countSQL) ds.addSql("SELECT count(u.unit_id) ");
-    else {
+    if (countSQL) {
+      ds.addSql("SELECT count(u.unit_id) ");
+    } else {
       ds.addSql("SELECT u.unit_id, u.profile_id, u.unit_type_id, ");
       for (int i = 0; i < parameters.size(); i++) {
         String tName = "up" + (i + 1);
@@ -419,17 +437,24 @@ public class UnitQueryWithinUnittype {
       Parameter parameter = parameters.get(i);
       UnittypeParameter utp = parameter.getUnittypeParameter();
       String operand = parameter.getValue();
-      if (parameter.valueWasNull()) operand = null;
-      else {
+      if (parameter.valueWasNull()) {
+        operand = null;
+      } else {
         operand = operand.replace('*', '%');
-        if (operand.startsWith("^")) operand = operand.substring(1);
-        if (operand.endsWith("$")) operand = operand.substring(0, operand.length() - 1);
+        if (operand.startsWith("^")) {
+          operand = operand.substring(1);
+        }
+        if (operand.endsWith("$")) {
+          operand = operand.substring(0, operand.length() - 1);
+        }
       }
       Parameter.Operator op = parameter.getOp();
       Parameter.ParameterDataType type = parameter.getType();
       String profileParameterValue = null;
       ProfileParameter pp = p.getProfileParameters().getById(utp.getId());
-      if (pp != null) profileParameterValue = pp.getValue();
+      if (pp != null) {
+        profileParameterValue = pp.getValue();
+      }
       boolean profileMatch =
           match(profileParameterValue, operand, parameter.getOp(), parameter.getType());
       /*
@@ -461,8 +486,9 @@ public class UnitQueryWithinUnittype {
        */
       if (profileMatch) {
         if (operand == null) {
-          if (op.equals(Parameter.Operator.EQ))
+          if (Parameter.Operator.EQ.equals(op)) {
             ds.addSqlAndArguments(tName + ".value IS NULL AND ");
+          }
         } else {
           ds.addSqlAndArguments(
               "("
@@ -476,21 +502,21 @@ public class UnitQueryWithinUnittype {
                   + ".value IS NULL) AND ",
               operand);
         }
+      } else if (operand == null) {
+        if (Parameter.Operator.NE.equals(op)) {
+          ds.addSqlAndArguments(tName + ".value IS NOT NULL AND ");
+        }
+        if (Parameter.Operator.EQ.equals(op)) {
+          ds.addSqlAndArguments(tName + ".value = '#@#@94ks94' AND ");
+        } // should never match anything!
       } else {
-        if (operand == null) {
-          if (op.equals(Parameter.Operator.NE))
-            ds.addSqlAndArguments(tName + ".value IS NOT NULL AND ");
-          if (op.equals(Parameter.Operator.EQ))
-            ds.addSqlAndArguments(
-                tName + ".value = '#@#@94ks94' AND "); // should never match anything!
-
-        } else
-          ds.addSqlAndArguments(
-              "(" + tName + ".value " + op.getSQL(operand) + " " + type.getSQL() + ") AND ",
-              operand);
+        ds.addSqlAndArguments(
+            "(" + tName + ".value " + op.getSQL(operand) + " " + type.getSQL() + ") AND ", operand);
       }
     }
-    if (p != null) ds.addSql("profile_id = " + p.getId());
+    if (p != null) {
+      ds.addSql("profile_id = " + p.getId());
+    }
     ds.cleanupSQLTail();
     return ds;
   }
@@ -502,15 +528,23 @@ public class UnitQueryWithinUnittype {
     try {
       pp = ds.makePreparedStatement(connection);
       rs = pp.executeQuery();
-      if (logger.isDebugEnabled()) logger.debug(ds.getDebugMessage());
-      if (rs.next()) return rs.getInt(1);
+      if (logger.isDebugEnabled()) {
+        logger.debug(ds.getDebugMessage());
+      }
+      if (rs.next()) {
+        return rs.getInt(1);
+      }
       return 0;
     } catch (SQLException sqle) {
       logger.error("The sql that failed:" + ds.getSqlQuestionMarksSubstituted());
       throw sqle;
     } finally {
-      if (rs != null) rs.close();
-      if (pp != null) pp.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (pp != null) {
+        pp.close();
+      }
     }
   }
 
@@ -522,10 +556,15 @@ public class UnitQueryWithinUnittype {
     PreparedStatement pp = null;
     try {
       pp = ds.makePreparedStatement(connection);
-      if (limit != null && limit > 0 && limit < 10000) pp.setFetchSize(limit);
-      else pp.setFetchSize(1000);
+      if (limit != null && limit > 0 && limit < 10000) {
+        pp.setFetchSize(limit);
+      } else {
+        pp.setFetchSize(1000);
+      }
       rs = pp.executeQuery();
-      if (logger.isDebugEnabled()) logger.debug(ds.getDebugMessage());
+      if (logger.isDebugEnabled()) {
+        logger.debug(ds.getDebugMessage());
+      }
       while (rs.next()) {
         String unitId = rs.getString("u.unit_id");
         Integer profileId = rs.getInt("u.profile_id");
@@ -544,15 +583,21 @@ public class UnitQueryWithinUnittype {
           }
         }
         units.put(unitId, unit);
-        if (limit != null && limit > 0 && units.size() == limit) break;
+        if (limit != null && limit > 0 && units.size() == limit) {
+          break;
+        }
       }
       return units;
     } catch (SQLException sqle) {
       logger.error("The sql that failed:" + ds.getSqlQuestionMarksSubstituted());
       throw sqle;
     } finally {
-      if (rs != null) rs.close();
-      if (pp != null) pp.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (pp != null) {
+        pp.close();
+      }
     }
   }
 
@@ -566,11 +611,16 @@ public class UnitQueryWithinUnittype {
 
   public Map<String, Unit> getUnits(List<Parameter> parameters, Integer limit) throws SQLException {
     Map<String, Unit> units = null;
-    if (acs.isStrictOrder()) units = new TreeMap<String, Unit>();
-    else units = new HashMap<String, Unit>();
+    if (acs.isStrictOrder()) {
+      units = new TreeMap<>();
+    } else {
+      units = new HashMap<>();
+    }
     for (Profile profile : profiles) {
       units = getUnits(units, parameters, profile, limit);
-      if (limit != null && limit > 0 && units.size() == limit) break;
+      if (limit != null && limit > 0 && units.size() == limit) {
+        break;
+      }
     }
     return units;
   }

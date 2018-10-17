@@ -59,8 +59,9 @@ public class HTTPReqResData {
       sessionData = new SessionData(sessionId, dbAccess.getDBI().getAcs());
       BaseCache.putSessionData(sessionId, sessionData);
     }
-    if (sessionData.getStartupTmsForSession() == null)
+    if (sessionData.getStartupTmsForSession() == null) {
       sessionData.setStartupTmsForSession(System.currentTimeMillis());
+    }
     Log.debug(HTTPReqResData.class, "Adding a HTTPReqResData object to the list");
     sessionData.getReqResList().add(this);
   }

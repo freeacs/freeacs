@@ -3,7 +3,6 @@ package com.github.freeacs.dbi.report;
 import java.util.Date;
 
 public class RecordJob extends Record<RecordJob> {
-
   private static KeyFactory keyFactory = new KeyFactory("Unittype", "Job", "Group");
   private Key key;
 
@@ -83,19 +82,19 @@ public class RecordJob extends Record<RecordJob> {
 
   @Override
   public void add(RecordJob record) {
-    this.getCompleted().add(record.getCompleted());
-    this.getConfirmedFailed().add(record.getConfirmedFailed());
-    this.getGroupSize().add(record.getGroupSize());
-    this.getUnconfirmedFailed().add(record.getUnconfirmedFailed());
+    getCompleted().add(record.getCompleted());
+    getConfirmedFailed().add(record.getConfirmedFailed());
+    getGroupSize().add(record.getGroupSize());
+    getUnconfirmedFailed().add(record.getUnconfirmedFailed());
   }
 
   @Override
   public RecordJob clone() {
     RecordJob clone = new RecordJob(tms, periodType, unittypeName, jobName, groupName);
-    clone.setCompleted(this.getCompleted().clone());
-    clone.setConfirmedFailed(this.getConfirmedFailed().clone());
-    clone.setGroupSize(this.getGroupSize().clone());
-    clone.setUnconfirmedFailed(this.getUnconfirmedFailed().clone());
+    clone.setCompleted(getCompleted().clone());
+    clone.setConfirmedFailed(getConfirmedFailed().clone());
+    clone.setGroupSize(getGroupSize().clone());
+    clone.setUnconfirmedFailed(getUnconfirmedFailed().clone());
     return clone;
   }
 

@@ -32,7 +32,6 @@ import javax.sql.DataSource;
  * @author Jarl Andre Hubenthal
  */
 public class GroupsPage extends AbstractWebPage {
-
   /** The xaps. */
   private ACS acs;
 
@@ -48,22 +47,14 @@ public class GroupsPage extends AbstractWebPage {
   /** The session id. */
   private String sessionId;
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.AbstractWebPage#getShortcutItems(com.owera.xaps.web.app.util.SessionData)
-   */
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
-    List<MenuItem> list = new ArrayList<MenuItem>();
-    list.addAll(super.getShortcutItems(sessionData));
+    List<MenuItem> list = new ArrayList<>(super.getShortcutItems(sessionData));
     list.add(new MenuItem("Create new Group", Page.GROUP).addCommand("create"));
     return list;
   }
 
   /** The Class GroupProfileMethod. */
   public class GroupProfileMethod implements TemplateMethodModel {
-
-    /* (non-Javadoc)
-     * @see freemarker.template.TemplateMethodModel#exec(java.util.List)
-     */
     @SuppressWarnings("rawtypes")
     public TemplateModel exec(List arg0) throws TemplateModelException {
       String groupName = (String) arg0.get(0);
@@ -77,19 +68,19 @@ public class GroupsPage extends AbstractWebPage {
       }
 
       Profile profile = null;
-      if (lastgroup != null && lastgroup.getProfile() != null)
+      if (lastgroup != null && lastgroup.getProfile() != null) {
         profile = unittype.getProfiles().getById(lastgroup.getProfile().getId());
-      else if (group.getProfile() != null)
+      } else if (group.getProfile() != null) {
         profile = unittype.getProfiles().getById(group.getProfile().getId());
+      }
 
-      if (profile != null) return new SimpleScalar(profile.getName());
+      if (profile != null) {
+        return new SimpleScalar(profile.getName());
+      }
       return new SimpleScalar("All profiles");
     }
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
-   */
   public void process(
       ParameterParser req,
       Output outputHandler,
@@ -132,11 +123,13 @@ public class GroupsPage extends AbstractWebPage {
           InputSelectionFactory.getProfileSelection(
               inputData.getProfile(), inputData.getUnittype(), acs));
       List<TableElement> params = new TableElementMaker().getGroups(unittype);
-      List<TableElement> copy = new ArrayList<TableElement>();
-      copy.addAll(params);
+      List<TableElement> copy = new ArrayList<>(params);
       for (TableElement elm : copy) {
-        if (!isGroupInProfile(elm.getGroup(), profile)) params.remove(elm);
-        else continue;
+        if (!isGroupInProfile(elm.getGroup(), profile)) {
+          params.remove(elm);
+        } else {
+          continue;
+        }
       }
 
       root.put("params", params);
@@ -153,12 +146,11 @@ public class GroupsPage extends AbstractWebPage {
    * @return true, if is group in profile
    */
   private boolean isGroupInProfile(Group g, Profile p) {
-    if (profile == null) return true;
-    if (g.getProfile() != null && g.getProfile().getName().equals(p.getName())) return true;
-    else if (g.getProfile() == null
-        && g.getTopParent().getProfile() != null
-        && g.getTopParent().getProfile().getName().equals(p.getName())) return true;
-    else if (g.getProfile() == null && g.getTopParent().getProfile() == null) return true;
-    return false;
+    return profile == null
+        || (g.getProfile() != null && g.getProfile().getName().equals(p.getName()))
+        || (g.getProfile() == null
+            && g.getTopParent().getProfile() != null
+            && g.getTopParent().getProfile().getName().equals(p.getName()))
+        || (g.getProfile() == null && g.getTopParent().getProfile() == null);
   }
 }

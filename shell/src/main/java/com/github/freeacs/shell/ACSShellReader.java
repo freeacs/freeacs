@@ -12,7 +12,6 @@ import jline.ConsoleReader;
 import jline.SimpleCompletor;
 
 public class ACSShellReader extends BufferedReader {
-
   private ConsoleReader console;
   private ArgumentCompletor argumentCompletor;
   private ACSShell ACSShell;
@@ -24,7 +23,9 @@ public class ACSShellReader extends BufferedReader {
 
   public String readLine() {
     try {
-      if (argumentCompletor != null) console.removeCompletor(argumentCompletor);
+      if (argumentCompletor != null) {
+        console.removeCompletor(argumentCompletor);
+      }
       argumentCompletor = new ArgumentCompletor(new SimpleCompletor(getLines()));
       console.addCompletor(argumentCompletor);
       String line = console.readLine();
@@ -42,9 +43,10 @@ public class ACSShellReader extends BufferedReader {
   }
 
   private String[] getLines() throws IOException {
-    List<String> completions = new ArrayList<String>();
-    if (ACSShell.getSession() != null && ACSShell.getSession().getAcs() != null)
+    List<String> completions = new ArrayList<>();
+    if (ACSShell.getSession() != null && ACSShell.getSession().getAcs() != null) {
       completions.addAll(FileUtil.getCompletions(ACSShell.getSession()));
+    }
 
     File folder = new File(System.getProperty("user.dir"));
     File[] listOfFiles = folder.listFiles();

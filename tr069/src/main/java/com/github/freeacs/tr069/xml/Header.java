@@ -3,7 +3,6 @@ package com.github.freeacs.tr069.xml;
 import com.github.freeacs.tr069.Namespace;
 
 public class Header {
-
   private HoldRequests holdRequests;
   private TR069TransactionID id;
   private NoMoreRequests noMoreRequests;
@@ -25,29 +24,43 @@ public class Header {
   }
 
   public void setHeaderField(String key, String value) {
-
-    if (key.equals("ID")) {
-      if (id != null) id.setId(value);
-      else this.id = new TR069TransactionID(value);
-    } else if (key.equals("NoMoreRequests")) {
-      if (noMoreRequests != null) noMoreRequests.setNoMoreRequestsFlag(value);
-      else this.noMoreRequests = new NoMoreRequests(value);
-    } else if (key.equals("HoldRequests")) {
-      if (holdRequests != null) holdRequests.setHoldRequestsFlag(value);
-      else this.holdRequests = new HoldRequests(value);
+    if ("ID".equals(key)) {
+      if (id != null) {
+        id.setId(value);
+      } else {
+        this.id = new TR069TransactionID(value);
+      }
+    } else if ("NoMoreRequests".equals(key)) {
+      if (noMoreRequests != null) {
+        noMoreRequests.setNoMoreRequestsFlag(value);
+      } else {
+        this.noMoreRequests = new NoMoreRequests(value);
+      }
+    } else if ("HoldRequests".equals(key)) {
+      if (holdRequests != null) {
+        holdRequests.setHoldRequestsFlag(value);
+      } else {
+        this.holdRequests = new HoldRequests(value);
+      }
     }
   }
 
   public String toXml() {
     StringBuilder sb = new StringBuilder(6);
     if (id != null || holdRequests != null) {
-      sb.append("<" + Namespace.getSoapEnvNS() + ":Header>\n");
-      if (id != null) sb.append(id.toXml());
-      if (holdRequests != null) sb.append(holdRequests.toXml());
-      if (noMoreRequests != null) sb.append(noMoreRequests.toXml());
-      sb.append("</" + Namespace.getSoapEnvNS() + ":Header>\n");
+      sb.append("<").append(Namespace.getSoapEnvNS()).append(":Header>\n");
+      if (id != null) {
+        sb.append(id.toXml());
+      }
+      if (holdRequests != null) {
+        sb.append(holdRequests.toXml());
+      }
+      if (noMoreRequests != null) {
+        sb.append(noMoreRequests.toXml());
+      }
+      sb.append("</").append(Namespace.getSoapEnvNS()).append(":Header>\n");
     } else {
-      sb.append("<" + Namespace.getSoapEnvNS() + ":Header/>\n");
+      sb.append("<").append(Namespace.getSoapEnvNS()).append(":Header/>\n");
     }
     return sb.toString();
   }

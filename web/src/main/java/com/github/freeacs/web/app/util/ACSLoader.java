@@ -20,7 +20,6 @@ import javax.sql.DataSource;
  * @author Jarl Andre Hubenthal
  */
 public class ACSLoader {
-
   /**
    * Gets the dBI.
    *
@@ -45,8 +44,12 @@ public class ACSLoader {
     } catch (Throwable t) {
       Monitor.setLastDBILogin(t);
       // Make sure all exceptions are thrown out of this method
-      if (t instanceof SQLException) throw (SQLException) t;
-      if (t instanceof RuntimeException) throw (RuntimeException) t;
+      if (t instanceof SQLException) {
+        throw (SQLException) t;
+      }
+      if (t instanceof RuntimeException) {
+        throw (RuntimeException) t;
+      }
     }
     return dbi;
   }
@@ -64,7 +67,9 @@ public class ACSLoader {
       String sessionId, DataSource mainDataSource, DataSource syslogDataSource)
       throws SQLException {
     DBI dbi = getDBI(sessionId, mainDataSource, syslogDataSource);
-    if (dbi != null) return dbi.getAcs();
+    if (dbi != null) {
+      return dbi.getAcs();
+    }
     return null;
   }
 
@@ -87,7 +92,9 @@ public class ACSLoader {
    */
   public static Identity getIdentity(String sessionId, DataSource dataSource) throws SQLException {
     User user = SessionCache.getSessionData(sessionId).getUser();
-    if (user == null) user = getDefaultUser(sessionId, dataSource);
+    if (user == null) {
+      user = getDefaultUser(sessionId, dataSource);
+    }
     return new Identity(SyslogConstants.FACILITY_WEB, "latest", user);
   }
 
@@ -101,8 +108,7 @@ public class ACSLoader {
    */
   private static User getDefaultUser(String sessionId, DataSource dataSource) throws SQLException {
     Users users = new Users(dataSource);
-    User user = new User("anonymous", null, null, false, users);
-    return user;
+    return new User("anonymous", null, null, false, users);
   }
 
   /**
@@ -118,7 +124,9 @@ public class ACSLoader {
       String sessionId, DataSource mainDataSource, DataSource syslogDataSource)
       throws SQLException {
     ACS acs = getDBI(sessionId, mainDataSource, syslogDataSource).getAcs();
-    if (acs == null) return null;
+    if (acs == null) {
+      return null;
+    }
     Identity ident = getIdentity(sessionId, acs.getDataSource());
     Syslog syslog = new Syslog(syslogDataSource, ident);
     return new ACSUnit(acs.getDataSource(), acs, syslog);

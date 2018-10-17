@@ -5,7 +5,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class IPAddress {
-
   /**
    * Returns true if and only if the given IP address is outside the ranges 10.0.0.0-10.255.255.255,
    * 172.16.0.0-172.31.255.255 or 192.168.0.0-192.168.255.255
@@ -20,10 +19,10 @@ public class IPAddress {
     } catch (UnknownHostException exception) {
       return false; // assuming no logging, exception handling required
     }
-    return !(address.isSiteLocalAddress()
-        || address.isAnyLocalAddress()
-        || address.isLinkLocalAddress()
-        || address.isLoopbackAddress()
-        || address.isMulticastAddress());
+    return !address.isSiteLocalAddress()
+        && !address.isAnyLocalAddress()
+        && !address.isLinkLocalAddress()
+        && !address.isLoopbackAddress()
+        && !address.isMulticastAddress();
   }
 }

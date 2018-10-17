@@ -21,22 +21,20 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/*
- * SingleKickThread is responsible for initiating a kick (connect to ConnectionRequestURL or
- * the UDPConnectinRequestAddress) for one or more devices.
+/**
+ * SingleKickThread is responsible for initiating a kick (connect to ConnectionRequestURL or the
+ * UDPConnectinRequestAddress) for one or more devices.
  *
- * This class is implemented as a Thread which always runs and listen for requests issued
- * by North-Bound Interfaces (Web, Shell or WS). If such a request (for a kick) is detected
- * it will check the state of the unit, to see if there's some parameters which can be used to
- * either connect using ConnectionRequestURL (TCP/HTTP connect) or UDPConnectionRequestURL (UDP connect).
+ * <p>This class is implemented as a Thread which always runs and listen for requests issued by
+ * North-Bound Interfaces (Web, Shell or WS). If such a request (for a kick) is detected it will
+ * check the state of the unit, to see if there's some parameters which can be used to either
+ * connect using ConnectionRequestURL (TCP/HTTP connect) or UDPConnectionRequestURL (UDP connect).
  * In the latter case, it is possible to traverse NATs to reach the device, and it's the primary
- * reason for why this logic is placed in the STUN-server. The support for this logic requires
- * the STUN-server to issue the UDP-packet. By doing so, Fusion supports the requirement to
- * TR-111 part 2.
- *
+ * reason for why this logic is placed in the STUN-server. The support for this logic requires the
+ * STUN-server to issue the UDP-packet. By doing so, Fusion supports the requirement to TR-111 part
+ * 2.
  */
 public class SingleKickThread implements Runnable {
-
   private static final Logger LOG = LoggerFactory.getLogger("KickSingle");
 
   private final DBI dbi;
@@ -81,13 +79,12 @@ public class SingleKickThread implements Runnable {
         is.setTmsOfLastChange(System.currentTimeMillis());
         LOG.debug(unitId + " is added to the watch list (from messages), will now be processed.");
         unitWatch.put(unitId, is);
-        inbox.markMessageAsRead(m);
       } else {
         InspectionState is = unitWatch.get(unitId);
         is.setTmsOfLastChange(System.currentTimeMillis());
         is.setKicked(false);
-        inbox.markMessageAsRead(m);
       }
+      inbox.markMessageAsRead(m);
     }
     inbox.deleteReadMessage();
   }
@@ -139,22 +136,23 @@ public class SingleKickThread implements Runnable {
 
   /* KICK RELATED METHODS */
 
-  /* CLEAN UP */
+  /** CLEAN UP. */
   private void reset(
       Iterator<String> watchListIterator,
-      Unit unit /*, UnitParameter stateUp, UnitParameter modeUp*/)
+      Unit unit /* , UnitParameter stateUp, UnitParameter modeUp */)
       throws SQLException {
     watchListIterator.remove();
     unit.toWriteQueue(SystemParameters.PROVISIONING_MODE, ProvisioningMode.REGULAR.toString());
     if (SystemConstants.DEFAULT_INSPECTION_MESSAGE.equals(
-        unit.getParameterValue(SystemParameters.INSPECTION_MESSAGE)))
+        unit.getParameterValue(SystemParameters.INSPECTION_MESSAGE))) {
       unit.toWriteQueue(
           SystemParameters.INSPECTION_MESSAGE, SystemConstants.DEFAULT_INSPECTION_MESSAGE);
+    }
     acsUnit.addOrChangeQueuedUnitParameters(unit);
     acsUnit.deleteAllSessionParameters(unit);
   }
 
-  /* MAIN LOOP */
+  /** MAIN LOOP. */
   private void processUnitWatchList() throws SQLException {
     Iterator<String> iterator = unitWatch.keySet().iterator();
     while (iterator.hasNext()) {
@@ -181,37 +179,38 @@ public class SingleKickThread implements Runnable {
                   + ProvisioningMode.REGULAR
                   + " for 60 sec.");
           reset(iterator, unit);
-        } else {
-          if (!lastIS.isKicked()) {
-            Kick.KickResponse kr = Kick.kick(unit, properties);
-            if (kr.isKicked())
-              acsUnit.addOrChangeUnitParameter(
-                  unit,
-                  SystemParameters.INSPECTION_MESSAGE,
-                  "Kick success at "
-                      + sdf.format(new Date())
-                      + " - *MAY* expect provisioning response :: "
-                      + kr.getMessage());
-            else
-              acsUnit.addOrChangeUnitParameter(
-                  unit,
-                  SystemParameters.INSPECTION_MESSAGE,
-                  "Kick failed at "
-                      + sdf.format(new Date())
-                      + " - require reboot to initiate provisioning :: "
-                      + kr.getMessage());
-            LOG.debug(
-                unit.getId()
-                    + " was kicked (response = "
-                    + kr.isKicked()
-                    + ", message =  "
-                    + kr.getMessage()
-                    + ").");
-            lastIS.setKicked(true);
+        } else if (!lastIS.isKicked()) {
+          Kick.KickResponse kr = Kick.kick(unit, properties);
+          if (kr.isKicked()) {
+            acsUnit.addOrChangeUnitParameter(
+                unit,
+                SystemParameters.INSPECTION_MESSAGE,
+                "Kick success at "
+                    + sdf.format(new Date())
+                    + " - *MAY* expect provisioning response :: "
+                    + kr.getMessage());
+          } else {
+            acsUnit.addOrChangeUnitParameter(
+                unit,
+                SystemParameters.INSPECTION_MESSAGE,
+                "Kick failed at "
+                    + sdf.format(new Date())
+                    + " - require reboot to initiate provisioning :: "
+                    + kr.getMessage());
           }
+          LOG.debug(
+              unit.getId()
+                  + " was kicked (response = "
+                  + kr.isKicked()
+                  + ", message =  "
+                  + kr.getMessage()
+                  + ").");
+          lastIS.setKicked(true);
         }
       } catch (Throwable t) {
-        if (unit != null) reset(iterator, unit);
+        if (unit != null) {
+          reset(iterator, unit);
+        }
         LOG.error(
             "An error occurred in processUnitWatchList() with unit "
                 + unitId
@@ -221,7 +220,7 @@ public class SingleKickThread implements Runnable {
     }
   }
 
-  /* MAIN METHOD */
+  /** MAIN METHOD. */
   public void run() {
     Thread.currentThread().setName("KickRunnable");
     try {
@@ -230,11 +229,12 @@ public class SingleKickThread implements Runnable {
       this.acsUnit = new ACSUnit(xapsCp, dbi.getAcs(), dbi.getAcs().getSyslog());
       Sleep sleep = new Sleep(1000, 1000, true);
       long lastUpdateCheck = 0;
-      while (true) {
+      do {
         try {
-
           sleep.sleep();
-          if (Sleep.isTerminated()) break;
+          if (Sleep.isTerminated()) {
+            break;
+          }
           updateUnitWatchBasedOnMessages();
           if (System.currentTimeMillis() - lastUpdateCheck > 5 * 60000) {
             updateUnitWatchBasedOnProvisioningMode();
@@ -243,9 +243,11 @@ public class SingleKickThread implements Runnable {
           }
           processUnitWatchList();
         } catch (Throwable tInner) {
-          if (LOG != null) LOG.error("An error ocurred, SingleKickThread.run() continues", tInner);
+          if (LOG != null) {
+            LOG.error("An error ocurred, SingleKickThread.run() continues", tInner);
+          }
         }
-      }
+      } while (true);
     } catch (Throwable tOuter) {
       LOG.error(
           "An error ocurred, SingleKickThread.run() exits - server is not able to process Extraction/Inspection/Kick Mode anymore!!!",
@@ -254,9 +256,8 @@ public class SingleKickThread implements Runnable {
   }
 
   public class InspectionState {
-
     private long tmsOfLastChange;
-    private boolean kicked = false;
+    private boolean kicked;
 
     public long getTmsOfLastChange() {
       return tmsOfLastChange;

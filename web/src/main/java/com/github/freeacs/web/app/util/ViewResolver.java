@@ -10,15 +10,6 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
  * @author Jarl Andre Hubenthal
  */
 public class ViewResolver extends FreeMarkerViewResolver {
-
-  /** Instantiates a new view resolver. */
-  public ViewResolver() {
-    super();
-  }
-
-  /* (non-Javadoc)
-   * @see org.springframework.web.servlet.view.UrlBasedViewResolver#getAttributesMap()
-   */
   public Map<String, Object> getAttributesMap() {
     Map<String, Object> map = super.getAttributesMap();
     map.put("URL_MAP", Page.getPageURLMap());
