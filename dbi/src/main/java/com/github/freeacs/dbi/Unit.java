@@ -74,7 +74,7 @@ public class Unit {
 
   public Map<String, UnitParameter> getUnitParameters() {
     if (this.unitParameters == null) {
-      MapWrapper<UnitParameter> mw = new MapWrapper<UnitParameter>(ACS.isStrictOrder());
+      MapWrapper<UnitParameter> mw = new MapWrapper<>(ACS.isStrictOrder());
       unitParameters = mw.getMap();
     }
     return unitParameters;

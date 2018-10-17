@@ -742,9 +742,9 @@ public class UnitPage extends AbstractWebPage {
     displayGUIURL(root);
 
     List<FileElement> fileElements = new ArrayList<>();
-    List<File> files = new ArrayList<>();
     // We need this "raw" list later on to check version membership
-    files.addAll(Arrays.asList(unittype.getFiles().getFiles(FileType.SOFTWARE)));
+    List<File> files =
+        new ArrayList<>(Arrays.asList(unittype.getFiles().getFiles(FileType.SOFTWARE)));
     // Create a list of FileElements from our filelist.
     for (File f : files) {
       fileElements.add(new FileElement(f.getVersion(), f));
