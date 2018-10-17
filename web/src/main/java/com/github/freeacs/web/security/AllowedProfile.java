@@ -28,15 +28,6 @@ public class AllowedProfile {
   }
 
   /**
-   * Instantiates a new allowed profile.
-   *
-   * @param name the name
-   */
-  public AllowedProfile(String name) {
-    this.name = name;
-  }
-
-  /**
    * Gets the id.
    *
    * @return the id

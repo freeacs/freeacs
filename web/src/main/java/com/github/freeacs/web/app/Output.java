@@ -50,7 +50,6 @@ public class Output {
   private Configuration freemarkerConfig;
   private static final String defaultTemplatePath = "/index.ftl";
   private String templatePathString;
-  private Boolean templatePathSet = false;
   private Map<String, Object> templateMap = new HashMap<>();
   private WebPage currentPage;
   private ParameterParser inputParameters;
@@ -350,7 +349,7 @@ public class Output {
    * @param servletResponseChannel the servlet response channel
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void writeBytesToResponse(byte[] image, HttpServletResponse servletResponseChannel)
+  private static void writeBytesToResponse(byte[] image, HttpServletResponse servletResponseChannel)
       throws IOException {
     OutputStream out = servletResponseChannel.getOutputStream();
     out.write(image);
@@ -401,7 +400,7 @@ public class Output {
    * @param res the res
    * @throws IOException the redirect failed
    */
-  public void redirect(String url, HttpServletResponse res) throws IOException {
+  private void redirect(String url, HttpServletResponse res) throws IOException {
     redirect(url, null, res);
   }
 
@@ -413,7 +412,7 @@ public class Output {
    * @param res the res
    * @throws IOException the redirect failed
    */
-  public void redirect(String url, ParameterParser params, HttpServletResponse res)
+  private void redirect(String url, ParameterParser params, HttpServletResponse res)
       throws IOException {
     if (url != null) {
       if (params != null && params.getBooleanParameter("async")) {
@@ -560,7 +559,6 @@ public class Output {
       path = "/" + path;
     }
     this.templatePathString = path + defaultTemplatePath;
-    this.templatePathSet = true;
   }
 
   /**
@@ -580,17 +578,6 @@ public class Output {
       path = "/" + path;
     }
     this.templatePathString = path;
-    this.templatePathSet = true;
-  }
-
-  /**
-   * Checks if <code>setTemplatePath</code> or <code>setTemplatePathWithIndex</code> has been run
-   * for this response handler instance.
-   *
-   * @return a boolean indicating if the template path has been configured
-   */
-  public boolean isTemplatePathSet() {
-    return this.templatePathSet;
   }
 
   /**
@@ -598,7 +585,7 @@ public class Output {
    *
    * @return the default template path
    */
-  String getDefaultTemplatePath() {
+  private String getDefaultTemplatePath() {
     return defaultTemplatePath;
   }
 
@@ -607,26 +594,8 @@ public class Output {
    *
    * @return the configured template path
    */
-  String getTemplatePath() {
+  private String getTemplatePath() {
     return this.templatePathString;
-  }
-
-  /**
-   * Gets the servlet response channel.
-   *
-   * @return the servlet response channel
-   */
-  HttpServletResponse getServletResponseChannel() {
-    return this.servletResponseChannel;
-  }
-
-  /**
-   * Gets the freemarker config.
-   *
-   * @return the freemarker config
-   */
-  Configuration getFreemarkerConfig() {
-    return this.freemarkerConfig;
   }
 
   /**
@@ -654,15 +623,6 @@ public class Output {
    */
   public Boolean isResponseCommitted() {
     return responseCommitted;
-  }
-
-  /**
-   * Checks if is response redirected.
-   *
-   * @return the boolean
-   */
-  public Boolean isResponseRedirected() {
-    return redirectToUrl != null;
   }
 
   /**

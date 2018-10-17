@@ -336,8 +336,6 @@ public enum Page {
       case UNITLIST:
         return REPORT.getId();
 
-        //		case MONITORSTATUS:
-        //			return "monitor";
       default:
         return pageStr;
     }

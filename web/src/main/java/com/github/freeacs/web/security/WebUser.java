@@ -16,8 +16,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 /** The Class WebUser. */
 public class WebUser extends User implements UserDetails {
-  /** The authenticated. */
-  private boolean authenticated;
 
   /**
    * Make sure that the user always has access.
@@ -54,7 +52,7 @@ public class WebUser extends User implements UserDetails {
         list = Page.getStringValuesFromList(pages);
         allowedPages = list;
       } else {
-        allowedPages = Arrays.asList(WebConstants.ALL_PAGES);
+        allowedPages = Collections.singletonList(WebConstants.ALL_PAGES);
       }
     }
     return allowedPages;

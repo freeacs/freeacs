@@ -40,54 +40,6 @@ public abstract class HelpPage {
   }
 
   /**
-   * Retrieves the content from an HTML file.
-   *
-   * <p>Wraps it in a help page.
-   *
-   * <p>Automatically including: - SomePage.js - SomePage.css into the main template in
-   * &lt;script&gt; and &lt;style&gt; tags within the header.
-   *
-   * @param page the page
-   * @return A HTML string
-   * @throws IOException Due to template parsing
-   * @throws TemplateException Due to template parsing
-   */
-  public static String getHTMLForPageByString(String page) throws IOException, TemplateException {
-    Template template = config.getTemplate("HelpPage.ftl");
-
-    Map<String, Object> map = new HashMap<>();
-
-    String className = camelCase(page);
-
-    String shortName = className;
-
-    if (className.endsWith("Page")) {
-      shortName = className.substring(0, className.length() - 4);
-    } else {
-      className = className + "Page";
-    }
-
-    map.put("title", shortName);
-
-    String html =
-        getFileContents("pages/" + shortName.toLowerCase() + "/" + className + ".html", NO_DATA);
-
-    String contents = getBodyContents(html);
-    map.put("content", contents);
-
-    String javascript =
-        getFileContents("pages/" + shortName.toLowerCase() + "/" + className + ".js", "");
-    map.put("script", javascript);
-
-    String css = getFileContents("pages/" + shortName.toLowerCase() + "/" + className + ".css", "");
-    map.put("style", css);
-
-    map.put("time", new Date());
-
-    return Freemarker.parseTemplate(map, template);
-  }
-
-  /**
    * Gets the hTML for page.
    *
    * @param page the page
