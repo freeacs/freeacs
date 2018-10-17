@@ -11,7 +11,7 @@
 package de.javawi.jstun.attribute;
 
 public interface MessageAttributeInterface {
-  public enum MessageAttributeType {
+  enum MessageAttributeType {
     MappedAddress,
     ResponseAddress,
     ChangeRequest,

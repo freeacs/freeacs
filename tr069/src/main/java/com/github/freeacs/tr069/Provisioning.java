@@ -225,8 +225,7 @@ public class Provisioning extends HttpServlet {
           && resData != null
           && TR069Method.EMPTY.equals(resData.getMethod())) {
         boolean terminationQuirk = properties.isTerminationQuirk(sessionData);
-        return (terminationQuirk && TR069Method.EMPTY.equals(reqData.getMethod()))
-            || !terminationQuirk;
+        return !terminationQuirk || TR069Method.EMPTY.equals(reqData.getMethod());
       }
       return false;
     } catch (Throwable t) {

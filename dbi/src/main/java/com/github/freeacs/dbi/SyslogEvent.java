@@ -30,7 +30,7 @@ public class SyslogEvent implements Comparable<SyslogEvent> {
   public enum StorePolicy {
     STORE,
     DUPLICATE,
-    DISCARD;
+    DISCARD
   }
 
   public static int DUPLICATE_TIMEOUT = 60;

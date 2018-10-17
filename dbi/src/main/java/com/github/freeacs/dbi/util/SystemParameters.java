@@ -161,7 +161,6 @@ public class SystemParameters {
     commonParameters.put(DESIRED_SOFTWARE_VERSION, X);
     commonParameters.put(SOFTWARE_URL, X);
     commonParameters.put(PROVISIONING_MODE, X);
-    //		commonParameters.put(PROVISIONING_PRIORITY, X);
     commonParameters.put(INSPECTION_MESSAGE, X);
     commonParameters.put(SERVICE_WINDOW_ENABLE, X);
     commonParameters.put(SERVICE_WINDOW_REGULAR, X);
@@ -175,7 +174,6 @@ public class SystemParameters {
     commonParameters.put(JOB_DISRUPTIVE, X);
     commonParameters.put(FIRST_CONNECT_TMS, X);
     commonParameters.put(LAST_CONNECT_TMS, X);
-    //		commonParameters.put(LAST_PROVISIONING_MESSAGES, X);
     commonParameters.put(SERIAL_NUMBER, X);
     commonParameters.put(RESTART, X);
     commonParameters.put(RESET, X);
@@ -183,7 +181,6 @@ public class SystemParameters {
     commonParameters.put(COMMENT, X);
     commonParameters.put(SECRET, XC);
     commonParameters.put(SECRET_SCHEME, X);
-    //		commonParameters.put(MAC, X);
     commonParameters.put(SOFTWARE_VERSION, X);
     commonParameters.put(PERIODIC_INTERVAL, X);
     commonParameters.put(IP_ADDRESS, X);
@@ -211,16 +208,13 @@ public class SystemParameters {
     stagingParameters.put(STAGING_PROVIDER_WSPASSWORD, X);
     stagingParameters.put(STAGING_PROVIDER_PROFILE, X);
     stagingParameters.put(STAGING_PROVIDER_UNITTYPE, X);
-    //		stagingParameters.put(STAGING_PROVIDER_SNPARAMETER, X);
-    //		stagingParameters.put(STAGING_PROVIDER_SECPARAMETER, X);
     stagingParameters.put(STAGING_PROVIDER_EMAIL, X);
-    //		stagingParameters.put(STAGING_PROVIDER_PROTOCOL, X);
   }
 
   public enum TR069ScriptType {
     Version,
     TargetFileName,
-    URL;
+    URL
   }
 
   /**

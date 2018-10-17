@@ -806,7 +806,7 @@ public class Input {
    */
   public boolean isValue(String valueToCheckFor) {
     String string = getString();
-    return string != null && valueToCheckFor.equals(string);
+    return valueToCheckFor.equals(string);
   }
 
   /**
@@ -839,7 +839,7 @@ public class Input {
    */
   public boolean hasValue(String valueToCheckFor) {
     String string = getString();
-    return string != null && valueToCheckFor.equals(string);
+    return valueToCheckFor.equals(string);
   }
 
   /**

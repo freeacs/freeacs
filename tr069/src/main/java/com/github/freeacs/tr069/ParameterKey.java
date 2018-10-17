@@ -34,7 +34,7 @@ public class ParameterKey {
   }
 
   public boolean isEqual() {
-    return cpeKey != null && serverKey != null && cpeKey.equals(serverKey);
+    return cpeKey != null && cpeKey.equals(serverKey);
   }
 
   private static String calculateParameterKey(HTTPReqResData reqRes)

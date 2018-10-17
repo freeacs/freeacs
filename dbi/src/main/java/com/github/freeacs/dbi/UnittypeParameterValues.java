@@ -47,9 +47,7 @@ public class UnittypeParameterValues {
   public boolean match(String str) {
     if (type.equals(REGEXP)) {
       Matcher mathcer = pattern.matcher(str);
-      if (mathcer.matches()) {
-        return true;
-      }
+      return mathcer.matches();
     } else if (type.equals(ENUM)) {
       return values.contains(str);
     }

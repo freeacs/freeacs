@@ -23,7 +23,7 @@ public class ScriptArg {
     TRIGGER,
     SYSLOGEVENT,
     HEARTBEAT,
-    ENUM;
+    ENUM
   }
 
   private int index;

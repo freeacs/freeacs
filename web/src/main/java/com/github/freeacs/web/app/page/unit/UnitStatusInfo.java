@@ -227,7 +227,7 @@ public class UnitStatusInfo {
             .getByName(SystemParameters.DESIRED_SOFTWARE_VERSION);
     if (desiredSw != null) {
       String param = currentUnit.getParameters().get(desiredSw.getName());
-      return param != null ? param : null;
+      return param;
     }
     return null;
   }
@@ -690,9 +690,7 @@ public class UnitStatusInfo {
       Date nextConnectUpperBound =
           new Date((long) (nextConnectNoSpread.getTime() + spread * msPerInterval));
       Date currentTime = new Date(System.currentTimeMillis());
-      if (currentTime.before(nextConnectUpperBound)) {
-        return true;
-      }
+      return currentTime.before(nextConnectUpperBound);
     }
 
     return false;

@@ -11,7 +11,7 @@
 package de.javawi.jstun.header;
 
 public interface MessageHeaderInterface {
-  public enum MessageHeaderType {
+  enum MessageHeaderType {
     BindingRequest,
     BindingResponse,
     BindingErrorResponse,

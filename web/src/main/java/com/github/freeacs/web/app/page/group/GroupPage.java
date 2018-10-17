@@ -34,7 +34,6 @@ import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -257,9 +256,9 @@ public class GroupPage extends AbstractWebPage {
           groups.getSelected().setProfile(null);
         }
       } catch (IllegalArgumentException ie) {
-        groups.getSelected().setParent(oldParent != null ? oldParent : null);
-        groups.getSelected().setProfile(oldProfile != null ? oldProfile : null);
-        groups.getSelected().setDescription(oldDescription != null ? oldDescription : null);
+        groups.getSelected().setParent(oldParent);
+        groups.getSelected().setProfile(oldProfile);
+        groups.getSelected().setDescription(oldDescription);
         throw ie;
       }
 
@@ -274,8 +273,6 @@ public class GroupPage extends AbstractWebPage {
    *
    * @return the string
    * @throws Exception the exception
-   * @param xapsDataSource
-   * @param syslogDataSource
    */
   private String actionCreateGroup(DataSource xapsDataSource, DataSource syslogDataSource)
       throws Exception {
@@ -307,12 +304,6 @@ public class GroupPage extends AbstractWebPage {
     }
   }
 
-  /**
-   * (non-Javadoc)
-   *
-   * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input .ParameterParser,
-   *     com.owera.xaps.web.app.output.ResponseHandler)
-   */
   public void process(
       ParameterParser params,
       Output outputHandler,
@@ -452,18 +443,11 @@ public class GroupPage extends AbstractWebPage {
    * @return the drop down single select
    * @throws IllegalArgumentException the illegal argument exception
    * @throws SecurityException the security exception
-   * @throws IllegalAccessException the illegal access exception
-   * @throws InvocationTargetException the invocation target exception
-   * @throws NoSuchMethodException the no such method exception
    *     <p>the no available connection exception
    * @throws SQLException the sQL exception
-   * @param xapsDataSource
-   * @param syslogDataSource
    */
   private DropDownSingleSelect<Profile> addGroupProfile(
-      DataSource xapsDataSource, DataSource syslogDataSource)
-      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException,
-          SQLException {
+      DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
     if (unittypes.getSelected() == null) {
       return null;
     }
@@ -488,7 +472,7 @@ public class GroupPage extends AbstractWebPage {
         parentGroup == null
             ? getAllowedProfiles(
                 sessionId, unittypes.getSelected(), xapsDataSource, syslogDataSource)
-            : new ArrayList<Profile>();
+            : new ArrayList<>();
 
     return InputSelectionFactory.getDropDownSingleSelect(
         inputData.getProfile(), profile, allowedProfiles);

@@ -76,7 +76,7 @@ public enum UnittypeParameterFlags {
    *
    * @param flag the flag
    */
-  private UnittypeParameterFlags(String flag) {
+  UnittypeParameterFlags(String flag) {
     display = flag;
   }
 

@@ -67,8 +67,7 @@ public class UnitStatusScore {
       } else if (is2LinesHasProblems) {
         voipLineEffect = 6;
       } else if (totalScore != null) {
-        double totalScoreEffect = (1f - totalScore / 100f) * 6;
-        this.totalScoreEffect = totalScoreEffect;
+        this.totalScoreEffect = (1f - totalScore / 100f) * 6;
       }
       setSyslogEffect(entries, SYSLOG_SEVERITY_HIGH_WITHIN_SERVICE_WINDOW_PENALTY);
     }

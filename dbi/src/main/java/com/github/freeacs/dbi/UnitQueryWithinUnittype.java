@@ -153,12 +153,10 @@ public class UnitQueryWithinUnittype {
         }
       } else {
         int compareInt = fixedOp.compareToIgnoreCase(varOp);
-        if ((Parameter.Operator.LT.equals(op) && compareInt < 0)
+        return (Parameter.Operator.LT.equals(op) && compareInt < 0)
             || (Parameter.Operator.LE.equals(op) && compareInt <= 0)
             || (Parameter.Operator.GE.equals(op) && compareInt >= 0)
-            || (Parameter.Operator.GT.equals(op) && compareInt > 0)) {
-          return true;
-        }
+            || (Parameter.Operator.GT.equals(op) && compareInt > 0);
       }
     }
     return false; // should never happen
@@ -610,8 +608,8 @@ public class UnitQueryWithinUnittype {
   }
 
   public Map<String, Unit> getUnits(List<Parameter> parameters, Integer limit) throws SQLException {
-    Map<String, Unit> units = null;
-    if (acs.isStrictOrder()) {
+    Map<String, Unit> units;
+    if (ACS.isStrictOrder()) {
       units = new TreeMap<>();
     } else {
       units = new HashMap<>();

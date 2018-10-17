@@ -43,7 +43,7 @@ public class ProvisioningMessage {
     SCRIPT,
     REBOOT,
     RESET,
-    SHELL;
+    SHELL
   }
 
   private ProvisioningProtocol provProtocol;

@@ -45,7 +45,7 @@ public class Schedule {
   }
 
   public boolean equals(Object o) {
-    if (o == null || !(o instanceof Schedule)) {
+    if (!(o instanceof Schedule)) {
       return false;
     }
     Schedule s = (Schedule) o;

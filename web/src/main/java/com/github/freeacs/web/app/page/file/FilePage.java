@@ -15,12 +15,9 @@ import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.WebConstants;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
@@ -90,9 +87,8 @@ public class FilePage extends AbstractWebPage {
    * @throws InvocationTargetException the invocation target exception
    * @throws NoSuchMethodException the no such method exception
    */
-  private void actionParse(ParameterParser req)
-      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-    if (formsubmit == null || !"Clear".equals(formsubmit)) {
+  private void actionParse(ParameterParser req) {
+    if (!"Clear".equals(formsubmit)) {
       id = inputData.getId().getInteger();
       FileItem file = req.getFileUpload("filename");
       if (file != null) {
@@ -110,31 +106,12 @@ public class FilePage extends AbstractWebPage {
       content = inputData.getContent().getString();
     }
 
-    String item = null;
+    String item;
     Enumeration<?> names = req.getKeyEnumeration();
     while (names.hasMoreElements() && (item = (String) names.nextElement()) != null) {
       if (item.startsWith("delete::")) {
         deleteList.add(item.substring(8));
       }
-      //					else if (item.startsWith("update::")) {
-      //						String[] arr = item.split("::");
-      //						if (arr.length == 3 && isNumber(arr[1])) {
-      //							Map<String, String> details = updateMap.get(arr[1]);
-      //							if (details == null) {
-      //								updateMap.put(arr[1], new HashMap<String, String>());
-      //								details = updateMap.get(arr[1]);
-      //							}
-      //							if (arr[2].equals("name")) {
-      //								details.put("name", req.getParameter(item));
-      //							} else if (arr[2].equals("type")) {
-      //								details.put("type", req.getParameter(item));
-      //							} else if (arr[2].equals("description")) {
-      //								details.put("description", req.getParameter(item));
-      //							} else if (arr[2].equals("softwaredate")) {
-      //								details.put("softwaredate", req.getParameter(item));
-      //							}
-      //						}
-      //					}
     }
   }
 
@@ -269,7 +246,7 @@ public class FilePage extends AbstractWebPage {
 
       Input fileTypeInput = inputData.getFileType();
       FileType fileType = null;
-      List<File> list = null;
+      List<File> list;
       if (fileTypeInput.getString() != null) {
         list = getFiles(FileType.valueOf(fileTypeInput.getString()));
         fileType = FileType.valueOf(fileTypeInput.getString());
@@ -311,15 +288,7 @@ public class FilePage extends AbstractWebPage {
     List<File> list = new ArrayList<>();
     if (unittype != null) {
       list = Arrays.asList(unittype.getFiles().getFiles(requiredType));
-      //			File[] firmwareArr = unittype.getFiles().getFiles();
-      //			for(File f: firmwareArr){
-      //				if(requiredType!=null){
-      //					if(f.getType().equals(requiredType))
-      //						list.add(f);
-      //				}else
-      //					list.add(f);
-      //			}
-      Collections.sort(list, new FileComparator(FileComparator.DATE));
+      list.sort(new FileComparator(FileComparator.DATE));
     }
     return list;
   }
@@ -328,8 +297,6 @@ public class FilePage extends AbstractWebPage {
    * Export firmware.
    *
    * @param outputHandler the outputHandler
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws SQLException the sQL exception the no available connection exception
    */
   private void exportFirmware(Output outputHandler) {
     try {
@@ -339,7 +306,7 @@ public class FilePage extends AbstractWebPage {
       outputHandler.setContentType("application/binary");
       outputHandler.setDownloadAttachment(stripSpacesReplaceWithUnderScore(firmware.getName()));
       outputHandler.writeBytesToResponse(firmware.getContent());
-    } catch (Exception ex) {
+    } catch (Exception ignored) {
     }
   }
 
@@ -359,12 +326,7 @@ public class FilePage extends AbstractWebPage {
    *
    * @return the drop down single select
    * @throws IllegalArgumentException the illegal argument exception
-   * @throws SecurityException the security exception
-   * @throws IllegalAccessException the illegal access exception
-   * @throws InvocationTargetException the invocation target exception
-   * @throws NoSuchMethodException the no such method exception the no available connection
-   *     exception
-   * @throws SQLException the sQL exception
+   * @throws SecurityException the security exception exception
    */
   protected DropDownSingleSelect<FileType> getTypeSelect(
       FileType selectedFileType, FileType... types) {

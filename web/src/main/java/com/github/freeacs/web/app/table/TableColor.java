@@ -31,7 +31,7 @@ public enum TableColor {
    *
    * @param color the color
    */
-  private TableColor(String color) {
+  TableColor(String color) {
     this.colorHex = color;
   }
 

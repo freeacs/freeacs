@@ -31,7 +31,7 @@ public class JobFlag {
 
   public enum JobServiceWindow {
     DISRUPTIVE,
-    REGULAR;
+    REGULAR
   }
 
   private JobType type;

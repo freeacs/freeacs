@@ -421,7 +421,6 @@ public class SearchPage extends AbstractWebPage {
         if (isEnabled) {
           value = req.getParameter(key);
         }
-        String common = utpName;
 
         Operator operator = Operator.EQ;
         if (req.getStringParameter("operator::" + key) != null) {
@@ -434,7 +433,7 @@ public class SearchPage extends AbstractWebPage {
         }
 
         volatileParameters.add(
-            new SearchParameter(utpName, common, value, operator, type, isEnabled));
+            new SearchParameter(utpName, utpName, value, operator, type, isEnabled));
       }
     }
 

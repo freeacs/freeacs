@@ -265,15 +265,13 @@ public class UnitMenu {
 
   private enum PrintLevel {
     UNIT,
-    ALL;
+    ALL
   }
 
   private void listparamsImpl(String[] inputArr, OutputHandler oh, PrintLevel pl) throws Exception {
     Unit unit = context.getUnit();
-    //		if (!unit.isParamsAvailable() || unit.isSessionMode()) {
     unit = session.getAcsUnit().getUnitById(unit.getId());
     context.setUnit(unit);
-    //		}
 
     boolean sessionMode =
         context.getUnit().isSessionMode() && ACSVersionCheck.unitParamSessionSupported;

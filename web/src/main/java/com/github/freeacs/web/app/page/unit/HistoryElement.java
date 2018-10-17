@@ -27,7 +27,7 @@ public class HistoryElement {
 
     private int code;
 
-    private EventCode(int c) {
+    EventCode(int c) {
       code = c;
     }
 

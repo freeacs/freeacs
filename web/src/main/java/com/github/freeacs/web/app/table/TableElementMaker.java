@@ -49,37 +49,34 @@ public class TableElementMaker {
     return list;
   }
 
-  private void getTrigger(Unittype unittype, List<TableElement> list, Trigger trigger, Integer nbsp)
-      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+  private void getTrigger(
+      Unittype unittype, List<TableElement> list, Trigger trigger, Integer nbsp) {
     String tableTriggerId = getTableTriggerId(trigger);
-    Integer str = nbsp;
     if (trigger != null && !trigger.getChildren().isEmpty()) {
-      list.add(new TableElement(tableTriggerId, str, trigger, true));
+      list.add(new TableElement(tableTriggerId, nbsp, trigger, true));
       List<String> childrenTriggernames = convertTriggersToNames(trigger.getChildren());
-      Collections.sort(childrenTriggernames, String.CASE_INSENSITIVE_ORDER);
+      childrenTriggernames.sort(String.CASE_INSENSITIVE_ORDER);
       for (String childrenTriggername : childrenTriggernames) {
         Trigger g = unittype.getTriggers().getByName(childrenTriggername);
         getTrigger(unittype, list, g, nbsp + WebConstants.PARAMETERS_NEXT_INDENTATION);
       }
     } else {
-      list.add(new TableElement(tableTriggerId, str, trigger, false));
+      list.add(new TableElement(tableTriggerId, nbsp, trigger, false));
     }
   }
 
-  private void getGroup(Unittype unittype, List<TableElement> list, Group group, Integer nbsp)
-      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+  private void getGroup(Unittype unittype, List<TableElement> list, Group group, Integer nbsp) {
     String tableGroupId = getTableGroupId(group);
-    Integer str = nbsp;
     if (group != null && !group.getChildren().isEmpty()) {
-      list.add(new TableElement(tableGroupId, str, group, true));
+      list.add(new TableElement(tableGroupId, nbsp, group, true));
       List<String> childrenGroupnames = convertGroupsToNames(group.getChildren());
-      Collections.sort(childrenGroupnames, String.CASE_INSENSITIVE_ORDER);
+      childrenGroupnames.sort(String.CASE_INSENSITIVE_ORDER);
       for (String childrenGroupname : childrenGroupnames) {
         Group g = unittype.getGroups().getByName(childrenGroupname);
         getGroup(unittype, list, g, nbsp + WebConstants.PARAMETERS_NEXT_INDENTATION);
       }
     } else {
-      list.add(new TableElement(tableGroupId, str, group, false));
+      list.add(new TableElement(tableGroupId, nbsp, group, false));
     }
   }
 
@@ -128,7 +125,7 @@ public class TableElementMaker {
     List<Job> topLevelJobs = findTopLevelJobs(unittype);
     if (!topLevelJobs.isEmpty()) {
       List<String> topLevelJobnames = convertJobsToNames(topLevelJobs);
-      Collections.sort(topLevelJobnames, String.CASE_INSENSITIVE_ORDER);
+      topLevelJobnames.sort(String.CASE_INSENSITIVE_ORDER);
       for (String jobname : topLevelJobnames) {
         Job topJob = unittype.getJobs().getByName(jobname);
         getJob(unittype, list, topJob, WebConstants.PARAMETERS_START_INDENTATION);
@@ -151,20 +148,18 @@ public class TableElementMaker {
    * @throws InvocationTargetException the invocation target exception
    * @throws NoSuchMethodException the no such method exception
    */
-  private void getJob(Unittype unittype, List<TableElement> list, Job job, Integer nbsp)
-      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+  private void getJob(Unittype unittype, List<TableElement> list, Job job, Integer nbsp) {
     String id = getTableJobId(job);
-    Integer str = nbsp;
     if (!getChildren(job).isEmpty()) {
-      list.add(new TableElement(id, str, job, true));
+      list.add(new TableElement(id, nbsp, job, true));
       List<String> childrenJobnames = convertJobsToNames(getChildren(job));
-      Collections.sort(childrenJobnames, String.CASE_INSENSITIVE_ORDER);
+      childrenJobnames.sort(String.CASE_INSENSITIVE_ORDER);
       for (String childrenJobname : childrenJobnames) {
         Job childrenJob = unittype.getJobs().getByName(childrenJobname);
         getJob(unittype, list, childrenJob, nbsp + WebConstants.PARAMETERS_NEXT_INDENTATION);
       }
     } else {
-      list.add(new TableElement(id, str, job, false));
+      list.add(new TableElement(id, nbsp, job, false));
     }
   }
 
@@ -323,16 +318,6 @@ public class TableElementMaker {
       JobFilter jobFilter, UnittypeParameter[] params, int i) {
     return jobFilter != null && !jobFilter.listParameter(params[i]);
   }
-
-  //	private boolean parameterFlagIsInspection(UnittypeParameter[] params, int i) {
-  //		return false;
-  //		//		return params[i].getFlag().isInspection();
-  //	}
-
-  //	private boolean eitherGroupParamsOrJobParamsIsNotNull(GroupParameter[] gParams, JobParameter[]
-  // jParams) {
-  //		return (gParams != null || jParams != null);
-  //	}
 
   /**
    * Gets the group params.

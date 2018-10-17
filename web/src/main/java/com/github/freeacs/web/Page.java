@@ -144,8 +144,7 @@ public enum Page {
   }
 
   public static String getTitle(String id) {
-    String s = id;
-    String[] arr = s.split("-");
+    String[] arr = id.split("-");
     int arrLength = arr.length;
     for (int i = 0; i < arrLength; i++) {
       arr[i] = convertToCamelCasedString(arr[i]);
@@ -177,12 +176,12 @@ public enum Page {
     return result;
   }
 
-  private Page(String id, Class<? extends WebPage> clazz) {
+  Page(String id, Class<? extends WebPage> clazz) {
     this.id = id != null ? id : "";
     this.clazz = clazz;
   }
 
-  private Page(String id, Class<? extends WebPage> clazz, String icon) {
+  Page(String id, Class<? extends WebPage> clazz, String icon) {
     this(id, clazz);
     this.iconURL = icon;
   }

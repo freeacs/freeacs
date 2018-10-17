@@ -90,7 +90,7 @@ public class HTTPRequestProcessor {
         Log.conversation(
             reqRes.getSessionData(),
             "============== FROM CPE ( "
-                + Optional.ofNullable(unitId).orElseGet(() -> "Unknown")
+                + Optional.ofNullable(unitId).orElse("Unknown")
                 + " ) TO ACS ===============\n"
                 + xml);
       }

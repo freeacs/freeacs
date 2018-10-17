@@ -120,9 +120,7 @@ public class Command {
     }
     if (!commandAndArguments.isEmpty()) {
       CommandAndArgument caa = commandAndArguments.get(0);
-      if ("unit".equals(caa.getCommandAndArgument()) || "cc".equals(caa.getCommandAndArgument())) {
-        return true;
-      }
+      return "unit".equals(caa.getCommandAndArgument()) || "cc".equals(caa.getCommandAndArgument());
     }
     return false;
   }

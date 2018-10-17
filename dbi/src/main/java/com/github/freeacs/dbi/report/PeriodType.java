@@ -12,7 +12,7 @@ public enum PeriodType {
 
   private int type;
 
-  private PeriodType(int type) {
+  PeriodType(int type) {
     this.type = type;
   }
 

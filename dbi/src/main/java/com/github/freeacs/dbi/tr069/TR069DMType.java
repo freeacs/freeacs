@@ -29,7 +29,7 @@ public enum TR069DMType {
   private long max;
   private String xsdType;
 
-  private TR069DMType(long min, long max, String xsdType) {
+  TR069DMType(long min, long max, String xsdType) {
     this.min = min;
     this.max = max;
     this.xsdType = xsdType;

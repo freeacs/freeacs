@@ -473,11 +473,9 @@ public class PermissionsPage extends AbstractWebPage {
   private boolean isPermissionsEqual(Permission perm1, Permission perm2) {
     if (perm1.getUnittypeId().intValue() == perm2.getUnittypeId().intValue()) {
       if (perm1.getProfileId() != null && perm2.getProfileId() != null) {
-        if (perm1.getProfileId().intValue() == perm2.getProfileId().intValue()) {
-          return true;
-        }
-      } else if (perm1.getProfileId() == null && perm2.getProfileId() == null) {
-        return true;
+        return perm1.getProfileId().intValue() == perm2.getProfileId().intValue();
+      } else {
+        return perm1.getProfileId() == null && perm2.getProfileId() == null;
       }
     }
     return false;

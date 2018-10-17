@@ -106,8 +106,7 @@ public class INreq {
         String paramValue = pvs.getName();
         int keyRootEndPos = paramValue.indexOf('.');
         keyRoot = paramValue.substring(0, keyRootEndPos + 1);
-        if (keyRoot != null
-            && ("Device.".equals(keyRoot) || "InternetGatewayDevice.".equals(keyRoot))) {
+        if ("Device.".equals(keyRoot) || "InternetGatewayDevice.".equals(keyRoot)) {
           sessionData.setKeyRoot(keyRoot);
           cpeParams = new CPEParameters(keyRoot);
           sessionData.setCpeParameters(cpeParams);
@@ -123,7 +122,7 @@ public class INreq {
         if (pvs.getName().equals(cpeParams.CONNECTION_URL)) {
           cpeParams.putPvs(cpeParams.CONNECTION_URL, pvs);
         }
-        if (informParams != null && pvs.getName().equals(informParams.UDP_CONNECTION_URL)) {
+        if (pvs.getName().equals(informParams.UDP_CONNECTION_URL)) {
           informParams.putPvs(informParams.UDP_CONNECTION_URL, pvs);
         }
       }

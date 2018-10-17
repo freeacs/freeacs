@@ -29,7 +29,7 @@ public abstract class DateUtils {
      *
      * @param s the s
      */
-    private Format(String s) {
+    Format(String s) {
       format = s;
     }
 
@@ -56,27 +56,6 @@ public abstract class DateUtils {
   }
 
   /**
-   * Format date only.
-   *
-   * @param d the d
-   * @return the string
-   */
-  public static String formatDateOnly(Date d) {
-    return formatDate(Format.DATE_ONLY, d);
-  }
-
-  /**
-   * Parses the date only.
-   *
-   * @param d the d
-   * @return the date
-   * @throws ParseException the parse exception
-   */
-  public static Date parseDateOnly(String d) throws ParseException {
-    return parseDate(Format.DATE_ONLY, d);
-  }
-
-  /**
    * Format date default.
    *
    * @param d the d
@@ -95,27 +74,6 @@ public abstract class DateUtils {
    */
   public static Date parseDateDefault(String d) throws ParseException {
     return parseDate(Format.DEFAULT, d);
-  }
-
-  /**
-   * Format date with seconds.
-   *
-   * @param d the d
-   * @return the string
-   */
-  public static String formatDateWithSeconds(Date d) {
-    return formatDate(Format.WITH_SECONDS, d);
-  }
-
-  /**
-   * Parses the date with seconds.
-   *
-   * @param d the d
-   * @return the date
-   * @throws ParseException the parse exception
-   */
-  public static Date parseDateWithSeconds(String d) throws ParseException {
-    return parseDate(Format.WITH_SECONDS, d);
   }
 
   /**

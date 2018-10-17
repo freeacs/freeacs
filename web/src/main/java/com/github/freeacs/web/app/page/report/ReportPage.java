@@ -532,10 +532,9 @@ public class ReportPage extends AbstractWebPage {
      * @param report the report
      */
     ChartLegendsDimensions(String[] aggregation, Report<?> report) {
-      String[] keys = aggregation;
       Set<String> uniqueLegendsSet = new HashSet<>();
       for (Key key : report.getMap().keySet()) {
-        uniqueLegendsSet.add(key.getKeyString(false, keys));
+        uniqueLegendsSet.add(key.getKeyString(false, aggregation));
       }
       int totalLegendSize = 0;
       for (String uniqueLegend : uniqueLegendsSet) {

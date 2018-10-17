@@ -84,7 +84,7 @@ public enum ReportType {
    * @param name the name
    * @param methods the methods
    */
-  private ReportType(String name, String... methods) {
+  ReportType(String name, String... methods) {
     this.name = name;
     this.methods = Arrays.asList(methods);
   }

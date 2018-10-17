@@ -3,7 +3,6 @@ package com.github.freeacs.shell;
 import com.github.freeacs.shell.util.FileUtil;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +41,7 @@ public class ACSShellReader extends BufferedReader {
     return null;
   }
 
-  private String[] getLines() throws IOException {
+  private String[] getLines() {
     List<String> completions = new ArrayList<>();
     if (ACSShell.getSession() != null && ACSShell.getSession().getAcs() != null) {
       completions.addAll(FileUtil.getCompletions(ACSShell.getSession()));

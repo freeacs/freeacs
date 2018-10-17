@@ -94,9 +94,7 @@ public class InsertOrUpdateStatement {
     public boolean equals(Object o) {
       if (o instanceof Field) {
         Field f = (Field) o;
-        if (f.getColumn().equals(getColumn())) {
-          return true;
-        }
+        return f.getColumn().equals(getColumn());
       }
       return false;
     }

@@ -262,7 +262,7 @@ public interface HTTPResponseCreator {
       Log.conversation(
           reqRes.getSessionData(),
           "=============== FROM ACS TO ( "
-              + Optional.ofNullable(unitId).orElseGet(() -> "Unknown")
+              + Optional.ofNullable(unitId).orElse("Unknown")
               + " ) ============\n"
               + responseStr
               + "\n");
