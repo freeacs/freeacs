@@ -857,8 +857,7 @@ public class ReportGenerator extends DBIOwner {
     populateReportUnitTable(getMainDataSource(), now, periodType);
   }
 
-  private void buildProvisioning(PeriodType periodType)
-      throws SQLException, IOException {
+  private void buildProvisioning(PeriodType periodType) throws SQLException, IOException {
     ReportProvisioningGenerator rg =
         new ReportProvisioningGenerator(
             getMainDataSource(), getSyslogDataSource(), acs, "- - ", getIdentity());
