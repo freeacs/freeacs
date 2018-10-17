@@ -114,7 +114,7 @@ public class ErrorCode extends MessageAttribute {
       ErrorCode result = new ErrorCode();
       result.setResponseCode(responseCode);
       return result;
-    } catch (UtilityException | MessageAttributeException mae) {
+    } catch (MessageAttributeException mae) {
       throw new MessageAttributeParsingException("Parsing error");
     }
   }
