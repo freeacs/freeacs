@@ -19,8 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class StunServlet {
-
-  public static StunServer server = null;
+  public static StunServer server;
 
   private static Logger logger = LoggerFactory.getLogger(StunServlet.class);
 
@@ -92,7 +91,6 @@ public class StunServlet {
       kickThread = new Thread(new JobKickThread(mainDs, dbi, properties));
       kickThread.setName("STUN Job Kick Thread");
       kickThread.start();
-
     } catch (Throwable t) {
       logger.error("An error occurred while starting Stun Server", t);
     }

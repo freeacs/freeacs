@@ -34,75 +34,82 @@ import org.slf4j.LoggerFactory;
 public class SessionData implements SessionDataI {
   private static final Logger LOGGER = LoggerFactory.getLogger(SessionData.class);
 
-  /* The session-id */
+  /** The session-id. */
   private String id;
-  /* Access to all database operations */
+  /** Access to all database operations. */
   private DBAccessSession dbAccess;
-  /* Data for monitoring/logging */
-  private List<HTTPReqResData> reqResList = new ArrayList<HTTPReqResData>();
-  private Long startupTmsForSession; // When did the session start?
+  /** Data for monitoring/logging. */
+  private List<HTTPReqResData> reqResList = new ArrayList<>();
+  /** When did the session start? */
+  private Long startupTmsForSession;
 
-  private String unitId; // The unique id for the CPE
-  private Unit unit; // The unit-object
-  private Profile profile; // The profile name for this CPE (defined i the DB)
-  private Unittype unittype; // The unittype for this CPE (defined in the DB)
-  private String keyRoot; // The keyroot of this CPE (e.g. InternetGatewayDevice.)
+  /** The unique id for the CPE. */
+  private String unitId;
+  /** The unit-object. */
+  private Unit unit;
+  /** The profile name for this CPE (defined i the DB). */
+  private Profile profile;
+  /** The unittype for this CPE (defined in the DB). */
+  private Unittype unittype;
+  /** The keyroot of this CPE (e.g. InternetGatewayDevice.) */
+  private String keyRoot;
+
   private String mac;
   private String serialNumber;
 
-  /* Tells whether the CPE is authenticated or not */
+  /** Tells whether the CPE is authenticated or not. */
   private boolean authenticated;
-  /* Tells whether the CPE is doing a periodic inform or not */
+  /** Tells whether the CPE is doing a periodic inform or not. */
   private boolean periodic;
-  /* Tells whether a job is under execution - important not to start on another job */
+  /** Tells whether a job is under execution - important not to start on another job. */
   private boolean jobUnderExecution;
-  /* The event code of the inform */
+  /** The event code of the inform. */
   private String eventCodes;
 
-  /* Owera parameters */
+  /** Owera parameters. */
   private ACSParameters acsParameters;
-  /* Special parameters, will always be retrieved */
+  /** Special parameters, will always be retrieved. */
   private CPEParameters cpeParameters;
-  /* Special parameter, will only be retrieved from the Inform */
+  /** Special parameter, will only be retrieved from the Inform. */
   private InformParameters informParameters;
 
-  /* All parameters found in the DB, except system parameters (X)*/
+  /** All parameters found in the DB, except system parameters (X). */
   private Map<String, ParameterValueStruct> fromDB;
-  /* All parameters read from the CPE */
+  /** All parameters read from the CPE. */
   private List<ParameterValueStruct> valuesFromCPE;
-  /* All parameters that shall be written to the CPE */
+  /** All parameters that shall be written to the CPE. */
   private ParameterList toCPE;
-  /* All parameters that shall be written to the DB */
+  /** All parameters that shall be written to the DB. */
   private List<ParameterValueStruct> toDB;
-  /* All parameters requested from CPE */
+  /** All parameters requested from CPE. */
   private List<ParameterValueStruct> requestedCPE;
 
-  /* Job */
+  /** Job. */
   private Job job;
-  /* All parameters from a job */
+  /** All parameters from a job. */
   private Map<String, JobParameter> jobParams;
 
-  /* parameterkey contains a hash of all values sent to CPE */
+  /** Parameterkey contains a hash of all values sent to CPE. */
   private ParameterKey parameterKey;
-  /* commandkey contains the version number of the last download - if a download was sent */
+  /** Commandkey contains the version number of the last download - if a download was sent. */
   private CommandKey commandKey;
-  /* Provisioning allowed. False if outside servicewindow or not allowed by unitJob */
+  /** Provisioning allowed. False if outside servicewindow or not allowed by unitJob */
   private boolean provisioningAllowed = true;
 
-  /* The secret obtained by discovery-mode, basic auth.*/
-  private String secret = null;
-  /* The flag signals a first-time connect in discovery-mode */
-  private boolean firstConnect = false;
-  /* Unittype has been created, but unitId remains unknown, only for discovery-mode */
+  /** The secret obtained by discovery-mode, basic auth. */
+  private String secret;
+  /** The flag signals a first-time connect in discovery-mode. */
+  private boolean firstConnect;
+  /** Unittype has been created, but unitId remains unknown, only for discovery-mode. */
   private boolean unittypeCreated = true;
 
-  /* PIIDecision is important to decide the final outcome of the next Periodic Inform Interval */
+  /** PIIDecision is important to decide the final outcome of the next Periodic Inform Interval. */
   private PIIDecision piiDecision;
 
-  // An object to store all kinds of data about the provisioning
+  /** An object to store all kinds of data about the provisioning. */
   private ProvisioningMessage provisioningMessage = new ProvisioningMessage();
 
-  // An object to store data about a download
+  /** An object to store data about a download. */
   private Download download;
 
   public SessionData(String id, ACS acs) {
@@ -116,7 +123,9 @@ public class SessionData implements SessionDataI {
   }
 
   public void setKeyRoot(String keyRoot) {
-    if (keyRoot != null) this.keyRoot = keyRoot;
+    if (keyRoot != null) {
+      this.keyRoot = keyRoot;
+    }
   }
 
   public Map<String, ParameterValueStruct> getFromDB() {
@@ -132,8 +141,9 @@ public class SessionData implements SessionDataI {
   }
 
   public void updateParametersFromDB(String unitId) throws SQLException {
-
-    if (fromDB != null) return;
+    if (fromDB != null) {
+      return;
+    }
 
     Log.debug(SessionData.class, "Will load unit data");
     addUnitDataToSession(this);
@@ -143,12 +153,16 @@ public class SessionData implements SessionDataI {
         Log.debug(
             SessionData.class,
             "No unit data found & discovery mode true -> first-connect = true, allow to continue");
-        this.setFirstConnect(true);
-      } else throw new NoDataAvailableException();
+        setFirstConnect(true);
+      } else {
+        throw new NoDataAvailableException();
+      }
     }
 
     if (!fromDB.isEmpty()) {
-      if (acsParameters == null) acsParameters = new ACSParameters();
+      if (acsParameters == null) {
+        acsParameters = new ACSParameters();
+      }
       Iterator<String> i = fromDB.keySet().iterator();
       int systemParamCounter = 0;
       while (i.hasNext()) {
@@ -230,7 +244,9 @@ public class SessionData implements SessionDataI {
   }
 
   public void setToDB(List<ParameterValueStruct> toDB) {
-    if (toDB == null) toDB = new ArrayList<>();
+    if (toDB == null) {
+      toDB = new ArrayList<>();
+    }
     this.toDB = toDB;
   }
 
@@ -251,15 +267,19 @@ public class SessionData implements SessionDataI {
   }
 
   public String getMethodBeforePreviousResponseMethod() {
-    if (reqResList != null && reqResList.size() > 2)
+    if (reqResList != null && reqResList.size() > 2) {
       return reqResList.get(reqResList.size() - 3).getResponse().getMethod();
-    else return null;
+    } else {
+      return null;
+    }
   }
 
   public String getPreviousResponseMethod() {
-    if (reqResList != null && reqResList.size() > 1)
+    if (reqResList != null && reqResList.size() > 1) {
       return reqResList.get(reqResList.size() - 2).getResponse().getMethod();
-    else return null;
+    } else {
+      return null;
+    }
   }
 
   public boolean isProvisioningAllowed() {
@@ -372,8 +392,8 @@ public class SessionData implements SessionDataI {
   }
 
   public void addUnitDataToSession(SessionData sessionData) throws SQLException {
-    Unit unit = this.getDbAccessSession().readUnit(sessionData.getUnitId());
-    Map<String, ParameterValueStruct> valueMap = new TreeMap<String, ParameterValueStruct>();
+    Unit unit = getDbAccessSession().readUnit(sessionData.getUnitId());
+    Map<String, ParameterValueStruct> valueMap = new TreeMap<>();
     if (unit != null) {
       sessionData.setUnit(unit);
       sessionData.setUnittype(unit.getUnittype());
@@ -389,7 +409,9 @@ public class SessionData implements SessionDataI {
           String utpName = entry.getKey();
           String value = entry.getValue().getValue();
           ParameterValueStruct pvs = new ParameterValueStruct(utpName, value);
-          if (valueMap.containsKey(utpName)) overrideCounter++;
+          if (valueMap.containsKey(utpName)) {
+            overrideCounter++;
+          }
           valueMap.put(utpName, pvs);
         } else {
           System.out.println(entry.getKey() + " is probably a session-parameter");
@@ -417,7 +439,9 @@ public class SessionData implements SessionDataI {
 
   public String getSoftwareVersion() {
     CPEParameters cpeParams = getCpeParameters();
-    if (cpeParams != null) return cpeParams.getValue(cpeParams.SOFTWARE_VERSION);
+    if (cpeParams != null) {
+      return cpeParams.getValue(cpeParams.SOFTWARE_VERSION);
+    }
     return null;
   }
 
@@ -452,7 +476,9 @@ public class SessionData implements SessionDataI {
 
   @Override
   public PIIDecision getPIIDecision() {
-    if (piiDecision == null) piiDecision = new PIIDecision(this);
+    if (piiDecision == null) {
+      piiDecision = new PIIDecision(this);
+    }
     return piiDecision;
   }
 
@@ -490,31 +516,37 @@ public class SessionData implements SessionDataI {
   public boolean discoverUnittype() {
     if (acsParameters != null
         && acsParameters.getValue(SystemParameters.DISCOVER) != null
-        && acsParameters.getValue(SystemParameters.DISCOVER).equals("1")) return true;
-    else if (acsParameters == null)
+        && "1".equals(acsParameters.getValue(SystemParameters.DISCOVER))) {
+      return true;
+    } else if (acsParameters == null) {
       Log.debug(SessionData.class, "freeacsParameters not found in discoverUnittype()");
-    else if (acsParameters.getValue(SystemParameters.DISCOVER) == null)
-      Log.debug(
-          SessionData.class,
-          "DISCOVER parameter not found of value is null in discoverUnittype() ");
-    else
+    } else if (acsParameters.getValue(SystemParameters.DISCOVER) != null) {
       Log.debug(
           SessionData.class,
           "DISCOVER parameter value is "
               + acsParameters.getValue(SystemParameters.DISCOVER)
               + " in discoverUnittype()");
+    } else {
+      Log.debug(
+          SessionData.class,
+          "DISCOVER parameter not found of value is null in discoverUnittype() ");
+    }
     return false;
   }
 
   public String getUnittypeName() {
     String unittypeName = null;
-    if (unittype != null) unittypeName = unittype.getName();
+    if (unittype != null) {
+      unittypeName = unittype.getName();
+    }
     return unittypeName;
   }
 
   public String getVersion() {
     String version = null;
-    if (cpeParameters != null) version = cpeParameters.getValue(cpeParameters.SOFTWARE_VERSION);
+    if (cpeParameters != null) {
+      version = cpeParameters.getValue(cpeParameters.SOFTWARE_VERSION);
+    }
     return version;
   }
 

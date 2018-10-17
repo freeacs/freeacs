@@ -4,7 +4,6 @@ import com.github.freeacs.dbi.Permission;
 
 /** The Class UserGroupModel. */
 public class UserGroupModel {
-
   /** The id. */
   private Integer id;
 

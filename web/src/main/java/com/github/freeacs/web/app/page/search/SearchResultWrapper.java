@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SearchResultWrapper {
-
   public Unit unit;
   public List<String> displayables = new ArrayList<>();
 

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Fault {
-
   private String soapFaultCode;
   private String soapFaultString;
   private String faultCode;
@@ -78,9 +77,9 @@ public class Fault {
       str.append("FaultCode            :  ").append(this.faultCode).append("\n");
       str.append("FaultString          :  ").append(this.faultString).append("\n");
     }
-    if (this.parameterFaults != null && this.parameterFaults.size() > 0) {
+    if (this.parameterFaults != null && !this.parameterFaults.isEmpty()) {
       for (SetParameterValuesFault paramFault : this.parameterFaults) {
-        str.append(paramFault.toString()).append("\n");
+        str.append(paramFault).append("\n");
       }
     }
     return str.toString();

@@ -4,21 +4,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Line {
-  private List<String> values = new ArrayList<String>();
+  private List<String> values = new ArrayList<>();
 
   public Line() {}
 
   public Line(String... values) {
-    for (String value : values) addValue(value);
+    for (String value : values) {
+      addValue(value);
+    }
   }
 
   private String processValue(String value) {
     if (value != null) {
       value = value.replaceAll("\"", "");
-      if (value.equals("")
-          || value.indexOf(" ") > -1
-          || value.indexOf("\t") > -1
-          || value.indexOf("|") > -1) value = "\"" + value + "\"";
+      if ("".equals(value)
+          || value.indexOf(' ') > -1
+          || value.indexOf('\t') > -1
+          || value.indexOf('|') > -1) {
+        value = "\"" + value + "\"";
+      }
       value = value.replaceAll("\r", "");
       value = value.replaceAll("\n", " ");
     } else {
@@ -36,8 +40,11 @@ public class Line {
   }
 
   public void addValue(Integer value) {
-    if (value == null) addValue((String) null);
-    else addValue("" + value);
+    if (value != null) {
+      addValue(String.valueOf(value));
+    } else {
+      addValue((String) null);
+    }
   }
 
   public void addValueRaw(String value) {

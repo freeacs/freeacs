@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HelpArguments {
-  private List<HelpArgument> arguments = new ArrayList<HelpArgument>();
+  private List<HelpArgument> arguments = new ArrayList<>();
 
   public void addArgument(HelpArgument helpArgument) {
     arguments.add(helpArgument);

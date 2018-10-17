@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class AddOrChangeUnittype {
-
   private static final Logger logger = LoggerFactory.getLogger(AddOrChangeUnittype.class);
 
   private ACS acs;
@@ -33,15 +32,15 @@ public class AddOrChangeUnittype {
         ProvisioningProtocol.toEnum(gur.getUnittype().getProtocol().getValue()));
     unittypeXAPS.setVendor(gur.getUnittype().getVendor().getValue());
     ParameterList parameterList = gur.getUnittype().getParameters().getValue();
-    List<UnittypeParameter> acUtpList = new ArrayList<UnittypeParameter>();
-    List<UnittypeParameter> dUtpList = new ArrayList<UnittypeParameter>();
+    List<UnittypeParameter> acUtpList = new ArrayList<>();
+    List<UnittypeParameter> dUtpList = new ArrayList<>();
     if (parameterList != null && parameterList.getParameterArray() != null) {
       for (com.github.freeacs.ws.xml.Parameter param :
           parameterList.getParameterArray().getItem()) {
         UnittypeParameter utp = unittypeXAPS.getUnittypeParameters().getByName(param.getName());
         if (param.getFlags() != null
-            && !param.getFlags().getValue().equals("D")
-            && !param.getFlags().getValue().equals("AC"))
+            && !"D".equals(param.getFlags().getValue())
+            && !"AC".equals(param.getFlags().getValue())) {
           throw ACSFactory.error(
               logger,
               "Flag for parameter "
@@ -49,18 +48,19 @@ public class AddOrChangeUnittype {
                   + " had value "
                   + param.getFlags()
                   + ", but must be either D or AC");
-        if (param.getFlags() == null || param.getFlags().getValue().equals("AC")) {
-          if (utp == null)
+        }
+        if (param.getFlags() == null || "AC".equals(param.getFlags().getValue())) {
+          if (utp == null) {
             acUtpList.add(
                 new UnittypeParameter(
                     unittypeXAPS,
                     param.getName(),
                     new UnittypeParameterFlag(param.getValue().getValue())));
-          else {
+          } else {
             utp.setFlag(new UnittypeParameterFlag(param.getValue().getValue()));
             acUtpList.add(utp);
           }
-        } else if (param.getFlags().getValue().equals("D") && utp != null) {
+        } else if ("D".equals(param.getFlags().getValue()) && utp != null) {
           dUtpList.add(utp);
         }
       }
@@ -83,12 +83,12 @@ public class AddOrChangeUnittype {
       AddOrChangeUnittypeRequest gur, DataSource xapsDs, DataSource syslogDs)
       throws RemoteException {
     try {
-
       acsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
       acs = acsWS.getAcs();
       User user = acsWS.getId().getUser();
-      if (gur.getUnittype() == null || gur.getUnittype().getName() == null)
+      if (gur.getUnittype() == null || gur.getUnittype().getName() == null) {
         throw ACSFactory.error(logger, "No unittype name specified");
+      }
       boolean isAdmin = user.getPermissions().getPermissions().length == 0;
       Unittypes unittypes = acs.getUnittypes();
       Unittype unittypeXAPS = null;
@@ -117,8 +117,9 @@ public class AddOrChangeUnittype {
       response.setUnittype(ConvertACS2WS.convert(unittypeXAPS));
       return response;
     } catch (Throwable t) {
-      if (t instanceof RemoteException) throw (RemoteException) t;
-      else {
+      if (t instanceof RemoteException) {
+        throw (RemoteException) t;
+      } else {
         throw ACSFactory.error(logger, t);
       }
     }

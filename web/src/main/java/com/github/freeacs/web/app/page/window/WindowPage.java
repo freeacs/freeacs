@@ -35,7 +35,6 @@ import javax.sql.DataSource;
  * @author Jarl Andre Hubenthal
  */
 public class WindowPage extends AbstractWebPage {
-
   /** The input data. */
   private WindowData inputData;
 
@@ -112,7 +111,7 @@ public class WindowPage extends AbstractWebPage {
   private static final String[] minutes = {"00", "15", "30", "45"};
 
   /** The hour minute strings. */
-  private static String[] hourMinuteStrings = new String[(hours.length) * minutes.length];
+  private static String[] hourMinuteStrings = new String[hours.length * minutes.length];
 
   /** The Constant submitText. */
   private static final String submitText = "Update service window";
@@ -160,12 +159,6 @@ public class WindowPage extends AbstractWebPage {
     hourMinuteStrings = Arrays.asList(hourMinuteStrings).subList(0, count).toArray(new String[] {});
   }
 
-  /** Instantiates a new window page. */
-  public WindowPage() {}
-
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
-   */
   public void process(
       ParameterParser params,
       Output outputHandler,
@@ -211,44 +204,57 @@ public class WindowPage extends AbstractWebPage {
       profile = unittype.getProfiles().getByName(inputData.getProfile().getString());
       if (profile != null) {
         profileDownload = profile.getProfileParameters().getByName(ServiceWindowDownload);
-        if (profileDownload != null && profileDownload.getValue() != null)
+        if (profileDownload != null && profileDownload.getValue() != null) {
           updateDownloadFields(profileDownload.getValue());
+        }
         profileRegular = profile.getProfileParameters().getByName(ServiceWindowRegular);
-        if (profileRegular != null && profileRegular.getValue() != null)
+        if (profileRegular != null && profileRegular.getValue() != null) {
           updateRegularFields(profileRegular.getValue());
+        }
         profileFrequency = profile.getProfileParameters().getByName(ServiceWindowFrequency);
-        if (frequency == null && profileFrequency != null && profileFrequency.getValue() != null)
+        if (frequency == null && profileFrequency != null && profileFrequency.getValue() != null) {
           frequency = profileFrequency.getValue();
+        }
         profileSpread = profile.getProfileParameters().getByName(ServiceWindowSpread);
-        if (spread == null && profileSpread != null && profileSpread.getValue() != null)
+        if (spread == null && profileSpread != null && profileSpread.getValue() != null) {
           spread = profileSpread.getValue();
+        }
       }
     } else if (inputData.getPage().startsWith("unit") && inputData.getUnit().getString() != null) {
       acsUnit = ACSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
       unit = acsUnit.getUnitById(inputData.getUnit().getString());
       if (unit != null) {
         unitDownload = unit.getUnitParameters().get(ServiceWindowDownload);
-        if (unitDownload != null && unitDownload.getValue() != null)
+        if (unitDownload != null && unitDownload.getValue() != null) {
           updateDownloadFields(unitDownload.getValue());
+        }
         unitRegular = unit.getUnitParameters().get(ServiceWindowRegular);
-        if (unitRegular != null && unitRegular.getValue() != null)
+        if (unitRegular != null && unitRegular.getValue() != null) {
           updateRegularFields(unitRegular.getValue());
+        }
         unitFrequency = unit.getUnitParameters().get(ServiceWindowFrequency);
-        if (frequency == null && unitFrequency != null && unitFrequency.getValue() != null)
+        if (frequency == null && unitFrequency != null && unitFrequency.getValue() != null) {
           frequency = unitFrequency.getValue();
+        }
         unitSpread = unit.getUnitParameters().get(ServiceWindowSpread);
-        if (spread == null && unitSpread != null && unitSpread.getValue() != null)
+        if (spread == null && unitSpread != null && unitSpread.getValue() != null) {
           spread = unitSpread.getValue();
+        }
       }
     }
 
-    if (frequency != null && (!isNumber(frequency) || frequency.startsWith("-"))) frequency = null;
-    if (spread != null && (!isNumber(spread) || spread.startsWith("-"))) spread = null;
+    if (frequency != null && (!isNumber(frequency) || frequency.startsWith("-"))) {
+      frequency = null;
+    }
+    if (spread != null && (!isNumber(spread) || spread.startsWith("-"))) {
+      spread = null;
+    }
 
-    if (inputData.getPage().hasValue("profilewindow") && unittype != null && profile != null)
+    if (inputData.getPage().hasValue("profilewindow") && unittype != null && profile != null) {
       windowPage = "profile";
-    else if (inputData.getPage().hasValue("unitwindow") && unit != null) windowPage = "unit";
-    else {
+    } else if (inputData.getPage().hasValue("unitwindow") && unit != null) {
+      windowPage = "unit";
+    } else {
       outputHandler.setDirectToPage(Page.SEARCH);
       return;
     }
@@ -265,7 +271,7 @@ public class WindowPage extends AbstractWebPage {
 
     root.put("windowPage", windowPage);
 
-    Map<String, Object> windowMap = new HashMap<String, Object>();
+    Map<String, Object> windowMap = new HashMap<>();
     windowMap.put("days", days);
     windowMap.put("hours", hourMinuteStrings);
     windowMap.put("button", submitText);
@@ -299,15 +305,13 @@ public class WindowPage extends AbstractWebPage {
           fromdayRegular = daySpan[0];
           todayRegular = daySpan[1];
         }
-      } else if (daySpan.length == 1) {
-        if (fromdayRegular == null) fromdayRegular = daySpan[0];
+      } else if (daySpan.length == 1 && fromdayRegular == null) {
+        fromdayRegular = daySpan[0];
       }
       String[] hourSpan = args[1].split("-");
-      if (hourSpan.length == 2) {
-        if (fromhourRegular == null) {
-          fromhourRegular = hourSpan[0];
-          tohourRegular = hourSpan[1];
-        }
+      if (hourSpan.length == 2 && fromhourRegular == null) {
+        fromhourRegular = hourSpan[0];
+        tohourRegular = hourSpan[1];
       }
     }
   }
@@ -326,15 +330,13 @@ public class WindowPage extends AbstractWebPage {
           fromdayDownload = daySpan[0];
           todayDownload = daySpan[1];
         }
-      } else if (daySpan.length == 1) {
-        if (fromdayDownload == null) fromdayDownload = daySpan[0];
+      } else if (daySpan.length == 1 && fromdayDownload == null) {
+        fromdayDownload = daySpan[0];
       }
       String[] hourSpan = args[1].split("-");
-      if (hourSpan.length == 2) {
-        if (fromhourDownload == null) {
-          fromhourDownload = hourSpan[0];
-          tohourDownload = hourSpan[1];
-        }
+      if (hourSpan.length == 2 && fromhourDownload == null) {
+        fromhourDownload = hourSpan[0];
+        tohourDownload = hourSpan[1];
       }
     }
   }
@@ -352,10 +354,9 @@ public class WindowPage extends AbstractWebPage {
    * @throws NoSuchMethodException the no such method exception
    */
   private String action()
-      throws SQLException, IOException, IllegalArgumentException, SecurityException,
-          IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+      throws SQLException, IOException, IllegalAccessException, InvocationTargetException,
+          NoSuchMethodException {
     if (inputData.getFormSubmit().hasValue(submitText)) {
-
       String download = getDownload();
       String regular = getRegular();
 
@@ -439,7 +440,9 @@ public class WindowPage extends AbstractWebPage {
           updated = true;
         }
 
-        if (updated) return "Service Window for profile was updated";
+        if (updated) {
+          return "Service Window for profile was updated";
+        }
       } else if (unit != null) {
         unittype = acs.getUnittype(unit.getUnittype().getId());
         Profile p = unittype.getProfiles().getById(unit.getProfile().getId());
@@ -455,13 +458,13 @@ public class WindowPage extends AbstractWebPage {
             unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, acs);
           }
           unitDownload = new UnitParameter(utp, unit.getId(), getDownload(), p);
-          List<UnitParameter> toAdd = new ArrayList<UnitParameter>();
+          List<UnitParameter> toAdd = new ArrayList<>();
           toAdd.add(unitDownload);
           acsUnit.addOrChangeUnitParameters(toAdd, p);
           updated = true;
         } else if (download != null) {
           unitDownload.getParameter().setValue(getDownload());
-          List<UnitParameter> toAdd = new ArrayList<UnitParameter>();
+          List<UnitParameter> toAdd = new ArrayList<>();
           toAdd.add(unitDownload);
           acsUnit.addOrChangeUnitParameters(toAdd, p);
           updated = true;
@@ -478,13 +481,13 @@ public class WindowPage extends AbstractWebPage {
             unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, acs);
           }
           unitRegular = new UnitParameter(utp, unit.getId(), getRegular(), p);
-          List<UnitParameter> toAdd = new ArrayList<UnitParameter>();
+          List<UnitParameter> toAdd = new ArrayList<>();
           toAdd.add(unitRegular);
           acsUnit.addOrChangeUnitParameters(toAdd, p);
           updated = true;
         } else if (regular != null) {
           unitRegular.getParameter().setValue(getRegular());
-          List<UnitParameter> toAdd = new ArrayList<UnitParameter>();
+          List<UnitParameter> toAdd = new ArrayList<>();
           toAdd.add(unitRegular);
           acsUnit.addOrChangeUnitParameters(toAdd, p);
           updated = true;
@@ -502,13 +505,13 @@ public class WindowPage extends AbstractWebPage {
             unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, acs);
           }
           unitFrequency = new UnitParameter(utp, unit.getId(), frequency, p);
-          List<UnitParameter> toAdd = new ArrayList<UnitParameter>();
+          List<UnitParameter> toAdd = new ArrayList<>();
           toAdd.add(unitFrequency);
           acsUnit.addOrChangeUnitParameters(toAdd, p);
           updated = true;
         } else if (frequency != null) {
           unitFrequency.getParameter().setValue(frequency);
-          List<UnitParameter> toAdd = new ArrayList<UnitParameter>();
+          List<UnitParameter> toAdd = new ArrayList<>();
           toAdd.add(unitFrequency);
           acsUnit.addOrChangeUnitParameters(toAdd, p);
           updated = true;
@@ -525,13 +528,13 @@ public class WindowPage extends AbstractWebPage {
             unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utp, acs);
           }
           unitSpread = new UnitParameter(utp, unit.getId(), spread, p);
-          List<UnitParameter> toAdd = new ArrayList<UnitParameter>();
+          List<UnitParameter> toAdd = new ArrayList<>();
           toAdd.add(unitSpread);
           acsUnit.addOrChangeUnitParameters(toAdd, p);
           updated = true;
         } else if (spread != null) {
           unitSpread.getParameter().setValue(spread);
-          List<UnitParameter> toAdd = new ArrayList<UnitParameter>();
+          List<UnitParameter> toAdd = new ArrayList<>();
           toAdd.add(unitSpread);
           acsUnit.addOrChangeUnitParameters(toAdd, p);
           updated = true;
@@ -552,22 +555,27 @@ public class WindowPage extends AbstractWebPage {
    * @return the regular
    */
   private String getRegular() {
-    StringBuffer string = new StringBuffer();
+    StringBuilder string = new StringBuilder();
     if (isValidString(fromdayRegular)
         && isValidString(fromhourRegular)
         && isValidString(tohourRegular)) {
       string.append(fromdayRegular);
-      if (isValidString(todayRegular)) string.append("-" + todayRegular);
-      else todayRegular = null;
+      if (isValidString(todayRegular)) {
+        string.append("-").append(todayRegular);
+      } else {
+        todayRegular = null;
+      }
       string.append(":");
-      string.append(fromhourRegular + "-" + tohourRegular);
+      string.append(fromhourRegular).append("-").append(tohourRegular);
     } else {
       fromdayRegular = null;
       todayRegular = null;
       tohourRegular = null;
       fromhourRegular = null;
     }
-    if (string.toString().length() == 0) return null;
+    if (string.toString().isEmpty()) {
+      return null;
+    }
     return string.toString();
   }
 
@@ -577,22 +585,27 @@ public class WindowPage extends AbstractWebPage {
    * @return the download
    */
   private String getDownload() {
-    StringBuffer string = new StringBuffer();
+    StringBuilder string = new StringBuilder();
     if (isValidString(fromdayDownload)
         && isValidString(fromhourDownload)
         && isValidString(tohourDownload)) {
       string.append(fromdayDownload);
-      if (isValidString(todayDownload)) string.append("-" + todayDownload);
-      else todayDownload = null;
+      if (isValidString(todayDownload)) {
+        string.append("-").append(todayDownload);
+      } else {
+        todayDownload = null;
+      }
       string.append(":");
-      string.append(fromhourDownload + "-" + tohourDownload);
+      string.append(fromhourDownload).append("-").append(tohourDownload);
     } else {
       fromdayDownload = null;
       todayDownload = null;
       fromhourDownload = null;
       tohourDownload = null;
     }
-    if (string.toString().length() == 0) return null;
+    if (string.toString().isEmpty()) {
+      return null;
+    }
     return string.toString();
   }
 }

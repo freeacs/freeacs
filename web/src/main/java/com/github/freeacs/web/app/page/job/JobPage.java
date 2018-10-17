@@ -41,10 +41,12 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 public class JobPage extends AbstractWebPage {
-  // Do NOT static this variable, contains singletons that should NOT be shared by different views
+  /**
+   * Do NOT static this variable, contains singletons that should NOT be shared by different views.
+   */
   private final JobStatusMethods jobStatusMethods = new JobStatusMethods();
 
-  // FIXME Why are we using class variables? What are the problem we are solving with this?
+  /** FIXME Why are we using class variables? What are the problem we are solving with this? */
   private JobData inputData;
 
   private ACS acs;
@@ -68,12 +70,13 @@ public class JobPage extends AbstractWebPage {
       return;
     }
 
-    if (inputData.getCmd().hasValue("create"))
+    if (inputData.getCmd().hasValue("create")) {
       InputDataIntegrity.loadAndStoreSession(
           req, outputHandler, inputData, inputData.getUnittype());
-    else
+    } else {
       InputDataIntegrity.loadAndStoreSession(
           req, outputHandler, inputData, inputData.getUnittype(), inputData.getJob());
+    }
 
     Map<String, Object> fmMap = outputHandler.getTemplateMap();
     DropDownSingleSelect<Unittype> unittypes =
@@ -82,7 +85,9 @@ public class JobPage extends AbstractWebPage {
     unittype = unittypes.getSelected();
 
     Job job = null;
-    if (unittype != null) job = action(req, outputHandler, acs);
+    if (unittype != null) {
+      job = action(req, outputHandler, acs);
+    }
     output(outputHandler, fmMap, job);
   }
 
@@ -100,9 +105,9 @@ public class JobPage extends AbstractWebPage {
     } else {
       boolean delete = inputData.getFormSubmit().hasValue(WebConstants.DELETE);
       Job jobFromSession =
-          (unittype != null
+          unittype != null
               ? unittype.getJobs().getByName(SessionCache.getSessionData(sessionId).getJobname())
-              : null);
+              : null;
       if (!delete && jobFromSession != null) {
         prepareEditOutput(jobFromSession, fmMap);
         outputHandler.setTemplatePath("job/details");
@@ -114,8 +119,7 @@ public class JobPage extends AbstractWebPage {
   }
 
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
-    List<MenuItem> list = new ArrayList<MenuItem>();
-    list.addAll(super.getShortcutItems(sessionData));
+    List<MenuItem> list = new ArrayList<>(super.getShortcutItems(sessionData));
     if (unittype != null) {
       list.add(new MenuItem("Create new Job", Page.JOB).addCommand("create"));
       list.add(new MenuItem("Job overwiew", Page.JOBSOVERVIEW));
@@ -149,8 +153,8 @@ public class JobPage extends AbstractWebPage {
   private boolean actionCUDParameters(ParameterParser req, ACS acs, Job job) throws SQLException {
     Jobs xapsJobs = unittype.getJobs();
     UnittypeParameter[] utParams = unittype.getUnittypeParameters().getUnittypeParameters();
-    List<JobParameter> deleteList = new ArrayList<JobParameter>();
-    List<JobParameter> updateList = new ArrayList<JobParameter>();
+    List<JobParameter> deleteList = new ArrayList<>();
+    List<JobParameter> updateList = new ArrayList<>();
     Map<String, JobParameter> jobParams = job.getDefaultParameters();
     for (UnittypeParameter utp : utParams) {
       if (req.getParameter("delete::" + utp.getName()) != null) {
@@ -181,15 +185,10 @@ public class JobPage extends AbstractWebPage {
     xapsJobs.deleteJobParameters(deleteList, acs);
     xapsJobs.addOrChangeJobParameters(updateList, acs);
 
-    if (deleteList.size() > 0 || updateList.size() > 0) {
-      return true;
-    }
-
-    return false;
+    return !deleteList.isEmpty() || !updateList.isEmpty();
   }
 
-  // code-order: unty, id, name, flag, desc, group, unct, rules, file, dep, repc, repi
-
+  /** Code-order: unty, id, name, flag, desc, group, unct, rules, file, dep, repc, repi */
   private Job action(ParameterParser req, Output res, ACS acs) throws Exception {
     Jobs xapsJobs = unittype.getJobs();
     Job job = null;
@@ -211,15 +210,18 @@ public class JobPage extends AbstractWebPage {
         job.setGroup(unittype.getGroups().getById(inputData.getGroupId().getInteger()));
         job.setUnconfirmedTimeout(inputData.getUnconfirmedTimeout().getInteger());
         job.setStopRules(inputData.getStoprules().getString());
-        if (job.getFlags().getType().requireFile())
+        if (job.getFlags().getType().requireFile()) {
           job.setFile(unittype.getFiles().getById(inputData.getFileId().getInteger()));
+        }
         //				if (inputData.getDependency().notNullNorValue(WebConstants.ALL_ITEMS_OR_DEFAULT))
         job.setDependency(unittype.getJobs().getByName(inputData.getDependency().getString()));
         job.setRepeatCount(inputData.getRepeatCount().getInteger());
         job.setRepeatInterval(inputData.getRepeatInterval().getInteger());
         if (inputData.getFormSubmit().hasValue("Create new job")) {
           xapsJobs.add(job, acs);
-        } else xapsJobs.changeFromUI(job, acs);
+        } else {
+          xapsJobs.changeFromUI(job, acs);
+        }
         return job;
       } else {
         res.getTemplateMap().put("errors", inputData.getErrors());
@@ -230,7 +232,6 @@ public class JobPage extends AbstractWebPage {
       unitJobs.delete(job);
       xapsJobs.deleteJobParameters(job, acs);
       xapsJobs.delete(job, acs);
-      return null;
     } else if (inputData.getFormSubmit().hasValue(WebConstants.UPDATE_PARAMS)) {
       job = unittype.getJobs().getByName(SessionCache.getSessionData(sessionId).getJobname());
       actionCUDParameters(req, acs, job);
@@ -247,9 +248,9 @@ public class JobPage extends AbstractWebPage {
 
   private void prepareEditOutput(Job job, Map<String, Object> map) {
     map.put("job", job);
-    map.put("haschildren", job.getChildren() != null && job.getChildren().size() > 0);
+    map.put("haschildren", job.getChildren() != null && !job.getChildren().isEmpty());
     map.put("requirefile", job.getFlags().getType().requireFile());
-    map.put("hasjobdependecies", job.getDependency() == null && job.getChildren().size() == 0);
+    map.put("hasjobdependecies", job.getDependency() == null && job.getChildren().isEmpty());
     map.put(
         "dependencies",
         InputSelectionFactory.getDropDownSingleSelect(
@@ -282,7 +283,9 @@ public class JobPage extends AbstractWebPage {
     map.put("finished", jobStatusMethods.getIsStatusFinishedMethod());
     map.put("ready", jobStatusMethods.getIsStatusReadyMethod());
     File selectedFile = unittype.getFiles().getById(inputData.getFileId().getInteger());
-    if (selectedFile == null) selectedFile = job.getFile();
+    if (selectedFile == null) {
+      selectedFile = job.getFile();
+    }
     map.put(
         "files",
         InputSelectionFactory.getDropDownSingleSelect(
@@ -340,16 +343,16 @@ public class JobPage extends AbstractWebPage {
   }
 
   private String getServiceWindowString() {
-    if (inputData.getType().getString() == null)
+    if (inputData.getType().getString() == null) {
       inputData.getType().setValue(JobType.CONFIG.toString());
-    if (inputData.getServiceWindow().getString() == null)
+    }
+    if (inputData.getServiceWindow().getString() == null) {
       inputData.getServiceWindow().setValue(JobServiceWindow.REGULAR.toString());
+    }
 
     String currentJobType = SessionCache.getSessionData(sessionId).getJobType();
-    boolean jobTypeChanged = false;
-    if (currentJobType != null && !currentJobType.equals(inputData.getType().getString()))
-      jobTypeChanged = true;
-
+    boolean jobTypeChanged =
+        currentJobType != null && !currentJobType.equals(inputData.getType().getString());
     // !! Here this method does more to that state of the web page, than simply returning a string
     // !!
     // However, this change of state cannot be performed until the previous comparison between
@@ -358,20 +361,16 @@ public class JobPage extends AbstractWebPage {
 
     JobServiceWindow jobWindow = JobServiceWindow.valueOf(inputData.getServiceWindow().getString());
     JobType jobType = JobType.valueOf(inputData.getType().getString());
-    boolean regularSelected = false;
-    if (!jobTypeChanged && jobWindow == JobServiceWindow.REGULAR) regularSelected = true;
-    else if (jobTypeChanged && (jobType == JobType.CONFIG || jobType == JobType.TR069_SCRIPT))
-      regularSelected = true;
-
-    boolean disruptedSelected = false;
-    if (!jobTypeChanged && jobWindow == JobServiceWindow.DISRUPTIVE) {
-      disruptedSelected = true;
-    } else if (jobTypeChanged
-        && (jobType == JobType.SOFTWARE
-            || jobType == JobType.RESET
-            || jobType == JobType.RESTART)) {
-      disruptedSelected = true;
-    }
+    boolean regularSelected =
+        jobTypeChanged
+            ? (jobType == JobType.CONFIG || jobType == JobType.TR069_SCRIPT)
+            : jobWindow == JobServiceWindow.REGULAR;
+    boolean disruptedSelected =
+        jobTypeChanged
+            ? (jobType == JobType.SOFTWARE
+                || jobType == JobType.RESET
+                || jobType == JobType.RESTART)
+            : jobWindow == JobServiceWindow.DISRUPTIVE;
     return (disruptedSelected
             ? JobServiceWindow.DISRUPTIVE
             : (regularSelected ? JobServiceWindow.REGULAR : JobServiceWindow.DISRUPTIVE))
@@ -379,7 +378,7 @@ public class JobPage extends AbstractWebPage {
   }
 
   private List<File> getFiles(FileType requiredType) {
-    List<File> list = new ArrayList<File>();
+    List<File> list = new ArrayList<>();
     if (unittype != null) {
       list = Arrays.asList(unittype.getFiles().getFiles(requiredType));
       Collections.sort(list, new FileComparator(FileComparator.DATE));

@@ -9,7 +9,6 @@ import java.util.List;
  * @author Jarl Andre Hubenthal
  */
 public class DropDownMultiSelect<T> extends InputSelectionModel<T> {
-
   /** Instantiates a new drop down multi select. */
   DropDownMultiSelect() {
     this(null, null, null);

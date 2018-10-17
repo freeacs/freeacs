@@ -33,8 +33,9 @@ public class RecordUIDataVoipFilter {
   }
 
   private boolean isTotalScoreRelevant(RecordUIDataVoip record) {
-    if (totalscore_high != null)
+    if (totalscore_high != null) {
       return record.getTotalScore() > totalscore_low && record.getTotalScore() <= totalscore_high;
+    }
     return record.getTotalScore() > totalscore_low;
   }
 }

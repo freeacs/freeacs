@@ -33,7 +33,6 @@ public class Permission {
   }
 
   public boolean isUnittypeAdmin() {
-    if (profileId == null) return true;
-    return false;
+    return profileId == null;
   }
 }

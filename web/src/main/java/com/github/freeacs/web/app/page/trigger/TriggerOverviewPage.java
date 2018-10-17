@@ -32,8 +32,7 @@ public class TriggerOverviewPage extends AbstractWebPage {
   }
 
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
-    List<MenuItem> list = new ArrayList<MenuItem>();
-    list.addAll(super.getShortcutItems(sessionData));
+    List<MenuItem> list = new ArrayList<>(super.getShortcutItems(sessionData));
     list.add(new MenuItem("Unit type overview", Page.UNITTYPEOVERVIEW));
     list.add(
         new MenuItem("Create new trigger", Page.CREATETRIGGER)

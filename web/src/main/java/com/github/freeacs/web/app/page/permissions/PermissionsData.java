@@ -6,7 +6,6 @@ import java.util.Map;
 
 /** The Class PermissionsData. */
 public class PermissionsData extends InputData {
-
   /** The user. */
   private Input user = Input.getStringInput("user");
 
@@ -19,7 +18,7 @@ public class PermissionsData extends InputData {
   /** The web access. */
   private Input webAccess = Input.getStringArrayInput("web_access");
 
-  /** The admin flag */
+  /** The admin flag. */
   private Input admin = Input.getBooleanInput("user_admin");
 
   /** The shell access. */
@@ -178,21 +177,11 @@ public class PermissionsData extends InputData {
     return shellAccess;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.input.InputData#bindForm(java.util.Map)
-   */
   @Override
-  public void bindForm(Map<String, Object> root) {
-    // TODO Auto-generated method stub
+  public void bindForm(Map<String, Object> root) {}
 
-  }
-
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.input.InputData#validateForm()
-   */
   @Override
   public boolean validateForm() {
-    // TODO Auto-generated method stub
     return false;
   }
 

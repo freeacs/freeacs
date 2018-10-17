@@ -89,15 +89,6 @@ public class UnitListPage extends AbstractWebPage {
 
     Map<String, Object> root = outputHandler.getTemplateMap();
 
-    /*
-    Certificate cert = xaps.getCertificates().getCertificate(Certificate.CERT_TYPE_REPORT);
-    if (cert == null || cert.isValid(null) == false || !SessionCache.getSessionData(req.getHttpServletRequest().getSession().getId()).getUser().isReportsAllowed()) {
-    	root.put("message", "No valid certificate found for Reports page. Please contact your systems administrator.");
-    	outputHandler.setTemplatePath("/exception.ftl");
-    	return;
-    }
-    */
-
     acsUnit = ACSLoader.getACSUnit(req.getSession().getId(), xapsDataSource, syslogDataSource);
 
     unittype = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
@@ -109,17 +100,19 @@ public class UnitListPage extends AbstractWebPage {
 
     ReportType reportType = ReportType.getEnum(inputData.getType().getString());
 
-    /**
+    /*
      * For use by mostly all types of reports. The Group report does NOT use on this variable, since
      * it uses the default group Input from inputData.
      */
     Group groupSelect = null;
-    if (unittype.getSelected() != null)
+    if (unittype.getSelected() != null) {
       groupSelect =
           unittype.getSelected().getGroups().getByName(inputData.getGroupSelect().getString());
+    }
 
-    if (reportType == ReportType.VOIP) displayVoipReport(root, groupSelect);
-    else if (reportType == ReportType.HARDWARE) {
+    if (reportType == ReportType.VOIP) {
+      displayVoipReport(root, groupSelect);
+    } else if (reportType == ReportType.HARDWARE) {
       ReportHardwareGenerator rgHardware =
           ReportPage.getReportHardwareGenerator(req.getSession().getId(), acs);
       List<String> swVersions =
@@ -154,44 +147,27 @@ public class UnitListPage extends AbstractWebPage {
     outputHandler.setTemplatePathWithIndex("unit-list");
   }
 
-  //	private void displayGroupReport(Map<String, Object> root) throws SQLException, IOException {
-  //		Group group = null;
-  //		if (unittype.getSelected() != null)
-  //			group = unittype.getSelected().getGroups().getByName(inputData.getGroup().getString());
-  //		if (group == null || group.getTimeParameter() == null)
-  //			throw new UnsupportedOperationException("Group for ReportType Group is not a time rolling
-  // group");
-  //		ReportGroupGenerator rgGroup = ReportPage.getReportGroupGenerator(req.getSession().getId(),
-  // xaps);
-  //		Map<String, Report<RecordGroup>> reports = rgGroup.generateFromSyslog(PeriodType.DAY,
-  // fromDate, toDate, unittype.getSelectedOrAllItemsAsList(), group);
-  //		Map<Unit, RecordUIDataGroupSumFromReport> records = new HashMap<Unit,
-  // RecordUIDataGroupSumFromReport>();
-  //		for (Entry<String, Report<RecordGroup>> entry : reports.entrySet()) {
-  //			Unit unit = xapsUnit.getUnitById(entry.getKey());
-  //
-  //			if (unit == null)
-  //				unit = new Unit(entry.getKey(), null, null);
-  //
-  //			RecordUIDataGroupSumFromReport unitRecordSum = null;
-  //
-  //			if (records.get(unit) == null) {
-  //				unitRecordSum = new RecordUIDataGroupSumFromReport(unit);
-  //				records.put(unit, unitRecordSum);
-  //			}
-  //
-  //			Collection<? extends RecordUIDataGroupFromReport> convertedRecords =
-  // RecordUIDataGroupFromReport.convertRecords(unit, entry.getValue().getMap().values());
-  //
-  //			for (RecordUIDataGroupFromReport rec : convertedRecords)
-  //				unitRecordSum.addRecord(rec);
-  //		}
-  //		DropDownSingleSelect<Group> groups =
-  // InputSelectionFactory.getGroupSelection(inputData.getGroup(), unittype.getSelected(), xaps);
-  //		root.put("groups", groups);
-  //		root.put("reports", records.values());
-  //	}
-
+  /**
+   * Private void displayGroupReport(Map<String, Object> root) throws SQLException, IOException {
+   * Group group = null; if (unittype.getSelected() != null) group =
+   * unittype.getSelected().getGroups().getByName(inputData.getGroup().getString()); if (group ==
+   * null || group.getTimeParameter() == null) throw new UnsupportedOperationException("Group for
+   * ReportType Group is not a time rolling group"); ReportGroupGenerator rgGroup =
+   * ReportPage.getReportGroupGenerator(req.getSession().getId(), xaps); Map<String,
+   * Report<RecordGroup>> reports = rgGroup.generateFromSyslog(PeriodType.DAY, fromDate, toDate,
+   * unittype.getSelectedOrAllItemsAsList(), group); Map<Unit, RecordUIDataGroupSumFromReport>
+   * records = new HashMap<Unit, RecordUIDataGroupSumFromReport>(); for (Entry<String,
+   * Report<RecordGroup>> entry : reports.entrySet()) { Unit unit =
+   * xapsUnit.getUnitById(entry.getKey()); if (unit == null) unit = new Unit(entry.getKey(), null,
+   * null); RecordUIDataGroupSumFromReport unitRecordSum = null; if (records.get(unit) == null) {
+   * unitRecordSum = new RecordUIDataGroupSumFromReport(unit); records.put(unit, unitRecordSum); }
+   * Collection<? extends RecordUIDataGroupFromReport> convertedRecords =
+   * RecordUIDataGroupFromReport.convertRecords(unit, entry.getValue().getMap().values()); for
+   * (RecordUIDataGroupFromReport rec : convertedRecords) unitRecordSum.addRecord(rec); }
+   * DropDownSingleSelect<Group> groups =
+   * InputSelectionFactory.getGroupSelection(inputData.getGroup(), unittype.getSelected(), xaps);
+   * root.put("groups", groups); root.put("reports", records.values()); }
+   */
   private void displaySyslogReport(Map<String, Object> root, Group groupSelect)
       throws SQLException, IOException, ParseException {
     ReportSyslogGenerator rgSyslog =
@@ -204,13 +180,14 @@ public class UnitListPage extends AbstractWebPage {
             unittype.getSelectedOrAllItemsAsList(),
             profile.getSelectedOrAllItemsAsList(),
             groupSelect);
-    Map<Unit, RecordUIDataSyslogSumFromReport> records =
-        new HashMap<Unit, RecordUIDataSyslogSumFromReport>();
+    Map<Unit, RecordUIDataSyslogSumFromReport> records = new HashMap<>();
     RecordUIDataSyslogFilter filter = new RecordUIDataSyslogFilter(inputData, root);
     for (Entry<String, Report<RecordSyslog>> entry : reports.entrySet()) {
       Unit unit = acsUnit.getUnitById(entry.getKey());
 
-      if (unit == null) unit = new Unit(entry.getKey(), null, null);
+      if (unit == null) {
+        unit = new Unit(entry.getKey(), null, null);
+      }
 
       RecordUIDataSyslogSumFromReport unitRecordSum = null;
 
@@ -222,28 +199,33 @@ public class UnitListPage extends AbstractWebPage {
       List<RecordUIDataSyslogFromReport> convertedRecords =
           RecordUIDataSyslogFromReport.convertRecords(unit, entry.getValue().getMap().values());
 
-      /**
+      /*
        * Iterate over each record and filter it according to parameter input. This is done with a
        * logical AND test.
        */
       for (RecordUIDataSyslogFromReport rec : convertedRecords) {
-        boolean isRelevant = true;
+        boolean isRelevant =
+            filter.eventid == null
+                || rec.getEntry().getEventId() == null
+                || rec.getEntry().getEventId().equals(filter.eventid);
 
-        if (filter.eventid != null && rec.getEntry().getEventId() != null)
-          isRelevant = rec.getEntry().getEventId().equals(filter.eventid);
-        if (isRelevant && filter.facility != null && rec.getEntry().getFacility() != null)
+        if (isRelevant && filter.facility != null && rec.getEntry().getFacility() != null) {
           isRelevant = rec.getEntry().getFacility().equals(filter.facility);
-        if (isRelevant && filter.severity != null && rec.getEntry().getSeverity() != null)
+        }
+        if (isRelevant && filter.severity != null && rec.getEntry().getSeverity() != null) {
           isRelevant = rec.getEntry().getSeverity().equals(filter.severity);
+        }
 
-        if (isRelevant) unitRecordSum.addRecord(rec);
+        if (isRelevant) {
+          unitRecordSum.addRecord(rec);
+        }
       }
 
-      if (unitRecordSum.getRecords().isEmpty() || !filter.isRecordSumRelevant(unitRecordSum))
+      if (unitRecordSum.getRecords().isEmpty() || !filter.isRecordSumRelevant(unitRecordSum)) {
         records.remove(unit);
+      }
     }
-    List<RecordUIDataSyslogSumFromReport> list =
-        new ArrayList<RecordUIDataSyslogSumFromReport>(records.values());
+    List<RecordUIDataSyslogSumFromReport> list = new ArrayList<>(records.values());
     if (filter.max_rows != null && list.size() > filter.max_rows) {
       Collections.sort(list);
       list = list.subList(0, filter.max_rows);
@@ -265,7 +247,7 @@ public class UnitListPage extends AbstractWebPage {
             unittype.getSelectedOrAllItemsAsList(),
             profile.getSelectedOrAllItemsAsList(),
             groupSelect);
-    Map<Unit, List<RecordUIDataHardware>> records = new HashMap<Unit, List<RecordUIDataHardware>>();
+    Map<Unit, List<RecordUIDataHardware>> records = new HashMap<>();
     RecordUIDataHardwareFilter limits = new RecordUIDataHardwareFilter(inputData, root);
     String swVersionFromReport = req.getParameter("softwareversion");
     String selectedSoftwareVersion =
@@ -276,14 +258,20 @@ public class UnitListPage extends AbstractWebPage {
     for (Entry<String, Report<RecordHardware>> entry : reports.entrySet()) {
       Unit unit = acsUnit.getUnitById(entry.getKey());
 
-      if (unit == null) unit = new Unit(entry.getKey(), null, null);
+      if (unit == null) {
+        unit = new Unit(entry.getKey(), null, null);
+      }
 
       if (swVersionList.getSelected() != null) {
         String cpSW = unit.getParameters().get(SystemParameters.SOFTWARE_VERSION);
-        if (cpSW == null || !cpSW.equals(swVersionList.getSelected())) continue;
+        if (cpSW == null || !cpSW.equals(swVersionList.getSelected())) {
+          continue;
+        }
       }
 
-      if (records.get(unit) == null) records.put(unit, new ArrayList<RecordUIDataHardware>());
+      if (records.get(unit) == null) {
+        records.put(unit, new ArrayList<RecordUIDataHardware>());
+      }
 
       records
           .get(unit)
@@ -291,27 +279,30 @@ public class UnitListPage extends AbstractWebPage {
               RecordUIDataHardware.convertRecords(
                   unit, new ArrayList<RecordHardware>(entry.getValue().getMap().values()), limits));
 
-      List<RecordUIDataHardware> recs = new ArrayList<RecordUIDataHardware>();
+      List<RecordUIDataHardware> recs = new ArrayList<>();
 
       List<RecordUIDataHardware> _recs = records.get(unit);
 
-      /**
+      /*
        * Iterate over each record and filter it according to parameter input. This is done with a
        * logical AND test.
        */
       for (RecordUIDataHardware uiDataRecord : _recs) {
-        boolean include = true;
+        boolean include =
+            swVersionFromReport == null
+                || (uiDataRecord.getSoftwareVersion() != null
+                    && uiDataRecord.getSoftwareVersion().equals(swVersionFromReport));
 
-        if (swVersionFromReport != null)
-          include =
-              (uiDataRecord.getSoftwareVersion() != null
-                  && uiDataRecord.getSoftwareVersion().equals(swVersionFromReport));
-
-        if (include) recs.add(uiDataRecord);
+        if (include) {
+          recs.add(uiDataRecord);
+        }
       }
 
-      if (recs.size() == 0) records.remove(unit);
-      else records.put(unit, recs);
+      if (recs.isEmpty()) {
+        records.remove(unit);
+      } else {
+        records.put(unit, recs);
+      }
     }
     List<RecordUIDataHwSum> hwSums = processUnitHardwareRecords(records);
     root.put("reports", hwSums);
@@ -344,46 +335,53 @@ public class UnitListPage extends AbstractWebPage {
             unittype.getSelectedOrAllItemsAsList(),
             profile.getSelectedOrAllItemsAsList(),
             groupSelect);
-    List<RecordWrapper<RecordVoip>> recordsWorking = new ArrayList<RecordWrapper<RecordVoip>>();
-    List<RecordWrapper<RecordVoip>> recordsDown = new ArrayList<RecordWrapper<RecordVoip>>();
+    List<RecordWrapper<RecordVoip>> recordsWorking = new ArrayList<>();
+    List<RecordWrapper<RecordVoip>> recordsDown = new ArrayList<>();
     for (Entry<String, Report<RecordVoip>> entry : reports.entrySet()) {
       Unit unit = acsUnit.getUnitById(entry.getKey());
 
-      if (unit == null) unit = new Unit(entry.getKey(), null, null);
+      if (unit == null) {
+        unit = new Unit(entry.getKey(), null, null);
+      }
 
       String line = req.getParameter("line");
       root.put("filter_line", line);
       String sw = req.getParameter("softwareversion");
       root.put("filter_softwareversion", sw);
 
-      List<RecordVoip> records = new ArrayList<RecordVoip>();
+      List<RecordVoip> records = new ArrayList<>();
 
-      List<RecordVoip> _records = new ArrayList<RecordVoip>(entry.getValue().getMap().values());
+      List<RecordVoip> _records = new ArrayList<>(entry.getValue().getMap().values());
 
-      /**
+      /*
        * Iterate over each record and filter it according to parameter input. This is done with a
        * logical AND test.
        */
       for (RecordVoip rec : _records) {
-        boolean include = true;
+        boolean include =
+            sw == null || (rec.getSoftwareVersion() != null && rec.getSoftwareVersion().equals(sw));
 
-        if (sw != null)
-          include = (rec.getSoftwareVersion() != null && rec.getSoftwareVersion().equals(sw));
-        if (include && line != null)
-          include = (rec.getLine() != null && rec.getLine().equals(line));
+        if (include && line != null) {
+          include = rec.getLine() != null && rec.getLine().equals(line);
+        }
 
-        if (include) records.add(rec);
+        if (include) {
+          records.add(rec);
+        }
       }
 
-      if (records.size() > 0) {
+      if (!records.isEmpty()) {
         RecordVoip record = records.get(0);
-        for (int i = 1; i < records.size(); i++) record.add(records.get(i));
-        if (record.getCallLengthTotal() != null && record.getCallLengthTotal().get() > 0)
+        for (int i = 1; i < records.size(); i++) {
+          record.add(records.get(i));
+        }
+        if (record.getCallLengthTotal() != null && record.getCallLengthTotal().get() > 0) {
           recordsWorking.add(new RecordWrapper<RecordVoip>(unit, record));
-        else if (record.getNoSipServiceTime() != null
+        } else if (record.getNoSipServiceTime() != null
             && record.getNoSipServiceTime().get() != null
-            && record.getNoSipServiceTime().get() > 0)
+            && record.getNoSipServiceTime().get() > 0) {
           recordsDown.add(new RecordWrapper<RecordVoip>(unit, record));
+        }
       }
     }
     Collections.sort(recordsWorking, new RecordTotalScoreComparator());
@@ -402,12 +400,16 @@ public class UnitListPage extends AbstractWebPage {
    */
   private List<RecordUIDataHwSum> processUnitHardwareRecords(
       Map<Unit, List<RecordUIDataHardware>> records) {
-    List<RecordUIDataHwSum> sums = new ArrayList<RecordUIDataHwSum>();
+    List<RecordUIDataHwSum> sums = new ArrayList<>();
     for (Entry<Unit, List<RecordUIDataHardware>> entry : records.entrySet()) {
       Unit unit = entry.getKey();
       RecordUIDataHwSum sum = new RecordUIDataHwSum(unit);
-      for (RecordUIDataHardware record : entry.getValue()) sum.addRecordIfRelevant(record);
-      if (sum.getRecords().size() > 0) sums.add(sum);
+      for (RecordUIDataHardware record : entry.getValue()) {
+        sum.addRecordIfRelevant(record);
+      }
+      if (!sum.getRecords().isEmpty()) {
+        sums.add(sum);
+      }
     }
     return sums;
   }
@@ -445,13 +447,11 @@ public class UnitListPage extends AbstractWebPage {
     Calendar end = Calendar.getInstance();
     if (input.notNullNorValue("")) {
       end.setTime(input.getDate());
-      end.set(Calendar.SECOND, 0);
-      end.set(Calendar.MILLISECOND, 0);
     } else {
       end.setTime(new Date());
-      end.set(Calendar.SECOND, 0);
-      end.set(Calendar.MILLISECOND, 0);
     }
+    end.set(Calendar.SECOND, 0);
+    end.set(Calendar.MILLISECOND, 0);
     return end.getTime();
   }
 
@@ -461,7 +461,6 @@ public class UnitListPage extends AbstractWebPage {
    * @param <V> the value type
    */
   public class RecordWrapper<V extends RecordVoip> {
-
     /**
      * Gets the unit.
      *
@@ -501,13 +500,13 @@ public class UnitListPage extends AbstractWebPage {
   /** The Class RecordTotalScoreComparator. */
   @SuppressWarnings("rawtypes")
   private class RecordTotalScoreComparator implements Comparator<RecordWrapper> {
-
-    /* (non-Javadoc)
-     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-     */
     public int compare(RecordWrapper o1, RecordWrapper o2) {
-      if (o1.getRecord().getVoIPQuality().get() < o2.getRecord().getVoIPQuality().get()) return 1;
-      if (o1.getRecord().getVoIPQuality().get() > o2.getRecord().getVoIPQuality().get()) return -1;
+      if (o1.getRecord().getVoIPQuality().get() < o2.getRecord().getVoIPQuality().get()) {
+        return 1;
+      }
+      if (o1.getRecord().getVoIPQuality().get() > o2.getRecord().getVoIPQuality().get()) {
+        return -1;
+      }
       return 0;
     }
   }
@@ -515,15 +514,13 @@ public class UnitListPage extends AbstractWebPage {
   /** The Class RecordSipRegFailedComparator. */
   @SuppressWarnings("rawtypes")
   private class RecordSipRegFailedComparator implements Comparator<RecordWrapper> {
-
-    /* (non-Javadoc)
-     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-     */
     public int compare(RecordWrapper o1, RecordWrapper o2) {
-      if (o1.getRecord().getNoSipServiceTime().get() < o2.getRecord().getNoSipServiceTime().get())
+      if (o1.getRecord().getNoSipServiceTime().get() < o2.getRecord().getNoSipServiceTime().get()) {
         return 1;
-      if (o1.getRecord().getNoSipServiceTime().get() > o2.getRecord().getNoSipServiceTime().get())
+      }
+      if (o1.getRecord().getNoSipServiceTime().get() > o2.getRecord().getNoSipServiceTime().get()) {
         return -1;
+      }
       return 0;
     }
   }
@@ -538,16 +535,17 @@ public class UnitListPage extends AbstractWebPage {
   @SuppressWarnings({"rawtypes"})
   private RecordVoip findRecord(String id, List<RecordWrapper<RecordVoip>> recordsWorking) {
     for (RecordWrapper wrapper : recordsWorking) {
-      if (wrapper.unit.getId().equals(id)) return wrapper.getRecord();
+      if (wrapper.unit.getId().equals(id)) {
+        return wrapper.getRecord();
+      }
     }
     return null;
   }
 
   /** The Class IsMosAvgBad. */
   public class IsMosAvgBad implements TemplateMethodModel {
-
     /** The units. */
-    private Map<String, Boolean> units = new HashMap<String, Boolean>();
+    private Map<String, Boolean> units = new HashMap<>();
 
     /** The records. */
     private List<RecordWrapper<RecordVoip>> records;
@@ -561,24 +559,25 @@ public class UnitListPage extends AbstractWebPage {
       this.records = records;
     }
 
-    /* (non-Javadoc)
-     * @see freemarker.template.TemplateMethodModel#exec(java.util.List)
-     */
     @SuppressWarnings("rawtypes")
     public Boolean exec(List arg0) throws TemplateModelException {
-      if (arg0.size() < 1) throw new TemplateModelException("Specify unitId");
+      if (arg0.isEmpty()) {
+        throw new TemplateModelException("Specify unitId");
+      }
 
       String key = (String) arg0.get(0);
 
-      if (units.containsKey(key)) return units.get(key);
+      if (units.containsKey(key)) {
+        return units.get(key);
+      }
 
       RecordVoip record = findRecord(key, records);
 
-      if (record == null) return false;
-
-      if (record.getMosAvg().get() != null
-          && record.getMosAvg().get() < 300
-          && record.getCallLengthTotal().get() > 5) return true;
+      if (record != null) {
+        return record.getMosAvg().get() != null
+            && record.getMosAvg().get() < 300
+            && record.getCallLengthTotal().get() > 5;
+      }
 
       return false;
     }
@@ -586,9 +585,8 @@ public class UnitListPage extends AbstractWebPage {
 
   /** The Class IsSipRegisterCause. */
   public class IsSipRegisterCause implements TemplateMethodModel {
-
     /** The units. */
-    private Map<String, Boolean> units = new HashMap<String, Boolean>();
+    private Map<String, Boolean> units = new HashMap<>();
 
     /** The records. */
     private List<RecordWrapper<RecordVoip>> records;
@@ -602,23 +600,26 @@ public class UnitListPage extends AbstractWebPage {
       this.records = records;
     }
 
-    /* (non-Javadoc)
-     * @see freemarker.template.TemplateMethodModel#exec(java.util.List)
-     */
     @SuppressWarnings("rawtypes")
     public Boolean exec(List arg0) throws TemplateModelException {
-      if (arg0.size() < 1) throw new TemplateModelException("Specify unitId");
+      if (arg0.isEmpty()) {
+        throw new TemplateModelException("Specify unitId");
+      }
 
       String key = (String) arg0.get(0);
 
-      if (units.containsKey(key)) return units.get(key);
+      if (units.containsKey(key)) {
+        return units.get(key);
+      }
 
       RecordVoip record = findRecord(key, records);
 
-      if (record == null) return false;
+      if (record != null) {
+        return record.getNoSipServiceTime().get() > 100
+            && !new IsMosAvgBad(records).exec(Arrays.asList(key));
+      }
 
-      return record.getNoSipServiceTime().get() > 100
-          && !new IsMosAvgBad(records).exec(Arrays.asList(key));
+      return false;
     }
   }
 }

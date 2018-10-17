@@ -58,9 +58,10 @@ public class UnitMenu {
       session.getBatchStorage().getAddChangeUnitParameters().add(unitParameter);
       String message =
           "[" + session.getCounter() + "] The unit parameter " + args[1] + " is " + action + ".";
-      if (utp.getFlag().isReadOnly() && !utp.getFlag().isSystem())
+      if (utp.getFlag().isReadOnly() && !utp.getFlag().isSystem()) {
         message +=
             " WARN: The parameter is Read-Only, the new value may be overwritten on next provisioning";
+      }
       context.println(message);
       if (session.getBatchStorage().getAddChangeUnitParameters().size() == 1000) {
         UnitTempStorage uts = session.getBatchStorage().getAddUnits();
@@ -100,7 +101,7 @@ public class UnitMenu {
         unitParameter.getParameter().setValue("REQUEST-SESSION-PARAMETER");
         action = "changed";
       }
-      List<UnitParameter> unitParameterList = new ArrayList<UnitParameter>();
+      List<UnitParameter> unitParameterList = new ArrayList<>();
       unitParameterList.add(unitParameter);
       session
           .getAcsUnit()
@@ -125,10 +126,10 @@ public class UnitMenu {
       context.setUnit(unit);
     }
     Map<String, UnitParameter> unitParameters = unit.getUnitParameters();
-    if (unitParameters == null || unitParameters.get(args[1]) == null)
+    if (unitParameters == null || unitParameters.get(args[1]) == null) {
       context.println(
           "[" + session.getCounter() + "] The unit parameter " + args[1] + " does not exist.");
-    else {
+    } else {
       session.getBatchStorage().getDeleteUnitParameters().add(unitParameters.get(args[1]));
       context.println(
           "["
@@ -156,9 +157,7 @@ public class UnitMenu {
       listparamsImpl(args, oh, PrintLevel.ALL);
     } else if (args[0].startsWith("listu")) {
       listparamsImpl(args, oh, PrintLevel.UNIT);
-    } else if (args[0].startsWith("regu")) {
-      modeChange(args);
-    } else if (args[0].startsWith("read")) {
+    } else if (args[0].startsWith("regu") || args[0].startsWith("read")) {
       modeChange(args);
     } else if (args[0].startsWith("refr")) {
       refresh(args);
@@ -180,9 +179,10 @@ public class UnitMenu {
   }
 
   private void modeChange(String[] inputArr) throws Exception {
-    if (context.getUnittype().getProtocol() != ProvisioningProtocol.TR069)
+    if (context.getUnittype().getProtocol() != ProvisioningProtocol.TR069) {
       throw new IllegalArgumentException(
           "The unittype does not support a TR-069 provisioning protocol, hence kick is not possible.");
+    }
 
     long MAX_WAIT_MS = 30000; // default timeout
 
@@ -201,7 +201,7 @@ public class UnitMenu {
     }
     session.getAcsUnit().addOrChangeQueuedUnitParameters(unit);
     DBI dbi = session.getDbi();
-    if (inputArr.length > 1 && inputArr[1].equals("async")) {
+    if (inputArr.length > 1 && "async".equals(inputArr[1])) {
       dbi.publishKick(context.getUnit(), SyslogConstants.FACILITY_STUN);
       return;
     }
@@ -211,7 +211,9 @@ public class UnitMenu {
             + "s to see outcome.");
     unit = session.getAcsUnit().getUnitById(context.getUnit().getId());
     String lct = unit.getParameterValue(SystemParameters.LAST_CONNECT_TMS);
-    if (lct == null) lct = "";
+    if (lct == null) {
+      lct = "";
+    }
     dbi.publishKick(context.getUnit(), SyslogConstants.FACILITY_STUN);
 
     /*
@@ -222,7 +224,7 @@ public class UnitMenu {
     long start = System.currentTimeMillis();
     //		boolean modePeriodic = false;
     String lastInspectionMessage = "";
-    while (true) {
+    do {
       Thread.sleep(500);
       Unit u = session.getAcsUnit().getUnitById(context.getUnit().getId());
       context.setUnit(u);
@@ -255,7 +257,7 @@ public class UnitMenu {
                 + "s, must be rebooted manually complete request");
         break;
       }
-    }
+    } while (true);
     context.getUnit().toDeleteQueue(SystemParameters.INSPECTION_MESSAGE);
     session.getAcsUnit().deleteUnitParameters(context.getUnit());
     context.setUnit(session.getAcsUnit().getUnitById(context.getUnit().getId()));
@@ -263,15 +265,13 @@ public class UnitMenu {
 
   private enum PrintLevel {
     UNIT,
-    ALL;
+    ALL
   }
 
   private void listparamsImpl(String[] inputArr, OutputHandler oh, PrintLevel pl) throws Exception {
     Unit unit = context.getUnit();
-    //		if (!unit.isParamsAvailable() || unit.isSessionMode()) {
     unit = session.getAcsUnit().getUnitById(unit.getId());
     context.setUnit(unit);
-    //		}
 
     boolean sessionMode =
         context.getUnit().isSessionMode() && ACSVersionCheck.unitParamSessionSupported;
@@ -280,15 +280,12 @@ public class UnitMenu {
     Line headingLine = new Line();
     headingLine.addValue("Unit Type Parameter Name");
     headingLine.addValue("Unit Parameter Value/Provisioned Value");
-    TreeSet<String> paramSet = new TreeSet<String>();
-    for (String utpName : unit.getUnitParameters().keySet()) { // default is all unit-parameters
-      paramSet.add(utpName);
-    }
+    TreeSet<String> paramSet = new TreeSet<>(unit.getUnitParameters().keySet());
     if (pl == PrintLevel.ALL) {
       headingLine.addValue("Profile Parameter Value");
-      for (ProfileParameter pp : unit.getProfile().getProfileParameters().getProfileParameters())
-        if (!paramSet.contains(pp.getUnittypeParameter().getName()))
-          paramSet.add(pp.getUnittypeParameter().getName());
+      for (ProfileParameter pp : unit.getProfile().getProfileParameters().getProfileParameters()) {
+        paramSet.add(pp.getUnittypeParameter().getName());
+      }
       if (sessionMode) {
         headingLine.addValue("CPE Parameter Value");
         paramSet.addAll(unit.getSessionParameters().keySet());
@@ -299,7 +296,6 @@ public class UnitMenu {
 
     // Loop through params
     for (String paramName : paramSet) {
-
       // Find unitValue, profileValue and cpeValue
       String profileValue = null;
       String cpeValue = null;
@@ -316,15 +312,18 @@ public class UnitMenu {
 
       // Filter based on param names and param values
       if (!Validation.matches(
-          inputArr.length > 1 ? inputArr[1] : null, paramName, unitValue, profileValue, cpeValue))
+          inputArr.length > 1 ? inputArr[1] : null, paramName, unitValue, profileValue, cpeValue)) {
         continue;
+      }
 
       // Print to listing
       Line line = new Line(paramName);
       line.addValue(unitValue);
       if (pl == PrintLevel.ALL) {
         line.addValue(profileValue);
-        if (sessionMode) line.addValue(cpeValue);
+        if (sessionMode) {
+          line.addValue(cpeValue);
+        }
       }
       listing.addLine(line);
     }

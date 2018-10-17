@@ -20,8 +20,7 @@ import java.util.Map;
 
 /** The Class VoipInterface. */
 public class ProvRetriever extends ReportRetriever {
-
-  /** The generator */
+  /** The generator. */
   private ReportProvisioningGenerator generatorProv;
 
   /**
@@ -43,9 +42,6 @@ public class ProvRetriever extends ReportRetriever {
             ACSLoader.getIdentity(params.getSession().getId(), acs.getDataSource()));
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.report.custom.ReportRetriever#generateReport(com.owera.xaps.dbi.report.PeriodType, java.util.Date, java.util.Date, java.util.List, java.util.List)
-   */
   @Override
   public Report<?> generateReport(
       PeriodType periodType,
@@ -61,16 +57,14 @@ public class ProvRetriever extends ReportRetriever {
           (Report<RecordProvisioning>)
               generatorProv.generateFromSyslog(
                   periodType, start, end, unittypes, profiles, null, groupSelect);
-    } else
+    } else {
       report =
           (Report<RecordProvisioning>)
               generatorProv.generateFromReport(periodType, start, end, unittypes, profiles);
+    }
     return report;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.report.custom.ReportRetriever#applyObjects(java.util.Map)
-   */
   @Override
   public void applyObjects(Map<String, Object> root) {}
 

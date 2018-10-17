@@ -49,9 +49,11 @@ public class ProfileParameters {
     try {
       s = c.createStatement();
       String logMsg = "profile parameter " + profileParameter.getUnittypeParameter().getName();
-      if (profileParameter.getUnittypeParameter().getFlag().isConfidential())
+      if (profileParameter.getUnittypeParameter().getFlag().isConfidential()) {
         logMsg += " with confidential value (*****)";
-      else logMsg += " with value " + profileParameter.getValue();
+      } else {
+        logMsg += " with value " + profileParameter.getValue();
+      }
       if (getById(profileParameter.getUnittypeParameter().getId()) == null) {
         sql = "INSERT INTO profile_param (profile_id, unit_type_param_id, value) VALUES (";
         sql += profileParameter.getProfile().getId() + ", ";
@@ -61,7 +63,9 @@ public class ProfileParameters {
         s.executeUpdate(sql);
 
         logger.info("Added " + logMsg);
-        if (acs.getDbi() != null) acs.getDbi().publishAdd(profileParameter, profile.getUnittype());
+        if (acs.getDbi() != null) {
+          acs.getDbi().publishAdd(profileParameter, profile.getUnittype());
+        }
       } else {
         sql = "UPDATE profile_param SET ";
         sql += "VALUE = '" + profileParameter.getValue() + "' ";
@@ -71,19 +75,23 @@ public class ProfileParameters {
         s.executeUpdate(sql);
 
         logger.info("Updated " + logMsg);
-        if (acs.getDbi() != null)
+        if (acs.getDbi() != null) {
           acs.getDbi().publishChange(profileParameter, profile.getUnittype());
+        }
       }
     } finally {
-      if (s != null) s.close();
+      if (s != null) {
+        s.close();
+      }
       c.close();
     }
   }
 
   public void addOrChangeProfileParameter(ProfileParameter profileParameter, ACS acs)
       throws SQLException {
-    if (!acs.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId()))
+    if (!acs.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
+    }
     //		if (profileParameter.getUnittypeParameter().getFlag().isInspection())
     //			throw new IllegalArgumentException("The unit type parameter is an inspection parameter -
     // cannot be set on a profile");
@@ -106,9 +114,13 @@ public class ProfileParameters {
       s.executeUpdate(sql);
 
       logger.info("Deleted profile parameter " + profileParameter.getUnittypeParameter().getName());
-      if (acs.getDbi() != null) acs.getDbi().publishDelete(profileParameter, profile.getUnittype());
+      if (acs.getDbi() != null) {
+        acs.getDbi().publishDelete(profileParameter, profile.getUnittype());
+      }
     } finally {
-      if (s != null) s.close();
+      if (s != null) {
+        s.close();
+      }
       c.close();
     }
   }
@@ -122,8 +134,9 @@ public class ProfileParameters {
    */
   public void deleteProfileParameter(ProfileParameter profileParameter, ACS acs)
       throws SQLException {
-    if (!acs.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId()))
+    if (!acs.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
+    }
     deleteProfileParameterImpl(profileParameter, profile, acs);
     nameMap.remove(profileParameter.getUnittypeParameter().getName());
     idMap.remove(profileParameter.getId());

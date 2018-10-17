@@ -8,7 +8,6 @@ import java.io.StringWriter;
  * @author Jarl Andre Hubenthal
  */
 public abstract class StackTraceFormatter {
-
   /**
    * Produces an HTML string of the stacktrace.
    *
@@ -19,7 +18,7 @@ public abstract class StackTraceFormatter {
     StringWriter string = new StringWriter();
     string.write("<br />");
     for (int i = 0; i < e.getStackTrace().length; i++) {
-      String stack = e.getStackTrace()[i].toString() + "<br />";
+      String stack = e.getStackTrace()[i] + "<br />";
       stack = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + stack;
       string.write(stack);
     }

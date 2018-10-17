@@ -13,13 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class GetUnittypes {
-
   private static final Logger logger = LoggerFactory.getLogger(GetUnittypes.class);
 
   public GetUnittypesResponse getUnittypes(
       GetUnittypesRequest gur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
     try {
-
       ACSFactory xapsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
       if (gur.getUnittypeName() != null) {
         Unittype unittypeXAPS = xapsWS.getUnittypeFromXAPS(gur.getUnittypeName().getValue());
@@ -32,8 +30,9 @@ public class GetUnittypes {
         com.github.freeacs.ws.xml.Unittype[] unittypeArray =
             new com.github.freeacs.ws.xml.Unittype[unittypeXAPSArr.length];
         int i = 0;
-        for (Unittype unittypeXAPS : unittypeXAPSArr)
+        for (Unittype unittypeXAPS : unittypeXAPSArr) {
           unittypeArray[i++] = ConvertACS2WS.convert(unittypeXAPS);
+        }
         return getGetUnittypesResponse(unittypeArray);
       }
     } catch (RemoteException re) {

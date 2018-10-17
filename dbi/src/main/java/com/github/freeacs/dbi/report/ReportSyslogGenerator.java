@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ReportSyslogGenerator extends ReportGenerator {
-
   private static Logger logger = LoggerFactory.getLogger(ReportSyslogGenerator.class);
 
   public ReportSyslogGenerator(
@@ -68,12 +67,14 @@ public class ReportSyslogGenerator extends ReportGenerator {
                 start, periodType, unittypeName, profileName, severity, eventId, facility);
         Key key = recordTmp.getKey();
         RecordSyslog record = report.getRecord(key);
-        if (record == null) record = recordTmp;
+        if (record == null) {
+          record = recordTmp;
+        }
         record.getMessageCount().add(rs.getInt("unit_count"));
         report.setRecord(key, record);
         foundDataInReportTable = true;
       }
-      if (foundDataInReportTable)
+      if (foundDataInReportTable) {
         logger.debug(
             logPrefix
                 + "SyslogReport: Have read "
@@ -83,10 +84,15 @@ public class ReportSyslogGenerator extends ReportGenerator {
                 + ", report is now "
                 + report.getMap().size()
                 + " entries");
+      }
       return report;
     } finally {
-      if (rs != null) rs.close();
-      if (ps != null) ps.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.close();
       }
@@ -139,11 +145,14 @@ public class ReportSyslogGenerator extends ReportGenerator {
               + sqlFormat
               + "'), unit_type_name, profile_name, unit_id, severity, syslog_event_id, facility, count(*) ");
       ds.addSqlAndArguments("FROM syslog WHERE collector_timestamp >= ? AND ", start);
-      if (swVersion != null) ds.addSqlAndArguments("facility_version = ?  AND ", swVersion);
-      else if (syslogFilter != null && syslogFilter.getFacilityVersion() != null)
+      if (swVersion != null) {
+        ds.addSqlAndArguments("facility_version = ?  AND ", swVersion);
+      } else if (syslogFilter != null && syslogFilter.getFacilityVersion() != null) {
         ds.addSqlAndArguments("facility_version = ?  AND ", syslogFilter.getFacilityVersion());
-      if (syslogFilter != null && syslogFilter.getMessage() != null)
+      }
+      if (syslogFilter != null && syslogFilter.getMessage() != null) {
         ds.addSqlAndArguments("content LIKE ? AND ", syslogFilter.getMessage());
+      }
       addUnittypeOrProfileCriteria(ds, uts, prs);
       //			ds.addSql(" AND unit_type_name <> '' AND profile_name <> '' ");
       ds.addSqlAndArguments("collector_timestamp < ? ", end);
@@ -154,18 +163,26 @@ public class ReportSyslogGenerator extends ReportGenerator {
       c = syslogDataSource.getConnection();
       ps = ds.makePreparedStatement(c);
       rs = ps.executeQuery();
-      Map<String, Report<RecordSyslog>> unitReportMap = new HashMap<String, Report<RecordSyslog>>();
+      Map<String, Report<RecordSyslog>> unitReportMap = new HashMap<>();
       int entries = 0;
       while (rs.next()) {
         Date tms = tmsFormatter.parse(rs.getString(1));
         String unitId = rs.getString("unit_id");
-        if (group != null && unitsInGroup.get(unitId) == null) continue;
+        if (group != null && unitsInGroup.get(unitId) == null) {
+          continue;
+        }
         entries++;
-        if (unitId == null || unitId.trim().equals("")) unitId = "Unknown";
+        if (unitId == null || "".equals(unitId.trim())) {
+          unitId = "Unknown";
+        }
         String unittypeName = rs.getString("unit_type_name");
-        if (unittypeName == null || unittypeName.trim().equals("")) unittypeName = "Unknown";
+        if (unittypeName == null || "".equals(unittypeName.trim())) {
+          unittypeName = "Unknown";
+        }
         String profileName = rs.getString("profile_name");
-        if (profileName == null || profileName.trim().equals("")) profileName = "Unknown";
+        if (profileName == null || "".equals(profileName.trim())) {
+          profileName = "Unknown";
+        }
         String severity = SyslogConstants.getSeverityName(rs.getInt("severity"));
         String eventId = rs.getString("syslog_event_id");
         String facility = SyslogConstants.getFacilityName(rs.getInt("facility"));
@@ -179,7 +196,9 @@ public class ReportSyslogGenerator extends ReportGenerator {
                 tms, periodType, unittypeName, profileName, severity, eventId, facility);
         Key key = recordTmp.getKey();
         RecordSyslog record = report.getRecord(key);
-        if (record == null) record = recordTmp;
+        if (record == null) {
+          record = recordTmp;
+        }
         record.setMessageCount(new Counter());
         record.getMessageCount().add(rs.getInt("count(*)"));
         report.setRecord(key, record);
@@ -197,8 +216,12 @@ public class ReportSyslogGenerator extends ReportGenerator {
       sqle = sqlex;
       throw sqlex;
     } finally {
-      if (rs != null) rs.close();
-      if (ps != null) ps.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
       if (c != null) {
         c.close();
       }
@@ -250,26 +273,38 @@ public class ReportSyslogGenerator extends ReportGenerator {
                 + sqlFormat
                 + "'), unit_type_name, profile_name, severity, syslog_event_id, facility, unit_id ");
         ds.addSqlAndArguments("FROM syslog WHERE collector_timestamp >= ? AND ", start);
-        if (unitId != null) ds.addSqlAndArguments("unit_id = ? AND ", unitId);
-        else addUnittypeOrProfileCriteria(ds, uts, prs);
-        if (swVersion != null) ds.addSqlAndArguments("facility_version = ?  AND ", swVersion);
-        else if (syslogFilter != null && syslogFilter.getFacilityVersion() != null)
+        if (unitId != null) {
+          ds.addSqlAndArguments("unit_id = ? AND ", unitId);
+        } else {
+          addUnittypeOrProfileCriteria(ds, uts, prs);
+        }
+        if (swVersion != null) {
+          ds.addSqlAndArguments("facility_version = ?  AND ", swVersion);
+        } else if (syslogFilter != null && syslogFilter.getFacilityVersion() != null) {
           ds.addSqlAndArguments("facility_version = ?  AND ", syslogFilter.getFacilityVersion());
-        if (syslogFilter != null && syslogFilter.getMessage() != null)
+        }
+        if (syslogFilter != null && syslogFilter.getMessage() != null) {
           ds.addSqlAndArguments("content LIKE ? AND ", syslogFilter.getMessage());
+        }
         ds.addSqlAndArguments("collector_timestamp < ? ", end);
         c = syslogDataSource.getConnection();
         ps = ds.makePreparedStatement(c);
         rs = ps.executeQuery();
         while (rs.next()) {
           String unitIdTmp = rs.getString("unit_id");
-          if (unitsInGroup.get(unitIdTmp) == null) continue;
+          if (unitsInGroup.get(unitIdTmp) == null) {
+            continue;
+          }
           entries++;
           Date tms = tmsFormatter.parse(rs.getString(1));
           String unittypeName = rs.getString("unit_type_name");
-          if (unittypeName == null || unittypeName.trim().equals("")) unittypeName = "Unknown";
+          if (unittypeName == null || "".equals(unittypeName.trim())) {
+            unittypeName = "Unknown";
+          }
           String profileName = rs.getString("profile_name");
-          if (profileName == null || profileName.trim().equals("")) profileName = "Unknown";
+          if (profileName == null || "".equals(profileName.trim())) {
+            profileName = "Unknown";
+          }
           String severity = SyslogConstants.getSeverityName(rs.getInt("severity"));
           String eventId = rs.getString("syslog_event_id");
           String facility = SyslogConstants.getFacilityName(rs.getInt("facility"));
@@ -278,7 +313,9 @@ public class ReportSyslogGenerator extends ReportGenerator {
                   tms, periodType, unittypeName, profileName, severity, eventId, facility);
           Key key = recordTmp.getKey();
           RecordSyslog record = report.getRecord(key);
-          if (record == null) record = recordTmp;
+          if (record == null) {
+            record = recordTmp;
+          }
           record.getMessageCount().add(1);
           report.setRecord(key, record);
         }
@@ -289,13 +326,19 @@ public class ReportSyslogGenerator extends ReportGenerator {
                 + sqlFormat
                 + "'), unit_type_name, profile_name, severity, syslog_event_id, facility, count(*) ");
         ds.addSqlAndArguments("FROM syslog WHERE collector_timestamp >= ? AND ", start);
-        if (unitId != null) ds.addSqlAndArguments("unit_id = ? AND ", unitId);
-        else addUnittypeOrProfileCriteria(ds, uts, prs);
-        if (swVersion != null) ds.addSqlAndArguments("facility_version = ?  AND ", swVersion);
-        else if (syslogFilter != null && syslogFilter.getFacilityVersion() != null)
+        if (unitId != null) {
+          ds.addSqlAndArguments("unit_id = ? AND ", unitId);
+        } else {
+          addUnittypeOrProfileCriteria(ds, uts, prs);
+        }
+        if (swVersion != null) {
+          ds.addSqlAndArguments("facility_version = ?  AND ", swVersion);
+        } else if (syslogFilter != null && syslogFilter.getFacilityVersion() != null) {
           ds.addSqlAndArguments("facility_version = ?  AND ", syslogFilter.getFacilityVersion());
-        if (syslogFilter != null && syslogFilter.getMessage() != null)
+        }
+        if (syslogFilter != null && syslogFilter.getMessage() != null) {
           ds.addSqlAndArguments("content LIKE ? AND ", syslogFilter.getMessage());
+        }
         ds.addSqlAndArguments("collector_timestamp < ? ", end);
         ds.addSql(
             "GROUP BY date_format(collector_timestamp, '"
@@ -308,9 +351,13 @@ public class ReportSyslogGenerator extends ReportGenerator {
           entries++;
           Date tms = tmsFormatter.parse(rs.getString(1));
           String unittypeName = rs.getString("unit_type_name");
-          if (unittypeName == null || unittypeName.trim().equals("")) unittypeName = "Unknown";
+          if (unittypeName == null || "".equals(unittypeName.trim())) {
+            unittypeName = "Unknown";
+          }
           String profileName = rs.getString("profile_name");
-          if (profileName == null || profileName.trim().equals("")) profileName = "Unknown";
+          if (profileName == null || "".equals(profileName.trim())) {
+            profileName = "Unknown";
+          }
           String severity = SyslogConstants.getSeverityName(rs.getInt("severity"));
           String eventId = rs.getString("syslog_event_id");
           String facility = SyslogConstants.getFacilityName(rs.getInt("facility"));
@@ -319,7 +366,9 @@ public class ReportSyslogGenerator extends ReportGenerator {
                   tms, periodType, unittypeName, profileName, severity, eventId, facility);
           Key key = recordTmp.getKey();
           RecordSyslog record = report.getRecord(key);
-          if (record == null) record = recordTmp;
+          if (record == null) {
+            record = recordTmp;
+          }
           record.setMessageCount(new Counter());
           record.getMessageCount().add(rs.getInt("count(*)"));
           report.setRecord(key, record);
@@ -332,8 +381,12 @@ public class ReportSyslogGenerator extends ReportGenerator {
 
       return report;
     } finally {
-      if (rs != null) rs.close();
-      if (ps != null) ps.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
       if (c != null) {
         c.close();
       }
@@ -342,16 +395,20 @@ public class ReportSyslogGenerator extends ReportGenerator {
 
   private boolean allUnittypesSpecified(
       List<Profile> profiles, Map<Integer, Set<Profile>> unittypesWithSomeProfilesSpecified) {
-    Set<Integer> unittypesWithAllProfilesSpecified = new HashSet<Integer>();
+    Set<Integer> unittypesWithAllProfilesSpecified = new HashSet<>();
     boolean allUnittypesSpecified = false;
     ACS acs = profiles.get(0).getUnittype().getAcs();
     int noUnittypes = acs.getUnittypes().getUnittypes().length; // the number of unittypes in ACS
     for (Profile profile : profiles) {
       Integer unittypeId = profile.getUnittype().getId();
       Set<Profile> profilesInUnittype = unittypesWithSomeProfilesSpecified.get(unittypeId);
-      if (profilesInUnittype == null) profilesInUnittype = new HashSet<Profile>();
+      if (profilesInUnittype == null) {
+        profilesInUnittype = new HashSet<>();
+      }
       profilesInUnittype.add(profile);
-      if (unittypesWithAllProfilesSpecified.contains(unittypeId)) continue;
+      if (unittypesWithAllProfilesSpecified.contains(unittypeId)) {
+        continue;
+      }
       unittypesWithSomeProfilesSpecified.put(unittypeId, profilesInUnittype);
       int noProfiles = profile.getUnittype().getProfiles().getProfiles().length;
       // populate and delete (logically: move from "someSpecified" to "allSpecified")
@@ -360,20 +417,22 @@ public class ReportSyslogGenerator extends ReportGenerator {
         unittypesWithSomeProfilesSpecified.remove(unittypeId);
       }
     }
-    if (noUnittypes == unittypesWithAllProfilesSpecified.size()) allUnittypesSpecified = true;
+    if (noUnittypes == unittypesWithAllProfilesSpecified.size()) {
+      allUnittypesSpecified = true;
+    }
     return allUnittypesSpecified;
   }
 
   private DynamicStatement addUnittypeOrProfileCriteria(
       DynamicStatement ds, List<Unittype> unittypes, List<Profile> profiles) {
     User user = id.getUser();
-    if (profiles != null && profiles.size() > 0) {
-      Map<Integer, Set<Profile>> unittypesWithSomeProfilesSpecified =
-          new HashMap<Integer, Set<Profile>>();
+    if (profiles != null && !profiles.isEmpty()) {
+      Map<Integer, Set<Profile>> unittypesWithSomeProfilesSpecified = new HashMap<>();
       boolean allUnittypesSpecified =
           allUnittypesSpecified(profiles, unittypesWithSomeProfilesSpecified);
-      if (user.isAdmin() && allUnittypesSpecified)
-        return ds; // no criteria added -> quicker search,  will search for all unittypes/profiles
+      if (user.isAdmin() && allUnittypesSpecified) {
+        return ds;
+      } // no criteria added -> quicker search,  will search for all unittypes/profiles
       ds.addSql("(");
       for (int i = 0; i < profiles.size(); i++) {
         Profile profile = profiles.get(i);
@@ -384,22 +443,23 @@ public class ReportSyslogGenerator extends ReportGenerator {
           boolean alreadyTreated = false;
           for (int j = 0; j < i; j++) {
             Profile p = profiles.get(j);
-            if (p.getId().equals(profile.getId())) alreadyTreated = true;
+            if (p.getId().equals(profile.getId())) {
+              alreadyTreated = true;
+            }
           }
-          if (!alreadyTreated) // To avoid repeating "unit_type_name = ?" with the same arguments
-            // many times - the SQL becomes ugly
+          if (!alreadyTreated) {
             ds.addSqlAndArguments("unit_type_name = ? OR ", profile.getUnittype().getName());
-        } else
-          // have to specify profiles since not all are specified or we do not know of all profile
-          // (not UnittypeAdmin)
+          }
+        } else {
           ds.addSqlAndArguments(
               "(profile_name = ? AND unit_type_name = ?) OR ",
               profile.getName(),
               profile.getUnittype().getName());
+        }
       }
       ds.cleanupSQLTail();
       ds.addSql(") AND ");
-    } else if (unittypes != null && unittypes.size() > 0) {
+    } else if (unittypes != null && !unittypes.isEmpty()) {
       ACS acs = unittypes.get(0).getAcs();
       int noUnittypes = acs.getUnittypes().getUnittypes().length;
       boolean isAdmin = user.isAdmin();

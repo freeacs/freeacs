@@ -13,7 +13,6 @@ import org.jfree.data.xy.XYDataset;
  * @author Jarl Andre Hubenthal
  */
 final class ReportURLGenerator extends org.jfree.chart.urls.CustomXYURLGenerator {
-
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
 
@@ -39,7 +38,9 @@ final class ReportURLGenerator extends org.jfree.chart.urls.CustomXYURLGenerator
     this.format = format;
     this.chart = chart;
     this.aggregation = aggregation;
-    if (aggregation == null) throw new IllegalArgumentException("Aggregation key list is null");
+    if (aggregation == null) {
+      throw new IllegalArgumentException("Aggregation key list is null");
+    }
     StringBuilder aggregateKeysAndValuesPointers = new StringBuilder();
     for (String aggr : aggregation) {
       aggregateKeysAndValuesPointers.append("&").append(aggr.toLowerCase()).append("=%s");
@@ -75,7 +76,7 @@ final class ReportURLGenerator extends org.jfree.chart.urls.CustomXYURLGenerator
     // If so we have an aggregated diagram that needs the object array we get by splitting the
     // series key added to the returned object array.
     if (this.aggregation.size() == name.split("\\|").length) {
-      List<Object> objects = new ArrayList<Object>();
+      List<Object> objects = new ArrayList<>();
       objects.add(series);
       objects.add(item);
       objects.addAll(Arrays.asList(name.split("\\|")));
@@ -84,7 +85,9 @@ final class ReportURLGenerator extends org.jfree.chart.urls.CustomXYURLGenerator
 
     // Check if this is instead a simple diagram with unittype only in the series key.
     // If so we just add the series key to the returned object array.
-    if (!name.equals("Total") && !name.contains("|")) return new Object[] {series, item, name};
+    if (!"Total".equals(name) && !name.contains("|")) {
+      return new Object[] {series, item, name};
+    }
 
     // Return a default object array with a dot (.) as the third value, representing null
     return new Object[] {series, item, WebConstants.ALL_ITEMS_OR_DEFAULT};

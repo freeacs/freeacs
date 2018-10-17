@@ -22,20 +22,20 @@ public class TableElement {
   /** The name. */
   private String name;
 
-  /** The amount of left margin (or tab as it can be called) */
+  /** The amount of left margin (or tab as it can be called). */
   private Integer tab;
 
-  /** The trigger */
+  /** The trigger. */
   private Trigger trigger;
 
-  /** The Release trigger information object */
+  /** The Release trigger information object. */
   private ReleaseTrigger releaseTrigger;
 
   /** The group. */
   private Group group;
 
   /** The gp. */
-  private List<GroupParameter> groupParameterList = null;
+  private List<GroupParameter> groupParameterList;
 
   /** The group parent. */
   private boolean groupParent;
@@ -47,18 +47,18 @@ public class TableElement {
   private Job job;
 
   /** The jp. */
-  private JobParameter jobParameter = null;
+  private JobParameter jobParameter;
 
   /** The job parent. */
   private boolean jobParent;
 
   /** The pp. */
-  private ProfileParameter profileParameter = null;
+  private ProfileParameter profileParameter;
 
   /** The up. */
-  private UnitParameter unitParameter = null;
+  private UnitParameter unitParameter;
 
-  private UnitParameter unitSessionParameter = null;
+  private UnitParameter unitSessionParameter;
 
   /** The utp. */
   private UnittypeParameter unitTypeParameter;
@@ -121,7 +121,9 @@ public class TableElement {
   }
 
   public void addGroupParameter(GroupParameter groupParameter) {
-    if (groupParameterList == null) groupParameterList = new ArrayList<GroupParameter>();
+    if (groupParameterList == null) {
+      groupParameterList = new ArrayList<>();
+    }
     groupParameterList.add(new TableGroupParameter(groupParameter));
   }
 
@@ -202,7 +204,7 @@ public class TableElement {
    * @return the short name
    */
   public String getShortName() {
-    return name.substring(name.lastIndexOf(".") + 1);
+    return name.substring(name.lastIndexOf('.') + 1);
   }
 
   /**

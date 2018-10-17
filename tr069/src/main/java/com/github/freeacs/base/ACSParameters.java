@@ -5,13 +5,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ACSParameters {
-
-  private Map<String, ParameterValueStruct> acsParams = new HashMap<String, ParameterValueStruct>();
+  private Map<String, ParameterValueStruct> acsParams = new HashMap<>();
 
   public String getValue(String param) {
     ParameterValueStruct pvs = acsParams.get(param);
-    if (pvs != null && pvs.getValue() != null) return pvs.getValue();
-    else return null;
+    if (pvs != null && pvs.getValue() != null) {
+      return pvs.getValue();
+    } else {
+      return null;
+    }
   }
 
   public void putPvs(String param, ParameterValueStruct pvs) {

@@ -7,7 +7,6 @@ import java.util.Map;
 
 /** The Class UnitStatusRealTimeMosData. */
 public class UnitStatusRealTimeMosData extends InputData {
-
   /** The start. */
   private Input start = Input.getDateInput("start", DateUtils.Format.WITH_SECONDS);
 
@@ -71,21 +70,11 @@ public class UnitStatusRealTimeMosData extends InputData {
     return channel;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.input.InputData#bindForm(java.util.Map)
-   */
   @Override
-  public void bindForm(Map<String, Object> root) {
-    // TODO Auto-generated method stub
+  public void bindForm(Map<String, Object> root) {}
 
-  }
-
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.input.InputData#validateForm()
-   */
   @Override
   public boolean validateForm() {
-    // TODO Auto-generated method stub
     return false;
   }
 }

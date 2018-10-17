@@ -15,7 +15,6 @@ import java.util.Objects;
 import javax.sql.DataSource;
 
 public class DBAccessStatic {
-
   private static void debug(String message) {
     Log.debug(DBAccessStatic.class, message);
   }
@@ -31,9 +30,9 @@ public class DBAccessStatic {
       File firmwareCache =
           BaseCache.getFirmware(firmwareFresh.getName(), firmwareFresh.getUnittype().getName());
       final File firmwareReturn;
-      if (firmwareCache != null && Objects.equals(firmwareFresh.getId(), firmwareCache.getId()))
+      if (firmwareCache != null && Objects.equals(firmwareFresh.getId(), firmwareCache.getId())) {
         firmwareReturn = firmwareCache;
-      else {
+      } else {
         firmwareFresh.setBytes(firmwareFresh.getContent());
         BaseCache.putFirmware(
             firmwareFresh.getName(), firmwareFresh.getUnittype().getName(), firmwareFresh);
@@ -88,7 +87,7 @@ public class DBAccessStatic {
     }
   }
 
-  // Write to queue, will be written to DB at the end of TR-069-session.
+  /** Write to queue, will be written to DB at the end of TR-069-session. */
   public static void queueUnitParameters(
       Unit unit, List<UnitParameter> unitParameters, Profile profile) {
     for (UnitParameter up : unitParameters) {

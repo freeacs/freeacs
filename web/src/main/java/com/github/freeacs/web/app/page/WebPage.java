@@ -27,21 +27,21 @@ public interface WebPage {
    *
    * @return A boolean true or false
    */
-  public boolean useWrapping();
+  boolean useWrapping();
 
   /**
    * Tells wheter or not this page requires "no cache" in the servlet outputHandler headers.
    *
    * @return A boolean true or false
    */
-  public boolean requiresNoCache();
+  boolean requiresNoCache();
 
   /**
    * Tells whether or not the page has been delivered (processed).
    *
    * @return A boolean true or false
    */
-  public boolean isPageProcessed();
+  boolean isPageProcessed();
 
   /**
    * Generates a list of shortcut MenuItems.
@@ -49,7 +49,7 @@ public interface WebPage {
    * @param sessionData The current SessionData
    * @return A list of MenuItems
    */
-  public List<MenuItem> getShortcutItems(SessionData sessionData);
+  List<MenuItem> getShortcutItems(SessionData sessionData);
 
   /**
    * Generates the page title used in the header.
@@ -57,7 +57,7 @@ public interface WebPage {
    * @param page the current page id
    * @return The page title
    */
-  public String getTitle(String page);
+  String getTitle(String page);
 
   /**
    * Returns the contents of the page. <br>
@@ -72,7 +72,7 @@ public interface WebPage {
    * @param syslogDataSource
    * @throws Exception the exception
    */
-  public void process(
+  void process(
       ParameterParser params,
       Output outputHandler,
       DataSource xapsDataSource,

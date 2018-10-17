@@ -39,9 +39,6 @@ public class MenuServlet extends HttpServlet {
   /** The logger. */
   private static final Logger logger = LoggerFactory.getLogger(MenuServlet.class);
 
-  /* (non-Javadoc)
-   * @see javax.servlet.GenericServlet#init()
-   */
   public void init() {
     getTemplateConfig();
   }
@@ -58,22 +55,21 @@ public class MenuServlet extends HttpServlet {
     return templateConfig;
   }
 
-  /* (non-Javadoc)
-   * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-   */
   @Override
   @Deprecated
   protected void doGet(HttpServletRequest req, HttpServletResponse res) {
     String type = req.getParameter("type");
-    if (type == null) type = "html";
+    if (type == null) {
+      type = "html";
+    }
     try {
-      if (type.equals("json")) {
+      if ("json".equals(type)) {
         List<MenuItem> mainMenu = getMainMenu(req);
         String json = OBJECT_MAPPER.writeValueAsString(mainMenu);
         res.setContentType("application/json");
         res.getWriter().println(json);
         res.getWriter().close();
-      } else if (type.equals("html")) {
+      } else if ("html".equals(type)) {
         String html = getMenuHtml(req);
         res.setContentType("text/html");
         res.getWriter().println(html);
@@ -96,10 +92,9 @@ public class MenuServlet extends HttpServlet {
   public static String getMenuHtml(HttpServletRequest req) throws TemplateException, IOException {
     List<MenuItem> mainMenu = getMainMenu(req);
     Template template = getTemplateConfig().getTemplate("MenuTemplate.ftl");
-    Map<String, Object> map = new HashMap<String, Object>();
+    Map<String, Object> map = new HashMap<>();
     map.put("list", mainMenu);
-    String html = Freemarker.parseTemplate(map, template);
-    return html;
+    return Freemarker.parseTemplate(map, template);
   }
 
   /**
@@ -113,11 +108,7 @@ public class MenuServlet extends HttpServlet {
 
     Page selectedMenuPage = Page.getById(Page.getParentPage(page));
 
-    List<MenuItem> mainMenu =
-        getMenuItems(
-            req.getSession().getId(), page, selectedMenuPage); // new ArrayList<MenuItem>();
-
-    return mainMenu;
+    return getMenuItems(req.getSession().getId(), page, selectedMenuPage);
   }
 
   /**
@@ -129,12 +120,13 @@ public class MenuServlet extends HttpServlet {
   private static List<String> getPagesAllowed(String sessionId) {
     SessionData sessionData = SessionCache.getSessionData(sessionId);
     if (sessionData.getUser() != null
-        && !sessionData.getUser().getAccess().equals(Users.ACCESS_ADMIN))
+        && !sessionData.getUser().getAccess().equals(Users.ACCESS_ADMIN)) {
       return sessionData.getUser().getAllowedPages(sessionId);
-    else if (sessionData.getUser() == null
+    } else if (sessionData.getUser() == null
         || (sessionData.getUser() != null
-            && sessionData.getUser().getAccess().equals(Users.ACCESS_ADMIN)))
+            && sessionData.getUser().getAccess().equals(Users.ACCESS_ADMIN))) {
       return Page.getAllPagesAsString();
+    }
     return null;
   }
 
@@ -168,15 +160,14 @@ public class MenuServlet extends HttpServlet {
     final List<Page> _pages = Page.getPageValuesFromList(getPagesAllowed(sessionId));
     return new ArrayList<MenuItem>() {
       {
-        if (_pages.contains(Page.PERMISSIONS))
+        if (_pages.contains(Page.PERMISSIONS)) {
           add(
               new MenuItem("Permissions", Page.PERMISSIONS)
-                  .setSelected(currentPage.equals(Page.PERMISSIONS)));
-        //				if (_pages.contains(Page.CERTIFICATES))
-        //				add(new MenuItem("Certificates",
-        // Page.CERTIFICATES).setSelected(currentPage.equals(Page.CERTIFICATES)));
-        if (_pages.contains(Page.MONITOR))
-          add(new MenuItem("Monitor", Page.MONITOR).setSelected(currentPage.equals(Page.MONITOR)));
+                  .setSelected(Page.PERMISSIONS.equals(currentPage)));
+        }
+        if (_pages.contains(Page.MONITOR)) {
+          add(new MenuItem("Monitor", Page.MONITOR).setSelected(Page.MONITOR.equals(currentPage)));
+        }
       }
     };
   }
@@ -191,16 +182,18 @@ public class MenuServlet extends HttpServlet {
    */
   private static List<MenuItem> createMenuItems(
       List<Page> allowedPages, Page selectedPage, String sessionId) {
-    List<MenuItem> menu = new ArrayList<MenuItem>();
+    List<MenuItem> menu = new ArrayList<>();
     if (allowedPages.contains(Page.DASHBOARD_SUPPORT)) {
       MenuItem support =
           new MenuItem("Support", Page.DASHBOARD_SUPPORT)
               .setSelected(
                   selectedPage.equalsAny(Page.SEARCH, Page.DASHBOARD_SUPPORT, Page.SYSLOG));
-      if (allowedPages.contains(Page.SEARCH))
+      if (allowedPages.contains(Page.SEARCH)) {
         support.addSubMenuItem(new MenuItem("Search", Page.SEARCH));
-      if (allowedPages.contains(Page.SYSLOG))
+      }
+      if (allowedPages.contains(Page.SYSLOG)) {
         support.addSubMenuItem(new MenuItem("Syslog", Page.SYSLOG));
+      }
       support.addSubMenuItem(new MenuItem("Forum support", "http://freeacs.freeforums.org/"));
       menu.add(support);
     }
@@ -209,22 +202,25 @@ public class MenuServlet extends HttpServlet {
           new MenuItem("Easy Provisioning", Page.TOPMENU_EASY)
               .setSelected(selectedPage.equalsAny(Page.UNITTYPE, Page.PROFILE, Page.UNIT))
               .setDisableOnClickWithJavaScript();
-      if (allowedPages.contains(Page.UNITTYPE))
+      if (allowedPages.contains(Page.UNITTYPE)) {
         simpleProv.addSubMenuItem(
             new MenuItem("Unit Type", Page.UNITTYPEOVERVIEW)
                 .addSubMenuItems(
                     new MenuItem("Unit Type Overview", Page.UNITTYPEOVERVIEW),
                     new MenuItem("Create Unit Type", Page.UNITTYPECREATE)));
-      if (allowedPages.contains(Page.PROFILE))
+      }
+      if (allowedPages.contains(Page.PROFILE)) {
         simpleProv.addSubMenuItem(
             new MenuItem("Profile", Page.PROFILEOVERVIEW)
                 .addSubMenuItems(
                     new MenuItem("Profile Overview", Page.PROFILEOVERVIEW),
                     new MenuItem("Create Profile", Page.PROFILECREATE)));
-      if (allowedPages.contains(Page.UNIT))
+      }
+      if (allowedPages.contains(Page.UNIT)) {
         simpleProv.addSubMenuItem(
             new MenuItem("Unit", Page.UNIT)
                 .addSubMenuItems(new MenuItem("Create Unit", Page.UNIT).addCommand("create")));
+      }
       menu.add(simpleProv);
     }
     if (allowedPages.contains(Page.TOPMENU_ADV)) {
@@ -232,18 +228,20 @@ public class MenuServlet extends HttpServlet {
           new MenuItem("Advanced Provisioning", Page.TOPMENU_ADV)
               .setSelected(selectedPage.equalsAny(Page.GROUP, Page.JOB))
               .setDisableOnClickWithJavaScript();
-      if (allowedPages.contains(Page.GROUP))
+      if (allowedPages.contains(Page.GROUP)) {
         advProv.addSubMenuItem(
             new MenuItem("Group", Page.GROUPSOVERVIEW)
                 .addSubMenuItems(
                     new MenuItem("Group Overview", Page.GROUPSOVERVIEW),
                     new MenuItem("Create Group", Page.GROUP).addCommand("create")));
-      if (allowedPages.contains(Page.JOB))
+      }
+      if (allowedPages.contains(Page.JOB)) {
         advProv.addSubMenuItem(
             new MenuItem("Job", Page.JOBSOVERVIEW)
                 .addSubMenuItems(
                     new MenuItem("Job Overview", Page.JOBSOVERVIEW),
                     new MenuItem("Create Job", Page.JOB).addCommand("create")));
+      }
       menu.add(advProv);
     }
     if (allowedPages.contains(Page.TOPMENU_FILESCRIPT)) {
@@ -251,8 +249,9 @@ public class MenuServlet extends HttpServlet {
           new MenuItem("Files & Scripts", Page.TOPMENU_FILESCRIPT)
               .setSelected(selectedPage.equalsAny(Page.FILES, Page.SCRIPTEXECUTIONS))
               .setDisableOnClickWithJavaScript();
-      if (allowedPages.contains(Page.FILES))
+      if (allowedPages.contains(Page.FILES)) {
         filescript.addSubMenuItem(new MenuItem("Files", Page.FILES));
+      }
       filescript.addSubMenuItem(new MenuItem("Script Executions", Page.SCRIPTEXECUTIONS));
 
       menu.add(filescript);

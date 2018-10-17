@@ -35,7 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Syslog2DB implements Runnable {
-
   private final Properties properties;
   private DataSource xapsCp;
 
@@ -56,7 +55,7 @@ public class Syslog2DB implements Runnable {
   private static Pattern simpleIPPattern =
       Pattern.compile("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}");
 
-  private static List<Pattern> deviceIdPatterns = new ArrayList<Pattern>();
+  private static List<Pattern> deviceIdPatterns = new ArrayList<>();
 
   static {
     deviceIdPatterns.add(Pattern.compile("\\[([a-fA-F0-9:-]{12,17})\\]:"));
@@ -76,7 +75,9 @@ public class Syslog2DB implements Runnable {
           logger.error(
               "A mac-pattern (" + patternStr + ") was incorrect and will not be used." + t);
         }
-      } else pattern = null;
+      } else {
+        pattern = null;
+      }
     } while (pattern != null);
   }
 
@@ -143,22 +144,31 @@ public class Syslog2DB implements Runnable {
       try {
         if (pause) {
           Thread.sleep(1000);
-          if (Sleep.isTerminated()) return;
+          if (Sleep.isTerminated()) {
+            return;
+          }
           continue;
         }
         SyslogPacket packet = SyslogPackets.get();
-        if (Sleep.isTerminated()) return;
-        if (packet == null) continue;
+        if (Sleep.isTerminated()) {
+          return;
+        }
+        if (packet == null) {
+          continue;
+        }
         try {
           SyslogEntry entry = prepareEntry(packet);
           ok = true;
-          if (entry == null) continue;
+          if (entry == null) {
+            continue;
+          }
           syslog.write(entry);
           counter.incOk();
           //					incWriteCount();
-          if (logger.isDebugEnabled())
+          if (logger.isDebugEnabled()) {
             logger.debug(
                 "The syslog message is written to database (unitId: " + entry.getUnitId() + ")");
+          }
         } catch (Throwable t) {
           throwable = t;
           ok = false;
@@ -179,8 +189,7 @@ public class Syslog2DB implements Runnable {
 
   private SyslogEntry processSyslogEvent(
       SyslogEntry entry, SyslogEvent se, Unittype unittype, Unit unit) throws SQLException {
-
-    if (logger.isDebugEnabled())
+    if (logger.isDebugEnabled()) {
       logger.debug(
           "Unitid "
               + entry.getUnitId()
@@ -189,6 +198,7 @@ public class Syslog2DB implements Runnable {
               + " (policy: "
               + se.getStorePolicy()
               + ")");
+    }
     if (se.getScript() != null) {
       String scriptArgs =
           "\"-uut:"
@@ -207,22 +217,24 @@ public class Syslog2DB implements Runnable {
       entry.setEventId(se.getEventId());
     } else if (se.getStorePolicy() == StorePolicy.DISCARD) {
       counter.incKnownEventDiscarded();
-      if (logger.isDebugEnabled())
+      if (logger.isDebugEnabled()) {
         logger.debug(
             "Unitid "
                 + entry.getUnitId()
                 + " has a message which matches eventId "
                 + se.getEventId()
                 + ", which task is to discard - thus discarded.");
+      }
       return null;
     } else if (se.getStorePolicy() == StorePolicy.DUPLICATE) {
-      if (logger.isDebugEnabled())
+      if (logger.isDebugEnabled()) {
         logger.debug(
             "Unitid "
                 + entry.getUnitId()
                 + " has a message which matches eventId "
                 + se.getEventId()
                 + ", which task is duplicate check - may be discarded");
+      }
       String key = entry.getUnitId() + entry.getContent();
       if (!DuplicateCheck.addMessage(key, entry, SyslogEvent.DUPLICATE_TIMEOUT, properties)) {
         counter.incKnownEventDuplicated();
@@ -243,16 +255,17 @@ public class Syslog2DB implements Runnable {
     ACS acs = populateXAPS();
     if (cv == null) {
       ACSUnit acsUnit = new ACSUnit(xapsCp, acs, syslog);
-      if (entry.getTag() != null && entry.getTag().equals("UNITID"))
+      if ("UNITID".equals(entry.getTag())) {
         unit = acsUnit.getUnitById(entry.getUnitId());
-      else unit = acsUnit.getLimitedUnitByValue(entry.getUnitId());
-      if (unit == null) {
-        cv = new CacheValue("Not found", Cache.ABSOLUTE, 1000 * 30);
-        unitCache.put(entry.getUnitId(), cv);
       } else {
-        cv = new CacheValue(unit, Cache.ABSOLUTE, 15 * 1000 * 60);
-        unitCache.put(entry.getUnitId(), cv);
+        unit = acsUnit.getLimitedUnitByValue(entry.getUnitId());
       }
+      if (unit != null) {
+        cv = new CacheValue(unit, Cache.ABSOLUTE, 15 * 1000 * 60);
+      } else {
+        cv = new CacheValue("Not found", Cache.ABSOLUTE, 1000 * 30);
+      }
+      unitCache.put(entry.getUnitId(), cv);
     }
     Object o = cv.getObject();
     if (o instanceof Unit) {
@@ -263,10 +276,13 @@ public class Syslog2DB implements Runnable {
       Unittype unittype = acs.getUnittype(entry.getUnittypeName());
 
       UnitParameter swUp = unit.getUnitParameters().get(SystemParameters.SOFTWARE_VERSION);
-      if (swUp != null && entry.getFacilityVersion() == null)
+      if (swUp != null && entry.getFacilityVersion() == null) {
         entry.setFacilityVersion(swUp.getValue());
+      }
       entry = populateSyslogEvent(unittype, entry, unit);
-      if (entry == null) return null;
+      if (entry == null) {
+        return null;
+      }
     } else {
       // unit was not found in xAPS
       String action = properties.getUnknownUnitsAction();
@@ -287,39 +303,43 @@ public class Syslog2DB implements Runnable {
           }
           Profile profile = unittype.getProfiles().getByName("Default");
           ACSUnit acsUnit = new ACSUnit(xapsCp, acs, syslog);
-          List<String> units = new ArrayList<String>();
+          List<String> units = new ArrayList<>();
           String unitId = "000000-MD-" + entry.getUnitId();
           units.add(unitId);
           acsUnit.addUnits(units, profile);
           UnittypeParameter utp =
               unittype.getUnittypeParameters().getByName(SystemParameters.SERIAL_NUMBER);
-          List<UnitParameter> unitParameters = new ArrayList<UnitParameter>();
+          List<UnitParameter> unitParameters = new ArrayList<>();
           unitParameters.add(new UnitParameter(utp, unitId, entry.getUnitId(), profile));
           acsUnit.addOrChangeUnitParameters(unitParameters, profile);
           unitCache.remove(entry.getUnitId());
-          if (logger.isDebugEnabled())
+          if (logger.isDebugEnabled()) {
             logger.debug(
                 "Unitid "
                     + entry.getUnitId()
                     + " unknown, but unknown units are allowed and dummy unit is created");
-        } else {
-          if (logger.isDebugEnabled())
-            logger.debug("Unitid " + entry.getUnitId() + " unknown, but unknown units are allowed");
+          }
+        } else if (logger.isDebugEnabled()) {
+          logger.debug("Unitid " + entry.getUnitId() + " unknown, but unknown units are allowed");
         }
-      } else if (action.equals("discard")) {
-        if (logger.isDebugEnabled())
-          logger.debug("Unitid " + entry.getUnitId() + " unknown, and unknown units are discarded");
-        counter.incUknownDiscarded();
-        return null;
       } else {
-        if (logger.isDebugEnabled())
-          logger.debug(
-              "Unitid "
-                  + entry.getUnitId()
-                  + " unknown, and unknown units are redirected to "
-                  + action);
-        SyslogClient.send(action, packet, properties.getPort());
-        counter.incUknownRedirected();
+        if ("discard".equals(action)) {
+          if (logger.isDebugEnabled()) {
+            logger.debug(
+                "Unitid " + entry.getUnitId() + " unknown, and unknown units are discarded");
+          }
+          counter.incUknownDiscarded();
+        } else {
+          if (logger.isDebugEnabled()) {
+            logger.debug(
+                "Unitid "
+                    + entry.getUnitId()
+                    + " unknown, and unknown units are redirected to "
+                    + action);
+          }
+          SyslogClient.send(action, packet, properties.getPort());
+          counter.incUknownRedirected();
+        }
         return null;
       }
     }
@@ -329,18 +349,22 @@ public class Syslog2DB implements Runnable {
   private SyslogEntry populateSyslogEvent(Unittype unittype, SyslogEntry entry, Unit unit)
       throws SQLException {
     SyslogEvent[] syslogEvents = unittype.getSyslogEvents().getSyslogEvents();
-    if (logger.isDebugEnabled())
+    if (logger.isDebugEnabled()) {
       logger.debug("Found " + syslogEvents.length + " syslog events for unit-id " + unit.getId());
+    }
     for (SyslogEvent se : syslogEvents) {
-      if (se.getEventId() < 1000) continue;
-      if (logger.isDebugEnabled())
+      if (se.getEventId() < 1000) {
+        continue;
+      }
+      if (logger.isDebugEnabled()) {
         logger.debug(
             "Syslog event " + se.getId() + " has expression pattern " + se.getExpressionPattern());
+      }
       Matcher m = se.getExpressionPattern().matcher(entry.getContent());
       if (m.find()) {
         if (se.getGroup() != null) {
           if (se.getGroup().match(unit)) {
-            if (logger.isDebugEnabled())
+            if (logger.isDebugEnabled()) {
               logger.debug(
                   "Unit-id: "
                       + unit.getId()
@@ -350,60 +374,74 @@ public class Syslog2DB implements Runnable {
                       + se.getExpression()
                       + " matched "
                       + entry.getContent());
+            }
           } else {
             continue;
           }
-        } else {
-          if (logger.isDebugEnabled())
-            logger.debug(
-                "Unit-id: "
-                    + unit.getId()
-                    + " with expression "
-                    + se.getExpression()
-                    + " matched "
-                    + entry.getContent());
+        } else if (logger.isDebugEnabled()) {
+          logger.debug(
+              "Unit-id: "
+                  + unit.getId()
+                  + " with expression "
+                  + se.getExpression()
+                  + " matched "
+                  + entry.getContent());
         }
         Triggers triggers = unittype.getTriggers();
         for (Trigger trigger : triggers.getTriggers()) {
-          if (!trigger.isActive()) continue;
-          if (trigger.getTriggerType() == Trigger.TRIGGER_TYPE_COMPOSITE) continue;
-          if (trigger.getSyslogEvent().getId() != se.getId()) continue;
+          if (!trigger.isActive()
+              || trigger.getTriggerType() == Trigger.TRIGGER_TYPE_COMPOSITE
+              || trigger.getSyslogEvent().getId() != se.getId()) {
+            continue;
+          }
           //					if (trigger.getGroup() != null && !trigger.getGroup().match(unit))
           //						continue;
           counter.incTriggerEvent();
           triggers.addEvent(new TriggerEvent(trigger, new Date(), unit.getId()), populateXAPS());
         }
-        if (processSyslogEvent(entry, se, unittype, unit) == null) return null;
+        if (processSyslogEvent(entry, se, unittype, unit) == null) {
+          return null;
+        }
         break;
       }
     }
-    if (entry.getEventId() == null) entry.setEventId(SyslogConstants.EVENT_DEFAULT);
+    if (entry.getEventId() == null) {
+      entry.setEventId(SyslogConstants.EVENT_DEFAULT);
+    }
     return entry;
   }
 
   private SyslogEntry prepareEntry(SyslogPacket packet) throws SQLException {
     SyslogEntry entry = parse(packet);
-    if (entry == null) return null;
-    if (logger.isDebugEnabled())
+    if (entry == null) {
+      return null;
+    }
+    if (logger.isDebugEnabled()) {
       logger.debug("Syslog message has been parsed (unitId: " + entry.getUnitId() + ")");
+    }
     if (entry.getHostname() == null) {
       entry.setHostname(packet.getAddress());
-      if (logger.isDebugEnabled())
+      if (logger.isDebugEnabled()) {
         logger.debug(
             "No hostname in syslog message, added IP-address (unitId: " + entry.getUnitId() + ")");
+      }
     }
     if (entry.getUnitId() != null && entry.getUnittypeName() == null) {
       entry = prepareEntryWithXAPSInfo(entry, packet);
-      if (entry == null) return null;
+      if (entry == null) {
+        return null;
+      }
     }
     Matcher ipMatcher = simpleIPPattern.matcher(entry.getHostname());
-    if (entry.getHostname() != null && ipMatcher.find()) entry.setIpAddress(entry.getHostname());
-    else entry.setIpAddress(packet.getAddress());
+    if (entry.getHostname() != null && ipMatcher.find()) {
+      entry.setIpAddress(entry.getHostname());
+    } else {
+      entry.setIpAddress(packet.getAddress());
+    }
     return entry;
   }
 
-  // No MAC-pattern were found, let's try using the IP-address
-
+  /** No MAC-pattern were found, let's try using the IP-address. */
   private void handleMissingMAC(SyslogEntry entry, SyslogPacket packet, String parsedSyslogStr) {
     if (entry.getUnitId() == null) {
       entry.setUnitId(packet.getAddress());
@@ -424,7 +462,9 @@ public class Syslog2DB implements Runnable {
     }
 
     SyslogEntry entry = new SyslogEntry();
-    if (packet.isFailoverPacket()) entry.setCollectorTimestamp(new Date(packet.getTms()));
+    if (packet.isFailoverPacket()) {
+      entry.setCollectorTimestamp(new Date(packet.getTms()));
+    }
     entry.setSeverity(severity);
     entry.setFacility(facility);
 
@@ -444,8 +484,8 @@ public class Syslog2DB implements Runnable {
         entry.setTag(syslogStr.substring(0, m.end()));
         syslogStr = syslogStr.substring(m.end());
         // Special hack to signal setting of UnitId directly, not using MAC/Serialnumber (as usual)
-        if (entry.getTag() != null && entry.getTag().equals("UNITID")) {
-          int unitIdStartPos = syslogStr.indexOf("[") + 1;
+        if ("UNITID".equals(entry.getTag())) {
+          int unitIdStartPos = syslogStr.indexOf('[') + 1;
           int unitIdEndPos = syslogStr.indexOf("]:");
           entry.setUnitId(syslogStr.substring(unitIdStartPos, unitIdEndPos));
           entry.setContent(syslogStr.substring(unitIdEndPos + 2).trim());
@@ -460,17 +500,17 @@ public class Syslog2DB implements Runnable {
           int userIdPos = content.indexOf("USER:");
           String userId = null;
           if (userIdPos > -1) {
-            userId = content.substring(userIdPos + 5, content.indexOf(" ", userIdPos + 5));
+            userId = content.substring(userIdPos + 5, content.indexOf(' ', userIdPos + 5));
             content =
-                content.substring(content.indexOf(" ", userIdPos + 5)); // Content is rest of string
+                content.substring(content.indexOf(' ', userIdPos + 5)); // Content is rest of string
           }
 
           int fcvPos = content.indexOf("FCV:");
           String facilityVersion = null;
           if (fcvPos > -1) {
-            facilityVersion = content.substring(fcvPos + 4, content.indexOf(" ", fcvPos + 4));
+            facilityVersion = content.substring(fcvPos + 4, content.indexOf(' ', fcvPos + 4));
             content =
-                content.substring(content.indexOf(" ", fcvPos + 4)); // Content is rest of string
+                content.substring(content.indexOf(' ', fcvPos + 4)); // Content is rest of string
           }
 
           entry.setFacilityVersion(facilityVersion);
@@ -487,7 +527,6 @@ public class Syslog2DB implements Runnable {
           break;
         }
       }
-      if (entry.getUnitId() == null) handleMissingMAC(entry, packet, syslogStr);
     } else {
       for (Pattern macPattern : deviceIdPatterns) {
         m = macPattern.matcher(syslogStr.trim());
@@ -497,7 +536,9 @@ public class Syslog2DB implements Runnable {
           break;
         }
       }
-      if (entry.getUnitId() == null) handleMissingMAC(entry, packet, syslogStr);
+    }
+    if (entry.getUnitId() == null) {
+      handleMissingMAC(entry, packet, syslogStr);
     }
     if (entry.getContent() != null) {
       int triplePipePos = entry.getContent().lastIndexOf("|||");
@@ -508,7 +549,9 @@ public class Syslog2DB implements Runnable {
         entry.setContent(entry.getContent().substring(0, triplePipePos).trim());
       }
       return entry;
-    } else return null;
+    } else {
+      return null;
+    }
   }
 
   public static boolean isOk() {
@@ -532,7 +575,6 @@ public class Syslog2DB implements Runnable {
   }
 
   public static class Syslog2DBCounter {
-
     private int unknownRedirected;
     private int unknownDiscarded;
     private int unknownAllowed;
@@ -559,7 +601,6 @@ public class Syslog2DB implements Runnable {
         int failed,
         int triggerEvent,
         int scriptExecuted) {
-      super();
       this.unknownRedirected = unknownRedirected;
       this.unknownDiscarded = unknownDiscarded;
       this.unknownAllowed = unknownAllowed;

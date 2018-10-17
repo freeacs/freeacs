@@ -35,7 +35,7 @@ public class MethodListHandler extends DefaultHandler {
   }
 
   public void characters(char[] ch, int start, int length) {
-    String content = String.valueOf(ch).substring(start, (start + length));
+    String content = String.valueOf(ch).substring(start, start + length);
     currTextContent.append(content.trim());
   }
 }

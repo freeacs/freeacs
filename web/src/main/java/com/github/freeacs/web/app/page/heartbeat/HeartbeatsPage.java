@@ -26,7 +26,6 @@ import javax.sql.DataSource;
 
 /** The Class HeartbeatsPage. */
 public class HeartbeatsPage extends AbstractWebPage {
-
   /** The input data. */
   private HeartbeatsData inputData;
 
@@ -39,7 +38,6 @@ public class HeartbeatsPage extends AbstractWebPage {
       DataSource xapsDataSource,
       DataSource syslogDataSource)
       throws Exception {
-
     /* Parse input data to the servlet */
     inputData = (HeartbeatsData) InputDataRetriever.parseInto(new HeartbeatsData(), params);
 
@@ -66,8 +64,9 @@ public class HeartbeatsPage extends AbstractWebPage {
     outputHandler.setTemplatePath("heartbeat/heartbeats.ftl");
   }
 
-  /* Should output an event, if an event is chosen. If not a default "blank" event must be the output
-   * Will always output a list of all possible events within this unittype.
+  /**
+   * Should output an event, if an event is chosen. If not a default "blank" event must be the
+   * output Will always output a list of all possible events within this unittype.
    */
   private void output(Output outputHandler, Unittype unittype, Heartbeat hb) {
     Map<String, Object> fmMap = outputHandler.getTemplateMap();
@@ -76,16 +75,14 @@ public class HeartbeatsPage extends AbstractWebPage {
     Heartbeats heartbeats = unittype.getHeartbeats();
 
     /* Output for the configuration */
-    if (hb != null) // Get the heartbeat from the action()
-    fmMap.put("heartbeat", hb);
-    else { // Get the heartbeat from URL
-      if (inputData.getId().getInteger() != null) {
-        hb = heartbeats.getById(inputData.getId().getInteger());
-        fmMap.put("heartbeat", hb);
-      }
+    if (hb != null) {
+      fmMap.put("heartbeat", hb);
+    } else if (inputData.getId().getInteger() != null) {
+      hb = heartbeats.getById(inputData.getId().getInteger());
+      fmMap.put("heartbeat", hb);
     }
 
-    Group selectedGroup = (hb != null ? hb.getGroup() : null);
+    Group selectedGroup = hb != null ? hb.getGroup() : null;
     DropDownSingleSelect<Group> groups =
         InputSelectionFactory.getDropDownSingleSelect(
             inputData.getGroupId(), selectedGroup, Arrays.asList(unittype.getGroups().getGroups()));
@@ -95,12 +92,13 @@ public class HeartbeatsPage extends AbstractWebPage {
     fmMap.put("heartbeats", heartbeats.getHeartbeats());
   }
 
-  /*
+  /**
    * Will delete, add or edit a heartbeat event. Will only update fmMap with error/info in the fmMap
-   * If a heartbeat is returned, it is part of an add/update action and should be displayed in the output
+   * If a heartbeat is returned, it is part of an add/update action and should be displayed in the
+   * output
    */
   private Heartbeat action(ParameterParser params, Output outputHandler, Unittype unittype)
-      throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+      throws IllegalAccessException, InvocationTargetException {
     Map<String, Object> fmMap = outputHandler.getTemplateMap();
     Heartbeats heartbeats = unittype.getHeartbeats();
 
@@ -115,8 +113,9 @@ public class HeartbeatsPage extends AbstractWebPage {
       if (heartbeat == null) { // Extra code to add heartbeat
         heartbeat = new Heartbeat();
         heartbeat.setUnittype(unittype);
-        if (inputData.getName().getString() != null)
+        if (inputData.getName().getString() != null) {
           heartbeat.setName(inputData.getName().getString());
+        }
       }
       heartbeat.validateInput(false);
       //			if (inputData.getGroupId().getInteger() != null)
@@ -141,8 +140,7 @@ public class HeartbeatsPage extends AbstractWebPage {
   }
 
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
-    List<MenuItem> list = new ArrayList<MenuItem>();
-    list.addAll(super.getShortcutItems(sessionData));
+    List<MenuItem> list = new ArrayList<>(super.getShortcutItems(sessionData));
     list.add(new MenuItem("Unit type overview", Page.UNITTYPEOVERVIEW));
     list.add(
         new MenuItem("Trigger overview", Page.TRIGGEROVERVIEW)

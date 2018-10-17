@@ -22,17 +22,18 @@ import java.util.Optional;
 import javax.sql.DataSource;
 
 public class ACSShell {
-
   public static String version = "2.3.41";
 
   private BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
   private PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
-  private List<Throwable> throwables = new ArrayList<Throwable>();
+  private List<Throwable> throwables = new ArrayList<>();
   private Session session;
-  private boolean initialized = false;
+  private boolean initialized;
 
   protected void setReader(BufferedReader reader) {
-    if (in == null) throw new IllegalArgumentException("BufferedReader cannot be null");
+    if (in == null) {
+      throw new IllegalArgumentException("BufferedReader cannot be null");
+    }
     in = reader;
   }
 
@@ -41,7 +42,9 @@ public class ACSShell {
   }
 
   public void setPrinter(PrintWriter printer) {
-    if (out == null) throw new IllegalArgumentException("PrintWriter cannot be null");
+    if (out == null) {
+      throw new IllegalArgumentException("PrintWriter cannot be null");
+    }
     out = printer;
   }
 
@@ -58,18 +61,22 @@ public class ACSShell {
   private Users getUsers() throws Exception {
     if (session.getMode() != SessionMode.DAEMON
         && session.getFusionUser() == null
-        && session.getFusionPass() == null) initFusionUser(session);
+        && session.getFusionPass() == null) {
+      initFusionUser(session);
+    }
     Users users = null;
     try {
       users = new Users(session.getXapsProps());
       if (session.getFusionUser() != null) {
         User u = users.getUnprotected(session.getFusionUser());
-        if (u == null)
+        if (u == null) {
           throw new IllegalArgumentException(
               "The Fusion Username " + session.getFusionUser() + " was not recognized");
+        }
         if (session.getMode() != SessionMode.DAEMON
-            && !u.isCorrectSecret(session.getFusionPass())) // In Daemon-mode, we skip the password
-        throw new IllegalArgumentException("The Fusion Password was wrong");
+            && !u.isCorrectSecret(session.getFusionPass())) {
+          throw new IllegalArgumentException("The Fusion Password was wrong");
+        }
         session.setVerifiedFusionUser(u);
       } else {
         session.setVerifiedFusionUser(
@@ -81,7 +88,9 @@ public class ACSShell {
       println(
           "\nCould not connect to database, showing the first 150 byte of the error-message:\n");
       String msg = t.getMessage();
-      if (t.getMessage().length() > 150) msg = t.getMessage().substring(0, 150) + "....";
+      if (t.getMessage().length() > 150) {
+        msg = t.getMessage().substring(0, 150) + "....";
+      }
       println(
           "\n**********************************\n "
               + msg
@@ -97,8 +106,7 @@ public class ACSShell {
     Users users = getUsers();
     session.setUsers(users);
     Identity id =
-        new Identity(
-            SyslogConstants.FACILITY_SHELL, ACSShell.version, session.getVerifiedFusionUser());
+        new Identity(SyslogConstants.FACILITY_SHELL, version, session.getVerifiedFusionUser());
     Syslog syslog = new Syslog(session.getSysProps(), id);
     DBI dbi = new DBI(Integer.MAX_VALUE, session.getXapsProps(), syslog);
     session.setDbi(dbi);
@@ -112,7 +120,7 @@ public class ACSShell {
   private boolean help(String[] args) {
     if (args != null) {
       for (String arg : args) {
-        if (arg.equals("-help") || arg.equals("-?")) {
+        if ("-help".equals(arg) || "-?".equals(arg)) {
           println("Usage:\n");
           println("xapsshell");
           println("\tInteractive session. Choose DB in application");
@@ -174,7 +182,6 @@ public class ACSShell {
       session = new Session(args, this);
       init(xapsDs, syslogDs);
       if (session.getMode() != SessionMode.SCRIPT) {
-
         println("  ____ _  _ ____ _ ____ _  _    ____ _  _ ____ _    _    ");
         println("  |___ |  | [__  | |  | |\\ |    [__  |__| |___ |    |");
         println("  |    |__| ___] | |__| | \\|    ___] |  | |___ |___ |___ v" + version + "\n\n");
@@ -194,22 +201,28 @@ public class ACSShell {
         println("  long as it's not ambigious.\n\n");
       }
       initialized = true;
-      while (true) {
+      do {
         try {
           session.getProcessor().promptProcessing();
         } catch (IOException e) {
           addThrowable(e);
           println("An I/O-error occurred: " + e);
-          if (session.getMode() == SessionMode.SCRIPT) session.exitShell(1);
+          if (session.getMode() == SessionMode.SCRIPT) {
+            session.exitShell(1);
+          }
         } catch (SQLException sqle) {
           addThrowable(sqle);
           session.getContext().resetXAPS(session.getDbi().getAcs());
           println("An SQL-error occurred: " + sqle);
-          if (session.getMode() == SessionMode.SCRIPT) session.exitShell(1);
+          if (session.getMode() == SessionMode.SCRIPT) {
+            session.exitShell(1);
+          }
         } catch (IllegalArgumentException iae) {
           addThrowable(iae);
           println("Error: " + iae.getMessage());
-          if (session.getMode() == SessionMode.SCRIPT) session.exitShell(1);
+          if (session.getMode() == SessionMode.SCRIPT) {
+            session.exitShell(1);
+          }
         } catch (Throwable tInner) {
           addThrowable(tInner);
           println(
@@ -217,9 +230,11 @@ public class ACSShell {
                   + tInner.getClass().getName()
                   + "): "
                   + tInner.getMessage());
-          if (session.getMode() == SessionMode.SCRIPT) session.exitShell(1);
+          if (session.getMode() == SessionMode.SCRIPT) {
+            session.exitShell(1);
+          }
         }
-      }
+      } while (true);
     } catch (Throwable t) {
       addThrowable(t);
       println("\n\nAn unexpected error occurred:" + t);
@@ -266,14 +281,15 @@ public class ACSShell {
 
   private void initFusionUser(Session session) throws IOException {
     session.println("=== FUSION LOGIN === ");
-    if (!Properties.isRestricted())
+    if (!Properties.isRestricted()) {
       session.println("You may skip login to become Admin, just press ENTER");
+    }
     session.print("Username: ");
     String fusionUser = session.getProcessor().retrieveInput();
     if (Properties.isRestricted()
         || (fusionUser != null
-            && fusionUser.trim().length() > 0
-            && !fusionUser.toLowerCase().equals("admin"))) {
+            && !fusionUser.trim().isEmpty()
+            && !"admin".equals(fusionUser.toLowerCase()))) {
       session.setFusionUser(fusionUser);
       session.print("Password: ");
       session.setFusionPass(session.getProcessor().retrieveInput());

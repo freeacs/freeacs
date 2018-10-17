@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MethodList {
-
   private List<String> methods;
 
   public MethodList() {

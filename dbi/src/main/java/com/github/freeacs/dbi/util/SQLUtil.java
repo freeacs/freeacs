@@ -3,7 +3,6 @@ package com.github.freeacs.dbi.util;
 import com.github.freeacs.dbi.DynamicStatement;
 
 public class SQLUtil {
-
   /**
    * As string-input coming from Web/XML-based input cannot contain the character '%' (due to
    * conflicts over URL-encoding, etc), we offer a method to convert from a semi-regexp format to a
@@ -37,32 +36,45 @@ public class SQLUtil {
    */
   public static DynamicStatement input2SQLCriteria(
       DynamicStatement ds, String criteriaName, String criteria) {
-    if (criteria == null) return ds;
+    if (criteria == null) {
+      return ds;
+    }
     boolean equality = true;
     if (criteria.startsWith("!")) {
       criteria = criteria.substring(1);
       equality = false;
     }
     String[] contentArr = criteria.split("\\|");
-    if (contentArr.length > 1 && equality) ds.addSql("(");
+    if (contentArr.length > 1 && equality) {
+      ds.addSql("(");
+    }
     for (String c : contentArr) {
       c = c.replace('*', '%');
       String searchStr = "%" + c + "%";
-      boolean exact = false;
-      if (c.startsWith("^") && c.endsWith("$") && c.indexOf("%") == -1 && c.indexOf("_") == -1)
-        exact = true;
-      if (c.startsWith("^")) searchStr = searchStr.substring(2); // remove %^
-      if (c.endsWith("$")) searchStr = searchStr.substring(0, searchStr.length() - 2); // remove $%
+      boolean exact =
+          c.startsWith("^") && c.endsWith("$") && c.indexOf('%') == -1 && c.indexOf('_') == -1;
+      if (c.startsWith("^")) {
+        searchStr = searchStr.substring(2);
+      } // remove %^
+      if (c.endsWith("$")) {
+        searchStr = searchStr.substring(0, searchStr.length() - 2);
+      } // remove $%
       if (exact) {
-        if (equality) ds.addSqlAndArguments(criteriaName + " = ? OR ", searchStr);
-        else ds.addSqlAndArguments(criteriaName + " <> ? AND ", searchStr);
+        if (equality) {
+          ds.addSqlAndArguments(criteriaName + " = ? OR ", searchStr);
+        } else {
+          ds.addSqlAndArguments(criteriaName + " <> ? AND ", searchStr);
+        }
+      } else if (equality) {
+        ds.addSqlAndArguments(criteriaName + " LIKE ? OR ", searchStr);
       } else {
-        if (equality) ds.addSqlAndArguments(criteriaName + " LIKE ? OR ", searchStr);
-        else ds.addSqlAndArguments(criteriaName + " NOT LIKE ? AND ", searchStr);
+        ds.addSqlAndArguments(criteriaName + " NOT LIKE ? AND ", searchStr);
       }
     }
     ds.cleanupSQLTail();
-    if (contentArr.length > 1 && equality) ds.addSql(")");
+    if (contentArr.length > 1 && equality) {
+      ds.addSql(")");
+    }
     return ds;
   }
 }

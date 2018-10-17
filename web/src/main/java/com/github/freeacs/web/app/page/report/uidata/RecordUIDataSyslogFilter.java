@@ -31,17 +31,17 @@ public class RecordUIDataSyslogFilter {
   public final String severity;
   public static final String severity_default = null;
   private static final List<String> severityList =
-      new ArrayList<String>(SyslogConstants.severityMap.values());
+      new ArrayList<>(SyslogConstants.severityMap.values());
 
   public final String facility;
   public static final String facility_default = null;
   private static final List<String> facilityList =
-      new ArrayList<String>(SyslogConstants.facilityMap.values());
+      new ArrayList<>(SyslogConstants.facilityMap.values());
 
   public final String eventid;
   public static final String eventid_default = null;
   private static final List<String> eventIdList =
-      new ArrayList<String>(SyslogConstants.eventMap.values());
+      new ArrayList<>(SyslogConstants.eventMap.values());
 
   public RecordUIDataSyslogFilter(UnitListData inputData, Map<String, Object> root) {
     msg_count_low = inputData.getMsgCountLow().getInteger(msg_count_low_default);
@@ -69,8 +69,9 @@ public class RecordUIDataSyslogFilter {
   }
 
   private boolean isMessageCountRelevant(RecordUIDataSyslogSumFromReport record) {
-    if (msg_count_high != null)
+    if (msg_count_high != null) {
       return record.getTotal() > msg_count_low && record.getTotal() < msg_count_high;
+    }
     return record.getTotal() > msg_count_low;
   }
 }

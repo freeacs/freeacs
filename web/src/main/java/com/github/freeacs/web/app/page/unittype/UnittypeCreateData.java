@@ -5,7 +5,6 @@ import com.github.freeacs.web.app.input.InputData;
 import java.util.Map;
 
 public class UnittypeCreateData extends InputData {
-
   /** The new description. */
   private Input newDescription = Input.getStringInput("new_description");
 
@@ -24,15 +23,9 @@ public class UnittypeCreateData extends InputData {
   /** The unittype to copy from. */
   private Input unittypeToCopyFrom = Input.getStringInput("unittypeToCopyFrom");
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.input.InputData#bindForm(java.util.Map)
-   */
   @Override
   protected void bindForm(Map<String, Object> root) {}
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.input.InputData#validateForm()
-   */
   @Override
   protected boolean validateForm() {
     return false;

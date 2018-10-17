@@ -13,7 +13,7 @@ public class AllowedProfile {
   /** The id. */
   private Integer id;
 
-  /** OR */
+  /** OR. */
 
   /** The name. */
   private String name;
@@ -25,15 +25,6 @@ public class AllowedProfile {
    */
   public AllowedProfile(Integer id) {
     this.id = id;
-  }
-
-  /**
-   * Instantiates a new allowed profile.
-   *
-   * @param name the name
-   */
-  public AllowedProfile(String name) {
-    this.name = name;
   }
 
   /**

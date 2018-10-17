@@ -6,7 +6,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
 
 public class HikariDataSourceHelper {
-
   public static DataSource dataSource(Config config) {
     HikariConfig hikariConfig = new HikariConfig();
     hikariConfig.setDriverClassName(config.getString("datasource.driverClassName"));

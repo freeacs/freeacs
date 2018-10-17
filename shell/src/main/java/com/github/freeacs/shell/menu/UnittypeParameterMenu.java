@@ -40,7 +40,7 @@ public class UnittypeParameterMenu {
       return;
     }
     if (dmp.getEnumeration() != null
-        && dmp.getEnumeration().size() > 0
+        && !dmp.getEnumeration().isEmpty()
         && dmp.getEnumeration().get(0).getValue() != null) {
       UnittypeParameterValues upv = utp.getValues();
       context.print(utp.getName() + " : Adding the following enumerations: ");
@@ -68,19 +68,18 @@ public class UnittypeParameterMenu {
     UnittypeParameterValues upv = up.getValues();
     Listing listing = oh.getListing();
     listing.setHeading("Type", "Values");
-    if (upv != null) {
-      if (upv.getType() != null) {
-        Line line = new Line();
+    if (upv != null && upv.getType() != null) {
+      Line line = new Line();
 
-        line.addValue(upv.getType());
-        if (upv.getType().equals(UnittypeParameterValues.ENUM)) {
-          for (String value : upv.getValues()) {
-            line.addValue(value);
-          }
-        } else if (upv.getType().equals(UnittypeParameterValues.REGEXP))
-          line.addValue(upv.getPattern().toString());
-        listing.addLine(line);
+      line.addValue(upv.getType());
+      if (upv.getType().equals(UnittypeParameterValues.ENUM)) {
+        for (String value : upv.getValues()) {
+          line.addValue(value);
+        }
+      } else if (upv.getType().equals(UnittypeParameterValues.REGEXP)) {
+        line.addValue(upv.getPattern().toString());
       }
+      listing.addLine(line);
     }
   }
 
@@ -93,14 +92,15 @@ public class UnittypeParameterMenu {
       up.setValues(upv);
     }
     if (!args[1].equals(UnittypeParameterValues.ENUM)
-        && !args[1].equals(UnittypeParameterValues.REGEXP))
+        && !args[1].equals(UnittypeParameterValues.REGEXP)) {
       throw new IllegalArgumentException(
           "The first argument must be either "
               + UnittypeParameterValues.ENUM
               + " or "
               + UnittypeParameterValues.REGEXP);
+    }
     if (args[1].equals(UnittypeParameterValues.ENUM)) {
-      List<String> values = new ArrayList<String>();
+      List<String> values = new ArrayList<>();
       for (int i = 2; i < args.length; i++) {
         values.add(args[i]);
       }

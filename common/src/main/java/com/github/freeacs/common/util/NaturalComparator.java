@@ -5,14 +5,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class NaturalComparator implements Comparator<String> {
-
   private Pattern numberPattern = Pattern.compile("\\d+");
 
   public int compare(String s1, String s2) {
     if (s1 != null) {
-      if (s2 != null) return compareImpl(s1, s2);
-      else return 1;
-    } else if (s2 != null) return -1;
+      if (s2 != null) {
+        return compareImpl(s1, s2);
+      } else {
+        return 1;
+      }
+    } else if (s2 != null) {
+      return -1;
+    }
     return 0;
   }
 
@@ -55,15 +59,13 @@ public class NaturalComparator implements Comparator<String> {
     return number;
   }
 
-  /*
-   * This compare routine takes about 9200 ns to perform. The logic goes like this:
-   * 1. Always search for a number.
-   * 2. If a number exists in both strings - perform special compare. Else: string compare.
-   * 3. Special compare:
-   * 3.1. Retrieve the strings before the number. Regular string compare. Return if difference.
-   * 3.2. Retrieve the numbers from both string. Regular int subtraction. Return if difference.
-   * 3.3. Continue with rest of the string, perform 3.1 and 3.2 in a loop.
-   * 3.4. If no more numbers are found : string compare.
+  /**
+   * This compare routine takes about 9200 ns to perform. The logic goes like this: 1. Always search
+   * for a number. 2. If a number exists in both strings - perform special compare. Else: string
+   * compare. 3. Special compare: 3.1. Retrieve the strings before the number. Regular string
+   * compare. Return if difference. 3.2. Retrieve the numbers from both string. Regular int
+   * subtraction. Return if difference. 3.3. Continue with rest of the string, perform 3.1 and 3.2
+   * in a loop. 3.4. If no more numbers are found : string compare.
    */
   private int compareImpl(String str1, String str2) {
     Matcher matcher1 = numberPattern.matcher(str1);
@@ -71,8 +73,12 @@ public class NaturalComparator implements Comparator<String> {
     int lastMatchEndPos1 = 0;
     int lastMatchEndPos2 = 0;
     while (matcher1.find()) {
-      if (matcher2 == null) matcher2 = numberPattern.matcher(str2);
-      if (!matcher2.find()) break;
+      if (matcher2 == null) {
+        matcher2 = numberPattern.matcher(str2);
+      }
+      if (!matcher2.find()) {
+        break;
+      }
       String str1BeforeNumber = str1.substring(lastMatchEndPos1, matcher1.start());
       String str2BeforeNumber = str2.substring(lastMatchEndPos2, matcher2.start());
       int compareStrBeforeNumber = str1BeforeNumber.compareTo(str2BeforeNumber);

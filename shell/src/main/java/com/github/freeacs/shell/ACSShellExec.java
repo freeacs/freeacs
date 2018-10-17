@@ -6,7 +6,6 @@ import javax.sql.DataSource;
 import jline.ConsoleReader;
 
 public class ACSShellExec {
-
   public static void main(String[] args) throws Exception {
     SyslogClient.SYSLOG_SERVER_HOST = Properties.pr.getProperty("syslog.server.host");
     ConsoleReader reader = new ConsoleReader();

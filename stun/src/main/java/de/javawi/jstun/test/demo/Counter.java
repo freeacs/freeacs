@@ -1,21 +1,20 @@
 package de.javawi.jstun.test.demo;
 
 public class Counter {
-
-  int request = 0;
-  int requestBinding = 0;
-  int requestBindingNoChange = 0;
-  int requestBindingIPChange = 0;
-  int requestBindingPortChange = 0;
-  int requestBindingIPPortChange = 0;
-  int requestBindingConnection = 0;
-  int requestUnknown = 0;
-  int messageAttributeChangeRequest = 0;
-  int kick = 0;
-  int idle = 0;
-  long receiveTimeNs = 0;
-  long processTimeMs = 0;
-  int error = 0;
+  int request;
+  int requestBinding;
+  int requestBindingNoChange;
+  int requestBindingIPChange;
+  int requestBindingPortChange;
+  int requestBindingIPPortChange;
+  int requestBindingConnection;
+  int requestUnknown;
+  int messageAttributeChangeRequest;
+  int kick;
+  int idle;
+  long receiveTimeNs;
+  long processTimeMs;
+  int error;
 
   public Counter cloneAndReset() {
     Counter clone = new Counter();

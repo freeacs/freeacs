@@ -236,8 +236,6 @@
 											<th>
 												<span title="Click here to check all" class="tiptip" onclick="check('delete')">Delete</span>
 											</th>
-											<#--if mode_session=true><th align="left">CPE (current) value</th></#if-->
-											<#--if mode_readall??><th align="left">CPE (current) value</th></#if-->
 											<#list params as param>
 												<#if param.name == "System.X_FREEACS-COM.ProvisioningMode" && param.unitParameter?? && param.unitParameter.value == "READALL">
 													<th align="left">CPE (current) value</th>

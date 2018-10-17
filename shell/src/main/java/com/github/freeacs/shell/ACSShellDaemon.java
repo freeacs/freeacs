@@ -9,7 +9,9 @@ public class ACSShellDaemon implements Runnable {
   private final DataSource mainDataSource;
   private final DataSource syslogDataSource;
   private String fusionUser;
-  private int index; // used to track which instance of a shell-daemon is running
+  /** Used to track which instance of a shell-daemon is running. */
+  private int index;
+
   private boolean idle = true;
 
   public ACSShellDaemon(DataSource mainDataSource, DataSource syslogDataSource, String fusionUser) {
@@ -34,7 +36,9 @@ public class ACSShellDaemon implements Runnable {
 
   public List<Throwable> getAndResetThrowables() {
     List<Throwable> throwables = ACSShell.getThrowables();
-    if (throwables.size() > 0) ACSShell.setThrowables(new ArrayList<Throwable>());
+    if (!throwables.isEmpty()) {
+      ACSShell.setThrowables(new ArrayList<Throwable>());
+    }
     return throwables;
   }
 

@@ -30,7 +30,6 @@ public class Average {
       try {
         add(Long.parseLong(str), 1);
       } catch (NumberFormatException nfe) {
-
       }
     }
   }
@@ -41,25 +40,22 @@ public class Average {
   }
 
   public void add(Average average) {
-    if (average.getDividend() != this.getDividend())
+    if (average.getDividend() != getDividend()) {
       throw new IllegalArgumentException("Cannot add an average if dividend differs");
+    }
     this.weightedCounter.add(average.getWeightedCounter());
     this.totalWeight.add(average.getTotalWeight());
   }
 
-  public void setAverage(long counter, long weight) {
-    weightedCounter = new Counter();
-    totalWeight = new Counter();
-    add(counter, weight);
-  }
-
   public Long get() {
-    if (totalWeight.get() == 0) return null;
-    return (long) Math.round((double) weightedCounter.get() / (double) totalWeight.get());
+    if (totalWeight.get() == 0) {
+      return null;
+    }
+    return Math.round((double) weightedCounter.get() / totalWeight.get());
   }
 
   public String toString() {
-    return "" + get();
+    return String.valueOf(get());
   }
 
   public long getDividend() {
@@ -68,8 +64,8 @@ public class Average {
 
   public Average clone() {
     Average clone = new Average(dividend);
-    clone.setWeightedCounter(this.getWeightedCounter().clone());
-    clone.setTotalWeight(this.getTotalWeight().clone());
+    clone.setWeightedCounter(getWeightedCounter().clone());
+    clone.setTotalWeight(getTotalWeight().clone());
     return clone;
   }
 

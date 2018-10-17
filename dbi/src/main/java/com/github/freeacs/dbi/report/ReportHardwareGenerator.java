@@ -26,17 +26,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ReportHardwareGenerator extends ReportGenerator {
-
   private static Logger logger = LoggerFactory.getLogger(ReportHardwareGenerator.class);
-  // Memory-content: HW Memory Pool/Current/LowWater: Heap(DDR)
-  // 10863616/10558784/10558144, Heap(OCM) 49152/34876/34876, NP(DDR)
-  // 4471/4094/4089, NP(OCM) 375/246/244
+  /**
+   * Memory-content: HW Memory Pool/Current/LowWater: Heap(DDR) 10863616/10558784/10558144,
+   * Heap(OCM) 49152/34876/34876, NP(DDR) 4471/4094/4089, NP(OCM) 375/246/244
+   */
   private static Pattern memPattern =
       Pattern.compile(
           "[^\\d]*(\\d+)\\/(\\d+)\\/(\\d+)[^\\d]*(\\d*)\\/(\\d+)\\/(\\d+)[^\\d]*(\\d*)\\/(\\d+)\\/(\\d+)[^\\d]*(\\d*)\\/(\\d+)\\/(\\d+).*");
-  // Uptime: [memPattern], Uptime 170:25:40
+  /** Uptime: [memPattern], Uptime 170:25:40 */
   private static Pattern uptimePattern = Pattern.compile("Uptime (\\d+):(\\d+):(\\d+)");
-  // Reboot-content: Reboot reason [0x0002]
+  /** Reboot-content: Reboot reason [0x0002] */
   private static Pattern rebootPattern = Pattern.compile(".*Reboot reason \\[.+\\](.+)");
 
   public ReportHardwareGenerator(
@@ -76,7 +76,9 @@ public class ReportHardwareGenerator extends ReportGenerator {
             new RecordHardware(start, periodType, unittypeName, profileName, softwareVersion);
         Key key = recordTmp.getKey();
         RecordHardware record = report.getRecord(key);
-        if (record == null) record = recordTmp;
+        if (record == null) {
+          record = recordTmp;
+        }
         //				record.getUnitCount().add(rs.getInt("unit_count"));
         record.getBootCount().add(rs.getInt("boot_count"));
         record.getBootMiscCount().add(rs.getInt("boot_misc_count"));
@@ -104,7 +106,7 @@ public class ReportHardwareGenerator extends ReportGenerator {
         report.setRecord(key, record);
         foundDataInReportTable = true;
       }
-      if (foundDataInReportTable)
+      if (foundDataInReportTable) {
         logger.debug(
             logPrefix
                 + "HardwareReport: Have read "
@@ -114,13 +116,18 @@ public class ReportHardwareGenerator extends ReportGenerator {
                 + ", report is now "
                 + report.getMap().size()
                 + " entries");
+      }
       return report;
     } catch (SQLException sqlex) {
       sqle = sqlex;
       throw sqlex;
     } finally {
-      if (rs != null) rs.close();
-      if (ps != null) ps.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.close();
       }
@@ -152,23 +159,31 @@ public class ReportHardwareGenerator extends ReportGenerator {
     filter.setFacilityVersion(swVersion);
     Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
     List<SyslogEntry> entries = syslog.read(filter, acs);
-    Map<String, Report<RecordHardware>> unitReportMap =
-        new HashMap<String, Report<RecordHardware>>();
+    Map<String, Report<RecordHardware>> unitReportMap = new HashMap<>();
     for (SyslogEntry entry : entries) {
       String unitId = entry.getUnitId();
-      if (group != null && unitsInGroup.get(entry.getUnitId()) == null) continue;
-      if (unitId == null || unitId.trim().equals("")) unitId = "Unknown";
+      if (group != null && unitsInGroup.get(entry.getUnitId()) == null) {
+        continue;
+      }
+      if (unitId == null || "".equals(unitId.trim())) {
+        unitId = "Unknown";
+      }
       String unittypeName = entry.getUnittypeName();
-      if (unittypeName == null || unittypeName.trim().equals("")) unittypeName = "Unknown";
+      if (unittypeName == null || "".equals(unittypeName.trim())) {
+        unittypeName = "Unknown";
+      }
       String profileName = entry.getProfileName();
-      if (profileName == null || profileName.trim().equals("")) profileName = "Unknown";
+      if (profileName == null || "".equals(profileName.trim())) {
+        profileName = "Unknown";
+      }
       Report<RecordHardware> report = unitReportMap.get(unitId);
       if (report == null) {
         report = new Report<RecordHardware>(RecordHardware.class, periodType);
         unitReportMap.put(unitId, report);
       }
-      if (entry.getFacilityVersion() == null || entry.getFacilityVersion().trim().equals(""))
+      if (entry.getFacilityVersion() == null || "".equals(entry.getFacilityVersion().trim())) {
         entry.setFacilityVersion("Unknown");
+      }
       RecordHardware recordTmp =
           new RecordHardware(
               entry.getCollectorTimestamp(),
@@ -178,7 +193,9 @@ public class ReportHardwareGenerator extends ReportGenerator {
               entry.getFacilityVersion());
       Key key = recordTmp.getKey();
       RecordHardware record = report.getRecord(key);
-      if (record == null) record = recordTmp;
+      if (record == null) {
+        record = recordTmp;
+      }
       try {
         parseContentAndPopulateRecord(record, entry.getContent(), entry.getCollectorTimestamp());
         report.setRecord(key, record);
@@ -212,7 +229,9 @@ public class ReportHardwareGenerator extends ReportGenerator {
     SyslogFilter filter = new SyslogFilter();
     filter.setFacility(16); // Only messages from device
     filter.setMessage("^Reboot reason|^HW Memory");
-    if (unitId != null) filter.setUnitId("^" + unitId + "$");
+    if (unitId != null) {
+      filter.setUnitId("^" + unitId + "$");
+    }
     filter.setProfiles(prs);
     filter.setUnittypes(uts);
     filter.setCollectorTmsStart(start);
@@ -221,13 +240,20 @@ public class ReportHardwareGenerator extends ReportGenerator {
     Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
     List<SyslogEntry> entries = syslog.read(filter, acs);
     for (SyslogEntry entry : entries) {
-      if (group != null && unitsInGroup.get(entry.getUnitId()) == null) continue;
+      if (group != null && unitsInGroup.get(entry.getUnitId()) == null) {
+        continue;
+      }
       String unittypeName = entry.getUnittypeName();
-      if (unittypeName == null || unittypeName.trim().equals("")) unittypeName = "Unknown";
+      if (unittypeName == null || "".equals(unittypeName.trim())) {
+        unittypeName = "Unknown";
+      }
       String profileName = entry.getProfileName();
-      if (profileName == null || profileName.trim().equals("")) profileName = "Unknown";
-      if (entry.getFacilityVersion() == null || entry.getFacilityVersion().trim().equals(""))
+      if (profileName == null || "".equals(profileName.trim())) {
+        profileName = "Unknown";
+      }
+      if (entry.getFacilityVersion() == null || "".equals(entry.getFacilityVersion().trim())) {
         entry.setFacilityVersion("Unknown");
+      }
       RecordHardware recordTmp =
           new RecordHardware(
               entry.getCollectorTimestamp(),
@@ -237,7 +263,9 @@ public class ReportHardwareGenerator extends ReportGenerator {
               entry.getFacilityVersion());
       Key key = recordTmp.getKey();
       RecordHardware record = report.getRecord(key);
-      if (record == null) record = recordTmp;
+      if (record == null) {
+        record = recordTmp;
+      }
       try {
         parseContentAndPopulateRecord(record, entry.getContent(), entry.getCollectorTimestamp());
         report.setRecord(key, record);
@@ -301,10 +329,13 @@ public class ReportHardwareGenerator extends ReportGenerator {
       m = rebootPattern.matcher(content);
       if (m.matches()) {
         record.getBootCount().inc();
-        if (m.group(1).trim().equalsIgnoreCase("Power-on reset")) record.getBootPowerCount().inc();
-        else if (m.group(1).trim().equalsIgnoreCase("Software reset"))
+        if ("Power-on reset".equalsIgnoreCase(m.group(1).trim())) {
+          record.getBootPowerCount().inc();
+        } else if ("Software reset".equalsIgnoreCase(m.group(1).trim())) {
           record.getBootProvCount().inc();
-        else record.getBootMiscCount().inc();
+        } else {
+          record.getBootMiscCount().inc();
+        }
       }
     } catch (Throwable t) {
       throw new SyslogParseException();

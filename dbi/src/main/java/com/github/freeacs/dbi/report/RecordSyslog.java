@@ -52,14 +52,14 @@ public class RecordSyslog extends Record<RecordSyslog> {
 
   @Override
   public void add(RecordSyslog record) {
-    this.getMessageCount().add(record.getMessageCount());
+    getMessageCount().add(record.getMessageCount());
   }
 
   @Override
   public RecordSyslog clone() {
     RecordSyslog clone =
         new RecordSyslog(tms, periodType, unittypeName, profileName, severity, eventId, facility);
-    clone.setMessageCount(this.getMessageCount().clone());
+    clone.setMessageCount(getMessageCount().clone());
     return clone;
   }
 

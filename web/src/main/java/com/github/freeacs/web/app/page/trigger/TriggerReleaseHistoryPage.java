@@ -29,12 +29,10 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 public class TriggerReleaseHistoryPage extends AbstractWebPage {
-
   private static SimpleDateFormat urlFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
-    List<MenuItem> list = new ArrayList<MenuItem>();
-    list.addAll(super.getShortcutItems(sessionData));
+    List<MenuItem> list = new ArrayList<>(super.getShortcutItems(sessionData));
     list.add(
         new MenuItem("Unit type overview", Page.UNITTYPEOVERVIEW)
             .addParameter("unittype", sessionData.getUnittypeName()));
@@ -57,13 +55,13 @@ public class TriggerReleaseHistoryPage extends AbstractWebPage {
   }
 
   private String getURLDate(Date d) {
-    if (d != null)
+    if (d != null) {
       try {
         return URLEncoder.encode(urlFormat.format(d), "UTF-8");
       } catch (UnsupportedEncodingException e) {
-        // TODO Auto-generated catch block
         return "";
       }
+    }
     return "";
   }
 
@@ -95,11 +93,15 @@ public class TriggerReleaseHistoryPage extends AbstractWebPage {
         inputData.getProfile(),
         inputData.getUnit());
     Input tmsEndInput = inputData.getTmsEnd();
-    if (tmsEndInput != null && tmsEndInput.getValue() != null) tmsEnd = tmsEndInput.getDate();
+    if (tmsEndInput != null && tmsEndInput.getValue() != null) {
+      tmsEnd = tmsEndInput.getDate();
+    }
     Input tmsStartInput = inputData.getTmsStart();
     if (tmsStartInput != null && tmsStartInput.getValue() != null) {
       tmsStart = tmsStartInput.getDate();
-      if (tmsStart.after(tmsEnd)) tmsStart = new Date(tmsEnd.getTime() - 24 * 3600 * 1000);
+      if (tmsStart.after(tmsEnd)) {
+        tmsStart = new Date(tmsEnd.getTime() - 24 * 3600 * 1000);
+      }
     }
     fmMap.put("tmsEnd", urlFormat.format(tmsEnd));
     fmMap.put("tmsStart", urlFormat.format(tmsStart));
@@ -112,7 +114,7 @@ public class TriggerReleaseHistoryPage extends AbstractWebPage {
       Trigger trigger = null;
       fmMap.put(
           "triggers", InputSelectionFactory.getTriggerSelection(triggerIdInput, unittype, acs));
-      List<ReleaseTrigger> releaseTriggerList = new ArrayList<ReleaseTrigger>();
+      List<ReleaseTrigger> releaseTriggerList = new ArrayList<>();
       fmMap.put("releasetriggers", releaseTriggerList);
       if (triggerIdInput != null && triggerIdInput.getValue() != null) {
         trigger = triggers.getById(triggerIdInput.getInteger());
@@ -128,8 +130,9 @@ public class TriggerReleaseHistoryPage extends AbstractWebPage {
           rt.setFirstEventTms(tr.getFirstEventTms());
           rt.setReleaseId(tr.getId());
         }
-        if (rt.getNotifiedTms() == null && tr.getSentTms() != null)
+        if (rt.getNotifiedTms() == null && tr.getSentTms() != null) {
           rt.setNotifiedTms(tr.getSentTms());
+        }
         if (rt.getTrigger().getTriggerType() == Trigger.TRIGGER_TYPE_BASIC
             && rt.getReleasedTms() != null) {
           String syslogQS = "?";

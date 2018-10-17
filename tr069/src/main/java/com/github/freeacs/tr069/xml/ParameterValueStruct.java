@@ -1,7 +1,6 @@
 package com.github.freeacs.tr069.xml;
 
 public class ParameterValueStruct {
-
   private String name;
   private String value;
   private String type;

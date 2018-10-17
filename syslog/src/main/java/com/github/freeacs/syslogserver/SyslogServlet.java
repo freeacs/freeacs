@@ -9,8 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SyslogServlet {
-
-  public static SyslogServer server = null;
+  public static SyslogServer server;
 
   private static Logger logger = LoggerFactory.getLogger(SyslogServlet.class);
   private final DataSource xapsDataSource;
@@ -56,25 +55,30 @@ public class SyslogServlet {
   public String health() {
     StringBuilder status = new StringBuilder();
     if (!FailoverFileReader.isOk()) {
-      status = new StringBuilder(FailoverFileReader.getThrowable() + "\n");
-      for (StackTraceElement ste : FailoverFileReader.getThrowable().getStackTrace())
-        status.append(ste.toString()).append("\n\n");
+      status = new StringBuilder().append(FailoverFileReader.getThrowable()).append("\n");
+      for (StackTraceElement ste : FailoverFileReader.getThrowable().getStackTrace()) {
+        status.append(ste).append("\n\n");
+      }
       status.append("\n");
     }
 
     if (!Syslog2DB.isOk()) {
       status.append(Syslog2DB.getThrowable()).append("\n");
-      for (StackTraceElement ste : Syslog2DB.getThrowable().getStackTrace())
-        status.append(ste.toString()).append("\n");
+      for (StackTraceElement ste : Syslog2DB.getThrowable().getStackTrace()) {
+        status.append(ste).append("\n");
+      }
       status.append("\n");
     }
     if (!SyslogServer.isOk()) {
       status.append(SyslogServer.getThrowable()).append("\n");
-      for (StackTraceElement ste : SyslogServer.getThrowable().getStackTrace())
-        status.append(ste.toString()).append("\n");
+      for (StackTraceElement ste : SyslogServer.getThrowable().getStackTrace()) {
+        status.append(ste).append("\n");
+      }
       status.append("\n");
     }
-    if (status.toString().equals("")) status = new StringBuilder("FREEACSOK");
+    if ("".equals(status.toString())) {
+      status = new StringBuilder("FREEACSOK");
+    }
     return status.toString();
   }
 }

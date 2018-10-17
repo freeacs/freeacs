@@ -8,7 +8,7 @@ public class City {
 
   public City(String cityStr) {
     this.name = cityStr.trim().split("\\s+")[0].trim();
-    this.percent = new Integer(cityStr.trim().split("\\s+")[1].trim());
+    this.percent = Integer.parseInt(cityStr.trim().split("\\s+")[1].trim());
   }
 
   public int getPercent() {

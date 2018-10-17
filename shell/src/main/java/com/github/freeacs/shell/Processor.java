@@ -33,7 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Processor {
-
   private Logger logger = LoggerFactory.getLogger(Processor.class);
 
   private String logPrefix = "";
@@ -42,14 +41,14 @@ public class Processor {
 
   private Echo echo;
 
-  private List<String> daemonCommands = new LinkedList<String>();
-  private List<String> processedCommands = new ArrayList<String>();
+  private List<String> daemonCommands = new LinkedList<>();
+  private List<String> processedCommands = new ArrayList<>();
 
-  // Used to send notify between Shell-thread and
-  // Core script execution thread when
-  //    1. Daemon-command is added to the shell-thread
-  //	  2. Daemon-command is processed in the shell-thread
-  // Used to grant exclusive right to add/remove from daemon-commands
+  /**
+   * Used to send notify between Shell-thread and Core script execution thread when 1.
+   * Daemon-command is added to the shell-thread 2. Daemon-command is processed in the shell-thread
+   * Used to grant exclusive right to add/remove from daemon-commands
+   */
   private final Object monitor = new Object();
 
   public Processor(Session session) {
@@ -57,12 +56,13 @@ public class Processor {
     this.echo = new Echo(session);
   }
 
-  // THE high level process function
+  /** THE high level process function. */
   public void promptProcessing() throws Exception {
     String input = retrieveInput();
     processInput(input);
-    if (processedCommands.size() > 1000) // just to avoid memory-trouble
-    processedCommands.remove(0);
+    if (processedCommands.size() > 1000) {
+      processedCommands.remove(0);
+    }
     processedCommands.add(input);
   }
 
@@ -78,64 +78,114 @@ public class Processor {
       } else if (ce.getType().equals(ContextElement.TYPE_UNITTYPE)) {
         String ceName = ce.getStringToSubstitute();
         Unittype unittype = session.getAcs().getUnittype(ceName);
-        if (unittype == null) throw makeContextSwitchException(ce);
+        if (unittype == null) {
+          throw makeContextSwitchException(ce);
+        }
         context.resetToNull();
         context.setUnittype(unittype);
       } else if (ce.getType().equals(ContextElement.TYPE_PROFILE)) {
         String ceName = ce.getStringToSubstitute();
         Unittype unittype = context.getUnittype();
-        if (unittype == null) throw makeContextSwitchException(ce);
+        if (unittype == null) {
+          throw makeContextSwitchException(ce);
+        }
         Profile profile = unittype.getProfiles().getByName(ceName);
-        if (profile == null) throw makeContextSwitchException(ce);
-        if (context.getUnit() != null) context.setUnit(null);
-        if (context.getGroup() != null) context.setGroup(null);
-        if (context.getJob() != null) context.setJob(null);
+        if (profile == null) {
+          throw makeContextSwitchException(ce);
+        }
+        if (context.getUnit() != null) {
+          context.setUnit(null);
+        }
+        if (context.getGroup() != null) {
+          context.setGroup(null);
+        }
+        if (context.getJob() != null) {
+          context.setJob(null);
+        }
         context.setProfile(profile);
       } else if (ce.getType().equals(ContextElement.TYPE_UNIT)) {
         String ceName = ce.getStringToSubstitute();
         Unittype unittype = context.getUnittype();
-        if (unittype == null) throw makeContextSwitchException(ce);
+        if (unittype == null) {
+          throw makeContextSwitchException(ce);
+        }
         Profile profile = context.getProfile();
-        if (profile == null) throw makeContextSwitchException(ce);
+        if (profile == null) {
+          throw makeContextSwitchException(ce);
+        }
         Unit unit = session.getAcsUnit().getUnitById(ceName, unittype, profile);
-        if (unit == null)
+        if (unit == null) {
           throw new IllegalArgumentException("The context switch to " + ce + " was not possible");
-        if (context.getGroup() != null) context.setGroup(null);
-        if (context.getJob() != null) context.setJob(null);
+        }
+        if (context.getGroup() != null) {
+          context.setGroup(null);
+        }
+        if (context.getJob() != null) {
+          context.setJob(null);
+        }
         context.setUnit(unit);
       } else if (ce.getType().equals(ContextElement.TYPE_GROUP)) {
         String ceName = ce.getStringToSubstitute();
         Unittype unittype = context.getUnittype();
-        if (unittype == null) throw makeContextSwitchException(ce);
+        if (unittype == null) {
+          throw makeContextSwitchException(ce);
+        }
         Group group = unittype.getGroups().getByName(ceName);
-        if (group == null) throw makeContextSwitchException(ce);
-        if (context.getUnit() != null) context.setUnit(null);
-        if (context.getProfile() != null) context.setProfile(null);
-        if (context.getJob() != null) context.setJob(null);
+        if (group == null) {
+          throw makeContextSwitchException(ce);
+        }
+        if (context.getUnit() != null) {
+          context.setUnit(null);
+        }
+        if (context.getProfile() != null) {
+          context.setProfile(null);
+        }
+        if (context.getJob() != null) {
+          context.setJob(null);
+        }
         context.setGroup(group);
       } else if (ce.getType().equals(ContextElement.TYPE_JOB)) {
         String ceName = ce.getStringToSubstitute();
         Unittype unittype = context.getUnittype();
-        if (unittype == null) throw makeContextSwitchException(ce);
+        if (unittype == null) {
+          throw makeContextSwitchException(ce);
+        }
         Job job = unittype.getJobs().getByName(ceName);
-        if (job == null) throw makeContextSwitchException(ce);
-        if (context.getUnit() != null) context.setUnit(null);
-        if (context.getProfile() != null) context.setProfile(null);
+        if (job == null) {
+          throw makeContextSwitchException(ce);
+        }
+        if (context.getUnit() != null) {
+          context.setUnit(null);
+        }
+        if (context.getProfile() != null) {
+          context.setProfile(null);
+        }
         context.setJob(job);
       } else if (ce.getType().equals(ContextElement.TYPE_UNITTYPE_PARAMS)) {
         String ceName = ce.getStringToSubstitute();
         Unittype unittype = context.getUnittype();
-        if (unittype == null) throw makeContextSwitchException(ce);
+        if (unittype == null) {
+          throw makeContextSwitchException(ce);
+        }
         UnittypeParameter unittypeParameter = unittype.getUnittypeParameters().getByName(ceName);
-        if (unittypeParameter == null) throw makeContextSwitchException(ce);
+        if (unittypeParameter == null) {
+          throw makeContextSwitchException(ce);
+        }
         context.setUnittypeParameter(unittypeParameter);
       } else if (ce.getType().equals(ContextElement.TYPE_BACK)) {
-        if (context.getUnittypeParameter() != null) context.setUnittypeParameter(null);
-        else if (context.getJob() != null) context.setJob(null);
-        else if (context.getGroup() != null) context.setGroup(null);
-        else if (context.getUnit() != null) context.setUnit(null);
-        else if (context.getProfile() != null) context.setProfile(null);
-        else if (context.getUnittype() != null) context.resetToNull();
+        if (context.getUnittypeParameter() != null) {
+          context.setUnittypeParameter(null);
+        } else if (context.getJob() != null) {
+          context.setJob(null);
+        } else if (context.getGroup() != null) {
+          context.setGroup(null);
+        } else if (context.getUnit() != null) {
+          context.setUnit(null);
+        } else if (context.getProfile() != null) {
+          context.setProfile(null);
+        } else if (context.getUnittype() != null) {
+          context.resetToNull();
+        }
       }
     }
   }
@@ -145,27 +195,32 @@ public class Processor {
   }
 
   private void debugCommand(Command command) {
-    if (logger.isDebugEnabled())
-      logger.debug(logPrefix + "Command: " + session.getContext() + command.toString());
+    if (logger.isDebugEnabled()) {
+      logger.debug(logPrefix + "Command: " + session.getContext() + command);
+    }
   }
 
   private void returnCommand(Command command) {
     String retVal = "";
     for (CommandAndArgument caa : command.getCommandAndArguments()) {
-      if (caa.getStringToSubstitute().equals("return")) continue;
+      if ("return".equals(caa.getStringToSubstitute())) {
+        continue;
+      }
       retVal += caa.getStringToSubstitute() + " ";
     }
     retVal = retVal.trim();
-    if (!retVal.equals("")) {
+    if (!"".equals(retVal)) {
       CommandAndArgument caa = new CommandAndArgument(retVal);
       Command.varArgSubst(caa, session);
       retVal = caa.getStringToSubstitute();
       retVal = GenericMenu.eval(retVal);
     }
-    while (session.getScriptStack().size() > 0) {
+    while (!session.getScriptStack().isEmpty()) {
       Script s = session.getScriptStack().pop();
       // pop off inner IF/WHILE-scripts
-      if (s.getType() == Script.SCRIPT) break;
+      if (s.getType() == Script.SCRIPT) {
+        break;
+      }
     }
     session.getScript().addVariable("_return", retVal);
   }
@@ -173,26 +228,30 @@ public class Processor {
   private void errorCommand(Command command) {
     String retVal = "";
     for (CommandAndArgument caa : command.getCommandAndArguments()) {
-      if (caa.getStringToSubstitute().equals("error")) continue;
+      if ("error".equals(caa.getStringToSubstitute())) {
+        continue;
+      }
       retVal += caa.getStringToSubstitute() + " ";
     }
     retVal = retVal.trim();
-    if (!retVal.equals("")) {
+    if (!"".equals(retVal)) {
       CommandAndArgument caa = new CommandAndArgument(retVal);
       Command.varArgSubst(caa, session);
       retVal = caa.getStringToSubstitute();
     }
-    while (session.getScriptStack().size() > 0) {
+    while (!session.getScriptStack().isEmpty()) {
       Script s = session.getScriptStack().pop();
       // pop off inner IF/WHILE-scripts
-      if (s.getType() == Script.SCRIPT) break;
+      if (s.getType() == Script.SCRIPT) {
+        break;
+      }
     }
     throw new IllegalArgumentException(retVal);
   }
 
-  /*
-   * Depending upon the context, retrieve the appropriate Menu-object and run
-   * the command in that context.
+  /**
+   * Depending upon the context, retrieve the appropriate Menu-object and run the command in that
+   * context.
    */
   private void processCommand(Context context, Command command, OutputHandler oh) throws Exception {
     String input = command.getCommandAndArguments().get(0).toString();
@@ -211,7 +270,9 @@ public class Processor {
       commandAndArgumentsArr[i] = caa.getStringToSubstitute();
     }
     GenericMenu hlc = new GenericMenu(context.getSession());
-    if (hlc.execute(commandAndArgumentsArr, oh)) return;
+    if (hlc.execute(commandAndArgumentsArr, oh)) {
+      return;
+    }
     if (context.getUnit() != null) {
       UnitMenu unitMenu = new UnitMenu(context.getSession());
       unitMenu.execute(commandAndArgumentsArr, oh);
@@ -259,8 +320,8 @@ public class Processor {
       command.processFileArgs(fileArgs);
       // expand command with variable arguments
       command.processVarArgs(session);
-      if (command.getCommandAndArguments().size() > 0
-          && command.getCommandAndArguments().get(0).getCommandAndArgument().equals("call")) {
+      if (!command.getCommandAndArguments().isEmpty()
+          && "call".equals(command.getCommandAndArguments().get(0).getCommandAndArgument())) {
         // expand call commands into a single-execution command line and put it back into the script
         session
             .getScript()
@@ -277,13 +338,14 @@ public class Processor {
     }
   }
 
-  /*
-   * Add command to history. Delete old history.
-   * If command is a history command, exchange input
+  /**
+   * Add command to history. Delete old history. If command is a history command, exchange input
    * with historical command.
    */
   private String historyProcessing(String input) {
-    if (input.trim().length() == 0) return input;
+    if (input.trim().isEmpty()) {
+      return input;
+    }
     String command = null;
     if (input.startsWith("!")) { // history-command
       if (input.length() == 1) {
@@ -302,13 +364,18 @@ public class Processor {
           //					for (String cmd : session.getCommandHistory()) {
           for (int i = session.getCommandHistory().size() - 1; i >= 0; i--) {
             String cmd = session.getCommandHistory().get(i);
-            if (cmd.contains(input.substring(1))) command = cmd;
+            if (cmd.contains(input.substring(1))) {
+              command = cmd;
+            }
           }
-          if (command == null)
+          if (command == null) {
             throw new IllegalArgumentException("The history search did not match any command");
+          }
         }
       }
-    } else command = input;
+    } else {
+      command = input;
+    }
     session.getCommandHistory().add(0, command);
     return command;
   }
@@ -324,7 +391,9 @@ public class Processor {
       for (int i = 0; i < inputPipeDividedArr.length; i++) {
         session.resetCounter();
         String commandStr = inputPipeDividedArr[i];
-        if (commandStr == null || commandStr.length() == 0 || commandStr.equals("")) continue;
+        if (commandStr == null || commandStr.isEmpty() || "".equals(commandStr)) {
+          continue;
+        }
         Command command = new Command(commandStr, session.getContext());
         oh = new OutputHandler(command, session.getContext());
         ih =
@@ -337,20 +406,29 @@ public class Processor {
         }
         ih.close();
         new RootMenu(session).executescript();
-        if (!command.contextChangeOnly()) currentScript.getContext().copyFrom(orgContext);
+        if (!command.contextChangeOnly()) {
+          currentScript.getContext().copyFrom(orgContext);
+        }
         // At the last command, print output to file/shell
         previousOh = oh;
         if (i == inputPipeDividedArr.length - 1
             && previousOh.getListing() != null
-            && previousOh.getListing().getLines().size() > 0)
+            && !previousOh.getListing().getLines().isEmpty()) {
           previousOh.getListing().printListing(previousOh);
+        }
         oh.close();
       }
     } catch (Exception e) { // lots of cleanup to reset state in the event of an error
-      if (ih != null) ih.close();
-      if (oh != null) oh.close();
+      if (ih != null) {
+        ih.close();
+      }
+      if (oh != null) {
+        oh.close();
+      }
       debugException(e);
-      while (session.getScriptStack().size() > 0) session.getScriptStack().pop();
+      while (!session.getScriptStack().isEmpty()) {
+        session.getScriptStack().pop();
+      }
       session.getContext().copyFrom(orgContext);
       session.getProcessor().getEcho().reset();
       throw e;
@@ -358,18 +436,18 @@ public class Processor {
   }
 
   protected String retrieveInput() throws IOException {
-    while (true) {
+    do {
       Script script = session.getScript();
       if (script.endOfScript()) {
         if (session.getScriptStack().size() > 1) {
           // If end-of-script, check if there's more scripts in the stack - and read on
           session.getScriptStack().pop();
           continue;
-        } else if (session.getMode() == SessionMode.SCRIPT)
-          session.exitShell(0); // In Script-mode, terminate the shell
-        else if (session.getMode() == SessionMode.DAEMON)
-          script.addScriptLine(getDaemonCommand()); // In Daemon-mode, wait until more input arrives
-        else if (session.getMode() == SessionMode.INTERACTIVE) {
+        } else if (session.getMode() == SessionMode.SCRIPT) {
+          session.exitShell(0);
+        } else if (session.getMode() == SessionMode.DAEMON) {
+          script.addScriptLine(getDaemonCommand());
+        } else if (session.getMode() == SessionMode.INTERACTIVE) {
           echo.printInteractiveMode();
           BufferedReader br =
               session.getACSShell().getReader(); // In interactive-mode, wait for keyboard-input
@@ -386,9 +464,8 @@ public class Processor {
       echo.setInput(input);
       echo.print();
       echo.setFromKeyboard(false); // reset flag
-      input = historyProcessing(input);
-      return input;
-    }
+      return historyProcessing(input);
+    } while (true);
   }
 
   /**
@@ -408,10 +485,12 @@ public class Processor {
     synchronized (monitor) {
       monitor.notifyAll();
     }
-    while (true) {
+    do {
       // Will wait forever if no daemon command is added to the shell
       synchronized (monitor) {
-        if (daemonCommands.size() > 0) return daemonCommands.remove(0);
+        if (!daemonCommands.isEmpty()) {
+          return daemonCommands.remove(0);
+        }
         // Wait one second each loop. If a notify has been sent
         // from the TR-069 Server/Syslog server (indicating a command
         // has been added), then the wait() will return immediately
@@ -419,11 +498,10 @@ public class Processor {
         try {
           monitor.wait(1000);
         } catch (InterruptedException e) {
-          // TODO Auto-generated catch block
           e.printStackTrace();
         }
       }
-    }
+    } while (true);
   }
 
   /**
@@ -443,8 +521,9 @@ public class Processor {
 
   private void call(Command command) throws SQLException {
     List<CommandAndArgument> caaList = command.getCommandAndArguments();
-    if (caaList.size() < 2)
+    if (caaList.size() < 2) {
       throw new IllegalArgumentException("call expects a filename as the first argumnet");
+    }
     String filename = caaList.get(1).toString();
     Context scriptContext = session.getContext().clone();
     Option conOption = command.getOptions().get(Option.OPTION_USE_CONTEXT);
@@ -453,7 +532,7 @@ public class Processor {
       session.getProcessor().changeContext(optionCC, scriptContext, session);
     }
     Option varOption = command.getOptions().get(Option.OPTION_VARIABLES);
-    Map<String, Variable> variables = new HashMap<String, Variable>();
+    Map<String, Variable> variables = new HashMap<>();
     if (varOption != null && varOption.getOptionArgs() != null) {
       String varOptionArgs = varOption.getStringToSubstitute();
       String[] varNameArr = varOptionArgs.split(",");
@@ -463,7 +542,9 @@ public class Processor {
         if (var == null) {
           variables.put("_" + varCounter, new Variable("_" + varCounter, varName));
           varCounter++;
-        } else variables.put(varName, var);
+        } else {
+          variables.put(varName, var);
+        }
       }
     }
     session.getScriptStack().push(new Script(filename, scriptContext, Script.SCRIPT, variables));
@@ -486,7 +567,9 @@ public class Processor {
   }
 
   public void setLogPrefix(String logPrefix) {
-    if (logPrefix == null) logPrefix = "";
+    if (logPrefix == null) {
+      logPrefix = "";
+    }
     this.logPrefix = logPrefix;
   }
 }

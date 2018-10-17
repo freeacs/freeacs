@@ -7,7 +7,7 @@ public class UnittypeParameterFlag {
   private String flag;
 
   public UnittypeParameterFlag(String flag) {
-    this.setFlag(flag);
+    setFlag(flag);
   }
 
   protected UnittypeParameterFlag(String flag, boolean noValidation) {
@@ -20,9 +20,10 @@ public class UnittypeParameterFlag {
 
   public void setFlag(String fl) {
     String flag = fl;
-    if (flag == null || flag.trim().length() == 0)
+    if (flag == null || flag.trim().isEmpty()) {
       throw new IllegalArgumentException(
           "The unittype parameter flag format cannot be blank/null.");
+    }
     flag = flag.toUpperCase();
     Pattern p = Pattern.compile("[ABCDIRWSX]{1,7}");
     Matcher m = p.matcher(flag);
@@ -34,26 +35,32 @@ public class UnittypeParameterFlag {
     }
     String modifiedFlag = ""; // strip away duplicate flags
     for (int i = 0; i < flag.length(); i++) {
-      if (flag.substring(i, i + 1).equals("I"))
-        continue; // silently drops all Inspection flags - to be backward compatible
-      if (modifiedFlag.indexOf(flag.substring(i, i + 1)) == -1)
+      if ("I".equals(flag.substring(i, i + 1))) {
+        continue;
+      } // silently drops all Inspection flags - to be backward compatible
+      if (!modifiedFlag.contains(flag.substring(i, i + 1))) {
         modifiedFlag += flag.substring(i, i + 1);
+      }
     }
     flag = modifiedFlag;
-    if (flag.indexOf("R") > -1) this.flag = flag;
-    else if (flag.indexOf("X") > -1) this.flag = flag;
-    else
+    if (flag.indexOf('R') > -1 || flag.indexOf('X') > -1) {
+      this.flag = flag;
+    } else {
       throw new IllegalArgumentException(
           "The flag must contain either R, RW or X (flag:" + flag + ")");
-    if (isSystem() && (flag.indexOf("W") > -1 || isReadOnly()))
+    }
+    if (isSystem() && (flag.indexOf('W') > -1 || isReadOnly())) {
       throw new IllegalArgumentException(
           "The flag must contain either R, RW or X (flag:" + flag + ")");
-    if (isAlwaysRead() && !isReadOnly())
+    }
+    if (isAlwaysRead() && !isReadOnly()) {
       throw new IllegalArgumentException(
           "The A flag cannot be set together with the W or X flag (flag:" + flag + ")");
-    if (isDisplayable() && isConfidential())
+    }
+    if (isDisplayable() && isConfidential()) {
       throw new IllegalArgumentException(
           "The D flag cannot be set together with the C flag (flag:" + flag + ")");
+    }
     if (isBootRequired() && !isReadWrite()) {
       throw new IllegalArgumentException(
           "The B flag can only be specified together with RW flag (flag:" + flag + ")");
@@ -61,43 +68,35 @@ public class UnittypeParameterFlag {
   }
 
   public boolean isConfidential() {
-    if (flag.indexOf("C") > -1) return true;
-    return false;
+    return flag.indexOf('C') > -1;
   }
 
   public boolean isAlwaysRead() {
-    if (flag.indexOf("A") > -1) return true;
-    return false;
+    return flag.indexOf('A') > -1;
   }
 
   public boolean isReadOnly() {
-    if (flag.indexOf("R") > -1 && flag.indexOf("W") == -1) return true;
-    return false;
+    return flag.indexOf('R') > -1 && flag.indexOf('W') == -1;
   }
 
   public boolean isReadWrite() {
-    if (flag.indexOf("R") > -1 && flag.indexOf("W") > -1) return true;
-    return false;
+    return flag.indexOf('R') > -1 && flag.indexOf('W') > -1;
   }
 
   public boolean isSystem() {
-    if (flag.indexOf("X") > -1) return true;
-    return false;
+    return flag.indexOf('X') > -1;
   }
 
   public boolean isBootRequired() {
-    if (flag.indexOf("B") > -1) return true;
-    return false;
+    return flag.indexOf('B') > -1;
   }
 
   public boolean isSearchable() {
-    if (flag.indexOf("S") > -1) return true;
-    return false;
+    return flag.indexOf('S') > -1;
   }
 
   public boolean isDisplayable() {
-    if (flag.indexOf("D") > -1) return true;
-    return false;
+    return flag.indexOf('D') > -1;
   }
 
   @Override

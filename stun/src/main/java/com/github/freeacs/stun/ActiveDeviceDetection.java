@@ -22,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ActiveDeviceDetection extends TaskDefaultImpl {
-
   private static Logger logger = LoggerFactory.getLogger(ActiveDeviceDetection.class);
   private DataSource xapsCp;
   private DBI dbi;
@@ -65,26 +64,26 @@ public class ActiveDeviceDetection extends TaskDefaultImpl {
     int loggedCount = 0;
     for (Entry<String, Long> entry : activeDevices.getMap().entrySet()) {
       String address = entry.getKey();
-      if (processCount > unitsToProcess) break;
-      if (entry.getValue() > fiveMinAgo) {
-        if (sentSyslogMap.get(address) == null) {
-          processCount++;
-          sentSyslogMap.put(address, getThisLaunchTms());
-          Unit unit = acsUnit.getUnitByValue(address, null, null);
-          if (unit != null) {
-            loggedCount++;
-            SyslogClient.info(
-                unit.getId(),
-                "StunMsg/TR-111: Requests from " + address + " within last 5 minutes",
-                16,
-                null,
-                null);
-          } else {
-            logger.info(
-                "ActiveDeviceDetection: Stun request from "
-                    + address
-                    + ", but the address was not recorded in Fusion - consider adding A-flag to UDPConnectionRequestAddress in all unittypes");
-          }
+      if (processCount > unitsToProcess) {
+        break;
+      }
+      if (entry.getValue() > fiveMinAgo && sentSyslogMap.get(address) == null) {
+        processCount++;
+        sentSyslogMap.put(address, getThisLaunchTms());
+        Unit unit = acsUnit.getUnitByValue(address, null, null);
+        if (unit != null) {
+          loggedCount++;
+          SyslogClient.info(
+              unit.getId(),
+              "StunMsg/TR-111: Requests from " + address + " within last 5 minutes",
+              16,
+              null,
+              null);
+        } else {
+          logger.info(
+              "ActiveDeviceDetection: Stun request from "
+                  + address
+                  + ", but the address was not recorded in Fusion - consider adding A-flag to UDPConnectionRequestAddress in all unittypes");
         }
       }
     }

@@ -5,9 +5,9 @@ import java.util.List;
 
 public class Data {
   private String value;
-  private List<String> errorMessages = new ArrayList<String>();
-  private List<String> warningMessages = new ArrayList<String>();
-  private List<Row> duplicateRows = new ArrayList<Row>();
+  private List<String> errorMessages = new ArrayList<>();
+  private List<String> warningMessages = new ArrayList<>();
+  private List<Row> duplicateRows = new ArrayList<>();
   private Row row;
 
   public Data(Row row, String value) {

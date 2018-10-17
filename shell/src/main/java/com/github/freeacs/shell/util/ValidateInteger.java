@@ -1,7 +1,6 @@
 package com.github.freeacs.shell.util;
 
 public class ValidateInteger implements ValidateInput {
-
   private Integer min;
 
   private Integer max;
@@ -14,10 +13,7 @@ public class ValidateInteger implements ValidateInput {
   public boolean validate(String input) {
     try {
       int i = Integer.parseInt(input);
-      if (min != null && i < min) return false;
-      if (max != null && i >= max) return false;
-      return true;
-
+      return (min == null || i >= min) && (max == null || i < max);
     } catch (NumberFormatException nfe) {
       return false;
     }

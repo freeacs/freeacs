@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 public class ScheduleList {
-
-  // This list orders the Schedule objects so that first in the list
-  // are first to run.
+  /** This list orders the Schedule objects so that first in the list are first to run. */
   private LinkedList<Schedule> list = new LinkedList<>();
 
   public synchronized void add(Schedule newSchedule) {

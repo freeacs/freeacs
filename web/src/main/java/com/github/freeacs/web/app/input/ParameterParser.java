@@ -24,7 +24,6 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
  * @author Jarl Andre Hubenthal
  */
 public class ParameterParser {
-
   //	private static final String URL_STRING_ENCODING = "UTF-8";
 
   /** The req. */
@@ -52,10 +51,10 @@ public class ParameterParser {
     this.req = new AbstractRequest(req);
     isMultipart = ServletFileUpload.isMultipartContent(req);
     // define files anyway so i can use it to return empty enumeration from getFileUploadNames()
-    files = new HashMap<String, List<FileItem>>();
+    files = new HashMap<>();
     if (isMultipart) {
       // only define params if i need it
-      params = new HashMap<String, List<String>>();
+      params = new HashMap<>();
       parseUploadParams(req);
     }
   }
@@ -80,8 +79,10 @@ public class ParameterParser {
    * @return the resource
    */
   public InputStream getResource(String path) {
-    if (context == null) return null;
-    return context.getResourceAsStream(path);
+    if (context != null) {
+      return context.getResourceAsStream(path);
+    }
+    return null;
   }
 
   /**
@@ -102,14 +103,19 @@ public class ParameterParser {
   public String getRequestURLButExcludeSomeParameters(String... exclude) {
     StringBuffer target = req.getRequestURL();
     Enumeration<?> parms = req.getParameterNames();
-    if (parms.hasMoreElements()) target.append("?");
+    if (parms.hasMoreElements()) {
+      target.append("?");
+    }
     List<String> excludedList = Arrays.asList(exclude);
     while (parms.hasMoreElements()) {
       String object = (String) parms.nextElement();
-      if (object.equals("index")) continue;
-      if (excludedList.contains(object)) continue;
+      if ("index".equals(object) || excludedList.contains(object)) {
+        continue;
+      }
       target.append(object).append("=").append(req.getParameter(object));
-      if (parms.hasMoreElements()) target.append("&");
+      if (parms.hasMoreElements()) {
+        target.append("&");
+      }
     }
     return target.toString();
   }
@@ -128,14 +134,14 @@ public class ParameterParser {
       if (fileItem.isFormField()) {
         List<String> arr = params.get(fileItem.getFieldName());
         if (arr == null) {
-          arr = new ArrayList<String>();
+          arr = new ArrayList<>();
           params.put(fileItem.getFieldName(), arr);
         }
         arr.add(fileItem.getString());
       } else {
         List<FileItem> arr = files.get(fileItem.getFieldName());
         if (arr == null) {
-          arr = new ArrayList<FileItem>();
+          arr = new ArrayList<>();
           files.put(fileItem.getFieldName(), arr);
         }
         arr.add(fileItem);
@@ -160,7 +166,9 @@ public class ParameterParser {
    */
   public FileItem getFileUpload(String name) {
     List<FileItem> arr = files.get(name);
-    if (arr != null) return arr.get(0);
+    if (arr != null) {
+      return arr.get(0);
+    }
     return null;
   }
 
@@ -181,7 +189,9 @@ public class ParameterParser {
    */
   public FileItem[] getFileUploadArray(String name) {
     List<FileItem> arr = files.get(name);
-    if (arr != null) return arr.toArray(new FileItem[] {});
+    if (arr != null) {
+      return arr.toArray(new FileItem[] {});
+    }
     return null;
   }
 
@@ -217,10 +227,16 @@ public class ParameterParser {
 
       if (isMultipart) {
         List<String> arr = params.get(name);
-        if (arr != null) values = arr.toArray(new String[] {});
-      } else values = req.getParameterValues(name);
+        if (arr != null) {
+          values = arr.toArray(new String[] {});
+        }
+      } else {
+        values = req.getParameterValues(name);
+      }
 
-      if (values == null) throw new ParameterNotFoundException(name + " not found");
+      if (values == null) {
+        throw new ParameterNotFoundException(name + " not found");
+      }
 
       return values;
     } catch (Exception e) {
@@ -251,10 +267,16 @@ public class ParameterParser {
 
       if (isMultipart) {
         List<String> arr = params.get(name);
-        if (arr != null) value = arr.get(0);
-      } else value = req.getParameter(name);
+        if (arr != null) {
+          value = arr.get(0);
+        }
+      } else {
+        value = req.getParameter(name);
+      }
 
-      if (value == null) throw new ParameterNotFoundException(name + " not found");
+      if (value == null) {
+        throw new ParameterNotFoundException(name + " not found");
+      }
 
       return value.trim();
     } catch (Exception e) {
@@ -303,9 +325,13 @@ public class ParameterParser {
   public Boolean getBooleanParameter(String name, Boolean def) {
     try {
       String s = getStringParameter(name);
-      if (s == null) return def;
-      if (s.equals("on")) return true;
-      return new Boolean(s);
+      if (s == null) {
+        return def;
+      }
+      if ("on".equals(s)) {
+        return true;
+      }
+      return Boolean.valueOf(s);
     } catch (Exception e) {
       return def;
     }
@@ -356,7 +382,7 @@ public class ParameterParser {
   private Character getCharParameter(String name, Character def) {
     try {
       String param = getStringParameter(name);
-      return (param.charAt(0));
+      return param.charAt(0);
     } catch (Exception e) {
       return def;
     }
@@ -381,7 +407,7 @@ public class ParameterParser {
    */
   private Double getDoubleParameter(String name, Double def) {
     try {
-      return new Double(getStringParameter(name)).doubleValue();
+      return Double.parseDouble(getStringParameter(name));
     } catch (Exception e) {
       return def;
     }
@@ -406,7 +432,7 @@ public class ParameterParser {
    */
   private Float getFloatParameter(String name, Float def) {
     try {
-      return new Float(getStringParameter(name)).floatValue();
+      return Float.parseFloat(getStringParameter(name));
     } catch (Exception e) {
       return def;
     }
@@ -431,14 +457,20 @@ public class ParameterParser {
    * @return The converted Integer
    * @throws Exception
    */
-  public Integer getIntegerParameter(String name, Integer def) throws NumberFormatException {
+  public Integer getIntegerParameter(String name, Integer def) {
     try {
       String toParse = getStringParameter(name);
-      if (toParse != null && toParse.equals("0")) return 0;
-      else if (toParse != null) return Integer.parseInt(toParse);
-      else return def;
+      if ("0".equals(toParse)) {
+        return 0;
+      } else if (toParse != null) {
+        return Integer.parseInt(toParse);
+      } else {
+        return def;
+      }
     } catch (NumberFormatException e) {
-      if (def != null) return def;
+      if (def != null) {
+        return def;
+      }
       // TODO Log this
       throw e;
     }
@@ -501,10 +533,12 @@ public class ParameterParser {
    * @return the integer parameter array
    * @throws NumberFormatException the number format exception
    */
-  public Integer[] getIntegerParameterArray(String name) throws NumberFormatException {
-    List<Integer> ints = new ArrayList<Integer>();
+  public Integer[] getIntegerParameterArray(String name) {
+    List<Integer> ints = new ArrayList<>();
     String arr[] = getStringParameterArray(name, new String[] {});
-    for (String value : arr) ints.add(Integer.parseInt(value));
+    for (String value : arr) {
+      ints.add(Integer.parseInt(value));
+    }
     return ints.toArray(new Integer[] {});
   }
 
@@ -515,10 +549,12 @@ public class ParameterParser {
    * @return the double parameter array
    * @throws NumberFormatException the number format exception
    */
-  public Double[] getDoubleParameterArray(String name) throws NumberFormatException {
-    List<Double> ints = new ArrayList<Double>();
+  public Double[] getDoubleParameterArray(String name) {
+    List<Double> ints = new ArrayList<>();
     String arr[] = getStringParameterArray(name, new String[] {});
-    for (String value : arr) ints.add(Double.parseDouble(value));
+    for (String value : arr) {
+      ints.add(Double.parseDouble(value));
+    }
     return ints.toArray(new Double[] {});
   }
 
@@ -529,10 +565,12 @@ public class ParameterParser {
    * @return the float parameter array
    * @throws NumberFormatException the number format exception
    */
-  public Float[] getFloatParameterArray(String name) throws NumberFormatException {
-    List<Float> ints = new ArrayList<Float>();
+  public Float[] getFloatParameterArray(String name) {
+    List<Float> ints = new ArrayList<>();
     String arr[] = getStringParameterArray(name, new String[] {});
-    for (String value : arr) ints.add(Float.parseFloat(value));
+    for (String value : arr) {
+      ints.add(Float.parseFloat(value));
+    }
     return ints.toArray(new Float[] {});
   }
 
@@ -543,10 +581,12 @@ public class ParameterParser {
    * @return the long parameter array
    * @throws NumberFormatException the number format exception
    */
-  public Long[] getLongParameterArray(String name) throws NumberFormatException {
-    List<Long> ints = new ArrayList<Long>();
+  public Long[] getLongParameterArray(String name) {
+    List<Long> ints = new ArrayList<>();
     String arr[] = getStringParameterArray(name, new String[] {});
-    for (String value : arr) ints.add(Long.parseLong(value));
+    for (String value : arr) {
+      ints.add(Long.parseLong(value));
+    }
     return ints.toArray(new Long[] {});
   }
 
@@ -557,10 +597,12 @@ public class ParameterParser {
    * @return the short parameter array
    * @throws NumberFormatException the number format exception
    */
-  public Short[] getShortParameterArray(String name) throws NumberFormatException {
-    List<Short> ints = new ArrayList<Short>();
+  public Short[] getShortParameterArray(String name) {
+    List<Short> ints = new ArrayList<>();
     String arr[] = getStringParameterArray(name, new String[] {});
-    for (String value : arr) ints.add(Short.parseShort(value));
+    for (String value : arr) {
+      ints.add(Short.parseShort(value));
+    }
     return ints.toArray(new Short[] {});
   }
 
@@ -571,10 +613,12 @@ public class ParameterParser {
    * @return the byte parameter array
    * @throws NumberFormatException the number format exception
    */
-  public Byte[] getByteParameterArray(String name) throws NumberFormatException {
-    List<Byte> ints = new ArrayList<Byte>();
+  public Byte[] getByteParameterArray(String name) {
+    List<Byte> ints = new ArrayList<>();
     String arr[] = getStringParameterArray(name, new String[] {});
-    for (String value : arr) ints.add(Byte.parseByte(value));
+    for (String value : arr) {
+      ints.add(Byte.parseByte(value));
+    }
     return ints.toArray(new Byte[] {});
   }
 
@@ -585,9 +629,11 @@ public class ParameterParser {
    * @return the boolean parameter array
    */
   public Boolean[] getBooleanParameterArray(String name) {
-    List<Boolean> ints = new ArrayList<Boolean>();
+    List<Boolean> ints = new ArrayList<>();
     String arr[] = getStringParameterArray(name, new String[] {});
-    for (String value : arr) ints.add(Boolean.parseBoolean(value));
+    for (String value : arr) {
+      ints.add(Boolean.parseBoolean(value));
+    }
     return ints.toArray(new Boolean[] {});
   }
 

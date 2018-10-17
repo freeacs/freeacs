@@ -21,7 +21,7 @@ public class RecordUIDataHardware extends RecordHardware {
   /** The boot count. */
   private Long bootProv;
 
-  /** The boot misc */
+  /** The boot misc. */
   private Long bootMisc;
 
   private Long bootPower;
@@ -88,38 +88,47 @@ public class RecordUIDataHardware extends RecordHardware {
     bootPower = getBootPowerCount().get() / getBootPowerCount().getDividend();
     bootMisc = getBootMiscCount().get() / getBootMiscCount().getDividend();
     bootProv = getBootProvCount().get() / getBootProvCount().getDividend();
-    if (getMemoryHeapDdrCurrentAvg().get() != null)
+    if (getMemoryHeapDdrCurrentAvg().get() != null) {
       memoryHeapDdrCurrentAvg =
           getMemoryHeapDdrCurrentAvg().get() / getMemoryHeapDdrCurrentAvg().getDividend();
-    if (getMemoryHeapDdrLowAvg().get() != null)
+    }
+    if (getMemoryHeapDdrLowAvg().get() != null) {
       memoryHeapDdrLowestAvg =
           getMemoryHeapDdrLowAvg().get() / getMemoryHeapDdrLowAvg().getDividend();
-    if (getMemoryHeapDdrPoolAvg().get() != null)
+    }
+    if (getMemoryHeapDdrPoolAvg().get() != null) {
       memoryHeapDdrPoolAvg =
           getMemoryHeapDdrPoolAvg().get() / getMemoryHeapDdrPoolAvg().getDividend();
-    if (getMemoryHeapOcmCurrentAvg().get() != null)
+    }
+    if (getMemoryHeapOcmCurrentAvg().get() != null) {
       memoryHeapOcmCurrentAvg =
           getMemoryHeapOcmCurrentAvg().get() / getMemoryHeapOcmCurrentAvg().getDividend();
-    if (getMemoryHeapOcmLowAvg().get() != null)
+    }
+    if (getMemoryHeapOcmLowAvg().get() != null) {
       memoryHeapOcmLowestAvg =
           getMemoryHeapOcmLowAvg().get() / getMemoryHeapOcmLowAvg().getDividend();
-    if (getMemoryHeapOcmPoolAvg().get() != null)
+    }
+    if (getMemoryHeapOcmPoolAvg().get() != null) {
       memoryHeapOcmPoolAvg =
           getMemoryHeapOcmPoolAvg().get() / getMemoryHeapOcmPoolAvg().getDividend();
-    if (getCpeUptimeAvg().get() != null)
+    }
+    if (getCpeUptimeAvg().get() != null) {
       upTimeAvg = getCpeUptimeAvg().get() / getCpeUptimeAvg().getDividend();
+    }
     memoryHeapDdrUsagePercent = getPercentageUsed(memoryHeapDdrCurrentAvg, memoryHeapDdrPoolAvg);
     memoryHeapOcmUsagePercent = getPercentageUsed(memoryHeapOcmCurrentAvg, memoryHeapOcmPoolAvg);
     try {
       String score = "100";
-      if (getBootMessage() != null) score = "70";
+      if (getBootMessage() != null) {
+        score = "70";
+      }
       rowBackgroundStyle =
           new AbstractWebPage.RowBackgroundColorMethod().exec(Arrays.asList(score));
     } catch (TemplateModelException e) {
       rowBackgroundStyle = "";
     }
-  } // Avoid public use
-
+  }
+  /** Avoid public use. */
   public boolean isRecordRelevant() {
     return limits.isRecordRelevant(this);
   }
@@ -171,7 +180,9 @@ public class RecordUIDataHardware extends RecordHardware {
    */
   private double getPercentageUsed(Long current, Long pool) {
     double d = RecordUIDataMethods.getPercent(current, pool);
-    if (d == 0) return 0d;
+    if (d == 0) {
+      return 0d;
+    }
     return 100 - d;
   }
 
@@ -183,7 +194,7 @@ public class RecordUIDataHardware extends RecordHardware {
    */
   public static List<RecordUIDataHardware> convertRecords(
       Unit unit, List<RecordHardware> records, RecordUIDataHardwareFilter limits) {
-    List<RecordUIDataHardware> list = new ArrayList<RecordUIDataHardware>();
+    List<RecordUIDataHardware> list = new ArrayList<>();
     for (RecordHardware record : records) {
       list.add(new RecordUIDataHardware(record, unit, limits));
     }
@@ -214,28 +225,39 @@ public class RecordUIDataHardware extends RecordHardware {
    * @return the boot message
    */
   public String getBootMessage() {
-    StringBuffer string = new StringBuffer();
-    if (super.getBootWatchdogCount().get() != null && super.getBootWatchdogCount().get() > 0)
+    StringBuilder string = new StringBuilder();
+    if (super.getBootWatchdogCount().get() != null && super.getBootWatchdogCount().get() > 0) {
       string.append("Watchdog boot,");
-    if (super.getBootPowerCount().get() != null && super.getBootPowerCount().get() > 0)
+    }
+    if (super.getBootPowerCount().get() != null && super.getBootPowerCount().get() > 0) {
       string.append("Power boot,");
-    if (super.getBootMiscCount().get() != null && super.getBootMiscCount().get() > 0)
+    }
+    if (super.getBootMiscCount().get() != null && super.getBootMiscCount().get() > 0) {
       string.append("Miscellaneous boot,");
-    if (super.getBootProvBootCount().get() != null && super.getBootProvBootCount().get() > 0)
+    }
+    if (super.getBootProvBootCount().get() != null && super.getBootProvBootCount().get() > 0) {
       string.append("Provisioning boot,");
-    if (super.getBootProvConfCount().get() != null && super.getBootProvConfCount().get() > 0)
+    }
+    if (super.getBootProvConfCount().get() != null && super.getBootProvConfCount().get() > 0) {
       string.append("Provisioning config boot,");
-    if (super.getBootProvCount().get() != null && super.getBootProvCount().get() > 0)
+    }
+    if (super.getBootProvCount().get() != null && super.getBootProvCount().get() > 0) {
       string.append("Provisioning boot,");
-    if (super.getBootProvSwCount().get() != null && super.getBootProvSwCount().get() > 0)
+    }
+    if (super.getBootProvSwCount().get() != null && super.getBootProvSwCount().get() > 0) {
       string.append("Provisioning software boot,");
-    if (super.getBootResetCount().get() != null && super.getBootResetCount().get() > 0)
+    }
+    if (super.getBootResetCount().get() != null && super.getBootResetCount().get() > 0) {
       string.append("Reset boot,");
-    if (super.getBootUserCount().get() != null && super.getBootUserCount().get() > 0)
+    }
+    if (super.getBootUserCount().get() != null && super.getBootUserCount().get() > 0) {
       string.append("User boot");
+    }
     if (string.length() > 0) {
       String s = string.toString();
-      if (s.endsWith(",")) s = s.substring(0, s.length() - 1);
+      if (s.endsWith(",")) {
+        s = s.substring(0, s.length() - 1);
+      }
       return s;
     }
     return null;

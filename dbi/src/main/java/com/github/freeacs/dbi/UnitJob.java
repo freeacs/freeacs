@@ -8,9 +8,10 @@ public class UnitJob {
   private Date startTimestamp;
   private Date endTimestamp;
   private String status;
-  private boolean processed = false;
-  //	private Integer complete;
+  private boolean processed;
+  /** Private Integer complete;. */
   private Integer confirmedFailed;
+
   private Integer unconfirmedFailed;
 
   public UnitJob(String unitId, Integer jobId) {

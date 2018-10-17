@@ -10,7 +10,6 @@ import org.jfree.data.xy.XYDataset;
  */
 @SuppressWarnings("serial")
 final class CustomXYSeriesLabelGenerator extends StandardXYSeriesLabelGenerator {
-
   private final String format;
 
   public CustomXYSeriesLabelGenerator(String format) {

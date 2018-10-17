@@ -9,10 +9,8 @@ import java.util.regex.Pattern;
  * @author Jarl Andre Hubenthal
  */
 public class Escaping {
-
   /** The Enum EscapeType. */
-  public static enum EscapeType {
-
+  public enum EscapeType {
     /** The TAG s_ an d_ content. */
     TAGS_AND_CONTENT,
 
@@ -28,7 +26,6 @@ public class Escaping {
    * @return the string
    */
   public static String removeHTMLTags(String strHTML, EscapeType type) {
-
     Pattern pattern = null;
 
     String strTagLess = strHTML;

@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Primary;
 
 @Configuration
 public class DataSourceConfig {
-
   @Bean
   @Primary
   @Qualifier("main")

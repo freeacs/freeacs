@@ -5,7 +5,6 @@ import java.util.List;
 
 /** The Enum UnittypeParameterTypes. */
 public enum UnittypeParameterTypes {
-
   /** The All. */
   All,
 
@@ -21,7 +20,7 @@ public enum UnittypeParameterTypes {
    * @return the list
    */
   public static List<String> toList() {
-    List<String> flags = new ArrayList<String>();
+    List<String> flags = new ArrayList<>();
     for (UnittypeParameterTypes flag : values()) {
       flags.add(flag.toString());
     }

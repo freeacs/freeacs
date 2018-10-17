@@ -28,7 +28,6 @@ import javax.sql.DataSource;
 
 /** The Class UnittypePage. */
 public class UnittypePage extends AbstractWebPage {
-
   protected static final String NA_PROTOCOL = "N/A";
   protected static final String TR069_PROTOCOL = "TR-069";
 
@@ -45,21 +44,14 @@ public class UnittypePage extends AbstractWebPage {
   private String sessionId;
 
   /** The unittype updated. */
-  private boolean unittypeUpdated = false;
+  private boolean unittypeUpdated;
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.AbstractWebPage#getTitle(java.lang.String)
-   */
   public String getTitle(String page) {
     return super.getTitle(page) + (unittype != null ? " | " + unittype.getName() : "");
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.AbstractWebPage#getShortcutItems(com.owera.xaps.web.app.util.SessionData)
-   */
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
-    List<MenuItem> list = new ArrayList<MenuItem>();
-    list.addAll(super.getShortcutItems(sessionData));
+    List<MenuItem> list = new ArrayList<>(super.getShortcutItems(sessionData));
     list.add(new MenuItem("Create new Unit Type", Page.UNITTYPECREATE));
     list.add(new MenuItem("Unit Type overview", Page.UNITTYPEOVERVIEW));
     list.add(new MenuItem("Trigger Overview", Page.TRIGGEROVERVIEW));
@@ -87,7 +79,9 @@ public class UnittypePage extends AbstractWebPage {
    * @throws Exception the exception
    */
   private void actionCUDUnittype() throws Exception {
-    if (unittype == null) return;
+    if (unittype == null) {
+      return;
+    }
 
     if (inputData.getFormSubmit().isValue(WebConstants.UPDATE)) {
       ProvisioningProtocol protocol =
@@ -127,7 +121,9 @@ public class UnittypePage extends AbstractWebPage {
    * @throws Exception the exception
    */
   private void actionCUDParameters(ParameterParser params) throws Exception {
-    if (unittype == null) return;
+    if (unittype == null) {
+      return;
+    }
     if (inputData.getFormSubmit().isValue(WebConstants.UPDATE_PARAMS)) {
       UnittypeParameter[] upParams = unittype.getUnittypeParameters().getUnittypeParameters();
       for (UnittypeParameter utp : upParams) {
@@ -162,13 +158,9 @@ public class UnittypePage extends AbstractWebPage {
    * @return true, if is protocol
    */
   public static boolean isProtocol(Unittype ut, String protocol) {
-    if (ut == null) return false;
-    return ut.getProtocol() != null && ut.getProtocol().equals(protocol);
+    return ut != null && ut.getProtocol() != null && ut.getProtocol().equals(protocol);
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
-   */
   public void process(
       ParameterParser params,
       Output outputHandler,

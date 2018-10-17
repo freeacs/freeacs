@@ -10,16 +10,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FailoverFile {
-
   private static String LOG_FILE_NAME = "fusion-syslog-failover.log";
 
   private static String PROCESSING_FILE_NAME = "fusion-syslog-failover-processing.log";
 
-  private static BufferedWriter bw = null;
+  private static BufferedWriter bw;
 
   private static File f = new File(LOG_FILE_NAME);
 
-  private static int failoverCount = 0;
+  private static int failoverCount;
 
   private static Logger logger = LoggerFactory.getLogger(FailoverFile.class);
 
@@ -63,7 +62,9 @@ public class FailoverFile {
   }
 
   private BufferedWriter getBufferedWriter() throws IOException {
-    if (bw == null) bw = new BufferedWriter(new FileWriter(f, true));
+    if (bw == null) {
+      bw = new BufferedWriter(new FileWriter(f, true));
+    }
     return bw;
   }
 
@@ -77,8 +78,9 @@ public class FailoverFile {
         }
         br.close();
         failoverCount = failoverFileLineCount;
-        if (failoverFileLineCount > 0)
+        if (failoverFileLineCount > 0) {
           logger.info("Counted " + failoverFileLineCount + " messages from failover-file.");
+        }
       } catch (IOException ioe) {
         logger.error("Tried to count lines in failover-file, but an exception occured: " + ioe);
       }

@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SummaryLogger extends TaskDefaultImpl {
-
   private final Properties properties;
 
   public SummaryLogger(String taskName, Properties properties) {
@@ -15,7 +14,7 @@ public class SummaryLogger extends TaskDefaultImpl {
 
   private static Logger logger = LoggerFactory.getLogger(SummaryLogger.class);
   private static Logger summary = LoggerFactory.getLogger("Summary");
-  private static int summaryHeaderCount = 0;
+  private static int summaryHeaderCount;
   private static boolean firstTime = true;
   private static Integer maxMessagesPrMinute;
 
@@ -35,10 +34,15 @@ public class SummaryLogger extends TaskDefaultImpl {
     updateProperties();
     if (summaryHeaderCount == 0) {
       String uua = properties.getUnknownUnitsAction();
-      if (uua.equals("allow")) uua = "    Allow";
-      else if (uua.equals("discard")) uua = "  Discard";
-      else if (uua.equals("allow-create")) uua = "   Create";
-      else uua = " Redirect";
+      if ("allow".equals(uua)) {
+        uua = "    Allow";
+      } else if ("discard".equals(uua)) {
+        uua = "  Discard";
+      } else if ("allow-create".equals(uua)) {
+        uua = "   Create";
+      } else {
+        uua = " Redirect";
+      }
       summary.info(
           "            INCOMING             |  UNKNOWN  |                 SYSLOG EVENTS                     |   DATABASE  |       FAILED        ");
       summary.info(
@@ -49,17 +53,20 @@ public class SummaryLogger extends TaskDefaultImpl {
           "-------------------------------------------------------------------------------------------------------------------------------------");
     }
     summaryHeaderCount++;
-    if (summaryHeaderCount == 20) summaryHeaderCount = 0;
+    if (summaryHeaderCount == 20) {
+      summaryHeaderCount = 0;
+    }
     int received = SyslogServer.resetPacketCount();
     int discarded = received - maxMessagesPrMinute;
-    if (discarded > 0)
+    if (discarded > 0) {
       logger.error(
           "Received "
               + received
               + " messages, discarded "
-              + (discarded)
+              + discarded
               + " messages due to maxMessagesPrMinute limit at "
               + maxMessagesPrMinute);
+    }
     SyslogPackets.BufferCounter bc = SyslogPackets.getCounter().resetCounters();
     Syslog2DB.Syslog2DBCounter sc = Syslog2DB.getCounter().resetCounters();
     FailoverFileReader.FailoverCounter fc = FailoverFileReader.getCounter().resetCounters();
@@ -84,7 +91,9 @@ public class SummaryLogger extends TaskDefaultImpl {
     if (firstTime) {
       message += String.format("%7s ", FailoverFile.getFailoverCount(true));
       firstTime = false;
-    } else message += String.format("%7s ", FailoverFile.getFailoverCount(false));
+    } else {
+      message += String.format("%7s ", FailoverFile.getFailoverCount(false));
+    }
     message += String.format("%4s ", fc.getRecycled());
     message += String.format("%6s", fc.getTooOld());
     summary.info(message);

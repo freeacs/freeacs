@@ -52,7 +52,9 @@ public class Group {
   }
 
   public void setName(String name) {
-    if (!name.equals(this.name)) this.oldName = this.name;
+    if (!name.equals(this.name)) {
+      this.oldName = this.name;
+    }
     this.name = name;
   }
 
@@ -80,19 +82,18 @@ public class Group {
     this.parent = newParent;
   }
 
-  /*
-   * Logic to prevent a group to reference itself,
-   * through one or many parents.
-   */
+  /** Logic to prevent a group to reference itself, through one or many parents. */
   public void setParent(Group newParent) {
-    if (this.parent != null) parent.removeChild(this);
+    if (this.parent != null) {
+      parent.removeChild(this);
+    }
     if (newParent == null) {
       this.parent = newParent;
       return;
     }
     Group tmpParent = newParent;
     while (tmpParent != null) {
-      if (tmpParent.getId().equals(this.getId())) {
+      if (tmpParent.getId().equals(getId())) {
         throw new IllegalArgumentException(
             "Group parent reference loop occurred for "
                 + tmpParent.getName()
@@ -111,7 +112,7 @@ public class Group {
   }
 
   private List<Group> getAllChildrenRec(Group g) {
-    List<Group> groups = new ArrayList<Group>();
+    List<Group> groups = new ArrayList<>();
     for (Group childrenGroup : g.getChildren()) {
       groups.add(childrenGroup);
       groups.addAll(getAllChildrenRec(childrenGroup));
@@ -121,8 +122,10 @@ public class Group {
 
   @Override
   public String toString() {
-    if (parent == null) return "[" + id + "] [" + name + "] [" + description + "] ";
-    return "[" + id + "] [" + name + "] [" + description + "] [" + parent.getId() + "]";
+    if (parent != null) {
+      return "[" + id + "] [" + name + "] [" + description + "] [" + parent.getId() + "]";
+    }
+    return "[" + id + "] [" + name + "] [" + description + "] ";
   }
 
   protected String getOldName() {
@@ -130,17 +133,25 @@ public class Group {
   }
 
   public List<Group> getChildren() {
-    if (children == null) children = new ArrayList<Group>();
+    if (children == null) {
+      children = new ArrayList<>();
+    }
     return children;
   }
 
   protected void addChild(Group child) {
-    if (children == null) children = new ArrayList<Group>();
-    if (!this.children.contains(child)) this.children.add(child);
+    if (children == null) {
+      children = new ArrayList<>();
+    }
+    if (!this.children.contains(child)) {
+      this.children.add(child);
+    }
   }
 
   protected void removeChild(Group child) {
-    if (children != null) children.remove(child);
+    if (children != null) {
+      children.remove(child);
+    }
   }
 
   public Unittype getUnittype() {
@@ -155,33 +166,28 @@ public class Group {
     this.profile = profile;
   }
 
-  /*
-   * If current profile has a value already, or the new value is set to null, then perform
-   * change.
+  /**
+   * If current profile has a value already, or the new value is set to null, then perform change.
    *
-   * If current profile is null, but the new profile has a value, then perform
-   * a check to see that it does not violates the rules for profile setting:
+   * <p>If current profile is null, but the new profile has a value, then perform a check to see
+   * that it does not violates the rules for profile setting:
    *
-   * 	All groups should inherit the profile from the top level group.
+   * <p>All groups should inherit the profile from the top level group.
    */
   public void setProfile(Profile profile) {
-    if (profile == null) {
-      this.profile = profile;
-    } else {
-      if (this.getParent() != null) {
-        Group topGroup = this.getTopParent();
-        Profile topProfile = topGroup.getProfile();
-        if (topProfile != null && topProfile.getId().equals(profile.getId())) {
-          // profile should only be set on top-level group, but we don't need to throw exception,
-          // just silently accept the value
-          profile = null;
-        } else {
-          throw new IllegalArgumentException(
-              "Cannot set group profile to something different than the top level group profile");
-        }
+    if (profile != null && getParent() != null) {
+      Group topGroup = getTopParent();
+      Profile topProfile = topGroup.getProfile();
+      if (topProfile != null && topProfile.getId().equals(profile.getId())) {
+        // profile should only be set on top-level group, but we don't need to throw exception,
+        // just silently accept the value
+        profile = null;
+      } else {
+        throw new IllegalArgumentException(
+            "Cannot set group profile to something different than the top level group profile");
       }
-      this.profile = profile;
     }
+    this.profile = profile;
   }
 
   public Profile getProfile() {
@@ -190,7 +196,7 @@ public class Group {
 
   public GroupParameters getGroupParameters() {
     if (parameters == null) {
-      Map<Integer, GroupParameter> idMap = new HashMap<Integer, GroupParameter>();
+      Map<Integer, GroupParameter> idMap = new HashMap<>();
       MapWrapper<GroupParameter> mw = new MapWrapper<GroupParameter>(ACS.isStrictOrder());
       Map<String, GroupParameter> nameMap = mw.getMap();
       parameters = new GroupParameters(nameMap, idMap, this);
@@ -212,12 +218,13 @@ public class Group {
 
   public boolean match(Unit unit) {
     Map<String, String> upMap = unit.getParameters();
-    Profile groupProfile = this.getTopParent().getProfile();
+    Profile groupProfile = getTopParent().getProfile();
     boolean match = true;
-    if (groupProfile != null && groupProfile.getId().intValue() != unit.getProfile().getId())
+    if (groupProfile != null && groupProfile.getId().intValue() != unit.getProfile().getId()) {
       return false;
+    }
     Group g = this;
-    GroupParameter[] gpArr = this.getGroupParameters().getGroupParameters();
+    GroupParameter[] gpArr = getGroupParameters().getGroupParameters();
     while (match && gpArr != null) {
       if (!matchGroupParameters(upMap, gpArr)) {
         match = false;
@@ -238,10 +245,13 @@ public class Group {
       String upValue = upMap.get(gp.getParameter().getUnittypeParameter().getName());
       Parameter gpParam = gp.getParameter();
       String gpValue = null;
-      if (!gpParam.valueWasNull()) gpValue = gpParam.getValue();
+      if (!gpParam.valueWasNull()) {
+        gpValue = gpParam.getValue();
+      }
 
-      if (!UnitQueryWithinUnittype.match(upValue, gpValue, gpParam.getOp(), gpParam.getType()))
+      if (!UnitQueryWithinUnittype.match(upValue, gpValue, gpParam.getOp(), gpParam.getType())) {
         return false;
+      }
     }
     return true;
   }

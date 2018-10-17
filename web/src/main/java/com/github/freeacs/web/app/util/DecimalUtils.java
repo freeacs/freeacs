@@ -4,10 +4,8 @@ import java.text.DecimalFormat;
 
 /** The Class DecimalUtils. */
 public class DecimalUtils {
-
   /** The Enum Format. */
   public enum Format {
-
     /** The ON e_ decimal. */
     ONE_DECIMAL("0.0"),
 

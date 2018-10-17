@@ -3,7 +3,6 @@ package com.github.freeacs.dbi.report;
 import java.util.Date;
 
 public class KeyFactory {
-
   private String[] keyNames;
 
   public KeyFactory(String... keyNames) {

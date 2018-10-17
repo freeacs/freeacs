@@ -21,7 +21,7 @@ public class RecordUIDataProv {
 
   public static List<RecordUIDataProv> convertRecords(
       ACSUnit acsUnit, Map<String, Report<RecordProvisioning>> reportMap) throws SQLException {
-    List<RecordUIDataProv> list = new ArrayList<RecordUIDataProv>();
+    List<RecordUIDataProv> list = new ArrayList<>();
 
     for (Entry<String, Report<RecordProvisioning>> reportMapEntry : reportMap.entrySet()) {
       Unit unit = acsUnit.getUnitById(reportMapEntry.getKey());
@@ -42,9 +42,6 @@ public class RecordUIDataProv {
     }
     return list;
   }
-
-  /** Instantiates a new record ui data hw sum. */
-  public RecordUIDataProv() {}
 
   public String getOutput() {
     return output;

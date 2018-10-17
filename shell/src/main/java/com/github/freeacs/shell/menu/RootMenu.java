@@ -1,8 +1,6 @@
 package com.github.freeacs.shell.menu;
 
 import com.github.freeacs.dbi.ACSUnit;
-import com.github.freeacs.dbi.Certificate;
-import com.github.freeacs.dbi.Certificates;
 import com.github.freeacs.dbi.Permission;
 import com.github.freeacs.dbi.Permissions;
 import com.github.freeacs.dbi.Profile;
@@ -12,7 +10,6 @@ import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.UnittypeParameterFlag;
 import com.github.freeacs.dbi.User;
 import com.github.freeacs.dbi.Users;
-import com.github.freeacs.dbi.crypto.Crypto;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.shell.Session;
 import com.github.freeacs.shell.UnitTempStorage;
@@ -37,7 +34,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RootMenu {
-
   private static Pattern hashedSecretPattern = Pattern.compile("[A-F0-9]{40}");
 
   private Session session;
@@ -47,7 +43,7 @@ public class RootMenu {
   }
 
   public void executescript() throws Exception {
-    if (session.getBatchStorage().getAddChangeUnittypeParameters().size() > 0) {
+    if (!session.getBatchStorage().getAddChangeUnittypeParameters().isEmpty()) {
       try {
         Unittype ut =
             session.getBatchStorage().getAddChangeUnittypeParameters().get(0).getUnittype();
@@ -69,13 +65,13 @@ public class RootMenu {
           session.getAcsUnit().addUnits(entry.getValue(), entry.getKey());
         }
         uts.reset();
-        if (session.getBatchStorage().getAddChangeUnitParameters().size() > 0) {
+        if (!session.getBatchStorage().getAddChangeUnitParameters().isEmpty()) {
           xapsU.addOrChangeUnitParameters(
               session.getBatchStorage().getAddChangeUnitParameters(),
               session.getContext().getProfile());
           session.getBatchStorage().setAddChangeUnitParameters(null);
         }
-        if (session.getBatchStorage().getDeleteUnitParameters().size() > 0) {
+        if (!session.getBatchStorage().getDeleteUnitParameters().isEmpty()) {
           xapsU.deleteUnitParameters(session.getBatchStorage().getDeleteUnitParameters());
           session.getBatchStorage().setDeleteUnitParameters(null);
           session.println("The unit parameters scheduled for deletion are deleted");
@@ -86,14 +82,18 @@ public class RootMenu {
           session.getAcsUnit().deleteUnits(entry.getValue());
           unitsDeleted = true;
         }
-        if (unitsDeleted) session.println("The units scheduled for deletion are deleted");
+        if (unitsDeleted) {
+          session.println("The units scheduled for deletion are deleted");
+        }
         uts.reset();
       } catch (Exception t) {
-        if (uts != null) uts.reset();
+        if (uts != null) {
+          uts.reset();
+        }
         throw t;
       }
     }
-    if (session.getBatchStorage().getDeleteUnittypeParameters().size() > 0) {
+    if (!session.getBatchStorage().getDeleteUnittypeParameters().isEmpty()) {
       try {
         Unittype ut = session.getBatchStorage().getDeleteUnittypeParameters().get(0).getUnittype();
         ut.getUnittypeParameters()
@@ -116,32 +116,20 @@ public class RootMenu {
       Permission[] permissions = user.getPermissions().getPermissions();
       for (Permission p : permissions) {
         Unittype unittype = session.getAcs().getUnittype(p.getUnittypeId());
-        if (!Validation.matches(args.length > 1 ? args[1] : null, unittype.getName())) continue;
+        if (!Validation.matches(args.length > 1 ? args[1] : null, unittype.getName())) {
+          continue;
+        }
         Line line = new Line(user.getUsername(), unittype.getName());
         Profile profile = unittype.getProfiles().getById(p.getProfileId());
-        if (profile != null) line.addValue(profile.getName());
-        else line.addValue("NULL");
+        if (profile != null) {
+          line.addValue(profile.getName());
+        } else {
+          line.addValue("NULL");
+        }
         listing.addLine(line);
       }
     }
   }
-
-  private void listcertificates(String[] args, OutputHandler oh) throws IOException {
-    Certificates certificates = session.getAcs().getCertificates();
-    Listing listing = oh.getListing();
-    listing.setHeading("Name", "Certificate", "ClearText");
-    for (Certificate cert : certificates.getCertificates()) {
-      Line line = new Line(cert.getName(), cert.getCertificate());
-      listing.addLine(line);
-      try {
-        line.addValue(Crypto.decryptUsingRSAPublicKey(cert.getCertificate()));
-      } catch (Throwable t) {
-        line.addValue("Not a valid certificate: " + t.getMessage());
-      }
-    }
-  }
-
-  //	}
 
   private void listusers(String[] args, OutputHandler oh) throws IOException {
     Users users = session.getUsers();
@@ -149,17 +137,22 @@ public class RootMenu {
     listing.setHeading("Username", "Full name", "Secret (hashed)", "Access", "Admin");
     for (User user : users.getUsers(session.getVerifiedFusionUser())) {
       if (!Validation.matches(
-          args.length > 1 ? args[1] : null, user.getUsername(), user.getAccess())) continue;
+          args.length > 1 ? args[1] : null, user.getUsername(), user.getAccess())) {
+        continue;
+      }
       Line line = new Line(user.getUsername(), user.getFullname(), user.getSecret());
-      if (user.getAccess() != null && user.getAccess().indexOf("[") > 0) {
-        int startPos = user.getAccess().indexOf("[");
-        int endPos = user.getAccess().indexOf("]");
+      if (user.getAccess() != null && user.getAccess().indexOf('[') > 0) {
+        int startPos = user.getAccess().indexOf('[');
+        int endPos = user.getAccess().indexOf(']');
         line.addValue(user.getAccess().substring(startPos + 1, endPos));
       } else {
         line.addValue(user.getAccess());
       }
-      if (user.getAdmin() != null) line.addValue(user.getAdmin().toString());
-      else line.addValue("false");
+      if (user.getAdmin() != null) {
+        line.addValue(user.getAdmin().toString());
+      } else {
+        line.addValue("false");
+      }
       listing.addLine(line);
     }
   }
@@ -197,38 +190,33 @@ public class RootMenu {
     String username = args[1];
     String unittypeName = args[2];
     String profileName = "NULL";
-    if (args.length > 3) profileName = args[3];
+    if (args.length > 3) {
+      profileName = args[3];
+    }
     Users users = session.getUsers();
     User user = users.getProtected(username, session.getVerifiedFusionUser());
-    if (user == null)
+    if (user == null) {
       throw new IllegalArgumentException("The user " + username + " does not exist");
+    }
     Permissions permissions = user.getPermissions();
     Unittype unittype = session.getAcs().getUnittype(unittypeName);
-    if (unittype == null)
+    if (unittype == null) {
       throw new IllegalArgumentException("The unittype " + unittypeName + " does not exist");
+    }
     Integer profileId = null;
-    if (!profileName.equals("NULL")) {
+    if (!"NULL".equals(profileName)) {
       Profile profile = unittype.getProfiles().getByName(profileName);
-      if (profile == null)
+      if (profile == null) {
         throw new IllegalArgumentException("The profile " + profileName + " does not exist");
+      }
       profileId = profile.getId();
     }
     Permission p = permissions.getByUnittypeProfile(unittype.getId(), profileId);
-    if (p == null) throw new IllegalArgumentException("The permission does not exist");
+    if (p == null) {
+      throw new IllegalArgumentException("The permission does not exist");
+    }
     user.deletePermission(p);
     session.println("The permission was deleted");
-  }
-
-  private void delcertificate(String[] args) throws Exception {
-    Validation.numberOfArgs(args, 2);
-    Certificates certificates = session.getAcs().getCertificates();
-    String name = args[1];
-    Certificate cert = certificates.getByName(name);
-    if (cert == null) session.println("The certificate " + name + " does not exist.");
-    else {
-      certificates.deleteCertificate(cert, session.getAcs());
-      session.println("The certificate " + name + " is deleted");
-    }
   }
 
   private void deluser(String[] args) throws Exception {
@@ -236,8 +224,9 @@ public class RootMenu {
     Users users = session.getUsers();
     String username = args[1];
     User user = users.getProtected(username, session.getVerifiedFusionUser());
-    if (user == null) session.println("The user " + username + " does not exist.");
-    else {
+    if (user == null) {
+      session.println("The user " + username + " does not exist.");
+    } else {
       users.delete(user, session.getVerifiedFusionUser());
       session.println("The user " + username + " is deleted.");
     }
@@ -248,20 +237,25 @@ public class RootMenu {
     String username = args[1];
     String unittypeName = args[2];
     String profileName = "NULL";
-    if (args.length > 3) profileName = args[3];
+    if (args.length > 3) {
+      profileName = args[3];
+    }
     Users users = session.getUsers();
     User user = users.getProtected(username, session.getVerifiedFusionUser());
-    if (user == null)
+    if (user == null) {
       throw new IllegalArgumentException("The user " + username + " does not exist");
+    }
     Permissions permissions = user.getPermissions();
     Unittype unittype = session.getAcs().getUnittype(unittypeName);
-    if (unittype == null)
+    if (unittype == null) {
       throw new IllegalArgumentException("The unittype " + unittypeName + " does not exist");
+    }
     Integer profileId = null;
-    if (!profileName.equals("NULL")) {
+    if (!"NULL".equals(profileName)) {
       Profile profile = unittype.getProfiles().getByName(profileName);
-      if (profile == null)
+      if (profile == null) {
         throw new IllegalArgumentException("The profile " + profileName + " does not exist");
+      }
       profileId = profile.getId();
     }
     Permission p = permissions.getByUnittypeProfile(unittype.getId(), profileId);
@@ -274,23 +268,6 @@ public class RootMenu {
     session.println("The permission is " + action);
   }
 
-  private void setcertificate(String[] args) throws Exception {
-    Validation.numberOfArgs(args, 3);
-    Certificates certificates = session.getAcs().getCertificates();
-    String name = args[1];
-    String certificate = args[2];
-    Certificate cert = certificates.getByName(name);
-    String action = "changed";
-    if (cert == null) {
-      cert = new Certificate(name, certificate);
-      action = "added";
-    } else {
-      cert.setCertificate(certificate);
-    }
-    certificates.addOrChangeCertificate(cert, session.getAcs());
-    session.println("The certificate " + cert.getName() + " is " + action + ".");
-  }
-
   private void setuser(String[] args) throws Exception {
     Validation.numberOfArgs(args, 5);
     Users users = session.getUsers();
@@ -299,15 +276,20 @@ public class RootMenu {
     String secret = args[3];
     String accessStr = args[4];
     boolean admin = false;
-    if (args.length > 5) admin = args[5].toLowerCase().equals("true");
-    else if (username.equals("admin")) // convert old admin-user to admin-permission
-    admin = true;
-    if (accessStr != null && accessStr.equals("NULL")) accessStr = "";
-    if (accessStr != null && !accessStr.trim().equals("")) {
-      if (username.equalsIgnoreCase(Users.USER_ADMIN)) accessStr = Users.ACCESS_ADMIN;
-      else {
-        Set<String> webPages = new HashSet<String>();
-        for (String s : Permissions.WEB_PAGES) webPages.add(s);
+    if (args.length > 5) {
+      admin = "true".equals(args[5].toLowerCase());
+    } else if ("admin".equals(username)) {
+      admin = true;
+    }
+    if ("NULL".equals(accessStr)) {
+      accessStr = "";
+    }
+    if (accessStr != null && !"".equals(accessStr.trim())) {
+      if (username.equalsIgnoreCase(Users.USER_ADMIN)) {
+        accessStr = Users.ACCESS_ADMIN;
+      } else {
+        Set<String> webPages = new HashSet<>();
+        java.util.Collections.addAll(webPages, Permissions.WEB_PAGES);
         // OLD: { "search", "unit", "profile", "unittype", "group", "job", "software", "syslog",
         // "report", "monitor", "staging" };
         // NEW { "support", "limited-provisioning", "full-provisioning", "report", "staging",
@@ -325,11 +307,14 @@ public class RootMenu {
         String newAccess = "";
         for (String a : accessArr) {
           String access = a.trim();
-          if (!webPages.contains(access) && !a.equals(Users.ACCESS_ADMIN))
+          if (!webPages.contains(access) && !a.equals(Users.ACCESS_ADMIN)) {
             throw new IllegalArgumentException("The access " + a + " is not valid");
+          }
           newAccess += access + ",";
         }
-        if (newAccess.endsWith(",")) newAccess = newAccess.substring(0, newAccess.length() - 1);
+        if (newAccess.endsWith(",")) {
+          newAccess = newAccess.substring(0, newAccess.length() - 1);
+        }
         accessStr = "WEB[" + newAccess + "]";
       }
     }
@@ -345,8 +330,11 @@ public class RootMenu {
       user.setAdmin(admin);
     }
     Matcher m = hashedSecretPattern.matcher(secret);
-    if (m.matches()) user.setSecretHashed(secret);
-    else user.setSecretClearText(secret);
+    if (m.matches()) {
+      user.setSecretHashed(secret);
+    } else {
+      user.setSecretClearText(secret);
+    }
     users.addOrChange(user, session.getVerifiedFusionUser());
     session.println("The user " + user.getUsername() + " is " + action + ".");
   }
@@ -375,8 +363,9 @@ public class RootMenu {
   private void delunittype(String[] args) throws Exception {
     Validation.numberOfArgs(args, 2);
     Unittype unittype = session.getAcs().getUnittype(args[1]);
-    if (unittype == null) session.println("The unittype does not exist.");
-    else {
+    if (unittype == null) {
+      session.println("The unittype does not exist.");
+    } else {
       session.getAcs().getUnittypes().deleteUnittype(unittype, session.getAcs(), true);
       session.println("The unittype is deleted.");
     }
@@ -386,14 +375,16 @@ public class RootMenu {
     Validation.numberOfArgs(args, 1);
     Listing listing = oh.getListing();
     listing.setHeading("Unit Type Parameter Name", "Flag");
-    if (args.length > 1 && args[1].equals("staging")) {
+    if (args.length > 1 && "staging".equals(args[1])) {
       for (Entry<String, UnittypeParameterFlag> entry :
-          SystemParameters.stagingParameters.entrySet())
+          SystemParameters.stagingParameters.entrySet()) {
         listing.addLine(entry.getKey(), entry.getValue().getFlag());
+      }
     } else {
       for (Entry<String, UnittypeParameterFlag> entry :
-          SystemParameters.commonParameters.entrySet())
+          SystemParameters.commonParameters.entrySet()) {
         listing.addLine(entry.getKey(), entry.getValue().getFlag());
+      }
     }
   }
 
@@ -412,24 +403,17 @@ public class RootMenu {
   //				throw new IOException("The file " + filename + " could not be deleted");
   //		}
   //	}
-  //
-  /*
-   * Returns  true  : has processed a cd-command
-   * Returns  false : has processed another command (everything else)
+  /**
+   * Returns true : has processed a cd-command Returns false : has processed another command
+   * (everything else)
    */
   public boolean execute(String[] inputArr, OutputHandler oh) throws Exception {
-    if (inputArr[0].startsWith("delcert")) {
-      delcertificate(inputArr);
-      //		} else if (inputArr[0].startsWith("delosf")) {
-      //			delfile(inputArr);
-    } else if (inputArr[0].startsWith("delperm")) {
+    if (inputArr[0].startsWith("delperm")) {
       delperm(inputArr);
     } else if (inputArr[0].startsWith("delunit")) {
       delunittype(inputArr);
     } else if (inputArr[0].startsWith("deluser")) {
       deluser(inputArr);
-    } else if (inputArr[0].startsWith("listc")) {
-      listcertificates(inputArr, oh);
     } else if (inputArr[0].startsWith("listpe")) {
       listperms(inputArr, oh);
     } else if (inputArr[0].startsWith("listpa")) {
@@ -442,17 +426,15 @@ public class RootMenu {
       listusers(inputArr, oh);
     } else if (inputArr[0].startsWith("setun")) {
       setunittype(inputArr, oh);
-    } else if (inputArr[0].startsWith("setc")) {
-      setcertificate(inputArr);
     } else if (inputArr[0].startsWith("setus")) {
       setuser(inputArr);
     } else if (inputArr[0].startsWith("setpe")) {
       setperm(inputArr);
-    } else if (inputArr[0].equals("maketestperfunits")) {
+    } else if ("maketestperfunits".equals(inputArr[0])) {
       makeTestperfUnits(inputArr);
-    } else if (inputArr[0].equals("maketransform")) {
+    } else if ("maketransform".equals(inputArr[0])) {
       Transform.transform(session, inputArr[1], inputArr[2]);
-    } else if (inputArr[0].equals("executescript")) {
+    } else if ("executescript".equals(inputArr[0])) {
       session.println("The command does not apply here.");
     } else {
       throw new IllegalArgumentException("The command " + inputArr[0] + " was not recognized.");
@@ -467,18 +449,18 @@ public class RootMenu {
       args[0] = inputArr[1];
       args[1] = inputArr[2];
       args[2] = inputArr[3];
-    } else if (inputArr.length == 3) {
-      args[0] = inputArr[1];
-      args[1] = inputArr[2];
-      args[2] = "internal/owera/groups/testperf.input";
-    } else if (inputArr.length == 2) {
-      args = findRange(inputArr[1], session);
-      //			addUpgradeSWJob(session);
-      makeTCScript(args);
-      args[2] = "internal/owera/groups/testperf.input";
     } else {
-      args[0] = "0";
-      args[1] = "99";
+      if (inputArr.length == 3) {
+        args[0] = inputArr[1];
+        args[1] = inputArr[2];
+      } else if (inputArr.length == 2) {
+        args = findRange(inputArr[1], session);
+        //			addUpgradeSWJob(session);
+        makeTCScript(args);
+      } else {
+        args[0] = "0";
+        args[1] = "99";
+      }
       args[2] = "internal/owera/groups/testperf.input";
     }
     MakeTestperfUnits.execute(args);
@@ -498,7 +480,7 @@ public class RootMenu {
 
   private String[] findRange(String arg0, Session session) throws SQLException {
     String[] args = new String[3];
-    int add = new Integer(arg0);
+    int add = Integer.parseInt(arg0);
     ACSUnit acsUnit = session.getAcsUnit();
     int i = 0;
     Unit unit = null;
@@ -507,16 +489,18 @@ public class RootMenu {
       unit = acsUnit.getUnitById(unitId);
       i = i + add;
     } while (unit != null);
-    args[0] = "" + (i - add);
-    args[1] = "" + i;
+    args[0] = String.valueOf(i - add);
+    args[1] = String.valueOf(i);
     return args;
   }
 
   private Map<String, Unit> getUnits(String[] args) throws Exception {
     Map<String, Unit> units = null;
-    if (args.length > 1)
+    if (args.length > 1) {
       units = session.getAcsUnit().getUnits("%" + args[1] + "%", null, null, null);
-    else units = session.getAcsUnit().getUnits((String) null, null, null, null);
+    } else {
+      units = session.getAcsUnit().getUnits((String) null, null, null, null);
+    }
     return units;
   }
 
@@ -524,6 +508,8 @@ public class RootMenu {
     Listing listing = oh.getListing();
     listing.setHeading(new Heading(new Line("Unit Id")), true);
     Map<String, Unit> units = getUnits(inputArr);
-    for (Unit unit : units.values()) listing.addLine(new Line(unit.getId()), unit);
+    for (Unit unit : units.values()) {
+      listing.addLine(new Line(unit.getId()), unit);
+    }
   }
 }

@@ -3,8 +3,7 @@ package com.github.freeacs.dbi.tr069;
 import java.util.Map;
 
 public class TR069DMParameterMap {
-
-  private Map<String, TR069DMParameter> map = null;
+  private Map<String, TR069DMParameter> map;
 
   public TR069DMParameterMap(Map<String, TR069DMParameter> map) {
     this.map = map;
@@ -18,9 +17,15 @@ public class TR069DMParameterMap {
     name = name.replaceAll("\\.\\d+\\.", ".{i}."); // data-model uses indexes {i}
 
     TR069DMParameter p = getParameterImpl(name);
-    if (p == null) p = getParameterImpl(name.replaceAll("^Device", "InternetGatewayDevice"));
-    if (p == null) p = getParameterImpl(name.replaceAll("^InternetGatewayDevice", "Device"));
-    if (p == null) p = getParameterImpl(name.replaceAll("^InternetGatewayDevice.Services.", ""));
+    if (p == null) {
+      p = getParameterImpl(name.replaceAll("^Device", "InternetGatewayDevice"));
+    }
+    if (p == null) {
+      p = getParameterImpl(name.replaceAll("^InternetGatewayDevice", "Device"));
+    }
+    if (p == null) {
+      p = getParameterImpl(name.replaceAll("^InternetGatewayDevice.Services.", ""));
+    }
     return p;
   }
 

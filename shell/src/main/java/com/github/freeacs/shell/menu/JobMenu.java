@@ -32,18 +32,13 @@ public class JobMenu {
     this.context = session.getContext();
   }
 
-  /*
-  * Returns true : has processed a cd-command Returns false : has processed
-  * another command (everything else)
-  	help += "\tlistdetails\n";
-  	help += "\tlistparams\n";
-  	help += "\tsetprofile <profilename>\n";
-  	help += "\tstart\n";
-  	help += "\tstop\n";
-  	help += "\tabort\n";
-  	help += "\tsetparam ALL|<unitid> <unittype-parameter-name> <value>\n";
-  	help += "\tdelparam ALL|<unitid> <unittype-parameter-name>\n";
-  */
+  /**
+   * Returns true : has processed a cd-command Returns false : has processed another command
+   * (everything else) help += "\tlistdetails\n"; help += "\tlistparams\n"; help += "\tsetprofile
+   * <profilename>\n"; help += "\tstart\n"; help += "\tstop\n"; help += "\tabort\n"; help +=
+   * "\tsetparam ALL|<unitid> <unittype-parameter-name> <value>\n"; help += "\tdelparam ALL|<unitid>
+   * <unittype-parameter-name>\n";
+   */
   public boolean execute(String[] inputArr, OutputHandler oh) throws Exception {
     if (inputArr[0].equals(JobStatus.COMPLETED.toString())) {
       changeStatus(JobStatus.STARTED);
@@ -78,7 +73,7 @@ public class JobMenu {
       changeStatus(JobStatus.STARTED);
     } else if (inputArr[0].startsWith("stat")) {
       status(inputArr, oh);
-    } else if (inputArr[0].equals("stop") || inputArr[0].equals("pause")) {
+    } else if ("stop".equals(inputArr[0]) || "pause".equals(inputArr[0])) {
       changeStatus(JobStatus.PAUSED);
     } else if (inputArr[0].equals(JobStatus.PAUSED.toString())) {
       changeStatus(JobStatus.STARTED);
@@ -116,25 +111,31 @@ public class JobMenu {
     listing.setHeading("Unit-id", "Unit Type Parameter Name", "Value");
     if (inputArr.length > 1) {
       String unitId = inputArr[1];
-      if (unitId.equals("DEFAULT")) params = context.getJob().getDefaultParameters();
-      else
+      if ("DEFAULT".equals(unitId)) {
+        params = context.getJob().getDefaultParameters();
+      } else {
         params =
             context
                 .getUnittype()
                 .getJobs()
                 .readJobParameters(
                     context.getJob(), new Unit(unitId, null, null), session.getAcs());
-    } else
+      }
+    } else {
       params =
           context
               .getUnittype()
               .getJobs()
               .readJobParameters(context.getJob(), null, session.getAcs());
+    }
     for (Entry<String, JobParameter> entry : params.entrySet()) {
       Line line = new Line();
       String unitId = entry.getValue().getUnitId();
-      if (unitId.equals(Job.ANY_UNIT_IN_GROUP)) line.addValue("DEFAULT");
-      else line.addValue(unitId);
+      if (unitId.equals(Job.ANY_UNIT_IN_GROUP)) {
+        line.addValue("DEFAULT");
+      } else {
+        line.addValue(unitId);
+      }
       line.addValue(entry.getKey());
       line.addValue(entry.getValue().getParameter().getValue());
       listing.addLine(line);
@@ -144,10 +145,12 @@ public class JobMenu {
 
   private void delparam(String[] inputArr) throws Exception {
     Validation.numberOfArgs(inputArr, 3);
-    List<JobParameter> toBeDeleted = new ArrayList<JobParameter>();
+    List<JobParameter> toBeDeleted = new ArrayList<>();
 
     String unitId = inputArr[1];
-    if (inputArr[1].equals("DEFAULT")) unitId = Job.ANY_UNIT_IN_GROUP;
+    if ("DEFAULT".equals(inputArr[1])) {
+      unitId = Job.ANY_UNIT_IN_GROUP;
+    }
     Job job = context.getJob();
     Unittype unittype = job.getGroup().getUnittype();
     UnittypeParameter utp = unittype.getUnittypeParameters().getByName(inputArr[2]);
@@ -164,12 +167,13 @@ public class JobMenu {
     toBeDeleted.add(jp);
     int rowsDeleted =
         context.getUnittype().getJobs().deleteJobParameters(toBeDeleted, session.getAcs());
-    if (rowsDeleted >= 1)
+    if (rowsDeleted >= 1) {
       session.println(
           "[" + session.getCounter() + "] Job parameter " + inputArr[2] + " was deleted");
-    else
+    } else {
       session.println(
           "[" + session.getCounter() + "] Job parameter " + inputArr[2] + " was not found");
+    }
     session.incCounter();
   }
 
@@ -179,12 +183,14 @@ public class JobMenu {
     Unittype unittype = job.getGroup().getUnittype();
 
     String unitId = inputArr[1];
-    if (unitId.equals("DEFAULT")) unitId = Job.ANY_UNIT_IN_GROUP;
+    if ("DEFAULT".equals(unitId)) {
+      unitId = Job.ANY_UNIT_IN_GROUP;
+    }
 
     UnittypeParameter utp = unittype.getUnittypeParameters().getByName(inputArr[2]);
     if (utp != null) {
       JobParameter p = new JobParameter(job, unitId, new Parameter(utp, inputArr[3]));
-      List<JobParameter> toBeAdded = new ArrayList<JobParameter>();
+      List<JobParameter> toBeAdded = new ArrayList<>();
       toBeAdded.add(p);
       context.getUnittype().getJobs().addOrChangeJobParameters(toBeAdded, session.getAcs());
       session.println(
@@ -203,8 +209,10 @@ public class JobMenu {
     session.incCounter();
   }
 
-  // setfailedunits <unitid> <status> <start-tms>|NULL <end-tms>|NULL <unconfirmedfailed>
-  // <confirmedfailed>
+  /**
+   * Setfailedunits <unitid> <status> <start-tms>|NULL <end-tms>|NULL <unconfirmedfailed>
+   * <confirmedfailed>.
+   */
   private void setfailedunits(String[] inputArr) throws Exception {
     Job job = context.getJob();
     UnitJobs unitJobs = session.getUnitJobs();
@@ -212,8 +220,12 @@ public class JobMenu {
     UnitJob uj = new UnitJob(inputArr[1], job.getId());
     uj.setProcessed(false);
     uj.setStatus(inputArr[2]);
-    if (!inputArr[3].equals("NULL")) uj.setStartTimestamp(sdf.parse(inputArr[3]));
-    if (!inputArr[4].equals("NULL")) uj.setEndTimestamp(sdf.parse(inputArr[4]));
+    if (!"NULL".equals(inputArr[3])) {
+      uj.setStartTimestamp(sdf.parse(inputArr[3]));
+    }
+    if (!"NULL".equals(inputArr[4])) {
+      uj.setEndTimestamp(sdf.parse(inputArr[4]));
+    }
     uj.setUnconfirmedFailed(Integer.parseInt(inputArr[5]));
     uj.setConfirmedFailed(Integer.parseInt(inputArr[6]));
     unitJobs.addOrChange(uj);
@@ -228,12 +240,18 @@ public class JobMenu {
     listing.setHeading("Unitid", "Status", "Start-Tms", "End-Tms", "UF", "CF");
     for (UnitJob uj : unitJobs) {
       Line line = new Line(uj.getUnitId(), uj.getStatus());
-      if (uj.getStartTimestamp() != null) line.addValue(sdf.format(uj.getStartTimestamp()));
-      else line.addValue("NULL");
-      if (uj.getEndTimestamp() != null) line.addValue(sdf.format(uj.getEndTimestamp()));
-      else line.addValue("NULL");
-      line.addValue("" + uj.getUnconfirmedFailed());
-      line.addValue("" + uj.getConfirmedFailed());
+      if (uj.getStartTimestamp() != null) {
+        line.addValue(sdf.format(uj.getStartTimestamp()));
+      } else {
+        line.addValue("NULL");
+      }
+      if (uj.getEndTimestamp() != null) {
+        line.addValue(sdf.format(uj.getEndTimestamp()));
+      } else {
+        line.addValue("NULL");
+      }
+      line.addValue(String.valueOf(uj.getUnconfirmedFailed()));
+      line.addValue(String.valueOf(uj.getConfirmedFailed()));
       listing.addLine(line);
     }
   }
@@ -254,24 +272,32 @@ public class JobMenu {
     oh.print("         Description : " + job.getDescription() + "\n");
     oh.print("          Stop rules : " + job.getStopRulesSerialized() + "\n");
     oh.print("               Group : " + job.getGroup().getName() + "\n");
-    if (job.getFile() != null)
+    if (job.getFile() != null) {
       oh.print("            Software : " + job.getFile().getNameAndVersion() + "\n");
-    else oh.print("            Software : NULL\n");
-    if (job.getDependency() != null)
+    } else {
+      oh.print("            Software : NULL\n");
+    }
+    if (job.getDependency() != null) {
       oh.print("          Dependency : " + job.getDependency().getName() + "\n");
-    else oh.print("          Dependency : NULL\n");
-    if (job.getChildren().size() > 0) {
+    } else {
+      oh.print("          Dependency : NULL\n");
+    }
+    if (!job.getChildren().isEmpty()) {
       oh.print("        Job children : ");
       for (Job child : job.getChildren()) {
         oh.print(child.getName() + ", ");
       }
       oh.print("\n");
-    } else oh.print("        Job children : No children\n");
+    } else {
+      oh.print("        Job children : No children\n");
+    }
 
     oh.print(" Unconfirmed timeout : " + job.getUnconfirmedTimeout() + "\n");
-    if (job.getTimeoutTms() < Long.MAX_VALUE)
-      oh.print("         Job timeout : " + new Date(job.getTimeoutTms()).toString() + "\n");
-    else oh.print("         Job timeout : Infinite\n");
+    if (job.getTimeoutTms() < Long.MAX_VALUE) {
+      oh.print("         Job timeout : " + new Date(job.getTimeoutTms()) + "\n");
+    } else {
+      oh.print("         Job timeout : Infinite\n");
+    }
     oh.print("              Status : " + job.getStatus() + "\n");
     oh.print(
         "                  OK : "
@@ -279,12 +305,16 @@ public class JobMenu {
             + "\n");
     oh.print("  Unconfirmed failed : " + job.getUnconfirmedFailed() + "\n");
     oh.print("    Confirmed failed : " + job.getConfirmedFailed() + "\n");
-    if (job.getStartTimestamp() != null)
+    if (job.getStartTimestamp() != null) {
       oh.print("     Start-timestamp : " + job.getStartTimestamp() + "\n");
-    else oh.print("     Start-timestamp : Not started\n");
-    if (job.getEndTimestamp() != null)
+    } else {
+      oh.print("     Start-timestamp : Not started\n");
+    }
+    if (job.getEndTimestamp() != null) {
       oh.print("       End-timestamp : " + job.getEndTimestamp() + "\n");
-    else oh.print("       End-timestamp : Not aborted nor completed\n");
+    } else {
+      oh.print("       End-timestamp : Not aborted nor completed\n");
+    }
     //		if (job.getMoveToProfile() != null)
     //			oh.print("     Move-to-profile : " + job.getMoveToProfile().getName() + "\n");
     //		else

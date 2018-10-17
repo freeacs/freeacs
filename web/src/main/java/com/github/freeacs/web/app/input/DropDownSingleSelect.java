@@ -10,7 +10,6 @@ import java.util.List;
  * @author Jarl Andre Hubenthal
  */
 public class DropDownSingleSelect<T> extends InputSelectionModel<T> {
-
   /** Instantiates a new drop down single select. */
   DropDownSingleSelect() {
     this(null, null, null);
@@ -52,7 +51,9 @@ public class DropDownSingleSelect<T> extends InputSelectionModel<T> {
    * @return the selected or all items as list
    */
   public List<T> getSelectedOrAllItemsAsList() {
-    if (getSelected() != null) return Arrays.asList(getSelected());
+    if (getSelected() != null) {
+      return Arrays.asList(getSelected());
+    }
     return getItems();
   }
 
@@ -62,7 +63,9 @@ public class DropDownSingleSelect<T> extends InputSelectionModel<T> {
    * @return the selected or first item
    */
   public T getSelectedOrFirstItem() {
-    if (getSelected() != null) return getSelected();
-    return getItems() != null && getItems().size() > 0 ? getItems().get(0) : null;
+    if (getSelected() != null) {
+      return getSelected();
+    }
+    return getItems() != null && !getItems().isEmpty() ? getItems().get(0) : null;
   }
 }

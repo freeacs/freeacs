@@ -1,8 +1,7 @@
 package com.github.freeacs.shell;
 
 public class Echo {
-
-  // Default is to echo prompt/command to output
+  /** Default is to echo prompt/command to output. */
   private boolean echo = true;
 
   private Session session;
@@ -11,7 +10,7 @@ public class Echo {
 
   private boolean printPrompt = true;
 
-  private boolean fromKeyboard = false;
+  private boolean fromKeyboard;
 
   public Echo(Session session) {
     this.session = session;
@@ -40,9 +39,13 @@ public class Echo {
 
   public void print() {
     if (echo) {
-      if (printPrompt) session.print(session.getScript().getContext().getPrompt());
+      if (printPrompt) {
+        session.print(session.getScript().getContext().getPrompt());
+      }
       if (input != null) {
-        if (!fromKeyboard) session.println(input);
+        if (!fromKeyboard) {
+          session.println(input);
+        }
         this.input = null;
         printPrompt = true;
       } else {

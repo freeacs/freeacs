@@ -6,7 +6,6 @@ import com.github.freeacs.common.scheduler.Scheduler;
 import com.github.freeacs.dbi.DBI;
 
 public class BackgroundProcesses {
-
   private static Scheduler scheduler = new Scheduler();
 
   public static void initiate(DBI dbi) {

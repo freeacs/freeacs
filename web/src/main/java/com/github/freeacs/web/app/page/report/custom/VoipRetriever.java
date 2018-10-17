@@ -22,7 +22,6 @@ import java.util.Map;
 
 /** The Class VoipInterface. */
 public class VoipRetriever extends ReportRetriever {
-
   /** The generator voip. */
   private ReportVoipGenerator generatorVoip;
 
@@ -55,9 +54,6 @@ public class VoipRetriever extends ReportRetriever {
             ACSLoader.getIdentity(params.getSession().getId(), acs.getDataSource()));
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.report.custom.ReportRetriever#generateReport(com.owera.xaps.dbi.report.PeriodType, java.util.Date, java.util.Date, java.util.List, java.util.List)
-   */
   @Override
   public Report<?> generateReport(
       PeriodType periodType,
@@ -69,26 +65,25 @@ public class VoipRetriever extends ReportRetriever {
       throws SQLException, IOException {
     Report<?> report = null;
     if (getInputData().getRealtime().getBoolean() || groupSelect != null) {
-      if (getInputData().getMethod().hasValue("MosAvg"))
+      if (getInputData().getMethod().hasValue("MosAvg")) {
         report =
             (Report<RecordVoipCall>)
                 generatorVoipCall.generateFromSyslog(
                     periodType, start, end, unittypes, profiles, null, null, groupSelect);
-      else
+      } else {
         report =
             (Report<RecordVoip>)
                 generatorVoip.generateFromSyslog(
                     periodType, start, end, unittypes, profiles, null, groupSelect);
-    } else
+      }
+    } else {
       report =
           (Report<RecordVoip>)
               generatorVoip.generateFromReport(periodType, start, end, unittypes, profiles);
+    }
     return report;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.report.custom.ReportRetriever#applyObjects(java.util.Map)
-   */
   @Override
   public void applyObjects(Map<String, Object> root) {}
 

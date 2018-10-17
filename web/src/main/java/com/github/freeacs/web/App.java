@@ -25,7 +25,6 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
 @SpringBootApplication(exclude = FlywayAutoConfiguration.class)
 public class App {
-
   public static void main(String[] args) {
     System.getProperties().setProperty("org.eclipse.jetty.server.Request.maxFormKeys", "100000");
     SpringApplication.run(App.class, args);
@@ -61,7 +60,7 @@ public class App {
 
   @Bean
   ServletRegistrationBean<HelpServlet> helpServlet() {
-    ServletRegistrationBean<HelpServlet> srb = new ServletRegistrationBean<HelpServlet>();
+    ServletRegistrationBean<HelpServlet> srb = new ServletRegistrationBean<>();
     srb.setServlet(new HelpServlet());
     srb.setUrlMappings(Collections.singletonList("/help"));
     return srb;

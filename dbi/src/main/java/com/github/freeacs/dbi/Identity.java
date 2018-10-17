@@ -10,9 +10,12 @@ public class Identity {
     this.facility = facility;
     this.facilityVersion = facilityVersion;
     this.facilityName = SyslogConstants.getFacilityName(facility);
-    if (facilityName == null)
+    if (facilityName == null) {
       throw new IllegalArgumentException("The facility supplied (" + facility + ") does not exist");
-    if (user == null) throw new IllegalArgumentException("The user does not exist");
+    }
+    if (user == null) {
+      throw new IllegalArgumentException("The user does not exist");
+    }
     this.user = user;
   }
 

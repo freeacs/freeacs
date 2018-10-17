@@ -7,24 +7,23 @@ import java.util.List;
 
 /** The Class UserModel. */
 public class UserModel {
-
   /** The id. */
-  private Long id = null;
+  private Long id;
 
   /** The username. */
-  private String username = null;
+  private String username;
 
   /** The fullname. */
-  private String fullname = null;
+  private String fullname;
 
   /** The access. */
-  private String access = null;
+  private String access;
 
   /** The password. */
-  private String password = null;
+  private String password;
 
-  /** The admin flag */
-  private Boolean admin = null;
+  /** The admin flag. */
+  private Boolean admin;
 
   public Boolean getAdmin() {
     return admin;
@@ -77,16 +76,11 @@ public class UserModel {
    * @return the user model[]
    */
   public static UserModel[] convertUsers(User[] users, UserGroupModel group) {
-    List<UserModel> newUsers = new ArrayList<UserModel>();
+    List<UserModel> newUsers = new ArrayList<>();
     for (User user : users) {
       newUsers.add(fromUser(user, group));
     }
     return newUsers.toArray(new UserModel[] {});
-  }
-
-  /** Instantiates a new user model. */
-  public UserModel() {
-    // TODO Auto-generated constructor stub
   }
 
   /**

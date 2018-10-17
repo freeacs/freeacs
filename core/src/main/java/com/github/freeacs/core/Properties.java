@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Properties {
-
   private final String reports;
   private final boolean staging;
   private final Integer shellScriptLimit;
@@ -35,10 +34,10 @@ public class Properties {
   @SuppressWarnings("unchecked")
   private <T> T getOrDefault(String key, T defaultValue) {
     Object obj = environment.hasPath(key) ? environment.getAnyRef(key) : null;
-    if (obj == null) {
-      return defaultValue;
+    if (obj != null) {
+      return (T) obj;
     }
-    return (T) obj;
+    return defaultValue;
   }
 
   public Integer getSyslogSeverityLimit(int severity) {

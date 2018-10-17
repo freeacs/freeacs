@@ -8,7 +8,6 @@
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
  */
-
 package de.javawi.jstun.attribute;
 
 import de.javawi.jstun.util.Utility;
@@ -37,8 +36,8 @@ public class Password extends MessageAttribute {
   public byte[] getBytes() throws UtilityException {
     int length = password.length();
     // password header
-    if ((length % 4) != 0) {
-      length += 4 - (length % 4);
+    if (length % 4 != 0) {
+      length += 4 - length % 4;
     }
     // message attribute header
     length += 4;

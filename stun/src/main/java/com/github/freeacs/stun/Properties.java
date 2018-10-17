@@ -3,7 +3,6 @@ package com.github.freeacs.stun;
 import com.typesafe.config.Config;
 
 public class Properties {
-
   private final boolean expectPortForwarding;
   private final boolean runWithStun;
   private final String secondaryIp;
@@ -34,10 +33,10 @@ public class Properties {
   @SuppressWarnings("unchecked")
   private <T> T getOrDefault(String key, T defaultValue) {
     Object obj = environment.hasPath(key) ? environment.getAnyRef(key) : null;
-    if (obj == null) {
-      return defaultValue;
+    if (obj != null) {
+      return (T) obj;
     }
-    return (T) obj;
+    return defaultValue;
   }
 
   public boolean isExpectPortForwarding() {

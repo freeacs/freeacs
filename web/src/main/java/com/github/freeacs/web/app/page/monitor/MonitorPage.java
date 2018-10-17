@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
  * @author Jarl Andre Hubenthal
  */
 public class MonitorPage extends AbstractWebPage {
-
   /** The logger. */
   private static final Logger logger = LoggerFactory.getLogger(MonitorPage.class);
 
@@ -37,16 +36,10 @@ public class MonitorPage extends AbstractWebPage {
     Protocol.registerProtocol("https", https);
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.AbstractWebPage#useWrapping()
-   */
   public boolean useWrapping() {
     return true;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
-   */
   public void process(
       ParameterParser req,
       Output outputHandler,
@@ -62,12 +55,16 @@ public class MonitorPage extends AbstractWebPage {
 
     String cmd = req.getParameter("page");
     String baseURL = WebProperties.MONITOR_LOCATION;
-    if (!baseURL.endsWith("/")) baseURL += "/";
+    if (!baseURL.endsWith("/")) {
+      baseURL += "/";
+    }
     String url = null;
     if (cmd != null) {
-      if (cmd.equalsIgnoreCase("status") || cmd.equalsIgnoreCase("monitor"))
+      if ("status".equalsIgnoreCase(cmd) || "monitor".equalsIgnoreCase(cmd)) {
         url = baseURL + "monitor/web?page=status&html=no";
-      else if (cmd.equalsIgnoreCase("history")) url = baseURL + "monitor/web?page=history&html=no";
+      } else if ("history".equalsIgnoreCase(cmd)) {
+        url = baseURL + "monitor/web?page=history&html=no";
+      }
     } else {
       cmd = "";
       url = baseURL + "monitor/web?html=no";
@@ -83,7 +80,7 @@ public class MonitorPage extends AbstractWebPage {
     String outputHandlerString = getStringFromURL(url, req);
 
     if (outputHandlerString == null) {
-      Map<String, String> root = new HashMap<String, String>();
+      Map<String, String> root = new HashMap<>();
       root.put("message", "Monitor Service is not running!");
       outputHandler.getTemplateMap().putAll(root);
       outputHandlerString = outputHandler.compileTemplate("/exception.ftl");
@@ -111,14 +108,17 @@ public class MonitorPage extends AbstractWebPage {
         pm.addParameter("limit", limit);
         pm.addParameter("system", system);
       }
-    } else method = new GetMethod(url);
+    } else {
+      method = new GetMethod(url);
+    }
 
     String outputHandler = null;
 
     try {
       client.executeMethod(method);
-      if (method.getStatusCode() == HttpStatus.SC_OK)
+      if (method.getStatusCode() == HttpStatus.SC_OK) {
         outputHandler = method.getResponseBodyAsString();
+      }
     } catch (IOException e) {
       logger.warn("Could not find the monitor server", e);
     } finally {

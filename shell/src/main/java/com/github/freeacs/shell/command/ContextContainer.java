@@ -28,14 +28,17 @@ import org.slf4j.LoggerFactory;
  * @author morten
  */
 public class ContextContainer {
-  private List<ContextElement> contextList = new ArrayList<ContextElement>();
-  private Map<String, Integer> lookupMap = new HashMap<String, Integer>();
+  private List<ContextElement> contextList = new ArrayList<>();
+  private Map<String, Integer> lookupMap = new HashMap<>();
   private static Logger logger = LoggerFactory.getLogger(ContextContainer.class);
 
   public ContextElement getContextElement(String type) {
     Integer index = lookupMap.get(type);
-    if (index != null) return contextList.get(index);
-    else return null;
+    if (index != null) {
+      return contextList.get(index);
+    } else {
+      return null;
+    }
   }
 
   public void removeContextElement(String type) {
@@ -44,7 +47,6 @@ public class ContextContainer {
       contextList.remove(index);
       lookupMap.remove(type);
     }
-    return;
   }
 
   public int size() {
@@ -68,21 +70,25 @@ public class ContextContainer {
   public void overwriteOrInsert(ContextContainer cc) {
     String thisCCStr = toString();
     String newCCStr = cc.toString();
-    if (cc != null && cc.getContextList().size() > 0) {
-      for (int i = cc.getContextList().size() - 1; i >= 0; i--)
+    if (cc != null && !cc.getContextList().isEmpty()) {
+      for (int i = cc.getContextList().size() - 1; i >= 0; i--) {
         overwriteOrInsert(cc.getContextList().get(i));
+      }
     }
-    logger.debug("OverwriteOrInsert " + thisCCStr + "  +  " + newCCStr + "  =  " + toString());
+    logger.debug("OverwriteOrInsert " + thisCCStr + "  +  " + newCCStr + "  =  " + this);
   }
 
   public void skipOrAppend(ContextContainer cc) {
     String thisCCStr = toString();
     String newCCStr = cc.toString();
-    if (cc != null && cc.getContextList().size() > 0) {
-      for (ContextElement ce : cc.getContextList()) skipOrAppend(ce);
+    if (cc != null && !cc.getContextList().isEmpty()) {
+      for (ContextElement ce : cc.getContextList()) {
+        skipOrAppend(ce);
+      }
     }
-    if (!thisCCStr.trim().equals("") && !newCCStr.trim().equals(""))
-      logger.debug("Adding two contexts: " + thisCCStr + "  +  " + newCCStr + "  =  " + toString());
+    if (!"".equals(thisCCStr.trim()) && !"".equals(newCCStr.trim())) {
+      logger.debug("Adding two contexts: " + thisCCStr + "  +  " + newCCStr + "  =  " + this);
+    }
   }
 
   private void overwriteOrInsert(ContextElement ce) {
@@ -107,7 +113,7 @@ public class ContextContainer {
   private void skipOrAppend(ContextElement ce) {
     if (ce != null && ce.getType() != null) {
       if (ce.getType().equals(ContextElement.TYPE_BACK)) {
-        if (contextList.size() > 0) {
+        if (!contextList.isEmpty()) {
           ContextElement prevElem = contextList.get(contextList.size() - 1);
           if (prevElem.getType().equals(ContextElement.TYPE_BACK)) {
             contextList.add(ce);
@@ -136,7 +142,7 @@ public class ContextContainer {
   protected void overwriteOrAppend(ContextElement ce) {
     if (ce != null && ce.getType() != null) {
       if (ce.getType().equals(ContextElement.TYPE_BACK)) {
-        if (contextList.size() > 0) {
+        if (!contextList.isEmpty()) {
           ContextElement prevElem = contextList.get(contextList.size() - 1);
           if (prevElem.getType().equals(ContextElement.TYPE_BACK)) {
             contextList.add(ce);
@@ -165,7 +171,7 @@ public class ContextContainer {
   }
 
   public String toString() {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     for (ContextElement ce : contextList) {
       sb.append(ce);
     }

@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ReportProvisioningGenerator extends ReportGenerator {
-
   private static Logger logger = LoggerFactory.getLogger(ReportProvisioningGenerator.class);
   private static String provMsgId = "^ProvMsg: PP:";
   private static Pattern provPattern =
@@ -77,7 +76,9 @@ public class ReportProvisioningGenerator extends ReportGenerator {
                 start, periodType, unittypeName, profileName, softwareVersion, output);
         Key key = recordTmp.getKey();
         RecordProvisioning record = report.getRecord(key);
-        if (record == null) record = recordTmp;
+        if (record == null) {
+          record = recordTmp;
+        }
         record.getProvisioningOkCount().add(rs.getInt("ok_count"));
         record.getProvisioningRescheduledCount().add(rs.getInt("rescheduled_count"));
         record.getProvisioningErrorCount().add(rs.getInt("error_count"));
@@ -93,7 +94,7 @@ public class ReportProvisioningGenerator extends ReportGenerator {
         report.setRecord(key, record);
         foundDataInReportTable = true;
       }
-      if (foundDataInReportTable)
+      if (foundDataInReportTable) {
         logger.debug(
             logPrefix
                 + "ProvisioningReport: Have read "
@@ -103,22 +104,27 @@ public class ReportProvisioningGenerator extends ReportGenerator {
                 + ", report is now "
                 + report.getMap().size()
                 + " entries");
+      }
       return report;
     } catch (SQLException sqlex) {
       sqle = sqlex;
       throw sqlex;
     } finally {
-      if (rs != null) rs.close();
-      if (ps != null) ps.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.close();
       }
     }
   }
 
-  /*
-   * Generate reports directly from syslog - retrieve data for a set of units,
-   * but keep them separated in a map of reports
+  /**
+   * Generate reports directly from syslog - retrieve data for a set of units, but keep them
+   * separated in a map of reports.
    */
   public Map<String, Report<RecordProvisioning>> generateFromSyslog(
       PeriodType periodType,
@@ -131,19 +137,16 @@ public class ReportProvisioningGenerator extends ReportGenerator {
     return generateFromSyslogImpl(periodType, start, end, uts, prs, null, group);
   }
 
-  /*
-   * Generate reports directly from syslog - retrieve data for one single unit
-   * and with periodtype = SECOND
+  /**
+   * Generate reports directly from syslog - retrieve data for one single unit and with periodtype =
+   * SECOND.
    */
   public Report<RecordProvisioning> generateFromSyslog(Date start, Date end, String unitId)
       throws SQLException, IOException {
     return generateFromSyslog(PeriodType.SECOND, start, end, null, null, unitId, null);
   }
 
-  /*
-   * Generate reports directly from syslog - retrieve data for a whole set of
-   * units
-   */
+  /** Generate reports directly from syslog - retrieve data for a whole set of units. */
   public Report<RecordProvisioning> generateFromSyslog(
       PeriodType periodType,
       Date start,
@@ -161,8 +164,11 @@ public class ReportProvisioningGenerator extends ReportGenerator {
     for (Report<RecordProvisioning> report : unitReportMap.values()) {
       for (RecordProvisioning record : report.getMap().values()) {
         RecordProvisioning endRecord = endReport.getRecord(record.getKey());
-        if (endRecord == null) endReport.setRecord(record.getKey(), record);
-        else endRecord.add(record);
+        if (endRecord != null) {
+          endRecord.add(record);
+        } else {
+          endReport.setRecord(record.getKey(), record);
+        }
       }
     }
     return endReport;
@@ -181,7 +187,9 @@ public class ReportProvisioningGenerator extends ReportGenerator {
     Syslog syslog = new Syslog(syslogDataSource, id);
     SyslogFilter filter = new SyslogFilter();
     filter.setMessage(provMsgId);
-    if (unitId != null) filter.setUnitId("^" + unitId + "$");
+    if (unitId != null) {
+      filter.setUnitId("^" + unitId + "$");
+    }
     filter.setProfiles(prs);
     filter.setUnittypes(uts);
     filter.setCollectorTmsStart(start);
@@ -189,13 +197,20 @@ public class ReportProvisioningGenerator extends ReportGenerator {
     filter.setFacilityVersion(swVersion);
     Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
     List<SyslogEntry> entries = syslog.read(filter, acs);
-    Map<String, Report<RecordProvisioning>> unitReportMap =
-        new HashMap<String, Report<RecordProvisioning>>();
+    Map<String, Report<RecordProvisioning>> unitReportMap = new HashMap<>();
     for (SyslogEntry entry : entries) {
-      if (group != null && unitsInGroup.get(entry.getUnitId()) == null) continue;
-      if (entry.getUnittypeName() == null) entry.setUnittypeName("Unknown");
-      if (entry.getProfileName() == null) entry.setProfileName("Unknown");
-      if (entry.getFacilityVersion() == null) entry.setFacilityVersion("Unknown");
+      if (group != null && unitsInGroup.get(entry.getUnitId()) == null) {
+        continue;
+      }
+      if (entry.getUnittypeName() == null) {
+        entry.setUnittypeName("Unknown");
+      }
+      if (entry.getProfileName() == null) {
+        entry.setProfileName("Unknown");
+      }
+      if (entry.getFacilityVersion() == null) {
+        entry.setFacilityVersion("Unknown");
+      }
       String unitIdEntry = entry.getUnitId();
       Report<RecordProvisioning> report = unitReportMap.get(unitIdEntry);
       if (report == null) {
@@ -216,7 +231,7 @@ public class ReportProvisioningGenerator extends ReportGenerator {
                 m.group(2));
         Key key = recordTmp.getKey();
         RecordProvisioning record =
-            (report.getRecord(key) == null ? recordTmp : report.getRecord(key));
+            report.getRecord(key) == null ? recordTmp : report.getRecord(key);
         ProvStatus status = ProvStatus.valueOf(m.group(1));
         switch (status) {
           case OK:
@@ -229,7 +244,7 @@ public class ReportProvisioningGenerator extends ReportGenerator {
             record.getProvisioningErrorCount().add(1);
             break;
         }
-        record.getSessionLengthAvg().add(new Integer(m.group(3)));
+        record.getSessionLengthAvg().add(Integer.valueOf(m.group(3)));
         report.setRecord(key, record);
       } else if (entry.getContent().startsWith("ProvMsg: Expected provisioning")) {
         recordTmp =
@@ -242,7 +257,7 @@ public class ReportProvisioningGenerator extends ReportGenerator {
                 "N/A");
         Key key = recordTmp.getKey();
         RecordProvisioning record =
-            (report.getRecord(key) == null ? recordTmp : report.getRecord(key));
+            report.getRecord(key) == null ? recordTmp : report.getRecord(key);
         record.getProvisioningMissingCount().add(1);
         record.getSessionLengthAvg().add(0);
         report.setRecord(key, record);

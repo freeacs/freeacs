@@ -34,7 +34,6 @@ import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +48,6 @@ import javax.sql.DataSource;
  * @author Jarl Andre Hubenthal
  */
 public class GroupPage extends AbstractWebPage {
-
   /** The xaps. */
   private ACS acs;
 
@@ -71,27 +69,24 @@ public class GroupPage extends AbstractWebPage {
   /** The parents. */
   private DropDownSingleSelect<Group> parents;
 
-  /*
+  /**
    * (non-Javadoc)
    *
-   * @see
-   * com.owera.xaps.web.app.page.AbstractWebPage#getTitle(java.lang.String)
+   * @see com.owera.xaps.web.app.page.AbstractWebPage#getTitle(java.lang.String)
    */
   public String getTitle(String page) {
     return super.getTitle(page)
         + (groups.getSelected() != null ? " | " + groups.getSelected().getName() : "");
   }
 
-  /*
+  /**
    * (non-Javadoc)
    *
-   * @see
-   * com.owera.xaps.web.app.page.AbstractWebPage#getShortcutItems(com.owera
-   * .xaps.web.app.util.SessionData)
+   * @see com.owera.xaps.web.app.page.AbstractWebPage#getShortcutItems(com.owera
+   *     .xaps.web.app.util.SessionData)
    */
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
-    List<MenuItem> list = new ArrayList<MenuItem>();
-    list.addAll(super.getShortcutItems(sessionData));
+    List<MenuItem> list = new ArrayList<>(super.getShortcutItems(sessionData));
     list.add(new MenuItem("Group overview", Page.GROUPSOVERVIEW));
     if (groups.getSelected() != null) {
       MenuItem unitsThatMatches = new MenuItem("Search for units that matches", Page.SEARCH);
@@ -101,9 +96,9 @@ public class GroupPage extends AbstractWebPage {
       unitsThatMatches.addParameter("unittype", groups.getSelected().getUnittype().getName());
       unitsThatMatches.addParameter(
           "profile",
-          (groups.getSelected().getTopParent().getProfile() != null
+          groups.getSelected().getTopParent().getProfile() != null
               ? groups.getSelected().getTopParent().getProfile().getName()
-              : WebConstants.ALL_ITEMS_OR_DEFAULT));
+              : WebConstants.ALL_ITEMS_OR_DEFAULT);
       unitsThatMatches.addParameter("group", groups.getSelected().getName());
       list.add(unitsThatMatches);
     }
@@ -142,7 +137,9 @@ public class GroupPage extends AbstractWebPage {
       // If parameter key is shorter than eight characters, the upName
       // will remain null
       String gpName = null;
-      if (key.length() > 8) gpName = key.substring(8);
+      if (key.length() > 8) {
+        gpName = key.substring(8);
+      }
       String convertedGroupParameterName = SearchParameter.convertParameterId(gpName);
       GroupParameter groupParameter = gParams.getByName(convertedGroupParameterName);
 
@@ -150,17 +147,22 @@ public class GroupPage extends AbstractWebPage {
       if (key.startsWith("update::") || key.startsWith("create::")) {
         String opStr = req.getParameter("operator::" + gpName);
         Operator operator = Operator.EQ;
-        if (opStr != null && isOperatorValid(opStr)) operator = Operator.getOperator(opStr);
+        if (opStr != null && isOperatorValid(opStr)) {
+          operator = Operator.getOperator(opStr);
+        }
 
         String typeStr = req.getParameter("datatype::" + gpName);
         ParameterDataType type = ParameterDataType.TEXT;
-        if (typeStr != null && isParameterDataTypeValid(typeStr))
+        if (typeStr != null && isParameterDataTypeValid(typeStr)) {
           type = ParameterDataType.getDataType(typeStr);
+        }
 
         // if no group parameter exists and this is a create key
         if (groupParameter == null && key.startsWith("create::")) {
           String newValue = req.getParameter("update::" + gpName);
-          if (newValue != null && newValue.equals("NULL")) newValue = null;
+          if ("NULL".equals(newValue)) {
+            newValue = null;
+          }
           newValue = SearchParameter.convertParameterValue(newValue);
           UnittypeParameter utp =
               groups.getSelected().getUnittype().getUnittypeParameters().getByName(gpName);
@@ -180,10 +182,12 @@ public class GroupPage extends AbstractWebPage {
             && req.getParameter("update::" + gpName) != null
             && req.getParameter("create::" + gpName) == null) {
           String updatedValue = req.getParameter("update::" + gpName);
-          if (updatedValue != null && updatedValue.equals("NULL")) updatedValue = null;
+          if ("NULL".equals(updatedValue)) {
+            updatedValue = null;
+          }
           updatedValue = SearchParameter.convertParameterValue(updatedValue);
-          if ((!groupParameter.getParameter().getValue().equals(updatedValue)
-                  || groupParameter.getParameter().getOp() != operator)
+          if (!groupParameter.getParameter().getValue().equals(updatedValue)
+              || groupParameter.getParameter().getOp() != operator
               || groupParameter.getParameter().getType() != type) {
             Parameter param =
                 new Parameter(
@@ -240,7 +244,7 @@ public class GroupPage extends AbstractWebPage {
 
         groups.getSelected().setParent(parentGroup);
 
-        if (inputData.getProfile().notNullNorValue(WebConstants.ALL_ITEMS_OR_DEFAULT))
+        if (inputData.getProfile().notNullNorValue(WebConstants.ALL_ITEMS_OR_DEFAULT)) {
           groups
               .getSelected()
               .setProfile(
@@ -248,11 +252,13 @@ public class GroupPage extends AbstractWebPage {
                       .getSelected()
                       .getProfiles()
                       .getByName(inputData.getProfile().getString()));
-        else groups.getSelected().setProfile(null);
+        } else {
+          groups.getSelected().setProfile(null);
+        }
       } catch (IllegalArgumentException ie) {
-        groups.getSelected().setParent(oldParent != null ? oldParent : null);
-        groups.getSelected().setProfile(oldProfile != null ? oldProfile : null);
-        groups.getSelected().setDescription(oldDescription != null ? oldDescription : null);
+        groups.getSelected().setParent(oldParent);
+        groups.getSelected().setProfile(oldProfile);
+        groups.getSelected().setDescription(oldDescription);
         throw ie;
       }
 
@@ -267,8 +273,6 @@ public class GroupPage extends AbstractWebPage {
    *
    * @return the string
    * @throws Exception the exception
-   * @param xapsDataSource
-   * @param syslogDataSource
    */
   private String actionCreateGroup(DataSource xapsDataSource, DataSource syslogDataSource)
       throws Exception {
@@ -280,14 +284,17 @@ public class GroupPage extends AbstractWebPage {
 
     Groups allGroups = unittypes.getSelected().getGroups();
 
-    if (inputData.getProfile().notNullNorValue(WebConstants.ALL_ITEMS_OR_DEFAULT))
+    if (inputData.getProfile().notNullNorValue(WebConstants.ALL_ITEMS_OR_DEFAULT)) {
       profile = unittypes.getSelected().getProfiles().getByName(inputData.getProfile().getString());
-    else if (isProfilesLimited(
-        unittypes.getSelected(), sessionId, xapsDataSource, syslogDataSource))
+    } else if (isProfilesLimited(
+        unittypes.getSelected(), sessionId, xapsDataSource, syslogDataSource)) {
       throw new Exception("You are not allowed to create groups!");
+    }
 
     if (gName != null && desc != null) {
-      if (allGroups.getByName(gName) != null) return "The group " + gName + " is already created";
+      if (allGroups.getByName(gName) != null) {
+        return "The group " + gName + " is already created";
+      }
       groups.setSelected(new Group(gName, desc, parent, unittypes.getSelected(), profile));
       allGroups.addOrChangeGroup(groups.getSelected(), acs);
       SessionCache.getSessionData(sessionId).setGroup(gName);
@@ -297,13 +304,6 @@ public class GroupPage extends AbstractWebPage {
     }
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see
-   * com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input
-   * .ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
-   */
   public void process(
       ParameterParser params,
       Output outputHandler,
@@ -326,23 +326,25 @@ public class GroupPage extends AbstractWebPage {
     InputDataIntegrity.loadAndStoreSession(
         params, outputHandler, inputData, inputData.getUnittype(), inputData.getGroup());
 
-    if (inputData.getCmd().hasValue("create")) inputData.getGroup().setValue(null);
+    if (inputData.getCmd().hasValue("create")) {
+      inputData.getGroup().setValue(null);
+    }
 
     unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
     groups =
         InputSelectionFactory.getGroupSelection(inputData.getGroup(), unittypes.getSelected(), acs);
     Group selectedParent =
-        (unittypes.getSelected() != null && inputData.getParentgroup().getString() != null
+        unittypes.getSelected() != null && inputData.getParentgroup().getString() != null
             ? unittypes.getSelected().getGroups().getByName(inputData.getParentgroup().getString())
-            : (groups.getSelected() != null ? groups.getSelected().getParent() : null));
+            : (groups.getSelected() != null ? groups.getSelected().getParent() : null);
     List<Group> possibleParents =
-        (groups.getSelected() != null
+        groups.getSelected() != null
             ? Arrays.asList(
                 calculatePossibleParents(
                     groups.getSelected(), unittypes.getSelected().getGroups().getGroups()))
             : (unittypes.getSelected() != null
                 ? Arrays.asList(unittypes.getSelected().getGroups().getGroups())
-                : new ArrayList<Group>()));
+                : new ArrayList<Group>());
     parents =
         InputSelectionFactory.getDropDownSingleSelect(
             inputData.getParentgroup(), selectedParent, possibleParents);
@@ -354,16 +356,18 @@ public class GroupPage extends AbstractWebPage {
       actionDeleteGroup();
       outputHandler.setDirectToPage(Page.GROUPSOVERVIEW);
       return;
-    } else if (inputData.getFormSubmit().isValue(WebConstants.UPDATE)) actionUpdateGroup();
-    else if (inputData.getFormSubmit().isValue("Create group")) {
+    } else if (inputData.getFormSubmit().isValue(WebConstants.UPDATE)) {
+      actionUpdateGroup();
+    } else if (inputData.getFormSubmit().isValue("Create group")) {
       createMessage = actionCreateGroup(xapsDataSource, syslogDataSource);
-    } else if (inputData.getFormSubmit().isValue(WebConstants.UPDATE_PARAMS))
+    } else if (inputData.getFormSubmit().isValue(WebConstants.UPDATE_PARAMS)) {
       actionCUDParameters(params);
+    }
 
     Map<String, Object> map = outputHandler.getTemplateMap();
 
     if (inputData.getCmd().hasValue("create")) {
-      if (createMessage != null && createMessage.equals("OK") && groups.getSelected() != null) {
+      if ("OK".equals(createMessage) && groups.getSelected() != null) {
         outputHandler.setDirectToPage(Page.GROUP);
         return;
       } else {
@@ -414,8 +418,8 @@ public class GroupPage extends AbstractWebPage {
           "groupjobs",
           unittypes.getSelected().getJobs().getGroupJobs(groups.getSelected().getId()));
       map.put("getgroupprofile", new FindProfileMethod());
-      map.put("operators", Parameter.Operator.values());
-      map.put("datatypes", Parameter.ParameterDataType.values());
+      map.put("operators", Operator.values());
+      map.put("datatypes", ParameterDataType.values());
     } else {
       outputHandler.setDirectToPage(Page.GROUP, "cmd=create");
       return;
@@ -426,8 +430,11 @@ public class GroupPage extends AbstractWebPage {
     map.put("parents", parents);
     map.put("profiles", addGroupProfile(xapsDataSource, syslogDataSource));
 
-    if (groups.getSelected() == null) outputHandler.setTemplatePath("group/create");
-    else outputHandler.setTemplatePath("group/details");
+    if (groups.getSelected() != null) {
+      outputHandler.setTemplatePath("group/details");
+    } else {
+      outputHandler.setTemplatePath("group/create");
+    }
   }
 
   /**
@@ -436,24 +443,20 @@ public class GroupPage extends AbstractWebPage {
    * @return the drop down single select
    * @throws IllegalArgumentException the illegal argument exception
    * @throws SecurityException the security exception
-   * @throws IllegalAccessException the illegal access exception
-   * @throws InvocationTargetException the invocation target exception
-   * @throws NoSuchMethodException the no such method exception
    *     <p>the no available connection exception
    * @throws SQLException the sQL exception
-   * @param xapsDataSource
-   * @param syslogDataSource
    */
   private DropDownSingleSelect<Profile> addGroupProfile(
-      DataSource xapsDataSource, DataSource syslogDataSource)
-      throws IllegalArgumentException, SecurityException, IllegalAccessException,
-          InvocationTargetException, NoSuchMethodException, SQLException {
-    if (unittypes.getSelected() == null) return null;
+      DataSource xapsDataSource, DataSource syslogDataSource) throws SQLException {
+    if (unittypes.getSelected() == null) {
+      return null;
+    }
 
     Group parentGroup = parents.getSelected();
 
-    if (groups.getSelected() != null && groups.getSelected().getParent() != null)
+    if (groups.getSelected() != null && groups.getSelected().getParent() != null) {
       parentGroup = groups.getSelected().getParent();
+    }
 
     Profile profile =
         parentGroup != null
@@ -469,13 +472,10 @@ public class GroupPage extends AbstractWebPage {
         parentGroup == null
             ? getAllowedProfiles(
                 sessionId, unittypes.getSelected(), xapsDataSource, syslogDataSource)
-            : new ArrayList<Profile>();
+            : new ArrayList<>();
 
-    DropDownSingleSelect<Profile> profiles =
-        InputSelectionFactory.getDropDownSingleSelect(
-            inputData.getProfile(), profile, allowedProfiles);
-
-    return profiles;
+    return InputSelectionFactory.getDropDownSingleSelect(
+        inputData.getProfile(), profile, allowedProfiles);
   }
 
   /**
@@ -494,13 +494,13 @@ public class GroupPage extends AbstractWebPage {
     }
 
     Profile profile = null;
-    if (lastgroup != null && lastgroup.getProfile() != null)
+    if (lastgroup != null && lastgroup.getProfile() != null) {
       profile = unittypes.getSelected().getProfiles().getById(lastgroup.getProfile().getId());
-    else if (group.getProfile() != null)
+    } else if (group.getProfile() != null) {
       profile = unittypes.getSelected().getProfiles().getById(group.getProfile().getId());
+    }
 
-    if (profile != null) return profile;
-    return null;
+    return profile;
   }
 
   /**
@@ -512,14 +512,18 @@ public class GroupPage extends AbstractWebPage {
    */
   private Group[] calculatePossibleParents(Group g, Group[] allGroups) {
     List<Group> notAllowedGroups = g.getAllChildren();
-    List<Group> allowedGroups = new ArrayList<Group>();
+    List<Group> allowedGroups = new ArrayList<>();
     notAllowedGroups.add(g);
     for (Group g1 : allGroups) {
       boolean match = false;
       for (Group g2 : notAllowedGroups) {
-        if (g1.getId() == g2.getId()) match = true;
+        if (g1.getId() == g2.getId()) {
+          match = true;
+        }
       }
-      if (!match) allowedGroups.add(g1);
+      if (!match) {
+        allowedGroups.add(g1);
+      }
     }
     Group[] retGroups = new Group[allowedGroups.size()];
     allowedGroups.toArray(retGroups);
@@ -528,15 +532,16 @@ public class GroupPage extends AbstractWebPage {
 
   /** The Class FindProfileMethod. */
   public class FindProfileMethod implements TemplateMethodModel {
-
-    /*
+    /**
      * (non-Javadoc)
      *
      * @see freemarker.template.TemplateMethodModel#exec(java.util.List)
      */
     @SuppressWarnings("rawtypes")
     public TemplateModel exec(List arg0) throws TemplateModelException {
-      if (arg0.size() < 1) throw new TemplateModelException("Specify job name");
+      if (arg0.isEmpty()) {
+        throw new TemplateModelException("Specify job name");
+      }
       Profile foundProfile = findProfile((String) arg0.get(0));
       return new SimpleScalar(foundProfile != null ? foundProfile.getName() : "All profiles");
     }

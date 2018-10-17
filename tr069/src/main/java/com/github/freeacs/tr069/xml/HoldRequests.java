@@ -11,9 +11,14 @@ public class HoldRequests {
 
   public String toXml() {
     StringBuilder sb = new StringBuilder(3);
-    sb.append("\t<cwmp:HoldRequests " + Namespace.getSoapEnvNS() + ":mustUnderstand=\"1\">");
-    if (holdRequests) sb.append("1");
-    else sb.append("0");
+    sb.append("\t<cwmp:HoldRequests ")
+        .append(Namespace.getSoapEnvNS())
+        .append(":mustUnderstand=\"1\">");
+    if (holdRequests) {
+      sb.append("1");
+    } else {
+      sb.append("0");
+    }
     sb.append("</cwmp:HoldRequests>\n");
     return sb.toString();
   }

@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SyslogClient {
-
   private static SimpleDateFormat sdf = new SimpleDateFormat("MMM d HH:mm:ss", Locale.US);
 
   public static String SYSLOG_SERVER_HOST = "localhost";
@@ -97,7 +96,7 @@ public class SyslogClient {
     socket.close();
   }
 
-  /* Syslog Message maker methods */
+  /** Syslog Message maker methods. */
   public static String makeMessage(
       int severity, Date date, String ipAddress, String unitId, String content, Syslog syslog) {
     Identity id = syslog.getIdentity();
@@ -122,9 +121,15 @@ public class SyslogClient {
       String facilityVersion,
       String user) {
     String tmp = "";
-    if (user != null) tmp += "USER:" + user + " ";
-    if (facilityVersion != null) tmp += "FCV:" + facilityVersion + " ";
-    if (!tmp.equals("")) content = tmp + content;
+    if (user != null) {
+      tmp += "USER:" + user + " ";
+    }
+    if (facilityVersion != null) {
+      tmp += "FCV:" + facilityVersion + " ";
+    }
+    if (!"".equals(tmp)) {
+      content = tmp + content;
+    }
     return makeMessage(severity, date, ipAddress, unitId, content, facility);
   }
 
@@ -133,10 +138,13 @@ public class SyslogClient {
     int PRI = 8 * facility + severity;
     String tmsStr = sdf.format(date);
     StringBuilder sb = new StringBuilder();
-    sb.append("<" + PRI + ">" + tmsStr + " ");
-    if (ipAddress != null) sb.append(ipAddress);
-    else sb.append("server");
-    sb.append(" UNITID [" + unitId + "]: " + content);
+    sb.append("<").append(PRI).append(">").append(tmsStr).append(" ");
+    if (ipAddress != null) {
+      sb.append(ipAddress);
+    } else {
+      sb.append("server");
+    }
+    sb.append(" UNITID [").append(unitId).append("]: ").append(content);
     return sb.toString();
   }
 }

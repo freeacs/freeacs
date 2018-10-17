@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ACSWSFactory {
-
   private static Cache cache = new Cache();
   private static final Logger logger = LoggerFactory.getLogger(ACSWSFactory.class);
 
@@ -20,8 +19,9 @@ public class ACSWSFactory {
 
   public static ACSFactory getXAPSWS(Login login, DataSource xaps, DataSource syslog)
       throws RemoteException {
-    if (login == null || login.getUsername() == null || login.getPassword() == null)
+    if (login == null || login.getUsername() == null || login.getPassword() == null) {
       throw error("No username and/or password are supplied in the Login object");
+    }
     String key = login.getUsername() + login.getPassword();
     if (cache.get(key) == null) {
       int lifetimeSec = 5 * 60;

@@ -125,9 +125,8 @@ import org.springframework.web.servlet.ModelAndView;
  * where we want to be and not be dependent on the process method.
  */
 @Controller
-@RequestMapping(value = "/app/unit-dashboard")
+@RequestMapping("/app/unit-dashboard")
 public class UnitStatusPage extends AbstractWebPage {
-
   /** The logger. */
   private static final Logger logger = LoggerFactory.getLogger(UnitStatusPage.class);
 
@@ -138,12 +137,8 @@ public class UnitStatusPage extends AbstractWebPage {
   @Qualifier("main")
   private DataSource mainDataSource;
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.AbstractWebPage#getShortcutItems(com.owera.xaps.web.app.util.SessionData)
-   */
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
-    List<MenuItem> list = new ArrayList<MenuItem>();
-    list.addAll(super.getShortcutItems(sessionData));
+    List<MenuItem> list = new ArrayList<>(super.getShortcutItems(sessionData));
     if (currentUnit != null) {
       list.add(
           new MenuItem("Last 100 syslog entries", Page.SYSLOG)
@@ -174,9 +169,6 @@ public class UnitStatusPage extends AbstractWebPage {
     return list;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.AbstractWebPage#getTitle(java.lang.String)
-   */
   public String getTitle(String page) {
     return super.getTitle(page)
         + (currentUnit != null
@@ -189,9 +181,6 @@ public class UnitStatusPage extends AbstractWebPage {
             : "");
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
-   */
   public void process(
       ParameterParser params,
       Output outputHandler,
@@ -276,12 +265,15 @@ public class UnitStatusPage extends AbstractWebPage {
 
     // Custom set properties that are to be displayed
     String unittypeName = unit.getUnittype().getName();
-    Map<String, String> shortCutParams = new LinkedHashMap<String, String>();
+    Map<String, String> shortCutParams = new LinkedHashMap<>();
     for (Entry<String, String> property : WebProperties.getCustomDash(unittypeName).entrySet()) {
       // Call to resolve any parameter referencing other parameters
       String propValue = resolveParameters(property.getKey());
-      if (property.getValue() != null) shortCutParams.put(property.getValue(), propValue);
-      else shortCutParams.put(property.getKey(), propValue);
+      if (property.getValue() != null) {
+        shortCutParams.put(property.getValue(), propValue);
+      } else {
+        shortCutParams.put(property.getKey(), propValue);
+      }
     }
     templateMap.put("shortCutParams", shortCutParams);
 
@@ -378,18 +370,22 @@ public class UnitStatusPage extends AbstractWebPage {
    * @throws Exception the exception
    */
   @RequestMapping(method = RequestMethod.GET, value = "linesup")
-  public @ResponseBody Map<String, Boolean> getLineStatus(
+  @ResponseBody
+  public Map<String, Boolean> getLineStatus(
       @RequestParam("unitId") String unitId, HttpSession session) throws Exception {
-
-    Map<String, Boolean> status = new HashMap<String, Boolean>();
+    Map<String, Boolean> status = new HashMap<>();
     Calendar cal = Calendar.getInstance();
     cal.setTimeInMillis(System.currentTimeMillis());
     cal.add(Calendar.SECOND, -30);
     Date start = cal.getTime();
     ACSUnit acsUnit = ACSLoader.getACSUnit(session.getId(), mainDataSource, mainDataSource);
-    if (acsUnit == null) throw new NotLoggedInException();
+    if (acsUnit == null) {
+      throw new NotLoggedInException();
+    }
     Unit unit = acsUnit.getUnitById(unitId);
-    if (unit == null) throw new UnitNotFoundException();
+    if (unit == null) {
+      throw new UnitNotFoundException();
+    }
     boolean isline1up =
         isCallOngoing(
             session.getId(), UnitStatusInfo.VoipLine.LINE_0, unit, start, null, mainDataSource);
@@ -418,18 +414,17 @@ public class UnitStatusPage extends AbstractWebPage {
   @SuppressWarnings("unchecked")
   @RequestMapping(method = RequestMethod.GET, value = "chartimage")
   public void getChartImage(
-      @RequestParam(value = "type") String pageType,
-      @RequestParam(value = "period") String periodType,
-      @RequestParam(value = "method") String requestMethod,
-      @RequestParam(value = "start") String startTms,
-      @RequestParam(value = "end") String endTms,
-      @RequestParam(value = "unitId") String unitId,
+      @RequestParam("type") String pageType,
+      @RequestParam("period") String periodType,
+      @RequestParam("method") String requestMethod,
+      @RequestParam("start") String startTms,
+      @RequestParam("end") String endTms,
+      @RequestParam("unitId") String unitId,
       @RequestParam(value = "syslogFilter", required = false) String syslogFilter,
       HttpServletResponse servletResponseChannel,
       HttpServletRequest servletRequest,
       HttpSession session)
       throws Exception {
-
     Date fromDate = DateUtils.parseDateDefault(startTms);
     Date toDate = DateUtils.parseDateDefault(endTms);
     Unit unit =
@@ -470,7 +465,7 @@ public class UnitStatusPage extends AbstractWebPage {
             SessionCache.convertSyslogReport(
                 (Report<RecordSyslog>) info.getSyslogReport(syslogFilter), type);
         List<String> keyNames =
-            new ArrayList<String>(
+            new ArrayList<>(
                 Arrays.asList(info.getSyslogReport(syslogFilter).getKeyFactory().getKeyNames()));
         String[] syslogAggregation =
             ReportPage.getSelectedAggregation(selectedAggregation, keyNames);
@@ -502,15 +497,14 @@ public class UnitStatusPage extends AbstractWebPage {
   @SuppressWarnings("unchecked")
   @RequestMapping(method = RequestMethod.GET, value = "charttable")
   public ModelAndView getChartTable(
-      @RequestParam(value = "type") String pageType,
-      @RequestParam(value = "start") String startTms,
-      @RequestParam(value = "end") String endTms,
-      @RequestParam(value = "unitId") String unitId,
+      @RequestParam("type") String pageType,
+      @RequestParam("start") String startTms,
+      @RequestParam("end") String endTms,
+      @RequestParam("unitId") String unitId,
       @RequestParam(value = "syslogFilter", required = false) String syslogFilter,
       HttpServletRequest servletRequest,
       HttpSession session)
       throws Exception {
-
     Date fromDate = DateUtils.parseDateDefault(startTms);
     Date toDate = DateUtils.parseDateDefault(endTms);
     ACSUnit acsUnit = ACSLoader.getACSUnit(session.getId(), mainDataSource, mainDataSource);
@@ -546,7 +540,9 @@ public class UnitStatusPage extends AbstractWebPage {
                         InputDataRetriever.parseInto(
                             new UnitListData(), new ParameterParser(servletRequest)),
                     new HashMap<>()));
-        if (records.size() > 100) records = records.subList(0, 100);
+        if (records.size() > 100) {
+          records = records.subList(0, 100);
+        }
         page = "memory";
         logTimeElapsed(getHwChart, "Retrieved Hardware table", logger);
         break;
@@ -588,13 +584,14 @@ public class UnitStatusPage extends AbstractWebPage {
    * @throws NoSuchMethodException the no such method exception
    */
   @RequestMapping(method = RequestMethod.GET, value = "totalscore-effect")
-  public @ResponseBody Map<String, Object> getTotalScoreEffect(
+  @ResponseBody
+  public Map<String, Object> getTotalScoreEffect(
       @RequestParam("start") String startTms,
       @RequestParam("end") String endTms,
       @RequestParam("unitId") String unitId,
       HttpSession session)
-      throws IllegalArgumentException, SecurityException, ParseException, SQLException, IOException,
-          IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+      throws ParseException, SQLException, IOException, IllegalAccessException,
+          InvocationTargetException, NoSuchMethodException {
     Date fromDate = DateUtils.parseDateDefault(startTms);
     Date toDate = DateUtils.parseDateDefault(endTms);
     Unit unit =
@@ -604,7 +601,7 @@ public class UnitStatusPage extends AbstractWebPage {
             unit, fromDate, toDate, session.getId(), mainDataSource, mainDataSource);
     Double effect = info.getOverallStatus().getTotalScoreEffect();
     DecimalUtils.Format df = DecimalUtils.Format.ONE_DECIMAL;
-    Map<String, Object> map = new HashMap<String, Object>();
+    Map<String, Object> map = new HashMap<>();
     if (effect > 0.09) {
       map.put("score", df.format(effect));
       map.put("color", "red");
@@ -626,7 +623,8 @@ public class UnitStatusPage extends AbstractWebPage {
    * @throws ParseException the parse exception
    */
   @RequestMapping(method = RequestMethod.GET, value = "totalscore-number")
-  public @ResponseBody String getTotalScoreNumber(
+  @ResponseBody
+  public String getTotalScoreNumber(
       @RequestParam("start") String startTms,
       @RequestParam("end") String endTms,
       @RequestParam("unitId") String unitId,
@@ -642,20 +640,20 @@ public class UnitStatusPage extends AbstractWebPage {
     Double totalScore = info.getTotalScore();
     DecimalUtils.Format df = DecimalUtils.Format.ONE_DECIMAL;
     String totalScoreString =
-        (totalScore != null ? "" + df.format(totalScore) : "No calls have been made");
-    boolean totalScoreIsNA = totalScoreString.equals("No calls have been made");
+        totalScore != null ? df.format(totalScore) : "No calls have been made";
+    boolean totalScoreIsNA = "No calls have been made".equals(totalScoreString);
     String html = "";
     html +=
-        ("<span style='"
+        "<span style='"
             + (totalScore != null && totalScore > 0
                 ? new RowBackgroundColorMethod().getFontColor(totalScore.floatValue())
                 : "")
             + (!totalScoreIsNA ? "font-weight:bold;" : "")
             + "'>"
             + totalScoreString
-            + "</span>");
+            + "</span>";
     if (!totalScoreIsNA) {
-      html += (" of 100");
+      html += " of 100";
     }
     return html;
   }
@@ -708,55 +706,55 @@ public class UnitStatusPage extends AbstractWebPage {
    */
   private CheckBoxGroup<String> getSyslogAggregation(UnitStatusData inputData, UnitStatusInfo info)
       throws SQLException, IOException, ParseException {
-    List<String> keyNames = new ArrayList<String>(Arrays.asList("Severity", "Facility", "EventId"));
+    List<String> keyNames = new ArrayList<>(Arrays.asList("Severity", "Facility", "EventId"));
     Input input = ReportPage.getSelectedAggregation(inputData.getAggregate(), keyNames);
     return InputSelectionFactory.getCheckBoxGroup(input, input.getStringList(), keyNames);
   }
 
   /** The Class RecordHardwareComparator. */
   class RecordHardwareComparator implements Comparator<RecordHardware> {
-
     /** Instantiates a new record hardware comparator. */
     public RecordHardwareComparator() {}
 
-    /* (non-Javadoc)
-     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-     */
     public int compare(RecordHardware o1, RecordHardware o2) {
-      if (o1.getKey().getTms().before(o2.getKey().getTms())) return 1;
-      if (o1.getKey().getTms().after(o2.getKey().getTms())) return -1;
+      if (o1.getKey().getTms().before(o2.getKey().getTms())) {
+        return 1;
+      }
+      if (o1.getKey().getTms().after(o2.getKey().getTms())) {
+        return -1;
+      }
       return 0;
     }
   }
 
   /** The Class RecordSyslogComparator. */
   class RecordSyslogComparator implements Comparator<RecordSyslog> {
-
     /** Instantiates a new record syslog comparator. */
     public RecordSyslogComparator() {}
 
-    /* (non-Javadoc)
-     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-     */
     public int compare(RecordSyslog o1, RecordSyslog o2) {
-      if (o1.getKey().getTms().before(o2.getKey().getTms())) return 1;
-      if (o1.getKey().getTms().after(o2.getKey().getTms())) return -1;
+      if (o1.getKey().getTms().before(o2.getKey().getTms())) {
+        return 1;
+      }
+      if (o1.getKey().getTms().after(o2.getKey().getTms())) {
+        return -1;
+      }
       return 0;
     }
   }
 
   /** The Class RecordVoipComparator. */
   class RecordVoipComparator implements Comparator<RecordVoip> {
-
     /** Instantiates a new record voip comparator. */
     public RecordVoipComparator() {}
 
-    /* (non-Javadoc)
-     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-     */
     public int compare(RecordVoip o1, RecordVoip o2) {
-      if (o1.getKey().getTms().before(o2.getKey().getTms())) return 1;
-      if (o1.getKey().getTms().after(o2.getKey().getTms())) return -1;
+      if (o1.getKey().getTms().before(o2.getKey().getTms())) {
+        return 1;
+      }
+      if (o1.getKey().getTms().after(o2.getKey().getTms())) {
+        return -1;
+      }
       return 0;
     }
   }
@@ -773,9 +771,11 @@ public class UnitStatusPage extends AbstractWebPage {
    */
   public static byte[] getReportChartImageBytes(
       Chart<?> chartMaker, JFreeChart chart, int width, int height) throws Exception {
-    if (chart == null && chartMaker != null)
+    if (chart == null && chartMaker != null) {
       chart = chartMaker.makeTimeChart(null, null, null, null);
-    else if (chart == null) throw new IllegalArgumentException("Chart<?> and JFreeChart is NULL.");
+    } else if (chart == null) {
+      throw new IllegalArgumentException("Chart<?> and JFreeChart is NULL.");
+    }
     if (chart.getPlot() instanceof XYPlot) {
       XYPlot plot = (XYPlot) chart.getPlot();
       XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
@@ -842,16 +842,16 @@ public class UnitStatusPage extends AbstractWebPage {
         "Retrieved last QoS report from Syslog. QoS timestamp: "
             + (lastQoS != null ? lastQoS.toString() : "n/a"),
         logger);
-    if (mosEntry.size() > 0 && lastQoS != null) {
+    if (!mosEntry.isEmpty() && lastQoS != null) {
       SyslogEntry mosSyslogEntry = mosEntry.get(0);
       Date mosSyslogEntryTs = mosSyslogEntry.getCollectorTimestamp();
       boolean ongoing = mosSyslogEntryTs.after(lastQoS);
       logger.info(
-          (line != null ? ("Line " + line.toString() + " is ") : ("One of the lines are "))
+          (line != null ? ("Line " + line + " is ") : "One of the lines are ")
               + (ongoing ? "active" : "inactive"));
       return ongoing;
-    } else if (mosEntry.size() > 0) {
-      logger.info("Line " + line.toString() + " is active");
+    } else if (!mosEntry.isEmpty()) {
+      logger.info("Line " + line + " is active");
       return true;
     }
     return false;
@@ -935,14 +935,11 @@ public class UnitStatusPage extends AbstractWebPage {
 
   /** The Class IsRecordACall. */
   public class IsRecordACall implements TemplateMethodModel {
-
-    /* (non-Javadoc)
-     * @see freemarker.template.TemplateMethodModel#exec(java.util.List)
-     */
     @SuppressWarnings({"rawtypes"})
     public Boolean exec(List arg0) throws TemplateModelException {
-      if (arg0.size() < 2)
+      if (arg0.size() < 2) {
         throw new TemplateModelException("Specify total score and sip reg failed");
+      }
       String sipregfailed = (String) arg0.get(0);
       String totalscore = (String) arg0.get(1);
       if (isNumber(sipregfailed) && isNumber(totalscore)) {
@@ -971,10 +968,15 @@ public class UnitStatusPage extends AbstractWebPage {
   private PeriodType getPeriodType(String periodTypeStr) {
     PeriodType periodType = PeriodType.MINUTE;
     if (periodTypeStr != null) {
-      if (periodTypeStr.equals(PeriodType.MONTH.getTypeStr())) periodType = PeriodType.MONTH;
-      else if (periodTypeStr.equals(PeriodType.DAY.getTypeStr())) periodType = PeriodType.DAY;
-      else if (periodTypeStr.equals(PeriodType.HOUR.getTypeStr())) periodType = PeriodType.HOUR;
-      else if (periodTypeStr.equals(PeriodType.MINUTE.getTypeStr())) periodType = PeriodType.MINUTE;
+      if (periodTypeStr.equals(PeriodType.MONTH.getTypeStr())) {
+        periodType = PeriodType.MONTH;
+      } else if (periodTypeStr.equals(PeriodType.DAY.getTypeStr())) {
+        periodType = PeriodType.DAY;
+      } else if (periodTypeStr.equals(PeriodType.HOUR.getTypeStr())) {
+        periodType = PeriodType.HOUR;
+      } else if (periodTypeStr.equals(PeriodType.MINUTE.getTypeStr())) {
+        periodType = PeriodType.MINUTE;
+      }
     }
     return periodType;
   }
@@ -988,7 +990,9 @@ public class UnitStatusPage extends AbstractWebPage {
    */
   private String getReportMethod(ReportType pageType, String suppliedMethod) {
     List<String> methods = pageType.getMethods();
-    if (methods.contains(suppliedMethod)) return suppliedMethod;
+    if (methods.contains(suppliedMethod)) {
+      return suppliedMethod;
+    }
     return methods.get(0);
   }
 
@@ -1013,15 +1017,23 @@ public class UnitStatusPage extends AbstractWebPage {
       Matcher matcher = paramRefPattern.matcher(value);
       if (matcher.find()) {
         StringBuilder param = new StringBuilder();
-        if (matcher.start() > 0) param.append(value.substring(0, matcher.start()));
+        if (matcher.start() > 0) {
+          param.append(value, 0, matcher.start());
+        }
 
         String newValue = currentUnit.getParameterValue(matcher.group(2));
-        if (newValue != null && !newValue.isEmpty()) param.append(newValue);
-        if (matcher.end() < value.length()) param.append(value.substring(matcher.end()));
+        if (newValue != null && !newValue.isEmpty()) {
+          param.append(newValue);
+        }
+        if (matcher.end() < value.length()) {
+          param.append(value.substring(matcher.end()));
+        }
         value = param.toString();
       }
     }
-    if (value == null || value.isEmpty()) value = "NO VALUE";
+    if (value == null || value.isEmpty()) {
+      value = "NO VALUE";
+    }
 
     return value;
   }

@@ -34,7 +34,6 @@ import com.github.freeacs.dbi.UnitJobStatus;
  * @author morten
  */
 public class PIIDecision {
-
   private SessionDataI sessionData;
   private Job currentJob;
   private String currentJobStatus;
@@ -60,7 +59,6 @@ public class PIIDecision {
           log(MINIMUM_PII, "Job is found and completed OK");
           return MINIMUM_PII;
         } // continue to next steps
-
       } else {
         log(
             MINIMUM_PII,
@@ -77,10 +75,7 @@ public class PIIDecision {
     if (allJobs != null) {
       for (Job job : allJobs) {
         if (job.getNextPII() != null) {
-          if (nextScheduledJob == null) {
-            nextScheduledJob = job;
-            nextScheduledJobPII = job.getNextPII();
-          } else if (nextScheduledJobPII > job.getNextPII()) {
+          if (nextScheduledJob == null || nextScheduledJobPII > job.getNextPII()) {
             nextScheduledJob = job;
             nextScheduledJobPII = job.getNextPII();
           }
@@ -93,7 +88,9 @@ public class PIIDecision {
       // A next scheduled job was found
       long timeSinceCalculation = (System.currentTimeMillis() - calcTms) / 1000;
       long nextPII = nextScheduledJobPII - timeSinceCalculation;
-      if (nextPII < MINIMUM_PII) nextPII = MINIMUM_PII;
+      if (nextPII < MINIMUM_PII) {
+        nextPII = MINIMUM_PII;
+      }
       if (disruptiveSW != null) {
         long dswPII = disruptiveSW.calculateStdPII();
         if (nextPII > dswPII) {

@@ -12,8 +12,9 @@ public class Profile {
   private ProfileParameters profileParameters;
 
   public Profile(String name, Unittype unittype) {
-    if (name == null || name.trim().equals(""))
+    if (name == null || "".equals(name.trim())) {
       throw new IllegalArgumentException("Profile name cannot be null or an empty string");
+    }
     this.name = name;
     this.unittype = unittype;
   }
@@ -37,7 +38,7 @@ public class Profile {
 
   public ProfileParameters getProfileParameters() {
     if (profileParameters == null) {
-      Map<Integer, ProfileParameter> idMap = new HashMap<Integer, ProfileParameter>();
+      Map<Integer, ProfileParameter> idMap = new HashMap<>();
       MapWrapper<ProfileParameter> mw = new MapWrapper<ProfileParameter>(ACS.isStrictOrder());
       Map<String, ProfileParameter> nameMap = mw.getMap();
       profileParameters = new ProfileParameters(idMap, nameMap, this);
@@ -58,7 +59,9 @@ public class Profile {
   }
 
   public void setName(String name) {
-    if (!name.equals(this.name)) this.oldName = this.name;
+    if (!name.equals(this.name)) {
+      this.oldName = this.name;
+    }
     this.name = name;
   }
 

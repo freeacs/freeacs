@@ -7,13 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 public class UnitTempStorage {
+  private Map<Profile, List<String>> map = new HashMap<>();
 
-  private Map<Profile, List<String>> map = new HashMap<Profile, List<String>>();
-
-  private int counter = 0;
+  private int counter;
 
   public Map<Profile, List<String>> getUnits() {
-    if (map == null) map = new HashMap<Profile, List<String>>();
+    if (map == null) {
+      map = new HashMap<>();
+    }
     return map;
   }
 
@@ -21,7 +22,7 @@ public class UnitTempStorage {
     Map<Profile, List<String>> map = getUnits();
     List<String> units = map.get(profile);
     if (units == null) {
-      units = new ArrayList<String>();
+      units = new ArrayList<>();
       map.put(profile, units);
     }
     units.add(unitId);
@@ -33,7 +34,7 @@ public class UnitTempStorage {
   }
 
   public void reset() {
-    map = new HashMap<Profile, List<String>>();
+    map = new HashMap<>();
     counter = 0;
   }
 }

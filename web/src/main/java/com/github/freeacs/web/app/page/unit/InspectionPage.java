@@ -26,7 +26,6 @@ import javax.sql.DataSource;
  * @author Jarl Andre Hubenthal
  */
 public class InspectionPage extends AbstractWebPage {
-
   /** The xaps. */
   private ACS acs;
 
@@ -63,8 +62,9 @@ public class InspectionPage extends AbstractWebPage {
       SessionCache.putUnit(sessionId, unit);
       if (unit != null) {
         profile = unit.getProfile();
-        if (inputData.getProfile().getString() == null)
+        if (inputData.getProfile().getString() == null) {
           inputData.getProfile().setValue(profile.getName());
+        }
         unittype = unit.getUnittype();
         inputData.getUnittype().setValue(unittype.getName());
       }
@@ -77,9 +77,6 @@ public class InspectionPage extends AbstractWebPage {
     }
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
-   */
   public void process(
       ParameterParser params, Output res, DataSource xapsDataSource, DataSource syslogDataSource)
       throws Exception {
@@ -103,7 +100,7 @@ public class InspectionPage extends AbstractWebPage {
       String message = null;
       if (unit != null && profile != null) {
         UnitParameter up = unit.getUnitParameters().get(SystemParameters.INSPECTION_MESSAGE);
-        if (up != null && !up.getValue().equals("N/A")) {
+        if (up != null && !"N/A".equals(up.getValue())) {
           message = up.getValue();
           up.setValue("N/A");
           acsUnit.addOrChangeUnitParameters(Arrays.asList(new UnitParameter[] {up}), profile);
@@ -112,16 +109,17 @@ public class InspectionPage extends AbstractWebPage {
 
       UnitParameter mode = unit.getUnitParameters().get(SystemParameters.PROVISIONING_MODE);
       //			UnitParameter state = unit.getUnitParameters().get(SystemParameters.PROVISIONING_STATE);
-      if (mode == null /*|| state == null*/) res.setDirectResponse("relo");
-      else {
+      if (mode == null /* || state == null */) {
+        res.setDirectResponse("relo");
+      } else {
         String modeString = inputData.getMode().getString();
         //				String stateString = inputData.getState().getString();
         if (mode.getParameter()
             .getValue()
-            .equals(modeString) /*&& state.getParameter().getValue().equals(stateString)*/)
+            .equals(modeString) /* && state.getParameter().getValue().equals(stateString) */) {
           res.setDirectResponse(
-              "wait" + (message != null && (message.trim().length() > 0) ? message : ""));
-        else {
+              "wait" + (message != null && !message.trim().isEmpty() ? message : ""));
+        } else {
           res.setDirectResponse("relo");
         }
       }
@@ -132,7 +130,6 @@ public class InspectionPage extends AbstractWebPage {
 
   /** The Class InspectionData. */
   public class InspectionData extends InputData {
-
     /** The mode. */
     private Input mode = Input.getStringInput("mode");
 
@@ -175,21 +172,11 @@ public class InspectionPage extends AbstractWebPage {
       this.state = state;
     }
 
-    /* (non-Javadoc)
-     * @see com.owera.xaps.web.app.input.InputData#bindForm(java.util.Map)
-     */
     @Override
-    public void bindForm(Map<String, Object> root) {
-      // TODO Auto-generated method stub
+    public void bindForm(Map<String, Object> root) {}
 
-    }
-
-    /* (non-Javadoc)
-     * @see com.owera.xaps.web.app.input.InputData#validateForm()
-     */
     @Override
     public boolean validateForm() {
-      // TODO Auto-generated method stub
       return false;
     }
   }

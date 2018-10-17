@@ -15,47 +15,50 @@ import java.util.Stack;
 import javax.sql.DataSource;
 
 public class Session {
+  /**
+   * Public static final int INTERACTIVE = 0; public static final int SCRIPT = 1; public static
+   * final int DAEMON = 2;.
+   */
+  private String[] originalOptionArgs;
 
-  //	public static final int INTERACTIVE = 0;
-  //	public static final int SCRIPT = 1;
-  //	public static final int DAEMON = 2;
-  //
-  private String[] originalOptionArgs = null;
-
-  /* Object holding the Session object and printer-objects */
+  /** Object holding the Session object and printer-objects. */
   private ACSShell ACSShell;
 
-  /* Information on how to access xAPS database */
-  private DataSource xapsProps = null;
-  private DataSource sysProps = null;
+  /** Information on how to access xAPS database. */
+  private DataSource xapsProps;
 
-  /* Fusion user/pass - can be used instead of running as Admin (default) */
+  private DataSource sysProps;
+
+  /** Fusion user/pass - can be used instead of running as Admin (default). */
   private String fusionUser;
-  private String fusionPass;
-  private User verifiedFusionUser; // should always be populated (as soon as login is completed)
 
-  /* Key objects to access/manipulate xAPS database */
+  private String fusionPass;
+  /** Should always be populated (as soon as login is completed). */
+  private User verifiedFusionUser;
+
+  /** Key objects to access/manipulate xAPS database. */
   private Users users;
+
   private DBI dbi;
   private ACS acs;
   private ACSUnit acsUnit;
   private UnitJobs unitJobs;
 
-  /* Responsible for processing all commands */
+  /** Responsible for processing all commands. */
   private Processor processor;
 
-  /* The script-stack, containing all commands to be run */
-  private Stack<Script> scriptStack = new Stack<Script>();
+  /** The script-stack, containing all commands to be run. */
+  private Stack<Script> scriptStack = new Stack<>();
 
-  /* Batch-storage, to speed up mass-change of unit/unit-parameter/unit-type parameters */
+  /** Batch-storage, to speed up mass-change of unit/unit-parameter/unit-type parameters. */
   private BatchStorage batchStorage = new BatchStorage();
 
-  private List<String> commandHistory = new ArrayList<String>();
+  private List<String> commandHistory = new ArrayList<>();
 
-  // Default mode of a session is Interactive mode
+  /** Default mode of a session is Interactive mode. */
   private SessionMode mode = SessionMode.INTERACTIVE;
 
-  // Counts number of operations during one command (only for set/del)
+  /** Counts number of operations during one command (only for set/del). */
   private int counter = 1;
 
   public Session(String[] args, ACSShell ACSShell) {
@@ -65,32 +68,32 @@ public class Session {
     this.processor = new Processor(this);
 
     // read from options
-    Map<String, Variable> variables = new HashMap<String, Variable>();
+    Map<String, Variable> variables = new HashMap<>();
     if (args != null) {
       for (int i = 0; i < args.length - 1; i = i + 2) {
-        if (args[i].equals("-script") && FileUtil.exists(args[i + 1])) {
+        if ("-script".equals(args[i]) && FileUtil.exists(args[i + 1])) {
           scriptStack.push(new Script(args[i + 1], context, Script.SCRIPT));
           mode = SessionMode.SCRIPT;
-        } else if (args[i].equals("-daemon")) {
+        } else if ("-daemon".equals(args[i])) {
           mode = SessionMode.DAEMON;
           i--; // since this argument don't need a 2nd arg.
-        } else if (args[i].equals("-export") || args[i].equals("-import")) {
+        } else if ("-export".equals(args[i]) || "-import".equals(args[i])) {
           scriptStack.push(
               new Script(ScriptMaker.getMigrateScript(i, args), context, Script.SCRIPT));
           mode = SessionMode.SCRIPT;
-        } else if (args[i].equals("-delete")) {
+        } else if ("-delete".equals(args[i])) {
           scriptStack.push(
               new Script(ScriptMaker.getDeleteScript(i, args), context, Script.SCRIPT));
           mode = SessionMode.SCRIPT;
-        } else if (args[i].equals("-upgradesystemparameters")) {
+        } else if ("-upgradesystemparameters".equals(args[i])) {
           scriptStack.push(
               new Script(
                   ScriptMaker.getUpgradeSystemparametersScript(i, args), context, Script.SCRIPT));
           mode = SessionMode.SCRIPT;
           i--; // since this argument don't need a 2nd arg.
-        } else if (args[i].equals("-fusionuser")) {
+        } else if ("-fusionuser".equals(args[i])) {
           fusionUser = args[i + 1];
-        } else if (args[i].equals("-fusionpass")) {
+        } else if ("-fusionpass".equals(args[i])) {
           fusionPass = args[i + 1];
         } else if (args[i].startsWith("-") && args[i].length() > 1) {
           try {
@@ -113,11 +116,15 @@ public class Session {
 
   public void exitShell(int status) {
     try {
-      if (dbi != null) dbi.processOutbox();
+      if (dbi != null) {
+        dbi.processOutbox();
+      }
     } catch (Throwable t) {
       // Ignore
     }
-    if (mode != SessionMode.DAEMON) System.exit(status);
+    if (mode != SessionMode.DAEMON) {
+      System.exit(status);
+    }
   }
 
   public void setAcsUnit(ACSUnit xapsU) {
@@ -180,15 +187,15 @@ public class Session {
     return scriptStack;
   }
 
-  /* Get the active/current script of the script stack */
+  /** Get the active/current script of the script stack. */
   public Script getScript() {
-    if (scriptStack.size() == 0) {
+    if (scriptStack.isEmpty()) {
       scriptStack.add(new Script(new ArrayList<String>(), new Context(this), Script.SCRIPT));
     }
     return scriptStack.peek();
   }
 
-  /* Get the active/current context of the session */
+  /** Get the active/current context of the session. */
   public Context getContext() {
     return getScript().getContext();
   }

@@ -6,7 +6,6 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 public class HTTPResponseAction {
-
   private CheckedResponseFunction createResponseMethod;
 
   public HTTPResponseAction(CheckedResponseFunction responseMethod) {

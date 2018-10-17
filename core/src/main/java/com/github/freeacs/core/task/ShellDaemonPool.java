@@ -20,11 +20,9 @@ import org.slf4j.LoggerFactory;
  * @author morten
  */
 public class ShellDaemonPool {
-
   private static Logger logger = LoggerFactory.getLogger(ShellDaemonPool.class);
 
-  private static Map<String, List<ACSShellDaemon>> shellDaemonPoolMap =
-      new HashMap<String, List<ACSShellDaemon>>();
+  private static Map<String, List<ACSShellDaemon>> shellDaemonPoolMap = new HashMap<>();
 
   private static ACSShellDaemon createNewShellDaemon(
       DataSource mainDataSource, DataSource syslogDataSource, int index, String fusionUser)
@@ -52,13 +50,12 @@ public class ShellDaemonPool {
     thread.start();
     while (!acsShellDaemon.isInitialized()) {
       List<Throwable> throwables = acsShellDaemon.getAndResetThrowables();
-      if (throwables != null && throwables.size() > 0) {
+      if (throwables != null && !throwables.isEmpty()) {
         throw throwables.get(0);
       }
       try {
         Thread.sleep(100);
       } catch (InterruptedException e) {
-        // TODO Auto-generated catch block
         e.printStackTrace();
       }
     }
@@ -94,7 +91,9 @@ public class ShellDaemonPool {
         break;
       }
     }
-    if (acsShellDaemon != null) acsShellDaemon.setIdle(false);
+    if (acsShellDaemon != null) {
+      acsShellDaemon.setIdle(false);
+    }
     return acsShellDaemon;
   }
 }

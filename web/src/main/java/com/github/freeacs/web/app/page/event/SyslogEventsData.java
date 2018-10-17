@@ -6,7 +6,6 @@ import java.util.Map;
 
 /** The Class SyslogEventsData. */
 public class SyslogEventsData extends InputData {
-
   private Input action = Input.getStringInput("action");
 
   private Input eventId = Input.getIntegerInput("eventid");
@@ -42,19 +41,19 @@ public class SyslogEventsData extends InputData {
       eventId.setError("Event Id must be higher than 1000");
       valid = false;
     }
-    if (name.getString() == null || name.getString().length() == 0) {
+    if (name.getString() == null || name.getString().isEmpty()) {
       name.setError("Name is required");
       valid = false;
     }
-    if (expression.getString() == null || expression.getString().length() == 0) {
+    if (expression.getString() == null || expression.getString().isEmpty()) {
       expression.setError("Expression is required");
       valid = false;
     }
-    if (storePolicy.getString() == null || storePolicy.getString().length() == 0) {
+    if (storePolicy.getString() == null || storePolicy.getString().isEmpty()) {
       storePolicy.setError("StorePolicy is required");
       valid = false;
     }
-    if (!limit.getString().equals("") && (limit.getInteger() == null || limit.getInteger() < 0)) {
+    if (!"".equals(limit.getString()) && (limit.getInteger() == null || limit.getInteger() < 0)) {
       limit.setError("Limit must be a number higher or equal to 0");
       valid = false;
     } else { // if input was empty and an attempt to parse to Integer failed, we suppress that error

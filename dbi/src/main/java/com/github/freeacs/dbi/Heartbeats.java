@@ -48,7 +48,7 @@ public class Heartbeats {
           new InsertOrUpdateStatement("heartbeat", new Field("id", heartbeat.getId()));
       ious.addField(new Field("name", heartbeat.getName()));
       ious.addField(new Field("unit_type_id", heartbeat.getUnittype().getId()));
-      ious.addField(new Field("heartbeat_expression", heartbeat.getExpression().toString()));
+      ious.addField(new Field("heartbeat_expression", heartbeat.getExpression()));
       ious.addField(new Field("heartbeat_group_id", heartbeat.getGroup().getId()));
       ious.addField(new Field("heartbeat_timeout_hour", heartbeat.getTimeoutHours()));
       ps = ious.makePreparedStatement(c);
@@ -56,22 +56,31 @@ public class Heartbeats {
       ps.executeUpdate();
       if (ious.isInsert()) {
         ResultSet gk = ps.getGeneratedKeys();
-        if (gk.next()) heartbeat.setId(gk.getInt(1));
+        if (gk.next()) {
+          heartbeat.setId(gk.getInt(1));
+        }
         logger.info("Inserted heartbeat " + heartbeat.getId());
-        if (acs.getDbi() != null) acs.getDbi().publishAdd(heartbeat, heartbeat.getUnittype());
+        if (acs.getDbi() != null) {
+          acs.getDbi().publishAdd(heartbeat, heartbeat.getUnittype());
+        }
       } else {
         logger.info("Updated heartbeat " + heartbeat.getId());
-        if (acs.getDbi() != null) acs.getDbi().publishChange(heartbeat, unittype);
+        if (acs.getDbi() != null) {
+          acs.getDbi().publishChange(heartbeat, unittype);
+        }
       }
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       c.close();
     }
   }
 
   public void addOrChangeHeartbeat(Heartbeat heartbeat, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
+    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
+    }
     heartbeat.validateInput(true);
     heartbeat.validate();
     addOrChangeHeartbeatImpl(heartbeat, acs);
@@ -90,9 +99,13 @@ public class Heartbeats {
       ps.executeUpdate();
 
       logger.info("Deleted heartbeat " + heartbeat.getId());
-      if (acs.getDbi() != null) acs.getDbi().publishDelete(heartbeat, unittype);
+      if (acs.getDbi() != null) {
+        acs.getDbi().publishDelete(heartbeat, unittype);
+      }
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       c.close();
     }
   }
@@ -104,8 +117,9 @@ public class Heartbeats {
    * @throws SQLException
    */
   public void deleteHeartbeat(Heartbeat heartbeat, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
+    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
+    }
     deleteHeartbeatImpl(heartbeat, acs);
     idMap.remove(heartbeat.getId());
     nameMap.remove(heartbeat.getName());

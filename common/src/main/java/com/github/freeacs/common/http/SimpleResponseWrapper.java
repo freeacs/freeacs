@@ -11,7 +11,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 public class SimpleResponseWrapper implements HttpServletResponse {
-
   private final StringWriter stringResponse;
   private final HashMap<String, Object> headers;
   private final FileResponse fileResponse;

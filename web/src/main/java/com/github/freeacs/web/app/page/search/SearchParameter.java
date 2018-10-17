@@ -48,8 +48,10 @@ public class SearchParameter {
    * @return the display text
    */
   public String getDisplayText() {
-    if (displayText == null) return id;
-    return displayText;
+    if (displayText != null) {
+      return displayText;
+    }
+    return id;
   }
 
   /**
@@ -59,22 +61,32 @@ public class SearchParameter {
    * @return the converted parameter id
    */
   public static String convertParameterId(String id) {
-    if (id == null) return id;
-    if (id.contains("::")) return id.replaceAll("::", "#");
-    else if (id.contains("#")) return id.replaceAll("#", "::");
+    if (id == null) {
+      return id;
+    }
+    if (id.contains("::")) {
+      return id.replaceAll("::", "#");
+    } else if (id.contains("#")) {
+      return id.replaceAll("#", "::");
+    }
     return id;
   }
 
   /**
-   * Replaces all * with %
+   * Replaces all * with %.
    *
    * @param value
    * @return the converted parameter value
    */
   public static String convertParameterValue(String value) {
-    if (value == null) return value;
-    if (value.contains("*")) return value.replaceAll("\\*", "%");
-    else if (value.contains("%")) return value.replaceAll("%", "*");
+    if (value == null) {
+      return value;
+    }
+    if (value.contains("*")) {
+      return value.replaceAll("\\*", "%");
+    } else if (value.contains("%")) {
+      return value.replaceAll("%", "*");
+    }
     return value;
   }
 

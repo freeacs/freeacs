@@ -18,7 +18,6 @@ import org.slf4j.Logger;
  * @author Morten
  */
 public abstract class DBIShare implements Task {
-
   private final DataSource mainDataSource;
   private final DataSource syslogDataSource;
 
@@ -29,7 +28,7 @@ public abstract class DBIShare implements Task {
 
   private String taskName;
   private long launchTms;
-  private boolean running = false;
+  private boolean running;
 
   private Throwable throwable;
 
@@ -38,11 +37,14 @@ public abstract class DBIShare implements Task {
     this.mainDataSource = mainDataSource;
     this.syslogDataSource = syslogDataSource;
     this.taskName = taskName;
-    if (users == null) users = new Users(this.mainDataSource);
-    if (id == null)
+    if (users == null) {
+      users = new Users(this.mainDataSource);
+    }
+    if (id == null) {
       id =
           new Identity(
               SyslogConstants.FACILITY_CORE, "latest", users.getUnprotected(Users.USER_ADMIN));
+    }
     if (dbi == null) {
       syslog = new Syslog(this.syslogDataSource, id);
       dbi = new DBI(Integer.MAX_VALUE, this.mainDataSource, syslog);
