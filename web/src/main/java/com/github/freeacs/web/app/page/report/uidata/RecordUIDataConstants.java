@@ -10,7 +10,6 @@ import com.github.freeacs.web.app.util.DecimalUtils;
  * @author Jarl Andre Hubenthal
  */
 final class RecordUIDataConstants {
-
   /** The Constant DATE_FORMAT. */
   public static final DateUtils.Format DATE_FORMAT = DateUtils.Format.WITH_SECONDS;
 

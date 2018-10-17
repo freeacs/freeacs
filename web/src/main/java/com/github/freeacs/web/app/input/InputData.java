@@ -12,7 +12,6 @@ import java.util.Map;
  * @author Jarl Andre Hubenthal
  */
 public abstract class InputData {
-
   /** Constants. */
   public static final String INFO = "info";
 
@@ -105,13 +104,15 @@ public abstract class InputData {
    * @throws InvocationTargetException the invocation target exception
    */
   public final Map<String, String> getErrors()
-      throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-    Map<String, String> map = new HashMap<String, String>();
-    Method[] methods = this.getClass().getMethods();
+      throws IllegalAccessException, InvocationTargetException {
+    Map<String, String> map = new HashMap<>();
+    Method[] methods = getClass().getMethods();
     for (Method m : methods) {
       if (m.getReturnType() == Input.class && Modifier.isPublic(m.getModifiers())) {
         Input in = (Input) m.invoke(this, (Object[]) null);
-        if (in.getError() != null) map.put(in.getKey(), in.getError());
+        if (in.getError() != null) {
+          map.put(in.getKey(), in.getError());
+        }
       }
     }
     return map;
@@ -135,7 +136,6 @@ public abstract class InputData {
    */
   protected abstract boolean validateForm();
 
-  //
   /**
    * 1. Binds the form input to the given root map<br>
    * 2. Validates the form input<br>
@@ -148,7 +148,7 @@ public abstract class InputData {
    * @throws InvocationTargetException the invocation target exception
    */
   public final boolean bindAndValidate(Map<String, Object> root)
-      throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+      throws IllegalAccessException, InvocationTargetException {
     bindForm(root);
     if (!validateForm()) {
       root.put("errors", getErrors());

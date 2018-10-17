@@ -20,7 +20,6 @@ import java.util.List;
  * @author Jarl Andre Hubenthal
  */
 public enum ReportType {
-
   /** The UNIT. */
   UNIT(
       "Unit",
@@ -85,7 +84,7 @@ public enum ReportType {
    * @param name the name
    * @param methods the methods
    */
-  private ReportType(String name, String... methods) {
+  ReportType(String name, String... methods) {
     this.name = name;
     this.methods = Arrays.asList(methods);
   }
@@ -115,10 +114,14 @@ public enum ReportType {
    * @return the enum
    */
   public static ReportType getEnum(String name) {
-    if (name == null) return NONE;
+    if (name == null) {
+      return NONE;
+    }
 
     for (ReportType rp : values()) {
-      if (rp.getName().equals(name)) return rp;
+      if (rp.getName().equals(name)) {
+        return rp;
+      }
     }
 
     return NONE;

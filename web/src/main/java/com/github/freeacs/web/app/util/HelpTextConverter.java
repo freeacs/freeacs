@@ -18,7 +18,6 @@ import javax.swing.*;
  */
 public class HelpTextConverter extends JFrame
     implements ActionListener, WindowListener, ClipboardOwner {
-
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -1L;
 
@@ -31,27 +30,21 @@ public class HelpTextConverter extends JFrame
   /** Instantiates a new help text converter. */
   public HelpTextConverter() {
     setTitle("Helpt text converter");
-    Container con = this.getContentPane();
+    Container con = getContentPane();
     setLayout(new BorderLayout());
-    con.add((input = new JTextArea()), BorderLayout.CENTER);
+    con.add(input = new JTextArea(), BorderLayout.CENTER);
     input.setText("<p>Input text here that needs to be escaped for use in XML documents</p>");
-    con.add((button = new JButton("Convert text and place in clipboard")), BorderLayout.SOUTH);
+    con.add(button = new JButton("Convert text and place in clipboard"), BorderLayout.SOUTH);
     button.addActionListener(this);
     setSize(800, 600);
     setVisible(true);
     addWindowListener(this);
   }
 
-  /* (non-Javadoc)
-   * @see java.awt.event.WindowListener#windowClosing(java.awt.event.WindowEvent)
-   */
   public void windowClosing(WindowEvent arg0) {
-    this.dispose();
+    dispose();
   }
 
-  /* (non-Javadoc)
-   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-   */
   public void actionPerformed(ActionEvent e) {
     input.setText(EscapeChars.forXML(input.getText()));
     StringSelection data = new StringSelection(input.getText());
@@ -60,58 +53,17 @@ public class HelpTextConverter extends JFrame
     JOptionPane.showMessageDialog(this, "The text is now in the clipboard");
   }
 
-  /* (non-Javadoc)
-   * @see java.awt.event.WindowListener#windowActivated(java.awt.event.WindowEvent)
-   */
-  public void windowActivated(WindowEvent e) {
-    // TODO Auto-generated method stub
+  public void windowActivated(WindowEvent e) {}
 
-  }
+  public void windowClosed(WindowEvent e) {}
 
-  /* (non-Javadoc)
-   * @see java.awt.event.WindowListener#windowClosed(java.awt.event.WindowEvent)
-   */
-  public void windowClosed(WindowEvent e) {
-    // TODO Auto-generated method stub
-  }
+  public void windowDeactivated(WindowEvent e) {}
 
-  /* (non-Javadoc)
-   * @see java.awt.event.WindowListener#windowDeactivated(java.awt.event.WindowEvent)
-   */
-  public void windowDeactivated(WindowEvent e) {
-    // TODO Auto-generated method stub
+  public void windowDeiconified(WindowEvent e) {}
 
-  }
+  public void windowIconified(WindowEvent e) {}
 
-  /* (non-Javadoc)
-   * @see java.awt.event.WindowListener#windowDeiconified(java.awt.event.WindowEvent)
-   */
-  public void windowDeiconified(WindowEvent e) {
-    // TODO Auto-generated method stub
+  public void windowOpened(WindowEvent e) {}
 
-  }
-
-  /* (non-Javadoc)
-   * @see java.awt.event.WindowListener#windowIconified(java.awt.event.WindowEvent)
-   */
-  public void windowIconified(WindowEvent e) {
-    // TODO Auto-generated method stub
-
-  }
-
-  /* (non-Javadoc)
-   * @see java.awt.event.WindowListener#windowOpened(java.awt.event.WindowEvent)
-   */
-  public void windowOpened(WindowEvent e) {
-    // TODO Auto-generated method stub
-
-  }
-
-  /* (non-Javadoc)
-   * @see java.awt.datatransfer.ClipboardOwner#lostOwnership(java.awt.datatransfer.Clipboard, java.awt.datatransfer.Transferable)
-   */
-  public void lostOwnership(Clipboard clipboard, Transferable contents) {
-    // TODO Auto-generated method stub
-
-  }
+  public void lostOwnership(Clipboard clipboard, Transferable contents) {}
 }

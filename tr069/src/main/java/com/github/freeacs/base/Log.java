@@ -10,12 +10,11 @@ import org.slf4j.LoggerFactory;
 /** This class handles all the logging in this server. */
 @SuppressWarnings("rawtypes")
 public class Log {
-
   private static Logger eventLog = LoggerFactory.getLogger("Event");
   private static Logger convLog = LoggerFactory.getLogger("Conversation");
   private static Logger debugLog = LoggerFactory.getLogger("Debug");
 
-  private static Map<Class, Logger> loggers = new HashMap<Class, Logger>();
+  private static Map<Class, Logger> loggers = new HashMap<>();
 
   public static void debug(Class c, String message) {
     getLogger(c).debug(message);
@@ -57,9 +56,13 @@ public class Log {
     convLog.info(message);
     if (sessionData == null
         || sessionData.getUnit() == null
-        || sessionData.getUnit().getUnitParameters() == null) return;
+        || sessionData.getUnit().getUnitParameters() == null) {
+      return;
+    }
     UnitParameter debugUp = sessionData.getUnit().getUnitParameters().get(SystemParameters.DEBUG);
-    if (debugUp != null && "1".equals(debugUp.getValue())) debugLog.info(message);
+    if (debugUp != null && "1".equals(debugUp.getValue())) {
+      debugLog.info(message);
+    }
   }
 
   public static boolean isConversationLogEnabled() {

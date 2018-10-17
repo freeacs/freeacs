@@ -8,7 +8,6 @@
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
  */
-
 package de.javawi.jstun.attribute;
 
 import org.slf4j.Logger;
@@ -24,7 +23,7 @@ public class MappedAddress extends MappedResponseChangedSourceAddressReflectedFr
   public static MessageAttribute parse(byte[] data) throws MessageAttributeParsingException {
     MappedAddress ma = new MappedAddress();
     MappedResponseChangedSourceAddressReflectedFrom.parse(ma, data);
-    LOGGER.debug("Message Attribute: Mapped Address parsed: " + ma.toString() + ".");
+    LOGGER.debug("Message Attribute: Mapped Address parsed: " + ma + ".");
     return ma;
   }
 }

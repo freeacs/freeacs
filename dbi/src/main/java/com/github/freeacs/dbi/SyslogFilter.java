@@ -18,7 +18,6 @@ import java.util.List;
  * @author Morten
  */
 public class SyslogFilter {
-
   private String content;
   private Integer facility;
   private String facilityVersion;

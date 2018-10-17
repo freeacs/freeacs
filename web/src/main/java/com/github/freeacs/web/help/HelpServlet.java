@@ -24,18 +24,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author Jarl Andre Hubenthal
  */
 public class HelpServlet extends HttpServlet {
-
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
-
-  /**
-   * Instantiates a new help servlet.
-   *
-   * @see HttpServlet#HttpServlet()
-   */
-  public HelpServlet() {
-    super();
-  }
 
   /**
    * Do get.
@@ -47,33 +37,34 @@ public class HelpServlet extends HttpServlet {
    */
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    if (request.getParameter("cmd") != null
-        && request.getParameter("cmd").equalsIgnoreCase("getactivedialog")) {
+    if ("getactivedialog".equalsIgnoreCase(request.getParameter("cmd"))) {
       String helpDialog = (String) request.getSession().getAttribute("activehelpdialog");
       response.setContentType("text/plain");
-      if (helpDialog != null && helpDialog.trim().length() > 0) {
+      if (helpDialog != null && !helpDialog.trim().isEmpty()) {
         response.getWriter().print(helpDialog);
         response.getWriter().close();
       }
       return;
     }
 
-    if (request.getParameter("cmd") != null
-        && request.getParameter("cmd").equalsIgnoreCase("setactivedialog")) {
-      String dialogTitle = (String) request.getParameter("title");
-      if (dialogTitle == null || dialogTitle.trim().length() == 0)
+    if ("setactivedialog".equalsIgnoreCase(request.getParameter("cmd"))) {
+      String dialogTitle = request.getParameter("title");
+      if (dialogTitle == null || dialogTitle.trim().isEmpty()) {
         request.getSession().removeAttribute("activehelpdialog");
-      else request.getSession().setAttribute("activehelpdialog", dialogTitle);
+      } else {
+        request.getSession().setAttribute("activehelpdialog", dialogTitle);
+      }
       response.setContentType("text/plain");
       response.getWriter().println("ok");
       response.getWriter().close();
       return;
-    } else if (request.getParameter("cmd") != null
-        && request.getParameter("cmd").equalsIgnoreCase("setactivetool")) {
-      String dialogTitle = (String) request.getParameter("title");
-      if (dialogTitle == null || dialogTitle.trim().length() == 0)
+    } else if ("setactivetool".equalsIgnoreCase(request.getParameter("cmd"))) {
+      String dialogTitle = request.getParameter("title");
+      if (dialogTitle == null || dialogTitle.trim().isEmpty()) {
         request.getSession().removeAttribute("activetooldialog");
-      else request.getSession().setAttribute("activetooldialog", dialogTitle);
+      } else {
+        request.getSession().setAttribute("activetooldialog", dialogTitle);
+      }
       response.setContentType("text/plain");
       response.getWriter().println("ok");
       response.getWriter().close();
@@ -84,8 +75,11 @@ public class HelpServlet extends HttpServlet {
     if (page != null) {
       try {
         Page p = Page.getById(page);
-        if (p != Page.NONE) html = HelpPage.getHTMLForPageByClass(p);
-        else html = HelpPage.getHTMLForPageByResourcePath("pages/" + page + "/" + page);
+        if (p != Page.NONE) {
+          html = HelpPage.getHTMLForPageByClass(p);
+        } else {
+          html = HelpPage.getHTMLForPageByResourcePath("pages/" + page + "/" + page);
+        }
       } catch (TemplateException e1) {
         throw new ServletException("Could not retrieve help file", e1);
       }

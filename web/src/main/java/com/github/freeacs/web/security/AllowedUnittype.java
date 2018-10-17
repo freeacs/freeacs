@@ -12,16 +12,15 @@ import java.util.List;
  * @author Jarl Andre Hubenthal
  */
 public class AllowedUnittype {
-
   /** The id. */
   private Integer id;
 
-  /** OR */
+  /** OR. */
 
   /** The name. */
   private String name;
 
-  /** AND */
+  /** AND. */
 
   /** The profile. */
   private AllowedProfile profile;
@@ -90,19 +89,19 @@ public class AllowedUnittype {
   }
 
   public static AllowedUnittype[] retrieveAllowedUnittypes(WebUser usr) {
-    List<AllowedUnittype> uts = new ArrayList<AllowedUnittype>();
+    List<AllowedUnittype> uts = new ArrayList<>();
     if (usr.getPermissions() != null) {
-      if (usr.getPermissions().getPermissions().length == 0)
+      if (usr.getPermissions().getPermissions().length == 0) {
         return new AllowedUnittype[] {new AllowedUnittype("*")};
+      }
       for (Permission permission : usr.getPermissions().getPermissions()) {
         AllowedUnittype allowed = new AllowedUnittype(permission.getUnittypeId());
         allowed.setProfile(permission.getProfileId());
         uts.add(allowed);
       }
-      return uts.toArray(new AllowedUnittype[] {});
     } else {
       uts.add(new AllowedUnittype("*"));
-      return uts.toArray(new AllowedUnittype[] {});
     }
+    return uts.toArray(new AllowedUnittype[] {});
   }
 }

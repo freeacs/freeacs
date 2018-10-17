@@ -12,9 +12,7 @@ public class CsrfSecurityRequestMatcher implements RequestMatcher {
 
   @Override
   public boolean matches(HttpServletRequest request) {
-    if (allowedMethods.matcher(request.getMethod()).matches()) {
-      return false;
-    }
-    return !unprotectedMatcher.matches(request);
+    return !allowedMethods.matcher(request.getMethod()).matches()
+        && !unprotectedMatcher.matches(request);
   }
 }

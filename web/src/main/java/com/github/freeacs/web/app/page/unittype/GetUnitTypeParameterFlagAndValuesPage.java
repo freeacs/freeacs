@@ -18,7 +18,6 @@ import javax.sql.DataSource;
  * @author Jarl Andre Hubenthal
  */
 public class GetUnitTypeParameterFlagAndValuesPage extends AbstractWebPage {
-
   protected class FlagsHolder {
     public Boolean hasValues;
     public String flag;
@@ -29,9 +28,6 @@ public class GetUnitTypeParameterFlagAndValuesPage extends AbstractWebPage {
     }
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
-   */
   public void process(
       ParameterParser params, Output res, DataSource xapsDataSource, DataSource syslogDataSource)
       throws Exception {
@@ -40,19 +36,25 @@ public class GetUnitTypeParameterFlagAndValuesPage extends AbstractWebPage {
     String unittype = params.getParameter("unittype");
     res.setContentType("text/html");
     if (type != null && name != null) {
-      if (type.equals("unittype") && unittype != null) {
+      if ("unittype".equals(type) && unittype != null) {
         ACS acs = ACSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
         Unittype ut = acs.getUnittype(unittype);
         if (ut != null) {
           UnittypeParameter utp = ut.getUnittypeParameters().getByName(name);
           String flag = utp.getFlag().getFlag();
-          boolean hasValues = (utp.getValues() != null && utp.getValues().getValues().size() > 0);
+          boolean hasValues = utp.getValues() != null && !utp.getValues().getValues().isEmpty();
           if (flag != null) {
             FlagsHolder toReturn = new FlagsHolder(hasValues, flag);
             res.setDirectResponse(OBJECT_MAPPER.writeValueAsString(toReturn));
           }
-        } else res.setDirectResponse("err: flag was not found");
-      } else res.setDirectResponse("err: unittype is null or type is not recognized");
-    } else res.setDirectResponse("err: specify name and type");
+        } else {
+          res.setDirectResponse("err: flag was not found");
+        }
+      } else {
+        res.setDirectResponse("err: unittype is null or type is not recognized");
+      }
+    } else {
+      res.setDirectResponse("err: specify name and type");
+    }
   }
 }

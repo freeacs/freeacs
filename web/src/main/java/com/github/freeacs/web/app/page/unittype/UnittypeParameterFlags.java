@@ -5,7 +5,6 @@ import java.util.List;
 
 /** The Enum UnittypeParameterFlags. */
 public enum UnittypeParameterFlags {
-
   /** The ALL. */
   ALL("All"),
 
@@ -36,7 +35,7 @@ public enum UnittypeParameterFlags {
   /** The A. */
   A("Always-Read"),
 
-  /** The B */
+  /** The B. */
   B("Boot-Required");
 
   /**
@@ -48,7 +47,9 @@ public enum UnittypeParameterFlags {
   public static UnittypeParameterFlags getByValue(String value) {
     if (value != null) {
       for (UnittypeParameterFlags utpf : values()) {
-        if (utpf.toString().equals(value)) return utpf;
+        if (utpf.toString().equals(value)) {
+          return utpf;
+        }
       }
     }
     return null;
@@ -60,7 +61,7 @@ public enum UnittypeParameterFlags {
    * @return the list
    */
   public static List<String> toList() {
-    List<String> flags = new ArrayList<String>();
+    List<String> flags = new ArrayList<>();
     for (UnittypeParameterFlags flag : values()) {
       flags.add(flag.toString());
     }
@@ -75,13 +76,10 @@ public enum UnittypeParameterFlags {
    *
    * @param flag the flag
    */
-  private UnittypeParameterFlags(String flag) {
+  UnittypeParameterFlags(String flag) {
     display = flag;
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Enum#toString()
-   */
   public String toString() {
     return display;
   }

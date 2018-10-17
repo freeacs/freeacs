@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 public class SyslogEvents {
   private static Logger logger = LoggerFactory.getLogger(SyslogEvents.class);
-  private static Map<Integer, SyslogEvent> idMap = new TreeMap<Integer, SyslogEvent>();
+  private static Map<Integer, SyslogEvent> idMap = new TreeMap<>();
 
   static {
     SyslogEvent defaultEvent = new SyslogEvent();
@@ -31,7 +31,9 @@ public class SyslogEvents {
 
   public SyslogEvents(Map<Integer, SyslogEvent> eventIdMap, Unittype unittype) {
     this.eventIdMap = eventIdMap;
-    for (SyslogEvent event : eventIdMap.values()) idMap.put(event.getId(), event);
+    for (SyslogEvent event : eventIdMap.values()) {
+      idMap.put(event.getId(), event);
+    }
     this.unittype = unittype;
   }
 
@@ -67,7 +69,7 @@ public class SyslogEvents {
       ious.addField(new Field("syslog_event_id", syslogEvent.getEventId()));
       ious.addField(new Field("syslog_event_name", syslogEvent.getName()));
       ious.addField(new Field("description", syslogEvent.getDescription()));
-      ious.addField(new Field("expression", syslogEvent.getExpression().toString()));
+      ious.addField(new Field("expression", syslogEvent.getExpression()));
       ious.addField(new Field("delete_limit", syslogEvent.getDeleteLimit()));
       if (ACSVersionCheck.syslogEventReworkSupported) {
         ious.addField(new Field("unit_type_id", syslogEvent.getUnittype().getId()));
@@ -82,26 +84,35 @@ public class SyslogEvents {
                 syslogEvent.getGroup() == null ? null : syslogEvent.getGroup().getId()));
       } else {
         ious.addField(new Field("unit_type_name", syslogEvent.getUnittype().getName()));
-        if (syslogEvent.getStorePolicy()
-            == StorePolicy.DUPLICATE) // Normalize the counter to 60 minutes in old databases
-        ious.addField(
+        if (syslogEvent.getStorePolicy() == StorePolicy.DUPLICATE) {
+          ious.addField(
               new Field("task", StorePolicy.DUPLICATE + "" + SyslogEvent.DUPLICATE_TIMEOUT));
-        else ious.addField(new Field("task", syslogEvent.getStorePolicy()));
+        } else {
+          ious.addField(new Field("task", syslogEvent.getStorePolicy()));
+        }
       }
       ps = ious.makePreparedStatement(c);
       ps.setQueryTimeout(60);
       ps.executeUpdate();
       if (ious.isInsert()) {
         ResultSet gk = ps.getGeneratedKeys();
-        if (gk.next()) syslogEvent.setId(gk.getInt(1));
+        if (gk.next()) {
+          syslogEvent.setId(gk.getInt(1));
+        }
         logger.info("Inserted syslog event " + syslogEvent.getEventId());
-        if (acs.getDbi() != null) acs.getDbi().publishAdd(syslogEvent, syslogEvent.getUnittype());
+        if (acs.getDbi() != null) {
+          acs.getDbi().publishAdd(syslogEvent, syslogEvent.getUnittype());
+        }
       } else {
         logger.info("Updated syslog event " + syslogEvent.getEventId());
-        if (acs.getDbi() != null) acs.getDbi().publishChange(syslogEvent, unittype);
+        if (acs.getDbi() != null) {
+          acs.getDbi().publishChange(syslogEvent, unittype);
+        }
       }
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       if (c != null) {
         c.close();
       }
@@ -109,8 +120,9 @@ public class SyslogEvents {
   }
 
   public void addOrChangeSyslogEvent(SyslogEvent syslogEvent, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
+    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
+    }
     syslogEvent.validate();
     addOrChangeSyslogEventImpl(syslogEvent, acs);
     idMap.put(syslogEvent.getId(), syslogEvent);
@@ -123,20 +135,27 @@ public class SyslogEvents {
     Connection c = acs.getDataSource().getConnection();
     try {
       DynamicStatement ds = new DynamicStatement();
-      if (ACSVersionCheck.syslogEventReworkSupported)
+      if (ACSVersionCheck.syslogEventReworkSupported) {
         ds.addSqlAndArguments(
             "DELETE FROM syslog_event WHERE syslog_event_id = ? ", syslogEvent.getEventId());
-      if (ACSVersionCheck.syslogEventReworkSupported)
+      }
+      if (ACSVersionCheck.syslogEventReworkSupported) {
         ds.addSqlAndArguments("AND unit_type_id = ?", unittype.getId());
-      else ds.addSqlAndArguments("AND unit_type_name = ?", unittype.getName());
+      } else {
+        ds.addSqlAndArguments("AND unit_type_name = ?", unittype.getName());
+      }
       ps = ds.makePreparedStatement(c);
       ps.setQueryTimeout(60);
       ps.executeUpdate();
 
       logger.info("Deleted syslog event " + syslogEvent.getEventId());
-      if (acs.getDbi() != null) acs.getDbi().publishDelete(syslogEvent, unittype);
+      if (acs.getDbi() != null) {
+        acs.getDbi().publishDelete(syslogEvent, unittype);
+      }
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       if (c != null) {
         c.close();
       }
@@ -150,11 +169,13 @@ public class SyslogEvents {
    * @throws SQLException
    */
   public void deleteSyslogEvent(SyslogEvent syslogEvent, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
+    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
-    if (syslogEvent.getEventId() < 1000)
+    }
+    if (syslogEvent.getEventId() < 1000) {
       throw new IllegalArgumentException(
           "Cannot delete syslog events with id 0-999, they are restricted to ACS");
+    }
     deleteSyslogEventImpl(syslogEvent, acs);
   }
 

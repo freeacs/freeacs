@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
  * @author Jarl Andre Hubenthal
  */
 public class Main extends HttpServlet {
-
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1009523437560499266L;
 
@@ -59,8 +58,9 @@ public class Main extends HttpServlet {
         Page p = Page.getById(page);
         if (p.getClazz() != null) {
           if (p.getClazz().getConstructors().length > 0
-              && p.getClazz().getConstructors()[0].getParameterTypes().length == 0)
+              && p.getClazz().getConstructors()[0].getParameterTypes().length == 0) {
             return (WebPage) p.getClazz().getConstructors()[0].newInstance();
+          }
           throw new RuntimeException(
               "Page " + page + " cannot be instantiated because it has no default constructor.");
         }
@@ -80,18 +80,12 @@ public class Main extends HttpServlet {
     return null;
   }
 
-  /* (non-Javadoc)
-   * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-   */
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse res)
       throws ServletException, IOException {
     doGet(req, res);
   }
 
-  /* (non-Javadoc)
-   * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-   */
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException {
     String pageStr = req.getParameter("page");
@@ -153,7 +147,6 @@ public class Main extends HttpServlet {
    */
   public void doImpl(ParameterParser params, HttpServletResponse res, String pageStr)
       throws IOException, TemplateException, ServletException {
-
     WebPage page = getWebPage(pageStr);
 
     Output outputHandler = new Output(page, params, res, config, xapsDataSource, syslogDataSource);

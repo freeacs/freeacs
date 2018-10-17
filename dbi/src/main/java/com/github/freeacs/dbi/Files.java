@@ -56,16 +56,19 @@ public class Files {
   }
 
   public File[] getFiles(FileType type) {
-    List<File> filteredFiles = new ArrayList<File>();
+    List<File> filteredFiles = new ArrayList<>();
     for (File f : nameMap.values()) {
-      if (type == null || f.getType() == type) filteredFiles.add(f);
+      if (type == null || f.getType() == type) {
+        filteredFiles.add(f);
+      }
     }
     return filteredFiles.toArray(new File[] {});
   }
 
   public void addOrChangeFile(File file, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
+    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
+    }
     file.setConnectionProperties(acs.getDataSource()); // just in
     // case...
     file.validate();
@@ -91,9 +94,13 @@ public class Files {
       s.executeUpdate(sql);
 
       logger.info("Deleted file " + file.getName());
-      if (acs.getDbi() != null) acs.getDbi().publishDelete(file, unittype);
+      if (acs.getDbi() != null) {
+        acs.getDbi().publishDelete(file, unittype);
+      }
     } finally {
-      if (s != null) s.close();
+      if (s != null) {
+        s.close();
+      }
       c.close();
     }
   }
@@ -106,8 +113,9 @@ public class Files {
    * @throws SQLException
    */
   public void deleteFile(File file, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
+    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
+    }
     deleteFileImpl(unittype, file, acs);
     nameMap.remove(file.getName());
     idMap.remove(file.getId());
@@ -122,8 +130,9 @@ public class Files {
     // add/change of file.
     // If logged-in user isAdmin, will skip this override, and will allow
     // any user specified in the file object.
-    if (!unittype.getAcs().getUser().isAdmin() && unittype.getAcs().getUser().getId() != null)
+    if (!unittype.getAcs().getUser().isAdmin() && unittype.getAcs().getUser().getId() != null) {
       file.setOwner(unittype.getAcs().getUser());
+    }
     if (file.getId() == null) {
       try {
         DynamicStatement ds = new DynamicStatement();
@@ -133,12 +142,14 @@ public class Files {
         ds.addSqlAndArguments("unit_type_id,", unittype.getId());
         ds.addSqlAndArguments("description,", file.getDescription());
         ds.addSqlAndArguments("version,", file.getVersion());
-        if (file.getContentProtected() != null)
+        if (file.getContentProtected() != null) {
           ds.addSqlAndArguments("content,", new ByteArrayInputStream(file.getContentProtected()));
+        }
         if (ACSVersionCheck.fileReworkSupported) {
           ds.addSqlAndStringArgs("target_name,", file.getTargetName());
-          if (file.getOwner() != null && file.getOwner().getId() != null)
+          if (file.getOwner() != null && file.getOwner().getId() != null) {
             ds.addSqlAndArguments("owner,", file.getOwner().getId());
+          }
         }
         ds.addSqlAndArguments("timestamp_", new Timestamp(file.getTimestamp().getTime()));
         ds.addSql(") values (" + ds.getQuestionMarks() + ")");
@@ -146,25 +157,36 @@ public class Files {
         s.setQueryTimeout(60);
         s.executeUpdate();
         ResultSet gk = s.getGeneratedKeys();
-        if (gk.next()) file.setId(gk.getInt(1));
+        if (gk.next()) {
+          file.setId(gk.getInt(1));
+        }
 
         // }
 
         logger.info("Added file " + file.getName());
-        if (acs.getDbi() != null) acs.getDbi().publishAdd(file, unittype);
+        if (acs.getDbi() != null) {
+          acs.getDbi().publishAdd(file, unittype);
+        }
       } finally {
-        if (s != null) s.close();
+        if (s != null) {
+          s.close();
+        }
         c.close();
       }
     } else {
       try {
         sql =
             "UPDATE filestore SET description=?,name=?,timestamp_=?,type=?,version=?,unit_type_id=?";
-        if (ACSVersionCheck.fileReworkSupported) sql += ",target_name=?,owner=?";
+        if (ACSVersionCheck.fileReworkSupported) {
+          sql += ",target_name=?,owner=?";
+        }
         sql += " WHERE id=?";
         s = c.prepareStatement(sql);
-        if (file.getDescription() != null) s.setString(1, file.getDescription());
-        else s.setNull(1, Types.VARCHAR);
+        if (file.getDescription() != null) {
+          s.setString(1, file.getDescription());
+        } else {
+          s.setNull(1, Types.VARCHAR);
+        }
         s.setString(2, file.getName());
         s.setTimestamp(3, new Timestamp(file.getTimestamp().getTime()));
         s.setString(4, file.getType().toString());
@@ -172,17 +194,25 @@ public class Files {
         s.setString(5, file.getVersion());
         s.setInt(6, unittype.getId());
         if (ACSVersionCheck.fileReworkSupported) {
-          if (file.getTargetName() == null) s.setNull(7, Types.VARCHAR);
-          else s.setString(7, file.getTargetName());
-          if (file.getOwner() != null && file.getOwner().getId() != null)
+          if (file.getTargetName() != null) {
+            s.setString(7, file.getTargetName());
+          } else {
+            s.setNull(7, Types.VARCHAR);
+          }
+          if (file.getOwner() != null && file.getOwner().getId() != null) {
             s.setInt(8, file.getOwner().getId());
-          else s.setNull(8, Types.INTEGER);
+          } else {
+            s.setNull(8, Types.INTEGER);
+          }
           s.setInt(9, file.getId());
-        } else s.setInt(7, file.getId());
+        } else {
+          s.setInt(7, file.getId());
+        }
         s.setQueryTimeout(60);
         int rowsAffected = s.executeUpdate();
-        if (rowsAffected == 0)
+        if (rowsAffected == 0) {
           throw new SQLException("The file [" + file.getId() + "] does not exist!");
+        }
         if (file.getContentProtected() != null) {
           DynamicStatement ds = new DynamicStatement();
           ds.addSqlAndArguments(
@@ -194,15 +224,19 @@ public class Files {
           s.executeUpdate();
         }
         logger.info("Updated file to " + file.getName());
-        if (acs.getDbi() != null) acs.getDbi().publishFile(file, unittype);
+        if (acs.getDbi() != null) {
+          acs.getDbi().publishFile(file, unittype);
+        }
       } finally {
-        if (s != null) s.close();
+        if (s != null) {
+          s.close();
+        }
         c.close();
       }
     }
   }
 
-  /* only used to refresh the cache, used from DBI */
+  /** Only used to refresh the cache, used from DBI. */
   protected static void refreshFile(Integer fileId, Integer unittypeId, ACS acs)
       throws SQLException {
     ResultSet rs = null;
@@ -210,7 +244,9 @@ public class Files {
     Connection c = acs.getDataSource().getConnection();
     try {
       Unittype unittype = acs.getUnittype(unittypeId);
-      if (unittype == null) return; // unittype not accessible by this user
+      if (unittype == null) {
+        return;
+      } // unittype not accessible by this user
       Files files = unittype.getFiles();
       File file = files.getById(fileId);
       DynamicStatement ds = new DynamicStatement();
@@ -235,8 +271,12 @@ public class Files {
       }
       logger.debug("Refreshed file " + file.getName());
     } finally {
-      if (rs != null) rs.close();
-      if (ps != null) ps.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
       c.close();
     }
   }

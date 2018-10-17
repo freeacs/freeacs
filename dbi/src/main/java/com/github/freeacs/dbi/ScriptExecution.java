@@ -3,7 +3,6 @@ package com.github.freeacs.dbi;
 import java.util.Date;
 
 public class ScriptExecution {
-
   private Integer id;
   private Unittype unittype;
   private File scriptFile;
@@ -56,7 +55,7 @@ public class ScriptExecution {
   }
 
   /**
-   * exitStatus == null : Not completed exitStatus == 0 : OK - SUCCESS exitStatus == 1 : ERROR -
+   * ExitStatus == null : Not completed exitStatus == 0 : OK - SUCCESS exitStatus == 1 : ERROR -
    * could expect an errorMessage
    *
    * @return

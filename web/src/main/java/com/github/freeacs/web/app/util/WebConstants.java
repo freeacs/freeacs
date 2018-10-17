@@ -6,7 +6,6 @@ package com.github.freeacs.web.app.util;
  * @author Jarl Andre Hubenthal
  */
 public final class WebConstants {
-
   public static final int PARAMETERS_NEXT_INDENTATION = 25;
   public static final int PARAMETERS_START_INDENTATION = 4;
   public static final String KEYROOT_INTERNET_GATEWAY_DEVICE = "InternetGatewayDevice.";

@@ -11,23 +11,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class Authenticator {
-
   private static Cache blockedClients = new Cache();
-  private static int blockedClientsCount = 0;
+  private static int blockedClientsCount;
 
   private static String computeBlockedClientKey(HttpServletRequest req) {
     String remoteHost = req.getRemoteHost();
     String authorization = req.getHeader("authorization");
-    if (authorization == null) return null; // probably a challenge - no blocking at that stage
+    if (authorization == null) {
+      return null;
+    } // probably a challenge - no blocking at that stage
     String username = authorization; // use raw header if basic auth, since the
     // header is always the same
     int startPos = authorization.indexOf("username=") + 9;
 
     if (startPos > 8) { // digest auth, must extract username, since header
       // varies in every request
-      int endPos = authorization.indexOf("=", startPos);
-      if (endPos > -1) username = authorization.substring(startPos, endPos);
-      else username = authorization.substring(startPos);
+      int endPos = authorization.indexOf('=', startPos);
+      if (endPos > -1) {
+        username = authorization.substring(startPos, endPos);
+      } else {
+        username = authorization.substring(startPos);
+      }
     }
     return remoteHost + username;
   }
@@ -57,7 +61,7 @@ public class Authenticator {
     if (bcKey != null) {
       CacheValue cv = blockedClients.get(bcKey);
       if (cv != null) {
-        cv.setObject(((Integer) cv.getObject()) + 1);
+        cv.setObject((Integer) cv.getObject() + 1);
       } else {
         blockedClients.put(bcKey, new CacheValue(1, Cache.SESSION, 5 * 60 * 1000));
       }
@@ -65,7 +69,6 @@ public class Authenticator {
   }
 
   public static boolean authenticate(HTTPReqResData reqRes) throws TR069AuthenticationException {
-
     SessionData sessionData = reqRes.getSessionData();
     if (sessionData.isAuthenticated()) {
       return true;
@@ -81,32 +84,30 @@ public class Authenticator {
     // device to be allowed into verification is to be silent for more than 5
     // minutes.
     String bcKey = computeBlockedClientKey(reqRes.getReq());
-    if (block(reqRes, bcKey)) return false;
+    if (block(reqRes, bcKey)) {
+      return false;
+    }
 
     // Start of normal authentication procedure
     boolean authenticated = true; // default
     String auth_method = Properties.AUTH_METHOD;
     try {
-      if (Properties.DISCOVERY_MODE) {
+      if (Properties.DISCOVERY_MODE || "basic".equalsIgnoreCase(auth_method)) {
         authenticated = BasicAuthenticator.authenticate(reqRes);
+      } else if ("digest".equalsIgnoreCase(auth_method)) {
+        authenticated = DigestAuthenticator.authenticate(reqRes);
+      } else if ("none".equalsIgnoreCase(auth_method)) {
+        authenticated = true;
+        Log.debug(Authenticator.class, "No authentication method was required");
       } else {
-        if (auth_method.equalsIgnoreCase("basic"))
-          authenticated = BasicAuthenticator.authenticate(reqRes);
-        else if (auth_method.equalsIgnoreCase("digest"))
-          authenticated = DigestAuthenticator.authenticate(reqRes);
-        else if (auth_method.equalsIgnoreCase("none")) {
-          authenticated = true;
-          Log.debug(Authenticator.class, "No authentication method was required");
-        } else {
-          throw new TR069AuthenticationException(
-              "The authentication method is "
-                  + auth_method
-                  + ", but no impl. exist for this method (CPE IP address: "
-                  + reqRes.getReq().getRemoteHost()
-                  + ")",
-              null,
-              HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
+        throw new TR069AuthenticationException(
+            "The authentication method is "
+                + auth_method
+                + ", but no impl. exist for this method (CPE IP address: "
+                + reqRes.getReq().getRemoteHost()
+                + ")",
+            null,
+            HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       }
     } catch (TR069AuthenticationException ex) {
       incBlockCounter(bcKey);

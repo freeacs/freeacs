@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class Report<R extends Record> {
   private static Logger logger = LoggerFactory.getLogger(Report.class);
-  private Map<Key, R> map = new TreeMap<Key, R>();
+  private Map<Key, R> map = new TreeMap<>();
   private Class<R> recordClass;
   private PeriodType periodType;
 
@@ -37,7 +37,7 @@ public class Report<R extends Record> {
   public String toString() {
     String s = "Contains  " + map.size() + " records:\n";
     for (Record r : map.values()) {
-      s += "\t" + r.toString() + "\n";
+      s += "\t" + r + "\n";
     }
     return s;
   }
@@ -50,7 +50,7 @@ public class Report<R extends Record> {
     logMsg = logMsg.substring(0, logMsg.length() - 2);
 
     logger.info(logMsg);
-    Map<Key, R> aggregatedMap = new TreeMap<Key, R>();
+    Map<Key, R> aggregatedMap = new TreeMap<>();
     for (Entry<Key, R> entry : map.entrySet()) {
       Key key = entry.getKey();
       R record = entry.getValue();
@@ -73,9 +73,8 @@ public class Report<R extends Record> {
 
   public KeyFactory getKeyFactory() {
     try {
-      Record record = (Record) recordClass.newInstance();
+      Record record = recordClass.newInstance();
       return record.getKeyFactory();
-
     } catch (Throwable t) {
       throw new RuntimeException(
           "The Record class " + recordClass + " did not implement getKeyFactory()");

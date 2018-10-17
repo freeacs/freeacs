@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MonitorServlet extends HttpServlet {
-
   private static final long serialVersionUID = 3051630277238752841L;
 
   private final Properties properties;
@@ -83,19 +82,24 @@ public class MonitorServlet extends HttpServlet {
       throws IOException {
     PrintWriter out = response.getWriter();
     Template page = config.getTemplate("main.ftl");
-    Map<String, Object> rootMap = new HashMap<String, Object>();
+    Map<String, Object> rootMap = new HashMap<>();
     String async = request.getParameter("async");
-    if (async != null) rootMap.put("async", async);
-    List<MonitorInfo> events = new ArrayList<MonitorInfo>();
+    if (async != null) {
+      rootMap.put("async", async);
+    }
+    List<MonitorInfo> events = new ArrayList<>();
     for (MonitorInfo mi : ModuleMonitorTask.getMonitorInfoSet()) {
-      if (mi.getModule().equals("monitor")) continue;
+      if ("monitor".equals(mi.getModule())) {
+        continue;
+      }
       events.add(mi);
     }
     rootMap.put("events", events);
     try {
       String embedded = request.getParameter("html");
-      if (embedded != null && embedded.equalsIgnoreCase("no")) page.process(rootMap, out);
-      else {
+      if ("no".equalsIgnoreCase(embedded)) {
+        page.process(rootMap, out);
+      } else {
         Template index = config.getTemplate("index.ftl");
         rootMap.put("main", "main.ftl");
         index.process(rootMap, out);

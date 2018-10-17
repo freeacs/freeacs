@@ -8,7 +8,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StringUtil {
-
   public static Map<String, String> getOptionMap(String[] args) {
     Map<String, String> options = new HashMap<>();
     StringBuilder sb = new StringBuilder();
@@ -47,7 +46,7 @@ public class StringUtil {
   public static String[] split(String s) {
     Matcher m = pattern.matcher(s);
     int pos = 0;
-    List<String> commands = new ArrayList<String>();
+    List<String> commands = new ArrayList<>();
     while (m.find(pos)) {
       String group1 = m.group(2);
       String group2 = m.group(3);
@@ -76,7 +75,7 @@ public class StringUtil {
   public static String[] splitOnPipe(String s) {
     Matcher m = pattern.matcher(s);
     int pos = 0;
-    List<String> commands = new ArrayList<String>();
+    List<String> commands = new ArrayList<>();
     String command = "";
     while (m.find(pos)) {
       String group1 = m.group(2);
@@ -87,14 +86,14 @@ public class StringUtil {
       } else if (group2 != null) {
         //				System.out.println("G2-without quotes: " + group2);
         // May contain |
-        int pipePos = group2.indexOf("|");
+        int pipePos = group2.indexOf('|');
         while (pipePos > -1) {
           String untilPipeStr = group2.substring(0, pipePos);
           command += untilPipeStr + " ";
           commands.add(command.trim());
           command = "";
           group2 = group2.substring(pipePos + 1); // make group2 shorter
-          pipePos = group2.indexOf("|");
+          pipePos = group2.indexOf('|');
         }
         command += group2 + " ";
       }

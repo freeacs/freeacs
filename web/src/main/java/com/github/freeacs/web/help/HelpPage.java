@@ -21,7 +21,6 @@ import java.util.Scanner;
  * @author Jarl Andre Hubenthal
  */
 public abstract class HelpPage {
-
   /** The Constant config. */
   private static final Configuration config = Freemarker.initFreemarker();
 
@@ -41,54 +40,6 @@ public abstract class HelpPage {
   }
 
   /**
-   * Retrieves the content from an HTML file.
-   *
-   * <p>Wraps it in a help page.
-   *
-   * <p>Automatically including: - SomePage.js - SomePage.css into the main template in
-   * &lt;script&gt; and &lt;style&gt; tags within the header.
-   *
-   * @param page the page
-   * @return A HTML string
-   * @throws IOException Due to template parsing
-   * @throws TemplateException Due to template parsing
-   */
-  public static String getHTMLForPageByString(String page) throws IOException, TemplateException {
-    Template template = config.getTemplate("HelpPage.ftl");
-
-    Map<String, Object> map = new HashMap<String, Object>();
-
-    String className = camelCase(page);
-
-    String shortName = className;
-
-    if (className.endsWith("Page")) {
-      shortName = className.substring(0, className.length() - 4);
-    } else {
-      className = className + "Page";
-    }
-
-    map.put("title", shortName);
-
-    String html =
-        getFileContents("pages/" + shortName.toLowerCase() + "/" + className + ".html", NO_DATA);
-
-    String contents = getBodyContents(html);
-    map.put("content", contents);
-
-    String javascript =
-        getFileContents("pages/" + shortName.toLowerCase() + "/" + className + ".js", "");
-    map.put("script", javascript);
-
-    String css = getFileContents("pages/" + shortName.toLowerCase() + "/" + className + ".css", "");
-    map.put("style", css);
-
-    map.put("time", new Date());
-
-    return Freemarker.parseTemplate(map, template);
-  }
-
-  /**
    * Gets the hTML for page.
    *
    * @param page the page
@@ -99,7 +50,7 @@ public abstract class HelpPage {
   public static String getHTMLForPage(Page page) throws IOException, TemplateException {
     Template template = config.getTemplate("HelpPage.ftl");
 
-    Map<String, Object> map = new HashMap<String, Object>();
+    Map<String, Object> map = new HashMap<>();
 
     map.put("title", page.getTitle());
 
@@ -112,7 +63,9 @@ public abstract class HelpPage {
       String contents = getBodyContents(html);
       map.put("content", contents);
       br.close();
-    } else map.put("content", NO_DATA);
+    } else {
+      map.put("content", NO_DATA);
+    }
 
     map.put("time", new Date());
 
@@ -128,7 +81,7 @@ public abstract class HelpPage {
   private static String getBodyContents(String html) {
     int start = html.indexOf("<body");
     if (start > -1) {
-      start = html.indexOf(">", start);
+      start = html.indexOf('>', start);
       if (start > -1) {
         start += 1;
         int end = html.indexOf("</body>", start);
@@ -154,8 +107,7 @@ public abstract class HelpPage {
       String contents = scanner.next();
       scanner.close();
       if (contents != null) {
-        contents = contents.replace("%VERSION%", "latest");
-        return contents;
+        return contents.replace("%VERSION%", "latest");
       }
     }
     return def;
@@ -174,13 +126,13 @@ public abstract class HelpPage {
       throws IOException, TemplateException {
     Template template = config.getTemplate("HelpPage.ftl");
 
-    Map<String, Object> map = new HashMap<String, Object>();
+    Map<String, Object> map = new HashMap<>();
 
-    String shortName = path.substring(path.lastIndexOf("/") + 1, path.length());
+    String shortName = path.substring(path.lastIndexOf('/') + 1, path.length());
 
     String fileName = camelCase(!shortName.endsWith("Page") ? shortName + "Page" : shortName);
 
-    path = path.substring(0, path.lastIndexOf("/"));
+    path = path.substring(0, path.lastIndexOf('/'));
 
     map.put("title", shortName);
 

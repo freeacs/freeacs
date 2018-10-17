@@ -35,23 +35,32 @@ public class UnittypeParameters {
     this.idMap = idMap;
     this.nameMap = nameMap;
     this.unittype = unittype;
-    this.alwaysMap = new HashMap<Integer, UnittypeParameter>();
-    this.displayableMap = new HashMap<Integer, UnittypeParameter>();
-    this.searchableMap = new HashMap<Integer, UnittypeParameter>();
+    this.alwaysMap = new HashMap<>();
+    this.displayableMap = new HashMap<>();
+    this.searchableMap = new HashMap<>();
     for (Entry<Integer, UnittypeParameter> entry : idMap.entrySet()) {
-      if (entry.getValue().getFlag().isAlwaysRead())
+      if (entry.getValue().getFlag().isAlwaysRead()) {
         alwaysMap.put(entry.getKey(), entry.getValue());
-      if (entry.getValue().getFlag().isDisplayable())
+      }
+      if (entry.getValue().getFlag().isDisplayable()) {
         displayableMap.put(entry.getKey(), entry.getValue());
-      if (entry.getValue().getFlag().isSearchable())
+      }
+      if (entry.getValue().getFlag().isSearchable()) {
         searchableMap.put(entry.getKey(), entry.getValue());
+      }
     }
   }
 
   protected void updateInternalMaps(UnittypeParameter utp) {
-    if (utp.getFlag().isAlwaysRead()) alwaysMap.put(utp.getId(), utp);
-    if (utp.getFlag().isDisplayable()) displayableMap.put(utp.getId(), utp);
-    if (utp.getFlag().isSearchable()) searchableMap.put(utp.getId(), utp);
+    if (utp.getFlag().isAlwaysRead()) {
+      alwaysMap.put(utp.getId(), utp);
+    }
+    if (utp.getFlag().isDisplayable()) {
+      displayableMap.put(utp.getId(), utp);
+    }
+    if (utp.getFlag().isSearchable()) {
+      searchableMap.put(utp.getId(), utp);
+    }
   }
 
   public UnittypeParameter getById(Integer id) {
@@ -63,18 +72,24 @@ public class UnittypeParameters {
   }
 
   public Map<Integer, UnittypeParameter> getSearchableMap() {
-    if (searchableMap == null) return new HashMap<Integer, UnittypeParameter>();
-    return searchableMap;
+    if (searchableMap != null) {
+      return searchableMap;
+    }
+    return new HashMap<>();
   }
 
   public Map<Integer, UnittypeParameter> getDisplayableMap() {
-    if (displayableMap == null) return new HashMap<Integer, UnittypeParameter>();
-    return displayableMap;
+    if (displayableMap != null) {
+      return displayableMap;
+    }
+    return new HashMap<>();
   }
 
   public Map<Integer, UnittypeParameter> getAlwaysMap() {
-    if (alwaysMap == null) return new HashMap<Integer, UnittypeParameter>();
-    return alwaysMap;
+    if (alwaysMap != null) {
+      return alwaysMap;
+    }
+    return new HashMap<>();
   }
 
   public UnittypeParameter[] getUnittypeParameters() {
@@ -90,8 +105,9 @@ public class UnittypeParameters {
 
   public void addOrChangeUnittypeParameters(List<UnittypeParameter> unittypeParameters, ACS acs)
       throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
+    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
+    }
     for (UnittypeParameter unittypeParameter : unittypeParameters) {
       if (unittypeParameter.getName().contains(",")
           || unittypeParameter.getName().contains("\"")
@@ -109,32 +125,38 @@ public class UnittypeParameters {
         nameMap.remove(unittypeParameter.getOldName());
         unittypeParameter.setOldName(null);
       }
-      if (unittypeParameter.getFlag().isAlwaysRead())
+      if (unittypeParameter.getFlag().isAlwaysRead()) {
         alwaysMap.put(unittypeParameter.getId(), unittypeParameter);
+      }
       if (unittypeParameter.getFlag().isAlwaysRead()
-          && !getAlwaysMap().containsKey(unittypeParameter.getId()))
+          && !getAlwaysMap().containsKey(unittypeParameter.getId())) {
         alwaysMap.put(unittypeParameter.getId(), unittypeParameter);
-      else if (!unittypeParameter.getFlag().isAlwaysRead()
-          && getAlwaysMap().containsKey(unittypeParameter.getId()))
+      } else if (!unittypeParameter.getFlag().isAlwaysRead()
+          && getAlwaysMap().containsKey(unittypeParameter.getId())) {
         alwaysMap.remove(unittypeParameter.getId());
+      }
 
-      if (unittypeParameter.getFlag().isDisplayable())
+      if (unittypeParameter.getFlag().isDisplayable()) {
         displayableMap.put(unittypeParameter.getId(), unittypeParameter);
+      }
       if (unittypeParameter.getFlag().isDisplayable()
-          && !getDisplayableMap().containsKey(unittypeParameter.getId()))
+          && !getDisplayableMap().containsKey(unittypeParameter.getId())) {
         displayableMap.put(unittypeParameter.getId(), unittypeParameter);
-      else if (!unittypeParameter.getFlag().isDisplayable()
-          && getDisplayableMap().containsKey(unittypeParameter.getId()))
+      } else if (!unittypeParameter.getFlag().isDisplayable()
+          && getDisplayableMap().containsKey(unittypeParameter.getId())) {
         displayableMap.remove(unittypeParameter.getId());
+      }
 
-      if (unittypeParameter.getFlag().isSearchable())
+      if (unittypeParameter.getFlag().isSearchable()) {
         searchableMap.put(unittypeParameter.getId(), unittypeParameter);
+      }
       if (unittypeParameter.getFlag().isSearchable()
-          && !getSearchableMap().containsKey(unittypeParameter.getId()))
+          && !getSearchableMap().containsKey(unittypeParameter.getId())) {
         searchableMap.put(unittypeParameter.getId(), unittypeParameter);
-      else if (!unittypeParameter.getFlag().isSearchable()
-          && getSearchableMap().containsKey(unittypeParameter.getId()))
+      } else if (!unittypeParameter.getFlag().isSearchable()
+          && getSearchableMap().containsKey(unittypeParameter.getId())) {
         searchableMap.remove(unittypeParameter.getId());
+      }
     }
   }
 
@@ -150,7 +172,9 @@ public class UnittypeParameters {
         utpNamePart = "." + utpNameArr[i] + utpNamePart;
         for (UnittypeParameter innerEntry : utParams) {
           String utpName = "." + innerEntry.getName();
-          if (utpName.endsWith(utpNamePart)) counter++;
+          if (utpName.endsWith(utpNamePart)) {
+            counter++;
+          }
         }
         if (counter == 1) {
           resultMap.put(outerEntry.getName(), utpNamePart.substring(1));
@@ -163,9 +187,10 @@ public class UnittypeParameters {
 
   public void addOrChangeUnittypeParameter(UnittypeParameter unittypeParameter, ACS acs)
       throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
+    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
-    List<UnittypeParameter> unittypeParameters = new ArrayList<UnittypeParameter>();
+    }
+    List<UnittypeParameter> unittypeParameters = new ArrayList<>();
     unittypeParameters.add(unittypeParameter);
     addOrChangeUnittypeParameters(unittypeParameters, acs);
   }
@@ -184,29 +209,33 @@ public class UnittypeParameters {
       List<UnittypeParameter> unittypeParameters, Unittype unittype, ACS acs) throws SQLException {
     Statement s = null;
     String sql = null;
-    boolean wasAutoCommit = false;
+    boolean wasAutoCommit;
     Connection c = acs.getDataSource().getConnection();
     wasAutoCommit = c.getAutoCommit();
     c.setAutoCommit(false);
     try {
       for (UnittypeParameter unittypeParameter : unittypeParameters) {
         s = c.createStatement();
-        if (unittypeParameter.getValues() != null)
+        if (unittypeParameter.getValues() != null) {
           deleteUnittypeParameterValues(unittypeParameter, s);
+        }
         sql = "DELETE FROM unit_type_param WHERE ";
         sql += "unit_type_param_id = " + unittypeParameter.getId();
         s.setQueryTimeout(60);
         int rowsDeleted = s.executeUpdate(sql);
         if (rowsDeleted > 0) {
-
           logger.info("Deleted unittype parameter " + unittypeParameter.getName());
         }
       }
       c.commit();
       c.setAutoCommit(true);
-      if (acs.getDbi() != null) acs.getDbi().publishChange(unittype, unittype);
+      if (acs.getDbi() != null) {
+        acs.getDbi().publishChange(unittype, unittype);
+      }
     } finally {
-      if (s != null) s.close();
+      if (s != null) {
+        s.close();
+      }
       c.setAutoCommit(wasAutoCommit);
       c.close();
     }
@@ -221,17 +250,19 @@ public class UnittypeParameters {
    */
   public void deleteUnittypeParameter(UnittypeParameter unittypeParameter, ACS acs)
       throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
+    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
-    List<UnittypeParameter> unittypeParameters = new ArrayList<UnittypeParameter>();
+    }
+    List<UnittypeParameter> unittypeParameters = new ArrayList<>();
     unittypeParameters.add(unittypeParameter);
     deleteUnittypeParameters(unittypeParameters, acs);
   }
 
   public void deleteUnittypeParameters(List<UnittypeParameter> unittypeParameters, ACS acs)
       throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
+    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
+    }
     deleteUnittypeParameterImpl(unittypeParameters, unittype, acs);
     for (UnittypeParameter unittypeParameter : unittypeParameters) {
       resetHasDeviceParameters();
@@ -247,7 +278,7 @@ public class UnittypeParameters {
 
   private void addOrChangeUnittypeParameterImpl(
       List<UnittypeParameter> unittypeParameters, Unittype unittype, ACS acs) throws SQLException {
-    boolean wasAutoCommit = false;
+    boolean wasAutoCommit;
     Connection c = acs.getDataSource().getConnection();
     wasAutoCommit = c.getAutoCommit();
     c.setAutoCommit(false);
@@ -255,9 +286,10 @@ public class UnittypeParameters {
     try {
       for (UnittypeParameter unittypeParameter : unittypeParameters) {
         DynamicStatement ds = new DynamicStatement();
-        if (unittypeParameter.getFlag() == null)
+        if (unittypeParameter.getFlag() == null) {
           throw new IllegalArgumentException(
               "The flag of unittypeParameter " + unittypeParameter + " is not correct.");
+        }
 
         if (unittypeParameter.getId() == null) {
           ds.addSql("INSERT INTO unit_type_param (unit_type_id, name, flags) VALUES (?,?,?)");
@@ -267,7 +299,9 @@ public class UnittypeParameters {
           ps.setQueryTimeout(60);
           ps.executeUpdate();
           ResultSet gk = ps.getGeneratedKeys();
-          if (gk.next()) unittypeParameter.setId(gk.getInt(1));
+          if (gk.next()) {
+            unittypeParameter.setId(gk.getInt(1));
+          }
 
           logger.info("Added unittype parameter " + unittypeParameter.getName());
         } else {
@@ -280,17 +314,24 @@ public class UnittypeParameters {
           ps.setQueryTimeout(60);
           ps.executeUpdate();
         }
-        if (unittypeParameter.getValues() != null)
-          if (unittypeParameter.getValues().getValues().size() > 0)
+        if (unittypeParameter.getValues() != null) {
+          if (!unittypeParameter.getValues().getValues().isEmpty()) {
             addOrChangeUnittypeParameterValues(unittypeParameter, ps);
-          else deleteUnittypeParameterValues(unittypeParameter, ps);
+          } else {
+            deleteUnittypeParameterValues(unittypeParameter, ps);
+          }
+        }
       }
       logger.info("Added/changed " + unittypeParameters.size() + " unittype parameters");
       c.commit();
       c.setAutoCommit(true);
-      if (acs.getDbi() != null) acs.getDbi().publishChange(unittype, unittype);
+      if (acs.getDbi() != null) {
+        acs.getDbi().publishChange(unittype, unittype);
+      }
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       c.setAutoCommit(wasAutoCommit);
       c.close();
     }
@@ -298,13 +339,12 @@ public class UnittypeParameters {
 
   private void addOrChangeUnittypeParameterValues(
       UnittypeParameter unittypeParameter, PreparedStatement s) throws SQLException {
-    String sql = null;
+    String sql;
     sql = "DELETE FROM unit_type_param_value WHERE ";
     sql += "unit_type_param_id = " + unittypeParameter.getId();
     s.setQueryTimeout(60);
     int rowsDeleted = s.executeUpdate(sql);
     if (rowsDeleted > 0) {
-
       logger.info("Deleted all unittype parameter values for utp:" + unittypeParameter.getName());
     }
     UnittypeParameterValues values = unittypeParameter.getValues();
@@ -317,7 +357,7 @@ public class UnittypeParameters {
       s.setQueryTimeout(60);
       s.executeUpdate(sql);
     } else if (values.getType().equals(UnittypeParameterValues.ENUM)
-        && values.getValues().size() > 0) {
+        && !values.getValues().isEmpty()) {
       for (int i = 0; i < values.getValues().size(); i++) {
         sql = "INSERT INTO unit_type_param_value ";
         sql += "(unit_type_param_id, value, priority, type) VALUES (";

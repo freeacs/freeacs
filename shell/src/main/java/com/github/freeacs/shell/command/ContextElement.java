@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class ContextElement implements Substitute {
-
   public static String TYPE_UNITTYPE = "ut";
   public static String TYPE_PROFILE = "pr";
   public static String TYPE_UNIT = "un";
@@ -16,7 +15,7 @@ public class ContextElement implements Substitute {
   public static String TYPE_ROOT = "ro";
   public static String TYPE_BACK = "ba";
 
-  public static Set<String> types = new HashSet<String>();
+  public static Set<String> types = new HashSet<>();
 
   static {
     types.add(TYPE_UNITTYPE);
@@ -59,8 +58,10 @@ public class ContextElement implements Substitute {
 
   @Override
   public String getStringToSubstitute() {
-    if (substitute == null) return name;
-    return substitute;
+    if (substitute != null) {
+      return substitute;
+    }
+    return name;
   }
 
   @Override
@@ -74,7 +75,9 @@ public class ContextElement implements Substitute {
 
   public static ContextContainer parseContextElements(String s) {
     ContextContainer cc = new ContextContainer();
-    if (s == null || s.trim().length() == 0) return cc;
+    if (s == null || s.trim().isEmpty()) {
+      return cc;
+    }
     s = s.trim();
     if (s.startsWith("/")) {
       s = s.substring(1);
@@ -82,34 +85,32 @@ public class ContextElement implements Substitute {
     }
     String[] slashSplitArr = s.split("/");
     for (String contextStr : slashSplitArr) {
-      if (contextStr.indexOf(":") == 2) { // matches context-pattern
+      if (contextStr.indexOf(':') == 2) { // matches context-pattern
         String type = contextStr.substring(0, 2);
-        if (types.contains(type))
+        if (types.contains(type)) {
           cc.overwriteOrAppend(new ContextElement(type, contextStr.substring(3)));
-        else throw new IllegalArgumentException("The context type " + type + " was not valid");
-      } else if (contextStr.equals("..")) {
+        } else {
+          throw new IllegalArgumentException("The context type " + type + " was not valid");
+        }
+      } else if ("..".equals(contextStr)) {
         cc.overwriteOrAppend(new ContextElement(TYPE_BACK, ".."));
       }
     }
-    if (cc.getContextElement(TYPE_ROOT) != null) cc.removeContextElement(TYPE_ROOT);
+    if (cc.getContextElement(TYPE_ROOT) != null) {
+      cc.removeContextElement(TYPE_ROOT);
+    }
     return cc;
   }
 
-  /*
-   * Accepted context elements string
-   * /
-   * /<type>:<name>
-   * /<type>:<name>/
-   * /<type>:<name>/<type:name>
-   * etc..
-   * <type>:<name>
-   * <type>:<name>/
-   * <type>:<name>/<type>:<name>
-   * etc..
+  /**
+   * Accepted context elements string / /<type>:<name> /<type>:<name>/ /<type>:<name>/<type:name>
+   * etc.. <type>:<name> <type>:<name>/ <type>:<name>/<type>:<name> etc..
    */
   public static Map<String, ContextElement> parseContextElementsOld(String s) {
-    Map<String, ContextElement> contextMap = new HashMap<String, ContextElement>();
-    if (s == null || s.trim().length() == 0) return contextMap;
+    Map<String, ContextElement> contextMap = new HashMap<>();
+    if (s == null || s.trim().isEmpty()) {
+      return contextMap;
+    }
     s = s.trim();
     // treat ROOT-context first
     if (s.startsWith("/")) {
@@ -118,22 +119,32 @@ public class ContextElement implements Substitute {
     }
     String[] slashSplitArr = s.split("/");
     for (String contextStr : slashSplitArr) {
-      if (contextStr.indexOf(":") == 2) { // matches context-pattern
+      if (contextStr.indexOf(':') == 2) { // matches context-pattern
         String type = contextStr.substring(0, 2);
-        if (types.contains(type))
+        if (types.contains(type)) {
           contextMap.put(type, new ContextElement(type, contextStr.substring(3)));
-        else throw new IllegalArgumentException("The context type " + type + " was not valid");
-      } else if (contextStr.equals("..")) {
-        if (contextMap.get(TYPE_UNIT) != null) contextMap.remove(TYPE_UNIT);
-        else if (contextMap.get(TYPE_UNITTYPE_PARAMS) != null)
+        } else {
+          throw new IllegalArgumentException("The context type " + type + " was not valid");
+        }
+      } else if ("..".equals(contextStr)) {
+        if (contextMap.get(TYPE_UNIT) != null) {
+          contextMap.remove(TYPE_UNIT);
+        } else if (contextMap.get(TYPE_UNITTYPE_PARAMS) != null) {
           contextMap.remove(TYPE_UNITTYPE_PARAMS);
-        else if (contextMap.get(TYPE_GROUP) != null) contextMap.remove(TYPE_GROUP);
-        else if (contextMap.get(TYPE_JOB) != null) contextMap.remove(TYPE_JOB);
-        else if (contextMap.get(TYPE_PROFILE) != null) contextMap.remove(TYPE_PROFILE);
-        else if (contextMap.get(TYPE_UNITTYPE) != null) contextMap.remove(TYPE_UNITTYPE);
+        } else if (contextMap.get(TYPE_GROUP) != null) {
+          contextMap.remove(TYPE_GROUP);
+        } else if (contextMap.get(TYPE_JOB) != null) {
+          contextMap.remove(TYPE_JOB);
+        } else if (contextMap.get(TYPE_PROFILE) != null) {
+          contextMap.remove(TYPE_PROFILE);
+        } else if (contextMap.get(TYPE_UNITTYPE) != null) {
+          contextMap.remove(TYPE_UNITTYPE);
+        }
       }
     }
-    if (contextMap.size() > 1 && contextMap.get(TYPE_ROOT) != null) contextMap.remove(TYPE_ROOT);
+    if (contextMap.size() > 1 && contextMap.get(TYPE_ROOT) != null) {
+      contextMap.remove(TYPE_ROOT);
+    }
     return contextMap;
   }
 }

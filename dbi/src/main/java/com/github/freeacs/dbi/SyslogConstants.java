@@ -36,17 +36,18 @@ public class SyslogConstants {
   public static final int FACILITY_SPP_TEST = 158;
   public static final int FACILITY_TFTP_TEST = 159;
   public static final int FACILITY_MONITOR_TEST = 160;
-  public static final int FACILITY_DBLIB_TEST = 200; // has no production counter part
+  /** Has no production counter part. */
+  public static final int FACILITY_DBLIB_TEST = 200;
 
   public static final int EVENT_DEFAULT = 0;
 
-  public static Map<Integer, String> eventMap = new HashMap<Integer, String>();
+  public static Map<Integer, String> eventMap = new HashMap<>();
 
   static {
     eventMap.put(EVENT_DEFAULT, "Default");
   }
 
-  public static Map<Integer, String> severityMap = new TreeMap<Integer, String>();
+  public static Map<Integer, String> severityMap = new TreeMap<>();
 
   static {
     severityMap.put(SEVERITY_EMERGENCY, "Emergency");
@@ -59,7 +60,7 @@ public class SyslogConstants {
     severityMap.put(SEVERITY_DEBUG, "Debug");
   }
 
-  public static Map<String, Integer> severityStrMap = new TreeMap<String, Integer>();
+  public static Map<String, Integer> severityStrMap = new TreeMap<>();
 
   static {
     severityStrMap.put("Emergency", SEVERITY_EMERGENCY);
@@ -72,7 +73,7 @@ public class SyslogConstants {
     severityStrMap.put("Debug", SEVERITY_DEBUG);
   }
 
-  public static Map<Integer, String> facilityMap = new TreeMap<Integer, String>();
+  public static Map<Integer, String> facilityMap = new TreeMap<>();
 
   static {
     facilityMap.put(0, "Device-Kernel");
@@ -124,19 +125,25 @@ public class SyslogConstants {
 
   public static String getFacilityName(int facility) {
     String name = facilityMap.get(facility);
-    if (name != null) return name;
+    if (name != null) {
+      return name;
+    }
     return "UNKNOWN";
   }
 
   public static Integer getSeverityInt(String severityName) {
     Integer i = severityStrMap.get(severityName);
-    if (i != null) return i;
+    if (i != null) {
+      return i;
+    }
     return SEVERITY_DEBUG;
   }
 
   public static String getSeverityName(int severity) {
     String name = severityMap.get(severity);
-    if (name != null) return name;
+    if (name != null) {
+      return name;
+    }
     return "UNKNOWN";
   }
 }

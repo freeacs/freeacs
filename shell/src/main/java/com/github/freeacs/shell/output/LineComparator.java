@@ -4,7 +4,6 @@ import java.util.Comparator;
 import java.util.List;
 
 public class LineComparator implements Comparator<Line> {
-
   private List<LineComparatorColumn> columnsToSort;
 
   public LineComparator(List<LineComparatorColumn> columnsToSort) {
@@ -12,17 +11,29 @@ public class LineComparator implements Comparator<Line> {
   }
 
   private int compareImpl(String s1, String s2, LineComparatorColumn lcc) {
-    if (s1 == null && s2 == null) return 0;
-    if (s1 == null && s2 != null) return -1;
-    if (s1 != null && s2 == null) return 1;
-    if (s1.equals("NULL") && s2.equals("NULL")) return 0;
-    if (s1.equals("NULL") && !s2.equals("NULL")) return 1;
-    if (!s1.equals("NULL") && s2.equals("NULL")) return -1;
+    if (s1 == null && s2 == null) {
+      return 0;
+    }
+    if (s1 == null && s2 != null) {
+      return -1;
+    }
+    if (s1 != null && s2 == null) {
+      return 1;
+    }
+    if ("NULL".equals(s1) && "NULL".equals(s2)) {
+      return 0;
+    }
+    if ("NULL".equals(s1) && !"NULL".equals(s2)) {
+      return 1;
+    }
+    if (!"NULL".equals(s1) && "NULL".equals(s2)) {
+      return -1;
+    }
 
     if (lcc.getSortType().equals(LineComparatorColumn.SORT_NUM)) {
       try {
-        int i1 = new Integer(s1);
-        int i2 = new Integer(s2);
+        int i1 = Integer.parseInt(s1);
+        int i2 = Integer.parseInt(s2);
         return i1 - i2;
       } catch (NumberFormatException nfe) {
         throw new IllegalArgumentException(
@@ -50,15 +61,19 @@ public class LineComparator implements Comparator<Line> {
         String val1 = o1.getValues().get(lcc.getColumnIndex());
         String val2 = o2.getValues().get(lcc.getColumnIndex());
         compareVal = compareImpl(val1, val2, lcc);
-        if (compareVal != 0) break;
+        if (compareVal != 0) {
+          break;
+        }
       }
     }
     if (!decidingColumn.getOrder().equals(LineComparatorColumn.ASCENDING)) {
-      if (compareVal > 0) return -1;
-      if (compareVal < 0) return 1;
-      return compareVal;
-    } else {
-      return compareVal;
+      if (compareVal > 0) {
+        return -1;
+      }
+      if (compareVal < 0) {
+        return 1;
+      }
     }
+    return compareVal;
   }
 }

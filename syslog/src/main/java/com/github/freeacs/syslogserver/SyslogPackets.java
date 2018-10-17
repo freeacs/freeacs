@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SyslogPackets {
-
   public static List<SyslogPacket> packets = new LinkedList<>();
 
   private static BufferCounter counter = new BufferCounter();
@@ -22,39 +21,50 @@ public class SyslogPackets {
     if (packets.size() < properties.getMaxMessagesInBuffer()) {
       synchronized (monitor) {
         packets.add(syslogPacket);
-        if (syslogPacket.isFailoverPacket()) counter.incFailoverPackets();
+        if (syslogPacket.isFailoverPacket()) {
+          counter.incFailoverPackets();
+        }
       }
-      if (logger.isDebugEnabled())
+      if (logger.isDebugEnabled()) {
         logger.debug(
             "Packet added to message buffer. Buffer size is "
                 + packets.size()
                 + ". Packet content: "
                 + syslogPacket.getSyslogStr());
+      }
     } else {
       counter.incBufferOverflow();
     }
-    if (messages.isDebugEnabled()) messages.debug(syslogPacket.toString());
+    if (messages.isDebugEnabled()) {
+      messages.debug(syslogPacket.toString());
+    }
   }
 
   public static SyslogPacket get() {
     SyslogPacket packet = null;
-    while (true) {
+    do {
       try {
-        if (packets == null) return null;
+        if (packets == null) {
+          return null;
+        }
         synchronized (monitor) {
           packet = packets.remove(0);
-          if (packet.isFailoverPacket()) counter.decFailoverPackets();
+          if (packet.isFailoverPacket()) {
+            counter.decFailoverPackets();
+          }
         }
         break;
       } catch (IndexOutOfBoundsException ignored) {
         try {
           Thread.sleep(100);
-          if (Sleep.isTerminated()) return null;
+          if (Sleep.isTerminated()) {
+            return null;
+          }
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
       }
-    }
+    } while (true);
     if (logger.isDebugEnabled()) {
       logger.debug("Returns a packet from buffer. Buffer size is " + packets.size() + ".");
     }
@@ -66,7 +76,6 @@ public class SyslogPackets {
   }
 
   public static class BufferCounter {
-
     private int failoverPackets;
     private int bufferOverflow;
     private int size;
@@ -74,7 +83,6 @@ public class SyslogPackets {
     public BufferCounter() {}
 
     public BufferCounter(int failoverPackets, int bufferOverflow, int size) {
-      super();
       this.failoverPackets = failoverPackets;
       this.bufferOverflow = bufferOverflow;
       this.size = size;

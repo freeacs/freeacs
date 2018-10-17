@@ -51,11 +51,10 @@ import java.util.Map;
  * that comment.
  */
 public class GPVDecision {
-
   public static void process(HTTPReqResData reqRes) throws TR069Exception {
     SessionData sessionData = reqRes.getSessionData();
     ProvisioningMode mode = sessionData.getUnit().getProvisioningMode();
-    Log.debug(GPVDecision.class, "Mode was detected to be: " + mode.toString());
+    Log.debug(GPVDecision.class, "Mode was detected to be: " + mode);
     ProvisioningMessage pm = sessionData.getProvisioningMessage();
     pm.setProvMode(mode);
     boolean PIIsupport = supportPII(sessionData);
@@ -65,13 +64,10 @@ public class GPVDecision {
       pm.setErrorMessage("The device does not support PII");
       pm.setProvStatus(ProvStatus.ERROR);
       pm.setErrorResponsibility(ErrorResponsibility.CLIENT);
-    } else {
-      if (mode == ProvisioningMode.REGULAR) processPeriodic(reqRes);
-      // else if (mode == ProvisioningMode.INSPECTION)
-      // GPVDecisionInspection.processInspection(reqRes);
-      // else if (mode == ProvisioningMode.EXTRACTION)
-      // GPVDecisionExtraction.processExtraction(reqRes);
-      else if (mode == ProvisioningMode.READALL) GPVDecisionExtraction.processExtraction(reqRes);
+    } else if (mode == ProvisioningMode.REGULAR) {
+      processPeriodic(reqRes);
+    } else if (mode == ProvisioningMode.READALL) {
+      GPVDecisionExtraction.processExtraction(reqRes);
     }
     updateActiveDeviceMap(reqRes);
     Log.debug(GPVDecision.class, "GPV-Decision is " + reqRes.getResponse().getMethod());
@@ -80,7 +76,7 @@ public class GPVDecision {
   private static void updateActiveDeviceMap(HTTPReqResData reqRes) {
     boolean updated = false;
     SessionData sessionData = reqRes.getSessionData();
-    if (reqRes.getResponse().getMethod().equals(TR069Method.SET_PARAMETER_VALUES)) {
+    if (TR069Method.SET_PARAMETER_VALUES.equals(reqRes.getResponse().getMethod())) {
       Long nextPII = null;
       CPEParameters cpeParams = sessionData.getCpeParameters();
       String PII = cpeParams.PERIODIC_INFORM_INTERVAL;
@@ -94,7 +90,9 @@ public class GPVDecision {
         ActiveDeviceDetectionTask.addActiveDevice(sessionData.getUnitId(), nextPII * 1000);
       }
     }
-    if (!updated) ActiveDeviceDetectionTask.remove(sessionData.getUnitId());
+    if (!updated) {
+      ActiveDeviceDetectionTask.remove(sessionData.getUnitId());
+    }
   }
 
   private static void normalPriorityProvisioning(HTTPReqResData reqRes) {
@@ -102,50 +100,52 @@ public class GPVDecision {
     SessionData sessionData = reqRes.getSessionData();
     String reset = sessionData.getAcsParameters().getValue(SystemParameters.RESET);
     String reboot = sessionData.getAcsParameters().getValue(SystemParameters.RESTART);
-    if (reset != null && reset.equals("1")) {
+    if ("1".equals(reset)) {
       sessionData.getProvisioningMessage().setProvOutput(ProvOutput.RESET);
       serviceWindow = new ServiceWindow(sessionData, true);
       if (serviceWindow.isWithin()) {
         Util.resetReset(sessionData);
         reqRes.getResponse().setMethod(TR069Method.FACTORY_RESET);
         return;
-      } else sessionData.getPIIDecision().setDisruptiveSW(serviceWindow);
-    } else if (reboot != null && reboot.equals("1")) {
+      } else {
+        sessionData.getPIIDecision().setDisruptiveSW(serviceWindow);
+      }
+    } else if ("1".equals(reboot)) {
       sessionData.getProvisioningMessage().setProvOutput(ProvOutput.REBOOT);
       serviceWindow = new ServiceWindow(sessionData, true);
       if (serviceWindow.isWithin()) {
         Util.resetReboot(sessionData);
         reqRes.getResponse().setMethod(TR069Method.REBOOT);
         return;
-      } else sessionData.getPIIDecision().setDisruptiveSW(serviceWindow);
-    } else if (DownloadLogicTR069.isSoftwareDownloadSetup(reqRes, null)
-        && DownloadLogic.downloadAllowed(null, Properties.CONCURRENT_DOWNLOAD_LIMIT)) {
+      } else {
+        sessionData.getPIIDecision().setDisruptiveSW(serviceWindow);
+      }
+    } else if ((DownloadLogicTR069.isSoftwareDownloadSetup(reqRes, null)
+            && DownloadLogic.downloadAllowed(null, Properties.CONCURRENT_DOWNLOAD_LIMIT))
+        || (DownloadLogicTR069.isScriptDownloadSetup(reqRes, null)
+            && DownloadLogic.downloadAllowed(null, Properties.CONCURRENT_DOWNLOAD_LIMIT))) {
       serviceWindow = new ServiceWindow(sessionData, true);
       if (serviceWindow.isWithin()) {
         reqRes.getResponse().setMethod(TR069Method.DOWNLOAD);
         return;
-      } else sessionData.getPIIDecision().setDisruptiveSW(serviceWindow);
-    } else if (DownloadLogicTR069.isScriptDownloadSetup(reqRes, null)
-        && DownloadLogic.downloadAllowed(null, Properties.CONCURRENT_DOWNLOAD_LIMIT)) {
-      serviceWindow = new ServiceWindow(sessionData, true);
-      if (serviceWindow.isWithin()) {
-        reqRes.getResponse().setMethod(TR069Method.DOWNLOAD);
-        return;
-      } else sessionData.getPIIDecision().setDisruptiveSW(serviceWindow);
+      } else {
+        sessionData.getPIIDecision().setDisruptiveSW(serviceWindow);
+      }
     } else {
       sessionData.getProvisioningMessage().setProvOutput(ProvOutput.CONFIG);
       serviceWindow = new ServiceWindow(sessionData, false);
       if (serviceWindow.isWithin()) {
         prepareSPV(sessionData);
-        if (sessionData.getToCPE().getParameterValueList().size() > 0)
+        if (!sessionData.getToCPE().getParameterValueList().isEmpty()) {
           reqRes.getResponse().setMethod(TR069Method.SET_PARAMETER_VALUES);
-        else reqRes.getResponse().setMethod(TR069Method.EMPTY);
+        } else {
+          reqRes.getResponse().setMethod(TR069Method.EMPTY);
+        }
         return;
       }
     }
     prepareSPVLimited(reqRes);
     reqRes.getResponse().setMethod(TR069Method.SET_PARAMETER_VALUES);
-    return;
   }
 
   private static void processPeriodic(HTTPReqResData reqRes) throws TR069Exception {
@@ -162,11 +162,11 @@ public class GPVDecision {
               sessionData, Properties.CONCURRENT_DOWNLOAD_LIMIT); // may find a new job
     }
     Job job = sessionData.getJob();
-    if (job == null) { // No job is present - process according to
+    if (job != null) { // No job is present - process according to
       // profile/unit-parameters
-      normalPriorityProvisioning(reqRes);
-    } else {
       jobProvisioning(reqRes, job, uj);
+    } else {
+      normalPriorityProvisioning(reqRes);
     }
   }
 
@@ -183,24 +183,27 @@ public class GPVDecision {
       reqRes.getResponse().setMethod(TR069Method.REBOOT);
     } else if (type == JobType.SOFTWARE) {
       sessionData.getProvisioningMessage().setProvOutput(ProvOutput.SOFTWARE);
-      if (!DownloadLogicTR069.isSoftwareDownloadSetup(reqRes, job))
+      if (!DownloadLogicTR069.isSoftwareDownloadSetup(reqRes, job)) {
         throw new RuntimeException("Not possible to setup a Software Download job");
+      }
       reqRes.getResponse().setMethod(TR069Method.DOWNLOAD);
     } else if (type == JobType.TR069_SCRIPT) {
       sessionData.getProvisioningMessage().setProvOutput(ProvOutput.SCRIPT);
-      if (!DownloadLogicTR069.isScriptDownloadSetup(reqRes, job))
+      if (!DownloadLogicTR069.isScriptDownloadSetup(reqRes, job)) {
         throw new RuntimeException("Not possible to setup a Script Download job");
+      }
       reqRes.getResponse().setMethod(TR069Method.DOWNLOAD);
-    } else if (type == JobType.SHELL) {
-      sessionData.getProvisioningMessage().setProvOutput(ProvOutput.SHELL);
-      ShellJobLogic.execute(sessionData, job, uj);
-      reqRes.getResponse().setMethod(TR069Method.SET_PARAMETER_VALUES);
-    } else { // type == JobType.CONFIG
-      // The service-window is unimportant for next PII calculation, will
-      // be set to 31 no matter what, since a job is "in the process".
-      sessionData.getProvisioningMessage().setProvOutput(ProvOutput.CONFIG);
-      // ServiceWindow serviceWindow = new ServiceWindow(sessionData, false);
-      prepareSPVForConfigJob(sessionData);
+    } else {
+      if (type == JobType.SHELL) {
+        sessionData.getProvisioningMessage().setProvOutput(ProvOutput.SHELL);
+        ShellJobLogic.execute(sessionData, job, uj);
+      } else { // type == JobType.CONFIG
+        // The service-window is unimportant for next PII calculation, will
+        // be set to 31 no matter what, since a job is "in the process".
+        sessionData.getProvisioningMessage().setProvOutput(ProvOutput.CONFIG);
+        // ServiceWindow serviceWindow = new ServiceWindow(sessionData, false);
+        prepareSPVForConfigJob(sessionData);
+      }
       reqRes.getResponse().setMethod(TR069Method.SET_PARAMETER_VALUES);
     }
   }
@@ -212,15 +215,16 @@ public class GPVDecision {
     if (utps.getByName(PII) != null && cpeParams.getValue(PII) != null) {
       Log.debug(GPVDecision.class, "CPE supports PeriodicInformInterval");
       return true;
-    } else if (utps.getByName(PII) == null) {
-      Log.error(
-          GPVDecision.class,
-          "The unittype does not contain PeriodicInformInterval, terminating the conversation.");
-      return false;
-    } else { // (cpeParams.getValue(PII) == null)
-      Log.error(
-          GPVDecision.class,
-          "The CPE did not return PeriodicInformInterval, terminating the conversation.");
+    } else {
+      if (utps.getByName(PII) != null) {
+        Log.error(
+            GPVDecision.class,
+            "The CPE did not return PeriodicInformInterval, terminating the conversation.");
+      } else { // (cpeParams.getValue(PII) == null)
+        Log.error(
+            GPVDecision.class,
+            "The unittype does not contain PeriodicInformInterval, terminating the conversation.");
+      }
       return false;
     }
   }
@@ -235,7 +239,7 @@ public class GPVDecision {
     ParameterList toCPE = new ParameterList();
     long nextPII = sessionData.getPIIDecision().nextPII();
     sessionData.getProvisioningMessage().setPeriodicInformInterval((int) nextPII);
-    pvs.setValue("" + nextPII);
+    pvs.setValue(String.valueOf(nextPII));
     pvs.setType("xsd:unsignedInt");
     Log.debug(
         GPVDecision.class,
@@ -244,13 +248,13 @@ public class GPVDecision {
             + ") to CPE and ACS");
     toCPE.addParameterValueStruct(pvs);
     sessionData.setToCPE(toCPE);
-    sessionData.getToDB().add(new ParameterValueStruct(PII, "" + nextPII));
+    sessionData.getToDB().add(new ParameterValueStruct(PII, String.valueOf(nextPII)));
     Log.debug(
         GPVDecision.class,
         "-ACS->ACS      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
     sessionData
         .getToDB()
-        .add(new ParameterValueStruct(SystemParameters.PERIODIC_INTERVAL, "" + nextPII));
+        .add(new ParameterValueStruct(SystemParameters.PERIODIC_INTERVAL, String.valueOf(nextPII)));
     Log.debug(
         GPVDecision.class,
         "-ACS->ACS      "
@@ -276,8 +280,10 @@ public class GPVDecision {
     for (JobParameter jp : sessionData.getJobParams().values()) {
       Parameter jup = jp.getParameter();
       String jpName = jup.getUnittypeParameter().getName();
-      if (jpName.equals(SystemParameters.JOB_CURRENT)
-          || jpName.equals(SystemParameters.JOB_HISTORY)) continue;
+      if (SystemParameters.JOB_CURRENT.equals(jpName)
+          || SystemParameters.JOB_HISTORY.equals(jpName)) {
+        continue;
+      }
 
       UnittypeParameterFlag upFlag = jup.getUnittypeParameter().getFlag();
       String jpValue = jup.getValue();
@@ -294,19 +300,20 @@ public class GPVDecision {
             UnitJob.class,
             "Added " + jpName + ", value:[" + jpValue + "] to session - will be asked for in GPV");
         TR069DMParameter dmp = dataModel.getParameter(jpName);
-        if (dmp == null)
-          toCPE.addParameterValueStruct(new ParameterValueStruct(jpName, jpValue, "xsd:string"));
-        else
+        if (dmp != null) {
           toCPE.addParameterValueStruct(
               new ParameterValueStruct(jpName, jpValue, dmp.getDatatype().getXsdType()));
+        } else {
+          toCPE.addParameterValueStruct(new ParameterValueStruct(jpName, jpValue, "xsd:string"));
+        }
       }
     }
     sessionData.setToCPE(toCPE);
 
     CPEParameters cpeParams = sessionData.getCpeParameters();
     String PII = cpeParams.PERIODIC_INFORM_INTERVAL;
-    String nextPII = "" + sessionData.getPIIDecision().nextPII();
-    sessionData.getProvisioningMessage().setPeriodicInformInterval(new Integer(nextPII));
+    String nextPII = String.valueOf(sessionData.getPIIDecision().nextPII());
+    sessionData.getProvisioningMessage().setPeriodicInformInterval(Integer.valueOf(nextPII));
     if (cpeParams.getValue(PII) != null && cpeParams.getValue(PII).equals(nextPII)) {
       Log.debug(
           GPVDecision.class,
@@ -322,13 +329,13 @@ public class GPVDecision {
       Log.debug(
           GPVDecision.class,
           "-ACS->CPE      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
-      sessionData.getToDB().add(new ParameterValueStruct(PII, "" + nextPII));
+      sessionData.getToDB().add(new ParameterValueStruct(PII, nextPII));
       Log.debug(
           GPVDecision.class,
           "-ACS->ACS      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
       sessionData
           .getToDB()
-          .add(new ParameterValueStruct(SystemParameters.PERIODIC_INTERVAL, "" + nextPII));
+          .add(new ParameterValueStruct(SystemParameters.PERIODIC_INTERVAL, nextPII));
       Log.debug(
           GPVDecision.class,
           "-ACS->ACS      "
@@ -346,11 +353,11 @@ public class GPVDecision {
     populateToCollections(sessionData);
     CPEParameters cpeParams = sessionData.getCpeParameters();
     String PII = cpeParams.PERIODIC_INFORM_INTERVAL;
-    String nextPII = "" + sessionData.getPIIDecision().nextPII();
+    String nextPII = String.valueOf(sessionData.getPIIDecision().nextPII());
 
     // Cleanup after all jobs have been completed
     String disruptiveJob = sessionData.getAcsParameters().getValue(SystemParameters.JOB_DISRUPTIVE);
-    if (disruptiveJob != null && disruptiveJob.equals("1")) {
+    if ("1".equals(disruptiveJob)) {
       Log.debug(
           GPVDecision.class, "No more jobs && disruptive flag set -> disruptive flag reset (to 0)");
       ParameterValueStruct disruptivePvs =
@@ -358,7 +365,7 @@ public class GPVDecision {
       sessionData.getToDB().add(disruptivePvs);
     }
 
-    sessionData.getProvisioningMessage().setPeriodicInformInterval(new Integer(nextPII));
+    sessionData.getProvisioningMessage().setPeriodicInformInterval(Integer.valueOf(nextPII));
     if (cpeParams.getValue(PII) != null && cpeParams.getValue(PII).equals(nextPII)) {
       Log.debug(
           GPVDecision.class,
@@ -374,13 +381,13 @@ public class GPVDecision {
       Log.debug(
           GPVDecision.class,
           "-ACS->CPE      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
-      sessionData.getToDB().add(new ParameterValueStruct(PII, "" + nextPII));
+      sessionData.getToDB().add(new ParameterValueStruct(PII, nextPII));
       Log.debug(
           GPVDecision.class,
           "-ACS->ACS      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
       sessionData
           .getToDB()
-          .add(new ParameterValueStruct(SystemParameters.PERIODIC_INTERVAL, "" + nextPII));
+          .add(new ParameterValueStruct(SystemParameters.PERIODIC_INTERVAL, nextPII));
       Log.debug(
           GPVDecision.class,
           "-ACS->ACS      "
@@ -420,24 +427,25 @@ public class GPVDecision {
         Log.warn(GPVDecision.class, logMessage);
       }
     }
-    if (parameterMissing)
+    if (parameterMissing) {
       Log.warn(
           GPVDecision.class,
           "GPV has been issued twice, but apparantly the reason for the failure of the first GPV-response is not due to missing parameters in the CPE.");
+    }
   }
 
   private static String msg(
       UnittypeParameter utp, String cpeValue, String acsValue, String action, String cause) {
-    if (utp.getFlag().isConfidential())
+    if (utp.getFlag().isConfidential()) {
       return "-"
           + String.format("%-15s", action)
           + utp.getName()
           + " CPE:[*****] ACS:[*****] Flags:["
-          + utp.getFlag().toString()
+          + utp.getFlag()
           + "] Cause:["
           + cause
           + "]";
-    else
+    } else {
       return "-"
           + String.format("%-15s", action)
           + utp.getName()
@@ -446,16 +454,17 @@ public class GPVDecision {
           + "] ACS:["
           + acsValue
           + "] Flags:["
-          + utp.getFlag().toString()
+          + utp.getFlag()
           + "] Cause:["
           + cause
           + "]";
+    }
   }
 
   private static void populateToCollections(SessionData sessionData) {
     UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
     ParameterList toCPE = new ParameterList();
-    List<ParameterValueStruct> toDB = new ArrayList<ParameterValueStruct>();
+    List<ParameterValueStruct> toDB = new ArrayList<>();
 
     for (int i = 0; i < sessionData.getFromCPE().size(); i++) {
       ParameterValueStruct pvsCPE = sessionData.getFromCPE().get(i);
@@ -463,7 +472,9 @@ public class GPVDecision {
       UnittypeParameter utp = utps.getByName(pvsCPE.getName());
       String cpeV = pvsCPE.getValue();
       String acsV = null;
-      if (pvsDB != null) acsV = pvsDB.getValue();
+      if (pvsDB != null) {
+        acsV = pvsDB.getValue();
+      }
       if (utp == null) {
         Log.debug(
             GPVDecision.class,
@@ -472,7 +483,7 @@ public class GPVDecision {
                 + " was not recognized in ACS, could happen if a GPV on all params was issued.");
         continue;
       }
-      if (acsV != null && !acsV.equals("ExtraCPEParam") && !(acsV.equals(cpeV))) {
+      if (acsV != null && !"ExtraCPEParam".equals(acsV) && !acsV.equals(cpeV)) {
         if (utp.getFlag().isReadWrite()) {
           if (sessionData.getParameterKey().isEqual()) {
             if (utp.getFlag().isConfidential()) {
@@ -497,7 +508,6 @@ public class GPVDecision {
                         acsV,
                         "ACS->CPE",
                         "Values differ & parameterkey is correct -> parameter is probably a secret and should be set to confidential to avoid unnecessary prov. of secret");
-
               } else {
                 msg =
                     msg(
@@ -507,14 +517,18 @@ public class GPVDecision {
                         "ACS->CPE",
                         "Values differ & parameterkey is correct -> parameter must have been changed on device OR should be set to confidential to avoid unnecessary write");
               }
-              if (pvsDB != null) pvsDB.setType(pvsCPE.getType());
+              if (pvsDB != null) {
+                pvsDB.setType(pvsCPE.getType());
+              }
               toCPE.addParameterValueStruct(pvsDB);
               Log.warn(GPVDecision.class, msg);
             }
           } else {
             Log.debug(
                 GPVDecision.class, msg(utp, cpeV, acsV, "ACS->CPE", "Param has ReadWrite-flag"));
-            if (pvsDB != null) pvsDB.setType(pvsCPE.getType());
+            if (pvsDB != null) {
+              pvsDB.setType(pvsCPE.getType());
+            }
             toCPE.addParameterValueStruct(pvsDB);
           }
         } else {
@@ -524,10 +538,10 @@ public class GPVDecision {
       } else if (pvsDB != null
           && pvsDB.getValue() == null
           && pvsCPE.getValue() != null
-          && pvsCPE.getValue().length() > 0) {
+          && !pvsCPE.getValue().isEmpty()) {
         Log.debug(GPVDecision.class, msg(utp, cpeV, acsV, "CPE->ACS", "Param new to ACS"));
         toDB.add(pvsCPE);
-      } else if (acsV != null && acsV.equals("ExtraCPEParam")) {
+      } else if ("ExtraCPEParam".equals(acsV)) {
         Log.debug(
             GPVDecision.class,
             msg(utp, cpeV, acsV, "No change", "Ignore ExtraCPEParam - they're treated separately"));
@@ -542,7 +556,9 @@ public class GPVDecision {
     Log.debug(
         GPVDecision.class,
         "PreviousResponseMethod before deciding on log missing cpe params: " + previousMethod);
-    if (previousMethod.equals(TR069Method.GET_PARAMETER_VALUES)) logMissingCPEParams(sessionData);
+    if (TR069Method.GET_PARAMETER_VALUES.equals(previousMethod)) {
+      logMissingCPEParams(sessionData);
+    }
     sessionData.setToCPE(toCPE);
     sessionData.setToDB(toDB);
     // sessionData.setToSyslog(toSyslog);
@@ -551,9 +567,7 @@ public class GPVDecision {
         toCPE.getParameterValueList().size() + " params to CPE, " + toDB.size() + " params to ACS");
   }
 
-  /*
-   * Make sure unit parameters accurately represents CPE parameters
-   */
+  /** Make sure unit parameters accurately represents CPE parameters. */
   private static void updateUnitParameters(SessionData sessionData) {
     if (sessionData.getUnit() != null && sessionData.getUnit().getUnitParameters() != null) {
       Map<String, String> parameters = sessionData.getUnit().getParameters();
@@ -561,7 +575,9 @@ public class GPVDecision {
           sessionData.getFromCPE() != null && i < sessionData.getFromCPE().size();
           i++) {
         ParameterValueStruct pvs = sessionData.getFromCPE().get(i);
-        if (pvs != null && pvs.getValue() != null) parameters.put(pvs.getName(), pvs.getValue());
+        if (pvs != null && pvs.getValue() != null) {
+          parameters.put(pvs.getName(), pvs.getValue());
+        }
       }
     }
   }

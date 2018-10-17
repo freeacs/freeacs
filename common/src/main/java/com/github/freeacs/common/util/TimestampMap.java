@@ -8,19 +8,24 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TimestampMap {
-
   private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SSS");
-  // Using ConcurrentHashMap allow this class to share the map for iteration+read purposes
-  // without conflicting insert/modify (in multiple threaded environment)
-  private Map<String, Long> map = new ConcurrentHashMap<String, Long>();
+  /**
+   * Using ConcurrentHashMap allow this class to share the map for iteration+read purposes without
+   * conflicting insert/modify (in multiple threaded environment).
+   */
+  private Map<String, Long> map = new ConcurrentHashMap<>();
 
-  private String oldest = null;
-  private String newest = null;
+  private String oldest;
+  private String newest;
 
   public void put(String key, Long tms) {
-    if (key == null || tms == null) return;
+    if (key == null || tms == null) {
+      return;
+    }
     newest = key;
-    if (oldest == null) oldest = key;
+    if (oldest == null) {
+      oldest = key;
+    }
     map.put(key, tms);
   }
 
@@ -44,7 +49,7 @@ public class TimestampMap {
     Iterator<String> iterator = map.keySet().iterator();
     Long oldestTms = Long.MAX_VALUE;
     String oldestKey = null;
-    Map<String, Long> removedMap = new HashMap<String, Long>();
+    Map<String, Long> removedMap = new HashMap<>();
     while (iterator.hasNext()) {
       String key = iterator.next();
       Long tms = map.get(key);
@@ -56,9 +61,10 @@ public class TimestampMap {
         oldestTms = tms;
       }
     }
-    if (oldestKey != null) this.oldest = oldestKey;
-    else this.oldest = null;
-    if (map.size() == 0) this.newest = null;
+    this.oldest = oldestKey;
+    if (map.isEmpty()) {
+      this.newest = null;
+    }
     return removedMap;
   }
 
@@ -71,14 +77,16 @@ public class TimestampMap {
   }
 
   public String toString() {
-    if (oldest != null && newest != null)
+    if (oldest != null && newest != null) {
       return "Contains: "
-          + this.size()
+          + size()
           + " entries from "
           + sdf.format(new Date(map.get(oldest)))
           + " to "
           + sdf.format(map.get(newest));
-    else return "Contains: " + this.size() + " entries";
+    } else {
+      return "Contains: " + size() + " entries";
+    }
   }
 
   public Map<String, Long> getMap() {

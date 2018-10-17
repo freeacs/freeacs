@@ -11,16 +11,17 @@ import com.github.freeacs.ws.xml.Unittype;
 import java.util.Arrays;
 
 /**
- * Converts from XAPS objects to WS objects
+ * Converts from XAPS objects to WS objects.
  *
  * @author Morten
  */
 public class ConvertACS2WS {
-
   private static final ObjectFactory factory = new ObjectFactory();
 
   public static Unittype convert(com.github.freeacs.dbi.Unittype ut) {
-    if (ut == null) return null;
+    if (ut == null) {
+      return null;
+    }
     String name = ut.getName();
     //		String matcherId = ut.getMatcherId();
     String vendor = ut.getVendor();
@@ -49,7 +50,9 @@ public class ConvertACS2WS {
   }
 
   public static Profile convert(com.github.freeacs.dbi.Profile p) {
-    if (p == null) return null;
+    if (p == null) {
+      return null;
+    }
     String name = p.getName();
     ProfileParameter[] pParams = p.getProfileParameters().getProfileParameters();
     Parameter[] parameterArray = new Parameter[pParams.length];

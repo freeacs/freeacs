@@ -19,11 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ScriptExecutor extends DBIShare {
-
   private final Properties properties;
 
   public static class ScriptDaemonRunnable implements Runnable {
-
     private ScriptExecution se;
     private ACSShellDaemon acsShellDaemon;
     private ScriptExecutions executions;
@@ -57,24 +55,23 @@ public class ScriptExecutor extends DBIShare {
         acsShellDaemon.addToRunList("echo ${initial_tms}");
         acsShellDaemon.addToRunList(command);
         acsShellDaemon.addToRunList("listvars | delvar"); // Cleanup of state
-        while (true) {
+        do {
           synchronized (acsShellDaemon.getMonitor()) {
             try {
               acsShellDaemon.getMonitor().wait(1000);
             } catch (InterruptedException e) {
-              // TODO Auto-generated catch block
               e.printStackTrace();
             }
           }
           if (acsShellDaemon.getCommandsNotRunYet() == 0) {
             break;
           }
-        }
+        } while (true);
         List<Throwable> throwables = acsShellDaemon.getAndResetThrowables();
         acsShellDaemon.setIdle(true);
         boolean exitStatus = false;
         String errorMsg = null;
-        if (throwables.size() > 0) {
+        if (!throwables.isEmpty()) {
           exitStatus = true;
           errorMsg = "";
           for (Throwable t : throwables) {
@@ -86,14 +83,18 @@ public class ScriptExecutor extends DBIShare {
           }
         }
         se.setEndTms(new Date());
-        if (errorMsg != null) se.setErrorMessage(errorMsg.trim());
-        if (exitStatus)
+        if (errorMsg != null) {
+          se.setErrorMessage(errorMsg.trim());
+        }
+        if (exitStatus) {
           daemonLogger.debug(
               "ScriptExecutor: Exit-status ERROR running command : "
                   + command
                   + ", errorMsg: "
                   + errorMsg);
-        else daemonLogger.debug("ScriptExecutor: Exit-status SUCCESS running command : " + command);
+        } else {
+          daemonLogger.debug("ScriptExecutor: Exit-status SUCCESS running command : " + command);
+        }
         se.setExitStatus(exitStatus);
         executions.updateExecution(se);
       } catch (Throwable t) {
@@ -119,8 +120,9 @@ public class ScriptExecutor extends DBIShare {
     try {
       processScripts();
     } catch (Throwable t) {
-      if (t instanceof Exception) throw (Exception) t;
-      else {
+      if (t instanceof Exception) {
+        throw (Exception) t;
+      } else {
         throw new Exception(t.getMessage(), t);
       }
     }
@@ -138,13 +140,14 @@ public class ScriptExecutor extends DBIShare {
 
     // Organize all script-executions pr fusion-user - they must be executed in separate
     // shell-deamons
-    Map<String, List<ScriptExecution>> userMap = new HashMap<String, List<ScriptExecution>>();
+    Map<String, List<ScriptExecution>> userMap = new HashMap<>();
     for (ScriptExecution se : executionList) {
       String fusionUser =
           Users.USER_ADMIN; // This will only happen if no users are defined, then only admin is
       // available
-      if (se.getScriptFile().getOwner() != null)
+      if (se.getScriptFile().getOwner() != null) {
         fusionUser = se.getScriptFile().getOwner().getUsername();
+      }
       List<ScriptExecution> list = userMap.computeIfAbsent(fusionUser, k -> new ArrayList<>());
       list.add(se);
     }
@@ -155,10 +158,12 @@ public class ScriptExecutor extends DBIShare {
         if (se.getScriptFile() == null) { // The file OR unittype has been deleted
           se.setStartTms(new Date());
           se.setEndTms(se.getStartTms());
-          if (se.getUnittype() == null)
+          if (se.getUnittype() != null) {
+            se.setErrorMessage("The script is deleted, aborting script execution");
+          } else {
             se.setErrorMessage(
                 "The unittype from which this script was initiated is deleted, therefore the script is also deleted, aborting script execution");
-          else se.setErrorMessage("The script is deleted, aborting script execution");
+          }
           executions.updateExecution(se);
         } else {
           ACSShellDaemon shellDaemon =

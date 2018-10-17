@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Properties {
-
   private static String propertyfile =
       Optional.ofNullable(System.getProperty("config.name")).orElse("application") + ".properties";
 
@@ -39,6 +38,6 @@ public class Properties {
   }
 
   public static boolean isRestricted() {
-    return getString("restricted", "false").equals("true");
+    return "true".equals(getString("restricted", "false"));
   }
 }

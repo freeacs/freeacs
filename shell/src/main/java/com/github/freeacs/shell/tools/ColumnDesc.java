@@ -15,14 +15,20 @@ public class ColumnDesc {
   public ColumnDesc(String columnDesc) {
     Matcher matcher = descPattern.matcher(columnDesc);
     if (matcher.matches()) {
-      fromIndex = new Integer(matcher.group(1));
+      fromIndex = Integer.parseInt(matcher.group(1));
       String tmp = matcher.group(2);
       if (tmp != null) {
-        if (tmp.equals("u")) toUpperCase = true;
-        if (tmp.equals("l")) toLowerCase = true;
-        if (tmp.equals("unitid")) unitid = true;
+        if ("u".equals(tmp)) {
+          toUpperCase = true;
+        }
+        if ("l".equals(tmp)) {
+          toLowerCase = true;
+        }
+        if ("unitid".equals(tmp)) {
+          unitid = true;
+        }
       }
-      toIndex = new Integer(matcher.group(3));
+      toIndex = Integer.parseInt(matcher.group(3));
       columnPattern = Pattern.compile(matcher.group(4));
     }
   }

@@ -31,7 +31,7 @@ public class RecordUIDataGroupFromReport {
 
   public static Collection<? extends RecordUIDataGroupFromReport> convertRecords(
       Unit unit, Collection<RecordGroup> values) {
-    List<RecordUIDataGroupFromReport> list = new ArrayList<RecordUIDataGroupFromReport>();
+    List<RecordUIDataGroupFromReport> list = new ArrayList<>();
     for (RecordGroup record : values) {
       list.add(new RecordUIDataGroupFromReport(unit, record));
     }

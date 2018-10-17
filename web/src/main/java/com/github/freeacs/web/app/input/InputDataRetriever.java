@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
  * @author Jarl Amdré Hübenthal
  */
 public class InputDataRetriever {
-
   /**
    * This method iterates on the methods of the InputData instance reflectively and tries to
    * retrieve the request parameter value for each Input those methods return.
@@ -30,7 +29,7 @@ public class InputDataRetriever {
    * @throws InvocationTargetException the invocation target exception
    */
   public static InputData parseInto(InputData inputData, ParameterParser params)
-      throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+      throws IllegalAccessException, InvocationTargetException {
     Method[] methods = inputData.getClass().getMethods();
     for (Method m : methods) {
       if (!Modifier.isStatic(m.getModifiers())
@@ -53,7 +52,9 @@ public class InputDataRetriever {
   private static String getNonEmptyStringParameter(ParameterParser params, String key) {
     try {
       String s = params.getStringParameter(key);
-      if (s != null && s.trim().length() == 0) return null;
+      if (s != null && s.trim().isEmpty()) {
+        return null;
+      }
       return s;
     } catch (Exception e) {
       return null;
@@ -70,42 +71,66 @@ public class InputDataRetriever {
     try {
       switch (in.getType()) {
         case STRING:
-          if (in.isArray()) in.setValue(params.getStringParameterArray(in.getKey()));
-          else in.setValue(getNonEmptyStringParameter(params, in.getKey()));
+          if (in.isArray()) {
+            in.setValue(params.getStringParameterArray(in.getKey()));
+          } else {
+            in.setValue(getNonEmptyStringParameter(params, in.getKey()));
+          }
           break;
         case INTEGER:
-          if (in.isArray()) in.setValue(params.getIntegerParameterArray(in.getKey()));
-          else in.setValue(params.getIntegerParameter(in.getKey()));
+          if (in.isArray()) {
+            in.setValue(params.getIntegerParameterArray(in.getKey()));
+          } else {
+            in.setValue(params.getIntegerParameter(in.getKey()));
+          }
           break;
         case DOUBLE:
-          if (in.isArray()) in.setValue(params.getDoubleParameterArray(in.getKey()));
-          else in.setValue(params.getDoubleParameter(in.getKey()));
+          if (in.isArray()) {
+            in.setValue(params.getDoubleParameterArray(in.getKey()));
+          } else {
+            in.setValue(params.getDoubleParameter(in.getKey()));
+          }
           break;
         case LONG:
-          if (in.isArray()) in.setValue(params.getLongParameterArray(in.getKey()));
-          else in.setValue(params.getLongParameter(in.getKey()));
+          if (in.isArray()) {
+            in.setValue(params.getLongParameterArray(in.getKey()));
+          } else {
+            in.setValue(params.getLongParameter(in.getKey()));
+          }
           break;
         case FLOAT:
-          if (in.isArray()) in.setValue(params.getFloatParameterArray(in.getKey()));
-          else in.setValue(params.getFloatParameter(in.getKey()));
+          if (in.isArray()) {
+            in.setValue(params.getFloatParameterArray(in.getKey()));
+          } else {
+            in.setValue(params.getFloatParameter(in.getKey()));
+          }
           break;
         case BYTE:
-          if (in.isArray()) in.setValue(params.getByteParameterArray(in.getKey()));
-          else in.setValue(params.getByteParameter(in.getKey()));
+          if (in.isArray()) {
+            in.setValue(params.getByteParameterArray(in.getKey()));
+          } else {
+            in.setValue(params.getByteParameter(in.getKey()));
+          }
           break;
         case SHORT:
-          if (in.isArray()) in.setValue(params.getShortParameterArray(in.getKey()));
-          else in.setValue(params.getShortParameter(in.getKey()));
+          if (in.isArray()) {
+            in.setValue(params.getShortParameterArray(in.getKey()));
+          } else {
+            in.setValue(params.getShortParameter(in.getKey()));
+          }
           break;
         case BOOLEAN:
-          if (in.isArray()) in.setValue(params.getBooleanParameterArray(in.getKey()));
-          else in.setValue(params.getBooleanParameter(in.getKey()));
+          if (in.isArray()) {
+            in.setValue(params.getBooleanParameterArray(in.getKey()));
+          } else {
+            in.setValue(params.getBooleanParameter(in.getKey()));
+          }
           break;
         case DATE:
           if (in.isArray()) {
             String arr[] = params.getStringParameterArray(in.getKey());
             if (arr != null) {
-              List<Date> dates = new ArrayList<Date>();
+              List<Date> dates = new ArrayList<>();
               for (String value : arr) {
                 try {
                   dates.add(in.getDateFormat().parse(value));
@@ -138,9 +163,11 @@ public class InputDataRetriever {
           if (values != null) {
             Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
             String[] arr = values.split(",");
-            List<String> emails = new ArrayList<String>();
+            List<String> emails = new ArrayList<>();
             for (String email : arr) {
-              if (email.trim().length() == 0) continue;
+              if (email.trim().isEmpty()) {
+                continue;
+              }
               if (p.matcher(email.trim()).matches()) {
                 emails.add(email);
               } else {
@@ -158,7 +185,9 @@ public class InputDataRetriever {
     } catch (NumberFormatException e) {
       if (in.isArray()) {
         String arr[] = params.getStringParameterArray(in.getKey());
-        if (arr != null) in.setValue(Arrays.toString(arr));
+        if (arr != null) {
+          in.setValue(Arrays.toString(arr));
+        }
       } else {
         in.setValue(params.getStringParameter(in.getKey()));
       }

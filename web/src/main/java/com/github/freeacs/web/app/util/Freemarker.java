@@ -20,7 +20,6 @@ import java.util.Locale;
  * @author Jarl Andre Hubenthal
  */
 public final class Freemarker {
-
   /**
    * Inits the freemarker.
    *

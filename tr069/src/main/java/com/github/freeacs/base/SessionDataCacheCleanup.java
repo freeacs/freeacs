@@ -9,7 +9,6 @@ import com.github.freeacs.dbi.util.ProvisioningMessage.ProvStatus;
 import com.github.freeacs.dbi.util.SyslogClient;
 
 public class SessionDataCacheCleanup implements CleanupNotifier {
-
   private SessionDataI sessionData;
   private String unitKey;
 
@@ -34,10 +33,13 @@ public class SessionDataCacheCleanup implements CleanupNotifier {
           "TR-069 session was aborted - most probably because the client did not respond");
       pm.setErrorResponsibility(ErrorResponsibility.CLIENT);
       pm.setProvStatus(ProvStatus.ERROR);
-      if (pm.getProvOutput() == null) pm.setProvOutput(ProvOutput.EMPTY);
-      if (sessionData.getStartupTmsForSession() != null)
+      if (pm.getProvOutput() == null) {
+        pm.setProvOutput(ProvOutput.EMPTY);
+      }
+      if (sessionData.getStartupTmsForSession() != null) {
         pm.setSessionLength(
             (int) (System.currentTimeMillis() - sessionData.getStartupTmsForSession()));
+      }
       try {
         SyslogClient.send(pm.syslogMsg(16, null, Users.USER_ADMIN));
       } catch (Throwable t) {

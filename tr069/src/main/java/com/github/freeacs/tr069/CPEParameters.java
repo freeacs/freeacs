@@ -17,22 +17,23 @@ import java.util.Map;
  * @author Morten
  */
 public class CPEParameters {
-  // All config file information
+  /** All config file information. */
   public String CONFIG_FILES;
-  // Special solution for Ping Communication's NPA and RGW
-  //	public String CONFIG_VERSION;
-  // The software/firmware version of the CPE
+  /**
+   * Special solution for Ping Communication's NPA and RGW public String CONFIG_VERSION; The
+   * software/firmware version of the CPE.
+   */
   public String SOFTWARE_VERSION;
-  // The periodic inform interval on the CPE
+  /** The periodic inform interval on the CPE. */
   public String PERIODIC_INFORM_INTERVAL;
-  // The connection url (for kick, ip-address)
+  /** The connection url (for kick, ip-address). */
   public String CONNECTION_URL;
-  // The connection username (for kick, using authentication)
+  /** The connection username (for kick, using authentication). */
   public String CONNECTION_USERNAME;
-  // The connection password (for kick, using authentication)
+  /** The connection password (for kick, using authentication). */
   public String CONNECTION_PASSWORD;
 
-  private Map<String, ParameterValueStruct> cpeParams = new HashMap<String, ParameterValueStruct>();
+  private Map<String, ParameterValueStruct> cpeParams = new HashMap<>();
 
   public CPEParameters(String keyRoot) {
     CONFIG_FILES = keyRoot + "DeviceInfo.VendorConfigFile.";
@@ -51,8 +52,11 @@ public class CPEParameters {
 
   public String getValue(String param) {
     ParameterValueStruct pvs = cpeParams.get(param);
-    if (pvs != null && pvs.getValue() != null) return pvs.getValue();
-    else return null;
+    if (pvs != null && pvs.getValue() != null) {
+      return pvs.getValue();
+    } else {
+      return null;
+    }
   }
 
   public Map<String, ParameterValueStruct> getCpeParams() {
@@ -67,24 +71,20 @@ public class CPEParameters {
     cpeParams.put(param, pvs);
   }
 
-  /*
-   * Retrieves info from vendor-config-files and populate this map:
-   * Key: Name of config-file
-   * Value: Version of config-file
-   * This method will crash with NP if the device returns a VendorConfigFile.{i}.Name, but
-   * not the corresponding VendorConfigFile.{i}.Version
+  /**
+   * Retrieves info from vendor-config-files and populate this map: Key: Name of config-file Value:
+   * Version of config-file This method will crash with NP if the device returns a
+   * VendorConfigFile.{i}.Name, but not the corresponding VendorConfigFile.{i}.Version
    */
   public Map<String, String> getConfigFileMap() {
-    Map<String, String> cMap = new HashMap<String, String>();
+    Map<String, String> cMap = new HashMap<>();
     for (Map.Entry<String, ParameterValueStruct> entry : cpeParams.entrySet()) {
-      if (entry.getKey().contains(CONFIG_FILES)) {
-        if (entry.getKey().endsWith("Name")) {
-          String namePN = entry.getKey();
-          String namePV = entry.getValue().getValue();
-          String versionPN = namePN.substring(0, namePN.length() - "Name".length()) + "Version";
-          String versionPV = cpeParams.get(versionPN).getValue();
-          cMap.put(namePV, versionPV);
-        }
+      if (entry.getKey().contains(CONFIG_FILES) && entry.getKey().endsWith("Name")) {
+        String namePN = entry.getKey();
+        String namePV = entry.getValue().getValue();
+        String versionPN = namePN.substring(0, namePN.length() - "Name".length()) + "Version";
+        String versionPV = cpeParams.get(versionPN).getValue();
+        cMap.put(namePV, versionPV);
       }
     }
     return cMap;

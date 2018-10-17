@@ -40,11 +40,10 @@ import javax.script.ScriptException;
 import javax.sql.DataSource;
 
 public class GenericMenu {
-
   private Session session;
 
   private static ScriptEngine scriptEngine =
-      (new ScriptEngineManager()).getEngineByName("JavaScript");
+      new ScriptEngineManager().getEngineByName("JavaScript");
 
   public GenericMenu(Session session) {
     this.session = session;
@@ -61,7 +60,9 @@ public class GenericMenu {
       char[] cbuf = new char[2];
       isr.read(cbuf);
       String s = new String(cbuf);
-      if (!s.contains("\n")) session.println("");
+      if (!s.contains("\n")) {
+        session.println("");
+      }
       return true;
     } else if ("syslog".equals(input)) {
       syslog(inputArr, oh);
@@ -71,14 +72,16 @@ public class GenericMenu {
       return true;
     } else if (input.startsWith("echo")) {
       if (inputArr.length > 1) {
-        if (inputArr[1].toLowerCase().matches("off") && inputArr.length == 2)
+        if (inputArr[1].toLowerCase().matches("off") && inputArr.length == 2) {
           session.getProcessor().getEcho().setEcho(false);
-        else if (inputArr[1].toLowerCase().matches("on") && inputArr.length == 2)
+        } else if (inputArr[1].toLowerCase().matches("on") && inputArr.length == 2) {
           session.getProcessor().getEcho().setEcho(true);
-        else {
+        } else {
           Listing listing = oh.getListing();
           Line echoLine = new Line();
-          for (int i = 1; i < inputArr.length; i++) echoLine.addValue(inputArr[i]);
+          for (int i = 1; i < inputArr.length; i++) {
+            echoLine.addValue(inputArr[i]);
+          }
           listing.addLine(echoLine);
         }
       }
@@ -152,7 +155,9 @@ public class GenericMenu {
               new Script(
                   ScriptMaker.getDeleteScript(0, inputArr), new Context(session), Script.SCRIPT));
       return true;
-    } else return false;
+    } else {
+      return false;
+    }
   }
 
   private void scriptstatus() {
@@ -172,22 +177,29 @@ public class GenericMenu {
     List<String> history = session.getCommandHistory();
     Listing listing = oh.getListing();
     int numberOfEntriesToList = 100;
-    if (history.size() < numberOfEntriesToList) numberOfEntriesToList = history.size();
+    if (history.size() < numberOfEntriesToList) {
+      numberOfEntriesToList = history.size();
+    }
     for (int i = numberOfEntriesToList - 1; i > -1; i--) {
-      listing.addLine("" + (i + 1), history.get(i));
+      listing.addLine(String.valueOf(i + 1), history.get(i));
     }
   }
 
   private void breakcontinue(String[] args, Session session) {
     while (session.getScript().getType() != Script.WHILE) {
-      if (session.getScriptStack().size() > 1) // The root-script can never be a WHILE-script
-      session.getScriptStack().pop();
-      else
+      if (session.getScriptStack().size() > 1) {
+        session.getScriptStack().pop();
+      } else {
         throw new IllegalArgumentException(
             "Script terminated because of '" + args[0] + "' not within a while-done loop");
+      }
     }
-    if ("break".equals(args[0])) session.getScriptStack().pop();
-    if ("continue".equals(args[0])) session.getScript().reset();
+    if ("break".equals(args[0])) {
+      session.getScriptStack().pop();
+    }
+    if ("continue".equals(args[0])) {
+      session.getScript().reset();
+    }
   }
 
   private static final String IF = "if";
@@ -199,8 +211,10 @@ public class GenericMenu {
 
   private String getCommand(String s) {
     s = s.trim().toLowerCase();
-    int spacePos = s.indexOf(" ");
-    if (spacePos > -1) s = s.substring(0, spacePos);
+    int spacePos = s.indexOf(' ');
+    if (spacePos > -1) {
+      s = s.substring(0, spacePos);
+    }
     return s;
   }
 
@@ -214,24 +228,26 @@ public class GenericMenu {
 
   private void whiledone(String[] args, Session session) throws IOException, SQLException {
     String command = getCommand(args[0]);
-    if (command.equals(WHILE)) {
+    if (WHILE.equals(command)) {
       String whilePath = getWhilePath(session);
       if (session.getScript().getWhilePath() == null
           || !session.getScript().getWhilePath().equals(whilePath)) {
         Script parentScript = session.getScript();
-        List<String> scriptLines = new ArrayList<String>();
+        List<String> scriptLines = new ArrayList<>();
         scriptLines.add(parentScript.getPreviousScriptLine()); // add the While-statement
         int whileCounter = 0;
-        while (true) {
-          if (parentScript.endOfScript())
+        do {
+          if (parentScript.endOfScript()) {
             throw new IllegalArgumentException(
                 "Cannot find matching 'done' for the 'while' statement");
+          }
           String scriptLine =
               parentScript.getNextScriptLine(); // moves the linepointer of the parent-script
           scriptLines.add(scriptLine);
           String c = getCommand(scriptLine);
-          if (c.equals(WHILE)) whileCounter++;
-          else if (c.equals(DONE)) {
+          if (WHILE.equals(c)) {
+            whileCounter++;
+          } else if (DONE.equals(c)) {
             if (whileCounter == 0) {
               Script whileScript =
                   new Script(
@@ -248,52 +264,56 @@ public class GenericMenu {
               whileCounter--;
             }
           }
-        }
+        } while (true);
       }
     }
 
     Script whileScript = session.getScript(); // Will now retrieve the IF-script
-    if (whileScript.getType() != Script.WHILE)
+    if (whileScript.getType() != Script.WHILE) {
       throw new IllegalArgumentException(
           "Not possible to put done here, since a preceding while was not found");
+    }
 
-    if (command.equals(WHILE)) {
+    if (WHILE.equals(command)) {
       String whileArg = "";
-      for (int i = 1; i < args.length; i++) whileArg += args[i] + " ";
+      for (int i = 1; i < args.length; i++) {
+        whileArg += args[i] + " ";
+      }
       whileArg = whileArg.trim();
 
       boolean eval = true;
       if (session.getContext().getUnittype() != null) {
         com.github.freeacs.dbi.File fusionFile =
             session.getContext().getUnittype().getFiles().getByName(whileArg);
-        if (fusionFile != null) {
-          if (whileScript.getWhileInput() == null) {
-            whileScript.setWhileInput(
-                new BufferedReader(
-                    new InputStreamReader(new ByteArrayInputStream(fusionFile.getContent()))));
-          }
+        if (fusionFile != null && whileScript.getWhileInput() == null) {
+          whileScript.setWhileInput(
+              new BufferedReader(
+                  new InputStreamReader(new ByteArrayInputStream(fusionFile.getContent()))));
         }
       }
-      if (whileScript.getWhileInput() == null) { // did not find a Fusion-file above
-        if (FileUtil.exists(whileArg) && FileUtil.allowed("while", new File(whileArg))) {
-          whileScript.setWhileInput(new BufferedReader(new FileReader(whileArg)));
-        }
+      if (whileScript.getWhileInput() == null
+          && FileUtil.exists(whileArg)
+          && FileUtil.allowed("while", new File(whileArg))) {
+        whileScript.setWhileInput(new BufferedReader(new FileReader(whileArg)));
       }
       if (whileScript.getWhileInput() != null) { // did find a Fusion-file or an OS-file
         // remove file-variables from last iteration
         int varCounter = 1;
-        while (whileScript.getVariable("" + varCounter) != null) {
-          whileScript.getVariables().remove("" + varCounter);
+        while (whileScript.getVariable(String.valueOf(varCounter)) != null) {
+          whileScript.getVariables().remove(String.valueOf(varCounter));
           varCounter++;
         }
         String line = whileScript.getWhileInput().readLine();
-        if (line == null) eval = false;
-        else {
+        if (line == null) {
+          eval = false;
+        } else {
           // add file-variables from this iteration
           String fileArgs[] = StringUtil.split(line);
           varCounter = 1;
           for (String fileArg : fileArgs) {
-            whileScript.getVariables().put("" + varCounter, new Variable("" + varCounter, fileArg));
+            whileScript
+                .getVariables()
+                .put(String.valueOf(varCounter), new Variable(String.valueOf(varCounter), fileArg));
             varCounter++;
           }
         }
@@ -302,10 +322,12 @@ public class GenericMenu {
       }
       if (!eval) {
         BufferedReader br = session.getScript().getWhileInput();
-        if (br != null) br.close();
+        if (br != null) {
+          br.close();
+        }
         session.getScriptStack().pop();
       }
-    } else if (command.equals(DONE)) {
+    } else if (DONE.equals(command)) {
       whileScript.reset();
     }
   }
@@ -316,30 +338,36 @@ public class GenericMenu {
     /* 1. Make a new IF-script, containing everything from IF to (matching) FI.
      * 2. Move the line pointer in the parent script till the line after FI.
      * 3. Validate the if-elseif-else-fi structure. */
-    if (command.equals(IF)) {
+    if (IF.equals(command)) {
       Script parentScript = session.getScript();
-      List<String> scriptLines = new ArrayList<String>();
+      List<String> scriptLines = new ArrayList<>();
       scriptLines.add(parentScript.getPreviousScriptLine()); // add the if-statement
       int ifCounter = 0;
       String ifLevel = IF;
-      while (true) {
-        if (parentScript.endOfScript())
+      do {
+        if (parentScript.endOfScript()) {
           throw new IllegalArgumentException("Cannot find matching 'fi' for the 'if' statement");
+        }
         String scriptLine = parentScript.getNextScriptLine();
         scriptLines.add(scriptLine);
         String c = getCommand(scriptLine);
-        if (c.equals(IF)) ifCounter++;
-        else if (c.equals(ELSEIF) && ifCounter == 0) {
-          if (ifLevel.equals(IF)) ifLevel = ELSEIF;
-          else
+        if (IF.equals(c)) {
+          ifCounter++;
+        } else if (ELSEIF.equals(c) && ifCounter == 0) {
+          if (IF.equals(ifLevel)) {
+            ifLevel = ELSEIF;
+          } else {
             throw new IllegalArgumentException(
                 "Not possible to put elseif here, since previous if/else word was " + ifLevel);
-        } else if (c.equals(ELSE) && ifCounter == 0) {
-          if (ifLevel.equals(IF) || ifLevel.equals(ELSEIF)) ifLevel = ELSE;
-          else
+          }
+        } else if (ELSE.equals(c) && ifCounter == 0) {
+          if (IF.equals(ifLevel) || ELSEIF.equals(ifLevel)) {
+            ifLevel = ELSE;
+          } else {
             throw new IllegalArgumentException(
                 "Not possible to put else here, since previous if/else word was " + ifLevel);
-        } else if (c.equals(FI)) {
+          }
+        } else if (FI.equals(c)) {
           if (ifCounter == 0) {
             Script ifScript =
                 new Script(
@@ -349,17 +377,20 @@ public class GenericMenu {
             // now
             session.getScriptStack().push(ifScript);
             break;
-          } else ifCounter--;
+          } else {
+            ifCounter--;
+          }
         }
-      }
+      } while (true);
     }
     Script ifScript = session.getScript(); // Will now retrieve the IF-script
-    if (ifScript.getType() != Script.IF)
+    if (ifScript.getType() != Script.IF) {
       throw new IllegalArgumentException(
           "Not possible to put " + command + " here, since a preceding 'if' was not found");
+    }
 
     /* Evaluate IF/ELSEIF if necessary - move linepointer accordingly */
-    if (command.equals(IF) || command.equals(ELSEIF)) {
+    if (IF.equals(command) || ELSEIF.equals(command)) {
       if (ifScript.isSkipOnNextIfElseWord()) {
         ifScript.moveUpUntilCommand(ELSEIF, ELSE, FI);
       } else {
@@ -374,13 +405,13 @@ public class GenericMenu {
           ifScript.setSkipOnNextIfElseWord(true);
         }
       }
-    } else if (command.equals(ELSE)) {
+    } else if (ELSE.equals(command)) {
       if (ifScript.isSkipOnNextIfElseWord()) {
         ifScript.moveUpUntilCommand(FI);
       } else {
         ifScript.setSkipOnNextIfElseWord(true);
       }
-    } else if (command.equals(FI)) {
+    } else if (FI.equals(command)) {
       session.getScriptStack().pop(); // pop of ifScript
     }
   }
@@ -417,7 +448,9 @@ public class GenericMenu {
     Validation.numberOfArgs(args, 2);
 
     String filename = args[1];
-    if (!FileUtil.allowed("cat " + filename, new File(filename))) return;
+    if (!FileUtil.allowed("cat " + filename, new File(filename))) {
+      return;
+    }
     if (session.getContext().getUnittype() != null) {
       com.github.freeacs.dbi.File f =
           session.getContext().getUnittype().getFiles().getByName(filename);
@@ -429,11 +462,14 @@ public class GenericMenu {
         return;
       }
     }
-    if (!FileUtil.exists(filename))
+    if (!FileUtil.exists(filename)) {
       throw new IllegalArgumentException("The file " + filename + " does not exist");
+    }
     BufferedReader br = new BufferedReader(new FileReader(filename));
     Listing listing = oh.getListing();
-    while (br.ready()) listing.addLineRaw(br.readLine());
+    while (br.ready()) {
+      listing.addLineRaw(br.readLine());
+    }
     br.close();
   }
 
@@ -445,16 +481,21 @@ public class GenericMenu {
   private void listvars(Script script, OutputHandler oh) {
     Listing listing = oh.getListing();
     listing.setHeading("Name", "Value");
-    for (Variable var : script.getVariables().values())
+    for (Variable var : script.getVariables().values()) {
       listing.addLine(var.getName(), var.getValue());
+    }
     //			session.println("${" + var.getName() + "} : " + var.getValue());
   }
 
   private void ls(String[] args, OutputHandler oh) {
     String filename = ".";
-    if (args.length > 1) filename = args[1];
+    if (args.length > 1) {
+      filename = args[1];
+    }
     File f = new File(filename);
-    if (!FileUtil.allowed("ls " + filename, f)) return;
+    if (!FileUtil.allowed("ls " + filename, f)) {
+      return;
+    }
     if (f.exists()) {
       if (f.isDirectory()) {
         File[] files = f.listFiles();
@@ -474,12 +515,15 @@ public class GenericMenu {
 
   private void setvar(String[] args, Script script) {
     Validation.numberOfArgs(args, 3);
-    if (Character.isDigit(args[1].charAt(0)))
+    if (Character.isDigit(args[1].charAt(0))) {
       throw new IllegalArgumentException("The variable name cannot start with a digit.");
-    if (args[1].indexOf(" ") > 0 || args[1].indexOf(",") > 0 || args[1].indexOf("\t") > 0)
+    }
+    if (args[1].indexOf(' ') > 0 || args[1].indexOf(',') > 0 || args[1].indexOf('\t') > 0) {
       throw new IllegalArgumentException("The variable name cannot include space, tabs or commas");
-    if (args[1].startsWith("_"))
+    }
+    if (args[1].startsWith("_")) {
       throw new IllegalArgumentException("The variable name cannot start with an underscore.");
+    }
     StringBuilder sb = new StringBuilder();
     for (int i = 2; i < args.length; i++) {
       sb.append(args[i]).append(" ");
@@ -512,20 +556,23 @@ public class GenericMenu {
   private void printFileInfo(File f, OutputHandler oh) {
     Listing listing = oh.getListing();
     String dirStr = "";
-    if (f.isDirectory()) dirStr = "<DIR>";
-    listing.addLine(dirStr, "" + f.length(), "" + f.getName());
+    if (f.isDirectory()) {
+      dirStr = "<DIR>";
+    }
+    listing.addLine(dirStr, String.valueOf(f.length()), f.getName());
   }
 
   private Map<String, Unit> getUnits(String[] args, Context context) throws Exception {
     Map<String, Unit> units = null;
-    if (args.length > 1)
+    if (args.length > 1) {
       units =
           session
               .getAcsUnit()
               .getUnits("%" + args[1] + "%", context.getUnittype(), context.getProfile(), null);
-    else
+    } else {
       units =
           session.getAcsUnit().getUnits(null, context.getUnittype(), context.getProfile(), null);
+    }
     return units;
   }
 
@@ -534,9 +581,10 @@ public class GenericMenu {
     Validation.numberOfArgs(args, 2);
     String ccArg = args[1].trim();
     ContextContainer cc = ContextElement.parseContextElements(ccArg);
-    if (cc.size() == 0)
+    if (cc.size() == 0) {
       throw new IllegalArgumentException(
           "The argument " + cc + " could not be parsed into a context switch");
+    }
     session.getProcessor().changeContext(cc, context, session);
   }
 
@@ -545,11 +593,15 @@ public class GenericMenu {
     sf.setMaxRows(100);
     sf.setCollectorTmsStart(new Date(System.currentTimeMillis() - 86400 * 1000));
     Context context = session.getContext();
-    if (context.getUnit() != null) sf.setUnitId(context.getUnit().getId());
-    if (context.getProfile() != null)
+    if (context.getUnit() != null) {
+      sf.setUnitId(context.getUnit().getId());
+    }
+    if (context.getProfile() != null) {
       sf.setProfiles(Collections.singletonList(context.getProfile()));
-    if (context.getUnittype() != null)
+    }
+    if (context.getUnittype() != null) {
       sf.setUnittypes(Collections.singletonList(context.getUnittype()));
+    }
     String listOptionStr = "t,s,fn,ev,m,ip,un,pr,ut";
     for (int i = 1; i < 3; i++) {
       if (args.length > i && args[i].startsWith("s") && args[i].length() > 1) {
@@ -560,9 +612,10 @@ public class GenericMenu {
         int rowOptStart = listOptionStr.indexOf("r=");
         if (rowOptStart > -1) {
           int rowOptEnd = listOptionStr.length();
-          int nextCommaPos = listOptionStr.indexOf(",", rowOptStart);
-          if (nextCommaPos > -1 && nextCommaPos < rowOptEnd)
-            rowOptEnd = listOptionStr.indexOf(",", rowOptStart);
+          int nextCommaPos = listOptionStr.indexOf(',', rowOptStart);
+          if (nextCommaPos > -1 && nextCommaPos < rowOptEnd) {
+            rowOptEnd = listOptionStr.indexOf(',', rowOptStart);
+          }
           String rowOption = listOptionStr.substring(rowOptStart, rowOptEnd);
           try {
             sf.setMaxRows(Integer.parseInt(rowOption.substring(2)));
@@ -579,41 +632,87 @@ public class GenericMenu {
     Listing listing = oh.getListing();
     Line headingLine = new Line();
     for (String listOption : listOptions) {
-      if (listOption.trim().length() == 0) continue;
-      if ("t".equals(listOption)) headingLine.addValue("Timestamp");
-      if ("ev".equals(listOption)) headingLine.addValue("Event Id");
-      if ("fn".equals(listOption)) headingLine.addValue("Facility");
-      if ("fv".equals(listOption)) headingLine.addValue("Facility-ver.");
-      if ("ip".equals(listOption)) headingLine.addValue("Ip address");
-      if ("m".equals(listOption)) headingLine.addValue("Message");
-      if ("s".equals(listOption)) headingLine.addValue("Severity");
-      if ("us".equals(listOption)) headingLine.addValue("User");
-      if ("un".equals(listOption)) headingLine.addValue("Unit Id");
-      if ("pr".equals(listOption)) headingLine.addValue("Profile");
-      if ("ut".equals(listOption)) headingLine.addValue("Unit Type");
-      if (headingLine.getValues().size() == 0)
+      if (listOption.trim().isEmpty()) {
+        continue;
+      }
+      if ("t".equals(listOption)) {
+        headingLine.addValue("Timestamp");
+      }
+      if ("ev".equals(listOption)) {
+        headingLine.addValue("Event Id");
+      }
+      if ("fn".equals(listOption)) {
+        headingLine.addValue("Facility");
+      }
+      if ("fv".equals(listOption)) {
+        headingLine.addValue("Facility-ver.");
+      }
+      if ("ip".equals(listOption)) {
+        headingLine.addValue("Ip address");
+      }
+      if ("m".equals(listOption)) {
+        headingLine.addValue("Message");
+      }
+      if ("s".equals(listOption)) {
+        headingLine.addValue("Severity");
+      }
+      if ("us".equals(listOption)) {
+        headingLine.addValue("User");
+      }
+      if ("un".equals(listOption)) {
+        headingLine.addValue("Unit Id");
+      }
+      if ("pr".equals(listOption)) {
+        headingLine.addValue("Profile");
+      }
+      if ("ut".equals(listOption)) {
+        headingLine.addValue("Unit Type");
+      }
+      if (headingLine.getValues().isEmpty()) {
         throw new IllegalArgumentException(
             "List option " + listOption + " was not specified correctly");
+      }
     }
     listing.setHeading(new Heading(headingLine));
     for (SyslogEntry entry : entries) {
       Line line = new Line();
       for (String listOption : listOptions) {
-        if (listOption.trim().length() == 0) continue;
-        if ("t".equals(listOption))
+        if (listOption.trim().isEmpty()) {
+          continue;
+        }
+        if ("t".equals(listOption)) {
           line.addValue(Util.outputFormatExtended.format(entry.getCollectorTimestamp()));
-        if ("ev".equals(listOption)) line.addValue("" + entry.getEventId());
-        if ("fn".equals(listOption))
+        }
+        if ("ev".equals(listOption)) {
+          line.addValue(String.valueOf(entry.getEventId()));
+        }
+        if ("fn".equals(listOption)) {
           line.addValue(SyslogConstants.getFacilityName(entry.getFacility()));
-        if ("fv".equals(listOption)) line.addValue(entry.getFacilityVersion());
-        if ("ip".equals(listOption)) line.addValue(entry.getIpAddress());
-        if ("m".equals(listOption)) line.addValue(entry.getContent());
-        if ("s".equals(listOption))
+        }
+        if ("fv".equals(listOption)) {
+          line.addValue(entry.getFacilityVersion());
+        }
+        if ("ip".equals(listOption)) {
+          line.addValue(entry.getIpAddress());
+        }
+        if ("m".equals(listOption)) {
+          line.addValue(entry.getContent());
+        }
+        if ("s".equals(listOption)) {
           line.addValue(SyslogConstants.getSeverityName(entry.getSeverity()));
-        if ("us".equals(listOption)) line.addValue(entry.getUserId());
-        if ("un".equals(listOption)) line.addValue(entry.getUnitId());
-        if ("pr".equals(listOption)) line.addValue(entry.getProfileName());
-        if ("ut".equals(listOption)) line.addValue(entry.getUnittypeName());
+        }
+        if ("us".equals(listOption)) {
+          line.addValue(entry.getUserId());
+        }
+        if ("un".equals(listOption)) {
+          line.addValue(entry.getUnitId());
+        }
+        if ("pr".equals(listOption)) {
+          line.addValue(entry.getProfileName());
+        }
+        if ("ut".equals(listOption)) {
+          line.addValue(entry.getUnittypeName());
+        }
       }
       listing.addLine(line);
     }
@@ -622,20 +721,23 @@ public class GenericMenu {
   private SyslogFilter alterSyslogFilter(SyslogFilter sf, String searchOptionStr) {
     String[] searchOptions = searchOptionStr.split(",");
     for (String searchOption : searchOptions) {
-      if (searchOption.trim().length() == 0) continue;
-      else if (searchOption.startsWith("ts=") && searchOption.length() > 3) {
+      if (searchOption.trim().isEmpty()) {
+        continue;
+      } else if (searchOption.startsWith("ts=") && searchOption.length() > 3) {
         String optionValue = searchOption.substring(3);
         Date d = Util.getDateFromOption(optionValue);
-        if (d == null)
+        if (d == null) {
           throw new IllegalArgumentException(
               "Search option " + searchOption + " was not specified correctly");
+        }
         sf.setCollectorTmsStart(d);
       } else if (searchOption.startsWith("te=") && searchOption.length() > 3) {
         String optionValue = searchOption.substring(3);
         Date d = Util.getDateFromOption(optionValue);
-        if (d == null)
+        if (d == null) {
           throw new IllegalArgumentException(
               "Search option " + searchOption + " was not specified correctly");
+        }
         sf.setCollectorTmsEnd(d);
       } else if (searchOption.startsWith("ev=") && searchOption.length() > 3) {
         String optionValue = searchOption.substring(3);
@@ -648,13 +750,14 @@ public class GenericMenu {
       } else if (searchOption.startsWith("fn=") && searchOption.length() > 3) {
         String optionValue = searchOption.substring(3);
         for (Entry<Integer, String> entry : SyslogConstants.facilityMap.entrySet()) {
-          if (entry.getValue().toUpperCase().equals(optionValue.toUpperCase())) {
+          if (entry.getValue().equalsIgnoreCase(optionValue)) {
             sf.setFacility(entry.getKey());
           }
         }
-        if (sf.getFacility() == null)
+        if (sf.getFacility() == null) {
           throw new IllegalArgumentException(
               "Search option " + searchOption + " was not specified correctly");
+        }
       } else if (searchOption.startsWith("fv=") && searchOption.length() > 3) {
         sf.setFacilityVersion(searchOption.substring(3));
       } else if (searchOption.startsWith("ip=") && searchOption.length() > 3) {
@@ -664,17 +767,19 @@ public class GenericMenu {
       } else if (searchOption.startsWith("s=") && searchOption.length() > 2) {
         String optionValue = searchOption.substring(2);
         try {
-          List<Integer> severityList = new ArrayList<Integer>();
-          for (int i = 0; i < optionValue.length(); i++)
-            severityList.add(Integer.parseInt("" + optionValue.charAt(i)));
+          List<Integer> severityList = new ArrayList<>();
+          for (int i = 0; i < optionValue.length(); i++) {
+            severityList.add(Integer.parseInt(String.valueOf(optionValue.charAt(i))));
+          }
           sf.setSeverity(severityList.toArray(new Integer[] {}));
         } catch (NumberFormatException nfe) {
           throw new IllegalArgumentException(
               "Search option " + searchOption + " was not specified correctly");
         }
-        if (sf.getSeverity() == null || sf.getSeverity().length == 0)
+        if (sf.getSeverity() == null || sf.getSeverity().length == 0) {
           throw new IllegalArgumentException(
               "Search option " + searchOption + " was not specified correctly");
+        }
       } else if (searchOption.startsWith("us=") && searchOption.length() > 3) {
         sf.setUserId(searchOption.substring(3));
       } else if (searchOption.startsWith("r=") && searchOption.length() > 2) {
@@ -695,8 +800,9 @@ public class GenericMenu {
   private void unit(String[] args, OutputHandler oh) throws Exception {
     Context context = session.getContext();
     Map<String, Unit> units = getUnits(args, context);
-    if (units.size() < 1) context.println("No units found - context change not possible");
-    else if (units.size() > 1) {
+    if (units.isEmpty()) {
+      context.println("No units found - context change not possible");
+    } else if (units.size() > 1) {
       if (context.getUnittype() != null) {
         context.println(units.size() + " units found - context change not possible");
         Listing listing = oh.getListing();
@@ -715,8 +821,11 @@ public class GenericMenu {
           line.addValue(u.getId());
           for (String utpName : displayableMap.keySet()) {
             String value = unit.getParameters().get(utpName);
-            if (value == null) line.addValue(" ");
-            else line.addValue(value);
+            if (value != null) {
+              line.addValue(value);
+            } else {
+              line.addValue(" ");
+            }
           }
           listing.addLine(line);
         }
@@ -727,8 +836,9 @@ public class GenericMenu {
         headingLine.addValue("Profile");
         headingLine.addValue("Unit Id");
         listing.setHeading(new Heading(headingLine));
-        for (Unit unit : units.values())
+        for (Unit unit : units.values()) {
           listing.addLine(unit.getUnittype().getName(), unit.getProfile().getName(), unit.getId());
+        }
       }
     } else { // units.size() == 1
       Unit unit = session.getAcsUnit().getUnitById((String) units.keySet().toArray()[0]);
@@ -744,11 +854,16 @@ public class GenericMenu {
     Validation.numberOfArgs(args, 2);
     String filename = args[1];
     File f = new File(filename);
-    if (!FileUtil.allowed("delosfile " + filename, f)) return;
+    if (!FileUtil.allowed("delosfile " + filename, f)) {
+      return;
+    }
     if (f.exists()) {
       boolean success = f.delete();
-      if (success) session.println("The file " + filename + " was deleted");
-      else throw new IOException("The file " + filename + " could not be deleted");
+      if (success) {
+        session.println("The file " + filename + " was deleted");
+      } else {
+        throw new IOException("The file " + filename + " could not be deleted");
+      }
     }
   }
 }

@@ -23,12 +23,11 @@ import org.slf4j.LoggerFactory;
  * @author Morten
  */
 public class Jobs {
-
   private static Logger logger = LoggerFactory.getLogger(Jobs.class);
-  private Map<Integer, Job> idMap = new HashMap<Integer, Job>();
-  private Map<String, Job> nameMap = new HashMap<String, Job>();
+  private Map<Integer, Job> idMap = new HashMap<>();
+  private Map<String, Job> nameMap = new HashMap<>();
   private Unittype unittype;
-  private static Map<String, String> jobParameterRules = new HashMap<String, String>();
+  private static Map<String, String> jobParameterRules = new HashMap<>();
 
   static {
     jobParameterRules.put(JobFlag.JobType.RESTART + SystemParameters.RESTART, "Allowed");
@@ -73,26 +72,25 @@ public class Jobs {
       //				throw new IllegalArgumentException("The unit type parameter " + utpName + " is an
       // inspection parameter, cannot be set in job");
       // Special modification for TR069_SCRIPT-parameter:
-      if (utpName.contains(SystemParameters.DESIRED_TR069_SCRIPT))
+      if (utpName.contains(SystemParameters.DESIRED_TR069_SCRIPT)) {
         utpName = SystemParameters.DESIRED_TR069_SCRIPT;
+      }
       String rule = jobParameterRules.get(jobType + utpName);
-      if (rule != null) {
-        if (rule.equals("Forbidden"))
-          throw new IllegalArgumentException(
-              "The job parameter " + utpName + " cannot be set for job type " + jobType);
-      } else {
+      if (rule == null) {
         rule = jobParameterRules.get(jobType + "REST_OF_PARAMETERS");
-        if (rule.equals("Forbidden"))
-          throw new IllegalArgumentException(
-              "The job parameter " + utpName + " cannot be set for job type " + jobType);
+      }
+      if ("Forbidden".equals(rule)) {
+        throw new IllegalArgumentException(
+            "The job parameter " + utpName + " cannot be set for job type " + jobType);
       }
     }
   }
 
   public void addOrChangeJobParameters(List<JobParameter> jobParameters, ACS acs)
       throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
+    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
+    }
     Connection connection = null;
     PreparedStatement pp = null;
     String sql;
@@ -106,8 +104,9 @@ public class Jobs {
         JobParameter jobParameter = jobParameters.get(i);
         Parameter parameter = jobParameter.getParameter();
         String unitId = jobParameter.getUnitId();
-        if (parameter.getValue() != null && parameter.getValue().length() > 250)
+        if (parameter.getValue() != null && parameter.getValue().length() > 250) {
           parameter.setValue(parameter.getValue().substring(0, 250) + "...");
+        }
         String action = "Inserted";
         try {
           sql =
@@ -136,29 +135,33 @@ public class Jobs {
         }
 
         logger.info(action + " job parameter " + parameter.getUnittypeParameter().getName());
-        if (unitId.equals(Job.ANY_UNIT_IN_GROUP))
+        if (unitId.equals(Job.ANY_UNIT_IN_GROUP)) {
           jobParameter
               .getJob()
               .getDefaultParameters()
               .put(parameter.getUnittypeParameter().getName(), jobParameter);
+        }
 
         if (i > 0 && i % 100 == 0) {
           connection.commit();
         }
       }
       connection.commit();
-      if (acs.getDbi() != null && jobParameters.size() > 0)
+      if (acs.getDbi() != null && !jobParameters.isEmpty()) {
         acs.getDbi()
             .publishChange(
                 jobParameters.get(0).getJob(),
                 jobParameters.get(0).getJob().getGroup().getUnittype());
+      }
     } catch (SQLException sqlex) {
       if (connection != null) {
         connection.rollback();
       }
       throw sqlex;
     } finally {
-      if (pp != null) pp.close();
+      if (pp != null) {
+        pp.close();
+      }
       if (connection != null) {
         connection.setAutoCommit(wasAutoCommit);
         connection.close();
@@ -167,8 +170,9 @@ public class Jobs {
   }
 
   public void deleteJobParameters(Job job, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
+    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
+    }
     Connection connection = null;
     Statement s = null;
     String sql;
@@ -183,12 +187,16 @@ public class Jobs {
       j.setDefaultParameters();
 
       logger.info("Deleted all job parameters for job " + job.getId());
-      if (acs.getDbi() != null) acs.getDbi().publishChange(job, job.getGroup().getUnittype());
+      if (acs.getDbi() != null) {
+        acs.getDbi().publishChange(job, job.getGroup().getUnittype());
+      }
     } catch (SQLException sqlex) {
       sqle = sqlex;
       throw sqle;
     } finally {
-      if (s != null) s.close();
+      if (s != null) {
+        s.close();
+      }
       if (connection != null) {
         connection.close();
       }
@@ -196,8 +204,9 @@ public class Jobs {
   }
 
   public int deleteJobParameters(List<JobParameter> jobParameters, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
+    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
+    }
     Connection connection = null;
     Statement s = null;
     String sql;
@@ -233,8 +242,9 @@ public class Jobs {
           Job j = getById(jobParameter.getJob().getId());
           if (j != null
               && j.getDefaultParameters() != null
-              && parameter.getUnittypeParameter() != null)
+              && parameter.getUnittypeParameter() != null) {
             j.getDefaultParameters().remove(parameter.getUnittypeParameter().getName());
+          }
         }
 
         if (i > 0 && i % 100 == 0) {
@@ -242,11 +252,12 @@ public class Jobs {
         }
       }
       connection.commit();
-      if (acs.getDbi() != null && jobParameters.size() > 0)
+      if (acs.getDbi() != null && !jobParameters.isEmpty()) {
         acs.getDbi()
             .publishChange(
                 jobParameters.get(0).getJob(),
                 jobParameters.get(0).getJob().getGroup().getUnittype());
+      }
       return rowsDeleted;
     } catch (SQLException sqlex) {
       sqle = sqlex;
@@ -255,7 +266,9 @@ public class Jobs {
       }
       throw sqle;
     } finally {
-      if (s != null) s.close();
+      if (s != null) {
+        s.close();
+      }
       if (connection != null) {
         connection.setAutoCommit(wasAutoCommit);
         connection.close();
@@ -264,14 +277,17 @@ public class Jobs {
   }
 
   protected void removeJobFromDataModel(Job job) {
-    if (job.getDependency() != null) job.getDependency().removeChild(job);
+    if (job.getDependency() != null) {
+      job.getDependency().removeChild(job);
+    }
     idMap.remove(job.getId());
     nameMap.remove(job.getName());
   }
 
   public void delete(Job job, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
+    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
+    }
     deleteJobParameters(job, acs);
     Connection c = null;
     PreparedStatement pp = null;
@@ -286,12 +302,16 @@ public class Jobs {
       removeJobFromDataModel(job);
 
       logger.info("Deleted job " + job.getId());
-      if (acs.getDbi() != null) acs.getDbi().publishDelete(job, job.getGroup().getUnittype());
+      if (acs.getDbi() != null) {
+        acs.getDbi().publishDelete(job, job.getGroup().getUnittype());
+      }
     } catch (SQLException sqlex) {
       sqle = sqlex;
       throw sqle;
     } finally {
-      if (pp != null) pp.close();
+      if (pp != null) {
+        pp.close();
+      }
       if (c != null) {
         c.close();
       }
@@ -299,13 +319,13 @@ public class Jobs {
   }
 
   /**
-   * Returns a list over allowed job dependencies
+   * Returns a list over allowed job dependencies.
    *
    * @param job The Job
    * @return List<Job>
    */
   public List<Job> getAllowedDependencies(Job job) {
-    List<Job> allowed = new ArrayList<Job>();
+    List<Job> allowed = new ArrayList<>();
     for (Job j : idMap.values()) {
       if (j.getGroup().getUnittype().getName().equals(unittype.getName())
           && !isDependencyLoop(job, j)) {
@@ -317,35 +337,34 @@ public class Jobs {
 
   private boolean isDependencyLoop(Job job, Job dep) {
     Job dependency = dep;
-    if (dependency == null) {
+    if (dependency == null || job == null) {
       return false;
     }
-    if (job == null) {
-      return false;
-    }
-
     if (job.getId().equals(dependency.getId())) {
       return true;
     }
 
     while (dependency != null) {
-      if (dependency.getDependency() != null && dependency.getDependency().getId() == job.getId())
+      if (dependency.getDependency() != null && dependency.getDependency().getId() == job.getId()) {
         return true;
+      }
       dependency = dependency.getDependency();
     }
     return false;
   }
 
   public void add(Job job, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
+    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
+    }
     job.setStatus(JobStatus.READY);
     job.validate();
     Connection c = null;
     PreparedStatement ps = null;
     try {
-      if (nameMap.get(job.getName()) != null)
+      if (nameMap.get(job.getName()) != null) {
         throw new IllegalArgumentException("The job name already exists, choose another name");
+      }
       c = acs.getDataSource().getConnection();
       DynamicStatement ds = new DynamicStatement();
       ds.setSql("INSERT INTO job (");
@@ -356,13 +375,18 @@ public class Jobs {
       ds.addSqlAndArguments("unconfirmed_timeout, ", job.getUnconfirmedTimeout());
       ds.addSqlAndArguments("stop_rules, ", job.getStopRulesSerialized());
       ds.addSqlAndArguments("status, ", job.getStatus().toString());
-      if (job.getFile() != null) ds.addSqlAndArguments("firmware_id, ", job.getFile().getId());
-      if (job.getDependency() != null)
+      if (job.getFile() != null) {
+        ds.addSqlAndArguments("firmware_id, ", job.getFile().getId());
+      }
+      if (job.getDependency() != null) {
         ds.addSqlAndArguments("job_id_dependency, ", job.getDependency().getId());
-      if (job.getRepeatCount() != null)
+      }
+      if (job.getRepeatCount() != null) {
         ds.addSqlAndArguments("repeat_count, ", job.getRepeatCount());
-      if (job.getRepeatInterval() != null)
+      }
+      if (job.getRepeatInterval() != null) {
         ds.addSqlAndArguments("repeat_interval, ", job.getRepeatInterval());
+      }
       ds.addSqlAndArguments("completed_no_failure, ", 0);
       ds.addSqlAndArguments("completed_had_failure, ", 0);
       ds.addSqlAndArguments("confirmed_failed, ", 0);
@@ -372,19 +396,27 @@ public class Jobs {
       ps.setQueryTimeout(60);
       ps.executeUpdate();
       ResultSet gk = ps.getGeneratedKeys();
-      if (gk.next()) job.setId(gk.getInt(1));
+      if (gk.next()) {
+        job.setId(gk.getInt(1));
+      }
 
       Job dep = job.getDependency();
-      if (dep != null && !dep.getChildren().contains(job)) dep.getChildren().add(job);
+      if (dep != null && !dep.getChildren().contains(job)) {
+        dep.getChildren().add(job);
+      }
 
       idMap.put(job.getId(), job);
       nameMap.put(job.getName(), job);
 
       updateMandatoryJobParameters(job, acs);
       logger.info("Inserted job " + job.getId());
-      if (acs.getDbi() != null) acs.getDbi().publishAdd(job, job.getGroup().getUnittype());
+      if (acs.getDbi() != null) {
+        acs.getDbi().publishAdd(job, job.getGroup().getUnittype());
+      }
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       if (c != null) {
         c.close();
       }
@@ -398,7 +430,7 @@ public class Jobs {
               unittype.getUnittypeParameters().getByName(SystemParameters.DESIRED_SOFTWARE_VERSION),
               job.getFile().getVersion());
       JobParameter jp = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, param);
-      List<JobParameter> jobParameters = new ArrayList<JobParameter>();
+      List<JobParameter> jobParameters = new ArrayList<>();
       jobParameters.add(jp);
       addOrChangeJobParameters(jobParameters, acs);
     } else if (job.getFlags().getType() == JobFlag.JobType.TR069_SCRIPT) {
@@ -410,42 +442,45 @@ public class Jobs {
               job.getUnittype());
       Parameter param = new Parameter(jobUtp, job.getFile().getVersion());
       JobParameter jp = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, param);
-      List<JobParameter> jobParameters = new ArrayList<JobParameter>();
+      List<JobParameter> jobParameters = new ArrayList<>();
       jobParameters.add(jp);
       addOrChangeJobParameters(jobParameters, acs);
     } else if (job.getFlags().getType() == JobFlag.JobType.RESTART) {
       Parameter param =
           new Parameter(unittype.getUnittypeParameters().getByName(SystemParameters.RESTART), "1");
       JobParameter jp = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, param);
-      List<JobParameter> jobParameters = new ArrayList<JobParameter>();
+      List<JobParameter> jobParameters = new ArrayList<>();
       jobParameters.add(jp);
       addOrChangeJobParameters(jobParameters, acs);
     } else if (job.getFlags().getType() == JobFlag.JobType.RESET) {
       Parameter param =
           new Parameter(unittype.getUnittypeParameters().getByName(SystemParameters.RESET), "1");
       JobParameter jp = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, param);
-      List<JobParameter> jobParameters = new ArrayList<JobParameter>();
+      List<JobParameter> jobParameters = new ArrayList<>();
       jobParameters.add(jp);
       addOrChangeJobParameters(jobParameters, acs);
     }
   }
 
-  /* Decided to skip unit-specific job parameters. Cause extra work/SQL in TR-069 server, has never been used in 5 years. */
+  /**
+   * Decided to skip unit-specific job parameters. Cause extra work/SQL in TR-069 server, has never
+   * been used in 5 years.
+   */
   public Map<String, JobParameter> readJobParameters(Job job, Unit unit, ACS acs) {
     return job.getDefaultParameters();
   }
 
-  /*
-   * This method can't publish the same way all other add/change/delete methods
-   * do in ACS. The reason is simply that this method may be run very often,
-   * maybe every second. Thus we could end up demanding all modules in ACS to
-   * reload the whole ACS object every second. Even if we modified publish of
-   * Job-object to only read the job-table, that could still be a significant load.
+  /**
+   * This method can't publish the same way all other add/change/delete methods do in ACS. The
+   * reason is simply that this method may be run very often, maybe every second. Thus we could end
+   * up demanding all modules in ACS to reload the whole ACS object every second. Even if we
+   * modified publish of Job-object to only read the job-table, that could still be a significant
+   * load.
    *
-   * The conclusion: Prepare a message in this publish which gives the information
-   * about the changes directly, in other words the modules may skip reading the
-   * job table. We make an effort to only send the data if there really is a change.
-   * That will keep the number of message and data and load and the very minimum.
+   * <p>The conclusion: Prepare a message in this publish which gives the information about the
+   * changes directly, in other words the modules may skip reading the job table. We make an effort
+   * to only send the data if there really is a change. That will keep the number of message and
+   * data and load and the very minimum.
    */
   public void changeFromCore(Job job, String publishMsg, ACS acs) throws SQLException {
     Connection c = null;
@@ -459,8 +494,9 @@ public class Jobs {
       ds.addSqlAndArguments("completed_no_failure = ?, ", job.getCompletedNoFailures());
       ds.addSqlAndArguments("confirmed_failed = ?, ", job.getConfirmedFailed());
       ds.addSqlAndArguments("unconfirmed_failed = ?, ", job.getUnconfirmedFailed());
-      if (job.getStatus().equals(JobStatus.COMPLETED))
+      if (JobStatus.COMPLETED.equals(job.getStatus())) {
         ds.addSqlAndArguments("end_timestamp = ?, ", new Date());
+      }
       ds.addSqlAndArguments("status = ? ", job.getStatus().toString());
       ds.addSqlAndArguments("WHERE job_id = ? AND ", job.getId());
       ds.addSqlAndArguments(
@@ -485,13 +521,16 @@ public class Jobs {
               + ")";
 
       logger.info(message);
-      if (publishMsg.length() > 0 && acs.getDbi() != null)
+      if (!publishMsg.isEmpty() && acs.getDbi() != null) {
         acs.getDbi().publishJobCounters(job.getId(), publishMsg);
+      }
     } catch (SQLException sqlex) {
       sqle = sqlex;
       throw sqle;
     } finally {
-      if (pp != null) pp.close();
+      if (pp != null) {
+        pp.close();
+      }
       if (c != null) {
         c.close();
       }
@@ -499,8 +538,9 @@ public class Jobs {
   }
 
   public void changeStatus(Job job, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
+    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
+    }
     Connection c = null;
     try {
       c = acs.getDataSource().getConnection();
@@ -517,8 +557,9 @@ public class Jobs {
       }
       ds.addSqlAndArguments("status = ? ", job.getStatus().toString());
       ds.addSqlAndArguments("WHERE job_id = ? AND ", job.getId());
-      if (job.getStatus() == JobStatus.READY) ds.addSql(" status = '" + JobStatus.READY + "'");
-      else if (job.getStatus() == JobStatus.STARTED) {
+      if (job.getStatus() == JobStatus.READY) {
+        ds.addSql(" status = '" + JobStatus.READY + "'");
+      } else if (job.getStatus() == JobStatus.STARTED) {
         ds.addSql("(status = '" + JobStatus.STARTED + "' OR");
         ds.addSql(" status = '" + JobStatus.READY + "' OR");
         ds.addSql(" status = '" + JobStatus.PAUSED + "')");
@@ -534,9 +575,10 @@ public class Jobs {
       int rowsUpdated = ps.executeUpdate();
       ps.close();
       if (rowsUpdated > 0) {
-
         logger.info("Updated job " + job.getId() + " with status = " + job.getStatus());
-        if (acs.getDbi() != null) acs.getDbi().publishChange(job, job.getGroup().getUnittype());
+        if (acs.getDbi() != null) {
+          acs.getDbi().publishChange(job, job.getGroup().getUnittype());
+        }
       } else {
         String msg =
             "The job was not updated, most likely because the status change was not allowed ";
@@ -557,27 +599,33 @@ public class Jobs {
    * various updates methods since the agents are independent of each other.
    */
   public int changeFromUI(Job job, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
+    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
+    }
     job.validate();
     Connection c = null;
     try {
       c = acs.getDataSource().getConnection();
-      if (isDependencyLoop(job, job.getDependency()))
+      if (isDependencyLoop(job, job.getDependency())) {
         throw new IllegalArgumentException(
             "Job "
                 + job.getId()
                 + " cannot depend upon job "
                 + job.getDependency().getId()
                 + " since that creates a loop");
+      }
       DynamicStatement ds = new DynamicStatement();
       ds.addSql("UPDATE job SET ");
       ds.addSqlAndArguments("description = ?, ", job.getDescription());
       ds.addSqlAndArguments("stop_rules = ?, ", job.getStopRulesSerialized());
-      if (job.getDependency() == null)
+      if (job.getDependency() != null) {
+        ds.addSqlAndArguments("job_id_dependency = ?, ", job.getDependency().getId());
+      } else {
         ds.addSqlAndArguments("job_id_dependency = ?, ", new NullInteger());
-      else ds.addSqlAndArguments("job_id_dependency = ?, ", job.getDependency().getId());
-      if (job.getFile() != null) ds.addSqlAndArguments("firmware_id = ?, ", job.getFile().getId());
+      }
+      if (job.getFile() != null) {
+        ds.addSqlAndArguments("firmware_id = ?, ", job.getFile().getId());
+      }
 
       if (job.getStatus() == JobStatus.STARTED && job.getStartTimestamp() == null) {
         long startTms = System.currentTimeMillis();
@@ -588,12 +636,16 @@ public class Jobs {
         job.setEndTimestamp(new Date(endTms));
         ds.addSqlAndArguments("end_timestamp = ?, ", new java.sql.Timestamp(endTms));
       }
-      if (job.getRepeatCount() != null)
+      if (job.getRepeatCount() != null) {
         ds.addSqlAndArguments("repeat_count = ?, ", job.getRepeatCount());
-      else ds.addSqlAndArguments("repeat_count = ?, ", new NullInteger());
-      if (job.getRepeatInterval() != null)
+      } else {
+        ds.addSqlAndArguments("repeat_count = ?, ", new NullInteger());
+      }
+      if (job.getRepeatInterval() != null) {
         ds.addSqlAndArguments("repeat_interval = ?, ", job.getRepeatInterval());
-      else ds.addSqlAndArguments("repeat_interval = ?, ", new NullInteger());
+      } else {
+        ds.addSqlAndArguments("repeat_interval = ?, ", new NullInteger());
+      }
       ds.addSqlAndArguments("unconfirmed_timeout = ? ", job.getUnconfirmedTimeout());
       ds.addSqlAndArguments("WHERE job_id = ? AND ", job.getId());
       ds.addSql(" status <> '" + JobStatus.COMPLETED + "'");
@@ -603,10 +655,11 @@ public class Jobs {
       int rowsUpdated = ps.executeUpdate();
       ps.close();
       if (rowsUpdated > 0) {
-
         updateMandatoryJobParameters(job, acs);
         logger.info("Updated job " + job.getId() + " with type/description/status/rules");
-        if (acs.getDbi() != null) acs.getDbi().publishChange(job, job.getGroup().getUnittype());
+        if (acs.getDbi() != null) {
+          acs.getDbi().publishChange(job, job.getGroup().getUnittype());
+        }
       } else {
         String msg =
             "The job was not updated, most likely because status was " + JobStatus.COMPLETED;
@@ -637,9 +690,13 @@ public class Jobs {
       Job newJob = null;
       if (rs.next()) {
         unittype = acs.getUnittype(rs.getInt("u.unit_type_id"));
-        if (unittype == null) return; // The unittype is not accessible for this user
+        if (unittype == null) {
+          return;
+        } // The unittype is not accessible for this user
         Job oldJob = unittype.getJobs().getById(rs.getInt("job_id"));
-        if (oldJob == null) return; // The job is not accessible for this user
+        if (oldJob == null) {
+          return;
+        } // The job is not accessible for this user
         newJob = new Job();
         newJob.setUnittype(unittype); // Use "old" unittype
         newJob.setNextPII(
@@ -656,7 +713,9 @@ public class Jobs {
         try {
           newJob.setStatus(JobStatus.valueOf(statusStr));
         } catch (Throwable t) {
-          if (statusStr.equals("STOPPED")) newJob.setStatus(JobStatus.PAUSED);
+          if ("STOPPED".equals(statusStr)) {
+            newJob.setStatus(JobStatus.PAUSED);
+          }
         }
         newJob.setCompletedNoFailures(rs.getInt("completed_no_failure"));
         newJob.setCompletedHadFailures(rs.getInt("completed_had_failure"));
@@ -665,16 +724,21 @@ public class Jobs {
         newJob.setStartTimestamp(rs.getTimestamp("start_timestamp"));
         newJob.setEndTimestamp(rs.getTimestamp("end_timestamp"));
         String firmwareIdStr = rs.getString("firmware_id");
-        if (firmwareIdStr != null)
+        if (firmwareIdStr != null) {
           newJob.setFile(unittype.getFiles().getById(Integer.parseInt(firmwareIdStr)));
+        }
         String depIdStr = rs.getString("job_id_dependency");
-        if (depIdStr != null)
-          newJob.setDependency(unittype.getJobs().getById(new Integer(depIdStr)));
+        if (depIdStr != null) {
+          newJob.setDependency(unittype.getJobs().getById(Integer.valueOf(depIdStr)));
+        }
         String repeatCountStr = rs.getString("repeat_count");
-        if (repeatCountStr != null) newJob.setRepeatCount(Integer.parseInt(repeatCountStr));
+        if (repeatCountStr != null) {
+          newJob.setRepeatCount(Integer.parseInt(repeatCountStr));
+        }
         String repeatIntervalStr = rs.getString("repeat_interval");
-        if (repeatIntervalStr != null)
+        if (repeatIntervalStr != null) {
           newJob.setRepeatInterval(Integer.parseInt(repeatIntervalStr));
+        }
       }
       s.close();
       s = c.createStatement();
@@ -689,7 +753,9 @@ public class Jobs {
       if (newJob != null && rs.next()) {
         Integer unitTypeParamId = rs.getInt("unit_type_param_id");
         String value = rs.getString("value");
-        if (value == null) value = "";
+        if (value == null) {
+          value = "";
+        }
         Unittype ut = newJob.getUnittype();
         UnittypeParameter utp = ut.getUnittypeParameters().getById(unitTypeParamId);
         JobParameter jp =
@@ -702,13 +768,18 @@ public class Jobs {
       } else {
         for (Unittype ut : acs.getUnittypes().getUnittypes()) {
           Job j = ut.getJobs().getIdMap().remove(jobId);
-          if (j != null) // should always be true - but for good measure...
-          ut.getJobs().getNameMap().remove(j.getName());
+          if (j != null) {
+            ut.getJobs().getNameMap().remove(j.getName());
+          }
         }
       }
     } finally {
-      if (rs != null) rs.close();
-      if (s != null) s.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (s != null) {
+        s.close();
+      }
       if (c != null) {
         c.close();
       }
@@ -716,15 +787,19 @@ public class Jobs {
   }
 
   public Job[] getGroupJobs(Integer groupId) {
-    List<Job> groupJobs = new ArrayList<Job>();
+    List<Job> groupJobs = new ArrayList<>();
     for (Job job : idMap.values()) {
-      if (job.getGroup().getId().intValue() == groupId.intValue()) groupJobs.add(job);
+      if (job.getGroup().getId().intValue() == groupId.intValue()) {
+        groupJobs.add(job);
+      }
     }
     return groupJobs.toArray(new Job[groupJobs.size()]);
   }
 
   public Job[] getJobs() {
-    if (idMap == null) idMap = new HashMap<>();
+    if (idMap == null) {
+      idMap = new HashMap<>();
+    }
     return idMap.values().toArray(new Job[idMap.size()]);
   }
 
@@ -733,7 +808,9 @@ public class Jobs {
   }
 
   public Job getById(Integer jobId) {
-    if (idMap != null) return idMap.get(jobId);
+    if (idMap != null) {
+      return idMap.get(jobId);
+    }
     return null;
   }
 

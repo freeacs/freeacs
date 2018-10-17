@@ -38,8 +38,7 @@ public class Triggers {
   }
 
   public Trigger[] getTriggers() {
-    Trigger[] triggers = nameMap.values().toArray(new Trigger[] {});
-    return triggers;
+    return nameMap.values().toArray(new Trigger[] {});
   }
 
   @Override
@@ -77,7 +76,9 @@ public class Triggers {
         ps.setQueryTimeout(60);
         ps.executeUpdate();
         ResultSet gk = ps.getGeneratedKeys();
-        if (gk.next()) history.setId(gk.getInt(1));
+        if (gk.next()) {
+          history.setId(gk.getInt(1));
+        }
       } else {
         // Can only update sent_timestamp - the other fields should not be touched
         DynamicStatement ds = new DynamicStatement();
@@ -90,7 +91,9 @@ public class Triggers {
         ps.executeUpdate();
       }
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       c.close();
     }
   }
@@ -98,7 +101,9 @@ public class Triggers {
   public TriggerRelease readLatestTriggerRelease(Trigger trigger, Date from, Date to, ACS acs)
       throws SQLException {
     List<TriggerRelease> history = readTriggerReleases(trigger, from, to, acs, 1);
-    if (history.size() > 0) return history.get(0);
+    if (!history.isEmpty()) {
+      return history.get(0);
+    }
     return null;
   }
 
@@ -108,7 +113,7 @@ public class Triggers {
     ResultSet rs = null;
     Connection c = acs.getDataSource().getConnection();
     try {
-      List<TriggerRelease> thList = new ArrayList<TriggerRelease>();
+      List<TriggerRelease> thList = new ArrayList<>();
       DynamicStatement ds = new DynamicStatement();
       ds.addSql(
           "SELECT tr.id, tr.trigger_id, tr.no_events, tr.no_events_pr_unit, tr.no_units, tr.first_event_timestamp, tr.release_timestamp, tr.sent_timestamp ");
@@ -116,10 +121,14 @@ public class Triggers {
           "FROM trigger_release tr, trigger_ t WHERE tr.release_timestamp >= ? AND tr.release_timestamp < ? ",
           from,
           to);
-      if (trigger != null) ds.addSqlAndArguments("AND tr.trigger_id = ? ", trigger.getId());
+      if (trigger != null) {
+        ds.addSqlAndArguments("AND tr.trigger_id = ? ", trigger.getId());
+      }
       ds.addSqlAndArguments("AND tr.trigger_id = t.id AND t.unit_type_id = ? ", unittype.getId());
       ds.addSql("ORDER BY tr.release_timestamp DESC");
-      if (limit != null) ds.addSql(" LIMIT " + limit);
+      if (limit != null) {
+        ds.addSql(" LIMIT " + limit);
+      }
       ps = ds.makePreparedStatement(c);
       ps.setQueryTimeout(60);
       rs = ps.executeQuery();
@@ -146,8 +155,12 @@ public class Triggers {
       }
       return thList;
     } finally {
-      if (rs != null) rs.close();
-      if (ps != null) ps.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
       c.close();
     }
   }
@@ -181,7 +194,9 @@ public class Triggers {
       // and the cache in the syslog server (running this method) has not
       // been updated.
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       c.close();
     }
   }
@@ -204,18 +219,21 @@ public class Triggers {
     Connection c = acs.getDataSource().getConnection();
     try {
       DynamicStatement ds = new DynamicStatement();
-      if (triggerId == null)
-        ds.addSqlAndArguments("DELETE FROM trigger_event WHERE timestamp_ < ?", upUntil);
-      else
+      if (triggerId != null) {
         ds.addSqlAndArguments(
             "DELETE FROM trigger_event WHERE trigger_id = ? and timestamp_ < ?",
             triggerId,
             upUntil);
+      } else {
+        ds.addSqlAndArguments("DELETE FROM trigger_event WHERE timestamp_ < ?", upUntil);
+      }
       ps = ds.makePreparedStatement(c);
       ps.setQueryTimeout(60);
       return ps.executeUpdate();
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       c.close();
     }
   }
@@ -236,7 +254,7 @@ public class Triggers {
     ResultSet rs;
     PreparedStatement ps = null;
     Connection c = acs.getDataSource().getConnection();
-    Map<String, Integer> unitMap = new HashMap<String, Integer>();
+    Map<String, Integer> unitMap = new HashMap<>();
     try {
       DynamicStatement ds = new DynamicStatement();
       ds.addSqlAndArguments(
@@ -257,7 +275,9 @@ public class Triggers {
       unitMap.put("TEC-TotalEventsCounter", totalCounter);
       return unitMap;
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       c.close();
     }
   }
@@ -276,17 +296,23 @@ public class Triggers {
       ps = ds.makePreparedStatement(c);
       ps.setQueryTimeout(60);
       rs = ps.executeQuery();
-      if (rs.next()) return rs.getTimestamp("timestamp_");
-      else return null;
+      if (rs.next()) {
+        return rs.getTimestamp("timestamp_");
+      } else {
+        return null;
+      }
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       c.close();
     }
   }
 
   public void addOrChangeTrigger(Trigger trigger, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
+    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
+    }
     trigger.validate();
     addOrChangeTriggerImpl(trigger, acs);
     nameMap.put(trigger.getName(), trigger);
@@ -299,7 +325,7 @@ public class Triggers {
 
   private int deleteTriggerImpl(Trigger trigger, ACS acs) throws SQLException {
     PreparedStatement ps = null;
-    boolean wasAutoCommit = false;
+    boolean wasAutoCommit;
     Connection c = acs.getDataSource().getConnection();
     wasAutoCommit = c.getAutoCommit();
     c.setAutoCommit(false);
@@ -321,11 +347,15 @@ public class Triggers {
       int rowsDeleted = ps.executeUpdate();
       c.commit();
       c.setAutoCommit(true);
-      if (acs.getDbi() != null) acs.getDbi().publishDelete(trigger, trigger.getUnittype());
+      if (acs.getDbi() != null) {
+        acs.getDbi().publishDelete(trigger, trigger.getUnittype());
+      }
       logger.info("Deleted trigger " + trigger.getName());
       return rowsDeleted;
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       c.setAutoCommit(wasAutoCommit);
       c.close();
     }
@@ -338,15 +368,19 @@ public class Triggers {
    * @throws java.sql.SQLException
    */
   public void deleteTrigger(Trigger trigger, ACS acs) throws SQLException {
-    if (trigger.getChildren().size() > 0)
+    if (!trigger.getChildren().isEmpty()) {
       throw new IllegalArgumentException(
           "This trigger is a composite trigger with \"child\" triggers. Remove child triggers before deleting this trigger");
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
+    }
+    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
+    }
     int rowsDeleted = deleteTriggerImpl(trigger, acs);
     nameMap.remove(trigger.getName());
     idMap.remove(trigger.getId());
-    if (trigger.getParent() != null) trigger.getParent().removeChild(trigger);
+    if (trigger.getParent() != null) {
+      trigger.getParent().removeChild(trigger);
+    }
   }
 
   private void addOrChangeTriggerImpl(Trigger trigger, ACS acs) throws SQLException {
@@ -365,16 +399,22 @@ public class Triggers {
       //				ious.addField(new Field("group_id", trigger.getGroup().getId()));
       ious.addField(new Field("eval_period_minutes", trigger.getEvalPeriodMinutes()));
       ious.addField(new Field("notify_interval_hours", trigger.getNotifyIntervalHours()));
-      if (trigger.getScript() != null)
+      if (trigger.getScript() != null) {
         ious.addField(new Field("filestore_id", trigger.getScript().getId()));
-      else ious.addField(new Field("filestore_id", (Integer) null));
-      if (trigger.getParent() != null)
+      } else {
+        ious.addField(new Field("filestore_id", (Integer) null));
+      }
+      if (trigger.getParent() != null) {
         ious.addField(new Field("parent_trigger_id", trigger.getParent().getId()));
-      else ious.addField(new Field("parent_trigger_id", (Integer) null));
+      } else {
+        ious.addField(new Field("parent_trigger_id", (Integer) null));
+      }
       ious.addField(new Field("to_list", trigger.getToList()));
-      if (trigger.getSyslogEvent() != null)
+      if (trigger.getSyslogEvent() != null) {
         ious.addField(new Field("syslog_event_id", trigger.getSyslogEvent().getId()));
-      else ious.addField(new Field("syslog_event_id", (Integer) null));
+      } else {
+        ious.addField(new Field("syslog_event_id", (Integer) null));
+      }
       ious.addField(new Field("no_events", trigger.getNoEvents()));
       ious.addField(new Field("no_events_pr_unit", trigger.getNoEventsPrUnit()));
       ious.addField(new Field("no_units", trigger.getNoUnits()));
@@ -383,19 +423,27 @@ public class Triggers {
       ps.executeUpdate();
       if (ious.isInsert()) {
         ResultSet gk = ps.getGeneratedKeys();
-        if (gk.next()) trigger.setId(gk.getInt(1));
+        if (gk.next()) {
+          trigger.setId(gk.getInt(1));
+        }
         logger.info("Inserted trigger " + trigger.getName());
-        if (acs.getDbi() != null) acs.getDbi().publishAdd(trigger, trigger.getUnittype());
+        if (acs.getDbi() != null) {
+          acs.getDbi().publishAdd(trigger, trigger.getUnittype());
+        }
       } else {
         if (trigger.isSyslogEventChanged()) { // delete all trigger_events for this trigger
           deleteEvents(trigger.getId(), new Date(), acs);
           trigger.setSyslogEventChangeCompleted();
         }
         logger.info("Updated trigger " + trigger.getName());
-        if (acs.getDbi() != null) acs.getDbi().publishChange(trigger, trigger.getUnittype());
+        if (acs.getDbi() != null) {
+          acs.getDbi().publishChange(trigger, trigger.getUnittype());
+        }
       }
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       c.close();
     }
   }
@@ -410,9 +458,11 @@ public class Triggers {
 
   public List<Trigger> getTopLevelTriggers() {
     Trigger[] allTriggers = getTriggers();
-    List<Trigger> topLevelTriggers = new ArrayList<Trigger>();
+    List<Trigger> topLevelTriggers = new ArrayList<>();
     for (Trigger t : allTriggers) {
-      if (t.getParent() == null) topLevelTriggers.add(t);
+      if (t.getParent() == null) {
+        topLevelTriggers.add(t);
+      }
     }
     return topLevelTriggers;
   }

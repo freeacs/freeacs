@@ -5,7 +5,6 @@ import com.github.freeacs.dbi.UnitJob;
 import com.github.freeacs.dbi.UnitJobStatus;
 
 public class FractionStopRuleCounter {
-
   private StopRule rule;
 
   private int CONFIRMED = 0;
@@ -15,11 +14,11 @@ public class FractionStopRuleCounter {
   private UnitResultMap<String, UnitJobResult> unitJobResults;
 
   public FractionStopRuleCounter(StopRule rule) {
-    if (rule.getNumberMax() == null)
-      throw new IllegalArgumentException(
-          "This rule is not a fraction stop rule: " + rule.toString());
+    if (rule.getNumberMax() == null) {
+      throw new IllegalArgumentException("This rule is not a fraction stop rule: " + rule);
+    }
     this.rule = rule;
-    unitJobResults = new UnitResultMap<String, UnitJobResult>(rule.getNumberMax());
+    unitJobResults = new UnitResultMap<>(rule.getNumberMax());
   }
 
   public void addResult(UnitJob uj) {
@@ -37,33 +36,47 @@ public class FractionStopRuleCounter {
     }
 
     if (unitJobResults.getEldestEntry() != null) {
-      UnitJobResult eldestEntry = (UnitJobResult) unitJobResults.getEldestEntry().getValue();
-      if (eldestEntry.isConfirmedFailure()) counters[CONFIRMED]--;
-      if (eldestEntry.isUnconfirmedFailure()) counters[UNCONFIRMED]--;
+      UnitJobResult eldestEntry = unitJobResults.getEldestEntry().getValue();
+      if (eldestEntry.isConfirmedFailure()) {
+        counters[CONFIRMED]--;
+      }
+      if (eldestEntry.isUnconfirmedFailure()) {
+        counters[UNCONFIRMED]--;
+      }
       unitJobResults.setEldestEntry(null);
     }
   }
 
-  // To be used from updateRules() - special case
+  /** To be used from updateRules() - special case. */
   public void addResult(UnitJobResult ujr) {
-    if (ujr.isConfirmedFailure()) counters[CONFIRMED]++;
-    if (ujr.isUnconfirmedFailure()) counters[UNCONFIRMED]++;
+    if (ujr.isConfirmedFailure()) {
+      counters[CONFIRMED]++;
+    }
+    if (ujr.isUnconfirmedFailure()) {
+      counters[UNCONFIRMED]++;
+    }
     if (unitJobResults.getEldestEntry() != null) {
-      UnitJobResult eldestEntry = (UnitJobResult) unitJobResults.getEldestEntry().getValue();
-      if (eldestEntry.isConfirmedFailure()) counters[CONFIRMED]--;
-      if (eldestEntry.isUnconfirmedFailure()) counters[UNCONFIRMED]--;
+      UnitJobResult eldestEntry = unitJobResults.getEldestEntry().getValue();
+      if (eldestEntry.isConfirmedFailure()) {
+        counters[CONFIRMED]--;
+      }
+      if (eldestEntry.isUnconfirmedFailure()) {
+        counters[UNCONFIRMED]--;
+      }
       unitJobResults.setEldestEntry(null);
     }
   }
 
   public boolean ruleMatch() {
     int failures = 0;
-    if (rule.getRuleType() == StopRule.ANY_FAILURE_TYPE)
+    if (rule.getRuleType() == StopRule.ANY_FAILURE_TYPE) {
       failures = counters[CONFIRMED] + counters[UNCONFIRMED];
-    else if (rule.getRuleType() == StopRule.CONFIRMED_FAILURE_TYPE) failures = counters[CONFIRMED];
-    else failures = counters[UNCONFIRMED];
-    if (failures >= rule.getNumberLimit()) return true;
-    else return false;
+    } else if (rule.getRuleType() == StopRule.CONFIRMED_FAILURE_TYPE) {
+      failures = counters[CONFIRMED];
+    } else {
+      failures = counters[UNCONFIRMED];
+    }
+    return failures >= rule.getNumberLimit();
   }
 
   public String toString() {

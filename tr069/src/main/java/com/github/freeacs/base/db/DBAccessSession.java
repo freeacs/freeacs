@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class DBAccessSession {
-
   private final ACS acs;
 
   public DBAccessSession(ACS acs) {
@@ -36,7 +35,7 @@ public class DBAccessSession {
     try {
       ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
       unit = acsUnit.getUnitById(unitId);
-      if (unit != null)
+      if (unit != null) {
         Log.debug(
             DBAccessSession.class,
             "Found unit "
@@ -45,6 +44,7 @@ public class DBAccessSession {
                 + unit.getUnittype().getName()
                 + ", profile "
                 + unit.getProfile().getName());
+      }
       return unit;
     } catch (Throwable t) {
       DBAccess.handleError(method, t);

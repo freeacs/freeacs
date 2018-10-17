@@ -6,20 +6,19 @@ import java.util.Map;
 
 /** The Class SyslogEventsData. */
 public class ScriptExecutionData extends InputData {
-
-  // Typically to indicate edit/delete/add/etc
+  /** Typically to indicate edit/delete/add/etc. */
   private Input action = Input.getStringInput("action");
 
-  // Id to reference a particular script execution
+  /** Id to reference a particular script execution. */
   private Input id = Input.getIntegerInput("id");
 
-  // The script file to be executed
+  /** The script file to be executed. */
   private Input fileId = Input.getIntegerInput("fileId");
 
-  // arguments which goes with the script file
+  /** Arguments which goes with the script file. */
   private Input arguments = Input.getStringInput("arguments");
 
-  // request id, to identify the script execution
+  /** Request id, to identify the script execution. */
   private Input requestid = Input.getStringInput("requestid");
 
   private Input info = Input.getStringInput("info");
@@ -50,25 +49,7 @@ public class ScriptExecutionData extends InputData {
 
   @Override
   public boolean validateForm() {
-    boolean valid = true;
-    //		if (name.getString() == null || name.getString().length() == 0) {
-    //			name.setError("Name is required");
-    //			valid = false;
-    //		}
-    //		if (expression.getString() == null || expression.getString().length() == 0) {
-    //			expression.setError("Expression is required");
-    //			valid = false;
-    //		}
-    //		if (groupId.getString() == null || groupId.getString().length() == 0) {
-    //			groupId.setError("Group is required");
-    //			valid = false;
-    //		}
-    //		if (timeout.getInteger() == null || timeout.getInteger() < 1 || timeout.getInteger() > 48) {
-    //			timeout.setError("Limit must be a number from 1 to 48");
-    //			valid = false;
-    //		}
-
-    return valid;
+    return true;
   }
 
   public Input getFileId() {

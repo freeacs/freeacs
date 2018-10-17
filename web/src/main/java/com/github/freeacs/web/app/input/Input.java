@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
  * @author Jarl Andre Hubenthal
  */
 public class Input {
-
   /** The key. */
   private String key;
 
@@ -69,7 +68,9 @@ public class Input {
     this.key = key;
     this.value = value;
     this.array = isArray;
-    if (type == null) throw new IllegalArgumentException("InputType cannot be NULL");
+    if (type == null) {
+      throw new IllegalArgumentException("InputType cannot be NULL");
+    }
     this.type = type;
   }
 
@@ -350,8 +351,9 @@ public class Input {
    */
   public String getStringWithoutTags() {
     String string = getString();
-    if (string != null && string.length() > 0)
+    if (string != null && !string.isEmpty()) {
       return Escaping.removeHTMLTags(string, Escaping.EscapeType.TAGS_ONLY);
+    }
     return null;
   }
 
@@ -362,8 +364,9 @@ public class Input {
    */
   public String getStringWithoutTagsAndContent() {
     String string = getString();
-    if (string != null && string.length() > 0)
+    if (string != null && !string.isEmpty()) {
       return Escaping.removeHTMLTags(string, Escaping.EscapeType.TAGS_AND_CONTENT);
+    }
     return null;
   }
 
@@ -373,8 +376,12 @@ public class Input {
    * @return the date
    */
   public Date getDate() {
-    if (type != InputType.DATE) logger.warn(key + " is not a date");
-    if (value instanceof Date) return (Date) value;
+    if (type != InputType.DATE) {
+      logger.warn(key + " is not a date");
+    }
+    if (value instanceof Date) {
+      return (Date) value;
+    }
     return null;
   }
 
@@ -386,7 +393,9 @@ public class Input {
    */
   public Date getDateOrDefault(Date def) {
     Date toReturn = getDate();
-    if (toReturn != null) return toReturn;
+    if (toReturn != null) {
+      return toReturn;
+    }
     return def;
   }
 
@@ -407,7 +416,7 @@ public class Input {
    * @return the date formatted
    * @throws IllegalArgumentException the illegal argument exception
    */
-  public String getDateFormatted() throws IllegalArgumentException {
+  public String getDateFormatted() {
     Date toFormat = getDate();
     return format(toFormat);
   }
@@ -419,9 +428,13 @@ public class Input {
    * @return the string
    * @throws IllegalArgumentException the illegal argument exception
    */
-  public String format(Date d) throws IllegalArgumentException {
-    if (d == null) return null;
-    if (dateFormat == null) throw new IllegalArgumentException("No date formatter available");
+  public String format(Date d) {
+    if (d == null) {
+      return null;
+    }
+    if (dateFormat == null) {
+      throw new IllegalArgumentException("No date formatter available");
+    }
     return DateUtils.formatDate(dateFormat, d);
   }
 
@@ -441,9 +454,13 @@ public class Input {
    * @return the boolean
    * @throws IllegalArgumentException the illegal argument exception
    */
-  public Boolean getBoolean(Boolean def) throws IllegalArgumentException {
-    if (type != InputType.BOOLEAN) logger.warn(key + " is not a Boolean");
-    if (value instanceof Boolean) return (Boolean) value;
+  public Boolean getBoolean(Boolean def) {
+    if (type != InputType.BOOLEAN) {
+      logger.warn(key + " is not a Boolean");
+    }
+    if (value instanceof Boolean) {
+      return (Boolean) value;
+    }
     return def;
   }
 
@@ -463,8 +480,12 @@ public class Input {
    * @return the integer
    */
   public Integer getInteger(Integer def) {
-    if (type != InputType.INTEGER) logger.warn(key + " is not an Integer");
-    if (value instanceof Integer) return (Integer) value;
+    if (type != InputType.INTEGER) {
+      logger.warn(key + " is not an Integer");
+    }
+    if (value instanceof Integer) {
+      return (Integer) value;
+    }
     return def;
   }
 
@@ -484,8 +505,12 @@ public class Input {
    * @return the float
    */
   public Float getFloat(Float def) {
-    if (type != InputType.FLOAT) logger.warn(key + " is not a Float");
-    if (value instanceof Float) return (Float) value;
+    if (type != InputType.FLOAT) {
+      logger.warn(key + " is not a Float");
+    }
+    if (value instanceof Float) {
+      return (Float) value;
+    }
     return def;
   }
 
@@ -495,8 +520,12 @@ public class Input {
    * @return the byte
    */
   public Byte getByte() {
-    if (type != InputType.BYTE) logger.warn(key + " is not a Byte");
-    if (value instanceof Byte) return (Byte) value;
+    if (type != InputType.BYTE) {
+      logger.warn(key + " is not a Byte");
+    }
+    if (value instanceof Byte) {
+      return (Byte) value;
+    }
     return null;
   }
 
@@ -506,8 +535,12 @@ public class Input {
    * @return the short
    */
   public Short getShort() {
-    if (type != InputType.SHORT) logger.warn(key + " is not a Short");
-    if (value instanceof Short) return (Short) value;
+    if (type != InputType.SHORT) {
+      logger.warn(key + " is not a Short");
+    }
+    if (value instanceof Short) {
+      return (Short) value;
+    }
     return null;
   }
 
@@ -517,8 +550,12 @@ public class Input {
    * @return the character
    */
   public Character getCharacter() {
-    if (type != InputType.CHAR) logger.warn(key + " is not a Character");
-    if (value instanceof Character) return (Character) value;
+    if (type != InputType.CHAR) {
+      logger.warn(key + " is not a Character");
+    }
+    if (value instanceof Character) {
+      return (Character) value;
+    }
     return null;
   }
 
@@ -528,8 +565,12 @@ public class Input {
    * @return the long
    */
   public Long getLong() {
-    if (type != InputType.LONG) logger.warn(key + " is not a Long");
-    if (value instanceof Long) return (Long) value;
+    if (type != InputType.LONG) {
+      logger.warn(key + " is not a Long");
+    }
+    if (value instanceof Long) {
+      return (Long) value;
+    }
     return null;
   }
 
@@ -539,8 +580,12 @@ public class Input {
    * @return the double
    */
   public Double getDouble() {
-    if (type != InputType.DOUBLE) logger.warn(key + " is not a Double");
-    if (value instanceof Double) return (Double) value;
+    if (type != InputType.DOUBLE) {
+      logger.warn(key + " is not a Double");
+    }
+    if (value instanceof Double) {
+      return (Double) value;
+    }
     return null;
   }
 
@@ -552,8 +597,12 @@ public class Input {
    * @return the double
    */
   public Double getDouble(Double def) {
-    if (type != InputType.DOUBLE) logger.warn(key + " is not a Double");
-    if (value instanceof Double) return (Double) value;
+    if (type != InputType.DOUBLE) {
+      logger.warn(key + " is not a Double");
+    }
+    if (value instanceof Double) {
+      return (Double) value;
+    }
     return def;
   }
 
@@ -563,9 +612,11 @@ public class Input {
    * @return the files
    */
   public List<byte[]> getFiles() {
-    if (type != InputType.FILE) logger.warn(key + " is not a File");
+    if (type != InputType.FILE) {
+      logger.warn(key + " is not a File");
+    }
     if (value instanceof FileItem[]) {
-      List<byte[]> files = new ArrayList<byte[]>();
+      List<byte[]> files = new ArrayList<>();
       for (FileItem item : (FileItem[]) value) {
         files.add(item.get());
       }
@@ -580,8 +631,12 @@ public class Input {
    * @return the file as string
    */
   public String getFileAsString() {
-    if (type != InputType.FILE) logger.warn(key + " is not a File");
-    if (value instanceof FileItem) return new String(((FileItem) value).get()).trim();
+    if (type != InputType.FILE) {
+      logger.warn(key + " is not a File");
+    }
+    if (value instanceof FileItem) {
+      return new String(((FileItem) value).get()).trim();
+    }
     return null;
   }
 
@@ -591,8 +646,12 @@ public class Input {
    * @return the file as bytes
    */
   public byte[] getFileAsBytes() {
-    if (type != InputType.FILE) logger.warn(key + " is not a File");
-    if (value instanceof FileItem) return ((FileItem) value).get();
+    if (type != InputType.FILE) {
+      logger.warn(key + " is not a File");
+    }
+    if (value instanceof FileItem) {
+      return ((FileItem) value).get();
+    }
     return null;
   }
 
@@ -602,8 +661,12 @@ public class Input {
    * @return the file
    */
   public FileItem getFile() {
-    if (type != InputType.FILE) logger.warn(key + " is not a File");
-    if (value instanceof FileItem) return ((FileItem) value);
+    if (type != InputType.FILE) {
+      logger.warn(key + " is not a File");
+    }
+    if (value instanceof FileItem) {
+      return (FileItem) value;
+    }
     return null;
   }
 
@@ -615,13 +678,22 @@ public class Input {
    * @return The string representation of the value
    */
   public String getString() {
-    if (value == null) return null;
+    if (value == null) {
+      return null;
+    }
     String string;
-    if (value instanceof String[]) string = StringUtils.join((String[]) value, ",");
-    else if (value instanceof Unittype) string = ((Unittype) value).getName();
-    else if (value instanceof Profile) string = ((Profile) value).getName();
-    else string = value.toString();
-    if (string != null && !string.equals(WebConstants.ALL_ITEMS_OR_DEFAULT)) return string.trim();
+    if (value instanceof String[]) {
+      string = StringUtils.join((String[]) value, ",");
+    } else if (value instanceof Unittype) {
+      string = ((Unittype) value).getName();
+    } else if (value instanceof Profile) {
+      string = ((Profile) value).getName();
+    } else {
+      string = value.toString();
+    }
+    if (string != null && !WebConstants.ALL_ITEMS_OR_DEFAULT.equals(string)) {
+      return string.trim();
+    }
     return null;
   }
 
@@ -631,9 +703,15 @@ public class Input {
    * @return the email
    */
   public String getEmail() {
-    if (type != InputType.EMAIL) logger.warn(key + " is not an email");
-    if (value instanceof String) return (String) value;
-    if (value instanceof String[]) return StringUtils.join((String[]) value, ",");
+    if (type != InputType.EMAIL) {
+      logger.warn(key + " is not an email");
+    }
+    if (value instanceof String) {
+      return (String) value;
+    }
+    if (value instanceof String[]) {
+      return StringUtils.join((String[]) value, ",");
+    }
     return null;
   }
 
@@ -705,7 +783,9 @@ public class Input {
    * @return the string array
    */
   public String[] getStringArray() {
-    if (value instanceof String[]) return (String[]) value;
+    if (value instanceof String[]) {
+      return (String[]) value;
+    }
     return null;
   }
 
@@ -726,8 +806,7 @@ public class Input {
    */
   public boolean isValue(String valueToCheckFor) {
     String string = getString();
-    if (string != null && valueToCheckFor.equals(string)) return true;
-    return false;
+    return valueToCheckFor.equals(string);
   }
 
   /**
@@ -738,9 +817,7 @@ public class Input {
    */
   public boolean isNullOrValue(String valueToCheckFor) {
     String string = getString();
-    if (string == null) return true;
-    if (valueToCheckFor.equals(string)) return true;
-    return false;
+    return string == null || valueToCheckFor.equals(string);
   }
 
   /**
@@ -751,10 +828,7 @@ public class Input {
    */
   public boolean notNullNorValue(String valueToCheckFor) {
     String string = getString();
-    if (string == null) return false;
-    if (valueToCheckFor == null) return true;
-    if (valueToCheckFor.equals(string)) return false;
-    return true;
+    return string != null && (valueToCheckFor == null || !valueToCheckFor.equals(string));
   }
 
   /**
@@ -765,9 +839,7 @@ public class Input {
    */
   public boolean hasValue(String valueToCheckFor) {
     String string = getString();
-    if (string == null) return false;
-    if (valueToCheckFor.equals(string)) return true;
-    return false;
+    return valueToCheckFor.equals(string);
   }
 
   /**
@@ -776,8 +848,11 @@ public class Input {
    * @param value the new value
    */
   public void setValue(Object value) {
-    if (value instanceof String) this.value = ((String) value).trim();
-    else this.value = value;
+    if (value instanceof String) {
+      this.value = ((String) value).trim();
+    } else {
+      this.value = value;
+    }
   }
 
   /**
@@ -795,8 +870,10 @@ public class Input {
 
   public String getString(String returnIfNull) {
     String mainReturnValue = getString();
-    if (mainReturnValue == null) return returnIfNull;
-    return mainReturnValue;
+    if (mainReturnValue != null) {
+      return mainReturnValue;
+    }
+    return returnIfNull;
   }
 
   public String getStringOrDefault(String returnIfNull) {
@@ -804,8 +881,7 @@ public class Input {
   }
 
   public boolean notValue(String oldUnittype) {
-    if (this.getString() == null && oldUnittype != null) return true;
-    else if (this.getString() != null && this.getString().equals(oldUnittype)) return true;
-    else return false;
+    return (getString() == null && oldUnittype != null)
+        || (getString() != null && getString().equals(oldUnittype));
   }
 }

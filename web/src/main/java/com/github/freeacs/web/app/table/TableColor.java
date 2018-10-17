@@ -2,7 +2,6 @@ package com.github.freeacs.web.app.table;
 
 /** The Enum TableColor. */
 public enum TableColor {
-
   /** The GREEN. */
   GREEN("ccdcb7"),
 
@@ -32,13 +31,10 @@ public enum TableColor {
    *
    * @param color the color
    */
-  private TableColor(String color) {
+  TableColor(String color) {
     this.colorHex = color;
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Enum#toString()
-   */
   public String toString() {
     return colorHex;
   }

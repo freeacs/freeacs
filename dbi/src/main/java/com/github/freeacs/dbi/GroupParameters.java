@@ -46,7 +46,7 @@ public class GroupParameters {
   }
 
   public List<Parameter> getParameters() {
-    List<Parameter> params = new ArrayList<Parameter>();
+    List<Parameter> params = new ArrayList<>();
     for (Entry<String, GroupParameter> entry : nameMap.entrySet()) {
       params.add(entry.getValue().getParameter());
     }
@@ -61,8 +61,7 @@ public class GroupParameters {
    * @return List<Parameter> All parameters including parents
    */
   public List<Parameter> getAllParameters(Group group) {
-    List<Parameter> groupParams = new ArrayList<Parameter>();
-    groupParams.addAll(group.getGroupParameters().getParameters());
+    List<Parameter> groupParams = new ArrayList<>(group.getGroupParameters().getParameters());
     Group parent = group;
     while ((parent = parent.getParent()) != null) {
       groupParams.addAll(parent.getGroupParameters().getParameters());
@@ -92,9 +91,13 @@ public class GroupParameters {
         ps.setQueryTimeout(60);
         ps.executeUpdate();
         ResultSet gk = ps.getGeneratedKeys();
-        if (gk.next()) groupParameter.setId(gk.getInt(1));
+        if (gk.next()) {
+          groupParameter.setId(gk.getInt(1));
+        }
         logger.info("Added group parameter " + groupParameter.getName());
-        if (acs.getDbi() != null) acs.getDbi().publishAdd(groupParameter, group.getUnittype());
+        if (acs.getDbi() != null) {
+          acs.getDbi().publishAdd(groupParameter, group.getUnittype());
+        }
       } else {
         ds.addSql("UPDATE group_param SET ");
         ds.addSql("value = ?, operator = ?, data_type = ? WHERE id = ?");
@@ -109,10 +112,14 @@ public class GroupParameters {
         ps.setQueryTimeout(60);
         ps.executeUpdate();
         logger.info("Updated group parameter " + groupParameter.getName());
-        if (acs.getDbi() != null) acs.getDbi().publishChange(groupParameter, group.getUnittype());
+        if (acs.getDbi() != null) {
+          acs.getDbi().publishChange(groupParameter, group.getUnittype());
+        }
       }
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       c.close();
     }
   }
@@ -155,9 +162,13 @@ public class GroupParameters {
       s.setQueryTimeout(60);
       s.executeUpdate(sql);
       logger.info("Deleted group parameter " + groupParameter.getName());
-      if (acs.getDbi() != null) acs.getDbi().publishDelete(groupParameter, group.getUnittype());
+      if (acs.getDbi() != null) {
+        acs.getDbi().publishDelete(groupParameter, group.getUnittype());
+      }
     } finally {
-      if (s != null) s.close();
+      if (s != null) {
+        s.close();
+      }
       c.close();
     }
   }
@@ -176,13 +187,18 @@ public class GroupParameters {
     idMap.remove(groupParameter.getId());
   }
 
-  /* Will only update the object model, not the database, used by ACS.read() and Groups.refreshGroupParameters() */
+  /**
+   * Will only update the object model, not the database, used by ACS.read() and
+   * Groups.refreshGroupParameters()
+   */
   protected void addOrChangeGroupParameter(GroupParameter groupParameter) {
     nameMap.put(groupParameter.getName(), groupParameter);
     idMap.put(groupParameter.getId(), groupParameter);
   }
 
-  /* Will only update the object model, not the database, used by Groups.refreshGroupParameters() */
+  /**
+   * Will only update the object model, not the database, used by Groups.refreshGroupParameters()
+   */
   protected void deleteGroupParameter(GroupParameter groupParameter) {
     nameMap.remove(groupParameter.getName());
     idMap.remove(groupParameter.getId());

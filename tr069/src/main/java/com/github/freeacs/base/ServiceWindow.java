@@ -8,9 +8,9 @@ import java.text.SimpleDateFormat;
 import java.util.Random;
 
 public class ServiceWindow {
-
-  // For random distribution of PII within the ServiceWindow
+  /** For random distribution of PII within the ServiceWindow. */
   private static Random random = new Random(System.currentTimeMillis());
+
   private TimeWindow timeWindow;
   private long currentTms;
   private ACSParameters ACSParameters;
@@ -19,27 +19,27 @@ public class ServiceWindow {
   public ServiceWindow(SessionDataI sessionData, boolean disruptive) {
     this.currentTms = System.currentTimeMillis();
     this.ACSParameters = sessionData.getAcsParameters();
-    if (disruptive)
+    if (disruptive) {
       timeWindow =
           new TimeWindow(ACSParameters.getValue(SystemParameters.SERVICE_WINDOW_DISRUPTIVE));
-    else
+    } else {
       timeWindow = new TimeWindow(ACSParameters.getValue(SystemParameters.SERVICE_WINDOW_REGULAR));
+    }
   }
 
   private boolean isEnabled() {
     String enable = ACSParameters.getValue(SystemParameters.SERVICE_WINDOW_ENABLE);
-    return enable == null || (!enable.equals("0") && !enable.equalsIgnoreCase("false"));
+    return enable == null || (!"0".equals(enable) && !"false".equalsIgnoreCase(enable));
   }
 
-  /* Return the number of provisionings per week. Default value is once per day.  */
+  /** Return the number of provisionings per week. Default value is once per day. */
   private float findFrequency() {
     String freq = ACSParameters.getValue(SystemParameters.SERVICE_WINDOW_FREQUENCY);
-    float freqFloat = (float) (timeWindow.getWeeklyLength() / timeWindow.getDailyLength());
+    float freqFloat = timeWindow.getWeeklyLength() / timeWindow.getDailyLength();
     if (freq != null) {
       try {
         freqFloat = Float.parseFloat(freq);
       } catch (Throwable t) {
-
       }
     }
     return freqFloat;
@@ -50,7 +50,7 @@ public class ServiceWindow {
     String freq = ACSParameters.getValue(SystemParameters.SERVICE_WINDOW_SPREAD);
     if (freq != null) {
       try {
-        freqFloat = new Float(freq) / 100f;
+        freqFloat = Float.valueOf(freq) / 100f;
       } catch (Throwable t) {
       }
     }
@@ -68,8 +68,7 @@ public class ServiceWindow {
    * @return
    */
   public boolean isWithin(long tms) {
-    if (isEnabled()) return timeWindow.isWithinTimeWindow(tms);
-    else return true;
+    return !isEnabled() || timeWindow.isWithinTimeWindow(tms);
   }
 
   /**
@@ -96,7 +95,7 @@ public class ServiceWindow {
       Log.debug(ServiceWindow.class, "Interval is 0, NRT is now!");
       return nextRunTms;
     }
-    long fixedIntervalMs = fixedInterval * 1000l;
+    long fixedIntervalMs = fixedInterval * 1000L;
     if (lastRunTms == null) { // this subtraction will be canceled below
       Log.debug(ServiceWindow.class, "LRT = null");
       nextRunTms -= fixedIntervalMs;
@@ -109,13 +108,13 @@ public class ServiceWindow {
       nextRunTms += (noIntervals - 1) * fixedIntervalMs;
     }
 
-    while (true) {
+    do {
       nextRunTms += fixedIntervalMs;
       Log.debug(ServiceWindow.class, "Suggested NRT = " + convert(nextRunTms));
       long timeToNRT = nextRunTms - currentTms;
       if (timeToNRT
           < -PIIDecision.MINIMUM_PII
-              * 1000l) { // do not test old tms, but let tms close to current time pass
+              * 1000L) { // do not test old tms, but let tms close to current time pass
         Log.debug(
             ServiceWindow.class,
             "Suggested NRT was rejected as too old (timeToNRT = " + timeToNRT / 1000 + " sec)");
@@ -127,7 +126,7 @@ public class ServiceWindow {
       } else {
         Log.debug(ServiceWindow.class, "Suggested NRT was rejected as outside SW");
       }
-    }
+    } while (true);
     return nextRunTms;
   }
 
@@ -156,8 +155,11 @@ public class ServiceWindow {
       if (timeWindow.isWithinTimeWindow(currentTms)) {
         long leftOfTW =
             timeWindow.getPreviousStartTms(currentTms) + timeWindow.getDailyLength() - currentTms;
-        if (nextInterval > leftOfTW) nextInterval -= leftOfTW; // More calculation will be necessary
-        else nextPIITms = currentTms + nextInterval; // We have our final time stamp..
+        if (nextInterval > leftOfTW) {
+          nextInterval -= leftOfTW;
+        } else {
+          nextPIITms = currentTms + nextInterval;
+        } // We have our final time stamp..
       }
 
       /*
@@ -207,7 +209,7 @@ public class ServiceWindow {
       }
       // Find the nextInterval (calculations are all in seconds)
       long nextPII = (long) ((float) (7 * 24 * 3600) / freqFloat);
-      long nextPIITms = (currentTms + nextPII * 1000l) / 1000;
+      long nextPIITms = (currentTms + nextPII * 1000L) / 1000;
       Log.debug(
           ServiceWindow.class,
           "Standard PeriodicInformInterval (SW disabled) calculated to "
@@ -272,7 +274,7 @@ public class ServiceWindow {
               + defaultInterval / 1000
               + " seconds - spreadfactor is 0");
     } else {
-      int ds = (int) ((double) defaultInterval * spreadFactor);
+      int ds = (int) (defaultInterval * spreadFactor);
       defaultInterval = defaultInterval + random.nextInt(ds * 2) - ds;
       Log.debug(
           ServiceWindow.class,

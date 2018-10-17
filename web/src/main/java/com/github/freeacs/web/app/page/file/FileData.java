@@ -15,10 +15,10 @@ public class FileData extends InputData {
   private Input targetName = Input.getStringInput("targetname");
   private Input content = Input.getStringInput("content");
 
-  // For preview of a file
+  /** For preview of a file. */
   private Input id = Input.getIntegerInput("id");
 
-  /** The file type filter */
+  /** The file type filter. */
   private Input fileType = Input.getStringInput("filetype");
 
   public Input getFileType() {
@@ -101,21 +101,11 @@ public class FileData extends InputData {
     return description;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.input.InputData#bindForm(java.util.Map)
-   */
   @Override
-  public void bindForm(Map<String, Object> root) {
-    // TODO Auto-generated method stub
+  public void bindForm(Map<String, Object> root) {}
 
-  }
-
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.input.InputData#validateForm()
-   */
   @Override
   public boolean validateForm() {
-    // TODO Auto-generated method stub
     return false;
   }
 

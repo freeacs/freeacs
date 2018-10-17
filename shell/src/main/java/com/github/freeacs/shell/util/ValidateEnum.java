@@ -4,8 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ValidateEnum implements ValidateInput {
-
-  private Map<String, Object> enumMap = new HashMap<String, Object>();
+  private Map<String, Object> enumMap = new HashMap<>();
 
   public ValidateEnum(String... strings) {
     for (String str : strings) {
@@ -18,7 +17,6 @@ public class ValidateEnum implements ValidateInput {
   }
 
   public boolean validate(String input) {
-    if (enumMap.containsKey(input)) return true;
-    return false;
+    return enumMap.containsKey(input);
   }
 }

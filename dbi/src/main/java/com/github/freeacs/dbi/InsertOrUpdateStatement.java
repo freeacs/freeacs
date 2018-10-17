@@ -14,19 +14,18 @@ import java.util.List;
  * @author Morten
  */
 public class InsertOrUpdateStatement {
-
   public static class Field {
-
-    /* The database name of the column */
+    /** The database name of the column. */
     private String column;
-    /* The value to insert/update in the column. Could be NullString, NullInteger, any "normal" type
+    /**
+     * The value to insert/update in the column. Could be NullString, NullInteger, any "normal" type
      * (String, Boolean, etc.) and null (in which case it will be skipped)
      */
     private Object value;
-    /*
+    /**
      * Set to true if this column is the primary key. If the value is infact null, the
-     * prepared-statement will set it to auto-generated (retrieve it in a new query after
-     * the insert).
+     * prepared-statement will set it to auto-generated (retrieve it in a new query after the
+     * insert).
      */
     private boolean primaryKey;
 
@@ -45,8 +44,11 @@ public class InsertOrUpdateStatement {
     }
 
     public Field(String column, Integer i, boolean primaryKey) {
-      if (i == null) this.value = new DynamicStatement.NullInteger();
-      else this.value = i;
+      if (i != null) {
+        this.value = i;
+      } else {
+        this.value = new DynamicStatement.NullInteger();
+      }
       this.column = column;
       this.primaryKey = primaryKey;
     }
@@ -56,8 +58,11 @@ public class InsertOrUpdateStatement {
     }
 
     public Field(String column, String s, boolean primaryKey) {
-      if (s == null) this.value = new DynamicStatement.NullString();
-      else this.value = s;
+      if (s != null) {
+        this.value = s;
+      } else {
+        this.value = new DynamicStatement.NullString();
+      }
       this.column = column;
       this.primaryKey = primaryKey;
     }
@@ -89,7 +94,7 @@ public class InsertOrUpdateStatement {
     public boolean equals(Object o) {
       if (o instanceof Field) {
         Field f = (Field) o;
-        if (f.getColumn().equals(this.getColumn())) return true;
+        return f.getColumn().equals(getColumn());
       }
       return false;
     }
@@ -99,7 +104,7 @@ public class InsertOrUpdateStatement {
     }
   }
 
-  private List<Field> fields = new ArrayList<Field>();
+  private List<Field> fields = new ArrayList<>();
   private String table;
   private boolean insert;
 
@@ -122,8 +127,8 @@ public class InsertOrUpdateStatement {
    * @throws SQLException
    */
   public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
-    List<String> autoGeneratePK = new ArrayList<String>();
-    List<Field> updateKeys = new ArrayList<Field>();
+    List<String> autoGeneratePK = new ArrayList<>();
+    List<Field> updateKeys = new ArrayList<>();
     for (Field field : fields) {
       if (field.isPrimaryKey()) {
         if (field.getValue() == null
@@ -151,13 +156,15 @@ public class InsertOrUpdateStatement {
     } else { // update
       ds.setSql("UPDATE " + table + " SET ");
       for (Field field : fields) {
-        if (!updateKeys.equals(field))
+        if (!updateKeys.equals(field)) {
           ds.addSqlAndArguments(field.getColumn() + " = ?, ", field.getValue());
+        }
       }
       ds.cleanupSQLTail();
       ds.addSql(" WHERE ");
-      for (Field field : updateKeys)
+      for (Field field : updateKeys) {
         ds.addSqlAndArguments(field.getColumn() + " = ?, ", field.getValue());
+      }
       ds.cleanupSQLTail();
       return ds.makePreparedStatement(c);
     }

@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DownloadLogicTR069 {
-
   private static Logger logger = LoggerFactory.getLogger(DownloadLogicTR069.class);
 
   public static boolean isScriptDownloadSetup(HTTPReqResData reqRes, Job job) {
@@ -73,9 +72,9 @@ public class DownloadLogicTR069 {
       String downloadURL = null;
       String scriptURLName =
           SystemParameters.getTR069ScriptParameterName(scriptName, TR069ScriptType.URL);
-      if (oweraParams.getValue(scriptURLName) != null)
+      if (oweraParams.getValue(scriptURLName) != null) {
         downloadURL = oweraParams.getValue(scriptURLName);
-      else {
+      } else {
         downloadURL =
             getDownloadUrl(
                 scriptVersionFromDB,
@@ -108,10 +107,13 @@ public class DownloadLogicTR069 {
     downloadURL = publicUrl;
     downloadURL += contextPath;
     downloadURL += "/file/" + type + "/" + version + "/" + unitTypeName;
-    if (unitId != null) downloadURL += "/" + unitId;
-    if (fileName != null) downloadURL += "/" + fileName;
-    downloadURL = downloadURL.replaceAll(" ", "--");
-    return downloadURL;
+    if (unitId != null) {
+      downloadURL += "/" + unitId;
+    }
+    if (fileName != null) {
+      downloadURL += "/" + fileName;
+    }
+    return downloadURL.replaceAll(" ", "--");
   }
 
   public static boolean isSoftwareDownloadSetup(HTTPReqResData reqRes, Job job) {
@@ -124,21 +126,23 @@ public class DownloadLogicTR069 {
     if (job == null) {
       ACSParameters oweraParams = sessionData.getAcsParameters();
       softwareVersionFromDB = oweraParams.getValue(SystemParameters.DESIRED_SOFTWARE_VERSION);
-      if (oweraParams.getValue(SystemParameters.SOFTWARE_URL) != null)
+      if (oweraParams.getValue(SystemParameters.SOFTWARE_URL) != null) {
         downloadURL = oweraParams.getValue(SystemParameters.SOFTWARE_URL);
+      }
     } else {
       Map<String, JobParameter> jobParams = job.getDefaultParameters();
-      if (jobParams.get(SystemParameters.DESIRED_SOFTWARE_VERSION) != null)
+      if (jobParams.get(SystemParameters.DESIRED_SOFTWARE_VERSION) != null) {
         softwareVersionFromDB =
             jobParams.get(SystemParameters.DESIRED_SOFTWARE_VERSION).getParameter().getValue();
-      else {
+      } else {
         Log.error(
             DownloadLogic.class,
             "No desired software version found in job " + job.getId() + " aborting the job");
         return false;
       }
-      if (jobParams.get(SystemParameters.SOFTWARE_URL) != null)
+      if (jobParams.get(SystemParameters.SOFTWARE_URL) != null) {
         downloadURL = jobParams.get(SystemParameters.SOFTWARE_URL).getParameter().getValue();
+      }
     }
     if (downloadURL == null) {
       downloadURL =
@@ -153,7 +157,7 @@ public class DownloadLogicTR069 {
     }
 
     if (softwareVersionFromDB != null
-        && !softwareVersionFromDB.trim().equals("")
+        && !"".equals(softwareVersionFromDB.trim())
         && !softwareVersionFromDB.equals(softwareVersionFromCPE)) {
       Log.debug(
           DownloadLogic.class,
@@ -176,7 +180,7 @@ public class DownloadLogicTR069 {
       return true;
     } else if (job != null
         && softwareVersionFromDB != null
-        && !softwareVersionFromDB.trim().equals("")
+        && !"".equals(softwareVersionFromDB.trim())
         && softwareVersionFromDB.equals(softwareVersionFromCPE)) {
       logger.warn(
           "Software is already upgraded to "

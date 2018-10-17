@@ -13,7 +13,7 @@ public class Util {
     Log.debug(Util.class, "The reboot parameter is reset to 0 and the reboot will be executed");
     Unittype unittype = sessionData.getUnittype();
     UnittypeParameter utp = unittype.getUnittypeParameters().getByName(SystemParameters.RESTART);
-    List<UnitParameter> unitParameters = new ArrayList<UnitParameter>();
+    List<UnitParameter> unitParameters = new ArrayList<>();
     UnitParameter up =
         new UnitParameter(utp, sessionData.getUnitId(), "0", sessionData.getProfile());
     unitParameters.add(up);
@@ -26,7 +26,7 @@ public class Util {
         Util.class, "The reset parameter is reset to 0 and the factory reset will be executed");
     Unittype unittype = sessionData.getUnittype();
     UnittypeParameter utp = unittype.getUnittypeParameters().getByName(SystemParameters.RESET);
-    List<UnitParameter> unitParameters = new ArrayList<UnitParameter>();
+    List<UnitParameter> unitParameters = new ArrayList<>();
     UnitParameter up =
         new UnitParameter(utp, sessionData.getUnitId(), "0", sessionData.getProfile());
     unitParameters.add(up);

@@ -21,28 +21,28 @@ import java.util.List;
  * @author Morten
  */
 public class MakeTestperfUnits {
-
-  private static List<Country> countries = null;
+  private static List<Country> countries;
 
   private static void populateCountries(File file) {
     try {
-      countries = new ArrayList<Country>();
+      countries = new ArrayList<>();
       FileReader fr = new FileReader(file);
       BufferedReader br = new BufferedReader(fr);
       String line = null;
       while ((line = br.readLine()) != null) {
-        if (line.length() > 1) countries.add(new Country(line));
+        if (line.length() > 1) {
+          countries.add(new Country(line));
+        }
       }
     } catch (Exception e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }
 
   public static void execute(String[] args) {
     try {
-      int rangeLowerBound = Integer.valueOf(args[0]);
-      int rangeUpperBound = Integer.valueOf(args[1]);
+      int rangeLowerBound = Integer.parseInt(args[0]);
+      int rangeUpperBound = Integer.parseInt(args[1]);
       File file = new File(args[2]);
       File outputFile1 = new File("internal/owera/units/testperf1.u");
       File outputFile2 = new File("internal/owera/units/testperf2.u");

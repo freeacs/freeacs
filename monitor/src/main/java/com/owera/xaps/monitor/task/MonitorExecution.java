@@ -10,11 +10,8 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/*
- * Http check implementation
- */
+/** Http check implementation. */
 public class MonitorExecution implements Runnable {
-
   private HttpClient client = new HttpClient();
 
   private static Logger logger = LoggerFactory.getLogger(MonitorExecution.class);
@@ -40,14 +37,17 @@ public class MonitorExecution implements Runnable {
     String status = "ERROR";
     String version = "";
     try {
-      if (url.startsWith("https://")) HTTPSManager.installCertificate(url, "changeit");
+      if (url.startsWith("https://")) {
+        HTTPSManager.installCertificate(url, "changeit");
+      }
       while (System.currentTimeMillis() - startTms < Properties.RETRY_SECS * 1000) {
         try {
           method = new GetMethod(url);
           int returnCode = client.executeMethod(method);
           String response = null;
-          if (returnCode == HttpStatus.SC_OK) response = getResponse(method);
-          else {
+          if (returnCode == HttpStatus.SC_OK) {
+            response = getResponse(method);
+          } else {
             errorMessage = "HTTP Return Code: " + returnCode;
           }
           if (response != null && response.contains("FREEACSOK")) {
@@ -80,9 +80,7 @@ public class MonitorExecution implements Runnable {
               + ")";
     } finally {
       updateFields(status, errorMessage, version);
-      if (errorMessage == null)
-        logger.debug("Monitoring: MonitorExecution: URL " + url + " has status " + status);
-      else
+      if (errorMessage != null) {
         logger.info(
             "Monitoring: MonitorExecution: URL "
                 + url
@@ -90,7 +88,12 @@ public class MonitorExecution implements Runnable {
                 + status
                 + ", error is "
                 + errorMessage);
-      if (method != null) method.releaseConnection();
+      } else {
+        logger.debug("Monitoring: MonitorExecution: URL " + url + " has status " + status);
+      }
+      if (method != null) {
+        method.releaseConnection();
+      }
     }
   }
 
@@ -104,7 +107,9 @@ public class MonitorExecution implements Runnable {
    */
   private String getResponse(HttpMethod method) throws IOException {
     String body = method.getResponseBodyAsString();
-    if (body == null || body.trim().length() == 0) return "Could not get response (No data)";
+    if (body == null || body.trim().isEmpty()) {
+      return "Could not get response (No data)";
+    }
     return body;
   }
 

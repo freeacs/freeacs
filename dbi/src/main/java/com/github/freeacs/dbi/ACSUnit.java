@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 /** ACSUnit is a class to help you work with units and unit parameters. */
 public class ACSUnit {
-
   private static Logger logger = LoggerFactory.getLogger(ACSUnit.class);
   private static long updateCounter;
   private static long insertCounter;
@@ -29,8 +28,9 @@ public class ACSUnit {
   public ACSUnit(DataSource dataSource, ACS acs, Syslog syslog) throws SQLException {
     this.dataSource = dataSource;
     this.syslog = syslog;
-    if (acs == null)
+    if (acs == null) {
       throw new IllegalArgumentException("The ACSUnit constructor requires a non-null ACS object");
+    }
     this.acs = acs;
     if (acs.getUnittypes() == null) {
       acs.read();
@@ -53,9 +53,11 @@ public class ACSUnit {
       connection.setAutoCommit(false);
       UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, acs, unittype, profile);
       Unit u = uqcu.getUnitByValue(value);
-      if (u != null && ACSVersionCheck.unitParamSessionSupported && u.isSessionMode())
+      if (u != null && ACSVersionCheck.unitParamSessionSupported && u.isSessionMode()) {
         return uqcu.addSessionParameters(u);
-      else return u;
+      } else {
+        return u;
+      }
     } finally {
       if (connection != null) {
         connection.setAutoCommit(wasAutoCommit);
@@ -98,9 +100,11 @@ public class ACSUnit {
       connection.setAutoCommit(false);
       UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, acs, unittype, profile);
       Unit u = uqcu.getUnitById(unitId);
-      if (u != null && ACSVersionCheck.unitParamSessionSupported && u.isSessionMode())
+      if (u != null && ACSVersionCheck.unitParamSessionSupported && u.isSessionMode()) {
         return uqcu.addSessionParameters(u);
-      else return u;
+      } else {
+        return u;
+      }
     } finally {
       if (connection != null) {
         connection.setAutoCommit(wasAutoCommit);
@@ -152,13 +156,17 @@ public class ACSUnit {
           ps = ds.makePreparedStatement(connection);
           ps.setQueryTimeout(60);
           int rowsUpdated = ps.executeUpdate();
-          if (rowsUpdated == 0) throw ex;
+          if (rowsUpdated == 0) {
+            throw ex;
+          }
           if (rowsUpdated > 0) {
             SyslogClient.info(unitId, "Moved unit to profile " + profile.getName(), syslog);
             logger.info("Moved unit " + unitId + " to profile " + profile.getName());
           }
         }
-        if (i > 0 && i % 100 == 0) connection.commit();
+        if (i > 0 && i % 100 == 0) {
+          connection.commit();
+        }
       }
       connection.commit();
     } catch (SQLException sqle) {
@@ -167,7 +175,9 @@ public class ACSUnit {
       }
       throw sqle;
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.setAutoCommit(wasAutoCommit);
         connection.close();
@@ -213,7 +223,9 @@ public class ACSUnit {
       }
       throw sqle;
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.setAutoCommit(wasAutoCommit);
         connection.close();
@@ -248,13 +260,15 @@ public class ACSUnit {
       ps = ds.makePreparedStatement(connection);
       ps.setQueryTimeout(60);
       rs = ps.executeQuery();
-      List<String> unitIds = new ArrayList<String>();
+      List<String> unitIds = new ArrayList<>();
       while (rs.next()) {
         unitIds.add(rs.getString("unit_id"));
       }
       return unitIds;
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.setAutoCommit(wasAutoCommit);
         connection.close();
@@ -269,10 +283,14 @@ public class ACSUnit {
     String sql;
     boolean updateFirst = true;
     String tableName = "unit_param";
-    if (session) tableName += "_session";
+    if (session) {
+      tableName += "_session";
+    }
     boolean wasAutoCommit = false;
     try {
-      if (updateCounter < insertCounter) updateFirst = false;
+      if (updateCounter < insertCounter) {
+        updateFirst = false;
+      }
       connection = dataSource.getConnection();
       wasAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
@@ -280,8 +298,9 @@ public class ACSUnit {
         UnitParameter unitParameter = unitParameters.get(i);
         String unitId = unitParameter.getUnitId();
         Parameter parameter = unitParameter.getParameter();
-        if (parameter.getValue() != null && parameter.getValue().length() > 512)
+        if (parameter.getValue() != null && parameter.getValue().length() > 512) {
           parameter.setValue(parameter.getValue().substring(0, 509) + "...");
+        }
         String value = parameter.getValue(); // will be "" if value was null
         String utpName = parameter.getUnittypeParameter().getName();
         String action = "Updated";
@@ -298,8 +317,9 @@ public class ACSUnit {
                     + tableName
                     + " (value, unit_id, unit_type_param_id) VALUES (?, ?, ?)";
             executeSql(sql, connection, parameter.getUnittypeParameter(), value, unitId);
-
-          } else updateCounter++;
+          } else {
+            updateCounter++;
+          }
         } else {
           sql =
               "INSERT INTO " + tableName + " (value, unit_id, unit_type_param_id) VALUES (?, ?, ?)";
@@ -315,7 +335,9 @@ public class ACSUnit {
                     + " SET value = ? WHERE unit_id = ? AND unit_type_param_id = ?";
             int rowsupdated =
                 executeSql(sql, connection, parameter.getUnittypeParameter(), value, unitId);
-            if (rowsupdated == 0) throw insertEx;
+            if (rowsupdated == 0) {
+              throw insertEx;
+            }
           }
         }
         if (updateCounter > 25 || insertCounter > 25) {
@@ -328,21 +350,30 @@ public class ACSUnit {
           }
         }
         String msg;
-        if (tableName.contains("session")) msg = action + " temporary unit parameter " + utpName;
-        else msg = action + " unit parameter " + utpName;
-        if (parameter.getUnittypeParameter().getFlag().isConfidential())
+        if (tableName.contains("session")) {
+          msg = action + " temporary unit parameter " + utpName;
+        } else {
+          msg = action + " unit parameter " + utpName;
+        }
+        if (parameter.getUnittypeParameter().getFlag().isConfidential()) {
           msg += " with confidental value (*****)";
-        else msg += " with value " + parameter.getValue();
+        } else {
+          msg += " with value " + parameter.getValue();
+        }
         SyslogClient.info(unitId, msg, syslog);
         logger.info(msg);
-        if (i > 0 && i % 100 == 0) connection.commit();
+        if (i > 0 && i % 100 == 0) {
+          connection.commit();
+        }
       }
       connection.commit();
     } catch (SQLException sqle) {
       connection.rollback();
       throw sqle;
     } finally {
-      if (pp != null) pp.close();
+      if (pp != null) {
+        pp.close();
+      }
       if (connection != null) {
         connection.setAutoCommit(wasAutoCommit);
         connection.close();
@@ -351,7 +382,6 @@ public class ACSUnit {
   }
 
   public void addOrChangeQueuedUnitParameters(Unit unit) throws SQLException {
-
     List<UnitParameter> queuedParameters = unit.flushWriteQueue();
     Iterator<UnitParameter> iterator = queuedParameters.iterator();
     while (iterator.hasNext()) {
@@ -380,15 +410,16 @@ public class ACSUnit {
     Parameter parameter =
         new Parameter(unittype.getUnittypeParameters().getByName(unittypeParameterName), value);
     UnitParameter up = new UnitParameter(parameter, unit.getId(), unit.getProfile());
-    List<UnitParameter> ups = new ArrayList<UnitParameter>();
+    List<UnitParameter> ups = new ArrayList<>();
     ups.add(up);
     addOrChangeUnitParameters(ups, unit.getProfile());
   }
 
   public void addOrChangeSessionUnitParameters(List<UnitParameter> unitParameters, Profile prof)
       throws SQLException {
-    if (ACSVersionCheck.unitParamSessionSupported)
+    if (ACSVersionCheck.unitParamSessionSupported) {
       addOrChangeUnitParameters(unitParameters, prof, true);
+    }
   }
 
   /**
@@ -427,12 +458,15 @@ public class ACSUnit {
       ps.close();
 
       connection.commit();
-      if (paramsDeleted > 0)
+      if (paramsDeleted > 0) {
         logger.info("Deleted " + paramsDeleted + " unit parameters for unit " + unit.getId());
-      if (unitJobsDeleted > 0)
+      }
+      if (unitJobsDeleted > 0) {
         logger.info("Deleted " + unitJobsDeleted + " unit jobs for unit " + unit.getId());
-      if (rowsDeleted == 0) logger.warn("No unit deleted, possibly because it did not exist.");
-      else {
+      }
+      if (rowsDeleted == 0) {
+        logger.warn("No unit deleted, possibly because it did not exist.");
+      } else {
         SyslogClient.info(unit.getId(), "Deleted unit", syslog);
         logger.info("Deleted unit " + unit.getId());
       }
@@ -443,7 +477,9 @@ public class ACSUnit {
       }
       throw sqle;
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.setAutoCommit(wasAutoCommit);
         connection.close();
@@ -478,7 +514,9 @@ public class ACSUnit {
       for (String unitId : unitMap.keySet()) {
         sql = "DELETE FROM unit_param WHERE unit_id = '" + unitId + "'";
         upDeleted += s.executeUpdate(sql);
-        if (counter > 0 && counter % 100 == 0) connection.commit();
+        if (counter > 0 && counter % 100 == 0) {
+          connection.commit();
+        }
         counter++;
       }
 
@@ -504,7 +542,9 @@ public class ACSUnit {
       }
       throw sqle;
     } finally {
-      if (s != null) s.close();
+      if (s != null) {
+        s.close();
+      }
       if (connection != null) {
         connection.setAutoCommit(wasAutoCommit);
         connection.close();
@@ -559,7 +599,9 @@ public class ACSUnit {
       }
       throw sqle;
     } finally {
-      if (s != null) s.close();
+      if (s != null) {
+        s.close();
+      }
       if (connection != null) {
         connection.setAutoCommit(wasAutoCommit);
         connection.close();
@@ -568,7 +610,9 @@ public class ACSUnit {
   }
 
   public int deleteAllSessionParameters(Unit unit) throws SQLException {
-    if (!ACSVersionCheck.unitParamSessionSupported) return 0;
+    if (!ACSVersionCheck.unitParamSessionSupported) {
+      return 0;
+    }
     Connection connection = null;
     Statement s = null;
     String sql;
@@ -582,11 +626,15 @@ public class ACSUnit {
       sql = "DELETE FROM unit_param_session WHERE unit_id = '" + unit.getId() + "'";
       s.setQueryTimeout(60);
       rowsDeleted += s.executeUpdate(sql);
-      if (rowsDeleted > 0) logger.info("Deleted " + rowsDeleted + " unit session parameters");
+      if (rowsDeleted > 0) {
+        logger.info("Deleted " + rowsDeleted + " unit session parameters");
+      }
       connection.commit();
       return rowsDeleted;
     } finally {
-      if (s != null) s.close();
+      if (s != null) {
+        s.close();
+      }
       if (connection != null) {
         connection.setAutoCommit(wasAutoCommit);
         connection.close();
@@ -627,7 +675,9 @@ public class ACSUnit {
         rowsDeleted += s.executeUpdate(sql);
         SyslogClient.info(unitIds.get(i), "Deleted unit", syslog);
         logger.info("Deleted unit " + unitIds.get(i));
-        if (i > 0 && i % 100 == 0) connection.commit();
+        if (i > 0 && i % 100 == 0) {
+          connection.commit();
+        }
       }
       connection.commit();
       return rowsDeleted;
@@ -638,7 +688,9 @@ public class ACSUnit {
       }
       throw sqle;
     } finally {
-      if (s != null) s.close();
+      if (s != null) {
+        s.close();
+      }
       if (connection != null) {
         connection.setAutoCommit(wasAutoCommit);
         connection.close();
@@ -750,25 +802,33 @@ public class ACSUnit {
   public Map<String, Unit> getUnits(
       Unittype unittype, Profile profile, List<Parameter> parameters, Integer limit)
       throws SQLException {
-    List<Profile> profiles = new ArrayList<Profile>();
-    if (profile != null) profiles.add(profile);
+    List<Profile> profiles = new ArrayList<>();
+    if (profile != null) {
+      profiles.add(profile);
+    }
     return getUnits(unittype, profiles, parameters, limit);
   }
 
   public Map<String, Unit> getUnits(
       Unittype unittype, Profile profile, Parameter parameter, Integer limit) throws SQLException {
-    List<Profile> profiles = new ArrayList<Profile>();
-    if (profile != null) profiles.add(profile);
-    List<Parameter> parameters = new ArrayList<Parameter>();
-    if (parameter != null) parameters.add(parameter);
+    List<Profile> profiles = new ArrayList<>();
+    if (profile != null) {
+      profiles.add(profile);
+    }
+    List<Parameter> parameters = new ArrayList<>();
+    if (parameter != null) {
+      parameters.add(parameter);
+    }
     return getUnits(unittype, profiles, parameters, limit);
   }
 
   public Map<String, Unit> getUnits(
       Unittype unittype, List<Profile> profiles, Parameter parameter, Integer limit)
       throws SQLException {
-    List<Parameter> parameters = new ArrayList<Parameter>();
-    if (parameter != null) parameters.add(parameter);
+    List<Parameter> parameters = new ArrayList<>();
+    if (parameter != null) {
+      parameters.add(parameter);
+    }
     return getUnits(unittype, profiles, parameters, limit);
   }
 
@@ -815,24 +875,32 @@ public class ACSUnit {
 
   public int getUnitCount(Unittype unittype, List<Profile> profiles, Parameter parameter)
       throws SQLException {
-    List<Parameter> parameters = new ArrayList<Parameter>();
-    if (parameter != null) parameters.add(parameter);
+    List<Parameter> parameters = new ArrayList<>();
+    if (parameter != null) {
+      parameters.add(parameter);
+    }
     return getUnitCount(unittype, profiles, parameters);
   }
 
   public int getUnitCount(Unittype unittype, Profile profile, List<Parameter> parameters)
       throws SQLException {
-    List<Profile> profiles = new ArrayList<Profile>();
-    if (profile != null) profiles.add(profile);
+    List<Profile> profiles = new ArrayList<>();
+    if (profile != null) {
+      profiles.add(profile);
+    }
     return getUnitCount(unittype, profiles, parameters);
   }
 
   public int getUnitCount(Unittype unittype, Profile profile, Parameter parameter)
       throws SQLException {
-    List<Profile> profiles = new ArrayList<Profile>();
-    if (profile != null) profiles.add(profile);
-    List<Parameter> parameters = new ArrayList<Parameter>();
-    if (parameter != null) parameters.add(parameter);
+    List<Profile> profiles = new ArrayList<>();
+    if (profile != null) {
+      profiles.add(profile);
+    }
+    List<Parameter> parameters = new ArrayList<>();
+    if (parameter != null) {
+      parameters.add(parameter);
+    }
     return getUnitCount(unittype, profiles, parameters);
   }
 

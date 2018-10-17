@@ -14,9 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ScheduledKickTask extends TaskDefaultImpl {
-
   public static class UnitKick {
-
     private Unit unit;
     private long initiatedTms;
     private int kickCount;
@@ -58,7 +56,7 @@ public class ScheduledKickTask extends TaskDefaultImpl {
   private DBI dbi;
   private static final Object syncMonitor = new Object();
 
-  private static List<UnitKick> kickList = new ArrayList<ScheduledKickTask.UnitKick>();
+  private static List<UnitKick> kickList = new ArrayList<>();
 
   public ScheduledKickTask(String taskName, DBI dbi) {
     super(taskName);
@@ -73,7 +71,9 @@ public class ScheduledKickTask extends TaskDefaultImpl {
       long now = System.currentTimeMillis();
       while (listIterator.hasNext()) {
         UnitKick uk = listIterator.next();
-        if (uk.getNextTms() > now) continue;
+        if (uk.getNextTms() > now) {
+          continue;
+        }
         if (uk.getKickCount() > 10) {
           logger.debug(
               "Removed UnitKick from list, have kicked 10 times (Unitid: "

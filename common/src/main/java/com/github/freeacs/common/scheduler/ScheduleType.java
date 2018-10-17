@@ -4,5 +4,5 @@ public enum ScheduleType {
   INTERVAL,
   HOURLY,
   DAILY,
-  MINUTELY;
+  MINUTELY
 }

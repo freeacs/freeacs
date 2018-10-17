@@ -9,7 +9,6 @@ import javax.sql.DataSource;
 import spark.Spark;
 
 public class App {
-
   public static void main(String[] args) {
     Config config = ConfigFactory.load();
     Spark.port(config.getInt("server.port"));

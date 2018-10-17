@@ -30,12 +30,12 @@ public class SyslogEntry {
 
   private String unittypeName;
 
-  // for backward compatibility
+  /** For backward compatibility. */
   private Integer unittypeId;
 
   private String profileName;
 
-  // for backward compatibility
+  /** For backward compatibility. */
   private Integer profileId;
 
   private String unitId;
@@ -78,7 +78,9 @@ public class SyslogEntry {
   public String toString() {
     String tmsStr = TimestampWrapper.tmsFormat.format(collectorTimestamp);
     String msgStr = content;
-    if (msgStr.length() > 80) msgStr = content.substring(0, 77) + "...";
+    if (msgStr.length() > 80) {
+      msgStr = content.substring(0, 77) + "...";
+    }
     return String.format(
         tmsStr + "%1$4s %2$-80s %3$20s %4$30s %5$30s %6$15s",
         severity,

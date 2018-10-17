@@ -6,15 +6,15 @@ import java.util.Map;
 
 /** The Class SyslogEventsData. */
 public class HeartbeatsData extends InputData {
-
-  // Typically to indicate edit/delete/add/etc
+  /** Typically to indicate edit/delete/add/etc. */
   private Input action = Input.getStringInput("action");
 
-  // Id to reference heartbeat
+  /** Id to reference heartbeat. */
   private Input id = Input.getIntegerInput("id");
 
-  // Input form data
+  /** Input form data. */
   private Input name = Input.getStringInput("name");
+
   private Input groupId = Input.getIntegerInput("groupId");
   private Input expression = Input.getStringInput("expression");
   private Input timeout = Input.getIntegerInput("timeout");
@@ -25,15 +25,15 @@ public class HeartbeatsData extends InputData {
   @Override
   public boolean validateForm() {
     boolean valid = true;
-    if (name.getString() == null || name.getString().length() == 0) {
+    if (name.getString() == null || name.getString().isEmpty()) {
       name.setError("Name is required");
       valid = false;
     }
-    if (expression.getString() == null || expression.getString().length() == 0) {
+    if (expression.getString() == null || expression.getString().isEmpty()) {
       expression.setError("Expression is required");
       valid = false;
     }
-    if (groupId.getString() == null || groupId.getString().length() == 0) {
+    if (groupId.getString() == null || groupId.getString().isEmpty()) {
       groupId.setError("Group is required");
       valid = false;
     }

@@ -3,7 +3,6 @@ package com.github.freeacs.tr069.xml;
 import java.util.Optional;
 
 public class DeviceIdStruct {
-
   public static final String ID = "DeviceIdStruct";
 
   private String manufacturer;

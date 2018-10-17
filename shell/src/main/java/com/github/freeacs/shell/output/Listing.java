@@ -11,7 +11,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Listing {
-
   public static String HEADER_UNITTYPE = "Unit Type";
   public static String HEADER_UNITTYPE_PARAMETER = "Unit Type Parameter Name";
   public static String HEADER_PROFILE = "Profile";
@@ -20,9 +19,9 @@ public class Listing {
   public static String HEADER_JOB = "Job";
 
   private Heading heading;
-  private List<Line> lines = new ArrayList<Line>();
-  private List<Column> columns = new ArrayList<Column>();
-  private boolean printed = false;
+  private List<Line> lines = new ArrayList<>();
+  private List<Column> columns = new ArrayList<>();
+  private boolean printed;
   private Context context;
   private Command command;
 
@@ -52,9 +51,11 @@ public class Listing {
   }
 
   private void insertIntoList(String strToInsert, Line line) {
-    if (line.getValues().size() > 0) {
+    if (!line.getValues().isEmpty()) {
       String firstElement = line.getValues().get(0);
-      if (!strToInsert.equals(firstElement)) line.insertValue(0, strToInsert);
+      if (!strToInsert.equals(firstElement)) {
+        line.insertValue(0, strToInsert);
+      }
     } else {
       line.addValue(strToInsert);
     }
@@ -66,38 +67,56 @@ public class Listing {
         .containsKey(
             Option.OPTION_LIST_CONTEXT)) { // insert context-headings, make sure to avoid duplicate
       // headings
-      if (context.getUnittypeParameter() != null)
+      if (context.getUnittypeParameter() != null) {
         insertIntoList(HEADER_UNITTYPE_PARAMETER, heading.getLine());
-      if (context.getJob() != null) insertIntoList(HEADER_JOB, heading.getLine());
-      if (context.getGroup() != null && !unitList && context.getProfile() == null)
+      }
+      if (context.getJob() != null) {
+        insertIntoList(HEADER_JOB, heading.getLine());
+      }
+      if (context.getGroup() != null && !unitList && context.getProfile() == null) {
         insertIntoList(HEADER_GROUP, heading.getLine());
-      if (context.getUnit() != null) insertIntoList(HEADER_UNIT, heading.getLine());
+      }
+      if (context.getUnit() != null) {
+        insertIntoList(HEADER_UNIT, heading.getLine());
+      }
       if (unitList) {
         insertIntoList(HEADER_PROFILE, heading.getLine());
         insertIntoList(HEADER_UNITTYPE, heading.getLine());
       } else {
-        if (context.getProfile() != null) insertIntoList(HEADER_PROFILE, heading.getLine());
-        if (context.getUnittype() != null) insertIntoList(HEADER_UNITTYPE, heading.getLine());
+        if (context.getProfile() != null) {
+          insertIntoList(HEADER_PROFILE, heading.getLine());
+        }
+        if (context.getUnittype() != null) {
+          insertIntoList(HEADER_UNITTYPE, heading.getLine());
+        }
       }
     }
   }
 
   private void addContextToLine(Line line, Unit unit) {
     if (command.getOptions().containsKey(Option.OPTION_LIST_CONTEXT)) { // insert context-values
-      if (context.getUnittypeParameter() != null)
+      if (context.getUnittypeParameter() != null) {
         insertIntoList("up:" + context.getUnittypeParameter().getName() + "/", line);
-      if (context.getJob() != null) insertIntoList("jo:" + context.getJob().getName() + "/", line);
-      if (context.getGroup() != null && unit == null && context.getProfile() == null)
+      }
+      if (context.getJob() != null) {
+        insertIntoList("jo:" + context.getJob().getName() + "/", line);
+      }
+      if (context.getGroup() != null && unit == null && context.getProfile() == null) {
         insertIntoList("gr:" + context.getGroup().getName() + "/", line);
-      if (context.getUnit() != null) insertIntoList("un:" + context.getUnit().getId() + "/", line);
+      }
+      if (context.getUnit() != null) {
+        insertIntoList("un:" + context.getUnit().getId() + "/", line);
+      }
       if (unit != null) {
         insertIntoList("pr:" + unit.getProfile().getName() + "/", line);
         insertIntoList("/ut:" + unit.getUnittype().getName() + "/", line);
       } else {
-        if (context.getProfile() != null)
+        if (context.getProfile() != null) {
           insertIntoList("pr:" + context.getProfile().getName() + "/", line);
-        if (context.getUnittype() != null)
+        }
+        if (context.getUnittype() != null) {
           insertIntoList("/ut:" + context.getUnittype().getName() + "/", line);
+        }
       }
     }
   }
@@ -127,17 +146,16 @@ public class Listing {
     updateColumns(line);
   }
 
-  //	public void addLine(Line line, Unit unit) {
-  //		addContextToLine(line, unit);
-  //		lines.add(line);
-  //		updateColumns(line);
-  //	}
-
+  /**
+   * Public void addLine(Line line, Unit unit) { addContextToLine(line, unit); lines.add(line);
+   * updateColumns(line); }
+   */
   private void updateColumns(Line line) {
     for (int i = 0; i < line.getValues().size(); i++) {
       String value = line.getValues().get(i);
-      if (columns.size() < i + 1) // column-length should be equals to line arguments
-      columns.add(new Column());
+      if (columns.size() < i + 1) {
+        columns.add(new Column());
+      }
       Column column = columns.get(i);
       column.incWidthIfNecessary(value.length());
     }
@@ -148,21 +166,21 @@ public class Listing {
       printed = true;
 
       if (heading != null) {
-        StringBuffer headingSb = new StringBuffer();
+        StringBuilder headingSb = new StringBuilder();
         for (int i = 0; i < heading.getLine().getValues().size(); i++) {
           String headingCol = heading.getLine().getValues().get(i);
           Column column = columns.get(i);
           headingSb.append(String.format("%-" + column.getMaxWidth() + "s ", headingCol));
         }
-        oh.setHeading(headingSb.toString() + "\n");
+        oh.setHeading(headingSb + "\n");
       }
       Option orderOption = command.getOptions().get(Option.OPTION_ORDER);
       if (orderOption != null && orderOption.getOptionArgs() != null) {
-        List<LineComparatorColumn> lineComparatorColumns = new ArrayList<LineComparatorColumn>();
+        List<LineComparatorColumn> lineComparatorColumns = new ArrayList<>();
         Matcher m = orderOptionArgPattern.matcher(orderOption.getOptionArgs());
         int lastEnd = 0;
         while (m.find()) {
-          int columnIndex = new Integer(m.group(1)) - 1;
+          int columnIndex = Integer.valueOf(m.group(1)) - 1;
           if (columnIndex >= 0 && columnIndex < heading.getLine().getValues().size()) {
             LineComparatorColumn lcc =
                 new LineComparatorColumn(columnIndex, m.group(2), m.group(3));
@@ -170,10 +188,13 @@ public class Listing {
             lastEnd = m.end();
           }
         }
-        if (lastEnd + 1 < orderOption.getOptionArgs().length())
+        if (lastEnd + 1 < orderOption.getOptionArgs().length()) {
           context.println(
               "WARN: The o-option arguments contain errors, ordering may not be applied");
-        if (lineComparatorColumns.size() > 0) lines.sort(new LineComparator(lineComparatorColumns));
+        }
+        if (!lineComparatorColumns.isEmpty()) {
+          lines.sort(new LineComparator(lineComparatorColumns));
+        }
       }
       for (Line line : lines) {
         StringBuilder lineSb = new StringBuilder();
@@ -190,8 +211,9 @@ public class Listing {
         oh.print("\n");
       }
       if (!oh.toFile()
-          && !command.getCommandAndArguments().get(0).getCommandAndArgument().contains("echo"))
+          && !command.getCommandAndArguments().get(0).getCommandAndArgument().contains("echo")) {
         oh.print(lines.size() + " entries printed\n");
+      }
     }
   }
 

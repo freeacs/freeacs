@@ -13,26 +13,25 @@ package com.github.freeacs.stun;
  * @author Morten
  */
 public class CPEParameters {
-  // The config version of the CPE
+  /** The config version of the CPE. */
   public String CONFIG_VERSION;
-  // The software/firmware version of the CPE
+  /** The software/firmware version of the CPE. */
   public String SOFTWARE_VERSION;
-  // The periodic inform interval on the CPE
+  /** The periodic inform interval on the CPE. */
   public String PERIODIC_INFORM_INTERVAL;
-  // The connection url (for kick, ip-address)
+  /** The connection url (for kick, ip-address). */
   public String CONNECTION_URL;
-  // The connection username (for kick, using authentication)
+  /** The connection username (for kick, using authentication). */
   public String CONNECTION_USERNAME;
-  // The connection password (for kick, using authentication)
+  /** The connection password (for kick, using authentication). */
   public String CONNECTION_PASSWORD;
-  // The UDP Connection URL (for kick through NAT)
+  /** The UDP Connection URL (for kick through NAT). */
   public String UDP_CONNECTION_URL;
 
-  //	// The phone number
-  //	public String PHONE_NUMBER;
-  //	// The voice service enabled parameter
-  //	public String VOICE_ENABLED;
-
+  /**
+   * // The phone number public String PHONE_NUMBER; // The voice service enabled parameter public
+   * String VOICE_ENABLED;.
+   */
   public CPEParameters(String keyRoot) {
     CONFIG_VERSION = keyRoot + "DeviceInfo.VendorConfigFile.1.Version";
     SOFTWARE_VERSION = keyRoot + "DeviceInfo.SoftwareVersion";

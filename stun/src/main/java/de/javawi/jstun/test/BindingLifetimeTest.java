@@ -8,7 +8,6 @@
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
  */
-
 package de.javawi.jstun.test;
 
 import de.javawi.jstun.attribute.ChangeRequest;
@@ -37,22 +36,25 @@ public class BindingLifetimeTest {
   private static Logger LOGGER = LoggerFactory.getLogger(BindingLifetimeTest.class);
   String stunServer;
   int port;
-  int timeout = 300; // ms
+  /** Ms. */
+  int timeout = 300;
+
   MappedAddress ma;
   Timer timer;
   DatagramSocket initialSocket;
 
-  // start value for binary search - should be carefully choosen
-  int upperBinarySearchLifetime = 345000; // ms
-  int lowerBinarySearchLifetime = 0;
+  /** Start value for binary search - should be carefully choosen ms. */
+  int upperBinarySearchLifetime = 345000;
+
+  int lowerBinarySearchLifetime;
   int binarySearchLifetime = (upperBinarySearchLifetime + lowerBinarySearchLifetime) / 2;
 
-  // lifetime value
-  int lifetime = -1; // -1 means undefined.
-  boolean completed = false;
+  /** Lifetime value -1 means undefined. */
+  int lifetime = -1;
+
+  boolean completed;
 
   public BindingLifetimeTest(String stunServer, int port) {
-    super();
     this.stunServer = stunServer;
     this.port = port;
     timer = new Timer(true);
@@ -89,7 +91,7 @@ public class BindingLifetimeTest {
     LOGGER.debug("Binding Request sent.");
 
     MessageHeader receiveMH = new MessageHeader();
-    while (!(receiveMH.equalTransactionID(sendMH))) {
+    while (!receiveMH.equalTransactionID(sendMH)) {
       DatagramPacket receive = new DatagramPacket(new byte[200], 200);
       initialSocket.receive(receive);
       receiveMH = MessageHeader.parseHeader(receive.getData());
@@ -125,10 +127,7 @@ public class BindingLifetimeTest {
   }
 
   class BindingLifetimeTask extends TimerTask {
-
-    public BindingLifetimeTask() {
-      super();
-    }
+    public BindingLifetimeTask() {}
 
     public void run() {
       try {
@@ -163,7 +162,7 @@ public class BindingLifetimeTest {
         LOGGER.debug("Binding Request sent.");
 
         MessageHeader receiveMH = new MessageHeader();
-        while (!(receiveMH.equalTransactionID(sendMH))) {
+        while (!receiveMH.equalTransactionID(sendMH)) {
           DatagramPacket receive = new DatagramPacket(new byte[200], 200);
           initialSocket.receive(receive);
           receiveMH = MessageHeader.parseHeader(receive.getData());

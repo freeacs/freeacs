@@ -37,11 +37,10 @@ import java.util.TreeSet;
 import org.apache.commons.lang3.StringUtils;
 
 public class INreq {
-
   private static void parseEvents(Parser parser, SessionData sessionData) {
     EventList eventList = parser.getEventList();
-    Set<Integer> eventCodeIntSet = new TreeSet<Integer>();
-    Set<String> eventCodeStrSet = new HashSet<String>();
+    Set<Integer> eventCodeIntSet = new TreeSet<>();
+    Set<String> eventCodeStrSet = new HashSet<>();
 
     sessionData.setCommandKey(new CommandKey());
     for (int i = 0; eventList != null && i < eventList.getEventList().size(); i++) {
@@ -54,20 +53,24 @@ public class INreq {
       }
       // if (es.getEventCode().startsWith("0")) sessionData.setFactoryReset(true);
       // if (es.getEventCode().startsWith("1")) sessionData.setBooted(true);
-      if (es.getEventCode().startsWith("2")) sessionData.setPeriodic(true);
+      if (es.getEventCode().startsWith("2")) {
+        sessionData.setPeriodic(true);
+      }
       // if (es.getEventCode().startsWith("4")) sessionData.setValueChange(true);
       // if (es.getEventCode().startsWith("6")) sessionData.setKicked(true);
       // if (es.getEventCode().startsWith("8")) sessionData.setDiagnosticsComplete(true);
       // This is a quick-and-easy impl. since, there can potentially be more than
       // one CommandKey. However, I don't think this will be the case in practice. (Morten May 2012)
       // TODO: This is surely not correct - Morten Jul 2012
-      if (es.getCommandKey() != null && !es.getCommandKey().trim().equals(""))
+      if (es.getCommandKey() != null && !"".equals(es.getCommandKey().trim())) {
         sessionData.getCommandKey().setCpeKey(es.getCommandKey());
+      }
     }
     String eventCodes = StringUtils.join(eventCodeIntSet.iterator(), ",");
-    if (eventCodeStrSet.size() > 0)
+    if (!eventCodeStrSet.isEmpty()) {
       eventCodes += "," + StringUtils.join(eventCodeStrSet.iterator(), ",");
-    if (eventCodes.length() > 0) {
+    }
+    if (!eventCodes.isEmpty()) {
       sessionData.setEventCodes(eventCodes);
     }
   }
@@ -76,7 +79,7 @@ public class INreq {
       throws UnsupportedEncodingException {
     String unitId = null;
     if (deviceIdStruct.getProductClass() != null
-        && !deviceIdStruct.getProductClass().trim().equals("")) {
+        && !"".equals(deviceIdStruct.getProductClass().trim())) {
       unitId =
           deviceIdStruct.getOui()
               + "-"
@@ -101,10 +104,9 @@ public class INreq {
     for (ParameterValueStruct pvs : parameterValues) {
       if (sessionData.getKeyRoot() == null) {
         String paramValue = pvs.getName();
-        int keyRootEndPos = paramValue.indexOf(".");
+        int keyRootEndPos = paramValue.indexOf('.');
         keyRoot = paramValue.substring(0, keyRootEndPos + 1);
-        if (keyRoot != null
-            && (keyRoot.equals("Device.") || keyRoot.equals("InternetGatewayDevice."))) {
+        if ("Device.".equals(keyRoot) || "InternetGatewayDevice.".equals(keyRoot)) {
           sessionData.setKeyRoot(keyRoot);
           cpeParams = new CPEParameters(keyRoot);
           sessionData.setCpeParameters(cpeParams);
@@ -117,12 +119,16 @@ public class INreq {
           cpeParams.putPvs(cpeParams.SOFTWARE_VERSION, pvs);
           sessionData.setSoftwareVersion(pvs.getValue());
         }
-        if (pvs.getName().equals(cpeParams.CONNECTION_URL))
+        if (pvs.getName().equals(cpeParams.CONNECTION_URL)) {
           cpeParams.putPvs(cpeParams.CONNECTION_URL, pvs);
-        if (informParams != null && pvs.getName().equals(informParams.UDP_CONNECTION_URL))
+        }
+        if (pvs.getName().equals(informParams.UDP_CONNECTION_URL)) {
           informParams.putPvs(informParams.UDP_CONNECTION_URL, pvs);
+        }
       }
-      if (pvs.getName().contains("ParameterKey")) pk.setCpeKey(pvs.getValue());
+      if (pvs.getName().contains("ParameterKey")) {
+        pk.setCpeKey(pvs.getValue());
+      }
     }
     if (keyRoot == null) {
       throw new TR069Exception(
@@ -133,9 +139,7 @@ public class INreq {
           "Parsed INreq params, found keyroot:" + keyRoot + ", parameterkey:" + pk.getCpeKey();
       msg +=
           ", swver:"
-              + (cpeParams == null
-                  ? "Unknown"
-                  : "" + cpeParams.getValue(cpeParams.SOFTWARE_VERSION));
+              + (cpeParams == null ? "Unknown" : cpeParams.getValue(cpeParams.SOFTWARE_VERSION));
       Log.debug(INreq.class, msg);
     }
   }
@@ -169,7 +173,7 @@ public class INreq {
             long shouldConnectTms =
                 TimestampWrapper.tmsFormat.parse(LCT).getTime() + Integer.parseInt(PII) * 1000;
             long diff = System.currentTimeMillis() - shouldConnectTms;
-            if (diff > -5000 && diff < 5000)
+            if (diff > -5000 && diff < 5000) {
               Log.info(
                   INreq.class,
                   "Periodic Inform recorded on time   ("
@@ -177,7 +181,7 @@ public class INreq {
                       + " sec). Deviation: "
                       + (diff / 10) / Integer.parseInt(PII)
                       + " %");
-            else if (diff >= 5000)
+            } else if (diff >= 5000) {
               Log.info(
                   INreq.class,
                   "Periodic Inform recorded too late  ("
@@ -185,8 +189,7 @@ public class INreq {
                       + " sec). Deviation: "
                       + (diff / 10) / Integer.parseInt(PII)
                       + " %");
-            else
-              // diff <= -5000
+            } else {
               Log.info(
                   INreq.class,
                   "Periodic Inform recorded too early ("
@@ -194,6 +197,7 @@ public class INreq {
                       + " sec). Deviation: "
                       + (diff / 10) / Integer.parseInt(PII)
                       + " %");
+            }
           }
         }
       }
@@ -213,7 +217,9 @@ public class INreq {
       DeviceIdStruct deviceIdStruct = parser.getDeviceIdStruct();
       // If unit is authenticated, the unitId is already found
       String unitId = sessionData.getUnitId();
-      if (unitId == null) unitId = getUnitId(deviceIdStruct);
+      if (unitId == null) {
+        unitId = getUnitId(deviceIdStruct);
+      }
       BaseCache.putSessionData(unitId, sessionData);
       sessionData.setUnitId(unitId);
       sessionData.setSerialNumber(deviceIdStruct.getSerialNumber());

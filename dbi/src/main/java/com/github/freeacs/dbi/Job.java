@@ -11,7 +11,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Job {
-
   private static Pattern pattern = Pattern.compile("(u|c|a|n|t)(\\d+)/?(\\d*)");
 
   public static String ANY_UNIT_IN_GROUP = "ANY-UNIT-IN-GROUP";
@@ -36,30 +35,40 @@ public class Job {
       Matcher m = pattern.matcher(ruleStr);
       if (m.matches()) {
         String type = m.group(1);
-        if (type.equals("u")) ruleType = UNCONFIRMED_FAILURE_TYPE;
-        else if (type.equals("c")) ruleType = CONFIRMED_FAILURE_TYPE;
-        else if (type.equals("a")) ruleType = ANY_FAILURE_TYPE;
-        else if (type.equals("n")) ruleType = COUNT_TYPE;
-        else if (type.equals("t")) ruleType = TIMEOUT_TYPE;
+        if ("u".equals(type)) {
+          ruleType = UNCONFIRMED_FAILURE_TYPE;
+        } else if ("c".equals(type)) {
+          ruleType = CONFIRMED_FAILURE_TYPE;
+        } else if ("a".equals(type)) {
+          ruleType = ANY_FAILURE_TYPE;
+        } else if ("n".equals(type)) {
+          ruleType = COUNT_TYPE;
+        } else if ("t".equals(type)) {
+          ruleType = TIMEOUT_TYPE;
+        }
         numberLimit = Integer.parseInt(m.group(2));
         String numberMaxStr = m.group(3);
-        if (numberMaxStr != null && !numberMaxStr.trim().equals("")) {
+        if (numberMaxStr != null && !"".equals(numberMaxStr.trim())) {
           numberMax = Integer.parseInt(numberMaxStr);
-          if (numberLimit >= numberMax)
+          if (numberLimit >= numberMax) {
             throw new IllegalArgumentException(
                 "The first number must be less than the second (rule: " + ruleStr + ")");
-          if (numberMax < 3 || numberMax > 10000)
+          }
+          if (numberMax < 3 || numberMax > 10000) {
             throw new IllegalArgumentException(
                 "The last number must be between 3 and 10000 (rule: " + ruleStr + ")");
-          if (numberLimit < 2)
+          }
+          if (numberLimit < 2) {
             throw new IllegalArgumentException(
                 "The first number must be between 2 and 10000 (rule: " + ruleStr + ")");
-        } else if (numberLimit < 1)
+          }
+        } else if (numberLimit < 1) {
           throw new IllegalArgumentException(
               "The number must be greater than 0 (rule: " + ruleStr + ")");
+        }
       } else {
         throw new IllegalArgumentException(
-            "The rule " + ruleStr + " does not match the regexp pattern " + pattern.toString());
+            "The rule " + ruleStr + " does not match the regexp pattern " + pattern);
       }
     }
 
@@ -98,14 +107,13 @@ public class Job {
 
   //	private Profile moveToProfile; -- obsolete, move to a profile should be fixed with a script
 
-  /* The field is calculated based on other jobs */
+  /** The field is calculated based on other jobs. */
   private List<Job> children;
 
-  /*
-   * Fields which are set as the job has changed to
-   * status STARTED
-   */
-  private JobStatus status = JobStatus.READY; // Initial Job status
+  /** Fields which are set as the job has changed to status STARTED. */
+  /** Initial Job status. */
+  private JobStatus status = JobStatus.READY;
+
   private Date startTimestamp;
   private Date endTimestamp;
   private Map<String, JobParameter> defaultParameters;
@@ -114,20 +122,21 @@ public class Job {
   private int confirmedFailed;
   private int unconfirmedFailed;
 
-  /* These counters are calculated each time rules are set,
-   * and they represents absolute stop rules (not fractional
-   * rules).
+  /**
+   * These counters are calculated each time rules are set, and they represents absolute stop rules
+   * (not fractional rules).
    */
   private long timeoutTms = Long.MAX_VALUE;
+
   private long maxFailureAny = Integer.MAX_VALUE;
   private long maxFailureConfirmed = Integer.MAX_VALUE;
   private long maxFailureUnconfirmed = Integer.MAX_VALUE;
   private long maxCount = Integer.MAX_VALUE;
 
-  /* The nextPII is calculated during JobLogic.checkNew to
-   * find which job to run first (or rather to set the
-   * nextPII correctly to the CPE. This is not kept in
-   * the database, but set during the session.
+  /**
+   * The nextPII is calculated during JobLogic.checkNew to find which job to run first (or rather to
+   * set the nextPII correctly to the CPE. This is not kept in the database, but set during the
+   * session.
    */
   private Long nextPII;
 
@@ -174,8 +183,7 @@ public class Job {
     setRepeatInterval(repeatInterval);
   }
 
-  /* GET methods */
-
+  /** GET methods. */
   public Unittype getUnittype() {
     return unittype;
   }
@@ -209,7 +217,9 @@ public class Job {
   }
 
   public List<StopRule> getStopRules() {
-    if (stopRules == null) stopRules = new ArrayList<StopRule>();
+    if (stopRules == null) {
+      stopRules = new ArrayList<>();
+    }
     return stopRules;
   }
 
@@ -230,15 +240,17 @@ public class Job {
   }
 
   public Integer getRepeatInterval() {
-    if (repeatCount != null && repeatInterval == null)
-      return 86400; // Make sure a default value is returned in case a repeat-counter exists
+    if (repeatCount != null && repeatInterval == null) {
+      return 86400;
+    } // Make sure a default value is returned in case a repeat-counter exists
     return repeatInterval;
   }
 
-  /* SET methods */
-
+  /** SET methods. */
   public void setUnittype(Unittype unittype) {
-    if (unittype == null) throw new IllegalArgumentException("Job unittype cannot be null");
+    if (unittype == null) {
+      throw new IllegalArgumentException("Job unittype cannot be null");
+    }
     this.unittype = unittype;
   }
 
@@ -256,9 +268,12 @@ public class Job {
   }
 
   public void setFlags(JobFlag flags) {
-    if (validateInput && flags == null)
+    if (validateInput && flags == null) {
       throw new IllegalArgumentException("Job Type/ServiceWindow cannot be null");
-    if (flags == null) flags = new JobFlag(JobType.CONFIG, JobServiceWindow.REGULAR);
+    }
+    if (flags == null) {
+      flags = new JobFlag(JobType.CONFIG, JobServiceWindow.REGULAR);
+    }
     this.flags = flags;
   }
 
@@ -267,15 +282,19 @@ public class Job {
   }
 
   public void setGroup(Group group) {
-    if (validateInput && group == null)
+    if (validateInput && group == null) {
       throw new IllegalArgumentException("Job group cannot be null");
+    }
     this.group = group;
   }
 
   public void setUnconfirmedTimeout(int unconfirmedTimeout) {
-    if (validateInput && unconfirmedTimeout < 60)
+    if (validateInput && unconfirmedTimeout < 60) {
       throw new IllegalArgumentException("Cannot set unconfirmed timeout to less than 60 (sec)");
-    if (unconfirmedTimeout < 60) unconfirmedTimeout = 60;
+    }
+    if (unconfirmedTimeout < 60) {
+      unconfirmedTimeout = 60;
+    }
     this.unconfirmedTimeout = unconfirmedTimeout;
   }
 
@@ -284,7 +303,7 @@ public class Job {
   }
 
   public void setStopRules(String sRules) {
-    List<StopRule> tmpList = new ArrayList<StopRule>();
+    List<StopRule> tmpList = new ArrayList<>();
     try {
       if (sRules != null) {
         String[] fRuleArr = sRules.split(",");
@@ -299,19 +318,21 @@ public class Job {
           tmpList.add(stopRule);
           if (stopRule.getNumberMax() == null) {
             if (stopRule.getRuleType() == StopRule.COUNT_TYPE
-                && stopRule.getNumberLimit() < maxCount) maxCount = (int) stopRule.getNumberLimit();
-            else if (stopRule.getRuleType() == StopRule.TIMEOUT_TYPE
-                && stopRule.getNumberLimit() < maxTimeoutTms)
+                && stopRule.getNumberLimit() < maxCount) {
+              maxCount = stopRule.getNumberLimit();
+            } else if (stopRule.getRuleType() == StopRule.TIMEOUT_TYPE
+                && stopRule.getNumberLimit() < maxTimeoutTms) {
               maxTimeoutTms = stopRule.getNumberLimit();
-            else if (stopRule.getRuleType() == StopRule.ANY_FAILURE_TYPE
-                && stopRule.getNumberLimit() < maxFailureAny)
+            } else if (stopRule.getRuleType() == StopRule.ANY_FAILURE_TYPE
+                && stopRule.getNumberLimit() < maxFailureAny) {
               maxFailureAny = stopRule.getNumberLimit();
-            else if (stopRule.getRuleType() == StopRule.CONFIRMED_FAILURE_TYPE
-                && stopRule.getNumberLimit() < maxFailureConf)
+            } else if (stopRule.getRuleType() == StopRule.CONFIRMED_FAILURE_TYPE
+                && stopRule.getNumberLimit() < maxFailureConf) {
               maxFailureConf = stopRule.getNumberLimit();
-            else if (stopRule.getRuleType() == StopRule.UNCONFIRMED_FAILURE_TYPE
-                && stopRule.getNumberLimit() < maxFailureUnconf)
+            } else if (stopRule.getRuleType() == StopRule.UNCONFIRMED_FAILURE_TYPE
+                && stopRule.getNumberLimit() < maxFailureUnconf) {
               maxFailureUnconf = stopRule.getNumberLimit();
+            }
           }
         }
         this.maxCount = maxCount;
@@ -321,7 +342,9 @@ public class Job {
         this.maxFailureUnconfirmed = maxFailureUnconf;
       }
     } catch (IllegalArgumentException iae) {
-      if (validateInput) throw iae;
+      if (validateInput) {
+        throw iae;
+      }
     }
     this.sRules = sRules;
     this.stopRules = tmpList;
@@ -329,39 +352,47 @@ public class Job {
 
   public void setFile(File file) {
     if (validateInput) {
-      if (this.getFlags().getType().requireFile() && file == null)
+      if (getFlags().getType().requireFile() && file == null) {
         throw new IllegalArgumentException(
-            "Job with jobtype " + this.getFlags().getType() + " requires a file (software/script)");
-      else if (!this.getFlags().getType().requireFile() && file != null)
+            "Job with jobtype " + getFlags().getType() + " requires a file (software/script)");
+      } else if (!getFlags().getType().requireFile() && file != null) {
         throw new IllegalArgumentException(
-            "Job with jobtype " + this.getFlags().getType() + " cannot specify a file");
+            "Job with jobtype " + getFlags().getType() + " cannot specify a file");
+      }
     }
     this.file = file;
   }
 
   public void setDependency(Job newdep) {
-    if (dependency != null) dependency.removeChild(this);
+    if (dependency != null) {
+      dependency.removeChild(this);
+    }
     dependency = newdep;
-    if (dependency != null) dependency.addChild(this);
+    if (dependency != null) {
+      dependency.addChild(this);
+    }
   }
 
   public void setRepeatCount(Integer repeat) {
-    if (validateInput && repeat != null && repeat < 0)
+    if (validateInput && repeat != null && repeat < 0) {
       throw new IllegalArgumentException("Job Repeat Count cannot be less than 0");
-    else if (repeat != null && repeat < 0) repeatCount = 0;
+    } else if (repeat != null && repeat < 0) {
+      repeatCount = 0;
+    }
     this.repeatCount = repeat;
   }
 
   public void setRepeatInterval(Integer repeatInterval) {
-    if (validateInput && repeatInterval != null && repeatInterval < 0)
+    if (validateInput && repeatInterval != null && repeatInterval < 0) {
       throw new IllegalArgumentException("Job Repeat Interval cannot be less than 0");
-    if (repeatInterval != null && repeatInterval < 0)
-      repeatInterval = 86400; // do not allow negative interval - set it default to 24h
+    }
+    if (repeatInterval != null && repeatInterval < 0) {
+      repeatInterval = 86400;
+    } // do not allow negative interval - set it default to 24h
     this.repeatInterval = repeatInterval;
   }
 
-  /* MISC Get-Methods for persistent fields set after Job has started */
-
+  /** MISC Get-Methods for persistent fields set after Job has started. */
   public int getCompletedHadFailures() {
     return completedHadFailures;
   }
@@ -398,8 +429,7 @@ public class Job {
     return unconfirmedFailed;
   }
 
-  /* MISC Set-Methods for persistent fields set after Job has started */
-
+  /** MISC Set-Methods for persistent fields set after Job has started. */
   public void setCompletedHadFailures(int completedHadFailures) {
     this.completedHadFailures = completedHadFailures;
   }
@@ -436,24 +466,30 @@ public class Job {
     this.unconfirmedFailed = unconfirmedFailed;
   }
 
-  /* Job children manipulation and retrieval */
-
+  /** Job children manipulation and retrieval. */
   protected void addChild(Job child) {
-    if (children == null) children = new ArrayList<Job>();
-    if (!this.children.contains(child)) this.children.add(child);
+    if (children == null) {
+      children = new ArrayList<>();
+    }
+    if (!this.children.contains(child)) {
+      this.children.add(child);
+    }
   }
 
   protected void removeChild(Job child) {
-    if (children != null) children.remove(child);
+    if (children != null) {
+      children.remove(child);
+    }
   }
 
   public List<Job> getChildren() {
-    if (children == null) children = new ArrayList<Job>();
+    if (children == null) {
+      children = new ArrayList<>();
+    }
     return children;
   }
 
-  /* Various GET/SET methods of non-persistent, run-time job-related fields */
-
+  /** Various GET/SET methods of non-persistent, run-time job-related fields. */
   public long getMaxFailureAny() {
     return maxFailureAny;
   }

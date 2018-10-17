@@ -1,7 +1,6 @@
 package com.github.freeacs.shell.command;
 
 public class CommandAndArgument implements Substitute {
-
   private String commandAndArgument;
   private String substitute;
   private boolean appendedFromFile;
@@ -34,8 +33,10 @@ public class CommandAndArgument implements Substitute {
 
   @Override
   public String getStringToSubstitute() {
-    if (substitute == null) return commandAndArgument;
-    return substitute;
+    if (substitute != null) {
+      return substitute;
+    }
+    return commandAndArgument;
   }
 
   @Override

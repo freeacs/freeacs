@@ -1,10 +1,12 @@
 package com.github.freeacs.shell.output;
 
 public class Column {
-  private int maxWidth = 0;
+  private int maxWidth;
 
   public void incWidthIfNecessary(int width) {
-    if (width > maxWidth) maxWidth = width;
+    if (width > maxWidth) {
+      maxWidth = width;
+    }
   }
 
   public int getMaxWidth() {

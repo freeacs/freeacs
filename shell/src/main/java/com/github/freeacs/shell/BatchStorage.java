@@ -19,13 +19,16 @@ public class BatchStorage {
   private List<UnittypeParameter> deleteUnittypeParameters;
 
   public List<UnitParameter> getAddChangeUnitParameters() {
-    if (addChangeUnitParameters == null) addChangeUnitParameters = new ArrayList<UnitParameter>();
+    if (addChangeUnitParameters == null) {
+      addChangeUnitParameters = new ArrayList<>();
+    }
     return addChangeUnitParameters;
   }
 
   public List<UnittypeParameter> getAddChangeUnittypeParameters() {
-    if (addChangeUnittypeParameters == null)
-      addChangeUnittypeParameters = new ArrayList<UnittypeParameter>();
+    if (addChangeUnittypeParameters == null) {
+      addChangeUnittypeParameters = new ArrayList<>();
+    }
     return addChangeUnittypeParameters;
   }
 
@@ -34,7 +37,9 @@ public class BatchStorage {
   }
 
   public List<UnitParameter> getDeleteUnitParameters() {
-    if (deleteUnitParameters == null) deleteUnitParameters = new ArrayList<UnitParameter>();
+    if (deleteUnitParameters == null) {
+      deleteUnitParameters = new ArrayList<>();
+    }
     return deleteUnitParameters;
   }
 
@@ -43,8 +48,9 @@ public class BatchStorage {
   }
 
   public List<UnittypeParameter> getDeleteUnittypeParameters() {
-    if (deleteUnittypeParameters == null)
-      deleteUnittypeParameters = new ArrayList<UnittypeParameter>();
+    if (deleteUnittypeParameters == null) {
+      deleteUnittypeParameters = new ArrayList<>();
+    }
     return deleteUnittypeParameters;
   }
 

@@ -6,5 +6,5 @@ public enum FileType {
   SHELL_SCRIPT,
   TELNET_SCRIPT,
   UNITS,
-  MISC;
+  MISC
 }

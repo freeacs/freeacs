@@ -26,7 +26,7 @@ public class Unittypes {
   }
 
   /**
-   * Only to be used internally (to shape ACS object according to permissions)
+   * Only to be used internally (to shape ACS object according to permissions).
    *
    * @param unittype
    * @return
@@ -65,11 +65,15 @@ public class Unittypes {
       s.executeUpdate();
       if (ious.isInsert()) {
         ResultSet gk = s.getGeneratedKeys();
-        if (gk.next()) unittype.setId(gk.getInt(1));
+        if (gk.next()) {
+          unittype.setId(gk.getInt(1));
+        }
         int changedSystemParameters = unittype.ensureValidSystemParameters(acs);
         logger.info(
             "Added unittype " + unittype.getName() + ", changed/added " + changedSystemParameters);
-        if (acs.getDbi() != null) acs.getDbi().publishAdd(unittype, unittype);
+        if (acs.getDbi() != null) {
+          acs.getDbi().publishAdd(unittype, unittype);
+        }
       } else {
         int changedSystemParameters = unittype.ensureValidSystemParameters(acs);
         logger.info(
@@ -77,19 +81,23 @@ public class Unittypes {
                 + unittype.getName()
                 + ", changed/added "
                 + changedSystemParameters);
-        if (acs.getDbi() != null) acs.getDbi().publishChange(unittype, unittype);
+        if (acs.getDbi() != null) {
+          acs.getDbi().publishChange(unittype, unittype);
+        }
       }
     } finally {
-      if (s != null) s.close();
+      if (s != null) {
+        s.close();
+      }
       c.close();
     }
   }
 
   public void addOrChangeUnittype(Unittype unittype, ACS acs) throws SQLException {
-    if (unittype.getId() == null && !acs.getUser().isAdmin())
+    if ((unittype.getId() == null && !acs.getUser().isAdmin())
+        || !acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
-      throw new IllegalArgumentException("Not allowed action for this user");
+    }
     addOrChangeUnittypeImpl(unittype, acs);
     unittype.setAcs(acs);
     nameMap.put(unittype.getName(), unittype);
@@ -99,8 +107,9 @@ public class Unittypes {
       unittype.setOldName(null);
     }
     Profiles profiles = unittype.getProfiles();
-    if (profiles.getProfiles().length == 0)
+    if (profiles.getProfiles().length == 0) {
       profiles.addOrChangeProfile(new Profile("Default", unittype), acs);
+    }
   }
 
   private int deleteUnittypeImpl(Unittype unittype, ACS acs) throws SQLException {
@@ -115,10 +124,14 @@ public class Unittypes {
       int rowsDeleted = s.executeUpdate(sql);
 
       logger.info("Deleted unittype " + unittype.getName());
-      if (acs.getDbi() != null) acs.getDbi().publishDelete(unittype, unittype);
+      if (acs.getDbi() != null) {
+        acs.getDbi().publishDelete(unittype, unittype);
+      }
       return rowsDeleted;
     } finally {
-      if (s != null) s.close();
+      if (s != null) {
+        s.close();
+      }
       c.close();
     }
   }
@@ -132,8 +145,9 @@ public class Unittypes {
    * @throws SQLException
    */
   public int deleteUnittype(Unittype unittype, ACS acs, boolean cascade) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId()))
+    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
+    }
     if (cascade) {
       UnittypeParameters utParams = unittype.getUnittypeParameters();
       UnittypeParameter[] utParamsArr = utParams.getUnittypeParameters();
@@ -142,8 +156,9 @@ public class Unittypes {
       // no profile parameters
       if (defaultProfile != null
           && unittype.getProfiles().getProfiles().length == 1
-          && defaultProfile.getProfileParameters().getProfileParameters().length == 0)
+          && defaultProfile.getProfileParameters().getProfileParameters().length == 0) {
         unittype.getProfiles().deleteProfile(defaultProfile, acs, false);
+      }
       utParams.deleteUnittypeParameters(Arrays.asList(utParamsArr), acs);
       Groups groups = unittype.getGroups();
       for (Group g : groups.getGroups()) {
@@ -152,7 +167,9 @@ public class Unittypes {
 
       SyslogEvents syslogEvents = unittype.getSyslogEvents();
       for (SyslogEvent sg : syslogEvents.getSyslogEvents()) {
-        if (sg.getUnittype() != null) syslogEvents.deleteSyslogEventImpl(sg, acs);
+        if (sg.getUnittype() != null) {
+          syslogEvents.deleteSyslogEventImpl(sg, acs);
+        }
       }
     }
     int rowsDeleted = deleteUnittypeImpl(unittype, acs);

@@ -9,7 +9,6 @@ import org.xml.sax.helpers.DefaultHandler;
  * EventCode and the CommandKey).
  */
 public class EventHandler extends DefaultHandler {
-
   public static final String EVENT_TAG = "Event";
   public static final String EVENT_STRUCT_TAG = "EventStruct";
   public static final String EVENT_CODE_TAG = "EventCode";
@@ -17,7 +16,7 @@ public class EventHandler extends DefaultHandler {
 
   private Parser owner;
   private EventList events = new EventList();
-  private EventStruct currEvent = null;
+  private EventStruct currEvent;
   private StringBuilder currTextContent = new StringBuilder();
 
   public EventHandler(EventList events, Parser owner) {
@@ -45,15 +44,13 @@ public class EventHandler extends DefaultHandler {
       if (currEvent != null) {
         currEvent.setEventCode(new String(currTextContent));
       }
-    } else if (COMMAND_KEY_TAG.equals(localName)) {
-      if (currEvent != null) {
-        currEvent.setCommandKey(new String(currTextContent));
-      }
+    } else if (COMMAND_KEY_TAG.equals(localName) && currEvent != null) {
+      currEvent.setCommandKey(new String(currTextContent));
     }
   }
 
   public void characters(char[] ch, int start, int length) {
-    String content = String.valueOf(ch).substring(start, (start + length));
+    String content = String.valueOf(ch).substring(start, start + length);
     currTextContent.append(content.trim());
   }
 }

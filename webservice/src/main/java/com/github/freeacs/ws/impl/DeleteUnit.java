@@ -21,22 +21,23 @@ public class DeleteUnit {
   public DeleteUnitResponse deleteUnit(
       DeleteUnitRequest dur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
     try {
-
       acsWS = ACSWSFactory.getXAPSWS(dur.getLogin(), xapsDs, syslogDs);
       ACS acs = acsWS.getAcs();
       ACSUnit acsUnit = acsWS.getXAPSUnit(acs);
-      if (dur.getUnit() == null) throw ACSFactory.error(logger, "No unit object is specified");
+      if (dur.getUnit() == null) {
+        throw ACSFactory.error(logger, "No unit object is specified");
+      }
       com.github.freeacs.dbi.Unit unitXAPS = validateUnitId(dur.getUnit(), acsUnit);
       if (unitXAPS == null) {
         return getDeleteUnitResponse(false);
       } else {
         int rowsDeleted = acsUnit.deleteUnit(unitXAPS);
-        if (rowsDeleted > 0) return getDeleteUnitResponse(true);
-        else return getDeleteUnitResponse(false);
+        return getDeleteUnitResponse(rowsDeleted > 0);
       }
     } catch (Throwable t) {
-      if (t instanceof RemoteException) throw (RemoteException) t;
-      else {
+      if (t instanceof RemoteException) {
+        throw (RemoteException) t;
+      } else {
         String msg = "An exception occurred: " + t.getMessage();
         logger.error(msg, t);
         throw new RemoteException(msg, t);
@@ -64,7 +65,9 @@ public class DeleteUnit {
       }
     } else {
       unitXAPS = acsUnit.getUnitById(unitWS.getUnitId().getValue());
-      if (unitXAPS.getId() == null) return null;
+      if (unitXAPS.getId() == null) {
+        return null;
+      }
     }
     acsWS.getProfileFromXAPS(unitXAPS.getUnittype().getName(), unitXAPS.getProfile().getName());
     return unitXAPS;

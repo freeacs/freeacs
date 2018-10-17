@@ -42,11 +42,15 @@ public class UnitParameter {
   }
 
   public String getValue() {
-    if (parameter != null) return parameter.getValue();
+    if (parameter != null) {
+      return parameter.getValue();
+    }
     return null;
   }
 
   public void setValue(String value) {
-    if (parameter != null) parameter.setValue(value);
+    if (parameter != null) {
+      parameter.setValue(value);
+    }
   }
 }

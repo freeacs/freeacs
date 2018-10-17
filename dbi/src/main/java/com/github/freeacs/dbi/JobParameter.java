@@ -1,7 +1,6 @@
 package com.github.freeacs.dbi;
 
 public class JobParameter {
-
   private Job job;
   private String unitId;
   private Parameter parameter;

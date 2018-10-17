@@ -41,26 +41,28 @@ public class GetUnits {
 
       /* Validate input - only allow permitted unittypes/profiles for this login */
       Unittype unittypeXAPS = null;
-      List<Profile> profilesXAPS = new ArrayList<Profile>();
+      List<Profile> profilesXAPS = new ArrayList<>();
       if (unitWS.getUnittype() != null && unitWS.getUnittype().getName() != null) {
         unittypeXAPS = acsWS.getUnittypeFromXAPS(unitWS.getUnittype().getValue().getName());
         if (unitWS.getProfile() != null && unitWS.getProfile().getName() != null) {
           profilesXAPS.add(
               acsWS.getProfileFromXAPS(
                   unittypeXAPS.getName(), unitWS.getProfile().getValue().getName()));
-        } else profilesXAPS = Arrays.asList(unittypeXAPS.getProfiles().getProfiles());
+        } else {
+          profilesXAPS = Arrays.asList(unittypeXAPS.getProfiles().getProfiles());
+        }
       }
       boolean useCase3 =
           unitWS.getParameters() != null
-              && unitWS.getParameters().getValue().getParameterArray().getItem().size() > 0;
-      if (useCase3 && profilesXAPS.size() == 0) {
+              && !unitWS.getParameters().getValue().getParameterArray().getItem().isEmpty();
+      if (useCase3 && profilesXAPS.isEmpty()) {
         throw ACSFactory.error(
             logger,
             "Unittype and profiles are not specified, not possible to execute parameter-search");
       }
 
       /* Input is validated - now execute searches */
-      Map<String, Unit> unitMap = new TreeMap<String, Unit>();
+      Map<String, Unit> unitMap = new TreeMap<>();
       GetUnitIds.getUnits(acsUnit, unitWS, unittypeXAPS, profilesXAPS, useCase3, unitMap);
 
       /* Search is executed - now build response */
@@ -133,13 +135,17 @@ public class GetUnits {
       UnittypeParameter snUtp = getSerialNumberUtp(utXAPS);
       String serialNumber = null;
       Map<String, String> unitParams = unit.getParameters();
-      if (snUtp != null) serialNumber = unitParams.get(snUtp.getName());
+      if (snUtp != null) {
+        serialNumber = unitParams.get(snUtp.getName());
+      }
       com.github.freeacs.ws.xml.Parameter[] parameterArray =
           new com.github.freeacs.ws.xml.Parameter[unitParams.size()];
       int pcount = 0;
       for (Entry<String, String> entry : unitParams.entrySet()) {
         String flags = "U";
-        if (unit.getUnitParameters().get(entry.getKey()) == null) flags = "P";
+        if (unit.getUnitParameters().get(entry.getKey()) == null) {
+          flags = "P";
+        }
         com.github.freeacs.ws.xml.Parameter paramWS = new com.github.freeacs.ws.xml.Parameter();
         paramWS.setName(entry.getKey());
         paramWS.setValue(factory.createParameterValue(entry.getValue()));

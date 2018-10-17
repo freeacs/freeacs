@@ -29,11 +29,11 @@ public class TR069Method {
 
   public static final String FACTORY_RESET = "FactoryReset";
 
-  /* Map of all (SOAP/HTTP-)request actions and what to do next */
+  /** Map of all (SOAP/HTTP-)request actions and what to do next. */
   private final Map<String, HTTPRequestAction> requestMap = new HashMap<>();
-  /* Map of all (SOAP/HTTP-)response actions and what to return */
+  /** Map of all (SOAP/HTTP-)response actions and what to return. */
   private final Map<String, HTTPResponseAction> responseMap = new HashMap<>();
-  /* Map of all abbreviations - only used in event-logging */
+  /** Map of all abbreviations - only used in event-logging. */
   private final Map<String, String> abbrevMap = new HashMap<>();
 
   public TR069Method(Properties properties) {
@@ -51,7 +51,7 @@ public class TR069Method {
         .put(
             GET_PARAMETER_NAMES,
             new HTTPResponseAction(
-                (reqResData) -> HTTPResponseCreator.buildGPN(reqResData, properties)));
+                reqResData -> HTTPResponseCreator.buildGPN(reqResData, properties)));
 
     getAbbrevMap().put(INFORM, "IN");
     getRequestMap().put(INFORM, new HTTPRequestAction(INreq::process, makeSimpleDecision(INFORM)));
@@ -64,19 +64,19 @@ public class TR069Method {
         .put(
             GET_PARAMETER_VALUES,
             new HTTPResponseAction(
-                (reqResData) -> HTTPResponseCreator.buildGPV(reqResData, properties)));
+                reqResData -> HTTPResponseCreator.buildGPV(reqResData, properties)));
 
     getAbbrevMap().put(SET_PARAMETER_VALUES, "SPV");
     getRequestMap()
         .put(
             SET_PARAMETER_VALUES,
             new HTTPRequestAction(
-                SPVres::process, (reqResData) -> SPVDecision.process(reqResData, properties)));
+                SPVres::process, reqResData -> SPVDecision.process(reqResData, properties)));
     getResponseMap()
         .put(
             SET_PARAMETER_VALUES,
             new HTTPResponseAction(
-                (reqResData) -> HTTPResponseCreator.buildSPV(reqResData, properties)));
+                reqResData -> HTTPResponseCreator.buildSPV(reqResData, properties)));
 
     getAbbrevMap().put(TRANSFER_COMPLETE, "TC");
     getRequestMap()
@@ -109,7 +109,7 @@ public class TR069Method {
   }
 
   private HTTPRequestAction.CheckedRequestFunction makeSimpleDecision(String getRpcMethodsRes) {
-    return (reqRes) -> reqRes.getResponse().setMethod(getRpcMethodsRes);
+    return reqRes -> reqRes.getResponse().setMethod(getRpcMethodsRes);
   }
 
   public Map<String, HTTPRequestAction> getRequestMap() {

@@ -26,13 +26,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ReportVoipGenerator extends ReportGenerator {
-
   private static Logger logger = LoggerFactory.getLogger(ReportVoipGenerator.class);
   private static Pattern qosPattern =
       Pattern.compile(
           ".*MOS: (\\d+)[^\\d]+(\\d+)[^\\d]+(\\d+)[^\\d]+(\\d+):(\\d+):(\\d+)[^\\d]+(\\d+)[^\\d]+(\\d+)[^\\d]+");
   private static Pattern qosChannelPattern = Pattern.compile(".*channel (\\d+).*");
-  // Reg failed: ua0: reg failed 613883@nettala.fo: 903 DNS Error (0 bindings)
+  /** Reg failed: ua0: reg failed 613883@nettala.fo: 903 DNS Error (0 bindings) */
   private static Pattern regfailedPattern = Pattern.compile(".*reg failed.*");
 
   public ReportVoipGenerator(
@@ -73,7 +72,9 @@ public class ReportVoipGenerator extends ReportGenerator {
             new RecordVoip(start, periodType, unittypeName, profileName, softwareVersion, line);
         Key key = recordTmp.getKey();
         RecordVoip record = report.getRecord(key);
-        if (record == null) record = recordTmp;
+        if (record == null) {
+          record = recordTmp;
+        }
         record.getIncomingCallCount().add(rs.getInt("incoming_call_count"));
         record.getCallLengthTotal().add(rs.getInt("call_length_total"));
         record.getOutgoingCallCount().add(rs.getInt("outgoing_call_count"));
@@ -101,7 +102,7 @@ public class ReportVoipGenerator extends ReportGenerator {
         report.setRecord(key, record);
         foundDataInReportTable = true;
       }
-      if (foundDataInReportTable)
+      if (foundDataInReportTable) {
         logger.debug(
             logPrefix
                 + "VoipReport: Have read "
@@ -111,34 +112,37 @@ public class ReportVoipGenerator extends ReportGenerator {
                 + ", report is now "
                 + report.getMap().size()
                 + " entries");
+      }
       return report;
     } catch (SQLException sqlex) {
       sqle = sqlex;
       throw sqlex;
     } finally {
-      if (rs != null) rs.close();
-      if (ps != null) ps.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.close();
       }
     }
   }
 
-  /*
-   * Generate reports directly from syslog - retrieve data for one single unit
-   * and with periodtype = SECOND
+  /**
+   * Generate reports directly from syslog - retrieve data for one single unit and with periodtype =
+   * SECOND.
    */
-
   public Report<RecordVoip> generateFromSyslog(Date start, Date end, String unitId)
       throws SQLException, IOException {
     return generateFromSyslog(PeriodType.SECOND, start, end, null, null, unitId, null);
   }
 
-  /*
-   * Generate reports directly from syslog - retrieve data for a set of units,
-   * but keep them separated in a map of reports
+  /**
+   * Generate reports directly from syslog - retrieve data for a set of units, but keep them
+   * separated in a map of reports.
    */
-
   public Map<String, Report<RecordVoip>> generateFromSyslog(
       PeriodType periodType,
       Date start,
@@ -159,10 +163,13 @@ public class ReportVoipGenerator extends ReportGenerator {
     filter.setFacilityVersion(swVersion);
     Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
     List<SyslogEntry> entries = syslog.read(filter, acs);
-    Map<String, Report<RecordVoip>> unitReportMap = new HashMap<String, Report<RecordVoip>>();
+    Map<String, Report<RecordVoip>> unitReportMap = new HashMap<>();
     for (SyslogEntry entry : entries) {
-      if (entry.getUnittypeName() == null || entry.getProfileName() == null) continue;
-      if (group != null && unitsInGroup.get(entry.getUnitId()) == null) continue;
+      if (entry.getUnittypeName() == null
+          || entry.getProfileName() == null
+          || (group != null && unitsInGroup.get(entry.getUnitId()) == null)) {
+        continue;
+      }
       String unitId = entry.getUnitId();
       Report<RecordVoip> report = unitReportMap.get(unitId);
       if (report == null) {
@@ -171,9 +178,12 @@ public class ReportVoipGenerator extends ReportGenerator {
       }
       Matcher m = qosChannelPattern.matcher(entry.getContent());
       String channel = "0";
-      if (m.matches()) channel = "" + m.group(1);
-      if (entry.getFacilityVersion() == null || entry.getFacilityVersion().trim().equals(""))
+      if (m.matches()) {
+        channel = m.group(1);
+      }
+      if (entry.getFacilityVersion() == null || "".equals(entry.getFacilityVersion().trim())) {
         entry.setFacilityVersion("Unknown");
+      }
       RecordVoip recordTmp =
           new RecordVoip(
               entry.getCollectorTimestamp(),
@@ -184,7 +194,9 @@ public class ReportVoipGenerator extends ReportGenerator {
               channel);
       Key key = recordTmp.getKey();
       RecordVoip record = report.getRecord(key);
-      if (record == null) record = recordTmp;
+      if (record == null) {
+        record = recordTmp;
+      }
       try {
         parseContentAndPopulateRecord(record, entry.getContent(), entry.getCollectorTimestamp());
         report.setRecord(key, record);
@@ -203,11 +215,7 @@ public class ReportVoipGenerator extends ReportGenerator {
     return unitReportMap;
   }
 
-  /*
-   * Generate reports directly from syslog - retrieve data for a whole set of
-   * units
-   */
-
+  /** Generate reports directly from syslog - retrieve data for a whole set of units. */
   public Report<RecordVoip> generateFromSyslog(
       PeriodType periodType,
       Date start,
@@ -223,7 +231,9 @@ public class ReportVoipGenerator extends ReportGenerator {
     SyslogFilter filter = new SyslogFilter();
     filter.setFacility(16); // Only messages from device
     filter.setMessage("^QoS|^ua_: reg failed");
-    if (unitId != null) filter.setUnitId("^" + unitId + "$");
+    if (unitId != null) {
+      filter.setUnitId("^" + unitId + "$");
+    }
     filter.setProfiles(prs);
     filter.setUnittypes(uts);
     filter.setCollectorTmsStart(start);
@@ -232,13 +242,19 @@ public class ReportVoipGenerator extends ReportGenerator {
     Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
     List<SyslogEntry> entries = syslog.read(filter, acs);
     for (SyslogEntry entry : entries) {
-      if (entry.getUnittypeName() == null || entry.getProfileName() == null) continue;
-      if (group != null && unitsInGroup.get(entry.getUnitId()) == null) continue;
+      if (entry.getUnittypeName() == null
+          || entry.getProfileName() == null
+          || (group != null && unitsInGroup.get(entry.getUnitId()) == null)) {
+        continue;
+      }
       Matcher m = qosChannelPattern.matcher(entry.getContent());
       String channel = "0";
-      if (m.matches()) channel = "" + m.group(1);
-      if (entry.getFacilityVersion() == null || entry.getFacilityVersion().trim().equals(""))
+      if (m.matches()) {
+        channel = m.group(1);
+      }
+      if (entry.getFacilityVersion() == null || "".equals(entry.getFacilityVersion().trim())) {
         entry.setFacilityVersion("Unknown");
+      }
       RecordVoip recordTmp =
           new RecordVoip(
               entry.getCollectorTimestamp(),
@@ -249,7 +265,9 @@ public class ReportVoipGenerator extends ReportGenerator {
               channel);
       Key key = recordTmp.getKey();
       RecordVoip record = report.getRecord(key);
-      if (record == null) record = recordTmp;
+      if (record == null) {
+        record = recordTmp;
+      }
       try {
         parseContentAndPopulateRecord(record, entry.getContent(), entry.getCollectorTimestamp());
         report.setRecord(key, record);
@@ -274,7 +292,9 @@ public class ReportVoipGenerator extends ReportGenerator {
       Matcher m = qosPattern.matcher(content);
       if (m.matches()) {
         long mosAvg = Long.parseLong(m.group(1));
-        if (mosAvg < 100) mosAvg = 100;
+        if (mosAvg < 100) {
+          mosAvg = 100;
+        }
         long jitterAvg = Long.parseLong(m.group(2));
         long jitterMax = Long.parseLong(m.group(3));
         long okCallHour = Long.parseLong(m.group(4));
@@ -283,7 +303,9 @@ public class ReportVoipGenerator extends ReportGenerator {
         long concealedCallLength = Long.parseLong(m.group(7));
         long callSecTotal =
             ((okCallHour * 3600 + okCallMin * 60 + okCallSec) * 1000 + concealedCallLength) / 1000;
-        if (callSecTotal == 0) callSecTotal = 1;
+        if (callSecTotal == 0) {
+          callSecTotal = 1;
+        }
         long lossPercent = Long.parseLong(m.group(8));
         record.getCallLengthTotal().add(callSecTotal);
         record.getCallLengthAvg().add(callSecTotal);

@@ -95,9 +95,9 @@ public class ReportPage extends AbstractWebPage {
   private Date toUseAsStart;
   private Date toUseAsEnd;
 
-  // Translates ReportType to Class<? extends ReportRetriever>
+  /** Translates ReportType to Class<? extends ReportRetriever> */
   private static Map<ReportType, Class<? extends ReportRetriever>> reportType2Implementation =
-      new HashMap<ReportType, Class<? extends ReportRetriever>>();
+      new HashMap<>();
 
   static {
     reportType2Implementation.put(ReportType.VOIP, VoipRetriever.class);
@@ -206,12 +206,13 @@ public class ReportPage extends AbstractWebPage {
     reportImplementation = DefaultRetriever.class.newInstance();
     Class<? extends ReportRetriever> reportImplementationClass =
         reportType2Implementation.get(reportType);
-    if (reportImplementationClass != null)
+    if (reportImplementationClass != null) {
       reportImplementation =
           (ReportRetriever)
               reportImplementationClass.getConstructors()[0].newInstance(inputData, req, acs);
+    }
 
-    /**
+    /*
      * We need to get a reference to the ReportRetriever before we can produce a list of software
      * versions.
      */
@@ -234,7 +235,9 @@ public class ReportPage extends AbstractWebPage {
 
     setPeriodTypeToSecondsIfRealtime(realtime);
 
-    if (isZoomingRequestAndShouldReturn(req, outputHandler)) return;
+    if (isZoomingRequestAndShouldReturn(req, outputHandler)) {
+      return;
+    }
 
     makeReport(groupSelect, swVersion);
 
@@ -298,7 +301,9 @@ public class ReportPage extends AbstractWebPage {
   }
 
   private void rememberPeriodTypeIfNotSeconds() {
-    if (toUseAsPeriodType != PeriodType.SECOND) periodType.setSelected(toUseAsPeriodType);
+    if (toUseAsPeriodType != PeriodType.SECOND) {
+      periodType.setSelected(toUseAsPeriodType);
+    }
   }
 
   private void makeReport(Group groupSelect, String swVersion) throws Exception {
@@ -347,26 +352,30 @@ public class ReportPage extends AbstractWebPage {
   }
 
   private List<String> getKeyNames() {
-    List<String> keyNames =
-        new ArrayList<String>(Arrays.asList(report.getKeyFactory().getKeyNames()));
+    List<String> keyNames = new ArrayList<>(Arrays.asList(report.getKeyFactory().getKeyNames()));
     removeUnrelevantKeyNames(keyNames);
     return keyNames;
   }
 
   private CheckBoxGroup<String> getAggregationCheckbox(List<String> keyNames) {
     Input aggregationInput = getSelectedAggregation(inputData.getAggregate(), keyNames);
-    CheckBoxGroup<String> aggregation =
-        InputSelectionFactory.getCheckBoxGroup(
-            aggregationInput, aggregationInput.getStringList(), keyNames);
-    return aggregation;
+    return InputSelectionFactory.getCheckBoxGroup(
+        aggregationInput, aggregationInput.getStringList(), keyNames);
   }
 
   private void removeUnrelevantKeyNames(List<String> keyNames) {
-    if (keyNames.contains("Profile") && isProfileListSelected()) keyNames.remove("Profile");
-    if (keyNames.contains("SoftwareVersion") && isSoftwareListSelected())
+    if (keyNames.contains("Profile") && isProfileListSelected()) {
+      keyNames.remove("Profile");
+    }
+    if (keyNames.contains("SoftwareVersion") && isSoftwareListSelected()) {
       keyNames.remove("SoftwareVersion");
-    if (keyNames.contains("Unittype") && isUnittypeListSelected()) keyNames.remove("Unittype");
-    if (keyNames.contains("Group") && isGroupListSelected()) keyNames.remove("Group");
+    }
+    if (keyNames.contains("Unittype") && isUnittypeListSelected()) {
+      keyNames.remove("Unittype");
+    }
+    if (keyNames.contains("Group") && isGroupListSelected()) {
+      keyNames.remove("Group");
+    }
   }
 
   private boolean isUnittypeListSelected() {
@@ -374,11 +383,11 @@ public class ReportPage extends AbstractWebPage {
   }
 
   private boolean isProfileListSelected() {
-    return (unittypes.getSelected() == null || profiles.getSelected() != null);
+    return unittypes.getSelected() == null || profiles.getSelected() != null;
   }
 
   private boolean isSoftwareListSelected() {
-    return (swVersionList != null && swVersionList.getSelected() != null);
+    return swVersionList != null && swVersionList.getSelected() != null;
   }
 
   private boolean isGroupListSelected() {
@@ -386,8 +395,8 @@ public class ReportPage extends AbstractWebPage {
   }
 
   private boolean isGroupRetrieverListSelected() {
-    return (((GroupRetriever) reportImplementation).getGroups() != null
-        && ((GroupRetriever) reportImplementation).getGroups().getSelected() != null);
+    return ((GroupRetriever) reportImplementation).getGroups() != null
+        && ((GroupRetriever) reportImplementation).getGroups().getSelected() != null;
   }
 
   private void processZoomingRequest(Output outputHandler, boolean realtime) {
@@ -428,18 +437,23 @@ public class ReportPage extends AbstractWebPage {
           url += "&" + aggr.toLowerCase() + "=" + req.getParameter(aggr.toLowerCase());
         }
       }
-      if (!url.contains("&unittype=") && isUnittypeListSelected())
+      if (!url.contains("&unittype=") && isUnittypeListSelected()) {
         url += "&unittype=" + unittypes.getSelected().getName();
-      if (!url.contains("&profile=") && profiles.getSelected() != null)
+      }
+      if (!url.contains("&profile=") && profiles.getSelected() != null) {
         url += "&profile=" + profiles.getSelected().getName();
-      if (!url.contains("&groupselect=") && groupList != null && groupList.getSelected() != null)
+      }
+      if (!url.contains("&groupselect=") && groupList != null && groupList.getSelected() != null) {
         url += "&groupselect=" + groupList.getSelected().getName();
-      if (!url.contains("&group=") && inputData.getGroup().getString() != null)
+      }
+      if (!url.contains("&group=") && inputData.getGroup().getString() != null) {
         url += "&group=" + inputData.getGroup().getString();
+      }
       if (!url.contains("&swversion=")
           && swVersionList != null
-          && swVersionList.getSelected() != null)
+          && swVersionList.getSelected() != null) {
         url += "&swversion=" + swVersionList.getSelected();
+      }
       // 5.2.3.1
       outputHandler.setDirectToPage(Page.UNITLIST, url);
       // 5.2.3.2
@@ -447,29 +461,31 @@ public class ReportPage extends AbstractWebPage {
       // 5.2.4.1
       String url = "type=" + reportType.getName() + "&start=" + startStr + "&end=" + endStr;
       url += "&" + inputData.getPeriod().getKey() + "=" + toUseAsPeriodType.getTypeStr();
-      if (method.getSelected() != null)
+      if (method.getSelected() != null) {
         url += "&" + inputData.getMethod().getKey() + "=" + method.getSelected();
-      if (optionalmethod.getSelected() != null)
+      }
+      if (optionalmethod.getSelected() != null) {
         url += "&" + inputData.getOptionalMethod().getKey() + "=" + optionalmethod.getSelected();
-      if (inputData.getAdvancedView().getBoolean() != null)
+      }
+      if (inputData.getAdvancedView().getBoolean() != null) {
         url +=
             "&"
                 + inputData.getAdvancedView().getKey()
                 + "="
-                + inputData.getAdvancedView().getBoolean().toString();
-      if (!url.contains("&groupselect=") && groupList != null && groupList.getSelected() != null)
+                + inputData.getAdvancedView().getBoolean();
+      }
+      if (!url.contains("&groupselect=") && groupList != null && groupList.getSelected() != null) {
         url += "&groupselect=" + groupList.getSelected().getName();
-      if (!url.contains("&group=") && inputData.getGroup().getString() != null)
+      }
+      if (!url.contains("&group=") && inputData.getGroup().getString() != null) {
         url += "&group=" + inputData.getGroup().getString();
+      }
       if (!url.contains("&swversion=")
           && swVersionList != null
-          && swVersionList.getSelected() != null)
+          && swVersionList.getSelected() != null) {
         url += "&swversion=" + swVersionList.getSelected();
-      url +=
-          "&"
-              + inputData.getRealtime().getKey()
-              + "="
-              + inputData.getRealtime().getBoolean().toString();
+      }
+      url += "&" + inputData.getRealtime().getKey() + "=" + inputData.getRealtime().getBoolean();
       String[] aggregation = inputData.getAggregate().getStringArray();
       if (aggregation != null && aggregation.length > 0) {
         for (String aggr : aggregation) {
@@ -496,12 +512,10 @@ public class ReportPage extends AbstractWebPage {
       res.addNoCacheToResponse();
       res.writeImageBytesToResponse(image);
     }
-    return;
   }
 
   /** The Class ChartLegendsDimensions. */
   class ChartLegendsDimensions {
-
     /** The MA x_ legend s_ p r_ column. */
     private int MAX_LEGENDS_PR_COLUMN = 21;
 
@@ -518,15 +532,20 @@ public class ReportPage extends AbstractWebPage {
      * @param report the report
      */
     ChartLegendsDimensions(String[] aggregation, Report<?> report) {
-      String[] keys = aggregation;
-      Set<String> uniqueLegendsSet = new HashSet<String>();
-      for (Key key : report.getMap().keySet()) uniqueLegendsSet.add(key.getKeyString(false, keys));
+      Set<String> uniqueLegendsSet = new HashSet<>();
+      for (Key key : report.getMap().keySet()) {
+        uniqueLegendsSet.add(key.getKeyString(false, aggregation));
+      }
       int totalLegendSize = 0;
-      for (String uniqueLegend : uniqueLegendsSet) totalLegendSize += uniqueLegend.length();
+      for (String uniqueLegend : uniqueLegendsSet) {
+        totalLegendSize += uniqueLegend.length();
+      }
       int uniqueLegendsSetSize = uniqueLegendsSet.size();
-      if (uniqueLegendsSetSize == 0) uniqueLegendsSetSize = 1;
+      if (uniqueLegendsSetSize == 0) {
+        uniqueLegendsSetSize = 1;
+      }
       averageLengthPrLegend = totalLegendSize / uniqueLegendsSetSize;
-      numberOfColumns = (uniqueLegendsSet.size() / MAX_LEGENDS_PR_COLUMN) + 1;
+      numberOfColumns = uniqueLegendsSet.size() / MAX_LEGENDS_PR_COLUMN + 1;
     }
   }
 
@@ -552,7 +571,9 @@ public class ReportPage extends AbstractWebPage {
   private static Date fixDateMinutes(Date date) {
     Calendar fix = Calendar.getInstance();
     fix.setTime(date);
-    if (fix.get(Calendar.MINUTE) == 59) fix.add(Calendar.MINUTE, 1);
+    if (fix.get(Calendar.MINUTE) == 59) {
+      fix.add(Calendar.MINUTE, 1);
+    }
     return fix.getTime();
   }
 
@@ -574,10 +595,11 @@ public class ReportPage extends AbstractWebPage {
   private PeriodType getNextLowerPeriodType(PeriodType t) {
     PeriodType[] types = getTypes();
     for (PeriodType type : types) {
-      if (t.isLongerThan(type)) return type;
+      if (t.isLongerThan(type)) {
+        return type;
+      }
     }
-    PeriodType type = types[types.length - 1];
-    return type;
+    return types[types.length - 1];
   }
 
   /**
@@ -589,12 +611,12 @@ public class ReportPage extends AbstractWebPage {
    * @return the item start date
    */
   private Date getItemStartDate(JFreeChart chart, int series, int item) {
-    TimeSeriesCollection collection = ((TimeSeriesCollection) chart.getXYPlot().getDataset());
+    TimeSeriesCollection collection = (TimeSeriesCollection) chart.getXYPlot().getDataset();
     return collection.getSeries(series).getDataItem(item).getPeriod().getStart();
   }
 
   private Date getItemEndDate(JFreeChart chart, int series, int item) {
-    TimeSeriesCollection collection = ((TimeSeriesCollection) chart.getXYPlot().getDataset());
+    TimeSeriesCollection collection = (TimeSeriesCollection) chart.getXYPlot().getDataset();
     return collection.getSeries(series).getDataItem(item).getPeriod().getEnd();
   }
 
@@ -605,13 +627,17 @@ public class ReportPage extends AbstractWebPage {
 
   public static List<String> getMethodOptions(String pageType) {
     ReportType type = ReportType.getEnum(pageType);
-    if (type == null) return ReportType.UNIT.getMethods();
-    return type.getMethods();
+    if (type != null) {
+      return type.getMethods();
+    }
+    return ReportType.UNIT.getMethods();
   }
 
   public static List<String> getMethodOptionsByType(ReportType type) {
-    if (type == null) return ReportType.UNIT.getMethods();
-    return type.getMethods();
+    if (type != null) {
+      return type.getMethods();
+    }
+    return ReportType.UNIT.getMethods();
   }
 
   private Integer getLegendIndex(String sessionId) {
@@ -654,10 +680,15 @@ public class ReportPage extends AbstractWebPage {
   public Date getEndDate(Input input) throws ParseException {
     Calendar end = Calendar.getInstance();
 
-    if (input.notNullNorValue("")) end.setTime(input.getDate());
-    else end.setTime(new Date());
+    if (input.notNullNorValue("")) {
+      end.setTime(input.getDate());
+    } else {
+      end.setTime(new Date());
+    }
 
-    if (end.get(Calendar.MINUTE) == 59) end.add(Calendar.MINUTE, 1);
+    if (end.get(Calendar.MINUTE) == 59) {
+      end.add(Calendar.MINUTE, 1);
+    }
     end.set(Calendar.SECOND, 0);
     end.set(Calendar.MILLISECOND, 0);
 
@@ -671,7 +702,9 @@ public class ReportPage extends AbstractWebPage {
    */
   public Date getEndDateForRealtime() {
     Calendar end = Calendar.getInstance();
-    if (inputData.getRealtime().getBoolean()) end.setTime(new Date());
+    if (inputData.getRealtime().getBoolean()) {
+      end.setTime(new Date());
+    }
     return end.getTime();
   }
 
@@ -783,7 +816,9 @@ public class ReportPage extends AbstractWebPage {
    */
   private PeriodType getType(String name) {
     for (PeriodType type : getTypes()) {
-      if (type.getTypeStr().equals(name)) return type;
+      if (type.getTypeStr().equals(name)) {
+        return type;
+      }
     }
     return null;
   }
@@ -797,12 +832,14 @@ public class ReportPage extends AbstractWebPage {
   private PeriodType getPeriodType(String period) {
     PeriodType periodType = getType(period);
 
-    if (periodType == null) periodType = PeriodType.DAY;
+    if (periodType == null) {
+      periodType = PeriodType.DAY;
+    }
 
     return periodType;
   }
 
-  private static Map<String, String> reportType2TableNameMap = new HashMap<String, String>();
+  private static Map<String, String> reportType2TableNameMap = new HashMap<>();
 
   static {
     reportType2TableNameMap.put(ReportType.HARDWARE.getName(), "report_hw");
@@ -821,10 +858,11 @@ public class ReportPage extends AbstractWebPage {
       Profile profile,
       ReportGenerator rgHardware)
       throws ParseException, SQLException {
-    List<String> swVersionList = new ArrayList<String>();
+    List<String> swVersionList = new ArrayList<>();
     String tableName = reportType2TableNameMap.get(type.getName());
-    if (unittype == null) return swVersionList;
-    swVersionList = rgHardware.getSoftwareVersions(unittype, profile, start, end, tableName);
+    if (unittype != null) {
+      return rgHardware.getSoftwareVersions(unittype, profile, start, end, tableName);
+    }
     return swVersionList;
   }
 
@@ -832,28 +870,35 @@ public class ReportPage extends AbstractWebPage {
       DropDownSingleSelect<Unittype> unittypes, DropDownSingleSelect<Profile> profiles) {
     Unittype unittype = unittypes.getSelected();
     Profile profile = profiles.getSelected();
-    List<Group> groupList = new ArrayList<Group>();
-    if (unittype == null) return groupList;
+    List<Group> groupList = new ArrayList<>();
+    if (unittype == null) {
+      return groupList;
+    }
     Group[] groupArr = unittype.getGroups().getGroups();
     for (Group g : groupArr) {
       if (profile == null) {
         groupList.add(g);
         continue;
       }
-      if (g.getTopParent().getProfile() != null) {
-        if (g.getTopParent().getProfile().getId().intValue() == profile.getId()) groupList.add(g);
+      if (g.getTopParent().getProfile() != null
+          && g.getTopParent().getProfile().getId().intValue() == profile.getId()) {
+        groupList.add(g);
       }
     }
     return groupList;
   }
 
   private List<String> getOptionalMethodOptions(String method, List<String> list) {
-    List<String> optionalmethods = new ArrayList<String>();
-    if (method == null) return optionalmethods;
-    for (String m : list) {
-      if (!m.equals(method)) optionalmethods.add(m);
+    List<String> optionalmethods = new ArrayList<>();
+    if (method == null) {
+      return optionalmethods;
     }
-    return optionalmethods.size() > 0 ? optionalmethods : null;
+    for (String m : list) {
+      if (!m.equals(method)) {
+        optionalmethods.add(m);
+      }
+    }
+    return !optionalmethods.isEmpty() ? optionalmethods : null;
   }
 
   private String generateClickablePointUrl(
@@ -869,30 +914,34 @@ public class ReportPage extends AbstractWebPage {
             + "&type="
             + pageType
             + "&series=%s&item=%s%AGGREGATION%";
-    if (method != null) url += "&method=" + method;
-    if (inputData.getAggregate().getStringArray() != null)
-      for (String aggregation : inputData.getAggregate().getStringArray())
+    if (method != null) {
+      url += "&method=" + method;
+    }
+    if (inputData.getAggregate().getStringArray() != null) {
+      for (String aggregation : inputData.getAggregate().getStringArray()) {
         url += "&" + inputData.getAggregate().getKey() + "=" + aggregation;
+      }
+    }
     if (periodType.isLongerThan(PeriodType.SECOND)) {
       messageToDisplayWhileWaiting += " graph ...";
       url += "&" + inputData.getPeriod().getKey() + "=" + periodType.getTypeStr();
-      if (inputData.getGroupSelect().notNullNorValue(""))
+      if (inputData.getGroupSelect().notNullNorValue("")) {
         url +=
             "&"
                 + inputData.getGroupSelect().getKey()
                 + "="
                 + inputData.getGroupSelect().getString();
-      if (inputData.getGroup().notNullNorValue(""))
+      }
+      if (inputData.getGroup().notNullNorValue("")) {
         url += "&" + inputData.getGroup().getKey() + "=" + inputData.getGroup().getString();
-      if (optionalmethod != null)
+      }
+      if (optionalmethod != null) {
         url += "&" + inputData.getOptionalMethod().getKey() + "=" + optionalmethod;
-      if (inputData.getAdvancedView().getBoolean() != null)
-        url += "&" + inputData.getAdvancedView().getKey() + "=" + Boolean.TRUE.toString();
-      url +=
-          "&"
-              + inputData.getRealtime().getKey()
-              + "="
-              + inputData.getRealtime().getBoolean().toString();
+      }
+      if (inputData.getAdvancedView().getBoolean() != null) {
+        url += "&" + inputData.getAdvancedView().getKey() + "=" + Boolean.TRUE;
+      }
+      url += "&" + inputData.getRealtime().getKey() + "=" + inputData.getRealtime().getBoolean();
     } else {
       messageToDisplayWhileWaiting += " units ...";
     }
@@ -915,8 +964,6 @@ public class ReportPage extends AbstractWebPage {
 
     switch (reportType) {
       case JOB:
-        shouldZoom = false;
-        break;
       case UNIT:
         shouldZoom = false;
         break;
@@ -925,7 +972,7 @@ public class ReportPage extends AbstractWebPage {
     }
 
     String clickablePointUrl = "";
-    if ((shouldZoom || periodType.getSelected().isLongerThan(PeriodType.HOUR)))
+    if (shouldZoom || periodType.getSelected().isLongerThan(PeriodType.HOUR)) {
       clickablePointUrl =
           generateClickablePointUrl(
               periodType.getSelected(),
@@ -933,6 +980,7 @@ public class ReportPage extends AbstractWebPage {
               method.getSelected(),
               optionalmethod.getSelected(),
               session.getId());
+    }
 
     XYPlot plot = (XYPlot) chart.getPlot();
     XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
@@ -993,11 +1041,15 @@ public class ReportPage extends AbstractWebPage {
   }
 
   public static String[] getSelectedAggregation(String[] aggregation, List<String> keyNames) {
-    List<String> selectedAggregation = new ArrayList<String>();
+    List<String> selectedAggregation = new ArrayList<>();
 
-    if (aggregation == null) return new String[] {};
+    if (aggregation == null) {
+      return new String[] {};
+    }
 
-    if (aggregation.length == 0) return aggregation;
+    if (aggregation.length == 0) {
+      return aggregation;
+    }
 
     for (String k : keyNames) {
       for (String a : aggregation) {
@@ -1012,7 +1064,7 @@ public class ReportPage extends AbstractWebPage {
   }
 
   public static Input getSelectedAggregation(Input aggregation, List<String> keyNames) {
-    List<String> selectedAggregation = new ArrayList<String>();
+    List<String> selectedAggregation = new ArrayList<>();
 
     if (aggregation.getStringArray() == null) {
       aggregation.setValue(new String[] {});

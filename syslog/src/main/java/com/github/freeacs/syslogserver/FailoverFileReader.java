@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FailoverFileReader implements Runnable {
-
   private static FailoverCounter counter = new FailoverCounter();
 
   private static Logger logger = LoggerFactory.getLogger(FailoverFileReader.class);
@@ -33,11 +32,13 @@ public class FailoverFileReader implements Runnable {
 
   public void run() {
     FailoverFile ff = FailoverFile.getInstance(properties);
-    while (true) {
+    do {
       try {
         Thread.sleep(1000);
-        if (Sleep.isTerminated()) return;
-        if ((System.currentTimeMillis() - ff.createdTms()) > PROCESS_INTERVAL.apply(properties)
+        if (Sleep.isTerminated()) {
+          return;
+        }
+        if (System.currentTimeMillis() - ff.createdTms() > PROCESS_INTERVAL.apply(properties)
             && FailoverFile.getFailoverCount(true) > 0) {
           logger.info("Will process failover messages - that is to add them back into the system");
           File processFile = ff.rotate();
@@ -46,24 +47,30 @@ public class FailoverFileReader implements Runnable {
             FileReader fr = new FileReader(processFile);
             BufferedReader br = new BufferedReader(fr);
             int lineCounter = 0;
-            while (true) {
-              if (Sleep.isTerminated()) break;
+            do {
+              if (Sleep.isTerminated()) {
+                break;
+              }
               int size = SyslogPackets.packets.size();
-              if (size > 0) Thread.sleep(SyslogPackets.packets.size() / 10 + 1);
+              if (size > 0) {
+                Thread.sleep(SyslogPackets.packets.size() / 10 + 1);
+              }
               String line = br.readLine();
-              if (line == null) break;
+              if (line == null) {
+                break;
+              }
               lineCounter++;
               String[] args = line.split("#@@#");
               long tms = Long.parseLong(args[1]);
               SyslogPacket packet = new SyslogPacket(args[3], args[2], tms, true);
-              if ((System.currentTimeMillis() - tms) > MAX_AGE.apply(properties)) {
+              if (System.currentTimeMillis() - tms > MAX_AGE.apply(properties)) {
                 failedMessages.error(packet + "Message was too old to retry");
                 counter.incTooOld();
                 continue;
               }
               SyslogPackets.add(packet, properties);
               counter.incRecycled();
-            }
+            } while (true);
             br.close();
             fr.close();
             if (processFile.delete()) {
@@ -97,9 +104,11 @@ public class FailoverFileReader implements Runnable {
       } catch (Throwable t) {
         throwable = t;
         ok = false;
-        if (!Sleep.isTerminated()) logger.error("Error occured, FailoverFileReader continues", t);
+        if (!Sleep.isTerminated()) {
+          logger.error("Error occured, FailoverFileReader continues", t);
+        }
       }
-    }
+    } while (true);
   }
 
   public static boolean isOk() {
@@ -115,14 +124,12 @@ public class FailoverFileReader implements Runnable {
   }
 
   public static class FailoverCounter {
-
     private int recycled;
     private int tooOld;
 
     public FailoverCounter() {}
 
     public FailoverCounter(int recycled, int tooOld) {
-      super();
       this.recycled = recycled;
       this.tooOld = tooOld;
     }

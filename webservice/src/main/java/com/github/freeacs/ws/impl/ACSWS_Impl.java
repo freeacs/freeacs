@@ -38,7 +38,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ACSWS_Impl {
-
   private final DataSource xapsDs;
 
   @Autowired

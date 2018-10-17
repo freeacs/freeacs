@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
  * @author Jarl Andre Hubenthal
  */
 public class ReferencingResourceBundle extends ResourceBundle {
-
   /** The resources. */
   private static ResourceBundle resources;
 
@@ -36,17 +35,11 @@ public class ReferencingResourceBundle extends ResourceBundle {
     this.silent = silent;
   }
 
-  /* (non-Javadoc)
-   * @see java.util.ResourceBundle#getKeys()
-   */
   @Override
   public Enumeration<String> getKeys() {
     return resources.getKeys();
   }
 
-  /* (non-Javadoc)
-   * @see java.util.ResourceBundle#handleGetObject(java.lang.String)
-   */
   @Override
   protected Object handleGetObject(String key) {
     String value = resources.getString(key);
@@ -57,9 +50,13 @@ public class ReferencingResourceBundle extends ResourceBundle {
         String s = match.substring(1, match.length() - 1);
         try {
           String referencedValue = (String) handleGetObject(s);
-          if (referencedValue != null) value = value.replace(match, referencedValue);
+          if (referencedValue != null) {
+            value = value.replace(match, referencedValue);
+          }
         } catch (MissingResourceException e) {
-          if (!this.silent) throw e;
+          if (!this.silent) {
+            throw e;
+          }
         }
       }
     }

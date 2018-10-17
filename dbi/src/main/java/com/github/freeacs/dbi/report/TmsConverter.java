@@ -35,31 +35,41 @@ public class TmsConverter {
 
   public Date rollForward(Date d, PeriodType periodType) {
     calendar.setTime(d);
-    if (periodType == PeriodType.MONTH)
+    if (periodType == PeriodType.MONTH) {
       calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 1);
-    if (periodType == PeriodType.DAY)
+    }
+    if (periodType == PeriodType.DAY) {
       calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) + 1);
-    if (periodType == PeriodType.HOUR)
+    }
+    if (periodType == PeriodType.HOUR) {
       calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY) + 1);
-    if (periodType == PeriodType.MINUTE)
+    }
+    if (periodType == PeriodType.MINUTE) {
       calendar.set(Calendar.MINUTE, calendar.get(Calendar.MINUTE) + 1);
-    if (periodType == PeriodType.SECOND)
+    }
+    if (periodType == PeriodType.SECOND) {
       calendar.set(Calendar.SECOND, calendar.get(Calendar.SECOND) + 1);
+    }
     return calendar.getTime();
   }
 
   public Date rollBackward(Date d, PeriodType periodType) {
     calendar.setTime(d);
-    if (periodType == PeriodType.MONTH)
+    if (periodType == PeriodType.MONTH) {
       calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) - 1);
-    if (periodType == PeriodType.DAY)
+    }
+    if (periodType == PeriodType.DAY) {
       calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) - 1);
-    if (periodType == PeriodType.HOUR)
+    }
+    if (periodType == PeriodType.HOUR) {
       calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY) - 1);
-    if (periodType == PeriodType.MINUTE)
+    }
+    if (periodType == PeriodType.MINUTE) {
       calendar.set(Calendar.MINUTE, calendar.get(Calendar.MINUTE) - 1);
-    if (periodType == PeriodType.SECOND)
+    }
+    if (periodType == PeriodType.SECOND) {
       calendar.set(Calendar.SECOND, calendar.get(Calendar.SECOND) - 1);
+    }
     return calendar.getTime();
   }
 

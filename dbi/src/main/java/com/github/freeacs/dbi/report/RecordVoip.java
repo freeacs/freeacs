@@ -3,7 +3,6 @@ package com.github.freeacs.dbi.report;
 import java.util.Date;
 
 public class RecordVoip extends Record<RecordVoip> {
-
   private static KeyFactory keyFactory =
       new KeyFactory("Unittype", "Profile", "SoftwareVersion", "Line");
   private Key key;
@@ -16,23 +15,26 @@ public class RecordVoip extends Record<RecordVoip> {
   private String line;
 
   protected Average mosAvg = new Average(100);
-  //	protected Counter mos12Count = new Counter();
-  //	protected Counter mos23Count = new Counter();
-  //	protected Counter mos34Count = new Counter();
-  //	protected Counter mos45Count = new Counter();
+  /**
+   * Protected Counter mos12Count = new Counter(); protected Counter mos23Count = new Counter();
+   * protected Counter mos34Count = new Counter(); protected Counter mos45Count = new Counter();.
+   */
   protected Average jitterAvg = new Average();
-  //	protected Counter jitterAbove200msCount = new Counter();
+  /** Protected Counter jitterAbove200msCount = new Counter();. */
   protected Average jitterMax = new Average();
+
   protected Average percentLossAvg = new Average();
-  //	protected Counter percentLossAbove10Count = new Counter();
+  /** Protected Counter percentLossAbove10Count = new Counter();. */
   protected Average callLengthAvg = new Average(60 * 1000);
+
   protected Counter callLengthTotal = new Counter(3600);
   protected Counter incomingCallCount = new Counter();
-  //	protected Counter sipRegisterFailedCount = new Counter();
+  /** Protected Counter sipRegisterFailedCount = new Counter();. */
   protected Counter outgoingCallCount = new Counter();
+
   protected Counter outgoingCallFailedCount = new Counter();
   protected Counter abortedCallCount = new Counter();
-  // protected Counter VoIPQuality = new Counter();
+  /** Protected Counter VoIPQuality = new Counter();. */
   protected Counter noSipServiceTime = new Counter();
 
   protected RecordVoip() {}
@@ -75,7 +77,9 @@ public class RecordVoip extends Record<RecordVoip> {
   }
 
   public Average getMosAvg() {
-    if (callLengthTotal.get() == 0) return new Average(100);
+    if (callLengthTotal.get() == 0) {
+      return new Average(100);
+    }
     return mosAvg;
   }
 
@@ -83,42 +87,27 @@ public class RecordVoip extends Record<RecordVoip> {
     this.mosAvg = mosAvg;
   }
 
-  /*
-  public Counter getMos12Count() {
-  	return mos12Count;
-  }
-
-  public void setMos12Count(Counter mos12Count) {
-  	this.mos12Count = mos12Count;
-  }
-
-  public Counter getMos23Count() {
-  	return mos23Count;
-  }
-
-  public void setMos23Count(Counter mos23Count) {
-  	this.mos23Count = mos23Count;
-  }
-
-  public Counter getMos34Count() {
-  	return mos34Count;
-  }
-
-  public void setMos34Count(Counter mos34Count) {
-  	this.mos34Count = mos34Count;
-  }
-
-  public Counter getMos45Count() {
-  	return mos45Count;
-  }
-
-  public void setMos45Count(Counter mos45Count) {
-  	this.mos45Count = mos45Count;
-  }
-  */
-
+  /**
+   * Public Counter getMos12Count() { return mos12Count; }
+   *
+   * <p>public void setMos12Count(Counter mos12Count) { this.mos12Count = mos12Count; }
+   *
+   * <p>public Counter getMos23Count() { return mos23Count; }
+   *
+   * <p>public void setMos23Count(Counter mos23Count) { this.mos23Count = mos23Count; }
+   *
+   * <p>public Counter getMos34Count() { return mos34Count; }
+   *
+   * <p>public void setMos34Count(Counter mos34Count) { this.mos34Count = mos34Count; }
+   *
+   * <p>public Counter getMos45Count() { return mos45Count; }
+   *
+   * <p>public void setMos45Count(Counter mos45Count) { this.mos45Count = mos45Count; }
+   */
   public Average getJitterAvg() {
-    if (callLengthTotal.get() == 0) return new Average();
+    if (callLengthTotal.get() == 0) {
+      return new Average();
+    }
     return jitterAvg;
   }
 
@@ -126,16 +115,15 @@ public class RecordVoip extends Record<RecordVoip> {
     this.jitterAvg = jitterAvg;
   }
 
-  //	public Counter getJitterAbove200msCount() {
-  //		return jitterAbove200msCount;
-  //	}
-  //
-  //	public void setJitterAbove200msCount(Counter jitterAbove200msCount) {
-  //		this.jitterAbove200msCount = jitterAbove200msCount;
-  //	}
-
+  /**
+   * Public Counter getJitterAbove200msCount() { return jitterAbove200msCount; } public void
+   * setJitterAbove200msCount(Counter jitterAbove200msCount) { this.jitterAbove200msCount =
+   * jitterAbove200msCount; }
+   */
   public Average getPercentLossAvg() {
-    if (callLengthTotal.get() == 0) return new Average();
+    if (callLengthTotal.get() == 0) {
+      return new Average();
+    }
     return percentLossAvg;
   }
 
@@ -143,16 +131,15 @@ public class RecordVoip extends Record<RecordVoip> {
     this.percentLossAvg = percentLossAvg;
   }
 
-  //	public Counter getPercentLossAbove10Count() {
-  //		return percentLossAbove10Count;
-  //	}
-  //
-  //	public void setPercentLossAbove10Count(Counter percentLossAbove10Count) {
-  //		this.percentLossAbove10Count = percentLossAbove10Count;
-  //	}
-
+  /**
+   * Public Counter getPercentLossAbove10Count() { return percentLossAbove10Count; } public void
+   * setPercentLossAbove10Count(Counter percentLossAbove10Count) { this.percentLossAbove10Count =
+   * percentLossAbove10Count; }
+   */
   public Average getCallLengthAvg() {
-    if (callLengthTotal.get() == 0) return new Average(60 * 1000);
+    if (callLengthTotal.get() == 0) {
+      return new Average(60 * 1000);
+    }
     return callLengthAvg;
   }
 
@@ -176,14 +163,11 @@ public class RecordVoip extends Record<RecordVoip> {
     this.incomingCallCount = incomingCallCount;
   }
 
-  //	public Counter getSipRegisterFailedCount() {
-  //		return sipRegisterFailedCount;
-  //	}
-  //
-  //	public void setSipRegisterFailedCount(Counter sipRegisterFailedCount) {
-  //		this.sipRegisterFailedCount = sipRegisterFailedCount;
-  //	}
-
+  /**
+   * Public Counter getSipRegisterFailedCount() { return sipRegisterFailedCount; } public void
+   * setSipRegisterFailedCount(Counter sipRegisterFailedCount) { this.sipRegisterFailedCount =
+   * sipRegisterFailedCount; }
+   */
   public Counter getOutgoingCallCount() {
     return outgoingCallCount;
   }
@@ -233,14 +217,15 @@ public class RecordVoip extends Record<RecordVoip> {
     double outgoing = getOutgoingCallCount().get();
     double mos = 0;
 
-    if (getMosAvg().get() != null)
-      mos = (double) getMosAvg().get() / (double) getMosAvg().getDividend();
+    if (getMosAvg().get() != null) {
+      mos = (double) getMosAvg().get() / getMosAvg().getDividend();
+    }
     //		System.out.println("missed:" + missed + ", aborted:" + aborted + ", incoming:" + incoming +
     // ", outgoing:" + outgoing + ", mos:" + mos);
     if (missedCalls != 0 || aborted != 0 || incoming != 0 || outgoing != 0 || mos != 0) {
       double totalMos =
-          ((missedCalls + aborted + (incoming + outgoing) * mos)
-                  / (missedCalls + aborted + incoming + outgoing))
+          (missedCalls + aborted + (incoming + outgoing) * mos)
+                  / (missedCalls + aborted + incoming + outgoing)
               - 1;
       Counter totalScore = new Counter(10);
       totalScore.set((long) (totalMos * 1000 / 3.38d));
@@ -253,44 +238,44 @@ public class RecordVoip extends Record<RecordVoip> {
   public RecordVoip clone() {
     RecordVoip clone =
         new RecordVoip(tms, periodType, unittypeName, profileName, softwareVersion, line);
-    clone.setCallLengthTotal(this.getCallLengthTotal().clone());
-    clone.setAbortedCallCount(this.getAbortedCallCount().clone());
-    clone.setCallLengthAvg(this.getCallLengthAvg().clone());
-    clone.setIncomingCallCount(this.getIncomingCallCount().clone());
+    clone.setCallLengthTotal(getCallLengthTotal().clone());
+    clone.setAbortedCallCount(getAbortedCallCount().clone());
+    clone.setCallLengthAvg(getCallLengthAvg().clone());
+    clone.setIncomingCallCount(getIncomingCallCount().clone());
     //		clone.setJitterAbove200msCount(this.getJitterAbove200msCount().clone());
-    clone.setJitterAvg(this.getJitterAvg().clone());
-    clone.setJitterMax(this.getJitterMax().clone());
+    clone.setJitterAvg(getJitterAvg().clone());
+    clone.setJitterMax(getJitterMax().clone());
     //		clone.setMos12Count(this.getMos12Count().clone());
     //		clone.setMos23Count(this.getMos23Count().clone());
     //		clone.setMos34Count(this.getMos34Count().clone());
     //		clone.setMos45Count(this.getMos45Count().clone());
-    clone.setMosAvg(this.getMosAvg().clone());
-    clone.setOutgoingCallCount(this.getOutgoingCallCount().clone());
-    clone.setOutgoingCallFailedCount(this.getOutgoingCallFailedCount().clone());
+    clone.setMosAvg(getMosAvg().clone());
+    clone.setOutgoingCallCount(getOutgoingCallCount().clone());
+    clone.setOutgoingCallFailedCount(getOutgoingCallFailedCount().clone());
     //		clone.setPercentLossAbove10Count(this.getPercentLossAbove10Count().clone());
-    clone.setPercentLossAvg(this.getPercentLossAvg().clone());
-    clone.setNoSipServiceTime(this.getNoSipServiceTime().clone());
+    clone.setPercentLossAvg(getPercentLossAvg().clone());
+    clone.setNoSipServiceTime(getNoSipServiceTime().clone());
     return clone;
   }
 
   public void add(RecordVoip record) {
-    this.getCallLengthTotal().add(record.getCallLengthTotal());
-    this.getAbortedCallCount().add(record.getAbortedCallCount());
-    this.getCallLengthAvg().add(record.getCallLengthAvg());
-    this.getIncomingCallCount().add(record.getIncomingCallCount());
+    getCallLengthTotal().add(record.getCallLengthTotal());
+    getAbortedCallCount().add(record.getAbortedCallCount());
+    getCallLengthAvg().add(record.getCallLengthAvg());
+    getIncomingCallCount().add(record.getIncomingCallCount());
     //		this.getJitterAbove200msCount().add(record.getJitterAbove200msCount());
-    this.getJitterAvg().add(record.getJitterAvg());
-    this.getJitterMax().add(record.getJitterMax());
+    getJitterAvg().add(record.getJitterAvg());
+    getJitterMax().add(record.getJitterMax());
     //		this.getMos12Count().add(record.getMos12Count());
     //		this.getMos23Count().add(record.getMos23Count());
     //		this.getMos34Count().add(record.getMos34Count());
     //		this.getMos45Count().add(record.getMos45Count());
-    this.getMosAvg().add(record.getMosAvg());
-    this.getOutgoingCallCount().add(record.getOutgoingCallCount());
-    this.getOutgoingCallFailedCount().add(record.getOutgoingCallFailedCount());
+    getMosAvg().add(record.getMosAvg());
+    getOutgoingCallCount().add(record.getOutgoingCallCount());
+    getOutgoingCallFailedCount().add(record.getOutgoingCallFailedCount());
     //		this.getPercentLossAbove10Count().add(record.getPercentLossAbove10Count());
-    this.getPercentLossAvg().add(record.getPercentLossAvg());
-    this.getNoSipServiceTime().add(record.getNoSipServiceTime());
+    getPercentLossAvg().add(record.getPercentLossAvg());
+    getNoSipServiceTime().add(record.getNoSipServiceTime());
   }
 
   public KeyFactory getKeyFactory() {

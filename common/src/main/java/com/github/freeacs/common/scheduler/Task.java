@@ -1,13 +1,13 @@
 package com.github.freeacs.common.scheduler;
 
 public interface Task extends Runnable {
-  public void setThisLaunchTms(long launchTms);
+  void setThisLaunchTms(long launchTms);
 
-  public String getTaskName();
+  String getTaskName();
 
-  public boolean isRunning();
+  boolean isRunning();
 
-  public Throwable getThrowable();
+  Throwable getThrowable();
 
-  public void setThrowable(Throwable t);
+  void setThrowable(Throwable t);
 }

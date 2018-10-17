@@ -69,7 +69,6 @@ public class SyslogUtil {
   public static String getFontColor(Integer severityLevel) {
     switch (severityLevel) {
       case SyslogConstants.SEVERITY_EMERGENCY:
-        return TableColor.BLACK.toString();
       default:
         return TableColor.BLACK.toString();
     }
@@ -82,16 +81,20 @@ public class SyslogUtil {
    * @return the object
    */
   public static Object translateSeverityLevel(String[] s) {
-    List<Integer> arr = new ArrayList<Integer>();
+    List<Integer> arr = new ArrayList<>();
     for (Entry<Integer, String> entry : SyslogConstants.severityMap.entrySet()) {
-      if (entry.getValue().equals(s.toString())) return entry.getKey();
+      if (entry.getValue().equals(s.toString())) {
+        return entry.getKey();
+      }
       for (int i = 0; i < s.length; i++) {
         if (entry.getValue().equals(s[i])) {
           arr.add(entry.getKey());
         }
       }
     }
-    if (arr.size() == 0) return null;
+    if (arr.isEmpty()) {
+      return null;
+    }
     return arr.toArray(new Integer[] {});
   }
 
@@ -102,7 +105,9 @@ public class SyslogUtil {
    * @return the integer
    */
   public static Integer convertToInt(String s) {
-    if (s == null) return null;
+    if (s == null) {
+      return null;
+    }
     try {
       return Integer.parseInt(s);
     } catch (Throwable t) {
@@ -119,7 +124,9 @@ public class SyslogUtil {
   public static Date convertToTms(String string) {
     try {
       String s = string;
-      if (s == null) return null;
+      if (s == null) {
+        return null;
+      }
       Calendar c = Calendar.getInstance();
       int year = c.get(Calendar.YEAR);
       if (s.startsWith("2")) {
@@ -157,13 +164,11 @@ public class SyslogUtil {
   public static Date getDate() {
     Calendar cal = Calendar.getInstance();
     cal.add(Calendar.DAY_OF_MONTH, -1);
-    Date date = cal.getTime();
-    return date;
+    return cal.getTime();
   }
 
   /** The Class Event. */
   public static class Event {
-
     /** The key. */
     private final String key;
 
@@ -202,7 +207,6 @@ public class SyslogUtil {
 
   /** The Class Facility. */
   public static class Facility {
-
     /** The key. */
     private final String key;
 
@@ -247,9 +251,15 @@ public class SyslogUtil {
    * @return the event
    */
   public static Event getEvent(Unittype unittype, Integer id) {
-    if (unittype == null && id != null) return convertSyslogEvent(SyslogEvents.getById(id));
-    if (id == null) return null;
-    if (id == 0) return new Event("0", "Default");
+    if (unittype == null && id != null) {
+      return convertSyslogEvent(SyslogEvents.getById(id));
+    }
+    if (id == null) {
+      return null;
+    }
+    if (id == 0) {
+      return new Event("0", "Default");
+    }
     return convertSyslogEvent(unittype.getSyslogEvents().getByEventId(id));
   }
 
@@ -260,7 +270,7 @@ public class SyslogUtil {
    * @return the events
    */
   public static List<Event> getEvents(Unittype unittype) {
-    List<Event> list = new ArrayList<Event>();
+    List<Event> list = new ArrayList<>();
     if (unittype == null) {
       list.add(new Event("0", "Default"));
     } else {
@@ -289,8 +299,10 @@ public class SyslogUtil {
    * @return the facility
    */
   public static Facility getFacility(Integer id) {
-    if (id == null) return null;
-    return new Facility(id.toString(), SyslogConstants.facilityMap.get(id));
+    if (id != null) {
+      return new Facility(id.toString(), SyslogConstants.facilityMap.get(id));
+    }
+    return null;
   }
 
   /**
@@ -299,9 +311,9 @@ public class SyslogUtil {
    * @return the facilities
    */
   public static List<Facility> getFacilities() {
-    List<Facility> list = new ArrayList<Facility>();
+    List<Facility> list = new ArrayList<>();
     for (Entry<Integer, String> facility : SyslogConstants.facilityMap.entrySet()) {
-      list.add(new Facility(facility.getKey().toString(), facility.getValue().toString()));
+      list.add(new Facility(facility.getKey().toString(), facility.getValue()));
     }
     return list;
   }
@@ -315,8 +327,7 @@ public class SyslogUtil {
   public static String getSeverity(String args) {
     Integer severityId = Integer.parseInt((String) args);
     Map severityMap = SyslogConstants.severityMap;
-    String text = (String) severityMap.get(severityId);
-    return text;
+    return (String) severityMap.get(severityId);
   }
 
   /**
@@ -327,18 +338,15 @@ public class SyslogUtil {
    */
   public static String getSeverity(Integer args) {
     Map severityMap = SyslogConstants.severityMap;
-    String text = (String) severityMap.get(args);
-    return text;
+    return (String) severityMap.get(args);
   }
 
   /** The Class GetSeverityText. */
   public static class GetSeverityText implements TemplateMethodModel {
-
-    /* (non-Javadoc)
-     * @see freemarker.template.TemplateMethodModel#exec(java.util.List)
-     */
     public String exec(List args) throws TemplateModelException {
-      if (args.size() < 1) throw new TemplateModelException("Wrong number of arguments");
+      if (args.isEmpty()) {
+        throw new TemplateModelException("Wrong number of arguments");
+      }
       return getSeverity((String) args.get(0));
     }
   }
@@ -352,38 +360,35 @@ public class SyslogUtil {
   private static String getFacility(String arg) {
     Integer facilityId = Integer.parseInt((String) arg);
     Map facilityMap = SyslogConstants.facilityMap;
-    String text = (String) facilityMap.get(facilityId);
-    return text;
+    return (String) facilityMap.get(facilityId);
   }
 
   /** The Class GetFacilityText. */
   public static class GetFacilityText implements TemplateMethodModel {
-
-    /* (non-Javadoc)
-     * @see freemarker.template.TemplateMethodModel#exec(java.util.List)
-     */
     public String exec(List args) throws TemplateModelException {
-      if (args.size() < 1) throw new TemplateModelException("Wrong number of arguments");
+      if (args.isEmpty()) {
+        throw new TemplateModelException("Wrong number of arguments");
+      }
       return getFacility((String) args.get(0));
     }
   }
 
   /** The Class GetBackgroundColor. */
   public static class GetBackgroundColor implements TemplateMethodModel {
-
     /** The colors. */
-    Map<String, String> colors = new HashMap<String, String>();
+    Map<String, String> colors = new HashMap<>();
 
-    /* (non-Javadoc)
-     * @see freemarker.template.TemplateMethodModel#exec(java.util.List)
-     */
     public TemplateModel exec(List args) throws TemplateModelException {
-      if (args.size() < 1) throw new TemplateModelException("Wrong number of arguments");
+      if (args.isEmpty()) {
+        throw new TemplateModelException("Wrong number of arguments");
+      }
       String color = colors.get(args.get(0));
-      if (color != null) return new SimpleScalar(color);
+      if (color != null) {
+        return new SimpleScalar(color);
+      }
       String se = (String) args.get(0);
       Integer severity = Integer.parseInt(se);
-      color = SyslogUtil.getBackgroundColor(severity);
+      color = getBackgroundColor(severity);
       colors.put(se, color);
       return new SimpleScalar(color);
     }
@@ -391,20 +396,20 @@ public class SyslogUtil {
 
   /** The Class GetFontColor. */
   public static class GetFontColor implements TemplateMethodModel {
-
     /** The colors. */
-    Map<String, String> colors = new HashMap<String, String>();
+    Map<String, String> colors = new HashMap<>();
 
-    /* (non-Javadoc)
-     * @see freemarker.template.TemplateMethodModel#exec(java.util.List)
-     */
     public TemplateModel exec(List args) throws TemplateModelException {
-      if (args.size() < 1) throw new TemplateModelException("Wrong number of arguments");
+      if (args.isEmpty()) {
+        throw new TemplateModelException("Wrong number of arguments");
+      }
       String color = colors.get(args.get(0));
-      if (color != null) return new SimpleScalar(color);
+      if (color != null) {
+        return new SimpleScalar(color);
+      }
       String se = (String) args.get(0);
       Integer severity = Integer.parseInt(se);
-      color = SyslogUtil.getFontColor(severity);
+      color = getFontColor(severity);
       colors.put(se, color);
       return new SimpleScalar(color);
     }
@@ -412,9 +417,8 @@ public class SyslogUtil {
 
   /** The Class GetEventMouseOver. */
   public static class GetEventMouseOver implements TemplateMethodModel {
-
     /** The texts. */
-    Map<String, String> texts = new HashMap<String, String>();
+    Map<String, String> texts = new HashMap<>();
 
     /** The xaps. */
     private ACS acs;
@@ -428,16 +432,17 @@ public class SyslogUtil {
       this.acs = acs;
     }
 
-    /* (non-Javadoc)
-     * @see freemarker.template.TemplateMethodModel#exec(java.util.List)
-     */
     public TemplateModel exec(List args) throws TemplateModelException {
-      if (args.size() < 1) throw new TemplateModelException("Wrong number of arguments");
+      if (args.isEmpty()) {
+        throw new TemplateModelException("Wrong number of arguments");
+      }
       String uts = (String) args.get(0);
       String es = (String) args.get(1);
       String text = texts.get(uts + ":" + es);
-      if (text != null) return new SimpleScalar(text);
-      Integer unittypeId = !uts.equals("") ? Integer.parseInt(uts) : null;
+      if (text != null) {
+        return new SimpleScalar(text);
+      }
+      Integer unittypeId = !"".equals(uts) ? Integer.parseInt(uts) : null;
       Integer eventId = Integer.parseInt(es);
       Unittype ut = unittypeId != null ? acs.getUnittype(unittypeId) : null;
       SyslogEvent event =
@@ -446,8 +451,9 @@ public class SyslogUtil {
         texts.put(uts + ":" + es, event.toString());
         return new SimpleScalar(event.toString());
       }
-      if (eventId != null && eventId == 0)
+      if (eventId != null && eventId == 0) {
         return new SimpleScalar(SyslogEvents.getById(eventId).getName());
+      }
       return new SimpleScalar("n/a");
     }
   }
@@ -470,7 +476,6 @@ public class SyslogUtil {
 
   /** The Class GetUnittypeProfileByName. */
   public static class GetUnittypeProfileByName implements TemplateMethodModel {
-
     /** The xaps. */
     private ACS acs;
 
@@ -483,34 +488,36 @@ public class SyslogUtil {
       this.acs = acs;
     }
 
-    /* (non-Javadoc)
-     * @see freemarker.template.TemplateMethodModel#exec(java.util.List)
-     */
     public TemplateModel exec(List args) throws TemplateModelException {
-      if (args.size() < 1) throw new TemplateModelException("Wrong number of arguments");
-      Map<String, String> map = new HashMap<String, String>();
+      if (args.isEmpty()) {
+        throw new TemplateModelException("Wrong number of arguments");
+      }
+      Map<String, String> map = new HashMap<>();
       String unittypeString = (String) args.get(0);
       String profileString = (String) args.get(1);
       Unittype entryUnittype = acs.getUnittype(unittypeString);
       Profile entryProfile =
-          (entryUnittype != null && profileString != null
+          entryUnittype != null && profileString != null
               ? entryUnittype.getProfiles().getByName(profileString)
-              : null);
+              : null;
       String unittypeName = entryUnittype != null ? entryUnittype.getName() : null;
       String profileName = entryProfile != null ? entryProfile.getName() : null;
-      if (profileString != null && !profileString.equals("") && profileName == null)
+      if (profileString != null && !"".equals(profileString) && profileName == null) {
         map.put("profile", "N/A (id: " + profileString + ")");
-      else map.put("profile", profileName);
-      if (unittypeString != null && unittypeName == null)
+      } else {
+        map.put("profile", profileName);
+      }
+      if (unittypeString != null && unittypeName == null) {
         map.put("unittype", "N/A (id: " + unittypeString + ")");
-      else map.put("unittype", unittypeName);
+      } else {
+        map.put("unittype", unittypeName);
+      }
       return new SimpleObjectWrapper().wrap(map);
     }
   }
 
   /** The Class GetUnittypeProfileById. */
   public static class GetUnittypeProfileById implements TemplateMethodModel {
-
     /** The xaps. */
     private ACS acs;
 
@@ -523,29 +530,32 @@ public class SyslogUtil {
       this.acs = acs;
     }
 
-    /* (non-Javadoc)
-     * @see freemarker.template.TemplateMethodModel#exec(java.util.List)
-     */
     public TemplateModel exec(List args) throws TemplateModelException {
-      if (args.size() < 2) throw new TemplateModelException("Wrong number of arguments");
-      Map<String, String> map = new HashMap<String, String>();
+      if (args.size() < 2) {
+        throw new TemplateModelException("Wrong number of arguments");
+      }
+      Map<String, String> map = new HashMap<>();
       Integer unittypeId = Integer.parseInt((String) args.get(0));
       Integer profileId =
-          !((String) args.get(1)).equals("") ? Integer.parseInt((String) args.get(1)) : null;
+          !"".equals((String) args.get(1)) ? Integer.parseInt((String) args.get(1)) : null;
       Unittype entryUnittype = acs.getUnittype(unittypeId);
       Profile entryProfile =
-          (entryUnittype != null && profileId != null
+          entryUnittype != null && profileId != null
               ? entryUnittype.getProfiles().getById(profileId)
-              : null);
+              : null;
       String unittypeName = entryUnittype != null ? entryUnittype.getName() : null;
       String profileName = entryProfile != null ? entryProfile.getName() : null;
-      if (profileId != null && !((String) args.get(1)).equals("") && profileName == null) {
+      if (profileId != null && !"".equals((String) args.get(1)) && profileName == null) {
         map.put("profile", "N/A (id: " + profileId + ")");
-      } else map.put("profile", profileName);
+      } else {
+        map.put("profile", profileName);
+      }
 
       if (unittypeId != null && unittypeName == null) {
         map.put("unittype", "N/A (id: " + unittypeId + ")");
-      } else map.put("unittype", unittypeName);
+      } else {
+        map.put("unittype", unittypeName);
+      }
       return new SimpleObjectWrapper().wrap(map);
     }
   }

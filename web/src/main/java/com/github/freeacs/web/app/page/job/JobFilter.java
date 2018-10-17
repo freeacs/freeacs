@@ -9,7 +9,6 @@ import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.util.SystemParameters;
 
 public class JobFilter {
-
   private Job job;
 
   public JobFilter(Job j) {
@@ -21,15 +20,12 @@ public class JobFilter {
       case CONFIG:
         return true;
       case SOFTWARE:
-        return false; // isSoftwareParameter(utp);
       case RESTART:
-        return false; // isRestartParameter(utp);
       case RESET:
-        return false; // isResetParameter(utp);
+      default: // SHELL, KICK, TELNET
+        return false; // isSoftwareParameter(utp);
       case TR069_SCRIPT:
         return isScriptParameter(utp);
-      default: // SHELL, KICK, TELNET
-        return false;
     }
   }
 
@@ -40,11 +36,9 @@ public class JobFilter {
   //	private boolean isRestartParameter(UnittypeParameter utp) {
   //		return SystemParameters.RESTART.equals(utp.getName());
   //	}
-  //
   //	private boolean isResetParameter(UnittypeParameter utp) {
   //		return SystemParameters.RESET.equals(utp.getName());
   //	}
-  //
   //	private boolean isSoftwareParameter(UnittypeParameter utp) {
   //		List<String> params = Arrays.asList(SystemParameters.DESIRED_SOFTWARE_VERSION,
   // SystemParameters.SOFTWARE_URL);

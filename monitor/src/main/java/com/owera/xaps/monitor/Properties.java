@@ -3,9 +3,8 @@ package com.owera.xaps.monitor;
 import com.typesafe.config.Config;
 
 public class Properties {
-
-  public static Long RETRY_SECS = null;
-  public static String URL_BASE = null;
+  public static Long RETRY_SECS;
+  public static String URL_BASE;
 
   private final Config config;
 
@@ -20,7 +19,9 @@ public class Properties {
     if (urlBase == null) {
       return "http://localhost/";
     }
-    if (!urlBase.endsWith("/")) urlBase += "/";
+    if (!urlBase.endsWith("/")) {
+      urlBase += "/";
+    }
     return urlBase;
   }
 

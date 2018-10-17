@@ -23,9 +23,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /** The Class UserController. */
 @Controller
-@RequestMapping(value = "/app/user")
+@RequestMapping("/app/user")
 public class UserController extends PermissionController {
-
   /** The user group controller. */
   @Autowired UserGroupController userGroupController;
 
@@ -43,11 +42,14 @@ public class UserController extends PermissionController {
    * @throws SQLException the sQL exception the no available connection exception
    */
   @RequestMapping(value = "/{name}", method = RequestMethod.DELETE)
-  public @ResponseBody void delete(@PathVariable String name, HttpSession session)
+  @ResponseBody
+  public void delete(@PathVariable String name, HttpSession session)
       throws IOException, ParseException, SQLException {
     Users users = getUsers(session.getId(), mainDataSource);
     User loggedInUser = SessionCache.getSessionData(session.getId()).getUser();
-    if (users.getProtected(name, loggedInUser) == null) throw new ResourceNotFoundException();
+    if (users.getProtected(name, loggedInUser) == null) {
+      throw new ResourceNotFoundException();
+    }
     users.delete(users.getProtected(name, loggedInUser), loggedInUser);
   }
 
@@ -61,11 +63,14 @@ public class UserController extends PermissionController {
    * @throws SQLException the sQL exception the no available connection exception
    */
   @RequestMapping(value = "/{name}", method = RequestMethod.GET)
-  public @ResponseBody UserModel get(@PathVariable String name, HttpSession session)
+  @ResponseBody
+  public UserModel get(@PathVariable String name, HttpSession session)
       throws IOException, SQLException {
     Users users = getUsers(session.getId(), mainDataSource);
     User loggedInUser = SessionCache.getSessionData(session.getId()).getUser();
-    if (users.getProtected(name, loggedInUser) == null) throw new ResourceNotFoundException();
+    if (users.getProtected(name, loggedInUser) == null) {
+      throw new ResourceNotFoundException();
+    }
     return UserModel.fromUser(
         users.getProtected(name, loggedInUser), userGroupController.getNameMap().get("NotAdmin"));
   }
@@ -81,7 +86,8 @@ public class UserController extends PermissionController {
    * @throws SQLException the sQL exception the no available connection exception
    */
   @RequestMapping(method = RequestMethod.POST)
-  public @ResponseBody UserModel create(@RequestBody UserModel details, HttpSession session)
+  @ResponseBody
+  public UserModel create(@RequestBody UserModel details, HttpSession session)
       throws IOException, ParseException, SQLException {
     Users users = getUsers(session.getId(), mainDataSource);
     User loggedInUser = SessionCache.getSessionData(session.getId()).getUser();
@@ -89,7 +95,9 @@ public class UserController extends PermissionController {
       User toCreate = UserModel.toUser(details, users);
       users.addOrChange(toCreate, loggedInUser);
       return UserModel.fromUser(toCreate, userGroupController.getNameMap().get("NotAdmin"));
-    } else throw new NotAllowedException("A user exists with that username");
+    } else {
+      throw new NotAllowedException("A user exists with that username");
+    }
   }
 
   /**
@@ -103,7 +111,8 @@ public class UserController extends PermissionController {
    * @throws SQLException the sQL exception the no available connection exception
    */
   @RequestMapping(method = RequestMethod.PUT)
-  public @ResponseBody UserModel update(@RequestBody UserModel details, HttpSession session)
+  @ResponseBody
+  public UserModel update(@RequestBody UserModel details, HttpSession session)
       throws IOException, ParseException, SQLException {
     Users users = getUsers(session.getId(), mainDataSource);
     User loggedInUser = SessionCache.getSessionData(session.getId()).getUser();
@@ -115,7 +124,9 @@ public class UserController extends PermissionController {
       oldUser.setSecretHashed(details.getPassword());
       users.addOrChange(oldUser, loggedInUser);
       return UserModel.fromUser(oldUser, userGroupController.getNameMap().get("NotAdmin"));
-    } else throw new ResourceNotFoundException();
+    } else {
+      throw new ResourceNotFoundException();
+    }
   }
 
   /**
@@ -130,10 +141,11 @@ public class UserController extends PermissionController {
    * @throws SQLException the sQL exception the no available connection exception
    */
   @RequestMapping(value = "list", method = RequestMethod.GET)
-  public @ResponseBody Map<String, Object> list(
+  @ResponseBody
+  public Map<String, Object> list(
       HttpSession session, HttpServletRequest request, HttpServletResponse outputHandler)
       throws IOException, ParseException, SQLException {
-    Map<String, Object> map = new HashMap<String, Object>();
+    Map<String, Object> map = new HashMap<>();
     map.put(
         "users",
         getAllUsers(

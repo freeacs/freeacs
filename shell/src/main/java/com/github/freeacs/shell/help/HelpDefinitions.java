@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HelpDefinitions {
-
   public static String CK_GENERIC = "generic";
   public static String CK_ROOT = "root";
   public static String CK_UNITTYPE = "unittype";
@@ -15,24 +14,16 @@ public class HelpDefinitions {
   public static String CK_GROUP = "group";
   public static String CK_JOB = "job";
 
-  private Map<String, HelpGroup> helpDef = new HashMap<String, HelpGroup>();
+  private Map<String, HelpGroup> helpDef = new HashMap<>();
 
   private static String expressionSyntax =
-      ""
-          + //
-          "\tword\tmatches messages which contain 'word'\n"
-          + //
-          "\t*\tmatches 0 or more characters\n"
-          + //
-          "\t_\tmatches 1 character\n"
-          + //
-          "\t^\tif used at beginning (allowed after !) of expression, matches expression only from start of message\n"
-          + //
-          "\t$\tif used at end of expression, matches expression only at end of message\n"
-          + //
-          "\t!\tif used at beginning of expression, will negate the matching\n"
-          + //
-          "\t|\tsplit the search, so 'A|B' translates to 'A OR B', and '!A|B' translates to 'NOT A AND NOT B'\n";
+      "\tword\tmatches messages which contain 'word'\n"
+          + "\t*\tmatches 0 or more characters\n"
+          + "\t_\tmatches 1 character\n"
+          + "\t^\tif used at beginning (allowed after !) of expression, matches expression only from start of message\n"
+          + "\t$\tif used at end of expression, matches expression only at end of message\n"
+          + "\t!\tif used at beginning of expression, will negate the matching\n"
+          + "\t|\tsplit the search, so 'A|B' translates to 'A OR B', and '!A|B' translates to 'NOT A AND NOT B'\n";
 
   public HelpDefinitions() {
     helpDef.put(CK_GENERIC, genericHelpBuilder());
@@ -62,7 +53,7 @@ public class HelpDefinitions {
 
   private HelpGroup jobHelpBuilder() {
     HelpGroup hg = new HelpGroup("Job");
-    Help help = null;
+    Help help;
 
     help = new Help("listdetails");
     help.addComment("List details about this job");
@@ -182,7 +173,7 @@ public class HelpDefinitions {
 
   private HelpGroup groupHelpBuilder() {
     HelpGroup hg = new HelpGroup("Group");
-    Help help = null;
+    Help help;
 
     help = new Help("listparams [<parameter-name-pattern>]");
     help.addComment("List group parameters");
@@ -287,7 +278,7 @@ public class HelpDefinitions {
 
   private HelpGroup unittypeParameterHelpBuilder() {
     HelpGroup hg = new HelpGroup("UnittypeParameter");
-    Help help = null;
+    Help help;
 
     help = new Help("listvalues");
     help.addComment("List all enumerated values for this unittype parameter.");
@@ -325,7 +316,7 @@ public class HelpDefinitions {
 
   private HelpGroup unitHelpBuilder() {
     HelpGroup hg = new HelpGroup("Unit");
-    Help help = null;
+    Help help;
 
     help = new Help("listallparams [<parameter-name-pattern>]");
     help.addComment(
@@ -607,7 +598,7 @@ public class HelpDefinitions {
 
   private HelpGroup profileHelpBuilder() {
     HelpGroup hg = new HelpGroup("Profile");
-    Help help = null;
+    Help help;
 
     help = new Help("listparams [<profile-parameter-name-pattern>]");
     help.addComment("List profile parameters.");
@@ -707,8 +698,8 @@ public class HelpDefinitions {
 
   private HelpGroup unittypeHelpBuilder() {
     HelpGroup hg = new HelpGroup("Unittype");
-    Help help = null;
-    String argCom = null;
+    Help help;
+    String argCom;
     help = new Help("listparams [<unittype-parameter-name-pattern>]");
     help.addComment("List unittype parameters.");
     help.addOption(getAllInfoHelpOption());
@@ -1522,7 +1513,6 @@ public class HelpDefinitions {
     //		help = new Help("listtesthistory");
     //		help.addComment("List the test history of this Unit Type.");
     //		hg.addHelp(help);
-    //
     //		help = new Help("deltesthistory");
     //		help.addComment("Delete the test history of this Unit Type.");
     //		hg.addHelp(help);
@@ -1532,14 +1522,14 @@ public class HelpDefinitions {
 
   private HelpGroup rootHelpBuilder() {
     HelpGroup hg = new HelpGroup("Root");
-    Help help = null;
+    Help help;
 
     help = new Help("listunittypes [<unittype-name-pattern>]");
     help.addComment("Lists the unittypes available in Fusion");
     help.addOption(getAllInfoHelpOption());
     help.addOption(getUseContextHelpOption());
     help.addOption(getOrderHelpOption());
-    String argCom = null;
+    String argCom;
     argCom = "Optional. Any string which will be used to match the list of unittype names. ";
     argCom += "The string will be interpreted as a regular expression ";
     argCom += "which is a very powerful matching language. If you want ";

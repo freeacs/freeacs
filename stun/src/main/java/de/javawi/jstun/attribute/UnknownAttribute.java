@@ -8,7 +8,6 @@
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
  */
-
 package de.javawi.jstun.attribute;
 
 import de.javawi.jstun.util.Utility;
@@ -17,16 +16,13 @@ import java.util.List;
 import java.util.Vector;
 
 public class UnknownAttribute extends MessageAttribute {
-  /*
-   *  0                   1                   2                   3
-   *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-   * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   * |      Attribute 1 Type           |     Attribute 2 Type        |
-   * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   * |      Attribute 3 Type           |     Attribute 4 Type    ...
+  /**
+   * 0 1 2 3 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ | Attribute 1 Type |
+   * Attribute 2 Type | +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
+   * Attribute 3 Type | Attribute 4 Type ...
    * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    */
-
   private List<MessageAttributeType> unkown = new Vector<>();
 
   public UnknownAttribute() {
@@ -65,7 +61,9 @@ public class UnknownAttribute extends MessageAttribute {
   public static UnknownAttribute parse(byte[] data) throws MessageAttributeParsingException {
     try {
       UnknownAttribute result = new UnknownAttribute();
-      if (data.length % 4 != 0) throw new MessageAttributeParsingException("Data array too short");
+      if (data.length % 4 != 0) {
+        throw new MessageAttributeParsingException("Data array too short");
+      }
       for (int i = 0; i < data.length; i += 4) {
         byte[] temp = new byte[4];
         System.arraycopy(data, i, temp, 0, 4);

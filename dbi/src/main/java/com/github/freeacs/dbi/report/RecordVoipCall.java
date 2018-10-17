@@ -3,7 +3,6 @@ package com.github.freeacs.dbi.report;
 import java.util.Date;
 
 public class RecordVoipCall extends Record<RecordVoipCall> {
-
   private static KeyFactory keyFactory =
       new KeyFactory("Unittype", "Profile", "SoftwareVersion", "Channel");
   private Key key;
@@ -71,15 +70,15 @@ public class RecordVoipCall extends Record<RecordVoipCall> {
 
   @Override
   public void add(RecordVoipCall record) {
-    this.getUnitCount().add(record.getUnitCount());
+    getUnitCount().add(record.getUnitCount());
   }
 
   @Override
   public RecordVoipCall clone() {
     RecordVoipCall clone =
         new RecordVoipCall(tms, periodType, unittypeName, profileName, softwareVersion, channel);
-    clone.setUnitCount(this.getUnitCount().clone());
-    clone.setMosAvg(this.getMosAvg().clone());
+    clone.setUnitCount(getUnitCount().clone());
+    clone.setMosAvg(getMosAvg().clone());
     return clone;
   }
 
@@ -88,7 +87,9 @@ public class RecordVoipCall extends Record<RecordVoipCall> {
   }
 
   public Average getMosAvg() {
-    if (unitCount.get() == 0) return new Average(100);
+    if (unitCount.get() == 0) {
+      return new Average(100);
+    }
     return mosAvg;
   }
 

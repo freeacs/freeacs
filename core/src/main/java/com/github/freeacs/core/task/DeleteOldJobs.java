@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DeleteOldJobs extends DBIOwner {
-
   private final Properties properties;
 
   public DeleteOldJobs(
@@ -46,15 +45,17 @@ public class DeleteOldJobs extends DBIOwner {
 
   private void removeOldJobs() throws Exception {
     UnitJobs unitJobs = new UnitJobs(getMainDataSource());
-    Map<Integer, Job> jobMap = new HashMap<Integer, Job>();
+    Map<Integer, Job> jobMap = new HashMap<>();
     Unittype[] unittypeArr = acs.getUnittypes().getUnittypes();
     for (Unittype unittype : unittypeArr) {
       Job[] jobList = unittype.getJobs().getJobs();
       for (Job j : jobList) {
-        if (j.getStatus().equals(JobStatus.COMPLETED)) jobMap.put(j.getId(), j);
+        if (JobStatus.COMPLETED.equals(j.getStatus())) {
+          jobMap.put(j.getId(), j);
+        }
       }
     }
-    List<Job> removeFromJCMap = new ArrayList<Job>();
+    List<Job> removeFromJCMap = new ArrayList<>();
     for (Job job : jobMap.values()) {
       if (System.currentTimeMillis() - job.getEndTimestamp().getTime()
           > properties.getCompletedJobLimit() * 3600 * 1000) {
@@ -66,7 +67,7 @@ public class DeleteOldJobs extends DBIOwner {
                   + job.getEndTimestamp()
                   + "), will try to delete it");
         }
-        if (job.getChildren().size() == 0) {
+        if (job.getChildren().isEmpty()) {
           unitJobs.delete(job);
           if (logger.isInfoEnabled()) {
             logger.info(
@@ -82,11 +83,8 @@ public class DeleteOldJobs extends DBIOwner {
             logger.info("DeleteOldJobs: \tDeleted row in job with jobId = " + job.getId());
           }
           removeFromJCMap.add(job);
-        } else {
-          if (logger.isInfoEnabled()) {
-            logger.info(
-                "DeleteOldJobs: \tCould not delete job, since some children job still exist");
-          }
+        } else if (logger.isInfoEnabled()) {
+          logger.info("DeleteOldJobs: \tCould not delete job, since some children job still exist");
         }
       }
     }

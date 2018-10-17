@@ -24,7 +24,6 @@ import java.util.Map;
 
 /** The Class GroupInterface. */
 public class GroupRetriever extends ReportRetriever {
-
   /** The generator. */
   private ReportGroupGenerator generator;
 
@@ -57,18 +56,20 @@ public class GroupRetriever extends ReportRetriever {
     // selectedType, Arrays.asList("All", "Normal", "Time"));
 
     Unittype unittype = null;
-    if (inputData.getUnittype().notNullNorValue(""))
+    if (inputData.getUnittype().notNullNorValue("")) {
       unittype = acs.getUnittype(inputData.getUnittype().getString());
+    }
 
-    List<Group> groupList = new ArrayList<Group>();
+    List<Group> groupList = new ArrayList<>();
     if (unittype != null) {
       List<Group> _all = Arrays.asList(unittype.getGroups().getGroups());
       groupList.addAll(_all);
     }
 
     Group group = null;
-    if (unittype != null && inputData.getGroup().notNullNorValue(""))
+    if (unittype != null && inputData.getGroup().notNullNorValue("")) {
       group = unittype.getGroups().getByName(inputData.getGroup().getString());
+    }
 
     groups = InputSelectionFactory.getDropDownSingleSelect(inputData.getGroup(), group, groupList);
   }
@@ -89,9 +90,6 @@ public class GroupRetriever extends ReportRetriever {
         ACSLoader.getIdentity(getParams().getSession().getId(), acs.getDataSource()));
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.report.custom.ReportRetriever#generateReport(com.owera.xaps.dbi.report.PeriodType, java.util.Date, java.util.Date, java.util.List, java.util.List)
-   */
   @Override
   public Report<RecordGroup> generateReport(
       PeriodType periodType,
@@ -101,13 +99,9 @@ public class GroupRetriever extends ReportRetriever {
       List<Profile> profiles,
       Group group)
       throws SQLException, IOException {
-    return (Report<RecordGroup>)
-        generator.generateGroupReport(periodType, start, end, unittypes, groups.getSelected());
+    return generator.generateGroupReport(periodType, start, end, unittypes, groups.getSelected());
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.report.custom.ReportRetriever#applyObjects(java.util.Map)
-   */
   @Override
   public void applyObjects(Map<String, Object> root) {
     root.put("groups", groups);

@@ -15,7 +15,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Responsible for logging to the tr069-event log
+ * Responsible for logging to the tr069-event log.
  *
  * @author Morten
  * @author Jarl
@@ -33,16 +33,22 @@ public class SessionLogging {
       // The new logging to syslog
       ProvisioningMessage pm = sessionData.getProvisioningMessage();
 
-      if (pm.getProvOutput() == null) pm.setProvOutput(ProvOutput.EMPTY);
+      if (pm.getProvOutput() == null) {
+        pm.setProvOutput(ProvOutput.EMPTY);
+      }
       if (reqRes.getThrowable() != null) {
         pm.setProvStatus(ProvStatus.ERROR);
         pm.setErrorResponsibility(ErrorResponsibility.SERVER);
         pm.setErrorMessage(reqRes.getThrowable().getMessage());
-      } else if (pm.getProvStatus() == null) pm.setProvStatus(ProvStatus.OK);
+      } else if (pm.getProvStatus() == null) {
+        pm.setProvStatus(ProvStatus.OK);
+      }
       if (pm.getProvMode() == null) {
-        if (sessionData.getUnit() != null)
+        if (sessionData.getUnit() != null) {
           pm.setProvMode(sessionData.getUnit().getProvisioningMode());
-        else pm.setProvMode(ProvisioningMode.REGULAR);
+        } else {
+          pm.setProvMode(ProvisioningMode.REGULAR);
+        }
       }
       pm.setSessionLength((int) diff);
       pm.setIpAddress(reqRes.getReq().getRemoteHost());
@@ -65,28 +71,40 @@ public class SessionLogging {
       HTTPReqData reqData = reqRes.getRequest();
       HTTPResData resData = reqRes.getResponse();
       String reqMethod = reqData.getMethod();
-      if (reqMethod == null) continue;
+      if (reqMethod == null) {
+        continue;
+      }
       String resMethod = resData.getMethod();
       String reqShortname = abbrevMap.get(reqMethod);
       if (i > 0) {
         HTTPReqResData prevReqRes = reqResList.get(i - 1);
         String prevResMethod = prevReqRes.getResponse().getMethod();
-        if (prevResMethod != null) {
-          if (!reqMethod.equals(TR069Method.EMPTY) && prevResMethod.equals(reqMethod))
-            reqShortname += "r";
+        if (prevResMethod != null
+            && !TR069Method.EMPTY.equals(reqMethod)
+            && prevResMethod.equals(reqMethod)) {
+          reqShortname += "r";
         }
       }
-      if (reqData.getFault() != null)
+      if (reqData.getFault() != null) {
         reqShortname += "(FC:" + reqData.getFault().getFaultCode() + ")";
+      }
       String resShortname = abbrevMap.get(resMethod);
-      if (!reqMethod.equals(TR069Method.EMPTY) && reqMethod.equals(resMethod)) resShortname += "r";
-      if (reqMethod.equals(TR069Method.SET_PARAMETER_VALUES)
-          && !reqRes.getSessionData().isProvisioningAllowed()) reqShortname += "lim";
-      if (reqMethod.equals(TR069Method.INFORM))
+      if (!TR069Method.EMPTY.equals(reqMethod) && reqMethod.equals(resMethod)) {
+        resShortname += "r";
+      }
+      if (TR069Method.SET_PARAMETER_VALUES.equals(reqMethod)
+          && !reqRes.getSessionData().isProvisioningAllowed()) {
+        reqShortname += "lim";
+      }
+      if (TR069Method.INFORM.equals(reqMethod)) {
         reqShortname += "(" + reqRes.getSessionData().getEventCodes() + ")";
+      }
       methodsUsed += "[" + reqShortname;
-      if (reqRes.getThrowable() != null) methodsUsed += "-(F)" + resShortname + "] ";
-      else methodsUsed += "-" + resShortname + "] ";
+      if (reqRes.getThrowable() != null) {
+        methodsUsed += "-(F)" + resShortname + "] ";
+      } else {
+        methodsUsed += "-" + resShortname + "] ";
+      }
     }
 
     return methodsUsed;
@@ -100,13 +118,15 @@ public class SessionLogging {
         String.format("%1$-16s %2$6dms %3$-60s", req.getRemoteHost(), diff, methodsUsed);
     //		String eventMsg = "[" + req.getRemoteHost() + "] [" + diff + " ms] [" + methodsUsed + "]";
     String job = "      ";
-    if (sessionData.getJob() != null) job = String.format("%-6s", sessionData.getJob().getId());
+    if (sessionData.getJob() != null) {
+      job = String.format("%-6s", sessionData.getJob().getId());
+    }
     eventMsg += job;
     String parameterList = "";
     int paramsToCPE = 0;
     for (HTTPReqResData reqResItem : reqResList) {
       String resMethod = reqResItem.getResponse().getMethod();
-      if (resMethod != null && resMethod.equals(TR069Method.SET_PARAMETER_VALUES)) {
+      if (TR069Method.SET_PARAMETER_VALUES.equals(resMethod)) {
         paramsToCPE = sessionData.getToCPE().getParameterValueList().size();
         for (ParameterValueStruct pvs : sessionData.getToCPE().getParameterValueList()) {
           parameterList += pvs.getName() + "=" + pvs.getValue() + ", ";
