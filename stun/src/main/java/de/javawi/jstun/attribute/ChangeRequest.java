@@ -66,31 +66,27 @@ public class ChangeRequest extends MessageAttribute {
   }
 
   public static ChangeRequest parse(byte[] data) throws MessageAttributeParsingException {
-    try {
-      if (data.length < 4) {
-        throw new MessageAttributeParsingException("Data array too short");
-      }
-      ChangeRequest cr = new ChangeRequest();
-      int status = Utility.oneByteToInteger(data[3]);
-      switch (status) {
-        case 0:
-          break;
-        case 2:
-          cr.setChangePort();
-          break;
-        case 4:
-          cr.setChangeIP();
-          break;
-        case 6:
-          cr.setChangeIP();
-          cr.setChangePort();
-          break;
-        default:
-          throw new MessageAttributeParsingException("Status parsing error");
-      }
-      return cr;
-    } catch (UtilityException ue) {
-      throw new MessageAttributeParsingException("Parsing error");
+    if (data.length < 4) {
+      throw new MessageAttributeParsingException("Data array too short");
     }
+    ChangeRequest cr = new ChangeRequest();
+    int status = Utility.oneByteToInteger(data[3]);
+    switch (status) {
+      case 0:
+        break;
+      case 2:
+        cr.setChangePort();
+        break;
+      case 4:
+        cr.setChangeIP();
+        break;
+      case 6:
+        cr.setChangeIP();
+        cr.setChangePort();
+        break;
+      default:
+        throw new MessageAttributeParsingException("Status parsing error");
+    }
+    return cr;
   }
 }
