@@ -169,7 +169,6 @@ public interface HTTPResponseCreator {
         parameterValueList.add(pvs);
       } else {
         Map<String, ParameterValueStruct> paramValueMap = sessionData.getFromDB();
-        UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
         addCPEParameters(sessionData, properties);
         for (Entry<String, ParameterValueStruct> entry : paramValueMap.entrySet()) {
           parameterValueList.add(entry.getValue());

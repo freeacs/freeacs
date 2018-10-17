@@ -49,7 +49,6 @@ public class ACSVersionCheck {
     Connection c = dataSource.getConnection();
     Statement s = null;
     ResultSet rs = null;
-    SQLException sqle = null;
     try {
       try {
         s = c.createStatement();

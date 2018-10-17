@@ -93,7 +93,7 @@ public class ACSLoader {
   public static Identity getIdentity(String sessionId, DataSource dataSource) throws SQLException {
     User user = SessionCache.getSessionData(sessionId).getUser();
     if (user == null) {
-      user = getDefaultUser(sessionId, dataSource);
+      user = getDefaultUser(dataSource);
     }
     return new Identity(SyslogConstants.FACILITY_WEB, "latest", user);
   }
@@ -101,12 +101,11 @@ public class ACSLoader {
   /**
    * Gets the default user.
    *
-   * @param sessionId the session id
    * @param dataSource
    * @return the default user
    * @throws SQLException
    */
-  private static User getDefaultUser(String sessionId, DataSource dataSource) throws SQLException {
+  private static User getDefaultUser(DataSource dataSource) throws SQLException {
     Users users = new Users(dataSource);
     return new User("anonymous", null, null, false, users);
   }

@@ -33,10 +33,6 @@ public class ActiveDeviceDetectionTask extends TaskDefaultImpl {
     activeDevicesMap.put(unitId, System.currentTimeMillis() + nextInformMs);
   }
 
-  public static int activeDevices() {
-    return activeDevicesMap.size();
-  }
-
   @Override
   public void runImpl() throws Throwable {
     Long anHourAgo = System.currentTimeMillis() - 60 * 60000;

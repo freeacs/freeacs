@@ -1,29 +1,24 @@
 package com.github.freeacs.tr069.xml;
 
-import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 /** The class is responsible for parsing the SOAP Fault entity received from the CPE. */
 public class FaultHandler extends DefaultHandler {
 
-  public static final String DSLFORUM_NS = "urn:dslforum-org:cwmp-1-0";
-  public static final String SOAP_ENV_NS = "http://schemas.xmlsoap.org/soap/envelope/";
+  private static final String DSLFORUM_NS = "urn:dslforum-org:cwmp-1-0";
+  private static final String SOAP_ENV_NS = "http://schemas.xmlsoap.org/soap/envelope/";
 
-  public static final String FAULT_TAG = "Fault";
-  public static final String SOAP_FAULT_CODE_TAG = "faultcode";
-  public static final String SOAP_FAULT_STRING_TAG = "faultstring";
-  public static final String SOAP_DETAIL_TAG = "detail";
-  public static final String FAULT_CODE_TAG = "FaultCode";
-  public static final String FAULT_STRING_TAG = "FaultString";
-  public static final String SET_PARAMETER_VALUES_FAULT_TAG = "SetParameterValuesFault";
-  public static final String PARAMETER_NAME_TAG = "ParameterName";
-  public static final String FAULT_STRUCT_TAG = "FaultStruct";
+  protected static final String FAULT_TAG = "Fault";
+  private static final String SOAP_FAULT_CODE_TAG = "faultcode";
+  private static final String SOAP_FAULT_STRING_TAG = "faultstring";
+  private static final String SOAP_DETAIL_TAG = "detail";
+  private static final String FAULT_CODE_TAG = "FaultCode";
+  private static final String FAULT_STRING_TAG = "FaultString";
+  private static final String SET_PARAMETER_VALUES_FAULT_TAG = "SetParameterValuesFault";
+  private static final String PARAMETER_NAME_TAG = "ParameterName";
+  private static final String FAULT_STRUCT_TAG = "FaultStruct";
 
-  private SAXParserFactory factory;
-  private XMLReader reader;
   private Fault fault;
   private Parser owner;
   private StringBuilder currTextContent = new StringBuilder();
@@ -31,30 +26,6 @@ public class FaultHandler extends DefaultHandler {
   public FaultHandler(Fault fault, Parser owner) {
     this.fault = fault;
     this.owner = owner;
-  }
-
-  public FaultHandler(InputSource xmlSource) {
-    this.fault = null;
-    try {
-      SAXParserFactory factory = getParserFactory();
-      factory.setNamespaceAware(true);
-
-      reader = factory.newSAXParser().getXMLReader();
-      reader.setContentHandler(this);
-      reader.setErrorHandler(new SOAPErrorHandler());
-      reader.parse(xmlSource);
-    } catch (Exception ex) {
-      ex.printStackTrace();
-    }
-  }
-
-  private SAXParserFactory getParserFactory() {
-    if (factory == null) {
-      factory = SAXParserFactory.newInstance();
-      factory.setNamespaceAware(true);
-    }
-
-    return factory;
   }
 
   public Fault getFault() {

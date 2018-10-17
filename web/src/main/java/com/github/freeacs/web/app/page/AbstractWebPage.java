@@ -1,13 +1,11 @@
 package com.github.freeacs.web.app.page;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.freeacs.common.util.NaturalComparator;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.web.Page;
 import com.github.freeacs.web.app.menu.MenuItem;
 import com.github.freeacs.web.app.table.TableColor;
@@ -30,8 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
 import java.util.regex.Pattern;
 import javax.sql.DataSource;
 import org.apache.commons.lang.StringUtils;
@@ -116,11 +112,6 @@ public abstract class AbstractWebPage implements WebPage {
   @ResponseStatus(reason = "The requested unitId was not found", value = HttpStatus.NOT_FOUND)
   public static class UnitNotFoundException extends IllegalAccessException {}
 
-  /** The Class UnitTypeNotAllowedException. */
-  @SuppressWarnings("serial")
-  @ResponseStatus(reason = "The requested Unit Type is not allowed", value = HttpStatus.NOT_FOUND)
-  public static class UnitTypeNotAllowedException extends IllegalAccessException {}
-
   /**
    * Checks if is profiles limited.
    *
@@ -191,69 +182,6 @@ public abstract class AbstractWebPage implements WebPage {
     if (toLog != null) {
       logger.debug(toLog);
     }
-  }
-
-  /**
-   * Gets the display names from map.
-   *
-   * @param map the map
-   * @return the display names from map
-   */
-  public Map<String, UnittypeParameter> getDisplayNamesFromMap(
-      Map<Integer, UnittypeParameter> map) {
-    Map<String, UnittypeParameter> resultMap =
-        new TreeMap<String, UnittypeParameter>(new NaturalComparator());
-    for (Entry<Integer, UnittypeParameter> outerEntry : map.entrySet()) {
-      int counter = 0;
-      String[] utpNameArr = outerEntry.getValue().getName().split("\\.");
-      String utpNamePart = "";
-      for (int i = utpNameArr.length - 1; i >= 0; i--) {
-        counter = 0;
-        utpNamePart = "." + utpNameArr[i] + utpNamePart;
-        for (Entry<Integer, UnittypeParameter> innerEntry : map.entrySet()) {
-          String utpName = "." + innerEntry.getValue().getName();
-          if (utpName.endsWith(utpNamePart)) {
-            counter++;
-          }
-        }
-        if (counter == 1) {
-          resultMap.put(utpNamePart.substring(1), outerEntry.getValue());
-          break;
-        }
-      }
-    }
-    return resultMap;
-  }
-
-  /**
-   * Gets the display names from array.
-   *
-   * @param map the map
-   * @return the display names from array
-   */
-  public Map<String, UnittypeParameter> getDisplayNamesFromArray(UnittypeParameter[] map) {
-    Map<String, UnittypeParameter> resultMap =
-        new TreeMap<String, UnittypeParameter>(new NaturalComparator());
-    for (UnittypeParameter outerEntry : map) {
-      int counter = 0;
-      String[] utpNameArr = outerEntry.getName().split("\\.");
-      String utpNamePart = "";
-      for (int i = utpNameArr.length - 1; i >= 0; i--) {
-        counter = 0;
-        utpNamePart = "." + utpNameArr[i] + utpNamePart;
-        for (UnittypeParameter innerEntry : map) {
-          String utpName = "." + innerEntry.getName();
-          if (utpName.endsWith(utpNamePart)) {
-            counter++;
-          }
-        }
-        if (counter == 1) {
-          resultMap.put(utpNamePart.substring(1), outerEntry);
-          break;
-        }
-      }
-    }
-    return resultMap;
   }
 
   /**
@@ -328,21 +256,6 @@ public abstract class AbstractWebPage implements WebPage {
             "<span class=\"requiresTitlePopup\" title=\"The unit has overridden the profile value with a blank string\">[blank&nbsp;unit&nbsp;parameter]</span>");
       }
       return new SimpleScalar(up);
-    }
-  }
-
-  /** The Class FirstIndexOfMethod. */
-  public static class FirstIndexOfMethod implements TemplateMethodModel {
-    @SuppressWarnings("rawtypes")
-    public TemplateModel exec(List args) throws TemplateModelException {
-      if (args.size() != 2) {
-        throw new TemplateModelException("Wrong arguments");
-      }
-
-      String text = (String) args.get(0);
-      String toFind = (String) args.get(1);
-
-      return new SimpleScalar(text.split(toFind)[0]);
     }
   }
 

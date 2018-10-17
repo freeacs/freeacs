@@ -22,7 +22,6 @@ public class Inbox {
    * field to NULL is like matching every message on that field Negative matches is not supported
    */
   public synchronized void addToInbox(Message m) {
-    boolean added = false;
     for (Message filter : filters) {
       if ((filter.getSender() != null && !filter.getSender().equals(m.getSender()))
           || (filter.getMessageType() != null
@@ -31,7 +30,6 @@ public class Inbox {
           || (filter.getReceiver() != null && !filter.getReceiver().equals(m.getReceiver()))) {
         continue;
       }
-      added = true;
       if (logger.isDebugEnabled()) {
         logger.debug("Message: [" + m + "] was added to an inbox");
       }
