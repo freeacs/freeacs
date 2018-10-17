@@ -16,22 +16,11 @@ public class Sleep {
   public Sleep(int maxSleep, int minSleep, boolean sleepFirstTime) {
     this.maxSleep = maxSleep;
     this.minSleep = minSleep;
-    if (minSleep > maxSleep) {
-      minSleep = maxSleep;
-    }
     if (sleepFirstTime) {
       this.lastReturnTms = System.currentTimeMillis();
     } else {
       this.lastReturnTms = 0;
     }
-  }
-
-  public void setMaxSleep(int maxSleep) {
-    this.maxSleep = maxSleep;
-  }
-
-  public void setMinSleep(int minSleep) {
-    this.minSleep = minSleep;
   }
 
   /**
@@ -48,7 +37,7 @@ public class Sleep {
     // if timeSinceLastReturn > maxSleep-minSleep, sleep at least minSleep ms
     // if timeSinceLastReturn <= maxSleep-minSleep, sleep maxSleep-timeSinceLastReturn ms
     long suggestedSleepTime = maxSleep - timeSinceLastReturn;
-    long sleepTime = minSleep; // minimum sleep time is default
+    long sleepTime; // minimum sleep time is default
     if (suggestedSleepTime < minSleep) {
       sleepTime = minSleep;
     } else {
@@ -81,14 +70,7 @@ public class Sleep {
       try {
         // Expect the server to be fully terminated within 5 seconds
         Thread.sleep(2000);
-      } catch (InterruptedException e) {
-        //			System.out.println(e);
-        //			try {
-        //				Thread.sleep(2000);
-        //			} catch (InterruptedException e1) {
-        //				// TODO Auto-generated catch block
-        //				e1.printStackTrace();
-        //			}
+      } catch (InterruptedException ignored) {
       }
     }
   }

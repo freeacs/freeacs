@@ -47,12 +47,6 @@ public class Average {
     this.totalWeight.add(average.getTotalWeight());
   }
 
-  public void setAverage(long counter, long weight) {
-    weightedCounter = new Counter();
-    totalWeight = new Counter();
-    add(counter, weight);
-  }
-
   public Long get() {
     if (totalWeight.get() == 0) {
       return null;

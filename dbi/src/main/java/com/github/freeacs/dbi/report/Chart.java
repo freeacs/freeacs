@@ -61,13 +61,12 @@ public class Chart<R extends Record> {
   private JFreeChart chart;
   private Map<Key, R> recordMap;
   private String title;
-  private boolean displayFrame = true;
+  private boolean displayFrame;
   private long startTms;
   private long endTms;
 
   public Chart(
-      Report<R> report, String method, boolean displayFrame, String title, String... keyNames)
-      throws Exception {
+      Report<R> report, String method, boolean displayFrame, String title, String... keyNames) {
     this.report = report;
     this.periodType = report.getPeriodType();
     this.method = method;
@@ -110,7 +109,6 @@ public class Chart<R extends Record> {
         Set hideSet = getSet(SET_TYPE_HIDE);
         if (hideSet.contains(keyStr)) {
           show = false;
-          //					System.out.println(keyStr + " was not shown since it's in the hide-set");
         }
       } else if (STRATEGY_SHOW_SELECTED.equals(strategy)) {
         show = false;
@@ -118,8 +116,6 @@ public class Chart<R extends Record> {
         if (showSet.contains(keyStr)) {
           show = true;
         }
-        //				else
-        //					System.out.println(keyStr + " was not shown since it's not in the show-set");
       }
     }
     return show;
@@ -176,10 +172,6 @@ public class Chart<R extends Record> {
     }
     logger.debug("Have created a time series map with " + timeSeriesMap.size() + " entries");
     return timeSeriesMap;
-  }
-
-  public JFreeChart makeTimeChart() throws Exception {
-    return makeTimeChart(null, null, null, null);
   }
 
   /**
@@ -248,7 +240,7 @@ public class Chart<R extends Record> {
     renderer.setBaseFillPaint(Color.white);
 
     long diff = endTms - startTms;
-    String format = "HH:mm";
+    String format;
     if (diff > NINTY_DAYS) {
       format = "MMM-yyyy";
     } else if (diff > TWO_DAYS) {
@@ -261,14 +253,6 @@ public class Chart<R extends Record> {
     DateAxis axis = (DateAxis) plot.getDomainAxis();
     axis.setDateFormatOverride(new SimpleDateFormat(format));
 
-    //		final DateAxis axis = new DateAxis("Date");
-    //		axis.setVerticalTickLabels(true);
-    //		axis.setTickUnit(new DateTickUnit(DateTickUnitType.HOUR, 1));
-    //		axis.setDateFormatOverride(new SimpleDateFormat("hh:mm"));
-    //		axis.setLowerMargin(0.01);
-    //		axis.setUpperMargin(0.01);
-    //		plot.setDomainAxis(axis);
-
     LegendTitle lt = chart.getLegend(0);
     lt.setPosition(RectangleEdge.RIGHT);
 
@@ -279,14 +263,6 @@ public class Chart<R extends Record> {
     }
 
     return chart;
-  }
-
-  public String getStrategy() {
-    return strategy;
-  }
-
-  public void setStrategy(String strategy) {
-    this.strategy = strategy;
   }
 
   public JFreeChart getChart() {

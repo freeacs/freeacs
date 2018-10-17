@@ -56,7 +56,7 @@ public class Cache {
         while (keys.hasNext()) {
           Object key = keys.next();
           CacheValue value = map.get(key);
-          boolean remove = false;
+          boolean remove;
           if (value != null) {
             remove = toBeRemoved(value, now);
           } else {

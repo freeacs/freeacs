@@ -98,10 +98,6 @@ public class RecordJob extends Record<RecordJob> {
     return clone;
   }
 
-  public String getJobName() {
-    return jobName;
-  }
-
   public Counter getFailed() {
     Counter counter = new Counter();
     counter.add(getConfirmedFailed());

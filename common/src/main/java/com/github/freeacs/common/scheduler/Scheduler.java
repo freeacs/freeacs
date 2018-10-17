@@ -83,10 +83,6 @@ public class Scheduler implements Runnable {
     scheduleList.add(schedule);
   }
 
-  public void unregisterTask(Schedule schedule) {
-    scheduleList.remove(schedule);
-  }
-
   public ScheduleList getScheduleList() {
     return scheduleList;
   }

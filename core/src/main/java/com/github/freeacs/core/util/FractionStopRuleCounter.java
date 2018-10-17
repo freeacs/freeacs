@@ -7,7 +7,7 @@ import com.github.freeacs.dbi.UnitJobStatus;
 public class FractionStopRuleCounter {
   private StopRule rule;
 
-  private int CONFIRMED;
+  private int CONFIRMED = 0;
   private int UNCONFIRMED = 1;
   private int[] counters = new int[2];
 
@@ -18,7 +18,7 @@ public class FractionStopRuleCounter {
       throw new IllegalArgumentException("This rule is not a fraction stop rule: " + rule);
     }
     this.rule = rule;
-    unitJobResults = new UnitResultMap<String, UnitJobResult>(rule.getNumberMax());
+    unitJobResults = new UnitResultMap<>(rule.getNumberMax());
   }
 
   public void addResult(UnitJob uj) {

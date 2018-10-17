@@ -20,8 +20,6 @@ public class RecordHardwareTR extends Record<RecordHardwareTR> {
   private Average temperatureNowAvg = new Average(1);
   private Average temperatureMaxAvg = new Average(1);
 
-  protected RecordHardwareTR() {}
-
   public RecordHardwareTR(
       Date tms,
       PeriodType periodType,

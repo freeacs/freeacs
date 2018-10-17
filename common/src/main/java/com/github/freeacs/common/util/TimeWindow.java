@@ -127,7 +127,6 @@ public class TimeWindow {
 
     do {
       long checkTms = c.getTimeInMillis();
-      //			System.out.println(String.format("-- Checking %1$tF %1$tR", checkTms));
       if (isWithinTimeWindow(checkTms) && c.getTimeInMillis() > tms) {
         return checkTms;
       }

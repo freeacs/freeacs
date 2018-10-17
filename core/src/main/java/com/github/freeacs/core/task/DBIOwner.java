@@ -26,7 +26,6 @@ public abstract class DBIOwner implements Task {
   private Syslog syslog;
 
   private String taskName;
-  private long launchTms;
   private boolean running;
 
   private Throwable throwable;
@@ -60,10 +59,6 @@ public abstract class DBIOwner implements Task {
     return mainDataSource;
   }
 
-  protected long getLaunchTms() {
-    return launchTms;
-  }
-
   protected Syslog getSyslog() {
     return syslog;
   }
@@ -89,9 +84,7 @@ public abstract class DBIOwner implements Task {
   public abstract Logger getLogger();
 
   @Override
-  public void setThisLaunchTms(long launchTms) {
-    this.launchTms = launchTms;
-  }
+  public void setThisLaunchTms(long launchTms) {}
 
   @Override
   public String getTaskName() {

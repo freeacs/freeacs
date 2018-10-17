@@ -102,10 +102,6 @@ public class Schedule {
     this.nextLaunch = nextLaunch;
   }
 
-  public long getAddedToQueueTms() {
-    return addedToQueueTms;
-  }
-
   public void setAddedToQueueTms(long addedToQueueTms) {
     this.addedToQueueTms = addedToQueueTms;
   }

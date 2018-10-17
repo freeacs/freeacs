@@ -32,7 +32,7 @@ public class Counter {
     if (str != null) {
       try {
         counter += Long.parseLong(str);
-      } catch (NumberFormatException nfe) {
+      } catch (NumberFormatException ignored) {
       }
     }
   }

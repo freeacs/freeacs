@@ -8,13 +8,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 public class SyslogMessageMapContainer {
   public class SyslogMessageMap {
     private Heartbeat heartbeat;
     private TimestampMap unitIdTmsMap;
-    private long startTms = System.currentTimeMillis();
 
     public SyslogMessageMap(Heartbeat heartbeat) {
       this.heartbeat = heartbeat;
@@ -29,25 +27,13 @@ public class SyslogMessageMapContainer {
       unitIdTmsMap.put(unitId, tms);
     }
 
-    public long getStartTms() {
-      return startTms;
-    }
-
-    public void setStartTms(long startTms) {
-      this.startTms = startTms;
-    }
-
     public String toString() {
       String oldest = "N/A";
       String newest = "N/A";
       if (unitIdTmsMap.oldest() != null) {
-        //				logger.debug("HeartbeatDetection: SyslogMessageMap:  oldest: " + unitIdTmsMap.oldest()
-        // + ", content: " + unitIdTmsMap.get(unitIdTmsMap.oldest()));
         oldest = sdf.format(new Date(unitIdTmsMap.get(unitIdTmsMap.oldest())));
       }
       if (unitIdTmsMap.newest() != null) {
-        //				logger.debug("HeartbeatDetection: SyslogMessageMap:  newest: " + unitIdTmsMap.newest()
-        // + ", content: " + unitIdTmsMap.get(unitIdTmsMap.newest()));
         newest = sdf.format(new Date(unitIdTmsMap.get(unitIdTmsMap.newest())));
       }
       return "Heartbeat:"
@@ -81,10 +67,6 @@ public class SyslogMessageMapContainer {
     SyslogMessageMap smm = new SyslogMessageMap(heartbeat);
     container.put(heartbeat.getId(), smm);
     return smm;
-  }
-
-  public Set<Integer> getContainerKeys() {
-    return container.keySet();
   }
 
   public Collection<SyslogMessageMap> getContainerValues() {

@@ -60,10 +60,6 @@ public class CacheValue {
     this.object = object;
   }
 
-  public Object getObjectUnnoticed() {
-    return object;
-  }
-
   public long getCreated() {
     return created;
   }
@@ -78,10 +74,6 @@ public class CacheValue {
 
   public void setCreated(long l) {
     created = l;
-  }
-
-  public void setLastAccess(long l) {
-    accessed = l;
   }
 
   public void setType(int i) {

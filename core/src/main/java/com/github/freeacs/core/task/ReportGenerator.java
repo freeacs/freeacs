@@ -479,7 +479,6 @@ public class ReportGenerator extends DBIOwner {
           unitReport.put(key, 1);
         }
       }
-      unitMap = null;
 
       for (Entry<String, Integer> entry : unitReport.entrySet()) {
         String[] keys = entry.getKey().split("###");
@@ -562,10 +561,6 @@ public class ReportGenerator extends DBIOwner {
 
     public Unit getUnit() {
       return unit;
-    }
-
-    public void setUnit(Unit unit) {
-      this.unit = unit;
     }
   }
 
@@ -863,7 +858,7 @@ public class ReportGenerator extends DBIOwner {
   }
 
   private void buildProvisioning(PeriodType periodType)
-      throws SQLException, IOException, ParseException {
+      throws SQLException, IOException {
     ReportProvisioningGenerator rg =
         new ReportProvisioningGenerator(
             getMainDataSource(), getSyslogDataSource(), acs, "- - ", getIdentity());

@@ -19,8 +19,6 @@ public class RecordGatewayTR extends Record<RecordGatewayTR> {
   private Average downloadSpeedAvg = new Average(1024);
   private Average uploadSpeedAvg = new Average(1024);
 
-  protected RecordGatewayTR() {}
-
   public RecordGatewayTR(
       Date tms,
       PeriodType periodType,
