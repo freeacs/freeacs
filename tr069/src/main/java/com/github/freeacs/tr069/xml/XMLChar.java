@@ -15,10 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
-
+/* $Id$ */
 package com.github.freeacs.tr069.xml;
 
 /**
@@ -41,10 +38,7 @@ package com.github.freeacs.tr069.xml;
  * @version $Id: XMLChar.java,v 1.7 2002/01/29 01:15:18 lehors Exp $
  */
 public class XMLChar {
-
-  //
   // Constants
-  //
 
   /** Character flags. */
   private static final byte[] CHARS = new byte[1 << 16];
@@ -79,57 +73,41 @@ public class XMLChar {
   /** NCName character mask. */
   public static final int MASK_NCNAME = 0x80;
 
-  //
-  // Static initialization
-  //
-
+  /** Static initialization. */
   static {
-
-    //
     // [2] Char ::= #x9 | #xA | #xD | [#x20-#xD7FF] |
     //              [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-    //
 
     int charRange[] = {
       0x0009, 0x000A, 0x000D, 0x000D, 0x0020, 0xD7FF, 0xE000, 0xFFFD,
     };
 
-    //
     // [3] S ::= (#x20 | #x9 | #xD | #xA)+
-    //
 
     int spaceChar[] = {
       0x0020, 0x0009, 0x000D, 0x000A,
     };
 
-    //
     // [4] NameChar ::= Letter | Digit | '.' | '-' | '_' | ':' |
     //                  CombiningChar | Extender
-    //
 
     int nameChar[] = {
       0x002D, 0x002E, // '-' and '.'
     };
 
-    //
     // [5] Name ::= (Letter | '_' | ':') (NameChar)*
-    //
 
     int nameStartChar[] = {
       0x003A, 0x005F, // ':' and '_'
     };
 
-    //
     // [13] PubidChar ::= #x20 | 0xD | 0xA | [a-zA-Z0-9] | [-'()+,./:=?;!*#@$_%]
-    //
 
     int pubidChar[] = {0x000A, 0x000D, 0x0020, 0x0021, 0x0023, 0x0024, 0x0025, 0x003D, 0x005F};
 
     int pubidRange[] = {0x0027, 0x003B, 0x003F, 0x005A, 0x0061, 0x007A};
 
-    //
     // [84] Letter ::= BaseChar | Ideographic
-    //
 
     int letterRange[] = {
       // BaseChar
@@ -495,9 +473,7 @@ public class XMLChar {
       0x3007,
     };
 
-    //
     // [87] CombiningChar ::= ...
-    //
 
     int combiningCharRange[] = {
       0x0300, 0x0345, 0x0360, 0x0361, 0x0483, 0x0486, 0x0591, 0x05A1,
@@ -526,9 +502,7 @@ public class XMLChar {
       0x0F97, 0x0FB9, 0x20E1, 0x3099, 0x309A,
     };
 
-    //
     // [88] Digit ::= ...
-    //
 
     int digitRange[] = {
       0x0030, 0x0039, 0x0660, 0x0669, 0x06F0, 0x06F9, 0x0966, 0x096F,
@@ -537,9 +511,7 @@ public class XMLChar {
       0x0E50, 0x0E59, 0x0ED0, 0x0ED9, 0x0F20, 0x0F29,
     };
 
-    //
     // [89] Extender ::= ...
-    //
 
     int extenderRange[] = {
       0x3031, 0x3035, 0x309D, 0x309E, 0x30FC, 0x30FE,
@@ -549,17 +521,13 @@ public class XMLChar {
       0x00B7, 0x02D0, 0x02D1, 0x0387, 0x0640, 0x0E46, 0x0EC6, 0x3005,
     };
 
-    //
     // SpecialChar ::= '<', '&', '\n', '\r', ']'
-    //
 
     int specialChar[] = {
       '<', '&', '\n', '\r', ']',
     };
 
-    //
     // Initialize
-    //
 
     // set valid characters
     for (int i = 0; i < charRange.length; i += 2) {

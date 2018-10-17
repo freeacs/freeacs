@@ -25,7 +25,7 @@ public abstract class Record<R extends Record> {
 
   public static String[] getCounterAndAveragesMethods(Class recordClass) {
     Method[] methods = recordClass.getMethods();
-    List<String> methodList = new ArrayList<String>();
+    List<String> methodList = new ArrayList<>();
     for (Method m : methods) {
       if (m.getReturnType().equals(Counter.class) || m.getReturnType().equals(Average.class)) {
         methodList.add(m.getName());
@@ -35,7 +35,7 @@ public abstract class Record<R extends Record> {
     return methodList.toArray(new String[methodList.size()]);
   }
 
-  private static Map<String, String> denomMap = new HashMap<String, String>();
+  private static Map<String, String> denomMap = new HashMap<>();
 
   static {
     denomMap.put(RecordVoip.class.getName() + "jitterAvg".toLowerCase(), "ms");

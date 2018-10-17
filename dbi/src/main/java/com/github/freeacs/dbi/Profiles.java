@@ -36,8 +36,9 @@ public class Profiles {
   }
 
   public void addOrChangeProfile(Profile profile, ACS acs) throws SQLException {
-    if (!acs.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId()))
+    if (!acs.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
+    }
     addOrChangeProfileImpl(profile, acs);
     nameMap.put(profile.getName(), profile);
     idMap.put(profile.getId(), profile);
@@ -59,10 +60,14 @@ public class Profiles {
       int rowsDeleted = s.executeUpdate(sql);
 
       logger.info("Deleted profile " + profile.getName());
-      if (acs.getDbi() != null) acs.getDbi().publishDelete(profile, profile.getUnittype());
+      if (acs.getDbi() != null) {
+        acs.getDbi().publishDelete(profile, profile.getUnittype());
+      }
       return rowsDeleted;
     } finally {
-      if (s != null) s.close();
+      if (s != null) {
+        s.close();
+      }
       c.close();
     }
   }
@@ -74,8 +79,9 @@ public class Profiles {
    * @throws SQLException
    */
   public int deleteProfile(Profile profile, ACS acs, boolean cascade) throws SQLException {
-    if (!acs.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId()))
+    if (!acs.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
+    }
     if (cascade) {
       ProfileParameters pParams = profile.getProfileParameters();
       ProfileParameter[] pParamsArr = pParams.getProfileParameters();
@@ -102,10 +108,14 @@ public class Profiles {
         s.setQueryTimeout(60);
         s.executeUpdate(sql, new String[] {"profile_id"});
         ResultSet gk = s.getGeneratedKeys();
-        if (gk.next()) profile.setId(gk.getInt(1));
+        if (gk.next()) {
+          profile.setId(gk.getInt(1));
+        }
 
         logger.info("Inserted profile " + profile.getName());
-        if (acs.getDbi() != null) acs.getDbi().publishAdd(profile, profile.getUnittype());
+        if (acs.getDbi() != null) {
+          acs.getDbi().publishAdd(profile, profile.getUnittype());
+        }
       } else {
         sql = "UPDATE profile SET ";
         sql += "unit_type_id = " + profile.getUnittype().getId() + ", ";
@@ -115,10 +125,14 @@ public class Profiles {
         s.executeUpdate(sql);
 
         logger.info("Updated profile " + profile.getName());
-        if (acs.getDbi() != null) acs.getDbi().publishChange(profile, profile.getUnittype());
+        if (acs.getDbi() != null) {
+          acs.getDbi().publishChange(profile, profile.getUnittype());
+        }
       }
     } finally {
-      if (s != null) s.close();
+      if (s != null) {
+        s.close();
+      }
       c.close();
     }
   }
@@ -132,7 +146,7 @@ public class Profiles {
   }
 
   /**
-   * Only to be used internally (to shape ACS object according to permissions)
+   * Only to be used internally (to shape ACS object according to permissions).
    *
    * @param profile
    * @return

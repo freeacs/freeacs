@@ -5,14 +5,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class StabilityLogger extends TaskDefaultImpl {
-
   public StabilityLogger(String taskName) {
     super(taskName);
   }
 
   private static Logger logger = LoggerFactory.getLogger(StabilityLogger.class);
   private static Logger stability = LoggerFactory.getLogger("Stability");
-  private static int summaryHeaderCount = 0;
+  private static int summaryHeaderCount;
 
   @Override
   public void runImpl() throws Throwable {
@@ -24,7 +23,9 @@ public class StabilityLogger extends TaskDefaultImpl {
           "------------------------------------------------------------------------------------------------------------- ");
     }
     summaryHeaderCount++;
-    if (summaryHeaderCount == 20) summaryHeaderCount = 0;
+    if (summaryHeaderCount == 20) {
+      summaryHeaderCount = 0;
+    }
 
     String message = "";
     message += String.format("%7s | ", counter.getRequest());

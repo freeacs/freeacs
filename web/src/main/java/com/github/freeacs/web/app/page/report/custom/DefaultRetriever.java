@@ -18,7 +18,6 @@ import org.apache.commons.lang.NotImplementedException;
 
 /** The Class DefaultInterface. */
 public class DefaultRetriever extends ReportRetriever {
-
   /**
    * Instantiates a new default interface.
    *
@@ -34,9 +33,6 @@ public class DefaultRetriever extends ReportRetriever {
     super(null, null, null);
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.report.custom.ReportRetriever#generateReport(com.owera.xaps.dbi.report.PeriodType, java.util.Date, java.util.Date, java.util.List, java.util.List)
-   */
   @Override
   public Report<?> generateReport(
       PeriodType periodType,
@@ -49,14 +45,8 @@ public class DefaultRetriever extends ReportRetriever {
     throw new NotImplementedException("The report is not implemented correctly.");
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.report.custom.ReportRetriever#applyObjects(java.util.Map)
-   */
   @Override
-  public void applyObjects(Map<String, Object> root) {
-    // TODO Auto-generated method stub
-
-  }
+  public void applyObjects(Map<String, Object> root) {}
 
   @Override
   public ReportGenerator getReportGenerator() {

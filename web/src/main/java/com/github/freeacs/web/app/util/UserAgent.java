@@ -8,7 +8,6 @@ import com.github.freeacs.web.app.page.unit.UnitStatusRealTimeMosPage;
  * @author Jarl Andre Hubenthal
  */
 public enum UserAgent {
-
   /** The IE. */
   IE,
 

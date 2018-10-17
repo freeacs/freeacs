@@ -17,9 +17,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 /** The Class WebUser. */
 public class WebUser extends User implements UserDetails {
 
-  /** The authenticated. */
-  private boolean authenticated = false;
-
   /**
    * Make sure that the user always has access.
    *
@@ -28,8 +25,10 @@ public class WebUser extends User implements UserDetails {
   @Override
   public String getAccess() {
     String access = super.getAccess();
-    if (access == null) return Users.ACCESS_ADMIN;
-    return access;
+    if (access != null) {
+      return access;
+    }
+    return Users.ACCESS_ADMIN;
   }
 
   /**
@@ -41,10 +40,10 @@ public class WebUser extends User implements UserDetails {
     if (allowedPages == null) {
       String access = getAccess().split(";")[0];
       if (access.startsWith("WEB[") && access.endsWith("]")) {
-        access = access.substring(access.indexOf("[") + 1);
+        access = access.substring(access.indexOf('[') + 1);
         access = access.substring(0, access.length() - 1);
         List<String> arr = Arrays.asList(access.split(","));
-        List<String> list = new ArrayList<String>(arr);
+        List<String> list = new ArrayList<>(arr);
         List<Page> pages = Page.getPageValuesFromList(list);
         Page.addRequiredPages(pages);
         if (SessionCache.getSessionData(sessionId).getUser().isAdmin()) {
@@ -53,7 +52,7 @@ public class WebUser extends User implements UserDetails {
         list = Page.getStringValuesFromList(pages);
         allowedPages = list;
       } else {
-        allowedPages = Arrays.asList(WebConstants.ALL_PAGES);
+        allowedPages = Collections.singletonList(WebConstants.ALL_PAGES);
       }
     }
     return allowedPages;
@@ -64,7 +63,7 @@ public class WebUser extends User implements UserDetails {
 
   public WebUser(User user) {
     super(user);
-    this.setSecretHashed(user.getSecret());
+    setSecretHashed(user.getSecret());
   }
 
   @Override
@@ -77,7 +76,7 @@ public class WebUser extends User implements UserDetails {
 
   @Override
   public String getPassword() {
-    return this.getSecret();
+    return getSecret();
   }
 
   @Override

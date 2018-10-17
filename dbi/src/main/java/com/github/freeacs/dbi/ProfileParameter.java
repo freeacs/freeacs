@@ -1,7 +1,6 @@
 package com.github.freeacs.dbi;
 
 public class ProfileParameter {
-
   private Integer id;
 
   private Profile profile;
@@ -43,7 +42,9 @@ public class ProfileParameter {
   }
 
   public void setValue(String value) {
-    if (value == null) value = "";
+    if (value == null) {
+      value = "";
+    }
     this.value = value;
   }
 }

@@ -9,7 +9,6 @@ import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import com.github.freeacs.tr069.xml.Parser;
 
 public class GPVres {
-
   private static void populateCPEParameters(SessionData sessionData) {
     CPEParameters cpeParams = sessionData.getCpeParameters();
     int counter = 0;
@@ -47,8 +46,9 @@ public class GPVres {
     Parser parser = new Parser(reqRes.getRequest().getXml());
     SessionData sessionData = reqRes.getSessionData();
     if (parser.getHeader().getNoMoreRequests() != null
-        && parser.getHeader().getNoMoreRequests().getNoMoreRequestFlag())
+        && parser.getHeader().getNoMoreRequests().getNoMoreRequestFlag()) {
       sessionData.setNoMoreRequests(true);
+    }
     sessionData.setFromCPE(parser.getParameterList().getParameterValueList());
     sessionData.getProvisioningMessage().setParamsRead(sessionData.getFromCPE().size());
     Log.debug(GPVres.class, "Response holds " + sessionData.getFromCPE().size() + " parameters");

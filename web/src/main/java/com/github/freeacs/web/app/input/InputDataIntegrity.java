@@ -22,7 +22,6 @@ import java.sql.SQLException;
  * @author Jarl Andre Hubenthal
  */
 public class InputDataIntegrity {
-
   /**
    * Gets the input by name.
    *
@@ -32,7 +31,9 @@ public class InputDataIntegrity {
    */
   private static Input getInputByName(Input[] inputs, String n) {
     for (Input i : inputs) {
-      if (i != null && i.getKey().equals(n)) return i;
+      if (i != null && i.getKey().equals(n)) {
+        return i;
+      }
     }
     return null;
   }
@@ -73,8 +74,9 @@ public class InputDataIntegrity {
       }
     } else if (unittypeInput != null) {
       if (unittypeInput.getValue() != null
-          && !unittypeInput.getValue().equals(sessionData.getUnittypeName()))
+          && !unittypeInput.getValue().equals(sessionData.getUnittypeName())) {
         unittypeChanged = true;
+      }
       sessionData.setUnittypeName((String) unittypeInput.getValue());
     }
 

@@ -9,7 +9,6 @@ import java.util.List;
  * @author Jarl Andre Hubenthal
  */
 public class CheckBoxGroup<T> extends InputSelectionModel<T> {
-
   /** Instantiates a new check box group. */
   CheckBoxGroup() {
     this(null, null, null);

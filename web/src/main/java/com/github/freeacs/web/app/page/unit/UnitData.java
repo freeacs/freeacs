@@ -5,7 +5,6 @@ import com.github.freeacs.web.app.input.InputData;
 import java.util.Map;
 
 public class UnitData extends InputData {
-
   private Input unitParameter = Input.getStringInput("unitparameter");
   private Input unitParameterValue = Input.getStringInput("unitparametervalue");
   private Input filter = Input.getStringInput("filter");
@@ -20,9 +19,12 @@ public class UnitData extends InputData {
   private Input changeFreqSpread = Input.getStringInput("change_freqspread");
   private Input unitUpgrade = Input.getStringArrayInput("unitupgrade");
   private Input showConfidential = Input.getBooleanInput("show_confidential");
-  //    private Input modeSelect = Input.getStringInput("modeselect");
-  //    private Input inspectAction = Input.getStringInput("inspectaction");
+  /**
+   * Private Input modeSelect = Input.getStringInput("modeselect"); private Input inspectAction =
+   * Input.getStringInput("inspectaction");
+   */
   private Input unitDelete = Input.getStringInput("unitdelete");
+
   private Input unitMove = Input.getStringInput("unitmove");
   private Input unitReset = Input.getStringInput("unitreset");
   private Input newUnit = Input.getStringInput("new_unit");
@@ -59,36 +61,19 @@ public class UnitData extends InputData {
     this.filter = filter;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.input.InputData#setCmd(com.owera.xaps.web.app.input.Input)
-   */
   public void setCmd(Input cmd) {
     this.cmd = cmd;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.input.InputData#getCmd()
-   */
   public Input getCmd() {
     return cmd;
   }
 
-  //    public void setModeSelect(Input modeSelect) {
-  //    	this.modeSelect = modeSelect;
-  //    }
-  //
-  //    public Input getModeSelect() {
-  //	return modeSelect;
-  //    }
-  //
-  //    public void setInspectAction(Input inspectAction) {
-  //    	this.inspectAction = inspectAction;
-  //    }
-  //
-  //    public Input getInspectAction() {
-  //    	return inspectAction;
-  //    }
-
+  /**
+   * Public void setModeSelect(Input modeSelect) { this.modeSelect = modeSelect; } public Input
+   * getModeSelect() { return modeSelect; } public void setInspectAction(Input inspectAction) {
+   * this.inspectAction = inspectAction; } public Input getInspectAction() { return inspectAction; }
+   */
   public void setUnitDelete(Input unitDelete) {
     this.unitDelete = unitDelete;
   }
@@ -113,21 +98,11 @@ public class UnitData extends InputData {
     return unitReset;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.input.InputData#bindForm(java.util.Map)
-   */
   @Override
-  public void bindForm(Map<String, Object> root) {
-    // TODO Auto-generated method stub
+  public void bindForm(Map<String, Object> root) {}
 
-  }
-
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.input.InputData#validateForm()
-   */
   @Override
   public boolean validateForm() {
-    // TODO Auto-generated method stub
     return false;
   }
 

@@ -7,7 +7,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Util {
-
   public static SimpleDateFormat outputFormatDefault = new SimpleDateFormat("yyyyMMdd-HHmm");
   public static SimpleDateFormat outputFormatExtended = new SimpleDateFormat("yyyyMMdd-HHmmss");
 
@@ -22,47 +21,67 @@ public class Util {
       calendar.set(Calendar.YEAR, Integer.parseInt(m.group(1)));
       calendar.set(Calendar.MONTH, Integer.parseInt(m.group(2)) - 1);
       calendar.set(Calendar.DATE, Integer.parseInt(m.group(3)));
-      if (m.group(4) == null) calendar.set(Calendar.HOUR_OF_DAY, 0);
-      else calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(m.group(4)));
-      if (m.group(5) == null) calendar.set(Calendar.MINUTE, 0);
-      else calendar.set(Calendar.MINUTE, Integer.parseInt(m.group(5)));
-      if (m.group(6) == null) calendar.set(Calendar.SECOND, 0);
-      else calendar.set(Calendar.SECOND, Integer.parseInt(m.group(6)));
+      if (m.group(4) != null) {
+        calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(m.group(4)));
+      } else {
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+      }
+      if (m.group(5) != null) {
+        calendar.set(Calendar.MINUTE, Integer.parseInt(m.group(5)));
+      } else {
+        calendar.set(Calendar.MINUTE, 0);
+      }
+      if (m.group(6) != null) {
+        calendar.set(Calendar.SECOND, Integer.parseInt(m.group(6)));
+      } else {
+        calendar.set(Calendar.SECOND, 0);
+      }
       calendar.set(Calendar.MILLISECOND, 0);
       return calendar.getTime();
     }
     m = offsetTimePattern.matcher(optionValue);
     if (m.find()) {
       Calendar calendar = Calendar.getInstance();
-      if (m.group(2).equals("m"))
+      if ("m".equals(m.group(2))) {
         calendar.set(Calendar.MINUTE, calendar.get(Calendar.MINUTE) - Integer.parseInt(m.group(1)));
-      if (m.group(2).equals("h"))
+      }
+      if ("h".equals(m.group(2))) {
         calendar.set(
             Calendar.HOUR_OF_DAY,
             calendar.get(Calendar.HOUR_OF_DAY) - Integer.parseInt(m.group(1)));
-      if (m.group(2).equals("d"))
+      }
+      if ("d".equals(m.group(2))) {
         calendar.set(Calendar.DATE, calendar.get(Calendar.DATE) - Integer.parseInt(m.group(1)));
+      }
       return calendar.getTime();
     }
     return null;
   }
 
   public static Date autoboxDate(String arg) {
-    if (arg != null && arg.equals("NULL")) return null;
+    if ("NULL".equals(arg)) {
+      return null;
+    }
     return getDateFromOption(arg);
   }
 
   public static Integer autoboxInteger(String arg) {
     try {
-      if (arg != null && arg.equals("NULL")) return null;
-      else return new Integer(arg);
+      if ("NULL".equals(arg)) {
+        return null;
+      } else {
+        return Integer.valueOf(arg);
+      }
     } catch (NumberFormatException nfe) {
       throw new IllegalArgumentException("The argument " + arg + " was not a number (as expected)");
     }
   }
 
   public static String autoboxString(String arg) {
-    if (arg != null && arg.equals("NULL")) return null;
-    else return arg;
+    if ("NULL".equals(arg)) {
+      return null;
+    } else {
+      return arg;
+    }
   }
 }

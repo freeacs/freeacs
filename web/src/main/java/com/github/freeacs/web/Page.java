@@ -3,7 +3,6 @@ package com.github.freeacs.web;
 import com.github.freeacs.web.app.Main;
 import com.github.freeacs.web.app.page.SupportDashboardPage;
 import com.github.freeacs.web.app.page.WebPage;
-import com.github.freeacs.web.app.page.certificates.CryptoPage;
 import com.github.freeacs.web.app.page.event.SyslogEventsPage;
 import com.github.freeacs.web.app.page.file.FilePage;
 import com.github.freeacs.web.app.page.file.SoftwarePage;
@@ -60,78 +59,73 @@ import org.apache.commons.lang.StringUtils;
  * @author Jarl Andre Hubenthal
  */
 public enum Page {
-
   /* The following pages are covered in ContextItem() - important to get the context-navigation to
    * work.
    */
 
-  /* Unittype pages */
-  UNITTYPE("unit-type-configuration", UnittypePage.class, "icon_settings.png"), //
-  UNITTYPECREATE("unit-type-create", UnittypeCreatePage.class, "icon_settings.png"), //
-  UNITTYPEOVERVIEW("unit-type-overview", UnittypeOverviewPage.class, "icon_settings.png"), //
+  /** Unittype pages. */
+  UNITTYPE("unit-type-configuration", UnittypePage.class, "icon_settings.png"),
+  UNITTYPECREATE("unit-type-create", UnittypeCreatePage.class, "icon_settings.png"),
+  UNITTYPEOVERVIEW("unit-type-overview", UnittypeOverviewPage.class, "icon_settings.png"),
   UNITTYPEPARAMETERS("parameters", UnittypeParametersPage.class),
 
-  /* Profile pages */
-  PROFILE("profile-configuration", ProfileDetailsPage.class, "icon_profile.png"), //
-  PROFILECREATE("profile-create", ProfileCreatePage.class, "icon_profile.png"), //
-  PROFILEOVERVIEW("profile-overview", ProfileOverviewPage.class, "icon_profile.png"), //
+  /** Profile pages. */
+  PROFILE("profile-configuration", ProfileDetailsPage.class, "icon_profile.png"),
+  PROFILECREATE("profile-create", ProfileCreatePage.class, "icon_profile.png"),
+  PROFILEOVERVIEW("profile-overview", ProfileOverviewPage.class, "icon_profile.png"),
   WINDOWPROFILE("profilewindow", WindowPage.class),
 
-  /* Unit pages */
+  /** Unit pages. */
   UNIT("unit-configuration", UnitPage.class, "icon_unit.png"),
   UNITSTATUS("unit-dashboard", UnitStatusPage.class, "icon_unit.png"),
   WINDOWUNIT("unitwindow", WindowPage.class),
 
-  /* Group detail page */
+  /** Group detail page. */
   GROUP("group", GroupPage.class, "icon_group.png"),
 
-  /* Job detail page */
+  /** Job detail page. */
   JOB("job", JobPage.class, "icon_job.png"),
 
-  /* Trigger pages */
-  CREATETRIGGER("create-trigger", TriggerOverviewPage.class), //
-  TRIGGEROVERVIEW("trigger-overview", TriggerOverviewPage.class, "icon_settings.png"), //
-  TRIGGERRELEASE("trigger-release", TriggerReleasePage.class, "icon_settings.png"), //
+  /** Trigger pages. */
+  CREATETRIGGER("create-trigger", TriggerOverviewPage.class),
+  TRIGGEROVERVIEW("trigger-overview", TriggerOverviewPage.class, "icon_settings.png"),
+  TRIGGERRELEASE("trigger-release", TriggerReleasePage.class, "icon_settings.png"),
   TRIGGERRELEASEHISTORY(
-      "trigger-release-history", TriggerReleaseHistoryPage.class, "icon_settings.png"), //
-
-  /* Misc pages - no profile "level" - or profile in dropdown on page */
-  FILES("files", FilePage.class, "icon_software.png"), //
-  SOFTWARE("software", SoftwarePage.class, "icon_software.png"), //
-  JOBSOVERVIEW("job-overview", JobsPage.class, "icon_job.png"), //
-  UNITJOB("unit-jobs", UnitJobPage.class, "icon_job.png"), //
-  SYSLOGEVENTS("events", SyslogEventsPage.class, "icon_syslog.png"), //
-  HEARTBEATS("heartbeats", HeartbeatsPage.class, "icon_syslog.png"), //
+      "trigger-release-history", TriggerReleaseHistoryPage.class, "icon_settings.png"),
+  /** Misc pages - no profile "level" - or profile in dropdown on page. */
+  FILES("files", FilePage.class, "icon_software.png"),
+  SOFTWARE("software", SoftwarePage.class, "icon_software.png"),
+  JOBSOVERVIEW("job-overview", JobsPage.class, "icon_job.png"),
+  UNITJOB("unit-jobs", UnitJobPage.class, "icon_job.png"),
+  SYSLOGEVENTS("events", SyslogEventsPage.class, "icon_syslog.png"),
+  HEARTBEATS("heartbeats", HeartbeatsPage.class, "icon_syslog.png"),
   UPGRADE("upgrade", UpgradePage.class, "icon_software.png"),
-  SCRIPTEXECUTIONS("scriptexecutions", ScriptExecutionsPage.class, "icon_syslog.png"), //
-
-  /* Misc pages - with profile "level" */
-  GROUPSOVERVIEW("group-overview", GroupsPage.class, "icon_group.png"), //
-  REPORT("report", ReportPage.class, "icon_report.png"), //
-  SEARCH("search", SearchPage.class, "icon_search.png"), //
-  SYSLOG("syslog", SyslogPage.class, "icon_syslog.png"), //
+  SCRIPTEXECUTIONS("scriptexecutions", ScriptExecutionsPage.class, "icon_syslog.png"),
+  /** Misc pages - with profile "level". */
+  GROUPSOVERVIEW("group-overview", GroupsPage.class, "icon_group.png"),
+  REPORT("report", ReportPage.class, "icon_report.png"),
+  SEARCH("search", SearchPage.class, "icon_search.png"),
+  SYSLOG("syslog", SyslogPage.class, "icon_syslog.png"),
   UNITLIST("unit-list", UnitListPage.class, "icon_report.png"),
 
-  /* The following pages are small popup-pages or otherwise pages not
-   * part of the standard context-navigation pages (unittype/profile-context
-   * is of no concern perhaps). Some of these pages may not even be in use.
+  /**
+   * The following pages are small popup-pages or otherwise pages not part of the standard
+   * context-navigation pages (unittype/profile-context is of no concern perhaps). Some of these
+   * pages may not even be in use.
    */
-  GETVALUE("getvalue", GetUnitTypeParameterFlagAndValuesPage.class), //
-  INSPECTION("inspection", InspectionPage.class), //
-
-  /* Top left menu pages - some are empty pages, not possible to view/click */
-  DASHBOARD_SUPPORT("support-dashboard", SupportDashboardPage.class), //
-  TOPMENU_EASY("topmenu-easy", null), //
-  TOPMENU_ADV("topmenu-adv", null), //
-  TOPMENU_FILESCRIPT("topmenu-filescript", null), //
-  TOPMENU_REPORT("topmenu-report", null), //
-  TOPMENU_TRIGEVENT("topmenu-trigevent", null), //
-  TOPMENU_WIZARDS("topmenu-wizard", null), //
-
-  /* Top top menu pages*/
-  CERTIFICATES("certificates", CryptoPage.class), //
-  MONITOR("monitor", MonitorPage.class), //
-  PERMISSIONS("permissions", PermissionsPage.class), //
+  GETVALUE("getvalue", GetUnitTypeParameterFlagAndValuesPage.class),
+  INSPECTION("inspection", InspectionPage.class),
+  /** Top left menu pages - some are empty pages, not possible to view/click. */
+  DASHBOARD_SUPPORT("support-dashboard", SupportDashboardPage.class),
+  TOPMENU_EASY("topmenu-easy", null),
+  TOPMENU_ADV("topmenu-adv", null),
+  TOPMENU_FILESCRIPT("topmenu-filescript", null),
+  TOPMENU_REPORT("topmenu-report", null),
+  TOPMENU_TRIGEVENT("topmenu-trigevent", null),
+  TOPMENU_WIZARDS("topmenu-wizard", null),
+  /** Top top menu pages. */
+  MONITOR("monitor", MonitorPage.class),
+  PERMISSIONS("permissions", PermissionsPage.class),
   REALTIMEMOS("unit-status-realtime-mos", UnitStatusRealTimeMosPage.class),
 
   NONE(null, null);
@@ -150,8 +144,7 @@ public enum Page {
   }
 
   public static String getTitle(String id) {
-    String s = id;
-    String[] arr = s.split("-");
+    String[] arr = id.split("-");
     int arrLength = arr.length;
     for (int i = 0; i < arrLength; i++) {
       arr[i] = convertToCamelCasedString(arr[i]);
@@ -161,7 +154,7 @@ public enum Page {
 
   public static Map<String, Page> getPageURLMap() {
     if (pageMap == null) {
-      Map<String, Page> map = new HashMap<String, Page>();
+      Map<String, Page> map = new HashMap<>();
       for (Page p : values()) {
         map.put(p.name(), p);
       }
@@ -183,20 +176,24 @@ public enum Page {
     return result;
   }
 
-  private Page(String id, Class<? extends WebPage> clazz) {
+  Page(String id, Class<? extends WebPage> clazz) {
     this.id = id != null ? id : "";
     this.clazz = clazz;
   }
 
-  private Page(String id, Class<? extends WebPage> clazz, String icon) {
+  Page(String id, Class<? extends WebPage> clazz, String icon) {
     this(id, clazz);
     this.iconURL = icon;
   }
 
   public static Page getById(String id) {
-    if (id == null) return Page.NONE;
+    if (id == null) {
+      return Page.NONE;
+    }
     for (Page p : Page.values()) {
-      if (p.getId() != null && p.getId().equals(id)) return p;
+      if (p.getId() != null && p.getId().equals(id)) {
+        return p;
+      }
     }
     return Page.NONE;
   }
@@ -237,14 +234,14 @@ public enum Page {
     List<Page> toConvert =
         Arrays.asList(
             SEARCH, UNIT, PROFILE, UNITTYPE, GROUP, JOB, SOFTWARE, SYSLOG, REPORT, MONITOR);
-    List<String> pages = new ArrayList<String>();
+    List<String> pages = new ArrayList<>();
     for (Page p : toConvert) {
       pages.add(p.getId());
     }
     return pages;
   }
 
-  private static Map<String, Page> permissiblePages = new LinkedHashMap<String, Page>();
+  private static Map<String, Page> permissiblePages = new LinkedHashMap<>();
 
   static {
     permissiblePages.put("support", DASHBOARD_SUPPORT);
@@ -264,7 +261,7 @@ public enum Page {
    * @return a list of page ids
    */
   public static List<String> getAllPagesAsString() {
-    List<String> pages = new ArrayList<String>();
+    List<String> pages = new ArrayList<>();
     for (Page p : Page.values()) {
       pages.add(p.getId());
     }
@@ -338,8 +335,6 @@ public enum Page {
       case UNITLIST:
         return REPORT.getId();
 
-        //		case MONITORSTATUS:
-        //			return "monitor";
       default:
         return pageStr;
     }
@@ -352,8 +347,10 @@ public enum Page {
    * @return a list of strings
    */
   public static List<String> getStringValuesFromList(List<Page> pages) {
-    List<String> ids = new ArrayList<String>();
-    for (Page p : pages) ids.add(p.getId());
+    List<String> ids = new ArrayList<>();
+    for (Page p : pages) {
+      ids.add(p.getId());
+    }
     return ids;
   }
 
@@ -364,11 +361,12 @@ public enum Page {
    * @return a list of Page enums
    */
   public static List<Page> getPageValuesFromList(List<String> pages) {
-    List<Page> pageList = new ArrayList<Page>();
+    List<Page> pageList = new ArrayList<>();
     for (String p : pages) {
       Page _p = getPermissiblePageMap().get(p);
-      if (_p != null) pageList.add(_p);
-      else if ((_p = Page.getById(p)) != null) pageList.add(_p);
+      if (_p != null || ((_p = Page.getById(p)) != null)) {
+        pageList.add(_p);
+      }
     }
     return pageList;
   }
@@ -464,7 +462,11 @@ public enum Page {
    * @return true, if successful
    */
   public boolean equalsAny(Page... pages) {
-    for (Page p : pages) if (this.equals(p)) return true;
+    for (Page p : pages) {
+      if (equals(p)) {
+        return true;
+      }
+    }
     return false;
   }
 }

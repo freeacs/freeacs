@@ -17,23 +17,47 @@ public class Parameter {
     }
 
     public static Operator getOperator(String op) {
-      if (op.equals("=")) return EQ;
-      if (op.equals("!") || op.equals("<>")) return NE;
-      if (op.equals("<")) return LT;
-      if (op.equals("<=")) return LE;
-      if (op.equals(">=")) return GE;
-      if (op.equals(">")) return GT;
+      if ("=".equals(op)) {
+        return EQ;
+      }
+      if ("!".equals(op) || "<>".equals(op)) {
+        return NE;
+      }
+      if ("<".equals(op)) {
+        return LT;
+      }
+      if ("<=".equals(op)) {
+        return LE;
+      }
+      if (">=".equals(op)) {
+        return GE;
+      }
+      if (">".equals(op)) {
+        return GT;
+      }
       throw new IllegalArgumentException("Operator " + op + " is not a valid operator");
     }
 
     public static Operator getOperatorFromLiteral(String op) {
       op = op.toUpperCase();
-      if (op.equals("EQ")) return EQ;
-      if (op.equals("NE")) return NE;
-      if (op.equals("LT")) return LT;
-      if (op.equals("LE")) return LE;
-      if (op.equals("GE")) return GE;
-      if (op.equals("GT")) return GT;
+      if ("EQ".equals(op)) {
+        return EQ;
+      }
+      if ("NE".equals(op)) {
+        return NE;
+      }
+      if ("LT".equals(op)) {
+        return LT;
+      }
+      if ("LE".equals(op)) {
+        return LE;
+      }
+      if ("GE".equals(op)) {
+        return GE;
+      }
+      if ("GT".equals(op)) {
+        return GT;
+      }
       throw new IllegalArgumentException("Operator " + op + " is not a valid operator");
     }
 
@@ -42,23 +66,43 @@ public class Parameter {
     }
 
     public String getOperatorLiteral() {
-      if (this.equals(EQ)) return "EQ";
-      if (this.equals(NE)) return "NE";
-      if (this.equals(LT)) return "LT";
-      if (this.equals(LE)) return "LE";
-      if (this.equals(GE)) return "GE";
-      if (this.equals(GT)) return "GT";
+      if (EQ.equals(this)) {
+        return "EQ";
+      }
+      if (NE.equals(this)) {
+        return "NE";
+      }
+      if (LT.equals(this)) {
+        return "LT";
+      }
+      if (LE.equals(this)) {
+        return "LE";
+      }
+      if (GE.equals(this)) {
+        return "GE";
+      }
+      if (GT.equals(this)) {
+        return "GT";
+      }
       throw new IllegalArgumentException("Operator " + op + " is not a valid operator");
     }
 
     public String getSQL(String operand) {
       if (operand == null) {
-        if (this.equals(EQ) || this.equals(LE) || this.equals(GE)) return "IS";
-        if (this.equals(NE) || this.equals(LT) || this.equals(GT)) return "IS NOT";
-      } else if (operand.indexOf("%") > -1 || operand.indexOf("_") > -1) {
-        if (this.equals(EQ)) return "LIKE";
-        else if (this.equals(NE)) return "NOT LIKE";
-        else return op;
+        if (EQ.equals(this) || LE.equals(this) || GE.equals(this)) {
+          return "IS";
+        }
+        if (NE.equals(this) || LT.equals(this) || GT.equals(this)) {
+          return "IS NOT";
+        }
+      } else if (operand.indexOf('%') > -1 || operand.indexOf('_') > -1) {
+        if (EQ.equals(this)) {
+          return "LIKE";
+        } else if (NE.equals(this)) {
+          return "NOT LIKE";
+        } else {
+          return op;
+        }
       } else {
         return op;
       }
@@ -76,8 +120,12 @@ public class Parameter {
     }
 
     public static ParameterDataType getDataType(String type) {
-      if (type.equals("TEXT")) return TEXT;
-      if (type.equals("NUMBER")) return NUMBER;
+      if ("TEXT".equals(type)) {
+        return TEXT;
+      }
+      if ("NUMBER".equals(type)) {
+        return NUMBER;
+      }
       throw new IllegalArgumentException("Data type " + type + " is not a valid type");
     }
 
@@ -86,7 +134,7 @@ public class Parameter {
     }
 
     public String getSQL() {
-      if (this.equals(TEXT)) {
+      if (TEXT.equals(this)) {
         return "?";
       } else {
         return "CONVERT(?,SIGNED)";
@@ -100,10 +148,12 @@ public class Parameter {
   private Integer groupParameterId;
   private Operator op;
   private ParameterDataType type;
-  // if value = null, it is set to "". Introducing UnitParameterQuery, we want to be able
-  // to use null-values in seraches, but we don't want to break the interface/behaviour (yet).
-  // instead we keep this flag to inform UPQ about the value orginial state.
-  private boolean valueWasNull = false;
+  /**
+   * If value = null, it is set to "". Introducing UnitParameterQuery, we want to be able to use
+   * null-values in seraches, but we don't want to break the interface/behaviour (yet). instead we
+   * keep this flag to inform UPQ about the value orginial state.
+   */
+  private boolean valueWasNull;
 
   public Parameter(UnittypeParameter utp, String val, Operator op, ParameterDataType type) {
     this.unittypeParameter = utp;
@@ -128,7 +178,9 @@ public class Parameter {
   }
 
   public String getValue() {
-    if (value == null) value = "";
+    if (value == null) {
+      value = "";
+    }
     return value;
   }
 
@@ -136,7 +188,9 @@ public class Parameter {
     if (value == null) {
       value = "";
       valueWasNull = true;
-    } else valueWasNull = false;
+    } else {
+      valueWasNull = false;
+    }
     this.value = value;
   }
 

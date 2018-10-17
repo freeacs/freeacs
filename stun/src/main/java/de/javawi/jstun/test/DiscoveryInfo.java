@@ -8,7 +8,6 @@
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
  */
-
 package de.javawi.jstun.test;
 
 import java.net.InetAddress;
@@ -17,16 +16,16 @@ import java.net.SocketException;
 
 public class DiscoveryInfo {
   private InetAddress testIP;
-  private boolean error = false;
-  private int errorResponseCode = 0;
+  private boolean error;
+  private int errorResponseCode;
   private String errorReason;
-  private boolean openAccess = false;
-  private boolean blockedUDP = false;
-  private boolean fullCone = false;
-  private boolean restrictedCone = false;
-  private boolean portRestrictedCone = false;
-  private boolean symmetric = false;
-  private boolean symmetricUDPFirewall = false;
+  private boolean openAccess;
+  private boolean blockedUDP;
+  private boolean fullCone;
+  private boolean restrictedCone;
+  private boolean portRestrictedCone;
+  private boolean symmetric;
+  private boolean symmetricUDPFirewall;
   private InetAddress publicIP;
 
   public DiscoveryInfo(InetAddress testIP) {
@@ -44,8 +43,7 @@ public class DiscoveryInfo {
   }
 
   public boolean isOpenAccess() {
-    if (error) return false;
-    return openAccess;
+    return !error && openAccess;
   }
 
   public void setOpenAccess() {
@@ -53,8 +51,7 @@ public class DiscoveryInfo {
   }
 
   public boolean isBlockedUDP() {
-    if (error) return false;
-    return blockedUDP;
+    return !error && blockedUDP;
   }
 
   public void setBlockedUDP() {
@@ -62,8 +59,7 @@ public class DiscoveryInfo {
   }
 
   public boolean isFullCone() {
-    if (error) return false;
-    return fullCone;
+    return !error && fullCone;
   }
 
   public void setFullCone() {
@@ -71,8 +67,7 @@ public class DiscoveryInfo {
   }
 
   public boolean isPortRestrictedCone() {
-    if (error) return false;
-    return portRestrictedCone;
+    return !error && portRestrictedCone;
   }
 
   public void setPortRestrictedCone() {
@@ -80,8 +75,7 @@ public class DiscoveryInfo {
   }
 
   public boolean isRestrictedCone() {
-    if (error) return false;
-    return restrictedCone;
+    return !error && restrictedCone;
   }
 
   public void setRestrictedCone() {
@@ -89,8 +83,7 @@ public class DiscoveryInfo {
   }
 
   public boolean isSymmetric() {
-    if (error) return false;
-    return symmetric;
+    return !error && symmetric;
   }
 
   public void setSymmetric() {
@@ -98,8 +91,7 @@ public class DiscoveryInfo {
   }
 
   public boolean isSymmetricUDPFirewall() {
-    if (error) return false;
-    return symmetricUDPFirewall;
+    return !error && symmetricUDPFirewall;
   }
 
   public void setSymmetricUDPFirewall() {
@@ -119,7 +111,7 @@ public class DiscoveryInfo {
   }
 
   public String toString() {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append("Network interface: ");
     try {
       sb.append(NetworkInterface.getByInetAddress(testIP).getName());
@@ -131,24 +123,40 @@ public class DiscoveryInfo {
     sb.append(testIP.getHostAddress());
     sb.append("\n");
     if (error) {
-      sb.append(errorReason + " - Responsecode: " + errorResponseCode);
+      sb.append(errorReason).append(" - Responsecode: ").append(errorResponseCode);
       return sb.toString();
     }
     sb.append("Result: ");
-    if (openAccess) sb.append("Open access to the Internet.\n");
-    if (blockedUDP) sb.append("Firewall blocks UDP.\n");
-    if (fullCone) sb.append("Full Cone NAT handles connections.\n");
-    if (restrictedCone) sb.append("Restricted Cone NAT handles connections.\n");
-    if (portRestrictedCone) sb.append("Port restricted Cone NAT handles connections.\n");
-    if (symmetric) sb.append("Symmetric Cone NAT handles connections.\n");
-    if (symmetricUDPFirewall) sb.append("Symmetric UDP Firewall handles connections.\n");
+    if (openAccess) {
+      sb.append("Open access to the Internet.\n");
+    }
+    if (blockedUDP) {
+      sb.append("Firewall blocks UDP.\n");
+    }
+    if (fullCone) {
+      sb.append("Full Cone NAT handles connections.\n");
+    }
+    if (restrictedCone) {
+      sb.append("Restricted Cone NAT handles connections.\n");
+    }
+    if (portRestrictedCone) {
+      sb.append("Port restricted Cone NAT handles connections.\n");
+    }
+    if (symmetric) {
+      sb.append("Symmetric Cone NAT handles connections.\n");
+    }
+    if (symmetricUDPFirewall) {
+      sb.append("Symmetric UDP Firewall handles connections.\n");
+    }
     if (!openAccess
         && !blockedUDP
         && !fullCone
         && !restrictedCone
         && !portRestrictedCone
         && !symmetric
-        && !symmetricUDPFirewall) sb.append("unkown\n");
+        && !symmetricUDPFirewall) {
+      sb.append("unkown\n");
+    }
     sb.append("Public IP address: ");
     if (publicIP != null) {
       sb.append(publicIP.getHostAddress());

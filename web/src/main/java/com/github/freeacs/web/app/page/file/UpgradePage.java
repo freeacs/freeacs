@@ -33,7 +33,6 @@ import javax.sql.DataSource;
  * @author Jarl Andre Hubenthal
  */
 public class UpgradePage extends AbstractWebPage {
-
   /** The xaps. */
   private ACS acs;
 
@@ -61,8 +60,9 @@ public class UpgradePage extends AbstractWebPage {
   private void updateDatabaseForUnit(Map<String, Object> root) throws Exception {
     Unit u = acsUnit.getUnitById(inputData.getUnit().getString(), unittypes.getSelected(), null);
 
-    if (u == null)
+    if (u == null) {
       throw new Exception("The unit <i>" + inputData.getUnit().getString() + "</i> was not found");
+    }
 
     Map<String, UnitParameter> params = acsUnit.getUnitById(u.getId()).getUnitParameters();
 
@@ -73,14 +73,17 @@ public class UpgradePage extends AbstractWebPage {
     if (version == null) {
       UnittypeParameter utp =
           acs.getUnittypeParameter(inputData.getUnittype().getString(), parameterVersion);
-      if (utp == null)
+      if (utp == null) {
         throw new Exception(
             "Invalid unittype. Missing Owera specific parameters. Cannot add Unit parameters.");
+      }
       version =
           new UnitParameter(utp, u.getId(), versionNumber, acs.getProfile(u.getProfile().getId()));
-    } else version.getParameter().setValue(versionNumber);
+    } else {
+      version.getParameter().setValue(versionNumber);
+    }
 
-    List<UnitParameter> updatedParams = new ArrayList<UnitParameter>();
+    List<UnitParameter> updatedParams = new ArrayList<>();
     updatedParams.add(version);
     acsUnit.addOrChangeUnitParameters(updatedParams, u.getProfile());
 
@@ -103,20 +106,22 @@ public class UpgradePage extends AbstractWebPage {
     ProfileParameter version = params.getByName(parameterVersion);
 
     String value = "";
-    if (inputData.getFirmware().getString() != null)
+    if (inputData.getFirmware().getString() != null) {
       value =
           unittypes
               .getSelected()
               .getFiles()
               .getByVersionType(inputData.getFirmware().getString(), FileType.SOFTWARE)
               .getVersion();
+    }
 
     if (version == null) {
       UnittypeParameter utp =
           acs.getUnittypeParameter(inputData.getUnittype().getString(), parameterVersion);
-      if (utp == null)
+      if (utp == null) {
         throw new Exception(
             "Invalid unittype. Missing Owera specific parameters. Cannot add Profile parameters.");
+      }
       version = new ProfileParameter(profile, utp, value);
     } else {
       version.setValue(value);
@@ -126,9 +131,6 @@ public class UpgradePage extends AbstractWebPage {
     root.put("message", "Saved successfully");
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
-   */
   public void process(
       ParameterParser params,
       Output outputHandler,
@@ -156,8 +158,11 @@ public class UpgradePage extends AbstractWebPage {
 
     try {
       if (inputData.getFormSubmit().hasValue("Upgrade")) {
-        if (inputData.getUpgradeType().isValue("Unit")) updateDatabaseForUnit(root);
-        else if (inputData.getUpgradeType().isValue("Profile")) updateDatabaseForProfile(root);
+        if (inputData.getUpgradeType().isValue("Unit")) {
+          updateDatabaseForUnit(root);
+        } else if (inputData.getUpgradeType().isValue("Profile")) {
+          updateDatabaseForProfile(root);
+        }
       }
     } catch (Exception e) {
       root.put("error", e.getLocalizedMessage());
@@ -172,13 +177,14 @@ public class UpgradePage extends AbstractWebPage {
               inputData.getUpgradeType(),
               inputData.getUpgradeType().getString(),
               Arrays.asList("Profile", "Unit")));
-      if (inputData.getUpgradeType().hasValue("Profile"))
+      if (inputData.getUpgradeType().hasValue("Profile")) {
         root.put(
             "profiles",
             InputSelectionFactory.getProfileSelection(
                 inputData.getProfile(), unittypes.getSelected()));
-      else if (inputData.getUpgradeType().hasValue("Unit"))
+      } else if (inputData.getUpgradeType().hasValue("Unit")) {
         root.put("unit", inputData.getUnit().getString());
+      }
       root.put(
           "softwares",
           InputSelectionFactory.getDropDownSingleSelect(

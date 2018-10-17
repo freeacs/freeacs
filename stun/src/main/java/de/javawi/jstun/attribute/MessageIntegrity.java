@@ -8,11 +8,10 @@
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
  */
-
 package de.javawi.jstun.attribute;
 
 public class MessageIntegrity extends MessageAttribute {
-  // incomplete message integrity implementation
+  /** Incomplete message integrity implementation. */
   public MessageIntegrity() {
     super(MessageAttribute.MessageAttributeType.MessageIntegrity);
   }

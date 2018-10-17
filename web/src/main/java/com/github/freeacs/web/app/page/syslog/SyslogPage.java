@@ -106,19 +106,23 @@ public class SyslogPage extends AbstractWebPage {
               xapsDataSource,
               syslogDataSource);
       map.put("rowsreturned", entries.size());
-      if (entries.size() > maxrows) entries = entries.subList(0, maxrows);
+      if (entries.size() > maxrows) {
+        entries = entries.subList(0, maxrows);
+      }
       map.put("result", entries);
       map.put("expectedrows", maxrows);
     }
 
     List<SyslogEntry> entries = SessionCache.getSyslogEntries(params.getSession().getId());
 
-    map.put("hashistory", entries != null && entries.size() > 0);
+    map.put("hashistory", entries != null && !entries.isEmpty());
     String cmd = inputData.getCmd().getString();
     map.put("cmd", cmd);
     map.put("url", inputData.getUrl().getString());
 
-    if (params.getBoolean("noreturn")) return;
+    if (params.getBoolean("noreturn")) {
+      return;
+    }
 
     outputHandler.setTemplatePathWithIndex("syslog");
   }
@@ -143,9 +147,8 @@ public class SyslogPage extends AbstractWebPage {
   }
 
   private DropDownMultiSelect<String> getSeverityDropdown(SyslogData syslogData) {
-    List<String> severityValues = new ArrayList<String>(SyslogConstants.severityMap.values());
-    DropDownMultiSelect<String> severities = getSeverityDropdown(severityValues, syslogData);
-    return severities;
+    List<String> severityValues = new ArrayList<>(SyslogConstants.severityMap.values());
+    return getSeverityDropdown(severityValues, syslogData);
   }
 
   private DropDownMultiSelect<String> getSeverityDropdown(
@@ -183,8 +186,8 @@ public class SyslogPage extends AbstractWebPage {
     res.setContentType("text/plain");
     res.setDownloadAttachment("syslogexport.txt");
     List<SyslogEntry> entries = SessionCache.getSyslogEntries(req.getSession().getId());
-    StringBuffer string = new StringBuffer();
-    if (entries != null && entries.size() > 0) {
+    StringBuilder string = new StringBuilder();
+    if (entries != null && !entries.isEmpty()) {
       string.append("Timestamp" + "\t");
       string.append("Severity" + "\t");
       string.append("Facility" + "\t");
@@ -198,17 +201,17 @@ public class SyslogPage extends AbstractWebPage {
       string.append("Unit Type" + "\t");
       string.append("\n");
       for (SyslogEntry entry : entries) {
-        string.append(DateUtils.formatDateDefault(entry.getCollectorTimestamp()) + "\t");
-        string.append(entry.getSeverity() + "\t");
-        string.append(entry.getFacility() + "\t");
-        string.append(entry.getEventId() + "\t");
-        string.append(entry.getContent() + "\t");
-        string.append(entry.getUserId() + "\t");
-        string.append(entry.getHostname() + "\t");
-        string.append(entry.getIpAddress() + "\t");
-        string.append(entry.getUnitId() + "\t");
-        string.append(entry.getProfileName() + "\t");
-        string.append(entry.getUnittypeName() + "\t");
+        string.append(DateUtils.formatDateDefault(entry.getCollectorTimestamp())).append("\t");
+        string.append(entry.getSeverity()).append("\t");
+        string.append(entry.getFacility()).append("\t");
+        string.append(entry.getEventId()).append("\t");
+        string.append(entry.getContent()).append("\t");
+        string.append(entry.getUserId()).append("\t");
+        string.append(entry.getHostname()).append("\t");
+        string.append(entry.getIpAddress()).append("\t");
+        string.append(entry.getUnitId()).append("\t");
+        string.append(entry.getProfileName()).append("\t");
+        string.append(entry.getUnittypeName()).append("\t");
         string.append("\n");
       }
     } else {

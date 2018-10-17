@@ -7,14 +7,18 @@ import java.util.regex.PatternSyntaxException;
 public class Validation {
   public static void numberOfArgs(String[] args, int argsExpected) {
     if (args.length < argsExpected) {
-      if (args.length <= 1)
+      if (args.length <= 1) {
         throw new IllegalArgumentException(
             "No arguments supplied, expected at least " + (argsExpected - 1));
+      }
       if (args.length > 1) {
         String supplied = "";
         for (int i = 1; i < args.length; i++) {
-          if (args[i].contains(" ")) supplied += "\"" + args[i] + "\" ";
-          else supplied += args[i] + " ";
+          if (args[i].contains(" ")) {
+            supplied += "\"" + args[i] + "\" ";
+          } else {
+            supplied += args[i] + " ";
+          }
         }
         throw new IllegalArgumentException(
             "Too few argument (expected  at least "
@@ -72,8 +76,12 @@ public class Validation {
    * @return
    */
   public static boolean matches(String regex, String strToMatch) {
-    if (regex == null) return true;
-    if (strToMatch == null) return false;
+    if (regex == null) {
+      return true;
+    }
+    if (strToMatch == null) {
+      return false;
+    }
     boolean equal = true; // standard compare
     if (regex.startsWith("!")) {
       regex = regex.substring(1);
@@ -81,14 +89,22 @@ public class Validation {
     }
     String[] regexChars = new String[] {"*", "+", "?", "^", "$"};
     boolean containsRexexChar = false;
-    for (String regexChar : regexChars) if (regex.contains(regexChar)) containsRexexChar = true;
-    if (!containsRexexChar) regex = ".*" + regex + ".*";
+    for (String regexChar : regexChars) {
+      if (regex.contains(regexChar)) {
+        containsRexexChar = true;
+      }
+    }
+    if (!containsRexexChar) {
+      regex = ".*" + regex + ".*";
+    }
     Pattern pattern = Pattern.compile(regex);
     Matcher matcher = pattern.matcher(strToMatch);
-    boolean match = false;
-    if (matcher.find()) match = true;
-    if (equal) return match;
-    else return !match;
+    boolean match = matcher.find();
+    if (equal) {
+      return match;
+    } else {
+      return !match;
+    }
   }
 
   /**
@@ -101,7 +117,9 @@ public class Validation {
    */
   public static boolean matches(String regexp, String... strsToMatch) {
     for (String strToMatch : strsToMatch) {
-      if (matches(regexp, strToMatch)) return true;
+      if (matches(regexp, strToMatch)) {
+        return true;
+      }
     }
     return false;
   }

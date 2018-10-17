@@ -7,7 +7,6 @@ import java.util.Map;
 
 /** The Class UnitListData. */
 public class UnitListData extends InputData {
-
   /** The type. */
   private Input type = Input.getStringInput("type");
 
@@ -29,14 +28,14 @@ public class UnitListData extends InputData {
    */
   private Input groupSelect = Input.getStringInput("groupselect");
 
-  /** Syslog Unit List */
+  /** Syslog Unit List. */
   private Input filterSeverity = Input.getStringInput("severity");
 
   private Input filterFacility = Input.getStringInput("facility");
   private Input filterEventId = Input.getStringInput("eventid");
   private Input filterLimit = Input.getIntegerInput("filter_rows_count");
 
-  /** Hardware Unit List */
+  /** Hardware Unit List. */
   private Input filterDdrHigh = Input.getIntegerInput("filter_ddr_high");
 
   private Input filterDdrLow = Input.getIntegerInput("filter_ddr_low");
@@ -46,7 +45,7 @@ public class UnitListData extends InputData {
   private Input filterUptimeLow = Input.getIntegerInput("filter_uptime_low");
   private Input filterOperand = Input.getStringInput("filter_operand");
 
-  /** Voip Unit list */
+  /** Voip Unit list. */
   private Input filterTotalScoreHigh = Input.getDoubleInput("filter_totalscore_high");
 
   private Input filterTotalScoreLow = Input.getDoubleInput("filter_totalscore_low");

@@ -10,7 +10,6 @@ import org.xml.sax.helpers.DefaultHandler;
  * method performed).
  */
 public class ParameterListHandler extends DefaultHandler {
-
   private enum ParameterType {
     VALUE,
     INFO,
@@ -33,7 +32,7 @@ public class ParameterListHandler extends DefaultHandler {
   private ParameterAttributeStruct pas;
   private StringBuilder currTextContent = new StringBuilder();
 
-  private ParameterType parameterType = null;
+  private ParameterType parameterType;
 
   public ParameterListHandler(ParameterList params, Parser owner) {
     this.owner = owner;
@@ -84,7 +83,7 @@ public class ParameterListHandler extends DefaultHandler {
       pvs.setValue(new String(currTextContent));
     } else if (WRITABLE_TAG.equals(localName)) {
       String ct = new String(currTextContent);
-      pis.setWritable(!ct.equals("0") && !ct.equals("false"));
+      pis.setWritable(!"0".equals(ct) && !"false".equals(ct));
     } else if (NOTIFICATION_TAG.equals(localName)) {
       String ct = new String(currTextContent);
       try {
@@ -96,7 +95,7 @@ public class ParameterListHandler extends DefaultHandler {
   }
 
   public void characters(char[] ch, int start, int length) {
-    String content = String.valueOf(ch).substring(start, (start + length));
+    String content = String.valueOf(ch).substring(start, start + length);
     currTextContent.append(content.trim());
   }
 }

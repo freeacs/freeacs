@@ -8,7 +8,6 @@
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
  */
-
 package de.javawi.jstun.header;
 
 import de.javawi.jstun.attribute.MessageAttribute;
@@ -22,34 +21,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MessageHeader implements MessageHeaderInterface {
-  /*
-   *  0                   1                   2                   3
-   *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-   * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   * |      STUN Message Type        |         Message Length        |
-   * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   * |
+  /**
+   * 0 1 2 3 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ | STUN Message Type | Message
+   * Length | +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
    * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    *
-   * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   *                          Transaction ID
-   * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   *                                                                 |
-   * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   * <p>+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ Transaction ID
+   * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
+   * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+.
    */
   private static Logger LOGGER = LoggerFactory.getLogger(MessageHeader.class);
+
   private MessageHeaderType type;
   private byte[] id = new byte[16];
 
-  protected Map<MessageAttribute.MessageAttributeType, MessageAttribute> ma =
-      new TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute>();
+  protected Map<MessageAttribute.MessageAttributeType, MessageAttribute> ma = new TreeMap<>();
 
-  public MessageHeader() {
-    super();
-  }
+  public MessageHeader() {}
 
   public MessageHeader(MessageHeaderType type) {
-    super();
     setType(type);
   }
 
@@ -62,12 +53,24 @@ public class MessageHeader implements MessageHeaderInterface {
   }
 
   public static int typeToInteger(MessageHeaderType type) {
-    if (type == MessageHeaderType.BindingRequest) return BINDINGREQUEST;
-    if (type == MessageHeaderType.BindingResponse) return BINDINGRESPONSE;
-    if (type == MessageHeaderType.BindingErrorResponse) return BINDINGERRORRESPONSE;
-    if (type == MessageHeaderType.SharedSecretRequest) return SHAREDSECRETREQUEST;
-    if (type == MessageHeaderType.SharedSecretResponse) return SHAREDSECRETRESPONSE;
-    if (type == MessageHeaderType.SharedSecretErrorResponse) return SHAREDSECRETERRORRESPONSE;
+    if (type == MessageHeaderType.BindingRequest) {
+      return BINDINGREQUEST;
+    }
+    if (type == MessageHeaderType.BindingResponse) {
+      return BINDINGRESPONSE;
+    }
+    if (type == MessageHeaderType.BindingErrorResponse) {
+      return BINDINGERRORRESPONSE;
+    }
+    if (type == MessageHeaderType.SharedSecretRequest) {
+      return SHAREDSECRETREQUEST;
+    }
+    if (type == MessageHeaderType.SharedSecretResponse) {
+      return SHAREDSECRETRESPONSE;
+    }
+    if (type == MessageHeaderType.SharedSecretErrorResponse) {
+      return SHAREDSECRETERRORRESPONSE;
+    }
     return -1;
   }
 
@@ -94,27 +97,23 @@ public class MessageHeader implements MessageHeaderInterface {
 
   public boolean equalTransactionID(MessageHeader header) {
     byte[] idHeader = header.getTransactionID();
-    if (idHeader.length != 16) return false;
-    if ((idHeader[0] == id[0])
-        && (idHeader[1] == id[1])
-        && (idHeader[2] == id[2])
-        && (idHeader[3] == id[3])
-        && (idHeader[4] == id[4])
-        && (idHeader[5] == id[5])
-        && (idHeader[6] == id[6])
-        && (idHeader[7] == id[7])
-        && (idHeader[8] == id[8])
-        && (idHeader[9] == id[9])
-        && (idHeader[10] == id[10])
-        && (idHeader[11] == id[11])
-        && (idHeader[12] == id[12])
-        && (idHeader[13] == id[13])
-        && (idHeader[14] == id[14])
-        && (idHeader[15] == id[15])) {
-      return true;
-    } else {
-      return false;
-    }
+    return idHeader.length == 16
+        && idHeader[0] == id[0]
+        && idHeader[1] == id[1]
+        && idHeader[2] == id[2]
+        && idHeader[3] == id[3]
+        && idHeader[4] == id[4]
+        && idHeader[5] == id[5]
+        && idHeader[6] == id[6]
+        && idHeader[7] == id[7]
+        && idHeader[8] == id[8]
+        && idHeader[9] == id[9]
+        && idHeader[10] == id[10]
+        && idHeader[11] == id[11]
+        && idHeader[12] == id[12]
+        && idHeader[13] == id[13]
+        && idHeader[14] == id[14]
+        && idHeader[15] == id[15];
   }
 
   public void addMessageAttribute(MessageAttribute attri) {

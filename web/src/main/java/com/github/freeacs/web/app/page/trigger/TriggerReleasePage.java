@@ -31,12 +31,10 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 public class TriggerReleasePage extends AbstractWebPage {
-
   private static SimpleDateFormat urlFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
-    List<MenuItem> list = new ArrayList<MenuItem>();
-    list.addAll(super.getShortcutItems(sessionData));
+    List<MenuItem> list = new ArrayList<>(super.getShortcutItems(sessionData));
     list.add(
         new MenuItem("Unit type overview", Page.UNITTYPEOVERVIEW)
             .addParameter("unittype", sessionData.getUnittypeName()));
@@ -59,13 +57,13 @@ public class TriggerReleasePage extends AbstractWebPage {
   }
 
   private String getURLDate(Date d) {
-    if (d != null)
+    if (d != null) {
       try {
         return URLEncoder.encode(urlFormat.format(d), "UTF-8");
       } catch (UnsupportedEncodingException e) {
-        // TODO Auto-generated catch block
         return "";
       }
+    }
     return "";
   }
 
@@ -94,7 +92,9 @@ public class TriggerReleasePage extends AbstractWebPage {
         inputData.getProfile(),
         inputData.getUnit());
     Input tmsInput = inputData.getTms();
-    if (tmsInput != null && tmsInput.getValue() != null) tms = tmsInput.getDate();
+    if (tmsInput != null && tmsInput.getValue() != null) {
+      tms = tmsInput.getDate();
+    }
     Date twoHoursBeforeTms = new Date(tms.getTime() - 7200 * 1000);
     fmMap.put("tms", urlFormat.format(tms));
     fmMap.put("twohoursbeforetms", urlFormat.format(twoHoursBeforeTms));
@@ -122,8 +122,9 @@ public class TriggerReleasePage extends AbstractWebPage {
             rt.setFirstEventTms(tr.getFirstEventTms());
             rt.setReleaseId(tr.getId());
           }
-          if (rt.getNotifiedTms() == null && tr.getSentTms() != null)
+          if (rt.getNotifiedTms() == null && tr.getSentTms() != null) {
             rt.setNotifiedTms(tr.getSentTms());
+          }
           rt.setNoEvents(tr.getNoEvents());
           rt.setNoEventsPrUnit(tr.getNoEventsPrUnit());
           rt.setNoUnits(tr.getNoUnits());

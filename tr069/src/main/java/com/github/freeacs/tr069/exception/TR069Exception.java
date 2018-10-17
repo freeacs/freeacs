@@ -2,14 +2,11 @@ package com.github.freeacs.tr069.exception;
 
 import javax.servlet.http.HttpServletResponse;
 
-/*
- * SA = Session Aborted
- */
+/** SA = Session Aborted. */
 public class TR069Exception extends Exception {
-
   private static final long serialVersionUID = 7288005181389170348L;
 
-  // Default is 200 OK
+  /** Default is 200 OK. */
   private Integer HTTPErrorCode = HttpServletResponse.SC_OK;
 
   private String errorMsg;

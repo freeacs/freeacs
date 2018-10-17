@@ -25,7 +25,7 @@ public class TableGroupParameter extends GroupParameter {
 
   private TableGroupParameter(Integer groupId, Parameter parameter, Group group) {
     super(parameter, group);
-    this.setParameter(new TableParameter(getParameter())); // CLONE! :)
+    setParameter(new TableParameter(getParameter())); // CLONE! :)
     this.groupId = groupId; // Remember group id
   }
 
@@ -36,9 +36,10 @@ public class TableGroupParameter extends GroupParameter {
 
   @Override
   public String getName() {
-    if (groupName == null)
+    if (groupName == null) {
       groupName =
           SearchParameter.convertParameterId(super.getName()).replace("null", groupId.toString());
+    }
     return groupName;
   }
 
@@ -49,7 +50,7 @@ public class TableGroupParameter extends GroupParameter {
           parameter.getValue(),
           parameter.getOp(),
           parameter.getType());
-      this.setValueWasNull(parameter.valueWasNull());
+      setValueWasNull(parameter.valueWasNull());
     }
 
     private TableParameter(UnittypeParameter utp, String val, Operator op, ParameterDataType type) {

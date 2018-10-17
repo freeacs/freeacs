@@ -10,9 +10,9 @@ import java.io.IOException;
 
 public class OutputHandler {
   private FileWriter fw;
-  private boolean printedHeading = false;
-  private Context context = null;
-  private String heading = null;
+  private boolean printedHeading;
+  private Context context;
+  private String heading;
   private Listing listing;
   private Command command;
 
@@ -27,9 +27,10 @@ public class OutputHandler {
     if (command.getOutputFilename() != null) {
       if (Properties.isRestricted()) {
         File f = new File(command.getOutputFilename());
-        if (!FileUtil.allowed("Write to " + command.getOutputFilename(), f))
+        if (!FileUtil.allowed("Write to " + command.getOutputFilename(), f)) {
           throw new IllegalArgumentException(
               "Abort command execution due to access restriction violations");
+        }
       }
       fw = new FileWriter(command.getOutputFilename(), command.appendToOutput());
     }
@@ -48,7 +49,9 @@ public class OutputHandler {
   }
 
   public void close() throws IOException {
-    if (fw != null) fw.close();
+    if (fw != null) {
+      fw.close();
+    }
   }
 
   public Listing getListing() {
@@ -60,6 +63,6 @@ public class OutputHandler {
   }
 
   public boolean toFile() {
-    return (fw != null ? true : false);
+    return fw != null;
   }
 }

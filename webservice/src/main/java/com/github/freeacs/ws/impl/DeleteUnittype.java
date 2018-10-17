@@ -10,24 +10,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DeleteUnittype {
-
   private static final Logger logger = LoggerFactory.getLogger(DeleteUnittype.class);
 
   public DeleteUnittypeResponse deleteUnittype(
       DeleteUnittypeRequest dur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
     try {
-
       ACSFactory acsWS = ACSWSFactory.getXAPSWS(dur.getLogin(), xapsDs, syslogDs);
       ACS acs = acsWS.getAcs();
-      if (dur.getUnittypeName() == null)
+      if (dur.getUnittypeName() == null) {
         throw ACSFactory.error(logger, "No unittype name is specified");
+      }
       Unittype unittype = acsWS.getUnittypeFromXAPS(dur.getUnittypeName());
       int rowsDeleted = acs.getUnittypes().deleteUnittype(unittype, acs, true);
-      if (rowsDeleted > 0) return getDeleteUnittypeResponse(true);
-      else return getDeleteUnittypeResponse(false);
+      return getDeleteUnittypeResponse(rowsDeleted > 0);
     } catch (Throwable t) {
-      if (t instanceof RemoteException) throw (RemoteException) t;
-      else {
+      if (t instanceof RemoteException) {
+        throw (RemoteException) t;
+      } else {
         throw ACSFactory.error(logger, t);
       }
     }

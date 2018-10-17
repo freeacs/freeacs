@@ -10,7 +10,6 @@ import spark.route.Routes;
 import spark.staticfiles.StaticFilesConfiguration;
 
 public class JettyFactory implements EmbeddedServerFactory {
-
   private final boolean httpOnly;
   private final int maxHttpPostSize;
   private final int maxFormKeys;

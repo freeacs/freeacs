@@ -6,12 +6,11 @@ import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import java.util.Map;
 
-/* This class is responsible for choosing the next response in the
- * TR-069 conversation. Depending upon the request, different logic
- * applies.
+/**
+ * This class is responsible for choosing the next response in the TR-069 conversation. Depending
+ * upon the request, different logic applies.
  */
 public class DecisionMaker {
-
   public static void process(HTTPReqResData reqRes, Map<String, HTTPRequestAction> requestMap)
       throws TR069Exception {
     HTTPResData resData = reqRes.getResponse();
@@ -29,7 +28,9 @@ public class DecisionMaker {
       int loopCount = 0;
       while (t.getCause() != null) {
         t = t.getCause();
-        if (++loopCount > 10) break;
+        if (++loopCount > 10) {
+          break;
+        }
       }
       throw new TR069Exception(
           "An error occurred in DecisionMaker: " + t.getMessage(),

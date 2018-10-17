@@ -63,9 +63,8 @@ import org.slf4j.LoggerFactory;
  * @author Morten
  */
 public class DBI implements Runnable {
-
   public class PublishType {
-    private Set<String> messageTypes = new TreeSet<String>();
+    private Set<String> messageTypes = new TreeSet<>();
 
     public Set<String> getMessageTypes() {
       return messageTypes;
@@ -81,9 +80,9 @@ public class DBI implements Runnable {
   }
 
   public class UnittypePublish {
-    private Map<Integer, PublishType> groups = new HashMap<Integer, PublishType>();
-    private Map<Integer, PublishType> jobs = new HashMap<Integer, PublishType>();
-    private Map<Integer, PublishType> profiles = new HashMap<Integer, PublishType>();
+    private Map<Integer, PublishType> groups = new HashMap<>();
+    private Map<Integer, PublishType> jobs = new HashMap<>();
+    private Map<Integer, PublishType> profiles = new HashMap<>();
     private PublishType publish = new PublishType();
     private Unittype unittype;
 
@@ -92,11 +91,16 @@ public class DBI implements Runnable {
     }
 
     public void addPublish(String messageType, String objectType, Integer objectId) {
-      if (objectType.equals(Message.OTYPE_UNIT_TYPE)) publish.addMessageType(messageType);
-      else {
+      if (Message.OTYPE_UNIT_TYPE.equals(objectType)) {
+        publish.addMessageType(messageType);
+      } else {
         Map<Integer, PublishType> map = profiles;
-        if (objectType.equals(Message.OTYPE_JOB)) map = jobs;
-        if (objectType.equals(Message.OTYPE_GROUP)) map = groups;
+        if (Message.OTYPE_JOB.equals(objectType)) {
+          map = jobs;
+        }
+        if (Message.OTYPE_GROUP.equals(objectType)) {
+          map = groups;
+        }
         PublishType pt = map.get(objectId);
         if (pt == null) {
           pt = new PublishType();
@@ -106,28 +110,36 @@ public class DBI implements Runnable {
       }
     }
 
-    /*
-     * Decide whether or not to replace/override all the profile/group publish-messages
-     * with one PUBLISH-CHG on unittype level.
+    /**
+     * Decide whether or not to replace/override all the profile/group publish-messages with one
+     * PUBLISH-CHG on unittype level.
      *
-     * For now we decide that if the number of publish-messages in total on
-     * profiles, groups and jobs are higher than 10, a unittype publish will be issued
+     * <p>For now we decide that if the number of publish-messages in total on profiles, groups and
+     * jobs are higher than 10, a unittype publish will be issued
      */
     public void addUnittypePublish() {
       int counter = 0;
-      for (PublishType pt : profiles.values()) counter += pt.size();
-      for (PublishType pt : groups.values()) counter += pt.size();
-      for (PublishType pt : jobs.values()) counter += pt.size();
-      if (counter > 10) publish.addMessageType(Message.MTYPE_PUB_CHG);
+      for (PublishType pt : profiles.values()) {
+        counter += pt.size();
+      }
+      for (PublishType pt : groups.values()) {
+        counter += pt.size();
+      }
+      for (PublishType pt : jobs.values()) {
+        counter += pt.size();
+      }
+      if (counter > 10) {
+        publish.addMessageType(Message.MTYPE_PUB_CHG);
+      }
     }
 
     public List<Message> getMessages(int facility) {
-      List<Message> list = new ArrayList<Message>();
-      if (publish.getMessageTypes().size() > 0) {
+      List<Message> list = new ArrayList<>();
+      if (!publish.getMessageTypes().isEmpty()) {
         for (String messageType : publish.getMessageTypes()) {
           Message m = new Message();
           m.setMessageType(messageType);
-          m.setObjectId("" + unittype.getId());
+          m.setObjectId(String.valueOf(unittype.getId()));
           m.setObjectType(Message.OTYPE_UNIT_TYPE);
           m.setSender(facility);
           m.setTimestamp(new Date());
@@ -138,7 +150,7 @@ public class DBI implements Runnable {
           for (String messageType : entry.getValue().getMessageTypes()) {
             Message m = new Message();
             m.setMessageType(messageType);
-            m.setObjectId("" + entry.getKey());
+            m.setObjectId(String.valueOf(entry.getKey()));
             m.setObjectType(Message.OTYPE_PROFILE);
             m.setSender(facility);
             m.setTimestamp(new Date());
@@ -149,7 +161,7 @@ public class DBI implements Runnable {
           for (String messageType : entry.getValue().getMessageTypes()) {
             Message m = new Message();
             m.setMessageType(messageType);
-            m.setObjectId("" + entry.getKey());
+            m.setObjectId(String.valueOf(entry.getKey()));
             m.setObjectType(Message.OTYPE_GROUP);
             m.setSender(facility);
             m.setTimestamp(new Date());
@@ -161,7 +173,7 @@ public class DBI implements Runnable {
         for (String messageType : entry.getValue().getMessageTypes()) {
           Message m = new Message();
           m.setMessageType(messageType);
-          m.setObjectId("" + entry.getKey());
+          m.setObjectId(String.valueOf(entry.getKey()));
           m.setObjectType(Message.OTYPE_JOB);
           m.setSender(facility);
           m.setTimestamp(new Date());
@@ -178,21 +190,21 @@ public class DBI implements Runnable {
   private DataSource dataSource;
   private int lifetimeSec;
   private long start = System.currentTimeMillis();
-  private boolean finished = false;
+  private boolean finished;
   private Sleep sleep;
   private ACS acs;
-  private boolean freeacsUpdated = false;
-  private Map<Integer, UnittypePublish> publishUnittypes = new HashMap<Integer, UnittypePublish>();
-  private List<Message> outbox = new ArrayList<Message>();
-  private Set<Integer> sent = new TreeSet<Integer>();
+  private boolean freeacsUpdated;
+  private Map<Integer, UnittypePublish> publishUnittypes = new HashMap<>();
+  private List<Message> outbox = new ArrayList<>();
+  private Set<Integer> sent = new TreeSet<>();
   private Syslog syslog;
   private Random random = new Random(System.nanoTime());
   private int dbiId;
-  private boolean dbiRun = false;
-  private Map<String, Inbox> inboxes = new HashMap<String, Inbox>();
+  private boolean dbiRun;
+  private Map<String, Inbox> inboxes = new HashMap<>();
   private int lastReadId = -1;
   private Inbox publishInbox = new Inbox();
-  // Set if an error occurs within DBI, used to signal ERROR in monitor
+  /** Set if an error occurs within DBI, used to signal ERROR in monitor. */
   private Throwable dbiThrowable;
 
   public DBI(int lifetimeSec, DataSource dataSource, Syslog syslog) throws SQLException {
@@ -210,16 +222,20 @@ public class DBI implements Runnable {
     publishInbox.addFilter(new Message(null, Message.MTYPE_PUB_DEL, null, null));
     registerInbox(PUBLISH_INBOX_NAME, publishInbox);
     Thread t = new Thread(this);
-    if (syslog != null) t.setName("DBI for " + syslog.getIdentity().getFacilityName());
-    else t.setName("DBI");
+    if (syslog != null) {
+      t.setName("DBI for " + syslog.getIdentity().getFacilityName());
+    } else {
+      t.setName("DBI");
+    }
     t.setDaemon(true);
     t.start();
     logger.debug("DBI is loaded for user " + syslog.getIdentity().getUser().getFullname());
   }
 
   public ACS getAcs() {
-    if (finished)
+    if (finished) {
       throw new RuntimeException("DBI does not run anymore since it passed it's lifetime timeout");
+    }
     return acs;
   }
 
@@ -246,26 +262,34 @@ public class DBI implements Runnable {
         message.setObjectId(rs.getString("object_id"));
         message.setObjectType(rs.getString("object_type"));
         String receiverStr = rs.getString("receiver");
-        if (receiverStr != null) message.setReceiver(new Integer(receiverStr));
+        if (receiverStr != null) {
+          message.setReceiver(Integer.valueOf(receiverStr));
+        }
         message.setSender(rs.getInt("sender"));
         message.setTimestamp(rs.getTimestamp("timestamp_"));
-        int colonPos = message.getObjectId().indexOf(":");
+        int colonPos = message.getObjectId().indexOf(':');
         if (colonPos > -1) {
           String sendersDbiId = message.getObjectId().substring(0, colonPos);
-          if (sendersDbiId.equals("" + dbiId)) {
+          if (sendersDbiId.equals(String.valueOf(dbiId))) {
             continue;
           }
           message.setObjectId(message.getObjectId().substring(colonPos + 1));
         }
-        if (sent.contains(message.getId())) continue;
+        if (sent.contains(message.getId())) {
+          continue;
+        }
 
-        if (message.getId() > lastReadId) lastReadId = message.getId();
+        if (message.getId() > lastReadId) {
+          lastReadId = message.getId();
+        }
         for (Inbox ibx : inboxes.values()) {
           ibx.addToInbox(message);
         }
       }
     } finally {
-      if (s != null) s.close();
+      if (s != null) {
+        s.close();
+      }
       c.close();
     }
   }
@@ -280,11 +304,12 @@ public class DBI implements Runnable {
       ps = ds.makePreparedStatement(c);
       int rowsDeleted = ps.executeUpdate();
       if (logger.isDebugEnabled() && rowsDeleted > 0) {
-
         logger.debug(rowsDeleted + " messages was deleted from message table");
       }
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       c.close();
     }
   }
@@ -295,8 +320,12 @@ public class DBI implements Runnable {
     try {
       DynamicStatement ds = new DynamicStatement();
       ds.addSqlAndArguments("INSERT INTO message (sender, ", message.getSender());
-      if (message.getReceiver() != null) ds.addSqlAndArguments("receiver, ", message.getReceiver());
-      if (message.getContent() != null) ds.addSqlAndArguments("content, ", message.getContent());
+      if (message.getReceiver() != null) {
+        ds.addSqlAndArguments("receiver, ", message.getReceiver());
+      }
+      if (message.getContent() != null) {
+        ds.addSqlAndArguments("content, ", message.getContent());
+      }
       ds.addSqlAndArguments(
           "type, object_type, object_id, timestamp_) ",
           message.getMessageType(),
@@ -312,25 +341,28 @@ public class DBI implements Runnable {
         sent.add(id);
       }
       if (logger.isDebugEnabled()) {
-
         logger.debug("Message: [" + message + "] sent/inserted");
       }
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       c.close();
     }
   }
 
   public void run() {
     boolean errorOccured = false;
-    while (true) {
+    do {
       dbiRun = true;
       try {
-        if (System.currentTimeMillis() - start > (long) lifetimeSec * 1000l) {
+        if (System.currentTimeMillis() - start > lifetimeSec * 1000L) {
           finished = true;
           break;
         }
-        if (Sleep.isTerminated()) break;
+        if (Sleep.isTerminated()) {
+          break;
+        }
         sleep.sleep();
         // Check message table for changes (read all with id > last_id_read)
         populateInboxes();
@@ -339,7 +371,9 @@ public class DBI implements Runnable {
         // Check outbox - may add/remove messages - then send them
         processOutbox();
         // Once in a while - clean out old messages
-        if (random.nextInt(10) == 0) cleanup();
+        if (random.nextInt(10) == 0) {
+          cleanup();
+        }
         dbiThrowable = null;
         errorOccured = false;
       } catch (Throwable t) {
@@ -353,13 +387,12 @@ public class DBI implements Runnable {
                 "An error occurred in DBI.run() (stacktrace printed earlier): " + t.getMessage());
           }
         } catch (Throwable ignored) {
-
         }
       }
-    }
+    } while (true);
   }
 
-  /*
+  /**
    * Must be called if an application is about to be terminated, otherwise it will be run every
    * second.
    */
@@ -378,29 +411,33 @@ public class DBI implements Runnable {
     Iterator<Integer> iterator = sent.iterator();
     while (iterator.hasNext()) {
       Integer sentId = iterator.next();
-      if (sentId <= lastReadId) iterator.remove();
-      else break;
+      if (sentId <= lastReadId) {
+        iterator.remove();
+      } else {
+        break;
+      }
     }
     outbox.clear();
     publishUnittypes.clear();
   }
 
-  // The string format is like this:
-  // <unittype-id>(,<id>=<count>)+
-  // These ids are allowed:
-  // cnf: completed-no-failures
-  // chf: completed-had-failures
-  // cf: confirmed-failed
-  // uf: unconfirmed-failed
+  /**
+   * The string format is like this: <unittype-id>(,<id>=<count>)+ These ids are allowed: cnf:
+   * completed-no-failures chf: completed-had-failures cf: confirmed-failed uf: unconfirmed-failed
+   */
   private void updateJobCounters(Integer jobId, String message) {
     String[] msgArr = message.split(",");
-    Unittype unittype = acs.getUnittype(new Integer(msgArr[0]));
-    if (unittype == null) return; // the user does not have access to this unittype
+    Unittype unittype = acs.getUnittype(Integer.valueOf(msgArr[0]));
+    if (unittype == null) {
+      return;
+    } // the user does not have access to this unittype
     Job job = unittype.getJobs().getById(jobId);
-    if (job == null) return; // the user does not have access to this job
+    if (job == null) {
+      return;
+    } // the user does not have access to this job
     for (int i = 1; i < msgArr.length; i++) {
       String id = msgArr[i].split("=")[0];
-      int counter = new Integer(msgArr[i].split("=")[1]);
+      int counter = Integer.parseInt(msgArr[i].split("=")[1]);
       switch (id) {
         case "cnf":
           job.setCompletedNoFailures(counter);
@@ -423,7 +460,6 @@ public class DBI implements Runnable {
     for (Message m : publishInbox.getUnreadMessages()) {
       publishInbox.markMessageAsRead(m);
       if (logger.isDebugEnabled()) {
-
         logger.debug(
             "DBI discovered that "
                 + m.getObjectType()
@@ -436,27 +472,28 @@ public class DBI implements Runnable {
                 + ")");
       }
       if (!updateACS) {
-        if (m.getObjectType().equals(Message.OTYPE_JOB)
+        if (Message.OTYPE_JOB.equals(m.getObjectType())
             && m.getContent() != null
-            && m.getSender() == SyslogConstants.FACILITY_CORE)
-          updateJobCounters(new Integer(m.getObjectId()), m.getContent());
-        else if (m.getObjectType().equals(Message.OTYPE_JOB)
-            && m.getMessageType().equals(Message.MTYPE_PUB_CHG))
-          Jobs.refreshJob(new Integer(m.getObjectId()), acs);
-        else if (m.getObjectType().equals(Message.OTYPE_GROUP)
-            && m.getMessageType().equals(Message.MTYPE_PUB_CHG))
-          Groups.refreshGroup(new Integer(m.getObjectId()), acs);
-        else if (m.getObjectType().equals(Message.OTYPE_FILE)
-            && m.getMessageType().equals(Message.MTYPE_PUB_CHG))
-          Files.refreshFile(new Integer(m.getObjectId()), new Integer(m.getContent()), acs);
-        else updateACS = true;
+            && m.getSender() == SyslogConstants.FACILITY_CORE) {
+          updateJobCounters(Integer.valueOf(m.getObjectId()), m.getContent());
+        } else if (Message.OTYPE_JOB.equals(m.getObjectType())
+            && Message.MTYPE_PUB_CHG.equals(m.getMessageType())) {
+          Jobs.refreshJob(Integer.valueOf(m.getObjectId()), acs);
+        } else if (Message.OTYPE_GROUP.equals(m.getObjectType())
+            && Message.MTYPE_PUB_CHG.equals(m.getMessageType())) {
+          Groups.refreshGroup(Integer.valueOf(m.getObjectId()), acs);
+        } else if (Message.OTYPE_FILE.equals(m.getObjectType())
+            && Message.MTYPE_PUB_CHG.equals(m.getMessageType())) {
+          Files.refreshFile(Integer.valueOf(m.getObjectId()), Integer.valueOf(m.getContent()), acs);
+        } else {
+          updateACS = true;
+        }
       }
     }
     if (updateACS) {
       acs.read();
       freeacsUpdated = true;
       if (logger.isDebugEnabled()) {
-
         logger.debug("ACS object has been updated due to changes in the tables");
       }
     }
@@ -469,16 +506,6 @@ public class DBI implements Runnable {
       return true;
     }
     return false;
-  }
-
-  public synchronized void publishCertificate(Certificate cert) {
-    Message m = new Message();
-    m.setMessageType(Message.MTYPE_PUB_CHG);
-    m.setObjectId("" + cert.getId());
-    m.setObjectType(Message.OTYPE_CERTIFICATE);
-    m.setSender(syslog.getIdentity().getFacility());
-    m.setTimestamp(new Date());
-    outbox.add(m);
   }
 
   public synchronized void publishDelete(Object object, Unittype unittype) {
@@ -495,11 +522,15 @@ public class DBI implements Runnable {
 
   public synchronized void publishFile(File file, Unittype unittype) {
     addMessage(
-        "" + unittype.getId(), Message.MTYPE_PUB_CHG, Message.OTYPE_FILE, "" + file.getId(), null);
+        String.valueOf(unittype.getId()),
+        Message.MTYPE_PUB_CHG,
+        Message.OTYPE_FILE,
+        String.valueOf(file.getId()),
+        null);
   }
 
   public synchronized void publishJobCounters(Integer jobId, String counters) {
-    addMessage(counters, Message.MTYPE_PUB_CHG, Message.OTYPE_JOB, "" + jobId, null);
+    addMessage(counters, Message.MTYPE_PUB_CHG, Message.OTYPE_JOB, String.valueOf(jobId), null);
   }
 
   public synchronized void publishKick(Unit u, int receiver) {
@@ -508,10 +539,10 @@ public class DBI implements Runnable {
 
   public synchronized void publishTriggerReleased(Trigger trigger, int receiver) {
     addMessage(
-        "" + trigger.getId(),
+        String.valueOf(trigger.getId()),
         Message.MTYPE_PUB_TRG_REL,
         Message.OTYPE_UNIT_TYPE,
-        "" + trigger.getUnittype().getId(),
+        String.valueOf(trigger.getUnittype().getId()),
         receiver);
   }
 

@@ -14,7 +14,6 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
  * @author Stefan Haberl
  */
 public class DecoratingFreeMarkerView extends FreeMarkerView {
-
   /** The Constant KEY_CONTENT_TEMPLATE. */
   public static final String KEY_CONTENT_TEMPLATE = "content_page";
 
@@ -44,7 +43,6 @@ public class DecoratingFreeMarkerView extends FreeMarkerView {
    */
   protected void exposeHelpers(Map<String, Object> model, HttpServletRequest request)
       throws Exception {
-
     model.put(KEY_CONTENT_TEMPLATE, "/" + getUrl());
     model.put("URL_MAP", Page.getPageURLMap());
   }

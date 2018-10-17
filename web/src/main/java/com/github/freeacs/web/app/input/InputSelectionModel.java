@@ -9,7 +9,6 @@ import java.util.List;
  * @author Jarl Andre Hubenthal
  */
 abstract class InputSelectionModel<T> {
-
   /**
    * Instantiates a new input selection model.
    *

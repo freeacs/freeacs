@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class FileServlet extends HttpServlet {
-
   private static final long serialVersionUID = -9027563648829505599L;
 
   private final DBAccess dbAccess;
@@ -29,7 +28,6 @@ public class FileServlet extends HttpServlet {
   }
 
   protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
-
     String firmwareName = null;
     String unittypeName = null;
     OutputStream out = null;
@@ -41,14 +39,16 @@ public class FileServlet extends HttpServlet {
       if (Properties.FILE_AUTH_USED) {
         HTTPReqResData reqRes = new HTTPReqResData(req, res, dbAccess);
         // 2. Authenticate the client (first issue challenge, then authenticate)
-        if (!Authenticator.authenticate(reqRes)) return;
+        if (!Authenticator.authenticate(reqRes)) {
+          return;
+        }
         if (reqRes.getSessionData() != null && reqRes.getSessionData().getUnittype() != null) {
           authUnittypeName = reqRes.getSessionData().getUnittype().getName();
         }
       }
 
       ACS acs = dbAccess.getDBI().getAcs();
-      File firmware = null;
+      File firmware;
       String pathInfo = req.getPathInfo().substring(this.context.length());
       pathInfo = pathInfo.replaceAll("--", " ");
       String[] pathInfoArr = pathInfo.split("/");

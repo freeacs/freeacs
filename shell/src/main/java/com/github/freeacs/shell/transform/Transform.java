@@ -18,43 +18,48 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class Transform {
-
   public static void transform(Session session, String unitFile, String paramFile)
       throws Exception {
     ACS acs = session.getAcs();
     ACSUnit acsUnit = session.getAcsUnit();
     BufferedReader unitFileBr = new BufferedReader(new FileReader(unitFile));
     String unitFileLine = null;
-    Map<String, String> convertParamMap = new HashMap<String, String>();
+    Map<String, String> convertParamMap = new HashMap<>();
     BufferedReader paramFileBr = new BufferedReader(new FileReader(paramFile));
     String paramFileLine = null;
     while ((paramFileLine = paramFileBr.readLine()) != null) {
       String[] params = StringUtil.split(paramFileLine);
-      if (convertParamMap.get(params[0]) == null) convertParamMap.put(params[0], params[1]);
-      else convertParamMap.put(params[0], convertParamMap.get(params[0]) + "," + params[1]);
+      if (convertParamMap.get(params[0]) != null) {
+        convertParamMap.put(params[0], convertParamMap.get(params[0]) + "," + params[1]);
+      } else {
+        convertParamMap.put(params[0], params[1]);
+      }
     }
     while ((unitFileLine = unitFileBr.readLine()) != null) {
       String[] units = StringUtil.split(unitFileLine);
       Unit unit = acsUnit.getUnitById(units[0]);
-      List<String> addUnits = new ArrayList<String>();
+      List<String> addUnits = new ArrayList<>();
       addUnits.add(units[1]);
       Unit newUnit = acsUnit.getUnitById(units[1]);
       Profile profile = acs.getProfile("NPA201E-2", "internal-sip-server");
       acsUnit.addUnits(addUnits, profile);
       Map<String, UnitParameter> unitParameters = unit.getUnitParameters();
       Unittype newUnittype = acs.getUnittype("NPA201E-2");
-      List<UnitParameter> newUnitParams = new ArrayList<UnitParameter>();
+      List<UnitParameter> newUnitParams = new ArrayList<>();
       for (Entry<String, UnitParameter> entry : unitParameters.entrySet()) {
-        if (entry.getKey().endsWith("ConnectTms")) continue;
-        if (entry.getKey().endsWith("DesiredSoftwareVersion")) continue;
+        if (entry.getKey().endsWith("ConnectTms")
+            || entry.getKey().endsWith("DesiredSoftwareVersion")) {
+          continue;
+        }
         if (convertParamMap.get(entry.getKey()) != null) {
           String[] newParams = convertParamMap.get(entry.getKey()).split(",");
           for (String newParam : newParams) {
             UnittypeParameter newUtp =
                 newUnittype.getUnittypeParameters().getByName(newParam.trim());
-            if (newUtp == null)
+            if (newUtp == null) {
               System.out.println(
                   "Couldn't find " + convertParamMap.get(entry.getKey()) + " in new Unittype");
+            }
             newUnitParams.add(
                 new UnitParameter(newUtp, newUnit.getId(), entry.getValue().getValue(), profile));
           }

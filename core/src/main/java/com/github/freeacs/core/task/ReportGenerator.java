@@ -43,7 +43,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ReportGenerator extends DBIOwner {
-
   private static long MINUTE_MS = 60 * 1000;
   private static long HOUR_MS = 60 * MINUTE_MS;
   private static long DAY_MS = 24 * HOUR_MS;
@@ -70,8 +69,9 @@ public class ReportGenerator extends DBIOwner {
   @Override
   public void runImpl() throws Exception {
     acs = getLatestACS();
-    if (scheduleType == ScheduleType.DAILY) dailyJobs();
-    else if (scheduleType == ScheduleType.HOURLY) {
+    if (scheduleType == ScheduleType.DAILY) {
+      dailyJobs();
+    } else if (scheduleType == ScheduleType.HOURLY) {
       hourlyJobs();
     } else {
       dailyJobs();
@@ -103,8 +103,12 @@ public class ReportGenerator extends DBIOwner {
       }
       return 0;
     } finally {
-      if (ps != null) ps.close();
-      if (rs != null) rs.close();
+      if (ps != null) {
+        ps.close();
+      }
+      if (rs != null) {
+        rs.close();
+      }
     }
   }
 
@@ -119,7 +123,6 @@ public class ReportGenerator extends DBIOwner {
       ACSUnit acsUnit = new ACSUnit(cp, acs, getSyslog());
       for (Unittype unittype : acs.getUnittypes().getUnittypes()) {
         for (Group group : unittype.getGroups().getGroups()) {
-
           int unitCount = acsUnit.getUnitCount(group);
           DynamicStatement ds = new DynamicStatement();
           ds.addSql("INSERT INTO report_group VALUES(?,?,?,?,?)");
@@ -141,7 +144,9 @@ public class ReportGenerator extends DBIOwner {
             ds.addArguments(now, pt.getTypeInt(), unittype.getName(), group.getName(), unitCount);
             ps = ds.makePreparedStatement(c);
             int rowsUpdated = ps.executeUpdate();
-            if (rowsUpdated > 0) unittype.getGroups().addOrChangeGroup(group, acs);
+            if (rowsUpdated > 0) {
+              unittype.getGroups().addOrChangeGroup(group, acs);
+            }
             logger.debug(
                 "ReportGenerator: ReportGenerator: - - The entry " + ru.getKey() + " was updated");
             updated++;
@@ -151,7 +156,9 @@ public class ReportGenerator extends DBIOwner {
       logger.info(
           "ReportGenerator: - " + inserted + " entries inserted, " + updated + " entries updated");
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       if (c != null) {
         c.close();
       }
@@ -177,21 +184,12 @@ public class ReportGenerator extends DBIOwner {
       for (RecordHardware r : recordMap.values()) {
         long diff = nowTms - r.getTms().getTime();
         PeriodType pt = r.getPeriodType();
-        if (pt == PeriodType.MONTH && diff < MONTH_MS && converter.month(r.getTms()) == nowMonth) {
-          skipped++;
-          continue;
-        }
-        if (pt == PeriodType.DAY && diff < DAY_MS && converter.day(r.getTms()) == nowDay) {
-          skipped++;
-          continue;
-        }
-        if (pt == PeriodType.HOUR && diff < HOUR_MS && converter.hour(r.getTms()) == nowHour) {
-          skipped++;
-          continue;
-        }
-        if (pt == PeriodType.MINUTE
-            && diff < MINUTE_MS
-            && converter.minute(r.getTms()) == nowMinute) {
+        if ((pt == PeriodType.MONTH && diff < MONTH_MS && converter.month(r.getTms()) == nowMonth)
+            || (pt == PeriodType.DAY && diff < DAY_MS && converter.day(r.getTms()) == nowDay)
+            || (pt == PeriodType.HOUR && diff < HOUR_MS && converter.hour(r.getTms()) == nowHour)
+            || (pt == PeriodType.MINUTE
+                && diff < MINUTE_MS
+                && converter.minute(r.getTms()) == nowMinute)) {
           skipped++;
           continue;
         }
@@ -241,7 +239,7 @@ public class ReportGenerator extends DBIOwner {
               sqlex2);
         }
       }
-      if (recordMap.size() > 0) {
+      if (!recordMap.isEmpty()) {
         logger.info(
             "ReportGenerator: - "
                 + inserted
@@ -252,7 +250,9 @@ public class ReportGenerator extends DBIOwner {
                 + " entries skipped (too new)");
       }
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.close();
       }
@@ -295,8 +295,9 @@ public class ReportGenerator extends DBIOwner {
             ds2.addArguments(now, pt.getTypeInt(), unittype.getName(), job.getName());
             ps = ds2.makePreparedStatement(c);
             int rowsUpdated = ps.executeUpdate();
-            if (rowsUpdated == 0) throw sqle2;
-            else {
+            if (rowsUpdated == 0) {
+              throw sqle2;
+            } else {
               logger.debug("ReportGenerator: - - The entry " + ru.getKey() + " was updated");
               updated++;
             }
@@ -306,7 +307,9 @@ public class ReportGenerator extends DBIOwner {
       logger.info(
           "ReportGenerator: - " + inserted + " entries inserted, " + updated + " entries updated");
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       if (c != null) {
         c.close();
       }
@@ -332,21 +335,12 @@ public class ReportGenerator extends DBIOwner {
       for (RecordSyslog r : recordMap.values()) {
         long diff = nowTms - r.getTms().getTime();
         PeriodType pt = r.getPeriodType();
-        if (pt == PeriodType.MONTH && diff < MONTH_MS && converter.month(r.getTms()) == nowMonth) {
-          skipped++;
-          continue;
-        }
-        if (pt == PeriodType.DAY && diff < DAY_MS && converter.day(r.getTms()) == nowDay) {
-          skipped++;
-          continue;
-        }
-        if (pt == PeriodType.HOUR && diff < HOUR_MS && converter.hour(r.getTms()) == nowHour) {
-          skipped++;
-          continue;
-        }
-        if (pt == PeriodType.MINUTE
-            && diff < MINUTE_MS
-            && converter.minute(r.getTms()) == nowMinute) {
+        if ((pt == PeriodType.MONTH && diff < MONTH_MS && converter.month(r.getTms()) == nowMonth)
+            || (pt == PeriodType.DAY && diff < DAY_MS && converter.day(r.getTms()) == nowDay)
+            || (pt == PeriodType.HOUR && diff < HOUR_MS && converter.hour(r.getTms()) == nowHour)
+            || (pt == PeriodType.MINUTE
+                && diff < MINUTE_MS
+                && converter.minute(r.getTms()) == nowMinute)) {
           skipped++;
           continue;
         }
@@ -357,7 +351,7 @@ public class ReportGenerator extends DBIOwner {
         ds.addArguments(r.getUnittypeName());
         ds.addArguments(r.getProfileName());
         ds.addArguments(r.getSeverity());
-        ds.addArguments(new Integer(r.getEventId()));
+        ds.addArguments(Integer.valueOf(r.getEventId()));
         ds.addArguments(r.getFacility());
         ds.addArguments(r.getMessageCount().get());
         ds.addSql("insert into report_syslog VALUES(" + ds.getQuestionMarks() + ")");
@@ -378,18 +372,19 @@ public class ReportGenerator extends DBIOwner {
               r.getUnittypeName(),
               r.getProfileName(),
               r.getSeverity(),
-              new Integer(r.getEventId()),
+              Integer.valueOf(r.getEventId()),
               r.getFacility());
           ps = ds.makePreparedStatement(connection);
           int rowsUpdated = ps.executeUpdate();
-          if (rowsUpdated == 0) throw sqlex2;
-          else {
+          if (rowsUpdated == 0) {
+            throw sqlex2;
+          } else {
             logger.debug("ReportGenerator: - - The entry " + r.getKey() + " was updated");
             updated++;
           }
         }
       }
-      if (recordMap.size() > 0) {
+      if (!recordMap.isEmpty()) {
         logger.info(
             "ReportGenerator: - "
                 + inserted
@@ -400,7 +395,9 @@ public class ReportGenerator extends DBIOwner {
                 + " entries skipped (too new)");
       }
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.close();
       }
@@ -421,7 +418,7 @@ public class ReportGenerator extends DBIOwner {
       c2 = cp.getConnection();
       s = c1.createStatement();
       rs = s.executeQuery("SELECT unit_id, profile_id, unit_type_id FROM unit");
-      Map<String, UnitSWLCT> unitMap = new HashMap<String, UnitSWLCT>();
+      Map<String, UnitSWLCT> unitMap = new HashMap<>();
       while (rs.next()) {
         Unittype unittype = acs.getUnittype(rs.getInt("unit_type_id"));
         Profile profile = unittype.getProfiles().getById(rs.getInt("profile_id"));
@@ -434,7 +431,9 @@ public class ReportGenerator extends DBIOwner {
               "SELECT up.unit_id, up.value FROM unit_type_param utp, unit_param up WHERE up.unit_type_param_id = utp.unit_type_param_id AND utp.name LIKE '%Device.DeviceInfo.SoftwareVersion'");
       while (rs.next()) {
         UnitSWLCT u = unitMap.get(rs.getString("unit_id"));
-        if (u != null) u.setSoftwareVersion(rs.getString("value"));
+        if (u != null) {
+          u.setSoftwareVersion(rs.getString("value"));
+        }
       }
       rs.close();
 
@@ -443,19 +442,28 @@ public class ReportGenerator extends DBIOwner {
               "SELECT up.unit_id, timestampdiff(DAY, up.value, sysdate()) FROM unit_type_param utp, unit_param up WHERE up.unit_type_param_id = utp.unit_type_param_id AND utp.name LIKE 'System.X_FREEACS-COM.LastConnectTms'");
       while (rs.next()) {
         UnitSWLCT u = unitMap.get(rs.getString("unit_id"));
-        if (u != null) u.setLastConnectTms(rs.getInt(2));
+        if (u != null) {
+          u.setLastConnectTms(rs.getInt(2));
+        }
       }
 
-      Map<String, Integer> unitReport = new HashMap<String, Integer>();
+      Map<String, Integer> unitReport = new HashMap<>();
       for (UnitSWLCT unitSWLCT : unitMap.values()) {
         String swVersion = unitSWLCT.getSoftwareVersion();
-        if (swVersion == null || swVersion.trim().equals("")) swVersion = "Unknown";
+        if (swVersion == null || "".equals(swVersion.trim())) {
+          swVersion = "Unknown";
+        }
         String status = "Inactive";
         if (unitSWLCT.getLastConnectTms() != null) {
-          if (unitSWLCT.getLastConnectTms() < 2) status = "Active last 48h";
-          if (unitSWLCT.getLastConnectTms() >= 2 && unitSWLCT.getLastConnectTms() <= 7)
+          if (unitSWLCT.getLastConnectTms() < 2) {
+            status = "Active last 48h";
+          }
+          if (unitSWLCT.getLastConnectTms() >= 2 && unitSWLCT.getLastConnectTms() <= 7) {
             status = "Active 2-7 days ago";
-          if (unitSWLCT.getLastConnectTms() > 7) status = "Active 8 or more days ago";
+          }
+          if (unitSWLCT.getLastConnectTms() > 7) {
+            status = "Active 8 or more days ago";
+          }
         }
         String key =
             unitSWLCT.getUnit().getUnittype().getName()
@@ -465,10 +473,12 @@ public class ReportGenerator extends DBIOwner {
                 + swVersion
                 + "###"
                 + status;
-        if (unitReport.get(key) == null) unitReport.put(key, 1);
-        else unitReport.put(key, unitReport.get(key) + 1);
+        if (unitReport.get(key) != null) {
+          unitReport.put(key, unitReport.get(key) + 1);
+        } else {
+          unitReport.put(key, 1);
+        }
       }
-      unitMap = null;
 
       for (Entry<String, Integer> entry : unitReport.entrySet()) {
         String[] keys = entry.getKey().split("###");
@@ -492,8 +502,9 @@ public class ReportGenerator extends DBIOwner {
               entry.getValue(), now, pt.getTypeInt(), keys[0], keys[1], keys[2], keys[3]);
           ps2 = ds2.makePreparedStatement(c2);
           int rowsUpdated = ps2.executeUpdate();
-          if (rowsUpdated == 0) throw sqle2;
-          else {
+          if (rowsUpdated == 0) {
+            throw sqle2;
+          } else {
             logger.debug("ReportGenerator: - - The entry " + ru.getKey() + " was updated");
             updated++;
           }
@@ -502,10 +513,18 @@ public class ReportGenerator extends DBIOwner {
       logger.info(
           "ReportGenerator: - " + inserted + " entries inserted, " + updated + " entries updated");
     } finally {
-      if (rs != null) rs.close();
-      if (ps1 != null) ps1.close();
-      if (s != null) s.close();
-      if (ps2 != null) ps2.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps1 != null) {
+        ps1.close();
+      }
+      if (s != null) {
+        s.close();
+      }
+      if (ps2 != null) {
+        ps2.close();
+      }
       if (c1 != null) {
         c1.close();
       }
@@ -543,10 +562,6 @@ public class ReportGenerator extends DBIOwner {
     public Unit getUnit() {
       return unit;
     }
-
-    public void setUnit(Unit unit) {
-      this.unit = unit;
-    }
   }
 
   private void populateReportVoipTable(DataSource cp, Report<RecordVoip> report)
@@ -568,21 +583,12 @@ public class ReportGenerator extends DBIOwner {
       for (RecordVoip r : recordMap.values()) {
         long diff = nowTms - r.getTms().getTime();
         PeriodType pt = r.getPeriodType();
-        if (pt == PeriodType.MONTH && diff < MONTH_MS && converter.month(r.getTms()) == nowMonth) {
-          skipped++;
-          continue;
-        }
-        if (pt == PeriodType.DAY && diff < DAY_MS && converter.day(r.getTms()) == nowDay) {
-          skipped++;
-          continue;
-        }
-        if (pt == PeriodType.HOUR && diff < HOUR_MS && converter.hour(r.getTms()) == nowHour) {
-          skipped++;
-          continue;
-        }
-        if (pt == PeriodType.MINUTE
-            && diff < MINUTE_MS
-            && converter.minute(r.getTms()) == nowMinute) {
+        if ((pt == PeriodType.MONTH && diff < MONTH_MS && converter.month(r.getTms()) == nowMonth)
+            || (pt == PeriodType.DAY && diff < DAY_MS && converter.day(r.getTms()) == nowDay)
+            || (pt == PeriodType.HOUR && diff < HOUR_MS && converter.hour(r.getTms()) == nowHour)
+            || (pt == PeriodType.MINUTE
+                && diff < MINUTE_MS
+                && converter.minute(r.getTms()) == nowMinute)) {
           skipped++;
           continue;
         }
@@ -653,7 +659,7 @@ public class ReportGenerator extends DBIOwner {
           updated++;
         }
       }
-      if (recordMap.size() > 0) {
+      if (!recordMap.isEmpty()) {
         logger.info(
             "ReportGenerator: - "
                 + inserted
@@ -664,7 +670,9 @@ public class ReportGenerator extends DBIOwner {
                 + " entries skipped (too new)");
       }
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.close();
       }
@@ -673,19 +681,18 @@ public class ReportGenerator extends DBIOwner {
 
   private boolean skip(PeriodType pt, Date recordTms, Calendar now) {
     long diff = now.getTimeInMillis() - recordTms.getTime();
-    if (pt == PeriodType.MONTH
-        && diff < MONTH_MS
-        && converter.month(recordTms) == now.get(Calendar.MONTH)) return true;
-    if (pt == PeriodType.DAY
-        && diff < DAY_MS
-        && converter.day(recordTms) == now.get(Calendar.DAY_OF_MONTH)) return true;
-    if (pt == PeriodType.HOUR
-        && diff < HOUR_MS
-        && converter.hour(recordTms) == now.get(Calendar.HOUR_OF_DAY)) return true;
-    if (pt == PeriodType.MINUTE
-        && diff < MINUTE_MS
-        && converter.minute(recordTms) == now.get(Calendar.MINUTE)) return true;
-    return false;
+    return (pt == PeriodType.MONTH
+            && diff < MONTH_MS
+            && converter.month(recordTms) == now.get(Calendar.MONTH))
+        || (pt == PeriodType.DAY
+            && diff < DAY_MS
+            && converter.day(recordTms) == now.get(Calendar.DAY_OF_MONTH))
+        || (pt == PeriodType.HOUR
+            && diff < HOUR_MS
+            && converter.hour(recordTms) == now.get(Calendar.HOUR_OF_DAY))
+        || (pt == PeriodType.MINUTE
+            && diff < MINUTE_MS
+            && converter.minute(recordTms) == now.get(Calendar.MINUTE));
   }
 
   private void populateReportProvTable(DataSource cp, Report<RecordProvisioning> report)
@@ -763,7 +770,7 @@ public class ReportGenerator extends DBIOwner {
           updated++;
         }
       }
-      if (recordMap.size() > 0) {
+      if (!recordMap.isEmpty()) {
         logger.info(
             "ReportGenerator: - "
                 + inserted
@@ -774,7 +781,9 @@ public class ReportGenerator extends DBIOwner {
                 + " entries skipped (too new)");
       }
     } finally {
-      if (ps != null) ps.close();
+      if (ps != null) {
+        ps.close();
+      }
       if (connection != null) {
         connection.close();
       }
@@ -785,8 +794,11 @@ public class ReportGenerator extends DBIOwner {
     logger.info("ReportGenerator: Daily report processing starts...");
     logger.info("ReportGenerator: Generate reports start");
     String reports = properties.getReports();
-    if (reports == null) reports = "Unit";
-    else if (!reports.contains("Unit")) reports = "Unit, " + reports;
+    if (reports == null) {
+      reports = "Unit";
+    } else if (!reports.contains("Unit")) {
+      reports = "Unit, " + reports;
+    }
 
     runReports(reports, PeriodType.DAY);
     logger.info("ReportGenerator: Daily report processing ends");
@@ -796,8 +808,11 @@ public class ReportGenerator extends DBIOwner {
     logger.info("ReportGenerator: Hourly report processing starts...");
     logger.info("ReportGenerator: Generate reports start");
     String reports = properties.getReports();
-    if (reports == null) reports = "Unit";
-    else if (!reports.contains("Unit")) reports = "Unit, " + reports;
+    if (reports == null) {
+      reports = "Unit";
+    } else if (!reports.contains("Unit")) {
+      reports = "Unit, " + reports;
+    }
     runReports(reports, PeriodType.HOUR);
     logger.info("ReportGenerator: Hourly report processing ends");
   }
@@ -827,7 +842,7 @@ public class ReportGenerator extends DBIOwner {
       skippingReports += "HardwareSYS, VoipSYS, ";
     }
 
-    if (!skippingReports.equals("")) {
+    if (!"".equals(skippingReports)) {
       skippingReports = skippingReports.substring(0, skippingReports.length() - 2);
       logger.info("ReportGenerator: Skipping reports: " + skippingReports);
     }
@@ -842,8 +857,7 @@ public class ReportGenerator extends DBIOwner {
     populateReportUnitTable(getMainDataSource(), now, periodType);
   }
 
-  private void buildProvisioning(PeriodType periodType)
-      throws SQLException, IOException, ParseException {
+  private void buildProvisioning(PeriodType periodType) throws SQLException, IOException {
     ReportProvisioningGenerator rg =
         new ReportProvisioningGenerator(
             getMainDataSource(), getSyslogDataSource(), acs, "- - ", getIdentity());

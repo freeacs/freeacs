@@ -5,11 +5,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ShowScheduleQueue implements Task {
-
   private static Logger logger = LoggerFactory.getLogger(ShowScheduleQueue.class);
 
   private String taskName;
-  private boolean running = false;
+  private boolean running;
   private Scheduler scheduler;
 
   public ShowScheduleQueue(String taskName, Scheduler scheduler) {
@@ -21,9 +20,7 @@ public class ShowScheduleQueue implements Task {
     return taskName;
   }
 
-  public void setThisLaunchTms(long launchTms) {
-    return;
-  }
+  public void setThisLaunchTms(long launchTms) {}
 
   @Override
   public void run() {

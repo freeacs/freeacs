@@ -23,7 +23,6 @@ package com.github.freeacs.web.app.page.monitor;
  * individuals on behalf of the Apache Software Foundation.  For more
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
- *
  */
 
 import java.security.KeyStore;
@@ -49,9 +48,8 @@ import javax.net.ssl.X509TrustManager;
  *     customization.
  */
 public class EasyX509TrustManager implements X509TrustManager {
-
   /** The standard trust manager. */
-  private X509TrustManager standardTrustManager = null;
+  private X509TrustManager standardTrustManager;
 
   /**
    * Constructor for EasyX509TrustManager.
@@ -62,7 +60,6 @@ public class EasyX509TrustManager implements X509TrustManager {
    */
   public EasyX509TrustManager(KeyStore keystore)
       throws NoSuchAlgorithmException, KeyStoreException {
-    super();
     TrustManagerFactory factory =
         TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
     factory.init(keystore);
@@ -96,10 +93,7 @@ public class EasyX509TrustManager implements X509TrustManager {
    */
   public void checkServerTrusted(X509Certificate[] certificates, String authType)
       throws CertificateException {
-    if ((certificates != null) && (certificates.length == 1)) {
-      return;
-      // certificates[0].checkValidity();
-    } else {
+    if (certificates == null || certificates.length != 1) {
       standardTrustManager.checkServerTrusted(certificates, authType);
     }
   }

@@ -24,11 +24,10 @@ import java.util.Map.Entry;
  * @author morten
  */
 public class JobLogic {
-
   public static boolean checkJobOK(SessionDataI sessionData) {
     try {
       String jobId = sessionData.getAcsParameters().getValue(SystemParameters.JOB_CURRENT);
-      if (jobId != null && jobId.trim().length() > 0) {
+      if (jobId != null && !jobId.trim().isEmpty()) {
         Log.debug(JobLogic.class, "Verification stage entered for job " + jobId);
         Job job = DBAccess.getJob(sessionData, jobId);
         if (job == null) {
@@ -37,7 +36,7 @@ public class JobLogic {
           return false;
         }
         UnitJob uj = new UnitJob(sessionData, job, false);
-        if (!job.getStatus().equals(JobStatus.STARTED)) {
+        if (!JobStatus.STARTED.equals(job.getStatus())) {
           Log.warn(JobLogic.class, "Current job is not STARTED, UnitJob must be STOPPED");
           uj.stop(UnitJobStatus.STOPPED);
           return false;
@@ -99,15 +98,14 @@ public class JobLogic {
 
   public static UnitJob checkNewJob(SessionDataI sessionData, int downloadLimit) {
     if (sessionData.getUnit().getProvisioningMode() == ProvisioningMode.REGULAR) {
-      Job job = JobLogic.getJob(sessionData, downloadLimit);
+      Job job = getJob(sessionData, downloadLimit);
       if (job != null) {
         UnitJob uj = null;
-        if (job.getFlags().getType()
-            == JobType.SHELL) // TELNET jobs are never triggered through provisioning
-        uj = new UnitJob(sessionData, job, true);
-        else
-          // CONFIG/SOFTWARE/SCRIPT/RESET/RESTART are client-side jobs
+        if (job.getFlags().getType() == JobType.SHELL) {
+          uj = new UnitJob(sessionData, job, true);
+        } else {
           uj = new UnitJob(sessionData, job, false);
+        }
         uj.start();
         sessionData.setJob(job);
         sessionData.getPIIDecision().setCurrentJob(job);
@@ -135,29 +133,41 @@ public class JobLogic {
     try {
       Map<Integer, Job> possibleJobs = filterOnStatusAndType(sessionData, unit, allJobs);
       message += "Status/Type:" + possibleJobs.size() + ", ";
-      if (possibleJobs.size() == 0) return null;
+      if (possibleJobs.isEmpty()) {
+        return null;
+      }
 
       possibleJobs = filterOnGroupMatch(possibleJobs, unit);
       message += "GroupMatch:" + possibleJobs.size() + ", ";
-      if (possibleJobs.size() == 0) return null;
+      if (possibleJobs.isEmpty()) {
+        return null;
+      }
 
       Map<Integer, JobHistoryEntry> jobHistory = getJobHistory(unit, jobs);
 
       possibleJobs = filterOnJobDependency(possibleJobs, jobHistory);
       message += "Dependencies:" + possibleJobs.size() + ", ";
-      if (possibleJobs.size() == 0) return null;
+      if (possibleJobs.isEmpty()) {
+        return null;
+      }
 
       possibleJobs = filterOnJobHistory(possibleJobs, jobHistory);
       message += "JobHistory:" + possibleJobs.size() + ", ";
-      if (possibleJobs.size() == 0) return null;
+      if (possibleJobs.isEmpty()) {
+        return null;
+      }
 
       possibleJobs = filterOnDownloadAllowed(possibleJobs, downloadLimit);
       message += "DownloadAllowed:" + possibleJobs.size() + ", ";
-      if (possibleJobs.size() == 0) return null;
+      if (possibleJobs.isEmpty()) {
+        return null;
+      }
 
       possibleJobs = filterOnRunTime(sessionData, possibleJobs, jobHistory);
       message += "RunTms:" + possibleJobs.size() + ", ";
-      if (possibleJobs.size() == 0) return null;
+      if (possibleJobs.isEmpty()) {
+        return null;
+      }
 
       Job j = findJobWithHighestPriority(possibleJobs);
       if (j == null) {
@@ -172,8 +182,7 @@ public class JobLogic {
       Log.error(JobLogic.class, "An error ocurred in getJob()", t);
       return null;
     } finally {
-      if (chosenJob == null) Log.info(JobLogic.class, "No job found (filter: " + message + ")");
-      else
+      if (chosenJob != null) {
         Log.notice(
             JobLogic.class,
             "Found job "
@@ -183,6 +192,9 @@ public class JobLogic {
                 + "(filter: "
                 + message
                 + ")");
+      } else {
+        Log.info(JobLogic.class, "No job found (filter: " + message + ")");
+      }
     }
   }
 
@@ -240,20 +252,18 @@ public class JobLogic {
      * harmless character.
      *
      * Morten Simonsen, Nov 2011
-     *
      */
     String disruptiveJob = sessionData.getAcsParameters().getValue(SystemParameters.JOB_DISRUPTIVE);
-    boolean inDisruptiveJobChain = false;
-    if (disruptiveJob != null && disruptiveJob.equals("1")) inDisruptiveJobChain = true;
+    boolean inDisruptiveJobChain = "1".equals(disruptiveJob);
     Iterator<Entry<Integer, Job>> i = possibleJobs.entrySet().iterator();
     long lowestNRT = Long.MAX_VALUE;
     Job nextRepeatableJob = null;
     while (i.hasNext()) {
       Entry<Integer, Job> entry = i.next();
       Job job = entry.getValue();
-      boolean repeatable = (job.getRepeatCount() != null && job.getRepeatCount() > 0);
+      boolean repeatable = job.getRepeatCount() != null && job.getRepeatCount() > 0;
       boolean isDisruptiveSw =
-          (entry.getValue().getFlags().getServiceWindow() == JobServiceWindow.DISRUPTIVE);
+          entry.getValue().getFlags().getServiceWindow() == JobServiceWindow.DISRUPTIVE;
       ServiceWindow serviceWindow = new ServiceWindow(sessionData, isDisruptiveSw);
       if (repeatable) {
         JobHistoryEntry jhEntry = jobHistory.get(job.getId());
@@ -272,14 +282,12 @@ public class JobLogic {
                   + " since it was scheduled to run in "
                   + nextPII
                   + " seconds");
-        } else {
-          if (NRT < lowestNRT) {
-            lowestNRT = NRT;
-            nextRepeatableJob = job;
-          }
-          //					Log.debug(JobLogic.class, "FilterOnRunTime kept job " + job.getId() + " since it
-          // was scheduled run within " + PIIDecision.MINIMUM_PII + " seconds");
+        } else if (NRT < lowestNRT) {
+          lowestNRT = NRT;
+          nextRepeatableJob = job;
         }
+        //					Log.debug(JobLogic.class, "FilterOnRunTime kept job " + job.getId() + " since it
+        // was scheduled run within " + PIIDecision.MINIMUM_PII + " seconds");
       } else if (!inDisruptiveJobChain && !serviceWindow.isWithin()) {
         i.remove();
         long nextPII = serviceWindow.calculateStdPII();
@@ -309,7 +317,7 @@ public class JobLogic {
       while (i2.hasNext()) {
         Entry<Integer, Job> entry = i2.next();
         Job job = entry.getValue();
-        boolean repeatable = (job.getRepeatCount() != null && job.getRepeatCount() > 0);
+        boolean repeatable = job.getRepeatCount() != null && job.getRepeatCount() > 0;
         if (repeatable && !job.getId().equals(nextRepeatableJob.getId())) {
           Log.debug(
               JobLogic.class,
@@ -326,7 +334,7 @@ public class JobLogic {
   }
 
   private static long convertToPII(ServiceWindow serviceWindow, long NRT) {
-    long nextPII = (NRT - serviceWindow.getCurrentTms()) / 1000l;
+    long nextPII = (NRT - serviceWindow.getCurrentTms()) / 1000L;
     Log.debug(
         JobLogic.class,
         "Repeatable Job Interval calculated to "
@@ -364,34 +372,43 @@ public class JobLogic {
     Iterator<Entry<Integer, Job>> i = possibleJobs.entrySet().iterator();
     while (i.hasNext()) {
       Job job = i.next().getValue();
-      if (!job.getGroup().match(unit)) i.remove();
+      if (!job.getGroup().match(unit)) {
+        i.remove();
+      }
     }
     return possibleJobs;
   }
 
   private static Map<Integer, Job> filterOnStatusAndType(
       SessionDataI sessionData, Unit unit, Job[] allJobs) {
-    Map<Integer, Job> possibleJobs = new HashMap<Integer, Job>();
+    Map<Integer, Job> possibleJobs = new HashMap<>();
     for (Job j : allJobs) {
       JobType type = j.getFlags().getType();
-      if (j.getStatus().equals(JobStatus.STARTED) && type != JobType.KICK && type != JobType.TELNET)
+      if (JobStatus.STARTED.equals(j.getStatus())
+          && type != JobType.KICK
+          && type != JobType.TELNET) {
         possibleJobs.put(j.getId(), j);
+      }
     }
     return possibleJobs;
   }
 
   private static Map<Integer, JobHistoryEntry> getJobHistory(Unit unit, Jobs jobs) {
-    Map<Integer, JobHistoryEntry> jobHistoryMap = new HashMap<Integer, JobHistoryEntry>();
+    Map<Integer, JobHistoryEntry> jobHistoryMap = new HashMap<>();
     String utpJobHistory = SystemParameters.JOB_HISTORY;
     UnitParameter jobHistoryUp = unit.getUnitParameters().get(utpJobHistory);
     if (jobHistoryUp != null) {
       String[] jobHistoryArr = jobHistoryUp.getValue().split(",");
       for (String str : jobHistoryArr) {
-        if (str.trim().equals("")) continue;
+        if ("".equals(str.trim())) {
+          continue;
+        }
         try {
           JobHistoryEntry jhEntry = new JobHistoryEntry(str);
           // A job in the history is deleted from the database, we'll ignore that one
-          if (jobs.getById(jhEntry.getJobId()) == null) continue;
+          if (jobs.getById(jhEntry.getJobId()) == null) {
+            continue;
+          }
           jobHistoryMap.put(jhEntry.getJobId(), jhEntry);
         } catch (NumberFormatException nfe) {
           // Ignore error...will occur if job-history is "" or someone has entered bogus history
@@ -407,9 +424,10 @@ public class JobLogic {
     while (i.hasNext()) {
       Job job = i.next().getValue();
       JobHistoryEntry jhEntry = jobHistory.get(job.getId());
-      if (jhEntry == null) // no history on this job, no filtering either
-      continue;
-      boolean repeatableJob = (job.getRepeatCount() != null && job.getRepeatCount() > 0);
+      if (jhEntry == null) {
+        continue;
+      }
+      boolean repeatableJob = job.getRepeatCount() != null && job.getRepeatCount() > 0;
       if (repeatableJob) {
         // If a job has been repeated enough, it will be filtered out
         if (jhEntry.getRepeatedCount() != null
@@ -441,18 +459,19 @@ public class JobLogic {
     Job repeatableJob = null;
     while (i.hasNext()) {
       Job job = i.next().getValue();
-      boolean repeatable = (job.getRepeatCount() != null && job.getRepeatCount() > 0);
-      if (!repeatable && job.getDependency() == null) // Highest priority (any job that fit will do)
-      return job; // return immediately
-      if (!repeatable
-          && job.getDependency() != null) // If a job matches, simply overwrite - it's alright
-      nonRepeatableAndDependent = job;
-      else repeatableJob = job;
+      boolean repeatable = job.getRepeatCount() != null && job.getRepeatCount() > 0;
+      if (!repeatable && job.getDependency() == null) {
+        return job;
+      } // return immediately
+      if (!repeatable && job.getDependency() != null) {
+        nonRepeatableAndDependent = job;
+      } else {
+        repeatableJob = job;
+      }
     }
-    if (nonRepeatableAndDependent != null) return nonRepeatableAndDependent;
-    if (repeatableJob != null) {
-      return repeatableJob;
+    if (nonRepeatableAndDependent != null) {
+      return nonRepeatableAndDependent;
     }
-    return null;
+    return repeatableJob;
   }
 }

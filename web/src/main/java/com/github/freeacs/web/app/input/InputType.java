@@ -6,7 +6,6 @@ package com.github.freeacs.web.app.input;
  * @author Jarl Andre Hubenthal
  */
 public enum InputType {
-
   /** The STRING. */
   STRING,
 

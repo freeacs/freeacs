@@ -23,8 +23,6 @@ public class User {
       this.users = copyMe.getUsers();
       this.permissions = copyMe.getPermissions();
       this.id = copyMe.getId();
-    } else {
-      // Do we need something here?
     }
   }
 
@@ -34,7 +32,9 @@ public class User {
     this.access = modules;
     this.admin = admin;
     this.users = users;
-    if (users != null) this.permissions = new Permissions(users.getConnectionProperties());
+    if (users != null) {
+      this.permissions = new Permissions(users.getConnectionProperties());
+    }
   }
 
   public Integer getId() {
@@ -78,7 +78,9 @@ public class User {
   }
 
   public Permissions getPermissions() {
-    if (permissions == null) permissions = new Permissions(users.getConnectionProperties());
+    if (permissions == null) {
+      permissions = new Permissions(users.getConnectionProperties());
+    }
     return permissions;
   }
 
@@ -90,14 +92,15 @@ public class User {
    * @throws SQLException
    */
   public void addOrChangePermission(Permission permission, User requestedBy) throws SQLException {
-    if (this.isAdmin()) {
+    if (isAdmin()) {
       throw new IllegalArgumentException(
           "Cannot add/change permissions for admin user, set admin-flag to 'false' to add/change permissions");
     } else if (requestedBy.isAdmin() || requestedBy.isUnittypeAdmin(permission.getUnittypeId())) {
       permissions.addOrChange(permission);
-    } else
+    } else {
       throw new IllegalArgumentException(
           "Not allowed to add/change permission for user " + requestedBy.getUsername());
+    }
   }
 
   /**
@@ -113,8 +116,7 @@ public class User {
 
   public boolean isCorrectSecret(String suppliedSecret) {
     String hashedSuppliedSecret = Crypto.computeSHA1DigestAsHexUpperCase(suppliedSecret);
-    if (hashedSuppliedSecret.equals(secret)) return true;
-    else return false;
+    return hashedSuppliedSecret.equals(secret);
   }
 
   public String getAccess() {
@@ -126,8 +128,7 @@ public class User {
   }
 
   public boolean isAdmin() {
-    if (username.equals(Users.USER_ADMIN)) return true;
-    return admin != null && admin;
+    return username.equals(Users.USER_ADMIN) || Boolean.TRUE.equals(admin);
   }
 
   public boolean isUnittypeAdmin(Integer unittypeId) {
@@ -135,14 +136,16 @@ public class User {
   }
 
   public boolean isProfileAdmin(Integer unittypeId, Integer profileId) {
-    if (isAdmin()) return true;
-    if (isUnittypeAdmin(unittypeId)) return true;
-    return permissions.getByUnittypeProfile(unittypeId, profileId) != null;
+    return isAdmin()
+        || isUnittypeAdmin(unittypeId)
+        || permissions.getByUnittypeProfile(unittypeId, profileId) != null;
   }
 
   public Boolean getAdmin() {
-    if (admin == null) return false;
-    return admin;
+    if (admin != null) {
+      return admin;
+    }
+    return false;
   }
 
   public void setAdmin(Boolean admin) {

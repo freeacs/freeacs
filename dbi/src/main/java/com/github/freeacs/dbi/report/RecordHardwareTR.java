@@ -3,7 +3,6 @@ package com.github.freeacs.dbi.report;
 import java.util.Date;
 
 public class RecordHardwareTR extends Record<RecordHardwareTR> {
-
   public static KeyFactory keyFactory = new KeyFactory("Unittype", "Profile", "SoftwareVersion");
   private Key key;
 
@@ -21,8 +20,6 @@ public class RecordHardwareTR extends Record<RecordHardwareTR> {
   private Average temperatureNowAvg = new Average(1);
   private Average temperatureMaxAvg = new Average(1);
 
-  protected RecordHardwareTR() {}
-
   public RecordHardwareTR(
       Date tms,
       PeriodType periodType,
@@ -33,7 +30,9 @@ public class RecordHardwareTR extends Record<RecordHardwareTR> {
     this.periodType = periodType;
     this.unittypeName = unittypeName;
     this.profileName = profileName;
-    if (softwareVersion == null) softwareVersion = "Unknown";
+    if (softwareVersion == null) {
+      softwareVersion = "Unknown";
+    }
     this.softwareVersion = softwareVersion;
     this.key = keyFactory.makeKey(tms, periodType, unittypeName, profileName, softwareVersion);
   }
@@ -61,24 +60,24 @@ public class RecordHardwareTR extends Record<RecordHardwareTR> {
   public RecordHardwareTR clone() {
     RecordHardwareTR clone =
         new RecordHardwareTR(tms, periodType, unittypeName, profileName, softwareVersion);
-    clone.setCpeUptimeAvg(this.getCpeUptimeAvg().clone());
-    clone.setCpuUsageAvg(this.getCpuUsageAvg().clone());
-    clone.setMemoryFreeAvg(this.getMemoryFreeAvg().clone());
-    clone.setMemoryTotalAvg(this.getMemoryTotalAvg().clone());
-    clone.setProcessCountAvg(this.getProcessCountAvg().clone());
-    clone.setTemperatureMaxAvg(this.getTemperatureMaxAvg().clone());
-    clone.setTemperatureNowAvg(this.getTemperatureNowAvg().clone());
+    clone.setCpeUptimeAvg(getCpeUptimeAvg().clone());
+    clone.setCpuUsageAvg(getCpuUsageAvg().clone());
+    clone.setMemoryFreeAvg(getMemoryFreeAvg().clone());
+    clone.setMemoryTotalAvg(getMemoryTotalAvg().clone());
+    clone.setProcessCountAvg(getProcessCountAvg().clone());
+    clone.setTemperatureMaxAvg(getTemperatureMaxAvg().clone());
+    clone.setTemperatureNowAvg(getTemperatureNowAvg().clone());
     return clone;
   }
 
   public void add(RecordHardwareTR record) {
-    this.getCpeUptimeAvg().add(record.getCpeUptimeAvg());
-    this.getCpuUsageAvg().add(record.getCpuUsageAvg());
-    this.getMemoryFreeAvg().add(record.getMemoryFreeAvg());
-    this.getMemoryTotalAvg().add(record.getMemoryTotalAvg());
-    this.getProcessCountAvg().add(record.getProcessCountAvg());
-    this.getTemperatureMaxAvg().add(record.getTemperatureMaxAvg());
-    this.getTemperatureNowAvg().add(record.getTemperatureNowAvg());
+    getCpeUptimeAvg().add(record.getCpeUptimeAvg());
+    getCpuUsageAvg().add(record.getCpuUsageAvg());
+    getMemoryFreeAvg().add(record.getMemoryFreeAvg());
+    getMemoryTotalAvg().add(record.getMemoryTotalAvg());
+    getProcessCountAvg().add(record.getProcessCountAvg());
+    getTemperatureMaxAvg().add(record.getTemperatureMaxAvg());
+    getTemperatureNowAvg().add(record.getTemperatureNowAvg());
   }
 
   public KeyFactory getKeyFactory() {

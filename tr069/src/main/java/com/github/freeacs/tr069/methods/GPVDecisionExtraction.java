@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GPVDecisionExtraction {
-
   /**
    * Extraction mode will read all parameters from the device and write them to the
    * unit_param_session table. No data will be written to unit_param table (provisioned data).
@@ -27,11 +26,11 @@ public class GPVDecisionExtraction {
   protected static void processExtraction(HTTPReqResData reqRes) throws TR069DatabaseException {
     SessionData sessionData = reqRes.getSessionData();
     UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
-    List<ParameterValueStruct> toDB = new ArrayList<ParameterValueStruct>();
+    List<ParameterValueStruct> toDB = new ArrayList<>();
     Log.info(
         GPVDecisionExtraction.class,
         "Provisioning in "
-            + ProvisioningMode.READALL.toString()
+            + ProvisioningMode.READALL
             + " mode, "
             + sessionData.getFromCPE().size()
             + " params from CPE may be copied to ACS session storage");
@@ -46,7 +45,7 @@ public class GPVDecisionExtraction {
             pvsCPE.getName() + " could not be stored in ACS, since name was unrecognized in ACS");
         continue;
       }
-      if (pvsCPE.getValue().equals("(null)")) {
+      if ("(null)".equals(pvsCPE.getValue())) {
         Log.debug(
             GPVDecision.class,
             pvsCPE.getName()

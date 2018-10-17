@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HelpOptions {
-  private List<HelpOption> options = new ArrayList<HelpOption>();
+  private List<HelpOption> options = new ArrayList<>();
 
   public void addOption(HelpOption helpOption) {
     options.add(helpOption);

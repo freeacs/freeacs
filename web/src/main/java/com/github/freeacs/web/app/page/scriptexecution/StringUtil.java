@@ -11,7 +11,6 @@ import java.util.regex.Pattern;
  * @author Morten Simonsen, Jarl Andre Hubenthal
  */
 public class StringUtil {
-
   /** The pattern. */
   private static Pattern pattern = Pattern.compile("(\"([^\"]*)\")|([^ \"\t]+)");
 
@@ -26,12 +25,15 @@ public class StringUtil {
   public static String[] split(String s) {
     Matcher m = pattern.matcher(s);
     int pos = 0;
-    List<String> commands = new ArrayList<String>();
+    List<String> commands = new ArrayList<>();
     while (m.find(pos)) {
       String group1 = m.group(2);
       String group2 = m.group(3);
-      if (group1 != null) commands.add(group1);
-      else if (group2 != null) commands.add(group2);
+      if (group1 != null) {
+        commands.add(group1);
+      } else if (group2 != null) {
+        commands.add(group2);
+      }
       pos = m.end();
     }
     String[] strArray = new String[commands.size()];

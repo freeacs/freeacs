@@ -8,7 +8,6 @@
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
  */
-
 package de.javawi.jstun.test;
 
 import de.javawi.jstun.attribute.ChangeRequest;
@@ -37,15 +36,16 @@ public class DiscoveryTest {
   InetAddress iaddress;
   String stunServer;
   int port;
-  int timeoutInitValue = 300; // ms
-  MappedAddress ma = null;
-  ChangedAddress ca = null;
+  /** Ms. */
+  int timeoutInitValue = 300;
+
+  MappedAddress ma;
+  ChangedAddress ca;
   boolean nodeNatted = true;
-  DatagramSocket socketTest1 = null;
-  DiscoveryInfo di = null;
+  DatagramSocket socketTest1;
+  DiscoveryInfo di;
 
   public DiscoveryTest(InetAddress iaddress, String stunServer, int port) {
-    super();
     this.iaddress = iaddress;
     this.stunServer = stunServer;
     this.port = port;
@@ -61,12 +61,8 @@ public class DiscoveryTest {
     socketTest1 = null;
     di = new DiscoveryInfo(iaddress);
 
-    if (test1()) {
-      if (test2()) {
-        if (test1Redo()) {
-          test3();
-        }
-      }
+    if (test1() && test2() && test1Redo()) {
+      test3();
     }
 
     socketTest1.close();
@@ -79,7 +75,7 @@ public class DiscoveryTest {
           MessageAttributeParsingException, MessageHeaderParsingException {
     int timeSinceFirstTransmission = 0;
     int timeout = timeoutInitValue;
-    while (true) {
+    do {
       try {
         // Test 1 including response
         socketTest1 = new DatagramSocket(new InetSocketAddress(iaddress, 0));
@@ -99,7 +95,7 @@ public class DiscoveryTest {
         LOGGER.debug("Test 1: Binding Request sent.");
 
         MessageHeader receiveMH = new MessageHeader();
-        while (!(receiveMH.equalTransactionID(sendMH))) {
+        while (!receiveMH.equalTransactionID(sendMH)) {
           DatagramPacket receive = new DatagramPacket(new byte[200], 200);
           socketTest1.receive(receive);
           receiveMH = MessageHeader.parseHeader(receive.getData());
@@ -120,7 +116,7 @@ public class DiscoveryTest {
           LOGGER.debug("Message header contains an Errorcode message attribute.");
           return false;
         }
-        if ((ma == null) || (ca == null)) {
+        if (ma == null || ca == null) {
           di.setError(
               700,
               "The server is sending an incomplete response (Mapped Address and Changed Address message attributes are missing). The client should not retry.");
@@ -129,8 +125,8 @@ public class DiscoveryTest {
           return false;
         } else {
           di.setPublicIP(ma.getAddress().getInetAddress());
-          if ((ma.getPort() == socketTest1.getLocalPort())
-              && (ma.getAddress().getInetAddress().equals(socketTest1.getLocalAddress()))) {
+          if (ma.getPort() == socketTest1.getLocalPort()
+              && ma.getAddress().getInetAddress().equals(socketTest1.getLocalAddress())) {
             LOGGER.debug("Node is not natted.");
             nodeNatted = false;
           } else {
@@ -142,8 +138,10 @@ public class DiscoveryTest {
         if (timeSinceFirstTransmission < 7900) {
           LOGGER.debug("Test 1: Socket timeout while receiving the response.");
           timeSinceFirstTransmission += timeout;
-          int timeoutAddValue = (timeSinceFirstTransmission * 2);
-          if (timeoutAddValue > 1600) timeoutAddValue = 1600;
+          int timeoutAddValue = timeSinceFirstTransmission * 2;
+          if (timeoutAddValue > 1600) {
+            timeoutAddValue = 1600;
+          }
           timeout = timeoutAddValue;
         } else {
           // node is not capable of udp communication
@@ -154,7 +152,7 @@ public class DiscoveryTest {
           return false;
         }
       }
-    }
+    } while (true);
   }
 
   private boolean test2()
@@ -163,7 +161,7 @@ public class DiscoveryTest {
           MessageHeaderParsingException {
     int timeSinceFirstTransmission = 0;
     int timeout = timeoutInitValue;
-    while (true) {
+    do {
       try {
         // Test 2 including response
         DatagramSocket sendSocket = new DatagramSocket(new InetSocketAddress(iaddress, 0));
@@ -193,7 +191,7 @@ public class DiscoveryTest {
         receiveSocket.setSoTimeout(timeout);
 
         MessageHeader receiveMH = new MessageHeader();
-        while (!(receiveMH.equalTransactionID(sendMH))) {
+        while (!receiveMH.equalTransactionID(sendMH)) {
           DatagramPacket receive = new DatagramPacket(new byte[200], 200);
           receiveSocket.receive(receive);
           receiveMH = MessageHeader.parseHeader(receive.getData());
@@ -220,8 +218,10 @@ public class DiscoveryTest {
         if (timeSinceFirstTransmission < 7900) {
           LOGGER.debug("Test 2: Socket timeout while receiving the response.");
           timeSinceFirstTransmission += timeout;
-          int timeoutAddValue = (timeSinceFirstTransmission * 2);
-          if (timeoutAddValue > 1600) timeoutAddValue = 1600;
+          int timeoutAddValue = timeSinceFirstTransmission * 2;
+          if (timeoutAddValue > 1600) {
+            timeoutAddValue = 1600;
+          }
           timeout = timeoutAddValue;
         } else {
           LOGGER.debug(
@@ -237,7 +237,7 @@ public class DiscoveryTest {
           }
         }
       }
-    }
+    } while (true);
   }
 
   private boolean test1Redo()
@@ -245,7 +245,7 @@ public class DiscoveryTest {
           MessageAttributeParsingException, MessageHeaderParsingException {
     int timeSinceFirstTransmission = 0;
     int timeout = timeoutInitValue;
-    while (true) {
+    do {
       // redo test 1 with address and port as offered in the changed-address message attribute
       try {
         // Test 1 with changed port and address values
@@ -264,7 +264,7 @@ public class DiscoveryTest {
         LOGGER.debug("Test 1 redo with changed address: Binding Request sent.");
 
         MessageHeader receiveMH = new MessageHeader();
-        while (!(receiveMH.equalTransactionID(sendMH))) {
+        while (!receiveMH.equalTransactionID(sendMH)) {
           DatagramPacket receive = new DatagramPacket(new byte[200], 200);
           socketTest1.receive(receive);
           receiveMH = MessageHeader.parseHeader(receive.getData());
@@ -287,13 +287,11 @@ public class DiscoveryTest {
               "The server is sending an incomplete response (Mapped Address message attribute is missing). The client should not retry.");
           LOGGER.debug("Response does not contain a Mapped Address message attribute.");
           return false;
-        } else {
-          if ((ma.getPort() != ma2.getPort())
-              || (!(ma.getAddress().getInetAddress().equals(ma2.getAddress().getInetAddress())))) {
-            di.setSymmetric();
-            LOGGER.debug("Node is behind a symmetric NAT.");
-            return false;
-          }
+        } else if (ma.getPort() != ma2.getPort()
+            || !ma.getAddress().getInetAddress().equals(ma2.getAddress().getInetAddress())) {
+          di.setSymmetric();
+          LOGGER.debug("Node is behind a symmetric NAT.");
+          return false;
         }
         return true;
       } catch (SocketTimeoutException ste2) {
@@ -301,8 +299,10 @@ public class DiscoveryTest {
           LOGGER.debug(
               "Test 1 redo with changed address: Socket timeout while receiving the response.");
           timeSinceFirstTransmission += timeout;
-          int timeoutAddValue = (timeSinceFirstTransmission * 2);
-          if (timeoutAddValue > 1600) timeoutAddValue = 1600;
+          int timeoutAddValue = timeSinceFirstTransmission * 2;
+          if (timeoutAddValue > 1600) {
+            timeoutAddValue = 1600;
+          }
           timeout = timeoutAddValue;
         } else {
           LOGGER.debug(
@@ -310,7 +310,7 @@ public class DiscoveryTest {
           return false;
         }
       }
-    }
+    } while (true);
   }
 
   private void test3()
@@ -319,7 +319,7 @@ public class DiscoveryTest {
           MessageHeaderParsingException {
     int timeSinceFirstTransmission = 0;
     int timeout = timeoutInitValue;
-    while (true) {
+    do {
       try {
         // Test 3 including response
         DatagramSocket sendSocket = new DatagramSocket(new InetSocketAddress(iaddress, 0));
@@ -348,7 +348,7 @@ public class DiscoveryTest {
         receiveSocket.setSoTimeout(timeout);
 
         MessageHeader receiveMH = new MessageHeader();
-        while (!(receiveMH.equalTransactionID(sendMH))) {
+        while (!receiveMH.equalTransactionID(sendMH)) {
           DatagramPacket receive = new DatagramPacket(new byte[200], 200);
           receiveSocket.receive(receive);
           receiveMH = MessageHeader.parseHeader(receive.getData());
@@ -371,8 +371,10 @@ public class DiscoveryTest {
         if (timeSinceFirstTransmission < 7900) {
           LOGGER.debug("Test 3: Socket timeout while receiving the response.");
           timeSinceFirstTransmission += timeout;
-          int timeoutAddValue = (timeSinceFirstTransmission * 2);
-          if (timeoutAddValue > 1600) timeoutAddValue = 1600;
+          int timeoutAddValue = timeSinceFirstTransmission * 2;
+          if (timeoutAddValue > 1600) {
+            timeoutAddValue = 1600;
+          }
           timeout = timeoutAddValue;
         } else {
           LOGGER.debug(
@@ -382,6 +384,6 @@ public class DiscoveryTest {
           return;
         }
       }
-    }
+    } while (true);
   }
 }

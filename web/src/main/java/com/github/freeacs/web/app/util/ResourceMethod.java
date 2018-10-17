@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.github.freeacs.web.app.util;
 
 import freemarker.template.TemplateMethodModel;
@@ -18,7 +17,6 @@ import org.apache.commons.lang.math.NumberUtils;
  * @author Jarl Andre Hubenthal
  */
 public class ResourceMethod implements TemplateMethodModel {
-
   /** The pattern. */
   private Pattern pattern = Pattern.compile("\\{.*?\\}");
 
@@ -40,11 +38,13 @@ public class ResourceMethod implements TemplateMethodModel {
         String s = match.substring(1, match.length() - 1);
         if (NumberUtils.isNumber(s)) {
           String matchedValue = (String) args.get(Integer.parseInt(s));
-          if (matchedValue != null) value = value.replace(match, matchedValue);
+          if (matchedValue != null) {
+            value = value.replace(match, matchedValue);
+          }
         }
       }
       return value;
-    } else if (list.size() > 0) {
+    } else if (!list.isEmpty()) {
       throw new TemplateModelException(
           "Unnecessary call to this method without any arguments other than property key. Reference properties directly instead.");
     } else {

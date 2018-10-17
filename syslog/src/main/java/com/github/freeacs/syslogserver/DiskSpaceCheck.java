@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DiskSpaceCheck extends TaskDefaultImpl {
-
   private static long freeSpace = Long.MAX_VALUE;
   private final Properties properties;
 
@@ -48,7 +47,6 @@ public class DiskSpaceCheck extends TaskDefaultImpl {
             100); // may sleep for a short while until disk space has been calculated the first time
         // after server start
       } catch (InterruptedException e) {
-        // TODO Auto-generated catch block
         e.printStackTrace();
       }
     }

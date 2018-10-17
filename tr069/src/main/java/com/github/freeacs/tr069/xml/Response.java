@@ -18,17 +18,19 @@ public class Response {
 
   public String toXml() {
     StringBuilder sb = new StringBuilder(10);
-    sb.append("<" + Namespace.getSoapEnvNS() + ":Envelope ");
-    sb.append(
-        "xmlns:" + Namespace.getSoapEnvNS() + "=\"http://schemas.xmlsoap.org/soap/envelope/\" ");
-    sb.append(
-        "xmlns:" + Namespace.getSoapEncNS() + "=\"http://schemas.xmlsoap.org/soap/encoding/\" ");
+    sb.append("<").append(Namespace.getSoapEnvNS()).append(":Envelope ");
+    sb.append("xmlns:")
+        .append(Namespace.getSoapEnvNS())
+        .append("=\"http://schemas.xmlsoap.org/soap/envelope/\" ");
+    sb.append("xmlns:")
+        .append(Namespace.getSoapEncNS())
+        .append("=\"http://schemas.xmlsoap.org/soap/encoding/\" ");
     sb.append("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" ");
     sb.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
     sb.append("xmlns:cwmp=\"urn:dslforum-org:cwmp-1-2\">\n");
     sb.append(header.toXml());
     sb.append(body.toXml());
-    sb.append("</" + Namespace.getSoapEnvNS() + ":Envelope>\n");
+    sb.append("</").append(Namespace.getSoapEnvNS()).append(":Envelope>\n");
     return sb.toString();
   }
 }

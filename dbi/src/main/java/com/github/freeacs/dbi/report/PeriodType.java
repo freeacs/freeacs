@@ -12,7 +12,7 @@ public enum PeriodType {
 
   private int type;
 
-  private PeriodType(int type) {
+  PeriodType(int type) {
     this.type = type;
   }
 
@@ -21,12 +21,20 @@ public enum PeriodType {
   }
 
   public String getTypeStr() {
-    if (type == -1) return "ETERNITY";
-    if (type == Calendar.MONTH) return "MONTH";
-    else if (type == Calendar.DAY_OF_MONTH) return "DAY";
-    else if (type == Calendar.HOUR_OF_DAY) return "HOUR";
-    else if (type == Calendar.MINUTE) return "MINUTE";
-    else if (type == Calendar.SECOND) return "SECOND";
+    if (type == -1) {
+      return "ETERNITY";
+    }
+    if (type == Calendar.MONTH) {
+      return "MONTH";
+    } else if (type == Calendar.DAY_OF_MONTH) {
+      return "DAY";
+    } else if (type == Calendar.HOUR_OF_DAY) {
+      return "HOUR";
+    } else if (type == Calendar.MINUTE) {
+      return "MINUTE";
+    } else if (type == Calendar.SECOND) {
+      return "SECOND";
+    }
     return "UNKNOWN";
   }
 
@@ -40,7 +48,9 @@ public enum PeriodType {
 
   public static PeriodType getType(String name) {
     for (PeriodType type : getTypes()) {
-      if (type.getTypeStr().equals(name)) return type;
+      if (type.getTypeStr().equals(name)) {
+        return type;
+      }
     }
     return null;
   }

@@ -39,8 +39,7 @@ public class HTTPReqData {
   }
 
   public static class XMLFormatter {
-
-    /** Filter away all illegal XML characters */
+    /** Filter away all illegal XML characters. */
     public static String filter(String unfilteredXml) {
       StringBuilder sb = new StringBuilder();
       for (int i = 0; i < unfilteredXml.length(); i++) {
@@ -66,18 +65,21 @@ public class HTTPReqData {
       Node previousNode = null;
       while (node != null) {
         if (node.getType() == NodeType.STARTTAG) {
-          if (previousNode != null && previousNode.getType() == NodeType.STARTTAG)
-            formattedXml.append(
-                "\n" + tabs(startTagCounter) + node); // start-tag following a start-tag
-          else formattedXml.append(tabs(startTagCounter) + node); // start-tag following an end-tag
+          if (previousNode != null && previousNode.getType() == NodeType.STARTTAG) {
+            formattedXml.append("\n").append(tabs(startTagCounter)).append(node);
+          } else {
+            formattedXml.append(tabs(startTagCounter)).append(node);
+          } // start-tag following an end-tag
           startTagCounter++;
         } else if (node.getType() == NodeType.CONTENT) {
           formattedXml.append(node);
         } else { // NodeType.ENDTAG
           startTagCounter--;
-          if (previousNode != null && previousNode.getType() == NodeType.ENDTAG)
-            formattedXml.append(tabs(startTagCounter) + node);
-          else formattedXml.append(node);
+          if (previousNode != null && previousNode.getType() == NodeType.ENDTAG) {
+            formattedXml.append(tabs(startTagCounter)).append(node);
+          } else {
+            formattedXml.append(node);
+          }
           formattedXml.append("\n");
         }
         currentPos = node.getEndPos();
@@ -89,21 +91,26 @@ public class HTTPReqData {
 
     private static String tabs(int indentCount) {
       StringBuilder sb = new StringBuilder();
-      for (int i = 0; i < indentCount; i++) sb.append("  ");
+      for (int i = 0; i < indentCount; i++) {
+        sb.append("  ");
+      }
       return sb.toString();
     }
 
     private static Node nextNode(String unformattedXml, int readFromPos) {
-      int ltPos = unformattedXml.indexOf("<", readFromPos);
-      int gtPos = unformattedXml.indexOf(">", ltPos);
-      if (ltPos == -1 || gtPos == -1) return null;
-      if (ltPos > readFromPos)
+      int ltPos = unformattedXml.indexOf('<', readFromPos);
+      int gtPos = unformattedXml.indexOf('>', ltPos);
+      if (ltPos == -1 || gtPos == -1) {
+        return null;
+      }
+      if (ltPos > readFromPos) {
         return new Node(NodeType.CONTENT, readFromPos, ltPos, unformattedXml);
-      else if (unformattedXml.charAt(ltPos + 1) == '/')
+      } else if (unformattedXml.charAt(ltPos + 1) == '/'
+          || unformattedXml.charAt(gtPos - 1) == '/') {
         return new Node(NodeType.ENDTAG, ltPos, gtPos + 1, unformattedXml);
-      else if (unformattedXml.charAt(gtPos - 1) == '/')
-        return new Node(NodeType.ENDTAG, ltPos, gtPos + 1, unformattedXml);
-      else return new Node(NodeType.STARTTAG, ltPos, gtPos + 1, unformattedXml);
+      } else {
+        return new Node(NodeType.STARTTAG, ltPos, gtPos + 1, unformattedXml);
+      }
     }
   }
 

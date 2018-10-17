@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 /** @author Morten */
 class UnitQueryCrossUnittype {
-
   private static Logger logger = LoggerFactory.getLogger(UnitQueryCrossUnittype.class);
 
   private List<Unittype> unittypes;
@@ -84,10 +83,9 @@ class UnitQueryCrossUnittype {
    * unittypes/profiles.
    */
   private void prepareUnittypesAndProfiles() {
-
     User user = acs.getSyslog().getIdentity().getUser();
 
-    if (profiles.size() > 0) {
+    if (!profiles.isEmpty()) {
       // Making a map of the number of profiles in the input, listed pr unittype
       Map<Integer, Integer> profileCountMap = new HashMap<>();
       for (Profile p : profiles) {
@@ -103,11 +101,12 @@ class UnitQueryCrossUnittype {
       // This flag can only be kept true if user is unittypeAdmin for all unittypes
       // and all profiles are found.
       boolean allProfilesSpecified = true;
-      for (Integer unittypeId : profileCountMap.keySet()) {
+      for (Map.Entry<Integer, Integer> entry : profileCountMap.entrySet()) {
+        Integer unittypeId = entry.getKey();
         boolean isUnittypeAdmin = user.isUnittypeAdmin(unittypeId);
         if (isUnittypeAdmin) {
           int allProfiles = acs.getUnittype(unittypeId).getProfiles().getProfiles().length;
-          if (allProfiles > profileCountMap.get(unittypeId)) {
+          if (allProfiles > entry.getValue()) {
             allProfilesSpecified = false;
             break;
           }
@@ -126,26 +125,24 @@ class UnitQueryCrossUnittype {
     }
     if (user.isAdmin()) {
       if (unittypes.size() == acs.getUnittypes().getUnittypes().length) {
-        unittypes = new ArrayList<>(); // search for all unittypes
+        unittypes = new ArrayList<>();
+      } // search for all unittypes
+    } else if (profiles.isEmpty() && unittypes.isEmpty()) {
+      List<Unittype> allowedUnittypes = new ArrayList<>();
+      List<Profile> allowedProfiles = new ArrayList<>();
+      Unittype[] allowedUnittypeArr = acs.getUnittypes().getUnittypes();
+      boolean allUnittypesAdmin = true;
+      for (Unittype allowedU : allowedUnittypeArr) {
+        if (!user.isUnittypeAdmin(allowedU.getId())) {
+          allUnittypesAdmin = false;
+        }
+        allowedUnittypes.add(allowedU);
+        Collections.addAll(allowedProfiles, allowedU.getProfiles().getProfiles());
       }
-    } else {
-      if (profiles.size() == 0 && unittypes.size() == 0) {
-        List<Unittype> allowedUnittypes = new ArrayList<>();
-        List<Profile> allowedProfiles = new ArrayList<>();
-        Unittype[] allowedUnittypeArr = acs.getUnittypes().getUnittypes();
-        boolean allUnittypesAdmin = true;
-        for (Unittype allowedU : allowedUnittypeArr) {
-          if (!user.isUnittypeAdmin(allowedU.getId())) {
-            allUnittypesAdmin = false;
-          }
-          allowedUnittypes.add(allowedU);
-          allowedProfiles.addAll(Arrays.asList(allowedU.getProfiles().getProfiles()));
-        }
-        if (allUnittypesAdmin) {
-          unittypes = allowedUnittypes;
-        } else {
-          profiles = allowedProfiles;
-        }
+      if (allUnittypesAdmin) {
+        unittypes = allowedUnittypes;
+      } else {
+        profiles = allowedProfiles;
       }
     }
   }
@@ -173,12 +170,12 @@ class UnitQueryCrossUnittype {
         Integer unittypeId = rs.getInt("unit_type_id");
         Unittype unittype = acs.getUnittype(unittypeId);
         if (unittype == null) {
-          break; // can happen if user has no unittypes allowed
-        }
+          break;
+        } // can happen if user has no unittypes allowed
         Profile profile = unittype.getProfiles().getById(profileId);
         if (profile == null) {
-          break; // can happen if user has no profiles allowed, although expect the previous break
-        }
+          break;
+        } // can happen if user has no profiles allowed, although expect the previous break
         // to hit first
         units.put(unitId, new Unit(unitId, unittype, profile));
         if (limit != null && limit > 0 && units.size() == limit) {
@@ -190,8 +187,12 @@ class UnitQueryCrossUnittype {
       logger.error("The sql that failed:" + ds.getSqlQuestionMarksSubstituted());
       throw sqle;
     } finally {
-      if (rs != null) rs.close();
-      if (pp != null) pp.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (pp != null) {
+        pp.close();
+      }
     }
   }
 
@@ -228,18 +229,19 @@ class UnitQueryCrossUnittype {
       ds.addSqlAndArguments(
           "OR u1.unit_id " + operator(likeness, equalValue) + " ?) AND ", searchStr);
     }
-    if (profiles.size() > 0) {
+    if (!profiles.isEmpty()) {
       ds = searchAmongManyProfiles("u1", ds);
-    } else if (unittypes.size() > 0) {
+    } else if (!unittypes.isEmpty()) {
       ds = searchAmongManyUnittypes("u1", ds);
     }
     ds.cleanupSQLTail();
     return ds;
   }
 
-  /* This is a special case - to ask for a set of unittypes
-   * can only happen when no profile or unittype parameters is
-   * specified */
+  /**
+   * This is a special case - to ask for a set of unittypes can only happen when no profile or
+   * unittype parameters is specified.
+   */
   private DynamicStatement searchAmongManyUnittypes(String alias, DynamicStatement ds) {
     ds.addSql("(");
     for (Unittype unittype : unittypes) {
@@ -270,10 +272,18 @@ class UnitQueryCrossUnittype {
    * we search for.
    */
   private String operator(boolean likeness, boolean equalValue) {
-    if (!likeness && !equalValue) return "<>";
-    if (!likeness && equalValue) return "=";
-    if (likeness && !equalValue) return "NOT LIKE";
-    if (likeness && equalValue) return "LIKE";
+    if (!likeness && !equalValue) {
+      return "<>";
+    }
+    if (!likeness && equalValue) {
+      return "=";
+    }
+    if (likeness && !equalValue) {
+      return "NOT LIKE";
+    }
+    if (likeness && equalValue) {
+      return "LIKE";
+    }
     return ""; // Can never happen!
   }
 
@@ -284,7 +294,9 @@ class UnitQueryCrossUnittype {
    * @return
    */
   public List<Unit> getUnitsById(List<Unit> units) throws SQLException {
-    if (units == null || units.size() == 0) return new ArrayList<>();
+    if (units == null || units.isEmpty()) {
+      return new ArrayList<>();
+    }
     DynamicStatement ds = new DynamicStatement();
     ds.addSql(
         "SELECT u.unit_id, u.profile_id, u.unit_type_id, up.unit_type_param_id, up.value FROM unit u ");
@@ -297,10 +309,10 @@ class UnitQueryCrossUnittype {
         sb.append("'").append(unit.getId()).append("'");
       }
     }
-    ds.addSql("u.unit_id IN (" + sb.toString() + ") AND ");
-    if (profiles.size() > 0) {
+    ds.addSql("u.unit_id IN (" + sb + ") AND ");
+    if (!profiles.isEmpty()) {
       ds = searchAmongManyProfiles("u", ds);
-    } else if (unittypes.size() > 0) {
+    } else if (!unittypes.isEmpty()) {
       ds = searchAmongManyUnittypes("u", ds);
     }
     ds.cleanupSQLTail();
@@ -318,7 +330,7 @@ class UnitQueryCrossUnittype {
       }
       Unit unit = null;
       Profile pr = null;
-      Unittype ut;
+      Unittype ut = null;
       while (rs.next()) {
         String uid = rs.getString("unit_id");
         Integer profileId = rs.getInt("profile_id");
@@ -333,14 +345,16 @@ class UnitQueryCrossUnittype {
           lastUnit = unit;
         }
         if (!uid.equals(unit.getId())) {
-          break; // could happen for unitParamValue-search
-        }
+          break;
+        } // could happen for unitParamValue-search
         String unittypeParameterIdStr = rs.getString("unit_type_param_id");
         String value = rs.getString("value");
         if (value == null) {
           value = "";
         }
-        addUnitTypeParameter(unit, unittypeParameterIdStr, value);
+        if (unittypeParameterIdStr != null) {
+          addUnitParameter(unit, pr, ut, uid, unittypeParameterIdStr, value);
+        }
         unit.setParamsAvailable(true);
       }
       return unitsWithDetails;
@@ -348,20 +362,21 @@ class UnitQueryCrossUnittype {
       logger.error("The sql that failed:" + ds.getSqlQuestionMarksSubstituted());
       throw sqle;
     } finally {
-      if (rs != null) rs.close();
-      if (pp != null) pp.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (pp != null) {
+        pp.close();
+      }
     }
   }
 
-  private void addUnitTypeParameter(Unit unit, String utpParamIdStr, String value) {
-    if (utpParamIdStr != null) {
-      Integer unittypeParameterId = Integer.parseInt(utpParamIdStr);
-      UnittypeParameter unittypeParameter =
-          unit.getUnittype().getUnittypeParameters().getById(unittypeParameterId);
-      UnitParameter uParam =
-          new UnitParameter(unittypeParameter, unit.getId(), value, unit.getProfile());
-      unit.getUnitParameters().put(unittypeParameter.getName(), uParam);
-    }
+  private void addUnitParameter(
+      Unit unit, Profile pr, Unittype ut, String uid, String unittypeParameterIdStr, String value) {
+    Integer unittypeParameterId = Integer.parseInt(unittypeParameterIdStr);
+    UnittypeParameter unittypeParameter = ut.getUnittypeParameters().getById(unittypeParameterId);
+    UnitParameter uParam = new UnitParameter(unittypeParameter, uid, value, pr);
+    unit.getUnitParameters().put(unittypeParameter.getName(), uParam);
   }
 
   public Unit getUnitById(String unitId) throws SQLException {
@@ -372,58 +387,15 @@ class UnitQueryCrossUnittype {
     if (unitId != null) {
       ds.addSqlAndArguments("u.unit_id = ? AND ", unitId);
     }
-    if (profiles.size() > 0) {
+    if (!profiles.isEmpty()) {
       ds = searchAmongManyProfiles("u", ds);
-    } else if (unittypes.size() > 0) {
+    } else if (!unittypes.isEmpty()) {
       ds = searchAmongManyUnittypes("u", ds);
     }
     ds.cleanupSQLTail();
-    return getUnit(ds);
-  }
-
-  private Unit getUnit(DynamicStatement ds) throws SQLException {
-    PreparedStatement pp = null;
     ResultSet rs = null;
-    try {
-      pp = ds.makePreparedStatement(connection);
-      pp.setQueryTimeout(60);
-      rs = pp.executeQuery();
-      if (logger.isDebugEnabled()) {
-        logger.debug(ds.getDebugMessage());
-      }
-      Unit unit = null;
-      Profile pr = null;
-      Unittype ut;
-      while (rs.next()) {
-        String uid = rs.getString("unit_id");
-        Integer profileId = rs.getInt("profile_id");
-        Integer unittypeId = rs.getInt("unit_type_id");
-        if (unit == null) {
-          ut = acs.getUnittype(unittypeId);
-          if (ut != null) {
-            pr = ut.getProfiles().getById(profileId);
-          }
-          unit = new Unit(uid, ut, pr);
-        }
-        if (!uid.equals(unit.getId())) {
-          break; // could happen for unitParamValue-search
-        }
-        String unittypeParameterIdStr = rs.getString("unit_type_param_id");
-        String value = rs.getString("value");
-        if (value == null) {
-          value = "";
-        }
-        addUnitTypeParameter(unit, unittypeParameterIdStr, value);
-        unit.setParamsAvailable(true);
-      }
-      return unit;
-    } catch (SQLException sqle) {
-      logger.error("The sql that failed:" + ds.getSqlQuestionMarksSubstituted());
-      throw sqle;
-    } finally {
-      if (rs != null) rs.close();
-      if (pp != null) pp.close();
-    }
+    PreparedStatement pp = null;
+    return getUnit(ds, rs, pp);
   }
 
   protected Unit addSessionParameters(Unit unit) throws SQLException {
@@ -431,6 +403,7 @@ class UnitQueryCrossUnittype {
     ds.addSqlAndArguments("SELECT * FROM unit_param_session WHERE unit_id = ?", unit.getId());
     ResultSet rs = null;
     PreparedStatement pp = null;
+    Unittype ut = unit.getUnittype();
     try {
       pp = ds.makePreparedStatement(connection);
       pp.setQueryTimeout(60);
@@ -444,15 +417,26 @@ class UnitQueryCrossUnittype {
         if (value == null) {
           value = "";
         }
-        addUnitTypeParameter(unit, unittypeParameterIdStr, value);
+        if (unittypeParameterIdStr != null) {
+          Integer unittypeParameterId = Integer.parseInt(unittypeParameterIdStr);
+          UnittypeParameter unittypeParameter =
+              ut.getUnittypeParameters().getById(unittypeParameterId);
+          UnitParameter sp =
+              new UnitParameter(unittypeParameter, unit.getId(), value, unit.getProfile());
+          unit.getSessionParameters().put(unittypeParameter.getName(), sp);
+        }
       }
       return unit;
     } catch (SQLException sqle) {
       logger.error("The sql that failed:" + ds.getSqlQuestionMarksSubstituted());
       throw sqle;
     } finally {
-      if (rs != null) rs.close();
-      if (pp != null) pp.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (pp != null) {
+        pp.close();
+      }
     }
   }
 
@@ -473,7 +457,7 @@ class UnitQueryCrossUnittype {
         rs = pp.executeQuery();
         rs.next();
         Unittype ut = acs.getUnittype(rs.getInt("unit_type_id"));
-        Profile pr = ut.getProfiles().getById((rs.getInt("profile_id")));
+        Profile pr = ut.getProfiles().getById(rs.getInt("profile_id"));
         UnittypeParameter swUtp =
             ut.getUnittypeParameters().getByName(SystemParameters.SOFTWARE_VERSION);
         ds = new DynamicStatement();
@@ -484,19 +468,26 @@ class UnitQueryCrossUnittype {
         pp = ds.makePreparedStatement(connection);
         rs = pp.executeQuery();
         Unit unit = new Unit(unitId, ut, pr);
-        if (rs.next())
+        if (rs.next()) {
           unit.getUnitParameters()
               .put(
                   SystemParameters.SOFTWARE_VERSION,
                   new UnitParameter(swUtp, unitId, rs.getString("value"), pr));
+        }
         return unit;
-      } else return null;
+      } else {
+        return null;
+      }
     } catch (SQLException sqle) {
       logger.error("The sql that failed:" + ds.getSqlQuestionMarksSubstituted(), sqle);
       throw sqle;
     } finally {
-      if (rs != null) rs.close();
-      if (pp != null) pp.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (pp != null) {
+        pp.close();
+      }
     }
   }
 
@@ -505,9 +496,9 @@ class UnitQueryCrossUnittype {
     ds.addSql(
         "SELECT u.unit_id, u.profile_id, u.unit_type_id, up.unit_type_param_id, up.value FROM unit u ");
     ds.addSql("LEFT JOIN unit_param up ON u.unit_id = up.unit_id WHERE ");
-    if (profiles.size() > 0) {
+    if (!profiles.isEmpty()) {
       ds = searchAmongManyProfiles("u", ds);
-    } else if (unittypes.size() > 0) {
+    } else if (!unittypes.isEmpty()) {
       ds = searchAmongManyUnittypes("u", ds);
     }
     if (uniqueUnitParamValue != null) {
@@ -516,7 +507,59 @@ class UnitQueryCrossUnittype {
     }
 
     ds.cleanupSQLTail();
-    return getUnit(ds);
+    ResultSet rs = null;
+    PreparedStatement pp = null;
+    return getUnit(ds, rs, pp);
+  }
+
+  private Unit getUnit(DynamicStatement ds, ResultSet rs, PreparedStatement pp)
+      throws SQLException {
+    try {
+      pp = ds.makePreparedStatement(connection);
+      pp.setQueryTimeout(60);
+      rs = pp.executeQuery();
+      if (logger.isDebugEnabled()) {
+        logger.debug(ds.getDebugMessage());
+      }
+      Unit unit = null;
+      Profile pr = null;
+      Unittype ut = null;
+      while (rs.next()) {
+        String uid = rs.getString("unit_id");
+        Integer profileId = rs.getInt("profile_id");
+        Integer unittypeId = rs.getInt("unit_type_id");
+        if (unit == null) {
+          ut = acs.getUnittype(unittypeId);
+          if (ut != null) {
+            pr = ut.getProfiles().getById(profileId);
+          }
+          unit = new Unit(uid, ut, pr);
+        }
+        if (!uid.equals(unit.getId())) {
+          break;
+        } // could happen for unitParamValue-search
+        String unittypeParameterIdStr = rs.getString("unit_type_param_id");
+        String value = rs.getString("value");
+        if (value == null) {
+          value = "";
+        }
+        if (unittypeParameterIdStr != null) {
+          addUnitParameter(unit, pr, ut, uid, unittypeParameterIdStr, value);
+        }
+        unit.setParamsAvailable(true);
+      }
+      return unit;
+    } catch (SQLException sqle) {
+      logger.error("The sql that failed:" + ds.getSqlQuestionMarksSubstituted());
+      throw sqle;
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (pp != null) {
+        pp.close();
+      }
+    }
   }
 
   public Map<String, Unit> getUnits(String searchStr, Integer limit) throws SQLException {

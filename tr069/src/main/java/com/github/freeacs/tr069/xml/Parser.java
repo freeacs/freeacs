@@ -45,16 +45,12 @@ public class Parser extends DefaultHandler {
   private String commandKey;
   private Fault fault;
 
-  /*
-   * Parse the soap messages using the standard SAX Parser
-   *
-   */
+  /** Parse the soap messages using the standard SAX Parser. */
   public Parser(String soapmsg) throws TR069Exception {
-
     InputSource xmlSource = getStringAsSource(soapmsg);
     initializeDataMappings();
 
-    parsers = new HashMap<String, ContentHandler>();
+    parsers = new HashMap<>();
     parsers.put(HeaderHandler.HEADER_TAG, new HeaderHandler(headers, this));
     parsers.put(FaultHandler.FAULT_TAG, new FaultHandler(fault, this));
     parsers.put(DeviceIdHandler.DEVICE_ID_TAG, new DeviceIdHandler(didStruct, this));
@@ -76,7 +72,7 @@ public class Parser extends DefaultHandler {
     }
   }
 
-  /** Initializes data mapping members */
+  /** Initializes data mapping members. */
   private void initializeDataMappings() {
     this.didStruct = new DeviceIdStruct();
     this.events = new EventList();
@@ -158,7 +154,7 @@ public class Parser extends DefaultHandler {
   }
 
   private static InputSource getStringAsSource(String xml) {
-    if (xml != null && !xml.equals("")) {
+    if (xml != null && !"".equals(xml)) {
       StringReader xmlReader = new StringReader(xml);
       return new InputSource(xmlReader);
     }
@@ -196,7 +192,7 @@ public class Parser extends DefaultHandler {
   }
 
   public void characters(char[] ch, int start, int length) {
-    String content = String.valueOf(ch).substring(start, (start + length));
+    String content = String.valueOf(ch).substring(start, start + length);
     currTextContent.append(content.trim());
   }
 }

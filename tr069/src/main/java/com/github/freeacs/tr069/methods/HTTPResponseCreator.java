@@ -38,14 +38,14 @@ import java.util.Optional;
  * @author morten
  */
 public interface HTTPResponseCreator {
-
   static Response buildEM(HTTPReqResData reqRes) {
     return new EmptyResponse();
   }
 
   static Response buildRE(HTTPReqResData reqRes) {
-    if (reqRes.getTR069TransactionID() == null)
+    if (reqRes.getTR069TransactionID() == null) {
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
+    }
     TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
     Header header = new Header(tr069ID, null, null);
     Body body = new REreq();
@@ -53,8 +53,9 @@ public interface HTTPResponseCreator {
   }
 
   static Response buildFR(HTTPReqResData reqRes) {
-    if (reqRes.getTR069TransactionID() == null)
+    if (reqRes.getTR069TransactionID() == null) {
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
+    }
     TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
     Header header = new Header(tr069ID, null, null);
     Body body = new FRreq();
@@ -83,8 +84,9 @@ public interface HTTPResponseCreator {
   }
 
   static Response buildGPN(HTTPReqResData reqRes, Properties properties) {
-    if (reqRes.getTR069TransactionID() == null)
+    if (reqRes.getTR069TransactionID() == null) {
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
+    }
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
     String keyRoot = reqRes.getSessionData().getKeyRoot();
     Body body = new GPNreq(keyRoot, properties.isNextLevel0InGPN(reqRes.getSessionData()));
@@ -92,9 +94,7 @@ public interface HTTPResponseCreator {
   }
 
   static boolean isOldPingcomDevice(String unitId) {
-    if (unitId.contains("NPA201E")) return true;
-    if (unitId.contains("RGW208EN")) return true;
-    return unitId.contains("NPA101E");
+    return unitId.contains("NPA201E") || unitId.contains("RGW208EN") || unitId.contains("NPA101E");
   }
 
   static void addCPEParameters(SessionData sessionData, Properties properties) {
@@ -108,21 +108,20 @@ public interface HTTPResponseCreator {
     boolean useVendorConfigFile =
         !isOldPingcomDevice(sessionData.getUnitId())
             && !properties.isIgnoreVendorConfigFile(sessionData);
-    if (useVendorConfigFile)
+    if (useVendorConfigFile) {
       Log.debug(
           HTTPResponseCreator.class,
           "VendorConfigFile object will be requested (default behavior)");
-    else
+    } else {
       Log.debug(
           HTTPResponseCreator.class,
           "VendorConfigFile object will not be requested. (quirk behavior: old Pingcom device or quirk enabled)");
+    }
 
     int counter = 0;
     for (String key : cpeParams.getCpeParams().keySet()) {
-      if (key.endsWith(".") && useVendorConfigFile) {
-        paramValueMap.put(key, new ParameterValueStruct(key, "ExtraCPEParam"));
-        counter++;
-      } else if (paramValueMap.get(key) == null && utps.getByName(key) != null) {
+      if ((key.endsWith(".") && useVendorConfigFile)
+          || (paramValueMap.get(key) == null && utps.getByName(key) != null)) {
         paramValueMap.put(key, new ParameterValueStruct(key, "ExtraCPEParam"));
         counter++;
       }
@@ -139,19 +138,20 @@ public interface HTTPResponseCreator {
    * to set it in the database, the standard and the FREEACS-way.
    */
   static Response buildGPV(HTTPReqResData reqRes, Properties properties) {
-    if (reqRes.getTR069TransactionID() == null)
+    if (reqRes.getTR069TransactionID() == null) {
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
+    }
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
     SessionData sessionData = reqRes.getSessionData();
     ProvisioningMode mode = sessionData.getUnit().getProvisioningMode();
-    List<ParameterValueStruct> parameterValueList = new ArrayList<ParameterValueStruct>();
+    List<ParameterValueStruct> parameterValueList = new ArrayList<>();
     if (mode == ProvisioningMode.READALL) {
       Log.debug(
           HTTPResponseCreator.class,
           "Asks for all params ("
               + sessionData.getKeyRoot()
               + "), since in "
-              + ProvisioningMode.READALL.toString()
+              + ProvisioningMode.READALL
               + " mode");
       ParameterValueStruct pvs = new ParameterValueStruct(sessionData.getKeyRoot(), "");
       parameterValueList.add(pvs);
@@ -159,7 +159,7 @@ public interface HTTPResponseCreator {
       // List<RequestResponseData> reqResList = sessionData.getReqResList();
       String previousMethod = sessionData.getPreviousResponseMethod();
       if (properties.isUnitDiscovery(sessionData)
-          || previousMethod.equals(TR069Method.GET_PARAMETER_VALUES)) {
+          || TR069Method.GET_PARAMETER_VALUES.equals(previousMethod)) {
         Log.debug(
             HTTPResponseCreator.class,
             "Asks for all params ("
@@ -169,7 +169,6 @@ public interface HTTPResponseCreator {
         parameterValueList.add(pvs);
       } else {
         Map<String, ParameterValueStruct> paramValueMap = sessionData.getFromDB();
-        UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
         addCPEParameters(sessionData, properties);
         for (Entry<String, ParameterValueStruct> entry : paramValueMap.entrySet()) {
           parameterValueList.add(entry.getValue());
@@ -187,13 +186,16 @@ public interface HTTPResponseCreator {
 
   static Response buildSPV(HTTPReqResData reqRes, Properties properties)
       throws NoSuchAlgorithmException, SQLException {
-    if (reqRes.getTR069TransactionID() == null)
+    if (reqRes.getTR069TransactionID() == null) {
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
+    }
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
     Body body;
     ParameterList paramList = reqRes.getSessionData().getToCPE();
     ParameterKey pk = new ParameterKey();
-    if (!properties.isParameterkeyQuirk(reqRes.getSessionData())) pk.setServerKey(reqRes);
+    if (!properties.isParameterkeyQuirk(reqRes.getSessionData())) {
+      pk.setServerKey(reqRes);
+    }
     body = new SPVreq(paramList.getParameterValueList(), pk.getServerKey());
     Log.notice(
         HTTPResponseCreator.class,
@@ -206,8 +208,9 @@ public interface HTTPResponseCreator {
   }
 
   static Response buildDO(HTTPReqResData reqRes) {
-    if (reqRes.getTR069TransactionID() == null)
+    if (reqRes.getTR069TransactionID() == null) {
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
+    }
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
     SessionData sessionData = reqRes.getSessionData();
     SessionData.Download download = sessionData.getDownload();
@@ -245,8 +248,9 @@ public interface HTTPResponseCreator {
       String methodName = reqRes.getResponse().getMethod();
       final Response response;
       HTTPResponseAction resAction = responseMap.get(methodName);
-      if (resAction != null) response = resAction.getCreateResponseMethod().apply(reqRes);
-      else {
+      if (resAction != null) {
+        response = resAction.getCreateResponseMethod().apply(reqRes);
+      } else {
         response = new EmptyResponse();
         Log.error(
             HTTPResponseCreator.class,
@@ -257,7 +261,7 @@ public interface HTTPResponseCreator {
       Log.conversation(
           reqRes.getSessionData(),
           "=============== FROM ACS TO ( "
-              + Optional.ofNullable(unitId).orElseGet(() -> "Unknown")
+              + Optional.ofNullable(unitId).orElse("Unknown")
               + " ) ============\n"
               + responseStr
               + "\n");

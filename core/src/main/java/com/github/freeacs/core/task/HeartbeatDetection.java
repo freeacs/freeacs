@@ -32,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class HeartbeatDetection extends DBIShare {
-
   private static long MINUTE_MS = 60 * 1000;
   private static long HOUR_MS = 60 * MINUTE_MS;
   private static long OFFSET = MINUTE_MS;
@@ -40,8 +39,9 @@ public class HeartbeatDetection extends DBIShare {
 
   private ACS acs;
   private long lastTms;
-  // Contains SyslogMessageMaps (which wraps InsertOrderMap) for each heartbeat
+  /** Contains SyslogMessageMaps (which wraps InsertOrderMap) for each heartbeat. */
   private SyslogMessageMapContainer smmc = new SyslogMessageMapContainer();
+
   private TimestampMap activeDevices = new TimestampMap();
   private Cache sentMessages = new Cache();
   private static Logger logger = LoggerFactory.getLogger(HeartbeatDetection.class);
@@ -84,14 +84,12 @@ public class HeartbeatDetection extends DBIShare {
             "HeartbeatDetection: FindHeartbeats: Parse syslog from the last hours (depending on heartbeat timeout) up to "
                 + sdf.format(new Date(to)));
       }
-    } else {
-      if (logger.isInfoEnabled()) {
-        logger.info(
-            "HeartbeatDetection: FindHeartbeats: Parse syslog in the timespan "
-                + sdf.format(new Date(from))
-                + " to "
-                + sdf.format(new Date(to)));
-      }
+    } else if (logger.isInfoEnabled()) {
+      logger.info(
+          "HeartbeatDetection: FindHeartbeats: Parse syslog in the timespan "
+              + sdf.format(new Date(from))
+              + " to "
+              + sdf.format(new Date(to)));
     }
     Connection c = null;
     ResultSet rs = null;
@@ -125,7 +123,7 @@ public class HeartbeatDetection extends DBIShare {
                   "HeartbeatDetection: FindHeartbeats: Creating new syslog message map - because server-startup or heartbeat-change");
             }
             smm = smmc.createSyslogMessageMap(heartbeat);
-            from = new Date(to - (long) heartbeat.getTimeoutHours() * HOUR_MS).getTime();
+            from = new Date(to - heartbeat.getTimeoutHours() * HOUR_MS).getTime();
             to = from + 5 * 60000;
           }
           while (to
@@ -152,9 +150,10 @@ public class HeartbeatDetection extends DBIShare {
             }
             while (rs.next()) {
               String unitId = rs.getString("unit_id");
-              if (unitsInGroupMap == null) smm.append(unitId, to);
-              else if (unitsInGroupMap != null && unitsInGroupMap.get(unitId) != null)
+              if (unitsInGroupMap == null
+                  || (unitsInGroupMap != null && unitsInGroupMap.get(unitId) != null)) {
                 smm.append(unitId, to);
+              }
               counter++;
             }
             if (logger.isDebugEnabled()) {
@@ -181,8 +180,12 @@ public class HeartbeatDetection extends DBIShare {
       }
       throw sqlex;
     } finally {
-      if (rs != null) rs.close();
-      if (ps != null) ps.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
       if (c != null) {
         c.close();
       }
@@ -236,8 +239,12 @@ public class HeartbeatDetection extends DBIShare {
       }
       throw sqlex;
     } finally {
-      if (rs != null) rs.close();
-      if (ps != null) ps.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
       if (c != null) {
         c.close();
       }
@@ -253,14 +260,15 @@ public class HeartbeatDetection extends DBIShare {
         logger.debug("HeartbeatDetection: FilterHeartbeats: Process " + smm);
       }
       // The list contains the units in the group without the heartbeat message
-      List<String> unitIdsAbsent = new ArrayList<String>();
+      List<String> unitIdsAbsent = new ArrayList<>();
       Heartbeat heartbeat = smm.getHeartbeat();
       Group group = heartbeat.getGroup();
       Map<String, Unit> groupUnits = acsUnit.getUnits(group);
       for (String unitId : groupUnits.keySet()) {
         if (smm.getUnitIdTmsMap().get(unitId) == null
-            && sentMessages.get(heartbeat.getId() + ":" + unitId) == null)
+            && sentMessages.get(heartbeat.getId() + ":" + unitId) == null) {
           unitIdsAbsent.add(unitId);
+        }
       }
       if (logger.isDebugEnabled()) {
         logger.debug(
@@ -289,7 +297,9 @@ public class HeartbeatDetection extends DBIShare {
         if (lastActivityTms != null) {
           sendHeartbeat(heartbeat, unitIdMissing, to);
           missingHeartbeatCounter++;
-        } else noHeartbeatNotActiveCounter++;
+        } else {
+          noHeartbeatNotActiveCounter++;
+        }
       }
       if (logger.isDebugEnabled()) {
         logger.debug(
@@ -312,9 +322,12 @@ public class HeartbeatDetection extends DBIShare {
 
   private void sendHeartbeat(Heartbeat heartbeat, String unitId, long tms) throws IOException {
     String expression = heartbeat.getExpression();
-    if (heartbeat.getExpression().startsWith("^")) expression = expression.substring(1);
-    if (heartbeat.getExpression().endsWith("$"))
+    if (heartbeat.getExpression().startsWith("^")) {
+      expression = expression.substring(1);
+    }
+    if (heartbeat.getExpression().endsWith("$")) {
       expression = expression.substring(0, expression.length() - 1);
+    }
     String content =
         expression
             + " "
@@ -381,8 +394,10 @@ public class HeartbeatDetection extends DBIShare {
     }
   }
 
-  // Check through all SyslogMessageMaps, and remove those which no longer
-  // has a heartbeat-object with a live and working Unittype and Group.
+  /**
+   * Check through all SyslogMessageMaps, and remove those which no longer has a heartbeat-object
+   * with a live and working Unittype and Group.
+   */
   private void updateSyslogMessageMaps() {
     Iterator<Integer> keyIterator = smmc.getIterator();
     while (keyIterator.hasNext()) {

@@ -1,7 +1,6 @@
 package com.github.freeacs.web.app.page.scriptexecution;
 
 public class Enumeration {
-
   private String value;
   private String description;
 
@@ -27,7 +26,7 @@ public class Enumeration {
   }
 
   public boolean equals(Object o) {
-    if (o != null && o instanceof Enumeration) {
+    if (o instanceof Enumeration) {
       Enumeration e = (Enumeration) o;
       return getValue().equals(e.getValue()) && getDescription().equals(e.getDescription());
     }

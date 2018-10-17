@@ -15,12 +15,9 @@ import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.WebConstants;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
@@ -35,7 +32,6 @@ import org.apache.commons.fileupload.FileItem;
  * @author Jarl A.
  */
 public class FilePage extends AbstractWebPage {
-
   /** The xaps. */
   private ACS acs;
 
@@ -48,7 +44,7 @@ public class FilePage extends AbstractWebPage {
   /** The description. */
   private String description;
 
-  /** The type */
+  /** The type. */
   private FileType fileTypeEnum;
 
   /** The version number. */
@@ -59,19 +55,19 @@ public class FilePage extends AbstractWebPage {
   /** The bytes. */
   private byte[] bytes;
 
-  /** The content as string, if specified in textarea on Filepage */
+  /** The content as string, if specified in textarea on Filepage. */
   private String content;
 
   /** The formsubmit. */
   private String formsubmit;
 
   /** The delete list. */
-  private List<String> deleteList = new ArrayList<String>();
+  private List<String> deleteList = new ArrayList<>();
 
   /** The input data. */
   private FileData inputData = new FileData();
 
-  /** The file id */
+  /** The file id. */
   private Integer id;
 
   /** The update map. */
@@ -91,48 +87,31 @@ public class FilePage extends AbstractWebPage {
    * @throws InvocationTargetException the invocation target exception
    * @throws NoSuchMethodException the no such method exception
    */
-  private void actionParse(ParameterParser req)
-      throws IllegalArgumentException, SecurityException, IllegalAccessException,
-          InvocationTargetException, NoSuchMethodException {
-    if (formsubmit == null || !formsubmit.equals("Clear")) {
+  private void actionParse(ParameterParser req) {
+    if (!"Clear".equals(formsubmit)) {
       id = inputData.getId().getInteger();
       FileItem file = req.getFileUpload("filename");
-      if (file != null) bytes = file.get();
+      if (file != null) {
+        bytes = file.get();
+      }
       name = inputData.getName().getStringWithoutTags();
       description = inputData.getDescription().getStringWithoutTagsAndContent();
       String fileTypeStr = inputData.getType().getString();
-      if (fileTypeStr != null) fileTypeEnum = FileType.valueOf(fileTypeStr);
+      if (fileTypeStr != null) {
+        fileTypeEnum = FileType.valueOf(fileTypeStr);
+      }
       date = inputData.getSoftwaredate().getDateOrDefault(new Date());
       versionNumber = inputData.getVersionNumber().getStringWithoutTags();
       targetName = inputData.getTargetName().getString();
       content = inputData.getContent().getString();
     }
 
-    String item = null;
+    String item;
     Enumeration<?> names = req.getKeyEnumeration();
     while (names.hasMoreElements() && (item = (String) names.nextElement()) != null) {
       if (item.startsWith("delete::")) {
         deleteList.add(item.substring(8));
       }
-      //					else if (item.startsWith("update::")) {
-      //						String[] arr = item.split("::");
-      //						if (arr.length == 3 && isNumber(arr[1])) {
-      //							Map<String, String> details = updateMap.get(arr[1]);
-      //							if (details == null) {
-      //								updateMap.put(arr[1], new HashMap<String, String>());
-      //								details = updateMap.get(arr[1]);
-      //							}
-      //							if (arr[2].equals("name")) {
-      //								details.put("name", req.getParameter(item));
-      //							} else if (arr[2].equals("type")) {
-      //								details.put("type", req.getParameter(item));
-      //							} else if (arr[2].equals("description")) {
-      //								details.put("description", req.getParameter(item));
-      //							} else if (arr[2].equals("softwaredate")) {
-      //								details.put("softwaredate", req.getParameter(item));
-      //							}
-      //						}
-      //					}
     }
   }
 
@@ -144,12 +123,13 @@ public class FilePage extends AbstractWebPage {
   private void actionAddChangeDelete() throws Exception {
     if (formsubmit != null) {
       Files files = unittype.getFiles();
-      if (formsubmit.equals("Upload file")) {
+      if ("Upload file".equals(formsubmit)) {
         File compare = files.getByVersionType(versionNumber, fileTypeEnum);
-        if (compare != null && !compare.getName().equals(name))
+        if (compare != null && !compare.getName().equals(name)) {
           throw new IllegalArgumentException(
               "Cannot add/change file, beacuse version + file type is the same as for "
                   + compare.getName());
+        }
         Date softwaredate = date;
         if (files.getByName(name) == null) {
           File file =
@@ -179,16 +159,16 @@ public class FilePage extends AbstractWebPage {
           throw new IllegalArgumentException(
               "The name " + name + " is already used for another file");
         }
-      } else if (formsubmit.equals("Update file") && id != null) {
-
+      } else if ("Update file".equals(formsubmit) && id != null) {
         /* We don't allow changing a file to have the same version/filetype as an
          * already existing file, except of course if they have the same ID. */
         File compare = files.getByVersionType(versionNumber, fileTypeEnum);
-        if (compare != null && !compare.getId().equals(id))
+        if (compare != null && !compare.getId().equals(id)) {
           throw new IllegalArgumentException(
               "Cannot add/change file, beacuse version"
                   + " and file type is the same as for "
                   + compare.getName());
+        }
 
         File file = files.getById(id);
         file.setName(name);
@@ -204,13 +184,13 @@ public class FilePage extends AbstractWebPage {
         }
 
         // Otherwise, for non-SOFTWARE filetypes, get the content from the input text field instead.
-        else if (fileTypeEnum != FileType.SOFTWARE /* && content != null*/) {
+        else if (fileTypeEnum != FileType.SOFTWARE /* && content != null */) {
           file.setBytes(content.getBytes());
         }
 
         // This means that SOFTWARE file contents often goes unchanged at this point.
         files.addOrChangeFile(file, acs);
-      } else if (formsubmit.equals("Delete selected files")) {
+      } else if ("Delete selected files".equals(formsubmit)) {
         for (String name : deleteList) {
           File firmware = files.getByName(name);
           files.deleteFile(firmware, acs);
@@ -219,9 +199,6 @@ public class FilePage extends AbstractWebPage {
     }
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
-   */
   public void process(
       ParameterParser params,
       Output outputHandler,
@@ -247,7 +224,9 @@ public class FilePage extends AbstractWebPage {
         params, outputHandler, inputData, inputData.getUnittype());
 
     String utN = inputData.getUnittype().getString();
-    if (utN != null) unittype = acs.getUnittype(utN);
+    if (utN != null) {
+      unittype = acs.getUnittype(utN);
+    }
 
     DropDownSingleSelect<Unittype> unittypeSelect =
         InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
@@ -260,16 +239,20 @@ public class FilePage extends AbstractWebPage {
       actionAddChangeDelete();
 
       FileType selectedFileType = null;
-      if (id != null) selectedFileType = unittype.getFiles().getById(id).getType();
+      if (id != null) {
+        selectedFileType = unittype.getFiles().getById(id).getType();
+      }
       DropDownSingleSelect<FileType> typeSelect = getTypeSelect(selectedFileType);
 
       Input fileTypeInput = inputData.getFileType();
       FileType fileType = null;
-      List<File> list = null;
+      List<File> list;
       if (fileTypeInput.getString() != null) {
         list = getFiles(FileType.valueOf(fileTypeInput.getString()));
         fileType = FileType.valueOf(fileTypeInput.getString());
-      } else list = getFiles();
+      } else {
+        list = getFiles();
+      }
 
       rootMap.put("dummy", WebConstants.ALL_ITEMS_OR_DEFAULT);
       rootMap.put("num", list.size());
@@ -284,12 +267,13 @@ public class FilePage extends AbstractWebPage {
         File f = unittype.getFiles().getById(id);
         if (f != null) {
           rootMap.put("fileobj", f);
-          if (f.getType() != FileType.SOFTWARE)
+          if (f.getType() != FileType.SOFTWARE) {
             rootMap.put("filecontent", new String(f.getContent()));
-          else
+          } else {
             rootMap.put(
                 "filecontent",
                 "Software is assumed to be binary content, not possible to view or change content. A file must be specified below in order to perform a change.");
+          }
         }
       }
     }
@@ -301,18 +285,10 @@ public class FilePage extends AbstractWebPage {
   }
 
   protected List<File> getFiles(FileType requiredType) {
-    List<File> list = new ArrayList<File>();
+    List<File> list = new ArrayList<>();
     if (unittype != null) {
       list = Arrays.asList(unittype.getFiles().getFiles(requiredType));
-      //			File[] firmwareArr = unittype.getFiles().getFiles();
-      //			for(File f: firmwareArr){
-      //				if(requiredType!=null){
-      //					if(f.getType().equals(requiredType))
-      //						list.add(f);
-      //				}else
-      //					list.add(f);
-      //			}
-      Collections.sort(list, new FileComparator(FileComparator.DATE));
+      list.sort(new FileComparator(FileComparator.DATE));
     }
     return list;
   }
@@ -321,8 +297,6 @@ public class FilePage extends AbstractWebPage {
    * Export firmware.
    *
    * @param outputHandler the outputHandler
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws SQLException the sQL exception the no available connection exception
    */
   private void exportFirmware(Output outputHandler) {
     try {
@@ -332,7 +306,7 @@ public class FilePage extends AbstractWebPage {
       outputHandler.setContentType("application/binary");
       outputHandler.setDownloadAttachment(stripSpacesReplaceWithUnderScore(firmware.getName()));
       outputHandler.writeBytesToResponse(firmware.getContent());
-    } catch (Exception ex) {
+    } catch (Exception ignored) {
     }
   }
 
@@ -352,19 +326,12 @@ public class FilePage extends AbstractWebPage {
    *
    * @return the drop down single select
    * @throws IllegalArgumentException the illegal argument exception
-   * @throws SecurityException the security exception
-   * @throws IllegalAccessException the illegal access exception
-   * @throws InvocationTargetException the invocation target exception
-   * @throws NoSuchMethodException the no such method exception the no available connection
-   *     exception
-   * @throws SQLException the sQL exception
+   * @throws SecurityException the security exception exception
    */
   protected DropDownSingleSelect<FileType> getTypeSelect(
       FileType selectedFileType, FileType... types) {
     List<FileType> typeList = Arrays.asList(types);
-    DropDownSingleSelect<FileType> typeDropdown =
-        InputSelectionFactory.getDropDownSingleSelect(
-            inputData.getType(), selectedFileType, typeList);
-    return typeDropdown;
+    return InputSelectionFactory.getDropDownSingleSelect(
+        inputData.getType(), selectedFileType, typeList);
   }
 }

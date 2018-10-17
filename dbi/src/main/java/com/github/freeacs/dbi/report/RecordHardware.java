@@ -3,7 +3,6 @@ package com.github.freeacs.dbi.report;
 import java.util.Date;
 
 public class RecordHardware extends Record<RecordHardware> {
-
   public static KeyFactory keyFactory = new KeyFactory("Unittype", "Profile", "SoftwareVersion");
   private Key key;
 
@@ -13,8 +12,9 @@ public class RecordHardware extends Record<RecordHardware> {
   private String profileName;
   private String softwareVersion;
 
-  //	private Counter unitCount = new Counter();
+  /** Private Counter unitCount = new Counter();. */
   private Counter bootCount = new Counter();
+
   private Counter bootWatchdogCount = new Counter();
   private Counter bootMiscCount = new Counter();
   private Counter bootPowerCount = new Counter();
@@ -50,7 +50,9 @@ public class RecordHardware extends Record<RecordHardware> {
     this.periodType = periodType;
     this.unittypeName = unittypeName;
     this.profileName = profileName;
-    if (softwareVersion == null) softwareVersion = "Unknown";
+    if (softwareVersion == null) {
+      softwareVersion = "Unknown";
+    }
     this.softwareVersion = softwareVersion;
     this.key = keyFactory.makeKey(tms, periodType, unittypeName, profileName, softwareVersion);
   }
@@ -78,55 +80,55 @@ public class RecordHardware extends Record<RecordHardware> {
   public RecordHardware clone() {
     RecordHardware clone =
         new RecordHardware(tms, periodType, unittypeName, profileName, softwareVersion);
-    clone.setBootCount(this.getBootCount().clone());
-    clone.setBootMiscCount(this.getBootMiscCount().clone());
-    clone.setBootPowerCount(this.getBootPowerCount().clone());
-    clone.setBootProvBootCount(this.getBootProvBootCount().clone());
-    clone.setBootProvConfCount(this.getBootProvConfCount().clone());
-    clone.setBootProvCount(this.getBootProvCount().clone());
-    clone.setBootProvSwCount(this.getBootProvSwCount().clone());
-    clone.setBootUserCount(this.getBootUserCount().clone());
-    clone.setBootWatchdogCount(this.getBootWatchdogCount().clone());
-    clone.setMemoryHeapDdrPoolAvg(this.getMemoryHeapDdrPoolAvg().clone());
-    clone.setMemoryHeapDdrCurrentAvg(this.getMemoryHeapDdrCurrentAvg().clone());
-    clone.setMemoryHeapDdrLowAvg(this.getMemoryHeapDdrLowAvg().clone());
-    clone.setMemoryHeapOcmPoolAvg(this.getMemoryHeapOcmPoolAvg().clone());
-    clone.setMemoryHeapOcmCurrentAvg(this.getMemoryHeapOcmCurrentAvg().clone());
-    clone.setMemoryHeapOcmLowAvg(this.getMemoryHeapOcmLowAvg().clone());
-    clone.setMemoryNpDdrPoolAvg(this.getMemoryNpDdrPoolAvg().clone());
-    clone.setMemoryNpDdrCurrentAvg(this.getMemoryNpDdrCurrentAvg().clone());
-    clone.setMemoryNpDdrLowAvg(this.getMemoryNpDdrLowAvg().clone());
-    clone.setMemoryNpOcmPoolAvg(this.getMemoryNpOcmPoolAvg().clone());
-    clone.setMemoryNpOcmCurrentAvg(this.getMemoryNpOcmCurrentAvg().clone());
-    clone.setMemoryNpOcmLowAvg(this.getMemoryNpOcmLowAvg().clone());
-    clone.setCpeUptimeAvg(this.getCpeUptimeAvg().clone());
+    clone.setBootCount(getBootCount().clone());
+    clone.setBootMiscCount(getBootMiscCount().clone());
+    clone.setBootPowerCount(getBootPowerCount().clone());
+    clone.setBootProvBootCount(getBootProvBootCount().clone());
+    clone.setBootProvConfCount(getBootProvConfCount().clone());
+    clone.setBootProvCount(getBootProvCount().clone());
+    clone.setBootProvSwCount(getBootProvSwCount().clone());
+    clone.setBootUserCount(getBootUserCount().clone());
+    clone.setBootWatchdogCount(getBootWatchdogCount().clone());
+    clone.setMemoryHeapDdrPoolAvg(getMemoryHeapDdrPoolAvg().clone());
+    clone.setMemoryHeapDdrCurrentAvg(getMemoryHeapDdrCurrentAvg().clone());
+    clone.setMemoryHeapDdrLowAvg(getMemoryHeapDdrLowAvg().clone());
+    clone.setMemoryHeapOcmPoolAvg(getMemoryHeapOcmPoolAvg().clone());
+    clone.setMemoryHeapOcmCurrentAvg(getMemoryHeapOcmCurrentAvg().clone());
+    clone.setMemoryHeapOcmLowAvg(getMemoryHeapOcmLowAvg().clone());
+    clone.setMemoryNpDdrPoolAvg(getMemoryNpDdrPoolAvg().clone());
+    clone.setMemoryNpDdrCurrentAvg(getMemoryNpDdrCurrentAvg().clone());
+    clone.setMemoryNpDdrLowAvg(getMemoryNpDdrLowAvg().clone());
+    clone.setMemoryNpOcmPoolAvg(getMemoryNpOcmPoolAvg().clone());
+    clone.setMemoryNpOcmCurrentAvg(getMemoryNpOcmCurrentAvg().clone());
+    clone.setMemoryNpOcmLowAvg(getMemoryNpOcmLowAvg().clone());
+    clone.setCpeUptimeAvg(getCpeUptimeAvg().clone());
     return clone;
   }
 
   public void add(RecordHardware record) {
-    this.getBootCount().add(record.getBootCount());
-    this.getBootMiscCount().add(record.getBootMiscCount());
-    this.getBootPowerCount().add(record.getBootPowerCount());
-    this.getBootProvBootCount().add(record.getBootProvBootCount());
-    this.getBootProvConfCount().add(record.getBootProvConfCount());
-    this.getBootProvCount().add(record.getBootProvCount());
-    this.getBootProvSwCount().add(record.getBootProvSwCount());
-    this.getBootResetCount().add(record.getBootResetCount());
-    this.getBootUserCount().add(record.getBootUserCount());
-    this.getBootWatchdogCount().add(record.getBootWatchdogCount());
-    this.getMemoryHeapDdrPoolAvg().add(record.getMemoryHeapDdrPoolAvg());
-    this.getMemoryHeapDdrCurrentAvg().add(record.getMemoryHeapDdrCurrentAvg());
-    this.getMemoryHeapDdrLowAvg().add(record.getMemoryHeapDdrLowAvg());
-    this.getMemoryHeapOcmPoolAvg().add(record.getMemoryHeapOcmPoolAvg());
-    this.getMemoryHeapOcmCurrentAvg().add(record.getMemoryHeapOcmCurrentAvg());
-    this.getMemoryHeapOcmLowAvg().add(record.getMemoryHeapOcmLowAvg());
-    this.getMemoryNpDdrPoolAvg().add(record.getMemoryNpDdrPoolAvg());
-    this.getMemoryNpDdrCurrentAvg().add(record.getMemoryNpDdrCurrentAvg());
-    this.getMemoryNpDdrLowAvg().add(record.getMemoryNpDdrLowAvg());
-    this.getMemoryNpOcmPoolAvg().add(record.getMemoryNpOcmPoolAvg());
-    this.getMemoryNpOcmCurrentAvg().add(record.getMemoryNpOcmCurrentAvg());
-    this.getMemoryNpOcmLowAvg().add(record.getMemoryNpOcmLowAvg());
-    this.getCpeUptimeAvg().add(record.getCpeUptimeAvg());
+    getBootCount().add(record.getBootCount());
+    getBootMiscCount().add(record.getBootMiscCount());
+    getBootPowerCount().add(record.getBootPowerCount());
+    getBootProvBootCount().add(record.getBootProvBootCount());
+    getBootProvConfCount().add(record.getBootProvConfCount());
+    getBootProvCount().add(record.getBootProvCount());
+    getBootProvSwCount().add(record.getBootProvSwCount());
+    getBootResetCount().add(record.getBootResetCount());
+    getBootUserCount().add(record.getBootUserCount());
+    getBootWatchdogCount().add(record.getBootWatchdogCount());
+    getMemoryHeapDdrPoolAvg().add(record.getMemoryHeapDdrPoolAvg());
+    getMemoryHeapDdrCurrentAvg().add(record.getMemoryHeapDdrCurrentAvg());
+    getMemoryHeapDdrLowAvg().add(record.getMemoryHeapDdrLowAvg());
+    getMemoryHeapOcmPoolAvg().add(record.getMemoryHeapOcmPoolAvg());
+    getMemoryHeapOcmCurrentAvg().add(record.getMemoryHeapOcmCurrentAvg());
+    getMemoryHeapOcmLowAvg().add(record.getMemoryHeapOcmLowAvg());
+    getMemoryNpDdrPoolAvg().add(record.getMemoryNpDdrPoolAvg());
+    getMemoryNpDdrCurrentAvg().add(record.getMemoryNpDdrCurrentAvg());
+    getMemoryNpDdrLowAvg().add(record.getMemoryNpDdrLowAvg());
+    getMemoryNpOcmPoolAvg().add(record.getMemoryNpOcmPoolAvg());
+    getMemoryNpOcmCurrentAvg().add(record.getMemoryNpOcmCurrentAvg());
+    getMemoryNpOcmLowAvg().add(record.getMemoryNpOcmLowAvg());
+    getCpeUptimeAvg().add(record.getCpeUptimeAvg());
   }
 
   public KeyFactory getKeyFactory() {

@@ -17,9 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 public class Sync {
-
   public static void main(String[] args, Session session, OutputHandler oh) throws Exception {
-
     /* Parse/validate input arguments */
     String unittypeName = args[1];
     ProvisioningProtocol protocol = ProvisioningProtocol.toEnum(args[2]);
@@ -27,11 +25,12 @@ public class Sync {
     ACS acs = session.getAcs();
     Unittype unittype = acs.getUnittype(unittypeName);
 
-    if (unittype != null && unittype.getProtocol() != protocol)
+    if (unittype != null && unittype.getProtocol() != protocol) {
       throw new IllegalArgumentException(
           "The unittype has a different protocol than the one supplied: "
               + args[3]
               + ", you may omit the last argument");
+    }
 
     /* Load XML-document */
     UnittypeXML unitType = new UnittypeXML();
@@ -54,12 +53,14 @@ public class Sync {
     /* Create/Update Unittype Parameters */
     UnittypeXML.Parameters parameters = unitType.parameters;
     UnittypeParameters utps = unittype.getUnittypeParameters();
-    Set<String> parameterNamesInUnittypeXML = new HashSet<String>();
-    List<UnittypeParameter> utpList = new ArrayList<UnittypeParameter>();
+    Set<String> parameterNamesInUnittypeXML = new HashSet<>();
+    List<UnittypeParameter> utpList = new ArrayList<>();
     for (int i = 0; i < parameters.list.size(); i++) {
       UnittypeXML.Parameter parameter = parameters.list.get(i);
       parameterNamesInUnittypeXML.add(parameter.name);
-      if (!parameter.protocol_match(protocol.toString())) continue;
+      if (!parameter.protocol_match(protocol.toString())) {
+        continue;
+      }
       UnittypeParameter utp = utps.getByName(parameter.name);
       if (utp == null) {
         utp =
@@ -82,9 +83,7 @@ public class Sync {
         utp.setValues(utpvs);
         //				utps.addOrChangeUnittypeParameter(utp, xaps);
         oh.print("Unittype parameter values are created/changed\n");
-      } else if (parameter.type != null
-          && parameter.type.equals("boolean")
-          && parameter.deviceflags.equals("RW")) {
+      } else if ("boolean".equals(parameter.type) && "RW".equals(parameter.deviceflags)) {
         UnittypeParameterValues utpvs = new UnittypeParameterValues();
         utpvs.setValues(Arrays.asList(new String[] {"0", "1"}));
         utp.setValues(utpvs);

@@ -35,9 +35,7 @@ public class Groups {
     return nameMap.get(name);
   }
 
-  /*
-   * Returns all groups
-   */
+  /** Returns all groups. */
   public Group[] getGroups() {
     Group[] groups = new Group[nameMap.size()];
     nameMap.values().toArray(groups);
@@ -51,12 +49,12 @@ public class Groups {
 
   protected static void checkPermission(Group group, ACS acs) {
     if (group.getTopParent().getProfile() == null) {
-      if (!acs.getUser().isUnittypeAdmin(group.getUnittype().getId()))
+      if (!acs.getUser().isUnittypeAdmin(group.getUnittype().getId())) {
         throw new IllegalArgumentException("Not allowed action for this user");
-    } else {
-      if (!acs.getUser()
-          .isProfileAdmin(group.getUnittype().getId(), group.getTopParent().getProfile().getId()))
-        throw new IllegalArgumentException("Not allowed action for this user");
+      }
+    } else if (!acs.getUser()
+        .isProfileAdmin(group.getUnittype().getId(), group.getTopParent().getProfile().getId())) {
+      throw new IllegalArgumentException("Not allowed action for this user");
     }
   }
 
@@ -74,14 +72,16 @@ public class Groups {
 
   public List<Group> getTopLevelGroups() {
     Group[] allGroups = getGroups();
-    List<Group> topLevelGroups = new ArrayList<Group>();
+    List<Group> topLevelGroups = new ArrayList<>();
     for (Group g : allGroups) {
-      if (g.getParent() == null) topLevelGroups.add(g);
+      if (g.getParent() == null) {
+        topLevelGroups.add(g);
+      }
     }
     return topLevelGroups;
   }
 
-  /* only used to refresh the cache, used from DBI */
+  /** Only used to refresh the cache, used from DBI. */
   private static void refreshGroupParameter(Group group, Connection c) throws SQLException {
     Statement s = null;
     ResultSet rs = null;
@@ -91,21 +91,24 @@ public class Groups {
       s = c.createStatement();
       s.setQueryTimeout(60);
       rs = s.executeQuery(sql);
-      Set<Integer> groupParamIdSet = new HashSet<Integer>();
+      Set<Integer> groupParamIdSet = new HashSet<>();
       while (rs.next()) {
         Integer unittypeParamId = rs.getInt("unit_type_param_id");
         logger.info(
             "refreshGroupParameter: Group: " + group + ", unittypeParamId: " + unittypeParamId);
-        if (group != null)
+        if (group != null) {
           logger.info("refreshGroupParameter: Group.getUnittype(): " + group.getUnittype());
-        if (group.getUnittype() != null)
+        }
+        if (group.getUnittype() != null) {
           logger.info(
               "refreshGroupParameter: Group.getUnittype().getUnittypeParameters(): "
                   + group.getUnittype().getUnittypeParameters());
-        if (group.getUnittype().getUnittypeParameters() != null)
+        }
+        if (group.getUnittype().getUnittypeParameters() != null) {
           logger.info(
               "refreshGroupParameter: Group.getUnittype().getUnittypeParameters().getById(utpId): "
                   + group.getUnittype().getUnittypeParameters().getById(unittypeParamId));
+        }
         UnittypeParameter utp =
             group.getUnittype().getUnittypeParameters().getById(unittypeParamId);
         String value = rs.getString("value");
@@ -124,15 +127,21 @@ public class Groups {
       // Find out if any group parameter has been deleted
       GroupParameters groupParams = group.getGroupParameters();
       for (GroupParameter gp : group.getGroupParameters().getGroupParameters()) {
-        if (!groupParamIdSet.contains(gp.getId())) groupParams.deleteGroupParameter(gp);
+        if (!groupParamIdSet.contains(gp.getId())) {
+          groupParams.deleteGroupParameter(gp);
+        }
       }
     } finally {
-      if (rs != null) rs.close();
-      if (s != null) s.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (s != null) {
+        s.close();
+      }
     }
   }
 
-  /* only used to refresh the cache, used from DBI */
+  /** Only used to refresh the cache, used from DBI. */
   protected static void refreshGroup(Integer groupId, ACS acs) throws SQLException {
     ResultSet rs = null;
     PreparedStatement ps = null;
@@ -168,8 +177,12 @@ public class Groups {
         logger.debug("Refreshed group " + group);
       }
     } finally {
-      if (rs != null) rs.close();
-      if (ps != null) ps.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
       c.close();
     }
   }
@@ -181,10 +194,16 @@ public class Groups {
     try {
       sql = "UPDATE group_ SET parent_group_id = ?, profile_id = ? WHERE parent_group_id = ?";
       s = c.prepareStatement(sql);
-      if (group.getParent() == null) s.setNull(1, Types.INTEGER);
-      else s.setInt(1, group.getParent().getId());
-      if (group.getProfile() == null) s.setNull(2, Types.INTEGER);
-      else s.setInt(2, group.getProfile().getId());
+      if (group.getParent() != null) {
+        s.setInt(1, group.getParent().getId());
+      } else {
+        s.setNull(1, Types.INTEGER);
+      }
+      if (group.getProfile() != null) {
+        s.setInt(2, group.getProfile().getId());
+      } else {
+        s.setNull(2, Types.INTEGER);
+      }
       s.setInt(3, group.getId());
 
       s.setQueryTimeout(60);
@@ -199,9 +218,13 @@ public class Groups {
       s.setQueryTimeout(60);
       s.executeUpdate(sql);
       logger.info("Deleted group " + group);
-      if (acs.getDbi() != null) acs.getDbi().publishDelete(group, group.getUnittype());
+      if (acs.getDbi() != null) {
+        acs.getDbi().publishDelete(group, group.getUnittype());
+      }
     } finally {
-      if (s != null) s.close();
+      if (s != null) {
+        s.close();
+      }
       c.close();
     }
   }
@@ -225,10 +248,14 @@ public class Groups {
     Group parent = group.getParent();
     for (Group child : group.getChildren()) {
       child.setParentFromDelete(parent);
-      if (parent != null) parent.addChild(child);
+      if (parent != null) {
+        parent.addChild(child);
+      }
       child.setProfileFromDelete(group.getProfile());
     }
-    if (parent != null) parent.removeChild(group);
+    if (parent != null) {
+      parent.removeChild(group);
+    }
     nameMap.remove(group.getName());
     idMap.remove(group.getId());
   }
@@ -239,8 +266,9 @@ public class Groups {
 
   private void addOrChangeGroupImpl(Group group, ACS acs) throws SQLException {
     PreparedStatement s = null;
-    if (group.getParent() != null && group.getId() == null)
+    if (group.getParent() != null && group.getId() == null) {
       addOrChangeGroup(group.getParent(), acs);
+    }
     Connection c = acs.getDataSource().getConnection();
     try {
       if (group.getId() == null) {
@@ -249,42 +277,62 @@ public class Groups {
             "INSERT INTO group_ (group_name, unit_type_id",
             group.getName(),
             group.getUnittype().getId());
-        if (group.getDescription() != null)
+        if (group.getDescription() != null) {
           ds.addSqlAndArguments(", description", group.getDescription());
-        if (group.getParent() != null)
+        }
+        if (group.getParent() != null) {
           ds.addSqlAndArguments(", parent_group_id", group.getParent().getId());
-        if (group.getProfile() != null)
+        }
+        if (group.getProfile() != null) {
           ds.addSqlAndArguments(", profile_id", group.getProfile().getId());
-        if (group.getCount() != null) ds.addSqlAndArguments(", count", group.getCount());
+        }
+        if (group.getCount() != null) {
+          ds.addSqlAndArguments(", count", group.getCount());
+        }
         ds.setSql(ds.getSql() + ") VALUES (" + ds.getQuestionMarks() + ")");
         s = ds.makePreparedStatement(c, "group_id");
         s.setQueryTimeout(60);
         s.executeUpdate();
         ResultSet gk = s.getGeneratedKeys();
-        if (gk.next()) group.setId(gk.getInt(1));
+        if (gk.next()) {
+          group.setId(gk.getInt(1));
+        }
         s.close();
         logger.info("Inserted group " + group.getName());
-        if (acs.getDbi() != null) acs.getDbi().publishAdd(group, group.getUnittype());
+        if (acs.getDbi() != null) {
+          acs.getDbi().publishAdd(group, group.getUnittype());
+        }
       } else {
         DynamicStatement ds = new DynamicStatement();
         ds.addSqlAndArguments("UPDATE group_ SET group_name = ?, ", group.getName());
         ds.addSqlAndArguments("description = ?, ", group.getDescription());
-        if (group.getParent() == null)
+        if (group.getParent() != null) {
+          ds.addSqlAndArguments("parent_group_id  = ?, ", group.getParent().getId());
+        } else {
           ds.addSqlAndArguments("parent_group_id  = ?, ", new NullInteger());
-        else ds.addSqlAndArguments("parent_group_id  = ?, ", group.getParent().getId());
-        if (group.getCount() != null) ds.addSqlAndArguments("count = ?, ", group.getCount());
-        if (group.getProfile() == null) ds.addSqlAndArguments("profile_id = ? ", new NullInteger());
-        else ds.addSqlAndArguments("profile_id = ? ", group.getProfile().getId());
+        }
+        if (group.getCount() != null) {
+          ds.addSqlAndArguments("count = ?, ", group.getCount());
+        }
+        if (group.getProfile() != null) {
+          ds.addSqlAndArguments("profile_id = ? ", group.getProfile().getId());
+        } else {
+          ds.addSqlAndArguments("profile_id = ? ", new NullInteger());
+        }
         ds.addSqlAndArguments("WHERE group_id = ?", group.getId());
         PreparedStatement ps = ds.makePreparedStatement(c);
         ps.setQueryTimeout(60);
         ps.executeUpdate();
 
         logger.info("Updated group " + group.getName());
-        if (acs.getDbi() != null) acs.getDbi().publishChange(group, group.getUnittype());
+        if (acs.getDbi() != null) {
+          acs.getDbi().publishChange(group, group.getUnittype());
+        }
       }
     } finally {
-      if (s != null) s.close();
+      if (s != null) {
+        s.close();
+      }
       c.close();
     }
   }

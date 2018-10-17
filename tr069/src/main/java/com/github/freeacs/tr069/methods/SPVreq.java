@@ -6,7 +6,6 @@ import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import java.util.List;
 
 public class SPVreq extends Body {
-
   private static final String START = "\t\t<cwmp:SetParameterValues>\n";
   private static final String END = "\t\t</cwmp:SetParameterValues>\n";
   private static final String PARAMETER_LIST_START_1 =
@@ -43,16 +42,21 @@ public class SPVreq extends Body {
       sb.append(NAME_START);
       sb.append(pvs.getName());
       sb.append(NAME_END);
-      sb.append("\t\t\t\t\t<Value xsi:type=\"" + pvs.getType() + "\">");
+      sb.append("\t\t\t\t\t<Value xsi:type=\"").append(pvs.getType()).append("\">");
       if (pvs.getType() != null
           && pvs.getType().contains("int")
-          && (pvs.getValue() == null || pvs.getValue().trim().equals(""))) sb.append("0");
-      else sb.append(pvs.getValue());
+          && (pvs.getValue() == null || "".equals(pvs.getValue().trim()))) {
+        sb.append("0");
+      } else {
+        sb.append(pvs.getValue());
+      }
       sb.append("</Value>\n");
       sb.append(PARAMETER_VALUE_STRUCT_END);
     }
     sb.append(PARAMETER_LIST_END);
-    if (parameterKey != null) sb.append(PARAMETER_KEY_START + parameterKey + PARAMETER_KEY_END);
+    if (parameterKey != null) {
+      sb.append(PARAMETER_KEY_START).append(parameterKey).append(PARAMETER_KEY_END);
+    }
     sb.append(END);
     return sb.toString();
   }

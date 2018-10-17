@@ -1,7 +1,6 @@
 package com.github.freeacs.web.app.page.trigger;
 
 public class TriggerType {
-
   private Integer id;
   private String name;
 

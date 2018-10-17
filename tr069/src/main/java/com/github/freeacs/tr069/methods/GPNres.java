@@ -17,11 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class GPNres {
-
   private static Logger logger = LoggerFactory.getLogger(GPNres.class);
 
   public static void process(HTTPReqResData reqRes) throws TR069Exception {
-
     reqRes.getRequest().setMethod(TR069Method.GET_PARAMETER_NAMES);
     Parser parser = new Parser(reqRes.getRequest().getXml());
 
@@ -29,23 +27,29 @@ public class GPNres {
     List<ParameterInfoStruct> pisList = parameterList.getParameterInfoList();
     SessionData sessionData = reqRes.getSessionData();
     if (parser.getHeader().getNoMoreRequests() != null
-        && parser.getHeader().getNoMoreRequests().getNoMoreRequestFlag())
+        && parser.getHeader().getNoMoreRequests().getNoMoreRequestFlag()) {
       sessionData.setNoMoreRequests(true);
+    }
     try {
       Unittype ut = sessionData.getUnittype();
-      List<UnittypeParameter> utpList = new ArrayList<UnittypeParameter>();
+      List<UnittypeParameter> utpList = new ArrayList<>();
       for (ParameterInfoStruct pis : pisList) {
-        if (pis.getName().endsWith(".")) continue;
+        if (pis.getName().endsWith(".")) {
+          continue;
+        }
         String newFlag = null;
-        if (pis.isWritable()) newFlag = "RW";
-        else newFlag = "R";
+        if (pis.isWritable()) {
+          newFlag = "RW";
+        } else {
+          newFlag = "R";
+        }
         UnittypeParameter utp = ut.getUnittypeParameters().getByName(pis.getName());
-        if (utp == null)
+        if (utp == null) {
           utp = new UnittypeParameter(ut, pis.getName(), new UnittypeParameterFlag(newFlag));
-        else { // modify existing flag - only change (if necessary) R->RW or RW->R, leave other
+        } else { // modify existing flag - only change (if necessary) R->RW or RW->R, leave other
           // flags untouched!
           String existingFlag = utp.getFlag().getFlag();
-          if (newFlag.equals("R")) { // delete W from existsingFlag if necessary
+          if ("R".equals(newFlag)) { // delete W from existsingFlag if necessary
             newFlag = existingFlag.replace("W", "");
           } else { // newFlag == 'RW' - remove W and then replace R with RW (make the flag easier to
             // read for humans)
@@ -54,12 +58,14 @@ public class GPNres {
           }
           utp.setFlag(new UnittypeParameterFlag(newFlag));
         }
-        if (!utpList.contains(utp)) utpList.add(utp);
-        else
+        if (!utpList.contains(utp)) {
+          utpList.add(utp);
+        } else {
           logger.debug(
               "The unittype parameter "
                   + utp.getName()
                   + " was found more than once in the GPNRes");
+        }
       }
       sessionData.getDbAccessSession().writeUnittypeParameters(sessionData, utpList);
       Log.debug(

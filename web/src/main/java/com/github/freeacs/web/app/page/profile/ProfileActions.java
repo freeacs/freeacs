@@ -23,10 +23,8 @@ import org.slf4j.LoggerFactory;
  * @author Jarl Andre Hubenthal
  */
 public abstract class ProfileActions extends AbstractWebPage {
-
   /** The Enum ProfileStatus. */
   enum ProfileStatus {
-
     /** The PROFIL e_ created. */
     PROFILE_CREATED,
 
@@ -143,20 +141,28 @@ public abstract class ProfileActions extends AbstractWebPage {
       String upName = utp.getName();
       ProfileParameter pp = pParams.getByName(upName);
       String pValue = null;
-      if (pp != null) pValue = pp.getValue();
+      if (pp != null) {
+        pValue = pp.getValue();
+      }
       if (pp != null && req.getParameter("delete::" + upName) != null) {
         pParams.deleteProfileParameter(pp, acs);
         nDeleted++;
       } else if (pp == null && req.getParameter("create::" + upName) != null) {
         String newValue = req.getParameter("update::" + upName);
-        if (newValue != null) newValue = removeFromStart(newValue, '!');
+        if (newValue != null) {
+          newValue = removeFromStart(newValue, '!');
+        }
         pp = new ProfileParameter(profiles.getSelected(), utp, newValue);
         pParams.addOrChangeProfileParameter(pp, acs);
         nCreated++;
       } else if (pp != null && req.getParameter("update::" + upName) != null) {
         String updatedValue = req.getParameter("update::" + upName);
-        if (updatedValue != null && updatedValue.equals(pValue)) continue;
-        if (updatedValue != null) updatedValue = removeFromStart(updatedValue, '!');
+        if (updatedValue != null && updatedValue.equals(pValue)) {
+          continue;
+        }
+        if (updatedValue != null) {
+          updatedValue = removeFromStart(updatedValue, '!');
+        }
         pp.setValue(updatedValue);
         pParams.addOrChangeProfileParameter(pp, acs);
         nUpdated++;
@@ -169,7 +175,9 @@ public abstract class ProfileActions extends AbstractWebPage {
             + nUpdated
             + " / nCreated: "
             + nCreated);
-    if (nDeleted > 0 || nUpdated > 0 || nCreated > 0) return ProfileStatus.PROFILE_PARAMS_UPDATED;
+    if (nDeleted > 0 || nUpdated > 0 || nCreated > 0) {
+      return ProfileStatus.PROFILE_PARAMS_UPDATED;
+    }
     return ProfileStatus.NONE;
   }
 }

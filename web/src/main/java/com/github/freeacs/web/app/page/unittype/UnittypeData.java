@@ -6,7 +6,6 @@ import java.util.Map;
 
 /** The Class UnittypeData. */
 public class UnittypeData extends InputData {
-
   /** The vendor. */
   private Input vendor = Input.getStringInput("vendor");
 
@@ -148,16 +147,10 @@ public class UnittypeData extends InputData {
     this.matcherId = matcherId;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.input.InputData#setCmd(com.owera.xaps.web.app.input.Input)
-   */
   public void setCmd(Input cmd) {
     this.cmd = cmd;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.input.InputData#getCmd()
-   */
   public Input getCmd() {
     return cmd;
   }
@@ -180,21 +173,11 @@ public class UnittypeData extends InputData {
     this.protocol = protocol;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.input.InputData#bindForm(java.util.Map)
-   */
   @Override
-  public void bindForm(Map<String, Object> root) {
-    // TODO Auto-generated method stub
+  public void bindForm(Map<String, Object> root) {}
 
-  }
-
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.input.InputData#validateForm()
-   */
   @Override
   public boolean validateForm() {
-    // TODO Auto-generated method stub
     return false;
   }
 }

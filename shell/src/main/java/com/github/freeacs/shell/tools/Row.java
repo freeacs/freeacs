@@ -1,8 +1,8 @@
 package com.github.freeacs.shell.tools;
 
 public class Row {
-  private boolean error = false;
-  private boolean warn = false;
+  private boolean error;
+  private boolean warn;
   private Data[] dataArray;
   private int lineNumber;
 
@@ -11,9 +11,7 @@ public class Row {
     dataArray = new Data[size];
   }
 
-  /*
-   * Index is 0-based (starts counting from 0)
-   */
+  /** Index is 0-based (starts counting from 0). */
   public void addData(int index, Data data) {
     dataArray[index] = data;
   }

@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TriggerReleaser extends DBIShare {
-
   public TriggerReleaser(String taskName, DataSource mainDataSource, DataSource syslogDataSource)
       throws SQLException {
     super(taskName, mainDataSource, syslogDataSource);
@@ -62,7 +61,7 @@ public class TriggerReleaser extends DBIShare {
   }
 
   private Map<String, Integer> getUnitEventsMapFromChilden(Trigger trigger) throws SQLException {
-    Map<String, Integer> unitEventsMap = new HashMap<String, Integer>();
+    Map<String, Integer> unitEventsMap = new HashMap<>();
     for (Trigger child : trigger.getAllChildren()) {
       if (child.getTriggerType() == Trigger.TRIGGER_TYPE_BASIC) {
         File triggerUnitsFile =
@@ -72,8 +71,11 @@ public class TriggerReleaser extends DBIShare {
         for (String line : contentLines) {
           String[] lineArgs = line.split(" ");
           Integer count = unitEventsMap.get(lineArgs[0]);
-          if (count == null) unitEventsMap.put(lineArgs[0], new Integer(lineArgs[1]));
-          else unitEventsMap.put(lineArgs[0], count + new Integer(lineArgs[1]));
+          if (count != null) {
+            unitEventsMap.put(lineArgs[0], count + Integer.valueOf(lineArgs[1]));
+          } else {
+            unitEventsMap.put(lineArgs[0], Integer.valueOf(lineArgs[1]));
+          }
         }
       }
     }
@@ -104,7 +106,7 @@ public class TriggerReleaser extends DBIShare {
         Date startOfMaxEvaluationPeriod =
             new Date(now.getTime() - Trigger.EVAL_PERIOD_MAX * MS_MINUTE);
         int rowsDeleted = triggers.deleteEvents(startOfMaxEvaluationPeriod, acs);
-        if (rowsDeleted > 0)
+        if (rowsDeleted > 0) {
           logger.info(
               "TriggerReleaser: Deleted "
                   + rowsDeleted
@@ -113,6 +115,7 @@ public class TriggerReleaser extends DBIShare {
                   + " min) (before "
                   + startOfMaxEvaluationPeriod
                   + ")");
+        }
         deleteOldEvents = false;
       }
       processTriggersForUnittype(triggers, now);
@@ -129,7 +132,9 @@ public class TriggerReleaser extends DBIShare {
               "TEC-TotalEventsCounter"); // will always return an int and then remove it from map
       int nu = 0;
       for (Integer noEvents : unitEventsMap.values()) {
-        if (noEvents >= trigger.getNoEventsPrUnit()) nu++;
+        if (noEvents >= trigger.getNoEventsPrUnit()) {
+          nu++;
+        }
       }
       if (ne >= trigger.getNoEvents() && nu >= trigger.getNoUnits()) { // trigger is released!
         Date firstEventTms = triggers.getFirstEventTms(trigger.getId(), evaluationStart, now, acs);
@@ -171,21 +176,23 @@ public class TriggerReleaser extends DBIShare {
           storeTriggerUnits(trigger, unitEventsMap, now);
         }
         int rowsDeleted = triggers.deleteEvents(trigger.getId(), now, acs);
-        if (rowsDeleted > 0)
+        if (rowsDeleted > 0) {
           logger.debug(
               "TriggerReleaser: \t\tDeleted "
                   + rowsDeleted
                   + " Trigger Events which was older than processing timestamp (before "
                   + now
                   + "), to avoid trigger release based on the same Trigger Events");
+        }
         DBI dbi = acs.getDbi();
         if (!sentWithinNotifyInterval(triggers, trigger, now)
             && (trigger.getNotifyType() == Trigger.NOTIFY_TYPE_ALARM
-                || trigger.getNotifyType() == Trigger.NOTIFY_TYPE_REPORT))
+                || trigger.getNotifyType() == Trigger.NOTIFY_TYPE_REPORT)) {
           dbi.publishTriggerReleased(trigger, SyslogConstants.FACILITY_MONITOR);
-        else
+        } else {
           logger.debug(
               "TriggerReleaser: \t\tFound a Trigger History which was notified, abort processing - no need to send ALARM more often than notify-interval");
+        }
       } else {
         logger.debug(
             "TriggerReleaser: \t\tTrigger was not released since noEvents is "
@@ -202,7 +209,9 @@ public class TriggerReleaser extends DBIShare {
       boolean release = false;
       Date firstEventTms = now;
       for (Trigger child : trigger.getChildren()) {
-        if (!child.isActive()) continue;
+        if (!child.isActive()) {
+          continue;
+        }
         Date evaluationPeriodStart =
             new Date(now.getTime() - trigger.getEvalPeriodMinutes() * MS_MINUTE);
         TriggerRelease th =
@@ -210,8 +219,12 @@ public class TriggerReleaser extends DBIShare {
         if (th == null) {
           release = false;
           break;
-        } else release = true;
-        if (th.getFirstEventTms().before(firstEventTms)) firstEventTms = th.getFirstEventTms();
+        } else {
+          release = true;
+        }
+        if (th.getFirstEventTms().before(firstEventTms)) {
+          firstEventTms = th.getFirstEventTms();
+        }
       }
       if (release) {
         logger.info(
@@ -220,13 +233,15 @@ public class TriggerReleaser extends DBIShare {
                 + " was released since all child trigger are released");
         TriggerRelease th = new TriggerRelease(trigger, firstEventTms, now, null);
         triggers.addOrChangeHistory(th, acs);
-        if (trigger.getScript() != null)
+        if (trigger.getScript() != null) {
           executeTriggerScript(trigger, getUnitEventsMapFromChilden(trigger), th.getId());
+        }
         DBI dbi = acs.getDbi();
         if (!sentWithinNotifyInterval(triggers, trigger, now)
             && (trigger.getNotifyType() == Trigger.NOTIFY_TYPE_ALARM
-                || trigger.getNotifyType() == Trigger.NOTIFY_TYPE_REPORT))
+                || trigger.getNotifyType() == Trigger.NOTIFY_TYPE_REPORT)) {
           dbi.publishTriggerReleased(trigger, SyslogConstants.FACILITY_MONITOR);
+        }
       } else {
         logger.debug(
             "TriggerReleaser: \t\tTrigger was not released since not all child triggers were released");
@@ -240,10 +255,11 @@ public class TriggerReleaser extends DBIShare {
     // COMPOSITE until
     // the highest level COMPOSITE will be treated last.
     Arrays.sort(triggerArr, new TriggerComparator(false));
-    if (triggerArr.length > 0)
+    if (triggerArr.length > 0) {
       logger.info(
           "TriggerReleaser: Processing triggers in unittype "
               + triggerArr[0].getUnittype().getName());
+    }
     for (Trigger trigger : triggerArr) {
       if (!trigger.isActive()) {
         logger.debug(
@@ -267,7 +283,7 @@ public class TriggerReleaser extends DBIShare {
       if (trigger.getTriggerType() == Trigger.TRIGGER_TYPE_BASIC) {
         // No trigger events to delete for a COMPOSITE trigger
         int rowsDeleted = triggers.deleteEvents(trigger.getId(), evaluationStart, acs);
-        if (rowsDeleted > 0)
+        if (rowsDeleted > 0) {
           logger.debug(
               "TriggerReleaser: \t\tDeleted "
                   + rowsDeleted
@@ -276,6 +292,7 @@ public class TriggerReleaser extends DBIShare {
                   + " min) (before "
                   + evaluationStart
                   + ")");
+        }
       }
       Date evaluationPeriodStart =
           new Date(now.getTime() - trigger.getEvalPeriodMinutes() * MS_MINUTE);
@@ -313,21 +330,23 @@ public class TriggerReleaser extends DBIShare {
     String desc =
         "Units causing release of trigger " + trigger.getName() + " at " + tmsFormat.format(now);
     StringBuilder sb = new StringBuilder();
-    for (Entry<String, Integer> entry : unitEventsMap.entrySet())
-      sb.append(entry.getKey() + " " + entry.getValue() + "\n");
+    for (Entry<String, Integer> entry : unitEventsMap.entrySet()) {
+      sb.append(entry.getKey()).append(" ").append(entry.getValue()).append("\n");
+    }
     byte[] triggerUnitsFileByteArr = sb.toString().getBytes();
     File f = files.getByName(filename);
-    if (f == null)
+    if (f == null) {
       f =
           new File(
               trigger.getUnittype(),
               filename,
               FileType.UNITS,
               desc,
-              trigger.getId() + "",
+              String.valueOf(trigger.getId()),
               now,
               null,
               acs.getUser());
+    }
     f.setDescription(desc);
     f.setBytes(triggerUnitsFileByteArr);
     files.addOrChangeFile(f, acs);

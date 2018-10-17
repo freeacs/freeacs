@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 
 public class Key implements Comparable<Key> {
-
   public static SimpleDateFormat MONTH_FORMAT = new SimpleDateFormat("yyyyMM");
   public static SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("yyyyMMdd");
   public static SimpleDateFormat HOUR_FORMAT = new SimpleDateFormat("yyyyMMddHH");
@@ -15,9 +14,9 @@ public class Key implements Comparable<Key> {
 
   private Date tms;
   private PeriodType periodType;
-  private List<KeyElement> additionalKeys = new ArrayList<KeyElement>();
-  private String tmsStr = null;
-  private String periodTypeStr = null;
+  private List<KeyElement> additionalKeys = new ArrayList<>();
+  private String tmsStr;
+  private String periodTypeStr;
 
   public Key(Date tms, PeriodType periodType) {
     this(tms, periodType, (KeyElement) null);
@@ -28,7 +27,7 @@ public class Key implements Comparable<Key> {
     this.periodType = periodType;
     this.tmsStr = getTmsStr();
     this.periodTypeStr = getPeriodTypeStr();
-    for (KeyElement additionalKey : additionalKeys) this.additionalKeys.add(additionalKey);
+    java.util.Collections.addAll(this.additionalKeys, additionalKeys);
   }
 
   protected Key clone(PeriodType pt) {
@@ -38,21 +37,35 @@ public class Key implements Comparable<Key> {
   }
 
   private String getTmsStr() {
-    if (periodType == PeriodType.ETERNITY) return "";
-    if (periodType == PeriodType.MONTH) return MONTH_FORMAT.format(tms);
-    else if (periodType == PeriodType.DAY) return DAY_FORMAT.format(tms);
-    else if (periodType == PeriodType.HOUR) return HOUR_FORMAT.format(tms);
-    else if (periodType == PeriodType.MINUTE) return MINUTE_FORMAT.format(tms);
-    else if (periodType == PeriodType.SECOND) return SECOND_FORMAT.format(tms);
-    return tms + "";
+    if (periodType == PeriodType.ETERNITY) {
+      return "";
+    }
+    if (periodType == PeriodType.MONTH) {
+      return MONTH_FORMAT.format(tms);
+    } else if (periodType == PeriodType.DAY) {
+      return DAY_FORMAT.format(tms);
+    } else if (periodType == PeriodType.HOUR) {
+      return HOUR_FORMAT.format(tms);
+    } else if (periodType == PeriodType.MINUTE) {
+      return MINUTE_FORMAT.format(tms);
+    } else if (periodType == PeriodType.SECOND) {
+      return SECOND_FORMAT.format(tms);
+    }
+    return String.valueOf(tms);
   }
 
   private String getPeriodTypeStr() {
-    if (periodType == PeriodType.MONTH) return "MONTH";
-    else if (periodType == PeriodType.DAY) return "DAY";
-    else if (periodType == PeriodType.HOUR) return "HOUR";
-    else if (periodType == PeriodType.MINUTE) return "MINUTE";
-    else if (periodType == PeriodType.SECOND) return "SECOND";
+    if (periodType == PeriodType.MONTH) {
+      return "MONTH";
+    } else if (periodType == PeriodType.DAY) {
+      return "DAY";
+    } else if (periodType == PeriodType.HOUR) {
+      return "HOUR";
+    } else if (periodType == PeriodType.MINUTE) {
+      return "MINUTE";
+    } else if (periodType == PeriodType.SECOND) {
+      return "SECOND";
+    }
     return "UNKNOWN";
   }
 
@@ -62,7 +75,9 @@ public class Key implements Comparable<Key> {
 
   public KeyElement getKeyElement(String keyName) {
     for (KeyElement ke : additionalKeys) {
-      if (ke.getName().equals(keyName)) return ke;
+      if (ke.getName().equals(keyName)) {
+        return ke;
+      }
     }
     return null;
   }
@@ -75,7 +90,9 @@ public class Key implements Comparable<Key> {
     sb.append("-");
     for (int j = 0; j < additionalKeys.size(); j++) {
       sb.append(additionalKeys.get(j).getValue());
-      if (j < additionalKeys.size() - 1) sb.append("-");
+      if (j < additionalKeys.size() - 1) {
+        sb.append("-");
+      }
     }
     return sb.toString();
   }
@@ -103,8 +120,11 @@ public class Key implements Comparable<Key> {
       }
     }
     String s = sb.toString();
-    if (s.equals("")) return "Total (" + method + ")";
-    else s = s.substring(0, s.length() - 1);
+    if ("".equals(s)) {
+      return "Total (" + method + ")";
+    } else {
+      s = s.substring(0, s.length() - 1);
+    }
     return s;
   }
 
@@ -131,19 +151,20 @@ public class Key implements Comparable<Key> {
       }
     }
     String s = sb.toString();
-    if (s.equals("")) return "Total";
-    else s = s.substring(0, s.length() - 1);
+    if ("".equals(s)) {
+      return "Total";
+    } else {
+      s = s.substring(0, s.length() - 1);
+    }
     return s;
   }
 
   public boolean equals(Object o) {
-    if (o instanceof Key) {
-      return this.getKeyString().equals(((Key) o).getKeyString());
-    } else return false;
+    return o instanceof Key && getKeyString().equals(((Key) o).getKeyString());
   }
 
   public int hashCode() {
-    return this.getKeyString().hashCode();
+    return getKeyString().hashCode();
   }
 
   public int compareTo(Key k) {
@@ -161,11 +182,12 @@ public class Key implements Comparable<Key> {
           transformedKeys[i] = keyElement;
         }
       }
-      if (!match)
+      if (!match) {
         throw new IllegalArgumentException(
             "The keyName "
                 + keyName
                 + " used in the tranform() method was not recognized in this key");
+      }
     }
     return new Key(tms, periodType, transformedKeys);
   }

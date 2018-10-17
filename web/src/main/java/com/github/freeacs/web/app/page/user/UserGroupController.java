@@ -13,17 +13,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /** The Class UserGroupController. */
 @Controller
-@RequestMapping(value = "/app/group")
+@RequestMapping("/app/group")
 public class UserGroupController extends PermissionController {
-
   /** The user controller. */
   @Autowired UserController userController;
 
   /** The name map. */
-  private Map<String, UserGroupModel> nameMap = new HashMap<String, UserGroupModel>();
+  private Map<String, UserGroupModel> nameMap = new HashMap<>();
 
   /** The id map. */
-  private Map<Integer, UserGroupModel> idMap = new HashMap<Integer, UserGroupModel>();
+  private Map<Integer, UserGroupModel> idMap = new HashMap<>();
 
   /** The max id. */
   private Integer maxId = 0;
@@ -60,8 +59,11 @@ public class UserGroupController extends PermissionController {
    * @return the user group model
    */
   @RequestMapping(value = "/{name}", method = RequestMethod.GET)
-  public @ResponseBody UserGroupModel details(@PathVariable String name) {
-    if (nameMap.get(name) == null) throw new ResourceNotFoundException();
+  @ResponseBody
+  public UserGroupModel details(@PathVariable String name) {
+    if (nameMap.get(name) == null) {
+      throw new ResourceNotFoundException();
+    }
     return nameMap.get(name);
   }
 
@@ -71,8 +73,11 @@ public class UserGroupController extends PermissionController {
    * @param name the name
    */
   @RequestMapping(value = "/{name}", method = RequestMethod.DELETE)
-  public @ResponseBody void delete(@PathVariable String name) {
-    if (nameMap.get(name) == null) throw new ResourceNotFoundException();
+  @ResponseBody
+  public void delete(@PathVariable String name) {
+    if (nameMap.get(name) == null) {
+      throw new ResourceNotFoundException();
+    }
     UserGroupModel toRemove = nameMap.get(name);
     nameMap.remove(toRemove.getName());
     idMap.remove(toRemove.getId());
@@ -84,8 +89,9 @@ public class UserGroupController extends PermissionController {
    * @return the map
    */
   @RequestMapping(value = "/list", method = RequestMethod.GET)
-  public @ResponseBody Map<String, Object> list() {
-    Map<String, Object> map = new HashMap<String, Object>();
+  @ResponseBody
+  public Map<String, Object> list() {
+    Map<String, Object> map = new HashMap<>();
     map.put("groups", nameMap.values().toArray(new UserGroupModel[] {}));
     return map;
   }
@@ -97,9 +103,11 @@ public class UserGroupController extends PermissionController {
    * @return the user group model
    */
   @RequestMapping(method = RequestMethod.POST)
-  public @ResponseBody UserGroupModel create(@RequestBody UserGroupModel details) {
-    if (nameMap.containsKey(details.getName()))
+  @ResponseBody
+  public UserGroupModel create(@RequestBody UserGroupModel details) {
+    if (nameMap.containsKey(details.getName())) {
       throw new NotAllowedException("UserGroup exists with that name");
+    }
     details.setId(++maxId);
     idMap.put(details.getId(), details);
     nameMap.put(details.getName(), details);
@@ -113,9 +121,11 @@ public class UserGroupController extends PermissionController {
    * @return the user group model
    */
   @RequestMapping(method = RequestMethod.PUT)
-  public @ResponseBody UserGroupModel update(@RequestBody UserGroupModel details) {
-    if (details.getId() == null || idMap.get(details.getId()) == null)
+  @ResponseBody
+  public UserGroupModel update(@RequestBody UserGroupModel details) {
+    if (details.getId() == null || idMap.get(details.getId()) == null) {
       throw new ResourceNotFoundException();
+    }
     idMap.put(details.getId(), details);
     nameMap.put(details.getName(), details);
     return details;

@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * @author Jarl Andre Hubenthal
  */
 public class AbstractRequest extends HttpServletRequestWrapper {
-
   /**
    * Instantiates a new abstract request.
    *
@@ -26,7 +25,7 @@ public class AbstractRequest extends HttpServletRequestWrapper {
   }
 
   /** The ignored parameters. */
-  private final List<String> ignoredParameters = new ArrayList<String>();
+  private final List<String> ignoredParameters = new ArrayList<>();
 
   /**
    * Ignore parameter.
@@ -37,12 +36,11 @@ public class AbstractRequest extends HttpServletRequestWrapper {
     ignoredParameters.add(param);
   }
 
-  /* (non-Javadoc)
-   * @see javax.servlet.ServletRequestWrapper#getParameter(java.lang.String)
-   */
   @Override
   public String getParameter(String key) {
-    if (key != null && !ignoredParameters.contains(key)) return super.getParameter(key);
+    if (key != null && !ignoredParameters.contains(key)) {
+      return super.getParameter(key);
+    }
     return null;
   }
 }

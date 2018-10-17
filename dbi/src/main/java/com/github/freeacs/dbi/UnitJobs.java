@@ -65,7 +65,7 @@ public class UnitJobs {
     this.connectionProperties = cp;
   }
 
-  // 1.1 and 1.2
+  /** 1.1 and 1.2 */
   public boolean start(UnitJob uj) throws SQLException {
     Connection c = null;
     PreparedStatement pp = null;
@@ -82,7 +82,9 @@ public class UnitJobs {
       pp.setQueryTimeout(60);
       pp.execute();
     } catch (SQLException sqlex) {
-      if (pp != null) pp.close();
+      if (pp != null) {
+        pp.close();
+      }
       pp =
           c.prepareStatement(
               "UPDATE unit_job SET status = ?, start_timestamp = ?, processed = 0 WHERE unit_id = ? and job_id = ?");
@@ -92,9 +94,13 @@ public class UnitJobs {
       pp.setInt(4, uj.getJobId());
       pp.setQueryTimeout(60);
       int rowsUpdated = pp.executeUpdate();
-      if (rowsUpdated == 0) throw sqlex;
+      if (rowsUpdated == 0) {
+        throw sqlex;
+      }
     } finally {
-      if (pp != null) pp.close();
+      if (pp != null) {
+        pp.close();
+      }
       if (c != null) {
         c.close();
       }
@@ -102,7 +108,7 @@ public class UnitJobs {
     return true;
   }
 
-  // 1.3 and 1.4
+  /** 1.3 and 1.4 */
   public boolean stop(UnitJob uj) throws SQLException {
     Connection c = null;
     PreparedStatement pp = null;
@@ -118,26 +124,23 @@ public class UnitJobs {
                   "UPDATE unit_job SET status = '"
                       + uj.getStatus()
                       + "', end_timestamp = ?, processed = 0 WHERE unit_id = ? AND job_id = ?");
-          pp.setTimestamp(1, new Timestamp(uj.getEndTimestamp().getTime()));
-          pp.setString(2, uj.getUnitId());
-          pp.setInt(3, uj.getJobId());
-          pp.setQueryTimeout(60);
-          rowsUpdated = pp.executeUpdate();
         } else {
           pp =
               c.prepareStatement(
                   "UPDATE unit_job SET end_timestamp = ?, status = '"
                       + uj.getStatus()
                       + "', confirmed = confirmed + 1, processed = 0 WHERE unit_id = ? AND job_id = ?");
-          pp.setTimestamp(1, new Timestamp(uj.getEndTimestamp().getTime()));
-          pp.setString(2, uj.getUnitId());
-          pp.setInt(3, uj.getJobId());
-          pp.setQueryTimeout(60);
-          rowsUpdated = pp.executeUpdate();
         }
+        pp.setTimestamp(1, new Timestamp(uj.getEndTimestamp().getTime()));
+        pp.setString(2, uj.getUnitId());
+        pp.setInt(3, uj.getJobId());
+        pp.setQueryTimeout(60);
+        rowsUpdated = pp.executeUpdate();
         finished = true;
       } finally {
-        if (pp != null) pp.close();
+        if (pp != null) {
+          pp.close();
+        }
         if (c != null) {
           c.close();
         }
@@ -146,7 +149,7 @@ public class UnitJobs {
     return rowsUpdated > 0;
   }
 
-  // added 2010-04-08 (see comment above)
+  /** Added 2010-04-08 (see comment above). */
   public int markAsCompleted(Job job) throws SQLException {
     Connection c = null;
     PreparedStatement pp = null;
@@ -170,7 +173,9 @@ public class UnitJobs {
         rowsUpdated = pp.executeUpdate();
         finished = true;
       } finally {
-        if (pp != null) pp.close();
+        if (pp != null) {
+          pp.close();
+        }
         if (c != null) {
           c.close();
         }
@@ -179,7 +184,7 @@ public class UnitJobs {
     return rowsUpdated;
   }
 
-  // 2.1
+  /** 2.1 */
   public int markAsUnconfirmed(Job job) throws SQLException {
     Connection c = null;
     PreparedStatement pp = null;
@@ -201,7 +206,9 @@ public class UnitJobs {
         rowsUpdated = pp.executeUpdate();
         finished = true;
       } finally {
-        if (pp != null) pp.close();
+        if (pp != null) {
+          pp.close();
+        }
         if (c != null) {
           c.close();
         }
@@ -210,12 +217,12 @@ public class UnitJobs {
     return rowsUpdated;
   }
 
-  // 2.2
+  /** 2.2 */
   public List<UnitJob> readAllUnprocessed(Job job) throws SQLException {
     return read(false, job);
   }
 
-  // 2.3
+  /** 2.3 */
   public void markAsProcessed(UnitJob uj) throws SQLException {
     Connection c = null;
     PreparedStatement pp = null;
@@ -228,14 +235,16 @@ public class UnitJobs {
       pp.setQueryTimeout(60);
       pp.executeUpdate();
     } finally {
-      if (pp != null) pp.close();
+      if (pp != null) {
+        pp.close();
+      }
       if (c != null) {
         c.close();
       }
     }
   }
 
-  // 2.4
+  /** 2.4 */
   public int countAndDeleteCompletedNoFailure(Job job) throws SQLException {
     Connection c = null;
     PreparedStatement pp = null;
@@ -250,14 +259,16 @@ public class UnitJobs {
       pp.setQueryTimeout(60);
       return pp.executeUpdate();
     } finally {
-      if (pp != null) pp.close();
+      if (pp != null) {
+        pp.close();
+      }
       if (c != null) {
         c.close();
       }
     }
   }
 
-  // 2.4 modified - due to introduction of STOPPED state for unit-jobs
+  /** 2.4 modified - due to introduction of STOPPED state for unit-jobs */
   public int countAndDeleteStoppedNoFailure(Job job) throws SQLException {
     Connection c = null;
     PreparedStatement pp = null;
@@ -272,40 +283,45 @@ public class UnitJobs {
       pp.setQueryTimeout(60);
       return pp.executeUpdate();
     } finally {
-      if (pp != null) pp.close();
+      if (pp != null) {
+        pp.close();
+      }
       if (c != null) {
         c.close();
       }
     }
   }
 
-  // 2.5
+  /** 2.5 */
   public List<UnitJob> readAllProcessed(Job job) throws SQLException {
     return read(true, job);
   }
 
-  // 2.6
+  /** 2.6 */
   public void delete(Job job) throws SQLException {
     Connection c = null;
     PreparedStatement pp = null;
     try {
       c = connectionProperties.getConnection();
-      if (job == null) pp = c.prepareStatement("DELETE FROM unit_job");
-      else {
+      if (job == null) {
+        pp = c.prepareStatement("DELETE FROM unit_job");
+      } else {
         pp = c.prepareStatement("DELETE FROM unit_job WHERE job_id = ?");
         pp.setInt(1, job.getId());
       }
       pp.setQueryTimeout(60);
       pp.execute();
     } finally {
-      if (pp != null) pp.close();
+      if (pp != null) {
+        pp.close();
+      }
       if (c != null) {
         c.close();
       }
     }
   }
 
-  // 2.7 & 2.8
+  /** 2.7 & 2.8 */
   public int count(Job job, String column, boolean isCompleted) throws SQLException {
     Connection c = null;
     PreparedStatement ps = null;
@@ -314,8 +330,11 @@ public class UnitJobs {
       c = connectionProperties.getConnection();
       String sql = "SELECT COUNT(status) FROM unit_job ";
       sql += "WHERE job_id = " + job.getId() + " AND ";
-      if (isCompleted) sql += "status = '" + UnitJobStatus.COMPLETED_OK + "' AND ";
-      else sql += "status <> '" + UnitJobStatus.COMPLETED_OK + "' AND ";
+      if (isCompleted) {
+        sql += "status = '" + UnitJobStatus.COMPLETED_OK + "' AND ";
+      } else {
+        sql += "status <> '" + UnitJobStatus.COMPLETED_OK + "' AND ";
+      }
       sql += "processed = 1 AND ";
       sql += column + " > 0";
       ps = c.prepareStatement(sql);
@@ -326,8 +345,12 @@ public class UnitJobs {
       }
       return 0;
     } finally {
-      if (rs != null) rs.close();
-      if (ps != null) ps.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
       if (c != null) {
         c.close();
       }
@@ -338,17 +361,21 @@ public class UnitJobs {
     Connection c = connectionProperties.getConnection();
     Statement s = null;
     ResultSet rs = null;
-    List<UnitJob> unitJobs = new ArrayList<UnitJob>();
+    List<UnitJob> unitJobs = new ArrayList<>();
     try {
       s = c.createStatement();
       String sql = "SELECT * FROM unit_job ";
       if (processed) {
         sql += "WHERE processed = 1 ";
-        if (job != null) sql += "AND job_id = " + job.getId() + " ";
+        if (job != null) {
+          sql += "AND job_id = " + job.getId() + " ";
+        }
         sql += "ORDER BY unconfirmed DESC, confirmed DESC";
       } else {
         sql += "WHERE processed = 0 AND status <> '" + UnitJobStatus.STARTED + "' ";
-        if (job != null) sql += "AND job_id = " + job.getId() + " ";
+        if (job != null) {
+          sql += "AND job_id = " + job.getId() + " ";
+        }
         sql += "ORDER BY start_timestamp ASC";
       }
       s.setQueryTimeout(60);
@@ -363,12 +390,18 @@ public class UnitJobs {
         uj.setConfirmedFailed(rs.getInt("confirmed"));
         uj.setUnconfirmedFailed(rs.getInt("unconfirmed"));
         int processedInt = rs.getInt("processed");
-        if (processedInt == 1) uj.setProcessed(true);
+        if (processedInt == 1) {
+          uj.setProcessed(true);
+        }
         unitJobs.add(uj);
       }
     } finally {
-      if (rs != null) rs.close();
-      if (s != null) s.close();
+      if (rs != null) {
+        rs.close();
+      }
+      if (s != null) {
+        s.close();
+      }
       if (c != null) {
         c.close();
       }
@@ -376,8 +409,10 @@ public class UnitJobs {
     return unitJobs;
   }
 
-  // This method is purely for migration purposes, only used by ACS Shell to migrate
-  // data from one database to another (perhaps after an upgrade of the database itself).
+  /**
+   * This method is purely for migration purposes, only used by ACS Shell to migrate data from one
+   * database to another (perhaps after an upgrade of the database itself).
+   */
   public void addOrChange(UnitJob uj) throws SQLException {
     Connection c = null;
     PreparedStatement pp = null;
@@ -390,37 +425,51 @@ public class UnitJobs {
       pp.setInt(1, uj.getJobId());
       pp.setString(2, uj.getUnitId());
       pp.setString(3, uj.getStatus());
-      if (uj.getStartTimestamp() != null)
+      if (uj.getStartTimestamp() != null) {
         pp.setTimestamp(4, new Timestamp(uj.getStartTimestamp().getTime()));
-      else pp.setTimestamp(4, null);
-      if (uj.getEndTimestamp() != null)
+      } else {
+        pp.setTimestamp(4, null);
+      }
+      if (uj.getEndTimestamp() != null) {
         pp.setTimestamp(5, new Timestamp(uj.getEndTimestamp().getTime()));
-      else pp.setTimestamp(5, null);
+      } else {
+        pp.setTimestamp(5, null);
+      }
       pp.setInt(6, uj.getUnconfirmedFailed());
       pp.setInt(7, uj.getConfirmedFailed());
       pp.setQueryTimeout(60);
       pp.execute();
     } catch (SQLException sqlex) {
-      if (pp != null) pp.close();
+      if (pp != null) {
+        pp.close();
+      }
       pp =
           c.prepareStatement(
               "UPDATE unit_job SET status = ?, start_timestamp = ?, end_timestamp = ?, processed = 0, unconfirmed = ?, confirmed = ? WHERE unit_id = ? and job_id = ?");
       pp.setString(1, uj.getStatus());
-      if (uj.getStartTimestamp() != null)
+      if (uj.getStartTimestamp() != null) {
         pp.setTimestamp(2, new Timestamp(uj.getStartTimestamp().getTime()));
-      else pp.setTimestamp(2, null);
-      if (uj.getEndTimestamp() != null)
+      } else {
+        pp.setTimestamp(2, null);
+      }
+      if (uj.getEndTimestamp() != null) {
         pp.setTimestamp(3, new Timestamp(uj.getEndTimestamp().getTime()));
-      else pp.setTimestamp(3, null);
+      } else {
+        pp.setTimestamp(3, null);
+      }
       pp.setInt(4, uj.getUnconfirmedFailed());
       pp.setInt(5, uj.getConfirmedFailed());
       pp.setString(6, uj.getUnitId());
       pp.setInt(7, uj.getJobId());
       pp.setQueryTimeout(60);
       int rowsUpdated = pp.executeUpdate();
-      if (rowsUpdated == 0) throw sqlex;
+      if (rowsUpdated == 0) {
+        throw sqlex;
+      }
     } finally {
-      if (pp != null) pp.close();
+      if (pp != null) {
+        pp.close();
+      }
       if (c != null) {
         c.close();
       }

@@ -3,15 +3,15 @@ package com.github.freeacs.dbi.report;
 import java.util.Map.Entry;
 
 public class ReportConverter {
-
   public static Report<RecordSyslog> convertSyslogReport(
       Report<RecordSyslog> r, PeriodType periodType) {
     Report<RecordSyslog> report = new Report<RecordSyslog>(RecordSyslog.class, periodType);
     for (Entry<Key, RecordSyslog> entry : r.getMap().entrySet()) {
       Key key = entry.getKey();
-      if (key.getPeriodType().isLongerThan(periodType))
+      if (key.getPeriodType().isLongerThan(periodType)) {
         throw new IllegalArgumentException(
             "Cannot convert a voip record to another voip record because its periodType is longer");
+      }
       RecordSyslog record = entry.getValue();
       RecordSyslog tmp =
           new RecordSyslog(
@@ -39,9 +39,10 @@ public class ReportConverter {
         new Report<RecordProvisioning>(RecordProvisioning.class, periodType);
     for (Entry<Key, RecordProvisioning> entry : r.getMap().entrySet()) {
       Key key = entry.getKey();
-      if (key.getPeriodType().isLongerThan(periodType))
+      if (key.getPeriodType().isLongerThan(periodType)) {
         throw new IllegalArgumentException(
             "Cannot convert a voip record to another voip record because its periodType is longer");
+      }
       RecordProvisioning record = entry.getValue();
       RecordProvisioning tmp =
           new RecordProvisioning(
@@ -66,9 +67,10 @@ public class ReportConverter {
     Report<RecordVoip> report = new Report<RecordVoip>(RecordVoip.class, periodType);
     for (Entry<Key, RecordVoip> entry : r.getMap().entrySet()) {
       Key key = entry.getKey();
-      if (key.getPeriodType().isLongerThan(periodType))
+      if (key.getPeriodType().isLongerThan(periodType)) {
         throw new IllegalArgumentException(
             "Cannot convert a voip record to another voip record because its periodType is longer");
+      }
       RecordVoip record = entry.getValue();
       RecordVoip tmp =
           new RecordVoip(
@@ -94,9 +96,10 @@ public class ReportConverter {
     Report<RecordHardware> report = new Report<RecordHardware>(RecordHardware.class, periodType);
     for (Entry<Key, RecordHardware> entry : r.getMap().entrySet()) {
       Key key = entry.getKey();
-      if (key.getPeriodType().isLongerThan(periodType))
+      if (key.getPeriodType().isLongerThan(periodType)) {
         throw new IllegalArgumentException(
             "Cannot convert periodType of the record since the origianl periodType is longer");
+      }
       RecordHardware record = entry.getValue();
       RecordHardware tmp =
           new RecordHardware(

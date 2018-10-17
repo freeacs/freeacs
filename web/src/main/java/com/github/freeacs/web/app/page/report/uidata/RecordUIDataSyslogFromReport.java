@@ -17,7 +17,6 @@ import java.util.List;
  * @author Jarl Andre Hubenthal
  */
 public class RecordUIDataSyslogFromReport {
-
   /** The entry. */
   private RecordSyslog entry;
 
@@ -61,7 +60,7 @@ public class RecordUIDataSyslogFromReport {
    * @throws TemplateModelException the template model exception
    */
   public String getSeverity() throws TemplateModelException {
-    return new SyslogUtil.GetSeverityText().exec(Arrays.asList(entry.getSeverity().toString()));
+    return new SyslogUtil.GetSeverityText().exec(Arrays.asList(entry.getSeverity()));
   }
 
   /**
@@ -71,7 +70,7 @@ public class RecordUIDataSyslogFromReport {
    * @throws TemplateModelException the template model exception
    */
   public String getFacility() throws TemplateModelException {
-    return new SyslogUtil.GetFacilityText().exec(Arrays.asList(entry.getFacility().toString()));
+    return new SyslogUtil.GetFacilityText().exec(Arrays.asList(entry.getFacility()));
   }
 
   /**
@@ -94,7 +93,7 @@ public class RecordUIDataSyslogFromReport {
    */
   public static List<RecordUIDataSyslogFromReport> convertRecords(
       Unit unit, Collection<RecordSyslog> records) {
-    List<RecordUIDataSyslogFromReport> list = new ArrayList<RecordUIDataSyslogFromReport>();
+    List<RecordUIDataSyslogFromReport> list = new ArrayList<>();
     for (RecordSyslog record : records) {
       list.add(new RecordUIDataSyslogFromReport(unit, record));
     }

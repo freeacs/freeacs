@@ -1,7 +1,6 @@
 package com.github.freeacs.web.app.page.report.uidata;
 
 public class RecordUIDataGroupSumFromReport {
-
   /*
   private final List<RecordUIDataGroupFromReport> records = new ArrayList<RecordUIDataGroupFromReport>();
   private final List<String> groupNames = new ArrayList<String>();

@@ -12,22 +12,26 @@ public class JobFlag {
     TR069_SCRIPT;
 
     public boolean requireFile() {
-      if (this == SHELL || this == SOFTWARE || this == TELNET || this == TR069_SCRIPT) return true;
-      return false;
+      return this == SHELL || this == SOFTWARE || this == TELNET || this == TR069_SCRIPT;
     }
 
     public FileType getCorrelatedFileType() {
-      if (this == SHELL) return FileType.SHELL_SCRIPT;
-      else if (this == SOFTWARE) return FileType.SOFTWARE;
-      else if (this == TELNET) return FileType.TELNET_SCRIPT;
-      else if (this == TR069_SCRIPT) return FileType.TR069_SCRIPT;
+      if (this == SHELL) {
+        return FileType.SHELL_SCRIPT;
+      } else if (this == SOFTWARE) {
+        return FileType.SOFTWARE;
+      } else if (this == TELNET) {
+        return FileType.TELNET_SCRIPT;
+      } else if (this == TR069_SCRIPT) {
+        return FileType.TR069_SCRIPT;
+      }
       return null;
     }
   }
 
   public enum JobServiceWindow {
     DISRUPTIVE,
-    REGULAR;
+    REGULAR
   }
 
   private JobType type;
@@ -38,7 +42,9 @@ public class JobFlag {
     try {
       type = JobType.valueOf(typeStr);
     } catch (Throwable t) { // Convert from old jobtype
-      if (typeStr.equals("SCRIPT")) type = JobType.TR069_SCRIPT;
+      if ("SCRIPT".equals(typeStr)) {
+        type = JobType.TR069_SCRIPT;
+      }
     }
     serviceWindow = JobServiceWindow.valueOf(flagStr.split("\\|")[1]);
   }

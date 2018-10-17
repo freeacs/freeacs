@@ -31,8 +31,11 @@ public class CacheValue {
   private CleanupNotifier cleanupNotifier;
 
   public CacheValue(Object object, int type, long timeout) {
-    if (type == Cache.SESSION || type == Cache.ABSOLUTE) this.type = type;
-    else this.type = Cache.SESSION;
+    if (type == Cache.SESSION || type == Cache.ABSOLUTE) {
+      this.type = type;
+    } else {
+      this.type = Cache.SESSION;
+    }
     this.object = object;
     this.timeout = timeout;
     this.created = System.currentTimeMillis();
@@ -57,10 +60,6 @@ public class CacheValue {
     this.object = object;
   }
 
-  public Object getObjectUnnoticed() {
-    return object;
-  }
-
   public long getCreated() {
     return created;
   }
@@ -75,10 +74,6 @@ public class CacheValue {
 
   public void setCreated(long l) {
     created = l;
-  }
-
-  public void setLastAccess(long l) {
-    accessed = l;
   }
 
   public void setType(int i) {

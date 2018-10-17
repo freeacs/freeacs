@@ -18,13 +18,13 @@ public class MenuItem {
   private String display;
   // MenuItem children
   /** The sub menu items. */
-  private List<MenuItem> subMenuItems = new ArrayList<MenuItem>();
+  private List<MenuItem> subMenuItems = new ArrayList<>();
   // Adds class="selected" if true
   /** The selected. */
-  private boolean selected = false;
+  private boolean selected;
 
   /** The attributes. */
-  private List<MenuItemAttribute> attributes = new ArrayList<MenuItemAttribute>();
+  private List<MenuItemAttribute> attributes = new ArrayList<>();
 
   /**
    * Instantiates a new menu item.
@@ -102,9 +102,7 @@ public class MenuItem {
    * @return the menu item
    */
   public MenuItem addSubMenuItems(MenuItem... items) {
-    for (MenuItem item : items) {
-      this.subMenuItems.add(item);
-    }
+    java.util.Collections.addAll(this.subMenuItems, items);
     return this;
   }
 
@@ -215,10 +213,12 @@ public class MenuItem {
    * @return the menu item
    */
   public MenuItem addAttribute(String key, String value) {
-    for (MenuItemAttribute attr : attributes)
-      if (attr.getKey().equals(key))
+    for (MenuItemAttribute attr : attributes) {
+      if (attr.getKey().equals(key)) {
         throw new RuntimeException(
             "Wrong usage of MenuItem.addAttribute. Trying to add [" + key + "] twice.");
+      }
+    }
     this.attributes.add(new MenuItemAttribute(key, value));
     return this;
   }

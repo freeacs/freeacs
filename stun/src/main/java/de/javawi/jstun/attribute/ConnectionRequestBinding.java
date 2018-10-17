@@ -8,7 +8,6 @@
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
  */
-
 package de.javawi.jstun.attribute;
 
 import de.javawi.jstun.util.Utility;
@@ -28,8 +27,9 @@ public class ConnectionRequestBinding extends MessageAttribute {
   public static ConnectionRequestBinding parse(byte[] data)
       throws MessageAttributeParsingException {
     String str = new String(data);
-    if (!str.trim().equals("dslforum.org/TR-111"))
+    if (!"dslforum.org/TR-111".equals(str.trim())) {
       throw new MessageAttributeParsingException("Attribute doesn't contain dslforum.org/TR-111");
+    }
     ConnectionRequestBinding result = new ConnectionRequestBinding();
     result.setData(data);
     return result;
@@ -38,8 +38,8 @@ public class ConnectionRequestBinding extends MessageAttribute {
   @Override
   public byte[] getBytes() throws UtilityException {
     int length = data.length;
-    if ((length % 4) != 0) {
-      length += 4 - (length % 4);
+    if (length % 4 != 0) {
+      length += 4 - length % 4;
     }
     length += 4;
     byte[] result = new byte[length];

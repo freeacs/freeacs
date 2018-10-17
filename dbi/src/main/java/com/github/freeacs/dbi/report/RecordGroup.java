@@ -52,13 +52,13 @@ public class RecordGroup extends Record<RecordGroup> {
 
   @Override
   public void add(RecordGroup record) {
-    this.getUnitCount().add(record.getUnitCount());
+    getUnitCount().add(record.getUnitCount());
   }
 
   @Override
   public RecordGroup clone() {
     RecordGroup clone = new RecordGroup(tms, periodType, unittypeName, groupName);
-    clone.setUnitCount(this.getUnitCount().clone());
+    clone.setUnitCount(getUnitCount().clone());
     return clone;
   }
 

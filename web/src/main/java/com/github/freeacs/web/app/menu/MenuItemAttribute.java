@@ -6,7 +6,6 @@ package com.github.freeacs.web.app.menu;
  * @author Jarl Andre Hubenthal
  */
 public class MenuItemAttribute {
-
   /** The key. */
   private String key;
 

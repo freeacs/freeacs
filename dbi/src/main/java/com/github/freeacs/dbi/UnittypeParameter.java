@@ -14,13 +14,15 @@ public class UnittypeParameter {
   private Unittype unittype;
 
   public UnittypeParameter(Unittype unittype, String name, UnittypeParameterFlag flag) {
-    if (unittype == null)
+    if (unittype == null) {
       throw new IllegalArgumentException(
           "The unittype cannot be null in UnittypeParameter() contstructor");
+    }
     this.unittype = unittype;
-    if (name == null || name.trim().length() == 0 || flag == null)
+    if (name == null || name.trim().isEmpty() || flag == null) {
       throw new IllegalArgumentException(
           "The unittype parameter name and flag cannot be null or empty strings");
+    }
     this.name = name;
     this.flag = flag;
   }
@@ -59,19 +61,22 @@ public class UnittypeParameter {
 
   @Override
   public boolean equals(Object o) {
-    if (o != null && o instanceof UnittypeParameter) {
+    if (o instanceof UnittypeParameter) {
       UnittypeParameter oCasted = (UnittypeParameter) o;
-      if (oCasted.getId() != null && this.getId() != null) return oCasted.getId().equals(id);
-      else if (oCasted.getName() != null && this.getName() != null)
-        return oCasted.getName().equals(this.getName());
+      if (oCasted.getId() != null && getId() != null) {
+        return oCasted.getId().equals(id);
+      } else if (oCasted.getName() != null && getName() != null) {
+        return oCasted.getName().equals(getName());
+      }
     }
     return false;
   }
 
   public void setFlag(UnittypeParameterFlag flag) {
-    if (flag.isReadOnly() && values != null)
+    if (flag.isReadOnly() && values != null) {
       throw new IllegalArgumentException(
           "Not allowed to change parameter to read-only because there are specified values for this parameter");
+    }
     this.flag = flag;
   }
 
@@ -80,9 +85,10 @@ public class UnittypeParameter {
   }
 
   public void setValues(UnittypeParameterValues values) {
-    if (values != null && getFlag().isReadOnly())
+    if (values != null && getFlag().isReadOnly()) {
       throw new IllegalArgumentException(
           "Not allowed to set enumerated values for a read-only unit type parameter");
+    }
     this.values = values;
   }
 

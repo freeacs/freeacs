@@ -15,7 +15,6 @@ import java.util.Map;
  * @author Jarl Andre Hubenthal
  */
 public class RecordUIDataHardwareFilter {
-
   public final Integer ddr_low;
   public static final Integer ddr_low_default = 90;
 
@@ -55,11 +54,11 @@ public class RecordUIDataHardwareFilter {
   }
 
   public boolean isAndOperand() {
-    return operand != null && operand.equals("AND");
+    return "AND".equals(operand);
   }
 
   public boolean isOrOperand() {
-    return operand != null && operand.equals("OR");
+    return "OR".equals(operand);
   }
 
   public boolean isRecordRelevant(RecordUIDataHardware record) {
@@ -68,8 +67,7 @@ public class RecordUIDataHardwareFilter {
 
   public boolean isBootsRelevant(RecordUIDataHardware record) {
     long total = record.getBootTotal();
-    if (total > 0) return true;
-    return false;
+    return total > 0;
   }
 
   public boolean isMemoryRelevant(RecordUIDataHardware record) {
@@ -81,19 +79,24 @@ public class RecordUIDataHardwareFilter {
     double heapOcmCurrentUsed = record.getMemoryHeapOcmUsagePercent();
     boolean isHeapOcmRelevant =
         heapOcmCurrentUsed > 0 && heapOcmCurrentUsed < ocm_high && heapOcmCurrentUsed > ocm_low;
-    if (isAndOperand()) return (isHeapDdrRelevant && isHeapOcmRelevant);
-    else if (isOrOperand()) return (isHeapDdrRelevant || isHeapOcmRelevant);
-    else throw new IllegalArgumentException("Operand [" + operand + "] is not valid");
+    if (isAndOperand()) {
+      return isHeapDdrRelevant && isHeapOcmRelevant;
+    } else if (isOrOperand()) {
+      return isHeapDdrRelevant || isHeapOcmRelevant;
+    } else {
+      throw new IllegalArgumentException("Operand [" + operand + "] is not valid");
+    }
   }
 
   public boolean isUptimeRelevant(RecordUIDataHardware record) {
-    if (record.getCpeUptimeAvg().get() == null) return false;
+    if (record.getCpeUptimeAvg().get() == null) {
+      return false;
+    }
     double cpeUptime = record.getCpeUptimeAvg().get() / record.getCpeUptimeAvg().getDividend();
     if (uptime_high != null) {
-      if (cpeUptime >= uptime_low && cpeUptime <= uptime_high) return true;
+      return cpeUptime >= uptime_low && cpeUptime <= uptime_high;
     } else {
-      if (cpeUptime >= uptime_low) return true;
+      return cpeUptime >= uptime_low;
     }
-    return false;
   }
 }

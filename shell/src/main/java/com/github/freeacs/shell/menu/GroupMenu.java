@@ -27,9 +27,9 @@ public class GroupMenu {
     this.context = session.getContext();
   }
 
-  /*
-   * Returns true : has processed a cd-command Returns false : has processed
-   * another command (everything else)
+  /**
+   * Returns true : has processed a cd-command Returns false : has processed another command
+   * (everything else)
    */
   public boolean execute(String[] inputArr, OutputHandler oh) throws Exception {
     if (inputArr[0].startsWith("dela")) {
@@ -38,7 +38,7 @@ public class GroupMenu {
       delparam(inputArr);
     } else if (inputArr[0].startsWith("listd")) {
       listdetails(inputArr, oh);
-    } else if (inputArr[0].equals("listparams")) {
+    } else if ("listparams".equals(inputArr[0])) {
       listparams(inputArr, oh, false);
     } else if (inputArr[0].startsWith("listparamsforexport")) {
       listparamsforexport(inputArr, oh);
@@ -89,11 +89,10 @@ public class GroupMenu {
     if (gp != null) {
       groupParams.deleteGroupParameter(gp, session.getAcs());
       session.println("[" + session.getCounter() + "] The group parameter is deleted");
-      session.incCounter();
     } else {
       session.println("[" + session.getCounter() + "] The group parameter does not exist.");
-      session.incCounter();
     }
+    session.incCounter();
   }
 
   private void listparamsforexport(String[] args, OutputHandler oh) throws Exception {
@@ -111,14 +110,21 @@ public class GroupMenu {
           p.getUnittypeParameter().getName(),
           p.getValue(),
           p.getOp().getOperatorLiteral(),
-          p.getType().getType())) continue;
+          p.getType().getType())) {
+        continue;
+      }
       Line line = new Line();
-      if (export) line.addValue(gp.getParameter().getUnittypeParameter().getName());
-      else line.addValue(gp.getName());
+      if (export) {
+        line.addValue(gp.getParameter().getUnittypeParameter().getName());
+      } else {
+        line.addValue(gp.getName());
+      }
       line.addValue(gp.getParameter().getOp().getOperatorLiteral());
-      if (gp.getParameter().getValue() == null || gp.getParameter().valueWasNull())
+      if (gp.getParameter().getValue() == null || gp.getParameter().valueWasNull()) {
         line.addValue("NULL");
-      else line.addValue(gp.getParameter().getValue());
+      } else {
+        line.addValue(gp.getParameter().getValue());
+      }
       line.addValue(gp.getParameter().getType().getType());
       listing.addLine(line);
     }
@@ -136,12 +142,11 @@ public class GroupMenu {
   }
 
   private void listdetails(String[] args, OutputHandler oh) throws Exception {
-    List<Group> groups = new ArrayList<Group>();
+    List<Group> groups = new ArrayList<>();
     Group tmp = context.getGroup();
     while (tmp != null) {
       groups.add(tmp);
-      if (tmp.getParent() != null) tmp = tmp.getParent();
-      else tmp = null;
+      tmp = tmp.getParent();
     }
     Profile profile = context.getGroup().getTopParent().getProfile();
     int units = session.getAcsUnit().getUnitCount(context.getGroup());
@@ -152,7 +157,9 @@ public class GroupMenu {
     for (int i = 0; i < groups.size(); i++) {
       Group g = groups.get(i);
       String parentStr = "Parent-" + i;
-      if (i == 0) parentStr = "        ";
+      if (i == 0) {
+        parentStr = "        ";
+      }
 
       oh.print(parentStr + "               Id : " + g.getId() + "\n");
       oh.print(parentStr + "             Name : " + g.getName() + "\n");
@@ -163,13 +170,17 @@ public class GroupMenu {
             String.format(
                 "%-30s " + gp.getParameter().getOp().getOperatorLiteral() + " ",
                 gp.getParameter().getUnittypeParameter().getName()));
-        if (gp.getParameter().getValue() == null || gp.getParameter().valueWasNull())
+        if (gp.getParameter().getValue() == null || gp.getParameter().valueWasNull()) {
           oh.print("NULL\n");
-        else oh.print(gp.getParameter().getValue() + "\n");
+        } else {
+          oh.print(gp.getParameter().getValue() + "\n");
+        }
       }
     }
     String profileStr = "NULL";
-    if (profile != null) profileStr = profile.getName();
+    if (profile != null) {
+      profileStr = profile.getName();
+    }
 
     oh.print("                  Profile : " + profileStr + "\n");
     oh.print("          Number of units : " + units + "\n");
@@ -179,7 +190,7 @@ public class GroupMenu {
     Listing listing = oh.getListing();
     listing.setHeading(new Heading(new Line("Unit-count")));
     int count = session.getAcsUnit().getUnitCount(context.getGroup());
-    listing.addLine(new Line("" + count));
+    listing.addLine(new Line(String.valueOf(count)));
     context.getGroup().setCount(count);
   }
 
@@ -189,11 +200,14 @@ public class GroupMenu {
     if (oh.getCommand().getOptions().containsKey(Option.OPTION_LIST_ALL_COLUMNS)) {
       Map<String, String> displayableMap =
           context.getUnittype().getUnittypeParameters().getDisplayableNameMap();
-      for (String shortName : displayableMap.values()) headingLine.addValue(shortName);
+      for (String shortName : displayableMap.values()) {
+        headingLine.addValue(shortName);
+      }
     }
     listing.setHeading(new Heading(headingLine), true);
     Map<String, Unit> units = session.getAcsUnit().getUnits(context.getGroup());
-    for (String unitId : units.keySet()) {
+    for (Map.Entry<String, Unit> entry : units.entrySet()) {
+      String unitId = entry.getKey();
       Line line = new Line(unitId);
       if (oh.getCommand().getOptions().containsKey(Option.OPTION_LIST_ALL_COLUMNS)) {
         Map<String, String> displayableMap =
@@ -201,11 +215,14 @@ public class GroupMenu {
         Unit unit = session.getAcsUnit().getUnitById(unitId);
         for (String utpName : displayableMap.keySet()) {
           String value = unit.getParameters().get(utpName);
-          if (value == null) line.addValue("NULL");
-          else line.addValue(value);
+          if (value != null) {
+            line.addValue(value);
+          } else {
+            line.addValue("NULL");
+          }
         }
       }
-      listing.addLine(line, units.get(unitId));
+      listing.addLine(line, entry.getValue());
     }
     context.getGroup().setCount(units.size());
   }

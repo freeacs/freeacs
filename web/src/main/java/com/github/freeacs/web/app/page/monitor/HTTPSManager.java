@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory;
 
 /** The Class HTTPSManager. */
 public class HTTPSManager {
-
   /** The logger. */
   private static Logger logger = LoggerFactory.getLogger(HTTPSManager.class);
 
@@ -37,9 +36,9 @@ public class HTTPSManager {
     int port = 443;
     char[] passphrase = password.toCharArray();
     int doubleSlashPos = url.indexOf("//");
-    int slashPos = url.indexOf("/", doubleSlashPos + 2);
+    int slashPos = url.indexOf('/', doubleSlashPos + 2);
     String host = url.substring(doubleSlashPos + 2, slashPos);
-    int colonPos = host.indexOf(":");
+    int colonPos = host.indexOf(':');
     if (colonPos > -1) {
       port = Integer.parseInt(host.substring(colonPos + 1));
       host = host.substring(0, colonPos);
@@ -140,7 +139,6 @@ public class HTTPSManager {
 
   /** The Class SavingTrustManager. */
   private static class SavingTrustManager implements X509TrustManager {
-
     /** The tm. */
     private final X509TrustManager tm;
 
@@ -156,26 +154,17 @@ public class HTTPSManager {
       this.tm = tm;
     }
 
-    /* (non-Javadoc)
-     * @see javax.net.ssl.X509TrustManager#getAcceptedIssuers()
-     */
     public X509Certificate[] getAcceptedIssuers() {
       return tm.getAcceptedIssuers();
       //			throw new UnsupportedOperationException();
     }
 
-    /* (non-Javadoc)
-     * @see javax.net.ssl.X509TrustManager#checkClientTrusted(java.security.cert.X509Certificate[], java.lang.String)
-     */
     public void checkClientTrusted(X509Certificate[] chain, String authType)
         throws CertificateException {
       tm.checkClientTrusted(chain, authType);
       //			throw new UnsupportedOperationException();
     }
 
-    /* (non-Javadoc)
-     * @see javax.net.ssl.X509TrustManager#checkServerTrusted(java.security.cert.X509Certificate[], java.lang.String)
-     */
     public void checkServerTrusted(X509Certificate[] chain, String authType)
         throws CertificateException {
       this.chain = chain;

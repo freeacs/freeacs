@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Kick {
-
   public static class KickResponse {
     private boolean kicked;
     private String message;
@@ -82,13 +81,13 @@ public class Kick {
             "Neither a public ConnectionRequestURL nor any UDPConnectionRequestAddress was found");
 
     // TCP-kick (HTTP)
-    if (crUrl != null && !crUrl.trim().equals("") && checkIfPublicIP(crUrl, properties)) {
+    if (crUrl != null && !"".equals(crUrl.trim()) && checkIfPublicIP(crUrl, properties)) {
       log.debug(unit.getId() + ": will try TCP kick on " + crUrl);
       return kickUsingTCP(unit, crUrl, crPass, crUser);
     }
 
     // UDP-kick
-    if (!kr.isKicked() && udpCrUrl != null && !udpCrUrl.trim().equals("")) {
+    if (!kr.isKicked() && udpCrUrl != null && !"".equals(udpCrUrl.trim())) {
       log.debug(unit.getId() + ": will try UDP kick on " + udpCrUrl);
       return kickUsingUDP(unit, udpCrUrl, crPass, crUser);
     }
@@ -133,10 +132,7 @@ public class Kick {
    * @throws MalformedURLException if the ip is malformed
    */
   boolean checkIfPublicIP(String crUrl, Properties properties) throws MalformedURLException {
-    if (!properties.isCheckPublicIp()) {
-      return true; // we don't check it and we allow it.
-    }
-    return IPAddress.isPublic(new URL(crUrl).getHost());
+    return !properties.isCheckPublicIp() || IPAddress.isPublic(new URL(crUrl).getHost());
   }
 
   protected KickResponse kickUsingTCP(Unit unit, String crUrl, String crPass, String crUser)
@@ -186,7 +182,7 @@ public class Kick {
     } else {
       log.warn(
           unit.getId() + " responded with HTTP " + statusCode + ", indicating a unsuccessful kick");
-      if (statusCode == HttpStatus.SC_FORBIDDEN || statusCode == HttpStatus.SC_UNAUTHORIZED)
+      if (statusCode == HttpStatus.SC_FORBIDDEN || statusCode == HttpStatus.SC_UNAUTHORIZED) {
         return new KickResponse(
             false,
             "TCP/HTTP-kick to "
@@ -197,17 +193,18 @@ public class Kick {
                 + crPass
                 + ") failed, probably due to wrong user/pass since HTTP response code is "
                 + statusCode);
-      else
+      } else {
         return new KickResponse(
             false, "TCP/HTTP-kick to " + crUrl + " failed with HTTP response code " + statusCode);
+      }
     }
   }
 
   private KickResponse kickUsingUDP(Unit unit, String udpCrUrl, String crPass, String crUser) {
     try {
-      String id = "" + random.nextInt(100000);
-      String cn = "" + random.nextLong();
-      String ts = "" + System.currentTimeMillis();
+      String id = String.valueOf(random.nextInt(100000));
+      String cn = String.valueOf(random.nextLong());
+      String ts = String.valueOf(System.currentTimeMillis());
       String text = ts + id + crUser + cn;
       String passFix = crPass == null ? "password" : crPass;
       String sig = Crypto.computeHmacSHA1AsHexUpperCase(passFix, text);
@@ -226,7 +223,9 @@ public class Kick {
               + sig
               + " HTTP/1.1\r\n\r\n";
       byte[] buf = req.getBytes();
-      if (!udpCrUrl.contains(":")) udpCrUrl += ":80";
+      if (!udpCrUrl.contains(":")) {
+        udpCrUrl += ":80";
+      }
       InetAddress address = InetAddress.getByName(udpCrUrl.split(":")[0]);
       int port = Integer.parseInt(udpCrUrl.split(":")[1]);
       DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
@@ -237,16 +236,19 @@ public class Kick {
       return new KickResponse(true, "UDP kick to " + udpCrUrl + " was initiated");
     } catch (Throwable t) {
       log.error(unit.getId() + " UDP kick to " + udpCrUrl + " failed", t);
-      return new KickResponse(false, "UDP kick to " + udpCrUrl + " failed: " + t.getMessage() + "");
+      return new KickResponse(false, "UDP kick to " + udpCrUrl + " failed: " + t.getMessage());
     }
   }
 
-  /* KICK RELATED METHODS */
-
+  /** KICK RELATED METHODS. */
   private String getKeyroot(Unit u) {
     for (String paramName : u.getParameters().keySet()) {
-      if (paramName.startsWith("Device.")) return "Device.";
-      if (paramName.startsWith("InternetGatewayDevice.")) return "InternetGatewayDevice.";
+      if (paramName.startsWith("Device.")) {
+        return "Device.";
+      }
+      if (paramName.startsWith("InternetGatewayDevice.")) {
+        return "InternetGatewayDevice.";
+      }
     }
     throw new RuntimeException(
         "No keyroot found for unit " + u.getId() + ", probably because no parameters are defined");

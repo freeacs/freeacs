@@ -9,8 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SyslogServer implements Runnable {
-
-  private static DatagramSocket socket = null;
+  private static DatagramSocket socket;
   private static Logger logger = LoggerFactory.getLogger(SyslogServer.class);
   private static boolean ok = true;
   private static Throwable throwable;
@@ -28,7 +27,7 @@ public class SyslogServer implements Runnable {
   }
 
   private DatagramPacket initServer() {
-    while (true) {
+    do {
       logger.info("Will try to bind server to port " + properties.getPort());
       try {
         socket = new DatagramSocket(properties.getPort());
@@ -48,21 +47,23 @@ public class SyslogServer implements Runnable {
       } catch (Throwable t) {
         throwable = t;
         ok = false;
-        if (!Sleep.isTerminated())
+        if (!Sleep.isTerminated()) {
           logger.error("Error occured, server did not start, will try again in 60 sec", t);
-        else break;
+        } else {
+          break;
+        }
         try {
           Thread.sleep(60000); // Try again in 60 sec
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
       }
-    }
+    } while (true);
     return null; // unreachable code
   }
 
   private void initDBThreads(DataSource xapsDataSource) {
-    while (true) {
+    do {
       logger.info("Will try to start Syslog2DB threads");
       try {
         int maxSyslogDBThreads = properties.getMaxSyslogdbThreads();
@@ -78,16 +79,18 @@ public class SyslogServer implements Runnable {
       } catch (Throwable t) {
         throwable = t;
         ok = false;
-        if (!Sleep.isTerminated())
+        if (!Sleep.isTerminated()) {
           logger.error("Error occured, server did not start, will try again in 60 sec", t);
-        else break;
+        } else {
+          break;
+        }
         try {
           Thread.sleep(60000); // Try again in 60 sec
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
       }
-    }
+    } while (true);
   }
 
   public void run() {
@@ -97,7 +100,7 @@ public class SyslogServer implements Runnable {
       packet = initServer();
       initDBThreads(xapsDataSource);
       logger.info("Server startup completed - will start to receive syslog packets");
-      while (true) {
+      do {
         try {
           if (Sleep.isTerminated()) {
             socket.close();
@@ -109,7 +112,9 @@ public class SyslogServer implements Runnable {
           }
           socket.receive(packet);
           packetCountInc();
-          if (packetCount > SummaryLogger.getMaxMessagesPrMinute(properties)) continue;
+          if (packetCount > SummaryLogger.getMaxMessagesPrMinute(properties)) {
+            continue;
+          }
           SyslogPacket syslogPacket = new SyslogPacket(packet);
           SyslogPackets.add(syslogPacket, properties);
           ok = true;
@@ -120,13 +125,16 @@ public class SyslogServer implements Runnable {
           ok = false;
           logger.error("Error occured, server continues", t);
         }
-      }
+      } while (true);
     } catch (Throwable t) {
       throwable = t;
       ok = false;
-      if (socket != null) socket.close();
-      if (!Sleep.isTerminated())
+      if (socket != null) {
+        socket.close();
+      }
+      if (!Sleep.isTerminated()) {
         logger.error("Error occured, server did not start - no attempts to restart it", t);
+      }
     }
   }
 

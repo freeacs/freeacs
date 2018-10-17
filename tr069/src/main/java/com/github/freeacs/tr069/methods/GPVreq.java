@@ -6,7 +6,6 @@ import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import java.util.List;
 
 public class GPVreq extends Body {
-
   private List<ParameterValueStruct> parameters;
 
   public GPVreq(List<ParameterValueStruct> parameters) {

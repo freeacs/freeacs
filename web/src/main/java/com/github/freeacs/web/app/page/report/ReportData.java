@@ -7,7 +7,6 @@ import java.util.Map;
 
 /** The Class ReportData. */
 public class ReportData extends InputData {
-
   /** The aggregate. */
   private Input aggregate = Input.getStringArrayInput("aggregate");
 
@@ -232,7 +231,7 @@ public class ReportData extends InputData {
     return groupSelect;
   }
 
-  /** The software version in advanced view */
+  /** The software version in advanced view. */
   private Input swVersion = Input.getStringInput("swversion");
 
   public void setSwVersion(Input swVersion) {
@@ -243,16 +242,10 @@ public class ReportData extends InputData {
     return swVersion;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.input.InputData#setAsync(com.owera.xaps.web.app.input.Input)
-   */
   public void setAsync(Input async) {
     this.async = async;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.input.InputData#getAsync()
-   */
   public Input getAsync() {
     return async;
   }
@@ -260,21 +253,11 @@ public class ReportData extends InputData {
   /** The async. */
   private Input async = Input.getStringInput("async");
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.input.InputData#bindForm(java.util.Map)
-   */
   @Override
-  public void bindForm(Map<String, Object> root) {
-    // TODO Auto-generated method stub
+  public void bindForm(Map<String, Object> root) {}
 
-  }
-
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.input.InputData#validateForm()
-   */
   @Override
   public boolean validateForm() {
-    // TODO Auto-generated method stub
     return false;
   }
 }

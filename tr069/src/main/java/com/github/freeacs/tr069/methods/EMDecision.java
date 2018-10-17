@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-/**
+/*
  * EMDecision has to decide what to do after an EM-request. The rules are:
  *
  * <p>1. If previous response from server was EM, then we are at the end of the conversation, thus
@@ -36,7 +36,6 @@ import java.util.List;
  * will be treated as regular AUTO provisioning.
  */
 public class EMDecision {
-
   private static void writeSystemParameters(HTTPReqResData reqRes) throws SQLException {
     writeSystemParameters(reqRes, null, true);
   }
@@ -44,12 +43,15 @@ public class EMDecision {
   private static void writeSystemParameters(
       HTTPReqResData reqRes, List<ParameterValueStruct> params, boolean queue) throws SQLException {
     SessionData sessionData = reqRes.getSessionData();
-    List<ParameterValueStruct> toDB = new ArrayList<ParameterValueStruct>();
-    if (params != null) toDB = new ArrayList<ParameterValueStruct>(params);
+    List<ParameterValueStruct> toDB = new ArrayList<>();
+    if (params != null) {
+      toDB = new ArrayList<>(params);
+    }
     String timestamp = TimestampWrapper.tmsFormat.format(new Date());
     toDB.add(new ParameterValueStruct(SystemParameters.LAST_CONNECT_TMS, timestamp));
-    if (sessionData.getAcsParameters().getValue(SystemParameters.FIRST_CONNECT_TMS) == null)
+    if (sessionData.getAcsParameters().getValue(SystemParameters.FIRST_CONNECT_TMS) == null) {
       toDB.add(new ParameterValueStruct(SystemParameters.FIRST_CONNECT_TMS, timestamp));
+    }
     String currentIPAddress =
         sessionData.getUnit().getParameters().get(SystemParameters.IP_ADDRESS);
     String actualIPAddress = reqRes.getRealIPAddress();
@@ -57,21 +59,23 @@ public class EMDecision {
       toDB.add(new ParameterValueStruct(SystemParameters.IP_ADDRESS, actualIPAddress));
     }
     String swVersion = sessionData.getUnit().getParameters().get(SystemParameters.SOFTWARE_VERSION);
-    if (swVersion == null || !swVersion.equals(reqRes.getSessionData().getSoftwareVersion()))
+    if (swVersion == null || !swVersion.equals(reqRes.getSessionData().getSoftwareVersion())) {
       toDB.add(
           new ParameterValueStruct(
               SystemParameters.SOFTWARE_VERSION, reqRes.getSessionData().getSoftwareVersion()));
+    }
     String sn = sessionData.getUnit().getParameters().get(SystemParameters.SERIAL_NUMBER);
-    if (sn == null || !sn.equals(sessionData.getSerialNumber()))
+    if (sn == null || !sn.equals(sessionData.getSerialNumber())) {
       toDB.add(
           new ParameterValueStruct(SystemParameters.SERIAL_NUMBER, sessionData.getSerialNumber()));
+    }
     InformParameters ifmp = sessionData.getInformParameters();
     if (ifmp != null
         && ifmp.getPvs(ifmp.UDP_CONNECTION_URL) != null
         && ifmp.getPvs(ifmp.UDP_CONNECTION_URL).getValue() != null) {
       String udpUrl = ifmp.getPvs(ifmp.UDP_CONNECTION_URL).getValue();
       if (udpUrl != null
-          && !udpUrl.trim().equals("")
+          && !"".equals(udpUrl.trim())
           && !udpUrl.equals(sessionData.getUnit().getParameterValue(ifmp.UDP_CONNECTION_URL))) {
         toDB.add(ifmp.getPvs(ifmp.UDP_CONNECTION_URL));
       }
@@ -96,12 +100,12 @@ public class EMDecision {
           EMDecision.class,
           "EM-Decision is EM since the CPE did not send an INFORM (or sessionId was not sent by client)");
       reqRes.getResponse().setMethod(TR069Method.EMPTY);
-    } else if (prevResponseMethod.equals(TR069Method.EMPTY)) {
+    } else if (TR069Method.EMPTY.equals(prevResponseMethod)) {
       Log.info(EMDecision.class, "EM-Decision is EM since two last responses from CPE was EM");
       reqRes.getResponse().setMethod(TR069Method.EMPTY);
-    } else if (prevResponseMethod.equals(TR069Method.INFORM)
-        || prevResponseMethod.equals(TR069Method.TRANSFER_COMPLETE)
-        || prevResponseMethod.equals(TR069Method.GET_RPC_METHODS_RES)) {
+    } else if (TR069Method.INFORM.equals(prevResponseMethod)
+        || TR069Method.TRANSFER_COMPLETE.equals(prevResponseMethod)
+        || TR069Method.GET_RPC_METHODS_RES.equals(prevResponseMethod)) {
       if (sessionData.getUnittype() == null) {
         Log.info(EMDecision.class, "EM-Decision is EM since unittype is not found");
         reqRes.getResponse().setMethod(TR069Method.EMPTY);
@@ -112,9 +116,9 @@ public class EMDecision {
             false);
         Log.info(EMDecision.class, "EM-Decision is GPN since unit has DISCOVER parameter set to 1");
         reqRes.getResponse().setMethod(TR069Method.GET_PARAMETER_NAMES);
-      } else if ((Properties.DISCOVERY_MODE
+      } else if (Properties.DISCOVERY_MODE
           && !sessionData.isUnittypeCreated()
-          && sessionData.isFirstConnect())) {
+          && sessionData.isFirstConnect()) {
         writeSystemParameters(reqRes, null, false);
         Log.info(EMDecision.class, "EM-Decision is GPN since ACS is in discovery-mode");
         reqRes.getResponse().setMethod(TR069Method.GET_PARAMETER_NAMES);

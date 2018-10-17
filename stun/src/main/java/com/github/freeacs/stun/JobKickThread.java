@@ -36,18 +36,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class JobKickThread implements Runnable {
-
   private static Logger log = LoggerFactory.getLogger("KickJob");
   private final Properties properties;
   private DBI dbi;
   private DataSource xapsCp;
-  // Key: jobId
-  // Value: Set of unitId
+  /** Key: jobId Value: Set of unitId */
   private Map<Integer, Set<String>> jobKickMap;
-  // Key: jobId
-  // Value: Tms of last refresh
+  /** Key: jobId Value: Tms of last refresh */
   private Map<Integer, Long> jobRefreshMap = new HashMap<>();
-  // This inbox listens for changes on job (from other modules in xAPS)
+  /** This inbox listens for changes on job (from other modules in xAPS). */
   private Inbox jobChangeInbox = new Inbox();
 
   public JobKickThread(DataSource xapsCp, DBI dbi, Properties properties) {
@@ -93,12 +90,18 @@ public class JobKickThread implements Runnable {
         UnitParameter up = u.getUnitParameters().get(historyUtp.getName());
         String historyParameterValue = up.getValue();
         for (String entry : historyParameterValue.split(",")) {
-          if (entry.trim().equals("")) continue;
+          if ("".equals(entry.trim())) {
+            continue;
+          }
           JobHistoryEntry jhEntry = new JobHistoryEntry(entry);
-          if (jhEntry.getJobId().intValue() != job.getId()) continue;
-          if (jhEntry.getRepeatedCount() >= job.getRepeatCount()) continue;
+          if (jhEntry.getJobId().intValue() != job.getId()
+              || jhEntry.getRepeatedCount() >= job.getRepeatCount()) {
+            continue;
+          }
           long timeSinceLastRun = now - jhEntry.getLastRunTms();
-          if (timeSinceLastRun <= job.getRepeatInterval() * 1000) continue;
+          if (timeSinceLastRun <= job.getRepeatInterval() * 1000) {
+            continue;
+          }
           // The job was run before, but it should now be run again, hence: not completed
           iterator.remove();
           runButRunAgainCounter++;
@@ -115,8 +118,9 @@ public class JobKickThread implements Runnable {
             + " ("
             + job.getId()
             + ") already completed.";
-    if (runButRunAgainCounter > 0)
+    if (runButRunAgainCounter > 0) {
       msg += " (" + runButRunAgainCounter + " have run before, but will be repeated)";
+    }
     log.info(msg);
 
     List<Parameter> upList = new ArrayList<>();
@@ -156,8 +160,8 @@ public class JobKickThread implements Runnable {
       }
       Job[] jobs = unittype.getJobs().getJobs();
       for (Job job : jobs) {
-        if (job.getFlags().getType().name().equals("KICK")) {
-          if (job.getStatus().equals(JobStatus.STARTED)) {
+        if ("KICK".equals(job.getFlags().getType().name())) {
+          if (JobStatus.STARTED.equals(job.getStatus())) {
             if (jobKickMap.get(job.getId()) == null) {
               log.info(
                   "Job "
@@ -176,16 +180,14 @@ public class JobKickThread implements Runnable {
                 populateJobKickMapForOneJob(job, acs, unittype);
               }
             }
-          } else { // The job is STOPPED or READY or COMPLETED
-            if (jobKickMap.get(job.getId()) != null) {
-              log.info(
-                  "Job "
-                      + job.getName()
-                      + " ("
-                      + job.getId()
-                      + ") is not STARTED and no more units will be kicked from this job");
-              jobKickMap.remove(job.getId());
-            }
+          } else if (jobKickMap.get(job.getId()) != null) {
+            log.info(
+                "Job "
+                    + job.getName()
+                    + " ("
+                    + job.getId()
+                    + ") is not STARTED and no more units will be kicked from this job");
+            jobKickMap.remove(job.getId());
           }
         }
       }
@@ -195,7 +197,9 @@ public class JobKickThread implements Runnable {
   private Job findJobById(Integer jobId) {
     for (Unittype unittype : dbi.getAcs().getUnittypes().getUnittypes()) {
       Job job = unittype.getJobs().getById(jobId);
-      if (job != null) return job;
+      if (job != null) {
+        return job;
+      }
     }
     return null;
   }
@@ -203,9 +207,10 @@ public class JobKickThread implements Runnable {
   private void kickJobs(ACS acs) {
     int kickInterval = properties.getKickInterval();
     Sleep kickSleep = new Sleep(kickInterval, kickInterval / 10, false);
-    for (Integer jobId : jobKickMap.keySet()) {
+    for (Map.Entry<Integer, Set<String>> entry : jobKickMap.entrySet()) {
+      Integer jobId = entry.getKey();
       Job job = findJobById(jobId);
-      Set<String> unitIdSet = jobKickMap.get(jobId);
+      Set<String> unitIdSet = entry.getValue();
       Iterator<String> iterator = unitIdSet.iterator();
       while (iterator.hasNext()) {
         String unitId = iterator.next();
@@ -219,11 +224,10 @@ public class JobKickThread implements Runnable {
           if (unit != null) {
             startUnitJob(unit, jobId, acs);
             Kick.kick(unit, properties);
-            iterator.remove();
           } else {
             log.error(unitId + " was not found in xAPS, not possible to kick");
-            iterator.remove();
           }
+          iterator.remove();
         } catch (Throwable t) {
           log.error(unitId + " experienced an error during kick, will be tried again later " + t);
         }
@@ -235,14 +239,15 @@ public class JobKickThread implements Runnable {
     Thread.currentThread().setName("JobKickSpawner");
     try {
       Sleep sleep = new Sleep(1000, 1000, true);
-      while (true) {
-
+      do {
         sleep.sleep();
-        if (Sleep.isTerminated()) break;
+        if (Sleep.isTerminated()) {
+          break;
+        }
         ACS acs = dbi.getAcs();
         populateJobKickMapForAllJobs(acs);
         kickJobs(acs);
-      }
+      } while (true);
     } catch (Throwable t) {
       log.error(
           "An error ocurred, JobKickSpawner exits - server is not able to process job-kick anymore!!!",
@@ -255,7 +260,8 @@ public class JobKickThread implements Runnable {
     Unittype unittype = u.getUnittype();
     UnittypeParameter currentUtp =
         unittype.getUnittypeParameters().getByName(SystemParameters.JOB_CURRENT);
-    UnitParameter currentUp = new UnitParameter(currentUtp, u.getId(), "" + jobId, u.getProfile());
+    UnitParameter currentUp =
+        new UnitParameter(currentUtp, u.getId(), String.valueOf(jobId), u.getProfile());
     List<UnitParameter> upList = new ArrayList<>();
     upList.add(currentUp);
     acsUnit.addOrChangeUnitParameters(upList, u.getProfile());
@@ -271,7 +277,7 @@ public class JobKickThread implements Runnable {
   }
 
   private boolean newJobStartedOrRunningJobStopped(Job j) {
-    if (!j.getStatus().equals(JobStatus.STARTED)) {
+    if (!JobStatus.STARTED.equals(j.getStatus())) {
       log.info("Job " + j.getId() + " is no longer running, aborting this job");
       return true;
     }
@@ -282,7 +288,7 @@ public class JobKickThread implements Runnable {
       String jcM = jcMessage.getMessageType() + jcMessage.getObjectType() + jcMessage.getObjectId();
       log.debug("Job change inbox reported that job " + jcMessage.getObjectId() + " has changed");
       boolean messageProcessed;
-      while (true) {
+      do {
         messageProcessed = true;
         for (Message dbiMessage : dbiMessages) {
           String dbiM =
@@ -296,19 +302,21 @@ public class JobKickThread implements Runnable {
             break;
           }
         }
-        if (messageProcessed) break;
+        if (messageProcessed) {
+          break;
+        }
         try {
           Thread.sleep(500);
         } catch (InterruptedException ignored) {
         }
-      }
+      } while (true);
       log.debug("DBI has processed the change message for job " + jcMessage.getObjectId());
       jobChangeInbox.markMessageAsRead(jcMessage);
       Unittypes unittypes = dbi.getAcs().getUnittypes();
       for (Unittype unittype : unittypes.getUnittypes()) {
-        Integer jobId = new Integer(jcMessage.getObjectId());
+        Integer jobId = Integer.valueOf(jcMessage.getObjectId());
         Job job = unittype.getJobs().getById(jobId);
-        if (job != null && job.getStatus().equals(JobStatus.STARTED)) {
+        if (job != null && JobStatus.STARTED.equals(job.getStatus())) {
           if (jobKickMap.get(jobId) == null) {
             log.info(
                 "Job "
@@ -330,7 +338,7 @@ public class JobKickThread implements Runnable {
         }
       }
     }
-    if (messages.size() > 0) {
+    if (!messages.isEmpty()) {
       jobChangeInbox.deleteReadMessage();
     }
     return false;

@@ -5,7 +5,6 @@ import com.github.freeacs.dbi.Group;
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.report.PeriodType;
-import com.github.freeacs.dbi.report.RecordSyslog;
 import com.github.freeacs.dbi.report.Report;
 import com.github.freeacs.dbi.report.ReportGenerator;
 import com.github.freeacs.dbi.report.ReportSyslogGenerator;
@@ -21,7 +20,6 @@ import java.util.Map;
 
 /** The Class SyslogInterface. */
 public class SyslogRetriever extends ReportRetriever {
-
   /** The generator. */
   private ReportSyslogGenerator generator;
 
@@ -45,9 +43,6 @@ public class SyslogRetriever extends ReportRetriever {
             ACSLoader.getIdentity(params.getSession().getId(), acs.getDataSource()));
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.report.custom.ReportRetriever#generateReport(com.owera.xaps.dbi.report.PeriodType, java.util.Date, java.util.Date, java.util.List, java.util.List)
-   */
   @Override
   public Report<?> generateReport(
       PeriodType periodType,
@@ -57,23 +52,16 @@ public class SyslogRetriever extends ReportRetriever {
       List<Profile> profiles,
       Group groupSelect)
       throws SQLException, IOException, ParseException {
-    if (getInputData().getRealtime().getBoolean() || groupSelect != null)
-      return (Report<RecordSyslog>)
-          generator.generateFromSyslog(
-              periodType, start, end, unittypes, profiles, null, groupSelect);
-    else
-      return (Report<RecordSyslog>)
-          generator.generateFromReport(periodType, start, end, unittypes, profiles);
+    if (getInputData().getRealtime().getBoolean() || groupSelect != null) {
+      return generator.generateFromSyslog(
+          periodType, start, end, unittypes, profiles, null, groupSelect);
+    } else {
+      return generator.generateFromReport(periodType, start, end, unittypes, profiles);
+    }
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.report.custom.ReportRetriever#applyObjects(java.util.Map)
-   */
   @Override
-  public void applyObjects(Map<String, Object> root) {
-    // TODO Auto-generated method stub
-
-  }
+  public void applyObjects(Map<String, Object> root) {}
 
   @Override
   public ReportGenerator getReportGenerator() {

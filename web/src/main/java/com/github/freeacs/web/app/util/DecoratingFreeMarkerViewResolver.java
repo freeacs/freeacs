@@ -13,7 +13,6 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
  * @since 1.0
  */
 public class DecoratingFreeMarkerViewResolver extends FreeMarkerViewResolver {
-
   /** The decorating template. */
   private String decoratingTemplate;
 
@@ -43,9 +42,6 @@ public class DecoratingFreeMarkerViewResolver extends FreeMarkerViewResolver {
     return DecoratingFreeMarkerView.class;
   }
 
-  /* (non-Javadoc)
-   * @see org.springframework.web.servlet.view.AbstractTemplateViewResolver#buildView(java.lang.String)
-   */
   @Override
   protected AbstractUrlBasedView buildView(String viewName) throws Exception {
     DecoratingFreeMarkerView view = (DecoratingFreeMarkerView) super.buildView(viewName);

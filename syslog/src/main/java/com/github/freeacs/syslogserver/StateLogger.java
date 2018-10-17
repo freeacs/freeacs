@@ -5,20 +5,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class StateLogger extends TaskDefaultImpl {
-
   public StateLogger(String taskName) {
     super(taskName);
   }
 
   private static Logger logger = LoggerFactory.getLogger(StateLogger.class);
   private static Logger stability = LoggerFactory.getLogger("Stability");
-  private static int summaryHeaderCount = 0;
+  private static int summaryHeaderCount;
 
   private String getUsedMemory() {
     long total = Runtime.getRuntime().totalMemory();
     long free = Runtime.getRuntime().freeMemory();
     long used = total - free;
-    return "" + used / (1024 * 1024);
+    return String.valueOf(used / (1024 * 1024));
   }
 
   @Override
@@ -28,7 +27,9 @@ public class StateLogger extends TaskDefaultImpl {
       stability.info("-----------------------------------------------------------------------");
     }
     summaryHeaderCount++;
-    if (summaryHeaderCount == 20) summaryHeaderCount = 0;
+    if (summaryHeaderCount == 20) {
+      summaryHeaderCount = 0;
+    }
 
     String message = "";
     message += String.format("%15s | ", getUsedMemory());

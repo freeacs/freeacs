@@ -3,13 +3,13 @@ package com.github.freeacs.web.app.page.unit;
 import com.github.freeacs.dbi.File;
 
 public class FileElement {
-
   private String version;
   private File file;
 
-  public FileElement(String v, File f) throws NullPointerException {
-    if (v == null)
+  public FileElement(String v, File f) {
+    if (v == null) {
       throw new NullPointerException("Sorry, can't have a FileElement without version.");
+    }
     version = v;
     file = f;
   }
@@ -18,9 +18,10 @@ public class FileElement {
     return version;
   }
 
-  public void setVersion(String version) throws NullPointerException {
-    if (version == null)
+  public void setVersion(String version) {
+    if (version == null) {
       throw new NullPointerException("Sorry, can't have a FileElement without version.");
+    }
     this.version = version;
   }
 
@@ -37,7 +38,9 @@ public class FileElement {
   }
 
   public boolean equals(Object o) {
-    if (!(o instanceof FileElement)) return false;
+    if (!(o instanceof FileElement)) {
+      return false;
+    }
     FileElement fe = (FileElement) o;
     return fe.getVersion().equals(getVersion());
   }

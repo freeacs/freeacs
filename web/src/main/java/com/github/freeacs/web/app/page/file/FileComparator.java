@@ -10,7 +10,6 @@ import java.util.Comparator;
  * @author Jarl Andre Hubenthal
  */
 public class FileComparator implements Comparator<File> {
-
   /** The Constant ID. */
   public static final int ID = 1;
 
@@ -45,18 +44,23 @@ public class FileComparator implements Comparator<File> {
     return field == f;
   }
 
-  /* (non-Javadoc)
-   * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-   */
   public int compare(File f1, File f2) {
-    if (is(ID)) return f1.getId().compareTo(f2.getId());
-    else if (is(NAME)) return f1.getName().compareTo(f2.getName());
-    else if (is(VERS)) return new NaturalComparator().compare(f1.getVersion(), f2.getVersion());
-    else if (is(DATE)) {
+    if (is(ID)) {
+      return f1.getId().compareTo(f2.getId());
+    } else if (is(NAME)) {
+      return f1.getName().compareTo(f2.getName());
+    } else if (is(VERS)) {
+      return new NaturalComparator().compare(f1.getVersion(), f2.getVersion());
+    } else if (is(DATE)) {
       int res = f1.getTimestamp().compareTo(f2.getTimestamp());
-      if (res == -1) return 1;
-      else if (res == 1) return -1;
+      if (res == -1) {
+        return 1;
+      } else if (res == 1) {
+        return -1;
+      }
       return res;
-    } else return 0;
+    } else {
+      return 0;
+    }
   }
 }

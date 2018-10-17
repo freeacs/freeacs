@@ -34,7 +34,6 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
 @Endpoint
 public class ACSEndpoint {
-
   private final ACSWS_Impl acsws;
 
   @Autowired

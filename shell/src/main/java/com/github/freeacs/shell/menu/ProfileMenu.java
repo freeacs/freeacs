@@ -58,7 +58,7 @@ public class ProfileMenu {
               + " is not a unittype parameter in unittype "
               + context.getUnittype().getName());
     } else {
-      if (args[2].equals("NULL")) {
+      if ("NULL".equals(args[2])) {
         if (profileParameter == null) {
           action = "ignored (parameter was set to NULL and did not exist in database)";
         } else {
@@ -98,9 +98,9 @@ public class ProfileMenu {
     Validation.numberOfArgs(args, 2);
     ProfileParameter profileParameter =
         context.getProfile().getProfileParameters().getByName(args[1]);
-    if (profileParameter == null)
+    if (profileParameter == null) {
       throw new IllegalArgumentException("The profile parameter does not exist.");
-    else {
+    } else {
       context
           .getProfile()
           .getProfileParameters()
@@ -117,11 +117,14 @@ public class ProfileMenu {
     if (oh.getCommand().getOptions().containsKey(Option.OPTION_LIST_ALL_COLUMNS)) {
       Map<String, String> displayableMap =
           context.getUnittype().getUnittypeParameters().getDisplayableNameMap();
-      for (String shortName : displayableMap.values()) headingLine.addValue(shortName);
+      for (String shortName : displayableMap.values()) {
+        headingLine.addValue(shortName);
+      }
     }
     listing.setHeading(new Heading(headingLine));
     Map<String, Unit> units = getUnitMap(args);
-    for (String unitId : units.keySet()) {
+    for (Entry<String, Unit> entry : units.entrySet()) {
+      String unitId = entry.getKey();
       Line line = new Line(unitId);
       if (oh.getCommand().getOptions().containsKey(Option.OPTION_LIST_ALL_COLUMNS)) {
         Map<String, String> displayableMap =
@@ -129,11 +132,14 @@ public class ProfileMenu {
         Unit unit = session.getAcsUnit().getUnitById(unitId);
         for (String utpName : displayableMap.keySet()) {
           String value = unit.getParameters().get(utpName);
-          if (value == null) line.addValue("NULL");
-          else line.addValue(value);
+          if (value != null) {
+            line.addValue(value);
+          } else {
+            line.addValue("NULL");
+          }
         }
       }
-      listing.addLine(line, units.get(unitId));
+      listing.addLine(line, entry.getValue());
     }
   }
 
@@ -185,7 +191,7 @@ public class ProfileMenu {
         session.getAcsUnit().getUnitById(args[1], context.getUnittype(), context.getProfile());
     Profile profile = context.getUnittype().getProfiles().getByName(args[2]);
     if (unit != null && profile != null) {
-      List<String> unitIds = new ArrayList<String>();
+      List<String> unitIds = new ArrayList<>();
       unitIds.add(args[1]);
       session.getAcsUnit().moveUnits(unitIds, profile);
       session.println(
@@ -196,9 +202,9 @@ public class ProfileMenu {
     session.incCounter();
   }
 
-  /*
-   * Returns  true  : has processed a cd-command
-   * Returns  false : has processed another command (everything else)
+  /**
+   * Returns true : has processed a cd-command Returns false : has processed another command
+   * (everything else)
    */
   public boolean execute(String[] inputArr, OutputHandler oh) throws Exception {
     String cmd = inputArr[0];
@@ -226,12 +232,12 @@ public class ProfileMenu {
 
   private Map<String, Unit> getUnitMap(String[] args) throws Exception {
     Map<String, Unit> units = null;
-    if (args.length == 1)
+    if (args.length == 1) {
       units =
           session
               .getAcsUnit()
               .getUnits((String) null, context.getUnittype(), context.getProfile(), null);
-    else if (args.length == 2) {
+    } else if (args.length == 2) {
       units =
           session
               .getAcsUnit()

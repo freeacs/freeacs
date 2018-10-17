@@ -5,19 +5,21 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 public class Util {
-
   public static String getRealm() {
     return "xaps";
   }
 
   public static boolean startsWithIgnoreCase(String str, String prefix) {
     String str_prefix = str.substring(0, prefix.length());
-    return (str_prefix.compareToIgnoreCase(prefix) == 0);
+    return str_prefix.compareToIgnoreCase(prefix) == 0;
   }
 
   public static String removePrefix(String str, String prefix) {
-    if (startsWithIgnoreCase(str, prefix)) return str.substring(prefix.length());
-    else return null;
+    if (startsWithIgnoreCase(str, prefix)) {
+      return str.substring(prefix.length());
+    } else {
+      return null;
+    }
   }
 
   public static String base64decode(String str) {
@@ -32,7 +34,7 @@ public class Util {
    */
   public static String removeQuotes(String quotedString, boolean quotesRequired) {
     // support both quoted and non-quoted
-    if (quotedString.length() > 0 && quotedString.charAt(0) != '"' && !quotesRequired) {
+    if (!quotedString.isEmpty() && quotedString.charAt(0) != '"' && !quotesRequired) {
       return quotedString;
     } else if (quotedString.length() > 2) {
       return quotedString.substring(1, quotedString.length() - 1);

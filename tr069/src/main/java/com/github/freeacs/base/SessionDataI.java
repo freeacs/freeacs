@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.util.Map;
 
 public interface SessionDataI {
-
   ACSParameters getAcsParameters();
 
   void setAcsParameters(ACSParameters acsParameters);
@@ -49,7 +48,7 @@ public interface SessionDataI {
 
   Map<String, ParameterValueStruct> getFromDB();
 
-  void updateParametersFromDB(String unitId) throws SQLException, NoDataAvailableException;
+  void updateParametersFromDB(String unitId) throws SQLException;
 
   void setFromDB(Map<String, ParameterValueStruct> fromDB);
 

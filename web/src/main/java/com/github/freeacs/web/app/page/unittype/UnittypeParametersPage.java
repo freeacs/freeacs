@@ -30,9 +30,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping(value = "/app/parameters")
+@RequestMapping("/app/parameters")
 public class UnittypeParametersPage extends AbstractWebPage {
-
   /** The session id. */
   private String sessionId;
 
@@ -40,7 +39,7 @@ public class UnittypeParametersPage extends AbstractWebPage {
   private boolean utpAdded;
   private String error;
 
-  /** The Session keys */
+  /** The Session keys. */
   private static final String SESSION_SAVE_BOOLEAN = "utp-save-complete";
 
   private static final String SESSION_SAVE_ERRORS = "utp-save-error";
@@ -58,10 +57,9 @@ public class UnittypeParametersPage extends AbstractWebPage {
    * @throws SQLException
    */
   @RequestMapping(method = RequestMethod.GET, value = "list")
-  public @ResponseBody String getUnittypeParameters(
-      @RequestParam(required = true) String unittype,
-      @RequestParam(required = true) String term,
-      HttpSession session)
+  @ResponseBody
+  public String getUnittypeParameters(
+      @RequestParam String unittype, @RequestParam String term, HttpSession session)
       throws SQLException, JsonProcessingException {
     ACS acs = ACSLoader.getXAPS(session.getId(), mainDataSource, mainDataSource);
     List<Unittype> allowedUnittypes = Arrays.asList(acs.getUnittypes().getUnittypes());
@@ -81,9 +79,6 @@ public class UnittypeParametersPage extends AbstractWebPage {
     return null;
   }
 
-  /* (non-Javadoc)
-   * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input.ParameterParser, com.owera.xaps.web.app.output.ResponseHandler)
-   */
   public void process(
       ParameterParser params,
       Output outputHandler,
@@ -107,7 +102,9 @@ public class UnittypeParametersPage extends AbstractWebPage {
     Unittype unittype = null;
 
     String utName = inputData.getUnittype().getString();
-    if (isValidString(utName)) unittype = acs.getUnittype(utName);
+    if (isValidString(utName)) {
+      unittype = acs.getUnittype(utName);
+    }
 
     if (unittype == null) {
       outputHandler.setDirectToPage(Page.UNITTYPE);
@@ -118,13 +115,16 @@ public class UnittypeParametersPage extends AbstractWebPage {
 
     root.put("unittype", unittype);
 
-    if (params.getParameter("utp") != null && isNumber(params.getParameter("utp")))
+    if (params.getParameter("utp") != null && isNumber(params.getParameter("utp"))) {
       utParam =
           unittype.getUnittypeParameters().getById(Integer.parseInt(params.getParameter("utp")));
-    else if (params.getParameter("utp") != null)
+    } else if (params.getParameter("utp") != null) {
       utParam = unittype.getUnittypeParameters().getByName(params.getParameter("utp"));
+    }
 
-    if (inputData.getFormSubmit().isValue("Save parameter")) saveParameter(params, unittype, acs);
+    if (inputData.getFormSubmit().isValue("Save parameter")) {
+      saveParameter(params, unittype, acs);
+    }
     //		else if (inputData.getFormSubmit().isValue("Finish")) {
     //			saveParameter(params, unittype, xaps);
     //			params.getSession().setAttribute(SESSION_SAVE_ERRORS, error);
@@ -157,7 +157,8 @@ public class UnittypeParametersPage extends AbstractWebPage {
 
     if (isValidString(name) && isValidString(flag)) {
       try {
-        if ((utParam = unittype.getUnittypeParameters().getByName(name)) != null) {
+        utParam = unittype.getUnittypeParameters().getByName(name);
+        if (utParam != null) {
           utParam.getFlag().setFlag(flag);
         } else if ((utParam = unittype.getUnittypeParameters().getByName(old_name)) != null) {
           utParam.setName(name.replaceAll(" ", "_"));
@@ -169,13 +170,17 @@ public class UnittypeParametersPage extends AbstractWebPage {
 
         if (!utParam.getFlag().isReadOnly()) {
           UnittypeParameterValues utpVals = utParam.getValues();
-          if (utpVals == null) utParam.setValues(new UnittypeParameterValues());
-          List<String> values = new ArrayList<String>();
+          if (utpVals == null) {
+            utParam.setValues(new UnittypeParameterValues());
+          }
+          List<String> values = new ArrayList<>();
           String[] tmp = params.getStringParameterArray("value::1::field");
           if (tmp != null) {
             for (String s : tmp) {
               String trimmed = s.trim();
-              if (trimmed.length() > 0) values.add(trimmed);
+              if (!trimmed.isEmpty()) {
+                values.add(trimmed);
+              }
             }
           }
           utParam.getValues().setValues(values);
