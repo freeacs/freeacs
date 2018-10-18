@@ -257,6 +257,7 @@ lazy val shell = (project in file("shell"))
       "jline" % "jline" % "0.9.5",
       "dom4j" % "dom4j" % "1.6.1"
     ),
+    copyAppProps,
     copyLogProps,
     copyAppIni
   )
