@@ -1,4 +1,4 @@
-package com.owera.xaps.monitor.https;
+package com.github.freeacs.common.ssl;
 
 /*
  * ====================================================================
@@ -76,7 +76,7 @@ public class EasyX509TrustManager implements X509TrustManager {
    * @param certificates the certificates
    * @param authType the auth type
    * @throws CertificateException the certificate exception
-   * @see X509TrustManager#checkClientTrusted(X509Certificate[],String authType)
+   * @see javax.net.ssl.X509TrustManager#checkClientTrusted(X509Certificate[],String authType)
    */
   public void checkClientTrusted(X509Certificate[] certificates, String authType)
       throws CertificateException {
@@ -89,7 +89,7 @@ public class EasyX509TrustManager implements X509TrustManager {
    * @param certificates the certificates
    * @param authType the auth type
    * @throws CertificateException the certificate exception
-   * @see X509TrustManager#checkServerTrusted(X509Certificate[],String authType)
+   * @see javax.net.ssl.X509TrustManager#checkServerTrusted(X509Certificate[],String authType)
    */
   public void checkServerTrusted(X509Certificate[] certificates, String authType)
       throws CertificateException {
@@ -102,7 +102,7 @@ public class EasyX509TrustManager implements X509TrustManager {
    * Gets the accepted issuers.
    *
    * @return the accepted issuers
-   * @see X509TrustManager#getAcceptedIssuers()
+   * @see javax.net.ssl.X509TrustManager#getAcceptedIssuers()
    */
   public X509Certificate[] getAcceptedIssuers() {
     return this.standardTrustManager.getAcceptedIssuers();
