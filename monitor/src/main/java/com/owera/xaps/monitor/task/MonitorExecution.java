@@ -1,7 +1,7 @@
 package com.owera.xaps.monitor.task;
 
+import com.github.freeacs.common.ssl.HTTPSManager;
 import com.owera.xaps.monitor.Properties;
-import com.owera.xaps.monitor.https.HTTPSManager;
 import java.io.IOException;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;

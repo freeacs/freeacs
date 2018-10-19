@@ -1,4 +1,4 @@
-package com.github.freeacs.web.app.page.monitor;
+package com.github.freeacs.common.ssl;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.SocketTimeoutException;
 import java.security.KeyStore;
-import java.security.MessageDigest;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
@@ -29,7 +27,7 @@ public class HTTPSManager {
    * Install certificate.
    *
    * @param url the url
-   * @param password
+   * @param password the password
    * @throws Exception the exception
    */
   public static void installCertificate(String url, String password) throws Exception {
@@ -80,7 +78,7 @@ public class HTTPSManager {
       throw ste;
     }
 
-    X509Certificate[] chain = tm.chain;
+    X509Certificate[] chain = tm.getChain();
     if (chain == null) {
       logger.error("Could not obtain server certificate chain");
       throw new RuntimeException(
@@ -88,19 +86,7 @@ public class HTTPSManager {
     }
 
     logger.debug("Server sent " + chain.length + " certificate(s):");
-    MessageDigest sha1 = MessageDigest.getInstance("SHA1");
-    MessageDigest md5 = MessageDigest.getInstance("MD5");
-    for (int i = 0; i < chain.length; i++) {
-      X509Certificate cert = chain[i];
-      String msg = "Certificate" + i + ": ";
-      msg += "Subject:" + cert.getSubjectDN();
-      msg += ", Issuer:" + cert.getIssuerDN();
-      sha1.update(cert.getEncoded());
-      msg += ", SHA1:" + toHexString(sha1.digest());
-      md5.update(cert.getEncoded());
-      msg += ", MD5:" + toHexString(md5.digest());
-      logger.debug(msg);
-    }
+
     X509Certificate cert = chain[chain.length - 1];
     String alias = host + "-" + chain.length;
     ks.setCertificateEntry(alias, cert);
@@ -115,60 +101,5 @@ public class HTTPSManager {
             + "' using alias '"
             + alias
             + "'");
-  }
-
-  /** The Constant HEXDIGITS. */
-  private static final char[] HEXDIGITS = "0123456789abcdef".toCharArray();
-
-  /**
-   * To hex string.
-   *
-   * @param bytes the bytes
-   * @return the string
-   */
-  private static String toHexString(byte[] bytes) {
-    StringBuilder sb = new StringBuilder(bytes.length * 3);
-    for (int b : bytes) {
-      b &= 0xff;
-      sb.append(HEXDIGITS[b >> 4]);
-      sb.append(HEXDIGITS[b & 15]);
-      sb.append(' ');
-    }
-    return sb.toString();
-  }
-
-  /** The Class SavingTrustManager. */
-  private static class SavingTrustManager implements X509TrustManager {
-    /** The tm. */
-    private final X509TrustManager tm;
-
-    /** The chain. */
-    private X509Certificate[] chain;
-
-    /**
-     * Instantiates a new saving trust manager.
-     *
-     * @param tm the tm
-     */
-    SavingTrustManager(X509TrustManager tm) {
-      this.tm = tm;
-    }
-
-    public X509Certificate[] getAcceptedIssuers() {
-      return tm.getAcceptedIssuers();
-      //			throw new UnsupportedOperationException();
-    }
-
-    public void checkClientTrusted(X509Certificate[] chain, String authType)
-        throws CertificateException {
-      tm.checkClientTrusted(chain, authType);
-      //			throw new UnsupportedOperationException();
-    }
-
-    public void checkServerTrusted(X509Certificate[] chain, String authType)
-        throws CertificateException {
-      this.chain = chain;
-      tm.checkServerTrusted(chain, authType);
-    }
   }
 }

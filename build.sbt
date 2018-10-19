@@ -72,9 +72,7 @@ lazy val commonSettings = Seq(
   releaseUseGlobalVersion := false,
   dependencyOverrides ++= Seq(
     "com.zaxxer" % "HikariCP" % "3.1.0",
-    "commons-io" % "commons-io" % "2.4",
-    "org.springframework.boot" % "spring-boot-starter-web" % "2.0.2.RELEASE",
-    "org.bouncycastle" % "bcprov-jdk15on" % "1.51" % "provided"
+    "commons-io" % "commons-io" % "2.4"
   )
 )
 
@@ -88,6 +86,7 @@ lazy val common = (project in file("common"))
       ++ List(
       "com.zaxxer" % "HikariCP" % "3.1.0",
       "org.apache.httpcomponents" % "httpclient" % "4.5.5",
+      "commons-httpclient" % "commons-httpclient" % "3.1",
       "ch.qos.logback" % "logback-classic" % "1.2.3",
       "com.sparkjava" % "spark-core" % "2.8.0",
       "com.typesafe" % "config" % "1.3.3"

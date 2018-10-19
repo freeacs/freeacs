@@ -1,4 +1,4 @@
-package com.owera.xaps.monitor.https;
+package com.github.freeacs.common.ssl;
 
 /*
  * $HeadURL$
@@ -122,7 +122,7 @@ public class EasySSLProtocolSocketFactory implements SecureProtocolSocketFactory
    * @return the socket
    * @throws IOException Signals that an I/O exception has occurred.
    * @throws UnknownHostException the unknown host exception
-   * @see SecureProtocolSocketFactory#createSocket(String,int, InetAddress,int)
+   * @see SecureProtocolSocketFactory#createSocket(java.lang.String,int,java.net.InetAddress,int)
    */
   public Socket createSocket(String host, int port, InetAddress clientHost, int clientPort)
       throws IOException, UnknownHostException {
@@ -179,7 +179,7 @@ public class EasySSLProtocolSocketFactory implements SecureProtocolSocketFactory
    * @return the socket
    * @throws IOException Signals that an I/O exception has occurred.
    * @throws UnknownHostException the unknown host exception
-   * @see SecureProtocolSocketFactory#createSocket(String,int)
+   * @see SecureProtocolSocketFactory#createSocket(java.lang.String,int)
    */
   public Socket createSocket(String host, int port) throws IOException, UnknownHostException {
     return getSSLContext().getSocketFactory().createSocket(host, port);
@@ -195,7 +195,7 @@ public class EasySSLProtocolSocketFactory implements SecureProtocolSocketFactory
    * @return the socket
    * @throws IOException Signals that an I/O exception has occurred.
    * @throws UnknownHostException the unknown host exception
-   * @see SecureProtocolSocketFactory#createSocket(Socket, String,int,boolean)
+   * @see SecureProtocolSocketFactory#createSocket(java.net.Socket,java.lang.String,int,boolean)
    */
   public Socket createSocket(Socket socket, String host, int port, boolean autoClose)
       throws IOException, UnknownHostException {
