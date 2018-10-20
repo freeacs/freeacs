@@ -1,5 +1,6 @@
 package com.github.freeacs;
 
+import static com.github.freeacs.common.util.DataSourceHelper.inMemoryDataSource;
 import static org.junit.Assert.*;
 
 import com.github.freeacs.common.util.Sleep;
@@ -9,7 +10,6 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.sql.SQLException;
 import javax.sql.DataSource;
@@ -19,6 +19,8 @@ import org.junit.Test;
 import spark.Spark;
 
 public class AppTest {
+  private static DataSource ds;
+
   private final String inform =
       "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n"
           + "                   xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\"\n"
@@ -133,7 +135,7 @@ public class AppTest {
 
   @BeforeClass
   public static void init() throws SQLException {
-    DataSource ds = dataSource();
+    ds = inMemoryDataSource();
     ValueInsertHelper.insert(ds);
     Config baseConfig = ConfigFactory.load("application.conf");
     App.routes(ds, new Properties(baseConfig));
@@ -141,9 +143,10 @@ public class AppTest {
   }
 
   @AfterClass
-  public static void after() {
+  public static void after() throws SQLException {
     Spark.stop();
     Sleep.terminateApplication();
+    ds.unwrap(HikariDataSource.class).close();
   }
 
   @Test
@@ -266,16 +269,5 @@ public class AppTest {
             .asString();
     assertNull(response.getBody());
     assertEquals(204, response.getStatus());
-  }
-
-  private static DataSource dataSource() {
-    HikariConfig hikariConfig = new HikariConfig();
-    hikariConfig.setDataSourceClassName("org.h2.jdbcx.JdbcDataSource");
-    hikariConfig.setConnectionTestQuery("VALUES 1");
-    hikariConfig.addDataSourceProperty(
-        "URL", "jdbc:h2:mem:testdb;MODE=MYSQL;INIT=RUNSCRIPT FROM 'classpath:h2-schema.sql';");
-    hikariConfig.addDataSourceProperty("user", "sa");
-    hikariConfig.addDataSourceProperty("password", "sa");
-    return new HikariDataSource(hikariConfig);
   }
 }
