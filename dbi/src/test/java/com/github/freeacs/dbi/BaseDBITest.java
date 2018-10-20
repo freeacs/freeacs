@@ -28,7 +28,6 @@ public abstract class BaseDBITest {
     when(acs.getDataSource()).thenReturn(dataSource);
     DBI dbi = mock(DBI.class);
     when(acs.getDbi()).thenReturn(dbi);
-    doNothing().when(dbi).publishChange(any(Unittype.class), any(Unittype.class));
   }
 
   @After
