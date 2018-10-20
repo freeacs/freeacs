@@ -114,7 +114,7 @@ public class Unittypes {
 
   private int deleteUnittypeImpl(Unittype unittype, ACS acs) throws SQLException {
     Statement s = null;
-    String sql = null;
+    String sql;
     Connection c = acs.getDataSource().getConnection();
     try {
       s = c.createStatement();

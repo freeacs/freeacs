@@ -1,7 +1,6 @@
 package com.github.freeacs.dbi;
 
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,9 +31,9 @@ public class TestUtils {
     return unittype;
   }
 
-  public static Unittype createUnittype(String name, ACS acs) throws SQLException {
+  public static Unittype createUnittype(String name, Unittypes unittypes, ACS acs)
+      throws SQLException {
     Unittype unittype = new Unittype(name, name, name, Unittype.ProvisioningProtocol.TR069);
-    Unittypes unittypes = new Unittypes(new HashMap<>(), new HashMap<>());
     unittypes.addOrChangeUnittype(unittype, acs);
     return unittype;
   }
