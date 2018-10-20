@@ -73,7 +73,7 @@ public class App {
     TR069Method tr069Method = new TR069Method(properties);
     Provisioning provisioning = new Provisioning(dbAccess, tr069Method, properties);
     provisioning.init();
-    FileServlet fileServlet = new FileServlet(dbAccess, ctxPath + "/file/");
+    FileServlet fileServlet = new FileServlet(dbAccess, ctxPath + "/file/", properties);
     OKServlet okServlet = new OKServlet(dbAccess);
     path(
         ctxPath,

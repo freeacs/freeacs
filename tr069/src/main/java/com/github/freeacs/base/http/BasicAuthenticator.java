@@ -5,7 +5,6 @@ import com.github.freeacs.base.Log;
 import com.github.freeacs.base.NoDataAvailableException;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.HTTPReqResData;
-import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069AuthenticationException;
 import java.sql.SQLException;
@@ -17,7 +16,9 @@ public class BasicAuthenticator {
     res.setStatus(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
   }
 
-  public static boolean authenticate(HTTPReqResData reqRes) throws TR069AuthenticationException {
+  public static boolean authenticate(
+      HTTPReqResData reqRes, boolean isDiscoveryMode, String[] discoveryBlocked)
+      throws TR069AuthenticationException {
     String authorization = reqRes.getReq().getHeader("authorization");
     if (authorization == null) {
       Log.notice(
@@ -26,7 +27,7 @@ public class BasicAuthenticator {
       sendChallenge(reqRes.getRes());
       return false;
     } else {
-      return verify(reqRes, authorization);
+      return verify(reqRes, authorization, isDiscoveryMode, discoveryBlocked);
     }
   }
 
@@ -35,9 +36,12 @@ public class BasicAuthenticator {
    *
    * @param reqRes HTTP servlet request
    * @param authorization Authorization credentials from this request
-   * @throws TR069AuthenticationException
    */
-  private static boolean verify(HTTPReqResData reqRes, String authorization)
+  private static boolean verify(
+      HTTPReqResData reqRes,
+      String authorization,
+      boolean isDiscoveryMode,
+      String[] discoveryBlocked)
       throws TR069AuthenticationException {
     Log.debug(
         BasicAuthenticator.class,
@@ -49,7 +53,7 @@ public class BasicAuthenticator {
     String userpass = Util.base64decode(authorization);
 
     // Validate any credentials already included with this request
-    String username = null;
+    String username;
     String password = null;
 
     // Get username and password
@@ -72,10 +76,11 @@ public class BasicAuthenticator {
     try {
       SessionData sessionData = reqRes.getSessionData();
       sessionData.setUnitId(unitId);
-      sessionData.updateParametersFromDB(unitId); // Unit is now stored in sessionData
+      sessionData.updateParametersFromDB(
+          unitId, isDiscoveryMode); // Unit is now stored in sessionData
       String secret = null;
-      if (sessionData.isFirstConnect() && Properties.DISCOVERY_MODE) {
-        for (String blocked : Properties.DISCOVERY_BLOCK) {
+      if (sessionData.isFirstConnect() && isDiscoveryMode) {
+        for (String blocked : discoveryBlocked) {
           if (unitId.contains(blocked)) {
             throw new TR069AuthenticationException(
                 "ACS Username is blocked by \"" + blocked + "\" in discovery mode. Access denied",

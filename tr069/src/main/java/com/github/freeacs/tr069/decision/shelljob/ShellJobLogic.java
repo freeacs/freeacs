@@ -45,14 +45,8 @@ public class ShellJobLogic {
    */
   private static Cache monitorCache = new Cache();
 
-  /**
-   * @param sessionData
-   * @param job
-   * @param uj
-   * @throws TR069DatabaseException
-   * @throws SQLException
-   */
-  public static void execute(SessionData sessionData, Job job, UnitJob uj) throws TR069Exception {
+  public static void execute(SessionData sessionData, Job job, UnitJob uj, boolean isDiscoveryMode)
+      throws TR069Exception {
     String unitId = sessionData.getUnitId();
     CacheValue cv = monitorCache.get(unitId);
     if (cv == null) {
@@ -63,7 +57,7 @@ public class ShellJobLogic {
       // read parameters from device and save it to the unit
       ShellJobLogic.importReadOnlyParameters(sessionData);
       // execute changes using the shell-script, all changes are written to database
-      ShellJobLogic.executeShellScript(sessionData, job, uj);
+      ShellJobLogic.executeShellScript(sessionData, job, uj, isDiscoveryMode);
       // read the changes from the database and send to CPE
       ShellJobLogic.prepareSPV(sessionData);
     }
@@ -77,13 +71,9 @@ public class ShellJobLogic {
    * should result in Job verification fail (not sure how) 3. Feed shell script into shell daemon.
    * Wait for the script to be executed. If shell daemon returns error - should result in Job
    * verification fail (not sure how)
-   *
-   * @param job
-   * @throws TR069DatabaseException
-   * @throws
    */
-  private static void executeShellScript(SessionData sessionData, Job job, UnitJob uj)
-      throws TR069Exception {
+  private static void executeShellScript(
+      SessionData sessionData, Job job, UnitJob uj, boolean isDiscoveryMode) throws TR069Exception {
     ScriptExecutions executions = Provisioning.getExecutions();
     String scriptArgs =
         "\"-uut:"
@@ -113,15 +103,15 @@ public class ShellJobLogic {
         if (se.getExitStatus() != null) {
           if (se.getExitStatus()) { // ERROR OCCURRED
             Log.error(ShellJobLogic.class, se.getErrorMessage());
-            uj.stop(UnitJobStatus.CONFIRMED_FAILED);
-          } else uj.stop(UnitJobStatus.COMPLETED_OK);
+            uj.stop(UnitJobStatus.CONFIRMED_FAILED, isDiscoveryMode);
+          } else uj.stop(UnitJobStatus.COMPLETED_OK, isDiscoveryMode);
           break;
         }
         if (timeWaited > 30000) {
           Log.error(
               ShellJobLogic.class,
               "The execution of the shell script did not complete within 30 sec");
-          uj.stop(UnitJobStatus.CONFIRMED_FAILED);
+          uj.stop(UnitJobStatus.CONFIRMED_FAILED, isDiscoveryMode);
           break;
         }
       } catch (Throwable t) {
@@ -136,9 +126,6 @@ public class ShellJobLogic {
   /**
    * Read unit parameters from database, to see if any changes have occurred (during the shell
    * script execution). If ReadWrite parameters differ from CPE, then send them to the CPE.
-   *
-   * @param sessionData
-   * @throws TR069DatabaseException
    */
   private static void toCPE(SessionData sessionData) throws TR069DatabaseException {
     UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
@@ -173,14 +160,10 @@ public class ShellJobLogic {
   /**
    * In order for the shell script to run with the correct parameters, we must read them from the
    * device and write it to the database, before the script starts.
-   *
-   * @param sessionData
-   * @throws TR069DatabaseException
    */
   private static void importReadOnlyParameters(SessionData sessionData)
       throws TR069DatabaseException {
-    //		List<ParameterValueStruct> toDB = new ArrayList<ParameterValueStruct>();
-    List<UnitParameter> unitParameters = new ArrayList<UnitParameter>();
+    List<UnitParameter> unitParameters = new ArrayList<>();
     UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
     for (int i = 0; i < sessionData.getFromCPE().size(); i++) {
       ParameterValueStruct pvsCPE = sessionData.getFromCPE().get(i);
@@ -215,7 +198,7 @@ public class ShellJobLogic {
 
   private static void prepareSPV(SessionData sessionData) throws TR069DatabaseException {
     toCPE(sessionData);
-    List<ParameterValueStruct> toDB = new ArrayList<ParameterValueStruct>();
+    List<ParameterValueStruct> toDB = new ArrayList<>();
     sessionData.setToDB(toDB);
     CPEParameters cpeParams = sessionData.getCpeParameters();
     String PII = cpeParams.PERIODIC_INFORM_INTERVAL;

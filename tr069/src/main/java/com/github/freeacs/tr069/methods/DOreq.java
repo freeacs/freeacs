@@ -1,6 +1,5 @@
 package com.github.freeacs.tr069.methods;
 
-import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.xml.Body;
 
 public class DOreq extends Body {
@@ -44,6 +43,7 @@ public class DOreq extends Body {
 
   private static final String END = "\t\t</cwmp:Download>\n";
 
+  private final boolean fileAuthUsed;
   private String url;
   private String type;
   private int filesize;
@@ -59,7 +59,8 @@ public class DOreq extends Body {
       int filesize,
       String commandKey,
       String username,
-      String password) {
+      String password,
+      boolean fileAuthUsed) {
     this.url = url;
     this.type = type;
     this.filesize = filesize;
@@ -67,6 +68,7 @@ public class DOreq extends Body {
     this.commandKey = commandKey;
     this.username = username;
     this.password = password;
+    this.fileAuthUsed = fileAuthUsed;
   }
 
   @Override
@@ -88,12 +90,12 @@ public class DOreq extends Body {
     sb.append(URL_END);
 
     sb.append(USERNAME_START);
-    if (Properties.FILE_AUTH_USED) {
+    if (fileAuthUsed) {
       sb.append(username);
     }
     sb.append(USERNAME_END);
     sb.append(PASSWORD_START);
-    if (Properties.FILE_AUTH_USED) {
+    if (fileAuthUsed) {
       sb.append(password);
     }
     sb.append(PASSWORD_END);

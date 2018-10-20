@@ -140,7 +140,7 @@ public class SessionData implements SessionDataI {
     this.startupTmsForSession = startupTmsForSession;
   }
 
-  public void updateParametersFromDB(String unitId) throws SQLException {
+  public void updateParametersFromDB(String unitId, boolean isDiscoveryMode) throws SQLException {
     if (fromDB != null) {
       return;
     }
@@ -149,7 +149,7 @@ public class SessionData implements SessionDataI {
     addUnitDataToSession(this);
 
     if (fromDB.isEmpty()) {
-      if (Properties.DISCOVERY_MODE) {
+      if (isDiscoveryMode) {
         Log.debug(
             SessionData.class,
             "No unit data found & discovery mode true -> first-connect = true, allow to continue");

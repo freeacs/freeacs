@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 public class GPNres {
   private static Logger logger = LoggerFactory.getLogger(GPNres.class);
 
-  public static void process(HTTPReqResData reqRes) throws TR069Exception {
+  public static void process(HTTPReqResData reqRes, boolean isDiscoveryMode) throws TR069Exception {
     reqRes.getRequest().setMethod(TR069Method.GET_PARAMETER_NAMES);
     Parser parser = new Parser(reqRes.getRequest().getXml());
 
@@ -73,7 +73,7 @@ public class GPNres {
           "Unittype parameters (" + pisList.size() + ") is written to DB, will now reload unit");
       sessionData.setFromDB(null);
       sessionData.setAcsParameters(null);
-      sessionData.updateParametersFromDB(sessionData.getUnitId());
+      sessionData.updateParametersFromDB(sessionData.getUnitId(), isDiscoveryMode);
     } catch (Throwable t) {
       throw new TR069Exception("Processing GPNRes failed", TR069ExceptionShortMessage.MISC, t);
     }
