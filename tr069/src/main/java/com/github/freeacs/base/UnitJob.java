@@ -37,7 +37,6 @@ public class UnitJob {
    */
   private boolean serverSideJob;
 
-  private Long jobStartTime;
 
   public UnitJob(SessionDataI sessionData, Job job, boolean serverSideJob) {
     this.sessionData = sessionData;
@@ -54,7 +53,7 @@ public class UnitJob {
    * This method updates the sessiondata object with the job parameters. Specifically it updates:
    * oweraparameters: job-current fromDB : all job-parameters (except job-current/job-history)
    */
-  private void updateSessionWithJobParams(boolean verification) {
+  private void updateSessionWithJobParams() {
     Map<String, JobParameter> jobParams = job.getDefaultParameters();
     sessionData.setJobParams(jobParams);
   }
@@ -80,9 +79,6 @@ public class UnitJob {
 
     String jh1 = unit.getParameters().get(SystemParameters.JOB_HISTORY);
     long tms = System.currentTimeMillis();
-    if (jobStartTime != null) {
-      tms = jobStartTime;
-    }
     if (jh1 == null || "".equals(jh1.trim())) {
       return makeUnitParameter(SystemParameters.JOB_HISTORY, "," + jobId + ":0:" + tms + ",");
     }
@@ -131,7 +127,7 @@ public class UnitJob {
         DBAccessStatic.startUnitJob(
             unitId, job.getId(), sessionData.getDbAccessSession().getAcs().getDataSource());
         if (!serverSideJob) {
-          updateSessionWithJobParams(false);
+          updateSessionWithJobParams();
           updateSessionWithJobCurrent();
           Log.debug(
               UnitJob.class,
@@ -154,7 +150,7 @@ public class UnitJob {
    * write job-history to DB (remove old jobs) - read unit again and update session data (must clear
    * fromDB to do this) Else - write unit-job entry to DB (failed) - write job-current to DB (as "")
    */
-  public void stop(String unitJobStatus) {
+  public void stop(String unitJobStatus, boolean isDiscoveryMode) {
     try {
       JobInfo jobInfo = new JobInfo(unitJobStatus).invoke();
       if (jobInfo.isIrrelevant()) {
@@ -182,7 +178,7 @@ public class UnitJob {
           Log.debug(
               UnitJob.class,
               "Unit-information will be reloaded to reflect changes in profile/unit parameters");
-          sessionData.updateParametersFromDB(sessionData.getUnitId());
+          sessionData.updateParametersFromDB(sessionData.getUnitId(), isDiscoveryMode);
         }
       } catch (SQLException sqle) {
         Log.error(UnitJob.class, "UnitJob update failed", sqle);

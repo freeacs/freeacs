@@ -21,10 +21,12 @@ public class FileServlet extends HttpServlet {
 
   private final DBAccess dbAccess;
   private final String context;
+  private final Properties properties;
 
-  public FileServlet(DBAccess dbAccess, String s) {
+  public FileServlet(DBAccess dbAccess, String context, Properties properties) {
     this.dbAccess = dbAccess;
-    this.context = s;
+    this.context = context;
+    this.properties = properties;
   }
 
   protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
@@ -36,10 +38,10 @@ public class FileServlet extends HttpServlet {
     try {
       // Create the main object which contains all objects concerning the entire
       // session. This object also contains the SessionData object
-      if (Properties.FILE_AUTH_USED) {
+      if (properties.isFileAuthUsed()) {
         HTTPReqResData reqRes = new HTTPReqResData(req, res, dbAccess);
         // 2. Authenticate the client (first issue challenge, then authenticate)
-        if (!Authenticator.authenticate(reqRes)) {
+        if (!Authenticator.authenticate(reqRes, properties)) {
           return;
         }
         if (reqRes.getSessionData() != null && reqRes.getSessionData().getUnittype() != null) {

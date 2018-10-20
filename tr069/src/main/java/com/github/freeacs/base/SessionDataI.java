@@ -48,7 +48,7 @@ public interface SessionDataI {
 
   Map<String, ParameterValueStruct> getFromDB();
 
-  void updateParametersFromDB(String unitId) throws SQLException;
+  void updateParametersFromDB(String unitId, boolean isDiscoveryMode) throws SQLException;
 
   void setFromDB(Map<String, ParameterValueStruct> fromDB);
 

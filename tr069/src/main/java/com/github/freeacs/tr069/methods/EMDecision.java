@@ -9,7 +9,6 @@ import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.TimestampWrapper;
 import com.github.freeacs.tr069.HTTPReqResData;
 import com.github.freeacs.tr069.InformParameters;
-import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import java.sql.SQLException;
@@ -92,7 +91,7 @@ public class EMDecision {
     sessionData.setToDB(null);
   }
 
-  public static void process(HTTPReqResData reqRes) throws SQLException {
+  public static void process(HTTPReqResData reqRes, boolean isDiscoveryMode) throws SQLException {
     SessionData sessionData = reqRes.getSessionData();
     String prevResponseMethod = sessionData.getPreviousResponseMethod();
     if (prevResponseMethod == null) {
@@ -116,13 +115,13 @@ public class EMDecision {
             false);
         Log.info(EMDecision.class, "EM-Decision is GPN since unit has DISCOVER parameter set to 1");
         reqRes.getResponse().setMethod(TR069Method.GET_PARAMETER_NAMES);
-      } else if (Properties.DISCOVERY_MODE
+      } else if (isDiscoveryMode
           && !sessionData.isUnittypeCreated()
           && sessionData.isFirstConnect()) {
         writeSystemParameters(reqRes, null, false);
         Log.info(EMDecision.class, "EM-Decision is GPN since ACS is in discovery-mode");
         reqRes.getResponse().setMethod(TR069Method.GET_PARAMETER_NAMES);
-      } else if (Properties.DISCOVERY_MODE
+      } else if (isDiscoveryMode
           && !sessionData.getUnittype().getUnittypeParameters().hasDeviceParameters()) {
         writeSystemParameters(reqRes);
         Log.info(

@@ -24,7 +24,7 @@ import java.util.Map.Entry;
  * @author morten
  */
 public class JobLogic {
-  public static boolean checkJobOK(SessionDataI sessionData) {
+  public static boolean checkJobOK(SessionDataI sessionData, boolean isDiscoveryMode) {
     try {
       String jobId = sessionData.getAcsParameters().getValue(SystemParameters.JOB_CURRENT);
       if (jobId != null && !jobId.trim().isEmpty()) {
@@ -38,52 +38,52 @@ public class JobLogic {
         UnitJob uj = new UnitJob(sessionData, job, false);
         if (!JobStatus.STARTED.equals(job.getStatus())) {
           Log.warn(JobLogic.class, "Current job is not STARTED, UnitJob must be STOPPED");
-          uj.stop(UnitJobStatus.STOPPED);
+          uj.stop(UnitJobStatus.STOPPED, isDiscoveryMode);
           return false;
         } else {
           JobType type = job.getFlags().getType();
           if (type == JobType.CONFIG) {
             boolean parameterKeyEquality = sessionData.lastProvisioningOK();
             if (parameterKeyEquality) {
-              uj.stop(UnitJobStatus.COMPLETED_OK);
+              uj.stop(UnitJobStatus.COMPLETED_OK, isDiscoveryMode);
               return true;
             } else {
               Log.warn(
                   JobLogic.class,
                   "The parameterkeys from CPE and ACS does not match, UnitJob FAILED");
-              uj.stop(UnitJobStatus.CONFIRMED_FAILED);
+              uj.stop(UnitJobStatus.CONFIRMED_FAILED, isDiscoveryMode);
               return false;
             }
           } else if (type == JobType.RESTART
               || type == JobType.RESET
               || type == JobType.KICK
               || type == JobType.SHELL) {
-            uj.stop(UnitJobStatus.COMPLETED_OK);
+            uj.stop(UnitJobStatus.COMPLETED_OK, isDiscoveryMode);
             return true;
           } else if (type == JobType.SOFTWARE) {
             Map<String, JobParameter> jpMap = job.getDefaultParameters();
             JobParameter dsw = jpMap.get(SystemParameters.DESIRED_SOFTWARE_VERSION);
             String sw = sessionData.getSoftwareVersion();
             if (dsw != null && sw != null && dsw.getParameter().getValue().equals(sw)) {
-              uj.stop(UnitJobStatus.COMPLETED_OK);
+              uj.stop(UnitJobStatus.COMPLETED_OK, isDiscoveryMode);
               return true;
             } else {
               Log.warn(
                   JobLogic.class,
                   "Software version on CPE and ACS (desired) does not match, UnitJob FAILED");
-              uj.stop(UnitJobStatus.CONFIRMED_FAILED);
+              uj.stop(UnitJobStatus.CONFIRMED_FAILED, isDiscoveryMode);
               return false;
             }
           } else if (type == JobType.TR069_SCRIPT) {
             boolean commandKeyEquality = sessionData.lastProvisioningOK();
             if (commandKeyEquality) {
-              uj.stop(UnitJobStatus.COMPLETED_OK);
+              uj.stop(UnitJobStatus.COMPLETED_OK, isDiscoveryMode);
               return true;
             } else {
               Log.warn(
                   JobLogic.class,
                   "Script/Config version on CPE and ACS (desired) does not match, UnitJob FAILED");
-              uj.stop(UnitJobStatus.CONFIRMED_FAILED);
+              uj.stop(UnitJobStatus.CONFIRMED_FAILED, isDiscoveryMode);
               return false;
             }
           }
@@ -118,10 +118,6 @@ public class JobLogic {
   /**
    * The method filters through all kinds of factors to find which Job (if any) should be the next
    * to run.
-   *
-   * @param sessionData
-   * @param downloadLimit
-   * @return
    */
   private static Job getJob(SessionDataI sessionData, int downloadLimit) {
     Unit unit = sessionData.getUnit();
@@ -131,7 +127,7 @@ public class JobLogic {
     sessionData.getPIIDecision().setAllJobs(allJobs);
     Job chosenJob = null;
     try {
-      Map<Integer, Job> possibleJobs = filterOnStatusAndType(sessionData, unit, allJobs);
+      Map<Integer, Job> possibleJobs = filterOnStatusAndType(allJobs);
       message += "Status/Type:" + possibleJobs.size() + ", ";
       if (possibleJobs.isEmpty()) {
         return null;
@@ -225,10 +221,6 @@ public class JobLogic {
    * interval and place it on the job object (and use that in PIIDecision).
    *
    * <p>The only jobs returned from this filter is jobs that can run right away!
-   *
-   * @param sessionData
-   * @param possibleJobs
-   * @return
    */
   private static Map<Integer, Job> filterOnRunTime(
       SessionDataI sessionData,
@@ -379,8 +371,7 @@ public class JobLogic {
     return possibleJobs;
   }
 
-  private static Map<Integer, Job> filterOnStatusAndType(
-      SessionDataI sessionData, Unit unit, Job[] allJobs) {
+  private static Map<Integer, Job> filterOnStatusAndType(Job[] allJobs) {
     Map<Integer, Job> possibleJobs = new HashMap<>();
     for (Job j : allJobs) {
       JobType type = j.getFlags().getType();
@@ -448,10 +439,6 @@ public class JobLogic {
    * jobs. The rules are shown below, in prioritized order: 1. Non-repeatable jobs have priority
    * over those that are repeatable. 2. Non-dependent jobs have priority over those that are
    * dependent.
-   *
-   * @param possibleJobs
-   * @param jobHistory
-   * @return
    */
   private static Job findJobWithHighestPriority(Map<Integer, Job> possibleJobs) {
     Iterator<Entry<Integer, Job>> i = possibleJobs.entrySet().iterator();

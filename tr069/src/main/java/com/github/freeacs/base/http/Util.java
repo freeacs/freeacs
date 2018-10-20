@@ -18,7 +18,7 @@ public class Util {
     if (startsWithIgnoreCase(str, prefix)) {
       return str.substring(prefix.length());
     } else {
-      return null;
+      return str;
     }
   }
 
@@ -51,8 +51,6 @@ public class Util {
   /**
    * Convert the authentication username to unitid (should be 1:1, but there might be some vendor
    * specific problems to solve...
-   *
-   * @throws UnsupportedEncodingException
    */
   public static String username2unitId(String username) {
     String unitId;

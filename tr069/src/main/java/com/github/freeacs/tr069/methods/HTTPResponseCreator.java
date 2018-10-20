@@ -176,7 +176,7 @@ public interface HTTPResponseCreator {
         Log.debug(
             HTTPResponseCreator.class,
             "Asks for " + parameterValueList.size() + " parameters in GPV-req");
-        Collections.sort(parameterValueList, new ParameterValueStructComparator());
+        parameterValueList.sort(new ParameterValueStructComparator());
       }
     }
     sessionData.setRequestedCPE(parameterValueList);
@@ -185,7 +185,7 @@ public interface HTTPResponseCreator {
   }
 
   static Response buildSPV(HTTPReqResData reqRes, Properties properties)
-      throws NoSuchAlgorithmException, SQLException {
+      throws NoSuchAlgorithmException {
     if (reqRes.getTR069TransactionID() == null) {
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     }
@@ -207,7 +207,7 @@ public interface HTTPResponseCreator {
     return new Response(header, body);
   }
 
-  static Response buildDO(HTTPReqResData reqRes) {
+  static Response buildDO(HTTPReqResData reqRes, boolean fileAuthUsed) {
     if (reqRes.getTR069TransactionID() == null) {
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     }
@@ -238,7 +238,8 @@ public interface HTTPResponseCreator {
             download.getFile().getLength(),
             commandKey,
             username,
-            password);
+            password,
+            fileAuthUsed);
     return new Response(header, body);
   }
 

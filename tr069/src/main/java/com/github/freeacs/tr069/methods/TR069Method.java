@@ -38,15 +38,17 @@ public class TR069Method {
 
   public TR069Method(Properties properties) {
     getAbbrevMap().put(EMPTY, "EM");
-    getRequestMap()
-        .put(EMPTY, new HTTPRequestAction(DoNotProcessReq::process, EMDecision::process));
+    getRequestMap().put(EMPTY,
+        new HTTPRequestAction(DoNotProcessReq::process,
+            (req) -> EMDecision.process(req, properties.isDiscoveryMode())));
     getResponseMap().put(EMPTY, new HTTPResponseAction(HTTPResponseCreator::buildEM));
 
     getAbbrevMap().put(GET_PARAMETER_NAMES, "GPN");
     getRequestMap()
         .put(
             GET_PARAMETER_NAMES,
-            new HTTPRequestAction(GPNres::process, makeSimpleDecision(GET_PARAMETER_VALUES)));
+            new HTTPRequestAction((req) -> GPNres.process(req, properties.isDiscoveryMode()),
+                makeSimpleDecision(GET_PARAMETER_VALUES)));
     getResponseMap()
         .put(
             GET_PARAMETER_NAMES,
@@ -54,12 +56,17 @@ public class TR069Method {
                 reqResData -> HTTPResponseCreator.buildGPN(reqResData, properties)));
 
     getAbbrevMap().put(INFORM, "IN");
-    getRequestMap().put(INFORM, new HTTPRequestAction(INreq::process, makeSimpleDecision(INFORM)));
+    getRequestMap().put(INFORM,
+        new HTTPRequestAction((req) -> INreq.process(req, properties.isDiscoveryMode()),
+            makeSimpleDecision(INFORM)));
     getResponseMap().put(INFORM, new HTTPResponseAction(HTTPResponseCreator::buildIN));
 
     getAbbrevMap().put(GET_PARAMETER_VALUES, "GPV");
     getRequestMap()
-        .put(GET_PARAMETER_VALUES, new HTTPRequestAction(GPVres::process, GPVDecision::process));
+        .put(GET_PARAMETER_VALUES,
+            new HTTPRequestAction(GPVres::process,
+                (req) -> GPVDecision.process(req, properties.isDiscoveryMode(), properties.getPublicUrl(),
+                    properties.getConcurrentDownloadLimit())));
     getResponseMap()
         .put(
             GET_PARAMETER_VALUES,
@@ -93,7 +100,8 @@ public class TR069Method {
 
     getAbbrevMap().put(DOWNLOAD, "DO");
     getRequestMap().put(DOWNLOAD, new HTTPRequestAction(DOres::process, makeSimpleDecision(EMPTY)));
-    getResponseMap().put(DOWNLOAD, new HTTPResponseAction(HTTPResponseCreator::buildDO));
+    getResponseMap().put(DOWNLOAD, new HTTPResponseAction((req) ->
+        HTTPResponseCreator.buildDO(req, properties.isFileAuthUsed())));
 
     getAbbrevMap().put(FAULT, "FA");
     getRequestMap().put(FAULT, new HTTPRequestAction(FAres::process, FADecision::process));
