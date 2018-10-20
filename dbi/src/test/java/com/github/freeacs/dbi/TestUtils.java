@@ -16,11 +16,9 @@ public class TestUtils {
     }
   }
 
-  public static Unittype createUnittypeWithParams(String name, List<Param> params, ACS acs)
+  public static Unittype createUnittypeWithParams(Unittype unittype, List<Param> params, ACS acs)
       throws SQLException {
-    Unittype unittype = createUnittype(name, acs);
-    UnittypeParameters unittypeParameters =
-        new UnittypeParameters(new HashMap<>(), new HashMap<>(), unittype);
+    UnittypeParameters unittypeParameters = unittype.getUnittypeParameters();
     List<UnittypeParameter> parametersToCreate =
         params
             .stream()
@@ -41,9 +39,8 @@ public class TestUtils {
     return unittype;
   }
 
-  public static Profile createProfile(String name, String unittypeName, ACS acs)
+  public static Profile createProfile(String name, Unittype unittype, ACS acs)
       throws SQLException {
-    Unittype unittype = createUnittype(unittypeName, acs);
     Profile profile = new Profile(name, unittype);
     Profiles profiles = unittype.getProfiles();
     profiles.addOrChangeProfile(profile, acs);

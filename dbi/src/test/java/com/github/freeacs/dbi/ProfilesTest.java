@@ -10,7 +10,8 @@ public class ProfilesTest extends BaseDBITest {
   @Test
   public void addOrChangeProfile() throws SQLException {
     // When:
-    Profile profile = TestUtils.createProfile("Test profile", "Unittype", acs);
+    Unittype unittype = TestUtils.createUnittype("Test unittype", acs);
+    Profile profile = TestUtils.createProfile("Test profile", unittype, acs);
 
     // Then:
     assertEquals(2, profile.getId().intValue());
