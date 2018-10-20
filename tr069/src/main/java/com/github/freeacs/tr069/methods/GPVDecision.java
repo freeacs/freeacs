@@ -25,7 +25,6 @@ import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.CPEParameters;
 import com.github.freeacs.tr069.DownloadLogicTR069;
 import com.github.freeacs.tr069.HTTPReqResData;
-import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.background.ActiveDeviceDetectionTask;
 import com.github.freeacs.tr069.decision.shelljob.ShellJobLogic;
@@ -51,10 +50,9 @@ import java.util.Map;
  * that comment.
  */
 public class GPVDecision {
-  public static void process(HTTPReqResData reqRes,
-                             boolean isDiscoveryMode,
-                             String publicUrl,
-                             int concurrentDownloadLimit) throws TR069Exception {
+  public static void process(
+      HTTPReqResData reqRes, boolean isDiscoveryMode, String publicUrl, int concurrentDownloadLimit)
+      throws TR069Exception {
     SessionData sessionData = reqRes.getSessionData();
     ProvisioningMode mode = sessionData.getUnit().getProvisioningMode();
     Log.debug(GPVDecision.class, "Mode was detected to be: " + mode);
@@ -98,9 +96,8 @@ public class GPVDecision {
     }
   }
 
-  private static void normalPriorityProvisioning(HTTPReqResData reqRes,
-                                                 String publicUrl,
-                                                 int concurrentDownloadLimit) {
+  private static void normalPriorityProvisioning(
+      HTTPReqResData reqRes, String publicUrl, int concurrentDownloadLimit) {
     ServiceWindow serviceWindow;
     SessionData sessionData = reqRes.getSessionData();
     String reset = sessionData.getAcsParameters().getValue(SystemParameters.RESET);
@@ -153,10 +150,9 @@ public class GPVDecision {
     reqRes.getResponse().setMethod(TR069Method.SET_PARAMETER_VALUES);
   }
 
-  private static void processPeriodic(HTTPReqResData reqRes,
-                                      boolean isDiscoveryMode,
-                                      String publicUrl,
-                                      int concurrentDownloadLimit) throws TR069Exception {
+  private static void processPeriodic(
+      HTTPReqResData reqRes, boolean isDiscoveryMode, String publicUrl, int concurrentDownloadLimit)
+      throws TR069Exception {
     SessionData sessionData = reqRes.getSessionData();
 
     UnitJob uj = null;
@@ -176,11 +172,8 @@ public class GPVDecision {
     }
   }
 
-  private static void jobProvisioning(HTTPReqResData reqRes,
-                                      Job job,
-                                      UnitJob uj,
-                                      boolean isDiscoveryMode,
-                                      String publicUrl)
+  private static void jobProvisioning(
+      HTTPReqResData reqRes, Job job, UnitJob uj, boolean isDiscoveryMode, String publicUrl)
       throws TR069Exception {
     SessionData sessionData = reqRes.getSessionData();
     sessionData.getProvisioningMessage().setJobId(job.getId());

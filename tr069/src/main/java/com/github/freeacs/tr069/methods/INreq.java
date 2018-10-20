@@ -24,8 +24,6 @@ import com.github.freeacs.tr069.xml.Header;
 import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import com.github.freeacs.tr069.xml.Parser;
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.security.NoSuchAlgorithmException;
@@ -34,6 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import org.apache.commons.lang3.StringUtils;
 
 public class INreq {
   private static void parseEvents(Parser parser, SessionData sessionData) {
@@ -206,7 +205,8 @@ public class INreq {
       sessionData.setSerialNumber(deviceIdStruct.getSerialNumber());
       parseEvents(parser, sessionData);
       parseParameters(sessionData, parser);
-      sessionData.updateParametersFromDB(unitId, isDiscoveryMode); // Unit-object is read and populated in SessionData
+      sessionData.updateParametersFromDB(
+          unitId, isDiscoveryMode); // Unit-object is read and populated in SessionData
       logPeriodicInformTiming(sessionData);
       ScheduledKickTask.removeUnit(unitId);
       if (isDiscoveryMode && sessionData.isFirstConnect()) {

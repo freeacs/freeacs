@@ -7,9 +7,8 @@ import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.HTTPReqResData;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069AuthenticationException;
-
-import javax.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
+import javax.servlet.http.HttpServletResponse;
 
 public class BasicAuthenticator {
   private static void sendChallenge(HttpServletResponse res) {
@@ -17,7 +16,8 @@ public class BasicAuthenticator {
     res.setStatus(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
   }
 
-  public static boolean authenticate(HTTPReqResData reqRes, boolean isDiscoveryMode, String[] discoveryBlocked)
+  public static boolean authenticate(
+      HTTPReqResData reqRes, boolean isDiscoveryMode, String[] discoveryBlocked)
       throws TR069AuthenticationException {
     String authorization = reqRes.getReq().getHeader("authorization");
     if (authorization == null) {
@@ -37,10 +37,11 @@ public class BasicAuthenticator {
    * @param reqRes HTTP servlet request
    * @param authorization Authorization credentials from this request
    */
-  private static boolean verify(HTTPReqResData reqRes,
-                                String authorization,
-                                boolean isDiscoveryMode,
-                                String[] discoveryBlocked)
+  private static boolean verify(
+      HTTPReqResData reqRes,
+      String authorization,
+      boolean isDiscoveryMode,
+      String[] discoveryBlocked)
       throws TR069AuthenticationException {
     Log.debug(
         BasicAuthenticator.class,
@@ -75,7 +76,8 @@ public class BasicAuthenticator {
     try {
       SessionData sessionData = reqRes.getSessionData();
       sessionData.setUnitId(unitId);
-      sessionData.updateParametersFromDB(unitId, isDiscoveryMode); // Unit is now stored in sessionData
+      sessionData.updateParametersFromDB(
+          unitId, isDiscoveryMode); // Unit is now stored in sessionData
       String secret = null;
       if (sessionData.isFirstConnect() && isDiscoveryMode) {
         for (String blocked : discoveryBlocked) {

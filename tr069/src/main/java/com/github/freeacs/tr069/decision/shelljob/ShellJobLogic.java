@@ -45,7 +45,8 @@ public class ShellJobLogic {
    */
   private static Cache monitorCache = new Cache();
 
-  public static void execute(SessionData sessionData, Job job, UnitJob uj, boolean isDiscoveryMode) throws TR069Exception {
+  public static void execute(SessionData sessionData, Job job, UnitJob uj, boolean isDiscoveryMode)
+      throws TR069Exception {
     String unitId = sessionData.getUnitId();
     CacheValue cv = monitorCache.get(unitId);
     if (cv == null) {
@@ -71,8 +72,8 @@ public class ShellJobLogic {
    * Wait for the script to be executed. If shell daemon returns error - should result in Job
    * verification fail (not sure how)
    */
-  private static void executeShellScript(SessionData sessionData, Job job, UnitJob uj, boolean isDiscoveryMode)
-      throws TR069Exception {
+  private static void executeShellScript(
+      SessionData sessionData, Job job, UnitJob uj, boolean isDiscoveryMode) throws TR069Exception {
     ScriptExecutions executions = Provisioning.getExecutions();
     String scriptArgs =
         "\"-uut:"
@@ -160,7 +161,8 @@ public class ShellJobLogic {
    * In order for the shell script to run with the correct parameters, we must read them from the
    * device and write it to the database, before the script starts.
    */
-  private static void importReadOnlyParameters(SessionData sessionData) throws TR069DatabaseException {
+  private static void importReadOnlyParameters(SessionData sessionData)
+      throws TR069DatabaseException {
     List<UnitParameter> unitParameters = new ArrayList<>();
     UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
     for (int i = 0; i < sessionData.getFromCPE().size(); i++) {

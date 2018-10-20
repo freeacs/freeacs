@@ -5,7 +5,6 @@ import com.github.freeacs.base.Log;
 import com.github.freeacs.base.NoDataAvailableException;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.HTTPReqResData;
-import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069AuthenticationException;
 import java.sql.SQLException;
@@ -13,16 +12,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.digest.DigestUtils;
 
 public class DigestAuthenticator {
-  private static void sendChallenge(String remoteAddr, HttpServletResponse res, String digestSecret) {
+  private static void sendChallenge(
+      String remoteAddr, HttpServletResponse res, String digestSecret) {
     long now = System.currentTimeMillis();
-    setAuthenticateHeader(
-        res, DigestUtils.md5Hex(remoteAddr + ":" + now + ":" + digestSecret));
+    setAuthenticateHeader(res, DigestUtils.md5Hex(remoteAddr + ":" + now + ":" + digestSecret));
     res.setStatus(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
   }
 
-  public static boolean authenticate(HTTPReqResData reqRes,
-                                     boolean isDiscoveryMode,
-                                     String digestSecret) throws TR069AuthenticationException {
+  public static boolean authenticate(
+      HTTPReqResData reqRes, boolean isDiscoveryMode, String digestSecret)
+      throws TR069AuthenticationException {
     String authorization = reqRes.getReq().getHeader("authorization");
     if (authorization == null) {
       Log.notice(
@@ -81,9 +80,8 @@ public class DigestAuthenticator {
    * @param reqRes HTTP servlet request
    * @param authorization Authorization credentials from this request
    */
-  private static boolean verify(HTTPReqResData reqRes,
-                                String authorization,
-                                boolean isDiscoveryMode)
+  private static boolean verify(
+      HTTPReqResData reqRes, String authorization, boolean isDiscoveryMode)
       throws TR069AuthenticationException {
     Log.debug(
         DigestAuthenticator.class,

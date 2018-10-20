@@ -37,7 +37,6 @@ public class UnitJob {
    */
   private boolean serverSideJob;
 
-
   public UnitJob(SessionDataI sessionData, Job job, boolean serverSideJob) {
     this.sessionData = sessionData;
     this.job = job;
