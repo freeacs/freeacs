@@ -25,7 +25,6 @@ import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.CPEParameters;
 import com.github.freeacs.tr069.DownloadLogicTR069;
 import com.github.freeacs.tr069.HTTPReqResData;
-import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.background.ActiveDeviceDetectionTask;
 import com.github.freeacs.tr069.decision.shelljob.ShellJobLogic;
@@ -51,7 +50,9 @@ import java.util.Map;
  * that comment.
  */
 public class GPVDecision {
-  public static void process(HTTPReqResData reqRes) throws TR069Exception {
+  public static void process(
+      HTTPReqResData reqRes, boolean isDiscoveryMode, String publicUrl, int concurrentDownloadLimit)
+      throws TR069Exception {
     SessionData sessionData = reqRes.getSessionData();
     ProvisioningMode mode = sessionData.getUnit().getProvisioningMode();
     Log.debug(GPVDecision.class, "Mode was detected to be: " + mode);
@@ -65,7 +66,7 @@ public class GPVDecision {
       pm.setProvStatus(ProvStatus.ERROR);
       pm.setErrorResponsibility(ErrorResponsibility.CLIENT);
     } else if (mode == ProvisioningMode.REGULAR) {
-      processPeriodic(reqRes);
+      processPeriodic(reqRes, isDiscoveryMode, publicUrl, concurrentDownloadLimit);
     } else if (mode == ProvisioningMode.READALL) {
       GPVDecisionExtraction.processExtraction(reqRes);
     }
@@ -95,8 +96,9 @@ public class GPVDecision {
     }
   }
 
-  private static void normalPriorityProvisioning(HTTPReqResData reqRes) {
-    ServiceWindow serviceWindow = null;
+  private static void normalPriorityProvisioning(
+      HTTPReqResData reqRes, String publicUrl, int concurrentDownloadLimit) {
+    ServiceWindow serviceWindow;
     SessionData sessionData = reqRes.getSessionData();
     String reset = sessionData.getAcsParameters().getValue(SystemParameters.RESET);
     String reboot = sessionData.getAcsParameters().getValue(SystemParameters.RESTART);
@@ -120,10 +122,10 @@ public class GPVDecision {
       } else {
         sessionData.getPIIDecision().setDisruptiveSW(serviceWindow);
       }
-    } else if ((DownloadLogicTR069.isSoftwareDownloadSetup(reqRes, null)
-            && DownloadLogic.downloadAllowed(null, Properties.CONCURRENT_DOWNLOAD_LIMIT))
-        || (DownloadLogicTR069.isScriptDownloadSetup(reqRes, null)
-            && DownloadLogic.downloadAllowed(null, Properties.CONCURRENT_DOWNLOAD_LIMIT))) {
+    } else if ((DownloadLogicTR069.isSoftwareDownloadSetup(reqRes, null, publicUrl)
+            && DownloadLogic.downloadAllowed(null, concurrentDownloadLimit))
+        || (DownloadLogicTR069.isScriptDownloadSetup(reqRes, null, publicUrl)
+            && DownloadLogic.downloadAllowed(null, concurrentDownloadLimit))) {
       serviceWindow = new ServiceWindow(sessionData, true);
       if (serviceWindow.isWithin()) {
         reqRes.getResponse().setMethod(TR069Method.DOWNLOAD);
@@ -148,7 +150,9 @@ public class GPVDecision {
     reqRes.getResponse().setMethod(TR069Method.SET_PARAMETER_VALUES);
   }
 
-  private static void processPeriodic(HTTPReqResData reqRes) throws TR069Exception {
+  private static void processPeriodic(
+      HTTPReqResData reqRes, boolean isDiscoveryMode, String publicUrl, int concurrentDownloadLimit)
+      throws TR069Exception {
     SessionData sessionData = reqRes.getSessionData();
 
     UnitJob uj = null;
@@ -157,20 +161,19 @@ public class GPVDecision {
       // group-matching in job-search
       // will not affect the comparison in populateToCollections()
       updateUnitParameters(sessionData);
-      uj =
-          JobLogic.checkNewJob(
-              sessionData, Properties.CONCURRENT_DOWNLOAD_LIMIT); // may find a new job
+      uj = JobLogic.checkNewJob(sessionData, concurrentDownloadLimit); // may find a new job
     }
     Job job = sessionData.getJob();
     if (job != null) { // No job is present - process according to
       // profile/unit-parameters
-      jobProvisioning(reqRes, job, uj);
+      jobProvisioning(reqRes, job, uj, isDiscoveryMode, publicUrl);
     } else {
-      normalPriorityProvisioning(reqRes);
+      normalPriorityProvisioning(reqRes, publicUrl, concurrentDownloadLimit);
     }
   }
 
-  private static void jobProvisioning(HTTPReqResData reqRes, Job job, UnitJob uj)
+  private static void jobProvisioning(
+      HTTPReqResData reqRes, Job job, UnitJob uj, boolean isDiscoveryMode, String publicUrl)
       throws TR069Exception {
     SessionData sessionData = reqRes.getSessionData();
     sessionData.getProvisioningMessage().setJobId(job.getId());
@@ -183,20 +186,20 @@ public class GPVDecision {
       reqRes.getResponse().setMethod(TR069Method.REBOOT);
     } else if (type == JobType.SOFTWARE) {
       sessionData.getProvisioningMessage().setProvOutput(ProvOutput.SOFTWARE);
-      if (!DownloadLogicTR069.isSoftwareDownloadSetup(reqRes, job)) {
+      if (!DownloadLogicTR069.isSoftwareDownloadSetup(reqRes, job, publicUrl)) {
         throw new RuntimeException("Not possible to setup a Software Download job");
       }
       reqRes.getResponse().setMethod(TR069Method.DOWNLOAD);
     } else if (type == JobType.TR069_SCRIPT) {
       sessionData.getProvisioningMessage().setProvOutput(ProvOutput.SCRIPT);
-      if (!DownloadLogicTR069.isScriptDownloadSetup(reqRes, job)) {
+      if (!DownloadLogicTR069.isScriptDownloadSetup(reqRes, job, publicUrl)) {
         throw new RuntimeException("Not possible to setup a Script Download job");
       }
       reqRes.getResponse().setMethod(TR069Method.DOWNLOAD);
     } else {
       if (type == JobType.SHELL) {
         sessionData.getProvisioningMessage().setProvOutput(ProvOutput.SHELL);
-        ShellJobLogic.execute(sessionData, job, uj);
+        ShellJobLogic.execute(sessionData, job, uj, isDiscoveryMode);
       } else { // type == JobType.CONFIG
         // The service-window is unimportant for next PII calculation, will
         // be set to 31 no matter what, since a job is "in the process".
@@ -271,7 +274,7 @@ public class GPVDecision {
     // populate to collections from job-params
     // impl.
     ParameterList toCPE = new ParameterList();
-    TR069DMParameterMap dataModel = null;
+    TR069DMParameterMap dataModel;
     try {
       dataModel = HTTPRequestProcessor.getTR069ParameterMap();
     } catch (Exception e) {

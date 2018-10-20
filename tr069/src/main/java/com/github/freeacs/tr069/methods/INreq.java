@@ -12,7 +12,6 @@ import com.github.freeacs.tr069.CommandKey;
 import com.github.freeacs.tr069.HTTPReqResData;
 import com.github.freeacs.tr069.InformParameters;
 import com.github.freeacs.tr069.ParameterKey;
-import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.background.ScheduledKickTask;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;
@@ -25,7 +24,6 @@ import com.github.freeacs.tr069.xml.Header;
 import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import com.github.freeacs.tr069.xml.Parser;
-import java.io.FileWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.security.NoSuchAlgorithmException;
@@ -77,7 +75,7 @@ public class INreq {
 
   private static String getUnitId(DeviceIdStruct deviceIdStruct)
       throws UnsupportedEncodingException {
-    String unitId = null;
+    String unitId;
     if (deviceIdStruct.getProductClass() != null
         && !"".equals(deviceIdStruct.getProductClass().trim())) {
       unitId =
@@ -144,24 +142,6 @@ public class INreq {
     }
   }
 
-  private static void reportKill(String unitId, boolean expected) {
-    try {
-      FileWriter fw = new FileWriter("kill-report-" + unitId + ".txt", true);
-      FileWriter fwDetails = new FileWriter("kill-report-details-" + unitId + ".txt", true);
-      if (expected) {
-        fw.write("Booted");
-        fwDetails.write("\nBooted - probably a good-natured boot.");
-      } else {
-        fw.write("Booted (unexpected)");
-        fwDetails.write("\nBooted - not supposed to happen - no SPV-response was received.");
-      }
-      fw.close();
-      fwDetails.close();
-    } catch (Throwable t) {
-      Log.warn(INreq.class, "Error occurred in printReport(): " + t);
-    }
-  }
-
   private static void logPeriodicInformTiming(SessionData sessionData) {
     try {
       if (sessionData.getUnit() != null && sessionData.isPeriodic()) {
@@ -207,7 +187,7 @@ public class INreq {
     }
   }
 
-  public static void process(HTTPReqResData reqRes) throws TR069Exception {
+  public static void process(HTTPReqResData reqRes, boolean isDiscoveryMode) throws TR069Exception {
     try {
       reqRes.getRequest().setMethod(TR069Method.INFORM);
       Parser parser = new Parser(reqRes.getRequest().getXml());
@@ -226,10 +206,10 @@ public class INreq {
       parseEvents(parser, sessionData);
       parseParameters(sessionData, parser);
       sessionData.updateParametersFromDB(
-          unitId); // Unit-object is read and populated in SessionData
+          unitId, isDiscoveryMode); // Unit-object is read and populated in SessionData
       logPeriodicInformTiming(sessionData);
       ScheduledKickTask.removeUnit(unitId);
-      if (Properties.DISCOVERY_MODE && sessionData.isFirstConnect()) {
+      if (isDiscoveryMode && sessionData.isFirstConnect()) {
         DBAccessSessionTR069 dbAccessSessionTR069 =
             new DBAccessSessionTR069(
                 reqRes.getDbAccess().getDBI().getAcs(), sessionData.getDbAccessSession());
@@ -237,17 +217,15 @@ public class INreq {
             sessionData, deviceIdStruct.getProductClass(), unitId);
         sessionData.setFromDB(null);
         sessionData.setAcsParameters(null);
-        sessionData.updateParametersFromDB(unitId);
+        sessionData.updateParametersFromDB(unitId, isDiscoveryMode);
         Log.debug(
             INreq.class,
             "Unittype, profile and unit is created, since discovery mode is enabled and this is the first connect");
       }
       sessionData.getCommandKey().setServerKey(reqRes);
       sessionData.getParameterKey().setServerKey(reqRes);
-      boolean jobOk = JobLogic.checkJobOK(sessionData);
+      boolean jobOk = JobLogic.checkJobOK(sessionData, isDiscoveryMode);
       sessionData.setJobUnderExecution(!jobOk);
-    } catch (TR069Exception ex) {
-      throw ex;
     } catch (SQLException e) {
       throw new TR069DatabaseException(e);
     } catch (UnsupportedEncodingException uee) {
