@@ -48,7 +48,7 @@ public class SystemParametersTest {
         // Given:
         String name = "Hallo";
         SystemParameters.TR069ScriptType type = SystemParameters.TR069ScriptType.TargetFileName;
-        Unittype unittype = UnittypeTestUtils.createUnittype(Arrays.asList(
+        Unittype unittype = UnittypeTestUtils.createUnittype("Name", Arrays.asList(
                 new UnittypeTestUtils.Param("System.X_FREEACS-COM.TR069Script.Hei.TargetFileName", "X"),
                 new UnittypeTestUtils.Param("System.X_FREEACS-COM.TR069Script.Hallo.TargetFileName", "X")),
                 acs);
@@ -66,7 +66,7 @@ public class SystemParametersTest {
         // Given:
         String name = "Hallo";
         SystemParameters.TR069ScriptType type = SystemParameters.TR069ScriptType.TargetFileName;
-        Unittype unittype = UnittypeTestUtils.createUnittype(Collections.emptyList(), acs);
+        Unittype unittype = UnittypeTestUtils.createUnittype("Name", Collections.emptyList(), acs);
 
         // When:
         UnittypeParameter unittypeParameter = SystemParameters.getTR069ScriptParameter(name, type, acs, unittype);

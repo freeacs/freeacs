@@ -16,13 +16,8 @@ public class UnittypeTestUtils {
         }
     }
 
-    public static Unittype createUnittype(List<Param> params, ACS acs) throws SQLException {
-        Unittype unittype = new Unittype(
-                "Name",
-                "Vendor",
-                "Desc",
-                Unittype.ProvisioningProtocol.TR069
-        );
+    public static Unittype createUnittype(String name, List<Param> params, ACS acs) throws SQLException {
+        Unittype unittype = new Unittype(name, name, name, Unittype.ProvisioningProtocol.TR069);
         Unittypes unittypes = new Unittypes(new HashMap<>(), new HashMap<>());
         unittypes.addOrChangeUnittype(unittype, acs);
         UnittypeParameters unittypeParameters = new UnittypeParameters(new HashMap<>(), new HashMap<>(), unittype);
