@@ -39,8 +39,7 @@ public class TestUtils {
     return unittype;
   }
 
-  public static Profile createProfile(String name, Unittype unittype, ACS acs)
-      throws SQLException {
+  public static Profile createProfile(String name, Unittype unittype, ACS acs) throws SQLException {
     Profile profile = new Profile(name, unittype);
     Profiles profiles = unittype.getProfiles();
     profiles.addOrChangeProfile(profile, acs);
