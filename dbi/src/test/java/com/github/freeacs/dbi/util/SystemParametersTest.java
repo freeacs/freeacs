@@ -44,10 +44,9 @@ public class SystemParametersTest extends BaseDBITest {
     // Given:
     String name = "Hallo";
     SystemParameters.TR069ScriptType type = SystemParameters.TR069ScriptType.TargetFileName;
-    Unittype unittype = TestUtils.createUnittypeWithParams(
-            TestUtils.createUnittype("Name", acs),
-            Collections.emptyList(),
-            acs);
+    Unittype unittype =
+        TestUtils.createUnittypeWithParams(
+            TestUtils.createUnittype("Name", acs), Collections.emptyList(), acs);
 
     // When:
     UnittypeParameter unittypeParameter =
