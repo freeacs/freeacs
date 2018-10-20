@@ -48,8 +48,6 @@ public class Unittype implements Comparable<Unittype> {
 
   private Files files;
 
-  private boolean toBeDeleted;
-
   private Groups groups;
 
   private Triggers triggers;

@@ -20,8 +20,9 @@ object Dependencies {
 
   val junit = "junit" % "junit" % "4.12" % "test"
   val junitInterface = "com.novocode" % "junit-interface" % "0.11" % "test"
+  val mockito = "org.mockito" % "mockito-core" % "2.23.0" % Test
 
-  val testing = Seq(junit, junitInterface)
+  val testing = Seq(junit, junitInterface, mockito)
 
   val jdeb = Seq("org.vafer" % "jdeb" % "1.3" % "provided" artifacts Artifact("jdeb", "jar", "jar"))
 
