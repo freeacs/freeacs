@@ -50,7 +50,7 @@ public class Profiles {
 
   private int deleteProfileImpl(Profile profile, ACS acs) throws SQLException {
     Statement s = null;
-    String sql = null;
+    String sql;
     Connection c = acs.getDataSource().getConnection();
     try {
       s = c.createStatement();
@@ -145,12 +145,7 @@ public class Profiles {
     return idMap;
   }
 
-  /**
-   * Only to be used internally (to shape ACS object according to permissions).
-   *
-   * @param profile
-   * @return
-   */
+  /** Only to be used internally (to shape ACS object according to permissions). */
   protected void removePermission(Profile profile) {
     nameMap.remove(profile.getName());
     idMap.remove(profile.getId());
