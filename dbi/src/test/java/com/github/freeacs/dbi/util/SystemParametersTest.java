@@ -7,9 +7,11 @@ import com.github.freeacs.dbi.BaseDBITest;
 import com.github.freeacs.dbi.TestUtils;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.Unittypes;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import org.junit.Test;
 
 public class SystemParametersTest extends BaseDBITest {
@@ -22,7 +24,7 @@ public class SystemParametersTest extends BaseDBITest {
     SystemParameters.TR069ScriptType type = SystemParameters.TR069ScriptType.TargetFileName;
     Unittype unittype =
         TestUtils.createUnittypeWithParams(
-            TestUtils.createUnittype("Name", acs),
+            TestUtils.createUnittype("Name", new Unittypes(new HashMap<>(), new HashMap<>()), acs),
             Arrays.asList(
                 new TestUtils.Param("System.X_FREEACS-COM.TR069Script.Hei.TargetFileName", "X"),
                 new TestUtils.Param("System.X_FREEACS-COM.TR069Script.Hallo.TargetFileName", "X")),
@@ -46,7 +48,9 @@ public class SystemParametersTest extends BaseDBITest {
     SystemParameters.TR069ScriptType type = SystemParameters.TR069ScriptType.TargetFileName;
     Unittype unittype =
         TestUtils.createUnittypeWithParams(
-            TestUtils.createUnittype("Name", acs), Collections.emptyList(), acs);
+            TestUtils.createUnittype("Name", new Unittypes(new HashMap<>(), new HashMap<>()), acs),
+            Collections.emptyList(),
+            acs);
 
     // When:
     UnittypeParameter unittypeParameter =
