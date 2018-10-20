@@ -68,7 +68,8 @@ public class Authenticator {
     }
   }
 
-  public static boolean authenticate(HTTPReqResData reqRes) throws TR069AuthenticationException {
+  public static boolean authenticate(HTTPReqResData reqRes, Properties properties)
+      throws TR069AuthenticationException {
     SessionData sessionData = reqRes.getSessionData();
     if (sessionData.isAuthenticated()) {
       return true;
@@ -89,13 +90,17 @@ public class Authenticator {
     }
 
     // Start of normal authentication procedure
-    boolean authenticated = true; // default
-    String auth_method = Properties.AUTH_METHOD;
+    boolean authenticated; // default
+    String auth_method = properties.getAuthMethod();
     try {
-      if (Properties.DISCOVERY_MODE || "basic".equalsIgnoreCase(auth_method)) {
-        authenticated = BasicAuthenticator.authenticate(reqRes);
+      if (properties.isDiscoveryMode() || "basic".equalsIgnoreCase(auth_method)) {
+        authenticated =
+            BasicAuthenticator.authenticate(
+                reqRes, properties.isDiscoveryMode(), properties.getDiscoveryBlock());
       } else if ("digest".equalsIgnoreCase(auth_method)) {
-        authenticated = DigestAuthenticator.authenticate(reqRes);
+        authenticated =
+            DigestAuthenticator.authenticate(
+                reqRes, properties.isDiscoveryMode(), properties.getDigestSecret());
       } else if ("none".equalsIgnoreCase(auth_method)) {
         authenticated = true;
         Log.debug(Authenticator.class, "No authentication method was required");

@@ -23,9 +23,7 @@ import com.github.freeacs.tr069.xml.ParameterValueStructComparator;
 import com.github.freeacs.tr069.xml.Response;
 import com.github.freeacs.tr069.xml.TR069TransactionID;
 import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -176,7 +174,7 @@ public interface HTTPResponseCreator {
         Log.debug(
             HTTPResponseCreator.class,
             "Asks for " + parameterValueList.size() + " parameters in GPV-req");
-        Collections.sort(parameterValueList, new ParameterValueStructComparator());
+        parameterValueList.sort(new ParameterValueStructComparator());
       }
     }
     sessionData.setRequestedCPE(parameterValueList);
@@ -185,7 +183,7 @@ public interface HTTPResponseCreator {
   }
 
   static Response buildSPV(HTTPReqResData reqRes, Properties properties)
-      throws NoSuchAlgorithmException, SQLException {
+      throws NoSuchAlgorithmException {
     if (reqRes.getTR069TransactionID() == null) {
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     }
@@ -207,7 +205,7 @@ public interface HTTPResponseCreator {
     return new Response(header, body);
   }
 
-  static Response buildDO(HTTPReqResData reqRes) {
+  static Response buildDO(HTTPReqResData reqRes, boolean fileAuthUsed) {
     if (reqRes.getTR069TransactionID() == null) {
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     }
@@ -238,7 +236,8 @@ public interface HTTPResponseCreator {
             download.getFile().getLength(),
             commandKey,
             username,
-            password);
+            password,
+            fileAuthUsed);
     return new Response(header, body);
   }
 

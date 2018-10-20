@@ -124,7 +124,7 @@ public class Provisioning extends HttpServlet {
       // session. This object also contains the SessionData object
       reqRes = new HTTPReqResData(req, res, dbAccess);
       // 2. Authenticate the client (first issue challenge, then authenticate)
-      if (!Authenticator.authenticate(reqRes)
+      if (!Authenticator.authenticate(reqRes, properties)
           || (reqRes.getSessionData() != null
               && !ThreadCounter.isRequestAllowed(reqRes.getSessionData()))) {
         return;

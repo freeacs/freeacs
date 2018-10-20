@@ -5,13 +5,13 @@ import com.typesafe.config.Config;
 import org.apache.commons.lang3.StringUtils;
 
 public class Properties {
-  public static String DIGEST_SECRET;
-  public static boolean FILE_AUTH_USED;
-  public static boolean DISCOVERY_MODE;
-  public static String[] DISCOVERY_BLOCK;
-  public static String AUTH_METHOD;
-  public static int CONCURRENT_DOWNLOAD_LIMIT;
-  public static String PUBLIC_URL;
+  private String digestSecret;
+  private boolean fileAuthUsed;
+  private boolean discoveryMode;
+  private String[] discoveryBlock;
+  private String authMethod;
+  private int concurrentDownloadLimit;
+  private String publicUrl;
 
   private Config environment;
   private String contextPath;
@@ -41,31 +41,31 @@ public class Properties {
   }
 
   private void setConcurrentDownloadLimit(Integer concurrentDownloadLimit) {
-    CONCURRENT_DOWNLOAD_LIMIT = concurrentDownloadLimit;
+    this.concurrentDownloadLimit = concurrentDownloadLimit;
   }
 
   private void setFileAuthUsed(Boolean fileAuthUsed) {
-    FILE_AUTH_USED = fileAuthUsed;
+    this.fileAuthUsed = fileAuthUsed;
   }
 
   private void setAuthMethod(String authMethod) {
-    AUTH_METHOD = authMethod;
+    this.authMethod = authMethod;
   }
 
   private void setPublicUrl(String url) {
-    PUBLIC_URL = url;
+    publicUrl = url;
   }
 
   private void setDigestSecret(String digestSecret) {
-    DIGEST_SECRET = digestSecret;
+    this.digestSecret = digestSecret;
   }
 
   private void setDiscoveryMode(Boolean discoveryMode) {
-    DISCOVERY_MODE = discoveryMode;
+    this.discoveryMode = discoveryMode;
   }
 
   private void setDiscoveryBlock(String discoveryBlock) {
-    DISCOVERY_BLOCK =
+    this.discoveryBlock =
         StringUtils.isEmpty(discoveryBlock) ? new String[0] : discoveryBlock.split("\\s*,\\s*");
   }
 
@@ -128,5 +128,33 @@ public class Properties {
 
   public String getContextPath() {
     return contextPath;
+  }
+
+  public String getDigestSecret() {
+    return digestSecret;
+  }
+
+  public boolean isFileAuthUsed() {
+    return fileAuthUsed;
+  }
+
+  public boolean isDiscoveryMode() {
+    return discoveryMode;
+  }
+
+  public String[] getDiscoveryBlock() {
+    return discoveryBlock;
+  }
+
+  public String getAuthMethod() {
+    return authMethod;
+  }
+
+  public int getConcurrentDownloadLimit() {
+    return concurrentDownloadLimit;
+  }
+
+  public String getPublicUrl() {
+    return publicUrl;
   }
 }

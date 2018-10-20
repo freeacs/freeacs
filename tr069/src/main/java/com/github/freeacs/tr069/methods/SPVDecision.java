@@ -18,7 +18,7 @@ public class SPVDecision {
           SPVDecision.class,
           "UnitJob is COMPLETED without verification stage, since CPE does not support ParameterKey");
       UnitJob uj = new UnitJob(sessionData, sessionData.getJob(), false);
-      uj.stop(UnitJobStatus.COMPLETED_OK);
+      uj.stop(UnitJobStatus.COMPLETED_OK, properties.isDiscoveryMode());
     }
     reqRes.getResponse().setMethod(TR069Method.EMPTY);
   }

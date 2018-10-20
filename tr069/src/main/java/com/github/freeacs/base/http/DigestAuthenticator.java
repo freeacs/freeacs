@@ -5,7 +5,6 @@ import com.github.freeacs.base.Log;
 import com.github.freeacs.base.NoDataAvailableException;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.HTTPReqResData;
-import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069AuthenticationException;
 import java.sql.SQLException;
@@ -13,23 +12,25 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.digest.DigestUtils;
 
 public class DigestAuthenticator {
-  private static void sendChallenge(String remoteAddr, HttpServletResponse res) {
+  private static void sendChallenge(
+      String remoteAddr, HttpServletResponse res, String digestSecret) {
     long now = System.currentTimeMillis();
-    setAuthenticateHeader(
-        res, DigestUtils.md5Hex(remoteAddr + ":" + now + ":" + Properties.DIGEST_SECRET));
+    setAuthenticateHeader(res, DigestUtils.md5Hex(remoteAddr + ":" + now + ":" + digestSecret));
     res.setStatus(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
   }
 
-  public static boolean authenticate(HTTPReqResData reqRes) throws TR069AuthenticationException {
+  public static boolean authenticate(
+      HTTPReqResData reqRes, boolean isDiscoveryMode, String digestSecret)
+      throws TR069AuthenticationException {
     String authorization = reqRes.getReq().getHeader("authorization");
     if (authorization == null) {
       Log.notice(
           DigestAuthenticator.class,
           "Send challenge to CPE, located on IP-address " + reqRes.getReq().getRemoteHost());
-      sendChallenge(reqRes.getRealIPAddress(), reqRes.getRes());
+      sendChallenge(reqRes.getRealIPAddress(), reqRes.getRes(), digestSecret);
       return false;
     } else {
-      return verify(reqRes, authorization);
+      return verify(reqRes, authorization, isDiscoveryMode);
     }
   }
 
@@ -78,9 +79,9 @@ public class DigestAuthenticator {
    *
    * @param reqRes HTTP servlet request
    * @param authorization Authorization credentials from this request
-   * @throws TR069AuthenticationException
    */
-  private static boolean verify(HTTPReqResData reqRes, String authorization)
+  private static boolean verify(
+      HTTPReqResData reqRes, String authorization, boolean isDiscoveryMode)
       throws TR069AuthenticationException {
     Log.debug(
         DigestAuthenticator.class,
@@ -171,7 +172,7 @@ public class DigestAuthenticator {
     try {
       SessionData sessionData = reqRes.getSessionData();
       sessionData.setUnitId(unitId);
-      sessionData.updateParametersFromDB(unitId);
+      sessionData.updateParametersFromDB(unitId, isDiscoveryMode);
       BaseCache.putSessionData(unitId, sessionData);
       String secret = sessionData.getAcsParameters().getValue(SystemParameters.SECRET);
       if (secret != null

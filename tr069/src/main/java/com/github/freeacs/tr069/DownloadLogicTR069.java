@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public class DownloadLogicTR069 {
   private static Logger logger = LoggerFactory.getLogger(DownloadLogicTR069.class);
 
-  public static boolean isScriptDownloadSetup(HTTPReqResData reqRes, Job job) {
+  public static boolean isScriptDownloadSetup(HTTPReqResData reqRes, Job job, String publicUrl) {
     SessionData sessionData = reqRes.getSessionData();
     ACSParameters oweraParams = sessionData.getAcsParameters();
     CPEParameters cpeParams = sessionData.getCpeParameters();
@@ -69,7 +69,7 @@ public class DownloadLogicTR069 {
         return false;
       }
 
-      String downloadURL = null;
+      String downloadURL;
       String scriptURLName =
           SystemParameters.getTR069ScriptParameterName(scriptName, TR069ScriptType.URL);
       if (oweraParams.getValue(scriptURLName) != null) {
@@ -83,7 +83,7 @@ public class DownloadLogicTR069 {
                 sessionData.getUnitId(),
                 file.getName(),
                 FileType.TR069_SCRIPT,
-                Properties.PUBLIC_URL);
+                publicUrl);
       }
       Log.debug(
           DownloadLogic.class,
@@ -116,7 +116,7 @@ public class DownloadLogicTR069 {
     return downloadURL.replaceAll(" ", "--");
   }
 
-  public static boolean isSoftwareDownloadSetup(HTTPReqResData reqRes, Job job) {
+  public static boolean isSoftwareDownloadSetup(HTTPReqResData reqRes, Job job, String publicUrl) {
     SessionData sessionData = reqRes.getSessionData();
     CPEParameters cpeParams = sessionData.getCpeParameters();
     String softwareVersionFromCPE = cpeParams.getValue(cpeParams.SOFTWARE_VERSION);
@@ -153,7 +153,7 @@ public class DownloadLogicTR069 {
               sessionData.getUnitId(),
               null,
               FileType.SOFTWARE,
-              Properties.PUBLIC_URL);
+              publicUrl);
     }
 
     if (softwareVersionFromDB != null
