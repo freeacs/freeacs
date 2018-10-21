@@ -8,7 +8,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TestUtils {
+public abstract class TestUtils {
+  private TestUtils() {}
+
   public static class Param {
     final String name;
     final String flag;
