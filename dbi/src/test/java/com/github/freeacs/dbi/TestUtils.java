@@ -52,9 +52,7 @@ public abstract class TestUtils {
 
   public static Unit createUnitAndVerify(ACSUnit acsUnit, String unitId, Profile profile)
       throws SQLException {
-    // When:
     acsUnit.addUnits(Collections.singletonList(unitId), profile);
-    // Then:
     Unit unit = acsUnit.getUnitById(unitId);
     assertEquals(unitId, unit.getId());
     assertEquals(profile.getName(), unit.getProfile().getName());
@@ -105,5 +103,22 @@ public abstract class TestUtils {
     List<UnitJob> jobs = unitJobs.readAllUnprocessed(job);
     assertEquals(1, jobs.size());
     return unitJob;
+  }
+
+  public static File createFileAndVerify(
+      Unittype unittype, String fileName, byte[] bytes, FileType fileType, String version, ACS acs)
+      throws SQLException {
+    Files files = unittype.getFiles();
+    File file = new File();
+    file.setName(fileName);
+    file.setDescription(fileName);
+    file.setUnittype(unittype);
+    file.setBytes(bytes);
+    file.setType(fileType);
+    file.setVersion(version);
+    files.addOrChangeFile(file, acs);
+    file = files.getByName(fileName);
+    assertNotNull(file);
+    return file;
   }
 }
