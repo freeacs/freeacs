@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.sql.SQLException;
-import java.util.HashMap;
 import org.junit.Test;
 
 public class ProfilesTest extends BaseDBITest {
@@ -13,8 +12,7 @@ public class ProfilesTest extends BaseDBITest {
   @Test
   public void createProfile() throws SQLException {
     // When:
-    Unittypes unittypes = new Unittypes(new HashMap<>(), new HashMap<>());
-    Unittype unittype = TestUtils.createUnittype("Test unittype", unittypes, acs);
+    Unittype unittype = TestUtils.createUnittype("Test unittype", acs);
     Profile profile = TestUtils.createProfile("Test profile", unittype, acs);
 
     // Then:
@@ -28,8 +26,7 @@ public class ProfilesTest extends BaseDBITest {
   @Test
   public void deleteProfile() throws SQLException {
     // Given:
-    Unittypes unittypes = new Unittypes(new HashMap<>(), new HashMap<>());
-    Unittype unittype = TestUtils.createUnittype("Test unittype", unittypes, acs);
+    Unittype unittype = TestUtils.createUnittype("Test unittype", acs);
     Profile profile = TestUtils.createProfile("Test profile", unittype, acs);
 
     // When:
@@ -44,8 +41,7 @@ public class ProfilesTest extends BaseDBITest {
   public void updateProfile() throws SQLException {
     // Given:
     String profileName = "Test profile";
-    Unittypes unittypes = new Unittypes(new HashMap<>(), new HashMap<>());
-    Unittype unittype = TestUtils.createUnittype("Test unittype", unittypes, acs);
+    Unittype unittype = TestUtils.createUnittype("Test unittype", acs);
     Profile profile = TestUtils.createProfile(profileName, unittype, acs);
     String newProfileName = "New profile name";
     profile.setName(newProfileName);

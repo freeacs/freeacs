@@ -159,7 +159,7 @@ public class Users {
       throw new IllegalArgumentException(
           "Not allowed to change admin user without being logged in as admin. If admin password is lost, reset it by deleting the admin user from the freeacs.user_ table (default password is 'freeacs')");
     }
-    if (addOrChange.getAdmin() && !requestedBy.getAdmin()) {
+    if (addOrChange.isAdmin() && !requestedBy.isAdmin()) {
       throw new IllegalArgumentException(
           "Not allowed to make an admin user if you're not an admin yourself");
     }
@@ -180,8 +180,8 @@ public class Users {
             addOrChange.getFullname(),
             addOrChange.getAccess());
         if (ACSVersionCheck.adminSupported) {
-          Integer adminInt = 0;
-          if (addOrChange.getAdmin() != null && addOrChange.getAdmin()) {
+          int adminInt = 0;
+          if (addOrChange.isAdmin()) {
             if (requestedBy.isAdmin()) {
               adminInt = 1;
             } else {
@@ -215,8 +215,8 @@ public class Users {
         ds.addSqlAndArguments(
             "fullname = ?, accesslist = ?", addOrChange.getFullname(), addOrChange.getAccess());
         if (ACSVersionCheck.adminSupported) {
-          Integer adminInt = 0;
-          if (addOrChange.getAdmin() != null && addOrChange.getAdmin()) {
+          int adminInt = 0;
+          if (addOrChange.isAdmin()) {
             adminInt = 1;
           }
           ds.addSqlAndArguments(", is_admin = ?", adminInt);
