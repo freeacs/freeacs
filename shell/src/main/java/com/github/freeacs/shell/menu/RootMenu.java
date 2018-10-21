@@ -108,7 +108,7 @@ public class RootMenu {
     }
   }
 
-  private void listperms(String[] args, OutputHandler oh) throws Exception {
+  private void listperms(String[] args, OutputHandler oh) {
     Users users = session.getUsers();
     Listing listing = oh.getListing();
     listing.setHeading("Username", "Unittype", "Profile");
@@ -131,7 +131,7 @@ public class RootMenu {
     }
   }
 
-  private void listusers(String[] args, OutputHandler oh) throws IOException {
+  private void listusers(String[] args, OutputHandler oh) {
     Users users = session.getUsers();
     Listing listing = oh.getListing();
     listing.setHeading("Username", "Full name", "Secret (hashed)", "Access", "Admin");
@@ -148,16 +148,12 @@ public class RootMenu {
       } else {
         line.addValue(user.getAccess());
       }
-      if (user.getAdmin() != null) {
-        line.addValue(user.getAdmin().toString());
-      } else {
-        line.addValue("false");
-      }
+      line.addValue(Boolean.toString(user.isAdmin()));
       listing.addLine(line);
     }
   }
 
-  private void listunittypes(String[] args, OutputHandler oh) throws IOException {
+  private void listunittypes(String[] args, OutputHandler oh) {
     Unittype[] unittypes = session.getAcs().getUnittypes().getUnittypes();
     Listing listing = oh.getListing();
     if (oh.getCommand().getOptions().containsKey(Option.OPTION_LIST_ALL_COLUMNS)) {
@@ -371,7 +367,7 @@ public class RootMenu {
     }
   }
 
-  private void listparams(String[] args, OutputHandler oh) throws Exception {
+  private void listparams(String[] args, OutputHandler oh) {
     Validation.numberOfArgs(args, 1);
     Listing listing = oh.getListing();
     listing.setHeading("Unit Type Parameter Name", "Flag");
@@ -388,21 +384,6 @@ public class RootMenu {
     }
   }
 
-  // Moved to Generic menu
-  //	private void delfile(String[] args) throws IOException {
-  //		Validation.numberOfArgs(args, 2);
-  //		String filename = args[1];
-  //		File f = new File(filename);
-  //		if (!FileUtil.allowed("delosfile " + filename, f))
-  //			return;
-  //		if (f.exists()) {
-  //			boolean success = f.delete();
-  //			if (success)
-  //				session.println("The file " + filename + " was deleted");
-  //			else
-  //				throw new IOException("The file " + filename + " could not be deleted");
-  //		}
-  //	}
   /**
    * Returns true : has processed a cd-command Returns false : has processed another command
    * (everything else)
