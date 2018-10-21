@@ -42,7 +42,6 @@ public class ACSUnit {
    * @param unittype - may be null
    * @param profile - may be null
    * @return a unit object will all unit parameters found
-   * @throws SQLException
    */
   public Unit getUnitByValue(String value, Unittype unittype, Profile profile) throws SQLException {
     Connection connection = null;
@@ -85,11 +84,9 @@ public class ACSUnit {
   }
 
   /**
-   * @param unitId
    * @param unittype - may be null
    * @param profile - may be null
    * @return a unit object will all unit parameters found
-   * @throws SQLException
    */
   public Unit getUnitById(String unitId, Unittype unittype, Profile profile) throws SQLException {
     Connection connection = null;
@@ -125,9 +122,6 @@ public class ACSUnit {
    * changing the profile, use the moveUnit()-function, for changing the unittype you would have to
    * delete all units from the current unittype, and add them to the new one. The reason for this is
    * that you should make a new set of unittype-parameters as well when you do that.
-   *
-   * @param unitIds
-   * @throws SQLException
    */
   public void addUnits(List<String> unitIds, Profile profile) throws SQLException {
     Connection connection = null;
@@ -188,10 +182,6 @@ public class ACSUnit {
   /**
    * This method is made for moving a number of units from one profile to another. If you try to
    * move a unitId which does not exist, then the method aborts with an sqlexception.
-   *
-   * @param unitIds
-   * @param profile
-   * @throws SQLException
    */
   public void moveUnits(List<String> unitIds, Profile profile) throws SQLException {
     Connection connection = null;
@@ -422,12 +412,7 @@ public class ACSUnit {
     }
   }
 
-  /**
-   * Deletes the unit and all the unitparameters in that unit.
-   *
-   * @param unit
-   * @throws SQLException
-   */
+  /** Deletes the unit and all the unitparameters in that unit. */
   public int deleteUnit(Unit unit) throws SQLException {
     Connection connection = null;
     PreparedStatement ps = null;
@@ -493,11 +478,8 @@ public class ACSUnit {
    * profile 2. Iterate over all units in profile and delete parameters for each one. 3. SQL to
    * delete all units in a profile If you have 100000 units in a profile, then you will need to run
    * 100002 SQL statements. That is going to take a long time.
-   *
-   * @param profile
-   * @throws SQLException
    */
-  public int deleteUnits(Profile profile) throws SQLException {
+  public void deleteUnits(Profile profile) throws SQLException {
     Statement s = null;
     String sql = null;
     Map<String, Unit> unitMap =
@@ -535,7 +517,6 @@ public class ACSUnit {
               + rowsDeleted
               + " units deleted)");
       connection.commit();
-      return rowsDeleted;
     } catch (SQLException sqle) {
       if (connection != null) {
         connection.rollback();
@@ -558,10 +539,8 @@ public class ACSUnit {
 
   /**
    * Deletes all unitparameters in the list. If list set to null then all parameters are deleted.
-   *
-   * @throws SQLException
    */
-  public int deleteUnitParameters(List<UnitParameter> unitParameters) throws SQLException {
+  public void deleteUnitParameters(List<UnitParameter> unitParameters) throws SQLException {
     Connection connection = null;
     Statement s = null;
     String sql;
@@ -592,7 +571,6 @@ public class ACSUnit {
         }
       }
       connection.commit();
-      return rowsDeleted;
     } catch (SQLException sqle) {
       if (connection != null) {
         connection.rollback();
@@ -609,9 +587,9 @@ public class ACSUnit {
     }
   }
 
-  public int deleteAllSessionParameters(Unit unit) throws SQLException {
+  public void deleteAllSessionParameters(Unit unit) throws SQLException {
     if (!ACSVersionCheck.unitParamSessionSupported) {
-      return 0;
+      return;
     }
     Connection connection = null;
     Statement s = null;
@@ -630,7 +608,6 @@ public class ACSUnit {
         logger.info("Deleted " + rowsDeleted + " unit session parameters");
       }
       connection.commit();
-      return rowsDeleted;
     } finally {
       if (s != null) {
         s.close();
@@ -646,10 +623,8 @@ public class ACSUnit {
    * Deletes all units and the belonging unit-parameters in the list. This method commits during the
    * execution, so if something fails during the execution, something might already have been
    * committed. This is done for performance reasons.
-   *
-   * @throws SQLException
    */
-  public int deleteUnits(List<String> unitIds) throws SQLException {
+  public void deleteUnits(List<String> unitIds) throws SQLException {
     Connection connection = null;
     Statement s = null;
     String sql;
@@ -680,7 +655,6 @@ public class ACSUnit {
         }
       }
       connection.commit();
-      return rowsDeleted;
     } catch (SQLException sqle) {
       // We will rollback that which is not yet commited.
       if (connection != null) {
@@ -733,7 +707,6 @@ public class ACSUnit {
    * @param profile - may be null
    * @param maxRows - may be null
    * @return a set of units. The unit object is not populated with unit parameters
-   * @throws SQLException
    */
   public Map<String, Unit> getUnits(
       String searchStr, Unittype unittype, Profile profile, Integer maxRows) throws SQLException {
