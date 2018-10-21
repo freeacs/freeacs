@@ -10,6 +10,7 @@ import org.junit.Before;
 public abstract class BaseDBITest {
   protected ACS acs;
   protected DataSource dataSource;
+  protected Syslog syslog;
 
   @Before
   public void init() throws SQLException {
@@ -18,7 +19,7 @@ public abstract class BaseDBITest {
     User admin = new User("admin", "Admin", "Admin", true, users);
     users.addOrChange(admin, admin); // nice little unit test trick, the user is creating itself
     Identity identity = new Identity(SyslogConstants.EVENT_DEFAULT, "test", admin);
-    Syslog syslog = new Syslog(dataSource, identity);
+    syslog = new Syslog(dataSource, identity);
     acs = new ACS(dataSource, syslog);
   }
 
