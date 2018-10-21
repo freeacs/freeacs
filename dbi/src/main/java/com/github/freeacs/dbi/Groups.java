@@ -208,15 +208,18 @@ public class Groups {
 
       s.setQueryTimeout(60);
       int rowsAffected = s.executeUpdate();
+      s.close();
       logger.info(
           "Updated "
               + rowsAffected
               + " childgroups of group "
               + group
               + " with either a new parent or no parent");
-      sql = "DELETE FROM group_ WHERE group_id = " + group.getId();
-      s.setQueryTimeout(60);
-      s.executeUpdate(sql);
+      try (Statement delStmt = c.createStatement()) {
+        sql = "DELETE FROM group_ WHERE group_id = " + group.getId();
+        delStmt.setQueryTimeout(60);
+        delStmt.executeUpdate(sql);
+      }
       logger.info("Deleted group " + group);
       if (acs.getDbi() != null) {
         acs.getDbi().publishDelete(group, group.getUnittype());
