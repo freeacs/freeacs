@@ -9,6 +9,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The purpose of unit_job table is for each job to:
@@ -59,6 +61,8 @@ import javax.sql.DataSource;
  * @author Morten
  */
 public class UnitJobs {
+  private static Logger logger = LoggerFactory.getLogger(UnitJobs.class);
+
   private DataSource connectionProperties;
 
   public UnitJobs(DataSource cp) {
@@ -416,7 +420,6 @@ public class UnitJobs {
   public void addOrChange(UnitJob uj) throws SQLException {
     Connection c = null;
     PreparedStatement pp = null;
-    SQLException sqle = null;
     try {
       c = connectionProperties.getConnection();
       pp =
@@ -439,6 +442,7 @@ public class UnitJobs {
       pp.setInt(7, uj.getConfirmedFailed());
       pp.setQueryTimeout(60);
       pp.execute();
+      logger.info("Inserted new UnitJob for unit " + uj.getUnitId() + " on job " + uj.getJobId());
     } catch (SQLException sqlex) {
       if (pp != null) {
         pp.close();
@@ -466,6 +470,7 @@ public class UnitJobs {
       if (rowsUpdated == 0) {
         throw sqlex;
       }
+      logger.info("Updated UnitJob for unit " + uj.getUnitId() + " on job " + uj.getJobId());
     } finally {
       if (pp != null) {
         pp.close();
