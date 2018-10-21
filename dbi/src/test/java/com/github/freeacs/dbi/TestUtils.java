@@ -31,10 +31,9 @@ public class TestUtils {
     return unittype;
   }
 
-  public static Unittype createUnittype(String name, Unittypes unittypes, ACS acs)
-      throws SQLException {
+  public static Unittype createUnittype(String name, ACS acs) throws SQLException {
     Unittype unittype = new Unittype(name, name, name, Unittype.ProvisioningProtocol.TR069);
-    unittypes.addOrChangeUnittype(unittype, acs);
+    acs.getUnittypes().addOrChangeUnittype(unittype, acs);
     return unittype;
   }
 

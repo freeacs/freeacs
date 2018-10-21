@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.sql.SQLException;
-import java.util.HashMap;
 import org.junit.Test;
 
 public class UnittypesTest extends BaseDBITest {
@@ -13,8 +12,7 @@ public class UnittypesTest extends BaseDBITest {
   @Test
   public void createUnittype() throws SQLException {
     // When:
-    Unittypes unittypes = new Unittypes(new HashMap<>(), new HashMap<>());
-    Unittype unittype = TestUtils.createUnittype("Name", unittypes, acs);
+    Unittype unittype = TestUtils.createUnittype("Name", acs);
 
     // Then:
     assertEquals(1, unittype.getId().intValue());
@@ -27,14 +25,13 @@ public class UnittypesTest extends BaseDBITest {
   public void deleteUnittype() throws SQLException {
     // Given:
     String unittypeName = "Name";
-    Unittypes unittypes = new Unittypes(new HashMap<>(), new HashMap<>());
-    Unittype unittype = TestUtils.createUnittype(unittypeName, unittypes, acs);
+    Unittype unittype = TestUtils.createUnittype(unittypeName, acs);
 
     // When:
-    unittypes.deleteUnittype(unittype, acs, true);
+    acs.getUnittypes().deleteUnittype(unittype, acs, true);
 
     // Then:
-    Unittype byName = unittypes.getByName(unittypeName);
+    Unittype byName = acs.getUnittypes().getByName(unittypeName);
     assertNull(byName);
   }
 
@@ -42,19 +39,18 @@ public class UnittypesTest extends BaseDBITest {
   public void updateUnittype() throws SQLException {
     // Given:
     String unittypeName = "Name";
-    Unittypes unittypes = new Unittypes(new HashMap<>(), new HashMap<>());
-    Unittype unittype = TestUtils.createUnittype(unittypeName, unittypes, acs);
+    Unittype unittype = TestUtils.createUnittype(unittypeName, acs);
     String newUnittypeName = "New name";
     unittype.setName(newUnittypeName);
 
     // When:
-    unittypes.addOrChangeUnittype(unittype, acs);
+    acs.getUnittypes().addOrChangeUnittype(unittype, acs);
 
     // Then:
-    Unittype byName = unittypes.getByName(newUnittypeName);
+    Unittype byName = acs.getUnittypes().getByName(newUnittypeName);
     assertNotNull(byName);
     assertEquals(newUnittypeName, byName.getName());
-    assertNull(unittypes.getByName(unittypeName));
+    assertNull(acs.getUnittypes().getByName(unittypeName));
   }
 
   @Test(expected = IllegalArgumentException.class)
