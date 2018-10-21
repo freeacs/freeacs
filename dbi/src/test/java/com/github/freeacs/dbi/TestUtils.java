@@ -21,7 +21,7 @@ public abstract class TestUtils {
     }
   }
 
-  public static Unittype createUnittypeWithParams(Unittype unittype, List<Param> params, ACS acs)
+  public static Unittype createUnittypeParameters(Unittype unittype, List<Param> params, ACS acs)
       throws SQLException {
     UnittypeParameters unittypeParameters = unittype.getUnittypeParameters();
     List<UnittypeParameter> parametersToCreate =
@@ -120,5 +120,16 @@ public abstract class TestUtils {
     file = files.getByName(fileName);
     assertNotNull(file);
     return file;
+  }
+
+  public static GroupParameter createGroupParameterAndVerify(
+      String utpParamName, String value, Unittype unittype, Group group, ACS acs)
+      throws SQLException {
+    UnittypeParameters unittypeParameters = unittype.getUnittypeParameters();
+    UnittypeParameter unittypeParameter = unittypeParameters.getByName(utpParamName);
+    Parameter parameter = new Parameter(unittypeParameter, value);
+    GroupParameter groupParameter = new GroupParameter(parameter, group);
+    group.getGroupParameters().addOrChangeGroupParameter(groupParameter, acs);
+    return groupParameter;
   }
 }
