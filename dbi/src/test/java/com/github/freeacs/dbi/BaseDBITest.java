@@ -1,6 +1,5 @@
 package com.github.freeacs.dbi;
 
-
 import com.github.freeacs.common.util.DataSourceHelper;
 import com.zaxxer.hikari.HikariDataSource;
 import java.sql.SQLException;
