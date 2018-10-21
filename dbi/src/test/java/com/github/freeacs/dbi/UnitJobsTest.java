@@ -21,7 +21,7 @@ public class UnitJobsTest extends BaseDBITest {
 
     // When:
     Unittype unittype = TestUtils.createUnittype(unittypeName, acs);
-    Profile profile = unittype.getProfiles().getByName("Default");
+    Profile profile = unittype.getProfiles().getByName(profileName);
     ACSUnit acsUnit = new ACSUnit(dataSource, acs, syslog);
     TestUtils.createUnitAndVerify(acsUnit, unitId, profile);
     Group group = TestUtils.createGroupAndVerify(groupName, profileName, unittype, acs);
