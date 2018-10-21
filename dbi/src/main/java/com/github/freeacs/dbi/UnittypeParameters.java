@@ -24,7 +24,6 @@ public class UnittypeParameters {
   private Map<Integer, UnittypeParameter> displayableMap;
   private Map<String, String> displayableNameMap;
   private Map<Integer, UnittypeParameter> searchableMap;
-  private Map<String, String> searchableNameMap;
   private Unittype unittype;
   private Boolean hasDeviceParameters;
 
@@ -117,7 +116,6 @@ public class UnittypeParameters {
     }
     addOrChangeUnittypeParameterImpl(unittypeParameters, unittype, acs);
     displayableNameMap = null;
-    searchableNameMap = null;
     for (UnittypeParameter unittypeParameter : unittypeParameters) {
       nameMap.put(unittypeParameter.getName(), unittypeParameter);
       idMap.put(unittypeParameter.getId(), unittypeParameter);
@@ -160,11 +158,11 @@ public class UnittypeParameters {
     }
   }
 
-  public Map<String, String> getUnittypeParameterNamesShort(
+  private Map<String, String> getUnittypeParameterNamesShort(
       Collection<UnittypeParameter> utParams) {
-    Map<String, String> resultMap = new TreeMap<String, String>(new NaturalComparator());
+    Map<String, String> resultMap = new TreeMap<>(new NaturalComparator());
     for (UnittypeParameter outerEntry : utParams) {
-      int counter = 0;
+      int counter;
       String[] utpNameArr = outerEntry.getName().split("\\.");
       String utpNamePart = "";
       for (int i = utpNameArr.length - 1; i >= 0; i--) {
@@ -208,7 +206,7 @@ public class UnittypeParameters {
   private void deleteUnittypeParameterImpl(
       List<UnittypeParameter> unittypeParameters, Unittype unittype, ACS acs) throws SQLException {
     Statement s = null;
-    String sql = null;
+    String sql;
     boolean wasAutoCommit;
     Connection c = acs.getDataSource().getConnection();
     wasAutoCommit = c.getAutoCommit();
@@ -244,9 +242,6 @@ public class UnittypeParameters {
   /**
    * The first time this method is run, the flag is set. The second time this method is run, the
    * parameter is removed from the name- and id-Map.
-   *
-   * @param unittypeParameter
-   * @throws SQLException
    */
   public void deleteUnittypeParameter(UnittypeParameter unittypeParameter, ACS acs)
       throws SQLException {
@@ -272,7 +267,6 @@ public class UnittypeParameters {
       displayableMap.remove(unittypeParameter.getId());
       searchableMap.remove(unittypeParameter.getId());
       displayableNameMap = null;
-      searchableNameMap = null;
     }
   }
 
@@ -384,7 +378,7 @@ public class UnittypeParameters {
     return hasDeviceParameters;
   }
 
-  public void resetHasDeviceParameters() {
+  private void resetHasDeviceParameters() {
     this.hasDeviceParameters = null;
   }
 
