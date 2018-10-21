@@ -16,18 +16,22 @@ public class ACSUnitTest extends BaseDBITest {
   public void createUnit() throws SQLException {
     // Given:
     String unitId = "YuddoJb7sssB";
+    String unitTypeName = "Test unittype";
+    String profileName = "Default";
     ACSUnit acsUnit = new ACSUnit(dataSource, acs, syslog);
 
     // When:
-    createUnitAndVerify(acsUnit, unitId);
+    TestUtils.createUnitAndVerify(acsUnit, unitId, acs, unitTypeName, profileName);
   }
 
   @Test
   public void deleteUnit() throws SQLException {
     // Given:
     String unitId = "YuddoJb7sssB";
+    String unitTypeName = "Test unittype";
+    String profileName = "Default";
     ACSUnit acsUnit = new ACSUnit(dataSource, acs, syslog);
-    Unit unit = createUnitAndVerify(acsUnit, unitId);
+    Unit unit = TestUtils.createUnitAndVerify(acsUnit, unitId, acs, unitTypeName, profileName);
 
     // When:
     acsUnit.deleteUnit(unit);
@@ -41,90 +45,79 @@ public class ACSUnitTest extends BaseDBITest {
   public void moveUnitToAnotherUnittypeShouldNotWork() throws SQLException {
     // Given:
     String unitId = "YuddoJb7sssB";
+    String unitTypeName = "Test unittype";
+    String profileName = "Default";
+    String otherUnittype = "Other unittype";
     ACSUnit acsUnit = new ACSUnit(dataSource, acs, syslog);
-    createUnitAndVerify(acsUnit, unitId);
+    TestUtils.createUnitAndVerify(acsUnit, unitId, acs, unitTypeName, profileName);
 
     // When:
-    String otherUnittypeName = "Other unittype";
-    Unittype unittype = TestUtils.createUnittype(otherUnittypeName, acs);
-    Profile profile = unittype.getProfiles().getByName("Default");
+    Unittype unittype = TestUtils.createUnittype(otherUnittype, acs);
+    Profile profile = unittype.getProfiles().getByName(profileName);
     acsUnit.moveUnits(Collections.singletonList(unitId), profile);
 
     // Then:
     Unit unit = acsUnit.getUnitById(unitId);
     assertNotNull(unit);
-    assertEquals("Test unittype", unit.getUnittype().getName());
-    assertEquals("Default", unit.getProfile().getName());
+    assertEquals(unitTypeName, unit.getUnittype().getName());
+    assertEquals(profileName, unit.getProfile().getName());
   }
 
   @Test
   public void moveUnitToAnotherProfileWithinSameUnittypeShouldWWork() throws SQLException {
     // Given:
     String unitId = "YuddoJb7sssB";
+    String unitTypeName = "Test unittype";
+    String defaultProfile = "Default";
+    String newProfile = "Test profile";
     ACSUnit acsUnit = new ACSUnit(dataSource, acs, syslog);
-    createUnitAndVerify(acsUnit, unitId);
+    TestUtils.createUnitAndVerify(acsUnit, unitId, acs, unitTypeName, defaultProfile);
 
     // When:
-    Unittype unittype = acs.getUnittypes().getByName("Test unittype");
-    Profile profile = new Profile("Test profile", unittype);
+    Unittype unittype = acs.getUnittypes().getByName(unitTypeName);
+    Profile profile = new Profile(newProfile, unittype);
     unittype.getProfiles().addOrChangeProfile(profile, acs);
     acsUnit.moveUnits(Collections.singletonList(unitId), profile);
 
     // Then:
     Unit unit = acsUnit.getUnitById(unitId);
     assertNotNull(unit);
-    assertEquals("Test unittype", unit.getUnittype().getName());
-    assertEquals("Test profile", unit.getProfile().getName());
+    assertEquals(unitTypeName, unit.getUnittype().getName());
+    assertEquals(newProfile, unit.getProfile().getName());
   }
 
   @Test
   public void createParameters() throws SQLException {
     // Given:
     String unitId = "YuddoJb7sssB";
+    String secretParam = "System.X_FREEACS-COM.Secret";
+    String secretValue = "Secret";
+    String commentParam = "System.X_FREEACS-COM.Comment";
+    String commentValue = "Comment";
+    UnittypeParameterFlag flag = new UnittypeParameterFlag("X");
+    String unitTypeName = "Test unittype";
+    String profileName = "Default";
     ACSUnit acsUnit = new ACSUnit(dataSource, acs, syslog);
-    createUnitAndVerify(acsUnit, unitId);
+    TestUtils.createUnitAndVerify(acsUnit, unitId, acs, unitTypeName, profileName);
 
     // When:
     Unit unit = acsUnit.getUnitById(unitId);
     Unittype unittype = acs.getUnittype(unit.getUnittype().getId());
-    UnittypeParameter utpSecret =
-        new UnittypeParameter(
-            unittype, "System.X_FREEACS-COM.Secret", new UnittypeParameterFlag("XC"));
-    UnittypeParameter utpComment =
-        new UnittypeParameter(
-            unittype, "System.X_FREEACS-COM.Comment", new UnittypeParameterFlag("X"));
+    UnittypeParameter utpSecret = new UnittypeParameter(unittype, secretParam, flag);
+    UnittypeParameter utpComment = new UnittypeParameter(unittype, commentParam, flag);
     unittype
         .getUnittypeParameters()
         .addOrChangeUnittypeParameters(Arrays.asList(utpSecret, utpComment), acs);
     List<UnitParameter> params =
         Arrays.asList(
-            new UnitParameter(utpSecret, unitId, "Secret", unit.getProfile()),
-            new UnitParameter(utpComment, unitId, "Comment", unit.getProfile()));
+            new UnitParameter(utpSecret, unitId, secretValue, unit.getProfile()),
+            new UnitParameter(utpComment, unitId, commentValue, unit.getProfile()));
     acsUnit.addOrChangeUnitParameters(params, unit.getProfile());
 
     // Then:
     unit = acsUnit.getUnitById(unitId);
     assertEquals(2, unit.getUnitParameters().size());
-    assertEquals(
-        "Comment", unit.getUnitParameters().get("System.X_FREEACS-COM.Comment").getValue());
-    assertEquals("Secret", unit.getUnitParameters().get("System.X_FREEACS-COM.Secret").getValue());
-  }
-
-  private Unit createUnitAndVerify(ACSUnit acsUnit, String unitId) throws SQLException {
-    // Given:
-    String unitTypeName = "Test unittype";
-    Unittype unittype = TestUtils.createUnittype(unitTypeName, acs);
-    Profile profile = unittype.getProfiles().getByName("Default");
-
-    // When:
-    acsUnit.addUnits(Collections.singletonList(unitId), profile);
-
-    // Then:
-    Unit unit = acsUnit.getUnitById(unitId);
-    assertEquals(unitId, unit.getId());
-    assertEquals("Default", unit.getProfile().getName());
-    assertEquals("Test unittype", unit.getUnittype().getName());
-
-    return unit;
+    assertEquals(commentValue, unit.getUnitParameters().get(commentParam).getValue());
+    assertEquals(secretValue, unit.getUnitParameters().get(secretParam).getValue());
   }
 }
