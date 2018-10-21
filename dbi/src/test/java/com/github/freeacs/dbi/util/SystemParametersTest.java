@@ -21,7 +21,7 @@ public class SystemParametersTest extends BaseDBITest {
     String name = "Hallo";
     SystemParameters.TR069ScriptType type = SystemParameters.TR069ScriptType.TargetFileName;
     Unittype unittype =
-        TestUtils.createUnittypeWithParams(
+        TestUtils.createUnittypeParameters(
             TestUtils.createUnittype("Name", acs),
             Arrays.asList(
                 new TestUtils.Param("System.X_FREEACS-COM.TR069Script.Hei.TargetFileName", "X"),
@@ -45,7 +45,7 @@ public class SystemParametersTest extends BaseDBITest {
     String name = "Hallo";
     SystemParameters.TR069ScriptType type = SystemParameters.TR069ScriptType.TargetFileName;
     Unittype unittype =
-        TestUtils.createUnittypeWithParams(
+        TestUtils.createUnittypeParameters(
             TestUtils.createUnittype("Name", acs), Collections.emptyList(), acs);
 
     // When:
