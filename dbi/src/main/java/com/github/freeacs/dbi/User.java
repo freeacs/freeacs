@@ -141,7 +141,7 @@ public class User {
         || permissions.getByUnittypeProfile(unittypeId, profileId) != null;
   }
 
-  public Boolean getAdmin() {
+  public boolean getAdmin() {
     if (admin != null) {
       return admin;
     }

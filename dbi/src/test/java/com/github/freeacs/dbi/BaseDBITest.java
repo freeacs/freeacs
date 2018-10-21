@@ -1,8 +1,5 @@
 package com.github.freeacs.dbi;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import com.github.freeacs.common.util.DataSourceHelper;
 import com.zaxxer.hikari.HikariDataSource;
@@ -16,17 +13,14 @@ public abstract class BaseDBITest {
   protected DataSource dataSource;
 
   @Before
-  public void init() {
-    acs = mock(ACS.class);
-    User user = mock(User.class);
-    when(acs.getUser()).thenReturn(user);
-    when(user.isUnittypeAdmin(any())).thenReturn(true);
-    when(user.isProfileAdmin(any(), any())).thenReturn(true);
-    when(user.isAdmin()).thenReturn(true);
+  public void init() throws SQLException {
     dataSource = DataSourceHelper.inMemoryDataSource();
-    when(acs.getDataSource()).thenReturn(dataSource);
-    DBI dbi = mock(DBI.class);
-    when(acs.getDbi()).thenReturn(dbi);
+    Users users = new Users(dataSource);
+    User admin = new User("admin", "Admin", "Admin", true, users);
+    users.addOrChange(admin, admin); // nice little unit test trick, the user is creating itself
+    Identity identity = new Identity(SyslogConstants.EVENT_DEFAULT, "test", admin);
+    Syslog syslog = new Syslog(dataSource, identity);
+    acs = new ACS(dataSource, syslog);
   }
 
   @After
