@@ -22,29 +22,7 @@ FreeACS requires Java and MySQL. It has been tested to work on Java 8 and latest
 FreeACS is built with SBT:
 
 ```bash
-$ sbt clean compile test
-```
-
-## Play with it
-Start tr069 server in discovery mode with:
-
-```
-discovery.mode=true
-```
-
-Fire up a tr069 test client in docker:
-
-```bash
-docker run --rm -it --net=host --entrypoint /bin/bash --name="easycwmp" xateam/easycwmp_docker
-apt install nano
-nano /etc/config/easycwmp
-change:
-    option url http://5.5.5.12/acs
-to
-    option url http://[your-lan-ip-on-host-machine]:[tr069-port]/tr069
-Ctrl-X+y+Enter
-chmod +x startup.sh
-./startup.sh
+$ sbt compile test
 ```
 
 ## Contributing
