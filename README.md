@@ -49,7 +49,7 @@ chmod +x startup.sh
 
 ## Contributing
 
-Please read [https://github.com/freeacs/freeacs/blob/master/CONTRIBUTING.md](CONTRIBUTING.md) for instructions to set up your development environment to build FreeACS
+Please read [CONTRIBUTING.md](https://github.com/freeacs/freeacs/blob/master/CONTRIBUTING.md) for instructions to set up your development environment to build FreeACS
 
 ## Versioning
 
