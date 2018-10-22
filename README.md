@@ -5,11 +5,11 @@
 [![Gitter chat](https://badges.gitter.im/FreeACS-on-Gitter/Freeacs.png)](https://gitter.im/FreeACS-on-Gitter/Freeacs)
 [![Donate](https://img.shields.io/badge/Patreon-Donate-blue.svg)](https://www.patreon.com/freeacs)
 
-Fusion Free ACS is the most complete TR-069 ACS available for free under the MIT License. You can download and install it, or contribute to the project! 
+FreeACS is the most complete TR-069 ACS available for free under the MIT License. You can download and install it, or contribute to the project! 
 
 ## Prerequisites
 
-Freeacs requires Java and MySQL. It has been tested to work on Java 8 and latest version of MySQL (the latter with some minor quirk in the install script).
+FreeACS requires Java and MySQL. It has been tested to work on Java 8 and latest version of MySQL (the latter with some minor quirk in the install script).
 
 ## Social
 
@@ -19,7 +19,7 @@ Freeacs requires Java and MySQL. It has been tested to work on Java 8 and latest
 
 ## Build it
 
-Freeacs is built with SBT:
+FreeACS is built with SBT:
 
 ```bash
 $ sbt clean compile test
@@ -49,7 +49,7 @@ chmod +x startup.sh
 
 ## Contributing
 
-Open a pull request, add an issue or discuss in the forums. 
+Please read [https://github.com/freeacs/freeacs/blob/master/CONTRIBUTING.md](CONTRIBUTING.md) for instructions to set up your development environment to build FreeACS
 
 ## Versioning
 
