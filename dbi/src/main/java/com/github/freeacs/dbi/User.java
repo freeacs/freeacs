@@ -6,7 +6,6 @@ import java.sql.SQLException;
 public class User {
   private Integer id;
   private String username;
-  private String oldUsername;
   private String secret;
   private String fullname;
   private String access;
