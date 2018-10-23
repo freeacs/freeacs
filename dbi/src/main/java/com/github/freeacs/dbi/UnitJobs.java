@@ -73,7 +73,6 @@ public class UnitJobs {
   public boolean start(UnitJob uj) throws SQLException {
     Connection c = null;
     PreparedStatement pp = null;
-    SQLException sqle = null;
     try {
       c = connectionProperties.getConnection();
       pp =
@@ -116,41 +115,35 @@ public class UnitJobs {
   public boolean stop(UnitJob uj) throws SQLException {
     Connection c = null;
     PreparedStatement pp = null;
-    boolean finished = false;
-    int rowsUpdated = 0;
-    while (!finished) { // will loop if MySQLTransactionRollbackException occurs
-      try {
-        c = connectionProperties.getConnection();
-        if (uj.getStatus().equals(UnitJobStatus.COMPLETED_OK)
-            || uj.getStatus().equals(UnitJobStatus.STOPPED)) {
-          pp =
-              c.prepareStatement(
-                  "UPDATE unit_job SET status = '"
-                      + uj.getStatus()
-                      + "', end_timestamp = ?, processed = 0 WHERE unit_id = ? AND job_id = ?");
-        } else {
-          pp =
-              c.prepareStatement(
-                  "UPDATE unit_job SET end_timestamp = ?, status = '"
-                      + uj.getStatus()
-                      + "', confirmed = confirmed + 1, processed = 0 WHERE unit_id = ? AND job_id = ?");
-        }
-        pp.setTimestamp(1, new Timestamp(uj.getEndTimestamp().getTime()));
-        pp.setString(2, uj.getUnitId());
-        pp.setInt(3, uj.getJobId());
-        pp.setQueryTimeout(60);
-        rowsUpdated = pp.executeUpdate();
-        finished = true;
-      } finally {
-        if (pp != null) {
-          pp.close();
-        }
-        if (c != null) {
-          c.close();
-        }
+    try {
+      c = connectionProperties.getConnection();
+      if (uj.getStatus().equals(UnitJobStatus.COMPLETED_OK)
+          || uj.getStatus().equals(UnitJobStatus.STOPPED)) {
+        pp =
+            c.prepareStatement(
+                "UPDATE unit_job SET status = '"
+                    + uj.getStatus()
+                    + "', end_timestamp = ?, processed = 0 WHERE unit_id = ? AND job_id = ?");
+      } else {
+        pp =
+            c.prepareStatement(
+                "UPDATE unit_job SET end_timestamp = ?, status = '"
+                    + uj.getStatus()
+                    + "', confirmed = confirmed + 1, processed = 0 WHERE unit_id = ? AND job_id = ?");
+      }
+      pp.setTimestamp(1, new Timestamp(uj.getEndTimestamp().getTime()));
+      pp.setString(2, uj.getUnitId());
+      pp.setInt(3, uj.getJobId());
+      pp.setQueryTimeout(60);
+      return pp.executeUpdate() > 0;
+    } finally {
+      if (pp != null) {
+        pp.close();
+      }
+      if (c != null) {
+        c.close();
       }
     }
-    return rowsUpdated > 0;
   }
 
   /** Added 2010-04-08 (see comment above). */
