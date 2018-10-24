@@ -79,6 +79,7 @@ public class App {
         ctxPath,
         () -> {
           post("/prov", processRequest(provisioning));
+          post("/", processRequest(provisioning));
           get("/file/*", processFile(fileServlet));
           get("/ok", processHealth(okServlet));
         });
