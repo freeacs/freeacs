@@ -1,7 +1,6 @@
 package com.github.freeacs.tr069.xml;
 
 import com.github.freeacs.tr069.Namespace;
-
 import java.util.Optional;
 
 /**
