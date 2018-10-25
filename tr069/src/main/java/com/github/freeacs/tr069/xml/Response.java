@@ -2,6 +2,8 @@ package com.github.freeacs.tr069.xml;
 
 import com.github.freeacs.tr069.Namespace;
 
+import java.util.Optional;
+
 /**
  * Represents the response from the ACS to the CPE.
  *
@@ -29,7 +31,9 @@ public class Response {
         .append("=\"http://schemas.xmlsoap.org/soap/encoding/\" ");
     sb.append("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" ");
     sb.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
-    sb.append("xmlns:cwmp=\"urn:dslforum-org:cwmp-").append(cwmpVersionNumber).append("\">\n");
+    sb.append("xmlns:cwmp=\"urn:dslforum-org:cwmp-")
+        .append(Optional.ofNullable(cwmpVersionNumber).orElse("1-0"))
+        .append("\">\n");
     sb.append(header.toXml());
     sb.append(body.toXml());
     sb.append("</").append(Namespace.getSoapEnvNS()).append(":Envelope>\n");
