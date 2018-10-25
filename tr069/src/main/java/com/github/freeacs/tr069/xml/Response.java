@@ -8,16 +8,18 @@ import com.github.freeacs.tr069.Namespace;
  * @author morten
  */
 public class Response {
-  private Header header;
-  private Body body;
+  private final Header header;
+  private final Body body;
+  private final String cwmpVersionNumber;
 
-  public Response(Header header, Body body) {
+  public Response(Header header, Body body, String cwmpVersionNumber) {
     this.header = header;
     this.body = body;
+    this.cwmpVersionNumber = cwmpVersionNumber;
   }
 
   public String toXml() {
-    StringBuilder sb = new StringBuilder(10);
+    final StringBuilder sb = new StringBuilder(10);
     sb.append("<").append(Namespace.getSoapEnvNS()).append(":Envelope ");
     sb.append("xmlns:")
         .append(Namespace.getSoapEnvNS())
@@ -27,7 +29,7 @@ public class Response {
         .append("=\"http://schemas.xmlsoap.org/soap/encoding/\" ");
     sb.append("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" ");
     sb.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
-    sb.append("xmlns:cwmp=\"urn:dslforum-org:cwmp-1-2\">\n");
+    sb.append("xmlns:cwmp=\"urn:dslforum-org:cwmp-").append(cwmpVersionNumber).append("\">\n");
     sb.append(header.toXml());
     sb.append(body.toXml());
     sb.append("</").append(Namespace.getSoapEnvNS()).append(":Envelope>\n");
