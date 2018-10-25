@@ -55,7 +55,9 @@ public class HTTPRequestProcessor {
       throws TR069Exception {
     try {
       if (reqRes.getSessionData().getCwmpVersionNumber() == null) {
-        reqRes.getSessionData().setCwmpVersionNumber(extractCwmpVersion(reqRes.getRequest().getXml()));
+        reqRes
+            .getSessionData()
+            .setCwmpVersionNumber(extractCwmpVersion(reqRes.getRequest().getXml()));
       }
       String requestMethodName = extractMethodName(reqRes.getRequest().getXml());
       if (requestMethodName == null) {
