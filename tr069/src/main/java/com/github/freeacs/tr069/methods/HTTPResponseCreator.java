@@ -37,7 +37,7 @@ import java.util.Optional;
  */
 public interface HTTPResponseCreator {
   static Response buildEM(HTTPReqResData reqRes) {
-    return new EmptyResponse();
+    return new EmptyResponse(reqRes.getSessionData().getCwmpVersionNumber());
   }
 
   static Response buildRE(HTTPReqResData reqRes) {
@@ -47,7 +47,7 @@ public interface HTTPResponseCreator {
     TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
     Header header = new Header(tr069ID, null, null);
     Body body = new REreq();
-    return new Response(header, body);
+    return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
   }
 
   static Response buildFR(HTTPReqResData reqRes) {
@@ -57,28 +57,28 @@ public interface HTTPResponseCreator {
     TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
     Header header = new Header(tr069ID, null, null);
     Body body = new FRreq();
-    return new Response(header, body);
+    return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
   }
 
   static Response buildTC(HTTPReqResData reqRes) {
     TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
     Header header = new Header(tr069ID, null, null);
     Body body = new TCres();
-    return new Response(header, body);
+    return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
   }
 
   static Response buildATC(HTTPReqResData reqRes) {
     TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
     Header header = new Header(tr069ID, null, null);
     Body body = new ATCres();
-    return new Response(header, body);
+    return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
   }
 
   static Response buildIN(HTTPReqResData reqRes) {
     TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
     Header header = new Header(tr069ID, null, null);
     Body body = new INres();
-    return new Response(header, body);
+    return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
   }
 
   static Response buildGPN(HTTPReqResData reqRes, Properties properties) {
@@ -88,7 +88,7 @@ public interface HTTPResponseCreator {
     Header header = new Header(reqRes.getTR069TransactionID(), null, null);
     String keyRoot = reqRes.getSessionData().getKeyRoot();
     Body body = new GPNreq(keyRoot, properties.isNextLevel0InGPN(reqRes.getSessionData()));
-    return new Response(header, body);
+    return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
   }
 
   static boolean isOldPingcomDevice(String unitId) {
@@ -179,7 +179,7 @@ public interface HTTPResponseCreator {
     }
     sessionData.setRequestedCPE(parameterValueList);
     Body body = new GPVreq(parameterValueList);
-    return new Response(header, body);
+    return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
   }
 
   static Response buildSPV(HTTPReqResData reqRes, Properties properties)
@@ -202,7 +202,7 @@ public interface HTTPResponseCreator {
         .getSessionData()
         .getProvisioningMessage()
         .setParamsWritten(paramList.getParameterValueList().size());
-    return new Response(header, body);
+    return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
   }
 
   static Response buildDO(HTTPReqResData reqRes, boolean fileAuthUsed) {
@@ -238,7 +238,7 @@ public interface HTTPResponseCreator {
             username,
             password,
             fileAuthUsed);
-    return new Response(header, body);
+    return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
   }
 
   static void createResponse(HTTPReqResData reqRes, Map<String, HTTPResponseAction> responseMap)
@@ -250,7 +250,7 @@ public interface HTTPResponseCreator {
       if (resAction != null) {
         response = resAction.getCreateResponseMethod().apply(reqRes);
       } else {
-        response = new EmptyResponse();
+        response = new EmptyResponse(reqRes.getSessionData().getCwmpVersionNumber());
         Log.error(
             HTTPResponseCreator.class,
             "The methodName " + methodName + " has no corresponding ResponseAction-method");

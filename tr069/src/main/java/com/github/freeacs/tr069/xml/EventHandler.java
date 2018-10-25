@@ -15,7 +15,7 @@ public class EventHandler extends DefaultHandler {
   public static final String COMMAND_KEY_TAG = "CommandKey";
 
   private Parser owner;
-  private EventList events = new EventList();
+  private EventList events;
   private EventStruct currEvent;
   private StringBuilder currTextContent = new StringBuilder();
 

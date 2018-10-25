@@ -22,6 +22,13 @@ import java.util.regex.Pattern;
  * @author Morten
  */
 public class HTTPRequestProcessor {
+
+  private static final Pattern VERSION_REGEX =
+      Pattern.compile(".*cwmp\\s*=\\s*\"urn:dslforum-org:cwmp-([^\"]+)\".*", Pattern.DOTALL);
+
+  private static final Pattern METHOD_NAME_PATTERN =
+      Pattern.compile(":Body.*>\\s*<cwmp:(\\w+)(>|/>)", Pattern.DOTALL);
+
   private static TR069DMParameterMap tr069ParameterMap;
 
   public static TR069DMParameterMap getTR069ParameterMap() throws Exception {
@@ -47,6 +54,9 @@ public class HTTPRequestProcessor {
       HTTPReqResData reqRes, Map<String, HTTPRequestAction> requestMap, Properties properties)
       throws TR069Exception {
     try {
+      if (reqRes.getSessionData().getCwmpVersionNumber() == null) {
+        reqRes.getSessionData().setCwmpVersionNumber(extractCwmpVersion(reqRes.getRequest().getXml()));
+      }
       String requestMethodName = extractMethodName(reqRes.getRequest().getXml());
       if (requestMethodName == null) {
         requestMethodName = TR069Method.EMPTY;
@@ -97,9 +107,6 @@ public class HTTPRequestProcessor {
     }
   }
 
-  private static final Pattern methodNamePattern =
-      Pattern.compile(":Body.*>\\s*<cwmp:(\\w+)(>|/>)", Pattern.DOTALL);
-
   /**
    * Fastest way to extract the method name without actually parsing the XML - the method name is
    * crucial to the next steps in TR-069 processing
@@ -118,7 +125,15 @@ public class HTTPRequestProcessor {
   }
 
   private static String getMethodStr(String reqStr) {
-    Matcher matcher = methodNamePattern.matcher(reqStr);
+    Matcher matcher = METHOD_NAME_PATTERN.matcher(reqStr);
+    if (matcher.find()) {
+      return matcher.group(1);
+    }
+    return null;
+  }
+
+  static String extractCwmpVersion(String reqStr) {
+    Matcher matcher = VERSION_REGEX.matcher(reqStr);
     if (matcher.find()) {
       return matcher.group(1);
     }

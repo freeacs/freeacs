@@ -54,7 +54,6 @@ public class SessionData implements SessionDataI {
   /** The keyroot of this CPE (e.g. InternetGatewayDevice.) */
   private String keyRoot;
 
-  private String mac;
   private String serialNumber;
 
   /** Tells whether the CPE is authenticated or not. */
@@ -111,6 +110,8 @@ public class SessionData implements SessionDataI {
 
   /** An object to store data about a download. */
   private Download download;
+
+  private String cwmpVersionNumber;
 
   public SessionData(String id, ACS acs) {
     this.id = id;
@@ -548,6 +549,14 @@ public class SessionData implements SessionDataI {
       version = cpeParameters.getValue(cpeParameters.SOFTWARE_VERSION);
     }
     return version;
+  }
+
+  public String getCwmpVersionNumber() {
+    return cwmpVersionNumber;
+  }
+
+  public void setCwmpVersionNumber(String cwmpVersionNumber) {
+    this.cwmpVersionNumber = cwmpVersionNumber;
   }
 
   public static class Download {
