@@ -3,7 +3,6 @@ package com.github.freeacs;
 import static com.github.freeacs.common.spark.ResponseHelper.process;
 import static com.github.freeacs.dbi.SyslogConstants.FACILITY_TR069;
 import static spark.Spark.get;
-import static spark.Spark.path;
 import static spark.Spark.post;
 
 import com.github.freeacs.base.Log;
@@ -75,14 +74,11 @@ public class App {
     provisioning.init();
     FileServlet fileServlet = new FileServlet(dbAccess, ctxPath + "/file/", properties);
     OKServlet okServlet = new OKServlet(dbAccess);
-    path(
-        ctxPath,
-        () -> {
-          post("/prov", processRequest(provisioning));
-          post("/", processRequest(provisioning));
-          get("/file/*", processFile(fileServlet));
-          get("/ok", processHealth(okServlet));
-        });
+    post(ctxPath, processRequest(provisioning));
+    post(ctxPath + "/", processRequest(provisioning));
+    post(ctxPath + "/prov", processRequest(provisioning));
+    get(ctxPath + "/file/*", processFile(fileServlet));
+    get(ctxPath + "/ok", processHealth(okServlet));
   }
 
   private static Route processHealth(OKServlet okServlet) {
