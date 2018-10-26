@@ -3,7 +3,6 @@ package com.github.freeacs;
 import static com.github.freeacs.common.spark.ResponseHelper.process;
 import static com.github.freeacs.dbi.SyslogConstants.FACILITY_TR069;
 import static spark.Spark.get;
-import static spark.Spark.path;
 import static spark.Spark.post;
 
 import com.github.freeacs.base.Log;
