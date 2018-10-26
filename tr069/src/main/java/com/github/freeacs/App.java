@@ -75,14 +75,11 @@ public class App {
     provisioning.init();
     FileServlet fileServlet = new FileServlet(dbAccess, ctxPath + "/file/", properties);
     OKServlet okServlet = new OKServlet(dbAccess);
-    path(
-        ctxPath,
-        () -> {
-          post("/prov", processRequest(provisioning));
-          post("/", processRequest(provisioning));
-          get("/file/*", processFile(fileServlet));
-          get("/ok", processHealth(okServlet));
-        });
+    post(ctxPath, processRequest(provisioning));
+    post(ctxPath + "/", processRequest(provisioning));
+    post(ctxPath + "/prov", processRequest(provisioning));
+    get(ctxPath + "/file/*", processFile(fileServlet));
+    get(ctxPath + "/ok", processHealth(okServlet));
   }
 
   private static Route processHealth(OKServlet okServlet) {
