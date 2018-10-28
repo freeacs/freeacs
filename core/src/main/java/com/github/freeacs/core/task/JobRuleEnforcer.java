@@ -176,10 +176,9 @@ public class JobRuleEnforcer extends DBIOwner {
   public JobRuleEnforcer(
       String taskName,
       DataSource mainDataSource,
-      DataSource syslogDataSource,
       Properties properties)
       throws SQLException {
-    super(taskName, mainDataSource, syslogDataSource);
+    super(taskName, mainDataSource, mainDataSource);
     this.properties = properties;
   }
 

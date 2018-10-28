@@ -28,9 +28,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TriggerReleaser extends DBIShare {
-  public TriggerReleaser(String taskName, DataSource mainDataSource, DataSource syslogDataSource)
+  public TriggerReleaser(String taskName, DataSource mainDataSource)
       throws SQLException {
-    super(taskName, mainDataSource, syslogDataSource);
+    super(taskName, mainDataSource, mainDataSource);
   }
 
   private static Logger logger = LoggerFactory.getLogger(TriggerReleaser.class);

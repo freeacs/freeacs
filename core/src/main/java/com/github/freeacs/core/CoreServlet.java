@@ -1,5 +1,6 @@
 package com.github.freeacs.core;
 
+import com.github.freeacs.common.quartz.QuartzWrapper;
 import com.github.freeacs.common.scheduler.Schedule;
 import com.github.freeacs.common.scheduler.ScheduleType;
 import com.github.freeacs.common.scheduler.Scheduler;
@@ -16,6 +17,8 @@ import com.github.freeacs.core.task.TriggerReleaser;
 import com.github.freeacs.dbi.util.ACSVersionCheck;
 import java.sql.SQLException;
 import javax.sql.DataSource;
+
+import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,22 +27,24 @@ public class CoreServlet {
 
   private static Logger log = LoggerFactory.getLogger(CoreServlet.class);
   private final DataSource mainDataSource;
-  private final DataSource syslogDataSource;
   private final Properties properties;
+  private final QuartzWrapper quartzWrapper;
 
-  public CoreServlet(DataSource mainDataSource, Properties properties) {
+  public CoreServlet(DataSource mainDataSource, Properties properties) throws SchedulerException {
     this.mainDataSource = mainDataSource;
-    this.syslogDataSource = mainDataSource;
     this.properties = properties;
+    this.quartzWrapper = new QuartzWrapper();
   }
 
-  public static void destroy() {
+  public void destroy() throws SchedulerException {
+    quartzWrapper.shutdown();
     log.info("Server shutdown...");
     Sleep.terminateApplication();
   }
 
   public void init() {
     try {
+      quartzWrapper.init();
       log.info("Server starts...");
       ACSVersionCheck.versionCheck(mainDataSource);
       scheduler = new Scheduler();
@@ -53,99 +58,81 @@ public class CoreServlet {
     }
   }
 
-  private void bootLightTasks() throws SQLException {
+  private void bootLightTasks() throws SQLException, SchedulerException {
     // Run at 0530 every night - light task
-    scheduler.registerTask(
-        new Schedule(
-            (5 * 60 + 30) * 60000,
-            false,
-            ScheduleType.DAILY,
-            new DeleteOldJobs("DeleteOldJobs", mainDataSource, syslogDataSource, properties)));
+    final DeleteOldJobs deleteOldJobsTask = new DeleteOldJobs("DeleteOldJobs", mainDataSource, properties);
+    quartzWrapper.scheduleCron(deleteOldJobsTask.getTaskName(), "Core Light", "0 30 5 ? * * *", () -> {
+      deleteOldJobsTask.run();
+      return null;
+    });
 
     // Run every second - light task
-    scheduler.registerTask(
-        new Schedule(
-            1000,
-            false,
-            ScheduleType.INTERVAL,
-            new JobRuleEnforcer("JobRuleEnforcer", mainDataSource, syslogDataSource, properties)));
+    final JobRuleEnforcer jobRuleEnforcerTaks = new JobRuleEnforcer("JobRuleEnforcer", mainDataSource, properties);
+    quartzWrapper.scheduleCron(jobRuleEnforcerTaks.getTaskName(), "Core Light", "* * * * * ? *", () -> {
+      jobRuleEnforcerTaks.run();
+      return null;
+    });
+
     if (ACSVersionCheck.triggerSupported) {
       // Run at 30(sec) every minute - light task
-      scheduler.registerTask(
-          new Schedule(
-              30000,
-              false,
-              ScheduleType.MINUTELY,
-              new TriggerReleaser("TriggerReleaser", mainDataSource, syslogDataSource)));
+      TriggerReleaser triggerReleaserTask = new TriggerReleaser("TriggerReleaser", mainDataSource);
+      quartzWrapper.scheduleCron(triggerReleaserTask.getTaskName(), "Core Light", "30 * * ? * * *", () -> {
+        triggerReleaserTask.run();
+        return null;
+      });
     }
     if (ACSVersionCheck.scriptExecutionSupported) {
-      // Run every 100 ms - very light task
-      scheduler.registerTask(
-          new Schedule(
-              100,
-              false,
-              ScheduleType.INTERVAL,
-              new ScriptExecutor("ScriptExecutor", mainDataSource, syslogDataSource, properties)));
+      // Run every second - light task
+      ScriptExecutor scriptExecutorTask = new ScriptExecutor("ScriptExecutor", mainDataSource, properties);
+      quartzWrapper.scheduleCron(scriptExecutorTask.getTaskName(), "Core Light", "* * * * * ? *", () -> {
+        scriptExecutorTask.run();
+        return null;
+      });
       // Run at 45 every hour - light task
-      scheduler.registerTask(
-          new Schedule(
-              45 * 1000,
-              false,
-              ScheduleType.MINUTELY,
-              new DeleteOldScripts(
-                  "DeleteOldScripts", mainDataSource, syslogDataSource, properties)));
+      DeleteOldScripts deleteOldScriptsTask = new DeleteOldScripts("DeleteOldScripts", mainDataSource, properties);
+      quartzWrapper.scheduleCron(deleteOldScriptsTask.getTaskName(), "Core Light", "0 45 * ? * * *", () -> {
+        deleteOldScriptsTask.run();
+        return null;
+      });
     }
     if (ACSVersionCheck.heartbeatSupported) {
       // Run every 5 minute - moderate task
-      scheduler.registerTask(
-          new Schedule(
-              5 * 60000,
-              false,
-              ScheduleType.INTERVAL,
-              new HeartbeatDetection("HeartbeatDetection", mainDataSource, syslogDataSource)));
+      HeartbeatDetection heartbeatDetectionTask = new HeartbeatDetection("HeartbeatDetection", mainDataSource);
+      quartzWrapper.scheduleCron(heartbeatDetectionTask.getTaskName(), "Core Light", "0 0/5 * ? * * *", () -> {
+        heartbeatDetectionTask.run();
+        return null;
+      });
     }
-    // Run at 59 every hour - very light task
-    scheduler.registerTask(
-        new Schedule(
-            60000,
-            false,
-            ScheduleType.HOURLY,
-            new ShowScheduleQueue("ShowScheduleQueue", scheduler)));
   }
 
-  private void bootHeavyTasks() throws SQLException {
+  private void bootHeavyTasks() throws SQLException, SchedulerException {
     // Run at 00 every hour - heavy task
-    scheduler.registerTask(
-        new Schedule(
-            0,
-            false,
-            ScheduleType.HOURLY,
-            new ReportGenerator(
-                "ReportGeneratorHourly",
-                ScheduleType.HOURLY,
-                mainDataSource,
-                syslogDataSource,
-                properties)));
+    ReportGenerator reportGeneratorHourlyTask = new ReportGenerator(
+        "ReportGeneratorHourly",
+        ScheduleType.HOURLY,
+        mainDataSource,
+        properties);
+    quartzWrapper.scheduleCron(reportGeneratorHourlyTask.getTaskName(), "Core Heavy", "0 0 * ? * * *", () -> {
+      reportGeneratorHourlyTask.run();
+      return null;
+    });
     // Run at 0015 every night - very heavy task
-    scheduler.registerTask(
-        new Schedule(
-            15 * 60000,
-            false,
-            ScheduleType.DAILY,
-            new ReportGenerator(
-                "ReportGeneratorDaily",
-                ScheduleType.DAILY,
-                mainDataSource,
-                syslogDataSource,
-                properties)));
+    ReportGenerator reportGeneratorDailyTask = new ReportGenerator(
+        "ReportGeneratorDaily",
+        ScheduleType.DAILY,
+        mainDataSource,
+        properties);
+    quartzWrapper.scheduleCron(reportGeneratorDailyTask.getTaskName(), "Core Heavy", "0 15 0 ? * * *", () -> {
+      reportGeneratorDailyTask.run();
+      return null;
+    });
     // Run at 0500 every night - very heavy task
-    scheduler.registerTask(
-        new Schedule(
-            5 * 60 * 60000,
-            false,
-            ScheduleType.DAILY,
-            new DeleteOldSyslog(
-                "DeleteOldSyslogEntries", mainDataSource, syslogDataSource, properties)));
+    DeleteOldSyslog deleteOldSyslogTask = new DeleteOldSyslog(
+        "DeleteOldSyslogEntries", mainDataSource, properties);
+    quartzWrapper.scheduleCron(deleteOldSyslogTask.getTaskName(), "Core Heavy", "0 0 5 ? * * *", () -> {
+      deleteOldSyslogTask.run();
+      return null;
+    });
   }
 
   public String health() {

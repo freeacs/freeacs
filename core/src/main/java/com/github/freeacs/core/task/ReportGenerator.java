@@ -58,10 +58,9 @@ public class ReportGenerator extends DBIOwner {
       String taskName,
       ScheduleType scheduleType,
       DataSource mainDataSource,
-      DataSource syslogDataSource,
       Properties properties)
       throws SQLException {
-    super(taskName, mainDataSource, syslogDataSource);
+    super(taskName, mainDataSource, mainDataSource);
     this.scheduleType = scheduleType;
     this.properties = properties;
   }

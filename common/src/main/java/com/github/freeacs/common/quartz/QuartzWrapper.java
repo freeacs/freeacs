@@ -8,13 +8,20 @@ import java.util.function.Supplier;
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 
-public class QuartzDsl {
+public class QuartzWrapper {
 
     private final Scheduler scheduler;
 
-    public QuartzDsl() throws SchedulerException {
+    public QuartzWrapper() throws SchedulerException {
         scheduler = StdSchedulerFactory.getDefaultScheduler();
+    }
+
+    public void init() throws SchedulerException {
         scheduler.start();
+    }
+
+    public void shutdown() throws SchedulerException {
+        scheduler.shutdown(true);
     }
 
     public Date scheduleCron(final String jobName,
@@ -36,7 +43,7 @@ public class QuartzDsl {
     }
 
     public static void main(String[] args) throws SchedulerException {
-        QuartzDsl dsl = new QuartzDsl();
+        QuartzWrapper dsl = new QuartzWrapper();
         dsl.scheduleCron("Job", "Test", "* * * * * ? *", () -> {
             System.out.println("Hello you");
             return null;

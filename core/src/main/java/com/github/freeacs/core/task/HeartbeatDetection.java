@@ -46,9 +46,9 @@ public class HeartbeatDetection extends DBIShare {
   private Cache sentMessages = new Cache();
   private static Logger logger = LoggerFactory.getLogger(HeartbeatDetection.class);
 
-  public HeartbeatDetection(String taskName, DataSource mainDataSource, DataSource syslogDataSource)
+  public HeartbeatDetection(String taskName, DataSource mainDataSource)
       throws SQLException {
-    super(taskName, mainDataSource, syslogDataSource);
+    super(taskName, mainDataSource, mainDataSource);
   }
 
   @Override
