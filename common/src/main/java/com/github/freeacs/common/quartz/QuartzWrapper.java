@@ -41,12 +41,4 @@ public class QuartzWrapper {
                 .build();
         return scheduler.scheduleJob(jobDetail, trigger);
     }
-
-    public static void main(String[] args) throws SchedulerException {
-        QuartzWrapper dsl = new QuartzWrapper();
-        dsl.scheduleCron("Job", "Test", "* * * * * ? *", () -> {
-            System.out.println("Hello you");
-            return null;
-        });
-    }
 }
