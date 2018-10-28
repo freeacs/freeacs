@@ -1,20 +1,19 @@
 package com.github.freeacs.core.task;
 
 import com.github.freeacs.core.Properties;
+import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.ScriptExecution;
 import com.github.freeacs.dbi.ScriptExecutions;
 import com.github.freeacs.dbi.Users;
 import com.github.freeacs.shell.ACSShellDaemon;
 import com.github.freeacs.shell.Processor;
 import com.github.freeacs.shell.Session;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,9 +102,8 @@ public class ScriptExecutor extends DBIShare {
     }
   }
 
-  public ScriptExecutor(String taskName, DataSource mainDataSource, Properties properties)
-      throws SQLException {
-    super(taskName, mainDataSource, mainDataSource);
+  public ScriptExecutor(String taskName, DBI dbi, Properties properties) {
+    super(taskName, dbi);
     this.properties = properties;
   }
 

@@ -23,13 +23,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TriggerReleaser extends DBIShare {
-  public TriggerReleaser(String taskName, DataSource mainDataSource) throws SQLException {
-    super(taskName, mainDataSource, mainDataSource);
+  public TriggerReleaser(String taskName, DBI dbi) {
+    super(taskName, dbi);
   }
 
   private static Logger logger = LoggerFactory.getLogger(TriggerReleaser.class);

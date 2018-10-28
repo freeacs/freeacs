@@ -11,6 +11,7 @@ import com.github.freeacs.core.task.JobRuleEnforcer;
 import com.github.freeacs.core.task.ReportGenerator;
 import com.github.freeacs.core.task.ScriptExecutor;
 import com.github.freeacs.core.task.TriggerReleaser;
+import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.util.ACSVersionCheck;
 import java.sql.SQLException;
 import java.util.Date;
@@ -43,17 +44,25 @@ public class CoreServlet {
       quartzWrapper.init();
       log.info("Server starts...");
       ACSVersionCheck.versionCheck(mainDataSource);
-      bootHeavyTasks();
-      bootLightTasks();
+      DBI dbi = getDbi();
+      bootHeavyTasks(dbi);
+      bootLightTasks(dbi);
     } catch (Throwable t) {
       log.error("Error occured in init(), some daemons may not have been started", t);
     }
   }
 
-  private void bootLightTasks() throws SQLException, SchedulerException {
+  private DBI getDbi() throws SQLException {
+    final Users users = new Users(mainDataSource);
+    final User adminUser = users.getUnprotected(Users.USER_ADMIN);
+    final Identity id = new Identity(SyslogConstants.FACILITY_CORE, "latest", adminUser);
+    final Syslog syslog = new Syslog(mainDataSource, id);
+    return new DBI(Integer.MAX_VALUE, mainDataSource, syslog);
+  }
+
+  private void bootLightTasks(DBI dbi) throws SchedulerException {
     // Run at 0530 every night - light task
-    final DeleteOldJobs deleteOldJobsTask =
-        new DeleteOldJobs("DeleteOldJobs", mainDataSource, properties);
+    final DeleteOldJobs deleteOldJobsTask = new DeleteOldJobs("DeleteOldJobs", dbi, properties);
     final Date scheduledToRunDOJ =
         quartzWrapper.scheduleCron(
             deleteOldJobsTask.getTaskName(),
@@ -64,7 +73,7 @@ public class CoreServlet {
 
     // Run every second - light task
     final JobRuleEnforcer jobRuleEnforcerTaks =
-        new JobRuleEnforcer("JobRuleEnforcer", mainDataSource, properties);
+        new JobRuleEnforcer("JobRuleEnforcer", dbi, properties);
     final Date scheduledToRunJRE =
         quartzWrapper.scheduleCron(
             jobRuleEnforcerTaks.getTaskName(),
@@ -75,8 +84,7 @@ public class CoreServlet {
 
     if (ACSVersionCheck.triggerSupported) {
       // Run at 30(sec) every minute - light task
-      final TriggerReleaser triggerReleaserTask =
-          new TriggerReleaser("TriggerReleaser", mainDataSource);
+      final TriggerReleaser triggerReleaserTask = new TriggerReleaser("TriggerReleaser", dbi);
       final Date scheduledToRun =
           quartzWrapper.scheduleCron(
               triggerReleaserTask.getTaskName(),
@@ -88,7 +96,7 @@ public class CoreServlet {
     if (ACSVersionCheck.scriptExecutionSupported) {
       // Run every second - light task
       final ScriptExecutor scriptExecutorTask =
-          new ScriptExecutor("ScriptExecutor", mainDataSource, properties);
+          new ScriptExecutor("ScriptExecutor", dbi, properties);
       final Date scheduledToRunSE =
           quartzWrapper.scheduleCron(
               scriptExecutorTask.getTaskName(),
@@ -98,7 +106,7 @@ public class CoreServlet {
       log.info("Script Executor scheduled to run at " + scheduledToRunSE.toString());
       // Run at 45 every hour - light task
       final DeleteOldScripts deleteOldScriptsTask =
-          new DeleteOldScripts("DeleteOldScripts", mainDataSource, properties);
+          new DeleteOldScripts("DeleteOldScripts", dbi, properties);
       final Date scheduledToRunDOS =
           quartzWrapper.scheduleCron(
               deleteOldScriptsTask.getTaskName(),
@@ -110,7 +118,7 @@ public class CoreServlet {
     if (ACSVersionCheck.heartbeatSupported) {
       // Run every 5 minute - moderate task
       final HeartbeatDetection heartbeatDetectionTask =
-          new HeartbeatDetection("HeartbeatDetection", mainDataSource);
+          new HeartbeatDetection("HeartbeatDetection", dbi);
       final Date scheduledToRun =
           quartzWrapper.scheduleCron(
               heartbeatDetectionTask.getTaskName(),
@@ -121,11 +129,10 @@ public class CoreServlet {
     }
   }
 
-  private void bootHeavyTasks() throws SQLException, SchedulerException {
+  private void bootHeavyTasks(DBI dbi) throws SchedulerException {
     // Run at 00 every hour - heavy task
     final ReportGenerator reportGeneratorHourlyTask =
-        new ReportGenerator(
-            "ReportGeneratorHourly", ScheduleType.HOURLY, mainDataSource, properties);
+        new ReportGenerator("ReportGeneratorHourly", ScheduleType.HOURLY, dbi, properties);
     final Date scheduledToRunRGH =
         quartzWrapper.scheduleCron(
             reportGeneratorHourlyTask.getTaskName(),
@@ -136,7 +143,7 @@ public class CoreServlet {
 
     // Run at 0015 every night - very heavy task
     final ReportGenerator reportGeneratorDailyTask =
-        new ReportGenerator("ReportGeneratorDaily", ScheduleType.DAILY, mainDataSource, properties);
+        new ReportGenerator("ReportGeneratorDaily", ScheduleType.DAILY, dbi, properties);
     final Date scheduledToRunRPD =
         quartzWrapper.scheduleCron(
             reportGeneratorDailyTask.getTaskName(),
@@ -147,7 +154,7 @@ public class CoreServlet {
 
     // Run at 0500 every night - very heavy task
     final DeleteOldSyslog deleteOldSyslogTask =
-        new DeleteOldSyslog("DeleteOldSyslogEntries", mainDataSource, properties);
+        new DeleteOldSyslog("DeleteOldSyslogEntries", dbi, properties);
     final Date scheduledToRunDOS =
         quartzWrapper.scheduleCron(
             deleteOldSyslogTask.getTaskName(),
