@@ -89,7 +89,8 @@ lazy val common = (project in file("common"))
       "commons-httpclient" % "commons-httpclient" % "3.1",
       "ch.qos.logback" % "logback-classic" % "1.2.3",
       "com.sparkjava" % "spark-core" % "2.8.0",
-      "com.typesafe" % "config" % "1.3.3"
+      "com.typesafe" % "config" % "1.3.3",
+      "org.quartz-scheduler" % "quartz" % "2.3.0"
     )
   )
 
