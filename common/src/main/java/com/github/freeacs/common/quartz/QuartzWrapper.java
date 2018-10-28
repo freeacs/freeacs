@@ -3,7 +3,6 @@ package com.github.freeacs.common.quartz;
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 
 import java.util.Date;
-import java.util.function.Supplier;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
@@ -27,7 +26,7 @@ public class QuartzWrapper {
       final String jobName,
       final String jobGroup,
       final String cronExpression,
-      final Supplier<Void> job)
+      final QuartzJob.Job job)
       throws SchedulerException {
     final JobDataMap jobDataMap = new JobDataMap();
     jobDataMap.put("job", job);

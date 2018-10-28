@@ -59,10 +59,7 @@ public class CoreServlet {
             deleteOldJobsTask.getTaskName(),
             "Core Light",
             "0 30 5 ? * * *",
-            () -> {
-              deleteOldJobsTask.run();
-              return null;
-            });
+            deleteOldJobsTask::run);
     log.info("Delete Old Jobs scheduled to run at " + scheduledToRunDOJ.toString());
 
     // Run every second - light task
@@ -73,10 +70,7 @@ public class CoreServlet {
             jobRuleEnforcerTaks.getTaskName(),
             "Core Light",
             "* * * * * ? *",
-            () -> {
-              jobRuleEnforcerTaks.run();
-              return null;
-            });
+            jobRuleEnforcerTaks::run);
     log.info("Job Rule Enforcer scheduled to run at " + scheduledToRunJRE.toString());
 
     if (ACSVersionCheck.triggerSupported) {
@@ -88,10 +82,7 @@ public class CoreServlet {
               triggerReleaserTask.getTaskName(),
               "Core Light",
               "30 * * ? * * *",
-              () -> {
-                triggerReleaserTask.run();
-                return null;
-              });
+              triggerReleaserTask::run);
       log.info("Trigger releaser scheduled to run at " + scheduledToRun.toString());
     }
     if (ACSVersionCheck.scriptExecutionSupported) {
@@ -103,10 +94,7 @@ public class CoreServlet {
               scriptExecutorTask.getTaskName(),
               "Core Light",
               "* * * * * ? *",
-              () -> {
-                scriptExecutorTask.run();
-                return null;
-              });
+              scriptExecutorTask::run);
       log.info("Script Executor scheduled to run at " + scheduledToRunSE.toString());
       // Run at 45 every hour - light task
       final DeleteOldScripts deleteOldScriptsTask =
@@ -116,10 +104,7 @@ public class CoreServlet {
               deleteOldScriptsTask.getTaskName(),
               "Core Light",
               "0 45 * ? * * *",
-              () -> {
-                deleteOldScriptsTask.run();
-                return null;
-              });
+              deleteOldScriptsTask::run);
       log.info("Delete Old Scripts scheduled to run at " + scheduledToRunDOS.toString());
     }
     if (ACSVersionCheck.heartbeatSupported) {
@@ -131,10 +116,7 @@ public class CoreServlet {
               heartbeatDetectionTask.getTaskName(),
               "Core Light",
               "0 0/5 * ? * * *",
-              () -> {
-                heartbeatDetectionTask.run();
-                return null;
-              });
+              heartbeatDetectionTask::run);
       log.info("Heartbeat Detection scheduled to run at " + scheduledToRun.toString());
     }
   }
@@ -149,10 +131,7 @@ public class CoreServlet {
             reportGeneratorHourlyTask.getTaskName(),
             "Core Heavy",
             "0 0 * ? * * *",
-            () -> {
-              reportGeneratorHourlyTask.run();
-              return null;
-            });
+            reportGeneratorHourlyTask::run);
     log.info("Report Generator Hourly scheduled to run at " + scheduledToRunRGH.toString());
 
     // Run at 0015 every night - very heavy task
@@ -163,10 +142,7 @@ public class CoreServlet {
             reportGeneratorDailyTask.getTaskName(),
             "Core Heavy",
             "0 15 0 ? * * *",
-            () -> {
-              reportGeneratorDailyTask.run();
-              return null;
-            });
+            reportGeneratorDailyTask::run);
     log.info("Report Generator Daily scheduled to run at " + scheduledToRunRPD.toString());
 
     // Run at 0500 every night - very heavy task
@@ -177,10 +153,7 @@ public class CoreServlet {
             deleteOldSyslogTask.getTaskName(),
             "Core Heavy",
             "0 0 5 ? * * *",
-            () -> {
-              deleteOldSyslogTask.run();
-              return null;
-            });
+            deleteOldSyslogTask::run);
     log.info("Delete Old Syslog scheduled to run at " + scheduledToRunDOS.toString());
   }
 
