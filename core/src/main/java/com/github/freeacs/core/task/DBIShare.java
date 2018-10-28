@@ -3,11 +3,7 @@ package com.github.freeacs.core.task;
 import com.github.freeacs.common.scheduler.Task;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.dbi.Identity;
 import com.github.freeacs.dbi.Syslog;
-import com.github.freeacs.dbi.SyslogConstants;
-import com.github.freeacs.dbi.Users;
-import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 
@@ -18,13 +14,7 @@ import org.slf4j.Logger;
  * @author Morten
  */
 public abstract class DBIShare implements Task {
-  private final DataSource mainDataSource;
-  private final DataSource syslogDataSource;
-
-  private static Users users;
-  private static DBI dbi;
-  private static Syslog syslog;
-  private static Identity id;
+  private DBI dbi;
 
   private String taskName;
   private long launchTms;
@@ -32,23 +22,9 @@ public abstract class DBIShare implements Task {
 
   private Throwable throwable;
 
-  public DBIShare(String taskName, DataSource mainDataSource, DataSource syslogDataSource)
-      throws SQLException {
-    this.mainDataSource = mainDataSource;
-    this.syslogDataSource = syslogDataSource;
+  public DBIShare(String taskName, DBI dbi) {
     this.taskName = taskName;
-    if (users == null) {
-      users = new Users(this.mainDataSource);
-    }
-    if (id == null) {
-      id =
-          new Identity(
-              SyslogConstants.FACILITY_CORE, "latest", users.getUnprotected(Users.USER_ADMIN));
-    }
-    if (dbi == null) {
-      syslog = new Syslog(this.syslogDataSource, id);
-      dbi = new DBI(Integer.MAX_VALUE, this.mainDataSource, syslog);
-    }
+    this.dbi = dbi;
   }
 
   protected ACS getLatestACS() {
@@ -56,11 +32,11 @@ public abstract class DBIShare implements Task {
   }
 
   protected DataSource getSyslogDataSource() {
-    return syslogDataSource;
+    return dbi.getAcs().getDataSource();
   }
 
   protected DataSource getMainDataSource() {
-    return mainDataSource;
+    return dbi.getAcs().getDataSource();
   }
 
   protected long getLaunchTms() {
@@ -68,7 +44,7 @@ public abstract class DBIShare implements Task {
   }
 
   protected Syslog getSyslog() {
-    return syslog;
+    return dbi.getAcs().getSyslog();
   }
 
   public void run() {

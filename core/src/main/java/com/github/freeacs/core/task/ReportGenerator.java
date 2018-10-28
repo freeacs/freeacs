@@ -2,14 +2,7 @@ package com.github.freeacs.core.task;
 
 import com.github.freeacs.common.scheduler.ScheduleType;
 import com.github.freeacs.core.Properties;
-import com.github.freeacs.dbi.ACS;
-import com.github.freeacs.dbi.ACSUnit;
-import com.github.freeacs.dbi.DynamicStatement;
-import com.github.freeacs.dbi.Group;
-import com.github.freeacs.dbi.Job;
-import com.github.freeacs.dbi.Profile;
-import com.github.freeacs.dbi.Unit;
-import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.report.Key;
 import com.github.freeacs.dbi.report.PeriodType;
 import com.github.freeacs.dbi.report.RecordGroup;
@@ -55,9 +48,8 @@ public class ReportGenerator extends DBIOwner {
   private TmsConverter converter = new TmsConverter();
 
   public ReportGenerator(
-      String taskName, ScheduleType scheduleType, DataSource mainDataSource, Properties properties)
-      throws SQLException {
-    super(taskName, mainDataSource, mainDataSource);
+      String taskName, ScheduleType scheduleType, DBI dbi, Properties properties) {
+    super(taskName, dbi);
     this.scheduleType = scheduleType;
     this.properties = properties;
   }

@@ -4,14 +4,7 @@ import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.common.util.CacheValue;
 import com.github.freeacs.common.util.TimestampMap;
 import com.github.freeacs.core.util.SyslogMessageMapContainer;
-import com.github.freeacs.dbi.ACS;
-import com.github.freeacs.dbi.ACSUnit;
-import com.github.freeacs.dbi.DynamicStatement;
-import com.github.freeacs.dbi.Group;
-import com.github.freeacs.dbi.Heartbeat;
-import com.github.freeacs.dbi.SyslogConstants;
-import com.github.freeacs.dbi.Unit;
-import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.util.SQLUtil;
 import com.github.freeacs.dbi.util.SyslogClient;
 import java.io.IOException;
@@ -27,7 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,8 +38,8 @@ public class HeartbeatDetection extends DBIShare {
   private Cache sentMessages = new Cache();
   private static Logger logger = LoggerFactory.getLogger(HeartbeatDetection.class);
 
-  public HeartbeatDetection(String taskName, DataSource mainDataSource) throws SQLException {
-    super(taskName, mainDataSource, mainDataSource);
+  public HeartbeatDetection(String taskName, DBI dbi) {
+    super(taskName, dbi);
   }
 
   @Override

@@ -5,9 +5,6 @@ import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Identity;
 import com.github.freeacs.dbi.Syslog;
-import com.github.freeacs.dbi.SyslogConstants;
-import com.github.freeacs.dbi.Users;
-import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 
@@ -19,28 +16,17 @@ import org.slf4j.Logger;
  * @author Morten
  */
 public abstract class DBIOwner implements Task {
-  private final DataSource mainDataSource;
-  private final DataSource syslogDataSource;
 
   private DBI dbi;
-  private Syslog syslog;
 
   private String taskName;
   private boolean running;
 
   private Throwable throwable;
 
-  public DBIOwner(String taskName, DataSource mainDataSource, DataSource syslogDataSource)
-      throws SQLException {
-    this.mainDataSource = mainDataSource;
-    this.syslogDataSource = syslogDataSource;
+  public DBIOwner(String taskName, DBI dbi) {
     this.taskName = taskName;
-    Users users = new Users(mainDataSource);
-    Identity id =
-        new Identity(
-            SyslogConstants.FACILITY_CORE, "latest", users.getUnprotected(Users.USER_ADMIN));
-    syslog = new Syslog(syslogDataSource, id);
-    dbi = new DBI(Integer.MAX_VALUE, mainDataSource, syslog);
+    this.dbi = dbi;
   }
 
   protected ACS getLatestACS() {
@@ -48,19 +34,19 @@ public abstract class DBIOwner implements Task {
   }
 
   protected DataSource getSyslogDataSource() {
-    return syslogDataSource;
+    return dbi.getAcs().getDataSource();
   }
 
   protected Identity getIdentity() {
-    return syslog.getIdentity();
+    return dbi.getAcs().getSyslog().getIdentity();
   }
 
   protected DataSource getMainDataSource() {
-    return mainDataSource;
+    return dbi.getAcs().getDataSource();
   }
 
   protected Syslog getSyslog() {
-    return syslog;
+    return dbi.getAcs().getSyslog();
   }
 
   public void run() {

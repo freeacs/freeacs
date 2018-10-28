@@ -1,26 +1,19 @@
 package com.github.freeacs.core.task;
 
 import com.github.freeacs.core.Properties;
-import com.github.freeacs.dbi.ACS;
-import com.github.freeacs.dbi.Job;
-import com.github.freeacs.dbi.JobStatus;
-import com.github.freeacs.dbi.UnitJobs;
-import com.github.freeacs.dbi.Unittype;
-import java.sql.SQLException;
+import com.github.freeacs.dbi.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DeleteOldJobs extends DBIOwner {
   private final Properties properties;
 
-  public DeleteOldJobs(String taskName, DataSource mainDataSource, Properties properties)
-      throws SQLException {
-    super(taskName, mainDataSource, mainDataSource);
+  public DeleteOldJobs(String taskName, DBI dbi, Properties properties) {
+    super(taskName, dbi);
     this.properties = properties;
   }
 
