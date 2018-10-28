@@ -55,10 +55,7 @@ public class ReportGenerator extends DBIOwner {
   private TmsConverter converter = new TmsConverter();
 
   public ReportGenerator(
-      String taskName,
-      ScheduleType scheduleType,
-      DataSource mainDataSource,
-      Properties properties)
+      String taskName, ScheduleType scheduleType, DataSource mainDataSource, Properties properties)
       throws SQLException {
     super(taskName, mainDataSource, mainDataSource);
     this.scheduleType = scheduleType;

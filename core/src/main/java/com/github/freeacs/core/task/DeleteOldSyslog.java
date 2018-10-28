@@ -18,10 +18,7 @@ public class DeleteOldSyslog extends DBIShare {
 
   private static Logger logger = LoggerFactory.getLogger(DeleteOldSyslog.class);
 
-  public DeleteOldSyslog(
-      String taskName,
-      DataSource mainDataSource,
-      Properties properties)
+  public DeleteOldSyslog(String taskName, DataSource mainDataSource, Properties properties)
       throws SQLException {
     super(taskName, mainDataSource, mainDataSource);
     this.properties = properties;

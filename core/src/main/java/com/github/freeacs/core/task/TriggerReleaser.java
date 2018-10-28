@@ -28,8 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TriggerReleaser extends DBIShare {
-  public TriggerReleaser(String taskName, DataSource mainDataSource)
-      throws SQLException {
+  public TriggerReleaser(String taskName, DataSource mainDataSource) throws SQLException {
     super(taskName, mainDataSource, mainDataSource);
   }
 

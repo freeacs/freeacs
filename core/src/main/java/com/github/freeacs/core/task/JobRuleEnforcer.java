@@ -173,10 +173,7 @@ public class JobRuleEnforcer extends DBIOwner {
   private UnitJobs unitJobs;
   private Map<Integer, JobControl> jobControlMap = new HashMap<>();
 
-  public JobRuleEnforcer(
-      String taskName,
-      DataSource mainDataSource,
-      Properties properties)
+  public JobRuleEnforcer(String taskName, DataSource mainDataSource, Properties properties)
       throws SQLException {
     super(taskName, mainDataSource, mainDataSource);
     this.properties = properties;

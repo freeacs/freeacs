@@ -103,10 +103,7 @@ public class ScriptExecutor extends DBIShare {
     }
   }
 
-  public ScriptExecutor(
-      String taskName,
-      DataSource mainDataSource,
-      Properties properties)
+  public ScriptExecutor(String taskName, DataSource mainDataSource, Properties properties)
       throws SQLException {
     super(taskName, mainDataSource, mainDataSource);
     this.properties = properties;

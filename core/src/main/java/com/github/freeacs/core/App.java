@@ -6,7 +6,6 @@ import com.github.freeacs.common.hikari.HikariDataSourceHelper;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import javax.sql.DataSource;
-
 import org.quartz.SchedulerException;
 import spark.Spark;
 
@@ -24,11 +23,11 @@ public class App {
             new Thread(
                 () -> {
                   System.out.println("Shutdown Hook is running !");
-                    try {
-                        coreServlet.destroy();
-                    } catch (SchedulerException e) {
-                        e.printStackTrace();
-                    }
+                  try {
+                    coreServlet.destroy();
+                  } catch (SchedulerException e) {
+                    e.printStackTrace();
+                  }
                 }));
   }
 }
