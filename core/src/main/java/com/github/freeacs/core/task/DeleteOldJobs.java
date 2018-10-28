@@ -18,13 +18,9 @@ import org.slf4j.LoggerFactory;
 public class DeleteOldJobs extends DBIOwner {
   private final Properties properties;
 
-  public DeleteOldJobs(
-      String taskName,
-      DataSource mainDataSource,
-      DataSource syslogDataSource,
-      Properties properties)
+  public DeleteOldJobs(String taskName, DataSource mainDataSource, Properties properties)
       throws SQLException {
-    super(taskName, mainDataSource, syslogDataSource);
+    super(taskName, mainDataSource, mainDataSource);
     this.properties = properties;
   }
 

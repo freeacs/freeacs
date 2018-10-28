@@ -11,13 +11,9 @@ import org.slf4j.LoggerFactory;
 public class DeleteOldScripts extends DBIShare {
   private final Properties properties;
 
-  public DeleteOldScripts(
-      String taskName,
-      DataSource mainDataSource,
-      DataSource syslogDataSource,
-      Properties properties)
+  public DeleteOldScripts(String taskName, DataSource mainDataSource, Properties properties)
       throws SQLException {
-    super(taskName, mainDataSource, syslogDataSource);
+    super(taskName, mainDataSource, mainDataSource);
     this.properties = properties;
   }
 
