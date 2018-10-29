@@ -31,10 +31,6 @@ public class DBAccess {
     this.syslogDataSource = syslogDataSource;
   }
 
-  public int getFacility() {
-    return facility;
-  }
-
   private static void error(String message, Throwable t) {
     Log.error(DBAccess.class, message, t);
   }

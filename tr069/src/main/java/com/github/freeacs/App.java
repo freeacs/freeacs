@@ -5,6 +5,7 @@ import static com.github.freeacs.dbi.SyslogConstants.FACILITY_TR069;
 import static spark.Spark.get;
 import static spark.Spark.post;
 
+import com.github.freeacs.base.BaseCache;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.http.FileServlet;
@@ -12,6 +13,7 @@ import com.github.freeacs.base.http.OKServlet;
 import com.github.freeacs.common.hikari.HikariDataSourceHelper;
 import com.github.freeacs.common.http.SimpleResponseWrapper;
 import com.github.freeacs.common.jetty.JettyFactory;
+import com.github.freeacs.common.quartz.QuartzWrapper;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.tr069.Properties;
@@ -23,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
+import org.quartz.SchedulerException;
 import spark.Request;
 import spark.Route;
 import spark.Spark;
@@ -32,10 +35,36 @@ public class App {
   private static final List<String> ALLOWED_CONTENT_TYPES =
       Arrays.asList("application/soap+xml", "application/xml", "text/xml", "text/html", "");
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws SchedulerException {
     Config config = ConfigFactory.load();
     SyslogClient.SYSLOG_SERVER_HOST = config.getString("syslog.server.host");
     Spark.port(config.getInt("server.port"));
+    setupThreadPool(config);
+    boolean httpOnly = config.getBoolean("server.servlet.session.cookie.http-only");
+    int maxHttpPostSize = getInt(config, "server.jetty.max-http-post-size");
+    int maxFormKeys = getInt(config, "server.jetty.max-form-keys");
+    EmbeddedServers.add(
+        EmbeddedServers.Identifiers.JETTY,
+        new JettyFactory(httpOnly, maxHttpPostSize, maxFormKeys));
+    DataSource mainDs = HikariDataSourceHelper.dataSource(config.getConfig("main"));
+    QuartzWrapper quartzWrapper = new QuartzWrapper();
+    quartzWrapper.init();
+    routes(mainDs, new Properties(config), quartzWrapper);
+    Runtime.getRuntime()
+        .addShutdownHook(
+            new Thread(
+                () -> {
+                  System.out.println("Shutdown Hook is running !");
+                  Sleep.terminateApplication();
+                  try {
+                    quartzWrapper.shutdown();
+                  } catch (SchedulerException e) {
+                    e.printStackTrace();
+                  }
+                }));
+  }
+
+  private static void setupThreadPool(final Config config) {
     /* THREADPOOL BEGIN */
     // Possible to add a new property server.jetty.threadpool.type? could be standard and custom.
     // My thought is that custom thread pool is ExecutorThreadPool, while standard is .. well,
@@ -45,32 +74,18 @@ public class App {
     int timeOutMillis = getInt(config, "server.jetty.threadpool.timeOutMillis");
     Spark.threadPool(maxThreads, minThreads, timeOutMillis);
     /* THREADPOOL END */
-    boolean httpOnly = config.getBoolean("server.servlet.session.cookie.http-only");
-    int maxHttpPostSize = getInt(config, "server.jetty.max-http-post-size");
-    int maxFormKeys = getInt(config, "server.jetty.max-form-keys");
-    EmbeddedServers.add(
-        EmbeddedServers.Identifiers.JETTY,
-        new JettyFactory(httpOnly, maxHttpPostSize, maxFormKeys));
-    DataSource mainDs = HikariDataSourceHelper.dataSource(config.getConfig("main"));
-    routes(mainDs, new Properties(config));
-    Runtime.getRuntime()
-        .addShutdownHook(
-            new Thread(
-                () -> {
-                  System.out.println("Shutdown Hook is running !");
-                  Sleep.terminateApplication();
-                }));
   }
 
   private static int getInt(Config config, String s) {
     return config.hasPath(s) ? config.getInt(s) : -1;
   }
 
-  public static void routes(DataSource mainDs, Properties properties) {
+  public static void routes(DataSource mainDs, Properties properties, QuartzWrapper quartzWrapper)
+      throws SchedulerException {
     String ctxPath = properties.getContextPath();
     DBAccess dbAccess = new DBAccess(FACILITY_TR069, "latest", mainDs, mainDs);
     TR069Method tr069Method = new TR069Method(properties);
-    Provisioning provisioning = new Provisioning(dbAccess, tr069Method, properties);
+    Provisioning provisioning = new Provisioning(dbAccess, tr069Method, properties, quartzWrapper);
     provisioning.init();
     FileServlet fileServlet = new FileServlet(dbAccess, ctxPath + "/file/", properties);
     OKServlet okServlet = new OKServlet(dbAccess);
@@ -83,6 +98,10 @@ public class App {
 
   private static Route processHealth(OKServlet okServlet) {
     return (req, res) -> {
+      if (req.queryParams("clearCache") != null) {
+        BaseCache.clearCache();
+        Log.info(App.class, "Cleared base cache");
+      }
       SimpleResponseWrapper response = new SimpleResponseWrapper(200, "text/html");
       return process(okServlet::service, req, res, response);
     };
@@ -99,7 +118,7 @@ public class App {
     return (req, res) -> {
       if (ALLOWED_CONTENT_TYPES.contains(getContentType(req))) {
         SimpleResponseWrapper response = new SimpleResponseWrapper(200, "text/xml");
-        return process(provisioning::service, req, res, response);
+        return process(provisioning::doPost, req, res, response);
       }
       Log.warn(App.class, "Got unexpected content type: " + req.contentType());
       res.status(415);
