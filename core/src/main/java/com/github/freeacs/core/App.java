@@ -16,7 +16,9 @@ public class App {
     Spark.port(config.getInt("server.port"));
     DataSource mainDs = HikariDataSourceHelper.dataSource(config.getConfig("main"));
     Properties properties = new Properties(config);
-    CoreServlet coreServlet = new CoreServlet(mainDs, properties, new QuartzWrapper());
+    QuartzWrapper quartzWrapper = new QuartzWrapper();
+    quartzWrapper.init();
+    CoreServlet coreServlet = new CoreServlet(mainDs, properties, quartzWrapper);
     coreServlet.init();
     get(properties.getContextPath() + "/ok", (req, res) -> coreServlet.health());
     Runtime.getRuntime()
@@ -26,6 +28,7 @@ public class App {
                   System.out.println("Shutdown Hook is running !");
                   try {
                     coreServlet.destroy();
+                    quartzWrapper.shutdown();
                   } catch (SchedulerException e) {
                     e.printStackTrace();
                   }

@@ -32,21 +32,20 @@ public class CoreServlet {
   private final Properties properties;
   private final QuartzWrapper quartzWrapper;
 
-  public CoreServlet(DataSource mainDataSource, Properties properties, QuartzWrapper quartzWrapper) {
+  public CoreServlet(
+      DataSource mainDataSource, Properties properties, QuartzWrapper quartzWrapper) {
     this.mainDataSource = mainDataSource;
     this.properties = properties;
     this.quartzWrapper = quartzWrapper;
   }
 
-  public void destroy() throws SchedulerException {
-    quartzWrapper.shutdown();
+  public void destroy() {
     log.info("Server shutdown...");
     Sleep.terminateApplication();
   }
 
   public void init() {
     try {
-      quartzWrapper.init();
       log.info("Server starts...");
       ACSVersionCheck.versionCheck(mainDataSource);
       DBI dbi = getDbi();

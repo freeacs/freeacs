@@ -6,7 +6,6 @@ import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.http.Authenticator;
 import com.github.freeacs.base.http.ThreadCounter;
 import com.github.freeacs.common.quartz.QuartzWrapper;
-import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.DBI;
@@ -22,12 +21,9 @@ import com.github.freeacs.tr069.methods.DecisionMaker;
 import com.github.freeacs.tr069.methods.HTTPRequestProcessor;
 import com.github.freeacs.tr069.methods.HTTPResponseCreator;
 import com.github.freeacs.tr069.methods.TR069Method;
-import org.quartz.SchedulerException;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -37,7 +33,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author morten
  */
-public class Provisioning extends HttpServlet {
+public class Provisioning {
   private static final long serialVersionUID = -3020450686422484143L;
 
   private static ScriptExecutions executions;
@@ -47,7 +43,11 @@ public class Provisioning extends HttpServlet {
 
   private final QuartzWrapper quartzWrapper;
 
-  public Provisioning(DBAccess dbAccess, TR069Method tr069Method, Properties properties, QuartzWrapper quartzWrapper) {
+  public Provisioning(
+      DBAccess dbAccess,
+      TR069Method tr069Method,
+      Properties properties,
+      QuartzWrapper quartzWrapper) {
     this.dbAccess = dbAccess;
     this.tr069Method = tr069Method;
     this.properties = properties;
@@ -58,19 +58,30 @@ public class Provisioning extends HttpServlet {
     Log.notice(Provisioning.class, "Server starts...");
     try {
       DBI dbi = dbAccess.getDBI();
-      quartzWrapper.init();
       // every 10 sec
       final StabilityTask stabilityTask = new StabilityTask("StabilityLogger");
-      quartzWrapper.scheduleCron(stabilityTask.getTaskName(), "Background", "0/10 * * ? * * *", stabilityTask::run);
+      quartzWrapper.scheduleCron(
+          stabilityTask.getTaskName(), "Background", "0/10 * * ? * * *", stabilityTask::run);
       // every 5 sec
-      final MessageListenerTask messageListenerTask = new MessageListenerTask("MessageListener", dbi);
-      quartzWrapper.scheduleCron(messageListenerTask.getTaskName(), "Background", "0/5 * * ? * * *", messageListenerTask::run);
+      final MessageListenerTask messageListenerTask =
+          new MessageListenerTask("MessageListener", dbi);
+      quartzWrapper.scheduleCron(
+          messageListenerTask.getTaskName(),
+          "Background",
+          "0/5 * * ? * * *",
+          messageListenerTask::run);
       // every 1 second
       final ScheduledKickTask scheduledKickTask = new ScheduledKickTask("ScheduledKick", dbi);
-      quartzWrapper.scheduleCron(scheduledKickTask.getTaskName(), "Background", "* * * ? * * *", scheduledKickTask::run);
+      quartzWrapper.scheduleCron(
+          scheduledKickTask.getTaskName(), "Background", "* * * ? * * *", scheduledKickTask::run);
       // every 5 minute
-      final ActiveDeviceDetectionTask activeDeviceDetectionTask = new ActiveDeviceDetectionTask("ActiveDeviceDetection TR069", dbi);
-      quartzWrapper.scheduleCron(activeDeviceDetectionTask.getTaskName(), "Background", "0 0/5 * * * ?", activeDeviceDetectionTask::run);
+      final ActiveDeviceDetectionTask activeDeviceDetectionTask =
+          new ActiveDeviceDetectionTask("ActiveDeviceDetection TR069", dbi);
+      quartzWrapper.scheduleCron(
+          activeDeviceDetectionTask.getTaskName(),
+          "Background",
+          "0 0/5 * * * ?",
+          activeDeviceDetectionTask::run);
     } catch (Throwable t) {
       Log.fatal(Provisioning.class, "Couldn't start BackgroundProcesses correctly ", t);
     }
@@ -81,15 +92,6 @@ public class Provisioning extends HttpServlet {
           Provisioning.class,
           "Couldn't initialize ScriptExecutions - not possible to run SHELL-jobs",
           t);
-    }
-  }
-
-  /**
-   * DoGet prints some information about the server, focus on database connections and memory usage.
-   */
-  protected void doGet(HttpServletRequest req, HttpServletResponse res) {
-    if (req.getParameter("clearCache") != null) {
-      BaseCache.clearCache();
     }
   }
 
@@ -140,7 +142,7 @@ public class Provisioning extends HttpServlet {
    * <p>In special cases the server will kick the device to "come back" and continue testing a new
    * test case.
    */
-  protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
+  public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
     HTTPReqResData reqRes = null;
     try {
       // Create the main object which contains all objects concerning the entire
@@ -258,15 +260,6 @@ public class Provisioning extends HttpServlet {
           t);
       return false;
     }
-  }
-
-  public void destroy() {
-    try {
-      quartzWrapper.shutdown();
-    } catch (SchedulerException e) {
-      e.printStackTrace();
-    }
-    Sleep.terminateApplication();
   }
 
   public static ScriptExecutions getExecutions() {
