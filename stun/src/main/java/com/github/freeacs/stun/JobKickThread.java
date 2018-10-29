@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class JobKickThread implements Runnable {
-  private static Logger log = LoggerFactory.getLogger("KickJob");
+  private static Logger log = LoggerFactory.getLogger(JobKickThread.class);
   private final Properties properties;
   private DBI dbi;
   private DataSource xapsCp;
@@ -236,7 +236,6 @@ public class JobKickThread implements Runnable {
   }
 
   public void run() {
-    Thread.currentThread().setName("JobKickSpawner");
     try {
       Sleep sleep = new Sleep(1000, 1000, true);
       do {

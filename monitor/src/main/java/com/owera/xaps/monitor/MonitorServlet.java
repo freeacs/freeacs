@@ -1,8 +1,6 @@
 package com.owera.xaps.monitor;
 
-import com.github.freeacs.common.scheduler.Schedule;
-import com.github.freeacs.common.scheduler.ScheduleType;
-import com.github.freeacs.common.scheduler.Scheduler;
+import com.github.freeacs.common.quartz.QuartzWrapper;
 import com.github.freeacs.common.ssl.EasySSLProtocolSocketFactory;
 import com.github.freeacs.common.util.Sleep;
 import com.owera.xaps.monitor.task.ModuleMonitorTask;
@@ -30,13 +28,15 @@ public class MonitorServlet extends HttpServlet {
   private static final long serialVersionUID = 3051630277238752841L;
 
   private final Properties properties;
+  private final QuartzWrapper quartzWrapper;
 
   private Configuration config;
 
   private static Logger log = LoggerFactory.getLogger(MonitorServlet.class);
 
-  public MonitorServlet(Properties properties) {
+  public MonitorServlet(Properties properties, QuartzWrapper quartzWrapper) {
     this.properties = properties;
+    this.quartzWrapper = quartzWrapper;
     ProtocolSocketFactory socketFactory = new EasySSLProtocolSocketFactory();
     Protocol https = new Protocol("https", socketFactory, 443);
     Protocol.registerProtocol("https", https);
@@ -46,21 +46,11 @@ public class MonitorServlet extends HttpServlet {
   public void init(ServletConfig serlvetConfig) throws ServletException {
     try {
       config = new Freemarker().initFreemarker();
-
-      Scheduler scheduler = new Scheduler();
-      Thread t = new Thread(scheduler);
-      t.setName("Monitor (Scheduler)");
-      t.start();
-      log.info("Scheduler started");
-
       // Run at every 5 minute - light task - run module monitoring (check OK-servlet response for
       // all modules)
-      scheduler.registerTask(
-          new Schedule(
-              60000,
-              false,
-              ScheduleType.INTERVAL,
-              new ModuleMonitorTask("ModuleMonitorTask", properties)));
+      ModuleMonitorTask moduleMonitorTask = new ModuleMonitorTask("ModuleMonitorTask", properties);
+      quartzWrapper.scheduleCron(
+          moduleMonitorTask.getTaskName(), "Syslog", "0 * * ? * * *", moduleMonitorTask::run);
     } catch (Exception ex) {
       log.error("Error while initializing Monitor: " + ex.getLocalizedMessage(), ex);
       throw new ServletException(ex);

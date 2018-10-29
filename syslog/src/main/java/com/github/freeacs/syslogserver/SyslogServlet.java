@@ -1,10 +1,9 @@
 package com.github.freeacs.syslogserver;
 
-import com.github.freeacs.common.scheduler.Schedule;
-import com.github.freeacs.common.scheduler.ScheduleType;
-import com.github.freeacs.common.scheduler.Scheduler;
+import com.github.freeacs.common.quartz.QuartzWrapper;
 import com.github.freeacs.common.util.Sleep;
 import javax.sql.DataSource;
+import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,10 +13,13 @@ public class SyslogServlet {
   private static Logger logger = LoggerFactory.getLogger(SyslogServlet.class);
   private final DataSource xapsDataSource;
   private final Properties properties;
+  private final QuartzWrapper quartzWrapper;
 
-  public SyslogServlet(DataSource xapsDataSource, Properties properties) {
+  public SyslogServlet(
+      DataSource xapsDataSource, Properties properties, QuartzWrapper quartzWrapper) {
     this.xapsDataSource = xapsDataSource;
     this.properties = properties;
+    this.quartzWrapper = quartzWrapper;
   }
 
   public static void destroy() {
@@ -25,7 +27,7 @@ public class SyslogServlet {
     Sleep.terminateApplication();
   }
 
-  public void init() {
+  public void init() throws SchedulerException {
     if (server == null) {
       server = new SyslogServer(xapsDataSource, properties);
     }
@@ -36,20 +38,15 @@ public class SyslogServlet {
       serverThread.start();
     }
 
-    Scheduler scheduler = new Scheduler();
-
-    scheduler.registerTask(
-        new Schedule(
-            60000, true, ScheduleType.INTERVAL, new SummaryLogger("SummaryLogger", properties)));
-    scheduler.registerTask(
-        new Schedule(60000, true, ScheduleType.INTERVAL, new StateLogger("StateLogger")));
-    scheduler.registerTask(
-        new Schedule(
-            60000, false, ScheduleType.INTERVAL, new DiskSpaceCheck("DiskSpaceCheck", properties)));
-
-    Thread t = new Thread(scheduler);
-    t.setName("Syslog (Scheduler)");
-    t.start();
+    SummaryLogger summaryLoggerTask = new SummaryLogger("SummaryLogger", properties);
+    quartzWrapper.scheduleCron(
+        summaryLoggerTask.getTaskName(), "Syslog", "0 * * ? * * *", summaryLoggerTask::run);
+    StateLogger stateLogger = new StateLogger("StateLogger");
+    quartzWrapper.scheduleCron(
+        stateLogger.getTaskName(), "Syslog", "15 * * ? * * *", stateLogger::run);
+    DiskSpaceCheck diskSpaceCheck = new DiskSpaceCheck("DiskSpaceCheck", properties);
+    quartzWrapper.scheduleCron(
+        diskSpaceCheck.getTaskName(), "Syslog", "30 * * ? * * *", diskSpaceCheck::run);
   }
 
   public String health() {
