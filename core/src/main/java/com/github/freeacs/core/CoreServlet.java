@@ -32,10 +32,10 @@ public class CoreServlet {
   private final Properties properties;
   private final QuartzWrapper quartzWrapper;
 
-  public CoreServlet(DataSource mainDataSource, Properties properties) throws SchedulerException {
+  public CoreServlet(DataSource mainDataSource, Properties properties, QuartzWrapper quartzWrapper) {
     this.mainDataSource = mainDataSource;
     this.properties = properties;
-    this.quartzWrapper = new QuartzWrapper();
+    this.quartzWrapper = quartzWrapper;
   }
 
   public void destroy() throws SchedulerException {

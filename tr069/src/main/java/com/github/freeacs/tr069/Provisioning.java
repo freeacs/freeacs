@@ -5,18 +5,25 @@ import com.github.freeacs.base.Log;
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.http.Authenticator;
 import com.github.freeacs.base.http.ThreadCounter;
+import com.github.freeacs.common.quartz.QuartzWrapper;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
+import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.ScriptExecutions;
 import com.github.freeacs.dbi.Unit;
-import com.github.freeacs.tr069.background.BackgroundProcesses;
+import com.github.freeacs.tr069.background.ActiveDeviceDetectionTask;
+import com.github.freeacs.tr069.background.MessageListenerTask;
+import com.github.freeacs.tr069.background.ScheduledKickTask;
+import com.github.freeacs.tr069.background.StabilityTask;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.github.freeacs.tr069.methods.DecisionMaker;
 import com.github.freeacs.tr069.methods.HTTPRequestProcessor;
 import com.github.freeacs.tr069.methods.HTTPResponseCreator;
 import com.github.freeacs.tr069.methods.TR069Method;
+import org.quartz.SchedulerException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -38,16 +45,32 @@ public class Provisioning extends HttpServlet {
   private final TR069Method tr069Method;
   private final Properties properties;
 
-  public Provisioning(DBAccess dbAccess, TR069Method tr069Method, Properties properties) {
+  private final QuartzWrapper quartzWrapper;
+
+  public Provisioning(DBAccess dbAccess, TR069Method tr069Method, Properties properties, QuartzWrapper quartzWrapper) {
     this.dbAccess = dbAccess;
     this.tr069Method = tr069Method;
     this.properties = properties;
+    this.quartzWrapper = quartzWrapper;
   }
 
   public void init() {
     Log.notice(Provisioning.class, "Server starts...");
     try {
-      BackgroundProcesses.initiate(dbAccess.getDBI());
+      DBI dbi = dbAccess.getDBI();
+      quartzWrapper.init();
+      // every 10 sec
+      final StabilityTask stabilityTask = new StabilityTask("StabilityLogger");
+      quartzWrapper.scheduleCron(stabilityTask.getTaskName(), "Background", "0/10 * * ? * * *", stabilityTask::run);
+      // every 5 sec
+      final MessageListenerTask messageListenerTask = new MessageListenerTask("MessageListener", dbi);
+      quartzWrapper.scheduleCron(messageListenerTask.getTaskName(), "Background", "0/5 * * ? * * *", messageListenerTask::run);
+      // every 1 second
+      final ScheduledKickTask scheduledKickTask = new ScheduledKickTask("ScheduledKick", dbi);
+      quartzWrapper.scheduleCron(scheduledKickTask.getTaskName(), "Background", "* * * ? * * *", scheduledKickTask::run);
+      // every 5 minute
+      final ActiveDeviceDetectionTask activeDeviceDetectionTask = new ActiveDeviceDetectionTask("ActiveDeviceDetection TR069", dbi);
+      quartzWrapper.scheduleCron(activeDeviceDetectionTask.getTaskName(), "Background", "0 0/5 * * * ?", activeDeviceDetectionTask::run);
     } catch (Throwable t) {
       Log.fatal(Provisioning.class, "Couldn't start BackgroundProcesses correctly ", t);
     }
@@ -238,6 +261,11 @@ public class Provisioning extends HttpServlet {
   }
 
   public void destroy() {
+    try {
+      quartzWrapper.shutdown();
+    } catch (SchedulerException e) {
+      e.printStackTrace();
+    }
     Sleep.terminateApplication();
   }
 

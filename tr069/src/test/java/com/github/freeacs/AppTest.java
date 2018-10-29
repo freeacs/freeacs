@@ -16,6 +16,7 @@ import javax.sql.DataSource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.quartz.SchedulerException;
 import spark.Spark;
 
 public class AppTest {
@@ -134,7 +135,7 @@ public class AppTest {
           + "</SOAP-ENV:Envelope>";
 
   @BeforeClass
-  public static void init() throws SQLException {
+  public static void init() throws SQLException, SchedulerException {
     ds = inMemoryDataSource();
     ValueInsertHelper.insert(ds);
     Config baseConfig = ConfigFactory.load("application.conf");

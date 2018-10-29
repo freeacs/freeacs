@@ -3,6 +3,7 @@ package com.github.freeacs.core;
 import static spark.Spark.get;
 
 import com.github.freeacs.common.hikari.HikariDataSourceHelper;
+import com.github.freeacs.common.quartz.QuartzWrapper;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import javax.sql.DataSource;
@@ -15,7 +16,7 @@ public class App {
     Spark.port(config.getInt("server.port"));
     DataSource mainDs = HikariDataSourceHelper.dataSource(config.getConfig("main"));
     Properties properties = new Properties(config);
-    CoreServlet coreServlet = new CoreServlet(mainDs, properties);
+    CoreServlet coreServlet = new CoreServlet(mainDs, properties, new QuartzWrapper());
     coreServlet.init();
     get(properties.getContextPath() + "/ok", (req, res) -> coreServlet.health());
     Runtime.getRuntime()

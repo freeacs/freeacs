@@ -35,7 +35,7 @@ public class ActiveDeviceDetectionTask extends TaskDefaultImpl {
 
   @Override
   public void runImpl() throws Throwable {
-    Long anHourAgo = System.currentTimeMillis() - 60 * 60000;
+    long anHourAgo = System.currentTimeMillis() - 60 * 60000;
     logger.info(
         "ActiveDeviceDetectionTask: Will check if some devices scheduled to return before "
             + new Date(anHourAgo)
