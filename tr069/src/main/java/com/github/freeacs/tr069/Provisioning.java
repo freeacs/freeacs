@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.quartz.SchedulerException;
 
 /**
  * This is the "main-class" of TR069 Provisioning. It receives the HTTP-request from the CPE and
@@ -58,30 +59,10 @@ public class Provisioning {
     Log.notice(Provisioning.class, "Server starts...");
     try {
       DBI dbi = dbAccess.getDBI();
-      // every 10 sec
-      final StabilityTask stabilityTask = new StabilityTask("StabilityLogger");
-      quartzWrapper.scheduleCron(
-          stabilityTask.getTaskName(), "Background", "0/10 * * ? * * *", stabilityTask::run);
-      // every 5 sec
-      final MessageListenerTask messageListenerTask =
-          new MessageListenerTask("MessageListener", dbi);
-      quartzWrapper.scheduleCron(
-          messageListenerTask.getTaskName(),
-          "Background",
-          "0/5 * * ? * * *",
-          messageListenerTask::run);
-      // every 1 second
-      final ScheduledKickTask scheduledKickTask = new ScheduledKickTask("ScheduledKick", dbi);
-      quartzWrapper.scheduleCron(
-          scheduledKickTask.getTaskName(), "Background", "* * * ? * * *", scheduledKickTask::run);
-      // every 5 minute
-      final ActiveDeviceDetectionTask activeDeviceDetectionTask =
-          new ActiveDeviceDetectionTask("ActiveDeviceDetection TR069", dbi);
-      quartzWrapper.scheduleCron(
-          activeDeviceDetectionTask.getTaskName(),
-          "Background",
-          "0 0/5 * * * ?",
-          activeDeviceDetectionTask::run);
+      scheduleStabilityTask();
+      scheduleMessageListenerTask(dbi);
+      scheduleKickTask(dbi);
+      scheduleActiveDeviceDetectionTask(dbi);
     } catch (Throwable t) {
       Log.fatal(Provisioning.class, "Couldn't start BackgroundProcesses correctly ", t);
     }
@@ -93,6 +74,41 @@ public class Provisioning {
           "Couldn't initialize ScriptExecutions - not possible to run SHELL-jobs",
           t);
     }
+  }
+
+  private void scheduleActiveDeviceDetectionTask(final DBI dbi) throws SchedulerException {
+    // every 5 minute
+    final ActiveDeviceDetectionTask activeDeviceDetectionTask =
+        new ActiveDeviceDetectionTask("ActiveDeviceDetection TR069", dbi);
+    quartzWrapper.scheduleCron(
+        activeDeviceDetectionTask.getTaskName(),
+        "Background",
+        "0 0/5 * * * ?",
+        activeDeviceDetectionTask::run);
+  }
+
+  private void scheduleKickTask(final DBI dbi) throws SchedulerException {
+    // every 1 second
+    final ScheduledKickTask scheduledKickTask = new ScheduledKickTask("ScheduledKick", dbi);
+    quartzWrapper.scheduleCron(
+        scheduledKickTask.getTaskName(), "Background", "* * * ? * * *", scheduledKickTask::run);
+  }
+
+  private void scheduleMessageListenerTask(final DBI dbi) throws SchedulerException {
+    // every 5 sec
+    final MessageListenerTask messageListenerTask = new MessageListenerTask("MessageListener", dbi);
+    quartzWrapper.scheduleCron(
+        messageListenerTask.getTaskName(),
+        "Background",
+        "0/5 * * ? * * *",
+        messageListenerTask::run);
+  }
+
+  private void scheduleStabilityTask() throws SchedulerException {
+    // every 10 sec
+    final StabilityTask stabilityTask = new StabilityTask("StabilityLogger");
+    quartzWrapper.scheduleCron(
+        stabilityTask.getTaskName(), "Background", "0/10 * * ? * * *", stabilityTask::run);
   }
 
   private static void extractRequest(HTTPReqResData reqRes) throws TR069Exception {

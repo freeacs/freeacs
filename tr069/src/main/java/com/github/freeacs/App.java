@@ -39,15 +39,7 @@ public class App {
     Config config = ConfigFactory.load();
     SyslogClient.SYSLOG_SERVER_HOST = config.getString("syslog.server.host");
     Spark.port(config.getInt("server.port"));
-    /* THREADPOOL BEGIN */
-    // Possible to add a new property server.jetty.threadpool.type? could be standard and custom.
-    // My thought is that custom thread pool is ExecutorThreadPool, while standard is .. well,
-    // standard ;) Queued.
-    int maxThreads = getInt(config, "server.jetty.threadpool.maxThreads");
-    int minThreads = getInt(config, "server.jetty.threadpool.minThreads");
-    int timeOutMillis = getInt(config, "server.jetty.threadpool.timeOutMillis");
-    Spark.threadPool(maxThreads, minThreads, timeOutMillis);
-    /* THREADPOOL END */
+    setupThreadPool(config);
     boolean httpOnly = config.getBoolean("server.servlet.session.cookie.http-only");
     int maxHttpPostSize = getInt(config, "server.jetty.max-http-post-size");
     int maxFormKeys = getInt(config, "server.jetty.max-form-keys");
@@ -70,6 +62,18 @@ public class App {
                     e.printStackTrace();
                   }
                 }));
+  }
+
+  private static void setupThreadPool(final Config config) {
+    /* THREADPOOL BEGIN */
+    // Possible to add a new property server.jetty.threadpool.type? could be standard and custom.
+    // My thought is that custom thread pool is ExecutorThreadPool, while standard is .. well,
+    // standard ;) Queued.
+    int maxThreads = getInt(config, "server.jetty.threadpool.maxThreads");
+    int minThreads = getInt(config, "server.jetty.threadpool.minThreads");
+    int timeOutMillis = getInt(config, "server.jetty.threadpool.timeOutMillis");
+    Spark.threadPool(maxThreads, minThreads, timeOutMillis);
+    /* THREADPOOL END */
   }
 
   private static int getInt(Config config, String s) {
