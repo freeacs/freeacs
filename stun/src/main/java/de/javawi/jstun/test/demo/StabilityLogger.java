@@ -10,11 +10,11 @@ public class StabilityLogger extends TaskDefaultImpl {
   }
 
   private static Logger logger = LoggerFactory.getLogger(StabilityLogger.class);
-  private static Logger stability = LoggerFactory.getLogger("Stability");
+  private static Logger stability = LoggerFactory.getLogger(StabilityLogger.class);
   private static int summaryHeaderCount;
 
   @Override
-  public void runImpl() throws Throwable {
+  public void runImpl() {
     Counter counter = StunServer.getCounter().cloneAndReset();
     if (summaryHeaderCount == 0) {
       stability.info(

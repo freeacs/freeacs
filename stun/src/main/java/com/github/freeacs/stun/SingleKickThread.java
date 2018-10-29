@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * 2.
  */
 public class SingleKickThread implements Runnable {
-  private static final Logger LOG = LoggerFactory.getLogger("KickSingle");
+  private static final Logger LOG = LoggerFactory.getLogger(SingleKickThread.class);
 
   private final DBI dbi;
   private final DataSource xapsCp;
@@ -222,7 +222,6 @@ public class SingleKickThread implements Runnable {
 
   /** MAIN METHOD. */
   public void run() {
-    Thread.currentThread().setName("KickRunnable");
     try {
       inbox.addFilter(new Message(null, Message.MTYPE_PUB_IM, null, Message.OTYPE_UNIT));
       dbi.registerInbox("KickRunnable", inbox);

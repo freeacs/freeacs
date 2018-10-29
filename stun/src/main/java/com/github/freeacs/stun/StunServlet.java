@@ -1,8 +1,6 @@
 package com.github.freeacs.stun;
 
-import com.github.freeacs.common.scheduler.Schedule;
-import com.github.freeacs.common.scheduler.ScheduleType;
-import com.github.freeacs.common.scheduler.Scheduler;
+import com.github.freeacs.common.quartz.QuartzWrapper;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Identity;
@@ -25,10 +23,12 @@ public class StunServlet {
 
   private final DataSource mainDs;
   private final Properties properties;
+  private final QuartzWrapper quartzWrapper;
 
-  public StunServlet(DataSource mainDs, Properties properties) {
+  public StunServlet(DataSource mainDs, Properties properties, QuartzWrapper quartzWrapper) {
     this.mainDs = mainDs;
     this.properties = properties;
+    this.quartzWrapper = quartzWrapper;
   }
 
   public static void destroy() {
@@ -67,30 +67,24 @@ public class StunServlet {
         }
       }
 
-      Scheduler scheduler = new Scheduler();
-      scheduler.registerTask(
-          new Schedule(
-              60000, true, ScheduleType.INTERVAL, new StabilityLogger("StabilityLogger STUN")));
+      StabilityLogger stabilityLogger = new StabilityLogger("StabilityLogger STUN");
+      quartzWrapper.scheduleCron(
+          stabilityLogger.getTaskName(), "Syslog", "0 * * ? * * *", stabilityLogger::run);
 
-      scheduler.registerTask(
-          new Schedule(
-              60000,
-              true,
-              ScheduleType.INTERVAL,
-              new ActiveDeviceDetection(mainDs, dbi, "ActiveDeviceDetection")));
-      Thread schedulerThread = new Thread(scheduler);
-      schedulerThread.setName("Scheduler STUN");
-      schedulerThread.start();
+      ActiveDeviceDetection activeDeviceDetection =
+          new ActiveDeviceDetection(mainDs, dbi, "ActiveDeviceDetection");
+      quartzWrapper.scheduleCron(
+          activeDeviceDetection.getTaskName(),
+          "Syslog",
+          "15 * * ? * * *",
+          activeDeviceDetection::run);
 
-      logger.info("Starting Single Kick Thread");
-      Thread kickThread = new Thread(new SingleKickThread(mainDs, dbi, properties));
-      kickThread.setName("STUN Single Kick Thread");
-      kickThread.start();
+      SingleKickThread singleKickThread = new SingleKickThread(mainDs, dbi, properties);
+      quartzWrapper.scheduleOnce("Scheduler STUN", "Syslog", singleKickThread::run);
 
-      logger.info("Starting Job Kick Thread");
-      kickThread = new Thread(new JobKickThread(mainDs, dbi, properties));
-      kickThread.setName("STUN Job Kick Thread");
-      kickThread.start();
+      JobKickThread jobKickThread = new JobKickThread(mainDs, dbi, properties);
+      quartzWrapper.scheduleOnce("STUN Job Kick Thread", "Syslog", jobKickThread::run);
+
     } catch (Throwable t) {
       logger.error("An error occurred while starting Stun Server", t);
     }
