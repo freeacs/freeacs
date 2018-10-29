@@ -393,9 +393,7 @@ class UnitQueryCrossUnittype {
       ds = searchAmongManyUnittypes("u", ds);
     }
     ds.cleanupSQLTail();
-    ResultSet rs = null;
-    PreparedStatement pp = null;
-    return getUnit(ds, rs, pp);
+    return getUnit(ds);
   }
 
   protected Unit addSessionParameters(Unit unit) throws SQLException {
@@ -507,13 +505,12 @@ class UnitQueryCrossUnittype {
     }
 
     ds.cleanupSQLTail();
-    ResultSet rs = null;
-    PreparedStatement pp = null;
-    return getUnit(ds, rs, pp);
+    return getUnit(ds);
   }
 
-  private Unit getUnit(DynamicStatement ds, ResultSet rs, PreparedStatement pp)
-      throws SQLException {
+  private Unit getUnit(DynamicStatement ds) throws SQLException {
+    PreparedStatement pp = null;
+    ResultSet rs = null;
     try {
       pp = ds.makePreparedStatement(connection);
       pp.setQueryTimeout(60);
@@ -543,7 +540,7 @@ class UnitQueryCrossUnittype {
         if (value == null) {
           value = "";
         }
-        if (unittypeParameterIdStr != null) {
+        if (ut != null && unittypeParameterIdStr != null) {
           addUnitParameter(unit, pr, ut, uid, unittypeParameterIdStr, value);
         }
         unit.setParamsAvailable(true);

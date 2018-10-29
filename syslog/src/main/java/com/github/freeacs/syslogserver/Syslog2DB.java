@@ -253,6 +253,11 @@ public class Syslog2DB implements Runnable {
     CacheValue cv = unitCache.get(entry.getUnitId());
     Unit unit;
     ACS acs = populateXAPS();
+    if (acs == null) {
+      logger.warn(
+          "ACS could not be loaded. Cannot continue to parse syslog entry [%s]", entry.toString());
+      return null;
+    }
     if (cv == null) {
       ACSUnit acsUnit = new ACSUnit(xapsCp, acs, syslog);
       if ("UNITID".equals(entry.getTag())) {
@@ -270,6 +275,10 @@ public class Syslog2DB implements Runnable {
     Object o = cv.getObject();
     if (o instanceof Unit) {
       unit = (Unit) cv.getObject();
+      if (unit.getProfile() == null || unit.getUnittype() == null) {
+        logger.warn("We found the unit [%s], but it was not populated with Unittype and Profile.");
+        return null;
+      }
       entry.setUnitId(unit.getId());
       entry.setProfileName(unit.getProfile().getName());
       entry.setUnittypeName(unit.getUnittype().getName());
