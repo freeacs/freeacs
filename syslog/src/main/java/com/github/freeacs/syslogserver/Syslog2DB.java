@@ -255,7 +255,10 @@ public class Syslog2DB implements Runnable {
     ACS acs = populateXAPS();
     if (acs == null) {
       logger.warn(
-          "ACS could not be loaded. Cannot continue to parse syslog entry [%s]", entry.toString());
+          String.format(
+              "ACS could not be loaded. Cannot continue to parse syslog entry [%s]",
+              entry.toString()),
+          new Exception());
       return null;
     }
     if (cv == null) {
@@ -276,7 +279,11 @@ public class Syslog2DB implements Runnable {
     if (o instanceof Unit) {
       unit = (Unit) cv.getObject();
       if (unit.getProfile() == null || unit.getUnittype() == null) {
-        logger.warn("We found the unit [%s], but it was not populated with Unittype and Profile.");
+        logger.warn(
+            String.format(
+                "We found the unit [%s], but it was not populated with Unittype and Profile. Syslog entry: %s",
+                entry.getUnitId(), entry.toString()),
+            new Exception());
         return null;
       }
       entry.setUnitId(unit.getId());
