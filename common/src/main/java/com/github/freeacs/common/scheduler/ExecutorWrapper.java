@@ -29,17 +29,23 @@ public class ExecutorWrapper {
       final long scheduleInterval,
       final Function<Long, Runnable> jobSupplier) {
 
+    final CronExpression cron;
+    try {
+      cron = new CronExpression(cronExpression);
+    } catch (ParseException e) {
+      throw new RuntimeException("Failed to parse cron expression: " + cronExpression, e);
+    }
+
     final Runnable scheduleTask =
         new Runnable() {
           private Future<?> lastExecution;
-
           @Override
           public void run() {
             if (lastExecution != null && !lastExecution.isDone()) {
               return;
             }
             final Date currentTime = new Date();
-            final Date nextFireTime = getNextValidTimeAfter(currentTime, cronExpression);
+            final Date nextFireTime = cron.getNextValidTimeAfter(currentTime);
             final Runnable runnable = jobSupplier.apply(nextFireTime.getTime());
             final long delayInMs = nextFireTime.getTime() - currentTime.getTime();
             lastExecution = executorService.schedule(runnable, delayInMs, TimeUnit.MILLISECONDS);
@@ -48,13 +54,5 @@ public class ExecutorWrapper {
 
     executorService.scheduleAtFixedRate(
         scheduleTask, initialDelay, scheduleInterval, TimeUnit.MILLISECONDS);
-  }
-
-  private Date getNextValidTimeAfter(Date currentTime, String cronExpression) {
-    try {
-      return new CronExpression(cronExpression).getNextValidTimeAfter(currentTime);
-    } catch (ParseException e) {
-      throw new RuntimeException("Failed to parse cron expression", e);
-    }
   }
 }
