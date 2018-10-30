@@ -1,6 +1,6 @@
 package com.github.freeacs.stun;
 
-import com.github.freeacs.common.quartz.QuartzWrapper;
+import com.github.freeacs.common.scheduler.ExecutorWrapper;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Identity;
@@ -23,12 +23,12 @@ public class StunServlet {
 
   private final DataSource mainDs;
   private final Properties properties;
-  private final QuartzWrapper quartzWrapper;
+  private final ExecutorWrapper executorWrapper;
 
-  public StunServlet(DataSource mainDs, Properties properties, QuartzWrapper quartzWrapper) {
+  public StunServlet(DataSource mainDs, Properties properties, ExecutorWrapper executorWrapper) {
     this.mainDs = mainDs;
     this.properties = properties;
-    this.quartzWrapper = quartzWrapper;
+    this.executorWrapper = executorWrapper;
   }
 
   public static void destroy() {
@@ -68,33 +68,31 @@ public class StunServlet {
       }
 
       StabilityLogger stabilityLogger = new StabilityLogger("StabilityLogger STUN");
-      quartzWrapper.scheduleCron(
-          stabilityLogger.getTaskName(),
-          "Syslog",
+      executorWrapper.scheduleCron(
           "0 * * ? * * *",
-          StabilityLoggerJob.class,
-          (tms) -> {
-            stabilityLogger.setThisLaunchTms(tms);
-            stabilityLogger.run();
-          });
+          (tms) ->
+              () -> {
+                stabilityLogger.setThisLaunchTms(tms);
+                stabilityLogger.run();
+              });
 
       ActiveDeviceDetection activeDeviceDetection =
           new ActiveDeviceDetection(mainDs, dbi, "ActiveDeviceDetection");
-      quartzWrapper.scheduleCron(
-          activeDeviceDetection.getTaskName(),
-          "Syslog",
+      executorWrapper.scheduleCron(
           "15 * * ? * * *",
-          ActiveDeviceDetectionJob.class,
-          (tms) -> {
-            activeDeviceDetection.setThisLaunchTms(tms);
-            activeDeviceDetection.run();
-          });
+          (tms) ->
+              () -> {
+                activeDeviceDetection.setThisLaunchTms(tms);
+                activeDeviceDetection.run();
+              });
 
-      SingleKickThread singleKickThread = new SingleKickThread(mainDs, dbi, properties);
-      quartzWrapper.scheduleOnce("Scheduler STUN", "Syslog", (tms) -> singleKickThread.run());
+      Thread singleKickThread = new Thread(new SingleKickThread(mainDs, dbi, properties));
+      singleKickThread.setName("Scheduler STUN");
+      singleKickThread.start();
 
-      JobKickThread jobKickThread = new JobKickThread(mainDs, dbi, properties);
-      quartzWrapper.scheduleOnce("STUN Job Kick Thread", "Syslog", (tms) -> jobKickThread.run());
+      Thread jobKickThread = new Thread(new JobKickThread(mainDs, dbi, properties));
+      jobKickThread.setName("STUN Job Kick Thread");
+      jobKickThread.start();
 
     } catch (Throwable t) {
       logger.error("An error occurred while starting Stun Server", t);

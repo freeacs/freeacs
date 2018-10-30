@@ -3,7 +3,7 @@ package com.github.freeacs;
 import static com.github.freeacs.common.util.DataSourceHelper.inMemoryDataSource;
 import static org.junit.Assert.*;
 
-import com.github.freeacs.common.quartz.QuartzWrapper;
+import com.github.freeacs.common.scheduler.ExecutorWrapper;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.tr069.Properties;
 import com.mashape.unirest.http.HttpResponse;
@@ -140,7 +140,7 @@ public class AppTest {
     ds = inMemoryDataSource();
     ValueInsertHelper.insert(ds);
     Config baseConfig = ConfigFactory.load("application.conf");
-    App.routes(ds, new Properties(baseConfig), new QuartzWrapper());
+    App.routes(ds, new Properties(baseConfig), new ExecutorWrapper(4));
     Spark.awaitInitialization();
   }
 
