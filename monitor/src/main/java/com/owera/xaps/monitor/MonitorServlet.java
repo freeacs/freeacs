@@ -50,7 +50,13 @@ public class MonitorServlet extends HttpServlet {
       // all modules)
       ModuleMonitorTask moduleMonitorTask = new ModuleMonitorTask("ModuleMonitorTask", properties);
       quartzWrapper.scheduleCron(
-          moduleMonitorTask.getTaskName(), "Syslog", "0 * * ? * * *", moduleMonitorTask::run);
+          moduleMonitorTask.getTaskName(),
+          "Syslog",
+          "0 * * ? * * *",
+          (tms) -> {
+            moduleMonitorTask.setThisLaunchTms(tms);
+            moduleMonitorTask.run();
+          });
     } catch (Exception ex) {
       log.error("Error while initializing Monitor: " + ex.getLocalizedMessage(), ex);
       throw new ServletException(ex);
