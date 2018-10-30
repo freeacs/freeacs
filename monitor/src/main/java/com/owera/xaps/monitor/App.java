@@ -9,11 +9,10 @@ import com.github.freeacs.common.util.Sleep;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import javax.servlet.ServletException;
-import org.quartz.SchedulerException;
 import spark.Spark;
 
 public class App {
-  public static void main(String[] args) throws ServletException, SchedulerException {
+  public static void main(String[] args) throws ServletException {
     Config config = ConfigFactory.load();
     Spark.port(config.getInt("server.port"));
     ExecutorWrapper executorWrapper = new ExecutorWrapper(1);

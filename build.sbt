@@ -90,7 +90,8 @@ lazy val common = (project in file("common"))
       "ch.qos.logback" % "logback-classic" % "1.2.3",
       "com.sparkjava" % "spark-core" % "2.8.0",
       "com.typesafe" % "config" % "1.3.3",
-      "org.quartz-scheduler" % "quartz" % "2.3.0"
+      "org.quartz-scheduler" % "quartz" % "2.3.0",
+      "org.apache.commons" % "commons-lang3" % "3.7"
     )
   )
 
@@ -125,7 +126,6 @@ lazy val web = (project in file("web"))
       "org.springframework.boot" % "spring-boot-starter-security" % "2.0.2.RELEASE",
       "org.springframework" % "spring-context-support" % "5.0.6.RELEASE",
       "commons-fileupload" % "commons-fileupload" % "1.3",
-      "commons-lang" % "commons-lang" % "2.4",
       "commons-httpclient" % "commons-httpclient" % "3.1",
       "org.freemarker" % "freemarker" % "2.3.14",
       "org.jfree" % "jcommon" % "1.0.17",
@@ -189,7 +189,6 @@ lazy val tr069 = (project in file("tr069"))
     libraryDependencies ++= Dependencies.database
       ++ Dependencies.testing
       ++ Seq(
-        "org.apache.commons" % "commons-lang3" % "3.7",
         "com.mashape.unirest" % "unirest-java" % "1.4.9" % "test"
       ),
     copyAppConfig,

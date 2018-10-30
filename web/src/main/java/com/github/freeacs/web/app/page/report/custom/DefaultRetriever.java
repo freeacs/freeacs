@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 
 /** The Class DefaultInterface. */
 public class DefaultRetriever extends ReportRetriever {

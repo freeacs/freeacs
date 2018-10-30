@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.concurrent.*;
 import java.util.function.Function;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.quartz.*;
 
 public class ExecutorWrapper {
@@ -11,7 +12,9 @@ public class ExecutorWrapper {
   private final ScheduledExecutorService executorService;
 
   public ExecutorWrapper(int numThreads) {
-    executorService = Executors.newScheduledThreadPool(numThreads);
+    final BasicThreadFactory factory =
+        new BasicThreadFactory.Builder().namingPattern("FreeACS-Executor-%d").build();
+    executorService = Executors.newScheduledThreadPool(numThreads, factory);
   }
 
   public void shutdown() {
@@ -39,6 +42,7 @@ public class ExecutorWrapper {
     final Runnable scheduleTask =
         new Runnable() {
           private Future<?> lastExecution;
+
           @Override
           public void run() {
             if (lastExecution != null && !lastExecution.isDone()) {

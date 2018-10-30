@@ -641,7 +641,7 @@ public class Output {
    * @param attrs the attrs
    */
   public void setDirectToPage(Page page, String... attrs) {
-    this.redirectToUrl = page.getUrl(org.apache.commons.lang.StringUtils.join(attrs, '&'));
+    this.redirectToUrl = page.getUrl(org.apache.commons.lang3.StringUtils.join(attrs, '&'));
   }
 
   /**

@@ -76,8 +76,7 @@ public class App {
   }
 
   public static void routes(
-      DataSource mainDs, Properties properties, ExecutorWrapper executorWrapper)
-      throws SchedulerException {
+      DataSource mainDs, Properties properties, ExecutorWrapper executorWrapper) {
     String ctxPath = properties.getContextPath();
     DBAccess dbAccess = new DBAccess(FACILITY_TR069, "latest", mainDs, mainDs);
     TR069Method tr069Method = new TR069Method(properties);

@@ -30,7 +30,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 import javax.sql.DataSource;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
