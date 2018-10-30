@@ -4,7 +4,7 @@ import static com.github.freeacs.common.spark.ResponseHelper.process;
 import static spark.Spark.path;
 
 import com.github.freeacs.common.http.SimpleResponseWrapper;
-import com.github.freeacs.common.quartz.QuartzWrapper;
+import com.github.freeacs.common.scheduler.ExecutorWrapper;
 import com.github.freeacs.common.util.Sleep;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -16,26 +16,21 @@ public class App {
   public static void main(String[] args) throws ServletException, SchedulerException {
     Config config = ConfigFactory.load();
     Spark.port(config.getInt("server.port"));
-    QuartzWrapper quartzWrapper = new QuartzWrapper();
-    quartzWrapper.init();
-    routes(new Properties(config), quartzWrapper);
+    ExecutorWrapper executorWrapper = new ExecutorWrapper(1);
+    routes(new Properties(config), executorWrapper);
     Runtime.getRuntime()
         .addShutdownHook(
             new Thread(
                 () -> {
                   System.out.println("Shutdown Hook is running !");
                   Sleep.terminateApplication();
-                  try {
-                    quartzWrapper.shutdown();
-                  } catch (SchedulerException e) {
-                    e.printStackTrace();
-                  }
+                  executorWrapper.shutdown();
                 }));
   }
 
-  public static void routes(Properties properties, QuartzWrapper quartzWrapper)
+  public static void routes(Properties properties, ExecutorWrapper executorWrapper)
       throws ServletException {
-    MonitorServlet servlet = new MonitorServlet(properties, quartzWrapper);
+    MonitorServlet servlet = new MonitorServlet(properties, executorWrapper);
     servlet.init(null);
     path(
         properties.getContextPath(),

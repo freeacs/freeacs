@@ -13,7 +13,7 @@ import com.github.freeacs.base.http.OKServlet;
 import com.github.freeacs.common.hikari.HikariDataSourceHelper;
 import com.github.freeacs.common.http.SimpleResponseWrapper;
 import com.github.freeacs.common.jetty.JettyFactory;
-import com.github.freeacs.common.quartz.QuartzWrapper;
+import com.github.freeacs.common.scheduler.ExecutorWrapper;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.tr069.Properties;
@@ -47,20 +47,15 @@ public class App {
         EmbeddedServers.Identifiers.JETTY,
         new JettyFactory(httpOnly, maxHttpPostSize, maxFormKeys));
     DataSource mainDs = HikariDataSourceHelper.dataSource(config.getConfig("main"));
-    QuartzWrapper quartzWrapper = new QuartzWrapper();
-    quartzWrapper.init();
-    routes(mainDs, new Properties(config), quartzWrapper);
+    ExecutorWrapper executorWrapper = new ExecutorWrapper(4);
+    routes(mainDs, new Properties(config), executorWrapper);
     Runtime.getRuntime()
         .addShutdownHook(
             new Thread(
                 () -> {
                   System.out.println("Shutdown Hook is running !");
                   Sleep.terminateApplication();
-                  try {
-                    quartzWrapper.shutdown();
-                  } catch (SchedulerException e) {
-                    e.printStackTrace();
-                  }
+                  executorWrapper.shutdown();
                 }));
   }
 
@@ -80,12 +75,14 @@ public class App {
     return config.hasPath(s) ? config.getInt(s) : -1;
   }
 
-  public static void routes(DataSource mainDs, Properties properties, QuartzWrapper quartzWrapper)
+  public static void routes(
+      DataSource mainDs, Properties properties, ExecutorWrapper executorWrapper)
       throws SchedulerException {
     String ctxPath = properties.getContextPath();
     DBAccess dbAccess = new DBAccess(FACILITY_TR069, "latest", mainDs, mainDs);
     TR069Method tr069Method = new TR069Method(properties);
-    Provisioning provisioning = new Provisioning(dbAccess, tr069Method, properties, quartzWrapper);
+    Provisioning provisioning =
+        new Provisioning(dbAccess, tr069Method, properties, executorWrapper);
     provisioning.init();
     FileServlet fileServlet = new FileServlet(dbAccess, ctxPath + "/file/", properties);
     OKServlet okServlet = new OKServlet(dbAccess);

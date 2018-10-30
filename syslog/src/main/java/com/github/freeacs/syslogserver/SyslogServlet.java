@@ -1,9 +1,8 @@
 package com.github.freeacs.syslogserver;
 
-import com.github.freeacs.common.quartz.QuartzWrapper;
+import com.github.freeacs.common.scheduler.ExecutorWrapper;
 import com.github.freeacs.common.util.Sleep;
 import javax.sql.DataSource;
-import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,13 +12,13 @@ public class SyslogServlet {
   private static Logger logger = LoggerFactory.getLogger(SyslogServlet.class);
   private final DataSource xapsDataSource;
   private final Properties properties;
-  private final QuartzWrapper quartzWrapper;
+  private final ExecutorWrapper executorWrapper;
 
   public SyslogServlet(
-      DataSource xapsDataSource, Properties properties, QuartzWrapper quartzWrapper) {
+      DataSource xapsDataSource, Properties properties, ExecutorWrapper executorWrapper) {
     this.xapsDataSource = xapsDataSource;
     this.properties = properties;
-    this.quartzWrapper = quartzWrapper;
+    this.executorWrapper = executorWrapper;
   }
 
   public static void destroy() {
@@ -27,7 +26,7 @@ public class SyslogServlet {
     Sleep.terminateApplication();
   }
 
-  public void init() throws SchedulerException {
+  public void init() {
     if (server == null) {
       server = new SyslogServer(xapsDataSource, properties);
     }
@@ -39,35 +38,29 @@ public class SyslogServlet {
     }
 
     SummaryLogger summaryLoggerTask = new SummaryLogger("SummaryLogger", properties);
-    quartzWrapper.scheduleCron(
-        summaryLoggerTask.getTaskName(),
-        "Syslog",
+    executorWrapper.scheduleCron(
         "0 * * ? * * *",
-        SummaryLoggerJob.class,
-        (tms) -> {
-          summaryLoggerTask.setThisLaunchTms(tms);
-          summaryLoggerTask.run();
-        });
+        (tms) ->
+            () -> {
+              summaryLoggerTask.setThisLaunchTms(tms);
+              summaryLoggerTask.run();
+            });
     StateLogger stateLogger = new StateLogger("StateLogger");
-    quartzWrapper.scheduleCron(
-        stateLogger.getTaskName(),
-        "Syslog",
+    executorWrapper.scheduleCron(
         "15 * * ? * * *",
-        StateLoggerJob.class,
-        (tms) -> {
-          stateLogger.setThisLaunchTms(tms);
-          stateLogger.run();
-        });
+        (tms) ->
+            () -> {
+              stateLogger.setThisLaunchTms(tms);
+              stateLogger.run();
+            });
     DiskSpaceCheck diskSpaceCheck = new DiskSpaceCheck("DiskSpaceCheck", properties);
-    quartzWrapper.scheduleCron(
-        diskSpaceCheck.getTaskName(),
-        "Syslog",
+    executorWrapper.scheduleCron(
         "30 * * ? * * *",
-        DiskSpaceCheckJob.class,
-        (tms) -> {
-          diskSpaceCheck.setThisLaunchTms(tms);
-          diskSpaceCheck.run();
-        });
+        (tms) ->
+            () -> {
+              diskSpaceCheck.setThisLaunchTms(tms);
+              diskSpaceCheck.run();
+            });
   }
 
   public String health() {

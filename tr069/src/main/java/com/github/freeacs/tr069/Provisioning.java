@@ -5,19 +5,15 @@ import com.github.freeacs.base.Log;
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.http.Authenticator;
 import com.github.freeacs.base.http.ThreadCounter;
-import com.github.freeacs.common.quartz.QuartzWrapper;
+import com.github.freeacs.common.scheduler.ExecutorWrapper;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.ScriptExecutions;
 import com.github.freeacs.dbi.Unit;
-import com.github.freeacs.tr069.background.ActiveDeviceDetectionJob;
 import com.github.freeacs.tr069.background.ActiveDeviceDetectionTask;
-import com.github.freeacs.tr069.background.MessageListenerJob;
 import com.github.freeacs.tr069.background.MessageListenerTask;
-import com.github.freeacs.tr069.background.ScheduledKickJob;
 import com.github.freeacs.tr069.background.ScheduledKickTask;
-import com.github.freeacs.tr069.background.StabilityJob;
 import com.github.freeacs.tr069.background.StabilityTask;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
@@ -30,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.quartz.SchedulerException;
 
 /**
  * This is the "main-class" of TR069 Provisioning. It receives the HTTP-request from the CPE and
@@ -39,24 +34,22 @@ import org.quartz.SchedulerException;
  * @author morten
  */
 public class Provisioning {
-  private static final long serialVersionUID = -3020450686422484143L;
-
   private static ScriptExecutions executions;
   private final DBAccess dbAccess;
   private final TR069Method tr069Method;
   private final Properties properties;
 
-  private final QuartzWrapper quartzWrapper;
+  private final ExecutorWrapper executorWrapper;
 
   public Provisioning(
       DBAccess dbAccess,
       TR069Method tr069Method,
       Properties properties,
-      QuartzWrapper quartzWrapper) {
+      ExecutorWrapper executorWrapper) {
     this.dbAccess = dbAccess;
     this.tr069Method = tr069Method;
     this.properties = properties;
-    this.quartzWrapper = quartzWrapper;
+    this.executorWrapper = executorWrapper;
   }
 
   public void init() {
@@ -80,66 +73,57 @@ public class Provisioning {
     }
   }
 
-  private void scheduleActiveDeviceDetectionTask(final DBI dbi) throws SchedulerException {
+  private void scheduleActiveDeviceDetectionTask(final DBI dbi) {
     // every 5 minute
     final ActiveDeviceDetectionTask activeDeviceDetectionTask =
         new ActiveDeviceDetectionTask("ActiveDeviceDetection TR069", dbi);
-    quartzWrapper.scheduleCron(
-        activeDeviceDetectionTask.getTaskName(),
-        "Background",
+    executorWrapper.scheduleCron(
         "0 0/5 * * * ?",
-        ActiveDeviceDetectionJob.class,
-        (tms) -> {
-          activeDeviceDetectionTask.setThisLaunchTms(tms);
-          activeDeviceDetectionTask.run();
-        });
+        (tms) ->
+            () -> {
+              activeDeviceDetectionTask.setThisLaunchTms(tms);
+              activeDeviceDetectionTask.run();
+            });
   }
 
-  private void scheduleKickTask(final DBI dbi) throws SchedulerException {
+  private void scheduleKickTask(final DBI dbi) {
     // every 1 second
     final ScheduledKickTask scheduledKickTask = new ScheduledKickTask("ScheduledKick", dbi);
-    quartzWrapper.scheduleCron(
-        scheduledKickTask.getTaskName(),
-        "Background",
+    executorWrapper.scheduleCron(
         "* * * ? * * *",
-        ScheduledKickJob.class,
-        (tms) -> {
-          scheduledKickTask.setThisLaunchTms(tms);
-          scheduledKickTask.run();
-        });
+        (tms) ->
+            () -> {
+              scheduledKickTask.setThisLaunchTms(tms);
+              scheduledKickTask.run();
+            });
   }
 
-  private void scheduleMessageListenerTask(final DBI dbi) throws SchedulerException {
+  private void scheduleMessageListenerTask(final DBI dbi) {
     // every 5 sec
     final MessageListenerTask messageListenerTask = new MessageListenerTask("MessageListener", dbi);
-    quartzWrapper.scheduleCron(
-        messageListenerTask.getTaskName(),
-        "Background",
+    executorWrapper.scheduleCron(
         "0/5 * * ? * * *",
-        MessageListenerJob.class,
-        (tms) -> {
-          messageListenerTask.setThisLaunchTms(tms);
-          messageListenerTask.run();
-        });
+        (tms) ->
+            () -> {
+              messageListenerTask.setThisLaunchTms(tms);
+              messageListenerTask.run();
+            });
   }
 
-  private void scheduleStabilityTask() throws SchedulerException {
+  private void scheduleStabilityTask() {
     // every 10 sec
     final StabilityTask stabilityTask = new StabilityTask("StabilityLogger");
-    quartzWrapper.scheduleCron(
-        stabilityTask.getTaskName(),
-        "Background",
+    executorWrapper.scheduleCron(
         "0/10 * * ? * * *",
-        StabilityJob.class,
-        (tms) -> {
-          stabilityTask.setThisLaunchTms(tms);
-          stabilityTask.run();
-        });
+        (tms) ->
+            () -> {
+              stabilityTask.setThisLaunchTms(tms);
+              stabilityTask.run();
+            });
   }
 
   private static void extractRequest(HTTPReqResData reqRes) throws TR069Exception {
     try {
-      long tms = System.currentTimeMillis();
       InputStreamReader isr = new InputStreamReader(reqRes.getReq().getInputStream());
       BufferedReader br = new BufferedReader(isr);
       StringBuilder requestSB = new StringBuilder(1000);
