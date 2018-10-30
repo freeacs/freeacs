@@ -12,7 +12,7 @@ public class QuartzJob implements Job {
 
   @Override
   public void execute(JobExecutionContext jobContext) {
-    long current = System.currentTimeMillis();
+    long current = jobContext.getFireTime().getTime();
     JobDetail jobDetail = jobContext.getJobDetail();
     Job job = (Job) jobDetail.getJobDataMap().get("job");
     job.apply(current);
