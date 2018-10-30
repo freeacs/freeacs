@@ -4,13 +4,21 @@ import com.github.freeacs.common.quartz.QuartzWrapper;
 import com.github.freeacs.common.scheduler.ScheduleType;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.core.task.DeleteOldJobs;
+import com.github.freeacs.core.task.DeleteOldJobsJob;
 import com.github.freeacs.core.task.DeleteOldScripts;
+import com.github.freeacs.core.task.DeleteOldScriptsJob;
 import com.github.freeacs.core.task.DeleteOldSyslog;
+import com.github.freeacs.core.task.DeleteOldSyslogJob;
 import com.github.freeacs.core.task.HeartbeatDetection;
+import com.github.freeacs.core.task.HeartbeatDetectionJob;
 import com.github.freeacs.core.task.JobRuleEnforcer;
+import com.github.freeacs.core.task.JobRuleEnforcerJob;
 import com.github.freeacs.core.task.ReportGenerator;
+import com.github.freeacs.core.task.ReportGeneratorJob;
 import com.github.freeacs.core.task.ScriptExecutor;
+import com.github.freeacs.core.task.ScriptExecutorJob;
 import com.github.freeacs.core.task.TriggerReleaser;
+import com.github.freeacs.core.task.TriggerReleaserJob;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Identity;
 import com.github.freeacs.dbi.Syslog;
@@ -72,6 +80,7 @@ public class CoreServlet {
             deleteOldJobsTask.getTaskName(),
             "Core Light",
             "0 30 5 ? * * *",
+            DeleteOldJobsJob.class,
             (tms) -> {
               deleteOldJobsTask.setThisLaunchTms(tms);
               deleteOldJobsTask.run();
@@ -86,6 +95,7 @@ public class CoreServlet {
             jobRuleEnforcerTaks.getTaskName(),
             "Core Light",
             "* * * * * ? *",
+            JobRuleEnforcerJob.class,
             (tms) -> {
               jobRuleEnforcerTaks.setThisLaunchTms(tms);
               jobRuleEnforcerTaks.run();
@@ -100,6 +110,7 @@ public class CoreServlet {
               triggerReleaserTask.getTaskName(),
               "Core Light",
               "30 * * ? * * *",
+              TriggerReleaserJob.class,
               (tms) -> {
                 triggerReleaserTask.setThisLaunchTms(tms);
                 triggerReleaserTask.run();
@@ -115,6 +126,7 @@ public class CoreServlet {
               scriptExecutorTask.getTaskName(),
               "Core Light",
               "* * * * * ? *",
+              ScriptExecutorJob.class,
               (tms) -> {
                 scriptExecutorTask.setThisLaunchTms(tms);
                 scriptExecutorTask.run();
@@ -128,6 +140,7 @@ public class CoreServlet {
               deleteOldScriptsTask.getTaskName(),
               "Core Light",
               "0 45 * ? * * *",
+              DeleteOldScriptsJob.class,
               (tms) -> {
                 deleteOldScriptsTask.setThisLaunchTms(tms);
                 deleteOldScriptsTask.run();
@@ -143,6 +156,7 @@ public class CoreServlet {
               heartbeatDetectionTask.getTaskName(),
               "Core Light",
               "0 0/5 * ? * * *",
+              HeartbeatDetectionJob.class,
               (tms) -> {
                 heartbeatDetectionTask.setThisLaunchTms(tms);
                 heartbeatDetectionTask.run();
@@ -160,6 +174,7 @@ public class CoreServlet {
             reportGeneratorHourlyTask.getTaskName(),
             "Core Heavy",
             "0 0 * ? * * *",
+            ReportGeneratorJob.class,
             (tms) -> {
               reportGeneratorHourlyTask.setThisLaunchTms(tms);
               reportGeneratorHourlyTask.run();
@@ -174,6 +189,7 @@ public class CoreServlet {
             reportGeneratorDailyTask.getTaskName(),
             "Core Heavy",
             "0 15 0 ? * * *",
+            ReportGeneratorJob.class,
             (tms) -> {
               reportGeneratorDailyTask.setThisLaunchTms(tms);
               reportGeneratorDailyTask.run();
@@ -188,6 +204,7 @@ public class CoreServlet {
             deleteOldSyslogTask.getTaskName(),
             "Core Heavy",
             "0 0 5 ? * * *",
+            DeleteOldSyslogJob.class,
             (tms) -> {
               deleteOldSyslogTask.setThisLaunchTms(tms);
               deleteOldSyslogTask.run();

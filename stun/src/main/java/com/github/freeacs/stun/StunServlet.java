@@ -72,6 +72,7 @@ public class StunServlet {
           stabilityLogger.getTaskName(),
           "Syslog",
           "0 * * ? * * *",
+          StabilityLoggerJob.class,
           (tms) -> {
             stabilityLogger.setThisLaunchTms(tms);
             stabilityLogger.run();
@@ -83,6 +84,7 @@ public class StunServlet {
           activeDeviceDetection.getTaskName(),
           "Syslog",
           "15 * * ? * * *",
+          ActiveDeviceDetectionJob.class,
           (tms) -> {
             activeDeviceDetection.setThisLaunchTms(tms);
             activeDeviceDetection.run();

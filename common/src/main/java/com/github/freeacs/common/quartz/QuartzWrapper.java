@@ -26,12 +26,13 @@ public class QuartzWrapper {
       final String jobName,
       final String jobGroup,
       final String cronExpression,
+      final Class<? extends QuartzJob> quartzJobClass,
       final QuartzJob.Job job)
       throws SchedulerException {
     final JobDataMap jobDataMap = new JobDataMap();
     jobDataMap.put("job", job);
     final JobDetail jobDetail =
-        JobBuilder.newJob(QuartzJob.class)
+        JobBuilder.newJob(quartzJobClass)
             .usingJobData(jobDataMap)
             .withIdentity(jobName + "Detail", jobGroup)
             .build();
@@ -39,7 +40,7 @@ public class QuartzWrapper {
         TriggerBuilder.newTrigger()
             .withIdentity(jobName + "Trigger", jobGroup)
             .startNow()
-            .withSchedule(cronSchedule(cronExpression))
+            .withSchedule(cronSchedule(cronExpression).withMisfireHandlingInstructionDoNothing())
             .build();
     return scheduler.scheduleJob(jobDetail, trigger);
   }

@@ -3,6 +3,7 @@ package com.owera.xaps.monitor;
 import com.github.freeacs.common.quartz.QuartzWrapper;
 import com.github.freeacs.common.ssl.EasySSLProtocolSocketFactory;
 import com.github.freeacs.common.util.Sleep;
+import com.owera.xaps.monitor.task.ModuleMonitorJob;
 import com.owera.xaps.monitor.task.ModuleMonitorTask;
 import com.owera.xaps.monitor.task.MonitorInfo;
 import freemarker.template.Configuration;
@@ -53,6 +54,7 @@ public class MonitorServlet extends HttpServlet {
           moduleMonitorTask.getTaskName(),
           "Syslog",
           "0 * * ? * * *",
+          ModuleMonitorJob.class,
           (tms) -> {
             moduleMonitorTask.setThisLaunchTms(tms);
             moduleMonitorTask.run();
