@@ -11,9 +11,13 @@ import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.ScriptExecutions;
 import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.tr069.background.ActiveDeviceDetectionJob;
 import com.github.freeacs.tr069.background.ActiveDeviceDetectionTask;
+import com.github.freeacs.tr069.background.MessageListenerJob;
 import com.github.freeacs.tr069.background.MessageListenerTask;
+import com.github.freeacs.tr069.background.ScheduledKickJob;
 import com.github.freeacs.tr069.background.ScheduledKickTask;
+import com.github.freeacs.tr069.background.StabilityJob;
 import com.github.freeacs.tr069.background.StabilityTask;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
@@ -84,6 +88,7 @@ public class Provisioning {
         activeDeviceDetectionTask.getTaskName(),
         "Background",
         "0 0/5 * * * ?",
+        ActiveDeviceDetectionJob.class,
         (tms) -> {
           activeDeviceDetectionTask.setThisLaunchTms(tms);
           activeDeviceDetectionTask.run();
@@ -97,6 +102,7 @@ public class Provisioning {
         scheduledKickTask.getTaskName(),
         "Background",
         "* * * ? * * *",
+        ScheduledKickJob.class,
         (tms) -> {
           scheduledKickTask.setThisLaunchTms(tms);
           scheduledKickTask.run();
@@ -110,6 +116,7 @@ public class Provisioning {
         messageListenerTask.getTaskName(),
         "Background",
         "0/5 * * ? * * *",
+        MessageListenerJob.class,
         (tms) -> {
           messageListenerTask.setThisLaunchTms(tms);
           messageListenerTask.run();
@@ -123,6 +130,7 @@ public class Provisioning {
         stabilityTask.getTaskName(),
         "Background",
         "0/10 * * ? * * *",
+        StabilityJob.class,
         (tms) -> {
           stabilityTask.setThisLaunchTms(tms);
           stabilityTask.run();

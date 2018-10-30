@@ -43,6 +43,7 @@ public class SyslogServlet {
         summaryLoggerTask.getTaskName(),
         "Syslog",
         "0 * * ? * * *",
+        SummaryLoggerJob.class,
         (tms) -> {
           summaryLoggerTask.setThisLaunchTms(tms);
           summaryLoggerTask.run();
@@ -52,6 +53,7 @@ public class SyslogServlet {
         stateLogger.getTaskName(),
         "Syslog",
         "15 * * ? * * *",
+        StateLoggerJob.class,
         (tms) -> {
           stateLogger.setThisLaunchTms(tms);
           stateLogger.run();
@@ -61,6 +63,7 @@ public class SyslogServlet {
         diskSpaceCheck.getTaskName(),
         "Syslog",
         "30 * * ? * * *",
+        DiskSpaceCheckJob.class,
         (tms) -> {
           diskSpaceCheck.setThisLaunchTms(tms);
           diskSpaceCheck.run();
