@@ -69,7 +69,13 @@ public class StunServlet {
 
       StabilityLogger stabilityLogger = new StabilityLogger("StabilityLogger STUN");
       quartzWrapper.scheduleCron(
-          stabilityLogger.getTaskName(), "Syslog", "0 * * ? * * *", stabilityLogger::run);
+          stabilityLogger.getTaskName(),
+          "Syslog",
+          "0 * * ? * * *",
+          (tms) -> {
+            stabilityLogger.setThisLaunchTms(tms);
+            stabilityLogger.run();
+          });
 
       ActiveDeviceDetection activeDeviceDetection =
           new ActiveDeviceDetection(mainDs, dbi, "ActiveDeviceDetection");
@@ -77,13 +83,16 @@ public class StunServlet {
           activeDeviceDetection.getTaskName(),
           "Syslog",
           "15 * * ? * * *",
-          activeDeviceDetection::run);
+          (tms) -> {
+            activeDeviceDetection.setThisLaunchTms(tms);
+            activeDeviceDetection.run();
+          });
 
       SingleKickThread singleKickThread = new SingleKickThread(mainDs, dbi, properties);
-      quartzWrapper.scheduleOnce("Scheduler STUN", "Syslog", singleKickThread::run);
+      quartzWrapper.scheduleOnce("Scheduler STUN", "Syslog", (tms) -> singleKickThread.run());
 
       JobKickThread jobKickThread = new JobKickThread(mainDs, dbi, properties);
-      quartzWrapper.scheduleOnce("STUN Job Kick Thread", "Syslog", jobKickThread::run);
+      quartzWrapper.scheduleOnce("STUN Job Kick Thread", "Syslog", (tms) -> jobKickThread.run());
 
     } catch (Throwable t) {
       logger.error("An error occurred while starting Stun Server", t);

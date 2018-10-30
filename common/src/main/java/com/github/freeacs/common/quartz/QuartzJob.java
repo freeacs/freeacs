@@ -7,13 +7,14 @@ import org.quartz.JobExecutionContext;
 public class QuartzJob implements Job {
 
   public interface Job {
-    void apply();
+    void apply(long tms);
   }
 
   @Override
   public void execute(JobExecutionContext jobContext) {
+    long current = System.currentTimeMillis();
     JobDetail jobDetail = jobContext.getJobDetail();
     Job job = (Job) jobDetail.getJobDataMap().get("job");
-    job.apply();
+    job.apply(current);
   }
 }

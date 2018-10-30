@@ -84,14 +84,23 @@ public class Provisioning {
         activeDeviceDetectionTask.getTaskName(),
         "Background",
         "0 0/5 * * * ?",
-        activeDeviceDetectionTask::run);
+        (tms) -> {
+          activeDeviceDetectionTask.setThisLaunchTms(tms);
+          activeDeviceDetectionTask.run();
+        });
   }
 
   private void scheduleKickTask(final DBI dbi) throws SchedulerException {
     // every 1 second
     final ScheduledKickTask scheduledKickTask = new ScheduledKickTask("ScheduledKick", dbi);
     quartzWrapper.scheduleCron(
-        scheduledKickTask.getTaskName(), "Background", "* * * ? * * *", scheduledKickTask::run);
+        scheduledKickTask.getTaskName(),
+        "Background",
+        "* * * ? * * *",
+        (tms) -> {
+          scheduledKickTask.setThisLaunchTms(tms);
+          scheduledKickTask.run();
+        });
   }
 
   private void scheduleMessageListenerTask(final DBI dbi) throws SchedulerException {
@@ -101,14 +110,23 @@ public class Provisioning {
         messageListenerTask.getTaskName(),
         "Background",
         "0/5 * * ? * * *",
-        messageListenerTask::run);
+        (tms) -> {
+          messageListenerTask.setThisLaunchTms(tms);
+          messageListenerTask.run();
+        });
   }
 
   private void scheduleStabilityTask() throws SchedulerException {
     // every 10 sec
     final StabilityTask stabilityTask = new StabilityTask("StabilityLogger");
     quartzWrapper.scheduleCron(
-        stabilityTask.getTaskName(), "Background", "0/10 * * ? * * *", stabilityTask::run);
+        stabilityTask.getTaskName(),
+        "Background",
+        "0/10 * * ? * * *",
+        (tms) -> {
+          stabilityTask.setThisLaunchTms(tms);
+          stabilityTask.run();
+        });
   }
 
   private static void extractRequest(HTTPReqResData reqRes) throws TR069Exception {

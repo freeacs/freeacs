@@ -1,7 +1,6 @@
 package com.github.freeacs.common.quartz;
 
 import static org.quartz.CronScheduleBuilder.cronSchedule;
-import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 
 import java.util.Date;
 import org.quartz.*;
@@ -55,11 +54,7 @@ public class QuartzWrapper {
             .withIdentity(jobName + "Detail", jobGroup)
             .build();
     final Trigger trigger =
-        TriggerBuilder.newTrigger()
-            .withIdentity(jobName + "Trigger", jobGroup)
-            .withSchedule(simpleSchedule().withIntervalInSeconds(1).withRepeatCount(1))
-            .startNow()
-            .build();
+        TriggerBuilder.newTrigger().withIdentity(jobName + "Trigger", jobGroup).startNow().build();
     scheduler.scheduleJob(jobDetail, trigger);
   }
 }

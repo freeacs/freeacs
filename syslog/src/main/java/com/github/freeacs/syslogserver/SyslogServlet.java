@@ -40,13 +40,31 @@ public class SyslogServlet {
 
     SummaryLogger summaryLoggerTask = new SummaryLogger("SummaryLogger", properties);
     quartzWrapper.scheduleCron(
-        summaryLoggerTask.getTaskName(), "Syslog", "0 * * ? * * *", summaryLoggerTask::run);
+        summaryLoggerTask.getTaskName(),
+        "Syslog",
+        "0 * * ? * * *",
+        (tms) -> {
+          summaryLoggerTask.setThisLaunchTms(tms);
+          summaryLoggerTask.run();
+        });
     StateLogger stateLogger = new StateLogger("StateLogger");
     quartzWrapper.scheduleCron(
-        stateLogger.getTaskName(), "Syslog", "15 * * ? * * *", stateLogger::run);
+        stateLogger.getTaskName(),
+        "Syslog",
+        "15 * * ? * * *",
+        (tms) -> {
+          stateLogger.setThisLaunchTms(tms);
+          stateLogger.run();
+        });
     DiskSpaceCheck diskSpaceCheck = new DiskSpaceCheck("DiskSpaceCheck", properties);
     quartzWrapper.scheduleCron(
-        diskSpaceCheck.getTaskName(), "Syslog", "30 * * ? * * *", diskSpaceCheck::run);
+        diskSpaceCheck.getTaskName(),
+        "Syslog",
+        "30 * * ? * * *",
+        (tms) -> {
+          diskSpaceCheck.setThisLaunchTms(tms);
+          diskSpaceCheck.run();
+        });
   }
 
   public String health() {
