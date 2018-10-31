@@ -14,6 +14,7 @@ import com.github.freeacs.common.hikari.HikariDataSourceHelper;
 import com.github.freeacs.common.http.SimpleResponseWrapper;
 import com.github.freeacs.common.jetty.JettyFactory;
 import com.github.freeacs.common.scheduler.ExecutorWrapper;
+import com.github.freeacs.common.scheduler.ExecutorWrapperFactory;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.tr069.Properties;
@@ -46,7 +47,7 @@ public class App {
         EmbeddedServers.Identifiers.JETTY,
         new JettyFactory(httpOnly, maxHttpPostSize, maxFormKeys));
     DataSource mainDs = HikariDataSourceHelper.dataSource(config.getConfig("main"));
-    ExecutorWrapper executorWrapper = new ExecutorWrapper(4);
+    ExecutorWrapper executorWrapper = ExecutorWrapperFactory.create(4);
     routes(mainDs, new Properties(config), executorWrapper);
     Runtime.getRuntime()
         .addShutdownHook(
