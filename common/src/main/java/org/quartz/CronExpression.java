@@ -1631,5 +1631,3 @@ public final class CronExpression implements Serializable, Cloneable {
     public int pos;
   }
 }
-
-
