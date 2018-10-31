@@ -12,13 +12,15 @@ public class ExecutorWrapper {
   private final ScheduledExecutorService executorService;
 
   public ExecutorWrapper(int numThreads) {
-    this(numThreads, null);
+    this(numThreads, "FreeACS-Executor", null);
   }
 
   public ExecutorWrapper(
-      int numThreads, final Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
+      int numThreads,
+      final String name,
+      final Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
     final BasicThreadFactory.Builder factory =
-        new BasicThreadFactory.Builder().namingPattern("FreeACS-Executor-%d");
+        new BasicThreadFactory.Builder().namingPattern(name + "-%d");
     if (uncaughtExceptionHandler != null) {
       factory.uncaughtExceptionHandler(uncaughtExceptionHandler);
     }
