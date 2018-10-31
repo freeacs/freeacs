@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
-import org.quartz.SchedulerException;
 import spark.Request;
 import spark.Route;
 import spark.Spark;
@@ -35,7 +34,7 @@ public class App {
   private static final List<String> ALLOWED_CONTENT_TYPES =
       Arrays.asList("application/soap+xml", "application/xml", "text/xml", "text/html", "");
 
-  public static void main(String[] args) throws SchedulerException {
+  public static void main(String[] args) {
     Config config = ConfigFactory.load();
     SyslogClient.SYSLOG_SERVER_HOST = config.getString("syslog.server.host");
     Spark.port(config.getInt("server.port"));
