@@ -122,44 +122,44 @@ public class UnitQueryWithinUnittype {
     }
     // If varOp == null, fixedOp can match only if operator is NE (since fixedOp cannot be null).
     if (varOp == null) {
-      return Parameter.Operator.NE.equals(op) && fixedOp != null;
+      return Parameter.Operator.NE.equals(op);
     }
-    // Neither varOp nor fixedOp can be NULL here.
-    if (Parameter.ParameterDataType.NUMBER.equals(type)) {
-      try {
-        Long operandL = Long.valueOf(varOp);
-        Long ppL = Long.valueOf(fixedOp);
-        return (Parameter.Operator.EQ.equals(op) && ppL.longValue() == operandL.longValue())
-            || (Parameter.Operator.NE.equals(op) && ppL.longValue() != operandL.longValue())
-            || (Parameter.Operator.LT.equals(op) && ppL.longValue() < operandL.longValue())
-            || (Parameter.Operator.LE.equals(op) && ppL.longValue() <= operandL.longValue())
-            || (Parameter.Operator.GE.equals(op) && ppL.longValue() >= operandL.longValue())
-            || (Parameter.Operator.GT.equals(op) && ppL.longValue() > operandL.longValue());
-      } catch (NumberFormatException nfe) {
+    switch (type) {
+      case NUMBER:
+        // Neither varOp nor fixedOp can be NULL here.
+        try {
+          Long operandL = Long.valueOf(varOp);
+          Long ppL = Long.valueOf(fixedOp);
+          return (Parameter.Operator.EQ.equals(op) && ppL.longValue() == operandL.longValue())
+              || (Parameter.Operator.NE.equals(op) && ppL.longValue() != operandL.longValue())
+              || (Parameter.Operator.LT.equals(op) && ppL < operandL)
+              || (Parameter.Operator.LE.equals(op) && ppL <= operandL)
+              || (Parameter.Operator.GE.equals(op) && ppL >= operandL)
+              || (Parameter.Operator.GT.equals(op) && ppL > operandL);
+        } catch (NumberFormatException ignored) {
+        }
         return false;
-      }
-    } else if (Parameter.ParameterDataType.TEXT.equals(type)) {
-      if (Parameter.Operator.EQ.equals(op)) {
-        if (varOp.indexOf('_') > -1 || varOp.indexOf('%') > -1) {
-          return matchWildcardString(fixedOp, varOp);
-        } else {
+      case TEXT:
+        if (Parameter.Operator.EQ.equals(op)) {
+          if (varOp.contains("_") || varOp.contains("%")) {
+            return matchWildcardString(fixedOp, varOp);
+          }
           return fixedOp.equals(varOp);
         }
-      } else if (Parameter.Operator.NE.equals(op)) {
-        if (varOp.indexOf('_') > -1 || varOp.indexOf('%') > -1) {
-          return !matchWildcardString(fixedOp, varOp);
-        } else {
+        if (Parameter.Operator.NE.equals(op)) {
+          if (varOp.contains("_") || varOp.contains("%")) {
+            return !matchWildcardString(fixedOp, varOp);
+          }
           return !fixedOp.equalsIgnoreCase(varOp);
         }
-      } else {
         int compareInt = fixedOp.compareToIgnoreCase(varOp);
         return (Parameter.Operator.LT.equals(op) && compareInt < 0)
             || (Parameter.Operator.LE.equals(op) && compareInt <= 0)
             || (Parameter.Operator.GE.equals(op) && compareInt >= 0)
             || (Parameter.Operator.GT.equals(op) && compareInt > 0);
-      }
+      default:
+        return false;
     }
-    return false; // should never happen
   }
 
   private static boolean matchWildcardString(String fixedOp, String varOp) {
