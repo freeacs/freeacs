@@ -27,9 +27,10 @@ public class ExecutorWrapper {
     if (uncaughtExceptionHandler != null) {
       factory.uncaughtExceptionHandler(uncaughtExceptionHandler);
     } else {
-      factory.uncaughtExceptionHandler((thread, error) -> {
-        LOG.error("Thread " + thread.toString() + " failed to complete properly", error);
-      });
+      factory.uncaughtExceptionHandler(
+          (thread, error) -> {
+            LOG.error("Thread " + thread.toString() + " failed to complete properly", error);
+          });
     }
     executorService = Executors.newScheduledThreadPool(numThreads, factory.build());
   }
