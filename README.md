@@ -1,7 +1,7 @@
 ![Freeacs Logo](https://github.com/freeacs/readme/blob/master/logo.png)
 
 [![Build Status](https://travis-ci.org/freeacs/freeacs.svg?branch=master)](https://travis-ci.org/freeacs/freeacs)
-[![codebeat badge](https://codebeat.co/badges/6d91650e-8335-4f38-a985-31ebc44cf3cd)](https://codebeat.co/projects/github-com-freeacs-freeacs-master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/4b32968512c546806799/maintainability)](https://codeclimate.com/github/freeacs/freeacs/maintainability)
 [![Gitter chat](https://badges.gitter.im/FreeACS-on-Gitter/Freeacs.png)](https://gitter.im/FreeACS-on-Gitter/Freeacs)
 [![Donate](https://img.shields.io/badge/Patreon-Donate-blue.svg)](https://www.patreon.com/freeacs)
 
