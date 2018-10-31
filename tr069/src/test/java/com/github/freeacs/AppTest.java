@@ -17,9 +17,13 @@ import javax.sql.DataSource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.Spark;
 
 public class AppTest {
+  private static final Logger log = LoggerFactory.getLogger(AppTest.class);
+
   private static DataSource ds;
 
   private final String inform =
@@ -178,26 +182,16 @@ public class AppTest {
   }
 
   @Test
+  public void testUrls() throws UnirestException {
+    assertInform("");
+    assertInform("/");
+    assertInform("/prov");
+  }
+
+  @Test
   public void provision() throws UnirestException {
-    HttpResponse<String> response =
-        Unirest.post("http://localhost:4567/tr069/prov")
-            .basicAuth("test123", "password")
-            .header("Content-type", "text/xml")
-            .body(inform)
-            .asString();
-    assertEquals(
-        "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soapenc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:cwmp=\"urn:dslforum-org:cwmp-1-2\">\n"
-            + "<soapenv:Header>\n"
-            + "\t<cwmp:ID soapenv:mustUnderstand=\"1\">1</cwmp:ID>\n"
-            + "</soapenv:Header>\n"
-            + "<soapenv:Body>\n"
-            + "\t\t<cwmp:InformResponse>\n"
-            + "\t\t\t<MaxEnvelopes>1</MaxEnvelopes>\n"
-            + "\t\t</cwmp:InformResponse>\n"
-            + "</soapenv:Body>\n"
-            + "</soapenv:Envelope>\n",
-        response.getBody());
-    assertEquals(200, response.getStatus());
+    assertInform("/prov");
+    HttpResponse<String> response;
     response =
         Unirest.post("http://localhost:4567/tr069/prov")
             .basicAuth("test123", "password")
@@ -270,5 +264,29 @@ public class AppTest {
             .asString();
     assertNull(response.getBody());
     assertEquals(204, response.getStatus());
+  }
+
+  private void assertInform(final String provUrl) throws UnirestException {
+    final String url = "http://localhost:4567/tr069" + provUrl;
+    log.info("Using url: " + url);
+    HttpResponse<String> response =
+        Unirest.post(url)
+            .basicAuth("test123", "password")
+            .header("Content-type", "text/xml")
+            .body(inform)
+            .asString();
+    assertEquals(
+        "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soapenc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:cwmp=\"urn:dslforum-org:cwmp-1-2\">\n"
+            + "<soapenv:Header>\n"
+            + "\t<cwmp:ID soapenv:mustUnderstand=\"1\">1</cwmp:ID>\n"
+            + "</soapenv:Header>\n"
+            + "<soapenv:Body>\n"
+            + "\t\t<cwmp:InformResponse>\n"
+            + "\t\t\t<MaxEnvelopes>1</MaxEnvelopes>\n"
+            + "\t\t</cwmp:InformResponse>\n"
+            + "</soapenv:Body>\n"
+            + "</soapenv:Envelope>\n",
+        response.getBody());
+    assertEquals(200, response.getStatus());
   }
 }
