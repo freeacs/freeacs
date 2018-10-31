@@ -4,6 +4,7 @@ import static spark.Spark.get;
 
 import com.github.freeacs.common.hikari.HikariDataSourceHelper;
 import com.github.freeacs.common.scheduler.ExecutorWrapper;
+import com.github.freeacs.common.scheduler.ExecutorWrapperFactory;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import javax.sql.DataSource;
@@ -15,7 +16,7 @@ public class App {
     Spark.port(config.getInt("server.port"));
     DataSource mainDs = HikariDataSourceHelper.dataSource(config.getConfig("main"));
     Properties properties = new Properties(config);
-    ExecutorWrapper executorwrapper = new ExecutorWrapper(10);
+    ExecutorWrapper executorwrapper = ExecutorWrapperFactory.create(10);
     CoreServlet coreServlet = new CoreServlet(mainDs, properties, executorwrapper);
     coreServlet.init();
     get(properties.getContextPath() + "/ok", (req, res) -> coreServlet.health());

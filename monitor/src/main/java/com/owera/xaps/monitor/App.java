@@ -5,6 +5,7 @@ import static spark.Spark.path;
 
 import com.github.freeacs.common.http.SimpleResponseWrapper;
 import com.github.freeacs.common.scheduler.ExecutorWrapper;
+import com.github.freeacs.common.scheduler.ExecutorWrapperFactory;
 import com.github.freeacs.common.util.Sleep;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -15,7 +16,7 @@ public class App {
   public static void main(String[] args) throws ServletException {
     Config config = ConfigFactory.load();
     Spark.port(config.getInt("server.port"));
-    ExecutorWrapper executorWrapper = new ExecutorWrapper(1);
+    ExecutorWrapper executorWrapper = ExecutorWrapperFactory.create(1);
     routes(new Properties(config), executorWrapper);
     Runtime.getRuntime()
         .addShutdownHook(
