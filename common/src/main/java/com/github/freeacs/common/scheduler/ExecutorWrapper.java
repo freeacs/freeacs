@@ -6,8 +6,11 @@ import java.util.concurrent.*;
 import java.util.function.Function;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.quartz.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExecutorWrapper {
+  private static final Logger LOG = LoggerFactory.getLogger(ExecutorWrapper.class);
 
   private final ScheduledExecutorService executorService;
 
@@ -23,6 +26,10 @@ public class ExecutorWrapper {
         new BasicThreadFactory.Builder().namingPattern(name + "-%d");
     if (uncaughtExceptionHandler != null) {
       factory.uncaughtExceptionHandler(uncaughtExceptionHandler);
+    } else {
+      factory.uncaughtExceptionHandler((thread, error) -> {
+        LOG.error("Thread " + thread.toString() + " failed to complete properly", error);
+      });
     }
     executorService = Executors.newScheduledThreadPool(numThreads, factory.build());
   }
