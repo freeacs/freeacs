@@ -12,9 +12,17 @@ public class ExecutorWrapper {
   private final ScheduledExecutorService executorService;
 
   public ExecutorWrapper(int numThreads) {
-    final BasicThreadFactory factory =
-        new BasicThreadFactory.Builder().namingPattern("FreeACS-Executor-%d").build();
-    executorService = Executors.newScheduledThreadPool(numThreads, factory);
+    this(numThreads, null);
+  }
+
+  public ExecutorWrapper(
+      int numThreads, final Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
+    final BasicThreadFactory.Builder factory =
+        new BasicThreadFactory.Builder().namingPattern("FreeACS-Executor-%d");
+    if (uncaughtExceptionHandler != null) {
+      factory.uncaughtExceptionHandler(uncaughtExceptionHandler);
+    }
+    executorService = Executors.newScheduledThreadPool(numThreads, factory.build());
   }
 
   public void shutdown() {
