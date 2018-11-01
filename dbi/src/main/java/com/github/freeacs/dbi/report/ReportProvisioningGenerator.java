@@ -16,10 +16,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.sql.DataSource;
@@ -34,7 +31,7 @@ public class ReportProvisioningGenerator extends ReportGenerator {
 
   public ReportProvisioningGenerator(
       DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {
-    super(mainDataSource, acs, logPrefix, id);
+    super(mainDataSource, acs, logPrefix, id, Calendar.getInstance());
   }
 
   public Report<RecordProvisioning> generateFromReport(

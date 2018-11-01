@@ -7,12 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +16,7 @@ public class ReportSyslogGenerator extends ReportGenerator {
   private static Logger logger = LoggerFactory.getLogger(ReportSyslogGenerator.class);
 
   public ReportSyslogGenerator(DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {
-    super(mainDataSource, acs, logPrefix, id);
+    super(mainDataSource, acs, logPrefix, id, Calendar.getInstance());
   }
 
   public Report<RecordSyslog> generateFromReport(

@@ -46,13 +46,18 @@ public class ReportGenerator extends DBIOwner {
   private final Properties properties;
   private ACS acs;
   private ScheduleType scheduleType;
-  private TmsConverter converter = new TmsConverter();
+  private TmsConverter converter;
 
   public ReportGenerator(
-      String taskName, ScheduleType scheduleType, DBI dbi, Properties properties) {
+      String taskName,
+      ScheduleType scheduleType,
+      DBI dbi,
+      Properties properties,
+      Calendar calendar) {
     super(taskName, dbi);
     this.scheduleType = scheduleType;
     this.properties = properties;
+    this.converter = new TmsConverter(calendar);
   }
 
   @Override
@@ -154,11 +159,15 @@ public class ReportGenerator extends DBIOwner {
     }
   }
 
-  private void populateReportHWTable(DataSource cp, Report<RecordHardware> report)
+  protected void populateReportHWTable(DataSource cp, Report<RecordHardware> report)
       throws SQLException {
+    populateReportHWTable(cp, report, Calendar.getInstance());
+  }
+
+  protected void populateReportHWTable(
+      DataSource cp, Report<RecordHardware> report, Calendar calendar) throws SQLException {
     Connection connection = null;
     PreparedStatement ps = null;
-    final Calendar calendar = Calendar.getInstance();
     int skipped = 0;
     int inserted = 0;
     int updated = 0;

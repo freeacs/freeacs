@@ -10,10 +10,7 @@ import com.github.freeacs.dbi.SyslogFilter;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.Unittype;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.sql.DataSource;
@@ -28,7 +25,7 @@ public class ReportVoipCallGenerator extends ReportGenerator {
 
   public ReportVoipCallGenerator(
       DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {
-    super(mainDataSource, acs, logPrefix, id);
+    super(mainDataSource, acs, logPrefix, id, Calendar.getInstance());
   }
 
   public Report<RecordVoipCall> generateFromSyslog(Date start, Date end, String unitId, String line)
