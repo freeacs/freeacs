@@ -10,15 +10,11 @@ import com.github.freeacs.dbi.SyslogEntry;
 import com.github.freeacs.dbi.SyslogFilter;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.Unittype;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.sql.DataSource;
@@ -34,25 +30,19 @@ public class ReportVoipGenerator extends ReportGenerator {
   /** Reg failed: ua0: reg failed 613883@nettala.fo: 903 DNS Error (0 bindings) */
   private static Pattern regfailedPattern = Pattern.compile(".*reg failed.*");
 
-  public ReportVoipGenerator(
-      DataSource mainDataSource,
-      DataSource syslogDataSource,
-      ACS acs,
-      String logPrefix,
-      Identity id) {
-    super(mainDataSource, syslogDataSource, acs, logPrefix, id);
+  public ReportVoipGenerator(DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {
+    super(mainDataSource, acs, logPrefix, id, Calendar.getInstance());
   }
 
   public Report<RecordVoip> generateFromReport(
       PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs)
-      throws SQLException, IOException {
+      throws SQLException {
     Connection connection = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    SQLException sqle = null;
     try {
       boolean foundDataInReportTable = false;
-      Report<RecordVoip> report = new Report<RecordVoip>(RecordVoip.class, periodType);
+      Report<RecordVoip> report = new Report<>(RecordVoip.class, periodType);
 
       logger.debug(
           logPrefix + "VoipReport: Reads from report_voip table from " + start + " to " + end);
@@ -84,20 +74,13 @@ public class ReportVoipGenerator extends ReportGenerator {
             .add(
                 rs.getInt("call_length_avg"),
                 record.getIncomingCallCount().get() + record.getOutgoingCallCount().get());
-        //				record.getJitterAbove200msCount().add(rs.getInt("jitter_above200ms_count"));
         record.getJitterAvg().add(rs.getInt("jitter_avg"), record.getCallLengthTotal().get());
         record.getJitterMax().add(rs.getInt("jitter_max"), record.getCallLengthTotal().get());
-        //				record.getMos12Count().add(rs.getInt("mos_1_2_count"));
-        //				record.getMos23Count().add(rs.getInt("mos_2_3_count"));
-        //				record.getMos34Count().add(rs.getInt("mos_3_4_count"));
-        //				record.getMos45Count().add(rs.getInt("mos_4_5_count"));
         record.getMosAvg().add(rs.getInt("mos_avg"), record.getCallLengthTotal().get());
         record.getOutgoingCallFailedCount().add(rs.getInt("outgoing_call_failed_count"));
-        //				record.getPercentLossAbove10Count().add(rs.getInt("percent_loss_above10_count"));
         record
             .getPercentLossAvg()
             .add(rs.getInt("percent_loss_avg"), record.getCallLengthTotal().get());
-        //				record.getSipRegisterFailedCount().add(rs.getInt("sip_reg_failed_count"));
         record.getNoSipServiceTime().add(rs.getInt("no_sip_service_time"));
         report.setRecord(key, record);
         foundDataInReportTable = true;
@@ -114,9 +97,6 @@ public class ReportVoipGenerator extends ReportGenerator {
                 + " entries");
       }
       return report;
-    } catch (SQLException sqlex) {
-      sqle = sqlex;
-      throw sqlex;
     } finally {
       if (rs != null) {
         rs.close();
@@ -135,7 +115,7 @@ public class ReportVoipGenerator extends ReportGenerator {
    * SECOND.
    */
   public Report<RecordVoip> generateFromSyslog(Date start, Date end, String unitId)
-      throws SQLException, IOException {
+      throws SQLException {
     return generateFromSyslog(PeriodType.SECOND, start, end, null, null, unitId, null);
   }
 
@@ -150,9 +130,9 @@ public class ReportVoipGenerator extends ReportGenerator {
       List<Unittype> uts,
       List<Profile> prs,
       Group group)
-      throws SQLException, IOException {
+      throws SQLException {
     logInfo("VoipReport", null, uts, prs, start, end);
-    Syslog syslog = new Syslog(syslogDataSource, id);
+    Syslog syslog = new Syslog(mainDataSource, id);
     SyslogFilter filter = new SyslogFilter();
     filter.setFacility(16); // Only messages from device
     filter.setMessage("^QoS|^ua_: reg failed");
@@ -173,7 +153,7 @@ public class ReportVoipGenerator extends ReportGenerator {
       String unitId = entry.getUnitId();
       Report<RecordVoip> report = unitReportMap.get(unitId);
       if (report == null) {
-        report = new Report<RecordVoip>(RecordVoip.class, periodType);
+        report = new Report<>(RecordVoip.class, periodType);
         unitReportMap.put(unitId, report);
       }
       Matcher m = qosChannelPattern.matcher(entry.getContent());
@@ -198,7 +178,7 @@ public class ReportVoipGenerator extends ReportGenerator {
         record = recordTmp;
       }
       try {
-        parseContentAndPopulateRecord(record, entry.getContent(), entry.getCollectorTimestamp());
+        parseContentAndPopulateRecord(record, entry.getContent());
         report.setRecord(key, record);
       } catch (SyslogParseException spe) {
         // ignore this record
@@ -224,10 +204,10 @@ public class ReportVoipGenerator extends ReportGenerator {
       List<Profile> prs,
       String unitId,
       Group group)
-      throws SQLException, IOException {
-    Report<RecordVoip> report = new Report<RecordVoip>(RecordVoip.class, periodType);
+      throws SQLException {
+    Report<RecordVoip> report = new Report<>(RecordVoip.class, periodType);
     logInfo("VoipReport", unitId, uts, prs, start, end);
-    Syslog syslog = new Syslog(syslogDataSource, id);
+    Syslog syslog = new Syslog(mainDataSource, id);
     SyslogFilter filter = new SyslogFilter();
     filter.setFacility(16); // Only messages from device
     filter.setMessage("^QoS|^ua_: reg failed");
@@ -269,7 +249,7 @@ public class ReportVoipGenerator extends ReportGenerator {
         record = recordTmp;
       }
       try {
-        parseContentAndPopulateRecord(record, entry.getContent(), entry.getCollectorTimestamp());
+        parseContentAndPopulateRecord(record, entry.getContent());
         report.setRecord(key, record);
       } catch (SyslogParseException spe) {
         // ignore this record
@@ -286,7 +266,7 @@ public class ReportVoipGenerator extends ReportGenerator {
     return report;
   }
 
-  private void parseContentAndPopulateRecord(RecordVoip record, String content, Date tms)
+  private void parseContentAndPopulateRecord(RecordVoip record, String content)
       throws SyslogParseException {
     try {
       Matcher m = qosPattern.matcher(content);

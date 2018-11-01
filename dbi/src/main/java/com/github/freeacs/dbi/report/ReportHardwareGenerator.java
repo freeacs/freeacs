@@ -10,15 +10,11 @@ import com.github.freeacs.dbi.SyslogEntry;
 import com.github.freeacs.dbi.SyslogFilter;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.Unittype;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.sql.DataSource;
@@ -40,24 +36,19 @@ public class ReportHardwareGenerator extends ReportGenerator {
   private static Pattern rebootPattern = Pattern.compile(".*Reboot reason \\[.+\\](.+)");
 
   public ReportHardwareGenerator(
-      DataSource mainDataSource,
-      DataSource syslogDataSource,
-      ACS acs,
-      String logPrefix,
-      Identity id) {
-    super(mainDataSource, syslogDataSource, acs, logPrefix, id);
+      DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {
+    super(mainDataSource, acs, logPrefix, id, Calendar.getInstance());
   }
 
   public Report<RecordHardware> generateFromReport(
       PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs)
-      throws SQLException, IOException {
+      throws SQLException {
     Connection connection = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    SQLException sqle = null;
     try {
       boolean foundDataInReportTable = false;
-      Report<RecordHardware> report = new Report<RecordHardware>(RecordHardware.class, periodType);
+      Report<RecordHardware> report = new Report<>(RecordHardware.class, periodType);
 
       logger.debug(
           logPrefix + "HardwareReport: Reads from report_hw table from " + start + " to " + end);
@@ -79,7 +70,6 @@ public class ReportHardwareGenerator extends ReportGenerator {
         if (record == null) {
           record = recordTmp;
         }
-        //				record.getUnitCount().add(rs.getInt("unit_count"));
         record.getBootCount().add(rs.getInt("boot_count"));
         record.getBootMiscCount().add(rs.getInt("boot_misc_count"));
         record.getBootPowerCount().add(rs.getInt("boot_power_count"));
@@ -118,9 +108,6 @@ public class ReportHardwareGenerator extends ReportGenerator {
                 + " entries");
       }
       return report;
-    } catch (SQLException sqlex) {
-      sqle = sqlex;
-      throw sqlex;
     } finally {
       if (rs != null) {
         rs.close();
@@ -135,7 +122,7 @@ public class ReportHardwareGenerator extends ReportGenerator {
   }
 
   public Report<RecordHardware> generateFromSyslog(Date start, Date end, String unitId)
-      throws SQLException, IOException {
+      throws SQLException {
     return generateFromSyslog(PeriodType.SECOND, start, end, null, null, unitId, null);
   }
 
@@ -146,9 +133,9 @@ public class ReportHardwareGenerator extends ReportGenerator {
       List<Unittype> uts,
       List<Profile> prs,
       Group group)
-      throws SQLException, IOException {
+      throws SQLException {
     logInfo("HardwareReport", null, uts, prs, start, end);
-    Syslog syslog = new Syslog(syslogDataSource, id);
+    Syslog syslog = new Syslog(mainDataSource, id);
     SyslogFilter filter = new SyslogFilter();
     filter.setFacility(16); // Only messages from device
     filter.setMessage("^Reboot reason|^HW Memory");
@@ -178,7 +165,7 @@ public class ReportHardwareGenerator extends ReportGenerator {
       }
       Report<RecordHardware> report = unitReportMap.get(unitId);
       if (report == null) {
-        report = new Report<RecordHardware>(RecordHardware.class, periodType);
+        report = new Report<>(RecordHardware.class, periodType);
         unitReportMap.put(unitId, report);
       }
       if (entry.getFacilityVersion() == null || "".equals(entry.getFacilityVersion().trim())) {
@@ -197,7 +184,7 @@ public class ReportHardwareGenerator extends ReportGenerator {
         record = recordTmp;
       }
       try {
-        parseContentAndPopulateRecord(record, entry.getContent(), entry.getCollectorTimestamp());
+        parseContentAndPopulateRecord(record, entry.getContent());
         report.setRecord(key, record);
       } catch (SyslogParseException spe) {
         // ignore this record
@@ -222,10 +209,10 @@ public class ReportHardwareGenerator extends ReportGenerator {
       List<Profile> prs,
       String unitId,
       Group group)
-      throws SQLException, IOException {
-    Report<RecordHardware> report = new Report<RecordHardware>(RecordHardware.class, periodType);
+      throws SQLException {
+    Report<RecordHardware> report = new Report<>(RecordHardware.class, periodType);
     logInfo("HardwareReport", unitId, uts, prs, start, end);
-    Syslog syslog = new Syslog(syslogDataSource, id);
+    Syslog syslog = new Syslog(mainDataSource, id);
     SyslogFilter filter = new SyslogFilter();
     filter.setFacility(16); // Only messages from device
     filter.setMessage("^Reboot reason|^HW Memory");
@@ -267,29 +254,12 @@ public class ReportHardwareGenerator extends ReportGenerator {
         record = recordTmp;
       }
       try {
-        parseContentAndPopulateRecord(record, entry.getContent(), entry.getCollectorTimestamp());
+        parseContentAndPopulateRecord(record, entry.getContent());
         report.setRecord(key, record);
       } catch (SyslogParseException spe) {
         // ignore this record
       }
     }
-
-    //		logger.info(logPrefix + "HardwareReport: Add unitCount data fra unitReport:");
-    //		Report<RecordUnit> unitReport = generateUnitReport(PeriodType.DAY, start, end, uts, prs);
-    //		Map<Key, RecordUnit> unitReportAgg =
-    // unitReport.getMapAggregatedOn(report.getKeyFactory().getKeyNames());
-    //		for (Key key : report.getMap().keySet()) {
-    //			RecordHardware rec = report.getRecord(key);
-    //			Key modifiedKey = key.clone(PeriodType.DAY);
-    //			RecordUnit recordUnit = unitReportAgg.get(modifiedKey);
-    //			if (recordUnit != null)
-    //				rec.getUnitCount().add(recordUnit.getUnitCount());
-    //			else {
-    //				rec.getUnitCount().add(0);
-    //				logger.warn(logPrefix + "HardwareReport: Could not find unitCount for key: " +
-    // modifiedKey.toString() + ", setting unitCount to 0");
-    //			}
-    //		}
     logger.info(
         logPrefix
             + "HardwareReport: Have read "
@@ -300,7 +270,7 @@ public class ReportHardwareGenerator extends ReportGenerator {
     return report;
   }
 
-  private void parseContentAndPopulateRecord(RecordHardware record, String content, Date tms)
+  private void parseContentAndPopulateRecord(RecordHardware record, String content)
       throws SyslogParseException {
     try {
       Matcher m = memPattern.matcher(content);
@@ -321,7 +291,6 @@ public class ReportHardwareGenerator extends ReportGenerator {
         if (m2.find()) {
           int hours = Integer.parseInt(m2.group(1));
           int minutes = Integer.parseInt(m2.group(2));
-          //				int seconds  =  Integer.parseInt(m2.group(3));
           int totaluptimemin = hours * 60 + minutes;
           record.getCpeUptimeAvg().add(totaluptimemin);
         }

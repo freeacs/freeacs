@@ -10,7 +10,11 @@ import java.util.Date;
  * @author Morten
  */
 public class TmsConverter {
-  private Calendar calendar = Calendar.getInstance();
+  private Calendar calendar;
+
+  public TmsConverter(Calendar calendar) {
+    this.calendar = calendar;
+  }
 
   public Date convert(Date d, PeriodType periodType) {
     calendar.setTime(d);

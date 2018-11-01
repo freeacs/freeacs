@@ -12,6 +12,7 @@ import com.github.freeacs.web.app.page.report.ReportData;
 import com.github.freeacs.web.app.util.ACSLoader;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -34,10 +35,10 @@ public class UnitRetriever extends ReportRetriever {
     generator =
         new ReportGenerator(
             acs.getDataSource(),
-            acs.getSyslog().getDataSource(),
             acs,
             null,
-            ACSLoader.getIdentity(params.getSession().getId(), acs.getDataSource()));
+            ACSLoader.getIdentity(params.getSession().getId(), acs.getDataSource()),
+            Calendar.getInstance());
   }
 
   @Override

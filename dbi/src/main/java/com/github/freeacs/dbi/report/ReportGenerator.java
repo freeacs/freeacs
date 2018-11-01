@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 public class ReportGenerator {
   private static Logger logger = LoggerFactory.getLogger(ReportGenerator.class);
 
-  protected TmsConverter converter = new TmsConverter();
+  protected TmsConverter converter;
   protected DataSource syslogDataSource;
   protected DataSource mainDataSource;
   protected ACS acs;
@@ -47,29 +47,15 @@ public class ReportGenerator {
   protected String swVersion;
   protected SyslogFilter syslogFilter;
 
-  public void resetFilters() {
-    periodType = null;
-    start = null;
-    end = null;
-    unittypes = null;
-    profiles = null;
-    group = null;
-    swVersion = null;
-  }
-
   public ReportGenerator(
-      DataSource mainDataSource,
-      DataSource syslogDataSource,
-      ACS acs,
-      String logPrefix,
-      Identity id) {
-    this.syslogDataSource = syslogDataSource;
+      DataSource mainDataSource, ACS acs, String logPrefix, Identity id, Calendar calendar) {
     this.mainDataSource = mainDataSource;
     this.acs = acs;
     this.id = id;
     if (logPrefix != null) {
       this.logPrefix = logPrefix;
     }
+    this.converter = new TmsConverter(calendar);
   }
 
   protected DynamicStatement selectReportSQL(

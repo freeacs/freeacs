@@ -9,12 +9,8 @@ import com.github.freeacs.dbi.SyslogEntry;
 import com.github.freeacs.dbi.SyslogFilter;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.Unittype;
-import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.sql.DataSource;
@@ -28,16 +24,12 @@ public class ReportVoipCallGenerator extends ReportGenerator {
   private static Pattern mosPattern = Pattern.compile("MOS: (\\d+)");
 
   public ReportVoipCallGenerator(
-      DataSource mainDataSource,
-      DataSource syslogDataSource,
-      ACS acs,
-      String logPrefix,
-      Identity id) {
-    super(mainDataSource, syslogDataSource, acs, logPrefix, id);
+      DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {
+    super(mainDataSource, acs, logPrefix, id, Calendar.getInstance());
   }
 
   public Report<RecordVoipCall> generateFromSyslog(Date start, Date end, String unitId, String line)
-      throws SQLException, IOException {
+      throws SQLException {
     return generateFromSyslog(PeriodType.SECOND, start, end, null, null, unitId, line, null);
   }
 
@@ -50,8 +42,8 @@ public class ReportVoipCallGenerator extends ReportGenerator {
       String unitId,
       String line,
       Group group)
-      throws SQLException, IOException {
-    Report<RecordVoipCall> report = new Report<RecordVoipCall>(RecordVoipCall.class, periodType);
+      throws SQLException {
+    Report<RecordVoipCall> report = new Report<>(RecordVoipCall.class, periodType);
     logInfo("VoipCallReport", null, uts, prs, start, end);
     if (unitId != null) {
       unitId = "^" + unitId + "$";
@@ -82,7 +74,7 @@ public class ReportVoipCallGenerator extends ReportGenerator {
       List<Unittype> uts,
       List<Profile> prs,
       Group group)
-      throws SQLException, IOException {
+      throws SQLException {
     logInfo("VoipCallReport", null, uts, prs, start, end);
     Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
     List<SyslogEntry> entries = readSyslog(start, end, uts, prs, null, null);
@@ -96,7 +88,7 @@ public class ReportVoipCallGenerator extends ReportGenerator {
       String unitId = entry.getUnitId();
       Report<RecordVoipCall> report = unitReportMap.get(unitId);
       if (report == null) {
-        report = new Report<RecordVoipCall>(RecordVoipCall.class, periodType);
+        report = new Report<>(RecordVoipCall.class, periodType);
         unitReportMap.put(unitId, report);
       }
       addToReport(report, entry, periodType);
@@ -112,7 +104,7 @@ public class ReportVoipCallGenerator extends ReportGenerator {
     return unitReportMap;
   }
 
-  private void parseContentAndPopulateRecord(RecordVoipCall record, String content, Date tms) {
+  private void parseContentAndPopulateRecord(RecordVoipCall record, String content) {
     Matcher m = mosPattern.matcher(content);
     if (m.find()) {
       record.getUnitCount().add(1);
@@ -123,7 +115,7 @@ public class ReportVoipCallGenerator extends ReportGenerator {
   private List<SyslogEntry> readSyslog(
       Date start, Date end, List<Unittype> uts, List<Profile> prs, String unitId, String line)
       throws SQLException {
-    Syslog syslog = new Syslog(syslogDataSource, id);
+    Syslog syslog = new Syslog(mainDataSource, id);
     SyslogFilter filter = new SyslogFilter();
     filter.setFacility(16); // Only messages from device
     if (line != null) {
@@ -163,7 +155,7 @@ public class ReportVoipCallGenerator extends ReportGenerator {
     if (record == null) {
       record = recordTmp;
     }
-    parseContentAndPopulateRecord(record, entry.getContent(), entry.getCollectorTimestamp());
+    parseContentAndPopulateRecord(record, entry.getContent());
     report.setRecord(key, record);
   }
 }

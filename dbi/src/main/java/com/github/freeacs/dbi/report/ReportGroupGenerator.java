@@ -5,11 +5,11 @@ import com.github.freeacs.dbi.DynamicStatement;
 import com.github.freeacs.dbi.Group;
 import com.github.freeacs.dbi.Identity;
 import com.github.freeacs.dbi.Unittype;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.sql.DataSource;
@@ -19,24 +19,18 @@ import org.slf4j.LoggerFactory;
 public class ReportGroupGenerator extends ReportGenerator {
   private static Logger logger = LoggerFactory.getLogger(ReportGroupGenerator.class);
 
-  public ReportGroupGenerator(
-      DataSource mainDataSource,
-      DataSource syslogDataSource,
-      ACS acs,
-      String logPrefix,
-      Identity id) {
-    super(mainDataSource, syslogDataSource, acs, logPrefix, id);
+  public ReportGroupGenerator(DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {
+    super(mainDataSource, acs, logPrefix, id, Calendar.getInstance());
   }
 
   public Report<RecordGroup> generateGroupReport(
       PeriodType periodType, Date start, Date end, List<Unittype> uts, Group g)
-      throws SQLException, IOException {
+      throws SQLException {
     Connection connection = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    SQLException sqle = null;
     try {
-      Report<RecordGroup> report = new Report<RecordGroup>(RecordGroup.class, periodType);
+      Report<RecordGroup> report = new Report<>(RecordGroup.class, periodType);
       connection = mainDataSource.getConnection();
 
       logger.info(logPrefix + "Reads from report_group table from " + start + " to " + end);
@@ -71,9 +65,6 @@ public class ReportGroupGenerator extends ReportGenerator {
               + report.getMap().size()
               + " entries");
       return report;
-    } catch (SQLException sqlex) {
-      sqle = sqlex;
-      throw sqlex;
     } finally {
       if (rs != null) {
         rs.close();

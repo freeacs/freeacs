@@ -11,7 +11,6 @@ import com.github.freeacs.dbi.report.ReportSyslogGenerator;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.report.ReportData;
 import com.github.freeacs.web.app.util.ACSLoader;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
@@ -37,7 +36,6 @@ public class SyslogRetriever extends ReportRetriever {
     generator =
         new ReportSyslogGenerator(
             acs.getDataSource(),
-            acs.getSyslog().getDataSource(),
             acs,
             null,
             ACSLoader.getIdentity(params.getSession().getId(), acs.getDataSource()));
@@ -51,7 +49,7 @@ public class SyslogRetriever extends ReportRetriever {
       List<Unittype> unittypes,
       List<Profile> profiles,
       Group groupSelect)
-      throws SQLException, IOException, ParseException {
+      throws SQLException, ParseException {
     if (getInputData().getRealtime().getBoolean() || groupSelect != null) {
       return generator.generateFromSyslog(
           periodType, start, end, unittypes, profiles, null, groupSelect);

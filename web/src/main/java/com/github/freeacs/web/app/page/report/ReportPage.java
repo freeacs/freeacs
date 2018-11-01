@@ -10,7 +10,6 @@ import com.github.freeacs.dbi.report.PeriodType;
 import com.github.freeacs.dbi.report.Record;
 import com.github.freeacs.dbi.report.Report;
 import com.github.freeacs.dbi.report.ReportGenerator;
-import com.github.freeacs.dbi.report.ReportGroupGenerator;
 import com.github.freeacs.dbi.report.ReportHardwareGenerator;
 import com.github.freeacs.dbi.report.ReportProvisioningGenerator;
 import com.github.freeacs.dbi.report.ReportSyslogGenerator;
@@ -61,8 +60,6 @@ import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.entity.StandardEntityCollection;
 import org.jfree.chart.imagemap.ImageMapUtilities;
-import org.jfree.chart.imagemap.ToolTipTagFragmentGenerator;
-import org.jfree.chart.imagemap.URLTagFragmentGenerator;
 import org.jfree.chart.labels.XYSeriesLabelGenerator;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
@@ -251,7 +248,7 @@ public class ReportPage extends AbstractWebPage {
 
     rememberChartInSession(req);
 
-    displayReportChart(req, templateMap, legendIndex, aggregation);
+    displayReportChart(req, templateMap, aggregation);
 
     // apply report specific objects to the template map
     reportImplementation.applyObjects(templateMap);
@@ -319,16 +316,12 @@ public class ReportPage extends AbstractWebPage {
   }
 
   private void displayReportChart(
-      ParameterParser req,
-      Map<String, Object> templateMap,
-      Integer legendIndex,
-      CheckBoxGroup<String> aggregation)
+      ParameterParser req, Map<String, Object> templateMap, CheckBoxGroup<String> aggregation)
       throws Exception {
     ChartLegendsDimensions legendDimensions =
         new ChartLegendsDimensions(aggregation.getSelected().toArray(new String[] {}), report);
     displayReportChartWithImageMap(
         templateMap,
-        legendIndex,
         legendDimensions.numberOfColumns,
         legendDimensions.averageLengthPrLegend,
         aggregation.getSelected(),
@@ -675,9 +668,8 @@ public class ReportPage extends AbstractWebPage {
    *
    * @param input the input
    * @return the end date
-   * @throws ParseException the parse exception
    */
-  public Date getEndDate(Input input) throws ParseException {
+  public Date getEndDate(Input input) {
     Calendar end = Calendar.getInstance();
 
     if (input.notNullNorValue("")) {
@@ -719,21 +711,13 @@ public class ReportPage extends AbstractWebPage {
   public static ReportVoipGenerator getReportVoipGenerator(String sessionId, ACS acs)
       throws SQLException {
     return new ReportVoipGenerator(
-        acs.getDataSource(),
-        acs.getSyslog().getDataSource(),
-        acs,
-        null,
-        ACSLoader.getIdentity(sessionId, acs.getDataSource()));
+        acs.getDataSource(), acs, null, ACSLoader.getIdentity(sessionId, acs.getDataSource()));
   }
 
   public static ReportProvisioningGenerator getReportProvGenerator(String sessionId, ACS acs)
       throws SQLException {
     return new ReportProvisioningGenerator(
-        acs.getDataSource(),
-        acs.getSyslog().getDataSource(),
-        acs,
-        null,
-        ACSLoader.getIdentity(sessionId, acs.getDataSource()));
+        acs.getDataSource(), acs, null, ACSLoader.getIdentity(sessionId, acs.getDataSource()));
   }
 
   /**
@@ -747,29 +731,7 @@ public class ReportPage extends AbstractWebPage {
   public static ReportHardwareGenerator getReportHardwareGenerator(String sessionId, ACS acs)
       throws SQLException {
     return new ReportHardwareGenerator(
-        acs.getDataSource(),
-        acs.getSyslog().getDataSource(),
-        acs,
-        null,
-        ACSLoader.getIdentity(sessionId, acs.getDataSource()));
-  }
-
-  /**
-   * Gets the report group generator.
-   *
-   * @param sessionId the session id
-   * @param acs the xaps
-   * @return the report syslog generator
-   * @throws SQLException the sQL exception the no available connection exception
-   */
-  public static ReportGroupGenerator getReportGroupGenerator(String sessionId, ACS acs)
-      throws SQLException {
-    return new ReportGroupGenerator(
-        acs.getDataSource(),
-        acs.getSyslog().getDataSource(),
-        acs,
-        null,
-        ACSLoader.getIdentity(sessionId, acs.getDataSource()));
+        acs.getDataSource(), acs, null, ACSLoader.getIdentity(sessionId, acs.getDataSource()));
   }
 
   /**
@@ -783,11 +745,7 @@ public class ReportPage extends AbstractWebPage {
   public static ReportSyslogGenerator getReportSyslogGenerator(String sessionId, ACS acs)
       throws SQLException {
     return new ReportSyslogGenerator(
-        acs.getDataSource(),
-        acs.getSyslog().getDataSource(),
-        acs,
-        null,
-        ACSLoader.getIdentity(sessionId, acs.getDataSource()));
+        acs.getDataSource(), acs, null, ACSLoader.getIdentity(sessionId, acs.getDataSource()));
   }
 
   /**
@@ -801,11 +759,7 @@ public class ReportPage extends AbstractWebPage {
   public static ReportVoipCallGenerator getReportVoipCallGenerator(String sessionId, ACS acs)
       throws SQLException {
     return new ReportVoipCallGenerator(
-        acs.getDataSource(),
-        acs.getSyslog().getDataSource(),
-        acs,
-        null,
-        ACSLoader.getIdentity(sessionId, acs.getDataSource()));
+        acs.getDataSource(), acs, null, ACSLoader.getIdentity(sessionId, acs.getDataSource()));
   }
 
   /**
@@ -857,7 +811,7 @@ public class ReportPage extends AbstractWebPage {
       Unittype unittype,
       Profile profile,
       ReportGenerator rgHardware)
-      throws ParseException, SQLException {
+      throws SQLException {
     List<String> swVersionList = new ArrayList<>();
     String tableName = reportType2TableNameMap.get(type.getName());
     if (unittype != null) {
@@ -902,11 +856,7 @@ public class ReportPage extends AbstractWebPage {
   }
 
   private String generateClickablePointUrl(
-      PeriodType periodType,
-      String pageType,
-      String method,
-      String optionalmethod,
-      String sessionId) {
+      PeriodType periodType, String pageType, String method, String optionalmethod) {
     String messageToDisplayWhileWaiting = "Loading";
     String url =
         "javascript:goToUrlAndWait('"
@@ -951,12 +901,10 @@ public class ReportPage extends AbstractWebPage {
 
   private void displayReportChartWithImageMap(
       Map<String, Object> root,
-      Integer legendIndex,
       int numberOfColumns,
       int averageLengthPrLegend,
       List<String> aggregation,
-      HttpSession session)
-      throws Exception {
+      HttpSession session) {
     StringWriter stringWriter = new StringWriter();
     PrintWriter writer = new PrintWriter(stringWriter);
 
@@ -978,15 +926,11 @@ public class ReportPage extends AbstractWebPage {
               periodType.getSelected(),
               reportType.getName(),
               method.getSelected(),
-              optionalmethod.getSelected(),
-              session.getId());
+              optionalmethod.getSelected());
     }
 
     XYPlot plot = (XYPlot) chart.getPlot();
     XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
-    //		Unittype unittype = xaps.getUnittype(inputData.getUnittype().getString());
-    //		if (!xaps.getAllowedUnittypes().contains(unittype))
-    //			unittype = null;
     XYURLGenerator urls = new ReportURLGenerator(clickablePointUrl, chart, aggregation);
     renderer.setURLGenerator(urls);
     XYSeriesLabelGenerator slg =
@@ -1011,16 +955,8 @@ public class ReportPage extends AbstractWebPage {
           writer,
           "chart" + reportType.getName(),
           info,
-          new ToolTipTagFragmentGenerator() {
-            public String generateToolTipFragment(String arg0) {
-              return " title=\"" + arg0 + "\" alt=\"" + arg0 + "\"";
-            }
-          },
-          new URLTagFragmentGenerator() {
-            public String generateURLFragment(String arg0) {
-              return " href=\"" + arg0 + "\"";
-            }
-          });
+          arg0 -> " title=\"" + arg0 + "\" alt=\"" + arg0 + "\"",
+          arg0 -> " href=\"" + arg0 + "\"");
 
       writer.println(
           "<img src=\""

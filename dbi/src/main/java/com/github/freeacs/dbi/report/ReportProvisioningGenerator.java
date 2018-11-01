@@ -16,10 +16,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.sql.DataSource;
@@ -33,25 +30,19 @@ public class ReportProvisioningGenerator extends ReportGenerator {
       Pattern.compile(provMsgId + ".*ST:(\\w+), PO:(\\w+), SL:(\\d+)");
 
   public ReportProvisioningGenerator(
-      DataSource mainDataSource,
-      DataSource syslogDataSource,
-      ACS acs,
-      String logPrefix,
-      Identity id) {
-    super(mainDataSource, syslogDataSource, acs, logPrefix, id);
+      DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {
+    super(mainDataSource, acs, logPrefix, id, Calendar.getInstance());
   }
 
   public Report<RecordProvisioning> generateFromReport(
       PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs)
-      throws SQLException, IOException {
+      throws SQLException {
     Connection connection = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    SQLException sqle = null;
     try {
       boolean foundDataInReportTable = false;
-      Report<RecordProvisioning> report =
-          new Report<RecordProvisioning>(RecordProvisioning.class, periodType);
+      Report<RecordProvisioning> report = new Report<>(RecordProvisioning.class, periodType);
 
       logger.debug(
           logPrefix
@@ -106,9 +97,6 @@ public class ReportProvisioningGenerator extends ReportGenerator {
                 + " entries");
       }
       return report;
-    } catch (SQLException sqlex) {
-      sqle = sqlex;
-      throw sqlex;
     } finally {
       if (rs != null) {
         rs.close();
@@ -133,7 +121,7 @@ public class ReportProvisioningGenerator extends ReportGenerator {
       List<Unittype> uts,
       List<Profile> prs,
       Group group)
-      throws SQLException, IOException {
+      throws SQLException {
     return generateFromSyslogImpl(periodType, start, end, uts, prs, null, group);
   }
 
@@ -155,11 +143,10 @@ public class ReportProvisioningGenerator extends ReportGenerator {
       List<Profile> prs,
       String unitId,
       Group group)
-      throws SQLException, IOException {
+      throws SQLException {
     Map<String, Report<RecordProvisioning>> unitReportMap =
         generateFromSyslogImpl(periodType, start, end, uts, prs, unitId, group);
-    Report<RecordProvisioning> endReport =
-        new Report<RecordProvisioning>(RecordProvisioning.class, periodType);
+    Report<RecordProvisioning> endReport = new Report<>(RecordProvisioning.class, periodType);
 
     for (Report<RecordProvisioning> report : unitReportMap.values()) {
       for (RecordProvisioning record : report.getMap().values()) {
@@ -182,9 +169,9 @@ public class ReportProvisioningGenerator extends ReportGenerator {
       List<Profile> prs,
       String unitId,
       Group group)
-      throws SQLException, IOException {
+      throws SQLException {
     logInfo("ProvisioningReport", unitId, uts, prs, start, end);
-    Syslog syslog = new Syslog(syslogDataSource, id);
+    Syslog syslog = new Syslog(mainDataSource, id);
     SyslogFilter filter = new SyslogFilter();
     filter.setMessage(provMsgId);
     if (unitId != null) {
@@ -214,12 +201,12 @@ public class ReportProvisioningGenerator extends ReportGenerator {
       String unitIdEntry = entry.getUnitId();
       Report<RecordProvisioning> report = unitReportMap.get(unitIdEntry);
       if (report == null) {
-        report = new Report<RecordProvisioning>(RecordProvisioning.class, periodType);
+        report = new Report<>(RecordProvisioning.class, periodType);
         unitReportMap.put(unitIdEntry, report);
       }
       Matcher m = provPattern.matcher(entry.getContent());
 
-      RecordProvisioning recordTmp = null;
+      RecordProvisioning recordTmp;
       if (m.find()) {
         recordTmp =
             new RecordProvisioning(

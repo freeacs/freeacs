@@ -1,26 +1,13 @@
 package com.github.freeacs.dbi.report;
 
-import com.github.freeacs.dbi.ACS;
-import com.github.freeacs.dbi.DynamicStatement;
-import com.github.freeacs.dbi.Group;
-import com.github.freeacs.dbi.Identity;
-import com.github.freeacs.dbi.Profile;
-import com.github.freeacs.dbi.SyslogConstants;
-import com.github.freeacs.dbi.Unit;
-import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.User;
+import com.github.freeacs.dbi.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,13 +15,8 @@ import org.slf4j.LoggerFactory;
 public class ReportSyslogGenerator extends ReportGenerator {
   private static Logger logger = LoggerFactory.getLogger(ReportSyslogGenerator.class);
 
-  public ReportSyslogGenerator(
-      DataSource mainDataSource,
-      DataSource syslogDataSource,
-      ACS acs,
-      String logPrefix,
-      Identity id) {
-    super(mainDataSource, syslogDataSource, acs, logPrefix, id);
+  public ReportSyslogGenerator(DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {
+    super(mainDataSource, acs, logPrefix, id, Calendar.getInstance());
   }
 
   public Report<RecordSyslog> generateFromReport(
@@ -115,7 +97,6 @@ public class ReportSyslogGenerator extends ReportGenerator {
     Connection c = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    SQLException sqle = null;
     try {
       logInfo("SyslogReport", null, uts, prs, start, end);
 
@@ -154,13 +135,12 @@ public class ReportSyslogGenerator extends ReportGenerator {
         ds.addSqlAndArguments("content LIKE ? AND ", syslogFilter.getMessage());
       }
       addUnittypeOrProfileCriteria(ds, uts, prs);
-      //			ds.addSql(" AND unit_type_name <> '' AND profile_name <> '' ");
       ds.addSqlAndArguments("collector_timestamp < ? ", end);
       ds.addSql(
           "GROUP BY date_format(collector_timestamp, '"
               + sqlFormat
               + "'), unit_type_name, profile_name, unit_id, severity, syslog_event_id, facility");
-      c = syslogDataSource.getConnection();
+      c = mainDataSource.getConnection();
       ps = ds.makePreparedStatement(c);
       rs = ps.executeQuery();
       Map<String, Report<RecordSyslog>> unitReportMap = new HashMap<>();
@@ -188,7 +168,7 @@ public class ReportSyslogGenerator extends ReportGenerator {
         String facility = SyslogConstants.getFacilityName(rs.getInt("facility"));
         Report<RecordSyslog> report = unitReportMap.get(unitId);
         if (report == null) {
-          report = new Report<RecordSyslog>(RecordSyslog.class, periodType);
+          report = new Report<>(RecordSyslog.class, periodType);
           unitReportMap.put(unitId, report);
         }
         RecordSyslog recordTmp =
@@ -212,9 +192,6 @@ public class ReportSyslogGenerator extends ReportGenerator {
               + unitReportMap.size()
               + " units are mapped");
       return unitReportMap;
-    } catch (SQLException sqlex) {
-      sqle = sqlex;
-      throw sqlex;
     } finally {
       if (rs != null) {
         rs.close();
@@ -287,7 +264,7 @@ public class ReportSyslogGenerator extends ReportGenerator {
           ds.addSqlAndArguments("content LIKE ? AND ", syslogFilter.getMessage());
         }
         ds.addSqlAndArguments("collector_timestamp < ? ", end);
-        c = syslogDataSource.getConnection();
+        c = mainDataSource.getConnection();
         ps = ds.makePreparedStatement(c);
         rs = ps.executeQuery();
         while (rs.next()) {
@@ -344,7 +321,7 @@ public class ReportSyslogGenerator extends ReportGenerator {
             "GROUP BY date_format(collector_timestamp, '"
                 + sqlFormat
                 + "'), unit_type_name, profile_name, severity, syslog_event_id, facility");
-        c = syslogDataSource.getConnection();
+        c = mainDataSource.getConnection();
         ps = ds.makePreparedStatement(c);
         rs = ps.executeQuery();
         while (rs.next()) {
@@ -399,24 +376,7 @@ public class ReportSyslogGenerator extends ReportGenerator {
     boolean allUnittypesSpecified = false;
     ACS acs = profiles.get(0).getUnittype().getAcs();
     int noUnittypes = acs.getUnittypes().getUnittypes().length; // the number of unittypes in ACS
-    for (Profile profile : profiles) {
-      Integer unittypeId = profile.getUnittype().getId();
-      Set<Profile> profilesInUnittype = unittypesWithSomeProfilesSpecified.get(unittypeId);
-      if (profilesInUnittype == null) {
-        profilesInUnittype = new HashSet<>();
-      }
-      profilesInUnittype.add(profile);
-      if (unittypesWithAllProfilesSpecified.contains(unittypeId)) {
-        continue;
-      }
-      unittypesWithSomeProfilesSpecified.put(unittypeId, profilesInUnittype);
-      int noProfiles = profile.getUnittype().getProfiles().getProfiles().length;
-      // populate and delete (logically: move from "someSpecified" to "allSpecified")
-      if (unittypesWithSomeProfilesSpecified.get(unittypeId).size() == noProfiles) {
-        unittypesWithAllProfilesSpecified.add(unittypeId);
-        unittypesWithSomeProfilesSpecified.remove(unittypeId);
-      }
-    }
+    Syslog.doStuff(unittypesWithSomeProfilesSpecified, unittypesWithAllProfilesSpecified, profiles);
     if (noUnittypes == unittypesWithAllProfilesSpecified.size()) {
       allUnittypesSpecified = true;
     }
