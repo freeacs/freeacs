@@ -444,8 +444,7 @@ public class Syslog {
                 "INSERT INTO syslog ("
                     + "collector_timestamp, syslog_event_id, facility, facility_version, severity, "
                     + "device_timestamp, hostname, tag, unit_id, profile_name, unit_type_name, user_id, content, "
-                    + "flags, ipaddress"
-                    + ") "
+                    + "flags, ipaddress) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
       s.setTimestamp(1, new Timestamp(getTmsArg(entry).getTime()));
       s.setInt(2, Optional.ofNullable(entry.getEventId()).orElse(0));
