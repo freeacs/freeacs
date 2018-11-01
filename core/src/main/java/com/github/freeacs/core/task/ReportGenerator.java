@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ReportGenerator extends DBIOwner {
+  private static final String LOG_PREFIX = "- - ";
   private static long MINUTE_MS = 60 * 1000;
   private static long HOUR_MS = 60 * MINUTE_MS;
   private static long DAY_MS = 24 * HOUR_MS;
@@ -465,11 +466,7 @@ public class ReportGenerator extends DBIOwner {
                 + swVersion
                 + "###"
                 + status;
-        if (unitReport.get(key) != null) {
-          unitReport.put(key, unitReport.get(key) + 1);
-        } else {
-          unitReport.put(key, 1);
-        }
+        unitReport.merge(key, 1, (a, b) -> a + b);
       }
 
       for (Entry<String, Integer> entry : unitReport.entrySet()) {
@@ -822,10 +819,9 @@ public class ReportGenerator extends DBIOwner {
     populateReportUnitTable(getMainDataSource(), now, periodType);
   }
 
-  private void buildProvisioning(PeriodType periodType) throws SQLException, IOException {
+  private void buildProvisioning(PeriodType periodType) throws SQLException {
     ReportProvisioningGenerator rg =
-        new ReportProvisioningGenerator(
-            getMainDataSource(), getSyslogDataSource(), acs, "- - ", getIdentity());
+        new ReportProvisioningGenerator(getMainDataSource(), acs, LOG_PREFIX, getIdentity());
     Date endTmsExc = new Date();
     Date startTmsInc = rg.startReportFromTms(periodType, "report_prov");
     logger.info(
@@ -853,10 +849,9 @@ public class ReportGenerator extends DBIOwner {
         "ReportGenerator: - Populated ProvSYSReport  (" + periodType.getTypeStr() + "-based)");
   }
 
-  private void buildSyslog(PeriodType periodType) throws SQLException, IOException, ParseException {
+  private void buildSyslog(PeriodType periodType) throws SQLException, ParseException {
     ReportSyslogGenerator rg =
-        new ReportSyslogGenerator(
-            getMainDataSource(), getSyslogDataSource(), acs, "- - ", getIdentity());
+        new ReportSyslogGenerator(getMainDataSource(), acs, LOG_PREFIX, getIdentity());
     Date endTmsExc = new Date();
     Date startTmsInc = rg.startReportFromTms(periodType, "report_syslog");
     logger.info(
@@ -884,10 +879,9 @@ public class ReportGenerator extends DBIOwner {
         "ReportGenerator: - Populated SyslogReport  (" + periodType.getTypeStr() + "-based)");
   }
 
-  private void buildHardwareSYS(PeriodType periodType) throws SQLException, IOException {
+  private void buildHardwareSYS(PeriodType periodType) throws SQLException {
     ReportHardwareGenerator rg =
-        new ReportHardwareGenerator(
-            getMainDataSource(), getSyslogDataSource(), acs, "- - ", getIdentity());
+        new ReportHardwareGenerator(getMainDataSource(), acs, LOG_PREFIX, getIdentity());
     Date endTmsExc = new Date();
     Date startTmsInc = rg.startReportFromTms(periodType, "report_hw");
     logger.info(
@@ -931,10 +925,9 @@ public class ReportGenerator extends DBIOwner {
     populateReportJobTable(getMainDataSource(), now, periodType);
   }
 
-  private void buildVoipSYS(PeriodType periodType) throws SQLException, IOException {
+  private void buildVoipSYS(PeriodType periodType) throws SQLException {
     ReportVoipGenerator rg =
-        new ReportVoipGenerator(
-            getMainDataSource(), getSyslogDataSource(), acs, "- - ", getIdentity());
+        new ReportVoipGenerator(getMainDataSource(), acs, LOG_PREFIX, getIdentity());
     Date endTmsExc = new Date();
     Date startTmsInc = rg.startReportFromTms(periodType, "report_voip");
     logger.info(

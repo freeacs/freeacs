@@ -11,7 +11,6 @@ import com.github.freeacs.dbi.report.ReportHardwareGenerator;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.report.ReportData;
 import com.github.freeacs.web.app.util.ACSLoader;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -36,7 +35,6 @@ public class HardwareRetriever extends ReportRetriever {
     generator =
         new ReportHardwareGenerator(
             acs.getDataSource(),
-            acs.getSyslog().getDataSource(),
             acs,
             null,
             ACSLoader.getIdentity(params.getSession().getId(), acs.getDataSource()));
@@ -50,7 +48,7 @@ public class HardwareRetriever extends ReportRetriever {
       List<Unittype> unittypes,
       List<Profile> profiles,
       Group group)
-      throws SQLException, IOException {
+      throws SQLException {
     if (group != null) {
       return generator.generateFromSyslog(periodType, start, end, unittypes, profiles, null, group);
     }

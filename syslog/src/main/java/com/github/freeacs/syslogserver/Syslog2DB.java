@@ -105,12 +105,7 @@ public class Syslog2DB implements Runnable {
       try {
         Users users = new Users(xapsCp);
         Identity id = new Identity(5, "latest", users.getUnprotected(Users.USER_ADMIN));
-        syslog =
-            new Syslog(
-                xapsCp,
-                id,
-                properties.getMaxSyslogdbCommitQueue(),
-                properties.getMinSyslogdbCommitDelay());
+        syslog = new Syslog(xapsCp, id);
         if (properties.isSimulation()) {
           syslog.setSimulationMode(true);
           logger.warn(

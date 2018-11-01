@@ -5,14 +5,12 @@ import com.github.freeacs.dbi.Group;
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.report.PeriodType;
-import com.github.freeacs.dbi.report.RecordProvisioning;
 import com.github.freeacs.dbi.report.Report;
 import com.github.freeacs.dbi.report.ReportGenerator;
 import com.github.freeacs.dbi.report.ReportProvisioningGenerator;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.report.ReportData;
 import com.github.freeacs.web.app.util.ACSLoader;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -36,7 +34,6 @@ public class ProvRetriever extends ReportRetriever {
     generatorProv =
         new ReportProvisioningGenerator(
             acs.getDataSource(),
-            acs.getSyslog().getDataSource(),
             acs,
             null,
             ACSLoader.getIdentity(params.getSession().getId(), acs.getDataSource()));
@@ -50,17 +47,14 @@ public class ProvRetriever extends ReportRetriever {
       List<Unittype> unittypes,
       List<Profile> profiles,
       Group groupSelect)
-      throws SQLException, IOException {
-    Report<?> report = null;
+      throws SQLException {
+    Report<?> report;
     if (getInputData().getRealtime().getBoolean() || groupSelect != null) {
       report =
-          (Report<RecordProvisioning>)
-              generatorProv.generateFromSyslog(
-                  periodType, start, end, unittypes, profiles, null, groupSelect);
+          generatorProv.generateFromSyslog(
+              periodType, start, end, unittypes, profiles, null, groupSelect);
     } else {
-      report =
-          (Report<RecordProvisioning>)
-              generatorProv.generateFromReport(periodType, start, end, unittypes, profiles);
+      report = generatorProv.generateFromReport(periodType, start, end, unittypes, profiles);
     }
     return report;
   }

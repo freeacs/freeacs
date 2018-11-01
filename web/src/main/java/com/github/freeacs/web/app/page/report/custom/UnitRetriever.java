@@ -34,7 +34,6 @@ public class UnitRetriever extends ReportRetriever {
     generator =
         new ReportGenerator(
             acs.getDataSource(),
-            acs.getSyslog().getDataSource(),
             acs,
             null,
             ACSLoader.getIdentity(params.getSession().getId(), acs.getDataSource()));

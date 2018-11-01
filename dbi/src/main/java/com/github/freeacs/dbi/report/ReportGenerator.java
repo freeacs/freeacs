@@ -30,7 +30,6 @@ public class ReportGenerator {
   private static Logger logger = LoggerFactory.getLogger(ReportGenerator.class);
 
   protected TmsConverter converter = new TmsConverter();
-  protected DataSource syslogDataSource;
   protected DataSource mainDataSource;
   protected ACS acs;
   protected Identity id;
@@ -57,13 +56,7 @@ public class ReportGenerator {
     swVersion = null;
   }
 
-  public ReportGenerator(
-      DataSource mainDataSource,
-      DataSource syslogDataSource,
-      ACS acs,
-      String logPrefix,
-      Identity id) {
-    this.syslogDataSource = syslogDataSource;
+  public ReportGenerator(DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {
     this.mainDataSource = mainDataSource;
     this.acs = acs;
     this.id = id;

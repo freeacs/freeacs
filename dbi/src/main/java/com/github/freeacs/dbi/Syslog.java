@@ -29,16 +29,12 @@ import org.slf4j.LoggerFactory;
  * @author Morten
  */
 public class Syslog {
+
   private DataSource dataSource;
 
   private Identity id;
 
   private static Logger logger = LoggerFactory.getLogger(Syslog.class);
-
-  /** Commit, default below. */
-  public static final int defaultMaxInsertCount = 1000;
-
-  public static final int defaultMinTmsDelay = 5000;
 
   /** Only necessary in simulation-mode fields: */
   private boolean simulationMode;
@@ -47,17 +43,11 @@ public class Syslog {
       new SimpleDateFormat("yyyy MMM dd HH:mm:ss", new Locale("EN"));
   private static Calendar yearCal = Calendar.getInstance();
 
-  public Syslog(DataSource dataSource, Identity id) {
-    this(dataSource, id, defaultMaxInsertCount, defaultMinTmsDelay); // Default values.
-  }
-
   /**
    * @param dataSource
    * @param id The {@link Identity} for this syslog instance
-   * @param maxInsertCount The max number of insert messages (SQL) in the commit buffer
-   * @param minTmsDelay The min milliseconds between inserts into the DB
    */
-  public Syslog(DataSource dataSource, Identity id, int maxInsertCount, int minTmsDelay) {
+  public Syslog(DataSource dataSource, Identity id) {
     this.dataSource = dataSource;
     this.id = id;
   }
@@ -70,9 +60,21 @@ public class Syslog {
       SyslogFilter filter, Map<Integer, Set<Profile>> unittypesWithSomeProfilesSpecified) {
     Set<Integer> unittypesWithAllProfilesSpecified = new HashSet<>();
     boolean allUnittypesSpecified = false;
-    ACS acs = filter.getProfiles().get(0).getUnittype().getAcs();
+    List<Profile> profiles = filter.getProfiles();
+    ACS acs = profiles.get(0).getUnittype().getAcs();
     int noUnittypes = acs.getUnittypes().getUnittypes().length;
-    for (Profile profile : filter.getProfiles()) {
+    doStuff(unittypesWithSomeProfilesSpecified, unittypesWithAllProfilesSpecified, profiles);
+    if (noUnittypes == unittypesWithAllProfilesSpecified.size()) {
+      allUnittypesSpecified = true;
+    }
+    return allUnittypesSpecified;
+  }
+
+  public static void doStuff(
+      Map<Integer, Set<Profile>> unittypesWithSomeProfilesSpecified,
+      Set<Integer> unittypesWithAllProfilesSpecified,
+      List<Profile> profiles) {
+    for (Profile profile : profiles) {
       Integer unittypeId = profile.getUnittype().getId();
       Set<Profile> profilesInUnittype = unittypesWithSomeProfilesSpecified.get(unittypeId);
       if (profilesInUnittype == null) {
@@ -91,10 +93,6 @@ public class Syslog {
         unittypesWithSomeProfilesSpecified.remove(unittypeId);
       }
     }
-    if (noUnittypes == unittypesWithAllProfilesSpecified.size()) {
-      allUnittypesSpecified = true;
-    }
-    return allUnittypesSpecified;
   }
 
   private DynamicStatement addUnittypeOrProfileCriteria(DynamicStatement ds, SyslogFilter filter) {
@@ -379,7 +377,6 @@ public class Syslog {
     Connection c = getDataSource().getConnection();
     PreparedStatement pp = null;
     ResultSet rs = null;
-    // facilityDevice = false;
     try {
       DynamicStatement ds = new DynamicStatement();
       pp = makeReadSQL(c, ds, filter);
@@ -417,7 +414,7 @@ public class Syslog {
           // with the wrong year, since we set the year on server side. To avoid
           // this, we must check if the device-tms is too far off from the now-tms.
           // If it is, we adjust the yearCal and force deviceTms to now-tms
-          if (Math.abs(System.currentTimeMillis() - deviceTms.getTime()) > 3600 * 1000 * 24 * 30) {
+          if (Math.abs(System.currentTimeMillis() - deviceTms.getTime()) > 3600 * 1000 * 24 * 30L) {
             deviceTms = new Date();
             yearCal.setTime(deviceTms);
           }
@@ -444,7 +441,11 @@ public class Syslog {
     try (Connection c = getDataSource().getConnection();
         PreparedStatement s =
             c.prepareStatement(
-                "INSERT INTO syslog (collector_timestamp, syslog_event_id, facility, facility_version, severity, device_timestamp, hostname, tag, unit_id, profile_name, unit_type_name, user_id, content, flags, ipaddress) "
+                "INSERT INTO syslog ("
+                    + "collector_timestamp, syslog_event_id, facility, facility_version, severity, "
+                    + "device_timestamp, hostname, tag, unit_id, profile_name, unit_type_name, user_id, content, "
+                    + "flags, ipaddress"
+                    + ") "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
       s.setTimestamp(1, new Timestamp(getTmsArg(entry).getTime()));
       s.setInt(2, Optional.ofNullable(entry.getEventId()).orElse(0));

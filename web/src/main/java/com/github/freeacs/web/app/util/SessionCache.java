@@ -17,7 +17,6 @@ import com.github.freeacs.dbi.report.ReportSyslogGenerator;
 import com.github.freeacs.dbi.report.ReportVoipGenerator;
 import com.github.freeacs.web.security.AllowedUnittype;
 import com.github.freeacs.web.security.WebUser;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -226,7 +225,6 @@ public class SessionCache {
    * @return The report. Is null when report functionality is not supported by the database. the no
    *     available connection exception
    * @throws SQLException the sQL exception
-   * @throws IOException Signals that an I/O exception has occurred.
    */
   @SuppressWarnings("unchecked")
   public static Report<RecordVoip> getVoipReport(
@@ -236,7 +234,7 @@ public class SessionCache {
       Date toDate,
       DataSource xapsDataSource,
       DataSource syslogDataSource)
-      throws SQLException, IOException {
+      throws SQLException {
     String key = getRangeKey(unitId, "voipcalls", fromDate, toDate);
 
     CacheValue cv = cache.get(key);
@@ -244,7 +242,6 @@ public class SessionCache {
       ReportVoipGenerator rg =
           new ReportVoipGenerator(
               xapsDataSource,
-              syslogDataSource,
               ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource),
               null,
               ACSLoader.getIdentity(sessionId, xapsDataSource));
@@ -308,7 +305,6 @@ public class SessionCache {
    * @param syslogDataSource
    * @return the hardware report the no available connection exception
    * @throws SQLException the sQL exception
-   * @throws IOException Signals that an I/O exception has occurred.
    */
   @SuppressWarnings("unchecked")
   public static Report<RecordHardware> getHardwareReport(
@@ -318,7 +314,7 @@ public class SessionCache {
       Date toDate,
       DataSource xapsDataSource,
       DataSource syslogDataSource)
-      throws SQLException, IOException {
+      throws SQLException {
     String key = getRangeKey(unitId, "hardwarereport", fromDate, toDate);
 
     CacheValue cv = cache.get(key);
@@ -326,7 +322,6 @@ public class SessionCache {
       ReportHardwareGenerator rg =
           new ReportHardwareGenerator(
               xapsDataSource,
-              syslogDataSource,
               ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource),
               null,
               ACSLoader.getIdentity(sessionId, xapsDataSource));
@@ -365,7 +360,6 @@ public class SessionCache {
    * @param syslogDataSource
    * @return the syslog report the no available connection exception
    * @throws SQLException the sQL exception
-   * @throws IOException Signals that an I/O exception has occurred.
    * @throws ParseException the parse exception
    */
   @SuppressWarnings("unchecked")
@@ -377,7 +371,7 @@ public class SessionCache {
       String syslogFilter,
       DataSource xapsDataSource,
       DataSource syslogDataSource)
-      throws SQLException, IOException, ParseException {
+      throws SQLException, ParseException {
     String key = getSyslogRangeKey(unitId, "syslogreport", fromDate, toDate, syslogFilter);
 
     CacheValue cv = cache.get(key);
@@ -387,7 +381,6 @@ public class SessionCache {
       ReportSyslogGenerator rg =
           new ReportSyslogGenerator(
               xapsDataSource,
-              syslogDataSource,
               ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource),
               null,
               ACSLoader.getIdentity(sessionId, xapsDataSource));

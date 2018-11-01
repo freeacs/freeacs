@@ -14,7 +14,6 @@ import com.github.freeacs.web.app.input.InputSelectionFactory;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.report.ReportData;
 import com.github.freeacs.web.app.util.ACSLoader;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,7 +83,6 @@ public class GroupRetriever extends ReportRetriever {
     ACS acs = getAcs();
     return new ReportGroupGenerator(
         acs.getDataSource(),
-        acs.getSyslog().getDataSource(),
         acs,
         null,
         ACSLoader.getIdentity(getParams().getSession().getId(), acs.getDataSource()));
@@ -98,7 +96,7 @@ public class GroupRetriever extends ReportRetriever {
       List<Unittype> unittypes,
       List<Profile> profiles,
       Group group)
-      throws SQLException, IOException {
+      throws SQLException {
     return generator.generateGroupReport(periodType, start, end, unittypes, groups.getSelected());
   }
 
