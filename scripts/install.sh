@@ -249,14 +249,6 @@ http {
       proxy_set_header        X-Real-IP       $remote_addr;
       proxy_pass http://localhost:8085/tr069;
     }
-    location /tr069/prov {
-      proxy_set_header        X-Real-IP       \$remote_addr;
-      proxy_pass http://localhost:8085/tr069/prov;
-    }
-    location /tr069/ {
-      proxy_set_header        X-Real-IP       \$remote_addr;
-      proxy_pass http://localhost:8085/tr069/;
-    }
     location /web/ {
       proxy_pass http://localhost:8081/web/;
     }
