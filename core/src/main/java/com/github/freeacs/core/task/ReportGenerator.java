@@ -564,38 +564,38 @@ public class ReportGenerator extends DBIOwner {
     try {
       connection = cp.getConnection();
       Map<Key, RecordVoip> recordMap = report.getMap();
-      for (RecordVoip r : recordMap.values()) {
-        PeriodType periodType = r.getPeriodType();
-        if (skipPeriod(calendar, r.getTms(), periodType)) {
+      for (RecordVoip record : recordMap.values()) {
+        PeriodType periodType = record.getPeriodType();
+        if (skipPeriod(calendar, record.getTms(), periodType)) {
           skipped++;
           continue;
         }
         DynamicStatement ds = new DynamicStatement();
-        Date keyTms = converter.convert(r.getTms(), r.getPeriodType());
+        Date keyTms = converter.convert(record.getTms(), record.getPeriodType());
         ds.addArguments(keyTms);
         ds.addArguments(periodType.getTypeInt());
-        ds.addArguments(r.getUnittypeName());
-        ds.addArguments(r.getProfileName());
-        ds.addArguments(r.getSoftwareVersion());
-        ds.addArguments(r.getLine());
-        ds.addArguments(r.getMosAvg().get());
-        ds.addArguments(r.getJitterAvg().get());
-        ds.addArguments(r.getJitterMax().get());
-        ds.addArguments(r.getPercentLossAvg().get());
-        ds.addArguments(r.getCallLengthAvg().get());
-        ds.addArguments(r.getCallLengthTotal().get());
-        ds.addArguments(r.getIncomingCallCount().get());
-        ds.addArguments(r.getOutgoingCallCount().get());
-        ds.addArguments(r.getOutgoingCallFailedCount().get());
-        ds.addArguments(r.getAbortedCallCount().get());
-        ds.addArguments(r.getNoSipServiceTime().get());
+        ds.addArguments(record.getUnittypeName());
+        ds.addArguments(record.getProfileName());
+        ds.addArguments(record.getSoftwareVersion());
+        ds.addArguments(record.getLine());
+        ds.addArguments(record.getMosAvg().get());
+        ds.addArguments(record.getJitterAvg().get());
+        ds.addArguments(record.getJitterMax().get());
+        ds.addArguments(record.getPercentLossAvg().get());
+        ds.addArguments(record.getCallLengthAvg().get());
+        ds.addArguments(record.getCallLengthTotal().get());
+        ds.addArguments(record.getIncomingCallCount().get());
+        ds.addArguments(record.getOutgoingCallCount().get());
+        ds.addArguments(record.getOutgoingCallFailedCount().get());
+        ds.addArguments(record.getAbortedCallCount().get());
+        ds.addArguments(record.getNoSipServiceTime().get());
         ds.addSql("insert into report_voip VALUES(" + ds.getQuestionMarks() + ")");
         ps = ds.makePreparedStatement(connection);
         try {
           logger.debug(
               "ReportGenerator: - - SQL to be run: " + ds.getSqlQuestionMarksSubstituted());
           ps.executeUpdate();
-          logger.debug("ReportGenerator: - - The entry " + r.getKey() + " was inserted");
+          logger.debug("ReportGenerator: - - The entry " + record.getKey() + " was inserted");
           inserted++;
         } catch (SQLException sqlex2) {
           logger.debug(
@@ -612,28 +612,28 @@ public class ReportGenerator extends DBIOwner {
           ds.addSql(
               "where timestamp_ = ? and period_type = ? and unit_type_name = ? and profile_name = ? ");
           ds.addSql("and software_version = ? and line = ?");
-          ds.addArguments(r.getMosAvg().get());
-          ds.addArguments(r.getJitterAvg().get());
-          ds.addArguments(r.getPercentLossAvg().get());
-          ds.addArguments(r.getCallLengthAvg().get());
-          ds.addArguments(r.getCallLengthTotal().get());
-          ds.addArguments(r.getIncomingCallCount().get());
-          ds.addArguments(r.getNoSipServiceTime().get());
-          ds.addArguments(r.getOutgoingCallCount().get());
-          ds.addArguments(r.getOutgoingCallFailedCount().get());
-          ds.addArguments(r.getAbortedCallCount().get());
+          ds.addArguments(record.getMosAvg().get());
+          ds.addArguments(record.getJitterAvg().get());
+          ds.addArguments(record.getPercentLossAvg().get());
+          ds.addArguments(record.getCallLengthAvg().get());
+          ds.addArguments(record.getCallLengthTotal().get());
+          ds.addArguments(record.getIncomingCallCount().get());
+          ds.addArguments(record.getNoSipServiceTime().get());
+          ds.addArguments(record.getOutgoingCallCount().get());
+          ds.addArguments(record.getOutgoingCallFailedCount().get());
+          ds.addArguments(record.getAbortedCallCount().get());
           ds.addArguments(keyTms);
           ds.addArguments(periodType.getTypeInt());
-          ds.addArguments(r.getUnittypeName());
-          ds.addArguments(r.getProfileName());
-          ds.addArguments(r.getSoftwareVersion());
-          ds.addArguments(r.getLine());
+          ds.addArguments(record.getUnittypeName());
+          ds.addArguments(record.getProfileName());
+          ds.addArguments(record.getSoftwareVersion());
+          ds.addArguments(record.getLine());
           ps = ds.makePreparedStatement(connection);
           int rowsUpdated = ps.executeUpdate();
           if (rowsUpdated == 0) {
             throw sqlex2;
           }
-          logger.debug("ReportGenerator: - - The entry " + r.getKey() + " was updated");
+          logger.debug("ReportGenerator: - - The entry " + record.getKey() + " was updated");
           updated++;
         }
       }
@@ -668,34 +668,34 @@ public class ReportGenerator extends DBIOwner {
       connection = cp.getConnection();
       Map<Key, RecordProvisioning> recordMap = report.getMap();
       Calendar calendar = Calendar.getInstance();
-      for (RecordProvisioning r : recordMap.values()) {
-        PeriodType periodType = r.getPeriodType();
-        if (skipPeriod(calendar, r.getTms(), periodType)) {
+      for (RecordProvisioning record : recordMap.values()) {
+        PeriodType periodType = record.getPeriodType();
+        if (skipPeriod(calendar, record.getTms(), periodType)) {
           skipped++;
           continue;
         }
         DynamicStatement ds = new DynamicStatement();
-        Date keyTms = converter.convert(r.getTms(), r.getPeriodType());
+        Date keyTms = converter.convert(record.getTms(), record.getPeriodType());
         ds.addArguments(
             keyTms,
             periodType.getTypeInt(),
-            r.getUnittypeName(),
-            r.getProfileName(),
-            r.getSoftwareVersion(),
-            r.getOutput());
+            record.getUnittypeName(),
+            record.getProfileName(),
+            record.getSoftwareVersion(),
+            record.getOutput());
         ds.addArguments(
-            r.getProvisioningOkCount().get(), r.getProvisioningRescheduledCount().get());
+            record.getProvisioningOkCount().get(), record.getProvisioningRescheduledCount().get());
         ds.addArguments(
-            r.getProvisioningErrorCount().get(),
-            r.getProvisioningMissingCount().get(),
-            r.getSessionLengthAvg().get());
+            record.getProvisioningErrorCount().get(),
+            record.getProvisioningMissingCount().get(),
+            record.getSessionLengthAvg().get());
         ds.addSql("insert into report_prov VALUES(" + ds.getQuestionMarks() + ")");
         ps = ds.makePreparedStatement(connection);
         try {
           logger.debug(
               "ReportGenerator: - - SQL to be run: " + ds.getSqlQuestionMarksSubstituted());
           ps.executeUpdate();
-          logger.debug("ReportGenerator: - - The entry " + r.getKey() + " was inserted");
+          logger.debug("ReportGenerator: - - The entry " + record.getKey() + " was inserted");
           inserted++;
         } catch (SQLException sqlex2) {
           logger.debug(
@@ -707,11 +707,12 @@ public class ReportGenerator extends DBIOwner {
           ds.addSql(
               "ok_count = ?, rescheduled_count = ?, error_count =? , missing_count = ?, session_length_avg = ? ");
           ds.addArguments(
-              r.getProvisioningOkCount().get(), r.getProvisioningRescheduledCount().get());
+              record.getProvisioningOkCount().get(),
+              record.getProvisioningRescheduledCount().get());
           ds.addArguments(
-              r.getProvisioningErrorCount().get(),
-              r.getProvisioningMissingCount().get(),
-              r.getSessionLengthAvg().get());
+              record.getProvisioningErrorCount().get(),
+              record.getProvisioningMissingCount().get(),
+              record.getSessionLengthAvg().get());
           ds.addSql(
               "where timestamp_ = ? and period_type = ? and unit_type_name = ? and profile_name = ? ");
           ds.addSql(
@@ -719,16 +720,16 @@ public class ReportGenerator extends DBIOwner {
           ds.addArguments(
               keyTms,
               periodType.getTypeInt(),
-              r.getUnittypeName(),
-              r.getProfileName(),
-              r.getSoftwareVersion(),
-              r.getOutput());
+              record.getUnittypeName(),
+              record.getProfileName(),
+              record.getSoftwareVersion(),
+              record.getOutput());
           ps = ds.makePreparedStatement(connection);
           int rowsUpdated = ps.executeUpdate();
           if (rowsUpdated == 0) {
             throw sqlex2;
           }
-          logger.debug("ReportGenerator: - - The entry " + r.getKey() + " was updated");
+          logger.debug("ReportGenerator: - - The entry " + record.getKey() + " was updated");
           updated++;
         }
       }

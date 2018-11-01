@@ -86,8 +86,7 @@ public class Syslog {
       }
       unittypesWithSomeProfilesSpecified.put(unittypeId, profilesInUnittype);
       int noProfiles = profile.getUnittype().getProfiles().getProfiles().length;
-      // populate and delete (logically: move from "someSpecified" to
-      // "allSpecified")
+      // populate and delete (logically: move from "someSpecified" to "allSpecified")
       if (unittypesWithSomeProfilesSpecified.get(unittypeId).size() == noProfiles) {
         unittypesWithAllProfilesSpecified.add(unittypeId);
         unittypesWithSomeProfilesSpecified.remove(unittypeId);
