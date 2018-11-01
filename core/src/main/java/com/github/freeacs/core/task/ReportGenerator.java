@@ -157,72 +157,60 @@ public class ReportGenerator extends DBIOwner {
       throws SQLException {
     Connection connection = null;
     PreparedStatement ps = null;
-    Calendar c = Calendar.getInstance();
-    int nowMonth = c.get(Calendar.MONTH);
-    int nowDay = c.get(Calendar.DAY_OF_MONTH);
-    int nowHour = c.get(Calendar.HOUR_OF_DAY);
-    int nowMinute = c.get(Calendar.MINUTE);
-    long nowTms = c.getTimeInMillis();
+    final Calendar calendar = Calendar.getInstance();
     int skipped = 0;
     int inserted = 0;
     int updated = 0;
     try {
       connection = cp.getConnection();
-      Map<Key, RecordHardware> recordMap = report.getMap();
-      for (RecordHardware r : recordMap.values()) {
-        long diff = nowTms - r.getTms().getTime();
-        PeriodType pt = r.getPeriodType();
-        if ((pt == PeriodType.MONTH && diff < MONTH_MS && converter.month(r.getTms()) == nowMonth)
-            || (pt == PeriodType.DAY && diff < DAY_MS && converter.day(r.getTms()) == nowDay)
-            || (pt == PeriodType.HOUR && diff < HOUR_MS && converter.hour(r.getTms()) == nowHour)
-            || (pt == PeriodType.MINUTE
-                && diff < MINUTE_MS
-                && converter.minute(r.getTms()) == nowMinute)) {
+      final Map<Key, RecordHardware> recordMap = report.getMap();
+      for (RecordHardware record : recordMap.values()) {
+        final PeriodType periodType = record.getPeriodType();
+        if (skipPeriod(calendar, record.getTms(), periodType)) {
           skipped++;
           continue;
         }
         DynamicStatement ds = new DynamicStatement();
-        Date keyTms = converter.convert(r.getTms(), r.getPeriodType());
+        Date keyTms = converter.convert(record.getTms(), record.getPeriodType());
         ds.addArguments(keyTms);
-        ds.addArguments(pt.getTypeInt());
-        ds.addArguments(r.getUnittypeName());
-        ds.addArguments(r.getProfileName());
-        ds.addArguments(r.getSoftwareVersion());
-        //				ds.addArguments(r.getUnitCount().get());
-        ds.addArguments(r.getBootCount().get());
-        ds.addArguments(r.getBootWatchdogCount().get());
-        ds.addArguments(r.getBootMiscCount().get());
-        ds.addArguments(r.getBootPowerCount().get());
-        ds.addArguments(r.getBootResetCount().get());
-        ds.addArguments(r.getBootProvCount().get());
-        ds.addArguments(r.getBootProvSwCount().get());
-        ds.addArguments(r.getBootProvConfCount().get());
-        ds.addArguments(r.getBootProvBootCount().get());
-        ds.addArguments(r.getBootUserCount().get());
-        ds.addArguments(r.getMemoryHeapDdrPoolAvg().get());
-        ds.addArguments(r.getMemoryHeapDdrCurrentAvg().get());
-        ds.addArguments(r.getMemoryHeapDdrLowAvg().get());
-        ds.addArguments(r.getMemoryHeapOcmPoolAvg().get());
-        ds.addArguments(r.getMemoryHeapOcmCurrentAvg().get());
-        ds.addArguments(r.getMemoryHeapOcmLowAvg().get());
-        ds.addArguments(r.getMemoryNpDdrPoolAvg().get());
-        ds.addArguments(r.getMemoryNpDdrCurrentAvg().get());
-        ds.addArguments(r.getMemoryNpDdrLowAvg().get());
-        ds.addArguments(r.getMemoryNpOcmPoolAvg().get());
-        ds.addArguments(r.getMemoryNpOcmCurrentAvg().get());
-        ds.addArguments(r.getMemoryNpOcmLowAvg().get());
-        ds.addArguments(r.getCpeUptimeAvg().get());
+        ds.addArguments(periodType.getTypeInt());
+        ds.addArguments(record.getUnittypeName());
+        ds.addArguments(record.getProfileName());
+        ds.addArguments(record.getSoftwareVersion());
+        ds.addArguments(record.getBootCount().get());
+        ds.addArguments(record.getBootWatchdogCount().get());
+        ds.addArguments(record.getBootMiscCount().get());
+        ds.addArguments(record.getBootPowerCount().get());
+        ds.addArguments(record.getBootResetCount().get());
+        ds.addArguments(record.getBootProvCount().get());
+        ds.addArguments(record.getBootProvSwCount().get());
+        ds.addArguments(record.getBootProvConfCount().get());
+        ds.addArguments(record.getBootProvBootCount().get());
+        ds.addArguments(record.getBootUserCount().get());
+        ds.addArguments(record.getMemoryHeapDdrPoolAvg().get());
+        ds.addArguments(record.getMemoryHeapDdrCurrentAvg().get());
+        ds.addArguments(record.getMemoryHeapDdrLowAvg().get());
+        ds.addArguments(record.getMemoryHeapOcmPoolAvg().get());
+        ds.addArguments(record.getMemoryHeapOcmCurrentAvg().get());
+        ds.addArguments(record.getMemoryHeapOcmLowAvg().get());
+        ds.addArguments(record.getMemoryNpDdrPoolAvg().get());
+        ds.addArguments(record.getMemoryNpDdrCurrentAvg().get());
+        ds.addArguments(record.getMemoryNpDdrLowAvg().get());
+        ds.addArguments(record.getMemoryNpOcmPoolAvg().get());
+        ds.addArguments(record.getMemoryNpOcmCurrentAvg().get());
+        ds.addArguments(record.getMemoryNpOcmLowAvg().get());
+        ds.addArguments(record.getCpeUptimeAvg().get());
         ds.addSql("insert into report_hw VALUES(" + ds.getQuestionMarks() + ")");
         ps = ds.makePreparedStatement(connection);
         try {
           ps.executeUpdate();
           logger.debug(
-              "ReportGenerator: ReportGenerator: - - The entry " + r.getKey() + " was inserted");
+              "ReportGenerator: ReportGenerator: - - The entry " + record.getKey() + " was inserted");
           inserted++;
         } catch (SQLException sqlex2) {
           logger.error(
               "ReportGenerator: ReportGenerator: - - The entry "
-                  + r.getKey()
+                  + record.getKey()
                   + " was not updated. Update is not implented yet.",
               sqlex2);
         }
@@ -308,45 +296,34 @@ public class ReportGenerator extends DBIOwner {
       throws SQLException {
     Connection connection = null;
     PreparedStatement ps = null;
-    Calendar c = Calendar.getInstance();
-    int nowMonth = c.get(Calendar.MONTH);
-    int nowDay = c.get(Calendar.DAY_OF_MONTH);
-    int nowHour = c.get(Calendar.HOUR_OF_DAY);
-    int nowMinute = c.get(Calendar.MINUTE);
-    long nowTms = c.getTimeInMillis();
+    Calendar calendar = Calendar.getInstance();
     int skipped = 0;
     int inserted = 0;
     int updated = 0;
     try {
       connection = cp.getConnection();
       Map<Key, RecordSyslog> recordMap = report.getMap();
-      for (RecordSyslog r : recordMap.values()) {
-        long diff = nowTms - r.getTms().getTime();
-        PeriodType pt = r.getPeriodType();
-        if ((pt == PeriodType.MONTH && diff < MONTH_MS && converter.month(r.getTms()) == nowMonth)
-            || (pt == PeriodType.DAY && diff < DAY_MS && converter.day(r.getTms()) == nowDay)
-            || (pt == PeriodType.HOUR && diff < HOUR_MS && converter.hour(r.getTms()) == nowHour)
-            || (pt == PeriodType.MINUTE
-                && diff < MINUTE_MS
-                && converter.minute(r.getTms()) == nowMinute)) {
+      for (RecordSyslog record : recordMap.values()) {
+        PeriodType periodType = record.getPeriodType();
+        if (skipPeriod(calendar, record.getTms(), periodType)) {
           skipped++;
           continue;
         }
         DynamicStatement ds = new DynamicStatement();
-        Date keyTms = converter.convert(r.getTms(), r.getPeriodType());
+        Date keyTms = converter.convert(record.getTms(), record.getPeriodType());
         ds.addArguments(keyTms);
-        ds.addArguments(pt.getTypeInt());
-        ds.addArguments(r.getUnittypeName());
-        ds.addArguments(r.getProfileName());
-        ds.addArguments(r.getSeverity());
-        ds.addArguments(Integer.valueOf(r.getEventId()));
-        ds.addArguments(r.getFacility());
-        ds.addArguments(r.getMessageCount().get());
+        ds.addArguments(periodType.getTypeInt());
+        ds.addArguments(record.getUnittypeName());
+        ds.addArguments(record.getProfileName());
+        ds.addArguments(record.getSeverity());
+        ds.addArguments(Integer.valueOf(record.getEventId()));
+        ds.addArguments(record.getFacility());
+        ds.addArguments(record.getMessageCount().get());
         ds.addSql("insert into report_syslog VALUES(" + ds.getQuestionMarks() + ")");
         ps = ds.makePreparedStatement(connection);
         try {
           ps.executeUpdate();
-          logger.debug("ReportGenerator: - - The entry " + r.getKey() + " was inserted");
+          logger.debug("ReportGenerator: - - The entry " + record.getKey() + " was inserted");
           inserted++;
         } catch (SQLException sqlex2) {
           ds = new DynamicStatement();
@@ -354,20 +331,20 @@ public class ReportGenerator extends DBIOwner {
           ds.addSql(
               "WHERE timestamp_ = ? AND period_type = ? AND unit_type_name = ? AND profile_name = ? AND severity = ? AND syslog_event_id = ? AND facility = ?");
           ds.addArguments(
-              r.getMessageCount().get(),
+              record.getMessageCount().get(),
               keyTms,
-              pt.getTypeInt(),
-              r.getUnittypeName(),
-              r.getProfileName(),
-              r.getSeverity(),
-              Integer.valueOf(r.getEventId()),
-              r.getFacility());
+              periodType.getTypeInt(),
+              record.getUnittypeName(),
+              record.getProfileName(),
+              record.getSeverity(),
+              Integer.valueOf(record.getEventId()),
+              record.getFacility());
           ps = ds.makePreparedStatement(connection);
           int rowsUpdated = ps.executeUpdate();
           if (rowsUpdated == 0) {
             throw sqlex2;
           } else {
-            logger.debug("ReportGenerator: - - The entry " + r.getKey() + " was updated");
+            logger.debug("ReportGenerator: - - The entry " + record.getKey() + " was updated");
             updated++;
           }
         }
@@ -390,6 +367,35 @@ public class ReportGenerator extends DBIOwner {
         connection.close();
       }
     }
+  }
+
+  private boolean skipPeriod(
+      final Calendar calendar,
+      final Date syslogTms,
+      final PeriodType periodType) {
+    final int nowMonth = calendar.get(Calendar.MONTH);
+    final int nowDay = calendar.get(Calendar.DAY_OF_MONTH);
+    final int nowHour = calendar.get(Calendar.HOUR_OF_DAY);
+    final int nowMinute = calendar.get(Calendar.MINUTE);
+    final long nowTms = calendar.getTimeInMillis();
+    final long diff = nowTms - syslogTms.getTime();
+    final boolean skipMonth =
+        periodType == PeriodType.MONTH
+            && diff < MONTH_MS
+            && converter.month(syslogTms) == nowMonth;
+    final boolean skipDay =
+        periodType == PeriodType.DAY
+            && diff < DAY_MS
+            && converter.day(syslogTms) == nowDay;
+    final boolean skipHour =
+        periodType == PeriodType.HOUR
+            && diff < HOUR_MS
+            && converter.hour(syslogTms) == nowHour;
+    final boolean skipMinute =
+        periodType == PeriodType.MINUTE
+            && diff < MINUTE_MS
+            && converter.minute(syslogTms) == nowMinute;
+    return skipMonth || skipDay || skipHour || skipMinute;
   }
 
   private void populateReportUnitTable(DataSource cp, Date now, PeriodType pt) throws SQLException {
@@ -416,7 +422,9 @@ public class ReportGenerator extends DBIOwner {
       rs.close();
       rs =
           s.executeQuery(
-              "SELECT up.unit_id, up.value FROM unit_type_param utp, unit_param up WHERE up.unit_type_param_id = utp.unit_type_param_id AND utp.name LIKE '%Device.DeviceInfo.SoftwareVersion'");
+              "SELECT up.unit_id, up.value FROM unit_type_param utp, unit_param up " +
+                  "WHERE up.unit_type_param_id = utp.unit_type_param_id " +
+                  "AND utp.name LIKE '%Device.DeviceInfo.SoftwareVersion'");
       while (rs.next()) {
         UnitSWLCT u = unitMap.get(rs.getString("unit_id"));
         if (u != null) {
@@ -427,7 +435,9 @@ public class ReportGenerator extends DBIOwner {
 
       rs =
           s.executeQuery(
-              "SELECT up.unit_id, timestampdiff(DAY, up.value, sysdate()) FROM unit_type_param utp, unit_param up WHERE up.unit_type_param_id = utp.unit_type_param_id AND utp.name LIKE 'System.X_FREEACS-COM.LastConnectTms'");
+              "SELECT up.unit_id, timestampdiff(DAY, up.value, sysdate()) FROM unit_type_param utp, unit_param up " +
+                  "WHERE up.unit_type_param_id = utp.unit_type_param_id " +
+                  "AND utp.name LIKE 'System.X_FREEACS-COM.LastConnectTms'");
       while (rs.next()) {
         UnitSWLCT u = unitMap.get(rs.getString("unit_id"));
         if (u != null) {
@@ -556,12 +566,7 @@ public class ReportGenerator extends DBIOwner {
       throws SQLException {
     Connection connection = null;
     PreparedStatement ps = null;
-    Calendar c = Calendar.getInstance();
-    int nowMonth = c.get(Calendar.MONTH);
-    int nowDay = c.get(Calendar.DAY_OF_MONTH);
-    int nowHour = c.get(Calendar.HOUR_OF_DAY);
-    int nowMinute = c.get(Calendar.MINUTE);
-    long nowTms = c.getTimeInMillis();
+    Calendar calendar = Calendar.getInstance();
     int skipped = 0;
     int inserted = 0;
     int updated = 0;
@@ -569,21 +574,15 @@ public class ReportGenerator extends DBIOwner {
       connection = cp.getConnection();
       Map<Key, RecordVoip> recordMap = report.getMap();
       for (RecordVoip r : recordMap.values()) {
-        long diff = nowTms - r.getTms().getTime();
-        PeriodType pt = r.getPeriodType();
-        if ((pt == PeriodType.MONTH && diff < MONTH_MS && converter.month(r.getTms()) == nowMonth)
-            || (pt == PeriodType.DAY && diff < DAY_MS && converter.day(r.getTms()) == nowDay)
-            || (pt == PeriodType.HOUR && diff < HOUR_MS && converter.hour(r.getTms()) == nowHour)
-            || (pt == PeriodType.MINUTE
-                && diff < MINUTE_MS
-                && converter.minute(r.getTms()) == nowMinute)) {
+        PeriodType periodType = r.getPeriodType();
+        if (skipPeriod(calendar, r.getTms(), periodType)) {
           skipped++;
           continue;
         }
         DynamicStatement ds = new DynamicStatement();
         Date keyTms = converter.convert(r.getTms(), r.getPeriodType());
         ds.addArguments(keyTms);
-        ds.addArguments(pt.getTypeInt());
+        ds.addArguments(periodType.getTypeInt());
         ds.addArguments(r.getUnittypeName());
         ds.addArguments(r.getProfileName());
         ds.addArguments(r.getSoftwareVersion());
@@ -633,7 +632,7 @@ public class ReportGenerator extends DBIOwner {
           ds.addArguments(r.getOutgoingCallFailedCount().get());
           ds.addArguments(r.getAbortedCallCount().get());
           ds.addArguments(keyTms);
-          ds.addArguments(pt.getTypeInt());
+          ds.addArguments(periodType.getTypeInt());
           ds.addArguments(r.getUnittypeName());
           ds.addArguments(r.getProfileName());
           ds.addArguments(r.getSoftwareVersion());
@@ -667,22 +666,6 @@ public class ReportGenerator extends DBIOwner {
     }
   }
 
-  private boolean skip(PeriodType pt, Date recordTms, Calendar now) {
-    long diff = now.getTimeInMillis() - recordTms.getTime();
-    return (pt == PeriodType.MONTH
-            && diff < MONTH_MS
-            && converter.month(recordTms) == now.get(Calendar.MONTH))
-        || (pt == PeriodType.DAY
-            && diff < DAY_MS
-            && converter.day(recordTms) == now.get(Calendar.DAY_OF_MONTH))
-        || (pt == PeriodType.HOUR
-            && diff < HOUR_MS
-            && converter.hour(recordTms) == now.get(Calendar.HOUR_OF_DAY))
-        || (pt == PeriodType.MINUTE
-            && diff < MINUTE_MS
-            && converter.minute(recordTms) == now.get(Calendar.MINUTE));
-  }
-
   private void populateReportProvTable(DataSource cp, Report<RecordProvisioning> report)
       throws SQLException {
     Connection connection = null;
@@ -693,10 +676,10 @@ public class ReportGenerator extends DBIOwner {
       int updated = 0;
       connection = cp.getConnection();
       Map<Key, RecordProvisioning> recordMap = report.getMap();
-      Calendar now = Calendar.getInstance();
+      Calendar calendar = Calendar.getInstance();
       for (RecordProvisioning r : recordMap.values()) {
-        PeriodType pt = r.getPeriodType();
-        if (skip(pt, r.getTms(), now)) {
+        PeriodType periodType = r.getPeriodType();
+        if (skipPeriod(calendar, r.getTms(), periodType)) {
           skipped++;
           continue;
         }
@@ -704,7 +687,7 @@ public class ReportGenerator extends DBIOwner {
         Date keyTms = converter.convert(r.getTms(), r.getPeriodType());
         ds.addArguments(
             keyTms,
-            pt.getTypeInt(),
+            periodType.getTypeInt(),
             r.getUnittypeName(),
             r.getProfileName(),
             r.getSoftwareVersion(),
@@ -744,7 +727,7 @@ public class ReportGenerator extends DBIOwner {
               "and software_version = ? and line = ? and prov_output = ? and prov_status = ?");
           ds.addArguments(
               keyTms,
-              pt.getTypeInt(),
+              periodType.getTypeInt(),
               r.getUnittypeName(),
               r.getProfileName(),
               r.getSoftwareVersion(),
@@ -858,7 +841,7 @@ public class ReportGenerator extends DBIOwner {
             + startTmsInc
             + " to "
             + endTmsExc);
-    Report<RecordProvisioning> report = null;
+    Report<RecordProvisioning> report;
     if (periodType == PeriodType.DAY) {
       report = rg.generateFromReport(PeriodType.HOUR, startTmsInc, endTmsExc, null, null);
       report = ReportConverter.convertProvReport(report, PeriodType.DAY);
@@ -889,7 +872,7 @@ public class ReportGenerator extends DBIOwner {
             + startTmsInc
             + " to "
             + endTmsExc);
-    Report<RecordSyslog> report = null;
+    Report<RecordSyslog> report;
     if (periodType == PeriodType.DAY) {
       report = rg.generateFromReport(PeriodType.HOUR, startTmsInc, endTmsExc, null, null);
       report = ReportConverter.convertSyslogReport(report, PeriodType.DAY);
@@ -920,7 +903,7 @@ public class ReportGenerator extends DBIOwner {
             + startTmsInc
             + " to "
             + endTmsExc);
-    Report<RecordHardware> report = null;
+    Report<RecordHardware> report;
     if (periodType == PeriodType.DAY) {
       report = rg.generateFromReport(PeriodType.HOUR, startTmsInc, endTmsExc, null, null);
       report = ReportConverter.convertHardwareReport(report, PeriodType.DAY);
@@ -946,7 +929,7 @@ public class ReportGenerator extends DBIOwner {
     populateReportGroupTable(getMainDataSource(), now, periodType);
   }
 
-  private void buildJob(PeriodType periodType, Date now) throws SQLException, IOException {
+  private void buildJob(PeriodType periodType, Date now) throws SQLException {
     logger.info(
         "ReportGenerator: - Generating and populating JobReport ("
             + periodType.getTypeStr()
@@ -967,7 +950,7 @@ public class ReportGenerator extends DBIOwner {
             + startTmsInc
             + " to "
             + endTmsExc);
-    Report<RecordVoip> report = null;
+    Report<RecordVoip> report;
     if (periodType == PeriodType.DAY) {
       report = rg.generateFromReport(PeriodType.HOUR, startTmsInc, endTmsExc, null, null);
       report = ReportConverter.convertVoipReport(report, PeriodType.DAY);
