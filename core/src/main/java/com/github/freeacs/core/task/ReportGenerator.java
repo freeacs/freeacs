@@ -205,7 +205,9 @@ public class ReportGenerator extends DBIOwner {
         try {
           ps.executeUpdate();
           logger.debug(
-              "ReportGenerator: ReportGenerator: - - The entry " + record.getKey() + " was inserted");
+              "ReportGenerator: ReportGenerator: - - The entry "
+                  + record.getKey()
+                  + " was inserted");
           inserted++;
         } catch (SQLException sqlex2) {
           logger.error(
@@ -370,9 +372,7 @@ public class ReportGenerator extends DBIOwner {
   }
 
   private boolean skipPeriod(
-      final Calendar calendar,
-      final Date syslogTms,
-      final PeriodType periodType) {
+      final Calendar calendar, final Date syslogTms, final PeriodType periodType) {
     final int nowMonth = calendar.get(Calendar.MONTH);
     final int nowDay = calendar.get(Calendar.DAY_OF_MONTH);
     final int nowHour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -380,17 +380,11 @@ public class ReportGenerator extends DBIOwner {
     final long nowTms = calendar.getTimeInMillis();
     final long diff = nowTms - syslogTms.getTime();
     final boolean skipMonth =
-        periodType == PeriodType.MONTH
-            && diff < MONTH_MS
-            && converter.month(syslogTms) == nowMonth;
+        periodType == PeriodType.MONTH && diff < MONTH_MS && converter.month(syslogTms) == nowMonth;
     final boolean skipDay =
-        periodType == PeriodType.DAY
-            && diff < DAY_MS
-            && converter.day(syslogTms) == nowDay;
+        periodType == PeriodType.DAY && diff < DAY_MS && converter.day(syslogTms) == nowDay;
     final boolean skipHour =
-        periodType == PeriodType.HOUR
-            && diff < HOUR_MS
-            && converter.hour(syslogTms) == nowHour;
+        periodType == PeriodType.HOUR && diff < HOUR_MS && converter.hour(syslogTms) == nowHour;
     final boolean skipMinute =
         periodType == PeriodType.MINUTE
             && diff < MINUTE_MS
@@ -422,9 +416,9 @@ public class ReportGenerator extends DBIOwner {
       rs.close();
       rs =
           s.executeQuery(
-              "SELECT up.unit_id, up.value FROM unit_type_param utp, unit_param up " +
-                  "WHERE up.unit_type_param_id = utp.unit_type_param_id " +
-                  "AND utp.name LIKE '%Device.DeviceInfo.SoftwareVersion'");
+              "SELECT up.unit_id, up.value FROM unit_type_param utp, unit_param up "
+                  + "WHERE up.unit_type_param_id = utp.unit_type_param_id "
+                  + "AND utp.name LIKE '%Device.DeviceInfo.SoftwareVersion'");
       while (rs.next()) {
         UnitSWLCT u = unitMap.get(rs.getString("unit_id"));
         if (u != null) {
@@ -435,9 +429,9 @@ public class ReportGenerator extends DBIOwner {
 
       rs =
           s.executeQuery(
-              "SELECT up.unit_id, timestampdiff(DAY, up.value, sysdate()) FROM unit_type_param utp, unit_param up " +
-                  "WHERE up.unit_type_param_id = utp.unit_type_param_id " +
-                  "AND utp.name LIKE 'System.X_FREEACS-COM.LastConnectTms'");
+              "SELECT up.unit_id, timestampdiff(DAY, up.value, sysdate()) FROM unit_type_param utp, unit_param up "
+                  + "WHERE up.unit_type_param_id = utp.unit_type_param_id "
+                  + "AND utp.name LIKE 'System.X_FREEACS-COM.LastConnectTms'");
       while (rs.next()) {
         UnitSWLCT u = unitMap.get(rs.getString("unit_id"));
         if (u != null) {
