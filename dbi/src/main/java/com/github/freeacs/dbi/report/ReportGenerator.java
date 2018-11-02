@@ -48,18 +48,13 @@ public class ReportGenerator {
   protected SyslogFilter syslogFilter;
 
   public ReportGenerator(DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {
-    this(mainDataSource, acs, logPrefix, id, Calendar.getInstance());
-  }
-
-  protected ReportGenerator(
-      DataSource mainDataSource, ACS acs, String logPrefix, Identity id, Calendar calendar) {
     this.mainDataSource = mainDataSource;
     this.acs = acs;
     this.id = id;
     if (logPrefix != null) {
       this.logPrefix = logPrefix;
     }
-    this.converter = new TmsConverter(calendar);
+    this.converter = new TmsConverter();
   }
 
   protected DynamicStatement selectReportSQL(

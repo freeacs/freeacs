@@ -12,6 +12,10 @@ import java.util.Date;
 public class TmsConverter {
   private Calendar calendar;
 
+  public TmsConverter() {
+    this(Calendar.getInstance());
+  }
+
   public TmsConverter(Calendar calendar) {
     this.calendar = calendar;
   }

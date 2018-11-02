@@ -50,19 +50,10 @@ public class ReportGenerator extends DBIOwner {
 
   public ReportGenerator(
       String taskName, ScheduleType scheduleType, DBI dbi, Properties properties) {
-    this(taskName, scheduleType, dbi, properties, Calendar.getInstance());
-  }
-
-  protected ReportGenerator(
-      String taskName,
-      ScheduleType scheduleType,
-      DBI dbi,
-      Properties properties,
-      Calendar calendar) {
     super(taskName, dbi);
     this.scheduleType = scheduleType;
     this.properties = properties;
-    this.converter = new TmsConverter(calendar);
+    this.converter = new TmsConverter();
   }
 
   @Override

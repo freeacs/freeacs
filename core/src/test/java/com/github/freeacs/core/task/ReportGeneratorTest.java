@@ -26,7 +26,7 @@ public class ReportGeneratorTest {
     calendar.set(Calendar.MONTH, 10);
     calendar.set(Calendar.DAY_OF_MONTH, 15);
     final ReportGenerator reportGenerator =
-        new ReportGenerator("Test", ScheduleType.DAILY, null, null, calendar);
+        new ReportGenerator("Test", ScheduleType.DAILY, null, null);
     final DataSource fakeDataSource = mock(DataSource.class);
     final Connection fakeConnection = mock(Connection.class);
     final PreparedStatement fakePreparedStatement = mock(PreparedStatement.class);
