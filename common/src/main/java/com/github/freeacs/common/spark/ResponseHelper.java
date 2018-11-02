@@ -23,6 +23,7 @@ public class ResponseHelper {
     service.apply(request.raw(), responseWrapper);
     response.status(responseWrapper.getStatus());
     response.type(responseWrapper.getContentType());
+    response.header("Content-Length", String.valueOf(responseWrapper.getResponseAsBytes().length));
     responseWrapper.getHeaders().forEach((k, v) -> response.header(k, v.toString()));
     return responseWrapper.getResponseAsBytes();
   }
