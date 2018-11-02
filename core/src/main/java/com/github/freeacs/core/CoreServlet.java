@@ -19,7 +19,6 @@ import com.github.freeacs.dbi.User;
 import com.github.freeacs.dbi.Users;
 import com.github.freeacs.dbi.util.ACSVersionCheck;
 import java.sql.SQLException;
-import java.util.Calendar;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,8 +134,7 @@ public class CoreServlet {
   private void bootHeavyTasks(DBI dbi) {
     // Run at 00 every hour - heavy task
     final ReportGenerator reportGeneratorHourlyTask =
-        new ReportGenerator(
-            "ReportGeneratorHourly", ScheduleType.HOURLY, dbi, properties, Calendar.getInstance());
+        new ReportGenerator("ReportGeneratorHourly", ScheduleType.HOURLY, dbi, properties);
     executorWrapper.scheduleCron(
         "0 0 * ? * * *",
         (tms) ->
@@ -147,8 +145,7 @@ public class CoreServlet {
 
     // Run at 0015 every night - very heavy task
     final ReportGenerator reportGeneratorDailyTask =
-        new ReportGenerator(
-            "ReportGeneratorDaily", ScheduleType.DAILY, dbi, properties, Calendar.getInstance());
+        new ReportGenerator("ReportGeneratorDaily", ScheduleType.DAILY, dbi, properties);
     executorWrapper.scheduleCron(
         "0 15 0 ? * * *",
         (tms) ->

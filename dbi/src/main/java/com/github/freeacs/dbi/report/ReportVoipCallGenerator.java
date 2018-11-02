@@ -25,7 +25,7 @@ public class ReportVoipCallGenerator extends ReportGenerator {
 
   public ReportVoipCallGenerator(
       DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {
-    super(mainDataSource, acs, logPrefix, id, Calendar.getInstance());
+    super(mainDataSource, acs, logPrefix, id);
   }
 
   public Report<RecordVoipCall> generateFromSyslog(Date start, Date end, String unitId, String line)

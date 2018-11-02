@@ -9,7 +9,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.sql.DataSource;
@@ -20,7 +19,7 @@ public class ReportGroupGenerator extends ReportGenerator {
   private static Logger logger = LoggerFactory.getLogger(ReportGroupGenerator.class);
 
   public ReportGroupGenerator(DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {
-    super(mainDataSource, acs, logPrefix, id, Calendar.getInstance());
+    super(mainDataSource, acs, logPrefix, id);
   }
 
   public Report<RecordGroup> generateGroupReport(

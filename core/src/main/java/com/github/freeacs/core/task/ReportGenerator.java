@@ -49,6 +49,11 @@ public class ReportGenerator extends DBIOwner {
   private TmsConverter converter;
 
   public ReportGenerator(
+      String taskName, ScheduleType scheduleType, DBI dbi, Properties properties) {
+    this(taskName, scheduleType, dbi, properties, Calendar.getInstance());
+  }
+
+  protected ReportGenerator(
       String taskName,
       ScheduleType scheduleType,
       DBI dbi,

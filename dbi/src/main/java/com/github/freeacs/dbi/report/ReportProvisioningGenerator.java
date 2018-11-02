@@ -31,7 +31,7 @@ public class ReportProvisioningGenerator extends ReportGenerator {
 
   public ReportProvisioningGenerator(
       DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {
-    super(mainDataSource, acs, logPrefix, id, Calendar.getInstance());
+    super(mainDataSource, acs, logPrefix, id);
   }
 
   public Report<RecordProvisioning> generateFromReport(

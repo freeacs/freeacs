@@ -16,7 +16,7 @@ public class ReportSyslogGenerator extends ReportGenerator {
   private static Logger logger = LoggerFactory.getLogger(ReportSyslogGenerator.class);
 
   public ReportSyslogGenerator(DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {
-    super(mainDataSource, acs, logPrefix, id, Calendar.getInstance());
+    super(mainDataSource, acs, logPrefix, id);
   }
 
   public Report<RecordSyslog> generateFromReport(

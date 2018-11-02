@@ -31,7 +31,7 @@ public class ReportVoipGenerator extends ReportGenerator {
   private static Pattern regfailedPattern = Pattern.compile(".*reg failed.*");
 
   public ReportVoipGenerator(DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {
-    super(mainDataSource, acs, logPrefix, id, Calendar.getInstance());
+    super(mainDataSource, acs, logPrefix, id);
   }
 
   public Report<RecordVoip> generateFromReport(

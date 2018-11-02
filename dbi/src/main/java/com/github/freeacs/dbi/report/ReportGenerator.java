@@ -47,7 +47,11 @@ public class ReportGenerator {
   protected String swVersion;
   protected SyslogFilter syslogFilter;
 
-  public ReportGenerator(
+  public ReportGenerator(DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {
+    this(mainDataSource, acs, logPrefix, id, Calendar.getInstance());
+  }
+
+  protected ReportGenerator(
       DataSource mainDataSource, ACS acs, String logPrefix, Identity id, Calendar calendar) {
     this.mainDataSource = mainDataSource;
     this.acs = acs;
