@@ -482,6 +482,20 @@ public class Job {
     }
   }
 
+  @SuppressWarnings("unused")
+  public List<Job> getAllChildren() {
+    return getAllChildrenRec(this);
+  }
+
+  private List<Job> getAllChildrenRec(Job j) {
+    List<Job> groups = new ArrayList<>();
+    for (Job childrenJob : j.getChildren()) {
+      groups.add(childrenJob);
+      groups.addAll(getAllChildrenRec(childrenJob));
+    }
+    return groups;
+  }
+
   public List<Job> getChildren() {
     if (children == null) {
       children = new ArrayList<>();
