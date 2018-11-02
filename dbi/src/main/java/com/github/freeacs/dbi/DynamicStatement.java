@@ -96,7 +96,7 @@ public class DynamicStatement {
 
   public PreparedStatement makePreparedStatement(Connection c, String[] columns)
       throws SQLException {
-    PreparedStatement pp = null;
+    PreparedStatement pp;
     if (columns == null || columns.length == 0) {
       pp = c.prepareStatement(sql.toString());
     } else {
