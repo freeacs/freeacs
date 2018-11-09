@@ -248,7 +248,7 @@ public class UnitStatusPage extends AbstractWebPage {
 
     UnitStatusInfo info =
         UnitStatusInfo.getUnitStatusInfo(
-            unit, fromDate, toDate, sessionId, mainDataSource, syslogDataSource);
+            unit, fromDate, toDate, sessionId, xapsDataSource, syslogDataSource);
 
     templateMap.put("info", info);
 
