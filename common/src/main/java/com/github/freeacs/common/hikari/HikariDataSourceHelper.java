@@ -23,7 +23,7 @@ public class HikariDataSourceHelper {
     hikariConfig.addDataSourceProperty("dataSource.prepStmtCacheSqlLimit", "2048");
     hikariConfig.addDataSourceProperty("dataSource.useServerPrepStmts", "true");
 
-    hikariConfig.setAutoCommit(false);
+    hikariConfig.setAutoCommit(true);
 
     return new HikariDataSource(hikariConfig);
   }
