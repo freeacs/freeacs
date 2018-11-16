@@ -75,6 +75,14 @@ public class App {
   }
 
   @Bean
+  ServletRegistrationBean<LogoutServlet> logoutServlet() {
+    ServletRegistrationBean<LogoutServlet> srb = new ServletRegistrationBean<>();
+    srb.setServlet(new LogoutServlet());
+    srb.setUrlMappings(Collections.singletonList("/logout"));
+    return srb;
+  }
+
+  @Bean
   public FreeMarkerViewResolver freemarkerViewResolver() {
     FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
     resolver.setCache(true);

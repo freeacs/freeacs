@@ -82,6 +82,10 @@ public class SessionCache {
     }
   }
 
+  public static void removeSession(String sessionId) {
+    cache.removeSession(sessionId);
+  }
+
   /**
    * Gets the dBI.
    *

@@ -63,6 +63,27 @@ import org.slf4j.LoggerFactory;
  * @author Morten
  */
 public class DBI implements Runnable {
+  private final Thread thread;
+
+  private boolean running = true;
+
+  public boolean isRunning() {
+    return running;
+  }
+
+  public void setRunning(boolean running) {
+    this.running = running;
+    this.finished = !running;
+    if (!running) {
+      try {
+        thread.interrupt();
+      } catch (Throwable e) {}
+      try {
+        thread.stop();
+      } catch (Throwable e) {}
+    }
+  }
+
   public class PublishType {
     private Set<String> messageTypes = new TreeSet<>();
 
@@ -221,14 +242,14 @@ public class DBI implements Runnable {
     publishInbox.addFilter(new Message(null, Message.MTYPE_PUB_CHG, null, null));
     publishInbox.addFilter(new Message(null, Message.MTYPE_PUB_DEL, null, null));
     registerInbox(PUBLISH_INBOX_NAME, publishInbox);
-    Thread t = new Thread(this);
+    thread = new Thread(this);
     if (syslog != null) {
-      t.setName("DBI for " + syslog.getIdentity().getFacilityName());
+      thread.setName("DBI for " + syslog.getIdentity().getFacilityName());
     } else {
-      t.setName("DBI");
+      thread.setName("DBI");
     }
-    t.setDaemon(true);
-    t.start();
+    thread.setDaemon(true);
+    thread.start();
     logger.debug("DBI is loaded for user " + syslog.getIdentity().getUser().getFullname());
   }
 
@@ -353,7 +374,7 @@ public class DBI implements Runnable {
 
   public void run() {
     boolean errorOccured = false;
-    do {
+    while(running && !finished) {
       dbiRun = true;
       try {
         if (System.currentTimeMillis() - start > lifetimeSec * 1000L) {
@@ -381,7 +402,7 @@ public class DBI implements Runnable {
         try {
           if (!errorOccured) {
             errorOccured = true;
-            logger.error("An error occurred in DBI.run()", t);
+            logger.error("An error occurred in DBI.run(): %s, %s", t.getCause().toString(), t.getLocalizedMessage());
           } else {
             logger.error(
                 "An error occurred in DBI.run() (stacktrace printed earlier): " + t.getMessage());
@@ -389,7 +410,7 @@ public class DBI implements Runnable {
         } catch (Throwable ignored) {
         }
       }
-    } while (true);
+    }
   }
 
   /**

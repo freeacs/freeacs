@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.function.Predicate;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,50 +49,66 @@ public class Cache {
 
   class Cleanup extends Cache implements Runnable {
     public void run() {
+      int startSize = map.size();
       long now = System.currentTimeMillis();
       if (lastCleanup + cleanupFrequence < now) {
         lastCleanup = System.currentTimeMillis();
         log.debug("Cache.Cleanup.run() starts");
-        Iterator<Object> keys = map.keySet().iterator();
-        List<Object> keysToRemove = new Vector<>();
-        while (keys.hasNext()) {
-          Object key = keys.next();
-          CacheValue value = map.get(key);
-          boolean remove;
-          if (value != null) {
-            remove = toBeRemoved(value, now);
-          } else {
-            remove = true;
-          }
-          if (remove) {
-            if (log.isDebugEnabled()) {
-              log.debug("Key " + key + " with CacheValue " + value + " is to be removed");
-            }
-            if (value != null && value.getCleanupNotifier() != null) {
-              if (log.isDebugEnabled()) {
-                log.debug("CacheValue has a cleanupnotifier-class which will be executed");
-              }
-              value.getCleanupNotifier().execute();
-            }
-            keysToRemove.add(key);
-          }
-        }
-        keys = keysToRemove.iterator();
-        while (keys.hasNext()) {
-          map.remove(keys.next());
-        }
-        if (log.isDebugEnabled()) {
-          log.debug(
-              "Cache removed "
-                  + keysToRemove.size()
-                  + " elements out of "
-                  + map.size()
-                  + " in "
-                  + (System.currentTimeMillis() - lastCleanup)
-                  + " ms.");
-        }
+        List<Object> keysToRemove = cleanup(now, null);
+        log.debug(
+            "Cache removed "
+                + keysToRemove.size()
+                + " elements out of "
+                + startSize
+                + " in "
+                + (System.currentTimeMillis() - lastCleanup)
+                + " ms.");
       }
     }
+  }
+
+  public void removeSession(String sessionId) {
+    int startSize = map.size();
+    log.debug("Cache.removeSession(" + sessionId + ") starts" );
+    List<Object> keysToRemove = cleanup(System.currentTimeMillis(), (k) -> k.toString().startsWith(sessionId));
+    log.debug(
+        "Cache removed "
+            + keysToRemove.size()
+            + " elements out of "
+            + startSize
+            + " in "
+            + (System.currentTimeMillis() - lastCleanup)
+            + " ms.");
+  }
+
+  private List<Object> cleanup(long now, Predicate<Object> predicate) {
+    Iterator<Object> keys = map.keySet().iterator();
+    List<Object> keysToRemove = new Vector<>();
+    while (keys.hasNext()) {
+      Object key = keys.next();
+      boolean remove = predicate != null && predicate.test(key);
+      CacheValue value = map.get(key);
+      if (!remove) {
+        if (value != null) {
+          remove = toBeRemoved(value, now);
+        } else {
+          remove = true;
+        }
+      }
+      if (remove) {
+        log.debug("Key " + key + " with CacheValue " + value + " is to be removed");
+        if (value != null && value.getCleanupNotifier() != null) {
+          log.debug("CacheValue has a cleanupnotifier-class which will be executed");
+          value.getCleanupNotifier().execute();
+        }
+        keysToRemove.add(key);
+      }
+    }
+    keys = keysToRemove.iterator();
+    while (keys.hasNext()) {
+      map.remove(keys.next());
+    }
+    return keysToRemove;
   }
 
   private boolean toBeRemoved(CacheValue value, long now) {
