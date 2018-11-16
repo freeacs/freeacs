@@ -70,7 +70,7 @@ public class Cache {
   public void removeSession(String sessionId) {
     int startSize = map.size();
     log.debug("Cache.removeSession(" + sessionId + ") starts" );
-    List<Object> keysToRemove = cleanup(System.currentTimeMillis(), (k) -> k.toString().startsWith(sessionId));
+    List<Object> keysToRemove = cleanup(System.currentTimeMillis(), (k) -> k.toString().contains(sessionId));
     log.debug(
         "Cache removed "
             + keysToRemove.size()
