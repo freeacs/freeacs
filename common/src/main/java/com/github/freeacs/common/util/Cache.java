@@ -86,15 +86,8 @@ public class Cache {
     List<Object> keysToRemove = new Vector<>();
     while (keys.hasNext()) {
       Object key = keys.next();
-      boolean remove = predicate != null && predicate.test(key);
       CacheValue value = map.get(key);
-      if (!remove) {
-        if (value != null) {
-          remove = toBeRemoved(value, now);
-        } else {
-          remove = true;
-        }
-      }
+      boolean remove = shouldRemove(now, predicate, key, value);
       if (remove) {
         log.debug("Key " + key + " with CacheValue " + value + " is to be removed");
         if (value != null && value.getCleanupNotifier() != null) {
@@ -109,6 +102,19 @@ public class Cache {
       map.remove(keys.next());
     }
     return keysToRemove;
+  }
+
+  private boolean shouldRemove(
+      long now, Predicate<Object> predicate, Object key, CacheValue value) {
+    boolean remove = predicate != null && predicate.test(key);
+    if (!remove) {
+      if (value != null) {
+        remove = toBeRemoved(value, now);
+      } else {
+        remove = true;
+      }
+    }
+    return remove;
   }
 
   private boolean toBeRemoved(CacheValue value, long now) {
