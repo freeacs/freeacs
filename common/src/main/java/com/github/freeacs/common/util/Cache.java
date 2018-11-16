@@ -53,14 +53,15 @@ public class Cache {
       if (lastCleanup + cleanupFrequence < now) {
         lastCleanup = System.currentTimeMillis();
         log.debug("Cache.Cleanup.run() starts");
-        List<Object> keysToRemove = cleanup(now, null);
+        int keysRemoved = cleanup(now, null);
+        long howLong = System.currentTimeMillis() - lastCleanup;
         log.debug(
             "Cache removed "
-                + keysToRemove.size()
+                + keysRemoved
                 + " elements out of "
                 + startSize
                 + " in "
-                + (System.currentTimeMillis() - lastCleanup)
+                + howLong
                 + " ms.");
       }
     }
@@ -69,11 +70,10 @@ public class Cache {
   public void removeSession(String sessionId) {
     int startSize = map.size();
     log.debug("Cache.removeSession(" + sessionId + ") starts");
-    List<Object> keysToRemove =
-        cleanup(System.currentTimeMillis(), (k) -> k.toString().contains(sessionId));
+    int keysRemoved = cleanup(System.currentTimeMillis(), (k) -> k.toString().contains(sessionId));
     log.debug(
         "Cache removed "
-            + keysToRemove.size()
+            + keysRemoved
             + " elements out of "
             + startSize
             + " in "
@@ -81,27 +81,27 @@ public class Cache {
             + " ms.");
   }
 
-  private List<Object> cleanup(long now, Predicate<Object> predicate) {
+  private int cleanup(long now, Predicate<Object> predicate) {
     Iterator<Object> keys = map.keySet().iterator();
     List<Object> keysToRemove = new Vector<>();
     while (keys.hasNext()) {
       Object key = keys.next();
       CacheValue value = map.get(key);
-      boolean remove = shouldRemove(now, predicate, key, value);
-      if (remove) {
+      if (shouldRemove(now, predicate, key, value)) {
         log.debug("Key " + key + " with CacheValue " + value + " is to be removed");
-        if (value != null && value.getCleanupNotifier() != null) {
-          log.debug("CacheValue has a cleanupnotifier-class which will be executed");
-          value.getCleanupNotifier().execute();
-        }
+        maybeNotifyCleanup(value);
         keysToRemove.add(key);
       }
     }
-    keys = keysToRemove.iterator();
-    while (keys.hasNext()) {
-      map.remove(keys.next());
+    keysToRemove.forEach(map::remove);
+    return keysToRemove.size();
+  }
+
+  private void maybeNotifyCleanup(CacheValue value) {
+    if (value != null && value.getCleanupNotifier() != null) {
+      log.debug("CacheValue has a cleanupnotifier-class which will be executed");
+      value.getCleanupNotifier().execute();
     }
-    return keysToRemove;
   }
 
   private boolean shouldRemove(
