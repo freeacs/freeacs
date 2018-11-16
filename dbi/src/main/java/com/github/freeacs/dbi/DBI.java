@@ -77,10 +77,12 @@ public class DBI implements Runnable {
     if (!running) {
       try {
         thread.interrupt();
-      } catch (Throwable e) {}
+      } catch (Throwable e) {
+      }
       try {
         thread.stop();
-      } catch (Throwable e) {}
+      } catch (Throwable e) {
+      }
     }
   }
 
@@ -374,7 +376,7 @@ public class DBI implements Runnable {
 
   public void run() {
     boolean errorOccured = false;
-    while(running && !finished) {
+    while (running && !finished) {
       dbiRun = true;
       try {
         if (System.currentTimeMillis() - start > lifetimeSec * 1000L) {
@@ -402,7 +404,9 @@ public class DBI implements Runnable {
         try {
           if (!errorOccured) {
             errorOccured = true;
-            logger.error("An error occurred in DBI.run(): %s, %s", t.getCause().toString(), t.getLocalizedMessage());
+            logger.error(
+                "An error occurred in DBI.run(): %s, %s",
+                t.getCause().toString(), t.getLocalizedMessage());
           } else {
             logger.error(
                 "An error occurred in DBI.run() (stacktrace printed earlier): " + t.getMessage());

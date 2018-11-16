@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.function.Predicate;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,8 +68,9 @@ public class Cache {
 
   public void removeSession(String sessionId) {
     int startSize = map.size();
-    log.debug("Cache.removeSession(" + sessionId + ") starts" );
-    List<Object> keysToRemove = cleanup(System.currentTimeMillis(), (k) -> k.toString().contains(sessionId));
+    log.debug("Cache.removeSession(" + sessionId + ") starts");
+    List<Object> keysToRemove =
+        cleanup(System.currentTimeMillis(), (k) -> k.toString().contains(sessionId));
     log.debug(
         "Cache removed "
             + keysToRemove.size()
