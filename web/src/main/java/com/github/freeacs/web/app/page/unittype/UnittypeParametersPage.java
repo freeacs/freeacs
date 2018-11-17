@@ -40,10 +40,6 @@ public class UnittypeParametersPage extends AbstractWebPage {
 
   private final DataSource mainDataSource;
 
-  public UnittypeParametersPage(DataSource mainDataSource) {
-    this.mainDataSource = mainDataSource;
-  }
-
   public UnittypeParametersPage() {
     this.mainDataSource = null;
   }

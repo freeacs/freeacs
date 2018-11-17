@@ -128,10 +128,6 @@ public class UnitStatusPage extends AbstractWebPage {
 
   private final DataSource mainDataSource;
 
-  public UnitStatusPage(DataSource mainDataSource) {
-    this.mainDataSource = mainDataSource;
-  }
-
   public UnitStatusPage() {
     mainDataSource = null;
   }
