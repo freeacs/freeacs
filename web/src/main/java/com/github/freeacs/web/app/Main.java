@@ -106,12 +106,14 @@ public class Main extends HttpServlet {
    * @return the logged in status title
    */
   private String getLoggedInStatusTitle(ParameterParser params) {
-    String username =
-        SessionCache.getSessionData(params.getHttpServletRequest().getSession().getId())
-            .getUser()
-            .getUsername();
+//      String username =
+//              SessionCache.getSessionData(params.getHttpServletRequest().getSession().getId())
+//                      .getUser()
+//                      .getUsername();
+//      String url = params.getHttpServletRequest().getServerName();
+//      return username + "@" + url;
     String url = params.getHttpServletRequest().getServerName();
-    return username + "@" + url;
+    return "none" + "@" + url;
   }
 
   /**

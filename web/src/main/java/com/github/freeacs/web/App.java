@@ -85,7 +85,11 @@ public class App {
     });
     Main main = new Main(mainDs, mainDs);
     main.init();
-    get(ctxPath + "/web", (req, res) -> {
+    get(ctxPath + "/index", (req, res) -> {
+      main.doGet(req.raw(), res.raw());
+      return null;
+    });
+    post(ctxPath + "/index", (req, res) -> {
       main.doGet(req.raw(), res.raw());
       return null;
     });
@@ -99,7 +103,7 @@ public class App {
       UserDetails userDetails = userService.loadUserByUsername(username);
       if (Objects.equals(userDetails.getPassword(), config.encoder().encode(password))) {
         req.session(true).attribute("loggedIn", true);
-        res.redirect(ctxPath + "/web");
+        res.redirect(ctxPath + "/index");
         return null;
       }
       return new FreeMarkerEngine(configuration).render(new ModelAndView(null, "login.ftl"));

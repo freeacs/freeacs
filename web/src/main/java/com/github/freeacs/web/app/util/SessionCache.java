@@ -136,10 +136,10 @@ public class SessionCache {
     CacheValue cv = cache.get(key(sessionId, "sessionData"));
     if (cv == null) {
       SessionData sessionData = new SessionData();
-      WebUser webUser =
-          (WebUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-      sessionData.setUser(webUser);
-      sessionData.setFilteredUnittypes(AllowedUnittype.retrieveAllowedUnittypes(webUser));
+//        WebUser webUser =
+//                (WebUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        sessionData.setUser(webUser);
+//        sessionData.setFilteredUnittypes(AllowedUnittype.retrieveAllowedUnittypes(webUser));
       cache.put(
           key(sessionId, "sessionData"),
           new CacheValue(sessionData, Cache.SESSION, Long.MAX_VALUE));
