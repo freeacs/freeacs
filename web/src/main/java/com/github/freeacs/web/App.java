@@ -2,6 +2,7 @@ package com.github.freeacs.web;
 
 import static spark.Spark.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.freeacs.common.hikari.HikariDataSourceHelper;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.DBI;
@@ -9,6 +10,8 @@ import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.web.app.Main;
 import com.github.freeacs.web.app.Monitor;
 import com.github.freeacs.web.app.menu.MenuServlet;
+import com.github.freeacs.web.app.page.unit.UnitStatusPage;
+import com.github.freeacs.web.app.page.unittype.UnittypeParametersPage;
 import com.github.freeacs.web.app.util.Freemarker;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.WebProperties;
@@ -22,6 +25,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import freemarker.template.Configuration;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import javax.servlet.ServletException;
@@ -71,6 +75,7 @@ public class App {
 
   private static void routes(DataSource mainDs, WebProperties properties, String ctxPath)
       throws ServletException {
+    ObjectMapper objectMapper = new ObjectMapper();
     get(
         ctxPath + "/logout",
         (req, res) -> {
@@ -145,6 +150,98 @@ public class App {
         (req, res) -> {
           menuServlet.service(req.raw(), res.raw());
           return null;
+        });
+    UnitStatusPage unitStatusPage = new UnitStatusPage();
+    unitStatusPage.setMainDataSource(mainDs);
+    get(
+        ctxPath + "/app/unit-dashboard/linesup",
+        (req, res) -> {
+          String unitId = req.raw().getParameter("unitId");
+          Map<String, Boolean> result =
+              unitStatusPage.getLineStatus(unitId, req.raw().getSession());
+          return objectMapper.writeValueAsString(result);
+        });
+    get(
+        ctxPath + "/app/unit-dashboard/chartimage",
+        (req, res) -> {
+          String pageType = req.raw().getParameter("type");
+          String periodType = req.raw().getParameter("period");
+          String method = req.raw().getParameter("method");
+          String startTms = req.raw().getParameter("start");
+          String endTms = req.raw().getParameter("end");
+          String unitId = req.raw().getParameter("unitId");
+          String syslogFilter = req.raw().getParameter("syslogFilter");
+          String[] aggregations = req.raw().getParameterValues("aggregate");
+          unitStatusPage.getChartImage(
+              pageType,
+              periodType,
+              method,
+              startTms,
+              endTms,
+              unitId,
+              syslogFilter,
+              aggregations,
+              res.raw(),
+              req.raw().getSession());
+          return null;
+        });
+    get(
+        ctxPath + "/app/unit-dashboard/charttable",
+        (req, res) -> {
+          String pageType = req.raw().getParameter("type");
+          String startTms = req.raw().getParameter("start");
+          String endTms = req.raw().getParameter("end");
+          String unitId = req.raw().getParameter("unitId");
+          String syslogFilter = req.raw().getParameter("syslogFilter");
+          ModelAndView modelAndView =
+              unitStatusPage.getChartTable(
+                  pageType,
+                  startTms,
+                  endTms,
+                  unitId,
+                  syslogFilter,
+                  req.raw(),
+                  req.raw().getSession());
+          return new FreeMarkerEngine(configuration).render(modelAndView);
+        });
+    get(
+        ctxPath + "/app/unit-dashboard/totalscore-effect",
+        (req, res) -> {
+          String startTms = req.raw().getParameter("start");
+          String endTms = req.raw().getParameter("end");
+          String unitId = req.raw().getParameter("unitId");
+          Map<String, Object> result =
+              unitStatusPage.getTotalScoreEffect(startTms, endTms, unitId, req.raw().getSession());
+          return objectMapper.writeValueAsString(result);
+        });
+    get(
+        ctxPath + "/app/unit-dashboard/totalscore-number",
+        (req, res) -> {
+          String startTms = req.raw().getParameter("start");
+          String endTms = req.raw().getParameter("end");
+          String unitId = req.raw().getParameter("unitId");
+          return unitStatusPage.getTotalScoreNumber(
+              startTms, endTms, unitId, req.raw().getSession());
+        });
+    get(
+        ctxPath + "/app/unit-dashboard/overallstatus",
+        (req, res) -> {
+          String startTms = req.raw().getParameter("start");
+          String endTms = req.raw().getParameter("end");
+          String unitId = req.raw().getParameter("unitId");
+          unitStatusPage.getOverallStatusSpeedometer(
+              startTms, endTms, unitId, res.raw(), req.raw().getSession());
+          return null;
+        });
+    UnittypeParametersPage unittypeParametersPage = new UnittypeParametersPage();
+    unittypeParametersPage.setMainDataSource(mainDs);
+    get(
+        ctxPath + "/app/parameters/list",
+        (req, res) -> {
+          String unittype = req.raw().getParameter("unittype");
+          String term = req.raw().getParameter("term");
+          return unittypeParametersPage.getUnittypeParameters(
+              unittype, term, req.raw().getSession());
         });
   }
 

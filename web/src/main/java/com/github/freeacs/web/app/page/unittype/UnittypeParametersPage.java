@@ -23,11 +23,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
-// @Controller
-// @RequestMapping("/app/parameters")
 public class UnittypeParametersPage extends AbstractWebPage {
-  /** The session id. */
-  private String sessionId;
 
   private UnittypeParameter utParam;
   private boolean utpAdded;
@@ -38,7 +34,7 @@ public class UnittypeParametersPage extends AbstractWebPage {
 
   private static final String SESSION_SAVE_ERRORS = "utp-save-error";
 
-  private final DataSource mainDataSource;
+  private DataSource mainDataSource;
 
   public UnittypeParametersPage() {
     this.mainDataSource = null;
@@ -53,10 +49,7 @@ public class UnittypeParametersPage extends AbstractWebPage {
    * @return A toString()'ed JSON object
    * @throws SQLException
    */
-  // @RequestMapping(method = RequestMethod.GET, value = "list")
-  // @ResponseBody
-  public String getUnittypeParameters(
-      /*@RequestParam*/ String unittype, /*@RequestParam*/ String term, HttpSession session)
+  public String getUnittypeParameters(String unittype, String term, HttpSession session)
       throws SQLException, JsonProcessingException {
     ACS acs = ACSLoader.getXAPS(session.getId(), mainDataSource, mainDataSource);
     List<Unittype> allowedUnittypes = Arrays.asList(acs.getUnittypes().getUnittypes());
@@ -85,7 +78,8 @@ public class UnittypeParametersPage extends AbstractWebPage {
     UnittypeParametersData inputData =
         (UnittypeParametersData) InputDataRetriever.parseInto(new UnittypeParametersData(), params);
 
-    sessionId = params.getSession().getId();
+    /** The session id. */
+    String sessionId = params.getSession().getId();
 
     ACS acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
     if (acs == null) {
@@ -122,13 +116,6 @@ public class UnittypeParametersPage extends AbstractWebPage {
     if (inputData.getFormSubmit().isValue("Save parameter")) {
       saveParameter(params, unittype, acs);
     }
-    //		else if (inputData.getFormSubmit().isValue("Finish")) {
-    //			saveParameter(params, unittype, xaps);
-    //			params.getSession().setAttribute(SESSION_SAVE_ERRORS, error);
-    //			params.getSession().setAttribute(SESSION_SAVE_BOOLEAN, utpAdded);
-    //			outputHandler.setDirectToPage(Page.UNITTYPEPARAMETERS);
-    //			return;
-    //		}
 
     if (params.getSession().getAttribute(SESSION_SAVE_ERRORS) != null) {
       error = (String) params.getSession().getAttribute(SESSION_SAVE_ERRORS);
@@ -194,5 +181,9 @@ public class UnittypeParametersPage extends AbstractWebPage {
         error += ex.getLocalizedMessage() + StackTraceFormatter.getStackTraceAsHTML(ex);
       }
     }
+  }
+
+  public void setMainDataSource(DataSource mainDataSource) {
+    this.mainDataSource = mainDataSource;
   }
 }
