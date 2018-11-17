@@ -28,6 +28,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import spark.ModelAndView;
+import spark.Request;
 import spark.Session;
 import spark.Spark;
 import spark.template.freemarker.FreeMarkerEngine;
@@ -70,7 +71,6 @@ public class App {
 
   private static void routes(DataSource mainDs, WebProperties properties, String ctxPath)
       throws ServletException {
-    UserService userService = new UserService(mainDs);
     get(
         ctxPath + "/logout",
         (req, res) -> {
@@ -102,21 +102,7 @@ public class App {
           return null;
         });
     Configuration configuration = Freemarker.initFreemarker();
-    get(
-        ctxPath + "/login",
-        (req, res) -> {
-          String uuid = UUID.randomUUID().toString();
-          req.session(true).attribute("csrf", uuid);
-          return new FreeMarkerEngine(configuration)
-              .render(
-                  new ModelAndView(
-                      new HashMap<String, String>() {
-                        {
-                          put("csrf", uuid);
-                        }
-                      },
-                      "login.ftl"));
-        });
+    get(ctxPath + "/login", (req, res) -> displayLogin(configuration, req));
     post(
         ctxPath + "/login",
         (req, res) -> {
@@ -127,14 +113,14 @@ public class App {
             res.redirect(ctxPath + Main.servletMapping);
             return null;
           }
-          WebUser userDetails = userService.loadUserByUsername(username);
+          WebUser userDetails = UserService.loadUserByUsername(mainDs, username);
           if (Objects.equals(userDetails.getPassword(), encoder.encode(password))) {
             req.session(true).attribute("loggedIn", userDetails);
             ThreadUser.setUserDetails(userDetails);
             res.redirect(ctxPath + Main.servletMapping);
             return null;
           }
-          return new FreeMarkerEngine(configuration).render(new ModelAndView(null, "login.ftl"));
+          return displayLogin(configuration, req);
         });
     Monitor monitorServlet = new Monitor();
     monitorServlet.init();
@@ -160,5 +146,19 @@ public class App {
           menuServlet.service(req.raw(), res.raw());
           return null;
         });
+  }
+
+  private static String displayLogin(Configuration configuration, Request req) {
+    String uuid = UUID.randomUUID().toString();
+    req.session(true).attribute("csrf", uuid);
+    return new FreeMarkerEngine(configuration)
+        .render(
+            new ModelAndView(
+                new HashMap<String, String>() {
+                  {
+                    put("csrf", uuid);
+                  }
+                },
+                "login.ftl"));
   }
 }

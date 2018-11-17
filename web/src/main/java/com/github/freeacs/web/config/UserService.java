@@ -9,20 +9,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class UserService {
-  private static Logger logger = LoggerFactory.getLogger(UserService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
-  private final Users users;
-
-  public UserService(DataSource mainDs) {
+  public static WebUser loadUserByUsername(DataSource mainDs, String username) {
+    Users users;
     try {
       users = new Users(mainDs);
     } catch (SQLException e) {
-      logger.error("Failed to create Users object", e);
+      LOGGER.error("Failed to create Users object", e);
       throw new IllegalStateException("Failed to create Users object", e);
     }
-  }
-
-  public WebUser loadUserByUsername(String username) {
     User userObject = users.getUnprotected(username);
     if (userObject == null) {
       throw new IllegalArgumentException(username);
