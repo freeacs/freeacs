@@ -24,6 +24,5 @@ public class LogoutServlet extends HttpServlet {
       new SecurityContextLogoutHandler().logout(request, response, auth);
     }
     SecurityContextHolder.getContext().setAuthentication(null);
-    response.sendRedirect("/web");
   }
 }

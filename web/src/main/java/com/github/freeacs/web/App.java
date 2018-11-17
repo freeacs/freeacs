@@ -54,12 +54,13 @@ public class App {
     ExecutorWrapper executorWrapper = ExecutorWrapperFactory.create(1);
     WebProperties properties = new WebProperties(config);
     String ctxPath = WebProperties.CONTEXT_PATH;
-    before((req, res) -> {
+    before("*", (req, res) -> {
       Session session = req.session(false);
-      System.out.println(req.url());
       if ((req.url() == null || !req.url().endsWith("/login")) && (session == null || session.attribute("loggedIn") == null)) {
         res.redirect(ctxPath + "/login");
         halt();
+      } else if (session != null && session.attribute("loggedIn") != null) {
+        ThreadUser.setUserDetails(session.attribute("loggedIn"));
       }
     });
     routes(mainDs, properties, executorWrapper, ctxPath);
@@ -81,6 +82,9 @@ public class App {
     logoutServlet.init();
     get(ctxPath + "/logout", (req, res) -> {
       logoutServlet.doGet(req.raw(), res.raw());
+      res.redirect(ctxPath + "/index");
+      req.session().removeAttribute("loggedIn");
+      ThreadUser.setUserDetails(null);
       return null;
     });
     Main main = new Main(mainDs, mainDs);
@@ -102,7 +106,8 @@ public class App {
       String password = req.raw().getParameter("password");
       UserDetails userDetails = userService.loadUserByUsername(username);
       if (Objects.equals(userDetails.getPassword(), config.encoder().encode(password))) {
-        req.session(true).attribute("loggedIn", true);
+        req.session(true).attribute("loggedIn", userDetails);
+        ThreadUser.setUserDetails(userDetails);
         res.redirect(ctxPath + "/index");
         return null;
       }

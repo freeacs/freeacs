@@ -15,6 +15,7 @@ import com.github.freeacs.dbi.report.ReportConverter;
 import com.github.freeacs.dbi.report.ReportHardwareGenerator;
 import com.github.freeacs.dbi.report.ReportSyslogGenerator;
 import com.github.freeacs.dbi.report.ReportVoipGenerator;
+import com.github.freeacs.web.ThreadUser;
 import com.github.freeacs.web.security.AllowedUnittype;
 import com.github.freeacs.web.security.WebUser;
 import java.sql.SQLException;
@@ -136,10 +137,9 @@ public class SessionCache {
     CacheValue cv = cache.get(key(sessionId, "sessionData"));
     if (cv == null) {
       SessionData sessionData = new SessionData();
-//        WebUser webUser =
-//                (WebUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        sessionData.setUser(webUser);
-//        sessionData.setFilteredUnittypes(AllowedUnittype.retrieveAllowedUnittypes(webUser));
+        WebUser webUser = (WebUser) ThreadUser.getUserDetails();
+        sessionData.setUser(webUser);
+        sessionData.setFilteredUnittypes(AllowedUnittype.retrieveAllowedUnittypes(webUser));
       cache.put(
           key(sessionId, "sessionData"),
           new CacheValue(sessionData, Cache.SESSION, Long.MAX_VALUE));
