@@ -1,4 +1,4 @@
-package com.github.freeacs.web;
+package com.github.freeacs.web.security;
 
 import org.springframework.security.core.userdetails.UserDetails;
 

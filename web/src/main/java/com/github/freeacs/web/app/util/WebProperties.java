@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
  * @author Jarl Andre Hubenthal
  */
 public class WebProperties {
+  public static String SYSLOG_SERVER_HOST;
   public static String KEYSTORE_PASS;
   public static String MONITOR_LOCATION;
   public static String LOCALE;
@@ -50,8 +51,12 @@ public class WebProperties {
     setKeyStorePass(config.hasPath("keystore.pass") ? config.getString("keystore.pass") : "changeit");
     setContextPath(config.hasPath("server.servlet.context-path") ? config.getString("server.servlet.context-path") : "/");
     setServerPort(config.hasPath("server.port") ? config.getInt("server.port") : 8080);
+    setSyslogServerHost(config.hasPath("syslog.server.host") ? config.getString("syslog.server.host") : "localhost");
   }
 
+  private void setSyslogServerHost(String syslogServerHost) {
+    SYSLOG_SERVER_HOST = syslogServerHost;
+  }
   private void setContextPath(String contextPath) {
     CONTEXT_PATH = contextPath;
   }
