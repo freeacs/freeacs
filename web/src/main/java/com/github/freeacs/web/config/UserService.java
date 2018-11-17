@@ -7,36 +7,21 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
 
-@Service
-public class UserService implements UserDetailsService {
-  private static Logger logger = LoggerFactory.getLogger(UserService.class);
+public class UserService {
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
-  private final DataSource mainDs;
-
-  @Autowired
-  public UserService(@Qualifier("main") DataSource mainDs) {
-    this.mainDs = mainDs;
-  }
-
-  @Override
-  public UserDetails loadUserByUsername(String username) {
+  public static WebUser loadUserByUsername(DataSource mainDs, String username) {
     Users users;
     try {
       users = new Users(mainDs);
     } catch (SQLException e) {
-      logger.error("Failed to create Users object", e);
+      LOGGER.error("Failed to create Users object", e);
       throw new IllegalStateException("Failed to create Users object", e);
     }
     User userObject = users.getUnprotected(username);
     if (userObject == null) {
-      throw new UsernameNotFoundException(username);
+      throw new IllegalArgumentException(username);
     }
     return new WebUser(userObject);
   }

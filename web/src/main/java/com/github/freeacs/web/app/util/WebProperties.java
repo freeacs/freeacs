@@ -1,9 +1,8 @@
 package com.github.freeacs.web.app.util;
 
+import com.typesafe.config.Config;
 import java.util.Collections;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 /**
  * Takes care of retrieving properties from a property file. If the same property file is requested
@@ -13,8 +12,8 @@ import org.springframework.stereotype.Component;
  *
  * @author Jarl Andre Hubenthal
  */
-@Component
 public class WebProperties {
+  public static String SYSLOG_SERVER_HOST;
   public static String KEYSTORE_PASS;
   public static String MONITOR_LOCATION;
   public static String LOCALE;
@@ -29,89 +28,106 @@ public class WebProperties {
   public static boolean SHOW_VOIP;
   public static boolean SHOW_HARDWARE;
   public static Integer SESSION_TIMEOUT;
+  public static String CONTEXT_PATH;
+  public static Integer SERVER_PORT;
 
-  /**
-   * Gets the session timeout.
-   *
-   * @return the session timeout
-   */
-  @Value("${session.timeout:30}")
-  public void setSessionTimeout(Integer timeout) {
+  public WebProperties(Config config) {
+    setSessionTimeout(config.hasPath("session.timeout") ? config.getInt("session.timeout") : 60);
+    setShowHardware(
+        config.hasPath("unit.dash.hardware") && config.getBoolean("unit.dash.hardware"));
+    setShowVoip(config.hasPath("unit.dash.voip") && config.getBoolean("unit.dash.voip"));
+    setDebug(config.hasPath("debug") && config.getBoolean("debug"));
+    setGzipEnabled(!config.hasPath("gzip.enabled") || config.getBoolean("gzip.enabled"));
+    setConfidentialsRestricted(
+        config.hasPath("confidentials.restricted")
+            && config.getBoolean("confidentials.restricted"));
+    setUnitConfigAutofilter(
+        config.hasPath("unit.config.autofilter") && config.getBoolean("unit.config.autofilter"));
+    setProperties(config.hasPath("properties") ? config.getString("properties") : "default");
+    setConfirmChanges(config.hasPath("confirmchanges") && config.getBoolean("confirmchanges"));
+    setIxEditEnabled(config.hasPath("ixedit.enabled") && config.getBoolean("ixedit.enabled"));
+    setJavascriptDebug(config.hasPath("javascript.debug") && config.getBoolean("javascript.debug"));
+    setLocale(config.hasPath("locale") ? config.getString("locale") : null);
+    setMonitorLocation(
+        config.hasPath("monitor.location") ? config.getString("monitor.location") : null);
+    setKeyStorePass(
+        config.hasPath("keystore.pass") ? config.getString("keystore.pass") : "changeit");
+    setContextPath(
+        config.hasPath("server.servlet.context-path")
+            ? config.getString("server.servlet.context-path")
+            : "/");
+    setServerPort(config.hasPath("server.port") ? config.getInt("server.port") : 8080);
+    setSyslogServerHost(
+        config.hasPath("syslog.server.host")
+            ? config.getString("syslog.server.host")
+            : "localhost");
+  }
+
+  private void setSyslogServerHost(String syslogServerHost) {
+    SYSLOG_SERVER_HOST = syslogServerHost;
+  }
+
+  private void setContextPath(String contextPath) {
+    CONTEXT_PATH = contextPath;
+  }
+
+  private void setServerPort(Integer port) {
+    SERVER_PORT = port;
+  }
+
+  private void setSessionTimeout(Integer timeout) {
     SESSION_TIMEOUT = timeout;
   }
 
-  /**
-   * Returns an indicator for if hardware syslog should be available.
-   *
-   * @return
-   */
-  @Value("${unit.dash.hardware:false}")
-  public void setShowHardware(Boolean showHardware) {
+  private void setShowHardware(Boolean showHardware) {
     SHOW_HARDWARE = showHardware;
   }
 
-  /**
-   * Returns an indicator for if voip syslog should be available.
-   *
-   * @return
-   */
-  @Value("${unit.dash.voip:false}")
-  public void setShowVoip(Boolean showVoip) {
+  private void setShowVoip(Boolean showVoip) {
     SHOW_VOIP = showVoip;
   }
 
-  @Value("${debug:false}")
-  public void setDebug(Boolean debug) {
+  private void setDebug(Boolean debug) {
     DEBUG = debug;
   }
 
-  @Value("${gzip.enabled:false}")
-  public void setGzipEnabled(Boolean enabled) {
+  private void setGzipEnabled(Boolean enabled) {
     GZIP_ENABLED = enabled;
   }
 
-  @Value("${confidentials.restricted:false}")
-  public void setConfidentialsRestricted(Boolean restricted) {
+  private void setConfidentialsRestricted(Boolean restricted) {
     CONFIDENTIALS_RESTRICTED = restricted;
   }
 
-  @Value("${unit.config.autofilter:false}")
-  public void setUnitConfigAutofilter(Boolean autofilter) {
+  private void setUnitConfigAutofilter(Boolean autofilter) {
     UNIT_CONFIG_AUTOFILTER = autofilter;
   }
 
-  @Value("${properties:default}")
-  public void setProperties(String properties) {
+  private void setProperties(String properties) {
     PROPERTIES = properties;
   }
 
-  @Value("${confirmchanges:false}")
-  public void setConfirmChanges(Boolean confirmChanges) {
+  private void setConfirmChanges(Boolean confirmChanges) {
     CONFIRM_CHANGES = confirmChanges;
   }
 
-  @Value("${ixedit.enabled:false}")
-  public void setIxEditEnabled(Boolean enabled) {
+  private void setIxEditEnabled(Boolean enabled) {
     IX_EDIT_ENABLED = enabled;
   }
 
-  @Value("${javascript.debug:false}")
-  public void setJavascriptDebug(Boolean debug) {
+  private void setJavascriptDebug(Boolean debug) {
     JAVASCRIPT_DEBUG = debug;
   }
 
-  @Value("${locale:#{null}}")
-  public void setLocale(String locale) {
+  private void setLocale(String locale) {
     LOCALE = locale;
   }
 
-  @Value("${monitor.location:#{null}}")
-  public void setMonitorLocation(String monitorLocation) {
+  private void setMonitorLocation(String monitorLocation) {
     MONITOR_LOCATION = monitorLocation;
   }
 
-  @Value("${keystore.pass:changeit}")
-  public void setKeyStorePass(String keyStorePass) {
+  private void setKeyStorePass(String keyStorePass) {
     KEYSTORE_PASS = keyStorePass;
   }
 

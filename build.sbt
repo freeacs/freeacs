@@ -117,18 +117,17 @@ lazy val web = (project in file("web"))
     name := "FreeACS Web",
     packageSummary := "FreeACS Web",
     packageDescription := "FreeACS Web",
-    libraryDependencies ++= Dependencies.springBoot
-      ++ Dependencies.database
+    libraryDependencies ++= Dependencies.database
       ++ Dependencies.testing
-      ++ Dependencies.jdeb
       ++ Seq(
-      "org.springframework.boot" % "spring-boot-starter-security" % "2.0.2.RELEASE",
-      "org.springframework" % "spring-context-support" % "5.0.6.RELEASE",
       "commons-fileupload" % "commons-fileupload" % "1.3",
       "commons-httpclient" % "commons-httpclient" % "3.1",
       "org.freemarker" % "freemarker" % "2.3.14",
       "org.jfree" % "jcommon" % "1.0.17",
-      "org.jfree" % "jfreechart" % "1.0.17"
+      "org.jfree" % "jfreechart" % "1.0.17",
+      "com.sparkjava" % "spark-template-freemarker" % "2.7.1",
+      "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.7"
+
     ),
     copyAppProps,
     copyLogProps,
@@ -248,7 +247,6 @@ lazy val shell = (project in file("shell"))
     publish in Docker := {},
     libraryDependencies ++= Dependencies.database
       ++ Dependencies.testing
-      ++ Dependencies.jdeb
       ++ List(
       "org.apache.httpcomponents" % "httpclient" % "4.5.5",
       "commons-io" % "commons-io" % "1.3.2",

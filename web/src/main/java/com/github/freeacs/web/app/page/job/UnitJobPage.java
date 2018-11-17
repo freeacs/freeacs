@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 public class UnitJobPage extends AbstractWebPage {
   /**
@@ -45,12 +44,19 @@ public class UnitJobPage extends AbstractWebPage {
    */
   private JobData inputData;
 
-  @Qualifier("main")
-  DataSource mainDataSource;
+  private final DataSource mainDataSource;
 
   private ACS acs;
   /** Private Unittype unittype; private Group group; private Job job;. */
   private String sessionId;
+
+  public UnitJobPage(DataSource mainDataSource) {
+    this.mainDataSource = mainDataSource;
+  }
+
+  public UnitJobPage() {
+    this.mainDataSource = null;
+  }
 
   public void process(
       ParameterParser req,

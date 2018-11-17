@@ -48,7 +48,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -81,14 +80,7 @@ import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.StandardGradientPaintTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
+import spark.ModelAndView;
 
 /**
  *
@@ -124,8 +116,6 @@ import org.springframework.web.servlet.ModelAndView;
  * usual when the only thing we want is a generated image or a table. We want to get straight to
  * where we want to be and not be dependent on the process method.
  */
-@Controller
-@RequestMapping("/app/unit-dashboard")
 public class UnitStatusPage extends AbstractWebPage {
   /** The logger. */
   private static final Logger logger = LoggerFactory.getLogger(UnitStatusPage.class);
@@ -133,9 +123,11 @@ public class UnitStatusPage extends AbstractWebPage {
   /** The current unit. */
   private Unit currentUnit;
 
-  @Autowired
-  @Qualifier("main")
   private DataSource mainDataSource;
+
+  public UnitStatusPage() {
+    mainDataSource = null;
+  }
 
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
     List<MenuItem> list = new ArrayList<>(super.getShortcutItems(sessionData));
@@ -207,14 +199,6 @@ public class UnitStatusPage extends AbstractWebPage {
 
     Map<String, Object> templateMap = outputHandler.getTemplateMap();
 
-    /* Morten jan 2014 - Certificate checks disabled due to open source
-    if(!CertificateVerification.isCertificateValid(Certificate.CERT_TYPE_REPORT, sessionId) || !SessionCache.getSessionData(sessionId).getUser().isReportsAllowed()){ // If not valid (see the "!")
-    	templateMap.put("message", "No valid certificate found for Reports page. Please contact your systems administrator.");
-    	outputHandler.setTemplatePath("/exception.ftl");
-    	return;
-    }
-    */
-
     ACSUnit acsUnit = ACSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
 
     Unit unit = null;
@@ -283,10 +267,7 @@ public class UnitStatusPage extends AbstractWebPage {
           InputSelectionFactory.getDropDownSingleSelect(
               inputData.getPeriod(),
               getPeriodType(inputData),
-              Arrays.asList(
-                  new PeriodType[] {
-                    PeriodType.MONTH, PeriodType.DAY, PeriodType.HOUR, PeriodType.MINUTE
-                  }));
+              Arrays.asList(PeriodType.MONTH, PeriodType.DAY, PeriodType.HOUR, PeriodType.MINUTE));
       String selectedTabKey = (pageType != null ? pageType : "") + "selectedTab";
       Integer selectedTab = params.getIntegerParameter(selectedTabKey);
       templateMap.put("pageType", pageType);
@@ -369,10 +350,7 @@ public class UnitStatusPage extends AbstractWebPage {
    * @return the line status
    * @throws Exception the exception
    */
-  @RequestMapping(method = RequestMethod.GET, value = "linesup")
-  @ResponseBody
-  public Map<String, Boolean> getLineStatus(
-      @RequestParam("unitId") String unitId, HttpSession session) throws Exception {
+  public Map<String, Boolean> getLineStatus(String unitId, HttpSession session) throws Exception {
     Map<String, Boolean> status = new HashMap<>();
     Calendar cal = Calendar.getInstance();
     cal.setTimeInMillis(System.currentTimeMillis());
@@ -407,22 +385,20 @@ public class UnitStatusPage extends AbstractWebPage {
    * @param endTms the end tms
    * @param unitId the unit id
    * @param servletResponseChannel the servlet outputHandler channel
-   * @param servletRequest the servlet request
    * @param session the session
    * @throws Exception the exception
    */
   @SuppressWarnings("unchecked")
-  @RequestMapping(method = RequestMethod.GET, value = "chartimage")
   public void getChartImage(
-      @RequestParam("type") String pageType,
-      @RequestParam("period") String periodType,
-      @RequestParam("method") String requestMethod,
-      @RequestParam("start") String startTms,
-      @RequestParam("end") String endTms,
-      @RequestParam("unitId") String unitId,
-      @RequestParam(value = "syslogFilter", required = false) String syslogFilter,
+      String pageType,
+      String periodType,
+      String requestMethod,
+      String startTms,
+      String endTms,
+      String unitId,
+      String syslogFilter,
+      String[] selectedAggregation,
       HttpServletResponse servletResponseChannel,
-      HttpServletRequest servletRequest,
       HttpSession session)
       throws Exception {
     Date fromDate = DateUtils.parseDateDefault(startTms);
@@ -435,43 +411,34 @@ public class UnitStatusPage extends AbstractWebPage {
     PeriodType type = getPeriodType(periodType);
     ReportType reportType = ReportType.getEnum(pageType);
     String method = getReportMethod(reportType, requestMethod);
-    String[] selectedAggregation = servletRequest.getParameterValues("aggregate");
 
-    byte[] image = null;
+    byte[] image;
 
     switch (reportType) {
       case VOIP:
         long getVoipChart = System.nanoTime();
-        Report<?> report =
-            SessionCache.convertVoipReport((Report<RecordVoip>) info.getVoipReport(), type);
-        Chart<?> chartMaker =
-            new Chart<RecordVoip>((Report<RecordVoip>) report, method, false, null);
+        Report<?> report = SessionCache.convertVoipReport(info.getVoipReport(), type);
+        Chart<?> chartMaker = new Chart<>((Report<RecordVoip>) report, method, false, null);
         image = getReportChartImageBytes(chartMaker, null, 900, 250);
         logTimeElapsed(getVoipChart, "Retrieved Voip chart", logger);
         break;
       case HARDWARE:
         long getHwChart = System.nanoTime();
-        report =
-            SessionCache.convertHardwareReport(
-                (Report<RecordHardware>) info.getHardwareReport(), type);
-        chartMaker =
-            new Chart<RecordHardware>((Report<RecordHardware>) report, method, false, null);
+        report = SessionCache.convertHardwareReport(info.getHardwareReport(), type);
+        chartMaker = new Chart<>((Report<RecordHardware>) report, method, false, null);
         image = getReportChartImageBytes(chartMaker, null, 900, 250);
         logTimeElapsed(getHwChart, "Retrieved Hardware chart", logger);
         break;
       case SYS:
         long getSyslogChart = System.nanoTime();
-        report =
-            SessionCache.convertSyslogReport(
-                (Report<RecordSyslog>) info.getSyslogReport(syslogFilter), type);
+        report = SessionCache.convertSyslogReport(info.getSyslogReport(syslogFilter), type);
         List<String> keyNames =
             new ArrayList<>(
                 Arrays.asList(info.getSyslogReport(syslogFilter).getKeyFactory().getKeyNames()));
         String[] syslogAggregation =
             ReportPage.getSelectedAggregation(selectedAggregation, keyNames);
         chartMaker =
-            new Chart<RecordSyslog>(
-                (Report<RecordSyslog>) report, method, false, null, syslogAggregation);
+            new Chart<>((Report<RecordSyslog>) report, method, false, null, syslogAggregation);
         image = getReportChartImageBytes(chartMaker, null, 900, 250);
         logTimeElapsed(getSyslogChart, "Retrieved Syslog chart", logger);
         break;
@@ -495,13 +462,12 @@ public class UnitStatusPage extends AbstractWebPage {
    * @throws Exception the exception
    */
   @SuppressWarnings("unchecked")
-  @RequestMapping(method = RequestMethod.GET, value = "charttable")
   public ModelAndView getChartTable(
-      @RequestParam("type") String pageType,
-      @RequestParam("start") String startTms,
-      @RequestParam("end") String endTms,
-      @RequestParam("unitId") String unitId,
-      @RequestParam(value = "syslogFilter", required = false) String syslogFilter,
+      String pageType,
+      String startTms,
+      String endTms,
+      String unitId,
+      String syslogFilter,
       HttpServletRequest servletRequest,
       HttpSession session)
       throws Exception {
@@ -522,9 +488,9 @@ public class UnitStatusPage extends AbstractWebPage {
       case VOIP:
         long getVoipChart = System.nanoTime();
         records = new ArrayList<>(info.getVoipReport().getMap().values());
-        Collections.sort((List<RecordVoip>) records, new RecordVoipComparator());
+        ((List<RecordVoip>) records).sort(new RecordVoipComparator());
         records = RecordUIDataVoip.convertRecords((List<RecordVoip>) records);
-        page = "calls";
+        page = "calls.ftl";
         logTimeElapsed(getVoipChart, "Retrieved Voip table", logger);
         break;
       case HARDWARE:
@@ -543,13 +509,13 @@ public class UnitStatusPage extends AbstractWebPage {
         if (records.size() > 100) {
           records = records.subList(0, 100);
         }
-        page = "memory";
+        page = "memory.ftl";
         logTimeElapsed(getHwChart, "Retrieved Hardware table", logger);
         break;
       case SYS:
         long getSyslogChart = System.nanoTime();
         records = RecordUIDataSyslog.convertRecords(info.getSyslogEntries(), acsUnit.getAcs());
-        page = "syslog";
+        page = "syslog.ftl";
         logTimeElapsed(getSyslogChart, "Retrieved Syslog table", logger);
         break;
       default:
@@ -563,7 +529,7 @@ public class UnitStatusPage extends AbstractWebPage {
     root.put("info", info);
     root.put("URL_MAP", Page.getPageURLMap());
 
-    return new ModelAndView("unit-status/" + page, root);
+    return new ModelAndView(root, "unit-status/" + page);
   }
 
   /**
@@ -583,13 +549,8 @@ public class UnitStatusPage extends AbstractWebPage {
    * @throws InvocationTargetException the invocation target exception
    * @throws NoSuchMethodException the no such method exception
    */
-  @RequestMapping(method = RequestMethod.GET, value = "totalscore-effect")
-  @ResponseBody
   public Map<String, Object> getTotalScoreEffect(
-      @RequestParam("start") String startTms,
-      @RequestParam("end") String endTms,
-      @RequestParam("unitId") String unitId,
-      HttpSession session)
+      String startTms, String endTms, String unitId, HttpSession session)
       throws ParseException, SQLException, IOException, IllegalAccessException,
           InvocationTargetException, NoSuchMethodException {
     Date fromDate = DateUtils.parseDateDefault(startTms);
@@ -622,13 +583,8 @@ public class UnitStatusPage extends AbstractWebPage {
    * @throws TemplateModelException the template model exception
    * @throws ParseException the parse exception
    */
-  @RequestMapping(method = RequestMethod.GET, value = "totalscore-number")
-  @ResponseBody
   public String getTotalScoreNumber(
-      @RequestParam("start") String startTms,
-      @RequestParam("end") String endTms,
-      @RequestParam("unitId") String unitId,
-      HttpSession session)
+      String startTms, String endTms, String unitId, HttpSession session)
       throws SQLException, IOException, TemplateModelException, ParseException {
     Date fromDate = DateUtils.parseDateDefault(startTms);
     Date toDate = DateUtils.parseDateDefault(endTms);
@@ -668,13 +624,8 @@ public class UnitStatusPage extends AbstractWebPage {
    * @param session the session
    * @throws Exception the exception
    */
-  @RequestMapping(method = RequestMethod.GET, value = "overallstatus")
   public void getOverallStatusSpeedometer(
-      @RequestParam("start") String startTms,
-      @RequestParam("end") String endTms,
-      @RequestParam("unitId") String unitId,
-      HttpServletResponse res,
-      HttpSession session)
+      String startTms, String endTms, String unitId, HttpServletResponse res, HttpSession session)
       throws Exception {
     Date fromDate = DateUtils.parseDateDefault(startTms);
     Date toDate = DateUtils.parseDateDefault(endTms);
@@ -700,15 +651,16 @@ public class UnitStatusPage extends AbstractWebPage {
    * @param inputData the input data
    * @param info the info
    * @return the syslog aggregation the no available connection exception
-   * @throws SQLException the sQL exception
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws ParseException the parse exception
    */
-  private CheckBoxGroup<String> getSyslogAggregation(UnitStatusData inputData, UnitStatusInfo info)
-      throws SQLException, IOException, ParseException {
+  private CheckBoxGroup<String> getSyslogAggregation(
+      UnitStatusData inputData, UnitStatusInfo info) {
     List<String> keyNames = new ArrayList<>(Arrays.asList("Severity", "Facility", "EventId"));
     Input input = ReportPage.getSelectedAggregation(inputData.getAggregate(), keyNames);
     return InputSelectionFactory.getCheckBoxGroup(input, input.getStringList(), keyNames);
+  }
+
+  public void setMainDataSource(DataSource mainDataSource) {
+    this.mainDataSource = mainDataSource;
   }
 
   /** The Class RecordHardwareComparator. */
@@ -717,22 +669,6 @@ public class UnitStatusPage extends AbstractWebPage {
     public RecordHardwareComparator() {}
 
     public int compare(RecordHardware o1, RecordHardware o2) {
-      if (o1.getKey().getTms().before(o2.getKey().getTms())) {
-        return 1;
-      }
-      if (o1.getKey().getTms().after(o2.getKey().getTms())) {
-        return -1;
-      }
-      return 0;
-    }
-  }
-
-  /** The Class RecordSyslogComparator. */
-  class RecordSyslogComparator implements Comparator<RecordSyslog> {
-    /** Instantiates a new record syslog comparator. */
-    public RecordSyslogComparator() {}
-
-    public int compare(RecordSyslog o1, RecordSyslog o2) {
       if (o1.getKey().getTms().before(o2.getKey().getTms())) {
         return 1;
       }

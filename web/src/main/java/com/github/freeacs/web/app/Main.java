@@ -7,6 +7,7 @@ import com.github.freeacs.web.app.menu.MenuServlet;
 import com.github.freeacs.web.app.page.WebPage;
 import com.github.freeacs.web.app.util.Freemarker;
 import com.github.freeacs.web.app.util.SessionCache;
+import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebProperties;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
@@ -90,7 +91,7 @@ public class Main extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException {
     String pageStr = req.getParameter("page");
     try {
-      doImpl(new ParameterParser(req, getServletContext()), res, pageStr);
+      doImpl(new ParameterParser(req), res, pageStr);
     } catch (Exception e) {
       logger.error("An error occured while instantiating ParameterParser", e);
       throw new ServletException(e);
@@ -106,10 +107,8 @@ public class Main extends HttpServlet {
    * @return the logged in status title
    */
   private String getLoggedInStatusTitle(ParameterParser params) {
-    String username =
-        SessionCache.getSessionData(params.getHttpServletRequest().getSession().getId())
-            .getUser()
-            .getUsername();
+    SessionData sessionData = SessionCache.getSessionData(params.getSession().getId());
+    String username = sessionData.getUser().getUsername();
     String url = params.getHttpServletRequest().getServerName();
     return username + "@" + url;
   }
@@ -139,8 +138,6 @@ public class Main extends HttpServlet {
    * .
    *
    * @param params the params
-   * @param res the res
-   * @param pageStr the page str
    * @throws IOException Signals that an I/O exception has occurred.
    * @throws TemplateException the template exception
    * @throws ServletException the servlet exception

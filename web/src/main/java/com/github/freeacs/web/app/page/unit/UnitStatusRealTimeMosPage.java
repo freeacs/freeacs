@@ -23,11 +23,7 @@ import com.github.freeacs.web.app.util.BrowserDetect;
 import com.github.freeacs.web.app.util.UserAgent;
 import com.github.freeacs.web.app.util.WebConstants;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.sql.DataSource;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
@@ -70,14 +66,6 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
     ACSUnit acsUnit = ACSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
 
     Map<String, Object> root = outputHandler.getTemplateMap();
-
-    /* Morten jan 2014 - Certificate checks disabled due to open source
-    if(!CertificateVerification.isCertificateValid(Certificate.CERT_TYPE_REPORT, sessionId)){ // If not valid (see the "!")
-    	root.put("message", "No valid certificate found for Reports page. Please contact your systems administrator.");
-    	outputHandler.setTemplatePath("/exception.ftl");
-    	return;
-    }
-    */
 
     Unittype unittype = null;
     if (inputData.getUnittype().notNullNorValue("")) {
@@ -137,11 +125,11 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
           ReportPage.getReportVoipCallGenerator(params.getSession().getId(), acs);
       List<Unittype> unittypes =
           unittype != null
-              ? Arrays.asList(unittype)
+              ? Collections.singletonList(unittype)
               : getAllowedUnittypes(sessionId, xapsDataSource, syslogDataSource);
       List<Profile> profiles =
           profile != null
-              ? Arrays.asList(profile)
+              ? Collections.singletonList(profile)
               : getAllowedProfiles(sessionId, unittype, xapsDataSource, syslogDataSource);
       String unitId = unit != null ? unit.getId() : null;
       Report<RecordVoipCall> report =
@@ -155,8 +143,7 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
               + ". To: "
               + (end != null ? end.toString() : "N/A"));
       Chart<RecordVoipCall> chartMaker =
-          new Chart<RecordVoipCall>(
-              (Report<RecordVoipCall>) report, "MosAvg", false, null, "Channel");
+          new Chart<RecordVoipCall>(report, "MosAvg", false, null, "Channel");
       byte[] image = UnitStatusPage.getReportChartImageBytes(chartMaker, null, 600, 250);
 
       params.getSession().setAttribute("realtime", image);

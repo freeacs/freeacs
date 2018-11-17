@@ -32,8 +32,6 @@ import java.util.regex.Pattern;
 import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * The simple {@link WebPage} implementation.<br>
@@ -104,12 +102,10 @@ public abstract class AbstractWebPage implements WebPage {
 
   /** The Class NotLoggedInException. */
   @SuppressWarnings("serial")
-  @ResponseStatus(reason = "You are not logged in", value = HttpStatus.UNAUTHORIZED)
   public static class NotLoggedInException extends IllegalAccessException {}
 
   /** The Class UnitNotFoundException. */
   @SuppressWarnings("serial")
-  @ResponseStatus(reason = "The requested unitId was not found", value = HttpStatus.NOT_FOUND)
   public static class UnitNotFoundException extends IllegalAccessException {}
 
   /**
@@ -222,11 +218,7 @@ public abstract class AbstractWebPage implements WebPage {
     /** The xaps unit. */
     private ACSUnit acsUnit;
 
-    /**
-     * Instantiates a new gets the parameter value.
-     *
-     * @param ACSUnit the xaps unit
-     */
+    /** Instantiates a new gets the parameter value. */
     public GetParameterValue(ACSUnit acsUnit) {
       this.acsUnit = acsUnit;
     }

@@ -279,7 +279,7 @@ public class ReportPage extends AbstractWebPage {
             && isNumber(req.getParameter("item"))
             && req.getSession().getAttribute("JFreeChart") != null;
     if (isZoomingRequest) {
-      processZoomingRequest(outputHandler, isZoomingRequest);
+      processZoomingRequest(outputHandler);
       return true;
     } else {
       return false;
@@ -392,7 +392,7 @@ public class ReportPage extends AbstractWebPage {
         && ((GroupRetriever) reportImplementation).getGroups().getSelected() != null;
   }
 
-  private void processZoomingRequest(Output outputHandler, boolean realtime) {
+  private void processZoomingRequest(Output outputHandler) {
     JFreeChart _chart = (JFreeChart) req.getSession().getAttribute("JFreeChart");
 
     int series = Integer.parseInt(req.getParameter("series"));
@@ -403,17 +403,14 @@ public class ReportPage extends AbstractWebPage {
     toUseAsEnd = getItemEndDate(_chart, series, item);
 
     toUseAsEnd = fixDateMillis(toUseAsEnd);
-    if (realtime) {
-      // 5.2.2
-      if (!toUseAsStart.before(toUseAsEnd) && !toUseAsEnd.after(toUseAsStart)) {
-        // 5.2.2.1
-        Calendar endCal = Calendar.getInstance();
-        endCal.setTime(toUseAsEnd);
-        endCal.add(Calendar.MINUTE, 1);
-        toUseAsEnd = endCal.getTime();
-      }
-    } else {
-      toUseAsEnd = fixDateMinutes(toUseAsEnd);
+
+    // 5.2.2
+    if (!toUseAsStart.before(toUseAsEnd) && !toUseAsEnd.after(toUseAsStart)) {
+      // 5.2.2.1
+      Calendar endCal = Calendar.getInstance();
+      endCal.setTime(toUseAsEnd);
+      endCal.add(Calendar.MINUTE, 1);
+      toUseAsEnd = endCal.getTime();
     }
 
     String startStr = inputData.getStart().format(toUseAsStart);

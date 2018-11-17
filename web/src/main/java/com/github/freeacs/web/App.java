@@ -1,100 +1,262 @@
 package com.github.freeacs.web;
 
+import static spark.Spark.*;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.freeacs.common.hikari.HikariDataSourceHelper;
+import com.github.freeacs.common.util.Sleep;
+import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.web.app.Main;
 import com.github.freeacs.web.app.Monitor;
 import com.github.freeacs.web.app.menu.MenuServlet;
+import com.github.freeacs.web.app.page.unit.UnitStatusPage;
+import com.github.freeacs.web.app.page.unittype.UnittypeParametersPage;
 import com.github.freeacs.web.app.util.Freemarker;
+import com.github.freeacs.web.app.util.SessionCache;
+import com.github.freeacs.web.app.util.WebProperties;
+import com.github.freeacs.web.config.PasswordEncoder;
+import com.github.freeacs.web.config.SecurityConfig;
+import com.github.freeacs.web.config.UserService;
 import com.github.freeacs.web.help.HelpServlet;
-import com.zaxxer.hikari.HikariDataSource;
-import java.util.Arrays;
-import java.util.Collections;
+import com.github.freeacs.web.security.ThreadUser;
+import com.github.freeacs.web.security.WebUser;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import freemarker.template.Configuration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
-import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
-import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
+import spark.ModelAndView;
+import spark.Request;
+import spark.Session;
+import spark.Spark;
+import spark.template.freemarker.FreeMarkerEngine;
 
-@SpringBootApplication(exclude = FlywayAutoConfiguration.class)
 public class App {
-  public static void main(String[] args) {
-    System.getProperties().setProperty("org.eclipse.jetty.server.Request.maxFormKeys", "100000");
-    SpringApplication.run(App.class, args);
+
+  private static final PasswordEncoder encoder = SecurityConfig.encoder();
+
+  public static void main(String[] args) throws ServletException {
+    staticFiles.location("/public");
+    Config config = ConfigFactory.load();
+    Spark.port(config.getInt("server.port"));
+    DataSource mainDs = HikariDataSourceHelper.dataSource(config.getConfig("main"));
+    WebProperties properties = new WebProperties(config);
+    SyslogClient.SYSLOG_SERVER_HOST = WebProperties.SYSLOG_SERVER_HOST;
+    String ctxPath = WebProperties.CONTEXT_PATH;
+    redirect.get("/", ctxPath);
+    before(
+        "*",
+        (req, res) -> {
+          ThreadUser.setUserDetails(null);
+          Session session = req.session(false);
+          if (!req.url().endsWith("/login")
+              && !req.url().endsWith("/ok")
+              && (session == null || session.attribute("loggedIn") == null)) {
+            res.redirect(ctxPath + "/login");
+            halt();
+          } else if (session != null && session.attribute("loggedIn") != null) {
+            ThreadUser.setUserDetails(session.attribute("loggedIn"));
+          }
+        });
+    routes(mainDs, properties, ctxPath);
+    Runtime.getRuntime()
+        .addShutdownHook(
+            new Thread(
+                () -> {
+                  System.out.println("Shutdown Hook is running !");
+                  Sleep.terminateApplication();
+                }));
   }
 
-  @Bean
-  @Primary
-  @Qualifier("main")
-  @ConfigurationProperties("main.datasource")
-  public DataSource mainDs() {
-    return DataSourceBuilder.create().type(HikariDataSource.class).build();
+  private static void routes(DataSource mainDs, WebProperties properties, String ctxPath)
+      throws ServletException {
+    ObjectMapper objectMapper = new ObjectMapper();
+    get(
+        ctxPath + "/logout",
+        (req, res) -> {
+          HttpSession session = req.raw().getSession(false);
+          if (session != null) {
+            DBI dbi = SessionCache.getDBI(session.getId());
+            if (dbi != null) {
+              dbi.setRunning(false);
+            }
+            SessionCache.removeSession(session.getId());
+          }
+          res.redirect(ctxPath + Main.servletMapping);
+          req.session().removeAttribute("loggedIn");
+          ThreadUser.setUserDetails(null);
+          return null;
+        });
+    Main main = new Main(mainDs, mainDs);
+    main.init();
+    get(
+        ctxPath + Main.servletMapping,
+        (req, res) -> {
+          main.doGet(req.raw(), res.raw());
+          return null;
+        });
+    post(
+        ctxPath + Main.servletMapping,
+        (req, res) -> {
+          main.doGet(req.raw(), res.raw());
+          return null;
+        });
+    Configuration configuration = Freemarker.initFreemarker();
+    get(ctxPath + "/login", (req, res) -> displayLogin(configuration, req));
+    post(
+        ctxPath + "/login",
+        (req, res) -> {
+          String username = req.raw().getParameter("username");
+          String password = req.raw().getParameter("password");
+          String csrf = req.raw().getParameter("csrf");
+          if (csrf == null || !Objects.equals(req.session().attribute("csrf"), csrf)) {
+            res.redirect(ctxPath + Main.servletMapping);
+            return null;
+          }
+          WebUser userDetails = UserService.loadUserByUsername(mainDs, username);
+          if (Objects.equals(userDetails.getPassword(), encoder.encode(password))) {
+            req.session(true).attribute("loggedIn", userDetails);
+            ThreadUser.setUserDetails(userDetails);
+            res.redirect(ctxPath + Main.servletMapping);
+            return null;
+          }
+          return displayLogin(configuration, req);
+        });
+    Monitor monitorServlet = new Monitor();
+    monitorServlet.init();
+    get(
+        ctxPath + "/ok",
+        (req, res) -> {
+          monitorServlet.service(req.raw(), res.raw());
+          return null;
+        });
+    HelpServlet helpServlet = new HelpServlet();
+    helpServlet.init();
+    get(
+        ctxPath + "/help",
+        (req, res) -> {
+          helpServlet.service(req.raw(), res.raw());
+          return null;
+        });
+    MenuServlet menuServlet = new MenuServlet();
+    menuServlet.init();
+    get(
+        ctxPath + "/menu",
+        (req, res) -> {
+          menuServlet.service(req.raw(), res.raw());
+          return null;
+        });
+    UnitStatusPage unitStatusPage = new UnitStatusPage();
+    unitStatusPage.setMainDataSource(mainDs);
+    get(
+        ctxPath + "/app/unit-dashboard/linesup",
+        (req, res) -> {
+          String unitId = req.raw().getParameter("unitId");
+          Map<String, Boolean> result =
+              unitStatusPage.getLineStatus(unitId, req.raw().getSession());
+          return objectMapper.writeValueAsString(result);
+        });
+    get(
+        ctxPath + "/app/unit-dashboard/chartimage",
+        (req, res) -> {
+          String pageType = req.raw().getParameter("type");
+          String periodType = req.raw().getParameter("period");
+          String method = req.raw().getParameter("method");
+          String startTms = req.raw().getParameter("start");
+          String endTms = req.raw().getParameter("end");
+          String unitId = req.raw().getParameter("unitId");
+          String syslogFilter = req.raw().getParameter("syslogFilter");
+          String[] aggregations = req.raw().getParameterValues("aggregate");
+          unitStatusPage.getChartImage(
+              pageType,
+              periodType,
+              method,
+              startTms,
+              endTms,
+              unitId,
+              syslogFilter,
+              aggregations,
+              res.raw(),
+              req.raw().getSession());
+          return null;
+        });
+    get(
+        ctxPath + "/app/unit-dashboard/charttable",
+        (req, res) -> {
+          String pageType = req.raw().getParameter("type");
+          String startTms = req.raw().getParameter("start");
+          String endTms = req.raw().getParameter("end");
+          String unitId = req.raw().getParameter("unitId");
+          String syslogFilter = req.raw().getParameter("syslogFilter");
+          ModelAndView modelAndView =
+              unitStatusPage.getChartTable(
+                  pageType,
+                  startTms,
+                  endTms,
+                  unitId,
+                  syslogFilter,
+                  req.raw(),
+                  req.raw().getSession());
+          return new FreeMarkerEngine(configuration).render(modelAndView);
+        });
+    get(
+        ctxPath + "/app/unit-dashboard/totalscore-effect",
+        (req, res) -> {
+          String startTms = req.raw().getParameter("start");
+          String endTms = req.raw().getParameter("end");
+          String unitId = req.raw().getParameter("unitId");
+          Map<String, Object> result =
+              unitStatusPage.getTotalScoreEffect(startTms, endTms, unitId, req.raw().getSession());
+          return objectMapper.writeValueAsString(result);
+        });
+    get(
+        ctxPath + "/app/unit-dashboard/totalscore-number",
+        (req, res) -> {
+          String startTms = req.raw().getParameter("start");
+          String endTms = req.raw().getParameter("end");
+          String unitId = req.raw().getParameter("unitId");
+          return unitStatusPage.getTotalScoreNumber(
+              startTms, endTms, unitId, req.raw().getSession());
+        });
+    get(
+        ctxPath + "/app/unit-dashboard/overallstatus",
+        (req, res) -> {
+          String startTms = req.raw().getParameter("start");
+          String endTms = req.raw().getParameter("end");
+          String unitId = req.raw().getParameter("unitId");
+          unitStatusPage.getOverallStatusSpeedometer(
+              startTms, endTms, unitId, res.raw(), req.raw().getSession());
+          return null;
+        });
+    UnittypeParametersPage unittypeParametersPage = new UnittypeParametersPage();
+    unittypeParametersPage.setMainDataSource(mainDs);
+    get(
+        ctxPath + "/app/parameters/list",
+        (req, res) -> {
+          String unittype = req.raw().getParameter("unittype");
+          String term = req.raw().getParameter("term");
+          return unittypeParametersPage.getUnittypeParameters(
+              unittype, term, req.raw().getSession());
+        });
   }
 
-  @Bean
-  ServletRegistrationBean<Monitor> monitor() {
-    ServletRegistrationBean<Monitor> srb = new ServletRegistrationBean<>();
-    srb.setServlet(new Monitor());
-    srb.setUrlMappings(Arrays.asList("/monitor", "/ok"));
-    return srb;
-  }
-
-  @Bean
-  ServletRegistrationBean<Main> main(
-      @Qualifier("main") DataSource mainDataSource,
-      @Value("${syslog.server.host}") String syslogServerHost) {
-    SyslogClient.SYSLOG_SERVER_HOST = syslogServerHost;
-    ServletRegistrationBean<Main> srb = new ServletRegistrationBean<>();
-    srb.setServlet(new Main(mainDataSource, mainDataSource));
-    srb.setName("main");
-    srb.setUrlMappings(Collections.singletonList(Main.servletMapping));
-    return srb;
-  }
-
-  @Bean
-  ServletRegistrationBean<HelpServlet> helpServlet() {
-    ServletRegistrationBean<HelpServlet> srb = new ServletRegistrationBean<>();
-    srb.setServlet(new HelpServlet());
-    srb.setUrlMappings(Collections.singletonList("/help"));
-    return srb;
-  }
-
-  @Bean
-  ServletRegistrationBean<MenuServlet> menuServlet() {
-    ServletRegistrationBean<MenuServlet> srb = new ServletRegistrationBean<>();
-    srb.setServlet(new MenuServlet());
-    srb.setUrlMappings(Collections.singletonList("/menu"));
-    return srb;
-  }
-
-  @Bean
-  ServletRegistrationBean<LogoutServlet> logoutServlet() {
-    ServletRegistrationBean<LogoutServlet> srb = new ServletRegistrationBean<>();
-    srb.setServlet(new LogoutServlet());
-    srb.setUrlMappings(Collections.singletonList("/logout"));
-    return srb;
-  }
-
-  @Bean
-  public FreeMarkerViewResolver freemarkerViewResolver() {
-    FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
-    resolver.setCache(true);
-    resolver.setPrefix("");
-    resolver.setSuffix(".ftl");
-    return resolver;
-  }
-
-  @Bean
-  public FreeMarkerConfigurer freemarkerConfig() {
-    FreeMarkerConfigurer freeMarkerConfigurer = new FreeMarkerConfigurer();
-    freeMarkerConfigurer.setConfiguration(Freemarker.initFreemarker());
-    return freeMarkerConfigurer;
+  private static String displayLogin(Configuration configuration, Request req) {
+    String uuid = UUID.randomUUID().toString();
+    req.session(true).attribute("csrf", uuid);
+    return new FreeMarkerEngine(configuration)
+        .render(
+            new ModelAndView(
+                new HashMap<String, String>() {
+                  {
+                    put("csrf", uuid);
+                  }
+                },
+                "login.ftl"));
   }
 }

@@ -2,7 +2,6 @@ package com.github.freeacs.web.app.input;
 
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,7 +9,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.fileupload.FileItem;
@@ -38,9 +36,6 @@ public class ParameterParser {
   /** The files. */
   private Map<String, List<FileItem>> files;
 
-  /** The context. */
-  private ServletContext context;
-
   /**
    * Instantiates a new parameter parser.
    *
@@ -57,32 +52,6 @@ public class ParameterParser {
       params = new HashMap<>();
       parseUploadParams(req);
     }
-  }
-
-  /**
-   * Instantiates a new parameter parser.
-   *
-   * @param req the req
-   * @param context the context
-   * @throws FileUploadException the file upload exception
-   */
-  public ParameterParser(HttpServletRequest req, ServletContext context)
-      throws FileUploadException {
-    this(req);
-    this.context = context;
-  }
-
-  /**
-   * Gets the resource.
-   *
-   * @param path the path
-   * @return the resource
-   */
-  public InputStream getResource(String path) {
-    if (context != null) {
-      return context.getResourceAsStream(path);
-    }
-    return null;
   }
 
   /**
