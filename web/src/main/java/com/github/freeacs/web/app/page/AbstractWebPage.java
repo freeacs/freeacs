@@ -218,9 +218,7 @@ public abstract class AbstractWebPage implements WebPage {
     /** The xaps unit. */
     private ACSUnit acsUnit;
 
-    /**
-     * Instantiates a new gets the parameter value.
-     */
+    /** Instantiates a new gets the parameter value. */
     public GetParameterValue(ACSUnit acsUnit) {
       this.acsUnit = acsUnit;
     }

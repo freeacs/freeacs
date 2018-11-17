@@ -117,8 +117,8 @@ import spark.ModelAndView;
  * usual when the only thing we want is a generated image or a table. We want to get straight to
  * where we want to be and not be dependent on the process method.
  */
-//@Controller
-//@RequestMapping("/app/unit-dashboard")
+// @Controller
+// @RequestMapping("/app/unit-dashboard")
 public class UnitStatusPage extends AbstractWebPage {
   /** The logger. */
   private static final Logger logger = LoggerFactory.getLogger(UnitStatusPage.class);
@@ -368,8 +368,8 @@ public class UnitStatusPage extends AbstractWebPage {
    * @return the line status
    * @throws Exception the exception
    */
-  //@RequestMapping(method = RequestMethod.GET, value = "linesup")
-  //@ResponseBody
+  // @RequestMapping(method = RequestMethod.GET, value = "linesup")
+  // @ResponseBody
   public Map<String, Boolean> getLineStatus(
       /*@RequestParam("unitId")*/ String unitId, HttpSession session) throws Exception {
     Map<String, Boolean> status = new HashMap<>();
@@ -411,7 +411,7 @@ public class UnitStatusPage extends AbstractWebPage {
    * @throws Exception the exception
    */
   @SuppressWarnings("unchecked")
-  //@RequestMapping(method = RequestMethod.GET, value = "chartimage")
+  // @RequestMapping(method = RequestMethod.GET, value = "chartimage")
   public void getChartImage(
       /*@RequestParam("type")  */ String pageType,
       /*@RequestParam("period")*/ String periodType,
@@ -494,7 +494,7 @@ public class UnitStatusPage extends AbstractWebPage {
    * @throws Exception the exception
    */
   @SuppressWarnings("unchecked")
-  //@RequestMapping(method = RequestMethod.GET, value = "charttable")
+  // @RequestMapping(method = RequestMethod.GET, value = "charttable")
   public ModelAndView getChartTable(
       /*@RequestParam("type")*/ String pageType,
       /*@RequestParam("start")*/ String startTms,
@@ -582,8 +582,8 @@ public class UnitStatusPage extends AbstractWebPage {
    * @throws InvocationTargetException the invocation target exception
    * @throws NoSuchMethodException the no such method exception
    */
-  //@RequestMapping(method = RequestMethod.GET, value = "totalscore-effect")
-  //@ResponseBody
+  // @RequestMapping(method = RequestMethod.GET, value = "totalscore-effect")
+  // @ResponseBody
   public Map<String, Object> getTotalScoreEffect(
       /*@RequestParam("start") */ String startTms,
       /*@RequestParam("end")   */ String endTms,
@@ -621,8 +621,8 @@ public class UnitStatusPage extends AbstractWebPage {
    * @throws TemplateModelException the template model exception
    * @throws ParseException the parse exception
    */
-  //@RequestMapping(method = RequestMethod.GET, value = "totalscore-number")
-  //@ResponseBody
+  // @RequestMapping(method = RequestMethod.GET, value = "totalscore-number")
+  // @ResponseBody
   public String getTotalScoreNumber(
       /*@RequestParam("start") */ String startTms,
       /*@RequestParam("end")   */ String endTms,
@@ -667,9 +667,9 @@ public class UnitStatusPage extends AbstractWebPage {
    * @param session the session
    * @throws Exception the exception
    */
-  //@RequestMapping(method = RequestMethod.GET, value = "overallstatus")
+  // @RequestMapping(method = RequestMethod.GET, value = "overallstatus")
   public void getOverallStatusSpeedometer(
-      /*@RequestParam("start") */String startTms,
+      /*@RequestParam("start") */ String startTms,
       /*@RequestParam("end")   */ String endTms,
       /*@RequestParam("unitId")*/ String unitId,
       HttpServletResponse res,

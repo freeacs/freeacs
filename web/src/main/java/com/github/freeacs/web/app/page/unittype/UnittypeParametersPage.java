@@ -23,8 +23,8 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
-//@Controller
-//@RequestMapping("/app/parameters")
+// @Controller
+// @RequestMapping("/app/parameters")
 public class UnittypeParametersPage extends AbstractWebPage {
   /** The session id. */
   private String sessionId;
@@ -57,8 +57,8 @@ public class UnittypeParametersPage extends AbstractWebPage {
    * @return A toString()'ed JSON object
    * @throws SQLException
    */
-  //@RequestMapping(method = RequestMethod.GET, value = "list")
-  //@ResponseBody
+  // @RequestMapping(method = RequestMethod.GET, value = "list")
+  // @ResponseBody
   public String getUnittypeParameters(
       /*@RequestParam*/ String unittype, /*@RequestParam*/ String term, HttpSession session)
       throws SQLException, JsonProcessingException {
