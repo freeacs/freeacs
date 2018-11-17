@@ -12,25 +12,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 /** The Class UserController. */
-@Controller
-@RequestMapping("/app/user")
+// @Controller
+// @RequestMapping("/app/user")
 public class UserController extends PermissionController {
-  /** The user group controller. */
-  @Autowired UserGroupController userGroupController;
 
-  @Autowired
-  @Qualifier("main")
-  DataSource mainDataSource;
+  /** The user group controller. */
+  private UserGroupController userGroupController;
+
+  private DataSource mainDataSource;
+
+  public UserController(DataSource mainDataSource, UserGroupController userGroupController) {
+    this.mainDataSource = mainDataSource;
+    this.userGroupController = userGroupController;
+  }
 
   /**
    * Delete.
@@ -41,9 +37,10 @@ public class UserController extends PermissionController {
    * @throws ParseException the parse exception
    * @throws SQLException the sQL exception the no available connection exception
    */
-  @RequestMapping(value = "/{name}", method = RequestMethod.DELETE)
-  @ResponseBody
-  public void delete(@PathVariable String name, HttpSession session)
+  // @RequestMapping(value = "/{name}", method = RequestMethod.DELETE)
+  // @ResponseBody
+  public void delete(
+      /*@PathVariable*/ String name, HttpSession session)
       throws IOException, ParseException, SQLException {
     Users users = getUsers(session.getId(), mainDataSource);
     User loggedInUser = SessionCache.getSessionData(session.getId()).getUser();
@@ -62,10 +59,10 @@ public class UserController extends PermissionController {
    * @throws IOException Signals that an I/O exception has occurred.
    * @throws SQLException the sQL exception the no available connection exception
    */
-  @RequestMapping(value = "/{name}", method = RequestMethod.GET)
-  @ResponseBody
-  public UserModel get(@PathVariable String name, HttpSession session)
-      throws IOException, SQLException {
+  // @RequestMapping(value = "/{name}", method = RequestMethod.GET)
+  // @ResponseBody
+  public UserModel get(
+      /*@PathVariable*/ String name, HttpSession session) throws IOException, SQLException {
     Users users = getUsers(session.getId(), mainDataSource);
     User loggedInUser = SessionCache.getSessionData(session.getId()).getUser();
     if (users.getProtected(name, loggedInUser) == null) {
@@ -85,9 +82,10 @@ public class UserController extends PermissionController {
    * @throws ParseException the parse exception
    * @throws SQLException the sQL exception the no available connection exception
    */
-  @RequestMapping(method = RequestMethod.POST)
-  @ResponseBody
-  public UserModel create(@RequestBody UserModel details, HttpSession session)
+  // @RequestMapping(method = RequestMethod.POST)
+  // @ResponseBody
+  public UserModel create(
+      /*@RequestBody*/ UserModel details, HttpSession session)
       throws IOException, ParseException, SQLException {
     Users users = getUsers(session.getId(), mainDataSource);
     User loggedInUser = SessionCache.getSessionData(session.getId()).getUser();
@@ -110,9 +108,10 @@ public class UserController extends PermissionController {
    * @throws ParseException the parse exception
    * @throws SQLException the sQL exception the no available connection exception
    */
-  @RequestMapping(method = RequestMethod.PUT)
-  @ResponseBody
-  public UserModel update(@RequestBody UserModel details, HttpSession session)
+  // @RequestMapping(method = RequestMethod.PUT)
+  // @ResponseBody
+  public UserModel update(
+      /*@RequestBody*/ UserModel details, HttpSession session)
       throws IOException, ParseException, SQLException {
     Users users = getUsers(session.getId(), mainDataSource);
     User loggedInUser = SessionCache.getSessionData(session.getId()).getUser();
@@ -140,8 +139,8 @@ public class UserController extends PermissionController {
    * @throws ParseException the parse exception
    * @throws SQLException the sQL exception the no available connection exception
    */
-  @RequestMapping(value = "list", method = RequestMethod.GET)
-  @ResponseBody
+  // @RequestMapping(value = "list", method = RequestMethod.GET)
+  // @ResponseBody
   public Map<String, Object> list(
       HttpSession session, HttpServletRequest request, HttpServletResponse outputHandler)
       throws IOException, ParseException, SQLException {
@@ -155,23 +154,5 @@ public class UserController extends PermissionController {
             userGroupController.getNameMap().get("NotAdmin"),
             mainDataSource));
     return map;
-  }
-
-  /**
-   * Gets the user group controller.
-   *
-   * @return the user group controller
-   */
-  UserGroupController getUserGroupController() {
-    return userGroupController;
-  }
-
-  /**
-   * Sets the user group controller.
-   *
-   * @param userGroupController the new user group controller
-   */
-  void setUserGroupController(UserGroupController userGroupController) {
-    this.userGroupController = userGroupController;
   }
 }
