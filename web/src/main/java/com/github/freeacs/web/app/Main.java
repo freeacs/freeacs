@@ -91,7 +91,7 @@ public class Main extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException {
     String pageStr = req.getParameter("page");
     try {
-      doImpl(new ParameterParser(req), pageStr, res);
+      doImpl(new ParameterParser(req), res, pageStr);
     } catch (Exception e) {
       logger.error("An error occured while instantiating ParameterParser", e);
       throw new ServletException(e);
@@ -142,7 +142,7 @@ public class Main extends HttpServlet {
    * @throws TemplateException the template exception
    * @throws ServletException the servlet exception
    */
-  public void doImpl(ParameterParser params, String pageStr, HttpServletResponse res)
+  public void doImpl(ParameterParser params, HttpServletResponse res, String pageStr)
       throws IOException, TemplateException, ServletException {
     WebPage page = getWebPage(pageStr);
 
