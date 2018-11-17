@@ -128,7 +128,8 @@ lazy val web = (project in file("web"))
       "commons-httpclient" % "commons-httpclient" % "3.1",
       "org.freemarker" % "freemarker" % "2.3.14",
       "org.jfree" % "jcommon" % "1.0.17",
-      "org.jfree" % "jfreechart" % "1.0.17"
+      "org.jfree" % "jfreechart" % "1.0.17",
+      "com.sparkjava" % "spark-template-freemarker" % "2.7.1"
     ),
     copyAppProps,
     copyLogProps,

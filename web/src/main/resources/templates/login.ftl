@@ -9,7 +9,6 @@
 		<center>
 			<div class="center_box" id="bodylogon">
 				<form action="login" id="loginForm" method="post" class="unit">
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 					<fieldset id="logondiv">
 						<legend>FreeACS</legend>
 						<table>
@@ -36,11 +35,6 @@
 							</tr>
 						</table>
 					</fieldset>
-					<font color="red"><b>
-						<#if Session.SPRING_SECURITY_LAST_EXCEPTION?? && Session.SPRING_SECURITY_LAST_EXCEPTION.message?has_content>
-							${Session.SPRING_SECURITY_LAST_EXCEPTION.message}
-						</#if>
-					</b></font>
 				</form>
 			</div>
 		</center>

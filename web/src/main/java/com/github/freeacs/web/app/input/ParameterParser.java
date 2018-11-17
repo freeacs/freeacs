@@ -38,9 +38,6 @@ public class ParameterParser {
   /** The files. */
   private Map<String, List<FileItem>> files;
 
-  /** The context. */
-  private ServletContext context;
-
   /**
    * Instantiates a new parameter parser.
    *
@@ -57,32 +54,6 @@ public class ParameterParser {
       params = new HashMap<>();
       parseUploadParams(req);
     }
-  }
-
-  /**
-   * Instantiates a new parameter parser.
-   *
-   * @param req the req
-   * @param context the context
-   * @throws FileUploadException the file upload exception
-   */
-  public ParameterParser(HttpServletRequest req, ServletContext context)
-      throws FileUploadException {
-    this(req);
-    this.context = context;
-  }
-
-  /**
-   * Gets the resource.
-   *
-   * @param path the path
-   * @return the resource
-   */
-  public InputStream getResource(String path) {
-    if (context != null) {
-      return context.getResourceAsStream(path);
-    }
-    return null;
   }
 
   /**

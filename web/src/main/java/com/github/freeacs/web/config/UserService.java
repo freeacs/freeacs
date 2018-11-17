@@ -18,22 +18,20 @@ import org.springframework.stereotype.Service;
 public class UserService implements UserDetailsService {
   private static Logger logger = LoggerFactory.getLogger(UserService.class);
 
-  private final DataSource mainDs;
+  private final Users users;
 
   @Autowired
   public UserService(@Qualifier("main") DataSource mainDs) {
-    this.mainDs = mainDs;
-  }
-
-  @Override
-  public UserDetails loadUserByUsername(String username) {
-    Users users;
     try {
       users = new Users(mainDs);
     } catch (SQLException e) {
       logger.error("Failed to create Users object", e);
       throw new IllegalStateException("Failed to create Users object", e);
     }
+  }
+
+  @Override
+  public UserDetails loadUserByUsername(String username) {
     User userObject = users.getUnprotected(username);
     if (userObject == null) {
       throw new UsernameNotFoundException(username);
