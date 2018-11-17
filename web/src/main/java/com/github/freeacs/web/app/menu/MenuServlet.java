@@ -194,7 +194,7 @@ public class MenuServlet extends HttpServlet {
       if (allowedPages.contains(Page.SYSLOG)) {
         support.addSubMenuItem(new MenuItem("Syslog", Page.SYSLOG));
       }
-      support.addSubMenuItem(new MenuItem("Forum support", "http://freeacs.freeforums.org/"));
+      support.addSubMenuItem(new MenuItem("Forum support", "http://freeacsforum.freeforums.org/"));
       menu.add(support);
     }
     if (allowedPages.contains(Page.TOPMENU_EASY)) {
