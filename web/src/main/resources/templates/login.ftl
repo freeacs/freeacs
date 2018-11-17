@@ -9,7 +9,8 @@
 		<center>
 			<div class="center_box" id="bodylogon">
 				<form action="login" id="loginForm" method="post" class="unit">
-					<fieldset id="logondiv">
+                    <input type="hidden" name="csrf" value="${csrf}"/>
+                    <fieldset id="logondiv">
 						<legend>FreeACS</legend>
 						<table>
 							<tr>

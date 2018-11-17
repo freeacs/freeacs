@@ -24,7 +24,9 @@ import spark.template.freemarker.FreeMarkerEngine;
 
 import javax.servlet.ServletException;
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.Objects;
+import java.util.UUID;
 
 import static spark.Spark.before;
 import static spark.Spark.get;
@@ -86,11 +88,20 @@ public class App {
     });
     Configuration configuration = Freemarker.initFreemarker();
     get(ctxPath + "/login", (req, res) -> {
-      return new FreeMarkerEngine(configuration).render(new ModelAndView(null, "login.ftl"));
+      String uuid = UUID.randomUUID().toString();
+      req.session(true).attribute("csrf", uuid);
+      return new FreeMarkerEngine(configuration).render(new ModelAndView(new HashMap<String, String>() {{
+        put("csrf", uuid);
+      }}, "login.ftl"));
     });
     post(ctxPath + "/login", (req, res) -> {
       String username = req.raw().getParameter("username");
       String password = req.raw().getParameter("password");
+      String csrf = req.raw().getParameter("csrf");
+      if (csrf == null || !Objects.equals(req.session().attribute("csrf"), csrf)) {
+        res.redirect(ctxPath + Main.servletMapping);
+        return null;
+      }
       UserDetails userDetails = userService.loadUserByUsername(username);
       if (Objects.equals(userDetails.getPassword(), config.encoder().encode(password))) {
         req.session(true).attribute("loggedIn", userDetails);
