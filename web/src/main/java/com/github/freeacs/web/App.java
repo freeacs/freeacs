@@ -1,8 +1,6 @@
 package com.github.freeacs.web;
 
 import com.github.freeacs.common.hikari.HikariDataSourceHelper;
-import com.github.freeacs.common.scheduler.ExecutorWrapper;
-import com.github.freeacs.common.scheduler.ExecutorWrapperFactory;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.web.app.Main;
@@ -40,7 +38,6 @@ public class App {
     Config config = ConfigFactory.load();
     Spark.port(config.getInt("server.port"));
     DataSource mainDs = HikariDataSourceHelper.dataSource(config.getConfig("main"));
-    ExecutorWrapper executorWrapper = ExecutorWrapperFactory.create(1);
     WebProperties properties = new WebProperties(config);
     SyslogClient.SYSLOG_SERVER_HOST = WebProperties.SYSLOG_SERVER_HOST;
     String ctxPath = WebProperties.CONTEXT_PATH;
@@ -54,18 +51,17 @@ public class App {
         ThreadUser.setUserDetails(session.attribute("loggedIn"));
       }
     });
-    routes(mainDs, properties, executorWrapper, ctxPath);
+    routes(mainDs, properties, ctxPath);
     Runtime.getRuntime()
         .addShutdownHook(
             new Thread(
                 () -> {
                   System.out.println("Shutdown Hook is running !");
                   Sleep.terminateApplication();
-                  executorWrapper.shutdown();
                 }));
   }
 
-  private static void routes(DataSource mainDs, WebProperties properties, ExecutorWrapper executorWrapper, String ctxPath)
+  private static void routes(DataSource mainDs, WebProperties properties, String ctxPath)
       throws ServletException {
     UserService userService = new UserService(mainDs);
     SecurityConfig config = new SecurityConfig(userService);
@@ -111,11 +107,13 @@ public class App {
         return null;
     });
     HelpServlet helpServlet = new HelpServlet();
+    helpServlet.init();
     get(ctxPath + "/help", (req, res) -> {
         helpServlet.service(req.raw(), res.raw());
         return null;
     });
     MenuServlet menuServlet = new MenuServlet();
+    menuServlet.init();
     get(ctxPath + "/menu", (req, res) -> {
         menuServlet.service(req.raw(), res.raw());
         return null;
