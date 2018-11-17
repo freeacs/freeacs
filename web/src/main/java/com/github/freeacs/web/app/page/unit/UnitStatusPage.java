@@ -81,14 +81,7 @@ import org.jfree.ui.GradientPaintTransformType;
 import org.jfree.ui.StandardGradientPaintTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
+import spark.ModelAndView;
 
 /**
  *
@@ -124,8 +117,8 @@ import org.springframework.web.servlet.ModelAndView;
  * usual when the only thing we want is a generated image or a table. We want to get straight to
  * where we want to be and not be dependent on the process method.
  */
-@Controller
-@RequestMapping("/app/unit-dashboard")
+//@Controller
+//@RequestMapping("/app/unit-dashboard")
 public class UnitStatusPage extends AbstractWebPage {
   /** The logger. */
   private static final Logger logger = LoggerFactory.getLogger(UnitStatusPage.class);
@@ -133,9 +126,15 @@ public class UnitStatusPage extends AbstractWebPage {
   /** The current unit. */
   private Unit currentUnit;
 
-  @Autowired
-  @Qualifier("main")
-  private DataSource mainDataSource;
+  private final DataSource mainDataSource;
+
+  public UnitStatusPage(DataSource mainDataSource) {
+    this.mainDataSource = mainDataSource;
+  }
+
+  public UnitStatusPage() {
+    mainDataSource = null;
+  }
 
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
     List<MenuItem> list = new ArrayList<>(super.getShortcutItems(sessionData));
@@ -369,10 +368,10 @@ public class UnitStatusPage extends AbstractWebPage {
    * @return the line status
    * @throws Exception the exception
    */
-  @RequestMapping(method = RequestMethod.GET, value = "linesup")
-  @ResponseBody
+  //@RequestMapping(method = RequestMethod.GET, value = "linesup")
+  //@ResponseBody
   public Map<String, Boolean> getLineStatus(
-      @RequestParam("unitId") String unitId, HttpSession session) throws Exception {
+      /*@RequestParam("unitId")*/ String unitId, HttpSession session) throws Exception {
     Map<String, Boolean> status = new HashMap<>();
     Calendar cal = Calendar.getInstance();
     cal.setTimeInMillis(System.currentTimeMillis());
@@ -412,15 +411,15 @@ public class UnitStatusPage extends AbstractWebPage {
    * @throws Exception the exception
    */
   @SuppressWarnings("unchecked")
-  @RequestMapping(method = RequestMethod.GET, value = "chartimage")
+  //@RequestMapping(method = RequestMethod.GET, value = "chartimage")
   public void getChartImage(
-      @RequestParam("type") String pageType,
-      @RequestParam("period") String periodType,
-      @RequestParam("method") String requestMethod,
-      @RequestParam("start") String startTms,
-      @RequestParam("end") String endTms,
-      @RequestParam("unitId") String unitId,
-      @RequestParam(value = "syslogFilter", required = false) String syslogFilter,
+      /*@RequestParam("type")  */ String pageType,
+      /*@RequestParam("period")*/ String periodType,
+      /*@RequestParam("method")*/ String requestMethod,
+      /*@RequestParam("start") */ String startTms,
+      /*@RequestParam("end")   */ String endTms,
+      /*@RequestParam("unitId")*/ String unitId,
+      /*@RequestParam(value = "syslogFilter", required = false)*/ String syslogFilter,
       HttpServletResponse servletResponseChannel,
       HttpServletRequest servletRequest,
       HttpSession session)
@@ -495,13 +494,13 @@ public class UnitStatusPage extends AbstractWebPage {
    * @throws Exception the exception
    */
   @SuppressWarnings("unchecked")
-  @RequestMapping(method = RequestMethod.GET, value = "charttable")
+  //@RequestMapping(method = RequestMethod.GET, value = "charttable")
   public ModelAndView getChartTable(
-      @RequestParam("type") String pageType,
-      @RequestParam("start") String startTms,
-      @RequestParam("end") String endTms,
-      @RequestParam("unitId") String unitId,
-      @RequestParam(value = "syslogFilter", required = false) String syslogFilter,
+      /*@RequestParam("type")*/ String pageType,
+      /*@RequestParam("start")*/ String startTms,
+      /*@RequestParam("end")*/ String endTms,
+      /*@RequestParam("unitId")*/ String unitId,
+      /*@RequestParam(value = "syslogFilter", required = false)*/ String syslogFilter,
       HttpServletRequest servletRequest,
       HttpSession session)
       throws Exception {
@@ -563,7 +562,7 @@ public class UnitStatusPage extends AbstractWebPage {
     root.put("info", info);
     root.put("URL_MAP", Page.getPageURLMap());
 
-    return new ModelAndView("unit-status/" + page, root);
+    return new ModelAndView(root, "unit-status/" + page);
   }
 
   /**
@@ -583,12 +582,12 @@ public class UnitStatusPage extends AbstractWebPage {
    * @throws InvocationTargetException the invocation target exception
    * @throws NoSuchMethodException the no such method exception
    */
-  @RequestMapping(method = RequestMethod.GET, value = "totalscore-effect")
-  @ResponseBody
+  //@RequestMapping(method = RequestMethod.GET, value = "totalscore-effect")
+  //@ResponseBody
   public Map<String, Object> getTotalScoreEffect(
-      @RequestParam("start") String startTms,
-      @RequestParam("end") String endTms,
-      @RequestParam("unitId") String unitId,
+      /*@RequestParam("start") */ String startTms,
+      /*@RequestParam("end")   */ String endTms,
+      /*@RequestParam("unitId")*/ String unitId,
       HttpSession session)
       throws ParseException, SQLException, IOException, IllegalAccessException,
           InvocationTargetException, NoSuchMethodException {
@@ -622,12 +621,12 @@ public class UnitStatusPage extends AbstractWebPage {
    * @throws TemplateModelException the template model exception
    * @throws ParseException the parse exception
    */
-  @RequestMapping(method = RequestMethod.GET, value = "totalscore-number")
-  @ResponseBody
+  //@RequestMapping(method = RequestMethod.GET, value = "totalscore-number")
+  //@ResponseBody
   public String getTotalScoreNumber(
-      @RequestParam("start") String startTms,
-      @RequestParam("end") String endTms,
-      @RequestParam("unitId") String unitId,
+      /*@RequestParam("start") */ String startTms,
+      /*@RequestParam("end")   */ String endTms,
+      /*@RequestParam("unitId")*/ String unitId,
       HttpSession session)
       throws SQLException, IOException, TemplateModelException, ParseException {
     Date fromDate = DateUtils.parseDateDefault(startTms);
@@ -668,11 +667,11 @@ public class UnitStatusPage extends AbstractWebPage {
    * @param session the session
    * @throws Exception the exception
    */
-  @RequestMapping(method = RequestMethod.GET, value = "overallstatus")
+  //@RequestMapping(method = RequestMethod.GET, value = "overallstatus")
   public void getOverallStatusSpeedometer(
-      @RequestParam("start") String startTms,
-      @RequestParam("end") String endTms,
-      @RequestParam("unitId") String unitId,
+      /*@RequestParam("start") */String startTms,
+      /*@RequestParam("end")   */ String endTms,
+      /*@RequestParam("unitId")*/ String unitId,
       HttpServletResponse res,
       HttpSession session)
       throws Exception {

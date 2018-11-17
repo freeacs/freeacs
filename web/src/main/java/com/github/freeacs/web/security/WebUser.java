@@ -7,15 +7,11 @@ import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.WebConstants;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 /** The Class WebUser. */
-public class WebUser extends User implements UserDetails {
+public class WebUser extends User {
 
   /**
    * Make sure that the user always has access.
@@ -66,36 +62,7 @@ public class WebUser extends User implements UserDetails {
     setSecretHashed(user.getSecret());
   }
 
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    if (isAdmin()) {
-      return Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
-    }
-    return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
-  }
-
-  @Override
   public String getPassword() {
     return getSecret();
-  }
-
-  @Override
-  public boolean isAccountNonExpired() {
-    return true;
-  }
-
-  @Override
-  public boolean isAccountNonLocked() {
-    return true;
-  }
-
-  @Override
-  public boolean isCredentialsNonExpired() {
-    return true;
-  }
-
-  @Override
-  public boolean isEnabled() {
-    return true;
   }
 }

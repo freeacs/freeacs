@@ -7,21 +7,13 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
 
-@Service
-public class UserService implements UserDetailsService {
+public class UserService {
   private static Logger logger = LoggerFactory.getLogger(UserService.class);
 
   private final Users users;
 
-  @Autowired
-  public UserService(@Qualifier("main") DataSource mainDs) {
+  public UserService(DataSource mainDs) {
     try {
       users = new Users(mainDs);
     } catch (SQLException e) {
@@ -30,11 +22,10 @@ public class UserService implements UserDetailsService {
     }
   }
 
-  @Override
-  public UserDetails loadUserByUsername(String username) {
+  public WebUser loadUserByUsername(String username) {
     User userObject = users.getUnprotected(username);
     if (userObject == null) {
-      throw new UsernameNotFoundException(username);
+      throw new IllegalArgumentException(username);
     }
     return new WebUser(userObject);
   }

@@ -22,15 +22,9 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-@Controller
-@RequestMapping("/app/parameters")
+//@Controller
+//@RequestMapping("/app/parameters")
 public class UnittypeParametersPage extends AbstractWebPage {
   /** The session id. */
   private String sessionId;
@@ -44,8 +38,15 @@ public class UnittypeParametersPage extends AbstractWebPage {
 
   private static final String SESSION_SAVE_ERRORS = "utp-save-error";
 
-  @Qualifier("main")
-  DataSource mainDataSource;
+  private final DataSource mainDataSource;
+
+  public UnittypeParametersPage(DataSource mainDataSource) {
+    this.mainDataSource = mainDataSource;
+  }
+
+  public UnittypeParametersPage() {
+    this.mainDataSource = null;
+  }
 
   /**
    * For use by jQuery on the search page for the "Add new parameter" in advanced mode.
@@ -56,10 +57,10 @@ public class UnittypeParametersPage extends AbstractWebPage {
    * @return A toString()'ed JSON object
    * @throws SQLException
    */
-  @RequestMapping(method = RequestMethod.GET, value = "list")
-  @ResponseBody
+  //@RequestMapping(method = RequestMethod.GET, value = "list")
+  //@ResponseBody
   public String getUnittypeParameters(
-      @RequestParam String unittype, @RequestParam String term, HttpSession session)
+      /*@RequestParam*/ String unittype, /*@RequestParam*/ String term, HttpSession session)
       throws SQLException, JsonProcessingException {
     ACS acs = ACSLoader.getXAPS(session.getId(), mainDataSource, mainDataSource);
     List<Unittype> allowedUnittypes = Arrays.asList(acs.getUnittypes().getUnittypes());

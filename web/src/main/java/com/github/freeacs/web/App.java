@@ -2,39 +2,41 @@ package com.github.freeacs.web;
 
 import com.github.freeacs.common.hikari.HikariDataSourceHelper;
 import com.github.freeacs.common.util.Sleep;
+import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.web.app.Main;
 import com.github.freeacs.web.app.Monitor;
 import com.github.freeacs.web.app.menu.MenuServlet;
 import com.github.freeacs.web.app.util.Freemarker;
+import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.WebProperties;
+import com.github.freeacs.web.config.PasswordEncoder;
 import com.github.freeacs.web.config.SecurityConfig;
 import com.github.freeacs.web.config.UserService;
 import com.github.freeacs.web.help.HelpServlet;
-import com.github.freeacs.web.security.LogoutServlet;
 import com.github.freeacs.web.security.ThreadUser;
+import com.github.freeacs.web.security.WebUser;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import freemarker.template.Configuration;
-import org.springframework.security.core.userdetails.UserDetails;
 import spark.ModelAndView;
 import spark.Session;
 import spark.Spark;
 import spark.template.freemarker.FreeMarkerEngine;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
 
-import static spark.Spark.before;
-import static spark.Spark.get;
-import static spark.Spark.halt;
-import static spark.Spark.post;
-import static spark.Spark.staticFiles;
+import static spark.Spark.*;
 
 public class App {
+
+  private static final PasswordEncoder encoder = SecurityConfig.encoder();
+
   public static void main(String[] args) throws ServletException {
     staticFiles.location("/public");
     Config config = ConfigFactory.load();
@@ -43,10 +45,13 @@ public class App {
     WebProperties properties = new WebProperties(config);
     SyslogClient.SYSLOG_SERVER_HOST = WebProperties.SYSLOG_SERVER_HOST;
     String ctxPath = WebProperties.CONTEXT_PATH;
+    redirect.get("/", ctxPath);
     before("*", (req, res) -> {
       ThreadUser.setUserDetails(null);
       Session session = req.session(false);
-      if ((req.url() == null || !req.url().endsWith("/login")) && (session == null || session.attribute("loggedIn") == null)) {
+      if ((req.url() == null
+              || !req.url().endsWith("/login")) && (session == null
+              || session.attribute("loggedIn") == null)) {
         res.redirect(ctxPath + "/login");
         halt();
       } else if (session != null && session.attribute("loggedIn") != null) {
@@ -66,11 +71,15 @@ public class App {
   private static void routes(DataSource mainDs, WebProperties properties, String ctxPath)
       throws ServletException {
     UserService userService = new UserService(mainDs);
-    SecurityConfig config = new SecurityConfig(userService);
-    LogoutServlet logoutServlet = new LogoutServlet();
-    logoutServlet.init();
     get(ctxPath + "/logout", (req, res) -> {
-      logoutServlet.doGet(req.raw(), res.raw());
+      HttpSession session = req.raw().getSession(false);
+      if (session != null) {
+        DBI dbi = SessionCache.getDBI(session.getId());
+        if (dbi != null) {
+          dbi.setRunning(false);
+        }
+        SessionCache.removeSession(session.getId());
+      }
       res.redirect(ctxPath + Main.servletMapping);
       req.session().removeAttribute("loggedIn");
       ThreadUser.setUserDetails(null);
@@ -102,8 +111,8 @@ public class App {
         res.redirect(ctxPath + Main.servletMapping);
         return null;
       }
-      UserDetails userDetails = userService.loadUserByUsername(username);
-      if (Objects.equals(userDetails.getPassword(), config.encoder().encode(password))) {
+      WebUser userDetails = userService.loadUserByUsername(username);
+      if (Objects.equals(userDetails.getPassword(), encoder.encode(password))) {
         req.session(true).attribute("loggedIn", userDetails);
         ThreadUser.setUserDetails(userDetails);
         res.redirect(ctxPath + Main.servletMapping);

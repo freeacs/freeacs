@@ -1,16 +1,14 @@
 package com.github.freeacs.web.security;
 
-import org.springframework.security.core.userdetails.UserDetails;
-
 public abstract class ThreadUser {
 
-    private static ThreadLocal<UserDetails> userDetails = new ThreadLocal<>();
+    private static ThreadLocal<WebUser> userDetails = new ThreadLocal<>();
 
-    public static void setUserDetails(UserDetails userDetails) {
+    public static void setUserDetails(WebUser userDetails) {
         ThreadUser.userDetails.set(userDetails);
     }
 
-    public static UserDetails getUserDetails() {
+    public static WebUser getUserDetails() {
         return ThreadUser.userDetails.get();
     }
 }
