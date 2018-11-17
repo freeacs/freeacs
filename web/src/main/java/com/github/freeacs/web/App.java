@@ -55,7 +55,8 @@ public class App {
         (req, res) -> {
           ThreadUser.setUserDetails(null);
           Session session = req.session(false);
-          if (!req.url().endsWith("/login") && !req.url().endsWith("/ok")
+          if (!req.url().endsWith("/login")
+              && !req.url().endsWith("/ok")
               && (session == null || session.attribute("loggedIn") == null)) {
             res.redirect(ctxPath + "/login");
             halt();
