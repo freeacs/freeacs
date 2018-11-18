@@ -1,22 +1,21 @@
 package com.github.freeacs.web;
 
+import static com.github.freeacs.common.util.DataSourceHelper.inMemoryDataSource;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.web.app.util.WebProperties;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.zaxxer.hikari.HikariDataSource;
+import java.sql.SQLException;
+import javax.sql.DataSource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 import spark.Spark;
-
-import javax.sql.DataSource;
-import java.sql.SQLException;
-
-import static com.github.freeacs.common.util.DataSourceHelper.inMemoryDataSource;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 public class AppTest {
 
