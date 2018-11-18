@@ -22,6 +22,7 @@ public class LoginFilter implements Filter {
     if (!request.url().endsWith("/login")
         && !request.url().endsWith("/ok")
         && (session == null || session.attribute("loggedIn") == null)) {
+      request.session().attribute("redirect", request.uri() + "?" + request.queryString());
       response.redirect(ctxPath + "/login");
       halt();
     } else if (session != null && session.attribute("loggedIn") != null) {

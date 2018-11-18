@@ -48,7 +48,13 @@ public class LoginRoute implements RouteGroup {
           if (Objects.equals(userDetails.getPassword(), encoder.encode(password))) {
             req.session(true).attribute("loggedIn", userDetails);
             ThreadUser.setUserDetails(userDetails);
-            res.redirect(ctxPath + "/index");
+            String redirect = req.session().attribute("redirect");
+            if (redirect != null) {
+              req.session().attribute("redirect", null);
+              res.redirect(redirect);
+            } else {
+              res.redirect(ctxPath + "/index");
+            }
             return null;
           }
           return displayLogin(configuration, req);
