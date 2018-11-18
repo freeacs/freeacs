@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.freeacs.common.hikari.HikariDataSourceHelper;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.util.SyslogClient;
+import com.github.freeacs.web.app.Main;
 import com.github.freeacs.web.app.util.Freemarker;
 import com.github.freeacs.web.app.util.WebProperties;
 import com.github.freeacs.web.routes.*;
@@ -51,14 +52,14 @@ public class App {
     SyslogClient.SYSLOG_SERVER_HOST = properties.getSyslogServerHost();
     Spark.port(properties.getServerPort());
     staticFiles.location("/public");
-    redirect.get("/", ctxPath + "/index");
-    redirect.get(ctxPath, ctxPath + "/index");
+    redirect.get("/", ctxPath + Main.servletMapping);
+    redirect.get(ctxPath, ctxPath + Main.servletMapping);
     before("*", new LoginFilter(ctxPath));
     path(
         ctxPath,
         () -> {
+          path(Main.servletMapping, new MainRoute(mainDs));
           get("/logout", new LogoutRoute(ctxPath));
-          path("/index", new MainRoute(mainDs));
           path("/login", new LoginRoute(ctxPath, configuration, mainDs));
           get("/ok", new HealthRoute());
           get("/help", new HelpRoute());
