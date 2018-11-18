@@ -2,6 +2,8 @@ language: scala
 sudo: false
 scala:
    - 2.12.2
+addons:
+  firefox: "latest-esr"
 env:
   global:
     - secure: "u6VXZ+NlvGpEyWD3u0Z7I4TbApRP1j86oGR08cSve4bhpCrOtthxlYPGPjLKXOBkqmM4oPmdZesaNMgv7yltahHDKz0LKcKIdj/HcZuJ6+wZvsm0sLmFyoF0nZMgk1zwv9KWGyHkB2oJGG01ptwDG3XwrXKYe8vmMJUTMod01k9u308Vgu2IfYF55SugTXZiHZ0bGFk+RiHXabmCcmhDpyl9kqvXhc2DkvPRRbQCdDQmT4VmroqOWDL/Sia5iP3rWunXNXU8RmC50VE+K8fLXPU5Pb8zfuinP2f1m76jNircHzNKHyuVS6oFDgrxWMJcQwhvK9z24z0b3R2RIB1WU5TfwWaFj+cRt8jl/feGarPbMNn3BjY41gyur3O77PKrRnw50g54OE+rl6laJGP+01N/GIa9cLuKJqL32rwFmiUo/1dFaJxvV19mAnUX4kdbqmuCLfiOLd/3w6aZUT5juK84JrSKyRwmmsPwTPTxO7yO0SCKI0ToPNndj8c2K1Tk/cfToE3FOK0CbEWAprN0O9RWwX17FdN0fnm1bDOs4TFGFYForPmTraz41ChNqFL7S5M3OFyoBMVit6+iuXSswuwneyqiPdOS2jKcV2aPG9tfs6rCMxt56PKW1r+5lhnub+iFO/thX+da+DuowRMQHqVlaU6OLOS8YgA2B8ntzJI="
@@ -10,5 +12,10 @@ env:
 
 script:
    - mvn fmt:check || travis_terminate 1
+   - wget https://github.com/mozilla/geckodriver/releases/download/v0.23.0/geckodriver-v0.23.0-linux64.tar.gz
+   - mkdir geckodriver
+   - tar -xzf geckodriver-v0.11.1-linux64.tar.gz -C geckodriver
+   - export PATH=$PATH:$PWD/geckodriver
+   - sbt clean compile test
    - docker login -u $DOCKER_USER -p $DOCKER_PASS
-   - sbt clean compile test docker:publish
+   - sbt docker:publish
