@@ -42,7 +42,6 @@ public class App {
   private static final PasswordEncoder encoder = SecurityConfig.encoder();
 
   public static void main(String[] args) throws ServletException {
-    staticFiles.location("/public");
     Config config = ConfigFactory.load();
     Spark.port(config.getInt("server.port"));
     DataSource mainDs = HikariDataSourceHelper.dataSource(config.getConfig("main"));
@@ -60,6 +59,7 @@ public class App {
   }
 
   public static void routes(DataSource mainDs, WebProperties properties, String ctxPath) {
+    staticFiles.location("/public");
     redirect.get("/", ctxPath);
     before(
         "*",

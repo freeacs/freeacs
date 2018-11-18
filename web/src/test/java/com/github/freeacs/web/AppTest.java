@@ -14,6 +14,10 @@ import javax.sql.DataSource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import spark.Spark;
 
 public class AppTest {
@@ -27,9 +31,9 @@ public class AppTest {
     ds = inMemoryDataSource();
     ValueInsertHelper.insert(ds);
     Config baseConfig = ConfigFactory.load("application.conf");
-    App.routes(ds, new WebProperties(baseConfig), "/");
+    App.routes(ds, new WebProperties(baseConfig), "/web");
     Spark.awaitInitialization();
-    seleniumTest = new SeleniumTest("http://localhost:4567/");
+    seleniumTest = new SeleniumTest("http://localhost:4567/web");
   }
 
   @AfterClass
@@ -45,5 +49,9 @@ public class AppTest {
     String actualTitle = seleniumTest.getTitle();
     assertNotNull(actualTitle);
     assertEquals("FreeACS Web | login", actualTitle);
+    seleniumTest.doLogin();
+    WebElement searchButton = seleniumTest.getElement("submitSearchButton");
+    assertEquals("FreeACS Web | Search", seleniumTest.getTitle());
+    searchButton.click();
   }
 }
