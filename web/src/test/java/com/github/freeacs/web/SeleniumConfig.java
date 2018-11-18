@@ -10,13 +10,13 @@ public class SeleniumConfig {
 
   private WebDriver driver;
 
-  public SeleniumConfig() {
+  public SeleniumConfig(long timeout) {
     FirefoxBinary firefoxBinary = new FirefoxBinary();
     firefoxBinary.addCommandLineOptions("--headless");
     FirefoxOptions firefoxOptions = new FirefoxOptions();
     firefoxOptions.setBinary(firefoxBinary);
     driver = new FirefoxDriver(firefoxOptions);
-    driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+    driver.manage().timeouts().implicitlyWait(timeout, TimeUnit.SECONDS);
   }
 
   public WebDriver getDriver() {
