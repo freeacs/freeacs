@@ -13,23 +13,25 @@ import java.util.Map;
  * @author Jarl Andre Hubenthal
  */
 public class WebProperties {
-  public static String SYSLOG_SERVER_HOST;
-  public static String KEYSTORE_PASS;
-  public static String MONITOR_LOCATION;
-  public static String LOCALE;
-  public static boolean JAVASCRIPT_DEBUG;
-  public static boolean IX_EDIT_ENABLED;
-  public static boolean CONFIRM_CHANGES;
-  public static String PROPERTIES;
-  public static boolean UNIT_CONFIG_AUTOFILTER;
-  public static boolean CONFIDENTIALS_RESTRICTED;
-  public static boolean GZIP_ENABLED;
-  public static boolean DEBUG;
-  public static boolean SHOW_VOIP;
-  public static boolean SHOW_HARDWARE;
-  public static Integer SESSION_TIMEOUT;
-  public static String CONTEXT_PATH;
-  public static Integer SERVER_PORT;
+  private String syslogServerHost;
+  private String keystorePass;
+  private String monitorLocation;
+  private String locale;
+  private boolean javascriptDebug;
+  private boolean ixEditEnabled;
+  private boolean confirmChanges;
+  private String properties;
+  private boolean unitConfigAutofilter;
+  private boolean confidentialsRestricted;
+  private boolean gzipEnabled;
+  private boolean debug;
+  private boolean showVoip;
+  private boolean showHardware;
+  private Integer sessionTimeout;
+  private String contextPath;
+  private Integer serverPort;
+
+  private static WebProperties instance;
 
   public WebProperties(Config config) {
     setSessionTimeout(config.hasPath("session.timeout") ? config.getInt("session.timeout") : 60);
@@ -61,74 +63,79 @@ public class WebProperties {
         config.hasPath("syslog.server.host")
             ? config.getString("syslog.server.host")
             : "localhost");
+    instance = this;
+  }
+
+  public static WebProperties getInstance() {
+    return instance;
   }
 
   private void setSyslogServerHost(String syslogServerHost) {
-    SYSLOG_SERVER_HOST = syslogServerHost;
+    this.syslogServerHost = syslogServerHost;
   }
 
   private void setContextPath(String contextPath) {
-    CONTEXT_PATH = contextPath;
+    this.contextPath = contextPath;
   }
 
   private void setServerPort(Integer port) {
-    SERVER_PORT = port;
+    serverPort = port;
   }
 
   private void setSessionTimeout(Integer timeout) {
-    SESSION_TIMEOUT = timeout;
+    sessionTimeout = timeout;
   }
 
   private void setShowHardware(Boolean showHardware) {
-    SHOW_HARDWARE = showHardware;
+    this.showHardware = showHardware;
   }
 
   private void setShowVoip(Boolean showVoip) {
-    SHOW_VOIP = showVoip;
+    this.showVoip = showVoip;
   }
 
   private void setDebug(Boolean debug) {
-    DEBUG = debug;
+    this.debug = debug;
   }
 
   private void setGzipEnabled(Boolean enabled) {
-    GZIP_ENABLED = enabled;
+    gzipEnabled = enabled;
   }
 
   private void setConfidentialsRestricted(Boolean restricted) {
-    CONFIDENTIALS_RESTRICTED = restricted;
+    confidentialsRestricted = restricted;
   }
 
   private void setUnitConfigAutofilter(Boolean autofilter) {
-    UNIT_CONFIG_AUTOFILTER = autofilter;
+    unitConfigAutofilter = autofilter;
   }
 
   private void setProperties(String properties) {
-    PROPERTIES = properties;
+    this.properties = properties;
   }
 
   private void setConfirmChanges(Boolean confirmChanges) {
-    CONFIRM_CHANGES = confirmChanges;
+    this.confirmChanges = confirmChanges;
   }
 
   private void setIxEditEnabled(Boolean enabled) {
-    IX_EDIT_ENABLED = enabled;
+    ixEditEnabled = enabled;
   }
 
   private void setJavascriptDebug(Boolean debug) {
-    JAVASCRIPT_DEBUG = debug;
+    javascriptDebug = debug;
   }
 
   private void setLocale(String locale) {
-    LOCALE = locale;
+    this.locale = locale;
   }
 
   private void setMonitorLocation(String monitorLocation) {
-    MONITOR_LOCATION = monitorLocation;
+    this.monitorLocation = monitorLocation;
   }
 
   private void setKeyStorePass(String keyStorePass) {
-    KEYSTORE_PASS = keyStorePass;
+    keystorePass = keyStorePass;
   }
 
   /**
@@ -140,5 +147,73 @@ public class WebProperties {
   public static Map<String, String> getCustomDash(String unittypeName) {
     // TODO should this be reimplemented?
     return Collections.emptyMap();
+  }
+
+  public String getSyslogServerHost() {
+    return syslogServerHost;
+  }
+
+  public String getKeystorePass() {
+    return keystorePass;
+  }
+
+  public String getMonitorLocation() {
+    return monitorLocation;
+  }
+
+  public String getLocale() {
+    return locale;
+  }
+
+  public boolean isJavascriptDebug() {
+    return javascriptDebug;
+  }
+
+  public boolean isIxEditEnabled() {
+    return ixEditEnabled;
+  }
+
+  public boolean isConfirmChanges() {
+    return confirmChanges;
+  }
+
+  public String getProperties() {
+    return properties;
+  }
+
+  public boolean isUnitConfigAutofilter() {
+    return unitConfigAutofilter;
+  }
+
+  public boolean isConfidentialsRestricted() {
+    return confidentialsRestricted;
+  }
+
+  public boolean isGzipEnabled() {
+    return gzipEnabled;
+  }
+
+  public boolean isDebug() {
+    return debug;
+  }
+
+  public boolean isShowVoip() {
+    return showVoip;
+  }
+
+  public boolean isShowHardware() {
+    return showHardware;
+  }
+
+  public Integer getSessionTimeout() {
+    return sessionTimeout;
+  }
+
+  public String getContextPath() {
+    return contextPath;
+  }
+
+  public Integer getServerPort() {
+    return serverPort;
   }
 }

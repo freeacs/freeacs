@@ -34,25 +34,13 @@ public class MenuServlet extends HttpServlet {
   private static final long serialVersionUID = -1057185634997595190L;
 
   /** The template config. */
-  private static Configuration templateConfig;
+  private Configuration templateConfig;
 
   /** The logger. */
   private static final Logger logger = LoggerFactory.getLogger(MenuServlet.class);
 
-  public void init() {
-    getTemplateConfig();
-  }
-
-  /**
-   * Gets the template config.
-   *
-   * @return the template config
-   */
-  private static Configuration getTemplateConfig() {
-    if (templateConfig == null) {
-      templateConfig = Freemarker.initFreemarker();
-    }
-    return templateConfig;
+  public MenuServlet(Configuration templateConfig) {
+    this.templateConfig = templateConfig;
   }
 
   @Override
@@ -89,9 +77,9 @@ public class MenuServlet extends HttpServlet {
    * @throws TemplateException the template exception
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static String getMenuHtml(HttpServletRequest req) throws TemplateException, IOException {
+  public String getMenuHtml(HttpServletRequest req) throws TemplateException, IOException {
     List<MenuItem> mainMenu = getMainMenu(req);
-    Template template = getTemplateConfig().getTemplate("MenuTemplate.ftl");
+    Template template = templateConfig.getTemplate("MenuTemplate.ftl");
     Map<String, Object> map = new HashMap<>();
     map.put("list", mainMenu);
     return Freemarker.parseTemplate(map, template);
@@ -103,7 +91,7 @@ public class MenuServlet extends HttpServlet {
    * @param req the req
    * @return the main menu
    */
-  private static List<MenuItem> getMainMenu(HttpServletRequest req) {
+  private List<MenuItem> getMainMenu(HttpServletRequest req) {
     String page = req.getParameter("page");
 
     Page selectedMenuPage = Page.getById(Page.getParentPage(page));
@@ -117,7 +105,7 @@ public class MenuServlet extends HttpServlet {
    * @param sessionId the session id
    * @return the pages allowed
    */
-  private static List<String> getPagesAllowed(String sessionId) {
+  private List<String> getPagesAllowed(String sessionId) {
     SessionData sessionData = SessionCache.getSessionData(sessionId);
     if (sessionData.getUser() != null
         && !sessionData.getUser().getAccess().equals(Users.ACCESS_ADMIN)) {
@@ -138,11 +126,8 @@ public class MenuServlet extends HttpServlet {
    * @param selectedPage the selected page
    * @return the menu items
    */
-  public static List<MenuItem> getMenuItems(
-      String sessionId, String currentPageId, Page selectedPage) {
+  public List<MenuItem> getMenuItems(String sessionId, String currentPageId, Page selectedPage) {
     List<Page> allowedPages = Page.getPageValuesFromList(getPagesAllowed(sessionId));
-    //		Boolean isCurrentGroup = isCurrentGroup(sessionId);
-    //		Boolean isCurrentJob = isCurrentJob(sessionId);
     return createMenuItems(allowedPages, selectedPage, sessionId);
   }
 
@@ -180,7 +165,7 @@ public class MenuServlet extends HttpServlet {
    * @param sessionId the session id
    * @return the list
    */
-  private static List<MenuItem> createMenuItems(
+  private List<MenuItem> createMenuItems(
       List<Page> allowedPages, Page selectedPage, String sessionId) {
     List<MenuItem> menu = new ArrayList<>();
     if (allowedPages.contains(Page.DASHBOARD_SUPPORT)) {
@@ -304,8 +289,8 @@ public class MenuServlet extends HttpServlet {
               new ArrayList<MenuItem>()));
 
       // If both hardware and voip are to be hidden this menu item is redundant.
-      boolean showHardware = WebProperties.SHOW_HARDWARE;
-      boolean showVoip = WebProperties.SHOW_VOIP;
+      boolean showHardware = WebProperties.getInstance().isShowHardware();
+      boolean showVoip = WebProperties.getInstance().isShowVoip();
       if (showHardware || showVoip) {
         MenuItem syslogReports = new MenuItem("Pingcom Devices", Page.REPORT);
         if (showVoip) {

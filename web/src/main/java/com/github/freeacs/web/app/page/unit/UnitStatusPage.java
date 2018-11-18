@@ -244,8 +244,8 @@ public class UnitStatusPage extends AbstractWebPage {
     templateMap.put("currentEnabled", currentEnabled);
     boolean historyEnabled = params.getBoolean("history");
 
-    templateMap.put("showVoip", WebProperties.SHOW_VOIP);
-    templateMap.put("showHardware", WebProperties.SHOW_HARDWARE);
+    templateMap.put("showVoip", WebProperties.getInstance().isShowVoip());
+    templateMap.put("showHardware", WebProperties.getInstance().isShowHardware());
 
     // Custom set properties that are to be displayed
     String unittypeName = unit.getUnittype().getName();

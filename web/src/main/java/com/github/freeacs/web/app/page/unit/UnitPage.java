@@ -71,7 +71,7 @@ public class UnitPage extends AbstractWebPage {
   private String nextConnectTms;
   private String nextConnectDiff;
   private boolean lateConnect;
-  private boolean confidentialsRestricted = WebProperties.CONFIDENTIALS_RESTRICTED;
+  private boolean confidentialsRestricted = WebProperties.getInstance().isConfidentialsRestricted();
 
   public String getTitle(String page) {
     return super.getTitle(page)
@@ -716,7 +716,7 @@ public class UnitPage extends AbstractWebPage {
     root.put("nextconnecttimestamp", nextConnectTms);
     root.put("nextconnectdiff", nextConnectDiff);
     root.put("lateconnect", lateConnect);
-    root.put("autofilter", WebProperties.UNIT_CONFIG_AUTOFILTER);
+    root.put("autofilter", WebProperties.getInstance().isUnitConfigAutofilter());
     String selectedFlag =
         inputData.getFilterFlag().getString() != null
             ? inputData.getFilterFlag().getString()
