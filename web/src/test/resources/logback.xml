@@ -8,9 +8,7 @@
     <appender name="ASYNC_STDOUT" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="STDOUT" />
     </appender>
-    <logger name="org.flywaydb.core" level="WARN" />
-    <logger name="com.zaxxer.hikari" level="WARN" />
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="ASYNC_STDOUT" />
     </root>
 </configuration>

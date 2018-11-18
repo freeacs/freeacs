@@ -49,6 +49,17 @@ public class App {
     WebProperties properties = new WebProperties(config);
     SyslogClient.SYSLOG_SERVER_HOST = WebProperties.SYSLOG_SERVER_HOST;
     String ctxPath = WebProperties.CONTEXT_PATH;
+    routes(mainDs, properties, ctxPath);
+    Runtime.getRuntime()
+        .addShutdownHook(
+            new Thread(
+                () -> {
+                  System.out.println("Shutdown Hook is running !");
+                  Sleep.terminateApplication();
+                }));
+  }
+
+  public static void routes(DataSource mainDs, WebProperties properties, String ctxPath) {
     redirect.get("/", ctxPath);
     before(
         "*",
@@ -64,18 +75,6 @@ public class App {
             ThreadUser.setUserDetails(session.attribute("loggedIn"));
           }
         });
-    routes(mainDs, properties, ctxPath);
-    Runtime.getRuntime()
-        .addShutdownHook(
-            new Thread(
-                () -> {
-                  System.out.println("Shutdown Hook is running !");
-                  Sleep.terminateApplication();
-                }));
-  }
-
-  private static void routes(DataSource mainDs, WebProperties properties, String ctxPath)
-      throws ServletException {
     ObjectMapper objectMapper = new ObjectMapper();
     get(
         ctxPath + "/logout",
@@ -129,7 +128,6 @@ public class App {
           return displayLogin(configuration, req);
         });
     Monitor monitorServlet = new Monitor();
-    monitorServlet.init();
     get(
         ctxPath + "/ok",
         (req, res) -> {
@@ -137,7 +135,6 @@ public class App {
           return null;
         });
     HelpServlet helpServlet = new HelpServlet();
-    helpServlet.init();
     get(
         ctxPath + "/help",
         (req, res) -> {
