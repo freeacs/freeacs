@@ -13,7 +13,6 @@ public class SeleniumConfig {
   public SeleniumConfig() {
     FirefoxBinary firefoxBinary = new FirefoxBinary();
     firefoxBinary.addCommandLineOptions("--headless");
-    System.setProperty("webdriver.gecko.driver", "geckodriver");
     FirefoxOptions firefoxOptions = new FirefoxOptions();
     firefoxOptions.setBinary(firefoxBinary);
     driver = new FirefoxDriver(firefoxOptions);
