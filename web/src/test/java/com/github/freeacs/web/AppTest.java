@@ -55,8 +55,17 @@ public class AppTest {
     assertNotNull(actualTitle);
     assertEquals("FreeACS Web | login", actualTitle);
     seleniumTest.doLogin();
-    WebElement searchButton = seleniumTest.getElement("submitSearchButton");
+    WebElement searchButton = seleniumTest.getElementById("submitSearchButton");
     assertEquals("FreeACS Web | Search", seleniumTest.getTitle());
     searchButton.click();
+    WebElement unitLink = seleniumTest.getLinkbyText("test123");
+    unitLink.click();
+    WebElement unitConfigurationLink = seleniumTest.getLinkbyText("Go to Unit configuration");
+    assertEquals(
+        "FreeACS Web | Unit Dashboard | test123 | Default | Test", seleniumTest.getTitle());
+    unitConfigurationLink.click();
+    seleniumTest.goBack();
+    WebElement unitHistoryLink = seleniumTest.getLinkbyText("Go to Unit history");
+    unitHistoryLink.click();
   }
 }

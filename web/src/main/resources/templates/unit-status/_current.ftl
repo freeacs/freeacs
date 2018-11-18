@@ -63,7 +63,7 @@
 				<td colspan="2" align="right">&nbsp;</td>
 			</tr>
 			<tr>
-				<td colspan="2" align="right"><a href="${URL_MAP.UNIT}&unit=${info.unit.id}" onclick="ACS.unit_dashboard.abortLineUpdates();">Go to Unit configuration</a></td>
+				<td colspan="2" align="right"><a href="${URL_MAP.UNIT}&unit=${info.unit.id}" onclick="ACS.unit.dashboard.abortLineUpdates();">Go to Unit configuration</a></td>
 			</tr>
 		</tbody></table>
 		</fieldset>
@@ -206,7 +206,7 @@
 				<td colspan="3" align="right">&nbsp;</td>
 			</tr>
 			<tr>
-				<td colspan="3" align="right"><a href="${URL_MAP.UNITSTATUS}&history=true&current=false&unit=${info.unit.id}" onclick="ACS.unit_dashboard.abortLineUpdates(this.href);">Go to Unit history</a></td>
+				<td colspan="3" align="right"><a href="${URL_MAP.UNITSTATUS}&history=true&current=false&unit=${info.unit.id}" onclick="ACS.unit.dashboard.abortLineUpdates(this.href);">Go to Unit history</a></td>
 			</tr>
 		</tbody></table>
 		</fieldset>
@@ -216,7 +216,7 @@
 		<table style="width:100%"><tbody>
 			<#list shortCutParams.entrySet() as entry>
 				<tr>
-                	<th>${entry.key}:</th> 
+                	<th>${entry.key}:</th>
 					<td>
 						<#if entry.value?matches("^https://.*|^http://.*")>
 							<a href="${entry.value}" target="_new">${entry.value}</a>
