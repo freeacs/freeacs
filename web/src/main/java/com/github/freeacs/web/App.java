@@ -52,6 +52,7 @@ public class App {
     Spark.port(properties.getServerPort());
     staticFiles.location("/public");
     redirect.get("/", ctxPath + "/index");
+    redirect.get(ctxPath, ctxPath + "/index");
     before("*", new LoginFilter(ctxPath));
     path(
         ctxPath,

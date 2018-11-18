@@ -3,6 +3,7 @@ package com.github.freeacs.web.routes;
 import static spark.Spark.halt;
 
 import com.github.freeacs.web.security.ThreadUser;
+import java.util.Optional;
 import spark.Filter;
 import spark.Request;
 import spark.Response;
@@ -22,7 +23,12 @@ public class LoginFilter implements Filter {
     if (!request.url().endsWith("/login")
         && !request.url().endsWith("/ok")
         && (session == null || session.attribute("loggedIn") == null)) {
-      request.session().attribute("redirect", request.uri() + "?" + request.queryString());
+      request
+          .session()
+          .attribute(
+              "redirect",
+              request.uri()
+                  + Optional.ofNullable(request.queryString()).map(qs -> "?" + qs).orElse(""));
       response.redirect(ctxPath + "/login");
       halt();
     } else if (session != null && session.attribute("loggedIn") != null) {
