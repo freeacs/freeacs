@@ -3,7 +3,6 @@
 	<head>
 		<title>FreeACS Web | login</title>
 		<#include "meta/basic.ftl">
-        <script src="javascript/jquery-1.4.4.js"></script>
 	</head>
 	<body>
 		<center>
