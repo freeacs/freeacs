@@ -126,7 +126,8 @@ lazy val web = (project in file("web"))
       "org.jfree" % "jcommon" % "1.0.17",
       "org.jfree" % "jfreechart" % "1.0.17",
       "com.sparkjava" % "spark-template-freemarker" % "2.7.1",
-      "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.7"
+      "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.7",
+      "org.seleniumhq.selenium" % "selenium-java" % "3.141.59"
 
     ),
     copyAppProps,
