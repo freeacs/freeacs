@@ -150,16 +150,17 @@ public class Main extends HttpServlet {
 
     Map<String, Object> templateMap = outputHandler.getTemplateMap();
 
-    templateMap.put("MAIN_MENU", MenuServlet.getMenuHtml(params.getHttpServletRequest()));
-    templateMap.put("TOOLS_MENU", new MenuServlet().getToolsMenu(params.getSession().getId(), ""));
+    MenuServlet menuServlet = new MenuServlet(config);
+    templateMap.put("MAIN_MENU", menuServlet.getMenuHtml(params.getHttpServletRequest()));
+    templateMap.put("TOOLS_MENU", menuServlet.getToolsMenu(params.getSession().getId(), ""));
     templateMap.put("HELP_PAGE", Page.getHelpPage(pageStr));
-    templateMap.put("CONFIRMCHANGES", WebProperties.CONFIRM_CHANGES);
+    templateMap.put("CONFIRMCHANGES", WebProperties.getInstance().isConfirmChanges());
     templateMap.put("REQUESTED_PAGE", pageStr);
-    templateMap.put("IXEDIT_DEVELOPER", WebProperties.IX_EDIT_ENABLED);
-    templateMap.put("CSS_FILE", WebProperties.PROPERTIES);
+    templateMap.put("IXEDIT_DEVELOPER", WebProperties.getInstance().isIxEditEnabled());
+    templateMap.put("CSS_FILE", WebProperties.getInstance().getProperties());
     templateMap.put("STATUS_LOGGEDIN", getLoggedInStatusTitle(params));
-    templateMap.put("SESSION_TIMEOUT", WebProperties.SESSION_TIMEOUT);
-    templateMap.put("JAVASCRIPT_DEBUG", WebProperties.JAVASCRIPT_DEBUG);
+    templateMap.put("SESSION_TIMEOUT", WebProperties.getInstance().getSessionTimeout());
+    templateMap.put("JAVASCRIPT_DEBUG", WebProperties.getInstance().isJavascriptDebug());
 
     outputHandler.deliverResponse();
   }

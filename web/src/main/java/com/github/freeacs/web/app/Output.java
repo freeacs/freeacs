@@ -146,7 +146,8 @@ public class Output {
       } catch (Throwable allPossibleExceptions) {
         allPossibleExceptions.printStackTrace();
         pageContents =
-            processExceptionTemplate(new Exception(allPossibleExceptions), WebProperties.DEBUG);
+            processExceptionTemplate(
+                new Exception(allPossibleExceptions), WebProperties.getInstance().isDebug());
       } finally {
         deliverHTML(pageContents, inputParameters, servletResponseChannel);
       }
@@ -521,7 +522,7 @@ public class Output {
    * @return true, if is gZIP enabled
    */
   private boolean isGZIPEnabled() {
-    return WebProperties.GZIP_ENABLED;
+    return WebProperties.getInstance().isGzipEnabled();
   }
 
   /**

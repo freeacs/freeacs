@@ -79,7 +79,7 @@ public class ACSLoader {
    * @return the session timeout
    */
   public static int getSessionTimeout() {
-    return WebProperties.SESSION_TIMEOUT;
+    return WebProperties.getInstance().getSessionTimeout();
   }
 
   /**
