@@ -72,6 +72,7 @@ public class AppTest {
     assertEquals(
         "FreeACS Web | Unit Dashboard | test123 | Default | Test", seleniumTest.getTitle());
     unitConfigurationLink.click();
+    Thread.sleep(1000);
     WebElement syslogLink = seleniumTest.getLinkByText("Provisioning history (last 48 hours)");
     assertEquals(
         "FreeACS Web | Unit Configuration | test123 | Default | Test", seleniumTest.getTitle());
