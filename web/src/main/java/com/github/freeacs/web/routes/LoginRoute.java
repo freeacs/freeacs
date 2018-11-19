@@ -53,6 +53,9 @@ public class LoginRoute implements RouteGroup {
             String redirect = req.session().attribute("redirect");
             if (redirect != null) {
               req.session().attribute("redirect", null);
+              if (redirect.equals(ctxPath + "/") || redirect.equals(ctxPath)) {
+                redirect = ctxPath + INDEX_URI;
+              }
               res.redirect(redirect);
             } else {
               res.redirect(ctxPath + INDEX_URI);
