@@ -45,7 +45,8 @@ public class LoginRoute implements RouteGroup {
             return null;
           }
           WebUser userDetails = UserService.loadUserByUsername(mainDs, username);
-          if (userDetails != null && Objects.equals(userDetails.getPassword(), encoder.encode(password))) {
+          if (userDetails != null
+              && Objects.equals(userDetails.getPassword(), encoder.encode(password))) {
             req.session(true).attribute("loggedIn", userDetails);
             ThreadUser.setUserDetails(userDetails);
             String redirect = req.session().attribute("redirect");
