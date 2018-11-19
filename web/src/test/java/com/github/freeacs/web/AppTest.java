@@ -73,10 +73,8 @@ public class AppTest {
         "FreeACS Web | Unit Dashboard | test123 | Default | Test", seleniumTest.getTitle());
     unitConfigurationLink.click();
     Thread.sleep(1000);
-    WebElement logoutLink = seleniumTest.getLinkByText("Secret");
     assertEquals(
         "FreeACS Web | Unit Configuration | test123 | Default | Test", seleniumTest.getTitle());
-    assertNotNull(logoutLink);
     seleniumTest.goBack();
     Thread.sleep(1000);
     WebElement unitHistoryLink = seleniumTest.getLinkByText("Go to Unit history");
@@ -84,7 +82,7 @@ public class AppTest {
     Thread.sleep(1000);
     WebElement syslogImage = seleniumTest.getElementById("SyslogImage");
     assertNotNull(syslogImage);
-    logoutLink = seleniumTest.getLinkByText("Logout");
+    WebElement logoutLink = seleniumTest.getLinkByText("Logout");
     assertEquals(
         "FreeACS Web | Unit Dashboard | test123 | Default | Test", seleniumTest.getTitle());
     logoutLink.click();
