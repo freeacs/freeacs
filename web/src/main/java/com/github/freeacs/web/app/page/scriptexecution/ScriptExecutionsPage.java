@@ -50,7 +50,7 @@ public class ScriptExecutionsPage extends AbstractWebPage {
     /* Retrieve the XAPS object from session */
     acs = ACSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
     if (acs == null) {
-      outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
+      outputHandler.setRedirectTarget(WebConstants.LOGIN_URI);
       return;
     }
 

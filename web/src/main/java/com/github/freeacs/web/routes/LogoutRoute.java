@@ -1,5 +1,7 @@
 package com.github.freeacs.web.routes;
 
+import static com.github.freeacs.web.app.util.WebConstants.INDEX_URI;
+
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.security.ThreadUser;
@@ -25,7 +27,7 @@ public class LogoutRoute implements Route {
       }
       SessionCache.removeSession(session.getId());
     }
-    response.redirect(ctxPath + "/index");
+    response.redirect(ctxPath + INDEX_URI);
     request.session().removeAttribute("loggedIn");
     ThreadUser.setUserDetails(null);
     return null;

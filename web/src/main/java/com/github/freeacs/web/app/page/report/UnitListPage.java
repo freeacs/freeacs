@@ -80,7 +80,7 @@ public class UnitListPage extends AbstractWebPage {
 
     acs = ACSLoader.getXAPS(req.getSession().getId(), xapsDataSource, syslogDataSource);
     if (acs == null) {
-      outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
+      outputHandler.setRedirectTarget(WebConstants.LOGIN_URI);
       return;
     }
 

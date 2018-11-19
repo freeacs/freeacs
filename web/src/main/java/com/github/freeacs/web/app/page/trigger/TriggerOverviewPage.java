@@ -67,7 +67,7 @@ public class TriggerOverviewPage extends AbstractWebPage {
 
     ACS acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
     if (acs == null) {
-      outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
+      outputHandler.setRedirectTarget(WebConstants.LOGIN_URI);
       return;
     }
 

@@ -1,6 +1,8 @@
 package com.github.freeacs.web;
 
-import static com.github.freeacs.web.app.util.WebConstants.MAIN_INDEX_URL;
+import static com.github.freeacs.web.app.util.WebConstants.INDEX_URI;
+import static com.github.freeacs.web.app.util.WebConstants.LOGIN_URI;
+import static com.github.freeacs.web.app.util.WebConstants.LOGOUT_URI;
 import static spark.Spark.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,15 +54,15 @@ public class App {
     SyslogClient.SYSLOG_SERVER_HOST = properties.getSyslogServerHost();
     Spark.port(properties.getServerPort());
     staticFiles.location("/public");
-    redirect.get("/", ctxPath + MAIN_INDEX_URL);
-    redirect.get(ctxPath, ctxPath + MAIN_INDEX_URL);
+    redirect.get("/", ctxPath + INDEX_URI);
+    redirect.get(ctxPath, ctxPath + INDEX_URI);
     before("*", new LoginFilter(ctxPath));
     path(
         ctxPath,
         () -> {
-          path(MAIN_INDEX_URL, new MainRoute(mainDs));
-          get("/logout", new LogoutRoute(ctxPath));
-          path("/login", new LoginRoute(ctxPath, configuration, mainDs));
+          path(INDEX_URI, new MainRoute(mainDs));
+          path(LOGIN_URI, new LoginRoute(ctxPath, configuration, mainDs));
+          get(LOGOUT_URI, new LogoutRoute(ctxPath));
           get("/ok", new HealthRoute());
           get("/help", new HelpRoute());
           get("/menu", new MenuRoute(configuration));

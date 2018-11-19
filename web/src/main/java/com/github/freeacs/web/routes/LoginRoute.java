@@ -1,5 +1,6 @@
 package com.github.freeacs.web.routes;
 
+import static com.github.freeacs.web.app.util.WebConstants.INDEX_URI;
 import static spark.Spark.get;
 import static spark.Spark.post;
 
@@ -41,7 +42,7 @@ public class LoginRoute implements RouteGroup {
           String password = req.raw().getParameter("password");
           String csrf = req.raw().getParameter("csrf");
           if (csrf == null || !Objects.equals(req.session().attribute("csrf"), csrf)) {
-            res.redirect(ctxPath + "/index");
+            res.redirect(ctxPath + INDEX_URI);
             return null;
           }
           WebUser userDetails = UserService.loadUserByUsername(mainDs, username);
@@ -54,7 +55,7 @@ public class LoginRoute implements RouteGroup {
               req.session().attribute("redirect", null);
               res.redirect(redirect);
             } else {
-              res.redirect(ctxPath + "/index");
+              res.redirect(ctxPath + INDEX_URI);
             }
             return null;
           }

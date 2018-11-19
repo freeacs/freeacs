@@ -38,6 +38,11 @@ public class SeleniumTest {
     return wait.until(ExpectedConditions.presenceOfElementLocated(By.id(id)));
   }
 
+  public WebElement getElementByName(String id) {
+    WebDriverWait wait = new WebDriverWait(this.config.getDriver(), TIMEOUT);
+    return wait.until(ExpectedConditions.presenceOfElementLocated(By.name(id)));
+  }
+
   public WebElement getLinkByText(String txt) {
     WebDriverWait wait = new WebDriverWait(this.config.getDriver(), TIMEOUT);
     return wait.until(

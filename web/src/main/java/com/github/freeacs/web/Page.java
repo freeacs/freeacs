@@ -1,6 +1,6 @@
 package com.github.freeacs.web;
 
-import static com.github.freeacs.web.app.util.WebConstants.MAIN_INDEX_URL;
+import static com.github.freeacs.web.app.util.WebConstants.INDEX_URI;
 
 import com.github.freeacs.web.app.page.SupportDashboardPage;
 import com.github.freeacs.web.app.page.WebPage;
@@ -215,7 +215,7 @@ public enum Page {
    * @return the generated url string
    */
   public String getUrl(String params) {
-    return MAIN_INDEX_URL.substring(1)
+    return INDEX_URI.substring(1)
         + "?page="
         + getId()
         + (params != null && !"".equals(params) ? "&amp;" + params : "");

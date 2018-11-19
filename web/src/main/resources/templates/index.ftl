@@ -30,15 +30,15 @@
 			     confirmchanges: ${CONFIRMCHANGES?string}
 			});
 			// code to perform automatic logout after session_timeout is reached
-			idleMax = ${SESSION_TIMEOUT} - 1; 
+			idleMax = ${SESSION_TIMEOUT} - 1;
 			idleTime = 0;
 			$(document).ready(function () {
-    			var idleInterval = setInterval("timerIncrement()", 60000); 
+    			var idleInterval = setInterval("timerIncrement()", 60000);
     			$(this).keypress(function (e) {idleTime = 0;});
 			})
 			function timerIncrement() {
     			idleTime = idleTime + 1;
-    			if (idleTime > idleMax) { 
+    			if (idleTime > idleMax) {
         			window.location="?page=login&logoff=true"; // redirect to login page
     			}
 			}
@@ -98,15 +98,15 @@
 						</div>
 						<div class='container' style='margin-left:2px;float:left;clear:right;'>
 							<b class="rtop"><b class="r1"></b> <b class="r2"></b> <b class="r3"></b> <b class="r4"></b></b>
-								<center style="padding-left: 10px; padding-right: 10px;"> 
+								<center style="padding-left: 10px; padding-right: 10px;">
 									<#if TOOLS_MENU??>
 										<#list TOOLS_MENU as tool>
-											<a href="javascript:IFRAMEDIALOGS.showToolDialog('${tool.display}','${tool.url}&amp;async=true&amp;header=true');">${tool.display}</a> | 
+											<a href="javascript:IFRAMEDIALOGS.showToolDialog('${tool.display}','${tool.url}&amp;async=true&amp;header=true');">${tool.display}</a> |
 										</#list>
 									</#if>
-									<a href="javascript:IFRAMEDIALOGS.showHelpDialog('about','help?page=about');">About</a> | 
-									<a href="javascript:IFRAMEDIALOGS.showHelpDialog('${HELP_PAGE!}','help?page=${HELP_PAGE!}');">Help</a> | 
-									<a href="logout">Logout</a> </center>
+									<a href="javascript:IFRAMEDIALOGS.showHelpDialog('about','help?page=about');">About</a> |
+									<a href="javascript:IFRAMEDIALOGS.showHelpDialog('${HELP_PAGE!}','help?page=${HELP_PAGE!}');">Help</a> |
+										<a href="${LOGOUT_URI}">Logout</a> </center>
 							<b class="rbottom"><b class="r4"></b> <b class="r3"></b> <b class="r2"></b> <b class="r1"></b></b>
 						</div>
 					</div>

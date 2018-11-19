@@ -193,7 +193,7 @@ public class UnitStatusPage extends AbstractWebPage {
     String sessionId = params.getSession().getId();
 
     if (ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource) == null) {
-      outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
+      outputHandler.setRedirectTarget(WebConstants.LOGIN_URI);
       return;
     }
 

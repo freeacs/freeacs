@@ -8,6 +8,7 @@ import com.github.freeacs.web.app.page.WebPage;
 import com.github.freeacs.web.app.util.Freemarker;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
+import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.WebProperties;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
@@ -159,6 +160,8 @@ public class Main extends HttpServlet {
     templateMap.put("STATUS_LOGGEDIN", getLoggedInStatusTitle(params));
     templateMap.put("SESSION_TIMEOUT", WebProperties.getInstance().getSessionTimeout());
     templateMap.put("JAVASCRIPT_DEBUG", WebProperties.getInstance().isJavascriptDebug());
+    templateMap.put(
+        "LOGOUT_URI", WebProperties.getInstance().getContextPath() + WebConstants.LOGOUT_URI);
 
     outputHandler.deliverResponse();
   }

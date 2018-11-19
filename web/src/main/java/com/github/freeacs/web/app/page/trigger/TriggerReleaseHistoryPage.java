@@ -80,7 +80,7 @@ public class TriggerReleaseHistoryPage extends AbstractWebPage {
     Map<String, Object> fmMap = outputHandler.getTemplateMap();
     ACS acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
     if (acs == null) {
-      outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
+      outputHandler.setRedirectTarget(WebConstants.LOGIN_URI);
       return;
     }
     Date tmsEnd = new Date();

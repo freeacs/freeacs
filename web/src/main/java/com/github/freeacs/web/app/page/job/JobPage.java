@@ -66,7 +66,7 @@ public class JobPage extends AbstractWebPage {
 
     acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
     if (acs == null) {
-      outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
+      outputHandler.setRedirectTarget(WebConstants.LOGIN_URI);
       return;
     }
 

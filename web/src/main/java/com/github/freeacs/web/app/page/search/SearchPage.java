@@ -65,7 +65,7 @@ public class SearchPage extends AbstractWebPage {
     inputData = (SearchData) InputDataRetriever.parseInto(new SearchData(), params);
     acs = ACSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
     if (acs == null) {
-      outputHandler.setRedirectTarget(WebConstants.DB_LOGIN_URL);
+      outputHandler.setRedirectTarget(WebConstants.LOGIN_URI);
       return;
     }
     acsUnit = ACSLoader.getACSUnit(params.getSession().getId(), xapsDataSource, syslogDataSource);
