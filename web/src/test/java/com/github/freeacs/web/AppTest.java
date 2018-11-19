@@ -73,7 +73,7 @@ public class AppTest {
         "FreeACS Web | Unit Dashboard | test123 | Default | Test", seleniumTest.getTitle());
     unitConfigurationLink.click();
     Thread.sleep(1000);
-    WebElement logoutLink = seleniumTest.getLinkByText("PeriodicInformInterval");
+    WebElement logoutLink = seleniumTest.getLinkByText("Secret");
     assertEquals(
         "FreeACS Web | Unit Configuration | test123 | Default | Test", seleniumTest.getTitle());
     assertNotNull(logoutLink);
