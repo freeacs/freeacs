@@ -21,7 +21,7 @@ public class UserService {
     }
     User userObject = users.getUnprotected(username);
     if (userObject == null) {
-      throw new IllegalArgumentException(username);
+      return null;
     }
     return new WebUser(userObject);
   }

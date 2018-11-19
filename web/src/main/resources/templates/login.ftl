@@ -7,7 +7,7 @@
 	<body>
 		<center>
 			<div class="center_box" id="bodylogon">
-				<form action="login" id="loginForm" method="post" class="unit">
+				<form action="" id="loginForm" method="post" class="unit">
                     <input type="hidden" name="csrf" value="${csrf}"/>
                     <fieldset id="logondiv">
 						<legend>FreeACS</legend>
@@ -35,6 +35,9 @@
 							</tr>
 						</table>
 					</fieldset>
+					<#if error??>
+						<span style="color: red; font-weight: bold">${error}</span>
+					</#if>
 				</form>
 			</div>
 		</center>

@@ -33,7 +33,7 @@ public class LoginRoute implements RouteGroup {
 
   @Override
   public void addRoutes() {
-    get("", (req, res) -> displayLogin(configuration, req));
+    get("", (req, res) -> displayLogin(configuration, req, null));
     post(
         "",
         (req, res) -> {
@@ -45,7 +45,7 @@ public class LoginRoute implements RouteGroup {
             return null;
           }
           WebUser userDetails = UserService.loadUserByUsername(mainDs, username);
-          if (Objects.equals(userDetails.getPassword(), encoder.encode(password))) {
+          if (userDetails != null && Objects.equals(userDetails.getPassword(), encoder.encode(password))) {
             req.session(true).attribute("loggedIn", userDetails);
             ThreadUser.setUserDetails(userDetails);
             String redirect = req.session().attribute("redirect");
@@ -57,11 +57,11 @@ public class LoginRoute implements RouteGroup {
             }
             return null;
           }
-          return displayLogin(configuration, req);
+          return displayLogin(configuration, req, "Wrong username or password");
         });
   }
 
-  private static String displayLogin(Configuration configuration, Request req) {
+  private static String displayLogin(Configuration configuration, Request req, String error) {
     String uuid = UUID.randomUUID().toString();
     req.session(true).attribute("csrf", uuid);
     return new FreeMarkerEngine(configuration)
@@ -70,6 +70,7 @@ public class LoginRoute implements RouteGroup {
                 new HashMap<String, String>() {
                   {
                     put("csrf", uuid);
+                    put("error", error);
                   }
                 },
                 "login.ftl"));
