@@ -14,6 +14,7 @@ public final class WebConstants {
   public static final String ALL_ITEMS_OR_DEFAULT = ".";
   public static final String ALL_PAGES = "ALL_PAGES";
   public static final String DB_LOGIN_URL = "/login";
+  public static final String MAIN_INDEX_URL = "/index";
   public static final String DELETE = "Delete";
   public static final String UPDATE = "Update";
   public static final String UPDATE_PARAMS = "Update parameters";
