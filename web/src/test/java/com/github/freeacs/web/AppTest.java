@@ -55,40 +55,29 @@ public class AppTest {
   }
 
   @Test
-  public void test() throws InterruptedException {
+  public void test() {
     String actualTitle = seleniumTest.getTitle();
     assertNotNull(actualTitle);
     assertEquals("FreeACS Web | login", actualTitle);
     seleniumTest.doLogin();
-    Thread.sleep(1000);
     WebElement searchButton = seleniumTest.getElementById("submitSearchButton");
     assertEquals("FreeACS Web | Search", seleniumTest.getTitle());
     searchButton.click();
-    Thread.sleep(1000);
     WebElement unitLink = seleniumTest.getLinkByText("test123");
     unitLink.click();
-    Thread.sleep(1000);
     WebElement unitConfigurationLink = seleniumTest.getLinkByText("Go to Unit configuration");
     assertEquals(
         "FreeACS Web | Unit Dashboard | test123 | Default | Test", seleniumTest.getTitle());
     unitConfigurationLink.click();
-    Thread.sleep(1000);
     WebElement syslogLink = seleniumTest.getLinkByText("Provisioning history (last 48 hours)");
     assertEquals(
         "FreeACS Web | Unit Configuration | test123 | Default | Test", seleniumTest.getTitle());
     assertNotNull(syslogLink);
     seleniumTest.goBack();
-    Thread.sleep(1000);
-    WebElement unitHistoryLink = seleniumTest.getLinkByText("Go to Unit history");
-    unitHistoryLink.click();
-    Thread.sleep(1000);
-    WebElement syslogImage = seleniumTest.getElementById("SyslogImage");
-    assertNotNull(syslogImage);
     WebElement logoutLink = seleniumTest.getLinkByText("Logout");
     assertEquals(
         "FreeACS Web | Unit Dashboard | test123 | Default | Test", seleniumTest.getTitle());
     logoutLink.click();
-    Thread.sleep(1000);
     WebElement loginButton = seleniumTest.getElementByName("login");
     assertEquals("FreeACS Web | login", seleniumTest.getTitle());
     assertNotNull(loginButton);
