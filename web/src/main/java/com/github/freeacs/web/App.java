@@ -7,6 +7,7 @@ import static spark.Spark.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.freeacs.common.hikari.HikariDataSourceHelper;
+import com.github.freeacs.common.jetty.JettyFactory;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.web.app.util.Freemarker;
@@ -19,11 +20,18 @@ import freemarker.template.Configuration;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import spark.Spark;
+import spark.embeddedserver.EmbeddedServers;
 
 public class App {
 
   public static void main(String[] args) {
     final Config config = ConfigFactory.load();
+    boolean httpOnly = config.getBoolean("server.servlet.session.cookie.http-only");
+    int maxHttpPostSize = getInt(config, "server.jetty.max-http-post-size");
+    int maxFormKeys = getInt(config, "server.jetty.max-form-keys");
+    EmbeddedServers.add(
+        EmbeddedServers.Identifiers.JETTY,
+        new JettyFactory(httpOnly, maxHttpPostSize, maxFormKeys));
     DataSource mainDs = HikariDataSourceHelper.dataSource(config.getConfig("main"));
     WebProperties properties = new WebProperties(config);
     Configuration configuration = Freemarker.initFreemarker();
@@ -74,5 +82,9 @@ public class App {
                 get("/parameters/list", new UnittypeParametersRoute(mainDs));
               });
         });
+  }
+
+  private static int getInt(Config config, String s) {
+    return config.hasPath(s) ? config.getInt(s) : -1;
   }
 }
