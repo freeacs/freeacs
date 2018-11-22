@@ -70,14 +70,7 @@ public class AppTest {
         "FreeACS Web | Unit Dashboard | test123 | Default | Test", seleniumTest.getTitle());
     unitConfigurationLink.click();
     Thread.sleep(1000);
-    WebElement syslogLink = seleniumTest.getLinkByText("Provisioning history (last 48 hours)");
-    assertEquals(
-        "FreeACS Web | Unit Configuration | test123 | Default | Test", seleniumTest.getTitle());
-    assertNotNull(syslogLink);
-    seleniumTest.goBack();
     WebElement logoutLink = seleniumTest.getLinkByText("Logout");
-    assertEquals(
-        "FreeACS Web | Unit Dashboard | test123 | Default | Test", seleniumTest.getTitle());
     logoutLink.click();
     WebElement loginButton = seleniumTest.getElementByName("login");
     assertEquals("FreeACS Web | login", seleniumTest.getTitle());
