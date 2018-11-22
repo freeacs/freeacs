@@ -1,7 +1,5 @@
 # --- override application properties here ----
 
-SPRING_PROFILES_ACTIVE=config
-
 # --- web specific overrides ---
 WEB_PROPERTIES=default
 WEB_CONFIRMCHANGES=false
