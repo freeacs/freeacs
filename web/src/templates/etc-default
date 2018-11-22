@@ -1,6 +1,6 @@
 # --- override application properties here ----
 
 # --- web specific overrides ---
-WEB_PROPERTIES=default
-WEB_CONFIRMCHANGES=false
-WEB_CONFIDENTIALS_RESTRICTED=false
+#WEB_PROPERTIES=default
+#WEB_CONFIRMCHANGES=false
+#WEB_CONFIDENTIALS_RESTRICTED=false
