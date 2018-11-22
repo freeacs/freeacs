@@ -1,6 +1,6 @@
 import sbt.Keys.fork
 import DebianConstants._
-import Dependencies.{hikari, mysql}
+import Dependencies.{h2, hikari, mysql}
 
 publishTo in ThisBuild := Some(Resolver.file("file",  new File(Path.userHome.absolutePath+"/.m2/repository")))
 
@@ -118,7 +118,7 @@ lazy val web = (project in file("web"))
     name := "FreeACS Web",
     packageSummary := "FreeACS Web",
     packageDescription := "FreeACS Web",
-    libraryDependencies ++= Seq(mysql, hikari)
+    libraryDependencies ++= Seq(mysql, hikari, h2)
       ++ Dependencies.testing
       ++ Seq(
       "commons-fileupload" % "commons-fileupload" % "1.3",
