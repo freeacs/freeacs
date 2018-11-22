@@ -1,5 +1,6 @@
 import sbt.Keys.fork
 import DebianConstants._
+import Dependencies.{hikari, mysql}
 
 publishTo in ThisBuild := Some(Resolver.file("file",  new File(Path.userHome.absolutePath+"/.m2/repository")))
 
@@ -117,7 +118,7 @@ lazy val web = (project in file("web"))
     name := "FreeACS Web",
     packageSummary := "FreeACS Web",
     packageDescription := "FreeACS Web",
-    libraryDependencies ++= Dependencies.database
+    libraryDependencies ++= Seq(mysql, hikari)
       ++ Dependencies.testing
       ++ Seq(
       "commons-fileupload" % "commons-fileupload" % "1.3",
@@ -127,8 +128,7 @@ lazy val web = (project in file("web"))
       "org.jfree" % "jfreechart" % "1.0.17",
       "com.sparkjava" % "spark-template-freemarker" % "2.7.1",
       "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.7",
-      "org.seleniumhq.selenium" % "selenium-java" % "3.141.59"
-
+      "org.seleniumhq.selenium" % "selenium-java" % "3.141.59" % "test"
     ),
     copyAppConfig,
     copyLogProps,
