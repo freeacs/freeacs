@@ -130,7 +130,7 @@ lazy val web = (project in file("web"))
       "org.seleniumhq.selenium" % "selenium-java" % "3.141.59"
 
     ),
-    copyAppProps,
+    copyAppConfig,
     copyLogProps,
     copyAppIni
   )

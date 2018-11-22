@@ -55,7 +55,7 @@ public class AppTest {
   }
 
   @Test
-  public void test() {
+  public void test() throws InterruptedException {
     String actualTitle = seleniumTest.getTitle();
     assertNotNull(actualTitle);
     assertEquals("FreeACS Web | login", actualTitle);
@@ -69,14 +69,8 @@ public class AppTest {
     assertEquals(
         "FreeACS Web | Unit Dashboard | test123 | Default | Test", seleniumTest.getTitle());
     unitConfigurationLink.click();
-    WebElement syslogLink = seleniumTest.getLinkByText("Provisioning history (last 48 hours)");
-    assertEquals(
-        "FreeACS Web | Unit Configuration | test123 | Default | Test", seleniumTest.getTitle());
-    assertNotNull(syslogLink);
-    seleniumTest.goBack();
+    Thread.sleep(1000);
     WebElement logoutLink = seleniumTest.getLinkByText("Logout");
-    assertEquals(
-        "FreeACS Web | Unit Dashboard | test123 | Default | Test", seleniumTest.getTitle());
     logoutLink.click();
     WebElement loginButton = seleniumTest.getElementByName("login");
     assertEquals("FreeACS Web | login", seleniumTest.getTitle());

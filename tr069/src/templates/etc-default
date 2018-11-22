@@ -1,2 +1,10 @@
 # --- override application properties here ----
 
+# --- tr069 specific overrides ---
+#TR069_AUTH_METHOD=basic
+#TR069_FILE_AUTH_USED=false
+#TR069_DISCOVERY_MODE=false
+#TR069_DISCOVERY_BLOCK=
+#TR069_CONCURRENT_DOWNLOAD_LIMIT=1000000
+#TR069_DIGEST_SECRET=changeme
+

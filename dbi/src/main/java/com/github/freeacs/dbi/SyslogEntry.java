@@ -76,7 +76,8 @@ public class SyslogEntry {
 
   @Override
   public String toString() {
-    String tmsStr = TimestampWrapper.tmsFormat.format(collectorTimestamp);
+    String tmsStr =
+        collectorTimestamp != null ? TimestampWrapper.tmsFormat.format(collectorTimestamp) : "n/a";
     String msgStr = content;
     if (msgStr.length() > 80) {
       msgStr = content.substring(0, 77) + "...";
