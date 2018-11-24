@@ -45,9 +45,6 @@ public class UpgradePage extends AbstractWebPage {
   /** The parameter version. */
   private String parameterVersion = SystemParameters.DESIRED_SOFTWARE_VERSION;
 
-  /** The session id. */
-  private String sessionId;
-
   /** The unittypes. */
   private DropDownSingleSelect<Unittype> unittypes;
 
@@ -86,9 +83,6 @@ public class UpgradePage extends AbstractWebPage {
     List<UnitParameter> updatedParams = new ArrayList<>();
     updatedParams.add(version);
     acsUnit.addOrChangeUnitParameters(updatedParams, u.getProfile());
-
-    u = acsUnit.getUnitById(u.getId());
-    SessionCache.putUnit(sessionId, u);
 
     root.put("message", "Saved successfully");
   }
@@ -139,7 +133,7 @@ public class UpgradePage extends AbstractWebPage {
       throws Exception {
     inputData = (UpgradeData) InputDataRetriever.parseInto(new UpgradeData(), params);
 
-    sessionId = params.getSession().getId();
+    String sessionId = params.getSession().getId();
 
     acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
     if (acs == null) {

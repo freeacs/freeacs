@@ -14,14 +14,14 @@ import com.github.freeacs.dbi.report.RecordHardware;
 import com.github.freeacs.dbi.report.RecordSyslog;
 import com.github.freeacs.dbi.report.RecordVoip;
 import com.github.freeacs.dbi.report.Report;
-import com.github.freeacs.dbi.report.ReportConverter;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.web.app.page.report.UnitListData;
 import com.github.freeacs.web.app.page.report.uidata.RecordUIDataHardware;
 import com.github.freeacs.web.app.page.report.uidata.RecordUIDataHardwareFilter;
 import com.github.freeacs.web.app.page.syslog.SyslogRetriever;
 import com.github.freeacs.web.app.util.ACSLoader;
-import com.github.freeacs.web.app.util.SessionCache;
+import com.github.freeacs.web.app.util.ReportConverter;
+import com.github.freeacs.web.app.util.ReportLoader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -818,17 +818,11 @@ public class UnitStatusInfo {
    *
    * @return the hardware report the no available connection exception
    * @throws SQLException the sQL exception
-   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public synchronized Report<RecordHardware> getHardwareReport() throws SQLException, IOException {
+  public synchronized Report<RecordHardware> getHardwareReport() throws SQLException {
     if (this.hardwareReport == null) {
-      Report<RecordHardware> hardwareReport =
-          SessionCache.getHardwareReport(
-              sessionId, currentUnit.getId(), fromDate, toDate, mainDataSource, syslogDataSource);
-      if (hardwareReport == null) {
-        hardwareReport = new Report<RecordHardware>(RecordHardware.class, PeriodType.ETERNITY);
-      }
-      this.hardwareReport = hardwareReport;
+      this.hardwareReport = ReportLoader.getHardwareReport(
+          sessionId, currentUnit.getId(), fromDate, toDate, mainDataSource, syslogDataSource);;
     }
     return this.hardwareReport;
   }
@@ -887,26 +881,20 @@ public class UnitStatusInfo {
    * @param syslogFilter
    * @return the syslog report the no available connection exception
    * @throws SQLException the sQL exception
-   * @throws IOException Signals that an I/O exception has occurred.
    * @throws ParseException the parse exception
    */
-  public synchronized Report<RecordSyslog> getSyslogReport(String syslogFilter)
-      throws SQLException, IOException, ParseException {
+  public Report<RecordSyslog> getSyslogReport(String syslogFilter)
+      throws SQLException, ParseException {
     if (this.syslogReport == null) {
       String toUseAsFilter = syslogFilter != null ? ("%" + syslogFilter + "%") : null;
-      Report<RecordSyslog> _syslogReport =
-          SessionCache.getSyslogReport(
-              sessionId,
-              currentUnit.getId(),
-              fromDate,
-              toDate,
-              toUseAsFilter,
-              mainDataSource,
-              syslogDataSource);
-      if (_syslogReport == null) {
-        _syslogReport = new Report<RecordSyslog>(RecordSyslog.class, PeriodType.ETERNITY);
-      }
-      this.syslogReport = _syslogReport;
+      this.syslogReport = ReportLoader.getSyslogReport(
+          sessionId,
+          currentUnit.getId(),
+          fromDate,
+          toDate,
+          toUseAsFilter,
+          mainDataSource,
+          syslogDataSource);;
     }
     return this.syslogReport;
   }
@@ -916,39 +904,16 @@ public class UnitStatusInfo {
    *
    * @return the voip report the no available connection exception
    * @throws SQLException the sQL exception
-   * @throws IOException Signals that an I/O exception has occurred.
    */
-  public synchronized Report<RecordVoip> getVoipReport() throws SQLException, IOException {
+  public Report<RecordVoip> getVoipReport() throws SQLException {
     if (this.voipReport == null) {
-      Report<RecordVoip> voipReport =
-          SessionCache.getVoipReport(
-              sessionId, currentUnit.getId(), fromDate, toDate, mainDataSource, syslogDataSource);
-      if (voipReport == null) {
-        voipReport = new Report<RecordVoip>(RecordVoip.class, PeriodType.ETERNITY);
-      }
-      this.voipReport = voipReport;
+      this.voipReport = ReportLoader.getVoipReport(
+          sessionId, currentUnit.getId(), fromDate, toDate, mainDataSource, syslogDataSource);;
     }
     return this.voipReport;
   }
 
-  /**
-   * Sets the start tms.
-   *
-   * @param date the new start tms
-   */
-  public void setStartTms(Date date) {
-    this.fromDate = date;
-  }
-
-  /**
-   * Sets the end tms.
-   *
-   * @param date the new end tms
-   */
-  public void setEndTms(Date date) {
-    this.toDate = date;
-  }
-
+  @SuppressWarnings("unused")
   public boolean supportsTr111() {
     String udpcra =
         Parameters.getUnitParameterValue(
@@ -956,6 +921,7 @@ public class UnitStatusInfo {
     return udpcra != null && !udpcra.isEmpty();
   }
 
+  @SuppressWarnings("unused")
   public boolean isBehindNat() {
     String cru =
         Parameters.getUnitParameterValue(
@@ -964,7 +930,7 @@ public class UnitStatusInfo {
   }
 
   private String getBaseAddress(String addr) {
-    if (addr.indexOf("http://") > -1) {
+    if (addr.contains("http://")) {
       addr = addr.substring(addr.indexOf("http://") + 7);
     }
     if (addr.indexOf('/') > -1) {

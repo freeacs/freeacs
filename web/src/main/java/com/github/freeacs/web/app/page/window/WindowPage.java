@@ -540,7 +540,6 @@ public class WindowPage extends AbstractWebPage {
           updated = true;
         }
 
-        SessionCache.putUnit(sessionId, acsUnit.getUnitById(unit.getId()));
         if (updated) {
           return "Service Window for unit was updated";
         }

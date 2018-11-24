@@ -117,9 +117,6 @@ public class SyslogRetriever {
       filter.setCollectorTmsEnd(c.getTime());
     }
     filter.setUnitId(inputData.getUnit().getString());
-    List<SyslogEntry> entries =
-        syslog.read(filter, ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource));
-    SessionCache.putSyslogEntries(sessionId, entries);
-    return entries;
+    return syslog.read(filter, ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource));
   }
 }

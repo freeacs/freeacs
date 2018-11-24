@@ -15,17 +15,18 @@ import com.github.freeacs.web.app.input.InputSelectionFactory;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.ACSLoader;
-import com.github.freeacs.web.app.util.DateUtils;
-import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.WebConstants;
-import java.io.IOException;
+
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.sql.DataSource;
 
 /** The Class SyslogPage. */
 public class SyslogPage extends AbstractWebPage {
+
+  private static final int DEFAULT_MAX_ROWS = 100;
+
   public void process(
       ParameterParser params,
       Output outputHandler,
@@ -34,13 +35,7 @@ public class SyslogPage extends AbstractWebPage {
       throws Exception {
     SyslogData inputData = (SyslogData) InputDataRetriever.parseInto(new SyslogData(), params);
 
-    if (params.getBoolean("history")) {
-      printSyslogList(params, outputHandler);
-      return;
-    }
-
     ACS acs = ACSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
-
     if (acs == null) {
       outputHandler.setRedirectTarget(WebConstants.LOGIN_URI);
       return;
@@ -91,7 +86,7 @@ public class SyslogPage extends AbstractWebPage {
       map.put("userid", getUserId(inputData));
       map.put("ipaddress", getIpAddress(inputData));
       map.put("message", getMessage(inputData));
-      map.put("maxrows", getMaxRowsOrDefault(100, inputData));
+      map.put("maxrows", getMaxRowsOrDefault(inputData));
     }
 
     if (inputData.getFormSubmit().isValue("Retrieve syslog")) {
@@ -113,9 +108,6 @@ public class SyslogPage extends AbstractWebPage {
       map.put("expectedrows", maxrows);
     }
 
-    List<SyslogEntry> entries = SessionCache.getSyslogEntries(params.getSession().getId());
-
-    map.put("hashistory", entries != null && !entries.isEmpty());
     String cmd = inputData.getCmd().getString();
     map.put("cmd", cmd);
     map.put("url", inputData.getUrl().getString());
@@ -169,55 +161,9 @@ public class SyslogPage extends AbstractWebPage {
     return syslogData.getMessage().getString();
   }
 
-  private int getMaxRowsOrDefault(int def, SyslogData syslogData) {
+  private int getMaxRowsOrDefault(SyslogData syslogData) {
     return syslogData.getMaxRows().getInteger() != null
         ? syslogData.getMaxRows().getInteger()
-        : def;
-  }
-
-  /**
-   * Prints the syslog list.
-   *
-   * @param req the req
-   * @param res the res
-   * @throws IOException Signals that an I/O exception has occurred.
-   */
-  private void printSyslogList(ParameterParser req, Output res) throws IOException {
-    res.setContentType("text/plain");
-    res.setDownloadAttachment("syslogexport.txt");
-    List<SyslogEntry> entries = SessionCache.getSyslogEntries(req.getSession().getId());
-    StringBuilder string = new StringBuilder();
-    if (entries != null && !entries.isEmpty()) {
-      string.append("Timestamp" + "\t");
-      string.append("Severity" + "\t");
-      string.append("Facility" + "\t");
-      string.append("Event ID" + "\t");
-      string.append("Content" + "\t");
-      string.append("User" + "\t");
-      string.append("Host name" + "\t");
-      string.append("IP address" + "\t");
-      string.append("Unit ID" + "\t");
-      string.append("Profile" + "\t");
-      string.append("Unit Type" + "\t");
-      string.append("\n");
-      for (SyslogEntry entry : entries) {
-        string.append(DateUtils.formatDateDefault(entry.getCollectorTimestamp())).append("\t");
-        string.append(entry.getSeverity()).append("\t");
-        string.append(entry.getFacility()).append("\t");
-        string.append(entry.getEventId()).append("\t");
-        string.append(entry.getContent()).append("\t");
-        string.append(entry.getUserId()).append("\t");
-        string.append(entry.getHostname()).append("\t");
-        string.append(entry.getIpAddress()).append("\t");
-        string.append(entry.getUnitId()).append("\t");
-        string.append(entry.getProfileName()).append("\t");
-        string.append(entry.getUnittypeName()).append("\t");
-        string.append("\n");
-      }
-    } else {
-      string.append(
-          "No syslog entries to export. Either the syslog search did not return any entries or the result cache has timed out.");
-    }
-    res.setDirectResponse(string.toString());
+        : DEFAULT_MAX_ROWS;
   }
 }

@@ -458,19 +458,11 @@ public class UnitPage extends AbstractWebPage {
   /**
    * Action populate.
    *
-   * @param sessionId the session id
    * @throws Exception the exception
    */
-  private void actionPopulate(String sessionId) throws Exception {
-    unit = null;
-    profile = null;
-    unittype = null;
+  private void actionPopulate() throws Exception {
     if (inputData.getUnit().notNullNorValue("")) {
-      unit = SessionCache.getUnit(sessionId, inputData.getUnit().getString());
-      if (unit == null) {
-        unit = acsUnit.getUnitById(inputData.getUnit().getString());
-        SessionCache.putUnit(sessionId, unit);
-      }
+      unit = acsUnit.getUnitById(inputData.getUnit().getString());
       if (unit != null) {
         profile = unit.getProfile();
         if (inputData.getProfile().getString() == null)
@@ -524,7 +516,7 @@ public class UnitPage extends AbstractWebPage {
       // Clear unit id by setting the input value to null
       inputData.getUnit().setValue(null);
 
-      actionPopulate(sessionId);
+      actionPopulate();
 
       outputHandler.setTemplatePath("/unit/create.ftl");
 
@@ -548,7 +540,7 @@ public class UnitPage extends AbstractWebPage {
       displayCreate(root);
 
     } else {
-      actionPopulate(sessionId);
+      actionPopulate();
 
       outputHandler.setTemplatePath("/unit/details.ftl");
       if (unit != null) {
@@ -570,7 +562,6 @@ public class UnitPage extends AbstractWebPage {
           }
         }
         unit = acsUnit.getUnitById(unit.getId());
-        SessionCache.putUnit(sessionId, unit);
 
         displayUnit(root, xapsDataSource, syslogDataSource);
 
