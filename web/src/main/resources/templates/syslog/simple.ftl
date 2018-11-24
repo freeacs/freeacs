@@ -9,6 +9,5 @@
 												</table>
 											</fieldset>
 										</td>
-										<#include "/syslog/links.ftl">
 									</tr>
 								</table>
