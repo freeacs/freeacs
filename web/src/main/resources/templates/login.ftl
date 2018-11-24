@@ -25,7 +25,7 @@
 									Password:
 								</td>
 								<td>
-									<input name="password" type="password" maxlength="50" style="width:120px;" />
+									<input name="password" type="password" maxlength="50" autocomplete="off" style="width:120px;" />
 								</td>
 							</tr>
 							<tr>
