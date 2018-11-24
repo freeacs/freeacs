@@ -32,7 +32,7 @@ import com.github.freeacs.web.app.page.report.uidata.RecordUIDataVoip;
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.DateUtils;
 import com.github.freeacs.web.app.util.DecimalUtils;
-import com.github.freeacs.web.app.util.SessionCache;
+import com.github.freeacs.web.app.util.ReportConverter;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.WebProperties;
@@ -417,21 +417,21 @@ public class UnitStatusPage extends AbstractWebPage {
     switch (reportType) {
       case VOIP:
         long getVoipChart = System.nanoTime();
-        Report<?> report = SessionCache.convertVoipReport(info.getVoipReport(), type);
+        Report<?> report = ReportConverter.convertVoipReport(info.getVoipReport(), type);
         Chart<?> chartMaker = new Chart<>((Report<RecordVoip>) report, method, false, null);
         image = getReportChartImageBytes(chartMaker, null, 900, 250);
         logTimeElapsed(getVoipChart, "Retrieved Voip chart", logger);
         break;
       case HARDWARE:
         long getHwChart = System.nanoTime();
-        report = SessionCache.convertHardwareReport(info.getHardwareReport(), type);
+        report = ReportConverter.convertHardwareReport(info.getHardwareReport(), type);
         chartMaker = new Chart<>((Report<RecordHardware>) report, method, false, null);
         image = getReportChartImageBytes(chartMaker, null, 900, 250);
         logTimeElapsed(getHwChart, "Retrieved Hardware chart", logger);
         break;
       case SYS:
         long getSyslogChart = System.nanoTime();
-        report = SessionCache.convertSyslogReport(info.getSyslogReport(syslogFilter), type);
+        report = ReportConverter.convertSyslogReport(info.getSyslogReport(syslogFilter), type);
         List<String> keyNames =
             new ArrayList<>(
                 Arrays.asList(info.getSyslogReport(syslogFilter).getKeyFactory().getKeyNames()));

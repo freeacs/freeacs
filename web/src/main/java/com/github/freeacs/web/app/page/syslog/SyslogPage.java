@@ -113,9 +113,7 @@ public class SyslogPage extends AbstractWebPage {
       map.put("expectedrows", maxrows);
     }
 
-    List<SyslogEntry> entries = SessionCache.getSyslogEntries(params.getSession().getId());
-
-    map.put("hashistory", entries != null && !entries.isEmpty());
+    map.put("hashistory", false); // fixme
     String cmd = inputData.getCmd().getString();
     map.put("cmd", cmd);
     map.put("url", inputData.getUrl().getString());
@@ -180,12 +178,11 @@ public class SyslogPage extends AbstractWebPage {
    *
    * @param req the req
    * @param res the res
-   * @throws IOException Signals that an I/O exception has occurred.
    */
-  private void printSyslogList(ParameterParser req, Output res) throws IOException {
+  private void printSyslogList(ParameterParser req, Output res) {
     res.setContentType("text/plain");
     res.setDownloadAttachment("syslogexport.txt");
-    List<SyslogEntry> entries = SessionCache.getSyslogEntries(req.getSession().getId());
+    List<SyslogEntry> entries = new ArrayList<>(); // fixme SessionCache.getSyslogEntries(req.getSession().getId());
     StringBuilder string = new StringBuilder();
     if (entries != null && !entries.isEmpty()) {
       string.append("Timestamp" + "\t");
@@ -216,7 +213,7 @@ public class SyslogPage extends AbstractWebPage {
       }
     } else {
       string.append(
-          "No syslog entries to export. Either the syslog search did not return any entries or the result cache has timed out.");
+          "This feature is not currently not working.");
     }
     res.setDirectResponse(string.toString());
   }

@@ -15,8 +15,8 @@ import com.github.freeacs.web.app.input.InputDataRetriever;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.ACSLoader;
-import com.github.freeacs.web.app.util.SessionCache;
-import java.util.Arrays;
+
+import java.util.Collections;
 import java.util.Map;
 import javax.sql.DataSource;
 
@@ -41,25 +41,17 @@ public class InspectionPage extends AbstractWebPage {
   /** The unittype. */
   private Unittype unittype;
 
-  /** The session id. */
-  private String sessionId;
-
   /** The input data. */
   private InspectionData inputData;
 
   /**
    * Action populate.
    *
-   * @param sessionId the session id
    * @throws Exception the exception
    */
-  private void actionPopulate(String sessionId) throws Exception {
-    unit = null;
-    profile = null;
-    unittype = null;
+  private void actionPopulate() throws Exception {
     if (inputData.getUnit().getString() != null) {
       unit = acsUnit.getUnitById(inputData.getUnit().getString());
-      SessionCache.putUnit(sessionId, unit);
       if (unit != null) {
         profile = unit.getProfile();
         if (inputData.getProfile().getString() == null) {
@@ -83,7 +75,7 @@ public class InspectionPage extends AbstractWebPage {
     inputData = (InspectionData) InputDataRetriever.parseInto(new InspectionData(), params);
     res.setContentType("text/html");
     try {
-      sessionId = params.getSession().getId();
+      String sessionId = params.getSession().getId();
 
       acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
       acsUnit = ACSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
@@ -95,7 +87,7 @@ public class InspectionPage extends AbstractWebPage {
       InputDataIntegrity.rememberAndCheck(
           params.getSession().getId(), inputData.getUnittype(), inputData.getProfile());
 
-      actionPopulate(sessionId);
+      actionPopulate();
 
       String message = null;
       if (unit != null && profile != null) {
@@ -103,7 +95,7 @@ public class InspectionPage extends AbstractWebPage {
         if (up != null && !"N/A".equals(up.getValue())) {
           message = up.getValue();
           up.setValue("N/A");
-          acsUnit.addOrChangeUnitParameters(Arrays.asList(new UnitParameter[] {up}), profile);
+          acsUnit.addOrChangeUnitParameters(Collections.singletonList(up), profile);
         }
       }
 
