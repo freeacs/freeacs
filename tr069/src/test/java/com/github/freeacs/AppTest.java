@@ -1,9 +1,7 @@
 package com.github.freeacs;
 
-import static com.github.freeacs.common.util.DataSourceHelper.inMemoryDataSource;
-import static org.junit.Assert.*;
-
 import com.github.freeacs.common.scheduler.ExecutorWrapperFactory;
+import com.github.freeacs.common.util.AbstractEmbeddedDataSourceClassTest;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.tr069.Properties;
 import com.mashape.unirest.http.HttpResponse;
@@ -12,8 +10,6 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.zaxxer.hikari.HikariDataSource;
-import java.sql.SQLException;
-import javax.sql.DataSource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,10 +17,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.Spark;
 
-public class AppTest {
-  private static final Logger log = LoggerFactory.getLogger(AppTest.class);
+import java.sql.SQLException;
 
-  private static DataSource ds;
+import static org.junit.Assert.*;
+
+public class AppTest extends AbstractEmbeddedDataSourceClassTest {
+  private static final Logger log = LoggerFactory.getLogger(AppTest.class);
 
   private final String inform =
       "<SOAP-ENV:Envelope xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\"\n"
@@ -140,10 +138,9 @@ public class AppTest {
 
   @BeforeClass
   public static void init() throws SQLException {
-    ds = inMemoryDataSource();
-    ValueInsertHelper.insert(ds);
+    ValueInsertHelper.insert(dataSource);
     Config baseConfig = ConfigFactory.load("application.conf");
-    App.routes(ds, new Properties(baseConfig), ExecutorWrapperFactory.create(1));
+    App.routes(dataSource, new Properties(baseConfig), ExecutorWrapperFactory.create(1));
     Spark.awaitInitialization();
   }
 
@@ -151,7 +148,7 @@ public class AppTest {
   public static void after() throws SQLException {
     Spark.stop();
     Sleep.terminateApplication();
-    ds.unwrap(HikariDataSource.class).close();
+    dataSource.unwrap(HikariDataSource.class).close();
   }
 
   @Test

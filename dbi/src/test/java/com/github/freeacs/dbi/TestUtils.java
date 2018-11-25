@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -97,6 +98,9 @@ public abstract class TestUtils {
     unitJob.setJobId(jobId);
     unitJob.setUnconfirmedFailed(1);
     unitJob.setConfirmedFailed(1);
+    unitJob.setStatus("status");
+    unitJob.setStartTimestamp(new Date());
+    unitJob.setEndTimestamp(new Date());
     unitJobs.addOrChange(unitJob);
     Job job = new Job();
     job.setId(jobId);

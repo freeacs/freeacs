@@ -8,7 +8,9 @@
     <appender name="ASYNC_STDOUT" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="STDOUT" />
     </appender>
-    <root level="INFO">
+    <logger name="org.eclipse.jetty" level="WARN" />
+    <logger name="com.github.freeacs" level="WARN" />
+    <root level="WARN">
         <appender-ref ref="ASYNC_STDOUT" />
     </root>
 </configuration>

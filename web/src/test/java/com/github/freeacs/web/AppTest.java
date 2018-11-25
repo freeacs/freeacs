@@ -1,10 +1,7 @@
 package com.github.freeacs.web;
 
-import static com.github.freeacs.common.util.DataSourceHelper.inMemoryDataSource;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.freeacs.common.util.AbstractEmbeddedDataSourceClassTest;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.web.app.util.Freemarker;
 import com.github.freeacs.web.app.util.WebProperties;
@@ -12,28 +9,23 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.zaxxer.hikari.HikariDataSource;
 import freemarker.template.Configuration;
-import java.sql.SQLException;
-import javax.sql.DataSource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 import spark.Spark;
 
-public class AppTest {
+import java.sql.SQLException;
 
-  private static DataSource dataSource;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+public class AppTest extends AbstractEmbeddedDataSourceClassTest {
 
   private static SeleniumTest seleniumTest;
 
   @BeforeClass
   public static void setUp() throws SQLException {
-    dataSource = inMemoryDataSource();
-    dataSource
-        .getConnection()
-        .createStatement()
-        .execute(
-            "CREATE ALIAS DATE_FORMAT FOR \"com.github.freeacs.web.H2CustomFunctions.convertDatetimeToString\";");
     ValueInsertHelper.insert(dataSource);
     Config baseConfig = ConfigFactory.load("application.conf");
     WebProperties properties = new WebProperties(baseConfig);
