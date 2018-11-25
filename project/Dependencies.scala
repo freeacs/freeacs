@@ -24,6 +24,12 @@ object Dependencies {
 
   val testing = Seq(junit, junitInterface, mockito)
 
+  val mariadb = Seq(
+    "ch.vorburger.mariaDB4j" % "mariaDB4j-core" % "2.3.0" % "test",
+    "ch.vorburger.mariaDB4j" % "mariaDB4j-db-linux64" % "10.2.11" % "test",
+    "org.mariadb.jdbc" % "mariadb-java-client" % "2.3.0" % "test"
+  )
+
   val jdeb = Seq("org.vafer" % "jdeb" % "1.3" % "provided" artifacts Artifact("jdeb", "jar", "jar"))
 
 }

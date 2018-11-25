@@ -77,6 +77,8 @@ lazy val commonSettings = Seq(
   )
 )
 
+lazy val tables = project in file("tables")
+
 lazy val common = (project in file("common"))
   .settings(
     commonSettings,
@@ -84,6 +86,7 @@ lazy val common = (project in file("common"))
     normalizedName := "freeacs-common",
     publish := {},
     libraryDependencies ++= Dependencies.testing
+      ++ Dependencies.mariadb
       ++ List(
       "com.zaxxer" % "HikariCP" % "3.1.0",
       "org.apache.httpcomponents" % "httpclient" % "4.5.5",
@@ -93,7 +96,7 @@ lazy val common = (project in file("common"))
       "com.typesafe" % "config" % "1.3.3",
       "org.apache.commons" % "commons-lang3" % "3.7"
     )
-  )
+  ).dependsOn(tables)
 
 lazy val dbi = (project in file("dbi"))
   .settings(
@@ -108,7 +111,7 @@ lazy val dbi = (project in file("dbi"))
       "org.jfree" % "jfreechart" % "1.0.17" % "provided"
     )
   )
-  .dependsOn(common)
+  .dependsOn(common % "compile->compile;test->test")
 
 lazy val web = (project in file("web"))
   .settings(
@@ -120,6 +123,7 @@ lazy val web = (project in file("web"))
     packageDescription := "FreeACS Web",
     libraryDependencies ++= Seq(mysql, hikari, h2)
       ++ Dependencies.testing
+      ++ Dependencies.mariadb
       ++ Seq(
       "commons-fileupload" % "commons-fileupload" % "1.3",
       "commons-httpclient" % "commons-httpclient" % "3.1",
@@ -135,7 +139,7 @@ lazy val web = (project in file("web"))
     copyAppIni
   )
   .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin, DockerPlugin)
-  .dependsOn(dbi)
+  .dependsOn(dbi, common % "compile->compile;test->test")
 
 lazy val monitor = (project in file("monitor"))
   .settings(
@@ -187,6 +191,7 @@ lazy val tr069 = (project in file("tr069"))
     packageDescription := "FreeACS Tr069",
     libraryDependencies ++= Dependencies.database
       ++ Dependencies.testing
+      ++ Dependencies.mariadb
       ++ Seq(
         "com.mashape.unirest" % "unirest-java" % "1.4.9" % "test"
       ),
@@ -195,7 +200,7 @@ lazy val tr069 = (project in file("tr069"))
     copyAppIni
   )
   .enablePlugins(JavaServerAppPackaging, SystemdPlugin, JDebPackaging, RpmPlugin, DockerPlugin)
-  .dependsOn(dbi)
+  .dependsOn(dbi, common % "compile->compile;test->test")
 
 lazy val syslog = (project in file("syslog"))
   .settings(
