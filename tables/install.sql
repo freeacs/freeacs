@@ -73,5 +73,5 @@ source tables/test_case_param.sql;
 source tables/test_case_files.sql;
 source tables/test_history.sql;
 
--- Setup initial admin user
+-- Setup initial admin user with default password "freeacs"
 INSERT INTO user_ (id, username, secret, fullname, accesslist, is_admin) VALUES (1, 'admin', '4E9BA006A68A8767D65B3761E038CF9040C54A00', 'Admin user', 'Admin', 1);
