@@ -1,7 +1,4 @@
-SET
-SQL_MODE
-=
-'ALLOW_INVALID_DATES';
+SET SQL_MODE = 'ALLOW_INVALID_DATES';
 
 DROP TABLE IF EXISTS `unit_type`;
 CREATE TABLE `unit_type`
@@ -14,8 +11,7 @@ CREATE TABLE `unit_type`
   `protocol`       VARCHAR(16) NOT NULL,
   PRIMARY KEY (`unit_type_id`),
   UNIQUE INDEX `uq_unit_type_name` (`unit_type_name`(64))
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `unit_type_param`;
 CREATE TABLE `unit_type_param`
@@ -30,8 +26,7 @@ CREATE TABLE `unit_type_param`
     REFERENCES `unit_type` (`unit_type_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 
 DROP TABLE IF EXISTS `unit_type_param_value`;
@@ -46,8 +41,7 @@ CREATE TABLE `unit_type_param_value`
     REFERENCES `unit_type_param` (`unit_type_param_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `profile`;
 CREATE TABLE `profile`
@@ -61,8 +55,7 @@ CREATE TABLE `profile`
     REFERENCES `unit_type` (`unit_type_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `profile_param`;
 CREATE TABLE `profile_param`
@@ -79,8 +72,7 @@ CREATE TABLE `profile_param`
     REFERENCES `unit_type_param` (`unit_type_param_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `unit`;
 CREATE TABLE `unit`
@@ -99,8 +91,7 @@ CREATE TABLE `unit`
     REFERENCES `profile` (`profile_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `unit_param`;
 CREATE TABLE `unit_param`
@@ -119,8 +110,7 @@ CREATE TABLE `unit_param`
     REFERENCES `unit_type_param` (`unit_type_param_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `unit_param_session`;
 CREATE TABLE `unit_param_session`
@@ -137,8 +127,7 @@ CREATE TABLE `unit_param_session`
     REFERENCES `unit_type_param` (`unit_type_param_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `group_`;
 CREATE TABLE `group_`
@@ -169,8 +158,7 @@ CREATE TABLE `group_`
     REFERENCES `unit_type_param` (`unit_type_param_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `group_param`;
 CREATE TABLE `group_param`
@@ -190,8 +178,7 @@ CREATE TABLE `group_param`
     REFERENCES `unit_type_param` (`unit_type_param_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `user_`;
 CREATE TABLE `user_`
@@ -204,8 +191,7 @@ CREATE TABLE `user_`
   `is_admin`   INTEGER                                                NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `idx_username` (`username`(64))
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 DROP TABLE IF EXISTS `permission_`;
 CREATE TABLE `permission_`
 (
@@ -227,8 +213,7 @@ CREATE TABLE `permission_`
     REFERENCES `unit_type` (`unit_type_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `filestore`;
 CREATE TABLE `filestore`
@@ -254,8 +239,7 @@ CREATE TABLE `filestore`
     REFERENCES `user_` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `syslog_event`;
 CREATE TABLE `syslog_event`
@@ -284,8 +268,7 @@ CREATE TABLE `syslog_event`
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   UNIQUE INDEX `idx_syslog_event_id_unit_type_name` (`syslog_event_id`, `unit_type_id`)
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `job`;
 CREATE TABLE `job`
@@ -327,8 +310,7 @@ CREATE TABLE `job`
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `job_param`;
 CREATE TABLE `job_param`
@@ -346,8 +328,7 @@ CREATE TABLE `job_param`
     REFERENCES `unit_type_param` (`unit_type_param_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `unit_job`;
 CREATE TABLE `unit_job`
@@ -371,8 +352,7 @@ CREATE TABLE `unit_job`
     ON UPDATE NO ACTION,
   INDEX             `idx_unit_job_1` (`status`(32), `start_timestamp`),
   INDEX             `idx_unit_job_2` (`processed`)
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `heartbeat`;
 CREATE TABLE `heartbeat`
@@ -392,8 +372,7 @@ CREATE TABLE `heartbeat`
     REFERENCES `unit_type` (`unit_type_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `trigger_`;
 CREATE TABLE `trigger_`
@@ -445,8 +424,7 @@ CREATE TABLE `trigger_`
     REFERENCES `syslog_event` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `trigger_event`;
 CREATE TABLE `trigger_event`
@@ -460,8 +438,7 @@ CREATE TABLE `trigger_event`
     REFERENCES `trigger_` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `trigger_release`;
 CREATE TABLE `trigger_release`
@@ -479,8 +456,7 @@ CREATE TABLE `trigger_release`
     REFERENCES `trigger_` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 -- Tables with no or few foreign keys
 DROP TABLE IF EXISTS `certificate`;
@@ -491,8 +467,7 @@ CREATE TABLE `certificate`
   `certificate` VARCHAR(256) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `idx_name` (`name`(64))
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message`
@@ -506,8 +481,7 @@ CREATE TABLE `message`
   `timestamp_`  DATETIME    NOT NULL,
   `content`     VARCHAR(2000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   PRIMARY KEY (`id`)
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `monitor_event`;
 CREATE TABLE `monitor_event`
@@ -523,8 +497,7 @@ CREATE TABLE `monitor_event`
   `url`          VARCHAR(255),
   PRIMARY KEY (`event_id`),
   CONSTRAINT NameAndKey UNIQUE (module_name, module_key)
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `script_execution`;
 CREATE TABLE `script_execution`
@@ -540,8 +513,7 @@ CREATE TABLE `script_execution`
   `exit_status`       INTEGER, -- SET BY SSD (0=SUCCESS, 1=ERROR)
   `error_message`     VARCHAR(1024), -- SET BY SSD IF NECESSARY
   PRIMARY KEY (`id`)
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `syslog`;
 CREATE TABLE `syslog`
@@ -565,8 +537,7 @@ CREATE TABLE `syslog`
   PRIMARY KEY (`syslog_id`),
   INDEX                 `idx_syslog_coll_tms` (`collector_timestamp` ASC, `severity` ASC, `syslog_event_id` ASC),
   INDEX                 `idx_syslog_unit_id_coll_tms` (`unit_id` ASC, `collector_timestamp` ASC)
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `report_unit`;
 CREATE TABLE `report_unit`
@@ -579,8 +550,7 @@ CREATE TABLE `report_unit`
   `status`           VARCHAR(32) NOT NULL,
   `unit_count`       INTEGER     NOT NULL,
   PRIMARY KEY (`timestamp_`, `period_type`, `unit_type_name`, `profile_name`, `software_version`, `status`)
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `report_group`;
 CREATE TABLE `report_group`
@@ -591,8 +561,7 @@ CREATE TABLE `report_group`
   `group_name`     VARCHAR(64) NOT NULL,
   `unit_count`     INTEGER     NOT NULL,
   PRIMARY KEY (`timestamp_`, `period_type`, `unit_type_name`, `group_name`)
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `report_job`;
 CREATE TABLE `report_job`
@@ -607,8 +576,7 @@ CREATE TABLE `report_job`
   `confirmed_failed`   INTEGER     NOT NULL,
   `unconfirmed_failed` INTEGER     NOT NULL,
   PRIMARY KEY (`timestamp_`, `period_type`, `unit_type_name`, `job_name`)
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `report_syslog`;
 CREATE TABLE `report_syslog`
@@ -622,8 +590,7 @@ CREATE TABLE `report_syslog`
   `facility`        VARCHAR(32) NOT NULL,
   `unit_count`      INTEGER     NOT NULL,
   PRIMARY KEY (`timestamp_`, `period_type`, `unit_type_name`, `profile_name`, `severity`, `syslog_event_id`, `facility`)
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `report_prov`;
 CREATE TABLE `report_prov`
@@ -640,9 +607,7 @@ CREATE TABLE `report_prov`
   `missing_count`      INTEGER,
   `session_length_avg` INTEGER,
   PRIMARY KEY (`timestamp_`, `period_type`, `unit_type_name`, `profile_name`, `software_version`, `prov_output`)
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
-
+);
 
 DROP TABLE IF EXISTS `report_voip`;
 CREATE TABLE `report_voip`
@@ -665,8 +630,7 @@ CREATE TABLE `report_voip`
   `aborted_call_count`         INTEGER     NOT NULL,
   `no_sip_service_time`        INTEGER     NOT NULL,
   PRIMARY KEY (`timestamp_`, `period_type`, `unit_type_name`, `profile_name`, `software_version`, `line`)
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `report_voip_tr`;
 CREATE TABLE `report_voip_tr`
@@ -689,8 +653,7 @@ CREATE TABLE `report_voip_tr`
   `aborted_call_count`         INTEGER     NOT NULL,
   `no_sip_service_time`        INTEGER     NOT NULL,
   PRIMARY KEY (`timestamp_`, `period_type`, `unit_type_name`, `profile_name`, `software_version`, `line`, `line_status`)
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `report_hw`;
 CREATE TABLE `report_hw`
@@ -724,8 +687,7 @@ CREATE TABLE `report_hw`
   `mem_np_ocm_low_avg`       INTEGER,
   `cpe_uptime_avg`           INTEGER,
   PRIMARY KEY (`timestamp_`, `period_type`, `unit_type_name`, `profile_name`, `software_version`)
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `report_hw_tr`;
 CREATE TABLE `report_hw_tr`
@@ -743,8 +705,7 @@ CREATE TABLE `report_hw_tr`
   `temperature_now_avg` INTEGER,
   `temperature_max_avg` INTEGER,
   PRIMARY KEY (`timestamp_`, `period_type`, `unit_type_name`, `profile_name`, `software_version`)
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 DROP TABLE IF EXISTS `report_gateway_tr`;
 CREATE TABLE `report_gateway_tr`
@@ -761,8 +722,7 @@ CREATE TABLE `report_gateway_tr`
   `upload_speed_avg`       INTEGER,
   `wan_uptime_avg`         INTEGER,
   PRIMARY KEY (`timestamp_`, `period_type`, `unit_type_name`, `profile_name`, `software_version`)
-)
-  ENGINE = innodb CHARACTER SET = latin1 COLLATE = latin1_general_ci;
+);
 
 -- Setup initial admin user with default password "freeacs"
 INSERT INTO user_ (id, username, secret, fullname, accesslist, is_admin)
