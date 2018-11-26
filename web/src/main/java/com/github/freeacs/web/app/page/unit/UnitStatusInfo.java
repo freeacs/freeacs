@@ -317,6 +317,16 @@ public class UnitStatusInfo {
   }
 
   /**
+   * Gets the ip address.
+   *
+   * @return the ip address
+   */
+  @SuppressWarnings("unused")
+  public String getIpAddress() {
+    return Parameters.getUnitParameterValue(currentUnit, "System.X_FREEACS-COM.Device.PublicIPAddress");
+  }
+
+  /**
    * Gets the integer or default.
    *
    * @param string the string
