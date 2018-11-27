@@ -50,12 +50,6 @@ public class SearchPage extends AbstractWebPage {
   /** The group. */
   private Group group;
 
-  /**
-   * (non-Javadoc)
-   *
-   * @see com.owera.xaps.web.app.page.WebPage#process(com.owera.xaps.web.app.input .ParameterParser,
-   *     com.owera.xaps.web.app.output.ResponseHandler)
-   */
   public void process(
       ParameterParser params,
       Output outputHandler,
@@ -154,6 +148,7 @@ public class SearchPage extends AbstractWebPage {
       }
       map.put("wrappedresults", wrappedResults);
       map.put("result", result);
+      map.put("unitcount", acsUnit.getUnitCount(unittypes.getSelectedOrAllItemsAsList()));
       map.put("limit", getLimit(limit));
     } else if (params.getParameter("term") != null) {
       int limit = 10;
@@ -455,7 +450,6 @@ public class SearchPage extends AbstractWebPage {
    *
    * @param req the req
    * @param unittype the unittype
-   * @param profile the profile
    * @return the unit params
    */
   private List<Parameter> geSearchableParametersFromRequest(

@@ -1,5 +1,5 @@
 <fieldset id="result">
-	<legend>Search results: Found <#if (limit.value < result?size)>more than ${limit.value}<#else>${result?size}</#if> unit(s) <#if displayables?? && (displayables?size>0) && (result?size>1000)> (only displaying 1000 units)</#if></legend>
+	<legend>Search results: Found <#if (limit.value < result?size)>more than ${limit.value}<#else>${result?size}</#if> unit(s) <#if displayables?? && (displayables?size>0) && (result?size>1000)> (only displaying 1000 units)</#if> of ${unitcount}</legend>
 	<table class="syslog tablesorter">
 		<thead>
 			<tr>
@@ -45,7 +45,7 @@
 						<a href="${URL_MAP.UNITTYPE}&amp;unittype=${wrapped.unit.unittype.name?url}">${wrapped.unit.unittype.name}</a>
 					</div>
 				</td>
-															
+
 				<#if displayheaders??>
 				<#list wrapped.displayables as dispvalue>
 				<td align="left">${dispvalue}</td>
