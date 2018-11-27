@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -844,6 +845,15 @@ public class ACSUnit {
         connection.close();
       }
     }
+  }
+
+  public int getUnitCount(List<Unittype> unittypes)
+      throws SQLException {
+    int count = 0;
+    for (Unittype unittype: unittypes) {
+      count += getUnitCount(unittype, Arrays.asList(unittype.getProfiles().getProfiles()), (Parameter) null);
+    }
+    return count;
   }
 
   public int getUnitCount(Unittype unittype, List<Profile> profiles, Parameter parameter)
