@@ -56,10 +56,10 @@ import java.util.Set;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import org.jfree.chart.ChartRenderingInfo;
-import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.entity.StandardEntityCollection;
-import org.jfree.chart.imagemap.ImageMapUtilities;
+import org.jfree.chart.imagemap.ImageMapUtils;
 import org.jfree.chart.labels.XYSeriesLabelGenerator;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
@@ -933,10 +933,10 @@ public class ReportPage extends AbstractWebPage {
     XYSeriesLabelGenerator slg =
         new CustomXYSeriesLabelGenerator("javascript:xAPS.report.updateReport(%d);");
     renderer.setLegendItemURLGenerator(slg);
-    renderer.setBaseShapesVisible(true);
+    renderer.setDefaultShapesVisible(true);
     renderer.setDrawOutlines(true);
     renderer.setUseFillPaint(true);
-    renderer.setBaseFillPaint(Color.white);
+    renderer.setDefaultFillPaint(Color.white);
 
     try {
       ChartRenderingInfo info = new ChartRenderingInfo(new StandardEntityCollection());
@@ -944,11 +944,11 @@ public class ReportPage extends AbstractWebPage {
 
       int chartWidth = 700 + 10 * averageLengthPrLegend * numberOfColumns + 35 * numberOfColumns;
 
-      ChartUtilities.writeChartAsPNG(image, chart, chartWidth, 400, info);
+      ChartUtils.writeChartAsPNG(image, chart, chartWidth, 400, info);
 
       session.setAttribute("JFreeChartPNG" + reportType.getName(), image.toByteArray());
 
-      ImageMapUtilities.writeImageMap(
+      ImageMapUtils.writeImageMap(
           writer,
           "chart" + reportType.getName(),
           info,

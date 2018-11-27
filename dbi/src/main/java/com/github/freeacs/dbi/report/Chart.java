@@ -27,7 +27,7 @@ import org.jfree.data.time.Month;
 import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
-import org.jfree.ui.RectangleEdge;
+import org.jfree.chart.ui.RectangleEdge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -235,9 +235,9 @@ public class Chart<R extends Record> {
     }
 
     XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
-    renderer.setBaseShapesVisible(true);
+    renderer.setDefaultShapesVisible(true);
     renderer.setUseFillPaint(true);
-    renderer.setBaseFillPaint(Color.white);
+    renderer.setDefaultFillPaint(Color.white);
 
     long diff = endTms - startTms;
     String format;

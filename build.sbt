@@ -107,8 +107,8 @@ lazy val dbi = (project in file("dbi"))
     libraryDependencies ++= Dependencies.database
       ++ Dependencies.testing
       ++ List(
-      "org.jfree" % "jcommon" % "1.0.17" % "provided",
-      "org.jfree" % "jfreechart" % "1.0.17" % "provided"
+      "org.jfree" % "jcommon" % "1.0.24",
+      "org.jfree" % "jfreechart" % "1.5.0",
     )
   )
   .dependsOn(common % "compile->compile;test->test")
@@ -128,8 +128,8 @@ lazy val web = (project in file("web"))
       "commons-fileupload" % "commons-fileupload" % "1.3",
       "commons-httpclient" % "commons-httpclient" % "3.1",
       "org.freemarker" % "freemarker" % "2.3.14",
-      "org.jfree" % "jcommon" % "1.0.17",
-      "org.jfree" % "jfreechart" % "1.0.17",
+      "org.jfree" % "jcommon" % "1.0.24",
+      "org.jfree" % "jfreechart" % "1.5.0",
       "com.sparkjava" % "spark-template-freemarker" % "2.7.1",
       "com.fasterxml.jackson.core" % "jackson-databind" % "2.9.7",
       "org.seleniumhq.selenium" % "selenium-java" % "3.141.59" % "test"
@@ -232,7 +232,7 @@ lazy val stun = (project in file("stun"))
       ++ Dependencies.testing
       ++ List(
       "org.apache.httpcomponents" % "httpclient" % "4.5.5",
-      "commons-io" % "commons-io" % "1.3.2",
+      "commons-io" % "commons-io" % "2.6",
       "org.mockito" % "mockito-core" % "2.21.0" % Test
     ),
     copyAppConfig,
@@ -255,7 +255,7 @@ lazy val shell = (project in file("shell"))
       ++ Dependencies.testing
       ++ List(
       "org.apache.httpcomponents" % "httpclient" % "4.5.5",
-      "commons-io" % "commons-io" % "1.3.2",
+      "commons-io" % "commons-io" % "2.6",
       "jline" % "jline" % "0.9.5",
       "dom4j" % "dom4j" % "1.6.1"
     ),
@@ -278,7 +278,7 @@ lazy val core = (project in file("core"))
       ++ Dependencies.testing
       ++ List(
       "org.apache.httpcomponents" % "httpclient" % "4.5.5",
-      "commons-io" % "commons-io" % "1.3.2"
+      "commons-io" % "commons-io" % "2.6"
     ),
     copyAppConfig,
     copyLogProps,
