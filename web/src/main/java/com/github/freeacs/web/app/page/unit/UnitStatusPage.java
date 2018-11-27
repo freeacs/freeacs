@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
-import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.plot.dial.DialBackground;
@@ -76,8 +76,8 @@ import org.jfree.chart.plot.dial.StandardDialScale;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.general.DefaultValueDataset;
 import org.jfree.data.general.ValueDataset;
-import org.jfree.ui.GradientPaintTransformType;
-import org.jfree.ui.StandardGradientPaintTransformer;
+import org.jfree.chart.ui.GradientPaintTransformType;
+import org.jfree.chart.ui.StandardGradientPaintTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spark.ModelAndView;
@@ -715,13 +715,13 @@ public class UnitStatusPage extends AbstractWebPage {
     if (chart.getPlot() instanceof XYPlot) {
       XYPlot plot = (XYPlot) chart.getPlot();
       XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
-      renderer.setBaseShapesVisible(true);
+      renderer.setDefaultShapesVisible(true);
       renderer.setDrawOutlines(true);
       renderer.setUseFillPaint(true);
-      renderer.setBaseFillPaint(Color.white);
+      renderer.setDefaultFillPaint(Color.white);
     }
     ByteArrayOutputStream image = new ByteArrayOutputStream();
-    ChartUtilities.writeChartAsPNG(image, chart, width, height);
+    ChartUtils.writeChartAsPNG(image, chart, width, height);
     return image.toByteArray();
   }
 
