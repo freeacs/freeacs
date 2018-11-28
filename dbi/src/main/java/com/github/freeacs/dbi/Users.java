@@ -32,6 +32,8 @@ public class Users {
 
   public static String ACCESS_ADMIN = "Admin";
 
+  private static String ADMIN_DEFAULT_PASSWORD = "freeacs";
+
   private final DataSource dataSource;
   private Map<Integer, User> idMap = new HashMap<>();
   private Map<String, User> nameMap = new TreeMap<>();
@@ -80,7 +82,14 @@ public class Users {
    * @return User or null
    */
   public User getUnprotected(String name) {
-    return nameMap.get(name);
+    User user = nameMap.get(name);
+    if (name.equals(USER_ADMIN) && user == null) {
+      User adminUser = new User(USER_ADMIN, "Admin user", ACCESS_ADMIN, true, this);
+      adminUser.setSecretClearText(ADMIN_DEFAULT_PASSWORD);
+      return adminUser;
+    } else {
+      return user;
+    }
   }
 
   /**
@@ -337,6 +346,12 @@ public class Users {
         } else {
           throw new SQLException("The user defined in permission table is not found in user table");
         }
+      }
+
+      if (tmpNameMap.get("admin") == null) {
+        User adminUser = new User(USER_ADMIN, "Admin user", ACCESS_ADMIN, true, this);
+        adminUser.setSecretClearText(ADMIN_DEFAULT_PASSWORD);
+        tmpNameMap.put(USER_ADMIN, adminUser);
       }
       idMap = tmpIdMap;
       nameMap = tmpNameMap;
