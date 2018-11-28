@@ -6,6 +6,8 @@ publishTo in ThisBuild := Some(Resolver.file("file",  new File(Path.userHome.abs
 
 javacOptions in ThisBuild ++= Seq("-encoding", "UTF-8")
 
+autoScalaLibrary in ThisBuild := false
+
 lazy val copyAppProps = mappings in Universal ++= {
   ((sourceDirectory in Compile).value / "resources" * "application.properties").get.map { f =>
     f -> s"config/application-config.properties"
