@@ -42,29 +42,27 @@ public class ParameterKey {
     SessionData sessionData = reqRes.getSessionData();
     UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
     Map<String, ParameterValueStruct> fromDB = sessionData.getFromDB();
-    if (sessionData.getJobParams() == null) { // already populated job params in fromDB.
-      String jobId = sessionData.getAcsParameters().getValue(SystemParameters.JOB_CURRENT);
-      if (jobId != null && !"".equals(jobId.trim())) {
-        Job job = DBAccess.getJob(sessionData, jobId);
-        if (job != null) {
-          Log.debug(
-              ParameterKey.class,
-              "Current job has jobId: "
-                  + job.getId()
-                  + " -> verification stage, must retrieve job parameters (with RW-flag) to calculate parameterkey correctly");
-          Map<String, JobParameter> jobParams = job.getDefaultParameters();
-          for (Entry<String, JobParameter> jobParamEntry : jobParams.entrySet()) {
-            if (jobParamEntry
-                .getValue()
-                .getParameter()
-                .getUnittypeParameter()
-                .getFlag()
-                .isReadWrite()) {
-              ParameterValueStruct jobParamPvs =
-                  new ParameterValueStruct(
-                      jobParamEntry.getKey(), jobParamEntry.getValue().getParameter().getValue());
-              fromDB.put(jobParamEntry.getKey(), jobParamPvs);
-            }
+    String jobId = sessionData.getAcsParameters().getValue(SystemParameters.JOB_CURRENT);
+    if (jobId != null && !"".equals(jobId.trim())) {
+      Job job = DBAccess.getJob(sessionData, jobId);
+      if (job != null) {
+        Log.debug(
+            ParameterKey.class,
+            "Current job has jobId: "
+                + job.getId()
+                + " -> verification stage, must retrieve job parameters (with RW-flag) to calculate parameterkey correctly");
+        Map<String, JobParameter> jobParams = job.getDefaultParameters();
+        for (Entry<String, JobParameter> jobParamEntry : jobParams.entrySet()) {
+          if (jobParamEntry
+              .getValue()
+              .getParameter()
+              .getUnittypeParameter()
+              .getFlag()
+              .isReadWrite()) {
+            ParameterValueStruct jobParamPvs =
+                new ParameterValueStruct(
+                    jobParamEntry.getKey(), jobParamEntry.getValue().getParameter().getValue());
+            fromDB.put(jobParamEntry.getKey(), jobParamPvs);
           }
         }
       }
