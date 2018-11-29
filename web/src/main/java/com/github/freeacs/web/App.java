@@ -1,26 +1,43 @@
 package com.github.freeacs.web;
 
-import static com.github.freeacs.web.app.util.WebConstants.INDEX_URI;
-import static com.github.freeacs.web.app.util.WebConstants.LOGIN_URI;
-import static com.github.freeacs.web.app.util.WebConstants.LOGOUT_URI;
-import static spark.Spark.*;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.freeacs.common.hikari.HikariDataSourceHelper;
 import com.github.freeacs.common.jetty.JettyFactory;
 import com.github.freeacs.common.util.Sleep;
+import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.web.app.util.Freemarker;
+import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.WebProperties;
-import com.github.freeacs.web.routes.*;
+import com.github.freeacs.web.routes.HealthRoute;
+import com.github.freeacs.web.routes.HelpRoute;
+import com.github.freeacs.web.routes.LoginFilter;
+import com.github.freeacs.web.routes.LoginRoute;
+import com.github.freeacs.web.routes.LogoutRoute;
+import com.github.freeacs.web.routes.MainRoute;
+import com.github.freeacs.web.routes.MenuRoute;
+import com.github.freeacs.web.routes.UnitDashboardRoute;
+import com.github.freeacs.web.routes.UnittypeParametersRoute;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.zaxxer.hikari.HikariDataSource;
 import freemarker.template.Configuration;
-import java.sql.SQLException;
-import javax.sql.DataSource;
 import spark.Spark;
 import spark.embeddedserver.EmbeddedServers;
+
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
+import javax.sql.DataSource;
+import java.sql.SQLException;
+
+import static com.github.freeacs.web.app.util.WebConstants.INDEX_URI;
+import static com.github.freeacs.web.app.util.WebConstants.LOGIN_URI;
+import static com.github.freeacs.web.app.util.WebConstants.LOGOUT_URI;
+import static spark.Spark.before;
+import static spark.Spark.get;
+import static spark.Spark.path;
+import static spark.Spark.redirect;
+import static spark.Spark.staticFiles;
 
 public class App {
 
@@ -29,11 +46,26 @@ public class App {
     boolean httpOnly = config.getBoolean("server.servlet.session.cookie.http-only");
     int maxHttpPostSize = getInt(config, "server.jetty.max-http-post-size");
     int maxFormKeys = getInt(config, "server.jetty.max-form-keys");
+    WebProperties properties = new WebProperties(config);
     EmbeddedServers.add(
         EmbeddedServers.Identifiers.JETTY,
-        new JettyFactory(httpOnly, maxHttpPostSize, maxFormKeys));
+        new JettyFactory(httpOnly, maxHttpPostSize, maxFormKeys, new HttpSessionListener() {
+            @Override
+            public void sessionCreated(HttpSessionEvent httpSessionEvent) {
+                httpSessionEvent.getSession().setMaxInactiveInterval(properties.getSessionTimeout() * 60);
+            }
+
+            @Override
+            public void sessionDestroyed(HttpSessionEvent httpSessionEvent) {
+                  String sessionId = httpSessionEvent.getSession().getId();
+                DBI dbi = SessionCache.getDBI(sessionId);
+                if (dbi != null) {
+                    dbi.setRunning(false);
+                }
+                SessionCache.removeSession(sessionId);
+            }
+        }));
     DataSource mainDs = HikariDataSourceHelper.dataSource(config.getConfig("main"));
-    WebProperties properties = new WebProperties(config);
     Configuration configuration = Freemarker.initFreemarker();
     ObjectMapper objectMapper = new ObjectMapper();
     routes(mainDs, properties, configuration, objectMapper);

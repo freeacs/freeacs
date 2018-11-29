@@ -45,7 +45,7 @@ public class App {
     int maxFormKeys = getInt(config, "server.jetty.max-form-keys");
     EmbeddedServers.add(
         EmbeddedServers.Identifiers.JETTY,
-        new JettyFactory(httpOnly, maxHttpPostSize, maxFormKeys));
+        new JettyFactory(httpOnly, maxHttpPostSize, maxFormKeys, null));
     DataSource mainDs = HikariDataSourceHelper.dataSource(config.getConfig("main"));
     ExecutorWrapper executorWrapper = ExecutorWrapperFactory.create(4);
     routes(mainDs, new Properties(config), executorWrapper);

@@ -29,19 +29,6 @@
 			     // page: '${SELECTED_MENU_PAGE!}', // The same as selectedPage but backwards compability
 			     confirmchanges: ${CONFIRMCHANGES?string}
 			});
-			// code to perform automatic logout after session_timeout is reached
-			idleMax = ${SESSION_TIMEOUT} - 1;
-			idleTime = 0;
-			$(document).ready(function () {
-    			var idleInterval = setInterval("timerIncrement()", 60000);
-    			$(this).keypress(function (e) {idleTime = 0;});
-			})
-			function timerIncrement() {
-    			idleTime = idleTime + 1;
-    			if (idleTime > idleMax) {
-        			window.location="?page=login&logoff=true"; // redirect to login page
-    			}
-			}
 		</script>
 		<#assign defaultMenuEnabled=true />
 	</head>
