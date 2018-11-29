@@ -35,7 +35,7 @@ public class FileServlet extends AbstractHttpDataWrapper {
       // Create the main object which contains all objects concerning the entire
       // session. This object also contains the SessionData object
       if (properties.isFileAuthUsed()) {
-        HTTPRequestResponseData reqRes = getHttpReqResDate(req, res);
+        HTTPRequestResponseData reqRes = getHttpRequestResponseDate(req, res);
         // 2. Authenticate the client (first issue challenge, then authenticate)
         if (!Authenticator.authenticate(reqRes, properties)) {
           return;

@@ -16,7 +16,7 @@ public abstract class AbstractHttpDataWrapper {
         this.properties = properties;
     }
 
-    public HTTPRequestResponseData getHttpReqResDate(HttpServletRequest req, HttpServletResponse res) throws SQLException {
+    public HTTPRequestResponseData getHttpRequestResponseDate(HttpServletRequest req, HttpServletResponse res) throws SQLException {
         HTTPRequestResponseData reqRes = new HTTPRequestResponseData(req, res, dbAccess);
         reqRes.getRequestData().setContextPath(properties.getContextPath());
         return reqRes;
