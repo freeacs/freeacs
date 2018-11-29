@@ -6,7 +6,7 @@ import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.UnittypeParameters;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ProvOutput;
 import com.github.freeacs.dbi.util.ProvisioningMode;
-import com.github.freeacs.tr069.HTTPRequestResponseData;
+import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;

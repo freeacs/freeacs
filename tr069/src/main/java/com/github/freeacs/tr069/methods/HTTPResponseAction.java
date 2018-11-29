@@ -1,6 +1,6 @@
 package com.github.freeacs.tr069.methods;
 
-import com.github.freeacs.tr069.HTTPRequestResponseData;
+import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.xml.Response;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;

@@ -1,7 +1,7 @@
 package com.github.freeacs.tr069.methods;
 
-import com.github.freeacs.tr069.HTTPRequestResponseData;
-import com.github.freeacs.tr069.HTTPResponseData;
+import com.github.freeacs.http.HTTPRequestResponseData;
+import com.github.freeacs.http.HTTPResponseData;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import java.util.Map;

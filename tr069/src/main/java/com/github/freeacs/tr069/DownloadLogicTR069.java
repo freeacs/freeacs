@@ -9,6 +9,7 @@ import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.JobParameter;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.SystemParameters.TR069ScriptType;
+import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import java.util.Map;
 import java.util.Map.Entry;

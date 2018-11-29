@@ -1,6 +1,6 @@
 package com.github.freeacs.tr069.methods;
 
-import com.github.freeacs.tr069.HTTPRequestResponseData;
+import com.github.freeacs.http.HTTPRequestResponseData;
 
 public class DoNotProcessReq {
   public static void process(HTTPRequestResponseData reqRes) {

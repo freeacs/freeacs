@@ -3,7 +3,7 @@ package com.github.freeacs.base.http;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.common.util.CacheValue;
-import com.github.freeacs.tr069.HTTPRequestResponseData;
+import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069AuthenticationException;

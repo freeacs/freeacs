@@ -5,7 +5,7 @@ import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ErrorResponsibility;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ProvStatus;
 import com.github.freeacs.dbi.util.ProvisioningMode;
-import com.github.freeacs.tr069.HTTPRequestResponseData;
+import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.xml.Fault;
 import java.util.List;

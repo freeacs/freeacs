@@ -9,7 +9,7 @@ import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.TimestampWrapper;
 import com.github.freeacs.tr069.CPEParameters;
 import com.github.freeacs.tr069.CommandKey;
-import com.github.freeacs.tr069.HTTPRequestResponseData;
+import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.InformParameters;
 import com.github.freeacs.tr069.ParameterKey;
 import com.github.freeacs.tr069.SessionData;

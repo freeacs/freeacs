@@ -2,7 +2,7 @@ package com.github.freeacs.tr069.methods;
 
 import com.github.freeacs.base.Log;
 import com.github.freeacs.tr069.CPEParameters;
-import com.github.freeacs.tr069.HTTPRequestResponseData;
+import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
