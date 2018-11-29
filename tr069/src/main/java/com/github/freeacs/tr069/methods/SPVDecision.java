@@ -4,12 +4,12 @@ import com.github.freeacs.base.Log;
 import com.github.freeacs.base.UnitJob;
 import com.github.freeacs.dbi.UnitJobStatus;
 import com.github.freeacs.dbi.util.ProvisioningMode;
-import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.HTTPRequestResponseData;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
 
 public class SPVDecision {
-  public static void process(HTTPReqResData reqRes, Properties properties) {
+  public static void process(HTTPRequestResponseData reqRes, Properties properties) {
     SessionData sessionData = reqRes.getSessionData();
     if (sessionData.getUnit().getProvisioningMode() == ProvisioningMode.REGULAR
         && properties.isParameterkeyQuirk(sessionData)
@@ -20,6 +20,6 @@ public class SPVDecision {
       UnitJob uj = new UnitJob(sessionData, sessionData.getJob(), false);
       uj.stop(UnitJobStatus.COMPLETED_OK, properties.isDiscoveryMode());
     }
-    reqRes.getResponse().setMethod(TR069Method.EMPTY);
+    reqRes.getResponseData().setMethod(TR069Method.EMPTY);
   }
 }

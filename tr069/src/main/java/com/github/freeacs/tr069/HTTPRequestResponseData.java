@@ -11,16 +11,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-public class HTTPReqResData {
+public class HTTPRequestResponseData {
   private final DBAccess dbAccess;
 
-  private HTTPReqData request;
+  private HTTPRequestData requestData;
 
-  private HTTPResData response;
+  private HTTPResponseData responseData;
 
-  private HttpServletRequest req;
+  private HttpServletRequest rawRequest;
 
-  private HttpServletResponse res;
+  private HttpServletResponse rawResponse;
 
   private Throwable throwable;
 
@@ -28,26 +28,26 @@ public class HTTPReqResData {
 
   private SessionData sessionData;
 
-  public HTTPReqResData(HttpServletRequest req, HttpServletResponse res, DBAccess dbAccess)
+  public HTTPRequestResponseData(HttpServletRequest rawRequest, HttpServletResponse rawResponse, DBAccess dbAccess)
       throws SQLException {
-    this.req = req;
-    this.res = res;
-    this.request = new HTTPReqData();
-    this.response = new HTTPResData();
+    this.rawRequest = rawRequest;
+    this.rawResponse = rawResponse;
+    this.requestData = new HTTPRequestData();
+    this.responseData = new HTTPResponseData();
     this.dbAccess = dbAccess;
 
-    String sessionId = req.getSession().getId();
+    String sessionId = rawRequest.getSession().getId();
     try {
       sessionData = (SessionData) BaseCache.getSessionData(sessionId);
     } catch (BaseCacheException tr069Ex) {
-      HttpSession session = req.getSession();
+      HttpSession session = rawRequest.getSession();
       Log.debug(
-          HTTPReqResData.class,
+          HTTPRequestResponseData.class,
           "Sessionid "
               + sessionId
               + " did not return a SessionData object from cache, must create a new SessionData object");
       Log.debug(
-          HTTPReqResData.class,
+          HTTPRequestResponseData.class,
           "Sessionid "
               + session.getId()
               + " created: "
@@ -62,16 +62,16 @@ public class HTTPReqResData {
     if (sessionData.getStartupTmsForSession() == null) {
       sessionData.setStartupTmsForSession(System.currentTimeMillis());
     }
-    Log.debug(HTTPReqResData.class, "Adding a HTTPReqResData object to the list");
+    Log.debug(HTTPRequestResponseData.class, "Adding a HTTPReqResData object to the list");
     sessionData.getReqResList().add(this);
   }
 
-  public HTTPReqData getRequest() {
-    return request;
+  public HTTPRequestData getRequestData() {
+    return requestData;
   }
 
-  public HTTPResData getResponse() {
-    return response;
+  public HTTPResponseData getResponseData() {
+    return responseData;
   }
 
   public Throwable getThrowable() {
@@ -90,12 +90,12 @@ public class HTTPReqResData {
     TR069TransactionID = transactionID;
   }
 
-  public HttpServletRequest getReq() {
-    return req;
+  public HttpServletRequest getRawRequest() {
+    return rawRequest;
   }
 
-  public HttpServletResponse getRes() {
-    return res;
+  public HttpServletResponse getRawResponse() {
+    return rawResponse;
   }
 
   public SessionData getSessionData() {
@@ -107,6 +107,6 @@ public class HTTPReqResData {
   }
 
   public String getRealIPAddress() {
-    return Optional.ofNullable(req.getHeader("X-Real-IP")).orElseGet(() -> req.getRemoteAddr());
+    return Optional.ofNullable(rawRequest.getHeader("X-Real-IP")).orElseGet(() -> rawRequest.getRemoteAddr());
   }
 }

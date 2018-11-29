@@ -3,7 +3,7 @@ package com.github.freeacs.base.http;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.common.util.CacheValue;
-import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.HTTPRequestResponseData;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069AuthenticationException;
@@ -42,13 +42,13 @@ public class Authenticator {
     return tmp;
   }
 
-  private static boolean block(HTTPReqResData reqRes, String bcKey) {
+  private static boolean block(HTTPRequestResponseData reqRes, String bcKey) {
     if (bcKey != null) {
       CacheValue cv = blockedClients.get(bcKey);
       if (cv != null) {
         int count = (Integer) cv.getObject();
         if (count >= 5) {
-          reqRes.getRes().setStatus(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+          reqRes.getRawResponse().setStatus(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
           blockedClientsCount++;
           return true;
         }
@@ -68,7 +68,7 @@ public class Authenticator {
     }
   }
 
-  public static boolean authenticate(HTTPReqResData reqRes, Properties properties)
+  public static boolean authenticate(HTTPRequestResponseData reqRes, Properties properties)
       throws TR069AuthenticationException {
     SessionData sessionData = reqRes.getSessionData();
     if (sessionData.isAuthenticated()) {
@@ -84,7 +84,7 @@ public class Authenticator {
     // way for the
     // device to be allowed into verification is to be silent for more than 5
     // minutes.
-    String bcKey = computeBlockedClientKey(reqRes.getReq());
+    String bcKey = computeBlockedClientKey(reqRes.getRawRequest());
     if (block(reqRes, bcKey)) {
       return false;
     }
@@ -109,7 +109,7 @@ public class Authenticator {
             "The authentication method is "
                 + auth_method
                 + ", but no impl. exist for this method (CPE IP address: "
-                + reqRes.getReq().getRemoteHost()
+                + reqRes.getRawRequest().getRemoteHost()
                 + ")",
             null,
             HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

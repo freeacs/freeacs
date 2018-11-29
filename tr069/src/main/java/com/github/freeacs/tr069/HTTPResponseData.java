@@ -1,6 +1,6 @@
 package com.github.freeacs.tr069;
 
-public class HTTPResData {
+public class HTTPResponseData {
   private String method;
   private String xml;
 

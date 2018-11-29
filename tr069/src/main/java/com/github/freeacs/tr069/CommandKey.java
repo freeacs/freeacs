@@ -10,7 +10,7 @@ public class CommandKey {
     this.cpeKey = cpeKey;
   }
 
-  public void setServerKey(HTTPReqResData reqRes) {
+  public void setServerKey(HTTPRequestResponseData reqRes) {
     this.serverKey =
         reqRes.getSessionData().getUnit().getParameterValue(SystemParameters.JOB_CURRENT_KEY);
   }

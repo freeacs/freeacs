@@ -3,7 +3,7 @@ package com.github.freeacs.tr069;
 import com.github.freeacs.tr069.xml.Fault;
 import com.github.freeacs.tr069.xml.XMLChar;
 
-public class HTTPReqData {
+public class HTTPRequestData {
   private String method;
   private String xml;
   private Fault fault;

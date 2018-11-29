@@ -9,7 +9,7 @@ import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.TimestampWrapper;
 import com.github.freeacs.tr069.CPEParameters;
 import com.github.freeacs.tr069.CommandKey;
-import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.HTTPRequestResponseData;
 import com.github.freeacs.tr069.InformParameters;
 import com.github.freeacs.tr069.ParameterKey;
 import com.github.freeacs.tr069.SessionData;
@@ -187,10 +187,10 @@ public class INreq {
     }
   }
 
-  public static void process(HTTPReqResData reqRes, boolean isDiscoveryMode) throws TR069Exception {
+  public static void process(HTTPRequestResponseData reqRes, boolean isDiscoveryMode) throws TR069Exception {
     try {
-      reqRes.getRequest().setMethod(TR069Method.INFORM);
-      Parser parser = new Parser(reqRes.getRequest().getXml());
+      reqRes.getRequestData().setMethod(TR069Method.INFORM);
+      Parser parser = new Parser(reqRes.getRequestData().getXml());
       SessionData sessionData = reqRes.getSessionData();
       Header header = parser.getHeader();
       reqRes.setTR069TransactionID(header.getId());

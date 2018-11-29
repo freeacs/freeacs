@@ -8,28 +8,24 @@ import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.File;
 import com.github.freeacs.dbi.FileType;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.AbstractHttpDataWrapper;
+import com.github.freeacs.tr069.HTTPRequestResponseData;
 import com.github.freeacs.tr069.Properties;
 import java.io.IOException;
 import java.io.OutputStream;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class FileServlet extends HttpServlet {
-  private static final long serialVersionUID = -9027563648829505599L;
+public class FileServlet extends AbstractHttpDataWrapper {
 
-  private final DBAccess dbAccess;
   private final String context;
-  private final Properties properties;
 
   public FileServlet(DBAccess dbAccess, String context, Properties properties) {
-    this.dbAccess = dbAccess;
+    super(dbAccess, properties);
     this.context = context;
-    this.properties = properties;
   }
 
-  protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
+  public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
     String firmwareName = null;
     String unittypeName = null;
     OutputStream out = null;
@@ -39,8 +35,7 @@ public class FileServlet extends HttpServlet {
       // Create the main object which contains all objects concerning the entire
       // session. This object also contains the SessionData object
       if (properties.isFileAuthUsed()) {
-        HTTPReqResData reqRes = new HTTPReqResData(req, res, dbAccess);
-        reqRes.getRequest().setContextPath(properties.getContextPath());
+        HTTPRequestResponseData reqRes = getHttpReqResDate(req, res);
         // 2. Authenticate the client (first issue challenge, then authenticate)
         if (!Authenticator.authenticate(reqRes, properties)) {
           return;
@@ -142,9 +137,5 @@ public class FileServlet extends HttpServlet {
         out.close();
       }
     }
-  }
-
-  protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
-    doGet(req, res);
   }
 }

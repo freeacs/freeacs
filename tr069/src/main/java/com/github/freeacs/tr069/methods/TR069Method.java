@@ -133,7 +133,7 @@ public class TR069Method {
   }
 
   private HTTPRequestAction.CheckedRequestFunction makeSimpleDecision(String getRpcMethodsRes) {
-    return reqRes -> reqRes.getResponse().setMethod(getRpcMethodsRes);
+    return reqRes -> reqRes.getResponseData().setMethod(getRpcMethodsRes);
   }
 
   public Map<String, HTTPRequestAction> getRequestMap() {

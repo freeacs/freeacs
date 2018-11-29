@@ -24,7 +24,7 @@ import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.CPEParameters;
 import com.github.freeacs.tr069.DownloadLogicTR069;
-import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.HTTPRequestResponseData;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.background.ActiveDeviceDetectionTask;
 import com.github.freeacs.tr069.decision.shelljob.ShellJobLogic;
@@ -51,7 +51,7 @@ import java.util.Map;
  */
 public class GPVDecision {
   public static void process(
-      HTTPReqResData reqRes, boolean isDiscoveryMode, String publicUrl, int concurrentDownloadLimit)
+      HTTPRequestResponseData reqRes, boolean isDiscoveryMode, String publicUrl, int concurrentDownloadLimit)
       throws TR069Exception {
     SessionData sessionData = reqRes.getSessionData();
     ProvisioningMode mode = sessionData.getUnit().getProvisioningMode();
@@ -60,7 +60,7 @@ public class GPVDecision {
     pm.setProvMode(mode);
     boolean PIIsupport = supportPII(sessionData);
     if (!PIIsupport) {
-      reqRes.getResponse().setMethod(TR069Method.EMPTY);
+      reqRes.getResponseData().setMethod(TR069Method.EMPTY);
       pm.setProvOutput(ProvOutput.EMPTY);
       pm.setErrorMessage("The device does not support PII");
       pm.setProvStatus(ProvStatus.ERROR);
@@ -71,13 +71,13 @@ public class GPVDecision {
       GPVDecisionExtraction.processExtraction(reqRes);
     }
     updateActiveDeviceMap(reqRes);
-    Log.debug(GPVDecision.class, "GPV-Decision is " + reqRes.getResponse().getMethod());
+    Log.debug(GPVDecision.class, "GPV-Decision is " + reqRes.getResponseData().getMethod());
   }
 
-  private static void updateActiveDeviceMap(HTTPReqResData reqRes) {
+  private static void updateActiveDeviceMap(HTTPRequestResponseData reqRes) {
     boolean updated = false;
     SessionData sessionData = reqRes.getSessionData();
-    if (TR069Method.SET_PARAMETER_VALUES.equals(reqRes.getResponse().getMethod())) {
+    if (TR069Method.SET_PARAMETER_VALUES.equals(reqRes.getResponseData().getMethod())) {
       Long nextPII = null;
       CPEParameters cpeParams = sessionData.getCpeParameters();
       String PII = cpeParams.PERIODIC_INFORM_INTERVAL;
@@ -97,7 +97,7 @@ public class GPVDecision {
   }
 
   private static void normalPriorityProvisioning(
-      HTTPReqResData reqRes, String publicUrl, int concurrentDownloadLimit) {
+      HTTPRequestResponseData reqRes, String publicUrl, int concurrentDownloadLimit) {
     ServiceWindow serviceWindow;
     SessionData sessionData = reqRes.getSessionData();
     String reset = sessionData.getAcsParameters().getValue(SystemParameters.RESET);
@@ -107,7 +107,7 @@ public class GPVDecision {
       serviceWindow = new ServiceWindow(sessionData, true);
       if (serviceWindow.isWithin()) {
         Util.resetReset(sessionData);
-        reqRes.getResponse().setMethod(TR069Method.FACTORY_RESET);
+        reqRes.getResponseData().setMethod(TR069Method.FACTORY_RESET);
         return;
       } else {
         sessionData.getPIIDecision().setDisruptiveSW(serviceWindow);
@@ -117,7 +117,7 @@ public class GPVDecision {
       serviceWindow = new ServiceWindow(sessionData, true);
       if (serviceWindow.isWithin()) {
         Util.resetReboot(sessionData);
-        reqRes.getResponse().setMethod(TR069Method.REBOOT);
+        reqRes.getResponseData().setMethod(TR069Method.REBOOT);
         return;
       } else {
         sessionData.getPIIDecision().setDisruptiveSW(serviceWindow);
@@ -128,7 +128,7 @@ public class GPVDecision {
             && DownloadLogic.downloadAllowed(null, concurrentDownloadLimit))) {
       serviceWindow = new ServiceWindow(sessionData, true);
       if (serviceWindow.isWithin()) {
-        reqRes.getResponse().setMethod(TR069Method.DOWNLOAD);
+        reqRes.getResponseData().setMethod(TR069Method.DOWNLOAD);
         return;
       } else {
         sessionData.getPIIDecision().setDisruptiveSW(serviceWindow);
@@ -139,19 +139,19 @@ public class GPVDecision {
       if (serviceWindow.isWithin()) {
         prepareSPV(sessionData);
         if (!sessionData.getToCPE().getParameterValueList().isEmpty()) {
-          reqRes.getResponse().setMethod(TR069Method.SET_PARAMETER_VALUES);
+          reqRes.getResponseData().setMethod(TR069Method.SET_PARAMETER_VALUES);
         } else {
-          reqRes.getResponse().setMethod(TR069Method.EMPTY);
+          reqRes.getResponseData().setMethod(TR069Method.EMPTY);
         }
         return;
       }
     }
     prepareSPVLimited(reqRes);
-    reqRes.getResponse().setMethod(TR069Method.SET_PARAMETER_VALUES);
+    reqRes.getResponseData().setMethod(TR069Method.SET_PARAMETER_VALUES);
   }
 
   private static void processPeriodic(
-      HTTPReqResData reqRes, boolean isDiscoveryMode, String publicUrl, int concurrentDownloadLimit)
+      HTTPRequestResponseData reqRes, boolean isDiscoveryMode, String publicUrl, int concurrentDownloadLimit)
       throws TR069Exception {
     SessionData sessionData = reqRes.getSessionData();
 
@@ -173,29 +173,29 @@ public class GPVDecision {
   }
 
   private static void jobProvisioning(
-      HTTPReqResData reqRes, Job job, UnitJob uj, boolean isDiscoveryMode, String publicUrl)
+      HTTPRequestResponseData reqRes, Job job, UnitJob uj, boolean isDiscoveryMode, String publicUrl)
       throws TR069Exception {
     SessionData sessionData = reqRes.getSessionData();
     sessionData.getProvisioningMessage().setJobId(job.getId());
     JobType type = job.getFlags().getType();
     if (type == JobType.RESET) {
       sessionData.getProvisioningMessage().setProvOutput(ProvOutput.RESET);
-      reqRes.getResponse().setMethod(TR069Method.FACTORY_RESET);
+      reqRes.getResponseData().setMethod(TR069Method.FACTORY_RESET);
     } else if (type == JobType.RESTART) {
       sessionData.getProvisioningMessage().setProvOutput(ProvOutput.REBOOT);
-      reqRes.getResponse().setMethod(TR069Method.REBOOT);
+      reqRes.getResponseData().setMethod(TR069Method.REBOOT);
     } else if (type == JobType.SOFTWARE) {
       sessionData.getProvisioningMessage().setProvOutput(ProvOutput.SOFTWARE);
       if (!DownloadLogicTR069.isSoftwareDownloadSetup(reqRes, job, publicUrl)) {
         throw new RuntimeException("Not possible to setup a Software Download job");
       }
-      reqRes.getResponse().setMethod(TR069Method.DOWNLOAD);
+      reqRes.getResponseData().setMethod(TR069Method.DOWNLOAD);
     } else if (type == JobType.TR069_SCRIPT) {
       sessionData.getProvisioningMessage().setProvOutput(ProvOutput.SCRIPT);
       if (!DownloadLogicTR069.isScriptDownloadSetup(reqRes, job, publicUrl)) {
         throw new RuntimeException("Not possible to setup a Script Download job");
       }
-      reqRes.getResponse().setMethod(TR069Method.DOWNLOAD);
+      reqRes.getResponseData().setMethod(TR069Method.DOWNLOAD);
     } else {
       if (type == JobType.SHELL) {
         sessionData.getProvisioningMessage().setProvOutput(ProvOutput.SHELL);
@@ -207,7 +207,7 @@ public class GPVDecision {
         // ServiceWindow serviceWindow = new ServiceWindow(sessionData, false);
         prepareSPVForConfigJob(sessionData);
       }
-      reqRes.getResponse().setMethod(TR069Method.SET_PARAMETER_VALUES);
+      reqRes.getResponseData().setMethod(TR069Method.SET_PARAMETER_VALUES);
     }
   }
 
@@ -232,7 +232,7 @@ public class GPVDecision {
     }
   }
 
-  private static void prepareSPVLimited(HTTPReqResData reqRes) {
+  private static void prepareSPVLimited(HTTPRequestResponseData reqRes) {
     SessionData sessionData = reqRes.getSessionData();
     sessionData.setProvisioningAllowed(false);
     sessionData.getProvisioningMessage().setProvStatus(ProvStatus.DELAYED);

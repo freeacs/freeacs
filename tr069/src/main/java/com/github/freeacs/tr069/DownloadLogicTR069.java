@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public class DownloadLogicTR069 {
   private static Logger logger = LoggerFactory.getLogger(DownloadLogicTR069.class);
 
-  public static boolean isScriptDownloadSetup(HTTPReqResData reqRes, Job job, String publicUrl) {
+  public static boolean isScriptDownloadSetup(HTTPRequestResponseData reqRes, Job job, String publicUrl) {
     SessionData sessionData = reqRes.getSessionData();
     ACSParameters oweraParams = sessionData.getAcsParameters();
     CPEParameters cpeParams = sessionData.getCpeParameters();
@@ -78,7 +78,7 @@ public class DownloadLogicTR069 {
         downloadURL =
             getDownloadUrl(
                 scriptVersionFromDB,
-                reqRes.getRequest().getContextPath(),
+                reqRes.getRequestData().getContextPath(),
                 sessionData.getUnittype().getName(),
                 sessionData.getUnitId(),
                 file.getName(),
@@ -116,7 +116,7 @@ public class DownloadLogicTR069 {
     return downloadURL.replaceAll(" ", "--");
   }
 
-  public static boolean isSoftwareDownloadSetup(HTTPReqResData reqRes, Job job, String publicUrl) {
+  public static boolean isSoftwareDownloadSetup(HTTPRequestResponseData reqRes, Job job, String publicUrl) {
     SessionData sessionData = reqRes.getSessionData();
     CPEParameters cpeParams = sessionData.getCpeParameters();
     String softwareVersionFromCPE = cpeParams.getValue(cpeParams.SOFTWARE_VERSION);
@@ -148,7 +148,7 @@ public class DownloadLogicTR069 {
       downloadURL =
           getDownloadUrl(
               softwareVersionFromDB,
-              reqRes.getRequest().getContextPath(),
+              reqRes.getRequestData().getContextPath(),
               sessionData.getUnittype().getName(),
               sessionData.getUnitId(),
               null,

@@ -12,8 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class OKServlet extends HttpServlet {
-  private static final long serialVersionUID = -3217484543967391741L;
+public class OKServlet {
   private static Map<String, Long> currentConnectionTmsMap = new HashMap<>();
 
   private final DBAccess dbAccess;

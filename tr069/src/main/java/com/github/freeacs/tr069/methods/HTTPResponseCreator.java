@@ -8,7 +8,7 @@ import com.github.freeacs.dbi.util.ProvisioningMessage.ProvOutput;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.CPEParameters;
-import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.tr069.HTTPRequestResponseData;
 import com.github.freeacs.tr069.ParameterKey;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
@@ -36,11 +36,11 @@ import java.util.Optional;
  * @author morten
  */
 public interface HTTPResponseCreator {
-  static Response buildEM(HTTPReqResData reqRes) {
+  static Response buildEM(HTTPRequestResponseData reqRes) {
     return new EmptyResponse(reqRes.getSessionData().getCwmpVersionNumber());
   }
 
-  static Response buildRE(HTTPReqResData reqRes) {
+  static Response buildRE(HTTPRequestResponseData reqRes) {
     if (reqRes.getTR069TransactionID() == null) {
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     }
@@ -50,7 +50,7 @@ public interface HTTPResponseCreator {
     return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
   }
 
-  static Response buildFR(HTTPReqResData reqRes) {
+  static Response buildFR(HTTPRequestResponseData reqRes) {
     if (reqRes.getTR069TransactionID() == null) {
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     }
@@ -60,28 +60,28 @@ public interface HTTPResponseCreator {
     return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
   }
 
-  static Response buildTC(HTTPReqResData reqRes) {
+  static Response buildTC(HTTPRequestResponseData reqRes) {
     TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
     Header header = new Header(tr069ID, null, null);
     Body body = new TCres();
     return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
   }
 
-  static Response buildATC(HTTPReqResData reqRes) {
+  static Response buildATC(HTTPRequestResponseData reqRes) {
     TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
     Header header = new Header(tr069ID, null, null);
     Body body = new ATCres();
     return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
   }
 
-  static Response buildIN(HTTPReqResData reqRes) {
+  static Response buildIN(HTTPRequestResponseData reqRes) {
     TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
     Header header = new Header(tr069ID, null, null);
     Body body = new INres();
     return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
   }
 
-  static Response buildGPN(HTTPReqResData reqRes, Properties properties) {
+  static Response buildGPN(HTTPRequestResponseData reqRes, Properties properties) {
     if (reqRes.getTR069TransactionID() == null) {
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     }
@@ -135,7 +135,7 @@ public interface HTTPResponseCreator {
    * regardless of what parameteres we have in the database. That's because we have 2 different ways
    * to set it in the database, the standard and the FREEACS-way.
    */
-  static Response buildGPV(HTTPReqResData reqRes, Properties properties) {
+  static Response buildGPV(HTTPRequestResponseData reqRes, Properties properties) {
     if (reqRes.getTR069TransactionID() == null) {
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     }
@@ -182,7 +182,7 @@ public interface HTTPResponseCreator {
     return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
   }
 
-  static Response buildSPV(HTTPReqResData reqRes, Properties properties)
+  static Response buildSPV(HTTPRequestResponseData reqRes, Properties properties)
       throws NoSuchAlgorithmException {
     if (reqRes.getTR069TransactionID() == null) {
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
@@ -205,7 +205,7 @@ public interface HTTPResponseCreator {
     return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
   }
 
-  static Response buildDO(HTTPReqResData reqRes, boolean fileAuthUsed) {
+  static Response buildDO(HTTPRequestResponseData reqRes, boolean fileAuthUsed) {
     if (reqRes.getTR069TransactionID() == null) {
       reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
     }
@@ -241,10 +241,10 @@ public interface HTTPResponseCreator {
     return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
   }
 
-  static void createResponse(HTTPReqResData reqRes, Map<String, HTTPResponseAction> responseMap)
+  static void createResponse(HTTPRequestResponseData reqRes, Map<String, HTTPResponseAction> responseMap)
       throws TR069Exception {
     try {
-      String methodName = reqRes.getResponse().getMethod();
+      String methodName = reqRes.getResponseData().getMethod();
       final Response response;
       HTTPResponseAction resAction = responseMap.get(methodName);
       if (resAction != null) {
@@ -264,7 +264,7 @@ public interface HTTPResponseCreator {
               + " ) ============\n"
               + responseStr
               + "\n");
-      reqRes.getResponse().setXml(responseStr);
+      reqRes.getResponseData().setXml(responseStr);
     } catch (Throwable t) {
       throw new TR069Exception(
           "Not possible to create HTTP-response (to the TR-069 client)",

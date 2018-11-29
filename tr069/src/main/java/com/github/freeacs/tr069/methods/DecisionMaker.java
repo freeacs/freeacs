@@ -1,7 +1,7 @@
 package com.github.freeacs.tr069.methods;
 
-import com.github.freeacs.tr069.HTTPReqResData;
-import com.github.freeacs.tr069.HTTPResData;
+import com.github.freeacs.tr069.HTTPRequestResponseData;
+import com.github.freeacs.tr069.HTTPResponseData;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import java.util.Map;
@@ -11,9 +11,9 @@ import java.util.Map;
  * upon the request, different logic applies.
  */
 public class DecisionMaker {
-  public static void process(HTTPReqResData reqRes, Map<String, HTTPRequestAction> requestMap)
+  public static void process(HTTPRequestResponseData reqRes, Map<String, HTTPRequestAction> requestMap)
       throws TR069Exception {
-    HTTPResData resData = reqRes.getResponse();
+    HTTPResponseData resData = reqRes.getResponseData();
     if (reqRes.getThrowable() != null) {
       resData.setMethod(TR069Method.EMPTY);
       return;
@@ -21,7 +21,7 @@ public class DecisionMaker {
     String reqMethod;
     HTTPRequestAction reqAction;
     try {
-      reqMethod = reqRes.getRequest().getMethod();
+      reqMethod = reqRes.getRequestData().getMethod();
       reqAction = requestMap.get(reqMethod);
       reqAction.getDecisionMakerMethod().apply(reqRes);
     } catch (Throwable t) {

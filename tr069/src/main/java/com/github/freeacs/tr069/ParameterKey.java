@@ -29,7 +29,7 @@ public class ParameterKey {
     return serverKey;
   }
 
-  public void setServerKey(HTTPReqResData reqRes) throws NoSuchAlgorithmException {
+  public void setServerKey(HTTPRequestResponseData reqRes) throws NoSuchAlgorithmException {
     this.serverKey = calculateParameterKey(reqRes);
   }
 
@@ -37,7 +37,7 @@ public class ParameterKey {
     return cpeKey != null && cpeKey.equals(serverKey);
   }
 
-  private static String calculateParameterKey(HTTPReqResData reqRes)
+  private static String calculateParameterKey(HTTPRequestResponseData reqRes)
       throws NoSuchAlgorithmException {
     SessionData sessionData = reqRes.getSessionData();
     UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
