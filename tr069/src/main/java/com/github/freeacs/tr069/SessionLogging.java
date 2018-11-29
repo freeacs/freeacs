@@ -8,6 +8,9 @@ import com.github.freeacs.dbi.util.ProvisioningMessage.ProvOutput;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ProvStatus;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SyslogClient;
+import com.github.freeacs.http.HTTPRequestData;
+import com.github.freeacs.http.HTTPRequestResponseData;
+import com.github.freeacs.http.HTTPResponseData;
 import com.github.freeacs.tr069.methods.TR069Method;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import java.util.List;
@@ -21,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Jarl
  */
 public class SessionLogging {
-  public static void log(HTTPReqResData reqRes, Map<String, String> abbrevMap) {
+  public static void log(HTTPRequestResponseData reqRes, Map<String, String> abbrevMap) {
     try {
       SessionData sessionData = reqRes.getSessionData();
       // The old logging to eventlog
@@ -51,7 +54,7 @@ public class SessionLogging {
         }
       }
       pm.setSessionLength((int) diff);
-      pm.setIpAddress(reqRes.getReq().getRemoteHost());
+      pm.setIpAddress(reqRes.getRawRequest().getRemoteHost());
       // We're not sending the facility-version, since the message is used in a report - where
       // the version of the TR-069 is much more interesting (will be added automatically be the
       // syslog server)
@@ -64,12 +67,12 @@ public class SessionLogging {
     }
   }
 
-  private static String abbreviate(List<HTTPReqResData> reqResList, Map<String, String> abbrevMap) {
+  private static String abbreviate(List<HTTPRequestResponseData> reqResList, Map<String, String> abbrevMap) {
     String methodsUsed = "";
     for (int i = 0; i < reqResList.size(); i++) {
-      HTTPReqResData reqRes = reqResList.get(i);
-      HTTPReqData reqData = reqRes.getRequest();
-      HTTPResData resData = reqRes.getResponse();
+      HTTPRequestResponseData reqRes = reqResList.get(i);
+      HTTPRequestData reqData = reqRes.getRequestData();
+      HTTPResponseData resData = reqRes.getResponseData();
       String reqMethod = reqData.getMethod();
       if (reqMethod == null) {
         continue;
@@ -77,8 +80,8 @@ public class SessionLogging {
       String resMethod = resData.getMethod();
       String reqShortname = abbrevMap.get(reqMethod);
       if (i > 0) {
-        HTTPReqResData prevReqRes = reqResList.get(i - 1);
-        String prevResMethod = prevReqRes.getResponse().getMethod();
+        HTTPRequestResponseData prevReqRes = reqResList.get(i - 1);
+        String prevResMethod = prevReqRes.getResponseData().getMethod();
         if (prevResMethod != null
             && !TR069Method.EMPTY.equals(reqMethod)
             && prevResMethod.equals(reqMethod)) {
@@ -110,9 +113,9 @@ public class SessionLogging {
     return methodsUsed;
   }
 
-  private static String makeEventMsg(HTTPReqResData reqRes, long diff, String methodsUsed) {
-    List<HTTPReqResData> reqResList = reqRes.getSessionData().getReqResList();
-    HttpServletRequest req = reqRes.getReq();
+  private static String makeEventMsg(HTTPRequestResponseData reqRes, long diff, String methodsUsed) {
+    List<HTTPRequestResponseData> reqResList = reqRes.getSessionData().getReqResList();
+    HttpServletRequest req = reqRes.getRawRequest();
     SessionData sessionData = reqRes.getSessionData();
     String eventMsg =
         String.format("%1$-16s %2$6dms %3$-60s", req.getRemoteHost(), diff, methodsUsed);
@@ -124,8 +127,8 @@ public class SessionLogging {
     eventMsg += job;
     String parameterList = "";
     int paramsToCPE = 0;
-    for (HTTPReqResData reqResItem : reqResList) {
-      String resMethod = reqResItem.getResponse().getMethod();
+    for (HTTPRequestResponseData reqResItem : reqResList) {
+      String resMethod = reqResItem.getResponseData().getMethod();
       if (TR069Method.SET_PARAMETER_VALUES.equals(resMethod)) {
         paramsToCPE = sessionData.getToCPE().getParameterValueList().size();
         for (ParameterValueStruct pvs : sessionData.getToCPE().getParameterValueList()) {

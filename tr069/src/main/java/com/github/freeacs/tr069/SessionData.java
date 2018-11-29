@@ -19,6 +19,7 @@ import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.dbi.util.SystemParameters;
+import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import java.sql.SQLException;
@@ -39,7 +40,7 @@ public class SessionData implements SessionDataI {
   /** Access to all database operations. */
   private DBAccessSession dbAccess;
   /** Data for monitoring/logging. */
-  private List<HTTPReqResData> reqResList = new ArrayList<>();
+  private List<HTTPRequestResponseData> reqResList = new ArrayList<>();
   /** When did the session start? */
   private Long startupTmsForSession;
 
@@ -263,13 +264,13 @@ public class SessionData implements SessionDataI {
     this.fromDB = fromDB;
   }
 
-  public List<HTTPReqResData> getReqResList() {
+  public List<HTTPRequestResponseData> getReqResList() {
     return reqResList;
   }
 
   public String getMethodBeforePreviousResponseMethod() {
     if (reqResList != null && reqResList.size() > 2) {
-      return reqResList.get(reqResList.size() - 3).getResponse().getMethod();
+      return reqResList.get(reqResList.size() - 3).getResponseData().getMethod();
     } else {
       return null;
     }
@@ -277,7 +278,7 @@ public class SessionData implements SessionDataI {
 
   public String getPreviousResponseMethod() {
     if (reqResList != null && reqResList.size() > 1) {
-      return reqResList.get(reqResList.size() - 2).getResponse().getMethod();
+      return reqResList.get(reqResList.size() - 2).getResponseData().getMethod();
     } else {
       return null;
     }

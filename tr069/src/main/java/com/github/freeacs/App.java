@@ -99,14 +99,14 @@ public class App {
         Log.info(App.class, "Cleared base cache");
       }
       SimpleResponseWrapper response = new SimpleResponseWrapper(200, "text/html");
-      return process(okServlet::service, req, res, response);
+      return process(okServlet::doGet, req, res, response);
     };
   }
 
   private static Route processFile(FileServlet fileServlet) {
     return (req, res) -> {
       SimpleResponseWrapper response = new SimpleResponseWrapper(200, "application/octet-stream");
-      return process(fileServlet::service, req, res, response);
+      return process(fileServlet::doPost, req, res, response);
     };
   }
 

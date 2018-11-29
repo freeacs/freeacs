@@ -1,12 +1,17 @@
-package com.github.freeacs.tr069;
+package com.github.freeacs.http;
 
 import com.github.freeacs.tr069.xml.Fault;
 import com.github.freeacs.tr069.xml.XMLChar;
 
-public class HTTPReqData {
+public class HTTPRequestData {
   private String method;
   private String xml;
   private Fault fault;
+  private String contextPath;
+
+  protected HTTPRequestData() {
+
+  }
 
   public enum NodeType {
     CONTENT,
@@ -112,6 +117,8 @@ public class HTTPReqData {
         return new Node(NodeType.STARTTAG, ltPos, gtPos + 1, unformattedXml);
       }
     }
+
+
   }
 
   public String getXml() {
@@ -136,5 +143,13 @@ public class HTTPReqData {
 
   public void setFault(Fault fault) {
     this.fault = fault;
+  }
+
+  public void setContextPath(String contextPath) {
+    this.contextPath = contextPath;
+  }
+
+  public String getContextPath() {
+    return contextPath;
   }
 }

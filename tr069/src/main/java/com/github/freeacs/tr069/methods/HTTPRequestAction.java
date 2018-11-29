@@ -1,6 +1,6 @@
 package com.github.freeacs.tr069.methods;
 
-import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
@@ -32,6 +32,6 @@ public class HTTPRequestAction {
 
   @FunctionalInterface
   public interface CheckedRequestFunction {
-    void apply(HTTPReqResData t) throws NoSuchAlgorithmException, SQLException, TR069Exception;
+    void apply(HTTPRequestResponseData t) throws NoSuchAlgorithmException, SQLException, TR069Exception;
   }
 }

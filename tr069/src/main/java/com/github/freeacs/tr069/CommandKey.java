@@ -1,6 +1,7 @@
 package com.github.freeacs.tr069;
 
 import com.github.freeacs.dbi.util.SystemParameters;
+import com.github.freeacs.http.HTTPRequestResponseData;
 
 public class CommandKey {
   private String cpeKey;
@@ -10,7 +11,7 @@ public class CommandKey {
     this.cpeKey = cpeKey;
   }
 
-  public void setServerKey(HTTPReqResData reqRes) {
+  public void setServerKey(HTTPRequestResponseData reqRes) {
     this.serverKey =
         reqRes.getSessionData().getUnit().getParameterValue(SystemParameters.JOB_CURRENT_KEY);
   }

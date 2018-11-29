@@ -4,7 +4,7 @@ import com.github.freeacs.base.Log;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.UnittypeParameterFlag;
-import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
@@ -19,9 +19,9 @@ import org.slf4j.LoggerFactory;
 public class GPNres {
   private static Logger logger = LoggerFactory.getLogger(GPNres.class);
 
-  public static void process(HTTPReqResData reqRes, boolean isDiscoveryMode) throws TR069Exception {
-    reqRes.getRequest().setMethod(TR069Method.GET_PARAMETER_NAMES);
-    Parser parser = new Parser(reqRes.getRequest().getXml());
+  public static void process(HTTPRequestResponseData reqRes, boolean isDiscoveryMode) throws TR069Exception {
+    reqRes.getRequestData().setMethod(TR069Method.GET_PARAMETER_NAMES);
+    Parser parser = new Parser(reqRes.getRequestData().getXml());
 
     ParameterList parameterList = parser.getParameterList();
     List<ParameterInfoStruct> pisList = parameterList.getParameterInfoList();

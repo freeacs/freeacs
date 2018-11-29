@@ -4,8 +4,8 @@ import com.github.freeacs.base.Log;
 import com.github.freeacs.base.NoDataAvailableException;
 import com.github.freeacs.dbi.tr069.TR069DMLoader;
 import com.github.freeacs.dbi.tr069.TR069DMParameterMap;
-import com.github.freeacs.tr069.HTTPReqData;
-import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.http.HTTPRequestData;
+import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.UnknownMethodException;
 import com.github.freeacs.tr069.exception.TR069Exception;
@@ -51,25 +51,25 @@ public class HTTPRequestProcessor {
    * @throws TR069Exception
    */
   public static void processRequest(
-      HTTPReqResData reqRes, Map<String, HTTPRequestAction> requestMap, Properties properties)
+      HTTPRequestResponseData reqRes, Map<String, HTTPRequestAction> requestMap, Properties properties)
       throws TR069Exception {
     try {
       if (reqRes.getSessionData().getCwmpVersionNumber() == null) {
         reqRes
             .getSessionData()
-            .setCwmpVersionNumber(extractCwmpVersion(reqRes.getRequest().getXml()));
+            .setCwmpVersionNumber(extractCwmpVersion(reqRes.getRequestData().getXml()));
       }
-      String requestMethodName = extractMethodName(reqRes.getRequest().getXml());
+      String requestMethodName = extractMethodName(reqRes.getRequestData().getXml());
       if (requestMethodName == null) {
         requestMethodName = TR069Method.EMPTY;
       }
-      reqRes.getRequest().setMethod(requestMethodName);
+      reqRes.getRequestData().setMethod(requestMethodName);
       Log.debug(
           HTTPRequestProcessor.class,
           "Will process method " + requestMethodName + " (incoming request/response from CPE)");
       HTTPRequestAction reqAction = requestMap.get(requestMethodName);
       if (reqAction != null) {
-        reqRes.getRequest().setXml(HTTPReqData.XMLFormatter.filter(reqRes.getRequest().getXml()));
+        reqRes.getRequestData().setXml(HTTPRequestData.XMLFormatter.filter(reqRes.getRequestData().getXml()));
         reqAction.getProcessRequestMethod().apply(reqRes);
       } else {
         throw new UnknownMethodException(requestMethodName);
@@ -89,15 +89,15 @@ public class HTTPRequestProcessor {
             t);
       }
     } finally {
-      if (reqRes.getRequest().getMethod() == null) {
-        reqRes.getRequest().setMethod(TR069Method.EMPTY);
-        reqRes.getRequest().setXml("");
+      if (reqRes.getRequestData().getMethod() == null) {
+        reqRes.getRequestData().setMethod(TR069Method.EMPTY);
+        reqRes.getRequestData().setXml("");
       }
       if (Log.isConversationLogEnabled()) {
         String unitId = reqRes.getSessionData().getUnitId();
-        String xml = reqRes.getRequest().getXml();
+        String xml = reqRes.getRequestData().getXml();
         if (properties.isPrettyPrintQuirk(reqRes.getSessionData())) {
-          xml = HTTPReqData.XMLFormatter.prettyprint(reqRes.getRequest().getXml());
+          xml = HTTPRequestData.XMLFormatter.prettyprint(reqRes.getRequestData().getXml());
         }
         Log.conversation(
             reqRes.getSessionData(),

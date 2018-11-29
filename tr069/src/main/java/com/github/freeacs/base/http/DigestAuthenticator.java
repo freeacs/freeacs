@@ -4,7 +4,7 @@ import com.github.freeacs.base.BaseCache;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.NoDataAvailableException;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069AuthenticationException;
 import java.sql.SQLException;
@@ -20,14 +20,14 @@ public class DigestAuthenticator {
   }
 
   public static boolean authenticate(
-      HTTPReqResData reqRes, boolean isDiscoveryMode, String digestSecret)
+      HTTPRequestResponseData reqRes, boolean isDiscoveryMode, String digestSecret)
       throws TR069AuthenticationException {
-    String authorization = reqRes.getReq().getHeader("authorization");
+    String authorization = reqRes.getRawRequest().getHeader("authorization");
     if (authorization == null) {
       Log.notice(
           DigestAuthenticator.class,
-          "Send challenge to CPE, located on IP-address " + reqRes.getReq().getRemoteHost());
-      sendChallenge(reqRes.getRealIPAddress(), reqRes.getRes(), digestSecret);
+          "Send challenge to CPE, located on IP-address " + reqRes.getRawRequest().getRemoteHost());
+      sendChallenge(reqRes.getRealIPAddress(), reqRes.getRawResponse(), digestSecret);
       return false;
     } else {
       return verify(reqRes, authorization, isDiscoveryMode);
@@ -81,12 +81,12 @@ public class DigestAuthenticator {
    * @param authorization Authorization credentials from this request
    */
   private static boolean verify(
-      HTTPReqResData reqRes, String authorization, boolean isDiscoveryMode)
+      HTTPRequestResponseData reqRes, String authorization, boolean isDiscoveryMode)
       throws TR069AuthenticationException {
     Log.debug(
         DigestAuthenticator.class,
         "Digest verification of CPE starts, located on IP-address "
-            + reqRes.getReq().getRemoteHost());
+            + reqRes.getRawRequest().getRemoteHost());
     authorization = authorization.trim();
     authorization = Util.removePrefix(authorization, "digest");
     authorization = authorization.trim();
@@ -101,7 +101,7 @@ public class DigestAuthenticator {
     String qop = null;
     String uri = null;
     String response = null;
-    String method = reqRes.getReq().getMethod();
+    String method = reqRes.getRawRequest().getMethod();
 
     for (String currentToken : tokens) {
       if (currentToken.isEmpty()) {
@@ -112,7 +112,7 @@ public class DigestAuthenticator {
       if (equalSign < 0) {
         throw new TR069AuthenticationException(
             "Digest challenge response has incorrect format (CPE IP address: "
-                + reqRes.getReq().getRemoteHost()
+                + reqRes.getRawRequest().getRemoteHost()
                 + ")",
             null,
             HttpServletResponse.SC_FORBIDDEN);
@@ -153,7 +153,7 @@ public class DigestAuthenticator {
         || response == null) {
       throw new TR069AuthenticationException(
           "Digest challenge response does not contain all necessary parameters (CPE IP address: "
-              + reqRes.getReq().getRemoteHost()
+              + reqRes.getRawRequest().getRemoteHost()
               + ") (username: "
               + username
               + ")",
@@ -168,7 +168,7 @@ public class DigestAuthenticator {
         "Digest verification identifed unit id "
             + unitId
             + " from CPE IP-address "
-            + reqRes.getReq().getRemoteHost());
+            + reqRes.getRawRequest().getRemoteHost());
     try {
       SessionData sessionData = reqRes.getSessionData();
       sessionData.setUnitId(unitId);
@@ -183,7 +183,7 @@ public class DigestAuthenticator {
       if (secret == null) {
         throw new TR069AuthenticationException(
             "No ACS Password found in database (CPE IP address: "
-                + reqRes.getReq().getRemoteHost()
+                + reqRes.getRawRequest().getRemoteHost()
                 + ") (username: "
                 + username
                 + ")",
@@ -194,7 +194,7 @@ public class DigestAuthenticator {
         if (!sharedSecretMd5.equals(response)) {
           throw new TR069AuthenticationException(
               "Incorrect ACS Password (CPE IP address: "
-                  + reqRes.getReq().getRemoteHost()
+                  + reqRes.getRawRequest().getRemoteHost()
                   + ") (username: "
                   + username
                   + ")",
@@ -203,14 +203,14 @@ public class DigestAuthenticator {
         } else {
           Log.notice(
               DigestAuthenticator.class,
-              "Authentication verified (CPE IP address: " + reqRes.getReq().getRemoteHost() + ")");
+              "Authentication verified (CPE IP address: " + reqRes.getRawRequest().getRemoteHost() + ")");
           return true;
         }
       }
     } catch (SQLException e) {
       throw new TR069AuthenticationException(
           "Authentication failed because of database error (CPE IP address: "
-              + reqRes.getReq().getRemoteHost()
+              + reqRes.getRawRequest().getRemoteHost()
               + ") (username: "
               + username
               + ")",
@@ -219,7 +219,7 @@ public class DigestAuthenticator {
     } catch (NoDataAvailableException e) {
       throw new TR069AuthenticationException(
           "Authentication failed because unitid was not found (CPE IP address: "
-              + reqRes.getReq().getRemoteHost()
+              + reqRes.getRawRequest().getRemoteHost()
               + ") (username: "
               + username
               + ")",

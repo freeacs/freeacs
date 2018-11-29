@@ -17,6 +17,10 @@ import com.github.freeacs.tr069.background.ScheduledKickTask;
 import com.github.freeacs.tr069.background.StabilityTask;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
+import com.github.freeacs.http.AbstractHttpDataWrapper;
+import com.github.freeacs.http.HTTPRequestData;
+import com.github.freeacs.http.HTTPRequestResponseData;
+import com.github.freeacs.http.HTTPResponseData;
 import com.github.freeacs.tr069.methods.DecisionMaker;
 import com.github.freeacs.tr069.methods.HTTPRequestProcessor;
 import com.github.freeacs.tr069.methods.HTTPResponseCreator;
@@ -33,11 +37,10 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author morten
  */
-public class Provisioning {
+public class Provisioning extends AbstractHttpDataWrapper {
   private static ScriptExecutions executions;
-  private final DBAccess dbAccess;
+
   private final TR069Method tr069Method;
-  private final Properties properties;
 
   private final ExecutorWrapper executorWrapper;
 
@@ -46,9 +49,8 @@ public class Provisioning {
       TR069Method tr069Method,
       Properties properties,
       ExecutorWrapper executorWrapper) {
-    this.dbAccess = dbAccess;
+    super(dbAccess, properties);
     this.tr069Method = tr069Method;
-    this.properties = properties;
     this.executorWrapper = executorWrapper;
   }
 
@@ -122,9 +124,9 @@ public class Provisioning {
             });
   }
 
-  private static void extractRequest(HTTPReqResData reqRes) throws TR069Exception {
+  private static void extractRequest(HTTPRequestResponseData reqRes) throws TR069Exception {
     try {
-      InputStreamReader isr = new InputStreamReader(reqRes.getReq().getInputStream());
+      InputStreamReader isr = new InputStreamReader(reqRes.getRawRequest().getInputStream());
       BufferedReader br = new BufferedReader(isr);
       StringBuilder requestSB = new StringBuilder(1000);
       do {
@@ -134,7 +136,7 @@ public class Provisioning {
         }
         requestSB.append(line).append("\n");
       } while (true);
-      reqRes.getRequest().setXml(requestSB.toString());
+      reqRes.getRequestData().setXml(requestSB.toString());
       System.currentTimeMillis();
     } catch (IOException e) {
       throw new TR069Exception(
@@ -169,11 +171,11 @@ public class Provisioning {
    * test case.
    */
   public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
-    HTTPReqResData reqRes = null;
+    HTTPRequestResponseData reqRes = null;
     try {
       // Create the main object which contains all objects concerning the entire
       // session. This object also contains the SessionData object
-      reqRes = new HTTPReqResData(req, res, dbAccess);
+      reqRes = getHttpRequestResponseDate(req, res);
       // 2. Authenticate the client (first issue challenge, then authenticate)
       if (!Authenticator.authenticate(reqRes, properties)
           || (reqRes.getSessionData() != null
@@ -189,16 +191,16 @@ public class Provisioning {
       // 7. Create TR-069 response
       HTTPResponseCreator.createResponse(reqRes, tr069Method.getResponseMap());
       // 8. Set correct headers in response
-      if (reqRes.getResponse().getXml() != null && !reqRes.getResponse().getXml().isEmpty()) {
+      if (reqRes.getResponseData().getXml() != null && !reqRes.getResponseData().getXml().isEmpty()) {
         res.setHeader("SOAPAction", "");
         res.setContentType("text/xml");
       }
       // 8. No need to send Content-length as it will only be informational for 204 HTTP messages
-      if ("Empty".equals(reqRes.getResponse().getMethod())) {
+      if ("Empty".equals(reqRes.getResponseData().getMethod())) {
         res.setStatus(HttpServletResponse.SC_NO_CONTENT);
       }
       // 9. Print response to output
-      res.getWriter().print(reqRes.getResponse().getXml());
+      res.getWriter().print(reqRes.getResponseData().getXml());
     } catch (Throwable t) {
       // Make sure we return an EMPTY response to the TR-069 client
       if (t instanceof TR069Exception) {
@@ -248,7 +250,7 @@ public class Provisioning {
     }
   }
 
-  private void writeQueuedUnitParameters(HTTPReqResData reqRes) {
+  private void writeQueuedUnitParameters(HTTPRequestResponseData reqRes) {
     try {
       Unit unit = reqRes.getSessionData().getUnit();
       if (unit != null) {
@@ -264,11 +266,11 @@ public class Provisioning {
     }
   }
 
-  private boolean endOfSession(HTTPReqResData reqRes) {
+  private boolean endOfSession(HTTPRequestResponseData reqRes) {
     try {
       SessionData sessionData = reqRes.getSessionData();
-      HTTPReqData reqData = reqRes.getRequest();
-      HTTPResData resData = reqRes.getResponse();
+      HTTPRequestData reqData = reqRes.getRequestData();
+      HTTPResponseData resData = reqRes.getResponseData();
       if (reqRes.getThrowable() != null) {
         return true;
       }

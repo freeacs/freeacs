@@ -4,7 +4,7 @@ import com.github.freeacs.base.BaseCache;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.NoDataAvailableException;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069AuthenticationException;
 import java.sql.SQLException;
@@ -17,14 +17,14 @@ public class BasicAuthenticator {
   }
 
   public static boolean authenticate(
-      HTTPReqResData reqRes, boolean isDiscoveryMode, String[] discoveryBlocked)
+      HTTPRequestResponseData reqRes, boolean isDiscoveryMode, String[] discoveryBlocked)
       throws TR069AuthenticationException {
-    String authorization = reqRes.getReq().getHeader("authorization");
+    String authorization = reqRes.getRawRequest().getHeader("authorization");
     if (authorization == null) {
       Log.notice(
           BasicAuthenticator.class,
-          "Send challenge to CPE, located on IP-address " + reqRes.getReq().getRemoteHost());
-      sendChallenge(reqRes.getRes());
+          "Send challenge to CPE, located on IP-address " + reqRes.getRawRequest().getRemoteHost());
+      sendChallenge(reqRes.getRawResponse());
       return false;
     } else {
       return verify(reqRes, authorization, isDiscoveryMode, discoveryBlocked);
@@ -38,7 +38,7 @@ public class BasicAuthenticator {
    * @param authorization Authorization credentials from this request
    */
   private static boolean verify(
-      HTTPReqResData reqRes,
+      HTTPRequestResponseData reqRes,
       String authorization,
       boolean isDiscoveryMode,
       String[] discoveryBlocked)
@@ -46,7 +46,7 @@ public class BasicAuthenticator {
     Log.debug(
         BasicAuthenticator.class,
         "Basic verification of CPE starts, located on IP-address "
-            + reqRes.getReq().getRemoteHost());
+            + reqRes.getRawRequest().getRemoteHost());
     authorization = authorization.trim();
     authorization = Util.removePrefix(authorization, "basic");
     authorization = authorization.trim();
@@ -72,7 +72,7 @@ public class BasicAuthenticator {
         "Basic verification identifed unit id "
             + unitId
             + " from CPE IP-address "
-            + reqRes.getReq().getRemoteHost());
+            + reqRes.getRawRequest().getRemoteHost());
     try {
       SessionData sessionData = reqRes.getSessionData();
       sessionData.setUnitId(unitId);
@@ -104,7 +104,7 @@ public class BasicAuthenticator {
       if (secret == null) {
         throw new TR069AuthenticationException(
             "No ACS Password found in database (CPE IP address: "
-                + reqRes.getReq().getRemoteHost()
+                + reqRes.getRawRequest().getRemoteHost()
                 + ") (username: "
                 + username
                 + ")",
@@ -113,7 +113,7 @@ public class BasicAuthenticator {
       } else if (!secret.equals(password)) {
         throw new TR069AuthenticationException(
             "Incorrect ACS Password (CPE IP address: "
-                + reqRes.getReq().getRemoteHost()
+                + reqRes.getRawRequest().getRemoteHost()
                 + ") (username: "
                 + username
                 + ")",
@@ -122,13 +122,13 @@ public class BasicAuthenticator {
       } else {
         Log.notice(
             BasicAuthenticator.class,
-            "Authentication verified (CPE IP address: " + reqRes.getReq().getRemoteHost() + ")");
+            "Authentication verified (CPE IP address: " + reqRes.getRawRequest().getRemoteHost() + ")");
         return true;
       }
     } catch (SQLException e) {
       throw new TR069AuthenticationException(
           "Authentication failed because of database error (CPE IP address: "
-              + reqRes.getReq().getRemoteHost()
+              + reqRes.getRawRequest().getRemoteHost()
               + ") (username: "
               + username
               + ")",
@@ -137,7 +137,7 @@ public class BasicAuthenticator {
     } catch (NoDataAvailableException e) {
       throw new TR069AuthenticationException(
           "Authentication failed because unitid was not found (CPE IP address: "
-              + reqRes.getReq().getRemoteHost()
+              + reqRes.getRawRequest().getRemoteHost()
               + ") (username: "
               + username
               + ")",

@@ -9,6 +9,7 @@ import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.JobParameter;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.SystemParameters.TR069ScriptType;
+import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -18,7 +19,7 @@ import org.slf4j.LoggerFactory;
 public class DownloadLogicTR069 {
   private static Logger logger = LoggerFactory.getLogger(DownloadLogicTR069.class);
 
-  public static boolean isScriptDownloadSetup(HTTPReqResData reqRes, Job job, String publicUrl) {
+  public static boolean isScriptDownloadSetup(HTTPRequestResponseData reqRes, Job job, String publicUrl) {
     SessionData sessionData = reqRes.getSessionData();
     ACSParameters oweraParams = sessionData.getAcsParameters();
     CPEParameters cpeParams = sessionData.getCpeParameters();
@@ -78,7 +79,7 @@ public class DownloadLogicTR069 {
         downloadURL =
             getDownloadUrl(
                 scriptVersionFromDB,
-                reqRes.getReq().getContextPath(),
+                reqRes.getRequestData().getContextPath(),
                 sessionData.getUnittype().getName(),
                 sessionData.getUnitId(),
                 file.getName(),
@@ -116,7 +117,7 @@ public class DownloadLogicTR069 {
     return downloadURL.replaceAll(" ", "--");
   }
 
-  public static boolean isSoftwareDownloadSetup(HTTPReqResData reqRes, Job job, String publicUrl) {
+  public static boolean isSoftwareDownloadSetup(HTTPRequestResponseData reqRes, Job job, String publicUrl) {
     SessionData sessionData = reqRes.getSessionData();
     CPEParameters cpeParams = sessionData.getCpeParameters();
     String softwareVersionFromCPE = cpeParams.getValue(cpeParams.SOFTWARE_VERSION);
@@ -148,7 +149,7 @@ public class DownloadLogicTR069 {
       downloadURL =
           getDownloadUrl(
               softwareVersionFromDB,
-              reqRes.getReq().getContextPath(),
+              reqRes.getRequestData().getContextPath(),
               sessionData.getUnittype().getName(),
               sessionData.getUnitId(),
               null,

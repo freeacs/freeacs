@@ -7,7 +7,7 @@ import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.TimestampWrapper;
-import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.InformParameters;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
@@ -35,12 +35,12 @@ import java.util.List;
  * will be treated as regular AUTO provisioning.
  */
 public class EMDecision {
-  private static void writeSystemParameters(HTTPReqResData reqRes) throws SQLException {
+  private static void writeSystemParameters(HTTPRequestResponseData reqRes) throws SQLException {
     writeSystemParameters(reqRes, null, true);
   }
 
   private static void writeSystemParameters(
-      HTTPReqResData reqRes, List<ParameterValueStruct> params, boolean queue) throws SQLException {
+      HTTPRequestResponseData reqRes, List<ParameterValueStruct> params, boolean queue) throws SQLException {
     SessionData sessionData = reqRes.getSessionData();
     List<ParameterValueStruct> toDB = new ArrayList<>();
     if (params != null) {
@@ -91,55 +91,55 @@ public class EMDecision {
     sessionData.setToDB(null);
   }
 
-  public static void process(HTTPReqResData reqRes, boolean isDiscoveryMode) throws SQLException {
+  public static void process(HTTPRequestResponseData reqRes, boolean isDiscoveryMode) throws SQLException {
     SessionData sessionData = reqRes.getSessionData();
     String prevResponseMethod = sessionData.getPreviousResponseMethod();
     if (prevResponseMethod == null) {
       Log.error(
           EMDecision.class,
           "EM-Decision is EM since the CPE did not send an INFORM (or sessionId was not sent by client)");
-      reqRes.getResponse().setMethod(TR069Method.EMPTY);
+      reqRes.getResponseData().setMethod(TR069Method.EMPTY);
     } else if (TR069Method.EMPTY.equals(prevResponseMethod)) {
       Log.info(EMDecision.class, "EM-Decision is EM since two last responses from CPE was EM");
-      reqRes.getResponse().setMethod(TR069Method.EMPTY);
+      reqRes.getResponseData().setMethod(TR069Method.EMPTY);
     } else if (TR069Method.INFORM.equals(prevResponseMethod)
         || TR069Method.TRANSFER_COMPLETE.equals(prevResponseMethod)
         || TR069Method.GET_RPC_METHODS_RES.equals(prevResponseMethod)) {
       if (sessionData.getUnittype() == null) {
         Log.info(EMDecision.class, "EM-Decision is EM since unittype is not found");
-        reqRes.getResponse().setMethod(TR069Method.EMPTY);
+        reqRes.getResponseData().setMethod(TR069Method.EMPTY);
       } else if (sessionData.discoverUnittype()) {
         writeSystemParameters(
             reqRes,
             Collections.singletonList(new ParameterValueStruct(SystemParameters.DISCOVER, "0")),
             false);
         Log.info(EMDecision.class, "EM-Decision is GPN since unit has DISCOVER parameter set to 1");
-        reqRes.getResponse().setMethod(TR069Method.GET_PARAMETER_NAMES);
+        reqRes.getResponseData().setMethod(TR069Method.GET_PARAMETER_NAMES);
       } else if (isDiscoveryMode
           && !sessionData.isUnittypeCreated()
           && sessionData.isFirstConnect()) {
         writeSystemParameters(reqRes, null, false);
         Log.info(EMDecision.class, "EM-Decision is GPN since ACS is in discovery-mode");
-        reqRes.getResponse().setMethod(TR069Method.GET_PARAMETER_NAMES);
+        reqRes.getResponseData().setMethod(TR069Method.GET_PARAMETER_NAMES);
       } else if (isDiscoveryMode
           && !sessionData.getUnittype().getUnittypeParameters().hasDeviceParameters()) {
         writeSystemParameters(reqRes);
         Log.info(
             EMDecision.class,
             "EM-Decision is GPN since ACS is in discovery-mode and no device parameters found");
-        reqRes.getResponse().setMethod(TR069Method.GET_PARAMETER_NAMES);
+        reqRes.getResponseData().setMethod(TR069Method.GET_PARAMETER_NAMES);
       } else {
         writeSystemParameters(reqRes);
         Log.info(
             EMDecision.class,
             "EM-Decision is GPV since everything is normal and previous method was either IN or TC (updating LCT and possibly FCT)");
-        reqRes.getResponse().setMethod(TR069Method.GET_PARAMETER_VALUES);
+        reqRes.getResponseData().setMethod(TR069Method.GET_PARAMETER_VALUES);
       }
     } else {
       Log.info(
           EMDecision.class,
           "EM-Decision is EM since it is the default method choice (nothing else fits)");
-      reqRes.getResponse().setMethod(TR069Method.EMPTY);
+      reqRes.getResponseData().setMethod(TR069Method.EMPTY);
     }
   }
 }

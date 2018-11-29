@@ -6,7 +6,7 @@ import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.UnittypeParameters;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ProvOutput;
 import com.github.freeacs.dbi.util.ProvisioningMode;
-import com.github.freeacs.tr069.HTTPReqResData;
+import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
@@ -23,7 +23,7 @@ public class GPVDecisionExtraction {
    * @throws TR069DatabaseException
    * @throws SQLException
    */
-  protected static void processExtraction(HTTPReqResData reqRes) throws TR069DatabaseException {
+  protected static void processExtraction(HTTPRequestResponseData reqRes) throws TR069DatabaseException {
     SessionData sessionData = reqRes.getSessionData();
     UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
     List<ParameterValueStruct> toDB = new ArrayList<>();
@@ -66,7 +66,7 @@ public class GPVDecisionExtraction {
           GPVDecisionExtraction.class, toDB.size() + " params written to ACS session storage");
       //			Log.debug(GPVDecisionExtraction.class, toDB.size() + " params written to ACS session
       // storage  - provisioning mode will be reset to " + ProvisioningMode.PERIODIC.toString());
-      reqRes.getResponse().setMethod(TR069Method.EMPTY);
+      reqRes.getResponseData().setMethod(TR069Method.EMPTY);
       sessionData.getProvisioningMessage().setProvOutput(ProvOutput.EMPTY);
     } catch (SQLException sqle) {
       throw new TR069DatabaseException(sqle);
