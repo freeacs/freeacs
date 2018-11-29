@@ -174,6 +174,7 @@ public class Provisioning {
       // Create the main object which contains all objects concerning the entire
       // session. This object also contains the SessionData object
       reqRes = new HTTPReqResData(req, res, dbAccess);
+      reqRes.getRequest().setContextPath(properties.getContextPath());
       // 2. Authenticate the client (first issue challenge, then authenticate)
       if (!Authenticator.authenticate(reqRes, properties)
           || (reqRes.getSessionData() != null

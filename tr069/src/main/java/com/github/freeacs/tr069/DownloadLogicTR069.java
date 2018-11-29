@@ -78,7 +78,7 @@ public class DownloadLogicTR069 {
         downloadURL =
             getDownloadUrl(
                 scriptVersionFromDB,
-                reqRes.getReq().getContextPath(),
+                reqRes.getRequest().getContextPath(),
                 sessionData.getUnittype().getName(),
                 sessionData.getUnitId(),
                 file.getName(),
@@ -148,7 +148,7 @@ public class DownloadLogicTR069 {
       downloadURL =
           getDownloadUrl(
               softwareVersionFromDB,
-              reqRes.getReq().getContextPath(),
+              reqRes.getRequest().getContextPath(),
               sessionData.getUnittype().getName(),
               sessionData.getUnitId(),
               null,

@@ -7,6 +7,7 @@ public class HTTPReqData {
   private String method;
   private String xml;
   private Fault fault;
+  private String contextPath;
 
   public enum NodeType {
     CONTENT,
@@ -112,6 +113,8 @@ public class HTTPReqData {
         return new Node(NodeType.STARTTAG, ltPos, gtPos + 1, unformattedXml);
       }
     }
+
+
   }
 
   public String getXml() {
@@ -136,5 +139,13 @@ public class HTTPReqData {
 
   public void setFault(Fault fault) {
     this.fault = fault;
+  }
+
+  public void setContextPath(String contextPath) {
+    this.contextPath = contextPath;
+  }
+
+  public String getContextPath() {
+    return contextPath;
   }
 }

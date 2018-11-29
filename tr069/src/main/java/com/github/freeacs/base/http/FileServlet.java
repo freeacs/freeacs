@@ -40,6 +40,7 @@ public class FileServlet extends HttpServlet {
       // session. This object also contains the SessionData object
       if (properties.isFileAuthUsed()) {
         HTTPReqResData reqRes = new HTTPReqResData(req, res, dbAccess);
+        reqRes.getRequest().setContextPath(properties.getContextPath());
         // 2. Authenticate the client (first issue challenge, then authenticate)
         if (!Authenticator.authenticate(reqRes, properties)) {
           return;
