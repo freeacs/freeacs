@@ -24,11 +24,22 @@
 			     session: {
 			     	timeout: ${SESSION_TIMEOUT}
 			     },
-			     // selectedPage: '${SELECTED_MENU_PAGE!}',
 			     requestedPage: '${REQUESTED_PAGE}',
-			     // page: '${SELECTED_MENU_PAGE!}', // The same as selectedPage but backwards compability
 			     confirmchanges: ${CONFIRMCHANGES?string}
 			});
+            // code to perform automatic logout after session_timeout is reached
+            var idleMax = ${SESSION_TIMEOUT} - 1;
+            var idleTime = 0;
+            $(document).ready(function () {
+                setInterval(timerIncrement, 60000);
+                $(this).keypress(function (e) {idleTime = 0;});
+            });
+            function timerIncrement() {
+                idleTime = idleTime + 1;
+                if (idleTime > idleMax) {
+                    window.location="${LOGOUT_URI}";
+                }
+            }
 		</script>
 		<#assign defaultMenuEnabled=true />
 	</head>
