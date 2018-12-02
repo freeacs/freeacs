@@ -601,23 +601,31 @@ public class UnitPage extends AbstractWebPage {
   private void displayGUIURL(Map<String, Object> root) {
     String guiurlOrg = unit.getParameterValue(SystemParameters.GUI_URL);
     if (guiurlOrg != null) {
-      String crequrl =
-          unit.getParameterValue(
-              "InternetGatewayDevice.ManagementServer.ConnectionRequestURL", false);
+      String deviceParam = "ManagementServer.ConnectionRequestURL";
+      String crequrl = unit.getParameterValue("InternetGatewayDevice." + deviceParam, false);
+      if (crequrl == null) {
+        crequrl = unit.getParameterValue("Device." + deviceParam, false);
+      }
       String publicip = unit.getParameterValue(SystemParameters.IP_ADDRESS, false);
-      if (crequrl != null && publicip != null && !crequrl.contains(publicip))
+      if (crequrl != null && publicip != null && !crequrl.contains(publicip)) {
         root.put("natdetected", "true");
+      }
       Matcher m = paramPattern.matcher(guiurlOrg);
       String guiurlMod = "";
       int previousEnd = 0;
       while (m.find()) {
         String varName = m.group(2);
         guiurlMod += guiurlOrg.substring(previousEnd, m.start());
-        if (unit.getParameterValue(varName) != null) guiurlMod += unit.getParameterValue(varName);
-        else guiurlMod += "${PARAM-VALUE-NOT-FOUND}";
+        if (unit.getParameterValue(varName) != null) {
+          guiurlMod += unit.getParameterValue(varName);
+        } else {
+          guiurlMod += "${PARAM-VALUE-NOT-FOUND}";
+        }
         previousEnd = m.end();
       }
-      if (previousEnd < guiurlOrg.length()) guiurlMod += guiurlOrg.substring(previousEnd);
+      if (previousEnd < guiurlOrg.length()) {
+        guiurlMod += guiurlOrg.substring(previousEnd);
+      }
       root.put("guiurl", guiurlMod);
     }
   }
