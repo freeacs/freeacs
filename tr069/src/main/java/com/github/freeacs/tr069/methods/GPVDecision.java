@@ -11,6 +11,7 @@ import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.JobFlag.JobType;
 import com.github.freeacs.dbi.JobParameter;
 import com.github.freeacs.dbi.Parameter;
+import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.UnittypeParameterFlag;
 import com.github.freeacs.dbi.UnittypeParameters;
@@ -32,6 +33,8 @@ import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +55,7 @@ import java.util.Map;
 public class GPVDecision {
   public static void process(
       HTTPRequestResponseData reqRes, boolean isDiscoveryMode, String publicUrl, int concurrentDownloadLimit)
-      throws TR069Exception {
+      throws TR069Exception, SQLException {
     SessionData sessionData = reqRes.getSessionData();
     ProvisioningMode mode = sessionData.getUnit().getProvisioningMode();
     Log.debug(GPVDecision.class, "Mode was detected to be: " + mode);
@@ -211,23 +214,22 @@ public class GPVDecision {
     }
   }
 
-  private static boolean supportPII(SessionData sessionData) {
+  private static boolean supportPII(SessionData sessionData) throws SQLException {
     CPEParameters cpeParams = sessionData.getCpeParameters();
     String PII = cpeParams.PERIODIC_INFORM_INTERVAL;
-    UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
-    if (utps.getByName(PII) != null && cpeParams.getValue(PII) != null) {
+    Unittype unittype = sessionData.getUnittype();
+    UnittypeParameter piiParam = unittype.getUnittypeParameters().getByName(PII);
+    if (piiParam == null) {
+      piiParam = new UnittypeParameter(unittype, PII, new UnittypeParameterFlag("RW"));
+      unittype.getUnittypeParameters().addOrChangeUnittypeParameter(piiParam, unittype.getAcs());
+    }
+    if (cpeParams.getValue(PII) != null) {
       Log.debug(GPVDecision.class, "CPE supports PeriodicInformInterval");
       return true;
     } else {
-      if (utps.getByName(PII) != null) {
-        Log.error(
-            GPVDecision.class,
-            "The CPE did not return PeriodicInformInterval, terminating the conversation.");
-      } else { // (cpeParams.getValue(PII) == null)
-        Log.error(
-            GPVDecision.class,
-            "The unittype does not contain PeriodicInformInterval, terminating the conversation.");
-      }
+      Log.error(
+          GPVDecision.class,
+          "The CPE did not return PeriodicInformInterval, terminating the conversation.");
       return false;
     }
   }
