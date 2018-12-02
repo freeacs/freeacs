@@ -221,7 +221,6 @@ public class Provisioning extends AbstractHttpDataWrapper {
       }
       if (reqRes != null) {
         reqRes.setThrowable(t);
-        Log.error(Provisioning.class, "Something went wrong", t);
       }
       res.setStatus(HttpServletResponse.SC_NO_CONTENT);
       res.getWriter().print("");
@@ -268,12 +267,12 @@ public class Provisioning extends AbstractHttpDataWrapper {
 
   private boolean endOfSession(HTTPRequestResponseData reqRes) {
     try {
-      SessionData sessionData = reqRes.getSessionData();
-      HTTPRequestData reqData = reqRes.getRequestData();
-      HTTPResponseData resData = reqRes.getResponseData();
       if (reqRes.getThrowable() != null) {
         return true;
       }
+      SessionData sessionData = reqRes.getSessionData();
+      HTTPRequestData reqData = reqRes.getRequestData();
+      HTTPResponseData resData = reqRes.getResponseData();
       if (reqData.getMethod() != null
           && resData != null
           && TR069Method.EMPTY.equals(resData.getMethod())) {
