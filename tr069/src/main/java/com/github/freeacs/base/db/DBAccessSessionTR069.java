@@ -36,7 +36,7 @@ public class DBAccessSessionTR069 {
       throws TR069Exception {
     // If no product class is specified in the inform:
     if (unittypeName == null || "".equals(unittypeName.trim())) {
-      unittypeName = "OUI-" + unitId.substring(0, 6);
+      unittypeName = "OUI-" + unitId.substring(0, Math.min(unitId.length(), 6));
     }
     try {
       Unittype ut = acs.getUnittype(unittypeName);
