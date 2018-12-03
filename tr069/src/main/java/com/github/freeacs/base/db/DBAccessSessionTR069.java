@@ -36,7 +36,7 @@ public class DBAccessSessionTR069 {
       throws TR069Exception {
     // If no product class is specified in the inform:
     if (unittypeName == null || "".equals(unittypeName.trim())) {
-      unittypeName = "OUI-" + unitId.substring(0, Math.min(unitId.length(), 6));
+      unittypeName = getUnittypeName(unitId);
     }
     try {
       Unittype ut = acs.getUnittype(unittypeName);
@@ -81,6 +81,10 @@ public class DBAccessSessionTR069 {
         throw new TR069Exception(errorMsg, TR069ExceptionShortMessage.MISC, t);
       }
     }
+  }
+
+  protected static String getUnittypeName(String unitId) {
+    return "OUI-" + unitId.substring(0, Math.min(unitId.length(), 6));
   }
 
   public void writeUnitSessionParams(SessionData sessionData) throws TR069DatabaseException {
