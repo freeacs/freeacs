@@ -601,15 +601,7 @@ public class UnitPage extends AbstractWebPage {
   private void displayGUIURL(Map<String, Object> root) {
     String guiurlOrg = unit.getParameterValue(SystemParameters.GUI_URL);
     if (guiurlOrg != null) {
-      String deviceParam = "ManagementServer.ConnectionRequestURL";
-      String crequrl = unit.getParameterValue("InternetGatewayDevice." + deviceParam, false);
-      if (crequrl == null) {
-        crequrl = unit.getParameterValue("Device." + deviceParam, false);
-      }
-      String publicip = unit.getParameterValue(SystemParameters.IP_ADDRESS, false);
-      if (crequrl != null && publicip != null && !crequrl.contains(publicip)) {
-        root.put("natdetected", "true");
-      }
+      root.put("natdetected", isNatDetected(unit));
       Matcher m = paramPattern.matcher(guiurlOrg);
       String guiurlMod = "";
       int previousEnd = 0;
@@ -628,6 +620,20 @@ public class UnitPage extends AbstractWebPage {
       }
       root.put("guiurl", guiurlMod);
     }
+  }
+
+  protected static boolean isNatDetected(final Unit unit) {
+    boolean natdetected = false;
+    String deviceParam = "ManagementServer.ConnectionRequestURL";
+    String crequrl = unit.getParameterValue("InternetGatewayDevice." + deviceParam, false);
+    if (crequrl == null) {
+      crequrl = unit.getParameterValue("Device." + deviceParam, false);
+    }
+    String publicip = unit.getParameterValue(SystemParameters.IP_ADDRESS, false);
+    if (crequrl != null && publicip != null && !crequrl.contains(publicip)) {
+      natdetected = true;
+    }
+    return natdetected;
   }
 
   private void displayFrequencySpread(Map<String, Object> root) {
