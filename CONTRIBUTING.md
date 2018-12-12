@@ -6,6 +6,8 @@ System Requirements:
 
 * JDK 8
 * SBT 1.X
+* libncurses5
+* geckodriver (https://github.com/mozilla/geckodriver/releases)
 
 The first step to contributing to FreeACS is to clone the FreeACS
 repo from Github and build the project using SBT.
