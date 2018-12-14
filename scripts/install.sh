@@ -4,6 +4,19 @@
 # FUNCTION DEFINTIONS BEGIN
 ###########################
 
+
+check_ubuntu_version() {
+    currentver=`lsb_release -r | awk '{ print $2 }'`
+    requiredver='16.04'
+    if [ "$(printf '%s\n' "$requiredver" "$currentver" | sort -V | head -n1)" = "$requiredver" ];
+    then
+        echo "Ubuntu version >= 16.04 OK "
+    else
+        echo "Your Ubuntu version is not supported, minimum is ${requiredver}"
+        exit
+    fi
+}
+
 # Install the applications/programs need to run FreeACS
 install_basic() {
   apt-get -y update && apt-get -y upgrade
@@ -206,6 +219,8 @@ case $yn in
   *     ) echo "Installation must be run with root permission."
           exit;;
 esac
+
+check_ubuntu_version
 
 read -p "Upgrade Ubuntu, install mysql-5.7 and default-jre (y/n) " answer
 echo ""
