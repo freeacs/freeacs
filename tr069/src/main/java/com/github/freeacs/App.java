@@ -87,6 +87,7 @@ public class App {
     OKServlet okServlet = new OKServlet(dbAccess);
     post(ctxPath, processRequest(provisioning));
     post(ctxPath + "/", processRequest(provisioning));
+    get(ctxPath + "/", processHealth(okServlet));
     post(ctxPath + "/prov", processRequest(provisioning));
     get(ctxPath + "/file/*", processFile(fileServlet));
     get(ctxPath + "/ok", processHealth(okServlet));
