@@ -16,9 +16,9 @@
         </encoder>
     </appender>
     <logger name="com.zaxxer.hikari" level="WARN" />
-    <logger name="com.github.freeacs" level="DEBUG" />
+    <logger name="com.github.freeacs" level="WARN" />
     <root level="WARN">
-        <appender-ref ref="ASYNC_FILE"/>
-        <appender-ref ref="ASYNC_STDOUT" />
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="STDOUT" />
     </root>
 </configuration>

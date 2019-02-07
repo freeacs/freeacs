@@ -34,19 +34,6 @@
     <appender name="ASYNC_CONVERSATION_FILE" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="CONVERSATION-FILE" />
     </appender>
-    <appender name="STABILITY-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_PATH:-logs}/tr069-stability.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>tr069-stability_%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>30</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
-    <appender name="ASYNC_STABILITY_FILE" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref ref="STABILITY-FILE" />
-    </appender>
     <appender name="EVENT-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH:-logs}/tr069-event.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -64,16 +51,12 @@
         <appender-ref ref="ASYNC_CONVERSATION_FILE"/>
         <appender-ref ref="ASYNC_STDOUT"/>
     </logger>
-    <logger name="Stability" level="INFO" additivity="false">
-        <appender-ref ref="ASYNC_STABILITY_FILE"/>
-        <appender-ref ref="ASYNC_STDOUT"/>
-    </logger>
     <logger name="Event" level="INFO" additivity="false">
         <appender-ref ref="ASYNC_EVENT_FILE"/>
         <appender-ref ref="ASYNC_STDOUT"/>
     </logger>
     <logger name="org.eclipse.jetty" level="WARN" />
-    <logger name="com.github.freeacs" level="DEBUG" />
+    <logger name="com.github.freeacs" level="WARN" />
     <root level="WARN">
         <appender-ref ref="ASYNC_FILE"/>
         <appender-ref ref="ASYNC_STDOUT" />

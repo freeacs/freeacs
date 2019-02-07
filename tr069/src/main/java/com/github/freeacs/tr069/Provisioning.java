@@ -14,7 +14,6 @@ import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.tr069.background.ActiveDeviceDetectionTask;
 import com.github.freeacs.tr069.background.MessageListenerTask;
 import com.github.freeacs.tr069.background.ScheduledKickTask;
-import com.github.freeacs.tr069.background.StabilityTask;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.github.freeacs.http.AbstractHttpDataWrapper;
@@ -58,7 +57,6 @@ public class Provisioning extends AbstractHttpDataWrapper {
     Log.notice(Provisioning.class, "Server starts...");
     try {
       DBI dbi = dbAccess.getDBI();
-      scheduleStabilityTask();
       scheduleMessageListenerTask(dbi);
       scheduleKickTask(dbi);
       scheduleActiveDeviceDetectionTask(dbi);
@@ -109,18 +107,6 @@ public class Provisioning extends AbstractHttpDataWrapper {
             () -> {
               messageListenerTask.setThisLaunchTms(tms);
               messageListenerTask.run();
-            });
-  }
-
-  private void scheduleStabilityTask() {
-    // every 10 sec
-    final StabilityTask stabilityTask = new StabilityTask("StabilityLogger");
-    executorWrapper.scheduleCron(
-        "0/10 * * ? * * *",
-        (tms) ->
-            () -> {
-              stabilityTask.setThisLaunchTms(tms);
-              stabilityTask.run();
             });
   }
 
