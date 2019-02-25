@@ -4,13 +4,7 @@ import ch.vorburger.exec.ManagedProcessException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-public abstract class AbstractEmbeddedDataSourceClassTest extends AbstractEmbeddedDataSourceHelper {
+public abstract class AbstractEmbeddedDataSourceClassTest extends AbstractEmbeddedDataSourceHelper implements FileSlurper {
 
     @BeforeClass
     public static void setUpBeforeClass() throws ManagedProcessException {
@@ -20,12 +14,5 @@ public abstract class AbstractEmbeddedDataSourceClassTest extends AbstractEmbedd
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
         AbstractEmbeddedDataSourceHelper.tearDownAfterClass();
-    }
-
-    public String getFileAsString(final String name) throws IOException {
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource(name).getFile());
-        byte[] encoded = Files.readAllBytes(Paths.get(file.toURI()));
-        return new String(encoded, StandardCharsets.UTF_8);
     }
 }
