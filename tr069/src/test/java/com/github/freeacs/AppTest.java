@@ -25,10 +25,10 @@ import static org.junit.Assert.*;
 public class AppTest extends AbstractEmbeddedDataSourceClassTest {
   private static final Logger log = LoggerFactory.getLogger(AppTest.class);
 
-  private final String inform = getFileAsString("/provision/cpe/Inform.xml");
-  private final String getParameterNamesResponse = getFileAsString("/provision/cpe/GetParameterNamesResponse.xml");
-  private final String getParameterValuesResponse = getFileAsString("/provision/cpe/GetParameterValuesResponse.xml");
-  private final String setParameterValuesResponse =  getFileAsString("/provision/cpe/SetParameterValuesResponse.xml");
+  private final String cpe_inform = getFileAsString("/provision/cpe/Inform.xml");
+  private final String cpe_getParameterValuesResponse = getFileAsString("/provision/cpe/GetParameterValuesResponse.xml");
+  private final String cpe_setParameterValuesResponse =  getFileAsString("/provision/cpe/SetParameterValuesResponse.xml");
+  private final String acs_informResponse = getFileAsString("/provision/acs/InformResponse.xml");
 
   public AppTest() throws IOException {
   }
@@ -86,76 +86,41 @@ public class AppTest extends AbstractEmbeddedDataSourceClassTest {
   public void provision() throws UnirestException {
     assertInform("/prov");
     HttpResponse<String> response;
+    String body;
     response =
         Unirest.post("http://localhost:4567/tr069/prov")
             .basicAuth("test123", "password")
             .header("Content-type", "text/xml")
             .asString();
-    assertTrue(
-        response
-            .getBody()
-            .endsWith(
-                "<soapenv:Body>\n"
-                    + "\t\t<cwmp:GetParameterValues>\n"
-                    + "\t\t\t<ParameterNames soapenc:arrayType=\"xsd:string[2]\">\n"
-                    + "\t\t\t\t<string>InternetGatewayDevice.DeviceInfo.VendorConfigFile.</string>\n"
-                    + "\t\t\t\t<string>InternetGatewayDevice.ManagementServer.PeriodicInformInterval</string>\n"
-                    + "\t\t\t</ParameterNames>\n"
-                    + "\t\t</cwmp:GetParameterValues>\n"
-                    + "</soapenv:Body>\n"
-                    + "</soapenv:Envelope>\n"));
+    body = response.getBody();
+    assertTrue(body.contains("cwmp:GetParameterValues"));
+    assertTrue(body.contains("<string>InternetGatewayDevice.DeviceInfo.VendorConfigFile.</string>"));
+    assertTrue(body.contains("<string>InternetGatewayDevice.ManagementServer.PeriodicInformInterval</string>"));
     assertEquals(200, response.getStatus());
     response =
         Unirest.post("http://localhost:4567/tr069/prov")
             .basicAuth("test123", "password")
             .header("Content-type", "text/xml")
-            .body(getParameterNamesResponse)
+            .body(cpe_getParameterValuesResponse)
             .asString();
-    assertTrue(
-        response
-            .getBody()
-            .endsWith(
-                "<soapenv:Body>\n"
-                    + "\t\t<cwmp:GetParameterValues>\n"
-                    + "\t\t\t<ParameterNames soapenc:arrayType=\"xsd:string[1]\">\n"
-                    + "\t\t\t\t<string>InternetGatewayDevice.</string>\n"
-                    + "\t\t\t</ParameterNames>\n"
-                    + "\t\t</cwmp:GetParameterValues>\n"
-                    + "</soapenv:Body>\n"
-                    + "</soapenv:Envelope>\n"));
+    body = response.getBody();
+    assertTrue(body.contains("cwmp:SetParameterValues"));
+    assertTrue(body.contains("<Name>InternetGatewayDevice.ManagementServer.PeriodicInformInterval</Name>"));
+    assertTrue(body.contains("<ParameterKey>No data in DB</ParameterKey>"));
     assertEquals(200, response.getStatus());
     response =
         Unirest.post("http://localhost:4567/tr069/prov")
             .basicAuth("test123", "password")
             .header("Content-type", "text/xml")
-            .body(getParameterValuesResponse)
+            .body(cpe_setParameterValuesResponse)
             .asString();
-    assertTrue(
-        response
-            .getBody()
-            .contains(
-                "<soapenv:Body>\n"
-                    + "\t\t<cwmp:SetParameterValues>\n"
-                    + "\t\t\t<ParameterList soapenc:arrayType=\"cwmp:ParameterValueStruct[1]\">\n"
-                    + "\t\t\t\t<ParameterValueStruct>\n"
-                    + "\t\t\t\t\t<Name>InternetGatewayDevice.ManagementServer.PeriodicInformInterval</Name>"));
-    assertTrue(
-        response
-            .getBody()
-            .endsWith(
-                "\t\t\t\t</ParameterValueStruct>\n"
-                    + "\t\t\t</ParameterList>\n"
-                    + "\t\t\t<ParameterKey>No data in DB</ParameterKey>\n"
-                    + "\t\t</cwmp:SetParameterValues>\n"
-                    + "</soapenv:Body>\n"
-                    + "</soapenv:Envelope>\n"));
-    assertEquals(200, response.getStatus());
+    assertNull(response.getBody());
+    assertEquals(204, response.getStatus());
     response =
-        Unirest.post("http://localhost:4567/tr069/prov")
-            .basicAuth("test123", "password")
-            .header("Content-type", "text/xml")
-            .body(setParameterValuesResponse)
-            .asString();
+            Unirest.post("http://localhost:4567/tr069/prov")
+                    .basicAuth("test123", "password")
+                    .header("Content-type", "text/xml")
+                    .asString();
     assertNull(response.getBody());
     assertEquals(204, response.getStatus());
   }
@@ -167,20 +132,9 @@ public class AppTest extends AbstractEmbeddedDataSourceClassTest {
         Unirest.post(url)
             .basicAuth("test123", "password")
             .header("Content-type", "text/xml")
-            .body(inform)
+            .body(cpe_inform)
             .asString();
-    assertEquals(
-        "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:soapenc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:cwmp=\"urn:dslforum-org:cwmp-1-2\">\n"
-            + "<soapenv:Header>\n"
-            + "\t<cwmp:ID soapenv:mustUnderstand=\"1\">1</cwmp:ID>\n"
-            + "</soapenv:Header>\n"
-            + "<soapenv:Body>\n"
-            + "\t\t<cwmp:InformResponse>\n"
-            + "\t\t\t<MaxEnvelopes>1</MaxEnvelopes>\n"
-            + "\t\t</cwmp:InformResponse>\n"
-            + "</soapenv:Body>\n"
-            + "</soapenv:Envelope>\n",
-        response.getBody());
+    assertEquals(acs_informResponse, response.getBody());
     assertEquals(200, response.getStatus());
   }
 }
