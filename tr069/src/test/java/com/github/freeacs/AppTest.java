@@ -136,7 +136,7 @@ public class AppTest extends AbstractEmbeddedDataSourceClassTest {
             .asString();
     String fromAcs = response.getBody().replaceAll("\\s","");
     String expectedFromAcs = acs_informResponse.replaceAll("\\s","");
-    assertTrue(expectedFromAcs.equalsIgnoreCase(fromAcs));
+    assertEquals(expectedFromAcs, fromAcs);
     assertEquals(200, response.getStatus());
   }
 }
