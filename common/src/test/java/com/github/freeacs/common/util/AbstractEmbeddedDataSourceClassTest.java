@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public abstract class AbstractEmbeddedDataSourceClassTest extends AbstractEmbeddedDataSourceHelper {
 
@@ -25,7 +25,7 @@ public abstract class AbstractEmbeddedDataSourceClassTest extends AbstractEmbedd
     public String getFileAsString(final String name) throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource(name).getFile());
-        byte[] encoded = Files.readAllBytes(Path.of(file.toURI()));
+        byte[] encoded = Files.readAllBytes(Paths.get(file.toURI()));
         return new String(encoded, StandardCharsets.UTF_8);
     }
 }
