@@ -134,7 +134,9 @@ public class AppTest extends AbstractEmbeddedDataSourceClassTest {
             .header("Content-type", "text/xml")
             .body(cpe_inform)
             .asString();
-    assertEquals(acs_informResponse, response.getBody());
+    String fromAcs = response.getBody().replaceAll("\\s","");
+    String expectedFromAcs = acs_informResponse.replaceAll("\\s","");
+    assertTrue(expectedFromAcs.equalsIgnoreCase(fromAcs));
     assertEquals(200, response.getStatus());
   }
 }
