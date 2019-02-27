@@ -30,17 +30,17 @@ public class GetScriptVersion {
     }
 
     GetScriptVersion build() {
-        Map<String, ParameterValueStruct> opMap = oweraParams.getAcsParams();
-        for (Map.Entry<String, ParameterValueStruct> entry : opMap.entrySet()) {
+        for (Map.Entry<String, ParameterValueStruct> entry : oweraParams.getAcsParams().entrySet()) {
             if (SystemParameters.isTR069ScriptVersionParameter(entry.getKey())) {
-                String svDB = entry.getValue().getValue();
-                // The config-file-name is the same as the script-name retrieved from
-                // the system-parameter
+                // The config-file-name is the same as the script-name retrieved from the system-parameter
                 String name = SystemParameters.getTR069ScriptName(entry.getKey());
                 String scriptVersionFromCPE = cpeParams.getConfigFileMap().get(name);
                 if (scriptVersionFromCPE == null) {
                     logger.error("No script version found for " + name);
-                } else if (svDB != null && !svDB.equals(scriptVersionFromCPE)) {
+                    continue;
+                }
+                String svDB = entry.getValue().getValue();
+                if (svDB != null && !svDB.equals(scriptVersionFromCPE)) {
                     // upgrade
                     scriptVersion = svDB;
                     scriptName = name;
