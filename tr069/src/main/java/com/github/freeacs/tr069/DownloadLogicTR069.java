@@ -10,7 +10,7 @@ import com.github.freeacs.dbi.JobParameter;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.SystemParameters.TR069ScriptType;
 import com.github.freeacs.http.HTTPRequestResponseData;
-import com.github.freeacs.tr069.xml.ParameterValueStruct;
+
 import java.util.Map;
 import java.util.Map.Entry;
 import org.slf4j.Logger;
@@ -35,22 +35,9 @@ public class DownloadLogicTR069 {
         }
       }
     } else {
-      Map<String, ParameterValueStruct> opMap = oweraParams.getAcsParams();
-      for (Entry<String, ParameterValueStruct> entry : opMap.entrySet()) {
-        if (SystemParameters.isTR069ScriptVersionParameter(entry.getKey())) {
-          String svDB = entry.getValue().getValue();
-          // The config-file-name is the same as the script-name retrieved from
-          // the system-parameter
-          String name = SystemParameters.getTR069ScriptName(entry.getKey());
-          String scriptVersionFromCPE = cpeParams.getConfigFileMap().get(name);
-          if (svDB != null && !svDB.equals(scriptVersionFromCPE)) {
-            // upgrade
-            scriptVersionFromDB = svDB;
-            scriptName = name;
-            break;
-          }
-        }
-      }
+      GetScriptVersion scriptVersion = new GetScriptVersion(oweraParams, cpeParams).build();
+      scriptVersionFromDB = scriptVersion.getScriptVersion();
+      scriptName = scriptVersion.getScriptName();
     }
     if (scriptVersionFromDB != null) {
       // scriptVersionFromDB has been found and we must find/build the

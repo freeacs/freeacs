@@ -84,8 +84,10 @@ public class CPEParameters {
         String namePV = entry.getValue().getValue();
         String versionPN = namePN.substring(0, namePN.length() - "Name".length()) + "Version";
         ParameterValueStruct valueStruct = cpeParams.get(versionPN);
-        String versionPV = valueStruct.getValue();
-        cMap.put(namePV, versionPV);
+        if (valueStruct != null) {
+          String versionPV = valueStruct.getValue();
+          cMap.put(namePV, versionPV);
+        }
       }
     }
     return cMap;

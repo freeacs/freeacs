@@ -19,8 +19,8 @@ public class CPEParametersTest {
         assertNotNull(result);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void shouldFailOnMissingVersion() {
+    @Test
+    public void shouldNotFailOnMissingVersion() {
         // Given:
         CPEParameters cpeParameters = new CPEParameters("Device.");
         cpeParameters.putPvs("Device.DeviceInfo.VendorConfigFile.1.Name", new ParameterValueStruct(
@@ -39,6 +39,6 @@ public class CPEParametersTest {
                 "xsd:boolean"
         ));
         // When:
-        cpeParameters.getConfigFileMap();
+        assertNotNull(cpeParameters.getConfigFileMap());
     }
 }
