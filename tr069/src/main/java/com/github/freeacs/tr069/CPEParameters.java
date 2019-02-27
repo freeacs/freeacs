@@ -78,10 +78,9 @@ public class CPEParameters {
    */
   public Map<String, String> getConfigFileMap() {
     Map<String, String> cMap = new HashMap<>();
-    for (Map.Entry<String, ParameterValueStruct> entry : cpeParams.entrySet()) {
-      if (entry.getKey().contains(CONFIG_FILES) && entry.getKey().endsWith("Name")) {
-        String namePN = entry.getKey();
-        String namePV = entry.getValue().getValue();
+    cpeParams.forEach((namePN, value) -> {
+      if (namePN.contains(CONFIG_FILES) && namePN.endsWith("Name")) {
+        String namePV = value.getValue();
         String versionPN = namePN.substring(0, namePN.length() - "Name".length()) + "Version";
         ParameterValueStruct valueStruct = cpeParams.get(versionPN);
         if (valueStruct != null) {
@@ -89,7 +88,7 @@ public class CPEParameters {
           cMap.put(namePV, versionPV);
         }
       }
-    }
+    });
     return cMap;
   }
 }
