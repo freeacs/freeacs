@@ -2,6 +2,7 @@ package com.github.freeacs;
 
 import com.github.freeacs.common.scheduler.ExecutorWrapperFactory;
 import com.github.freeacs.common.util.AbstractEmbeddedDataSourceClassTest;
+import com.github.freeacs.common.util.FileSlurper;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.tr069.Properties;
 import com.mashape.unirest.http.HttpResponse;
@@ -25,10 +26,10 @@ import static org.junit.Assert.*;
 public class AppTest extends AbstractEmbeddedDataSourceClassTest {
   private static final Logger log = LoggerFactory.getLogger(AppTest.class);
 
-  private final String cpe_inform = getFileAsString("/provision/cpe/Inform.xml");
-  private final String cpe_getParameterValuesResponse = getFileAsString("/provision/cpe/GetParameterValuesResponse.xml");
-  private final String cpe_setParameterValuesResponse =  getFileAsString("/provision/cpe/SetParameterValuesResponse.xml");
-  private final String acs_informResponse = getFileAsString("/provision/acs/InformResponse.xml");
+  private final String cpe_inform = FileSlurper.getFileAsString("/provision/cpe/Inform.xml");
+  private final String cpe_getParameterValuesResponse = FileSlurper.getFileAsString("/provision/cpe/GetParameterValuesResponse.xml");
+  private final String cpe_setParameterValuesResponse =  FileSlurper.getFileAsString("/provision/cpe/SetParameterValuesResponse.xml");
+  private final String acs_informResponse = FileSlurper.getFileAsString("/provision/acs/InformResponse.xml");
 
   public AppTest() throws IOException {
   }

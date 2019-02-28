@@ -8,8 +8,8 @@ import java.nio.charset.StandardCharsets;
 
 public interface FileSlurper {
 
-    default String getFileAsString(final String name) throws IOException {
-        InputStream inputStream = getClass().getResourceAsStream(name);
+    static String getFileAsString(final String name) throws IOException {
+        InputStream inputStream = FileSlurper.class.getResourceAsStream(name);
         return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
     }
 }

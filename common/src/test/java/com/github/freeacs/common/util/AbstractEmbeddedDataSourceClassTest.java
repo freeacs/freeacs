@@ -4,7 +4,7 @@ import ch.vorburger.exec.ManagedProcessException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-public abstract class AbstractEmbeddedDataSourceClassTest extends AbstractEmbeddedDataSourceHelper implements FileSlurper {
+public abstract class AbstractEmbeddedDataSourceClassTest extends AbstractEmbeddedDataSourceHelper {
 
     @BeforeClass
     public static void setUpBeforeClass() throws ManagedProcessException {
