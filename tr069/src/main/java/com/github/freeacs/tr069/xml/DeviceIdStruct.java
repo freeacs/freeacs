@@ -1,6 +1,9 @@
 package com.github.freeacs.tr069.xml;
 
+import java.util.ArrayList;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class DeviceIdStruct {
   private static final char[] ALLOWED_CHARS_IN_PRODUCT_CLASS =
@@ -62,19 +65,20 @@ public class DeviceIdStruct {
 
   // to hell with regex, this method is EASY to read.
   private static String safeChar(String input) {
-    final char[] charArray = input.toCharArray();
-    final StringBuffer result = new StringBuffer();
-    for (char c : charArray) {
-      if (c == '/') {
-        result.append('-');
-      } else if (c == '\\') {
-        result.append('-');
-      } else {
-        for (char a : ALLOWED_CHARS_IN_PRODUCT_CLASS) {
-          if (c == a) result.append(a);
-        }
-      }
-    }
-    return result.toString();
+    return Stream.of(input.toCharArray())
+        .reduce(new StringBuffer(), (stringBuffer, charArray) -> {
+            for (char c : charArray) {
+                if (c == '/') {
+                    stringBuffer.append('-');
+                } else if (c == '\\') {
+                    stringBuffer.append('-');
+                } else {
+                    for (char a : ALLOWED_CHARS_IN_PRODUCT_CLASS) {
+                        if (c == a) stringBuffer.append(a);
+                    }
+                }
+            }
+            return stringBuffer;
+        }, StringBuffer::append).toString();
   }
 }
