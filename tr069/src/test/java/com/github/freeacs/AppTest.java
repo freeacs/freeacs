@@ -116,13 +116,6 @@ public class AppTest extends AbstractEmbeddedDataSourceClassTest {
             .asString();
     assertNull(response.getBody());
     assertEquals(204, response.getStatus());
-    response =
-            Unirest.post("http://localhost:4567/tr069/prov")
-                    .basicAuth("test123", "password")
-                    .header("Content-type", "text/xml")
-                    .asString();
-    assertNull(response.getBody());
-    assertEquals(204, response.getStatus());
   }
 
   private void assertInform(final String provUrl) throws UnirestException {
