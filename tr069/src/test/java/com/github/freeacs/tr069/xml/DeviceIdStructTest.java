@@ -15,7 +15,7 @@ public class DeviceIdStructTest {
     struct.setProductClass(unittypeNameStr);
 
     // Then:
-    Assert.assertEquals("ODU-xxx-yyya", struct.getProductClass());
+    Assert.assertEquals("ODU-xxx-yyya2", struct.getProductClass());
   }
 
   @Test
@@ -28,7 +28,7 @@ public class DeviceIdStructTest {
     struct.setProductClass(unittypeNameStr);
 
     // Then:
-    Assert.assertEquals("ODU-xxx-yyya", struct.getProductClass());
+    Assert.assertEquals("ODU-xxx-yyya2", struct.getProductClass());
   }
 
 

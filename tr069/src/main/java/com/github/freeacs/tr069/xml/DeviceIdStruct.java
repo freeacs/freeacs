@@ -1,8 +1,6 @@
 package com.github.freeacs.tr069.xml;
 
-import java.util.ArrayList;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class DeviceIdStruct {
@@ -68,10 +66,10 @@ public class DeviceIdStruct {
     return Stream.of(input.toCharArray())
         .reduce(new StringBuffer(), (stringBuffer, charArray) -> {
             for (char c : charArray) {
-                if (c == '/') {
+                if (c == '/' || c == '\\') {
                     stringBuffer.append('-');
-                } else if (c == '\\') {
-                    stringBuffer.append('-');
+                } else if (c == '²') {
+                    stringBuffer.append('2');
                 } else {
                     for (char a : ALLOWED_CHARS_IN_PRODUCT_CLASS) {
                         if (c == a) stringBuffer.append(a);
