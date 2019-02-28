@@ -3,6 +3,9 @@ package com.github.freeacs.tr069.xml;
 import java.util.Optional;
 
 public class DeviceIdStruct {
+  private static final char[] ALLOWED_CHARS_IN_PRODUCT_CLASS =
+          "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_".toCharArray();
+
   public static final String ID = "DeviceIdStruct";
 
   private String manufacturer;
@@ -52,8 +55,26 @@ public class DeviceIdStruct {
   private interface DeviceIdStructHelper {
     static String parseProductClass(String productClass) {
       return Optional.ofNullable(productClass)
-          .map(s -> s.replaceAll("\\\\", "-").replaceAll("/", "-"))
+          .map(DeviceIdStruct::safeChar)
           .orElse(productClass);
     }
+  }
+
+  // to hell with regex, this method is EASY to read.
+  private static String safeChar(String input) {
+    final char[] charArray = input.toCharArray();
+    final StringBuffer result = new StringBuffer();
+    for (char c : charArray) {
+      if (c == '/') {
+        result.append('-');
+      } else if (c == '\\') {
+        result.append('-');
+      } else {
+        for (char a : ALLOWED_CHARS_IN_PRODUCT_CLASS) {
+          if (c == a) result.append(a);
+        }
+      }
+    }
+    return result.toString();
   }
 }

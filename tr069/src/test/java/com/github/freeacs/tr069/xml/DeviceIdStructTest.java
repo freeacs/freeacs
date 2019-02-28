@@ -6,17 +6,31 @@ import org.junit.Test;
 public class DeviceIdStructTest {
 
   @Test
-  public void parseUnittypeName() {
+  public void parseUnittypeNameWithForwardSlash() {
     // Given:
-    String unittypeNameStr = "ODU/xxx/yyy";
+    String unittypeNameStr = "ODU/xxx/yyya²";
 
     // When:
     DeviceIdStruct struct = new DeviceIdStruct();
     struct.setProductClass(unittypeNameStr);
 
     // Then:
-    Assert.assertEquals("ODU-xxx-yyy", struct.getProductClass());
+    Assert.assertEquals("ODU-xxx-yyya", struct.getProductClass());
   }
+
+  @Test
+  public void parseUnittypeNameWithBackwardSlash() {
+    // Given:
+    String unittypeNameStr = "ODU\\xxx\\yyya²";
+
+    // When:
+    DeviceIdStruct struct = new DeviceIdStruct();
+    struct.setProductClass(unittypeNameStr);
+
+    // Then:
+    Assert.assertEquals("ODU-xxx-yyya", struct.getProductClass());
+  }
+
 
   @Test
   public void mustSupportNull() {
