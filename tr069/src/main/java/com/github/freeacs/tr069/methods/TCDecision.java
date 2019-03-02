@@ -14,7 +14,11 @@ public class TCDecision {
         Log.error(TCDecision.class, errormsg);
       }
     } finally {
-      reqRes.getResponseData().setMethod(TR069Method.AUTONOMOUS_TRANSFER_COMPLETE);
+      if (reqRes.getSessionData().isAutonomousTransferComplete()) {
+        reqRes.getResponseData().setMethod(TR069Method.AUTONOMOUS_TRANSFER_COMPLETE);
+      } else {
+        reqRes.getResponseData().setMethod(TR069Method.TRANSFER_COMPLETE);
+      }
     }
   }
 }

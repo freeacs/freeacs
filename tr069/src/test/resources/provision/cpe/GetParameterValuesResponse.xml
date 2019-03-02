@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+                   xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                   xmlns:cwmp="urn:dslforum-org:cwmp-1-2">
+    <SOAP-ENV:Header>
+        <cwmp:ID SOAP-ENV:mustUnderstand="1">FREEACS-0</cwmp:ID>
+    </SOAP-ENV:Header>
+    <SOAP-ENV:Body SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+        <cwmp:GetParameterValuesResponse>
+            <ParameterList xsi:type="SOAP-ENC:Array" SOAP-ENC:arrayType="cwmp:ParameterValueStruct[9]">
+                <ParameterValueStruct>
+                    <Name>InternetGatewayDevice.DeviceInfo.SoftwareVersion</Name>
+                    <Value xsi:type="xsd:string">v1.1.91</Value>
+                </ParameterValueStruct>
+                <ParameterValueStruct>
+                    <Name>InternetGatewayDevice.ManagementServer.PeriodicInformInterval</Name>
+                    <Value xsi:type="xsd:unsignedInt">360</Value>
+                </ParameterValueStruct>
+            </ParameterList>
+        </cwmp:GetParameterValuesResponse>
+    </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

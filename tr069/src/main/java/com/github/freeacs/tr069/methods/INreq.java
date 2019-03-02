@@ -49,14 +49,14 @@ public class INreq {
       } catch (NumberFormatException nfe) {
         eventCodeStrSet.add(tmpArr[0]);
       }
-      // if (es.getEventCode().startsWith("0")) sessionData.setFactoryReset(true);
-      // if (es.getEventCode().startsWith("1")) sessionData.setBooted(true);
-      if (es.getEventCode().startsWith("2")) {
-        sessionData.setPeriodic(true);
-      }
-      // if (es.getEventCode().startsWith("4")) sessionData.setValueChange(true);
-      // if (es.getEventCode().startsWith("6")) sessionData.setKicked(true);
-      // if (es.getEventCode().startsWith("8")) sessionData.setDiagnosticsComplete(true);
+      sessionData.setFactoryReset(es.getEventCode().startsWith("0"));
+      sessionData.setBooted(es.getEventCode().startsWith("1"));
+      sessionData.setPeriodic(es.getEventCode().startsWith("2"));
+      sessionData.setValueChange(es.getEventCode().startsWith("4"));
+      sessionData.setKicked(es.getEventCode().startsWith("6"));
+      sessionData.setTransferComplete(es.getEventCode().startsWith("7"));
+      sessionData.setAutonomousTransferComplete(es.getEventCode().startsWith("10"));
+      sessionData.setDiagnosticsComplete(es.getEventCode().startsWith("8"));
       // This is a quick-and-easy impl. since, there can potentially be more than
       // one CommandKey. However, I don't think this will be the case in practice. (Morten May 2012)
       // TODO: This is surely not correct - Morten Jul 2012
