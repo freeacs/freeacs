@@ -243,7 +243,7 @@ systemctl restart nginx
 fi
 setsebool -P httpd_can_network_connect 1
 echo "Generated mysql root pw: $mysqlRootPass"
-echo "Generated acs password is $acsPass."
+echo "Generated acs password is $acsPass"
 echo "Updating property files in module... "
 sed -i -e '/main.datasource.password=/ s/=acs/='"$acsPass"'/' /opt/freeacs-web/config/application.conf
 sed -i -e '/main.datasource.password=/ s/=acs/='"$acsPass"'/' /opt/freeacs-webservice/config/application.conf
