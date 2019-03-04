@@ -45,14 +45,6 @@ public class SyslogServlet {
               summaryLoggerTask.setThisLaunchTms(tms);
               summaryLoggerTask.run();
             });
-    StateLogger stateLogger = new StateLogger("StateLogger");
-    executorWrapper.scheduleCron(
-        "15 * * ? * * *",
-        (tms) ->
-            () -> {
-              stateLogger.setThisLaunchTms(tms);
-              stateLogger.run();
-            });
     DiskSpaceCheck diskSpaceCheck = new DiskSpaceCheck("DiskSpaceCheck", properties);
     executorWrapper.scheduleCron(
         "30 * * ? * * *",

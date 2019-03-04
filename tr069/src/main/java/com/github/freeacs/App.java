@@ -86,6 +86,7 @@ public class App {
     FileServlet fileServlet = new FileServlet(dbAccess, ctxPath + "/file/", properties);
     OKServlet okServlet = new OKServlet(dbAccess);
     post(ctxPath, processRequest(provisioning));
+    get(ctxPath, processHealth(okServlet));
     post(ctxPath + "/", processRequest(provisioning));
     post(ctxPath + "/prov", processRequest(provisioning));
     get(ctxPath + "/file/*", processFile(fileServlet));

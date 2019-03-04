@@ -61,6 +61,15 @@ public class SessionData implements SessionDataI {
   private boolean authenticated;
   /** Tells whether the CPE is doing a periodic inform or not. */
   private boolean periodic;
+  /* other event codes */
+  private boolean factoryReset;
+  private boolean valueChange;
+  private boolean kicked;
+  private boolean transferComplete;
+  private boolean autonomousTransferComplete;
+  private boolean diagnosticsComplete;
+  private boolean booted;
+
   /** Tells whether a job is under execution - important not to start on another job. */
   private boolean jobUnderExecution;
   /** The event code of the inform. */
@@ -558,6 +567,62 @@ public class SessionData implements SessionDataI {
 
   public void setCwmpVersionNumber(String cwmpVersionNumber) {
     this.cwmpVersionNumber = cwmpVersionNumber;
+  }
+
+  public boolean isFactoryReset() {
+    return factoryReset;
+  }
+
+  public void setFactoryReset(boolean factoryReset) {
+    this.factoryReset = factoryReset;
+  }
+
+  public boolean isValueChange() {
+    return valueChange;
+  }
+
+  public void setValueChange(boolean valueChange) {
+    this.valueChange = valueChange;
+  }
+
+  public boolean isKicked() {
+    return kicked;
+  }
+
+  public void setKicked(boolean kicked) {
+    this.kicked = kicked;
+  }
+
+  public boolean isTransferComplete() {
+    return transferComplete;
+  }
+
+  public void setTransferComplete(boolean transferComplete) {
+    this.transferComplete = transferComplete;
+  }
+
+  public boolean isAutonomousTransferComplete() {
+    return autonomousTransferComplete;
+  }
+
+  public void setAutonomousTransferComplete(boolean autonomousTransferComplete) {
+    this.autonomousTransferComplete = autonomousTransferComplete;
+  }
+
+  public boolean isDiagnosticsComplete() {
+    return diagnosticsComplete;
+  }
+
+  public void setDiagnosticsComplete(boolean diagnosticsComplete) {
+    this.diagnosticsComplete = diagnosticsComplete;
+  }
+
+  public boolean isBooted() {
+    return booted;
+  }
+
+  public void setBooted(boolean booted) {
+    this.booted = booted;
   }
 
   public static class Download {
