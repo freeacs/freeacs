@@ -7,7 +7,7 @@ download_freeacs() {
   echo "Downloads all necessary resources from freeacs.com:"
 
   yum install epel-release -y
-  yum install jq -y
+  yum install jq unzip -y
   jq --version
 
   cleanup
@@ -245,4 +245,13 @@ systemctl restart nginx
 fi
 setsebool -P httpd_can_network_connect 1
 echo "Generated mysql root pw: $mysqlRootPass"
-echo "Generated acs password is $acsPass"
+echo "Generated acs password is $acsPass."
+echo "Updating property files in module... "
+sed -i -e '/main.datasource.password=/ s/=acs/='"$acsPass"'/' /opt/freeacs-web/config/application.conf
+sed -i -e '/main.datasource.password=/ s/=acs/='"$acsPass"'/' /opt/freeacs-webservice/config/application.conf
+sed -i -e '/main.datasource.password=/ s/=acs/='"$acsPass"'/' /opt/freeacs-shell/config/application.properties
+sed -i -e '/main.datasource.password=/ s/=acs/='"$acsPass"'/' /opt/freeacs-tr069/config/application.conf
+sed -i -e '/main.datasource.password=/ s/=acs/='"$acsPass"'/' /opt/freeacs-core/config/application.conf
+sed -i -e '/main.datasource.password=/ s/=acs/='"$acsPass"'/' /opt/freeacs-stun/config/application.conf
+sed -i -e '/main.datasource.password=/ s/=acs/='"$acsPass"'/' /opt/freeacs-syslog/config/application.conf
+echo "Done"
