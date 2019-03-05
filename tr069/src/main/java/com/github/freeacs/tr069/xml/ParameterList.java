@@ -36,7 +36,8 @@ public class ParameterList {
             .stream()
             .filter(parameter -> keyName.equals(parameter.getName()))
             .findFirst()
-            .orElse(new ParameterValueStruct(keyName,"")).getValue();
+            .orElse(new ParameterValueStruct(keyName,""))
+            .getValue();
   }
 
   public List<ParameterInfoStruct> getParameterInfoList() {
