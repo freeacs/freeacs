@@ -30,6 +30,16 @@ public class ParameterList {
     return this.params;
   }
 
+  public String getParameterValueByKey(String keyName)
+  {
+    return this.params
+            .stream()
+            .filter(parameter -> keyName.equals(parameter.getName()))
+            .findFirst()
+            .orElse(new ParameterValueStruct(keyName,""))
+            .getValue();
+  }
+
   public List<ParameterInfoStruct> getParameterInfoList() {
     return this.info;
   }
