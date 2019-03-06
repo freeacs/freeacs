@@ -163,5 +163,5 @@ public class Properties {
     return publicUrl;
   }
 
-  public boolean wantsAppendHwVersion() { return appendHwVersion; }
+  public boolean shouldAppendHwVersion() { return appendHwVersion; }
 }

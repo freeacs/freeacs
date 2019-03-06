@@ -212,7 +212,7 @@ public class INreq {
 
         String unitTypeName = deviceIdStruct.getProductClass();
 
-        if(properties.wantsAppendHwVersion())
+        if(properties.shouldAppendHwVersion())
         {
           String hardwareVersion = parser.getParameterList()
                   .getParameterValueByKey(sessionData.getKeyRoot()+"DeviceInfo.HardwareVersion");
