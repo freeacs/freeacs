@@ -10,18 +10,17 @@ import com.github.freeacs.base.Log;
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.http.FileServlet;
 import com.github.freeacs.base.http.OKServlet;
-import com.github.freeacs.common.hikari.HikariDataSourceHelper;
 import com.github.freeacs.common.http.SimpleResponseWrapper;
 import com.github.freeacs.common.jetty.JettyFactory;
 import com.github.freeacs.common.scheduler.ExecutorWrapper;
 import com.github.freeacs.common.scheduler.ExecutorWrapperFactory;
+import com.github.freeacs.common.spark.SparkApp;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.Provisioning;
 import com.github.freeacs.tr069.methods.TR069Method;
 import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -31,24 +30,22 @@ import spark.Route;
 import spark.Spark;
 import spark.embeddedserver.EmbeddedServers;
 
-public class App {
+public class App extends SparkApp {
   private static final List<String> ALLOWED_CONTENT_TYPES =
       Arrays.asList("application/soap+xml", "application/xml", "text/xml", "text/html", "");
 
   public static void main(String[] args) {
-    Config config = ConfigFactory.load();
-    SyslogClient.SYSLOG_SERVER_HOST = config.getString("syslog.server.host");
-    Spark.port(config.getInt("server.port"));
-    setupThreadPool(config);
-    boolean httpOnly = config.getBoolean("server.servlet.session.cookie.http-only");
-    int maxHttpPostSize = getInt(config, "server.jetty.max-http-post-size");
-    int maxFormKeys = getInt(config, "server.jetty.max-form-keys");
+    final App app = new App();
+    SyslogClient.SYSLOG_SERVER_HOST = app.config.getString("syslog.server.host");
+    setupThreadPool(app.config);
+    boolean httpOnly = app.config.getBoolean("server.servlet.session.cookie.http-only");
+    int maxHttpPostSize = getInt(app.config, "server.jetty.max-http-post-size");
+    int maxFormKeys = getInt(app.config, "server.jetty.max-form-keys");
     EmbeddedServers.add(
         EmbeddedServers.Identifiers.JETTY,
         new JettyFactory(httpOnly, maxHttpPostSize, maxFormKeys, null));
-    DataSource mainDs = HikariDataSourceHelper.dataSource(config.getConfig("main"));
     ExecutorWrapper executorWrapper = ExecutorWrapperFactory.create(4);
-    routes(mainDs, new Properties(config), executorWrapper);
+    routes(app.datasource, new Properties(app.config), executorWrapper);
     Runtime.getRuntime()
         .addShutdownHook(
             new Thread(
