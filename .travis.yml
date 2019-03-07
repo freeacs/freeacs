@@ -6,8 +6,7 @@ addons:
 stages:
   - compile
   - package
-  - name: deploy
-    if: branch = master
+  - deploy
 
 env:
   global:
@@ -29,7 +28,8 @@ jobs:
         - mvn package
     - stage: deploy
       script:
-        - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-        - ./scripts/docker-build.sh
-        - ./scripts/docker-publish.sh
+        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS else echo "Not on master" fi;'
+        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then ./scripts/docker-build.sh else echo "Not on master" fi;'
+        - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then ./scripts/docker-publish.sh else echo "Not on master" fi;'
+        -
 
