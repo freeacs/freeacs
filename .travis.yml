@@ -1,4 +1,4 @@
-language: scala
+language: java
 sudo: false
 scala:
    - 2.12.2
@@ -15,4 +15,4 @@ script:
    - mkdir geckodriver
    - tar -xzf geckodriver-v0.23.0-linux64.tar.gz -C geckodriver
    - export PATH=$PATH:$PWD/geckodriver
-   - sbt clean test
+   - mvn clean test
