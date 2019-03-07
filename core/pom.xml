@@ -50,7 +50,7 @@
             <manifest>
               <addClasspath>true</addClasspath>
               <classpathPrefix>lib</classpathPrefix>
-              <mainClass>com.github.freeacs.stun.App</mainClass>
+              <mainClass>com.github.freeacs.core.App</mainClass>
             </manifest>
           </archive>
         </configuration>

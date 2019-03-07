@@ -48,7 +48,7 @@
             <manifest>
               <addClasspath>true</addClasspath>
               <classpathPrefix>lib</classpathPrefix>
-              <mainClass>com.github.freeacs.stun.App</mainClass>
+              <mainClass>com.owera.xaps.monitor.App</mainClass>
             </manifest>
           </archive>
         </configuration>

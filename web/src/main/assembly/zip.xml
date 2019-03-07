@@ -11,6 +11,7 @@
         <fileSet>
             <directory>${project.basedir}/src/main/scripts</directory>
             <outputDirectory>/</outputDirectory>
+            <fileMode>0755</fileMode>
         </fileSet>
         <fileSet>
             <directory>${project.basedir}/src/main/resources</directory>
