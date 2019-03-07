@@ -28,7 +28,7 @@ jobs:
         - mvn package
     - stage: deploy
       script:
-        - if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS; else echo "Not on master"; exit -1; fi
-        - if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then ./scripts/docker-build.sh; else echo "Not on master"; exit -1; fi
-        - if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then ./scripts/docker-publish.sh; else echo "Not on master"; exit -1; fi
+        - if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS; else echo "Not on master"; fi
+        - if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then ./scripts/docker-build.sh; else echo "Not on master"; fi
+        - if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then ./scripts/docker-publish.sh; else echo "Not on master"; fi
 
