@@ -28,5 +28,7 @@ jobs:
         - export PATH=$PATH:$PWD/geckodriver
         - mvn package
     - stage: deploy
-      script: bash /scripts/publish.sh
+      script:
+        - ./scripts/deployLocal.sh
+        - ./scripts/publish.sh
 
