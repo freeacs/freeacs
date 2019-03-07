@@ -30,6 +30,6 @@ jobs:
     - stage: deploy
       script:
         - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-        - ./scripts/deployLocal.sh
-        - ./scripts/publish.sh
+        - ./scripts/docker-build.sh
+        - ./scripts/docker-publish.sh
 
