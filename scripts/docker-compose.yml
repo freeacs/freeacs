@@ -16,7 +16,7 @@ services:
       - syslog
       - core
   web:
-    build: ../web
+    image: freeacs/web
     restart: always
     mem_limit: 2048000000
     depends_on:
@@ -39,7 +39,7 @@ services:
 #     - ./conf/web/application-config.properties:/opt/docker/config/application-config.properties
 #     - ./conf/web/logback.xml:/opt/docker/config/logback.xml
   monitor:
-    build: ../monitor
+    image: freeacs/monitor
     restart: always
     mem_limit: 2048000000
     depends_on:
@@ -61,7 +61,7 @@ services:
 #     - ./conf/monitor/application-config.properties:/opt/docker/config/application-config.properties
 #     - ./conf/monitor/logback.xml:/opt/docker/config/logback.xml
   tr069:
-    build: ../tr069
+    image: freeacs/tr069
     restart: always
     mem_limit: 2048000000
     depends_on:
@@ -86,7 +86,7 @@ services:
 #     - ./conf/tr069/application-config.properties:/opt/docker/config/application-config.properties
 #     - ./conf/tr069/logback.xml:/opt/docker/config/logback.xml
   syslog:
-    build: ../syslog
+    image: freeacs/syslog
     restart: always
     mem_limit: 2048000000
     depends_on:
@@ -105,7 +105,7 @@ services:
 #     - ./conf/syslog/application-config.properties:/opt/docker/config/application-config.properties
 #     - ./conf/syslog/logback.xml:/opt/docker/config/logback.xml
   core:
-    build: ../core
+    image: freeacs/core
     restart: always
     mem_limit: 2048000000
     depends_on:
@@ -124,7 +124,7 @@ services:
 #     - ./conf/core/application-config.properties:/opt/docker/config/application-config.properties
 #     - ./conf/core/logback.xml:/opt/docker/config/logback.xml
   stun:
-    build: ../stun
+    image: freeacs/stun
     restart: always
     mem_limit: 2048000000
     depends_on:
@@ -143,7 +143,7 @@ services:
 #     - ./conf/stun/application-config.properties:/opt/docker/config/application-config.properties
 #     - ./conf/stun/logback.xml:/opt/docker/config/logback.xml
   webservice:
-    build: ../webservice
+    image: freeacs/webservice
     restart: always
     mem_limit: 2048000000
     depends_on:
