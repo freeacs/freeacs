@@ -44,19 +44,9 @@ public class UnitJobPage extends AbstractWebPage {
    */
   private JobData inputData;
 
-  private final DataSource mainDataSource;
-
   private ACS acs;
   /** Private Unittype unittype; private Group group; private Job job;. */
   private String sessionId;
-
-  public UnitJobPage(DataSource mainDataSource) {
-    this.mainDataSource = mainDataSource;
-  }
-
-  public UnitJobPage() {
-    this.mainDataSource = null;
-  }
 
   public void process(
       ParameterParser req,
@@ -94,10 +84,10 @@ public class UnitJobPage extends AbstractWebPage {
         exportCompletedUnitJobs(outputHandler, jobName);
         return;
       } else if (inputData.getCmd().hasValue("getfailedunitjobs")) {
-        getFailedUnitJobs(job, outputHandler);
+        getFailedUnitJobs(job, outputHandler, xapsDataSource);
         return;
       } else if (inputData.getCmd().hasValue("getcompletedunitjobs")) {
-        getCompletedUnitJobs(job, outputHandler, unittype);
+        getCompletedUnitJobs(job, outputHandler, unittype, xapsDataSource);
         return;
       }
     }
@@ -180,7 +170,7 @@ public class UnitJobPage extends AbstractWebPage {
     res.setDirectResponse(string.toString());
   }
 
-  private void getFailedUnitJobs(Job job, Output res)
+  private void getFailedUnitJobs(Job job, Output res, DataSource mainDataSource)
       throws SQLException, IOException, TemplateException {
     res.setTemplatePath("unit-job/failed");
     Map<String, Object> rootMap = new HashMap<>();
@@ -204,7 +194,7 @@ public class UnitJobPage extends AbstractWebPage {
     res.getTemplateMap().putAll(rootMap);
   }
 
-  private void getCompletedUnitJobs(Job job, Output res, Unittype unittype)
+  private void getCompletedUnitJobs(Job job, Output res, Unittype unittype, DataSource mainDataSource)
       throws SQLException, IOException, TemplateException {
     res.setTemplatePath("unit-job/completed");
     ACSUnit acsUnit = ACSLoader.getACSUnit(sessionId, mainDataSource, mainDataSource);
