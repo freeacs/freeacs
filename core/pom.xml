@@ -59,9 +59,9 @@
               <goal>single</goal>
             </goals>
             <configuration>
-              <appendAssemblyId>false</appendAssemblyId>
+              <appendAssemblyId>true</appendAssemblyId>
               <descriptors>
-                <descriptor>src/main/assembly/zip.xml</descriptor>
+                <descriptor>src/main/assembly/bin.xml</descriptor>
               </descriptors>
             </configuration>
           </execution>
