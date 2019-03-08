@@ -30,6 +30,9 @@
             <outputDirectory>lib</outputDirectory>
             <excludes>
                 <exclude>${project.groupId}:${project.artifactId}:jar:*</exclude>
+                <exclude>com.sparkjava:spark-core:jar:*</exclude>
+                <exclude>org.eclipse.jetty.websocket:*:jar:*</exclude>
+                <exclude>org.eclipse.jetty:*:jar:*</exclude>
             </excludes>
         </dependencySet>
     </dependencySets>
