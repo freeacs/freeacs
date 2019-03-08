@@ -15,12 +15,70 @@
   <description>A simple common.</description>
 
   <dependencies>
-    <dependency>
-      <groupId>ch.vorburger.mariaDB4j</groupId>
-      <artifactId>mariaDB4j-core</artifactId>
-      <version>2.4.0</version>
-      <scope>test</scope>
-    </dependency>
+      <dependency>
+          <groupId>org.mockito</groupId>
+          <artifactId>mockito-all</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>logback-classic</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>com.sparkjava</groupId>
+          <artifactId>spark-core</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>com.zaxxer</groupId>
+          <artifactId>HikariCP</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>commons-httpclient</groupId>
+          <artifactId>commons-httpclient</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>commons-codec</groupId>
+          <artifactId>commons-codec</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-lang3</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>com.typesafe</groupId>
+          <artifactId>config</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>ch.vorburger.mariaDB4j</groupId>
+          <artifactId>mariaDB4j-core</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>ch.vorburger.mariaDB4j</groupId>
+          <artifactId>mariaDB4j-db-mac64</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>ch.vorburger.mariaDB4j</groupId>
+          <artifactId>mariaDB4j-db-linux64</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>ch.vorburger.mariaDB4j</groupId>
+          <artifactId>mariaDB4j-db-win32</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>org.mariadb.jdbc</groupId>
+          <artifactId>mariadb-java-client</artifactId>
+      </dependency>
   </dependencies>
 
   <build>
