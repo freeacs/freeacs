@@ -33,7 +33,7 @@ jobs:
     - stage: deploy
       install: true
       script:
-        - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+        - docker login -u $DOCKER_USER -p $DOCKER_PASS
         - if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then ./scripts/docker-build.sh; else echo "Not on master"; fi
         - if [ "$TRAVIS_PULL_REQUEST" = "false" ] && [ "$TRAVIS_BRANCH" == "master" ]; then ./scripts/docker-publish.sh; else echo "Not on master"; fi
 
