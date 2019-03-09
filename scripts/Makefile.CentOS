@@ -16,6 +16,7 @@ install-mysql:
 		rm -rf /var/lib/mysql && \
 		rm -rf /var/log/mysqld.log && \
 		rm -rf /etc/my.cnf
+	rm -rf /var/log/mysqld.log
 	@echo ' -> Installing mysql server (community edition)'
 	yum localinstall -y https://dev.mysql.com/get/mysql57-community-release-el7-7.noarch.rpm
 	yum install -y mysql-community-server
