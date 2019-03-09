@@ -38,7 +38,7 @@ else
 endif
 
 download-release: | set-artifacts
-	make -f Makefile._Common download-release DOWNLOAD_ARTIFACTS=${DOWNLOAD_ARTIFACTS}
+	make -f Makefile._Common download-release DOWNLOAD_ARTIFACTS="${DOWNLOAD_ARTIFACTS}"
 
 load-tables: | check-acs-user
 	make -f Makefile._Common load-tables MYSQL_ACS_PASSWORD="${MYSQL_ACS_PASSWORD}"

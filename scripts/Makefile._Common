@@ -50,15 +50,3 @@ ifneq (${FREEACSUSEROK},2)
 	mysql -uroot -p'${MYSQL_ROOT_PASSWORD}' acs -e "GRANT ALL ON acs.* TO 'acs' IDENTIFIED BY '${MYSQL_ACS_PASSWORD}'"  2> .tmp
 	mysql -uroot -p'${MYSQL_ROOT_PASSWORD}' acs -e "GRANT ALL ON acs.* TO 'acs'@'localhost' IDENTIFIED BY '${MYSQL_ACS_PASSWORD}'" 2>> .tmp
 endif
-	mysql -uroot -p'${MYSQL_ROOT_PASSWORD}' -e "SELECT count(user) FROM mysql.user where user = 'acs'" 2> /dev/null | tail -n1 > .tmp
-	$(eval FREEACSUSEROK = `cat .tmp`)
-ifneq (${FREEACSUSEROK},2)
-	@echo "The FreeACS MySQL database users 'acs' and 'acs'@'localhost' is not found"
-	@echo "the problem at hand:"
-	cat .tmp
-	exit
-else
-	@echo ""
-	@echo "The FreeACS MySQL database user is OK. "
-	@echo ""
-endif
