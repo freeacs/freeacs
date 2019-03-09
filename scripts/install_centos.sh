@@ -117,7 +117,7 @@ module_setup() {
   module="$1"
   echo "$module installation start"
   systemctl disable freeacs-$module
-  rpm -Uvh freeacs-$module*.rpm
+  rpm -Uvh freeacs-$module-*.rpm
   systemctl restart freeacs-$module
   echo "$module installation complete"
 }
