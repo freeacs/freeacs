@@ -7,5 +7,12 @@
 MYSQL_ROOT_PASSWORD :=
 MYSQL_ACS_PASSWORD :=
 
-install_mysql:
-	@echo ' -> Do ubuntu mysql stuff'
+install-deps:
+	apt-get install curl wget jq unzip openjdk-8-jre-headless -y;
+
+install-mysql:
+	@echo ' -> Installing mysql server'
+	apt-get -y install mysql-server-5.7
+	make -f Makefile._Common setup-user  \
+		MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} \
+		MYSQL_ACS_PASSWORD=${MYSQL_ACS_PASSWORD}

@@ -1,0 +1,61 @@
+###########################
+#                         #
+#     COMMON MAKEFILE     #
+#                         #
+###########################
+
+VERSION_NUMBER := latest
+DOWNLOAD_ARTIFACTS := zip
+MYSQL_ACS_PASSWORD :=
+MYSQL_ROOT_PASSWORD :=
+
+cleanup:
+	@echo " -> cleaning up";
+	rm -rf files.txt .tmp *.rpm *.zip *.deb *.pdf *.sql;
+	@echo " -> done cleaning";
+
+download-release: | cleanup
+	@echo " -> downloading FreeACS resources"
+	@echo "${DOWNLOAD_ARTIFACTS}"
+	curl -s https://api.github.com/repos/freeacs/freeacs/releases/${VERSION_NUMBER} | \
+		jq -r ".assets[] | select(.name | test(\"${DOWNLOAD_ARTIFACTS}\")) | .browser_download_url" \
+		> files.txt;
+	awk '{print $0;}' files.txt | xargs -L1 wget;
+	unzip "*.zip";
+	@echo " -> all necessary FreeACS resources are available.";
+
+load-tables:
+	@echo "Loads all FreeACS table defintions into MySQL"
+	mysql -uacs -p${MYSQL_ACS_PASSWORD} acs < install.sql 2> .tmp
+	$(eval INSTALLTABLESOK := $(wc -l .tmp | cut -b1-1))
+	if [ "${INSTALLTABLESOK}" != '1' ] ; then
+		@echo "The output from the installation of the tables indicate some"
+		@echo "errors occurred:"
+		@echo "------------------------------------------------"
+		cat .tmp
+		@echo "------------------------------------------------"
+		exit
+	else
+		@echo "Loading of all FreeACS tables was OK"
+	fi
+
+setup-user:
+	@echo "Using mysql root pw: ${MYSQL_ROOT_PASSWORD}"
+	$(eval FREEACSUSEROK := $(mysql -uroot -p${MYSQL_ROOT_PASSWORD} -e "SELECT count(user) FROM mysql.user where user = 'acs'" 2> /dev/null | tail -n1))
+	if [ "${FREEACSUSEROK}" != '2' ] ; then
+		mysql -uroot -p${MYSQL_ROOT_PASSWORD} -e "CREATE DATABASE acs" 2> /dev/nul
+		mysql -uroot -p${MYSQL_ROOT_PASSWORD} acs -e "CREATE USER 'acs'@'localhost' IDENTIFIED BY '${MYSQL_ACS_PASSWORD}'" 2> /dev/null
+		mysql -uroot -p${MYSQL_ROOT_PASSWORD} acs -e "GRANT ALL ON acs.* TO 'acs' IDENTIFIED BY '${MYSQL_ACS_PASSWORD}'"  2> .tmp
+		mysql -uroot -p${MYSQL_ROOT_PASSWORD} acs -e "GRANT ALL ON acs.* TO 'acs'@'localhost' IDENTIFIED BY '${MYSQL_ACS_PASSWORD}'" 2>> .tmp
+	fi
+	$(eval FREEACSUSEROK := $(mysql -uroot -p${MYSQL_ROOT_PASSWORD} -e "SELECT count(user) FROM mysql.user where user = 'acs'" 2> /dev/null | tail -n1`))
+	if [ "${FREEACSUSEROK}" != '2' ] ; then
+		@echo "The FreeACS MySQL database users 'acs' and 'acs'@'localhost' is not found"
+		@echo "the problem at hand:"
+		cat .tmp
+		exit
+	else
+		@echo ""
+		@echo "The FreeACS MySQL database user is OK. "
+		@echo ""
+	fi

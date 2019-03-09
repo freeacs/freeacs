@@ -7,7 +7,7 @@ download_freeacs() {
   echo "Downloads all necessary resources from freeacs.com:"
 
   yum install epel-release -y
-  yum install jq unzip -y
+  yum install curl wget jq unzip -y
   jq --version
 
   cleanup
