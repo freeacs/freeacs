@@ -12,8 +12,7 @@ install-deps:
 
 install-mysql:
 	@echo ' -> Removing previous mysql server installation'
-	systemctl stop mysqld.service && \
-		yum remove -y mysql-community-server && \
+	yum remove -y mysql-community-server && \
 		rm -rf /var/lib/mysql && \
 		rm -rf /var/log/mysqld.log && \
 		rm -rf /etc/my.cnf
