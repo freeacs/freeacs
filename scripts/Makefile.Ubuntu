@@ -14,5 +14,5 @@ install-mysql:
 	@echo ' -> Installing mysql server'
 	apt-get -y install mysql-server-5.7
 	make -f Makefile._Common setup-user  \
-		MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} \
-		MYSQL_ACS_PASSWORD=${MYSQL_ACS_PASSWORD}
+		MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}" \
+		MYSQL_ACS_PASSWORD="${MYSQL_ACS_PASSWORD}"

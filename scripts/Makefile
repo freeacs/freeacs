@@ -41,7 +41,7 @@ download-release: | set-artifacts
 	make -f Makefile._Common download-release DOWNLOAD_ARTIFACTS=${DOWNLOAD_ARTIFACTS}
 
 load-tables: | check-acs-user
-	make -f Makefile._Common load-tables MYSQL_ACS_PASSWORD=${MYSQL_ACS_PASSWORD}
+	make -f Makefile._Common load-tables MYSQL_ACS_PASSWORD="${MYSQL_ACS_PASSWORD}"
 
 install-deps:
 ifeq ($(DIST),CentOS)
@@ -55,12 +55,12 @@ endif
 install-mysql: | check-root-user check-acs-user
 ifeq ($(DIST),CentOS)
 	make -f Makefile.CentOS install-mysql \
-		MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} \
-		MYSQL_ACS_PASSWORD=${MYSQL_ACS_PASSWORD}
+		MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}" \
+		MYSQL_ACS_PASSWORD="${MYSQL_ACS_PASSWORD}"
 else ifeq ($(DIST),Ubuntu)
 	make -f Makefile.Ubuntu install-mysql \
-		MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} \
-		MYSQL_ACS_PASSWORD=${MYSQL_ACS_PASSWORD}
+		MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}" \
+		MYSQL_ACS_PASSWORD="${MYSQL_ACS_PASSWORD}"
 else
 	$(error $(DIST))
 endif
