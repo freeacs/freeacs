@@ -42,7 +42,7 @@ load-tables:
 
 setup-user:
 	@echo "Using mysql root pw: ${MYSQL_ROOT_PASSWORD}"
-	mysql -uroot -p${MYSQL_ROOT_PASSWORD} -e "SELECT count(user) FROM mysql.user where user = 'acs'" 2> /dev/null | tail -n1 > .ok
+	mysql -uroot -p'${MYSQL_ROOT_PASSWORD}' -e "SELECT count(user) FROM mysql.user where user = 'acs'" 2> /dev/null | tail -n1 > .ok
 	$(eval FREEACSUSEROK = `cat .ok`)
 	if [ "${FREEACSUSEROK}" != '2' ] ; then
 		mysql -uroot -p${MYSQL_ROOT_PASSWORD} -e "CREATE DATABASE acs" 2> /dev/null
@@ -50,7 +50,7 @@ setup-user:
 		mysql -uroot -p${MYSQL_ROOT_PASSWORD} acs -e "GRANT ALL ON acs.* TO 'acs' IDENTIFIED BY '${MYSQL_ACS_PASSWORD}'"  2> .tmp
 		mysql -uroot -p${MYSQL_ROOT_PASSWORD} acs -e "GRANT ALL ON acs.* TO 'acs'@'localhost' IDENTIFIED BY '${MYSQL_ACS_PASSWORD}'" 2>> .tmp
 	fi
-	mysql -uroot -p${MYSQL_ROOT_PASSWORD} -e "SELECT count(user) FROM mysql.user where user = 'acs'" 2> /dev/null | tail -n1 > .ok
+	mysql -uroot -p'${MYSQL_ROOT_PASSWORD}' -e "SELECT count(user) FROM mysql.user where user = 'acs'" 2> /dev/null | tail -n1 > .ok
 	$(eval FREEACSUSEROK = `cat .ok`)
 	if [ "${FREEACSUSEROK}" != '2' ] ; then
 		@echo "The FreeACS MySQL database users 'acs' and 'acs'@'localhost' is not found"
