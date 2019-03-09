@@ -253,3 +253,5 @@ sed -i -e '/main.datasource.password=/ s/=acs/='"$acsPass"'/' /opt/freeacs-core/
 sed -i -e '/main.datasource.password=/ s/=acs/='"$acsPass"'/' /opt/freeacs-stun/config/application-config.conf
 sed -i -e '/main.datasource.password=/ s/=acs/='"$acsPass"'/' /opt/freeacs-syslog/config/application-config.conf
 echo "Done"
+rm -rf *.rpm
+systemctl restart freeacs-*
