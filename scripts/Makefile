@@ -53,5 +53,9 @@ load_tables:
 
 install_mysql: | check_env download_release
 ifeq ($(DIST),CentOS)
-    make -f Makefile.CentOS
+	make -f Makefile.CentOS install_mysql
+else ifeq ($(DIST),CentOS)
+	make -f Makefile.Ubuntu install_mysql
+else
+	echo "$(DIST)"
 endif
