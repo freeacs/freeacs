@@ -31,7 +31,7 @@ endif
 set-artifacts:
 ifeq (${DIST},Ubuntu)
 	$(eval DOWNLOAD_ARTIFACTS := deb|zip|pdf)
-else ifeq (${DIST},Ubuntu)
+else ifeq (${DIST},CentOS)
 	$(eval DOWNLOAD_ARTIFACTS := rpm|zip|pdf)
 else
 	$(error $(DIST))
