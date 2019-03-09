@@ -10,13 +10,8 @@ if [ "${OS}" = "Linux" ] ; then
 		DIST='CentOS'
 	elif [ -f /etc/redhat-release ] ; then
 		DIST='RedHat'
-	elif [ -f /etc/SuSE-release ] ; then
-		DIST=`cat /etc/SuSE-release | tr "\n" ' '| sed s/VERSION.*//`
 	elif [ -f /etc/debian_version ] ; then
-		DIST="Debian `cat /etc/debian_version`"
-	fi
-	if [ -f /etc/UnitedLinux-release ] ; then
-		DIST="${DIST}[`cat /etc/UnitedLinux-release | tr "\n" ' ' | sed s/VERSION.*//`]"
+		DIST="Debian"
 	fi
 fi
 

@@ -4,8 +4,8 @@
 #                         #
 ###########################
 
-MYSQL_ROOT_PASSWORD := fromparameter
-MYSQL_ACS_PASSWORD := fromparameter
+MYSQL_ROOT_PASSWORD :=
+MYSQL_ACS_PASSWORD :=
 
 install_mysql:
 	@echo ' -> Removing previous mysql server installation'

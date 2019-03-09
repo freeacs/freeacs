@@ -9,8 +9,8 @@
 INSTALLATION_PATH := /opt/freeacs
 VERSION_NUMBER := latest
 DOWNLOAD_ARTIFACTS := rpm|zip
-#MYSQL_ROOT_PASSWORD := fromparameter
-#MYSQL_ACS_PASSWORD := fromparameter
+MYSQL_ROOT_PASSWORD :=
+MYSQL_ACS_PASSWORD :=
 DIST := $(shell ./detect_dist.sh)
 
 check_env:
@@ -51,7 +51,7 @@ load_tables:
 		@echo "Loading of all FreeACS tables was OK"
 	fi
 
-install_mysql:
+install_mysql: | check_env download_release
 ifeq ($(DIST),CentOS)
     make -f Makefile.CentOS
 endif
