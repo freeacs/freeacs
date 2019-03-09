@@ -45,9 +45,9 @@ load-tables: | check-acs-user
 
 install-deps:
 ifeq ($(DIST),CentOS)
-	make -f Makefile.CentOS install_deps
+	make -f Makefile.CentOS install-deps
 else ifeq ($(DIST),Ubuntu)
-	make -f Makefile.Ubuntu install_deps
+	make -f Makefile.Ubuntu install-deps
 else
 	$(error $(DIST))
 endif
