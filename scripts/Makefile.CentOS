@@ -22,7 +22,7 @@ install-mysql:
 	@echo ' -> Starting mysql server (first run)'
 	systemctl enable mysqld.service
 	systemctl start mysqld.service
-	$(eval TMP_ROOT_PASSWORD := $(grep 'temporary.*root@localhost' /var/log/mysqld.log | tail -n 1 | sed 's/.*root@localhost: //'))
+	$(eval TMP_ROOT_PASSWORD := $(shell grep 'temporary.*root@localhost' /var/log/mysqld.log | tail -n 1 | sed 's/.*root@localhost: //'))
 	@echo ' -> Setting up new mysql server root password'
 	mysqladmin -u root --password="${TMP_ROOT_PASSWORD}" password "${MYSQL_ROOT_PASSWORD}"
 	make -f Makefile._Common setup-user  \
