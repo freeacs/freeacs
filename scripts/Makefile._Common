@@ -26,10 +26,10 @@ download-release: | cleanup
 
 load-tables:
 	@echo "Loads all FreeACS table defintions into MySQL"
-	mysql -uacs -p${MYSQL_ACS_PASSWORD} acs < install.sql 2> .tmp
-	wc -l .tmp | cut -b1-1 > .ok
-	$(eval INSTALLTABLESOK := `cat .ok`)
-ifneq (${INSTALLTABLESOK}, 1)
+	mysql -uacs -p'${MYSQL_ACS_PASSWORD}' acs < install.sql 2> .tmp
+	wc -l .tmp | cut -b1-1 > .tmp
+	$(eval INSTALLTABLESOK := `cat .tmp`)
+ifneq (${INSTALLTABLESOK},1)
 	@echo "The output from the installation of the tables indicate some"
 	@echo "errors occurred:"
 	@echo "------------------------------------------------"
@@ -42,16 +42,16 @@ endif
 
 setup-user:
 	@echo "Using mysql root pw: ${MYSQL_ROOT_PASSWORD}"
-	mysql -uroot -p'${MYSQL_ROOT_PASSWORD}' -e "SELECT count(user) FROM mysql.user where user = 'acs'" 2> /dev/null | tail -n1 > .ok
-	$(eval FREEACSUSEROK = `cat .ok`)
+	mysql -uroot -p'${MYSQL_ROOT_PASSWORD}' -e "SELECT count(user) FROM mysql.user where user = 'acs'" 2> /dev/null | tail -n1 > .tmp
+	$(eval FREEACSUSEROK = `cat .tmp`)
 ifneq (${FREEACSUSEROK},2)
 	mysql -uroot -p'${MYSQL_ROOT_PASSWORD}' -e "CREATE DATABASE acs" 2> /dev/null
 	mysql -uroot -p'${MYSQL_ROOT_PASSWORD}' acs -e "CREATE USER 'acs'@'localhost' IDENTIFIED BY '${MYSQL_ACS_PASSWORD}'" 2> /dev/null
 	mysql -uroot -p'${MYSQL_ROOT_PASSWORD}' acs -e "GRANT ALL ON acs.* TO 'acs' IDENTIFIED BY '${MYSQL_ACS_PASSWORD}'"  2> .tmp
 	mysql -uroot -p'${MYSQL_ROOT_PASSWORD}' acs -e "GRANT ALL ON acs.* TO 'acs'@'localhost' IDENTIFIED BY '${MYSQL_ACS_PASSWORD}'" 2>> .tmp
 endif
-	mysql -uroot -p'${MYSQL_ROOT_PASSWORD}' -e "SELECT count(user) FROM mysql.user where user = 'acs'" 2> /dev/null | tail -n1 > .ok
-	$(eval FREEACSUSEROK = `cat .ok`)
+	mysql -uroot -p'${MYSQL_ROOT_PASSWORD}' -e "SELECT count(user) FROM mysql.user where user = 'acs'" 2> /dev/null | tail -n1 > .tmp
+	$(eval FREEACSUSEROK = `cat .tmp`)
 ifneq (${FREEACSUSEROK},2)
 	@echo "The FreeACS MySQL database users 'acs' and 'acs'@'localhost' is not found"
 	@echo "the problem at hand:"
