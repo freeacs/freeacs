@@ -1,0 +1,45 @@
+###########################
+#                         #
+#     CENTOS MAKEFEILE    #
+#                         #
+###########################
+
+MYSQL_ROOT_PASSWORD := fromparameter
+MYSQL_ACS_PASSWORD := fromparameter
+
+install_mysql:
+	@echo ' -> Removing previous mysql server installation'
+	systemctl stop mysqld.service && \
+		yum remove -y mysql-community-server && \
+		rm -rf /var/lib/mysql && \
+		rm -rf /var/log/mysqld.log && \
+		rm -rf /etc/my.cnf
+	@echo ' -> Installing mysql server (community edition)'
+	yum localinstall -y https://dev.mysql.com/get/mysql57-community-release-el7-7.noarch.rpm
+	yum install -y mysql-community-server
+	@echo ' -> Starting mysql server (first run)'
+	systemctl enable mysqld.service
+	systemctl start mysqld.service
+	$(eval TMP_ROOT_PASSWORD := $(`grep 'temporary.*root@localhost' /var/log/mysqld.log | tail -n 1 | sed 's/.*root@localhost: //'`))
+	@echo ' -> Setting up new mysql server root password'
+	mysqladmin -u root --password="${TMP_ROOT_PASSWORD}" password "${MYSQL_ROOT_PASSWORD}"
+	systemctl status mysqld.service
+	$(eval FREEACSUSEROK := $(mysql -uroot -p${MYSQL_ROOT_PASSWORD} -e "SELECT count(user) FROM mysql.user where user = 'acs'" 2> /dev/null | tail -n1`))
+	if [ "${FREEACSUSEROK}" != '2' ] ; then
+		mysql -uroot -p${MYSQL_ROOT_PASSWORD} -e "CREATE DATABASE acs" 2> /dev/nul
+		mysql -uroot -p${MYSQL_ROOT_PASSWORD} -e "uninstall plugin validate_password" 2> /dev/null
+		mysql -uroot -p${MYSQL_ROOT_PASSWORD} acs -e "CREATE USER 'acs'@'localhost' IDENTIFIED BY '${MYSQL_ACS_PASSWORD}'" 2> /dev/null
+		mysql -uroot -p${MYSQL_ROOT_PASSWORD} acs -e "GRANT ALL ON acs.* TO 'acs' IDENTIFIED BY '${MYSQL_ACS_PASSWORD}'"  2> .tmp
+		mysql -uroot -p${MYSQL_ROOT_PASSWORD} acs -e "GRANT ALL ON acs.* TO 'acs'@'localhost' IDENTIFIED BY '${MYSQL_ACS_PASSWORD}'" 2>> .tmp
+	fi;
+	$(eval FREEACSUSEROK := $(mysql -uroot -p${MYSQL_ROOT_PASSWORD} -e "SELECT count(user) FROM mysql.user where user = 'acs'" 2> /dev/null | tail -n1`))
+	if [ "${FREEACSUSEROK}" != '2' ] ; then
+		@echo "The FreeACS MySQL database users 'acs' and 'acs'@'localhost' is not found"
+		@echo "the problem at hand:"
+		cat .tmp
+		exit
+	else
+		@echo ""
+		@echo "The FreeACS MySQL database user is OK. "
+		@echo ""
+	fi
