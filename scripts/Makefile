@@ -15,7 +15,7 @@ DIST := $(shell ./detect_dist.sh)
 
 .DEFAULT_GOAL := default
 
-default: | check-root-user check-acs-user install-deps install-mysql load-tables download-release
+default: | check-root-user check-acs-user install-deps install-mysql download-release load-tables
 	@echo "Done"
 
 check-acs-user:
