@@ -23,7 +23,8 @@ default: | confirm \
 		install-mysql \
 		load-tables \
 		install-binaries \
-		update-property-files
+		update-property-files \
+		install-nginx
 	@echo "Script complete"
 
 update-property-files: | check-acs-user
@@ -118,6 +119,15 @@ ifeq ($(DIST),CentOS)
 else ifeq ($(DIST),Ubuntu)
 	@$(MAKE) -f Makefile.Ubuntu install-binaries \
 		INSTALLATION_PATH="${INSTALLATION_PATH}"
+else
+	$(error $(DIST))
+endif
+
+install-nginx:
+ifeq ($(DIST),CentOS)
+	@(./common/install_nginx_centos.sh)
+else ifeq ($(DIST),Ubuntu)
+	@(./common/install_nginx_ubuntu.sh)
 else
 	$(error $(DIST))
 endif
