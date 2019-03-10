@@ -23,7 +23,7 @@ install-mysql:
 	@systemctl enable mysqld.service
 	@systemctl start mysqld.service
 	@grep 'temporary.*root@localhost' /var/log/mysqld.log | tail -n 1 | sed 's/.*root@localhost: //' > .pwd
-	$(eval TMP_ROOT_PASSWORD = `cat .pwd`)
+	$(eval TMP_ROOT_PASSWORD = $(`cat .pwd`))
 	@echo ' -> Temporary password is ${TMP_ROOT_PASSWORD}'
 	@echo ' -> Setting up new mysql server root password'
 	@mysqladmin -u root --password="${TMP_ROOT_PASSWORD}" password "${MYSQL_ROOT_PASSWORD}"
