@@ -20,6 +20,8 @@ install-mysql:
 	@debconf-set-selections <<< 'mysql-server-5.7 mysql-server/root_password password ${MYSQL_ROOT_PASSWORD}'
 	@debconf-set-selections <<< 'mysql-server-5.7 mysql-server/root_password_again password ${MYSQL_ROOT_PASSWORD}'
 	@apt-get -y install mysql-server-5.7
+	@systemctl enable mysqld.service
+	@systemctl start mysqld.service
 	@make -f Makefile._Common setup-user  \
 		MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}" \
 		MYSQL_ACS_PASSWORD="${MYSQL_ACS_PASSWORD}"
