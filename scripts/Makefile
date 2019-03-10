@@ -26,9 +26,7 @@ default: | confirm \
 		update-property-files
 	@echo "Script complete"
 
-update-property-files:
-	@echo "MySQL ROOT PW: ${MYSQL_ROOT_PASSWORD}"
-	@echo "MySQL ACS  PW: ${MYSQL_ACS_PASSWORD}"
+update-property-files: | check-acs-user
 	@echo "Updating property files in all modules... "
 	@sed -i -e '/main.datasource.password=/ s/=acs/='\""${MYSQL_ACS_PASSWORD}"\"'/' /opt/freeacs-web/config/application-config.conf
 	@sed -i -e '/main.datasource.password=/ s/=acs/='"${MYSQL_ACS_PASSWORD}"'/' /opt/freeacs-webservice/config/application-config.properties
