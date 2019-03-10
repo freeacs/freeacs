@@ -109,7 +109,15 @@ else
 endif
 
 install-binaries:
-	@echo "TODO: install binaries"
+ifeq ($(DIST),CentOS)
+	$(MAKE) -f Makefile.CentOS install-binaries \
+		INSTALLATION_PATH="${INSTALLATION_PATH}"
+else ifeq ($(DIST),Ubuntu)
+	$(MAKE) -f Makefile.Ubuntu install-binaries \
+		INSTALLATION_PATH="${INSTALLATION_PATH}"
+else
+	$(error $(DIST))
+endif
 
 update-binaries:
 	@echo "TODO: update binaries"

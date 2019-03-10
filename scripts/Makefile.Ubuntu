@@ -25,3 +25,7 @@ install-mysql:
 	@make -f Makefile._Common setup-user  \
 		MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}" \
 		MYSQL_ACS_PASSWORD="${MYSQL_ACS_PASSWORD}"
+
+install-binaries:
+	@dpkg -i freeacs-*.deb
+	@systemctl restart freeacs-*
