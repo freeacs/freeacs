@@ -24,7 +24,7 @@ default: | confirm \
 			load-tables \
 			install-binaries \
 			update-property-files
-	@echo "Script completed"
+	@echo "Script complete"
 
 update-property-files:
 	@echo "MySQL ROOT PW: $MYSQL_ROOT_PASSWORD"
@@ -47,11 +47,14 @@ update-property-files:
 	@echo "Done"
 
 confirm:
-	@echo "WARNING!!!\n" \
-		"This script will completely reinstall MySQL and FreeACS, if already installed.\n" \
-		"You also need to run this script as root, or else it will just fail.\n" \
-		"If you need to update FreeACS, then run 'make update-freeacs', and it will only update binaries\n" \
-		"Continue? [y/N] " && read ans && [ $${ans:-N} == y ]
+	@echo "WARNING!!!"
+	@echo "This script will completely reinstall MySQL and FreeACS, if already installed."
+	@echo "You also need to run this script as root, or else it will just fail."
+	@echo "If you need to update FreeACS, then run 'make update-freeacs', and it will only update binaries"
+	@echo "Continue? [y/N] "
+	@read line; if [ "$$line" != "y" ]; then echo aborting; exit 1 ; fi
+	@echo "Are you sure? [y/N] "
+	@read line; if [ "$$line" != "y" ]; then echo aborting; exit 1 ; fi
 
 check-acs-user:
 ifndef MYSQL_ACS_PASSWORD
