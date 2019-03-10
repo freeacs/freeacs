@@ -28,22 +28,22 @@ default: | confirm \
 	@echo "Script complete"
 
 update-property-files:
-	@echo "MySQL ROOT PW: $MYSQL_ROOT_PASSWORD"
-	@echo "MySQL ACS  PW: $MYSQL_ACS_PASSWORD"
+	@echo "MySQL ROOT PW: ${MYSQL_ROOT_PASSWORD}"
+	@echo "MySQL ACS  PW: ${MYSQL_ACS_PASSWORD}"
 	@echo "Updating property files in all modules... "
-	sed -i -e '/main.datasource.password=/ s/=acs/='\""$MYSQL_ACS_PASSWORD"\"'/' \
+	sed -i -e '/main.datasource.password=/ s/=acs/='\""${MYSQL_ACS_PASSWORD}"\"'/' \
 		/opt/freeacs-web/config/application-config.conf
-	sed -i -e '/main.datasource.password=/ s/=acs/='\""$MYSQL_ACS_PASSWORD"\"'/' \
+	sed -i -e '/main.datasource.password=/ s/=acs/='\""${MYSQL_ACS_PASSWORD}"\"'/' \
 		/opt/freeacs-webservice/config/application-config.properties
-	sed -i -e '/main.datasource.password=/ s/=acs/='\""$MYSQL_ACS_PASSWORD"\"'/' \
+	sed -i -e '/main.datasource.password=/ s/=acs/='\""${MYSQL_ACS_PASSWORD}"\"'/' \
 		/opt/freeacs-shell/config/application-config.properties
-	sed -i -e '/main.datasource.password=/ s/=acs/='\""$MYSQL_ACS_PASSWORD"\"'/' \
+	sed -i -e '/main.datasource.password=/ s/=acs/='\""${MYSQL_ACS_PASSWORD}"\"'/' \
 		/opt/freeacs-tr069/config/application-config.conf
-	sed -i -e '/main.datasource.password=/ s/=acs/='\""$MYSQL_ACS_PASSWORD"\"'/' \
+	sed -i -e '/main.datasource.password=/ s/=acs/='\""${MYSQL_ACS_PASSWORD}"\"'/' \
 		/opt/freeacs-core/config/application-config.conf
-	sed -i -e '/main.datasource.password=/ s/=acs/='\""$MYSQL_ACS_PASSWORD"\"'/' \
+	sed -i -e '/main.datasource.password=/ s/=acs/='\""${MYSQL_ACS_PASSWORD}"\"'/' \
 		/opt/freeacs-stun/config/application-config.conf
-	sed -i -e '/main.datasource.password=/ s/=acs/='\""$MYSQL_ACS_PASSWORD"\"'/' \
+	sed -i -e '/main.datasource.password=/ s/=acs/='\""${MYSQL_ACS_PASSWORD}"\"'/' \
 		/opt/freeacs-syslog/config/application-config.conf
 	@echo "Done"
 
