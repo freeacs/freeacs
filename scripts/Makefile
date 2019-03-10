@@ -15,11 +15,43 @@ DIST := $(shell ./common/detect_dist.sh)
 
 .DEFAULT_GOAL := default
 
-default: | confirm check-root-user check-acs-user install-deps install-mysql download-release load-tables
+default: | confirm \
+			check-root-user \
+			check-acs-user \
+			install-deps \
+			install-mysql \
+			download-release \
+			load-tables \
+			install-binaries \
+			update-property-files
+	@echo "Script completed"
+
+update-property-files:
+	@echo "MySQL ROOT PW: $MYSQL_ROOT_PASSWORD"
+	@echo "MySQL ACS  PW: $MYSQL_ACS_PASSWORD"
+	@echo "Updating property files in all modules... "
+	sed -i -e '/main.datasource.password=/ s/=acs/='\""$MYSQL_ACS_PASSWORD"\"'/' \
+		/opt/freeacs-web/config/application-config.conf
+	sed -i -e '/main.datasource.password=/ s/=acs/='\""$MYSQL_ACS_PASSWORD"\"'/' \
+		/opt/freeacs-webservice/config/application-config.properties
+	sed -i -e '/main.datasource.password=/ s/=acs/='\""$MYSQL_ACS_PASSWORD"\"'/' \
+		/opt/freeacs-shell/config/application-config.properties
+	sed -i -e '/main.datasource.password=/ s/=acs/='\""$MYSQL_ACS_PASSWORD"\"'/' \
+		/opt/freeacs-tr069/config/application-config.conf
+	sed -i -e '/main.datasource.password=/ s/=acs/='\""$MYSQL_ACS_PASSWORD"\"'/' \
+		/opt/freeacs-core/config/application-config.conf
+	sed -i -e '/main.datasource.password=/ s/=acs/='\""$MYSQL_ACS_PASSWORD"\"'/' \
+		/opt/freeacs-stun/config/application-config.conf
+	sed -i -e '/main.datasource.password=/ s/=acs/='\""$MYSQL_ACS_PASSWORD"\"'/' \
+		/opt/freeacs-syslog/config/application-config.conf
 	@echo "Done"
 
 confirm:
-	@echo "WARNING!!\nThis script will completely reinstall MySQL and FreeACS, if already installed.\nAre you sure? [y/N] " && read ans && [ $${ans:-N} == y ]
+	@echo "WARNING!!!\n" \
+		"This script will completely reinstall MySQL and FreeACS, if already installed.\n" \
+		"You also need to run this script as root, or else it will just fail.\n" \
+		"If you need to update FreeACS, then run 'make update-freeacs', and it will only update binaries\n" \
+		"Continue? [y/N] " && read ans && [ $${ans:-N} == y ]
 
 check-acs-user:
 ifndef MYSQL_ACS_PASSWORD
@@ -45,29 +77,35 @@ else
 endif
 
 download-release: | set-artifacts
-	@make -f Makefile._Common download-release DOWNLOAD_ARTIFACTS="${DOWNLOAD_ARTIFACTS}"
+	$(MAKE) -f Makefile._Common download-release DOWNLOAD_ARTIFACTS="${DOWNLOAD_ARTIFACTS}"
 
 load-tables: | check-acs-user
-	@make -f Makefile._Common load-tables MYSQL_ACS_PASSWORD="${MYSQL_ACS_PASSWORD}"
+	$(MAKE) -f Makefile._Common load-tables MYSQL_ACS_PASSWORD="${MYSQL_ACS_PASSWORD}"
 
 install-deps:
 ifeq ($(DIST),CentOS)
-	@make -f Makefile.CentOS install-deps
+	$(MAKE) -f Makefile.CentOS install-deps
 else ifeq ($(DIST),Ubuntu)
-	@make -f Makefile.Ubuntu install-deps
+	$(MAKE) -f Makefile.Ubuntu install-deps
 else
 	$(error $(DIST))
 endif
 
 install-mysql: | check-root-user check-acs-user
 ifeq ($(DIST),CentOS)
-	@make -f Makefile.CentOS install-mysql \
+	$(MAKE) -f Makefile.CentOS install-mysql \
 		MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}" \
 		MYSQL_ACS_PASSWORD="${MYSQL_ACS_PASSWORD}"
 else ifeq ($(DIST),Ubuntu)
-	@make -f Makefile.Ubuntu install-mysql \
+	$(MAKE) -f Makefile.Ubuntu install-mysql \
 		MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}" \
 		MYSQL_ACS_PASSWORD="${MYSQL_ACS_PASSWORD}"
 else
 	$(error $(DIST))
 endif
+
+install-binaries:
+	@echo "TODO: install binaries"
+
+update-binaries:
+	@echo "TODO: update binaries"
