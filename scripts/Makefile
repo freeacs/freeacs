@@ -37,7 +37,7 @@ update-property-files:
 		/opt/freeacs-webservice/config/application-config.properties
 	@sed -i -e '/main.datasource.password=/ s/=acs/='\""${MYSQL_ACS_PASSWORD}"\"'/' \
 		/opt/freeacs-shell/config/application-config.properties
-	sed -i -e '/main.datasource.password=/ s/=acs/='\""${MYSQL_ACS_PASSWORD}"\"'/' \
+	@sed -i -e '/main.datasource.password=/ s/=acs/='\""${MYSQL_ACS_PASSWORD}"\"'/' \
 		/opt/freeacs-tr069/config/application-config.conf
 	@sed -i -e '/main.datasource.password=/ s/=acs/='\""${MYSQL_ACS_PASSWORD}"\"'/' \
 		/opt/freeacs-core/config/application-config.conf
