@@ -21,11 +21,15 @@ default: | check-root-user check-acs-user install-deps install-mysql download-re
 check-acs-user:
 ifndef MYSQL_ACS_PASSWORD
 	$(error MYSQL_ACS_PASSWORD is undefined)
+else
+	@echo ' -> Using mysql acs password ${MYSQL_ACS_PASSWORD}'
 endif
 
 check-root-user:
 ifndef MYSQL_ROOT_PASSWORD
 	$(error MYSQL_ROOT_PASSWORD is undefined)
+else
+	@echo ' -> Using mysql root password ${MYSQL_ROOT_PASSWORD}'
 endif
 
 set-artifacts:
