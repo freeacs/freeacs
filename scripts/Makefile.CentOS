@@ -6,6 +6,7 @@
 
 MYSQL_ROOT_PASSWORD :=
 MYSQL_ACS_PASSWORD :=
+SHELL := /bin/bash
 
 install-deps:
 	@yum install epel-release curl wget jq unzip java-1.8.0-openjdk-headless -y;

@@ -8,6 +8,7 @@ VERSION_NUMBER := latest
 DOWNLOAD_ARTIFACTS := zip
 MYSQL_ACS_PASSWORD :=
 MYSQL_ROOT_PASSWORD :=
+SHELL := /bin/bash
 
 cleanup:
 	@echo " -> cleaning up";

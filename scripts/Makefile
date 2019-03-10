@@ -12,6 +12,7 @@ DOWNLOAD_ARTIFACTS :=
 MYSQL_ROOT_PASSWORD :=
 MYSQL_ACS_PASSWORD :=
 DIST := $(shell ./common/detect_dist.sh)
+SHELL := /bin/bash
 
 .DEFAULT_GOAL := default
 
