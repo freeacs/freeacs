@@ -1,8 +1,6 @@
 ###########################
 #                         #
-#     THIS MAKEFILE       #
-#           IS            #
-#     WORK IN PROGRESS    #
+#     FREEACS MAKEFILE    #
 #                         #
 ###########################
 
@@ -72,7 +70,9 @@ download-tables:
 	@$(MAKE) -f Makefile._Common download-release DOWNLOAD_ARTIFACTS="tables.zip"
 
 download-binaries: | set-artifacts
-	@$(MAKE) -f Makefile._Common download-release DOWNLOAD_ARTIFACTS="${DOWNLOAD_ARTIFACTS}"
+	@$(MAKE) -f Makefile._Common download-release \
+		DOWNLOAD_ARTIFACTS="${DOWNLOAD_ARTIFACTS}" \
+		VERSION_NUMBER="${VERSION_NUMBER}"
 
 load-tables: | check-acs-user download-tables
 	@unzip "*.zip";
