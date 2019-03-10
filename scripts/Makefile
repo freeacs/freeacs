@@ -11,12 +11,15 @@ VERSION_NUMBER := latest
 DOWNLOAD_ARTIFACTS :=
 MYSQL_ROOT_PASSWORD :=
 MYSQL_ACS_PASSWORD :=
-DIST := $(shell ./detect_dist.sh)
+DIST := $(shell ./common/detect_dist.sh)
 
 .DEFAULT_GOAL := default
 
-default: | check-root-user check-acs-user install-deps install-mysql download-release load-tables
+default: | confirm check-root-user check-acs-user install-deps install-mysql download-release load-tables
 	@echo "Done"
+
+confirm:
+	@echo "WARNING!!\nThis script will completely reinstall MySQL and FreeACS, if already installed.\nAre you sure? [y/N] " && read ans && [ $${ans:-N} == y ]
 
 check-acs-user:
 ifndef MYSQL_ACS_PASSWORD

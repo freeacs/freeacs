@@ -25,18 +25,8 @@ download-release: | cleanup
 	@echo " -> all necessary FreeACS resources are available.";
 
 load-tables:
-	$(eval tablepresent = `mysql -uacs -p$acsdbpw acs -e "SHOW TABLES LIKE 'unit_type'" 2> /dev/null  | wc -l`)
-ifeq ($(tablepresent),2)
-	@echo "WARNING! An important FreeACS table is found in the database,"
-	@echo "indicating that the database tables have already been loaded. "
-	@echo "If you decide to load all table definitions, you will delete "
-	@echo "ALL FreeACS data in the database, and start over."
-	@read -p "Load all table defintions (and overwriting all data)? (y/n): " yn
-ifeq ($(yn), y)
 	@echo "Loads all FreeACS table defintions into MySQL"
 	@mysql -uacs -p'${MYSQL_ACS_PASSWORD}' acs < install.sql
-endif
-endif
 
 setup-user:
 	@echo "Setu up acs user"
