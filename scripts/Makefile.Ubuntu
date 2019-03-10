@@ -29,4 +29,3 @@ install-mysql:
 install-binaries:
 	@dpkg -i freeacs-*.deb
 	@rm -rf freeacs-*.deb
-	@systemctl restart freeacs-*
