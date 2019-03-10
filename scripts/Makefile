@@ -16,14 +16,14 @@ DIST := $(shell ./common/detect_dist.sh)
 .DEFAULT_GOAL := default
 
 default: | confirm \
-			check-root-user \
-			check-acs-user \
-			install-deps \
-			install-mysql \
-			download-release \
-			load-tables \
-			install-binaries \
-			update-property-files
+		check-root-user \
+		check-acs-user \
+		install-deps \
+		install-mysql \
+		download-release \
+		load-tables \
+		install-binaries \
+		update-property-files
 	@echo "Script complete"
 
 update-property-files:
