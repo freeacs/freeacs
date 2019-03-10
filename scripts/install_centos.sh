@@ -7,7 +7,7 @@ download_freeacs() {
   echo "Downloads all necessary resources from freeacs.com:"
 
   yum install epel-release -y
-  yum install jq unzip -y
+  yum install curl wget jq unzip -y
   jq --version
 
   cleanup
@@ -27,15 +27,15 @@ create_freeacsdbuser() {
   echo "Using mysql root pw: $mysqlRootPass"
   acsPass="$(pwmake 128)"
   echo "Generated acs password is $acsPass"
-  freeacsdbuserok=`mysql -uroot -p$mysqlRootPass -e "SELECT count(user) FROM mysql.user where user = 'acs'" 2> /dev/null | tail -n1`
-  if [ "$freeacsdbuserok" != '2' ] ; then
-    mysql -uroot -p$mysqlRootPass -e "CREATE DATABASE acs" 2> /dev/null
-    mysql -uroot -p$mysqlRootPass -e "uninstall plugin validate_password" 2> /dev/null
-    mysql -uroot -p$mysqlRootPass acs -e "CREATE USER 'acs'@'localhost' IDENTIFIED BY '$acsPass'" 2> /dev/null
-    mysql -uroot -p$mysqlRootPass acs -e "GRANT ALL ON acs.* TO 'acs' IDENTIFIED BY '$acsPass'"  2> .tmp
-    mysql -uroot -p$mysqlRootPass acs -e "GRANT ALL ON acs.* TO 'acs'@'localhost' IDENTIFIED BY '$acsPass'" 2>> .tmp
-    freeacsdbuserok=`mysql -uroot -p$mysqlRootPass -e "SELECT count(user) FROM mysql.user where user = 'acs'" 2> /dev/null | tail -n1`
-    if [ "$freeacsdbuserok" != '2' ] ; then
+  freeacsdbuserok=`mysql -uroot -p"${mysqlRootPass}" -e "SELECT count(user) FROM mysql.user where user = 'acs'" 2> /dev/null | tail -n1`
+  if [[ "$freeacsdbuserok" != '2' ]] ; then
+    mysql -uroot -p"${mysqlRootPass}" -e "CREATE DATABASE acs" 2> /dev/null
+    mysql -uroot -p"${mysqlRootPass}" -e "uninstall plugin validate_password" 2> /dev/null
+    mysql -uroot -p"${mysqlRootPass}" acs -e "CREATE USER 'acs'@'localhost' IDENTIFIED BY '$acsPass'" 2> /dev/null
+    mysql -uroot -p"${mysqlRootPass}" acs -e "GRANT ALL ON acs.* TO 'acs' IDENTIFIED BY '$acsPass'"  2> .tmp
+    mysql -uroot -p"${mysqlRootPass}" acs -e "GRANT ALL ON acs.* TO 'acs'@'localhost' IDENTIFIED BY '$acsPass'" 2>> .tmp
+    freeacsdbuserok=`mysql -uroot -p"${mysqlRootPass}" -e "SELECT count(user) FROM mysql.user where user = 'acs'" 2> /dev/null | tail -n1`
+    if [[ "$freeacsdbuserok" != '2' ]] ; then
       echo "The FreeACS MySQL database users 'acs' and 'acs'@'localhost' is not found"
       echo "in the mysql.user table. Maybe you stated the wrong MySQL root password??"
       echo "Please make sure this is corrected, either by running this script again with"
@@ -69,9 +69,9 @@ create_freeacsdbuser() {
 load_database_tables() {
   echo ""
   echo "Loads all FreeACS table defintions into MySQL"
-  mysql -uacs -p$acsPass acs < install.sql 2> .tmp
+  mysql -uacs -p"${acsPass}" acs < install.sql 2> .tmp
   installtables=`wc -l .tmp | cut -b1-1`
-  if [ "$installtables" != '1' ] ; then
+  if [[ "$installtables" != '1' ]] ; then
     echo "The output from the installation of the tables indicate some"
     echo "errors occurred:"
 	echo "------------------------------------------------"

@@ -1,0 +1,34 @@
+###########################
+#                         #
+#     UBUNTU MAKEFEILE    #
+#                         #
+###########################
+
+MYSQL_ROOT_PASSWORD :=
+MYSQL_ACS_PASSWORD :=
+SHELL := /bin/bash
+
+install-deps:
+	@apt-get install curl wget jq unzip openjdk-8-jre-headless -y;
+
+install-mysql:
+	@echo ' -> Removing previous mysql server installation'
+	@apt-get -y remove --purge mysql-server* && \
+		rm -rf /var/lib/mysql && \
+		rm -rf /var/log/mysqld.log && \
+		rm -rf /etc/my.cnf
+	@echo ' -> Installing mysql server'
+	@debconf-set-selections <<< 'mysql-server-5.7 mysql-server/root_password password ${MYSQL_ROOT_PASSWORD}'
+	@debconf-set-selections <<< 'mysql-server-5.7 mysql-server/root_password_again password ${MYSQL_ROOT_PASSWORD}'
+	@apt-get -y install mysql-server-5.7
+	@service mysql start
+	@$(MAKE) -f Makefile._Common setup-user  \
+		MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}" \
+		MYSQL_ACS_PASSWORD="${MYSQL_ACS_PASSWORD}"
+
+uninstall-binaries:
+	@apt-get remove --purge -y freeacs-*
+
+install-binaries:
+	@dpkg -i freeacs-*.deb
+	@rm -rf freeacs-*.deb
