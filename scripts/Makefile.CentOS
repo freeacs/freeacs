@@ -26,7 +26,7 @@ install-mysql:
 	$(eval TMP_ROOT_PASSWORD = $(`cat .pwd`))
 	@echo ' -> Temporary password is ${TMP_ROOT_PASSWORD}'
 	@echo ' -> Uninstall validate_password plugin'
-	@mysql -uroot --p'${TMP_ROOT_PASSWORD}' -e "uninstall plugin validate_password" 2> /dev/null
+	@mysql -uroot --p'${TMP_ROOT_PASSWORD}' -e "uninstall plugin validate_password"
 	@echo ' -> Setting up new mysql server root password'
 	@mysqladmin -u root --password="${TMP_ROOT_PASSWORD}" password "${MYSQL_ROOT_PASSWORD}"
 	@make -f Makefile._Common setup-user  \
