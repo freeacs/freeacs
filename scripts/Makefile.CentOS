@@ -6,11 +6,15 @@
 
 MYSQL_ROOT_PASSWORD :=
 MYSQL_ACS_PASSWORD :=
+MYSQL_PRESENT := `type mysql >/dev/null 2>&1 && echo "MySQL present." || echo "MySQL not present."`
 
 install-deps:
 	@yum install epel-release curl wget jq unzip java-1.8.0-openjdk-headless -y;
 
 install-mysql:
+ifeq ($(MYSQL_PRESENT),MySQL present)
+	@echo ' -> MySQL is already installed'
+else
 	@echo ' -> Removing previous mysql server installation'
 	@yum remove -y mysql-community-server && \
 		rm -rf /var/lib/mysql && \
@@ -28,6 +32,7 @@ install-mysql:
 	@mysqladmin -u root --password="${TMP_ROOT_PASSWORD}" password "${MYSQL_ROOT_PASSWORD}"
 	@echo ' -> Uninstall validate_password plugin'
 	@mysql -uroot -p${MYSQL_ROOT_PASSWORD} -e "uninstall plugin validate_password"
+endif
 	@make -f Makefile._Common setup-user  \
 		MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}" \
 		MYSQL_ACS_PASSWORD="${MYSQL_ACS_PASSWORD}"
