@@ -33,3 +33,10 @@ install-mysql:
 		MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}" \
 		MYSQL_ACS_PASSWORD="${MYSQL_ACS_PASSWORD}"
 	@systemctl status mysqld.service
+
+uninstall-binaries:
+	@yum remove freeacs-*
+
+install-binaries:
+	@rpm -Uvh freeacs-*.rpm
+	@rm -rf freeacs-*.rpm

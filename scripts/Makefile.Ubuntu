@@ -26,7 +26,9 @@ install-mysql:
 		MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}" \
 		MYSQL_ACS_PASSWORD="${MYSQL_ACS_PASSWORD}"
 
+uninstall-binaries:
+	@apt-get remove --purge -y freeacs-*
+
 install-binaries:
-	@apt-get remove --purge freeacs-*
 	@dpkg -i freeacs-*.deb
 	@rm -rf freeacs-*.deb

@@ -22,7 +22,6 @@ download-release: | cleanup
 		jq -r ".assets[] | select(.name | test(\"${DOWNLOAD_ARTIFACTS}\")) | .browser_download_url" \
 		> files.txt;
 	@awk '{print $0;}' files.txt | xargs -L1 wget;
-	@unzip "*.zip";
 	@echo " -> all necessary FreeACS resources are available.";
 
 load-tables:
