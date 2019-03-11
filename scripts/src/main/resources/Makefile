@@ -38,7 +38,7 @@ update-property-files: | check-acs-user
 	@echo "Done"
 
 confirm:
-	@echo "WARNING!!!"
+	@echo "WARNING:"
 	@echo "This script will completely reinstall MySQL and FreeACS, if already installed."
 	@echo "You also need to run this script as root, or else it will just fail."
 	@echo "If you need to update FreeACS, then run 'make update-freeacs', and it will only update binaries"
@@ -132,13 +132,23 @@ else
 	$(error $(DIST))
 endif
 
-update-binaries: | download-binaries
+confirm-update:
+	@echo "WARNING:"
+	@echo "This script will update all modules."
+	@echo "You need to run this script as root, or else it will just fail."
+	@echo "This script will take backup of the property files of each module."
+	@echo "Continue? [y/N] "
+	@read line; if [ "$$line" != "y" ]; then echo aborting; exit 1 ; fi
+	@echo "Are you sure? [y/N] "
+	@read line; if [ "$$line" != "y" ]; then echo aborting; exit 1 ; fi
+
+update-binaries: | confirm-update download-binaries
 ifeq ($(DIST),CentOS)
-	@$(./common/backup_config.sh)
+	$(shell ./common/backup_config.sh)
 	@$(MAKE) -f Makefile.CentOS install-binaries \
 		INSTALLATION_PATH="${INSTALLATION_PATH}"
 else ifeq ($(DIST),Ubuntu)
-	@$(./common/backup_config.sh)
+	$(shell ./common/backup_config.sh)
 	@$(MAKE) -f Makefile.Ubuntu install-binaries \
 		INSTALLATION_PATH="${INSTALLATION_PATH}"
 else

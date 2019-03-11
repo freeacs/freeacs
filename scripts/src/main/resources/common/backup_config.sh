@@ -1,12 +1,12 @@
 #!/bin/bash
 
-declare -a moduleNames=(core stun syslog shell monitor web webservices tr069)
+declare -a moduleNames=(core stun syslog shell monitor web webservice tr069)
 
 for module in ${moduleNames[@]} ; do
+    config_loc=/opt/freeacs-${module}/config
+    config_name=application-config
     # backup .conf file
-    cp /opt/freeacs-${module}/config/application-config.conf \
-        /opt/freeacs-${module}/config/application-config.conf.$(date +%Y%m%d%H%M) 2>/dev/null || :
+    cp ${config_loc}/${config_name}.conf ${config_loc}/${config_name}.conf.$(date +%Y%m%d%H%M) || :
     # backup .properties file
-    cp /opt/freeacs-${module}/config/application-config.properties \
-        /opt/freeacs-${module}/config/application-config.properties.$(date +%Y%m%d%H%M) 2>/dev/null || :
+    cp ${config_loc}/${config_name}.properties ${config_loc}/${config_name}.properties.$(date +%Y%m%d%H%M) || :
 done
