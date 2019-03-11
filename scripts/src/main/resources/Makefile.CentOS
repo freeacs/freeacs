@@ -29,7 +29,7 @@ install-mysql:
 	@echo ' -> Setting up new mysql server root password'
 	@mysqladmin -u root --password="${TMP_ROOT_PASSWORD}" password "${MYSQL_ROOT_PASSWORD}"
 	@echo ' -> Uninstall validate_password plugin'
-	@mysql -uroot -p${MYSQL_ROOT_PASSWORD} -e "uninstall plugin validate_password"
+	@mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "uninstall plugin validate_password"
 	@$(MAKE) -f Makefile._Common setup-user  \
 		MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}" \
 		MYSQL_ACS_PASSWORD="${MYSQL_ACS_PASSWORD}"

@@ -26,11 +26,11 @@ download-release: | cleanup
 
 load-tables:
 	@echo "Loads all FreeACS table defintions into MySQL"
-	@mysql -uacs -p'${MYSQL_ACS_PASSWORD}' acs < install.sql
+	@mysql -uacs -p"${MYSQL_ACS_PASSWORD}" acs < install.sql
 
 setup-user:
 	@echo "Setu up acs user"
-	@mysql -uroot -p'${MYSQL_ROOT_PASSWORD}' -e "CREATE DATABASE acs"
-	@mysql -uroot -p'${MYSQL_ROOT_PASSWORD}' acs -e "CREATE USER 'acs'@'localhost' IDENTIFIED BY '${MYSQL_ACS_PASSWORD}'"
-	@mysql -uroot -p'${MYSQL_ROOT_PASSWORD}' acs -e "GRANT ALL ON acs.* TO 'acs' IDENTIFIED BY '${MYSQL_ACS_PASSWORD}'"
-	@mysql -uroot -p'${MYSQL_ROOT_PASSWORD}' acs -e "GRANT ALL ON acs.* TO 'acs'@'localhost' IDENTIFIED BY '${MYSQL_ACS_PASSWORD}'"
+	@mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "CREATE DATABASE acs"
+	@mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" acs -e "CREATE USER 'acs'@'localhost' IDENTIFIED BY '${MYSQL_ACS_PASSWORD}'"
+	@mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" acs -e "GRANT ALL ON acs.* TO 'acs' IDENTIFIED BY '${MYSQL_ACS_PASSWORD}'"
+	@mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" acs -e "GRANT ALL ON acs.* TO 'acs'@'localhost' IDENTIFIED BY '${MYSQL_ACS_PASSWORD}'"
