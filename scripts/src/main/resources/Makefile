@@ -138,6 +138,7 @@ ifeq ($(DIST),CentOS)
 	@$(MAKE) -f Makefile.CentOS install-binaries \
 		INSTALLATION_PATH="${INSTALLATION_PATH}"
 else ifeq ($(DIST),Ubuntu)
+	@$(./common/backup_config.sh)
 	@$(MAKE) -f Makefile.Ubuntu install-binaries \
 		INSTALLATION_PATH="${INSTALLATION_PATH}"
 else
