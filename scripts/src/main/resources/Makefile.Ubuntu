@@ -9,7 +9,7 @@ MYSQL_ACS_PASSWORD :=
 SHELL := /bin/bash
 
 install-deps:
-	@apt-get install curl wget jq unzip openjdk-8-jre-headless -y;
+	@apt-get install curl wget jq unzip openjdk-8-jre-headless -y 2>/dev/null || :
 
 install-mysql:
 	@echo ' -> Removing previous mysql server installation'
