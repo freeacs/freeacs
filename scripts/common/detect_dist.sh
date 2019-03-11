@@ -12,7 +12,7 @@ if [[ "${OS}" = "Linux" ]] ; then
 		if [[ ${DIST} != "Ubuntu" ]] && [[ ${DIST} != "LinuxMint" ]]; then
 			DIST="Unsupported debian distro: $DIST"
 		else
-		    DIST='Ubuntu'
+			DIST='Ubuntu'
 			CURRENT_VERSION=`lsb_release -rs`
 			REQUIRED_VERSION='16.04'
 			if [[ "$(printf '%s\n' "$REQUIRED_VERSION" "$CURRENT_VERSION" | sort -V | head -n1)" != "$REQUIRED_VERSION" ]];
