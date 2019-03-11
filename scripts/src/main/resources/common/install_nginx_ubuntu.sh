@@ -1,6 +1,34 @@
 #!/bin/bash
 
-if ! dpkg -l nginx | egrep 'îi.*nginx' > /dev/null 2>&1; then
+dpkg -s nginx &> /dev/null
+if [ $? -eq 0 ]; then
+echo "Ngninx is already installed. Add the following to http.server configuration in nginx or similar"
+echo "
+    location /tr069/ {
+      proxy_set_header        X-Real-IP       \$remote_addr;
+      proxy_pass http://localhost:8085/tr069/;
+    }
+    location /web/ {
+      proxy_pass http://localhost:8081/web/;
+    }
+    location /monitor/ {
+      proxy_pass http://localhost:8090/monitor/;
+    }
+    location /webservice/ {
+      proxy_pass http://localhost:8088/webservice/;
+    }
+    location /syslog/ {
+      proxy_pass http://localhost:8086/syslog/;
+    }
+    location /core/ {
+      proxy_pass http://localhost:8083/core/;
+    }
+    location /stun/ {
+      proxy_pass http://localhost:8087/stun/;
+    }
+"
+echo "If not already there."
+else
 apt-get -y install nginx
 cat > /etc/nginx/nginx.conf <<- EOM
 events {
@@ -44,30 +72,4 @@ http {
 EOM
 systemctl enable nginx
 systemctl restart nginx
-else
-echo "Ngninx is already installed. Add the following to http.server configuration in nginx or similar"
-echo "
-    location /tr069/ {
-      proxy_set_header        X-Real-IP       \$remote_addr;
-      proxy_pass http://localhost:8085/tr069/;
-    }
-    location /web/ {
-      proxy_pass http://localhost:8081/web/;
-    }
-    location /monitor/ {
-      proxy_pass http://localhost:8090/monitor/;
-    }
-    location /webservice/ {
-      proxy_pass http://localhost:8088/webservice/;
-    }
-    location /syslog/ {
-      proxy_pass http://localhost:8086/syslog/;
-    }
-    location /core/ {
-      proxy_pass http://localhost:8083/core/;
-    }
-    location /stun/ {
-      proxy_pass http://localhost:8087/stun/;
-    }
-"
 fi
