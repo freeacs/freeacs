@@ -12,7 +12,7 @@ SHELL := /bin/bash
 
 cleanup:
 	@echo " -> cleaning up";
-	@rm -rf files.txt .tmp *.rpm *.zip *.deb *.pdf *.sql;
+	@rm -rf files.txt .tmp freeacs-*.rpm *.zip freeacs-*.deb *.pdf *.sql;
 	@echo " -> done cleaning";
 
 download-release: | cleanup

@@ -275,6 +275,7 @@
         <module>web</module>
         <module>webservice</module>
         <module>tables</module>
+        <module>scripts</module>
         <module>distribution</module>
     </modules>
 </project>
