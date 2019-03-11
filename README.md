@@ -22,20 +22,16 @@ FreeACS requires Java and MySQL. It has been tested to work on Java 8 and latest
 FreeACS is built with SBT on unix/linux systems:
 
 ```bash
-$ ./sbt test
+$ ./mvnw test
 ```
 
-Packaged to .deb files with:
+Packaged to deployable zips with:
 
 ```bash
-$ ./sbt debian:packageBin
+$ ./mvnw package
 ```
 
-Packaged to .rpm files with:
-
-```bash
-$ ./sbt rpm:packageBin
-```
+See the distribution modules target folder or the individual module target folders for deployable zip files.
 
 ## Contributing
 
