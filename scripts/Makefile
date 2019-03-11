@@ -132,5 +132,14 @@ else
 	$(error $(DIST))
 endif
 
-update-binaries:
-	@echo "TODO: update binaries"
+update-binaries: | download-binaries
+ifeq ($(DIST),CentOS)
+	@$(./common/backup_config.sh)
+	@$(MAKE) -f Makefile.CentOS install-binaries \
+		INSTALLATION_PATH="${INSTALLATION_PATH}"
+else ifeq ($(DIST),Ubuntu)
+	@$(MAKE) -f Makefile.Ubuntu install-binaries \
+		INSTALLATION_PATH="${INSTALLATION_PATH}"
+else
+	$(error $(DIST))
+endif
