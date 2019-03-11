@@ -142,7 +142,7 @@ confirm-update:
 	@echo "Are you sure? [y/N] "
 	@read line; if [ "$$line" != "y" ]; then echo aborting; exit 1 ; fi
 
-update-binaries: | confirm-update download-binaries
+update-binaries: | confirm-update install-deps download-binaries
 ifeq ($(DIST),CentOS)
 	$(shell ./common/backup_config.sh)
 	@$(MAKE) -f Makefile.CentOS install-binaries \
