@@ -36,7 +36,7 @@ install-mysql:
 	@systemctl status mysqld.service
 
 uninstall-binaries:
-	@yum remove freeacs-*
+	@yum remove freeacs-* -y
 
 install-binaries:
 	@rpm -Uvh freeacs-*.rpm
