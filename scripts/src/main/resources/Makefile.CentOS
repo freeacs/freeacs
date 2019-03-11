@@ -9,7 +9,9 @@ MYSQL_ACS_PASSWORD :=
 SHELL := /bin/bash
 
 install-deps:
-	@yum install epel-release curl wget jq unzip java-1.8.0-openjdk-headless -y;
+	@yum install epel-release -y;
+	@yum curl wget jq unzip java-1.8.0-openjdk-headless -y;
+    @jq --version
 
 install-mysql:
 	@echo ' -> Removing previous mysql server installation'
