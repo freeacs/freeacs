@@ -143,6 +143,8 @@ confirm-update:
 	@read line; if [ "$$line" != "y" ]; then echo aborting; exit 1 ; fi
 
 update-binaries: | confirm-update install-deps download-binaries
+	@echo "Dont mind the warnings below, this script is trying to backup two types of property files."
+	@echo "Only one type of property file exists in each module"
 ifeq ($(DIST),CentOS)
 	$(shell ./common/backup_config.sh)
 	@$(MAKE) -f Makefile.CentOS install-binaries \
