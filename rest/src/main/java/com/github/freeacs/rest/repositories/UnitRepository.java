@@ -8,8 +8,12 @@ import java.util.List;
 
 public interface UnitRepository{
 
+    String BASIC_UNIT_COLUMNS =
+            "unit.unit_id, profile.profile_id as profile_id, profile.profile_name as profile_name, " +
+            "unit_type.unit_type_id as unit_type_id, unit_type.unit_type_name as unit_type_name";
+
     String BASIC_UNIT_QUERY =
-            "select unit.unit_id, profile.id as profile_id, profile.name as profile_name, unit_type.id as unit_type_id, unit_type.name as unit_type_name " +
+            "select " + BASIC_UNIT_COLUMNS + " " +
                     "from unit " +
                     "inner join profile on unit.profile_id = profile.profile_id " +
                     "inner join unit_type on unit.unit_type_id = unit_type.unit_type_id ";
