@@ -136,4 +136,16 @@ public abstract class TestUtils {
     group.getGroupParameters().addOrChangeGroupParameter(groupParameter, acs);
     return groupParameter;
   }
+
+  public static User createUser(
+          String username, String fullname, String password, Boolean admin, ACS acs)
+          throws SQLException {
+    Users users = new Users(acs.getDataSource());
+    User adminUser = users.getUnprotected("admin");
+    User newUser = new User(username,fullname,"",admin, users);
+    newUser.setSecretClearText(password);
+    users.addOrChange(newUser,adminUser);
+
+    return newUser;
+  }
 }
