@@ -379,7 +379,7 @@ public class DBI implements Runnable {
     while (running && !finished) {
       dbiRun = true;
       try {
-        if (System.currentTimeMillis() - start > lifetimeSec * 1000L) {
+        if (lifetimeSec > 0 && System.currentTimeMillis() - start > lifetimeSec * 1000L) {
           finished = true;
           break;
         }

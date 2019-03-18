@@ -1,0 +1,23 @@
+type Unit {
+    id: String!
+    profile: Profile!
+    unittype: UnitType!
+}
+
+type Profile {
+    id: Int!
+    name: String!
+}
+
+type UnitType {
+    id: Int!
+    name: String!
+}
+
+type Query {
+    getUnits(search: String!, unittypeName: String, profileName: String, number: Int!): [Unit]
+}
+
+schema {
+    query: Query
+}
