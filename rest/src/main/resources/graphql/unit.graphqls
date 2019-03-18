@@ -15,7 +15,7 @@ type UnitType {
 }
 
 type Query {
-    getUnits(search: String!, unittypeName: String, profileName: String, number: Int!): [Unit]
+    getUnits(search: String!, unittypeName: String, profileName: String, limit: Int!): [Unit]
 }
 
 schema {
