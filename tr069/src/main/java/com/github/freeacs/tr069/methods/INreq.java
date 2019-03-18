@@ -7,12 +7,9 @@ import com.github.freeacs.base.db.DBAccessSessionTR069;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.TimestampWrapper;
-import com.github.freeacs.tr069.CPEParameters;
-import com.github.freeacs.tr069.CommandKey;
+import com.github.freeacs.tr069.*;
 import com.github.freeacs.http.HTTPRequestResponseData;
-import com.github.freeacs.tr069.InformParameters;
-import com.github.freeacs.tr069.ParameterKey;
-import com.github.freeacs.tr069.SessionData;
+import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.background.ScheduledKickTask;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.tr069.exception.TR069Exception;
@@ -28,10 +25,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+
 import org.apache.commons.lang3.StringUtils;
 
 public class INreq {
@@ -187,8 +182,9 @@ public class INreq {
     }
   }
 
-  public static void process(HTTPRequestResponseData reqRes, boolean isDiscoveryMode) throws TR069Exception {
+  public static void process(HTTPRequestResponseData reqRes, Properties properties) throws TR069Exception {
     try {
+      boolean isDiscoveryMode = properties.isDiscoveryMode();
       reqRes.getRequestData().setMethod(TR069Method.INFORM);
       Parser parser = new Parser(reqRes.getRequestData().getXml());
       SessionData sessionData = reqRes.getSessionData();
@@ -213,8 +209,20 @@ public class INreq {
         DBAccessSessionTR069 dbAccessSessionTR069 =
             new DBAccessSessionTR069(
                 reqRes.getDbAccess().getDBI().getAcs(), sessionData.getDbAccessSession());
+
+        String unitTypeName = deviceIdStruct.getProductClass();
+
+        if(properties.shouldAppendHwVersion())
+        {
+          String hardwareVersion = parser.getParameterList()
+                  .getParameterValueByKey(sessionData.getKeyRoot() + "DeviceInfo.HardwareVersion");
+
+          unitTypeName += hardwareVersion;
+        }
+
         dbAccessSessionTR069.writeUnittypeProfileUnit(
-            sessionData, deviceIdStruct.getProductClass(), unitId);
+            sessionData, unitTypeName, unitId);
+
         sessionData.setFromDB(null);
         sessionData.setAcsParameters(null);
         sessionData.updateParametersFromDB(unitId, isDiscoveryMode);

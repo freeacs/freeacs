@@ -1,0 +1,36 @@
+###########################
+#                         #
+#     COMMON MAKEFILE     #
+#                         #
+###########################
+
+VERSION_NUMBER := latest
+DOWNLOAD_ARTIFACTS := zip
+MYSQL_ACS_PASSWORD :=
+MYSQL_ROOT_PASSWORD :=
+SHELL := /bin/bash
+
+cleanup:
+	@echo " -> cleaning up";
+	@rm -rf files.txt .tmp freeacs-*.rpm *.zip freeacs-*.deb *.pdf *.sql;
+	@echo " -> done cleaning";
+
+download-release: | cleanup
+	@echo " -> downloading FreeACS resources"
+	@echo "${DOWNLOAD_ARTIFACTS}"
+	@curl -s https://api.github.com/repos/freeacs/freeacs/releases/${VERSION_NUMBER} | \
+		jq -r ".assets[] | select(.name | test(\"${DOWNLOAD_ARTIFACTS}\")) | .browser_download_url" \
+		> files.txt;
+	@awk '{print $0;}' files.txt | xargs -L1 wget;
+	@echo " -> all necessary FreeACS resources are available.";
+
+load-tables:
+	@echo "Loads all FreeACS table defintions into MySQL"
+	@mysql -uacs -p"${MYSQL_ACS_PASSWORD}" acs < install.sql
+
+setup-user:
+	@echo "Setu up acs user"
+	@mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "CREATE DATABASE acs"
+	@mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" acs -e "CREATE USER 'acs'@'localhost' IDENTIFIED BY '${MYSQL_ACS_PASSWORD}'"
+	@mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" acs -e "GRANT ALL ON acs.* TO 'acs' IDENTIFIED BY '${MYSQL_ACS_PASSWORD}'"
+	@mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" acs -e "GRANT ALL ON acs.* TO 'acs'@'localhost' IDENTIFIED BY '${MYSQL_ACS_PASSWORD}'"

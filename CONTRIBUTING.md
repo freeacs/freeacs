@@ -31,19 +31,22 @@ To build FreeACS, do the following:
 * Build master branch:
 
       cd freeacs
-      sbt test
+      ./mvnw test
 
-* Create runnable builds:
+* Create deployable zip files:
 
-      sbt universal:stage
+      ./mvnw package
       
-The latter will create runnable versions of each module in:
+The latter will create deployable zips of each module in:
        
-      ./<module>/target/universal/stage/
+      ./<module>/target/<module>-<version>-bin.zip
 
 for ex, to run tr069 (it will crash if you have not setup a database, loaded the acs table and added an acs user):
 
-      ./tr069/target/universal/stage/bin/freeacs-tr069
+      cd /tr069/target
+      unzip tr069-<version>-bin.zip
+      cd ./tr069-<version>/
+      ./start.sh
 
 You can find tables.zip on release page, but its easier to load up docker to get the database set up.
 

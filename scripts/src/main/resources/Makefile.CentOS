@@ -1,0 +1,43 @@
+###########################
+#                         #
+#     CENTOS MAKEFEILE    #
+#                         #
+###########################
+
+MYSQL_ROOT_PASSWORD :=
+MYSQL_ACS_PASSWORD :=
+SHELL := /bin/bash
+
+install-deps:
+	@yum install epel-release -y;
+	@yum install curl wget jq unzip java-1.8.0-openjdk-headless -y;
+
+install-mysql:
+	@echo ' -> Removing previous mysql server installation'
+	@yum remove -y mysql-community-server && \
+		rm -rf /var/lib/mysql && \
+		rm -rf /var/log/mysqld.log && \
+		rm -rf /etc/my.cnf
+	@echo ' -> Installing mysql server (community edition)'
+	@yum localinstall -y https://dev.mysql.com/get/mysql57-community-release-el7-7.noarch.rpm
+	@yum install -y mysql-community-server
+	@echo ' -> Starting mysql server (first run)'
+	@systemctl enable mysqld.service
+	@systemctl start mysqld.service
+	@grep 'temporary.*root@localhost' /var/log/mysqld.log | tail -n 1 | sed 's/.*root@localhost: //' > .pwd
+	$(eval TMP_ROOT_PASSWORD = `cat .pwd`)
+	@echo ' -> Setting up new mysql server root password'
+	@mysqladmin -u root --password="${TMP_ROOT_PASSWORD}" password "${MYSQL_ROOT_PASSWORD}"
+	@echo ' -> Uninstall validate_password plugin'
+	@mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "uninstall plugin validate_password"
+	@$(MAKE) -f Makefile._Common setup-user  \
+		MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}" \
+		MYSQL_ACS_PASSWORD="${MYSQL_ACS_PASSWORD}"
+	@systemctl status mysqld.service
+
+uninstall-binaries:
+	@yum remove freeacs-* -y
+
+install-binaries:
+	@rpm -Uvh freeacs-*.rpm
+	@rm -rf freeacs-*.rpm

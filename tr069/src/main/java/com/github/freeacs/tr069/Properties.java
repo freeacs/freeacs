@@ -16,6 +16,8 @@ public class Properties {
   private Config environment;
   private String contextPath;
 
+  private boolean appendHwVersion;
+
   public Properties(Config config) {
     this.environment = config;
     setAuthMethod(config.getString("auth.method"));
@@ -26,6 +28,7 @@ public class Properties {
     setDiscoveryBlock(getOrDefault("discovery.block", null));
     setConcurrentDownloadLimit(getOrDefault("concurrent.download.limit", 50));
     setContextPath(getOrDefault("server.servlet.context-path", "/"));
+    setAppendHwVersion(getOrDefault("unit.type.append-hw-version", false));
   }
 
   private <T> T getOrDefault(String key, T defaultValue) {
@@ -63,6 +66,8 @@ public class Properties {
   private void setDiscoveryMode(Boolean discoveryMode) {
     this.discoveryMode = discoveryMode;
   }
+
+  private void setAppendHwVersion(Boolean appendHwVersion) { this.appendHwVersion = appendHwVersion; }
 
   private void setDiscoveryBlock(String discoveryBlock) {
     this.discoveryBlock =
@@ -157,4 +162,6 @@ public class Properties {
   public String getPublicUrl() {
     return publicUrl;
   }
+
+  public boolean shouldAppendHwVersion() { return appendHwVersion; }
 }

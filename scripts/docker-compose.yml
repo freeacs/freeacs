@@ -16,7 +16,7 @@ services:
       - syslog
       - core
   web:
-    image: freeacs/freeacs-web
+    image: freeacs/web
     restart: always
     mem_limit: 2048000000
     depends_on:
@@ -24,7 +24,6 @@ services:
     networks:
       - mynetwork
     environment:
-      - SPRING_PROFILES_ACTIVE
       - WEB_PROPERTIES
       - WEB_CONFIRMCHANGES
       - WEB_CONFIDENTIALS_RESTRICTED
@@ -36,11 +35,11 @@ services:
       - SERVER_PORT
       - TZ
     volumes:
-      - web_logs:/opt/docker/logs
+      - web_logs:/app/app/logs
 #     - ./conf/web/application-config.properties:/opt/docker/config/application-config.properties
 #     - ./conf/web/logback.xml:/opt/docker/config/logback.xml
   monitor:
-    image: freeacs/freeacs-monitor
+    image: freeacs/monitor
     restart: always
     mem_limit: 2048000000
     depends_on:
@@ -48,7 +47,6 @@ services:
     networks:
       - mynetwork
     environment:
-      - SPRING_PROFILES_ACTIVE
       - MONITOR_URL_CORE
       - MONITOR_URL_SYSLOG
       - MONITOR_URL_TR069
@@ -59,11 +57,11 @@ services:
       - SERVER_PORT
       - TZ
     volumes:
-      - monitor_logs:/opt/docker/logs
+      - monitor_logs:/app/app/logs
 #     - ./conf/monitor/application-config.properties:/opt/docker/config/application-config.properties
 #     - ./conf/monitor/logback.xml:/opt/docker/config/logback.xml
   tr069:
-    image: freeacs/freeacs-tr069
+    image: freeacs/tr069
     restart: always
     mem_limit: 2048000000
     depends_on:
@@ -71,7 +69,6 @@ services:
     networks:
       - mynetwork
     environment:
-      - SPRING_PROFILES_ACTIVE
       - TR069_AUTH_METHOD
       - TR069_FILE_AUTH_USED
       - TR069_DISCOVERY_MODE
@@ -85,11 +82,11 @@ services:
       - SERVER_PORT
       - TZ
     volumes:
-      - tr069_logs:/opt/docker/logs
+      - tr069_logs:/app/app/logs
 #     - ./conf/tr069/application-config.properties:/opt/docker/config/application-config.properties
 #     - ./conf/tr069/logback.xml:/opt/docker/config/logback.xml
   syslog:
-    image: freeacs/freeacs-syslog
+    image: freeacs/syslog
     restart: always
     mem_limit: 2048000000
     depends_on:
@@ -97,7 +94,6 @@ services:
     networks:
       - mynetwork
     environment:
-      - SPRING_PROFILES_ACTIVE
       - MAIN_DATASOURCE_JDBCURL
       - MAIN_DATASOURCE_USERNAME
       - MAIN_DATASOURCE_PASSWORD
@@ -105,11 +101,11 @@ services:
       - SERVER_PORT
       - TZ
     volumes:
-      - syslog_logs:/opt/docker/logs
+      - syslog_logs:/app/app/logs
 #     - ./conf/syslog/application-config.properties:/opt/docker/config/application-config.properties
 #     - ./conf/syslog/logback.xml:/opt/docker/config/logback.xml
   core:
-    image: freeacs/freeacs-core
+    image: freeacs/core
     restart: always
     mem_limit: 2048000000
     depends_on:
@@ -117,7 +113,6 @@ services:
     networks:
       - mynetwork
     environment:
-      - SPRING_PROFILES_ACTIVE
       - MAIN_DATASOURCE_JDBCURL
       - MAIN_DATASOURCE_USERNAME
       - MAIN_DATASOURCE_PASSWORD
@@ -125,11 +120,11 @@ services:
       - SERVER_PORT
       - TZ
     volumes:
-      - core_logs:/opt/docker/logs
+      - core_logs:/app/app/logs
 #     - ./conf/core/application-config.properties:/opt/docker/config/application-config.properties
 #     - ./conf/core/logback.xml:/opt/docker/config/logback.xml
   stun:
-    image: freeacs/freeacs-stun
+    image: freeacs/stun
     restart: always
     mem_limit: 2048000000
     depends_on:
@@ -137,7 +132,6 @@ services:
     networks:
       - mynetwork
     environment:
-      - SPRING_PROFILES_ACTIVE
       - MAIN_DATASOURCE_JDBCURL
       - MAIN_DATASOURCE_USERNAME
       - MAIN_DATASOURCE_PASSWORD
@@ -145,11 +139,11 @@ services:
       - SERVER_PORT
       - TZ
     volumes:
-      - stun_logs:/opt/docker/logs
+      - stun_logs:/app/app/logs
 #     - ./conf/stun/application-config.properties:/opt/docker/config/application-config.properties
 #     - ./conf/stun/logback.xml:/opt/docker/config/logback.xml
   webservice:
-    image: freeacs/freeacs-webservice
+    image: freeacs/webservice
     restart: always
     mem_limit: 2048000000
     depends_on:
@@ -157,7 +151,6 @@ services:
     networks:
       - mynetwork
     environment:
-      - SPRING_PROFILES_ACTIVE
       - MAIN_DATASOURCE_JDBCURL
       - MAIN_DATASOURCE_USERNAME
       - MAIN_DATASOURCE_PASSWORD
@@ -165,7 +158,7 @@ services:
       - SERVER_PORT
       - TZ
     volumes:
-      - webservice_logs:/opt/docker/logs
+      - webservice_logs:/app/app/logs
 #     - ./conf/webservice/application-config.properties:/opt/docker/config/application-config.properties
 #     - ./conf/webservice/logback.xml:/opt/docker/config/logback.xml
   db:

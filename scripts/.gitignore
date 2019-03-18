@@ -1,0 +1,7 @@
+files.txt
+.tmp
+*.rpm
+*.deb
+*.sql
+*.zip
+*.pdf

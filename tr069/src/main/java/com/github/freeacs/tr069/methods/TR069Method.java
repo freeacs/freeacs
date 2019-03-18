@@ -64,7 +64,7 @@ public class TR069Method {
         .put(
             INFORM,
             new HTTPRequestAction(
-                (req) -> INreq.process(req, properties.isDiscoveryMode()),
+                (req) -> INreq.process(req, properties),
                 makeSimpleDecision(INFORM)));
     getResponseMap().put(INFORM, new HTTPResponseAction(HTTPResponseCreator::buildIN));
 
