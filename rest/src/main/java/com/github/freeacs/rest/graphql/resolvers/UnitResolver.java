@@ -26,16 +26,17 @@ public class UnitResolver implements GraphQLQueryResolver {
     public Collection<Unit> getUnits(String search, String unittypeName, String profileName, Integer number) throws SQLException {
         Unittype unittype = null;
         Profile profile = null;
-        if (unittypeName != null){
+        if (unittypeName != null) {
             unittype = this.acsUnit.getAcs().getUnittype(unittypeName);
             if (unittype == null) {
                 log.warn("Unittype " + unittypeName + " does not exist");
                 return Collections.emptyList();
-            }
-            profile = unittype.getProfiles().getByName(profileName);
-            if (profileName != null && profile == null) {
-                log.warn("Profile " + profileName + " does not exist in Unittype " + unittypeName);
-                return Collections.emptyList();
+            } else if (profileName != null) {
+                profile = unittype.getProfiles().getByName(profileName);
+                if (profile == null) {
+                    log.warn("Profile " + profileName + " does not exist in Unittype " + unittypeName);
+                    return Collections.emptyList();
+                }
             }
         }
         return acsUnit.getUnits(search, unittype, profile, number).values();
