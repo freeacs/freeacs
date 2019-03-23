@@ -14,6 +14,10 @@ public interface UnitDao {
     @RegisterFieldMapper(Unit.class)
     List<Unit> getUnits();
 
+    @SqlQuery
+    @RegisterFieldMapper(Unit.class)
+    Unit getUnit(@Bind("id") String id);
+
     @SqlUpdate
     void createUnit(@BindBean Unit unit);
 
