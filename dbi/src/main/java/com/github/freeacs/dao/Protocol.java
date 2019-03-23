@@ -1,6 +1,8 @@
 package com.github.freeacs.dao;
 
-public enum Protocol {
+import java.io.Serializable;
+
+public enum Protocol implements Serializable {
     TR069,
     HTTP,
     OPP,
