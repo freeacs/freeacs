@@ -7,6 +7,7 @@ import com.hazelcast.core.IMap;
 import com.hazelcast.query.Predicate;
 import com.hazelcast.query.SqlPredicate;
 import io.vavr.collection.List;
+import io.vavr.control.Option;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -23,13 +24,13 @@ public class UnitCache {
         this.cache = cache.getMap(KEY);
     }
 
-    public Unit getUnit(String unitId) {
+    public Option<Unit> getUnit(String unitId) {
         if (cache.containsKey(unitId)) {
-            return cache.get(unitId);
+            return Option.of(cache.get(unitId));
         }
-        Unit unit = unitDao.getUnit(unitId);
-        cache.put(unitId, unit);
-        return unit;
+        Option<Unit> maybeUnit = unitDao.getUnit(unitId);
+        maybeUnit.forEach(unit -> cache.put(unitId, unit));
+        return maybeUnit;
     }
 
     public void createUnit(Unit unit) {

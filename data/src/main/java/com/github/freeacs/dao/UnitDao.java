@@ -1,5 +1,6 @@
 package com.github.freeacs.dao;
 import io.vavr.collection.List;
+import io.vavr.control.Option;
 import org.jdbi.v3.sqlobject.config.RegisterFieldMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
@@ -16,7 +17,7 @@ public interface UnitDao {
 
     @SqlQuery
     @RegisterFieldMapper(Unit.class)
-    Unit getUnit(@Bind("id") String id);
+    Option<Unit> getUnit(@Bind("id") String id);
 
     @SqlUpdate
     void createUnit(@BindBean Unit unit);
