@@ -5,7 +5,9 @@ import com.github.freeacs.dao.ProfileDao;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import io.vavr.control.Option;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProfileCache {
     private static final String KEY = "profiles";
 

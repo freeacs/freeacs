@@ -2,7 +2,9 @@ package com.github.freeacs.service;
 
 import com.github.freeacs.cache.ProfileCache;
 import io.vavr.control.Option;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProfileService {
     private final ProfileCache profileCache;
     private final UnitTypeService unitTypeService;

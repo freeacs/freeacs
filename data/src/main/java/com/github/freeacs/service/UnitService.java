@@ -2,7 +2,9 @@ package com.github.freeacs.service;
 
 import com.github.freeacs.cache.UnitCache;
 import io.vavr.control.Option;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UnitService {
 
     private final UnitCache unitCache;

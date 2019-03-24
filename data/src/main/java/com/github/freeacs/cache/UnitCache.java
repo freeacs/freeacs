@@ -8,10 +8,12 @@ import com.hazelcast.query.Predicate;
 import com.hazelcast.query.SqlPredicate;
 import io.vavr.collection.List;
 import io.vavr.control.Option;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+@Component
 public class UnitCache {
     private static final String KEY = "units";
 

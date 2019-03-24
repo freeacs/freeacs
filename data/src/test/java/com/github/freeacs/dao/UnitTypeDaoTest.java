@@ -1,5 +1,6 @@
 package com.github.freeacs.dao;
 
+import com.github.freeacs.shared.Protocol;
 import io.vavr.collection.List;
 import org.junit.Test;
 

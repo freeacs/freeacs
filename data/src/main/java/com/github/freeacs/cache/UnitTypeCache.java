@@ -5,7 +5,9 @@ import com.github.freeacs.dao.UnitTypeDao;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import io.vavr.control.Option;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UnitTypeCache {
     private static final String KEY = "unitTypes";
 

@@ -1,6 +1,6 @@
 package com.github.freeacs.service;
 
-import com.github.freeacs.dao.Protocol;
+import com.github.freeacs.shared.Protocol;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
