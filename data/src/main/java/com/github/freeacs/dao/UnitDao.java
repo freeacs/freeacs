@@ -4,25 +4,23 @@ import io.vavr.control.Option;
 import org.jdbi.v3.sqlobject.config.RegisterFieldMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.customizer.BindBean;
-import org.jdbi.v3.sqlobject.locator.UseClasspathSqlLocator;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
-@UseClasspathSqlLocator
 public interface UnitDao {
 
-    @SqlQuery
+    @SqlQuery("select unit_id, unit_type_id, profile_id from unit")
     @RegisterFieldMapper(Unit.class)
     List<Unit> getUnits();
 
-    @SqlQuery
+    @SqlQuery("select unit_id, unit_type_id, profile_id from unit where unit_id = :id")
     @RegisterFieldMapper(Unit.class)
     Option<Unit> getUnit(@Bind("id") String id);
 
-    @SqlUpdate
+    @SqlUpdate("insert into unit(unit_id, unit_type_id, profile_id) values (:unitId, :unitTypeId, :profileId)")
     void createUnit(@BindBean Unit unit);
 
-    @SqlUpdate
+    @SqlUpdate("delete from unit where unit_id = :id\n")
     Integer deleteUnit(@Bind("id") String id);
 
 }
