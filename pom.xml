@@ -285,6 +285,7 @@
 
     <modules>
         <module>data</module>
+        <module>data-api</module>
         <module>common</module>
         <module>dbi</module>
         <module>shell</module>
