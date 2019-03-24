@@ -1,18 +1,14 @@
 package com.github.freeacs.dao;
 
-import com.github.freeacs.dbi.BaseDBITest;
 import io.vavr.collection.List;
-import org.jdbi.v3.core.Jdbi;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class UnitTypeDaoTest extends BaseDBITest {
+public class UnitTypeDaoTest extends BaseDaoTest {
 
     @Test
     public void testCRUDDao() {
-        Jdbi jdbi = Jdbi.create(acs.getDataSource()).installPlugins();
-        UnitTypeDao unitTypeDao = jdbi.onDemand(UnitTypeDao.class);
 
         List<UnitType> unitTypes = unitTypeDao.getUnitTypes();
         assertEquals(0, unitTypes.size());

@@ -2,6 +2,7 @@ package com.github.freeacs.cache;
 
 import com.github.freeacs.dao.Unit;
 import com.github.freeacs.dao.UnitDao;
+import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import com.hazelcast.query.Predicate;
 import com.hazelcast.query.SqlPredicate;
@@ -11,13 +12,13 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 public class UnitCache {
-    public static final String KEY = "units";
+    private static final String KEY = "units";
 
     private final IMap<String, Unit> cache;
 
     private final UnitDao unitDao;
 
-    public UnitCache(UnitDao unitDao, Cache cache) {
+    public UnitCache(UnitDao unitDao, HazelcastInstance cache) {
         this.unitDao = unitDao;
         this.cache = cache.getMap(KEY);
     }

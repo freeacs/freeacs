@@ -1,20 +1,14 @@
 package com.github.freeacs.dao;
 
-import com.github.freeacs.dbi.BaseDBITest;
 import io.vavr.collection.List;
-import org.jdbi.v3.core.Jdbi;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class ProfileDaoTest extends BaseDBITest {
+public class ProfileDaoTest extends BaseDaoTest {
 
     @Test
     public void testCRUDDao() {
-        Jdbi jdbi = Jdbi.create(acs.getDataSource()).installPlugins();
-        UnitTypeDao unitTypeDao = jdbi.onDemand(UnitTypeDao.class);
-        ProfileDao profileDao = jdbi.onDemand(ProfileDao.class);
-
         List<Profile> profiles = profileDao.getProfiles();
         assertEquals(0, profiles.size());
 

@@ -273,6 +273,7 @@
     </dependencyManagement>
 
     <modules>
+        <module>data</module>
         <module>common</module>
         <module>dbi</module>
         <module>shell</module>

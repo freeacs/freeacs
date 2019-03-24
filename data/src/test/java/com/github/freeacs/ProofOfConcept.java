@@ -1,6 +1,5 @@
 package com.github.freeacs;
 
-import com.github.freeacs.cache.CacheImpl;
 import com.github.freeacs.cache.UnitCache;
 import com.github.freeacs.dao.*;
 import com.hazelcast.core.Hazelcast;
@@ -18,7 +17,7 @@ public class ProofOfConcept {
         ProfileDao profileDao = jdbi.onDemand(ProfileDao.class);
         Long profileId = profileDao.createProfile(new Profile(null, "Default", unitTypeId));
         HazelcastInstance instance = Hazelcast.newHazelcastInstance();
-        UnitCache unitCache = new UnitCache(unitDao, new CacheImpl(instance));
+        UnitCache unitCache = new UnitCache(unitDao, instance);
         unitCache.createUnit(new Unit("123", profileId, unitTypeId));
         // just a dummy example, not possible to have 2 - 10 million units in memory
         Collection<Unit> units = unitCache.searchForUnits("2", io.vavr.collection.List.of(1L));
