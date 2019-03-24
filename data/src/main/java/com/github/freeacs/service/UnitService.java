@@ -1,6 +1,7 @@
 package com.github.freeacs.service;
 
 import com.github.freeacs.cache.UnitCache;
+import com.github.freeacs.dao.Unit;
 import io.vavr.control.Option;
 import org.springframework.stereotype.Component;
 
@@ -21,8 +22,21 @@ public class UnitService {
         return unitCache.getUnit(unitId)
                 .flatMap(unit -> profileService.getProfile(unit.getProfileId())
                         .flatMap(profileDto -> unitTypeService.getUnitType(unit.getUnitTypeId())
-                                .map(unitTypeDto -> new UnitDto(unit.getUnitId(), profileDto, unitTypeDto))
+                                .map(unitTypeDto -> new UnitDto(
+                                        unit.getUnitId(),
+                                        profileDto,
+                                        unitTypeDto
+                                ))
                         )
                 );
+    }
+
+    public Option<UnitDto> createUnit(UnitDto unitDto) {
+        unitCache.createUnit(new Unit(
+                unitDto.getUnitId(),
+                unitDto.getProfile().getId(),
+                unitDto.getUnitType().getId()
+        ));
+        return getUnit(unitDto.getUnitId());
     }
 }

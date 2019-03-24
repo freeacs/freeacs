@@ -1,6 +1,7 @@
 package com.github.freeacs.service;
 
 import com.github.freeacs.cache.ProfileCache;
+import com.github.freeacs.dao.Profile;
 import io.vavr.control.Option;
 import org.springframework.stereotype.Component;
 
@@ -23,5 +24,14 @@ public class ProfileService {
                                 unitTypeDto
                         ))
                 );
+    }
+
+    public Option<ProfileDto> createProfile(ProfileDto profileDto) {
+        Long newId = profileCache.createProfile(new Profile(
+                null,
+                profileDto.getName(),
+                profileDto.getUnitType().getId()
+        ));
+        return getProfile(newId);
     }
 }

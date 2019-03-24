@@ -16,8 +16,12 @@ public class UnitController {
     }
 
     @GetMapping("/{unitId}")
-    @ResponseBody
     public Option<UnitDto> getUnit(@PathVariable String unitId) {
         return unitService.getUnit(unitId);
+    }
+
+    @PostMapping
+    public Option<UnitDto>  createUnit(@RequestBody UnitDto payload) {
+        return unitService.createUnit(payload);
     }
 }

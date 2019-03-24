@@ -9,23 +9,37 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ProfileCache {
-    private static final String KEY = "profiles";
+    private static final String KEY_BY_ID = "profilesById";
+    private static final String KEY_BY_NAME = "profilesByName";
 
-    private final IMap<Long, Profile> cache;
+    private final IMap<Long, Profile> idCache;
+    private final IMap<String, Profile> nameCache;
 
     private final ProfileDao profileDao;
 
     public ProfileCache(ProfileDao profileDao, HazelcastInstance cache) {
         this.profileDao = profileDao;
-        this.cache = cache.getMap(KEY);
+        this.idCache = cache.getMap(KEY_BY_ID);
+        this.nameCache = cache.getMap(KEY_BY_NAME);
     }
 
     public Option<Profile> getProfile(Long id) {
-        if (cache.containsKey(id)) {
-            return Option.of(cache.get(id));
+        if (idCache.containsKey(id)) {
+            return Option.of(idCache.get(id));
         }
         Option<Profile> maybeProfile = profileDao.getProfile(id);
-        maybeProfile.forEach(profile -> cache.put(id, profile));
+        maybeProfile.forEach(profile -> {
+            idCache.put(id, profile);
+            nameCache.put(profile.getName(), profile);
+        });
         return maybeProfile;
+    }
+
+    public Long createProfile(Profile profile) {
+        Long newId = profileDao.createProfile(profile);
+        Profile withId = profile.withId(newId);
+        idCache.put(newId, withId);
+        nameCache.put(profile.getName(), withId);
+        return newId;
     }
 }
