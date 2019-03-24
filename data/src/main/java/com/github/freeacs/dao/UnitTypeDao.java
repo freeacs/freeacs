@@ -18,6 +18,10 @@ public interface UnitTypeDao {
     @RegisterFieldMapper(UnitType.class)
     Option<UnitType> getUnitType(@Bind("id") Long id);
 
+    @SqlQuery("select unit_type_id as id, unit_type_name as name, vendor_name as vendor, description, protocol from unit_type where unit_type_name = :name")
+    @RegisterFieldMapper(UnitType.class)
+    Option<UnitType> getUnitTypeByName(@Bind("name") String name);
+
     @SqlUpdate("insert into unit_type(unit_type_name, vendor_name, description, protocol) values (:name, :vendor, :description, :protocol)")
     @GetGeneratedKeys
     Long createUnitType(@BindBean UnitType unitType);

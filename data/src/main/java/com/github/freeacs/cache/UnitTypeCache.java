@@ -35,6 +35,18 @@ public class UnitTypeCache {
         return maybeUnitType;
     }
 
+    public Option<UnitType> getUnitTypeByName(String name) {
+        if (nameCache.containsKey(name)) {
+            return Option.of(nameCache.get(name));
+        }
+        Option<UnitType> maybeUnitType = unitTypeDao.getUnitTypeByName(name);
+        maybeUnitType.forEach(unitType -> {
+            idCache.put(unitType.getId(), unitType);
+            nameCache.put(unitType.getName(), unitType);
+        });
+        return maybeUnitType;
+    }
+
     public Long createUnitType(UnitType unitType) {
         if (nameCache.containsKey(unitType.getName())) {
             throw new IllegalArgumentException("UnitType already exists");

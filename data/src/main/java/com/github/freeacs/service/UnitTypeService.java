@@ -25,6 +25,18 @@ public class UnitTypeService {
                 ));
     }
 
+    public Option<UnitTypeDto> getUnitTypeByName(String name) {
+        return unitTypeCache.getUnitTypeByName(name)
+                .map(unitType -> new UnitTypeDto(
+                        unitType.getId(),
+                        unitType.getName(),
+                        unitType.getVendor(),
+                        unitType.getDescription(),
+                        unitType.getProtocol()
+                ));
+    }
+
+
     public Option<UnitTypeDto> createUnitType(UnitTypeDto unitTypeDto) {
         Long newId = unitTypeCache.createUnitType(new UnitType(
                 null,
