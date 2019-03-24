@@ -27,7 +27,7 @@ public interface UnitDao {
     Integer deleteUnit(@Bind("id") String id);
 
     @SqlQuery("select unit_id, unit_type_id, profile_id from unit " +
-            "where unit_id like '%:term%' and profile_id in (<profiles>) " +
+            "where unit_id like concat('%',:term,'%') and profile_id in (<profiles>) " +
             "LIMIT :limit")
     @RegisterFieldMapper(Unit.class)
     List<Unit> searchForUnits(@Bind("term") String term,

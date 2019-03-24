@@ -28,8 +28,8 @@ public class UnitController {
 
     @GetMapping("/search")
     public List<UnitDto> searchForUnits(@RequestParam String term,
-                                        @RequestParam List<Long> profiles,
+                                        @RequestParam(value="profiles[]") Long[] profiles,
                                         @RequestParam Integer limit) {
-        return unitService.searchForUnits(term, profiles, limit);
+        return unitService.searchForUnits(term, List.of(profiles), limit);
     }
 }
