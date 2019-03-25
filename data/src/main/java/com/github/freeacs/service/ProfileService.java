@@ -15,9 +15,9 @@ public class ProfileService {
         this.unitTypeService = unitTypeService;
     }
 
-    public Option<ProfileDto> getProfile(Long id) {
-        return profileCache.getProfile(id)
-                .flatMap(profile -> unitTypeService.getUnitType(profile.getUnitTypeId())
+    public Option<ProfileDto> getProfileById(Long id) {
+        return profileCache.getProfileById(id)
+                .flatMap(profile -> unitTypeService.getUnitTypeById(profile.getUnitTypeId())
                         .map(unitTypeDto -> new ProfileDto(
                                 profile.getId(),
                                 profile.getName(),
@@ -32,6 +32,6 @@ public class ProfileService {
                 profileDto.getName(),
                 profileDto.getUnitType().getId()
         ));
-        return getProfile(newId);
+        return getProfileById(newId);
     }
 }

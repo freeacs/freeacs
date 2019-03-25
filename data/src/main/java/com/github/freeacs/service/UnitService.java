@@ -21,8 +21,8 @@ public class UnitService {
 
     public Option<UnitDto> getUnit(String unitId) {
         return unitCache.getUnit(unitId)
-                .flatMap(unit -> profileService.getProfile(unit.getProfileId())
-                        .flatMap(profileDto -> unitTypeService.getUnitType(unit.getUnitTypeId())
+                .flatMap(unit -> profileService.getProfileById(unit.getProfileId())
+                        .flatMap(profileDto -> unitTypeService.getUnitTypeById(unit.getUnitTypeId())
                                 .map(unitTypeDto -> new UnitDto(
                                         unit.getUnitId(),
                                         profileDto,
@@ -43,8 +43,8 @@ public class UnitService {
 
     public List<UnitDto> searchForUnits(String term, List<Long> profiles, Integer limit) {
         return unitCache.searchForUnits(term, profiles, limit)
-                .flatMap(unit -> profileService.getProfile(unit.getProfileId())
-                    .flatMap(profile -> unitTypeService.getUnitType(unit.getUnitTypeId())
+                .flatMap(unit -> profileService.getProfileById(unit.getProfileId())
+                    .flatMap(profile -> unitTypeService.getUnitTypeById(unit.getUnitTypeId())
                         .map(unitType -> new UnitDto(
                                 unit.getUnitId(),
                                 profile,

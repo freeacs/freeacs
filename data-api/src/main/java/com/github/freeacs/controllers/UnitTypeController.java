@@ -16,8 +16,8 @@ public class UnitTypeController {
     }
 
     @GetMapping("/{id}")
-    public Option<UnitTypeDto> getUnitType(@PathVariable Long id) {
-        return this.unitTypeService.getUnitType(id);
+    public Option<UnitTypeDto> getUnitTypeById(@PathVariable Long id) {
+        return this.unitTypeService.getUnitTypeById(id);
     }
 
     @PostMapping

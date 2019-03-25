@@ -12,30 +12,30 @@ import org.springframework.stereotype.Component;
 public class UnitCache {
     private static final String KEY = "units";
 
-    private final IMap<String, Unit> cache;
+    private final IMap<String, Unit> unitIdCache;
 
     private final UnitDao unitDao;
 
     public UnitCache(UnitDao unitDao, HazelcastInstance cache) {
         this.unitDao = unitDao;
-        this.cache = cache.getMap(KEY);
+        this.unitIdCache = cache.getMap(KEY);
     }
 
     public Option<Unit> getUnit(String unitId) {
-        if (cache.containsKey(unitId)) {
-            return Option.of(cache.get(unitId));
+        Unit unitFromCache = unitIdCache.get(unitId);
+        if (unitFromCache != null) {
+            return Option.of(unitFromCache);
         }
-        Option<Unit> maybeUnit = unitDao.getUnit(unitId);
-        maybeUnit.forEach(unit -> cache.put(unitId, unit));
-        return maybeUnit;
+        return unitDao.getUnit(unitId)
+                .map(unit -> unitIdCache.put(unitId, unit));
     }
 
     public void createUnit(Unit unit) {
-        if (cache.containsKey(unit.getUnitId())) {
+        if (unitIdCache.containsKey(unit.getUnitId())) {
             throw new IllegalArgumentException("Unit already exists");
         }
         unitDao.createUnit(unit);
-        cache.put(unit.getUnitId(), unit);
+        unitIdCache.put(unit.getUnitId(), unit);
     }
 
     public List<Unit> searchForUnits(String searchStr, List<Long> profiles, Integer limit) {

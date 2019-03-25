@@ -23,33 +23,27 @@ public class UnitTypeCache {
         this.nameCache = cache.getMap(KEY_BY_NAME);
     }
 
-    public Option<UnitType> getUnitType(Long id) {
-        if (idCache.containsKey(id)) {
-            return Option.of(idCache.get(id));
+    public Option<UnitType> getUnitTypeById(Long id) {
+        UnitType unitTypeFromCache = idCache.get(id);
+        if (unitTypeFromCache != null) {
+            return Option.of(unitTypeFromCache);
         }
-        Option<UnitType> maybeUnitType = unitTypeDao.getUnitType(id);
-        maybeUnitType.forEach(unitType -> {
-            idCache.put(id, unitType);
-            nameCache.put(unitType.getName(), unitType);
-        });
-        return maybeUnitType;
+        return unitTypeDao.getUnitTypeById(id)
+            .map(unitType -> idCache.put(id, nameCache.put(unitType.getName(), unitType)));
     }
 
     public Option<UnitType> getUnitTypeByName(String name) {
-        if (nameCache.containsKey(name)) {
-            return Option.of(nameCache.get(name));
+        UnitType unitTypeFromCache = nameCache.get(name);
+        if (unitTypeFromCache != null) {
+            return Option.of(unitTypeFromCache);
         }
-        Option<UnitType> maybeUnitType = unitTypeDao.getUnitTypeByName(name);
-        maybeUnitType.forEach(unitType -> {
-            idCache.put(unitType.getId(), unitType);
-            nameCache.put(unitType.getName(), unitType);
-        });
-        return maybeUnitType;
+        return unitTypeDao.getUnitTypeByName(name)
+            .map(unitType -> idCache.put(unitType.getId(), nameCache.put(unitType.getName(), unitType)));
     }
 
     public Long createUnitType(UnitType unitType) {
         if (nameCache.containsKey(unitType.getName())) {
-            throw new IllegalArgumentException("UnitType already exists");
+            throw new IllegalArgumentException("UnitType already exists with this name: " + unitType.getName());
         }
         Long newId = unitTypeDao.createUnitType(unitType);
         UnitType withId = unitType.withId(newId);

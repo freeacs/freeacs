@@ -16,7 +16,7 @@ public interface ProfileDao {
 
     @SqlQuery("select profile_id as id, profile_name as name, unit_type_id from profile where profile_id = :id")
     @RegisterFieldMapper(Profile.class)
-    Option<Profile> getProfile(@Bind("id") Long id);
+    Option<Profile> getProfileById(@Bind("id") Long id);
 
     @SqlUpdate("insert into profile(profile_name, unit_type_id) values (:name, :unitTypeId)")
     @GetGeneratedKeys

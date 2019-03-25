@@ -16,8 +16,8 @@ public class ProfileController {
     }
 
     @GetMapping("/{id}")
-    public Option<ProfileDto> getProfile(@PathVariable Long id) {
-        return this.profileService.getProfile(id);
+    public Option<ProfileDto> getProfileById(@PathVariable Long id) {
+        return this.profileService.getProfileById(id);
     }
 
     @PostMapping
