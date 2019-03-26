@@ -3,9 +3,6 @@ package com.github.freeacs;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.freeacs.service.UnitTypeDto;
 import com.github.freeacs.shared.Protocol;
-import com.hazelcast.core.HazelcastInstance;
-import org.jdbi.v3.core.Jdbi;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UnitTypeControllerTest {
+public class UnitTypeControllerTest extends BaseTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -31,20 +28,6 @@ public class UnitTypeControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Autowired
-    private HazelcastInstance hazelcastInstance;
-
-    @Autowired
-    private Jdbi jdbi;
-
-    @Before
-    public void init() {
-        hazelcastInstance.getMap("unitTypesById").removeAll(o -> true);
-        hazelcastInstance.getMap("unitTypesByName").removeAll(o -> true);
-        hazelcastInstance.getMap("profilesById").removeAll(o -> true);
-        jdbi.withHandle(handle -> handle.createUpdate("DROP ALL OBJECTS").execute());
-    }
 
     @Test
     public void shouldFailWith401() throws Exception {
