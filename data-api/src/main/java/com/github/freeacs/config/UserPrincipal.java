@@ -1,5 +1,6 @@
 package com.github.freeacs.config;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.freeacs.dao.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 @Data
 @AllArgsConstructor
 public class UserPrincipal implements UserDetails {
+    @JsonIgnore
     private User user;
 
     @Override
@@ -31,6 +33,7 @@ public class UserPrincipal implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public String getPassword() {
         return user.getSecret();
     }
