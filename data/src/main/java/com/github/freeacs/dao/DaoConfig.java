@@ -29,4 +29,9 @@ public class DaoConfig {
         return jdbi.onDemand(UnitDao.class);
     }
 
+    @Bean
+    public UserDao getUserDao(Jdbi jdbi) {
+        return jdbi.onDemand(UserDao.class);
+    }
+
 }

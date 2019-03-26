@@ -188,7 +188,6 @@ CREATE TABLE IF NOT EXISTS user_ (
   UNIQUE INDEX idx_username (username)
 );
 
-
 CREATE TABLE IF NOT EXISTS permission_ (
   id INTEGER NOT NULL AUTO_INCREMENT,
   user_id INTEGER NOT NULL,
@@ -705,3 +704,5 @@ CREATE TABLE IF NOT EXISTS report_gateway_tr (
   wan_uptime_avg INTEGER,
   PRIMARY KEY (timestamp_, period_type, unit_type_name, profile_name, software_version)
 );
+
+insert into user_(username, secret, fullname, accesslist, is_admin) values('admin', '4E9BA006A68A8767D65B3761E038CF9040C54A00', 'Admin', 'Admin', 1);
