@@ -1,5 +1,6 @@
 package com.github.freeacs;
 
+import com.github.freeacs.config.UserService;
 import com.github.freeacs.controllers.ProfileController;
 import com.github.freeacs.controllers.UnitController;
 import com.github.freeacs.controllers.UnitTypeController;
@@ -21,12 +22,15 @@ public class ApplicationTest {
     private ProfileController profileController;
     @Autowired
     private UnitController unitController;
+    @Autowired
+    private UserService userService;
 
     @Test
     public void contextLoads() {
         assertThat(unitTypeController).isNotNull();
         assertThat(profileController).isNotNull();
         assertThat(unitController).isNotNull();
+        assertThat(userService).isNotNull();
     }
 
 }

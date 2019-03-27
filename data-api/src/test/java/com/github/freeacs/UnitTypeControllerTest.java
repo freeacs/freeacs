@@ -25,7 +25,6 @@ public class UnitTypeControllerTest extends BaseTest {
     @Autowired
     private MockMvc mockMvc;
 
-
     @Autowired
     private ObjectMapper objectMapper;
 
