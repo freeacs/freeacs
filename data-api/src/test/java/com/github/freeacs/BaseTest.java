@@ -17,13 +17,15 @@ public class BaseTest {
 
     @After
     public void init() throws IOException {
-        hazelcastInstance.getMap("unitTypesById").removeAll(o -> true);
-        hazelcastInstance.getMap("unitTypesByName").removeAll(o -> true);
-        hazelcastInstance.getMap("profilesById").removeAll(o -> true);
+        hazelcastInstance.getMap("unitTypesById").clear();
+        hazelcastInstance.getMap("unitTypesByName").clear();
+        hazelcastInstance.getMap("profilesById").clear();
         jdbi.withHandle(handle -> {
             handle.createUpdate("DROP ALL OBJECTS").execute();
-            handle.createScript(FileUtil.readFileFromClasspath("/h2-schema.sql")).execute();
-            return null;
+            return handle.createScript(FileUtil.readFileFromClasspath("/h2-schema.sql")).execute();
         });
+        jdbi.withHandle(handle ->
+                handle.createUpdate("insert into user_(username, secret, fullname, accesslist, is_admin) " +
+                        "values('admin', '4E9BA006A68A8767D65B3761E038CF9040C54A00', 'Admin', 'Admin', 1);").execute());
     }
 }
