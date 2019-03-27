@@ -33,7 +33,7 @@ public class ProfileControllerTest extends BaseTest {
     public void shouldFailWith401() throws Exception {
         mockMvc.perform(post("/profile")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 
     @Test

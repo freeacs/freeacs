@@ -36,7 +36,7 @@ public class UnitControllerTest extends BaseTest {
     public void shouldFailWith401() throws Exception {
         mockMvc.perform(post("/unit")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 
     @Test

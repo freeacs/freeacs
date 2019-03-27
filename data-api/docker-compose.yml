@@ -1,12 +1,20 @@
 version: '3'
 services:
-    data-api:
+    data-api-1:
       build: .
       links:
         - mysql
       environment:
         - SPRING_PROFILES_ACTIVE=docker
       ports:
-        - "9000:9000"
+        - "9001:9000"
+    data-api-2:
+      build: .
+      links:
+        - mysql
+      environment:
+        - SPRING_PROFILES_ACTIVE=docker
+      ports:
+        - "9002:9000"
     mysql:
       image: freeacs/mysql
