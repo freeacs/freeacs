@@ -2,6 +2,7 @@ package com.github.freeacs.controllers;
 
 import com.github.freeacs.service.UnitTypeDto;
 import com.github.freeacs.service.UnitTypeService;
+import io.vavr.collection.List;
 import io.vavr.control.Option;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,11 @@ public class UnitTypeController {
 
     public UnitTypeController(UnitTypeService unitTypeService) {
         this.unitTypeService = unitTypeService;
+    }
+
+    @GetMapping
+    public List<UnitTypeDto> getUnitTypes() {
+        return this.unitTypeService.getUnitTyps();
     }
 
     @GetMapping("/{id}")

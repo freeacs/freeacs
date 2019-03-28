@@ -2,6 +2,7 @@ package com.github.freeacs.service;
 
 import com.github.freeacs.cache.UnitTypeCache;
 import com.github.freeacs.dao.UnitType;
+import io.vavr.collection.List;
 import io.vavr.control.Option;
 import org.springframework.stereotype.Component;
 
@@ -45,5 +46,16 @@ public class UnitTypeService {
                 unitTypeDto.getProtocol()
         ));
         return getUnitTypeById(newId);
+    }
+
+    public List<UnitTypeDto> getUnitTyps() {
+        return unitTypeCache.getUnitTypes()
+                .map(unitType -> new UnitTypeDto(
+                        unitType.getId(),
+                        unitType.getName(),
+                        unitType.getVendor(),
+                        unitType.getDescription(),
+                        unitType.getProtocol()
+                ));
     }
 }

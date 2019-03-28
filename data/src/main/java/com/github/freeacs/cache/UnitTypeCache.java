@@ -2,8 +2,10 @@ package com.github.freeacs.cache;
 
 import com.github.freeacs.dao.UnitType;
 import com.github.freeacs.dao.UnitTypeDao;
+import com.github.freeacs.service.UnitTypeDto;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
+import io.vavr.collection.List;
 import io.vavr.control.Option;
 import org.springframework.stereotype.Component;
 
@@ -50,5 +52,16 @@ public class UnitTypeCache {
         idCache.put(newId, withId);
         nameCache.put(unitType.getName(), withId);
         return newId;
+    }
+
+    public List<UnitType> getUnitTypes() {
+        List<UnitType> unitTypes = unitTypeDao.getUnitTypes();
+        unitTypes.forEach(unitType -> {
+            if (!idCache.containsKey(unitType.getId())) {
+                idCache.put(unitType.getId(), unitType);
+                nameCache.put(unitType.getName(), unitType);
+            }
+        });
+        return unitTypes;
     }
 }
