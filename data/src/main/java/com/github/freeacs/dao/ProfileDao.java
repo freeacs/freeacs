@@ -10,9 +10,9 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 public interface ProfileDao {
 
-    @SqlQuery("select profile_id as id, profile_name as name, unit_type_id from profile")
+    @SqlQuery("select profile_id as id, profile_name as name, unit_type_id from profile where unit_type_id = :unitTypeId")
     @RegisterFieldMapper(Profile.class)
-    List<Profile> getProfiles();
+    List<Profile> getProfiles(@Bind("unitTypeId") Long unitTypeId);
 
     @SqlQuery("select profile_id as id, profile_name as name, unit_type_id from profile where profile_id = :id")
     @RegisterFieldMapper(Profile.class)

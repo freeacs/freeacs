@@ -2,6 +2,7 @@ package com.github.freeacs.service;
 
 import com.github.freeacs.cache.ProfileCache;
 import com.github.freeacs.dao.Profile;
+import io.vavr.collection.List;
 import io.vavr.control.Option;
 import org.springframework.stereotype.Component;
 
@@ -33,5 +34,10 @@ public class ProfileService {
                 profileDto.getUnitType().getId()
         ));
         return getProfileById(newId);
+    }
+
+    public List<ProfileDto> getProfiles(Long unitTypeId) {
+        return profileCache.getProfiles(unitTypeId)
+                .flatMap(profile -> getProfileById(profile.getId()));
     }
 }

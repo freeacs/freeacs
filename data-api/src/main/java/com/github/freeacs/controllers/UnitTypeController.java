@@ -18,7 +18,7 @@ public class UnitTypeController {
 
     @GetMapping
     public List<UnitTypeDto> getUnitTypes() {
-        return this.unitTypeService.getUnitTyps();
+        return this.unitTypeService.getUnitTypes();
     }
 
     @GetMapping("/{id}")

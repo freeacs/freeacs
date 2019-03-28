@@ -4,6 +4,7 @@ import com.github.freeacs.dao.Profile;
 import com.github.freeacs.dao.ProfileDao;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
+import io.vavr.collection.List;
 import io.vavr.control.Option;
 import org.springframework.stereotype.Component;
 
@@ -34,5 +35,15 @@ public class ProfileCache {
         Profile withId = profile.withId(newId);
         idCache.put(newId, withId);
         return newId;
+    }
+
+    public List<Profile> getProfiles(Long unitTypeId) {
+        List<Profile> profiles = profileDao.getProfiles(unitTypeId);
+        profiles.forEach(profile -> {
+            if (!idCache.containsKey(profile.getId())) {
+                idCache.put(profile.getId(), profile);
+            }
+        });
+        return profiles;
     }
 }

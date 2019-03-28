@@ -2,6 +2,7 @@ package com.github.freeacs.controllers;
 
 import com.github.freeacs.service.ProfileDto;
 import com.github.freeacs.service.ProfileService;
+import io.vavr.collection.List;
 import io.vavr.control.Option;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,11 @@ public class ProfileController {
 
     public ProfileController(ProfileService profileService) {
         this.profileService = profileService;
+    }
+
+    @GetMapping("/byUnitTypeId/{unitTypeId}")
+    public List<ProfileDto> getProfiles(@PathVariable Long unitTypeId) {
+        return this.profileService.getProfiles(unitTypeId);
     }
 
     @GetMapping("/{id}")

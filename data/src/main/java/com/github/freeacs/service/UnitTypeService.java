@@ -48,14 +48,8 @@ public class UnitTypeService {
         return getUnitTypeById(newId);
     }
 
-    public List<UnitTypeDto> getUnitTyps() {
+    public List<UnitTypeDto> getUnitTypes() {
         return unitTypeCache.getUnitTypes()
-                .map(unitType -> new UnitTypeDto(
-                        unitType.getId(),
-                        unitType.getName(),
-                        unitType.getVendor(),
-                        unitType.getDescription(),
-                        unitType.getProtocol()
-                ));
+                .flatMap(unitType -> getUnitTypeById(unitType.getId()));
     }
 }
