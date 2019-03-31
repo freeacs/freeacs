@@ -26,8 +26,8 @@ public class UserDto {
     }
 
     public List<String> getAccessList() {
-        if (accessList != null && accessList.startsWith("WEB")) {
-            String[] modules = accessList.substring(1, accessList.length() - 1).split(",");
+        if (accessList != null && accessList.startsWith("WEB[")) {
+            String[] modules = accessList.substring("WEB[".length(), accessList.length() - 1).split(",");
             return io.vavr.collection.List.of(modules);
         }
         if (accessList != null) {

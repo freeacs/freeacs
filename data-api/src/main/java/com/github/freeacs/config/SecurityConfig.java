@@ -34,7 +34,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        //@formatter:off
         http
                 .httpBasic().disable()
                 .csrf().disable()
@@ -45,7 +44,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider));
-        //@formatter:on
     }
 
     @Data
@@ -53,6 +51,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public static class UserPrincipal implements UserDetails {
         @JsonIgnore
         private UserDto user;
+        private final boolean isAccountNonExpired = true;
+        private final boolean isAccountNonLocked = true;
+        private final boolean isCredentialsNonExpired = true;
+        private final boolean isEnabled = true;
 
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -70,26 +72,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         @Override
         public String getUsername() {
             return user.getUsername();
-        }
-
-        @Override
-        public boolean isAccountNonExpired() {
-            return true;
-        }
-
-        @Override
-        public boolean isAccountNonLocked() {
-            return true;
-        }
-
-        @Override
-        public boolean isCredentialsNonExpired() {
-            return true;
-        }
-
-        @Override
-        public boolean isEnabled() {
-            return true;
         }
     }
 }
