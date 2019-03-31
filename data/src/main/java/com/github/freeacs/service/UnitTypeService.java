@@ -4,9 +4,9 @@ import com.github.freeacs.cache.UnitTypeCache;
 import com.github.freeacs.dao.UnitType;
 import io.vavr.collection.List;
 import io.vavr.control.Option;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class UnitTypeService {
     private final UnitTypeCache unitTypeCache;
 

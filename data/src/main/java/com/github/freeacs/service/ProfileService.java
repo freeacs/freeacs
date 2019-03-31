@@ -4,9 +4,9 @@ import com.github.freeacs.cache.ProfileCache;
 import com.github.freeacs.dao.Profile;
 import io.vavr.collection.List;
 import io.vavr.control.Option;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class ProfileService {
     private final ProfileCache profileCache;
     private final UnitTypeService unitTypeService;

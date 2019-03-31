@@ -10,6 +10,7 @@ import lombok.experimental.Wither;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
+    private Long id;
     private String username;
     private String secret;
     private String fullname;
