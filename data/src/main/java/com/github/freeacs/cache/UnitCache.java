@@ -27,7 +27,10 @@ public class UnitCache {
             return Option.of(unitFromCache);
         }
         return unitDao.getUnit(unitId)
-                .map(unit -> unitIdCache.put(unitId, unit));
+                .map(unit -> {
+                    unitIdCache.put(unitId, unit);
+                    return unit;
+                });
     }
 
     public void createUnit(Unit unit) {
