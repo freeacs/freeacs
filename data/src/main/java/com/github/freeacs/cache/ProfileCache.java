@@ -27,7 +27,10 @@ public class ProfileCache {
             return Option.of(profileFromCache);
         }
         return profileDao.getProfileById(id)
-            .map(profileFromDb -> idCache.put(id, profileFromDb));
+            .map(profileFromDb -> {
+               idCache.put(id, profileFromDb);
+               return profileFromDb;
+            });
     }
 
     public Long createProfile(Profile profile) {

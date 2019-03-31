@@ -30,7 +30,11 @@ public class UnitTypeCache {
             return Option.of(unitTypeFromCache);
         }
         return unitTypeDao.getUnitTypeById(id)
-            .map(unitType -> idCache.put(id, nameCache.put(unitType.getName(), unitType)));
+            .map(unitType -> {
+                nameCache.put(unitType.getName(), unitType);
+                idCache.put(id, unitType);
+                return unitType;
+            });
     }
 
     public Long createUnitType(UnitType unitType) {

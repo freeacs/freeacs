@@ -2,6 +2,7 @@ package com.github.freeacs.config;
 
 import com.github.freeacs.config.SecurityConfig.UserPrincipal;
 import com.github.freeacs.service.UserService;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ACSUserDetailsService implements UserDetailsService {
+    @Getter
     private final UserService userService;
 
     @Autowired

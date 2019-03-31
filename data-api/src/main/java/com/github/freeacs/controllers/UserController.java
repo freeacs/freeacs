@@ -1,5 +1,6 @@
 package com.github.freeacs.controllers;
 
+import com.github.freeacs.config.ACSUserDetailsService;
 import com.github.freeacs.config.JwtTokenProvider;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +14,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
@@ -29,13 +29,13 @@ public class UserController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserDetailsService userService;
+    private final ACSUserDetailsService userDetailsService;
 
     @Autowired
-    public UserController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserDetailsService userService) {
+    public UserController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, ACSUserDetailsService userDetailsService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.userService = userService;
+        this.userDetailsService = userDetailsService;
     }
 
     @GetMapping("/me")
@@ -52,15 +52,10 @@ public class UserController {
 
     @PostMapping("/signin")
     public ResponseEntity signin(@RequestBody UserLogin data) {
-
         try {
             String username = data.getUsername();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, data.getPassword()));
-            String token = jwtTokenProvider.createToken(username, this.userService.loadUserByUsername(username)
-                    .getAuthorities()
-                    .stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .collect(toList()));
+            String token = jwtTokenProvider.createToken(username, this.userDetailsService.getUserService().getByUserName(username).get());
             Map<Object, Object> model = new HashMap<>();
             model.put("username", username);
             model.put("token", token);

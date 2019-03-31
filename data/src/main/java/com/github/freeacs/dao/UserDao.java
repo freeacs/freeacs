@@ -9,5 +9,5 @@ public interface UserDao {
 
     @SqlQuery("select id, username, secret, fullname, accesslist from user_ where username = :username")
     @RegisterFieldMapper(User.class)
-    Option<User> findUser(@Bind("username") String username);
+    Option<User> findUserByName(@Bind("username") String username);
 }

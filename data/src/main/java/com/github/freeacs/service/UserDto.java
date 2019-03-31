@@ -16,6 +16,7 @@ public class UserDto {
     private String secret;
     private String fullname;
     private String accessList;
+    private List<PermissionDto> permissions;
 
     public boolean isAdmin() {
         return "admin".equalsIgnoreCase(username);
