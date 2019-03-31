@@ -2,7 +2,6 @@ package com.github.freeacs.cache;
 
 import com.github.freeacs.dao.UnitType;
 import com.github.freeacs.dao.UnitTypeDao;
-import com.github.freeacs.service.UnitTypeDto;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import io.vavr.collection.List;
@@ -32,15 +31,6 @@ public class UnitTypeCache {
         }
         return unitTypeDao.getUnitTypeById(id)
             .map(unitType -> idCache.put(id, nameCache.put(unitType.getName(), unitType)));
-    }
-
-    public Option<UnitType> getUnitTypeByName(String name) {
-        UnitType unitTypeFromCache = nameCache.get(name);
-        if (unitTypeFromCache != null) {
-            return Option.of(unitTypeFromCache);
-        }
-        return unitTypeDao.getUnitTypeByName(name)
-            .map(unitType -> idCache.put(unitType.getId(), nameCache.put(unitType.getName(), unitType)));
     }
 
     public Long createUnitType(UnitType unitType) {
