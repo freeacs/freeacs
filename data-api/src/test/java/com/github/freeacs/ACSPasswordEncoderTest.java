@@ -7,7 +7,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ACSPasswordEncoderTest {
-    private static final String ENCODED_PASSWORD = "4E9BA006A68A8767D65B3761E038CF9040C54A00";
+    private static final String ENCODED_PASSWORD = "A33E0694639DA19CF58FA1130B2D767F6F4531019FDD45D73D178CED";
 
     private ACSPasswordEncoder encoder;
 

@@ -20,7 +20,7 @@ public class BaseTest {
     public void init() {
         jdbi.withHandle(handle ->
                 handle.createUpdate("insert into user_(username, secret, fullname, accesslist, is_admin) " +
-                        "values('admin', '4E9BA006A68A8767D65B3761E038CF9040C54A00', 'Admin', 'Admin', 1);").execute());
+                        "values('admin', 'A33E0694639DA19CF58FA1130B2D767F6F4531019FDD45D73D178CED', 'Admin', 'Admin', 1);").execute());
     }
 
     @After
