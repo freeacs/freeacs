@@ -1,6 +1,6 @@
 package com.github.freeacs;
 
-import com.github.freeacs.config.UserService;
+import com.github.freeacs.config.ACSUserDetailsService;
 import com.github.freeacs.controllers.ProfileController;
 import com.github.freeacs.controllers.UnitController;
 import com.github.freeacs.controllers.UnitTypeController;
@@ -23,7 +23,7 @@ public class ApplicationTest {
     @Autowired
     private UnitController unitController;
     @Autowired
-    private UserService userService;
+    private ACSUserDetailsService userService;
 
     @Test
     public void contextLoads() {

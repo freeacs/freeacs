@@ -1,19 +1,19 @@
 package com.github.freeacs;
 
-import com.github.freeacs.config.UserPasswordEncoder;
+import com.github.freeacs.config.ACSPasswordEncoder;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class UserPasswordEncoderTest {
+public class ACSPasswordEncoderTest {
     private static final String ENCODED_PASSWORD = "4E9BA006A68A8767D65B3761E038CF9040C54A00";
 
-    private UserPasswordEncoder encoder;
+    private ACSPasswordEncoder encoder;
 
     @Before
     public void init() {
-        encoder = new UserPasswordEncoder();
+        encoder = new ACSPasswordEncoder();
     }
 
     @Test

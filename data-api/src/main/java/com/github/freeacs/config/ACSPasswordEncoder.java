@@ -5,7 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class UserPasswordEncoder implements PasswordEncoder {
+public class ACSPasswordEncoder implements PasswordEncoder {
     private String convertByte2HexUpperCase(byte[] bytes) {
         StringBuilder s = new StringBuilder();
         for (byte b : bytes) {
