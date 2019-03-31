@@ -4,6 +4,7 @@ import com.github.freeacs.service.UnitTypeDto;
 import com.github.freeacs.service.UnitTypeService;
 import io.vavr.collection.List;
 import io.vavr.control.Option;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,6 +13,7 @@ public class UnitTypeController {
 
     private final UnitTypeService unitTypeService;
 
+    @Autowired
     public UnitTypeController(UnitTypeService unitTypeService) {
         this.unitTypeService = unitTypeService;
     }

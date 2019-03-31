@@ -4,6 +4,7 @@ import com.github.freeacs.service.ProfileDto;
 import com.github.freeacs.service.ProfileService;
 import io.vavr.collection.List;
 import io.vavr.control.Option;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,6 +13,7 @@ public class ProfileController {
 
     private final ProfileService profileService;
 
+    @Autowired
     public ProfileController(ProfileService profileService) {
         this.profileService = profileService;
     }
