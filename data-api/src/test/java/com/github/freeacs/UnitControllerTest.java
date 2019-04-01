@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.freeacs.service.ProfileDto;
 import com.github.freeacs.service.UnitDto;
 import com.github.freeacs.service.UnitTypeDto;
+import io.vavr.collection.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,7 @@ public class UnitControllerTest extends BaseTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(content().string(objectMapper.writeValueAsString(request)));
+                .andExpect(content().string(objectMapper.writeValueAsString(request.withUnitType(request.getUnitType().withProfiles(List.of(new ProfileDto(1L, "Test", null)))))));
         return request;
     }
 

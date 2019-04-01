@@ -3,6 +3,7 @@ package com.github.freeacs;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.freeacs.service.ProfileDto;
 import com.github.freeacs.service.UnitTypeDto;
+import io.vavr.collection.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class ProfileControllerTest extends BaseTest {
 
     public static ProfileDto createProfile(MockMvc mockMvc, ObjectMapper objectMapper, UnitTypeDto unitType) throws Exception {
         ProfileDto request = new ProfileDto(null, "Test", unitType);
-        ProfileDto withId = request.withId(1L);
+        ProfileDto withId = request.withId(1L).withUnitType(unitType.withProfiles(List.of(request.withId(1L).withUnitType(null))));
         mockMvc.perform(post("/profile")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
