@@ -3,6 +3,7 @@ package com.github.freeacs;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.freeacs.service.UnitTypeDto;
 import com.github.freeacs.shared.Protocol;
+import io.vavr.collection.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class UnitTypeControllerTest extends BaseTest {
     }
 
     public static UnitTypeDto createUnitType(MockMvc mockMvc, ObjectMapper objectMapper) throws Exception {
-        UnitTypeDto request = new UnitTypeDto(null, "Test", "Test", "Test", Protocol.TR069);
+        UnitTypeDto request = new UnitTypeDto(null, "Test", "Test", "Test", Protocol.TR069, List.empty());
         UnitTypeDto withId = request.withId(1L);
         mockMvc.perform(post("/unittype")
                 .contentType(MediaType.APPLICATION_JSON)

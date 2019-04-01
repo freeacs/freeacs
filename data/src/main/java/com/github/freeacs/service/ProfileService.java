@@ -27,6 +27,15 @@ public class ProfileService {
                 );
     }
 
+    public Option<ProfileDto> getProfileByIdWithoutUnitType(Long id) {
+        return profileCache.getProfileById(id)
+                .map(profile -> new ProfileDto(
+                        profile.getId(),
+                        profile.getName(),
+                        null
+                ));
+    }
+
     public Option<ProfileDto> createProfile(ProfileDto profileDto) {
         Long newId = profileCache.createProfile(new Profile(
                 null,
@@ -39,5 +48,10 @@ public class ProfileService {
     public List<ProfileDto> getProfiles(Long unitTypeId) {
         return profileCache.getProfiles(unitTypeId)
                 .flatMap(profile -> getProfileById(profile.getId()));
+    }
+
+    public List<ProfileDto> getProfilesWithoutUnitType(Long unitTypeId) {
+        return profileCache.getProfiles(unitTypeId)
+                .flatMap(profile -> getProfileByIdWithoutUnitType(profile.getId()));
     }
 }

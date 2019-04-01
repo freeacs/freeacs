@@ -1,5 +1,6 @@
 package com.github.freeacs.service;
 
+import com.github.freeacs.cache.ProfileCache;
 import com.github.freeacs.cache.UnitTypeCache;
 import com.github.freeacs.dao.UnitType;
 import io.vavr.collection.List;
@@ -9,9 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class UnitTypeService {
     private final UnitTypeCache unitTypeCache;
+    private final ProfileService profileService;
 
-    public UnitTypeService(UnitTypeCache unitTypeCache) {
+    public UnitTypeService(UnitTypeCache unitTypeCache, ProfileCache profileCache) {
         this.unitTypeCache = unitTypeCache;
+        this.profileService = new ProfileService(profileCache, this);
     }
 
     public Option<UnitTypeDto> getUnitTypeById(Long id) {
@@ -21,7 +24,8 @@ public class UnitTypeService {
                         unitType.getName(),
                         unitType.getVendor(),
                         unitType.getDescription(),
-                        unitType.getProtocol()
+                        unitType.getProtocol(),
+                        profileService.getProfilesWithoutUnitType(unitType.getId())
                 ));
     }
 
