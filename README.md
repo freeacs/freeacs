@@ -13,8 +13,8 @@ FreeACS requires Java and MySQL. It has been tested to work on Java 8 and latest
 
 ## Social
 
-* [Freeforums](https://www.tapatalk.com/groups/freeacsforum/) (fastes support is here on Github)
-* [Gitter](https://gitter.im/FreeACS-on-Gitter/Freeacs) (fastes support is here on Github)
+* [Freeforums] (deprecated)
+
 
 
 ## Build it
