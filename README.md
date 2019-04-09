@@ -3,8 +3,6 @@
 [![Build Status](https://travis-ci.org/freeacs/freeacs.svg?branch=master)](https://travis-ci.org/freeacs/freeacs)
 [![Maintainability](https://api.codeclimate.com/v1/badges/4b32968512c546806799/maintainability)](https://codeclimate.com/github/freeacs/freeacs/maintainability)
 
-[![Donate](https://img.shields.io/badge/Patreon-Donate-blue.svg)](https://www.patreon.com/freeacs)
-
 FreeACS is the most complete TR-069 ACS available for free under the MIT License. You can download and install it, or contribute to the project! 
 
 ## Prerequisites
@@ -14,8 +12,6 @@ FreeACS requires Java and MySQL. It has been tested to work on Java 8 and latest
 ## Social
 
 * [Freeforums] (deprecated)
-
-
 
 ## Build it
 
