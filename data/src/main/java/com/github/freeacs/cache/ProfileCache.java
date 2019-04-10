@@ -6,6 +6,7 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import io.vavr.collection.List;
 import io.vavr.control.Option;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,7 +17,7 @@ public class ProfileCache {
 
     private final ProfileDao profileDao;
 
-    public ProfileCache(ProfileDao profileDao, HazelcastInstance cache) {
+    public ProfileCache(ProfileDao profileDao, @Qualifier("hazelcastInstance") HazelcastInstance cache) {
         this.profileDao = profileDao;
         this.idCache = cache.getMap(KEY_BY_ID);
     }

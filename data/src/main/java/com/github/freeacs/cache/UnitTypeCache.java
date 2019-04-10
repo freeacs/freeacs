@@ -6,6 +6,7 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import io.vavr.collection.List;
 import io.vavr.control.Option;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,7 +19,7 @@ public class UnitTypeCache {
 
     private final UnitTypeDao unitTypeDao;
 
-    public UnitTypeCache(UnitTypeDao unitTypeDao, HazelcastInstance cache) {
+    public UnitTypeCache(UnitTypeDao unitTypeDao, @Qualifier("hazelcastInstance") HazelcastInstance cache) {
         this.unitTypeDao = unitTypeDao;
         this.idCache = cache.getMap(KEY_BY_ID);
         this.nameCache = cache.getMap(KEY_BY_NAME);
