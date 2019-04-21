@@ -4,7 +4,6 @@ import com.github.freeacs.base.Log;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.ParameterKey;
 import com.github.freeacs.tr069.Properties;
-import com.github.freeacs.tr069.methods.HTTPResponseCreator;
 import com.github.freeacs.tr069.methods.SPVreq;
 import com.github.freeacs.tr069.xml.*;
 
@@ -30,7 +29,7 @@ public class SetParameterValuesResponseCreateStrategy implements ResponseCreateS
         }
         body = new SPVreq(paramList.getParameterValueList(), pk.getServerKey());
         Log.notice(
-                HTTPResponseCreator.class,
+                SetParameterValuesResponseCreateStrategy.class,
                 "Sent to CPE: " + paramList.getParameterValueList().size() + " parameters.");
         reqRes
                 .getSessionData()

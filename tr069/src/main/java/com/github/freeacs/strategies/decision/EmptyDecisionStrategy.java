@@ -11,7 +11,6 @@ import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.InformParameters;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
-import com.github.freeacs.tr069.methods.EMDecision;
 import com.github.freeacs.tr069.methods.Method;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 
@@ -34,48 +33,48 @@ public class EmptyDecisionStrategy implements DecisionStrategy {
         String prevResponseMethod = sessionData.getPreviousResponseMethod();
         if (prevResponseMethod == null) {
             Log.error(
-                    EMDecision.class,
+                    EmptyDecisionStrategy.class,
                     "EM-Decision is EM since the CPE did not send an INFORM (or sessionId was not sent by client)");
             reqRes.getResponseData().setMethod(Method.Empty.name());
         } else if (Method.Empty.name().equals(prevResponseMethod)) {
-            Log.info(EMDecision.class, "EM-Decision is EM since two last responses from CPE was EM");
+            Log.info(EmptyDecisionStrategy.class, "EM-Decision is EM since two last responses from CPE was EM");
             reqRes.getResponseData().setMethod(Method.Empty.name());
         } else if (Method.Inform.name().equals(prevResponseMethod)
                 || Method.TransferComplete.name().equals(prevResponseMethod)
                 || Method.GetRPCMethodsResponse.name().equals(prevResponseMethod)) {
             if (sessionData.getUnittype() == null) {
-                Log.info(EMDecision.class, "EM-Decision is EM since unittype is not found");
+                Log.info(EmptyDecisionStrategy.class, "EM-Decision is EM since unittype is not found");
                 reqRes.getResponseData().setMethod(Method.Empty.name());
             } else if (sessionData.discoverUnittype()) {
                 writeSystemParameters(
                         reqRes,
                         Collections.singletonList(new ParameterValueStruct(SystemParameters.DISCOVER, "0")),
                         false);
-                Log.info(EMDecision.class, "EM-Decision is GPN since unit has DISCOVER parameter set to 1");
+                Log.info(EmptyDecisionStrategy.class, "EM-Decision is GPN since unit has DISCOVER parameter set to 1");
                 reqRes.getResponseData().setMethod(Method.GetParameterNames.name());
             } else if (properties.isDiscoveryMode()
                     && !sessionData.isUnittypeCreated()
                     && sessionData.isFirstConnect()) {
                 writeSystemParameters(reqRes, null, false);
-                Log.info(EMDecision.class, "EM-Decision is GPN since ACS is in discovery-mode");
+                Log.info(EmptyDecisionStrategy.class, "EM-Decision is GPN since ACS is in discovery-mode");
                 reqRes.getResponseData().setMethod(Method.GetParameterNames.name());
             } else if (properties.isDiscoveryMode()
                     && !sessionData.getUnittype().getUnittypeParameters().hasDeviceParameters()) {
                 writeSystemParameters(reqRes);
                 Log.info(
-                        EMDecision.class,
+                        EmptyDecisionStrategy.class,
                         "EM-Decision is GPN since ACS is in discovery-mode and no device parameters found");
                 reqRes.getResponseData().setMethod(Method.GetParameterNames.name());
             } else {
                 writeSystemParameters(reqRes);
                 Log.info(
-                        EMDecision.class,
+                        EmptyDecisionStrategy.class,
                         "EM-Decision is GPV since everything is normal and previous method was either IN or TC (updating LCT and possibly FCT)");
                 reqRes.getResponseData().setMethod(Method.GetParameterValues.name());
             }
         } else {
             Log.info(
-                    EMDecision.class,
+                    EmptyDecisionStrategy.class,
                     "EM-Decision is EM since it is the default method choice (nothing else fits)");
             reqRes.getResponseData().setMethod(Method.Empty.name());
         }

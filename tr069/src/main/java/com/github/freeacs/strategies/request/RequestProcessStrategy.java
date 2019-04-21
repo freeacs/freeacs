@@ -21,9 +21,21 @@ public interface RequestProcessStrategy {
                 return getParameterValuesStrategy();
             case SetParameterValues:
                 return setParameterValuesStrategy();
+            case TransferComplete:
+                return transferCompleteStrategy();
+            case AutonomousTransferComplete:
+                return autonomousTransferComplete();
             default:
                 return doNotProcessStrategy();
         }
+    }
+
+    static RequestProcessStrategy autonomousTransferComplete() {
+        return new AutonomousTransferCompleteRequestProcessStrategy();
+    }
+
+    static RequestProcessStrategy transferCompleteStrategy() {
+        return new TransferCompleteRequestProcessStrategy();
     }
 
     static RequestProcessStrategy doNotProcessStrategy() {

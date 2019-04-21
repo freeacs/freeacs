@@ -1,33 +1,15 @@
 package com.github.freeacs.tr069.methods;
 
-import com.github.freeacs.base.Log;
 import com.github.freeacs.dbi.FileType;
-import com.github.freeacs.dbi.UnittypeParameters;
 import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ProvOutput;
-import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.github.freeacs.tr069.CPEParameters;
 import com.github.freeacs.http.HTTPRequestResponseData;
-import com.github.freeacs.tr069.ParameterKey;
-import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
-import com.github.freeacs.tr069.exception.TR069Exception;
-import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.github.freeacs.tr069.xml.Body;
-import com.github.freeacs.tr069.xml.EmptyResponse;
 import com.github.freeacs.tr069.xml.Header;
-import com.github.freeacs.tr069.xml.ParameterList;
-import com.github.freeacs.tr069.xml.ParameterValueStruct;
-import com.github.freeacs.tr069.xml.ParameterValueStructComparator;
 import com.github.freeacs.tr069.xml.Response;
 import com.github.freeacs.tr069.xml.TR069TransactionID;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
 
 /**
  * The class is responsible for creating a suitable response to the CPE. This response could be a
@@ -36,9 +18,6 @@ import java.util.Optional;
  * @author morten
  */
 public interface HTTPResponseCreator {
-  static Response buildEM(HTTPRequestResponseData reqRes) {
-    return new EmptyResponse(reqRes.getSessionData().getCwmpVersionNumber());
-  }
 
   static Response buildRE(HTTPRequestResponseData reqRes) {
     if (reqRes.getTR069TransactionID() == null) {
@@ -57,151 +36,6 @@ public interface HTTPResponseCreator {
     TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
     Header header = new Header(tr069ID, null, null);
     Body body = new FRreq();
-    return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
-  }
-
-  static Response buildTC(HTTPRequestResponseData reqRes) {
-    TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
-    Header header = new Header(tr069ID, null, null);
-    Body body = new TCres();
-    return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
-  }
-
-  static Response buildATC(HTTPRequestResponseData reqRes) {
-    TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
-    Header header = new Header(tr069ID, null, null);
-    Body body = new ATCres();
-    return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
-  }
-
-  static Response buildIN(HTTPRequestResponseData reqRes) {
-    TR069TransactionID tr069ID = reqRes.getTR069TransactionID();
-    Header header = new Header(tr069ID, null, null);
-    Body body = new INres();
-    return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
-  }
-
-  static Response buildGPN(HTTPRequestResponseData reqRes, Properties properties) {
-    if (reqRes.getTR069TransactionID() == null) {
-      reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
-    }
-    Header header = new Header(reqRes.getTR069TransactionID(), null, null);
-    String keyRoot = reqRes.getSessionData().getKeyRoot();
-    Body body = new GPNreq(keyRoot, properties.isNextLevel0InGPN(reqRes.getSessionData()));
-    return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
-  }
-
-  static boolean isOldPingcomDevice(String unitId) {
-    return unitId.contains("NPA201E") || unitId.contains("RGW208EN") || unitId.contains("NPA101E");
-  }
-
-  static void addCPEParameters(SessionData sessionData, Properties properties) {
-    Map<String, ParameterValueStruct> paramValueMap = sessionData.getFromDB();
-    CPEParameters cpeParams = sessionData.getCpeParameters();
-    UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
-
-    // If device is not old Ping Communication device (NPA201E or RGW208EN) and
-    // vendor config file is not explicitely turned off,
-    // then we may ask for VendorConfigFile object.
-    boolean useVendorConfigFile =
-        !isOldPingcomDevice(sessionData.getUnitId())
-            && !properties.isIgnoreVendorConfigFile(sessionData);
-    if (useVendorConfigFile) {
-      Log.debug(
-          HTTPResponseCreator.class,
-          "VendorConfigFile object will be requested (default behavior)");
-    } else {
-      Log.debug(
-          HTTPResponseCreator.class,
-          "VendorConfigFile object will not be requested. (quirk behavior: old Pingcom device or quirk enabled)");
-    }
-
-    int counter = 0;
-    for (String key : cpeParams.getCpeParams().keySet()) {
-      if ((key.endsWith(".") && useVendorConfigFile)
-          || (paramValueMap.get(key) == null && utps.getByName(key) != null)) {
-        paramValueMap.put(key, new ParameterValueStruct(key, "ExtraCPEParam"));
-        counter++;
-      }
-    }
-    Log.debug(
-        HTTPResponseCreator.class,
-        counter
-            + " cpe-param (not found in database, but of special interest to ACS) added to the GPV-request");
-  }
-
-  /**
-   * Special treatment for PeriodicInformInterval, we want to get that parameter from the CPE,
-   * regardless of what parameteres we have in the database. That's because we have 2 different ways
-   * to set it in the database, the standard and the FREEACS-way.
-   */
-  static Response buildGPV(HTTPRequestResponseData reqRes, Properties properties) {
-    if (reqRes.getTR069TransactionID() == null) {
-      reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
-    }
-    Header header = new Header(reqRes.getTR069TransactionID(), null, null);
-    SessionData sessionData = reqRes.getSessionData();
-    ProvisioningMode mode = sessionData.getUnit().getProvisioningMode();
-    List<ParameterValueStruct> parameterValueList = new ArrayList<>();
-    if (mode == ProvisioningMode.READALL) {
-      Log.debug(
-          HTTPResponseCreator.class,
-          "Asks for all params ("
-              + sessionData.getKeyRoot()
-              + "), since in "
-              + ProvisioningMode.READALL
-              + " mode");
-      ParameterValueStruct pvs = new ParameterValueStruct(sessionData.getKeyRoot(), "");
-      parameterValueList.add(pvs);
-    } else { // mode == ProvisioningMode.PERIODIC
-      // List<RequestResponseData> reqResList = sessionData.getReqResList();
-      String previousMethod = sessionData.getPreviousResponseMethod();
-      if (properties.isUnitDiscovery(sessionData)
-          || TR069Method.GET_PARAMETER_VALUES.equals(previousMethod)) {
-        Log.debug(
-            HTTPResponseCreator.class,
-            "Asks for all params ("
-                + sessionData.getKeyRoot()
-                + "), either because unitdiscovery-quirk or prev. GPV failed");
-        ParameterValueStruct pvs = new ParameterValueStruct(sessionData.getKeyRoot(), "");
-        parameterValueList.add(pvs);
-      } else {
-        Map<String, ParameterValueStruct> paramValueMap = sessionData.getFromDB();
-        addCPEParameters(sessionData, properties);
-        for (Entry<String, ParameterValueStruct> entry : paramValueMap.entrySet()) {
-          parameterValueList.add(entry.getValue());
-        }
-        Log.debug(
-            HTTPResponseCreator.class,
-            "Asks for " + parameterValueList.size() + " parameters in GPV-req");
-        parameterValueList.sort(new ParameterValueStructComparator());
-      }
-    }
-    sessionData.setRequestedCPE(parameterValueList);
-    Body body = new GPVreq(parameterValueList);
-    return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
-  }
-
-  static Response buildSPV(HTTPRequestResponseData reqRes, Properties properties)
-      throws NoSuchAlgorithmException {
-    if (reqRes.getTR069TransactionID() == null) {
-      reqRes.setTR069TransactionID(new TR069TransactionID("FREEACS-" + System.currentTimeMillis()));
-    }
-    Header header = new Header(reqRes.getTR069TransactionID(), null, null);
-    Body body;
-    ParameterList paramList = reqRes.getSessionData().getToCPE();
-    ParameterKey pk = new ParameterKey();
-    if (!properties.isParameterkeyQuirk(reqRes.getSessionData())) {
-      pk.setServerKey(reqRes);
-    }
-    body = new SPVreq(paramList.getParameterValueList(), pk.getServerKey());
-    Log.notice(
-        HTTPResponseCreator.class,
-        "Sent to CPE: " + paramList.getParameterValueList().size() + " parameters.");
-    reqRes
-        .getSessionData()
-        .getProvisioningMessage()
-        .setParamsWritten(paramList.getParameterValueList().size());
     return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
   }
 
@@ -241,35 +75,4 @@ public interface HTTPResponseCreator {
     return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
   }
 
-  static void createResponse(HTTPRequestResponseData reqRes, Map<String, HTTPResponseAction> responseMap)
-      throws TR069Exception {
-    try {
-      String methodName = reqRes.getResponseData().getMethod();
-      final Response response;
-      HTTPResponseAction resAction = responseMap.get(methodName);
-      if (resAction != null) {
-        response = resAction.getCreateResponseMethod().apply(reqRes);
-      } else {
-        response = new EmptyResponse(reqRes.getSessionData().getCwmpVersionNumber());
-        Log.error(
-            HTTPResponseCreator.class,
-            "The methodName " + methodName + " has no corresponding ResponseAction-method");
-      }
-      String responseStr = response.toXml();
-      String unitId = reqRes.getSessionData().getUnitId();
-      Log.conversation(
-          reqRes.getSessionData(),
-          "=============== FROM ACS TO ( "
-              + Optional.ofNullable(unitId).orElse("Unknown")
-              + " ) ============\n"
-              + responseStr
-              + "\n");
-      reqRes.getResponseData().setXml(responseStr);
-    } catch (Throwable t) {
-      throw new TR069Exception(
-          "Not possible to create HTTP-response (to the TR-069 client)",
-          TR069ExceptionShortMessage.MISC,
-          t);
-    }
-  }
 }

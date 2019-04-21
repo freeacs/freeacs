@@ -8,8 +8,6 @@ import java.sql.SQLException;
 public class HTTPRequestAction {
   private CheckedRequestFunction processRequestMethod;
 
-  private CheckedRequestFunction decisionMakerMethod;
-
   /**
    * ReqClass: The class must provide a process(RequestResponse) method. This method is responsible
    * for processing the incoming request. decideClass: In case there are several options of what to
@@ -17,17 +15,12 @@ public class HTTPRequestAction {
    * process(RequestResponse) method.
    */
   public HTTPRequestAction(
-      CheckedRequestFunction processRequestMethod, CheckedRequestFunction decisionMakerMethod) {
+          CheckedRequestFunction processRequestMethod) {
     this.processRequestMethod = processRequestMethod;
-    this.decisionMakerMethod = decisionMakerMethod;
   }
 
   public CheckedRequestFunction getProcessRequestMethod() {
     return processRequestMethod;
-  }
-
-  public CheckedRequestFunction getDecisionMakerMethod() {
-    return decisionMakerMethod;
   }
 
   @FunctionalInterface

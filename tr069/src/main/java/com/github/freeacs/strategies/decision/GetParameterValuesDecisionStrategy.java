@@ -40,7 +40,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
     public void makeDecision(HTTPRequestResponseData reqRes) throws Exception {
         SessionData sessionData = reqRes.getSessionData();
         ProvisioningMode mode = sessionData.getUnit().getProvisioningMode();
-        Log.debug(GPVDecision.class, "Mode was detected to be: " + mode);
+        Log.debug(GetParameterValuesDecisionStrategy.class, "Mode was detected to be: " + mode);
         ProvisioningMessage pm = sessionData.getProvisioningMessage();
         pm.setProvMode(mode);
         boolean PIIsupport = supportPII(sessionData);
@@ -56,7 +56,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
             processExtraction(reqRes);
         }
         updateActiveDeviceMap(reqRes);
-        Log.debug(GPVDecision.class, "GPV-Decision is " + reqRes.getResponseData().getMethod());
+        Log.debug(GetParameterValuesDecisionStrategy.class, "GPV-Decision is " + reqRes.getResponseData().getMethod());
     }
 
     @SuppressWarnings("Duplicates")
@@ -206,16 +206,16 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         String PII = cpeParams.PERIODIC_INFORM_INTERVAL;
         UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
         if (utps.getByName(PII) != null && cpeParams.getValue(PII) != null) {
-            Log.debug(GPVDecision.class, "CPE supports PeriodicInformInterval");
+            Log.debug(GetParameterValuesDecisionStrategy.class, "CPE supports PeriodicInformInterval");
             return true;
         } else {
             if (utps.getByName(PII) != null) {
                 Log.error(
-                        GPVDecision.class,
+                        GetParameterValuesDecisionStrategy.class,
                         "The CPE did not return PeriodicInformInterval, terminating the conversation.");
             } else { // (cpeParams.getValue(PII) == null)
                 Log.error(
-                        GPVDecision.class,
+                        GetParameterValuesDecisionStrategy.class,
                         "The unittype does not contain PeriodicInformInterval, terminating the conversation.");
             }
             return false;
@@ -236,7 +236,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         pvs.setValue(String.valueOf(nextPII));
         pvs.setType("xsd:unsignedInt");
         Log.debug(
-                GPVDecision.class,
+                GetParameterValuesDecisionStrategy.class,
                 "All previous CPE parameter changes are cancelled, will only set PeriodicInformInterval ("
                         + pvs.getValue()
                         + ") to CPE and ACS");
@@ -244,13 +244,13 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         sessionData.setToCPE(toCPE);
         sessionData.getToDB().add(new ParameterValueStruct(PII, String.valueOf(nextPII)));
         Log.debug(
-                GPVDecision.class,
+                GetParameterValuesDecisionStrategy.class,
                 "-ACS->ACS      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
         sessionData
                 .getToDB()
                 .add(new ParameterValueStruct(SystemParameters.PERIODIC_INTERVAL, String.valueOf(nextPII)));
         Log.debug(
-                GPVDecision.class,
+                GetParameterValuesDecisionStrategy.class,
                 "-ACS->ACS      "
                         + SystemParameters.PERIODIC_INTERVAL
                         + " CPE["
@@ -311,7 +311,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         sessionData.getProvisioningMessage().setPeriodicInformInterval(Integer.valueOf(nextPII));
         if (cpeParams.getValue(PII) != null && cpeParams.getValue(PII).equals(nextPII)) {
             Log.debug(
-                    GPVDecision.class,
+                    GetParameterValuesDecisionStrategy.class,
                     "-No change     "
                             + PII
                             + " CPE["
@@ -322,17 +322,17 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         } else {
             sessionData.getToCPE().addOrChangeParameterValueStruct(PII, nextPII, "xsd:unsignedInt");
             Log.debug(
-                    GPVDecision.class,
+                    GetParameterValuesDecisionStrategy.class,
                     "-ACS->CPE      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
             sessionData.getToDB().add(new ParameterValueStruct(PII, nextPII));
             Log.debug(
-                    GPVDecision.class,
+                    GetParameterValuesDecisionStrategy.class,
                     "-ACS->ACS      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
             sessionData
                     .getToDB()
                     .add(new ParameterValueStruct(SystemParameters.PERIODIC_INTERVAL, nextPII));
             Log.debug(
-                    GPVDecision.class,
+                    GetParameterValuesDecisionStrategy.class,
                     "-ACS->ACS      "
                             + SystemParameters.PERIODIC_INTERVAL
                             + " CPE["
@@ -355,7 +355,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         String disruptiveJob = sessionData.getAcsParameters().getValue(SystemParameters.JOB_DISRUPTIVE);
         if ("1".equals(disruptiveJob)) {
             Log.debug(
-                    GPVDecision.class, "No more jobs && disruptive flag set -> disruptive flag reset (to 0)");
+                    GetParameterValuesDecisionStrategy.class, "No more jobs && disruptive flag set -> disruptive flag reset (to 0)");
             ParameterValueStruct disruptivePvs =
                     new ParameterValueStruct(SystemParameters.JOB_DISRUPTIVE, "0");
             sessionData.getToDB().add(disruptivePvs);
@@ -364,7 +364,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         sessionData.getProvisioningMessage().setPeriodicInformInterval(Integer.valueOf(nextPII));
         if (cpeParams.getValue(PII) != null && cpeParams.getValue(PII).equals(nextPII)) {
             Log.debug(
-                    GPVDecision.class,
+                    GetParameterValuesDecisionStrategy.class,
                     "-No change     "
                             + PII
                             + " CPE["
@@ -375,17 +375,17 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         } else {
             sessionData.getToCPE().addOrChangeParameterValueStruct(PII, nextPII, "xsd:unsignedInt");
             Log.debug(
-                    GPVDecision.class,
+                    GetParameterValuesDecisionStrategy.class,
                     "-ACS->CPE      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
             sessionData.getToDB().add(new ParameterValueStruct(PII, nextPII));
             Log.debug(
-                    GPVDecision.class,
+                    GetParameterValuesDecisionStrategy.class,
                     "-ACS->ACS      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
             sessionData
                     .getToDB()
                     .add(new ParameterValueStruct(SystemParameters.PERIODIC_INTERVAL, nextPII));
             Log.debug(
-                    GPVDecision.class,
+                    GetParameterValuesDecisionStrategy.class,
                     "-ACS->ACS      "
                             + SystemParameters.PERIODIC_INTERVAL
                             + " CPE["
@@ -421,12 +421,12 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
                 logMessage +=
                         "but does not exist in the CPE. Delete it from the unittype or update the firmware! ";
                 logMessage += "This situation will impact on the performance of the system.";
-                Log.warn(GPVDecision.class, logMessage);
+                Log.warn(GetParameterValuesDecisionStrategy.class, logMessage);
             }
         }
         if (parameterMissing) {
             Log.warn(
-                    GPVDecision.class,
+                    GetParameterValuesDecisionStrategy.class,
                     "GPV has been issued twice, but apparantly the reason for the failure of the first GPV-response is not due to missing parameters in the CPE.");
         }
     }
@@ -475,7 +475,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
             }
             if (utp == null) {
                 Log.debug(
-                        GPVDecision.class,
+                        GetParameterValuesDecisionStrategy.class,
                         "The parameter name "
                                 + pvsCPE.getName()
                                 + " was not recognized in ACS, could happen if a GPV on all params was issued.");
@@ -492,7 +492,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
                                             acsV,
                                             "No change",
                                             "Values differ & parameterkey is correct & param is confidential (C flag)");
-                            Log.debug(GPVDecision.class, msg);
+                            Log.debug(GetParameterValuesDecisionStrategy.class, msg);
                         } else {
                             String unlc = utp.getName().toLowerCase();
                             String msg = null;
@@ -519,40 +519,40 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
                                 pvsDB.setType(pvsCPE.getType());
                             }
                             toCPE.addParameterValueStruct(pvsDB);
-                            Log.warn(GPVDecision.class, msg);
+                            Log.warn(GetParameterValuesDecisionStrategy.class, msg);
                         }
                     } else {
                         Log.debug(
-                                GPVDecision.class, msg(utp, cpeV, acsV, "ACS->CPE", "Param has ReadWrite-flag"));
+                                GetParameterValuesDecisionStrategy.class, msg(utp, cpeV, acsV, "ACS->CPE", "Param has ReadWrite-flag"));
                         if (pvsDB != null) {
                             pvsDB.setType(pvsCPE.getType());
                         }
                         toCPE.addParameterValueStruct(pvsDB);
                     }
                 } else {
-                    Log.debug(GPVDecision.class, msg(utp, cpeV, acsV, "CPE->ACS", "Param has ReadOnly-flag"));
+                    Log.debug(GetParameterValuesDecisionStrategy.class, msg(utp, cpeV, acsV, "CPE->ACS", "Param has ReadOnly-flag"));
                     toDB.add(pvsCPE);
                 }
             } else if (pvsDB != null
                     && pvsDB.getValue() == null
                     && pvsCPE.getValue() != null
                     && !pvsCPE.getValue().isEmpty()) {
-                Log.debug(GPVDecision.class, msg(utp, cpeV, acsV, "CPE->ACS", "Param new to ACS"));
+                Log.debug(GetParameterValuesDecisionStrategy.class, msg(utp, cpeV, acsV, "CPE->ACS", "Param new to ACS"));
                 toDB.add(pvsCPE);
             } else if ("ExtraCPEParam".equals(acsV)) {
                 Log.debug(
-                        GPVDecision.class,
+                        GetParameterValuesDecisionStrategy.class,
                         msg(utp, cpeV, acsV, "No change", "Ignore ExtraCPEParam - they're treated separately"));
             } else {
                 Log.debug(
-                        GPVDecision.class,
+                        GetParameterValuesDecisionStrategy.class,
                         msg(utp, cpeV, acsV, "No change", "Default action, the values should be equal"));
             }
         }
         // List<RequestResponseData> reqResList = sessionData.getReqResList();
         String previousMethod = sessionData.getMethodBeforePreviousResponseMethod();
         Log.debug(
-                GPVDecision.class,
+                GetParameterValuesDecisionStrategy.class,
                 "PreviousResponseMethod before deciding on log missing cpe params: " + previousMethod);
         if (Method.GetParameterValues.name().equals(previousMethod)) {
             logMissingCPEParams(sessionData);
@@ -561,7 +561,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         sessionData.setToDB(toDB);
         // sessionData.setToSyslog(toSyslog);
         Log.debug(
-                GPVDecision.class,
+                GetParameterValuesDecisionStrategy.class,
                 toCPE.getParameterValueList().size() + " params to CPE, " + toDB.size() + " params to ACS");
     }
 
@@ -595,26 +595,26 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
         List<ParameterValueStruct> toDB = new ArrayList<>();
         Log.info(
-                GPVDecisionExtraction.class,
+                GetParameterValuesDecisionStrategy.class,
                 "Provisioning in "
                         + ProvisioningMode.READALL
                         + " mode, "
                         + sessionData.getFromCPE().size()
                         + " params from CPE may be copied to ACS session storage");
-        //		Log.info(GPVDecisionExtraction.class, "Provisioning in EXTRACTION mode, " +
+        //		Log.info(GetParameterValuesDecisionStrategyExtraction.class, "Provisioning in EXTRACTION mode, " +
         // sessionData.getFromCPE().size() + " params from CPE may be copied to ACS session storage");
         for (int i = 0; i < sessionData.getFromCPE().size(); i++) {
             ParameterValueStruct pvsCPE = sessionData.getFromCPE().get(i);
             UnittypeParameter utp = utps.getByName(pvsCPE.getName());
             if (utp == null) {
                 Log.debug(
-                        GPVDecision.class,
+                        GetParameterValuesDecisionStrategy.class,
                         pvsCPE.getName() + " could not be stored in ACS, since name was unrecognized in ACS");
                 continue;
             }
             if ("(null)".equals(pvsCPE.getValue())) {
                 Log.debug(
-                        GPVDecision.class,
+                        GetParameterValuesDecisionStrategy.class,
                         pvsCPE.getName()
                                 + " will not be stored in ACS, since value was '(null)' - indicating not implemented");
                 continue;
@@ -627,12 +627,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
                     new DBAccessSessionTR069(
                             reqRes.getDbAccess().getDBI().getAcs(), sessionData.getDbAccessSession());
             dbAccessSessionTR069.writeUnitSessionParams(sessionData);
-            //			reqRes.getSessionData().getUnit().toWriteQueue(SystemParameters.PROVISIONING_MODE,
-            // ProvisioningMode.PERIODIC.toString());
-            Log.debug(
-                    GPVDecisionExtraction.class, toDB.size() + " params written to ACS session storage");
-            //			Log.debug(GPVDecisionExtraction.class, toDB.size() + " params written to ACS session
-            // storage  - provisioning mode will be reset to " + ProvisioningMode.PERIODIC.toString());
+            Log.debug(GetParameterValuesDecisionStrategy.class, toDB.size() + " params written to ACS session storage");
             reqRes.getResponseData().setMethod(Method.Empty.name());
             sessionData.getProvisioningMessage().setProvOutput(ProvisioningMessage.ProvOutput.EMPTY);
         } catch (SQLException sqle) {

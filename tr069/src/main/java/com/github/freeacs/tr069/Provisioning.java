@@ -21,6 +21,7 @@ import com.github.freeacs.http.AbstractHttpDataWrapper;
 import com.github.freeacs.http.HTTPRequestData;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.http.HTTPResponseData;
+import com.github.freeacs.tr069.methods.Method;
 import com.github.freeacs.tr069.methods.TR069Method;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -255,9 +256,9 @@ public class Provisioning extends AbstractHttpDataWrapper {
       HTTPResponseData resData = reqRes.getResponseData();
       if (reqData.getMethod() != null
           && resData != null
-          && TR069Method.EMPTY.equals(resData.getMethod())) {
+          && Method.Empty.name().equals(resData.getMethod())) {
         boolean terminationQuirk = properties.isTerminationQuirk(sessionData);
-        return !terminationQuirk || TR069Method.EMPTY.equals(reqData.getMethod());
+        return !terminationQuirk || Method.Empty.name().equals(reqData.getMethod());
       }
       return false;
     } catch (Throwable t) {

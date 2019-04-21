@@ -4,7 +4,6 @@ import com.github.freeacs.base.Log;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.CPEParameters;
 import com.github.freeacs.tr069.SessionData;
-import com.github.freeacs.tr069.methods.GPVres;
 import com.github.freeacs.tr069.methods.Method;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import com.github.freeacs.tr069.xml.Parser;
@@ -15,7 +14,7 @@ public class GetParameterValuesRequestProcessStrategy implements RequestProcessS
     @Override
     public void process(HTTPRequestResponseData reqRes) throws Exception {
         reqRes.getRequestData().setMethod(Method.GetParameterNames.name());
-        Log.debug(GPVres.class, "Will process XML: " + reqRes.getRequestData().getXml().length() + " char");
+        Log.debug(GetParameterValuesRequestProcessStrategy.class, "Will process XML: " + reqRes.getRequestData().getXml().length() + " char");
         Parser parser = new Parser(reqRes.getRequestData().getXml());
         SessionData sessionData = reqRes.getSessionData();
         if (parser.getHeader().getNoMoreRequests() != null
@@ -24,11 +23,11 @@ public class GetParameterValuesRequestProcessStrategy implements RequestProcessS
         }
         sessionData.setFromCPE(parser.getParameterList().getParameterValueList());
         sessionData.getProvisioningMessage().setParamsRead(sessionData.getFromCPE().size());
-        Log.debug(GPVres.class, "Response holds " + sessionData.getFromCPE().size() + " parameters");
+        Log.debug(GetParameterValuesRequestProcessStrategy.class, "Response holds " + sessionData.getFromCPE().size() + " parameters");
         if (sessionData.getFromCPE().size() < sessionData.getRequestedCPE().size()) {
             String msg = "Number of parameters returned from CPE is less than asked for (";
             msg += sessionData.getRequestedCPE().size() + ")";
-            Log.warn(GPVres.class, msg);
+            Log.warn(GetParameterValuesRequestProcessStrategy.class, msg);
         }
         populateCPEParameters(sessionData);
     }
@@ -61,7 +60,6 @@ public class GetParameterValuesRequestProcessStrategy implements RequestProcessS
                 cpeParams.putPvs(cpeParams.SOFTWARE_VERSION, pvs);
             }
         }
-        Log.debug(
-                GPVres.class, "Found " + counter + " cpe-params (of special interest to ACS) in response");
+        Log.debug(GetParameterValuesRequestProcessStrategy.class, "Found " + counter + " cpe-params (of special interest to ACS) in response");
     }
 }

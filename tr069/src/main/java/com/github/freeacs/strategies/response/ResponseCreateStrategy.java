@@ -5,8 +5,6 @@ import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.methods.Method;
 import com.github.freeacs.tr069.xml.Response;
 
-import java.security.NoSuchAlgorithmException;
-
 @FunctionalInterface
 public interface ResponseCreateStrategy {
 
@@ -24,9 +22,21 @@ public interface ResponseCreateStrategy {
                 return getParameterValuesStrategy(properties);
             case SetParameterValues:
                 return setParameterValuesStrategy(properties);
+            case TransferComplete:
+                return transferCompleteStrategy();
+            case AutonomousTransferComplete:
+                return autonomousTransferCompleteStrategy();
             default:
                 return emStrategy();
         }
+    }
+
+    static ResponseCreateStrategy autonomousTransferCompleteStrategy() {
+        return new AutonomousTransferCompleteResponseCreateStrategy();
+    }
+
+    static ResponseCreateStrategy transferCompleteStrategy() {
+        return new TransferCompleteResponseCreateStrategy();
     }
 
     static ResponseCreateStrategy emStrategy() {

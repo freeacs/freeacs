@@ -23,7 +23,6 @@ import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
-import com.github.freeacs.tr069.methods.GPVDecision;
 import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import java.sql.SQLException;
@@ -206,17 +205,17 @@ public class ShellJobLogic {
     sessionData.getProvisioningMessage().setPeriodicInformInterval(new Integer(nextPII));
     sessionData.getToCPE().addOrChangeParameterValueStruct(PII, nextPII, "xsd:unsignedInt");
     Log.debug(
-        GPVDecision.class,
+            ShellJobLogic.class,
         "-ACS->CPE      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
     sessionData.getToDB().add(new ParameterValueStruct(PII, "" + nextPII));
     Log.debug(
-        GPVDecision.class,
+            ShellJobLogic.class,
         "-ACS->ACS      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
     sessionData
         .getToDB()
         .add(new ParameterValueStruct(SystemParameters.PERIODIC_INTERVAL, "" + nextPII));
     Log.debug(
-        GPVDecision.class,
+            ShellJobLogic.class,
         "-ACS->ACS      "
             + SystemParameters.PERIODIC_INTERVAL
             + " CPE["

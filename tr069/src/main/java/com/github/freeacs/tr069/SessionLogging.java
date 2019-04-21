@@ -11,6 +11,7 @@ import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.http.HTTPRequestData;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.http.HTTPResponseData;
+import com.github.freeacs.tr069.methods.Method;
 import com.github.freeacs.tr069.methods.TR069Method;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import java.util.List;
@@ -83,7 +84,7 @@ public class SessionLogging {
         HTTPRequestResponseData prevReqRes = reqResList.get(i - 1);
         String prevResMethod = prevReqRes.getResponseData().getMethod();
         if (prevResMethod != null
-            && !TR069Method.EMPTY.equals(reqMethod)
+            && !Method.Empty.name().equals(reqMethod)
             && prevResMethod.equals(reqMethod)) {
           reqShortname += "r";
         }
@@ -92,14 +93,14 @@ public class SessionLogging {
         reqShortname += "(FC:" + reqData.getFault().getFaultCode() + ")";
       }
       String resShortname = abbrevMap.get(resMethod);
-      if (!TR069Method.EMPTY.equals(reqMethod) && reqMethod.equals(resMethod)) {
+      if (!Method.Empty.name().equals(reqMethod) && reqMethod.equals(resMethod)) {
         resShortname += "r";
       }
-      if (TR069Method.SET_PARAMETER_VALUES.equals(reqMethod)
+      if (Method.SetParameterValues.name().equals(reqMethod)
           && !reqRes.getSessionData().isProvisioningAllowed()) {
         reqShortname += "lim";
       }
-      if (TR069Method.INFORM.equals(reqMethod)) {
+      if (Method.Inform.name().equals(reqMethod)) {
         reqShortname += "(" + reqRes.getSessionData().getEventCodes() + ")";
       }
       methodsUsed += "[" + reqShortname;
@@ -129,7 +130,7 @@ public class SessionLogging {
     int paramsToCPE = 0;
     for (HTTPRequestResponseData reqResItem : reqResList) {
       String resMethod = reqResItem.getResponseData().getMethod();
-      if (TR069Method.SET_PARAMETER_VALUES.equals(resMethod)) {
+      if (Method.SetParameterValues.name().equals(resMethod)) {
         paramsToCPE = sessionData.getToCPE().getParameterValueList().size();
         for (ParameterValueStruct pvs : sessionData.getToCPE().getParameterValueList()) {
           parameterList += pvs.getName() + "=" + pvs.getValue() + ", ";

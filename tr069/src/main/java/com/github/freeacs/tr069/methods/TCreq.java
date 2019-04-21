@@ -8,7 +8,7 @@ import com.github.freeacs.tr069.xml.Parser;
 
 public class TCreq {
   public static void process(HTTPRequestResponseData reqRes) throws TR069Exception {
-    reqRes.getRequestData().setMethod(TR069Method.TRANSFER_COMPLETE);
+    reqRes.getRequestData().setMethod(Method.TransferComplete.name());
     Parser parser = new Parser(reqRes.getRequestData().getXml());
     Header header = parser.getHeader();
     reqRes.setTR069TransactionID(header.getId());

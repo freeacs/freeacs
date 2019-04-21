@@ -21,9 +21,21 @@ public interface DecisionStrategy {
                 return getParameterValuesStrategy(properties);
             case SetParameterValues:
                 return setParameterValuesStrategy(properties);
+            case TransferComplete:
+                return transferCompleteStrategy();
+            case AutonomousTransferComplete:
+                return autonomousTransferComplete();
             default:
                 return emStrategy(properties);
         }
+    }
+
+    static DecisionStrategy autonomousTransferComplete() {
+        return new AutonomousTransferCompleteDecisionStrategy();
+    }
+
+    static DecisionStrategy transferCompleteStrategy() {
+        return new TransferCompleteDecisionStrategy();
     }
 
     static DecisionStrategy informStrategy() {

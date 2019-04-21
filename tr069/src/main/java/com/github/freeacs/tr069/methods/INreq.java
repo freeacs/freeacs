@@ -185,7 +185,7 @@ public class INreq {
   public static void process(HTTPRequestResponseData reqRes, Properties properties) throws TR069Exception {
     try {
       boolean isDiscoveryMode = properties.isDiscoveryMode();
-      reqRes.getRequestData().setMethod(TR069Method.INFORM);
+      reqRes.getRequestData().setMethod(Method.Inform.name());
       Parser parser = new Parser(reqRes.getRequestData().getXml());
       SessionData sessionData = reqRes.getSessionData();
       Header header = parser.getHeader();

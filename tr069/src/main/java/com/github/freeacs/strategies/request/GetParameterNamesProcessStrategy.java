@@ -9,7 +9,6 @@ import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
-import com.github.freeacs.tr069.methods.GPNres;
 import com.github.freeacs.tr069.methods.Method;
 import com.github.freeacs.tr069.xml.ParameterInfoStruct;
 import com.github.freeacs.tr069.xml.ParameterList;
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GetParameterNamesProcessStrategy implements RequestProcessStrategy {
-    private static final Logger logger = LoggerFactory.getLogger(GPNres.class);
+    private static final Logger logger = LoggerFactory.getLogger(GetParameterNamesProcessStrategy.class);
 
     private Properties properties;
 
@@ -81,7 +80,7 @@ public class GetParameterNamesProcessStrategy implements RequestProcessStrategy 
             }
             sessionData.getDbAccessSession().writeUnittypeParameters(sessionData, utpList);
             Log.debug(
-                    GPNres.class,
+                    GetParameterNamesProcessStrategy.class,
                     "Unittype parameters (" + pisList.size() + ") is written to DB, will now reload unit");
             sessionData.setFromDB(null);
             sessionData.setAcsParameters(null);

@@ -8,7 +8,6 @@ import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.methods.Method;
-import com.github.freeacs.tr069.methods.SPVDecision;
 
 public class SetParameterValuesDecisionStrategy implements DecisionStrategy {
     private final Properties properties;
@@ -25,7 +24,7 @@ public class SetParameterValuesDecisionStrategy implements DecisionStrategy {
                 && properties.isParameterkeyQuirk(sessionData)
                 && sessionData.isProvisioningAllowed()) {
             Log.debug(
-                    SPVDecision.class,
+                    SetParameterValuesDecisionStrategy.class,
                     "UnitJob is COMPLETED without verification stage, since CPE does not support ParameterKey");
             UnitJob uj = new UnitJob(sessionData, sessionData.getJob(), false);
             uj.stop(UnitJobStatus.COMPLETED_OK, properties.isDiscoveryMode());
