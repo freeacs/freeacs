@@ -12,23 +12,7 @@ import com.github.freeacs.tr069.xml.Response;
 import com.github.freeacs.tr069.xml.TR069TransactionID;
 
 public class DownloadResponseCreateStrategy implements ResponseCreateStrategy {
-    private final String START = "\t\t<cwmp:Download xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">\n";
-    private final String COMMAND_KEY_START = "\t\t\t<CommandKey>";
-    private final String COMMAND_KEY_END = "</CommandKey>\n";
-    private final String FILE_TYPE_START = "\t\t\t<FileType>";
-    private final String FILE_TYPE_END = "</FileType>\n";
-    private final String URL_START = "\t\t\t<URL>";
-    private final String URL_END = "</URL>\n";
-    private final String USERNAME_START = "\t\t\t<Username>";
-    private final String USERNAME_END = "</Username>\n";
-    private final String PASSWORD_START = "\t\t\t<Password>";
-    private final String PASSWORD_END = "</Password>\n";
-    private final String DELAY_SECONDS_START = "\t\t\t<DelaySeconds>";
-    private final String DELAY_SECONDS = "0";
-    private final String DELAY_SECONDS_END = "</DelaySeconds>\n";
-    private final String SUCCESS_URL = "\t\t\t<SuccessURL></SuccessURL>\n";
-    private final String FAILURE_URL = "\t\t\t<FailureURL></FailureURL>\n";
-    private final String END = "\t\t</cwmp:Download>\n";
+    private static final String DELAY_SECONDS = "0";
 
     private final Properties properties;
 
@@ -72,43 +56,43 @@ public class DownloadResponseCreateStrategy implements ResponseCreateStrategy {
             @Override
             public String toXmlImpl() {
                 StringBuilder sb = new StringBuilder(3);
-                sb.append(START);
-                sb.append(COMMAND_KEY_START);
+                sb.append("\t\t<cwmp:Download xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">\n");
+                sb.append("\t\t\t<CommandKey>");
                 if (commandKey != null) {
                     sb.append(commandKey);
                 } else {
                     sb.append("Download_To_CPE");
                 }
-                sb.append(COMMAND_KEY_END);
-                sb.append(FILE_TYPE_START);
+                sb.append("</CommandKey>\n");
+                sb.append("\t\t\t<FileType>");
                 sb.append(type);
-                sb.append(FILE_TYPE_END);
-                sb.append(URL_START);
+                sb.append("</FileType>\n");
+                sb.append("\t\t\t<URL>");
                 sb.append(url);
-                sb.append(URL_END);
+                sb.append("</URL>\n");
 
-                sb.append(USERNAME_START);
+                sb.append("\t\t\t<Username>");
                 if (fileAuthUsed) {
                     sb.append(username);
                 }
-                sb.append(USERNAME_END);
-                sb.append(PASSWORD_START);
+                sb.append("</Username>\n");
+                sb.append("\t\t\t<Password>");
                 if (fileAuthUsed) {
                     sb.append(password);
                 }
-                sb.append(PASSWORD_END);
+                sb.append("</Password>\n");
                 sb.append("\t\t\t<FileSize>").append(filesize).append("</FileSize>\n");
                 if (targetFilename != null) {
                     sb.append("\t\t\t<TargetFileName>").append(targetFilename).append("</TargetFileName>\n");
                 } else {
                     sb.append("\t\t\t<TargetFileName></TargetFileName>\n");
                 }
-                sb.append(DELAY_SECONDS_START);
+                sb.append("\t\t\t<DelaySeconds>");
                 sb.append(DELAY_SECONDS);
-                sb.append(DELAY_SECONDS_END);
-                sb.append(SUCCESS_URL);
-                sb.append(FAILURE_URL);
-                sb.append(END);
+                sb.append("</DelaySeconds>\n");
+                sb.append("\t\t\t<SuccessURL></SuccessURL>\n");
+                sb.append("\t\t\t<FailureURL></FailureURL>\n");
+                sb.append("\t\t</cwmp:Download>\n");
                 return sb.toString();
             }
         };

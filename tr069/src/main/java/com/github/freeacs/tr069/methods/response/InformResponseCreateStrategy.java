@@ -15,11 +15,9 @@ public class InformResponseCreateStrategy implements ResponseCreateStrategy {
         Body body = new Body() {
             @Override
             public String toXmlImpl() {
-                StringBuilder sb = new StringBuilder(3);
-                sb.append("\t\t<cwmp:InformResponse>\n");
-                sb.append("\t\t\t<MaxEnvelopes>1</MaxEnvelopes>\n");
-                sb.append("\t\t</cwmp:InformResponse>\n");
-                return sb.toString();
+                return "\t\t<cwmp:InformResponse>\n" +
+                        "\t\t\t<MaxEnvelopes>1</MaxEnvelopes>\n" +
+                        "\t\t</cwmp:InformResponse>\n";
             }
         };
         return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());

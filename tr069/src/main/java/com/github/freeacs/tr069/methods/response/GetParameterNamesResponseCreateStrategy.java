@@ -23,13 +23,6 @@ public class GetParameterNamesResponseCreateStrategy implements ResponseCreateSt
         Header header = new Header(reqRes.getTR069TransactionID(), null, null);
         String keyRoot = reqRes.getSessionData().getKeyRoot();
         Body body = new Body() {
-            private final String START = "\t\t<cwmp:GetParameterNames>\n";
-            private final String PARAMETER_PATH_START = "\t\t\t<ParameterPath>";
-            private final String PARAMETER_PATH_END = "</ParameterPath>\n";
-            private final String NEXTLEVEL_F = "\t\t\t<NextLevel>false</NextLevel>\n";
-            private final String NEXTLEVEL_0 = "\t\t\t<NextLevel>0</NextLevel>\n";
-            /** Private static final String NEXTLEVEL = "\t\t\t<NextLevel>true</NextLevel>\n";. */
-            private final String END = "\t\t</cwmp:GetParameterNames>\n";
 
             private String parameter = keyRoot;
             private boolean nextLevel0 = properties.isNextLevel0InGPN(reqRes.getSessionData());
@@ -37,16 +30,16 @@ public class GetParameterNamesResponseCreateStrategy implements ResponseCreateSt
             @Override
             public String toXmlImpl() {
                 StringBuilder sb = new StringBuilder(3);
-                sb.append(START);
-                sb.append(PARAMETER_PATH_START);
+                sb.append("\t\t<cwmp:GetParameterNames>\n");
+                sb.append("\t\t\t<ParameterPath>");
                 sb.append(parameter);
-                sb.append(PARAMETER_PATH_END);
+                sb.append("</ParameterPath>\n");
                 if (nextLevel0) {
-                    sb.append(NEXTLEVEL_0);
+                    sb.append("\t\t\t<NextLevel>0</NextLevel>\n");
                 } else {
-                    sb.append(NEXTLEVEL_F);
+                    sb.append("\t\t\t<NextLevel>false</NextLevel>\n");
                 }
-                sb.append(END);
+                sb.append("\t\t</cwmp:GetParameterNames>\n");
                 return sb.toString();
             }
         };

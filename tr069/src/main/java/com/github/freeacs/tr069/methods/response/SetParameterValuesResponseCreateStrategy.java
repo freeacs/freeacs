@@ -30,34 +30,22 @@ public class SetParameterValuesResponseCreateStrategy implements ResponseCreateS
             pk.setServerKey(reqRes);
         }
         body = new Body() {
-            private final String START = "\t\t<cwmp:SetParameterValues>\n";
-            private final String END = "\t\t</cwmp:SetParameterValues>\n";
-            private final String PARAMETER_LIST_START_1 = "\t\t\t<ParameterList " + Namespace.getSoapEncNS() + ":arrayType=\"cwmp:ParameterValueStruct[";
-            private final String PARAMETER_LIST_START_2 = "]\">\n";
-            private final String PARAMETER_KEY_START = "\t\t\t<ParameterKey>";
-            private final String PARAMETER_KEY_END = "</ParameterKey>\n";
-            private final String PARAMETER_VALUE_STRUCT_START = "\t\t\t\t<ParameterValueStruct>\n";
-            private final String NAME_START = "\t\t\t\t\t<Name>";
-            private final String NAME_END = "</Name>\n";
-            private final String PARAMETER_VALUE_STRUCT_END = "\t\t\t\t</ParameterValueStruct>\n";
-            private final String PARAMETER_LIST_END = "\t\t\t</ParameterList>\n";
-
             private List<ParameterValueStruct> parameterValueList = paramList.getParameterValueList();
             private String parameterKey = pk.getServerKey();
 
             @Override
             public String toXmlImpl() {
                 StringBuilder sb = new StringBuilder(50);
-                sb.append(START);
-                sb.append(PARAMETER_LIST_START_1);
+                sb.append("\t\t<cwmp:SetParameterValues>\n");
+                sb.append("\t\t\t<ParameterList ").append(Namespace.getSoapEncNS()).append(":arrayType=\"cwmp:ParameterValueStruct[");
                 sb.append(parameterValueList.size());
-                sb.append(PARAMETER_LIST_START_2);
+                sb.append("]\">\n");
 
                 for (ParameterValueStruct pvs : parameterValueList) {
-                    sb.append(PARAMETER_VALUE_STRUCT_START);
-                    sb.append(NAME_START);
+                    sb.append("\t\t\t\t<ParameterValueStruct>\n");
+                    sb.append("\t\t\t\t\t<Name>");
                     sb.append(pvs.getName());
-                    sb.append(NAME_END);
+                    sb.append("</Name>\n");
                     sb.append("\t\t\t\t\t<Value xsi:type=\"").append(pvs.getType()).append("\">");
                     if (pvs.getType() != null
                             && pvs.getType().contains("int")
@@ -66,14 +54,14 @@ public class SetParameterValuesResponseCreateStrategy implements ResponseCreateS
                     } else {
                         sb.append(pvs.getValue());
                     }
-                    sb.append("</Value>\n");
-                    sb.append(PARAMETER_VALUE_STRUCT_END);
+                    sb.append("\t\t\t\t\t</Value>\n");
+                    sb.append("\t\t\t\t</ParameterValueStruct>\n");
                 }
-                sb.append(PARAMETER_LIST_END);
+                sb.append("\t\t\t</ParameterList>\n");
                 if (parameterKey != null) {
-                    sb.append(PARAMETER_KEY_START).append(parameterKey).append(PARAMETER_KEY_END);
+                    sb.append("\t\t\t<ParameterKey>").append(parameterKey).append("</ParameterKey>\n");
                 }
-                sb.append(END);
+                sb.append("\t\t</cwmp:SetParameterValues>\n");
                 return sb.toString();
             }
         };

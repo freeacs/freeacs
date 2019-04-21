@@ -18,10 +18,8 @@ public class FactoryResetResponseCreateStrategy implements ResponseCreateStrateg
         Body body = new Body() {
             @Override
             public String toXmlImpl() {
-                StringBuilder sb = new StringBuilder(3);
-                sb.append("\t<cwmp:FactoryReset xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">\n");
-                sb.append("\t</cwmp:FactoryReset>\n");
-                return sb.toString();
+                return "\t<cwmp:FactoryReset xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">\n" +
+                        "\t</cwmp:FactoryReset>\n";
             }
         };
         return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());

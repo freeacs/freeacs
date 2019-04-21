@@ -18,13 +18,11 @@ public class RebootResponseCreateStrategy implements ResponseCreateStrategy {
         Body body = new Body() {
             @Override
             public String toXmlImpl() {
-                StringBuilder sb = new StringBuilder(3);
-                sb.append("\t<cwmp:Reboot xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">\n");
-                sb.append("\t\t<CommandKey>Reboot_FREEACS-")
-                        .append(System.currentTimeMillis())
-                        .append("</CommandKey>\n");
-                sb.append("\t</cwmp:Reboot>\n");
-                return sb.toString();
+                return "\t<cwmp:Reboot xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">\n" +
+                        "\t\t<CommandKey>Reboot_FREEACS-" +
+                        System.currentTimeMillis() +
+                        "</CommandKey>\n" +
+                        "\t</cwmp:Reboot>\n";
             }
         };
         return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
