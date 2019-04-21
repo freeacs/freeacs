@@ -38,31 +38,53 @@ public abstract class ProvisioningStrategy {
             reqRes.getRequestData().setMethod(extractMethod(reqRes));
             reqRes.getSessionData().setCwmpVersionNumber(extractCwmpVersion(reqRes));
             // 1. process the request
-            RequestProcessStrategy.getStrategy(getMethod(reqRes), properties).process(reqRes);
+            Method requestMethod = getRequestMethod(reqRes);
+            RequestProcessStrategy.getStrategy(requestMethod, properties).process(reqRes);
             // 2. decide what to do next
-            DecisionStrategy.getStrategy(getMethod(reqRes), properties).makeDecision(reqRes);
+            DecisionStrategy.getStrategy(requestMethod, properties).makeDecision(reqRes);
             // 3. Create and set response
-            Response response = ResponseCreateStrategy.getStrategy(getMethod(reqRes), properties).getResponse(reqRes);
+            Method responseMethod = getResponseMethod(reqRes);
+            Response response = ResponseCreateStrategy.getStrategy(responseMethod, properties).getResponse(reqRes);
             reqRes.getResponseData().setXml(response.toXml());
         }
 
+        /**
+         * Extract request method name.
+         */
         private String extractMethod(HTTPRequestResponseData reqRes) {
-            String requestMethodName = extractMethodName(reqRes.getRequestData().getXml());
+            String requestMethodName = null;
+            Matcher matcher = METHOD_NAME_PATTERN.matcher(reqRes.getRequestData().getXml());
+            if (matcher.find()) {
+                requestMethodName = matcher.group(1);
+            }
+            if (requestMethodName != null && requestMethodName.endsWith("Response")) {
+                requestMethodName = requestMethodName.substring(0, requestMethodName.length() - 8);
+            }
             if (requestMethodName == null) {
                 requestMethodName = Method.Empty.name();
             }
             return requestMethodName;
         }
 
+        /**
+         * Extract cwmp version or default to "1-2"
+         */
         private String extractCwmpVersion(HTTPRequestResponseData reqRes) {
-            String version = "1";
+            String version = "1-2";
             if (reqRes.getSessionData().getCwmpVersionNumber() == null) {
-                version = extractCwmpVersion(reqRes.getRequestData().getXml());
+                Matcher matcher = VERSION_REGEX.matcher(reqRes.getRequestData().getXml());
+                if (matcher.find()) {
+                    version = matcher.group(1);
+                }
             }
             return version;
         }
 
-        private Method getMethod(HTTPRequestResponseData reqRes) {
+        /**
+         * The request method will never change, so this method is just here to wrap the operation
+         * of converting null method to Empty
+         */
+        private Method getRequestMethod(HTTPRequestResponseData reqRes) {
             try {
                 return Method.valueOf(reqRes.getRequestData().getMethod());
             } catch (Exception e) {
@@ -71,37 +93,15 @@ public abstract class ProvisioningStrategy {
         }
 
         /**
-         * Fastest way to extract the method name without actually parsing the XML - the method name is
-         * crucial to the next steps in TR-069 processing
-         *
-         * <p>The TR-069 Method is found after the first "<cwmp:" after ":Body"
-         *
-         * @param reqStr (TR-069 XML)
-         * @return TR-069 methodName
+         * The response method will be mutated by the DecisionStrategy,
+         * so this method can and will return something else than the method getRequestMethod.
          */
-        @SuppressWarnings("Duplicates")
-        private String extractMethodName(String reqStr) {
-            String methodStr = getMethodStr(reqStr);
-            if (methodStr != null && methodStr.endsWith("Response")) {
-                methodStr = methodStr.substring(0, methodStr.length() - 8);
+        private Method getResponseMethod(HTTPRequestResponseData reqRes) {
+            try {
+                return Method.valueOf(reqRes.getResponseData().getMethod());
+            } catch (Exception e) {
+                return Method.Empty;
             }
-            return methodStr;
-        }
-
-        private static String getMethodStr(String reqStr) {
-            Matcher matcher = METHOD_NAME_PATTERN.matcher(reqStr);
-            if (matcher.find()) {
-                return matcher.group(1);
-            }
-            return null;
-        }
-
-        private String extractCwmpVersion(String reqStr) {
-            Matcher matcher = VERSION_REGEX.matcher(reqStr);
-            if (matcher.find()) {
-                return matcher.group(1);
-            }
-            return null;
         }
     }
 }

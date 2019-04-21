@@ -19,6 +19,8 @@ public interface DecisionStrategy {
                 return getParameterNamesStrategy();
             case GetParameterValues:
                 return getParameterValuesStrategy(properties);
+            case SetParameterValues:
+                return setParameterValuesStrategy(properties);
             default:
                 return emStrategy(properties);
         }
@@ -38,5 +40,9 @@ public interface DecisionStrategy {
 
     static DecisionStrategy getParameterValuesStrategy(Properties properties) {
         return new GetParameterValuesDecisionStrategy(properties);
+    }
+
+    static DecisionStrategy setParameterValuesStrategy(Properties properties) {
+        return new SetParameterValuesDecisionStrategy(properties);
     }
 }

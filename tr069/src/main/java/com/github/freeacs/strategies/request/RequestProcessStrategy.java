@@ -19,6 +19,8 @@ public interface RequestProcessStrategy {
                 return getParameterNamesStrategy(properties);
             case GetParameterValues:
                 return getParameterValuesStrategy();
+            case SetParameterValues:
+                return setParameterValuesStrategy();
             default:
                 return doNotProcessStrategy();
         }
@@ -38,5 +40,9 @@ public interface RequestProcessStrategy {
 
     static RequestProcessStrategy getParameterValuesStrategy() {
         return new GetParameterValuesRequestProcessStrategy();
+    }
+
+    static RequestProcessStrategy setParameterValuesStrategy() {
+        return new SetParameterValuesRequestProcessStrategy();
     }
 }
