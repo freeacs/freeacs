@@ -12,11 +12,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class ProvisioningStrategy {
-    private static final Pattern VERSION_REGEX =
-            Pattern.compile(".*cwmp\\s*=\\s*\"urn:dslforum-org:cwmp-([^\"]+)\".*", Pattern.DOTALL);
-
-    private static final Pattern METHOD_NAME_PATTERN =
-            Pattern.compile(":Body.*>\\s*<cwmp:(\\w+)(>|/>)", Pattern.DOTALL);
 
     public abstract void process(HTTPRequestResponseData reqRes) throws Exception;
 
@@ -25,6 +20,10 @@ public abstract class ProvisioningStrategy {
     }
 
     private static class NormalProvisioningStrategy extends ProvisioningStrategy {
+        private static final Pattern VERSION_REGEX =
+                Pattern.compile(".*cwmp\\s*=\\s*\"urn:dslforum-org:cwmp-([^\"]+)\".*", Pattern.DOTALL);
+        private static final Pattern METHOD_NAME_PATTERN =
+                Pattern.compile(":Body.*>\\s*<cwmp:(\\w+)(>|/>)", Pattern.DOTALL);
 
         private final Properties properties;
 
