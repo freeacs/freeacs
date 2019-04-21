@@ -1,0 +1,42 @@
+package com.github.freeacs.strategies.decision;
+
+import com.github.freeacs.http.HTTPRequestResponseData;
+import com.github.freeacs.tr069.Properties;
+import com.github.freeacs.tr069.methods.Method;
+
+@FunctionalInterface
+public interface DecisionStrategy {
+
+    void makeDecision(HTTPRequestResponseData reqRes) throws Exception;
+
+    static DecisionStrategy getStrategy(Method method, Properties properties) {
+        switch (method) {
+            case Empty:
+                return emStrategy(properties);
+            case Inform:
+                return informStrategy();
+            case GetParameterNames:
+                return getParameterNamesStrategy();
+            case GetParameterValues:
+                return getParameterValuesStrategy(properties);
+            default:
+                return emStrategy(properties);
+        }
+    }
+
+    static DecisionStrategy informStrategy() {
+        return new InformDecisionStrategy();
+    }
+
+    static DecisionStrategy getParameterNamesStrategy() {
+        return new GetParameterNamesDecisionStrategy();
+    }
+
+    static DecisionStrategy emStrategy(Properties properties) {
+        return new EmptyDecisionStrategy(properties);
+    }
+
+    static DecisionStrategy getParameterValuesStrategy(Properties properties) {
+        return new GetParameterValuesDecisionStrategy(properties);
+    }
+}

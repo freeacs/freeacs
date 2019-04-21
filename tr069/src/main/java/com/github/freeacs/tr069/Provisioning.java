@@ -11,6 +11,7 @@ import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.ScriptExecutions;
 import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.strategies.ProvisioningStrategy;
 import com.github.freeacs.tr069.background.ActiveDeviceDetectionTask;
 import com.github.freeacs.tr069.background.MessageListenerTask;
 import com.github.freeacs.tr069.background.ScheduledKickTask;
@@ -20,9 +21,6 @@ import com.github.freeacs.http.AbstractHttpDataWrapper;
 import com.github.freeacs.http.HTTPRequestData;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.http.HTTPResponseData;
-import com.github.freeacs.tr069.methods.DecisionMaker;
-import com.github.freeacs.tr069.methods.HTTPRequestProcessor;
-import com.github.freeacs.tr069.methods.HTTPResponseCreator;
 import com.github.freeacs.tr069.methods.TR069Method;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -170,22 +168,18 @@ public class Provisioning extends AbstractHttpDataWrapper {
       }
       // 4. Read the request from the client - store in reqRes object
       extractRequest(reqRes);
-      // 5.Process request (parsing xml/data)
-      HTTPRequestProcessor.processRequest(reqRes, tr069Method.getRequestMap(), properties);
-      // 6. Decide next step in TR-069 session (sometimes trivial, sometimes complex)
-      DecisionMaker.process(reqRes, tr069Method.getRequestMap());
-      // 7. Create TR-069 response
-      HTTPResponseCreator.createResponse(reqRes, tr069Method.getResponseMap());
-      // 8. Set correct headers in response
+      // 5. Process provision strategy
+      ProvisioningStrategy.getStrategy(properties).process(reqRes);
+      // 6. Set correct headers in response
       if (reqRes.getResponseData().getXml() != null && !reqRes.getResponseData().getXml().isEmpty()) {
         res.setHeader("SOAPAction", "");
         res.setContentType("text/xml");
       }
-      // 8. No need to send Content-length as it will only be informational for 204 HTTP messages
+      // 7. No need to send Content-length as it will only be informational for 204 HTTP messages
       if ("Empty".equals(reqRes.getResponseData().getMethod())) {
         res.setStatus(HttpServletResponse.SC_NO_CONTENT);
       }
-      // 9. Print response to output
+      // 8. Print response to output
       res.getWriter().print(reqRes.getResponseData().getXml());
     } catch (Throwable t) {
       // Make sure we return an EMPTY response to the TR-069 client
