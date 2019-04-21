@@ -63,7 +63,7 @@ public interface RequestProcessStrategy {
     }
 
     static RequestProcessStrategy doNotProcessStrategy() {
-        return new DoNotProcessRequestStrategy();
+        return reqRes -> {};
     }
 
     static RequestProcessStrategy informStrategy(Properties properties) {
