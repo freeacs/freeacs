@@ -11,7 +11,8 @@ import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.ScriptExecutions;
 import com.github.freeacs.dbi.Unit;
-import com.github.freeacs.strategies.ProvisioningStrategy;
+import com.github.freeacs.tr069.methods.ProvisioningMethod;
+import com.github.freeacs.tr069.methods.ProvisioningStrategy;
 import com.github.freeacs.tr069.background.ActiveDeviceDetectionTask;
 import com.github.freeacs.tr069.background.MessageListenerTask;
 import com.github.freeacs.tr069.background.ScheduledKickTask;
@@ -21,8 +22,7 @@ import com.github.freeacs.http.AbstractHttpDataWrapper;
 import com.github.freeacs.http.HTTPRequestData;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.http.HTTPResponseData;
-import com.github.freeacs.tr069.methods.Method;
-import com.github.freeacs.tr069.methods.TR069Method;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -38,17 +38,14 @@ import javax.servlet.http.HttpServletResponse;
 public class Provisioning extends AbstractHttpDataWrapper {
   private static ScriptExecutions executions;
 
-  private final TR069Method tr069Method;
 
   private final ExecutorWrapper executorWrapper;
 
   public Provisioning(
       DBAccess dbAccess,
-      TR069Method tr069Method,
       Properties properties,
       ExecutorWrapper executorWrapper) {
     super(dbAccess, properties);
-    this.tr069Method = tr069Method;
     this.executorWrapper = executorWrapper;
   }
 
@@ -219,7 +216,7 @@ public class Provisioning extends AbstractHttpDataWrapper {
           // ProvisioningState.READY.toString());
           writeQueuedUnitParameters(reqRes);
         }
-        SessionLogging.log(reqRes, tr069Method.getAbbrevMap());
+        SessionLogging.log(reqRes);
         BaseCache.removeSessionData(reqRes.getSessionData().getUnitId());
         BaseCache.removeSessionData(reqRes.getSessionData().getId());
         res.setHeader("Connection", "close");
@@ -256,9 +253,9 @@ public class Provisioning extends AbstractHttpDataWrapper {
       HTTPResponseData resData = reqRes.getResponseData();
       if (reqData.getMethod() != null
           && resData != null
-          && Method.Empty.name().equals(resData.getMethod())) {
+          && ProvisioningMethod.Empty.name().equals(resData.getMethod())) {
         boolean terminationQuirk = properties.isTerminationQuirk(sessionData);
-        return !terminationQuirk || Method.Empty.name().equals(reqData.getMethod());
+        return !terminationQuirk || ProvisioningMethod.Empty.name().equals(reqData.getMethod());
       }
       return false;
     } catch (Throwable t) {

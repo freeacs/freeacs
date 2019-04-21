@@ -19,7 +19,6 @@ import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.Provisioning;
-import com.github.freeacs.tr069.methods.TR069Method;
 import com.typesafe.config.Config;
 import java.util.Arrays;
 import java.util.List;
@@ -76,9 +75,7 @@ public class App extends SparkApp {
       DataSource mainDs, Properties properties, ExecutorWrapper executorWrapper) {
     String ctxPath = properties.getContextPath();
     DBAccess dbAccess = new DBAccess(FACILITY_TR069, "latest", mainDs, mainDs);
-    TR069Method tr069Method = new TR069Method(properties);
-    Provisioning provisioning =
-        new Provisioning(dbAccess, tr069Method, properties, executorWrapper);
+    Provisioning provisioning = new Provisioning(dbAccess, properties, executorWrapper);
     provisioning.init();
     FileServlet fileServlet = new FileServlet(dbAccess, ctxPath + "/file/", properties);
     OKServlet okServlet = new OKServlet(dbAccess);

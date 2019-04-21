@@ -11,11 +11,9 @@ import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.http.HTTPRequestData;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.http.HTTPResponseData;
-import com.github.freeacs.tr069.methods.Method;
-import com.github.freeacs.tr069.methods.TR069Method;
+import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import java.util.List;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -25,11 +23,11 @@ import javax.servlet.http.HttpServletRequest;
  * @author Jarl
  */
 public class SessionLogging {
-  public static void log(HTTPRequestResponseData reqRes, Map<String, String> abbrevMap) {
+  public static void log(HTTPRequestResponseData reqRes) {
     try {
       SessionData sessionData = reqRes.getSessionData();
       // The old logging to eventlog
-      String methodsUsed = abbreviate(sessionData.getReqResList(), abbrevMap);
+      String methodsUsed = abbreviate(sessionData.getReqResList());
       long diff = System.currentTimeMillis() - sessionData.getStartupTmsForSession();
       String eventMsg = makeEventMsg(reqRes, diff, methodsUsed);
       Log.event(eventMsg);
@@ -68,7 +66,7 @@ public class SessionLogging {
     }
   }
 
-  private static String abbreviate(List<HTTPRequestResponseData> reqResList, Map<String, String> abbrevMap) {
+  private static String abbreviate(List<HTTPRequestResponseData> reqResList) {
     String methodsUsed = "";
     for (int i = 0; i < reqResList.size(); i++) {
       HTTPRequestResponseData reqRes = reqResList.get(i);
@@ -79,12 +77,12 @@ public class SessionLogging {
         continue;
       }
       String resMethod = resData.getMethod();
-      String reqShortname = abbrevMap.get(reqMethod);
+      String reqShortname = ProvisioningMethod.valueOf(reqMethod).getAbbreviation();
       if (i > 0) {
         HTTPRequestResponseData prevReqRes = reqResList.get(i - 1);
         String prevResMethod = prevReqRes.getResponseData().getMethod();
         if (prevResMethod != null
-            && !Method.Empty.name().equals(reqMethod)
+            && !ProvisioningMethod.Empty.name().equals(reqMethod)
             && prevResMethod.equals(reqMethod)) {
           reqShortname += "r";
         }
@@ -92,15 +90,15 @@ public class SessionLogging {
       if (reqData.getFault() != null) {
         reqShortname += "(FC:" + reqData.getFault().getFaultCode() + ")";
       }
-      String resShortname = abbrevMap.get(resMethod);
-      if (!Method.Empty.name().equals(reqMethod) && reqMethod.equals(resMethod)) {
+      String resShortname = ProvisioningMethod.valueOf(resMethod).getAbbreviation();
+      if (!ProvisioningMethod.Empty.name().equals(reqMethod) && reqMethod.equals(resMethod)) {
         resShortname += "r";
       }
-      if (Method.SetParameterValues.name().equals(reqMethod)
+      if (ProvisioningMethod.SetParameterValues.name().equals(reqMethod)
           && !reqRes.getSessionData().isProvisioningAllowed()) {
         reqShortname += "lim";
       }
-      if (Method.Inform.name().equals(reqMethod)) {
+      if (ProvisioningMethod.Inform.name().equals(reqMethod)) {
         reqShortname += "(" + reqRes.getSessionData().getEventCodes() + ")";
       }
       methodsUsed += "[" + reqShortname;
@@ -130,7 +128,7 @@ public class SessionLogging {
     int paramsToCPE = 0;
     for (HTTPRequestResponseData reqResItem : reqResList) {
       String resMethod = reqResItem.getResponseData().getMethod();
-      if (Method.SetParameterValues.name().equals(resMethod)) {
+      if (ProvisioningMethod.SetParameterValues.name().equals(resMethod)) {
         paramsToCPE = sessionData.getToCPE().getParameterValueList().size();
         for (ParameterValueStruct pvs : sessionData.getToCPE().getParameterValueList()) {
           parameterList += pvs.getName() + "=" + pvs.getValue() + ", ";
