@@ -18,7 +18,7 @@ public class RebootResponseCreateStrategy implements ResponseCreateStrategy {
         Body body = new Body() {
             @Override
             public String toXmlImpl() {
-                return "\t<cwmp:Reboot xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">\n" +
+                return "\t<cwmp:Reboot xmlns:cwmp=\"urn:dslforum-org:cwmp-" + reqRes.getSessionData().getCwmpVersionNumber() + "\">\n" +
                         "\t\t<CommandKey>Reboot_FREEACS-" +
                         System.currentTimeMillis() +
                         "</CommandKey>\n" +

@@ -56,7 +56,7 @@ public class DownloadResponseCreateStrategy implements ResponseCreateStrategy {
             @Override
             public String toXmlImpl() {
                 StringBuilder sb = new StringBuilder(3);
-                sb.append("\t\t<cwmp:Download xmlns:cwmp=\"urn:dslforum-org:cwmp-1-0\">\n");
+                sb.append("\t\t<cwmp:Download xmlns:cwmp=\"urn:dslforum-org:cwmp-").append(reqRes.getSessionData().getCwmpVersionNumber()).append("\">\n");
                 sb.append("\t\t\t<CommandKey>");
                 if (commandKey != null) {
                     sb.append(commandKey);
