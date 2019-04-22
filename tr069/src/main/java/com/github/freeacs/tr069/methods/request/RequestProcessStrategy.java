@@ -1,5 +1,6 @@
 package com.github.freeacs.tr069.methods.request;
 
+import com.github.freeacs.base.Log;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
@@ -34,6 +35,7 @@ public interface RequestProcessStrategy {
             case Reboot:
                 return rebootStrategy();
             default:
+                Log.debug(RequestProcessStrategy.class,"The methodName " + provisioningMethod + " has no request processing strategy");
                 return doNotProcessStrategy();
         }
     }
