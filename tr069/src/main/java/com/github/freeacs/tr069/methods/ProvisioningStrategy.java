@@ -5,6 +5,7 @@ import com.github.freeacs.tr069.methods.decision.DecisionStrategy;
 import com.github.freeacs.tr069.methods.request.RequestProcessStrategy;
 import com.github.freeacs.tr069.methods.response.ResponseCreateStrategy;
 import com.github.freeacs.tr069.Properties;
+import com.github.freeacs.tr069.xml.PrettyPrinter;
 import com.github.freeacs.tr069.xml.Response;
 
 import java.util.regex.Matcher;
@@ -43,7 +44,7 @@ public abstract class ProvisioningStrategy {
             // 3. Create and set response
             ProvisioningMethod responseProvisioningMethod = getResponseMethod(reqRes);
             Response response = ResponseCreateStrategy.getStrategy(responseProvisioningMethod, properties).getResponse(reqRes);
-            reqRes.getResponseData().setXml(response.toXml());
+            reqRes.getResponseData().setXml(PrettyPrinter.transform(response.toXml()));
         }
 
         /**
