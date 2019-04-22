@@ -2,14 +2,12 @@ package com.github.freeacs.tr069;
 
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.http.HTTPRequestResponseData;
+import lombok.Data;
 
+@Data
 public class CommandKey {
   private String cpeKey;
   private String serverKey;
-
-  public void setCpeKey(String cpeKey) {
-    this.cpeKey = cpeKey;
-  }
 
   public void setServerKey(HTTPRequestResponseData reqRes) {
     this.serverKey =

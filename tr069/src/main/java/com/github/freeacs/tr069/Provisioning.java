@@ -159,7 +159,7 @@ public class Provisioning extends AbstractHttpDataWrapper {
       // session. This object also contains the SessionData object
       reqRes = getHttpRequestResponseData(req, res);
       // 2. Authenticate the client (first issue challenge, then authenticate)
-      if (!Authenticator.authenticate(reqRes, properties)
+      if (Authenticator.notAuthenticated(reqRes, properties)
           || (reqRes.getSessionData() != null
               && !ThreadCounter.isRequestAllowed(reqRes.getSessionData()))) {
         return;

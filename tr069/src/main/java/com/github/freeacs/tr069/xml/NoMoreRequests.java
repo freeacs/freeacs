@@ -3,11 +3,11 @@ package com.github.freeacs.tr069.xml;
 public class NoMoreRequests {
   private boolean noMoreRequests;
 
-  public NoMoreRequests(String noMoreRequests) {
-    this.noMoreRequests = noMoreRequests != "0";
+  NoMoreRequests(String noMoreRequests) {
+    this.noMoreRequests = !noMoreRequests.equals("0");
   }
 
-  public String toXml() {
+  String toXml() {
     StringBuilder sb = new StringBuilder(3);
       sb.append("\t<cwmp:NoMoreRequests ")
         .append("soapenv")
@@ -21,8 +21,8 @@ public class NoMoreRequests {
     return sb.toString();
   }
 
-  public void setNoMoreRequestsFlag(String flag) {
-    noMoreRequests = flag != "0";
+  void setNoMoreRequestsFlag(String flag) {
+    noMoreRequests = !flag.equals("0");
   }
 
   public boolean getNoMoreRequestFlag() {

@@ -129,8 +129,8 @@ public class ShellJobLogic {
             throw new TR069DatabaseException(e);
         }
         ParameterList toCPE = new ParameterList();
-        for (int i = 0; i < sessionData.getFromCPE().size(); i++) {
-            ParameterValueStruct pvsCPE = sessionData.getFromCPE().get(i);
+        for (int i = 0; i < sessionData.getValuesFromCPE().size(); i++) {
+            ParameterValueStruct pvsCPE = sessionData.getValuesFromCPE().get(i);
             if (pvsCPE == null || pvsCPE.getValue() == null || pvsCPE.getName() == null) continue;
             UnittypeParameter utp = utps.getByName(pvsCPE.getName());
             if (utp == null || !utp.getFlag().isReadWrite()) continue;
@@ -156,8 +156,8 @@ public class ShellJobLogic {
             throws TR069DatabaseException {
         List<UnitParameter> unitParameters = new ArrayList<>();
         UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
-        for (int i = 0; i < sessionData.getFromCPE().size(); i++) {
-            ParameterValueStruct pvsCPE = sessionData.getFromCPE().get(i);
+        for (int i = 0; i < sessionData.getValuesFromCPE().size(); i++) {
+            ParameterValueStruct pvsCPE = sessionData.getValuesFromCPE().get(i);
             if (pvsCPE == null || pvsCPE.getValue() == null || pvsCPE.getName() == null) continue;
             UnittypeParameter utp = utps.getByName(pvsCPE.getName());
             if (utp == null || !utp.getFlag().isReadOnly()) continue;

@@ -227,7 +227,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         sessionData.getProvisioningMessage().setProvStatus(ProvisioningMessage.ProvStatus.DELAYED);
         CPEParameters cpeParams = sessionData.getCpeParameters();
         String PII = cpeParams.PERIODIC_INFORM_INTERVAL;
-        ParameterValueStruct pvs = cpeParams.getPvs(PII);
+        ParameterValueStruct pvs = cpeParams.getCpeParams().get(PII);
         ParameterList toCPE = new ParameterList();
         long nextPII = sessionData.getPIIDecision().nextPII();
         sessionData.getProvisioningMessage().setPeriodicInformInterval((int) nextPII);
@@ -407,7 +407,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         boolean parameterMissing = false;
         for (ParameterValueStruct pvsDB : sessionData.getFromDB().values()) {
             boolean match = false;
-            for (ParameterValueStruct pvsCPE : sessionData.getFromCPE()) {
+            for (ParameterValueStruct pvsCPE : sessionData.getValuesFromCPE()) {
                 if (pvsDB.getName().equals(pvsCPE.getName())) {
                     match = true;
                     parameterMissing = true;
@@ -462,8 +462,8 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         ParameterList toCPE = new ParameterList();
         List<ParameterValueStruct> toDB = new ArrayList<>();
 
-        for (int i = 0; i < sessionData.getFromCPE().size(); i++) {
-            ParameterValueStruct pvsCPE = sessionData.getFromCPE().get(i);
+        for (int i = 0; i < sessionData.getValuesFromCPE().size(); i++) {
+            ParameterValueStruct pvsCPE = sessionData.getValuesFromCPE().get(i);
             ParameterValueStruct pvsDB = sessionData.getFromDB().get(pvsCPE.getName());
             UnittypeParameter utp = utps.getByName(pvsCPE.getName());
             String cpeV = pvsCPE.getValue();
@@ -569,9 +569,9 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         if (sessionData.getUnit() != null && sessionData.getUnit().getUnitParameters() != null) {
             Map<String, String> parameters = sessionData.getUnit().getParameters();
             for (int i = 0;
-                 sessionData.getFromCPE() != null && i < sessionData.getFromCPE().size();
+                 sessionData.getValuesFromCPE() != null && i < sessionData.getValuesFromCPE().size();
                  i++) {
-                ParameterValueStruct pvs = sessionData.getFromCPE().get(i);
+                ParameterValueStruct pvs = sessionData.getValuesFromCPE().get(i);
                 if (pvs != null && pvs.getValue() != null) {
                     parameters.put(pvs.getName(), pvs.getValue());
                 }
@@ -597,12 +597,12 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
                 "Provisioning in "
                         + ProvisioningMode.READALL
                         + " mode, "
-                        + sessionData.getFromCPE().size()
+                        + sessionData.getValuesFromCPE().size()
                         + " params from CPE may be copied to ACS session storage");
         //		Log.info(GetParameterValuesDecisionStrategyExtraction.class, "Provisioning in EXTRACTION mode, " +
         // sessionData.getFromCPE().size() + " params from CPE may be copied to ACS session storage");
-        for (int i = 0; i < sessionData.getFromCPE().size(); i++) {
-            ParameterValueStruct pvsCPE = sessionData.getFromCPE().get(i);
+        for (int i = 0; i < sessionData.getValuesFromCPE().size(); i++) {
+            ParameterValueStruct pvsCPE = sessionData.getValuesFromCPE().get(i);
             UnittypeParameter utp = utps.getByName(pvsCPE.getName());
             if (utp == null) {
                 Log.debug(

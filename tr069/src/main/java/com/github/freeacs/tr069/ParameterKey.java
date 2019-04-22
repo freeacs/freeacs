@@ -9,26 +9,17 @@ import com.github.freeacs.dbi.UnittypeParameters;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
+import lombok.Data;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.Map.Entry;
 
+@Data
 public class ParameterKey {
   private String cpeKey;
   private String serverKey;
-
-  public String getCpeKey() {
-    return cpeKey;
-  }
-
-  public void setCpeKey(String cpeKey) {
-    this.cpeKey = cpeKey;
-  }
-
-  public String getServerKey() {
-    return serverKey;
-  }
 
   public void setServerKey(HTTPRequestResponseData reqRes) throws NoSuchAlgorithmException {
     this.serverKey = calculateParameterKey(reqRes);
@@ -68,7 +59,7 @@ public class ParameterKey {
         }
       }
     }
-    String values = "";
+    StringBuilder valuesBuilder = new StringBuilder();
     for (Entry<String, ParameterValueStruct> entry : fromDB.entrySet()) {
       String utpName = entry.getKey();
       //			ParameterInfoStruct pis = infoMap.get(utpName);
@@ -79,9 +70,10 @@ public class ParameterKey {
             || "ExtraCPEParam".equals(entry.getValue().getValue())) {
           continue;
         }
-        values += entry.getValue().getValue();
+        valuesBuilder.append(entry.getValue().getValue());
       }
     }
+    String values = valuesBuilder.toString();
     if ("".equals(values)) {
       Log.debug(
           ParameterKey.class,
@@ -90,13 +82,13 @@ public class ParameterKey {
     } else {
       MessageDigest md = MessageDigest.getInstance("SHA");
       byte[] hash = md.digest(values.getBytes());
-      String parameterKey = "";
+      StringBuilder parameterKey = new StringBuilder();
       for (byte b : hash) {
         String hex = Integer.toHexString(b + 128);
         if (hex.length() == 1) {
           hex = "0" + hex;
         }
-        parameterKey += hex;
+        parameterKey.append(hex);
       }
       String pk = parameterKey.substring(0, 32);
       Log.debug(

@@ -9,17 +9,17 @@ import org.xml.sax.helpers.DefaultHandler;
  * EventCode and the CommandKey).
  */
 public class EventHandler extends DefaultHandler {
-  public static final String EVENT_TAG = "Event";
-  public static final String EVENT_STRUCT_TAG = "EventStruct";
-  public static final String EVENT_CODE_TAG = "EventCode";
-  public static final String COMMAND_KEY_TAG = "CommandKey";
+  static final String EVENT_TAG = "Event";
+  private static final String EVENT_STRUCT_TAG = "EventStruct";
+  private static final String EVENT_CODE_TAG = "EventCode";
+  private static final String COMMAND_KEY_TAG = "CommandKey";
 
   private Parser owner;
   private EventList events;
   private EventStruct currEvent;
   private StringBuilder currTextContent = new StringBuilder();
 
-  public EventHandler(EventList events, Parser owner) {
+  EventHandler(EventList events, Parser owner) {
     this.events = events;
     this.owner = owner;
   }
@@ -34,7 +34,7 @@ public class EventHandler extends DefaultHandler {
 
   public void endElement(String namespaceURI, String localName, String qualifiedName) {
     if (EVENT_TAG.equals(localName)) {
-      owner.getXMLReader().setContentHandler(owner);
+      owner.getXmlReader().setContentHandler(owner);
     } else if (EVENT_STRUCT_TAG.equals(localName)) {
       if (currEvent != null) {
         events.addEvent(currEvent);

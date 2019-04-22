@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public class Authenticator {
   private static Cache blockedClients = new Cache();
-  private static int blockedClientsCount;
 
   private static String computeBlockedClientKey(HttpServletRequest req) {
     String remoteHost = req.getRemoteHost();
@@ -36,12 +35,6 @@ public class Authenticator {
     return remoteHost + username;
   }
 
-  public static int getAndResetBlockedClientsCount() {
-    int tmp = blockedClientsCount;
-    blockedClientsCount = 0;
-    return tmp;
-  }
-
   private static boolean block(HTTPRequestResponseData reqRes, String bcKey) {
     if (bcKey != null) {
       CacheValue cv = blockedClients.get(bcKey);
@@ -49,7 +42,6 @@ public class Authenticator {
         int count = (Integer) cv.getObject();
         if (count >= 5) {
           reqRes.getRawResponse().setStatus(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-          blockedClientsCount++;
           return true;
         }
       }
@@ -68,11 +60,11 @@ public class Authenticator {
     }
   }
 
-  public static boolean authenticate(HTTPRequestResponseData reqRes, Properties properties)
+  public static boolean notAuthenticated(HTTPRequestResponseData reqRes, Properties properties)
       throws TR069AuthenticationException {
     SessionData sessionData = reqRes.getSessionData();
     if (sessionData.isAuthenticated()) {
-      return true;
+      return false;
     }
 
     // Code for early return of a non-authorized device with no logging or fuss
@@ -86,7 +78,7 @@ public class Authenticator {
     // minutes.
     String bcKey = computeBlockedClientKey(reqRes.getRawRequest());
     if (block(reqRes, bcKey)) {
-      return false;
+      return true;
     }
 
     // Start of normal authentication procedure
@@ -126,6 +118,6 @@ public class Authenticator {
     if (authenticated) { // all checks are passed - cleanup
       blockedClients.remove(bcKey);
     }
-    return authenticated;
+    return !authenticated;
   }
 }

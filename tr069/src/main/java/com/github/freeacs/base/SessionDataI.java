@@ -54,8 +54,6 @@ public interface SessionDataI {
 
   boolean lastProvisioningOK();
 
-  //	public CPEParameters getCpeParameters();
-
   /**
    * The PIIDecision object contains information need to calculate the next periodic inform. The
    * information needed in this object is listed in the javadoc for that class. Make sure the method

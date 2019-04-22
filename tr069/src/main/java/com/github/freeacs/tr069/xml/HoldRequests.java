@@ -1,13 +1,13 @@
 package com.github.freeacs.tr069.xml;
 
-public class HoldRequests {
+class HoldRequests {
   private boolean holdRequests;
 
-  public HoldRequests(String holdRequests) {
-    this.holdRequests = holdRequests != "0";
+  HoldRequests(String holdRequests) {
+    this.holdRequests = !holdRequests.equals("0");
   }
 
-  public String toXml() {
+  String toXml() {
     StringBuilder sb = new StringBuilder(3);
       sb.append("\t<cwmp:HoldRequests ")
         .append("soapenv")
@@ -21,7 +21,7 @@ public class HoldRequests {
     return sb.toString();
   }
 
-  public void setHoldRequestsFlag(String flag) {
-    holdRequests = flag != "0";
+  void setHoldRequestsFlag(String flag) {
+    holdRequests = !flag.equals("0");
   }
 }

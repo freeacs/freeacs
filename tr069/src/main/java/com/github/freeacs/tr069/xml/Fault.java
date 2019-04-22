@@ -1,22 +1,21 @@
 package com.github.freeacs.tr069.xml;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Fault {
   private String soapFaultCode;
   private String soapFaultString;
   private String faultCode;
   private String faultString;
-  private List<SetParameterValuesFault> parameterFaults;
-
-  public Fault() {
-    this.soapFaultCode = null;
-    this.soapFaultString = null;
-    this.faultCode = null;
-    this.faultString = null;
-    this.parameterFaults = new ArrayList<>();
-  }
+  private List<SetParameterValuesFault> parameterFaults = new ArrayList<>();
 
   public Fault(String soapFaultCode, String soapFaultString, String faultCode, String faultString) {
     this.soapFaultCode = soapFaultCode;
@@ -26,44 +25,7 @@ public class Fault {
     this.parameterFaults = new ArrayList<>();
   }
 
-  public Fault(
-      String soapFaultCode,
-      String soapFaultString,
-      String faultCode,
-      String faultString,
-      List<SetParameterValuesFault> parameterFaults) {
-    this.soapFaultCode = soapFaultCode;
-    this.soapFaultString = soapFaultString;
-    this.faultCode = faultCode;
-    this.faultString = faultString;
-    this.parameterFaults = parameterFaults;
-  }
-
-  public void setSoapFaultCode(String soapFaultCode) {
-    this.soapFaultCode = soapFaultCode;
-  }
-
-  public void setSoapFaultString(String soapFaultString) {
-    this.soapFaultString = soapFaultString;
-  }
-
-  public String getFaultCode() {
-    return faultCode;
-  }
-
-  public void setFaultCode(String faultCode) {
-    this.faultCode = faultCode;
-  }
-
-  public String getFaultString() {
-    return faultString;
-  }
-
-  public void setFaultString(String faultString) {
-    this.faultString = faultString;
-  }
-
-  public void addParameterValuesFault(SetParameterValuesFault paramFault) {
+  void addParameterValuesFault(SetParameterValuesFault paramFault) {
     this.parameterFaults.add(paramFault);
   }
 

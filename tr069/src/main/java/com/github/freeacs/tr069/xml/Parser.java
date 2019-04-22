@@ -6,6 +6,8 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.parsers.SAXParserFactory;
+
+import lombok.Data;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -16,6 +18,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * The class is responsible for parsing the SOAP messages from the CPE. The messages could be a
  * TR-069 request or a TR-069 response.
  */
+@Data
 public class Parser extends DefaultHandler {
   private static final String MAX_ENVELOPES_TAG = "MaxEnvelopes";
   private static final String CURRENT_TIME_TAG = "CurrentTime";
@@ -26,16 +29,16 @@ public class Parser extends DefaultHandler {
   private static final String COMMAND_KEY_TAG = "CommandKey";
   private static final String FAULT_STRUCT_TAG = "FaultStruct";
 
-  protected SAXParserFactory factory;
-  private XMLReader reader;
+  private SAXParserFactory factory;
+  private XMLReader xmlReader;
   private Map<String, ContentHandler> parsers;
   private StringBuilder currTextContent = new StringBuilder();
 
-  private Header headers;
-  private DeviceIdStruct didStruct;
-  private EventList events;
-  private ParameterList params;
-  private MethodList methods;
+  private Header header;
+  private DeviceIdStruct deviceIdStruct;
+  private EventList eventList;
+  private ParameterList parameterList;
+  private MethodList methodList;
   private String maxEnvelopes;
   private String currentTime;
   private String retryCount;
@@ -51,21 +54,21 @@ public class Parser extends DefaultHandler {
     initializeDataMappings();
 
     parsers = new HashMap<>();
-    parsers.put(HeaderHandler.HEADER_TAG, new HeaderHandler(headers, this));
+    parsers.put(HeaderHandler.HEADER_TAG, new HeaderHandler(header, this));
     parsers.put(FaultHandler.FAULT_TAG, new FaultHandler(fault, this));
-    parsers.put(DeviceIdHandler.DEVICE_ID_TAG, new DeviceIdHandler(didStruct, this));
-    parsers.put(EventHandler.EVENT_TAG, new EventHandler(events, this));
-    parsers.put(ParameterListHandler.PARAMETER_LIST_TAG, new ParameterListHandler(params, this));
-    parsers.put(MethodListHandler.METHOD_LIST_TAG, new MethodListHandler(methods, this));
+    parsers.put(DeviceIdHandler.DEVICE_ID_TAG, new DeviceIdHandler(deviceIdStruct, this));
+    parsers.put(EventHandler.EVENT_TAG, new EventHandler(eventList, this));
+    parsers.put(ParameterListHandler.PARAMETER_LIST_TAG, new ParameterListHandler(parameterList, this));
+    parsers.put(MethodListHandler.METHOD_LIST_TAG, new MethodListHandler(methodList, this));
 
     try {
       // the "SAXParserFactory" class indication has been removed.
       factory = getParserFactory();
       factory.setNamespaceAware(true);
-      reader = factory.newSAXParser().getXMLReader();
-      reader.setContentHandler(this);
-      reader.setErrorHandler(new SOAPErrorHandler());
-      reader.parse(xmlSource);
+      xmlReader = factory.newSAXParser().getXMLReader();
+      xmlReader.setContentHandler(this);
+      xmlReader.setErrorHandler(new SOAPErrorHandler());
+      xmlReader.parse(xmlSource);
     } catch (Exception ex) {
       throw new TR069Exception(
           "Parsing of SOAP/XML request failed", TR069ExceptionShortMessage.MISC, ex);
@@ -74,11 +77,11 @@ public class Parser extends DefaultHandler {
 
   /** Initializes data mapping members. */
   private void initializeDataMappings() {
-    this.didStruct = new DeviceIdStruct();
-    this.events = new EventList();
-    this.headers = new Header();
-    this.params = new ParameterList();
-    this.methods = new MethodList();
+    this.deviceIdStruct = new DeviceIdStruct();
+    this.eventList = new EventList();
+    this.header = new Header();
+    this.parameterList = new ParameterList();
+    this.methodList = new MethodList();
     this.fault = new Fault();
   }
 
@@ -92,67 +95,6 @@ public class Parser extends DefaultHandler {
     return factory;
   }
 
-  protected XMLReader getXMLReader() {
-    return this.reader;
-  }
-
-  /** @return the map of handlers (ContentHandlers) available */
-  private Map<String, ContentHandler> getHandlerMap() {
-    return this.parsers;
-  }
-
-  public DeviceIdStruct getDeviceIdStruct() {
-    return this.didStruct;
-  }
-
-  public EventList getEventList() {
-    return this.events;
-  }
-
-  public Header getHeader() {
-    return this.headers;
-  }
-
-  public ParameterList getParameterList() {
-    return this.params;
-  }
-
-  public MethodList getMethodList() {
-    return this.methods;
-  }
-
-  public String getMaxEnvelopes() {
-    return this.maxEnvelopes;
-  }
-
-  public String getCurrentTime() {
-    return this.currentTime;
-  }
-
-  public String getRetryCount() {
-    return this.retryCount;
-  }
-
-  public String getStatus() {
-    return this.status;
-  }
-
-  public String getStartTime() {
-    return this.startTime;
-  }
-
-  public String getCompleteTime() {
-    return this.completeTime;
-  }
-
-  public String getCommandKey() {
-    return this.commandKey;
-  }
-
-  public Fault getFault() {
-    return this.fault;
-  }
-
   private static InputSource getStringAsSource(String xml) {
     if (xml != null && !"".equals(xml)) {
       StringReader xmlReader = new StringReader(xml);
@@ -164,12 +106,12 @@ public class Parser extends DefaultHandler {
   public void startElement(
       String namespaceURI, String localName, String qualifiedName, Attributes attributes) {
     currTextContent = new StringBuilder();
-    if (getHandlerMap().containsKey(localName)) {
-      reader.setContentHandler(getHandlerMap().get(localName));
+    if (this.parsers.containsKey(localName)) {
+      xmlReader.setContentHandler(this.parsers.get(localName));
     } else if (FAULT_STRUCT_TAG.equals(localName)) {
       this.fault = new Fault();
       FaultHandler faultHandler = new FaultHandler(this.fault, this);
-      reader.setContentHandler(faultHandler);
+      xmlReader.setContentHandler(faultHandler);
     }
   }
 
