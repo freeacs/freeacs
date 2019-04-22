@@ -41,7 +41,7 @@ public abstract class ProvisioningStrategy {
             reqRes.getSessionData().setCwmpVersionNumber(extractCwmpVersion(reqRes));
 
             // 1. process the request
-            logWillProcess(reqRes);
+            logWillProcessRequest(reqRes);
             ProvisioningMethod requestProvisioningMethod = getRequestMethod(reqRes);
             RequestProcessStrategy.getStrategy(requestProvisioningMethod, properties).process(reqRes);
             if (Log.isConversationLogEnabled()) {
@@ -54,27 +54,39 @@ public abstract class ProvisioningStrategy {
             // 3. Create and set response
             ProvisioningMethod responseProvisioningMethod = getResponseMethod(reqRes);
             Response response = ResponseCreateStrategy.getStrategy(responseProvisioningMethod, properties).getResponse(reqRes);
-            reqRes.getResponseData().setXml(response.toXml());
+            String responseStr = response.toXml();
+            if (Log.isConversationLogEnabled()) {
+                logConversationResponse(reqRes, responseStr);
+            }
+            reqRes.getResponseData().setXml(responseStr);
         }
 
-        private void logWillProcess(HTTPRequestResponseData reqRes) {
-            Log.debug(ProvisioningStrategy.class,
-                    "Will process method " + reqRes.getRequestData().getMethod() +
-                            " (incoming request/response from CPE)");
+        /**
+         * Log that we have got a request.
+         */
+        private void logWillProcessRequest(HTTPRequestResponseData reqRes) {
+            String method = reqRes.getRequestData().getMethod();
+            Log.debug(ProvisioningStrategy.class, "Will process method " + method + " (incoming request/response from CPE)");
         }
 
         /**
          * Log the xml payload. Pretty print it if pretty print quirk is enabled.
          */
         private void logConversationRequest(HTTPRequestResponseData reqRes) {
-            String unitId = reqRes.getSessionData().getUnitId();
+            String unitId = Optional.ofNullable(reqRes.getSessionData().getUnitId()).orElse("Unknown");
             String xml = reqRes.getRequestData().getXml();
             if (properties.isPrettyPrintQuirk(reqRes.getSessionData())) {
                 xml = PrettyPrinter.prettyPrintXmlString(reqRes.getRequestData().getXml());
             }
-            Log.conversation(reqRes.getSessionData(),
-                    "============== FROM CPE ( " + Optional.ofNullable(unitId).orElse("Unknown") + " )" +
-                            " TO ACS ===============\n" + xml);
+            Log.conversation(reqRes.getSessionData(), "============== FROM CPE ( " + unitId + " ) TO ACS ===============\n" + xml);
+        }
+
+        /**
+         * Log the xml response.
+         */
+        private void logConversationResponse(HTTPRequestResponseData reqRes, String responseStr) {
+            String unitId = Optional.ofNullable(reqRes.getSessionData().getUnitId()).orElse("Unknown");
+            Log.conversation(reqRes.getSessionData(), "=============== FROM ACS TO ( " + unitId + " ) ============\n" + responseStr + "\n");
         }
 
         /**

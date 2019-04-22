@@ -1,5 +1,6 @@
 package com.github.freeacs.tr069.methods.response;
 
+import com.github.freeacs.base.Log;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
@@ -33,6 +34,7 @@ public interface ResponseCreateStrategy {
             case Reboot:
                 return rebootStrategy();
             default:
+                Log.error(ResponseCreateStrategy.class,"The methodName " + provisioningMethod + " has no response strategy");
                 return emStrategy();
         }
     }
