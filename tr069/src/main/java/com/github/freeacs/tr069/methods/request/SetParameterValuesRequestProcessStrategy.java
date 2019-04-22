@@ -23,7 +23,7 @@ public class SetParameterValuesRequestProcessStrategy implements RequestProcessS
         }
         SessionData sessionData = reqRes.getSessionData();
         ParameterList paramList = sessionData.getToCPE();
-        for (ParameterValueStruct pvs : paramList.getParameterValueStructArrayList()) {
+        for (ParameterValueStruct pvs : paramList.getParameterValueList()) {
             Log.notice(SetParameterValuesRequestProcessStrategy.class, "\t" + pvs.getName() + " : " + pvs.getValue());
             String user =
                     sessionData

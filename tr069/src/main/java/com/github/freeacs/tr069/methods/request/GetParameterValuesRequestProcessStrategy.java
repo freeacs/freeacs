@@ -21,7 +21,7 @@ public class GetParameterValuesRequestProcessStrategy implements RequestProcessS
                 && parser.getHeader().getNoMoreRequests().getNoMoreRequestFlag()) {
             sessionData.setNoMoreRequests(true);
         }
-        sessionData.setValuesFromCPE(parser.getParameterList().getParameterValueStructArrayList());
+        sessionData.setValuesFromCPE(parser.getParameterList().getParameterValueList());
         sessionData.getProvisioningMessage().setParamsRead(sessionData.getValuesFromCPE().size());
         Log.debug(GetParameterValuesRequestProcessStrategy.class, "Response holds " + sessionData.getValuesFromCPE().size() + " parameters");
         if (sessionData.getValuesFromCPE().size() < sessionData.getRequestedCPE().size()) {

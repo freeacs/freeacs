@@ -7,12 +7,12 @@ import java.util.List;
 
 @Data
 public class ParameterList {
-    private List<ParameterValueStruct> parameterValueStructArrayList = new ArrayList<>();
+    private List<ParameterValueStruct> parameterValueList = new ArrayList<>();
     private List<ParameterInfoStruct> parameterInfoList = new ArrayList<>();
     private List<ParameterAttributeStruct> parameterAttributeList = new ArrayList<>();
 
     public void addParameterValueStruct(ParameterValueStruct param) {
-        this.parameterValueStructArrayList.add(param);
+        this.parameterValueList.add(param);
     }
 
     void addParameterInfoStruct(ParameterInfoStruct param) {
@@ -24,7 +24,7 @@ public class ParameterList {
     }
 
     public String getParameterValueByKey(String keyName) {
-        return this.parameterValueStructArrayList
+        return this.parameterValueList
                 .stream()
                 .filter(parameter -> keyName.equals(parameter.getName()))
                 .findFirst()
@@ -34,7 +34,7 @@ public class ParameterList {
 
     public void addOrChangeParameterValueStruct(String key, String value, String type) {
         boolean changed = false;
-        for (ParameterValueStruct struct : this.parameterValueStructArrayList) {
+        for (ParameterValueStruct struct : this.parameterValueList) {
             if (struct.getName().equals(key)) {
                 struct.setValue(value);
                 changed = true;
@@ -42,7 +42,7 @@ public class ParameterList {
             }
         }
         if (!changed) {
-            this.parameterValueStructArrayList.add(new ParameterValueStruct(key, value, type));
+            this.parameterValueList.add(new ParameterValueStruct(key, value, type));
         }
     }
 }
