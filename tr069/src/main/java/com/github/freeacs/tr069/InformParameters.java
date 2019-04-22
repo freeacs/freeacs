@@ -1,9 +1,12 @@
 package com.github.freeacs.tr069;
 
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
+import lombok.Data;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@Data
 public class InformParameters {
   /** The connection udp-url (for kick, ip-address). */
   public String UDP_CONNECTION_URL;
@@ -22,13 +25,5 @@ public class InformParameters {
     } else {
       return null;
     }
-  }
-
-  public ParameterValueStruct getPvs(String param) {
-    return cpeParams.get(param);
-  }
-
-  public void putPvs(String param, ParameterValueStruct pvs) {
-    cpeParams.put(param, pvs);
   }
 }

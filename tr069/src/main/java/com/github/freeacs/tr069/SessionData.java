@@ -29,16 +29,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Data
 public class SessionData implements SessionDataI {
   private static final Logger LOGGER = LoggerFactory.getLogger(SessionData.class);
 
   /** The session-id. */
   private String id;
   /** Access to all database operations. */
-  private DBAccessSession dbAccess;
+  private DBAccessSession dbAccessSession;
   /** Data for monitoring/logging. */
   private List<HTTPRequestResponseData> reqResList = new ArrayList<>();
   /** When did the session start? */
@@ -125,30 +129,14 @@ public class SessionData implements SessionDataI {
 
   public SessionData(String id, ACS acs) {
     this.id = id;
-    this.dbAccess = new DBAccessSession(acs);
+    this.dbAccessSession = new DBAccessSession(acs);
     provisioningMessage.setProvProtocol(ProvisioningProtocol.TR069);
-  }
-
-  public String getKeyRoot() {
-    return keyRoot;
   }
 
   public void setKeyRoot(String keyRoot) {
     if (keyRoot != null) {
       this.keyRoot = keyRoot;
     }
-  }
-
-  public Map<String, ParameterValueStruct> getFromDB() {
-    return fromDB;
-  }
-
-  public Long getStartupTmsForSession() {
-    return startupTmsForSession;
-  }
-
-  public void setStartupTmsForSession(long startupTmsForSession) {
-    this.startupTmsForSession = startupTmsForSession;
   }
 
   public void updateParametersFromDB(String unitId, boolean isDiscoveryMode) throws SQLException {
@@ -195,10 +183,6 @@ public class SessionData implements SessionDataI {
     }
   }
 
-  public String getUnitId() {
-    return unitId;
-  }
-
   public void setUnitId(String unitId) {
     if (unitId != null) {
       this.unitId = unitId;
@@ -206,52 +190,8 @@ public class SessionData implements SessionDataI {
     }
   }
 
-  public boolean isAuthenticated() {
-    return authenticated;
-  }
-
-  public void setAuthenticated(boolean authenticated) {
-    this.authenticated = authenticated;
-  }
-
   public void setNoMoreRequests(boolean noMoreRequests) {
     LOGGER.warn("Setting unused noMoreRequests field to " + noMoreRequests);
-  }
-
-  public CPEParameters getCpeParameters() {
-    return cpeParameters;
-  }
-
-  public void setCpeParameters(CPEParameters cpeParameters) {
-    this.cpeParameters = cpeParameters;
-  }
-
-  public ACSParameters getAcsParameters() {
-    return acsParameters;
-  }
-
-  public void setAcsParameters(ACSParameters acsParameters) {
-    this.acsParameters = acsParameters;
-  }
-
-  public List<ParameterValueStruct> getFromCPE() {
-    return valuesFromCPE;
-  }
-
-  public void setFromCPE(List<ParameterValueStruct> fromCPE) {
-    this.valuesFromCPE = fromCPE;
-  }
-
-  public ParameterList getToCPE() {
-    return toCPE;
-  }
-
-  public void setToCPE(ParameterList toCPE) {
-    this.toCPE = toCPE;
-  }
-
-  public List<ParameterValueStruct> getToDB() {
-    return toDB;
   }
 
   public void setToDB(List<ParameterValueStruct> toDB) {
@@ -259,22 +199,6 @@ public class SessionData implements SessionDataI {
       toDB = new ArrayList<>();
     }
     this.toDB = toDB;
-  }
-
-  public List<ParameterValueStruct> getRequestedCPE() {
-    return requestedCPE;
-  }
-
-  public void setRequestedCPE(List<ParameterValueStruct> requestedCPE) {
-    this.requestedCPE = requestedCPE;
-  }
-
-  public void setFromDB(Map<String, ParameterValueStruct> fromDB) {
-    this.fromDB = fromDB;
-  }
-
-  public List<HTTPRequestResponseData> getReqResList() {
-    return reqResList;
   }
 
   public String getMethodBeforePreviousResponseMethod() {
@@ -293,116 +217,12 @@ public class SessionData implements SessionDataI {
     }
   }
 
-  public boolean isProvisioningAllowed() {
-    return provisioningAllowed;
-  }
-
-  public void setProvisioningAllowed(boolean provisioningAllowed) {
-    this.provisioningAllowed = provisioningAllowed;
-  }
-
-  public Profile getProfile() {
-    return profile;
-  }
-
-  public void setProfile(Profile profile) {
-    this.profile = profile;
-  }
-
-  public Unittype getUnittype() {
-    return unittype;
-  }
-
-  public void setUnittype(Unittype unittype) {
-    this.unittype = unittype;
-  }
-
-  public boolean isPeriodic() {
-    return periodic;
-  }
-
-  public void setPeriodic(boolean periodic) {
-    this.periodic = periodic;
-  }
-
-  public Unit getUnit() {
-    return unit;
-  }
-
-  public void setUnit(Unit unit) {
-    this.unit = unit;
-  }
-
-  public String getEventCodes() {
-    return eventCodes;
-  }
-
   public void setEventCodes(String eventCodes) {
     this.eventCodes = eventCodes;
     this.provisioningMessage.setEventCodes(eventCodes);
   }
 
-  public String getSecret() {
-    return secret;
-  }
-
-  public void setSecret(String secret) {
-    this.secret = secret;
-  }
-
-  public boolean isFirstConnect() {
-    return firstConnect;
-  }
-
-  public void setFirstConnect(boolean firstConnect) {
-    this.firstConnect = firstConnect;
-  }
-
-  public boolean isUnittypeCreated() {
-    return unittypeCreated;
-  }
-
-  public void setUnittypeCreated(boolean unittypeCreated) {
-    this.unittypeCreated = unittypeCreated;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public ParameterKey getParameterKey() {
-    return parameterKey;
-  }
-
-  public void setParameterKey(ParameterKey parameterKey) {
-    this.parameterKey = parameterKey;
-  }
-
-  public Map<String, JobParameter> getJobParams() {
-    return jobParams;
-  }
-
-  public void setJobParams(Map<String, JobParameter> jobParams) {
-    this.jobParams = jobParams;
-  }
-
-  public DBAccessSession getDbAccessSession() {
-    return dbAccess;
-  }
-
-  public Job getJob() {
-    return job;
-  }
-
-  public void setJob(Job job) {
-    this.job = job;
-  }
-
-  public void addUnitDataToSession(SessionData sessionData) throws SQLException {
+  private void addUnitDataToSession(SessionData sessionData) throws SQLException {
     Unit unit = getDbAccessSession().readUnit(sessionData.getUnitId());
     Map<String, ParameterValueStruct> valueMap = new TreeMap<>();
     if (unit != null) {
@@ -459,7 +279,7 @@ public class SessionData implements SessionDataI {
   public void setSoftwareVersion(String softwareVersion) {
     CPEParameters cpeParams = getCpeParameters();
     if (cpeParams != null) {
-      cpeParams.putPvs(
+      cpeParams.getCpeParams().put(
           cpeParams.SOFTWARE_VERSION,
           new ParameterValueStruct(cpeParams.SOFTWARE_VERSION, softwareVersion));
     }
@@ -469,59 +289,12 @@ public class SessionData implements SessionDataI {
     return getParameterKey().isEqual() && getCommandKey().isEqual();
   }
 
-  public InformParameters getInformParameters() {
-    return informParameters;
-  }
-
-  public void setInformParameters(InformParameters informParameters) {
-    this.informParameters = informParameters;
-  }
-
-  public boolean isJobUnderExecution() {
-    return jobUnderExecution;
-  }
-
-  public void setJobUnderExecution(boolean jobUnderExecution) {
-    this.jobUnderExecution = jobUnderExecution;
-  }
-
   @Override
   public PIIDecision getPIIDecision() {
     if (piiDecision == null) {
       piiDecision = new PIIDecision(this);
     }
     return piiDecision;
-  }
-
-  @Override
-  public void setSerialNumber(String serialNumber) {
-    this.serialNumber = serialNumber;
-  }
-
-  @Override
-  public String getSerialNumber() {
-    return serialNumber;
-  }
-
-  @Override
-  public ProvisioningMessage getProvisioningMessage() {
-    return provisioningMessage;
-  }
-
-  public CommandKey getCommandKey() {
-    return commandKey;
-  }
-
-  public void setCommandKey(CommandKey commandKey) {
-    this.commandKey = commandKey;
-  }
-
-  public Download getDownload() {
-    return download;
-  }
-
-  public void setDownload(Download download) {
-    this.download = download;
   }
 
   public boolean discoverUnittype() {
@@ -545,7 +318,7 @@ public class SessionData implements SessionDataI {
     return false;
   }
 
-  public String getUnittypeName() {
+  String getUnittypeName() {
     String unittypeName = null;
     if (unittype != null) {
       unittypeName = unittype.getName();
@@ -561,85 +334,10 @@ public class SessionData implements SessionDataI {
     return version;
   }
 
-  public String getCwmpVersionNumber() {
-    return cwmpVersionNumber;
-  }
-
-  public void setCwmpVersionNumber(String cwmpVersionNumber) {
-    this.cwmpVersionNumber = cwmpVersionNumber;
-  }
-
-  public boolean isFactoryReset() {
-    return factoryReset;
-  }
-
-  public void setFactoryReset(boolean factoryReset) {
-    this.factoryReset = factoryReset;
-  }
-
-  public boolean isValueChange() {
-    return valueChange;
-  }
-
-  public void setValueChange(boolean valueChange) {
-    this.valueChange = valueChange;
-  }
-
-  public boolean isKicked() {
-    return kicked;
-  }
-
-  public void setKicked(boolean kicked) {
-    this.kicked = kicked;
-  }
-
-  public boolean isTransferComplete() {
-    return transferComplete;
-  }
-
-  public void setTransferComplete(boolean transferComplete) {
-    this.transferComplete = transferComplete;
-  }
-
-  public boolean isAutonomousTransferComplete() {
-    return autonomousTransferComplete;
-  }
-
-  public void setAutonomousTransferComplete(boolean autonomousTransferComplete) {
-    this.autonomousTransferComplete = autonomousTransferComplete;
-  }
-
-  public boolean isDiagnosticsComplete() {
-    return diagnosticsComplete;
-  }
-
-  public void setDiagnosticsComplete(boolean diagnosticsComplete) {
-    this.diagnosticsComplete = diagnosticsComplete;
-  }
-
-  public boolean isBooted() {
-    return booted;
-  }
-
-  public void setBooted(boolean booted) {
-    this.booted = booted;
-  }
-
+  @Data
+  @AllArgsConstructor
   public static class Download {
     private String url;
     private File file;
-
-    public Download(String url, File file) {
-      this.url = url;
-      this.file = file;
-    }
-
-    public String getUrl() {
-      return url;
-    }
-
-    public File getFile() {
-      return file;
-    }
   }
 }

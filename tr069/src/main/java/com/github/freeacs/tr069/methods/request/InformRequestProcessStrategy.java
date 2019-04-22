@@ -65,7 +65,7 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
 
                 String unitTypeName = deviceIdStruct.getProductClass();
 
-                if (properties.shouldAppendHwVersion()) {
+                if (properties.isAppendHwVersion()) {
                     String hardwareVersion = parser.getParameterList()
                             .getParameterValueByKey(sessionData.getKeyRoot() + "DeviceInfo.HardwareVersion");
 
@@ -179,14 +179,14 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
             }
             if (cpeParams != null) {
                 if (pvs.getName().equals(cpeParams.SOFTWARE_VERSION)) {
-                    cpeParams.putPvs(cpeParams.SOFTWARE_VERSION, pvs);
+                    cpeParams.getCpeParams().put(cpeParams.SOFTWARE_VERSION, pvs);
                     sessionData.setSoftwareVersion(pvs.getValue());
                 }
                 if (pvs.getName().equals(cpeParams.CONNECTION_URL)) {
-                    cpeParams.putPvs(cpeParams.CONNECTION_URL, pvs);
+                    cpeParams.getCpeParams().put(cpeParams.CONNECTION_URL, pvs);
                 }
                 if (pvs.getName().equals(informParams.UDP_CONNECTION_URL)) {
-                    informParams.putPvs(informParams.UDP_CONNECTION_URL, pvs);
+                    informParams.getCpeParams().put(informParams.UDP_CONNECTION_URL, pvs);
                 }
             }
             if (pvs.getName().contains("ParameterKey")) {

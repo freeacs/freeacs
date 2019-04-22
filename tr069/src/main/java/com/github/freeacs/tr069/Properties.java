@@ -2,8 +2,10 @@ package com.github.freeacs.tr069;
 
 import com.github.freeacs.base.Log;
 import com.typesafe.config.Config;
+import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
+@Data
 public class Properties {
   private String digestSecret;
   private boolean fileAuthUsed;
@@ -31,6 +33,7 @@ public class Properties {
     setAppendHwVersion(getOrDefault("unit.type.append-hw-version", false));
   }
 
+  @SuppressWarnings({"Duplicates", "unchecked"})
   private <T> T getOrDefault(String key, T defaultValue) {
     Object obj = environment.hasPath(key) ? environment.getAnyRef(key) : null;
     if (obj != null) {
@@ -38,36 +41,6 @@ public class Properties {
     }
     return defaultValue;
   }
-
-  private void setContextPath(String contextPath) {
-    this.contextPath = contextPath;
-  }
-
-  private void setConcurrentDownloadLimit(Integer concurrentDownloadLimit) {
-    this.concurrentDownloadLimit = concurrentDownloadLimit;
-  }
-
-  private void setFileAuthUsed(Boolean fileAuthUsed) {
-    this.fileAuthUsed = fileAuthUsed;
-  }
-
-  private void setAuthMethod(String authMethod) {
-    this.authMethod = authMethod;
-  }
-
-  private void setPublicUrl(String url) {
-    publicUrl = url;
-  }
-
-  private void setDigestSecret(String digestSecret) {
-    this.digestSecret = digestSecret;
-  }
-
-  private void setDiscoveryMode(Boolean discoveryMode) {
-    this.discoveryMode = discoveryMode;
-  }
-
-  private void setAppendHwVersion(Boolean appendHwVersion) { this.appendHwVersion = appendHwVersion; }
 
   private void setDiscoveryBlock(String discoveryBlock) {
     this.discoveryBlock =
@@ -130,38 +103,4 @@ public class Properties {
       return new String[0];
     }
   }
-
-  public String getContextPath() {
-    return contextPath;
-  }
-
-  public String getDigestSecret() {
-    return digestSecret;
-  }
-
-  public boolean isFileAuthUsed() {
-    return fileAuthUsed;
-  }
-
-  public boolean isDiscoveryMode() {
-    return discoveryMode;
-  }
-
-  public String[] getDiscoveryBlock() {
-    return discoveryBlock;
-  }
-
-  public String getAuthMethod() {
-    return authMethod;
-  }
-
-  public int getConcurrentDownloadLimit() {
-    return concurrentDownloadLimit;
-  }
-
-  public String getPublicUrl() {
-    return publicUrl;
-  }
-
-  public boolean shouldAppendHwVersion() { return appendHwVersion; }
 }

@@ -116,13 +116,13 @@ public class EmptyDecisionStrategy implements DecisionStrategy {
         }
         InformParameters ifmp = sessionData.getInformParameters();
         if (ifmp != null
-                && ifmp.getPvs(ifmp.UDP_CONNECTION_URL) != null
-                && ifmp.getPvs(ifmp.UDP_CONNECTION_URL).getValue() != null) {
-            String udpUrl = ifmp.getPvs(ifmp.UDP_CONNECTION_URL).getValue();
+                && ifmp.getCpeParams().get(ifmp.UDP_CONNECTION_URL) != null
+                && ifmp.getCpeParams().get(ifmp.UDP_CONNECTION_URL).getValue() != null) {
+            String udpUrl = ifmp.getCpeParams().get(ifmp.UDP_CONNECTION_URL).getValue();
             if (udpUrl != null
                     && !"".equals(udpUrl.trim())
                     && !udpUrl.equals(sessionData.getUnit().getParameterValue(ifmp.UDP_CONNECTION_URL))) {
-                toDB.add(ifmp.getPvs(ifmp.UDP_CONNECTION_URL));
+                toDB.add(ifmp.getCpeParams().get(ifmp.UDP_CONNECTION_URL));
             }
         }
         sessionData.setToDB(toDB);

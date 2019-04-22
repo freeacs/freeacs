@@ -1,6 +1,8 @@
 package com.github.freeacs.tr069;
 
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
+import lombok.Data;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +18,7 @@ import java.util.Map;
  *
  * @author Morten
  */
+@Data
 public class CPEParameters {
   /** All config file information. */
   public String CONFIG_FILES;
@@ -57,18 +60,6 @@ public class CPEParameters {
     } else {
       return null;
     }
-  }
-
-  public Map<String, ParameterValueStruct> getCpeParams() {
-    return cpeParams;
-  }
-
-  public ParameterValueStruct getPvs(String param) {
-    return cpeParams.get(param);
-  }
-
-  public void putPvs(String param, ParameterValueStruct pvs) {
-    cpeParams.put(param, pvs);
   }
 
   /**

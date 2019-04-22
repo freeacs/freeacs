@@ -67,7 +67,7 @@ public class SessionLogging {
   }
 
   private static String abbreviate(List<HTTPRequestResponseData> reqResList) {
-    String methodsUsed = "";
+    StringBuilder methodsUsed = new StringBuilder();
     for (int i = 0; i < reqResList.size(); i++) {
       HTTPRequestResponseData reqRes = reqResList.get(i);
       HTTPRequestData reqData = reqRes.getRequestData();
@@ -101,15 +101,15 @@ public class SessionLogging {
       if (ProvisioningMethod.Inform.name().equals(reqMethod)) {
         reqShortname += "(" + reqRes.getSessionData().getEventCodes() + ")";
       }
-      methodsUsed += "[" + reqShortname;
+      methodsUsed.append("[").append(reqShortname);
       if (reqRes.getThrowable() != null) {
-        methodsUsed += "-(F)" + resShortname + "] ";
+        methodsUsed.append("-(F)").append(resShortname).append("] ");
       } else {
-        methodsUsed += "-" + resShortname + "] ";
+        methodsUsed.append("-").append(resShortname).append("] ");
       }
     }
 
-    return methodsUsed;
+    return methodsUsed.toString();
   }
 
   private static String makeEventMsg(HTTPRequestResponseData reqRes, long diff, String methodsUsed) {
@@ -124,14 +124,14 @@ public class SessionLogging {
       job = String.format("%-6s", sessionData.getJob().getId());
     }
     eventMsg += job;
-    String parameterList = "";
+    StringBuilder parameterList = new StringBuilder();
     int paramsToCPE = 0;
     for (HTTPRequestResponseData reqResItem : reqResList) {
       String resMethod = reqResItem.getResponseData().getMethod();
       if (ProvisioningMethod.SetParameterValues.name().equals(resMethod)) {
         paramsToCPE = sessionData.getToCPE().getParameterValueList().size();
         for (ParameterValueStruct pvs : sessionData.getToCPE().getParameterValueList()) {
-          parameterList += pvs.getName() + "=" + pvs.getValue() + ", ";
+          parameterList.append(pvs.getName()).append("=").append(pvs.getValue()).append(", ");
         }
       }
     }

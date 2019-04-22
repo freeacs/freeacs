@@ -37,7 +37,7 @@ public class FileServlet extends AbstractHttpDataWrapper {
       if (properties.isFileAuthUsed()) {
         HTTPRequestResponseData reqRes = getHttpRequestResponseData(req, res);
         // 2. Authenticate the client (first issue challenge, then authenticate)
-        if (!Authenticator.authenticate(reqRes, properties)) {
+        if (Authenticator.notAuthenticated(reqRes, properties)) {
           return;
         }
         if (reqRes.getSessionData() != null && reqRes.getSessionData().getUnittype() != null) {

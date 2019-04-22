@@ -20,7 +20,7 @@ public class GetScriptVersionTest {
                 "xsd:string"
         ));
         CPEParameters cpeParameters = new CPEParameters("Device.");
-        cpeParameters.putPvs("Device.DeviceInfo.VendorConfigFile.1.Name", new ParameterValueStruct(
+        cpeParameters.getCpeParams().put("Device.DeviceInfo.VendorConfigFile.1.Name", new ParameterValueStruct(
                 "Device.DeviceInfo.VendorConfigFile.1.Name",
                 "SomeName",
                 "xsd:string"
@@ -45,12 +45,12 @@ public class GetScriptVersionTest {
                 "xsd:string"
         ));
         CPEParameters cpeParameters = new CPEParameters("Device.");
-        cpeParameters.putPvs("Device.DeviceInfo.VendorConfigFile.1.Name", new ParameterValueStruct(
+        cpeParameters.getCpeParams().put("Device.DeviceInfo.VendorConfigFile.1.Name", new ParameterValueStruct(
                 "Device.DeviceInfo.VendorConfigFile.1.Name",
                 "SomeName",
                 "xsd:string"
         ));
-        cpeParameters.putPvs("Device.DeviceInfo.VendorConfigFile.1.Version", new ParameterValueStruct(
+        cpeParameters.getCpeParams().put("Device.DeviceInfo.VendorConfigFile.1.Version", new ParameterValueStruct(
                 "Device.DeviceInfo.VendorConfigFile.1.Version",
                 "versionFromCPE",
                 "xsd:string"
