@@ -3,6 +3,7 @@ package com.github.freeacs.base.http;
 import com.github.freeacs.base.BaseCache;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.NoDataAvailableException;
+import com.github.freeacs.base.db.DBAccessSession;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.SessionData;
@@ -76,8 +77,7 @@ public class BasicAuthenticator {
     try {
       SessionData sessionData = reqRes.getSessionData();
       sessionData.setUnitId(unitId);
-      sessionData.updateParametersFromDB(
-          unitId, isDiscoveryMode); // Unit is now stored in sessionData
+      new DBAccessSession(reqRes.getDbAccess().getDBI().getAcs()).updateParametersFromDB(sessionData, isDiscoveryMode); // Unit is now stored in sessionData
       String secret = null;
       if (sessionData.isFirstConnect() && isDiscoveryMode) {
         for (String blocked : discoveryBlocked) {

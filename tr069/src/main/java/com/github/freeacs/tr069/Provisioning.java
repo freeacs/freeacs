@@ -231,7 +231,7 @@ public class Provisioning extends AbstractHttpDataWrapper {
     try {
       Unit unit = reqRes.getSessionData().getUnit();
       if (unit != null) {
-        ACS acs = reqRes.getSessionData().getDbAccessSession().getAcs();
+        ACS acs = reqRes.getDbAccess().getDBI().getAcs();
         ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
         acsUnit.addOrChangeQueuedUnitParameters(unit);
       }

@@ -1,6 +1,7 @@
 package com.github.freeacs.base;
 
 import com.github.freeacs.base.db.DBAccess;
+import com.github.freeacs.base.db.DBAccessSession;
 import com.github.freeacs.base.db.DBAccessStatic;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
@@ -13,6 +14,7 @@ import com.github.freeacs.dbi.UnitParameter;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.util.SystemParameters;
+import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class UnitJob {
+  private final ACS acs;
   private SessionDataI sessionData;
   private Job job;
   /**
@@ -37,10 +40,11 @@ public class UnitJob {
    */
   private boolean serverSideJob;
 
-  public UnitJob(SessionDataI sessionData, Job job, boolean serverSideJob) {
+  public UnitJob(SessionDataI sessionData, ACS acs, Job job, boolean serverSideJob) {
     this.sessionData = sessionData;
     this.job = job;
     this.serverSideJob = serverSideJob;
+    this.acs = acs;
   }
 
   private UnitParameter makeUnitParameter(String name, String value) {
@@ -124,7 +128,7 @@ public class UnitJob {
               sessionData.getUnit(), upList, sessionData.getProfile());
         }
         DBAccessStatic.startUnitJob(
-            unitId, job.getId(), sessionData.getDbAccessSession().getAcs().getDataSource());
+            unitId, job.getId(), acs.getDataSource());
         if (!serverSideJob) {
           updateSessionWithJobParams();
           updateSessionWithJobCurrent();
@@ -163,11 +167,10 @@ public class UnitJob {
             sessionData.getUnitId(),
             jobId,
             unitJobStatus,
-            sessionData.getDbAccessSession().getAcs().getDataSource());
+            acs.getDataSource());
         sessionData.getPIIDecision().setCurrentJobStatus(unitJobStatus);
         // Write directly to database, no queuing, since the all data are flushed in next step (most
         // likely)
-        ACS acs = sessionData.getDbAccessSession().getAcs();
         ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
         acsUnit.addOrChangeUnitParameters(upList, sessionData.getProfile());
         if (!serverSideJob) {
@@ -177,7 +180,7 @@ public class UnitJob {
           Log.debug(
               UnitJob.class,
               "Unit-information will be reloaded to reflect changes in profile/unit parameters");
-          sessionData.updateParametersFromDB(sessionData.getUnitId(), isDiscoveryMode);
+          new DBAccessSession(acs).updateParametersFromDB((SessionData) sessionData, isDiscoveryMode);
         }
       } catch (SQLException sqle) {
         Log.error(UnitJob.class, "UnitJob update failed", sqle);

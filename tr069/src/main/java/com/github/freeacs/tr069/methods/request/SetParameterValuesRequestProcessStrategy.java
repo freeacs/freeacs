@@ -1,6 +1,7 @@
 package com.github.freeacs.tr069.methods.request;
 
 import com.github.freeacs.base.Log;
+import com.github.freeacs.base.db.DBAccessSession;
 import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.http.HTTPRequestResponseData;
@@ -25,9 +26,7 @@ public class SetParameterValuesRequestProcessStrategy implements RequestProcessS
         ParameterList paramList = sessionData.getToCPE();
         for (ParameterValueStruct pvs : paramList.getParameterValueList()) {
             Log.notice(SetParameterValuesRequestProcessStrategy.class, "\t" + pvs.getName() + " : " + pvs.getValue());
-            String user =
-                    sessionData
-                            .getDbAccessSession()
+            String user = new DBAccessSession(reqRes.getDbAccess().getDBI().getAcs())
                             .getAcs()
                             .getSyslog()
                             .getIdentity()

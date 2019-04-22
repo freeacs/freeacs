@@ -2,38 +2,28 @@ package com.github.freeacs.tr069;
 
 import com.github.freeacs.base.ACSParameters;
 import com.github.freeacs.base.Log;
-import com.github.freeacs.base.NoDataAvailableException;
 import com.github.freeacs.base.PIIDecision;
 import com.github.freeacs.base.SessionDataI;
-import com.github.freeacs.base.db.DBAccessSession;
-import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.File;
 import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.JobParameter;
 import com.github.freeacs.dbi.Profile;
-import com.github.freeacs.dbi.ProfileParameter;
 import com.github.freeacs.dbi.Unit;
-import com.github.freeacs.dbi.UnitParameter;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
-import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Data
 public class SessionData implements SessionDataI {
@@ -41,8 +31,6 @@ public class SessionData implements SessionDataI {
 
   /** The session-id. */
   private String id;
-  /** Access to all database operations. */
-  private DBAccessSession dbAccessSession;
   /** Data for monitoring/logging. */
   private List<HTTPRequestResponseData> reqResList = new ArrayList<>();
   /** When did the session start? */
@@ -127,59 +115,14 @@ public class SessionData implements SessionDataI {
 
   private String cwmpVersionNumber;
 
-  public SessionData(String id, ACS acs) {
+  public SessionData(String id) {
     this.id = id;
-    this.dbAccessSession = new DBAccessSession(acs);
     provisioningMessage.setProvProtocol(ProvisioningProtocol.TR069);
   }
 
   public void setKeyRoot(String keyRoot) {
     if (keyRoot != null) {
       this.keyRoot = keyRoot;
-    }
-  }
-
-  public void updateParametersFromDB(String unitId, boolean isDiscoveryMode) throws SQLException {
-    if (fromDB != null) {
-      return;
-    }
-
-    Log.debug(SessionData.class, "Will load unit data");
-    addUnitDataToSession(this);
-
-    if (fromDB.isEmpty()) {
-      if (isDiscoveryMode) {
-        Log.debug(
-            SessionData.class,
-            "No unit data found & discovery mode true -> first-connect = true, allow to continue");
-        setFirstConnect(true);
-      } else {
-        throw new NoDataAvailableException();
-      }
-    }
-
-    if (!fromDB.isEmpty()) {
-      if (acsParameters == null) {
-        acsParameters = new ACSParameters();
-      }
-      Iterator<String> i = fromDB.keySet().iterator();
-      int systemParamCounter = 0;
-      while (i.hasNext()) {
-        String utpName = i.next();
-        UnittypeParameter utp = unittype.getUnittypeParameters().getByName(utpName);
-        if (utp != null && utp.getFlag().isSystem()) {
-          systemParamCounter++;
-          acsParameters.putPvs(utpName, fromDB.get(utpName));
-          i.remove();
-        }
-      }
-      Log.debug(
-          SessionData.class,
-          "Removed "
-              + systemParamCounter
-              + " system parameter from param-list, now contains "
-              + fromDB.size()
-              + " params");
     }
   }
 
@@ -220,52 +163,6 @@ public class SessionData implements SessionDataI {
   public void setEventCodes(String eventCodes) {
     this.eventCodes = eventCodes;
     this.provisioningMessage.setEventCodes(eventCodes);
-  }
-
-  private void addUnitDataToSession(SessionData sessionData) throws SQLException {
-    Unit unit = getDbAccessSession().readUnit(sessionData.getUnitId());
-    Map<String, ParameterValueStruct> valueMap = new TreeMap<>();
-    if (unit != null) {
-      sessionData.setUnit(unit);
-      sessionData.setUnittype(unit.getUnittype());
-      sessionData.setProfile(unit.getProfile());
-      ProfileParameter[] pparams = unit.getProfile().getProfileParameters().getProfileParameters();
-      for (ProfileParameter pp : pparams) {
-        String utpName = pp.getUnittypeParameter().getName();
-        valueMap.put(utpName, new ParameterValueStruct(utpName, pp.getValue()));
-      }
-      int overrideCounter = 0;
-      for (Entry<String, UnitParameter> entry : unit.getUnitParameters().entrySet()) {
-        if (!entry.getValue().getParameter().valueWasNull()) {
-          String utpName = entry.getKey();
-          String value = entry.getValue().getValue();
-          ParameterValueStruct pvs = new ParameterValueStruct(utpName, value);
-          if (valueMap.containsKey(utpName)) {
-            overrideCounter++;
-          }
-          valueMap.put(utpName, pvs);
-        } else {
-          System.out.println(entry.getKey() + " is probably a session-parameter");
-        }
-      }
-      int alwaysCounter = 0;
-      for (Entry<Integer, UnittypeParameter> entry :
-          unit.getUnittype().getUnittypeParameters().getAlwaysMap().entrySet()) {
-        String utpName = entry.getValue().getName();
-        if (!valueMap.containsKey(utpName)) {
-          alwaysCounter++;
-          valueMap.put(utpName, new ParameterValueStruct(utpName, ""));
-        }
-      }
-      String msg = "Found unit in database - in total " + valueMap.size() + " params ";
-      msg += "(" + unit.getUnitParameters().size() + " unit params, ";
-      msg += pparams.length + " profile params (" + overrideCounter + " overridden), ";
-      msg += alwaysCounter + " always read params added)";
-      Log.debug(SessionData.class, msg);
-    } else {
-      Log.warn(SessionData.class, "Did not find unit in unit-table, nothing exists on this unit");
-    }
-    sessionData.setFromDB(valueMap);
   }
 
   public String getSoftwareVersion() {

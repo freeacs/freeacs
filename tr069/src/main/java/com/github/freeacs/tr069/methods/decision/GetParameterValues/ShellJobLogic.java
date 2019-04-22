@@ -36,8 +36,7 @@ public class ShellJobLogic {
      */
     private static Cache monitorCache = new Cache();
 
-    public static void execute(SessionData sessionData, Job job, UnitJob uj, boolean isDiscoveryMode)
-            throws TR069Exception {
+    public static void execute(SessionData sessionData, ACS acs, Job job, UnitJob uj, boolean isDiscoveryMode) throws TR069Exception {
         String unitId = sessionData.getUnitId();
         CacheValue cv = monitorCache.get(unitId);
         if (cv == null) {
@@ -46,11 +45,11 @@ public class ShellJobLogic {
         }
         synchronized (cv.getObject()) {
             // read parameters from device and save it to the unit
-            ShellJobLogic.importReadOnlyParameters(sessionData);
+            ShellJobLogic.importReadOnlyParameters(sessionData, acs);
             // execute changes using the shell-script, all changes are written to database
             ShellJobLogic.executeShellScript(sessionData, job, uj, isDiscoveryMode);
             // read the changes from the database and send to CPE
-            ShellJobLogic.prepareSPV(sessionData);
+            ShellJobLogic.prepareSPV(sessionData, acs);
         }
     }
 
@@ -118,9 +117,8 @@ public class ShellJobLogic {
      * Read unit parameters from database, to see if any changes have occurred (during the shell
      * script execution). If ReadWrite parameters differ from CPE, then send them to the CPE.
      */
-    private static void toCPE(SessionData sessionData) throws TR069DatabaseException {
+    private static void toCPE(SessionData sessionData, ACS acs) throws TR069DatabaseException {
         UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
-        ACS acs = sessionData.getDbAccessSession().getAcs();
         Unit unit;
         try {
             ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
@@ -152,7 +150,7 @@ public class ShellJobLogic {
      * In order for the shell script to run with the correct parameters, we must read them from the
      * device and write it to the database, before the script starts.
      */
-    private static void importReadOnlyParameters(SessionData sessionData)
+    private static void importReadOnlyParameters(SessionData sessionData, ACS acs)
             throws TR069DatabaseException {
         List<UnitParameter> unitParameters = new ArrayList<>();
         UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
@@ -178,7 +176,6 @@ public class ShellJobLogic {
         }
         if (unitParameters.size() > 0) {
             try {
-                ACS acs = sessionData.getDbAccessSession().getAcs();
                 ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
                 acsUnit.addOrChangeUnitParameters(unitParameters, sessionData.getProfile());
             } catch (SQLException sqle) {
@@ -187,8 +184,8 @@ public class ShellJobLogic {
         }
     }
 
-    private static void prepareSPV(SessionData sessionData) throws TR069DatabaseException {
-        toCPE(sessionData);
+    private static void prepareSPV(SessionData sessionData, ACS acs) throws TR069DatabaseException {
+        toCPE(sessionData, acs);
         List<ParameterValueStruct> toDB = new ArrayList<>();
         sessionData.setToDB(toDB);
         CPEParameters cpeParams = sessionData.getCpeParameters();
