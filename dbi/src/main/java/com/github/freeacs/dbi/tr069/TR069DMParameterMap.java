@@ -3,6 +3,15 @@ package com.github.freeacs.dbi.tr069;
 import java.util.Map;
 
 public class TR069DMParameterMap {
+  private static TR069DMParameterMap tr069ParameterMap;
+
+  public static TR069DMParameterMap getTR069ParameterMap() throws Exception {
+    if (tr069ParameterMap == null) {
+      tr069ParameterMap = TR069DMLoader.load();
+    }
+    return tr069ParameterMap;
+  }
+
   private Map<String, TR069DMParameter> map;
 
   public TR069DMParameterMap(Map<String, TR069DMParameter> map) {

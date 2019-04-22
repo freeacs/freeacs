@@ -4,10 +4,6 @@ public class HTTPResponseData {
   private String method;
   private String xml;
 
-  protected HTTPResponseData() {
-
-  }
-
   public String getXml() {
     return xml;
   }

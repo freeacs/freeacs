@@ -11,6 +11,8 @@ import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.ScriptExecutions;
 import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.tr069.methods.ProvisioningMethod;
+import com.github.freeacs.tr069.methods.ProvisioningStrategy;
 import com.github.freeacs.tr069.background.ActiveDeviceDetectionTask;
 import com.github.freeacs.tr069.background.MessageListenerTask;
 import com.github.freeacs.tr069.background.ScheduledKickTask;
@@ -20,10 +22,7 @@ import com.github.freeacs.http.AbstractHttpDataWrapper;
 import com.github.freeacs.http.HTTPRequestData;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.http.HTTPResponseData;
-import com.github.freeacs.tr069.methods.DecisionMaker;
-import com.github.freeacs.tr069.methods.HTTPRequestProcessor;
-import com.github.freeacs.tr069.methods.HTTPResponseCreator;
-import com.github.freeacs.tr069.methods.TR069Method;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -39,17 +38,14 @@ import javax.servlet.http.HttpServletResponse;
 public class Provisioning extends AbstractHttpDataWrapper {
   private static ScriptExecutions executions;
 
-  private final TR069Method tr069Method;
 
   private final ExecutorWrapper executorWrapper;
 
   public Provisioning(
       DBAccess dbAccess,
-      TR069Method tr069Method,
       Properties properties,
       ExecutorWrapper executorWrapper) {
     super(dbAccess, properties);
-    this.tr069Method = tr069Method;
     this.executorWrapper = executorWrapper;
   }
 
@@ -161,7 +157,7 @@ public class Provisioning extends AbstractHttpDataWrapper {
     try {
       // Create the main object which contains all objects concerning the entire
       // session. This object also contains the SessionData object
-      reqRes = getHttpRequestResponseDate(req, res);
+      reqRes = getHttpRequestResponseData(req, res);
       // 2. Authenticate the client (first issue challenge, then authenticate)
       if (!Authenticator.authenticate(reqRes, properties)
           || (reqRes.getSessionData() != null
@@ -170,22 +166,18 @@ public class Provisioning extends AbstractHttpDataWrapper {
       }
       // 4. Read the request from the client - store in reqRes object
       extractRequest(reqRes);
-      // 5.Process request (parsing xml/data)
-      HTTPRequestProcessor.processRequest(reqRes, tr069Method.getRequestMap(), properties);
-      // 6. Decide next step in TR-069 session (sometimes trivial, sometimes complex)
-      DecisionMaker.process(reqRes, tr069Method.getRequestMap());
-      // 7. Create TR-069 response
-      HTTPResponseCreator.createResponse(reqRes, tr069Method.getResponseMap());
-      // 8. Set correct headers in response
+      // 5. Process provision strategy
+      ProvisioningStrategy.getStrategy(properties).process(reqRes);
+      // 6. Set correct headers in response
       if (reqRes.getResponseData().getXml() != null && !reqRes.getResponseData().getXml().isEmpty()) {
         res.setHeader("SOAPAction", "");
         res.setContentType("text/xml");
       }
-      // 8. No need to send Content-length as it will only be informational for 204 HTTP messages
+      // 7. No need to send Content-length as it will only be informational for 204 HTTP messages
       if ("Empty".equals(reqRes.getResponseData().getMethod())) {
         res.setStatus(HttpServletResponse.SC_NO_CONTENT);
       }
-      // 9. Print response to output
+      // 8. Print response to output
       res.getWriter().print(reqRes.getResponseData().getXml());
     } catch (Throwable t) {
       // Make sure we return an EMPTY response to the TR-069 client
@@ -224,7 +216,7 @@ public class Provisioning extends AbstractHttpDataWrapper {
           // ProvisioningState.READY.toString());
           writeQueuedUnitParameters(reqRes);
         }
-        SessionLogging.log(reqRes, tr069Method.getAbbrevMap());
+        SessionLogging.log(reqRes);
         BaseCache.removeSessionData(reqRes.getSessionData().getUnitId());
         BaseCache.removeSessionData(reqRes.getSessionData().getId());
         res.setHeader("Connection", "close");
@@ -261,9 +253,9 @@ public class Provisioning extends AbstractHttpDataWrapper {
       HTTPResponseData resData = reqRes.getResponseData();
       if (reqData.getMethod() != null
           && resData != null
-          && TR069Method.EMPTY.equals(resData.getMethod())) {
+          && ProvisioningMethod.Empty.name().equals(resData.getMethod())) {
         boolean terminationQuirk = properties.isTerminationQuirk(sessionData);
-        return !terminationQuirk || TR069Method.EMPTY.equals(reqData.getMethod());
+        return !terminationQuirk || ProvisioningMethod.Empty.name().equals(reqData.getMethod());
       }
       return false;
     } catch (Throwable t) {
