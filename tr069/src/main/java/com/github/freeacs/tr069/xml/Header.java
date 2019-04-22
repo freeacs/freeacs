@@ -1,27 +1,22 @@
 package com.github.freeacs.tr069.xml;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Header {
-  private HoldRequests holdRequests;
   private TR069TransactionID id;
+  private HoldRequests holdRequests;
   private NoMoreRequests noMoreRequests;
-
-  public Header() {
-    this.id = null;
-    this.holdRequests = null;
-    this.noMoreRequests = null;
-  }
-
-  public Header(TR069TransactionID id, HoldRequests hr, NoMoreRequests nmr) {
-    this.id = id;
-    this.holdRequests = hr;
-    this.noMoreRequests = nmr;
-  }
 
   public Header getHeader() {
     return this;
   }
 
-  public void setHeaderField(String key, String value) {
+  void setHeaderField(String key, String value) {
     if ("ID".equals(key)) {
       if (id != null) {
         id.setId(value);
@@ -43,7 +38,7 @@ public class Header {
     }
   }
 
-  public String toXml() {
+  String toXml() {
     StringBuilder sb = new StringBuilder(6);
     if (id != null || holdRequests != null) {
       sb.append("<").append("soapenv").append(":Header>\n");
@@ -61,17 +56,5 @@ public class Header {
       sb.append("<").append("soapenv").append(":Header/>\n");
     }
     return sb.toString();
-  }
-
-  public TR069TransactionID getId() {
-    return id;
-  }
-
-  public HoldRequests getHoldRequests() {
-    return holdRequests;
-  }
-
-  public NoMoreRequests getNoMoreRequests() {
-    return noMoreRequests;
   }
 }

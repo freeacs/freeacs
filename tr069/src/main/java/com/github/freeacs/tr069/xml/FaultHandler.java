@@ -58,7 +58,7 @@ public class FaultHandler extends DefaultHandler {
     if (SOAP_ENV_NS.equals(namespaceURI) && FAULT_TAG.equals(localName)) {}
     if (FAULT_STRUCT_TAG.equals(localName)) {
       if (owner != null) {
-        owner.getXMLReader().setContentHandler(owner);
+        owner.getXmlReader().setContentHandler(owner);
       }
     } else if (SOAP_FAULT_CODE_TAG.equals(localName)) {
       if (this.fault != null) {

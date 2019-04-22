@@ -123,7 +123,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
             serviceWindow = new ServiceWindow(sessionData, false);
             if (serviceWindow.isWithin()) {
                 prepareSPV(sessionData);
-                if (!sessionData.getToCPE().getParameterValueList().isEmpty()) {
+                if (!sessionData.getToCPE().getParameterValueStructArrayList().isEmpty()) {
                     reqRes.getResponseData().setMethod(ProvisioningMethod.SetParameterValues.name());
                 } else {
                     reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());
@@ -560,7 +560,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         // sessionData.setToSyslog(toSyslog);
         Log.debug(
                 GetParameterValuesDecisionStrategy.class,
-                toCPE.getParameterValueList().size() + " params to CPE, " + toDB.size() + " params to ACS");
+                toCPE.getParameterValueStructArrayList().size() + " params to CPE, " + toDB.size() + " params to ACS");
     }
 
     /** Make sure unit parameters accurately represents CPE parameters. */

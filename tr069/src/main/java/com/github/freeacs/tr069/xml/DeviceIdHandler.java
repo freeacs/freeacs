@@ -8,17 +8,17 @@ import org.xml.sax.helpers.DefaultHandler;
  * fields (manufacturer, oui, productClass, serialNumber).
  */
 public class DeviceIdHandler extends DefaultHandler {
-  public static final String DEVICE_ID_TAG = "DeviceId";
-  public static final String MANUFACTURER_TAG = "Manufacturer";
-  public static final String OUI_TAG = "OUI";
-  public static final String PRODUCT_CLASS_TAG = "ProductClass";
-  public static final String SERIAL_NUMBER_TAG = "SerialNumber";
+  static final String DEVICE_ID_TAG = "DeviceId";
+  private static final String MANUFACTURER_TAG = "Manufacturer";
+  private static final String OUI_TAG = "OUI";
+  private static final String PRODUCT_CLASS_TAG = "ProductClass";
+  private static final String SERIAL_NUMBER_TAG = "SerialNumber";
 
-  Parser owner;
+  private Parser owner;
   private DeviceIdStruct didStruct;
   private StringBuilder currTextContent = new StringBuilder();
 
-  public DeviceIdHandler(DeviceIdStruct didStruct, Parser owner) {
+  DeviceIdHandler(DeviceIdStruct didStruct, Parser owner) {
     this.didStruct = didStruct;
     this.owner = owner;
   }
@@ -33,7 +33,7 @@ public class DeviceIdHandler extends DefaultHandler {
 
   public void endElement(String namespaceURI, String localName, String qualifiedName) {
     if (DEVICE_ID_TAG.equals(localName)) {
-      owner.getXMLReader().setContentHandler(owner);
+      owner.getXmlReader().setContentHandler(owner);
     } else if (MANUFACTURER_TAG.equals(localName)) {
       if (didStruct != null && currTextContent != null) {
         didStruct.setManufacturer(new String(currTextContent));

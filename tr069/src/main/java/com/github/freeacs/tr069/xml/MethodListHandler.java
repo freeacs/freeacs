@@ -28,7 +28,7 @@ public class MethodListHandler extends DefaultHandler {
 
   public void endElement(String namespaceURI, String localName, String qualifiedName) {
     if (METHOD_LIST_TAG.equals(localName)) {
-      owner.getXMLReader().setContentHandler(owner);
+      owner.getXmlReader().setContentHandler(owner);
     } else if (STRING_TAG.equals(localName)) {
       this.methods.addMethod(new String(currTextContent));
     }

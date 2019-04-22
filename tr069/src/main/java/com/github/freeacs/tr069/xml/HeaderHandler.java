@@ -27,7 +27,7 @@ public class HeaderHandler extends DefaultHandler {
 
   public void endElement(String namespaceURI, String localName, String qualifiedName) {
     if (HEADER_TAG.equals(localName)) {
-      owner.getXMLReader().setContentHandler(owner);
+      owner.getXmlReader().setContentHandler(owner);
     } else {
       this.header.setHeaderField(localName, new String(currTextContent));
     }

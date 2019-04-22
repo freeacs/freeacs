@@ -129,8 +129,8 @@ public class SessionLogging {
     for (HTTPRequestResponseData reqResItem : reqResList) {
       String resMethod = reqResItem.getResponseData().getMethod();
       if (ProvisioningMethod.SetParameterValues.name().equals(resMethod)) {
-        paramsToCPE = sessionData.getToCPE().getParameterValueList().size();
-        for (ParameterValueStruct pvs : sessionData.getToCPE().getParameterValueList()) {
+        paramsToCPE = sessionData.getToCPE().getParameterValueStructArrayList().size();
+        for (ParameterValueStruct pvs : sessionData.getToCPE().getParameterValueStructArrayList()) {
           parameterList.append(pvs.getName()).append("=").append(pvs.getValue()).append(", ");
         }
       }

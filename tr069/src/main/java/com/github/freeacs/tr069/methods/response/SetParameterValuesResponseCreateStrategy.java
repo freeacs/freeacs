@@ -29,7 +29,7 @@ public class SetParameterValuesResponseCreateStrategy implements ResponseCreateS
             pk.setServerKey(reqRes);
         }
         body = new Body() {
-            private List<ParameterValueStruct> parameterValueList = paramList.getParameterValueList();
+            private List<ParameterValueStruct> parameterValueList = paramList.getParameterValueStructArrayList();
             private String parameterKey = pk.getServerKey();
 
             @Override
@@ -66,11 +66,11 @@ public class SetParameterValuesResponseCreateStrategy implements ResponseCreateS
         };
         Log.notice(
                 SetParameterValuesResponseCreateStrategy.class,
-                "Sent to CPE: " + paramList.getParameterValueList().size() + " parameters.");
+                "Sent to CPE: " + paramList.getParameterValueStructArrayList().size() + " parameters.");
         reqRes
                 .getSessionData()
                 .getProvisioningMessage()
-                .setParamsWritten(paramList.getParameterValueList().size());
+                .setParamsWritten(paramList.getParameterValueStructArrayList().size());
         return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
     }
 }

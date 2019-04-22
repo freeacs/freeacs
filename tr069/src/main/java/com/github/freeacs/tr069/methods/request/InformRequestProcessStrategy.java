@@ -158,7 +158,7 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
     private static void parseParameters(SessionData sessionData, Parser parser)
             throws TR069Exception {
         ParameterList parameterList = parser.getParameterList();
-        List<ParameterValueStruct> parameterValues = parameterList.getParameterValueList();
+        List<ParameterValueStruct> parameterValues = parameterList.getParameterValueStructArrayList();
         String keyRoot = sessionData.getKeyRoot();
         CPEParameters cpeParams = null;
         InformParameters informParams = null;

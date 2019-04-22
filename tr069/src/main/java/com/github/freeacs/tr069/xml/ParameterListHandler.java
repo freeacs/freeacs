@@ -64,7 +64,7 @@ public class ParameterListHandler extends DefaultHandler {
   public void endElement(String namespaceURI, String localName, String qualifiedName)
       throws SAXException {
     if (PARAMETER_LIST_TAG.equals(localName)) {
-      owner.getXMLReader().setContentHandler(owner);
+      owner.getXmlReader().setContentHandler(owner);
     } else if (PARAMETER_VALUE_STRUCT_TAG.equals(localName)) {
       this.params.addParameterValueStruct(pvs);
     } else if (PARAMETER_INFO_STRUCT_TAG.equals(localName)) {
