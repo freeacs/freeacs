@@ -1,5 +1,6 @@
 package com.github.freeacs.tr069.methods;
 
+import com.github.freeacs.base.Log;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.methods.decision.DecisionStrategy;
 import com.github.freeacs.tr069.methods.request.RequestProcessStrategy;
@@ -8,6 +9,7 @@ import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.xml.PrettyPrinter;
 import com.github.freeacs.tr069.xml.Response;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,17 +36,45 @@ public abstract class ProvisioningStrategy {
         @Override
         public void process(HTTPRequestResponseData reqRes) throws Exception {
             // 0. Pre-processing
+            reqRes.getRequestData().setXml(PrettyPrinter.filterInvalidCharacters(reqRes.getRequestData().getXml()));
             reqRes.getRequestData().setMethod(extractMethod(reqRes));
             reqRes.getSessionData().setCwmpVersionNumber(extractCwmpVersion(reqRes));
+
             // 1. process the request
+            logWillProcess(reqRes);
             ProvisioningMethod requestProvisioningMethod = getRequestMethod(reqRes);
             RequestProcessStrategy.getStrategy(requestProvisioningMethod, properties).process(reqRes);
+            if (Log.isConversationLogEnabled()) {
+                logConversationRequest(reqRes);
+            }
+
             // 2. decide what to do next
             DecisionStrategy.getStrategy(requestProvisioningMethod, properties).makeDecision(reqRes);
+
             // 3. Create and set response
             ProvisioningMethod responseProvisioningMethod = getResponseMethod(reqRes);
             Response response = ResponseCreateStrategy.getStrategy(responseProvisioningMethod, properties).getResponse(reqRes);
-            reqRes.getResponseData().setXml(PrettyPrinter.transform(response.toXml()));
+            reqRes.getResponseData().setXml(response.toXml());
+        }
+
+        private void logWillProcess(HTTPRequestResponseData reqRes) {
+            Log.debug(ProvisioningStrategy.class,
+                    "Will process method " + reqRes.getRequestData().getMethod() +
+                            " (incoming request/response from CPE)");
+        }
+
+        /**
+         * Log the xml payload. Pretty print it if pretty print quirk is enabled.
+         */
+        private void logConversationRequest(HTTPRequestResponseData reqRes) {
+            String unitId = reqRes.getSessionData().getUnitId();
+            String xml = reqRes.getRequestData().getXml();
+            if (properties.isPrettyPrintQuirk(reqRes.getSessionData())) {
+                xml = PrettyPrinter.prettyPrintXmlString(reqRes.getRequestData().getXml());
+            }
+            Log.conversation(reqRes.getSessionData(),
+                    "============== FROM CPE ( " + Optional.ofNullable(unitId).orElse("Unknown") + " )" +
+                            " TO ACS ===============\n" + xml);
         }
 
         /**

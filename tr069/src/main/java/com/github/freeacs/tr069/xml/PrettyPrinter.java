@@ -2,13 +2,17 @@ package com.github.freeacs.tr069.xml;
 
 public class PrettyPrinter {
 
-    public static String transform(String input) {
+    public static String prettyPrintXmlString(String input) {
         return XMLFormatter.prettyprint(input);
+    }
+
+    public static String filterInvalidCharacters(String input) {
+        return XMLFormatter.filter(input);
     }
 
     private static class XMLFormatter {
         /** Filter away all illegal XML characters. */
-        public static String filter(String unfilteredXml) {
+        static String filter(String unfilteredXml) {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < unfilteredXml.length(); i++) {
                 char c = unfilteredXml.charAt(i);
@@ -25,9 +29,9 @@ public class PrettyPrinter {
          * unformattedXml is not well-formed, the output will not be "symmetric". If the unformattedXml
          * is not XML, nothing will be printed.
          */
-        public static String prettyprint(String unformattedXml) {
+        static String prettyprint(String unformattedXml) {
             StringBuilder formattedXml = new StringBuilder();
-            int currentPos = 0;
+            int currentPos;
             int startTagCounter = 0;
             Node node = nextNode(unformattedXml, 0);
             Node previousNode = null;
@@ -110,19 +114,19 @@ public class PrettyPrinter {
         private static final byte[] CHARS = new byte[1 << 16];
 
         /** Valid character mask. */
-        public static final int MASK_VALID = 0x01;
+        private static final int MASK_VALID = 0x01;
 
         /** Space character mask. */
-        public static final int MASK_SPACE = 0x02;
+        private static final int MASK_SPACE = 0x02;
 
         /** Name start character mask. */
-        public static final int MASK_NAME_START = 0x04;
+        private static final int MASK_NAME_START = 0x04;
 
         /** Name character mask. */
-        public static final int MASK_NAME = 0x08;
+        private static final int MASK_NAME = 0x08;
 
         /** Pubid character mask. */
-        public static final int MASK_PUBID = 0x10;
+        private static final int MASK_PUBID = 0x10;
 
         /**
          * Content character mask. Special characters are those that can be considered the start of
@@ -131,13 +135,13 @@ public class PrettyPrinter {
          *
          * <p>This is an optimization for the inner loop of character scanning.
          */
-        public static final int MASK_CONTENT = 0x20;
+        private static final int MASK_CONTENT = 0x20;
 
         /** NCName start character mask. */
-        public static final int MASK_NCNAME_START = 0x40;
+        private static final int MASK_NCNAME_START = 0x40;
 
         /** NCName character mask. */
-        public static final int MASK_NCNAME = 0x80;
+        private static final int MASK_NCNAME = 0x80;
 
         /** Static initialization. */
         static {
@@ -674,7 +678,7 @@ public class PrettyPrinter {
          *
          * @param c The character to check.
          */
-        public static boolean isValid(int c) {
+        private static boolean isValid(int c) {
             return (c < 0x10000 && (CHARS[c] & MASK_VALID) != 0) || (0x10000 <= c && c <= 0x10FFFF);
         } // isValid(int):boolean
     } // class XMLChar
@@ -690,17 +694,17 @@ public class PrettyPrinter {
         private int endPos;
         private String nodeString;
 
-        public Node(NodeType type, int startPos, int endPos, String unformattedXml) {
+        private Node(NodeType type, int startPos, int endPos, String unformattedXml) {
             this.type = type;
             this.endPos = endPos;
             this.nodeString = unformattedXml.substring(startPos, endPos).trim();
         }
 
-        public NodeType getType() {
+        private NodeType getType() {
             return type;
         }
 
-        public int getEndPos() {
+        private int getEndPos() {
             return endPos;
         }
 
