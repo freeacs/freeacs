@@ -2,7 +2,6 @@ package com.github.freeacs.tr069.methods.response;
 
 import com.github.freeacs.base.Log;
 import com.github.freeacs.http.HTTPRequestResponseData;
-import com.github.freeacs.tr069.Namespace;
 import com.github.freeacs.tr069.ParameterKey;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.xml.*;
@@ -37,7 +36,7 @@ public class SetParameterValuesResponseCreateStrategy implements ResponseCreateS
             public String toXmlImpl() {
                 StringBuilder sb = new StringBuilder(50);
                 sb.append("\t\t<cwmp:SetParameterValues>\n");
-                sb.append("\t\t\t<ParameterList ").append(Namespace.getSoapEncNS()).append(":arrayType=\"cwmp:ParameterValueStruct[");
+                sb.append("\t\t\t<ParameterList ").append("soapenc").append(":arrayType=\"cwmp:ParameterValueStruct[");
                 sb.append(parameterValueList.size());
                 sb.append("]\">\n");
 

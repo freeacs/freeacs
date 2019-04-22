@@ -1,7 +1,5 @@
 package com.github.freeacs.tr069.xml;
 
-import com.github.freeacs.tr069.Namespace;
-
 public class Header {
   private HoldRequests holdRequests;
   private TR069TransactionID id;
@@ -48,7 +46,7 @@ public class Header {
   public String toXml() {
     StringBuilder sb = new StringBuilder(6);
     if (id != null || holdRequests != null) {
-      sb.append("<").append(Namespace.getSoapEnvNS()).append(":Header>\n");
+      sb.append("<").append("soapenv").append(":Header>\n");
       if (id != null) {
         sb.append(id.toXml());
       }
@@ -58,9 +56,9 @@ public class Header {
       if (noMoreRequests != null) {
         sb.append(noMoreRequests.toXml());
       }
-      sb.append("</").append(Namespace.getSoapEnvNS()).append(":Header>\n");
+      sb.append("</").append("soapenv").append(":Header>\n");
     } else {
-      sb.append("<").append(Namespace.getSoapEnvNS()).append(":Header/>\n");
+      sb.append("<").append("soapenv").append(":Header/>\n");
     }
     return sb.toString();
   }

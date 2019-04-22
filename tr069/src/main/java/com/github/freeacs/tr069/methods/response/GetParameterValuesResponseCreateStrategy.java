@@ -5,7 +5,6 @@ import com.github.freeacs.dbi.UnittypeParameters;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.CPEParameters;
-import com.github.freeacs.tr069.Namespace;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
@@ -78,7 +77,7 @@ public class GetParameterValuesResponseCreateStrategy implements ResponseCreateS
                 StringBuilder sb = new StringBuilder(3);
                 sb.append("\t\t<cwmp:GetParameterValues>\n");
                 sb.append("\t\t\t<ParameterNames ")
-                        .append(Namespace.getSoapEncNS())
+                        .append("soapenc")
                         .append(":arrayType=\"xsd:string[")
                         .append(parameterValueList.size())
                         .append("]\">\n");

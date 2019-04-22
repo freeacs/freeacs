@@ -1,6 +1,5 @@
 package com.github.freeacs.tr069.xml;
 
-import com.github.freeacs.tr069.Namespace;
 import java.util.Optional;
 
 /**
@@ -21,12 +20,12 @@ public class Response {
 
   public String toXml() {
     final StringBuilder sb = new StringBuilder(10);
-    sb.append("<").append(Namespace.getSoapEnvNS()).append(":Envelope ");
-    sb.append("xmlns:")
-        .append(Namespace.getSoapEnvNS())
+      sb.append("<").append("soapenv").append(":Envelope ");
+      sb.append("xmlns:")
+        .append("soapenv")
         .append("=\"http://schemas.xmlsoap.org/soap/envelope/\" ");
     sb.append("xmlns:")
-        .append(Namespace.getSoapEncNS())
+        .append("soapenc")
         .append("=\"http://schemas.xmlsoap.org/soap/encoding/\" ");
     sb.append("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" ");
     sb.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
@@ -35,7 +34,7 @@ public class Response {
         .append("\">\n");
     sb.append(header.toXml());
     sb.append(body.toXml());
-    sb.append("</").append(Namespace.getSoapEnvNS()).append(":Envelope>\n");
+      sb.append("</").append("soapenv").append(":Envelope>\n");
     return sb.toString();
   }
 }

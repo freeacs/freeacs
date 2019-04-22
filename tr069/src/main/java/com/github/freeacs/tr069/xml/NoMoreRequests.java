@@ -1,7 +1,5 @@
 package com.github.freeacs.tr069.xml;
 
-import com.github.freeacs.tr069.Namespace;
-
 public class NoMoreRequests {
   private boolean noMoreRequests;
 
@@ -11,8 +9,8 @@ public class NoMoreRequests {
 
   public String toXml() {
     StringBuilder sb = new StringBuilder(3);
-    sb.append("\t<cwmp:NoMoreRequests ")
-        .append(Namespace.getSoapEnvNS())
+      sb.append("\t<cwmp:NoMoreRequests ")
+        .append("soapenv")
         .append(":mustUnderstand=\"1\">");
     if (noMoreRequests) {
       sb.append("1");

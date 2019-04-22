@@ -1,6 +1,7 @@
-package com.github.freeacs.tr069;
+package com.github.freeacs.tr069.methods.decision;
 
 import com.github.freeacs.base.ACSParameters;
+import com.github.freeacs.tr069.CPEParameters;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import org.junit.Test;
 
