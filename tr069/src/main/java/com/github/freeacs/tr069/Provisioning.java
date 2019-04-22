@@ -157,7 +157,7 @@ public class Provisioning extends AbstractHttpDataWrapper {
     try {
       // Create the main object which contains all objects concerning the entire
       // session. This object also contains the SessionData object
-      reqRes = getHttpRequestResponseDate(req, res);
+      reqRes = getHttpRequestResponseData(req, res);
       // 2. Authenticate the client (first issue challenge, then authenticate)
       if (!Authenticator.authenticate(reqRes, properties)
           || (reqRes.getSessionData() != null

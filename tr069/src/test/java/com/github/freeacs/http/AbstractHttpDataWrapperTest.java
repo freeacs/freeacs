@@ -54,7 +54,7 @@ public class AbstractHttpDataWrapperTest {
         // When:
         final AbstractHttpDataWrapper wrapper = new AbstractHttpDataWrapper(mockDBAccess, properties) {};
         final HTTPRequestResponseData httpRequestResponseData =
-            wrapper.getHttpRequestResponseDate(mockServletRequest, mockServletResponse);
+            wrapper.getHttpRequestResponseData(mockServletRequest, mockServletResponse);
 
         // Then:
         assertNotNull(httpRequestResponseData);
