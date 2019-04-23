@@ -2,6 +2,7 @@ package com.github.freeacs.tr069.methods.decision;
 
 import com.github.freeacs.base.*;
 import com.github.freeacs.base.UnitJob;
+import com.github.freeacs.base.db.DBAccessSession;
 import com.github.freeacs.base.db.DBAccessSessionTR069;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.tr069.TR069DMParameter;
@@ -138,7 +139,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
     @SuppressWarnings("Duplicates")
     private void processPeriodic(
             HTTPRequestResponseData reqRes, boolean isDiscoveryMode, String publicUrl, int concurrentDownloadLimit)
-            throws TR069Exception {
+            throws TR069Exception, SQLException {
         SessionData sessionData = reqRes.getSessionData();
 
         UnitJob uj = null;
@@ -147,7 +148,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
             // group-matching in job-search
             // will not affect the comparison in populateToCollections()
             updateUnitParameters(sessionData);
-            uj = JobLogic.checkNewJob(sessionData, concurrentDownloadLimit); // may find a new job
+            uj = JobLogic.checkNewJob(sessionData, reqRes.getDbAccess().getDBI().getAcs(), concurrentDownloadLimit); // may find a new job
         }
         Job job = sessionData.getJob();
         if (job != null) { // No job is present - process according to
@@ -161,7 +162,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
     @SuppressWarnings("Duplicates")
     private void jobProvisioning(
             HTTPRequestResponseData reqRes, Job job, UnitJob uj, boolean isDiscoveryMode, String publicUrl)
-            throws TR069Exception {
+            throws TR069Exception, SQLException {
         SessionData sessionData = reqRes.getSessionData();
         sessionData.getProvisioningMessage().setJobId(job.getId());
         JobFlag.JobType type = job.getFlags().getType();
@@ -186,7 +187,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         } else {
             if (type == JobFlag.JobType.SHELL) {
                 sessionData.getProvisioningMessage().setProvOutput(ProvisioningMessage.ProvOutput.SHELL);
-                ShellJobLogic.execute(sessionData, job, uj, isDiscoveryMode);
+                ShellJobLogic.execute(sessionData, reqRes.getDbAccess().getDBI().getAcs(), job, uj, isDiscoveryMode);
             } else { // type == JobType.CONFIG
                 // The service-window is unimportant for next PII calculation, will
                 // be set to 31 no matter what, since a job is "in the process".
@@ -623,7 +624,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         try {
             DBAccessSessionTR069 dbAccessSessionTR069 =
                     new DBAccessSessionTR069(
-                            reqRes.getDbAccess().getDBI().getAcs(), sessionData.getDbAccessSession());
+                            reqRes.getDbAccess().getDBI().getAcs(), new DBAccessSession(reqRes.getDbAccess().getDBI().getAcs()));
             dbAccessSessionTR069.writeUnitSessionParams(sessionData);
             Log.debug(GetParameterValuesDecisionStrategy.class, toDB.size() + " params written to ACS session storage");
             reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());

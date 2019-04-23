@@ -3,6 +3,7 @@ package com.github.freeacs.base.http;
 import com.github.freeacs.base.BaseCache;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.NoDataAvailableException;
+import com.github.freeacs.base.db.DBAccessSession;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.SessionData;
@@ -172,7 +173,7 @@ public class DigestAuthenticator {
     try {
       SessionData sessionData = reqRes.getSessionData();
       sessionData.setUnitId(unitId);
-      sessionData.updateParametersFromDB(unitId, isDiscoveryMode);
+      new DBAccessSession(reqRes.getDbAccess().getDBI().getAcs()).updateParametersFromDB(sessionData, isDiscoveryMode);
       BaseCache.putSessionData(unitId, sessionData);
       String secret = sessionData.getAcsParameters().getValue(SystemParameters.SECRET);
       if (secret != null

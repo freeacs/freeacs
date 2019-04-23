@@ -29,8 +29,7 @@ public class HTTPRequestResponseData {
 
   private SessionData sessionData;
 
-  protected HTTPRequestResponseData(HttpServletRequest rawRequest, HttpServletResponse rawResponse, DBAccess dbAccess)
-      throws SQLException {
+  protected HTTPRequestResponseData(HttpServletRequest rawRequest, HttpServletResponse rawResponse, DBAccess dbAccess) {
     this.rawRequest = rawRequest;
     this.rawResponse = rawResponse;
     this.requestData = new HTTPRequestData();
@@ -57,7 +56,7 @@ public class HTTPRequestResponseData {
               + session.getLastAccessedTime()
               + ", mxInactiveInterval:"
               + session.getMaxInactiveInterval());
-      sessionData = new SessionData(sessionId, dbAccess.getDBI().getAcs());
+      sessionData = new SessionData(sessionId);
       BaseCache.putSessionData(sessionId, sessionData);
     }
     if (sessionData.getStartupTmsForSession() == null) {

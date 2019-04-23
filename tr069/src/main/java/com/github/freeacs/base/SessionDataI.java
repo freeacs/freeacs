@@ -32,8 +32,6 @@ public interface SessionDataI {
 
   void setUnitId(String unitId);
 
-  DBAccessSession getDbAccessSession();
-
   Job getJob();
 
   void setJob(Job job);
@@ -47,8 +45,6 @@ public interface SessionDataI {
   void setSoftwareVersion(String softwareVersion);
 
   Map<String, ParameterValueStruct> getFromDB();
-
-  void updateParametersFromDB(String unitId, boolean isDiscoveryMode) throws SQLException;
 
   void setFromDB(Map<String, ParameterValueStruct> fromDB);
 

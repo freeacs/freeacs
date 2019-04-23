@@ -1,6 +1,7 @@
 package com.github.freeacs.tr069.methods.request;
 
 import com.github.freeacs.base.Log;
+import com.github.freeacs.base.db.DBAccessSession;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.UnittypeParameterFlag;
@@ -78,13 +79,14 @@ public class GetParameterNamesProcessStrategy implements RequestProcessStrategy 
                                     + " was found more than once in the GPNRes");
                 }
             }
-            sessionData.getDbAccessSession().writeUnittypeParameters(sessionData, utpList);
+            DBAccessSession dbAccessSession = new DBAccessSession(reqRes.getDbAccess().getDBI().getAcs());
+            dbAccessSession.writeUnittypeParameters(sessionData, utpList);
             Log.debug(
                     GetParameterNamesProcessStrategy.class,
                     "Unittype parameters (" + pisList.size() + ") is written to DB, will now reload unit");
             sessionData.setFromDB(null);
             sessionData.setAcsParameters(null);
-            sessionData.updateParametersFromDB(sessionData.getUnitId(), properties.isDiscoveryMode());
+            dbAccessSession.updateParametersFromDB(sessionData, properties.isDiscoveryMode());
         } catch (Throwable t) {
             throw new TR069Exception("Processing GPNRes failed", TR069ExceptionShortMessage.MISC, t);
         }

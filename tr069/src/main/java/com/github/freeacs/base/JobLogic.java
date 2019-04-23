@@ -1,15 +1,9 @@
 package com.github.freeacs.base;
 
 import com.github.freeacs.base.db.DBAccess;
-import com.github.freeacs.dbi.Job;
+import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
 import com.github.freeacs.dbi.JobFlag.JobType;
-import com.github.freeacs.dbi.JobParameter;
-import com.github.freeacs.dbi.JobStatus;
-import com.github.freeacs.dbi.Jobs;
-import com.github.freeacs.dbi.Unit;
-import com.github.freeacs.dbi.UnitJobStatus;
-import com.github.freeacs.dbi.UnitParameter;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemParameters;
 import java.util.HashMap;
@@ -24,7 +18,7 @@ import java.util.Map.Entry;
  * @author morten
  */
 public class JobLogic {
-  public static boolean checkJobOK(SessionDataI sessionData, boolean isDiscoveryMode) {
+  public static boolean checkJobOK(SessionDataI sessionData, ACS acs, boolean isDiscoveryMode) {
     try {
       String jobId = sessionData.getAcsParameters().getValue(SystemParameters.JOB_CURRENT);
       if (jobId != null && !jobId.trim().isEmpty()) {
@@ -35,7 +29,7 @@ public class JobLogic {
               JobLogic.class, "Current job " + jobId + " does no longer exist, cannot be verified");
           return false;
         }
-        UnitJob uj = new UnitJob(sessionData, job, false);
+        UnitJob uj = new UnitJob(sessionData, acs, job, false);
         if (!JobStatus.STARTED.equals(job.getStatus())) {
           Log.warn(JobLogic.class, "Current job is not STARTED, UnitJob must be STOPPED");
           uj.stop(UnitJobStatus.STOPPED, isDiscoveryMode);
@@ -96,15 +90,15 @@ public class JobLogic {
     }
   }
 
-  public static UnitJob checkNewJob(SessionDataI sessionData, int downloadLimit) {
+  public static UnitJob checkNewJob(SessionDataI sessionData, ACS acs, int downloadLimit) {
     if (sessionData.getUnit().getProvisioningMode() == ProvisioningMode.REGULAR) {
       Job job = getJob(sessionData, downloadLimit);
       if (job != null) {
         UnitJob uj = null;
         if (job.getFlags().getType() == JobType.SHELL) {
-          uj = new UnitJob(sessionData, job, true);
+          uj = new UnitJob(sessionData, acs, job, true);
         } else {
-          uj = new UnitJob(sessionData, job, false);
+          uj = new UnitJob(sessionData, acs, job, false);
         }
         uj.start();
         sessionData.setJob(job);
