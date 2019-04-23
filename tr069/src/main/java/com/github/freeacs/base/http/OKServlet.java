@@ -19,7 +19,7 @@ public class OKServlet {
     PrintWriter out = res.getWriter();
     StringBuilder status = new StringBuilder("FREEACSOK");
     try {
-      DBI dbi = DBAccess.getInstance().getDBI();
+      DBI dbi = DBAccess.getInstance().getDbi();
       if (dbi != null && dbi.getDbiThrowable() != null) {
         status =
             new StringBuilder("ERROR: DBI reported error:\n")

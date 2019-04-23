@@ -40,238 +40,238 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RestController
 public class Provisioning extends AbstractHttpDataWrapper {
-  private static ScriptExecutions executions;
+    private static ScriptExecutions executions;
 
-  private final ExecutorWrapper executorWrapper;
-  private final DBAccess dbAccess;
+    private final ExecutorWrapper executorWrapper;
+    private final DBAccess dbAccess;
 
-  public Provisioning(DBAccess dbAccess,
-                      Properties properties,
-                      ExecutorWrapper executorWrapper) {
-    super(properties);
-    this.dbAccess = dbAccess;
-    this.executorWrapper = executorWrapper;
-  }
+    public Provisioning(DBAccess dbAccess,
+                        Properties properties,
+                        ExecutorWrapper executorWrapper) {
+        super(properties);
+        this.dbAccess = dbAccess;
+        this.executorWrapper = executorWrapper;
+    }
 
-  /**
-   * This is the entry point for TR-069 Clients - everything starts here!!!
-   *
-   * <p>A TR-069 session consists of many rounds of HTTP request/responses, however each
-   * request/response non-the-less follows a standard pattern:
-   *
-   * <p>1. Check special HTTP headers for a "early return" (CONTINUE) 2. Check authentication -
-   * challenge client if necessary. If not authenticated - return 3. Check concurrent sessions from
-   * same unit - if detected: return 4. Extract XML from request - store in sessionData object 5.
-   * Process HTTP Request (xml-parsing, find methodname, test-verification) 6. Decide upon next step
-   * - may contain logic that processes the request and decide response 7. Produce HTTP Response
-   * (xml-creation) 8. Some details about the xml-response like content-type/Empty response 9.
-   * Return response to TR-069 client
-   *
-   * <p>At the end we have error handling, to make sure that no matter what, we do return an EMTPY
-   * response to the client - to signal end of conversation/TR-069-session.
-   *
-   * <p>In the finally loop we check if a TR-069 Session is in-fact completed (one way or the other)
-   * and if so, logging is performed. Also, if unit-parameters are queued up for writing, those will
-   * be written now (instead of writing some here and some there along the entire TR-069 session).
-   *
-   * <p>In special cases the server will kick the device to "come back" and continue testing a new
-   * test case.
-   */
-  @PostMapping(value = {"/${context-path}", "/${context-path}/prov"})
-  public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
-    HTTPRequestResponseData reqRes = null;
-    try {
-      // Create the main object which contains all objects concerning the entire
-      // session. This object also contains the SessionData object
-      reqRes = getHttpRequestResponseData(req, res);
-      // 2. Authenticate the client (first issue challenge, then authenticate)
-      if (Authenticator.notAuthenticated(reqRes, properties)
-              || (reqRes.getSessionData() != null
-              && !ThreadCounter.isRequestAllowed(reqRes.getSessionData()))) {
-        return;
-      }
-      // 4. Read the request from the client - store in reqRes object
-      extractRequest(reqRes);
-      // 5. Process provision strategy
-      ProvisioningStrategy.getStrategy(properties).process(reqRes);
-      // 6. Set correct headers in response
-      if (reqRes.getResponseData().getXml() != null && !reqRes.getResponseData().getXml().isEmpty()) {
-        res.setHeader("SOAPAction", "");
-        res.setContentType("text/xml");
-      }
-      // 7. No need to send Content-length as it will only be informational for 204 HTTP messages
-      if ("Empty".equals(reqRes.getResponseData().getMethod())) {
-        res.setStatus(HttpServletResponse.SC_NO_CONTENT);
-      }
-      // 8. Print response to output
-      res.getWriter().print(reqRes.getResponseData().getXml());
-    } catch (Throwable t) {
-      // Make sure we return an EMPTY response to the TR-069 client
-      if (t instanceof TR069Exception) {
-        TR069Exception tex = (TR069Exception) t;
-        Throwable stacktraceThrowable = t;
-        if (tex.getCause() != null) {
-          stacktraceThrowable = tex.getCause();
+    /**
+     * This is the entry point for TR-069 Clients - everything starts here!!!
+     *
+     * <p>A TR-069 session consists of many rounds of HTTP request/responses, however each
+     * request/response non-the-less follows a standard pattern:
+     *
+     * <p>1. Check special HTTP headers for a "early return" (CONTINUE) 2. Check authentication -
+     * challenge client if necessary. If not authenticated - return 3. Check concurrent sessions from
+     * same unit - if detected: return 4. Extract XML from request - store in sessionData object 5.
+     * Process HTTP Request (xml-parsing, find methodname, test-verification) 6. Decide upon next step
+     * - may contain logic that processes the request and decide response 7. Produce HTTP Response
+     * (xml-creation) 8. Some details about the xml-response like content-type/Empty response 9.
+     * Return response to TR-069 client
+     *
+     * <p>At the end we have error handling, to make sure that no matter what, we do return an EMTPY
+     * response to the client - to signal end of conversation/TR-069-session.
+     *
+     * <p>In the finally loop we check if a TR-069 Session is in-fact completed (one way or the other)
+     * and if so, logging is performed. Also, if unit-parameters are queued up for writing, those will
+     * be written now (instead of writing some here and some there along the entire TR-069 session).
+     *
+     * <p>In special cases the server will kick the device to "come back" and continue testing a new
+     * test case.
+     */
+    @PostMapping(value = {"/${context-path}", "/${context-path}/prov"})
+    public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        HTTPRequestResponseData reqRes = null;
+        try {
+            // Create the main object which contains all objects concerning the entire
+            // session. This object also contains the SessionData object
+            reqRes = getHttpRequestResponseData(req, res);
+            // 2. Authenticate the client (first issue challenge, then authenticate)
+            if (Authenticator.notAuthenticated(reqRes, properties)
+                    || (reqRes.getSessionData() != null
+                    && !ThreadCounter.isRequestAllowed(reqRes.getSessionData()))) {
+                return;
+            }
+            // 4. Read the request from the client - store in reqRes object
+            extractRequest(reqRes);
+            // 5. Process provision strategy
+            ProvisioningStrategy.getStrategy(properties).process(reqRes);
+            // 6. Set correct headers in response
+            if (reqRes.getResponseData().getXml() != null && !reqRes.getResponseData().getXml().isEmpty()) {
+                res.setHeader("SOAPAction", "");
+                res.setContentType("text/xml");
+            }
+            // 7. No need to send Content-length as it will only be informational for 204 HTTP messages
+            if ("Empty".equals(reqRes.getResponseData().getMethod())) {
+                res.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            }
+            // 8. Print response to output
+            res.getWriter().print(reqRes.getResponseData().getXml());
+        } catch (Throwable t) {
+            // Make sure we return an EMPTY response to the TR-069 client
+            if (t instanceof TR069Exception) {
+                TR069Exception tex = (TR069Exception) t;
+                Throwable stacktraceThrowable = t;
+                if (tex.getCause() != null) {
+                    stacktraceThrowable = tex.getCause();
+                }
+                if (tex.getShortMsg() == TR069ExceptionShortMessage.MISC
+                        || tex.getShortMsg() == TR069ExceptionShortMessage.DATABASE) {
+                    Log.error(Provisioning.class, "An error ocurred: " + t.getMessage(), stacktraceThrowable);
+                }
+                if (tex.getShortMsg() == TR069ExceptionShortMessage.IOABORTED) {
+                    Log.warn(Provisioning.class, t.getMessage());
+                } else {
+                    Log.error(Provisioning.class, t.getMessage());
+                } // No stacktrace printed to log
+            }
+            if (reqRes != null) {
+                reqRes.setThrowable(t);
+            }
+            res.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            res.getWriter().print("");
+        } finally {
+            // Run at end of every TR-069 session
+            if (reqRes != null && endOfSession(reqRes)) {
+                Log.debug(
+                        Provisioning.class,
+                        "End of session is reached, will write queued unit parameters if unit ("
+                                + reqRes.getSessionData().getUnit()
+                                + ") is not null");
+                // Logging of the entire session, both to tr069-event.log and syslog
+                if (reqRes.getSessionData().getUnit() != null) {
+                    writeQueuedUnitParameters(reqRes);
+                }
+                SessionLogging.log(reqRes);
+                BaseCache.removeSessionData(reqRes.getSessionData().getUnitId());
+                BaseCache.removeSessionData(reqRes.getSessionData().getId());
+                res.setHeader("Connection", "close");
+            }
         }
-        if (tex.getShortMsg() == TR069ExceptionShortMessage.MISC
-                || tex.getShortMsg() == TR069ExceptionShortMessage.DATABASE) {
-          Log.error(Provisioning.class, "An error ocurred: " + t.getMessage(), stacktraceThrowable);
+        if (reqRes != null && reqRes.getSessionData() != null) {
+            ThreadCounter.responseDelivered(reqRes.getSessionData());
         }
-        if (tex.getShortMsg() == TR069ExceptionShortMessage.IOABORTED) {
-          Log.warn(Provisioning.class, t.getMessage());
-        } else {
-          Log.error(Provisioning.class, t.getMessage());
-        } // No stacktrace printed to log
-      }
-      if (reqRes != null) {
-        reqRes.setThrowable(t);
-      }
-      res.setStatus(HttpServletResponse.SC_NO_CONTENT);
-      res.getWriter().print("");
-    } finally {
-      // Run at end of every TR-069 session
-      if (reqRes != null && endOfSession(reqRes)) {
-        Log.debug(
-                Provisioning.class,
-                "End of session is reached, will write queued unit parameters if unit ("
-                        + reqRes.getSessionData().getUnit()
-                        + ") is not null");
-        // Logging of the entire session, both to tr069-event.log and syslog
-        if (reqRes.getSessionData().getUnit() != null) {
-          writeQueuedUnitParameters(reqRes);
+    }
+
+    @PostConstruct
+    public void init() {
+        Log.notice(Provisioning.class, "Server starts...");
+        try {
+            DBI dbi = dbAccess.getDbi();
+            scheduleMessageListenerTask(dbi);
+            scheduleKickTask(dbi);
+            scheduleActiveDeviceDetectionTask(dbi);
+        } catch (Throwable t) {
+            Log.fatal(Provisioning.class, "Couldn't start BackgroundProcesses correctly ", t);
         }
-        SessionLogging.log(reqRes);
-        BaseCache.removeSessionData(reqRes.getSessionData().getUnitId());
-        BaseCache.removeSessionData(reqRes.getSessionData().getId());
-        res.setHeader("Connection", "close");
-      }
-    }
-    if (reqRes != null && reqRes.getSessionData() != null) {
-      ThreadCounter.responseDelivered(reqRes.getSessionData());
-    }
-  }
-
-  @PostConstruct
-  public void init() {
-    Log.notice(Provisioning.class, "Server starts...");
-    try {
-      DBI dbi = dbAccess.getDBI();
-      scheduleMessageListenerTask(dbi);
-      scheduleKickTask(dbi);
-      scheduleActiveDeviceDetectionTask(dbi);
-    } catch (Throwable t) {
-      Log.fatal(Provisioning.class, "Couldn't start BackgroundProcesses correctly ", t);
-    }
-    try {
-      executions = new ScriptExecutions(dbAccess.getDataSource());
-    } catch (Throwable t) {
-      Log.fatal(
-          Provisioning.class,
-          "Couldn't initialize ScriptExecutions - not possible to run SHELL-jobs",
-          t);
-    }
-  }
-
-  private void scheduleActiveDeviceDetectionTask(final DBI dbi) {
-    // every 5 minute
-    final ActiveDeviceDetectionTask activeDeviceDetectionTask =
-        new ActiveDeviceDetectionTask("ActiveDeviceDetection TR069", dbi);
-    executorWrapper.scheduleCron(
-        "0 0/5 * * * ?",
-        (tms) ->
-            () -> {
-              activeDeviceDetectionTask.setThisLaunchTms(tms);
-              activeDeviceDetectionTask.run();
-            });
-  }
-
-  private void scheduleKickTask(final DBI dbi) {
-    // every 1 second
-    final ScheduledKickTask scheduledKickTask = new ScheduledKickTask("ScheduledKick", dbi);
-    executorWrapper.scheduleCron(
-        "* * * ? * * *",
-        (tms) ->
-            () -> {
-              scheduledKickTask.setThisLaunchTms(tms);
-              scheduledKickTask.run();
-            });
-  }
-
-  private void scheduleMessageListenerTask(final DBI dbi) {
-    // every 5 sec
-    final MessageListenerTask messageListenerTask = new MessageListenerTask("MessageListener", dbi);
-    executorWrapper.scheduleCron(
-        "0/5 * * ? * * *",
-        (tms) ->
-            () -> {
-              messageListenerTask.setThisLaunchTms(tms);
-              messageListenerTask.run();
-            });
-  }
-
-  private static void extractRequest(HTTPRequestResponseData reqRes) throws TR069Exception {
-    try {
-      InputStreamReader isr = new InputStreamReader(reqRes.getRawRequest().getInputStream());
-      BufferedReader br = new BufferedReader(isr);
-      StringBuilder requestSB = new StringBuilder(1000);
-      do {
-        String line = br.readLine();
-        if (line == null) {
-          break;
+        try {
+            executions = new ScriptExecutions(dbAccess.getDataSource());
+        } catch (Throwable t) {
+            Log.fatal(
+                    Provisioning.class,
+                    "Couldn't initialize ScriptExecutions - not possible to run SHELL-jobs",
+                    t);
         }
-        requestSB.append(line).append("\n");
-      } while (true);
-      reqRes.getRequestData().setXml(requestSB.toString());
-      System.currentTimeMillis();
-    } catch (IOException e) {
-      throw new TR069Exception(
-          "TR-069 client aborted (not possible to read more input)",
-          TR069ExceptionShortMessage.IOABORTED,
-          e);
     }
-  }
 
-  private void writeQueuedUnitParameters(HTTPRequestResponseData reqRes) {
-    try {
-      Unit unit = reqRes.getSessionData().getUnit();
-      if (unit != null) {
-        ACS acs = dbAccess.getDBI().getAcs();
-        ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
-        acsUnit.addOrChangeQueuedUnitParameters(unit);
-      }
-    } catch (Throwable t) {
-      Log.error(
-          Provisioning.class,
-          "An error occured when writing queued unit parameters to Fusion. May affect provisioning",
-          t);
+    private void scheduleActiveDeviceDetectionTask(final DBI dbi) {
+        // every 5 minute
+        final ActiveDeviceDetectionTask activeDeviceDetectionTask =
+                new ActiveDeviceDetectionTask("ActiveDeviceDetection TR069", dbi);
+        executorWrapper.scheduleCron(
+                "0 0/5 * * * ?",
+                (tms) ->
+                        () -> {
+                            activeDeviceDetectionTask.setThisLaunchTms(tms);
+                            activeDeviceDetectionTask.run();
+                        });
     }
-  }
 
-  private boolean endOfSession(HTTPRequestResponseData reqRes) {
-    try {
-      if (reqRes.getThrowable() != null) {
-        return true;
-      }
-      SessionData sessionData = reqRes.getSessionData();
-      HTTPRequestData reqData = reqRes.getRequestData();
-      HTTPResponseData resData = reqRes.getResponseData();
-      if (reqData.getMethod() != null
-          && resData != null
-          && ProvisioningMethod.Empty.name().equals(resData.getMethod())) {
-        boolean terminationQuirk = properties.isTerminationQuirk(sessionData);
-        return !terminationQuirk || ProvisioningMethod.Empty.name().equals(reqData.getMethod());
-      }
-      return false;
-    } catch (Throwable t) {
-      Log.warn(
-          Provisioning.class,
-          "An error occured when determining endOfSession. Does not affect provisioning",
-          t);
-      return false;
+    private void scheduleKickTask(final DBI dbi) {
+        // every 1 second
+        final ScheduledKickTask scheduledKickTask = new ScheduledKickTask("ScheduledKick", dbi);
+        executorWrapper.scheduleCron(
+                "* * * ? * * *",
+                (tms) ->
+                        () -> {
+                            scheduledKickTask.setThisLaunchTms(tms);
+                            scheduledKickTask.run();
+                        });
     }
-  }
 
-  public static ScriptExecutions getExecutions() {
-    return executions;
-  }
+    private void scheduleMessageListenerTask(final DBI dbi) {
+        // every 5 sec
+        final MessageListenerTask messageListenerTask = new MessageListenerTask("MessageListener", dbi);
+        executorWrapper.scheduleCron(
+                "0/5 * * ? * * *",
+                (tms) ->
+                        () -> {
+                            messageListenerTask.setThisLaunchTms(tms);
+                            messageListenerTask.run();
+                        });
+    }
+
+    private static void extractRequest(HTTPRequestResponseData reqRes) throws TR069Exception {
+        try {
+            InputStreamReader isr = new InputStreamReader(reqRes.getRawRequest().getInputStream());
+            BufferedReader br = new BufferedReader(isr);
+            StringBuilder requestSB = new StringBuilder(1000);
+            do {
+                String line = br.readLine();
+                if (line == null) {
+                    break;
+                }
+                requestSB.append(line).append("\n");
+            } while (true);
+            reqRes.getRequestData().setXml(requestSB.toString());
+            System.currentTimeMillis();
+        } catch (IOException e) {
+            throw new TR069Exception(
+                    "TR-069 client aborted (not possible to read more input)",
+                    TR069ExceptionShortMessage.IOABORTED,
+                    e);
+        }
+    }
+
+    private void writeQueuedUnitParameters(HTTPRequestResponseData reqRes) {
+        try {
+            Unit unit = reqRes.getSessionData().getUnit();
+            if (unit != null) {
+                ACS acs = dbAccess.getDbi().getAcs();
+                ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
+                acsUnit.addOrChangeQueuedUnitParameters(unit);
+            }
+        } catch (Throwable t) {
+            Log.error(
+                    Provisioning.class,
+                    "An error occured when writing queued unit parameters to Fusion. May affect provisioning",
+                    t);
+        }
+    }
+
+    private boolean endOfSession(HTTPRequestResponseData reqRes) {
+        try {
+            if (reqRes.getThrowable() != null) {
+                return true;
+            }
+            SessionData sessionData = reqRes.getSessionData();
+            HTTPRequestData reqData = reqRes.getRequestData();
+            HTTPResponseData resData = reqRes.getResponseData();
+            if (reqData.getMethod() != null
+                    && resData != null
+                    && ProvisioningMethod.Empty.name().equals(resData.getMethod())) {
+                boolean terminationQuirk = properties.isTerminationQuirk(sessionData);
+                return !terminationQuirk || ProvisioningMethod.Empty.name().equals(reqData.getMethod());
+            }
+            return false;
+        } catch (Throwable t) {
+            Log.warn(
+                    Provisioning.class,
+                    "An error occured when determining endOfSession. Does not affect provisioning",
+                    t);
+            return false;
+        }
+    }
+
+    public static ScriptExecutions getExecutions() {
+        return executions;
+    }
 }

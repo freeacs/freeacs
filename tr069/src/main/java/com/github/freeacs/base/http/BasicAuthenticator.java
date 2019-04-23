@@ -78,7 +78,7 @@ class BasicAuthenticator {
     try {
       SessionData sessionData = reqRes.getSessionData();
       sessionData.setUnitId(unitId);
-      new DBAccessSession(DBAccess.getInstance().getDBI().getAcs()).updateParametersFromDB(sessionData, isDiscoveryMode); // Unit is now stored in sessionData
+      new DBAccessSession(DBAccess.getInstance().getDbi().getAcs()).updateParametersFromDB(sessionData, isDiscoveryMode); // Unit is now stored in sessionData
       String secret = null;
       if (sessionData.isFirstConnect() && isDiscoveryMode) {
         for (String blocked : discoveryBlocked) {

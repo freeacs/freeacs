@@ -128,7 +128,7 @@ public class EmptyDecisionStrategy implements DecisionStrategy {
         sessionData.setToDB(toDB);
         DBAccessSessionTR069.writeUnitParams(sessionData); // queue-parameters - will be written at end-of-session
         if (!queue) { // execute changes immediately - since otherwise these parameters will be lost (in the event of GPNRes.process())
-            ACS acs = DBAccess.getInstance().getDBI().getAcs();
+            ACS acs = DBAccess.getInstance().getDbi().getAcs();
             ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
             acsUnit.addOrChangeQueuedUnitParameters(sessionData.getUnit());
         }
