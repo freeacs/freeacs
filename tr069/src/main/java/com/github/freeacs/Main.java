@@ -6,7 +6,6 @@ import com.github.freeacs.common.scheduler.ExecutorWrapper;
 import com.github.freeacs.common.scheduler.ExecutorWrapperFactory;
 import com.github.freeacs.dbi.ScriptExecutions;
 import com.typesafe.config.Config;
-import com.typesafe.config.ConfigException;
 import com.typesafe.config.ConfigFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -66,13 +65,11 @@ public class Main {
         }
 
         @Override
-        public Object getProperty(String name) {
-            try {
-                return source.getAnyRef(name);
-            } catch (ConfigException.Missing missing) {
-                System.out.println("Property requested [" + name + "] is not set");
-                return null;
+        public Object getProperty(String path) {
+            if (source.hasPath(path)) {
+                return source.getAnyRef(path);
             }
+            return null;
         }
     }
 
