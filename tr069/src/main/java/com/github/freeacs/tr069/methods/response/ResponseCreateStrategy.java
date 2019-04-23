@@ -13,28 +13,17 @@ public interface ResponseCreateStrategy {
 
     static ResponseCreateStrategy getStrategy(ProvisioningMethod provisioningMethod, Properties properties) {
         switch(provisioningMethod) {
-            case Empty:
-                return emStrategy();
-            case Download:
-                return downloadStrategy(properties);
-            case FactoryReset:
-                return factoryResetStrategy();
-            case Inform:
-                return informStrategy();
-            case GetParameterNames:
-                return getParameterNamesStrategy(properties);
-            case GetParameterValues:
-                return getParameterValuesStrategy(properties);
-            case SetParameterValues:
-                return setParameterValuesStrategy(properties);
-            case TransferComplete:
-                return transferCompleteStrategy();
-            case AutonomousTransferComplete:
-                return autonomousTransferCompleteStrategy();
-            case Reboot:
-                return rebootStrategy();
-            case GetRPCMethods:
-                return getRPCMethodsStrategy();
+            case Empty: return emStrategy();
+            case Download: return downloadStrategy(properties);
+            case FactoryReset: return factoryResetStrategy();
+            case Inform: return informStrategy();
+            case GetParameterNames: return getParameterNamesStrategy(properties);
+            case GetParameterValues: return getParameterValuesStrategy(properties);
+            case SetParameterValues: return setParameterValuesStrategy(properties);
+            case TransferComplete: return transferCompleteStrategy();
+            case AutonomousTransferComplete: return autonomousTransferCompleteStrategy();
+            case Reboot: return rebootStrategy();
+            case GetRPCMethods: return getRPCMethodsStrategy();
             default:
                 Log.error(ResponseCreateStrategy.class,"The methodName " + provisioningMethod + " has no response strategy");
                 return emStrategy();

@@ -12,28 +12,17 @@ public interface RequestProcessStrategy {
 
     static RequestProcessStrategy getStrategy(ProvisioningMethod provisioningMethod, Properties properties) {
         switch (provisioningMethod) {
-            case Empty:
-                return doNotProcessStrategy();
-            case Download:
-                return downloadStrategy();
-            case Fault:
-                return faultStrategy();
-            case FactoryReset:
-                return factoryResetStrategy();
-            case Inform:
-                return informStrategy(properties);
-            case GetParameterNames:
-                return getParameterNamesStrategy(properties);
-            case GetParameterValues:
-                return getParameterValuesStrategy();
-            case SetParameterValues:
-                return setParameterValuesStrategy();
-            case TransferComplete:
-                return transferCompleteStrategy();
-            case AutonomousTransferComplete:
-                return autonomousTransferComplete();
-            case Reboot:
-                return rebootStrategy();
+            case Empty: return doNotProcessStrategy();
+            case Download: return downloadStrategy();
+            case Fault: return faultStrategy();
+            case FactoryReset: return factoryResetStrategy();
+            case Inform: return informStrategy(properties);
+            case GetParameterNames: return getParameterNamesStrategy(properties);
+            case GetParameterValues: return getParameterValuesStrategy();
+            case SetParameterValues: return setParameterValuesStrategy();
+            case TransferComplete: return transferCompleteStrategy();
+            case AutonomousTransferComplete: return autonomousTransferComplete();
+            case Reboot: return rebootStrategy();
             default:
                 Log.debug(RequestProcessStrategy.class,"The methodName " + provisioningMethod + " has no request processing strategy");
                 return doNotProcessStrategy();
