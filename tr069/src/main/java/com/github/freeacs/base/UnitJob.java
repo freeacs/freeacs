@@ -270,7 +270,7 @@ public class UnitJob {
                 + jobId
                 + ", will stop unit job with unit job status set to "
                 + unitJobStatus);
-          job = sessionData.getUnittype().getJobs().getById(Integer.valueOf(jobIdStr));
+        job = sessionData.getUnittype().getJobs().getById(Integer.valueOf(jobIdStr));
         if (job == null && !unitJobStatus.equals(UnitJobStatus.CONFIRMED_FAILED)) {
           Log.warn(
               UnitJob.class,
