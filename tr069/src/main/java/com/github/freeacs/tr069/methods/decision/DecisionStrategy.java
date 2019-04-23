@@ -12,27 +12,25 @@ public interface DecisionStrategy {
 
     static DecisionStrategy getStrategy(ProvisioningMethod provisioningMethod, Properties properties) {
         switch (provisioningMethod) {
-            case Empty:
-                return emStrategy(properties);
-            case Inform:
-                return informStrategy();
-            case GetParameterNames:
-                return getParameterNamesStrategy();
-            case GetParameterValues:
-                return getParameterValuesStrategy(properties);
-            case SetParameterValues:
-                return setParameterValuesStrategy(properties);
-            case TransferComplete:
-                return transferCompleteStrategy();
-            case AutonomousTransferComplete:
-                return autonomousTransferComplete();
+            case Empty: return emStrategy(properties);
+            case Inform: return informStrategy();
+            case GetParameterNames: return getParameterNamesStrategy();
+            case GetParameterValues: return getParameterValuesStrategy(properties);
+            case SetParameterValues: return setParameterValuesStrategy(properties);
+            case TransferComplete: return transferCompleteStrategy();
+            case AutonomousTransferComplete: return autonomousTransferCompleteStrategy();
+            case GetRPCMethods: return getRPCMethodsStrategy();
             default:
                 Log.debug(DecisionStrategy.class,"The methodName " + provisioningMethod + " has no decision strategy");
                 return emStrategy(properties);
         }
     }
 
-    static DecisionStrategy autonomousTransferComplete() {
+    static DecisionStrategy getRPCMethodsStrategy() {
+        return new GetRPCMethodsDecisionStrategy();
+    }
+
+    static DecisionStrategy autonomousTransferCompleteStrategy() {
         return new AutonomousTransferCompleteDecisionStrategy();
     }
 

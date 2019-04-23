@@ -12,7 +12,7 @@ public enum ProvisioningMethod {
     Download("DO"),
     Reboot("RE"),
     FactoryReset("FR"),
-    GetRPCMethodsResponse(null); // like, its not used..
+    GetRPCMethods("GRP");
 
     private final String abbreviation;
 

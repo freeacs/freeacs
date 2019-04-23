@@ -41,7 +41,7 @@ public class EmptyDecisionStrategy implements DecisionStrategy {
             reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());
         } else if (ProvisioningMethod.Inform.name().equals(prevResponseMethod)
                 || ProvisioningMethod.TransferComplete.name().equals(prevResponseMethod)
-                || ProvisioningMethod.GetRPCMethodsResponse.name().equals(prevResponseMethod)) {
+                || ProvisioningMethod.GetRPCMethods.name().equals(prevResponseMethod)) {
             if (sessionData.getUnittype() == null) {
                 Log.info(EmptyDecisionStrategy.class, "EM-Decision is EM since unittype is not found");
                 reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());
