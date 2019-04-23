@@ -77,7 +77,7 @@ public class Provisioning extends AbstractHttpDataWrapper {
    * <p>In special cases the server will kick the device to "come back" and continue testing a new
    * test case.
    */
-  @PostMapping(value = {"/", "/prov"})
+  @PostMapping(value = {"/${context-path}", "/${context-path}/prov"})
   public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
     HTTPRequestResponseData reqRes = null;
     try {

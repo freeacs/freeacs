@@ -5,14 +5,10 @@ import com.github.freeacs.common.hikari.HikariDataSourceHelper;
 import com.github.freeacs.common.scheduler.ExecutorWrapper;
 import com.github.freeacs.common.scheduler.ExecutorWrapperFactory;
 import com.github.freeacs.dbi.ScriptExecutions;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.MutablePropertySources;
-import org.springframework.core.env.PropertySource;
+import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
 
@@ -31,8 +27,8 @@ public class Main {
     }
 
     @Bean
-    public DataSource getDataSource(Config config) {
-        return HikariDataSourceHelper.dataSource(config.getConfig("main"));
+    public DataSource getDataSource(Environment environment) {
+        return HikariDataSourceHelper.dataSource(environment);
     }
 
     @Bean
@@ -43,34 +39,6 @@ public class Main {
     @Bean
     public ExecutorWrapper getExecutor() {
         return ExecutorWrapperFactory.create(4);
-    }
-
-    @Bean
-    public Config getTypeSafeConfig() {
-        return ConfigFactory.load().resolve();
-    }
-
-    @Bean
-    public TypeSafeConfigPropertySource typeSafeBackedSpringConfig(Config conf, ConfigurableEnvironment env) {
-        TypeSafeConfigPropertySource source = new TypeSafeConfigPropertySource("typeSafe", conf);
-        MutablePropertySources sources = env.getPropertySources();
-        sources.addFirst(source);
-        return source;
-    }
-
-    public class TypeSafeConfigPropertySource extends PropertySource<Config> {
-
-        TypeSafeConfigPropertySource(String name, Config source) {
-            super(name, source);
-        }
-
-        @Override
-        public Object getProperty(String path) {
-            if (source.hasPath(path)) {
-                return source.getAnyRef(path);
-            }
-            return null;
-        }
     }
 
 }
