@@ -35,7 +35,7 @@ public class ParameterKey {
     Map<String, ParameterValueStruct> fromDB = sessionData.getFromDB();
     String jobId = sessionData.getAcsParameters().getValue(SystemParameters.JOB_CURRENT);
     if (jobId != null && !"".equals(jobId.trim())) {
-        Job job = sessionData.getUnittype().getJobs().getById(Integer.valueOf(jobId));
+      Job job = sessionData.getUnittype().getJobs().getById(Integer.valueOf(jobId));
       if (job != null) {
         Log.debug(
             ParameterKey.class,
