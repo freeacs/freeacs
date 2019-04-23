@@ -3,23 +3,34 @@ package com.github.freeacs.base.http;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.dbi.DBI;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@RestController
 public class OKServlet {
   private static Map<String, Long> currentConnectionTmsMap = new HashMap<>();
 
-  @SuppressWarnings("rawtypes")
-  public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
+  private final DBAccess dbAccess;
+  private final ThreadCounter threadCounter;
+
+  public OKServlet(DBAccess dbAccess, ThreadCounter threadCounter) {
+    this.dbAccess = dbAccess;
+    this.threadCounter = threadCounter;
+  }
+
+  @GetMapping("${context-path}/ok")
+  public void doGet(HttpServletResponse res) throws IOException {
     PrintWriter out = res.getWriter();
     StringBuilder status = new StringBuilder("FREEACSOK");
     try {
-      DBI dbi = DBAccess.getInstance().getDbi();
+      DBI dbi = dbAccess.getDbi();
       if (dbi != null && dbi.getDbiThrowable() != null) {
         status =
             new StringBuilder("ERROR: DBI reported error:\n")
@@ -31,8 +42,8 @@ public class OKServlet {
       }
     } catch (Throwable ignored) {
     }
-    if (!status.toString().contains("ERROR") && ThreadCounter.currentSessionsCount() > 0) {
-      Map<String, Long> currentSessions = ThreadCounter.cloneCurrentSessions();
+    if (!status.toString().contains("ERROR") && threadCounter.currentSessionsCount() > 0) {
+      Map<String, Long> currentSessions = threadCounter.cloneCurrentSessions();
       Iterator<String> cctmIterator = currentConnectionTmsMap.keySet().iterator();
       while (cctmIterator.hasNext()) {
         String uId = cctmIterator.next();

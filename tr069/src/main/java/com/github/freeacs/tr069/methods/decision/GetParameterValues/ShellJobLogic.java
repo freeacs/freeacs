@@ -35,7 +35,12 @@ public class ShellJobLogic {
      */
     private static Cache monitorCache = new Cache();
 
-    public static void execute(SessionData sessionData, ACS acs, Job job, UnitJob uj, boolean isDiscoveryMode) throws TR069Exception {
+    public static void execute(SessionData sessionData,
+                               ACS acs,
+                               Job job,
+                               UnitJob uj,
+                               boolean isDiscoveryMode,
+                               ScriptExecutions executions) throws TR069Exception {
         String unitId = sessionData.getUnitId();
         CacheValue cv = monitorCache.get(unitId);
         if (cv == null) {
@@ -46,7 +51,7 @@ public class ShellJobLogic {
             // read parameters from device and save it to the unit
             ShellJobLogic.importReadOnlyParameters(sessionData, acs);
             // execute changes using the shell-script, all changes are written to database
-            ShellJobLogic.executeShellScript(sessionData, job, uj, isDiscoveryMode);
+            ShellJobLogic.executeShellScript(sessionData, job, uj, isDiscoveryMode, executions);
             // read the changes from the database and send to CPE
             ShellJobLogic.prepareSPV(sessionData, acs);
         }
@@ -61,9 +66,11 @@ public class ShellJobLogic {
      * Wait for the script to be executed. If shell daemon returns error - should result in Job
      * verification fail (not sure how)
      */
-    private static void executeShellScript(
-            SessionData sessionData, Job job, UnitJob uj, boolean isDiscoveryMode) throws TR069Exception {
-        ScriptExecutions executions = Provisioning.getExecutions();
+    private static void executeShellScript(SessionData sessionData,
+                                           Job job,
+                                           UnitJob uj,
+                                           boolean isDiscoveryMode,
+                                           ScriptExecutions executions) throws TR069Exception {
         String scriptArgs =
                 "\"-uut:"
                         + sessionData.getUnittype().getName()

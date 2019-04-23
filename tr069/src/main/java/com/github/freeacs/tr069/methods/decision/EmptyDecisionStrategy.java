@@ -21,10 +21,12 @@ import java.util.Date;
 import java.util.List;
 
 public class EmptyDecisionStrategy implements DecisionStrategy {
-    private Properties properties;
+    private final DBAccess dbAccess;
+    private final Properties properties;
 
-    EmptyDecisionStrategy(Properties properties) {
+    EmptyDecisionStrategy(Properties properties, DBAccess dbAccess) {
         this.properties = properties;
+        this.dbAccess = dbAccess;
     }
 
     @Override
@@ -80,12 +82,12 @@ public class EmptyDecisionStrategy implements DecisionStrategy {
         }
     }
 
-    private static void writeSystemParameters(HTTPRequestResponseData reqRes) throws SQLException {
+    private void writeSystemParameters(HTTPRequestResponseData reqRes) throws SQLException {
         writeSystemParameters(reqRes, null, true);
     }
 
     @SuppressWarnings("Duplicates")
-    private static void writeSystemParameters(
+    private void writeSystemParameters(
             HTTPRequestResponseData reqRes, List<ParameterValueStruct> params, boolean queue) throws SQLException {
         SessionData sessionData = reqRes.getSessionData();
         List<ParameterValueStruct> toDB = new ArrayList<>();
@@ -128,7 +130,7 @@ public class EmptyDecisionStrategy implements DecisionStrategy {
         sessionData.setToDB(toDB);
         DBAccessSessionTR069.writeUnitParams(sessionData); // queue-parameters - will be written at end-of-session
         if (!queue) { // execute changes immediately - since otherwise these parameters will be lost (in the event of GPNRes.process())
-            ACS acs = DBAccess.getInstance().getDbi().getAcs();
+            ACS acs = dbAccess.getDbi().getAcs();
             ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
             acsUnit.addOrChangeQueuedUnitParameters(sessionData.getUnit());
         }

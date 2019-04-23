@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * A class which matches incoming requests with outgoing responses. If a second request from the
@@ -17,15 +18,16 @@ import org.slf4j.LoggerFactory;
  *
  * @author Morten
  */
+@Component
 public class ThreadCounter {
-  private static Map<String, Long> currentSessions = new HashMap<>();
+  private final Map<String, Long> currentSessions = new HashMap<>();
 
   private static Logger logger = LoggerFactory.getLogger(ThreadCounter.class);
 
   /**
    * Returns false if a request has not been responded to, and a second request is "counted".
    */
-  public static synchronized boolean isRequestAllowed(SessionDataI sessionData) {
+  public synchronized boolean isRequestAllowed(SessionDataI sessionData) {
     if (sessionData.getUnitId() != null) {
       String unitId = sessionData.getUnitId();
       Long tms = currentSessions.get(unitId);
@@ -55,13 +57,13 @@ public class ThreadCounter {
     return true;
   }
 
-  public static synchronized void responseDelivered(SessionDataI sessionData) {
+  public synchronized void responseDelivered(SessionDataI sessionData) {
     if (sessionData.getUnitId() != null) {
       currentSessions.remove(sessionData.getUnitId());
     }
   }
 
-  static synchronized Map<String, Long> cloneCurrentSessions() {
+  synchronized Map<String, Long> cloneCurrentSessions() {
     Map<String, Long> currentSessionsClone = new HashMap<>();
     for (Entry<String, Long> entry : currentSessions.entrySet()) {
       currentSessionsClone.put(entry.getKey(), entry.getValue());
@@ -69,7 +71,7 @@ public class ThreadCounter {
     return currentSessionsClone;
   }
 
-  static int currentSessionsCount() {
+  int currentSessionsCount() {
     return currentSessions.size();
   }
 }

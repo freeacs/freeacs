@@ -106,7 +106,7 @@ public class DBAccessSession {
       msg += alwaysCounter + " always read params added)";
       Log.debug(SessionData.class, msg);
     } else {
-      Log.warn(SessionData.class, "Did not find unit in unit-table, nothing exists on this unit");
+      Log.warn(DBAccessSession.class, "Did not find unit in unit-table, nothing exists on this unit");
     }
     sessionData.setFromDB(valueMap);
   }

@@ -3,13 +3,9 @@ package com.github.freeacs.tr069;
 import com.github.freeacs.base.BaseCache;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.db.DBAccess;
-import com.github.freeacs.base.http.Authenticator;
 import com.github.freeacs.base.http.ThreadCounter;
-import com.github.freeacs.common.scheduler.ExecutorWrapper;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
-import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.dbi.ScriptExecutions;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.methods.ProvisioningStrategy;
@@ -22,13 +18,12 @@ import com.github.freeacs.http.AbstractHttpDataWrapper;
 import com.github.freeacs.http.HTTPRequestData;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.http.HTTPResponseData;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -40,17 +35,16 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RestController
 public class Provisioning extends AbstractHttpDataWrapper {
-    private static ScriptExecutions executions;
 
-    private final ExecutorWrapper executorWrapper;
     private final DBAccess dbAccess;
+    private final ThreadCounter threadCounter;
 
     public Provisioning(DBAccess dbAccess,
                         Properties properties,
-                        ExecutorWrapper executorWrapper) {
+                        ThreadCounter threadCounter) {
         super(properties);
         this.dbAccess = dbAccess;
-        this.executorWrapper = executorWrapper;
+        this.threadCounter = threadCounter;
     }
 
     /**
@@ -78,32 +72,26 @@ public class Provisioning extends AbstractHttpDataWrapper {
      * test case.
      */
     @PostMapping(value = {"/${context-path}", "/${context-path}/prov"})
-    public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
+    public void doPost(@RequestBody(required = false) String xmlPayload, HttpServletRequest req, HttpServletResponse res) throws IOException {
         HTTPRequestResponseData reqRes = null;
         try {
             // Create the main object which contains all objects concerning the entire
             // session. This object also contains the SessionData object
             reqRes = getHttpRequestResponseData(req, res);
-            // 2. Authenticate the client (first issue challenge, then authenticate)
-            if (Authenticator.notAuthenticated(reqRes, properties)
-                    || (reqRes.getSessionData() != null
-                    && !ThreadCounter.isRequestAllowed(reqRes.getSessionData()))) {
-                return;
-            }
-            // 4. Read the request from the client - store in reqRes object
-            extractRequest(reqRes);
-            // 5. Process provision strategy
-            ProvisioningStrategy.getStrategy(properties).process(reqRes);
-            // 6. Set correct headers in response
+            // store xml payload in reqRes object
+            reqRes.getRequestData().setXml(xmlPayload);
+            // Process provision strategy
+            ProvisioningStrategy.getStrategy(properties, dbAccess).process(reqRes);
+            // Set correct headers in response
             if (reqRes.getResponseData().getXml() != null && !reqRes.getResponseData().getXml().isEmpty()) {
                 res.setHeader("SOAPAction", "");
                 res.setContentType("text/xml");
             }
-            // 7. No need to send Content-length as it will only be informational for 204 HTTP messages
+            // No need to send Content-length as it will only be informational for 204 HTTP messages
             if ("Empty".equals(reqRes.getResponseData().getMethod())) {
                 res.setStatus(HttpServletResponse.SC_NO_CONTENT);
             }
-            // 8. Print response to output
+            // Print response to output
             res.getWriter().print(reqRes.getResponseData().getXml());
         } catch (Throwable t) {
             // Make sure we return an EMPTY response to the TR-069 client
@@ -147,88 +135,35 @@ public class Provisioning extends AbstractHttpDataWrapper {
             }
         }
         if (reqRes != null && reqRes.getSessionData() != null) {
-            ThreadCounter.responseDelivered(reqRes.getSessionData());
+            threadCounter.responseDelivered(reqRes.getSessionData());
         }
     }
 
-    @PostConstruct
-    public void init() {
-        Log.notice(Provisioning.class, "Server starts...");
-        try {
-            DBI dbi = dbAccess.getDbi();
-            scheduleMessageListenerTask(dbi);
-            scheduleKickTask(dbi);
-            scheduleActiveDeviceDetectionTask(dbi);
-        } catch (Throwable t) {
-            Log.fatal(Provisioning.class, "Couldn't start BackgroundProcesses correctly ", t);
-        }
-        try {
-            executions = new ScriptExecutions(dbAccess.getDataSource());
-        } catch (Throwable t) {
-            Log.fatal(
-                    Provisioning.class,
-                    "Couldn't initialize ScriptExecutions - not possible to run SHELL-jobs",
-                    t);
-        }
-    }
-
-    private void scheduleActiveDeviceDetectionTask(final DBI dbi) {
-        // every 5 minute
+    // every 5 minute
+    @Scheduled(cron = "0 0/5 * * * *")
+    private void scheduleActiveDeviceDetectionTask() {
         final ActiveDeviceDetectionTask activeDeviceDetectionTask =
-                new ActiveDeviceDetectionTask("ActiveDeviceDetection TR069", dbi);
-        executorWrapper.scheduleCron(
-                "0 0/5 * * * ?",
-                (tms) ->
-                        () -> {
-                            activeDeviceDetectionTask.setThisLaunchTms(tms);
-                            activeDeviceDetectionTask.run();
-                        });
+                new ActiveDeviceDetectionTask("ActiveDeviceDetection TR069", dbAccess.getDbi());
+        activeDeviceDetectionTask.setThisLaunchTms(System.currentTimeMillis());
+        activeDeviceDetectionTask.run();
     }
 
-    private void scheduleKickTask(final DBI dbi) {
-        // every 1 second
-        final ScheduledKickTask scheduledKickTask = new ScheduledKickTask("ScheduledKick", dbi);
-        executorWrapper.scheduleCron(
-                "* * * ? * * *",
-                (tms) ->
-                        () -> {
-                            scheduledKickTask.setThisLaunchTms(tms);
-                            scheduledKickTask.run();
-                        });
+    // every 1 second
+    @Scheduled(cron = "* * * ? * *")
+    private void scheduleKickTask() {
+        final ScheduledKickTask scheduledKickTask =
+                new ScheduledKickTask("ScheduledKick", dbAccess.getDbi());
+        scheduledKickTask.setThisLaunchTms(System.currentTimeMillis());
+        scheduledKickTask.run();
     }
 
-    private void scheduleMessageListenerTask(final DBI dbi) {
-        // every 5 sec
-        final MessageListenerTask messageListenerTask = new MessageListenerTask("MessageListener", dbi);
-        executorWrapper.scheduleCron(
-                "0/5 * * ? * * *",
-                (tms) ->
-                        () -> {
-                            messageListenerTask.setThisLaunchTms(tms);
-                            messageListenerTask.run();
-                        });
-    }
-
-    private static void extractRequest(HTTPRequestResponseData reqRes) throws TR069Exception {
-        try {
-            InputStreamReader isr = new InputStreamReader(reqRes.getRawRequest().getInputStream());
-            BufferedReader br = new BufferedReader(isr);
-            StringBuilder requestSB = new StringBuilder(1000);
-            do {
-                String line = br.readLine();
-                if (line == null) {
-                    break;
-                }
-                requestSB.append(line).append("\n");
-            } while (true);
-            reqRes.getRequestData().setXml(requestSB.toString());
-            System.currentTimeMillis();
-        } catch (IOException e) {
-            throw new TR069Exception(
-                    "TR-069 client aborted (not possible to read more input)",
-                    TR069ExceptionShortMessage.IOABORTED,
-                    e);
-        }
+    // every 5 sec
+    @Scheduled(cron = "0/5 * * ? * *")
+    private void scheduleMessageListenerTask() {
+        final MessageListenerTask messageListenerTask =
+                new MessageListenerTask("MessageListener", dbAccess.getDbi());
+        messageListenerTask.setThisLaunchTms(System.currentTimeMillis());
+        messageListenerTask.run();
     }
 
     private void writeQueuedUnitParameters(HTTPRequestResponseData reqRes) {
@@ -269,9 +204,5 @@ public class Provisioning extends AbstractHttpDataWrapper {
                     t);
             return false;
         }
-    }
-
-    public static ScriptExecutions getExecutions() {
-        return executions;
     }
 }

@@ -30,9 +30,14 @@ import java.util.Map;
 
 public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
     private final Properties properties;
+    private final DBAccess dbAccess;
+    private final ScriptExecutions scriptExecutions;
 
-    GetParameterValuesDecisionStrategy(Properties properties) {
+    GetParameterValuesDecisionStrategy(Properties properties,
+                                       DBAccess dbAccess) {
         this.properties = properties;
+        this.dbAccess = dbAccess;
+        this.scriptExecutions = new ScriptExecutions(dbAccess.getDataSource());
     }
 
     @SuppressWarnings("Duplicates")
@@ -83,8 +88,9 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
     }
 
     @SuppressWarnings("Duplicates")
-    private void normalPriorityProvisioning(
-            HTTPRequestResponseData reqRes, String publicUrl, int concurrentDownloadLimit) {
+    private void normalPriorityProvisioning(HTTPRequestResponseData reqRes,
+                                            String publicUrl,
+                                            int concurrentDownloadLimit) {
         ServiceWindow serviceWindow;
         SessionData sessionData = reqRes.getSessionData();
         String reset = sessionData.getAcsParameters().getValue(SystemParameters.RESET);
@@ -138,9 +144,11 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
     }
 
     @SuppressWarnings("Duplicates")
-    private void processPeriodic(
-            HTTPRequestResponseData reqRes, boolean isDiscoveryMode, String publicUrl, int concurrentDownloadLimit)
-            throws TR069Exception, SQLException {
+    private void processPeriodic(HTTPRequestResponseData reqRes,
+                                 boolean isDiscoveryMode,
+                                 String publicUrl,
+                                 int concurrentDownloadLimit)
+            throws TR069Exception {
         SessionData sessionData = reqRes.getSessionData();
 
         UnitJob uj = null;
@@ -149,7 +157,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
             // group-matching in job-search
             // will not affect the comparison in populateToCollections()
             updateUnitParameters(sessionData);
-            uj = JobLogic.checkNewJob(sessionData, DBAccess.getInstance().getDbi().getAcs(), concurrentDownloadLimit); // may find a new job
+            uj = JobLogic.checkNewJob(sessionData, dbAccess.getDbi().getAcs(), concurrentDownloadLimit); // may find a new job
         }
         Job job = sessionData.getJob();
         if (job != null) { // No job is present - process according to
@@ -161,9 +169,12 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
     }
 
     @SuppressWarnings("Duplicates")
-    private void jobProvisioning(
-            HTTPRequestResponseData reqRes, Job job, UnitJob uj, boolean isDiscoveryMode, String publicUrl)
-            throws TR069Exception, SQLException {
+    private void jobProvisioning(HTTPRequestResponseData reqRes,
+                                 Job job,
+                                 UnitJob unitJob,
+                                 boolean isDiscoveryMode,
+                                 String publicUrl)
+            throws TR069Exception {
         SessionData sessionData = reqRes.getSessionData();
         sessionData.getProvisioningMessage().setJobId(job.getId());
         JobFlag.JobType type = job.getFlags().getType();
@@ -188,7 +199,12 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         } else {
             if (type == JobFlag.JobType.SHELL) {
                 sessionData.getProvisioningMessage().setProvOutput(ProvisioningMessage.ProvOutput.SHELL);
-                ShellJobLogic.execute(sessionData, DBAccess.getInstance().getDbi().getAcs(), job, uj, isDiscoveryMode);
+                ShellJobLogic.execute(sessionData,
+                        dbAccess.getDbi().getAcs(),
+                        job,
+                        unitJob,
+                        isDiscoveryMode,
+                        scriptExecutions);
             } else { // type == JobType.CONFIG
                 // The service-window is unimportant for next PII calculation, will
                 // be set to 31 no matter what, since a job is "in the process".
@@ -622,7 +638,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
             toDB.add(pvsCPE);
         }
         sessionData.setToDB(toDB);
-        ACS acs = DBAccess.getInstance().getDbi().getAcs();
+        ACS acs = dbAccess.getDbi().getAcs();
         DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(acs, new DBAccessSession(acs));
         dbAccessSessionTR069.writeUnitSessionParams(sessionData);
         Log.debug(GetParameterValuesDecisionStrategy.class, toDB.size() + " params written to ACS session storage");

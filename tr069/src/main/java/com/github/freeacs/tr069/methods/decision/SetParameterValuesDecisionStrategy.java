@@ -12,14 +12,16 @@ import com.github.freeacs.tr069.methods.ProvisioningMethod;
 
 public class SetParameterValuesDecisionStrategy implements DecisionStrategy {
     private final Properties properties;
+    private final DBAccess dbAccess;
 
-    public SetParameterValuesDecisionStrategy(Properties properties) {
+    public SetParameterValuesDecisionStrategy(Properties properties, DBAccess dbAccess) {
         this.properties = properties;
+        this.dbAccess = dbAccess;
     }
 
     @SuppressWarnings("Duplicates")
     @Override
-    public void makeDecision(HTTPRequestResponseData reqRes) throws Exception {
+    public void makeDecision(HTTPRequestResponseData reqRes) {
         SessionData sessionData = reqRes.getSessionData();
         if (sessionData.getUnit().getProvisioningMode() == ProvisioningMode.REGULAR
                 && properties.isParameterkeyQuirk(sessionData)
@@ -27,7 +29,7 @@ public class SetParameterValuesDecisionStrategy implements DecisionStrategy {
             Log.debug(
                     SetParameterValuesDecisionStrategy.class,
                     "UnitJob is COMPLETED without verification stage, since CPE does not support ParameterKey");
-            UnitJob uj = new UnitJob(sessionData, DBAccess.getInstance().getDbi().getAcs(), sessionData.getJob(), false);
+            UnitJob uj = new UnitJob(sessionData, dbAccess.getDbi().getAcs(), sessionData.getJob(), false);
             uj.stop(UnitJobStatus.COMPLETED_OK, properties.isDiscoveryMode());
         }
         reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());

@@ -14,6 +14,12 @@ import com.github.freeacs.tr069.xml.Parser;
 
 public class SetParameterValuesRequestProcessStrategy implements RequestProcessStrategy {
 
+    private final DBAccess dbAccess;
+
+    public SetParameterValuesRequestProcessStrategy(DBAccess dbAccess) {
+        this.dbAccess = dbAccess;
+    }
+
     @SuppressWarnings("Duplicates")
     @Override
     public void process(HTTPRequestResponseData reqRes) throws Exception {
@@ -27,7 +33,7 @@ public class SetParameterValuesRequestProcessStrategy implements RequestProcessS
         ParameterList paramList = sessionData.getToCPE();
         for (ParameterValueStruct pvs : paramList.getParameterValueList()) {
             Log.notice(SetParameterValuesRequestProcessStrategy.class, "\t" + pvs.getName() + " : " + pvs.getValue());
-            String user = new DBAccessSession(DBAccess.getInstance().getDbi().getAcs())
+            String user = new DBAccessSession(dbAccess.getDbi().getAcs())
                             .getAcs()
                             .getSyslog()
                             .getIdentity()

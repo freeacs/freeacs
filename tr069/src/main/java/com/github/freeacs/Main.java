@@ -9,21 +9,22 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import javax.sql.DataSource;
+
+import java.sql.SQLException;
 
 import static com.github.freeacs.dbi.SyslogConstants.FACILITY_TR069;
 
 @SpringBootApplication
+@EnableWebSecurity
+@EnableScheduling
 public class Main {
 
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
-    }
-
-    @Bean
-    public ScriptExecutions getScriptExecutions(DataSource dataSource) {
-        return new ScriptExecutions(dataSource);
     }
 
     @Bean
@@ -32,13 +33,8 @@ public class Main {
     }
 
     @Bean
-    public DBAccess getDBAccess(DataSource dataSource) {
-        return DBAccess.createInstance(FACILITY_TR069, "latest", dataSource);
-    }
-
-    @Bean
-    public ExecutorWrapper getExecutor() {
-        return ExecutorWrapperFactory.create(4);
+    public DBAccess getDBAccess(DataSource dataSource) throws SQLException {
+        return new DBAccess(FACILITY_TR069, "latest", dataSource);
     }
 
 }

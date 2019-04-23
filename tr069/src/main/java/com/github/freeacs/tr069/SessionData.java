@@ -50,7 +50,7 @@ public class SessionData implements SessionDataI {
   private String serialNumber;
 
   /** Tells whether the CPE is authenticated or not. */
-  private boolean authenticated;
+  private boolean authenticated = true;
   /** Tells whether the CPE is doing a periodic inform or not. */
   private boolean periodic;
   /* other event codes */

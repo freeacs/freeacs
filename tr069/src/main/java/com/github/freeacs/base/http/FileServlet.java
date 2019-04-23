@@ -9,61 +9,42 @@ import com.github.freeacs.dbi.File;
 import com.github.freeacs.dbi.FileType;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.http.AbstractHttpDataWrapper;
-import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.Properties;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@RestController
 public class FileServlet extends AbstractHttpDataWrapper {
 
-  private final String context;
+  private final DBAccess dbAccess;
 
-  public FileServlet(String context, Properties properties) {
+  public FileServlet(Properties properties, DBAccess dbAccess) {
     super(properties);
-    this.context = context;
+    this.dbAccess = dbAccess;
   }
 
-  public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
+  @GetMapping("${context-path}/file/**")
+  public void doPost(@Value("${context-path}") String contextPath, HttpServletRequest req, HttpServletResponse res) throws IOException {
     String firmwareName = null;
     String unittypeName = null;
     OutputStream out = null;
-    String authUnittypeName = null;
 
     try {
-      // Create the main object which contains all objects concerning the entire
-      // session. This object also contains the SessionData object
-      if (properties.isFileAuthUsed()) {
-        HTTPRequestResponseData reqRes = getHttpRequestResponseData(req, res);
-        // 2. Authenticate the client (first issue challenge, then authenticate)
-        if (Authenticator.notAuthenticated(reqRes, properties)) {
-          return;
-        }
-        if (reqRes.getSessionData() != null && reqRes.getSessionData().getUnittype() != null) {
-          authUnittypeName = reqRes.getSessionData().getUnittype().getName();
-        }
-      }
-
-      ACS acs = DBAccess.getInstance().getDbi().getAcs();
+      ACS acs = dbAccess.getDbi().getAcs();
       File firmware;
-      String pathInfo = req.getPathInfo().substring(this.context.length());
+      String pathInfo = req.getPathInfo().substring(contextPath.length());
       pathInfo = pathInfo.replaceAll("--", " ");
       String[] pathInfoArr = pathInfo.split("/");
       FileType fileType = FileType.valueOf(pathInfoArr[0]); // Expect it to be a
       // FileType.TYPE_SOFTWARE/TYPE_SCRIPT
       String firmwareVersion = pathInfoArr[1];
       unittypeName = pathInfoArr[2];
-      if (authUnittypeName != null && !unittypeName.equals(authUnittypeName)) {
-        Log.error(
-            FileServlet.class,
-            "Requested file in "
-                + unittypeName
-                + ", but was only authorized for files in "
-                + authUnittypeName);
-        res.sendError(HttpServletResponse.SC_FORBIDDEN);
-        return;
-      }
       Unittype unittype = acs.getUnittype(unittypeName);
       if (unittype == null) {
         Log.error(

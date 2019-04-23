@@ -1,6 +1,7 @@
 package com.github.freeacs.tr069.methods;
 
 import com.github.freeacs.base.Log;
+import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.methods.decision.DecisionStrategy;
 import com.github.freeacs.tr069.methods.request.RequestProcessStrategy;
@@ -17,8 +18,8 @@ public abstract class ProvisioningStrategy {
 
     public abstract void process(HTTPRequestResponseData reqRes) throws Exception;
 
-    public static ProvisioningStrategy getStrategy(Properties properties) {
-        return new NormalProvisioningStrategy(properties);
+    public static ProvisioningStrategy getStrategy(Properties properties, DBAccess dbAccess) {
+        return new NormalProvisioningStrategy(properties, dbAccess);
     }
 
     private static class NormalProvisioningStrategy extends ProvisioningStrategy {
@@ -28,9 +29,12 @@ public abstract class ProvisioningStrategy {
                 Pattern.compile(":Body.*>\\s*<cwmp:(\\w+)(>|/>)", Pattern.DOTALL);
 
         private final Properties properties;
+        private final DBAccess dbAccess;
 
-        private NormalProvisioningStrategy(Properties properties) {
+        private NormalProvisioningStrategy(Properties properties,
+                                           DBAccess dbAccess) {
             this.properties = properties;
+            this.dbAccess = dbAccess;
         }
 
         @Override
@@ -43,13 +47,13 @@ public abstract class ProvisioningStrategy {
             // 1. process the request
             logWillProcessRequest(reqRes);
             ProvisioningMethod requestProvisioningMethod = getRequestMethod(reqRes);
-            RequestProcessStrategy.getStrategy(requestProvisioningMethod, properties).process(reqRes);
+            RequestProcessStrategy.getStrategy(requestProvisioningMethod, properties, dbAccess).process(reqRes);
             if (Log.isConversationLogEnabled()) {
                 logConversationRequest(reqRes);
             }
 
             // 2. decide what to do next
-            DecisionStrategy.getStrategy(requestProvisioningMethod, properties).makeDecision(reqRes);
+            DecisionStrategy.getStrategy(requestProvisioningMethod, properties, dbAccess).makeDecision(reqRes);
 
             // 3. Create and set response
             ProvisioningMethod responseProvisioningMethod = getResponseMethod(reqRes);

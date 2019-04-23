@@ -23,11 +23,13 @@ import java.util.List;
 
 public class GetParameterNamesProcessStrategy implements RequestProcessStrategy {
     private static final Logger logger = LoggerFactory.getLogger(GetParameterNamesProcessStrategy.class);
+    private final DBAccess dbAccess;
 
     private Properties properties;
 
-    GetParameterNamesProcessStrategy(Properties properties) {
+    GetParameterNamesProcessStrategy(Properties properties, DBAccess dbAccess) {
         this.properties = properties;
+        this.dbAccess = dbAccess;
     }
 
     @SuppressWarnings("Duplicates")
@@ -80,7 +82,7 @@ public class GetParameterNamesProcessStrategy implements RequestProcessStrategy 
                                     + " was found more than once in the GPNRes");
                 }
             }
-            DBAccessSession dbAccessSession = new DBAccessSession(DBAccess.getInstance().getDbi().getAcs());
+            DBAccessSession dbAccessSession = new DBAccessSession(dbAccess.getDbi().getAcs());
             dbAccessSession.writeUnittypeParameters(sessionData, utpList);
             Log.debug(
                     GetParameterNamesProcessStrategy.class,
