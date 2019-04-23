@@ -33,10 +33,16 @@ public interface ResponseCreateStrategy {
                 return autonomousTransferCompleteStrategy();
             case Reboot:
                 return rebootStrategy();
+            case GetRPCMethods:
+                return getRPCMethodsStrategy();
             default:
                 Log.error(ResponseCreateStrategy.class,"The methodName " + provisioningMethod + " has no response strategy");
                 return emStrategy();
         }
+    }
+
+    static ResponseCreateStrategy getRPCMethodsStrategy() {
+        return new GetRPCMethodsResponseCreateStrategy();
     }
 
     static ResponseCreateStrategy factoryResetStrategy() {

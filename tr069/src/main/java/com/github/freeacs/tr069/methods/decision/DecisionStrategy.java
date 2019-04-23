@@ -25,14 +25,20 @@ public interface DecisionStrategy {
             case TransferComplete:
                 return transferCompleteStrategy();
             case AutonomousTransferComplete:
-                return autonomousTransferComplete();
+                return autonomousTransferCompleteStrategy();
+            case GetRPCMethods:
+                return getRPCMethodsStrategy();
             default:
                 Log.debug(DecisionStrategy.class,"The methodName " + provisioningMethod + " has no decision strategy");
                 return emStrategy(properties);
         }
     }
 
-    static DecisionStrategy autonomousTransferComplete() {
+    static DecisionStrategy getRPCMethodsStrategy() {
+        return new GetRPCMethodsDecisionStrategy();
+    }
+
+    static DecisionStrategy autonomousTransferCompleteStrategy() {
         return new AutonomousTransferCompleteDecisionStrategy();
     }
 
