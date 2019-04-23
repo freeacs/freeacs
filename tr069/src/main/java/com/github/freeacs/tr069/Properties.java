@@ -4,8 +4,10 @@ import com.github.freeacs.base.Log;
 import com.typesafe.config.Config;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
 @Data
+@Component
 public class Properties {
   private String digestSecret;
   private boolean fileAuthUsed;

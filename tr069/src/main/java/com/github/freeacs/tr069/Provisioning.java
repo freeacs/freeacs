@@ -22,10 +22,13 @@ import com.github.freeacs.http.AbstractHttpDataWrapper;
 import com.github.freeacs.http.HTTPRequestData;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.http.HTTPResponseData;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -35,20 +38,124 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author morten
  */
+@RestController
 public class Provisioning extends AbstractHttpDataWrapper {
   private static ScriptExecutions executions;
 
   private final ExecutorWrapper executorWrapper;
+  private final DBAccess dbAccess;
 
-  public Provisioning(Properties properties, ExecutorWrapper executorWrapper) {
+  public Provisioning(DBAccess dbAccess,
+                      Properties properties,
+                      ExecutorWrapper executorWrapper) {
     super(properties);
+    this.dbAccess = dbAccess;
     this.executorWrapper = executorWrapper;
   }
 
+  /**
+   * This is the entry point for TR-069 Clients - everything starts here!!!
+   *
+   * <p>A TR-069 session consists of many rounds of HTTP request/responses, however each
+   * request/response non-the-less follows a standard pattern:
+   *
+   * <p>1. Check special HTTP headers for a "early return" (CONTINUE) 2. Check authentication -
+   * challenge client if necessary. If not authenticated - return 3. Check concurrent sessions from
+   * same unit - if detected: return 4. Extract XML from request - store in sessionData object 5.
+   * Process HTTP Request (xml-parsing, find methodname, test-verification) 6. Decide upon next step
+   * - may contain logic that processes the request and decide response 7. Produce HTTP Response
+   * (xml-creation) 8. Some details about the xml-response like content-type/Empty response 9.
+   * Return response to TR-069 client
+   *
+   * <p>At the end we have error handling, to make sure that no matter what, we do return an EMTPY
+   * response to the client - to signal end of conversation/TR-069-session.
+   *
+   * <p>In the finally loop we check if a TR-069 Session is in-fact completed (one way or the other)
+   * and if so, logging is performed. Also, if unit-parameters are queued up for writing, those will
+   * be written now (instead of writing some here and some there along the entire TR-069 session).
+   *
+   * <p>In special cases the server will kick the device to "come back" and continue testing a new
+   * test case.
+   */
+  @PostMapping(value = {"/", "/prov"})
+  public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
+    HTTPRequestResponseData reqRes = null;
+    try {
+      // Create the main object which contains all objects concerning the entire
+      // session. This object also contains the SessionData object
+      reqRes = getHttpRequestResponseData(req, res);
+      // 2. Authenticate the client (first issue challenge, then authenticate)
+      if (Authenticator.notAuthenticated(reqRes, properties)
+              || (reqRes.getSessionData() != null
+              && !ThreadCounter.isRequestAllowed(reqRes.getSessionData()))) {
+        return;
+      }
+      // 4. Read the request from the client - store in reqRes object
+      extractRequest(reqRes);
+      // 5. Process provision strategy
+      ProvisioningStrategy.getStrategy(properties).process(reqRes);
+      // 6. Set correct headers in response
+      if (reqRes.getResponseData().getXml() != null && !reqRes.getResponseData().getXml().isEmpty()) {
+        res.setHeader("SOAPAction", "");
+        res.setContentType("text/xml");
+      }
+      // 7. No need to send Content-length as it will only be informational for 204 HTTP messages
+      if ("Empty".equals(reqRes.getResponseData().getMethod())) {
+        res.setStatus(HttpServletResponse.SC_NO_CONTENT);
+      }
+      // 8. Print response to output
+      res.getWriter().print(reqRes.getResponseData().getXml());
+    } catch (Throwable t) {
+      // Make sure we return an EMPTY response to the TR-069 client
+      if (t instanceof TR069Exception) {
+        TR069Exception tex = (TR069Exception) t;
+        Throwable stacktraceThrowable = t;
+        if (tex.getCause() != null) {
+          stacktraceThrowable = tex.getCause();
+        }
+        if (tex.getShortMsg() == TR069ExceptionShortMessage.MISC
+                || tex.getShortMsg() == TR069ExceptionShortMessage.DATABASE) {
+          Log.error(Provisioning.class, "An error ocurred: " + t.getMessage(), stacktraceThrowable);
+        }
+        if (tex.getShortMsg() == TR069ExceptionShortMessage.IOABORTED) {
+          Log.warn(Provisioning.class, t.getMessage());
+        } else {
+          Log.error(Provisioning.class, t.getMessage());
+        } // No stacktrace printed to log
+      }
+      if (reqRes != null) {
+        reqRes.setThrowable(t);
+      }
+      res.setStatus(HttpServletResponse.SC_NO_CONTENT);
+      res.getWriter().print("");
+    } finally {
+      // Run at end of every TR-069 session
+      if (reqRes != null && endOfSession(reqRes)) {
+        Log.debug(
+                Provisioning.class,
+                "End of session is reached, will write queued unit parameters if unit ("
+                        + reqRes.getSessionData().getUnit()
+                        + ") is not null");
+        // Logging of the entire session, both to tr069-event.log and syslog
+        if (reqRes.getSessionData().getUnit() != null) {
+          writeQueuedUnitParameters(reqRes);
+        }
+        SessionLogging.log(reqRes);
+        BaseCache.removeSessionData(reqRes.getSessionData().getUnitId());
+        BaseCache.removeSessionData(reqRes.getSessionData().getId());
+        res.setHeader("Connection", "close");
+      }
+    }
+    if (reqRes != null && reqRes.getSessionData() != null) {
+      ThreadCounter.responseDelivered(reqRes.getSessionData());
+    }
+  }
+
+  @PostConstruct
   public void init() {
     Log.notice(Provisioning.class, "Server starts...");
     try {
-      DBI dbi = DBAccess.getInstance().getDBI();
+      DBI dbi = dbAccess.getDBI();
       scheduleMessageListenerTask(dbi);
       scheduleKickTask(dbi);
       scheduleActiveDeviceDetectionTask(dbi);
@@ -56,7 +163,7 @@ public class Provisioning extends AbstractHttpDataWrapper {
       Log.fatal(Provisioning.class, "Couldn't start BackgroundProcesses correctly ", t);
     }
     try {
-      executions = new ScriptExecutions(DBAccess.getInstance().getDataSource());
+      executions = new ScriptExecutions(dbAccess.getDataSource());
     } catch (Throwable t) {
       Log.fatal(
           Provisioning.class,
@@ -124,110 +231,11 @@ public class Provisioning extends AbstractHttpDataWrapper {
     }
   }
 
-  /**
-   * This is the entry point for TR-069 Clients - everything starts here!!!
-   *
-   * <p>A TR-069 session consists of many rounds of HTTP request/responses, however each
-   * request/response non-the-less follows a standard pattern:
-   *
-   * <p>1. Check special HTTP headers for a "early return" (CONTINUE) 2. Check authentication -
-   * challenge client if necessary. If not authenticated - return 3. Check concurrent sessions from
-   * same unit - if detected: return 4. Extract XML from request - store in sessionData object 5.
-   * Process HTTP Request (xml-parsing, find methodname, test-verification) 6. Decide upon next step
-   * - may contain logic that processes the request and decide response 7. Produce HTTP Response
-   * (xml-creation) 8. Some details about the xml-response like content-type/Empty response 9.
-   * Return response to TR-069 client
-   *
-   * <p>At the end we have error handling, to make sure that no matter what, we do return an EMTPY
-   * response to the client - to signal end of conversation/TR-069-session.
-   *
-   * <p>In the finally loop we check if a TR-069 Session is in-fact completed (one way or the other)
-   * and if so, logging is performed. Also, if unit-parameters are queued up for writing, those will
-   * be written now (instead of writing some here and some there along the entire TR-069 session).
-   *
-   * <p>In special cases the server will kick the device to "come back" and continue testing a new
-   * test case.
-   */
-  public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
-    HTTPRequestResponseData reqRes = null;
-    try {
-      // Create the main object which contains all objects concerning the entire
-      // session. This object also contains the SessionData object
-      reqRes = getHttpRequestResponseData(req, res);
-      // 2. Authenticate the client (first issue challenge, then authenticate)
-      if (Authenticator.notAuthenticated(reqRes, properties)
-          || (reqRes.getSessionData() != null
-              && !ThreadCounter.isRequestAllowed(reqRes.getSessionData()))) {
-        return;
-      }
-      // 4. Read the request from the client - store in reqRes object
-      extractRequest(reqRes);
-      // 5. Process provision strategy
-      ProvisioningStrategy.getStrategy(properties).process(reqRes);
-      // 6. Set correct headers in response
-      if (reqRes.getResponseData().getXml() != null && !reqRes.getResponseData().getXml().isEmpty()) {
-        res.setHeader("SOAPAction", "");
-        res.setContentType("text/xml");
-      }
-      // 7. No need to send Content-length as it will only be informational for 204 HTTP messages
-      if ("Empty".equals(reqRes.getResponseData().getMethod())) {
-        res.setStatus(HttpServletResponse.SC_NO_CONTENT);
-      }
-      // 8. Print response to output
-      res.getWriter().print(reqRes.getResponseData().getXml());
-    } catch (Throwable t) {
-      // Make sure we return an EMPTY response to the TR-069 client
-      if (t instanceof TR069Exception) {
-        TR069Exception tex = (TR069Exception) t;
-        Throwable stacktraceThrowable = t;
-        if (tex.getCause() != null) {
-          stacktraceThrowable = tex.getCause();
-        }
-        if (tex.getShortMsg() == TR069ExceptionShortMessage.MISC
-            || tex.getShortMsg() == TR069ExceptionShortMessage.DATABASE) {
-          Log.error(Provisioning.class, "An error ocurred: " + t.getMessage(), stacktraceThrowable);
-        }
-        if (tex.getShortMsg() == TR069ExceptionShortMessage.IOABORTED) {
-          Log.warn(Provisioning.class, t.getMessage());
-        } else {
-          Log.error(Provisioning.class, t.getMessage());
-        } // No stacktrace printed to log
-      }
-      if (reqRes != null) {
-        reqRes.setThrowable(t);
-      }
-      res.setStatus(HttpServletResponse.SC_NO_CONTENT);
-      res.getWriter().print("");
-    } finally {
-      // Run at end of every TR-069 session
-      if (reqRes != null && endOfSession(reqRes)) {
-        Log.debug(
-            Provisioning.class,
-            "End of session is reached, will write queued unit parameters if unit ("
-                + reqRes.getSessionData().getUnit()
-                + ") is not null");
-        // Logging of the entire session, both to tr069-event.log and syslog
-        if (reqRes.getSessionData().getUnit() != null) {
-          //					reqRes.getSessionData().getUnit().toWriteQueue(SystemParameters.PROVISIONING_STATE,
-          // ProvisioningState.READY.toString());
-          writeQueuedUnitParameters(reqRes);
-        }
-        SessionLogging.log(reqRes);
-        BaseCache.removeSessionData(reqRes.getSessionData().getUnitId());
-        BaseCache.removeSessionData(reqRes.getSessionData().getId());
-        res.setHeader("Connection", "close");
-      }
-    }
-    if (reqRes != null && reqRes.getSessionData() != null) {
-      ThreadCounter.responseDelivered(reqRes.getSessionData());
-    }
-  }
-
   private void writeQueuedUnitParameters(HTTPRequestResponseData reqRes) {
     try {
       Unit unit = reqRes.getSessionData().getUnit();
       if (unit != null) {
-        ACS acs = DBAccess.getInstance().getDBI().getAcs();
+        ACS acs = dbAccess.getDBI().getAcs();
         ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
         acsUnit.addOrChangeQueuedUnitParameters(unit);
       }
