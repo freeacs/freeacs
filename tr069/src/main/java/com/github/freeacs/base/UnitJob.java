@@ -1,6 +1,5 @@
 package com.github.freeacs.base;
 
-import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.db.DBAccessSession;
 import com.github.freeacs.base.db.DBAccessStatic;
 import com.github.freeacs.dbi.ACS;
@@ -93,7 +92,7 @@ public class UnitJob {
         continue;
       }
       JobHistoryEntry jhEntry = new JobHistoryEntry(entry);
-      Job entryJob = DBAccess.getJob(sessionData, String.valueOf(jhEntry.getJobId()));
+      Job entryJob = sessionData.getUnittype().getJobs().getById(Integer.valueOf(String.valueOf(jhEntry.getJobId())));
       if (entryJob != null) {
         if (Objects.equals(entryJob.getId(), jobId)) { // inc repeated-counter
           jh2 += jhEntry.incEntry(tms) + ",";
@@ -120,12 +119,10 @@ public class UnitJob {
       try {
         String unitId = sessionData.getUnitId();
         if (!serverSideJob) {
-          UnitParameter jobUp =
-              makeUnitParameter(SystemParameters.JOB_CURRENT, String.valueOf(job.getId()));
+          UnitParameter jobUp = makeUnitParameter(SystemParameters.JOB_CURRENT, String.valueOf(job.getId()));
           List<UnitParameter> upList = new ArrayList<>();
           upList.add(jobUp);
-          DBAccessStatic.queueUnitParameters(
-              sessionData.getUnit(), upList, sessionData.getProfile());
+          upList.forEach(sessionData.getUnit()::toWriteQueue);
         }
         DBAccessStatic.startUnitJob(
             unitId, job.getId(), acs.getDataSource());
@@ -171,7 +168,7 @@ public class UnitJob {
         sessionData.getPIIDecision().setCurrentJobStatus(unitJobStatus);
         // Write directly to database, no queuing, since the all data are flushed in next step (most
         // likely)
-        ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
+        ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
         acsUnit.addOrChangeUnitParameters(upList, sessionData.getProfile());
         if (!serverSideJob) {
           sessionData.setFromDB(null);
@@ -273,7 +270,7 @@ public class UnitJob {
                 + jobId
                 + ", will stop unit job with unit job status set to "
                 + unitJobStatus);
-        job = DBAccess.getJob(sessionData, jobIdStr);
+        job = sessionData.getUnittype().getJobs().getById(Integer.valueOf(jobIdStr));
         if (job == null && !unitJobStatus.equals(UnitJobStatus.CONFIRMED_FAILED)) {
           Log.warn(
               UnitJob.class,

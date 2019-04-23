@@ -52,7 +52,7 @@ public class AbstractHttpDataWrapperTest {
         final Properties properties = new Properties(ConfigFactory.load());
 
         // When:
-        final AbstractHttpDataWrapper wrapper = new AbstractHttpDataWrapper(mockDBAccess, properties) {};
+        final AbstractHttpDataWrapper wrapper = new AbstractHttpDataWrapper(properties) {};
         final HTTPRequestResponseData httpRequestResponseData =
             wrapper.getHttpRequestResponseData(mockServletRequest, mockServletResponse);
 

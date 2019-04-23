@@ -24,9 +24,6 @@ public class ThreadCounter {
 
   /**
    * Returns false if a request has not been responded to, and a second request is "counted".
-   *
-   * @param sessionData
-   * @return
    */
   public static synchronized boolean isRequestAllowed(SessionDataI sessionData) {
     if (sessionData.getUnitId() != null) {
@@ -64,7 +61,7 @@ public class ThreadCounter {
     }
   }
 
-  public static synchronized Map<String, Long> cloneCurrentSessions() {
+  static synchronized Map<String, Long> cloneCurrentSessions() {
     Map<String, Long> currentSessionsClone = new HashMap<>();
     for (Entry<String, Long> entry : currentSessions.entrySet()) {
       currentSessionsClone.put(entry.getKey(), entry.getValue());
@@ -72,7 +69,7 @@ public class ThreadCounter {
     return currentSessionsClone;
   }
 
-  public static int currentSessionsCount() {
+  static int currentSessionsCount() {
     return currentSessions.size();
   }
 }

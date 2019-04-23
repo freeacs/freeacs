@@ -17,4 +17,14 @@ public abstract class SparkApp {
         Spark.port(config.getInt("server.port"));
         datasource = HikariDataSourceHelper.dataSource(config.getConfig("main"));
     }
+
+    protected int getIntOrMinusOne(String s) {
+        return getIntOrMinusOne(config, s);
+    }
+
+    protected int getIntOrMinusOne(Config config, String s) {
+        return config.hasPath(s) ? config.getInt(s) : -1;
+    }
+
+
 }

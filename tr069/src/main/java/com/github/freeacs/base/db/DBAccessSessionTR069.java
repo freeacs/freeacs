@@ -61,7 +61,7 @@ public class DBAccessSessionTR069 {
       sessionData.setUnittype(ut);
       sessionData.setProfile(pr);
 
-      ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
+      ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
       List<String> unitIds = new ArrayList<>();
       unitIds.add(unitId);
       acsUnit.addUnits(unitIds, pr);
@@ -83,7 +83,7 @@ public class DBAccessSessionTR069 {
     }
   }
 
-  protected static String getUnittypeName(String unitId) {
+  static String getUnittypeName(String unitId) {
     return "OUI-" + unitId.substring(0, Math.min(unitId.length(), 6));
   }
 
@@ -112,7 +112,7 @@ public class DBAccessSessionTR069 {
         }
       }
       if (!unitSessionParameters.isEmpty()) {
-        ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
+        ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
         acsUnit.addOrChangeSessionUnitParameters(unitSessionParameters, profile);
       }
     } catch (SQLException sqle) {
@@ -130,14 +130,11 @@ public class DBAccessSessionTR069 {
     for (ParameterValueStruct pvs : parameterValuesToDB) {
       UnittypeParameter utp = unittype.getUnittypeParameters().getByName(pvs.getName());
       if (utp != null) {
-        unitParameters.add(
-            new UnitParameter(utp, sessionData.getUnitId(), pvs.getValue(), profile));
+        unitParameters.add(new UnitParameter(utp, sessionData.getUnitId(), pvs.getValue(), profile));
       } else {
-        Log.warn(
-            DBAccessSession.class,
-            "\t" + pvs.getName() + " : does not exist, cannot write value " + pvs.getValue());
+        Log.warn(DBAccessSession.class,"\t" + pvs.getName() + " : does not exist, cannot write value " + pvs.getValue());
       }
     }
-    DBAccessStatic.queueUnitParameters(unit, unitParameters, profile);
+    unitParameters.forEach(unit::toWriteQueue);
   }
 }

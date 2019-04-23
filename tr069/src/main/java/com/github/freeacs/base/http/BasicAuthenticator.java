@@ -3,6 +3,7 @@ package com.github.freeacs.base.http;
 import com.github.freeacs.base.BaseCache;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.NoDataAvailableException;
+import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.db.DBAccessSession;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.http.HTTPRequestResponseData;
@@ -11,13 +12,13 @@ import com.github.freeacs.tr069.exception.TR069AuthenticationException;
 import java.sql.SQLException;
 import javax.servlet.http.HttpServletResponse;
 
-public class BasicAuthenticator {
+class BasicAuthenticator {
   private static void sendChallenge(HttpServletResponse res) {
-    res.setHeader("WWW-Authenticate", "Basic realm=\"" + Util.getRealm() + "\"");
+    res.setHeader("WWW-Authenticate", "Basic realm=\"" + AuthenticatorUtil.getRealm() + "\"");
     res.setStatus(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
   }
 
-  public static boolean authenticate(
+  static boolean authenticate(
       HTTPRequestResponseData reqRes, boolean isDiscoveryMode, String[] discoveryBlocked)
       throws TR069AuthenticationException {
     String authorization = reqRes.getRawRequest().getHeader("authorization");
@@ -49,9 +50,9 @@ public class BasicAuthenticator {
         "Basic verification of CPE starts, located on IP-address "
             + reqRes.getRawRequest().getRemoteHost());
     authorization = authorization.trim();
-    authorization = Util.removePrefix(authorization, "basic");
+    authorization = AuthenticatorUtil.removePrefix(authorization, "basic");
     authorization = authorization.trim();
-    String userpass = Util.base64decode(authorization);
+    String userpass = AuthenticatorUtil.base64decode(authorization);
 
     // Validate any credentials already included with this request
     String username;
@@ -67,7 +68,7 @@ public class BasicAuthenticator {
     }
 
     // Do database read parameters and then perform verification
-    String unitId = Util.username2unitId(username);
+    String unitId = AuthenticatorUtil.username2unitId(username);
     Log.debug(
         DigestAuthenticator.class,
         "Basic verification identifed unit id "
@@ -77,7 +78,7 @@ public class BasicAuthenticator {
     try {
       SessionData sessionData = reqRes.getSessionData();
       sessionData.setUnitId(unitId);
-      new DBAccessSession(reqRes.getDbAccess().getDBI().getAcs()).updateParametersFromDB(sessionData, isDiscoveryMode); // Unit is now stored in sessionData
+      new DBAccessSession(DBAccess.getInstance().getDBI().getAcs()).updateParametersFromDB(sessionData, isDiscoveryMode); // Unit is now stored in sessionData
       String secret = null;
       if (sessionData.isFirstConnect() && isDiscoveryMode) {
         for (String blocked : discoveryBlocked) {

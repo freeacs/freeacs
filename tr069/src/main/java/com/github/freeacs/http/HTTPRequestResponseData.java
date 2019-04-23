@@ -3,17 +3,14 @@ package com.github.freeacs.http;
 import com.github.freeacs.base.BaseCache;
 import com.github.freeacs.base.BaseCacheException;
 import com.github.freeacs.base.Log;
-import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.xml.TR069TransactionID;
-import java.sql.SQLException;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class HTTPRequestResponseData {
-  private final DBAccess dbAccess;
 
   private HTTPRequestData requestData;
 
@@ -29,12 +26,11 @@ public class HTTPRequestResponseData {
 
   private SessionData sessionData;
 
-  protected HTTPRequestResponseData(HttpServletRequest rawRequest, HttpServletResponse rawResponse, DBAccess dbAccess) {
+  protected HTTPRequestResponseData(HttpServletRequest rawRequest, HttpServletResponse rawResponse) {
     this.rawRequest = rawRequest;
     this.rawResponse = rawResponse;
     this.requestData = new HTTPRequestData();
     this.responseData = new HTTPResponseData();
-    this.dbAccess = dbAccess;
 
     String sessionId = rawRequest.getSession().getId();
     try {
@@ -100,10 +96,6 @@ public class HTTPRequestResponseData {
 
   public SessionData getSessionData() {
     return sessionData;
-  }
-
-  public DBAccess getDbAccess() {
-    return dbAccess;
   }
 
   public String getRealIPAddress() {

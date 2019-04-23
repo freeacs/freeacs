@@ -3,6 +3,7 @@ package com.github.freeacs.tr069.methods.request;
 import com.github.freeacs.base.BaseCache;
 import com.github.freeacs.base.JobLogic;
 import com.github.freeacs.base.Log;
+import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.db.DBAccessSession;
 import com.github.freeacs.base.db.DBAccessSessionTR069;
 import com.github.freeacs.dbi.Unit;
@@ -30,7 +31,7 @@ import java.util.TreeSet;
 public class InformRequestProcessStrategy implements RequestProcessStrategy {
     private Properties properties;
 
-    public InformRequestProcessStrategy(Properties properties) {
+    InformRequestProcessStrategy(Properties properties) {
         this.properties = properties;
     }
 
@@ -55,12 +56,12 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
             sessionData.setSerialNumber(deviceIdStruct.getSerialNumber());
             parseEvents(parser, sessionData);
             parseParameters(sessionData, parser);
-            DBAccessSession dbAccessSession = new DBAccessSession(reqRes.getDbAccess().getDBI().getAcs());
+            DBAccessSession dbAccessSession = new DBAccessSession(DBAccess.getInstance().getDBI().getAcs());
             dbAccessSession.updateParametersFromDB(sessionData, isDiscoveryMode); // Unit-object is read and populated in SessionData
             logPeriodicInformTiming(sessionData);
             ScheduledKickTask.removeUnit(unitId);
             if (isDiscoveryMode && sessionData.isFirstConnect()) {
-                DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(reqRes.getDbAccess().getDBI().getAcs(), dbAccessSession);
+                DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(DBAccess.getInstance().getDBI().getAcs(), dbAccessSession);
 
                 String unitTypeName = deviceIdStruct.getProductClass();
 
@@ -83,7 +84,7 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
             }
             sessionData.getCommandKey().setServerKey(reqRes);
             sessionData.getParameterKey().setServerKey(reqRes);
-            boolean jobOk = JobLogic.checkJobOK(sessionData, reqRes.getDbAccess().getDBI().getAcs(), isDiscoveryMode);
+            boolean jobOk = JobLogic.checkJobOK(sessionData, DBAccess.getInstance().getDBI().getAcs(), isDiscoveryMode);
             sessionData.setJobUnderExecution(!jobOk);
         } catch (SQLException e) {
             throw new TR069DatabaseException(e);

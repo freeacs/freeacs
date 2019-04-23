@@ -38,21 +38,17 @@ import javax.servlet.http.HttpServletResponse;
 public class Provisioning extends AbstractHttpDataWrapper {
   private static ScriptExecutions executions;
 
-
   private final ExecutorWrapper executorWrapper;
 
-  public Provisioning(
-      DBAccess dbAccess,
-      Properties properties,
-      ExecutorWrapper executorWrapper) {
-    super(dbAccess, properties);
+  public Provisioning(Properties properties, ExecutorWrapper executorWrapper) {
+    super(properties);
     this.executorWrapper = executorWrapper;
   }
 
   public void init() {
     Log.notice(Provisioning.class, "Server starts...");
     try {
-      DBI dbi = dbAccess.getDBI();
+      DBI dbi = DBAccess.getInstance().getDBI();
       scheduleMessageListenerTask(dbi);
       scheduleKickTask(dbi);
       scheduleActiveDeviceDetectionTask(dbi);
@@ -60,7 +56,7 @@ public class Provisioning extends AbstractHttpDataWrapper {
       Log.fatal(Provisioning.class, "Couldn't start BackgroundProcesses correctly ", t);
     }
     try {
-      executions = new ScriptExecutions(dbAccess.getMainDataSource());
+      executions = new ScriptExecutions(DBAccess.getInstance().getDataSource());
     } catch (Throwable t) {
       Log.fatal(
           Provisioning.class,
@@ -231,8 +227,8 @@ public class Provisioning extends AbstractHttpDataWrapper {
     try {
       Unit unit = reqRes.getSessionData().getUnit();
       if (unit != null) {
-        ACS acs = reqRes.getDbAccess().getDBI().getAcs();
-        ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
+        ACS acs = DBAccess.getInstance().getDBI().getAcs();
+        ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
         acsUnit.addOrChangeQueuedUnitParameters(unit);
       }
     } catch (Throwable t) {

@@ -24,7 +24,6 @@ public class DBAccessStatic {
   }
 
   public static byte[] readFirmwareImage(File firmwareFresh) throws SQLException {
-    long start = System.currentTimeMillis();
     String action = "readFirmwareImage";
     try {
       File firmwareCache =
@@ -40,14 +39,13 @@ public class DBAccessStatic {
       }
       return firmwareReturn.getContent();
     } catch (Throwable t) {
-      DBAccess.handleError(action, t);
+      DBAccessErrorHandler.handleError(action, t);
     }
     return null; // Unreachable code - compiler doesn't detect it
   }
 
   public static void startUnitJob(String unitId, Integer jobId, DataSource xapsDataSource)
       throws SQLException {
-    long start = System.currentTimeMillis();
     String action = "startUnitJob";
     try {
       UnitJobs unitJobs = new UnitJobs(xapsDataSource);
@@ -61,14 +59,13 @@ public class DBAccessStatic {
             "The unit-job couldn't be started. The reason might it is already COMPLETED_OK state");
       }
     } catch (Throwable t) {
-      DBAccess.handleError(action, t);
+      DBAccessErrorHandler.handleError(action, t);
     }
   }
 
   public static void stopUnitJob(
       String unitId, Integer jobId, String unitJobStatus, DataSource xapsDataSource)
       throws SQLException {
-    long start = System.currentTimeMillis();
     String action = "stopUnitJob";
     try {
       UnitJobs unitJobs = new UnitJobs(xapsDataSource);
@@ -83,15 +80,8 @@ public class DBAccessStatic {
             "The unit-job couldn't be stopped. The reason might be it is deleted or maybe even in COMPLETED_OK state already");
       }
     } catch (Throwable t) {
-      DBAccess.handleError(action, t);
+      DBAccessErrorHandler.handleError(action, t);
     }
   }
 
-  /** Write to queue, will be written to DB at the end of TR-069-session. */
-  public static void queueUnitParameters(
-      Unit unit, List<UnitParameter> unitParameters, Profile profile) {
-    for (UnitParameter up : unitParameters) {
-      unit.toWriteQueue(up);
-    }
-  }
 }

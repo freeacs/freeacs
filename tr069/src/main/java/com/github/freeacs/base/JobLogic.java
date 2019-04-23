@@ -1,6 +1,5 @@
 package com.github.freeacs.base;
 
-import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
 import com.github.freeacs.dbi.JobFlag.JobType;
@@ -23,7 +22,7 @@ public class JobLogic {
       String jobId = sessionData.getAcsParameters().getValue(SystemParameters.JOB_CURRENT);
       if (jobId != null && !jobId.trim().isEmpty()) {
         Log.debug(JobLogic.class, "Verification stage entered for job " + jobId);
-        Job job = DBAccess.getJob(sessionData, jobId);
+        Job job = sessionData.getUnittype().getJobs().getById(Integer.valueOf(jobId));
         if (job == null) {
           Log.warn(
               JobLogic.class, "Current job " + jobId + " does no longer exist, cannot be verified");

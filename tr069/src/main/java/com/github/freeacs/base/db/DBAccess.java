@@ -1,76 +1,54 @@
 package com.github.freeacs.base.db;
 
-import com.github.freeacs.base.Log;
-import com.github.freeacs.base.SessionDataI;
 import com.github.freeacs.dbi.ACS;
-import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Identity;
-import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.Syslog;
 import com.github.freeacs.dbi.Users;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 
 public class DBAccess {
-  private final DataSource mainDataSource;
-  private final DataSource syslogDataSource;
+
+  private static DBAccess instance;
+
+  private final DataSource dataSource;
   private final String facilityVersion;
   private final int facility;
 
   private DBI dbi;
 
-  public DBAccess(
-      int facilityInt,
-      String facilityVersionStr,
-      DataSource mainDataSource,
-      DataSource syslogDataSource) {
+  private DBAccess(int facilityInt, String facilityVersionStr, DataSource dataSource) {
     this.facility = facilityInt;
     this.facilityVersion = facilityVersionStr;
-    this.mainDataSource = mainDataSource;
-    this.syslogDataSource = syslogDataSource;
-  }
-
-  private static void error(String message, Throwable t) {
-    Log.error(DBAccess.class, message, t);
+    this.dataSource = dataSource;
   }
 
   public Syslog getSyslog() throws SQLException {
-    Users users = new Users(getMainDataSource());
+    Users users = new Users(getDataSource());
     Identity id = new Identity(facility, facilityVersion, users.getUnprotected(Users.USER_ADMIN));
-    return new Syslog(getSyslogDataSource(), id);
+    return new Syslog(dataSource, id);
   }
 
   public synchronized DBI getDBI() throws SQLException {
     ACS.setStrictOrder(false);
     if (dbi == null) {
       Syslog syslog = getSyslog();
-      dbi = new DBI(Integer.MAX_VALUE, getMainDataSource(), syslog);
+      dbi = new DBI(Integer.MAX_VALUE, getDataSource(), syslog);
     }
     return dbi;
   }
 
-  public static Job getJob(SessionDataI sessionData, String id) {
-    return sessionData.getUnittype().getJobs().getById(Integer.valueOf(id));
+  public DataSource getDataSource() {
+    return dataSource;
   }
 
-  static void handleError(String method, Throwable t) throws SQLException {
-    error(method + " failed", t);
-    if (t instanceof SQLException) {
-      throw (SQLException) t;
-    }
-    throw (RuntimeException) t;
+  public static DBAccess createInstance(int facilityInt, String facilityVersionStr, DataSource dataSource) {
+    instance = new DBAccess(facilityInt, facilityVersionStr, dataSource);
+    return instance;
   }
 
-  public static ACSUnit getXAPSUnit(ACS acs) throws SQLException {
-    return new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
-  }
-
-  public DataSource getMainDataSource() {
-    return mainDataSource;
-  }
-
-  public DataSource getSyslogDataSource() {
-    return syslogDataSource;
+  public static DBAccess getInstance() {
+    return instance;
   }
 }

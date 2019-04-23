@@ -4,17 +4,17 @@ import com.github.freeacs.base.Log;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-public class Util {
-  public static String getRealm() {
+class AuthenticatorUtil {
+  static String getRealm() {
     return "xaps";
   }
 
-  public static boolean startsWithIgnoreCase(String str, String prefix) {
+  private static boolean startsWithIgnoreCase(String str, String prefix) {
     String str_prefix = str.substring(0, prefix.length());
     return str_prefix.compareToIgnoreCase(prefix) == 0;
   }
 
-  public static String removePrefix(String str, String prefix) {
+  static String removePrefix(String str, String prefix) {
     if (startsWithIgnoreCase(str, prefix)) {
       return str.substring(prefix.length());
     } else {
@@ -22,7 +22,7 @@ public class Util {
     }
   }
 
-  public static String base64decode(String str) {
+  static String base64decode(String str) {
     byte[] data1 = str.getBytes();
     byte[] data2 = org.apache.commons.codec.binary.Base64.decodeBase64(data1);
     return new String(data2);
@@ -32,7 +32,7 @@ public class Util {
    * Removes the quotes on a string. RFC2617 states quotes are optional for all parameters except
    * realm.
    */
-  public static String removeQuotes(String quotedString, boolean quotesRequired) {
+  static String removeQuotes(String quotedString, boolean quotesRequired) {
     // support both quoted and non-quoted
     if (!quotedString.isEmpty() && quotedString.charAt(0) != '"' && !quotesRequired) {
       return quotedString;
@@ -44,7 +44,7 @@ public class Util {
   }
 
   /** Removes the quotes on a string. */
-  public static String removeQuotes(String quotedString) {
+  static String removeQuotes(String quotedString) {
     return removeQuotes(quotedString, false);
   }
 
@@ -52,7 +52,7 @@ public class Util {
    * Convert the authentication username to unitid (should be 1:1, but there might be some vendor
    * specific problems to solve...
    */
-  public static String username2unitId(String username) {
+  static String username2unitId(String username) {
     String unitId;
 
     // Fix for Thompson ST780
@@ -68,7 +68,7 @@ public class Util {
       unitId = URLDecoder.decode(unitId, "UTF-8");
     } catch (UnsupportedEncodingException uee) {
       Log.warn(
-          Util.class,
+          AuthenticatorUtil.class,
           "Not possible to decode username using UTF-8 - username may possibly be wrong",
           uee);
     }

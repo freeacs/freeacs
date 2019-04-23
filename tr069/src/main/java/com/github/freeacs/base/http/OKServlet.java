@@ -8,29 +8,18 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class OKServlet {
   private static Map<String, Long> currentConnectionTmsMap = new HashMap<>();
 
-  private final DBAccess dbAccess;
-
-  public OKServlet(DBAccess dbAccess) {
-    this.dbAccess = dbAccess;
-  }
-
-  public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
-    doGet(req, res);
-  }
-
   @SuppressWarnings("rawtypes")
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
     PrintWriter out = res.getWriter();
     StringBuilder status = new StringBuilder("FREEACSOK");
     try {
-      DBI dbi = dbAccess.getDBI();
+      DBI dbi = DBAccess.getInstance().getDBI();
       if (dbi != null && dbi.getDbiThrowable() != null) {
         status =
             new StringBuilder("ERROR: DBI reported error:\n")
