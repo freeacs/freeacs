@@ -45,7 +45,7 @@ public class FileServlet extends AbstractHttpDataWrapper {
         }
       }
 
-      ACS acs = DBAccess.getInstance().getDBI().getAcs();
+      ACS acs = DBAccess.getInstance().getDbi().getAcs();
       File firmware;
       String pathInfo = req.getPathInfo().substring(this.context.length());
       pathInfo = pathInfo.replaceAll("--", " ");

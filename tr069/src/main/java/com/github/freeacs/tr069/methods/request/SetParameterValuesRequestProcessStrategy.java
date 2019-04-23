@@ -27,7 +27,7 @@ public class SetParameterValuesRequestProcessStrategy implements RequestProcessS
         ParameterList paramList = sessionData.getToCPE();
         for (ParameterValueStruct pvs : paramList.getParameterValueList()) {
             Log.notice(SetParameterValuesRequestProcessStrategy.class, "\t" + pvs.getName() + " : " + pvs.getValue());
-            String user = new DBAccessSession(DBAccess.getInstance().getDBI().getAcs())
+            String user = new DBAccessSession(DBAccess.getInstance().getDbi().getAcs())
                             .getAcs()
                             .getSyslog()
                             .getIdentity()

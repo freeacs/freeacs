@@ -149,7 +149,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
             // group-matching in job-search
             // will not affect the comparison in populateToCollections()
             updateUnitParameters(sessionData);
-            uj = JobLogic.checkNewJob(sessionData, DBAccess.getInstance().getDBI().getAcs(), concurrentDownloadLimit); // may find a new job
+            uj = JobLogic.checkNewJob(sessionData, DBAccess.getInstance().getDbi().getAcs(), concurrentDownloadLimit); // may find a new job
         }
         Job job = sessionData.getJob();
         if (job != null) { // No job is present - process according to
@@ -188,7 +188,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         } else {
             if (type == JobFlag.JobType.SHELL) {
                 sessionData.getProvisioningMessage().setProvOutput(ProvisioningMessage.ProvOutput.SHELL);
-                ShellJobLogic.execute(sessionData, DBAccess.getInstance().getDBI().getAcs(), job, uj, isDiscoveryMode);
+                ShellJobLogic.execute(sessionData, DBAccess.getInstance().getDbi().getAcs(), job, uj, isDiscoveryMode);
             } else { // type == JobType.CONFIG
                 // The service-window is unimportant for next PII calculation, will
                 // be set to 31 no matter what, since a job is "in the process".
@@ -622,16 +622,12 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
             toDB.add(pvsCPE);
         }
         sessionData.setToDB(toDB);
-        try {
-            ACS acs = DBAccess.getInstance().getDBI().getAcs();
-            DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(acs, new DBAccessSession(acs));
-            dbAccessSessionTR069.writeUnitSessionParams(sessionData);
-            Log.debug(GetParameterValuesDecisionStrategy.class, toDB.size() + " params written to ACS session storage");
-            reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());
-            sessionData.getProvisioningMessage().setProvOutput(ProvisioningMessage.ProvOutput.EMPTY);
-        } catch (SQLException sqle) {
-            throw new TR069DatabaseException(sqle);
-        }
+        ACS acs = DBAccess.getInstance().getDbi().getAcs();
+        DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(acs, new DBAccessSession(acs));
+        dbAccessSessionTR069.writeUnitSessionParams(sessionData);
+        Log.debug(GetParameterValuesDecisionStrategy.class, toDB.size() + " params written to ACS session storage");
+        reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());
+        sessionData.getProvisioningMessage().setProvOutput(ProvisioningMessage.ProvOutput.EMPTY);
     }
 }
 

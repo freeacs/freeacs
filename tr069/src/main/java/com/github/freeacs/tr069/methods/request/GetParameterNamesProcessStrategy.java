@@ -80,7 +80,7 @@ public class GetParameterNamesProcessStrategy implements RequestProcessStrategy 
                                     + " was found more than once in the GPNRes");
                 }
             }
-            DBAccessSession dbAccessSession = new DBAccessSession(DBAccess.getInstance().getDBI().getAcs());
+            DBAccessSession dbAccessSession = new DBAccessSession(DBAccess.getInstance().getDbi().getAcs());
             dbAccessSession.writeUnittypeParameters(sessionData, utpList);
             Log.debug(
                     GetParameterNamesProcessStrategy.class,

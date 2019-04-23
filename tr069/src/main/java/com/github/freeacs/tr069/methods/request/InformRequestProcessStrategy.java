@@ -56,12 +56,12 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
             sessionData.setSerialNumber(deviceIdStruct.getSerialNumber());
             parseEvents(parser, sessionData);
             parseParameters(sessionData, parser);
-            DBAccessSession dbAccessSession = new DBAccessSession(DBAccess.getInstance().getDBI().getAcs());
+            DBAccessSession dbAccessSession = new DBAccessSession(DBAccess.getInstance().getDbi().getAcs());
             dbAccessSession.updateParametersFromDB(sessionData, isDiscoveryMode); // Unit-object is read and populated in SessionData
             logPeriodicInformTiming(sessionData);
             ScheduledKickTask.removeUnit(unitId);
             if (isDiscoveryMode && sessionData.isFirstConnect()) {
-                DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(DBAccess.getInstance().getDBI().getAcs(), dbAccessSession);
+                DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(DBAccess.getInstance().getDbi().getAcs(), dbAccessSession);
 
                 String unitTypeName = deviceIdStruct.getProductClass();
 
@@ -84,7 +84,7 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
             }
             sessionData.getCommandKey().setServerKey(reqRes);
             sessionData.getParameterKey().setServerKey(reqRes);
-            boolean jobOk = JobLogic.checkJobOK(sessionData, DBAccess.getInstance().getDBI().getAcs(), isDiscoveryMode);
+            boolean jobOk = JobLogic.checkJobOK(sessionData, DBAccess.getInstance().getDbi().getAcs(), isDiscoveryMode);
             sessionData.setJobUnderExecution(!jobOk);
         } catch (SQLException e) {
             throw new TR069DatabaseException(e);
