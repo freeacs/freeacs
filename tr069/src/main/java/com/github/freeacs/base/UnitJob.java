@@ -92,7 +92,7 @@ public class UnitJob {
         continue;
       }
       JobHistoryEntry jhEntry = new JobHistoryEntry(entry);
-        Job entryJob = sessionData.getUnittype().getJobs().getById(Integer.valueOf(String.valueOf(jhEntry.getJobId())));
+      Job entryJob = sessionData.getUnittype().getJobs().getById(Integer.valueOf(String.valueOf(jhEntry.getJobId())));
       if (entryJob != null) {
         if (Objects.equals(entryJob.getId(), jobId)) { // inc repeated-counter
           jh2 += jhEntry.incEntry(tms) + ",";
