@@ -1,6 +1,5 @@
 package com.github.freeacs.tr069.background;
 
-import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.common.scheduler.TaskDefaultImpl;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
@@ -83,7 +82,7 @@ public class ScheduledKickTask extends TaskDefaultImpl {
           continue;
         }
         Unit unit = uk.getUnit();
-        ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
+        ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
         acsUnit.addOrChangeQueuedUnitParameters(unit);
         dbi.publishKick(unit, SyslogConstants.FACILITY_STUN);
         uk.setNextTms(now + 30000);

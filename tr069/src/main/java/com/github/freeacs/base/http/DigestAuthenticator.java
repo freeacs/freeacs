@@ -3,6 +3,7 @@ package com.github.freeacs.base.http;
 import com.github.freeacs.base.BaseCache;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.NoDataAvailableException;
+import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.db.DBAccessSession;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.http.HTTPRequestResponseData;
@@ -12,7 +13,7 @@ import java.sql.SQLException;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.digest.DigestUtils;
 
-public class DigestAuthenticator {
+class DigestAuthenticator {
   private static void sendChallenge(
       String remoteAddr, HttpServletResponse res, String digestSecret) {
     long now = System.currentTimeMillis();
@@ -20,7 +21,7 @@ public class DigestAuthenticator {
     res.setStatus(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
   }
 
-  public static boolean authenticate(
+  static boolean authenticate(
       HTTPRequestResponseData reqRes, boolean isDiscoveryMode, String digestSecret)
       throws TR069AuthenticationException {
     String authorization = reqRes.getRawRequest().getHeader("authorization");
@@ -57,15 +58,15 @@ public class DigestAuthenticator {
     res.setHeader("WWW-Authenticate", authenticateHeader);
   }
 
-  public static String passwordMd5(
-      String username,
-      String password,
-      String method,
-      String uri,
-      String nonce,
-      String nc,
-      String cnonce,
-      String qop) {
+  private static String passwordMd5(
+          String username,
+          String password,
+          String method,
+          String uri,
+          String nonce,
+          String nc,
+          String cnonce,
+          String qop) {
     String realm = Util.getRealm();
     String a1 = username + ":" + realm + ":" + password;
     String md5a1 = DigestUtils.md5Hex(a1);
@@ -173,7 +174,7 @@ public class DigestAuthenticator {
     try {
       SessionData sessionData = reqRes.getSessionData();
       sessionData.setUnitId(unitId);
-      new DBAccessSession(reqRes.getDbAccess().getDBI().getAcs()).updateParametersFromDB(sessionData, isDiscoveryMode);
+      new DBAccessSession(DBAccess.getInstance().getDBI().getAcs()).updateParametersFromDB(sessionData, isDiscoveryMode);
       BaseCache.putSessionData(unitId, sessionData);
       String secret = sessionData.getAcsParameters().getValue(SystemParameters.SECRET);
       if (secret != null

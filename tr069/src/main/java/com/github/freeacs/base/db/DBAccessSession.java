@@ -117,14 +117,14 @@ public class DBAccessSession {
       ut.getUnittypeParameters().addOrChangeUnittypeParameters(utpList, acs);
       Log.debug(DBAccessSession.class, "Have written " + utpList.size() + " unittype parameters");
     } catch (Throwable t) {
-      DBAccess.handleError("writeUnittypeParameters", t);
+      DBAccessErrorHandler.handleError("writeUnittypeParameters", t);
     }
   }
 
   public Unit readUnit(String unitId) throws SQLException {
     Unit unit;
     try {
-      ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
+        ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
       unit = acsUnit.getUnitById(unitId);
       if (unit != null) {
         Log.debug(
@@ -138,7 +138,7 @@ public class DBAccessSession {
       }
       return unit;
     } catch (Throwable t) {
-      DBAccess.handleError("readUnit", t);
+      DBAccessErrorHandler.handleError("readUnit", t);
       return null;
     }
   }

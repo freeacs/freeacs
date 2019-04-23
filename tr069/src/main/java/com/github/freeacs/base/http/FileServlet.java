@@ -20,8 +20,8 @@ public class FileServlet extends AbstractHttpDataWrapper {
 
   private final String context;
 
-  public FileServlet(DBAccess dbAccess, String context, Properties properties) {
-    super(dbAccess, properties);
+  public FileServlet(String context, Properties properties) {
+    super(properties);
     this.context = context;
   }
 
@@ -45,7 +45,7 @@ public class FileServlet extends AbstractHttpDataWrapper {
         }
       }
 
-      ACS acs = dbAccess.getDBI().getAcs();
+      ACS acs = DBAccess.getInstance().getDBI().getAcs();
       File firmware;
       String pathInfo = req.getPathInfo().substring(this.context.length());
       pathInfo = pathInfo.replaceAll("--", " ");

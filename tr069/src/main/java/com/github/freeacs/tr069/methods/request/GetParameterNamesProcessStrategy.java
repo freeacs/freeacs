@@ -1,6 +1,7 @@
 package com.github.freeacs.tr069.methods.request;
 
 import com.github.freeacs.base.Log;
+import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.db.DBAccessSession;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.UnittypeParameter;
@@ -25,7 +26,7 @@ public class GetParameterNamesProcessStrategy implements RequestProcessStrategy 
 
     private Properties properties;
 
-    public GetParameterNamesProcessStrategy(Properties properties) {
+    GetParameterNamesProcessStrategy(Properties properties) {
         this.properties = properties;
     }
 
@@ -79,7 +80,7 @@ public class GetParameterNamesProcessStrategy implements RequestProcessStrategy 
                                     + " was found more than once in the GPNRes");
                 }
             }
-            DBAccessSession dbAccessSession = new DBAccessSession(reqRes.getDbAccess().getDBI().getAcs());
+            DBAccessSession dbAccessSession = new DBAccessSession(DBAccess.getInstance().getDBI().getAcs());
             dbAccessSession.writeUnittypeParameters(sessionData, utpList);
             Log.debug(
                     GetParameterNamesProcessStrategy.class,

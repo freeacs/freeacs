@@ -1,7 +1,6 @@
 package com.github.freeacs.tr069;
 
 import com.github.freeacs.base.Log;
-import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.JobParameter;
 import com.github.freeacs.dbi.UnittypeParameter;
@@ -36,7 +35,7 @@ public class ParameterKey {
     Map<String, ParameterValueStruct> fromDB = sessionData.getFromDB();
     String jobId = sessionData.getAcsParameters().getValue(SystemParameters.JOB_CURRENT);
     if (jobId != null && !"".equals(jobId.trim())) {
-      Job job = DBAccess.getJob(sessionData, jobId);
+        Job job = sessionData.getUnittype().getJobs().getById(Integer.valueOf(jobId));
       if (job != null) {
         Log.debug(
             ParameterKey.class,

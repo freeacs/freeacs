@@ -61,7 +61,7 @@ public class DBAccessSessionTR069 {
       sessionData.setUnittype(ut);
       sessionData.setProfile(pr);
 
-      ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
+        ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
       List<String> unitIds = new ArrayList<>();
       unitIds.add(unitId);
       acsUnit.addUnits(unitIds, pr);
@@ -112,7 +112,7 @@ public class DBAccessSessionTR069 {
         }
       }
       if (!unitSessionParameters.isEmpty()) {
-        ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
+          ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
         acsUnit.addOrChangeSessionUnitParameters(unitSessionParameters, profile);
       }
     } catch (SQLException sqle) {
@@ -138,6 +138,6 @@ public class DBAccessSessionTR069 {
             "\t" + pvs.getName() + " : does not exist, cannot write value " + pvs.getValue());
       }
     }
-    DBAccessStatic.queueUnitParameters(unit, unitParameters, profile);
+    unitParameters.forEach(unit::toWriteQueue);
   }
 }

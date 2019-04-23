@@ -19,7 +19,7 @@ import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.Provisioning;
-import com.typesafe.config.Config;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -36,10 +36,13 @@ public class App extends SparkApp {
   public static void main(String[] args) {
     final App app = new App();
     SyslogClient.SYSLOG_SERVER_HOST = app.config.getString("syslog.server.host");
-    setupThreadPool(app.config);
+    int maxThreads = app.getIntOrMinusOne("server.jetty.threadpool.maxThreads");
+    int minThreads = app.getIntOrMinusOne("server.jetty.threadpool.minThreads");
+    int timeOutMillis = app.getIntOrMinusOne("server.jetty.threadpool.timeOutMillis");
+    Spark.threadPool(maxThreads, minThreads, timeOutMillis);
     boolean httpOnly = app.config.getBoolean("server.servlet.session.cookie.http-only");
-    int maxHttpPostSize = getInt(app.config, "server.jetty.max-http-post-size");
-    int maxFormKeys = getInt(app.config, "server.jetty.max-form-keys");
+    int maxHttpPostSize = app.getIntOrMinusOne("server.jetty.max-http-post-size");
+    int maxFormKeys = app.getIntOrMinusOne("server.jetty.max-form-keys");
     EmbeddedServers.add(
         EmbeddedServers.Identifiers.JETTY,
         new JettyFactory(httpOnly, maxHttpPostSize, maxFormKeys, null));
@@ -55,30 +58,13 @@ public class App extends SparkApp {
                 }));
   }
 
-  private static void setupThreadPool(final Config config) {
-    /* THREADPOOL BEGIN */
-    // Possible to add a new property server.jetty.threadpool.type? could be standard and custom.
-    // My thought is that custom thread pool is ExecutorThreadPool, while standard is .. well,
-    // standard ;) Queued.
-    int maxThreads = getInt(config, "server.jetty.threadpool.maxThreads");
-    int minThreads = getInt(config, "server.jetty.threadpool.minThreads");
-    int timeOutMillis = getInt(config, "server.jetty.threadpool.timeOutMillis");
-    Spark.threadPool(maxThreads, minThreads, timeOutMillis);
-    /* THREADPOOL END */
-  }
-
-  private static int getInt(Config config, String s) {
-    return config.hasPath(s) ? config.getInt(s) : -1;
-  }
-
-  public static void routes(
-      DataSource mainDs, Properties properties, ExecutorWrapper executorWrapper) {
+  static void routes(DataSource mainDs, Properties properties, ExecutorWrapper executorWrapper) {
     String ctxPath = properties.getContextPath();
-    DBAccess dbAccess = new DBAccess(FACILITY_TR069, "latest", mainDs, mainDs);
-    Provisioning provisioning = new Provisioning(dbAccess, properties, executorWrapper);
+    DBAccess.createInstance(FACILITY_TR069, "latest", mainDs);
+    Provisioning provisioning = new Provisioning(properties, executorWrapper);
     provisioning.init();
-    FileServlet fileServlet = new FileServlet(dbAccess, ctxPath + "/file/", properties);
-    OKServlet okServlet = new OKServlet(dbAccess);
+    FileServlet fileServlet = new FileServlet(ctxPath + "/file/", properties);
+    OKServlet okServlet = new OKServlet();
 
     post(ctxPath, processRequest(provisioning));
     get(ctxPath, processHealth(okServlet));

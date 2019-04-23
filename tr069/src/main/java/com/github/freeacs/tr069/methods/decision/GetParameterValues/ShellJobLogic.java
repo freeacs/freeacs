@@ -2,7 +2,6 @@ package com.github.freeacs.tr069.methods.decision.GetParameterValues;
 
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.UnitJob;
-import com.github.freeacs.base.db.DBAccess;
 import com.github.freeacs.base.db.DBAccessSessionTR069;
 import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.common.util.CacheValue;
@@ -121,7 +120,7 @@ public class ShellJobLogic {
         UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
         Unit unit;
         try {
-            ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
+            ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
             unit = acsUnit.getUnitById(sessionData.getUnitId());
         } catch (SQLException e) {
             throw new TR069DatabaseException(e);
@@ -176,7 +175,7 @@ public class ShellJobLogic {
         }
         if (unitParameters.size() > 0) {
             try {
-                ACSUnit acsUnit = DBAccess.getXAPSUnit(acs);
+                ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
                 acsUnit.addOrChangeUnitParameters(unitParameters, sessionData.getProfile());
             } catch (SQLException sqle) {
                 throw new TR069DatabaseException(sqle);
