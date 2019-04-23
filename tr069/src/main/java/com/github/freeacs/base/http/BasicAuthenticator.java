@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 class BasicAuthenticator {
   private static void sendChallenge(HttpServletResponse res) {
-    res.setHeader("WWW-Authenticate", "Basic realm=\"" + Util.getRealm() + "\"");
+    res.setHeader("WWW-Authenticate", "Basic realm=\"" + AuthenticatorUtil.getRealm() + "\"");
     res.setStatus(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
   }
 
@@ -50,9 +50,9 @@ class BasicAuthenticator {
         "Basic verification of CPE starts, located on IP-address "
             + reqRes.getRawRequest().getRemoteHost());
     authorization = authorization.trim();
-    authorization = Util.removePrefix(authorization, "basic");
+    authorization = AuthenticatorUtil.removePrefix(authorization, "basic");
     authorization = authorization.trim();
-    String userpass = Util.base64decode(authorization);
+    String userpass = AuthenticatorUtil.base64decode(authorization);
 
     // Validate any credentials already included with this request
     String username;
@@ -68,7 +68,7 @@ class BasicAuthenticator {
     }
 
     // Do database read parameters and then perform verification
-    String unitId = Util.username2unitId(username);
+    String unitId = AuthenticatorUtil.username2unitId(username);
     Log.debug(
         DigestAuthenticator.class,
         "Basic verification identifed unit id "

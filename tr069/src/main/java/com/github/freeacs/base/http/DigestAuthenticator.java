@@ -43,7 +43,7 @@ class DigestAuthenticator {
    * @param nonce nonce token
    */
   private static void setAuthenticateHeader(HttpServletResponse res, String nonce) {
-    String realm = Util.getRealm();
+    String realm = AuthenticatorUtil.getRealm();
 
     String authenticateHeader =
         "Digest realm=\""
@@ -67,7 +67,7 @@ class DigestAuthenticator {
           String nc,
           String cnonce,
           String qop) {
-    String realm = Util.getRealm();
+    String realm = AuthenticatorUtil.getRealm();
     String a1 = username + ":" + realm + ":" + password;
     String md5a1 = DigestUtils.md5Hex(a1);
     String a2 = method + ":" + uri;
@@ -90,7 +90,7 @@ class DigestAuthenticator {
         "Digest verification of CPE starts, located on IP-address "
             + reqRes.getRawRequest().getRemoteHost());
     authorization = authorization.trim();
-    authorization = Util.removePrefix(authorization, "digest");
+    authorization = AuthenticatorUtil.removePrefix(authorization, "digest");
     authorization = authorization.trim();
 
     String[] tokens = authorization.split(",(?=(?:[^\"]*\"[^\"]*\")+$)");
@@ -122,28 +122,28 @@ class DigestAuthenticator {
       String currentTokenName = currentToken.substring(0, equalSign).trim();
       String currentTokenValue = currentToken.substring(equalSign + 1).trim();
       if ("username".equals(currentTokenName)) {
-        username = Util.removeQuotes(currentTokenValue);
+        username = AuthenticatorUtil.removeQuotes(currentTokenValue);
       }
       if ("realm".equals(currentTokenName)) {
-        realm = Util.removeQuotes(currentTokenValue, true);
+        realm = AuthenticatorUtil.removeQuotes(currentTokenValue, true);
       }
       if ("nonce".equals(currentTokenName)) {
-        nonce = Util.removeQuotes(currentTokenValue);
+        nonce = AuthenticatorUtil.removeQuotes(currentTokenValue);
       }
       if ("nc".equals(currentTokenName)) {
-        nc = Util.removeQuotes(currentTokenValue);
+        nc = AuthenticatorUtil.removeQuotes(currentTokenValue);
       }
       if ("cnonce".equals(currentTokenName)) {
-        cnonce = Util.removeQuotes(currentTokenValue);
+        cnonce = AuthenticatorUtil.removeQuotes(currentTokenValue);
       }
       if ("qop".equals(currentTokenName)) {
-        qop = Util.removeQuotes(currentTokenValue);
+        qop = AuthenticatorUtil.removeQuotes(currentTokenValue);
       }
       if ("uri".equals(currentTokenName)) {
-        uri = Util.removeQuotes(currentTokenValue);
+        uri = AuthenticatorUtil.removeQuotes(currentTokenValue);
       }
       if ("response".equals(currentTokenName)) {
-        response = Util.removeQuotes(currentTokenValue);
+        response = AuthenticatorUtil.removeQuotes(currentTokenValue);
       }
     }
 
@@ -164,7 +164,7 @@ class DigestAuthenticator {
     }
 
     // Do database read parameters and then perform verification
-    String unitId = Util.username2unitId(username);
+    String unitId = AuthenticatorUtil.username2unitId(username);
     Log.debug(
         DigestAuthenticator.class,
         "Digest verification identifed unit id "

@@ -121,7 +121,7 @@ public class DBAccessSession {
     }
   }
 
-  public Unit readUnit(String unitId) throws SQLException {
+  Unit readUnit(String unitId) throws SQLException {
     Unit unit;
     try {
         ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());

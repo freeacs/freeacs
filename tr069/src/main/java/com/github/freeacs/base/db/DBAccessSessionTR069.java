@@ -83,7 +83,7 @@ public class DBAccessSessionTR069 {
     }
   }
 
-  protected static String getUnittypeName(String unitId) {
+  static String getUnittypeName(String unitId) {
     return "OUI-" + unitId.substring(0, Math.min(unitId.length(), 6));
   }
 
