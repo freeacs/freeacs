@@ -11,5 +11,4 @@ target
 /scripts/conf
 /project/target
 /project/project
-./db
 .DS_Store
