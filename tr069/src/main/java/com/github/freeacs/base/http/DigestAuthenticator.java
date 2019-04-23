@@ -174,7 +174,7 @@ class DigestAuthenticator {
     try {
       SessionData sessionData = reqRes.getSessionData();
       sessionData.setUnitId(unitId);
-      new DBAccessSession(DBAccess.getInstance().getDBI().getAcs()).updateParametersFromDB(sessionData, isDiscoveryMode);
+      new DBAccessSession(DBAccess.getInstance().getDbi().getAcs()).updateParametersFromDB(sessionData, isDiscoveryMode);
       BaseCache.putSessionData(unitId, sessionData);
       String secret = sessionData.getAcsParameters().getValue(SystemParameters.SECRET);
       if (secret != null

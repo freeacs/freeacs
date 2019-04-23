@@ -37,13 +37,13 @@ public class AbstractHttpDataWrapperTest {
     }
 
     @Test
-    public void getHttpRequestResponseDate() throws SQLException {
+    public void getHttpRequestResponseDate() {
         // Given:
         final DBAccess mockDBAccess = mock(DBAccess.class);
         final DBI mockDbi = mock(DBI.class);
         final ACS mockAcs = mock(ACS.class);
         when(mockDbi.getAcs()).thenReturn(mockAcs);
-        when(mockDBAccess.getDBI()).thenReturn(mockDbi);
+        when(mockDBAccess.getDbi()).thenReturn(mockDbi);
         final HttpServletRequest mockServletRequest = mock(HttpServletRequest.class);
         final HttpSession mockSession = mock(HttpSession.class);
         when(mockSession.getId()).thenReturn(FAKE_SESSION_ID);

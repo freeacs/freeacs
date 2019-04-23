@@ -48,7 +48,7 @@ public class Provisioning extends AbstractHttpDataWrapper {
   public void init() {
     Log.notice(Provisioning.class, "Server starts...");
     try {
-      DBI dbi = DBAccess.getInstance().getDBI();
+      DBI dbi = DBAccess.getInstance().getDbi();
       scheduleMessageListenerTask(dbi);
       scheduleKickTask(dbi);
       scheduleActiveDeviceDetectionTask(dbi);
@@ -227,7 +227,7 @@ public class Provisioning extends AbstractHttpDataWrapper {
     try {
       Unit unit = reqRes.getSessionData().getUnit();
       if (unit != null) {
-        ACS acs = DBAccess.getInstance().getDBI().getAcs();
+        ACS acs = DBAccess.getInstance().getDbi().getAcs();
         ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
         acsUnit.addOrChangeQueuedUnitParameters(unit);
       }
