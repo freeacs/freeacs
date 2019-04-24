@@ -1,12 +1,15 @@
 package com.github.freeacs.controllers;
 
 import com.github.freeacs.dbi.DBI;
+import com.github.freeacs.tr069.base.BaseCache;
+import com.github.freeacs.tr069.base.Log;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestController
 public class OKController {
@@ -17,21 +20,19 @@ public class OKController {
   }
 
   @GetMapping("${context-path}/ok")
-  public void doGet(HttpServletResponse res) throws IOException {
-    PrintWriter out = res.getWriter();
-    StringBuilder status = new StringBuilder("FREEACSOK");
-    try {
-      if (dbi != null && dbi.getDbiThrowable() != null) {
-        status =
-            new StringBuilder("ERROR: DBI reported error:\n")
-                .append(dbi.getDbiThrowable())
-                .append("\n");
-        for (StackTraceElement ste : dbi.getDbiThrowable().getStackTrace()) {
-          status.append(ste);
-        }
-      }
-    } catch (Throwable ignored) {}
-    out.print(status);
-    out.close();
+  public String doGet(@RequestParam(required = false) String clearCache) {
+    if (clearCache != null) {
+      BaseCache.clearCache();
+      Log.info(OKController.class, "Cleared base cache");
+    }
+    String status = "FREEACSOK";
+    if (dbi != null && dbi.getDbiThrowable() != null) {
+      status = "ERROR: DBI reported error:\n" +
+              dbi.getDbiThrowable() + "\n" +
+              Arrays.stream(dbi.getDbiThrowable().getStackTrace())
+                      .map(Objects::toString)
+                      .collect(Collectors.joining());
+    }
+    return status;
   }
 }

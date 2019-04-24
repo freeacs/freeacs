@@ -1,7 +1,6 @@
 package com.github.freeacs.tr069;
 
 import com.github.freeacs.tr069.base.Log;
-import com.github.freeacs.controllers.Tr069Controller;
 import com.github.freeacs.dbi.Users;
 import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ErrorResponsibility;
@@ -61,7 +60,7 @@ public class SessionLogging {
       SyslogClient.send(pm.syslogMsg(16, null, Users.USER_ADMIN));
     } catch (Throwable t) {
       Log.warn(
-          Tr069Controller.class,
+          SessionLogging.class,
           "An error ocurred when logging at endOfSession. Does not affect provisioning",
           t);
     }
