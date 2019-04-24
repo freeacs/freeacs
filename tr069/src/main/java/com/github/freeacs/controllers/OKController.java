@@ -32,8 +32,7 @@ public class OKController {
           status.append(ste);
         }
       }
-    } catch (Throwable ignored) {
-    }
+    } catch (Throwable ignored) {}
     out.print(status);
     out.close();
   }

@@ -26,7 +26,7 @@ public class HTTPRequestResponseData {
 
   private SessionData sessionData;
 
-  protected HTTPRequestResponseData(HttpServletRequest rawRequest, HttpServletResponse rawResponse) {
+  public HTTPRequestResponseData(HttpServletRequest rawRequest, HttpServletResponse rawResponse) {
     this.rawRequest = rawRequest;
     this.rawResponse = rawResponse;
     this.requestData = new HTTPRequestData();

@@ -32,7 +32,7 @@ public class HTTPRequestData {
     this.fault = fault;
   }
 
-  void setContextPath(String contextPath) {
+  public void setContextPath(String contextPath) {
     this.contextPath = contextPath;
   }
 

@@ -16,7 +16,6 @@ import com.github.freeacs.tr069.background.MessageListenerTask;
 import com.github.freeacs.tr069.background.ScheduledKickTask;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
-import com.github.freeacs.http.AbstractHttpDataWrapper;
 import com.github.freeacs.http.HTTPRequestData;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.http.HTTPResponseData;
@@ -36,13 +35,14 @@ import javax.servlet.http.HttpServletResponse;
  * @author morten
  */
 @RestController
-public class Tr069Controller extends AbstractHttpDataWrapper {
+public class Tr069Controller {
 
     private final DBAccess dbAccess;
+    private final Properties properties;
 
     public Tr069Controller(DBAccess dbAccess,
                            Properties properties) {
-        super(properties);
+        this.properties = properties;
         this.dbAccess = dbAccess;
     }
 
@@ -74,23 +74,21 @@ public class Tr069Controller extends AbstractHttpDataWrapper {
     public void doPost(@RequestBody(required = false) String xmlPayload, HttpServletRequest req, HttpServletResponse res) throws IOException {
         HTTPRequestResponseData reqRes = null;
         try {
-            // Create the main object which contains all objects concerning the entire
-            // session. This object also contains the SessionData object
-            reqRes = getHttpRequestResponseData(req, res);
-            // store xml payload in reqRes object
+            reqRes = new HTTPRequestResponseData(req, res);
+            reqRes.getRequestData().setContextPath(properties.getContextPath());
             reqRes.getRequestData().setXml(xmlPayload);
-            // Process provision strategy
+
             ProvisioningStrategy.getStrategy(properties, dbAccess).process(reqRes);
-            // Set correct headers in response
+
             if (reqRes.getResponseData().getXml() != null && !reqRes.getResponseData().getXml().isEmpty()) {
                 res.setHeader("SOAPAction", "");
                 res.setContentType("text/xml");
             }
-            // No need to send Content-length as it will only be informational for 204 HTTP messages
+
             if ("Empty".equals(reqRes.getResponseData().getMethod())) {
                 res.setStatus(HttpServletResponse.SC_NO_CONTENT);
             }
-            // Print response to output
+
             res.getWriter().print(reqRes.getResponseData().getXml());
         } catch (Throwable t) {
             // Make sure we return an EMPTY response to the TR-069 client
@@ -201,4 +199,5 @@ public class Tr069Controller extends AbstractHttpDataWrapper {
             return false;
         }
     }
+
 }

@@ -8,8 +8,6 @@ import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.File;
 import com.github.freeacs.dbi.FileType;
 import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.http.AbstractHttpDataWrapper;
-import com.github.freeacs.tr069.Properties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,17 +18,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
-public class FileController extends AbstractHttpDataWrapper {
+public class FileController {
 
   private final DBAccess dbAccess;
 
-  public FileController(Properties properties, DBAccess dbAccess) {
-    super(properties);
+  public FileController(DBAccess dbAccess) {
     this.dbAccess = dbAccess;
   }
 
   @GetMapping("${context-path}/file/**")
-  public void doPost(@Value("${context-path}") String contextPath, HttpServletRequest req, HttpServletResponse res) throws IOException {
+  public void doGet(@Value("${context-path}") String contextPath, HttpServletRequest req, HttpServletResponse res) throws IOException {
     String firmwareName = null;
     String unittypeName = null;
     OutputStream out = null;
