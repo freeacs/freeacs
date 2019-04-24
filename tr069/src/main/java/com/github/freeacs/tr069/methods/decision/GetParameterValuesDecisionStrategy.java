@@ -1,10 +1,10 @@
 package com.github.freeacs.tr069.methods.decision;
 
-import com.github.freeacs.base.*;
-import com.github.freeacs.base.UnitJob;
-import com.github.freeacs.base.db.DBAccess;
-import com.github.freeacs.base.db.DBAccessSession;
-import com.github.freeacs.base.db.DBAccessSessionTR069;
+import com.github.freeacs.tr069.base.*;
+import com.github.freeacs.tr069.base.UnitJob;
+import com.github.freeacs.dbaccess.DBAccess;
+import com.github.freeacs.dbaccess.DBAccessSession;
+import com.github.freeacs.dbaccess.DBAccessSessionTR069;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.tr069.TR069DMParameter;
 import com.github.freeacs.dbi.tr069.TR069DMParameterMap;

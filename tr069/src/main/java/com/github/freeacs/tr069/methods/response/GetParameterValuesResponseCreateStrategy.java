@@ -1,6 +1,6 @@
 package com.github.freeacs.tr069.methods.response;
 
-import com.github.freeacs.base.Log;
+import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.dbi.UnittypeParameters;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.http.HTTPRequestResponseData;

@@ -1,8 +1,8 @@
 package com.github.freeacs.http;
 
-import com.github.freeacs.base.BaseCache;
-import com.github.freeacs.base.BaseCacheException;
-import com.github.freeacs.base.Log;
+import com.github.freeacs.tr069.base.BaseCache;
+import com.github.freeacs.tr069.base.BaseCacheException;
+import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.xml.TR069TransactionID;
 import java.util.Optional;

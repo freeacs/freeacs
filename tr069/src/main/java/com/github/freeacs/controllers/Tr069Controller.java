@@ -1,8 +1,8 @@
 package com.github.freeacs.controllers;
 
-import com.github.freeacs.base.BaseCache;
-import com.github.freeacs.base.Log;
-import com.github.freeacs.base.db.DBAccess;
+import com.github.freeacs.tr069.base.BaseCache;
+import com.github.freeacs.tr069.base.Log;
+import com.github.freeacs.dbaccess.DBAccess;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.Unit;

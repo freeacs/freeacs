@@ -6,11 +6,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-public class AcsUser implements UserDetails {
+public class AcsUnit implements UserDetails {
     private final String user;
     private final String pass;
 
-    public AcsUser(String user, String pass) {
+    public AcsUnit(String user, String pass) {
         this.user = user;
         this.pass = pass;
     }

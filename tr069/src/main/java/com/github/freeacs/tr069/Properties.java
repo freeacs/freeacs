@@ -1,6 +1,6 @@
 package com.github.freeacs.tr069;
 
-import com.github.freeacs.base.Log;
+import com.github.freeacs.tr069.base.Log;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.env.Environment;

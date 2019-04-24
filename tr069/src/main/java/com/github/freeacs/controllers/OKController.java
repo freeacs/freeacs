@@ -1,6 +1,6 @@
 package com.github.freeacs.controllers;
 
-import com.github.freeacs.base.db.DBAccess;
+import com.github.freeacs.dbaccess.DBAccess;
 import com.github.freeacs.dbi.DBI;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

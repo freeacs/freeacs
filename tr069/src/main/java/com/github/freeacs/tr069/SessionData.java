@@ -1,9 +1,9 @@
 package com.github.freeacs.tr069;
 
-import com.github.freeacs.base.ACSParameters;
-import com.github.freeacs.base.Log;
-import com.github.freeacs.base.PIIDecision;
-import com.github.freeacs.base.SessionDataI;
+import com.github.freeacs.tr069.base.ACSParameters;
+import com.github.freeacs.tr069.base.Log;
+import com.github.freeacs.tr069.base.PIIDecision;
+import com.github.freeacs.tr069.base.SessionDataI;
 import com.github.freeacs.dbi.File;
 import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.JobParameter;

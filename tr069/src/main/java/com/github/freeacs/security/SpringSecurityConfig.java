@@ -21,38 +21,45 @@ import org.springframework.security.web.authentication.www.DigestAuthenticationF
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final String authMethod;
-    private final AcsUserDetailsService acsUserDetailsService;
+    private final AcsUnitDetailsService acsUnitDetailsService;
     private final String digestSecret;
 
     @Autowired
     public SpringSecurityConfig(@Value("${auth.method}") String authMethod,
-                                AcsUserDetailsService acsUserDetailsService,
+                                AcsUnitDetailsService acsUnitDetailsService,
                                 Properties properties) {
         this.authMethod = authMethod;
-        this.acsUserDetailsService = acsUserDetailsService;
+        this.acsUnitDetailsService = acsUnitDetailsService;
         this.digestSecret = properties.getDigestSecret();
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        if ("digest".equalsIgnoreCase(authMethod)) {
+        boolean isBasic = "basic".equalsIgnoreCase(authMethod);
+        boolean isDigest = "digest".equalsIgnoreCase(authMethod);
+
+        if (isDigest) {
             http.addFilter(digestAuthenticationFilter())
                     .exceptionHandling().authenticationEntryPoint(digestEntryPoint());
         }
 
-        ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry config = http
-                .csrf().disable()
-                .authorizeRequests()
-                .anyRequest().authenticated();
+        ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry config = null;
 
-        if ("basic".equalsIgnoreCase(authMethod)) {
+        if (isDigest || isBasic) {
+             config = http
+                    .csrf().disable()
+                    .authorizeRequests()
+                    .anyRequest().authenticated();
+        }
+
+        if (isBasic) {
             config.and().httpBasic().authenticationEntryPoint(basicEntryPoint());
         }
     }
 
     private DigestAuthenticationFilter digestAuthenticationFilter() {
         DigestAuthenticationFilter digestAuthenticationFilter = new DigestAuthenticationFilter();
-        digestAuthenticationFilter.setUserDetailsService(acsUserDetailsService);
+        digestAuthenticationFilter.setUserDetailsService(acsUnitDetailsService);
         digestAuthenticationFilter.setAuthenticationEntryPoint(digestEntryPoint());
         return digestAuthenticationFilter;
     }
@@ -64,7 +71,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(acsUserDetailsService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(acsUnitDetailsService).passwordEncoder(passwordEncoder());
     }
 
     private BasicAuthenticationEntryPoint basicEntryPoint() {

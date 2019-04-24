@@ -1,8 +1,8 @@
 package com.github.freeacs.tr069.methods.decision.GetParameterValues;
 
-import com.github.freeacs.base.ACSParameters;
-import com.github.freeacs.base.DownloadLogic;
-import com.github.freeacs.base.Log;
+import com.github.freeacs.tr069.base.ACSParameters;
+import com.github.freeacs.tr069.base.DownloadLogic;
+import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.dbi.File;
 import com.github.freeacs.dbi.FileType;
 import com.github.freeacs.dbi.Job;

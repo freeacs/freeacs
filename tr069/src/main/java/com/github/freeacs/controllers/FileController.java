@@ -1,9 +1,9 @@
 package com.github.freeacs.controllers;
 
-import com.github.freeacs.base.DownloadLogic;
-import com.github.freeacs.base.Log;
-import com.github.freeacs.base.db.DBAccess;
-import com.github.freeacs.base.db.DBAccessStatic;
+import com.github.freeacs.tr069.base.DownloadLogic;
+import com.github.freeacs.tr069.base.Log;
+import com.github.freeacs.dbaccess.DBAccess;
+import com.github.freeacs.dbaccess.DBAccessStatic;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.File;
 import com.github.freeacs.dbi.FileType;

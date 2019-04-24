@@ -1,9 +1,9 @@
-package com.github.freeacs.base.db;
+package com.github.freeacs.dbaccess;
 
-import com.github.freeacs.base.ACSParameters;
-import com.github.freeacs.base.Log;
-import com.github.freeacs.base.NoDataAvailableException;
-import com.github.freeacs.base.SessionDataI;
+import com.github.freeacs.tr069.base.ACSParameters;
+import com.github.freeacs.tr069.base.Log;
+import com.github.freeacs.tr069.base.NoDataAvailableException;
+import com.github.freeacs.tr069.base.SessionDataI;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;

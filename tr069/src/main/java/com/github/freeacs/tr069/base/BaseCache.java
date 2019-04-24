@@ -1,4 +1,4 @@
-package com.github.freeacs.base;
+package com.github.freeacs.tr069.base;
 
 import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.common.util.CacheValue;

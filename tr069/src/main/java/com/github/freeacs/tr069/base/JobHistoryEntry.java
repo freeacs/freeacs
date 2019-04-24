@@ -1,4 +1,4 @@
-package com.github.freeacs.base;
+package com.github.freeacs.tr069.base;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -1,6 +1,6 @@
 package com.github.freeacs.tr069;
 
-import com.github.freeacs.base.Log;
+import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.JobParameter;
 import com.github.freeacs.dbi.UnittypeParameter;

@@ -1,8 +1,8 @@
 package com.github.freeacs.tr069.methods.request;
 
-import com.github.freeacs.base.Log;
-import com.github.freeacs.base.db.DBAccess;
-import com.github.freeacs.base.db.DBAccessSession;
+import com.github.freeacs.tr069.base.Log;
+import com.github.freeacs.dbaccess.DBAccess;
+import com.github.freeacs.dbaccess.DBAccessSession;
 import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.http.HTTPRequestResponseData;

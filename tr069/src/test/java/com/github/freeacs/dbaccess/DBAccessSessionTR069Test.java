@@ -1,4 +1,4 @@
-package com.github.freeacs.base.db;
+package com.github.freeacs.dbaccess;
 
 import org.junit.Test;
 

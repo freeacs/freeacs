@@ -1,10 +1,7 @@
 package com.github.freeacs;
 
-import com.github.freeacs.base.db.DBAccess;
+import com.github.freeacs.dbaccess.DBAccess;
 import com.github.freeacs.common.hikari.HikariDataSourceHelper;
-import com.github.freeacs.common.scheduler.ExecutorWrapper;
-import com.github.freeacs.common.scheduler.ExecutorWrapperFactory;
-import com.github.freeacs.dbi.ScriptExecutions;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;

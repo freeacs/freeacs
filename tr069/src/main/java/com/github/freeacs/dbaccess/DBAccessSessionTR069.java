@@ -1,6 +1,6 @@
-package com.github.freeacs.base.db;
+package com.github.freeacs.dbaccess;
 
-import com.github.freeacs.base.Log;
+import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.Profile;

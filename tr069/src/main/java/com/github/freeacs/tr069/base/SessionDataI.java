@@ -1,6 +1,5 @@
-package com.github.freeacs.base;
+package com.github.freeacs.tr069.base;
 
-import com.github.freeacs.base.db.DBAccessSession;
 import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.JobParameter;
 import com.github.freeacs.dbi.Profile;
@@ -8,7 +7,7 @@ import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
-import java.sql.SQLException;
+
 import java.util.Map;
 
 public interface SessionDataI {

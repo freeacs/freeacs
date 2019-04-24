@@ -1,4 +1,4 @@
-package com.github.freeacs.base;
+package com.github.freeacs.tr069.base;
 
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import java.util.HashMap;

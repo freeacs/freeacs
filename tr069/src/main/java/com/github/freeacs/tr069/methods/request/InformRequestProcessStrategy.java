@@ -1,11 +1,11 @@
 package com.github.freeacs.tr069.methods.request;
 
-import com.github.freeacs.base.BaseCache;
-import com.github.freeacs.base.JobLogic;
-import com.github.freeacs.base.Log;
-import com.github.freeacs.base.db.DBAccess;
-import com.github.freeacs.base.db.DBAccessSession;
-import com.github.freeacs.base.db.DBAccessSessionTR069;
+import com.github.freeacs.tr069.base.BaseCache;
+import com.github.freeacs.tr069.base.JobLogic;
+import com.github.freeacs.tr069.base.Log;
+import com.github.freeacs.dbaccess.DBAccess;
+import com.github.freeacs.dbaccess.DBAccessSession;
+import com.github.freeacs.dbaccess.DBAccessSessionTR069;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.TimestampWrapper;

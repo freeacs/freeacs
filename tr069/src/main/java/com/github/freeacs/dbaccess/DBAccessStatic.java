@@ -1,16 +1,13 @@
-package com.github.freeacs.base.db;
+package com.github.freeacs.dbaccess;
 
-import com.github.freeacs.base.BaseCache;
-import com.github.freeacs.base.Log;
+import com.github.freeacs.tr069.base.BaseCache;
+import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.dbi.File;
-import com.github.freeacs.dbi.Profile;
-import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.UnitJob;
 import com.github.freeacs.dbi.UnitJobs;
-import com.github.freeacs.dbi.UnitParameter;
+
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import javax.sql.DataSource;
 

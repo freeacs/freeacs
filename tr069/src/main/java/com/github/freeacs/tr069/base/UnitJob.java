@@ -1,7 +1,7 @@
-package com.github.freeacs.base;
+package com.github.freeacs.tr069.base;
 
-import com.github.freeacs.base.db.DBAccessSession;
-import com.github.freeacs.base.db.DBAccessStatic;
+import com.github.freeacs.dbaccess.DBAccessSession;
+import com.github.freeacs.dbaccess.DBAccessStatic;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.Job;
