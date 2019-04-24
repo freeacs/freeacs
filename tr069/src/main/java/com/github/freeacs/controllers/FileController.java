@@ -22,8 +22,8 @@ public class FileController {
     this.dbi = dbi;
   }
 
-  @GetMapping("${context-path}/file/*")
-  public void doGet(@Value("${context-path}/file/") String contextPath, HttpServletRequest req, HttpServletResponse res) throws IOException {
+  @GetMapping("/${context-path}/file/*")
+  public void doGet(@Value("/${context-path}/file/") String contextPath, HttpServletRequest req, HttpServletResponse res) throws IOException {
     String firmwareName = null;
     String unittypeName = null;
     OutputStream out = null;

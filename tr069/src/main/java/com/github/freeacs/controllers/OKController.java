@@ -19,7 +19,7 @@ public class OKController {
     this.dbi = dbi;
   }
 
-  @GetMapping("${context-path}/ok")
+  @GetMapping("/${context-path}/ok")
   public String doGet(@RequestParam(required = false) String clearCache) {
     if (clearCache != null) {
       BaseCache.clearCache();
