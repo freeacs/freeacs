@@ -233,7 +233,7 @@ public class JobRuleEnforcer extends DBIOwner {
       }
       removeDeletedJobs(jobList, ut);
     }
-    unitJobs = new UnitJobs(getMainDataSource());
+    unitJobs = new UnitJobs(getDataSource());
   }
 
   private void process() throws Exception {

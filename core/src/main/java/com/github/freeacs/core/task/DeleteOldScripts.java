@@ -29,7 +29,7 @@ public class DeleteOldScripts extends DBIShare {
   }
 
   private void deleteOldScripts() throws SQLException {
-    ScriptExecutions executions = new ScriptExecutions(getMainDataSource());
+    ScriptExecutions executions = new ScriptExecutions(getDataSource());
     int days = properties.getShellScriptLimit();
     Calendar c = Calendar.getInstance();
     c.add(Calendar.DAY_OF_MONTH, -days);

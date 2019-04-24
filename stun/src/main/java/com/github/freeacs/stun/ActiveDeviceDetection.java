@@ -48,7 +48,7 @@ public class ActiveDeviceDetection extends TaskDefaultImpl {
     int unitsToProcess = activeDevices.size() / 60;
     long fiveMinAgo = getThisLaunchTms() - 5 * 60000;
     long oneHourAgo = getThisLaunchTms() - 60 * 60000;
-    ACSUnit acsUnit = new ACSUnit(xapsCp, dbi.getAcs(), dbi.getAcs().getSyslog());
+    ACSUnit acsUnit = new ACSUnit(xapsCp, dbi.getAcs(), dbi.getSyslog());
 
     // this will force units which haven't been processed the last hour to
     // be processed again.
@@ -107,10 +107,10 @@ public class ActiveDeviceDetection extends TaskDefaultImpl {
     Map<String, Long> tooOldMap = activeDevices.removeOldSync(tooOldTms);
     for (Entry<String, Long> entry : tooOldMap.entrySet()) {
       String address = entry.getKey();
-      ACSUnit acsUnit = new ACSUnit(xapsCp, dbi.getAcs(), dbi.getAcs().getSyslog());
+      ACSUnit acsUnit = new ACSUnit(xapsCp, dbi.getAcs(), dbi.getSyslog());
       Unit unit = acsUnit.getUnitByValue(address, null, null);
       if (unit != null) {
-        Syslog syslog = dbi.getAcs().getSyslog();
+        Syslog syslog = dbi.getSyslog();
         SyslogFilter sf = new SyslogFilter();
         sf.setCollectorTmsStart(new Date(tooOldTms)); // look for syslog newer than 1 hour
         sf.setUnitId(unit.getId());
@@ -147,7 +147,7 @@ public class ActiveDeviceDetection extends TaskDefaultImpl {
                   + " since "
                   + new Date(tooOldTms)
                   + " - but device has been active since then",
-              dbi.getAcs().getSyslog());
+              dbi.getSyslog());
         } else {
           logger.info(
               "ActiveDeviceDection: No STUN request from "

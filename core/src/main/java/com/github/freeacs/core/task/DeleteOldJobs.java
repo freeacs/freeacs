@@ -33,7 +33,7 @@ public class DeleteOldJobs extends DBIOwner {
   }
 
   private void removeOldJobs() throws Exception {
-    UnitJobs unitJobs = new UnitJobs(getMainDataSource());
+    UnitJobs unitJobs = new UnitJobs(getDataSource());
     Map<Integer, Job> jobMap = new HashMap<>();
     Unittype[] unittypeArr = acs.getUnittypes().getUnittypes();
     for (Unittype unittype : unittypeArr) {

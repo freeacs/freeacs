@@ -51,7 +51,7 @@ public class TriggerReleaser extends DBIShare {
   private void executeTriggerScript(
       Trigger trigger, Map<String, Integer> unitEventsMap, Integer triggerReleaseId)
       throws SQLException {
-    ScriptExecutions executions = new ScriptExecutions(getMainDataSource());
+    ScriptExecutions executions = new ScriptExecutions(getDataSource());
     executions.requestExecution(
         trigger.getScript(),
         "\"-uut:" + trigger.getUnittype().getName() + "\" -v" + makeTriggerUnitsFilename(trigger),

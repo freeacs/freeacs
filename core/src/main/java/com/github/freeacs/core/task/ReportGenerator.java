@@ -822,12 +822,12 @@ public class ReportGenerator extends DBIOwner {
         "ReportGenerator: - Generating and populating UnitReport ("
             + periodType.getTypeStr()
             + "-based)");
-    populateReportUnitTable(getMainDataSource(), now, periodType);
+    populateReportUnitTable(getDataSource(), now, periodType);
   }
 
   private void buildProvisioning(PeriodType periodType) throws SQLException {
     ReportProvisioningGenerator rg =
-        new ReportProvisioningGenerator(getMainDataSource(), acs, LOG_PREFIX, getIdentity());
+        new ReportProvisioningGenerator(getDataSource(), acs, LOG_PREFIX, getIdentity());
     Date endTmsExc = new Date();
     Date startTmsInc = rg.startReportFromTms(periodType, "report_prov");
     logger.info(
@@ -850,14 +850,14 @@ public class ReportGenerator extends DBIOwner {
             + "-based), "
             + report.getMap().size()
             + " entries");
-    populateReportProvTable(getMainDataSource(), report);
+    populateReportProvTable(getDataSource(), report);
     logger.info(
         "ReportGenerator: - Populated ProvSYSReport  (" + periodType.getTypeStr() + "-based)");
   }
 
   private void buildSyslog(PeriodType periodType) throws SQLException, ParseException {
     ReportSyslogGenerator rg =
-        new ReportSyslogGenerator(getMainDataSource(), acs, LOG_PREFIX, getIdentity());
+        new ReportSyslogGenerator(getDataSource(), acs, LOG_PREFIX, getIdentity());
     Date endTmsExc = new Date();
     Date startTmsInc = rg.startReportFromTms(periodType, "report_syslog");
     logger.info(
@@ -880,14 +880,14 @@ public class ReportGenerator extends DBIOwner {
             + "-based), "
             + report.getMap().size()
             + " entries");
-    populateReportSyslogTable(getMainDataSource(), report);
+    populateReportSyslogTable(getDataSource(), report);
     logger.info(
         "ReportGenerator: - Populated SyslogReport  (" + periodType.getTypeStr() + "-based)");
   }
 
   private void buildHardwareSYS(PeriodType periodType) throws SQLException {
     ReportHardwareGenerator rg =
-        new ReportHardwareGenerator(getMainDataSource(), acs, LOG_PREFIX, getIdentity());
+        new ReportHardwareGenerator(getDataSource(), acs, LOG_PREFIX, getIdentity());
     Date endTmsExc = new Date();
     Date startTmsInc = rg.startReportFromTms(periodType, "report_hw");
     logger.info(
@@ -910,7 +910,7 @@ public class ReportGenerator extends DBIOwner {
             + "-based), "
             + report.getMap().size()
             + " entries");
-    populateReportHWTable(getMainDataSource(), report);
+    populateReportHWTable(getDataSource(), report);
     logger.info(
         "ReportGenerator: - Populated HardwareSYSReport  (" + periodType.getTypeStr() + "-based)");
   }
@@ -920,7 +920,7 @@ public class ReportGenerator extends DBIOwner {
         "ReportGenerator: - Generating and populating GroupReport ("
             + periodType.getTypeStr()
             + "-based)");
-    populateReportGroupTable(getMainDataSource(), now, periodType);
+    populateReportGroupTable(getDataSource(), now, periodType);
   }
 
   private void buildJob(PeriodType periodType, Date now) throws SQLException {
@@ -928,12 +928,12 @@ public class ReportGenerator extends DBIOwner {
         "ReportGenerator: - Generating and populating JobReport ("
             + periodType.getTypeStr()
             + "-based)");
-    populateReportJobTable(getMainDataSource(), now, periodType);
+    populateReportJobTable(getDataSource(), now, periodType);
   }
 
   private void buildVoipSYS(PeriodType periodType) throws SQLException {
     ReportVoipGenerator rg =
-        new ReportVoipGenerator(getMainDataSource(), acs, LOG_PREFIX, getIdentity());
+        new ReportVoipGenerator(getDataSource(), acs, LOG_PREFIX, getIdentity());
     Date endTmsExc = new Date();
     Date startTmsInc = rg.startReportFromTms(periodType, "report_voip");
     logger.info(
@@ -956,7 +956,7 @@ public class ReportGenerator extends DBIOwner {
             + "-based), "
             + report.getMap().size()
             + " entries");
-    populateReportVoipTable(getMainDataSource(), report);
+    populateReportVoipTable(getDataSource(), report);
     logger.info(
         "ReportGenerator: - Populated VoipSYSReport  (" + periodType.getTypeStr() + "-based)");
   }

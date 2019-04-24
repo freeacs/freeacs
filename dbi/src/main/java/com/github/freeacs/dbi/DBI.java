@@ -271,50 +271,41 @@ public class DBI implements Runnable {
   }
 
   private void populateInboxes() throws SQLException {
-    Connection c = dataSource.getConnection();
-    Statement s = null;
-    try {
-      s = c.createStatement();
-      ResultSet rs =
-          s.executeQuery("SELECT * FROM message WHERE id > " + lastReadId + " ORDER BY id");
-      while (rs.next()) {
-        Message message = new Message();
-        message.setId(rs.getInt("id"));
-        message.setContent(rs.getString("content"));
-        message.setMessageType(rs.getString("type"));
-        message.setObjectId(rs.getString("object_id"));
-        message.setObjectType(rs.getString("object_type"));
-        String receiverStr = rs.getString("receiver");
-        if (receiverStr != null) {
-          message.setReceiver(Integer.valueOf(receiverStr));
-        }
-        message.setSender(rs.getInt("sender"));
-        message.setTimestamp(rs.getTimestamp("timestamp_"));
-        int colonPos = message.getObjectId().indexOf(':');
-        if (colonPos > -1) {
-          String sendersDbiId = message.getObjectId().substring(0, colonPos);
-          if (sendersDbiId.equals(String.valueOf(dbiId))) {
-            continue;
-          }
-          message.setObjectId(message.getObjectId().substring(colonPos + 1));
-        }
-        if (sent.contains(message.getId())) {
-          continue;
-        }
+      try (Connection c = dataSource.getConnection(); Statement s = c.createStatement()) {
+          ResultSet rs = s.executeQuery("SELECT * FROM message WHERE id > " + lastReadId + " ORDER BY id");
+          while (rs.next()) {
+              Message message = new Message();
+              message.setId(rs.getInt("id"));
+              message.setContent(rs.getString("content"));
+              message.setMessageType(rs.getString("type"));
+              message.setObjectId(rs.getString("object_id"));
+              message.setObjectType(rs.getString("object_type"));
+              String receiverStr = rs.getString("receiver");
+              if (receiverStr != null) {
+                  message.setReceiver(Integer.valueOf(receiverStr));
+              }
+              message.setSender(rs.getInt("sender"));
+              message.setTimestamp(rs.getTimestamp("timestamp_"));
+              int colonPos = message.getObjectId().indexOf(':');
+              if (colonPos > -1) {
+                  String sendersDbiId = message.getObjectId().substring(0, colonPos);
+                  if (sendersDbiId.equals(String.valueOf(dbiId))) {
+                      continue;
+                  }
+                  message.setObjectId(message.getObjectId().substring(colonPos + 1));
+              }
+              if (sent.contains(message.getId())) {
+                  continue;
+              }
 
-        if (message.getId() > lastReadId) {
-          lastReadId = message.getId();
-        }
-        for (Inbox ibx : inboxes.values()) {
-          ibx.addToInbox(message);
-        }
+              if (message.getId() > lastReadId) {
+                  lastReadId = message.getId();
+              }
+              for (Inbox ibx : inboxes.values()) {
+                  ibx.addToInbox(message);
+              }
+          }
       }
-    } finally {
-      if (s != null) {
-        s.close();
-      }
-      c.close();
-    }
   }
 
   private void cleanup() throws SQLException {
