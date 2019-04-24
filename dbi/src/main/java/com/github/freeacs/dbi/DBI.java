@@ -634,4 +634,12 @@ public class DBI implements Runnable {
   public Throwable getDbiThrowable() {
     return dbiThrowable;
   }
+
+  public DataSource getDataSource() {
+    return dataSource;
+  }
+
+  public Syslog getSyslog() {
+    return syslog;
+  }
 }

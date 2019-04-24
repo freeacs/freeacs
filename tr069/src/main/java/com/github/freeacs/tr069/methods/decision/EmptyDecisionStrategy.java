@@ -1,7 +1,7 @@
 package com.github.freeacs.tr069.methods.decision;
 
+import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.tr069.base.Log;
-import com.github.freeacs.dbaccess.DBAccess;
 import com.github.freeacs.dbaccess.DBAccessSessionTR069;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
@@ -21,12 +21,12 @@ import java.util.Date;
 import java.util.List;
 
 public class EmptyDecisionStrategy implements DecisionStrategy {
-    private final DBAccess dbAccess;
+    private final DBI dbi;
     private final Properties properties;
 
-    EmptyDecisionStrategy(Properties properties, DBAccess dbAccess) {
+    EmptyDecisionStrategy(Properties properties, DBI dbi) {
         this.properties = properties;
-        this.dbAccess = dbAccess;
+        this.dbi = dbi;
     }
 
     @Override
@@ -130,7 +130,7 @@ public class EmptyDecisionStrategy implements DecisionStrategy {
         sessionData.setToDB(toDB);
         DBAccessSessionTR069.writeUnitParams(sessionData); // queue-parameters - will be written at end-of-session
         if (!queue) { // execute changes immediately - since otherwise these parameters will be lost (in the event of GPNRes.process())
-            ACS acs = dbAccess.getDbi().getAcs();
+            ACS acs = dbi.getAcs();
             ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
             acsUnit.addOrChangeQueuedUnitParameters(sessionData.getUnit());
         }

@@ -1,7 +1,7 @@
 package com.github.freeacs.tr069.methods.request;
 
+import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.tr069.base.Log;
-import com.github.freeacs.dbaccess.DBAccess;
 import com.github.freeacs.dbaccess.DBAccessSession;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.UnittypeParameter;
@@ -23,13 +23,13 @@ import java.util.List;
 
 public class GetParameterNamesProcessStrategy implements RequestProcessStrategy {
     private static final Logger logger = LoggerFactory.getLogger(GetParameterNamesProcessStrategy.class);
-    private final DBAccess dbAccess;
+    private final DBI dbi;
 
     private Properties properties;
 
-    GetParameterNamesProcessStrategy(Properties properties, DBAccess dbAccess) {
+    GetParameterNamesProcessStrategy(Properties properties, DBI dbi) {
         this.properties = properties;
-        this.dbAccess = dbAccess;
+        this.dbi = dbi;
     }
 
     @SuppressWarnings("Duplicates")
@@ -52,7 +52,7 @@ public class GetParameterNamesProcessStrategy implements RequestProcessStrategy 
                 if (pis.getName().endsWith(".")) {
                     continue;
                 }
-                String newFlag = null;
+                String newFlag;
                 if (pis.isWritable()) {
                     newFlag = "RW";
                 } else {
@@ -82,7 +82,7 @@ public class GetParameterNamesProcessStrategy implements RequestProcessStrategy 
                                     + " was found more than once in the GPNRes");
                 }
             }
-            DBAccessSession dbAccessSession = new DBAccessSession(dbAccess.getDbi().getAcs());
+            DBAccessSession dbAccessSession = new DBAccessSession(dbi.getAcs());
             dbAccessSession.writeUnittypeParameters(sessionData, utpList);
             Log.debug(
                     GetParameterNamesProcessStrategy.class,

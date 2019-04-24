@@ -1,7 +1,7 @@
 package com.github.freeacs.tr069.methods;
 
+import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.tr069.base.Log;
-import com.github.freeacs.dbaccess.DBAccess;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.methods.decision.DecisionStrategy;
 import com.github.freeacs.tr069.methods.request.RequestProcessStrategy;
@@ -18,8 +18,8 @@ public abstract class ProvisioningStrategy {
 
     public abstract void process(HTTPRequestResponseData reqRes) throws Exception;
 
-    public static ProvisioningStrategy getStrategy(Properties properties, DBAccess dbAccess) {
-        return new NormalProvisioningStrategy(properties, dbAccess);
+    public static ProvisioningStrategy getStrategy(Properties properties, DBI dbi) {
+        return new NormalProvisioningStrategy(properties, dbi);
     }
 
     private static class NormalProvisioningStrategy extends ProvisioningStrategy {
@@ -29,12 +29,12 @@ public abstract class ProvisioningStrategy {
                 Pattern.compile(":Body.*>\\s*<cwmp:(\\w+)(>|/>)", Pattern.DOTALL);
 
         private final Properties properties;
-        private final DBAccess dbAccess;
+        private final DBI dbi;
 
         private NormalProvisioningStrategy(Properties properties,
-                                           DBAccess dbAccess) {
+                                           DBI dbi) {
             this.properties = properties;
-            this.dbAccess = dbAccess;
+            this.dbi = dbi;
         }
 
         @Override
@@ -47,13 +47,13 @@ public abstract class ProvisioningStrategy {
             // 1. process the request
             logWillProcessRequest(reqRes);
             ProvisioningMethod requestProvisioningMethod = getRequestMethod(reqRes);
-            RequestProcessStrategy.getStrategy(requestProvisioningMethod, properties, dbAccess).process(reqRes);
+            RequestProcessStrategy.getStrategy(requestProvisioningMethod, properties, dbi).process(reqRes);
             if (Log.isConversationLogEnabled()) {
                 logConversationRequest(reqRes);
             }
 
             // 2. decide what to do next
-            DecisionStrategy.getStrategy(requestProvisioningMethod, properties, dbAccess).makeDecision(reqRes);
+            DecisionStrategy.getStrategy(requestProvisioningMethod, properties, dbi).makeDecision(reqRes);
 
             // 3. Create and set response
             ProvisioningMethod responseProvisioningMethod = getResponseMethod(reqRes);

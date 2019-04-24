@@ -1,9 +1,9 @@
 package com.github.freeacs.tr069.methods.request;
 
+import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.tr069.base.BaseCache;
 import com.github.freeacs.tr069.base.JobLogic;
 import com.github.freeacs.tr069.base.Log;
-import com.github.freeacs.dbaccess.DBAccess;
 import com.github.freeacs.dbaccess.DBAccessSession;
 import com.github.freeacs.dbaccess.DBAccessSessionTR069;
 import com.github.freeacs.dbi.Unit;
@@ -29,12 +29,12 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class InformRequestProcessStrategy implements RequestProcessStrategy {
-    private final DBAccess dbAccess;
+    private final DBI dbi;
     private Properties properties;
 
-    InformRequestProcessStrategy(Properties properties, DBAccess dbAccess) {
+    InformRequestProcessStrategy(Properties properties, DBI dbi) {
         this.properties = properties;
-        this.dbAccess = dbAccess;
+        this.dbi = dbi;
     }
 
     @SuppressWarnings("Duplicates")
@@ -58,12 +58,12 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
             sessionData.setSerialNumber(deviceIdStruct.getSerialNumber());
             parseEvents(parser, sessionData);
             parseParameters(sessionData, parser);
-            DBAccessSession dbAccessSession = new DBAccessSession(dbAccess.getDbi().getAcs());
+            DBAccessSession dbAccessSession = new DBAccessSession(dbi.getAcs());
             dbAccessSession.updateParametersFromDB(sessionData, isDiscoveryMode); // Unit-object is read and populated in SessionData
             logPeriodicInformTiming(sessionData);
             ScheduledKickTask.removeUnit(unitId);
             if (isDiscoveryMode && sessionData.isFirstConnect()) {
-                DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(dbAccess.getDbi().getAcs(), dbAccessSession);
+                DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(dbi.getAcs(), dbAccessSession);
 
                 String unitTypeName = deviceIdStruct.getProductClass();
 
@@ -86,7 +86,7 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
             }
             sessionData.getCommandKey().setServerKey(reqRes);
             sessionData.getParameterKey().setServerKey(reqRes);
-            boolean jobOk = JobLogic.checkJobOK(sessionData, dbAccess.getDbi().getAcs(), isDiscoveryMode);
+            boolean jobOk = JobLogic.checkJobOK(sessionData, dbi.getAcs(), isDiscoveryMode);
             sessionData.setJobUnderExecution(!jobOk);
         } catch (SQLException e) {
             throw new TR069DatabaseException(e);

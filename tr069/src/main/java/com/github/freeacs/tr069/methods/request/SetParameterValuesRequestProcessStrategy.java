@@ -1,7 +1,7 @@
 package com.github.freeacs.tr069.methods.request;
 
+import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.tr069.base.Log;
-import com.github.freeacs.dbaccess.DBAccess;
 import com.github.freeacs.dbaccess.DBAccessSession;
 import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.dbi.util.SyslogClient;
@@ -14,10 +14,10 @@ import com.github.freeacs.tr069.xml.Parser;
 
 public class SetParameterValuesRequestProcessStrategy implements RequestProcessStrategy {
 
-    private final DBAccess dbAccess;
+    private final DBI dbi;
 
-    public SetParameterValuesRequestProcessStrategy(DBAccess dbAccess) {
-        this.dbAccess = dbAccess;
+    public SetParameterValuesRequestProcessStrategy(DBI dbi) {
+        this.dbi = dbi;
     }
 
     @SuppressWarnings("Duplicates")
@@ -33,7 +33,7 @@ public class SetParameterValuesRequestProcessStrategy implements RequestProcessS
         ParameterList paramList = sessionData.getToCPE();
         for (ParameterValueStruct pvs : paramList.getParameterValueList()) {
             Log.notice(SetParameterValuesRequestProcessStrategy.class, "\t" + pvs.getName() + " : " + pvs.getValue());
-            String user = new DBAccessSession(dbAccess.getDbi().getAcs())
+            String user = new DBAccessSession(dbi.getAcs())
                             .getAcs()
                             .getSyslog()
                             .getIdentity()

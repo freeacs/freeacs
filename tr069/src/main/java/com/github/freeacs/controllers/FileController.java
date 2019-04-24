@@ -1,13 +1,9 @@
 package com.github.freeacs.controllers;
 
+import com.github.freeacs.dbi.*;
 import com.github.freeacs.tr069.base.DownloadLogic;
 import com.github.freeacs.tr069.base.Log;
-import com.github.freeacs.dbaccess.DBAccess;
 import com.github.freeacs.dbaccess.DBAccessStatic;
-import com.github.freeacs.dbi.ACS;
-import com.github.freeacs.dbi.File;
-import com.github.freeacs.dbi.FileType;
-import com.github.freeacs.dbi.Unittype;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,10 +16,10 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 public class FileController {
 
-  private final DBAccess dbAccess;
+  private final DBI dbi;
 
-  public FileController(DBAccess dbAccess) {
-    this.dbAccess = dbAccess;
+  public FileController(DBI dbi) {
+    this.dbi = dbi;
   }
 
   @GetMapping("${context-path}/file/**")
@@ -33,7 +29,7 @@ public class FileController {
     OutputStream out = null;
 
     try {
-      ACS acs = dbAccess.getDbi().getAcs();
+      ACS acs = dbi.getAcs();
       File firmware;
       String pathInfo = req.getPathInfo().substring(contextPath.length());
       pathInfo = pathInfo.replaceAll("--", " ");

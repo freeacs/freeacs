@@ -1,8 +1,8 @@
 package com.github.freeacs.controllers;
 
+import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.tr069.base.BaseCache;
 import com.github.freeacs.tr069.base.Log;
-import com.github.freeacs.dbaccess.DBAccess;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.Unit;
@@ -37,13 +37,13 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 public class Tr069Controller {
 
-    private final DBAccess dbAccess;
+    private final DBI dbi;
     private final Properties properties;
 
-    public Tr069Controller(DBAccess dbAccess,
+    public Tr069Controller(DBI dbi,
                            Properties properties) {
         this.properties = properties;
-        this.dbAccess = dbAccess;
+        this.dbi = dbi;
     }
 
     /**
@@ -78,7 +78,7 @@ public class Tr069Controller {
             reqRes.getRequestData().setContextPath(properties.getContextPath());
             reqRes.getRequestData().setXml(xmlPayload);
 
-            ProvisioningStrategy.getStrategy(properties, dbAccess).process(reqRes);
+            ProvisioningStrategy.getStrategy(properties, dbi).process(reqRes);
 
             if (reqRes.getResponseData().getXml() != null && !reqRes.getResponseData().getXml().isEmpty()) {
                 res.setHeader("SOAPAction", "");
@@ -137,7 +137,7 @@ public class Tr069Controller {
     @Scheduled(cron = "0 0/5 * * * *")
     private void scheduleActiveDeviceDetectionTask() {
         final ActiveDeviceDetectionTask activeDeviceDetectionTask =
-                new ActiveDeviceDetectionTask("ActiveDeviceDetection TR069", dbAccess.getDbi());
+                new ActiveDeviceDetectionTask("ActiveDeviceDetection TR069", dbi);
         activeDeviceDetectionTask.setThisLaunchTms(System.currentTimeMillis());
         activeDeviceDetectionTask.run();
     }
@@ -146,7 +146,7 @@ public class Tr069Controller {
     @Scheduled(cron = "* * * ? * *")
     private void scheduleKickTask() {
         final ScheduledKickTask scheduledKickTask =
-                new ScheduledKickTask("ScheduledKick", dbAccess.getDbi());
+                new ScheduledKickTask("ScheduledKick", dbi);
         scheduledKickTask.setThisLaunchTms(System.currentTimeMillis());
         scheduledKickTask.run();
     }
@@ -155,7 +155,7 @@ public class Tr069Controller {
     @Scheduled(cron = "0/5 * * ? * *")
     private void scheduleMessageListenerTask() {
         final MessageListenerTask messageListenerTask =
-                new MessageListenerTask("MessageListener", dbAccess.getDbi());
+                new MessageListenerTask("MessageListener", dbi);
         messageListenerTask.setThisLaunchTms(System.currentTimeMillis());
         messageListenerTask.run();
     }
@@ -164,7 +164,7 @@ public class Tr069Controller {
         try {
             Unit unit = reqRes.getSessionData().getUnit();
             if (unit != null) {
-                ACS acs = dbAccess.getDbi().getAcs();
+                ACS acs = dbi.getAcs();
                 ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
                 acsUnit.addOrChangeQueuedUnitParameters(unit);
             }

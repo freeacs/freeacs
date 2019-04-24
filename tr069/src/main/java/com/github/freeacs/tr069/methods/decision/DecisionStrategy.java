@@ -1,7 +1,7 @@
 package com.github.freeacs.tr069.methods.decision;
 
+import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.tr069.base.Log;
-import com.github.freeacs.dbaccess.DBAccess;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
@@ -13,19 +13,19 @@ public interface DecisionStrategy {
 
     static DecisionStrategy getStrategy(ProvisioningMethod provisioningMethod,
                                         Properties properties,
-                                        DBAccess dbAccess) {
+                                        DBI dbi) {
         switch (provisioningMethod) {
-            case Empty: return emStrategy(properties, dbAccess);
+            case Empty: return emStrategy(properties, dbi);
             case Inform: return informStrategy();
             case GetParameterNames: return getParameterNamesStrategy();
-            case GetParameterValues: return getParameterValuesStrategy(properties, dbAccess);
-            case SetParameterValues: return setParameterValuesStrategy(properties, dbAccess);
+            case GetParameterValues: return getParameterValuesStrategy(properties, dbi);
+            case SetParameterValues: return setParameterValuesStrategy(properties, dbi);
             case TransferComplete: return transferCompleteStrategy();
             case AutonomousTransferComplete: return autonomousTransferCompleteStrategy();
             case GetRPCMethods: return getRPCMethodsStrategy();
             default:
                 Log.debug(DecisionStrategy.class,"The methodName " + provisioningMethod + " has no decision strategy. Using empty strategy.");
-                return emStrategy(properties, dbAccess);
+                return emStrategy(properties, dbi);
         }
     }
 
@@ -49,15 +49,15 @@ public interface DecisionStrategy {
         return new GetParameterNamesDecisionStrategy();
     }
 
-    static DecisionStrategy emStrategy(Properties properties, DBAccess dbAccess) {
-        return new EmptyDecisionStrategy(properties, dbAccess);
+    static DecisionStrategy emStrategy(Properties properties, DBI dbi) {
+        return new EmptyDecisionStrategy(properties, dbi);
     }
 
-    static DecisionStrategy getParameterValuesStrategy(Properties properties, DBAccess dbAccess) {
-        return new GetParameterValuesDecisionStrategy(properties, dbAccess);
+    static DecisionStrategy getParameterValuesStrategy(Properties properties, DBI dbi) {
+        return new GetParameterValuesDecisionStrategy(properties, dbi);
     }
 
-    static DecisionStrategy setParameterValuesStrategy(Properties properties, DBAccess dbAccess) {
-        return new SetParameterValuesDecisionStrategy(properties, dbAccess);
+    static DecisionStrategy setParameterValuesStrategy(Properties properties, DBI dbi) {
+        return new SetParameterValuesDecisionStrategy(properties, dbi);
     }
 }

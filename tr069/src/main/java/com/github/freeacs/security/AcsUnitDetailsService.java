@@ -1,7 +1,7 @@
 package com.github.freeacs.security;
 
-import com.github.freeacs.dbaccess.DBAccess;
 import com.github.freeacs.dbi.ACSUnit;
+import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.util.SystemParameters;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +15,17 @@ import java.sql.SQLException;
 @Component
 public class AcsUnitDetailsService implements UserDetailsService {
 
-    private final DBAccess dbAccess;
+    private final DBI dbi;
 
     @Autowired
-    public AcsUnitDetailsService(DBAccess dbAccess) {
-        this.dbAccess = dbAccess;
+    public AcsUnitDetailsService(DBI dbi) {
+        this.dbi = dbi;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
-            ACSUnit acsUnit = new ACSUnit(dbAccess.getDataSource(), dbAccess.getDbi().getAcs(), dbAccess.getDbi().getAcs().getSyslog());
+            ACSUnit acsUnit = new ACSUnit(dbi.getDataSource(), dbi.getAcs(), dbi.getSyslog());
             Unit unit = acsUnit.getUnitById(username);
             if (unit != null) {
                 String secret = unit.getUnitParameters().get(SystemParameters.SECRET).getValue();

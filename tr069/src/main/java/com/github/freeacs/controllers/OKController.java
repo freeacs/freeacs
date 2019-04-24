@@ -1,6 +1,5 @@
 package com.github.freeacs.controllers;
 
-import com.github.freeacs.dbaccess.DBAccess;
 import com.github.freeacs.dbi.DBI;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,10 +10,10 @@ import java.io.PrintWriter;
 
 @RestController
 public class OKController {
-  private final DBAccess dbAccess;
+  private final DBI dbi;
 
-  public OKController(DBAccess dbAccess) {
-    this.dbAccess = dbAccess;
+  public OKController(DBI dbi) {
+    this.dbi = dbi;
   }
 
   @GetMapping("${context-path}/ok")
@@ -22,7 +21,6 @@ public class OKController {
     PrintWriter out = res.getWriter();
     StringBuilder status = new StringBuilder("FREEACSOK");
     try {
-      DBI dbi = dbAccess.getDbi();
       if (dbi != null && dbi.getDbiThrowable() != null) {
         status =
             new StringBuilder("ERROR: DBI reported error:\n")

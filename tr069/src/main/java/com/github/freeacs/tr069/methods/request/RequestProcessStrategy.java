@@ -1,7 +1,7 @@
 package com.github.freeacs.tr069.methods.request;
 
+import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.tr069.base.Log;
-import com.github.freeacs.dbaccess.DBAccess;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
@@ -13,16 +13,16 @@ public interface RequestProcessStrategy {
 
     static RequestProcessStrategy getStrategy(ProvisioningMethod provisioningMethod,
                                               Properties properties,
-                                              DBAccess dbAccess) {
+                                              DBI dbi) {
         switch (provisioningMethod) {
             case Empty: return doNotProcessStrategy();
             case Download: return downloadStrategy();
             case Fault: return faultStrategy();
             case FactoryReset: return factoryResetStrategy();
-            case Inform: return informStrategy(properties, dbAccess);
-            case GetParameterNames: return getParameterNamesStrategy(properties, dbAccess);
+            case Inform: return informStrategy(properties, dbi);
+            case GetParameterNames: return getParameterNamesStrategy(properties, dbi);
             case GetParameterValues: return getParameterValuesStrategy();
-            case SetParameterValues: return setParameterValuesStrategy(dbAccess);
+            case SetParameterValues: return setParameterValuesStrategy(dbi);
             case TransferComplete: return transferCompleteStrategy();
             case AutonomousTransferComplete: return autonomousTransferComplete();
             case Reboot: return rebootStrategy();
@@ -60,19 +60,19 @@ public interface RequestProcessStrategy {
         return reqRes -> {};
     }
 
-    static RequestProcessStrategy informStrategy(Properties properties, DBAccess dbAccess) {
-        return new InformRequestProcessStrategy(properties, dbAccess);
+    static RequestProcessStrategy informStrategy(Properties properties, DBI dbi) {
+        return new InformRequestProcessStrategy(properties, dbi);
     }
 
-    static RequestProcessStrategy getParameterNamesStrategy(Properties properties, DBAccess dbAccess) {
-        return new GetParameterNamesProcessStrategy(properties, dbAccess);
+    static RequestProcessStrategy getParameterNamesStrategy(Properties properties, DBI dbi) {
+        return new GetParameterNamesProcessStrategy(properties, dbi);
     }
 
     static RequestProcessStrategy getParameterValuesStrategy() {
         return new GetParameterValuesRequestProcessStrategy();
     }
 
-    static RequestProcessStrategy setParameterValuesStrategy(DBAccess dbAccess) {
-        return new SetParameterValuesRequestProcessStrategy(dbAccess);
+    static RequestProcessStrategy setParameterValuesStrategy(DBI dbi) {
+        return new SetParameterValuesRequestProcessStrategy(dbi);
     }
 }
