@@ -1,30 +1,32 @@
 package com.github.freeacs.controllers;
 
-import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.tr069.base.BaseCache;
-import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
+import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Unit;
-import com.github.freeacs.tr069.Properties;
-import com.github.freeacs.tr069.SessionData;
-import com.github.freeacs.tr069.SessionLogging;
-import com.github.freeacs.tr069.methods.ProvisioningMethod;
-import com.github.freeacs.tr069.methods.ProvisioningStrategy;
-import com.github.freeacs.tr069.background.ActiveDeviceDetectionTask;
-import com.github.freeacs.tr069.background.MessageListenerTask;
-import com.github.freeacs.tr069.background.ScheduledKickTask;
-import com.github.freeacs.tr069.exception.TR069Exception;
-import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.github.freeacs.http.HTTPRequestData;
 import com.github.freeacs.http.HTTPRequestResponseData;
 import com.github.freeacs.http.HTTPResponseData;
+import com.github.freeacs.tr069.Properties;
+import com.github.freeacs.tr069.SessionData;
+import com.github.freeacs.tr069.SessionLogging;
+import com.github.freeacs.tr069.background.ActiveDeviceDetectionTask;
+import com.github.freeacs.tr069.background.MessageListenerTask;
+import com.github.freeacs.tr069.background.ScheduledKickTask;
+import com.github.freeacs.tr069.base.BaseCache;
+import com.github.freeacs.tr069.base.Log;
+import com.github.freeacs.tr069.methods.ProvisioningMethod;
+import com.github.freeacs.tr069.methods.ProvisioningStrategy;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -71,57 +73,37 @@ public class Tr069Controller {
      * test case.
      */
     @PostMapping(value = {"/${context-path}", "/${context-path}/prov"})
-    public void doPost(@RequestBody(required = false) String xmlPayload, HttpServletRequest req, HttpServletResponse res) throws IOException {
+    public ResponseEntity<String> doPost(@RequestBody(required = false) String xmlPayload, HttpServletRequest req, HttpServletResponse res) {
         HTTPRequestResponseData reqRes = null;
         try {
-            reqRes = new HTTPRequestResponseData(req, res);
+            reqRes = new HTTPRequestResponseData(req);
             reqRes.getRequestData().setContextPath(properties.getContextPath());
             reqRes.getRequestData().setXml(xmlPayload);
 
             ProvisioningStrategy.getStrategy(properties, dbi).process(reqRes);
 
-            if (reqRes.getResponseData().getXml() != null && !reqRes.getResponseData().getXml().isEmpty()) {
-                res.setHeader("SOAPAction", "");
-                res.setContentType("text/xml");
-            }
-
-            if ("Empty".equals(reqRes.getResponseData().getMethod())) {
-                res.setStatus(HttpServletResponse.SC_NO_CONTENT);
-            }
-
-            res.getWriter().print(reqRes.getResponseData().getXml());
+            return ResponseEntity
+                    .status("Empty".equals(reqRes.getResponseData().getMethod())
+                            ? HttpStatus.NO_CONTENT
+                            : HttpStatus.OK)
+                    .contentType(StringUtils.isNotEmpty(reqRes.getResponseData().getXml())
+                            ? MediaType.TEXT_XML
+                            : MediaType.TEXT_HTML)
+                    .headers(StringUtils.isNotEmpty(reqRes.getResponseData().getXml())
+                            ? getSOAPActionHeader()
+                            : null)
+                    .body(reqRes.getResponseData().getXml());
         } catch (Throwable t) {
-            // Make sure we return an EMPTY response to the TR-069 client
-            if (t instanceof TR069Exception) {
-                TR069Exception tex = (TR069Exception) t;
-                Throwable stacktraceThrowable = t;
-                if (tex.getCause() != null) {
-                    stacktraceThrowable = tex.getCause();
-                }
-                if (tex.getShortMsg() == TR069ExceptionShortMessage.MISC
-                        || tex.getShortMsg() == TR069ExceptionShortMessage.DATABASE) {
-                    Log.error(Tr069Controller.class, "An error ocurred: " + t.getMessage(), stacktraceThrowable);
-                }
-                if (tex.getShortMsg() == TR069ExceptionShortMessage.IOABORTED) {
-                    Log.warn(Tr069Controller.class, t.getMessage());
-                } else {
-                    Log.error(Tr069Controller.class, t.getMessage());
-                } // No stacktrace printed to log
-            }
+            Log.error(Tr069Controller.class, "An error occurred during processing the request", t);
             if (reqRes != null) {
                 reqRes.setThrowable(t);
             }
-            res.setStatus(HttpServletResponse.SC_NO_CONTENT);
-            res.getWriter().print("");
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
         } finally {
-            // Run at end of every TR-069 session
             if (reqRes != null && endOfSession(reqRes)) {
-                Log.debug(
-                        Tr069Controller.class,
-                        "End of session is reached, will write queued unit parameters if unit ("
-                                + reqRes.getSessionData().getUnit()
-                                + ") is not null");
-                // Logging of the entire session, both to tr069-event.log and syslog
+                Log.debug(Tr069Controller.class, "End of session is reached, " +
+                        "will write queued unit parameters " +
+                        "if unit (" + reqRes.getSessionData().getUnit() + ") is not null");
                 if (reqRes.getSessionData().getUnit() != null) {
                     writeQueuedUnitParameters(reqRes);
                 }
@@ -131,6 +113,12 @@ public class Tr069Controller {
                 res.setHeader("Connection", "close");
             }
         }
+    }
+
+    private HttpHeaders getSOAPActionHeader() {
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("SOAPAction", "");
+        return responseHeaders;
     }
 
     // every 5 minute

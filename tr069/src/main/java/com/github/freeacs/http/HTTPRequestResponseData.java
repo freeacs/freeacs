@@ -1,14 +1,14 @@
 package com.github.freeacs.http;
 
+import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.base.BaseCache;
 import com.github.freeacs.tr069.base.BaseCacheException;
 import com.github.freeacs.tr069.base.Log;
-import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.xml.TR069TransactionID;
-import java.util.Optional;
+
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Optional;
 
 public class HTTPRequestResponseData {
 
@@ -18,17 +18,14 @@ public class HTTPRequestResponseData {
 
   private HttpServletRequest rawRequest;
 
-  private HttpServletResponse rawResponse;
-
   private Throwable throwable;
 
   private TR069TransactionID TR069TransactionID;
 
   private SessionData sessionData;
 
-  public HTTPRequestResponseData(HttpServletRequest rawRequest, HttpServletResponse rawResponse) {
+  public HTTPRequestResponseData(HttpServletRequest rawRequest) {
     this.rawRequest = rawRequest;
-    this.rawResponse = rawResponse;
     this.requestData = new HTTPRequestData();
     this.responseData = new HTTPResponseData();
 
@@ -88,10 +85,6 @@ public class HTTPRequestResponseData {
 
   public HttpServletRequest getRawRequest() {
     return rawRequest;
-  }
-
-  public HttpServletResponse getRawResponse() {
-    return rawResponse;
   }
 
   public SessionData getSessionData() {
