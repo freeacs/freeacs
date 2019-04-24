@@ -29,6 +29,9 @@ public class AcsUnitDetailsService implements UserDetailsService {
             Unit unit = acsUnit.getUnitById(username);
             if (unit != null) {
                 String secret = unit.getUnitParameters().get(SystemParameters.SECRET).getValue();
+                if (secret == null) {
+                    throw new UsernameNotFoundException("User " + username + " has no secret");
+                }
                 return new AcsUnit(username, secret);
             }
         } catch (SQLException e) {
