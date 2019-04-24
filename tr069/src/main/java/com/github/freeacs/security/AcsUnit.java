@@ -10,7 +10,7 @@ public class AcsUnit implements UserDetails {
     private final String user;
     private final String pass;
 
-    public AcsUnit(String user, String pass) {
+    AcsUnit(String user, String pass) {
         this.user = user;
         this.pass = pass;
     }

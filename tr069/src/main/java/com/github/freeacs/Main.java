@@ -16,7 +16,6 @@ import java.sql.SQLException;
 import static com.github.freeacs.dbi.SyslogConstants.FACILITY_TR069;
 
 @SpringBootApplication
-@EnableWebSecurity
 @EnableScheduling
 public class Main {
 
