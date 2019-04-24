@@ -1,12 +1,14 @@
-package com.github.freeacs.tr069;
+package com.github.freeacs.controllers;
 
 import com.github.freeacs.base.BaseCache;
 import com.github.freeacs.base.Log;
 import com.github.freeacs.base.db.DBAccess;
-import com.github.freeacs.base.http.ThreadCounter;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.tr069.Properties;
+import com.github.freeacs.tr069.SessionData;
+import com.github.freeacs.tr069.SessionLogging;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.methods.ProvisioningStrategy;
 import com.github.freeacs.tr069.background.ActiveDeviceDetectionTask;
@@ -34,17 +36,14 @@ import javax.servlet.http.HttpServletResponse;
  * @author morten
  */
 @RestController
-public class Provisioning extends AbstractHttpDataWrapper {
+public class Tr069Controller extends AbstractHttpDataWrapper {
 
     private final DBAccess dbAccess;
-    private final ThreadCounter threadCounter;
 
-    public Provisioning(DBAccess dbAccess,
-                        Properties properties,
-                        ThreadCounter threadCounter) {
+    public Tr069Controller(DBAccess dbAccess,
+                           Properties properties) {
         super(properties);
         this.dbAccess = dbAccess;
-        this.threadCounter = threadCounter;
     }
 
     /**
@@ -103,12 +102,12 @@ public class Provisioning extends AbstractHttpDataWrapper {
                 }
                 if (tex.getShortMsg() == TR069ExceptionShortMessage.MISC
                         || tex.getShortMsg() == TR069ExceptionShortMessage.DATABASE) {
-                    Log.error(Provisioning.class, "An error ocurred: " + t.getMessage(), stacktraceThrowable);
+                    Log.error(Tr069Controller.class, "An error ocurred: " + t.getMessage(), stacktraceThrowable);
                 }
                 if (tex.getShortMsg() == TR069ExceptionShortMessage.IOABORTED) {
-                    Log.warn(Provisioning.class, t.getMessage());
+                    Log.warn(Tr069Controller.class, t.getMessage());
                 } else {
-                    Log.error(Provisioning.class, t.getMessage());
+                    Log.error(Tr069Controller.class, t.getMessage());
                 } // No stacktrace printed to log
             }
             if (reqRes != null) {
@@ -120,7 +119,7 @@ public class Provisioning extends AbstractHttpDataWrapper {
             // Run at end of every TR-069 session
             if (reqRes != null && endOfSession(reqRes)) {
                 Log.debug(
-                        Provisioning.class,
+                        Tr069Controller.class,
                         "End of session is reached, will write queued unit parameters if unit ("
                                 + reqRes.getSessionData().getUnit()
                                 + ") is not null");
@@ -133,9 +132,6 @@ public class Provisioning extends AbstractHttpDataWrapper {
                 BaseCache.removeSessionData(reqRes.getSessionData().getId());
                 res.setHeader("Connection", "close");
             }
-        }
-        if (reqRes != null && reqRes.getSessionData() != null) {
-            threadCounter.responseDelivered(reqRes.getSessionData());
         }
     }
 
@@ -176,7 +172,7 @@ public class Provisioning extends AbstractHttpDataWrapper {
             }
         } catch (Throwable t) {
             Log.error(
-                    Provisioning.class,
+                    Tr069Controller.class,
                     "An error occured when writing queued unit parameters to Fusion. May affect provisioning",
                     t);
         }
@@ -199,7 +195,7 @@ public class Provisioning extends AbstractHttpDataWrapper {
             return false;
         } catch (Throwable t) {
             Log.warn(
-                    Provisioning.class,
+                    Tr069Controller.class,
                     "An error occured when determining endOfSession. Does not affect provisioning",
                     t);
             return false;

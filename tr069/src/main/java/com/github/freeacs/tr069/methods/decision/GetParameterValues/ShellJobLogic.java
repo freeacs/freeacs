@@ -8,7 +8,6 @@ import com.github.freeacs.common.util.CacheValue;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.CPEParameters;
-import com.github.freeacs.tr069.Provisioning;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.tr069.exception.TR069Exception;

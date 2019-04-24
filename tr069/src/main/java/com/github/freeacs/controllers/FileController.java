@@ -1,4 +1,4 @@
-package com.github.freeacs.base.http;
+package com.github.freeacs.controllers;
 
 import com.github.freeacs.base.DownloadLogic;
 import com.github.freeacs.base.Log;
@@ -20,11 +20,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
-public class FileServlet extends AbstractHttpDataWrapper {
+public class FileController extends AbstractHttpDataWrapper {
 
   private final DBAccess dbAccess;
 
-  public FileServlet(Properties properties, DBAccess dbAccess) {
+  public FileController(Properties properties, DBAccess dbAccess) {
     super(properties);
     this.dbAccess = dbAccess;
   }
@@ -48,7 +48,7 @@ public class FileServlet extends AbstractHttpDataWrapper {
       Unittype unittype = acs.getUnittype(unittypeName);
       if (unittype == null) {
         Log.error(
-            FileServlet.class,
+            FileController.class,
             "Could not find unittype " + unittypeName + " in xAPS, hence file URL is incorrect");
         res.sendError(HttpServletResponse.SC_NOT_FOUND);
         return;
@@ -56,7 +56,7 @@ public class FileServlet extends AbstractHttpDataWrapper {
       firmware = unittype.getFiles().getByVersionType(firmwareVersion, fileType);
       if (firmware == null) {
         Log.error(
-            FileServlet.class,
+            FileController.class,
             "Could not find "
                 + fileType
                 + " version "
@@ -69,7 +69,7 @@ public class FileServlet extends AbstractHttpDataWrapper {
       }
       firmwareName = firmware.getName();
       Log.debug(
-          FileServlet.class,
+          FileController.class,
           "Firmware "
               + firmwareName
               + " exists, will now retrieve binaries for unittype-name "
@@ -80,7 +80,7 @@ public class FileServlet extends AbstractHttpDataWrapper {
       if (firmwareImage == null || firmwareImage.length == 0) {
         res.sendError(HttpServletResponse.SC_NOT_FOUND);
         Log.error(
-            FileServlet.class,
+            FileController.class,
             "No binaries found for firmware "
                 + firmwareName
                 + " (in unittype "
@@ -89,7 +89,7 @@ public class FileServlet extends AbstractHttpDataWrapper {
         return;
       }
       Log.debug(
-          FileServlet.class,
+          FileController.class,
           "Binaries found for firmware "
               + firmwareName
               + " (in unittype "
@@ -99,11 +99,11 @@ public class FileServlet extends AbstractHttpDataWrapper {
       res.setContentLength(firmwareImage.length);
       out.write(firmwareImage);
       Log.debug(
-          FileServlet.class,
+          FileController.class,
           "Transmission of firmware " + firmwareName + " (in unittype " + unittypeName + ") ends");
     } catch (Throwable t) {
       Log.error(
-          FileServlet.class,
+          FileController.class,
           "Error while retrieving the firmware "
               + firmwareName
               + " (in unittype "
