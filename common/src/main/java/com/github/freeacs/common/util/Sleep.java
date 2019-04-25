@@ -69,7 +69,7 @@ public class Sleep {
       terminated = true;
       try {
         // Expect the server to be fully terminated within 5 seconds
-        Thread.sleep(2000);
+        Thread.sleep(5000);
       } catch (InterruptedException ignored) {
       }
     }
