@@ -1,6 +1,5 @@
 package com.github.freeacs.tr069.methods.response;
 
-import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.dbi.UnittypeParameters;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.tr069.http.HTTPRequestResponseData;
@@ -14,16 +13,18 @@ import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import com.github.freeacs.tr069.xml.ParameterValueStructComparator;
 import com.github.freeacs.tr069.xml.Response;
 import com.github.freeacs.tr069.xml.TR069TransactionID;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 public class GetParameterValuesResponseCreateStrategy implements ResponseCreateStrategy {
 
     private final Properties properties;
 
-    public GetParameterValuesResponseCreateStrategy(Properties properties) {
+    GetParameterValuesResponseCreateStrategy(Properties properties) {
         this.properties = properties;
     }
 
@@ -38,13 +39,7 @@ public class GetParameterValuesResponseCreateStrategy implements ResponseCreateS
         ProvisioningMode mode = sessionData.getUnit().getProvisioningMode();
         List<ParameterValueStruct> parameterValueList = new ArrayList<>();
         if (mode == ProvisioningMode.READALL) {
-            Log.debug(
-                    GetParameterValuesResponseCreateStrategy.class,
-                    "Asks for all params ("
-                            + sessionData.getKeyRoot()
-                            + "), since in "
-                            + ProvisioningMode.READALL
-                            + " mode");
+            log.debug("Asks for all params (" + sessionData.getKeyRoot() + "), since in " + ProvisioningMode.READALL + " mode");
             ParameterValueStruct pvs = new ParameterValueStruct(sessionData.getKeyRoot(), "");
             parameterValueList.add(pvs);
         } else { // mode == ProvisioningMode.PERIODIC
@@ -52,11 +47,7 @@ public class GetParameterValuesResponseCreateStrategy implements ResponseCreateS
             String previousMethod = sessionData.getPreviousResponseMethod();
             if (properties.isUnitDiscovery(sessionData)
                     || ProvisioningMethod.GetParameterValues.name().equals(previousMethod)) {
-                Log.debug(
-                        GetParameterValuesResponseCreateStrategy.class,
-                        "Asks for all params ("
-                                + sessionData.getKeyRoot()
-                                + "), either because unitdiscovery-quirk or prev. GPV failed");
+                log.debug("Asks for all params (" + sessionData.getKeyRoot() + "), either because unitdiscovery-quirk or prev. GPV failed");
                 ParameterValueStruct pvs = new ParameterValueStruct(sessionData.getKeyRoot(), "");
                 parameterValueList.add(pvs);
             } else {
@@ -65,9 +56,7 @@ public class GetParameterValuesResponseCreateStrategy implements ResponseCreateS
                 for (Map.Entry<String, ParameterValueStruct> entry : paramValueMap.entrySet()) {
                     parameterValueList.add(entry.getValue());
                 }
-                Log.debug(
-                        GetParameterValuesResponseCreateStrategy.class,
-                        "Asks for " + parameterValueList.size() + " parameters in GPV-req");
+                log.debug("Asks for " + parameterValueList.size() + " parameters in GPV-req");
                 parameterValueList.sort(new ParameterValueStructComparator());
             }
         }
@@ -91,7 +80,7 @@ public class GetParameterValuesResponseCreateStrategy implements ResponseCreateS
             }
         };
         return new Response(header, body, reqRes.getSessionData().getCwmpVersionNumber());
-    };
+    }
 
     @SuppressWarnings("Duplicates")
     private void addCPEParameters(SessionData sessionData, Properties properties) {
@@ -107,13 +96,9 @@ public class GetParameterValuesResponseCreateStrategy implements ResponseCreateS
                 !(unitId.contains("NPA201E") || unitId.contains("RGW208EN") || unitId.contains("NPA101E"))
                         && !properties.isIgnoreVendorConfigFile(sessionData);
         if (useVendorConfigFile) {
-            Log.debug(
-                    GetParameterValuesResponseCreateStrategy.class,
-                    "VendorConfigFile object will be requested (default behavior)");
+            log.debug("VendorConfigFile object will be requested (default behavior)");
         } else {
-            Log.debug(
-                    GetParameterValuesResponseCreateStrategy.class,
-                    "VendorConfigFile object will not be requested. (quirk behavior: old Pingcom device or quirk enabled)");
+            log.debug("VendorConfigFile object will not be requested. (quirk behavior: old Pingcom device or quirk enabled)");
         }
 
         int counter = 0;
@@ -124,9 +109,6 @@ public class GetParameterValuesResponseCreateStrategy implements ResponseCreateS
                 counter++;
             }
         }
-        Log.debug(
-                GetParameterValuesResponseCreateStrategy.class,
-                counter
-                        + " cpe-param (not found in database, but of special interest to ACS) added to the GPV-request");
+        log.debug(counter + " cpe-param (not found in database, but of special interest to ACS) added to the GPV-request");
     }
 }

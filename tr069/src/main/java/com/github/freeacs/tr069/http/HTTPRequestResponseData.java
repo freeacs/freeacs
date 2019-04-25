@@ -3,13 +3,14 @@ package com.github.freeacs.tr069.http;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.base.BaseCache;
 import com.github.freeacs.tr069.base.BaseCacheException;
-import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.tr069.xml.TR069TransactionID;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
+@Slf4j
 public class HTTPRequestResponseData {
 
   private HTTPRequestData requestData;
@@ -34,14 +35,10 @@ public class HTTPRequestResponseData {
       sessionData = (SessionData) BaseCache.getSessionData(sessionId);
     } catch (BaseCacheException tr069Ex) {
       HttpSession session = rawRequest.getSession();
-      Log.debug(
-          HTTPRequestResponseData.class,
-          "Sessionid "
+      log.debug("Sessionid "
               + sessionId
               + " did not return a SessionData object from cache, must create a new SessionData object");
-      Log.debug(
-          HTTPRequestResponseData.class,
-          "Sessionid "
+      log.debug("Sessionid "
               + session.getId()
               + " created: "
               + session.getCreationTime()
@@ -55,7 +52,7 @@ public class HTTPRequestResponseData {
     if (sessionData.getStartupTmsForSession() == null) {
       sessionData.setStartupTmsForSession(System.currentTimeMillis());
     }
-    Log.debug(HTTPRequestResponseData.class, "Adding a HTTPReqResData object to the list");
+    log.debug("Adding a HTTPReqResData object to the list");
     sessionData.getReqResList().add(this);
   }
 

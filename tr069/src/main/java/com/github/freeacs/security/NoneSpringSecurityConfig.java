@@ -1,5 +1,6 @@
 package com.github.freeacs.security;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -8,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 import javax.annotation.PostConstruct;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @ConditionalOnProperty(
@@ -19,7 +21,7 @@ public class NoneSpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @PostConstruct
     public void init() {
-        System.out.println("Started " + this.getClass().getName());
+        log.info("Started " + this.getClass().getName());
     }
 
     @Override

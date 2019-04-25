@@ -7,21 +7,21 @@ import com.github.freeacs.dbi.util.ProvisioningMessage.ErrorResponsibility;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ProvOutput;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ProvStatus;
 import com.github.freeacs.dbi.util.SyslogClient;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class SessionDataCacheCleanup implements CleanupNotifier {
   private SessionDataI sessionData;
   private String unitKey;
 
-  public SessionDataCacheCleanup(String unitKey, SessionDataI sessionData) {
+  SessionDataCacheCleanup(String unitKey, SessionDataI sessionData) {
     this.unitKey = unitKey;
     this.sessionData = sessionData;
   }
 
   @Override
   public void execute() {
-    Log.error(
-        SessionDataCacheCleanup.class,
-        "SessionData for "
+    log.error("SessionData for "
             + sessionData.getUnitId()
             + " (key:"
             + unitKey
@@ -43,9 +43,7 @@ public class SessionDataCacheCleanup implements CleanupNotifier {
       try {
         SyslogClient.send(pm.syslogMsg(16, null, Users.USER_ADMIN));
       } catch (Throwable t) {
-        Log.error(
-            SessionDataCacheCleanup.class,
-            "Could not send/make syslog-message in SessionDataCacheCleanup");
+        log.error("Could not send/make syslog-message in SessionDataCacheCleanup");
       }
     }
   }

@@ -1,8 +1,6 @@
 package com.github.freeacs.tr069.methods.decision.GetParameterValues;
 
 import com.github.freeacs.tr069.base.ACSParameters;
-import com.github.freeacs.tr069.base.DownloadLogic;
-import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.dbi.File;
 import com.github.freeacs.dbi.FileType;
 import com.github.freeacs.dbi.Job;
@@ -11,13 +9,12 @@ import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.CPEParameters;
 import com.github.freeacs.tr069.SessionData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
+@Slf4j
 public class DownloadLogicTR069 {
-    private static Logger logger = LoggerFactory.getLogger(DownloadLogicTR069.class);
 
     public static boolean isScriptDownloadSetup(HTTPRequestResponseData reqRes, Job job, String publicUrl) {
         SessionData sessionData = reqRes.getSessionData();
@@ -48,18 +45,13 @@ public class DownloadLogicTR069 {
                             .getFiles()
                             .getByVersionType(scriptVersionFromDB, FileType.TR069_SCRIPT);
             if (file == null) {
-                logger.error(
-                        "File-type "
-                                + FileType.TR069_SCRIPT
-                                + " and version "
-                                + scriptVersionFromDB
-                                + " does not exists - indicate wrong setup of version number");
+                log.error("File-type " + FileType.TR069_SCRIPT + " and version " + scriptVersionFromDB
+                        + " does not exists - indicate wrong setup of version number");
                 return false;
             }
 
             String downloadURL;
-            String scriptURLName =
-                    SystemParameters.getTR069ScriptParameterName(scriptName, SystemParameters.TR069ScriptType.URL);
+            String scriptURLName = SystemParameters.getTR069ScriptParameterName(scriptName, SystemParameters.TR069ScriptType.URL);
             if (oweraParams.getValue(scriptURLName) != null) {
                 downloadURL = oweraParams.getValue(scriptURLName);
             } else {
@@ -73,9 +65,7 @@ public class DownloadLogicTR069 {
                                 FileType.TR069_SCRIPT,
                                 publicUrl);
             }
-            Log.debug(
-                    DownloadLogic.class,
-                    "Download script/config URL found (" + downloadURL + "), may trigger a Download");
+            log.debug("Download script/config URL found (" + downloadURL + "), may trigger a Download");
             sessionData.getUnit().toWriteQueue(SystemParameters.JOB_CURRENT_KEY, scriptVersionFromDB);
             sessionData.setDownload(new SessionData.Download(downloadURL, file));
             return true;
@@ -123,9 +113,7 @@ public class DownloadLogicTR069 {
                 softwareVersionFromDB =
                         jobParams.get(SystemParameters.DESIRED_SOFTWARE_VERSION).getParameter().getValue();
             } else {
-                Log.error(
-                        DownloadLogic.class,
-                        "No desired software version found in job " + job.getId() + " aborting the job");
+                log.error("No desired software version found in job " + job.getId() + " aborting the job");
                 return false;
             }
             if (jobParams.get(SystemParameters.SOFTWARE_URL) != null) {
@@ -147,21 +135,15 @@ public class DownloadLogicTR069 {
         if (softwareVersionFromDB != null
                 && !"".equals(softwareVersionFromDB.trim())
                 && !softwareVersionFromDB.equals(softwareVersionFromCPE)) {
-            Log.debug(
-                    DownloadLogic.class,
-                    "Download software URL found (" + downloadURL + "), may trigger a Download");
+            log.debug("Download software URL found (" + downloadURL + "), may trigger a Download");
             File file =
                     sessionData
                             .getUnittype()
                             .getFiles()
                             .getByVersionType(softwareVersionFromDB, FileType.SOFTWARE);
             if (file == null) {
-                logger.error(
-                        "File-type "
-                                + FileType.SOFTWARE
-                                + " and version "
-                                + softwareVersionFromDB
-                                + " does not exists - indicate wrong setup of version number");
+                log.error("File-type " + FileType.SOFTWARE + " and version " + softwareVersionFromDB +
+                        " does not exists - indicate wrong setup of version number");
                 return false;
             }
             sessionData.setDownload(new SessionData.Download(downloadURL, file));
@@ -170,10 +152,7 @@ public class DownloadLogicTR069 {
                 && softwareVersionFromDB != null
                 && !"".equals(softwareVersionFromDB.trim())
                 && softwareVersionFromDB.equals(softwareVersionFromCPE)) {
-            logger.warn(
-                    "Software is already upgraded to "
-                            + softwareVersionFromCPE
-                            + " - will not issue an software job");
+            log.warn("Software is already upgraded to " + softwareVersionFromCPE + " - will not issue an software job");
         }
         return false;
     }

@@ -1,13 +1,14 @@
 package com.github.freeacs.tr069.methods.response;
 
-import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.ParameterKey;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.xml.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+@Slf4j
 public class SetParameterValuesResponseCreateStrategy implements ResponseCreateStrategy {
     private final Properties properties;
 
@@ -64,9 +65,7 @@ public class SetParameterValuesResponseCreateStrategy implements ResponseCreateS
                 return sb.toString();
             }
         };
-        Log.notice(
-                SetParameterValuesResponseCreateStrategy.class,
-                "Sent to CPE: " + paramList.getParameterValueList().size() + " parameters.");
+        log.debug("Sent to CPE: " + paramList.getParameterValueList().size() + " parameters.");
         reqRes
                 .getSessionData()
                 .getProvisioningMessage()

@@ -3,10 +3,13 @@ package com.github.freeacs.tr069.base;
 import com.github.freeacs.common.util.TimeWindow;
 import com.github.freeacs.dbi.util.SystemConstants;
 import com.github.freeacs.dbi.util.SystemParameters;
+import lombok.extern.slf4j.Slf4j;
+
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Random;
 
+@Slf4j
 public class ServiceWindow {
   /** For random distribution of PII within the ServiceWindow. */
   private static Random random = new Random(System.currentTimeMillis());
@@ -67,7 +70,7 @@ public class ServiceWindow {
    * @param tms
    * @return
    */
-  public boolean isWithin(long tms) {
+  private boolean isWithin(long tms) {
     return !isEnabled() || timeWindow.isWithinTimeWindow(tms);
   }
 
@@ -89,18 +92,18 @@ public class ServiceWindow {
    *
    * @return
    */
-  public long calculateNextRepeatableTms(Long lastRunTms, long fixedInterval) {
+  long calculateNextRepeatableTms(Long lastRunTms, long fixedInterval) {
     long nextRunTms = currentTms;
     if (fixedInterval == 0) {
-      Log.debug(ServiceWindow.class, "Interval is 0, NRT is now!");
+      log.debug("Interval is 0, NRT is now!");
       return nextRunTms;
     }
     long fixedIntervalMs = fixedInterval * 1000L;
     if (lastRunTms == null) { // this subtraction will be canceled below
-      Log.debug(ServiceWindow.class, "LRT = null");
+      log.debug("LRT = null");
       nextRunTms -= fixedIntervalMs;
     } else {
-      Log.debug(ServiceWindow.class, "LRT = " + convert(lastRunTms));
+      log.debug("LRT = " + convert(lastRunTms));
       nextRunTms = lastRunTms;
     }
     if (currentTms - nextRunTms > 0) {
@@ -110,21 +113,19 @@ public class ServiceWindow {
 
     do {
       nextRunTms += fixedIntervalMs;
-      Log.debug(ServiceWindow.class, "Suggested NRT = " + convert(nextRunTms));
+      log.debug("Suggested NRT = " + convert(nextRunTms));
       long timeToNRT = nextRunTms - currentTms;
       if (timeToNRT
           < -PIIDecision.MINIMUM_PII
               * 1000L) { // do not test old tms, but let tms close to current time pass
-        Log.debug(
-            ServiceWindow.class,
-            "Suggested NRT was rejected as too old (timeToNRT = " + timeToNRT / 1000 + " sec)");
+        log.debug("Suggested NRT was rejected as too old (timeToNRT = " + timeToNRT / 1000 + " sec)");
         continue;
       }
       if (timeWindow.isWithinTimeWindow(nextRunTms)) {
-        Log.debug(ServiceWindow.class, "Suggested NRT was accepted");
+        log.debug("Suggested NRT was accepted");
         break;
       } else {
-        Log.debug(ServiceWindow.class, "Suggested NRT was rejected as outside SW");
+        log.debug("Suggested NRT was rejected as outside SW");
       }
     } while (true);
     return nextRunTms;
@@ -139,7 +140,7 @@ public class ServiceWindow {
    *
    * @return
    */
-  public long calculateStdPII() {
+  long calculateStdPII() {
     if (isEnabled()) {
       long nextPIITms = 0;
       long nextInterval = calculateNextInterval();
@@ -179,9 +180,7 @@ public class ServiceWindow {
       // Convert from timestamp (ms) back to Periodic Inform Interval (seconds
       // til next provisioning).
       long nextPII = (nextPIITms - currentTms) / 1000;
-      Log.debug(
-          ServiceWindow.class,
-          "Standard PeriodicInformInterval calculated to "
+      log.debug("Standard PeriodicInformInterval calculated to "
               + nextPII
               + "("
               + convert(nextPIITms)
@@ -189,9 +188,7 @@ public class ServiceWindow {
               + timeWindow
               + ")");
       if (nextPII < PIIDecision.MINIMUM_PII) {
-        Log.debug(
-            ServiceWindow.class,
-            "Standard PeriodicInformInterval was calculated too low, changed to "
+        log.debug("Standard PeriodicInformInterval was calculated too low, changed to "
                 + PIIDecision.MINIMUM_PII);
         nextPII = PIIDecision.MINIMUM_PII;
       }
@@ -210,9 +207,7 @@ public class ServiceWindow {
       // Find the nextInterval (calculations are all in seconds)
       long nextPII = (long) ((float) (7 * 24 * 3600) / freqFloat);
       long nextPIITms = (currentTms + nextPII * 1000L) / 1000;
-      Log.debug(
-          ServiceWindow.class,
-          "Standard PeriodicInformInterval (SW disabled) calculated to "
+      log.debug("Standard PeriodicInformInterval (SW disabled) calculated to "
               + nextPII
               + "("
               + convert(nextPIITms)
@@ -221,9 +216,7 @@ public class ServiceWindow {
               + ")");
       // make sure it is above 30 seconds
       if (nextPII < PIIDecision.MINIMUM_PII) {
-        Log.debug(
-            ServiceWindow.class,
-            "Standard PeriodicInformInterval (SW disabled) was calculated too low, set to "
+        log.debug("Standard PeriodicInformInterval (SW disabled) was calculated too low, set to "
                 + PIIDecision.MINIMUM_PII);
         nextPII = PIIDecision.MINIMUM_PII;
       }
@@ -268,17 +261,13 @@ public class ServiceWindow {
     // time and frequency=7 will give 24h time-window.
     long defaultInterval = (long) ((float) timeWindow.getWeeklyLength() / frequency);
     if (spreadFactor == 0f) { // Special code to treat 0 spread (random function cannot handle 0)
-      Log.debug(
-          ServiceWindow.class,
-          "DefaultInterval calculated to "
+      log.debug("DefaultInterval calculated to "
               + defaultInterval / 1000
               + " seconds - spreadfactor is 0");
     } else {
       int ds = (int) (defaultInterval * spreadFactor);
       defaultInterval = defaultInterval + random.nextInt(ds * 2) - ds;
-      Log.debug(
-          ServiceWindow.class,
-          "DefaultInterval calculated to "
+      log.debug("DefaultInterval calculated to "
               + defaultInterval / 1000
               + " seconds - spreadfactor is "
               + spreadFactor * 100);
@@ -286,16 +275,16 @@ public class ServiceWindow {
     return defaultInterval;
   }
 
-  public long getCurrentTms() {
+  long getCurrentTms() {
     return currentTms;
   }
 
-  public static String convert(Long tms) {
+  static String convert(Long tms) {
     return sdf.format(new Date(tms));
     //		return String.format("%1$tF %1$tR", tms);
   }
 
-  public TimeWindow getTimeWindow() {
+  TimeWindow getTimeWindow() {
     return timeWindow;
   }
 }

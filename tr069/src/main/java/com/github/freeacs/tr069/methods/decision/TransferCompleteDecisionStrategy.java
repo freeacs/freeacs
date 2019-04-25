@@ -1,10 +1,11 @@
 package com.github.freeacs.tr069.methods.decision;
 
-import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.xml.Fault;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class TransferCompleteDecisionStrategy implements DecisionStrategy {
     @SuppressWarnings("Duplicates")
     @Override
@@ -14,7 +15,7 @@ public class TransferCompleteDecisionStrategy implements DecisionStrategy {
             if (fault != null && !"0".equals(fault.getFaultCode())) {
                 String errormsg = "TC request reports a faultcode (" + fault.getFaultCode();
                 errormsg += ") with faultstring (" + fault.getFaultString() + ")";
-                Log.error(TransferCompleteDecisionStrategy.class, errormsg);
+                log.error(errormsg);
             }
         } finally {
             if (reqRes.getSessionData().isAutonomousTransferComplete()) {

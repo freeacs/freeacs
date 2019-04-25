@@ -1,12 +1,13 @@
 package com.github.freeacs.tr069;
 
-import com.github.freeacs.tr069.base.Log;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Data
+@Slf4j
 @Component
 public class Properties {
   private String digestSecret;
@@ -67,9 +68,7 @@ public class Properties {
 
   private boolean isQuirk(String quirkName, String unittypeName, String version) {
     if (unittypeName == null) {
-      Log.debug(
-          Properties.class,
-          "The unittypename (null) could not be found. The quirk "
+      log.debug("The unittypename (null) could not be found. The quirk "
               + quirkName
               + " will return default false");
       return false;

@@ -1,7 +1,6 @@
 package com.github.freeacs.tr069.methods.decision.GetParameterValues;
 
 import com.github.freeacs.tr069.base.DBIActions;
-import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.tr069.base.UnitJob;
 import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.common.util.CacheValue;
@@ -14,6 +13,7 @@ import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Random;
 
 /** This class performs a SHELL-job */
+@Slf4j
 public class ShellJobLogic {
 
     private static Random random = new Random();
@@ -97,15 +98,13 @@ public class ShellJobLogic {
                 ScriptExecution se = executions.getExecution(sessionData.getUnittype(), requestId);
                 if (se.getExitStatus() != null) {
                     if (se.getExitStatus()) { // ERROR OCCURRED
-                        Log.error(ShellJobLogic.class, se.getErrorMessage());
+                        log.error(se.getErrorMessage());
                         uj.stop(UnitJobStatus.CONFIRMED_FAILED, isDiscoveryMode);
                     } else uj.stop(UnitJobStatus.COMPLETED_OK, isDiscoveryMode);
                     break;
                 }
                 if (timeWaited > 30000) {
-                    Log.error(
-                            ShellJobLogic.class,
-                            "The execution of the shell script did not complete within 30 sec");
+                    log.error("The execution of the shell script did not complete within 30 sec");
                     uj.stop(UnitJobStatus.CONFIRMED_FAILED, isDiscoveryMode);
                     break;
                 }
@@ -198,19 +197,13 @@ public class ShellJobLogic {
         String nextPII = "" + sessionData.getPIIDecision().nextPII();
         sessionData.getProvisioningMessage().setPeriodicInformInterval(new Integer(nextPII));
         sessionData.getToCPE().addOrChangeParameterValueStruct(PII, nextPII, "xsd:unsignedInt");
-        Log.debug(
-                ShellJobLogic.class,
-                "-ACS->CPE      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
+        log.debug("-ACS->CPE      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
         sessionData.getToDB().add(new ParameterValueStruct(PII, "" + nextPII));
-        Log.debug(
-                ShellJobLogic.class,
-                "-ACS->ACS      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
+        log.debug("-ACS->ACS      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
         sessionData
                 .getToDB()
                 .add(new ParameterValueStruct(SystemParameters.PERIODIC_INTERVAL, "" + nextPII));
-        Log.debug(
-                ShellJobLogic.class,
-                "-ACS->ACS      "
+        log.debug("-ACS->ACS      "
                         + SystemParameters.PERIODIC_INTERVAL
                         + " CPE["
                         + nextPII

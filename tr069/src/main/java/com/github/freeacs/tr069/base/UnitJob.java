@@ -13,12 +13,15 @@ import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
+import lombok.extern.slf4j.Slf4j;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+@Slf4j
 public class UnitJob {
   private final DBI dbi;
   private final SessionDataI sessionData;
@@ -127,18 +130,16 @@ public class UnitJob {
         if (!serverSideJob) {
           updateSessionWithJobParams();
           updateSessionWithJobCurrent();
-          Log.debug(
-              UnitJob.class,
-              "UnitJob status is updated to STARTED and job parameters / job profile are written to session.");
+          log.debug("UnitJob status is updated to STARTED and job parameters / job profile are written to session.");
         } else {
-          Log.debug(UnitJob.class, "UnitJob status is updated to STARTED");
+          log.debug("UnitJob status is updated to STARTED");
         }
       } catch (SQLException sqle) {
-        Log.error(UnitJob.class, "UnitJob update failed", sqle);
+        log.error("UnitJob update failed", sqle);
         throw sqle;
       }
     } catch (Throwable t) {
-      Log.error(UnitJob.class, "An error ocurred in start()", t);
+      log.error("An error ocurred in start()", t);
     }
   }
 
@@ -172,17 +173,15 @@ public class UnitJob {
           sessionData.setFromDB(null);
           sessionData.setAcsParameters(null);
           sessionData.setJobParams(null);
-          Log.debug(
-              UnitJob.class,
-              "Unit-information will be reloaded to reflect changes in profile/unit parameters");
+          log.debug("Unit-information will be reloaded to reflect changes in profile/unit parameters");
           DBIActions.updateParametersFromDB((SessionData) sessionData, isDiscoveryMode, dbi);
         }
       } catch (SQLException sqle) {
-        Log.error(UnitJob.class, "UnitJob update failed", sqle);
+        log.error("UnitJob update failed", sqle);
         throw sqle;
       }
     } catch (Throwable t) {
-      Log.error(UnitJob.class, "An error ocurred in stop()", t);
+      log.error("An error ocurred in stop()", t);
     }
   }
 
@@ -198,7 +197,7 @@ public class UnitJob {
         upList.add(makeUnitParameter(SystemParameters.JOB_DISRUPTIVE, "1"));
       }
       if (serverSideJob) {
-        Log.notice(UnitJob.class, "UnitJob is COMPLETED, job history is updated");
+        log.debug("UnitJob is COMPLETED, job history is updated");
       } else {
         Map<String, JobParameter> jobParams = job.getDefaultParameters();
         sessionData.setJobParams(jobParams);
@@ -214,9 +213,7 @@ public class UnitJob {
                   jp.getParameter(), sessionData.getUnitId(), sessionData.getProfile());
           upList.add(up);
         }
-        Log.notice(
-            UnitJob.class,
-            "UnitJob is COMPLETED, job history, profile/unit parameters are updated");
+        log.debug("UnitJob is COMPLETED, job history, profile/unit parameters are updated");
       }
     }
     return upList;
@@ -262,17 +259,13 @@ public class UnitJob {
           irrelevant = true;
           return this;
         }
-        Log.debug(
-            UnitJob.class,
-            "Current jobId param is "
+        log.debug("Current jobId param is "
                 + jobId
                 + ", will stop unit job with unit job status set to "
                 + unitJobStatus);
         job = sessionData.getUnittype().getJobs().getById(Integer.valueOf(jobIdStr));
         if (job == null && !unitJobStatus.equals(UnitJobStatus.CONFIRMED_FAILED)) {
-          Log.warn(
-              UnitJob.class,
-              "Couldn't find job with jobId "
+          log.warn("Couldn't find job with jobId "
                   + jobId
                   + ", unit job status changed to "
                   + UnitJobStatus.CONFIRMED_FAILED);

@@ -2,6 +2,7 @@ package com.github.freeacs.tr069.base;
 
 import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.UnitJobStatus;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * This class should be the final decision maker on the next Periodic Inform Interval (PII). The
@@ -33,6 +34,7 @@ import com.github.freeacs.dbi.UnitJobStatus;
  *
  * @author morten
  */
+@Slf4j
 public class PIIDecision {
   private SessionDataI sessionData;
   private Job currentJob;
@@ -121,9 +123,7 @@ public class PIIDecision {
   }
 
   private void log(long pii, String reason) {
-    Log.debug(
-        ServiceWindow.class,
-        "PeriodicInformInterval (final): " + pii + " (reason: " + reason + ")");
+    log.debug("PeriodicInformInterval (final): " + pii + " (reason: " + reason + ")");
   }
 
   /**

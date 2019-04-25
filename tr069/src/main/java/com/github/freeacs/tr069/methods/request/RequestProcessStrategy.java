@@ -1,13 +1,15 @@
 package com.github.freeacs.tr069.methods.request;
 
 import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @FunctionalInterface
 public interface RequestProcessStrategy {
+    Logger log = LoggerFactory.getLogger(RequestProcessStrategy.class);
 
     void process(HTTPRequestResponseData reqRes) throws Exception;
 
@@ -27,7 +29,7 @@ public interface RequestProcessStrategy {
             case AutonomousTransferComplete: return autonomousTransferComplete();
             case Reboot: return rebootStrategy();
             default:
-                Log.debug(RequestProcessStrategy.class,"The methodName " + provisioningMethod + " has no request processing strategy");
+                log.debug("The methodName " + provisioningMethod + " has no request processing strategy");
                 return doNotProcessStrategy();
         }
     }

@@ -9,11 +9,13 @@ import com.github.freeacs.tr069.methods.response.ResponseCreateStrategy;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.xml.PrettyPrinter;
 import com.github.freeacs.tr069.xml.Response;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Slf4j
 public abstract class ProvisioningStrategy {
 
     public abstract void process(HTTPRequestResponseData reqRes) throws Exception;
@@ -70,7 +72,7 @@ public abstract class ProvisioningStrategy {
          */
         private void logWillProcessRequest(HTTPRequestResponseData reqRes) {
             String method = reqRes.getRequestData().getMethod();
-            Log.debug(ProvisioningStrategy.class, "Will process method " + method + " (incoming request/response from CPE)");
+            log.debug("Will process method " + method + " (incoming request/response from CPE)");
         }
 
         /**

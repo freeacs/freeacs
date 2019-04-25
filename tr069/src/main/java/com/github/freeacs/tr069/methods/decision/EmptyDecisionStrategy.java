@@ -2,7 +2,6 @@ package com.github.freeacs.tr069.methods.decision;
 
 import com.github.freeacs.tr069.base.DBIActions;
 import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.util.SystemParameters;
@@ -13,6 +12,7 @@ import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 public class EmptyDecisionStrategy implements DecisionStrategy {
     private final DBI dbi;
     private final Properties properties;
@@ -34,50 +35,42 @@ public class EmptyDecisionStrategy implements DecisionStrategy {
         SessionData sessionData = reqRes.getSessionData();
         String prevResponseMethod = sessionData.getPreviousResponseMethod();
         if (prevResponseMethod == null) {
-            Log.error(
-                    EmptyDecisionStrategy.class,
-                    "EM-Decision is EM since the CPE did not send an INFORM (or sessionId was not sent by client)");
+            log.error("EM-Decision is EM since the CPE did not send an INFORM (or sessionId was not sent by client)");
             reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());
         } else if (ProvisioningMethod.Empty.name().equals(prevResponseMethod)) {
-            Log.info(EmptyDecisionStrategy.class, "EM-Decision is EM since two last responses from CPE was EM");
+            log.info("EM-Decision is EM since two last responses from CPE was EM");
             reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());
         } else if (ProvisioningMethod.Inform.name().equals(prevResponseMethod)
                 || ProvisioningMethod.TransferComplete.name().equals(prevResponseMethod)
                 || ProvisioningMethod.GetRPCMethods.name().equals(prevResponseMethod)) {
             if (sessionData.getUnittype() == null) {
-                Log.info(EmptyDecisionStrategy.class, "EM-Decision is EM since unittype is not found");
+                log.info("EM-Decision is EM since unittype is not found");
                 reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());
             } else if (sessionData.discoverUnittype()) {
                 writeSystemParameters(
                         reqRes,
                         Collections.singletonList(new ParameterValueStruct(SystemParameters.DISCOVER, "0")),
                         false);
-                Log.info(EmptyDecisionStrategy.class, "EM-Decision is GPN since unit has DISCOVER parameter set to 1");
+                log.info("EM-Decision is GPN since unit has DISCOVER parameter set to 1");
                 reqRes.getResponseData().setMethod(ProvisioningMethod.GetParameterNames.name());
             } else if (properties.isDiscoveryMode()
                     && !sessionData.isUnittypeCreated()
                     && sessionData.isFirstConnect()) {
                 writeSystemParameters(reqRes, null, false);
-                Log.info(EmptyDecisionStrategy.class, "EM-Decision is GPN since ACS is in discovery-mode");
+                log.info("EM-Decision is GPN since ACS is in discovery-mode");
                 reqRes.getResponseData().setMethod(ProvisioningMethod.GetParameterNames.name());
             } else if (properties.isDiscoveryMode()
                     && !sessionData.getUnittype().getUnittypeParameters().hasDeviceParameters()) {
                 writeSystemParameters(reqRes);
-                Log.info(
-                        EmptyDecisionStrategy.class,
-                        "EM-Decision is GPN since ACS is in discovery-mode and no device parameters found");
+                log.info("EM-Decision is GPN since ACS is in discovery-mode and no device parameters found");
                 reqRes.getResponseData().setMethod(ProvisioningMethod.GetParameterNames.name());
             } else {
                 writeSystemParameters(reqRes);
-                Log.info(
-                        EmptyDecisionStrategy.class,
-                        "EM-Decision is GPV since everything is normal and previous method was either IN or TC (updating LCT and possibly FCT)");
+                log.info("EM-Decision is GPV since everything is normal and previous method was either IN or TC (updating LCT and possibly FCT)");
                 reqRes.getResponseData().setMethod(ProvisioningMethod.GetParameterValues.name());
             }
         } else {
-            Log.info(
-                    EmptyDecisionStrategy.class,
-                    "EM-Decision is EM since it is the default method choice (nothing else fits)");
+            log.info("EM-Decision is EM since it is the default method choice (nothing else fits)");
             reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());
         }
     }

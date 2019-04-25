@@ -1,7 +1,6 @@
 package com.github.freeacs.tr069.methods.request;
 
 import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.tr069.http.HTTPRequestResponseData;
@@ -10,7 +9,9 @@ import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import com.github.freeacs.tr069.xml.Parser;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class SetParameterValuesRequestProcessStrategy implements RequestProcessStrategy {
 
     private final DBI dbi;
@@ -31,7 +32,7 @@ public class SetParameterValuesRequestProcessStrategy implements RequestProcessS
         SessionData sessionData = reqRes.getSessionData();
         ParameterList paramList = sessionData.getToCPE();
         for (ParameterValueStruct pvs : paramList.getParameterValueList()) {
-            Log.notice(SetParameterValuesRequestProcessStrategy.class, "\t" + pvs.getName() + " : " + pvs.getValue());
+            log.debug(pvs.getName() + " : " + pvs.getValue());
             String user = dbi.getSyslog().getIdentity().getUser().getUsername();
             SyslogClient.notice(
                     sessionData.getUnitId(),

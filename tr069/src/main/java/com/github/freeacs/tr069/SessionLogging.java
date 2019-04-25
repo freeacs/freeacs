@@ -13,6 +13,8 @@ import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.http.HTTPResponseData;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Morten
  * @author Jarl
  */
+@Slf4j
 public class SessionLogging {
   public static void log(HTTPRequestResponseData reqRes) {
     try {
@@ -59,10 +62,7 @@ public class SessionLogging {
       // syslog server)
       SyslogClient.send(pm.syslogMsg(16, null, Users.USER_ADMIN));
     } catch (Throwable t) {
-      Log.warn(
-          SessionLogging.class,
-          "An error ocurred when logging at endOfSession. Does not affect provisioning",
-          t);
+      log.warn("An error ocurred when logging at endOfSession. Does not affect provisioning", t);
     }
   }
 

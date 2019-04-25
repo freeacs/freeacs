@@ -12,6 +12,8 @@ import com.github.freeacs.dbi.UnitJobStatus;
 import com.github.freeacs.dbi.UnitParameter;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemParameters;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -23,21 +25,21 @@ import java.util.Map.Entry;
  *
  * @author morten
  */
+@Slf4j
 public class JobLogic {
   public static boolean checkJobOK(SessionDataI sessionData, DBI dbi, boolean isDiscoveryMode) {
     try {
       String jobId = sessionData.getAcsParameters().getValue(SystemParameters.JOB_CURRENT);
       if (jobId != null && !jobId.trim().isEmpty()) {
-        Log.debug(JobLogic.class, "Verification stage entered for job " + jobId);
+        log.debug("Verification stage entered for job " + jobId);
         Job job = sessionData.getUnittype().getJobs().getById(Integer.valueOf(jobId));
         if (job == null) {
-          Log.warn(
-              JobLogic.class, "Current job " + jobId + " does no longer exist, cannot be verified");
+          log.warn("Current job " + jobId + " does no longer exist, cannot be verified");
           return false;
         }
         UnitJob uj = new UnitJob(sessionData, dbi, job, false);
         if (!JobStatus.STARTED.equals(job.getStatus())) {
-          Log.warn(JobLogic.class, "Current job is not STARTED, UnitJob must be STOPPED");
+          log.warn("Current job is not STARTED, UnitJob must be STOPPED");
           uj.stop(UnitJobStatus.STOPPED, isDiscoveryMode);
           return false;
         } else {
@@ -48,9 +50,7 @@ public class JobLogic {
               uj.stop(UnitJobStatus.COMPLETED_OK, isDiscoveryMode);
               return true;
             } else {
-              Log.warn(
-                  JobLogic.class,
-                  "The parameterkeys from CPE and ACS does not match, UnitJob FAILED");
+              log.warn("The parameterkeys from CPE and ACS does not match, UnitJob FAILED");
               uj.stop(UnitJobStatus.CONFIRMED_FAILED, isDiscoveryMode);
               return false;
             }
@@ -68,9 +68,7 @@ public class JobLogic {
               uj.stop(UnitJobStatus.COMPLETED_OK, isDiscoveryMode);
               return true;
             } else {
-              Log.warn(
-                  JobLogic.class,
-                  "Software version on CPE and ACS (desired) does not match, UnitJob FAILED");
+              log.warn("Software version on CPE and ACS (desired) does not match, UnitJob FAILED");
               uj.stop(UnitJobStatus.CONFIRMED_FAILED, isDiscoveryMode);
               return false;
             }
@@ -80,9 +78,7 @@ public class JobLogic {
               uj.stop(UnitJobStatus.COMPLETED_OK, isDiscoveryMode);
               return true;
             } else {
-              Log.warn(
-                  JobLogic.class,
-                  "Script/Config version on CPE and ACS (desired) does not match, UnitJob FAILED");
+              log.warn("Script/Config version on CPE and ACS (desired) does not match, UnitJob FAILED");
               uj.stop(UnitJobStatus.CONFIRMED_FAILED, isDiscoveryMode);
               return false;
             }
@@ -91,7 +87,7 @@ public class JobLogic {
       }
       return true;
     } catch (Throwable t) {
-      Log.error(JobLogic.class, "Job verification check failed", t);
+      log.error("Job verification check failed", t);
       return false;
     }
   }
@@ -175,13 +171,11 @@ public class JobLogic {
         return chosenJob;
       }
     } catch (Throwable t) {
-      Log.error(JobLogic.class, "An error ocurred in getJob()", t);
+      log.error("An error ocurred in getJob()", t);
       return null;
     } finally {
       if (chosenJob != null) {
-        Log.notice(
-            JobLogic.class,
-            "Found job "
+        log.debug("Found job "
                 + chosenJob.getId()
                 + " of type "
                 + chosenJob.getFlags().getType()
@@ -189,7 +183,7 @@ public class JobLogic {
                 + message
                 + ")");
       } else {
-        Log.info(JobLogic.class, "No job found (filter: " + message + ")");
+        log.info("No job found (filter: " + message + ")");
       }
     }
   }
@@ -267,9 +261,7 @@ public class JobLogic {
         // over to another thread/session)
         if (nextPII > PIIDecision.MINIMUM_PII) {
           i.remove();
-          Log.debug(
-              JobLogic.class,
-              "FilterOnRunTime removed job "
+          log.debug("FilterOnRunTime removed job "
                   + job.getId()
                   + " since it was scheduled to run in "
                   + nextPII
@@ -278,14 +270,10 @@ public class JobLogic {
           lowestNRT = NRT;
           nextRepeatableJob = job;
         }
-        //					Log.debug(JobLogic.class, "FilterOnRunTime kept job " + job.getId() + " since it
-        // was scheduled run within " + PIIDecision.MINIMUM_PII + " seconds");
       } else if (!inDisruptiveJobChain && !serviceWindow.isWithin()) {
         i.remove();
         long nextPII = serviceWindow.calculateStdPII();
-        Log.debug(
-            JobLogic.class,
-            "FilterOnRunTime removed job "
+        log.debug("FilterOnRunTime removed job "
                 + entry.getValue().getId()
                 + " since it was outside SW and scheduled to run in "
                 + nextPII
@@ -294,9 +282,7 @@ public class JobLogic {
             nextPII); // important for PIIDecision, must be removed in PIIDecision (must not leak
         // over to another thread/session)
       } else {
-        Log.debug(
-            JobLogic.class,
-            "FilterOnRunTime kept job "
+        log.debug("FilterOnRunTime kept job "
                 + entry.getValue().getId()
                 + " since it was inside SW or in a disruptive job chain, and not repeatable");
       }
@@ -311,9 +297,7 @@ public class JobLogic {
         Job job = entry.getValue();
         boolean repeatable = job.getRepeatCount() != null && job.getRepeatCount() > 0;
         if (repeatable && !job.getId().equals(nextRepeatableJob.getId())) {
-          Log.debug(
-              JobLogic.class,
-              "FilterOnRunTime removed job "
+          log.debug("FilterOnRunTime removed job "
                   + job.getId()
                   + " since it was not first in line to run.");
           i2.remove();
@@ -327,9 +311,7 @@ public class JobLogic {
 
   private static long convertToPII(ServiceWindow serviceWindow, long NRT) {
     long nextPII = (NRT - serviceWindow.getCurrentTms()) / 1000L;
-    Log.debug(
-        JobLogic.class,
-        "Repeatable Job Interval calculated to "
+    log.debug("Repeatable Job Interval calculated to "
             + nextPII
             + "("
             + ServiceWindow.convert(NRT)
@@ -337,9 +319,7 @@ public class JobLogic {
             + serviceWindow.getTimeWindow()
             + ")");
     if (nextPII < PIIDecision.MINIMUM_PII) {
-      Log.debug(
-          JobLogic.class,
-          "Repeatable Job Interval was calculated too low, changed to " + PIIDecision.MINIMUM_PII);
+      log.debug("Repeatable Job Interval was calculated too low, changed to " + PIIDecision.MINIMUM_PII);
       nextPII = PIIDecision.MINIMUM_PII;
     }
     return nextPII;
