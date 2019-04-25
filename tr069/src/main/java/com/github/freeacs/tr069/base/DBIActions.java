@@ -285,7 +285,7 @@ public abstract class DBIActions {
         return "OUI-" + unitId.substring(0, Math.min(unitId.length(), 6));
     }
 
-    public static void handleError(String method, Throwable t) throws SQLException {
+    private static void handleError(String method, Throwable t) throws SQLException {
         log.error(method + " failed", t);
         if (t instanceof SQLException) {
             throw (SQLException) t;

@@ -1,6 +1,5 @@
 package com.github.freeacs.controllers;
 
-import com.github.freeacs.tr069.base.DBIActions;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.File;
@@ -86,21 +85,15 @@ public class FileController {
   }
 
   private static byte[] readFirmwareImage(File firmwareFresh) throws SQLException {
-    String action = "readFirmwareImage";
-    try {
-      File firmwareCache = getFirmware(firmwareFresh.getName(), firmwareFresh.getUnittype().getName());
-      final File firmwareReturn;
-      if (firmwareCache != null && Objects.equals(firmwareFresh.getId(), firmwareCache.getId())) {
-        firmwareReturn = firmwareCache;
-      } else {
-        firmwareFresh.setBytes(firmwareFresh.getContent());
-        putFirmware(firmwareFresh.getName(), firmwareFresh.getUnittype().getName(), firmwareFresh);
-        firmwareReturn = firmwareFresh;
-      }
-      return firmwareReturn.getContent();
-    } catch (Throwable t) {
-      DBIActions.handleError(action, t);
-      return null;
+    File firmwareCache = getFirmware(firmwareFresh.getName(), firmwareFresh.getUnittype().getName());
+    final File firmwareReturn;
+    if (firmwareCache != null && Objects.equals(firmwareFresh.getId(), firmwareCache.getId())) {
+      firmwareReturn = firmwareCache;
+    } else {
+      firmwareFresh.setBytes(firmwareFresh.getContent());
+      putFirmware(firmwareFresh.getName(), firmwareFresh.getUnittype().getName(), firmwareFresh);
+      firmwareReturn = firmwareFresh;
     }
+    return firmwareReturn.getContent();
   }
 }
