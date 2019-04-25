@@ -1,8 +1,8 @@
 package com.github.freeacs.tr069.methods.decision.GetParameterValues;
 
+import com.github.freeacs.tr069.base.DBIActions;
 import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.tr069.base.UnitJob;
-import com.github.freeacs.dbaccess.DBAccessSessionTR069;
 import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.common.util.CacheValue;
 import com.github.freeacs.dbi.*;
@@ -217,6 +217,6 @@ public class ShellJobLogic {
                         + "] ACS["
                         + nextPII
                         + "] Decided by ACS");
-        DBAccessSessionTR069.writeUnitParams(sessionData);
+        DBIActions.writeUnitParams(sessionData);
     }
 }

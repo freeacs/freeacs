@@ -1,9 +1,7 @@
 package com.github.freeacs.tr069.base;
 
-import com.github.freeacs.dbaccess.DBAccessSession;
-import com.github.freeacs.dbaccess.DBAccessStatic;
-import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
+import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
 import com.github.freeacs.dbi.JobParameter;
@@ -22,9 +20,10 @@ import java.util.Map;
 import java.util.Objects;
 
 public class UnitJob {
-  private final ACS acs;
-  private SessionDataI sessionData;
+  private final DBI dbi;
+  private final SessionDataI sessionData;
   private Job job;
+
   /**
    * Server-side provisioning differs from TR-069/TFTP/HTTP in several ways 1. Triggered from server
    * side 2. Continuous/synchronous - not splitted in several sessions (execution/verification) 3.
@@ -39,11 +38,11 @@ public class UnitJob {
    */
   private boolean serverSideJob;
 
-  public UnitJob(SessionDataI sessionData, ACS acs, Job job, boolean serverSideJob) {
+  public UnitJob(SessionDataI sessionData, DBI dbi, Job job, boolean serverSideJob) {
     this.sessionData = sessionData;
     this.job = job;
     this.serverSideJob = serverSideJob;
-    this.acs = acs;
+    this.dbi = dbi;
   }
 
   private UnitParameter makeUnitParameter(String name, String value) {
@@ -124,8 +123,7 @@ public class UnitJob {
           upList.add(jobUp);
           upList.forEach(sessionData.getUnit()::toWriteQueue);
         }
-        DBAccessStatic.startUnitJob(
-            unitId, job.getId(), acs.getDataSource());
+        DBIActions.startUnitJob(unitId, job.getId(), dbi);
         if (!serverSideJob) {
           updateSessionWithJobParams();
           updateSessionWithJobCurrent();
@@ -160,15 +158,15 @@ public class UnitJob {
       Integer jobId = jobInfo.getJobId();
       try {
         List<UnitParameter> upList = getUnitParameters(unitJobStatus);
-        DBAccessStatic.stopUnitJob(
+        DBIActions.stopUnitJob(
             sessionData.getUnitId(),
             jobId,
             unitJobStatus,
-            acs.getDataSource());
+            dbi);
         sessionData.getPIIDecision().setCurrentJobStatus(unitJobStatus);
         // Write directly to database, no queuing, since the all data are flushed in next step (most
         // likely)
-        ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
+        ACSUnit acsUnit = new ACSUnit(dbi.getDataSource(), dbi.getAcs(), dbi.getSyslog());
         acsUnit.addOrChangeUnitParameters(upList, sessionData.getProfile());
         if (!serverSideJob) {
           sessionData.setFromDB(null);
@@ -177,7 +175,7 @@ public class UnitJob {
           Log.debug(
               UnitJob.class,
               "Unit-information will be reloaded to reflect changes in profile/unit parameters");
-          new DBAccessSession(acs).updateParametersFromDB((SessionData) sessionData, isDiscoveryMode);
+          DBIActions.updateParametersFromDB((SessionData) sessionData, isDiscoveryMode, dbi);
         }
       } catch (SQLException sqle) {
         Log.error(UnitJob.class, "UnitJob update failed", sqle);
@@ -188,7 +186,7 @@ public class UnitJob {
     }
   }
 
-  private List<UnitParameter> getUnitParameters(String unitJobStatus) throws SQLException {
+  private List<UnitParameter> getUnitParameters(String unitJobStatus) {
     List<UnitParameter> upList = new ArrayList<>();
     if (!serverSideJob) {
       upList.add(makeUnitParameter(SystemParameters.JOB_CURRENT, ""));
@@ -229,7 +227,7 @@ public class UnitJob {
     private String unitJobStatus;
     private Integer jobId;
 
-    public JobInfo(String unitJobStatus) {
+    JobInfo(String unitJobStatus) {
       this.unitJobStatus = unitJobStatus;
     }
 
@@ -237,15 +235,15 @@ public class UnitJob {
       return irrelevant;
     }
 
-    public String getUnitJobStatus() {
+    String getUnitJobStatus() {
       return unitJobStatus;
     }
 
-    public Integer getJobId() {
+    Integer getJobId() {
       return jobId;
     }
 
-    public JobInfo invoke() {
+    JobInfo invoke() {
       if (serverSideJob) {
         jobId = sessionData.getJob().getId();
       } else {

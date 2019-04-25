@@ -1,8 +1,7 @@
 package com.github.freeacs.tr069.methods.request;
 
+import com.github.freeacs.tr069.base.DBIActions;
 import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.tr069.base.Log;
-import com.github.freeacs.dbaccess.DBAccessSession;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.UnittypeParameterFlag;
@@ -15,14 +14,13 @@ import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.xml.ParameterInfoStruct;
 import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.Parser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class GetParameterNamesProcessStrategy implements RequestProcessStrategy {
-    private static final Logger logger = LoggerFactory.getLogger(GetParameterNamesProcessStrategy.class);
     private final DBI dbi;
 
     private Properties properties;
@@ -76,20 +74,14 @@ public class GetParameterNamesProcessStrategy implements RequestProcessStrategy 
                 if (!utpList.contains(utp)) {
                     utpList.add(utp);
                 } else {
-                    logger.debug(
-                            "The unittype parameter "
-                                    + utp.getName()
-                                    + " was found more than once in the GPNRes");
+                    log.debug("The unittype parameter " + utp.getName() + " was found more than once in the GPNRes");
                 }
             }
-            DBAccessSession dbAccessSession = new DBAccessSession(dbi.getAcs());
-            dbAccessSession.writeUnittypeParameters(sessionData, utpList);
-            Log.debug(
-                    GetParameterNamesProcessStrategy.class,
-                    "Unittype parameters (" + pisList.size() + ") is written to DB, will now reload unit");
+            DBIActions.writeUnittypeParameters(sessionData, utpList, dbi);
+            log.debug("Unittype parameters (" + pisList.size() + ") is written to DB, will now reload unit");
             sessionData.setFromDB(null);
             sessionData.setAcsParameters(null);
-            dbAccessSession.updateParametersFromDB(sessionData, properties.isDiscoveryMode());
+            DBIActions.updateParametersFromDB(sessionData, properties.isDiscoveryMode(), dbi);
         } catch (Throwable t) {
             throw new TR069Exception("Processing GPNRes failed", TR069ExceptionShortMessage.MISC, t);
         }

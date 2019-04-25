@@ -14,7 +14,7 @@ public class SetParameterValuesDecisionStrategy implements DecisionStrategy {
     private final Properties properties;
     private final DBI dbi;
 
-    public SetParameterValuesDecisionStrategy(Properties properties, DBI dbi) {
+    SetParameterValuesDecisionStrategy(Properties properties, DBI dbi) {
         this.properties = properties;
         this.dbi = dbi;
     }
@@ -29,7 +29,7 @@ public class SetParameterValuesDecisionStrategy implements DecisionStrategy {
             Log.debug(
                     SetParameterValuesDecisionStrategy.class,
                     "UnitJob is COMPLETED without verification stage, since CPE does not support ParameterKey");
-            UnitJob uj = new UnitJob(sessionData, dbi.getAcs(), sessionData.getJob(), false);
+            UnitJob uj = new UnitJob(sessionData, dbi, sessionData.getJob(), false);
             uj.stop(UnitJobStatus.COMPLETED_OK, properties.isDiscoveryMode());
         }
         reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());

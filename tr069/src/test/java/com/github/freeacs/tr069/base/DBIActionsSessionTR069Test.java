@@ -1,10 +1,10 @@
-package com.github.freeacs.dbaccess;
+package com.github.freeacs.tr069.base;
 
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class DBAccessSessionTR069Test {
+public class DBIActionsSessionTR069Test {
 
     @Test
     public void shouldWorkForLessThan6Chars() {
@@ -12,7 +12,7 @@ public class DBAccessSessionTR069Test {
         String shortUnitUd = "ABC";
 
         // When:
-        String unittypeName = DBAccessSessionTR069.getUnittypeName(shortUnitUd);
+        String unittypeName = DBIActions.getUnittypeName(shortUnitUd);
 
         // Then:
         assertEquals("OUI-ABC", unittypeName);
@@ -24,7 +24,7 @@ public class DBAccessSessionTR069Test {
         String shortUnitUd = "ABCDEFG123";
 
         // When:
-        String unittypeName = DBAccessSessionTR069.getUnittypeName(shortUnitUd);
+        String unittypeName = DBIActions.getUnittypeName(shortUnitUd);
 
         // Then:
         assertEquals("OUI-ABCDEF", unittypeName);
@@ -36,6 +36,6 @@ public class DBAccessSessionTR069Test {
         String shortUnitUd = null;
 
         // When:
-        DBAccessSessionTR069.getUnittypeName(shortUnitUd);
+        DBIActions.getUnittypeName(shortUnitUd);
     }
 }

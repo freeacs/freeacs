@@ -14,9 +14,9 @@ import com.github.freeacs.tr069.background.ActiveDeviceDetectionTask;
 import com.github.freeacs.tr069.background.MessageListenerTask;
 import com.github.freeacs.tr069.background.ScheduledKickTask;
 import com.github.freeacs.tr069.base.BaseCache;
-import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.methods.ProvisioningStrategy;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -33,9 +33,8 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * This is the "main-class" of TR069 Provisioning. It receives the HTTP-request from the CPE and
  * returns an HTTP-response. The content of the request/reponse can be both TR-069 request/response.
- *
- * @author morten
  */
+@Slf4j
 @RestController
 public class Tr069Controller {
 
@@ -72,7 +71,7 @@ public class Tr069Controller {
      * <p>In special cases the server will kick the device to "come back" and continue testing a new
      * test case.
      */
-    @PostMapping(value = {"/${context-path}", "/${context-path}/prov"})
+    @PostMapping(value = {"${context-path}", "${context-path}/prov"})
     public ResponseEntity<String> doPost(@RequestBody(required = false) String xmlPayload, HttpServletRequest req, HttpServletResponse res) {
         HTTPRequestResponseData reqRes = null;
         try {
@@ -94,14 +93,14 @@ public class Tr069Controller {
                             : null)
                     .body(reqRes.getResponseData().getXml());
         } catch (Throwable t) {
-            Log.error(Tr069Controller.class, "An error occurred during processing the request", t);
+            log.error("An error occurred during processing the request", t);
             if (reqRes != null) {
                 reqRes.setThrowable(t);
             }
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
         } finally {
             if (reqRes != null && endOfSession(reqRes)) {
-                Log.debug(Tr069Controller.class, "End of session is reached, " +
+                log.debug("End of session is reached, " +
                         "will write queued unit parameters " +
                         "if unit (" + reqRes.getSessionData().getUnit() + ") is not null");
                 if (reqRes.getSessionData().getUnit() != null) {
@@ -157,10 +156,7 @@ public class Tr069Controller {
                 acsUnit.addOrChangeQueuedUnitParameters(unit);
             }
         } catch (Throwable t) {
-            Log.error(
-                    Tr069Controller.class,
-                    "An error occured when writing queued unit parameters to Fusion. May affect provisioning",
-                    t);
+            log.error("An error occured when writing queued unit parameters to Fusion. May affect provisioning", t);
         }
     }
 
@@ -180,10 +176,7 @@ public class Tr069Controller {
             }
             return false;
         } catch (Throwable t) {
-            Log.warn(
-                    Tr069Controller.class,
-                    "An error occured when determining endOfSession. Does not affect provisioning",
-                    t);
+            log.warn("An error occured when determining endOfSession. Does not affect provisioning", t);
             return false;
         }
     }

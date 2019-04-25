@@ -2,7 +2,6 @@ package com.github.freeacs.tr069.methods.request;
 
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.tr069.base.Log;
-import com.github.freeacs.dbaccess.DBAccessSession;
 import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.http.HTTPRequestResponseData;
@@ -16,7 +15,7 @@ public class SetParameterValuesRequestProcessStrategy implements RequestProcessS
 
     private final DBI dbi;
 
-    public SetParameterValuesRequestProcessStrategy(DBI dbi) {
+    SetParameterValuesRequestProcessStrategy(DBI dbi) {
         this.dbi = dbi;
     }
 
@@ -33,12 +32,7 @@ public class SetParameterValuesRequestProcessStrategy implements RequestProcessS
         ParameterList paramList = sessionData.getToCPE();
         for (ParameterValueStruct pvs : paramList.getParameterValueList()) {
             Log.notice(SetParameterValuesRequestProcessStrategy.class, "\t" + pvs.getName() + " : " + pvs.getValue());
-            String user = new DBAccessSession(dbi.getAcs())
-                            .getAcs()
-                            .getSyslog()
-                            .getIdentity()
-                            .getUser()
-                            .getUsername();
+            String user = dbi.getSyslog().getIdentity().getUser().getUsername();
             SyslogClient.notice(
                     sessionData.getUnitId(),
                     "ProvMsg: Written to CPE: " + pvs.getName() + " = " + pvs.getValue(),

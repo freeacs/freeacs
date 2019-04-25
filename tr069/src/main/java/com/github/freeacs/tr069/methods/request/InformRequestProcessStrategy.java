@@ -1,11 +1,10 @@
 package com.github.freeacs.tr069.methods.request;
 
+import com.github.freeacs.tr069.base.DBIActions;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.tr069.base.BaseCache;
 import com.github.freeacs.tr069.base.JobLogic;
 import com.github.freeacs.tr069.base.Log;
-import com.github.freeacs.dbaccess.DBAccessSession;
-import com.github.freeacs.dbaccess.DBAccessSessionTR069;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.TimestampWrapper;
@@ -17,6 +16,7 @@ import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.xml.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+@Slf4j
 public class InformRequestProcessStrategy implements RequestProcessStrategy {
     private final DBI dbi;
     private Properties properties;
@@ -58,12 +59,10 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
             sessionData.setSerialNumber(deviceIdStruct.getSerialNumber());
             parseEvents(parser, sessionData);
             parseParameters(sessionData, parser);
-            DBAccessSession dbAccessSession = new DBAccessSession(dbi.getAcs());
-            dbAccessSession.updateParametersFromDB(sessionData, isDiscoveryMode); // Unit-object is read and populated in SessionData
+            DBIActions.updateParametersFromDB(sessionData, isDiscoveryMode, dbi); // Unit-object is read and populated in SessionData
             logPeriodicInformTiming(sessionData);
             ScheduledKickTask.removeUnit(unitId);
             if (isDiscoveryMode && sessionData.isFirstConnect()) {
-                DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(dbi.getAcs(), dbAccessSession);
 
                 String unitTypeName = deviceIdStruct.getProductClass();
 
@@ -74,19 +73,18 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
                     unitTypeName += hardwareVersion;
                 }
 
-                dbAccessSessionTR069.writeUnittypeProfileUnit(
-                        sessionData, unitTypeName, unitId);
+                DBIActions.writeUnittypeProfileUnit(sessionData, unitTypeName, unitId, dbi);
 
                 sessionData.setFromDB(null);
                 sessionData.setAcsParameters(null);
-                dbAccessSession.updateParametersFromDB(sessionData, isDiscoveryMode);
+                DBIActions.updateParametersFromDB(sessionData, isDiscoveryMode, dbi);
                 Log.debug(
                         InformRequestProcessStrategy.class,
                         "Unittype, profile and unit is created, since discovery mode is enabled and this is the first connect");
             }
             sessionData.getCommandKey().setServerKey(reqRes);
             sessionData.getParameterKey().setServerKey(reqRes);
-            boolean jobOk = JobLogic.checkJobOK(sessionData, dbi.getAcs(), isDiscoveryMode);
+            boolean jobOk = JobLogic.checkJobOK(sessionData, dbi, isDiscoveryMode);
             sessionData.setJobUnderExecution(!jobOk);
         } catch (SQLException e) {
             throw new TR069DatabaseException(e);
@@ -205,7 +203,7 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
             msg +=
                     ", swver:"
                             + (cpeParams == null ? "Unknown" : cpeParams.getValue(cpeParams.SOFTWARE_VERSION));
-            Log.debug(InformRequestProcessStrategy.class, msg);
+            log.debug(msg);
         }
     }
 

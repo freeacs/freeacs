@@ -1,8 +1,8 @@
 package com.github.freeacs.tr069.methods.decision;
 
+import com.github.freeacs.tr069.base.DBIActions;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.tr069.base.Log;
-import com.github.freeacs.dbaccess.DBAccessSessionTR069;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.util.SystemParameters;
@@ -128,7 +128,7 @@ public class EmptyDecisionStrategy implements DecisionStrategy {
             }
         }
         sessionData.setToDB(toDB);
-        DBAccessSessionTR069.writeUnitParams(sessionData); // queue-parameters - will be written at end-of-session
+        DBIActions.writeUnitParams(sessionData); // queue-parameters - will be written at end-of-session
         if (!queue) { // execute changes immediately - since otherwise these parameters will be lost (in the event of GPNRes.process())
             ACS acs = dbi.getAcs();
             ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());

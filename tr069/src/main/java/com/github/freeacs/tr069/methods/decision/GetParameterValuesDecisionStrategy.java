@@ -1,9 +1,15 @@
 package com.github.freeacs.tr069.methods.decision;
 
-import com.github.freeacs.tr069.base.*;
+import com.github.freeacs.tr069.CPEParameters;
+import com.github.freeacs.tr069.Properties;
+import com.github.freeacs.tr069.SessionData;
+import com.github.freeacs.tr069.base.DBIActions;
+import com.github.freeacs.tr069.base.DownloadLogic;
+import com.github.freeacs.tr069.base.JobLogic;
+import com.github.freeacs.tr069.base.Log;
+import com.github.freeacs.tr069.base.ResetUtil;
+import com.github.freeacs.tr069.base.ServiceWindow;
 import com.github.freeacs.tr069.base.UnitJob;
-import com.github.freeacs.dbaccess.DBAccessSession;
-import com.github.freeacs.dbaccess.DBAccessSessionTR069;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.tr069.TR069DMParameter;
 import com.github.freeacs.dbi.tr069.TR069DMParameterMap;
@@ -11,7 +17,6 @@ import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.http.HTTPRequestResponseData;
-import com.github.freeacs.tr069.*;
 import com.github.freeacs.tr069.background.ActiveDeviceDetectionTask;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.tr069.exception.TR069Exception;
@@ -22,7 +27,6 @@ import com.github.freeacs.tr069.methods.decision.GetParameterValues.ShellJobLogi
 import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -155,7 +159,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
             // group-matching in job-search
             // will not affect the comparison in populateToCollections()
             updateUnitParameters(sessionData);
-            uj = JobLogic.checkNewJob(sessionData, dbi.getAcs(), concurrentDownloadLimit); // may find a new job
+            uj = JobLogic.checkNewJob(sessionData, dbi, concurrentDownloadLimit); // may find a new job
         }
         Job job = sessionData.getJob();
         if (job != null) { // No job is present - process according to
@@ -267,7 +271,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
                         + "] ACS["
                         + nextPII
                         + "] Decided by ACS");
-        DBAccessSessionTR069.writeUnitParams(sessionData);
+        DBIActions.writeUnitParams(sessionData);
     }
 
     @SuppressWarnings("Duplicates")
@@ -350,7 +354,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
                             + nextPII
                             + "] Decided by ACS");
         }
-        DBAccessSessionTR069.writeUnitParams(sessionData);
+        DBIActions.writeUnitParams(sessionData);
     }
 
     @SuppressWarnings("Duplicates")
@@ -403,7 +407,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
                             + nextPII
                             + "] Decided by ACS");
         }
-        DBAccessSessionTR069.writeUnitParams(sessionData);
+        DBIActions.writeUnitParams(sessionData);
     }
 
     /**
@@ -422,7 +426,6 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
                 if (pvsDB.getName().equals(pvsCPE.getName())) {
                     match = true;
                     parameterMissing = true;
-                    continue;
                 }
             }
             if (!match) {
@@ -593,10 +596,6 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
     /**
      * Extraction mode will read all parameters from the device and write them to the
      * unit_param_session table. No data will be written to unit_param table (provisioned data).
-     *
-     * @param reqRes
-     * @throws TR069DatabaseException
-     * @throws SQLException
      */
     @SuppressWarnings("Duplicates")
     private void processExtraction(HTTPRequestResponseData reqRes) throws TR069DatabaseException {
@@ -632,8 +631,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         }
         sessionData.setToDB(toDB);
         ACS acs = dbi.getAcs();
-        DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(acs, new DBAccessSession(acs));
-        dbAccessSessionTR069.writeUnitSessionParams(sessionData);
+        DBIActions.writeUnitSessionParams(sessionData, dbi);
         Log.debug(GetParameterValuesDecisionStrategy.class, toDB.size() + " params written to ACS session storage");
         reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());
         sessionData.getProvisioningMessage().setProvOutput(ProvisioningMessage.ProvOutput.EMPTY);
