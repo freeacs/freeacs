@@ -8,7 +8,7 @@ import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.TimestampWrapper;
-import com.github.freeacs.http.HTTPRequestResponseData;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.*;
 import com.github.freeacs.tr069.background.ScheduledKickTask;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;

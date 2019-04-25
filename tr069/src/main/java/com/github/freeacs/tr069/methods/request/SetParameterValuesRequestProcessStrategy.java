@@ -4,7 +4,7 @@ import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.dbi.util.SyslogClient;
-import com.github.freeacs.http.HTTPRequestResponseData;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.xml.ParameterList;

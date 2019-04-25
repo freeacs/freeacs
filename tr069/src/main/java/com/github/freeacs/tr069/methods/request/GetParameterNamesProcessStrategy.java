@@ -5,7 +5,7 @@ import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.UnittypeParameterFlag;
-import com.github.freeacs.http.HTTPRequestResponseData;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069Exception;

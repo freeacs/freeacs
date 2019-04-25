@@ -16,7 +16,7 @@ import com.github.freeacs.dbi.tr069.TR069DMParameterMap;
 import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.github.freeacs.http.HTTPRequestResponseData;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.background.ActiveDeviceDetectionTask;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.tr069.exception.TR069Exception;

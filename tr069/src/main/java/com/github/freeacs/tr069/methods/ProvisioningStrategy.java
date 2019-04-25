@@ -2,7 +2,7 @@ package com.github.freeacs.tr069.methods;
 
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.tr069.base.Log;
-import com.github.freeacs.http.HTTPRequestResponseData;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.methods.decision.DecisionStrategy;
 import com.github.freeacs.tr069.methods.request.RequestProcessStrategy;
 import com.github.freeacs.tr069.methods.response.ResponseCreateStrategy;

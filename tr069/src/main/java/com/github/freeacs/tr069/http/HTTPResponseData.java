@@ -1,4 +1,4 @@
-package com.github.freeacs.http;
+package com.github.freeacs.tr069.http;
 
 public class HTTPResponseData {
   private String method;

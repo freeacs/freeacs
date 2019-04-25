@@ -13,7 +13,7 @@ import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.github.freeacs.http.HTTPRequestResponseData;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import lombok.AllArgsConstructor;

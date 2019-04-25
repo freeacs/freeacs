@@ -8,7 +8,7 @@ import com.github.freeacs.dbi.FileType;
 import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.JobParameter;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.github.freeacs.http.HTTPRequestResponseData;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.CPEParameters;
 import com.github.freeacs.tr069.SessionData;
 import org.slf4j.Logger;

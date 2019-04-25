@@ -7,7 +7,7 @@ import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.TimestampWrapper;
-import com.github.freeacs.http.HTTPRequestResponseData;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.InformParameters;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;

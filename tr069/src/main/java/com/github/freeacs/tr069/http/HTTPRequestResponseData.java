@@ -1,4 +1,4 @@
-package com.github.freeacs.http;
+package com.github.freeacs.tr069.http;
 
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.base.BaseCache;
