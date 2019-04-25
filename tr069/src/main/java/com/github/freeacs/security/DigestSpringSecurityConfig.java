@@ -2,6 +2,7 @@ package com.github.freeacs.security;
 
 import com.github.freeacs.tr069.Properties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,12 +27,15 @@ public class DigestSpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AcsUnitDetailsService acsUnitDetailsService;
     private final String digestSecret;
+    private final String contextPath;
 
     @Autowired
     public DigestSpringSecurityConfig(AcsUnitDetailsService acsUnitDetailsService,
-                                      Properties properties) {
+                                      Properties properties,
+                                      @Value("${context-path}") String contextPath) {
         this.acsUnitDetailsService = acsUnitDetailsService;
         this.digestSecret = properties.getDigestSecret();
+        this.contextPath = contextPath;
     }
 
     @PostConstruct
@@ -47,6 +51,7 @@ public class DigestSpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(digestEntryPoint())
                 .and()
                 .authorizeRequests()
+                .antMatchers(contextPath + "/ok").permitAll()
                 .anyRequest().authenticated();
     }
 

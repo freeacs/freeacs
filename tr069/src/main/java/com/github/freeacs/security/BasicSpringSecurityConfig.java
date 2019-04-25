@@ -1,6 +1,7 @@
 package com.github.freeacs.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,10 +24,13 @@ import javax.annotation.PostConstruct;
 public class BasicSpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AcsUnitDetailsService acsUnitDetailsService;
+    private final String contextPath;
 
     @Autowired
-    public BasicSpringSecurityConfig(AcsUnitDetailsService acsUnitDetailsService) {
+    public BasicSpringSecurityConfig(AcsUnitDetailsService acsUnitDetailsService,
+                                     @Value("${context-path}") String contextPath) {
         this.acsUnitDetailsService = acsUnitDetailsService;
+        this.contextPath = contextPath;
     }
 
     @PostConstruct
@@ -39,6 +43,7 @@ public class BasicSpringSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
+                .antMatchers(contextPath + "/ok").permitAll()
                 .anyRequest().authenticated()
                 .and().httpBasic()
                 .authenticationEntryPoint(basicEntryPoint());

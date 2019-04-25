@@ -90,7 +90,9 @@ public class SessionLogging {
       if (reqData.getFault() != null) {
         reqShortname += "(FC:" + reqData.getFault().getFaultCode() + ")";
       }
-      String resShortname = ProvisioningMethod.valueOf(resMethod).getAbbreviation();
+      String resShortname = resMethod != null
+              ? ProvisioningMethod.valueOf(resMethod).getAbbreviation()
+              : ProvisioningMethod.Empty.getAbbreviation();
       if (!ProvisioningMethod.Empty.name().equals(reqMethod) && reqMethod.equals(resMethod)) {
         resShortname += "r";
       }
