@@ -1,5 +1,8 @@
 package com.github.freeacs;
 
+import com.github.freeacs.common.util.FileSlurper;
+
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,13 +13,15 @@ import javax.sql.DataSource;
 
 public class ValueInsertHelper {
 
-  public static void insert(DataSource ds) throws SQLException {
+  public static void insert(DataSource ds) throws SQLException, IOException {
     Connection connection = ds.getConnection();
     connection.setAutoCommit(false);
     Statement stmt =
         connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
     List<String> inserts =
         Arrays.asList(
+            "DROP ALL OBJECTS;",
+            FileSlurper.getFileAsString("/h2-schema.sql"),
             "INSERT INTO unit_type (unit_type_id, matcher_id, unit_type_name, vendor_name, description, protocol) VALUES (1, null, 'Test', null, 'Test', 'TR069');              ",
             "INSERT INTO unit_type_param (unit_type_param_id, unit_type_id, name, flags) VALUES (1, 1, 'System.X_FREEACS-COM.Comment', 'X');                                    ",
             "INSERT INTO unit_type_param (unit_type_param_id, unit_type_id, name, flags) VALUES (2, 1, 'System.X_FREEACS-COM.Debug', 'X');                                      ",
