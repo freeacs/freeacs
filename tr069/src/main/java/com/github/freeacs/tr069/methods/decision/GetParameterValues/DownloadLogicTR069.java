@@ -16,6 +16,8 @@ import java.util.Map;
 @Slf4j
 public class DownloadLogicTR069 {
 
+    public static final String SPACE_SEPARATOR = "--";
+
     public static boolean isScriptDownloadSetup(HTTPRequestResponseData reqRes, Job job, String publicUrl) {
         SessionData sessionData = reqRes.getSessionData();
         ACSParameters oweraParams = sessionData.getAcsParameters();
@@ -91,7 +93,7 @@ public class DownloadLogicTR069 {
         if (fileName != null) {
             downloadURL += "/" + fileName;
         }
-        return downloadURL.replaceAll(" ", "--");
+        return downloadURL.replaceAll(" ", SPACE_SEPARATOR);
     }
 
     public static boolean isSoftwareDownloadSetup(HTTPRequestResponseData reqRes, Job job, String publicUrl) {

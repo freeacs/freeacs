@@ -6,6 +6,7 @@ import com.github.freeacs.dbi.File;
 import com.github.freeacs.dbi.FileType;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.tr069.base.DownloadLogic;
+import com.github.freeacs.tr069.methods.decision.GetParameterValues.DownloadLogicTR069;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,6 +37,8 @@ public class FileController {
                     @PathVariable String firmwareVersion,
                     @PathVariable String unitTypeName,
                     HttpServletResponse res) throws IOException {
+    firmwareVersion = firmwareVersion.replaceAll(DownloadLogicTR069.SPACE_SEPARATOR, " ");
+    unitTypeName = unitTypeName.replaceAll(DownloadLogicTR069.SPACE_SEPARATOR, " ");
     String firmwareName = null;
     OutputStream out = null;
 
