@@ -1,6 +1,5 @@
 package com.github.freeacs.security;
 
-import com.github.freeacs.tr069.Properties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint;
@@ -25,19 +23,19 @@ import javax.annotation.PostConstruct;
         value="auth.method",
         havingValue = "digest"
 )
-public class DigestSpringSecurityConfig extends WebSecurityConfigurerAdapter {
+public class DigestSpringSecurityConfig extends AbstractSecurityConfig {
 
     private final AcsUnitDetailsService acsUnitDetailsService;
     private final String digestSecret;
-    private final String contextPath;
 
     @Autowired
     public DigestSpringSecurityConfig(AcsUnitDetailsService acsUnitDetailsService,
-                                      Properties properties,
+                                      @Value("${digest.secret}") String digestSecret,
+                                      @Value("${file.auth.used}") Boolean fileAuthUsed,
                                       @Value("${context-path}") String contextPath) {
+        super(contextPath, fileAuthUsed);
         this.acsUnitDetailsService = acsUnitDetailsService;
-        this.digestSecret = properties.getDigestSecret();
-        this.contextPath = contextPath;
+        this.digestSecret = digestSecret;
     }
 
     @PostConstruct
@@ -47,13 +45,16 @@ public class DigestSpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
-                .addFilter(digestAuthenticationFilter())
-                .exceptionHandling().authenticationEntryPoint(digestEntryPoint())
-                .and()
-                .authorizeRequests()
-                .antMatchers(contextPath + "/ok").permitAll()
+        allowHealthEndpoint(
+                conditionalUseFileAuth(
+                        http
+                                .csrf().disable()
+                                .addFilter(digestAuthenticationFilter())
+                                .exceptionHandling().authenticationEntryPoint(digestEntryPoint())
+                                .and()
+                                .authorizeRequests()
+                )
+        )
                 .anyRequest().authenticated();
     }
 

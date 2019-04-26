@@ -14,13 +14,15 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 public class OKController {
+  public static final String CTX_PATH = "/ok";
+
   private final DBI dbi;
 
   public OKController(DBI dbi) {
     this.dbi = dbi;
   }
 
-  @GetMapping("${context-path}/ok")
+  @GetMapping("${context-path}" + CTX_PATH)
   public String doGet(@RequestParam(required = false) String clearCache) {
     if (clearCache != null) {
       BaseCache.clearCache();

@@ -23,16 +23,16 @@ import javax.annotation.PostConstruct;
         value="auth.method",
         havingValue = "basic"
 )
-public class BasicSpringSecurityConfig extends WebSecurityConfigurerAdapter {
+public class BasicSpringSecurityConfig extends AbstractSecurityConfig {
 
     private final AcsUnitDetailsService acsUnitDetailsService;
-    private final String contextPath;
 
     @Autowired
     public BasicSpringSecurityConfig(AcsUnitDetailsService acsUnitDetailsService,
+                                     @Value("${file.auth.used}") Boolean fileAuthUsed,
                                      @Value("${context-path}") String contextPath) {
+        super(contextPath, fileAuthUsed);
         this.acsUnitDetailsService = acsUnitDetailsService;
-        this.contextPath = contextPath;
     }
 
     @PostConstruct
@@ -42,10 +42,13 @@ public class BasicSpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers(contextPath + "/ok").permitAll()
+        allowHealthEndpoint(
+                conditionalUseFileAuth(
+                        http
+                                .csrf().disable()
+                                .authorizeRequests()
+                )
+        )
                 .anyRequest().authenticated()
                 .and().httpBasic()
                 .authenticationEntryPoint(basicEntryPoint());

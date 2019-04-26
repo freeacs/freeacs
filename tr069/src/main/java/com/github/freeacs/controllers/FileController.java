@@ -7,15 +7,14 @@ import com.github.freeacs.dbi.FileType;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.tr069.base.DownloadLogic;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.Objects;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static com.github.freeacs.tr069.base.BaseCache.getFirmware;
@@ -24,6 +23,7 @@ import static com.github.freeacs.tr069.base.BaseCache.putFirmware;
 @RestController
 @Slf4j
 public class FileController {
+  public static final String CTX_PATH = "/file";
 
   private final DBI dbi;
 
@@ -31,24 +31,20 @@ public class FileController {
     this.dbi = dbi;
   }
 
-  @GetMapping("${context-path}/file/*")
-  public void doGet(@Value("${context-path}/file/") String contextPath, HttpServletRequest req, HttpServletResponse res) throws IOException {
+  @GetMapping("${context-path}" + CTX_PATH + "/{fileType}/{firmwareVersion}/{unitTypeName}")
+  public void doGet(@PathVariable FileType fileType,
+                    @PathVariable String firmwareVersion,
+                    @PathVariable String unitTypeName,
+                    HttpServletResponse res) throws IOException {
     String firmwareName = null;
-    String unittypeName = null;
     OutputStream out = null;
 
     try {
       ACS acs = dbi.getAcs();
       File firmware;
-      String pathInfo = req.getPathInfo().substring(contextPath.length());
-      pathInfo = pathInfo.replaceAll("--", " ");
-      String[] pathInfoArr = pathInfo.split("/");
-      FileType fileType = FileType.valueOf(pathInfoArr[0]); // Expect it to be FileType.TYPE_SOFTWARE/TYPE_SCRIPT
-      String firmwareVersion = pathInfoArr[1];
-      unittypeName = pathInfoArr[2];
-      Unittype unittype = acs.getUnittype(unittypeName);
+      Unittype unittype = acs.getUnittype(unitTypeName);
       if (unittype == null) {
-        log.error("Could not find unittype " + unittypeName + " in xAPS, hence file URL is incorrect");
+        log.error("Could not find unittype " + unitTypeName + " in xAPS, hence file URL is incorrect");
         res.sendError(HttpServletResponse.SC_NOT_FOUND);
         return;
       }
@@ -59,21 +55,21 @@ public class FileController {
         return;
       }
       firmwareName = firmware.getName();
-      log.debug("Firmware " + firmwareName + " exists, will now retrieve binaries for unittype-name " + unittypeName);
+      log.debug("Firmware " + firmwareName + " exists, will now retrieve binaries for unittype-name " + unitTypeName);
       out = res.getOutputStream();
       byte[] firmwareImage = readFirmwareImage(firmware);
       if (firmwareImage == null || firmwareImage.length == 0) {
         res.sendError(HttpServletResponse.SC_NOT_FOUND);
-        log.error("No binaries found for firmware " + firmwareName + " (in unittype " + unittypeName + ")");
+        log.error("No binaries found for firmware " + firmwareName + " (in unittype " + unitTypeName + ")");
         return;
       }
-      log.debug("Binaries found for firmware " + firmwareName + " (in unittype " + unittypeName + "), starts to transmit firmware image");
+      log.debug("Binaries found for firmware " + firmwareName + " (in unittype " + unitTypeName + "), starts to transmit firmware image");
       res.setContentType("application/octet-stream");
       res.setContentLength(firmwareImage.length);
       out.write(firmwareImage);
-      log.debug("Transmission of firmware " + firmwareName + " (in unittype " + unittypeName + ") ends");
+      log.debug("Transmission of firmware " + firmwareName + " (in unittype " + unitTypeName + ") ends");
     } catch (Throwable t) {
-      log.error("Error while retrieving the firmware " + firmwareName + " (in unittype " + unittypeName + ")", t);
+      log.error("Error while retrieving the firmware " + firmwareName + " (in unittype " + unitTypeName + ")", t);
       res.sendError(HttpServletResponse.SC_NOT_FOUND);
     } finally {
       DownloadLogic.removeOldest();
