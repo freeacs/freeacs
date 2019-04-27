@@ -66,11 +66,11 @@ public class ShellDaemonPool {
     return shellDaemonPoolMap.computeIfAbsent(fusionUser, k -> new ArrayList<>());
   }
 
-  public static synchronized ACSShellDaemon getShellDaemon(
-      DataSource mainDataSource,
-      DataSource syslogDataSource,
-      String fusionUser,
-      Properties properties)
+  static synchronized ACSShellDaemon getShellDaemon(
+          DataSource mainDataSource,
+          DataSource syslogDataSource,
+          String fusionUser,
+          Properties properties)
       throws Throwable {
     List<ACSShellDaemon> shellDaemonPool = getShellDaemonPool(fusionUser);
     int poolsize = properties.getShellScriptPoolSize();
@@ -83,7 +83,6 @@ public class ShellDaemonPool {
           break;
         } else {
           acsShellDaemon = null;
-          continue;
         }
       } else {
         acsShellDaemon = createNewShellDaemon(mainDataSource, syslogDataSource, i, fusionUser);

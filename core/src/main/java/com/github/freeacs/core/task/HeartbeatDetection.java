@@ -87,7 +87,7 @@ public class HeartbeatDetection extends DBIShare {
     PreparedStatement ps = null;
     DynamicStatement ds = null;
     try {
-      c = getSyslogDataSource().getConnection();
+      c = getDataSource().getConnection();
       Unittype[] unittypes = acs.getUnittypes().getUnittypes();
       for (Unittype unittype : unittypes) {
         Heartbeat[] heartbeats = unittype.getHeartbeats().getHeartbeats();
@@ -197,7 +197,7 @@ public class HeartbeatDetection extends DBIShare {
     DynamicStatement ds = null;
     int counter = 0;
     try {
-      c = getSyslogDataSource().getConnection();
+      c = getDataSource().getConnection();
       ds = new DynamicStatement();
       ds.addSql("SELECT distinct(unit_id) FROM syslog WHERE ");
       ds.addSqlAndArguments("collector_timestamp >= ? AND ", new Date(from));
@@ -245,7 +245,7 @@ public class HeartbeatDetection extends DBIShare {
   private void filterAndSendHeartbeats(long to) throws SQLException, IOException {
     // Now process the maps and the "absence"-events to see if there's any units
     // missing and build a list of missing events from units
-    ACSUnit acsUnit = new ACSUnit(getMainDataSource(), acs, getSyslog());
+    ACSUnit acsUnit = new ACSUnit(getDataSource(), acs, getSyslog());
     for (SyslogMessageMapContainer.SyslogMessageMap smm : smmc.getContainerValues()) {
       if (logger.isDebugEnabled()) {
         logger.debug("HeartbeatDetection: FilterHeartbeats: Process " + smm);

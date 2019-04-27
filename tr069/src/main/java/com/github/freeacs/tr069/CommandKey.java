@@ -1,7 +1,7 @@
 package com.github.freeacs.tr069;
 
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.github.freeacs.http.HTTPRequestResponseData;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import lombok.Data;
 
 @Data

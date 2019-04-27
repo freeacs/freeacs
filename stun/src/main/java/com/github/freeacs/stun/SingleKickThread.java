@@ -161,9 +161,7 @@ public class SingleKickThread implements Runnable {
       try {
         unitId = iterator.next();
         InspectionState lastIS = unitWatch.get(unitId);
-        acsUnit =
-            new ACSUnit(
-                xapsCp, dbi.getAcs(), dbi.getAcs().getSyslog()); // make sure xAPS object is updated
+        acsUnit = new ACSUnit(xapsCp, dbi.getAcs(), dbi.getSyslog()); // make sure xAPS object is updated
         unit = acsUnit.getUnitById(unitId);
         long timeSinceLastChange = System.currentTimeMillis() - lastIS.getTmsOfLastChange();
         if (timeSinceLastChange > 15 * 60 * 1000) {
@@ -225,7 +223,7 @@ public class SingleKickThread implements Runnable {
     try {
       inbox.addFilter(new Message(null, Message.MTYPE_PUB_IM, null, Message.OTYPE_UNIT));
       dbi.registerInbox("KickRunnable", inbox);
-      this.acsUnit = new ACSUnit(xapsCp, dbi.getAcs(), dbi.getAcs().getSyslog());
+      this.acsUnit = new ACSUnit(xapsCp, dbi.getAcs(), dbi.getSyslog());
       Sleep sleep = new Sleep(1000, 1000, true);
       long lastUpdateCheck = 0;
       do {

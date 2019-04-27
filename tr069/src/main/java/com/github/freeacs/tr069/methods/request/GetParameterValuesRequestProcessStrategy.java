@@ -1,20 +1,21 @@
 package com.github.freeacs.tr069.methods.request;
 
-import com.github.freeacs.base.Log;
-import com.github.freeacs.http.HTTPRequestResponseData;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.CPEParameters;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import com.github.freeacs.tr069.xml.Parser;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class GetParameterValuesRequestProcessStrategy implements RequestProcessStrategy {
 
     @SuppressWarnings("Duplicates")
     @Override
     public void process(HTTPRequestResponseData reqRes) throws Exception {
         reqRes.getRequestData().setMethod(ProvisioningMethod.GetParameterNames.name());
-        Log.debug(GetParameterValuesRequestProcessStrategy.class, "Will process XML: " + reqRes.getRequestData().getXml().length() + " char");
+        log.debug("Will process XML: " + reqRes.getRequestData().getXml().length() + " char");
         Parser parser = new Parser(reqRes.getRequestData().getXml());
         SessionData sessionData = reqRes.getSessionData();
         if (parser.getHeader().getNoMoreRequests() != null
@@ -23,11 +24,11 @@ public class GetParameterValuesRequestProcessStrategy implements RequestProcessS
         }
         sessionData.setValuesFromCPE(parser.getParameterList().getParameterValueList());
         sessionData.getProvisioningMessage().setParamsRead(sessionData.getValuesFromCPE().size());
-        Log.debug(GetParameterValuesRequestProcessStrategy.class, "Response holds " + sessionData.getValuesFromCPE().size() + " parameters");
+        log.debug("Response holds " + sessionData.getValuesFromCPE().size() + " parameters");
         if (sessionData.getValuesFromCPE().size() < sessionData.getRequestedCPE().size()) {
             String msg = "Number of parameters returned from CPE is less than asked for (";
             msg += sessionData.getRequestedCPE().size() + ")";
-            Log.warn(GetParameterValuesRequestProcessStrategy.class, msg);
+            log.warn(msg);
         }
         populateCPEParameters(sessionData);
     }
@@ -60,6 +61,6 @@ public class GetParameterValuesRequestProcessStrategy implements RequestProcessS
                 cpeParams.getCpeParams().put(cpeParams.SOFTWARE_VERSION, pvs);
             }
         }
-        Log.debug(GetParameterValuesRequestProcessStrategy.class, "Found " + counter + " cpe-params (of special interest to ACS) in response");
+        log.debug("Found " + counter + " cpe-params (of special interest to ACS) in response");
     }
 }

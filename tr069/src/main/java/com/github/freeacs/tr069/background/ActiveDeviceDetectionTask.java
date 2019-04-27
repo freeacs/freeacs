@@ -45,7 +45,7 @@ public class ActiveDeviceDetectionTask extends TaskDefaultImpl {
         "ActiveDeviceDetectionTask: Have found " + inactiveUnits.size() + " inactive devices");
     for (Entry<String, Long> entry : inactiveUnits.entrySet()) {
       String unitId = entry.getKey();
-      Syslog syslog = dbi.getAcs().getSyslog();
+      Syslog syslog = dbi.getSyslog();
       SyslogFilter sf = new SyslogFilter();
       sf.setCollectorTmsStart(new Date(anHourAgo)); // look for syslog newer than 1 hour
       sf.setUnitId(unitId);
@@ -73,7 +73,7 @@ public class ActiveDeviceDetectionTask extends TaskDefaultImpl {
                 + " (as expected) or since, but device has been active since "
                 + new Date(anHourAgo)
                 + ". TR-069 client may have stopped",
-            dbi.getAcs().getSyslog());
+            dbi.getSyslog());
         logger.info(
             "ActivceDeviceDetection: Unit "
                 + entry.getKey()

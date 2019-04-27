@@ -1,22 +1,32 @@
 package com.github.freeacs.tr069.methods.request;
 
-import com.github.freeacs.base.BaseCache;
-import com.github.freeacs.base.JobLogic;
-import com.github.freeacs.base.Log;
-import com.github.freeacs.base.db.DBAccess;
-import com.github.freeacs.base.db.DBAccessSession;
-import com.github.freeacs.base.db.DBAccessSessionTR069;
+import com.github.freeacs.tr069.CPEParameters;
+import com.github.freeacs.tr069.CommandKey;
+import com.github.freeacs.tr069.InformParameters;
+import com.github.freeacs.tr069.ParameterKey;
+import com.github.freeacs.tr069.Properties;
+import com.github.freeacs.tr069.SessionData;
+import com.github.freeacs.tr069.base.DBIActions;
+import com.github.freeacs.dbi.DBI;
+import com.github.freeacs.tr069.base.BaseCache;
+import com.github.freeacs.tr069.base.JobLogic;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.TimestampWrapper;
-import com.github.freeacs.http.HTTPRequestResponseData;
-import com.github.freeacs.tr069.*;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.background.ScheduledKickTask;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
-import com.github.freeacs.tr069.xml.*;
+import com.github.freeacs.tr069.xml.DeviceIdStruct;
+import com.github.freeacs.tr069.xml.EventList;
+import com.github.freeacs.tr069.xml.EventStruct;
+import com.github.freeacs.tr069.xml.Header;
+import com.github.freeacs.tr069.xml.ParameterList;
+import com.github.freeacs.tr069.xml.ParameterValueStruct;
+import com.github.freeacs.tr069.xml.Parser;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -28,11 +38,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+@Slf4j
 public class InformRequestProcessStrategy implements RequestProcessStrategy {
+    private final DBI dbi;
     private Properties properties;
 
-    InformRequestProcessStrategy(Properties properties) {
+    InformRequestProcessStrategy(Properties properties, DBI dbi) {
         this.properties = properties;
+        this.dbi = dbi;
     }
 
     @SuppressWarnings("Duplicates")
@@ -56,12 +69,10 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
             sessionData.setSerialNumber(deviceIdStruct.getSerialNumber());
             parseEvents(parser, sessionData);
             parseParameters(sessionData, parser);
-            DBAccessSession dbAccessSession = new DBAccessSession(DBAccess.getInstance().getDbi().getAcs());
-            dbAccessSession.updateParametersFromDB(sessionData, isDiscoveryMode); // Unit-object is read and populated in SessionData
+            DBIActions.updateParametersFromDB(sessionData, isDiscoveryMode, dbi); // Unit-object is read and populated in SessionData
             logPeriodicInformTiming(sessionData);
             ScheduledKickTask.removeUnit(unitId);
             if (isDiscoveryMode && sessionData.isFirstConnect()) {
-                DBAccessSessionTR069 dbAccessSessionTR069 = new DBAccessSessionTR069(DBAccess.getInstance().getDbi().getAcs(), dbAccessSession);
 
                 String unitTypeName = deviceIdStruct.getProductClass();
 
@@ -72,19 +83,16 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
                     unitTypeName += hardwareVersion;
                 }
 
-                dbAccessSessionTR069.writeUnittypeProfileUnit(
-                        sessionData, unitTypeName, unitId);
+                DBIActions.writeUnittypeProfileUnit(sessionData, unitTypeName, unitId, dbi);
 
                 sessionData.setFromDB(null);
                 sessionData.setAcsParameters(null);
-                dbAccessSession.updateParametersFromDB(sessionData, isDiscoveryMode);
-                Log.debug(
-                        InformRequestProcessStrategy.class,
-                        "Unittype, profile and unit is created, since discovery mode is enabled and this is the first connect");
+                DBIActions.updateParametersFromDB(sessionData, true, dbi);
+                log.debug("Unittype, profile and unit is created, since discovery mode is enabled and this is the first connect");
             }
             sessionData.getCommandKey().setServerKey(reqRes);
             sessionData.getParameterKey().setServerKey(reqRes);
-            boolean jobOk = JobLogic.checkJobOK(sessionData, DBAccess.getInstance().getDbi().getAcs(), isDiscoveryMode);
+            boolean jobOk = JobLogic.checkJobOK(sessionData, dbi, isDiscoveryMode);
             sessionData.setJobUnderExecution(!jobOk);
         } catch (SQLException e) {
             throw new TR069DatabaseException(e);
@@ -203,7 +211,7 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
             msg +=
                     ", swver:"
                             + (cpeParams == null ? "Unknown" : cpeParams.getValue(cpeParams.SOFTWARE_VERSION));
-            Log.debug(InformRequestProcessStrategy.class, msg);
+            log.debug(msg);
         }
     }
 
@@ -220,36 +228,17 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
                                 TimestampWrapper.tmsFormat.parse(LCT).getTime() + Integer.parseInt(PII) * 1000;
                         long diff = System.currentTimeMillis() - shouldConnectTms;
                         if (diff > -5000 && diff < 5000) {
-                            Log.info(
-                                    InformRequestProcessStrategy.class,
-                                    "Periodic Inform recorded on time   ("
-                                            + diff / 1000
-                                            + " sec). Deviation: "
-                                            + (diff / 10) / Integer.parseInt(PII)
-                                            + " %");
+                            log.info("Periodic Inform recorded on time   (" + diff / 1000 + " sec). Deviation: " + (diff / 10) / Integer.parseInt(PII) + " %");
                         } else if (diff >= 5000) {
-                            Log.info(
-                                    InformRequestProcessStrategy.class,
-                                    "Periodic Inform recorded too late  ("
-                                            + diff / 1000
-                                            + " sec). Deviation: "
-                                            + (diff / 10) / Integer.parseInt(PII)
-                                            + " %");
+                            log.info("Periodic Inform recorded too late  (" + diff / 1000 + " sec). Deviation: " + (diff / 10) / Integer.parseInt(PII) + " %");
                         } else {
-                            Log.info(
-                                    InformRequestProcessStrategy.class,
-                                    "Periodic Inform recorded too early ("
-                                            + diff / 1000
-                                            + " sec). Deviation: "
-                                            + (diff / 10) / Integer.parseInt(PII)
-                                            + " %");
+                            log.info("Periodic Inform recorded too early (" + diff / 1000 + " sec). Deviation: " + (diff / 10) / Integer.parseInt(PII) + " %");
                         }
                     }
                 }
             }
         } catch (Throwable t) {
-            Log.warn(
-                    InformRequestProcessStrategy.class, "LogPeriodicInformTiming failed - no consequence for provisioning: ", t);
+            log.warn("LogPeriodicInformTiming failed - no consequence for provisioning: ", t);
         }
     }
 }

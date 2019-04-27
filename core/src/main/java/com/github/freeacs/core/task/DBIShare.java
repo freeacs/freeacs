@@ -31,12 +31,8 @@ public abstract class DBIShare implements Task {
     return dbi.getAcs();
   }
 
-  protected DataSource getSyslogDataSource() {
-    return dbi.getAcs().getDataSource();
-  }
-
-  protected DataSource getMainDataSource() {
-    return dbi.getAcs().getDataSource();
+  protected DataSource getDataSource() {
+    return dbi.getDataSource();
   }
 
   protected long getLaunchTms() {
@@ -44,7 +40,7 @@ public abstract class DBIShare implements Task {
   }
 
   protected Syslog getSyslog() {
-    return dbi.getAcs().getSyslog();
+    return dbi.getSyslog();
   }
 
   public void run() {

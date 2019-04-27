@@ -24,29 +24,25 @@ public abstract class DBIOwner implements Task {
 
   private Throwable throwable;
 
-  public DBIOwner(String taskName, DBI dbi) {
+  DBIOwner(String taskName, DBI dbi) {
     this.taskName = taskName;
     this.dbi = dbi;
   }
 
-  protected ACS getLatestACS() {
+  ACS getLatestACS() {
     return dbi.getAcs();
   }
 
-  protected DataSource getSyslogDataSource() {
-    return dbi.getAcs().getDataSource();
+  Identity getIdentity() {
+    return dbi.getSyslog().getIdentity();
   }
 
-  protected Identity getIdentity() {
-    return dbi.getAcs().getSyslog().getIdentity();
-  }
-
-  protected DataSource getMainDataSource() {
-    return dbi.getAcs().getDataSource();
+  DataSource getDataSource() {
+    return dbi.getDataSource();
   }
 
   protected Syslog getSyslog() {
-    return dbi.getAcs().getSyslog();
+    return dbi.getSyslog();
   }
 
   public void run() {

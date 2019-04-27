@@ -1,24 +1,27 @@
 package com.github.freeacs.tr069.methods;
 
-import com.github.freeacs.base.Log;
-import com.github.freeacs.http.HTTPRequestResponseData;
+import com.github.freeacs.dbi.DBI;
+import com.github.freeacs.tr069.base.Log;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.methods.decision.DecisionStrategy;
 import com.github.freeacs.tr069.methods.request.RequestProcessStrategy;
 import com.github.freeacs.tr069.methods.response.ResponseCreateStrategy;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.xml.PrettyPrinter;
 import com.github.freeacs.tr069.xml.Response;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Slf4j
 public abstract class ProvisioningStrategy {
 
     public abstract void process(HTTPRequestResponseData reqRes) throws Exception;
 
-    public static ProvisioningStrategy getStrategy(Properties properties) {
-        return new NormalProvisioningStrategy(properties);
+    public static ProvisioningStrategy getStrategy(Properties properties, DBI dbi) {
+        return new NormalProvisioningStrategy(properties, dbi);
     }
 
     private static class NormalProvisioningStrategy extends ProvisioningStrategy {
@@ -28,9 +31,12 @@ public abstract class ProvisioningStrategy {
                 Pattern.compile(":Body.*>\\s*<cwmp:(\\w+)(>|/>)", Pattern.DOTALL);
 
         private final Properties properties;
+        private final DBI dbi;
 
-        private NormalProvisioningStrategy(Properties properties) {
+        private NormalProvisioningStrategy(Properties properties,
+                                           DBI dbi) {
             this.properties = properties;
+            this.dbi = dbi;
         }
 
         @Override
@@ -43,13 +49,13 @@ public abstract class ProvisioningStrategy {
             // 1. process the request
             logWillProcessRequest(reqRes);
             ProvisioningMethod requestProvisioningMethod = getRequestMethod(reqRes);
-            RequestProcessStrategy.getStrategy(requestProvisioningMethod, properties).process(reqRes);
+            RequestProcessStrategy.getStrategy(requestProvisioningMethod, properties, dbi).process(reqRes);
             if (Log.isConversationLogEnabled()) {
                 logConversationRequest(reqRes);
             }
 
             // 2. decide what to do next
-            DecisionStrategy.getStrategy(requestProvisioningMethod, properties).makeDecision(reqRes);
+            DecisionStrategy.getStrategy(requestProvisioningMethod, properties, dbi).makeDecision(reqRes);
 
             // 3. Create and set response
             ProvisioningMethod responseProvisioningMethod = getResponseMethod(reqRes);
@@ -66,7 +72,7 @@ public abstract class ProvisioningStrategy {
          */
         private void logWillProcessRequest(HTTPRequestResponseData reqRes) {
             String method = reqRes.getRequestData().getMethod();
-            Log.debug(ProvisioningStrategy.class, "Will process method " + method + " (incoming request/response from CPE)");
+            log.debug("Will process method " + method + " (incoming request/response from CPE)");
         }
 
         /**

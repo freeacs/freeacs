@@ -1,13 +1,19 @@
 package com.github.freeacs.tr069.xml;
 
+import java.util.Objects;
+
 public class PrettyPrinter {
 
     public static String prettyPrintXmlString(String input) {
-        return XMLFormatter.prettyprint(input);
+        return XMLFormatter.prettyprint(setEmptyIfNull(input));
     }
 
     public static String filterInvalidCharacters(String input) {
-        return XMLFormatter.filter(input);
+        return XMLFormatter.filter(setEmptyIfNull(input));
+    }
+
+    private static String setEmptyIfNull(String string) {
+        return Objects.isNull(string) ? "" : string;
     }
 
     private static class XMLFormatter {

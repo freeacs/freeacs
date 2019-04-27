@@ -1,20 +1,19 @@
 package com.github.freeacs.tr069.methods.decision.GetParameterValues;
 
-import com.github.freeacs.base.Log;
-import com.github.freeacs.base.UnitJob;
-import com.github.freeacs.base.db.DBAccessSessionTR069;
+import com.github.freeacs.tr069.base.DBIActions;
+import com.github.freeacs.tr069.base.UnitJob;
 import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.common.util.CacheValue;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.CPEParameters;
-import com.github.freeacs.tr069.Provisioning;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -22,6 +21,7 @@ import java.util.List;
 import java.util.Random;
 
 /** This class performs a SHELL-job */
+@Slf4j
 public class ShellJobLogic {
 
     private static Random random = new Random();
@@ -35,7 +35,12 @@ public class ShellJobLogic {
      */
     private static Cache monitorCache = new Cache();
 
-    public static void execute(SessionData sessionData, ACS acs, Job job, UnitJob uj, boolean isDiscoveryMode) throws TR069Exception {
+    public static void execute(SessionData sessionData,
+                               ACS acs,
+                               Job job,
+                               UnitJob uj,
+                               boolean isDiscoveryMode,
+                               ScriptExecutions executions) throws TR069Exception {
         String unitId = sessionData.getUnitId();
         CacheValue cv = monitorCache.get(unitId);
         if (cv == null) {
@@ -46,7 +51,7 @@ public class ShellJobLogic {
             // read parameters from device and save it to the unit
             ShellJobLogic.importReadOnlyParameters(sessionData, acs);
             // execute changes using the shell-script, all changes are written to database
-            ShellJobLogic.executeShellScript(sessionData, job, uj, isDiscoveryMode);
+            ShellJobLogic.executeShellScript(sessionData, job, uj, isDiscoveryMode, executions);
             // read the changes from the database and send to CPE
             ShellJobLogic.prepareSPV(sessionData, acs);
         }
@@ -61,9 +66,11 @@ public class ShellJobLogic {
      * Wait for the script to be executed. If shell daemon returns error - should result in Job
      * verification fail (not sure how)
      */
-    private static void executeShellScript(
-            SessionData sessionData, Job job, UnitJob uj, boolean isDiscoveryMode) throws TR069Exception {
-        ScriptExecutions executions = Provisioning.getExecutions();
+    private static void executeShellScript(SessionData sessionData,
+                                           Job job,
+                                           UnitJob uj,
+                                           boolean isDiscoveryMode,
+                                           ScriptExecutions executions) throws TR069Exception {
         String scriptArgs =
                 "\"-uut:"
                         + sessionData.getUnittype().getName()
@@ -91,15 +98,13 @@ public class ShellJobLogic {
                 ScriptExecution se = executions.getExecution(sessionData.getUnittype(), requestId);
                 if (se.getExitStatus() != null) {
                     if (se.getExitStatus()) { // ERROR OCCURRED
-                        Log.error(ShellJobLogic.class, se.getErrorMessage());
+                        log.error(se.getErrorMessage());
                         uj.stop(UnitJobStatus.CONFIRMED_FAILED, isDiscoveryMode);
                     } else uj.stop(UnitJobStatus.COMPLETED_OK, isDiscoveryMode);
                     break;
                 }
                 if (timeWaited > 30000) {
-                    Log.error(
-                            ShellJobLogic.class,
-                            "The execution of the shell script did not complete within 30 sec");
+                    log.error("The execution of the shell script did not complete within 30 sec");
                     uj.stop(UnitJobStatus.CONFIRMED_FAILED, isDiscoveryMode);
                     break;
                 }
@@ -192,25 +197,19 @@ public class ShellJobLogic {
         String nextPII = "" + sessionData.getPIIDecision().nextPII();
         sessionData.getProvisioningMessage().setPeriodicInformInterval(new Integer(nextPII));
         sessionData.getToCPE().addOrChangeParameterValueStruct(PII, nextPII, "xsd:unsignedInt");
-        Log.debug(
-                ShellJobLogic.class,
-                "-ACS->CPE      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
+        log.debug("-ACS->CPE      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
         sessionData.getToDB().add(new ParameterValueStruct(PII, "" + nextPII));
-        Log.debug(
-                ShellJobLogic.class,
-                "-ACS->ACS      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
+        log.debug("-ACS->ACS      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
         sessionData
                 .getToDB()
                 .add(new ParameterValueStruct(SystemParameters.PERIODIC_INTERVAL, "" + nextPII));
-        Log.debug(
-                ShellJobLogic.class,
-                "-ACS->ACS      "
+        log.debug("-ACS->ACS      "
                         + SystemParameters.PERIODIC_INTERVAL
                         + " CPE["
                         + nextPII
                         + "] ACS["
                         + nextPII
                         + "] Decided by ACS");
-        DBAccessSessionTR069.writeUnitParams(sessionData);
+        DBIActions.writeUnitParams(sessionData);
     }
 }

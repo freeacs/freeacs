@@ -1,11 +1,14 @@
 package com.github.freeacs.tr069;
 
-import com.github.freeacs.base.Log;
-import com.typesafe.config.Config;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
 @Data
+@Slf4j
+@Component
 public class Properties {
   private String digestSecret;
   private boolean fileAuthUsed;
@@ -15,31 +18,22 @@ public class Properties {
   private int concurrentDownloadLimit;
   private String publicUrl;
 
-  private Config environment;
+  private Environment environment;
   private String contextPath;
 
   private boolean appendHwVersion;
 
-  public Properties(Config config) {
-    this.environment = config;
-    setAuthMethod(config.getString("auth.method"));
-    setFileAuthUsed(config.getBoolean("file.auth.used"));
-    setPublicUrl(config.getString("public.url"));
-    setDigestSecret(config.getString("digest.secret"));
-    setDiscoveryMode(config.getBoolean("discovery.mode"));
-    setDiscoveryBlock(getOrDefault("discovery.block", null));
-    setConcurrentDownloadLimit(getOrDefault("concurrent.download.limit", 50));
-    setContextPath(getOrDefault("server.servlet.context-path", "/"));
-    setAppendHwVersion(getOrDefault("unit.type.append-hw-version", false));
-  }
-
-  @SuppressWarnings({"Duplicates", "unchecked"})
-  private <T> T getOrDefault(String key, T defaultValue) {
-    Object obj = environment.hasPath(key) ? environment.getAnyRef(key) : null;
-    if (obj != null) {
-      return (T) obj;
-    }
-    return defaultValue;
+  public Properties(Environment environment) {
+    this.environment = environment;
+    setAuthMethod(environment.getProperty("auth.method"));
+    setFileAuthUsed(environment.getProperty("file.auth.used", Boolean.class, true));
+    setPublicUrl(environment.getProperty("public.url"));
+    setDigestSecret(environment.getProperty("digest.secret"));
+    setDiscoveryMode(environment.getProperty("discovery.mode", Boolean.class, false));
+    setDiscoveryBlock(environment.getProperty("discovery.block", String.class, null));
+    setConcurrentDownloadLimit(environment.getProperty("concurrent.download.limit", Integer.class, 50));
+    setContextPath(environment.getProperty("server.servlet.context-path", String.class, "/"));
+    setAppendHwVersion(environment.getProperty("unit.type.append-hw-version", Boolean.class, false));
   }
 
   private void setDiscoveryBlock(String discoveryBlock) {
@@ -74,9 +68,7 @@ public class Properties {
 
   private boolean isQuirk(String quirkName, String unittypeName, String version) {
     if (unittypeName == null) {
-      Log.debug(
-          Properties.class,
-          "The unittypename (null) could not be found. The quirk "
+      log.debug("The unittypename (null) could not be found. The quirk "
               + quirkName
               + " will return default false");
       return false;
@@ -91,11 +83,11 @@ public class Properties {
 
   private String[] getQuirks(String unittypeName, String version) {
     String quirks = null;
-    if (version != null && environment.hasPath("quirks." + unittypeName + "." + version)) {
-      quirks = environment.getString("quirks." + unittypeName + "." + version);
+    if (version != null && environment.getProperty("quirks." + unittypeName + "." + version) != null) {
+      quirks = environment.getProperty("quirks." + unittypeName + "." + version);
     }
-    if (quirks == null && environment.hasPath("quirks." + unittypeName)) {
-      quirks = environment.getString("quirks." + unittypeName);
+    if (quirks == null && environment.getProperty("quirks." + unittypeName) != null) {
+      quirks = environment.getProperty("quirks." + unittypeName);
     }
     if (quirks != null) {
       return quirks.split("\\s*,\\s*");

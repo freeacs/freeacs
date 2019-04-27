@@ -1,18 +1,24 @@
 package com.github.freeacs.tr069.methods.request;
 
-import com.github.freeacs.base.Log;
-import com.github.freeacs.base.db.DBAccess;
-import com.github.freeacs.base.db.DBAccessSession;
+import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.dbi.util.SyslogClient;
-import com.github.freeacs.http.HTTPRequestResponseData;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import com.github.freeacs.tr069.xml.Parser;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class SetParameterValuesRequestProcessStrategy implements RequestProcessStrategy {
+
+    private final DBI dbi;
+
+    SetParameterValuesRequestProcessStrategy(DBI dbi) {
+        this.dbi = dbi;
+    }
 
     @SuppressWarnings("Duplicates")
     @Override
@@ -26,13 +32,8 @@ public class SetParameterValuesRequestProcessStrategy implements RequestProcessS
         SessionData sessionData = reqRes.getSessionData();
         ParameterList paramList = sessionData.getToCPE();
         for (ParameterValueStruct pvs : paramList.getParameterValueList()) {
-            Log.notice(SetParameterValuesRequestProcessStrategy.class, "\t" + pvs.getName() + " : " + pvs.getValue());
-            String user = new DBAccessSession(DBAccess.getInstance().getDbi().getAcs())
-                            .getAcs()
-                            .getSyslog()
-                            .getIdentity()
-                            .getUser()
-                            .getUsername();
+            log.debug(pvs.getName() + " : " + pvs.getValue());
+            String user = dbi.getSyslog().getIdentity().getUser().getUsername();
             SyslogClient.notice(
                     sessionData.getUnitId(),
                     "ProvMsg: Written to CPE: " + pvs.getName() + " = " + pvs.getValue(),

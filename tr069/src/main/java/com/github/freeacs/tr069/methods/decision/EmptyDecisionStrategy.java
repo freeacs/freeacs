@@ -1,18 +1,18 @@
 package com.github.freeacs.tr069.methods.decision;
 
-import com.github.freeacs.base.Log;
-import com.github.freeacs.base.db.DBAccess;
-import com.github.freeacs.base.db.DBAccessSessionTR069;
+import com.github.freeacs.tr069.base.DBIActions;
+import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.TimestampWrapper;
-import com.github.freeacs.http.HTTPRequestResponseData;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.InformParameters;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,11 +20,14 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
 public class EmptyDecisionStrategy implements DecisionStrategy {
-    private Properties properties;
+    private final DBI dbi;
+    private final Properties properties;
 
-    EmptyDecisionStrategy(Properties properties) {
+    EmptyDecisionStrategy(Properties properties, DBI dbi) {
         this.properties = properties;
+        this.dbi = dbi;
     }
 
     @Override
@@ -32,60 +35,52 @@ public class EmptyDecisionStrategy implements DecisionStrategy {
         SessionData sessionData = reqRes.getSessionData();
         String prevResponseMethod = sessionData.getPreviousResponseMethod();
         if (prevResponseMethod == null) {
-            Log.error(
-                    EmptyDecisionStrategy.class,
-                    "EM-Decision is EM since the CPE did not send an INFORM (or sessionId was not sent by client)");
+            log.error("EM-Decision is EM since the CPE did not send an INFORM (or sessionId was not sent by client)");
             reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());
         } else if (ProvisioningMethod.Empty.name().equals(prevResponseMethod)) {
-            Log.info(EmptyDecisionStrategy.class, "EM-Decision is EM since two last responses from CPE was EM");
+            log.info("EM-Decision is EM since two last responses from CPE was EM");
             reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());
         } else if (ProvisioningMethod.Inform.name().equals(prevResponseMethod)
                 || ProvisioningMethod.TransferComplete.name().equals(prevResponseMethod)
                 || ProvisioningMethod.GetRPCMethods.name().equals(prevResponseMethod)) {
             if (sessionData.getUnittype() == null) {
-                Log.info(EmptyDecisionStrategy.class, "EM-Decision is EM since unittype is not found");
+                log.info("EM-Decision is EM since unittype is not found");
                 reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());
             } else if (sessionData.discoverUnittype()) {
                 writeSystemParameters(
                         reqRes,
                         Collections.singletonList(new ParameterValueStruct(SystemParameters.DISCOVER, "0")),
                         false);
-                Log.info(EmptyDecisionStrategy.class, "EM-Decision is GPN since unit has DISCOVER parameter set to 1");
+                log.info("EM-Decision is GPN since unit has DISCOVER parameter set to 1");
                 reqRes.getResponseData().setMethod(ProvisioningMethod.GetParameterNames.name());
             } else if (properties.isDiscoveryMode()
                     && !sessionData.isUnittypeCreated()
                     && sessionData.isFirstConnect()) {
                 writeSystemParameters(reqRes, null, false);
-                Log.info(EmptyDecisionStrategy.class, "EM-Decision is GPN since ACS is in discovery-mode");
+                log.info("EM-Decision is GPN since ACS is in discovery-mode");
                 reqRes.getResponseData().setMethod(ProvisioningMethod.GetParameterNames.name());
             } else if (properties.isDiscoveryMode()
                     && !sessionData.getUnittype().getUnittypeParameters().hasDeviceParameters()) {
                 writeSystemParameters(reqRes);
-                Log.info(
-                        EmptyDecisionStrategy.class,
-                        "EM-Decision is GPN since ACS is in discovery-mode and no device parameters found");
+                log.info("EM-Decision is GPN since ACS is in discovery-mode and no device parameters found");
                 reqRes.getResponseData().setMethod(ProvisioningMethod.GetParameterNames.name());
             } else {
                 writeSystemParameters(reqRes);
-                Log.info(
-                        EmptyDecisionStrategy.class,
-                        "EM-Decision is GPV since everything is normal and previous method was either IN or TC (updating LCT and possibly FCT)");
+                log.info("EM-Decision is GPV since everything is normal and previous method was either IN or TC (updating LCT and possibly FCT)");
                 reqRes.getResponseData().setMethod(ProvisioningMethod.GetParameterValues.name());
             }
         } else {
-            Log.info(
-                    EmptyDecisionStrategy.class,
-                    "EM-Decision is EM since it is the default method choice (nothing else fits)");
+            log.info("EM-Decision is EM since it is the default method choice (nothing else fits)");
             reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());
         }
     }
 
-    private static void writeSystemParameters(HTTPRequestResponseData reqRes) throws SQLException {
+    private void writeSystemParameters(HTTPRequestResponseData reqRes) throws SQLException {
         writeSystemParameters(reqRes, null, true);
     }
 
     @SuppressWarnings("Duplicates")
-    private static void writeSystemParameters(
+    private void writeSystemParameters(
             HTTPRequestResponseData reqRes, List<ParameterValueStruct> params, boolean queue) throws SQLException {
         SessionData sessionData = reqRes.getSessionData();
         List<ParameterValueStruct> toDB = new ArrayList<>();
@@ -126,9 +121,9 @@ public class EmptyDecisionStrategy implements DecisionStrategy {
             }
         }
         sessionData.setToDB(toDB);
-        DBAccessSessionTR069.writeUnitParams(sessionData); // queue-parameters - will be written at end-of-session
+        DBIActions.writeUnitParams(sessionData); // queue-parameters - will be written at end-of-session
         if (!queue) { // execute changes immediately - since otherwise these parameters will be lost (in the event of GPNRes.process())
-            ACS acs = DBAccess.getInstance().getDbi().getAcs();
+            ACS acs = dbi.getAcs();
             ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
             acsUnit.addOrChangeQueuedUnitParameters(sessionData.getUnit());
         }

@@ -1,6 +1,6 @@
 package com.github.freeacs.tr069;
 
-import com.github.freeacs.base.Log;
+import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.dbi.Users;
 import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ErrorResponsibility;
@@ -8,11 +8,13 @@ import com.github.freeacs.dbi.util.ProvisioningMessage.ProvOutput;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ProvStatus;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SyslogClient;
-import com.github.freeacs.http.HTTPRequestData;
-import com.github.freeacs.http.HTTPRequestResponseData;
-import com.github.freeacs.http.HTTPResponseData;
+import com.github.freeacs.tr069.http.HTTPRequestData;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
+import com.github.freeacs.tr069.http.HTTPResponseData;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Morten
  * @author Jarl
  */
+@Slf4j
 public class SessionLogging {
   public static void log(HTTPRequestResponseData reqRes) {
     try {
@@ -59,10 +62,7 @@ public class SessionLogging {
       // syslog server)
       SyslogClient.send(pm.syslogMsg(16, null, Users.USER_ADMIN));
     } catch (Throwable t) {
-      Log.warn(
-          Provisioning.class,
-          "An error ocurred when logging at endOfSession. Does not affect provisioning",
-          t);
+      log.warn("An error ocurred when logging at endOfSession. Does not affect provisioning", t);
     }
   }
 
@@ -90,7 +90,9 @@ public class SessionLogging {
       if (reqData.getFault() != null) {
         reqShortname += "(FC:" + reqData.getFault().getFaultCode() + ")";
       }
-      String resShortname = ProvisioningMethod.valueOf(resMethod).getAbbreviation();
+      String resShortname = resMethod != null
+              ? ProvisioningMethod.valueOf(resMethod).getAbbreviation()
+              : ProvisioningMethod.Empty.getAbbreviation();
       if (!ProvisioningMethod.Empty.name().equals(reqMethod) && reqMethod.equals(resMethod)) {
         resShortname += "r";
       }

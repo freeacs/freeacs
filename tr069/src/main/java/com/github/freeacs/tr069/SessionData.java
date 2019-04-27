@@ -1,9 +1,8 @@
 package com.github.freeacs.tr069;
 
-import com.github.freeacs.base.ACSParameters;
-import com.github.freeacs.base.Log;
-import com.github.freeacs.base.PIIDecision;
-import com.github.freeacs.base.SessionDataI;
+import com.github.freeacs.tr069.base.ACSParameters;
+import com.github.freeacs.tr069.base.PIIDecision;
+import com.github.freeacs.tr069.base.SessionDataI;
 import com.github.freeacs.dbi.File;
 import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.JobParameter;
@@ -13,11 +12,12 @@ import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.github.freeacs.http.HTTPRequestResponseData;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 @Data
+@Slf4j
 public class SessionData implements SessionDataI {
   private static final Logger LOGGER = LoggerFactory.getLogger(SessionData.class);
 
@@ -49,8 +50,6 @@ public class SessionData implements SessionDataI {
 
   private String serialNumber;
 
-  /** Tells whether the CPE is authenticated or not. */
-  private boolean authenticated;
   /** Tells whether the CPE is doing a periodic inform or not. */
   private boolean periodic;
   /* other event codes */
@@ -200,17 +199,13 @@ public class SessionData implements SessionDataI {
         && "1".equals(acsParameters.getValue(SystemParameters.DISCOVER))) {
       return true;
     } else if (acsParameters == null) {
-      Log.debug(SessionData.class, "freeacsParameters not found in discoverUnittype()");
+      log.debug("freeacsParameters not found in discoverUnittype()");
     } else if (acsParameters.getValue(SystemParameters.DISCOVER) != null) {
-      Log.debug(
-          SessionData.class,
-          "DISCOVER parameter value is "
+      log.debug("DISCOVER parameter value is "
               + acsParameters.getValue(SystemParameters.DISCOVER)
               + " in discoverUnittype()");
     } else {
-      Log.debug(
-          SessionData.class,
-          "DISCOVER parameter not found of value is null in discoverUnittype() ");
+      log.debug("DISCOVER parameter not found of value is null in discoverUnittype() ");
     }
     return false;
   }

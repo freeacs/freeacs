@@ -1,13 +1,15 @@
 package com.github.freeacs.tr069.methods.response;
 
-import com.github.freeacs.base.Log;
-import com.github.freeacs.http.HTTPRequestResponseData;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.xml.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @FunctionalInterface
 public interface ResponseCreateStrategy {
+    Logger log = LoggerFactory.getLogger(ResponseCreateStrategy.class);
 
     Response getResponse(HTTPRequestResponseData reqRes) throws Exception;
 
@@ -25,7 +27,7 @@ public interface ResponseCreateStrategy {
             case Reboot: return rebootStrategy();
             case GetRPCMethods: return getRPCMethodsStrategy();
             default:
-                Log.error(ResponseCreateStrategy.class,"The methodName " + provisioningMethod + " has no response strategy");
+                log.error("The methodName " + provisioningMethod + " has no response strategy");
                 return emStrategy();
         }
     }

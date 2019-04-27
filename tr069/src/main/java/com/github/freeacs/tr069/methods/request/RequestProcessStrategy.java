@@ -1,30 +1,35 @@
 package com.github.freeacs.tr069.methods.request;
 
-import com.github.freeacs.base.Log;
-import com.github.freeacs.http.HTTPRequestResponseData;
+import com.github.freeacs.dbi.DBI;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @FunctionalInterface
 public interface RequestProcessStrategy {
+    Logger log = LoggerFactory.getLogger(RequestProcessStrategy.class);
 
     void process(HTTPRequestResponseData reqRes) throws Exception;
 
-    static RequestProcessStrategy getStrategy(ProvisioningMethod provisioningMethod, Properties properties) {
+    static RequestProcessStrategy getStrategy(ProvisioningMethod provisioningMethod,
+                                              Properties properties,
+                                              DBI dbi) {
         switch (provisioningMethod) {
             case Empty: return doNotProcessStrategy();
             case Download: return downloadStrategy();
             case Fault: return faultStrategy();
             case FactoryReset: return factoryResetStrategy();
-            case Inform: return informStrategy(properties);
-            case GetParameterNames: return getParameterNamesStrategy(properties);
+            case Inform: return informStrategy(properties, dbi);
+            case GetParameterNames: return getParameterNamesStrategy(properties, dbi);
             case GetParameterValues: return getParameterValuesStrategy();
-            case SetParameterValues: return setParameterValuesStrategy();
+            case SetParameterValues: return setParameterValuesStrategy(dbi);
             case TransferComplete: return transferCompleteStrategy();
             case AutonomousTransferComplete: return autonomousTransferComplete();
             case Reboot: return rebootStrategy();
             default:
-                Log.debug(RequestProcessStrategy.class,"The methodName " + provisioningMethod + " has no request processing strategy");
+                log.debug("The methodName " + provisioningMethod + " has no request processing strategy");
                 return doNotProcessStrategy();
         }
     }
@@ -57,19 +62,19 @@ public interface RequestProcessStrategy {
         return reqRes -> {};
     }
 
-    static RequestProcessStrategy informStrategy(Properties properties) {
-        return new InformRequestProcessStrategy(properties);
+    static RequestProcessStrategy informStrategy(Properties properties, DBI dbi) {
+        return new InformRequestProcessStrategy(properties, dbi);
     }
 
-    static RequestProcessStrategy getParameterNamesStrategy(Properties properties) {
-        return new GetParameterNamesProcessStrategy(properties);
+    static RequestProcessStrategy getParameterNamesStrategy(Properties properties, DBI dbi) {
+        return new GetParameterNamesProcessStrategy(properties, dbi);
     }
 
     static RequestProcessStrategy getParameterValuesStrategy() {
         return new GetParameterValuesRequestProcessStrategy();
     }
 
-    static RequestProcessStrategy setParameterValuesStrategy() {
-        return new SetParameterValuesRequestProcessStrategy();
+    static RequestProcessStrategy setParameterValuesStrategy(DBI dbi) {
+        return new SetParameterValuesRequestProcessStrategy(dbi);
     }
 }

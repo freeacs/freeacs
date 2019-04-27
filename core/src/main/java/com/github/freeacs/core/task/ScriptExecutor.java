@@ -128,7 +128,7 @@ public class ScriptExecutor extends DBIShare {
   }
 
   private void processScripts() throws Throwable {
-    ScriptExecutions executions = new ScriptExecutions(getMainDataSource());
+    ScriptExecutions executions = new ScriptExecutions(getDataSource());
     List<ScriptExecution> executionList =
         executions.getNotStartedExecutions(getLatestACS(), properties.getShellScriptPoolSize());
 
@@ -161,8 +161,7 @@ public class ScriptExecutor extends DBIShare {
           executions.updateExecution(se);
         } else {
           ACSShellDaemon shellDaemon =
-              ShellDaemonPool.getShellDaemon(
-                  getMainDataSource(), getSyslogDataSource(), entry.getKey(), properties);
+              ShellDaemonPool.getShellDaemon(getDataSource(), getDataSource(), entry.getKey(), properties);
           if (shellDaemon == null) {
             logger.debug(
                 "No shell daemon available within pool size limit, will try again in 100 ms");

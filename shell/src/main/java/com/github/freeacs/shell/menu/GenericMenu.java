@@ -626,7 +626,7 @@ public class GenericMenu {
         }
       }
     }
-    Syslog syslog = session.getAcs().getSyslog();
+    Syslog syslog = session.getDbi().getSyslog();
     String[] listOptions = listOptionStr.split(",");
     List<SyslogEntry> entries = syslog.read(sf, session.getAcs());
     Listing listing = oh.getListing();
