@@ -400,7 +400,7 @@ public class DBI implements Runnable {
                 t.getCause().toString(), t.getLocalizedMessage());
           } else {
             logger.error(
-                "An error occurred in DBI.run() (stacktrace printed earlier): " + t.getMessage());
+                "An error occurred in DBI.run() (stacktrace printed earlier): " + t.getMessage(), dbiThrowable);
           }
         } catch (Throwable ignored) {
         }

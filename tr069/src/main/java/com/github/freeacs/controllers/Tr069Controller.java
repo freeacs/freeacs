@@ -85,7 +85,7 @@ public class Tr069Controller {
             reqRes.getRequestData().setXml(xmlPayload);
 
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            AcsUnit acsUnit = principal != null ? (AcsUnit) principal : null;
+            AcsUnit acsUnit = principal instanceof AcsUnit ? (AcsUnit) principal : null;
 
             ProvisioningStrategy.getStrategy(properties, dbi, acsUnit).process(reqRes);
 
