@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SuppressWarnings("WeakerAccess")
 public abstract class AbstractProvisioningTest {
     public static final String UNIT_ID = "test123";
-    static final String UNIT_TYPE_NAME = "Test";
+    public static final String UNIT_TYPE_NAME = "Test";
     public static final String UNIT_PASSWORD = "password";
     static final String PROFILE_NAME = "Default";
 

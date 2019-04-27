@@ -9,9 +9,10 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
+import static com.github.freeacs.provisioning.AbstractProvisioningTest.UNIT_TYPE_NAME;
+
 @SuppressWarnings("WeakerAccess")
 public abstract class AbstractDownloadTest {
-    static final String UNIT_TYPE_NAME = "Test";
     static final byte[] FILE_BYTES = new byte[]{3,6,1};
     static final String FILE_VERSION = "1.23.1";
 
