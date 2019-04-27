@@ -84,8 +84,7 @@ public class DigestProvisioningTest {
                         "/*[local-name() = 'InformResponse']" +
                         "/MaxEnvelopes").string("1"));
         mvc.perform(post("/tr069")
-                .session(session)
-                .with(digest(UNIT_ID).password(UNIT_PASSWORD).realm(DIGEST_REALM)))
+                .session(session))
                 .andExpect(status().isOk())
                 .andExpect(xpath("/*[local-name() = 'Envelope']" +
                         "/*[local-name() = 'Body']" +
