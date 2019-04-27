@@ -39,7 +39,7 @@ public class BasicProvisioningTest extends AbstractProvisioningTest {
     }
 
     @Test
-    public void discoverUnitWithDigestAuthentication() throws Exception {
+    public void discoverUnit() throws Exception {
        discoverUnit(httpBasic(UNIT_ID, UNIT_PASSWORD));
     }
 }

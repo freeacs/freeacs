@@ -38,7 +38,7 @@ public class NoSecurityProvisioningTest extends AbstractProvisioningTest {
     }
 
     @Test
-    public void discoverUnitWithDigestAuthentication() throws Exception {
+    public void discoverUnit() throws Exception {
        discoverUnit(null);
     }
 }

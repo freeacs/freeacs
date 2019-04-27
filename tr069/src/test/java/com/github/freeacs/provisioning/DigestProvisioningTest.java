@@ -40,7 +40,7 @@ public class DigestProvisioningTest extends AbstractProvisioningTest {
     }
 
     @Test
-    public void discoverUnitWithDigestAuthentication() throws Exception {
+    public void discoverUnit() throws Exception {
        discoverUnit(digest(UNIT_ID).password(UNIT_PASSWORD).realm(DIGEST_REALM));
     }
 }
