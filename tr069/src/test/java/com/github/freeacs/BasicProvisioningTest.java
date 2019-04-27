@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.SQLException;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.digest;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -20,11 +20,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(locations = {
         "classpath:application.properties",
         "classpath:application-h2-datasource.properties",
-        "classpath:application-digest-security.properties",
+        "classpath:application-basic-security.properties",
         "classpath:application-discovery-mode.properties"
 })
-public class DigestProvisioningTest extends AbstractBaseTest {
-    private static final String DIGEST_REALM = "FreeACS";
+public class BasicProvisioningTest extends AbstractBaseTest {
 
     @Before
     public void init() throws SQLException {
@@ -38,6 +37,6 @@ public class DigestProvisioningTest extends AbstractBaseTest {
 
     @Test
     public void discoverUnitWithDigestAuthentication() throws Exception {
-       discoverUnit(digest(UNIT_ID).password(UNIT_PASSWORD).realm(DIGEST_REALM));
+       discoverUnit(httpBasic(UNIT_ID, UNIT_PASSWORD));
     }
 }
