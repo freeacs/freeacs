@@ -65,7 +65,7 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
             // If unit is authenticated, the unitId is already found
             String unitId = sessionData.getUnitId();
             if (unitId == null) {
-                if (acsUnit != null) {
+                if (acsUnit != null && properties.isUsernameAsUnitId()) {
                     unitId = acsUnit.getUsername();
                 } else {
                     unitId = getUnitId(deviceIdStruct);
