@@ -32,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestPropertySource(locations = {
         "classpath:application.properties",
+        "classpath:application-h2-datasource.properties",
         "classpath:application-digest-security.properties",
         "classpath:application-discovery-mode.properties"
 })
