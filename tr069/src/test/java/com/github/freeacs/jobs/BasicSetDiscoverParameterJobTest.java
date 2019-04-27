@@ -16,6 +16,7 @@ import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.provisioning.AbstractProvisioningTest;
+import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigValueFactory;
 import org.junit.Before;
@@ -59,6 +60,7 @@ public class BasicSetDiscoverParameterJobTest {
     @Autowired
     private DBI dbi;
 
+    // This comes from the core module, and is imported with scope test in maven dependencies
     private ScriptExecutor scriptExecutorTask;
 
     @Scheduled(cron = "* * * ? * *")
@@ -69,12 +71,12 @@ public class BasicSetDiscoverParameterJobTest {
 
     @Before
     public void init() throws SQLException, IOException {
-        scriptExecutorTask = new ScriptExecutor(
-                "ScriptExecutor",
-                dbi,
-                new Properties(ConfigFactory.empty()
-                        .withValue("shellscript.poolsize", ConfigValueFactory.fromAnyRef(1))
-                        .withValue("syslog.severity.0.limit", ConfigValueFactory.fromAnyRef(90))));
+        // We initialize the ScriptExecutor task from the core module
+        Config config = ConfigFactory.empty()
+                .withValue("shellscript.poolsize", ConfigValueFactory.fromAnyRef(1))
+                .withValue("syslog.severity.0.limit", ConfigValueFactory.fromAnyRef(90));
+        scriptExecutorTask = new ScriptExecutor("ScriptExecutor", dbi, new Properties(config));
+        // Create necessary state
         AbstractProvisioningTest.addNonProvisionedUnit(dbi);
         Unittype unittype = dbi.getAcs().getUnittype(UNIT_TYPE_NAME);
         Profile profile = unittype.getProfiles().getByName("Default");
