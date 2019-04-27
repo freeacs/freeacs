@@ -52,7 +52,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @EnableScheduling
-public class BasicSetDiscoverParameterJobTest {
+public class SetDiscoverParameterJobTest {
 
     @Autowired
     protected MockMvc mvc;
