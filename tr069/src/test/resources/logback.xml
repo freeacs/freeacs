@@ -9,8 +9,8 @@
         <appender-ref ref="STDOUT" />
     </appender>
     <logger name="org.eclipse.jetty" level="WARN" />
-    <logger name="com.github.freeacs" level="WARN" />
-    <root level="WARN">
+    <logger name="com.github.freeacs" level="INFO" />
+    <root level="INFO">
         <appender-ref ref="ASYNC_STDOUT" />
     </root>
 </configuration>

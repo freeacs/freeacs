@@ -79,6 +79,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-test</artifactId>
+      <version>5.1.5.RELEASE</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>com.mashape.unirest</groupId>
       <artifactId>unirest-java</artifactId>
       <version>${unirest.version}</version>

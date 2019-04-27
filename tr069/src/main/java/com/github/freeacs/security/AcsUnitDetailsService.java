@@ -33,10 +33,11 @@ public class AcsUnitDetailsService implements UserDetailsService {
                     throw new UsernameNotFoundException("User " + username + " has no secret");
                 }
                 return new AcsUnit(username, secret);
+            } else {
+                throw new UsernameNotFoundException("User was not found: " + username);
             }
         } catch (SQLException e) {
-            throw new UsernameNotFoundException("Failed to retrieve user " + username, e);
+            throw new UsernameNotFoundException("Failed to retrieve user: " + username, e);
         }
-        return null;
     }
 }
