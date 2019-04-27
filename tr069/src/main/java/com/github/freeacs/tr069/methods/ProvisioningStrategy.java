@@ -1,6 +1,7 @@
 package com.github.freeacs.tr069.methods;
 
 import com.github.freeacs.dbi.DBI;
+import com.github.freeacs.security.AcsUnit;
 import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.methods.decision.DecisionStrategy;
@@ -20,8 +21,8 @@ public abstract class ProvisioningStrategy {
 
     public abstract void process(HTTPRequestResponseData reqRes) throws Exception;
 
-    public static ProvisioningStrategy getStrategy(Properties properties, DBI dbi) {
-        return new NormalProvisioningStrategy(properties, dbi);
+    public static ProvisioningStrategy getStrategy(Properties properties, DBI dbi, AcsUnit acsUnit) {
+        return new NormalProvisioningStrategy(properties, dbi, acsUnit);
     }
 
     private static class NormalProvisioningStrategy extends ProvisioningStrategy {
@@ -32,11 +33,14 @@ public abstract class ProvisioningStrategy {
 
         private final Properties properties;
         private final DBI dbi;
+        private final AcsUnit acsUnit;
 
         private NormalProvisioningStrategy(Properties properties,
-                                           DBI dbi) {
+                                           DBI dbi,
+                                           AcsUnit acsUnit) {
             this.properties = properties;
             this.dbi = dbi;
+            this.acsUnit = acsUnit;
         }
 
         @Override
@@ -49,7 +53,7 @@ public abstract class ProvisioningStrategy {
             // 1. process the request
             logWillProcessRequest(reqRes);
             ProvisioningMethod requestProvisioningMethod = getRequestMethod(reqRes);
-            RequestProcessStrategy.getStrategy(requestProvisioningMethod, properties, dbi).process(reqRes);
+            RequestProcessStrategy.getStrategy(requestProvisioningMethod, properties, dbi, acsUnit).process(reqRes);
             if (Log.isConversationLogEnabled()) {
                 logConversationRequest(reqRes);
             }

@@ -18,6 +18,7 @@ public class Properties {
   private int concurrentDownloadLimit;
   private String publicUrl;
   private boolean appendHwVersion;
+  private boolean usernameAsUnitId;
 
   private Environment environment;
 
@@ -31,6 +32,7 @@ public class Properties {
     setDiscoveryBlock(environment.getProperty("discovery.block", String.class, null));
     setConcurrentDownloadLimit(environment.getProperty("concurrent.download.limit", Integer.class, 50));
     setAppendHwVersion(environment.getProperty("unit.type.append-hw-version", Boolean.class, false));
+    setUsernameAsUnitId(environment.getProperty("username-as-unit-id", Boolean.class, true));
   }
 
   private void setDiscoveryBlock(String discoveryBlock) {

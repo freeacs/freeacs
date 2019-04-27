@@ -1,5 +1,6 @@
 package com.github.freeacs.tr069.methods.request;
 
+import com.github.freeacs.security.AcsUnit;
 import com.github.freeacs.tr069.CPEParameters;
 import com.github.freeacs.tr069.CommandKey;
 import com.github.freeacs.tr069.InformParameters;
@@ -41,11 +42,13 @@ import java.util.TreeSet;
 @Slf4j
 public class InformRequestProcessStrategy implements RequestProcessStrategy {
     private final DBI dbi;
+    private final AcsUnit acsUnit;
     private Properties properties;
 
-    InformRequestProcessStrategy(Properties properties, DBI dbi) {
+    InformRequestProcessStrategy(Properties properties, DBI dbi, AcsUnit acsUnit) {
         this.properties = properties;
         this.dbi = dbi;
+        this.acsUnit = acsUnit;
     }
 
     @SuppressWarnings("Duplicates")
@@ -62,7 +65,11 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
             // If unit is authenticated, the unitId is already found
             String unitId = sessionData.getUnitId();
             if (unitId == null) {
-                unitId = getUnitId(deviceIdStruct);
+                if (acsUnit != null && properties.isUsernameAsUnitId()) {
+                    unitId = acsUnit.getUsername();
+                } else {
+                    unitId = getUnitId(deviceIdStruct);
+                }
             }
             BaseCache.putSessionData(unitId, sessionData);
             sessionData.setUnitId(unitId);
