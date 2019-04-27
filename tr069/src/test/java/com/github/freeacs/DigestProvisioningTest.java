@@ -79,21 +79,67 @@ public class DigestProvisioningTest {
                 .with(digest(UNIT_ID).password(UNIT_PASSWORD).realm(DIGEST_REALM))
                 .content(getFileAsString("/provision/cpe/Inform.xml")))
                 .andExpect(status().isOk())
+                .andExpect(content().contentType("text/xml"))
+                .andExpect(header().string("SOAPAction", ""))
                 .andExpect(xpath("/*[local-name() = 'Envelope']" +
                         "/*[local-name() = 'Body']" +
                         "/*[local-name() = 'InformResponse']" +
-                        "/MaxEnvelopes").string("1"));
+                        "/MaxEnvelopes")
+                        .string("1"));
         mvc.perform(post("/tr069")
                 .session(session))
                 .andExpect(status().isOk())
+                .andExpect(content().contentType("text/xml"))
+                .andExpect(header().string("SOAPAction", ""))
                 .andExpect(xpath("/*[local-name() = 'Envelope']" +
                         "/*[local-name() = 'Body']" +
                         "/*[local-name() = 'GetParameterNames']" +
-                        "/*[local-name() = 'ParameterPath']").string("InternetGatewayDevice."))
+                        "/ParameterPath")
+                        .string("InternetGatewayDevice."))
                 .andExpect(xpath("/*[local-name() = 'Envelope']" +
                         "/*[local-name() = 'Body']" +
                         "/*[local-name() = 'GetParameterNames']" +
-                        "/*[local-name() = 'NextLevel']").string("false"));
+                        "/NextLevel")
+                        .string("false"));
+        mvc.perform(post("/tr069")
+                .session(session)
+                .content(getFileAsString("/provision/cpe/GetParameterNamesResponse.xml")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/xml"))
+                .andExpect(header().string("SOAPAction", ""))
+                .andExpect(xpath("/*[local-name() = 'Envelope']" +
+                        "/*[local-name() = 'Body']" +
+                        "/*[local-name() = 'GetParameterValues']" +
+                        "/ParameterNames" +
+                        "/string[1]")
+                        .string("InternetGatewayDevice.DeviceInfo.SoftwareVersion"))
+                .andExpect(xpath("/*[local-name() = 'Envelope']" +
+                        "/*[local-name() = 'Body']" +
+                        "/*[local-name() = 'GetParameterValues']" +
+                        "/ParameterNames" +
+                        "/string[2]")
+                        .string("InternetGatewayDevice.DeviceInfo.VendorConfigFile."));
+        mvc.perform(post("/tr069")
+                .session(session)
+                .content(getFileAsString("/provision/cpe/GetParameterValuesResponse.xml")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/xml"))
+                .andExpect(header().string("SOAPAction", ""))
+                .andExpect(xpath("/*[local-name() = 'Envelope']" +
+                        "/*[local-name() = 'Body']" +
+                        "/*[local-name() = 'SetParameterValues']" +
+                        "/ParameterList" +
+                        "/ParameterValueStruct" +
+                        "/Name")
+                        .string("InternetGatewayDevice.ManagementServer.PeriodicInformInterval"))
+                .andExpect(xpath("/*[local-name() = 'Envelope']" +
+                        "/*[local-name() = 'Body']" +
+                        "/*[local-name() = 'SetParameterValues']" +
+                        "/ParameterList" +
+                        "/ParameterValueStruct" +
+                        "/Value")
+                        .exists()); // need to test if it NOT contains space or tabs
+
     }
 
 }
