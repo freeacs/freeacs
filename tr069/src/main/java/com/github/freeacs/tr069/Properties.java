@@ -17,11 +17,9 @@ public class Properties {
   private String authMethod;
   private int concurrentDownloadLimit;
   private String publicUrl;
+  private boolean appendHwVersion;
 
   private Environment environment;
-  private String contextPath;
-
-  private boolean appendHwVersion;
 
   public Properties(Environment environment) {
     this.environment = environment;
@@ -32,7 +30,6 @@ public class Properties {
     setDiscoveryMode(environment.getProperty("discovery.mode", Boolean.class, false));
     setDiscoveryBlock(environment.getProperty("discovery.block", String.class, null));
     setConcurrentDownloadLimit(environment.getProperty("concurrent.download.limit", Integer.class, 50));
-    setContextPath(environment.getProperty("server.servlet.context-path", String.class, "/"));
     setAppendHwVersion(environment.getProperty("unit.type.append-hw-version", Boolean.class, false));
   }
 

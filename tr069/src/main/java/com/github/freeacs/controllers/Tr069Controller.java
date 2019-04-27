@@ -18,6 +18,7 @@ import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.methods.ProvisioningStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,8 +42,7 @@ public class Tr069Controller {
     private final DBI dbi;
     private final Properties properties;
 
-    public Tr069Controller(DBI dbi,
-                           Properties properties) {
+    public Tr069Controller(DBI dbi, Properties properties) {
         this.properties = properties;
         this.dbi = dbi;
     }
@@ -72,11 +72,14 @@ public class Tr069Controller {
      * test case.
      */
     @PostMapping(value = {"${context-path}", "${context-path}/prov"})
-    public ResponseEntity<String> doPost(@RequestBody(required = false) String xmlPayload, HttpServletRequest req, HttpServletResponse res) {
+    public ResponseEntity<String> doPost(@RequestBody(required = false) String xmlPayload,
+                                         @Value("${context-path}") String contextPath,
+                                         HttpServletRequest req,
+                                         HttpServletResponse res) {
         HTTPRequestResponseData reqRes = null;
         try {
             reqRes = new HTTPRequestResponseData(req);
-            reqRes.getRequestData().setContextPath(properties.getContextPath());
+            reqRes.getRequestData().setContextPath(contextPath);
             reqRes.getRequestData().setXml(xmlPayload);
 
             ProvisioningStrategy.getStrategy(properties, dbi).process(reqRes);
