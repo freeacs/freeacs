@@ -4,6 +4,7 @@ import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.security.AcsUnit;
 import com.github.freeacs.tr069.http.HTTPRequestData;
 import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.http.HTTPResponseData;
@@ -24,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -82,7 +84,10 @@ public class Tr069Controller {
             reqRes.getRequestData().setContextPath(contextPath);
             reqRes.getRequestData().setXml(xmlPayload);
 
-            ProvisioningStrategy.getStrategy(properties, dbi).process(reqRes);
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            AcsUnit acsUnit = principal != null ? (AcsUnit) principal : null;
+
+            ProvisioningStrategy.getStrategy(properties, dbi, acsUnit).process(reqRes);
 
             return ResponseEntity
                     .status("Empty".equals(reqRes.getResponseData().getMethod())

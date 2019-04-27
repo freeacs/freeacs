@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import java.sql.SQLException;
 import java.util.Collections;
 
-import static com.github.freeacs.provisioning.Matchers.hasNoSpace;
+import static com.github.freeacs.utils.Matchers.hasNoSpace;
 import static com.github.freeacs.common.util.FileSlurper.getFileAsString;
 import static com.github.freeacs.dbi.Unittype.ProvisioningProtocol.TR069;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -54,6 +54,10 @@ public abstract class AbstractProvisioningTest {
     }
 
     void discoverUnit(@Nullable RequestPostProcessor authPostProcessor) throws Exception {
+        discoverUnit(authPostProcessor, mvc);
+    }
+
+    public static void discoverUnit(@Nullable RequestPostProcessor authPostProcessor, MockMvc mvc) throws Exception {
         MockHttpSession session = new MockHttpSession();
         MockHttpServletRequestBuilder postRequestBuilder = post("/tr069").session(session);
         if (authPostProcessor != null) {

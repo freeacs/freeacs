@@ -1,6 +1,7 @@
 package com.github.freeacs.tr069.methods.request;
 
 import com.github.freeacs.dbi.DBI;
+import com.github.freeacs.security.AcsUnit;
 import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
@@ -15,13 +16,14 @@ public interface RequestProcessStrategy {
 
     static RequestProcessStrategy getStrategy(ProvisioningMethod provisioningMethod,
                                               Properties properties,
-                                              DBI dbi) {
+                                              DBI dbi,
+                                              AcsUnit acsUnit) {
         switch (provisioningMethod) {
             case Empty: return doNotProcessStrategy();
             case Download: return downloadStrategy();
             case Fault: return faultStrategy();
             case FactoryReset: return factoryResetStrategy();
-            case Inform: return informStrategy(properties, dbi);
+            case Inform: return informStrategy(properties, dbi, acsUnit);
             case GetParameterNames: return getParameterNamesStrategy(properties, dbi);
             case GetParameterValues: return getParameterValuesStrategy();
             case SetParameterValues: return setParameterValuesStrategy(dbi);
@@ -62,8 +64,8 @@ public interface RequestProcessStrategy {
         return reqRes -> {};
     }
 
-    static RequestProcessStrategy informStrategy(Properties properties, DBI dbi) {
-        return new InformRequestProcessStrategy(properties, dbi);
+    static RequestProcessStrategy informStrategy(Properties properties, DBI dbi, AcsUnit acsUnit) {
+        return new InformRequestProcessStrategy(properties, dbi, acsUnit);
     }
 
     static RequestProcessStrategy getParameterNamesStrategy(Properties properties, DBI dbi) {
