@@ -1,10 +1,12 @@
-package com.github.freeacs;
+package com.github.freeacs.provisioning;
 
+import com.github.freeacs.Main;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -23,8 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "classpath:application-digest-security.properties",
         "classpath:application-discovery-mode.properties"
 })
-public class DigestProvisioningTest extends AbstractBaseTest {
-    private static final String DIGEST_REALM = "FreeACS";
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+public class DigestProvisioningTest extends AbstractProvisioningTest {
+    public static final String DIGEST_REALM = "FreeACS";
 
     @Before
     public void init() throws SQLException {

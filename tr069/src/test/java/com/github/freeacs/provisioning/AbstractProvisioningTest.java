@@ -1,12 +1,10 @@
-package com.github.freeacs;
+package com.github.freeacs.provisioning;
 
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.github.freeacs.tr069.base.BaseCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
@@ -14,18 +12,18 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import java.sql.SQLException;
 import java.util.Collections;
 
-import static com.github.freeacs.Matchers.hasNoSpace;
+import static com.github.freeacs.provisioning.Matchers.hasNoSpace;
 import static com.github.freeacs.common.util.FileSlurper.getFileAsString;
 import static com.github.freeacs.dbi.Unittype.ProvisioningProtocol.TR069;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public abstract class AbstractBaseTest {
-    protected static final String UNIT_ID = "test123";
-    protected static final String UNIT_TYPE_NAME = "Test";
-    protected static final String UNIT_PASSWORD = "password";
-    protected static final String PROFILE_NAME = "Default";
+@SuppressWarnings("WeakerAccess")
+public abstract class AbstractProvisioningTest {
+    public static final String UNIT_ID = "test123";
+    static final String UNIT_TYPE_NAME = "Test";
+    public static final String UNIT_PASSWORD = "password";
+    static final String PROFILE_NAME = "Default";
 
     @Autowired
     protected MockMvc mvc;
@@ -34,6 +32,10 @@ public abstract class AbstractBaseTest {
     protected DBI dbi;
 
     protected void addNonProvisionedUnit() throws SQLException {
+        addNonProvisionedUnit(dbi);
+    }
+
+    public static void addNonProvisionedUnit(DBI dbi) throws SQLException {
         ACSUnit acsUnit = new ACSUnit(dbi.getDataSource(), dbi.getAcs(), dbi.getSyslog());
         Unittypes unittypes = dbi.getAcs().getUnittypes();
         Unittype unittype = unittypes.getByName(UNIT_TYPE_NAME);
@@ -51,7 +53,7 @@ public abstract class AbstractBaseTest {
         acsUnit.addOrChangeUnitParameter(unit, SystemParameters.SECRET, UNIT_PASSWORD);
     }
 
-    protected void discoverUnit(@Nullable RequestPostProcessor authPostProcessor) throws Exception {
+    void discoverUnit(@Nullable RequestPostProcessor authPostProcessor) throws Exception {
         MockHttpSession session = new MockHttpSession();
         MockHttpServletRequestBuilder postRequestBuilder = post("/tr069").session(session);
         if (authPostProcessor != null) {
