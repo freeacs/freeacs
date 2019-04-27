@@ -54,7 +54,7 @@ public class SetParameterValuesResponseCreateStrategy implements ResponseCreateS
                     } else {
                         sb.append(pvs.getValue());
                     }
-                    sb.append("\t\t\t\t\t</Value>\n");
+                    sb.append("</Value>\n");
                     sb.append("\t\t\t\t</ParameterValueStruct>\n");
                 }
                 sb.append("\t\t\t</ParameterList>\n");

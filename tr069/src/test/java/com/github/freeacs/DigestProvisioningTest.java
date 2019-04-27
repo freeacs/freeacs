@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.sql.SQLException;
 import java.util.Collections;
 
+import static com.github.freeacs.Matchers.hasNoSpace;
 import static com.github.freeacs.common.util.FileSlurper.getFileAsString;
 import static com.github.freeacs.dbi.Unittype.ProvisioningProtocol.TR069;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.digest;
@@ -72,7 +73,7 @@ public class DigestProvisioningTest {
     }
 
     @Test
-    public void getInformResponseOnInformRequest() throws Exception {
+    public void discoverUnit() throws Exception {
         MockHttpSession session = new MockHttpSession();
         mvc.perform(post("/tr069")
                 .session(session)
@@ -138,8 +139,12 @@ public class DigestProvisioningTest {
                         "/ParameterList" +
                         "/ParameterValueStruct" +
                         "/Value")
-                        .exists()); // need to test if it NOT contains space or tabs
-
+                        .string(hasNoSpace()));
+        mvc.perform(post("/tr069")
+                .session(session)
+                .content(getFileAsString("/provision/cpe/SetParameterValuesResponse.xml")))
+                .andExpect(status().isNoContent())
+                .andExpect(content().contentType("text/html"))
+                .andExpect(header().doesNotExist("SOAPAction"));
     }
-
 }
