@@ -132,8 +132,10 @@ public abstract class AbstractProvisioningTest {
                 .andExpect(status().isNoContent())
                 .andExpect(content().contentType("text/html"))
                 .andExpect(header().doesNotExist("SOAPAction"));
-        mvc.perform(post("/tr069")
-                .session(session))
-                .andExpect(status().isUnauthorized());
+        if (authPostProcessor != null) {
+            mvc.perform(post("/tr069")
+                    .session(session))
+                    .andExpect(status().isUnauthorized());
+        }
     }
 }
