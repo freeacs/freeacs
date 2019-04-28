@@ -4,7 +4,6 @@ import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Unit;
-import com.github.freeacs.security.AcsUnit;
 import com.github.freeacs.tr069.http.HTTPRequestData;
 import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.http.HTTPResponseData;
@@ -25,7 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -84,10 +83,7 @@ public class Tr069Controller {
             reqRes.getRequestData().setContextPath(contextPath);
             reqRes.getRequestData().setXml(xmlPayload);
 
-            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            AcsUnit acsUnit = principal instanceof AcsUnit ? (AcsUnit) principal : null;
-
-            ProvisioningStrategy.getStrategy(properties, dbi, acsUnit).process(reqRes);
+            ProvisioningStrategy.getStrategy(properties, dbi).process(reqRes);
 
             return ResponseEntity
                     .status("Empty".equals(reqRes.getResponseData().getMethod())
@@ -118,6 +114,7 @@ public class Tr069Controller {
                 BaseCache.removeSessionData(reqRes.getSessionData().getUnitId());
                 BaseCache.removeSessionData(reqRes.getSessionData().getId());
                 res.setHeader("Connection", "close");
+                new SecurityContextLogoutHandler().logout(req, null, null);
             }
         }
     }

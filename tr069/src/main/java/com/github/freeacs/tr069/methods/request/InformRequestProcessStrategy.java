@@ -29,6 +29,7 @@ import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import com.github.freeacs.tr069.xml.Parser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -42,13 +43,11 @@ import java.util.TreeSet;
 @Slf4j
 public class InformRequestProcessStrategy implements RequestProcessStrategy {
     private final DBI dbi;
-    private final AcsUnit acsUnit;
     private Properties properties;
 
-    InformRequestProcessStrategy(Properties properties, DBI dbi, AcsUnit acsUnit) {
+    InformRequestProcessStrategy(Properties properties, DBI dbi) {
         this.properties = properties;
         this.dbi = dbi;
-        this.acsUnit = acsUnit;
     }
 
     @SuppressWarnings("Duplicates")
@@ -65,7 +64,9 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
             // If unit is authenticated, the unitId is already found
             String unitId = sessionData.getUnitId();
             if (unitId == null) {
-                if (acsUnit != null && properties.isUsernameAsUnitId()) {
+                if (properties.isUsernameAsUnitId()) {
+                    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                    AcsUnit acsUnit = principal instanceof AcsUnit ? (AcsUnit) principal : null;
                     unitId = acsUnit.getUsername();
                 } else {
                     unitId = getUnitId(deviceIdStruct);

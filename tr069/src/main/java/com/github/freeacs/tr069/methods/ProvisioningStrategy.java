@@ -1,7 +1,6 @@
 package com.github.freeacs.tr069.methods;
 
 import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.security.AcsUnit;
 import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.methods.decision.DecisionStrategy;
@@ -21,8 +20,8 @@ public abstract class ProvisioningStrategy {
 
     public abstract void process(HTTPRequestResponseData reqRes) throws Exception;
 
-    public static ProvisioningStrategy getStrategy(Properties properties, DBI dbi, AcsUnit acsUnit) {
-        return new NormalProvisioningStrategy(properties, dbi, acsUnit);
+    public static ProvisioningStrategy getStrategy(Properties properties, DBI dbi) {
+        return new NormalProvisioningStrategy(properties, dbi);
     }
 
     private static class NormalProvisioningStrategy extends ProvisioningStrategy {
@@ -33,14 +32,10 @@ public abstract class ProvisioningStrategy {
 
         private final Properties properties;
         private final DBI dbi;
-        private final AcsUnit acsUnit;
 
-        private NormalProvisioningStrategy(Properties properties,
-                                           DBI dbi,
-                                           AcsUnit acsUnit) {
+        private NormalProvisioningStrategy(Properties properties, DBI dbi) {
             this.properties = properties;
             this.dbi = dbi;
-            this.acsUnit = acsUnit;
         }
 
         @Override
@@ -52,18 +47,18 @@ public abstract class ProvisioningStrategy {
 
             // 1. process the request
             logWillProcessRequest(reqRes);
-            ProvisioningMethod requestProvisioningMethod = getRequestMethod(reqRes);
-            RequestProcessStrategy.getStrategy(requestProvisioningMethod, properties, dbi, acsUnit).process(reqRes);
+            ProvisioningMethod requestMethod = getRequestMethod(reqRes);
+            RequestProcessStrategy.getStrategy(requestMethod, properties, dbi).process(reqRes);
             if (Log.isConversationLogEnabled()) {
                 logConversationRequest(reqRes);
             }
 
             // 2. decide what to do next
-            DecisionStrategy.getStrategy(requestProvisioningMethod, properties, dbi).makeDecision(reqRes);
+            DecisionStrategy.getStrategy(requestMethod, properties, dbi).makeDecision(reqRes);
 
             // 3. Create and set response
-            ProvisioningMethod responseProvisioningMethod = getResponseMethod(reqRes);
-            Response response = ResponseCreateStrategy.getStrategy(responseProvisioningMethod, properties).getResponse(reqRes);
+            ProvisioningMethod responseMethod = getResponseMethod(reqRes);
+            Response response = ResponseCreateStrategy.getStrategy(responseMethod, properties).getResponse(reqRes);
             String responseStr = response.toXml();
             if (Log.isConversationLogEnabled()) {
                 logConversationResponse(reqRes, responseStr);
