@@ -25,7 +25,7 @@ public class AcsUnitDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
-            ACSUnit acsUnit = new ACSUnit(dbi.getDataSource(), dbi.getAcs(), dbi.getSyslog());
+            ACSUnit acsUnit = dbi.getACSUnit();
             Unit unit = acsUnit.getUnitById(username);
             if (unit != null) {
                 String secret = unit.getUnitParameters().get(SystemParameters.SECRET).getValue();

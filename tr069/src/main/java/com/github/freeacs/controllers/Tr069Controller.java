@@ -167,9 +167,7 @@ public class Tr069Controller {
         try {
             Unit unit = reqRes.getSessionData().getUnit();
             if (unit != null) {
-                ACS acs = dbi.getAcs();
-                ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
-                acsUnit.addOrChangeQueuedUnitParameters(unit);
+                dbi.getACSUnit().addOrChangeQueuedUnitParameters(unit);
             }
         } catch (Throwable t) {
             log.error("An error occured when writing queued unit parameters to Fusion. May affect provisioning", t);
