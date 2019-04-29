@@ -99,7 +99,7 @@ public abstract class DBIActions {
             sessionData.setUnittype(ut);
             sessionData.setProfile(pr);
 
-            ACSUnit acsUnit = new ACSUnit(dbi.getDataSource(), dbi.getAcs(), dbi.getSyslog());
+            ACSUnit acsUnit = dbi.getACSUnit();
             List<String> unitIds = new ArrayList<>();
             unitIds.add(unitId);
             acsUnit.addUnits(unitIds, pr);
@@ -139,7 +139,7 @@ public abstract class DBIActions {
                 }
             }
             if (!unitSessionParameters.isEmpty()) {
-                ACSUnit acsUnit = new ACSUnit(dbi.getDataSource(), dbi.getAcs(), dbi.getSyslog());
+                ACSUnit acsUnit = dbi.getACSUnit();
                 acsUnit.addOrChangeSessionUnitParameters(unitSessionParameters, profile);
             }
         } catch (SQLException sqle) {
@@ -264,7 +264,7 @@ public abstract class DBIActions {
     private static Unit readUnit(String unitId, DBI dbi) throws SQLException {
         Unit unit;
         try {
-            ACSUnit acsUnit = new ACSUnit(dbi.getDataSource(), dbi.getAcs(), dbi.getSyslog());
+            ACSUnit acsUnit = dbi.getACSUnit();
             unit = acsUnit.getUnitById(unitId);
             if (unit != null) {
                 log.debug("Found unit "

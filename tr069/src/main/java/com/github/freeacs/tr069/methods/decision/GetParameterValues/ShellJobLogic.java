@@ -35,12 +35,8 @@ public class ShellJobLogic {
      */
     private static Cache monitorCache = new Cache();
 
-    public static void execute(SessionData sessionData,
-                               ACS acs,
-                               Job job,
-                               UnitJob uj,
-                               boolean isDiscoveryMode,
-                               ScriptExecutions executions) throws TR069Exception {
+    public static void execute(SessionData sessionData, DBI dbi, Job job, UnitJob uj, boolean discovery, ScriptExecutions execs)
+            throws TR069Exception {
         String unitId = sessionData.getUnitId();
         CacheValue cv = monitorCache.get(unitId);
         if (cv == null) {
@@ -49,11 +45,11 @@ public class ShellJobLogic {
         }
         synchronized (cv.getObject()) {
             // read parameters from device and save it to the unit
-            ShellJobLogic.importReadOnlyParameters(sessionData, acs);
+            ShellJobLogic.importReadOnlyParameters(sessionData, dbi);
             // execute changes using the shell-script, all changes are written to database
-            ShellJobLogic.executeShellScript(sessionData, job, uj, isDiscoveryMode, executions);
+            ShellJobLogic.executeShellScript(sessionData, job, uj, discovery, execs);
             // read the changes from the database and send to CPE
-            ShellJobLogic.prepareSPV(sessionData, acs);
+            ShellJobLogic.prepareSPV(sessionData, dbi);
         }
     }
 
@@ -66,11 +62,8 @@ public class ShellJobLogic {
      * Wait for the script to be executed. If shell daemon returns error - should result in Job
      * verification fail (not sure how)
      */
-    private static void executeShellScript(SessionData sessionData,
-                                           Job job,
-                                           UnitJob uj,
-                                           boolean isDiscoveryMode,
-                                           ScriptExecutions executions) throws TR069Exception {
+    private static void executeShellScript(SessionData sessionData, Job job, UnitJob uj, boolean discovery, ScriptExecutions execs)
+            throws TR069Exception {
         String scriptArgs =
                 "\"-uut:"
                         + sessionData.getUnittype().getName()
@@ -82,7 +75,7 @@ public class ShellJobLogic {
         String requestId =
                 "JOB:" + job.getId() + ":" + random.nextInt(1000000); // should be a unique Id
         try {
-            executions.requestExecution(job.getFile(), scriptArgs, requestId);
+            execs.requestExecution(job.getFile(), scriptArgs, requestId);
         } catch (SQLException e) {
             throw new TR069DatabaseException("Could not request a script execution", e);
         }
@@ -95,17 +88,17 @@ public class ShellJobLogic {
                 Thread.sleep(timeWait);
                 timeWaited += timeWait;
                 timeWaitFactor += 2;
-                ScriptExecution se = executions.getExecution(sessionData.getUnittype(), requestId);
+                ScriptExecution se = execs.getExecution(sessionData.getUnittype(), requestId);
                 if (se.getExitStatus() != null) {
                     if (se.getExitStatus()) { // ERROR OCCURRED
                         log.error(se.getErrorMessage());
-                        uj.stop(UnitJobStatus.CONFIRMED_FAILED, isDiscoveryMode);
-                    } else uj.stop(UnitJobStatus.COMPLETED_OK, isDiscoveryMode);
+                        uj.stop(UnitJobStatus.CONFIRMED_FAILED, discovery);
+                    } else uj.stop(UnitJobStatus.COMPLETED_OK, discovery);
                     break;
                 }
                 if (timeWaited > 30000) {
                     log.error("The execution of the shell script did not complete within 30 sec");
-                    uj.stop(UnitJobStatus.CONFIRMED_FAILED, isDiscoveryMode);
+                    uj.stop(UnitJobStatus.CONFIRMED_FAILED, discovery);
                     break;
                 }
             } catch (Throwable t) {
@@ -121,12 +114,11 @@ public class ShellJobLogic {
      * Read unit parameters from database, to see if any changes have occurred (during the shell
      * script execution). If ReadWrite parameters differ from CPE, then send them to the CPE.
      */
-    private static void toCPE(SessionData sessionData, ACS acs) throws TR069DatabaseException {
+    private static void toCPE(SessionData sessionData, DBI dbi) throws TR069DatabaseException {
         UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
         Unit unit;
         try {
-            ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
-            unit = acsUnit.getUnitById(sessionData.getUnitId());
+            unit = dbi.getACSUnit().getUnitById(sessionData.getUnitId());
         } catch (SQLException e) {
             throw new TR069DatabaseException(e);
         }
@@ -154,7 +146,7 @@ public class ShellJobLogic {
      * In order for the shell script to run with the correct parameters, we must read them from the
      * device and write it to the database, before the script starts.
      */
-    private static void importReadOnlyParameters(SessionData sessionData, ACS acs)
+    private static void importReadOnlyParameters(SessionData sessionData, DBI dbi)
             throws TR069DatabaseException {
         List<UnitParameter> unitParameters = new ArrayList<>();
         UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
@@ -180,16 +172,15 @@ public class ShellJobLogic {
         }
         if (unitParameters.size() > 0) {
             try {
-                ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
-                acsUnit.addOrChangeUnitParameters(unitParameters, sessionData.getProfile());
+                dbi.getACSUnit().addOrChangeUnitParameters(unitParameters, sessionData.getProfile());
             } catch (SQLException sqle) {
                 throw new TR069DatabaseException(sqle);
             }
         }
     }
 
-    private static void prepareSPV(SessionData sessionData, ACS acs) throws TR069DatabaseException {
-        toCPE(sessionData, acs);
+    private static void prepareSPV(SessionData sessionData, DBI dbi) throws TR069DatabaseException {
+        toCPE(sessionData, dbi);
         List<ParameterValueStruct> toDB = new ArrayList<>();
         sessionData.setToDB(toDB);
         CPEParameters cpeParams = sessionData.getCpeParameters();

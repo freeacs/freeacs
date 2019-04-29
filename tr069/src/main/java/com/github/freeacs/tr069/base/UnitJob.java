@@ -165,9 +165,8 @@ public class UnitJob {
             unitJobStatus,
             dbi);
         sessionData.getPIIDecision().setCurrentJobStatus(unitJobStatus);
-        // Write directly to database, no queuing, since the all data are flushed in next step (most
-        // likely)
-        ACSUnit acsUnit = new ACSUnit(dbi.getDataSource(), dbi.getAcs(), dbi.getSyslog());
+        // Write directly to database, no queuing, since the all data are flushed in next step (most likely)
+        ACSUnit acsUnit = dbi.getACSUnit();
         acsUnit.addOrChangeUnitParameters(upList, sessionData.getProfile());
         if (!serverSideJob) {
           sessionData.setFromDB(null);

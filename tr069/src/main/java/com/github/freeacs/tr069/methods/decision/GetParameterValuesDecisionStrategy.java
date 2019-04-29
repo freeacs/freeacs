@@ -202,7 +202,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         } else {
             if (type == JobFlag.JobType.SHELL) {
                 sessionData.getProvisioningMessage().setProvOutput(ProvisioningMessage.ProvOutput.SHELL);
-                ShellJobLogic.execute(sessionData, dbi.getAcs(), job, unitJob, isDiscoveryMode, scriptExecutions);
+                ShellJobLogic.execute(sessionData, dbi, job, unitJob, isDiscoveryMode, scriptExecutions);
             } else { // type == JobType.CONFIG
                 // The service-window is unimportant for next PII calculation, will
                 // be set to 31 no matter what, since a job is "in the process".

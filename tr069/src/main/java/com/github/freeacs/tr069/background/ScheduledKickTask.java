@@ -64,7 +64,6 @@ public class ScheduledKickTask extends TaskDefaultImpl {
 
   @Override
   public void runImpl() throws Throwable {
-    ACS acs = dbi.getAcs();
     synchronized (syncMonitor) {
       Iterator<UnitKick> listIterator = kickList.iterator();
       long now = System.currentTimeMillis();
@@ -82,7 +81,7 @@ public class ScheduledKickTask extends TaskDefaultImpl {
           continue;
         }
         Unit unit = uk.getUnit();
-        ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
+        ACSUnit acsUnit = dbi.getACSUnit();
         acsUnit.addOrChangeQueuedUnitParameters(unit);
         dbi.publishKick(unit, SyslogConstants.FACILITY_STUN);
         uk.setNextTms(now + 30000);
@@ -100,6 +99,7 @@ public class ScheduledKickTask extends TaskDefaultImpl {
     return logger;
   }
 
+  // TODO remove?
   public static void addUnit(Unit u) {
     removeUnit(u.getId());
     synchronized (syncMonitor) {
