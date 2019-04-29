@@ -48,7 +48,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
         "classpath:application.properties",
         "classpath:application-h2-datasource.properties",
         "classpath:application-basic-security.properties",
-        "classpath:application-discovery-mode.properties"
+        "classpath:application-discovery-off.properties"
 })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @EnableScheduling
@@ -77,7 +77,7 @@ public class SetDiscoverParameterJobTest {
                 .withValue("syslog.severity.0.limit", ConfigValueFactory.fromAnyRef(90));
         scriptExecutorTask = new ScriptExecutor("ScriptExecutor", dbi, new Properties(config));
         // Create necessary state
-        AbstractProvisioningTest.addNonProvisionedUnit(dbi);
+        AbstractProvisioningTest.addUnitsToProvision(dbi);
         Unittype unittype = dbi.getAcs().getUnittype(UNIT_TYPE_NAME);
         Profile profile = unittype.getProfiles().getByName("Default");
         Group group = new Group("Test", "Test", null, unittype, profile);
@@ -104,14 +104,14 @@ public class SetDiscoverParameterJobTest {
         unittype.getJobs().add(job, dbi.getAcs());
         job.setStatus(JobStatus.STARTED);
         unittype.getJobs().changeStatus(job, dbi.getAcs());
-        ACSUnit acsUnit = new ACSUnit(dbi.getDataSource(), dbi.getAcs(), dbi.getSyslog());
+        ACSUnit acsUnit = dbi.getACSUnit();
         acsUnit.addOrChangeUnitParameter(acsUnit.getUnitById(UNIT_ID), SystemParameters.JOB_CURRENT, job.getId().toString());
     }
 
     @Test
     public void setDiscoverParameterViaJob() throws Exception {
-        AbstractProvisioningTest.discoverUnit(httpBasic(UNIT_ID, UNIT_PASSWORD), mvc);
-        ACSUnit acsUnit = new ACSUnit(dbi.getDataSource(), dbi.getAcs(), dbi.getSyslog());
+        AbstractProvisioningTest.provisionUnit(httpBasic(UNIT_ID, UNIT_PASSWORD), mvc);
+        ACSUnit acsUnit = dbi.getACSUnit();
         String discoverValue = acsUnit.getUnitById(UNIT_ID).getUnitParameters().get(SystemParameters.DISCOVER).getValue();
         assertEquals("valueToExpectInTest", discoverValue);
     }

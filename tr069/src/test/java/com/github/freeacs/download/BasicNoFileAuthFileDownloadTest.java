@@ -1,7 +1,6 @@
 package com.github.freeacs.download;
 
 import com.github.freeacs.Main;
-import com.github.freeacs.provisioning.AbstractProvisioningTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +12,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.SQLException;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,7 +34,7 @@ public class BasicNoFileAuthFileDownloadTest extends AbstractDownloadTest {
     }
 
     @Test
-    public void getNotFoundOnUnitTypeThatDoesNotExist() throws Exception {
+    public void notFoundOnUnitTypeThatDoesNotExist() throws Exception {
         mvc.perform(get("/tr069/file/SOFTWARE/1.23.1/DoesNotExist"))
                 .andExpect(status().isNotFound());
     }

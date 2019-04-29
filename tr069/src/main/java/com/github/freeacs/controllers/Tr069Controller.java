@@ -4,6 +4,7 @@ import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.security.AcsUnit;
 import com.github.freeacs.tr069.http.HTTPRequestData;
 import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.http.HTTPResponseData;
@@ -24,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,6 +41,9 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 @RestController
 public class Tr069Controller {
+
+    @Value("${context-path}")
+    private String contextPath;
 
     private final DBI dbi;
     private final Properties properties;
@@ -74,7 +79,7 @@ public class Tr069Controller {
      */
     @PostMapping(value = {"${context-path}", "${context-path}/prov"})
     public ResponseEntity<String> doPost(@RequestBody(required = false) String xmlPayload,
-                                         @Value("${context-path}") String contextPath,
+                                         Authentication authentication,
                                          HttpServletRequest req,
                                          HttpServletResponse res) {
         HTTPRequestResponseData reqRes = null;
@@ -82,6 +87,12 @@ public class Tr069Controller {
             reqRes = new HTTPRequestResponseData(req);
             reqRes.getRequestData().setContextPath(contextPath);
             reqRes.getRequestData().setXml(xmlPayload);
+            if (authentication != null && reqRes.getSessionData().getUnit() == null) {
+                String username = ((AcsUnit) authentication.getPrincipal()).getUsername();
+                SessionData sessionData = reqRes.getSessionData();
+                sessionData.setUnitId(username);
+                sessionData.setUnit(dbi.getACSUnit().getUnitById(username));
+            }
 
             ProvisioningStrategy.getStrategy(properties, dbi).process(reqRes);
 

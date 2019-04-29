@@ -23,7 +23,7 @@ public abstract class AbstractDownloadTest {
     protected DBI dbi;
 
     protected void addTestfile() throws SQLException {
-        AbstractProvisioningTest.addNonProvisionedUnit(dbi);
+        AbstractProvisioningTest.addUnitsToProvision(dbi);
         Unittype unittype = dbi.getAcs().getUnittype(UNIT_TYPE_NAME);
         User admin = dbi.getAcs().getUser();
         Files files = unittype.getFiles();
