@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "classpath:application.properties",
         "classpath:application-h2-datasource.properties",
         "classpath:application-digest-security.properties",
-        "classpath:application-discovery-mode.properties"
+        "classpath:application-discovery-off.properties"
 })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class DigestProvisioningTest extends AbstractProvisioningTest {
@@ -31,16 +31,16 @@ public class DigestProvisioningTest extends AbstractProvisioningTest {
 
     @Before
     public void init() throws SQLException {
-        addNonProvisionedUnit();
+        addUnitsToProvision();
     }
 
     @Test
-    public void getUnauthorizedOnMissingAuthentication() throws Exception {
+    public void unauthorizedOnMissingAuthentication() throws Exception {
         mvc.perform(post("/tr069")).andExpect(status().isUnauthorized());
     }
 
     @Test
     public void discoverUnit() throws Exception {
-       discoverUnit(digest(UNIT_ID).password(UNIT_PASSWORD).realm(DIGEST_REALM));
+       provisionUnit(digest(UNIT_ID).password(UNIT_PASSWORD).realm(DIGEST_REALM));
     }
 }

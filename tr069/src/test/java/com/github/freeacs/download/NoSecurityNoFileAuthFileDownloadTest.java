@@ -34,7 +34,7 @@ public class NoSecurityNoFileAuthFileDownloadTest extends AbstractDownloadTest {
     }
 
     @Test
-    public void getNotFoundOnUnitTypeThatDoesNotExist() throws Exception {
+    public void notFoundOnUnitTypeThatDoesNotExist() throws Exception {
         mvc.perform(get("/tr069/file/SOFTWARE/1.23.1/DoesNotExist"))
                 .andExpect(status().isNotFound()); // not unauthorized
     }

@@ -38,7 +38,7 @@ public class DigestFileDownloadTest extends AbstractDownloadTest {
     }
 
     @Test
-    public void getUnauthorizedOnMissingAuthentication() throws Exception {
+    public void unauthorizedOnMissingAuthentication() throws Exception {
         mvc.perform(get("/tr069/file/SOFTWARE/1.23.1/Test"))
                 .andExpect(status().isUnauthorized());
     }

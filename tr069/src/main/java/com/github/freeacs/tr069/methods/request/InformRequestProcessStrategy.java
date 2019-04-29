@@ -1,6 +1,5 @@
 package com.github.freeacs.tr069.methods.request;
 
-import com.github.freeacs.security.AcsUnit;
 import com.github.freeacs.tr069.CPEParameters;
 import com.github.freeacs.tr069.CommandKey;
 import com.github.freeacs.tr069.InformParameters;
@@ -29,7 +28,6 @@ import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import com.github.freeacs.tr069.xml.Parser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -64,13 +62,7 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
             // If unit is authenticated, the unitId is already found
             String unitId = sessionData.getUnitId();
             if (unitId == null) {
-                Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                AcsUnit acsUnit = principal instanceof AcsUnit ? (AcsUnit) principal : null;
-                if (acsUnit != null && properties.isUsernameAsUnitId()) {
-                    unitId = acsUnit.getUsername();
-                } else {
-                    unitId = getUnitId(deviceIdStruct);
-                }
+                unitId = getUnitId(deviceIdStruct);
             }
             BaseCache.putSessionData(unitId, sessionData);
             sessionData.setUnitId(unitId);

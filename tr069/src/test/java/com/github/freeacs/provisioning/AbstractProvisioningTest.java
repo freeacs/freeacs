@@ -23,7 +23,8 @@ public abstract class AbstractProvisioningTest {
     public static final String UNIT_ID = "test123";
     public static final String UNIT_TYPE_NAME = "Test";
     public static final String UNIT_PASSWORD = "password";
-    static final String PROFILE_NAME = "Default";
+    public static final String PROFILE_NAME = "Default";
+    public static final String UNIT_ID_AUTO = "000000-FakeProductClass-FakeSerialNumber";
 
     @Autowired
     protected MockMvc mvc;
@@ -31,12 +32,26 @@ public abstract class AbstractProvisioningTest {
     @Autowired
     protected DBI dbi;
 
-    protected void addNonProvisionedUnit() throws SQLException {
-        addNonProvisionedUnit(dbi);
+    protected void addUnitsToProvision() throws SQLException {
+        addUnitsToProvision(dbi);
     }
 
-    public static void addNonProvisionedUnit(DBI dbi) throws SQLException {
-        ACSUnit acsUnit = new ACSUnit(dbi.getDataSource(), dbi.getAcs(), dbi.getSyslog());
+    public static void addUnitsToProvision(DBI dbi) throws SQLException {
+        Unittype unittype = addUnittype(dbi);
+
+        ACSUnit acsUnit = dbi.getACSUnit();
+
+        acsUnit.addUnits(Collections.singletonList(UNIT_ID), unittype.getProfiles().getByName(PROFILE_NAME));
+        Unit unit = acsUnit.getUnitById(UNIT_ID);
+        acsUnit.addOrChangeUnitParameter(unit, SystemParameters.SECRET, UNIT_PASSWORD);
+
+        acsUnit.addUnits(Collections.singletonList(UNIT_ID_AUTO), unittype.getProfiles().getByName(PROFILE_NAME));
+        unit = acsUnit.getUnitById(UNIT_ID_AUTO);
+        acsUnit.addOrChangeUnitParameter(unit, SystemParameters.SECRET, UNIT_PASSWORD);
+    }
+
+    public static Unittype addUnittype(DBI dbi) throws SQLException {
+        ACSUnit acsUnit = dbi.getACSUnit();
         Unittypes unittypes = dbi.getAcs().getUnittypes();
         Unittype unittype = unittypes.getByName(UNIT_TYPE_NAME);
         if (unittype != null) {
@@ -44,20 +59,23 @@ public abstract class AbstractProvisioningTest {
             if (unit != null) {
                 acsUnit.deleteUnit(unit);
             }
+            unit = acsUnit.getUnitById(UNIT_ID_AUTO);
+            if (unit != null) {
+                acsUnit.deleteUnit(unit);
+            }
             unittypes.deleteUnittype(unittype, dbi.getAcs(), true);
         }
         unittypes.addOrChangeUnittype(new Unittype(UNIT_TYPE_NAME, "","", TR069), dbi.getAcs());
         unittype = unittypes.getByName(UNIT_TYPE_NAME);
-        acsUnit.addUnits(Collections.singletonList(UNIT_ID), unittype.getProfiles().getByName(PROFILE_NAME));
-        Unit unit = acsUnit.getUnitById(UNIT_ID);
-        acsUnit.addOrChangeUnitParameter(unit, SystemParameters.SECRET, UNIT_PASSWORD);
+        unittype.getUnittypeParameters().addOrChangeUnittypeParameter(new UnittypeParameter(unittype, "InternetGatewayDevice.ManagementServer.PeriodicInformInterval", new UnittypeParameterFlag("RW")), dbi.getAcs());
+        return unittype;
     }
 
-    void discoverUnit(@Nullable RequestPostProcessor authPostProcessor) throws Exception {
-        discoverUnit(authPostProcessor, mvc);
+    void provisionUnit(@Nullable RequestPostProcessor authPostProcessor) throws Exception {
+        provisionUnit(authPostProcessor, mvc);
     }
 
-    public static void discoverUnit(@Nullable RequestPostProcessor authPostProcessor, MockMvc mvc) throws Exception {
+    public static void provisionUnit(@Nullable RequestPostProcessor authPostProcessor, MockMvc mvc) throws Exception {
         MockHttpSession session = new MockHttpSession();
         MockHttpServletRequestBuilder postRequestBuilder = post("/tr069").session(session);
         if (authPostProcessor != null) {
@@ -80,31 +98,9 @@ public abstract class AbstractProvisioningTest {
                 .andExpect(header().string("SOAPAction", ""))
                 .andExpect(xpath("/*[local-name() = 'Envelope']" +
                         "/*[local-name() = 'Body']" +
-                        "/*[local-name() = 'GetParameterNames']" +
-                        "/ParameterPath")
-                        .string("InternetGatewayDevice."))
-                .andExpect(xpath("/*[local-name() = 'Envelope']" +
-                        "/*[local-name() = 'Body']" +
-                        "/*[local-name() = 'GetParameterNames']" +
-                        "/NextLevel")
-                        .string("false"));
-        mvc.perform(post("/tr069")
-                .session(session)
-                .content(getFileAsString("/provision/cpe/GetParameterNamesResponse.xml")))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType("text/xml"))
-                .andExpect(header().string("SOAPAction", ""))
-                .andExpect(xpath("/*[local-name() = 'Envelope']" +
-                        "/*[local-name() = 'Body']" +
                         "/*[local-name() = 'GetParameterValues']" +
                         "/ParameterNames" +
                         "/string[1]")
-                        .string("InternetGatewayDevice.DeviceInfo.SoftwareVersion"))
-                .andExpect(xpath("/*[local-name() = 'Envelope']" +
-                        "/*[local-name() = 'Body']" +
-                        "/*[local-name() = 'GetParameterValues']" +
-                        "/ParameterNames" +
-                        "/string[2]")
                         .string("InternetGatewayDevice.DeviceInfo.VendorConfigFile."));
         mvc.perform(post("/tr069")
                 .session(session)

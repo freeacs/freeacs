@@ -633,4 +633,8 @@ public class DBI implements Runnable {
   public Syslog getSyslog() {
     return syslog;
   }
+
+  public ACSUnit getACSUnit() throws SQLException {
+    return new ACSUnit(dataSource, acs, syslog);
+  }
 }
