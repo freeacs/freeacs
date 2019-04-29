@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.security.Principal;
 
 /**
  * This is the "main-class" of TR069 Provisioning. It receives the HTTP-request from the CPE and
@@ -42,6 +41,9 @@ import java.security.Principal;
 @Slf4j
 @RestController
 public class Tr069Controller {
+
+    @Value("${context-path}")
+    private String contextPath;
 
     private final DBI dbi;
     private final Properties properties;
@@ -77,7 +79,6 @@ public class Tr069Controller {
      */
     @PostMapping(value = {"${context-path}", "${context-path}/prov"})
     public ResponseEntity<String> doPost(@RequestBody(required = false) String xmlPayload,
-                                         @Value("${context-path}") String contextPath,
                                          Authentication authentication,
                                          HttpServletRequest req,
                                          HttpServletResponse res) {
@@ -88,10 +89,8 @@ public class Tr069Controller {
             reqRes.getRequestData().setXml(xmlPayload);
             if (authentication != null && reqRes.getSessionData().getUnit() == null) {
                 String username = ((AcsUnit) authentication.getPrincipal()).getUsername();
-                String password = ((AcsUnit) authentication.getPrincipal()).getPassword();
                 SessionData sessionData = reqRes.getSessionData();
                 sessionData.setUnitId(username);
-                sessionData.setSecret(password);
                 sessionData.setUnit(dbi.getACSUnit().getUnitById(username));
             }
 
