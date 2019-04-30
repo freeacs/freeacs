@@ -4,11 +4,11 @@
   <parent>
     <artifactId>freeacs</artifactId>
     <groupId>com.github.freeacs</groupId>
-    <version>1.0-SNAPSHOT</version>
+    <version>3.0-RC1</version>
   </parent>
 
   <artifactId>tr069</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>3.0-RC1</version>
   <packaging>jar</packaging>
 
   <name>tr069</name>
@@ -175,7 +175,7 @@
       <dependency>
           <groupId>com.github.freeacs</groupId>
           <artifactId>core</artifactId>
-          <version>1.0-SNAPSHOT</version>
+          <version>3.0-RC1</version>
           <scope>test</scope>
       </dependency>
     <dependency>
