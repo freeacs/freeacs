@@ -6,11 +6,11 @@
     <parent>
         <artifactId>freeacs</artifactId>
         <groupId>com.github.freeacs</groupId>
-        <version>3.0-RC2</version>
+        <version>3.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>distribution</artifactId>
-    <version>3.0-RC2</version>
+    <version>3.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Distribution</name>
