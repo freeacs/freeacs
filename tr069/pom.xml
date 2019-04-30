@@ -197,7 +197,7 @@
             <manifest>
               <addClasspath>true</addClasspath>
               <classpathPrefix>lib</classpathPrefix>
-              <mainClass>com.github.freeacs.App</mainClass>
+              <mainClass>com.github.freeacs.Main</mainClass>
             </manifest>
           </archive>
         </configuration>
