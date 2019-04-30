@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+                   xmlns:cwmp="urn:dslforum-org:cwmp-1-2">
+    <SOAP-ENV:Header>
+        <cwmp:ID SOAP-ENV:mustUnderstand="1">FREEACS-0</cwmp:ID>
+    </SOAP-ENV:Header>
+    <SOAP-ENV:Body SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
+        <cwmp:GetRPCMethods/>
+    </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

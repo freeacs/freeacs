@@ -2,7 +2,7 @@ package com.github.freeacs.tr069.xml;
 
 import java.util.Objects;
 
-public class PrettyPrinter {
+public class XMLFormatterUtils {
 
     public static String prettyPrintXmlString(String input) {
         return XMLFormatter.prettyprint(setEmptyIfNull(input));

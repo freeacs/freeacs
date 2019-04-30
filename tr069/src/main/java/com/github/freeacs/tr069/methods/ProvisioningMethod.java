@@ -1,5 +1,7 @@
 package com.github.freeacs.tr069.methods;
 
+import java.util.stream.Stream;
+
 public enum ProvisioningMethod {
     Empty("EM"),
     Fault("FA"),
@@ -12,7 +14,9 @@ public enum ProvisioningMethod {
     Download("DO"),
     Reboot("RE"),
     FactoryReset("FR"),
-    GetRPCMethods("GRP");
+    GetRPCMethods("GRPC");
+
+    private static String RESPONSE_POSTFIX = "Response";
 
     private final String abbreviation;
 
@@ -22,5 +26,16 @@ public enum ProvisioningMethod {
 
     public String getAbbreviation() {
         return abbreviation;
+    }
+
+    /**
+     * Extract request method name.
+     */
+    public static ProvisioningMethod extractMethodFrom(final String xml) {
+        return Stream.of(values())
+                .filter(m -> xml != null)
+                .filter(m -> xml.contains("<cwmp:" + m.name()) || xml.contains("<cwmp:" + m.name() + RESPONSE_POSTFIX))
+                .findFirst()
+                .orElse(Empty);
     }
 }

@@ -7,13 +7,14 @@ import com.github.freeacs.tr069.methods.decision.DecisionStrategy;
 import com.github.freeacs.tr069.methods.request.RequestProcessStrategy;
 import com.github.freeacs.tr069.methods.response.ResponseCreateStrategy;
 import com.github.freeacs.tr069.Properties;
-import com.github.freeacs.tr069.xml.PrettyPrinter;
+import com.github.freeacs.tr069.xml.XMLFormatterUtils;
 import com.github.freeacs.tr069.xml.Response;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static com.github.freeacs.tr069.CwmpVersion.extractVersionFrom;
+import static com.github.freeacs.tr069.methods.ProvisioningMethod.extractMethodFrom;
 
 @Slf4j
 public abstract class ProvisioningStrategy {
@@ -25,10 +26,6 @@ public abstract class ProvisioningStrategy {
     }
 
     private static class NormalProvisioningStrategy extends ProvisioningStrategy {
-        private static final Pattern VERSION_REGEX =
-                Pattern.compile(".*cwmp\\s*=\\s*\"urn:dslforum-org:cwmp-([^\"]+)\".*", Pattern.DOTALL);
-        private static final Pattern METHOD_NAME_PATTERN =
-                Pattern.compile(":Body.*>\\s*<cwmp:(\\w+)(>|/>)", Pattern.DOTALL);
 
         private final Properties properties;
         private final DBI dbi;
@@ -41,13 +38,14 @@ public abstract class ProvisioningStrategy {
         @Override
         public void process(HTTPRequestResponseData reqRes) throws Exception {
             // 0. Pre-processing
-            reqRes.getRequestData().setXml(PrettyPrinter.filterInvalidCharacters(reqRes.getRequestData().getXml()));
-            reqRes.getRequestData().setMethod(extractMethod(reqRes));
-            reqRes.getSessionData().setCwmpVersionNumber(extractCwmpVersion(reqRes));
+            String xml = reqRes.getRequestData().getXml();
+            ProvisioningMethod requestMethod = extractMethodFrom(xml);
+            reqRes.getRequestData().setXml(XMLFormatterUtils.filterInvalidCharacters(xml));
+            reqRes.getRequestData().setMethod(requestMethod.name());
+            reqRes.getSessionData().setCwmpVersionNumber(extractVersionFrom(xml));
 
             // 1. process the request
             logWillProcessRequest(reqRes);
-            ProvisioningMethod requestMethod = getRequestMethod(reqRes);
             RequestProcessStrategy.getStrategy(requestMethod, properties, dbi).process(reqRes);
             if (Log.isConversationLogEnabled()) {
                 logConversationRequest(reqRes);
@@ -81,7 +79,7 @@ public abstract class ProvisioningStrategy {
             String unitId = Optional.ofNullable(reqRes.getSessionData().getUnitId()).orElse("Unknown");
             String xml = reqRes.getRequestData().getXml();
             if (properties.isPrettyPrintQuirk(reqRes.getSessionData())) {
-                xml = PrettyPrinter.prettyPrintXmlString(reqRes.getRequestData().getXml());
+                xml = XMLFormatterUtils.prettyPrintXmlString(reqRes.getRequestData().getXml());
             }
             Log.conversation(reqRes.getSessionData(), "============== FROM CPE ( " + unitId + " ) TO ACS ===============\n" + xml);
         }
@@ -92,38 +90,6 @@ public abstract class ProvisioningStrategy {
         private void logConversationResponse(HTTPRequestResponseData reqRes, String responseStr) {
             String unitId = Optional.ofNullable(reqRes.getSessionData().getUnitId()).orElse("Unknown");
             Log.conversation(reqRes.getSessionData(), "=============== FROM ACS TO ( " + unitId + " ) ============\n" + responseStr + "\n");
-        }
-
-        /**
-         * Extract request method name.
-         */
-        private String extractMethod(HTTPRequestResponseData reqRes) {
-            String requestMethodName = null;
-            Matcher matcher = METHOD_NAME_PATTERN.matcher(reqRes.getRequestData().getXml());
-            if (matcher.find()) {
-                requestMethodName = matcher.group(1);
-            }
-            if (requestMethodName != null && requestMethodName.endsWith("Response")) {
-                requestMethodName = requestMethodName.substring(0, requestMethodName.length() - 8);
-            }
-            if (requestMethodName == null) {
-                requestMethodName = ProvisioningMethod.Empty.name();
-            }
-            return requestMethodName;
-        }
-
-        /**
-         * Extract cwmp version or default to "1-2"
-         */
-        private String extractCwmpVersion(HTTPRequestResponseData reqRes) {
-            String version = "1-2";
-            if (reqRes.getSessionData().getCwmpVersionNumber() == null) {
-                Matcher matcher = VERSION_REGEX.matcher(reqRes.getRequestData().getXml());
-                if (matcher.find()) {
-                    version = matcher.group(1);
-                }
-            }
-            return version;
         }
 
         /**
