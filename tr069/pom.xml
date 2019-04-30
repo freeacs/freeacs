@@ -172,17 +172,11 @@
       <version>${mariadb.version}</version>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>com.github.freeacs</groupId>
-          <artifactId>core</artifactId>
-          <version>3.1-SNAPSHOT</version>
-          <scope>test</scope>
-      </dependency>
     <dependency>
-      <groupId>com.typesafe</groupId>
-      <artifactId>config</artifactId>
-      <version>1.3.3</version>
-      <scope>test</scope>
+        <groupId>com.github.freeacs</groupId>
+        <artifactId>core</artifactId>
+        <version>3.1-SNAPSHOT</version>
+        <scope>test</scope>
     </dependency>
   </dependencies>
 
