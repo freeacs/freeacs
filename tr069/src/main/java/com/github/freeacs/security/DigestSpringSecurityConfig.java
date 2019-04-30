@@ -25,6 +25,9 @@ public class DigestSpringSecurityConfig extends AbstractSecurityConfig {
 
     @Autowired
     public DigestSpringSecurityConfig(@Value("${digest.secret}") String digestSecret) {
+        if ("changeme".equals(digestSecret)) {
+            throw new IllegalArgumentException("Please change the digest.secret property to start using digest authentication");
+        }
         this.digestSecret = digestSecret;
     }
 
