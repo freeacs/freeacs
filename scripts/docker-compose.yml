@@ -127,6 +127,9 @@ services:
     image: freeacs/stun
     restart: always
     mem_limit: 2048000000
+    ports:
+      - 3478:3478
+      - 3479:3479
     depends_on:
     - db
     networks:
