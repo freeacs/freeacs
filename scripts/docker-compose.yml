@@ -128,8 +128,8 @@ services:
     restart: always
     mem_limit: 2048000000
     ports:
-      - 3478:3478
-      - 3479:3479
+      - 3478:3478/udp
+      - 3479:3479/udp
     depends_on:
     - db
     networks:
@@ -140,6 +140,8 @@ services:
       - MAIN_DATASOURCE_PASSWORD
       - SYSLOG_SERVER_HOST
       - SERVER_PORT
+      - PRIMARY_IP
+      - SECONDARY_IP
       - TZ
     volumes:
       - stun_logs:/app/app/logs

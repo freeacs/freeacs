@@ -99,14 +99,14 @@ public class StunServer {
           receiverSocket.receive(receive);
           if (System.currentTimeMillis() - tms > 1000) {
             tms = System.currentTimeMillis();
-            DatagramPacket packet = null;
+            DatagramPacket packet;
             while ((packet = MessageStack.pop()) != null) {
               counter.incKick();
               receiverSocket.send(packet);
             }
           }
         } catch (SocketTimeoutException ste) {
-          DatagramPacket packet = null;
+          DatagramPacket packet;
           while ((packet = MessageStack.pop()) != null) {
             receiverSocket.send(packet);
           }
@@ -386,20 +386,21 @@ public class StunServer {
 
   public StunServer(int primaryPort, InetAddress primary, int secondaryPort, InetAddress secondary)
       throws SocketException {
+    logger.info("Primary port: {}, Primary address: {}, Secondary port: {}, Secondary address: {}", primaryPort, primary.toString(), secondaryPort, secondary.toString());
     sockets = new Vector<>();
     sockets.add(new DatagramSocket(primaryPort, primary));
     sockets.add(new DatagramSocket(secondaryPort, primary));
-    if (!"127.0.0.1".equals(primary.getHostAddress())
-        || !"127.0.0.1".equals(secondary.getHostAddress())) {
+    if (!"0.0.0.0".equals(primary.getHostAddress())
+        || !"0.0.0.0".equals(secondary.getHostAddress())) {
       sockets.add(new DatagramSocket(primaryPort, secondary));
       sockets.add(new DatagramSocket(secondaryPort, secondary));
     } else {
       logger.info(
-          "Not adding sockets for secondary interface 127.0.0.1, since primary interface is also 127.0.0.1");
+          "Not adding sockets for secondary interface 0.0.0.0, since primary interface is also 0.0.0.0");
     }
-    if ("127.0.0.1".equals(secondary.getHostAddress())) {
+    if ("0.0.0.0".equals(secondary.getHostAddress())) {
       logger.info(
-          "STUN Server has started, secondary interface uses to 127.0.0.1 - not optimal for full STUN functionality");
+          "STUN Server has started, secondary interface uses to 0.0.0.0 - not optimal for full STUN functionality");
     } else {
       logger.info("STUN Server has started, all interfaces are operational");
     }
