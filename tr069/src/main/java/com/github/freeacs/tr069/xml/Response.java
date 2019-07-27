@@ -20,12 +20,13 @@ public class Response {
 
   public String toXml() {
     final StringBuilder sb = new StringBuilder(10);
-      sb.append("<").append("soapenv").append(":Envelope ");
+    sb.append("<?").append("xml").append(" version=\"1.0\" encoding=\"UTF-8\"").append("?>\n");
+      sb.append("<").append("soap-env").append(":Envelope ");
       sb.append("xmlns:")
-        .append("soapenv")
+        .append("soap-env")
         .append("=\"http://schemas.xmlsoap.org/soap/envelope/\" ");
     sb.append("xmlns:")
-        .append("soapenc")
+        .append("soap-enc")
         .append("=\"http://schemas.xmlsoap.org/soap/encoding/\" ");
     sb.append("xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" ");
     sb.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
@@ -34,7 +35,7 @@ public class Response {
         .append("\">\n");
     sb.append(header.toXml());
     sb.append(body.toXml());
-      sb.append("</").append("soapenv").append(":Envelope>\n");
+      sb.append("</").append("soap-env").append(":Envelope>\n");
     return sb.toString();
   }
 }

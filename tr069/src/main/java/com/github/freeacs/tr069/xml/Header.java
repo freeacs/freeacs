@@ -41,7 +41,7 @@ public class Header {
   String toXml() {
     StringBuilder sb = new StringBuilder(6);
     if (id != null || holdRequests != null) {
-      sb.append("<").append("soapenv").append(":Header>\n");
+      sb.append("<").append("soap-env").append(":Header>\n");
       if (id != null) {
         sb.append(id.toXml());
       }
@@ -51,9 +51,9 @@ public class Header {
       if (noMoreRequests != null) {
         sb.append(noMoreRequests.toXml());
       }
-      sb.append("</").append("soapenv").append(":Header>\n");
+      sb.append("</").append("soap-env").append(":Header>\n");
     } else {
-      sb.append("<").append("soapenv").append(":Header/>\n");
+      sb.append("<").append("soap-env").append(":Header/>\n");
     }
     return sb.toString();
   }
