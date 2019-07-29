@@ -1,5 +1,6 @@
 package com.github.freeacs.tr069.methods.decision;
 
+import com.github.freeacs.tr069.CPEParameters;
 import com.github.freeacs.tr069.base.DBIActions;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.ACS;
@@ -118,6 +119,15 @@ public class EmptyDecisionStrategy implements DecisionStrategy {
                     && !"".equals(udpUrl.trim())
                     && !udpUrl.equals(sessionData.getUnit().getParameterValue(ifmp.UDP_CONNECTION_URL))) {
                 toDB.add(ifmp.getCpeParams().get(ifmp.UDP_CONNECTION_URL));
+            }
+        }
+        CPEParameters cpep = sessionData.getCpeParameters();
+        if (cpep != null
+                && cpep.getValue(cpep.CONNECTION_URL) != null) {
+            String tcpUrl = cpep.getValue(cpep.CONNECTION_URL);
+            if (tcpUrl != null
+                    && !tcpUrl.equals(sessionData.getUnit().getParameterValue(cpep.CONNECTION_URL))) {
+                toDB.add(cpep.getCpeParams().get(cpep.CONNECTION_URL));
             }
         }
         sessionData.setToDB(toDB);
