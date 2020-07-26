@@ -12,6 +12,9 @@ trim_trailing_whitespace = true
 quote_type = single
 indent_size = 2
 
+[*.json]
+indent_size = 2
+
 [*.md]
 max_line_length = off
 trim_trailing_whitespace = false
