@@ -82,18 +82,6 @@
                             <arguments>run build</arguments>
                         </configuration>
                     </execution>
-
-                    <execution>
-                        <id>gulp build</id>
-                        <goals>
-                            <goal>gulp</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <arguments>build</arguments>
-                        </configuration>
-                    </execution>
-
                 </executions>
             </plugin>
         </plugins>

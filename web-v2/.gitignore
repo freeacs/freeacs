@@ -91,6 +91,7 @@ Thumbs.db
 
 # dependencies
 /node_modules
+/node
 
 # profiling files
 chrome-profiler-events*.json

@@ -2,7 +2,10 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
-    "outDir": "./dist/out-tsc",
+    "outDir": "src/main/resources/static",
+    "paths": {
+      "app/*": ["src/main/webapp/app/*"]
+    },
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,
@@ -16,6 +19,14 @@
       "dom"
     ]
   },
+  "include": [
+    "src/main/webapp/main.ts",
+    "src/main/webapp/polyfills.ts",
+    "src/main/webapp/app"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true

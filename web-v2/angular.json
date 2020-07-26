@@ -11,24 +11,24 @@
         }
       },
       "root": "",
-      "sourceRoot": "src",
+      "sourceRoot": "src/main/webapp",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/webapp",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
+            "outputPath": "src/main/resources/static",
+            "index": "src/main/webapp/index.html",
+            "main": "src/main/webapp/main.ts",
+            "polyfills": "src/main/webapp/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
             "assets": [
-              "src/favicon.ico",
-              "src/assets"
+              "src/main/webapp/favicon.ico",
+              "src/main/webapp/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/main/webapp/styles.scss"
             ],
             "scripts": []
           },
@@ -36,8 +36,8 @@
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "replace": "src/main/webapp/environments/environment.ts",
+                  "with": "src/main/webapp/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
@@ -83,16 +83,16 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
+            "main": "src/main/webapp/test.ts",
+            "polyfills": "src/main/webapp/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
             "assets": [
-              "src/favicon.ico",
-              "src/assets"
+              "src/main/webapp/favicon.ico",
+              "src/main/webapp/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/main/webapp/styles.scss"
             ],
             "scripts": []
           }
@@ -123,6 +123,7 @@
           }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "webapp"
 }
