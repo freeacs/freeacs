@@ -1,3 +1,7 @@
+# ARCHIVED!
+
+Due to inactivity for several years and because no one wanted to maintain it, this project and all other projects in this org is archived.
+
 ![Freeacs Logo](https://github.com/freeacs/readme/blob/master/logo.png)
 
 [![Build Status](https://travis-ci.org/freeacs/freeacs.svg?branch=master)](https://travis-ci.org/freeacs/freeacs)
