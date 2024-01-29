@@ -37,7 +37,7 @@
         <mariadb-dlls.version>10.2.11</mariadb-dlls.version>
         <mariadb.version>2.4.0</mariadb.version>
         <selenium.version>3.141.59</selenium.version>
-        <mockito.version>1.9.5</mockito.version>
+        <mockito.version>1.10.19</mockito.version>
         <commons-fileupload>1.4</commons-fileupload>
         <httpclient.version>4.5.7</httpclient.version>
         <jackson.databind>2.9.8</jackson.databind>
