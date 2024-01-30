@@ -10,7 +10,7 @@ public interface FileSlurper {
 
     static String getFileAsString(final String name) throws IOException {
         try (InputStream inputStream = FileSlurper.class.getResourceAsStream(name)) {
-            return IOUtil.toString(Objects.requireNonNull(inputStream), "UTF_8");
+            return IOUtil.toString(Objects.requireNonNull(inputStream), "UTF-8");
         }
     }
 }
