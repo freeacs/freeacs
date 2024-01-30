@@ -87,9 +87,6 @@ public class MonitorExecution implements Runnable {
       } else {
         logger.debug("Monitoring: MonitorExecution: URL " + url + " has status " + status);
       }
-      if (method != null) {
-        method.releaseConnection();
-      }
     }
   }
 
