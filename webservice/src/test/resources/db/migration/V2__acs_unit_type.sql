@@ -1,1 +1,0 @@
-INSERT INTO unit_type (unit_type_id, matcher_id, unit_type_name, vendor_name, description, protocol) VALUES (1, null, 'Generic', null, 'Auto-generated', 'TR069');

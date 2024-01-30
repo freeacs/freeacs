@@ -60,10 +60,10 @@
         <module>monitor</module>
         <module>tr069</module>
         <module>web</module>
-        <module>webservice</module>
         <module>tables</module>
         <module>scripts</module>
         <module>distribution</module>
+        <module>bom</module>
     </modules>
 
     <build>
@@ -74,6 +74,24 @@
                 <version>2.7</version>
             </plugin>
         </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>1.18.30</version>
+                            </path>
+                        </annotationProcessorPaths>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
 </project>
