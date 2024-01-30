@@ -1,0 +1,1 @@
+INSERT INTO unit (unit_id, unit_type_id, profile_id) VALUES ('test', 1, 1);

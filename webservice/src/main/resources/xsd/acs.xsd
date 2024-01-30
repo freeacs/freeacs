@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://xml.ws.freeacs.github.com/"
+           targetNamespace="http://xml.ws.freeacs.github.com/" elementFormDefault="qualified">
+
+    <xs:complexType name="Login">
+        <xs:sequence>
+            <xs:element name="username" nillable="false" type="xs:string" />
+            <xs:element minOccurs="0" name="password" nillable="true" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="Unittype">
+        <xs:sequence>
+            <xs:element name="name" nillable="false" type="xs:string" />
+            <xs:element minOccurs="0" name="matcherId" nillable="true" type="xs:string" />
+            <xs:element minOccurs="0" name="vendor" nillable="true" type="xs:string" />
+            <xs:element minOccurs="0" name="description" nillable="true" type="xs:string" />
+            <xs:element minOccurs="0" name="protocol" nillable="true" type="xs:string" />
+            <xs:element minOccurs="0" name="parameters" nillable="true" type="tns:parameterList" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="Profile">
+        <xs:sequence>
+            <xs:element name="name" nillable="false" type="xs:string" />
+            <xs:element minOccurs="0" name="parameters" nillable="true" type="tns:parameterList" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="Unit">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="unitId" nillable="true" type="xs:string" />
+            <xs:element minOccurs="0" name="serialNumber" nillable="true" type="xs:string" />
+            <xs:element minOccurs="0" name="profile" nillable="true" type="tns:Profile" />
+            <xs:element minOccurs="0" name="unittype" nillable="true" type="tns:Unittype" />
+            <xs:element minOccurs="0" name="parameters" nillable="true" type="tns:parameterList" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="Parameter">
+        <xs:sequence>
+            <xs:element name="name" nillable="false" type="xs:string" />
+            <xs:element minOccurs="0" name="value" nillable="true" type="xs:string" />
+            <xs:element minOccurs="0" name="flags" nillable="true" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ArrayOfParameter">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="1" name="item" type="tns:Parameter" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="parameterList">
+        <xs:sequence>
+            <xs:element name="parameterArray" nillable="false" type="tns:ArrayOfParameter" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ArrayOfUnittype">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="item" type="tns:Unittype" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="unittypeList">
+        <xs:sequence>
+            <xs:element name="unittypeArray" nillable="false" type="tns:ArrayOfUnittype" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ArrayOfProfile">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="item" type="tns:Profile" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="profileList">
+        <xs:sequence>
+            <xs:element name="profileArray" nillable="false" type="tns:ArrayOfProfile" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ArrayOfUnitId">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="unitId" nillable="true" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ArrayOfUnit">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="item" type="tns:Unit" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="unitIdList">
+        <xs:sequence>
+            <xs:element name="unitIdArray" nillable="false" type="tns:ArrayOfUnitId" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="unitList">
+        <xs:sequence>
+            <xs:element name="unitArray" nillable="false" type="tns:ArrayOfUnit" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="KickUnitRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="login" type="tns:Login" />
+                <xs:element name="unitId" type="xs:string" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="KickUnitResponse">
+        <xs:complexType>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="GetUnittypesRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="1" minOccurs="1" name="login" nillable="false" type="tns:Login" />
+                <xs:element minOccurs="0" name="unittypeName" nillable="true" type="xs:string" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="GetUnittypesResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" name="unittypes" nillable="true" type="tns:unittypeList" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="AddOrChangeUnittypeRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="1" minOccurs="1" name="login" nillable="false" type="tns:Login" />
+                <xs:element maxOccurs="1" minOccurs="1" name="unittype" nillable="false" type="tns:Unittype" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="AddOrChangeUnittypeResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="unittype" type="tns:Unittype" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="DeleteUnittypeRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="1" minOccurs="1" name="login" nillable="false" type="tns:Login" />
+                <xs:element minOccurs="1" name="unittypeName" nillable="false" type="xs:string" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="DeleteUnittypeResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="deleted" nillable="false" type="xs:boolean" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="GetProfilesRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="1" minOccurs="1" name="login" nillable="false" type="tns:Login" />
+                <xs:element maxOccurs="1" minOccurs="1" name="unittype" nillable="false" type="tns:Unittype" />
+                <xs:element maxOccurs="1" minOccurs="0" name="profile" nillable="true" type="tns:Profile" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="GetProfilesResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" name="profiles" nillable="true" type="tns:profileList" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="AddOrChangeProfileRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="1" minOccurs="1" name="login" nillable="false" type="tns:Login" />
+                <xs:element maxOccurs="1" minOccurs="1" name="unittype" nillable="false" type="tns:Unittype" />
+                <xs:element maxOccurs="1" minOccurs="1" name="profile" nillable="false" type="tns:Profile" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="AddOrChangeProfileResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="profile" type="tns:Profile" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="DeleteProfileRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="1" minOccurs="1" name="login" nillable="false" type="tns:Login" />
+                <xs:element maxOccurs="1" minOccurs="1" name="unittype" nillable="false" type="tns:Unittype" />
+                <xs:element maxOccurs="1" minOccurs="1" name="profile" nillable="false" type="tns:Profile" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="DeleteProfileResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="deleted" nillable="false" type="xs:boolean" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="GetUnitIdsRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="1" minOccurs="1" name="login" nillable="false" type="tns:Login" />
+                <xs:element maxOccurs="1" minOccurs="1" name="unit" nillable="false" type="tns:Unit" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="GetUnitIdsResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" name="units" nillable="true" type="tns:unitIdList" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="GetUnitsRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="1" minOccurs="1" name="login" nillable="false" type="tns:Login" />
+                <xs:element maxOccurs="1" minOccurs="1" name="unit" nillable="false" type="tns:Unit" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="GetUnitsResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" name="units" nillable="true" type="tns:unitList" />
+                <xs:element name="moreUnits" type="xs:boolean" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="AddOrChangeUnitRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="1" minOccurs="1" name="login" nillable="false" type="tns:Login" />
+                <xs:element maxOccurs="1" minOccurs="1" name="unit" nillable="false" type="tns:Unit" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="AddOrChangeUnitResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="unit" type="tns:Unit" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="DeleteUnitRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="1" minOccurs="1" name="login" nillable="false" type="tns:Login" />
+                <xs:element maxOccurs="1" minOccurs="1" name="unit" nillable="false" type="tns:Unit" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="DeleteUnitResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="deleted" nillable="false" type="xs:boolean" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

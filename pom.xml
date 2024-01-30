@@ -31,6 +31,7 @@
     </properties>
 
     <modules>
+        <module>bom</module>
         <module>common</module>
         <module>dbi</module>
         <module>shell</module>
@@ -40,10 +41,10 @@
         <module>monitor</module>
         <module>tr069</module>
         <module>web</module>
+        <module>webservice</module>
         <module>tables</module>
         <module>scripts</module>
         <module>distribution</module>
-        <module>bom</module>
     </modules>
 
     <build>
