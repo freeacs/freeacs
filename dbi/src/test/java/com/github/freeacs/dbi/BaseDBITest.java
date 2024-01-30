@@ -23,8 +23,7 @@ public abstract class BaseDBITest {
     dataSource.setUser(mysql.getUsername());
     dataSource.setPassword(mysql.getPassword());
     Connection connection = dataSource.getConnection();
-    String path = new java.io.File(ClassLoader.getSystemClassLoader().getResource("install.sql").getFile()).toPath().toString();
-    DBScriptUtility.runScript(path, connection);
+    DBScriptUtility.runScript("install.sql", connection);
     connection.close();
   }
 
