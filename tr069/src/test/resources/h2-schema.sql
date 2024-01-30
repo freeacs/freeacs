@@ -29,10 +29,10 @@ CREATE TABLE IF NOT EXISTS unit_type_param (
 
 CREATE TABLE IF NOT EXISTS unit_type_param_value (
   unit_type_param_id INTEGER NOT NULL,
-  value VARCHAR(255)  NOT NULL,
+  "value" VARCHAR(255)  NOT NULL,
   priority INTEGER NOT NULL,
   type VARCHAR(32) NOT NULL DEFAULT 'enum',
-  PRIMARY KEY (unit_type_param_id,value),
+  PRIMARY KEY (unit_type_param_id, "value"),
   CONSTRAINT fk_unit_param_value_utpid FOREIGN KEY (unit_type_param_id)
     REFERENCES unit_type_param (unit_type_param_id)
     ON DELETE NO ACTION
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS profile (
 CREATE TABLE IF NOT EXISTS profile_param (
   profile_id INTEGER NOT NULL,
   unit_type_param_id INTEGER NOT NULL,
-  value VARCHAR(255)  NULL,
+  "value" VARCHAR(255)  NULL,
   PRIMARY KEY (profile_id, unit_type_param_id),
   CONSTRAINT fk_profile_param_profile_id FOREIGN KEY (profile_id)
     REFERENCES profile (profile_id)
@@ -93,10 +93,10 @@ CREATE TABLE IF NOT EXISTS unit (
 CREATE TABLE IF NOT EXISTS unit_param (
   unit_id VARCHAR(64) NOT NULL,
   unit_type_param_id INTEGER NOT NULL,
-  value VARCHAR(512)  NULL,
+  "value" VARCHAR(512)  NULL,
   PRIMARY KEY (unit_id, unit_type_param_id),
-  INDEX idx_unit_param_type_id2 (unit_type_param_id, value),
-  INDEX idx_unit_param_value (value),
+  INDEX idx_unit_param_type_id2 (unit_type_param_id, "value"),
+  INDEX idx_unit_param_value ("value"),
   CONSTRAINT fk_unit_param_unit_id FOREIGN KEY (unit_id)
     REFERENCES unit (unit_id)
     ON DELETE NO ACTION
@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS unit_param (
 CREATE TABLE IF NOT EXISTS unit_param_session (
   unit_id VARCHAR(64) NOT NULL,
   unit_type_param_id INTEGER NOT NULL,
-  value VARCHAR(512)  NULL,
+  "value" VARCHAR(512)  NULL,
   PRIMARY KEY (unit_id, unit_type_param_id),
   CONSTRAINT fk_unit_param_session_unit_id FOREIGN KEY (unit_id)
     REFERENCES unit (unit_id)
@@ -163,7 +163,7 @@ CREATE TABLE IF NOT EXISTS group_param (
   unit_type_param_id INTEGER NOT NULL,
   operator VARCHAR(2) NOT NULL DEFAULT '=',
   data_type VARCHAR(32) NOT NULL DEFAULT 'TEXT',
-  value VARCHAR(255)  NULL,
+  "value" VARCHAR(255)  NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_group_param_group_id FOREIGN KEY (group_id)
     REFERENCES group_ (group_id)
@@ -306,7 +306,7 @@ CREATE TABLE IF NOT EXISTS job_param (
   job_id INTEGER NOT NULL,
   unit_id VARCHAR(64) NOT NULL,
   unit_type_param_id INTEGER NOT NULL,
-  value VARCHAR(255)  NULL,
+  "value" VARCHAR(255)  NULL,
   PRIMARY KEY (job_id, unit_id, unit_type_param_id),
   CONSTRAINT fk_job_param_job_id FOREIGN KEY  (job_id)
     REFERENCES job (job_id)
@@ -726,7 +726,7 @@ CREATE TABLE IF NOT EXISTS test_case_param (
   type VARCHAR(16) NOT NULL, -- IN, OUT
   case_id INTEGER NOT NULL,
   unit_type_param_id INTEGER NOT NULL,
-  value VARCHAR(512) ,
+  "value" VARCHAR(512) ,
   notification INTEGER,
   PRIMARY KEY (id),
   CONSTRAINT fk_test_case_param_input_u_t_p_id FOREIGN KEY  (unit_type_param_id)

@@ -110,7 +110,7 @@ public class Jobs {
         String action = "Inserted";
         try {
           sql =
-              "INSERT INTO job_param (job_id, unit_id, unit_type_param_id, value) VALUES (?, ?, ?, ?)";
+              "INSERT INTO job_param (job_id, unit_id, unit_type_param_id, \"value\") VALUES (?, ?, ?, ?)";
           pp = connection.prepareStatement(sql);
           pp.setInt(1, jobParameter.getJob().getId());
           pp.setString(2, unitId);
@@ -123,7 +123,7 @@ public class Jobs {
           pp.close();
           action = "Updated";
           sql =
-              "UPDATE job_param SET value = ? WHERE job_id = ? AND unit_id = ? AND unit_type_param_id = ?";
+              "UPDATE job_param SET \"value\" = ? WHERE job_id = ? AND unit_id = ? AND unit_type_param_id = ?";
           pp = connection.prepareStatement(sql);
           pp.setString(1, parameter.getValue());
           pp.setInt(2, jobParameter.getJob().getId());

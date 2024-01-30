@@ -100,7 +100,7 @@ public class GroupParameters {
         }
       } else {
         ds.addSql("UPDATE group_param SET ");
-        ds.addSql("value = ?, operator = ?, data_type = ? WHERE id = ?");
+        ds.addSql("\"value\" = ?, operator = ?, data_type = ? WHERE id = ?");
         ds.addArguments(
             (parameter.valueWasNull() || parameter.getValue() == null)
                 ? new NullString()

@@ -222,7 +222,7 @@ class UnitQueryCrossUnittype {
         equalValue = false;
       }
       ds.addSqlAndArguments(
-          "(u1.unit_id IN (SELECT up.unit_id FROM unit_param up WHERE value "
+          "(u1.unit_id IN (SELECT up.unit_id FROM unit_param up WHERE \"value\" "
               + operator(likeness, equalValue)
               + " ?) ",
           searchStr);
@@ -299,7 +299,7 @@ class UnitQueryCrossUnittype {
     }
     DynamicStatement ds = new DynamicStatement();
     ds.addSql(
-        "SELECT u.unit_id, u.profile_id, u.unit_type_id, up.unit_type_param_id, up.value FROM unit u ");
+        "SELECT u.unit_id, u.profile_id, u.unit_type_id, up.unit_type_param_id, up.\"value\" FROM unit u ");
     ds.addSql("LEFT JOIN unit_param up ON u.unit_id = up.unit_id WHERE ");
     StringBuilder sb = new StringBuilder();
     for (Unit unit : units) {
@@ -382,7 +382,7 @@ class UnitQueryCrossUnittype {
   public Unit getUnitById(String unitId) throws SQLException {
     DynamicStatement ds = new DynamicStatement();
     ds.addSql(
-        "SELECT u.unit_id, u.profile_id, u.unit_type_id, up.unit_type_param_id, up.value FROM unit u ");
+        "SELECT u.unit_id, u.profile_id, u.unit_type_id, up.unit_type_param_id, up.\"value\" FROM unit u ");
     ds.addSql("LEFT JOIN unit_param up ON u.unit_id = up.unit_id WHERE ");
     if (unitId != null) {
       ds.addSqlAndArguments("u.unit_id = ? AND ", unitId);
@@ -460,7 +460,7 @@ class UnitQueryCrossUnittype {
             ut.getUnittypeParameters().getByName(SystemParameters.SOFTWARE_VERSION);
         ds = new DynamicStatement();
         ds.addSqlAndArguments(
-            "SELECT value FROM unit_param WHERE unit_type_param_id = ? AND unit_id = ?",
+            "SELECT \"value\" FROM unit_param WHERE unit_type_param_id = ? AND unit_id = ?",
             swUtp.getId(),
             unitId);
         pp = ds.makePreparedStatement(connection);
@@ -492,7 +492,7 @@ class UnitQueryCrossUnittype {
   public Unit getUnitByValue(String uniqueUnitParamValue) throws SQLException {
     DynamicStatement ds = new DynamicStatement();
     ds.addSql(
-        "SELECT u.unit_id, u.profile_id, u.unit_type_id, up.unit_type_param_id, up.value FROM unit u ");
+        "SELECT u.unit_id, u.profile_id, u.unit_type_id, up.unit_type_param_id, up.\"value\" FROM unit u ");
     ds.addSql("LEFT JOIN unit_param up ON u.unit_id = up.unit_id WHERE ");
     if (!profiles.isEmpty()) {
       ds = searchAmongManyProfiles("u", ds);
