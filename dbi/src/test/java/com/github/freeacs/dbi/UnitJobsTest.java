@@ -1,10 +1,10 @@
 package com.github.freeacs.dbi;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.SQLException;
 import java.util.List;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class UnitJobsTest extends BaseDBITest {
 

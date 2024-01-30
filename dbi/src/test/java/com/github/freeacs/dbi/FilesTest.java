@@ -1,16 +1,16 @@
 package com.github.freeacs.dbi;
 
-import static org.junit.Assert.*;
-
 import java.sql.SQLException;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class FilesTest extends BaseDBITest {
 
   @Test
   public void addOrChangeFile() throws SQLException {
     // Given:
-    String unittypeName = "Test unittype";
+    String unittypeName = "Test unittype 1";
     Unittype unittype = TestUtils.createUnittype(unittypeName, acs);
     String fileName = "File name";
     byte[] bytes = "Hei, dette er en test".getBytes();
@@ -22,14 +22,14 @@ public class FilesTest extends BaseDBITest {
 
     // Then:
     File file = unittype.getFiles().getByName(fileName);
-    assertNotNull(file);
-    assertEquals(bytes, file.getContent());
+    Assertions.assertNotNull(file);
+    Assertions.assertEquals(bytes, file.getContent());
   }
 
   @Test
   public void deleteFile() throws SQLException {
     // Given:
-    String unittypeName = "Test unittype";
+    String unittypeName = "Test unittype 2";
     Unittype unittype = TestUtils.createUnittype(unittypeName, acs);
     String fileName = "File name";
     byte[] bytes = "Hei, dette er en test".getBytes();
@@ -39,6 +39,6 @@ public class FilesTest extends BaseDBITest {
 
     // When:
     unittype.getFiles().deleteFile(unittype.getFiles().getByName(fileName), acs);
-    assertEquals(0, unittype.getFiles().getFiles().length);
+    Assertions.assertEquals(0, unittype.getFiles().getFiles().length);
   }
 }

@@ -60,7 +60,7 @@ public class Kick {
   private static Logger log = LoggerFactory.getLogger("KickSingle");
   private static Random random = new Random();
 
-  protected KickResponse kickInternal(Unit unit, Properties properties)
+  public KickResponse kickInternal(Unit unit, Properties properties)
       throws MalformedURLException {
     CPEParameters cpeParams = new CPEParameters(getKeyroot(unit));
     String udpCrUrl = unit.getParameterValue(cpeParams.UDP_CONNECTION_URL, false);

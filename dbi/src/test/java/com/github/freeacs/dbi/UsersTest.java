@@ -1,7 +1,8 @@
 package com.github.freeacs.dbi;
 
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 
@@ -11,19 +12,19 @@ public class UsersTest extends BaseDBITest {
 
   @Test
   public void testItCanAddUser() throws SQLException {
-    this.addTestUser();
+    this.addTestUser("testuser1");
     Users users = new Users(dataSource);
     User addedUser = users.getUnprotected("testuser1");
-    Assert.assertEquals("testuser1", addedUser.getUsername());
-    Assert.assertEquals("Test User 1", addedUser.getFullname());
-    Assert.assertTrue(addedUser.isAdmin());
+    Assertions.assertEquals("testuser1", addedUser.getUsername());
+    Assertions.assertEquals("Test User 1", addedUser.getFullname());
+    Assertions.assertTrue(addedUser.isAdmin());
   }
 
   @Test
   public void testItCanEditUser() throws SQLException {
-    this.addTestUser();
+    this.addTestUser("testuser2");
     Users users = new Users(dataSource);
-    User userToEdit = users.getUnprotected("testuser1");
+    User userToEdit = users.getUnprotected("testuser2");
     userToEdit.setUsername("testuserafteredit");
     userToEdit.setAdmin(false);
     userToEdit.setFullname("Test Edited User");
@@ -34,30 +35,30 @@ public class UsersTest extends BaseDBITest {
 
     User editedUser = users.getUnprotected("testuserafteredit");
 
-    Assert.assertEquals("testuserafteredit",editedUser.getUsername());
-    Assert.assertEquals("Test Edited User",editedUser.getFullname());
-    Assert.assertFalse(editedUser.isAdmin());
+    Assertions.assertEquals("testuserafteredit", editedUser.getUsername());
+    Assertions.assertEquals("Test Edited User", editedUser.getFullname());
+    Assertions.assertFalse(editedUser.isAdmin());
 
   }
 
   @Test
   public void testItCanDeleteUser() throws SQLException {
-    this.addTestUser();
+    this.addTestUser("testuser3");
     Users users = new Users(dataSource);
-    User toDelete = users.getUnprotected("testuser1");
+    User toDelete = users.getUnprotected("testuser3");
     users.delete(toDelete,this.adminUser);
 
     users = new Users(dataSource);
 
-    User deleted = users.getUnprotected("testuser1");
+    User deleted = users.getUnprotected("testuser3");
 
-    Assert.assertNull(deleted);
+    Assertions.assertNull(deleted);
   }
 
-  private void addTestUser() throws SQLException {
+  private void addTestUser(String testuser1) throws SQLException {
     Users users = new Users(dataSource);
     this.adminUser = users.getUnprotected("admin");
-    User newUser = new User("testuser1","Test User 1","",true, users);
+    User newUser = new User(testuser1,"Test User 1","",true, users);
     newUser.setSecretClearText("s3cr3p4ssw0rd");
     users.addOrChange(newUser,adminUser);
   }

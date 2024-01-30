@@ -1,22 +1,20 @@
 package com.github.freeacs.dbi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.sql.SQLException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UnittypesTest extends BaseDBITest {
 
   @Test
   public void createUnittype() throws SQLException {
     // When:
-    Unittype unittype = TestUtils.createUnittype("Name", acs);
+    Unittype unittype = TestUtils.createUnittype("Name 1", acs);
 
     // Then:
-    assertEquals(1, unittype.getId().intValue());
-    assertEquals("Name", unittype.getName());
+    assertNotNull(unittype.getId());
+    assertEquals("Name 1", unittype.getName());
     assertEquals(1, unittype.getProfiles().getProfiles().length);
     assertEquals("Default", unittype.getProfiles().getProfiles()[0].getName());
   }
@@ -24,7 +22,7 @@ public class UnittypesTest extends BaseDBITest {
   @Test
   public void deleteUnittype() throws SQLException {
     // Given:
-    String unittypeName = "Name";
+    String unittypeName = "Name 2";
     Unittype unittype = TestUtils.createUnittype(unittypeName, acs);
 
     // When:
@@ -38,7 +36,7 @@ public class UnittypesTest extends BaseDBITest {
   @Test
   public void updateUnittype() throws SQLException {
     // Given:
-    String unittypeName = "Name";
+    String unittypeName = "Name 3";
     Unittype unittype = TestUtils.createUnittype(unittypeName, acs);
     String newUnittypeName = "New name";
     unittype.setName(newUnittypeName);
@@ -53,9 +51,9 @@ public class UnittypesTest extends BaseDBITest {
     assertNull(acs.getUnittypes().getByName(unittypeName));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void invalidProtocolFails() {
     // When:
-    new Unittype("Name", "Name", "Name", null);
+    assertThrows(IllegalArgumentException.class, () -> new Unittype("Name 4", "Name", "Name",  null));
   }
 }

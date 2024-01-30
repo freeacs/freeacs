@@ -1,8 +1,8 @@
 package com.github.freeacs.tr069.base;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DBIActionsSessionTR069Test {
 
@@ -30,12 +30,14 @@ public class DBIActionsSessionTR069Test {
         assertEquals("OUI-ABCDEF", unittypeName);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void cantHandleNullUnitId() {
         // Given:
         String shortUnitUd = null;
 
         // When:
-        DBIActions.getUnittypeName(shortUnitUd);
+        assertThrows(NullPointerException.class, () -> {
+            DBIActions.getUnittypeName(shortUnitUd);
+        });
     }
 }
