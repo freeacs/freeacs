@@ -1,7 +1,6 @@
 package com.github.freeacs.web.app.page.monitor;
 
-import com.github.freeacs.common.ssl.EasySSLProtocolSocketFactory;
-import com.github.freeacs.common.ssl.HTTPSManager;
+
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.input.ParameterParser;
@@ -14,12 +13,11 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.protocol.Protocol;
-import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,12 +29,6 @@ import org.slf4j.LoggerFactory;
 public class MonitorPage extends AbstractWebPage {
   /** The logger. */
   private static final Logger logger = LoggerFactory.getLogger(MonitorPage.class);
-
-  static {
-    ProtocolSocketFactory socketFactory = new EasySSLProtocolSocketFactory();
-    Protocol https = new Protocol("https", socketFactory, 443);
-    Protocol.registerProtocol("https", https);
-  }
 
   public boolean useWrapping() {
     return true;
@@ -72,13 +64,6 @@ public class MonitorPage extends AbstractWebPage {
       url = baseURL + "monitor/web?html=no";
     }
 
-    if (url != null && url.startsWith("https://")) {
-      try {
-        HTTPSManager.installCertificate(url, WebProperties.getInstance().getKeystorePass());
-      } catch (Exception e) {
-        logger.error("Could not install server certificate for " + url, e);
-      }
-    }
     String outputHandlerString = getStringFromURL(url, req);
 
     if (outputHandlerString == null) {
@@ -121,10 +106,8 @@ public class MonitorPage extends AbstractWebPage {
       if (method.getStatusCode() == HttpStatus.SC_OK) {
         outputHandler = method.getResponseBodyAsString();
       }
-    } catch (IOException e) {
+    } catch (IOException | HttpException e) {
       logger.warn("Could not find the monitor server", e);
-    } finally {
-      method.releaseConnection();
     }
 
     return outputHandler;

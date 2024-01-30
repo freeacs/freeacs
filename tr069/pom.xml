@@ -14,19 +14,6 @@
   <name>tr069</name>
   <description>A simple tr069.</description>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <artifactId>bom</artifactId>
-        <groupId>com.github.freeacs</groupId>
-        <version>1.0.0</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
-
   <dependencies>
     <dependency>
       <groupId>com.h2database</groupId>
@@ -166,7 +153,7 @@
     <dependency>
         <groupId>com.github.freeacs</groupId>
         <artifactId>core</artifactId>
-        <version>3.1-SNAPSHOT</version>
+        <version>${project.version}</version>
         <scope>test</scope>
     </dependency>
   </dependencies>
@@ -176,7 +163,7 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>${spring-boot.version}</version>
+        <version>3.2.2</version>
         <executions>
           <execution>
             <goals>

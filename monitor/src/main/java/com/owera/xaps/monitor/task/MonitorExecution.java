@@ -1,6 +1,5 @@
 package com.owera.xaps.monitor.task;
 
-import com.github.freeacs.common.ssl.HTTPSManager;
 import com.owera.xaps.monitor.Properties;
 import java.io.IOException;
 import org.apache.commons.httpclient.HttpClient;
@@ -12,11 +11,11 @@ import org.slf4j.LoggerFactory;
 
 /** Http check implementation. */
 public class MonitorExecution implements Runnable {
-  private HttpClient client = new HttpClient();
+  private final HttpClient client = new HttpClient();
 
-  private static Logger logger = LoggerFactory.getLogger(MonitorExecution.class);
+  private static final Logger logger = LoggerFactory.getLogger(MonitorExecution.class);
 
-  private String url;
+  private final String url;
 
   private String status;
 
@@ -24,7 +23,7 @@ public class MonitorExecution implements Runnable {
 
   private String version;
 
-  private long startTms;
+  private final long startTms;
 
   MonitorExecution(String url) {
     this.url = url;
@@ -37,9 +36,6 @@ public class MonitorExecution implements Runnable {
     String status = "ERROR";
     String version = "";
     try {
-      if (url.startsWith("https://")) {
-        HTTPSManager.installCertificate(url, "changeit");
-      }
       while (System.currentTimeMillis() - startTms < Properties.RETRY_SECS * 1000) {
         try {
           method = new GetMethod(url);

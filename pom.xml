@@ -12,6 +12,18 @@
     <description>A simple freeacs.</description>
     <url>http://freeacs.com</url>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <artifactId>bom</artifactId>
+                <groupId>com.github.freeacs</groupId>
+                <version>1.0.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>19</maven.compiler.source>
