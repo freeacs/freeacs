@@ -5,6 +5,10 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
+
 public class SeleniumTest {
   private static final long TIMEOUT = 10L;
 
@@ -34,17 +38,17 @@ public class SeleniumTest {
   }
 
   public WebElement getElementById(String id) {
-    WebDriverWait wait = new WebDriverWait(this.config.getDriver(), TIMEOUT);
+    WebDriverWait wait = new WebDriverWait(this.config.getDriver(), Duration.of(TIMEOUT, SECONDS));
     return wait.until(ExpectedConditions.presenceOfElementLocated(By.id(id)));
   }
 
   public WebElement getElementByName(String id) {
-    WebDriverWait wait = new WebDriverWait(this.config.getDriver(), TIMEOUT);
+    WebDriverWait wait = new WebDriverWait(this.config.getDriver(), Duration.of(TIMEOUT, SECONDS));
     return wait.until(ExpectedConditions.presenceOfElementLocated(By.name(id)));
   }
 
   public WebElement getLinkByText(String txt) {
-    WebDriverWait wait = new WebDriverWait(this.config.getDriver(), TIMEOUT);
+    WebDriverWait wait = new WebDriverWait(this.config.getDriver(), Duration.of(TIMEOUT, SECONDS));
     return wait.until(
         ExpectedConditions.presenceOfElementLocated(
             By.xpath("//a[contains(text(),'" + txt + "')]")));

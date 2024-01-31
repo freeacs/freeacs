@@ -4,7 +4,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.mariadb.jdbc.MariaDbDataSource;
 import org.testcontainers.containers.MySQLContainer;
-
+import com.github.freeacs.common.util.DBScriptUtility;
 import java.sql.Connection;
 
 public abstract class BaseDBITest {

@@ -156,7 +156,7 @@ public class ACS {
       sql += "gp.id, ";
       sql += "gp.group_id, gp.unit_type_param_id, ";
       sql += "gp.operator, gp.data_type, ";
-      sql += "gp.\"value\" ";
+      sql += "gp.value ";
       sql += " FROM group_param gp, unit_type_param utp, unit_type ut ";
       sql +=
           " WHERE gp.unit_type_param_id = utp.unit_type_param_id AND utp.unit_type_id = ut.unit_type_id ORDER BY ut.unit_type_name ASC";
@@ -174,7 +174,7 @@ public class ACS {
         Integer unittypeParamId = rs.getInt("gp.unit_type_param_id");
         UnittypeParameter utp =
             group.getUnittype().getUnittypeParameters().getById(unittypeParamId);
-        String value = rs.getString("gp.\"value\"");
+        String value = rs.getString("gp.value");
         Parameter.Operator op = Parameter.Operator.getOperator(rs.getString("operator"));
         Parameter.ParameterDataType pdt =
             Parameter.ParameterDataType.getDataType(rs.getString("data_type"));
@@ -212,7 +212,7 @@ public class ACS {
       Map<Integer, ProfileParameter> idMap = null;
       Profile lastProfile = null;
       sql =
-          "SELECT utp.unit_type_id, pm.profile_id, pm.unit_type_param_id, pm.\"value\" FROM profile_param pm, unit_type_param utp WHERE pm.unit_type_param_id = utp.unit_type_param_id ORDER BY utp.unit_type_id ASC, pm.profile_id ASC";
+          "SELECT utp.unit_type_id, pm.profile_id, pm.unit_type_param_id, pm.value FROM profile_param pm, unit_type_param utp WHERE pm.unit_type_param_id = utp.unit_type_param_id ORDER BY utp.unit_type_id ASC, pm.profile_id ASC";
       connection = getDataSource().getConnection();
       wasAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
@@ -265,7 +265,7 @@ public class ACS {
     boolean wasAutoCommit = false;
     Connection connection = null;
     try {
-      sql = "SELECT utp.unit_type_id, utpv.unit_type_param_id, \"value\", priority, type ";
+      sql = "SELECT utp.unit_type_id, utpv.unit_type_param_id, value, priority, type ";
       sql += "FROM unit_type_param_value utpv, unit_type_param utp ";
       sql += "WHERE utpv.unit_type_param_id = utp.unit_type_param_id ";
       sql += "ORDER BY utp.unit_type_id ASC, utpv.unit_type_param_id, utpv.priority ASC";
@@ -1019,7 +1019,7 @@ public class ACS {
       s.setQueryTimeout(60);
       rs =
           s.executeQuery(
-              "SELECT utp.unit_type_id, jp.job_id, jp.unit_type_param_id, jp.\"value\" FROM job_param jp, unit_type_param utp WHERE jp.unit_type_param_id = utp.unit_type_param_id AND unit_id = '"
+              "SELECT utp.unit_type_id, jp.job_id, jp.unit_type_param_id, jp.value FROM job_param jp, unit_type_param utp WHERE jp.unit_type_param_id = utp.unit_type_param_id AND unit_id = '"
                   + Job.ANY_UNIT_IN_GROUP
                   + "'");
       int paramsCounter = 0;

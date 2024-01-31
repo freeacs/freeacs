@@ -1,4 +1,4 @@
-package com.github.freeacs.dbi;
+package com.github.freeacs.common.util;
 
 import org.apache.ibatis.jdbc.ScriptRunner;
 
@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 
 public class DBScriptUtility {
-    static void runScript(
+    public static void runScript(
             String path,
             Connection connection
     ) {

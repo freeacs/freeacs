@@ -19,8 +19,6 @@ public class FlywayConfiguration {
 
   @PostConstruct
   public void runFlyway() {
-    Flyway flyway = new Flyway();
-    flyway.setDataSource(mainDataSource);
-    flyway.migrate();
+    Flyway.configure().dataSource(mainDataSource).load().migrate();
   }
 }

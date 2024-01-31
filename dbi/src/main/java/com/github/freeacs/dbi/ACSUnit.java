@@ -297,7 +297,7 @@ public class ACSUnit {
         String action = "Updated";
         if (updateFirst) {
           sql =
-              "UPDATE " + tableName + " SET \"value\" = ? WHERE unit_id = ? AND unit_type_param_id = ?";
+              "UPDATE " + tableName + " SET value = ? WHERE unit_id = ? AND unit_type_param_id = ?";
           int rowsupdated =
               executeSql(sql, connection, parameter.getUnittypeParameter(), value, unitId);
           if (rowsupdated == 0) {
@@ -306,14 +306,14 @@ public class ACSUnit {
             sql =
                 "INSERT INTO "
                     + tableName
-                    + " (\"value\", unit_id, unit_type_param_id) VALUES (?, ?, ?)";
+                    + " (value, unit_id, unit_type_param_id) VALUES (?, ?, ?)";
             executeSql(sql, connection, parameter.getUnittypeParameter(), value, unitId);
           } else {
             updateCounter++;
           }
         } else {
           sql =
-              "INSERT INTO " + tableName + " (\"value\", unit_id, unit_type_param_id) VALUES (?, ?, ?)";
+              "INSERT INTO " + tableName + " (value, unit_id, unit_type_param_id) VALUES (?, ?, ?)";
           try {
             executeSql(sql, connection, parameter.getUnittypeParameter(), value, unitId);
             insertCounter++;
@@ -323,7 +323,7 @@ public class ACSUnit {
             sql =
                 "UPDATE "
                     + tableName
-                    + " SET \"value\" = ? WHERE unit_id = ? AND unit_type_param_id = ?";
+                    + " SET value = ? WHERE unit_id = ? AND unit_type_param_id = ?";
             int rowsupdated =
                 executeSql(sql, connection, parameter.getUnittypeParameter(), value, unitId);
             if (rowsupdated == 0) {
