@@ -1,6 +1,7 @@
 package com.github.freeacs.download;
 
 import com.github.freeacs.Main;
+import com.github.freeacs.provisioning.AbstractProvisioningTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.sql.SQLException;
 
+import static com.github.freeacs.provisioning.AbstractProvisioningTest.UNIT_TYPE_NAME;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -21,17 +23,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestPropertySource(locations = {
         "classpath:application.properties",
-        "classpath:application-h2-datasource.properties",
         "classpath:application-digest-security.properties",
         "classpath:application-file-auth-disabled.properties"
 })
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class DigestNoFileAuthFileDownloadTest extends AbstractDownloadTest {
-
-    @BeforeEach
-    public void init() throws SQLException {
-        addTestfile();
-    }
 
     @Test
     public void notFoundOnUnitTypeThatDoesNotExist() throws Exception {
@@ -41,6 +36,7 @@ public class DigestNoFileAuthFileDownloadTest extends AbstractDownloadTest {
 
     @Test
     public void canDownloadFile() throws Exception {
+        addTestfile(UNIT_TYPE_NAME, AbstractProvisioningTest.UNIT_ID);
         mvc.perform(get("/tr069/file/SOFTWARE/1.23.1/Test"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/octet-stream"))

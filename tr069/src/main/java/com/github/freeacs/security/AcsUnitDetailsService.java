@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
@@ -16,10 +18,12 @@ import java.sql.SQLException;
 public class AcsUnitDetailsService implements UserDetailsService {
 
     private final DBI dbi;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public AcsUnitDetailsService(DBI dbi) {
         this.dbi = dbi;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     @Override
@@ -32,6 +36,10 @@ public class AcsUnitDetailsService implements UserDetailsService {
                 if (secret == null) {
                     throw new UsernameNotFoundException("User " + username + " has no secret");
                 }
+                // TODO make a new major release and add the passwordEncoder.encode(secret) below
+                // by migrating the secret to a hashed secret we can remove the passwordEncoder.encode(secret) below
+                // For adding new units we probably need to convert the secret to a hashed secret in ACSUnit
+                // return new AcsUnit(username, passwordEncoder.encode(secret));
                 return new AcsUnit(username, secret);
             } else {
                 throw new UsernameNotFoundException("User was not found: " + username);

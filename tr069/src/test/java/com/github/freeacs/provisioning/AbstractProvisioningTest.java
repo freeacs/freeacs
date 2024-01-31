@@ -33,27 +33,27 @@ public abstract class AbstractProvisioningTest {
     protected DBI dbi;
 
     protected void addUnitsToProvision() throws SQLException {
-        addUnitsToProvision(dbi);
+        addUnitsToProvision(dbi, UNIT_TYPE_NAME, UNIT_ID);
     }
 
-    public static void addUnitsToProvision(DBI dbi) throws SQLException {
-        Unittype unittype = addUnittype(dbi);
+    public static void addUnitsToProvision(DBI dbi, String unitTypeName, String unitId) throws SQLException {
+        Unittype unittype = addUnittype(dbi, unitTypeName);
 
         ACSUnit acsUnit = dbi.getACSUnit();
 
-        acsUnit.addUnits(Collections.singletonList(UNIT_ID), unittype.getProfiles().getByName(PROFILE_NAME));
-        Unit unit = acsUnit.getUnitById(UNIT_ID);
+        acsUnit.addUnits(Collections.singletonList(unitId), unittype.getProfiles().getByName(PROFILE_NAME));
+        Unit unit = acsUnit.getUnitById(unitId);
         acsUnit.addOrChangeUnitParameter(unit, SystemParameters.SECRET, UNIT_PASSWORD);
 
-        acsUnit.addUnits(Collections.singletonList(UNIT_ID_AUTO), unittype.getProfiles().getByName(PROFILE_NAME));
-        unit = acsUnit.getUnitById(UNIT_ID_AUTO);
+        acsUnit.addUnits(Collections.singletonList(UNIT_ID_AUTO + unitId), unittype.getProfiles().getByName(PROFILE_NAME));
+        unit = acsUnit.getUnitById(UNIT_ID_AUTO + unitId);
         acsUnit.addOrChangeUnitParameter(unit, SystemParameters.SECRET, UNIT_PASSWORD);
     }
 
-    public static Unittype addUnittype(DBI dbi) throws SQLException {
+    public static Unittype addUnittype(DBI dbi, String unitTypeName) throws SQLException {
         ACSUnit acsUnit = dbi.getACSUnit();
         Unittypes unittypes = dbi.getAcs().getUnittypes();
-        Unittype unittype = unittypes.getByName(UNIT_TYPE_NAME);
+        Unittype unittype = unittypes.getByName(unitTypeName);
         if (unittype != null) {
             Unit unit = acsUnit.getUnitById(UNIT_ID);
             if (unit != null) {
@@ -65,8 +65,8 @@ public abstract class AbstractProvisioningTest {
             }
             unittypes.deleteUnittype(unittype, dbi.getAcs(), true);
         }
-        unittypes.addOrChangeUnittype(new Unittype(UNIT_TYPE_NAME, "","", TR069), dbi.getAcs());
-        unittype = unittypes.getByName(UNIT_TYPE_NAME);
+        unittypes.addOrChangeUnittype(new Unittype(unitTypeName, "","", TR069), dbi.getAcs());
+        unittype = unittypes.getByName(unitTypeName);
         unittype.getUnittypeParameters().addOrChangeUnittypeParameter(new UnittypeParameter(unittype, "InternetGatewayDevice.ManagementServer.PeriodicInformInterval", new UnittypeParameterFlag("RW")), dbi.getAcs());
         return unittype;
     }

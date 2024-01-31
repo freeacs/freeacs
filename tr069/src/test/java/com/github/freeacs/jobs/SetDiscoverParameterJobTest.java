@@ -77,7 +77,7 @@ public class SetDiscoverParameterJobTest {
                 .withValue("syslog.severity.0.limit", ConfigValueFactory.fromAnyRef(90));
         scriptExecutorTask = new ScriptExecutor("ScriptExecutor", dbi, new Properties(config));
         // Create necessary state
-        AbstractProvisioningTest.addUnitsToProvision(dbi);
+        AbstractProvisioningTest.addUnitsToProvision(dbi, UNIT_TYPE_NAME, UNIT_ID);
         Unittype unittype = dbi.getAcs().getUnittype(UNIT_TYPE_NAME);
         Profile profile = unittype.getProfiles().getByName("Default");
         Group group = new Group("Test", "Test", null, unittype, profile);

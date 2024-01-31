@@ -12,8 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.sql.SQLException;
 
-import static com.github.freeacs.provisioning.AbstractProvisioningTest.UNIT_ID;
-import static com.github.freeacs.provisioning.AbstractProvisioningTest.UNIT_PASSWORD;
+import static com.github.freeacs.provisioning.AbstractProvisioningTest.*;
 import static com.github.freeacs.provisioning.DigestProvisioningTest.DIGEST_REALM;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.digest;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -25,17 +24,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestPropertySource(locations = {
         "classpath:application.properties",
-        "classpath:application-h2-datasource.properties",
         "classpath:application-digest-security.properties",
         "classpath:application-file-auth-enabled.properties"
 })
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class DigestFileDownloadTest extends AbstractDownloadTest {
-
-    @BeforeEach
-    public void init() throws SQLException {
-        addTestfile();
-    }
 
     @Test
     public void unauthorizedOnMissingAuthentication() throws Exception {
@@ -45,7 +37,8 @@ public class DigestFileDownloadTest extends AbstractDownloadTest {
 
     @Test
     public void canDownloadFile() throws Exception {
-        mvc.perform(get("/tr069/file/SOFTWARE/1.23.1/Test")
+        addTestfile(UNIT_TYPE_NAME, UNIT_ID);
+        mvc.perform(get("/tr069/file/SOFTWARE/1.23.1/" + UNIT_TYPE_NAME)
                 .with(digest(UNIT_ID).password(UNIT_PASSWORD).realm(DIGEST_REALM)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/octet-stream"))

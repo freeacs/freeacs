@@ -22,7 +22,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 @AutoConfigureMockMvc
 @TestPropertySource(locations = {
         "classpath:application.properties",
-        "classpath:application-h2-datasource.properties",
         "classpath:application-basic-security.properties",
         "classpath:application-discovery-off.properties"
 })
@@ -31,7 +30,7 @@ public class BasicGetRPCMethodsTest extends AbstractGetRPCMethodsTest {
 
     @BeforeEach
     public void init() throws SQLException {
-        AbstractProvisioningTest.addUnitsToProvision(dbi);
+        AbstractProvisioningTest.addUnitsToProvision(dbi, AbstractProvisioningTest.UNIT_TYPE_NAME, UNIT_ID);
     }
 
     @Test

@@ -1,16 +1,33 @@
 package com.github.freeacs.discover;
 
 import com.github.freeacs.Main;
+import com.github.freeacs.common.util.DBScriptUtility;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.util.SystemParameters;
+
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mariadb.jdbc.MariaDbDataSource;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.support.TestPropertySourceUtils;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.sql.Connection;
 
 import static com.github.freeacs.provisioning.AbstractProvisioningTest.UNIT_ID_AUTO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,7 +39,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestPropertySource(locations = {
         "classpath:application.properties",
-        "classpath:application-h2-datasource.properties",
         "classpath:application-no-security.properties",
         "classpath:application-discovery-on.properties"
 })
