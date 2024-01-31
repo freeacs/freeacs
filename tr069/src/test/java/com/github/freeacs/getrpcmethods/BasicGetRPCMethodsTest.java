@@ -28,13 +28,9 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class BasicGetRPCMethodsTest extends AbstractGetRPCMethodsTest {
 
-    @BeforeEach
-    public void init() throws SQLException {
-        AbstractProvisioningTest.addUnitsToProvision(dbi, AbstractProvisioningTest.UNIT_TYPE_NAME, UNIT_ID);
-    }
-
     @Test
     public void canAskForRPCMethods() throws Exception {
+        AbstractProvisioningTest.addUnitsToProvision(dbi, AbstractProvisioningTest.UNIT_TYPE_NAME, UNIT_ID);
         getRPCMethods(httpBasic(UNIT_ID, UNIT_PASSWORD), mvc);
     }
 }

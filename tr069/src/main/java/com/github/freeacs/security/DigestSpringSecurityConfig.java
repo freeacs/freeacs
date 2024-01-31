@@ -17,6 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.DigestAuthenticationFilter;
+import org.springframework.security.web.savedrequest.NullRequestCache;
 
 @Slf4j
 @Configuration
@@ -38,6 +39,7 @@ public class DigestSpringSecurityConfig extends AbstractSecurityConfig {
                     }
                     authorizeRequests.anyRequest().authenticated();
                 })
+                .requestCache(rc -> rc.requestCache(new NullRequestCache()))
                 .build();
     }
 

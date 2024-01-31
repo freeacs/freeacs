@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
+import org.springframework.security.web.savedrequest.NullRequestCache;
 
 @Slf4j
 @Configuration
@@ -22,6 +23,7 @@ public class NoneSpringSecurityConfig extends AbstractSecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests.anyRequest().permitAll())
+                .requestCache(rc -> rc.requestCache(new NullRequestCache()))
                 .build();
     }
 
