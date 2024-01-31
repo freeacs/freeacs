@@ -12,9 +12,9 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import java.sql.SQLException;
 import java.util.Collections;
 
-import static com.github.freeacs.utils.Matchers.hasNoSpace;
 import static com.github.freeacs.common.util.FileSlurper.getFileAsString;
 import static com.github.freeacs.dbi.Unittype.ProvisioningProtocol.TR069;
+import static com.github.freeacs.utils.Matchers.hasNoSpace;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 

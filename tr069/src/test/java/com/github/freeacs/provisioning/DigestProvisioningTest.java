@@ -1,12 +1,18 @@
 package com.github.freeacs.provisioning;
 
 import com.github.freeacs.Main;
+import com.github.freeacs.common.util.AbstractMySqlIntegrationTest;
+import com.github.freeacs.utils.MysqlDataSourceInitializer;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -21,18 +27,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestPropertySource(locations = {
         "classpath:application.properties",
-        "classpath:application-h2-datasource.properties",
         "classpath:application-digest-security.properties",
         "classpath:application-discovery-off.properties"
 })
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class DigestProvisioningTest extends AbstractProvisioningTest {
-    public static final String DIGEST_REALM = "FreeACS";
+@ContextConfiguration(initializers = DigestProvisioningTest.DataSourceInitializer.class)
+public class DigestProvisioningTest extends AbstractProvisioningTest implements AbstractMySqlIntegrationTest {
 
-    @BeforeEach
-    public void init() throws SQLException {
-        addUnitsToProvision();
+    public static class DataSourceInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+        @Override
+        public void initialize(@NotNull ConfigurableApplicationContext applicationContext) {
+            MysqlDataSourceInitializer.initialize(mysql, applicationContext);
+        }
     }
+
+    public static final String DIGEST_REALM = "FreeACS";
 
     @Test
     public void unauthorizedOnMissingAuthentication() throws Exception {
@@ -41,6 +49,7 @@ public class DigestProvisioningTest extends AbstractProvisioningTest {
 
     @Test
     public void discoverUnit() throws Exception {
-       provisionUnit(digest(UNIT_ID).password(UNIT_PASSWORD).realm(DIGEST_REALM));
+        addUnitsToProvision();
+        provisionUnit(digest(UNIT_ID).password(UNIT_PASSWORD).realm(DIGEST_REALM));
     }
 }

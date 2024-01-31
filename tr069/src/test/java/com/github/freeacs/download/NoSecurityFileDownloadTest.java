@@ -2,16 +2,12 @@ package com.github.freeacs.download;
 
 import com.github.freeacs.Main;
 import com.github.freeacs.provisioning.AbstractProvisioningTest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.sql.SQLException;
 
 import static com.github.freeacs.provisioning.AbstractProvisioningTest.UNIT_TYPE_NAME;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

@@ -1,33 +1,31 @@
 package com.github.freeacs.jobs;
 
 import com.github.freeacs.Main;
+import com.github.freeacs.common.util.AbstractMySqlIntegrationTest;
 import com.github.freeacs.common.util.FileSlurper;
 import com.github.freeacs.core.Properties;
 import com.github.freeacs.core.task.ScriptExecutor;
-import com.github.freeacs.dbi.ACSUnit;
-import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.dbi.File;
-import com.github.freeacs.dbi.FileType;
-import com.github.freeacs.dbi.Group;
-import com.github.freeacs.dbi.Job;
-import com.github.freeacs.dbi.JobFlag;
-import com.github.freeacs.dbi.JobStatus;
-import com.github.freeacs.dbi.Profile;
-import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.util.SystemParameters;
+import com.github.freeacs.health.BasicHealthTest;
 import com.github.freeacs.provisioning.AbstractProvisioningTest;
+import com.github.freeacs.utils.MysqlDataSourceInitializer;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigValueFactory;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -46,13 +44,19 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 @AutoConfigureMockMvc
 @TestPropertySource(locations = {
         "classpath:application.properties",
-        "classpath:application-h2-datasource.properties",
         "classpath:application-basic-security.properties",
         "classpath:application-discovery-off.properties"
 })
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @EnableScheduling
-public class SetDiscoverParameterJobTest {
+@ContextConfiguration(initializers = SetDiscoverParameterJobTest.DataSourceInitializer.class)
+public class SetDiscoverParameterJobTest implements AbstractMySqlIntegrationTest {
+
+    public static class DataSourceInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+        @Override
+        public void initialize(@NotNull ConfigurableApplicationContext applicationContext) {
+            MysqlDataSourceInitializer.initialize(mysql, applicationContext);
+        }
+    }
 
     @Autowired
     protected MockMvc mvc;
@@ -69,8 +73,7 @@ public class SetDiscoverParameterJobTest {
         scriptExecutorTask.run();
     }
 
-    @BeforeEach
-    public void init() throws SQLException, IOException {
+    private void init() throws SQLException, IOException {
         // We initialize the ScriptExecutor task from the core module
         Config config = ConfigFactory.empty()
                 .withValue("shellscript.poolsize", ConfigValueFactory.fromAnyRef(1))
@@ -110,6 +113,7 @@ public class SetDiscoverParameterJobTest {
 
     @Test
     public void setDiscoverParameterViaJob() throws Exception {
+        init();
         AbstractProvisioningTest.provisionUnit(httpBasic(UNIT_ID, UNIT_PASSWORD), mvc);
         ACSUnit acsUnit = dbi.getACSUnit();
         String discoverValue = acsUnit.getUnitById(UNIT_ID).getUnitParameters().get(SystemParameters.DISCOVER).getValue();
