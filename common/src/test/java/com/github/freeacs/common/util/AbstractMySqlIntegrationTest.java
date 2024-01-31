@@ -13,7 +13,7 @@ import java.sql.Connection;
 public interface AbstractMySqlIntegrationTest {
 
     @Container
-    public final static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:5.7.34");
+    MySQLContainer<?> mysql = new MySQLContainer<>("mysql:5.7.34");
 
     @BeforeAll
     static void beforeAll() throws Exception {

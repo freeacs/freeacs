@@ -1,8 +1,8 @@
 package com.github.freeacs.tr069.methods.response;
 
-import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.ParameterKey;
 import com.github.freeacs.tr069.Properties;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.xml.*;
 import lombok.extern.slf4j.Slf4j;
 

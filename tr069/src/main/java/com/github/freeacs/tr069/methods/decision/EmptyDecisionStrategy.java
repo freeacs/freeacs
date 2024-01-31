@@ -1,15 +1,13 @@
 package com.github.freeacs.tr069.methods.decision;
 
-import com.github.freeacs.tr069.base.DBIActions;
 import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.dbi.ACS;
-import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.TimestampWrapper;
-import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.InformParameters;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
+import com.github.freeacs.tr069.base.DBIActions;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import lombok.extern.slf4j.Slf4j;

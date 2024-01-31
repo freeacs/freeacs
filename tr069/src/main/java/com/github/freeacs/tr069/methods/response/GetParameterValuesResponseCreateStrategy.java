@@ -2,17 +2,12 @@ package com.github.freeacs.tr069.methods.response;
 
 import com.github.freeacs.dbi.UnittypeParameters;
 import com.github.freeacs.dbi.util.ProvisioningMode;
-import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.CPEParameters;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
-import com.github.freeacs.tr069.xml.Body;
-import com.github.freeacs.tr069.xml.Header;
-import com.github.freeacs.tr069.xml.ParameterValueStruct;
-import com.github.freeacs.tr069.xml.ParameterValueStructComparator;
-import com.github.freeacs.tr069.xml.Response;
-import com.github.freeacs.tr069.xml.TR069TransactionID;
+import com.github.freeacs.tr069.xml.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;

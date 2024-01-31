@@ -1,6 +1,5 @@
 package com.github.freeacs.tr069;
 
-import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.dbi.Users;
 import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ErrorResponsibility;
@@ -8,15 +7,16 @@ import com.github.freeacs.dbi.util.ProvisioningMessage.ProvOutput;
 import com.github.freeacs.dbi.util.ProvisioningMessage.ProvStatus;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SyslogClient;
+import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.tr069.http.HTTPRequestData;
 import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.http.HTTPResponseData;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Responsible for logging to the tr069-event log.

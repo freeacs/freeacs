@@ -1,12 +1,12 @@
 package com.github.freeacs.tr069.methods.decision;
 
 import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.tr069.base.UnitJob;
 import com.github.freeacs.dbi.UnitJobStatus;
 import com.github.freeacs.dbi.util.ProvisioningMode;
-import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
+import com.github.freeacs.tr069.base.UnitJob;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import lombok.extern.slf4j.Slf4j;
 

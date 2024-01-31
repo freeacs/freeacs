@@ -1,12 +1,9 @@
 package com.github.freeacs.controllers;
 
-import com.github.freeacs.dbi.ACS;
-import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.dbi.File;
-import com.github.freeacs.dbi.FileType;
-import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.*;
 import com.github.freeacs.tr069.base.DownloadLogic;
 import com.github.freeacs.tr069.methods.decision.GetParameterValues.DownloadLogicTR069;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +13,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.Objects;
-import jakarta.servlet.http.HttpServletResponse;
 
 import static com.github.freeacs.tr069.base.BaseCache.getFirmware;
 import static com.github.freeacs.tr069.base.BaseCache.putFirmware;

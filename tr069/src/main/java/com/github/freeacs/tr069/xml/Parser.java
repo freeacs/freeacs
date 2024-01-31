@@ -2,17 +2,17 @@ package com.github.freeacs.tr069.xml;
 
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
-import java.io.StringReader;
-import java.util.HashMap;
-import java.util.Map;
-import javax.xml.parsers.SAXParserFactory;
-
 import lombok.Data;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.parsers.SAXParserFactory;
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The class is responsible for parsing the SOAP messages from the CPE. The messages could be a
