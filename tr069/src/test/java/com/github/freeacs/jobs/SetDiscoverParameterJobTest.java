@@ -96,6 +96,7 @@ public class SetDiscoverParameterJobTest implements AbstractMySqlIntegrationTest
         file.setName("Shell script");
         unittype.getFiles().addOrChangeFile(file, dbi.getAcs());
         Job job = new Job();
+        job.setName("Test");
         job.setDescription("Test");
         job.setStopRules("n1");
         job.setUnittype(unittype);
