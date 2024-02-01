@@ -5,12 +5,14 @@ import com.github.freeacs.common.util.AbstractMySqlIntegrationTest;
 import com.github.freeacs.utils.DigestUtil;
 import com.github.freeacs.utils.MysqlDataSourceInitializer;
 import com.github.freeacs.utils.RestTemplateConfig;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Import;
@@ -23,22 +25,29 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+import java.net.HttpCookie;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
+import static com.github.freeacs.common.util.FileSlurper.getFileAsString;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = Main.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = Main.class)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = {
         "classpath:application.properties",
         "classpath:application-digest-security.properties",
-        "classpath:application-discovery-off.properties",
-        "classpath:application-fixedport.properties"
+        "classpath:application-discovery-off.properties"
 })
 @ContextConfiguration(initializers = DigestProvisioningTest.DataSourceInitializer.class)
 @Import(RestTemplateConfig.class)
+@Slf4j
 public class DigestProvisioningTest extends AbstractProvisioningTest implements AbstractMySqlIntegrationTest {
 
     public static class DataSourceInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
@@ -48,13 +57,16 @@ public class DigestProvisioningTest extends AbstractProvisioningTest implements 
         }
     }
 
-    public DigestProvisioningTest(@Autowired RestTemplate restTemplate) {
+    public DigestProvisioningTest(@Autowired RestTemplate restTemplate, @LocalServerPort Integer randomServerPort) {
         this.restTemplate = restTemplate;
+        this.randomServerPort = randomServerPort;
     }
 
     public static final String DIGEST_REALM = "FreeACS";
 
     private RestTemplate restTemplate;
+
+    private Integer randomServerPort;
 
     @Test
     public void unauthorizedOnMissingAuthentication() throws Exception {
@@ -62,18 +74,47 @@ public class DigestProvisioningTest extends AbstractProvisioningTest implements 
     }
 
     @Test
-    public void restTemplateTest() throws SQLException {
+    public void restTemplateTest() throws SQLException, IOException {
         addUnitsToProvision();
+        String url = "http://localhost:%d/tr069".formatted(randomServerPort);
         try {
-            restTemplate.exchange("http://localhost:7777/tr069", HttpMethod.POST,null, String.class);
+            restTemplate.exchange(url, HttpMethod.POST,null, String.class);
         } catch(HttpStatusCodeException e) {
-            var digest = new DigestUtil("test123", "password", "http://localhost:7777/tr069", "POST");
+            log.info("Sending the Inform again");
+            var digest = new DigestUtil(UNIT_ID, UNIT_PASSWORD, url, HttpMethod.POST.name());
             digest.parseWwwAuthenticate(e.getResponseHeaders().toSingleValueMap());
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", digest.getTokenDigest());
-            System.out.println(headers);
-            HttpEntity<String> entity = new HttpEntity<>(null, headers);
-            restTemplate.exchange("http://localhost:7777/tr069", HttpMethod.POST, entity, String.class);
+            headers.set("Content-Type", "text/xml");
+            headers.set("SOAPAction", "");
+            HttpEntity<String> entity = new HttpEntity<>(getFileAsString("/provision/cpe/Inform.xml"), headers);
+            var response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+            assertTrue(response.getStatusCode().is2xxSuccessful());
+
+            log.info("Sending get parameter values");
+            List<HttpCookie> cookies = HttpCookie.parse(response.getHeaders().get("Set-Cookie").get(0));
+            headers = new HttpHeaders();
+            headers.set("Cookie", cookies.get(0).toString());
+            headers.set("Authorization", digest.getTokenDigest());
+            headers.set("Content-Type", "text/xml");
+            headers.set("SOAPAction", "");
+            entity = new HttpEntity<>(getFileAsString("/provision/cpe/GetParameterValuesResponse.xml"), headers);
+            response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+            assertTrue(response.getStatusCode().is2xxSuccessful());
+            assertNotNull(response.getBody());
+
+            log.info("sending set parameter values should end the session (this is normal)");
+            entity = new HttpEntity<>(getFileAsString("/provision/cpe/SetParameterValuesResponse.xml"), headers);
+            response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+            assertTrue(response.getStatusCode().is2xxSuccessful());
+            assertNull(response.getBody());
+
+            log.info("Sending get parameter values again");
+            // This should fail with empty body, since the session has been invalidated and we have not yet sent an Inform
+            entity = new HttpEntity<>(getFileAsString("/provision/cpe/GetParameterValuesResponse.xml"), headers);
+            response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+            assertTrue(response.getStatusCode().is2xxSuccessful());
+            assertNull(response.getBody());
         }
     }
 

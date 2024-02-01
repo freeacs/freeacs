@@ -44,16 +44,13 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
     public void makeDecision(HTTPRequestResponseData reqRes) throws Exception {
         SessionData sessionData = reqRes.getSessionData();
         ProvisioningMode mode = sessionData.getUnit().getProvisioningMode();
-        log.debug("Mode was detected to be: " + mode);
         ProvisioningMessage pm = sessionData.getProvisioningMessage();
+        log.debug("Mode was detected to be: " + mode);
         pm.setProvMode(mode);
-        boolean PIIsupport = supportPII(sessionData);
-        if (!PIIsupport) {
-            reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());
-            pm.setProvOutput(ProvisioningMessage.ProvOutput.EMPTY);
-            pm.setErrorMessage("The device does not support PII");
-            pm.setProvStatus(ProvisioningMessage.ProvStatus.ERROR);
-            pm.setErrorResponsibility(ProvisioningMessage.ErrorResponsibility.CLIENT);
+        if (sessionData.getCpeParameters() == null) {
+            failWithEmpty(reqRes, pm, "The device has not sent any parameters, cannot determine provisioning mode");
+        }else if (!supportPII(sessionData)) {
+            failWithEmpty(reqRes, pm, "The device does not support PII");
         } else if (mode == ProvisioningMode.REGULAR) {
             processPeriodic(reqRes, properties.isDiscoveryMode(), properties.getPublicUrl(), properties.getConcurrentDownloadLimit());
         } else if (mode == ProvisioningMode.READALL) {
@@ -61,6 +58,14 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         }
         updateActiveDeviceMap(reqRes);
         log.debug("GPV-Decision is " + reqRes.getResponseData().getMethod());
+    }
+
+    private static void failWithEmpty(HTTPRequestResponseData reqRes, ProvisioningMessage pm, String em) {
+        reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());
+        pm.setProvOutput(ProvisioningMessage.ProvOutput.EMPTY);
+        pm.setErrorMessage(em);
+        pm.setProvStatus(ProvisioningMessage.ProvStatus.ERROR);
+        pm.setErrorResponsibility(ProvisioningMessage.ErrorResponsibility.CLIENT);
     }
 
     @SuppressWarnings("Duplicates")

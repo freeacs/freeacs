@@ -27,11 +27,12 @@ import org.springframework.security.web.savedrequest.NullRequestCache;
 )
 public class DigestSpringSecurityConfig extends AbstractSecurityConfig {
     @Bean
-    public SecurityFilterChain configure(HttpSecurity http, DigestAuthenticationFilter digestAuthenticationFilter, DigestAuthenticationEntryPoint digestAuthenticationEntryPoint) throws Exception {
+    public SecurityFilterChain configure(HttpSecurity http, UserDetailsService userDetailsService, @Value("${digest.secret}") String digestSecret) throws Exception {
+        DigestAuthenticationEntryPoint authenticationEntryPoint = digestEntryPoint(digestSecret);
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(configure -> configure.authenticationEntryPoint(digestAuthenticationEntryPoint))
-                .addFilterBefore(digestAuthenticationFilter, BasicAuthenticationFilter.class)
+                .exceptionHandling(configure -> configure.authenticationEntryPoint(authenticationEntryPoint))
+                .addFilterBefore(digestAuthenticationFilter(authenticationEntryPoint, digestUserCache(), userDetailsService), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests.requestMatchers(contextPath + OKController.CTX_PATH).permitAll();
                     if (!fileAuthUsed) {
@@ -43,8 +44,7 @@ public class DigestSpringSecurityConfig extends AbstractSecurityConfig {
                 .build();
     }
 
-    @Bean
-    public DigestAuthenticationFilter digestAuthenticationFilter(DigestAuthenticationEntryPoint digestAuthenticationEntryPoint, UserCache digestUserCache, UserDetailsService userDetailsService) {
+    private DigestAuthenticationFilter digestAuthenticationFilter(DigestAuthenticationEntryPoint digestAuthenticationEntryPoint, UserCache digestUserCache, UserDetailsService userDetailsService) {
         DigestAuthenticationFilter digestAuthenticationFilter = new DigestAuthenticationFilter();
         digestAuthenticationFilter.setUserDetailsService(userDetailsService);
         digestAuthenticationFilter.setCreateAuthenticatedToken(true);
@@ -53,8 +53,7 @@ public class DigestSpringSecurityConfig extends AbstractSecurityConfig {
         return digestAuthenticationFilter;
     }
 
-    @Bean
-    public DigestAuthenticationEntryPoint digestEntryPoint(@Value("${digest.secret}") String digestSecret) {
+    private DigestAuthenticationEntryPoint digestEntryPoint(@Value("${digest.secret}") String digestSecret) {
         if ("changeme".equals(digestSecret)) {
             throw new IllegalArgumentException("Please change the digest.secret property to start using digest authentication");
         }
@@ -65,8 +64,7 @@ public class DigestSpringSecurityConfig extends AbstractSecurityConfig {
         return digestAuthenticationEntryPoint;
     }
 
-    @Bean
-    UserCache digestUserCache() throws Exception {
+    private UserCache digestUserCache() throws Exception {
         return new SpringCacheBasedUserCache(new ConcurrentMapCache("digestUserCache"));
     }
 }
