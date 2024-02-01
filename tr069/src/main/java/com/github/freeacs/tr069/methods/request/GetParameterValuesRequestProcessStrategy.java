@@ -37,30 +37,34 @@ public class GetParameterValuesRequestProcessStrategy implements RequestProcessS
 
     private void populateCPEParameters(SessionData sessionData) {
         CPEParameters cpeParams = sessionData.getCpeParameters();
+        if (cpeParams == null) {
+            log.debug("No cpe-params found in sessionData");
+            return;
+        }
+
         int counter = 0;
-        if (cpeParams != null) {
-            for (ParameterValueStruct pvs : sessionData.getValuesFromCPE()) {
-                if (pvs.getName().contains(cpeParams.CONFIG_FILES)) {
-                    counter++;
-                    cpeParams.getCpeParams().put(pvs.getName(), pvs);
-                } else if (pvs.getName().equals(cpeParams.CONNECTION_URL)) {
-                    counter++;
-                    cpeParams.getCpeParams().put(cpeParams.CONNECTION_URL, pvs);
-                } else if (pvs.getName().equals(cpeParams.CONNECTION_USERNAME)) {
-                    counter++;
-                    cpeParams.getCpeParams().put(cpeParams.CONNECTION_USERNAME, pvs);
-                } else if (pvs.getName().equals(cpeParams.CONNECTION_PASSWORD)) {
-                    counter++;
-                    cpeParams.getCpeParams().put(cpeParams.CONNECTION_PASSWORD, pvs);
-                } else if (pvs.getName().equals(cpeParams.PERIODIC_INFORM_INTERVAL)) {
-                    counter++;
-                    cpeParams.getCpeParams().put(cpeParams.PERIODIC_INFORM_INTERVAL, pvs);
-                } else if (pvs.getName().equals(cpeParams.SOFTWARE_VERSION)) {
-                    counter++;
-                    cpeParams.getCpeParams().put(cpeParams.SOFTWARE_VERSION, pvs);
-                }
+        for (ParameterValueStruct pvs : sessionData.getValuesFromCPE()) {
+            if (pvs.getName().contains(cpeParams.CONFIG_FILES)) {
+                counter++;
+                cpeParams.getCpeParams().put(pvs.getName(), pvs);
+            } else if (pvs.getName().equals(cpeParams.CONNECTION_URL)) {
+                counter++;
+                cpeParams.getCpeParams().put(cpeParams.CONNECTION_URL, pvs);
+            } else if (pvs.getName().equals(cpeParams.CONNECTION_USERNAME)) {
+                counter++;
+                cpeParams.getCpeParams().put(cpeParams.CONNECTION_USERNAME, pvs);
+            } else if (pvs.getName().equals(cpeParams.CONNECTION_PASSWORD)) {
+                counter++;
+                cpeParams.getCpeParams().put(cpeParams.CONNECTION_PASSWORD, pvs);
+            } else if (pvs.getName().equals(cpeParams.PERIODIC_INFORM_INTERVAL)) {
+                counter++;
+                cpeParams.getCpeParams().put(cpeParams.PERIODIC_INFORM_INTERVAL, pvs);
+            } else if (pvs.getName().equals(cpeParams.SOFTWARE_VERSION)) {
+                counter++;
+                cpeParams.getCpeParams().put(cpeParams.SOFTWARE_VERSION, pvs);
             }
         }
+
         log.debug("Found " + counter + " cpe-params (of special interest to ACS) in response");
     }
 }
