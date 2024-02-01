@@ -44,6 +44,19 @@
         </dependency>
         <dependency>
             <groupId>com.github.freeacs</groupId>
+            <artifactId>webservice</artifactId>
+            <version>${project.version}</version>
+            <type>zip</type>
+            <classifier>bin</classifier>
+            <exclusions>
+                <exclusion>
+                    <artifactId>*</artifactId>
+                    <groupId>*</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.github.freeacs</groupId>
             <artifactId>stun</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
