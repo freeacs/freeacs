@@ -117,7 +117,7 @@ public class Session {
   public void exitShell(int status) {
     try {
       if (dbi != null) {
-        dbi.processOutbox();
+        dbi.processOutboxMessages();
       }
     } catch (Throwable t) {
       // Ignore

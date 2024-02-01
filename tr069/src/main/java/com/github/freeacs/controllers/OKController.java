@@ -7,10 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 @Slf4j
 @RestController
 public class OKController {
@@ -29,12 +25,8 @@ public class OKController {
       log.info("Cleared base cache");
     }
     String status = "FREEACSOK";
-    if (dbi != null && dbi.getDbiThrowable() != null) {
-      status = "ERROR: DBI reported error:\n" +
-              dbi.getDbiThrowable() + "\n" +
-              Arrays.stream(dbi.getDbiThrowable().getStackTrace())
-                      .map(Objects::toString)
-                      .collect(Collectors.joining());
+    if (dbi != null && !dbi.isRunning()) {
+      status = "ERROR: DBI is not running";
     }
     return status;
   }

@@ -1,6 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.util.Sleep;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -77,11 +76,7 @@ public class DBI implements Runnable {
     if (!running) {
       try {
         thread.interrupt();
-      } catch (Throwable e) {
-      }
-      try {
-        thread.stop();
-      } catch (Throwable e) {
+      } catch (Throwable ignored) {
       }
     }
   }
@@ -214,29 +209,24 @@ public class DBI implements Runnable {
   private int lifetimeSec;
   private long start = System.currentTimeMillis();
   private boolean finished;
-  private Sleep sleep;
   private ACS acs;
   private boolean freeacsUpdated;
-  private Map<Integer, UnittypePublish> publishUnittypes = new HashMap<>();
-  private List<Message> outbox = new ArrayList<>();
-  private Set<Integer> sent = new TreeSet<>();
-  private Syslog syslog;
-  private Random random = new Random(System.nanoTime());
-  private int dbiId;
-  private boolean dbiRun;
-  private Map<String, Inbox> inboxes = new HashMap<>();
+  private final Map<Integer, UnittypePublish> publishUnittypes = new HashMap<>();
+  private final List<Message> outbox = new ArrayList<>();
+  private final Set<Integer> sent = new TreeSet<>();
+  private final Syslog syslog;
+  private final Random random = new Random(System.nanoTime());
+  private final int dbiId;
+  private final Map<String, Inbox> inboxes = new HashMap<>();
   private int lastReadId = -1;
-  private Inbox publishInbox = new Inbox();
-  /** Set if an error occurs within DBI, used to signal ERROR in monitor. */
-  private Throwable dbiThrowable;
+  private final Inbox publishInbox = new Inbox();
 
   public DBI(int lifetimeSec, DataSource dataSource, Syslog syslog) throws SQLException {
     this.dataSource = dataSource;
     this.lifetimeSec = lifetimeSec;
     this.syslog = syslog;
-    populateInboxes();
+    processMessagesFromDatabase();
     publishInbox.deleteReadMessage();
-    this.sleep = new Sleep(1000, 1000, true);
     this.acs = new ACS(dataSource, syslog);
     this.dbiId = random.nextInt(1000000);
     acs.setDbi(this);
@@ -270,7 +260,7 @@ public class DBI implements Runnable {
     return inboxes.get(key);
   }
 
-  private void populateInboxes() throws SQLException {
+  private void processMessagesFromDatabase() throws SQLException {
       try (Connection c = dataSource.getConnection(); Statement s = c.createStatement()) {
           ResultSet rs = s.executeQuery("SELECT * FROM message WHERE id > " + lastReadId + " ORDER BY id");
           while (rs.next()) {
@@ -308,7 +298,7 @@ public class DBI implements Runnable {
       }
   }
 
-  private void cleanup() throws SQLException {
+  private void cleanupOldMessages() throws SQLException {
     Connection c = dataSource.getConnection();
     PreparedStatement ps = null;
     try {
@@ -328,7 +318,7 @@ public class DBI implements Runnable {
     }
   }
 
-  private void send(Message message) throws SQLException {
+  private void sendMessage(Message message) throws SQLException {
     Connection c = dataSource.getConnection();
     PreparedStatement ps = null;
     try {
@@ -366,53 +356,62 @@ public class DBI implements Runnable {
   }
 
   public void run() {
-    boolean errorOccured = false;
-    while (running && !finished) {
-      dbiRun = true;
-      try {
-        if (System.currentTimeMillis() - start > lifetimeSec * 1000L) {
-          finished = true;
-          break;
-        }
-        if (Sleep.isTerminated()) {
-          break;
-        }
-        sleep.sleep();
-        // Check message table for changes (read all with id > last_id_read)
-        populateInboxes();
-        // Update objects if necessary
-        processPublishInbox();
-        // Check outbox - may add/remove messages - then send them
-        processOutbox();
-        // Once in a while - clean out old messages
-        if (random.nextInt(10) == 0) {
-          cleanup();
-        }
-        dbiThrowable = null;
-        errorOccured = false;
-      } catch (Throwable t) {
-        dbiThrowable = t;
-        try {
-          if (!errorOccured) {
-            errorOccured = true;
-            logger.error(
-                "An error occurred in DBI.run(): %s, %s",
-                t.getCause().toString(), t.getLocalizedMessage());
-          } else {
-            logger.error(
-                "An error occurred in DBI.run() (stacktrace printed earlier): " + t.getMessage(), dbiThrowable);
-          }
-        } catch (Throwable ignored) {
-        }
+    try {
+      while (!Thread.currentThread().isInterrupted() && running) {
+        performDBIOperations();
+        Thread.sleep(1000); // Replace with appropriate sleep time
       }
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt(); // Preserve interrupt status
+      logger.info("DBI thread interrupted");
+    } catch (Exception e) {
+      logger.error("Error in DBI thread: " + e.getMessage(), e);
     }
+  }
+
+  private void performDBIOperations() {
+    try {
+      // Check if the DBI lifetime has expired
+      checkLifetime();
+
+      // Read and process messages from the database
+      processMessagesFromDatabase();
+
+      // Update objects if necessary based on new messages
+      updateObjectsBasedOnMessages();
+
+      // Process the outbox: send messages, handle responses, etc.
+      processOutboxMessages();
+
+      // Periodically clean up old messages from the database
+      if (shouldCleanup()) {
+        cleanupOldMessages();
+      }
+
+    } catch (SQLException e) {
+      logger.error("SQL error in DBI operations: " + e.getMessage(), e);
+    } catch (Exception e) {
+      logger.error("Unexpected error in DBI operations: " + e.getMessage(), e);
+    }
+  }
+
+  private void checkLifetime() {
+    if (System.currentTimeMillis() - start > lifetimeSec * 1000L) {
+      running = false;
+    }
+  }
+
+  private boolean shouldCleanup() {
+    // Determine if it's time to clean up old messages
+    // For example, this could be a random or time-based check
+    return random.nextInt(10) == 0;
   }
 
   /**
    * Must be called if an application is about to be terminated, otherwise it will be run every
    * second.
    */
-  public synchronized void processOutbox() throws SQLException {
+  public synchronized void processOutboxMessages() throws SQLException {
     for (Entry<Integer, UnittypePublish> entry : publishUnittypes.entrySet()) {
       UnittypePublish up = entry.getValue();
       up.addUnittypePublish();
@@ -421,7 +420,7 @@ public class DBI implements Runnable {
     }
     for (Message message : outbox) {
       message.setObjectId(dbiId + ":" + message.getObjectId());
-      send(message);
+      sendMessage(message);
     }
     // Clean up the sent-box
     Iterator<Integer> iterator = sent.iterator();
@@ -471,7 +470,7 @@ public class DBI implements Runnable {
     }
   }
 
-  private void processPublishInbox() throws SQLException {
+  private void updateObjectsBasedOnMessages() throws SQLException {
     boolean updateACS = false;
     for (Message m : publishInbox.getUnreadMessages()) {
       publishInbox.markMessageAsRead(m);
@@ -601,7 +600,7 @@ public class DBI implements Runnable {
 
   private void addMessage(
       String content, String messageType, String objectType, String objectId, Integer receiver) {
-    if (dbiRun) {
+    if (this.running) {
       Message message = new Message();
       message.setContent(content);
       message.setMessageType(messageType);
@@ -620,10 +619,6 @@ public class DBI implements Runnable {
 
   public void setLifetimeSec(int lifetimeSec) {
     this.lifetimeSec = lifetimeSec;
-  }
-
-  public Throwable getDbiThrowable() {
-    return dbiThrowable;
   }
 
   public DataSource getDataSource() {
