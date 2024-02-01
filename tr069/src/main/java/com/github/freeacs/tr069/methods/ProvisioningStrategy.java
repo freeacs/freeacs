@@ -1,14 +1,14 @@
 package com.github.freeacs.tr069.methods;
 
 import com.github.freeacs.dbi.DBI;
+import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.methods.decision.DecisionStrategy;
 import com.github.freeacs.tr069.methods.request.RequestProcessStrategy;
 import com.github.freeacs.tr069.methods.response.ResponseCreateStrategy;
-import com.github.freeacs.tr069.Properties;
-import com.github.freeacs.tr069.xml.XMLFormatterUtils;
 import com.github.freeacs.tr069.xml.Response;
+import com.github.freeacs.tr069.xml.XMLFormatterUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;

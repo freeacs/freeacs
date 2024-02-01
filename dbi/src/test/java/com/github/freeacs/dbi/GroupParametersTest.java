@@ -5,14 +5,16 @@ import static org.junit.Assert.assertEquals;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class GroupParametersTest extends BaseDBITest {
 
   @Test
   public void addOrChangeGroupParameter() throws SQLException {
     // Given:
-    String unittypeName = "Test unittype";
+    String unittypeName = "Test unittype 1";
     String groupName = "Group name";
     String profileName = "Default";
     String utpParamName = "Test.Test";
@@ -29,13 +31,13 @@ public class GroupParametersTest extends BaseDBITest {
 
     // Then:
     GroupParameter byId = group.getGroupParameters().getById(groupParameter.getId());
-    assertEquals(value, byId.getParameter().getValue());
+    Assertions.assertEquals(value, byId.getParameter().getValue());
   }
 
   @Test
   public void deleteGroupParameter() throws SQLException {
     // Given:
-    String unittypeName = "Test unittype";
+    String unittypeName = "Test unittype 2";
     String groupName = "Group name";
     String profileName = "Default";
     String utpParamName = "Test.Test";
@@ -52,6 +54,6 @@ public class GroupParametersTest extends BaseDBITest {
     group.getGroupParameters().deleteGroupParameter(groupParameter, acs);
 
     // Then:
-    assertEquals(0, group.getGroupParameters().getGroupParameters().length);
+    Assertions.assertEquals(0, group.getGroupParameters().getGroupParameters().length);
   }
 }

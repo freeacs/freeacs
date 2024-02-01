@@ -2,7 +2,7 @@ package com.github.freeacs.syslogserver;
 
 import com.github.freeacs.common.scheduler.TaskDefaultImpl;
 import java.io.File;
-import org.apache.commons.io.FileSystemUtils;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,7 @@ public class DiskSpaceCheck extends TaskDefaultImpl {
 
   @Override
   public void runImpl() throws Throwable {
-    freeSpace = FileSystemUtils.freeSpaceKb(new File(".").getAbsolutePath());
+    freeSpace = FileUtils.sizeOfDirectory(new File(".").getAbsolutePath());
     if (freeSpace < getMinFreeDiskSpace()) {
       logger.error("Server will pause, since free disk space is " + freeSpace / 1024 + " MB.");
       SyslogServer.pause(true);

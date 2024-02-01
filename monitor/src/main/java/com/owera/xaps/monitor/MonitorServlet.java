@@ -1,7 +1,6 @@
 package com.owera.xaps.monitor;
 
 import com.github.freeacs.common.scheduler.ExecutorWrapper;
-import com.github.freeacs.common.ssl.EasySSLProtocolSocketFactory;
 import com.github.freeacs.common.util.Sleep;
 import com.owera.xaps.monitor.task.ModuleMonitorTask;
 import com.owera.xaps.monitor.task.MonitorInfo;
@@ -19,27 +18,20 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.httpclient.protocol.Protocol;
-import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MonitorServlet extends HttpServlet {
-  private static final long serialVersionUID = 3051630277238752841L;
-
   private final Properties properties;
   private final ExecutorWrapper executorWrapper;
 
   private Configuration config;
 
-  private static Logger log = LoggerFactory.getLogger(MonitorServlet.class);
+  private static final Logger log = LoggerFactory.getLogger(MonitorServlet.class);
 
   public MonitorServlet(Properties properties, ExecutorWrapper executorWrapper) {
     this.properties = properties;
     this.executorWrapper = executorWrapper;
-    ProtocolSocketFactory socketFactory = new EasySSLProtocolSocketFactory();
-    Protocol https = new Protocol("https", socketFactory, 443);
-    Protocol.registerProtocol("https", https);
   }
 
   @Override

@@ -1,0 +1,1 @@
+org.springframework.context.ApplicationListener=com.github.test.freeacs.DatabasePropertiesListener,com.github.test.freeacs.TestcontainersDataPopulator

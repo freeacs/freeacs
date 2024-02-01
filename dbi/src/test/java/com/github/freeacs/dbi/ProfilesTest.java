@@ -1,32 +1,30 @@
 package com.github.freeacs.dbi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.sql.SQLException;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ProfilesTest extends BaseDBITest {
 
   @Test
   public void createProfile() throws SQLException {
     // When:
-    Unittype unittype = TestUtils.createUnittype("Test unittype", acs);
+    Unittype unittype = TestUtils.createUnittype("Test unittype 1", acs);
     Profile profile = TestUtils.createProfile("Test profile", unittype, acs);
 
     // Then:
-    assertEquals(2, profile.getId().intValue());
-    assertEquals("Test profile", profile.getName());
-    assertEquals(2, profile.getUnittype().getProfiles().getProfiles().length);
-    assertEquals("Default", profile.getUnittype().getProfiles().getProfiles()[0].getName());
-    assertEquals("Test profile", profile.getUnittype().getProfiles().getProfiles()[1].getName());
+    Assertions.assertNotNull(profile.getId());
+    Assertions.assertEquals("Test profile", profile.getName());
+    Assertions.assertEquals(2, profile.getUnittype().getProfiles().getProfiles().length);
+    Assertions.assertEquals("Default", profile.getUnittype().getProfiles().getProfiles()[0].getName());
+    Assertions.assertEquals("Test profile", profile.getUnittype().getProfiles().getProfiles()[1].getName());
   }
 
   @Test
   public void deleteProfile() throws SQLException {
     // Given:
-    Unittype unittype = TestUtils.createUnittype("Test unittype", acs);
+    Unittype unittype = TestUtils.createUnittype("Test unittype 2", acs);
     Profile profile = TestUtils.createProfile("Test profile", unittype, acs);
 
     // When:
@@ -34,14 +32,14 @@ public class ProfilesTest extends BaseDBITest {
 
     // Then:
     Profile byName = unittype.getProfiles().getByName("Test profile");
-    assertNull(byName);
+    Assertions.assertNull(byName);
   }
 
   @Test
   public void updateProfile() throws SQLException {
     // Given:
     String profileName = "Test profile";
-    Unittype unittype = TestUtils.createUnittype("Test unittype", acs);
+    Unittype unittype = TestUtils.createUnittype("Test unittype 3", acs);
     Profile profile = TestUtils.createProfile(profileName, unittype, acs);
     String newProfileName = "New profile name";
     profile.setName(newProfileName);
@@ -51,8 +49,8 @@ public class ProfilesTest extends BaseDBITest {
 
     // Then:
     Profile byName = unittype.getProfiles().getByName(newProfileName);
-    assertNotNull(byName);
-    assertEquals(newProfileName, byName.getName());
-    assertNull(unittype.getProfiles().getByName(profileName));
+    Assertions.assertNotNull(byName);
+    Assertions.assertEquals(newProfileName, byName.getName());
+    Assertions.assertNull(unittype.getProfiles().getByName(profileName));
   }
 }

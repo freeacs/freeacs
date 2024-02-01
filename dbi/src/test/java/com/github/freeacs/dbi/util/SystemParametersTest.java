@@ -1,8 +1,5 @@
 package com.github.freeacs.dbi.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import com.github.freeacs.dbi.BaseDBITest;
 import com.github.freeacs.dbi.TestUtils;
 import com.github.freeacs.dbi.Unittype;
@@ -10,7 +7,9 @@ import com.github.freeacs.dbi.UnittypeParameter;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SystemParametersTest extends BaseDBITest {
 
@@ -22,7 +21,7 @@ public class SystemParametersTest extends BaseDBITest {
     SystemParameters.TR069ScriptType type = SystemParameters.TR069ScriptType.TargetFileName;
     Unittype unittype =
         TestUtils.createUnittypeParameters(
-            TestUtils.createUnittype("Name", acs),
+            TestUtils.createUnittype("Name 1", acs),
             Arrays.asList(
                 new TestUtils.Param("System.X_FREEACS-COM.TR069Script.Hei.TargetFileName", "X"),
                 new TestUtils.Param("System.X_FREEACS-COM.TR069Script.Hallo.TargetFileName", "X")),
@@ -46,7 +45,7 @@ public class SystemParametersTest extends BaseDBITest {
     SystemParameters.TR069ScriptType type = SystemParameters.TR069ScriptType.TargetFileName;
     Unittype unittype =
         TestUtils.createUnittypeParameters(
-            TestUtils.createUnittype("Name", acs), Collections.emptyList(), acs);
+            TestUtils.createUnittype("Name 2", acs), Collections.emptyList(), acs);
 
     // When:
     UnittypeParameter unittypeParameter =
@@ -97,9 +96,11 @@ public class SystemParametersTest extends BaseDBITest {
     assertEquals("System.X_FREEACS-COM.TR069Script.Hallo.Version", result);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void getTR069ScriptParameterNameWhenNameIsNull() {
     // When:
-    SystemParameters.getTR069ScriptParameterName(null, SystemParameters.TR069ScriptType.URL);
+    assertThrows(
+            IllegalArgumentException.class,
+        () -> SystemParameters.getTR069ScriptParameterName(null, SystemParameters.TR069ScriptType.TargetFileName));
   }
 }

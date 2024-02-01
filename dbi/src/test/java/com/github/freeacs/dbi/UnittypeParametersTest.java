@@ -1,9 +1,9 @@
 package com.github.freeacs.dbi;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.github.freeacs.dbi.util.MapWrapper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -14,7 +14,7 @@ public class UnittypeParametersTest extends BaseDBITest {
 
   @Test
   public void addOrChangeUnittypeParameters() throws SQLException {
-    Unittype unittype = TestUtils.createUnittype("Test Unit Type", acs);
+    Unittype unittype = TestUtils.createUnittype("Test Unit Type 1", acs);
     UnittypeParameterFlag flag = new UnittypeParameterFlag("R");
 
     Map<Integer, UnittypeParameter> idMap = new HashMap<>();
@@ -37,7 +37,7 @@ public class UnittypeParametersTest extends BaseDBITest {
 
   @Test
   public void addOrChangeUnittypeParameter() throws SQLException {
-    Unittype unittype = TestUtils.createUnittype("Test Unit Type", acs);
+    Unittype unittype = TestUtils.createUnittype("Test Unit Type 2", acs);
     UnittypeParameterFlag flag = new UnittypeParameterFlag("R");
     UnittypeParameter unittypeParameter = new UnittypeParameter(unittype,
             "TEST.Parameter.Subparameter",flag);

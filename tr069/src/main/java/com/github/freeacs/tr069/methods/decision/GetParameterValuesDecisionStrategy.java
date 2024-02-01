@@ -1,26 +1,22 @@
 package com.github.freeacs.tr069.methods.decision;
 
-import com.github.freeacs.tr069.CPEParameters;
-import com.github.freeacs.tr069.Properties;
-import com.github.freeacs.tr069.SessionData;
-import com.github.freeacs.tr069.base.DBIActions;
-import com.github.freeacs.tr069.base.DownloadLogic;
-import com.github.freeacs.tr069.base.JobLogic;
-import com.github.freeacs.tr069.base.ResetUtil;
-import com.github.freeacs.tr069.base.ServiceWindow;
-import com.github.freeacs.tr069.base.UnitJob;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.tr069.TR069DMParameter;
 import com.github.freeacs.dbi.tr069.TR069DMParameterMap;
 import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.github.freeacs.tr069.http.HTTPRequestResponseData;
+import com.github.freeacs.tr069.CPEParameters;
+import com.github.freeacs.tr069.Properties;
+import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.background.ActiveDeviceDetectionTask;
+import com.github.freeacs.tr069.base.UnitJob;
+import com.github.freeacs.tr069.base.*;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
-import com.github.freeacs.tr069.methods.*;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
+import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.methods.decision.GetParameterValues.DownloadLogicTR069;
 import com.github.freeacs.tr069.methods.decision.GetParameterValues.ShellJobLogic;
 import com.github.freeacs.tr069.xml.ParameterList;
@@ -48,16 +44,13 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
     public void makeDecision(HTTPRequestResponseData reqRes) throws Exception {
         SessionData sessionData = reqRes.getSessionData();
         ProvisioningMode mode = sessionData.getUnit().getProvisioningMode();
-        log.debug("Mode was detected to be: " + mode);
         ProvisioningMessage pm = sessionData.getProvisioningMessage();
+        log.debug("Mode was detected to be: " + mode);
         pm.setProvMode(mode);
-        boolean PIIsupport = supportPII(sessionData);
-        if (!PIIsupport) {
-            reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());
-            pm.setProvOutput(ProvisioningMessage.ProvOutput.EMPTY);
-            pm.setErrorMessage("The device does not support PII");
-            pm.setProvStatus(ProvisioningMessage.ProvStatus.ERROR);
-            pm.setErrorResponsibility(ProvisioningMessage.ErrorResponsibility.CLIENT);
+        if (sessionData.getCpeParameters() == null) {
+            failWithEmpty(reqRes, pm, "The device has not sent any parameters, cannot determine provisioning mode");
+        }else if (!supportPII(sessionData)) {
+            failWithEmpty(reqRes, pm, "The device does not support PII");
         } else if (mode == ProvisioningMode.REGULAR) {
             processPeriodic(reqRes, properties.isDiscoveryMode(), properties.getPublicUrl(), properties.getConcurrentDownloadLimit());
         } else if (mode == ProvisioningMode.READALL) {
@@ -65,6 +58,14 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         }
         updateActiveDeviceMap(reqRes);
         log.debug("GPV-Decision is " + reqRes.getResponseData().getMethod());
+    }
+
+    private static void failWithEmpty(HTTPRequestResponseData reqRes, ProvisioningMessage pm, String em) {
+        reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());
+        pm.setProvOutput(ProvisioningMessage.ProvOutput.EMPTY);
+        pm.setErrorMessage(em);
+        pm.setProvStatus(ProvisioningMessage.ProvStatus.ERROR);
+        pm.setErrorResponsibility(ProvisioningMessage.ErrorResponsibility.CLIENT);
     }
 
     @SuppressWarnings("Duplicates")

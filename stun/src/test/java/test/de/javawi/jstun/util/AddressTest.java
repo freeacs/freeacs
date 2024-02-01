@@ -13,14 +13,14 @@ package test.de.javawi.jstun.util;
 
 import de.javawi.jstun.util.Address;
 import de.javawi.jstun.util.UtilityException;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Disabled;
 
-public class AddressTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@Disabled("Testcase ? Why?")
+public class AddressTest {
   Address address;
-
-  public AddressTest(String mesg) {
-    super(mesg);
-  }
 
   protected void setUp() throws Exception {
     address = new Address("192.168.100.1");

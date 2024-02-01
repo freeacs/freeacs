@@ -2,34 +2,34 @@ package com.github.freeacs.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-
-import javax.annotation.PostConstruct;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
+import org.springframework.security.web.savedrequest.NullRequestCache;
 
 @Slf4j
 @Configuration
-@EnableWebSecurity
 @ConditionalOnProperty(
         value="auth.method",
-        havingValue = "none",
-        matchIfMissing = true
+        havingValue = "none"
 )
-public class NoneSpringSecurityConfig extends WebSecurityConfigurerAdapter {
+public class NoneSpringSecurityConfig extends AbstractSecurityConfig {
 
-    @PostConstruct
-    public void init() {
-        log.info("Started " + this.getClass().getName());
+    @Bean
+    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests.anyRequest().permitAll())
+                .requestCache(rc -> rc.requestCache(new NullRequestCache()))
+                .build();
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/**").permitAll();
-
+    private BasicAuthenticationEntryPoint basicEntryPoint() {
+        BasicAuthenticationEntryPoint basicAuthenticationEntryPoint = new BasicAuthenticationEntryPoint();
+        basicAuthenticationEntryPoint.setRealmName("FreeACS");
+        return basicAuthenticationEntryPoint;
     }
 }

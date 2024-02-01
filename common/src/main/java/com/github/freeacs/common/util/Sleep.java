@@ -58,7 +58,8 @@ public class Sleep {
         return;
       }
     } catch (InterruptedException e) {
-      e.printStackTrace();
+      // e.printStackTrace();
+      System.out.println("Sleep was interrupted");
     }
     lastReturnTms = System.currentTimeMillis();
   }

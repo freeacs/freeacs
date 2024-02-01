@@ -1,11 +1,12 @@
 package com.github.freeacs.tr069;
 
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class CPEParametersTest {
 

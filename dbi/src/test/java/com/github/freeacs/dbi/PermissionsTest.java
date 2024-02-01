@@ -1,8 +1,8 @@
 package com.github.freeacs.dbi;
 
-import static org.junit.Assert.*;
-
-import org.junit.Test;
+import com.github.freeacs.common.util.AbstractMySqlIntegrationTest;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 
@@ -14,10 +14,9 @@ public class PermissionsTest extends BaseDBITest{
 
   @Test
   public void delete() throws SQLException {
-    this.addTestData();
+    this.addTestData("TestUnitType 1", "TestProfile 1", "TestUser 1");
 
     Permission newPermission = new Permission(user, unittype.getId(), profile.getId());
-    Users users = new Users(dataSource);
 
     Permissions perms = new Permissions(acs.getDataSource());
     perms.addOrChange(newPermission);
@@ -28,32 +27,32 @@ public class PermissionsTest extends BaseDBITest{
 
     createdPerm = perms.getByUnittypeProfile(unittype.getId(), profile.getId());
 
-    assertNull(createdPerm);
+    Assertions.assertNull(createdPerm);
 
   }
 
   @Test
   public void add() throws SQLException {
 
-    this.addTestData();
+    this.addTestData("TestUnitType 2", "TestProfile 2", "TestUser 2");
 
     Permission newPermission = new Permission(user, unittype.getId(), profile.getId());
-    Users users = new Users(dataSource);
+    Users users = new Users(AbstractMySqlIntegrationTest.getDataSource());
 
     Permissions perms = new Permissions(acs.getDataSource());
     perms.addOrChange(newPermission);
 
     Permission createdPerm = perms.getByUnittypeProfile(unittype.getId(), profile.getId());
 
-    assertNotNull(createdPerm);
-    assertEquals(newPermission.getUnittypeId(), createdPerm.getUnittypeId());
+    Assertions.assertNotNull(createdPerm);
+    Assertions.assertEquals(newPermission.getUnittypeId(), createdPerm.getUnittypeId());
 
   }
 
   @Test
   public void change() throws SQLException
   {
-    this.addTestData();
+    this.addTestData("TestUnitType 3", "TestProfile 3", "TestUser 3");
 
     Permission newPermission = new Permission(user, unittype.getId(), profile.getId());
 
@@ -62,7 +61,7 @@ public class PermissionsTest extends BaseDBITest{
 
     Permission createdPerm = perms.getByUnittypeProfile(unittype.getId(), profile.getId());
 
-    assertEquals(createdPerm.getUser().getId(), user.getId());
+    Assertions.assertEquals(createdPerm.getUser().getId(), user.getId());
 
     User otherUser = TestUtils.createUser(
             "OtherTestUser","Other Test User", "s3cr3tPassw0rd",false, acs);
@@ -74,17 +73,17 @@ public class PermissionsTest extends BaseDBITest{
 
     Permission editedPerm = perms.getByUnittypeProfile(unittype.getId(), profile.getId());
 
-    assertEquals(editedPerm.getUser().getId(),otherUser.getId());
+    Assertions.assertEquals(editedPerm.getUser().getId(), otherUser.getId());
 
   }
 
-  public void addTestData() throws SQLException
+  public void addTestData(String unitType, String testProfile, String testUser) throws SQLException
   {
-    unittype = TestUtils.createUnittype("TestUnitType", acs);
+    unittype = TestUtils.createUnittype(unitType, acs);
 
-    profile = TestUtils.createProfile("TestProfile", unittype, acs);
+    profile = TestUtils.createProfile(testProfile, unittype, acs);
     user = TestUtils.createUser(
-            "TestUser","Test User", "s3cr3tPassw0rd",false, acs);
+            testUser,"Test User 4", "s3cr3tPassw0rd",false, acs);
 
   }
 }

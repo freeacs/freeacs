@@ -1,9 +1,15 @@
 package com.github.freeacs.getrpcmethods;
 
+import com.github.freeacs.common.util.AbstractMySqlIntegrationTest;
 import com.github.freeacs.dbi.DBI;
+import com.github.freeacs.utils.MysqlDataSourceInitializer;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.lang.Nullable;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
@@ -12,9 +18,16 @@ import static com.github.freeacs.common.util.FileSlurper.getFileAsString;
 import static com.github.freeacs.utils.Matchers.hasNoSpace;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class AbstractGetRPCMethodsTest {
+@ContextConfiguration(initializers = AbstractGetRPCMethodsTest.DataSourceInitializer.class)
+public abstract class AbstractGetRPCMethodsTest implements AbstractMySqlIntegrationTest {
+
+    public static class DataSourceInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+        @Override
+        public void initialize(@NotNull ConfigurableApplicationContext applicationContext) {
+            MysqlDataSourceInitializer.initialize(mysql, applicationContext);
+        }
+    }
 
     @Autowired
     protected MockMvc mvc;

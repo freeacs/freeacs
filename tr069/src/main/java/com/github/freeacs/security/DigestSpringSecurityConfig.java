@@ -1,68 +1,74 @@
 package com.github.freeacs.security;
 
+import com.github.freeacs.controllers.FileController;
+import com.github.freeacs.controllers.OKController;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cache.concurrent.ConcurrentMapCache;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.UserCache;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.cache.SpringCacheBasedUserCache;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.authentication.www.DigestAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.DigestAuthenticationFilter;
+import org.springframework.security.web.savedrequest.NullRequestCache;
 
-import javax.annotation.PostConstruct;
+import static org.springframework.security.config.http.SessionCreationPolicy.ALWAYS;
+import static org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED;
 
 @Slf4j
 @Configuration
-@EnableWebSecurity
 @ConditionalOnProperty(
-        value="auth.method",
+        value = "auth.method",
         havingValue = "digest"
 )
 public class DigestSpringSecurityConfig extends AbstractSecurityConfig {
-
-    private final String digestSecret;
-
-    @Autowired
-    public DigestSpringSecurityConfig(@Value("${digest.secret}") String digestSecret) {
-        if ("changeme".equals(digestSecret)) {
-            throw new IllegalArgumentException("Please change the digest.secret property to start using digest authentication");
-        }
-        this.digestSecret = digestSecret;
+    @Bean
+    public SecurityFilterChain configure(HttpSecurity http, UserDetailsService userDetailsService, @Value("${digest.secret}") String digestSecret) throws Exception {
+        DigestAuthenticationEntryPoint authenticationEntryPoint = digestEntryPoint(digestSecret);
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(configure -> configure.authenticationEntryPoint(authenticationEntryPoint))
+                .addFilterBefore(digestAuthenticationFilter(authenticationEntryPoint, digestUserCache(), userDetailsService), BasicAuthenticationFilter.class)
+                .authorizeHttpRequests(authorizeRequests -> {
+                    authorizeRequests.requestMatchers(contextPath + OKController.CTX_PATH).permitAll();
+                    if (!fileAuthUsed) {
+                        authorizeRequests.requestMatchers(contextPath + FileController.CTX_PATH + "/**").permitAll();
+                    }
+                    authorizeRequests.anyRequest().authenticated();
+                })
+                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(IF_REQUIRED))
+                .requestCache(rc -> rc.requestCache(new NullRequestCache()))
+                .build();
     }
 
-    @PostConstruct
-    public void init() {
-        log.info("Started " + this.getClass().getName());
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        allowHealthEndpoint(
-                conditionalUseFileAuth(
-                        http
-                                .csrf().disable()
-                                .addFilter(digestAuthenticationFilter())
-                                .exceptionHandling().authenticationEntryPoint(digestEntryPoint())
-                                .and()
-                                .authorizeRequests()
-                )
-        )
-                .anyRequest().authenticated();
-    }
-
-    private DigestAuthenticationFilter digestAuthenticationFilter() {
+    private DigestAuthenticationFilter digestAuthenticationFilter(DigestAuthenticationEntryPoint digestAuthenticationEntryPoint, UserCache digestUserCache, UserDetailsService userDetailsService) {
         DigestAuthenticationFilter digestAuthenticationFilter = new DigestAuthenticationFilter();
-        digestAuthenticationFilter.setUserDetailsService(acsUnitDetailsService);
-        digestAuthenticationFilter.setAuthenticationEntryPoint(digestEntryPoint());
+        digestAuthenticationFilter.setUserDetailsService(userDetailsService);
+        digestAuthenticationFilter.setCreateAuthenticatedToken(true);
+        digestAuthenticationFilter.setAuthenticationEntryPoint(digestAuthenticationEntryPoint);
+        digestAuthenticationFilter.setUserCache(digestUserCache);
         return digestAuthenticationFilter;
     }
 
-    private DigestAuthenticationEntryPoint digestEntryPoint() {
+    private DigestAuthenticationEntryPoint digestEntryPoint(@Value("${digest.secret}") String digestSecret) {
+        if ("changeme".equals(digestSecret)) {
+            throw new IllegalArgumentException("Please change the digest.secret property to start using digest authentication");
+        }
         DigestAuthenticationEntryPoint digestAuthenticationEntryPoint = new DigestAuthenticationEntryPoint();
         digestAuthenticationEntryPoint.setKey(digestSecret);
+        digestAuthenticationEntryPoint.setNonceValiditySeconds(300);
         digestAuthenticationEntryPoint.setRealmName("FreeACS");
         return digestAuthenticationEntryPoint;
     }
 
+    private UserCache digestUserCache() throws Exception {
+        return new SpringCacheBasedUserCache(new ConcurrentMapCache("digestUserCache"));
+    }
 }

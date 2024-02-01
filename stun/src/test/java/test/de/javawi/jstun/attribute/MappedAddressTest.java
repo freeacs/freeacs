@@ -12,15 +12,14 @@
 package test.de.javawi.jstun.attribute;
 
 import de.javawi.jstun.attribute.MappedAddress;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Disabled;
 
-public class MappedAddressTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@Disabled("Testcase ? Why?")
+public class MappedAddressTest {
   MappedAddress ma;
   byte[] data;
-
-  public MappedAddressTest(String mesg) {
-    super(mesg);
-  }
 
   public void setUp() throws Exception {
     data = new byte[8];

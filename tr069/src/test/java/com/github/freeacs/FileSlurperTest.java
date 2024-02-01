@@ -1,10 +1,11 @@
 package com.github.freeacs;
 
 import com.github.freeacs.common.util.FileSlurper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import static org.junit.Assert.assertNotNull;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class FileSlurperTest {
 

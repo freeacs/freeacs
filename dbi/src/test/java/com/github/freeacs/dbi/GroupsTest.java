@@ -1,16 +1,16 @@
 package com.github.freeacs.dbi;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
-import org.junit.Test;
 
 public class GroupsTest extends BaseDBITest {
 
   @Test
   public void addOrChangeGroup() throws SQLException {
     // Given:
-    String unittypeName = "Test unittype";
+    String unittypeName = "Test unittype 1";
     String groupName = "Group name";
     String profileName = "Default";
     Unittype unittype = TestUtils.createUnittype(unittypeName, acs);
@@ -19,15 +19,15 @@ public class GroupsTest extends BaseDBITest {
     Group group = TestUtils.createGroupAndVerify(groupName, profileName, unittype, acs);
 
     // Then:
-    assertEquals(groupName, group.getName());
-    assertEquals(profileName, group.getProfile().getName());
-    assertEquals(unittypeName, group.getUnittype().getName());
+    Assertions.assertEquals(groupName, group.getName());
+    Assertions.assertEquals(profileName, group.getProfile().getName());
+    Assertions.assertEquals(unittypeName, group.getUnittype().getName());
   }
 
   @Test
   public void deleteGroup() throws SQLException {
     // Given:
-    String unittypeName = "Test unittype";
+    String unittypeName = "Test unittype 2";
     String groupName = "Group name";
     String profileName = "Default";
     Unittype unittype = TestUtils.createUnittype(unittypeName, acs);
@@ -37,6 +37,6 @@ public class GroupsTest extends BaseDBITest {
     unittype.getGroups().deleteGroup(group, acs);
 
     // Then:
-    assertEquals(0, unittype.getGroups().getGroups().length);
+    Assertions.assertEquals(0, unittype.getGroups().getGroups().length);
   }
 }

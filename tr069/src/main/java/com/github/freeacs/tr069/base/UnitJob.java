@@ -1,15 +1,7 @@
 package com.github.freeacs.tr069.base;
 
-import com.github.freeacs.dbi.ACSUnit;
-import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.dbi.Job;
+import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
-import com.github.freeacs.dbi.JobParameter;
-import com.github.freeacs.dbi.Unit;
-import com.github.freeacs.dbi.UnitJobStatus;
-import com.github.freeacs.dbi.UnitParameter;
-import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;

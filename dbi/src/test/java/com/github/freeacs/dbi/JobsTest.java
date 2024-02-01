@@ -1,17 +1,18 @@
 package com.github.freeacs.dbi;
 
-import static org.junit.Assert.*;
-
 import java.sql.SQLException;
-import org.junit.Test;
+
+import com.github.freeacs.common.util.AbstractMySqlIntegrationTest;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class JobsTest extends BaseDBITest {
 
   @Test
   public void add() throws SQLException {
     // Given:
-    String unitId = "YidduJb7sssC";
-    String unittypeName = "Test unittype";
+    String unitId = "YidduJb7sssC1";
+    String unittypeName = "Test unittype 1";
     String groupName = "Group";
     String profileName = "Default";
     String jobName = "Job";
@@ -21,24 +22,24 @@ public class JobsTest extends BaseDBITest {
     // When:
     Unittype unittype = TestUtils.createUnittype(unittypeName, acs);
     Profile profile = unittype.getProfiles().getByName(profileName);
-    ACSUnit acsUnit = new ACSUnit(dataSource, acs, syslog);
+    ACSUnit acsUnit = new ACSUnit(AbstractMySqlIntegrationTest.getDataSource(), acs, syslog);
     TestUtils.createUnitAndVerify(acsUnit, unitId, profile);
     Group group = TestUtils.createGroupAndVerify(groupName, profileName, unittype, acs);
     Job job = TestUtils.createJobAndVerify(jobName, jobFlag, jobDesc, unittype, group, acs);
 
     // Then:
-    assertEquals(jobName, job.getName());
-    assertEquals(jobDesc, job.getDescription());
-    assertEquals(jobFlag, job.getFlags());
-    assertEquals(unittype, job.getUnittype());
-    assertEquals(group, job.getGroup());
+    Assertions.assertEquals(jobName, job.getName());
+    Assertions.assertEquals(jobDesc, job.getDescription());
+    Assertions.assertEquals(jobFlag, job.getFlags());
+    Assertions.assertEquals(unittype, job.getUnittype());
+    Assertions.assertEquals(group, job.getGroup());
   }
 
   @Test
   public void delete() throws SQLException {
     // Given:
-    String unitId = "YidduJb7sssC";
-    String unittypeName = "Test unittype";
+    String unitId = "YidduJb7sssC2";
+    String unittypeName = "Test unittype 2";
     String groupName = "Group";
     String profileName = "Default";
     String jobName = "Job";
@@ -46,7 +47,7 @@ public class JobsTest extends BaseDBITest {
     String jobDesc = "Description";
     Unittype unittype = TestUtils.createUnittype(unittypeName, acs);
     Profile profile = unittype.getProfiles().getByName(profileName);
-    ACSUnit acsUnit = new ACSUnit(dataSource, acs, syslog);
+    ACSUnit acsUnit = new ACSUnit(AbstractMySqlIntegrationTest.getDataSource(), acs, syslog);
     TestUtils.createUnitAndVerify(acsUnit, unitId, profile);
     Group group = TestUtils.createGroupAndVerify(groupName, profileName, unittype, acs);
     Job job = TestUtils.createJobAndVerify(jobName, jobFlag, jobDesc, unittype, group, acs);
@@ -55,6 +56,6 @@ public class JobsTest extends BaseDBITest {
     unittype.getJobs().delete(job, acs);
 
     // Then:
-    assertNull(unittype.getJobs().getByName(jobName));
+    Assertions.assertNull(unittype.getJobs().getByName(jobName));
   }
 }

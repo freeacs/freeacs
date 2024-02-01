@@ -1,8 +1,8 @@
 package com.github.freeacs.tr069.methods.decision;
 
 import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.Properties;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,19 +16,20 @@ public interface DecisionStrategy {
     static DecisionStrategy getStrategy(ProvisioningMethod provisioningMethod,
                                         Properties properties,
                                         DBI dbi) {
-        switch (provisioningMethod) {
-            case Empty: return emStrategy(properties, dbi);
-            case Inform: return informStrategy();
-            case GetParameterNames: return getParameterNamesStrategy();
-            case GetParameterValues: return getParameterValuesStrategy(properties, dbi);
-            case SetParameterValues: return setParameterValuesStrategy(properties, dbi);
-            case TransferComplete: return transferCompleteStrategy();
-            case AutonomousTransferComplete: return autonomousTransferCompleteStrategy();
-            case GetRPCMethods: return getRPCMethodsStrategy();
-            default:
+        return switch (provisioningMethod) {
+            case Empty -> emStrategy(properties, dbi);
+            case Inform -> informStrategy();
+            case GetParameterNames -> getParameterNamesStrategy();
+            case GetParameterValues -> getParameterValuesStrategy(properties, dbi);
+            case SetParameterValues -> setParameterValuesStrategy(properties, dbi);
+            case TransferComplete -> transferCompleteStrategy();
+            case AutonomousTransferComplete -> autonomousTransferCompleteStrategy();
+            case GetRPCMethods -> getRPCMethodsStrategy();
+            default -> {
                 log.debug("The methodName " + provisioningMethod + " has no decision strategy. Using empty strategy.");
-                return emStrategy(properties, dbi);
-        }
+                yield emStrategy(properties, dbi);
+            }
+        };
     }
 
     static DecisionStrategy getRPCMethodsStrategy() {

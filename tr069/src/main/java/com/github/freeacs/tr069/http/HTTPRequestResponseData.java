@@ -4,10 +4,10 @@ import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.base.BaseCache;
 import com.github.freeacs.tr069.base.BaseCacheException;
 import com.github.freeacs.tr069.xml.TR069TransactionID;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 @Slf4j

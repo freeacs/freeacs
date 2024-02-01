@@ -1,15 +1,7 @@
 package com.github.freeacs.tr069.base;
 
-import com.github.freeacs.dbi.ACSUnit;
-import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.dbi.Profile;
-import com.github.freeacs.dbi.ProfileParameter;
-import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.UnitJob;
-import com.github.freeacs.dbi.UnitJobs;
-import com.github.freeacs.dbi.UnitParameter;
-import com.github.freeacs.dbi.Unittype;
-import com.github.freeacs.dbi.UnittypeParameter;
+import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.exception.TR069DatabaseException;
@@ -19,12 +11,7 @@ import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * A collection of helper methods / actions that operate on the dbi instance.

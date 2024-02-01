@@ -1,7 +1,7 @@
 package com.github.freeacs.tr069.xml;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class DeviceIdStructTest {
 
@@ -15,7 +15,7 @@ public class DeviceIdStructTest {
     struct.setProductClass(unittypeNameStr);
 
     // Then:
-    Assert.assertEquals("ODU-xxx-yyya2", struct.getProductClass());
+    Assertions.assertEquals("ODU-xxx-yyya2", struct.getProductClass());
   }
 
   @Test
@@ -28,7 +28,7 @@ public class DeviceIdStructTest {
     struct.setProductClass(unittypeNameStr);
 
     // Then:
-    Assert.assertEquals("ODU-xxx-yyya2", struct.getProductClass());
+    Assertions.assertEquals("ODU-xxx-yyya2", struct.getProductClass());
   }
 
 
@@ -42,6 +42,6 @@ public class DeviceIdStructTest {
     struct.setProductClass(unittypeNameStr);
 
     // Then:
-    Assert.assertNull(struct.getProductClass());
+    Assertions.assertNull(struct.getProductClass());
   }
 }

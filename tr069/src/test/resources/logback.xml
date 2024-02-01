@@ -10,6 +10,7 @@
     </appender>
     <logger name="org.eclipse.jetty" level="WARN" />
     <logger name="com.github.freeacs" level="INFO" />
+    <logger name="org.springframework.security" level="DEBUG" />
     <root level="INFO">
         <appender-ref ref="ASYNC_STDOUT" />
     </root>

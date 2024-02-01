@@ -36,39 +36,37 @@
     <dependency>
       <groupId>org.jfree</groupId>
       <artifactId>jfreechart</artifactId>
-      <version>${jfreechart.version}</version>
     </dependency>
     <dependency>
       <groupId>org.jfree</groupId>
       <artifactId>jcommon</artifactId>
-      <version>${jcommon.version}</version>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
-      <version>${mockito.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>${mysql.version}</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>${logback.version}</version>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.sparkjava</groupId>
       <artifactId>spark-core</artifactId>
-      <version>${sparkjava.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.eclipse.jetty.websocket</groupId>
@@ -83,61 +81,41 @@
     <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
-      <version>${hikaricp.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>commons-httpclient</groupId>
       <artifactId>commons-httpclient</artifactId>
-      <version>${commons-httpclient.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>${commons-io.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
-      <version>${commons-codec.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>${commons-lang3.version}</version>
     </dependency>
     <dependency>
       <groupId>com.typesafe</groupId>
       <artifactId>config</artifactId>
-      <version>${typesafe-config.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>ch.vorburger.mariaDB4j</groupId>
-      <artifactId>mariaDB4j-core</artifactId>
-      <version>${mariadb.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>ch.vorburger.mariaDB4j</groupId>
-      <artifactId>mariaDB4j-db-mac64</artifactId>
-      <version>${mariadb-dlls.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>ch.vorburger.mariaDB4j</groupId>
-      <artifactId>mariaDB4j-db-linux64</artifactId>
-      <version>${mariadb-dlls.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>ch.vorburger.mariaDB4j</groupId>
-      <artifactId>mariaDB4j-db-win32</artifactId>
-      <version>${mariadb-dlls.version}</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mariadb.jdbc</groupId>
       <artifactId>mariadb-java-client</artifactId>
-      <version>${mariadb.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>mysql</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

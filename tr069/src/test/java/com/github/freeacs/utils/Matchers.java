@@ -7,7 +7,7 @@ import org.hamcrest.Matcher;
 
 public abstract class Matchers {
     public static Matcher<String> hasNoSpace() {
-        return new BaseMatcher<String>() {
+        return new BaseMatcher<>() {
             @Override
             public boolean matches(final Object item) {
                 return !StringUtils.containsWhitespace(item.toString());
