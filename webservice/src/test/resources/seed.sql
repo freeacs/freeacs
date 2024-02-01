@@ -1,3 +1,5 @@
+INSERT INTO unit_type (unit_type_id, matcher_id, unit_type_name, vendor_name, description, protocol) VALUES (1, null, 'Generic', null, 'Auto-generated', 'TR069');
+
 INSERT INTO unit_type_param (unit_type_param_id, unit_type_id, name, flags) VALUES (107, 1, 'System.X_FREEACS-COM.Comment', 'X');
 INSERT INTO unit_type_param (unit_type_param_id, unit_type_id, name, flags) VALUES (108, 1, 'System.X_FREEACS-COM.Debug', 'X');
 INSERT INTO unit_type_param (unit_type_param_id, unit_type_id, name, flags) VALUES (109, 1, 'System.X_FREEACS-COM.DesiredSoftwareVersion', 'X');
@@ -64,3 +66,24 @@ INSERT INTO unit_type_param (unit_type_param_id, unit_type_id, name, flags) VALU
 INSERT INTO unit_type_param (unit_type_param_id, unit_type_id, name, flags) VALUES (170, 1, 'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.2.WANPPPConnection.1.Enable', 'RW');
 INSERT INTO unit_type_param (unit_type_param_id, unit_type_id, name, flags) VALUES (171, 1, 'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.2.WANPPPConnection.1.Password', 'RW');
 INSERT INTO unit_type_param (unit_type_param_id, unit_type_id, name, flags) VALUES (172, 1, 'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.2.WANPPPConnection.1.Username', 'RW');
+
+INSERT INTO profile (profile_id, unit_type_id, profile_name) VALUES (1, 1, 'Default');
+
+INSERT INTO unit (unit_id, unit_type_id, profile_id) VALUES ('test', 1, 1);
+
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 120, '');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 121, '');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 112, '192.168.0.8');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 118, '2018-10-14 13:08:44');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 124, '2018-10-16 19:39:29');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 111, '70896');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 163, '70896');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 113, '7547');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 128, 'easycwmp');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 159, 'easycwmp');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 115, 'FFFFFF123456');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 114, 'http');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 116, 'r47745');
+INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 125, 'REGULAR');
+
+INSERT INTO user_ (id, username, secret, fullname, accesslist, is_admin) VALUES (1, 'admin', '4E9BA006A68A8767D65B3761E038CF9040C54A00', 'Admin user', 'Admin', 1);

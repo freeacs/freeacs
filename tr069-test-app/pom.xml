@@ -8,7 +8,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>tr069-test-app</artifactId>
-    <name>Archetype - tr069-test-app</name>
+    <name>tr069-test-app</name>
     <url>http://maven.apache.org</url>
 
     <dependencies>

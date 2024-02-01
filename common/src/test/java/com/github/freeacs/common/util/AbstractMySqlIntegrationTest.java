@@ -24,6 +24,7 @@ public interface AbstractMySqlIntegrationTest {
         dataSource.setPassword(mysql.getPassword());
         Connection connection = dataSource.getConnection();
         DBScriptUtility.runScript("install.sql", connection);
+        DBScriptUtility.runScript("seed.sql", connection);
         connection.close();
     }
 
