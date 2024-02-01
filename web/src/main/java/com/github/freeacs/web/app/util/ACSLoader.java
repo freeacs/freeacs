@@ -37,7 +37,7 @@ public class ACSLoader {
       if (dbi == null || dbi.isFinished()) {
         Identity ident = getIdentity(sessionId, mainDataSource);
         Syslog syslog = new Syslog(syslogDataSource, ident);
-        dbi = new DBI(sessionTimeoutSecs, mainDataSource, syslog);
+        dbi = DBI.createAndInitialize(sessionTimeoutSecs, mainDataSource, syslog);
         SessionCache.putDBI(sessionId, dbi, sessionTimeoutSecs);
       }
       Monitor.setLastDBILogin(null);

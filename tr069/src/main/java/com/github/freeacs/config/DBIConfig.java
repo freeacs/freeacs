@@ -18,6 +18,6 @@ public class DBIConfig {
         Users users = new Users(dataSource);
         Identity id = new Identity(FACILITY_TR069, "latest", users.getUnprotected(Users.USER_ADMIN));
         Syslog syslog = new Syslog(dataSource, id);
-        return new DBI(Integer.MAX_VALUE, dataSource, syslog);
+        return DBI.createAndInitialize(Integer.MAX_VALUE, dataSource, syslog);
     }
 }

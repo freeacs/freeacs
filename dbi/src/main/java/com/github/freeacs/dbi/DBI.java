@@ -1,6 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.util.Sleep;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -77,11 +76,7 @@ public class DBI implements Runnable {
     if (!running) {
       try {
         thread.interrupt();
-      } catch (Throwable e) {
-      }
-      try {
-        thread.stop();
-      } catch (Throwable e) {
+      } catch (Throwable ignored) {
       }
     }
   }
@@ -214,45 +209,55 @@ public class DBI implements Runnable {
   private int lifetimeSec;
   private long start = System.currentTimeMillis();
   private boolean finished;
-  private Sleep sleep;
   private ACS acs;
   private boolean freeacsUpdated;
-  private Map<Integer, UnittypePublish> publishUnittypes = new HashMap<>();
-  private List<Message> outbox = new ArrayList<>();
-  private Set<Integer> sent = new TreeSet<>();
-  private Syslog syslog;
-  private Random random = new Random(System.nanoTime());
-  private int dbiId;
-  private boolean dbiRun;
-  private Map<String, Inbox> inboxes = new HashMap<>();
+  private final Map<Integer, UnittypePublish> publishUnittypes = new HashMap<>();
+  private final List<Message> outbox = new ArrayList<>();
+  private final Set<Integer> sent = new TreeSet<>();
+  private final Syslog syslog;
+  private final Random random = new Random(System.nanoTime());
+  private final int dbiId;
+  private final Map<String, Inbox> inboxes = new HashMap<>();
   private int lastReadId = -1;
-  private Inbox publishInbox = new Inbox();
-  /** Set if an error occurs within DBI, used to signal ERROR in monitor. */
-  private Throwable dbiThrowable;
+  private final Inbox publishInbox = new Inbox();
 
-  public DBI(int lifetimeSec, DataSource dataSource, Syslog syslog) throws SQLException {
+  private DBI(int lifetimeSec, DataSource dataSource, Syslog syslog) throws SQLException {
     this.dataSource = dataSource;
     this.lifetimeSec = lifetimeSec;
     this.syslog = syslog;
-    populateInboxes();
-    publishInbox.deleteReadMessage();
-    this.sleep = new Sleep(1000, 1000, true);
     this.acs = new ACS(dataSource, syslog);
-    this.dbiId = random.nextInt(1000000);
+    this.dbiId = new Random().nextInt(1000000);
     acs.setDbi(this);
+    this.thread = createDBIThread();
+  }
+
+  public static DBI createAndInitialize(int lifetimeSec, DataSource dataSource, Syslog syslog) throws SQLException {
+    DBI dbi = new DBI(lifetimeSec, dataSource, syslog);
+    dbi.initialize();
+    return dbi;
+  }
+
+  private void initialize() throws SQLException {
+    processMessagesFromDatabase();
+    setupPublishInbox();
+    thread.start();
+    logger.debug("DBI is loaded for user " + (syslog != null ? syslog.getIdentity().getUser().getFullname() : "unknown"));
+  }
+
+  private Thread createDBIThread() {
+    Thread thread = new Thread(this);
+    String threadName = (syslog != null) ? "DBI for " + syslog.getIdentity().getFacilityName() : "DBI";
+    thread.setName(threadName);
+    thread.setDaemon(true);
+    return thread;
+  }
+
+  private void setupPublishInbox() {
+    publishInbox.deleteReadMessage();
     publishInbox.addFilter(new Message(null, Message.MTYPE_PUB_ADD, null, null));
     publishInbox.addFilter(new Message(null, Message.MTYPE_PUB_CHG, null, null));
     publishInbox.addFilter(new Message(null, Message.MTYPE_PUB_DEL, null, null));
     registerInbox(PUBLISH_INBOX_NAME, publishInbox);
-    thread = new Thread(this);
-    if (syslog != null) {
-      thread.setName("DBI for " + syslog.getIdentity().getFacilityName());
-    } else {
-      thread.setName("DBI");
-    }
-    thread.setDaemon(true);
-    thread.start();
-    logger.debug("DBI is loaded for user " + syslog.getIdentity().getUser().getFullname());
   }
 
   public ACS getAcs() {
@@ -270,45 +275,69 @@ public class DBI implements Runnable {
     return inboxes.get(key);
   }
 
-  private void populateInboxes() throws SQLException {
-      try (Connection c = dataSource.getConnection(); Statement s = c.createStatement()) {
-          ResultSet rs = s.executeQuery("SELECT * FROM message WHERE id > " + lastReadId + " ORDER BY id");
-          while (rs.next()) {
-              Message message = new Message();
-              message.setId(rs.getInt("id"));
-              message.setContent(rs.getString("content"));
-              message.setMessageType(rs.getString("type"));
-              message.setObjectId(rs.getString("object_id"));
-              message.setObjectType(rs.getString("object_type"));
-              String receiverStr = rs.getString("receiver");
-              if (receiverStr != null) {
-                  message.setReceiver(Integer.valueOf(receiverStr));
-              }
-              message.setSender(rs.getInt("sender"));
-              message.setTimestamp(rs.getTimestamp("timestamp_"));
-              int colonPos = message.getObjectId().indexOf(':');
-              if (colonPos > -1) {
-                  String sendersDbiId = message.getObjectId().substring(0, colonPos);
-                  if (sendersDbiId.equals(String.valueOf(dbiId))) {
-                      continue;
-                  }
-                  message.setObjectId(message.getObjectId().substring(colonPos + 1));
-              }
-              if (sent.contains(message.getId())) {
-                  continue;
-              }
-
-              if (message.getId() > lastReadId) {
-                  lastReadId = message.getId();
-              }
-              for (Inbox ibx : inboxes.values()) {
-                  ibx.addToInbox(message);
-              }
-          }
+  private void processMessagesFromDatabase() throws SQLException {
+    try (Connection c = dataSource.getConnection(); Statement s = c.createStatement()) {
+      ResultSet rs = s.executeQuery("SELECT * FROM message WHERE id > " + lastReadId + " ORDER BY id");
+      while (rs.next()) {
+        Message message = createMessageFromResultSet(rs);
+        if (shouldSkipMessage(message)) {
+          continue;
+        }
+        updateLastReadId(message);
+        distributeMessageToInboxes(message);
       }
+    }
   }
 
-  private void cleanup() throws SQLException {
+  private Message createMessageFromResultSet(ResultSet rs) throws SQLException {
+    Message message = new Message();
+    message.setId(rs.getInt("id"));
+    message.setContent(rs.getString("content"));
+    message.setMessageType(rs.getString("type"));
+    message.setObjectId(rs.getString("object_id"));
+    message.setObjectType(rs.getString("object_type"));
+    message.setReceiver(parseReceiver(rs.getString("receiver")));
+    message.setSender(rs.getInt("sender"));
+    message.setTimestamp(rs.getTimestamp("timestamp_"));
+    return message;
+  }
+
+  private boolean shouldSkipMessage(Message message) {
+    if (isMessageFromSelf(message) || sent.contains(message.getId())) {
+      return true;
+    }
+    return false;
+  }
+
+  private boolean isMessageFromSelf(Message message) {
+    int colonPos = message.getObjectId().indexOf(':');
+    if (colonPos > -1) {
+      String sendersDbiId = message.getObjectId().substring(0, colonPos);
+      if (sendersDbiId.equals(String.valueOf(dbiId))) {
+        message.setObjectId(message.getObjectId().substring(colonPos + 1));
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private Integer parseReceiver(String receiverStr) {
+    return receiverStr != null ? Integer.valueOf(receiverStr) : null;
+  }
+
+  private void updateLastReadId(Message message) {
+    if (message.getId() > lastReadId) {
+      lastReadId = message.getId();
+    }
+  }
+
+  private void distributeMessageToInboxes(Message message) {
+    for (Inbox ibx : inboxes.values()) {
+      ibx.addToInbox(message);
+    }
+  }
+
+  private void cleanupOldMessages() throws SQLException {
     Connection c = dataSource.getConnection();
     PreparedStatement ps = null;
     try {
@@ -328,7 +357,7 @@ public class DBI implements Runnable {
     }
   }
 
-  private void send(Message message) throws SQLException {
+  private void sendMessage(Message message) throws SQLException {
     Connection c = dataSource.getConnection();
     PreparedStatement ps = null;
     try {
@@ -366,64 +395,85 @@ public class DBI implements Runnable {
   }
 
   public void run() {
-    boolean errorOccured = false;
-    while (running && !finished) {
-      dbiRun = true;
-      try {
-        if (System.currentTimeMillis() - start > lifetimeSec * 1000L) {
-          finished = true;
-          break;
-        }
-        if (Sleep.isTerminated()) {
-          break;
-        }
-        sleep.sleep();
-        // Check message table for changes (read all with id > last_id_read)
-        populateInboxes();
-        // Update objects if necessary
-        processPublishInbox();
-        // Check outbox - may add/remove messages - then send them
-        processOutbox();
-        // Once in a while - clean out old messages
-        if (random.nextInt(10) == 0) {
-          cleanup();
-        }
-        dbiThrowable = null;
-        errorOccured = false;
-      } catch (Throwable t) {
-        dbiThrowable = t;
-        try {
-          if (!errorOccured) {
-            errorOccured = true;
-            logger.error(
-                "An error occurred in DBI.run(): %s, %s",
-                t.getCause().toString(), t.getLocalizedMessage());
-          } else {
-            logger.error(
-                "An error occurred in DBI.run() (stacktrace printed earlier): " + t.getMessage(), dbiThrowable);
-          }
-        } catch (Throwable ignored) {
-        }
+    try {
+      while (!Thread.currentThread().isInterrupted() && running) {
+        performDBIOperations();
+        Thread.sleep(1000); // Replace with appropriate sleep time
       }
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt(); // Preserve interrupt status
+      logger.info("DBI thread interrupted");
+    } catch (Exception e) {
+      logger.error("Error in DBI thread: " + e.getMessage(), e);
     }
+  }
+
+  private void performDBIOperations() {
+    try {
+      // Check if the DBI lifetime has expired
+      checkLifetime();
+
+      // Read and process messages from the database
+      processMessagesFromDatabase();
+
+      // Update objects if necessary based on new messages
+      updateObjectsBasedOnMessages();
+
+      // Process the outbox: send messages, handle responses, etc.
+      processOutboxMessages();
+
+      // Periodically clean up old messages from the database
+      if (shouldCleanup()) {
+        cleanupOldMessages();
+      }
+
+    } catch (SQLException e) {
+      logger.error("SQL error in DBI operations: " + e.getMessage(), e);
+    } catch (Exception e) {
+      logger.error("Unexpected error in DBI operations: " + e.getMessage(), e);
+    }
+  }
+
+  private void checkLifetime() {
+    if (System.currentTimeMillis() - start > lifetimeSec * 1000L) {
+      running = false;
+    }
+  }
+
+  private boolean shouldCleanup() {
+    // Determine if it's time to clean up old messages
+    // For example, this could be a random or time-based check
+    return random.nextInt(10) == 0;
   }
 
   /**
    * Must be called if an application is about to be terminated, otherwise it will be run every
    * second.
    */
-  public synchronized void processOutbox() throws SQLException {
+  public synchronized void processOutboxMessages() throws SQLException {
+    prepareAndAddOutboxMessages();
+    sendOutboxMessages();
+    cleanupSentMessages();
+    clearOutboxes();
+  }
+
+  private void prepareAndAddOutboxMessages() {
     for (Entry<Integer, UnittypePublish> entry : publishUnittypes.entrySet()) {
       UnittypePublish up = entry.getValue();
       up.addUnittypePublish();
       List<Message> messages = up.getMessages(syslog.getIdentity().getFacility());
       outbox.addAll(messages);
     }
+  }
+
+  private void sendOutboxMessages() throws SQLException {
     for (Message message : outbox) {
       message.setObjectId(dbiId + ":" + message.getObjectId());
-      send(message);
+      sendMessage(message);
     }
-    // Clean up the sent-box
+  }
+
+  private void cleanupSentMessages() {
     Iterator<Integer> iterator = sent.iterator();
     while (iterator.hasNext()) {
       Integer sentId = iterator.next();
@@ -433,6 +483,9 @@ public class DBI implements Runnable {
         break;
       }
     }
+  }
+
+  private void clearOutboxes() {
     outbox.clear();
     publishUnittypes.clear();
   }
@@ -443,77 +496,131 @@ public class DBI implements Runnable {
    */
   private void updateJobCounters(Integer jobId, String message) {
     String[] msgArr = message.split(",");
+    if (msgArr.length < 2) {
+      // Log error or throw an exception due to incorrect message format
+      return;
+    }
+
     Unittype unittype = acs.getUnittype(Integer.valueOf(msgArr[0]));
     if (unittype == null) {
+      // Log error or handle the case where the unittype is not accessible
       return;
-    } // the user does not have access to this unittype
+    }
+
     Job job = unittype.getJobs().getById(jobId);
     if (job == null) {
+      // Log error or handle the case where the job is not accessible
       return;
-    } // the user does not have access to this job
+    }
+
     for (int i = 1; i < msgArr.length; i++) {
-      String id = msgArr[i].split("=")[0];
-      int counter = Integer.parseInt(msgArr[i].split("=")[1]);
-      switch (id) {
-        case "cnf":
-          job.setCompletedNoFailures(counter);
-          break;
-        case "chf":
-          job.setCompletedHadFailures(counter);
-          break;
-        case "cf":
-          job.setConfirmedFailed(counter);
-          break;
-        case "uf":
-          job.setUnconfirmedFailed(counter);
-          break;
-      }
+      updateCounter(job, msgArr[i]);
     }
   }
 
-  private void processPublishInbox() throws SQLException {
+  private void updateCounter(Job job, String counterData) {
+    String[] parts = counterData.split("=");
+    if (parts.length != 2) {
+      // Log error or throw an exception due to incorrect counter data format
+      return;
+    }
+
+    String id = parts[0];
+    int counter;
+    try {
+      counter = Integer.parseInt(parts[1]);
+    } catch (NumberFormatException e) {
+      // Log error or handle the parsing error
+      return;
+    }
+
+    switch (id) {
+      case "cnf":
+        job.setCompletedNoFailures(counter);
+        break;
+      case "chf":
+        job.setCompletedHadFailures(counter);
+        break;
+      case "cf":
+        job.setConfirmedFailed(counter);
+        break;
+      case "uf":
+        job.setUnconfirmedFailed(counter);
+        break;
+      default:
+        // Log error or handle unknown id
+        break;
+    }
+  }
+
+  private void updateObjectsBasedOnMessages() throws SQLException {
     boolean updateACS = false;
     for (Message m : publishInbox.getUnreadMessages()) {
-      publishInbox.markMessageAsRead(m);
-      if (logger.isDebugEnabled()) {
-        logger.debug(
-            "DBI discovered that "
-                + m.getObjectType()
-                + " with id = "
-                + m.getObjectId()
-                + " has changed ("
-                + m.getMessageType()
-                + ") (sent from "
-                + SyslogConstants.getFacilityName(m.getSender())
-                + ")");
-      }
-      if (!updateACS) {
-        if (Message.OTYPE_JOB.equals(m.getObjectType())
-            && m.getContent() != null
-            && m.getSender() == SyslogConstants.FACILITY_CORE) {
-          updateJobCounters(Integer.valueOf(m.getObjectId()), m.getContent());
-        } else if (Message.OTYPE_JOB.equals(m.getObjectType())
-            && Message.MTYPE_PUB_CHG.equals(m.getMessageType())) {
-          Jobs.refreshJob(Integer.valueOf(m.getObjectId()), acs);
-        } else if (Message.OTYPE_GROUP.equals(m.getObjectType())
-            && Message.MTYPE_PUB_CHG.equals(m.getMessageType())) {
-          Groups.refreshGroup(Integer.valueOf(m.getObjectId()), acs);
-        } else if (Message.OTYPE_FILE.equals(m.getObjectType())
-            && Message.MTYPE_PUB_CHG.equals(m.getMessageType())) {
-          Files.refreshFile(Integer.valueOf(m.getObjectId()), Integer.valueOf(m.getContent()), acs);
-        } else {
-          updateACS = true;
-        }
-      }
+      processMessage(m);
+      updateACS = updateACS || needsAcsUpdate(m);
     }
     if (updateACS) {
-      acs.read();
-      freeacsUpdated = true;
-      if (logger.isDebugEnabled()) {
-        logger.debug("ACS object has been updated due to changes in the tables");
-      }
+      performAcsUpdate();
     }
     publishInbox.deleteReadMessage();
+  }
+
+  private void processMessage(Message m) throws SQLException {
+    publishInbox.markMessageAsRead(m);
+    logMessageDetails(m);
+    handleObjectTypeSpecificUpdates(m);
+  }
+
+  private void logMessageDetails(Message m) {
+    if (logger.isDebugEnabled()) {
+      logger.debug("DBI discovered that " + m.getObjectType() + " with id = " + m.getObjectId() +
+              " has changed (" + m.getMessageType() + ") (sent from " +
+              SyslogConstants.getFacilityName(m.getSender()) + ")");
+    }
+  }
+
+  private void handleObjectTypeSpecificUpdates(Message m) throws SQLException {
+    if (Message.OTYPE_JOB.equals(m.getObjectType())) {
+      handleJobTypeMessage(m);
+    } else if (Message.OTYPE_GROUP.equals(m.getObjectType())) {
+      handleGroupTypeMessage(m);
+    } else if (Message.OTYPE_FILE.equals(m.getObjectType())) {
+      handleFileTypeMessage(m);
+    }
+  }
+
+  private void handleJobTypeMessage(Message m) throws SQLException {
+    if (m.getContent() != null && m.getSender() == SyslogConstants.FACILITY_CORE) {
+      updateJobCounters(Integer.valueOf(m.getObjectId()), m.getContent());
+    } else if (Message.MTYPE_PUB_CHG.equals(m.getMessageType())) {
+      Jobs.refreshJob(Integer.valueOf(m.getObjectId()), acs);
+    }
+  }
+
+  private void handleGroupTypeMessage(Message m) throws SQLException {
+    if (Message.MTYPE_PUB_CHG.equals(m.getMessageType())) {
+      Groups.refreshGroup(Integer.valueOf(m.getObjectId()), acs);
+    }
+  }
+
+  private void handleFileTypeMessage(Message m) throws SQLException {
+    if (Message.MTYPE_PUB_CHG.equals(m.getMessageType())) {
+      Files.refreshFile(Integer.valueOf(m.getObjectId()), Integer.valueOf(m.getContent()), acs);
+    }
+  }
+
+  private boolean needsAcsUpdate(Message m) {
+    return !Message.OTYPE_JOB.equals(m.getObjectType()) &&
+            !Message.OTYPE_GROUP.equals(m.getObjectType()) &&
+            !Message.OTYPE_FILE.equals(m.getObjectType());
+  }
+
+  private void performAcsUpdate() throws SQLException {
+    acs.read();
+    freeacsUpdated = true;
+    if (logger.isDebugEnabled()) {
+      logger.debug("ACS object has been updated due to changes in the tables");
+    }
   }
 
   public boolean isACSUpdated() {
@@ -563,45 +670,57 @@ public class DBI implements Runnable {
   }
 
   private void addToPublish(String messageType, Object object, Unittype unittype) {
-    UnittypePublish up = publishUnittypes.get(unittype.getId());
-    if (up == null) {
-      up = new UnittypePublish(unittype);
-      publishUnittypes.put(unittype.getId(), up);
-    }
-    if (object instanceof Unittype) {
-      up.addPublish(messageType, Message.OTYPE_UNIT_TYPE, unittype.getId());
-    } else if (object instanceof File
-        || object instanceof SyslogEvent
-        || object instanceof UnittypeParameter
-        || object instanceof Trigger) {
-      up.addPublish(Message.MTYPE_PUB_CHG, Message.OTYPE_UNIT_TYPE, unittype.getId());
-    } else if (object instanceof Profile) {
-      Profile profile = (Profile) object;
-      up.addPublish(messageType, Message.OTYPE_PROFILE, profile.getId());
-    } else if (object instanceof ProfileParameter) {
-      ProfileParameter pp = (ProfileParameter) object;
-      Profile profile = pp.getProfile();
-      up.addPublish(Message.MTYPE_PUB_CHG, Message.OTYPE_PROFILE, profile.getId());
-    } else if (object instanceof Group) {
-      Group group = (Group) object;
-      up.addPublish(messageType, Message.OTYPE_GROUP, group.getId());
-    } else if (object instanceof GroupParameter) {
-      GroupParameter gp = (GroupParameter) object;
-      Group group = gp.getGroup();
-      up.addPublish(Message.MTYPE_PUB_CHG, Message.OTYPE_GROUP, group.getId());
-    } else if (object instanceof Job) {
-      Job job = (Job) object;
-      up.addPublish(messageType, Message.OTYPE_JOB, job.getId());
-    } else if (object instanceof JobParameter) {
-      JobParameter jp = (JobParameter) object;
-      Job job = jp.getJob();
-      up.addPublish(Message.MTYPE_PUB_CHG, Message.OTYPE_JOB, job.getId());
+    UnittypePublish up = getOrCreateUnittypePublish(unittype);
+    String objectType = determineObjectType(object);
+    Integer objectId = determineObjectId(object, unittype);
+
+    if (objectType != null && objectId != null) {
+      up.addPublish(messageType, objectType, objectId);
     }
   }
 
+  private UnittypePublish getOrCreateUnittypePublish(Unittype unittype) {
+    return publishUnittypes.computeIfAbsent(unittype.getId(), k -> new UnittypePublish(unittype));
+  }
+
+  private String determineObjectType(Object object) {
+    if (object instanceof Unittype || object instanceof File ||
+            object instanceof SyslogEvent || object instanceof UnittypeParameter ||
+            object instanceof Trigger) {
+      return Message.OTYPE_UNIT_TYPE;
+    } else if (object instanceof Profile || object instanceof ProfileParameter) {
+      return Message.OTYPE_PROFILE;
+    } else if (object instanceof Group || object instanceof GroupParameter) {
+      return Message.OTYPE_GROUP;
+    } else if (object instanceof Job || object instanceof JobParameter) {
+      return Message.OTYPE_JOB;
+    }
+    return null;
+  }
+
+  private Integer determineObjectId(Object object, Unittype unittype) {
+    if (object instanceof Unittype) {
+      return unittype.getId();
+    } else if (object instanceof Profile) {
+      return ((Profile) object).getId();
+    } else if (object instanceof ProfileParameter) {
+      return ((ProfileParameter) object).getProfile().getId();
+    } else if (object instanceof Group) {
+      return ((Group) object).getId();
+    } else if (object instanceof GroupParameter) {
+      return ((GroupParameter) object).getGroup().getId();
+    } else if (object instanceof Job) {
+      return ((Job) object).getId();
+    } else if (object instanceof JobParameter) {
+      return ((JobParameter) object).getJob().getId();
+    }
+    return null;
+  }
+
+
   private void addMessage(
       String content, String messageType, String objectType, String objectId, Integer receiver) {
-    if (dbiRun) {
+    if (this.running) {
       Message message = new Message();
       message.setContent(content);
       message.setMessageType(messageType);
@@ -620,10 +739,6 @@ public class DBI implements Runnable {
 
   public void setLifetimeSec(int lifetimeSec) {
     this.lifetimeSec = lifetimeSec;
-  }
-
-  public Throwable getDbiThrowable() {
-    return dbiThrowable;
   }
 
   public DataSource getDataSource() {

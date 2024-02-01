@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -46,62 +45,43 @@ import org.slf4j.LoggerFactory;
  * UQWU cannot search across unittypes.
  */
 public class UnitQueryWithinUnittype {
-  private static Logger logger = LoggerFactory.getLogger(UnitQueryWithinUnittype.class);
-  public static Cache patternCache = new Cache();
-  private Connection connection;
-  private Unittype unittype;
-  private List<Profile> profiles;
+  private static final Logger logger = LoggerFactory.getLogger(UnitQueryWithinUnittype.class);
+  private static final Cache patternCache = new Cache();
+  private final Connection connection;
+  private final Unittype unittype;
+  private final List<Profile> profiles;
+  private final ACS acs;
 
-  private ACS acs;
-
-  public UnitQueryWithinUnittype(Connection c, ACS acs, Unittype unittype, List<Profile> profiles) {
-    this.connection = c;
+  public UnitQueryWithinUnittype(Connection connection, ACS acs, Unittype unittype, List<Profile> profiles) {
+    this.connection = connection;
     this.acs = acs;
-    if (unittype != null) {
-      this.unittype = unittype;
-    } else if (profiles != null && !profiles.isEmpty() && profiles.get(0).getUnittype() != null) {
-      this.unittype = profiles.get(0).getUnittype();
-    } else {
-      throw new IllegalArgumentException(
-          "UnitQueryWithinUnittype requires a unittype - not found explicitly nor implicitly");
-    }
+    this.unittype = validateUnittype(unittype, profiles);
+    this.profiles = validateProfiles(profiles);
+  }
 
-    if (profiles == null || profiles.isEmpty()) {
-      this.profiles = Arrays.asList(unittype.getProfiles().getProfiles());
+  private Unittype validateUnittype(Unittype unittype, List<Profile> profiles) {
+    if (unittype != null) {
+      return unittype;
+    } else if (profiles != null && !profiles.isEmpty() && profiles.get(0).getUnittype() != null) {
+      return profiles.get(0).getUnittype();
     } else {
-      for (Profile p : profiles) {
-        if (this.unittype.getProfiles().getById(p.getId()) == null) {
-          throw new IllegalArgumentException(
-              "UnitQueryWithinUnittype requires that profiles must be within the unittype specified");
+      throw new IllegalArgumentException("UnitQueryWithinUnittype requires a unittype - not found explicitly nor implicitly");
+    }
+  }
+
+  private List<Profile> validateProfiles(List<Profile> profiles) {
+    if (profiles == null || profiles.isEmpty()) {
+      return Arrays.asList(this.unittype.getProfiles().getProfiles());
+    } else {
+      for (Profile profile : profiles) {
+        if (this.unittype.getProfiles().getById(profile.getId()) == null) {
+          throw new IllegalArgumentException("Profiles must be within the specified unittype");
         }
       }
-      this.profiles = profiles;
+      return profiles;
     }
   }
 
-  public UnitQueryWithinUnittype(Connection c, ACS acs, Unittype unittype, Profile profile) {
-    this.connection = c;
-    this.acs = acs;
-    if (unittype != null) {
-      this.unittype = unittype;
-    } else if (profiles != null && !profiles.isEmpty() && profiles.get(0).getUnittype() != null) {
-      this.unittype = profiles.get(0).getUnittype();
-    } else {
-      throw new IllegalArgumentException(
-          "UnitQueryWithinUnittype requires a unittype - not found explicitly nor implicitly");
-    }
-
-    if (profile == null) {
-      this.profiles = Arrays.asList(unittype.getProfiles().getProfiles());
-    } else {
-      if (this.unittype.getProfiles().getById(profile.getId()) == null) {
-        throw new IllegalArgumentException(
-            "UnitQueryWithinUnittype requires that profiles must be within the unittype specified");
-      }
-      this.profiles = new ArrayList<>();
-      this.profiles.add(profile);
-    }
-  }
 
   /**
    * Matches two strings. FixedOp may be a string without wildchar (% or _). Typically this string
@@ -110,55 +90,63 @@ public class UnitQueryWithinUnittype {
    * searched for string in group-search or unit-query-search. Usage of % or _ is only possible for
    * TEXT matching, not for NUMBER matching
    */
-  public static boolean match(
-      String fixedOp, String varOp, Parameter.Operator op, Parameter.ParameterDataType type) {
-    // If fixedOp == null, varOp can match only if null and operator is EQ, or the opposite.
-    if (fixedOp == null) {
-      return (Parameter.Operator.EQ.equals(op) && varOp == null)
-          || ((!Parameter.Operator.EQ.equals(op) || varOp == null)
-              && (!Parameter.Operator.NE.equals(op) || varOp != null)
-              && Parameter.Operator.NE.equals(op)
-              && varOp != null);
+  public static boolean match(String fixedOp, String varOp, Parameter.Operator op, Parameter.ParameterDataType type) {
+    // Simplify null checks and return early
+    if (fixedOp == null || varOp == null) {
+      return handleNullComparison(fixedOp, varOp, op);
     }
-    // If varOp == null, fixedOp can match only if operator is NE (since fixedOp cannot be null).
-    if (varOp == null) {
+
+    // Delegate to type-specific matching methods
+    return switch (type) {
+        case NUMBER -> matchNumber(fixedOp, varOp, op);
+        case TEXT -> matchText(fixedOp, varOp, op);
+        default -> false;
+    };
+  }
+
+  private static boolean handleNullComparison(String fixedOp, String varOp, Parameter.Operator op) {
+    if (fixedOp == null && varOp == null) {
+      return Parameter.Operator.EQ.equals(op);
+    }
+    if (fixedOp == null || varOp == null) {
       return Parameter.Operator.NE.equals(op);
     }
-    switch (type) {
-      case NUMBER:
-        // Neither varOp nor fixedOp can be NULL here.
-        try {
-          Long operandL = Long.valueOf(varOp);
-          Long ppL = Long.valueOf(fixedOp);
-          return (Parameter.Operator.EQ.equals(op) && ppL.longValue() == operandL.longValue())
-              || (Parameter.Operator.NE.equals(op) && ppL.longValue() != operandL.longValue())
-              || (Parameter.Operator.LT.equals(op) && ppL < operandL)
-              || (Parameter.Operator.LE.equals(op) && ppL <= operandL)
-              || (Parameter.Operator.GE.equals(op) && ppL >= operandL)
-              || (Parameter.Operator.GT.equals(op) && ppL > operandL);
-        } catch (NumberFormatException ignored) {
-        }
-        return false;
-      case TEXT:
-        if (Parameter.Operator.EQ.equals(op)) {
-          if (varOp.contains("_") || varOp.contains("%")) {
-            return matchWildcardString(fixedOp, varOp);
-          }
-          return fixedOp.equals(varOp);
-        }
-        if (Parameter.Operator.NE.equals(op)) {
-          if (varOp.contains("_") || varOp.contains("%")) {
-            return !matchWildcardString(fixedOp, varOp);
-          }
-          return !fixedOp.equalsIgnoreCase(varOp);
-        }
-        int compareInt = fixedOp.compareToIgnoreCase(varOp);
-        return (Parameter.Operator.LT.equals(op) && compareInt < 0)
-            || (Parameter.Operator.LE.equals(op) && compareInt <= 0)
-            || (Parameter.Operator.GE.equals(op) && compareInt >= 0)
-            || (Parameter.Operator.GT.equals(op) && compareInt > 0);
-      default:
-        return false;
+    return false; // Unreachable but clarifies logic
+  }
+
+  private static boolean matchNumber(String fixedOp, String varOp, Parameter.Operator op) {
+    try {
+      long fixedValue = Long.parseLong(fixedOp);
+      long varValue = Long.parseLong(varOp);
+      switch (op) {
+        case EQ: return fixedValue == varValue;
+        case NE: return fixedValue != varValue;
+        case LT: return fixedValue < varValue;
+        case LE: return fixedValue <= varValue;
+        case GT: return fixedValue > varValue;
+        case GE: return fixedValue >= varValue;
+        default: return false;
+      }
+    } catch (NumberFormatException e) {
+      logger.debug("Could not parse number: " + e.getMessage());
+      return false;
+    }
+  }
+
+  private static boolean matchText(String fixedOp, String varOp, Parameter.Operator op) {
+    if (op == Parameter.Operator.EQ || op == Parameter.Operator.NE) {
+      boolean match = varOp.contains("_") || varOp.contains("%") ?
+              matchWildcardString(fixedOp, varOp) : fixedOp.equalsIgnoreCase(varOp);
+      return op == Parameter.Operator.EQ ? match : !match;
+    } else {
+      int comparison = fixedOp.compareToIgnoreCase(varOp);
+      switch (op) {
+        case LT: return comparison < 0;
+        case LE: return comparison <= 0;
+        case GT: return comparison > 0;
+        case GE: return comparison >= 0;
+        default: return false;
+      }
     }
   }
 

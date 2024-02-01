@@ -34,14 +34,8 @@ public class Monitor extends HttpServlet {
         if (s.endsWith("dbi")) {
           // We've found a DBI-object in the cache
           DBI dbi = (DBI) entry.getValue().getObject();
-          if (dbi != null && dbi.getDbiThrowable() != null) {
-            status =
-                new StringBuilder("ERROR: DBI reported error:\n")
-                    .append(dbi.getDbiThrowable())
-                    .append("\n");
-            for (StackTraceElement ste : dbi.getDbiThrowable().getStackTrace()) {
-              status.append(ste);
-            }
+          if (dbi != null && !dbi.isRunning()) {
+            status = new StringBuilder("ERROR: DBI is not running");
           }
         }
       }

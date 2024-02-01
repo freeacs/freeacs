@@ -8,19 +8,15 @@ package com.github.freeacs.common.util;
  * @author Morten
  */
 public class Sleep {
-  private static boolean terminated;
-  private int maxSleep;
-  private int minSleep;
+  private static volatile boolean terminated = false;
+  private final int maxSleep;
+  private final int minSleep;
   private long lastReturnTms;
 
   public Sleep(int maxSleep, int minSleep, boolean sleepFirstTime) {
     this.maxSleep = maxSleep;
     this.minSleep = minSleep;
-    if (sleepFirstTime) {
-      this.lastReturnTms = System.currentTimeMillis();
-    } else {
-      this.lastReturnTms = 0;
-    }
+    this.lastReturnTms = sleepFirstTime ? System.currentTimeMillis() : 0;
   }
 
   /**
@@ -31,49 +27,22 @@ public class Sleep {
     if (terminated) {
       return;
     }
-    long invokeTms = System.currentTimeMillis();
-    long timeSinceLastReturn = invokeTms - lastReturnTms; // could be any number of ms
-    // if timeSinceLastReturn > maxSleep, sleep at least minSleep ms
-    // if timeSinceLastReturn > maxSleep-minSleep, sleep at least minSleep ms
-    // if timeSinceLastReturn <= maxSleep-minSleep, sleep maxSleep-timeSinceLastReturn ms
-    long suggestedSleepTime = maxSleep - timeSinceLastReturn;
-    long sleepTime; // minimum sleep time is default
-    if (suggestedSleepTime < minSleep) {
-      sleepTime = minSleep;
-    } else {
-      sleepTime = suggestedSleepTime;
-    }
+    long timeSinceLastReturn = System.currentTimeMillis() - lastReturnTms;
+    long sleepTime = Math.max(minSleep, maxSleep - timeSinceLastReturn);
+
     try {
-      while (sleepTime > 1000) {
-        Thread.sleep(1000);
-        sleepTime -= 1000;
-        if (terminated) {
-          return;
-        }
-      }
-      if (sleepTime > 0) {
-        Thread.sleep(sleepTime);
-      }
-      if (terminated) {
-        return;
-      }
+      Thread.sleep(sleepTime);
     } catch (InterruptedException e) {
-      // e.printStackTrace();
+      Thread.currentThread().interrupt(); // Preserve interrupt status
       System.out.println("Sleep was interrupted");
     }
+
     lastReturnTms = System.currentTimeMillis();
   }
 
   /** By running this method you will abort the sleep-routine. */
   public static void terminateApplication() {
-    if (!terminated) {
-      terminated = true;
-      try {
-        // Expect the server to be fully terminated within 5 seconds
-        Thread.sleep(2000);
-      } catch (InterruptedException ignored) {
-      }
-    }
+    terminated = true;
   }
 
   public static boolean isTerminated() {
