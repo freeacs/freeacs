@@ -5,7 +5,7 @@
 ![main](https://github.com/freeacs/freeacs/actions/workflows/maven.yml/badge.svg?branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/4b32968512c546806799/maintainability)](https://codeclimate.com/github/freeacs/freeacs/maintainability)
 
-FreeACS is the most complete TR-069 ACS available for free under the MIT License. You can download and install it, or contribute to the project! 
+FreeACS is a somewhat complete TR-069 ACS available for free under the MIT License. You can download and install it, or contribute to the project! 
 
 ## Prerequisites
 
