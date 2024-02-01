@@ -237,7 +237,7 @@ public class DBI implements Runnable {
     return dbi;
   }
 
-  public void initialize() throws SQLException {
+  private void initialize() throws SQLException {
     processMessagesFromDatabase();
     setupPublishInbox();
     thread.start();
