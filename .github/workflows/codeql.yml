@@ -1,0 +1,42 @@
+
+name: "CodeQL"
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Mondays at 13:17 UTC
+    - cron: '17 13 * * 1'
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'java' ]
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: setup JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: "temurin"
+        java-version: 17
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: ${{ matrix.language }}
+
+    - name: build
+      run: ./mvnw --batch-mode --no-transfer-progress package
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
