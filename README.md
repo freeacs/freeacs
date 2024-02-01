@@ -1,4 +1,4 @@
-# ARCHIVED!
+# ARCHIVED! (or maybe not? update: working on bringing this up to date)
 
 Due to inactivity for several years and because no one wanted to maintain it, this project and all other projects in this org is archived.
 
