@@ -30,7 +30,7 @@
             <MaxEnvelopes>1</MaxEnvelopes>
             <CurrentTime>1970-01-02T00:08:34</CurrentTime>
             <RetryCount>0</RetryCount>
-            <ParameterList SOAP-ENC:arrayType="cwmp:ParameterValueStruct[10]">
+            <ParameterList SOAP-ENC:arrayType="cwmp:ParameterValueStruct[4]">
                 <ParameterValueStruct>
                     <Name>InternetGatewayDevice.DeviceSummary</Name>
                     <Value xsi:type="xsd:string">InternetGatewayDevice:1.0[](Baseline:1, EthernetLAN:4,GE:4,WiFi:1,

@@ -19,6 +19,9 @@ import org.springframework.security.web.authentication.www.DigestAuthenticationE
 import org.springframework.security.web.authentication.www.DigestAuthenticationFilter;
 import org.springframework.security.web.savedrequest.NullRequestCache;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.ALWAYS;
+import static org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED;
+
 @Slf4j
 @Configuration
 @ConditionalOnProperty(
@@ -40,6 +43,7 @@ public class DigestSpringSecurityConfig extends AbstractSecurityConfig {
                     }
                     authorizeRequests.anyRequest().authenticated();
                 })
+                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(IF_REQUIRED))
                 .requestCache(rc -> rc.requestCache(new NullRequestCache()))
                 .build();
     }

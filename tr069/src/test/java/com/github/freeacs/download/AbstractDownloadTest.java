@@ -4,18 +4,22 @@ import com.github.freeacs.common.util.AbstractMySqlIntegrationTest;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.provisioning.AbstractProvisioningTest;
 import com.github.freeacs.utils.MysqlDataSourceInitializer;
+import com.github.freeacs.utils.RestTemplateConfig;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.RestTemplate;
 
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
 @ContextConfiguration(initializers = AbstractDownloadTest.DataSourceInitializer.class)
+@Import(RestTemplateConfig.class)
 @SuppressWarnings("WeakerAccess")
 public abstract class AbstractDownloadTest implements AbstractMySqlIntegrationTest {
     static final byte[] FILE_BYTES = new byte[]{3,6,1};
@@ -33,6 +37,9 @@ public abstract class AbstractDownloadTest implements AbstractMySqlIntegrationTe
 
     @Autowired
     protected DBI dbi;
+
+    @Autowired
+    protected RestTemplate restTemplate;
 
     protected void addTestfile(String unitTypeName, String unitId) throws SQLException {
         AbstractProvisioningTest.addUnitsToProvision(dbi, unitTypeName, unitId);

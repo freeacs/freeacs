@@ -12,6 +12,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.security.web.savedrequest.NullRequestCache;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED;
+
 @Slf4j
 @Configuration
 @ConditionalOnProperty(
@@ -33,6 +35,7 @@ public class BasicSpringSecurityConfig extends AbstractSecurityConfig {
                     authorizeRequests.anyRequest().authenticated();
                 })
                 .userDetailsService(acsUnitDetailsService)
+                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(IF_REQUIRED))
                 .requestCache(rc -> rc.requestCache(new NullRequestCache()))
                 .build();
     }
