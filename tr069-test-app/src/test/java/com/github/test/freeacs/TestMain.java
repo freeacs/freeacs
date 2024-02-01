@@ -25,6 +25,10 @@ public class TestMain {
         serverPortOption.setRequired(false);
         options.addOption(serverPortOption);
 
+        Option authModeOption = new Option(null, "auth-method", true, "Set auth method");
+        authModeOption.setRequired(false);
+        options.addOption(authModeOption);
+
         // Create a parser
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = null;
@@ -43,6 +47,10 @@ public class TestMain {
 
         if (cmd.hasOption("port")) {
             DatabasePropertiesListener.SERVER_PORT = Integer.parseInt(cmd.getOptionValue("port"));
+        }
+
+        if (cmd.hasOption("auth-method")) {
+            DatabasePropertiesListener.AUTH_MODE = cmd.getOptionValue("auth-method");
         }
 
         Runtime.getRuntime().addShutdownHook(new Thread(Sleep::terminateApplication));

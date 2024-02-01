@@ -10,6 +10,7 @@ import java.util.Properties;
 
 // Add this factory to tr069/src/test/resources/META-INF/spring.factories
 public class DatabasePropertiesListener implements ApplicationListener<ApplicationEnvironmentPreparedEvent> {
+    public static String AUTH_MODE = null;
     public static boolean TESTCONTAINERS_ENABLED = false;
     public static Integer SERVER_PORT = null;
 
@@ -26,6 +27,10 @@ public class DatabasePropertiesListener implements ApplicationListener<Applicati
                 props.put("main.datasource.password", AbstractMySqlIntegrationTest.mysql.getPassword());
                 if (SERVER_PORT != null) {
                     props.put("server.port", SERVER_PORT.toString());
+                }
+                if (AUTH_MODE != null) {
+                    props.put("auth.method", AUTH_MODE);
+                    props.put("digest.secret", "supersecret");
                 }
                 environment.getPropertySources().addFirst(new PropertiesPropertySource("testDbProps", props));
             } catch (Exception e) {

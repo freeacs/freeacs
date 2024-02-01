@@ -60,7 +60,7 @@ public class DigestSpringSecurityConfig extends AbstractSecurityConfig {
         }
         DigestAuthenticationEntryPoint digestAuthenticationEntryPoint = new DigestAuthenticationEntryPoint();
         digestAuthenticationEntryPoint.setKey(digestSecret);
-        digestAuthenticationEntryPoint.setNonceValiditySeconds(10);
+        digestAuthenticationEntryPoint.setNonceValiditySeconds(300);
         digestAuthenticationEntryPoint.setRealmName("FreeACS");
         return digestAuthenticationEntryPoint;
     }
