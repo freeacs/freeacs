@@ -12,11 +12,11 @@ public class DBScriptUtility {
             String path,
             Connection connection
     ) {
-        if (!new File(path).exists()) {
+        InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(path);
+        if (inputStream == null) {
             System.out.println("File " + path + " does not exist");
             return;
         }
-        InputStream inputStream = ClassLoader.getSystemClassLoader().getResourceAsStream(path);
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         ScriptRunner scriptRunner = new ScriptRunner(connection);
         scriptRunner.setSendFullScript(false);
