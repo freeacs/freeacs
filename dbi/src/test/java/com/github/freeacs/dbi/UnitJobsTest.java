@@ -4,7 +4,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.sql.SQLException;
 import java.util.List;
+
+import com.github.freeacs.common.util.AbstractMySqlIntegrationTest;
 import org.junit.jupiter.api.Test;
+import org.mariadb.jdbc.MariaDbDataSource;
 
 public class UnitJobsTest extends BaseDBITest {
 
@@ -22,6 +25,7 @@ public class UnitJobsTest extends BaseDBITest {
     // When:
     Unittype unittype = TestUtils.createUnittype(unittypeName, acs);
     Profile profile = unittype.getProfiles().getByName(profileName);
+    MariaDbDataSource dataSource = AbstractMySqlIntegrationTest.getDataSource();
     ACSUnit acsUnit = new ACSUnit(dataSource, acs, syslog);
     TestUtils.createUnitAndVerify(acsUnit, unitId, profile);
     Group group = TestUtils.createGroupAndVerify(groupName, profileName, unittype, acs);

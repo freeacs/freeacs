@@ -1,5 +1,6 @@
 package com.github.freeacs.dbi;
 
+import com.github.freeacs.common.util.AbstractMySqlIntegrationTest;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ public class UsersTest extends BaseDBITest {
   @Test
   public void testItCanAddUser() throws SQLException {
     this.addTestUser("testuser1");
-    Users users = new Users(dataSource);
+    Users users = new Users(AbstractMySqlIntegrationTest.getDataSource());
     User addedUser = users.getUnprotected("testuser1");
     Assertions.assertEquals("testuser1", addedUser.getUsername());
     Assertions.assertEquals("Test User 1", addedUser.getFullname());
@@ -23,7 +24,7 @@ public class UsersTest extends BaseDBITest {
   @Test
   public void testItCanEditUser() throws SQLException {
     this.addTestUser("testuser2");
-    Users users = new Users(dataSource);
+    Users users = new Users(AbstractMySqlIntegrationTest.getDataSource());
     User userToEdit = users.getUnprotected("testuser2");
     userToEdit.setUsername("testuserafteredit");
     userToEdit.setAdmin(false);
@@ -31,7 +32,7 @@ public class UsersTest extends BaseDBITest {
 
     users.addOrChange(userToEdit,this.adminUser);
 
-    users = new Users(dataSource);
+    users = new Users(AbstractMySqlIntegrationTest.getDataSource());
 
     User editedUser = users.getUnprotected("testuserafteredit");
 
@@ -44,11 +45,11 @@ public class UsersTest extends BaseDBITest {
   @Test
   public void testItCanDeleteUser() throws SQLException {
     this.addTestUser("testuser3");
-    Users users = new Users(dataSource);
+    Users users = new Users(AbstractMySqlIntegrationTest.getDataSource());
     User toDelete = users.getUnprotected("testuser3");
     users.delete(toDelete,this.adminUser);
 
-    users = new Users(dataSource);
+    users = new Users(AbstractMySqlIntegrationTest.getDataSource());
 
     User deleted = users.getUnprotected("testuser3");
 
@@ -56,7 +57,7 @@ public class UsersTest extends BaseDBITest {
   }
 
   private void addTestUser(String testuser1) throws SQLException {
-    Users users = new Users(dataSource);
+    Users users = new Users(AbstractMySqlIntegrationTest.getDataSource());
     this.adminUser = users.getUnprotected("admin");
     User newUser = new User(testuser1,"Test User 1","",true, users);
     newUser.setSecretClearText("s3cr3p4ssw0rd");

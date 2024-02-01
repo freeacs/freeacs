@@ -2,6 +2,7 @@ package com.github.freeacs.dbi;
 
 import java.sql.SQLException;
 
+import com.github.freeacs.common.util.AbstractMySqlIntegrationTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +22,7 @@ public class JobsTest extends BaseDBITest {
     // When:
     Unittype unittype = TestUtils.createUnittype(unittypeName, acs);
     Profile profile = unittype.getProfiles().getByName(profileName);
-    ACSUnit acsUnit = new ACSUnit(dataSource, acs, syslog);
+    ACSUnit acsUnit = new ACSUnit(AbstractMySqlIntegrationTest.getDataSource(), acs, syslog);
     TestUtils.createUnitAndVerify(acsUnit, unitId, profile);
     Group group = TestUtils.createGroupAndVerify(groupName, profileName, unittype, acs);
     Job job = TestUtils.createJobAndVerify(jobName, jobFlag, jobDesc, unittype, group, acs);
@@ -46,7 +47,7 @@ public class JobsTest extends BaseDBITest {
     String jobDesc = "Description";
     Unittype unittype = TestUtils.createUnittype(unittypeName, acs);
     Profile profile = unittype.getProfiles().getByName(profileName);
-    ACSUnit acsUnit = new ACSUnit(dataSource, acs, syslog);
+    ACSUnit acsUnit = new ACSUnit(AbstractMySqlIntegrationTest.getDataSource(), acs, syslog);
     TestUtils.createUnitAndVerify(acsUnit, unitId, profile);
     Group group = TestUtils.createGroupAndVerify(groupName, profileName, unittype, acs);
     Job job = TestUtils.createJobAndVerify(jobName, jobFlag, jobDesc, unittype, group, acs);

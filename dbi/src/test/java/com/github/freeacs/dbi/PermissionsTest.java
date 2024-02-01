@@ -1,5 +1,6 @@
 package com.github.freeacs.dbi;
 
+import com.github.freeacs.common.util.AbstractMySqlIntegrationTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +37,7 @@ public class PermissionsTest extends BaseDBITest{
     this.addTestData("TestUnitType 2", "TestProfile 2", "TestUser 2");
 
     Permission newPermission = new Permission(user, unittype.getId(), profile.getId());
-    Users users = new Users(dataSource);
+    Users users = new Users(AbstractMySqlIntegrationTest.getDataSource());
 
     Permissions perms = new Permissions(acs.getDataSource());
     perms.addOrChange(newPermission);
