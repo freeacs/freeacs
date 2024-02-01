@@ -1,6 +1,4 @@
-# ARCHIVED! (or maybe not? update: working on bringing this up to date)
-
-Due to inactivity for several years and because no one wanted to maintain it, this project and all other projects in this org is archived.
+# Free ACS
 
 ![Freeacs Logo](https://github.com/freeacs/readme/blob/master/logo.png)
 
