@@ -59,7 +59,7 @@ public class CoreServlet {
     final User adminUser = users.getUnprotected(Users.USER_ADMIN);
     final Identity id = new Identity(SyslogConstants.FACILITY_CORE, "latest", adminUser);
     final Syslog syslog = new Syslog(mainDataSource, id);
-    return new DBI(Integer.MAX_VALUE, mainDataSource, syslog);
+    return DBI.createAndInitialize(Integer.MAX_VALUE, mainDataSource, syslog);
   }
 
   private void bootLightTasks(DBI dbi) {

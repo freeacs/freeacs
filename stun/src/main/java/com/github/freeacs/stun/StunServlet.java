@@ -44,7 +44,7 @@ public class StunServlet {
     User user = users.getUnprotected(Users.USER_ADMIN);
     Identity id = new Identity(SyslogConstants.FACILITY_STUN, "latest", user);
     Syslog syslog = new Syslog(mainDs, id);
-    return new DBI(Integer.MAX_VALUE, mainDs, syslog);
+    return DBI.createAndInitialize(Integer.MAX_VALUE, mainDs, syslog);
   }
 
   private synchronized void trigger() {
