@@ -20,21 +20,29 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
+import static com.github.freeacs.common.util.FileSlurper.getFileAsString;
 import static com.github.freeacs.provisioning.AbstractProvisioningTest.*;
+import static com.github.freeacs.utils.Matchers.hasNoSpace;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = Main.class)
@@ -112,9 +120,75 @@ public class SetDiscoverParameterJobTest implements AbstractMySqlIntegrationTest
     @Test
     public void setDiscoverParameterViaJob() throws Exception {
         init();
-        AbstractProvisioningTest.provisionUnit(httpBasic(UNIT_ID, UNIT_PASSWORD), mvc);
+        provisionUnit(httpBasic(UNIT_ID, UNIT_PASSWORD));
         ACSUnit acsUnit = dbi.getACSUnit();
         String discoverValue = acsUnit.getUnitById(UNIT_ID).getUnitParameters().get(SystemParameters.DISCOVER).getValue();
         assertEquals("valueToExpectInTest", discoverValue);
+    }
+
+    private void provisionUnit(RequestPostProcessor authPostProcessor) throws Exception {
+        MockHttpSession session = new MockHttpSession();
+        MockHttpServletRequestBuilder postRequestBuilder = post("/tr069").session(session);
+        if (authPostProcessor != null) {
+            postRequestBuilder = postRequestBuilder.with(authPostProcessor);
+        }
+        mvc.perform(postRequestBuilder
+                        .content(getFileAsString("/provision/cpe/Inform.xml")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/xml"))
+                .andExpect(header().string("SOAPAction", ""))
+                .andExpect(xpath("/*[local-name() = 'Envelope']" +
+                        "/*[local-name() = 'Body']" +
+                        "/*[local-name() = 'InformResponse']" +
+                        "/MaxEnvelopes")
+                        .string("1"));
+        mvc.perform(post("/tr069")
+                        .session(session))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/xml"))
+                .andExpect(header().string("SOAPAction", ""))
+                .andExpect(xpath("/*[local-name() = 'Envelope']" +
+                        "/*[local-name() = 'Body']" +
+                        "/*[local-name() = 'GetParameterValues']" +
+                        "/ParameterNames" +
+                        "/string[1]")
+                        .string("InternetGatewayDevice.DeviceInfo.VendorConfigFile."))
+                .andExpect(xpath("/*[local-name() = 'Envelope']" +
+                        "/*[local-name() = 'Body']" +
+                        "/*[local-name() = 'GetParameterValues']" +
+                        "/ParameterNames" +
+                        "/string[2]")
+                        .string("InternetGatewayDevice.ManagementServer.PeriodicInformInterval"));
+        mvc.perform(post("/tr069")
+                        .session(session)
+                        .content(getFileAsString("/provision/cpe/GetParameterValuesResponse.xml")))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/xml"))
+                .andExpect(header().string("SOAPAction", ""))
+                .andExpect(xpath("/*[local-name() = 'Envelope']" +
+                        "/*[local-name() = 'Body']" +
+                        "/*[local-name() = 'SetParameterValues']" +
+                        "/ParameterList" +
+                        "/ParameterValueStruct" +
+                        "/Name")
+                        .string("InternetGatewayDevice.ManagementServer.PeriodicInformInterval"))
+                .andExpect(xpath("/*[local-name() = 'Envelope']" +
+                        "/*[local-name() = 'Body']" +
+                        "/*[local-name() = 'SetParameterValues']" +
+                        "/ParameterList" +
+                        "/ParameterValueStruct" +
+                        "/Value")
+                        .string(hasNoSpace()));
+        mvc.perform(post("/tr069")
+                        .session(session)
+                        .content(getFileAsString("/provision/cpe/SetParameterValuesResponse.xml")))
+                .andExpect(status().isNoContent())
+                .andExpect(content().contentType("text/html"))
+                .andExpect(header().doesNotExist("SOAPAction"));
+        if (authPostProcessor != null) {
+            mvc.perform(post("/tr069")
+                            .session(session))
+                    .andExpect(status().isUnauthorized());
+        }
     }
 }

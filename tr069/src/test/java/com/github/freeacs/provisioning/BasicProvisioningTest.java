@@ -2,9 +2,7 @@ package com.github.freeacs.provisioning;
 
 import com.github.freeacs.Main;
 import com.github.freeacs.common.util.AbstractMySqlIntegrationTest;
-import com.github.freeacs.utils.DigestUtil;
 import com.github.freeacs.utils.MysqlDataSourceInitializer;
-import com.github.freeacs.utils.RestTemplateConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
@@ -14,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -27,8 +24,8 @@ import org.springframework.web.client.HttpStatusCodeException;
 import java.util.Base64;
 
 import static com.github.freeacs.common.util.FileSlurper.getFileAsString;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

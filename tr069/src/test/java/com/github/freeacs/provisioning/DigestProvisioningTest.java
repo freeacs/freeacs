@@ -4,7 +4,6 @@ import com.github.freeacs.Main;
 import com.github.freeacs.common.util.AbstractMySqlIntegrationTest;
 import com.github.freeacs.utils.DigestUtil;
 import com.github.freeacs.utils.MysqlDataSourceInitializer;
-import com.github.freeacs.utils.RestTemplateConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -54,8 +52,6 @@ public class DigestProvisioningTest extends AbstractProvisioningTest implements 
     public DigestProvisioningTest(@LocalServerPort Integer randomServerPort) {
         this.randomServerPort = randomServerPort;
     }
-
-    public static final String DIGEST_REALM = "FreeACS";
 
     @Test
     public void unauthorizedOnMissingAuthentication() throws Exception {

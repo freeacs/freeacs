@@ -9,11 +9,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -27,15 +23,11 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-import static com.github.freeacs.common.util.FileSlurper.getFileAsString;
 import static com.github.freeacs.dbi.Unittype.ProvisioningProtocol.TR069;
-import static com.github.freeacs.utils.Matchers.hasNoSpace;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.xml.HasXPath.hasXPath;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SuppressWarnings("WeakerAccess")
 @Import(RestTemplateConfig.class)
@@ -88,76 +80,6 @@ public abstract class AbstractProvisioningTest {
         unittype = unittypes.getByName(unitTypeName);
         unittype.getUnittypeParameters().addOrChangeUnittypeParameter(new UnittypeParameter(unittype, "InternetGatewayDevice.ManagementServer.PeriodicInformInterval", new UnittypeParameterFlag("RW")), dbi.getAcs());
         return unittype;
-    }
-
-    void provisionUnit(@Nullable RequestPostProcessor authPostProcessor) throws Exception {
-        provisionUnit(authPostProcessor, mvc);
-    }
-
-    public static void provisionUnit(@Nullable RequestPostProcessor authPostProcessor, MockMvc mvc) throws Exception {
-        MockHttpSession session = new MockHttpSession();
-        MockHttpServletRequestBuilder postRequestBuilder = post("/tr069").session(session);
-        if (authPostProcessor != null) {
-            postRequestBuilder = postRequestBuilder.with(authPostProcessor);
-        }
-        mvc.perform(postRequestBuilder
-                .content(getFileAsString("/provision/cpe/Inform.xml")))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType("text/xml"))
-                .andExpect(header().string("SOAPAction", ""))
-                .andExpect(xpath("/*[local-name() = 'Envelope']" +
-                        "/*[local-name() = 'Body']" +
-                        "/*[local-name() = 'InformResponse']" +
-                        "/MaxEnvelopes")
-                        .string("1"));
-        mvc.perform(post("/tr069")
-                .session(session))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType("text/xml"))
-                .andExpect(header().string("SOAPAction", ""))
-                .andExpect(xpath("/*[local-name() = 'Envelope']" +
-                        "/*[local-name() = 'Body']" +
-                        "/*[local-name() = 'GetParameterValues']" +
-                        "/ParameterNames" +
-                        "/string[1]")
-                        .string("InternetGatewayDevice.DeviceInfo.VendorConfigFile."))
-                .andExpect(xpath("/*[local-name() = 'Envelope']" +
-                        "/*[local-name() = 'Body']" +
-                        "/*[local-name() = 'GetParameterValues']" +
-                        "/ParameterNames" +
-                        "/string[2]")
-                        .string("InternetGatewayDevice.ManagementServer.PeriodicInformInterval"));
-        mvc.perform(post("/tr069")
-                .session(session)
-                .content(getFileAsString("/provision/cpe/GetParameterValuesResponse.xml")))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType("text/xml"))
-                .andExpect(header().string("SOAPAction", ""))
-                .andExpect(xpath("/*[local-name() = 'Envelope']" +
-                        "/*[local-name() = 'Body']" +
-                        "/*[local-name() = 'SetParameterValues']" +
-                        "/ParameterList" +
-                        "/ParameterValueStruct" +
-                        "/Name")
-                        .string("InternetGatewayDevice.ManagementServer.PeriodicInformInterval"))
-                .andExpect(xpath("/*[local-name() = 'Envelope']" +
-                        "/*[local-name() = 'Body']" +
-                        "/*[local-name() = 'SetParameterValues']" +
-                        "/ParameterList" +
-                        "/ParameterValueStruct" +
-                        "/Value")
-                        .string(hasNoSpace()));
-        mvc.perform(post("/tr069")
-                .session(session)
-                .content(getFileAsString("/provision/cpe/SetParameterValuesResponse.xml")))
-                .andExpect(status().isNoContent())
-                .andExpect(content().contentType("text/html"))
-                .andExpect(header().doesNotExist("SOAPAction"));
-        if (authPostProcessor != null) {
-            mvc.perform(post("/tr069")
-                    .session(session))
-                    .andExpect(status().isUnauthorized());
-        }
     }
 
     protected Element parseXmlResponse(ResponseEntity<String> response) throws SAXException, IOException, ParserConfigurationException {
