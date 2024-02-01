@@ -85,5 +85,3 @@ INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 115,
 INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 114, 'http');
 INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 116, 'r47745');
 INSERT INTO unit_param (unit_id, unit_type_param_id, value) VALUES ('test', 125, 'REGULAR');
-
-INSERT INTO user_ (id, username, secret, fullname, accesslist, is_admin) VALUES (1, 'admin', '4E9BA006A68A8767D65B3761E038CF9040C54A00', 'Admin user', 'Admin', 1);
