@@ -129,16 +129,37 @@ public class Parser extends DefaultHandler {
 
   public void startElement(String namespaceURI, String localName, String qualifiedName, Attributes attributes) {
     currTextContent = new StringBuilder();
-    if ("Body".equals(localName) && "http://schemas.xmlsoap.org/soap/envelope/".equals(namespaceURI)) {
-      insideBody = true;
-    } else if (insideBody && cwmpMethod == ProvisioningMethod.Empty) {
-      cwmpMethod = ProvisioningMethod.fromString(localName);
-      insideBody = false; // Reset or keep true if you want to capture more within the body
-    } else if (this.parsers.containsKey(localName)) {
+    if (isSoapBodyElement(namespaceURI, localName)) {
+      handleSoapBodyStart();
+    } else if (shouldHandleCwmpMethod()) {
+      handleCwmpMethod(localName);
+    } else {
+      delegateToSpecificHandler(localName);
+    }
+  }
+
+  private boolean isSoapBodyElement(String namespaceURI, String localName) {
+    return "Body".equals(localName) && "http://schemas.xmlsoap.org/soap/envelope/".equals(namespaceURI);
+  }
+
+  private void handleSoapBodyStart() {
+    insideBody = true;
+  }
+
+  private boolean shouldHandleCwmpMethod() {
+    return insideBody && cwmpMethod == ProvisioningMethod.Empty;
+  }
+
+  private void handleCwmpMethod(String localName) {
+    cwmpMethod = ProvisioningMethod.fromString(localName);
+    insideBody = false;
+  }
+
+  private void delegateToSpecificHandler(String localName) {
+    if (this.parsers.containsKey(localName)) {
       xmlReader.setContentHandler(this.parsers.get(localName));
     } else if (FAULT_STRUCT_TAG.equals(localName)) {
-      this.fault = new Fault();
-      FaultHandler faultHandler = new FaultHandler(this.fault, this);
+      FaultHandler faultHandler = new FaultHandler(this.fault = new Fault(), this);
       xmlReader.setContentHandler(faultHandler);
     }
   }
