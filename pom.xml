@@ -45,7 +45,6 @@
         <module>tables</module>
         <module>scripts</module>
         <module>distribution</module>
-        <module>tr069-test-app</module>
     </modules>
 
     <build>
