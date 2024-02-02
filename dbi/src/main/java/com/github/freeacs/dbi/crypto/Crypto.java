@@ -1,5 +1,6 @@
 package com.github.freeacs.dbi.crypto;
 
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -10,10 +11,16 @@ import javax.crypto.spec.SecretKeySpec;
  * This class should handle all crypto and crypto-like operations for ACS. There are currently X
  * operations needed:
  *
- * <p>1. compute a SHA1 digest - used to store passwords in the ACS database 2. compute a HMAC-SHA1
+ * <ol>
+ *    <li>compute a SHA-256 digest - used to store passwords in the ACS database</li>
+ *    <li>compute a HmacSHA256</li>
+ * </ol>
  * digest - used to transmit ConnectionPassword securly in TR-111
  */
 public class Crypto {
+  private static final String HASH_ALGORITHM = "SHA-256"; // Updated to SHA-256, previously SHA-1
+  private static final String HMAC_ALGORITHM = "HmacSHA256"; // Updated to HmacSHA256, previously HmacSHA1
+
   private static String convertByte2HexUpperCase(byte[] bytes) {
     StringBuilder s = new StringBuilder();
     for (byte b : bytes) {
@@ -22,31 +29,25 @@ public class Crypto {
     return s.toString().toUpperCase();
   }
 
-  public static String computeSHA1DigestAsHexUpperCase(String text) {
+  public static String computeDigestAsHexUpperCase(String text) {
     try {
-      MessageDigest md = MessageDigest.getInstance("SHA1");
-      byte[] sha1hash;
-      md.update(text.getBytes(), 0, text.length());
-      sha1hash = md.digest();
-      return convertByte2HexUpperCase(sha1hash);
+      MessageDigest md = MessageDigest.getInstance(HASH_ALGORITHM);
+      byte[] hash = md.digest(text.getBytes(StandardCharsets.UTF_8));
+      return convertByte2HexUpperCase(hash);
     } catch (NoSuchAlgorithmException e) {
-      throw new RuntimeException(
-          "The JVM does not support SHA1 digest mechanism - maybe it's not correct JVM version", e);
+      throw new RuntimeException("Failed to compute hash: " + e.getMessage(), e);
     }
   }
 
-  public static String computeHmacSHA1AsHexUpperCase(String key, String text) {
+  public static String computeHmacAsHexUpperCase(String key, String text) {
     try {
-      Mac mac = Mac.getInstance("HmacSHA1");
-      SecretKeySpec secret = new SecretKeySpec(key.getBytes(), "HmacSHA1");
+      Mac mac = Mac.getInstance(HMAC_ALGORITHM);
+      SecretKeySpec secret = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), HMAC_ALGORITHM);
       mac.init(secret);
-      byte[] digest = mac.doFinal(text.getBytes());
-      return convertByte2HexUpperCase(digest);
-    } catch (NoSuchAlgorithmException e) {
-      throw new RuntimeException("The JVM does algorithm - maybe it's not correct JVM version", e);
-    } catch (InvalidKeyException ike) {
-      throw new RuntimeException(
-          "InvalidKeyException: " + ike + ", maybe the JVM version is not correct", ike);
+      byte[] hmac = mac.doFinal(text.getBytes(StandardCharsets.UTF_8));
+      return convertByte2HexUpperCase(hmac);
+    } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+      throw new RuntimeException("Failed to compute HMAC: " + e.getMessage(), e);
     }
   }
 }

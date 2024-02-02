@@ -65,7 +65,7 @@ public class User {
   }
 
   public void setSecretClearText(String secret) {
-    this.secret = Crypto.computeSHA1DigestAsHexUpperCase(secret);
+    this.secret = Crypto.computeDigestAsHexUpperCase(secret);
   }
 
   public String getFullname() {
@@ -114,7 +114,7 @@ public class User {
   }
 
   public boolean isCorrectSecret(String suppliedSecret) {
-    String hashedSuppliedSecret = Crypto.computeSHA1DigestAsHexUpperCase(suppliedSecret);
+    String hashedSuppliedSecret = Crypto.computeDigestAsHexUpperCase(suppliedSecret);
     return hashedSuppliedSecret.equals(secret);
   }
 
