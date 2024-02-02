@@ -332,7 +332,7 @@ public class GroupPage extends AbstractWebPage {
 
     unittypes = InputSelectionFactory.getUnittypeSelection(inputData.getUnittype(), acs);
     groups =
-        InputSelectionFactory.getGroupSelection(inputData.getGroup(), unittypes.getSelected(), acs);
+        InputSelectionFactory.getGroupSelection(inputData.getGroup(), unittypes.getSelected());
     Group selectedParent =
         unittypes.getSelected() != null && inputData.getParentgroup().getString() != null
             ? unittypes.getSelected().getGroups().getByName(inputData.getParentgroup().getString())

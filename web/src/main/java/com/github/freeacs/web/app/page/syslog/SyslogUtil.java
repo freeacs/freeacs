@@ -13,12 +13,9 @@ import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import lombok.Getter;
+
+import java.util.*;
 import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 
@@ -33,21 +30,14 @@ public class SyslogUtil {
    * @return the background color
    */
   public static String getBackgroundColor(Integer severityLevel) {
-    switch (severityLevel) {
-      case SyslogConstants.SEVERITY_EMERGENCY:
-        return TableColor.RED.toString();
-      case SyslogConstants.SEVERITY_ALERT:
-      case SyslogConstants.SEVERITY_CRITICAL:
-      case SyslogConstants.SEVERITY_ERROR:
-        return TableColor.ORANGE_DARK.toString();
-      case SyslogConstants.SEVERITY_WARNING:
-        return TableColor.ORANGE_LIGHT.toString();
-      case SyslogConstants.SEVERITY_NOTICE:
-      case SyslogConstants.SEVERITY_INFO:
-        return TableColor.GREEN.toString();
-      default:
-        return TableColor.GRAY.toString();
-    }
+      return switch (severityLevel) {
+          case SyslogConstants.SEVERITY_EMERGENCY -> TableColor.RED.toString();
+          case SyslogConstants.SEVERITY_ALERT, SyslogConstants.SEVERITY_CRITICAL, SyslogConstants.SEVERITY_ERROR ->
+                  TableColor.ORANGE_DARK.toString();
+          case SyslogConstants.SEVERITY_WARNING -> TableColor.ORANGE_LIGHT.toString();
+          case SyslogConstants.SEVERITY_NOTICE, SyslogConstants.SEVERITY_INFO -> TableColor.GREEN.toString();
+          default -> TableColor.GRAY.toString();
+      };
   }
 
   /**
@@ -63,15 +53,10 @@ public class SyslogUtil {
   /**
    * Gets the font color.
    *
-   * @param severityLevel the severity level
    * @return the font color
    */
-  public static String getFontColor(Integer severityLevel) {
-    switch (severityLevel) {
-      case SyslogConstants.SEVERITY_EMERGENCY:
-      default:
-        return TableColor.BLACK.toString();
-    }
+  public static String getFontColor() {
+      return TableColor.BLACK.toString();
   }
 
   /**
@@ -83,13 +68,13 @@ public class SyslogUtil {
   public static Object translateSeverityLevel(String[] s) {
     List<Integer> arr = new ArrayList<>();
     for (Entry<Integer, String> entry : SyslogConstants.severityMap.entrySet()) {
-      if (entry.getValue().equals(s.toString())) {
+      if (entry.getValue().equals(Arrays.toString(s))) {
         return entry.getKey();
       }
-      for (int i = 0; i < s.length; i++) {
-        if (entry.getValue().equals(s[i])) {
-          arr.add(entry.getKey());
-        }
+      for (String string : s) {
+          if (entry.getValue().equals(string)) {
+              arr.add(entry.getKey());
+          }
       }
     }
     if (arr.isEmpty()) {
@@ -116,47 +101,6 @@ public class SyslogUtil {
   }
 
   /**
-   * Convert to tms.
-   *
-   * @param string the string
-   * @return the date
-   */
-  public static Date convertToTms(String string) {
-    try {
-      String s = string;
-      if (s == null) {
-        return null;
-      }
-      Calendar c = Calendar.getInstance();
-      int year = c.get(Calendar.YEAR);
-      if (s.startsWith("2")) {
-        year = convertToInt(s.substring(0, 4));
-        s = s.substring(4);
-      }
-      if (s.length() >= 4) {
-        int month = convertToInt(s.substring(0, 2)) - 1;
-        int date = convertToInt(s.substring(2, 4));
-        c.set(year, month, date);
-      }
-      if (s.length() == 8) {
-        int hour = convertToInt(s.substring(4, 6));
-        int minute = convertToInt(s.substring(6, 8));
-        c.set(Calendar.HOUR_OF_DAY, hour);
-        c.set(Calendar.MINUTE, minute);
-      } else {
-        c.set(Calendar.HOUR_OF_DAY, 0);
-        c.set(Calendar.MINUTE, 0);
-      }
-      c.set(Calendar.SECOND, 0);
-      c.set(Calendar.MILLISECOND, 0);
-      return c.getTime();
-    } catch (Throwable t) {
-      throw new IllegalArgumentException(
-          "The argument " + string + " cannot be converted to a date");
-    }
-  }
-
-  /**
    * Gets the date.
    *
    * @return the date
@@ -168,6 +112,7 @@ public class SyslogUtil {
   }
 
   /** The Class Event. */
+  @Getter
   public static class Event {
     /** The key. */
     private final String key;
@@ -186,26 +131,10 @@ public class SyslogUtil {
       this.value = value;
     }
 
-    /**
-     * Gets the value.
-     *
-     * @return the value
-     */
-    public String getValue() {
-      return value;
-    }
-
-    /**
-     * Gets the key.
-     *
-     * @return the key
-     */
-    public String getKey() {
-      return key;
-    }
   }
 
   /** The Class Facility. */
+  @Getter
   public static class Facility {
     /** The key. */
     private final String key;
@@ -224,23 +153,6 @@ public class SyslogUtil {
       this.value = value;
     }
 
-    /**
-     * Gets the value.
-     *
-     * @return the value
-     */
-    public String getValue() {
-      return value;
-    }
-
-    /**
-     * Gets the key.
-     *
-     * @return the key
-     */
-    public String getKey() {
-      return key;
-    }
   }
 
   /**
@@ -330,17 +242,6 @@ public class SyslogUtil {
     return (String) severityMap.get(severityId);
   }
 
-  /**
-   * Gets the severity.
-   *
-   * @param args the args
-   * @return the severity
-   */
-  public static String getSeverity(Integer args) {
-    Map severityMap = SyslogConstants.severityMap;
-    return (String) severityMap.get(args);
-  }
-
   /** The Class GetSeverityText. */
   public static class GetSeverityText implements TemplateMethodModel {
     public String exec(List args) throws TemplateModelException {
@@ -409,7 +310,7 @@ public class SyslogUtil {
       }
       String se = (String) args.get(0);
       Integer severity = Integer.parseInt(se);
-      color = getFontColor(severity);
+      color = getFontColor();
       colors.put(se, color);
       return new SimpleScalar(color);
     }
@@ -445,13 +346,12 @@ public class SyslogUtil {
       Integer unittypeId = !"".equals(uts) ? Integer.parseInt(uts) : null;
       Integer eventId = Integer.parseInt(es);
       Unittype ut = unittypeId != null ? acs.getUnittype(unittypeId) : null;
-      SyslogEvent event =
-          ut != null && eventId != null ? ut.getSyslogEvents().getByEventId(eventId) : null;
+      SyslogEvent event = ut != null ? ut.getSyslogEvents().getByEventId(eventId) : null;
       if (ut != null && event != null) {
         texts.put(uts + ":" + es, event.toString());
         return new SimpleScalar(event.toString());
       }
-      if (eventId != null && eventId == 0) {
+      if (eventId == 0) {
         return new SimpleScalar(SyslogEvents.getById(eventId).getName());
       }
       return new SimpleScalar("n/a");
@@ -467,9 +367,9 @@ public class SyslogUtil {
    */
   public static String getUrl(HttpServletRequest req, String... keyValuePairs) {
     String reqUrl = req.getRequestURL().toString();
-    String queryString = "?";
+    StringBuilder queryString = new StringBuilder("?");
     for (String kvp : keyValuePairs) {
-      queryString += kvp + "&";
+      queryString.append(kvp).append("&");
     }
     return reqUrl + queryString.substring(0, queryString.length() - 1);
   }
@@ -502,7 +402,7 @@ public class SyslogUtil {
               : null;
       String unittypeName = entryUnittype != null ? entryUnittype.getName() : null;
       String profileName = entryProfile != null ? entryProfile.getName() : null;
-      if (profileString != null && !"".equals(profileString) && profileName == null) {
+      if (profileString != null && !profileString.isEmpty() && profileName == null) {
         map.put("profile", "N/A (id: " + profileString + ")");
       } else {
         map.put("profile", profileName);
@@ -551,11 +451,7 @@ public class SyslogUtil {
         map.put("profile", profileName);
       }
 
-      if (unittypeId != null && unittypeName == null) {
-        map.put("unittype", "N/A (id: " + unittypeId + ")");
-      } else {
-        map.put("unittype", unittypeName);
-      }
+        map.put("unittype", Objects.requireNonNullElseGet(unittypeName, () -> "N/A (id: " + unittypeId + ")"));
       return new SimpleObjectWrapper().wrap(map);
     }
   }

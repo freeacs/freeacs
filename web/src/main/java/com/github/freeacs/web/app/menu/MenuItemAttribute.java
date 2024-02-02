@@ -1,16 +1,19 @@
 package com.github.freeacs.web.app.menu;
 
+import lombok.Getter;
+
 /**
  * A single menu item attribute. Represents a name='value' for a list item (li).
  *
  * @author Jarl Andre Hubenthal
  */
+@Getter
 public class MenuItemAttribute {
   /** The key. */
-  private String key;
+  private final String key;
 
   /** The value. */
-  private String value;
+  private final String value;
 
   /**
    * Instantiates a new menu item attribute.
@@ -21,23 +24,5 @@ public class MenuItemAttribute {
   public MenuItemAttribute(String k, String v) {
     key = k;
     value = v;
-  }
-
-  /**
-   * Gets the key.
-   *
-   * @return the key
-   */
-  public String getKey() {
-    return key;
-  }
-
-  /**
-   * Gets the value.
-   *
-   * @return the value
-   */
-  public String getValue() {
-    return value;
   }
 }

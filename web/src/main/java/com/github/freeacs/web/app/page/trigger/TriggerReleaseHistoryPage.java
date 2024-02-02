@@ -19,8 +19,8 @@ import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,7 +29,7 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 public class TriggerReleaseHistoryPage extends AbstractWebPage {
-  private static SimpleDateFormat urlFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+  private static final SimpleDateFormat urlFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
     List<MenuItem> list = new ArrayList<>(super.getShortcutItems(sessionData));
@@ -56,11 +56,7 @@ public class TriggerReleaseHistoryPage extends AbstractWebPage {
 
   private String getURLDate(Date d) {
     if (d != null) {
-      try {
-        return URLEncoder.encode(urlFormat.format(d), "UTF-8");
-      } catch (UnsupportedEncodingException e) {
-        return "";
-      }
+        return URLEncoder.encode(urlFormat.format(d), StandardCharsets.UTF_8);
     }
     return "";
   }
@@ -92,11 +88,11 @@ public class TriggerReleaseHistoryPage extends AbstractWebPage {
         inputData.getUnittype(),
         inputData.getProfile(),
         inputData.getUnit());
-    Input tmsEndInput = inputData.getTmsEnd();
+    Input tmsEndInput = inputData.getTmsend();
     if (tmsEndInput != null && tmsEndInput.getValue() != null) {
       tmsEnd = tmsEndInput.getDate();
     }
-    Input tmsStartInput = inputData.getTmsStart();
+    Input tmsStartInput = inputData.getTmsstart();
     if (tmsStartInput != null && tmsStartInput.getValue() != null) {
       tmsStart = tmsStartInput.getDate();
       if (tmsStart.after(tmsEnd)) {
@@ -113,7 +109,7 @@ public class TriggerReleaseHistoryPage extends AbstractWebPage {
       Input triggerIdInput = inputData.getTriggerId();
       Trigger trigger = null;
       fmMap.put(
-          "triggers", InputSelectionFactory.getTriggerSelection(triggerIdInput, unittype, acs));
+          "triggers", InputSelectionFactory.getTriggerSelection(triggerIdInput, unittype));
       List<ReleaseTrigger> releaseTriggerList = new ArrayList<>();
       fmMap.put("releasetriggers", releaseTriggerList);
       if (triggerIdInput != null && triggerIdInput.getValue() != null) {

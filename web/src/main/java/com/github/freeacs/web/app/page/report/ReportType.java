@@ -11,6 +11,8 @@ import com.github.freeacs.dbi.report.RecordSyslog;
 import com.github.freeacs.dbi.report.RecordUnit;
 import com.github.freeacs.dbi.report.RecordVoip;
 import com.github.freeacs.dbi.report.RecordVoipTR;
+import lombok.Getter;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,6 +21,7 @@ import java.util.List;
  *
  * @author Jarl Andre Hubenthal
  */
+@Getter
 public enum ReportType {
   /** The UNIT. */
   UNIT(
@@ -73,10 +76,10 @@ public enum ReportType {
   NONE("", "");
 
   /** The name. */
-  private String name;
+  private final String name;
 
   /** The methods. */
-  private List<String> methods;
+  private final List<String> methods;
 
   /**
    * Instantiates a new report type.
@@ -87,24 +90,6 @@ public enum ReportType {
   ReportType(String name, String... methods) {
     this.name = name;
     this.methods = Arrays.asList(methods);
-  }
-
-  /**
-   * Gets the methods.
-   *
-   * @return the methods
-   */
-  public List<String> getMethods() {
-    return this.methods;
-  }
-
-  /**
-   * Gets the name.
-   *
-   * @return the name
-   */
-  public String getName() {
-    return this.name;
   }
 
   /**

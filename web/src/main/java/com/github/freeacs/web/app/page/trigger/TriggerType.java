@@ -1,5 +1,8 @@
 package com.github.freeacs.web.app.page.trigger;
 
+import lombok.Getter;
+
+@Getter
 public class TriggerType {
   private Integer id;
   private String name;
@@ -7,14 +10,6 @@ public class TriggerType {
   public TriggerType(Integer id, String name) {
     this.id = id;
     this.name = name;
-  }
-
-  public Integer getId() {
-    return id;
-  }
-
-  public String getName() {
-    return name;
   }
 
   public void setId(Integer id) {

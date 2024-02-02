@@ -1,5 +1,8 @@
 package com.github.freeacs.web.app.page.trigger;
 
+import lombok.Getter;
+
+@Getter
 public class NotifyType {
   private Integer id;
   private String name;
@@ -9,16 +12,8 @@ public class NotifyType {
     this.name = name;
   }
 
-  public Integer getId() {
-    return id;
-  }
-
   public void setId(Integer id) {
     this.id = id;
-  }
-
-  public String getName() {
-    return name;
   }
 
   public void setName(String name) {

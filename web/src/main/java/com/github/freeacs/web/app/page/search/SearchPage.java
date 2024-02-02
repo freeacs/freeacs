@@ -38,8 +38,6 @@ import javax.sql.DataSource;
  * @author Jarl Andre Hubenthal
  */
 public class SearchPage extends AbstractWebPage {
-  /** The xaps. */
-  private ACS acs;
 
   /** The xaps unit. */
   private ACSUnit acsUnit;
@@ -57,7 +55,7 @@ public class SearchPage extends AbstractWebPage {
       DataSource syslogDataSource)
       throws Exception {
     inputData = (SearchData) InputDataRetriever.parseInto(new SearchData(), params);
-    acs = ACSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
+    ACS acs = ACSLoader.getXAPS(params.getSession().getId(), xapsDataSource, syslogDataSource);
     if (acs == null) {
       outputHandler.setRedirectTarget(WebConstants.LOGIN_URI);
       return;
@@ -89,12 +87,7 @@ public class SearchPage extends AbstractWebPage {
     map.put("advanced", advanced);
     map.put("operators", Operator.values());
     map.put("datatypes", ParameterDataType.values());
-    /* Morten jan 2014 - certificate checks are not necessary after going open-source */
-    boolean isReportCertValid =
-        true /*CertificateVerification.isCertificateValid(Certificate.CERT_TYPE_REPORT, params.getSession().getId())*/;
-    boolean isReportAllowed =
-        true /*SessionCache.getSessionData(params.getHttpServletRequest().getSession().getId()).getUser().isReportsAllowed()*/;
-    map.put("reportvalid", isReportCertValid && isReportAllowed);
+    map.put("reportvalid", true);
 
     String cmd = params.getParameter("cmd");
 
@@ -116,7 +109,7 @@ public class SearchPage extends AbstractWebPage {
         srw.unit = u;
         wrappedResults.add(srw);
       }
-      if ("follow-single-unit".equals(cmd) && result != null && result.size() == 1) {
+      if ("follow-single-unit".equals(cmd) && result.size() == 1) {
         outputHandler.setDirectToPage(
             Page.UNITSTATUS,
             "unit=" + result.get(0).getId(),
@@ -127,7 +120,7 @@ public class SearchPage extends AbstractWebPage {
 
       // The contents of the following if is only relevant if there are
       // results to display
-      if (result != null && !result.isEmpty() && unittypes.getSelected() != null) {
+      if (!result.isEmpty() && unittypes.getSelected() != null) {
         Map<String, String> displayableMap =
             unittypes.getSelected().getUnittypeParameters().getDisplayableNameMap();
         List<String> displayHeaders = new ArrayList<>();
@@ -194,7 +187,6 @@ public class SearchPage extends AbstractWebPage {
    * @param limit the limit
    * @param unittype the unittype
    * @param profile the profile
-   * @param syslogDataSource
    * @return the results
    * @throws Exception the exception
    */
@@ -273,33 +265,6 @@ public class SearchPage extends AbstractWebPage {
   }
 
   /**
-   * Gets the common name.
-   *
-   * @param utp the utp
-   * @param allGroupUtps the all group utps
-   * @return the common name
-   */
-  public String getCommonName(UnittypeParameter utp, Map<String, String> allGroupUtps) {
-    return getCommonName(utp.getName(), allGroupUtps);
-  }
-
-  /**
-   * Gets the common name.
-   *
-   * @param name the name
-   * @param map the map
-   * @return the common name
-   */
-  public String getCommonName(String name, Map<String, String> map) {
-    for (Entry<String, String> entry : map.entrySet()) {
-      if (entry.getKey().startsWith(name)) {
-        return entry.getValue();
-      }
-    }
-    return null;
-  }
-
-  /**
    * Prepare parameters.
    *
    * @param rootMap the root map
@@ -323,9 +288,7 @@ public class SearchPage extends AbstractWebPage {
 
     if (groupParams != null) {
       for (GroupParameter param : groupParams) {
-        if (searchables.contains(param.getParameter().getUnittypeParameter())) {
-          searchables.remove(param.getParameter().getUnittypeParameter());
-        }
+        searchables.remove(param.getParameter().getUnittypeParameter());
       }
 
       List<SearchParameter> groupParamsList = new ArrayList<>();
@@ -369,8 +332,7 @@ public class SearchPage extends AbstractWebPage {
         groupParamsList.add(
             new SearchParameter(
                 theParameterName,
-                theParameterDisplayText,
-                theParameterValue,
+                    theParameterValue,
                 operator,
                 type,
                 isEnabled));
@@ -400,7 +362,7 @@ public class SearchPage extends AbstractWebPage {
       }
 
       searchableParamsList.add(
-          new SearchParameter(utpName, common, value, operator, type, isEnabled));
+          new SearchParameter(utpName, value, operator, type, isEnabled));
     }
 
     rootMap.put("searchables", searchableParamsList);
@@ -428,21 +390,11 @@ public class SearchPage extends AbstractWebPage {
         }
 
         volatileParameters.add(
-            new SearchParameter(utpName, utpName, value, operator, type, isEnabled));
+            new SearchParameter(utpName, value, operator, type, isEnabled));
       }
     }
 
     rootMap.put("volatiles", volatileParameters);
-  }
-
-  public List<GroupParameter> getAllParameters(Group group) {
-    List<GroupParameter> groupParams =
-        new ArrayList<>(Arrays.asList(group.getGroupParameters().getGroupParameters()));
-    Group parent = group;
-    while ((parent = parent.getParent()) != null) {
-      groupParams.addAll(Arrays.asList(parent.getGroupParameters().getGroupParameters()));
-    }
-    return groupParams;
   }
 
   /**
@@ -476,7 +428,6 @@ public class SearchPage extends AbstractWebPage {
           Boolean isEnabled = req.getBooleanParameter("enabled::" + name);
           String value = req.getStringParameter(name);
           if (gp != null && isEnabled) {
-            utp = gp.getParameter().getUnittypeParameter();
             Parameter param = gp.getParameter();
 
             if (SearchParameter.NULL_VALUE.equals(value)) {

@@ -19,10 +19,10 @@ import java.util.Map;
  * @author Jarl Andre Hubenthal
  */
 public class RecordUIDataSyslogFilter {
-  public final Integer msg_count_low;
+  public final Long msg_count_low;
   public static final Integer msg_count_low_default = 1;
 
-  public final Integer msg_count_high;
+  public final Long msg_count_high;
   public static final Integer msg_count_high_default = null;
 
   public final Integer max_rows;
@@ -44,8 +44,8 @@ public class RecordUIDataSyslogFilter {
       new ArrayList<>(SyslogConstants.eventMap.values());
 
   public RecordUIDataSyslogFilter(UnitListData inputData, Map<String, Object> root) {
-    msg_count_low = inputData.getMsgCountLow().getInteger(msg_count_low_default);
-    msg_count_high = inputData.getMsgCountHigh().getInteger(msg_count_high_default);
+    msg_count_low = inputData.getMsgCountLow().getInteger(msg_count_low_default).longValue();
+    msg_count_high = inputData.getMsgCountHigh().getInteger(msg_count_high_default).longValue();
     severity = inputData.getFilterSeverity().getString(severity_default);
     facility = inputData.getFilterFacility().getString(facility_default);
     eventid = inputData.getFilterEventId().getString(eventid_default);

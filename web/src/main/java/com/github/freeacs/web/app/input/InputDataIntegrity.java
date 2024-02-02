@@ -4,7 +4,6 @@ import com.github.freeacs.web.app.Output;
 import com.github.freeacs.web.app.context.ContextItem;
 import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
-import java.sql.SQLException;
 
 /**
  * This class ensures that:
@@ -61,9 +60,8 @@ public class InputDataIntegrity {
    *
    * @param sessionId the session id
    * @param inputs the inputs the no available connection exception
-   * @throws SQLException the sQL exception
    */
-  public static void rememberAndCheck(String sessionId, Input... inputs) throws SQLException {
+  public static void rememberAndCheck(String sessionId, Input... inputs) {
     SessionData sessionData = SessionCache.getSessionData(sessionId);
 
     Input unittypeInput = getInputByName(inputs, "unittype");
@@ -73,8 +71,7 @@ public class InputDataIntegrity {
         unittypeInput.setValue(sessionData.getUnittypeName());
       }
     } else if (unittypeInput != null) {
-      if (unittypeInput.getValue() != null
-          && !unittypeInput.getValue().equals(sessionData.getUnittypeName())) {
+      if (!unittypeInput.getValue().equals(sessionData.getUnittypeName())) {
         unittypeChanged = true;
       }
       sessionData.setUnittypeName((String) unittypeInput.getValue());

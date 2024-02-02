@@ -10,10 +10,6 @@ import java.util.List;
  * @author Jarl Andre Hubenthal
  */
 public class DropDownSingleSelect<T> extends InputSelectionModel<T> {
-  /** Instantiates a new drop down single select. */
-  DropDownSingleSelect() {
-    this(null, null, null);
-  }
 
   /**
    * Instantiates a new drop down single select.

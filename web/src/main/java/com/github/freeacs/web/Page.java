@@ -38,11 +38,12 @@ import com.github.freeacs.web.app.page.unittype.UnittypePage;
 import com.github.freeacs.web.app.page.unittype.UnittypeParametersPage;
 import com.github.freeacs.web.app.page.window.WindowPage;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -59,55 +60,56 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author Jarl Andre Hubenthal
  */
+@Getter
 public enum Page {
   /* The following pages are covered in ContextItem() - important to get the context-navigation to
    * work.
    */
 
   /** Unittype pages. */
-  UNITTYPE("unit-type-configuration", UnittypePage.class, "icon_settings.png"),
-  UNITTYPECREATE("unit-type-create", UnittypeCreatePage.class, "icon_settings.png"),
-  UNITTYPEOVERVIEW("unit-type-overview", UnittypeOverviewPage.class, "icon_settings.png"),
+  UNITTYPE("unit-type-configuration", UnittypePage.class),
+  UNITTYPECREATE("unit-type-create", UnittypeCreatePage.class),
+  UNITTYPEOVERVIEW("unit-type-overview", UnittypeOverviewPage.class),
   UNITTYPEPARAMETERS("parameters", UnittypeParametersPage.class),
 
   /** Profile pages. */
-  PROFILE("profile-configuration", ProfileDetailsPage.class, "icon_profile.png"),
-  PROFILECREATE("profile-create", ProfileCreatePage.class, "icon_profile.png"),
-  PROFILEOVERVIEW("profile-overview", ProfileOverviewPage.class, "icon_profile.png"),
+  PROFILE("profile-configuration", ProfileDetailsPage.class),
+  PROFILECREATE("profile-create", ProfileCreatePage.class),
+  PROFILEOVERVIEW("profile-overview", ProfileOverviewPage.class),
   WINDOWPROFILE("profilewindow", WindowPage.class),
 
   /** Unit pages. */
-  UNIT("unit-configuration", UnitPage.class, "icon_unit.png"),
-  UNITSTATUS("unit-dashboard", UnitStatusPage.class, "icon_unit.png"),
+  UNIT("unit-configuration", UnitPage.class),
+  UNITSTATUS("unit-dashboard", UnitStatusPage.class),
   WINDOWUNIT("unitwindow", WindowPage.class),
 
   /** Group detail page. */
-  GROUP("group", GroupPage.class, "icon_group.png"),
+  GROUP("group", GroupPage.class),
 
   /** Job detail page. */
-  JOB("job", JobPage.class, "icon_job.png"),
+  JOB("job", JobPage.class),
 
   /** Trigger pages. */
   CREATETRIGGER("create-trigger", TriggerOverviewPage.class),
-  TRIGGEROVERVIEW("trigger-overview", TriggerOverviewPage.class, "icon_settings.png"),
-  TRIGGERRELEASE("trigger-release", TriggerReleasePage.class, "icon_settings.png"),
+  TRIGGEROVERVIEW("trigger-overview", TriggerOverviewPage.class),
+  TRIGGERRELEASE("trigger-release", TriggerReleasePage.class),
   TRIGGERRELEASEHISTORY(
-      "trigger-release-history", TriggerReleaseHistoryPage.class, "icon_settings.png"),
+      "trigger-release-history", TriggerReleaseHistoryPage.class),
   /** Misc pages - no profile "level" - or profile in dropdown on page. */
-  FILES("files", FilePage.class, "icon_software.png"),
-  SOFTWARE("software", SoftwarePage.class, "icon_software.png"),
-  JOBSOVERVIEW("job-overview", JobsPage.class, "icon_job.png"),
-  UNITJOB("unit-jobs", UnitJobPage.class, "icon_job.png"),
-  SYSLOGEVENTS("events", SyslogEventsPage.class, "icon_syslog.png"),
-  HEARTBEATS("heartbeats", HeartbeatsPage.class, "icon_syslog.png"),
-  UPGRADE("upgrade", UpgradePage.class, "icon_software.png"),
-  SCRIPTEXECUTIONS("scriptexecutions", ScriptExecutionsPage.class, "icon_syslog.png"),
+  FILES("files", FilePage.class),
+  SOFTWARE("software", SoftwarePage.class),
+  JOBSOVERVIEW("job-overview", JobsPage.class),
+  UNITJOB("unit-jobs", UnitJobPage.class),
+  SYSLOGEVENTS("events", SyslogEventsPage.class),
+  HEARTBEATS("heartbeats", HeartbeatsPage.class),
+  UPGRADE("upgrade", UpgradePage.class),
+  SCRIPTEXECUTIONS("scriptexecutions", ScriptExecutionsPage.class),
   /** Misc pages - with profile "level". */
-  GROUPSOVERVIEW("group-overview", GroupsPage.class, "icon_group.png"),
-  REPORT("report", ReportPage.class, "icon_report.png"),
-  SEARCH("search", SearchPage.class, "icon_search.png"),
-  SYSLOG("syslog", SyslogPage.class, "icon_syslog.png"),
-  UNITLIST("unit-list", UnitListPage.class, "icon_report.png"),
+  GROUPSOVERVIEW("group-overview", GroupsPage.class),
+  REPORT("report", ReportPage.class),
+  SEARCH("search", SearchPage.class),
+  SYSLOG("syslog", SyslogPage.class),
+  UNITLIST("unit-list", UnitListPage.class),
 
   /**
    * The following pages are small popup-pages or otherwise pages not part of the standard
@@ -132,13 +134,8 @@ public enum Page {
   NONE(null, null);
 
   private static Map<String, Page> pageMap;
-  private String id;
-  private Class<? extends WebPage> clazz;
-  private String iconURL;
-
-  public String getIconURL() {
-    return iconURL;
-  }
+  private final String id;
+  private final Class<? extends WebPage> clazz;
 
   public String getTitle() {
     return getTitle(id);
@@ -165,26 +162,21 @@ public enum Page {
   }
 
   private static String convertToCamelCasedString(String string) {
-    String result = "";
+    StringBuilder result = new StringBuilder();
     for (int i = 0; i < string.length(); i++) {
       String next = string.substring(i, i + 1);
       if (i == 0) {
-        result += next.toUpperCase();
+        result.append(next.toUpperCase());
       } else {
-        result += next.toLowerCase();
+        result.append(next.toLowerCase());
       }
     }
-    return result;
+    return result.toString();
   }
 
   Page(String id, Class<? extends WebPage> clazz) {
     this.id = id != null ? id : "";
     this.clazz = clazz;
-  }
-
-  Page(String id, Class<? extends WebPage> clazz, String icon) {
-    this(id, clazz);
-    this.iconURL = icon;
   }
 
   public static Page getById(String id) {
@@ -197,10 +189,6 @@ public enum Page {
       }
     }
     return Page.NONE;
-  }
-
-  public String getId() {
-    return id;
   }
 
   public String getUrl() {
@@ -218,31 +206,10 @@ public enum Page {
     return INDEX_URI.substring(1)
         + "?page="
         + getId()
-        + (params != null && !"".equals(params) ? "&amp;" + params : "");
+        + (params != null && !params.isEmpty() ? "&amp;" + params : "");
   }
 
-  public Class<? extends WebPage> getClazz() {
-    return clazz;
-  }
-
-  /**
-   * A static helper method for retrieving a list of pages that can be assigned to a users access
-   * list.
-   *
-   * @return a list of page ids
-   */
-  public static List<String> getPermissiblePagesAsString() {
-    List<Page> toConvert =
-        Arrays.asList(
-            SEARCH, UNIT, PROFILE, UNITTYPE, GROUP, JOB, SOFTWARE, SYSLOG, REPORT, MONITOR);
-    List<String> pages = new ArrayList<>();
-    for (Page p : toConvert) {
-      pages.add(p.getId());
-    }
-    return pages;
-  }
-
-  private static Map<String, Page> permissiblePages = new LinkedHashMap<>();
+  private static final Map<String, Page> permissiblePages = new LinkedHashMap<>();
 
   static {
     permissiblePages.put("support", DASHBOARD_SUPPORT);
@@ -275,70 +242,30 @@ public enum Page {
    */
   public static String getParentPage(String pageStr) {
     Page page = Page.getById(pageStr);
-    switch (page) {
-      case UNITTYPEOVERVIEW:
-      case UNITTYPEPARAMETERS:
-      case UNITTYPECREATE:
-        return UNITTYPE.getId();
-
-      case PROFILEOVERVIEW:
-      case PROFILECREATE:
-      case WINDOWPROFILE:
-        return PROFILE.getId();
-
-      case WINDOWUNIT:
-      case UNITSTATUS:
-        return UNIT.getId();
-
-      case GROUPSOVERVIEW:
-        return GROUP.getId();
-      case JOBSOVERVIEW:
-        return JOB.getId();
-
-      case UNITLIST:
-        return REPORT.getId();
-
-      default:
-        return pageStr;
-    }
+      return switch (page) {
+          case UNITTYPEOVERVIEW, UNITTYPEPARAMETERS, UNITTYPECREATE -> UNITTYPE.getId();
+          case PROFILEOVERVIEW, PROFILECREATE, WINDOWPROFILE -> PROFILE.getId();
+          case WINDOWUNIT, UNITSTATUS -> UNIT.getId();
+          case GROUPSOVERVIEW -> GROUP.getId();
+          case JOBSOVERVIEW -> JOB.getId();
+          case UNITLIST -> REPORT.getId();
+          default -> pageStr;
+      };
   }
 
   public static String getHelpPage(String pageStr) {
     Page page = Page.getById(pageStr);
-    switch (page) {
-      case UNITTYPEOVERVIEW:
-      case UNITTYPEPARAMETERS:
-      case UNITTYPECREATE:
-        return UNITTYPE.getId();
-
-      case PROFILEOVERVIEW:
-      case PROFILECREATE:
-      case WINDOWPROFILE:
-        return PROFILE.getId();
-
-      case WINDOWUNIT:
-      case UNITSTATUS:
-        return UNIT.getId();
-
-      case GROUPSOVERVIEW:
-        return GROUP.getId();
-      case JOBSOVERVIEW:
-        return JOB.getId();
-
-      case UPGRADE:
-        return SOFTWARE.getId();
-
-      case CREATETRIGGER:
-      case TRIGGERRELEASE:
-      case TRIGGERRELEASEHISTORY:
-        return TRIGGEROVERVIEW.getId();
-
-      case UNITLIST:
-        return REPORT.getId();
-
-      default:
-        return pageStr;
-    }
+      return switch (page) {
+          case UNITTYPEOVERVIEW, UNITTYPEPARAMETERS, UNITTYPECREATE -> UNITTYPE.getId();
+          case PROFILEOVERVIEW, PROFILECREATE, WINDOWPROFILE -> PROFILE.getId();
+          case WINDOWUNIT, UNITSTATUS -> UNIT.getId();
+          case GROUPSOVERVIEW -> GROUP.getId();
+          case JOBSOVERVIEW -> JOB.getId();
+          case UPGRADE -> SOFTWARE.getId();
+          case CREATETRIGGER, TRIGGERRELEASE, TRIGGERRELEASEHISTORY -> TRIGGEROVERVIEW.getId();
+          case UNITLIST -> REPORT.getId();
+          default -> pageStr;
+      };
   }
 
   /**

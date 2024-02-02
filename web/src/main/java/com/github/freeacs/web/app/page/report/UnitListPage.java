@@ -37,11 +37,12 @@ import com.github.freeacs.web.app.util.DateUtils;
 import com.github.freeacs.web.app.util.WebConstants;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
+import lombok.Getter;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -269,15 +270,13 @@ public class UnitListPage extends AbstractWebPage {
         }
       }
 
-      if (records.get(unit) == null) {
-        records.put(unit, new ArrayList<RecordUIDataHardware>());
-      }
+      records.computeIfAbsent(unit, k -> new ArrayList<>());
 
       records
           .get(unit)
           .addAll(
               RecordUIDataHardware.convertRecords(
-                  unit, new ArrayList<RecordHardware>(entry.getValue().getMap().values()), limits));
+                  unit, new ArrayList<>(entry.getValue().getMap().values()), limits));
 
       List<RecordUIDataHardware> recs = new ArrayList<>();
 
@@ -384,8 +383,8 @@ public class UnitListPage extends AbstractWebPage {
         }
       }
     }
-    Collections.sort(recordsWorking, new RecordTotalScoreComparator());
-    Collections.sort(recordsDown, new RecordSipRegFailedComparator());
+    recordsWorking.sort(new RecordTotalScoreComparator());
+    recordsDown.sort(new RecordSipRegFailedComparator());
     root.put("reports", recordsWorking);
     root.put("failed", recordsDown);
     root.put("mosavgbad", new IsMosAvgBad(recordsWorking));
@@ -419,9 +418,8 @@ public class UnitListPage extends AbstractWebPage {
    *
    * @param input the input
    * @return the start date
-   * @throws ParseException the parse exception
    */
-  public Date getStartDate(Input input) throws ParseException {
+  public Date getStartDate(Input input) {
     Calendar start = Calendar.getInstance();
     if (input.notNullNorValue("")) {
       start.setTime(input.getDate());
@@ -441,9 +439,8 @@ public class UnitListPage extends AbstractWebPage {
    *
    * @param input the input
    * @return the end date
-   * @throws ParseException the parse exception
    */
-  public Date getEndDate(Input input) throws ParseException {
+  public Date getEndDate(Input input) {
     Calendar end = Calendar.getInstance();
     if (input.notNullNorValue("")) {
       end.setTime(input.getDate());
@@ -460,15 +457,7 @@ public class UnitListPage extends AbstractWebPage {
    *
    * @param <V> the value type
    */
-  public class RecordWrapper<V extends RecordVoip> {
-    /**
-     * Gets the unit.
-     *
-     * @return the unit
-     */
-    public Unit getUnit() {
-      return unit;
-    }
+  public static class RecordWrapper<V extends RecordVoip> {
 
     /**
      * Instantiates a new record wrapper.
@@ -485,6 +474,7 @@ public class UnitListPage extends AbstractWebPage {
     public RecordVoip voipRecord;
 
     /** The unit. */
+    @Getter
     public Unit unit;
 
     /**
@@ -499,7 +489,7 @@ public class UnitListPage extends AbstractWebPage {
 
   /** The Class RecordTotalScoreComparator. */
   @SuppressWarnings("rawtypes")
-  private class RecordTotalScoreComparator implements Comparator<RecordWrapper> {
+  private static class RecordTotalScoreComparator implements Comparator<RecordWrapper> {
     public int compare(RecordWrapper o1, RecordWrapper o2) {
       if (o1.getRecord().getVoIPQuality().get() < o2.getRecord().getVoIPQuality().get()) {
         return 1;
@@ -513,7 +503,7 @@ public class UnitListPage extends AbstractWebPage {
 
   /** The Class RecordSipRegFailedComparator. */
   @SuppressWarnings("rawtypes")
-  private class RecordSipRegFailedComparator implements Comparator<RecordWrapper> {
+  private static class RecordSipRegFailedComparator implements Comparator<RecordWrapper> {
     public int compare(RecordWrapper o1, RecordWrapper o2) {
       if (o1.getRecord().getNoSipServiceTime().get() < o2.getRecord().getNoSipServiceTime().get()) {
         return 1;
@@ -545,10 +535,10 @@ public class UnitListPage extends AbstractWebPage {
   /** The Class IsMosAvgBad. */
   public class IsMosAvgBad implements TemplateMethodModel {
     /** The units. */
-    private Map<String, Boolean> units = new HashMap<>();
+    private final Map<String, Boolean> units = new HashMap<>();
 
     /** The records. */
-    private List<RecordWrapper<RecordVoip>> records;
+    private final List<RecordWrapper<RecordVoip>> records;
 
     /**
      * Instantiates a new checks if is mos avg bad.
@@ -559,7 +549,6 @@ public class UnitListPage extends AbstractWebPage {
       this.records = records;
     }
 
-    @SuppressWarnings("rawtypes")
     public Boolean exec(List arg0) throws TemplateModelException {
       if (arg0.isEmpty()) {
         throw new TemplateModelException("Specify unitId");
@@ -586,10 +575,10 @@ public class UnitListPage extends AbstractWebPage {
   /** The Class IsSipRegisterCause. */
   public class IsSipRegisterCause implements TemplateMethodModel {
     /** The units. */
-    private Map<String, Boolean> units = new HashMap<>();
+    private final Map<String, Boolean> units = new HashMap<>();
 
     /** The records. */
-    private List<RecordWrapper<RecordVoip>> records;
+    private final List<RecordWrapper<RecordVoip>> records;
 
     /**
      * Instantiates a new checks if is sip register cause.
@@ -600,7 +589,6 @@ public class UnitListPage extends AbstractWebPage {
       this.records = records;
     }
 
-    @SuppressWarnings("rawtypes")
     public Boolean exec(List arg0) throws TemplateModelException {
       if (arg0.isEmpty()) {
         throw new TemplateModelException("Specify unitId");
@@ -616,7 +604,7 @@ public class UnitListPage extends AbstractWebPage {
 
       if (record != null) {
         return record.getNoSipServiceTime().get() > 100
-            && !new IsMosAvgBad(records).exec(Arrays.asList(key));
+            && !new IsMosAvgBad(records).exec(Collections.singletonList(key));
       }
 
       return false;

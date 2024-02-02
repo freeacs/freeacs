@@ -111,12 +111,7 @@ public class ScriptExecutionsPage extends AbstractWebPage {
             }
             if (scriptArg.getType() == ScriptArg.ArgType.ENUM) {
               Method m = ScriptExecutionData.class.getMethod("getArgument" + scriptArg.getIndex());
-              Input in = (Input) m.invoke(inputData, (Object[]) null);
-              //							System.out.println("Bork: " + in.getString());
-
-              //							scriptArg.getEnumDropDown().getItems()
-              //							scriptArg.getEnumDropDown().setSelected(new Enumeration(in.getString(),
-              // in.getString()));
+              m.invoke(inputData, (Object[]) null);
             }
             scriptArg.setValue(args[i]);
           }
@@ -184,7 +179,6 @@ public class ScriptExecutionsPage extends AbstractWebPage {
         }
         if (fieldArray.length > 3) {
           value = fieldArray[3].trim();
-          //					System.out.println("Parsed a value \"" + value + "\"");
         }
         if (fieldArray.length > 4) {
           comment = fieldArray[4].trim();
@@ -210,7 +204,7 @@ public class ScriptExecutionsPage extends AbstractWebPage {
     return script;
   }
 
-  private static Pattern rangePattern = Pattern.compile("(\\d+)\\s*-\\s*(\\d+)?");
+  private static final Pattern rangePattern = Pattern.compile("(\\d+)\\s*-\\s*(\\d+)?");
 
   private boolean validate(ScriptArg scriptArg, Unittype unittype) {
     if (scriptArg.getType() == ScriptArg.ArgType.INTEGER && scriptArg.getValidationRule() == null) {
@@ -220,8 +214,7 @@ public class ScriptExecutionsPage extends AbstractWebPage {
         scriptArg.setError("Not a number");
         return false;
       }
-    } else if (scriptArg.getType() == ScriptArg.ArgType.INTEGER
-        && scriptArg.getValidationRule() != null) {
+    } else if (scriptArg.getType() == ScriptArg.ArgType.INTEGER) {
       Matcher matcher = rangePattern.matcher(scriptArg.getValidationRule());
       if (matcher.matches()) {
         int from = Integer.parseInt(matcher.group(1));
@@ -317,7 +310,6 @@ public class ScriptExecutionsPage extends AbstractWebPage {
           String requestId = inputData.getRequestid().getString();
           if (typeCheckOk) {
             scriptExecutions.requestExecution(scriptFile, scriptArgs, requestId);
-            // To avoid Double-post of Execute-command:
             outputHandler
                 .getServletResponse()
                 .sendRedirect(

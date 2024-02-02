@@ -6,11 +6,16 @@ import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.web.app.input.DropDownSingleSelect;
 import com.github.freeacs.web.app.input.Input;
 import com.github.freeacs.web.app.input.InputSelectionFactory;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Getter
+@Setter
 public class ScriptArg {
   public enum ArgType {
     STRING,
@@ -89,45 +94,8 @@ public class ScriptArg {
         enumDropDown =
             InputSelectionFactory.getDropDownSingleSelect(
                 retrieveInput(inputData, index), null, optionsWrapped);
-        //				System.out.println("Enum scriptarg created, options are: " + options);
       }
     }
-  }
-
-  public int getIndex() {
-    return index;
-  }
-
-  public void setIndex(int index) {
-    this.index = index;
-  }
-
-  public ArgType getType() {
-    return type;
-  }
-
-  public void setType(ArgType type) {
-    this.type = type;
-  }
-
-  public String getComment() {
-    return comment;
-  }
-
-  public void setComment(String comment) {
-    this.comment = comment;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getValue() {
-    return value;
   }
 
   public void setValue(String value) {
@@ -138,46 +106,6 @@ public class ScriptArg {
       value = value.substring(0, value.length() - 1);
     }
     this.value = value;
-  }
-
-  public String getError() {
-    return error;
-  }
-
-  public void setError(String error) {
-    this.error = error;
-  }
-
-  public DropDownSingleSelect<Profile> getProfileDropDown() {
-    return profileDropDown;
-  }
-
-  public void setProfileDropDown(DropDownSingleSelect<Profile> profileDropDown) {
-    this.profileDropDown = profileDropDown;
-  }
-
-  public DropDownSingleSelect<File> getFileDropDown() {
-    return fileDropDown;
-  }
-
-  public void setFileDropDown(DropDownSingleSelect<File> fileDropDown) {
-    this.fileDropDown = fileDropDown;
-  }
-
-  public DropDownSingleSelect<Enumeration> getEnumDropDown() {
-    return enumDropDown;
-  }
-
-  public void setEnumDropDown(DropDownSingleSelect<Enumeration> enumDropDown) {
-    this.enumDropDown = enumDropDown;
-  }
-
-  public String getValidationRule() {
-    return validationRule;
-  }
-
-  public void setValidationRule(String validationRule) {
-    this.validationRule = validationRule;
   }
 
   public String toString() {

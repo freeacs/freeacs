@@ -128,7 +128,7 @@ public class InputDataRetriever {
           break;
         case DATE:
           if (in.isArray()) {
-            String arr[] = params.getStringParameterArray(in.getKey());
+            String[] arr = params.getStringParameterArray(in.getKey());
             if (arr != null) {
               List<Date> dates = new ArrayList<>();
               for (String value : arr) {
@@ -184,7 +184,7 @@ public class InputDataRetriever {
       }
     } catch (NumberFormatException e) {
       if (in.isArray()) {
-        String arr[] = params.getStringParameterArray(in.getKey());
+        String[] arr = params.getStringParameterArray(in.getKey());
         if (arr != null) {
           in.setValue(Arrays.toString(arr));
         }
@@ -194,7 +194,6 @@ public class InputDataRetriever {
       in.setError("Could not parse number");
     } catch (Exception e) {
       in.setError("Checked, but not managed, error occured: " + e.getLocalizedMessage());
-      return;
     }
   }
 }

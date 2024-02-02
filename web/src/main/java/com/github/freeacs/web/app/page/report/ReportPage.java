@@ -316,8 +316,7 @@ public class ReportPage extends AbstractWebPage {
   }
 
   private void displayReportChart(
-      ParameterParser req, Map<String, Object> templateMap, CheckBoxGroup<String> aggregation)
-      throws Exception {
+      ParameterParser req, Map<String, Object> templateMap, CheckBoxGroup<String> aggregation) {
     ChartLegendsDimensions legendDimensions =
         new ChartLegendsDimensions(aggregation.getSelected().toArray(new String[] {}), report);
     displayReportChartWithImageMap(

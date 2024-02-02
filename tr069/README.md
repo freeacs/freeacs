@@ -68,14 +68,10 @@ The features offered by the server are:
 
 Also see the documentation found in the docs-folder
 
-
-
- 
-  
-
-
-
-
-
+### Development
+```bash
+docker run --name acs -e MYSQL_USER=acs -e MYSQL_PASSWORD=acs -e MYSQL_DATABASE=acs -e MYSQL_RANDOM_ROOT_PASSWORD=true -p 3306:3306 -d --platform=linux/amd64 mysql:5.7
+mysql -h 127.0.0.1 -u acs -pacs -P 3306 acs < tables/src/main/resources/install.sql
+```
  
 

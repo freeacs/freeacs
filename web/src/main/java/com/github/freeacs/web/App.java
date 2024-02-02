@@ -83,6 +83,7 @@ public class App {
                   }
                   System.out.println("Halted");
                 }));
+    System.out.println("Server started on port " + properties.getServerPort() + " with context path " + properties.getContextPath() + " and syslog server host " + properties.getSyslogServerHost() + " and session timeout " + properties.getSessionTimeout() + " minutes");
   }
 
   public static void routes(

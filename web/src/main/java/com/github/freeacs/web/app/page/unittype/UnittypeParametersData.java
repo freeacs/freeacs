@@ -13,11 +13,7 @@ public class UnittypeParametersData extends InputData {
     return formSubmit;
   }
 
-  public void setFormSubmit(Input formSubmit) {
-    this.formSubmit = formSubmit;
-  }
-
-  @Override
+    @Override
   public void bindForm(Map<String, Object> root) {}
 
   @Override
