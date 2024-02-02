@@ -8,7 +8,7 @@ public class SecurityConfig {
     return new PasswordEncoder() {
       @Override
       public String encode(CharSequence rawPassword) {
-        return Crypto.computeSHA1DigestAsHexUpperCase(rawPassword.toString());
+        return Crypto.computeDigestAsHexUpperCase(rawPassword.toString());
       }
 
       @Override

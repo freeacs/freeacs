@@ -207,7 +207,7 @@ public class Kick {
       String ts = String.valueOf(System.currentTimeMillis());
       String text = ts + id + crUser + cn;
       String passFix = crPass == null ? "password" : crPass;
-      String sig = Crypto.computeHmacSHA1AsHexUpperCase(passFix, text);
+      String sig = Crypto.computeHmacAsHexUpperCase(passFix, text);
       String req =
           "GET http://"
               + udpCrUrl
