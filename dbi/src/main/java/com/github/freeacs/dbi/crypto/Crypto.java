@@ -50,9 +50,4 @@ public class Crypto {
       throw new RuntimeException("Failed to compute HMAC: " + e.getMessage(), e);
     }
   }
-
-  public static void main(String[] args) {
-    System.out.println(computeDigestAsHexUpperCase("freeacs"));
-    System.out.println(computeHmacAsHexUpperCase("key", "text"));
-  }
 }
