@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import lombok.Getter;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -23,6 +25,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jarl Andre Hubenthal
  */
+@Getter
 public class Input {
   /** The key. */
   private String key;
@@ -31,7 +34,7 @@ public class Input {
   private Object value;
 
   /** The array. */
-  private boolean array;
+  private final boolean array;
 
   /** The type. */
   private InputType type;
@@ -44,17 +47,13 @@ public class Input {
 
   private static final Logger logger = LoggerFactory.getLogger(Input.class);
 
-  // Hide constructor
   /**
-   * Instantiates a new input.
-   *
-   * @throws IllegalAccessException
+   * @throws IllegalAccessException thrown if the constructor is called
    */
   private Input() throws IllegalAccessException {
-    throw new IllegalAccessException("Calling the private constructur of Input is not allowed!");
+    throw new IllegalAccessException("Cannot instantiate Input without parameters");
   }
 
-  // Hide constructor
   /**
    * Instantiates a new input.
    *
@@ -75,20 +74,6 @@ public class Input {
   }
 
   /**
-   * Instantiates a new input.
-   *
-   * @param key the key
-   * @param value the value
-   * @param isArray the is array
-   * @param type the type
-   * @param df the df
-   */
-  private Input(String key, Object value, boolean isArray, InputType type, DateUtils.Format df) {
-    this(key, value, isArray, type);
-    this.dateFormat = df;
-  }
-
-  /**
    * Gets the single input.
    *
    * @param key the key
@@ -103,11 +88,10 @@ public class Input {
    * Gets the array input.
    *
    * @param key the key
-   * @param type the type
    * @return the array input
    */
-  private static Input getArrayInput(String key, InputType type) {
-    return new Input(key, null, true, type);
+  private static Input getArrayInput(String key) {
+    return new Input(key, null, true, InputType.STRING);
   }
 
   /**
@@ -127,7 +111,7 @@ public class Input {
    * @return the string array input
    */
   public static Input getStringArrayInput(String key) {
-    return getArrayInput(key, InputType.STRING);
+    return getArrayInput(key);
   }
 
   /**
@@ -141,16 +125,6 @@ public class Input {
   }
 
   /**
-   * Gets the integer array input.
-   *
-   * @param key the key
-   * @return the integer array input
-   */
-  public static Input getIntegerArrayInput(String key) {
-    return getArrayInput(key, InputType.INTEGER);
-  }
-
-  /**
    * Gets the double input.
    *
    * @param key the key
@@ -158,96 +132,6 @@ public class Input {
    */
   public static Input getDoubleInput(String key) {
     return getSingleInput(key, InputType.DOUBLE);
-  }
-
-  /**
-   * Gets the double array input.
-   *
-   * @param key the key
-   * @return the double array input
-   */
-  public static Input getDoubleArrayInput(String key) {
-    return getArrayInput(key, InputType.DOUBLE);
-  }
-
-  /**
-   * Gets the float input.
-   *
-   * @param key the key
-   * @return the float input
-   */
-  public static Input getFloatInput(String key) {
-    return getSingleInput(key, InputType.FLOAT);
-  }
-
-  /**
-   * Gets the float array input.
-   *
-   * @param key the key
-   * @return the float array input
-   */
-  public static Input getFloatArrayInput(String key) {
-    return getArrayInput(key, InputType.FLOAT);
-  }
-
-  /**
-   * Gets the long input.
-   *
-   * @param key the key
-   * @return the long input
-   */
-  public static Input getLongInput(String key) {
-    return getSingleInput(key, InputType.LONG);
-  }
-
-  /**
-   * Gets the long array input.
-   *
-   * @param key the key
-   * @return the long array input
-   */
-  public static Input getLongArrayInput(String key) {
-    return getArrayInput(key, InputType.LONG);
-  }
-
-  /**
-   * Gets the short input.
-   *
-   * @param key the key
-   * @return the short input
-   */
-  public static Input getShortInput(String key) {
-    return getSingleInput(key, InputType.SHORT);
-  }
-
-  /**
-   * Gets the short array input.
-   *
-   * @param key the key
-   * @return the short array input
-   */
-  public static Input getShortArrayInput(String key) {
-    return getArrayInput(key, InputType.SHORT);
-  }
-
-  /**
-   * Gets the byte input.
-   *
-   * @param key the key
-   * @return the byte input
-   */
-  public static Input getByteInput(String key) {
-    return getSingleInput(key, InputType.BYTE);
-  }
-
-  /**
-   * Gets the byte array input.
-   *
-   * @param key the key
-   * @return the byte array input
-   */
-  public static Input getByteArrayInput(String key) {
-    return getArrayInput(key, InputType.BYTE);
   }
 
   /**
@@ -261,36 +145,6 @@ public class Input {
   }
 
   /**
-   * Gets the boolean array input.
-   *
-   * @param key the key
-   * @return the boolean array input
-   */
-  public static Input getBooleanArrayInput(String key) {
-    return getArrayInput(key, InputType.BOOLEAN);
-  }
-
-  /**
-   * Gets the file input.
-   *
-   * @param key the key
-   * @return the file input
-   */
-  public static Input getFileInput(String key) {
-    return getSingleInput(key, InputType.FILE);
-  }
-
-  /**
-   * Gets the file array input.
-   *
-   * @param key the key
-   * @return the file array input
-   */
-  public static Input getFileArrayInput(String key) {
-    return getArrayInput(key, InputType.FILE);
-  }
-
-  /**
    * Gets the date input.
    *
    * @param key the key
@@ -301,38 +155,6 @@ public class Input {
     Input in = getSingleInput(key, InputType.DATE);
     in.dateFormat = dateOnly;
     return in;
-  }
-
-  /**
-   * Gets the date array input.
-   *
-   * @param key the key
-   * @param sdf the sdf
-   * @return the date array input
-   */
-  public static Input getDateArrayInput(String key, DateUtils.Format sdf) {
-    Input in = getArrayInput(key, InputType.DATE);
-    in.dateFormat = sdf;
-    return in;
-  }
-
-  /**
-   * Gets the email input.
-   *
-   * @param key the key
-   * @return the email input
-   */
-  public static Input getEmailInput(String key) {
-    return getSingleInput(key, InputType.EMAIL);
-  }
-
-  /**
-   * Gets the key.
-   *
-   * @return the key
-   */
-  public String getKey() {
-    return key;
   }
 
   /**
@@ -515,36 +337,6 @@ public class Input {
   }
 
   /**
-   * Gets the byte.
-   *
-   * @return the byte
-   */
-  public Byte getByte() {
-    if (type != InputType.BYTE) {
-      logger.warn(key + " is not a Byte");
-    }
-    if (value instanceof Byte) {
-      return (Byte) value;
-    }
-    return null;
-  }
-
-  /**
-   * Gets the short.
-   *
-   * @return the short
-   */
-  public Short getShort() {
-    if (type != InputType.SHORT) {
-      logger.warn(key + " is not a Short");
-    }
-    if (value instanceof Short) {
-      return (Short) value;
-    }
-    return null;
-  }
-
-  /**
    * Gets the character.
    *
    * @return the character
@@ -626,36 +418,6 @@ public class Input {
   }
 
   /**
-   * Gets the file as string.
-   *
-   * @return the file as string
-   */
-  public String getFileAsString() {
-    if (type != InputType.FILE) {
-      logger.warn(key + " is not a File");
-    }
-    if (value instanceof FileItem) {
-      return new String(((FileItem) value).get()).trim();
-    }
-    return null;
-  }
-
-  /**
-   * Gets the file as bytes.
-   *
-   * @return the file as bytes
-   */
-  public byte[] getFileAsBytes() {
-    if (type != InputType.FILE) {
-      logger.warn(key + " is not a File");
-    }
-    if (value instanceof FileItem) {
-      return ((FileItem) value).get();
-    }
-    return null;
-  }
-
-  /**
    * Gets the file.
    *
    * @return the file
@@ -698,24 +460,6 @@ public class Input {
   }
 
   /**
-   * Gets the email.
-   *
-   * @return the email
-   */
-  public String getEmail() {
-    if (type != InputType.EMAIL) {
-      logger.warn(key + " is not an email");
-    }
-    if (value instanceof String) {
-      return (String) value;
-    }
-    if (value instanceof String[]) {
-      return StringUtils.join((String[]) value, ",");
-    }
-    return null;
-  }
-
-  /**
    * Sets the error.
    *
    * @param string the new error
@@ -725,56 +469,12 @@ public class Input {
   }
 
   /**
-   * Gets the error.
-   *
-   * @return the error
-   */
-  public String getError() {
-    return error;
-  }
-
-  /**
-   * If any exceptions occur when converting the input to the InputType<br>
-   * this method will return the actual string value that was sent to the servlet. <br>
-   * <br>
-   * Can for example be used for testing if a number conversion went wrong:<br>
-   * if(id.getValue()!=null && id.getInteger()==null)<br>
-   * &nbsp;&nbsp;in.setError("Id is not an integer"); <br>
-   * <br>
-   * Also, this method should be used when binding the form, so the user can see what he typed and
-   * the error it generated.
-   *
-   * @return The value object
-   */
-  public Object getValue() {
-    return value;
-  }
-
-  /**
-   * Gets the type.
-   *
-   * @return the type
-   */
-  public InputType getType() {
-    return type;
-  }
-
-  /**
    * Sets the type.
    *
    * @param type the new type
    */
   public void setType(InputType type) {
     this.type = type;
-  }
-
-  /**
-   * Checks if is array.
-   *
-   * @return true, if is array
-   */
-  public boolean isArray() {
-    return this.array;
   }
 
   /**
@@ -810,17 +510,6 @@ public class Input {
   }
 
   /**
-   * Checks if is null or value.
-   *
-   * @param valueToCheckFor the value to check for
-   * @return true, if is null or value
-   */
-  public boolean isNullOrValue(String valueToCheckFor) {
-    String string = getString();
-    return string == null || valueToCheckFor.equals(string);
-  }
-
-  /**
    * Not null nor value.
    *
    * @param valueToCheckFor the value to check for
@@ -853,15 +542,6 @@ public class Input {
     } else {
       this.value = value;
     }
-  }
-
-  /**
-   * Gets the date format.
-   *
-   * @return the date format
-   */
-  public DateUtils.Format getDateFormat() {
-    return dateFormat;
   }
 
   public boolean startsWith(String string) {

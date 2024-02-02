@@ -2,18 +2,18 @@ package com.github.freeacs.tr069.xml;
 
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
+import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import lombok.Getter;
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
-import org.xml.sax.XMLReader;
+import lombok.extern.slf4j.Slf4j;
+import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.StringReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +22,7 @@ import java.util.Map;
  * TR-069 request or a TR-069 response.
  */
 @Getter
+@Slf4j
 public class Parser extends DefaultHandler {
   public static final String FEATURE_DISALLOW_DOCTYPE_DECL = "http://apache.org/xml/features/disallow-doctype-decl";
 
@@ -33,10 +34,11 @@ public class Parser extends DefaultHandler {
   private static final String COMPLETE_TIME_TAG = "CompleteTime";
   private static final String COMMAND_KEY_TAG = "CommandKey";
   private static final String FAULT_STRUCT_TAG = "FaultStruct";
+  public static final String CWMP_VERSION_NAMESPACE_PREFIX = "urn:dslforum-org:cwmp-";
 
   private SAXParserFactory factory;
-  private final XMLReader xmlReader;
-  private final Map<String, ContentHandler> parsers;
+  private XMLReader xmlReader;
+  private Map<String, ContentHandler> parsers;
   private StringBuilder currTextContent = new StringBuilder();
 
   private Header header;
@@ -52,11 +54,19 @@ public class Parser extends DefaultHandler {
   private String completeTime;
   private String commandKey;
   private Fault fault;
+  private boolean insideBody;
+  private ProvisioningMethod cwmpMethod;
+  private String cwmpVersion;
+  private String rawXMLForDebugging;
 
   /** Parse the soap messages using the standard SAX Parser. */
-  public Parser(String soapmsg) throws TR069Exception {
-    InputSource xmlSource = getStringAsSource(soapmsg);
+  public Parser(InputStream xmlInputStream, int contentLength, boolean debugXML) throws TR069Exception, IOException {
     initializeDataMappings();
+
+    if (contentLength <= 0) {
+      log.debug("THere is no xml payload to parse");
+      return;
+    }
 
     parsers = new HashMap<>();
     parsers.put(HeaderHandler.HEADER_TAG, new HeaderHandler(header, this));
@@ -67,16 +77,23 @@ public class Parser extends DefaultHandler {
     parsers.put(MethodListHandler.METHOD_LIST_TAG, new MethodListHandler(methodList, this));
 
     try {
-      // the "SAXParserFactory" class indication has been removed.
       factory = getParserFactory();
       factory.setNamespaceAware(true);
       xmlReader = factory.newSAXParser().getXMLReader();
       xmlReader.setContentHandler(this);
       xmlReader.setErrorHandler(new SOAPErrorHandler());
-      xmlReader.parse(xmlSource);
+
+      if (debugXML) {
+        // Efficiently read and duplicate the input stream for debugging
+        byte[] bytes = xmlInputStream.readAllBytes();
+        this.rawXMLForDebugging = new String(bytes, StandardCharsets.UTF_8);
+        xmlInputStream = new ByteArrayInputStream(bytes); // Reset stream for parsing
+      }
+
+      xmlReader.parse(new InputSource(xmlInputStream));
     } catch (Exception ex) {
-      throw new TR069Exception(
-          "Parsing of SOAP/XML request failed", TR069ExceptionShortMessage.MISC, ex);
+      // Enhanced error handling could go here
+      throw new TR069Exception("Parsing of SOAP/XML request failed", TR069ExceptionShortMessage.MISC, ex);
     }
   }
 
@@ -88,6 +105,8 @@ public class Parser extends DefaultHandler {
     this.parameterList = new ParameterList();
     this.methodList = new MethodList();
     this.fault = new Fault();
+    this.cwmpMethod = ProvisioningMethod.Empty;
+    this.rawXMLForDebugging = null;
   }
 
   /** @return a new instance of a SAXParserFactory */
@@ -101,22 +120,46 @@ public class Parser extends DefaultHandler {
     return factory;
   }
 
-  private static InputSource getStringAsSource(String xml) {
-    if (xml != null && !xml.isEmpty()) {
-      StringReader xmlReader = new StringReader(xml);
-      return new InputSource(xmlReader);
+  @Override
+  public void startPrefixMapping(String prefix, String uri) {
+    if ("cwmp".equals(prefix) && uri.startsWith(CWMP_VERSION_NAMESPACE_PREFIX)) {
+      cwmpVersion = uri.replace(CWMP_VERSION_NAMESPACE_PREFIX, "");
     }
-    return null;
   }
 
-  public void startElement(
-      String namespaceURI, String localName, String qualifiedName, Attributes attributes) {
+  public void startElement(String namespaceURI, String localName, String qualifiedName, Attributes attributes) {
     currTextContent = new StringBuilder();
+    if (isSoapBodyElement(namespaceURI, localName)) {
+      handleSoapBodyStart();
+    } else if (shouldHandleCwmpMethod()) {
+      handleCwmpMethod(localName);
+    } else {
+      delegateToSpecificHandler(localName);
+    }
+  }
+
+  private boolean isSoapBodyElement(String namespaceURI, String localName) {
+    return "Body".equals(localName) && "http://schemas.xmlsoap.org/soap/envelope/".equals(namespaceURI);
+  }
+
+  private void handleSoapBodyStart() {
+    insideBody = true;
+  }
+
+  private boolean shouldHandleCwmpMethod() {
+    return insideBody && cwmpMethod == ProvisioningMethod.Empty;
+  }
+
+  private void handleCwmpMethod(String localName) {
+    cwmpMethod = ProvisioningMethod.fromString(localName);
+    insideBody = false;
+  }
+
+  private void delegateToSpecificHandler(String localName) {
     if (this.parsers.containsKey(localName)) {
       xmlReader.setContentHandler(this.parsers.get(localName));
     } else if (FAULT_STRUCT_TAG.equals(localName)) {
-      this.fault = new Fault();
-      FaultHandler faultHandler = new FaultHandler(this.fault, this);
+      FaultHandler faultHandler = new FaultHandler(this.fault = new Fault(), this);
       xmlReader.setContentHandler(faultHandler);
     }
   }

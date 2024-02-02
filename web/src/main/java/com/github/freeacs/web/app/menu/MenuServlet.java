@@ -19,6 +19,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,11 +31,8 @@ import org.slf4j.LoggerFactory;
 public class MenuServlet extends HttpServlet {
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-  /** The Constant serialVersionUID. */
-  private static final long serialVersionUID = -1057185634997595190L;
-
   /** The template config. */
-  private Configuration templateConfig;
+  private final Configuration templateConfig;
 
   /** The logger. */
   private static final Logger logger = LoggerFactory.getLogger(MenuServlet.class);
@@ -64,7 +62,6 @@ public class MenuServlet extends HttpServlet {
         res.getWriter().close();
       }
     } catch (Exception e) {
-      e.printStackTrace();
       logger.warn("An error occured", e);
     }
   }
@@ -96,7 +93,7 @@ public class MenuServlet extends HttpServlet {
 
     Page selectedMenuPage = Page.getById(Page.getParentPage(page));
 
-    return getMenuItems(req.getSession().getId(), page, selectedMenuPage);
+    return getMenuItems(req.getSession().getId(), selectedMenuPage);
   }
 
   /**
@@ -115,20 +112,19 @@ public class MenuServlet extends HttpServlet {
             && sessionData.getUser().getAccess().equals(Users.ACCESS_ADMIN))) {
       return Page.getAllPagesAsString();
     }
-    return null;
+    return List.of();
   }
 
   /**
    * Gets the menu items.
    *
    * @param sessionId the session id
-   * @param currentPageId the current page id
    * @param selectedPage the selected page
    * @return the menu items
    */
-  public List<MenuItem> getMenuItems(String sessionId, String currentPageId, Page selectedPage) {
+  public List<MenuItem> getMenuItems(String sessionId, Page selectedPage) {
     List<Page> allowedPages = Page.getPageValuesFromList(getPagesAllowed(sessionId));
-    return createMenuItems(allowedPages, selectedPage, sessionId);
+    return createMenuItems(allowedPages, selectedPage);
   }
 
   /**
@@ -140,20 +136,19 @@ public class MenuServlet extends HttpServlet {
    * @param currentPage the current page
    * @return the tools menu
    */
-  @SuppressWarnings("serial")
   public List<MenuItem> getToolsMenu(final String sessionId, final String currentPage) {
     final List<Page> _pages = Page.getPageValuesFromList(getPagesAllowed(sessionId));
-    return new ArrayList<MenuItem>() {
-      {
-        if (_pages.contains(Page.PERMISSIONS)) {
-          add(
-              new MenuItem("Permissions", Page.PERMISSIONS)
-                  .setSelected(Page.PERMISSIONS.equals(currentPage)));
+    return new ArrayList<>() {
+        {
+            if (_pages.contains(Page.PERMISSIONS)) {
+                add(
+                        new MenuItem("Permissions", Page.PERMISSIONS)
+                                .setSelected(Page.PERMISSIONS.name().equals(currentPage)));
+            }
+            if (_pages.contains(Page.MONITOR)) {
+                add(new MenuItem("Monitor", Page.MONITOR).setSelected(Page.MONITOR.name().equals(currentPage)));
+            }
         }
-        if (_pages.contains(Page.MONITOR)) {
-          add(new MenuItem("Monitor", Page.MONITOR).setSelected(Page.MONITOR.equals(currentPage)));
-        }
-      }
     };
   }
 
@@ -162,11 +157,10 @@ public class MenuServlet extends HttpServlet {
    *
    * @param allowedPages the pages
    * @param selectedPage the selected page
-   * @param sessionId the session id
    * @return the list
    */
   private List<MenuItem> createMenuItems(
-      List<Page> allowedPages, Page selectedPage, String sessionId) {
+      List<Page> allowedPages, Page selectedPage) {
     List<MenuItem> menu = new ArrayList<>();
     if (allowedPages.contains(Page.DASHBOARD_SUPPORT)) {
       MenuItem support =

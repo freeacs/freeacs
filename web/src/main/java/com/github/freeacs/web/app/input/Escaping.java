@@ -42,13 +42,4 @@ public class Escaping {
     return strTagLess;
   }
 
-  /**
-   * Removes the non alphanumeric characters.
-   *
-   * @param s the s
-   * @return the string
-   */
-  public static String removeNonAlphanumericCharacters(String s) {
-    return s.replaceAll("[^a-zA-Z0-9]", "");
-  }
 }

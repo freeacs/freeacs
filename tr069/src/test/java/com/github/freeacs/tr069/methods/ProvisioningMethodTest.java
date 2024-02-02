@@ -8,12 +8,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class ProvisioningMethodTest {
 
     @Test
-    public void nullXmlReturnsEmpty() {
+    public void nullString() {
         // Given:
         String xml = null;
 
         // When:
-        String methodName = ProvisioningMethod.extractMethodFrom(xml).name();
+        String methodName = ProvisioningMethod.fromString(xml).name();
 
         // Then:
         assertNotNull(methodName);
@@ -21,12 +21,12 @@ public class ProvisioningMethodTest {
     }
 
     @Test
-    public void validSelfClosedMethod() {
+    public void validString() {
         // Given:
-        String xml = "<cwmp:GetRPCMethods/>";
+        String xml = "GetRPCMethods";
 
         // When:
-        String methodName = ProvisioningMethod.extractMethodFrom(xml).name();
+        String methodName = ProvisioningMethod.fromString(xml).name();
 
         // Then:
         assertNotNull(methodName);
@@ -34,94 +34,16 @@ public class ProvisioningMethodTest {
     }
 
     @Test
-    public void validClosedMethod() {
+    public void unknownString() {
         // Given:
-        String xml = "<cwmp:GetRPCMethods></cwmp:GetRPCMethods>";
+        String xml = "FooBar";
 
         // When:
-        String methodName = ProvisioningMethod.extractMethodFrom(xml).name();
-
-        // Then:
-        assertNotNull(methodName);
-        assertEquals("GetRPCMethods", methodName);
-    }
-
-    @Test
-    public void validUnclosedMethod() {
-        // Given:
-        String xml = "<cwmp:GetRPCMethods>";
-
-        // When:
-        String methodName = ProvisioningMethod.extractMethodFrom(xml).name();
-
-        // Then:
-        assertNotNull(methodName);
-        assertEquals("GetRPCMethods", methodName);
-    }
-
-    @Test
-    public void emptyWhenNotSupported() {
-        // Given:
-        String xml = "<cwmp:YoMama/>";
-
-        // When:
-        String methodName = ProvisioningMethod.extractMethodFrom(xml).name();
+        String methodName = ProvisioningMethod.fromString(xml).name();
 
         // Then:
         assertNotNull(methodName);
         assertEquals("Empty", methodName);
-    }
-
-    @Test
-    public void validResponseMethod() {
-        // Given:
-        String xml = "<cwmp:GetParameterValuesResponse>";
-
-        // When:
-        String methodName = ProvisioningMethod.extractMethodFrom(xml).name();
-
-        // Then:
-        assertNotNull(methodName);
-        assertEquals("GetParameterValues", methodName);
-    }
-
-    @Test
-    public void otherValidResponseMethod() {
-        // Given:
-        String xml = "<cwmp:SetParameterValuesResponse>";
-
-        // When:
-        String methodName = ProvisioningMethod.extractMethodFrom(xml).name();
-
-        // Then:
-        assertNotNull(methodName);
-        assertEquals("SetParameterValues", methodName);
-    }
-
-    @Test
-    public void validRequestMethod() {
-        // Given:
-        String xml = "<cwmp:TransferComplete>";
-
-        // When:
-        String methodName = ProvisioningMethod.extractMethodFrom(xml).name();
-
-        // Then:
-        assertNotNull(methodName);
-        assertEquals("TransferComplete", methodName);
-    }
-
-    @Test
-    public void validInformMethod() {
-        // Given:
-        String xml = "<cwmp:Inform>";
-
-        // When:
-        String methodName = ProvisioningMethod.extractMethodFrom(xml).name();
-
-        // Then:
-        assertNotNull(methodName);
-        assertEquals("Inform", methodName);
     }
 
 }

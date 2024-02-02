@@ -21,8 +21,8 @@ import com.github.freeacs.web.app.table.TableElementMaker;
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,7 +31,7 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 public class TriggerReleasePage extends AbstractWebPage {
-  private static SimpleDateFormat urlFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+  private static final SimpleDateFormat urlFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
     List<MenuItem> list = new ArrayList<>(super.getShortcutItems(sessionData));
@@ -58,11 +58,7 @@ public class TriggerReleasePage extends AbstractWebPage {
 
   private String getURLDate(Date d) {
     if (d != null) {
-      try {
-        return URLEncoder.encode(urlFormat.format(d), "UTF-8");
-      } catch (UnsupportedEncodingException e) {
-        return "";
-      }
+        return URLEncoder.encode(urlFormat.format(d), StandardCharsets.UTF_8);
     }
     return "";
   }

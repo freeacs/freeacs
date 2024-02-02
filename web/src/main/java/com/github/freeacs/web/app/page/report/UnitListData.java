@@ -3,9 +3,14 @@ package com.github.freeacs.web.app.page.report;
 import com.github.freeacs.web.app.input.Input;
 import com.github.freeacs.web.app.input.InputData;
 import com.github.freeacs.web.app.util.DateUtils;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Map;
 
 /** The Class UnitListData. */
+@Getter
+@Setter
 public class UnitListData extends InputData {
   /** The type. */
   private Input type = Input.getStringInput("type");
@@ -59,165 +64,5 @@ public class UnitListData extends InputData {
   public boolean validateForm() {
     // TODO not implemented
     return false;
-  }
-
-  public Input getEnd() {
-    return end;
-  }
-
-  public Input getGroupSelect() {
-    return groupSelect;
-  }
-
-  public Input getMsgCountHigh() {
-    return msgCountHigh;
-  }
-
-  public Input getMsgCountLow() {
-    return msgCountLow;
-  }
-
-  public Input getStart() {
-    return start;
-  }
-
-  public Input getSwVersion() {
-    return swVersion;
-  }
-
-  public Input getType() {
-    return type;
-  }
-
-  public void setEnd(Input end) {
-    this.end = end;
-  }
-
-  public void setGroupSelect(Input groupSelect) {
-    this.groupSelect = groupSelect;
-  }
-
-  public void setMsgCountHigh(Input msgCountHigh) {
-    this.msgCountHigh = msgCountHigh;
-  }
-
-  public void setMsgCountLow(Input msgCountLow) {
-    this.msgCountLow = msgCountLow;
-  }
-
-  public void setStart(Input start) {
-    this.start = start;
-  }
-
-  public void setSwVersion(Input swVersion) {
-    this.swVersion = swVersion;
-  }
-
-  public void setType(Input type) {
-    this.type = type;
-  }
-
-  public Input getFilterSeverity() {
-    return filterSeverity;
-  }
-
-  public void setFilterSeverity(Input filterSeverity) {
-    this.filterSeverity = filterSeverity;
-  }
-
-  public Input getFilterFacility() {
-    return filterFacility;
-  }
-
-  public void setFilterFacility(Input filterFacility) {
-    this.filterFacility = filterFacility;
-  }
-
-  public Input getFilterEventId() {
-    return filterEventId;
-  }
-
-  public void setFilterEventId(Input filterEventId) {
-    this.filterEventId = filterEventId;
-  }
-
-  public Input getFilterLimit() {
-    return filterLimit;
-  }
-
-  public void setFilterLimit(Input filterLimit) {
-    this.filterLimit = filterLimit;
-  }
-
-  public Input getFilterDdrHigh() {
-    return filterDdrHigh;
-  }
-
-  public void setFilterDdrHigh(Input filterDdrHigh) {
-    this.filterDdrHigh = filterDdrHigh;
-  }
-
-  public Input getFilterDdrLow() {
-    return filterDdrLow;
-  }
-
-  public void setFilterDdrLow(Input filterDdrLow) {
-    this.filterDdrLow = filterDdrLow;
-  }
-
-  public Input getFilterOcmHigh() {
-    return filterOcmHigh;
-  }
-
-  public void setFilterOcmHigh(Input filterOcmHigh) {
-    this.filterOcmHigh = filterOcmHigh;
-  }
-
-  public Input getFilterOcmLow() {
-    return filterOcmLow;
-  }
-
-  public void setFilterOcmLow(Input filterOcmLow) {
-    this.filterOcmLow = filterOcmLow;
-  }
-
-  public Input getFilterOperand() {
-    return filterOperand;
-  }
-
-  public void setFilterOperand(Input filterOperand) {
-    this.filterOperand = filterOperand;
-  }
-
-  public Input getFilterUptimeHigh() {
-    return filterUptimeHigh;
-  }
-
-  public void setFilterUptimeHigh(Input filterUptimeHigh) {
-    this.filterUptimeHigh = filterUptimeHigh;
-  }
-
-  public Input getFilterUptimeLow() {
-    return filterUptimeLow;
-  }
-
-  public void setFilterUptimeLow(Input filterUptimeLow) {
-    this.filterUptimeLow = filterUptimeLow;
-  }
-
-  public Input getFilterTotalScoreHigh() {
-    return filterTotalScoreHigh;
-  }
-
-  public void setFilterTotalScoreHigh(Input filterTotalScoreHigh) {
-    this.filterTotalScoreHigh = filterTotalScoreHigh;
-  }
-
-  public Input getFilterTotalScoreLow() {
-    return filterTotalScoreLow;
-  }
-
-  public void setFilterTotalScoreLow(Input filterTotalScoreLow) {
-    this.filterTotalScoreLow = filterTotalScoreLow;
   }
 }

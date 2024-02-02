@@ -1,7 +1,10 @@
 package com.github.freeacs.tr069.methods;
 
+import lombok.Getter;
+
 import java.util.stream.Stream;
 
+@Getter
 public enum ProvisioningMethod {
     Empty("EM"),
     Fault("FA"),
@@ -16,7 +19,7 @@ public enum ProvisioningMethod {
     FactoryReset("FR"),
     GetRPCMethods("GRPC");
 
-    private static String RESPONSE_POSTFIX = "Response";
+    private static final String RESPONSE_POSTFIX = "Response";
 
     private final String abbreviation;
 
@@ -24,17 +27,13 @@ public enum ProvisioningMethod {
         this.abbreviation = abbreviation;
     }
 
-    public String getAbbreviation() {
-        return abbreviation;
-    }
-
     /**
      * Extract request method name.
      */
-    public static ProvisioningMethod extractMethodFrom(final String xml) {
+    public static ProvisioningMethod fromString(final String mehtodAsString) {
         return Stream.of(values())
-                .filter(m -> xml != null)
-                .filter(m -> xml.contains("<cwmp:" + m.name()) || xml.contains("<cwmp:" + m.name() + RESPONSE_POSTFIX))
+                .filter(m -> mehtodAsString != null)
+                .filter(m -> mehtodAsString.equals(m.name()) || mehtodAsString.equals(m.name() + RESPONSE_POSTFIX))
                 .findFirst()
                 .orElse(Empty);
     }

@@ -1,7 +1,9 @@
 package com.github.freeacs.tr069;
 
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 
+@Getter
 public enum CwmpVersion {
     VER_1_0("1-0"),
     VER_1_1("1-1"),
@@ -9,14 +11,10 @@ public enum CwmpVersion {
     VER_1_3("1-3"),
     VER_1_4("1-4");
 
-    private String id;
+    private final String id;
 
     CwmpVersion(String id) {
         this.id = id;
-    }
-
-    public String getId() {
-        return id;
     }
 
     public static String extractVersionFrom(String xml) {

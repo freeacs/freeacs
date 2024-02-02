@@ -43,7 +43,7 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
         try {
             boolean isDiscoveryMode = properties.isDiscoveryMode();
             reqRes.getRequestData().setMethod(ProvisioningMethod.Inform.name());
-            Parser parser = new Parser(reqRes.getRequestData().getXml());
+            Parser parser = reqRes.getRequestData().getParser();
             SessionData sessionData = reqRes.getSessionData();
             Header header = parser.getHeader();
             reqRes.setTR069TransactionID(header.getId());

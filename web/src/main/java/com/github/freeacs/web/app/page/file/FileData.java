@@ -3,9 +3,13 @@ package com.github.freeacs.web.app.page.file;
 import com.github.freeacs.web.app.input.Input;
 import com.github.freeacs.web.app.input.InputData;
 import com.github.freeacs.web.app.util.DateUtils;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Map;
 
-/** The Class FirmwareData. */
+@Getter
+@Setter
 public class FileData extends InputData {
   private Input name = Input.getStringInput("name");
   private Input type = Input.getStringInput("type");
@@ -21,14 +25,6 @@ public class FileData extends InputData {
   /** The file type filter. */
   private Input fileType = Input.getStringInput("filetype");
 
-  public Input getFileType() {
-    return fileType;
-  }
-
-  public void setFileType(Input fileType) {
-    this.fileType = fileType;
-  }
-
   /**
    * Sets the name.
    *
@@ -36,51 +32,6 @@ public class FileData extends InputData {
    */
   public void setName(Input name) {
     this.name = name;
-  }
-
-  /**
-   * Gets the name.
-   *
-   * @return the name
-   */
-  public Input getName() {
-    return name;
-  }
-
-  /**
-   * Sets the version number.
-   *
-   * @param versionNumber the new version number
-   */
-  public void setVersionNumber(Input versionNumber) {
-    this.versionNumber = versionNumber;
-  }
-
-  /**
-   * Gets the version number.
-   *
-   * @return the version number
-   */
-  public Input getVersionNumber() {
-    return versionNumber;
-  }
-
-  /**
-   * Sets the softwaredate.
-   *
-   * @param softwaredate the new softwaredate
-   */
-  public void setSoftwaredate(Input softwaredate) {
-    this.softwaredate = softwaredate;
-  }
-
-  /**
-   * Gets the softwaredate.
-   *
-   * @return the softwaredate
-   */
-  public Input getSoftwaredate() {
-    return softwaredate;
   }
 
   /**
@@ -92,15 +43,6 @@ public class FileData extends InputData {
     this.description = description;
   }
 
-  /**
-   * Gets the description.
-   *
-   * @return the description
-   */
-  public Input getDescription() {
-    return description;
-  }
-
   @Override
   public void bindForm(Map<String, Object> root) {}
 
@@ -109,28 +51,8 @@ public class FileData extends InputData {
     return false;
   }
 
-  public Input getType() {
-    return type;
-  }
-
   public void setType(Input type) {
     this.type = type;
-  }
-
-  public Input getTargetName() {
-    return targetName;
-  }
-
-  public void setTargetName(Input targetName) {
-    this.targetName = targetName;
-  }
-
-  public Input getId() {
-    return id;
-  }
-
-  public Input getContent() {
-    return content;
   }
 
   public void setContent(Input content) {

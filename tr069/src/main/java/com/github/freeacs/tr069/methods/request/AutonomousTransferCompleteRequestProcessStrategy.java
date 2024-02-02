@@ -12,7 +12,7 @@ public class AutonomousTransferCompleteRequestProcessStrategy implements Request
     @Override
     public void process(HTTPRequestResponseData reqRes) throws Exception {
         reqRes.getRequestData().setMethod(ProvisioningMethod.TransferComplete.name());
-        Parser parser = new Parser(reqRes.getRequestData().getXml());
+        Parser parser = reqRes.getRequestData().getParser();
         Header header = parser.getHeader();
         reqRes.setTR069TransactionID(header.getId());
         if (parser.getFault() != null && !"0".equals(parser.getFault().getFaultCode())) {

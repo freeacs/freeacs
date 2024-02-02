@@ -34,7 +34,7 @@ public class GetParameterNamesProcessStrategy implements RequestProcessStrategy 
     @Override
     public void process(HTTPRequestResponseData reqRes) throws Exception {
         reqRes.getRequestData().setMethod(ProvisioningMethod.GetParameterNames.name());
-        Parser parser = new Parser(reqRes.getRequestData().getXml());
+        Parser parser = reqRes.getRequestData().getParser();
 
         ParameterList parameterList = parser.getParameterList();
         List<ParameterInfoStruct> pisList = parameterList.getParameterInfoList();

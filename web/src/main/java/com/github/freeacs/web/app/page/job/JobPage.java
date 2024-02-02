@@ -99,7 +99,7 @@ public class JobPage extends AbstractWebPage {
       prepareEditOutput(jobFromAction, fmMap);
       outputHandler.setTemplatePath("job/details");
     } else if (inputData.getCmd().hasValue("create")) {
-      prepareCreateOutput(jobFromAction, fmMap, acs);
+      prepareCreateOutput(jobFromAction, fmMap);
       outputHandler.getTrailPoint().setJobName(null);
       outputHandler.setTemplatePath("job/create");
     } else {
@@ -294,7 +294,7 @@ public class JobPage extends AbstractWebPage {
             getFiles(job.getFlags().getType().getCorrelatedFileType())));
   }
 
-  private void prepareCreateOutput(Job jobInAction, Map<String, Object> map, ACS acs) {
+  private void prepareCreateOutput(Job jobInAction, Map<String, Object> map) {
     if (unittype != null) {
       JobServiceWindow selectedJobWindow = JobServiceWindow.valueOf(getServiceWindowString());
       map.put(
@@ -304,7 +304,7 @@ public class JobPage extends AbstractWebPage {
               selectedJobWindow,
               Arrays.asList(JobServiceWindow.values())));
       map.put(
-          "groups", InputSelectionFactory.getGroupSelection(inputData.getGroupId(), unittype, acs));
+          "groups", InputSelectionFactory.getGroupSelection(inputData.getGroupId(), unittype));
       Group selectedGroup = unittype.getGroups().getById(inputData.getGroupId().getInteger());
       map.put(
           "groups",

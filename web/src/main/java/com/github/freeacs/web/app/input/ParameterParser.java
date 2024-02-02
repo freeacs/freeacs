@@ -4,7 +4,6 @@ import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -22,19 +21,18 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
  * @author Jarl Andre Hubenthal
  */
 public class ParameterParser {
-  //	private static final String URL_STRING_ENCODING = "UTF-8";
 
   /** The req. */
-  private AbstractRequest req;
+  private final AbstractRequest req;
 
   /** The is multipart. */
-  private boolean isMultipart;
+  private final boolean isMultipart;
 
   /** The params. */
   private Map<String, List<String>> params;
 
   /** The files. */
-  private Map<String, List<FileItem>> files;
+  private final Map<String, List<FileItem>> files;
 
   /**
    * Instantiates a new parameter parser.
@@ -45,7 +43,6 @@ public class ParameterParser {
   public ParameterParser(HttpServletRequest req) throws FileUploadException {
     this.req = new AbstractRequest(req);
     isMultipart = ServletFileUpload.isMultipartContent(req);
-    // define files anyway so i can use it to return empty enumeration from getFileUploadNames()
     files = new HashMap<>();
     if (isMultipart) {
       // only define params if i need it
@@ -60,7 +57,7 @@ public class ParameterParser {
    * @return the request url
    */
   public String getRequestURL() {
-    return getRequestURLButExcludeSomeParameters(new String[] {});
+    return getRequestURLButExcludeSomeParameters();
   }
 
   /**
@@ -101,19 +98,11 @@ public class ParameterParser {
     for (Object item : items) {
       FileItem fileItem = (FileItem) item;
       if (fileItem.isFormField()) {
-        List<String> arr = params.get(fileItem.getFieldName());
-        if (arr == null) {
-          arr = new ArrayList<>();
-          params.put(fileItem.getFieldName(), arr);
-        }
-        arr.add(fileItem.getString());
+          List<String> arr = params.computeIfAbsent(fileItem.getFieldName(), k -> new ArrayList<>());
+          arr.add(fileItem.getString());
       } else {
-        List<FileItem> arr = files.get(fileItem.getFieldName());
-        if (arr == null) {
-          arr = new ArrayList<>();
-          files.put(fileItem.getFieldName(), arr);
-        }
-        arr.add(fileItem);
+          List<FileItem> arr = files.computeIfAbsent(fileItem.getFieldName(), k -> new ArrayList<>());
+          arr.add(fileItem);
       }
     }
   }
@@ -139,15 +128,6 @@ public class ParameterParser {
       return arr.get(0);
     }
     return null;
-  }
-
-  /**
-   * Will only return one of each fieldName.
-   *
-   * @return The enumeration of file upload names
-   */
-  public Enumeration<String> getFileUploadNames() {
-    return Collections.enumeration(files.keySet());
   }
 
   /**
@@ -313,47 +293,10 @@ public class ParameterParser {
    * @return the byte parameter
    */
   public Byte getByteParameter(String name) {
-    return getByteParameter(name, null);
-  }
-
-  /**
-   * Gets the byte parameter.
-   *
-   * @param name the name
-   * @param def the def
-   * @return the byte parameter
-   */
-  private Byte getByteParameter(String name, Byte def) {
     try {
       return Byte.parseByte(getStringParameter(name));
     } catch (Exception e) {
-      return def;
-    }
-  }
-
-  /**
-   * Gets the char parameter.
-   *
-   * @param name the name
-   * @return the char parameter
-   */
-  public Character getCharParameter(String name) {
-    return getCharParameter(name, null);
-  }
-
-  /**
-   * Gets the char parameter.
-   *
-   * @param name the name
-   * @param def the def
-   * @return the char parameter
-   */
-  private Character getCharParameter(String name, Character def) {
-    try {
-      String param = getStringParameter(name);
-      return param.charAt(0);
-    } catch (Exception e) {
-      return def;
+      return null;
     }
   }
 
@@ -364,21 +307,10 @@ public class ParameterParser {
    * @return the double parameter
    */
   public Double getDoubleParameter(String name) {
-    return getDoubleParameter(name, null);
-  }
-
-  /**
-   * Gets the double parameter.
-   *
-   * @param name the name
-   * @param def the def
-   * @return the double parameter
-   */
-  private Double getDoubleParameter(String name, Double def) {
     try {
       return Double.parseDouble(getStringParameter(name));
     } catch (Exception e) {
-      return def;
+      return null;
     }
   }
 
@@ -389,21 +321,10 @@ public class ParameterParser {
    * @return the float parameter
    */
   public Float getFloatParameter(String name) {
-    return getFloatParameter(name, null);
-  }
-
-  /**
-   * Gets the float parameter.
-   *
-   * @param name the name
-   * @param def the def
-   * @return the float parameter
-   */
-  private Float getFloatParameter(String name, Float def) {
     try {
       return Float.parseFloat(getStringParameter(name));
     } catch (Exception e) {
-      return def;
+      return null;
     }
   }
 
@@ -412,7 +333,6 @@ public class ParameterParser {
    *
    * @param name the name
    * @return the integer parameter
-   * @throws Exception the exception
    */
   public Integer getIntegerParameter(String name) {
     return getIntegerParameter(name, null);
@@ -424,7 +344,6 @@ public class ParameterParser {
    * @param name The parameter name
    * @param def The default value to return
    * @return The converted Integer
-   * @throws Exception
    */
   public Integer getIntegerParameter(String name, Integer def) {
     try {
@@ -452,21 +371,10 @@ public class ParameterParser {
    * @return the long parameter
    */
   public Long getLongParameter(String name) {
-    return getLongParameter(name, null);
-  }
-
-  /**
-   * Gets the long parameter.
-   *
-   * @param name the name
-   * @param def the def
-   * @return the long parameter
-   */
-  private Long getLongParameter(String name, Long def) {
     try {
       return Long.parseLong(getStringParameter(name));
     } catch (Exception e) {
-      return def;
+      return null;
     }
   }
 
@@ -477,21 +385,10 @@ public class ParameterParser {
    * @return the short parameter
    */
   public Short getShortParameter(String name) {
-    return getShortParameter(name, null);
-  }
-
-  /**
-   * Gets the short parameter.
-   *
-   * @param name the name
-   * @param def the def
-   * @return the short parameter
-   */
-  private Short getShortParameter(String name, Short def) {
     try {
       return Short.parseShort(getStringParameter(name));
     } catch (Exception e) {
-      return def;
+      return null;
     }
   }
 
@@ -504,7 +401,7 @@ public class ParameterParser {
    */
   public Integer[] getIntegerParameterArray(String name) {
     List<Integer> ints = new ArrayList<>();
-    String arr[] = getStringParameterArray(name, new String[] {});
+    String[] arr = getStringParameterArray(name, new String[] {});
     for (String value : arr) {
       ints.add(Integer.parseInt(value));
     }
@@ -520,7 +417,7 @@ public class ParameterParser {
    */
   public Double[] getDoubleParameterArray(String name) {
     List<Double> ints = new ArrayList<>();
-    String arr[] = getStringParameterArray(name, new String[] {});
+    String[] arr = getStringParameterArray(name, new String[] {});
     for (String value : arr) {
       ints.add(Double.parseDouble(value));
     }
@@ -536,7 +433,7 @@ public class ParameterParser {
    */
   public Float[] getFloatParameterArray(String name) {
     List<Float> ints = new ArrayList<>();
-    String arr[] = getStringParameterArray(name, new String[] {});
+    String[] arr = getStringParameterArray(name, new String[] {});
     for (String value : arr) {
       ints.add(Float.parseFloat(value));
     }
@@ -552,7 +449,7 @@ public class ParameterParser {
    */
   public Long[] getLongParameterArray(String name) {
     List<Long> ints = new ArrayList<>();
-    String arr[] = getStringParameterArray(name, new String[] {});
+    String[] arr = getStringParameterArray(name, new String[] {});
     for (String value : arr) {
       ints.add(Long.parseLong(value));
     }
@@ -568,7 +465,7 @@ public class ParameterParser {
    */
   public Short[] getShortParameterArray(String name) {
     List<Short> ints = new ArrayList<>();
-    String arr[] = getStringParameterArray(name, new String[] {});
+    String[] arr = getStringParameterArray(name, new String[] {});
     for (String value : arr) {
       ints.add(Short.parseShort(value));
     }
@@ -584,7 +481,7 @@ public class ParameterParser {
    */
   public Byte[] getByteParameterArray(String name) {
     List<Byte> ints = new ArrayList<>();
-    String arr[] = getStringParameterArray(name, new String[] {});
+    String[] arr = getStringParameterArray(name, new String[] {});
     for (String value : arr) {
       ints.add(Byte.parseByte(value));
     }
@@ -599,7 +496,7 @@ public class ParameterParser {
    */
   public Boolean[] getBooleanParameterArray(String name) {
     List<Boolean> ints = new ArrayList<>();
-    String arr[] = getStringParameterArray(name, new String[] {});
+    String[] arr = getStringParameterArray(name, new String[] {});
     for (String value : arr) {
       ints.add(Boolean.parseBoolean(value));
     }

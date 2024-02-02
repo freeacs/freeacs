@@ -13,8 +13,6 @@ import org.jfree.data.xy.XYDataset;
  * @author Jarl Andre Hubenthal
  */
 final class ReportURLGenerator extends org.jfree.chart.urls.CustomXYURLGenerator {
-  /** The Constant serialVersionUID. */
-  private static final long serialVersionUID = 1L;
 
   /** The chart. */
   JFreeChart chart;
@@ -23,7 +21,7 @@ final class ReportURLGenerator extends org.jfree.chart.urls.CustomXYURLGenerator
   private String format;
 
   /** The aggregation. */
-  private List<String> aggregation;
+  private final List<String> aggregation;
 
   /**
    * The constructor.

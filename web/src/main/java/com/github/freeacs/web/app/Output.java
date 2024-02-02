@@ -182,7 +182,7 @@ public class Output {
         "PROFILE_DROPDOWN", InputSelectionFactory.getProfileSelection(prInput, utInput, acs));
     Input grInput = Input.getStringInput("group");
     templateMap.put(
-        "GROUP_DROPDOWN", InputSelectionFactory.getGroupSelection(grInput, currentUnittype, acs));
+        "GROUP_DROPDOWN", InputSelectionFactory.getGroupSelection(grInput, currentUnittype));
     Input jInput = Input.getStringInput("job");
     templateMap.put(
         "JOB_DROPDOWN",
