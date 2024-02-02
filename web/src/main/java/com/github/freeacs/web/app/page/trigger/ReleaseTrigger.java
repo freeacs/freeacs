@@ -27,19 +27,6 @@ public class ReleaseTrigger {
   private String syslogPageQueryString;
   private ScriptExecution scriptExecution;
   private Trigger trigger;
-
-  public void setNoEvents(int noEvents) {
-    this.noEvents = noEvents;
-  }
-
-  public void setNoEventsPrUnit(int noEventsPrUnit) {
-    this.noEventsPrUnit = noEventsPrUnit;
-  }
-
-  public void setNoUnits(int noUnits) {
-    this.noUnits = noUnits;
-  }
-
   private int noEvents;
   private int noEventsPrUnit;
   private int noUnits;
