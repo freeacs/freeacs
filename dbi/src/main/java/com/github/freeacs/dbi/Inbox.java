@@ -23,11 +23,10 @@ public class Inbox {
    */
   public synchronized void addToInbox(Message m) {
     for (Message filter : filters) {
-      if ((filter.getSender() != null && !filter.getSender().equals(m.getSender()))
-          || (filter.getMessageType() != null
-              && !filter.getMessageType().equals(m.getMessageType()))
-          || (filter.getObjectType() != null && !filter.getObjectType().equals(m.getObjectType()))
-          || (filter.getReceiver() != null && !filter.getReceiver().equals(m.getReceiver()))) {
+      if (!(filter.getSender() == null || filter.getSender().equals(m.getSender()))
+              || !(filter.getMessageType() == null || filter.getMessageType().equals(m.getMessageType()))
+              || !(filter.getObjectType() == null || filter.getObjectType().equals(m.getObjectType()))
+              || !(filter.getReceiver() == null || filter.getReceiver().equals(m.getReceiver()))) {
         continue;
       }
       if (logger.isDebugEnabled()) {
