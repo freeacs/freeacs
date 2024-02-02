@@ -9,9 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Inbox {
-  private static Logger logger = LoggerFactory.getLogger(Inbox.class);
-  private Map<Integer, Message> map = new TreeMap<>();
-  private List<Message> filters = new ArrayList<>();
+  private static final Logger logger = LoggerFactory.getLogger(Inbox.class);
+  private final Map<Integer, Message> map = new TreeMap<>();
+  private final List<Message> filters = new ArrayList<>();
 
   public void addFilter(Message m) {
     filters.add(m);

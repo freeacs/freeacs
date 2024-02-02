@@ -13,15 +13,16 @@ package test.de.javawi.jstun.util;
 
 import de.javawi.jstun.util.Address;
 import de.javawi.jstun.util.UtilityException;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Disabled("Testcase ? Why?")
 public class AddressTest {
   Address address;
 
+  @BeforeEach
   protected void setUp() throws Exception {
     address = new Address("192.168.100.1");
   }
@@ -29,6 +30,7 @@ public class AddressTest {
   /*
    * Test method for 'de.javawi.jstun.util.Address.Address(int, int, int, int)'
    */
+  @Test
   public void testAddressIntIntIntInt() {
     try {
       Address comp = new Address(192, 168, 100, 1);
@@ -41,6 +43,7 @@ public class AddressTest {
   /*
    * Test method for 'de.javawi.jstun.util.Address.Address(String)'
    */
+  @Test
   public void testAddressString() {
     try {
       Address comp = new Address("192.168.100.1");
@@ -53,6 +56,7 @@ public class AddressTest {
   /*
    * Test method for 'de.javawi.jstun.util.Address.Address(byte[])'
    */
+  @Test
   public void testAddressByteArray() {
     try {
       byte[] data = {(byte) 192, (byte) 168, (byte) 100, (byte) 1};
@@ -66,6 +70,7 @@ public class AddressTest {
   /*
    * Test method for 'de.javawi.jstun.util.Address.toString()'
    */
+  @Test
   public void testToString() {
     try {
       Address comp = new Address("192.168.100.1");
@@ -78,6 +83,7 @@ public class AddressTest {
   /*
    * Test method for 'de.javawi.jstun.util.Address.getBytes()'
    */
+  @Test
   public void testGetBytes() {
     try {
       byte[] data = address.getBytes();
@@ -93,6 +99,7 @@ public class AddressTest {
   /*
    * Test method for 'de.javawi.jstun.util.Address.getInetAddress()'
    */
+  @Test
   public void testGetInetAddress() {
     try {
       Address comp = new Address("192.168.100.1");
@@ -109,6 +116,7 @@ public class AddressTest {
   /*
    * Test method for 'de.javawi.jstun.util.Address.equals(Object)'
    */
+  @Test
   public void testEqualsObject() {
     try {
       Address comp = new Address("192.168.100.1");

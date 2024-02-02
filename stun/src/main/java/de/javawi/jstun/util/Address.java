@@ -20,22 +20,19 @@ public class Address {
   int thirdOctet;
   int fourthOctet;
 
-  public Address(int firstOctet, int secondOctet, int thirdOctet, int fourthOctet)
-      throws UtilityException {
-    if (firstOctet < 0
-        || firstOctet > 255
-        || secondOctet < 0
-        || secondOctet > 255
-        || thirdOctet < 0
-        || thirdOctet > 255
-        || fourthOctet < 0
-        || fourthOctet > 255) {
+  public Address(int... octets) throws UtilityException {
+    if (octets.length != 4) {
       throw new UtilityException("Address is malformed.");
     }
-    this.firstOctet = firstOctet;
-    this.secondOctet = secondOctet;
-    this.thirdOctet = thirdOctet;
-    this.fourthOctet = fourthOctet;
+    for (int octet : octets) {
+      if (octet < 0 || octet > 255) {
+        throw new UtilityException("Address is malformed.");
+      }
+    }
+    this.firstOctet = octets[0];
+    this.secondOctet = octets[1];
+    this.thirdOctet = octets[2];
+    this.fourthOctet = octets[3];
   }
 
   public Address(String address) throws UtilityException {
