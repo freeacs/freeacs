@@ -14,150 +14,133 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class TR069DMLoader {
-  private static void updateParameters(
-      Map<String, TR069DMParameter> map, String objectName, NodeList nList) throws Exception {
+  private static void updateParameters(Map<String, TR069DMParameter> map, String objectName, NodeList nList) {
     for (int i = 0; i < nList.getLength(); i++) {
       Node n = nList.item(i);
       TR069DMParameter parameter = new TR069DMParameter();
+      processNodeAttributes(n, parameter, objectName, map);
+      processNodeChildren(n, parameter);
+    }
+  }
 
-      // Find attributes
-      NamedNodeMap nnm = n.getAttributes();
-      for (int j = 0; j < nnm.getLength(); j++) {
-        Node attribute = nnm.item(j);
-        if ("name".equals(attribute.getNodeName())) {
+  private static void processNodeAttributes(Node n, TR069DMParameter parameter, String objectName, Map<String, TR069DMParameter> map) {
+    NamedNodeMap nnm = n.getAttributes();
+    for (int j = 0; j < nnm.getLength(); j++) {
+      Node attribute = nnm.item(j);
+      switch (attribute.getNodeName()) {
+        case "name":
           parameter.setName(objectName + attribute.getNodeValue());
           map.put(parameter.getName(), parameter);
-        }
-        if ("access".equals(attribute.getNodeName())) {
+          break;
+        case "access":
           parameter.setReadOnly("readOnly".equals(attribute.getNodeValue()));
-        }
-        if ("dmr:version".equals(attribute.getNodeName())) {
+          break;
+        case "dmr:version":
           parameter.setDataModelVersion(attribute.getNodeValue());
-        }
-        if ("activeNotify".equals(attribute.getNodeName())) {
+          break;
+        case "activeNotify":
           parameter.setNotification(attribute.getNodeValue());
-        }
-        if ("status".equals(attribute.getNodeName())) {
+          break;
+        case "status":
           parameter.setDataModelStatus(attribute.getNodeValue());
-        }
-        if ("forcedInform".equals(attribute.getNodeName())) {
+          break;
+        case "forcedInform":
           parameter.setForcedInform("true".equals(attribute.getNodeValue()));
-        }
-      }
-
-      // Find children
-      NodeList children = n.getChildNodes();
-      for (int j = 0; j < children.getLength(); j++) {
-        if (!children.item(j).hasChildNodes()) {
-          continue;
-        }
-        Element syntaxElement = (Element) children.item(j);
-        if ("description".equals(syntaxElement.getNodeName())) {
-          parameter.setDescription(syntaxElement.getTextContent());
-        }
-        if ("syntax".equals(syntaxElement.getNodeName())) {
-          String command = syntaxElement.getAttribute("command");
-          if ("true".equals(command)) {
-            parameter.setCommand(true);
-          }
-          NodeList syntaxChildren = syntaxElement.getChildNodes();
-          for (int k = 0; k < syntaxChildren.getLength(); k++) {
-            Node syntaxChildNode = syntaxChildren.item(k);
-            String name = syntaxChildNode.getNodeName();
-            if ("#text".equals(name) || "default".equals(name)) {
-              continue;
-            }
-            if ("dataType".equals(name)) {
-              String dataType = ((Element) syntaxChildNode).getAttribute("ref");
-              parameter.setDatatype(TR069DMType.valueOf(dataType.toUpperCase()));
-              continue;
-            }
-            if ("list".equals(name)) {
-              parameter.setList(true);
-            } else {
-              parameter.setDatatype(TR069DMType.valueOf(name.toUpperCase()));
-              NodeList datatypeChildren = syntaxChildNode.getChildNodes();
-              for (int l = 0; l < datatypeChildren.getLength(); l++) {
-                // May find size, range, enumeration, pattern
-                Node datatypeChild = datatypeChildren.item(l);
-                if ("range".equals(datatypeChild.getNodeName())) {
-                  Element rangeElement = (Element) datatypeChild;
-                  if (rangeElement.getAttribute("minInclusive") != null
-                      && !"".equals(rangeElement.getAttribute("minInclusive"))) {
-                    parameter
-                        .getRange()
-                        .setMin(Long.valueOf(rangeElement.getAttribute("minInclusive")));
-                  }
-                  if (rangeElement.getAttribute("maxInclusive") != null
-                      && !"".equals(rangeElement.getAttribute("maxInclusive"))) {
-                    parameter
-                        .getRange()
-                        .setMax(Long.valueOf(rangeElement.getAttribute("maxInclusive")));
-                  }
-                }
-                if ("size".equals(datatypeChild.getNodeName())) {
-                  Element sizeElement = (Element) datatypeChild;
-                  if (sizeElement.getAttribute("minLength") != null
-                      && !"".equals(sizeElement.getAttribute("minLength"))) {
-                    parameter
-                        .getRange()
-                        .setMin(Long.valueOf(sizeElement.getAttribute("minLength")));
-                  }
-                  if (sizeElement.getAttribute("maxLength") != null
-                      && !"".equals(sizeElement.getAttribute("maxLength"))) {
-                    parameter
-                        .getRange()
-                        .setMax(Long.valueOf(sizeElement.getAttribute("maxLength")));
-                  }
-                }
-                if ("pattern".equals(datatypeChild.getNodeName())) {
-                  Element patternElement = (Element) datatypeChild;
-                  List<StringType> enums = parameter.getEnumeration();
-                  StringType st = null;
-                  if (!enums.isEmpty()) {
-                    st = enums.get(enums.size() - 1);
-                  }
-                  if (st != null) {
-                    if (st.getPattern() == null) {
-                      st.setPattern(patternElement.getAttribute("value"));
-                    } else {
-                      st = new StringType(null, patternElement.getAttribute("value"));
-                      enums.add(st);
-                    }
-                  } else {
-                    st = new StringType(null, patternElement.getAttribute("value"));
-                    enums.add(st);
-                  }
-                }
-                if ("enumeration".equals(datatypeChild.getNodeName())) {
-                  Element enumeration = (Element) datatypeChild;
-                  List<StringType> enums = parameter.getEnumeration();
-                  StringType st = null;
-                  if (!enums.isEmpty()) {
-                    st = enums.get(enums.size() - 1);
-                  }
-                  if (st != null) {
-                    if (st.getValue() == null) {
-                      st.setValue(enumeration.getAttribute("value"));
-                    } else {
-                      st = new StringType(enumeration.getAttribute("value"), null);
-                      enums.add(st);
-                    }
-                  } else {
-                    st = new StringType(enumeration.getAttribute("value"), null);
-                    enums.add(st);
-                  }
-                }
-              }
-            }
-          }
-        }
+          break;
       }
     }
   }
 
-  private static void updateDatamodelFromInputStream(
-      Map<String, TR069DMParameter> map, InputStream inputStream) throws Exception {
+  private static void processNodeChildren(Node n, TR069DMParameter parameter) {
+    NodeList children = n.getChildNodes();
+    for (int j = 0; j < children.getLength(); j++) {
+      if (!children.item(j).hasChildNodes()) {
+        continue;
+      }
+      Element childElement = (Element) children.item(j);
+      switch (childElement.getNodeName()) {
+        case "description":
+          parameter.setDescription(childElement.getTextContent());
+          break;
+        case "syntax":
+          processSyntax(childElement, parameter);
+          break;
+      }
+    }
+  }
+
+  private static void processSyntax(Element syntaxElement, TR069DMParameter parameter) {
+    String command = syntaxElement.getAttribute("command");
+    if ("true".equals(command)) {
+      parameter.setCommand(true);
+    }
+    NodeList syntaxChildren = syntaxElement.getChildNodes();
+    for (int k = 0; k < syntaxChildren.getLength(); k++) {
+      Node syntaxChildNode = syntaxChildren.item(k);
+      if (!"#text".equals(syntaxChildNode.getNodeName()) && !"default".equals(syntaxChildNode.getNodeName())) {
+        processSyntaxChild(syntaxChildNode, parameter);
+      }
+    }
+  }
+
+  private static void processSyntaxChild(Node syntaxChildNode, TR069DMParameter parameter) {
+    switch (syntaxChildNode.getNodeName()) {
+      case "dataType":
+        String dataType = ((Element) syntaxChildNode).getAttribute("ref");
+        parameter.setDatatype(TR069DMType.valueOf(dataType.toUpperCase()));
+        break;
+      case "list":
+        parameter.setList(true);
+        break;
+      default:
+        parameter.setDatatype(TR069DMType.valueOf(syntaxChildNode.getNodeName().toUpperCase()));
+        processDatatypeChildren(syntaxChildNode, parameter);
+        break;
+    }
+  }
+
+  private static void processDatatypeChildren(Node syntaxChildNode, TR069DMParameter parameter) {
+    NodeList datatypeChildren = syntaxChildNode.getChildNodes();
+    for (int l = 0; l < datatypeChildren.getLength(); l++) {
+      Node datatypeChild = datatypeChildren.item(l);
+      switch (datatypeChild.getNodeName()) {
+        case "range":
+        case "size":
+          processRangeOrSize((Element) datatypeChild, parameter);
+          break;
+        case "pattern":
+          processPattern((Element) datatypeChild, parameter);
+          break;
+        case "enumeration":
+          processEnumeration((Element) datatypeChild, parameter);
+          break;
+      }
+    }
+  }
+
+  private static void processRangeOrSize(Element element, TR069DMParameter parameter) {
+    String min = element.getAttribute("minInclusive");
+    if (min.isEmpty()) min = element.getAttribute("minLength");
+    if (!min.isEmpty()) parameter.getRange().setMin(Long.valueOf(min));
+
+    String max = element.getAttribute("maxInclusive");
+    if (max.isEmpty()) max = element.getAttribute("maxLength");
+    if (!max.isEmpty()) parameter.getRange().setMax(Long.valueOf(max));
+  }
+
+  private static void processPattern(Element patternElement, TR069DMParameter parameter) {
+    List<StringType> enums = parameter.getEnumeration();
+    StringType st = new StringType(null, patternElement.getAttribute("value"));
+    enums.add(st);
+  }
+
+  private static void processEnumeration(Element enumeration, TR069DMParameter parameter) {
+    List<StringType> enums = parameter.getEnumeration();
+    StringType st = new StringType(enumeration.getAttribute("value"), null);
+    enums.add(st);
+  }
+
+  private static void updateDatamodelFromInputStream(Map<String, TR069DMParameter> map, InputStream inputStream) throws Exception {
     DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
     DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
     Document doc = dBuilder.parse(inputStream);
@@ -188,8 +171,7 @@ public class TR069DMLoader {
 
   public static TR069DMParameterMap load() throws Exception {
     Map<String, TR069DMParameter> map = new TreeMap<>();
-    String[] filenames =
-        new String[] {"tr-098-1-4-0-full.xml", "tr-181-1-2-0-full.xml", "tr-104-1-1-0-full.xml"};
+    String[] filenames = {"tr-098-1-4-0-full.xml", "tr-181-1-2-0-full.xml", "tr-104-1-1-0-full.xml"};
     for (String filename : filenames) {
       InputStream is = getInputStream(filename);
       if (is == null) {
