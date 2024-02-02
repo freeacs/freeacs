@@ -10,11 +10,13 @@ import com.github.freeacs.tr069.background.ActiveDeviceDetectionTask;
 import com.github.freeacs.tr069.background.MessageListenerTask;
 import com.github.freeacs.tr069.background.ScheduledKickTask;
 import com.github.freeacs.tr069.base.BaseCache;
+import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.tr069.http.HTTPRequestData;
 import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.http.HTTPResponseData;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.methods.ProvisioningStrategy;
+import com.github.freeacs.tr069.xml.Parser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +30,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -75,54 +76,54 @@ public class Tr069Controller {
      * test case.
      */
     @PostMapping(value = {"${context-path}", "${context-path}/prov"})
-    public ResponseEntity<String> doPost(@RequestBody(required = false) String xmlPayload,
-                                         Authentication authentication,
-                                         HttpServletRequest req,
-                                         HttpServletResponse res) {
-        HTTPRequestResponseData reqRes = null;
+    public ResponseEntity<String> doPost(Authentication authentication,
+                                         HttpServletRequest request,
+                                         HttpServletResponse response) {
+        HTTPRequestResponseData requestResponseData = null;
         try {
-            reqRes = new HTTPRequestResponseData(req);
-            reqRes.getRequestData().setContextPath(contextPath);
-            reqRes.getRequestData().setXml(xmlPayload);
-            if (authentication != null && reqRes.getSessionData().getUnit() == null) {
+            requestResponseData = new HTTPRequestResponseData(request);
+            requestResponseData.getRequestData().setContextPath(contextPath);
+            Parser parser = new Parser(request.getInputStream(), request.getContentLength(), Log.isConversationLogEnabled());
+            requestResponseData.getRequestData().setParser(parser);
+            if (authentication != null && requestResponseData.getSessionData().getUnit() == null) {
                 String username = ((AcsUnit) authentication.getPrincipal()).getUsername();
-                SessionData sessionData = reqRes.getSessionData();
+                SessionData sessionData = requestResponseData.getSessionData();
                 sessionData.setUnitId(username);
                 sessionData.setUnit(dbi.getACSUnit().getUnitById(username));
             }
 
-            ProvisioningStrategy.getStrategy(properties, dbi).process(reqRes);
+            ProvisioningStrategy.getStrategy(properties, dbi).process(requestResponseData);
 
             return ResponseEntity
-                    .status("Empty".equals(reqRes.getResponseData().getMethod())
+                    .status("Empty".equals(requestResponseData.getResponseData().getMethod())
                             ? HttpStatus.NO_CONTENT
                             : HttpStatus.OK)
-                    .contentType(StringUtils.isNotEmpty(reqRes.getResponseData().getXml())
+                    .contentType(StringUtils.isNotEmpty(requestResponseData.getResponseData().getXml())
                             ? MediaType.TEXT_XML
                             : MediaType.TEXT_HTML)
-                    .headers(StringUtils.isNotEmpty(reqRes.getResponseData().getXml())
+                    .headers(StringUtils.isNotEmpty(requestResponseData.getResponseData().getXml())
                             ? getSOAPActionHeader()
                             : null)
-                    .body(reqRes.getResponseData().getXml());
+                    .body(requestResponseData.getResponseData().getXml());
         } catch (Throwable t) {
             log.error("An error occurred during processing the request", t);
-            if (reqRes != null) {
-                reqRes.setThrowable(t);
+            if (requestResponseData != null) {
+                requestResponseData.setThrowable(t);
             }
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
         } finally {
-            if (reqRes != null && endOfSession(reqRes)) {
+            if (requestResponseData != null && endOfSession(requestResponseData)) {
                 log.debug("End of session is reached, " +
                         "will write queued unit parameters " +
-                        "if unit (" + reqRes.getSessionData().getUnit() + ") is not null");
-                if (reqRes.getSessionData().getUnit() != null) {
-                    writeQueuedUnitParameters(reqRes);
+                        "if unit (" + requestResponseData.getSessionData().getUnit() + ") is not null");
+                if (requestResponseData.getSessionData().getUnit() != null) {
+                    writeQueuedUnitParameters(requestResponseData);
                 }
-                SessionLogging.log(reqRes);
-                BaseCache.removeSessionData(reqRes.getSessionData().getUnitId());
-                BaseCache.removeSessionData(reqRes.getSessionData().getId());
-                res.setHeader("Connection", "close");
-                new SecurityContextLogoutHandler().logout(req, null, null);
+                SessionLogging.log(requestResponseData);
+                BaseCache.removeSessionData(requestResponseData.getSessionData().getUnitId());
+                BaseCache.removeSessionData(requestResponseData.getSessionData().getId());
+                response.setHeader("Connection", "close");
+                new SecurityContextLogoutHandler().logout(request, null, null);
             }
         }
     }

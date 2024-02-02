@@ -8,7 +8,7 @@ public class FaultRequestProcessStrategy implements RequestProcessStrategy {
     @Override
     public void process(HTTPRequestResponseData reqRes) throws Exception {
         reqRes.getRequestData().setMethod(ProvisioningMethod.Fault.name());
-        Parser parser = new Parser(reqRes.getRequestData().getXml());
+        Parser parser = reqRes.getRequestData().getParser();
         reqRes.getRequestData().setFault(parser.getFault());
     }
 }

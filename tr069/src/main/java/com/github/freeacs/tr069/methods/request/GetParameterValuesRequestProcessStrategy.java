@@ -17,8 +17,7 @@ public class GetParameterValuesRequestProcessStrategy implements RequestProcessS
     @Override
     public void process(HTTPRequestResponseData reqRes) throws Exception {
         reqRes.getRequestData().setMethod(ProvisioningMethod.GetParameterValues.name());
-        log.debug("Will process XML: " + reqRes.getRequestData().getXml().length() + " char");
-        Parser parser = new Parser(reqRes.getRequestData().getXml());
+        Parser parser = reqRes.getRequestData().getParser();
         SessionData sessionData = reqRes.getSessionData();
         if (parser.getHeader().getNoMoreRequests() != null
                 && parser.getHeader().getNoMoreRequests().getNoMoreRequestFlag()) {

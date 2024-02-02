@@ -7,14 +7,12 @@ import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.methods.decision.DecisionStrategy;
 import com.github.freeacs.tr069.methods.request.RequestProcessStrategy;
 import com.github.freeacs.tr069.methods.response.ResponseCreateStrategy;
+import com.github.freeacs.tr069.xml.Parser;
 import com.github.freeacs.tr069.xml.Response;
 import com.github.freeacs.tr069.xml.XMLFormatterUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
-
-import static com.github.freeacs.tr069.CwmpVersion.extractVersionFrom;
-import static com.github.freeacs.tr069.methods.ProvisioningMethod.extractMethodFrom;
 
 @Slf4j
 public abstract class ProvisioningStrategy {
@@ -38,21 +36,19 @@ public abstract class ProvisioningStrategy {
         @Override
         public void process(HTTPRequestResponseData reqRes) throws Exception {
             // 0. Pre-processing
-            String xml = reqRes.getRequestData().getXml();
-            ProvisioningMethod requestMethod = extractMethodFrom(xml);
-            reqRes.getRequestData().setXml(XMLFormatterUtils.filterInvalidCharacters(xml));
-            reqRes.getRequestData().setMethod(requestMethod.name());
-            reqRes.getSessionData().setCwmpVersionNumber(extractVersionFrom(xml));
+            Parser xml = reqRes.getRequestData().getParser();
+            reqRes.getRequestData().setMethod(xml.getCwmpMethod().name());
+            reqRes.getSessionData().setCwmpVersionNumber(xml.getCwmpVersion());
 
             // 1. process the request
             logWillProcessRequest(reqRes);
-            RequestProcessStrategy.getStrategy(requestMethod, properties, dbi).process(reqRes);
+            RequestProcessStrategy.getStrategy(xml.getCwmpMethod(), properties, dbi).process(reqRes);
             if (Log.isConversationLogEnabled()) {
                 logConversationRequest(reqRes);
             }
 
             // 2. decide what to do next
-            DecisionStrategy.getStrategy(requestMethod, properties, dbi).makeDecision(reqRes);
+            DecisionStrategy.getStrategy(xml.getCwmpMethod(), properties, dbi).makeDecision(reqRes);
 
             // 3. Create and set response
             ProvisioningMethod responseMethod = getResponseMethod(reqRes);
@@ -77,9 +73,9 @@ public abstract class ProvisioningStrategy {
          */
         private void logConversationRequest(HTTPRequestResponseData reqRes) {
             String unitId = Optional.ofNullable(reqRes.getSessionData().getUnitId()).orElse("Unknown");
-            String xml = reqRes.getRequestData().getXml();
-            if (properties.isPrettyPrintQuirk(reqRes.getSessionData())) {
-                xml = XMLFormatterUtils.prettyPrintXmlString(reqRes.getRequestData().getXml());
+            String xml = reqRes.getRequestData().getParser().getRawXMLForDebugging();
+            if (xml != null && properties.isPrettyPrintQuirk(reqRes.getSessionData())) {
+                xml = XMLFormatterUtils.prettyPrintXmlString(xml);
             }
             Log.conversation(reqRes.getSessionData(), "============== FROM CPE ( " + unitId + " ) TO ACS ===============\n" + xml);
         }
