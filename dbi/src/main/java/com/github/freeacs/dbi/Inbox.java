@@ -22,13 +22,14 @@ public class Inbox {
    * field to NULL is like matching every message on that field Negative matches is not supported
    */
   public synchronized void addToInbox(Message m) {
-    for (Message filter : filters) {
-      if (!(filter.getSender() == null || filter.getSender().equals(m.getSender()))
-              || !(filter.getMessageType() == null || filter.getMessageType().equals(m.getMessageType()))
-              || !(filter.getObjectType() == null || filter.getObjectType().equals(m.getObjectType()))
-              || !(filter.getReceiver() == null || filter.getReceiver().equals(m.getReceiver()))) {
-        continue;
-      }
+    boolean matchesAnyFilter = filters.stream().anyMatch(filter ->
+            (filter.getSender() == null || filter.getSender().equals(m.getSender())) &&
+                    (filter.getMessageType() == null || filter.getMessageType().equals(m.getMessageType())) &&
+                    (filter.getObjectType() == null || filter.getObjectType().equals(m.getObjectType())) &&
+                    (filter.getReceiver() == null || filter.getReceiver().equals(m.getReceiver()))
+    );
+
+    if (matchesAnyFilter) {
       if (logger.isDebugEnabled()) {
         logger.debug("Message: [" + m + "] was added to an inbox");
       }
