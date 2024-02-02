@@ -2,13 +2,16 @@ package com.github.freeacs.tr069.xml;
 
 import com.github.freeacs.tr069.exception.TR069Exception;
 import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
-import lombok.Data;
+import lombok.Getter;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.StringReader;
 import java.util.HashMap;
@@ -18,8 +21,10 @@ import java.util.Map;
  * The class is responsible for parsing the SOAP messages from the CPE. The messages could be a
  * TR-069 request or a TR-069 response.
  */
-@Data
+@Getter
 public class Parser extends DefaultHandler {
+  public static final String FEATURE_DISALLOW_DOCTYPE_DECL = "http://apache.org/xml/features/disallow-doctype-decl";
+
   private static final String MAX_ENVELOPES_TAG = "MaxEnvelopes";
   private static final String CURRENT_TIME_TAG = "CurrentTime";
   private static final String RETRY_COUNT_TAG = "RetryCount";
@@ -30,8 +35,8 @@ public class Parser extends DefaultHandler {
   private static final String FAULT_STRUCT_TAG = "FaultStruct";
 
   private SAXParserFactory factory;
-  private XMLReader xmlReader;
-  private Map<String, ContentHandler> parsers;
+  private final XMLReader xmlReader;
+  private final Map<String, ContentHandler> parsers;
   private StringBuilder currTextContent = new StringBuilder();
 
   private Header header;
@@ -86,9 +91,10 @@ public class Parser extends DefaultHandler {
   }
 
   /** @return a new instance of a SAXParserFactory */
-  private SAXParserFactory getParserFactory() {
+  private SAXParserFactory getParserFactory() throws SAXNotSupportedException, SAXNotRecognizedException, ParserConfigurationException {
     if (factory == null) {
       factory = SAXParserFactory.newInstance();
+      factory.setFeature(FEATURE_DISALLOW_DOCTYPE_DECL, true);
       factory.setNamespaceAware(true);
     }
 
@@ -96,7 +102,7 @@ public class Parser extends DefaultHandler {
   }
 
   private static InputSource getStringAsSource(String xml) {
-    if (xml != null && !"".equals(xml)) {
+    if (xml != null && !xml.isEmpty()) {
       StringReader xmlReader = new StringReader(xml);
       return new InputSource(xmlReader);
     }
