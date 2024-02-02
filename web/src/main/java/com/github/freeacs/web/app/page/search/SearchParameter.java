@@ -13,6 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SearchParameter {
+  private final String displayText;
   private final String id;
   private final String value;
   private final Operator operator;
@@ -26,15 +27,18 @@ public class SearchParameter {
    * Instantiates a new search parameter.
    *
    * @param theParameterId the key
+   * @param theDisplayText the common
    * @param theParameterValue the value
    */
   public SearchParameter(
       String theParameterId,
+      String theDisplayText,
       String theParameterValue,
       Operator operator,
       ParameterDataType type,
       Boolean isEnabled) {
     this.id = theParameterId;
+    this.displayText = theDisplayText;
     this.value = theParameterValue;
     this.operator = operator;
     this.type = type;

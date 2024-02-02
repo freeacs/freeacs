@@ -332,7 +332,8 @@ public class SearchPage extends AbstractWebPage {
         groupParamsList.add(
             new SearchParameter(
                 theParameterName,
-                    theParameterValue,
+                theParameterDisplayText,
+                theParameterValue,
                 operator,
                 type,
                 isEnabled));
@@ -362,7 +363,7 @@ public class SearchPage extends AbstractWebPage {
       }
 
       searchableParamsList.add(
-          new SearchParameter(utpName, value, operator, type, isEnabled));
+          new SearchParameter(utpName, common, value, operator, type, isEnabled));
     }
 
     rootMap.put("searchables", searchableParamsList);
@@ -390,7 +391,7 @@ public class SearchPage extends AbstractWebPage {
         }
 
         volatileParameters.add(
-            new SearchParameter(utpName, value, operator, type, isEnabled));
+            new SearchParameter(utpName, utpName, value, operator, type, isEnabled));
       }
     }
 
