@@ -218,9 +218,9 @@ public class UnittypeXML {
 
     Parameters() {}
 
-    @SuppressWarnings("rawtypes")
+    
     public void load(Node node, Enums enums) throws Exception {
-      List parameter_nodes = node.selectNodes("parameter");
+      List<?> parameter_nodes = node.selectNodes("parameter");
       for (Object parameter_node : parameter_nodes) {
         Parameter parameter = new Parameter();
         parameter.load((Node) parameter_node, enums);
@@ -243,7 +243,7 @@ public class UnittypeXML {
 
   UnittypeXML() {}
 
-  @SuppressWarnings("rawtypes")
+  
   public void load(String file_input) throws Exception {
     SAXParserFactory factory = SAXParserFactory.newInstance();
     factory.setXIncludeAware(true);
@@ -262,7 +262,7 @@ public class UnittypeXML {
     enums.load(document.selectSingleNode("//unittype/parameters/enums"));
 
     parameters = new Parameters();
-    List parameters_nodes = document.selectNodes("//unittype/parameters");
+    List<?> parameters_nodes = document.selectNodes("//unittype/parameters");
     for (Object parameters_node : parameters_nodes) {
       Node parameter_node = (Node) parameters_node;
       parameters.load(parameter_node, enums);

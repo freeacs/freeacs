@@ -35,7 +35,7 @@ import com.github.freeacs.web.app.page.report.uidata.RecordUIDataSyslogSumFromRe
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.DateUtils;
 import com.github.freeacs.web.app.util.WebConstants;
-import freemarker.template.TemplateMethodModel;
+import com.github.freeacs.common.freemarker.AbstractTemplateMethodModel;
 import freemarker.template.TemplateModelException;
 import lombok.Getter;
 
@@ -488,7 +488,7 @@ public class UnitListPage extends AbstractWebPage {
   }
 
   /** The Class RecordTotalScoreComparator. */
-  @SuppressWarnings("rawtypes")
+  
   private static class RecordTotalScoreComparator implements Comparator<RecordWrapper> {
     public int compare(RecordWrapper o1, RecordWrapper o2) {
       if (o1.getRecord().getVoIPQuality().get() < o2.getRecord().getVoIPQuality().get()) {
@@ -502,16 +502,11 @@ public class UnitListPage extends AbstractWebPage {
   }
 
   /** The Class RecordSipRegFailedComparator. */
-  @SuppressWarnings("rawtypes")
+  
   private static class RecordSipRegFailedComparator implements Comparator<RecordWrapper> {
     public int compare(RecordWrapper o1, RecordWrapper o2) {
-      if (o1.getRecord().getNoSipServiceTime().get() < o2.getRecord().getNoSipServiceTime().get()) {
-        return 1;
-      }
-      if (o1.getRecord().getNoSipServiceTime().get() > o2.getRecord().getNoSipServiceTime().get()) {
-        return -1;
-      }
-      return 0;
+        return o2.getRecord().getNoSipServiceTime().get()
+                .compareTo(o1.getRecord().getNoSipServiceTime().get());
     }
   }
 
@@ -533,7 +528,7 @@ public class UnitListPage extends AbstractWebPage {
   }
 
   /** The Class IsMosAvgBad. */
-  public class IsMosAvgBad implements TemplateMethodModel {
+  public class IsMosAvgBad implements AbstractTemplateMethodModel {
     /** The units. */
     private final Map<String, Boolean> units = new HashMap<>();
 
@@ -573,7 +568,7 @@ public class UnitListPage extends AbstractWebPage {
   }
 
   /** The Class IsSipRegisterCause. */
-  public class IsSipRegisterCause implements TemplateMethodModel {
+  public class IsSipRegisterCause implements AbstractTemplateMethodModel {
     /** The units. */
     private final Map<String, Boolean> units = new HashMap<>();
 

@@ -19,7 +19,7 @@ import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.security.WebUser;
 import freemarker.template.SimpleScalar;
-import freemarker.template.TemplateMethodModel;
+import com.github.freeacs.common.freemarker.AbstractTemplateMethodModel;
 import freemarker.template.TemplateModelException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -295,14 +295,8 @@ public class PermissionsPage extends AbstractWebPage {
    * Gets the temporary permissions.
    *
    * @return the temporary permissions
-   * @throws IllegalArgumentException the illegal argument exception
-   * @throws SecurityException the security exception
-   * @throws IllegalAccessException the illegal access exception
-   * @throws InvocationTargetException the invocation target exception
-   * @throws NoSuchMethodException the no such method exception
    */
-  private Permission[] getTemporaryPermissions()
-      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+  private Permission[] getTemporaryPermissions() {
     String[] permissions = inputData.getPermission().getStringArray();
     if (permissions == null) {
       return null;
@@ -330,7 +324,7 @@ public class PermissionsPage extends AbstractWebPage {
   }
 
   /** The Class GetUnittypeName. */
-  public class GetUnittypeName implements TemplateMethodModel {
+  public class GetUnittypeName implements AbstractTemplateMethodModel {
     public Object exec(List args) throws TemplateModelException {
       if (args.isEmpty()) {
         throw new TemplateModelException("Specify Unit Type Id");
@@ -342,7 +336,7 @@ public class PermissionsPage extends AbstractWebPage {
   }
 
   /** The Class GetProfileName. */
-  public class GetProfileName implements TemplateMethodModel {
+  public class GetProfileName implements AbstractTemplateMethodModel {
     public Object exec(List args) throws TemplateModelException {
       if (args.size() < 2) {
         throw new TemplateModelException("Specify Unit Type Id and Profile Id");

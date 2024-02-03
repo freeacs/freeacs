@@ -10,7 +10,7 @@ import com.github.freeacs.web.app.table.TableColor;
 import com.github.freeacs.web.app.util.DateUtils;
 import freemarker.template.SimpleObjectWrapper;
 import freemarker.template.SimpleScalar;
-import freemarker.template.TemplateMethodModel;
+import com.github.freeacs.common.freemarker.AbstractTemplateMethodModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import lombok.Getter;
@@ -243,7 +243,7 @@ public class SyslogUtil {
   }
 
   /** The Class GetSeverityText. */
-  public static class GetSeverityText implements TemplateMethodModel {
+  public static class GetSeverityText implements AbstractTemplateMethodModel {
     public String exec(List args) throws TemplateModelException {
       if (args.isEmpty()) {
         throw new TemplateModelException("Wrong number of arguments");
@@ -259,13 +259,13 @@ public class SyslogUtil {
    * @return the facility
    */
   private static String getFacility(String arg) {
-    Integer facilityId = Integer.parseInt((String) arg);
+    Integer facilityId = Integer.parseInt(arg);
     Map facilityMap = SyslogConstants.facilityMap;
     return (String) facilityMap.get(facilityId);
   }
 
   /** The Class GetFacilityText. */
-  public static class GetFacilityText implements TemplateMethodModel {
+  public static class GetFacilityText implements AbstractTemplateMethodModel {
     public String exec(List args) throws TemplateModelException {
       if (args.isEmpty()) {
         throw new TemplateModelException("Wrong number of arguments");
@@ -275,7 +275,7 @@ public class SyslogUtil {
   }
 
   /** The Class GetBackgroundColor. */
-  public static class GetBackgroundColor implements TemplateMethodModel {
+  public static class GetBackgroundColor implements AbstractTemplateMethodModel {
     /** The colors. */
     Map<String, String> colors = new HashMap<>();
 
@@ -296,7 +296,7 @@ public class SyslogUtil {
   }
 
   /** The Class GetFontColor. */
-  public static class GetFontColor implements TemplateMethodModel {
+  public static class GetFontColor implements AbstractTemplateMethodModel {
     /** The colors. */
     Map<String, String> colors = new HashMap<>();
 
@@ -317,7 +317,7 @@ public class SyslogUtil {
   }
 
   /** The Class GetEventMouseOver. */
-  public static class GetEventMouseOver implements TemplateMethodModel {
+  public static class GetEventMouseOver implements AbstractTemplateMethodModel {
     /** The texts. */
     Map<String, String> texts = new HashMap<>();
 
@@ -375,7 +375,7 @@ public class SyslogUtil {
   }
 
   /** The Class GetUnittypeProfileByName. */
-  public static class GetUnittypeProfileByName implements TemplateMethodModel {
+  public static class GetUnittypeProfileByName implements AbstractTemplateMethodModel {
     /** The xaps. */
     private final ACS acs;
 
@@ -417,7 +417,7 @@ public class SyslogUtil {
   }
 
   /** The Class GetUnittypeProfileById. */
-  public static class GetUnittypeProfileById implements TemplateMethodModel {
+  public static class GetUnittypeProfileById implements AbstractTemplateMethodModel {
     /** The xaps. */
     private final ACS acs;
 

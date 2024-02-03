@@ -277,11 +277,11 @@ public class JobPage extends AbstractWebPage {
         InputSelectionFactory.getDropDownSingleSelect(
             inputData.getFilterType(), selectedType, UnittypeParameterTypes.toList()));
     map.put("filterstring", inputData.getFilterString());
-    map.put("acronym", jobStatusMethods.getStatusToAcronymMethod());
-    map.put("original", jobStatusMethods.getStatusFromAcronymMethod());
-    map.put("allowed", jobStatusMethods.getNextAvailableStatusCodesMethod());
-    map.put("finished", jobStatusMethods.getIsStatusFinishedMethod());
-    map.put("ready", jobStatusMethods.getIsStatusReadyMethod());
+    map.put("acronym", jobStatusMethods.getStatusToAcronymConverter());
+    map.put("original", jobStatusMethods.getStatusFromAcronymConverter());
+    map.put("allowed", jobStatusMethods.getAllowedStatusVerificator());
+    map.put("finished", jobStatusMethods.getStatusFinishedVerificator());
+    map.put("ready", jobStatusMethods.getStatusReadyVerificator());
     File selectedFile = unittype.getFiles().getById(inputData.getFileId().getInteger());
     if (selectedFile == null) {
       selectedFile = job.getFile();

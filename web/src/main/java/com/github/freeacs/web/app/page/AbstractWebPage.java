@@ -17,7 +17,7 @@ import com.github.freeacs.web.app.util.TimeFormatter;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.security.AllowedUnittype;
 import freemarker.template.SimpleScalar;
-import freemarker.template.TemplateMethodModel;
+import com.github.freeacs.common.freemarker.AbstractTemplateMethodModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import java.sql.SQLException;
@@ -189,7 +189,7 @@ public abstract class AbstractWebPage implements WebPage {
    *
    * @author Jarl Andre Hubenthal
    */
-  public static class LastIndexOfMethod implements TemplateMethodModel {
+  public static class LastIndexOfMethod implements AbstractTemplateMethodModel {
     public TemplateModel exec(List args) throws TemplateModelException {
       if (args.size() != 2) {
         throw new TemplateModelException("Wrong arguments");
@@ -211,7 +211,7 @@ public abstract class AbstractWebPage implements WebPage {
   }
 
   /** The Class GetParameterValue. */
-  public static class GetParameterValue implements TemplateMethodModel {
+  public static class GetParameterValue implements AbstractTemplateMethodModel {
     /** The xaps unit. */
     private final ACSUnit acsUnit;
 
@@ -248,7 +248,7 @@ public abstract class AbstractWebPage implements WebPage {
   }
 
   /** The Class RowBackgroundColorMethod. */
-  public static class RowBackgroundColorMethod implements TemplateMethodModel {
+  public static class RowBackgroundColorMethod implements AbstractTemplateMethodModel {
     /** The GOOD. */
     private String GOOD = TableColor.GREEN.toString();
 
@@ -273,7 +273,7 @@ public abstract class AbstractWebPage implements WebPage {
       GOOD = "green";
       MEDIUM = "orange";
       CRITICAL = "red";
-      return getStyle(Arrays.asList(totalScore != null ? totalScore.toString() : ""), "color:%s;");
+      return getStyle(List.of(totalScore != null ? totalScore.toString() : ""), "color:%s;");
     }
 
     /**
@@ -302,7 +302,7 @@ public abstract class AbstractWebPage implements WebPage {
   }
 
   /** The Class DivideBy. */
-  public static class DivideBy implements TemplateMethodModel {
+  public static class DivideBy implements AbstractTemplateMethodModel {
     public Float exec(List arg) throws TemplateModelException {
       if (arg.size() < 2) {
         throw new TemplateModelException("Specify the number and the dividend");
@@ -317,7 +317,7 @@ public abstract class AbstractWebPage implements WebPage {
   }
 
   /** The Class FriendlyTimeRepresentationMethod. */
-  public static class FriendlyTimeRepresentationMethod implements TemplateMethodModel {
+  public static class FriendlyTimeRepresentationMethod implements AbstractTemplateMethodModel {
     public String exec(List arg) throws TemplateModelException {
       if (arg.isEmpty()) {
         throw new TemplateModelException("Wrong number of arguments given. Seconds needed.");

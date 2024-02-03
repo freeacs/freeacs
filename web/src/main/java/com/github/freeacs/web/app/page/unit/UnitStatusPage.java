@@ -36,7 +36,7 @@ import com.github.freeacs.web.app.util.ReportConverter;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
 import com.github.freeacs.web.app.util.WebProperties;
-import freemarker.template.TemplateMethodModel;
+import com.github.freeacs.common.freemarker.AbstractTemplateMethodModel;
 import freemarker.template.TemplateModelException;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
@@ -869,7 +869,7 @@ public class UnitStatusPage extends AbstractWebPage {
   }
 
   /** The Class IsRecordACall. */
-  public static class IsRecordACall implements TemplateMethodModel {
+  public static class IsRecordACall implements AbstractTemplateMethodModel {
     public Boolean exec(List arg0) throws TemplateModelException {
       if (arg0.size() < 2) {
         throw new TemplateModelException("Specify total score and sip reg failed");
