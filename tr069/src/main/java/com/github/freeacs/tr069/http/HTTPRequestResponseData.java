@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Optional;
 
 @Getter
+@Setter
 @Slf4j
 public class HTTPRequestResponseData {
 
@@ -22,10 +23,8 @@ public class HTTPRequestResponseData {
 
   private final HttpServletRequest rawRequest;
 
-  @Setter
   private Throwable throwable;
 
-  @Setter
   private TR069TransactionID TR069TransactionID;
 
   private final SessionData sessionData;
