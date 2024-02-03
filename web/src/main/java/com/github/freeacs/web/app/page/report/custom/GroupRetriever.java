@@ -24,16 +24,13 @@ import java.util.List;
 import java.util.Map;
 
 @Getter
-/** The Class GroupInterface. */
+// The Class GroupInterface.
 public class GroupRetriever extends ReportRetriever {
   /** The generator. */
   private final ReportGroupGenerator generator;
 
   /** The groups. */
   private final DropDownSingleSelect<Group> groups;
-
-  /** The types. */
-  //	private DropDownSingleSelect<String> types;
 
   /**
    * Instantiates a new group interface.
@@ -47,11 +44,6 @@ public class GroupRetriever extends ReportRetriever {
     super(inputData, params, acs);
 
     generator = generateGroupGenerator();
-
-    //		String selectedType = params.getParameter("grouptype") != null ?
-    // params.getParameter("grouptype") : "All";
-    //		types = InputSelectionFactory.getDropDownSingleSelect(Input.getStringInput("grouptype"),
-    // selectedType, Arrays.asList("All", "Normal", "Time"));
 
     Unittype unittype = null;
     if (inputData.getUnittype().notNullNorValue("")) {

@@ -70,10 +70,6 @@ public class FilePage extends AbstractWebPage {
   /** The file id. */
   private Integer id;
 
-  /** The update map. */
-  //	private HashMap<String, Map<String, String>> updateMap = new HashMap<String, Map<String,
-  // String>>();
-
   /** The date. */
   private Date date;
 

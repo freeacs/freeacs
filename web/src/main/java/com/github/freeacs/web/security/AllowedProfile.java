@@ -18,8 +18,6 @@ public class AllowedProfile {
   /** The id. */
   private Integer id;
 
-  /** OR. */
-
   /** The name. */
   private String name;
 

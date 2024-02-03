@@ -7,7 +7,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-/** The Class UnitStatusScore. */
+// The Class UnitStatusScore.
 public class UnitStatusScore {
   /** The Constant TOP_STATUS. */
   private static final int TOP_STATUS = 10;

@@ -2,7 +2,6 @@ package com.github.freeacs.web.security;
 
 import com.github.freeacs.dbi.Permission;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +18,8 @@ public class AllowedUnittype {
   /** The id. */
   private Integer id;
 
-  /** OR. */
-
   /** The name. */
   private String name;
-
-  /** AND. */
 
   /** The profile. */
   private AllowedProfile profile;
