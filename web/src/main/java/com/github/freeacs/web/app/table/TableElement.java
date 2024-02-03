@@ -9,6 +9,9 @@ import com.github.freeacs.dbi.Trigger;
 import com.github.freeacs.dbi.UnitParameter;
 import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.web.app.page.trigger.ReleaseTrigger;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +21,8 @@ import java.util.List;
  *
  * @author Jarl Andre Hubenthal
  */
+@Setter
+@Getter
 public class TableElement {
   /** The name. */
   private String name;
@@ -128,74 +133,12 @@ public class TableElement {
   }
 
   /**
-   * Just to avoid making hundreds of set methods for each of them.
-   *
-   * @param param the param
-   */
-  //	public void addParameter(Object param) {
-  //		if (param instanceof UnitParameter)
-  //			unitParameter = (UnitParameter) param;
-  //		else if (param instanceof ProfileParameter)
-  //			profileParameter = (ProfileParameter) param;
-  //		else if (param instanceof JobParameter)
-  //			jobParameter = (JobParameter) param;
-  //		else
-  //			throw new IllegalArgumentException("Parameter must be one of the following types:
-  // Unit,Profile,Group or Job");
-  //	}
-
-  /**
-   * Gets the group.
-   *
-   * @return the group
-   */
-  public Group getGroup() {
-    return group;
-  }
-
-  /**
    * Gets the list of group parameters.
    *
    * @return the group parameter
    */
   public List<GroupParameter> getGroupParameter() {
     return groupParameterList;
-  }
-
-  /**
-   * Gets the job.
-   *
-   * @return the job
-   */
-  public Job getJob() {
-    return job;
-  }
-
-  /**
-   * Gets the job parameter.
-   *
-   * @return the job parameter
-   */
-  public JobParameter getJobParameter() {
-    return jobParameter;
-  }
-
-  /**
-   * Gets the name.
-   *
-   * @return the name
-   */
-  public String getName() {
-    return this.name;
-  }
-
-  /**
-   * Gets the profile parameter.
-   *
-   * @return the profile parameter
-   */
-  public ProfileParameter getProfileParameter() {
-    return profileParameter;
   }
 
   /**
@@ -208,84 +151,12 @@ public class TableElement {
   }
 
   /**
-   * Gets the tab.
-   *
-   * @return the tab
-   */
-  public Integer getTab() {
-    return this.tab;
-  }
-
-  /**
-   * Gets the unit parameter.
-   *
-   * @return the unit parameter
-   */
-  public UnitParameter getUnitParameter() {
-    return unitParameter;
-  }
-
-  /**
    * Gets the unittype parameter.
    *
    * @return the unittype parameter
    */
   public UnittypeParameter getUnittypeParameter() {
     return unitTypeParameter;
-  }
-
-  /**
-   * Checks if is group parent.
-   *
-   * @return true, if is group parent
-   */
-  public boolean isGroupParent() {
-    return groupParent;
-  }
-
-  /**
-   * Checks if is job parent.
-   *
-   * @return true, if is job parent
-   */
-  public boolean isJobParent() {
-    return jobParent;
-  }
-
-  /**
-   * Sets the group.
-   *
-   * @param group the new group
-   */
-  public void setGroup(Group group) {
-    this.group = group;
-  }
-
-  /**
-   * Sets the group parent.
-   *
-   * @param groupParent the new group parent
-   */
-  public void setGroupParent(boolean groupParent) {
-    this.groupParent = groupParent;
-  }
-
-  /**
-   * Sets the job.
-   *
-   * @param job the new job
-   */
-  public void setJob(Job job) {
-    this.job = job;
-  }
-
-  /**
-   * Sets the job parent.
-   *
-   * @param jobParent the new job parent
-   */
-  public void setJobParent(boolean jobParent) {
-    this.jobParent = jobParent;
   }
 
   /**
@@ -302,47 +173,4 @@ public class TableElement {
         + "]";
   }
 
-  public Trigger getTrigger() {
-    return trigger;
-  }
-
-  public void setTrigger(Trigger trigger) {
-    this.trigger = trigger;
-  }
-
-  public boolean isTriggerParent() {
-    return triggerParent;
-  }
-
-  public void setTriggerParent(boolean triggerParent) {
-    this.triggerParent = triggerParent;
-  }
-
-  public ReleaseTrigger getReleaseTrigger() {
-    return releaseTrigger;
-  }
-
-  public void setReleaseTrigger(ReleaseTrigger releaseTrigger) {
-    this.releaseTrigger = releaseTrigger;
-  }
-
-  public UnitParameter getUnitSessionParameter() {
-    return unitSessionParameter;
-  }
-
-  public void setJobParameter(JobParameter jobParameter) {
-    this.jobParameter = jobParameter;
-  }
-
-  public void setProfileParameter(ProfileParameter profileParameter) {
-    this.profileParameter = profileParameter;
-  }
-
-  public void setUnitParameter(UnitParameter unitParameter) {
-    this.unitParameter = unitParameter;
-  }
-
-  public void setUnitSessionParameter(UnitParameter unitSessionParameter) {
-    this.unitSessionParameter = unitSessionParameter;
-  }
 }

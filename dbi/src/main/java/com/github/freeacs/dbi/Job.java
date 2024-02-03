@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Job {
-  private static final Pattern pattern = Pattern.compile("(u|c|a|n|t)(\\d+)/?(\\d*)");
+  private static final Pattern pattern = Pattern.compile("([ucant])(\\d+)/?(\\d*)");
 
   public static String ANY_UNIT_IN_GROUP = "ANY-UNIT-IN-GROUP";
 
@@ -48,7 +48,7 @@ public class Job {
         }
         numberLimit = Integer.parseInt(m.group(2));
         String numberMaxStr = m.group(3);
-        if (numberMaxStr != null && !"".equals(numberMaxStr.trim())) {
+        if (numberMaxStr != null && !numberMaxStr.trim().isEmpty()) {
           numberMax = Integer.parseInt(numberMaxStr);
           if (numberLimit >= numberMax) {
             throw new IllegalArgumentException(
@@ -105,12 +105,9 @@ public class Job {
   private Integer repeatCount;
   private Integer repeatInterval;
 
-  //	private Profile moveToProfile; -- obsolete, move to a profile should be fixed with a script
-
   /** The field is calculated based on other jobs. */
   private List<Job> children;
 
-  /** Fields which are set as the job has changed to status STARTED. */
   /** Initial Job status. */
   private JobStatus status = JobStatus.READY;
 
@@ -377,9 +374,10 @@ public class Job {
     if (validateInput && repeat != null && repeat < 0) {
       throw new IllegalArgumentException("Job Repeat Count cannot be less than 0");
     } else if (repeat != null && repeat < 0) {
-      repeatCount = 0;
+      this.repeatCount = 0;
+    } else {
+      this.repeatCount = repeat;
     }
-    this.repeatCount = repeat;
   }
 
   public void setRepeatInterval(Integer repeatInterval) {
@@ -407,7 +405,7 @@ public class Job {
 
   public Map<String, JobParameter> getDefaultParameters() {
     if (defaultParameters == null) {
-      MapWrapper<JobParameter> mw = new MapWrapper<JobParameter>(ACS.isStrictOrder());
+      MapWrapper<JobParameter> mw = new MapWrapper<>(ACS.isStrictOrder());
       defaultParameters = mw.getMap();
     }
     return defaultParameters;

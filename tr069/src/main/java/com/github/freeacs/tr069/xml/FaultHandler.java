@@ -1,5 +1,6 @@
 package com.github.freeacs.tr069.xml;
 
+import lombok.Getter;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -19,6 +20,7 @@ public class FaultHandler extends DefaultHandler {
   private static final String PARAMETER_NAME_TAG = "ParameterName";
   private static final String FAULT_STRUCT_TAG = "FaultStruct";
 
+  @Getter
   private Fault fault;
   private final Parser owner;
   private StringBuilder currTextContent = new StringBuilder();
@@ -26,10 +28,6 @@ public class FaultHandler extends DefaultHandler {
   public FaultHandler(Fault fault, Parser owner) {
     this.fault = fault;
     this.owner = owner;
-  }
-
-  public Fault getFault() {
-    return this.fault;
   }
 
   private boolean isParameterFault = false;

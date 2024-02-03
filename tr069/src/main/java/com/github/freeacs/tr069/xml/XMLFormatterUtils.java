@@ -8,10 +8,6 @@ public class XMLFormatterUtils {
         return XMLFormatter.prettyprint(setEmptyIfNull(input));
     }
 
-    public static String filterInvalidCharacters(String input) {
-        return XMLFormatter.filter(setEmptyIfNull(input));
-    }
-
     private static String setEmptyIfNull(String string) {
         return Objects.isNull(string) ? "" : string;
     }
@@ -149,43 +145,42 @@ public class XMLFormatterUtils {
         /** NCName character mask. */
         private static final int MASK_NCNAME = 0x80;
 
-        /** Static initialization. */
         static {
             // [2] Char ::= #x9 | #xA | #xD | [#x20-#xD7FF] |
             //              [#xE000-#xFFFD] | [#x10000-#x10FFFF]
 
-            int charRange[] = {
+            int[] charRange = {
                     0x0009, 0x000A, 0x000D, 0x000D, 0x0020, 0xD7FF, 0xE000, 0xFFFD,
             };
 
             // [3] S ::= (#x20 | #x9 | #xD | #xA)+
 
-            int spaceChar[] = {
+            int[] spaceChar = {
                     0x0020, 0x0009, 0x000D, 0x000A,
             };
 
             // [4] NameChar ::= Letter | Digit | '.' | '-' | '_' | ':' |
             //                  CombiningChar | Extender
 
-            int nameChar[] = {
+            int[] nameChar = {
                     0x002D, 0x002E, // '-' and '.'
             };
 
             // [5] Name ::= (Letter | '_' | ':') (NameChar)*
 
-            int nameStartChar[] = {
+            int[] nameStartChar = {
                     0x003A, 0x005F, // ':' and '_'
             };
 
             // [13] PubidChar ::= #x20 | 0xD | 0xA | [a-zA-Z0-9] | [-'()+,./:=?;!*#@$_%]
 
-            int pubidChar[] = {0x000A, 0x000D, 0x0020, 0x0021, 0x0023, 0x0024, 0x0025, 0x003D, 0x005F};
+            int[] pubidChar = {0x000A, 0x000D, 0x0020, 0x0021, 0x0023, 0x0024, 0x0025, 0x003D, 0x005F};
 
-            int pubidRange[] = {0x0027, 0x003B, 0x003F, 0x005A, 0x0061, 0x007A};
+            int[] pubidRange = {0x0027, 0x003B, 0x003F, 0x005A, 0x0061, 0x007A};
 
             // [84] Letter ::= BaseChar | Ideographic
 
-            int letterRange[] = {
+            int[] letterRange = {
                     // BaseChar
                     0x0041,
                     0x005A,
@@ -491,7 +486,7 @@ public class XMLFormatterUtils {
                     0x4E00,
                     0x9FA5,
             };
-            int letterChar[] = {
+            int[] letterChar = {
                     // BaseChar
                     0x0386,
                     0x038C,
@@ -551,7 +546,7 @@ public class XMLFormatterUtils {
 
             // [87] CombiningChar ::= ...
 
-            int combiningCharRange[] = {
+            int[] combiningCharRange = {
                     0x0300, 0x0345, 0x0360, 0x0361, 0x0483, 0x0486, 0x0591, 0x05A1,
                     0x05A3, 0x05B9, 0x05BB, 0x05BD, 0x05C1, 0x05C2, 0x064B, 0x0652,
                     0x06D6, 0x06DC, 0x06DD, 0x06DF, 0x06E0, 0x06E4, 0x06E7, 0x06E8,
@@ -571,7 +566,7 @@ public class XMLFormatterUtils {
                     0x20D0, 0x20DC, 0x302A, 0x302F,
             };
 
-            int combiningCharChar[] = {
+            int[] combiningCharChar = {
                     0x05BF, 0x05C4, 0x0670, 0x093C, 0x094D, 0x09BC, 0x09BE, 0x09BF,
                     0x09D7, 0x0A02, 0x0A3C, 0x0A3E, 0x0A3F, 0x0ABC, 0x0B3C, 0x0BD7,
                     0x0D57, 0x0E31, 0x0EB1, 0x0F35, 0x0F37, 0x0F39, 0x0F3E, 0x0F3F,
@@ -580,7 +575,7 @@ public class XMLFormatterUtils {
 
             // [88] Digit ::= ...
 
-            int digitRange[] = {
+            int[] digitRange = {
                     0x0030, 0x0039, 0x0660, 0x0669, 0x06F0, 0x06F9, 0x0966, 0x096F,
                     0x09E6, 0x09EF, 0x0A66, 0x0A6F, 0x0AE6, 0x0AEF, 0x0B66, 0x0B6F,
                     0x0BE7, 0x0BEF, 0x0C66, 0x0C6F, 0x0CE6, 0x0CEF, 0x0D66, 0x0D6F,
@@ -589,17 +584,17 @@ public class XMLFormatterUtils {
 
             // [89] Extender ::= ...
 
-            int extenderRange[] = {
+            int[] extenderRange = {
                     0x3031, 0x3035, 0x309D, 0x309E, 0x30FC, 0x30FE,
             };
 
-            int extenderChar[] = {
+            int[] extenderChar = {
                     0x00B7, 0x02D0, 0x02D1, 0x0387, 0x0640, 0x0E46, 0x0EC6, 0x3005,
             };
 
             // SpecialChar ::= '<', '&', '\n', '\r', ']'
 
-            int specialChar[] = {
+            int[] specialChar = {
                     '<', '&', '\n', '\r', ']',
             };
 

@@ -14,6 +14,8 @@ import com.github.freeacs.web.app.input.InputSelectionFactory;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.report.ReportData;
 import com.github.freeacs.web.app.util.ACSLoader;
+import lombok.Getter;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,20 +23,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-/** The Class GroupInterface. */
+@Getter
+// The Class GroupInterface.
 public class GroupRetriever extends ReportRetriever {
   /** The generator. */
   private final ReportGroupGenerator generator;
 
   /** The groups. */
   private final DropDownSingleSelect<Group> groups;
-
-  public DropDownSingleSelect<Group> getGroups() {
-    return groups;
-  }
-
-  /** The types. */
-  //	private DropDownSingleSelect<String> types;
 
   /**
    * Instantiates a new group interface.
@@ -48,11 +44,6 @@ public class GroupRetriever extends ReportRetriever {
     super(inputData, params, acs);
 
     generator = generateGroupGenerator();
-
-    //		String selectedType = params.getParameter("grouptype") != null ?
-    // params.getParameter("grouptype") : "All";
-    //		types = InputSelectionFactory.getDropDownSingleSelect(Input.getStringInput("grouptype"),
-    // selectedType, Arrays.asList("All", "Normal", "Time"));
 
     Unittype unittype = null;
     if (inputData.getUnittype().notNullNorValue("")) {

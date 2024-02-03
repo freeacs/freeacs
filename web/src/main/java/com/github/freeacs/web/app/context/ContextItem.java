@@ -201,24 +201,6 @@ public class ContextItem {
     }
   }
 
-  /**
-   * Sets the unit id.
-   *
-   * @param unitId the new unit id
-   */
-  public void setUnitId(String unitId) {
-    this.unitId = unitId;
-  }
-
-  /**
-   * Sets the job name.
-   *
-   * @param jobName the new job name
-   */
-  public void setJobName(String jobName) {
-    this.jobName = jobName;
-  }
-
   @Override
   public boolean equals(Object obj) {
     throw new IllegalArgumentException("ContextItem.equals() was not expected to be in use");

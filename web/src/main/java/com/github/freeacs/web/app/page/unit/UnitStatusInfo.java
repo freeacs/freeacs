@@ -22,6 +22,9 @@ import com.github.freeacs.web.app.page.syslog.SyslogRetriever;
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.ReportConverter;
 import com.github.freeacs.web.app.util.ReportLoader;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -43,6 +46,8 @@ import javax.sql.DataSource;
  *
  * @author Jarl Andre Hubenthal
  */
+@Getter
+@Setter
 public class UnitStatusInfo {
   /** The Constant OVERALL_STATUS_MAX. */
   public static final Integer OVERALL_STATUS_MAX = 10;
@@ -580,15 +585,6 @@ public class UnitStatusInfo {
   }
 
   /**
-   * Gets the line1 configured.
-   *
-   * @return the line1 configured
-   */
-  public VoipConfigured getLine1Configured() {
-    return line1Configured;
-  }
-
-  /**
    * Checks if is line1 configured.
    *
    * @return true, if is line1 configured
@@ -616,24 +612,6 @@ public class UnitStatusInfo {
   }
 
   /**
-   * Sets the line1 configured.
-   *
-   * @param line1active the new line1 configured
-   */
-  public void setLine1Configured(VoipConfigured line1active) {
-    this.line1Configured = line1active;
-  }
-
-  /**
-   * Gets the line2 configured.
-   *
-   * @return the line2 configured
-   */
-  public VoipConfigured getLine2Configured() {
-    return line2Configured;
-  }
-
-  /**
    * Checks if is line2 configured.
    *
    * @return true, if is line2 configured
@@ -658,15 +636,6 @@ public class UnitStatusInfo {
    */
   public boolean isLine2ConfiguredNotEnabled() {
     return VoipConfigured.CONFIGURED_NOT_ENABLED.equals(line2Configured);
-  }
-
-  /**
-   * Sets the line2 configured.
-   *
-   * @param line2active the new line2 configured
-   */
-  public void setLine2Configured(VoipConfigured line2active) {
-    this.line2Configured = line2active;
   }
 
   /**
@@ -747,42 +716,6 @@ public class UnitStatusInfo {
   }
 
   /**
-   * Gets the first connect timestamp.
-   *
-   * @return the first connect timestamp
-   */
-  public String getFirstConnectTimestamp() {
-    return firstConnectTimestamp;
-  }
-
-  /**
-   * Gets the last connect timestamp.
-   *
-   * @return the last connect timestamp
-   */
-  public String getLastConnectTimestamp() {
-    return lastConnectTimestamp;
-  }
-
-  /**
-   * Gets the next connect timestamp.
-   *
-   * @return the next connect timestamp
-   */
-  public String getNextConnectTimestamp() {
-    return nextConnectTimestamp;
-  }
-
-  /**
-   * Checks if is checks for connected.
-   *
-   * @return true, if is checks for connected
-   */
-  public boolean isHasConnected() {
-    return hasConnected;
-  }
-
-  /**
    * Gets the overall status.
    *
    * @return the overall status
@@ -832,7 +765,7 @@ public class UnitStatusInfo {
   public synchronized Report<RecordHardware> getHardwareReport() throws SQLException {
     if (this.hardwareReport == null) {
       this.hardwareReport = ReportLoader.getHardwareReport(
-          sessionId, currentUnit.getId(), fromDate, toDate, mainDataSource, syslogDataSource);;
+          sessionId, currentUnit.getId(), fromDate, toDate, mainDataSource, syslogDataSource);
     }
     return this.hardwareReport;
   }
@@ -904,7 +837,7 @@ public class UnitStatusInfo {
           toDate,
           toUseAsFilter,
           mainDataSource,
-          syslogDataSource);;
+          syslogDataSource);
     }
     return this.syslogReport;
   }
@@ -918,7 +851,7 @@ public class UnitStatusInfo {
   public Report<RecordVoip> getVoipReport() throws SQLException {
     if (this.voipReport == null) {
       this.voipReport = ReportLoader.getVoipReport(
-          sessionId, currentUnit.getId(), fromDate, toDate, mainDataSource, syslogDataSource);;
+          sessionId, currentUnit.getId(), fromDate, toDate, mainDataSource, syslogDataSource);
     }
     return this.voipReport;
   }

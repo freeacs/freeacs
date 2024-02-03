@@ -30,6 +30,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.sql.DataSource;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -37,15 +40,11 @@ import org.apache.commons.lang3.StringUtils;
  *
  * @author Jarl Andre Hubenthal
  */
-@SuppressWarnings("rawtypes")
 public class PermissionsPage extends AbstractWebPage {
   /** The user. */
   private User user;
 
-  /** The users. */
-  private Users users;
-
-  /** The xaps. */
+    /** The xaps. */
   private ACS acs;
 
   /** The input data. */
@@ -74,11 +73,11 @@ public class PermissionsPage extends AbstractWebPage {
       return;
     }
 
-    String template = null;
+    String template;
 
     Map<String, Object> root = outputHandler.getTemplateMap();
 
-    users = new Users(xapsDataSource);
+    Users users = new Users(xapsDataSource);
 
     if (inputData.getUser().getString() != null) {
       user = users.getProtected(inputData.getUser().getString(), loggedInUser);
@@ -231,7 +230,7 @@ public class PermissionsPage extends AbstractWebPage {
       modules = "WEB[" + StringUtils.join(pages, ",") + "]";
     }
 
-    if ("".equals(modules)) {
+    if (modules.isEmpty()) {
       modules = Users.ACCESS_ADMIN;
     }
 
@@ -264,42 +263,9 @@ public class PermissionsPage extends AbstractWebPage {
   }
 
   /** The Class PagePermission. */
+  @Setter
+  @Getter
   public static class PagePermission {
-    /**
-     * Gets the key.
-     *
-     * @return the key
-     */
-    public String getKey() {
-      return key;
-    }
-
-    /**
-     * Sets the key.
-     *
-     * @param key the new key
-     */
-    public void setKey(String key) {
-      this.key = key;
-    }
-
-    /**
-     * Gets the value.
-     *
-     * @return the value
-     */
-    public String getValue() {
-      return value;
-    }
-
-    /**
-     * Sets the value.
-     *
-     * @param value the new value
-     */
-    public void setValue(String value) {
-      this.value = value;
-    }
 
     /** The key. */
     private String key;
@@ -419,7 +385,7 @@ public class PermissionsPage extends AbstractWebPage {
         if (permDetails.length > 1) {
           Unittype unittype = acs.getUnittype(permDetails[0]);
           Profile profile = unittype.getProfiles().getByName(permDetails[1]);
-          if (newUser.getId() != null && unittype != null && profile != null) {
+          if (newUser.getId() != null && profile != null) {
             toAdd.add(new Permission(newUser, unittype.getId(), profile.getId()));
           }
         } else if (permDetails.length > 0) {

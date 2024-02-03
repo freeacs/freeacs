@@ -6,6 +6,7 @@ import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.web.security.AllowedUnittype;
 import com.github.freeacs.web.security.ThreadUser;
 import com.github.freeacs.web.security.WebUser;
+import lombok.Getter;
 
 /**
  * The Session Store for xAPS Web. Uses session id as unique identifier.
@@ -14,6 +15,7 @@ import com.github.freeacs.web.security.WebUser;
  */
 public class SessionCache {
   /** The cache. */
+  @Getter
   private static Cache cache = new Cache();
 
   /** Reset. */
@@ -86,7 +88,4 @@ public class SessionCache {
     return (SessionData) cv.getObject();
   }
 
-  public static Cache getCache() {
-    return cache;
-  }
 }

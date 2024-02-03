@@ -6,10 +6,14 @@ import com.github.freeacs.tr069.base.BaseCacheException;
 import com.github.freeacs.tr069.xml.TR069TransactionID;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 
+@Getter
+@Setter
 @Slf4j
 public class HTTPRequestResponseData {
 
@@ -23,9 +27,10 @@ public class HTTPRequestResponseData {
 
   private TR069TransactionID TR069TransactionID;
 
-  private SessionData sessionData;
+  private final SessionData sessionData;
 
   public HTTPRequestResponseData(HttpServletRequest rawRequest) {
+    SessionData sessionData;
     this.rawRequest = rawRequest;
     this.requestData = new HTTPRequestData();
     this.responseData = new HTTPResponseData();
@@ -49,6 +54,7 @@ public class HTTPRequestResponseData {
       sessionData = new SessionData(sessionId);
       BaseCache.putSessionData(sessionId, sessionData);
     }
+    this.sessionData = sessionData;
     if (sessionData.getStartupTmsForSession() == null) {
       sessionData.setStartupTmsForSession(System.currentTimeMillis());
     }
@@ -56,39 +62,7 @@ public class HTTPRequestResponseData {
     sessionData.getReqResList().add(this);
   }
 
-  public HTTPRequestData getRequestData() {
-    return requestData;
-  }
-
-  public HTTPResponseData getResponseData() {
-    return responseData;
-  }
-
-  public Throwable getThrowable() {
-    return throwable;
-  }
-
-  public void setThrowable(Throwable throwable) {
-    this.throwable = throwable;
-  }
-
-  public TR069TransactionID getTR069TransactionID() {
-    return TR069TransactionID;
-  }
-
-  public void setTR069TransactionID(TR069TransactionID transactionID) {
-    TR069TransactionID = transactionID;
-  }
-
-  public HttpServletRequest getRawRequest() {
-    return rawRequest;
-  }
-
-  public SessionData getSessionData() {
-    return sessionData;
-  }
-
   public String getRealIPAddress() {
-    return Optional.ofNullable(rawRequest.getHeader("X-Real-IP")).orElseGet(() -> rawRequest.getRemoteAddr());
+    return Optional.ofNullable(rawRequest.getHeader("X-Real-IP")).orElseGet(rawRequest::getRemoteAddr);
   }
 }

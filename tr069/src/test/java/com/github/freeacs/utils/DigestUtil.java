@@ -1,6 +1,7 @@
 package com.github.freeacs.utils;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +22,7 @@ public class DigestUtil {
     /**
      * Log4j logger sent to view.
      */
+    @Setter
     @Getter
     private String tokenDigest = null;
 
@@ -102,10 +104,6 @@ public class DigestUtil {
 
     public boolean isDigest() {
         return this.tokenDigest != null;
-    }
-
-    public void setTokenDigest(String tokenDigest) {
-        this.tokenDigest = tokenDigest;
     }
 
 }

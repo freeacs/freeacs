@@ -61,6 +61,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
+
+import lombok.Setter;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
@@ -116,6 +118,7 @@ import spark.ModelAndView;
  * usual when the only thing we want is a generated image or a table. We want to get straight to
  * where we want to be and not be dependent on the process method.
  */
+@Setter
 public class UnitStatusPage extends AbstractWebPage {
   /** The logger. */
   private static final Logger logger = LoggerFactory.getLogger(UnitStatusPage.class);
@@ -657,10 +660,6 @@ public class UnitStatusPage extends AbstractWebPage {
     List<String> keyNames = new ArrayList<>(Arrays.asList("Severity", "Facility", "EventId"));
     Input input = ReportPage.getSelectedAggregation(inputData.getAggregate(), keyNames);
     return InputSelectionFactory.getCheckBoxGroup(input, input.getStringList(), keyNames);
-  }
-
-  public void setMainDataSource(DataSource mainDataSource) {
-    this.mainDataSource = mainDataSource;
   }
 
   /** The Class RecordHardwareComparator. */

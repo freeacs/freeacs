@@ -24,10 +24,9 @@ public class ModuleMonitorTask extends TaskDefaultImpl {
    */
   private static final Set<MonitorInfo> monitorInfoSet = new TreeSet<>();
 
-  /**
-   * All modules are defined here - we assume that every module will be monitored using this URL:
-   * monitor-urlbase+xaps+<module>+/ok Example: https://localhost:8443/xapsspp/ok
-   */
+
+  // All modules are defined here - we assume that every module will be monitored using this URL:
+  // monitor-urlbase+xaps+<module>+/ok Example: https://localhost:8443/xapsspp/ok
   static {
     for (String module : new String[] {"core", "stun", "syslog", "tr069", "web", "webservice"}) {
       monitorInfoSet.add(new MonitorInfo(module));

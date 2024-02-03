@@ -2,9 +2,12 @@ package com.github.freeacs.web.app.page.unit;
 
 import com.github.freeacs.dbi.SyslogEntry;
 import com.github.freeacs.web.app.page.report.uidata.RecordUIDataHardware;
+import lombok.Getter;
+
 import java.util.List;
 
-/** The Class UnitStatusScore. */
+@Getter
+// The Class UnitStatusScore.
 public class UnitStatusScore {
   /** The Constant TOP_STATUS. */
   private static final int TOP_STATUS = 10;
@@ -151,30 +154,4 @@ public class UnitStatusScore {
     return status;
   }
 
-  /**
-   * Gets the service window effect.
-   *
-   * @return the service window effect
-   */
-  public Integer getServiceWindowEffect() {
-    return serviceWindowEffect;
-  }
-
-  /**
-   * Gets the voip line effect.
-   *
-   * @return the voip line effect
-   */
-  public Integer getVoipLineEffect() {
-    return voipLineEffect;
-  }
-
-  /**
-   * Gets the total score effect.
-   *
-   * @return the total score effect
-   */
-  public Double getTotalScoreEffect() {
-    return totalScoreEffect;
-  }
 }

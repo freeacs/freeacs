@@ -4,6 +4,8 @@ import com.github.freeacs.dbi.report.RecordVoip;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.TimeFormatter;
 import freemarker.template.TemplateModelException;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -35,9 +37,11 @@ public class RecordUIDataVoip extends RecordVoip {
   private Long callLengthTotalInSeconds;
 
   /** The total score. */
+  @Getter
   private Double totalScore;
 
   /** The row background style. */
+  @Getter
   private String rowBackgroundStyle = "";
 
   /** Instantiates a new record ui data voip. */
@@ -222,16 +226,4 @@ public class RecordUIDataVoip extends RecordVoip {
     return RecordUIDataConstants.NO_DECIMALS_FORMAT.format(totalScore);
   }
 
-  /**
-   * Gets the row background style.
-   *
-   * @return the row background style
-   */
-  public String getRowBackgroundStyle() {
-    return rowBackgroundStyle;
-  }
-
-  public Double getTotalScore() {
-    return totalScore;
-  }
 }

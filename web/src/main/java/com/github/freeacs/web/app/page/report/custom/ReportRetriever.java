@@ -9,6 +9,8 @@ import com.github.freeacs.dbi.report.Report;
 import com.github.freeacs.dbi.report.ReportGenerator;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.report.ReportData;
+import lombok.Getter;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -20,33 +22,8 @@ import java.util.Map;
  *
  * @author Jarl Andre Hubenthal
  */
+@Getter
 public abstract class ReportRetriever {
-  /**
-   * Gets the input data.
-   *
-   * @return the input data
-   */
-  public ReportData getInputData() {
-    return inputData;
-  }
-
-  /**
-   * Gets the params.
-   *
-   * @return the params
-   */
-  public ParameterParser getParams() {
-    return params;
-  }
-
-  /**
-   * Gets the xaps.
-   *
-   * @return the xaps
-   */
-  public ACS getAcs() {
-    return acs;
-  }
 
   /** The input data. */
   private final ReportData inputData;

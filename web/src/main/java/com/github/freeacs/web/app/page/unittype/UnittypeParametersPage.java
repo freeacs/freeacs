@@ -15,6 +15,8 @@ import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.StackTraceFormatter;
 import com.github.freeacs.web.app.util.WebConstants;
+import lombok.Setter;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,6 +36,7 @@ public class UnittypeParametersPage extends AbstractWebPage {
 
   private static final String SESSION_SAVE_ERRORS = "utp-save-error";
 
+  @Setter
   private DataSource mainDataSource;
 
   public UnittypeParametersPage() {
@@ -78,7 +81,6 @@ public class UnittypeParametersPage extends AbstractWebPage {
     UnittypeParametersData inputData =
         (UnittypeParametersData) InputDataRetriever.parseInto(new UnittypeParametersData(), params);
 
-    /** The session id. */
     String sessionId = params.getSession().getId();
 
     ACS acs = ACSLoader.getXAPS(sessionId, xapsDataSource, syslogDataSource);
@@ -183,7 +185,4 @@ public class UnittypeParametersPage extends AbstractWebPage {
     }
   }
 
-  public void setMainDataSource(DataSource mainDataSource) {
-    this.mainDataSource = mainDataSource;
-  }
 }

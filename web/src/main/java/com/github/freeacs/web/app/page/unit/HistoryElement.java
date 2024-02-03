@@ -1,5 +1,8 @@
 package com.github.freeacs.web.app.page.unit;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,6 +15,8 @@ import java.util.regex.Pattern;
  * This class represents a single row in the "provisioning history" table found on the unit
  * configuration page.
  */
+@Getter
+@Setter
 public class HistoryElement {
   private enum EventCode {
     BOOTSTRAP(0),
@@ -94,60 +99,8 @@ public class HistoryElement {
     }
   }
 
-  public String getTimestamp() {
-    return timestamp;
-  }
-
-  public void setTimestamp(String timestamp) {
-    this.timestamp = timestamp;
-  }
-
-  public String getStatus() {
-    return status;
-  }
-
-  public void setStatus(String status) {
-    this.status = status;
-  }
-
-  public String getOutput() {
-    return output;
-  }
-
-  public void setOutput(String output) {
-    this.output = output;
-  }
-
-  public String getParamsWritten() {
-    return paramsWritten;
-  }
-
-  public void setParamsWritten(String paramsWritten) {
-    this.paramsWritten = paramsWritten;
-  }
-
-  public List<EventCode> getEventCodes() {
-    return eventCodes;
-  }
-
   public void setEventCode(List<EventCode> eventCodes) {
     this.eventCodes = eventCodes;
-  }
-
-  public String getFileVersion() {
-    return fileVersion;
-  }
-
-  public void setFileVersion(String fileVersion) {
-    this.fileVersion = fileVersion;
-  }
-
-  public String getErrorMessage() {
-    return errorMessage;
-  }
-
-  public void setErrorMessage(String errorMessage) {
-    this.errorMessage = errorMessage;
   }
 
   public String toString() {

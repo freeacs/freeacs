@@ -3,10 +3,11 @@ package com.github.freeacs.web.app.page.report.uidata;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.report.RecordHardware;
 import com.github.freeacs.web.app.page.AbstractWebPage;
-import com.github.freeacs.web.app.util.DateUtils;
 import freemarker.template.TemplateModelException;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -19,54 +20,51 @@ import java.util.List;
  */
 public class RecordUIDataHardware extends RecordHardware {
   /** The boot count. */
+  @Setter
+  @Getter
   private Long bootProv;
 
   /** The boot misc. */
+  @Setter
+  @Getter
   private Long bootMisc;
 
+  @Setter
+  @Getter
   private Long bootPower;
 
   /** The memory heap ddr current avg. */
   private Long memoryHeapDdrCurrentAvg;
 
-  /** The memory heap ddr lowest avg. */
-  private Long memoryHeapDdrLowestAvg;
-
   /** The memory heap ddr pool avg. */
   private Long memoryHeapDdrPoolAvg;
 
   /** The memory heap ddr percent. */
+  @Getter
   private final double memoryHeapDdrUsagePercent;
 
   /** The memory heap ocm current avg. */
   private Long memoryHeapOcmCurrentAvg;
 
-  /** The memory heap ocm lowest avg. */
-  private Long memoryHeapOcmLowestAvg;
-
-  /** The memory heap ocm pool avg. */
+    /** The memory heap ocm pool avg. */
   private Long memoryHeapOcmPoolAvg;
 
   /** The memory heap ocm percent. */
+  @Getter
   private final double memoryHeapOcmUsagePercent;
 
-  /** The up time avg. */
-  private Long upTimeAvg;
-
   /** The row background style. */
+  @Getter
   private String rowBackgroundStyle = "";
 
-  /** The memory heap ddr lowest percent. */
-  private double memoryHeapDdrHighestUsagePercent;
-
-  /** The memory heap ocm lowest percent. */
-  private double memoryHeapOcmHighestUsagePercent;
-
   /** The unit. */
+  @Getter
   private final Unit unit;
 
+  @Getter
   private final RecordUIDataHardwareFilter limits;
 
+  @Getter
   private final long bootTotal;
 
   /**
@@ -92,10 +90,6 @@ public class RecordUIDataHardware extends RecordHardware {
       memoryHeapDdrCurrentAvg =
           getMemoryHeapDdrCurrentAvg().get() / getMemoryHeapDdrCurrentAvg().getDividend();
     }
-    if (getMemoryHeapDdrLowAvg().get() != null) {
-      memoryHeapDdrLowestAvg =
-          getMemoryHeapDdrLowAvg().get() / getMemoryHeapDdrLowAvg().getDividend();
-    }
     if (getMemoryHeapDdrPoolAvg().get() != null) {
       memoryHeapDdrPoolAvg =
           getMemoryHeapDdrPoolAvg().get() / getMemoryHeapDdrPoolAvg().getDividend();
@@ -104,16 +98,9 @@ public class RecordUIDataHardware extends RecordHardware {
       memoryHeapOcmCurrentAvg =
           getMemoryHeapOcmCurrentAvg().get() / getMemoryHeapOcmCurrentAvg().getDividend();
     }
-    if (getMemoryHeapOcmLowAvg().get() != null) {
-      memoryHeapOcmLowestAvg =
-          getMemoryHeapOcmLowAvg().get() / getMemoryHeapOcmLowAvg().getDividend();
-    }
     if (getMemoryHeapOcmPoolAvg().get() != null) {
       memoryHeapOcmPoolAvg =
           getMemoryHeapOcmPoolAvg().get() / getMemoryHeapOcmPoolAvg().getDividend();
-    }
-    if (getCpeUptimeAvg().get() != null) {
-      upTimeAvg = getCpeUptimeAvg().get() / getCpeUptimeAvg().getDividend();
     }
     memoryHeapDdrUsagePercent = getPercentageUsed(memoryHeapDdrCurrentAvg, memoryHeapDdrPoolAvg);
     memoryHeapOcmUsagePercent = getPercentageUsed(memoryHeapOcmCurrentAvg, memoryHeapOcmPoolAvg);
@@ -123,7 +110,7 @@ public class RecordUIDataHardware extends RecordHardware {
         score = "70";
       }
       rowBackgroundStyle =
-          new AbstractWebPage.RowBackgroundColorMethod().exec(Arrays.asList(score));
+          new AbstractWebPage.RowBackgroundColorMethod().exec(List.of(score));
     } catch (TemplateModelException e) {
       rowBackgroundStyle = "";
     }
@@ -145,29 +132,24 @@ public class RecordUIDataHardware extends RecordHardware {
     return limits.isBootsRelevant(this);
   }
 
-  public String getTableOfMemoryUnused() {
-    return getTableOfMemoryUnused(Arrays.asList(this));
-  }
-
   /**
    * Gets the table of memory unused.
    *
    * @return the table of memory unused
    */
   public static String getTableOfMemoryUnused(List<RecordUIDataHardware> records) {
-    String html = "<table>";
+    StringBuilder html = new StringBuilder("<table>");
     for (RecordUIDataHardware record : records) {
-      html +=
-          "<tr><td border=1>"
-              + record.getTmsAsString()
-              + "<br />Memory used:<br />Heap(Ocm: "
-              + record.getMemoryHeapOcmUsagePercentAsString()
-              + "%, Ddr: "
-              + record.getMemoryHeapDdrUsagePercentAsString()
-              + "%)</td></tr>";
+      html.append("<tr><td border=1>")
+              .append(record.getTmsAsString())
+              .append("<br />Memory used:<br />Heap(Ocm: ")
+              .append(record.getMemoryHeapOcmUsagePercentAsString())
+              .append("%, Ddr: ")
+              .append(record.getMemoryHeapDdrUsagePercentAsString())
+              .append("%)</td></tr>");
     }
-    html += "</table>";
-    return html;
+    html.append("</table>");
+    return html.toString();
   }
 
   /**
@@ -201,16 +183,7 @@ public class RecordUIDataHardware extends RecordHardware {
     return list;
   }
 
-  /**
-   * Gets the row background style.
-   *
-   * @return the row background style
-   */
-  public String getRowBackgroundStyle() {
-    return rowBackgroundStyle;
-  }
-
-  /**
+    /**
    * Gets the tms as string.
    *
    * @return the tms as string
@@ -253,7 +226,7 @@ public class RecordUIDataHardware extends RecordHardware {
     if (super.getBootUserCount().get() != null && super.getBootUserCount().get() > 0) {
       string.append("User boot");
     }
-    if (string.length() > 0) {
+    if (!string.isEmpty()) {
       String s = string.toString();
       if (s.endsWith(",")) {
         s = s.substring(0, s.length() - 1);
@@ -274,61 +247,6 @@ public class RecordUIDataHardware extends RecordHardware {
   }
 
   /**
-   * Gets the memory heap ddr current avg as string.
-   *
-   * @return the memory heap ddr current avg as string
-   */
-  public String getMemoryHeapDdrCurrentAvgAsString() {
-    return RecordUIDataMethods.getMegaBytePresentation(memoryHeapDdrCurrentAvg);
-  }
-
-  /**
-   * Gets the memory heap ocm current avg as string.
-   *
-   * @return the memory heap ocm current avg as string
-   */
-  public String getMemoryHeapOcmCurrentAvgAsString() {
-    return RecordUIDataMethods.getMegaBytePresentation(memoryHeapOcmCurrentAvg);
-  }
-
-  /**
-   * Gets the memory heap ddr lowest avg as string.
-   *
-   * @return the memory heap ddr lowest avg as string
-   */
-  public String getMemoryHeapDdrLowestAvgAsString() {
-    return RecordUIDataMethods.getMegaBytePresentation(memoryHeapDdrLowestAvg);
-  }
-
-  /**
-   * Gets the memory heap ocm lowest avg as string.
-   *
-   * @return the memory heap ocm lowest avg as string
-   */
-  public String getMemoryHeapOcmLowestAvgAsString() {
-    return RecordUIDataMethods.getMegaBytePresentation(memoryHeapOcmLowestAvg);
-  }
-
-  /**
-   * Gets the up time avg as string.
-   *
-   * @return the up time avg as string
-   */
-  public String getUpTimeAvgAsString() {
-    String upTimeString = RecordUIDataMethods.getToStringOrNonBreakingSpace(upTimeAvg);
-    return RecordUIDataMethods.appendStringIfNotNonBreaking(upTimeString, "m");
-  }
-
-  /**
-   * Gets the memory heap ddr percent.
-   *
-   * @return the memory heap ddr percent
-   */
-  public double getMemoryHeapDdrUsagePercent() {
-    return memoryHeapDdrUsagePercent;
-  }
-
-  /**
    * Gets the memory heap ddr percent as string.
    *
    * @return the memory heap ddr percent as string
@@ -337,16 +255,7 @@ public class RecordUIDataHardware extends RecordHardware {
     return formatNumberWithTwoDesimals(memoryHeapDdrUsagePercent);
   }
 
-  /**
-   * Gets the memory heap ocm percent.
-   *
-   * @return the memory heap ocm percent
-   */
-  public double getMemoryHeapOcmUsagePercent() {
-    return memoryHeapOcmUsagePercent;
-  }
-
-  /**
+    /**
    * Gets the memory heap ocm percent as string.
    *
    * @return the memory heap ocm percent as string
@@ -355,102 +264,4 @@ public class RecordUIDataHardware extends RecordHardware {
     return formatNumberWithTwoDesimals(memoryHeapOcmUsagePercent);
   }
 
-  /**
-   * Gets the memory heap ddr pool avg as long.
-   *
-   * @return the memory heap ddr pool avg as long
-   */
-  public Long getMemoryHeapDdrPoolAvgAsLong() {
-    return memoryHeapDdrPoolAvg;
-  }
-
-  /**
-   * Gets the memory heap ddr pool avg as string.
-   *
-   * @return the memory heap ddr pool avg as string
-   */
-  public String getMemoryHeapDdrPoolAvgAsString() {
-    return RecordUIDataMethods.getMegaBytePresentation(memoryHeapDdrPoolAvg);
-  }
-
-  /**
-   * Gets the memory heap ocm pool avg as long.
-   *
-   * @return the memory heap ocm pool avg as long
-   */
-  public Long getMemoryHeapOcmPoolAvgAsLong() {
-    return memoryHeapOcmPoolAvg;
-  }
-
-  /**
-   * Gets the memory heap ocm pool avg as string.
-   *
-   * @return the memory heap ocm pool avg as string
-   */
-  public String getMemoryHeapOcmPoolAvgAsString() {
-    return RecordUIDataMethods.getMegaBytePresentation(memoryHeapOcmPoolAvg);
-  }
-
-  /**
-   * Gets the memory heap ddr lowest percent.
-   *
-   * @return the memory heap ddr lowest percent
-   */
-  public double getMemoryHeapDdrHighestUsagePercent() {
-    return memoryHeapDdrHighestUsagePercent;
-  }
-
-  /**
-   * Gets the memory heap ocm lowest percent.
-   *
-   * @return the memory heap ocm lowest percent
-   */
-  public double getMemoryHeapOcmHighestUsagePercent() {
-    return memoryHeapOcmHighestUsagePercent;
-  }
-
-  public Long getBootProv() {
-    return bootProv;
-  }
-
-  public void setBootProv(Long bootProv) {
-    this.bootProv = bootProv;
-  }
-
-  public Long getBootMisc() {
-    return bootMisc;
-  }
-
-  public void setBootMisc(Long bootMisc) {
-    this.bootMisc = bootMisc;
-  }
-
-  public Long getBootPower() {
-    return bootPower;
-  }
-
-  public void setBootPower(Long bootPower) {
-    this.bootPower = bootPower;
-  }
-
-  /**
-   * Gets the unit.
-   *
-   * @return the unit
-   */
-  public Unit getUnit() {
-    return unit;
-  }
-
-  public RecordUIDataHardwareFilter getLimits() {
-    return limits;
-  }
-
-  public long getBootTotal() {
-    return bootTotal;
-  }
-
-  public String getUpTimeAvgAsReadable() {
-    return DateUtils.getUpTime(upTimeAvg);
-  }
 }

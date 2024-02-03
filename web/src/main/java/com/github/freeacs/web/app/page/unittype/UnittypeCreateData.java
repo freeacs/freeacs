@@ -2,8 +2,13 @@ package com.github.freeacs.web.app.page.unittype;
 
 import com.github.freeacs.web.app.input.Input;
 import com.github.freeacs.web.app.input.InputData;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Map;
 
+@Setter
+@Getter
 public class UnittypeCreateData extends InputData {
   /** The new description. */
   private Input newDescription = Input.getStringInput("new_description");
@@ -31,111 +36,4 @@ public class UnittypeCreateData extends InputData {
     return false;
   }
 
-  /**
-   * Gets the new description.
-   *
-   * @return the new description
-   */
-  public Input getNewDescription() {
-    return newDescription;
-  }
-
-  /**
-   * Sets the new description.
-   *
-   * @param newDescription the new new description
-   */
-  public void setNewDescription(Input newDescription) {
-    this.newDescription = newDescription;
-  }
-
-  /**
-   * Gets the new modelname.
-   *
-   * @return the new modelname
-   */
-  public Input getNewModelname() {
-    return newModelname;
-  }
-
-  /**
-   * Sets the new modelname.
-   *
-   * @param newModelname the new new modelname
-   */
-  public void setNewModelname(Input newModelname) {
-    this.newModelname = newModelname;
-  }
-
-  /**
-   * Gets the new protocol.
-   *
-   * @return the new protocol
-   */
-  public Input getNewProtocol() {
-    return newProtocol;
-  }
-
-  /**
-   * Sets the new protocol.
-   *
-   * @param newProtocol the new new protocol
-   */
-  public void setNewProtocol(Input newProtocol) {
-    this.newProtocol = newProtocol;
-  }
-
-  /**
-   * Gets the new vendor.
-   *
-   * @return the new vendor
-   */
-  public Input getNewVendor() {
-    return newVendor;
-  }
-
-  /**
-   * Sets the new vendor.
-   *
-   * @param newVendor the new new vendor
-   */
-  public void setNewVendor(Input newVendor) {
-    this.newVendor = newVendor;
-  }
-
-  /**
-   * Gets the new matcherid.
-   *
-   * @return the new matcherid
-   */
-  public Input getNewMatcherid() {
-    return newMatcherid;
-  }
-
-  /**
-   * Sets the new matcherid.
-   *
-   * @param newMatcherid the new new matcherid
-   */
-  public void setNewMatcherid(Input newMatcherid) {
-    this.newMatcherid = newMatcherid;
-  }
-
-  /**
-   * Gets the unittype to copy from.
-   *
-   * @return the unittype to copy from
-   */
-  public Input getUnittypeToCopyFrom() {
-    return unittypeToCopyFrom;
-  }
-
-  /**
-   * Sets the unittype to copy from.
-   *
-   * @param unittypeToCopyFrom the new unittype to copy from
-   */
-  public void setUnittypeToCopyFrom(Input unittypeToCopyFrom) {
-    this.unittypeToCopyFrom = unittypeToCopyFrom;
-  }
 }

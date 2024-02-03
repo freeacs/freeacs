@@ -4,6 +4,9 @@ import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.DateUtils;
 import freemarker.template.TemplateModelException;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,27 +22,37 @@ import java.util.List;
  */
 public class RecordUIDataHwSum {
   /** The unit. */
+  @Getter
   private Unit unit;
 
   /** The boot counts. */
   private Long bootCount = 0L;
 
+  @Setter
+  @Getter
   private Long bootMisc = 0L;
 
+  @Setter
+  @Getter
   private Long bootPower = 0L;
 
+  @Setter
+  @Getter
   private Long bootProv = 0L;
 
   /** The heap ddr bad. */
+  @Getter
   private double heapDdrMaxPercent;
 
   /** The heap ocm bad. */
+  @Getter
   private double heapOcmMaxPercent;
 
   /** The row background style. */
   private String rowBackgroundStyle = "";
 
   /** The records. */
+  @Getter
   private final List<RecordUIDataHardware> records = new ArrayList<>();
 
   /** Instantiates a new record ui data hw sum. */
@@ -120,30 +133,6 @@ public class RecordUIDataHwSum {
     return DateUtils.getUpTime(up);
   }
 
-  public Long getBootMisc() {
-    return bootMisc;
-  }
-
-  public void setBootMisc(Long bootMisc) {
-    this.bootMisc = bootMisc;
-  }
-
-  public Long getBootPower() {
-    return bootPower;
-  }
-
-  public void setBootPower(Long bootPower) {
-    this.bootPower = bootPower;
-  }
-
-  public Long getBootProv() {
-    return bootProv;
-  }
-
-  public void setBootProv(Long bootProv) {
-    this.bootProv = bootProv;
-  }
-
   /**
    * Gets the boots.
    *
@@ -153,43 +142,7 @@ public class RecordUIDataHwSum {
     return bootCount;
   }
 
-  /**
-   * Checks if is heap ddr bad.
-   *
-   * @return true, if is heap ddr bad
-   */
-  public double getHeapDdrMaxPercent() {
-    return heapDdrMaxPercent;
-  }
-
-  /**
-   * Checks if is heap ocm bad.
-   *
-   * @return true, if is heap ocm bad
-   */
-  public double getHeapOcmMaxPercent() {
-    return heapOcmMaxPercent;
-  }
-
-  /**
-   * Gets the records.
-   *
-   * @return the records
-   */
-  public List<RecordUIDataHardware> getRecords() {
-    return records;
-  }
-
-  /**
-   * Gets the unit.
-   *
-   * @return the unit
-   */
-  public Unit getUnit() {
-    return unit;
-  }
-
-  /**
+    /**
    * Gets the boot count as long.
    *
    * @return the boot count as long

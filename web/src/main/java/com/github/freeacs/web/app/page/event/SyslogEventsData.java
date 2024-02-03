@@ -2,9 +2,14 @@ package com.github.freeacs.web.app.page.event;
 
 import com.github.freeacs.web.app.input.Input;
 import com.github.freeacs.web.app.input.InputData;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Map;
 
 /** The Class SyslogEventsData. */
+@Setter
+@Getter
 public class SyslogEventsData extends InputData {
   private Input action = Input.getStringInput("action");
 
@@ -16,14 +21,6 @@ public class SyslogEventsData extends InputData {
   private Input storePolicy = Input.getStringInput("storepolicy");
   private Input script = Input.getIntegerInput("scriptId");
   private Input limit = Input.getIntegerInput("limit");
-
-  public Input getScript() {
-    return script;
-  }
-
-  public void setScript(Input script) {
-    this.script = script;
-  }
 
   @Override
   public void bindForm(Map<String, Object> root) {}
@@ -63,67 +60,4 @@ public class SyslogEventsData extends InputData {
     return valid;
   }
 
-  public Input getEventId() {
-    return eventId;
-  }
-
-  public void setEventId(Input id) {
-    this.eventId = id;
-  }
-
-  public Input getName() {
-    return name;
-  }
-
-  public void setName(Input name) {
-    this.name = name;
-  }
-
-  public Input getDescription() {
-    return description;
-  }
-
-  public void setDescription(Input description) {
-    this.description = description;
-  }
-
-  public Input getExpression() {
-    return expression;
-  }
-
-  public void setExpression(Input expression) {
-    this.expression = expression;
-  }
-
-  public Input getLimit() {
-    return limit;
-  }
-
-  public void setLimit(Input limit) {
-    this.limit = limit;
-  }
-
-  public Input getAction() {
-    return action;
-  }
-
-  public void setAction(Input action) {
-    this.action = action;
-  }
-
-  public Input getGroupId() {
-    return groupId;
-  }
-
-  public void setGroupId(Input groupId) {
-    this.groupId = groupId;
-  }
-
-  public Input getStorePolicy() {
-    return storePolicy;
-  }
-
-  public void setStorePolicy(Input storePolicy) {
-    this.storePolicy = storePolicy;
-  }
 }

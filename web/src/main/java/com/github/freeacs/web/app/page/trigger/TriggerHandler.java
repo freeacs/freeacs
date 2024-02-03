@@ -15,6 +15,8 @@ import com.github.freeacs.web.app.table.TableElement;
 import com.github.freeacs.web.app.table.TableElementMaker;
 import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.SessionCache;
+import lombok.Getter;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +25,7 @@ import javax.sql.DataSource;
 
 public class TriggerHandler {
   private final ACS acs;
+  @Getter
   private Unittype unittype;
   private final String sessionId;
   private final TriggerData inputData;
@@ -39,11 +42,7 @@ public class TriggerHandler {
     setUnittype(inputData);
   }
 
-  public Unittype getUnittype() {
-    return unittype;
-  }
-
-  public void deleteTrigger(TriggerData inputData) throws SQLException {
+    public void deleteTrigger(TriggerData inputData) throws SQLException {
     setUnittype(inputData);
     Triggers triggers = unittype.getTriggers();
     Trigger trigger = triggers.getById(inputData.getTriggerId().getInteger());
@@ -98,7 +97,6 @@ public class TriggerHandler {
       trigger.setNoEventPrUnit(nullsafeInteger(inputData.getNumberPerUnit()));
       trigger.setNoUnits(nullsafeInteger(inputData.getNumberOfUnits()));
       trigger.setNotifyIntervalHours(nullsafeInteger(inputData.getNotifyIntervalHours()));
-      //			trigger.setGroup(xaps.getGroup(nullsafeInteger(inputData.getGroupId())));
       trigger.setParent(
           unittype.getTriggers().getById(nullsafeInteger(inputData.getParentTrigger())));
       trigger.setScript(unittype.getFiles().getById(nullsafeInteger(inputData.getScriptFileId())));

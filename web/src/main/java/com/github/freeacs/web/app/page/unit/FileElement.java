@@ -1,7 +1,11 @@
 package com.github.freeacs.web.app.page.unit;
 
 import com.github.freeacs.dbi.File;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class FileElement {
   private String version;
   private File file;
@@ -14,23 +18,11 @@ public class FileElement {
     file = f;
   }
 
-  public String getVersion() {
-    return version;
-  }
-
   public void setVersion(String version) {
     if (version == null) {
       throw new NullPointerException("Sorry, can't have a FileElement without version.");
     }
     this.version = version;
-  }
-
-  public File getFile() {
-    return file;
-  }
-
-  public void setFile(File file) {
-    this.file = file;
   }
 
   public int hashCode() {

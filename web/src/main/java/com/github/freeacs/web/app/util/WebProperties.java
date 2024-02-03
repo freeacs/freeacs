@@ -1,6 +1,8 @@
 package com.github.freeacs.web.app.util;
 
 import com.typesafe.config.Config;
+import lombok.Getter;
+
 import java.util.Collections;
 import java.util.Map;
 
@@ -12,6 +14,7 @@ import java.util.Map;
  *
  * @author Jarl Andre Hubenthal
  */
+@Getter
 public class WebProperties {
   private String syslogServerHost;
   private String keystorePass;
@@ -31,6 +34,7 @@ public class WebProperties {
   private String contextPath;
   private Integer serverPort;
 
+  @Getter
   private static WebProperties instance;
 
   public WebProperties(Config config) {
@@ -66,11 +70,7 @@ public class WebProperties {
     instance = this;
   }
 
-  public static WebProperties getInstance() {
-    return instance;
-  }
-
-  private void setSyslogServerHost(String syslogServerHost) {
+    private void setSyslogServerHost(String syslogServerHost) {
     this.syslogServerHost = syslogServerHost;
   }
 
@@ -149,71 +149,4 @@ public class WebProperties {
     return Collections.emptyMap();
   }
 
-  public String getSyslogServerHost() {
-    return syslogServerHost;
-  }
-
-  public String getKeystorePass() {
-    return keystorePass;
-  }
-
-  public String getMonitorLocation() {
-    return monitorLocation;
-  }
-
-  public String getLocale() {
-    return locale;
-  }
-
-  public boolean isJavascriptDebug() {
-    return javascriptDebug;
-  }
-
-  public boolean isIxEditEnabled() {
-    return ixEditEnabled;
-  }
-
-  public boolean isConfirmChanges() {
-    return confirmChanges;
-  }
-
-  public String getProperties() {
-    return properties;
-  }
-
-  public boolean isUnitConfigAutofilter() {
-    return unitConfigAutofilter;
-  }
-
-  public boolean isConfidentialsRestricted() {
-    return confidentialsRestricted;
-  }
-
-  public boolean isGzipEnabled() {
-    return gzipEnabled;
-  }
-
-  public boolean isDebug() {
-    return debug;
-  }
-
-  public boolean isShowVoip() {
-    return showVoip;
-  }
-
-  public boolean isShowHardware() {
-    return showHardware;
-  }
-
-  public Integer getSessionTimeout() {
-    return sessionTimeout;
-  }
-
-  public String getContextPath() {
-    return contextPath;
-  }
-
-  public Integer getServerPort() {
-    return serverPort;
-  }
 }

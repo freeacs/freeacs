@@ -2,22 +2,17 @@ package com.github.freeacs.web.app.page.report.uidata;
 
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.report.RecordGroup;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Getter
 public class RecordUIDataGroupFromReport {
   private final RecordGroup record;
 
-  public RecordGroup getRecord() {
-    return record;
-  }
-
   private final Unit unit;
-
-  public Unit getUnit() {
-    return unit;
-  }
 
   RecordUIDataGroupFromReport() {
     unit = null;
