@@ -35,7 +35,6 @@ include:
   - name: UnnecessaryLocalVariable
   - name: UNUSED_IMPORT
   - name: DanglingJavadoc
-  - name: JavadocDeclaration
   - name: MismatchedJavadocCode
   - name: StringEqualsEmptyString
   - name: LombokGetterMayBeUsed
