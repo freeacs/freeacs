@@ -13,6 +13,7 @@ import com.github.freeacs.web.app.util.WebProperties;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 import java.io.IOException;
+import java.io.Serial;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import javax.servlet.ServletException;
@@ -30,6 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Main extends HttpServlet {
   /** The Constant serialVersionUID. */
+  @Serial
   private static final long serialVersionUID = 1009523437560499266L;
 
   /** The logger. */

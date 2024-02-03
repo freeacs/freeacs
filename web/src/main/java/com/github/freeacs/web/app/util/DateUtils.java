@@ -22,7 +22,7 @@ public abstract class DateUtils {
     WITH_SECONDS(ResourceHandler.getString("DATE_FORMAT_WITH_SECONDS"));
 
     /** The format. */
-    String format;
+    final String format;
 
     /**
      * Instantiates a new format.

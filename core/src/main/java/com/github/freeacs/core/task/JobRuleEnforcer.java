@@ -7,18 +7,15 @@ import com.github.freeacs.core.util.UnitResultMap;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.Job.StopRule;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class JobRuleEnforcer extends DBIOwner {
   private final Properties properties;
 
-  public class JobControl {
+  public static final class JobControl {
     private List<FractionStopRuleCounter> fractionStopRuleCounters = new ArrayList<>();
 
     private Job job;
@@ -323,7 +320,7 @@ public class JobRuleEnforcer extends DBIOwner {
           break;
         }
       }
-      if (!match && jc.getJob().getGroup().getUnittype().getId() == unittype.getId()) {
+      if (!match && Objects.equals(jc.getJob().getGroup().getUnittype().getId(), unittype.getId())) {
         deletedJobs.add(jc.getJob().getId());
       }
     }

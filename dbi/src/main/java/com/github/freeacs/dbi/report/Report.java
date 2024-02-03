@@ -73,7 +73,7 @@ public class Report<R extends Record> {
 
   public KeyFactory getKeyFactory() {
     try {
-      Record record = recordClass.newInstance();
+      Record record = recordClass.getDeclaredConstructor().newInstance();
       return record.getKeyFactory();
     } catch (Throwable t) {
       throw new RuntimeException(

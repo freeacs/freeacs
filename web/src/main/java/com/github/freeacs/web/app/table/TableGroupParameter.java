@@ -43,7 +43,7 @@ public class TableGroupParameter extends GroupParameter {
     return groupName;
   }
 
-  private class TableParameter extends Parameter {
+  private static class TableParameter extends Parameter {
     public TableParameter(Parameter parameter) {
       this(
           parameter.getUnittypeParameter(),

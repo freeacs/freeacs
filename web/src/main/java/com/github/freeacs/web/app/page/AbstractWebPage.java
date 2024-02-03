@@ -44,7 +44,7 @@ import org.slf4j.Logger;
 public abstract class AbstractWebPage implements WebPage {
   public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-  protected class ValueHolder {
+  protected static class ValueHolder {
     public String value;
 
     public ValueHolder(String value) {
@@ -101,11 +101,9 @@ public abstract class AbstractWebPage implements WebPage {
   }
 
   /** The Class NotLoggedInException. */
-  @SuppressWarnings("serial")
   public static class NotLoggedInException extends IllegalAccessException {}
 
   /** The Class UnitNotFoundException. */
-  @SuppressWarnings("serial")
   public static class UnitNotFoundException extends IllegalAccessException {}
 
   /**
@@ -192,7 +190,6 @@ public abstract class AbstractWebPage implements WebPage {
    * @author Jarl Andre Hubenthal
    */
   public static class LastIndexOfMethod implements TemplateMethodModel {
-    @SuppressWarnings("rawtypes")
     public TemplateModel exec(List args) throws TemplateModelException {
       if (args.size() != 2) {
         throw new TemplateModelException("Wrong arguments");
@@ -226,7 +223,6 @@ public abstract class AbstractWebPage implements WebPage {
     /** The units. */
     Map<String, Unit> units = new HashMap<>();
 
-    @SuppressWarnings("rawtypes")
     public TemplateModel exec(List args) throws TemplateModelException {
       if (args.size() < 2) {
         throw new TemplateModelException("Wrong number of arguments");
@@ -262,7 +258,6 @@ public abstract class AbstractWebPage implements WebPage {
     /** The CRITICAL. */
     private String CRITICAL = TableColor.RED.toString();
 
-    @SuppressWarnings("rawtypes")
     public String exec(List arg0) throws TemplateModelException {
       return getStyle(arg0, "background-color:#%s;");
     }
@@ -308,7 +303,6 @@ public abstract class AbstractWebPage implements WebPage {
 
   /** The Class DivideBy. */
   public static class DivideBy implements TemplateMethodModel {
-    @SuppressWarnings("rawtypes")
     public Float exec(List arg) throws TemplateModelException {
       if (arg.size() < 2) {
         throw new TemplateModelException("Specify the number and the dividend");
@@ -324,7 +318,6 @@ public abstract class AbstractWebPage implements WebPage {
 
   /** The Class FriendlyTimeRepresentationMethod. */
   public static class FriendlyTimeRepresentationMethod implements TemplateMethodModel {
-    @SuppressWarnings("rawtypes")
     public String exec(List arg) throws TemplateModelException {
       if (arg.isEmpty()) {
         throw new TemplateModelException("Wrong number of arguments given. Seconds needed.");

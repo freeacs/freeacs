@@ -10,7 +10,10 @@
  */
 package de.javawi.jstun.attribute;
 
+import java.io.Serial;
+
 public class MessageAttributeException extends Exception {
+  @Serial
   private static final long serialVersionUID = 3258131345099404850L;
 
   public MessageAttributeException(String mesg) {

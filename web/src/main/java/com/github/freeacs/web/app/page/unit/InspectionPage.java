@@ -15,6 +15,8 @@ import com.github.freeacs.web.app.input.InputDataRetriever;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.ACSLoader;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Collections;
 import java.util.Map;
@@ -121,48 +123,14 @@ public class InspectionPage extends AbstractWebPage {
   }
 
   /** The Class InspectionData. */
-  public class InspectionData extends InputData {
+  @Setter
+  @Getter
+  public static class InspectionData extends InputData {
     /** The mode. */
     private Input mode = Input.getStringInput("mode");
 
     /** The state. */
     private Input state = Input.getStringInput("state");
-
-    /**
-     * Gets the mode.
-     *
-     * @return the mode
-     */
-    public Input getMode() {
-      return this.mode;
-    }
-
-    /**
-     * Sets the mode.
-     *
-     * @param mode the new mode
-     */
-    public void setMode(Input mode) {
-      this.mode = mode;
-    }
-
-    /**
-     * Gets the state.
-     *
-     * @return the state
-     */
-    public Input getState() {
-      return this.state;
-    }
-
-    /**
-     * Sets the state.
-     *
-     * @param state the new state
-     */
-    public void setState(Input state) {
-      this.state = state;
-    }
 
     @Override
     public void bindForm(Map<String, Object> root) {}

@@ -44,7 +44,7 @@ public class GetScriptVersion {
                     // upgrade
                     scriptVersion = svDB;
                     scriptName = name;
-                    return Stream.of(new GetScriptVersion.NameAndValue<>(name, svDB));
+                    return Stream.of(new NameAndValue<>(name, svDB));
                 }
             }
             return Stream.empty();
@@ -55,7 +55,7 @@ public class GetScriptVersion {
         return this;
     }
 
-    private class NameAndValue<T1, T2> {
+    private static class NameAndValue<T1, T2> {
         T1 name;
         T2 value;
         NameAndValue(T1 name, T2 value) {

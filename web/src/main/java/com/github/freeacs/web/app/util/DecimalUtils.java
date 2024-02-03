@@ -16,7 +16,7 @@ public class DecimalUtils {
     NO_DECIMALS("0");
 
     /** The format. */
-    String format;
+    final String format;
 
     /**
      * Instantiates a new format.

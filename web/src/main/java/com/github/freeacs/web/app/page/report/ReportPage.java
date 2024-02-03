@@ -200,7 +200,7 @@ public class ReportPage extends AbstractWebPage {
       method.setSelected("VoIPQuality");
     }
 
-    reportImplementation = DefaultRetriever.class.newInstance();
+    reportImplementation = DefaultRetriever.class.getDeclaredConstructor().newInstance();
     Class<? extends ReportRetriever> reportImplementationClass =
         reportType2Implementation.get(reportType);
     if (reportImplementationClass != null) {
@@ -318,7 +318,7 @@ public class ReportPage extends AbstractWebPage {
   private void displayReportChart(
       ParameterParser req, Map<String, Object> templateMap, CheckBoxGroup<String> aggregation) {
     ChartLegendsDimensions legendDimensions =
-        new ChartLegendsDimensions(aggregation.getSelected().toArray(new String[] {}), report);
+            new ChartLegendsDimensions(aggregation.getSelected().toArray(new String[]{}), report);
     displayReportChartWithImageMap(
         templateMap,
         legendDimensions.numberOfColumns,
@@ -504,7 +504,7 @@ public class ReportPage extends AbstractWebPage {
   }
 
   /** The Class ChartLegendsDimensions. */
-  class ChartLegendsDimensions {
+  static class ChartLegendsDimensions {
     /** The MA x_ legend s_ p r_ column. */
     private final int MAX_LEGENDS_PR_COLUMN = 21;
 

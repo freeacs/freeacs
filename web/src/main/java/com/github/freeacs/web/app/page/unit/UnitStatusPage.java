@@ -664,7 +664,7 @@ public class UnitStatusPage extends AbstractWebPage {
   }
 
   /** The Class RecordHardwareComparator. */
-  class RecordHardwareComparator implements Comparator<RecordHardware> {
+  static class RecordHardwareComparator implements Comparator<RecordHardware> {
     /** Instantiates a new record hardware comparator. */
     public RecordHardwareComparator() {}
 
@@ -680,7 +680,7 @@ public class UnitStatusPage extends AbstractWebPage {
   }
 
   /** The Class RecordVoipComparator. */
-  class RecordVoipComparator implements Comparator<RecordVoip> {
+  static class RecordVoipComparator implements Comparator<RecordVoip> {
     /** Instantiates a new record voip comparator. */
     public RecordVoipComparator() {}
 
@@ -870,8 +870,7 @@ public class UnitStatusPage extends AbstractWebPage {
   }
 
   /** The Class IsRecordACall. */
-  public class IsRecordACall implements TemplateMethodModel {
-    @SuppressWarnings({"rawtypes"})
+  public static class IsRecordACall implements TemplateMethodModel {
     public Boolean exec(List arg0) throws TemplateModelException {
       if (arg0.size() < 2) {
         throw new TemplateModelException("Specify total score and sip reg failed");

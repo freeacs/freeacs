@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class SyslogMessageMapContainer {
-  public class SyslogMessageMap {
+  public static class SyslogMessageMap {
     private Heartbeat heartbeat;
     private final TimestampMap unitIdTmsMap;
 

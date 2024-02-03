@@ -10,7 +10,10 @@
  */
 package de.javawi.jstun.util;
 
+import java.io.Serial;
+
 public class UtilityException extends Exception {
+  @Serial
   private static final long serialVersionUID = 3545800974716581680L;
 
   UtilityException(String mesg) {

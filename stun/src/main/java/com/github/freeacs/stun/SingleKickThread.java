@@ -252,7 +252,7 @@ public class SingleKickThread implements Runnable {
     }
   }
 
-  public class InspectionState {
+  public static class InspectionState {
     private long tmsOfLastChange;
     private boolean kicked;
 

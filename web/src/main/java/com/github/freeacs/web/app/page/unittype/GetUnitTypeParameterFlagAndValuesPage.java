@@ -18,7 +18,7 @@ import javax.sql.DataSource;
  * @author Jarl Andre Hubenthal
  */
 public class GetUnitTypeParameterFlagAndValuesPage extends AbstractWebPage {
-  protected class FlagsHolder {
+  protected static final class FlagsHolder {
     public Boolean hasValues;
     public String flag;
 

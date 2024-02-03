@@ -28,7 +28,7 @@ public class UnittypeXML {
     }
   }
 
-  public class Info {
+  public static class Info {
     String version;
     String vendor;
     String description;
@@ -42,7 +42,7 @@ public class UnittypeXML {
     }
   }
 
-  public class EnumEntry {
+  public static class EnumEntry {
     String displayname;
     String value;
 
@@ -54,7 +54,7 @@ public class UnittypeXML {
     }
   }
 
-  public class EnumEntries {
+  public static class EnumEntries {
     List<EnumEntry> list = new ArrayList<>();
 
     EnumEntries() {}

@@ -17,6 +17,7 @@
 
 package org.quartz;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Calendar;
@@ -183,6 +184,7 @@ import java.util.TreeSet;
  */
 public final class CronExpression implements Serializable, Cloneable {
 
+  @Serial
   private static final long serialVersionUID = 12423409423L;
 
   protected static final int SECOND = 0;
@@ -1609,6 +1611,7 @@ public final class CronExpression implements Serializable, Cloneable {
     }
   }
 
+  @Serial
   private void readObject(java.io.ObjectInputStream stream)
       throws java.io.IOException, ClassNotFoundException {
 
@@ -1625,7 +1628,7 @@ public final class CronExpression implements Serializable, Cloneable {
     return new CronExpression(this);
   }
 
-  private class ValueSet {
+  private static class ValueSet {
     public int value;
 
     public int pos;

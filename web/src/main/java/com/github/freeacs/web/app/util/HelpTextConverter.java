@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.Serial;
 import javax.swing.*;
 
 /**
@@ -19,6 +20,7 @@ import javax.swing.*;
 public class HelpTextConverter extends JFrame
     implements ActionListener, WindowListener, ClipboardOwner {
   /** The Constant serialVersionUID. */
+  @Serial
   private static final long serialVersionUID = -1L;
 
   /** The input. */

@@ -41,8 +41,8 @@ public class JobStatusMethods {
     return statusToAcronymConverter;
   }
 
-  private final class GetNextAvailableStatusCodesMethod implements TemplateMethodModel {
-    public List<?> exec(@SuppressWarnings("rawtypes") List args) throws TemplateModelException {
+  private static final class GetNextAvailableStatusCodesMethod implements TemplateMethodModel {
+    public List<?> exec(List args) throws TemplateModelException {
       if (args.size() != 1) {
         throw new TemplateModelException("No status in argument list");
       }
@@ -52,7 +52,7 @@ public class JobStatusMethods {
     }
   }
 
-  public String[] getNextAvailableStatusCodes(String status) {
+  public static String[] getNextAvailableStatusCodes(String status) {
     if (JobStatus.READY.toString().equalsIgnoreCase(status)) {
       return new String[] {JobStatus.STARTED.toString()};
     } else if (JobStatus.PAUSED.toString().equalsIgnoreCase(status)) {
@@ -64,8 +64,8 @@ public class JobStatusMethods {
     }
   }
 
-  private final class IsStatusFinishedMethod implements TemplateMethodModel {
-    public Boolean exec(@SuppressWarnings("rawtypes") List args) throws TemplateModelException {
+  private static final class IsStatusFinishedMethod implements TemplateMethodModel {
+    public Boolean exec(List args) throws TemplateModelException {
       if (args.size() != 1) {
         throw new TemplateModelException("No job status in argument list");
       }
@@ -73,8 +73,8 @@ public class JobStatusMethods {
     }
   }
 
-  private final class IsStatusReadyMethod implements TemplateMethodModel {
-    public Boolean exec(@SuppressWarnings("rawtypes") List args) throws TemplateModelException {
+  private static final class IsStatusReadyMethod implements TemplateMethodModel {
+    public Boolean exec(List args) throws TemplateModelException {
       if (args.size() != 1) {
         throw new TemplateModelException("No job status in argument list");
       }
@@ -82,8 +82,8 @@ public class JobStatusMethods {
     }
   }
 
-  private final class ConvertStatusToAcronymMethod implements TemplateMethodModel {
-    public String exec(@SuppressWarnings("rawtypes") List args) throws TemplateModelException {
+  private static final class ConvertStatusToAcronymMethod implements TemplateMethodModel {
+    public String exec(List args) throws TemplateModelException {
       if (args.size() != 1) {
         throw new TemplateModelException("No job status in argument list");
       }
@@ -92,7 +92,7 @@ public class JobStatusMethods {
     }
   }
 
-  public String getJobStatusToAcronym(String jobStatus) {
+  public static String getJobStatusToAcronym(String jobStatus) {
     if (JobStatus.STARTED.toString().equalsIgnoreCase(jobStatus)) {
       return "START";
     } else if (JobStatus.PAUSED.toString().equalsIgnoreCase(jobStatus)) {
@@ -104,8 +104,8 @@ public class JobStatusMethods {
     }
   }
 
-  private final class GetStatusFromAcronymMethod implements TemplateMethodModel {
-    public String exec(@SuppressWarnings("rawtypes") List args) throws TemplateModelException {
+  private static final class GetStatusFromAcronymMethod implements TemplateMethodModel {
+    public String exec(List args) throws TemplateModelException {
       if (args.size() != 1) {
         throw new TemplateModelException("No acronym supplied in argument list");
       }
@@ -114,7 +114,7 @@ public class JobStatusMethods {
     }
   }
 
-  public JobStatus getJobStatusFromAcronym(String acronym) {
+  public static JobStatus getJobStatusFromAcronym(String acronym) {
     if ("START".equalsIgnoreCase(acronym)) {
       return JobStatus.STARTED;
     } else if ("PAUSE".equalsIgnoreCase(acronym)) {

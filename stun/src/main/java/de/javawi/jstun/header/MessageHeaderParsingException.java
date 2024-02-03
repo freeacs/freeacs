@@ -10,7 +10,10 @@
  */
 package de.javawi.jstun.header;
 
+import java.io.Serial;
+
 public class MessageHeaderParsingException extends MessageHeaderException {
+  @Serial
   private static final long serialVersionUID = 3544393617029607478L;
 
   public MessageHeaderParsingException(String mesg) {

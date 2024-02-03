@@ -3,6 +3,7 @@ package com.github.freeacs.web.help;
 import com.github.freeacs.web.Page;
 import freemarker.template.TemplateException;
 import java.io.IOException;
+import java.io.Serial;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class HelpServlet extends HttpServlet {
   /** The Constant serialVersionUID. */
+  @Serial
   private static final long serialVersionUID = 1L;
 
   /**

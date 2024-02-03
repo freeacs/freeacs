@@ -264,7 +264,7 @@ public class PermissionsPage extends AbstractWebPage {
   }
 
   /** The Class PagePermission. */
-  public class PagePermission {
+  public static class PagePermission {
     /**
      * Gets the key.
      *

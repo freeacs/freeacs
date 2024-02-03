@@ -1,9 +1,11 @@
 package com.github.freeacs.core.util;
 
+import java.io.Serial;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class UnitResultMap<K, V> extends LinkedHashMap<K, V> {
+  @Serial
   private static final long serialVersionUID = 1911267205492200962L;
 
   private final int maxSize;

@@ -81,7 +81,7 @@ public class DBI implements Runnable {
     }
   }
 
-  public class PublishType {
+  public static class PublishType {
     private final Set<String> messageTypes = new TreeSet<>();
 
     public Set<String> getMessageTypes() {
@@ -97,7 +97,7 @@ public class DBI implements Runnable {
     }
   }
 
-  public class UnittypePublish {
+  public static class UnittypePublish {
     private final Map<Integer, PublishType> groups = new HashMap<>();
     private final Map<Integer, PublishType> jobs = new HashMap<>();
     private final Map<Integer, PublishType> profiles = new HashMap<>();

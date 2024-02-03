@@ -15,7 +15,7 @@ public class Job {
 
   public static String ANY_UNIT_IN_GROUP = "ANY-UNIT-IN-GROUP";
 
-  public class StopRule {
+  public static class StopRule {
     public static final int ANY_FAILURE_TYPE = 0;
     public static final int CONFIRMED_FAILURE_TYPE = 1;
     public static final int UNCONFIRMED_FAILURE_TYPE = 2;
