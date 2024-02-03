@@ -23,5 +23,8 @@ jobs:
         uses: JetBrains/qodana-action@v2023.3
         with:
           upload-result: true
+          pr-mode: false
+          args: --apply-fixes
+          push-fixes: pull-request
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}

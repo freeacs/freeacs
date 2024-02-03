@@ -21,6 +21,7 @@ projectJDK: 19 #(Applied in CI/CD pipeline)
 #plugins:
 #  - id: <plugin.id> #(plugin id can be found at https://plugins.jetbrains.com)
 #Specify Qodana linter for analysis (Applied in CI/CD pipeline)
+fixesStrategy: cleanup
 linter: jetbrains/qodana-jvm-community:latest
 exclude:
   - name: All
