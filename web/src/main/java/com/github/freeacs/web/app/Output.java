@@ -541,7 +541,7 @@ public class Output {
     return encoding != null && encoding.toLowerCase().contains("gzip");
   }
 
-    /**
+  /**
    * Used to set template paths that are using the default template path, the index.ftl file. <br>
    * Example wise: by calling setTemplatePathWithIndex("/report"); <br>
    * The template path will become "/report/index.ftl"
