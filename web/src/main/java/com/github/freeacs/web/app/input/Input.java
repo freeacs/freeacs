@@ -159,7 +159,7 @@ public class Input {
     return in;
   }
 
-    /**
+  /**
    * Gets the string without tags.
    *
    * @return the string without tags
@@ -452,7 +452,7 @@ public class Input {
     return null;
   }
 
-    /**
+  /**
    * Gets the string array.
    *
    * @return the string array
