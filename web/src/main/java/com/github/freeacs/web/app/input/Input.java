@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ import org.slf4j.LoggerFactory;
  * @author Jarl Andre Hubenthal
  */
 @Getter
+@Setter
 public class Input {
   /** The key. */
   private String key;
@@ -157,16 +159,7 @@ public class Input {
     return in;
   }
 
-  /**
-   * Sets the key.
-   *
-   * @param key the new key
-   */
-  public void setKey(String key) {
-    this.key = key;
-  }
-
-  /**
+    /**
    * Gets the string without tags.
    *
    * @return the string without tags
@@ -459,25 +452,7 @@ public class Input {
     return null;
   }
 
-  /**
-   * Sets the error.
-   *
-   * @param string the new error
-   */
-  public void setError(String string) {
-    error = string;
-  }
-
-  /**
-   * Sets the type.
-   *
-   * @param type the new type
-   */
-  public void setType(InputType type) {
-    this.type = type;
-  }
-
-  /**
+    /**
    * Gets the string array.
    *
    * @return the string array

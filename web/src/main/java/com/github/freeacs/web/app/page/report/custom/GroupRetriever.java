@@ -14,6 +14,8 @@ import com.github.freeacs.web.app.input.InputSelectionFactory;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.report.ReportData;
 import com.github.freeacs.web.app.util.ACSLoader;
+import lombok.Getter;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+@Getter
 /** The Class GroupInterface. */
 public class GroupRetriever extends ReportRetriever {
   /** The generator. */
@@ -28,10 +31,6 @@ public class GroupRetriever extends ReportRetriever {
 
   /** The groups. */
   private final DropDownSingleSelect<Group> groups;
-
-  public DropDownSingleSelect<Group> getGroups() {
-    return groups;
-  }
 
   /** The types. */
   //	private DropDownSingleSelect<String> types;

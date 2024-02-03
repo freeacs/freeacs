@@ -4,6 +4,8 @@ import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.report.RecordSyslog;
 import com.github.freeacs.web.app.page.syslog.SyslogUtil;
 import freemarker.template.TemplateModelException;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,30 +18,13 @@ import java.util.List;
  *
  * @author Jarl Andre Hubenthal
  */
+@Getter
 public class RecordUIDataSyslogFromReport {
   /** The entry. */
   private RecordSyslog entry;
 
-  /**
-   * Gets the entry.
-   *
-   * @return the entry
-   */
-  public RecordSyslog getEntry() {
-    return entry;
-  }
-
   /** The unit. */
   private Unit unit;
-
-  /**
-   * Gets the unit.
-   *
-   * @return the unit
-   */
-  public Unit getUnit() {
-    return unit;
-  }
 
   /**
    * Gets the message count.

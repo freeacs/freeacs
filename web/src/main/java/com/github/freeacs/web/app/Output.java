@@ -32,6 +32,9 @@ import java.util.zip.GZIPOutputStream;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +45,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author Jarl Andre Hubenthal
  */
+@Getter
+@Setter
 public class Output {
   private static final String INCLUDE_TEMPLATE_KEY = "INCLUDED_TEMPLATE";
   private final DataSource xapsDataSource;
@@ -536,16 +541,7 @@ public class Output {
     return encoding != null && encoding.toLowerCase().contains("gzip");
   }
 
-  /**
-   * Gets the template map.
-   *
-   * @return the template map
-   */
-  public Map<String, Object> getTemplateMap() {
-    return this.templateMap;
-  }
-
-  /**
+    /**
    * Used to set template paths that are using the default template path, the index.ftl file. <br>
    * Example wise: by calling setTemplatePathWithIndex("/report"); <br>
    * The template path will become "/report/index.ftl"
@@ -600,24 +596,6 @@ public class Output {
   }
 
   /**
-   * Sets the content type.
-   *
-   * @param string the new content type
-   */
-  public void setContentType(String string) {
-    this.contentType = string;
-  }
-
-  /**
-   * Sets the response committed.
-   *
-   * @param responseCommitted the new response committed
-   */
-  public void setResponseCommitted(Boolean responseCommitted) {
-    this.responseCommitted = responseCommitted;
-  }
-
-  /**
    * Checks if is response committed.
    *
    * @return the boolean
@@ -654,7 +632,4 @@ public class Output {
     this.trailPoint = contextDataKeeper;
   }
 
-  public ContextItem getTrailPoint() {
-    return trailPoint;
-  }
 }

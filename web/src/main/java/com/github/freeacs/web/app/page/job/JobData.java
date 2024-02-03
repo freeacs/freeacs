@@ -3,8 +3,13 @@ package com.github.freeacs.web.app.page.job;
 import com.github.freeacs.dbi.JobFlag.JobType;
 import com.github.freeacs.web.app.input.Input;
 import com.github.freeacs.web.app.input.InputData;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Map;
 
+@Setter
+@Getter
 public class JobData extends InputData {
   /** Code-order: unty, id, name, flag, desc, group, unct, rules, file, dep, repc, repi */
   private Input name = Input.getStringInput("name");
@@ -77,99 +82,4 @@ public class JobData extends InputData {
     return valid;
   }
 
-  public Input getDescription() {
-    return description;
-  }
-
-  public Input getName() {
-    return name;
-  }
-
-  public Input getDependency() {
-    return dependency;
-  }
-
-  public Input getServiceWindow() {
-    return serviceWindow;
-  }
-
-  public Input getStatusSubmit() {
-    return statusSubmit;
-  }
-
-  public Input getType() {
-    return type;
-  }
-
-  public Input getRepeatCount() {
-    return repeatCount;
-  }
-
-  public Input getRepeatInterval() {
-    return repeatInterval;
-  }
-
-  public Input getStoprules() {
-    return stoprules;
-  }
-
-  public Input getUnconfirmedTimeout() {
-    return unconfirmedTimeout;
-  }
-
-  public void setDescription(Input description) {
-    this.description = description;
-  }
-
-  public void setName(Input jobcreatename) {
-    this.name = jobcreatename;
-  }
-
-  public void setDependency(Input jobdependency) {
-    this.dependency = jobdependency;
-  }
-
-  public void setServiceWindow(Input jobSW) {
-    this.serviceWindow = jobSW;
-  }
-
-  public void setStatusSubmit(Input jobStatusSubmit) {
-    this.statusSubmit = jobStatusSubmit;
-  }
-
-  public void setType(Input jobType) {
-    this.type = jobType;
-  }
-
-  public void setRepeatCount(Input repeatCount) {
-    this.repeatCount = repeatCount;
-  }
-
-  public void setRepeatInterval(Input repeatInterval) {
-    this.repeatInterval = repeatInterval;
-  }
-
-  public void setStoprules(Input stoprules) {
-    this.stoprules = stoprules;
-  }
-
-  public void setUnconfirmedTimeout(Input timeoutsetting) {
-    this.unconfirmedTimeout = timeoutsetting;
-  }
-
-  public Input getFileId() {
-    return fileId;
-  }
-
-  public void setFileId(Input fileId) {
-    this.fileId = fileId;
-  }
-
-  public Input getGroupId() {
-    return groupId;
-  }
-
-  public void setGroupId(Input groupId) {
-    this.groupId = groupId;
-  }
 }

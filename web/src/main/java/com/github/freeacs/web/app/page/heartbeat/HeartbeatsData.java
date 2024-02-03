@@ -2,9 +2,14 @@ package com.github.freeacs.web.app.page.heartbeat;
 
 import com.github.freeacs.web.app.input.Input;
 import com.github.freeacs.web.app.input.InputData;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Map;
 
 /** The Class SyslogEventsData. */
+@Setter
+@Getter
 public class HeartbeatsData extends InputData {
   /** Typically to indicate edit/delete/add/etc. */
   private Input action = Input.getStringInput("action");
@@ -45,51 +50,4 @@ public class HeartbeatsData extends InputData {
     return valid;
   }
 
-  public Input getName() {
-    return name;
-  }
-
-  public void setName(Input name) {
-    this.name = name;
-  }
-
-  public Input getExpression() {
-    return expression;
-  }
-
-  public void setExpression(Input expression) {
-    this.expression = expression;
-  }
-
-  public Input getAction() {
-    return action;
-  }
-
-  public void setAction(Input action) {
-    this.action = action;
-  }
-
-  public Input getGroupId() {
-    return groupId;
-  }
-
-  public void setGroupId(Input groupId) {
-    this.groupId = groupId;
-  }
-
-  public Input getTimeout() {
-    return timeout;
-  }
-
-  public void setTimeout(Input timeout) {
-    this.timeout = timeout;
-  }
-
-  public Input getId() {
-    return id;
-  }
-
-  public void setId(Input id) {
-    this.id = id;
-  }
 }

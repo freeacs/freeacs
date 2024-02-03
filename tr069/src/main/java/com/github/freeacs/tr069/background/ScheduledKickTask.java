@@ -5,6 +5,8 @@ import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.dbi.Unit;
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,9 +16,15 @@ import java.util.List;
 
 public class ScheduledKickTask extends TaskDefaultImpl {
   public static class UnitKick {
+    @Setter
+    @Getter
     private Unit unit;
     private final long initiatedTms;
+    @Setter
+    @Getter
     private int kickCount;
+    @Setter
+    @Getter
     private long nextTms;
 
     public UnitKick(Unit u) {
@@ -26,29 +34,6 @@ public class ScheduledKickTask extends TaskDefaultImpl {
       this.nextTms = initiatedTms + 5000;
     }
 
-    public Unit getUnit() {
-      return unit;
-    }
-
-    public void setUnit(Unit unit) {
-      this.unit = unit;
-    }
-
-    public int getKickCount() {
-      return kickCount;
-    }
-
-    public void setKickCount(int kickCount) {
-      this.kickCount = kickCount;
-    }
-
-    public long getNextTms() {
-      return nextTms;
-    }
-
-    public void setNextTms(long nextTms) {
-      this.nextTms = nextTms;
-    }
   }
 
   private static final Logger logger = LoggerFactory.getLogger(ScheduledKickTask.class);
@@ -99,7 +84,7 @@ public class ScheduledKickTask extends TaskDefaultImpl {
     return logger;
   }
 
-  // TODO remove?
+  // FIXME this should have been called from somewhere
   public static void addUnit(Unit u) {
     removeUnit(u.getId());
     synchronized (syncMonitor) {

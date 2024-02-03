@@ -1,7 +1,9 @@
 package com.github.freeacs.web.app.page.scriptexecution;
 
 import lombok.Getter;
+import lombok.Setter;
 
+@Setter
 @Getter
 public class Enumeration {
   private String value;
@@ -10,14 +12,6 @@ public class Enumeration {
   public Enumeration(String v, String d) {
     value = v;
     description = d;
-  }
-
-  public void setValue(String value) {
-    this.value = value;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
   }
 
   public boolean equals(Object o) {

@@ -3,11 +3,13 @@ package com.github.freeacs.tr069.methods.decision.GetParameterValues;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.tr069.CPEParameters;
 import com.github.freeacs.tr069.base.ACSParameters;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.stream.Stream;
 
+@Getter
 public class GetScriptVersion {
     private static final Logger logger = LoggerFactory.getLogger(GetScriptVersion.class);
 
@@ -19,14 +21,6 @@ public class GetScriptVersion {
     public GetScriptVersion(ACSParameters oweraParams, CPEParameters cpeParams) {
         this.oweraParams = oweraParams;
         this.cpeParams = cpeParams;
-    }
-
-    public String getScriptVersion() {
-        return scriptVersion;
-    }
-
-    public String getScriptName() {
-        return scriptName;
     }
 
     public GetScriptVersion build() {

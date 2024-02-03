@@ -25,24 +25,6 @@ public class FileData extends InputData {
   /** The file type filter. */
   private Input fileType = Input.getStringInput("filetype");
 
-  /**
-   * Sets the name.
-   *
-   * @param name the new name
-   */
-  public void setName(Input name) {
-    this.name = name;
-  }
-
-  /**
-   * Sets the description.
-   *
-   * @param description the new description
-   */
-  public void setDescription(Input description) {
-    this.description = description;
-  }
-
   @Override
   public void bindForm(Map<String, Object> root) {}
 
@@ -51,11 +33,4 @@ public class FileData extends InputData {
     return false;
   }
 
-  public void setType(Input type) {
-    this.type = type;
-  }
-
-  public void setContent(Input content) {
-    this.content = content;
-  }
 }

@@ -1,5 +1,8 @@
 package com.github.freeacs.web.security;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Always connected to an AllowedUnittype.
  *
@@ -9,6 +12,8 @@ package com.github.freeacs.web.security;
  *
  * @author Jarl Andre Hubenthal
  */
+@Setter
+@Getter
 public class AllowedProfile {
   /** The id. */
   private Integer id;
@@ -27,39 +32,4 @@ public class AllowedProfile {
     this.id = id;
   }
 
-  /**
-   * Gets the id.
-   *
-   * @return the id
-   */
-  public Integer getId() {
-    return id;
-  }
-
-  /**
-   * Gets the name.
-   *
-   * @return the name
-   */
-  public String getName() {
-    return name;
-  }
-
-  /**
-   * Sets the id.
-   *
-   * @param id the new id
-   */
-  public void setId(Integer id) {
-    this.id = id;
-  }
-
-  /**
-   * Sets the name.
-   *
-   * @param name the new name
-   */
-  public void setName(String name) {
-    this.name = name;
-  }
 }

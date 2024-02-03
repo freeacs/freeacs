@@ -2,6 +2,7 @@ package com.github.freeacs.tr069.base;
 
 import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.UnitJobStatus;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -35,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author morten
  */
 @Slf4j
+@Setter
 public class PIIDecision {
   private final SessionDataI sessionData;
   private Job currentJob;
@@ -107,7 +109,7 @@ public class PIIDecision {
       return nextPII;
     } else {
       ServiceWindow sw = disruptiveSW;
-      long nextPII = 0;
+      long nextPII;
       if (sw == null) {
         sw = new ServiceWindow(sessionData, false);
         nextPII = sw.calculateStdPII();
@@ -126,48 +128,4 @@ public class PIIDecision {
     log.debug("PeriodicInformInterval (final): " + pii + " (reason: " + reason + ")");
   }
 
-  /**
-   * Set by JobLogic.checkNewJob() - verified
-   *
-   * @param currentJob
-   */
-  public void setCurrentJob(Job currentJob) {
-    this.currentJob = currentJob;
-  }
-
-  /**
-   * Set by UnitJob.stop() - verified
-   *
-   * @param currentJobStatus
-   */
-  public void setCurrentJobStatus(String currentJobStatus) {
-    this.currentJobStatus = currentJobStatus;
-  }
-
-  /**
-   * Set by JobLogic.checkNewJob() - verified
-   *
-   * @param allJobs
-   */
-  public void setAllJobs(Job[] allJobs) {
-    this.allJobs = allJobs;
-  }
-
-  /**
-   * Set by JobLogic.filterOnRunTime() - verified
-   *
-   * @param calcTms
-   */
-  public void setCalcTms(long calcTms) {
-    this.calcTms = calcTms;
-  }
-
-  /**
-   * Set by GPVDecision.somemethod()
-   *
-   * @param disruptiveSW
-   */
-  public void setDisruptiveSW(ServiceWindow disruptiveSW) {
-    this.disruptiveSW = disruptiveSW;
-  }
 }

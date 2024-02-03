@@ -1,8 +1,11 @@
 package com.github.freeacs.tr069.base;
 
+import lombok.Getter;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Getter
 public class JobHistoryEntry {
   private static final Pattern jobHistoryPattern = Pattern.compile("^(\\d+)(:(\\d+):(\\d+))?$");
 
@@ -23,19 +26,7 @@ public class JobHistoryEntry {
     }
   }
 
-  public Integer getJobId() {
-    return jobId;
-  }
-
-  public Integer getRepeatedCount() {
-    return repeatedCount;
-  }
-
-  public Long getLastRunTms() {
-    return lastRunTms;
-  }
-
-  public String incEntry(long tms) {
+    public String incEntry(long tms) {
     if (repeatedCount != null) {
       return jobId + ":" + (repeatedCount + 1) + ":" + tms;
     } else {
