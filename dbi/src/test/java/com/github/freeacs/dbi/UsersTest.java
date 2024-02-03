@@ -1,7 +1,6 @@
 package com.github.freeacs.dbi;
 
 import com.github.freeacs.common.util.AbstractMySqlIntegrationTest;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
