@@ -97,10 +97,9 @@ public abstract class HelpPage {
    * Finds and retrieves the contents of a resource path.
    *
    * @param path The resource path to look for
-   * @param def The default value to return if no resource path is not found
    * @return The resource path contents
    */
-  private static String getFileContents(String path, String def) {
+  private static String getFileContents(String path) {
     InputStream is = HelpPage.class.getResourceAsStream(path);
     if (is != null) {
       Scanner scanner = new Scanner(is).useDelimiter("\\Z");
@@ -110,7 +109,7 @@ public abstract class HelpPage {
         return contents.replace("%VERSION%", "latest");
       }
     }
-    return def;
+    return HelpPage.NO_DATA;
   }
 
   /**
@@ -128,15 +127,11 @@ public abstract class HelpPage {
 
     Map<String, Object> map = new HashMap<>();
 
-    String shortName = path.substring(path.lastIndexOf('/') + 1, path.length());
-
-    String fileName = camelCase(!shortName.endsWith("Page") ? shortName + "Page" : shortName);
-
-    path = path.substring(0, path.lastIndexOf('/'));
+    String shortName = path.substring(path.lastIndexOf('/') + 1).replace(".html", "");
 
     map.put("title", shortName);
 
-    String contents = getFileContents(path + "/" + fileName + ".html", NO_DATA);
+    String contents = getFileContents(path);
 
     map.put("content", contents);
 
@@ -145,13 +140,4 @@ public abstract class HelpPage {
     return Freemarker.parseTemplate(map, template);
   }
 
-  /**
-   * Uppercases the first character of a string.
-   *
-   * @param string A string to camelcase
-   * @return The string with the first character uppercased.
-   */
-  private static String camelCase(String string) {
-    return string.substring(0, 1).toUpperCase() + string.substring(1);
-  }
 }

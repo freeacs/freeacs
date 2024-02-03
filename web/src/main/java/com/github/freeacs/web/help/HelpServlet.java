@@ -77,8 +77,8 @@ public class HelpServlet extends HttpServlet {
         Page p = Page.getById(page);
         if (p != Page.NONE) {
           html = HelpPage.getHTMLForPageByClass(p);
-        } else {
-          html = HelpPage.getHTMLForPageByResourcePath("pages/" + page + "/" + page);
+        } else if (page.equals("about")) {
+          html = HelpPage.getHTMLForPageByResourcePath("pages/about/AboutPage.html");
         }
       } catch (TemplateException e1) {
         throw new ServletException("Could not retrieve help file", e1);
