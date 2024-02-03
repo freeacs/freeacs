@@ -26,7 +26,7 @@ public class JobHistoryEntry {
     }
   }
 
-    public String incEntry(long tms) {
+  public String incEntry(long tms) {
     if (repeatedCount != null) {
       return jobId + ":" + (repeatedCount + 1) + ":" + tms;
     } else {
