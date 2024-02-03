@@ -89,7 +89,7 @@ public class TimeWindow {
   public long getDailyLength() {
     int hour = timeSpan / 100;
     int minute = timeSpan % 100;
-    return hour * 3600 * 1000 + minute * 60 * 1000;
+    return (long) hour * 3600 * 1000 + minute * 60 * 1000;
   }
 
   public long getWeeklyLength() {

@@ -49,6 +49,6 @@ public class Utility {
     int temp1 = value[1] & 0xFF;
     int temp2 = value[2] & 0xFF;
     int temp3 = value[3] & 0xFF;
-    return (temp0 << 24) + (temp1 << 16) + (temp2 << 8) + temp3;
+    return ((long) temp0 << 24) + (temp1 << 16) + (temp2 << 8) + temp3;
   }
 }

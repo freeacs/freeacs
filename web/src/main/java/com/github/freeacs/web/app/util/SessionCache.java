@@ -44,7 +44,7 @@ public class SessionCache {
       cache.remove(key(sessionId, "dbi"));
     } else {
       String key = key(sessionId, "dbi");
-      cache.put(key, new CacheValue(xapsCache, Cache.SESSION, (lifeTimeSec * 1000)));
+      cache.put(key, new CacheValue(xapsCache, Cache.SESSION, (lifeTimeSec * 1000L)));
     }
   }
 

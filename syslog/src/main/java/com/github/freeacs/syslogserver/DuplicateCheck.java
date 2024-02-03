@@ -45,7 +45,7 @@ public class DuplicateCheck {
 
       Syslog2DB.getSyslog()
           .updateContent(
-              duplicate.getTimeout() - SyslogEvent.DUPLICATE_TIMEOUT * 60000,
+              duplicate.getTimeout() - SyslogEvent.DUPLICATE_TIMEOUT * 60000L,
               orgMsg,
               newMsg,
               duplicate.getEntry().getUnitId());
@@ -109,7 +109,7 @@ public class DuplicateCheck {
       String key, SyslogEntry entry, int duplicateTimeoutMinutes, Properties properties)
       throws SQLException {
     Duplicate duplicate =
-        new Duplicate(entry, System.currentTimeMillis() + duplicateTimeoutMinutes * 60000);
+        new Duplicate(entry, System.currentTimeMillis() + duplicateTimeoutMinutes * 60000L);
     if (duplicateMap.size() <= getMaxSize(properties) && !duplicate(key)) {
       counter++;
       if (counter > getCleanupLimitCounter(properties)

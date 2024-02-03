@@ -197,7 +197,7 @@ public class UnitJobs {
         pp = c.prepareStatement(sql);
         pp.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
         pp.setTimestamp(
-            2, new Timestamp(System.currentTimeMillis() - job.getUnconfirmedTimeout() * 1000));
+            2, new Timestamp(System.currentTimeMillis() - job.getUnconfirmedTimeout() * 1000L));
         pp.setInt(3, job.getId());
         pp.setQueryTimeout(60);
         rowsUpdated = pp.executeUpdate();

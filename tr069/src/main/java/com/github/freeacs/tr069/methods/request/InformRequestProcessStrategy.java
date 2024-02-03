@@ -214,7 +214,7 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
                     String LCT = unit.getParameterValue(SystemParameters.LAST_CONNECT_TMS, false);
                     if (PII != null && LCT != null) {
                         long shouldConnectTms =
-                                TimestampWrapper.tmsFormat.parse(LCT).getTime() + Integer.parseInt(PII) * 1000;
+                                TimestampWrapper.tmsFormat.parse(LCT).getTime() + Integer.parseInt(PII) * 1000L;
                         long diff = System.currentTimeMillis() - shouldConnectTms;
                         if (diff > -5000 && diff < 5000) {
                             log.info("Periodic Inform recorded on time   (" + diff / 1000 + " sec). Deviation: " + (diff / 10) / Integer.parseInt(PII) + " %");
