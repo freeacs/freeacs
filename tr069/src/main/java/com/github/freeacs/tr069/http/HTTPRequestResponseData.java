@@ -28,9 +28,10 @@ public class HTTPRequestResponseData {
   @Setter
   private TR069TransactionID TR069TransactionID;
 
-  private SessionData sessionData;
+  private final SessionData sessionData;
 
   public HTTPRequestResponseData(HttpServletRequest rawRequest) {
+    SessionData sessionData;
     this.rawRequest = rawRequest;
     this.requestData = new HTTPRequestData();
     this.responseData = new HTTPResponseData();
@@ -54,6 +55,7 @@ public class HTTPRequestResponseData {
       sessionData = new SessionData(sessionId);
       BaseCache.putSessionData(sessionId, sessionData);
     }
+    this.sessionData = sessionData;
     if (sessionData.getStartupTmsForSession() == null) {
       sessionData.setStartupTmsForSession(System.currentTimeMillis());
     }
@@ -62,6 +64,6 @@ public class HTTPRequestResponseData {
   }
 
   public String getRealIPAddress() {
-    return Optional.ofNullable(rawRequest.getHeader("X-Real-IP")).orElseGet(() -> rawRequest.getRemoteAddr());
+    return Optional.ofNullable(rawRequest.getHeader("X-Real-IP")).orElseGet(rawRequest::getRemoteAddr);
   }
 }
