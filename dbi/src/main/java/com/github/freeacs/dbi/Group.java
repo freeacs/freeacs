@@ -197,7 +197,7 @@ public class Group {
   public GroupParameters getGroupParameters() {
     if (parameters == null) {
       Map<Integer, GroupParameter> idMap = new HashMap<>();
-      MapWrapper<GroupParameter> mw = new MapWrapper<GroupParameter>(ACS.isStrictOrder());
+      MapWrapper<GroupParameter> mw = new MapWrapper<>(ACS.isStrictOrder());
       Map<String, GroupParameter> nameMap = mw.getMap();
       parameters = new GroupParameters(nameMap, idMap, this);
     }

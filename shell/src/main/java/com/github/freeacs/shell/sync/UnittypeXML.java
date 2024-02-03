@@ -70,7 +70,7 @@ public class UnittypeXML {
     }
   }
 
-  public class Enum {
+  public static class Enum {
     String name;
     String default_value;
     EnumEntries enumEntries = new EnumEntries();

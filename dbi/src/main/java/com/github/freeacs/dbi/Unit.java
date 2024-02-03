@@ -52,7 +52,7 @@ public class Unit {
    * will override the profile parameters.
    */
   public Map<String, String> getParameters() {
-    MapWrapper<String> mw = new MapWrapper<String>(ACS.isStrictOrder());
+    MapWrapper<String> mw = new MapWrapper<>(ACS.isStrictOrder());
     Map<String, String> map = mw.getMap();
     if (profile != null && profile.getProfileParameters() != null) {
       ProfileParameter[] pparams = profile.getProfileParameters().getProfileParameters();
@@ -220,7 +220,7 @@ public class Unit {
 
   public Map<String, UnitParameter> getSessionParameters() {
     if (this.sessionParameters == null) {
-      MapWrapper<UnitParameter> mw = new MapWrapper<UnitParameter>(ACS.isStrictOrder());
+      MapWrapper<UnitParameter> mw = new MapWrapper<>(ACS.isStrictOrder());
       sessionParameters = mw.getMap();
     }
     return sessionParameters;

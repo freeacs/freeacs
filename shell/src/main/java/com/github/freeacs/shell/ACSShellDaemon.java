@@ -37,7 +37,7 @@ public class ACSShellDaemon implements Runnable {
   public List<Throwable> getAndResetThrowables() {
     List<Throwable> throwables = ACSShell.getThrowables();
     if (!throwables.isEmpty()) {
-      ACSShell.setThrowables(new ArrayList<Throwable>());
+      ACSShell.setThrowables(new ArrayList<>());
     }
     return throwables;
   }

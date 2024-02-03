@@ -48,9 +48,10 @@ public class GroupComparator implements Comparator<Group> {
     Integer matchId = null;
     for (Integer x : groupIdList1) {
       for (Integer y : groupIdList2) {
-        if (x == y) {
-          matchId = x;
-        }
+          if (x.equals(y)) {
+              matchId = x;
+              break;
+          }
       }
     }
 

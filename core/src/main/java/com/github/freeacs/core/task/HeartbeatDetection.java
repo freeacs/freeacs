@@ -47,7 +47,7 @@ public class HeartbeatDetection extends DBIShare {
     acs = getLatestACS();
     // Set the tms back 60 sec, since we expect all writing
     // to syslog table (with tms 60 sec old) to be finished
-    Long tms = getLaunchTms() - OFFSET;
+    long tms = getLaunchTms() - OFFSET;
 
     // Clean old records from the activce device map and heartbeat maps
     removeOldEntriesFromActiveDevices(tms);
@@ -356,8 +356,7 @@ public class HeartbeatDetection extends DBIShare {
 
   private void removeOldEntriesFromActiveDevices(long to) {
     long tooOldTms = to - HOUR_MS;
-    TimestampMap unitIdTmsMap = activeDevices;
-    Map<String, Long> removedMap = unitIdTmsMap.removeOld(tooOldTms);
+    Map<String, Long> removedMap = activeDevices.removeOld(tooOldTms);
     if (logger.isDebugEnabled()) {
       logger.debug(
           "HeartbeatDetection: RemoveOldEntries: Have removed "

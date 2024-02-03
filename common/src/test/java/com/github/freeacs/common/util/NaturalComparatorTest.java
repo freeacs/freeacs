@@ -12,7 +12,7 @@ public class NaturalComparatorTest {
 
   @Test
   public void sortingTest() {
-    Map<String, String> m = new TreeMap<String, String>(new NaturalComparator());
+    Map<String, String> m = new TreeMap<>(new NaturalComparator());
 
     m.put("1", "1");
     m.put("2", "2");

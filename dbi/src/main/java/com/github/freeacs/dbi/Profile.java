@@ -39,7 +39,7 @@ public class Profile {
   public ProfileParameters getProfileParameters() {
     if (profileParameters == null) {
       Map<Integer, ProfileParameter> idMap = new HashMap<>();
-      MapWrapper<ProfileParameter> mw = new MapWrapper<ProfileParameter>(ACS.isStrictOrder());
+      MapWrapper<ProfileParameter> mw = new MapWrapper<>(ACS.isStrictOrder());
       Map<String, ProfileParameter> nameMap = mw.getMap();
       profileParameters = new ProfileParameters(idMap, nameMap, this);
     }

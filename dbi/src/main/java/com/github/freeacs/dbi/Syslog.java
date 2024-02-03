@@ -113,9 +113,10 @@ public class Syslog {
           boolean alreadyTreated = false;
           for (int j = 0; j < i; j++) {
             Profile p = filter.getProfiles().get(j);
-            if (p.getId().equals(profile.getId())) {
-              alreadyTreated = true;
-            }
+              if (p.getId().equals(profile.getId())) {
+                  alreadyTreated = true;
+                  break;
+              }
           }
           if (!alreadyTreated) {
             ds.addSqlAndArguments("unit_type_name = ? OR ", profile.getUnittype().getName());

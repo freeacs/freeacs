@@ -256,7 +256,7 @@ public class ReportGenerator {
     ResultSet rs = null;
     SQLException sqle = null;
     try {
-      Report<RecordUnit> report = new Report<RecordUnit>(RecordUnit.class, periodType);
+      Report<RecordUnit> report = new Report<>(RecordUnit.class, periodType);
       connection = mainDataSource.getConnection();
 
       logger.info(logPrefix + "Reads from report_unit table from " + start + " to " + end);
@@ -315,7 +315,7 @@ public class ReportGenerator {
     ResultSet rs = null;
     SQLException sqle = null;
     try {
-      Report<RecordJob> report = new Report<RecordJob>(RecordJob.class, periodType);
+      Report<RecordJob> report = new Report<>(RecordJob.class, periodType);
       connection = mainDataSource.getConnection();
 
       logger.info(logPrefix + "Reads from report_job table from " + start + " to " + end);

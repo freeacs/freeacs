@@ -50,9 +50,10 @@ public class JobComparator implements Comparator<Job> {
     Integer matchId = null;
     for (Integer x : jobIdList1) {
       for (Integer y : jobIdList2) {
-        if (x == y) {
-          matchId = x;
-        }
+          if (x.equals(y)) {
+              matchId = x;
+              break;
+          }
       }
     }
 

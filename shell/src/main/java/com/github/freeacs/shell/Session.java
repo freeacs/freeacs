@@ -190,7 +190,7 @@ public class Session {
   /** Get the active/current script of the script stack. */
   public Script getScript() {
     if (scriptStack.isEmpty()) {
-      scriptStack.add(new Script(new ArrayList<String>(), new Context(this), Script.SCRIPT));
+      scriptStack.add(new Script(new ArrayList<>(), new Context(this), Script.SCRIPT));
     }
     return scriptStack.peek();
   }

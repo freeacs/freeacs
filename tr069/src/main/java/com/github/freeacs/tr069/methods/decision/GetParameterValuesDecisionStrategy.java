@@ -397,6 +397,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
                 if (pvsDB.getName().equals(pvsCPE.getName())) {
                     match = true;
                     parameterMissing = true;
+                    break;
                 }
             }
             if (!match) {

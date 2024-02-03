@@ -110,6 +110,7 @@ public class Script {
       for (String w : cmdList) {
         if (word.equals(w)) {
           match = true;
+          break;
         }
       }
       if (match) {

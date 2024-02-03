@@ -289,7 +289,7 @@ public abstract class AbstractWebPage implements WebPage {
         throw new TemplateModelException("Specify total");
       }
       String totalString = (String) arg0.get(0);
-      Float total = Float.parseFloat(totalString);
+      float total = Float.parseFloat(totalString);
       if (total > 80) {
         toFormat = String.format(toFormat, GOOD);
       } else if (total >= 70) {

@@ -47,7 +47,7 @@ public class TimestampMap {
 
   public Map<String, Long> removeOld(long tooOldTms) {
     Iterator<String> iterator = map.keySet().iterator();
-    Long oldestTms = Long.MAX_VALUE;
+    long oldestTms = Long.MAX_VALUE;
     String oldestKey = null;
     Map<String, Long> removedMap = new HashMap<>();
     while (iterator.hasNext()) {

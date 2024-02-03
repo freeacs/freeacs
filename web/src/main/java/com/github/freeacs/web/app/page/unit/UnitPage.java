@@ -86,8 +86,7 @@ public class UnitPage extends AbstractWebPage {
   }
 
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
-    List<MenuItem> list = new ArrayList<MenuItem>();
-    list.addAll(super.getShortcutItems(sessionData));
+      List<MenuItem> list = new ArrayList<>(super.getShortcutItems(sessionData));
     list.add(new MenuItem("Create new Unit", Page.UNIT).addCommand("create"));
     if (unit != null) {
       list.add(
@@ -149,8 +148,8 @@ public class UnitPage extends AbstractWebPage {
     UnittypeParameter[] utParams = unittype.getUnittypeParameters().getUnittypeParameters();
     Map<String, UnitParameter> uParams = unit.getUnitParameters();
 
-    List<UnitParameter> upDeleteList = new ArrayList<UnitParameter>();
-    List<UnitParameter> upUpdateList = new ArrayList<UnitParameter>();
+    List<UnitParameter> upDeleteList = new ArrayList<>();
+    List<UnitParameter> upUpdateList = new ArrayList<>();
 
     for (UnittypeParameter utp : utParams) {
       String utpName = utp.getName();
@@ -189,7 +188,7 @@ public class UnitPage extends AbstractWebPage {
     Profile newProfile = acs.getProfile(unittype.getName(), newProfileStr);
     Profile oldProfile = acs.getProfile(unit.getProfile().getId());
     if (!oldProfile.getName().equals(newProfile.getName())) {
-      List<String> unitList = new ArrayList<String>();
+      List<String> unitList = new ArrayList<>();
       unitList.add(unit.getId());
       acsUnit.moveUnits(unitList, newProfile);
       unit = acsUnit.getUnitById(unit.getId());
@@ -222,7 +221,7 @@ public class UnitPage extends AbstractWebPage {
     if (sameProtocol && sameModel) {
       // unit.setUnittype(newUnittype);
       // unit.setProfile(newProfile);
-      List<String> unitList = new ArrayList<String>();
+      List<String> unitList = new ArrayList<>();
       unitList.add(unit.getId());
       acsUnit.moveUnits(unitList, newProfile);
       unit = acsUnit.getUnitById(unit.getId());
@@ -525,7 +524,7 @@ public class UnitPage extends AbstractWebPage {
         if (!isValidString(unitId)) {
           root.put("error", "Please enter a unitId");
         } else if (acsUnit.getUnitById(unitId) == null) {
-          List<String> unitIds = new ArrayList<String>();
+          List<String> unitIds = new ArrayList<>();
           unitIds.add(unitId);
           acsUnit.addUnits(unitIds, profile);
           unit = acsUnit.getUnitById(unitId, unittype, profile);

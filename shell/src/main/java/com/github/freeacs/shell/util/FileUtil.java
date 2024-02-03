@@ -55,12 +55,13 @@ public class FileUtil {
                 + "' since it access outside your direcetory tree. This incident will be reported.";
       }
       for (String protectedFilePattern : protectedFilePatterns) {
-        if (absPath.matches(".*" + protectedFilePattern)) {
-          msg =
-              "Error: Not allowed to do '"
-                  + command
-                  + "' to this specially protected file. This incident will be reported";
-        }
+          if (absPath.matches(".*" + protectedFilePattern)) {
+              msg =
+                      "Error: Not allowed to do '"
+                              + command
+                              + "' to this specially protected file. This incident will be reported";
+              break;
+          }
       }
       if (msg != null) {
         System.out.println(msg);

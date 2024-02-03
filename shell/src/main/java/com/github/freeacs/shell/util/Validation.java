@@ -90,9 +90,10 @@ public class Validation {
     String[] regexChars = new String[] {"*", "+", "?", "^", "$"};
     boolean containsRexexChar = false;
     for (String regexChar : regexChars) {
-      if (regex.contains(regexChar)) {
-        containsRexexChar = true;
-      }
+        if (regex.contains(regexChar)) {
+            containsRexexChar = true;
+            break;
+        }
     }
     if (!containsRexexChar) {
       regex = ".*" + regex + ".*";

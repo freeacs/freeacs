@@ -186,7 +186,7 @@ public class ShellJobLogic {
         CPEParameters cpeParams = sessionData.getCpeParameters();
         String PII = cpeParams.PERIODIC_INFORM_INTERVAL;
         String nextPII = "" + sessionData.getPIIDecision().nextPII();
-        sessionData.getProvisioningMessage().setPeriodicInformInterval(new Integer(nextPII));
+        sessionData.getProvisioningMessage().setPeriodicInformInterval(Integer.valueOf(nextPII));
         sessionData.getToCPE().addOrChangeParameterValueStruct(PII, nextPII, "xsd:unsignedInt");
         log.debug("-ACS->CPE      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
         sessionData.getToDB().add(new ParameterValueStruct(PII, "" + nextPII));

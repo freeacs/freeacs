@@ -27,7 +27,7 @@ public class ReportSyslogGenerator extends ReportGenerator {
     ResultSet rs = null;
     try {
       boolean foundDataInReportTable = false;
-      Report<RecordSyslog> report = new Report<RecordSyslog>(RecordSyslog.class, periodType);
+      Report<RecordSyslog> report = new Report<>(RecordSyslog.class, periodType);
 
       logger.debug(
           logPrefix + "SyslogReport: Reads from report_syslog table from " + start + " to " + end);
@@ -218,7 +218,7 @@ public class ReportSyslogGenerator extends ReportGenerator {
     PreparedStatement ps = null;
     ResultSet rs = null;
     try {
-      Report<RecordSyslog> report = new Report<RecordSyslog>(RecordSyslog.class, periodType);
+      Report<RecordSyslog> report = new Report<>(RecordSyslog.class, periodType);
       logInfo("SyslogReport", unitId, uts, prs, start, end);
 
       String sqlFormat = "%Y%m"; // default PeriodType = MONTH
@@ -403,9 +403,10 @@ public class ReportSyslogGenerator extends ReportGenerator {
           boolean alreadyTreated = false;
           for (int j = 0; j < i; j++) {
             Profile p = profiles.get(j);
-            if (p.getId().equals(profile.getId())) {
-              alreadyTreated = true;
-            }
+              if (p.getId().equals(profile.getId())) {
+                  alreadyTreated = true;
+                  break;
+              }
           }
           if (!alreadyTreated) {
             ds.addSqlAndArguments("unit_type_name = ? OR ", profile.getUnittype().getName());

@@ -32,7 +32,7 @@ public abstract class Record<R extends Record> {
       }
     }
     Collections.sort(methodList);
-    return methodList.toArray(new String[methodList.size()]);
+    return methodList.toArray(new String[0]);
   }
 
   private static final Map<String, String> denomMap = new HashMap<>();

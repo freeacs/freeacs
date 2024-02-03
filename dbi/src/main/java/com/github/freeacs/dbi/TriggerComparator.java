@@ -46,9 +46,10 @@ public class TriggerComparator implements Comparator<Trigger> {
     Integer matchId = null;
     for (Integer x : triggerIdList1) {
       for (Integer y : triggerIdList2) {
-        if (x == y) {
-          matchId = x;
-        }
+          if (x.equals(y)) {
+              matchId = x;
+              break;
+          }
       }
     }
 

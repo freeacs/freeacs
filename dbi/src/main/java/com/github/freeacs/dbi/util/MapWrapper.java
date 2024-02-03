@@ -10,7 +10,7 @@ public class MapWrapper<V> {
 
   public MapWrapper(boolean strictOrder) {
     if (strictOrder) {
-      map = new TreeMap<String, V>(new NaturalComparator());
+      map = new TreeMap<>(new NaturalComparator());
     } else {
       map = new HashMap<>();
     }

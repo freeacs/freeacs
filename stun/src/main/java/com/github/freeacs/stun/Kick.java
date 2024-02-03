@@ -258,7 +258,7 @@ public class Kick {
       DefaultHttpClient client, HttpGet get, String urlStr, String username, String password)
       throws MalformedURLException {
     URL url = new URL(urlStr);
-    List<String> authPrefs = new ArrayList<String>(2);
+    List<String> authPrefs = new ArrayList<>(2);
     authPrefs.add(AuthPolicy.DIGEST);
     authPrefs.add(AuthPolicy.BASIC);
     client.getParams().setParameter(AuthPNames.PROXY_AUTH_PREF, authPrefs);

@@ -38,7 +38,7 @@ public class ServiceWindow {
   /** Return the number of provisionings per week. Default value is once per day. */
   private float findFrequency() {
     String freq = ACSParameters.getValue(SystemParameters.SERVICE_WINDOW_FREQUENCY);
-    float freqFloat = timeWindow.getWeeklyLength() / timeWindow.getDailyLength();
+    float freqFloat = (float) timeWindow.getWeeklyLength() / timeWindow.getDailyLength();
     if (freq != null) {
       try {
         freqFloat = Float.parseFloat(freq);

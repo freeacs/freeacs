@@ -402,7 +402,7 @@ public class Syslog2DB implements Runnable {
         for (Trigger trigger : triggers.getTriggers()) {
           if (!trigger.isActive()
               || trigger.getTriggerType() == Trigger.TRIGGER_TYPE_COMPOSITE
-              || trigger.getSyslogEvent().getId() != se.getId()) {
+              || !trigger.getSyslogEvent().getId().equals(se.getId())) {
             continue;
           }
           //					if (trigger.getGroup() != null && !trigger.getGroup().match(unit))

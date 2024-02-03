@@ -268,7 +268,7 @@ public class Triggers {
       int totalCounter = 0;
       while (rs.next()) {
         String unitId = rs.getString("unit_id");
-        Integer count = rs.getInt(2);
+        int count = rs.getInt(2);
         totalCounter += count;
         unitMap.put(unitId, count);
       }

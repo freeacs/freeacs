@@ -280,7 +280,7 @@ public class MenuServlet extends HttpServlet {
           new MenuItem(
               "Units",
               Page.UNITLIST.getUrl("type=" + ReportType.SYS.getName()),
-              new ArrayList<MenuItem>()));
+                  new ArrayList<>()));
 
       // If both hardware and voip are to be hidden this menu item is redundant.
       boolean showHardware = WebProperties.getInstance().isShowHardware();
@@ -295,7 +295,7 @@ public class MenuServlet extends HttpServlet {
               new MenuItem(
                   "Units",
                   Page.UNITLIST.getUrl("type=" + ReportType.VOIP.getName()),
-                  new ArrayList<MenuItem>()));
+                      new ArrayList<>()));
         }
         if (showHardware) {
           MenuItem hardwareReport =
@@ -305,7 +305,7 @@ public class MenuServlet extends HttpServlet {
               new MenuItem(
                   "Units",
                   Page.UNITLIST.getUrl("type=" + ReportType.HARDWARE.getName()),
-                  new ArrayList<MenuItem>()));
+                      new ArrayList<>()));
         }
         syslogReports.setDisableOnClickWithJavaScript();
         reporting.addSubMenuItem(syslogReports);

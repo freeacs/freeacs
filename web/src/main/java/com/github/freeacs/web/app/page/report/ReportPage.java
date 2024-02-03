@@ -334,12 +334,12 @@ public class ReportPage extends AbstractWebPage {
   @SuppressWarnings({"unchecked", "rawtypes"})
   private void makeChart(Integer legendIndex, CheckBoxGroup<String> aggregation) throws Exception {
     chartMaker =
-        new Chart<Record>(
-            (Report<Record>) report,
-            method.getSelectedOrFirstItem(),
-            false,
-            null,
-            aggregation.getSelected().toArray(new String[] {}));
+            new Chart<>(
+                    (Report<Record>) report,
+                    method.getSelectedOrFirstItem(),
+                    false,
+                    null,
+                    aggregation.getSelected().toArray(new String[]{}));
     chart = chartMaker.makeTimeChart(null, null, optionalmethod.getSelected(), legendIndex);
   }
 

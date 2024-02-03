@@ -619,45 +619,45 @@ public class XMLFormatterUtils {
 
             // set name start characters
             for (int aNameStartChar : nameStartChar) {
-                CHARS[aNameStartChar] |= MASK_NAME_START | MASK_NAME | MASK_NCNAME_START | MASK_NCNAME;
+                CHARS[aNameStartChar] |= (byte) (MASK_NAME_START | MASK_NAME | MASK_NCNAME_START | MASK_NCNAME);
             }
             for (int i = 0; i < letterRange.length; i += 2) {
                 for (int j = letterRange[i]; j <= letterRange[i + 1]; j++) {
-                    CHARS[j] |= MASK_NAME_START | MASK_NAME | MASK_NCNAME_START | MASK_NCNAME;
+                    CHARS[j] |= (byte) (MASK_NAME_START | MASK_NAME | MASK_NCNAME_START | MASK_NCNAME);
                 }
             }
             for (int aLetterChar : letterChar) {
-                CHARS[aLetterChar] |= MASK_NAME_START | MASK_NAME | MASK_NCNAME_START | MASK_NCNAME;
+                CHARS[aLetterChar] |= (byte) (MASK_NAME_START | MASK_NAME | MASK_NCNAME_START | MASK_NCNAME);
             }
 
             // set name characters
             for (int aNameChar : nameChar) {
-                CHARS[aNameChar] |= MASK_NAME | MASK_NCNAME;
+                CHARS[aNameChar] |= (byte) (MASK_NAME | MASK_NCNAME);
             }
             for (int i = 0; i < digitRange.length; i += 2) {
                 for (int j = digitRange[i]; j <= digitRange[i + 1]; j++) {
-                    CHARS[j] |= MASK_NAME | MASK_NCNAME;
+                    CHARS[j] |= (byte) (MASK_NAME | MASK_NCNAME);
                 }
             }
             for (int i = 0; i < combiningCharRange.length; i += 2) {
                 for (int j = combiningCharRange[i]; j <= combiningCharRange[i + 1]; j++) {
-                    CHARS[j] |= MASK_NAME | MASK_NCNAME;
+                    CHARS[j] |= (byte) (MASK_NAME | MASK_NCNAME);
                 }
             }
             for (int aCombiningCharChar : combiningCharChar) {
-                CHARS[aCombiningCharChar] |= MASK_NAME | MASK_NCNAME;
+                CHARS[aCombiningCharChar] |= (byte) (MASK_NAME | MASK_NCNAME);
             }
             for (int i = 0; i < extenderRange.length; i += 2) {
                 for (int j = extenderRange[i]; j <= extenderRange[i + 1]; j++) {
-                    CHARS[j] |= MASK_NAME | MASK_NCNAME;
+                    CHARS[j] |= (byte) (MASK_NAME | MASK_NCNAME);
                 }
             }
             for (int anExtenderChar : extenderChar) {
-                CHARS[anExtenderChar] |= MASK_NAME | MASK_NCNAME;
+                CHARS[anExtenderChar] |= (byte) (MASK_NAME | MASK_NCNAME);
             }
 
             // remove ':' from allowable MASK_NCNAME_START and MASK_NCNAME chars
-            CHARS[':'] &= ~(MASK_NCNAME_START | MASK_NCNAME);
+            CHARS[':'] &= (byte) ~(MASK_NCNAME_START | MASK_NCNAME);
 
             // set Pubid characters
             for (int aPubidChar : pubidChar) {

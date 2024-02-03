@@ -18,7 +18,7 @@ public class HelpProcess {
     commands.addAll(hgCon.getCommands());
     int hitCount = 0;
     String commandChosen = null;
-    String ambigiousCommands = "";
+    StringBuilder ambigiousCommands = new StringBuilder();
     for (String command : commands) {
       if (command.equals(helpArg)) {
         commandChosen = command;
@@ -28,9 +28,9 @@ public class HelpProcess {
         hitCount++;
         commandChosen = command;
         if (ambigiousCommands.isEmpty()) {
-          ambigiousCommands = command;
+          ambigiousCommands = new StringBuilder(command);
         } else {
-          ambigiousCommands += ", " + command;
+          ambigiousCommands.append(", ").append(command);
         }
       }
     }

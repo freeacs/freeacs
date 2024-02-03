@@ -232,7 +232,7 @@ public class TableElementMaker {
       String param = params[i].getName();
       String[] names = param.split("\\.");
       String id = "";
-      Integer tab = WebConstants.PARAMETERS_START_INDENTATION;
+      int tab = WebConstants.PARAMETERS_START_INDENTATION;
       for (int j = 0; j < names.length; j++) {
         UnittypeParameter utp = j == (names.length - 1) ? params[i] : null;
         String name = names[j];

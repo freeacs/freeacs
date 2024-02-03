@@ -662,7 +662,7 @@ public class ACS {
         String description = rs.getString("description");
         String parentIdStr = rs.getString("parent_group_id");
         String profileIdStr = rs.getString("profile_id");
-        Integer count;
+        int count;
         count = rs.getInt("count");
 
         // Make maps

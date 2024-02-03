@@ -171,7 +171,7 @@ public class UnittypeParametersPage extends AbstractWebPage {
           }
           utParam.getValues().setValues(values);
         } else if (utParam.getValues() != null) {
-          utParam.getValues().setValues(new ArrayList<String>());
+          utParam.getValues().setValues(new ArrayList<>());
         }
 
         unittype.getUnittypeParameters().addOrChangeUnittypeParameter(utParam, acs);

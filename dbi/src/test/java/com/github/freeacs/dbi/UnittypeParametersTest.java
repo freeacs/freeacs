@@ -18,7 +18,7 @@ public class UnittypeParametersTest extends BaseDBITest {
     UnittypeParameterFlag flag = new UnittypeParameterFlag("R");
 
     Map<Integer, UnittypeParameter> idMap = new HashMap<>();
-    MapWrapper<UnittypeParameter> mw = new MapWrapper<UnittypeParameter>(ACS.isStrictOrder());
+    MapWrapper<UnittypeParameter> mw = new MapWrapper<>(ACS.isStrictOrder());
     Map<String, UnittypeParameter> nameMap = mw.getMap();
 
     UnittypeParameters unittypeParameters = new UnittypeParameters(idMap, nameMap, unittype);
@@ -43,7 +43,7 @@ public class UnittypeParametersTest extends BaseDBITest {
             "TEST.Parameter.Subparameter",flag);
 
     Map<Integer, UnittypeParameter> idMap = new HashMap<>();
-    MapWrapper<UnittypeParameter> mw = new MapWrapper<UnittypeParameter>(ACS.isStrictOrder());
+    MapWrapper<UnittypeParameter> mw = new MapWrapper<>(ACS.isStrictOrder());
     Map<String, UnittypeParameter> nameMap = mw.getMap();
 
     UnittypeParameters unittypeParameters = new UnittypeParameters(idMap, nameMap, unittype);

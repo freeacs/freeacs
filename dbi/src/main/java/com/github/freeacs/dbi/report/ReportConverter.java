@@ -5,7 +5,7 @@ import java.util.Map.Entry;
 public class ReportConverter {
   public static Report<RecordSyslog> convertSyslogReport(
       Report<RecordSyslog> r, PeriodType periodType) {
-    Report<RecordSyslog> report = new Report<RecordSyslog>(RecordSyslog.class, periodType);
+    Report<RecordSyslog> report = new Report<>(RecordSyslog.class, periodType);
     for (Entry<Key, RecordSyslog> entry : r.getMap().entrySet()) {
       Key key = entry.getKey();
       if (key.getPeriodType().isLongerThan(periodType)) {
@@ -36,7 +36,7 @@ public class ReportConverter {
   public static Report<RecordProvisioning> convertProvReport(
       Report<RecordProvisioning> r, PeriodType periodType) {
     Report<RecordProvisioning> report =
-        new Report<RecordProvisioning>(RecordProvisioning.class, periodType);
+            new Report<>(RecordProvisioning.class, periodType);
     for (Entry<Key, RecordProvisioning> entry : r.getMap().entrySet()) {
       Key key = entry.getKey();
       if (key.getPeriodType().isLongerThan(periodType)) {
@@ -64,7 +64,7 @@ public class ReportConverter {
   }
 
   public static Report<RecordVoip> convertVoipReport(Report<RecordVoip> r, PeriodType periodType) {
-    Report<RecordVoip> report = new Report<RecordVoip>(RecordVoip.class, periodType);
+    Report<RecordVoip> report = new Report<>(RecordVoip.class, periodType);
     for (Entry<Key, RecordVoip> entry : r.getMap().entrySet()) {
       Key key = entry.getKey();
       if (key.getPeriodType().isLongerThan(periodType)) {
@@ -93,7 +93,7 @@ public class ReportConverter {
 
   public static Report<RecordHardware> convertHardwareReport(
       Report<RecordHardware> r, PeriodType periodType) {
-    Report<RecordHardware> report = new Report<RecordHardware>(RecordHardware.class, periodType);
+    Report<RecordHardware> report = new Report<>(RecordHardware.class, periodType);
     for (Entry<Key, RecordHardware> entry : r.getMap().entrySet()) {
       Key key = entry.getKey();
       if (key.getPeriodType().isLongerThan(periodType)) {

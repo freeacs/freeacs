@@ -375,11 +375,11 @@ public class UnitListPage extends AbstractWebPage {
           record.add(records.get(i));
         }
         if (record.getCallLengthTotal() != null && record.getCallLengthTotal().get() > 0) {
-          recordsWorking.add(new RecordWrapper<RecordVoip>(unit, record));
+          recordsWorking.add(new RecordWrapper<>(unit, record));
         } else if (record.getNoSipServiceTime() != null
             && record.getNoSipServiceTime().get() != null
             && record.getNoSipServiceTime().get() > 0) {
-          recordsDown.add(new RecordWrapper<RecordVoip>(unit, record));
+          recordsDown.add(new RecordWrapper<>(unit, record));
         }
       }
     }

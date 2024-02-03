@@ -13,6 +13,7 @@ import com.github.freeacs.shell.output.Listing;
 import com.github.freeacs.shell.output.OutputHandler;
 import com.github.freeacs.shell.util.Validation;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UnittypeParameterMenu {
@@ -48,7 +49,7 @@ public class UnittypeParameterMenu {
         upv = new UnittypeParameterValues();
         utp.setValues(upv);
       }
-      upv.setValues(new ArrayList<String>()); // clear old enumerations
+      upv.setValues(new ArrayList<>()); // clear old enumerations
       for (StringType st : dmp.getEnumeration()) {
         upv.getValues().add(st.getValue());
         context.print(st.getValue() + " ");
@@ -100,10 +101,7 @@ public class UnittypeParameterMenu {
               + UnittypeParameterValues.REGEXP);
     }
     if (args[1].equals(UnittypeParameterValues.ENUM)) {
-      List<String> values = new ArrayList<>();
-      for (int i = 2; i < args.length; i++) {
-        values.add(args[i]);
-      }
+        List<String> values = new ArrayList<>(Arrays.asList(args).subList(2, args.length));
       upv.setValues(values);
     } else if (args[1].equals(UnittypeParameterValues.REGEXP)) {
       upv.setPattern(args[2]);
@@ -123,7 +121,7 @@ public class UnittypeParameterMenu {
 
   private void delvalues(String[] args) throws Exception {
     UnittypeParameter unittypeParameter = context.getUnittypeParameter();
-    unittypeParameter.getValues().setValues(new ArrayList<String>());
+    unittypeParameter.getValues().setValues(new ArrayList<>());
     unittypeParameter.getValues().setPattern(null);
     context
         .getUnittype()

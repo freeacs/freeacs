@@ -345,7 +345,7 @@ public class Jobs {
     }
 
     while (dependency != null) {
-      if (dependency.getDependency() != null && dependency.getDependency().getId() == job.getId()) {
+      if (dependency.getDependency() != null && dependency.getDependency().getId().equals(job.getId())) {
         return true;
       }
       dependency = dependency.getDependency();
@@ -793,14 +793,14 @@ public class Jobs {
         groupJobs.add(job);
       }
     }
-    return groupJobs.toArray(new Job[groupJobs.size()]);
+    return groupJobs.toArray(new Job[0]);
   }
 
   public Job[] getJobs() {
     if (idMap == null) {
       idMap = new HashMap<>();
     }
-    return idMap.values().toArray(new Job[idMap.size()]);
+    return idMap.values().toArray(new Job[0]);
   }
 
   public Job getByName(String jobName) {

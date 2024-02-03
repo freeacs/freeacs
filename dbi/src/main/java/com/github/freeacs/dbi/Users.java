@@ -143,9 +143,10 @@ public class Users {
   public void addOrChange(User addOrChange, User requestedBy) throws SQLException {
     boolean unittypeAdmin = false;
     for (Permission p : requestedBy.getPermissions().getPermissions()) {
-      if (p.getProfileId() == null) {
-        unittypeAdmin = true;
-      }
+        if (p.getProfileId() == null) {
+            unittypeAdmin = true;
+            break;
+        }
     }
     if (!requestedBy.isAdmin() && !unittypeAdmin) {
       throw new IllegalArgumentException(

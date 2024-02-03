@@ -231,8 +231,7 @@ public class UnitStatusInfo {
             .getUnittypeParameters()
             .getByName(SystemParameters.DESIRED_SOFTWARE_VERSION);
     if (desiredSw != null) {
-      String param = currentUnit.getParameters().get(desiredSw.getName());
-      return param;
+      return currentUnit.getParameters().get(desiredSw.getName());
     }
     return null;
   }
@@ -782,7 +781,7 @@ public class UnitStatusInfo {
     Collection<RecordHardware> hwRecords = getHardwareReport().getMap().values();
     return RecordUIDataHardware.convertRecords(
         getUnit(),
-        new ArrayList<RecordHardware>(hwRecords),
+            new ArrayList<>(hwRecords),
         new RecordUIDataHardwareFilter(new UnitListData(), new HashMap<>()));
   }
 

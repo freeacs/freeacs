@@ -307,8 +307,7 @@ public class GroupPage extends AbstractWebPage {
       return;
     }
 
-      /** The xaps unit. */
-      ACSUnit acsUnit = ACSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
+    ACSUnit acsUnit = ACSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
 
     InputDataIntegrity.loadAndStoreSession(
         params, outputHandler, inputData, inputData.getUnittype(), inputData.getGroup());
@@ -331,7 +330,7 @@ public class GroupPage extends AbstractWebPage {
                     groups.getSelected(), unittypes.getSelected().getGroups().getGroups()))
             : (unittypes.getSelected() != null
                 ? Arrays.asList(unittypes.getSelected().getGroups().getGroups())
-                : new ArrayList<Group>());
+                : new ArrayList<>());
     parents =
         InputSelectionFactory.getDropDownSingleSelect(
             inputData.getParentgroup(), selectedParent, possibleParents);
@@ -504,9 +503,10 @@ public class GroupPage extends AbstractWebPage {
     for (Group g1 : allGroups) {
       boolean match = false;
       for (Group g2 : notAllowedGroups) {
-        if (g1.getId() == g2.getId()) {
-          match = true;
-        }
+          if (g1.getId().equals(g2.getId())) {
+              match = true;
+              break;
+          }
       }
       if (!match) {
         allowedGroups.add(g1);

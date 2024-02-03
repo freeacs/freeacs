@@ -92,7 +92,7 @@ public class RecordUIDataHardwareFilter {
     if (record.getCpeUptimeAvg().get() == null) {
       return false;
     }
-    double cpeUptime = record.getCpeUptimeAvg().get() / record.getCpeUptimeAvg().getDividend();
+    double cpeUptime = (double) record.getCpeUptimeAvg().get() / record.getCpeUptimeAvg().getDividend();
     if (uptime_high != null) {
       return cpeUptime >= uptime_low && cpeUptime <= uptime_high;
     } else {

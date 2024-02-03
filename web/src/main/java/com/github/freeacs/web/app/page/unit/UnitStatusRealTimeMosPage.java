@@ -143,7 +143,7 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
               + ". To: "
               + (end != null ? end.toString() : "N/A"));
       Chart<RecordVoipCall> chartMaker =
-          new Chart<RecordVoipCall>(report, "MosAvg", false, null, "Channel");
+              new Chart<>(report, "MosAvg", false, null, "Channel");
       byte[] image = UnitStatusPage.getReportChartImageBytes(chartMaker, null, 600, 250);
 
       params.getSession().setAttribute("realtime", image);
