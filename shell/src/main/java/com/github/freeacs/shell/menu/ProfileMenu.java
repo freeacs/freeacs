@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class ProfileMenu {
-  private Session session;
-  private Context context;
+  private final Session session;
+  private final Context context;
 
   public ProfileMenu(Session session) {
     this.session = session;

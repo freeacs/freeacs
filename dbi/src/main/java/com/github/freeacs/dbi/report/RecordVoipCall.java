@@ -3,7 +3,7 @@ package com.github.freeacs.dbi.report;
 import java.util.Date;
 
 public class RecordVoipCall extends Record<RecordVoipCall> {
-  private static KeyFactory keyFactory =
+  private static final KeyFactory keyFactory =
       new KeyFactory("Unittype", "Profile", "SoftwareVersion", "Channel");
   private Key key;
 

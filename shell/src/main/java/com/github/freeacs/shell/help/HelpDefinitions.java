@@ -14,9 +14,9 @@ public class HelpDefinitions {
   public static String CK_GROUP = "group";
   public static String CK_JOB = "job";
 
-  private Map<String, HelpGroup> helpDef = new HashMap<>();
+  private final Map<String, HelpGroup> helpDef = new HashMap<>();
 
-  private static String expressionSyntax =
+  private static final String expressionSyntax =
       "\tword\tmatches messages which contain 'word'\n"
           + "\t*\tmatches 0 or more characters\n"
           + "\t_\tmatches 1 character\n"

@@ -31,7 +31,7 @@ public class UnitJob {
    * 2.) c. Handles only Job-history/Disruptive params here, rest is handled in TelnetJobThread (ref
    * 5.)
    */
-  private boolean serverSideJob;
+  private final boolean serverSideJob;
 
   public UnitJob(SessionDataI sessionData, DBI dbi, Job job, boolean serverSideJob) {
     this.sessionData = sessionData;

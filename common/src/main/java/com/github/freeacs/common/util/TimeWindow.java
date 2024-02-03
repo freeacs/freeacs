@@ -22,21 +22,21 @@ import java.util.Map;
  * @author Morten
  */
 public class TimeWindow {
-  private int weekdayStart;
+  private final int weekdayStart;
 
-  private int weekdayEnd;
+  private final int weekdayEnd;
 
-  private int weekdaySpan;
+  private final int weekdaySpan;
 
-  private int timeStart;
+  private final int timeStart;
 
   private int timeEnd;
 
-  private int timeSpan;
+  private final int timeSpan;
 
-  private String orgStr;
+  private final String orgStr;
 
-  private static Map<String, Integer> weekDayMap = new HashMap<>();
+  private static final Map<String, Integer> weekDayMap = new HashMap<>();
 
   static {
     weekDayMap.put("su", 1);

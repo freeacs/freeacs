@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ACSParameters {
-  private Map<String, ParameterValueStruct> acsParams = new HashMap<>();
+  private final Map<String, ParameterValueStruct> acsParams = new HashMap<>();
 
   public String getValue(String param) {
     ParameterValueStruct pvs = acsParams.get(param);

@@ -3,7 +3,7 @@ package com.github.freeacs.common.scheduler;
 import org.slf4j.Logger;
 
 public abstract class TaskDefaultImpl implements Task {
-  private String taskName;
+  private final String taskName;
   private long launchTms;
   private Throwable t;
   private boolean running;

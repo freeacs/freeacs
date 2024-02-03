@@ -16,7 +16,7 @@ public class DeleteOldScripts extends DBIShare {
     this.properties = properties;
   }
 
-  private static Logger logger = LoggerFactory.getLogger(DeleteOldScripts.class);
+  private static final Logger logger = LoggerFactory.getLogger(DeleteOldScripts.class);
 
   @Override
   public void runImpl() throws Exception {

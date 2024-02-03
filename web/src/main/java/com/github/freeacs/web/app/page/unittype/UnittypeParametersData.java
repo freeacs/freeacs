@@ -7,7 +7,7 @@ import java.util.Map;
 /** The Class UnittypeParametersData. */
 public class UnittypeParametersData extends InputData {
   /** The form submit. */
-  private Input formSubmit = Input.getStringInput("addparameters");
+  private final Input formSubmit = Input.getStringInput("addparameters");
 
   public Input getFormSubmit() {
     return formSubmit;

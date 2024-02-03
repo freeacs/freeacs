@@ -8,7 +8,7 @@ import java.util.List;
 
 @Slf4j
 public class DownloadLogic {
-  private static List<Long> downloadList = new LinkedList<>();
+  private static final List<Long> downloadList = new LinkedList<>();
 
   public static void add() {
     downloadList.add(System.currentTimeMillis());

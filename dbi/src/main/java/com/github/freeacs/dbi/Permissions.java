@@ -21,11 +21,11 @@ public class Permissions {
     "support", "limited-provisioning", "full-provisioning", "report", "staging", "monitor"
   };
 
-  private DataSource dataSource;
+  private final DataSource dataSource;
   /** Private User user;. */
-  private Map<Integer, Permission> idMap = new HashMap<>();
+  private final Map<Integer, Permission> idMap = new HashMap<>();
   /** A unittype-id maps to a set of permission-ids. */
-  private Map<Integer, Set<Integer>> unittypeIdMap = new TreeMap<>();
+  private final Map<Integer, Set<Integer>> unittypeIdMap = new TreeMap<>();
 
   protected Permissions(DataSource dataSource) {
     this.dataSource = dataSource;

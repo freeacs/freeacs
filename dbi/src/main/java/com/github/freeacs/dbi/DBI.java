@@ -82,7 +82,7 @@ public class DBI implements Runnable {
   }
 
   public class PublishType {
-    private Set<String> messageTypes = new TreeSet<>();
+    private final Set<String> messageTypes = new TreeSet<>();
 
     public Set<String> getMessageTypes() {
       return messageTypes;
@@ -98,11 +98,11 @@ public class DBI implements Runnable {
   }
 
   public class UnittypePublish {
-    private Map<Integer, PublishType> groups = new HashMap<>();
-    private Map<Integer, PublishType> jobs = new HashMap<>();
-    private Map<Integer, PublishType> profiles = new HashMap<>();
-    private PublishType publish = new PublishType();
-    private Unittype unittype;
+    private final Map<Integer, PublishType> groups = new HashMap<>();
+    private final Map<Integer, PublishType> jobs = new HashMap<>();
+    private final Map<Integer, PublishType> profiles = new HashMap<>();
+    private final PublishType publish = new PublishType();
+    private final Unittype unittype;
 
     public UnittypePublish(Unittype unittype) {
       this.unittype = unittype;
@@ -202,14 +202,14 @@ public class DBI implements Runnable {
     }
   }
 
-  private static Logger logger = LoggerFactory.getLogger(DBI.class);
+  private static final Logger logger = LoggerFactory.getLogger(DBI.class);
   public static String PUBLISH_INBOX_NAME = "publishACSInbox";
 
-  private DataSource dataSource;
+  private final DataSource dataSource;
   private int lifetimeSec;
-  private long start = System.currentTimeMillis();
+  private final long start = System.currentTimeMillis();
   private boolean finished;
-  private ACS acs;
+  private final ACS acs;
   private boolean freeacsUpdated;
   private final Map<Integer, UnittypePublish> publishUnittypes = new HashMap<>();
   private final List<Message> outbox = new ArrayList<>();

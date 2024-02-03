@@ -2,7 +2,7 @@ package com.github.freeacs.dbi.report;
 
 public class Counter {
   private long counter;
-  private long dividend;
+  private final long dividend;
 
   public Counter() {
     this.dividend = 1;

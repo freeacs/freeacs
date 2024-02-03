@@ -16,7 +16,7 @@ import com.github.freeacs.web.app.page.search.SearchParameter;
  * @author Jarl Andre Hubenthal
  */
 public class TableGroupParameter extends GroupParameter {
-  private Integer groupId;
+  private final Integer groupId;
   private String groupName;
 
   public TableGroupParameter(GroupParameter parameter) {

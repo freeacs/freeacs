@@ -14,7 +14,7 @@ public class DeviceIdHandler extends DefaultHandler {
   private static final String PRODUCT_CLASS_TAG = "ProductClass";
   private static final String SERIAL_NUMBER_TAG = "SerialNumber";
 
-  private Parser owner;
+  private final Parser owner;
   private DeviceIdStruct didStruct;
   private StringBuilder currTextContent = new StringBuilder();
 

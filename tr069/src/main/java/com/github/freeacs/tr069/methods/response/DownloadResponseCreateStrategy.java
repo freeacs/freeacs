@@ -47,11 +47,11 @@ public class DownloadResponseCreateStrategy implements ResponseCreateStrategy {
         String username = sessionData.getUnitId();
         String password = sessionData.getAcsParameters().getValue(SystemParameters.SECRET);
         Body body = new Body() {
-            private boolean fileAuthUsed = properties.isFileAuthUsed();
-            private String url = download.getUrl();
-            private String type = downloadType;
-            private int filesize = download.getFile().getLength();
-            private String targetFilename = tn;
+            private final boolean fileAuthUsed = properties.isFileAuthUsed();
+            private final String url = download.getUrl();
+            private final String type = downloadType;
+            private final int filesize = download.getFile().getLength();
+            private final String targetFilename = tn;
 
             @Override
             public String toXmlImpl() {

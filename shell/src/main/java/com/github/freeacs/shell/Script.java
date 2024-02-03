@@ -14,14 +14,14 @@ public class Script {
   public static final int WHILE = 1;
   public static final int IF = 2;
 
-  private int type;
+  private final int type;
   private Context context;
   private Map<String, Variable> variables = new HashMap<>();
   private List<String> scriptLines;
   private int linePointer;
   private boolean skipOnNextIfElseWord;
   /** Name of script-file (if used). */
-  private String filename;
+  private final String filename;
   /** File-args when iterating over a file. */
   private BufferedReader whileInput;
   /** Sequence of linepointer-numbers going back to root-script. Gives a unique while-id */

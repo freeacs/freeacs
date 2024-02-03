@@ -322,7 +322,7 @@ public class SyslogUtil {
     Map<String, String> texts = new HashMap<>();
 
     /** The xaps. */
-    private ACS acs;
+    private final ACS acs;
 
     /**
      * Instantiates a new gets the event mouse over.
@@ -377,7 +377,7 @@ public class SyslogUtil {
   /** The Class GetUnittypeProfileByName. */
   public static class GetUnittypeProfileByName implements TemplateMethodModel {
     /** The xaps. */
-    private ACS acs;
+    private final ACS acs;
 
     /**
      * Instantiates a new gets the unittype profile by name.
@@ -419,7 +419,7 @@ public class SyslogUtil {
   /** The Class GetUnittypeProfileById. */
   public static class GetUnittypeProfileById implements TemplateMethodModel {
     /** The xaps. */
-    private ACS acs;
+    private final ACS acs;
 
     /**
      * Instantiates a new gets the unittype profile by id.

@@ -19,7 +19,7 @@ public class DiskSpaceCheck extends TaskDefaultImpl {
     return properties.getMinFreeDiskSpace() * 1024;
   }
 
-  private static Logger logger = LoggerFactory.getLogger(DiskSpaceCheck.class);
+  private static final Logger logger = LoggerFactory.getLogger(DiskSpaceCheck.class);
 
   @Override
   public void runImpl() throws Throwable {

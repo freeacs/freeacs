@@ -19,7 +19,7 @@ import java.util.Map;
 /** The Class HardwareInterface. */
 public class HardwareRetriever extends ReportRetriever {
   /** The generator. */
-  private ReportHardwareGenerator generator;
+  private final ReportHardwareGenerator generator;
 
   /**
    * Instantiates a new hardware interface.

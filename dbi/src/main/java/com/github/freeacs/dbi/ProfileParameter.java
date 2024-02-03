@@ -3,9 +3,9 @@ package com.github.freeacs.dbi;
 public class ProfileParameter {
   private Integer id;
 
-  private Profile profile;
+  private final Profile profile;
 
-  private UnittypeParameter unittypeParameter;
+  private final UnittypeParameter unittypeParameter;
 
   private String value;
 

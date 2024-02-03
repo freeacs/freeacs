@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Job {
-  private static Pattern pattern = Pattern.compile("(u|c|a|n|t)(\\d+)/?(\\d*)");
+  private static final Pattern pattern = Pattern.compile("(u|c|a|n|t)(\\d+)/?(\\d*)");
 
   public static String ANY_UNIT_IN_GROUP = "ANY-UNIT-IN-GROUP";
 
@@ -24,11 +24,11 @@ public class Job {
 
     private Integer numberMax;
 
-    private long numberLimit;
+    private final long numberLimit;
 
     private int ruleType;
 
-    private String ruleStr;
+    private final String ruleStr;
 
     public StopRule(String ruleStr) {
       this.ruleStr = ruleStr;

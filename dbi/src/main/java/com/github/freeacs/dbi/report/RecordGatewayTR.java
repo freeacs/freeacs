@@ -4,13 +4,13 @@ import java.util.Date;
 
 public class RecordGatewayTR extends Record<RecordGatewayTR> {
   public static KeyFactory keyFactory = new KeyFactory("Unittype", "Profile", "SoftwareVersion");
-  private Key key;
+  private final Key key;
 
-  private Date tms;
-  private PeriodType periodType;
-  private String unittypeName;
-  private String profileName;
-  private String softwareVersion;
+  private final Date tms;
+  private final PeriodType periodType;
+  private final String unittypeName;
+  private final String profileName;
+  private final String softwareVersion;
 
   private Average wanUptimeAvg = new Average(1);
   private Average pingSuccessCountAvg = new Average(1);

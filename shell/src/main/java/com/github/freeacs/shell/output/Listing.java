@@ -19,13 +19,13 @@ public class Listing {
   public static String HEADER_JOB = "Job";
 
   private Heading heading;
-  private List<Line> lines = new ArrayList<>();
-  private List<Column> columns = new ArrayList<>();
+  private final List<Line> lines = new ArrayList<>();
+  private final List<Column> columns = new ArrayList<>();
   private boolean printed;
-  private Context context;
-  private Command command;
+  private final Context context;
+  private final Command command;
 
-  private static Pattern orderOptionArgPattern = Pattern.compile("(\\d+)(a|n)(a|d)");
+  private static final Pattern orderOptionArgPattern = Pattern.compile("(\\d+)(a|n)(a|d)");
 
   public Listing(Context context, Command command) {
     this.context = context;

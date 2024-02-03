@@ -1,7 +1,7 @@
 package com.github.freeacs.shell.help;
 
 public class Help {
-  private HelpSyntax syntax;
+  private final HelpSyntax syntax;
   private HelpComment comment;
   private HelpOptions options;
   private HelpArguments arguments;

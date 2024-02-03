@@ -9,7 +9,7 @@ import com.github.freeacs.dbi.UnittypeParameter;
 import com.github.freeacs.dbi.util.SystemParameters;
 
 public class JobFilter {
-  private Job job;
+  private final Job job;
 
   public JobFilter(Job j) {
     this.job = j;

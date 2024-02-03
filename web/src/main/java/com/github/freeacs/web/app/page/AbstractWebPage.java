@@ -216,7 +216,7 @@ public abstract class AbstractWebPage implements WebPage {
   /** The Class GetParameterValue. */
   public static class GetParameterValue implements TemplateMethodModel {
     /** The xaps unit. */
-    private ACSUnit acsUnit;
+    private final ACSUnit acsUnit;
 
     /** Instantiates a new gets the parameter value. */
     public GetParameterValue(ACSUnit acsUnit) {

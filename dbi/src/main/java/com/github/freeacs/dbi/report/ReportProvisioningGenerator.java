@@ -24,9 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ReportProvisioningGenerator extends ReportGenerator {
-  private static Logger logger = LoggerFactory.getLogger(ReportProvisioningGenerator.class);
-  private static String provMsgId = "^ProvMsg: PP:";
-  private static Pattern provPattern =
+  private static final Logger logger = LoggerFactory.getLogger(ReportProvisioningGenerator.class);
+  private static final String provMsgId = "^ProvMsg: PP:";
+  private static final Pattern provPattern =
       Pattern.compile(provMsgId + ".*ST:(\\w+), PO:(\\w+), SL:(\\d+)");
 
   public ReportProvisioningGenerator(

@@ -4,7 +4,7 @@ public class Echo {
   /** Default is to echo prompt/command to output. */
   private boolean echo = true;
 
-  private Session session;
+  private final Session session;
 
   private String input;
 

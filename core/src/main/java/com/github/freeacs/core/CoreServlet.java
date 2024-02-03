@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 public class CoreServlet {
 
-  private static Logger log = LoggerFactory.getLogger(CoreServlet.class);
+  private static final Logger log = LoggerFactory.getLogger(CoreServlet.class);
   private final DataSource mainDataSource;
   private final Properties properties;
   private final ExecutorWrapper executorWrapper;

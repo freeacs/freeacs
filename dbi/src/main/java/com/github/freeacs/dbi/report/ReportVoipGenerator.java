@@ -22,13 +22,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ReportVoipGenerator extends ReportGenerator {
-  private static Logger logger = LoggerFactory.getLogger(ReportVoipGenerator.class);
-  private static Pattern qosPattern =
+  private static final Logger logger = LoggerFactory.getLogger(ReportVoipGenerator.class);
+  private static final Pattern qosPattern =
       Pattern.compile(
           ".*MOS: (\\d+)[^\\d]+(\\d+)[^\\d]+(\\d+)[^\\d]+(\\d+):(\\d+):(\\d+)[^\\d]+(\\d+)[^\\d]+(\\d+)[^\\d]+");
-  private static Pattern qosChannelPattern = Pattern.compile(".*channel (\\d+).*");
+  private static final Pattern qosChannelPattern = Pattern.compile(".*channel (\\d+).*");
   /** Reg failed: ua0: reg failed 613883@nettala.fo: 903 DNS Error (0 bindings) */
-  private static Pattern regfailedPattern = Pattern.compile(".*reg failed.*");
+  private static final Pattern regfailedPattern = Pattern.compile(".*reg failed.*");
 
   public ReportVoipGenerator(DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {
     super(mainDataSource, acs, logPrefix, id);

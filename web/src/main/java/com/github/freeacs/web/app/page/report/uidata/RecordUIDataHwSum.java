@@ -40,7 +40,7 @@ public class RecordUIDataHwSum {
   private String rowBackgroundStyle = "";
 
   /** The records. */
-  private List<RecordUIDataHardware> records = new ArrayList<>();
+  private final List<RecordUIDataHardware> records = new ArrayList<>();
 
   /** Instantiates a new record ui data hw sum. */
   RecordUIDataHwSum() {}

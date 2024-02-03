@@ -3,7 +3,7 @@ package com.github.freeacs.dbi.report;
 import java.util.Date;
 
 public class RecordSyslog extends Record<RecordSyslog> {
-  private static KeyFactory keyFactory =
+  private static final KeyFactory keyFactory =
       new KeyFactory("Unittype", "Profile", "Severity", "EventId", "Facility");
   private Key key;
 

@@ -12,7 +12,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 public class ScriptExecutions {
-  private DataSource dataSource;
+  private final DataSource dataSource;
 
   public ScriptExecutions(DataSource dataSource) {
     this.dataSource = dataSource;

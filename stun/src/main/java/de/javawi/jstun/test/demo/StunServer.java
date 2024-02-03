@@ -50,10 +50,10 @@ import org.slf4j.LoggerFactory;
  */
 public class StunServer {
   private static boolean started;
-  private static Logger logger = LoggerFactory.getLogger(StunServer.class);
-  private static Counter counter = new Counter();
-  private List<DatagramSocket> sockets;
-  private static TimestampMap activeStunClients = new TimestampMap();
+  private static final Logger logger = LoggerFactory.getLogger(StunServer.class);
+  private static final Counter counter = new Counter();
+  private final List<DatagramSocket> sockets;
+  private static final TimestampMap activeStunClients = new TimestampMap();
 
   /**
    * Inner class to handle incoming packets and react accordingly. I decided not to start a thread
@@ -63,13 +63,13 @@ public class StunServer {
    * Request.
    */
   class StunServerReceiverThread extends Thread {
-    private DatagramSocket receiverSocket;
+    private final DatagramSocket receiverSocket;
     private DatagramSocket changedPort;
     private DatagramSocket changedIP;
     private DatagramSocket changedPortIP;
     private Long tms;
 
-    private boolean primaryPortIP;
+    private final boolean primaryPortIP;
 
     StunServerReceiverThread(DatagramSocket datagramSocket, boolean primaryPortIP) {
       this.primaryPortIP = primaryPortIP;

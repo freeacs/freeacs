@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class MessageAttribute implements MessageAttributeInterface {
-  private static Logger LOGGER = LoggerFactory.getLogger(MessageAttribute.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(MessageAttribute.class);
   MessageAttributeType type;
 
   public MessageAttribute() {}

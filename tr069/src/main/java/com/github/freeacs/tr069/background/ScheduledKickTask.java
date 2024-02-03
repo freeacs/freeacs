@@ -15,7 +15,7 @@ import java.util.List;
 public class ScheduledKickTask extends TaskDefaultImpl {
   public static class UnitKick {
     private Unit unit;
-    private long initiatedTms;
+    private final long initiatedTms;
     private int kickCount;
     private long nextTms;
 
@@ -51,11 +51,11 @@ public class ScheduledKickTask extends TaskDefaultImpl {
     }
   }
 
-  private static Logger logger = LoggerFactory.getLogger(ScheduledKickTask.class);
-  private DBI dbi;
+  private static final Logger logger = LoggerFactory.getLogger(ScheduledKickTask.class);
+  private final DBI dbi;
   private static final Object syncMonitor = new Object();
 
-  private static List<UnitKick> kickList = new ArrayList<>();
+  private static final List<UnitKick> kickList = new ArrayList<>();
 
   public ScheduledKickTask(String taskName, DBI dbi) {
     super(taskName);

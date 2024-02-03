@@ -56,8 +56,8 @@ import org.slf4j.LoggerFactory;
 public class UnitPage extends AbstractWebPage {
   private static final Logger logger = LoggerFactory.getLogger(UnitPage.class);
   private static final Logger accessLogger = LoggerFactory.getLogger("Access");
-  private static DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-  private static Pattern paramPattern = Pattern.compile("(\\$\\{([^\\}]+)\\})");
+  private static final DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+  private static final Pattern paramPattern = Pattern.compile("(\\$\\{([^\\}]+)\\})");
 
   private ACS acs;
   private ACSUnit acsUnit;
@@ -71,7 +71,7 @@ public class UnitPage extends AbstractWebPage {
   private String nextConnectTms;
   private String nextConnectDiff;
   private boolean lateConnect;
-  private boolean confidentialsRestricted = WebProperties.getInstance().isConfidentialsRestricted();
+  private final boolean confidentialsRestricted = WebProperties.getInstance().isConfidentialsRestricted();
 
   public String getTitle(String page) {
     return super.getTitle(page)

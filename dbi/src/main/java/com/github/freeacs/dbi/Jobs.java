@@ -23,11 +23,11 @@ import org.slf4j.LoggerFactory;
  * @author Morten
  */
 public class Jobs {
-  private static Logger logger = LoggerFactory.getLogger(Jobs.class);
+  private static final Logger logger = LoggerFactory.getLogger(Jobs.class);
   private Map<Integer, Job> idMap = new HashMap<>();
   private Map<String, Job> nameMap = new HashMap<>();
-  private Unittype unittype;
-  private static Map<String, String> jobParameterRules = new HashMap<>();
+  private final Unittype unittype;
+  private static final Map<String, String> jobParameterRules = new HashMap<>();
 
   static {
     jobParameterRules.put(JobFlag.JobType.RESTART + SystemParameters.RESTART, "Allowed");

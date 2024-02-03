@@ -14,9 +14,9 @@ import org.slf4j.Logger;
  * @author Morten
  */
 public abstract class DBIShare implements Task {
-  private DBI dbi;
+  private final DBI dbi;
 
-  private String taskName;
+  private final String taskName;
   private long launchTms;
   private boolean running;
 

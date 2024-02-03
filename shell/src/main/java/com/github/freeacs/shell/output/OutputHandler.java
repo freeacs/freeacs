@@ -11,10 +11,10 @@ import java.io.IOException;
 public class OutputHandler {
   private FileWriter fw;
   private boolean printedHeading;
-  private Context context;
+  private final Context context;
   private String heading;
-  private Listing listing;
-  private Command command;
+  private final Listing listing;
+  private final Command command;
 
   public void setHeading(String heading) {
     this.heading = heading;

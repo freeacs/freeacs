@@ -12,11 +12,11 @@ public class Key implements Comparable<Key> {
   public static SimpleDateFormat MINUTE_FORMAT = new SimpleDateFormat("yyyyMMddHHmm");
   public static SimpleDateFormat SECOND_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss");
 
-  private Date tms;
-  private PeriodType periodType;
-  private List<KeyElement> additionalKeys = new ArrayList<>();
-  private String tmsStr;
-  private String periodTypeStr;
+  private final Date tms;
+  private final PeriodType periodType;
+  private final List<KeyElement> additionalKeys = new ArrayList<>();
+  private final String tmsStr;
+  private final String periodTypeStr;
 
   public Key(Date tms, PeriodType periodType) {
     this(tms, periodType, (KeyElement) null);

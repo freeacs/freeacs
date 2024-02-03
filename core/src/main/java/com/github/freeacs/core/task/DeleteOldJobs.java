@@ -17,7 +17,7 @@ public class DeleteOldJobs extends DBIOwner {
     this.properties = properties;
   }
 
-  private static Logger logger = LoggerFactory.getLogger(DeleteOldJobs.class);
+  private static final Logger logger = LoggerFactory.getLogger(DeleteOldJobs.class);
 
   private ACS acs;
 

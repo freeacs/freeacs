@@ -5,7 +5,7 @@ import java.io.Reader;
 
 /** To be used in InputHandler (reads Listing like it reads a file). */
 public class ListingReader extends Reader {
-  private StringBuffer listingBuffer;
+  private final StringBuffer listingBuffer;
   private int pos;
 
   public ListingReader(Listing listing) {

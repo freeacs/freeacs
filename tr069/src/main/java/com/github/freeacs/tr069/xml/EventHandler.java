@@ -14,8 +14,8 @@ public class EventHandler extends DefaultHandler {
   private static final String EVENT_CODE_TAG = "EventCode";
   private static final String COMMAND_KEY_TAG = "CommandKey";
 
-  private Parser owner;
-  private EventList events;
+  private final Parser owner;
+  private final EventList events;
   private EventStruct currEvent;
   private StringBuilder currTextContent = new StringBuilder();
 

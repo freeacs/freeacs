@@ -37,12 +37,12 @@ public class Processor {
 
   private String logPrefix = "";
 
-  private Session session;
+  private final Session session;
 
-  private Echo echo;
+  private final Echo echo;
 
-  private List<String> daemonCommands = new LinkedList<>();
-  private List<String> processedCommands = new ArrayList<>();
+  private final List<String> daemonCommands = new LinkedList<>();
+  private final List<String> processedCommands = new ArrayList<>();
 
   /**
    * Used to send notify between Shell-thread and Core script execution thread when 1.

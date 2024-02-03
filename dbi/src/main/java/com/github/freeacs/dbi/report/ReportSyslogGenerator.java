@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ReportSyslogGenerator extends ReportGenerator {
-  private static Logger logger = LoggerFactory.getLogger(ReportSyslogGenerator.class);
+  private static final Logger logger = LoggerFactory.getLogger(ReportSyslogGenerator.class);
 
   public ReportSyslogGenerator(DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {
     super(mainDataSource, acs, logPrefix, id);

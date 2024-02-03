@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Line {
-  private List<String> values = new ArrayList<>();
+  private final List<String> values = new ArrayList<>();
 
   public Line() {}
 

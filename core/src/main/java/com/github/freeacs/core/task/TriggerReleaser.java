@@ -31,11 +31,11 @@ public class TriggerReleaser extends DBIShare {
     super(taskName, dbi);
   }
 
-  private static Logger logger = LoggerFactory.getLogger(TriggerReleaser.class);
+  private static final Logger logger = LoggerFactory.getLogger(TriggerReleaser.class);
   private ACS acs;
-  private static SimpleDateFormat tmsFormat = new SimpleDateFormat("HHmmss");
-  private static long MS_MINUTE = 60 * 1000;
-  private static long MS_HOUR = 60 * MS_MINUTE;
+  private static final SimpleDateFormat tmsFormat = new SimpleDateFormat("HHmmss");
+  private static final long MS_MINUTE = 60 * 1000;
+  private static final long MS_HOUR = 60 * MS_MINUTE;
 
   @Override
   public void runImpl() throws Exception {

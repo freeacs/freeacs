@@ -61,9 +61,9 @@ import org.slf4j.LoggerFactory;
  * @author Morten
  */
 public class UnitJobs {
-  private static Logger logger = LoggerFactory.getLogger(UnitJobs.class);
+  private static final Logger logger = LoggerFactory.getLogger(UnitJobs.class);
 
-  private DataSource connectionProperties;
+  private final DataSource connectionProperties;
 
   public UnitJobs(DataSource cp) {
     this.connectionProperties = cp;

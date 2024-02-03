@@ -24,10 +24,10 @@ import java.util.Map;
 /** The Class GroupInterface. */
 public class GroupRetriever extends ReportRetriever {
   /** The generator. */
-  private ReportGroupGenerator generator;
+  private final ReportGroupGenerator generator;
 
   /** The groups. */
-  private DropDownSingleSelect<Group> groups;
+  private final DropDownSingleSelect<Group> groups;
 
   public DropDownSingleSelect<Group> getGroups() {
     return groups;

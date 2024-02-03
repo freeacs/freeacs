@@ -8,7 +8,7 @@ public class Profile {
   private Integer id;
   private String name;
   private String oldName;
-  private Unittype unittype;
+  private final Unittype unittype;
   private ProfileParameters profileParameters;
 
   public Profile(String name, Unittype unittype) {

@@ -30,8 +30,8 @@ public class SetParameterValuesResponseCreateStrategy implements ResponseCreateS
             pk.setServerKey(reqRes);
         }
         body = new Body() {
-            private List<ParameterValueStruct> parameterValueList = paramList.getParameterValueList();
-            private String parameterKey = pk.getServerKey();
+            private final List<ParameterValueStruct> parameterValueList = paramList.getParameterValueList();
+            private final String parameterKey = pk.getServerKey();
 
             @Override
             public String toXmlImpl() {

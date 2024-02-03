@@ -36,26 +36,26 @@ import org.slf4j.LoggerFactory;
 
 public class Syslog2DB implements Runnable {
   private final Properties properties;
-  private DataSource xapsCp;
+  private final DataSource xapsCp;
 
-  private static Syslog2DBCounter counter = new Syslog2DBCounter();
+  private static final Syslog2DBCounter counter = new Syslog2DBCounter();
 
-  private static Logger logger = LoggerFactory.getLogger(Syslog2DB.class);
+  private static final Logger logger = LoggerFactory.getLogger(Syslog2DB.class);
 
-  private static Pattern priPattern = Pattern.compile("^<(\\d{1,3})>");
+  private static final Pattern priPattern = Pattern.compile("^<(\\d{1,3})>");
 
-  private static Pattern tmsPattern =
+  private static final Pattern tmsPattern =
       Pattern.compile(
           "^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\s+(\\d{1,2})\\s+(\\d{2}):(\\d{2}):(\\d{2})\\s+");
 
-  private static Pattern hostPattern = Pattern.compile("^\\S+\\s+");
+  private static final Pattern hostPattern = Pattern.compile("^\\S+\\s+");
 
-  private static Pattern tagPattern = Pattern.compile("^\\w{1,32}");
+  private static final Pattern tagPattern = Pattern.compile("^\\w{1,32}");
 
-  private static Pattern simpleIPPattern =
+  private static final Pattern simpleIPPattern =
       Pattern.compile("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}");
 
-  private static List<Pattern> deviceIdPatterns = new ArrayList<>();
+  private static final List<Pattern> deviceIdPatterns = new ArrayList<>();
 
   static {
     deviceIdPatterns.add(Pattern.compile("\\[([a-fA-F0-9:-]{12,17})\\]:"));
@@ -91,7 +91,7 @@ public class Syslog2DB implements Runnable {
 
   private static Throwable throwable;
 
-  private static Cache unitCache = new Cache();
+  private static final Cache unitCache = new Cache();
 
   private ScriptExecutions executions;
 

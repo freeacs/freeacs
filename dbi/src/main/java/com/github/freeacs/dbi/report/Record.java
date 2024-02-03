@@ -35,7 +35,7 @@ public abstract class Record<R extends Record> {
     return methodList.toArray(new String[methodList.size()]);
   }
 
-  private static Map<String, String> denomMap = new HashMap<>();
+  private static final Map<String, String> denomMap = new HashMap<>();
 
   static {
     denomMap.put(RecordVoip.class.getName() + "jitterAvg".toLowerCase(), "ms");

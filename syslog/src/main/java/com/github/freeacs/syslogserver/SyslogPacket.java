@@ -7,7 +7,7 @@ public class SyslogPacket {
 
   private String address;
 
-  private long tms;
+  private final long tms;
 
   private boolean failoverPacket;
 

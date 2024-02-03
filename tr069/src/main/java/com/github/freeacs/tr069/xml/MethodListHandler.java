@@ -11,8 +11,8 @@ public class MethodListHandler extends DefaultHandler {
   public static final String METHOD_LIST_TAG = "MethodList";
   public static final String STRING_TAG = "string";
 
-  private Parser owner;
-  private MethodList methods;
+  private final Parser owner;
+  private final MethodList methods;
 
   private StringBuilder currTextContent = new StringBuilder();
 

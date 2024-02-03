@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UnittypeParameterMenu {
-  private Context context;
-  private Session session;
+  private final Context context;
+  private final Session session;
   private static TR069DMParameterMap dmMap;
 
   static {

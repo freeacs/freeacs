@@ -31,10 +31,10 @@ public class MessageHeader implements MessageHeaderInterface {
    * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ |
    * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+.
    */
-  private static Logger LOGGER = LoggerFactory.getLogger(MessageHeader.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(MessageHeader.class);
 
   private MessageHeaderType type;
-  private byte[] id = new byte[16];
+  private final byte[] id = new byte[16];
 
   protected Map<MessageAttribute.MessageAttributeType, MessageAttribute> ma = new TreeMap<>();
 

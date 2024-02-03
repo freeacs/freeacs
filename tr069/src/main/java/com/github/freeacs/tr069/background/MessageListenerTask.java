@@ -9,8 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MessageListenerTask extends TaskDefaultImpl {
-  private static Logger logger = LoggerFactory.getLogger(MessageListenerTask.class);
-  private Inbox tr069ServerListenerInbox = new Inbox();
+  private static final Logger logger = LoggerFactory.getLogger(MessageListenerTask.class);
+  private final Inbox tr069ServerListenerInbox = new Inbox();
 
   public MessageListenerTask(String taskName, DBI dbi) {
     super(taskName);

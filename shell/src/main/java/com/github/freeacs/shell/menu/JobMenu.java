@@ -23,9 +23,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class JobMenu {
-  private Session session;
-  private Context context;
-  private static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss");
+  private final Session session;
+  private final Context context;
+  private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss");
 
   public JobMenu(Session session) {
     this.session = session;

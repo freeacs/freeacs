@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BaseCache {
-  private static Cache cache = new Cache();
+  private static final Cache cache = new Cache();
 
   /** 2 minutes. */
   private static final int SESSIONDATA_CACHE_TIMEOUT = 3 * 60 * 1000;

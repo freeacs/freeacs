@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public class StunServlet {
   public static StunServer server;
 
-  private static Logger logger = LoggerFactory.getLogger(StunServlet.class);
+  private static final Logger logger = LoggerFactory.getLogger(StunServlet.class);
 
   private final DataSource mainDs;
   private final Properties properties;

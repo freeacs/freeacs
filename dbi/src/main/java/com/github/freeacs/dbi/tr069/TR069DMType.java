@@ -25,9 +25,9 @@ public enum TR069DMType {
   /** Real-max is 18446744073709551615. */
   DBM1000(Integer.MIN_VALUE, Integer.MAX_VALUE, "xsd:integer");
 
-  private long min;
-  private long max;
-  private String xsdType;
+  private final long min;
+  private final long max;
+  private final String xsdType;
 
   TR069DMType(long min, long max, String xsdType) {
     this.min = min;

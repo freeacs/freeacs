@@ -6,7 +6,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
 
 public class FileResponse extends ServletOutputStream {
-  private ByteArrayOutputStream outputStream;
+  private final ByteArrayOutputStream outputStream;
 
   public FileResponse() {
     outputStream = new ByteArrayOutputStream();

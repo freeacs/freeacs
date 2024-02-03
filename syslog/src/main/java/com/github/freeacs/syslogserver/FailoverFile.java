@@ -10,9 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FailoverFile {
-  private static String LOG_FILE_NAME = "fusion-syslog-failover.log";
+  private static final String LOG_FILE_NAME = "fusion-syslog-failover.log";
 
-  private static String PROCESSING_FILE_NAME = "fusion-syslog-failover-processing.log";
+  private static final String PROCESSING_FILE_NAME = "fusion-syslog-failover-processing.log";
 
   private static BufferedWriter bw;
 
@@ -20,7 +20,7 @@ public class FailoverFile {
 
   private static int failoverCount;
 
-  private static Logger logger = LoggerFactory.getLogger(FailoverFile.class);
+  private static final Logger logger = LoggerFactory.getLogger(FailoverFile.class);
 
   private static FailoverFile instance;
 

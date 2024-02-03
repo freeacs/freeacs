@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HelpGroup {
-  private List<Help> helpList = new ArrayList<>();
+  private final List<Help> helpList = new ArrayList<>();
 
-  private String menu;
+  private final String menu;
 
   public HelpGroup(String menu) {
     this.menu = menu;

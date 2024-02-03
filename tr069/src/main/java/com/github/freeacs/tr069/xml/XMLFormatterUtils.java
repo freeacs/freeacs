@@ -696,9 +696,9 @@ public class XMLFormatterUtils {
     }
 
     private static class Node {
-        private NodeType type;
-        private int endPos;
-        private String nodeString;
+        private final NodeType type;
+        private final int endPos;
+        private final String nodeString;
 
         private Node(NodeType type, int startPos, int endPos, String unformattedXml) {
             this.type = type;

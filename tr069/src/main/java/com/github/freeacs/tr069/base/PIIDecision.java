@@ -36,7 +36,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class PIIDecision {
-  private SessionDataI sessionData;
+  private final SessionDataI sessionData;
   private Job currentJob;
   private String currentJobStatus;
   private Job[] allJobs;

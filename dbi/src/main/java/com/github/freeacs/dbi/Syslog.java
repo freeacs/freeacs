@@ -30,18 +30,18 @@ import org.slf4j.LoggerFactory;
  */
 public class Syslog {
 
-  private DataSource dataSource;
+  private final DataSource dataSource;
 
   private Identity id;
 
-  private static Logger logger = LoggerFactory.getLogger(Syslog.class);
+  private static final Logger logger = LoggerFactory.getLogger(Syslog.class);
 
   /** Only necessary in simulation-mode fields: */
   private boolean simulationMode;
 
-  private static SimpleDateFormat deviceTmsFormat =
+  private static final SimpleDateFormat deviceTmsFormat =
       new SimpleDateFormat("yyyy MMM dd HH:mm:ss", new Locale("EN"));
-  private static Calendar yearCal = Calendar.getInstance();
+  private static final Calendar yearCal = Calendar.getInstance();
 
   /**
    * @param dataSource

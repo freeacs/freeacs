@@ -8,10 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ProfileParameters {
-  private static Logger logger = LoggerFactory.getLogger(ProfileParameters.class);
-  private Map<String, ProfileParameter> nameMap;
-  private Map<Integer, ProfileParameter> idMap;
-  private Profile profile;
+  private static final Logger logger = LoggerFactory.getLogger(ProfileParameters.class);
+  private final Map<String, ProfileParameter> nameMap;
+  private final Map<Integer, ProfileParameter> idMap;
+  private final Profile profile;
 
   public ProfileParameters(
       Map<Integer, ProfileParameter> idMap,

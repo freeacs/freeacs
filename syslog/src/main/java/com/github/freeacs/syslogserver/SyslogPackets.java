@@ -9,11 +9,11 @@ import org.slf4j.LoggerFactory;
 public class SyslogPackets {
   public static List<SyslogPacket> packets = new LinkedList<>();
 
-  private static BufferCounter counter = new BufferCounter();
+  private static final BufferCounter counter = new BufferCounter();
 
-  private static Logger messages = LoggerFactory.getLogger("Messages");
+  private static final Logger messages = LoggerFactory.getLogger("Messages");
 
-  private static Logger logger = LoggerFactory.getLogger(SyslogPackets.class);
+  private static final Logger logger = LoggerFactory.getLogger(SyslogPackets.class);
 
   private static final Object monitor = new Object();
 

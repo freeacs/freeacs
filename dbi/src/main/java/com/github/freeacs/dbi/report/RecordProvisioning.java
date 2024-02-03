@@ -3,7 +3,7 @@ package com.github.freeacs.dbi.report;
 import java.util.Date;
 
 public class RecordProvisioning extends Record<RecordProvisioning> {
-  private static KeyFactory keyFactory =
+  private static final KeyFactory keyFactory =
       new KeyFactory("Unittype", "Profile", "SoftwareVersion", "Output");
   private Key key;
 

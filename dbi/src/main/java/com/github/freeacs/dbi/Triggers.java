@@ -14,10 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Triggers {
-  private static Logger logger = LoggerFactory.getLogger(Triggers.class);
-  private Map<String, Trigger> nameMap;
-  private Map<Integer, Trigger> idMap;
-  private Unittype unittype;
+  private static final Logger logger = LoggerFactory.getLogger(Triggers.class);
+  private final Map<String, Trigger> nameMap;
+  private final Map<Integer, Trigger> idMap;
+  private final Unittype unittype;
 
   public Triggers(Map<Integer, Trigger> idMap, Map<String, Trigger> nameMap, Unittype unittype) {
     this.idMap = idMap;

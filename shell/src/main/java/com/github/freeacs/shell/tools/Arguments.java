@@ -6,7 +6,7 @@ import java.util.Map;
 public class Arguments {
   public static final String FLAG_EXISTS = "FLAG_EXISTS";
 
-  private Map<String, String> argMap = new HashMap<>();
+  private final Map<String, String> argMap = new HashMap<>();
 
   public Arguments(String[] args) {
     String flag = null;

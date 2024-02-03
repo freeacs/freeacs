@@ -161,10 +161,10 @@ public class JobRuleEnforcer extends DBIOwner {
     }
   }
 
-  private static Logger logger = LoggerFactory.getLogger(JobRuleEnforcer.class);
+  private static final Logger logger = LoggerFactory.getLogger(JobRuleEnforcer.class);
   private ACS acs;
   private UnitJobs unitJobs;
-  private Map<Integer, JobControl> jobControlMap = new HashMap<>();
+  private final Map<Integer, JobControl> jobControlMap = new HashMap<>();
 
   public JobRuleEnforcer(String taskName, DBI dbi, Properties properties) {
     super(taskName, dbi);

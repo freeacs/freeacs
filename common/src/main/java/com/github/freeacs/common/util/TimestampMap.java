@@ -8,12 +8,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TimestampMap {
-  private static SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SSS");
+  private static final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss.SSS");
   /**
    * Using ConcurrentHashMap allow this class to share the map for iteration+read purposes without
    * conflicting insert/modify (in multiple threaded environment).
    */
-  private Map<String, Long> map = new ConcurrentHashMap<>();
+  private final Map<String, Long> map = new ConcurrentHashMap<>();
 
   private String oldest;
   private String newest;

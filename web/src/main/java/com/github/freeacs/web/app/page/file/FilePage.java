@@ -62,7 +62,7 @@ public class FilePage extends AbstractWebPage {
   private String formsubmit;
 
   /** The delete list. */
-  private List<String> deleteList = new ArrayList<>();
+  private final List<String> deleteList = new ArrayList<>();
 
   /** The input data. */
   private FileData inputData = new FileData();

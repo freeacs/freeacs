@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ACSWSFactory {
-  private static Cache cache = new Cache();
+  private static final Cache cache = new Cache();
   private static final Logger logger = LoggerFactory.getLogger(ACSWSFactory.class);
 
   private static RemoteException error(String msg) {

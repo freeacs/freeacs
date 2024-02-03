@@ -19,7 +19,7 @@ import javax.sql.DataSource;
 import org.slf4j.LoggerFactory;
 
 public class AddOrChangeProfile {
-  private static org.slf4j.Logger logger = LoggerFactory.getLogger(AddOrChangeProfile.class);
+  private static final org.slf4j.Logger logger = LoggerFactory.getLogger(AddOrChangeProfile.class);
 
   private ACS acs;
 

@@ -24,23 +24,23 @@ import java.util.regex.Pattern;
  * various objects for retrieval upon processing.
  */
 public class Command {
-  private static Pattern commandPattern = Pattern.compile("([^<>]+)(<([^>]+))?((>+)(.*))?");
-  private static Pattern varPattern = Pattern.compile("(\\$\\{([^\\}]+)\\})");
-  private static Pattern fileArgPattern = Pattern.compile("(\\$\\{(\\d+)\\})");
-  private static Pattern contextPattern =
+  private static final Pattern commandPattern = Pattern.compile("([^<>]+)(<([^>]+))?((>+)(.*))?");
+  private static final Pattern varPattern = Pattern.compile("(\\$\\{([^\\}]+)\\})");
+  private static final Pattern fileArgPattern = Pattern.compile("(\\$\\{(\\d+)\\})");
+  private static final Pattern contextPattern =
       Pattern.compile(
           "(\\.\\./)|(ut:[^/]+/)|(pr:[^/]+/)|(un:[^/]+/)|(up:[^/]+/)|(gr:[^/]+/)|(jo:[^/]+/)");
 
   /** Private Map<String, ContextElement> contextMap = new HashMap<String, ContextElement>();. */
   private ContextContainer contextContainer = new ContextContainer();
 
-  private List<CommandAndArgument> commandAndArguments = new ArrayList<>();
-  private Map<Character, Option> options = new HashMap<>();
+  private final List<CommandAndArgument> commandAndArguments = new ArrayList<>();
+  private final Map<Character, Option> options = new HashMap<>();
 
   private String inputFilename;
   private String outputFilename;
   private boolean appendToOutput;
-  private Context context;
+  private final Context context;
 
   /**
    * In order to process the prompt input correctly, we need to know where the Context ends and

@@ -1,8 +1,8 @@
 package com.github.freeacs.shell.help;
 
 public class HelpOption {
-  private String option;
-  private String comment;
+  private final String option;
+  private final String comment;
 
   public HelpOption(String option, String comment) {
     this.option = option;

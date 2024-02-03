@@ -10,11 +10,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class Unit {
-  private String id;
+  private final String id;
 
-  private Unittype unittype;
+  private final Unittype unittype;
 
-  private Profile profile;
+  private final Profile profile;
 
   private Map<String, UnitParameter> unitParameters;
   private Map<String, UnitParameter> sessionParameters;

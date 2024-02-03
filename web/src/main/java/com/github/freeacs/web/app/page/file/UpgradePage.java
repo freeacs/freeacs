@@ -43,7 +43,7 @@ public class UpgradePage extends AbstractWebPage {
   private ACSUnit acsUnit;
 
   /** The parameter version. */
-  private String parameterVersion = SystemParameters.DESIRED_SOFTWARE_VERSION;
+  private final String parameterVersion = SystemParameters.DESIRED_SOFTWARE_VERSION;
 
   /** The unittypes. */
   private DropDownSingleSelect<Unittype> unittypes;

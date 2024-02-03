@@ -1,10 +1,10 @@
 package com.github.freeacs.dbi;
 
 public class Identity {
-  private int facility;
-  private String facilityName;
-  private String facilityVersion;
-  private User user;
+  private final int facility;
+  private final String facilityName;
+  private final String facilityVersion;
+  private final User user;
 
   public Identity(int facility, String facilityVersion, User user) {
     this.facility = facility;

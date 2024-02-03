@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class TriggerComparator implements Comparator<Trigger> {
-  private boolean parentFirst;
+  private final boolean parentFirst;
 
   public TriggerComparator(boolean parentFirst) {
     this.parentFirst = parentFirst;

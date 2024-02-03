@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 public class Kick {
   public static class KickResponse {
-    private boolean kicked;
+    private final boolean kicked;
     private String message;
 
     public KickResponse(boolean kicked, String message) {
@@ -57,8 +57,8 @@ public class Kick {
     return kickSingleton.kickInternal(unit, properties);
   }
 
-  private static Logger log = LoggerFactory.getLogger("KickSingle");
-  private static Random random = new Random();
+  private static final Logger log = LoggerFactory.getLogger("KickSingle");
+  private static final Random random = new Random();
 
   public KickResponse kickInternal(Unit unit, Properties properties)
       throws MalformedURLException {

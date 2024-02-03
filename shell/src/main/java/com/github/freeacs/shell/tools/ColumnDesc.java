@@ -10,7 +10,7 @@ public class ColumnDesc {
   private int fromIndex;
   private int toIndex;
   private Pattern columnPattern;
-  private Pattern descPattern = Pattern.compile("(\\d+)(u|l|unitid)?-(\\d+)(.*)?");
+  private final Pattern descPattern = Pattern.compile("(\\d+)(u|l|unitid)?-(\\d+)(.*)?");
 
   public ColumnDesc(String columnDesc) {
     Matcher matcher = descPattern.matcher(columnDesc);

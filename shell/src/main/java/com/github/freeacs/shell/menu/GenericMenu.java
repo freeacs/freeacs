@@ -40,9 +40,9 @@ import javax.script.ScriptException;
 import javax.sql.DataSource;
 
 public class GenericMenu {
-  private Session session;
+  private final Session session;
 
-  private static ScriptEngine scriptEngine =
+  private static final ScriptEngine scriptEngine =
       new ScriptEngineManager().getEngineByName("JavaScript");
 
   public GenericMenu(Session session) {

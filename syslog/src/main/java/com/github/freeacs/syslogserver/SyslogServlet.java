@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 public class SyslogServlet {
   public static SyslogServer server;
 
-  private static Logger logger = LoggerFactory.getLogger(SyslogServlet.class);
+  private static final Logger logger = LoggerFactory.getLogger(SyslogServlet.class);
   private final DataSource xapsDataSource;
   private final Properties properties;
   private final ExecutorWrapper executorWrapper;

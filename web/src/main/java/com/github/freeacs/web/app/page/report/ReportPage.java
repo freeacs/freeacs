@@ -93,7 +93,7 @@ public class ReportPage extends AbstractWebPage {
   private Date toUseAsEnd;
 
   /** Translates ReportType to Class<? extends ReportRetriever> */
-  private static Map<ReportType, Class<? extends ReportRetriever>> reportType2Implementation =
+  private static final Map<ReportType, Class<? extends ReportRetriever>> reportType2Implementation =
       new HashMap<>();
 
   static {
@@ -506,13 +506,13 @@ public class ReportPage extends AbstractWebPage {
   /** The Class ChartLegendsDimensions. */
   class ChartLegendsDimensions {
     /** The MA x_ legend s_ p r_ column. */
-    private int MAX_LEGENDS_PR_COLUMN = 21;
+    private final int MAX_LEGENDS_PR_COLUMN = 21;
 
     /** The average length pr legend. */
-    private int averageLengthPrLegend;
+    private final int averageLengthPrLegend;
 
     /** The number of columns. */
-    private int numberOfColumns;
+    private final int numberOfColumns;
 
     /**
      * Instantiates a new chart legends dimensions.
@@ -789,7 +789,7 @@ public class ReportPage extends AbstractWebPage {
     return periodType;
   }
 
-  private static Map<String, String> reportType2TableNameMap = new HashMap<>();
+  private static final Map<String, String> reportType2TableNameMap = new HashMap<>();
 
   static {
     reportType2TableNameMap.put(ReportType.HARDWARE.getName(), "report_hw");

@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ACSVersionCheck {
-  private static Logger logger = LoggerFactory.getLogger(ACSVersionCheck.class);
+  private static final Logger logger = LoggerFactory.getLogger(ACSVersionCheck.class);
 
   /** Marks the beginning of 2013R1. */
   public static boolean triggerSupported;

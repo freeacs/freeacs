@@ -23,7 +23,7 @@ import java.util.List;
 public class GetParameterNamesProcessStrategy implements RequestProcessStrategy {
     private final DBI dbi;
 
-    private Properties properties;
+    private final Properties properties;
 
     GetParameterNamesProcessStrategy(Properties properties, DBI dbi) {
         this.properties = properties;

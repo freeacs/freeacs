@@ -19,7 +19,7 @@ import java.util.Map;
 /** The Class VoipInterface. */
 public class ProvRetriever extends ReportRetriever {
   /** The generator. */
-  private ReportProvisioningGenerator generatorProv;
+  private final ReportProvisioningGenerator generatorProv;
 
   /**
    * Instantiates a new voip interface.

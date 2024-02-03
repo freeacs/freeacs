@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class DynamicStatement {
-  private static SimpleDateFormat tmsFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+  private static final SimpleDateFormat tmsFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-  private static String[] leftovers = new String[] {" AND", " WHERE", " OR", "(", ","};
+  private static final String[] leftovers = new String[] {" AND", " WHERE", " OR", "(", ","};
 
   private Long startTms;
 
@@ -27,7 +27,7 @@ public class DynamicStatement {
 
   private StringBuilder sql = new StringBuilder();
 
-  private List<Object> arguments = new ArrayList<>();
+  private final List<Object> arguments = new ArrayList<>();
 
   public void addSql(String sql) {
     this.sql.append(sql);

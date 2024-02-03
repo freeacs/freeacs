@@ -15,7 +15,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 
 public class DiscoveryInfo {
-  private InetAddress testIP;
+  private final InetAddress testIP;
   private boolean error;
   private int errorResponseCode;
   private String errorReason;

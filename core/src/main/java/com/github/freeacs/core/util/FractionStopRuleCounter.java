@@ -5,13 +5,13 @@ import com.github.freeacs.dbi.UnitJob;
 import com.github.freeacs.dbi.UnitJobStatus;
 
 public class FractionStopRuleCounter {
-  private StopRule rule;
+  private final StopRule rule;
 
-  private int CONFIRMED = 0;
-  private int UNCONFIRMED = 1;
-  private int[] counters = new int[2];
+  private final int CONFIRMED = 0;
+  private final int UNCONFIRMED = 1;
+  private final int[] counters = new int[2];
 
-  private UnitResultMap<String, UnitJobResult> unitJobResults;
+  private final UnitResultMap<String, UnitJobResult> unitJobResults;
 
   public FractionStopRuleCounter(StopRule rule) {
     if (rule.getNumberMax() == null) {

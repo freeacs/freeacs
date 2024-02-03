@@ -3,7 +3,7 @@ package com.github.freeacs.dbi.report;
 public class Average {
   private Counter weightedCounter = new Counter();
   private Counter totalWeight = new Counter();
-  private long dividend;
+  private final long dividend;
 
   public Average() {
     this(1);

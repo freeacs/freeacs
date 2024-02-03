@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class MapWrapper<V> {
-  private Map<String, V> map;
+  private final Map<String, V> map;
 
   public MapWrapper(boolean strictOrder) {
     if (strictOrder) {

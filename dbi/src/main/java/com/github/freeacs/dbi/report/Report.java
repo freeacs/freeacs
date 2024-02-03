@@ -8,10 +8,10 @@ import org.slf4j.LoggerFactory;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class Report<R extends Record> {
-  private static Logger logger = LoggerFactory.getLogger(Report.class);
-  private Map<Key, R> map = new TreeMap<>();
-  private Class<R> recordClass;
-  private PeriodType periodType;
+  private static final Logger logger = LoggerFactory.getLogger(Report.class);
+  private final Map<Key, R> map = new TreeMap<>();
+  private final Class<R> recordClass;
+  private final PeriodType periodType;
 
   public Report(Class<R> recordClass, PeriodType periodType) {
     this.recordClass = recordClass;

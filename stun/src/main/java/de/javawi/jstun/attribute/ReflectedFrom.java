@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ReflectedFrom extends MappedResponseChangedSourceAddressReflectedFrom {
-  private static Logger LOGGER = LoggerFactory.getLogger(ReflectedFrom.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ReflectedFrom.class);
 
   public ReflectedFrom() {
     super(MessageAttribute.MessageAttributeType.ReflectedFrom);

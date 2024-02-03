@@ -18,7 +18,7 @@ import org.apache.commons.lang3.math.NumberUtils;
  */
 public class ResourceMethod implements TemplateMethodModel {
   /** The pattern. */
-  private Pattern pattern = Pattern.compile("\\{.*?\\}");
+  private final Pattern pattern = Pattern.compile("\\{.*?\\}");
 
   /**
    * Executes the method.

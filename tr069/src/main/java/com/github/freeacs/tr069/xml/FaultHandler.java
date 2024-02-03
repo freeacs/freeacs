@@ -20,7 +20,7 @@ public class FaultHandler extends DefaultHandler {
   private static final String FAULT_STRUCT_TAG = "FaultStruct";
 
   private Fault fault;
-  private Parser owner;
+  private final Parser owner;
   private StringBuilder currTextContent = new StringBuilder();
 
   public FaultHandler(Fault fault, Parser owner) {

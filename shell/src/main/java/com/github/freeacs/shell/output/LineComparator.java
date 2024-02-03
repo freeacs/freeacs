@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class LineComparator implements Comparator<Line> {
-  private List<LineComparatorColumn> columnsToSort;
+  private final List<LineComparatorColumn> columnsToSort;
 
   public LineComparator(List<LineComparatorColumn> columnsToSort) {
     this.columnsToSort = columnsToSort;

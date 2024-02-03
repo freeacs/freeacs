@@ -12,9 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Unittypes {
-  private static Logger logger = LoggerFactory.getLogger(Unittypes.class);
-  private Map<String, Unittype> nameMap;
-  private Map<Integer, Unittype> idMap;
+  private static final Logger logger = LoggerFactory.getLogger(Unittypes.class);
+  private final Map<String, Unittype> nameMap;
+  private final Map<Integer, Unittype> idMap;
 
   public Unittypes(Map<String, Unittype> nameMap, Map<Integer, Unittype> idMap) {
     this.nameMap = nameMap;

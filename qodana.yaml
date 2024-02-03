@@ -3,33 +3,42 @@
 #             https://www.jetbrains.com/help/qodana/qodana-yaml.html            #
 #-------------------------------------------------------------------------------#
 version: "1.0"
-
 #Specify inspection profile for code analysis
 profile:
   name: qodana.starter
-
 #Enable inspections
 #include:
 #  - name: <SomeEnabledInspectionId>
-
 #Disable inspections
 #exclude:
 #  - name: <SomeDisabledInspectionId>
 #    paths:
 #      - <path/where/not/run/inspection>
-
 projectJDK: 19 #(Applied in CI/CD pipeline)
-
 #Execute shell command before Qodana execution (Applied in CI/CD pipeline)
 #bootstrap: sh ./prepare-qodana.sh
-
 #Install IDE plugins before Qodana execution (Applied in CI/CD pipeline)
 #plugins:
 #  - id: <plugin.id> #(plugin id can be found at https://plugins.jetbrains.com)
-
 #Specify Qodana linter for analysis (Applied in CI/CD pipeline)
 linter: jetbrains/qodana-jvm-community:latest
 exclude:
   - name: All
     paths:
       - common/src/main/java/org/quartz/CronExpression.java
+include:
+  - name: NonFinalFieldInEnum
+  - name: Deprecation
+  - name: ExtractMethodRecommender
+  - name: FieldMayBeFinal
+  - name: UnnecessarySemicolon
+  - name: UnnecessaryLocalVariable
+  - name: UNUSED_IMPORT
+  - name: DanglingJavadoc
+  - name: JavadocDeclaration
+  - name: MismatchedJavadocCode
+  - name: StringEqualsEmptyString
+  - name: LombokGetterMayBeUsed
+  - name: LombokSetterMayBeUsed
+  - name: ManualMinMaxCalculation
+  - name: StringOperationCanBeSimplified

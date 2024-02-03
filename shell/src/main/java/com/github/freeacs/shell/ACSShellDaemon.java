@@ -5,10 +5,10 @@ import java.util.List;
 import javax.sql.DataSource;
 
 public class ACSShellDaemon implements Runnable {
-  private ACSShell ACSShell = new ACSShell();
+  private final ACSShell ACSShell = new ACSShell();
   private final DataSource mainDataSource;
   private final DataSource syslogDataSource;
-  private String fusionUser;
+  private final String fusionUser;
   /** Used to track which instance of a shell-daemon is running. */
   private int index;
 

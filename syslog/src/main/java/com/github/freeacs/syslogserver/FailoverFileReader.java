@@ -9,17 +9,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FailoverFileReader implements Runnable {
-  private static FailoverCounter counter = new FailoverCounter();
+  private static final FailoverCounter counter = new FailoverCounter();
 
-  private static Logger logger = LoggerFactory.getLogger(FailoverFileReader.class);
+  private static final Logger logger = LoggerFactory.getLogger(FailoverFileReader.class);
 
-  private static Logger failedMessages = LoggerFactory.getLogger("FAILED");
+  private static final Logger failedMessages = LoggerFactory.getLogger("FAILED");
   private final Properties properties;
 
-  private Function<Properties, Long> MAX_AGE =
+  private final Function<Properties, Long> MAX_AGE =
       (properties) -> properties.getMaxFailoverMessageAge().longValue() * 60 * 60 * 1000;
 
-  private Function<Properties, Long> PROCESS_INTERVAL =
+  private final Function<Properties, Long> PROCESS_INTERVAL =
       (properties) -> properties.getFailoverProcessInterval().longValue() * 60 * 1000;
 
   private static boolean ok = true;

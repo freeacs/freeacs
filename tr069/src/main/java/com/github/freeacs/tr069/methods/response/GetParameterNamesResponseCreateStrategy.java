@@ -24,8 +24,8 @@ public class GetParameterNamesResponseCreateStrategy implements ResponseCreateSt
         String keyRoot = reqRes.getSessionData().getKeyRoot();
         Body body = new Body() {
 
-            private String parameter = keyRoot;
-            private boolean nextLevel0 = properties.isNextLevel0InGPN(reqRes.getSessionData());
+            private final String parameter = keyRoot;
+            private final boolean nextLevel0 = properties.isNextLevel0InGPN(reqRes.getSessionData());
 
             @Override
             public String toXmlImpl() {

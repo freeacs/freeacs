@@ -154,8 +154,8 @@ public class SystemParameters {
   public static Map<String, UnittypeParameterFlag> commonParameters = new TreeMap<>();
   public static Map<String, UnittypeParameterFlag> stagingParameters = new TreeMap<>();
 
-  private static UnittypeParameterFlag X = new UnittypeParameterFlag("X");
-  private static UnittypeParameterFlag XC = new UnittypeParameterFlag("XC");
+  private static final UnittypeParameterFlag X = new UnittypeParameterFlag("X");
+  private static final UnittypeParameterFlag XC = new UnittypeParameterFlag("XC");
 
   static {
     commonParameters.put(DESIRED_SOFTWARE_VERSION, X);

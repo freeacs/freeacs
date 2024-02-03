@@ -13,8 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SyslogEvents {
-  private static Logger logger = LoggerFactory.getLogger(SyslogEvents.class);
-  private static Map<Integer, SyslogEvent> idMap = new TreeMap<>();
+  private static final Logger logger = LoggerFactory.getLogger(SyslogEvents.class);
+  private static final Map<Integer, SyslogEvent> idMap = new TreeMap<>();
 
   static {
     SyslogEvent defaultEvent = new SyslogEvent();
@@ -26,8 +26,8 @@ public class SyslogEvents {
     idMap.put(0, defaultEvent);
   }
 
-  private Map<Integer, SyslogEvent> eventIdMap;
-  private Unittype unittype;
+  private final Map<Integer, SyslogEvent> eventIdMap;
+  private final Unittype unittype;
 
   public SyslogEvents(Map<Integer, SyslogEvent> eventIdMap, Unittype unittype) {
     this.eventIdMap = eventIdMap;

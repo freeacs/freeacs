@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class GroupComparator implements Comparator<Group> {
-  private boolean parentFirst;
+  private final boolean parentFirst;
 
   public GroupComparator(boolean parentFirst) {
     this.parentFirst = parentFirst;

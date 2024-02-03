@@ -10,11 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Heartbeats {
-  private static Logger logger = LoggerFactory.getLogger(Heartbeats.class);
+  private static final Logger logger = LoggerFactory.getLogger(Heartbeats.class);
 
-  private Map<String, Heartbeat> nameMap;
-  private Map<Integer, Heartbeat> idMap;
-  private Unittype unittype;
+  private final Map<String, Heartbeat> nameMap;
+  private final Map<Integer, Heartbeat> idMap;
+  private final Unittype unittype;
 
   public Heartbeats(
       Map<Integer, Heartbeat> idMap, Map<String, Heartbeat> nameMap, Unittype unittype) {

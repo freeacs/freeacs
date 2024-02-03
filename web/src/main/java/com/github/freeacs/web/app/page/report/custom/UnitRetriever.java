@@ -19,7 +19,7 @@ import java.util.Map;
 /** The Class UnitInterface. */
 public class UnitRetriever extends ReportRetriever {
   /** The generator. */
-  private ReportGenerator generator;
+  private final ReportGenerator generator;
 
   /**
    * Instantiates a new unit interface.

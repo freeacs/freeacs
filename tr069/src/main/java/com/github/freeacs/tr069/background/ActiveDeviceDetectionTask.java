@@ -10,9 +10,9 @@ import java.util.*;
 import java.util.Map.Entry;
 
 public class ActiveDeviceDetectionTask extends TaskDefaultImpl {
-  private static Logger logger = LoggerFactory.getLogger(ActiveDeviceDetectionTask.class);
+  private static final Logger logger = LoggerFactory.getLogger(ActiveDeviceDetectionTask.class);
 
-  private DBI dbi;
+  private final DBI dbi;
 
   public static Map<String, Long> activeDevicesMap = new HashMap<>();
 

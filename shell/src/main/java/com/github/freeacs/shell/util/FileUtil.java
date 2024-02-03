@@ -19,14 +19,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class FileUtil {
-  private static Logger logger = LoggerFactory.getLogger(FileUtil.class);
+  private static final Logger logger = LoggerFactory.getLogger(FileUtil.class);
 
   public static boolean exists(String filename) {
     File f = new File(filename);
     return f.exists();
   }
 
-  private static String[] protectedFilePatterns =
+  private static final String[] protectedFilePatterns =
       new String[] {
         "application.properties",
         "xaps-shell-logs.properties",

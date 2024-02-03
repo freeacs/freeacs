@@ -20,7 +20,7 @@ import java.util.Map;
 /** The Class SyslogInterface. */
 public class SyslogRetriever extends ReportRetriever {
   /** The generator. */
-  private ReportSyslogGenerator generator;
+  private final ReportSyslogGenerator generator;
 
   /**
    * Instantiates a new syslog interface.

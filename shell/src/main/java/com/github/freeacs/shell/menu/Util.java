@@ -10,9 +10,9 @@ public class Util {
   public static SimpleDateFormat outputFormatDefault = new SimpleDateFormat("yyyyMMdd-HHmm");
   public static SimpleDateFormat outputFormatExtended = new SimpleDateFormat("yyyyMMdd-HHmmss");
 
-  private static Pattern absoluteTimePattern =
+  private static final Pattern absoluteTimePattern =
       Pattern.compile("(\\d{4})(\\d{2})(\\d{2})-?(\\d{2})?(\\d{2})?(\\d{2})?");
-  private static Pattern offsetTimePattern = Pattern.compile("(\\d+)(m|h|d)");
+  private static final Pattern offsetTimePattern = Pattern.compile("(\\d+)(m|h|d)");
 
   public static Date getDateFromOption(String optionValue) {
     Matcher m = absoluteTimePattern.matcher(optionValue);

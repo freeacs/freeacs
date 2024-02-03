@@ -18,13 +18,13 @@ import org.slf4j.LoggerFactory;
 
 /** ACSUnit is a class to help you work with units and unit parameters. */
 public class ACSUnit {
-  private static Logger logger = LoggerFactory.getLogger(ACSUnit.class);
+  private static final Logger logger = LoggerFactory.getLogger(ACSUnit.class);
   private static long updateCounter;
   private static long insertCounter;
 
-  private DataSource dataSource;
-  private Syslog syslog;
-  private ACS acs;
+  private final DataSource dataSource;
+  private final Syslog syslog;
+  private final ACS acs;
 
   public ACSUnit(DataSource dataSource, ACS acs, Syslog syslog) throws SQLException {
     this.dataSource = dataSource;

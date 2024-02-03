@@ -23,7 +23,7 @@ public class UnknownAttribute extends MessageAttribute {
    * Attribute 3 Type | Attribute 4 Type ...
    * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    */
-  private List<MessageAttributeType> unkown = new Vector<>();
+  private final List<MessageAttributeType> unkown = new Vector<>();
 
   public UnknownAttribute() {
     super(MessageAttribute.MessageAttributeType.UnknownAttribute);

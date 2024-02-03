@@ -20,9 +20,9 @@ import org.slf4j.LoggerFactory;
  * @author morten
  */
 public class ShellDaemonPool {
-  private static Logger logger = LoggerFactory.getLogger(ShellDaemonPool.class);
+  private static final Logger logger = LoggerFactory.getLogger(ShellDaemonPool.class);
 
-  private static Map<String, List<ACSShellDaemon>> shellDaemonPoolMap = new HashMap<>();
+  private static final Map<String, List<ACSShellDaemon>> shellDaemonPoolMap = new HashMap<>();
 
   private static ACSShellDaemon createNewShellDaemon(
       DataSource mainDataSource, DataSource syslogDataSource, int index, String fusionUser)

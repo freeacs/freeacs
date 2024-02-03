@@ -22,10 +22,10 @@ public class HelpTextConverter extends JFrame
   private static final long serialVersionUID = -1L;
 
   /** The input. */
-  private JTextArea input;
+  private final JTextArea input;
 
   /** The button. */
-  private JButton button;
+  private final JButton button;
 
   /** Instantiates a new help text converter. */
   public HelpTextConverter() {

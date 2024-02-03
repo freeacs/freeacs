@@ -11,7 +11,7 @@ public class UnittypeParameter {
 
   private UnittypeParameterValues values;
 
-  private Unittype unittype;
+  private final Unittype unittype;
 
   public UnittypeParameter(Unittype unittype, String name, UnittypeParameterFlag flag) {
     if (unittype == null) {

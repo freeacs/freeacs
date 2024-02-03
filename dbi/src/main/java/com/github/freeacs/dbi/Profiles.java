@@ -9,9 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Profiles {
-  private static Logger logger = LoggerFactory.getLogger(Profiles.class);
-  private Map<String, Profile> nameMap;
-  private Map<Integer, Profile> idMap;
+  private static final Logger logger = LoggerFactory.getLogger(Profiles.class);
+  private final Map<String, Profile> nameMap;
+  private final Map<Integer, Profile> idMap;
 
   public Profiles(Map<Integer, Profile> idMap, Map<String, Profile> nameMap) {
     this.idMap = idMap;

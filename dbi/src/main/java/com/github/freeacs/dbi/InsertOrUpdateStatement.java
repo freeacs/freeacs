@@ -104,8 +104,8 @@ public class InsertOrUpdateStatement {
     }
   }
 
-  private List<Field> fields = new ArrayList<>();
-  private String table;
+  private final List<Field> fields = new ArrayList<>();
+  private final String table;
   private boolean insert;
 
   public InsertOrUpdateStatement(String table, Field primaryKey) {

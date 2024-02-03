@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Properties {
-  private static String propertyfile =
+  private static final String propertyfile =
       Optional.ofNullable(System.getProperty("config.name")).orElse("application") + ".properties";
 
   public static PropertyReader pr;
@@ -18,7 +18,7 @@ public class Properties {
     }
   }
 
-  private static Logger logger = LoggerFactory.getLogger(Properties.class);
+  private static final Logger logger = LoggerFactory.getLogger(Properties.class);
 
   private static String getString(String propertyKey, String defaultValue) {
     try {

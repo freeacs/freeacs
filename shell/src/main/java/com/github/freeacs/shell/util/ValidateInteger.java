@@ -1,9 +1,9 @@
 package com.github.freeacs.shell.util;
 
 public class ValidateInteger implements ValidateInput {
-  private Integer min;
+  private final Integer min;
 
-  private Integer max;
+  private final Integer max;
 
   public ValidateInteger(Integer minInc, Integer maxExc) {
     this.min = minInc;

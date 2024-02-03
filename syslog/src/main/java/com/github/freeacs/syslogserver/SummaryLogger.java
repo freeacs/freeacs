@@ -12,8 +12,8 @@ public class SummaryLogger extends TaskDefaultImpl {
     this.properties = properties;
   }
 
-  private static Logger logger = LoggerFactory.getLogger(SummaryLogger.class);
-  private static Logger summary = LoggerFactory.getLogger("Summary");
+  private static final Logger logger = LoggerFactory.getLogger(SummaryLogger.class);
+  private static final Logger summary = LoggerFactory.getLogger("Summary");
   private static int summaryHeaderCount;
   private static boolean firstTime = true;
   private static Integer maxMessagesPrMinute;

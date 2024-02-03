@@ -11,7 +11,7 @@ import jline.ConsoleReader;
 import jline.SimpleCompletor;
 
 public class ACSShellReader extends BufferedReader {
-  private ConsoleReader console;
+  private final ConsoleReader console;
   private ArgumentCompletor argumentCompletor;
   private ACSShell ACSShell;
 

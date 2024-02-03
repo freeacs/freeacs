@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 public class GroupMenu {
-  private Session session;
-  private Context context;
+  private final Session session;
+  private final Context context;
 
   public GroupMenu(Session session) {
     this.session = session;

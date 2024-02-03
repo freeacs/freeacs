@@ -17,9 +17,9 @@ public class PropertyReader {
   private static final String RELOAD_INTERVAL_SEC = "reload.interval-seconds";
   private static final long RELOAD_INTERVAL_DEFAULT = 30 * 1000;
 
-  private static Map<String, Object> properties = new HashMap<>();
-  private static Logger logger = LoggerFactory.getLogger(PropertyReader.class);
-  private String propertyfile;
+  private static final Map<String, Object> properties = new HashMap<>();
+  private static final Logger logger = LoggerFactory.getLogger(PropertyReader.class);
+  private final String propertyfile;
 
   public PropertyReader(String propertyfile) {
     this.propertyfile = propertyfile;

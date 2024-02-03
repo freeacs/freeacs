@@ -48,9 +48,9 @@ import java.util.List;
 import java.util.Map;
 
 public class UnittypeMenu {
-  private Session session;
-  private Context context;
-  private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HH:mm:ss");
+  private final Session session;
+  private final Context context;
+  private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HH:mm:ss");
 
   public UnittypeMenu(Session session) {
     this.session = session;

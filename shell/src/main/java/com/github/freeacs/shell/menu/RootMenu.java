@@ -34,9 +34,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RootMenu {
-  private static Pattern hashedSecretPattern = Pattern.compile("[A-F0-9]{40}");
+  private static final Pattern hashedSecretPattern = Pattern.compile("[A-F0-9]{40}");
 
-  private Session session;
+  private final Session session;
 
   public RootMenu(Session session) {
     this.session = session;

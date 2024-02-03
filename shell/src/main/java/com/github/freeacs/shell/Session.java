@@ -19,10 +19,10 @@ public class Session {
    * Public static final int INTERACTIVE = 0; public static final int SCRIPT = 1; public static
    * final int DAEMON = 2;.
    */
-  private String[] originalOptionArgs;
+  private final String[] originalOptionArgs;
 
   /** Object holding the Session object and printer-objects. */
-  private ACSShell ACSShell;
+  private final ACSShell ACSShell;
 
   /** Information on how to access xAPS database. */
   private DataSource xapsProps;
@@ -45,15 +45,15 @@ public class Session {
   private UnitJobs unitJobs;
 
   /** Responsible for processing all commands. */
-  private Processor processor;
+  private final Processor processor;
 
   /** The script-stack, containing all commands to be run. */
-  private Stack<Script> scriptStack = new Stack<>();
+  private final Stack<Script> scriptStack = new Stack<>();
 
   /** Batch-storage, to speed up mass-change of unit/unit-parameter/unit-type parameters. */
-  private BatchStorage batchStorage = new BatchStorage();
+  private final BatchStorage batchStorage = new BatchStorage();
 
-  private List<String> commandHistory = new ArrayList<>();
+  private final List<String> commandHistory = new ArrayList<>();
 
   /** Default mode of a session is Interactive mode. */
   private SessionMode mode = SessionMode.INTERACTIVE;

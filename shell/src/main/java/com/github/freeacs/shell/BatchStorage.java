@@ -10,9 +10,9 @@ public class BatchStorage {
 
   private List<UnitParameter> deleteUnitParameters;
 
-  private UnitTempStorage addUnits = new UnitTempStorage();
+  private final UnitTempStorage addUnits = new UnitTempStorage();
 
-  private UnitTempStorage deleteUnits = new UnitTempStorage();
+  private final UnitTempStorage deleteUnits = new UnitTempStorage();
 
   private List<UnittypeParameter> addChangeUnittypeParameters;
 

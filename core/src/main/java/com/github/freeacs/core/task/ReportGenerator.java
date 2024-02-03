@@ -37,16 +37,16 @@ import org.slf4j.LoggerFactory;
 
 public class ReportGenerator extends DBIOwner {
   private static final String LOG_PREFIX = "- - ";
-  private static long MINUTE_MS = 60 * 1000;
-  private static long HOUR_MS = 60 * MINUTE_MS;
-  private static long DAY_MS = 24 * HOUR_MS;
-  private static long MONTH_MS = 31 * DAY_MS;
+  private static final long MINUTE_MS = 60 * 1000;
+  private static final long HOUR_MS = 60 * MINUTE_MS;
+  private static final long DAY_MS = 24 * HOUR_MS;
+  private static final long MONTH_MS = 31 * DAY_MS;
 
-  private static Logger logger = LoggerFactory.getLogger(ReportGenerator.class);
+  private static final Logger logger = LoggerFactory.getLogger(ReportGenerator.class);
   private final Properties properties;
   private ACS acs;
-  private ScheduleType scheduleType;
-  private TmsConverter converter;
+  private final ScheduleType scheduleType;
+  private final TmsConverter converter;
 
   public ReportGenerator(
       String taskName, ScheduleType scheduleType, DBI dbi, Properties properties) {
@@ -529,7 +529,7 @@ public class ReportGenerator extends DBIOwner {
   }
 
   public static class UnitSWLCT {
-    private Unit unit;
+    private final Unit unit;
     private Integer lastConnectTms;
     private String softwareVersion;
 

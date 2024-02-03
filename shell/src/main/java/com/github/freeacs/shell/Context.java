@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Context {
-  private static Pattern commandPattern = Pattern.compile("\\t([^\\s\\n]+)");
+  private static final Pattern commandPattern = Pattern.compile("\\t([^\\s\\n]+)");
 
   private Session session;
   private Group group;
@@ -23,7 +23,7 @@ public class Context {
   private Unit unit;
   private Unittype unittype;
   private UnittypeParameter unittypeParameter;
-  private String[] commandCounterContext = new String[6];
+  private final String[] commandCounterContext = new String[6];
 
   public Context(Session session) {
     this.session = session;

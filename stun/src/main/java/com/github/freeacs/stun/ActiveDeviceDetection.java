@@ -22,10 +22,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ActiveDeviceDetection extends TaskDefaultImpl {
-  private static Logger logger = LoggerFactory.getLogger(ActiveDeviceDetection.class);
-  private DataSource xapsCp;
-  private DBI dbi;
-  private TimestampMap activeDevicesLogged = new TimestampMap();
+  private static final Logger logger = LoggerFactory.getLogger(ActiveDeviceDetection.class);
+  private final DataSource xapsCp;
+  private final DBI dbi;
+  private final TimestampMap activeDevicesLogged = new TimestampMap();
 
   public ActiveDeviceDetection(DataSource xapsCp, DBI dbi, String taskName) {
     super(taskName);

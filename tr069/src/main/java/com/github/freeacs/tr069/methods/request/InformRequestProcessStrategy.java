@@ -30,7 +30,7 @@ import java.util.TreeSet;
 @Slf4j
 public class InformRequestProcessStrategy implements RequestProcessStrategy {
     private final DBI dbi;
-    private Properties properties;
+    private final Properties properties;
 
     InformRequestProcessStrategy(Properties properties, DBI dbi) {
         this.properties = properties;

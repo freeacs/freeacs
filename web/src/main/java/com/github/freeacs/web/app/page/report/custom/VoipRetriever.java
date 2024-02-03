@@ -20,10 +20,10 @@ import java.util.Map;
 /** The Class VoipInterface. */
 public class VoipRetriever extends ReportRetriever {
   /** The generator voip. */
-  private ReportVoipGenerator generatorVoip;
+  private final ReportVoipGenerator generatorVoip;
 
   /** The generator voip call. */
-  private ReportVoipCallGenerator generatorVoipCall;
+  private final ReportVoipCallGenerator generatorVoipCall;
 
   /**
    * Instantiates a new voip interface.

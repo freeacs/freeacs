@@ -18,10 +18,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ReportVoipCallGenerator extends ReportGenerator {
-  private static Logger logger = LoggerFactory.getLogger(ReportVoipCallGenerator.class);
-  private static Pattern mosChannelPattern = Pattern.compile(".*Channel (\\d+).*");
+  private static final Logger logger = LoggerFactory.getLogger(ReportVoipCallGenerator.class);
+  private static final Pattern mosChannelPattern = Pattern.compile(".*Channel (\\d+).*");
   /** MOS-report: MOS Report: Channel 0: MOS: 434 */
-  private static Pattern mosPattern = Pattern.compile("MOS: (\\d+)");
+  private static final Pattern mosPattern = Pattern.compile("MOS: (\\d+)");
 
   public ReportVoipCallGenerator(
       DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {

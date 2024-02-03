@@ -46,13 +46,13 @@ public class Output {
   private static final String INCLUDE_TEMPLATE_KEY = "INCLUDED_TEMPLATE";
   private final DataSource xapsDataSource;
   private final DataSource syslogDataSource;
-  private HttpServletResponse servletResponseChannel;
-  private Configuration freemarkerConfig;
+  private final HttpServletResponse servletResponseChannel;
+  private final Configuration freemarkerConfig;
   private static final String defaultTemplatePath = "/index.ftl";
   private String templatePathString;
-  private Map<String, Object> templateMap = new HashMap<>();
-  private WebPage currentPage;
-  private ParameterParser inputParameters;
+  private final Map<String, Object> templateMap = new HashMap<>();
+  private final WebPage currentPage;
+  private final ParameterParser inputParameters;
   private static final Logger logger = LoggerFactory.getLogger(Output.class);
   private String redirectToUrl;
   private String directResponseString;

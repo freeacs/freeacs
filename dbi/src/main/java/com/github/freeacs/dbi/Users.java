@@ -32,7 +32,7 @@ public class Users {
 
   public static String ACCESS_ADMIN = "Admin";
 
-  private static String ADMIN_DEFAULT_PASSWORD = "freeacs";
+  private static final String ADMIN_DEFAULT_PASSWORD = "freeacs";
 
   private final DataSource dataSource;
   private Map<Integer, User> idMap = new HashMap<>();

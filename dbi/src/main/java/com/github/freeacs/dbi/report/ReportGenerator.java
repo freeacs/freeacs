@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ReportGenerator {
-  private static Logger logger = LoggerFactory.getLogger(ReportGenerator.class);
+  private static final Logger logger = LoggerFactory.getLogger(ReportGenerator.class);
 
   protected TmsConverter converter;
   protected DataSource syslogDataSource;

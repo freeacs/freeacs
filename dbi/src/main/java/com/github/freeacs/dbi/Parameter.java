@@ -10,7 +10,7 @@ public class Parameter {
     LE("<="),
     GT(">"),
     GE(">=");
-    private String op;
+    private final String op;
 
     Operator(String op) {
       this.op = op;
@@ -113,7 +113,7 @@ public class Parameter {
   public enum ParameterDataType {
     TEXT("TEXT"),
     NUMBER("NUMBER");
-    private String type;
+    private final String type;
 
     ParameterDataType(String type) {
       this.type = type;

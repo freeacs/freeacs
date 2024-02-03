@@ -932,7 +932,7 @@ public class UnitStatusPage extends AbstractWebPage {
     return methods.get(0);
   }
 
-  private static Pattern paramRefPattern = Pattern.compile("(\\$\\{([^\\}]+)\\})");
+  private static final Pattern paramRefPattern = Pattern.compile("(\\$\\{([^\\}]+)\\})");
   /**
    * This method attempts to resolve any references to other parameters by looking for references
    * with the syntax ${<other_parameter>} in the parameter from the unit.

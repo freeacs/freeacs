@@ -25,7 +25,7 @@ public class HistoryElement {
     DIAGNOSTICSCOMPLETE(8),
     REQUESTDOWNLOAD(9);
 
-    private int code;
+    private final int code;
 
     EventCode(int c) {
       code = c;
@@ -41,7 +41,7 @@ public class HistoryElement {
     }
   }
 
-  private static DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+  private static final DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
   private String timestamp;
   private String status;

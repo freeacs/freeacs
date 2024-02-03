@@ -11,8 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SessionDataCacheCleanup implements CleanupNotifier {
-  private SessionDataI sessionData;
-  private String unitKey;
+  private final SessionDataI sessionData;
+  private final String unitKey;
 
   SessionDataCacheCleanup(String unitKey, SessionDataI sessionData) {
     this.unitKey = unitKey;

@@ -2,9 +2,9 @@ package com.github.freeacs.dbi;
 
 public class Permission {
   private Integer id;
-  private User user;
-  private Integer unittypeId;
-  private Integer profileId;
+  private final User user;
+  private final Integer unittypeId;
+  private final Integer profileId;
 
   public Permission(User user, Integer unittypeId, Integer profileId) {
     this.user = user;

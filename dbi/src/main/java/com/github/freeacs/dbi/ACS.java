@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * @author Morten S
  */
 public class ACS {
-  private static Logger logger = LoggerFactory.getLogger(ACS.class);
+  private static final Logger logger = LoggerFactory.getLogger(ACS.class);
   private static boolean strictOrder = true;
 
   private final DataSource dataSource;

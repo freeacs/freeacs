@@ -16,11 +16,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Files {
-  private static Logger logger = LoggerFactory.getLogger(Files.class);
-  private Map<String, File> nameMap;
-  private Map<String, File> versionTypeMap;
-  private Map<Integer, File> idMap;
-  private Unittype unittype;
+  private static final Logger logger = LoggerFactory.getLogger(Files.class);
+  private final Map<String, File> nameMap;
+  private final Map<String, File> versionTypeMap;
+  private final Map<Integer, File> idMap;
+  private final Unittype unittype;
 
   protected Files(
       Map<Integer, File> idMap,

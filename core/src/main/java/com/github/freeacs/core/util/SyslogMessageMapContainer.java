@@ -12,7 +12,7 @@ import java.util.Map;
 public class SyslogMessageMapContainer {
   public class SyslogMessageMap {
     private Heartbeat heartbeat;
-    private TimestampMap unitIdTmsMap;
+    private final TimestampMap unitIdTmsMap;
 
     public SyslogMessageMap(Heartbeat heartbeat) {
       this.heartbeat = heartbeat;
@@ -55,9 +55,9 @@ public class SyslogMessageMapContainer {
     }
   }
 
-  private static SimpleDateFormat sdf = new SimpleDateFormat("MMM dd HH:mm:ss");
+  private static final SimpleDateFormat sdf = new SimpleDateFormat("MMM dd HH:mm:ss");
 
-  private Map<Integer, SyslogMessageMap> container = new HashMap<>();
+  private final Map<Integer, SyslogMessageMap> container = new HashMap<>();
 
   public SyslogMessageMap getSyslogMessageMap(Integer heartbeatId) {
     return container.get(heartbeatId);

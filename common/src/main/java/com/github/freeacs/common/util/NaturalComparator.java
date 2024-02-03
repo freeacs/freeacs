@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class NaturalComparator implements Comparator<String> {
-  private Pattern numberPattern = Pattern.compile("\\d+");
+  private final Pattern numberPattern = Pattern.compile("\\d+");
 
   public int compare(String s1, String s2) {
     if (s1 != null) {

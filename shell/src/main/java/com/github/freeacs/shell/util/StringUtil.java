@@ -33,7 +33,7 @@ public class StringUtil {
     return options;
   }
 
-  private static Pattern pattern = Pattern.compile("(\"([^\"]*)\")|([^ \"\t]+)");
+  private static final Pattern pattern = Pattern.compile("(\"([^\"]*)\")|([^ \"\t]+)");
 
   /**
    * Replaces the old split function, since the old function did not handle strings which had quotes

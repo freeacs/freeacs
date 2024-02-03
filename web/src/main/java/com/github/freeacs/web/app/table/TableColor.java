@@ -24,7 +24,7 @@ public enum TableColor {
   BLACK("000000");
 
   /** The color hex. */
-  private String colorHex;
+  private final String colorHex;
 
   /**
    * Instantiates a new table color.

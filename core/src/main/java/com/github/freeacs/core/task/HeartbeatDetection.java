@@ -24,19 +24,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class HeartbeatDetection extends DBIShare {
-  private static long MINUTE_MS = 60 * 1000;
-  private static long HOUR_MS = 60 * MINUTE_MS;
-  private static long OFFSET = MINUTE_MS;
-  private static SimpleDateFormat sdf = new SimpleDateFormat("MMM dd HH:mm:ss", Locale.US);
+  private static final long MINUTE_MS = 60 * 1000;
+  private static final long HOUR_MS = 60 * MINUTE_MS;
+  private static final long OFFSET = MINUTE_MS;
+  private static final SimpleDateFormat sdf = new SimpleDateFormat("MMM dd HH:mm:ss", Locale.US);
 
   private ACS acs;
   private long lastTms;
   /** Contains SyslogMessageMaps (which wraps InsertOrderMap) for each heartbeat. */
-  private SyslogMessageMapContainer smmc = new SyslogMessageMapContainer();
+  private final SyslogMessageMapContainer smmc = new SyslogMessageMapContainer();
 
-  private TimestampMap activeDevices = new TimestampMap();
-  private Cache sentMessages = new Cache();
-  private static Logger logger = LoggerFactory.getLogger(HeartbeatDetection.class);
+  private final TimestampMap activeDevices = new TimestampMap();
+  private final Cache sentMessages = new Cache();
+  private static final Logger logger = LoggerFactory.getLogger(HeartbeatDetection.class);
 
   public HeartbeatDetection(String taskName, DBI dbi) {
     super(taskName, dbi);

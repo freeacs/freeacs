@@ -10,7 +10,7 @@ import java.util.Date;
  * @author Morten
  */
 public class TmsConverter {
-  private Calendar calendar;
+  private final Calendar calendar;
 
   public TmsConverter() {
     this(Calendar.getInstance());

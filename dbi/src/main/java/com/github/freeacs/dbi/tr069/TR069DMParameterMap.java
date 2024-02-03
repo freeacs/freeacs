@@ -12,7 +12,7 @@ public class TR069DMParameterMap {
     return tr069ParameterMap;
   }
 
-  private Map<String, TR069DMParameter> map;
+  private final Map<String, TR069DMParameter> map;
 
   public TR069DMParameterMap(Map<String, TR069DMParameter> map) {
     this.map = map;

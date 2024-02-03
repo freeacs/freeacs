@@ -17,10 +17,10 @@ public class ReferencingResourceBundle extends ResourceBundle {
   private static ResourceBundle resources;
 
   /** The pattern. */
-  private Pattern pattern;
+  private final Pattern pattern;
 
   /** The silent. */
-  private boolean silent;
+  private final boolean silent;
 
   /**
    * Instantiates a new referencing resource bundle.

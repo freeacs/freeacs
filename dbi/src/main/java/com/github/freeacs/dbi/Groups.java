@@ -16,10 +16,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Groups {
-  private static Logger logger = LoggerFactory.getLogger(Groups.class);
-  private Map<String, Group> nameMap;
-  private Map<Integer, Group> idMap;
-  private Unittype unittype;
+  private static final Logger logger = LoggerFactory.getLogger(Groups.class);
+  private final Map<String, Group> nameMap;
+  private final Map<Integer, Group> idMap;
+  private final Unittype unittype;
 
   public Groups(Map<Integer, Group> idMap, Map<String, Group> nameMap, Unittype unittype) {
     this.idMap = idMap;

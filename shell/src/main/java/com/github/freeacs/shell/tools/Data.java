@@ -5,10 +5,10 @@ import java.util.List;
 
 public class Data {
   private String value;
-  private List<String> errorMessages = new ArrayList<>();
-  private List<String> warningMessages = new ArrayList<>();
-  private List<Row> duplicateRows = new ArrayList<>();
-  private Row row;
+  private final List<String> errorMessages = new ArrayList<>();
+  private final List<String> warningMessages = new ArrayList<>();
+  private final List<Row> duplicateRows = new ArrayList<>();
+  private final Row row;
 
   public Data(Row row, String value) {
     this.row = row;

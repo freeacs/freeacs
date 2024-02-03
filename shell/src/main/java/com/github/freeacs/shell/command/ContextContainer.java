@@ -28,9 +28,9 @@ import org.slf4j.LoggerFactory;
  * @author morten
  */
 public class ContextContainer {
-  private List<ContextElement> contextList = new ArrayList<>();
-  private Map<String, Integer> lookupMap = new HashMap<>();
-  private static Logger logger = LoggerFactory.getLogger(ContextContainer.class);
+  private final List<ContextElement> contextList = new ArrayList<>();
+  private final Map<String, Integer> lookupMap = new HashMap<>();
+  private static final Logger logger = LoggerFactory.getLogger(ContextContainer.class);
 
   public ContextElement getContextElement(String type) {
     Integer index = lookupMap.get(type);

@@ -6,9 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Log {
-  private static Logger eventLog = LoggerFactory.getLogger("Event");
-  private static Logger convLog = LoggerFactory.getLogger("Conversation");
-  private static Logger debugLog = LoggerFactory.getLogger("Debug");
+  private static final Logger eventLog = LoggerFactory.getLogger("Event");
+  private static final Logger convLog = LoggerFactory.getLogger("Conversation");
+  private static final Logger debugLog = LoggerFactory.getLogger("Debug");
 
   public static void conversation(SessionDataI sessionData, String message) {
     convLog.info(message);

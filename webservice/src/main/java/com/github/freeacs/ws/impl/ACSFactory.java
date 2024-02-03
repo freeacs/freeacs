@@ -19,10 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ACSFactory {
-  private static Logger logger = LoggerFactory.getLogger(ACSFactory.class);
+  private static final Logger logger = LoggerFactory.getLogger(ACSFactory.class);
 
-  private DataSource xapsDataSource;
-  private DataSource syslogDataSource;
+  private final DataSource xapsDataSource;
+  private final DataSource syslogDataSource;
   private Identity id;
   private ACS acs;
   private boolean initialized;

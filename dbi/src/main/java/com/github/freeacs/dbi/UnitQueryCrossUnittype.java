@@ -16,12 +16,12 @@ import org.slf4j.LoggerFactory;
 
 /** @author Morten */
 class UnitQueryCrossUnittype {
-  private static Logger logger = LoggerFactory.getLogger(UnitQueryCrossUnittype.class);
+  private static final Logger logger = LoggerFactory.getLogger(UnitQueryCrossUnittype.class);
 
   private List<Unittype> unittypes;
   private List<Profile> profiles;
-  private Connection connection;
-  private ACS acs;
+  private final Connection connection;
+  private final ACS acs;
 
   public UnitQueryCrossUnittype(
       Connection c, ACS acs, List<Unittype> unittypes, List<Profile> profiles) {

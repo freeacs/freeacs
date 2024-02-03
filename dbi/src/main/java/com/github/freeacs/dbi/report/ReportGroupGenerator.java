@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ReportGroupGenerator extends ReportGenerator {
-  private static Logger logger = LoggerFactory.getLogger(ReportGroupGenerator.class);
+  private static final Logger logger = LoggerFactory.getLogger(ReportGroupGenerator.class);
 
   public ReportGroupGenerator(DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {
     super(mainDataSource, acs, logPrefix, id);

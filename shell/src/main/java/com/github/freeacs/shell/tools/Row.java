@@ -3,8 +3,8 @@ package com.github.freeacs.shell.tools;
 public class Row {
   private boolean error;
   private boolean warn;
-  private Data[] dataArray;
-  private int lineNumber;
+  private final Data[] dataArray;
+  private final int lineNumber;
 
   public Row(int lineNumber, int size) {
     this.lineNumber = lineNumber;

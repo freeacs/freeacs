@@ -36,15 +36,15 @@ public class Cache {
 
   public static int ABSOLUTE = 2;
 
-  private static int SINCE_MODIFIED = 3;
+  private static final int SINCE_MODIFIED = 3;
 
   protected static long STANDARDTIMEOUT = 30 * 60 * 1000;
 
-  private Map<Object, CacheValue> map = new Hashtable<>();
-  private long cleanupFrequence = 60 * 1000;
+  private final Map<Object, CacheValue> map = new Hashtable<>();
+  private final long cleanupFrequence = 60 * 1000;
   private long lastCleanup = System.currentTimeMillis();
 
-  private static Logger log = LoggerFactory.getLogger(Cache.class);
+  private static final Logger log = LoggerFactory.getLogger(Cache.class);
 
   class Cleanup extends Cache implements Runnable {
     public void run() {

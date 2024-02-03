@@ -22,10 +22,10 @@ import java.util.List;
 import javax.sql.DataSource;
 
 public class TriggerHandler {
-  private ACS acs;
+  private final ACS acs;
   private Unittype unittype;
-  private String sessionId;
-  private TriggerData inputData;
+  private final String sessionId;
+  private final TriggerData inputData;
 
   public TriggerHandler(
       String sessionId,

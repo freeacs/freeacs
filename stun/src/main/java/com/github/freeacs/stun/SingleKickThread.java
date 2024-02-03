@@ -43,9 +43,9 @@ public class SingleKickThread implements Runnable {
 
   private ACSUnit acsUnit;
 
-  private Map<String, InspectionState> unitWatch = new HashMap<>();
-  private Inbox inbox = new Inbox();
-  private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+  private final Map<String, InspectionState> unitWatch = new HashMap<>();
+  private final Inbox inbox = new Inbox();
+  private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
   public SingleKickThread(DataSource xapsCp, DBI dbi, Properties properties) {
     this.xapsCp = xapsCp;

@@ -20,7 +20,7 @@ import java.util.Map;
 /** The Class JobInterface. */
 public class JobRetriever extends ReportRetriever {
   /** The generator. */
-  private ReportGenerator generator;
+  private final ReportGenerator generator;
 
   /**
    * Instantiates a new job interface.

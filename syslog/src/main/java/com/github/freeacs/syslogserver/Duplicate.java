@@ -3,8 +3,8 @@ package com.github.freeacs.syslogserver;
 import com.github.freeacs.dbi.SyslogEntry;
 
 public class Duplicate {
-  private SyslogEntry entry;
-  private long timeout;
+  private final SyslogEntry entry;
+  private final long timeout;
   private int count;
 
   public Duplicate(SyslogEntry entry, long timeout) {

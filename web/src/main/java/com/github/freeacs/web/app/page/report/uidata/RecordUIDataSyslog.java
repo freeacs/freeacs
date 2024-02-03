@@ -21,7 +21,7 @@ public class RecordUIDataSyslog {
   private final ACS acs;
 
   /** The entry. */
-  private SyslogEntry entry;
+  private final SyslogEntry entry;
 
   /**
    * Gets the severity.

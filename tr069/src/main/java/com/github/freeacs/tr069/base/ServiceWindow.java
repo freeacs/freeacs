@@ -12,12 +12,12 @@ import java.util.Random;
 @Slf4j
 public class ServiceWindow {
   /** For random distribution of PII within the ServiceWindow. */
-  private static Random random = new Random(System.currentTimeMillis());
+  private static final Random random = new Random(System.currentTimeMillis());
 
-  private TimeWindow timeWindow;
-  private long currentTms;
-  private ACSParameters ACSParameters;
-  private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+  private final TimeWindow timeWindow;
+  private final long currentTms;
+  private final ACSParameters ACSParameters;
+  private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
   public ServiceWindow(SessionDataI sessionData, boolean disruptive) {
     this.currentTms = System.currentTimeMillis();

@@ -11,9 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DuplicateCheck {
-  private static Map<String, Duplicate> duplicateMap = new HashMap<>();
+  private static final Map<String, Duplicate> duplicateMap = new HashMap<>();
   private static int counter;
-  private static Logger logger = LoggerFactory.getLogger(DuplicateCheck.class);
+  private static final Logger logger = LoggerFactory.getLogger(DuplicateCheck.class);
 
   private static int getMaxSize(Properties properties) {
     return properties.getMaxMessagesInDuplicateBuffer();

@@ -23,7 +23,7 @@ public class FileComparator implements Comparator<File> {
   public static final int DATE = 4;
 
   /** The field. */
-  private int field;
+  private final int field;
 
   /**
    * Instantiates a new file comparator.

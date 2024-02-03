@@ -16,13 +16,13 @@ import org.slf4j.LoggerFactory;
  * @author Morten
  */
 public class ModuleMonitorTask extends TaskDefaultImpl {
-  private static Logger log = LoggerFactory.getLogger(ModuleMonitorTask.class);
+  private static final Logger log = LoggerFactory.getLogger(ModuleMonitorTask.class);
 
   /**
    * Contains a list of MonitorInfo. This list is used to 1. Run monitoring of the various URLs in
    * MonitorInfo 2. Read the list of monitored URLs 3. Read the status for each monitored URL.
    */
-  private static Set<MonitorInfo> monitorInfoSet = new TreeSet<>();
+  private static final Set<MonitorInfo> monitorInfoSet = new TreeSet<>();
 
   /**
    * All modules are defined here - we assume that every module will be monitored using this URL:

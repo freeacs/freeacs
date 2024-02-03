@@ -113,7 +113,7 @@ public class UnitStatusInfo {
   private Report<RecordSyslog> syslogReport;
 
   /** The sdf. */
-  private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+  private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
   /**
    * Gets the unit status info.

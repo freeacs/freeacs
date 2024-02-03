@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 public class SyslogServer implements Runnable {
   private static DatagramSocket socket;
-  private static Logger logger = LoggerFactory.getLogger(SyslogServer.class);
+  private static final Logger logger = LoggerFactory.getLogger(SyslogServer.class);
   private static boolean ok = true;
   private static Throwable throwable;
   private static boolean started;

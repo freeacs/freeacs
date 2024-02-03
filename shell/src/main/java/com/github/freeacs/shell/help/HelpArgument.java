@@ -1,8 +1,8 @@
 package com.github.freeacs.shell.help;
 
 public class HelpArgument {
-  private String argument;
-  private String comment;
+  private final String argument;
+  private final String comment;
 
   public HelpArgument(String argument, String comment) {
     this.argument = argument;

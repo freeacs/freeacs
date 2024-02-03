@@ -3,7 +3,7 @@ package com.github.freeacs.dbi.report;
 import java.util.Date;
 
 public class RecordGroup extends Record<RecordGroup> {
-  private static KeyFactory keyFactory = new KeyFactory("Unittype", "Group");
+  private static final KeyFactory keyFactory = new KeyFactory("Unittype", "Group");
   private Key key;
 
   private Date tms;

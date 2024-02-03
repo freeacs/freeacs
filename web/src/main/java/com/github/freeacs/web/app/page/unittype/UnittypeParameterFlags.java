@@ -69,7 +69,7 @@ public enum UnittypeParameterFlags {
   }
 
   /** The display. */
-  private String display;
+  private final String display;
 
   /**
    * Instantiates a new unittype parameter flags.

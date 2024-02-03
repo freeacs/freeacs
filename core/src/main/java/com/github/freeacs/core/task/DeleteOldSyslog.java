@@ -16,7 +16,7 @@ public class DeleteOldSyslog extends DBIShare {
   private final Properties properties;
   private ACS acs;
 
-  private static Logger logger = LoggerFactory.getLogger(DeleteOldSyslog.class);
+  private static final Logger logger = LoggerFactory.getLogger(DeleteOldSyslog.class);
 
   public DeleteOldSyslog(String taskName, DBI dbi, Properties properties) {
     super(taskName, dbi);

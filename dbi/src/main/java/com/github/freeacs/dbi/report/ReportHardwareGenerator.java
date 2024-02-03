@@ -22,18 +22,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ReportHardwareGenerator extends ReportGenerator {
-  private static Logger logger = LoggerFactory.getLogger(ReportHardwareGenerator.class);
+  private static final Logger logger = LoggerFactory.getLogger(ReportHardwareGenerator.class);
   /**
    * Memory-content: HW Memory Pool/Current/LowWater: Heap(DDR) 10863616/10558784/10558144,
    * Heap(OCM) 49152/34876/34876, NP(DDR) 4471/4094/4089, NP(OCM) 375/246/244
    */
-  private static Pattern memPattern =
+  private static final Pattern memPattern =
       Pattern.compile(
           "[^\\d]*(\\d+)\\/(\\d+)\\/(\\d+)[^\\d]*(\\d*)\\/(\\d+)\\/(\\d+)[^\\d]*(\\d*)\\/(\\d+)\\/(\\d+)[^\\d]*(\\d*)\\/(\\d+)\\/(\\d+).*");
   /** Uptime: [memPattern], Uptime 170:25:40 */
-  private static Pattern uptimePattern = Pattern.compile("Uptime (\\d+):(\\d+):(\\d+)");
+  private static final Pattern uptimePattern = Pattern.compile("Uptime (\\d+):(\\d+):(\\d+)");
   /** Reboot-content: Reboot reason [0x0002] */
-  private static Pattern rebootPattern = Pattern.compile(".*Reboot reason \\[.+\\](.+)");
+  private static final Pattern rebootPattern = Pattern.compile(".*Reboot reason \\[.+\\](.+)");
 
   public ReportHardwareGenerator(
       DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {

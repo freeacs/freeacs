@@ -25,8 +25,8 @@ public class ParameterListHandler extends DefaultHandler {
   public static final String WRITABLE_TAG = "Writable";
   public static final String NOTIFICATION_TAG = "Notification";
 
-  private Parser owner;
-  private ParameterList params;
+  private final Parser owner;
+  private final ParameterList params;
   private ParameterValueStruct pvs;
   private ParameterInfoStruct pis;
   private ParameterAttributeStruct pas;

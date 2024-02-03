@@ -36,16 +36,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class JobKickThread implements Runnable {
-  private static Logger log = LoggerFactory.getLogger(JobKickThread.class);
+  private static final Logger log = LoggerFactory.getLogger(JobKickThread.class);
   private final Properties properties;
-  private DBI dbi;
-  private DataSource xapsCp;
+  private final DBI dbi;
+  private final DataSource xapsCp;
   /** Key: jobId Value: Set of unitId */
   private Map<Integer, Set<String>> jobKickMap;
   /** Key: jobId Value: Tms of last refresh */
-  private Map<Integer, Long> jobRefreshMap = new HashMap<>();
+  private final Map<Integer, Long> jobRefreshMap = new HashMap<>();
   /** This inbox listens for changes on job (from other modules in xAPS). */
-  private Inbox jobChangeInbox = new Inbox();
+  private final Inbox jobChangeInbox = new Inbox();
 
   public JobKickThread(DataSource xapsCp, DBI dbi, Properties properties) {
     this.xapsCp = xapsCp;

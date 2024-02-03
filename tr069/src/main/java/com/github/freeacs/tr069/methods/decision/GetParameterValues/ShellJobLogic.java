@@ -24,7 +24,7 @@ import java.util.Random;
 @Slf4j
 public class ShellJobLogic {
 
-    private static Random random = new Random();
+    private static final Random random = new Random();
 
     /**
      * We need a monitor to synchronize, so that two devices using the same unit-id (same
@@ -33,7 +33,7 @@ public class ShellJobLogic {
      * object directly, because even if the String-object encapsulates the same string, it is not the
      * same object.
      */
-    private static Cache monitorCache = new Cache();
+    private static final Cache monitorCache = new Cache();
 
     public static void execute(SessionData sessionData, DBI dbi, Job job, UnitJob uj, boolean discovery, ScriptExecutions execs)
             throws TR069Exception {

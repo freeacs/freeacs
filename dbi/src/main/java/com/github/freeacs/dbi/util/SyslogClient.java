@@ -15,11 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SyslogClient {
-  private static SimpleDateFormat sdf = new SimpleDateFormat("MMM d HH:mm:ss", Locale.US);
+  private static final SimpleDateFormat sdf = new SimpleDateFormat("MMM d HH:mm:ss", Locale.US);
 
   public static String SYSLOG_SERVER_HOST = "localhost";
 
-  private static Logger logger = LoggerFactory.getLogger(SyslogClient.class);
+  private static final Logger logger = LoggerFactory.getLogger(SyslogClient.class);
 
   public static void info(
       String unitId, String content, int facility, String facilityVersion, String user) {

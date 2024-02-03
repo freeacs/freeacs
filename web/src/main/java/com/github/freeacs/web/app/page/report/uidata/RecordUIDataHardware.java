@@ -36,7 +36,7 @@ public class RecordUIDataHardware extends RecordHardware {
   private Long memoryHeapDdrPoolAvg;
 
   /** The memory heap ddr percent. */
-  private double memoryHeapDdrUsagePercent;
+  private final double memoryHeapDdrUsagePercent;
 
   /** The memory heap ocm current avg. */
   private Long memoryHeapOcmCurrentAvg;
@@ -48,7 +48,7 @@ public class RecordUIDataHardware extends RecordHardware {
   private Long memoryHeapOcmPoolAvg;
 
   /** The memory heap ocm percent. */
-  private double memoryHeapOcmUsagePercent;
+  private final double memoryHeapOcmUsagePercent;
 
   /** The up time avg. */
   private Long upTimeAvg;
@@ -63,11 +63,11 @@ public class RecordUIDataHardware extends RecordHardware {
   private double memoryHeapOcmHighestUsagePercent;
 
   /** The unit. */
-  private Unit unit;
+  private final Unit unit;
 
   private final RecordUIDataHardwareFilter limits;
 
-  private long bootTotal;
+  private final long bootTotal;
 
   /**
    * Instantiates a new record ui data hardware.

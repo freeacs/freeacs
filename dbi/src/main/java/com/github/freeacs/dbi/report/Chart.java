@@ -43,25 +43,25 @@ public class Chart<R extends Record> {
   /** Add to set to show in strategy mode STRATEGY_SHOW_SELECTED. */
   public static final String STRATEGY_SHOW_SELECTED = "SHOW";
 
-  private static Logger logger = LoggerFactory.getLogger(Chart.class);
+  private static final Logger logger = LoggerFactory.getLogger(Chart.class);
 
-  private long NINTY_DAYS = 90L * 24L * 3600L * 1000L;
-  private long TWO_DAYS = 2L * 24L * 3600L * 1000L;
-  private long TWO_MINUTES = 2L * 60L * 1000L;
+  private final long NINTY_DAYS = 90L * 24L * 3600L * 1000L;
+  private final long TWO_DAYS = 2L * 24L * 3600L * 1000L;
+  private final long TWO_MINUTES = 2L * 60L * 1000L;
 
   /** Set to true to use showMap-logic, set to false to use hideMap-logic. */
-  private String strategy = STRATEGY_HIDE_SELECTED;
+  private final String strategy = STRATEGY_HIDE_SELECTED;
   /** The map which contains all the sets. */
-  private Map<String, Set<String>> setMap = new HashMap<>();
+  private final Map<String, Set<String>> setMap = new HashMap<>();
 
-  private Report<R> report;
-  private PeriodType periodType;
-  private String method;
-  private String[] keyNames;
+  private final Report<R> report;
+  private final PeriodType periodType;
+  private final String method;
+  private final String[] keyNames;
   private JFreeChart chart;
-  private Map<Key, R> recordMap;
-  private String title;
-  private boolean displayFrame;
+  private final Map<Key, R> recordMap;
+  private final String title;
+  private final boolean displayFrame;
   private long startTms;
   private long endTms;
 

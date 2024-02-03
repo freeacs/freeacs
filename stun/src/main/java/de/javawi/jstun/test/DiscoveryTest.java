@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DiscoveryTest {
-  private static Logger LOGGER = LoggerFactory.getLogger(DiscoveryTest.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DiscoveryTest.class);
   InetAddress iaddress;
   String stunServer;
   int port;

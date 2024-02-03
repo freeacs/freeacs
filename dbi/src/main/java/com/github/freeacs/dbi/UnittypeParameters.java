@@ -17,14 +17,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class UnittypeParameters {
-  private static Logger logger = LoggerFactory.getLogger(UnittypeParameters.class);
-  private Map<Integer, UnittypeParameter> idMap;
-  private Map<String, UnittypeParameter> nameMap;
-  private Map<Integer, UnittypeParameter> alwaysMap;
-  private Map<Integer, UnittypeParameter> displayableMap;
+  private static final Logger logger = LoggerFactory.getLogger(UnittypeParameters.class);
+  private final Map<Integer, UnittypeParameter> idMap;
+  private final Map<String, UnittypeParameter> nameMap;
+  private final Map<Integer, UnittypeParameter> alwaysMap;
+  private final Map<Integer, UnittypeParameter> displayableMap;
   private Map<String, String> displayableNameMap;
-  private Map<Integer, UnittypeParameter> searchableMap;
-  private Unittype unittype;
+  private final Map<Integer, UnittypeParameter> searchableMap;
+  private final Unittype unittype;
   private Boolean hasDeviceParameters;
 
   public UnittypeParameters(

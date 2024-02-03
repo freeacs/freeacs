@@ -35,7 +35,7 @@ public class JobFlag {
   }
 
   private JobType type;
-  private JobServiceWindow serviceWindow;
+  private final JobServiceWindow serviceWindow;
 
   public JobFlag(String flagStr) {
     String typeStr = flagStr.split("\\|")[0];

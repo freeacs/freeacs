@@ -14,10 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class GroupParameters {
-  private static Logger logger = LoggerFactory.getLogger(GroupParameters.class);
-  private Map<String, GroupParameter> nameMap;
-  private Map<Integer, GroupParameter> idMap;
-  private Group group;
+  private static final Logger logger = LoggerFactory.getLogger(GroupParameters.class);
+  private final Map<String, GroupParameter> nameMap;
+  private final Map<Integer, GroupParameter> idMap;
+  private final Group group;
 
   public GroupParameters(
       Map<String, GroupParameter> nameMap, Map<Integer, GroupParameter> idMap, Group group) {

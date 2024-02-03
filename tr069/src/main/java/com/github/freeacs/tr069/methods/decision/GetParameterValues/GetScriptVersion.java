@@ -9,10 +9,10 @@ import org.slf4j.LoggerFactory;
 import java.util.stream.Stream;
 
 public class GetScriptVersion {
-    private static Logger logger = LoggerFactory.getLogger(GetScriptVersion.class);
+    private static final Logger logger = LoggerFactory.getLogger(GetScriptVersion.class);
 
-    private ACSParameters oweraParams;
-    private CPEParameters cpeParams;
+    private final ACSParameters oweraParams;
+    private final CPEParameters cpeParams;
     private String scriptVersion;
     private String scriptName;
 

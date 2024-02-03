@@ -1,7 +1,7 @@
 package com.github.freeacs.shell.help;
 
 public class HelpSyntax {
-  private String syntax;
+  private final String syntax;
   private String command;
 
   public HelpSyntax(String syntax) {

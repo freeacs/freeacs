@@ -6,7 +6,7 @@ import java.util.Map;
 public class UnitResultMap<K, V> extends LinkedHashMap<K, V> {
   private static final long serialVersionUID = 1911267205492200962L;
 
-  private int maxSize;
+  private final int maxSize;
 
   private Map.Entry<K, V> eldestEntry;
 

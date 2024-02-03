@@ -11,7 +11,7 @@ public class ProvisioningMessage {
     DELAYED("DELAYED"),
     ERROR("ERROR");
 
-    private String str;
+    private final String str;
 
     ProvStatus(String str) {
       this.str = str;
@@ -25,7 +25,7 @@ public class ProvisioningMessage {
   public enum ErrorResponsibility {
     CLIENT("CLIENT"),
     SERVER("SERVER");
-    private String str;
+    private final String str;
 
     ErrorResponsibility(String str) {
       this.str = str;

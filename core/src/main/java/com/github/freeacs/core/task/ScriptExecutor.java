@@ -21,10 +21,10 @@ public class ScriptExecutor extends DBIShare {
   private final Properties properties;
 
   public static class ScriptDaemonRunnable implements Runnable {
-    private ScriptExecution se;
-    private ACSShellDaemon acsShellDaemon;
-    private ScriptExecutions executions;
-    private static Logger daemonLogger = LoggerFactory.getLogger("ShellDaemon");
+    private final ScriptExecution se;
+    private final ACSShellDaemon acsShellDaemon;
+    private final ScriptExecutions executions;
+    private static final Logger daemonLogger = LoggerFactory.getLogger("ShellDaemon");
 
     public ScriptDaemonRunnable(
         ScriptExecutions executions,
@@ -107,7 +107,7 @@ public class ScriptExecutor extends DBIShare {
     this.properties = properties;
   }
 
-  private static Logger logger = LoggerFactory.getLogger(ScriptExecutor.class);
+  private static final Logger logger = LoggerFactory.getLogger(ScriptExecutor.class);
 
   @Override
   public void runImpl() throws Exception {

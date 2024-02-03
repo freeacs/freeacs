@@ -27,8 +27,8 @@ import java.util.Map.Entry;
 import java.util.TreeSet;
 
 public class UnitMenu {
-  private Context context;
-  private Session session;
+  private final Context context;
+  private final Session session;
 
   public UnitMenu(Session session) {
     this.session = session;

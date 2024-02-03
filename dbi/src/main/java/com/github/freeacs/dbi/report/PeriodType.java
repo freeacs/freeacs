@@ -10,7 +10,7 @@ public enum PeriodType {
   MINUTE(Calendar.MINUTE),
   SECOND(Calendar.SECOND);
 
-  private int type;
+  private final int type;
 
   PeriodType(int type) {
     this.type = type;

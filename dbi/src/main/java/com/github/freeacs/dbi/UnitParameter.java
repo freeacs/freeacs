@@ -1,9 +1,9 @@
 package com.github.freeacs.dbi;
 
 public class UnitParameter {
-  private String unitId;
+  private final String unitId;
 
-  private Profile profile;
+  private final Profile profile;
 
   private Parameter parameter;
 

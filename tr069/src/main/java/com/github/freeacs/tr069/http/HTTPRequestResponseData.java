@@ -13,11 +13,11 @@ import java.util.Optional;
 @Slf4j
 public class HTTPRequestResponseData {
 
-  private HTTPRequestData requestData;
+  private final HTTPRequestData requestData;
 
-  private HTTPResponseData responseData;
+  private final HTTPResponseData responseData;
 
-  private HttpServletRequest rawRequest;
+  private final HttpServletRequest rawRequest;
 
   private Throwable throwable;
 
