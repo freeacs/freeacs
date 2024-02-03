@@ -120,7 +120,7 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
             // This is a quick-and-easy impl. since, there can potentially be more than
             // one CommandKey. However, I don't think this will be the case in practice. (Morten May 2012)
             // TODO: This is surely not correct - Morten Jul 2012
-            if (es.getCommandKey() != null && !"".equals(es.getCommandKey().trim())) {
+            if (es.getCommandKey() != null && !es.getCommandKey().trim().isEmpty()) {
                 sessionData.getCommandKey().setCpeKey(es.getCommandKey());
             }
         }
@@ -138,7 +138,7 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
             throws UnsupportedEncodingException {
         String unitId;
         if (deviceIdStruct.getProductClass() != null
-                && !"".equals(deviceIdStruct.getProductClass().trim())) {
+                && !deviceIdStruct.getProductClass().trim().isEmpty()) {
             unitId =
                     deviceIdStruct.getOui()
                             + "-"

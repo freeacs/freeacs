@@ -152,15 +152,15 @@ public class ReportHardwareGenerator extends ReportGenerator {
       if (group != null && unitsInGroup.get(entry.getUnitId()) == null) {
         continue;
       }
-      if (unitId == null || "".equals(unitId.trim())) {
+      if (unitId == null || unitId.trim().isEmpty()) {
         unitId = "Unknown";
       }
       String unittypeName = entry.getUnittypeName();
-      if (unittypeName == null || "".equals(unittypeName.trim())) {
+      if (unittypeName == null || unittypeName.trim().isEmpty()) {
         unittypeName = "Unknown";
       }
       String profileName = entry.getProfileName();
-      if (profileName == null || "".equals(profileName.trim())) {
+      if (profileName == null || profileName.trim().isEmpty()) {
         profileName = "Unknown";
       }
       Report<RecordHardware> report = unitReportMap.get(unitId);
@@ -168,7 +168,7 @@ public class ReportHardwareGenerator extends ReportGenerator {
         report = new Report<>(RecordHardware.class, periodType);
         unitReportMap.put(unitId, report);
       }
-      if (entry.getFacilityVersion() == null || "".equals(entry.getFacilityVersion().trim())) {
+      if (entry.getFacilityVersion() == null || entry.getFacilityVersion().trim().isEmpty()) {
         entry.setFacilityVersion("Unknown");
       }
       RecordHardware recordTmp =
@@ -231,14 +231,14 @@ public class ReportHardwareGenerator extends ReportGenerator {
         continue;
       }
       String unittypeName = entry.getUnittypeName();
-      if (unittypeName == null || "".equals(unittypeName.trim())) {
+      if (unittypeName == null || unittypeName.trim().isEmpty()) {
         unittypeName = "Unknown";
       }
       String profileName = entry.getProfileName();
-      if (profileName == null || "".equals(profileName.trim())) {
+      if (profileName == null || profileName.trim().isEmpty()) {
         profileName = "Unknown";
       }
-      if (entry.getFacilityVersion() == null || "".equals(entry.getFacilityVersion().trim())) {
+      if (entry.getFacilityVersion() == null || entry.getFacilityVersion().trim().isEmpty()) {
         entry.setFacilityVersion("Unknown");
       }
       RecordHardware recordTmp =

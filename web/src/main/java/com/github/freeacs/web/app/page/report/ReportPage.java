@@ -419,70 +419,66 @@ public class ReportPage extends AbstractWebPage {
 
     // 5.2.3
     if (toUseAsPeriodType == PeriodType.SECOND) {
-      String url = "start=" + startStr + "&end=" + endStr + "&type=" + reportType.getName();
+      StringBuilder url = new StringBuilder("start=" + startStr + "&end=" + endStr + "&type=" + reportType.getName());
       String[] aggregation = inputData.getAggregate().getStringArray();
       if (aggregation != null && aggregation.length > 0) {
         for (String aggr : aggregation) {
-          url += "&" + aggr.toLowerCase() + "=" + req.getParameter(aggr.toLowerCase());
+          url.append("&").append(aggr.toLowerCase()).append("=").append(req.getParameter(aggr.toLowerCase()));
         }
       }
-      if (!url.contains("&unittype=") && isUnittypeListSelected()) {
-        url += "&unittype=" + unittypes.getSelected().getName();
+      if (!url.toString().contains("&unittype=") && isUnittypeListSelected()) {
+        url.append("&unittype=").append(unittypes.getSelected().getName());
       }
-      if (!url.contains("&profile=") && profiles.getSelected() != null) {
-        url += "&profile=" + profiles.getSelected().getName();
+      if (!url.toString().contains("&profile=") && profiles.getSelected() != null) {
+        url.append("&profile=").append(profiles.getSelected().getName());
       }
-      if (!url.contains("&groupselect=") && groupList != null && groupList.getSelected() != null) {
-        url += "&groupselect=" + groupList.getSelected().getName();
+      if (!url.toString().contains("&groupselect=") && groupList != null && groupList.getSelected() != null) {
+        url.append("&groupselect=").append(groupList.getSelected().getName());
       }
-      if (!url.contains("&group=") && inputData.getGroup().getString() != null) {
-        url += "&group=" + inputData.getGroup().getString();
+      if (!url.toString().contains("&group=") && inputData.getGroup().getString() != null) {
+        url.append("&group=").append(inputData.getGroup().getString());
       }
-      if (!url.contains("&swversion=")
+      if (!url.toString().contains("&swversion=")
           && swVersionList != null
           && swVersionList.getSelected() != null) {
-        url += "&swversion=" + swVersionList.getSelected();
+        url.append("&swversion=").append(swVersionList.getSelected());
       }
       // 5.2.3.1
-      outputHandler.setDirectToPage(Page.UNITLIST, url);
+      outputHandler.setDirectToPage(Page.UNITLIST, url.toString());
       // 5.2.3.2
     } else { // 5.2.4
       // 5.2.4.1
-      String url = "type=" + reportType.getName() + "&start=" + startStr + "&end=" + endStr;
-      url += "&" + inputData.getPeriod().getKey() + "=" + toUseAsPeriodType.getTypeStr();
+      StringBuilder url = new StringBuilder("type=" + reportType.getName() + "&start=" + startStr + "&end=" + endStr);
+      url.append("&").append(inputData.getPeriod().getKey()).append("=").append(toUseAsPeriodType.getTypeStr());
       if (method.getSelected() != null) {
-        url += "&" + inputData.getMethod().getKey() + "=" + method.getSelected();
+        url.append("&").append(inputData.getMethod().getKey()).append("=").append(method.getSelected());
       }
       if (optionalmethod.getSelected() != null) {
-        url += "&" + inputData.getOptionalMethod().getKey() + "=" + optionalmethod.getSelected();
+        url.append("&").append(inputData.getOptionalMethod().getKey()).append("=").append(optionalmethod.getSelected());
       }
       if (inputData.getAdvancedView().getBoolean() != null) {
-        url +=
-            "&"
-                + inputData.getAdvancedView().getKey()
-                + "="
-                + inputData.getAdvancedView().getBoolean();
+        url.append("&").append(inputData.getAdvancedView().getKey()).append("=").append(inputData.getAdvancedView().getBoolean());
       }
-      if (!url.contains("&groupselect=") && groupList != null && groupList.getSelected() != null) {
-        url += "&groupselect=" + groupList.getSelected().getName();
+      if (!url.toString().contains("&groupselect=") && groupList != null && groupList.getSelected() != null) {
+        url.append("&groupselect=").append(groupList.getSelected().getName());
       }
-      if (!url.contains("&group=") && inputData.getGroup().getString() != null) {
-        url += "&group=" + inputData.getGroup().getString();
+      if (!url.toString().contains("&group=") && inputData.getGroup().getString() != null) {
+        url.append("&group=").append(inputData.getGroup().getString());
       }
-      if (!url.contains("&swversion=")
+      if (!url.toString().contains("&swversion=")
           && swVersionList != null
           && swVersionList.getSelected() != null) {
-        url += "&swversion=" + swVersionList.getSelected();
+        url.append("&swversion=").append(swVersionList.getSelected());
       }
-      url += "&" + inputData.getRealtime().getKey() + "=" + inputData.getRealtime().getBoolean();
+      url.append("&").append(inputData.getRealtime().getKey()).append("=").append(inputData.getRealtime().getBoolean());
       String[] aggregation = inputData.getAggregate().getStringArray();
       if (aggregation != null && aggregation.length > 0) {
         for (String aggr : aggregation) {
-          url += "&aggregate=" + aggr;
+          url.append("&aggregate=").append(aggr);
         }
       }
 
-      outputHandler.setDirectToPage(Page.REPORT, url);
+      outputHandler.setDirectToPage(Page.REPORT, url.toString());
     }
   }
 
@@ -854,45 +850,41 @@ public class ReportPage extends AbstractWebPage {
   private String generateClickablePointUrl(
       PeriodType periodType, String pageType, String method, String optionalmethod) {
     String messageToDisplayWhileWaiting = "Loading";
-    String url =
-        "javascript:goToUrlAndWait('"
-            + Page.REPORT.getUrl()
-            + "&type="
-            + pageType
-            + "&series=%s&item=%s%AGGREGATION%";
+    StringBuilder url =
+            new StringBuilder("javascript:goToUrlAndWait('"
+                    + Page.REPORT.getUrl()
+                    + "&type="
+                    + pageType
+                    + "&series=%s&item=%s%AGGREGATION%");
     if (method != null) {
-      url += "&method=" + method;
+      url.append("&method=").append(method);
     }
     if (inputData.getAggregate().getStringArray() != null) {
       for (String aggregation : inputData.getAggregate().getStringArray()) {
-        url += "&" + inputData.getAggregate().getKey() + "=" + aggregation;
+        url.append("&").append(inputData.getAggregate().getKey()).append("=").append(aggregation);
       }
     }
     if (periodType.isLongerThan(PeriodType.SECOND)) {
       messageToDisplayWhileWaiting += " graph ...";
-      url += "&" + inputData.getPeriod().getKey() + "=" + periodType.getTypeStr();
+      url.append("&").append(inputData.getPeriod().getKey()).append("=").append(periodType.getTypeStr());
       if (inputData.getGroupSelect().notNullNorValue("")) {
-        url +=
-            "&"
-                + inputData.getGroupSelect().getKey()
-                + "="
-                + inputData.getGroupSelect().getString();
+        url.append("&").append(inputData.getGroupSelect().getKey()).append("=").append(inputData.getGroupSelect().getString());
       }
       if (inputData.getGroup().notNullNorValue("")) {
-        url += "&" + inputData.getGroup().getKey() + "=" + inputData.getGroup().getString();
+        url.append("&").append(inputData.getGroup().getKey()).append("=").append(inputData.getGroup().getString());
       }
       if (optionalmethod != null) {
-        url += "&" + inputData.getOptionalMethod().getKey() + "=" + optionalmethod;
+        url.append("&").append(inputData.getOptionalMethod().getKey()).append("=").append(optionalmethod);
       }
       if (inputData.getAdvancedView().getBoolean() != null) {
-        url += "&" + inputData.getAdvancedView().getKey() + "=" + Boolean.TRUE;
+        url.append("&").append(inputData.getAdvancedView().getKey()).append("=").append(Boolean.TRUE);
       }
-      url += "&" + inputData.getRealtime().getKey() + "=" + inputData.getRealtime().getBoolean();
+      url.append("&").append(inputData.getRealtime().getKey()).append("=").append(inputData.getRealtime().getBoolean());
     } else {
       messageToDisplayWhileWaiting += " units ...";
     }
-    url += "','" + messageToDisplayWhileWaiting + "')";
-    return url;
+    url.append("','").append(messageToDisplayWhileWaiting).append("')");
+    return url.toString();
   }
 
   private void displayReportChartWithImageMap(

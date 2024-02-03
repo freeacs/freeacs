@@ -58,10 +58,10 @@ public class Country {
   }
 
   public String toString() {
-    String retVal = name + " " + incLowerLimit + "-" + (excUpperLimit - 1) + ":\n";
+    StringBuilder retVal = new StringBuilder(name + " " + incLowerLimit + "-" + (excUpperLimit - 1) + ":\n");
     for (City city : cities) {
-      retVal += city + "\n";
+      retVal.append(city).append("\n");
     }
-    return retVal;
+    return retVal.toString();
   }
 }

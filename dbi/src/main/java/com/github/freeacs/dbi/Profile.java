@@ -12,7 +12,7 @@ public class Profile {
   private ProfileParameters profileParameters;
 
   public Profile(String name, Unittype unittype) {
-    if (name == null || "".equals(name.trim())) {
+    if (name == null || name.trim().isEmpty()) {
       throw new IllegalArgumentException("Profile name cannot be null or an empty string");
     }
     this.name = name;

@@ -87,7 +87,7 @@ public class PropertyReader {
             String value = line.substring(line.indexOf('=') + 1);
             value = value.trim();
             if (!key.isEmpty()) {
-              keys.put(key, "".equals(value) ? null : value);
+              keys.put(key, value.isEmpty() ? null : value);
             }
           } else {
             String key = line.trim();
@@ -144,7 +144,7 @@ public class PropertyReader {
     }
     Map hm = (Map) properties.get(propertyfile);
     String prop = (String) hm.get(propertykey);
-    if (prop != null && !"".equals(prop)) {
+    if (prop != null && !prop.isEmpty()) {
       return prop;
     }
     return prop;

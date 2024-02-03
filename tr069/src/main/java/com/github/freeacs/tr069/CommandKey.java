@@ -16,7 +16,7 @@ public class CommandKey {
 
   public boolean isEqual() {
     return serverKey == null
-        || "".equals(serverKey.trim())
+        || serverKey.trim().isEmpty()
         || (cpeKey != null && cpeKey.equals(serverKey));
   }
 }

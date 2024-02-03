@@ -84,14 +84,14 @@ public class Chart<R extends Record> {
    */
   @SuppressWarnings("unchecked")
   public Set<String> getSet(String setType) {
-    String mapKey = setType + method;
+    StringBuilder mapKey = new StringBuilder(setType + method);
     for (String keyName : keyNames) {
-      mapKey += keyName;
+      mapKey.append(keyName);
     }
-    Set set = setMap.get(mapKey);
+    Set set = setMap.get(mapKey.toString());
     if (set == null) {
       set = new HashSet<>();
-      setMap.put(mapKey, set);
+      setMap.put(mapKey.toString(), set);
     }
     return set;
   }

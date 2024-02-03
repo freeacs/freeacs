@@ -135,7 +135,7 @@ public class DownloadLogicTR069 {
         }
 
         if (softwareVersionFromDB != null
-                && !"".equals(softwareVersionFromDB.trim())
+                && !softwareVersionFromDB.trim().isEmpty()
                 && !softwareVersionFromDB.equals(softwareVersionFromCPE)) {
             log.debug("Download software URL found (" + downloadURL + "), may trigger a Download");
             File file =
@@ -152,7 +152,7 @@ public class DownloadLogicTR069 {
             return true;
         } else if (job != null
                 && softwareVersionFromDB != null
-                && !"".equals(softwareVersionFromDB.trim())
+                && !softwareVersionFromDB.trim().isEmpty()
                 && softwareVersionFromDB.equals(softwareVersionFromCPE)) {
             log.warn("Software is already upgraded to " + softwareVersionFromCPE + " - will not issue an software job");
         }

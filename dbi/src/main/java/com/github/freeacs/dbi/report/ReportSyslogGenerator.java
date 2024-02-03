@@ -152,15 +152,15 @@ public class ReportSyslogGenerator extends ReportGenerator {
           continue;
         }
         entries++;
-        if (unitId == null || "".equals(unitId.trim())) {
+        if (unitId == null || unitId.trim().isEmpty()) {
           unitId = "Unknown";
         }
         String unittypeName = rs.getString("unit_type_name");
-        if (unittypeName == null || "".equals(unittypeName.trim())) {
+        if (unittypeName == null || unittypeName.trim().isEmpty()) {
           unittypeName = "Unknown";
         }
         String profileName = rs.getString("profile_name");
-        if (profileName == null || "".equals(profileName.trim())) {
+        if (profileName == null || profileName.trim().isEmpty()) {
           profileName = "Unknown";
         }
         String severity = SyslogConstants.getSeverityName(rs.getInt("severity"));
@@ -275,11 +275,11 @@ public class ReportSyslogGenerator extends ReportGenerator {
           entries++;
           Date tms = tmsFormatter.parse(rs.getString(1));
           String unittypeName = rs.getString("unit_type_name");
-          if (unittypeName == null || "".equals(unittypeName.trim())) {
+          if (unittypeName == null || unittypeName.trim().isEmpty()) {
             unittypeName = "Unknown";
           }
           String profileName = rs.getString("profile_name");
-          if (profileName == null || "".equals(profileName.trim())) {
+          if (profileName == null || profileName.trim().isEmpty()) {
             profileName = "Unknown";
           }
           String severity = SyslogConstants.getSeverityName(rs.getInt("severity"));
@@ -328,11 +328,11 @@ public class ReportSyslogGenerator extends ReportGenerator {
           entries++;
           Date tms = tmsFormatter.parse(rs.getString(1));
           String unittypeName = rs.getString("unit_type_name");
-          if (unittypeName == null || "".equals(unittypeName.trim())) {
+          if (unittypeName == null || unittypeName.trim().isEmpty()) {
             unittypeName = "Unknown";
           }
           String profileName = rs.getString("profile_name");
-          if (profileName == null || "".equals(profileName.trim())) {
+          if (profileName == null || profileName.trim().isEmpty()) {
             profileName = "Unknown";
           }
           String severity = SyslogConstants.getSeverityName(rs.getInt("severity"));

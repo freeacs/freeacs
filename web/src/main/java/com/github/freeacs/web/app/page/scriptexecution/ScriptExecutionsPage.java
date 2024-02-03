@@ -162,7 +162,7 @@ public class ScriptExecutionsPage extends AbstractWebPage {
     List<ScriptArg> scriptArgList = new ArrayList<>();
     int index = 0;
     String title = null;
-    String description = null;
+    StringBuilder description = null;
     for (String line : lines) {
       if (line.startsWith("#:Argument")) {
         String[] fieldArray = line.substring(2).split(":");
@@ -193,13 +193,13 @@ public class ScriptExecutionsPage extends AbstractWebPage {
       } else if (line.startsWith("#:Description")) {
         String[] array = line.substring(2).split(":");
         if (array.length > 1 && description == null) {
-          description = "";
+          description = new StringBuilder();
         }
-        description += array[1];
+        description.append(array[1]);
       }
     }
     script.setTitle(title);
-    script.setDescription(description);
+    script.setDescription(description.toString());
     script.setScriptArgs(scriptArgList);
     return script;
   }
@@ -261,7 +261,7 @@ public class ScriptExecutionsPage extends AbstractWebPage {
           File scriptFile = unittype.getFiles().getById(inputData.getFileId().getInteger());
           Script script = parse(scriptFile, unittype);
           int index = 1;
-          String scriptArgs = "";
+          StringBuilder scriptArgs = new StringBuilder();
           boolean typeCheckOk = true;
           do {
             String argValue = params.getParameter("argument" + index);
@@ -301,15 +301,15 @@ public class ScriptExecutionsPage extends AbstractWebPage {
             if (argValue != null && argValue.contains(" ")) {
               argValue = "\"" + argValue + "\"";
             }
-            scriptArgs += argValue + " ";
+            scriptArgs.append(argValue).append(" ");
             index++;
           } while (true);
-          if (scriptArgs.isEmpty()) {
-            scriptArgs = inputData.getArguments().getString();
+          if (scriptArgs.length() == 0) {
+            scriptArgs = new StringBuilder(inputData.getArguments().getString());
           }
           String requestId = inputData.getRequestid().getString();
           if (typeCheckOk) {
-            scriptExecutions.requestExecution(scriptFile, scriptArgs, requestId);
+            scriptExecutions.requestExecution(scriptFile, scriptArgs.toString(), requestId);
             outputHandler
                 .getServletResponse()
                 .sendRedirect(

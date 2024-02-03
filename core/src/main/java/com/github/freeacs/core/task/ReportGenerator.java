@@ -448,7 +448,7 @@ public class ReportGenerator extends DBIOwner {
       Map<String, Integer> unitReport = new HashMap<>();
       for (UnitSWLCT unitSWLCT : unitMap.values()) {
         String swVersion = unitSWLCT.getSoftwareVersion();
-        if (swVersion == null || "".equals(swVersion.trim())) {
+        if (swVersion == null || swVersion.trim().isEmpty()) {
           swVersion = "Unknown";
         }
         String status = "Inactive";
@@ -810,7 +810,7 @@ public class ReportGenerator extends DBIOwner {
       skippingReports += "HardwareSYS, VoipSYS, ";
     }
 
-    if (!"".equals(skippingReports)) {
+    if (!skippingReports.isEmpty()) {
       skippingReports = skippingReports.substring(0, skippingReports.length() - 2);
       logger.info("ReportGenerator: Skipping reports: " + skippingReports);
     }

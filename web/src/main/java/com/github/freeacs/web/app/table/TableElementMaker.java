@@ -100,24 +100,24 @@ public class TableElementMaker {
     if (g == null) {
       return null;
     }
-    String id = g.getName().replace(".", "-");
+    StringBuilder id = new StringBuilder(g.getName().replace(".", "-"));
     Group group = g;
     while ((group = group.getParent()) != null) {
-      id = group.getName().replace(".", "-") + "." + id;
+      id.insert(0, group.getName().replace(".", "-") + ".");
     }
-    return id;
+    return id.toString();
   }
 
   private String getTableTriggerId(Trigger g) {
     if (g == null) {
       return null;
     }
-    String id = g.getName().replace(".", "-");
+    StringBuilder id = new StringBuilder(g.getName().replace(".", "-"));
     Trigger group = g;
     while ((group = group.getParent()) != null) {
-      id = group.getName().replace(".", "-") + "." + id;
+      id.insert(0, group.getName().replace(".", "-") + ".");
     }
-    return id;
+    return id.toString();
   }
 
   public List<TableElement> getJobs(Unittype unittype) throws Exception {
@@ -205,12 +205,12 @@ public class TableElementMaker {
   }
 
   private String getTableJobId(Job j) {
-    String id = j.getName().replace(".", "-");
+    StringBuilder id = new StringBuilder(j.getName().replace(".", "-"));
     Job job = j;
     while ((job = job.getDependency()) != null) {
-      id = job.getName().replace(".", "-") + "." + id;
+      id.insert(0, job.getName().replace(".", "-") + ".");
     }
-    return id;
+    return id.toString();
   }
 
   public List<TableElement> getParameters(Object[]... inputs) {

@@ -86,7 +86,7 @@ public class ContextContainer {
         skipOrAppend(ce);
       }
     }
-    if (!"".equals(thisCCStr.trim()) && !"".equals(newCCStr.trim())) {
+    if (!thisCCStr.trim().isEmpty() && !newCCStr.trim().isEmpty()) {
       logger.debug("Adding two contexts: " + thisCCStr + "  +  " + newCCStr + "  =  " + this);
     }
   }

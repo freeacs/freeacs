@@ -160,12 +160,12 @@ public class DeleteOldSyslog extends DBIShare {
 
       // 2.1.
       List<SyslogEvent> eventList = new ArrayList<>();
-      String eventListStr = "";
+      StringBuilder eventListStr = new StringBuilder();
       for (SyslogEvent event : events) {
         // limit for the eventId is longer than the severity limit - add event id to list
         if (event.getDeleteLimit() != null && event.getDeleteLimit() > severityLimit) {
           eventList.add(event);
-          eventListStr += "(" + event.getEventId() + "," + event.getUnittype().getName() + "), ";
+          eventListStr.append("(").append(event.getEventId()).append(",").append(event.getUnittype().getName()).append("), ");
         }
       }
       String logMsg =
@@ -174,7 +174,7 @@ public class DeleteOldSyslog extends DBIShare {
               + " with severity level "
               + severity;
       if (eventListStr.length() > 2) {
-        eventListStr = eventListStr.substring(0, eventListStr.length() - 2);
+        eventListStr = new StringBuilder(eventListStr.substring(0, eventListStr.length() - 2));
         logMsg += ", but these eventIds (" + eventListStr + ") will not be deleted";
       }
 

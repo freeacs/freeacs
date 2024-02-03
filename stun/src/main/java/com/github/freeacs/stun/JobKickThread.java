@@ -90,7 +90,7 @@ public class JobKickThread implements Runnable {
         UnitParameter up = u.getUnitParameters().get(historyUtp.getName());
         String historyParameterValue = up.getValue();
         for (String entry : historyParameterValue.split(",")) {
-          if ("".equals(entry.trim())) {
+          if (entry.trim().isEmpty()) {
             continue;
           }
           JobHistoryEntry jhEntry = new JobHistoryEntry(entry);

@@ -201,19 +201,19 @@ public class Processor {
   }
 
   private void returnCommand(Command command) {
-    String retVal = "";
+    StringBuilder retVal = new StringBuilder();
     for (CommandAndArgument caa : command.getCommandAndArguments()) {
       if ("return".equals(caa.getStringToSubstitute())) {
         continue;
       }
-      retVal += caa.getStringToSubstitute() + " ";
+      retVal.append(caa.getStringToSubstitute()).append(" ");
     }
-    retVal = retVal.trim();
-    if (!"".equals(retVal)) {
-      CommandAndArgument caa = new CommandAndArgument(retVal);
+    retVal = new StringBuilder(retVal.toString().trim());
+    if (!retVal.toString().isEmpty()) {
+      CommandAndArgument caa = new CommandAndArgument(retVal.toString());
       Command.varArgSubst(caa, session);
-      retVal = caa.getStringToSubstitute();
-      retVal = GenericMenu.eval(retVal);
+      retVal = new StringBuilder(caa.getStringToSubstitute());
+      retVal = new StringBuilder(GenericMenu.eval(retVal.toString()));
     }
     while (!session.getScriptStack().isEmpty()) {
       Script s = session.getScriptStack().pop();
@@ -222,22 +222,22 @@ public class Processor {
         break;
       }
     }
-    session.getScript().addVariable("_return", retVal);
+    session.getScript().addVariable("_return", retVal.toString());
   }
 
   private void errorCommand(Command command) {
-    String retVal = "";
+    StringBuilder retVal = new StringBuilder();
     for (CommandAndArgument caa : command.getCommandAndArguments()) {
       if ("error".equals(caa.getStringToSubstitute())) {
         continue;
       }
-      retVal += caa.getStringToSubstitute() + " ";
+      retVal.append(caa.getStringToSubstitute()).append(" ");
     }
-    retVal = retVal.trim();
-    if (!"".equals(retVal)) {
-      CommandAndArgument caa = new CommandAndArgument(retVal);
+    retVal = new StringBuilder(retVal.toString().trim());
+    if (!retVal.toString().isEmpty()) {
+      CommandAndArgument caa = new CommandAndArgument(retVal.toString());
       Command.varArgSubst(caa, session);
-      retVal = caa.getStringToSubstitute();
+      retVal = new StringBuilder(caa.getStringToSubstitute());
     }
     while (!session.getScriptStack().isEmpty()) {
       Script s = session.getScriptStack().pop();
@@ -246,7 +246,7 @@ public class Processor {
         break;
       }
     }
-    throw new IllegalArgumentException(retVal);
+    throw new IllegalArgumentException(retVal.toString());
   }
 
   /**
@@ -391,7 +391,7 @@ public class Processor {
       for (int i = 0; i < inputPipeDividedArr.length; i++) {
         session.resetCounter();
         String commandStr = inputPipeDividedArr[i];
-        if (commandStr == null || commandStr.isEmpty() || "".equals(commandStr)) {
+        if (commandStr == null || commandStr.isEmpty() || commandStr.isEmpty()) {
           continue;
         }
         Command command = new Command(commandStr, session.getContext());

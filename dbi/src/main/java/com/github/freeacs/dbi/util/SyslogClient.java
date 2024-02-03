@@ -127,7 +127,7 @@ public class SyslogClient {
     if (facilityVersion != null) {
       tmp += "FCV:" + facilityVersion + " ";
     }
-    if (!"".equals(tmp)) {
+    if (!tmp.isEmpty()) {
       content = tmp + content;
     }
     return makeMessage(severity, date, ipAddress, unitId, content, facility);

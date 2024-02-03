@@ -47,7 +47,7 @@ public class InputHandler {
     if (br != null) {
       String fileLine = br.readLine();
       if (fileLine != null) {
-        if ("".equals(fileLine.trim()) || fileLine.startsWith("#")) {
+        if (fileLine.trim().isEmpty() || fileLine.startsWith("#")) {
           return read();
         }
         return StringUtil.split(fileLine);

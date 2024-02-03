@@ -35,21 +35,21 @@ public class Report<R extends Record> {
   }
 
   public String toString() {
-    String s = "Contains  " + map.size() + " records:\n";
+    StringBuilder s = new StringBuilder("Contains  " + map.size() + " records:\n");
     for (Record r : map.values()) {
-      s += "\t" + r + "\n";
+      s.append("\t").append(r).append("\n");
     }
-    return s;
+    return s.toString();
   }
 
   public Map<Key, R> getMapAggregatedOn(String... keyNames) {
-    String logMsg = "Will aggregate report with " + map.size() + " records on keyNames: ";
+    StringBuilder logMsg = new StringBuilder("Will aggregate report with " + map.size() + " records on keyNames: ");
     for (String keyName : keyNames) {
-      logMsg += keyName + ", ";
+      logMsg.append(keyName).append(", ");
     }
-    logMsg = logMsg.substring(0, logMsg.length() - 2);
+    logMsg = new StringBuilder(logMsg.substring(0, logMsg.length() - 2));
 
-    logger.info(logMsg);
+    logger.info(logMsg.toString());
     Map<Key, R> aggregatedMap = new TreeMap<>();
     for (Entry<Key, R> entry : map.entrySet()) {
       Key key = entry.getKey();

@@ -41,10 +41,10 @@ public class Row {
   }
 
   public String toString() {
-    String retStr = "";
+    StringBuilder retStr = new StringBuilder();
     for (Data data : dataArray) {
-      retStr += data.getValue() + " ";
+      retStr.append(data.getValue()).append(" ");
     }
-    return retStr;
+    return retStr.toString();
   }
 }

@@ -35,7 +35,7 @@ public class ParameterKey {
     UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
     Map<String, ParameterValueStruct> fromDB = sessionData.getFromDB();
     String jobId = sessionData.getAcsParameters().getValue(SystemParameters.JOB_CURRENT);
-    if (jobId != null && !"".equals(jobId.trim())) {
+    if (jobId != null && !jobId.trim().isEmpty()) {
       Job job = sessionData.getUnittype().getJobs().getById(Integer.valueOf(jobId));
       if (job != null) {
         log.debug("Current job has jobId: "
@@ -72,7 +72,7 @@ public class ParameterKey {
       }
     }
     String values = valuesBuilder.toString();
-    if ("".equals(values)) {
+    if (values.isEmpty()) {
       log.debug("No device parameter values found, ACS parameterkey = \"No data in DB\"");
       return "No data in DB";
     } else {

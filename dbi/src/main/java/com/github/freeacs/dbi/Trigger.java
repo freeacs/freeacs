@@ -205,7 +205,7 @@ public class Trigger {
   }
 
   public void setName(String name) {
-    if (name == null || "".equals(name.trim())) {
+    if (name == null || name.trim().isEmpty()) {
       throw new IllegalArgumentException("Trigger name cannot be null or an empty string");
     }
     if (!name.equals(this.name)) {

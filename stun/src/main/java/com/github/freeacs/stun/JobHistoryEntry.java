@@ -14,10 +14,10 @@ public class JobHistoryEntry {
     Matcher m = jobHistoryPattern.matcher(entry.trim());
     if (m.matches()) {
       jobId = Integer.parseInt(m.group(1));
-      if (m.group(3) != null && !"".equals(m.group(3).trim())) {
+      if (m.group(3) != null && !m.group(3).trim().isEmpty()) {
         repeatedCount = Integer.parseInt(m.group(3));
       }
-      if (m.group(4) != null && !"".equals(m.group(4).trim())) {
+      if (m.group(4) != null && !m.group(4).trim().isEmpty()) {
         lastRunTms = Long.parseLong(m.group(4));
       }
     }

@@ -603,22 +603,22 @@ public class UnitPage extends AbstractWebPage {
     if (guiurlOrg != null) {
       root.put("natdetected", isNatDetected(unit));
       Matcher m = paramPattern.matcher(guiurlOrg);
-      String guiurlMod = "";
+      StringBuilder guiurlMod = new StringBuilder();
       int previousEnd = 0;
       while (m.find()) {
         String varName = m.group(2);
-        guiurlMod += guiurlOrg.substring(previousEnd, m.start());
+        guiurlMod.append(guiurlOrg.substring(previousEnd, m.start()));
         if (unit.getParameterValue(varName) != null) {
-          guiurlMod += unit.getParameterValue(varName);
+          guiurlMod.append(unit.getParameterValue(varName));
         } else {
-          guiurlMod += "${PARAM-VALUE-NOT-FOUND}";
+          guiurlMod.append("${PARAM-VALUE-NOT-FOUND}");
         }
         previousEnd = m.end();
       }
       if (previousEnd < guiurlOrg.length()) {
-        guiurlMod += guiurlOrg.substring(previousEnd);
+        guiurlMod.append(guiurlOrg.substring(previousEnd));
       }
-      root.put("guiurl", guiurlMod);
+      root.put("guiurl", guiurlMod.toString());
     }
   }
 

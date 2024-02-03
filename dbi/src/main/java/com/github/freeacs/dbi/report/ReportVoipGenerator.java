@@ -161,7 +161,7 @@ public class ReportVoipGenerator extends ReportGenerator {
       if (m.matches()) {
         channel = m.group(1);
       }
-      if (entry.getFacilityVersion() == null || "".equals(entry.getFacilityVersion().trim())) {
+      if (entry.getFacilityVersion() == null || entry.getFacilityVersion().trim().isEmpty()) {
         entry.setFacilityVersion("Unknown");
       }
       RecordVoip recordTmp =
@@ -232,7 +232,7 @@ public class ReportVoipGenerator extends ReportGenerator {
       if (m.matches()) {
         channel = m.group(1);
       }
-      if (entry.getFacilityVersion() == null || "".equals(entry.getFacilityVersion().trim())) {
+      if (entry.getFacilityVersion() == null || entry.getFacilityVersion().trim().isEmpty()) {
         entry.setFacilityVersion("Unknown");
       }
       RecordVoip recordTmp =

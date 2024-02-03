@@ -17,7 +17,7 @@ public class Line {
   private String processValue(String value) {
     if (value != null) {
       value = value.replaceAll("\"", "");
-      if ("".equals(value)
+      if (value.isEmpty()
           || value.indexOf(' ') > -1
           || value.indexOf('\t') > -1
           || value.indexOf('|') > -1) {

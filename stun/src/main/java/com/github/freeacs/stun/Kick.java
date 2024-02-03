@@ -81,13 +81,13 @@ public class Kick {
             "Neither a public ConnectionRequestURL nor any UDPConnectionRequestAddress was found");
 
     // TCP-kick (HTTP)
-    if (crUrl != null && !"".equals(crUrl.trim()) && checkIfPublicIP(crUrl, properties)) {
+    if (crUrl != null && !crUrl.trim().isEmpty() && checkIfPublicIP(crUrl, properties)) {
       log.debug(unit.getId() + ": will try TCP kick on " + crUrl);
       return kickUsingTCP(unit, crUrl, crPass, crUser);
     }
 
     // UDP-kick
-    if (!kr.isKicked() && udpCrUrl != null && !"".equals(udpCrUrl.trim())) {
+    if (!kr.isKicked() && udpCrUrl != null && !udpCrUrl.trim().isEmpty()) {
       log.debug(unit.getId() + ": will try UDP kick on " + udpCrUrl);
       return kickUsingUDP(unit, udpCrUrl, crPass, crUser);
     }

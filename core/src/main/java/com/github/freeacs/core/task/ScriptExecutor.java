@@ -69,21 +69,21 @@ public class ScriptExecutor extends DBIShare {
         List<Throwable> throwables = acsShellDaemon.getAndResetThrowables();
         acsShellDaemon.setIdle(true);
         boolean exitStatus = false;
-        String errorMsg = null;
+        StringBuilder errorMsg = null;
         if (!throwables.isEmpty()) {
           exitStatus = true;
-          errorMsg = "";
+          errorMsg = new StringBuilder();
           for (Throwable t : throwables) {
-            errorMsg += t.getMessage() + "\n";
+            errorMsg.append(t.getMessage()).append("\n");
             daemonLogger.error("ScriptExecutor: Error  in Script execution : ", t);
           }
           if (errorMsg.length() > 1024) {
-            errorMsg = errorMsg.substring(0, 1020) + "...";
+            errorMsg = new StringBuilder(errorMsg.substring(0, 1020) + "...");
           }
         }
         se.setEndTms(new Date());
         if (errorMsg != null) {
-          se.setErrorMessage(errorMsg.trim());
+          se.setErrorMessage(errorMsg.toString().trim());
         }
         if (exitStatus) {
           daemonLogger.debug(

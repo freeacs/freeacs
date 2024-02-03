@@ -104,12 +104,12 @@ public class HistoryElement {
   }
 
   public String toString() {
-    String events = "";
+    StringBuilder events = new StringBuilder();
     for (EventCode event : eventCodes) {
-      events += event + ",";
+      events.append(event).append(",");
     }
     System.out.println(events);
-    events = events.substring(0, events.length() - 1);
+    events = new StringBuilder(events.substring(0, events.length() - 1));
     return "EventCode: "
         + events
         + ", ParamsWritten: "

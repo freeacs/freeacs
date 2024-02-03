@@ -113,7 +113,7 @@ public class EmptyDecisionStrategy implements DecisionStrategy {
                 && ifmp.getCpeParams().get(ifmp.UDP_CONNECTION_URL).getValue() != null) {
             String udpUrl = ifmp.getCpeParams().get(ifmp.UDP_CONNECTION_URL).getValue();
             if (udpUrl != null
-                    && !"".equals(udpUrl.trim())
+                    && !udpUrl.trim().isEmpty()
                     && !udpUrl.equals(sessionData.getUnit().getParameterValue(ifmp.UDP_CONNECTION_URL))) {
                 toDB.add(ifmp.getCpeParams().get(ifmp.UDP_CONNECTION_URL));
             }

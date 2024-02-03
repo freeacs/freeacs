@@ -75,31 +75,31 @@ public class UnitJob {
 
     String jh1 = unit.getParameters().get(SystemParameters.JOB_HISTORY);
     long tms = System.currentTimeMillis();
-    if (jh1 == null || "".equals(jh1.trim())) {
+    if (jh1 == null || jh1.trim().isEmpty()) {
       return makeUnitParameter(SystemParameters.JOB_HISTORY, "," + jobId + ":0:" + tms + ",");
     }
 
-    String jh2 = ","; // + jobId + ",";
+    StringBuilder jh2 = new StringBuilder(","); // + jobId + ",";
     boolean found = false;
     for (String entry : jh1.split(",")) {
-      if ("".equals(entry.trim())) {
+      if (entry.trim().isEmpty()) {
         continue;
       }
       JobHistoryEntry jhEntry = new JobHistoryEntry(entry);
       Job entryJob = sessionData.getUnittype().getJobs().getById(Integer.valueOf(String.valueOf(jhEntry.getJobId())));
       if (entryJob != null) {
         if (Objects.equals(entryJob.getId(), jobId)) { // inc repeated-counter
-          jh2 += jhEntry.incEntry(tms) + ",";
+          jh2.append(jhEntry.incEntry(tms)).append(",");
           found = true;
         } else {
-          jh2 += entry + ",";
+          jh2.append(entry).append(",");
         }
       }
     }
     if (!found) {
-      jh2 = "," + jobId + ":0:" + tms + jh2;
+      jh2.insert(0, "," + jobId + ":0:" + tms);
     }
-    jobHistoryUp.getParameter().setValue(jh2);
+    jobHistoryUp.getParameter().setValue(jh2.toString());
     return jobHistoryUp;
   }
 

@@ -49,7 +49,7 @@ public class SetParameterValuesResponseCreateStrategy implements ResponseCreateS
                     sb.append("\t\t\t\t\t<Value xsi:type=\"").append(pvs.getType()).append("\">");
                     if (pvs.getType() != null
                             && pvs.getType().contains("int")
-                            && (pvs.getValue() == null || "".equals(pvs.getValue().trim()))) {
+                            && (pvs.getValue() == null || pvs.getValue().trim().isEmpty())) {
                         sb.append("0");
                     } else {
                         sb.append(pvs.getValue());

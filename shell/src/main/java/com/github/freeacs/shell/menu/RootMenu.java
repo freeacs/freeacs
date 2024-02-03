@@ -280,7 +280,7 @@ public class RootMenu {
     if ("NULL".equals(accessStr)) {
       accessStr = "";
     }
-    if (accessStr != null && !"".equals(accessStr.trim())) {
+    if (accessStr != null && !accessStr.trim().isEmpty()) {
       if (username.equalsIgnoreCase(Users.USER_ADMIN)) {
         accessStr = Users.ACCESS_ADMIN;
       } else {
@@ -300,16 +300,16 @@ public class RootMenu {
         accessStr = accessStr.replace("software", "full-provisioning");
         accessStr = accessStr.replace("syslog", "support");
         String[] accessArr = accessStr.split(",");
-        String newAccess = "";
+        StringBuilder newAccess = new StringBuilder();
         for (String a : accessArr) {
           String access = a.trim();
           if (!webPages.contains(access) && !a.equals(Users.ACCESS_ADMIN)) {
             throw new IllegalArgumentException("The access " + a + " is not valid");
           }
-          newAccess += access + ",";
+          newAccess.append(access).append(",");
         }
-        if (newAccess.endsWith(",")) {
-          newAccess = newAccess.substring(0, newAccess.length() - 1);
+        if (newAccess.toString().endsWith(",")) {
+          newAccess = new StringBuilder(newAccess.substring(0, newAccess.length() - 1));
         }
         accessStr = "WEB[" + newAccess + "]";
       }

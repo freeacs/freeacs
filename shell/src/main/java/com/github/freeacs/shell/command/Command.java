@@ -150,21 +150,20 @@ public class Command {
     String orgStr = inputFilename;
     Matcher m = varPattern.matcher(orgStr);
     Session session = context.getSession();
-    String modStr = "";
+    StringBuilder modStr = new StringBuilder();
     int previousEnd = 0;
     while (m.find()) {
       String varName = m.group(2);
-      modStr += orgStr.substring(previousEnd, m.start());
+      modStr.append(orgStr.substring(previousEnd, m.start()));
       if (session.getScript().getVariable(varName) != null) {
-        modStr +=
-            varArgSubstParam(session.getScript().getVariable(varName).getValue(), session, true);
+        modStr.append(varArgSubstParam(session.getScript().getVariable(varName).getValue(), session, true));
       }
       previousEnd = m.end();
     }
     if (previousEnd < orgStr.length()) {
-      modStr += orgStr.substring(previousEnd);
+      modStr.append(orgStr.substring(previousEnd));
     }
-    return modStr;
+    return modStr.toString();
   }
 
   public String getOutputFilename() {
@@ -175,21 +174,20 @@ public class Command {
     String orgStr = outputFilename;
     Matcher m = varPattern.matcher(orgStr);
     Session session = context.getSession();
-    String modStr = "";
+    StringBuilder modStr = new StringBuilder();
     int previousEnd = 0;
     while (m.find()) {
       String varName = m.group(2);
-      modStr += orgStr.substring(previousEnd, m.start());
+      modStr.append(orgStr.substring(previousEnd, m.start()));
       if (session.getScript().getVariable(varName) != null) {
-        modStr +=
-            varArgSubstParam(session.getScript().getVariable(varName).getValue(), session, true);
+        modStr.append(varArgSubstParam(session.getScript().getVariable(varName).getValue(), session, true));
       }
       previousEnd = m.end();
     }
     if (previousEnd < orgStr.length()) {
-      modStr += orgStr.substring(previousEnd);
+      modStr.append(orgStr.substring(previousEnd));
     }
-    return modStr;
+    return modStr.toString();
   }
 
   public String toString() {
@@ -317,53 +315,52 @@ public class Command {
   public static void varArgSubst(Substitute subst, Session session) {
     String orgStr = subst.getStringToSubstitute();
     Matcher m = varPattern.matcher(orgStr);
-    String modStr = "";
+    StringBuilder modStr = new StringBuilder();
     int previousEnd = 0;
     while (m.find()) {
       String varName = m.group(2);
-      modStr += orgStr.substring(previousEnd, m.start());
+      modStr.append(orgStr.substring(previousEnd, m.start()));
       if (session.getScript().getVariable(varName) != null) { // Variable exists
         // Check if variable value is to be used directly - or interpreted as a parameter
-        modStr +=
-            varArgSubstParam(session.getScript().getVariable(varName).getValue(), session, true);
+        modStr.append(varArgSubstParam(session.getScript().getVariable(varName).getValue(), session, true));
       } else if (varName.startsWith("_")) { // Special variable name is used
         if (varName.length() > 1) {
           String type = varName.substring(1);
           if (ContextElement.types.contains(type)) {
             if (type.equals(ContextElement.TYPE_UNITTYPE)
                 && session.getContext().getUnittype() != null) {
-              modStr += session.getContext().getUnittype().getName();
+              modStr.append(session.getContext().getUnittype().getName());
             } else if (type.equals(ContextElement.TYPE_UNITTYPE_PARAMS)
                 && session.getContext().getUnittypeParameter() != null) {
-              modStr += session.getContext().getUnittypeParameter().getName();
+              modStr.append(session.getContext().getUnittypeParameter().getName());
             } else if (type.equals(ContextElement.TYPE_PROFILE)
                 && session.getContext().getProfile() != null) {
-              modStr += session.getContext().getProfile().getName();
+              modStr.append(session.getContext().getProfile().getName());
             } else if (type.equals(ContextElement.TYPE_GROUP)
                 && session.getContext().getGroup() != null) {
-              modStr += session.getContext().getGroup().getName();
+              modStr.append(session.getContext().getGroup().getName());
             } else if (type.equals(ContextElement.TYPE_JOB)
                 && session.getContext().getJob() != null) {
-              modStr += session.getContext().getJob().getName();
+              modStr.append(session.getContext().getJob().getName());
             } else if (type.equals(ContextElement.TYPE_UNIT)
                 && session.getContext().getUnit() != null) {
-              modStr += session.getContext().getUnit().getId();
+              modStr.append(session.getContext().getUnit().getId());
             }
           } else {
-            modStr += varArgSubstParam(varName, session, false);
+            modStr.append(varArgSubstParam(varName, session, false));
           }
         } else {
           throw new IllegalArgumentException("The variable name '_' is not allowed");
         }
       } else { // Check if variable name can be interpreted as a parameter
-        modStr += varArgSubstParam(varName, session, false);
+        modStr.append(varArgSubstParam(varName, session, false));
       }
       previousEnd = m.end();
     }
     if (previousEnd < orgStr.length()) {
-      modStr += orgStr.substring(previousEnd);
+      modStr.append(orgStr.substring(previousEnd));
     }
-    subst.setSubstitutedString(modStr);
+    subst.setSubstitutedString(modStr.toString());
   }
 
   public void processFileArgs(String[] fileArgs) {
@@ -448,27 +445,27 @@ public class Command {
   private static boolean fileArgSubst(Substitute subst, String[] fileArgs) {
     String orgStr = subst.getStringToSubstitute();
     Matcher m = fileArgPattern.matcher(orgStr);
-    String modStr = "";
+    StringBuilder modStr = new StringBuilder();
     int previousEnd = 0;
     boolean changed = false;
     while (m.find()) {
       int fileArgIndex = Integer.parseInt(m.group(2));
-      modStr += orgStr.substring(previousEnd, m.start());
+      modStr.append(orgStr.substring(previousEnd, m.start()));
       if (fileArgIndex <= 0 || fileArgIndex > fileArgs.length) {
         throw new IllegalArgumentException(
             "The file argument index "
                 + fileArgIndex
                 + " does not match any column in the file input");
       } else {
-        modStr += fileArgs[fileArgIndex - 1];
+        modStr.append(fileArgs[fileArgIndex - 1]);
       }
       previousEnd = m.end();
       changed = true;
     }
     if (previousEnd < orgStr.length()) {
-      modStr += orgStr.substring(previousEnd);
+      modStr.append(orgStr.substring(previousEnd));
     }
-    subst.setSubstitutedString(modStr);
+    subst.setSubstitutedString(modStr.toString());
     return changed;
   }
 }

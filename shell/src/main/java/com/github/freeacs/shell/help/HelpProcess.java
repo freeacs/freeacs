@@ -27,7 +27,7 @@ public class HelpProcess {
       } else if (command.startsWith(helpArg)) {
         hitCount++;
         commandChosen = command;
-        if ("".equals(ambigiousCommands)) {
+        if (ambigiousCommands.isEmpty()) {
           ambigiousCommands = command;
         } else {
           ambigiousCommands += ", " + command;

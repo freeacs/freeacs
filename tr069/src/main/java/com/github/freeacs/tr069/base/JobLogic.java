@@ -364,7 +364,7 @@ public class JobLogic {
     if (jobHistoryUp != null) {
       String[] jobHistoryArr = jobHistoryUp.getValue().split(",");
       for (String str : jobHistoryArr) {
-        if ("".equals(str.trim())) {
+        if (str.trim().isEmpty()) {
           continue;
         }
         try {

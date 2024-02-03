@@ -33,16 +33,16 @@ public class UnittypeParameterFlag {
               + flag
               + ")");
     }
-    String modifiedFlag = ""; // strip away duplicate flags
+    StringBuilder modifiedFlag = new StringBuilder(); // strip away duplicate flags
     for (int i = 0; i < flag.length(); i++) {
       if ("I".equals(flag.substring(i, i + 1))) {
         continue;
       } // silently drops all Inspection flags - to be backward compatible
-      if (!modifiedFlag.contains(flag.substring(i, i + 1))) {
-        modifiedFlag += flag.substring(i, i + 1);
+      if (!modifiedFlag.toString().contains(flag.substring(i, i + 1))) {
+        modifiedFlag.append(flag.substring(i, i + 1));
       }
     }
-    flag = modifiedFlag;
+    flag = modifiedFlag.toString();
     if (flag.indexOf('R') > -1 || flag.indexOf('X') > -1) {
       this.flag = flag;
     } else {

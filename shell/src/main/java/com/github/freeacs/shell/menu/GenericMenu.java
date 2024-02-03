@@ -275,16 +275,16 @@ public class GenericMenu {
     }
 
     if (WHILE.equals(command)) {
-      String whileArg = "";
+      StringBuilder whileArg = new StringBuilder();
       for (int i = 1; i < args.length; i++) {
-        whileArg += args[i] + " ";
+        whileArg.append(args[i]).append(" ");
       }
-      whileArg = whileArg.trim();
+      whileArg = new StringBuilder(whileArg.toString().trim());
 
       boolean eval = true;
       if (session.getContext().getUnittype() != null) {
         com.github.freeacs.dbi.File fusionFile =
-            session.getContext().getUnittype().getFiles().getByName(whileArg);
+            session.getContext().getUnittype().getFiles().getByName(whileArg.toString());
         if (fusionFile != null && whileScript.getWhileInput() == null) {
           whileScript.setWhileInput(
               new BufferedReader(
@@ -292,9 +292,9 @@ public class GenericMenu {
         }
       }
       if (whileScript.getWhileInput() == null
-          && FileUtil.exists(whileArg)
-          && FileUtil.allowed("while", new File(whileArg))) {
-        whileScript.setWhileInput(new BufferedReader(new FileReader(whileArg)));
+          && FileUtil.exists(whileArg.toString())
+          && FileUtil.allowed("while", new File(whileArg.toString()))) {
+        whileScript.setWhileInput(new BufferedReader(new FileReader(whileArg.toString())));
       }
       if (whileScript.getWhileInput() != null) { // did find a Fusion-file or an OS-file
         // remove file-variables from last iteration
@@ -318,7 +318,7 @@ public class GenericMenu {
           }
         }
       } else {
-        eval = evalBoolean(whileArg);
+        eval = evalBoolean(whileArg.toString());
       }
       if (!eval) {
         BufferedReader br = session.getScript().getWhileInput();

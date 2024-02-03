@@ -61,7 +61,7 @@ public abstract class DBIActions {
     public static void writeUnittypeProfileUnit(SessionData sessionData, String unittypeName, String unitId, DBI dbi)
             throws TR069Exception {
         // If no product class is specified in the inform:
-        if (unittypeName == null || "".equals(unittypeName.trim())) {
+        if (unittypeName == null || unittypeName.trim().isEmpty()) {
             unittypeName = getUnittypeName(unitId);
         }
         try {

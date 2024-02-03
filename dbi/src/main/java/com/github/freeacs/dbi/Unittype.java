@@ -61,7 +61,7 @@ public class Unittype implements Comparable<Unittype> {
   private ACS acs;
 
   public Unittype(String name, String vendor, String desc, ProvisioningProtocol protocol) {
-    if (name == null || "".equals(name.trim())) {
+    if (name == null || name.trim().isEmpty()) {
       throw new IllegalArgumentException("Unittype name cannot be null or an empty string");
     }
     this.name = name;

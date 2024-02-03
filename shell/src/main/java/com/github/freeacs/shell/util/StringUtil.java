@@ -76,30 +76,30 @@ public class StringUtil {
     Matcher m = pattern.matcher(s);
     int pos = 0;
     List<String> commands = new ArrayList<>();
-    String command = "";
+    StringBuilder command = new StringBuilder();
     while (m.find(pos)) {
       String group1 = m.group(2);
       String group2 = m.group(3);
       if (group1 != null) {
         //				System.out.println("G1-with quotes   : " + group1);
-        command += "\"" + group1 + "\" ";
+        command.append("\"").append(group1).append("\" ");
       } else if (group2 != null) {
         //				System.out.println("G2-without quotes: " + group2);
         // May contain |
         int pipePos = group2.indexOf('|');
         while (pipePos > -1) {
           String untilPipeStr = group2.substring(0, pipePos);
-          command += untilPipeStr + " ";
-          commands.add(command.trim());
-          command = "";
+          command.append(untilPipeStr).append(" ");
+          commands.add(command.toString().trim());
+          command = new StringBuilder();
           group2 = group2.substring(pipePos + 1); // make group2 shorter
           pipePos = group2.indexOf('|');
         }
-        command += group2 + " ";
+        command.append(group2).append(" ");
       }
       pos = m.end();
     }
-    commands.add(command.trim());
+    commands.add(command.toString().trim());
     String[] strArray = new String[commands.size()];
     commands.toArray(strArray);
     return strArray;

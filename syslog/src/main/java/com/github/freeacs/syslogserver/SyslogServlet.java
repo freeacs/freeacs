@@ -79,7 +79,7 @@ public class SyslogServlet {
       }
       status.append("\n");
     }
-    if ("".equals(status.toString())) {
+    if (status.toString().isEmpty()) {
       status = new StringBuilder("FREEACSOK");
     }
     return status.toString();

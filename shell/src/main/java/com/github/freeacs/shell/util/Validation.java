@@ -12,12 +12,12 @@ public class Validation {
             "No arguments supplied, expected at least " + (argsExpected - 1));
       }
       if (args.length > 1) {
-        String supplied = "";
+        StringBuilder supplied = new StringBuilder();
         for (int i = 1; i < args.length; i++) {
           if (args[i].contains(" ")) {
-            supplied += "\"" + args[i] + "\" ";
+            supplied.append("\"").append(args[i]).append("\" ");
           } else {
-            supplied += args[i] + " ";
+            supplied.append(args[i]).append(" ");
           }
         }
         throw new IllegalArgumentException(

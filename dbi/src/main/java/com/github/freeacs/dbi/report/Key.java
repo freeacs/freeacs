@@ -120,7 +120,7 @@ public class Key implements Comparable<Key> {
       }
     }
     String s = sb.toString();
-    if ("".equals(s)) {
+    if (s.isEmpty()) {
       return "Total (" + method + ")";
     } else {
       s = s.substring(0, s.length() - 1);
@@ -151,7 +151,7 @@ public class Key implements Comparable<Key> {
       }
     }
     String s = sb.toString();
-    if ("".equals(s)) {
+    if (s.isEmpty()) {
       return "Total";
     } else {
       s = s.substring(0, s.length() - 1);
