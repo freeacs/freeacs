@@ -15,16 +15,12 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ScheduledKickTask extends TaskDefaultImpl {
+  @Setter
+  @Getter
   public static class UnitKick {
-    @Setter
-    @Getter
     private Unit unit;
     private final long initiatedTms;
-    @Setter
-    @Getter
     private int kickCount;
-    @Setter
-    @Getter
     private long nextTms;
 
     public UnitKick(Unit u) {
