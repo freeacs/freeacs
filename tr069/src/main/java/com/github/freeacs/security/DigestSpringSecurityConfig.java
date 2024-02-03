@@ -19,7 +19,6 @@ import org.springframework.security.web.authentication.www.DigestAuthenticationE
 import org.springframework.security.web.authentication.www.DigestAuthenticationFilter;
 import org.springframework.security.web.savedrequest.NullRequestCache;
 
-import static org.springframework.security.config.http.SessionCreationPolicy.ALWAYS;
 import static org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED;
 
 @Slf4j

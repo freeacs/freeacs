@@ -5,8 +5,6 @@ import com.github.freeacs.tr069.xml.Parser;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.InputStream;
-
 @Getter
 @Setter
 public class HTTPRequestData {

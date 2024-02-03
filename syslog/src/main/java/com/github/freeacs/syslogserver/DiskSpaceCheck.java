@@ -23,7 +23,7 @@ public class DiskSpaceCheck extends TaskDefaultImpl {
 
   @Override
   public void runImpl() throws Throwable {
-    freeSpace = FileUtils.sizeOfDirectory(new File(".").getAbsolutePath());
+    freeSpace = FileUtils.sizeOfDirectory(new File("."));
     if (freeSpace < getMinFreeDiskSpace()) {
       logger.error("Server will pause, since free disk space is " + freeSpace / 1024 + " MB.");
       SyslogServer.pause(true);

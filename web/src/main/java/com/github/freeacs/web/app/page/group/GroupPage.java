@@ -31,7 +31,7 @@ import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
 import freemarker.template.SimpleScalar;
-import freemarker.template.TemplateMethodModel;
+import com.github.freeacs.common.freemarker.AbstractTemplateMethodModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import java.sql.SQLException;
@@ -51,10 +51,7 @@ public class GroupPage extends AbstractWebPage {
   /** The xaps. */
   private ACS acs;
 
-  /** The xaps unit. */
-  private ACSUnit acsUnit;
-
-  /** The input data. */
+    /** The input data. */
   private GroupData inputData;
 
   /** The session id. */
@@ -69,22 +66,11 @@ public class GroupPage extends AbstractWebPage {
   /** The parents. */
   private DropDownSingleSelect<Group> parents;
 
-  /**
-   * (non-Javadoc)
-   *
-   * @see com.owera.xaps.web.app.page.AbstractWebPage#getTitle(java.lang.String)
-   */
   public String getTitle(String page) {
     return super.getTitle(page)
         + (groups.getSelected() != null ? " | " + groups.getSelected().getName() : "");
   }
 
-  /**
-   * (non-Javadoc)
-   *
-   * @see com.owera.xaps.web.app.page.AbstractWebPage#getShortcutItems(com.owera
-   *     .xaps.web.app.util.SessionData)
-   */
   public List<MenuItem> getShortcutItems(SessionData sessionData) {
     List<MenuItem> list = new ArrayList<>(super.getShortcutItems(sessionData));
     list.add(new MenuItem("Group overview", Page.GROUPSOVERVIEW));
@@ -124,13 +110,13 @@ public class GroupPage extends AbstractWebPage {
    * @param req the req
    * @throws Exception the exception
    */
-  @SuppressWarnings("rawtypes")
+  
   private void actionCUDParameters(ParameterParser req) throws Exception {
     GroupParameters gParams = groups.getSelected().getGroupParameters();
 
-    Enumeration requestParameters = req.getHttpServletRequest().getParameterNames();
+    Enumeration<String> requestParameters = req.getHttpServletRequest().getParameterNames();
     while (requestParameters.hasMoreElements()) {
-      String key = (String) requestParameters.nextElement();
+      String key = requestParameters.nextElement();
 
       // Parameter keys are prefixed with either create::, delete:: or
       // update::
@@ -321,7 +307,8 @@ public class GroupPage extends AbstractWebPage {
       return;
     }
 
-    acsUnit = ACSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
+      /** The xaps unit. */
+      ACSUnit acsUnit = ACSLoader.getACSUnit(sessionId, xapsDataSource, syslogDataSource);
 
     InputDataIntegrity.loadAndStoreSession(
         params, outputHandler, inputData, inputData.getUnittype(), inputData.getGroup());
@@ -531,13 +518,12 @@ public class GroupPage extends AbstractWebPage {
   }
 
   /** The Class FindProfileMethod. */
-  public class FindProfileMethod implements TemplateMethodModel {
+  public class FindProfileMethod implements AbstractTemplateMethodModel {
     /**
      * (non-Javadoc)
      *
-     * @see freemarker.template.TemplateMethodModel#exec(java.util.List)
+     * @see freemarker.template.TemplateMethodModelEx#exec(java.util.List)
      */
-    @SuppressWarnings("rawtypes")
     public TemplateModel exec(List arg0) throws TemplateModelException {
       if (arg0.isEmpty()) {
         throw new TemplateModelException("Specify job name");

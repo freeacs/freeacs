@@ -5,12 +5,15 @@
 package com.github.freeacs.web.app.page.job;
 
 import com.github.freeacs.dbi.JobStatus;
-import freemarker.template.TemplateMethodModel;
+import com.github.freeacs.common.freemarker.AbstractTemplateMethodModel;
 import freemarker.template.TemplateModelException;
 import java.util.Arrays;
 import java.util.List;
+
+import lombok.Getter;
 import org.apache.commons.lang3.ArrayUtils;
 
+@Getter
 public class JobStatusMethods {
   private final GetNextAvailableStatusCodesMethod allowedStatusVerificator =
       new GetNextAvailableStatusCodesMethod();
@@ -21,27 +24,7 @@ public class JobStatusMethods {
   private final ConvertStatusToAcronymMethod statusToAcronymConverter =
       new ConvertStatusToAcronymMethod();
 
-  public TemplateMethodModel getNextAvailableStatusCodesMethod() {
-    return allowedStatusVerificator;
-  }
-
-  public TemplateMethodModel getIsStatusFinishedMethod() {
-    return statusFinishedVerificator;
-  }
-
-  public TemplateMethodModel getIsStatusReadyMethod() {
-    return statusReadyVerificator;
-  }
-
-  public TemplateMethodModel getStatusFromAcronymMethod() {
-    return statusFromAcronymConverter;
-  }
-
-  public TemplateMethodModel getStatusToAcronymMethod() {
-    return statusToAcronymConverter;
-  }
-
-  private static final class GetNextAvailableStatusCodesMethod implements TemplateMethodModel {
+  private static final class GetNextAvailableStatusCodesMethod implements AbstractTemplateMethodModel {
     public List<?> exec(List args) throws TemplateModelException {
       if (args.size() != 1) {
         throw new TemplateModelException("No status in argument list");
@@ -64,7 +47,7 @@ public class JobStatusMethods {
     }
   }
 
-  private static final class IsStatusFinishedMethod implements TemplateMethodModel {
+  private static final class IsStatusFinishedMethod implements AbstractTemplateMethodModel {
     public Boolean exec(List args) throws TemplateModelException {
       if (args.size() != 1) {
         throw new TemplateModelException("No job status in argument list");
@@ -73,7 +56,7 @@ public class JobStatusMethods {
     }
   }
 
-  private static final class IsStatusReadyMethod implements TemplateMethodModel {
+  private static final class IsStatusReadyMethod implements AbstractTemplateMethodModel {
     public Boolean exec(List args) throws TemplateModelException {
       if (args.size() != 1) {
         throw new TemplateModelException("No job status in argument list");
@@ -82,7 +65,7 @@ public class JobStatusMethods {
     }
   }
 
-  private static final class ConvertStatusToAcronymMethod implements TemplateMethodModel {
+  private static final class ConvertStatusToAcronymMethod implements AbstractTemplateMethodModel {
     public String exec(List args) throws TemplateModelException {
       if (args.size() != 1) {
         throw new TemplateModelException("No job status in argument list");
@@ -104,7 +87,7 @@ public class JobStatusMethods {
     }
   }
 
-  private static final class GetStatusFromAcronymMethod implements TemplateMethodModel {
+  private static final class GetStatusFromAcronymMethod implements AbstractTemplateMethodModel {
     public String exec(List args) throws TemplateModelException {
       if (args.size() != 1) {
         throw new TemplateModelException("No acronym supplied in argument list");

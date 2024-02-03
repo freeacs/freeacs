@@ -18,7 +18,7 @@ import com.github.freeacs.web.app.util.ACSLoader;
 import com.github.freeacs.web.app.util.SessionData;
 import com.github.freeacs.web.app.util.WebConstants;
 import freemarker.template.SimpleScalar;
-import freemarker.template.TemplateMethodModel;
+import com.github.freeacs.common.freemarker.AbstractTemplateMethodModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import java.util.ArrayList;
@@ -54,8 +54,8 @@ public class GroupsPage extends AbstractWebPage {
   }
 
   /** The Class GroupProfileMethod. */
-  public class GroupProfileMethod implements TemplateMethodModel {
-    @SuppressWarnings("rawtypes")
+  public class GroupProfileMethod implements AbstractTemplateMethodModel {
+    
     public TemplateModel exec(List arg0) throws TemplateModelException {
       String groupName = (String) arg0.get(0);
 
