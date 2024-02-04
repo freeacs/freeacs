@@ -8,6 +8,7 @@ public class AutoCommitResettingConnectionWrapper implements AutoCloseable {
     private final boolean originalAutoCommit;
 
     public AutoCommitResettingConnectionWrapper(Connection connection, boolean autoCommit) throws SQLException {
+        if (connection == null) throw new IllegalArgumentException("Connection cannot be null");
         this.connection = connection;
         this.originalAutoCommit = connection.getAutoCommit();
         connection.setAutoCommit(autoCommit);

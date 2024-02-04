@@ -8,6 +8,7 @@ public class StatementWithTimeoutWrapper implements AutoCloseable {
     private final Statement statement;
 
     public StatementWithTimeoutWrapper(Connection connection, int queryTimeout) throws SQLException {
+        if (connection == null) throw new IllegalArgumentException("Connection cannot be null");
         this.statement = connection.createStatement();
         this.statement.setQueryTimeout(queryTimeout);
     }
