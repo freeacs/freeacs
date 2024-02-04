@@ -7,6 +7,7 @@ import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
 import java.net.URISyntaxException;
+import java.util.Optional;
 
 @Configuration
 public class DataSourceConfig {
@@ -14,8 +15,7 @@ public class DataSourceConfig {
     @Bean
     public DataSource getDataSource(Environment env) throws URISyntaxException {
         return DatabaseConfig.builder()
-                .databaseUrl(env.getProperty("DATABASE_URL"))
-                .jdbcUrl(env.getProperty("main.datasource.jdbcUrl"))
+                .jdbcUrl(Optional.ofNullable(env.getProperty("DATABASE_URL")).orElse(env.getProperty("main.datasource.jdbcUrl")))
                 .driverClassName(env.getProperty("main.datasource.driverClassName"))
                 .username(env.getProperty("main.datasource.username"))
                 .password(env.getProperty("main.datasource.password"))
