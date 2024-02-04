@@ -25,6 +25,7 @@ class DatabaseConfigTest {
         assertEquals(1, hikariConfig.getMinimumIdle());
         assertEquals(10, hikariConfig.getMaximumPoolSize());
         assertEquals("SELECT 1", hikariConfig.getConnectionTestQuery());
+        assertEquals("HikariCP", hikariConfig.getPoolName());
     }
 
     @Test
@@ -41,6 +42,7 @@ class DatabaseConfigTest {
         assertEquals(1, hikariConfig.getMinimumIdle());
         assertEquals(10, hikariConfig.getMaximumPoolSize());
         assertEquals("SELECT 1", hikariConfig.getConnectionTestQuery());
+        assertEquals("HikariCP", hikariConfig.getPoolName());
     }
 
     @Test
