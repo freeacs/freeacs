@@ -1,9 +1,14 @@
 package com.github.freeacs.common.sql;
 
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+@Slf4j
+@Getter
 public class StatementWithTimeoutWrapper implements AutoCloseable {
     private final Statement statement;
 
@@ -13,12 +18,12 @@ public class StatementWithTimeoutWrapper implements AutoCloseable {
         this.statement.setQueryTimeout(queryTimeout);
     }
 
-    public Statement getStatement() {
-        return statement;
-    }
-
     @Override
     public void close() throws SQLException {
-        statement.close();
+        try {
+            statement.close();
+        } catch (SQLException e) {
+            log.error("Failed to close statement", e);
+        }
     }
 }

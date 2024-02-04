@@ -1,8 +1,13 @@
 package com.github.freeacs.common.sql;
 
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 
+@Slf4j
+@Getter
 public class AutoCommitResettingConnectionWrapper implements AutoCloseable {
     private final Connection connection;
     private final boolean originalAutoCommit;
@@ -14,14 +19,12 @@ public class AutoCommitResettingConnectionWrapper implements AutoCloseable {
         connection.setAutoCommit(autoCommit);
     }
 
-    public Connection getConnection() {
-        return connection;
-    }
-
     @Override
     public void close() throws SQLException {
         try {
             connection.setAutoCommit(originalAutoCommit);
+        } catch (SQLException e) {
+            log.error("Failed to reset auto commit", e);
         } finally {
             connection.close();
         }
