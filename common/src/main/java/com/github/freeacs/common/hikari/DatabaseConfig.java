@@ -21,13 +21,7 @@ public record DatabaseConfig(
         Integer minimumIdle,
         Integer maximumPoolSize,
         String connectionTestQuery,
-        String poolName,
-        // statement settings
-        Integer prepStmtCacheSize,
-        Integer prepStmtCacheSqlLimit,
-        boolean cachePrepStmts,
-        boolean useServerPrepStmts,
-        boolean autoCommit) {
+        String poolName) {
     public DataSource getDataSource() throws URISyntaxException {
         if (databaseUrl != null) {
             HikariConfig hikariConfig = getDatabaseUrlBasedConfig();
@@ -90,22 +84,16 @@ public record DatabaseConfig(
     }
 
     private void configureDataSource(HikariConfig hikariConfig) {
-        hikariConfig.setMinimumIdle(
-                Optional.ofNullable(minimumIdle).orElse(1));
-        hikariConfig.setMaximumPoolSize(
-                Optional.ofNullable(maximumPoolSize).orElse(10));
-        hikariConfig.setConnectionTestQuery(
-                Optional.ofNullable(connectionTestQuery).orElse("SELECT 1"));
-        hikariConfig.setPoolName(
-                Optional.ofNullable(poolName).orElse("HikariCP"));
+        hikariConfig.setMinimumIdle(Optional.ofNullable(minimumIdle).orElse(1));
+        hikariConfig.setMaximumPoolSize(Optional.ofNullable(maximumPoolSize).orElse(10));
+        hikariConfig.setConnectionTestQuery(Optional.ofNullable(connectionTestQuery).orElse("SELECT 1"));
+        hikariConfig.setPoolName(Optional.ofNullable(poolName).orElse("FreeACS"));
 
-        hikariConfig.addDataSourceProperty("dataSource.cachePrepStmts", cachePrepStmts);
-        hikariConfig.addDataSourceProperty("dataSource.prepStmtCacheSize",
-                Optional.ofNullable(prepStmtCacheSize).map(Object::toString).orElse("250"));
-        hikariConfig.addDataSourceProperty("dataSource.prepStmtCacheSqlLimit",
-                Optional.ofNullable(prepStmtCacheSqlLimit).map(Object::toString).orElse("2048"));
-        hikariConfig.addDataSourceProperty("dataSource.useServerPrepStmts", useServerPrepStmts);
+        hikariConfig.addDataSourceProperty("dataSource.cachePrepStmts", "true");
+        hikariConfig.addDataSourceProperty("dataSource.prepStmtCacheSize","250");
+        hikariConfig.addDataSourceProperty("dataSource.prepStmtCacheSqlLimit","2048");
+        hikariConfig.addDataSourceProperty("dataSource.useServerPrepStmts", "true");
 
-        hikariConfig.setAutoCommit(autoCommit);
+        hikariConfig.setAutoCommit(true);
     }
 }
