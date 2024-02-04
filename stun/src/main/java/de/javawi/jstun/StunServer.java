@@ -49,6 +49,8 @@ import org.slf4j.LoggerFactory;
  * simply that the server will check with MessageStack to see if any STUN client should be notified.
  */
 public class StunServer {
+  // is this correct? it was previously 127.0.0.1, but I changed it to this
+  public static final String LOOP_BACK_IP_ADDRESS = "0.0.0.0";
   private static boolean started;
   private static final Logger logger = LoggerFactory.getLogger(StunServer.class);
   private final List<DatagramSocket> sockets;
@@ -370,17 +372,17 @@ public class StunServer {
     sockets = new Vector<>();
     sockets.add(new DatagramSocket(primaryPort, primary));
     sockets.add(new DatagramSocket(secondaryPort, primary));
-    if (!"0.0.0.0".equals(primary.getHostAddress())
-        || !"0.0.0.0".equals(secondary.getHostAddress())) {
+    if (!LOOP_BACK_IP_ADDRESS.equals(primary.getHostAddress())
+        || !LOOP_BACK_IP_ADDRESS.equals(secondary.getHostAddress())) {
       sockets.add(new DatagramSocket(primaryPort, secondary));
       sockets.add(new DatagramSocket(secondaryPort, secondary));
     } else {
       logger.info(
-          "Not adding sockets for secondary interface 0.0.0.0, since primary interface is also 0.0.0.0");
+          "Not adding sockets for secondary interface " + LOOP_BACK_IP_ADDRESS + ", since primary interface is also " + LOOP_BACK_IP_ADDRESS);
     }
-    if ("0.0.0.0".equals(secondary.getHostAddress())) {
+    if (LOOP_BACK_IP_ADDRESS.equals(secondary.getHostAddress())) {
       logger.info(
-          "STUN Server has started, secondary interface uses to 0.0.0.0 - not optimal for full STUN functionality");
+          "STUN Server has started, secondary interface uses to " + LOOP_BACK_IP_ADDRESS + " - not optimal for full STUN functionality");
     } else {
       logger.info("STUN Server has started, all interfaces are operational");
     }
