@@ -21,6 +21,10 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.github.freeacs</groupId>
       <artifactId>dbi</artifactId>
       <version>${project.version}</version>
