@@ -12,8 +12,9 @@ FreeACS is a somewhat complete TR-069 ACS available for free under the MIT Licen
 
 FreeACS requires Java 17 and MySQL. It has been tested to work on Java 17, 18 and 19 and latest version of MySQL (the latter with some minor quirk in the install script).
 
-## Social
+## Discussion
 
+* Discussion: https://github.com/freeacs/freeacs/discussions
 * [Freeforums] (deprecated)
 
 ## Build it
