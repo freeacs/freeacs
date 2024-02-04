@@ -32,8 +32,8 @@ public record DatabaseConfig(
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setDriverClassName(driverClassName);
         hikariConfig.setJdbcUrl(jdbcUrl);
-        hikariConfig.setUsername(username);
-        hikariConfig.setPassword(password);
+        hikariConfig.setUsername(Optional.ofNullable(username).orElse("acs"));
+        hikariConfig.setPassword(Optional.ofNullable(password).orElse("acs"));
 
         configureDataSource(hikariConfig);
 
@@ -46,8 +46,8 @@ public record DatabaseConfig(
         String[] userInfoParts = Optional.ofNullable(dbUri.getUserInfo())
                 .map(ui -> ui.split(":"))
                 .orElse(new String[0]);
-        String username = userInfoParts.length > 0 ? userInfoParts[0] : "";
-        String password = userInfoParts.length > 1 ? userInfoParts[1] : "";
+        String username = userInfoParts.length > 0 ? userInfoParts[0] : "acs";
+        String password = userInfoParts.length > 1 ? userInfoParts[1] : "acs";
 
         String dbType = dbUri.getScheme().split(":")[0];
         String dbUrl = constructJdbcUrl(dbType, dbUri);
