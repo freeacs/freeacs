@@ -26,29 +26,33 @@ public record DatabaseConfig(
         Boolean autoCommit) {
 
     public DataSource getDataSource() throws URISyntaxException {
+        HikariConfig hikariConfig = getHikariConfig();
+        return new HikariDataSource(hikariConfig);
+    }
+
+    HikariConfig getHikariConfig() throws URISyntaxException {
         String finalJdbcUrl = jdbcUrl;
         String finalUsername = username;
         String finalPassword = password;
         String finalDriverClassName = driverClassName;
 
-        if (!jdbcUrl.startsWith("jdbc")) {
+        if (jdbcUrl != null && !jdbcUrl.startsWith("jdbc")) {
             URI dbUri = new URI(jdbcUrl);
             finalUsername = dbUri.getUserInfo().split(":")[0];
             finalPassword = dbUri.getUserInfo().split(":")[1];
             String dbType = dbUri.getScheme().split(":")[0];
-            finalJdbcUrl = constructJdbcUrl(dbType, dbUri);
+            finalJdbcUrl = constructJdbcUrl(dbType, dbUri) + Optional.ofNullable(dbUri.getQuery()).map(q -> "?" + q).orElse("");
             finalDriverClassName = determineDriverClassName(dbType);
         }
 
         HikariConfig hikariConfig = new HikariConfig();
-        hikariConfig.setDriverClassName(Optional.ofNullable(finalDriverClassName).orElseThrow(() -> new IllegalArgumentException("Driver class name is required")));
         hikariConfig.setJdbcUrl(Optional.ofNullable(finalJdbcUrl).orElseThrow(() -> new IllegalArgumentException("JDBC URL is required")));
+        hikariConfig.setDriverClassName(Optional.ofNullable(finalDriverClassName).orElseThrow(() -> new IllegalArgumentException("Driver class name is required")));
         hikariConfig.setUsername(finalUsername);
         hikariConfig.setPassword(finalPassword);
 
         configureDataSource(hikariConfig);
-
-        return new HikariDataSource(hikariConfig);
+        return hikariConfig;
     }
 
     private String constructJdbcUrl(String dbType, URI dbUri) {
