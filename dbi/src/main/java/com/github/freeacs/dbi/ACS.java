@@ -84,8 +84,8 @@ public class ACS {
    * permission or profile permissions for a unittype, remove unittype 2. If no unittype permission,
    * but profile permission exists, remove some objects from unittype and return profile
    *
-   * @return
-   * @throws SQLException
+   * @return the Unittypes object
+   * @throws SQLException if something goes wrong
    */
   public Unittypes read() throws SQLException {
     unittypes = readAsAdmin();
@@ -259,18 +259,15 @@ public class ACS {
   }
 
   private void readUnittypeParameterValues(Unittypes unittypes) throws SQLException {
-    Statement s = null;
-    ResultSet rs = null;
-    String sql;
-    try(Connection connection = getDataSource().getConnection()) {
-      sql = "SELECT utp.unit_type_id, utpv.unit_type_param_id, value, priority, type ";
-      sql += "FROM unit_type_param_value utpv, unit_type_param utp ";
-      sql += "WHERE utpv.unit_type_param_id = utp.unit_type_param_id ";
-      sql += "ORDER BY utp.unit_type_id ASC, utpv.unit_type_param_id, utpv.priority ASC";
-      connection.setAutoCommit(false);
-      s = connection.createStatement();
-      s.setQueryTimeout(60);
-      rs = s.executeQuery(sql);
+    final var sql = """
+        SELECT utp.unit_type_id, utpv.unit_type_param_id, value, priority, type
+        FROM unit_type_param_value utpv, unit_type_param utp
+        WHERE utpv.unit_type_param_id = utp.unit_type_param_id
+        ORDER BY utp.unit_type_id ASC, utpv.unit_type_param_id, utpv.priority ASC
+    """;
+    try(Connection connection = getDataSource().getConnection();
+        Statement s = connection.createStatement();
+        ResultSet rs = s.executeQuery(sql)) {
       UnittypeParameterValues values = null;
       Integer lastUnittypeParameterId = null;
       int counter = 0;
@@ -295,13 +292,6 @@ public class ACS {
       }
       if (logger.isDebugEnabled()) {
         logger.debug("Read " + counter + " unittype parameter values");
-      }
-    } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (s != null) {
-        s.close();
       }
     }
   }
