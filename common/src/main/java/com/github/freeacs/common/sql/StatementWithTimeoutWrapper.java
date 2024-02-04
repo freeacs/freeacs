@@ -3,7 +3,6 @@ package com.github.freeacs.common.sql;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -12,12 +11,12 @@ import java.sql.Statement;
 public class StatementWithTimeoutWrapper implements AutoCloseable {
     private final Statement statement;
 
-    public StatementWithTimeoutWrapper(Connection connection, int queryTimeout)
+    public StatementWithTimeoutWrapper(AutoCommitResettingConnectionWrapper connectionWrapper, int queryTimeout)
             throws SQLException, IllegalArgumentException {
-        if (connection == null) {
-            throw new IllegalArgumentException("Connection cannot be null");
+        if (connectionWrapper == null) {
+            throw new IllegalArgumentException("Connection wrapper cannot be null");
         }
-        this.statement = connection.createStatement();
+        this.statement = connectionWrapper.getConnection().createStatement();
         this.statement.setQueryTimeout(queryTimeout);
     }
 

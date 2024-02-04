@@ -116,118 +116,86 @@ public class ACS {
   }
 
   private Unittypes readAsAdmin() throws SQLException {
-    boolean wasAutoCommit = false;
-    Connection connection = null;
-    try {
-      connection = getDataSource().getConnection();
-      wasAutoCommit = connection.getAutoCommit();
-      connection.setAutoCommit(false);
-      Unittypes tmpUnittypes = readUnittypes();
-      readFilestore(tmpUnittypes);
-      readUnittypeParameters(tmpUnittypes);
-      readUnittypeParameterValues(tmpUnittypes);
-      readProfiles(tmpUnittypes);
-      readGroups(tmpUnittypes);
-      if (ACSVersionCheck.heartbeatSupported) {
-        readHeartbeats(tmpUnittypes);
-      }
-      readSyslogEvents(tmpUnittypes);
-      readProfileParameters(tmpUnittypes);
-      readGroupParameters(tmpUnittypes);
-      readJobs(tmpUnittypes);
-      if (ACSVersionCheck.triggerSupported) {
-        readTriggers(tmpUnittypes);
-      }
-      return tmpUnittypes;
-    } finally {
-      if (connection != null) {
-        connection.setAutoCommit(wasAutoCommit);
-        connection.close();
-      }
+    Unittypes tmpUnittypes = readUnittypes();
+    readFilestore(tmpUnittypes);
+    readUnittypeParameters(tmpUnittypes);
+    readUnittypeParameterValues(tmpUnittypes);
+    readProfiles(tmpUnittypes);
+    readGroups(tmpUnittypes);
+    if (ACSVersionCheck.heartbeatSupported) {
+      readHeartbeats(tmpUnittypes);
     }
+    readSyslogEvents(tmpUnittypes);
+    readProfileParameters(tmpUnittypes);
+    readGroupParameters(tmpUnittypes);
+    readJobs(tmpUnittypes);
+    if (ACSVersionCheck.triggerSupported) {
+      readTriggers(tmpUnittypes);
+    }
+    return tmpUnittypes;
   }
 
   private void readGroupParameters(Unittypes unittypes) throws SQLException {
-    Statement s = null;
-    ResultSet rs = null;
-    String sql;
-    boolean wasAutoCommit = false;
-    Connection connection = null;
-    try {
-      sql = "SELECT ut.unit_type_name, ";
-      sql += "gp.id, ";
-      sql += "gp.group_id, gp.unit_type_param_id, ";
-      sql += "gp.operator, gp.data_type, ";
-      sql += "gp.value ";
-      sql += " FROM group_param gp, unit_type_param utp, unit_type ut ";
-      sql +=
-          " WHERE gp.unit_type_param_id = utp.unit_type_param_id AND utp.unit_type_id = ut.unit_type_id ORDER BY ut.unit_type_name ASC";
-      connection = getDataSource().getConnection();
-      wasAutoCommit = connection.getAutoCommit();
-      connection.setAutoCommit(false);
-      s = connection.createStatement();
-      s.setQueryTimeout(60);
-      rs = s.executeQuery(sql);
+    String sql = """
+      SELECT ut.unit_type_name,
+      gp.id,
+      gp.group_id, gp.unit_type_param_id,
+      gp.operator, gp.data_type,
+      gp.value
+      FROM group_param gp, unit_type_param utp, unit_type ut
+      WHERE gp.unit_type_param_id = utp.unit_type_param_id AND utp.unit_type_id = ut.unit_type_id ORDER BY ut.unit_type_name ASC
+    """;
+    try(AutoCommitResettingConnectionWrapper connectionWrapper =
+                new AutoCommitResettingConnectionWrapper(getDataSource().getConnection(), false);
+        StatementWithTimeoutWrapper statementWrapper =
+                new StatementWithTimeoutWrapper(connectionWrapper, 60);
+        ResultSet resultSet = statementWrapper.getStatement().executeQuery(sql)) {
       int counter = 0;
-      while (rs.next()) {
+      while (resultSet.next()) {
         counter++;
-        Unittype unittype = unittypes.getByName(rs.getString("unit_type_name"));
-        Group group = unittype.getGroups().getById(rs.getInt("group_id"));
-        Integer unittypeParamId = rs.getInt("gp.unit_type_param_id");
+        Unittype unittype = unittypes.getByName(resultSet.getString("unit_type_name"));
+        Group group = unittype.getGroups().getById(resultSet.getInt("group_id"));
+        Integer unittypeParamId = resultSet.getInt("gp.unit_type_param_id");
         UnittypeParameter utp =
             group.getUnittype().getUnittypeParameters().getById(unittypeParamId);
-        String value = rs.getString("gp.value");
-        Parameter.Operator op = Parameter.Operator.getOperator(rs.getString("operator"));
+        String value = resultSet.getString("gp.value");
+        Parameter.Operator op = Parameter.Operator.getOperator(resultSet.getString("operator"));
         Parameter.ParameterDataType pdt =
-            Parameter.ParameterDataType.getDataType(rs.getString("data_type"));
+            Parameter.ParameterDataType.getDataType(resultSet.getString("data_type"));
         Parameter parameter = new Parameter(utp, value, op, pdt);
         GroupParameter groupParameter = new GroupParameter(parameter, group);
-        groupParameter.setId(rs.getInt("gp.id"));
+        groupParameter.setId(resultSet.getInt("gp.id"));
         GroupParameters groupParams = group.getGroupParameters();
         groupParams.addOrChangeGroupParameter(groupParameter);
       }
       if (logger.isDebugEnabled()) {
         logger.debug("Read " + counter + " group parameters");
       }
-    } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (s != null) {
-        s.close();
-      }
-      if (connection != null) {
-        connection.setAutoCommit(wasAutoCommit);
-        connection.close();
-      }
     }
   }
 
   private void readProfileParameters(Unittypes unittypes) throws SQLException {
-    Statement s = null;
-    ResultSet rs = null;
-    String sql;
-    boolean wasAutoCommit = false;
-    Connection connection = null;
-    try {
+    String sql = """
+      SELECT utp.unit_type_id, pm.profile_id, pm.unit_type_param_id, pm.value 
+      FROM profile_param pm, unit_type_param utp 
+      WHERE pm.unit_type_param_id = utp.unit_type_param_id 
+      ORDER BY utp.unit_type_id ASC, pm.profile_id ASC
+    """;
+    try(AutoCommitResettingConnectionWrapper connectionWrapper =
+                new AutoCommitResettingConnectionWrapper(getDataSource().getConnection(), false);
+        StatementWithTimeoutWrapper statementWrapper =
+                new StatementWithTimeoutWrapper(connectionWrapper, 60);
+        ResultSet resultSet = statementWrapper.getStatement().executeQuery(sql)) {
       Map<String, ProfileParameter> nameMap = null;
       Map<Integer, ProfileParameter> idMap = null;
       Profile lastProfile = null;
-      sql =
-          "SELECT utp.unit_type_id, pm.profile_id, pm.unit_type_param_id, pm.value FROM profile_param pm, unit_type_param utp WHERE pm.unit_type_param_id = utp.unit_type_param_id ORDER BY utp.unit_type_id ASC, pm.profile_id ASC";
-      connection = getDataSource().getConnection();
-      wasAutoCommit = connection.getAutoCommit();
-      connection.setAutoCommit(false);
-      s = connection.createStatement();
-      s.setQueryTimeout(60);
-      rs = s.executeQuery(sql);
       int counter = 0;
-      while (rs.next()) {
+      while (resultSet.next()) {
         counter++;
-        Unittype unittype = unittypes.getById(rs.getInt("unit_type_id"));
-        Profile profile = unittype.getProfiles().getById(rs.getInt("profile_id"));
-        Integer unittypeParamId = rs.getInt("unit_type_param_id");
-        String value = rs.getString("value");
+        Unittype unittype = unittypes.getById(resultSet.getInt("unit_type_id"));
+        Profile profile = unittype.getProfiles().getById(resultSet.getInt("profile_id"));
+        Integer unittypeParamId = resultSet.getInt("unit_type_param_id");
+        String value = resultSet.getString("value");
         if (value == null) {
           value = "";
         }
@@ -246,17 +214,6 @@ public class ACS {
       if (logger.isDebugEnabled()) {
         logger.debug("Read " + counter + " profile parameters");
       }
-    } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (s != null) {
-        s.close();
-      }
-      if (connection != null) {
-        connection.setAutoCommit(wasAutoCommit);
-        connection.close();
-      }
     }
   }
 
@@ -270,7 +227,7 @@ public class ACS {
     try(AutoCommitResettingConnectionWrapper connectionWrapper =
                 new AutoCommitResettingConnectionWrapper(getDataSource().getConnection(), false);
         StatementWithTimeoutWrapper statementWrapper =
-                new StatementWithTimeoutWrapper(connectionWrapper.getConnection(), 60);
+                new StatementWithTimeoutWrapper(connectionWrapper, 60);
         ResultSet resultSet = statementWrapper.getStatement().executeQuery(sql)) {
       UnittypeParameterValues values = null;
       Integer lastUnittypeParameterId = null;
@@ -301,31 +258,26 @@ public class ACS {
   }
 
   private void readUnittypeParameters(Unittypes unittypes) throws SQLException {
-    Statement s = null;
-    ResultSet rs = null;
-    String sql;
-    boolean wasAutoCommit = false;
-    Connection connection = null;
-    try {
+    String sql = """
+      SELECT unit_type_id, unit_type_param_id, name, flags
+      FROM unit_type_param ORDER BY unit_type_id ASC
+    """;
+    try(AutoCommitResettingConnectionWrapper connectionWrapper =
+                new AutoCommitResettingConnectionWrapper(getDataSource().getConnection(), false);
+        StatementWithTimeoutWrapper statementWrapper =
+                new StatementWithTimeoutWrapper(connectionWrapper, 60);
+        ResultSet resultSet = statementWrapper.getStatement().executeQuery(sql)) {
       Map<Integer, UnittypeParameter> idMap = null;
       Map<String, UnittypeParameter> nameMap = null;
       Unittype lastUnittype = null;
-      sql =
-          "SELECT unit_type_id, unit_type_param_id, name, flags FROM unit_type_param ORDER BY unit_type_id ASC";
-      connection = getDataSource().getConnection();
-      wasAutoCommit = connection.getAutoCommit();
-      connection.setAutoCommit(false);
-      s = connection.createStatement();
-      s.setQueryTimeout(60);
-      rs = s.executeQuery(sql);
       int counter = 0;
-      while (rs.next()) {
+      while (resultSet.next()) {
         counter++;
-        Unittype unittype = unittypes.getById(rs.getInt("unit_type_id"));
-        Integer unittypeParamId = rs.getInt("unit_type_param_id");
-        String name = rs.getString("name");
+        Unittype unittype = unittypes.getById(resultSet.getInt("unit_type_id"));
+        Integer unittypeParamId = resultSet.getInt("unit_type_param_id");
+        String name = resultSet.getString("name");
         UnittypeParameterFlag unittypeParameterFlag =
-            new UnittypeParameterFlag(rs.getString("flags"), true);
+            new UnittypeParameterFlag(resultSet.getString("flags"), true);
         UnittypeParameter unittypeParameter =
             new UnittypeParameter(unittype, name, unittypeParameterFlag);
         unittypeParameter.setId(unittypeParamId);
@@ -342,17 +294,6 @@ public class ACS {
       if (logger.isDebugEnabled()) {
         logger.debug("Read " + counter + " unittype params");
       }
-    } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (s != null) {
-        s.close();
-      }
-      if (connection != null) {
-        connection.setAutoCommit(wasAutoCommit);
-        connection.close();
-      }
     }
   }
 
@@ -360,63 +301,54 @@ public class ACS {
    * SyslogEvent differ from the other read-operations because not all syslog-event has a
    * unittype-id.
    *
-   * @return
-   * @throws SQLException
+   * @throws SQLException if something goes wrong
    */
   private void readSyslogEvents(Unittypes unittypes) throws SQLException {
-    Statement s = null;
-    ResultSet rs = null;
-    String sql;
-    boolean wasAutoCommit = false;
-    Connection connection = null;
-    try {
+    String sql = ACSVersionCheck.syslogEventReworkSupported
+            ? "SELECT * FROM syslog_event ORDER BY unit_type_id ASC"
+            : "SELECT * FROM syslog_event ORDER BY unit_type_name ASC";
+    try(AutoCommitResettingConnectionWrapper connectionWrapper =
+                new AutoCommitResettingConnectionWrapper(getDataSource().getConnection(), false);
+        StatementWithTimeoutWrapper statementWrapper =
+                new StatementWithTimeoutWrapper(connectionWrapper, 60);
+        ResultSet resultSet = statementWrapper.getStatement().executeQuery(sql)) {
       TreeMap<Integer, SyslogEvent> syslogIdMap = null;
       Unittype lastUnittype = null;
-      if (ACSVersionCheck.syslogEventReworkSupported) {
-        sql = "SELECT * FROM syslog_event ORDER BY unit_type_id ASC";
-      } else {
-        sql = "SELECT * FROM syslog_event ORDER BY unit_type_name ASC";
-      }
-      connection = getDataSource().getConnection();
-      wasAutoCommit = connection.getAutoCommit();
-      connection.setAutoCommit(false);
-      s = connection.createStatement();
-      s.setQueryTimeout(60);
-      rs = s.executeQuery(sql);
+
       int counter = 0;
-      while (rs.next()) {
+      while (resultSet.next()) {
         counter++;
         Unittype unittype;
         if (ACSVersionCheck.syslogEventReworkSupported) {
-          unittype = unittypes.getById(rs.getInt("unit_type_id"));
+          unittype = unittypes.getById(resultSet.getInt("unit_type_id"));
         } else {
-          unittype = unittypes.getByName(rs.getString("unit_type_name"));
+          unittype = unittypes.getByName(resultSet.getString("unit_type_name"));
         }
 
         SyslogEvent syslogEvent = new SyslogEvent();
         syslogEvent.validateInput(false);
         syslogEvent.setUnittype(unittype);
-        syslogEvent.setId(rs.getInt("id"));
-        syslogEvent.setEventId(rs.getInt("syslog_event_id"));
-        syslogEvent.setName(rs.getString("syslog_event_name"));
-        syslogEvent.setExpression(rs.getString("expression"));
-        syslogEvent.setDescription(rs.getString("description"));
-        String deleteLimitStr = rs.getString("delete_limit");
+        syslogEvent.setId(resultSet.getInt("id"));
+        syslogEvent.setEventId(resultSet.getInt("syslog_event_id"));
+        syslogEvent.setName(resultSet.getString("syslog_event_name"));
+        syslogEvent.setExpression(resultSet.getString("expression"));
+        syslogEvent.setDescription(resultSet.getString("description"));
+        String deleteLimitStr = resultSet.getString("delete_limit");
         if (deleteLimitStr != null) {
           syslogEvent.setDeleteLimit(Integer.valueOf(deleteLimitStr));
         }
         if (ACSVersionCheck.syslogEventReworkSupported) {
-          String groupId = rs.getString("group_id");
+          String groupId = resultSet.getString("group_id");
           if (groupId != null) {
             syslogEvent.setGroup(unittype.getGroups().getById(Integer.valueOf(groupId)));
           }
-          syslogEvent.setStorePolicy(SyslogEvent.StorePolicy.valueOf(rs.getString("store_policy")));
-          String filestoreId = rs.getString("filestore_id");
+          syslogEvent.setStorePolicy(SyslogEvent.StorePolicy.valueOf(resultSet.getString("store_policy")));
+          String filestoreId = resultSet.getString("filestore_id");
           if (filestoreId != null) {
             syslogEvent.setScript(unittype.getFiles().getById(Integer.valueOf(filestoreId)));
           }
         } else {
-          String taskStr = rs.getString("task");
+          String taskStr = resultSet.getString("task");
           if (taskStr.startsWith("DUCT") || taskStr.startsWith("DCT")) {
             syslogEvent.setStorePolicy(SyslogEvent.StorePolicy.DUPLICATE);
           } else if (taskStr.startsWith("DISCARD")) {
@@ -445,17 +377,6 @@ public class ACS {
       }
       if (logger.isDebugEnabled()) {
         logger.debug("Read " + counter + " syslog events");
-      }
-    } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (s != null) {
-        s.close();
-      }
-      if (connection != null) {
-        connection.setAutoCommit(wasAutoCommit);
-        connection.close();
       }
     }
   }
