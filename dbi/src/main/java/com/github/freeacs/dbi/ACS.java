@@ -1,5 +1,7 @@
 package com.github.freeacs.dbi;
 
+import com.github.freeacs.common.sql.AutoCommitResettingConnectionWrapper;
+import com.github.freeacs.common.sql.StatementWithTimeoutWrapper;
 import com.github.freeacs.common.util.NumberComparator;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.util.ACSVersionCheck;
@@ -265,24 +267,26 @@ public class ACS {
         WHERE utpv.unit_type_param_id = utp.unit_type_param_id
         ORDER BY utp.unit_type_id ASC, utpv.unit_type_param_id, utpv.priority ASC
     """;
-    try(Connection connection = getDataSource().getConnection();
-        Statement s = connection.createStatement();
-        ResultSet rs = s.executeQuery(sql)) {
+    try(AutoCommitResettingConnectionWrapper connectionWrapper =
+                new AutoCommitResettingConnectionWrapper(getDataSource().getConnection(), false);
+        StatementWithTimeoutWrapper statementWrapper =
+                new StatementWithTimeoutWrapper(connectionWrapper.getConnection(), 60);
+        ResultSet resultSet = statementWrapper.getStatement().executeQuery(sql)) {
       UnittypeParameterValues values = null;
       Integer lastUnittypeParameterId = null;
       int counter = 0;
-      while (rs.next()) {
+      while (resultSet.next()) {
         counter++;
-        Unittype unittype = unittypes.getById(rs.getInt("unit_type_id"));
-        Integer utpId = rs.getInt("unit_type_param_id");
+        Unittype unittype = unittypes.getById(resultSet.getInt("unit_type_id"));
+        Integer utpId = resultSet.getInt("unit_type_param_id");
         if (lastUnittypeParameterId == null || !lastUnittypeParameterId.equals(utpId)) {
           UnittypeParameter up = unittype.getUnittypeParameters().getById(utpId);
           values = new UnittypeParameterValues();
           up.setValuesFromACS(values);
           lastUnittypeParameterId = utpId;
         }
-        String type = rs.getString("type");
-        String value = rs.getString("value");
+        String type = resultSet.getString("type");
+        String value = resultSet.getString("value");
         values.setType(type);
         if (type.equals(UnittypeParameterValues.REGEXP)) {
           values.setPattern(value);
