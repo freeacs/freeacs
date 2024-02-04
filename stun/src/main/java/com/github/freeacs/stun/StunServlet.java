@@ -8,7 +8,7 @@ import com.github.freeacs.dbi.Syslog;
 import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.dbi.User;
 import com.github.freeacs.dbi.Users;
-import de.javawi.jstun.test.demo.StunServer;
+import de.javawi.jstun.StunServer;
 import java.net.InetAddress;
 import java.sql.SQLException;
 import javax.sql.DataSource;
