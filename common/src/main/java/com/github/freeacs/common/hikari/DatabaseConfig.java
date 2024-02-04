@@ -11,37 +11,26 @@ import java.util.Optional;
 
 @Builder
 public record DatabaseConfig(
+        // connection settings
         String databaseUrl,
         String jdbcUrl,
         String driverClassName,
         String username,
         String password,
+        // pool settings
         Integer minimumIdle,
         Integer maximumPoolSize,
         String connectionTestQuery,
         String poolName,
-        Boolean cachePrepStmts,
+        // statement settings
         Integer prepStmtCacheSize,
         Integer prepStmtCacheSqlLimit,
-        Boolean useServerPrepStmts,
-        Boolean autoCommit) {
+        boolean cachePrepStmts,
+        boolean useServerPrepStmts,
+        boolean autoCommit) {
     public DataSource getDataSource() throws URISyntaxException {
         if (databaseUrl != null) {
-            URI dbUri = new URI(databaseUrl);
-
-            String username = dbUri.getUserInfo().split(":")[0];
-            String password = dbUri.getUserInfo().split(":")[1];
-            String dbType = dbUri.getScheme().split(":")[0];
-            String dbUrl = constructJdbcUrl(dbType, dbUri);
-
-            HikariConfig hikariConfig = new HikariConfig();
-            hikariConfig.setDriverClassName(determineDriverClassName(dbType));
-            hikariConfig.setJdbcUrl(dbUrl);
-            hikariConfig.setUsername(username);
-            hikariConfig.setPassword(password);
-
-            // Configure other settings as needed
-            configureDataSource(hikariConfig);
+            HikariConfig hikariConfig = getDatabaseUrlBasedConfig();
 
             return new HikariDataSource(hikariConfig);
         }
@@ -57,12 +46,39 @@ public record DatabaseConfig(
         return new HikariDataSource(hikariConfig);
     }
 
+    private HikariConfig getDatabaseUrlBasedConfig() throws URISyntaxException {
+        URI dbUri = new URI(databaseUrl);
+
+        String[] userInfoParts = Optional.ofNullable(dbUri.getUserInfo())
+                .map(ui -> ui.split(":"))
+                .orElse(new String[0]);
+        String username = userInfoParts.length > 0 ? userInfoParts[0] : "";
+        String password = userInfoParts.length > 1 ? userInfoParts[1] : "";
+
+        String dbType = dbUri.getScheme().split(":")[0];
+        String dbUrl = constructJdbcUrl(dbType, dbUri);
+
+        HikariConfig hikariConfig = new HikariConfig();
+        hikariConfig.setDriverClassName(determineDriverClassName(dbType));
+        hikariConfig.setJdbcUrl(dbUrl);
+        hikariConfig.setUsername(username);
+        hikariConfig.setPassword(password);
+
+        // Configure other settings as needed
+        configureDataSource(hikariConfig);
+        return hikariConfig;
+    }
+
     private String constructJdbcUrl(String dbType, URI dbUri) {
         return switch (dbType) {
-            case "postgres" -> "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
-            case "mysql" -> "jdbc:mysql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
+            case "postgres" -> "jdbc:postgresql://" + dbUri.getHost() + ':' + getDatabasePort(dbUri, 5432) + dbUri.getPath();
+            case "mysql" -> "jdbc:mysql://" + dbUri.getHost() + ':' + getDatabasePort(dbUri, 3306) + dbUri.getPath();
             default -> throw new IllegalArgumentException("Unsupported database type: " + dbType);
         };
+    }
+
+    private static String getDatabasePort(URI dbUri, int number) {
+        return String.valueOf(dbUri.getPort() > -1 ? dbUri.getPort() : number);
     }
 
     private String determineDriverClassName(String dbType) {
@@ -83,15 +99,13 @@ public record DatabaseConfig(
         hikariConfig.setPoolName(
                 Optional.ofNullable(poolName).orElse("HikariCP"));
 
-        hikariConfig.addDataSourceProperty("dataSource.cachePrepStmts",
-                Optional.ofNullable(cachePrepStmts).map(Object::toString).orElse( "true"));
+        hikariConfig.addDataSourceProperty("dataSource.cachePrepStmts", cachePrepStmts);
         hikariConfig.addDataSourceProperty("dataSource.prepStmtCacheSize",
                 Optional.ofNullable(prepStmtCacheSize).map(Object::toString).orElse("250"));
         hikariConfig.addDataSourceProperty("dataSource.prepStmtCacheSqlLimit",
                 Optional.ofNullable(prepStmtCacheSqlLimit).map(Object::toString).orElse("2048"));
-        hikariConfig.addDataSourceProperty("dataSource.useServerPrepStmts",
-                Optional.ofNullable(useServerPrepStmts).map(Object::toString).orElse("true"));
+        hikariConfig.addDataSourceProperty("dataSource.useServerPrepStmts", useServerPrepStmts);
 
-        hikariConfig.setAutoCommit(true);
+        hikariConfig.setAutoCommit(autoCommit);
     }
 }
