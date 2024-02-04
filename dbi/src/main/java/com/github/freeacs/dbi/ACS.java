@@ -262,15 +262,11 @@ public class ACS {
     Statement s = null;
     ResultSet rs = null;
     String sql;
-    boolean wasAutoCommit = false;
-    Connection connection = null;
-    try {
+    try(Connection connection = getDataSource().getConnection()) {
       sql = "SELECT utp.unit_type_id, utpv.unit_type_param_id, value, priority, type ";
       sql += "FROM unit_type_param_value utpv, unit_type_param utp ";
       sql += "WHERE utpv.unit_type_param_id = utp.unit_type_param_id ";
       sql += "ORDER BY utp.unit_type_id ASC, utpv.unit_type_param_id, utpv.priority ASC";
-      connection = getDataSource().getConnection();
-      wasAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
       s = connection.createStatement();
       s.setQueryTimeout(60);
@@ -306,10 +302,6 @@ public class ACS {
       }
       if (s != null) {
         s.close();
-      }
-      if (connection != null) {
-        connection.setAutoCommit(wasAutoCommit);
-        connection.close();
       }
     }
   }
