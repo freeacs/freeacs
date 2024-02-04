@@ -1,4 +1,4 @@
-package com.github.freeacs.common.sql;
+package com.github.freeacs.dbi.sql;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
