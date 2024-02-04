@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 public class ACS {
   private static final Logger logger = LoggerFactory.getLogger(ACS.class);
   @Getter
+  @Setter
   private static boolean strictOrder = true;
 
   private final DataSource dataSource;
@@ -892,13 +893,5 @@ public class ACS {
 
   public String toString() {
     return "ACS";
-  }
-
-  public static void setStrictOrder(boolean strictOrder) {
-    ACS.strictOrder = strictOrder;
-  }
-
-  public DataSource getConnectionProperties() {
-    return dataSource;
   }
 }

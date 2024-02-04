@@ -136,13 +136,12 @@ public class HeartbeatDetection extends DBIShare {
             int counter = 0;
             Map<String, Unit> unitsInGroupMap = null;
             if (heartbeat.getGroup() != null) {
-              ACSUnit acsUnit = new ACSUnit(acs.getConnectionProperties(), acs, acs.getSyslog());
+              ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
               unitsInGroupMap = acsUnit.getUnits(heartbeat.getGroup());
             }
             while (rs.next()) {
               String unitId = rs.getString("unit_id");
-              if (unitsInGroupMap == null
-                  || (unitsInGroupMap != null && unitsInGroupMap.get(unitId) != null)) {
+              if (unitsInGroupMap == null || unitsInGroupMap.get(unitId) != null) {
                 smm.append(unitId, to);
               }
               counter++;
