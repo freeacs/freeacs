@@ -125,7 +125,7 @@ public class Files {
   private void addOrChangeFileImpl(Unittype unittype, File file, ACS acs) throws SQLException {
     Connection c = acs.getDataSource().getConnection();
     PreparedStatement s = null;
-    String sql = null;
+    String sql;
     // The file owner is set automatically to the logged-in user upon
     // add/change of file.
     // If logged-in user isAdmin, will skip this override, and will allow

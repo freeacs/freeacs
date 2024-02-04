@@ -260,7 +260,7 @@ public class SystemParameters {
     }
     int lastSlash = name.lastIndexOf('/');
     int lastBackslash = name.lastIndexOf('\\');
-    int startPos = lastSlash > lastBackslash ? lastSlash : lastBackslash;
+    int startPos = Math.max(lastSlash, lastBackslash);
     if (startPos == -1) {
       startPos = 0;
     }

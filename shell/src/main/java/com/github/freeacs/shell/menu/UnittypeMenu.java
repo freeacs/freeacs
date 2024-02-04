@@ -404,7 +404,7 @@ public class UnittypeMenu {
       name = name.substring(name.lastIndexOf('\\') + 1);
     }
     FileType type = FileType.valueOf(args[2]);
-    String desc = null, ver = null, targetName = null, ownerName = null;
+    String desc, ver, targetName = null, ownerName = null;
     Date date = null;
     User owner;
     boolean fusion2012 = args.length == 6;
@@ -432,7 +432,7 @@ public class UnittypeMenu {
     if (loggedInUser.isAdmin() && ownerName != null) {
       owner = session.getAcs().getUsers().getUnprotected(ownerName);
     }
-    byte[] b = null;
+    byte[] b;
     if (filename.startsWith("DUMMY")) {
       b = "Test".getBytes();
     } else {
@@ -535,7 +535,7 @@ public class UnittypeMenu {
     Unittype unittype = context.getUnittype();
     SyslogEvents syslogEvents = unittype.getSyslogEvents();
     SyslogEvent syslogEvent;
-    Integer eventId = null;
+    Integer eventId;
     try {
       eventId = Integer.valueOf(args[1]);
     } catch (NumberFormatException nfe) {
@@ -592,7 +592,7 @@ public class UnittypeMenu {
     Unittype unittype = context.getUnittype();
     SyslogEvents syslogEvents = unittype.getSyslogEvents();
     SyslogEvent syslogEvent;
-    Integer eventId = null;
+    Integer eventId;
     try {
       eventId = Integer.valueOf(args[1]);
     } catch (NumberFormatException nfe) {
@@ -1075,7 +1075,7 @@ public class UnittypeMenu {
     Triggers triggers = unittype.getTriggers();
     Validation.numberOfArgs(args, 15);
     Trigger thisTrigger = triggers.getByName(args[1]);
-    String action = null;
+    String action;
     if (thisTrigger == null) {
       action = "added";
       thisTrigger = new Trigger(Trigger.getTriggerType(args[3]), Trigger.getNotifyType(args[4]));
@@ -1112,7 +1112,7 @@ public class UnittypeMenu {
     Validation.numberOfArgs(args, 3);
     String args1Str = args[1].trim();
     int spacePos = args1Str.indexOf(' ');
-    String scriptFileStr = null;
+    String scriptFileStr;
     String scriptArgs = null;
     if (spacePos == -1) {
       scriptFileStr = args1Str;

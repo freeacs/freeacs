@@ -80,8 +80,7 @@ public class Permissions {
       ps = ds.makePreparedStatement(c);
       ps.executeUpdate();
     } catch (SQLException sqlex) {
-      sqle = sqlex;
-      throw sqlex;
+        throw sqlex;
     } finally {
       if (ps != null) {
         ps.close();

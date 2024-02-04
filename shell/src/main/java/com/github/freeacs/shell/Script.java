@@ -68,7 +68,6 @@ public class Script {
       if (!fileFound && FileUtil.exists(filename)) {
         this.context = context;
         scriptLines = FileUtil.getLines(filename);
-        fileFound = true;
       } else if (!fileFound) {
         throw new IllegalArgumentException("The script file " + filename + " does not exist");
       }
@@ -94,7 +93,7 @@ public class Script {
    * (word.equals(w)) { return s; } } } return null; }
    */
   public void moveUpUntilCommand(String... cmdList) {
-    String s = null;
+    String s;
     int skipAhead = 0;
     while ((s = getNextScriptLine()) != null) {
       String word = getCommand(s);

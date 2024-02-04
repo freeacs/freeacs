@@ -52,7 +52,7 @@ public class Command {
   private int getContextEndPos(String commandEFR) {
     Matcher m = contextPattern.matcher(commandEFR);
     int endPos = 0;
-    int startPos = 0;
+    int startPos;
     while (m.find()) {
       startPos = m.start();
       if (startPos - 2 > endPos) {

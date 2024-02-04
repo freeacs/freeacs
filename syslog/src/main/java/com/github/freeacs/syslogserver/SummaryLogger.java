@@ -74,7 +74,7 @@ public class SummaryLogger extends TaskDefaultImpl {
     message += String.format("%8s ", received);
     message += String.format("%7s ", bc.getSize());
     message += String.format("%5s ", bc.getBufferOverflow());
-    message += String.format("%9s | ", discarded > 0 ? discarded : 0);
+    message += String.format("%9s | ", Math.max(discarded, 0));
     int unknown =
         sc.getUnknownAllowed()
             + sc.getUnknownAllowedCreated()

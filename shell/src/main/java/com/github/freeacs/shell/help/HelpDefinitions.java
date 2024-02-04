@@ -363,9 +363,7 @@ public class HelpDefinitions {
     help = new Help("provision [async]");
     String argCom =
         "The device will connect ASAP and complete a provisioning (both reading/writing from/to the device). ";
-    argCom +=
-        "This will only work if the ConnectionRequestURL or UDPConnectionRequestAddress is pointing to the correct address.";
-    help.addComment("");
+      help.addComment("");
     help.addOption(getUseContextHelpOption());
     help.addArgument(
         "async",
@@ -710,8 +708,7 @@ public class HelpDefinitions {
     argCom += "The string will be interpreted as a regular expression ";
     argCom += "which is a very powerful matching language. If you want ";
     argCom += "to know how to take full advantage of regular expressions ";
-    argCom += "you need to consult internet resources.";
-    help.addArgument(
+      help.addArgument(
         "[[!]<unittype-parameter-name-pattern>]", getPatternComment("unittype-parameter"));
     help.addExamples("listparams", "listparams DeviceInfo", "listparams ^Device.Device.*");
     hg.addHelp(help);
@@ -1877,8 +1874,7 @@ public class HelpDefinitions {
     help = new Help("delosfile <filename>");
     help.addComment("Deletes a file found in the os filesystem.");
     help.addOption(getUseContextHelpOption());
-    argCom = "Specify filename to delete. Use / as directory path delimiter.";
-    help.addArgument("<filename>", "Specify filename to delete. Use / as directory path delimiter");
+      help.addArgument("<filename>", "Specify filename to delete. Use / as directory path delimiter");
     help.addExamples("delosfile test.log");
     hg.addHelp(help);
 

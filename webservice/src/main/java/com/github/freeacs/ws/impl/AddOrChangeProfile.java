@@ -91,7 +91,7 @@ public class AddOrChangeProfile {
         }
       }
 
-      Profile profileXAPS = null;
+      Profile profileXAPS;
       if (unittype.getProfiles().getByName(gur.getProfile().getName())
           == null) { // make new profile
         if (isAllowedToMakeProfile) {

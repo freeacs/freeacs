@@ -49,7 +49,7 @@ public class ProfileMenu {
     Validation.numberOfArgs(args, 3);
     ProfileParameter profileParameter =
         context.getProfile().getProfileParameters().getByName(args[1]);
-    String action = "";
+    String action;
     UnittypeParameter up = context.getUnittype().getUnittypeParameters().getByName(args[1]);
     if (up == null) {
       throw new IllegalArgumentException(

@@ -400,7 +400,7 @@ public abstract class AbstractWebPage implements WebPage {
       if (sessionData.getFilteredUnittypes().length == 1
           && sessionData.getFilteredUnittypes()[0].getName() != null
           && "*".equals(sessionData.getFilteredUnittypes()[0].getName())) {
-        return unittypesList = Arrays.asList(xAPSUnittypes);
+        return Arrays.asList(xAPSUnittypes);
       }
 
       for (Unittype xAPSUnittype : xAPSUnittypes) {
@@ -443,7 +443,7 @@ public abstract class AbstractWebPage implements WebPage {
 
     Profile[] allProfiles = unittype.getProfiles().getProfiles();
 
-    List<Profile> profilesList = null;
+    List<Profile> profilesList;
     if (sessionData.getFilteredUnittypes() != null) {
       List<Profile> profiles = new ArrayList<>();
 

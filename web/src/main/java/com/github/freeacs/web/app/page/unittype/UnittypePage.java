@@ -188,7 +188,7 @@ public class UnittypePage extends AbstractWebPage {
 
     Map<String, Object> root = outputHandler.getTemplateMap();
 
-    String template = null;
+    String template;
 
     if (inputData.getUnittype().getString() != null) {
       unittype = acs.getUnittype(inputData.getUnittype().getString());

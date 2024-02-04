@@ -191,7 +191,7 @@ public class JobPage extends AbstractWebPage {
   /** Code-order: unty, id, name, flag, desc, group, unct, rules, file, dep, repc, repi */
   private Job action(ParameterParser req, Output res, ACS acs) throws Exception {
     Jobs xapsJobs = unittype.getJobs();
-    Job job = null;
+    Job job;
     if (inputData.getFormSubmit().hasValue("Create new job")
         || inputData.getFormSubmit().hasValue(WebConstants.UPDATE)) {
       if (inputData.validateForm()) {

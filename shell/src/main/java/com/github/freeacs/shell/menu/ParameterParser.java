@@ -29,8 +29,8 @@ public class ParameterParser {
           value = null;
         }
         i++;
-        ParameterDataType type = null;
-        Parameter p = null;
+        ParameterDataType type;
+        Parameter p;
         try {
           type = ParameterDataType.getDataType(args[i]);
           p = new Parameter(utp, value, op, type);

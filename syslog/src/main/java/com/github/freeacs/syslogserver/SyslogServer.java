@@ -95,7 +95,7 @@ public class SyslogServer implements Runnable {
 
   public void run() {
     started = true;
-    DatagramPacket packet = null;
+    DatagramPacket packet;
     try {
       packet = initServer();
       initDBThreads(xapsDataSource);

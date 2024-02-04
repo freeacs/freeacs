@@ -34,7 +34,7 @@ public class UnknownAttribute extends MessageAttribute {
   }
 
   public byte[] getBytes() throws UtilityException {
-    int length = 0;
+    int length;
     if (unkown.size() % 2 == 1) {
       length = 2 * (unkown.size() + 1) + 4;
     } else {

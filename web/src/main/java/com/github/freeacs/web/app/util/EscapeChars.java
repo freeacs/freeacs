@@ -227,7 +227,7 @@ public final class EscapeChars {
    * @return the string
    */
   public static String forURL(String aURLFragment) {
-    String result = null;
+    String result;
     try {
       result = URLEncoder.encode(aURLFragment, "UTF-8");
     } catch (UnsupportedEncodingException ex) {

@@ -167,8 +167,7 @@ public class ReportGenerator {
       }
       return swVersionList;
     } catch (SQLException sqlex) {
-      sqle = sqlex;
-      throw sqlex;
+        throw sqlex;
     } finally {
       if (rs != null) {
         rs.close();
@@ -224,8 +223,7 @@ public class ReportGenerator {
       // if no data exists, start from two days ago
       return converter.convert(new Date(twoDaysAgo), periodType);
     } catch (SQLException sqlex) {
-      sqle = sqlex;
-      throw sqlex;
+        throw sqlex;
     } finally {
       if (rs != null) {
         rs.close();
@@ -292,8 +290,7 @@ public class ReportGenerator {
               + " entries");
       return report;
     } catch (SQLException sqlex) {
-      sqle = sqlex;
-      throw sqlex;
+        throw sqlex;
     } finally {
       if (rs != null) {
         rs.close();
@@ -352,8 +349,7 @@ public class ReportGenerator {
               + " entries");
       return report;
     } catch (SQLException sqlex) {
-      sqle = sqlex;
-      throw sqlex;
+        throw sqlex;
     } finally {
       if (rs != null) {
         rs.close();

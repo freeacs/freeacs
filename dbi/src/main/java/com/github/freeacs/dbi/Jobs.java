@@ -24,8 +24,8 @@ import org.slf4j.LoggerFactory;
  */
 public class Jobs {
   private static final Logger logger = LoggerFactory.getLogger(Jobs.class);
-  private Map<Integer, Job> idMap = new HashMap<>();
-  private Map<String, Job> nameMap = new HashMap<>();
+  private Map<Integer, Job> idMap;
+  private Map<String, Job> nameMap;
   private final Unittype unittype;
   private static final Map<String, String> jobParameterRules = new HashMap<>();
 
@@ -485,7 +485,7 @@ public class Jobs {
   public void changeFromCore(Job job, String publishMsg, ACS acs) throws SQLException {
     Connection c = null;
     PreparedStatement pp = null;
-    SQLException sqle = null;
+    SQLException sqle;
     try {
       c = acs.getDataSource().getConnection();
       DynamicStatement ds = new DynamicStatement();

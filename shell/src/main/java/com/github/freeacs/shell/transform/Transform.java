@@ -23,10 +23,10 @@ public class Transform {
     ACS acs = session.getAcs();
     ACSUnit acsUnit = session.getAcsUnit();
     BufferedReader unitFileBr = new BufferedReader(new FileReader(unitFile));
-    String unitFileLine = null;
+    String unitFileLine;
     Map<String, String> convertParamMap = new HashMap<>();
     BufferedReader paramFileBr = new BufferedReader(new FileReader(paramFile));
-    String paramFileLine = null;
+    String paramFileLine;
     while ((paramFileLine = paramFileBr.readLine()) != null) {
       String[] params = StringUtil.split(paramFileLine);
       if (convertParamMap.get(params[0]) != null) {

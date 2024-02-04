@@ -106,7 +106,7 @@ public class JobMenu {
 
   private void listparams(String[] inputArr, OutputHandler oh) throws Exception {
     refresh();
-    Map<String, JobParameter> params = null;
+    Map<String, JobParameter> params;
     Listing listing = oh.getListing();
     listing.setHeading("Unit-id", "Unit Type Parameter Name", "Value");
     if (inputArr.length > 1) {

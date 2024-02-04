@@ -73,7 +73,7 @@ public class DeleteOldSyslog extends DBIShare {
         fromCal.roll(Calendar.DAY_OF_MONTH, -1);
 
         int days = 0;
-        int rowsDeleted = 0;
+        int rowsDeleted;
         int loopCounter = 0;
         if (logger.isInfoEnabled()) {
           logger.info(
@@ -180,7 +180,7 @@ public class DeleteOldSyslog extends DBIShare {
 
       // 2.2.
       int days = 0;
-      int rowsDeleted = 0;
+      int rowsDeleted;
       int loopCounter = 0;
       if (logger.isInfoEnabled()) {
         logger.info("DeleteOldSyslog: " + logMsg);

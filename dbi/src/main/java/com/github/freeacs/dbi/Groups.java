@@ -85,7 +85,7 @@ public class Groups {
   private static void refreshGroupParameter(Group group, Connection c) throws SQLException {
     Statement s = null;
     ResultSet rs = null;
-    String sql = null;
+    String sql;
     try {
       sql = "SELECT * FROM group_param WHERE group_id = " + group.getId();
       s = c.createStatement();

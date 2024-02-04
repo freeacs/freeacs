@@ -517,7 +517,7 @@ public final class CronExpression implements Serializable, Cloneable {
         && (!s.equals("LW"))
         && (!s.matches("^L-[0-9]*[W]?"))) {
       String sub = s.substring(i, i + 3);
-      int sval = -1;
+      int sval;
       int eval = -1;
       if (type == MONTH) {
         sval = getMonthNumber(sub) + 1;
@@ -766,7 +766,7 @@ public final class CronExpression implements Serializable, Cloneable {
         end = vs.value;
         i = vs.pos;
       }
-      if (i < s.length() && ((c = s.charAt(i)) == '/')) {
+      if (i < s.length() && (s.charAt(i) == '/')) {
         i++;
         c = s.charAt(i);
         int v2 = Integer.parseInt(String.valueOf(c));
@@ -1164,8 +1164,8 @@ public final class CronExpression implements Serializable, Cloneable {
         return null;
       }
 
-      SortedSet<Integer> st = null;
-      int t = 0;
+      SortedSet<Integer> st;
+      int t;
 
       int sec = cl.get(Calendar.SECOND);
       int min = cl.get(Calendar.MINUTE);
@@ -1514,9 +1514,8 @@ public final class CronExpression implements Serializable, Cloneable {
       // 1-based
 
       year = cl.get(Calendar.YEAR);
-      t = -1;
 
-      // get year...................................................
+        // get year...................................................
       st = years.tailSet(year);
       if (st != null && st.size() != 0) {
         t = year;

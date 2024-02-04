@@ -68,7 +68,7 @@ public class FractionStopRuleCounter {
   }
 
   public boolean ruleMatch() {
-    int failures = 0;
+    int failures;
     if (rule.getRuleType() == StopRule.ANY_FAILURE_TYPE) {
       failures = counters[CONFIRMED] + counters[UNCONFIRMED];
     } else if (rule.getRuleType() == StopRule.CONFIRMED_FAILURE_TYPE) {
