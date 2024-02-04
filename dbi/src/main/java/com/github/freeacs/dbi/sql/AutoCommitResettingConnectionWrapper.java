@@ -27,9 +27,12 @@ public class AutoCommitResettingConnectionWrapper implements AutoCloseable {
         try {
             connection.setAutoCommit(originalAutoCommit);
         } catch (SQLException e) {
-            log.error("Failed to reset auto commit", e);
-        } finally {
+            throw new SQLException("Failed to reset auto commit", e);
+        }
+        try {
             connection.close();
+        } catch (SQLException e) {
+            throw new SQLException("Failed to close connection", e);
         }
     }
 }

@@ -25,7 +25,7 @@ public class StatementWithTimeoutWrapper implements AutoCloseable {
         try {
             statement.close();
         } catch (SQLException e) {
-            log.error("Failed to close statement", e);
+            throw new SQLException("Failed to close statement", e);
         }
     }
 }

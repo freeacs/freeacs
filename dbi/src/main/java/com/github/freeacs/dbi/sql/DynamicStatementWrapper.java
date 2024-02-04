@@ -11,7 +11,11 @@ public class DynamicStatementWrapper implements AutoCloseable {
     private final DynamicStatement dynamicStatement;
     private final PreparedStatement preparedStatement;
 
-    public DynamicStatementWrapper(AutoCommitResettingConnectionWrapper connectionWrapper, String sql, Object... args) throws SQLException {
+    public DynamicStatementWrapper(AutoCommitResettingConnectionWrapper connectionWrapper, String sql, Object... args)
+            throws SQLException {
+        if (connectionWrapper == null) {
+            throw new IllegalArgumentException("Connection wrapper cannot be null");
+        }
         this.dynamicStatement = new DynamicStatement();
         dynamicStatement.addSqlAndArguments(sql, args);
         preparedStatement = dynamicStatement.makePreparedStatement(connectionWrapper.getConnection());
@@ -19,8 +23,10 @@ public class DynamicStatementWrapper implements AutoCloseable {
 
     @Override
     public void close() throws SQLException {
-        if (preparedStatement != null) {
+        try {
             preparedStatement.close();
+        } catch (SQLException e) {
+            throw new SQLException("Failed to close prepared statement", e);
         }
     }
 }
