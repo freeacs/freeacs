@@ -62,7 +62,7 @@ public class GroupMenu {
       GroupParameters groupParams = group.getGroupParameters();
       for (Parameter param : params) {
         String action = "added";
-        GroupParameter gp = null;
+        GroupParameter gp;
         if (param.getGroupParameterId() == null
             || groupParams.getById(param.getGroupParameterId()) == null) {
           gp = new GroupParameter(param, group);

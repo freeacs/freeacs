@@ -250,38 +250,33 @@ public class UnitPage extends AbstractWebPage {
     /* If we're in REGULAR mode, but is told to read all,
      *  put us in READALL mode and publish. */
     if (isRegularMode() && inputData.getInitReadAll().getValue() != null) {
-      publish = true;
-      mode = ProvisioningMode.READALL;
+        mode = ProvisioningMode.READALL;
     }
 
     /* If we're to initiate provisioning, set mode to REGULAR and publish. */
     else if (inputData.getInitProvisioning().getValue() != null) {
-      publish = true;
-      mode = ProvisioningMode.REGULAR;
+        mode = ProvisioningMode.REGULAR;
     }
 
     /* Set restart-flag and initiate provisioning in REGULAR mode */
     else if (inputData.getInitRestart().getValue() != null) {
-      publish = true;
-      mode = ProvisioningMode.REGULAR;
+        mode = ProvisioningMode.REGULAR;
       unit.toWriteQueue(SystemParameters.RESTART, "1");
     }
 
     /* Set reset-flag and initiate provisioning in REGULAR mode */
     else if (inputData.getInitReset().getValue() != null) {
-      publish = true;
-      mode = ProvisioningMode.REGULAR;
+        mode = ProvisioningMode.REGULAR;
       unit.toWriteQueue(SystemParameters.RESET, "1");
     }
 
     /* Change frequency/spread in REGULAR mode */
     else if (inputData.getChangeFreqSpread().getValue() != null) {
-      publish = true;
-      mode = ProvisioningMode.REGULAR;
+        mode = ProvisioningMode.REGULAR;
       try {
         int freq = Integer.parseInt(inputData.getFrequency().getString());
         String freqStr =
-            "" + (freq < 1 ? 1 : (freq > 20000 ? 20000 : freq)); // limit freq between 1 and 20000
+            "" + (freq < 1 ? 1 : (Math.min(freq, 20000))); // limit freq between 1 and 20000
         unit.toWriteQueue(SystemParameters.SERVICE_WINDOW_FREQUENCY, freqStr);
         root.put("frequency", freqStr);
       } catch (NumberFormatException nfe) {
@@ -293,7 +288,7 @@ public class UnitPage extends AbstractWebPage {
       try {
         int spread = Integer.parseInt(inputData.getSpread().getString());
         String spreadStr =
-            "" + (spread < 0 ? 0 : (spread > 100 ? 100 : spread)); // limit spread between 0 and 100
+            "" + (spread < 0 ? 0 : (Math.min(spread, 100))); // limit spread between 0 and 100
         unit.toWriteQueue(SystemParameters.SERVICE_WINDOW_SPREAD, spreadStr);
         root.put("spread", spreadStr);
       } catch (NumberFormatException nfe) {
@@ -304,8 +299,7 @@ public class UnitPage extends AbstractWebPage {
       }
     } else if (inputData.getUnitUpgrade().getString() != null
         && inputData.getUnitUpgrade().getString().endsWith("Upgrade")) {
-      publish = true;
-      mode = ProvisioningMode.REGULAR;
+        mode = ProvisioningMode.REGULAR;
       /* Ett horribelt jävla fulhack här, men det får duga tills vidare.
        * Problemet är att "getUnitUpgrade().getString()" returnerar filnamnet
        * konkatenerat med texten på upgrade-knappen, separerat med komma.

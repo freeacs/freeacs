@@ -103,7 +103,7 @@ public class ProfileParameters {
   private void deleteProfileParameterImpl(
       ProfileParameter profileParameter, Profile profile, ACS acs) throws SQLException {
     Statement s = null;
-    String sql = null;
+    String sql;
     Connection c = acs.getDataSource().getConnection();
     try {
       s = c.createStatement();

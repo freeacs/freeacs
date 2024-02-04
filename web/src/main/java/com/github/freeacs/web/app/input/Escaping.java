@@ -26,7 +26,7 @@ public class Escaping {
    * @return the string
    */
   public static String removeHTMLTags(String strHTML, EscapeType type) {
-    Pattern pattern = null;
+    Pattern pattern;
 
     String strTagLess = strHTML;
 

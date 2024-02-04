@@ -91,7 +91,7 @@ public class AddOrChangeUnittype {
       }
       boolean isAdmin = user.getPermissions().getPermissions().length == 0;
       Unittypes unittypes = acs.getUnittypes();
-      Unittype unittypeXAPS = null;
+      Unittype unittypeXAPS;
       if (unittypes.getByName(gur.getUnittype().getName()) == null) { // make new unittype
         if (isAdmin) { // allow if login is admin
           com.github.freeacs.ws.xml.Unittype uWS = gur.getUnittype();

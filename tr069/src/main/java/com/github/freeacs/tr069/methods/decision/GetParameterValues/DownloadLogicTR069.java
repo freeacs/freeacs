@@ -101,7 +101,7 @@ public class DownloadLogicTR069 {
         CPEParameters cpeParams = sessionData.getCpeParameters();
         String softwareVersionFromCPE = cpeParams.getValue(cpeParams.SOFTWARE_VERSION);
 
-        String softwareVersionFromDB = null;
+        String softwareVersionFromDB;
         String downloadURL = null;
         if (job == null) {
             ACSParameters oweraParams = sessionData.getAcsParameters();

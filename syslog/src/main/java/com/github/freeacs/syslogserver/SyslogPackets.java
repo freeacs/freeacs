@@ -41,7 +41,7 @@ public class SyslogPackets {
   }
 
   public static SyslogPacket get() {
-    SyslogPacket packet = null;
+    SyslogPacket packet;
     do {
       try {
         if (packets == null) {

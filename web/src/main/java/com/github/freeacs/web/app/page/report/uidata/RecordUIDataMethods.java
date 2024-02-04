@@ -60,7 +60,7 @@ final class RecordUIDataMethods {
    */
   static String appendStringIfNotNonBreaking(String value, String toAppend) {
     if (value != null && !NON_BREAKING.equals(value) && toAppend != null) {
-      return value += NON_BREAKING + toAppend;
+      return value + (NON_BREAKING + toAppend);
     }
     return value;
   }

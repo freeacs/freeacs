@@ -24,7 +24,7 @@ public class GetProfiles {
         throw ACSFactory.error(logger, "No unittype is specified");
       }
       Unittype unittype = xapsWS.getUnittypeFromXAPS(gur.getUnittype().getName());
-      com.github.freeacs.ws.xml.Profile[] profileArray = null;
+      com.github.freeacs.ws.xml.Profile[] profileArray;
       if (gur.getProfile() == null || gur.getProfile().getName() == null) {
         Profile[] profileXAPSArr = unittype.getProfiles().getProfiles();
         profileArray = new com.github.freeacs.ws.xml.Profile[profileXAPSArr.length];

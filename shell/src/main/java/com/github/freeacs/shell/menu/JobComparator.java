@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class JobComparator implements Comparator<Job> {
-  private boolean dependencyFirst = true;
+  private boolean dependencyFirst;
 
   public JobComparator(boolean dependencyFirst) {
     this.dependencyFirst = dependencyFirst;

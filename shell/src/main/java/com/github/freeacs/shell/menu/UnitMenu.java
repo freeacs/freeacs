@@ -47,7 +47,7 @@ public class UnitMenu {
       Unit unit = context.getUnit();
       Map<String, UnitParameter> unitParameters = unit.getUnitParameters();
       UnitParameter unitParameter = unitParameters.get(args[1]);
-      String action = null;
+      String action;
       if (unitParameter == null) {
         unitParameter = new UnitParameter(utp, unit.getId(), args[2], context.getProfile());
         action = "added or changed";
@@ -92,7 +92,7 @@ public class UnitMenu {
       //			unit = context.getXapsU().getUnit(unit);
       Map<String, UnitParameter> sessionParameters = unit.getSessionParameters();
       UnitParameter unitParameter = sessionParameters.get(args[1]);
-      String action = null;
+      String action;
       if (unitParameter == null) {
         unitParameter =
             new UnitParameter(up, unit.getId(), "REQUEST-SESSION-PARAMETER", context.getProfile());

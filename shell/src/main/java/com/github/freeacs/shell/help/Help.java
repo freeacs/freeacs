@@ -82,7 +82,7 @@ public class Help {
     }
     String[] col2Words = col2.split(" ");
     String col2Sentence = "";
-    String lastCol2Sentence = null;
+    String lastCol2Sentence;
     boolean col1printed = false;
     for (String col2Word : col2Words) {
       lastCol2Sentence = col2Sentence;

@@ -311,7 +311,7 @@ public class Processor {
 
   private void multipleCommandExecution(
       Context context, Command command, OutputHandler oh, InputHandler ih) throws Exception {
-    String[] fileArgs = null;
+    String[] fileArgs;
     Context initialContext = context.clone();
     while ((fileArgs = ih.read()) != null) {
       // Set context to initalContext before every run in this loop

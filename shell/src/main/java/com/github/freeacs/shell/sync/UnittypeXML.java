@@ -107,7 +107,7 @@ public class UnittypeXML {
     }
   }
 
-  public class Enums {
+  public static class Enums {
     List<Enum> list = new ArrayList<>();
 
     Enums() {}

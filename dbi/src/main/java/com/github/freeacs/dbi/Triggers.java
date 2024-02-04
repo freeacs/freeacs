@@ -283,7 +283,7 @@ public class Triggers {
   }
 
   public Date getFirstEventTms(Integer triggerId, Date from, Date to, ACS acs) throws SQLException {
-    ResultSet rs = null;
+    ResultSet rs;
     PreparedStatement ps = null;
     Connection c = acs.getDataSource().getConnection();
     try {

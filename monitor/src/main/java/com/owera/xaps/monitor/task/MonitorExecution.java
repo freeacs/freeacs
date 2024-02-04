@@ -31,7 +31,7 @@ public class MonitorExecution implements Runnable {
   }
 
   public void run() {
-    HttpMethod method = null;
+    HttpMethod method;
     String errorMessage = null;
     String status = "ERROR";
     String version = "";

@@ -464,7 +464,7 @@ public class Output {
    * @throws IOException Signals that an I/O exception has occurred.
    */
   private String processExceptionTemplate(Exception e, boolean debug) throws IOException {
-    String pageContents = null;
+    String pageContents;
     String error = e.toString();
     if (debug) {
       error += StackTraceFormatter.getStackTraceAsHTML(e);

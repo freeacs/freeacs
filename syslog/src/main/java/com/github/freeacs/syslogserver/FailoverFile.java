@@ -94,8 +94,7 @@ public class FailoverFile {
       File tmp = f;
       BufferedWriter oldBw = getBufferedWriter();
       oldBw.close();
-      oldBw = null;
-      boolean success = new File(PROCESSING_FILE_NAME).delete();
+        boolean success = new File(PROCESSING_FILE_NAME).delete();
       logger.info("The result of the deletion of file " + PROCESSING_FILE_NAME + " was " + success);
       success = tmp.renameTo(new File(PROCESSING_FILE_NAME));
       logger.info("The result of the rename of tmp to " + PROCESSING_FILE_NAME + " was " + success);

@@ -339,7 +339,7 @@ public class RootMenu {
     Validation.numberOfArgs(args, 4);
     if (args.length >= 5) {
       Unittype unittype = session.getAcs().getUnittype(args[1]);
-      String action = "";
+      String action;
       if (unittype == null) {
         unittype = new Unittype(args[1], args[3], args[4], ProvisioningProtocol.toEnum(args[2]));
         action = "added";
@@ -464,7 +464,7 @@ public class RootMenu {
     int add = Integer.parseInt(arg0);
     ACSUnit acsUnit = session.getAcsUnit();
     int i = 0;
-    Unit unit = null;
+    Unit unit;
     do {
       String unitId = String.format("000000-TR069TestClient-%012d", i);
       unit = acsUnit.getUnitById(unitId);
@@ -476,7 +476,7 @@ public class RootMenu {
   }
 
   private Map<String, Unit> getUnits(String[] args) throws Exception {
-    Map<String, Unit> units = null;
+    Map<String, Unit> units;
     if (args.length > 1) {
       units = session.getAcsUnit().getUnits("%" + args[1] + "%", null, null, null);
     } else {

@@ -99,10 +99,6 @@ public class HistoryElement {
     }
   }
 
-  public void setEventCode(List<EventCode> eventCodes) {
-    this.eventCodes = eventCodes;
-  }
-
   public String toString() {
     StringBuilder events = new StringBuilder();
     for (EventCode event : eventCodes) {

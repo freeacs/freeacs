@@ -11,7 +11,7 @@ import com.github.freeacs.dbi.SyslogEntry;
 import com.github.freeacs.dbi.SyslogFilter;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.util.SyslogClient;
-import de.javawi.jstun.test.demo.StunServer;
+import de.javawi.jstun.StunServer;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;

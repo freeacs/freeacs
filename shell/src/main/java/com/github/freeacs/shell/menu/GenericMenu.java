@@ -563,7 +563,7 @@ public class GenericMenu {
   }
 
   private Map<String, Unit> getUnits(String[] args, Context context) throws Exception {
-    Map<String, Unit> units = null;
+    Map<String, Unit> units;
     if (args.length > 1) {
       units =
           session

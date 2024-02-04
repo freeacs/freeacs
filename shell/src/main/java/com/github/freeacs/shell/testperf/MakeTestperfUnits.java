@@ -28,7 +28,7 @@ public class MakeTestperfUnits {
       countries = new ArrayList<>();
       FileReader fr = new FileReader(file);
       BufferedReader br = new BufferedReader(fr);
-      String line = null;
+      String line;
       while ((line = br.readLine()) != null) {
         if (line.length() > 1) {
           countries.add(new Country(line));

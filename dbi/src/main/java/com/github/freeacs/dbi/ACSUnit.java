@@ -482,7 +482,7 @@ public class ACSUnit {
    */
   public void deleteUnits(Profile profile) throws SQLException {
     Statement s = null;
-    String sql = null;
+    String sql;
     Map<String, Unit> unitMap =
         getUnits(profile.getUnittype(), profile, (Parameter) null, Integer.MAX_VALUE);
     Connection connection = null;

@@ -60,8 +60,7 @@ public class MonitorPage extends AbstractWebPage {
         url = baseURL + "monitor/web?page=history&html=no";
       }
     } else {
-      cmd = "";
-      url = baseURL + "monitor/web?html=no";
+        url = baseURL + "monitor/web?html=no";
     }
 
     String outputHandlerString = getStringFromURL(url, req);
@@ -85,7 +84,7 @@ public class MonitorPage extends AbstractWebPage {
    */
   private String getStringFromURL(String url, ParameterParser req) {
     HttpClient client = new HttpClient();
-    HttpMethod method = null;
+    HttpMethod method;
     if (url.contains("page=history")) {
       method = new PostMethod(url);
       PostMethod pm = (PostMethod) method;
