@@ -1,8 +1,11 @@
 package com.github.freeacs.dbi;
 
 import com.github.freeacs.dbi.crypto.Crypto;
+import lombok.Data;
+
 import java.sql.SQLException;
 
+@Data
 public class User {
   private Integer id;
   private String username;
@@ -36,44 +39,12 @@ public class User {
     }
   }
 
-  public Integer getId() {
-    return id;
-  }
-
-  protected void setId(Integer id) {
-    this.id = id;
-  }
-
-  public String getUsername() {
-    return username;
-  }
-
-  public void setUsername(String username) {
-    this.username = username;
-  }
-
-  public String getSecret() {
-    return secret;
-  }
-
-  public String toString() {
-    return username;
-  }
-
   public void setSecretHashed(String secret) {
     this.secret = secret;
   }
 
   public void setSecretClearText(String secret) {
     this.secret = Crypto.computeDigestAsHexUpperCase(secret);
-  }
-
-  public String getFullname() {
-    return fullname;
-  }
-
-  public void setFullname(String fullname) {
-    this.fullname = fullname;
   }
 
   public Permissions getPermissions() {
@@ -87,8 +58,8 @@ public class User {
    * Permission status: To be protected If admin, allow changes on all users except for the admin
    * user Else If requestedBy user is unittypeAdmin for the permission added, then allow Else deny
    *
-   * @param permission
-   * @throws SQLException
+   * @param permission  The permission to add or change
+   * @throws SQLException   If something goes wrong
    */
   public void addOrChangePermission(Permission permission, User requestedBy) throws SQLException {
     if (isAdmin()) {
@@ -106,8 +77,8 @@ public class User {
    * Permission status: Will not be protected - if you can access the user (and therefore the
    * permissions), you are allowed to delete all kinds of permissions
    *
-   * @param permission
-   * @throws SQLException
+   * @param permission  The permission to delete
+   * @throws SQLException If something goes wrong
    */
   public void deletePermission(Permission permission) throws SQLException {
     permissions.delete(permission);
@@ -116,14 +87,6 @@ public class User {
   public boolean isCorrectSecret(String suppliedSecret) {
     String hashedSuppliedSecret = Crypto.computeDigestAsHexUpperCase(suppliedSecret);
     return hashedSuppliedSecret.equals(secret);
-  }
-
-  public String getAccess() {
-    return access;
-  }
-
-  public void setAccess(String access) {
-    this.access = access;
   }
 
   public boolean isAdmin() {
@@ -145,13 +108,5 @@ public class User {
       return admin;
     }
     return false;
-  }
-
-  public void setAdmin(Boolean admin) {
-    this.admin = admin;
-  }
-
-  protected Users getUsers() {
-    return users;
   }
 }

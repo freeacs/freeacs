@@ -1,21 +1,16 @@
 package com.github.freeacs.dbi;
 
+import lombok.Data;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Data
 public class UnittypeParameterFlag {
   private String flag;
 
   public UnittypeParameterFlag(String flag) {
-    setFlag(flag);
-  }
-
-  protected UnittypeParameterFlag(String flag, boolean noValidation) {
     this.flag = flag;
-  }
-
-  public String getFlag() {
-    return flag;
   }
 
   public void setFlag(String fl) {
@@ -39,7 +34,7 @@ public class UnittypeParameterFlag {
         continue;
       } // silently drops all Inspection flags - to be backward compatible
       if (!modifiedFlag.toString().contains(flag.substring(i, i + 1))) {
-        modifiedFlag.append(flag.substring(i, i + 1));
+        modifiedFlag.append(flag.charAt(i));
       }
     }
     flag = modifiedFlag.toString();
@@ -97,10 +92,5 @@ public class UnittypeParameterFlag {
 
   public boolean isDisplayable() {
     return flag.indexOf('D') > -1;
-  }
-
-  @Override
-  public String toString() {
-    return flag;
   }
 }

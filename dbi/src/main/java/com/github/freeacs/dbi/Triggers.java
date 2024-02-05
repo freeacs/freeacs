@@ -10,23 +10,25 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Triggers {
   private static final Logger logger = LoggerFactory.getLogger(Triggers.class);
+  @Getter(AccessLevel.PROTECTED)
   private final Map<String, Trigger> nameMap;
+  @Getter(AccessLevel.PROTECTED)
   private final Map<Integer, Trigger> idMap;
+  @Getter
   private final Unittype unittype;
 
   public Triggers(Map<Integer, Trigger> idMap, Map<String, Trigger> nameMap, Unittype unittype) {
     this.idMap = idMap;
     this.nameMap = nameMap;
     this.unittype = unittype;
-  }
-
-  public Unittype getUnittype() {
-    return unittype;
   }
 
   public Trigger getById(Integer id) {
@@ -446,14 +448,6 @@ public class Triggers {
       }
       c.close();
     }
-  }
-
-  protected Map<String, Trigger> getNameMap() {
-    return nameMap;
-  }
-
-  protected Map<Integer, Trigger> getIdMap() {
-    return idMap;
   }
 
   public List<Trigger> getTopLevelTriggers() {

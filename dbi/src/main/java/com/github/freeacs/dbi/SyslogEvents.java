@@ -166,7 +166,7 @@ public class SyslogEvents {
    * The first time this method is run, the flag is set. The second time this method is run, the
    * parameter is removed from the name- and id-Map.
    *
-   * @throws SQLException
+   * @throws SQLException   If something goes wrong
    */
   public void deleteSyslogEvent(SyslogEvent syslogEvent, ACS acs) throws SQLException {
     if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {

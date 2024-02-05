@@ -15,9 +15,12 @@ import com.github.freeacs.ws.xml.Login;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import javax.sql.DataSource;
+
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Getter
 public class ACSFactory {
   private static final Logger logger = LoggerFactory.getLogger(ACSFactory.class);
 
@@ -32,10 +35,6 @@ public class ACSFactory {
     this.xapsDataSource = xaps;
     this.syslogDataSource = syslog;
     init(login, lifetimeSec);
-  }
-
-  public ACS getAcs() {
-    return acs;
   }
 
   public ACSUnit getXAPSUnit(ACS acs) throws RemoteException {
@@ -113,9 +112,9 @@ public class ACSFactory {
    * add/change/delete). This permission check is performed in DBI, and will throw
    * IllegalArgumentExceptions if it occur.
    *
-   * @param unittypeName
-   * @return
-   * @throws RemoteException
+   * @param unittypeName The name of the unittype
+   * @return The unittype object
+   * @throws RemoteException If the unittype is not found or not allowed
    */
   protected Unittype getUnittypeFromXAPS(String unittypeName) throws RemoteException {
     if (unittypeName == null) {
@@ -135,10 +134,10 @@ public class ACSFactory {
    * add/change/delete). This permission check is performed in DBI, and will throw
    * IllegalArgumentExceptions if it occur.
    *
-   * @param unittypeName
-   * @param profileName
-   * @return
-   * @throws RemoteException
+   * @param unittypeName The name of the unittype
+   * @param profileName The name of the profile
+   * @return The profile object
+   * @throws RemoteException If the profile is not found or not allowed
    */
   public Profile getProfileFromXAPS(String unittypeName, String profileName)
       throws RemoteException {
@@ -151,9 +150,5 @@ public class ACSFactory {
       throw error("The profile " + profileName + " is not found/allowed in xAPS");
     }
     return profile;
-  }
-
-  public Identity getId() {
-    return id;
   }
 }

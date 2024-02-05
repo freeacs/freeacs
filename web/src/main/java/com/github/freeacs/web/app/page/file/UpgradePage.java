@@ -81,7 +81,7 @@ public class UpgradePage extends AbstractWebPage {
 
     List<UnitParameter> updatedParams = new ArrayList<>();
     updatedParams.add(version);
-    acsUnit.addOrChangeUnitParameters(updatedParams, u.getProfile());
+    acsUnit.addOrChangeUnitParameters(updatedParams);
 
     root.put("message", "Saved successfully");
   }

@@ -117,14 +117,11 @@ public class HeartbeatsPage extends AbstractWebPage {
           heartbeat.setName(inputData.getName().getString());
         }
       }
-      heartbeat.validateInput(false);
-      //			if (inputData.getGroupId().getInteger() != null)
+      heartbeat.setValidateInput(false);
       heartbeat.setGroup(unittype.getGroups().getById(inputData.getGroupId().getInteger()));
-      //			if (inputData.getExpression().getString() != null)
       heartbeat.setExpression(inputData.getExpression().getString());
-      //			if (inputData.getTimeout().getInteger() != null)
       heartbeat.setTimeoutHours(inputData.getTimeout().getInteger());
-      heartbeat.validateInput(true);
+      heartbeat.setValidateInput(true);
       if (inputData.validateForm()) {
         try {
           heartbeats.addOrChangeHeartbeat(heartbeat, acs);

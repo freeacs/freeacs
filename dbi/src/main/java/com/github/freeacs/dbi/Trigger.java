@@ -1,10 +1,13 @@
 package com.github.freeacs.dbi;
 
+import lombok.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Data
 public class Trigger {
   public static int TRIGGER_TYPE_BASIC;
   public static int TRIGGER_TYPE_COMPOSITE = 1;
@@ -179,31 +182,6 @@ public class Trigger {
     setNoUnits(noUnits);
   }
 
-  public Integer getId() {
-    return id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public Unittype getUnittype() {
-    return unittype;
-  }
-
-  @Override
-  public String toString() {
-    return "[" + id + "] [" + name + "]";
-  }
-
-  protected void setId(Integer id) {
-    this.id = id;
-  }
-
-  protected String getOldName() {
-    return oldName;
-  }
-
   public void setName(String name) {
     if (name == null || name.trim().isEmpty()) {
       throw new IllegalArgumentException("Trigger name cannot be null or an empty string");
@@ -214,48 +192,8 @@ public class Trigger {
     this.name = name;
   }
 
-  protected void setOldName(String oldName) {
-    this.oldName = oldName;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public SyslogEvent getSyslogEvent() {
-    return syslogEvent;
-  }
-
-  public int getNotifyType() {
-    return notifyType;
-  }
-
   public String getNotifyTypeAsStr() {
     return notifyTypeMap.get(notifyType);
-  }
-
-  public String getToList() {
-    return toList;
-  }
-
-  public int getEvalPeriodMinutes() {
-    return evalPeriodMinutes;
-  }
-
-  public Integer getNoEvents() {
-    return noEvents;
-  }
-
-  public Integer getNoEventsPrUnit() {
-    return noEventsPrUnit;
-  }
-
-  public Integer getNoUnits() {
-    return noUnits;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
   }
 
   public void setSyslogEvent(SyslogEvent syslogEvent) {
@@ -393,10 +331,6 @@ public class Trigger {
     this.unittype = unittype;
   }
 
-  public Integer getNotifyIntervalHours() {
-    return notifyIntervalHours;
-  }
-
   public void setNotifyIntervalHours(Integer notifyIntervalHours) {
     if (this.notifyType == NOTIFY_TYPE_ALARM || this.notifyType == NOTIFY_TYPE_REPORT) {
       if (notifyIntervalHours == null) {
@@ -419,18 +353,6 @@ public class Trigger {
       }
     }
     this.notifyIntervalHours = notifyIntervalHours;
-  }
-
-  public boolean isActive() {
-    return active;
-  }
-
-  public void setActive(boolean active) {
-    this.active = active;
-  }
-
-  public Trigger getParent() {
-    return parent;
   }
 
   public void setParent(Trigger newParent) {
@@ -460,20 +382,8 @@ public class Trigger {
     this.parent.addChild(this);
   }
 
-  public int getTriggerType() {
-    return triggerType;
-  }
-
   public String getTriggerTypeStr() {
     return triggerTypeMap.get(triggerType);
-  }
-
-  public void setTriggerType(int triggerType) {
-    this.triggerType = triggerType;
-  }
-
-  public File getScript() {
-    return script;
   }
 
   public void setScript(File script) {
@@ -531,7 +441,7 @@ public class Trigger {
    * Used by Core-TriggerDaemon to determine when to store TriggerUnits file Used by
    * Core-ScriptDaemon to determine when to delete TriggerUnits file.
    *
-   * @return
+   * @return true if any parent trigger has a script
    */
   public boolean hasAnyParentScript() {
     Trigger tmp = getParent();

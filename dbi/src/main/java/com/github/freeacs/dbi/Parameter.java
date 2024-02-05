@@ -1,7 +1,11 @@
 package com.github.freeacs.dbi;
 
+import lombok.Data;
+import lombok.Getter;
+
 import java.util.regex.Pattern;
 
+@Data
 public class Parameter {
   public enum Operator {
     EQ("="),
@@ -110,6 +114,7 @@ public class Parameter {
     }
   }
 
+  @Getter
   public enum ParameterDataType {
     TEXT("TEXT"),
     NUMBER("NUMBER");
@@ -127,10 +132,6 @@ public class Parameter {
         return NUMBER;
       }
       throw new IllegalArgumentException("Data type " + type + " is not a valid type");
-    }
-
-    public String getType() {
-      return this.type;
     }
 
     public String getSQL() {
@@ -169,14 +170,6 @@ public class Parameter {
     this.type = ParameterDataType.TEXT;
   }
 
-  public UnittypeParameter getUnittypeParameter() {
-    return unittypeParameter;
-  }
-
-  public void setUnittypeParameter(UnittypeParameter unittypeParameter) {
-    this.unittypeParameter = unittypeParameter;
-  }
-
   public String getValue() {
     if (value == null) {
       value = "";
@@ -194,47 +187,8 @@ public class Parameter {
     this.value = value;
   }
 
-  public String toString() {
-    return "[" + unittypeParameter.getName() + " " + op.getOperatorSign() + " " + getValue() + "]";
-  }
-
-  protected Pattern getPattern() {
-    return pattern;
-  }
-
-  protected void setPattern(Pattern pattern) {
-    this.pattern = pattern;
-  }
-
-  public Integer getGroupParameterId() {
-    return groupParameterId;
-  }
-
-  public void setGroupParameterId(Integer groupParameterId) {
-    this.groupParameterId = groupParameterId;
-  }
-
-  public Operator getOp() {
-    return op;
-  }
-
-  public void setOp(Operator op) {
-    this.op = op;
-  }
-
-  public ParameterDataType getType() {
-    return type;
-  }
-
-  public void setType(ParameterDataType type) {
-    this.type = type;
-  }
-
   public boolean valueWasNull() {
     return valueWasNull;
   }
 
-  public void setValueWasNull(boolean valueWasNull) {
-    this.valueWasNull = valueWasNull;
-  }
 }

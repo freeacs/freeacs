@@ -1,5 +1,8 @@
 package com.github.freeacs.dbi;
 
+import lombok.Data;
+
+@Data
 public class ProfileParameter {
   private Integer id;
 
@@ -13,32 +16,7 @@ public class ProfileParameter {
     this.id = unittypeParameter.getId();
     this.profile = profile;
     this.unittypeParameter = unittypeParameter;
-    setValue(value);
-  }
-
-  @Override
-  public String toString() {
-    return "[" + unittypeParameter.getName() + "] [" + value + "] [" + profile.getName() + "]";
-  }
-
-  public Profile getProfile() {
-    return profile;
-  }
-
-  public UnittypeParameter getUnittypeParameter() {
-    return unittypeParameter;
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  public Integer getId() {
-    return id;
-  }
-
-  protected void setId(Integer id) {
-    this.id = id;
+    this.value = value;
   }
 
   public void setValue(String value) {

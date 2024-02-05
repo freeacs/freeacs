@@ -12,6 +12,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +21,7 @@ public class Groups {
   private static final Logger logger = LoggerFactory.getLogger(Groups.class);
   private final Map<String, Group> nameMap;
   private final Map<Integer, Group> idMap;
+  @Getter
   private final Unittype unittype;
 
   public Groups(Map<Integer, Group> idMap, Map<String, Group> nameMap, Unittype unittype) {
@@ -236,7 +239,7 @@ public class Groups {
    * The first time this method is run, the flag is set. The second time this method is run, the
    * parameter is removed from the name- and id-Map.
    *
-   * @throws SQLException
+   * @throws SQLException if database query fails
    */
   public void deleteGroup(Group group, ACS acs) throws SQLException {
     checkPermission(group, acs);
@@ -261,10 +264,6 @@ public class Groups {
     }
     nameMap.remove(group.getName());
     idMap.remove(group.getId());
-  }
-
-  public Unittype getUnittype() {
-    return unittype;
   }
 
   private void addOrChangeGroupImpl(Group group, ACS acs) throws SQLException {
@@ -338,13 +337,5 @@ public class Groups {
       }
       c.close();
     }
-  }
-
-  protected Map<String, Group> getNameMap() {
-    return nameMap;
-  }
-
-  protected Map<Integer, Group> getIdMap() {
-    return idMap;
   }
 }

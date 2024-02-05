@@ -15,7 +15,6 @@ import java.util.*;
 
 /**
  * A collection of helper methods / actions that operate on the dbi instance.
- *
  * And some other utility methods.
  */
 @Slf4j
@@ -94,7 +93,7 @@ public abstract class DBIActions {
             UnittypeParameter secretUtp = ut.getUnittypeParameters().getByName(SystemParameters.SECRET);
             UnitParameter up = new UnitParameter(secretUtp, unitId, sessionData.getSecret(), pr);
             unitParameters.add(up);
-            acsUnit.addOrChangeUnitParameters(unitParameters, pr);
+            acsUnit.addOrChangeUnitParameters(unitParameters);
             Unit unit = readUnit(sessionData.getUnitId(), dbi);
             sessionData.setUnit(unit);
             log.debug("Have created a unit:" + unitId + " with the obtained secret");

@@ -15,7 +15,7 @@ import java.sql.SQLException;
 public interface AbstractMySqlIntegrationTest {
 
     @Container
-    MySQLContainer<?> mysql = new MySQLContainer<>("mysql:5.7.34");
+    MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.3.0");
 
     @BeforeAll
     static void beforeAll() throws Exception {

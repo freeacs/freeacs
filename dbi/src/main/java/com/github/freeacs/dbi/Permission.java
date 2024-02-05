@@ -1,5 +1,8 @@
 package com.github.freeacs.dbi;
 
+import lombok.Data;
+
+@Data
 public class Permission {
   private Integer id;
   private final User user;
@@ -10,26 +13,6 @@ public class Permission {
     this.user = user;
     this.unittypeId = unittypeId;
     this.profileId = profileId;
-  }
-
-  public User getUser() {
-    return user;
-  }
-
-  public Integer getId() {
-    return id;
-  }
-
-  protected void setId(Integer id) {
-    this.id = id;
-  }
-
-  public Integer getUnittypeId() {
-    return unittypeId;
-  }
-
-  public Integer getProfileId() {
-    return profileId;
   }
 
   public boolean isUnittypeAdmin() {

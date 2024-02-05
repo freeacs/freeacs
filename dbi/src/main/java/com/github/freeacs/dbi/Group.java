@@ -1,11 +1,15 @@
 package com.github.freeacs.dbi;
 
 import com.github.freeacs.dbi.util.MapWrapper;
+import lombok.Data;
+import lombok.ToString;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Data
 public class Group {
   private Integer id;
 
@@ -19,6 +23,7 @@ public class Group {
 
   private Unittype unittype;
 
+  @ToString.Exclude
   private List<Group> children;
 
   private Profile profile;
@@ -39,35 +44,11 @@ public class Group {
     setProfile(profile);
   }
 
-  public Integer getId() {
-    return id;
-  }
-
-  protected void setId(Integer id) {
-    this.id = id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
   public void setName(String name) {
     if (!name.equals(this.name)) {
       this.oldName = this.name;
     }
     this.name = name;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-  public Group getParent() {
-    return parent;
   }
 
   public Group getTopParent() {
@@ -120,14 +101,6 @@ public class Group {
     return groups;
   }
 
-  @Override
-  public String toString() {
-    if (parent != null) {
-      return "[" + id + "] [" + name + "] [" + description + "] [" + parent.getId() + "]";
-    }
-    return "[" + id + "] [" + name + "] [" + description + "] ";
-  }
-
   protected String getOldName() {
     return oldName;
   }
@@ -152,14 +125,6 @@ public class Group {
     if (children != null) {
       children.remove(child);
     }
-  }
-
-  public Unittype getUnittype() {
-    return unittype;
-  }
-
-  protected void setUnittype(Unittype unittype) {
-    this.unittype = unittype;
   }
 
   protected void setProfileFromDelete(Profile profile) {
@@ -190,10 +155,6 @@ public class Group {
     this.profile = profile;
   }
 
-  public Profile getProfile() {
-    return profile;
-  }
-
   public GroupParameters getGroupParameters() {
     if (parameters == null) {
       Map<Integer, GroupParameter> idMap = new HashMap<>();
@@ -202,18 +163,6 @@ public class Group {
       parameters = new GroupParameters(nameMap, idMap, this);
     }
     return parameters;
-  }
-
-  protected void setOldName(String oldName) {
-    this.oldName = oldName;
-  }
-
-  public Integer getCount() {
-    return count;
-  }
-
-  public void setCount(Integer count) {
-    this.count = count;
   }
 
   public boolean match(Unit unit) {
@@ -225,7 +174,7 @@ public class Group {
     }
     Group g = this;
     GroupParameter[] gpArr = getGroupParameters().getGroupParameters();
-    while (match && gpArr != null) {
+    while (gpArr != null) {
       if (!matchGroupParameters(upMap, gpArr)) {
         match = false;
         break;

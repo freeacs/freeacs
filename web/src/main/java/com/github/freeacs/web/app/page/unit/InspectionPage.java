@@ -97,7 +97,7 @@ public class InspectionPage extends AbstractWebPage {
         if (up != null && !"N/A".equals(up.getValue())) {
           message = up.getValue();
           up.setValue("N/A");
-          acsUnit.addOrChangeUnitParameters(Collections.singletonList(up), profile);
+          acsUnit.addOrChangeUnitParameters(Collections.singletonList(up));
         }
       }
 

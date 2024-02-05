@@ -81,7 +81,7 @@ public class Heartbeats {
     if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
     }
-    heartbeat.validateInput(true);
+    heartbeat.setValidateInput(true);
     heartbeat.validate();
     addOrChangeHeartbeatImpl(heartbeat, acs);
     idMap.put(heartbeat.getId(), heartbeat);

@@ -177,8 +177,8 @@ public class GroupParameters {
    * The first time this method is run, the flag is set. The second time this method is run, the
    * parameter is removed from the name- and id-Map.
    *
-   * @param groupParameter
-   * @throws SQLException
+   * @param groupParameter the group parameter to delete
+   * @throws SQLException if something goes wrong
    */
   public void deleteGroupParameter(GroupParameter groupParameter, ACS acs) throws SQLException {
     Groups.checkPermission(group, acs);

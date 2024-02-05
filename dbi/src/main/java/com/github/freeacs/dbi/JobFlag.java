@@ -1,5 +1,8 @@
 package com.github.freeacs.dbi;
 
+import lombok.Data;
+
+@Data
 public class JobFlag {
   public enum JobType {
     CONFIG,
@@ -54,19 +57,7 @@ public class JobFlag {
     serviceWindow = jobServiceWindow;
   }
 
-  public JobType getType() {
-    return type;
-  }
-
-  public void setType(JobType type) {
-    this.type = type;
-  }
-
-  public JobServiceWindow getServiceWindow() {
-    return serviceWindow;
-  }
-
-  public String toString() {
-    return type + "|" + serviceWindow;
+public String getFlag() {
+    return type.name() + "|" + serviceWindow.name();
   }
 }

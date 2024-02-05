@@ -268,7 +268,7 @@ public class ACSUnit {
   }
 
   private void addOrChangeUnitParameters(
-      List<UnitParameter> unitParameters, Profile prof, boolean session) throws SQLException {
+      List<UnitParameter> unitParameters, boolean session) throws SQLException {
     Connection connection = null;
     PreparedStatement pp = null;
     String sql;
@@ -387,12 +387,12 @@ public class ACSUnit {
         // stored
       }
     }
-    addOrChangeUnitParameters(queuedParameters, unit.getProfile());
+    addOrChangeUnitParameters(queuedParameters);
   }
 
-  public void addOrChangeUnitParameters(List<UnitParameter> unitParameters, Profile prof)
+  public void addOrChangeUnitParameters(List<UnitParameter> unitParameters)
       throws SQLException {
-    addOrChangeUnitParameters(unitParameters, prof, false);
+    addOrChangeUnitParameters(unitParameters, false);
   }
 
   public void addOrChangeUnitParameter(Unit unit, String unittypeParameterName, String value)
@@ -403,13 +403,13 @@ public class ACSUnit {
     UnitParameter up = new UnitParameter(parameter, unit.getId(), unit.getProfile());
     List<UnitParameter> ups = new ArrayList<>();
     ups.add(up);
-    addOrChangeUnitParameters(ups, unit.getProfile());
+    addOrChangeUnitParameters(ups);
   }
 
   public void addOrChangeSessionUnitParameters(List<UnitParameter> unitParameters, Profile prof)
       throws SQLException {
     if (ACSVersionCheck.unitParamSessionSupported) {
-      addOrChangeUnitParameters(unitParameters, prof, true);
+      addOrChangeUnitParameters(unitParameters, true);
     }
   }
 

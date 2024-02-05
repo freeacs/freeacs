@@ -3,12 +3,15 @@ package com.github.freeacs.dbi;
 import com.github.freeacs.dbi.util.MapWrapper;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemParameters;
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+@Data
 public class Unit {
   private final String id;
 
@@ -37,14 +40,6 @@ public class Unit {
     this.id = id;
     this.unittype = null;
     this.profile = null;
-  }
-
-  public String getId() {
-    return id;
-  }
-
-  public Profile getProfile() {
-    return profile;
   }
 
   /**
@@ -80,10 +75,6 @@ public class Unit {
     return unitParameters;
   }
 
-  public void setUnitParameters(Map<String, UnitParameter> parameters) {
-    this.unitParameters = parameters;
-  }
-
   @Override
   public int hashCode() {
     return id.hashCode();
@@ -92,23 +83,6 @@ public class Unit {
   @Override
   public boolean equals(Object o) {
     return o instanceof Unit && this.id.equals(((Unit) o).getId());
-  }
-
-  @Override
-  public String toString() {
-    return id;
-  }
-
-  public Unittype getUnittype() {
-    return unittype;
-  }
-
-  public boolean isParamsAvailable() {
-    return paramsAvailable;
-  }
-
-  public void setParamsAvailable(boolean paramsAvailable) {
-    this.paramsAvailable = paramsAvailable;
   }
 
   public String getParameterValue(String unittypeParameterName) {

@@ -263,7 +263,7 @@ public class JobKickThread implements Runnable {
         new UnitParameter(currentUtp, u.getId(), String.valueOf(jobId), u.getProfile());
     List<UnitParameter> upList = new ArrayList<>();
     upList.add(currentUp);
-    acsUnit.addOrChangeUnitParameters(upList, u.getProfile());
+    acsUnit.addOrChangeUnitParameters(upList);
     UnitJobs unitJobs = new UnitJobs(xapsCp);
     UnitJob uj = new UnitJob(u.getId(), jobId);
     uj.setStartTimestamp(new Date());

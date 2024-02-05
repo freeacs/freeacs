@@ -1,10 +1,14 @@
 package com.github.freeacs.dbi;
 
+import lombok.Data;
+import lombok.Getter;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This is a helper class to easily build SQL for insert/update, since it's the same columns
@@ -13,7 +17,9 @@ import java.util.List;
  *
  * @author Morten
  */
+@Getter
 public class InsertOrUpdateStatement {
+  @Data
   public static class Field {
     /** The database name of the column. */
     private String column;
@@ -44,11 +50,7 @@ public class InsertOrUpdateStatement {
     }
 
     public Field(String column, Integer i, boolean primaryKey) {
-      if (i != null) {
-        this.value = i;
-      } else {
-        this.value = new DynamicStatement.NullInteger();
-      }
+      this.value = Objects.requireNonNullElseGet(i, DynamicStatement.NullInteger::new);
       this.column = column;
       this.primaryKey = primaryKey;
     }
@@ -58,49 +60,16 @@ public class InsertOrUpdateStatement {
     }
 
     public Field(String column, String s, boolean primaryKey) {
-      if (s != null) {
-        this.value = s;
-      } else {
-        this.value = new DynamicStatement.NullString();
-      }
+      this.value = Objects.requireNonNullElseGet(s, DynamicStatement.NullString::new);
       this.column = column;
-      this.primaryKey = primaryKey;
-    }
-
-    public String getColumn() {
-      return column;
-    }
-
-    public void setColumn(String column) {
-      this.column = column;
-    }
-
-    public Object getValue() {
-      return value;
-    }
-
-    public void setValue(Object value) {
-      this.value = value;
-    }
-
-    public boolean isPrimaryKey() {
-      return primaryKey;
-    }
-
-    public void setPrimaryKey(boolean primaryKey) {
       this.primaryKey = primaryKey;
     }
 
     public boolean equals(Object o) {
-      if (o instanceof Field) {
-        Field f = (Field) o;
-        return f.getColumn().equals(getColumn());
+      if (o instanceof Field f) {
+          return f.getColumn().equals(getColumn());
       }
       return false;
-    }
-
-    public String toString() {
-      return column;
     }
   }
 
@@ -122,9 +91,9 @@ public class InsertOrUpdateStatement {
    * This method will either make an insert or and update. If primary keys are null, it will make an
    * insert (the primary keys will be auto-generated), otherwise it will make an update.
    *
-   * @param c
-   * @return
-   * @throws SQLException
+   * @param c The connection to the database
+   * @return The prepared statement
+   * @throws SQLException If something goes wrong
    */
   public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
     List<String> autoGeneratePK = new ArrayList<>();
@@ -168,9 +137,5 @@ public class InsertOrUpdateStatement {
       ds.cleanupSQLTail();
       return ds.makePreparedStatement(c);
     }
-  }
-
-  public boolean isInsert() {
-    return insert;
   }
 }

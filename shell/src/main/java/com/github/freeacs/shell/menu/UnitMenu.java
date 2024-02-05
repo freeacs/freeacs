@@ -72,7 +72,7 @@ public class UnitMenu {
         session
             .getAcsUnit()
             .addOrChangeUnitParameters(
-                session.getBatchStorage().getAddChangeUnitParameters(), context.getProfile());
+                session.getBatchStorage().getAddChangeUnitParameters());
         session.getBatchStorage().setAddChangeUnitParameters(null);
       }
       session.incCounter();

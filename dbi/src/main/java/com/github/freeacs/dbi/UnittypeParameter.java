@@ -1,5 +1,8 @@
 package com.github.freeacs.dbi;
 
+import lombok.Data;
+
+@Data
 public class UnittypeParameter {
   private Integer id;
 
@@ -27,31 +30,6 @@ public class UnittypeParameter {
     this.flag = flag;
   }
 
-  public UnittypeParameterFlag getFlag() {
-    return flag;
-  }
-
-  public Integer getId() {
-    return id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  @Override
-  public String toString() {
-    return "[" + id + "] [" + name + "] [" + flag + "]";
-  }
-
-  protected void setId(Integer id) {
-    this.id = id;
-  }
-
-  protected String getOldName() {
-    return oldName;
-  }
-
   public void setName(String name) {
     if (!name.equals(oldName)) {
       this.oldName = this.name;
@@ -61,9 +39,8 @@ public class UnittypeParameter {
 
   @Override
   public boolean equals(Object o) {
-    if (o instanceof UnittypeParameter) {
-      UnittypeParameter oCasted = (UnittypeParameter) o;
-      if (oCasted.getId() != null && getId() != null) {
+    if (o instanceof UnittypeParameter oCasted) {
+        if (oCasted.getId() != null && getId() != null) {
         return oCasted.getId().equals(id);
       } else if (oCasted.getName() != null && getName() != null) {
         return oCasted.getName().equals(getName());
@@ -80,10 +57,6 @@ public class UnittypeParameter {
     this.flag = flag;
   }
 
-  public UnittypeParameterValues getValues() {
-    return values;
-  }
-
   public void setValues(UnittypeParameterValues values) {
     if (values != null && getFlag().isReadOnly()) {
       throw new IllegalArgumentException(
@@ -94,13 +67,5 @@ public class UnittypeParameter {
 
   protected void setValuesFromACS(UnittypeParameterValues values) {
     this.values = values;
-  }
-
-  protected void setOldName(String oldName) {
-    this.oldName = oldName;
-  }
-
-  public Unittype getUnittype() {
-    return unittype;
   }
 }

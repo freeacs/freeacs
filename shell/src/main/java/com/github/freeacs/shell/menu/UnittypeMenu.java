@@ -1222,7 +1222,7 @@ public class UnittypeMenu {
     unitList.add(u.getId());
     acsUnit.deleteUnit(u);
     acsUnit.addUnits(unitList, targetProfile);
-    acsUnit.addOrChangeUnitParameters(targetUnitParams, targetProfile);
+    acsUnit.addOrChangeUnitParameters(targetUnitParams);
     context.println(
         "The unit " + args[1] + " is moved to unittype " + args[2] + ", profile " + args[3]);
   }

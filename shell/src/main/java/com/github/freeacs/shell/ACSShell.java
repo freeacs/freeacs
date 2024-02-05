@@ -10,6 +10,9 @@ import com.github.freeacs.dbi.User;
 import com.github.freeacs.dbi.Users;
 import com.github.freeacs.dbi.util.ACSVersionCheck;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -27,7 +30,10 @@ public class ACSShell {
   private BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
   private PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
   private List<Throwable> throwables = new ArrayList<>();
+  @Setter
+  @Getter
   private Session session;
+  @Getter
   private boolean initialized;
 
   protected void setReader(BufferedReader reader) {
@@ -289,15 +295,11 @@ public class ACSShell {
     if (Properties.isRestricted()
         || (fusionUser != null
             && !fusionUser.trim().isEmpty()
-            && !"admin".equals(fusionUser.toLowerCase()))) {
+            && !"admin".equalsIgnoreCase(fusionUser))) {
       session.setFusionUser(fusionUser);
       session.print("Password: ");
       session.setFusionPass(session.getProcessor().retrieveInput());
     }
-  }
-
-  public Session getSession() {
-    return session;
   }
 
   public synchronized void addThrowable(Throwable t) {
@@ -312,11 +314,4 @@ public class ACSShell {
     this.throwables = throwables;
   }
 
-  public void setSession(Session session) {
-    this.session = session;
-  }
-
-  public boolean isInitialized() {
-    return initialized;
-  }
 }
