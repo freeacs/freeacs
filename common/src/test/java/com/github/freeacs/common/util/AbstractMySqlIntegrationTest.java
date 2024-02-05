@@ -22,7 +22,7 @@ public interface AbstractMySqlIntegrationTest {
         mysql.start();
         MariaDbDataSource dataSource = getDataSource();
         Connection connection = dataSource.getConnection();
-        DBScriptUtility.runScript("install.sql", connection);
+        DBScriptUtility.runScript("mysql/install.sql", connection);
         DBScriptUtility.runScript("seed.sql", connection);
         connection.close();
     }
