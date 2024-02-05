@@ -1,0 +1,22 @@
+# fly.toml app configuration file generated for tr069 on 2024-02-04T17:12:54+01:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'tr069'
+primary_region = 'ams'
+
+[build]
+
+[http_service]
+  internal_port = 8085
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ['app']
+
+[[vm]]
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 2048

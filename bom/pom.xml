@@ -96,26 +96,6 @@
                 <version>1.4.3</version>
             </dependency>
             <dependency>
-                <groupId>ch.vorburger.mariaDB4j</groupId>
-                <artifactId>mariaDB4j-core</artifactId>
-                <version>3.0.1</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.vorburger.mariaDB4j</groupId>
-                <artifactId>mariaDB4j-db-mac64</artifactId>
-                <version>10.2.11</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.vorburger.mariaDB4j</groupId>
-                <artifactId>mariaDB4j-db-linux64</artifactId>
-                <version>10.11.5</version>
-            </dependency>
-            <dependency>
-                <groupId>ch.vorburger.mariaDB4j</groupId>
-                <artifactId>mariaDB4j-db-win32</artifactId>
-                <version>10.2.11</version>
-            </dependency>
-            <dependency>
                 <groupId>org.eclipse.jetty.websocket</groupId>
                 <artifactId>websocket-server</artifactId>
                 <version>9.4.53.v20231009</version>
@@ -124,6 +104,11 @@
                 <groupId>org.eclipse.jetty.websocket</groupId>
                 <artifactId>websocket-servlet</artifactId>
                 <version>11.0.20</version>
+            </dependency>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>42.7.1</version>
             </dependency>
             <dependency>
                 <groupId>org.mariadb.jdbc</groupId>
@@ -153,7 +138,7 @@
             <dependency>
                 <groupId>com.mysql</groupId>
                 <artifactId>mysql-connector-j</artifactId>
-                <version>8.0.33</version>
+                <version>8.2.0</version>
             </dependency>
             <dependency>
                 <groupId>org.mybatis</groupId>

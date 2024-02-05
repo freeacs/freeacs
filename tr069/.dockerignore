@@ -1,0 +1,12 @@
+# flyctl launch added from .gitignore
+.classpath
+.project
+.settings
+bin
+build
+**/*.iml
+/target
+**/*.log
+**/db
+fly.toml
+!/target/*.zip
