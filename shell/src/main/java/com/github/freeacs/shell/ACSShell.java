@@ -1,5 +1,6 @@
 package com.github.freeacs.shell;
 
+import com.github.freeacs.common.cache.NoOpACSCacheManager;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Identity;
@@ -10,6 +11,9 @@ import com.github.freeacs.dbi.User;
 import com.github.freeacs.dbi.Users;
 import com.github.freeacs.dbi.util.ACSVersionCheck;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -27,7 +31,10 @@ public class ACSShell {
   private BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
   private PrintWriter out = new PrintWriter(new OutputStreamWriter(System.out));
   private List<Throwable> throwables = new ArrayList<>();
+  @Setter
+  @Getter
   private Session session;
+  @Getter
   private boolean initialized;
 
   protected void setReader(BufferedReader reader) {
@@ -108,7 +115,7 @@ public class ACSShell {
     Identity id =
         new Identity(SyslogConstants.FACILITY_SHELL, version, session.getVerifiedFusionUser());
     Syslog syslog = new Syslog(session.getSysProps(), id);
-    DBI dbi = DBI.createAndInitialize(Integer.MAX_VALUE, session.getXapsProps(), syslog);
+    DBI dbi = DBI.createAndInitialize(Integer.MAX_VALUE, session.getXapsProps(), syslog, new NoOpACSCacheManager());
     session.setDbi(dbi);
     session.setAcs(dbi.getAcs());
     ACSUnit xapsU = new ACSUnit(session.getXapsProps(), session.getAcs(), syslog);
@@ -289,15 +296,11 @@ public class ACSShell {
     if (Properties.isRestricted()
         || (fusionUser != null
             && !fusionUser.trim().isEmpty()
-            && !"admin".equals(fusionUser.toLowerCase()))) {
+            && !"admin".equalsIgnoreCase(fusionUser))) {
       session.setFusionUser(fusionUser);
       session.print("Password: ");
       session.setFusionPass(session.getProcessor().retrieveInput());
     }
-  }
-
-  public Session getSession() {
-    return session;
   }
 
   public synchronized void addThrowable(Throwable t) {
@@ -312,11 +315,4 @@ public class ACSShell {
     this.throwables = throwables;
   }
 
-  public void setSession(Session session) {
-    this.session = session;
-  }
-
-  public boolean isInitialized() {
-    return initialized;
-  }
 }

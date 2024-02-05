@@ -1,5 +1,6 @@
 package com.github.freeacs.core;
 
+import com.github.freeacs.common.cache.NoOpACSCacheManager;
 import com.github.freeacs.common.scheduler.ExecutorWrapper;
 import com.github.freeacs.common.scheduler.ScheduleType;
 import com.github.freeacs.common.util.Sleep;
@@ -59,7 +60,7 @@ public class CoreServlet {
     final User adminUser = users.getUnprotected(Users.USER_ADMIN);
     final Identity id = new Identity(SyslogConstants.FACILITY_CORE, "latest", adminUser);
     final Syslog syslog = new Syslog(mainDataSource, id);
-    return DBI.createAndInitialize(Integer.MAX_VALUE, mainDataSource, syslog);
+    return DBI.createAndInitialize(Integer.MAX_VALUE, mainDataSource, syslog, new NoOpACSCacheManager());
   }
 
   private void bootLightTasks(DBI dbi) {

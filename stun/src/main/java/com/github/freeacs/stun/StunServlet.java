@@ -1,5 +1,6 @@
 package com.github.freeacs.stun;
 
+import com.github.freeacs.common.cache.NoOpACSCacheManager;
 import com.github.freeacs.common.scheduler.ExecutorWrapper;
 import com.github.freeacs.common.util.Sleep;
 import com.github.freeacs.dbi.DBI;
@@ -44,7 +45,7 @@ public class StunServlet {
     User user = users.getUnprotected(Users.USER_ADMIN);
     Identity id = new Identity(SyslogConstants.FACILITY_STUN, "latest", user);
     Syslog syslog = new Syslog(mainDs, id);
-    return DBI.createAndInitialize(Integer.MAX_VALUE, mainDs, syslog);
+    return DBI.createAndInitialize(Integer.MAX_VALUE, mainDs, syslog, new NoOpACSCacheManager());
   }
 
   private synchronized void trigger() {

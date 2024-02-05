@@ -1,5 +1,6 @@
 package com.github.freeacs.syslogserver;
 
+import com.github.freeacs.common.cache.NoOpACSCacheManager;
 import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.common.util.CacheValue;
 import com.github.freeacs.common.util.Sleep;
@@ -31,6 +32,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.sql.DataSource;
+
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +41,7 @@ public class Syslog2DB implements Runnable {
   private final Properties properties;
   private final DataSource xapsCp;
 
+  @Getter
   private static final Syslog2DBCounter counter = new Syslog2DBCounter();
 
   private static final Logger logger = LoggerFactory.getLogger(Syslog2DB.class);
@@ -58,7 +62,7 @@ public class Syslog2DB implements Runnable {
   private static final List<Pattern> deviceIdPatterns = new ArrayList<>();
 
   static {
-    deviceIdPatterns.add(Pattern.compile("\\[([a-fA-F0-9:-]{12,17})\\]:"));
+    deviceIdPatterns.add(Pattern.compile("\\[([a-fA-F0-9:-]{12,17})]:"));
   }
 
   private void poulateDeviceIdPatterns() {
@@ -83,21 +87,20 @@ public class Syslog2DB implements Runnable {
 
   private static DBI dbi;
 
+  @Getter
   private static Syslog syslog;
 
   private static boolean pause;
 
+  @Getter
   private static boolean ok = true;
 
+  @Getter
   private static Throwable throwable;
 
   private static final Cache unitCache = new Cache();
 
   private ScriptExecutions executions;
-
-  public static int getUnitCacheSize() {
-    return unitCache.getMap().size();
-  }
 
   private synchronized void init(DataSource xapsCp, Properties properties) {
     executions = new ScriptExecutions(xapsCp);
@@ -111,7 +114,7 @@ public class Syslog2DB implements Runnable {
           logger.warn(
               "Syslog server runs in simulation mode, collector timestamp will be populated with device timestamp *if* they differ from 1 Jan 00:00:00");
         }
-        dbi = DBI.createAndInitialize(Integer.MAX_VALUE, xapsCp, syslog);
+        dbi = DBI.createAndInitialize(Integer.MAX_VALUE, xapsCp, syslog, new NoOpACSCacheManager());
       } catch (Throwable t) {
         logger.error("Syslog2DB Thread could not start due to failure in initialization", t);
       }
@@ -182,8 +185,7 @@ public class Syslog2DB implements Runnable {
             + " exited due to missing dbi instance");
   }
 
-  private SyslogEntry processSyslogEvent(
-      SyslogEntry entry, SyslogEvent se, Unittype unittype, Unit unit) throws SQLException {
+  private SyslogEntry processSyslogEvent(SyslogEntry entry, SyslogEvent se, Unit unit) throws SQLException {
     if (logger.isDebugEnabled()) {
       logger.debug(
           "Unitid "
@@ -252,7 +254,7 @@ public class Syslog2DB implements Runnable {
       logger.warn(
           String.format(
               "ACS could not be loaded. Cannot continue to parse syslog entry [%s]",
-              entry.toString()),
+                  entry),
           new Exception());
       return null;
     }
@@ -277,7 +279,7 @@ public class Syslog2DB implements Runnable {
         logger.warn(
             String.format(
                 "We found the unit [%s], but it was not populated with Unittype and Profile. Syslog entry: %s",
-                entry.getUnitId(), entry.toString()),
+                entry.getUnitId(), entry),
             new Exception());
         return null;
       }
@@ -291,9 +293,6 @@ public class Syslog2DB implements Runnable {
         entry.setFacilityVersion(swUp.getValue());
       }
       entry = populateSyslogEvent(unittype, entry, unit);
-      if (entry == null) {
-        return null;
-      }
     } else {
       // unit was not found in xAPS
       String action = properties.getUnknownUnitsAction();
@@ -405,12 +404,10 @@ public class Syslog2DB implements Runnable {
               || !trigger.getSyslogEvent().getId().equals(se.getId())) {
             continue;
           }
-          //					if (trigger.getGroup() != null && !trigger.getGroup().match(unit))
-          //						continue;
           counter.incTriggerEvent();
           triggers.addEvent(new TriggerEvent(trigger, new Date(), unit.getId()), populateXAPS());
         }
-        if (processSyslogEvent(entry, se, unittype, unit) == null) {
+        if (processSyslogEvent(entry, se, unit) == null) {
           return null;
         }
         break;
@@ -460,7 +457,7 @@ public class Syslog2DB implements Runnable {
     }
   }
 
-  private SyslogEntry parse(SyslogPacket packet) throws SQLException {
+  private SyslogEntry parse(SyslogPacket packet) {
     String syslogStr = packet.getSyslogStr().trim();
     Matcher m = priPattern.matcher(syslogStr);
     int severity = 7;
@@ -565,26 +562,11 @@ public class Syslog2DB implements Runnable {
     }
   }
 
-  public static boolean isOk() {
-    return ok;
-  }
-
-  public static Throwable getThrowable() {
-    return throwable;
-  }
-
-  public static Syslog getSyslog() {
-    return syslog;
-  }
-
-  public static Syslog2DBCounter getCounter() {
-    return counter;
-  }
-
   public static void pause(boolean newState) {
     pause = newState;
   }
 
+  @Getter
   public static class Syslog2DBCounter {
     private int unknownRedirected;
     private int unknownDiscarded;
@@ -665,10 +647,6 @@ public class Syslog2DB implements Runnable {
       triggerEvent++;
     }
 
-    public synchronized void incScriptExecuted() {
-      scriptExecuted++;
-    }
-
     public synchronized Syslog2DBCounter resetCounters() {
       Syslog2DBCounter c =
           new Syslog2DBCounter(
@@ -697,48 +675,5 @@ public class Syslog2DB implements Runnable {
       return c;
     }
 
-    public int getUnknownRedirected() {
-      return unknownRedirected;
-    }
-
-    public int getUnknownDiscarded() {
-      return unknownDiscarded;
-    }
-
-    public int getUnknownAllowed() {
-      return unknownAllowed;
-    }
-
-    public int getUnknownAllowedCreated() {
-      return unknownAllowedCreated;
-    }
-
-    public int getKnownEventDiscarded() {
-      return knownEventDiscarded;
-    }
-
-    public int getKnownEventDuplicated() {
-      return knownEventDuplicated;
-    }
-
-    public int getOk() {
-      return ok;
-    }
-
-    public int getFailed() {
-      return failed;
-    }
-
-    public int getKnownEventAllowed() {
-      return knownEventAllowed;
-    }
-
-    public int getTriggerEvent() {
-      return triggerEvent;
-    }
-
-    public int getScriptExecuted() {
-      return scriptExecuted;
-    }
   }
 }
