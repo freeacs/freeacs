@@ -1,0 +1,18 @@
+hazelcast:
+  cluster-name: FreeACS
+  network:
+    join:
+      multicast:
+        enabled: false
+      kubernetes:
+        enabled: false
+      tcp-ip:
+        enabled: true
+        interface: 127.0.0.1
+        member-list:
+          - 127.0.0.1:5701
+          - 127.0.0.1:5702
+    reuse-address: true
+    port:
+      auto-increment: true
+      port: 5701

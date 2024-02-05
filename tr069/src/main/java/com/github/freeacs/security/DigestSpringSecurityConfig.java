@@ -37,6 +37,7 @@ public class DigestSpringSecurityConfig extends AbstractSecurityConfig {
                 .addFilterBefore(digestAuthenticationFilter(authenticationEntryPoint, digestUserCache(), userDetailsService), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests.requestMatchers(contextPath + OKController.CTX_PATH).permitAll();
+                    authorizeRequests.requestMatchers(contextPath + "/test/*").permitAll();
                     if (!fileAuthUsed) {
                         authorizeRequests.requestMatchers(contextPath + FileController.CTX_PATH + "/**").permitAll();
                     }
