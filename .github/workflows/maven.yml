@@ -19,4 +19,4 @@ jobs:
     - uses: actions/setup-java@v1
       with:
         java-version: ${{ matrix.java-version }}
-    - run: mvn -B install --no-transfer-progress --file pom.xml
+    - run: mvn -B package --no-transfer-progress --file pom.xml
