@@ -14,15 +14,67 @@ import java.util.List;
 @Slf4j
 public class ACSDao {
 
-    private static final String GET_UNITTYPE_BY_ID = "SELECT unit_type_id, matcher_id, unit_type_name, vendor_name, description, protocol FROM unit_type WHERE unit_type_id = ?";
+    private static final String GET_UNITTYPE_BY_ID = """
+        SELECT 
+            unit_type_id,
+            unit_type_name, 
+            vendor_name, 
+            description, 
+            protocol
+        FROM unit_type
+        WHERE unit_type_id = ?
+    """;;
 
-    private static final String GET_UNITTYPE_PARAMETERS_BY_UNITTYPE_ID = "SELECT unit_type_param_id, unit_type_id, name, value, flags FROM unit_type_param WHERE unit_type_id = ?";
+    private static final String GET_UNITTYPE_PARAMETERS_BY_UNITTYPE_ID = """
+        SELECT 
+            unit_type_param_id, 
+            unit_type_id, 
+            name, 
+            value, 
+            flags
+        FROM unit_type_param
+        WHERE unit_type_id = ?
+    """;
 
-    private static final String GET_PROFILE_PARAMETERS_BY_PROFILE_ID = "SELECT profile_id, unit_type_param_id, value FROM profile_param WHERE profile_id = ?";
+    private static final String GET_PROFILE_PARAMETERS_BY_PROFILE_ID = """
+        SELECT
+            pp.profile_param_id, 
+            ut.unit_type_id, 
+            pp.unit_type_param_id, 
+            pp.value
+        FROM profile_parameters AS pp
+        JOIN unittype AS ut ON pp.unittype_id = ut.id
+        JOIN unittype_parameters AS utp ON ut.id = utp.unittype_id
+        WHERE pp.profile_id = ?
+    """;
 
-    private static final String GET_JOB_PARAMETERS_BY_JOB_ID = "SELECT job_id, unit_type_param_id, value FROM job_param WHERE job_id = ?";
+    private static final String GET_JOB_PARAMETERS_BY_JOB_ID = """
+        SELECT 
+            jp.job_id,
+            jp.job_param_id,
+            ut.unit_type_id, 
+            jp.unit_type_param_id, 
+            jp.value
+        FROM job_parameters AS jp
+        JOIN unittype AS ut ON jp.unittype_id = ut.id
+        JOIN unittype_parameters AS utp ON ut.id = utp.unittype_id 
+        WHERE jp.job_id = ?
+    """;
 
-    private static final String GET_JOB_PARAMETERS_BY_UNIT_ID = "SELECT job_id, unit_type_param_id, value FROM job_param WHERE job_id = ?";
+    private static final String GET_GROUP_PARAMETERS_BY_GROUP_ID = """
+        SELECT 
+            ut.unit_type_id,
+            gp.id,
+            gp.group_id, 
+            gp.unit_type_param_id,
+            gp.operator, 
+            gp.data_type,
+            gp.value
+        FROM group_parameters AS gp
+        JOIN unittype AS ut ON gp.unittype_id = ut.id
+        JOIN unittype_parameters AS utp ON ut.id = utp.unittype_id
+        WHERE gp.group_id = ?
+    """;
 
     private final DataSource dataSource;
     private final ACSCacheManager acsCacheManager;
@@ -156,6 +208,7 @@ public class ACSDao {
                             new UnittypeParameterFlag(resultSet.getString("flags"), true)
                     );
                     unitTypeParam.setId(resultSet.getInt("unit_type_param_id"));
+                    unittypeParameters.add(unitTypeParam);
                 }
                 return unittypeParameters;
             }
@@ -180,17 +233,90 @@ public class ACSDao {
     }
 
     private List<GroupParameter> getGroupParametersByGroupId(Integer groupId) {
-        // TODO: Implement this method
-        return null;
+        if (groupId == null) {
+            throw new IllegalArgumentException("groupId cannot be null");
+        }
+        var group = getCachedGroup(groupId);
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(GET_GROUP_PARAMETERS_BY_GROUP_ID)) {
+            statement.setInt(1, groupId);
+            try(ResultSet resultSet = statement.executeQuery()) {
+                var groupParameters = new ArrayList<GroupParameter>();
+                while (resultSet.next()) {
+                    Integer unit_type_param_id = resultSet.getInt("gp.unit_type_param_id");
+                    UnittypeParameter utp = 
+                        getCachedUnittypeParameters(resultSet.getInt("unit_type_id"))
+                            .stream()
+                            .filter(p -> p.getId() == unit_type_param_id)
+                            .findFirst()
+                            .orElseThrow();
+                    String value = resultSet.getString("gp.value");
+                    Parameter.Operator op = Parameter.Operator.getOperator(resultSet.getString("operator"));
+                    Parameter.ParameterDataType pdt = Parameter.ParameterDataType.getDataType(resultSet.getString("data_type"));
+                    Parameter parameter = new Parameter(utp, value, op, pdt);
+                    GroupParameter groupParameter = new GroupParameter(parameter, group);
+                    groupParameter.setId(resultSet.getInt("gp.id"));
+                    groupParameters.add(groupParameter);
+                }
+                return groupParameters;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private List<ProfileParameter> getProfileParametersByProfileId(Integer profileId) {
-        // TODO: Implement this method
-        return null;
+        if (profileId == null) {
+            throw new IllegalArgumentException("profileId cannot be null");
+        }
+        var profile = getCachedProfile(profileId);
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(GET_PROFILE_PARAMETERS_BY_PROFILE_ID)) {
+            statement.setInt(1, profileId);
+            try(ResultSet resultSet = statement.executeQuery()) {
+                var profileParameters = new ArrayList<ProfileParameter>();
+                while (resultSet.next()) {
+                    var unit_type_param_id = resultSet.getInt("unit_type_param_id");
+                    UnittypeParameter unit_type_param = 
+                        getCachedUnittypeParameters(resultSet.getInt("unit_type_id"))
+                            .stream()
+                            .filter(p -> p.getId() == unit_type_param_id)
+                            .findFirst()
+                            .orElseThrow();
+                    var value = resultSet.getString("value");
+                    var profileParameter = new ProfileParameter(profile, unit_type_param, value);
+                    profileParameters.add(profileParameter);
+                }
+                return profileParameters;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private List<JobParameter> getJobParametersByJobId(Integer jobId) {
-        // TODO: Implement this method
-        return null;
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(GET_JOB_PARAMETERS_BY_JOB_ID)) {
+            statement.setInt(1, jobId);
+            try(ResultSet resultSet = statement.executeQuery()) {
+                var jobParameters = new ArrayList<JobParameter>();
+                while (resultSet.next()) {
+                    var unit_type_param_id = resultSet.getInt("unit_type_param_id");
+                    UnittypeParameter unit_type_param = 
+                        getCachedUnittypeParameters(resultSet.getInt("unit_type_id"))
+                            .stream()
+                            .filter(p -> p.getId() == unit_type_param_id)
+                            .findFirst()
+                            .orElseThrow();
+                    var job = getCachedJob(resultSet.getInt("job_id"));
+                    var param = new Parameter(unit_type_param,resultSet.getString("value"));
+                    var jobParameter = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, param);
+                    jobParameters.add(jobParameter);
+                }
+                return jobParameters;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
