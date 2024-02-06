@@ -1,6 +1,5 @@
 package com.github.freeacs.web.app.util;
 
-import com.github.freeacs.common.cache.NoOpACSCacheManager;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.DBI;
@@ -38,7 +37,7 @@ public class ACSLoader {
       if (dbi == null || dbi.isFinished()) {
         Identity ident = getIdentity(sessionId, mainDataSource);
         Syslog syslog = new Syslog(syslogDataSource, ident);
-        dbi = DBI.createAndInitialize(sessionTimeoutSecs, mainDataSource, syslog, new NoOpACSCacheManager());
+        dbi = DBI.createAndInitialize(sessionTimeoutSecs, mainDataSource, syslog);
         SessionCache.putDBI(sessionId, dbi, sessionTimeoutSecs);
       }
       Monitor.setLastDBILogin(null);

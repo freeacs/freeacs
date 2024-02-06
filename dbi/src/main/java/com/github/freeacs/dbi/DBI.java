@@ -18,7 +18,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import javax.sql.DataSource;
 
-import com.github.freeacs.common.cache.ACSCacheManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -68,7 +67,6 @@ import org.slf4j.LoggerFactory;
 @Getter
 public class DBI implements Runnable {
   private final Thread thread;
-  private final ACSCacheManager cacheManager;
 
   private boolean running = true;
 
@@ -221,19 +219,18 @@ public class DBI implements Runnable {
   private int lastReadId = -1;
   private final Inbox publishInbox = new Inbox();
 
-  private DBI(int lifetimeSec, DataSource dataSource, Syslog syslog, ACSCacheManager cacheManager) throws SQLException {
+  private DBI(int lifetimeSec, DataSource dataSource, Syslog syslog) throws SQLException {
     this.dataSource = dataSource;
     this.lifetimeSec = lifetimeSec;
     this.syslog = syslog;
-    this.cacheManager = cacheManager;
     this.acs = new ACS(dataSource, syslog);
     this.dbiId = new Random().nextInt(1000000);
     acs.setDbi(this);
     this.thread = createDBIThread();
   }
 
-  public static DBI createAndInitialize(int lifetimeSec, DataSource dataSource, Syslog syslog, ACSCacheManager cacheManager) throws SQLException {
-    DBI dbi = new DBI(lifetimeSec, dataSource, syslog, cacheManager);
+  public static DBI createAndInitialize(int lifetimeSec, DataSource dataSource, Syslog syslog) throws SQLException {
+    DBI dbi = new DBI(lifetimeSec, dataSource, syslog);
     dbi.initialize();
     return dbi;
   }

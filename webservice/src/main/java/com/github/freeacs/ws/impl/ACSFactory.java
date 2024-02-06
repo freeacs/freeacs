@@ -1,6 +1,5 @@
 package com.github.freeacs.ws.impl;
 
-import com.github.freeacs.common.cache.NoOpACSCacheManager;
 import com.github.freeacs.dbi.ACS;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.DBI;
@@ -60,7 +59,7 @@ public class ACSFactory {
         id = new Identity(SyslogConstants.FACILITY_WEBSERVICE, "2.0.1-SNAPSHOT", user);
         //	private Unittypes allowedUnittypes;
         Syslog syslog = new Syslog(syslogDataSource, id);
-        DBI dbi = DBI.createAndInitialize(lifetimeSec + 30, xapsDataSource, syslog, new NoOpACSCacheManager());
+        DBI dbi = DBI.createAndInitialize(lifetimeSec + 30, xapsDataSource, syslog);
         acs = dbi.getAcs();
         if (!login.getPassword().getValue().equals(user.getSecret())
             && !user.isCorrectSecret(login.getPassword().getValue())) {

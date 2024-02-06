@@ -1,6 +1,5 @@
 package com.github.freeacs.shell;
 
-import com.github.freeacs.common.cache.NoOpACSCacheManager;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Identity;
@@ -115,7 +114,7 @@ public class ACSShell {
     Identity id =
         new Identity(SyslogConstants.FACILITY_SHELL, version, session.getVerifiedFusionUser());
     Syslog syslog = new Syslog(session.getSysProps(), id);
-    DBI dbi = DBI.createAndInitialize(Integer.MAX_VALUE, session.getXapsProps(), syslog, new NoOpACSCacheManager());
+    DBI dbi = DBI.createAndInitialize(Integer.MAX_VALUE, session.getXapsProps(), syslog);
     session.setDbi(dbi);
     session.setAcs(dbi.getAcs());
     ACSUnit xapsU = new ACSUnit(session.getXapsProps(), session.getAcs(), syslog);
