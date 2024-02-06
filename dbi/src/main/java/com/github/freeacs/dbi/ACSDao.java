@@ -89,9 +89,9 @@ public class ACSDao {
         if (cache != null) {
             return cache;
         }
-        Unittype profile = getUnitTypeById(unitTypeId);
-        acsCacheManager.put("unittype-%s".formatted(unitTypeId), profile);
-        return profile;
+        Unittype unittype = getUnitTypeById(unitTypeId);
+        acsCacheManager.put("unittype-%s".formatted(unitTypeId), unittype);
+        return unittype;
     }
 
     public List<UnittypeParameter> getCachedUnittypeParameters(Integer unitTypeId) {
@@ -99,9 +99,9 @@ public class ACSDao {
         if (cache != null) {
             return cache;
         }
-        List<UnittypeParameter> profile = getUnittypeParametersByUnitTypeId(unitTypeId);
-        acsCacheManager.put("unittype-params-%s".formatted(unitTypeId), profile);
-        return profile;
+        List<UnittypeParameter> unittypeParameters = getUnittypeParametersByUnitTypeId(unitTypeId);
+        acsCacheManager.put("unittype-params-%s".formatted(unitTypeId), unittypeParameters);
+        return unittypeParameters;
     }
 
     public Profile getCachedProfile(Integer profileId) {
@@ -139,8 +139,8 @@ public class ACSDao {
         if (cache != null) {
             return cache;
         }
-        List<GroupParameter> profile = getGroupParametersByGroupId(groupId);
-        acsCacheManager.put("group-params-%s".formatted(groupId), profile);
+        List<GroupParameter> groupParameters = getGroupParametersByGroupId(groupId);
+        acsCacheManager.put("group-params-%s".formatted(groupId), groupParameters);
         return profile;
     }
 
@@ -159,8 +159,8 @@ public class ACSDao {
         if (cache != null) {
             return cache;
         }
-        List<JobParameter> profile = getJobParametersByJobId(jobId);
-        acsCacheManager.put("job-params-%s".formatted(jobId), profile);
+        List<JobParameter> jobParameters = getJobParametersByJobId(jobId);
+        acsCacheManager.put("job-params-%s".formatted(jobId), jobParameters);
         return profile;
     }
 
@@ -249,7 +249,7 @@ public class ACSDao {
                             .stream()
                             .filter(p -> p.getId() == unit_type_param_id)
                             .findFirst()
-                            .orElseThrow();
+                            .orElseThrow(() -> new NoSuchElementException("No UnittypeParameter found with id " + unit_type_param_id));
                     String value = resultSet.getString("gp.value");
                     Parameter.Operator op = Parameter.Operator.getOperator(resultSet.getString("operator"));
                     Parameter.ParameterDataType pdt = Parameter.ParameterDataType.getDataType(resultSet.getString("data_type"));
