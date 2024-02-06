@@ -15,22 +15,21 @@ import java.util.List;
 public class ACSDao {
 
     private static final String GET_UNITTYPE_BY_ID = """
-        SELECT 
+        SELECT
             unit_type_id,
-            unit_type_name, 
-            vendor_name, 
-            description, 
+            unit_type_name,
+            vendor_name,
+            description,
             protocol
         FROM unit_type
         WHERE unit_type_id = ?
     """;
 
     private static final String GET_UNITTYPE_PARAMETERS_BY_UNITTYPE_ID = """
-        SELECT 
-            unit_type_param_id, 
-            unit_type_id, 
-            name, 
-            value, 
+        SELECT
+            unit_type_param_id,
+            unit_type_id,
+            name,
             flags
         FROM unit_type_param
         WHERE unit_type_id = ?
@@ -38,41 +37,39 @@ public class ACSDao {
 
     private static final String GET_PROFILE_PARAMETERS_BY_PROFILE_ID = """
         SELECT
-            pp.profile_param_id, 
-            ut.unit_type_id, 
-            pp.unit_type_param_id, 
+            ut.unit_type_id,
+            pp.unit_type_param_id,
             pp.value
-        FROM profile_parameters AS pp
-        JOIN unittype AS ut ON pp.unittype_id = ut.id
-        JOIN unittype_parameters AS utp ON ut.id = utp.unittype_id
+        FROM profile_param AS pp
+        JOIN unit_type_param AS utp ON pp.unit_type_param_id = utp.unit_type_param_id
+        JOIN unit_type AS ut ON ut.unit_type_id = utp.unit_type_id
         WHERE pp.profile_id = ?
     """;
 
     private static final String GET_JOB_PARAMETERS_BY_JOB_ID = """
-        SELECT 
+        SELECT
             jp.job_id,
-            jp.job_param_id,
-            ut.unit_type_id, 
-            jp.unit_type_param_id, 
+            ut.unit_type_id,
+            jp.unit_type_param_id,
             jp.value
-        FROM job_parameters AS jp
-        JOIN unittype AS ut ON jp.unittype_id = ut.id
-        JOIN unittype_parameters AS utp ON ut.id = utp.unittype_id 
+        FROM job_param AS jp
+        JOIN unit_type_param AS utp ON jp.unit_type_param_id = utp.unit_type_param_id
+        JOIN unit_type AS ut ON ut.unit_type_id = utp.unit_type_id
         WHERE jp.job_id = ?
     """;
 
     private static final String GET_GROUP_PARAMETERS_BY_GROUP_ID = """
-        SELECT 
+        SELECT
             ut.unit_type_id,
             gp.id,
-            gp.group_id, 
+            gp.group_id,
             gp.unit_type_param_id,
-            gp.operator, 
+            gp.operator,
             gp.data_type,
             gp.value
-        FROM group_parameters AS gp
-        JOIN unittype AS ut ON gp.unittype_id = ut.id
-        JOIN unittype_parameters AS utp ON ut.id = utp.unittype_id
+        FROM group_param AS gp
+        JOIN unit_type_param AS utp ON gp.unit_type_param_id = utp.unit_type_param_id
+        JOIN unit_type AS ut ON ut.unit_type_id = utp.unit_type_id
         WHERE gp.group_id = ?
     """;
 
@@ -165,7 +162,7 @@ public class ACSDao {
     }
 
     public UnittypeParameter getCachedUnittypeParameterById(Integer unitTypeId, Integer unitTypeParamId) {
-        UnittypeParameter cache = acsCacheManager.get("unit-type-%a-param-%s".formatted(unitTypeId, unitTypeParamId), UnittypeParameter.class);
+        UnittypeParameter cache = acsCacheManager.get("unit-type-%s-param-%s".formatted(unitTypeId, unitTypeParamId), UnittypeParameter.class);
         if (cache != null) {
             return cache;
         }
@@ -174,7 +171,7 @@ public class ACSDao {
             .filter(p -> p.getId().equals(unitTypeParamId))
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("No UnittypeParameter found with id " + unitTypeParamId));
-        acsCacheManager.put("unit-type-%a-param-%s".formatted(unitTypeId, unitTypeParamId), unittypeParameter);
+        acsCacheManager.put("unit-type-%s-param-%s".formatted(unitTypeId, unitTypeParamId), unittypeParameter);
         return unittypeParameter;
     }
 
@@ -216,11 +213,9 @@ public class ACSDao {
             try (ResultSet resultSet = statement.executeQuery()) {
                 var unittypeParameters = new ArrayList<UnittypeParameter>();
                 while (resultSet.next()) {
-                    var unitTypeParam = new UnittypeParameter(
-                            unittype,
-                            resultSet.getString("name"),
-                            new UnittypeParameterFlag(resultSet.getString("flags"), true)
-                    );
+                    var name = resultSet.getString("name");
+                    var param = new UnittypeParameterFlag(resultSet.getString("flags"), true);
+                    var unitTypeParam = new UnittypeParameter(unittype, name, param);
                     unitTypeParam.setId(resultSet.getInt("unit_type_param_id"));
                     unittypeParameters.add(unitTypeParam);
                 }
@@ -260,12 +255,12 @@ public class ACSDao {
                     var unit_type_id = resultSet.getInt("unit_type_id");
                     var unit_type_param_id = resultSet.getInt("unit_type_param_id");
                     UnittypeParameter unit_type_param = getCachedUnittypeParameterById(unit_type_id, unit_type_param_id);
-                    String value = resultSet.getString("gp.value");
+                    String value = resultSet.getString("value");
                     Parameter.Operator op = Parameter.Operator.getOperator(resultSet.getString("operator"));
                     Parameter.ParameterDataType pdt = Parameter.ParameterDataType.getDataType(resultSet.getString("data_type"));
                     Parameter parameter = new Parameter(unit_type_param, value, op, pdt);
                     GroupParameter groupParameter = new GroupParameter(parameter, group);
-                    groupParameter.setId(resultSet.getInt("gp.id"));
+                    groupParameter.setId(resultSet.getInt("id"));
                     groupParameters.add(groupParameter);
                 }
                 return groupParameters;

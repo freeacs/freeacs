@@ -808,7 +808,12 @@ public class ACS {
     }
 
     // Update job parameters
-    sql = "SELECT * FROM job_param ORDER BY job_id ASC";
+    sql =  """
+      SELECT utp.unit_type_id, jp.job_id, jp.unit_type_param_id, jp.value
+      FROM job_param jp, unit_type_param utp
+      WHERE jp.unit_type_param_id = utp.unit_type_param_id
+      AND unit_id = '%s'
+    """.formatted(Job.ANY_UNIT_IN_GROUP);
     try(AutoCommitResettingConnectionWrapper connectionWrapper =
                 new AutoCommitResettingConnectionWrapper(getDataSource().getConnection(), false);
         DynamicStatementWrapper statementWrapper =

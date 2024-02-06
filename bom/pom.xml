@@ -253,12 +253,18 @@
             <dependency>
                 <groupId>com.hazelcast</groupId>
                 <artifactId>hazelcast-spring</artifactId>
-                <version>5.2.4</version>
+                <version>5.3.6</version>
             </dependency>
             <dependency>
                 <groupId>com.hazelcast</groupId>
                 <artifactId>hazelcast</artifactId>
-                <version>5.2.4</version>
+                <version>5.3.6</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hazelcast</groupId>
+                <artifactId>hazelcast</artifactId>
+                <version>5.3.6</version>
+                <classifier>tests</classifier>
             </dependency>
         </dependencies>
     </dependencyManagement>

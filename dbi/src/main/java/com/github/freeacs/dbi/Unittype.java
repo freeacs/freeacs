@@ -3,6 +3,8 @@ package com.github.freeacs.dbi;
 import com.github.freeacs.common.util.NumberComparator;
 import com.github.freeacs.dbi.util.MapWrapper;
 import com.github.freeacs.dbi.util.SystemParameters;
+import lombok.Data;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+@Data
 public class Unittype implements Comparable<Unittype> {
   public enum ProvisioningProtocol {
     TR069,
@@ -73,8 +76,7 @@ public class Unittype implements Comparable<Unittype> {
   /**
    * Only to be used internally (to shape ACS object according to permissions).
    *
-   * @param p
-   * @return
+   * @param p The profile to be used to shape the ACS object
    */
   protected void removeObjects(Profile p) {
     files = null;
@@ -96,22 +98,6 @@ public class Unittype implements Comparable<Unittype> {
     syslogEvents = null;
     triggers = null;
     heartbeats = null;
-  }
-
-  public void setAcs(ACS acs) {
-    this.acs = acs;
-  }
-
-  public ACS getAcs() {
-    return acs;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public String getVendor() {
-    return vendor;
   }
 
   public Profiles getProfiles() {
@@ -151,18 +137,6 @@ public class Unittype implements Comparable<Unittype> {
     this.unittypeParameters = unittypeParameters;
   }
 
-  public Integer getId() {
-    return id;
-  }
-
-  protected void setId(Integer id) {
-    this.id = id;
-  }
-
-  protected String getOldName() {
-    return oldName;
-  }
-
   public Files getFiles() {
     if (files == null) {
       MapWrapper<File> mw1 = new MapWrapper<>(ACS.isStrictOrder());
@@ -172,18 +146,6 @@ public class Unittype implements Comparable<Unittype> {
       files = new Files(new HashMap<>(), m1, m2, this);
     }
     return files;
-  }
-
-  protected void setFiles(Files files) {
-    this.files = files;
-  }
-
-  public void setDescription(String desc) {
-    this.description = desc;
-  }
-
-  public void setVendor(String vendor) {
-    this.vendor = vendor.trim();
   }
 
   public Heartbeats getHeartbeats() {
@@ -196,10 +158,6 @@ public class Unittype implements Comparable<Unittype> {
     return heartbeats;
   }
 
-  protected void setHeartbeats(Heartbeats heartbeats) {
-    this.heartbeats = heartbeats;
-  }
-
   public Triggers getTriggers() {
     if (triggers == null) {
       Map<Integer, Trigger> idMap = new HashMap<>();
@@ -208,10 +166,6 @@ public class Unittype implements Comparable<Unittype> {
       triggers = new Triggers(idMap, nameMap, this);
     }
     return triggers;
-  }
-
-  protected void setTriggers(Triggers triggers) {
-    this.triggers = triggers;
   }
 
   public Groups getGroups() {
@@ -224,10 +178,6 @@ public class Unittype implements Comparable<Unittype> {
     return groups;
   }
 
-  protected void setGroups(Groups groups) {
-    this.groups = groups;
-  }
-
   public SyslogEvents getSyslogEvents() {
     if (syslogEvents == null) {
       TreeMap<Integer, SyslogEvent> idMap =
@@ -236,15 +186,6 @@ public class Unittype implements Comparable<Unittype> {
     }
     return syslogEvents;
   }
-
-  protected void setSyslogEvents(SyslogEvents syslogEvents) {
-    this.syslogEvents = syslogEvents;
-  }
-
-  public String getName() {
-    return name;
-  }
-
   public void setName(String name) {
     if (!name.equals(this.name)) {
       this.oldName = this.name;
@@ -252,19 +193,11 @@ public class Unittype implements Comparable<Unittype> {
     this.name = name;
   }
 
-  public ProvisioningProtocol getProtocol() {
-    return protocol;
-  }
-
   public void setProtocol(ProvisioningProtocol protocol) {
     if (protocol == null) {
       throw new IllegalArgumentException("Unittype must specify protocol");
     }
     this.protocol = protocol;
-  }
-
-  protected void setOldName(String oldName) {
-    this.oldName = oldName;
   }
 
   public Jobs getJobs() {
@@ -277,13 +210,9 @@ public class Unittype implements Comparable<Unittype> {
     return jobs;
   }
 
-  protected void setJobs(Jobs jobs) {
-    this.jobs = jobs;
-  }
-
-  public int compareTo(Unittype o) {
-    if (o != null) {
-      return getName().compareTo(o.getName());
+  public int compareTo(Unittype unittype) {
+    if (unittype != null) {
+      return getName().compareTo(unittype.getName());
     }
     return 0;
   }
