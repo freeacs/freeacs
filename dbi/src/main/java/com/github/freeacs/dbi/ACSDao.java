@@ -164,6 +164,20 @@ public class ACSDao {
         return jobParameters;
     }
 
+    public UnittypeParameter getCachedUnittypeParameterById(Integer unitTypeId, Integer unitTypeParamId) {
+        UnittypeParameter cache = acsCacheManager.get("unit-type-%a-param-%s".formatted(unitTypeId, unitTypeParamId), UnittypeParameter.class);
+        if (cache != null) {
+            return cache;
+        }
+        UnittypeParameter unittypeParameter = getCachedUnittypeParameters(unitTypeId)
+            .stream()
+            .filter(p -> p.getId().equals(unitTypeParamId))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("No UnittypeParameter found with id " + unitTypeParamId));
+        acsCacheManager.put("unit-type-%a-param-%s".formatted(unitTypeId, unitTypeParamId), unittypeParameter);
+        return unittypeParameter;
+    }
+
     private Unittype getUnitTypeById(Integer unitTypeId) {
         if (unitTypeId == null) {
             throw new IllegalArgumentException("unitTypeId cannot be null");
@@ -243,17 +257,13 @@ public class ACSDao {
             try(ResultSet resultSet = statement.executeQuery()) {
                 var groupParameters = new ArrayList<GroupParameter>();
                 while (resultSet.next()) {
-                    Integer unit_type_param_id = resultSet.getInt("gp.unit_type_param_id");
-                    UnittypeParameter utp = 
-                        getCachedUnittypeParameters(resultSet.getInt("unit_type_id"))
-                            .stream()
-                            .filter(p -> p.getId() == unit_type_param_id)
-                            .findFirst()
-                            .orElseThrow(() -> new IllegalArgumentException("No UnittypeParameter found with id " + unit_type_param_id));
+                    var unit_type_id = resultSet.getInt("unit_type_id");
+                    var unit_type_param_id = resultSet.getInt("unit_type_param_id");
+                    UnittypeParameter unit_type_param = getCachedUnittypeParameterById(unit_type_id, unit_type_param_id);
                     String value = resultSet.getString("gp.value");
                     Parameter.Operator op = Parameter.Operator.getOperator(resultSet.getString("operator"));
                     Parameter.ParameterDataType pdt = Parameter.ParameterDataType.getDataType(resultSet.getString("data_type"));
-                    Parameter parameter = new Parameter(utp, value, op, pdt);
+                    Parameter parameter = new Parameter(unit_type_param, value, op, pdt);
                     GroupParameter groupParameter = new GroupParameter(parameter, group);
                     groupParameter.setId(resultSet.getInt("gp.id"));
                     groupParameters.add(groupParameter);
@@ -276,13 +286,9 @@ public class ACSDao {
             try(ResultSet resultSet = statement.executeQuery()) {
                 var profileParameters = new ArrayList<ProfileParameter>();
                 while (resultSet.next()) {
+                    var unit_type_id = resultSet.getInt("unit_type_id");
                     var unit_type_param_id = resultSet.getInt("unit_type_param_id");
-                    UnittypeParameter unit_type_param = 
-                        getCachedUnittypeParameters(resultSet.getInt("unit_type_id"))
-                            .stream()
-                            .filter(p -> p.getId() == unit_type_param_id)
-                            .findFirst()
-                            .orElseThrow();
+                    UnittypeParameter unit_type_param = getCachedUnittypeParameterById(unit_type_id, unit_type_param_id);
                     var value = resultSet.getString("value");
                     var profileParameter = new ProfileParameter(profile, unit_type_param, value);
                     profileParameters.add(profileParameter);
@@ -301,13 +307,9 @@ public class ACSDao {
             try(ResultSet resultSet = statement.executeQuery()) {
                 var jobParameters = new ArrayList<JobParameter>();
                 while (resultSet.next()) {
+                    var unit_type_id = resultSet.getInt("unit_type_id");
                     var unit_type_param_id = resultSet.getInt("unit_type_param_id");
-                    UnittypeParameter unit_type_param = 
-                        getCachedUnittypeParameters(resultSet.getInt("unit_type_id"))
-                            .stream()
-                            .filter(p -> p.getId() == unit_type_param_id)
-                            .findFirst()
-                            .orElseThrow();
+                    UnittypeParameter unit_type_param = getCachedUnittypeParameterById(unit_type_id, unit_type_param_id);
                     var job = getCachedJob(resultSet.getInt("job_id"));
                     var param = new Parameter(unit_type_param,resultSet.getString("value"));
                     var jobParameter = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, param);
