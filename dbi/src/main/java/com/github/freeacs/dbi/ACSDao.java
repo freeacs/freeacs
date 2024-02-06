@@ -23,7 +23,7 @@ public class ACSDao {
             protocol
         FROM unit_type
         WHERE unit_type_id = ?
-    """;;
+    """;
 
     private static final String GET_UNITTYPE_PARAMETERS_BY_UNITTYPE_ID = """
         SELECT 
