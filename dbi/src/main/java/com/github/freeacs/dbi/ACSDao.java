@@ -56,6 +56,7 @@ public class ACSDao {
                             Unittype.ProvisioningProtocol.valueOf(resultSet.getString("protocol"))
                     );
                     unittype.setId(unitTypeId);
+                    acsCacheManager.put("unittype-%s".formatted(unitTypeId), unittype);
                     return unittype;
                 } else {
                     log.warn("No unittype found with id {}", unitTypeId);
@@ -89,6 +90,7 @@ public class ACSDao {
                     );
                     unitTypeParam.setId(resultSet.getInt("unit_type_param_id"));
                 }
+                acsCacheManager.put("unittype-params-%s".formatted(unitTypeId), unittypeParameters);
                 return unittypeParameters;
             }
         } catch (SQLException e) {
