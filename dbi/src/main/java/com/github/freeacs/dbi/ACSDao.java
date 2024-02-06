@@ -141,7 +141,7 @@ public class ACSDao {
         }
         List<GroupParameter> groupParameters = getGroupParametersByGroupId(groupId);
         acsCacheManager.put("group-params-%s".formatted(groupId), groupParameters);
-        return profile;
+        return groupParameters;
     }
 
     public Job getCachedJob(Integer jobId) {
@@ -161,7 +161,7 @@ public class ACSDao {
         }
         List<JobParameter> jobParameters = getJobParametersByJobId(jobId);
         acsCacheManager.put("job-params-%s".formatted(jobId), jobParameters);
-        return profile;
+        return jobParameters;
     }
 
     private Unittype getUnitTypeById(Integer unitTypeId) {
@@ -249,7 +249,7 @@ public class ACSDao {
                             .stream()
                             .filter(p -> p.getId() == unit_type_param_id)
                             .findFirst()
-                            .orElseThrow(() -> new NoSuchElementException("No UnittypeParameter found with id " + unit_type_param_id));
+                            .orElseThrow(() -> new IllegalArgumentException("No UnittypeParameter found with id " + unit_type_param_id));
                     String value = resultSet.getString("gp.value");
                     Parameter.Operator op = Parameter.Operator.getOperator(resultSet.getString("operator"));
                     Parameter.ParameterDataType pdt = Parameter.ParameterDataType.getDataType(resultSet.getString("data_type"));
