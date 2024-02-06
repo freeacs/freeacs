@@ -29,7 +29,6 @@ public class BasicSpringSecurityConfig extends AbstractSecurityConfig {
                 .httpBasic(conf -> conf.authenticationEntryPoint(basicEntryPoint()))
                 .authorizeHttpRequests(authorizeRequests -> {
                     authorizeRequests.requestMatchers(contextPath + OKController.CTX_PATH).permitAll();
-                    authorizeRequests.requestMatchers(contextPath + "/test/*").permitAll();
                     if (!fileAuthUsed) {
                         authorizeRequests.requestMatchers(contextPath + FileController.CTX_PATH + "/**").permitAll();
                     }

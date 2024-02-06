@@ -26,10 +26,4 @@ public class NoneSpringSecurityConfig extends AbstractSecurityConfig {
                 .requestCache(rc -> rc.requestCache(new NullRequestCache()))
                 .build();
     }
-
-    private BasicAuthenticationEntryPoint basicEntryPoint() {
-        BasicAuthenticationEntryPoint basicAuthenticationEntryPoint = new BasicAuthenticationEntryPoint();
-        basicAuthenticationEntryPoint.setRealmName("FreeACS");
-        return basicAuthenticationEntryPoint;
-    }
 }

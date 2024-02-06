@@ -18,12 +18,10 @@ import java.sql.SQLException;
 public class AcsUnitDetailsService implements UserDetailsService {
 
     private final DBI dbi;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public AcsUnitDetailsService(DBI dbi) {
         this.dbi = dbi;
-        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     @Override
