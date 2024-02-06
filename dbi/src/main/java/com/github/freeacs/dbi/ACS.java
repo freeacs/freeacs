@@ -812,12 +812,12 @@ public class ACS {
       SELECT utp.unit_type_id, jp.job_id, jp.unit_type_param_id, jp.value
       FROM job_param jp, unit_type_param utp
       WHERE jp.unit_type_param_id = utp.unit_type_param_id
-      AND unit_id = '%s'
-    """.formatted(Job.ANY_UNIT_IN_GROUP);
+      AND unit_id = ?
+    """;
     try(AutoCommitResettingConnectionWrapper connectionWrapper =
                 new AutoCommitResettingConnectionWrapper(getDataSource().getConnection(), false);
         DynamicStatementWrapper statementWrapper =
-                new DynamicStatementWrapper(connectionWrapper, sql);
+                new DynamicStatementWrapper(connectionWrapper, sql, Job.ANY_UNIT_IN_GROUP);
         ResultSet resultSet =
                 statementWrapper.getPreparedStatement().executeQuery()) {
       int paramsCounter = 0;
