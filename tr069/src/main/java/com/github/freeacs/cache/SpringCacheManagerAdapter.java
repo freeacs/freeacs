@@ -5,6 +5,8 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 @Configuration
 public class SpringCacheManagerAdapter implements ACSCacheManager {
 
@@ -26,6 +28,17 @@ public class SpringCacheManagerAdapter implements ACSCacheManager {
         }
         //noinspection unchecked
         return (T) value;
+    }
+
+    @Override
+    public <T> List<T> getList(String key) {
+        Cache cache = cacheManager.getCache("defaultCache"); // Adjust the cache name as needed
+        if (cache == null) return null;
+        Cache.ValueWrapper wrapper = cache.get(key);
+        if (wrapper == null) return null;
+        Object value = wrapper.get();
+        //noinspection unchecked
+        return (List<T>) value;
     }
 
     @Override

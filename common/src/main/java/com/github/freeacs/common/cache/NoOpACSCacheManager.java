@@ -1,9 +1,16 @@
 package com.github.freeacs.common.cache;
 
+import java.util.List;
+
 public class NoOpACSCacheManager implements ACSCacheManager {
     @Override
     public <T> T get(String key, Class<T> type) {
         return null; // No caching, always return null
+    }
+
+    @Override
+    public <T> List<T> getList(String key) {
+        return null;
     }
 
     @Override
