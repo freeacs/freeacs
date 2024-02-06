@@ -22,7 +22,7 @@ public class ACSDao {
 
     private static final String GET_JOB_PARAMETERS_BY_JOB_ID = "SELECT job_id, unit_type_param_id, value FROM job_param WHERE job_id = ?";
 
-    private static final String GET_UNIT_PARAMETERS_BY_UNIT_ID = "SELECT unit_id, unit_type_param_id, value FROM unit_param WHERE unit_id = ?";
+    private static final String GET_JOB_PARAMETERS_BY_UNIT_ID = "SELECT job_id, unit_type_param_id, value FROM job_param WHERE job_id = ?";
 
     private final DataSource dataSource;
     private final ACSCacheManager acsCacheManager;
@@ -32,17 +32,89 @@ public class ACSDao {
         this.acsCacheManager = acsCacheManager;
     }
 
-
-    // TODO add methods to get unittype, profile, job, and unit parameters, similar to the methods in ACS.java, but without the map memoization
-    // instead use the ACSCacheManager to memoize the results
-
-    public Unittype getUnitTypeById(Integer unitTypeId) {
-        if (unitTypeId == null) {
-            throw new IllegalArgumentException("unitTypeId cannot be null");
-        }
+    public Unittype getCachedUnittype(Integer unitTypeId) {
         Unittype cache = acsCacheManager.get("unittype-%s".formatted(unitTypeId), Unittype.class);
         if (cache != null) {
             return cache;
+        }
+        Unittype profile = getUnitTypeById(unitTypeId);
+        acsCacheManager.put("unittype-%s".formatted(unitTypeId), profile);
+        return profile;
+    }
+
+    public List<UnittypeParameter> getCachedUnittypeParameters(Integer unitTypeId) {
+        List<UnittypeParameter> cache = acsCacheManager.getList("unittype-params-%s".formatted(unitTypeId));
+        if (cache != null) {
+            return cache;
+        }
+        List<UnittypeParameter> profile = getUnittypeParametersByUnitTypeId(unitTypeId);
+        acsCacheManager.put("unittype-params-%s".formatted(unitTypeId), profile);
+        return profile;
+    }
+
+    public Profile getCachedProfile(Integer profileId) {
+        Profile cache = acsCacheManager.get("profile-%s".formatted(profileId), Profile.class);
+        if (cache != null) {
+            return cache;
+        }
+        Profile profile = getProfile(profileId);
+        acsCacheManager.put("profile-%s".formatted(profileId), profile);
+        return profile;
+    }
+
+    public List<ProfileParameter> getCachedProfileParameters(Integer profileId) {
+        List<ProfileParameter> cache = acsCacheManager.getList("profile-params-%s".formatted(profileId));
+        if (cache != null) {
+            return cache;
+        }
+        List<ProfileParameter> profile = getProfileParametersByProfileId(profileId);
+        acsCacheManager.put("profile-params-%s".formatted(profileId), profile);
+        return profile;
+    }
+
+    public Group getCachedGroup(Integer groupId) {
+        Group cache = acsCacheManager.get("group-%s".formatted(groupId), Group.class);
+        if (cache != null) {
+            return cache;
+        }
+        Group group = getGroup(groupId);
+        acsCacheManager.put("group-%s".formatted(groupId), group);
+        return group;
+    }
+
+    public List<GroupParameter> getCachedGroupParameters(Integer groupId) {
+        List<GroupParameter> cache = acsCacheManager.getList("group-params-%s".formatted(groupId));
+        if (cache != null) {
+            return cache;
+        }
+        List<GroupParameter> profile = getGroupParametersByGroupId(groupId);
+        acsCacheManager.put("group-params-%s".formatted(groupId), profile);
+        return profile;
+    }
+
+    public Job getCachedJob(Integer jobId) {
+        Job cache = acsCacheManager.get("job-%s".formatted(jobId), Job.class);
+        if (cache != null) {
+            return cache;
+        }
+        Job group = getJob(jobId);
+        acsCacheManager.put("job-%s".formatted(jobId), group);
+        return group;
+    }
+
+    public List<JobParameter> getCachedJobParameters(Integer jobId) {
+        List<JobParameter> cache = acsCacheManager.getList("job-params-%s".formatted(jobId));
+        if (cache != null) {
+            return cache;
+        }
+        List<JobParameter> profile = getJobParametersByJobId(jobId);
+        acsCacheManager.put("job-params-%s".formatted(jobId), profile);
+        return profile;
+    }
+
+    private Unittype getUnitTypeById(Integer unitTypeId) {
+        if (unitTypeId == null) {
+            throw new IllegalArgumentException("unitTypeId cannot be null");
         }
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(GET_UNITTYPE_BY_ID)) {
@@ -56,7 +128,6 @@ public class ACSDao {
                             Unittype.ProvisioningProtocol.valueOf(resultSet.getString("protocol"))
                     );
                     unittype.setId(unitTypeId);
-                    acsCacheManager.put("unittype-%s".formatted(unitTypeId), unittype);
                     return unittype;
                 } else {
                     log.warn("No unittype found with id {}", unitTypeId);
@@ -68,13 +139,9 @@ public class ACSDao {
         }
     }
 
-    public List<UnittypeParameter> getUnitTypeParametersByUnitTypeId(Integer unitTypeId) {
+    private List<UnittypeParameter> getUnittypeParametersByUnitTypeId(Integer unitTypeId) {
         if (unitTypeId == null) {
             throw new IllegalArgumentException("unitTypeId cannot be null");
-        }
-        List<UnittypeParameter> cache = acsCacheManager.getList("unittype-params-%s".formatted(unitTypeId));
-        if (cache != null) {
-            return cache;
         }
         var unittype = getUnitTypeById(unitTypeId);
         try (Connection connection = dataSource.getConnection();
@@ -90,7 +157,6 @@ public class ACSDao {
                     );
                     unitTypeParam.setId(resultSet.getInt("unit_type_param_id"));
                 }
-                acsCacheManager.put("unittype-params-%s".formatted(unitTypeId), unittypeParameters);
                 return unittypeParameters;
             }
         } catch (SQLException e) {
@@ -98,4 +164,33 @@ public class ACSDao {
         }
     }
 
+    private Group getGroup(Integer groupId) {
+        // TODO: Implement this method
+        return null;
+    }
+
+    private Profile getProfile(Integer profileId) {
+        // TODO: Implement this method
+        return null;
+    }
+
+    private Job getJob(Integer jobId) {
+        // TODO: Implement this method
+        return null;
+    }
+
+    private List<GroupParameter> getGroupParametersByGroupId(Integer groupId) {
+        // TODO: Implement this method
+        return null;
+    }
+
+    private List<ProfileParameter> getProfileParametersByProfileId(Integer profileId) {
+        // TODO: Implement this method
+        return null;
+    }
+
+    private List<JobParameter> getJobParametersByJobId(Integer jobId) {
+        // TODO: Implement this method
+        return null;
+    }
 }
