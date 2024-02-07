@@ -1,6 +1,8 @@
 package com.github.freeacs.config;
 
+import com.github.freeacs.cache.SpringCacheManagerAdapter;
 import com.github.freeacs.dbi.*;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,5 +21,10 @@ public class DBIConfig {
         Identity id = new Identity(FACILITY_TR069, "latest", users.getUnprotected(Users.USER_ADMIN));
         Syslog syslog = new Syslog(dataSource, id);
         return DBI.createAndInitialize(Integer.MAX_VALUE, dataSource, syslog);
+    }
+
+    @Bean
+    public ACSDao getACSDao(DBI dbi, CacheManager cacheManager) {
+        return new ACSDao(dbi.getDataSource(), new SpringCacheManagerAdapter(cacheManager));
     }
 }

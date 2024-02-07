@@ -23,9 +23,11 @@ public class FileController {
   public static final String CTX_PATH = "/file";
 
   private final DBI dbi;
+  private final ACSDao acsDao;
 
-  public FileController(DBI dbi) {
+  public FileController(DBI dbi, ACSDao acsDao) {
     this.dbi = dbi;
+    this.acsDao = acsDao;
   }
 
   @GetMapping("${context-path}" + CTX_PATH + "/{fileType}/{firmwareVersion}/{unitTypeName}")
@@ -41,7 +43,7 @@ public class FileController {
     try {
       ACS acs = dbi.getAcs();
       File firmware;
-      Unittype unittype = acs.getUnittype(unitTypeName);
+      Unittype unittype = acsDao.getCachedUnittypeByUnitTypeName(unitTypeName);
       if (unittype == null) {
         log.error("Could not find unittype " + unitTypeName + " in xAPS, hence file URL is incorrect");
         res.sendError(HttpServletResponse.SC_NOT_FOUND);

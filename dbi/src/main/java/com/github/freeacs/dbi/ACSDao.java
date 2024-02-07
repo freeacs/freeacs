@@ -25,6 +25,17 @@ public class ACSDao {
         WHERE unit_type_id = ?
     """;
 
+    private static final String GET_UNITTYPE_BY_NANE = """
+        SELECT
+            unit_type_id,
+            unit_type_name,
+            vendor_name,
+            description,
+            protocol
+        FROM unit_type
+        WHERE unit_type_name = ?
+    """;
+
     private static final String GET_UNITTYPE_PARAMETERS_BY_UNITTYPE_ID = """
         SELECT
             unit_type_param_id,
@@ -81,88 +92,99 @@ public class ACSDao {
         this.acsCacheManager = acsCacheManager;
     }
 
-    public Unittype getCachedUnittype(Integer unitTypeId) {
-        Unittype cache = acsCacheManager.get("unittype-%s".formatted(unitTypeId), Unittype.class);
+    public Unittype getCachedUnittypeByUnitTypeId(Integer unitTypeId) {
+        Unittype cache = acsCacheManager.get("unittype-byId-%d".formatted(unitTypeId), Unittype.class);
         if (cache != null) {
             return cache;
         }
         Unittype unittype = getUnitTypeById(unitTypeId);
-        acsCacheManager.put("unittype-%s".formatted(unitTypeId), unittype);
+        acsCacheManager.put("unittype-byId-%d".formatted(unitTypeId), unittype);
         return unittype;
     }
 
+    public Unittype getCachedUnittypeByUnitTypeName(String unitTypeName) {
+        Unittype cache = acsCacheManager.get("unittype-byName-%s".formatted(unitTypeName), Unittype.class);
+        if (cache != null) {
+            return cache;
+        }
+        Unittype unittype = getUnitTypeByName(unitTypeName);
+        acsCacheManager.put("unittype-byName-%s".formatted(unitTypeName), unittype);
+        return unittype;
+    }
+
+
     public List<UnittypeParameter> getCachedUnittypeParameters(Integer unitTypeId) {
-        List<UnittypeParameter> cache = acsCacheManager.getList("unittype-params-%s".formatted(unitTypeId));
+        List<UnittypeParameter> cache = acsCacheManager.getList("unittype-byId-%d-params".formatted(unitTypeId));
         if (cache != null) {
             return cache;
         }
         List<UnittypeParameter> unittypeParameters = getUnittypeParametersByUnitTypeId(unitTypeId);
-        acsCacheManager.put("unittype-params-%s".formatted(unitTypeId), unittypeParameters);
+        acsCacheManager.put("unittype-byId-%d-params".formatted(unitTypeId), unittypeParameters);
         return unittypeParameters;
     }
 
     public Profile getCachedProfile(Integer profileId) {
-        Profile cache = acsCacheManager.get("profile-%s".formatted(profileId), Profile.class);
+        Profile cache = acsCacheManager.get("profile-byId-%d".formatted(profileId), Profile.class);
         if (cache != null) {
             return cache;
         }
         Profile profile = getProfile(profileId);
-        acsCacheManager.put("profile-%s".formatted(profileId), profile);
+        acsCacheManager.put("profile-byId-%d".formatted(profileId), profile);
         return profile;
     }
 
     public List<ProfileParameter> getCachedProfileParameters(Integer profileId) {
-        List<ProfileParameter> cache = acsCacheManager.getList("profile-params-%s".formatted(profileId));
+        List<ProfileParameter> cache = acsCacheManager.getList("profile-byId-%d-params".formatted(profileId));
         if (cache != null) {
             return cache;
         }
         List<ProfileParameter> profile = getProfileParametersByProfileId(profileId);
-        acsCacheManager.put("profile-params-%s".formatted(profileId), profile);
+        acsCacheManager.put("profile-byId-%d-params".formatted(profileId), profile);
         return profile;
     }
 
     public Group getCachedGroup(Integer groupId) {
-        Group cache = acsCacheManager.get("group-%s".formatted(groupId), Group.class);
+        Group cache = acsCacheManager.get("group-byId-%s".formatted(groupId), Group.class);
         if (cache != null) {
             return cache;
         }
         Group group = getGroup(groupId);
-        acsCacheManager.put("group-%s".formatted(groupId), group);
+        acsCacheManager.put("group-byId-%s".formatted(groupId), group);
         return group;
     }
 
     public List<GroupParameter> getCachedGroupParameters(Integer groupId) {
-        List<GroupParameter> cache = acsCacheManager.getList("group-params-%s".formatted(groupId));
+        List<GroupParameter> cache = acsCacheManager.getList("group-byId-%d-params".formatted(groupId));
         if (cache != null) {
             return cache;
         }
         List<GroupParameter> groupParameters = getGroupParametersByGroupId(groupId);
-        acsCacheManager.put("group-params-%s".formatted(groupId), groupParameters);
+        acsCacheManager.put("group-byId-%d-params".formatted(groupId), groupParameters);
         return groupParameters;
     }
 
     public Job getCachedJob(Integer jobId) {
-        Job cache = acsCacheManager.get("job-%s".formatted(jobId), Job.class);
+        Job cache = acsCacheManager.get("job-byId-%s".formatted(jobId), Job.class);
         if (cache != null) {
             return cache;
         }
         Job group = getJob(jobId);
-        acsCacheManager.put("job-%s".formatted(jobId), group);
+        acsCacheManager.put("job-byId-%s".formatted(jobId), group);
         return group;
     }
 
     public List<JobParameter> getCachedJobParameters(Integer jobId) {
-        List<JobParameter> cache = acsCacheManager.getList("job-params-%s".formatted(jobId));
+        List<JobParameter> cache = acsCacheManager.getList("job-byId-%d-params".formatted(jobId));
         if (cache != null) {
             return cache;
         }
         List<JobParameter> jobParameters = getJobParametersByJobId(jobId);
-        acsCacheManager.put("job-params-%s".formatted(jobId), jobParameters);
+        acsCacheManager.put("job-byId-%d-params".formatted(jobId), jobParameters);
         return jobParameters;
     }
 
     public UnittypeParameter getCachedUnittypeParameterById(Integer unitTypeId, Integer unitTypeParamId) {
-        UnittypeParameter cache = acsCacheManager.get("unit-type-%s-param-%s".formatted(unitTypeId, unitTypeParamId), UnittypeParameter.class);
+        UnittypeParameter cache = acsCacheManager.get("unit-type-byId-%d-param-byId-%d".formatted(unitTypeId, unitTypeParamId), UnittypeParameter.class);
         if (cache != null) {
             return cache;
         }
@@ -171,7 +193,7 @@ public class ACSDao {
             .filter(p -> p.getId().equals(unitTypeParamId))
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("No UnittypeParameter found with id " + unitTypeParamId));
-        acsCacheManager.put("unit-type-%s-param-%s".formatted(unitTypeId, unitTypeParamId), unittypeParameter);
+        acsCacheManager.put("unit-type-byId-%d-param-byId-%d".formatted(unitTypeId, unitTypeParamId), unittypeParameter);
         return unittypeParameter;
     }
 
@@ -194,6 +216,33 @@ public class ACSDao {
                     return unittype;
                 } else {
                     log.warn("No unittype found with id {}", unitTypeId);
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Unittype getUnitTypeByName(String unitTypeName) {
+        if (unitTypeName == null) {
+            throw new IllegalArgumentException("unitTypeName cannot be null");
+        }
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(GET_UNITTYPE_BY_NANE)) {
+            statement.setString(1, unitTypeName);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    var unittype = new Unittype(
+                            resultSet.getString("unit_type_name"),
+                            resultSet.getString("vendor_name"),
+                            resultSet.getString("description"),
+                            Unittype.ProvisioningProtocol.valueOf(resultSet.getString("protocol"))
+                    );
+                    unittype.setId(resultSet.getInt("unit_type_id"));
+                    return unittype;
+                } else {
+                    log.warn("No unittype found with id {}", unitTypeName);
                     return null;
                 }
             }

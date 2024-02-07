@@ -24,8 +24,8 @@ public class ACSDaoTest extends BaseDBITest {
         ACSDao acs = new ACSDao(dataSource, new InMemoryACSCacheManager());
 
         // When:
-        Unittype result1 = acs.getCachedUnittype(1);
-        Unittype result2 = acs.getCachedUnittype(1);
+        Unittype result1 = acs.getCachedUnittypeByUnitTypeId(1);
+        Unittype result2 = acs.getCachedUnittypeByUnitTypeId(1);
 
         // Then:
         assertNotNull(result1);
