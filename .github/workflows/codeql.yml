@@ -40,7 +40,7 @@ jobs:
         languages: ${{ matrix.language }}
 
     - name: build
-      run: mvn clean --batch-mode --no-transfer-progress package
+      run: mvn clean --batch-mode --no-transfer-progress compile
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
