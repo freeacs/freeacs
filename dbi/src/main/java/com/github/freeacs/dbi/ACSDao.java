@@ -1,12 +1,11 @@
 package com.github.freeacs.dbi;
 
 import com.github.freeacs.common.cache.ACSCacheManager;
+import com.github.freeacs.dbi.sql.AutoCommitResettingConnectionWrapper;
+import com.github.freeacs.dbi.sql.DynamicStatementWrapper;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -248,23 +247,21 @@ public class ACSDao {
         if (unitTypeId == 0) {
             throw new IllegalArgumentException("unitTypeId cannot be null");
         }
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(GET_UNITTYPE_BY_ID)) {
-            statement.setInt(1, unitTypeId);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    var unittype = new Unittype(
-                            resultSet.getString("unit_type_name"),
-                            resultSet.getString("vendor_name"),
-                            resultSet.getString("description"),
-                            Unittype.ProvisioningProtocol.valueOf(resultSet.getString("protocol"))
-                    );
-                    unittype.setId(unitTypeId);
-                    return unittype;
-                } else {
-                    log.warn("No unittype found with id {}", unitTypeId);
-                    return null;
-                }
+        try (var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+             var statement = new DynamicStatementWrapper(connection, GET_UNITTYPE_BY_ID, unitTypeId);
+             var resultSet = statement.getPreparedStatement().executeQuery()) {
+            if (resultSet.next()) {
+                var unittype = new Unittype(
+                        resultSet.getString("unit_type_name"),
+                        resultSet.getString("vendor_name"),
+                        resultSet.getString("description"),
+                        Unittype.ProvisioningProtocol.valueOf(resultSet.getString("protocol"))
+                );
+                unittype.setId(unitTypeId);
+                return unittype;
+            } else {
+                log.warn("No unittype found with id {}", unitTypeId);
+                return null;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -275,23 +272,21 @@ public class ACSDao {
         if (unitTypeName == null) {
             throw new IllegalArgumentException("unitTypeName cannot be null");
         }
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(GET_UNITTYPE_BY_NANE)) {
-            statement.setString(1, unitTypeName);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    var unittype = new Unittype(
-                            resultSet.getString("unit_type_name"),
-                            resultSet.getString("vendor_name"),
-                            resultSet.getString("description"),
-                            Unittype.ProvisioningProtocol.valueOf(resultSet.getString("protocol"))
-                    );
-                    unittype.setId(resultSet.getInt("unit_type_id"));
-                    return unittype;
-                } else {
-                    log.warn("No unittype found with id {}", unitTypeName);
-                    return null;
-                }
+        try (var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+             var statement = new DynamicStatementWrapper(connection, GET_UNITTYPE_BY_NANE, unitTypeName);
+             var resultSet = statement.getPreparedStatement().executeQuery()) {
+            if (resultSet.next()) {
+                var unittype = new Unittype(
+                        resultSet.getString("unit_type_name"),
+                        resultSet.getString("vendor_name"),
+                        resultSet.getString("description"),
+                        Unittype.ProvisioningProtocol.valueOf(resultSet.getString("protocol"))
+                );
+                unittype.setId(resultSet.getInt("unit_type_id"));
+                return unittype;
+            } else {
+                log.warn("No unittype found with id {}", unitTypeName);
+                return null;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -303,20 +298,18 @@ public class ACSDao {
             throw new IllegalArgumentException("unitTypeId cannot be null");
         }
         var unittype = getUnitTypeById(unitTypeId);
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(GET_UNITTYPE_PARAMETERS_BY_UNITTYPE_ID)) {
-            statement.setInt(1, unitTypeId);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                var unittypeParameters = new ArrayList<UnittypeParameter>();
-                while (resultSet.next()) {
-                    var name = resultSet.getString("name");
-                    var param = new UnittypeParameterFlag(resultSet.getString("flags"), true);
-                    var unitTypeParam = new UnittypeParameter(unittype, name, param);
-                    unitTypeParam.setId(resultSet.getInt("unit_type_param_id"));
-                    unittypeParameters.add(unitTypeParam);
-                }
-                return unittypeParameters;
+        try (var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+             var statement = new DynamicStatementWrapper(connection, GET_UNITTYPE_PARAMETERS_BY_UNITTYPE_ID, unitTypeId);
+             var resultSet = statement.getPreparedStatement().executeQuery()) {
+            var unittypeParameters = new ArrayList<UnittypeParameter>();
+            while (resultSet.next()) {
+                var name = resultSet.getString("name");
+                var param = new UnittypeParameterFlag(resultSet.getString("flags"), true);
+                var unitTypeParam = new UnittypeParameter(unittype, name, param);
+                unitTypeParam.setId(resultSet.getInt("unit_type_param_id"));
+                unittypeParameters.add(unitTypeParam);
             }
+            return unittypeParameters;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -326,33 +319,31 @@ public class ACSDao {
         if (groupId == 0) {
             throw new IllegalArgumentException("groupId cannot be null");
         }
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement(GET_GROUP_BY_ID)) {
-            statement.setInt(1, groupId);
-            try(ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    var unitTypeId = resultSet.getInt("unit_type_id");
-                    var unitType = getCachedUnittypeByUnitTypeId(unitTypeId);
-                    var group = new Group(resultSet.getInt("group_id"));
-                    group.setName(resultSet.getString("group_name"));
-                    group.setDescription(resultSet.getString("description"));
-                    group.setUnittype(unitType);
-                    var parentGroupId = resultSet.getInt("parent_group_id");
-                    if (parentGroupId != 0) {
-                        var parentGroup = getCachedGroup(parentGroupId);
-                        group.setParent(parentGroup);
-                    }
-                    var profileId = resultSet.getInt("profile_id");
-                    if (profileId != 0) {
-                        var profile = getCachedProfile(profileId);
-                        group.setProfile(profile);
-                    }
-                    group.setCount(resultSet.getInt("count"));
-                    return group;
-                } else {
-                    log.warn("No group found with id {}", groupId);
-                    return null;
+        try(var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+            var statement = new DynamicStatementWrapper(connection, GET_GROUP_BY_ID, groupId);
+            var resultSet = statement.getPreparedStatement().executeQuery()) {
+            if (resultSet.next()) {
+                var unitTypeId = resultSet.getInt("unit_type_id");
+                var unitType = getCachedUnittypeByUnitTypeId(unitTypeId);
+                var group = new Group(resultSet.getInt("group_id"));
+                group.setName(resultSet.getString("group_name"));
+                group.setDescription(resultSet.getString("description"));
+                group.setUnittype(unitType);
+                var parentGroupId = resultSet.getInt("parent_group_id");
+                if (parentGroupId != 0) {
+                    var parentGroup = getCachedGroup(parentGroupId);
+                    group.setParent(parentGroup);
                 }
+                var profileId = resultSet.getInt("profile_id");
+                if (profileId != 0) {
+                    var profile = getCachedProfile(profileId);
+                    group.setProfile(profile);
+                }
+                group.setCount(resultSet.getInt("count"));
+                return group;
+            } else {
+                log.warn("No group found with id {}", groupId);
+                return null;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -363,20 +354,18 @@ public class ACSDao {
         if (profileId == 0) {
             throw new IllegalArgumentException("profileId cannot be null");
         }
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement(GET_PROFILE_BY_ID)) {
-            statement.setInt(1, profileId);
-            try(ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    var unitTypeId = resultSet.getInt("unit_type_id");
-                    var unitType = getCachedUnittypeByUnitTypeId(unitTypeId);
-                    var profile = new Profile(resultSet.getString("profile_name"), unitType);
-                    profile.setId(profileId);
-                    return profile;
-                } else {
-                    log.warn("No profile found with id {}", profileId);
-                    return null;
-                }
+        try(var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+            var statement = new DynamicStatementWrapper(connection, GET_PROFILE_BY_ID, profileId);
+            var resultSet = statement.getPreparedStatement().executeQuery()) {
+            if (resultSet.next()) {
+                var unitTypeId = resultSet.getInt("unit_type_id");
+                var unitType = getCachedUnittypeByUnitTypeId(unitTypeId);
+                var profile = new Profile(resultSet.getString("profile_name"), unitType);
+                profile.setId(profileId);
+                return profile;
+            } else {
+                log.warn("No profile found with id {}", profileId);
+                return null;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -387,41 +376,39 @@ public class ACSDao {
         if (jobId == 0) {
             throw new IllegalArgumentException("jobId cannot be null");
         }
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement(GET_JOB_BY_ID)) {
-            statement.setInt(1, jobId);
-            try(ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    var job = new Job();
-                    job.setName(resultSet.getString("job_name"));
-                    job.setId(resultSet.getInt("job_id"));
-                    job.setDescription(resultSet.getString("description"));
-                    var groupId = resultSet.getInt("group_id");
-                    if (groupId != 0) {
-                        var group = getCachedGroup(groupId);
-                        job.setGroup(group);
-                    }
-                    job.setUnconfirmedTimeout(resultSet.getInt("unconfirmed_timeout"));
-                    job.setStopRules(resultSet.getString("stop_rules"));
-                    job.setStatus(JobStatus.valueOf(resultSet.getString("status")));
-                    job.setCompletedNoFailures(resultSet.getInt("completed_no_failure"));
-                    job.setCompletedHadFailures(resultSet.getInt("completed_had_failure"));
-                    job.setConfirmedFailed(resultSet.getInt("confirmed_failed"));
-                    job.setUnconfirmedFailed(resultSet.getInt("unconfirmed_failed"));
-                    job.setStartTimestamp(resultSet.getTimestamp("start_timestamp"));
-                    job.setEndTimestamp(resultSet.getTimestamp("end_timestamp"));
-                    var jobIdDependency = resultSet.getInt("job_id_dependency");
-                    if (jobIdDependency != 0) {
-                        var jobDependency = getCachedJob(jobIdDependency);
-                        job.setDependency(jobDependency);
-                    }
-                    job.setRepeatCount(resultSet.getInt("repeat_count"));
-                    job.setRepeatInterval(resultSet.getInt("repeat_interval"));
-                    return job;
-                } else {
-                    log.warn("No job found with id {}", jobId);
-                    return null;
+        try(var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+            var statement = new DynamicStatementWrapper(connection, GET_JOB_BY_ID, jobId);
+            var resultSet = statement.getPreparedStatement().executeQuery()) {
+            if (resultSet.next()) {
+                var job = new Job();
+                job.setName(resultSet.getString("job_name"));
+                job.setId(resultSet.getInt("job_id"));
+                job.setDescription(resultSet.getString("description"));
+                var groupId = resultSet.getInt("group_id");
+                if (groupId != 0) {
+                    var group = getCachedGroup(groupId);
+                    job.setGroup(group);
                 }
+                job.setUnconfirmedTimeout(resultSet.getInt("unconfirmed_timeout"));
+                job.setStopRules(resultSet.getString("stop_rules"));
+                job.setStatus(JobStatus.valueOf(resultSet.getString("status")));
+                job.setCompletedNoFailures(resultSet.getInt("completed_no_failure"));
+                job.setCompletedHadFailures(resultSet.getInt("completed_had_failure"));
+                job.setConfirmedFailed(resultSet.getInt("confirmed_failed"));
+                job.setUnconfirmedFailed(resultSet.getInt("unconfirmed_failed"));
+                job.setStartTimestamp(resultSet.getTimestamp("start_timestamp"));
+                job.setEndTimestamp(resultSet.getTimestamp("end_timestamp"));
+                var jobIdDependency = resultSet.getInt("job_id_dependency");
+                if (jobIdDependency != 0) {
+                    var jobDependency = getCachedJob(jobIdDependency);
+                    job.setDependency(jobDependency);
+                }
+                job.setRepeatCount(resultSet.getInt("repeat_count"));
+                job.setRepeatInterval(resultSet.getInt("repeat_interval"));
+                return job;
+            } else {
+                log.warn("No job found with id {}", jobId);
+                return null;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -433,25 +420,23 @@ public class ACSDao {
             throw new IllegalArgumentException("groupId cannot be null");
         }
         var group = getCachedGroup(groupId);
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement(GET_GROUP_PARAMETERS_BY_GROUP_ID)) {
-            statement.setInt(1, groupId);
-            try(ResultSet resultSet = statement.executeQuery()) {
-                var groupParameters = new ArrayList<GroupParameter>();
-                while (resultSet.next()) {
-                    var unit_type_id = resultSet.getInt("unit_type_id");
-                    var unit_type_param_id = resultSet.getInt("unit_type_param_id");
-                    UnittypeParameter unit_type_param = getCachedUnittypeParameterById(unit_type_id, unit_type_param_id);
-                    String value = resultSet.getString("value");
-                    Parameter.Operator op = Parameter.Operator.getOperator(resultSet.getString("operator"));
-                    Parameter.ParameterDataType pdt = Parameter.ParameterDataType.getDataType(resultSet.getString("data_type"));
-                    Parameter parameter = new Parameter(unit_type_param, value, op, pdt);
-                    GroupParameter groupParameter = new GroupParameter(parameter, group);
-                    groupParameter.setId(resultSet.getInt("id"));
-                    groupParameters.add(groupParameter);
-                }
-                return groupParameters;
+        try(var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+            var statement = new DynamicStatementWrapper(connection, GET_GROUP_PARAMETERS_BY_GROUP_ID, groupId);
+            var resultSet = statement.getPreparedStatement().executeQuery()) {
+            var groupParameters = new ArrayList<GroupParameter>();
+            while (resultSet.next()) {
+                var unit_type_id = resultSet.getInt("unit_type_id");
+                var unit_type_param_id = resultSet.getInt("unit_type_param_id");
+                UnittypeParameter unit_type_param = getCachedUnittypeParameterById(unit_type_id, unit_type_param_id);
+                String value = resultSet.getString("value");
+                Parameter.Operator op = Parameter.Operator.getOperator(resultSet.getString("operator"));
+                Parameter.ParameterDataType pdt = Parameter.ParameterDataType.getDataType(resultSet.getString("data_type"));
+                Parameter parameter = new Parameter(unit_type_param, value, op, pdt);
+                GroupParameter groupParameter = new GroupParameter(parameter, group);
+                groupParameter.setId(resultSet.getInt("id"));
+                groupParameters.add(groupParameter);
             }
+            return groupParameters;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -462,21 +447,19 @@ public class ACSDao {
             throw new IllegalArgumentException("profileId cannot be null");
         }
         var profile = getCachedProfile(profileId);
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement(GET_PROFILE_PARAMETERS_BY_PROFILE_ID)) {
-            statement.setInt(1, profileId);
-            try(ResultSet resultSet = statement.executeQuery()) {
-                var profileParameters = new ArrayList<ProfileParameter>();
-                while (resultSet.next()) {
-                    var unit_type_id = resultSet.getInt("unit_type_id");
-                    var unit_type_param_id = resultSet.getInt("unit_type_param_id");
-                    UnittypeParameter unit_type_param = getCachedUnittypeParameterById(unit_type_id, unit_type_param_id);
-                    var value = resultSet.getString("value");
-                    var profileParameter = new ProfileParameter(profile, unit_type_param, value);
-                    profileParameters.add(profileParameter);
-                }
-                return profileParameters;
+        try(var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+            var statement = new DynamicStatementWrapper(connection, GET_PROFILE_PARAMETERS_BY_PROFILE_ID, profileId);
+            var resultSet = statement.getPreparedStatement().executeQuery()) {
+            var profileParameters = new ArrayList<ProfileParameter>();
+            while (resultSet.next()) {
+                var unit_type_id = resultSet.getInt("unit_type_id");
+                var unit_type_param_id = resultSet.getInt("unit_type_param_id");
+                UnittypeParameter unit_type_param = getCachedUnittypeParameterById(unit_type_id, unit_type_param_id);
+                var value = resultSet.getString("value");
+                var profileParameter = new ProfileParameter(profile, unit_type_param, value);
+                profileParameters.add(profileParameter);
             }
+            return profileParameters;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -486,22 +469,20 @@ public class ACSDao {
         if (jobId == 0) {
             throw new IllegalArgumentException("jobId cannot be null");
         }
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement(GET_JOB_PARAMETERS_BY_JOB_ID)) {
-            statement.setInt(1, jobId);
-            try(ResultSet resultSet = statement.executeQuery()) {
-                var jobParameters = new ArrayList<JobParameter>();
-                while (resultSet.next()) {
-                    var unit_type_id = resultSet.getInt("unit_type_id");
-                    var unit_type_param_id = resultSet.getInt("unit_type_param_id");
-                    UnittypeParameter unit_type_param = getCachedUnittypeParameterById(unit_type_id, unit_type_param_id);
-                    var job = getCachedJob(resultSet.getInt("job_id"));
-                    var param = new Parameter(unit_type_param,resultSet.getString("value"));
-                    var jobParameter = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, param);
-                    jobParameters.add(jobParameter);
-                }
-                return jobParameters;
+        try(var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+            var statement = new DynamicStatementWrapper(connection, GET_JOB_PARAMETERS_BY_JOB_ID, jobId);
+            var resultSet = statement.getPreparedStatement().executeQuery()) {
+            var jobParameters = new ArrayList<JobParameter>();
+            while (resultSet.next()) {
+                var unit_type_id = resultSet.getInt("unit_type_id");
+                var unit_type_param_id = resultSet.getInt("unit_type_param_id");
+                UnittypeParameter unit_type_param = getCachedUnittypeParameterById(unit_type_id, unit_type_param_id);
+                var job = getCachedJob(resultSet.getInt("job_id"));
+                var param = new Parameter(unit_type_param,resultSet.getString("value"));
+                var jobParameter = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, param);
+                jobParameters.add(jobParameter);
             }
+            return jobParameters;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
