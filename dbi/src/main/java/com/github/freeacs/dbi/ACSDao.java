@@ -212,6 +212,9 @@ public class ACSDao {
         }
         Group group = getGroup(groupId);
         acsCacheManager.put("group-byId-%s".formatted(groupId), group);
+        for(Group parentGrouop = group.getParent(); parentGrouop != null; parentGrouop = parentGrouop.getParent()) {
+            acsCacheManager.put("group-byId-%s".formatted(parentGrouop.getId()), parentGrouop);
+        }
         return group;
     }
 
@@ -338,9 +341,8 @@ public class ACSDao {
         try(var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
             var statement = new DynamicStatementWrapper(connection, GET_GROUP_BY_ID, groupId);
             var resultSet = statement.getPreparedStatement().executeQuery()) {
-            var groupCache = new HashMap<Integer, Group>();
             if (resultSet.next()) {
-                return parseGroup(resultSet, groupCache);
+                return parseGroup(resultSet, new HashMap<>());
             } else {
                 log.warn("No group found with id {}", groupId);
                 return null;
@@ -357,11 +359,6 @@ public class ACSDao {
         group.setName(resultSet.getString("group_name"));
         group.setDescription(resultSet.getString("description"));
         group.setUnittype(unitType);
-        var parentGroupId = resultSet.getInt("parent_group_id");
-        if (parentGroupId != 0) {
-            var parentGroup = getCachedGroup(parentGroupId);
-            group.setParent(parentGroup);
-        }
         var profileId = resultSet.getInt("profile_id");
         if (profileId != 0) {
             var profile = getCachedProfile(profileId);

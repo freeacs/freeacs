@@ -106,10 +106,7 @@ public class ACSDaoTest extends BaseDBITest {
         assertEquals(result3.getName(), "Test group name 2");
         assertEquals(result3.getDescription(), "Test description 2");
         assertEquals(result3.getUnittype().getId(), 1);
-        // for now, we don't have a profile for this group,
-        // because the profile must be one of the parent group's profile
-        // and the seed.sql file doesn't have a proper setup
-        assertNull(result3.getProfile());
+        assertEquals(result3.getProfile().getId(), 1);
         assertEquals(result3.getParent().getId(), result1.getId());
         assertSame(result3, result4);
     }
