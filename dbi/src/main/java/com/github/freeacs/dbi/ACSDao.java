@@ -84,6 +84,50 @@ public class ACSDao {
         WHERE gp.group_id = ?
     """;
 
+    private static final String GET_GROUP_BY_ID = """
+        SELECT
+            group_id,
+            unit_type_id,
+            group_name,
+            description,
+            parent_group_id,
+            profile_id,
+            count
+        FROM group_
+        WHERE group_id = ?
+    """;
+
+    public static String GET_JOB_BY_ID = """
+        SELECT
+            job_id,
+            job_name,
+            description,
+            group_id,
+            unconfirmed_timeout,
+            stop_rules,
+            status,
+            completed_no_failure,
+            completed_had_failure,
+            confirmed_failed,
+            unconfirmed_failed,
+            start_timestamp,
+            end_timestamp,
+            job_id_dependency,
+            repeat_count,
+            repeat_interval
+        FROM job
+        WHERE job_id = ?
+    """;
+
+    private static final String GET_PROFILE_BY_ID = """
+        SELECT
+            profile_id,
+            unit_type_id,
+            profile_name
+        FROM profile
+        WHERE profile_id = ?
+    """;
+
     private final DataSource dataSource;
     private final ACSCacheManager acsCacheManager;
 
@@ -92,7 +136,10 @@ public class ACSDao {
         this.acsCacheManager = acsCacheManager;
     }
 
-    public Unittype getCachedUnittypeByUnitTypeId(Integer unitTypeId) {
+    public Unittype getCachedUnittypeByUnitTypeId(int unitTypeId) {
+        if (unitTypeId == 0) {
+            throw new IllegalArgumentException("unitTypeId cannot be null");
+        }
         Unittype cache = acsCacheManager.get("unittype-byId-%d".formatted(unitTypeId), Unittype.class);
         if (cache != null) {
             return cache;
@@ -197,8 +244,8 @@ public class ACSDao {
         return unittypeParameter;
     }
 
-    private Unittype getUnitTypeById(Integer unitTypeId) {
-        if (unitTypeId == null) {
+    private Unittype getUnitTypeById(int unitTypeId) {
+        if (unitTypeId == 0) {
             throw new IllegalArgumentException("unitTypeId cannot be null");
         }
         try (Connection connection = dataSource.getConnection();
@@ -251,8 +298,8 @@ public class ACSDao {
         }
     }
 
-    private List<UnittypeParameter> getUnittypeParametersByUnitTypeId(Integer unitTypeId) {
-        if (unitTypeId == null) {
+    private List<UnittypeParameter> getUnittypeParametersByUnitTypeId(int unitTypeId) {
+        if (unitTypeId == 0) {
             throw new IllegalArgumentException("unitTypeId cannot be null");
         }
         var unittype = getUnitTypeById(unitTypeId);
@@ -275,23 +322,114 @@ public class ACSDao {
         }
     }
 
-    private Group getGroup(Integer groupId) {
-        // TODO: Implement this method
-        return null;
+    private Group getGroup(int groupId) {
+        if (groupId == 0) {
+            throw new IllegalArgumentException("groupId cannot be null");
+        }
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(GET_GROUP_BY_ID)) {
+            statement.setInt(1, groupId);
+            try(ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    var unitTypeId = resultSet.getInt("unit_type_id");
+                    var unitType = getCachedUnittypeByUnitTypeId(unitTypeId);
+                    var group = new Group(resultSet.getInt("group_id"));
+                    group.setName(resultSet.getString("group_name"));
+                    group.setDescription(resultSet.getString("description"));
+                    group.setUnittype(unitType);
+                    var parentGroupId = resultSet.getInt("parent_group_id");
+                    if (parentGroupId != 0) {
+                        var parentGroup = getCachedGroup(parentGroupId);
+                        group.setParent(parentGroup);
+                    }
+                    var profileId = resultSet.getInt("profile_id");
+                    if (profileId != 0) {
+                        var profile = getCachedProfile(profileId);
+                        group.setProfile(profile);
+                    }
+                    group.setCount(resultSet.getInt("count"));
+                    return group;
+                } else {
+                    log.warn("No group found with id {}", groupId);
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private Profile getProfile(Integer profileId) {
-        // TODO: Implement this method
-        return null;
+    private Profile getProfile(int profileId) {
+        if (profileId == 0) {
+            throw new IllegalArgumentException("profileId cannot be null");
+        }
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(GET_PROFILE_BY_ID)) {
+            statement.setInt(1, profileId);
+            try(ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    var unitTypeId = resultSet.getInt("unit_type_id");
+                    var unitType = getCachedUnittypeByUnitTypeId(unitTypeId);
+                    var profile = new Profile(resultSet.getString("profile_name"), unitType);
+                    profile.setId(profileId);
+                    return profile;
+                } else {
+                    log.warn("No profile found with id {}", profileId);
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private Job getJob(Integer jobId) {
-        // TODO: Implement this method
-        return null;
+    private Job getJob(int jobId) {
+        if (jobId == 0) {
+            throw new IllegalArgumentException("jobId cannot be null");
+        }
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(GET_JOB_BY_ID)) {
+            statement.setInt(1, jobId);
+            try(ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    var job = new Job();
+                    job.setName(resultSet.getString("job_name"));
+                    job.setId(resultSet.getInt("job_id"));
+                    job.setDescription(resultSet.getString("description"));
+                    var groupId = resultSet.getInt("group_id");
+                    if (groupId != 0) {
+                        var group = getCachedGroup(groupId);
+                        job.setGroup(group);
+                    }
+                    job.setUnconfirmedTimeout(resultSet.getInt("unconfirmed_timeout"));
+                    job.setStopRules(resultSet.getString("stop_rules"));
+                    job.setStatus(JobStatus.valueOf(resultSet.getString("status")));
+                    job.setCompletedNoFailures(resultSet.getInt("completed_no_failure"));
+                    job.setCompletedHadFailures(resultSet.getInt("completed_had_failure"));
+                    job.setConfirmedFailed(resultSet.getInt("confirmed_failed"));
+                    job.setUnconfirmedFailed(resultSet.getInt("unconfirmed_failed"));
+                    job.setStartTimestamp(resultSet.getTimestamp("start_timestamp"));
+                    job.setEndTimestamp(resultSet.getTimestamp("end_timestamp"));
+                    var jobIdDependency = resultSet.getInt("job_id_dependency");
+                    if (jobIdDependency != 0) {
+                        var jobDependency = getCachedJob(jobIdDependency);
+                        job.setDependency(jobDependency);
+                    }
+                    job.setRepeatCount(resultSet.getInt("repeat_count"));
+                    job.setRepeatInterval(resultSet.getInt("repeat_interval"));
+                    return job;
+                } else {
+                    log.warn("No job found with id {}", jobId);
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private List<GroupParameter> getGroupParametersByGroupId(Integer groupId) {
-        if (groupId == null) {
+    private List<GroupParameter> getGroupParametersByGroupId(int groupId) {
+        if (groupId == 0) {
             throw new IllegalArgumentException("groupId cannot be null");
         }
         var group = getCachedGroup(groupId);
@@ -319,8 +457,8 @@ public class ACSDao {
         }
     }
 
-    private List<ProfileParameter> getProfileParametersByProfileId(Integer profileId) {
-        if (profileId == null) {
+    private List<ProfileParameter> getProfileParametersByProfileId(int profileId) {
+        if (profileId == 0) {
             throw new IllegalArgumentException("profileId cannot be null");
         }
         var profile = getCachedProfile(profileId);
@@ -344,7 +482,10 @@ public class ACSDao {
         }
     }
 
-    private List<JobParameter> getJobParametersByJobId(Integer jobId) {
+    private List<JobParameter> getJobParametersByJobId(int jobId) {
+        if (jobId == 0) {
+            throw new IllegalArgumentException("jobId cannot be null");
+        }
         try(Connection connection = dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(GET_JOB_PARAMETERS_BY_JOB_ID)) {
             statement.setInt(1, jobId);

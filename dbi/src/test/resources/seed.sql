@@ -13,14 +13,17 @@ values (1, 1, 'Test profile name');
 insert profile_param(profile_id, unit_type_param_id, value)
 values (1, 1, 'Test value');
 
-insert into group_ (group_id, unit_type_id, group_name, description)
-values (1, 1, 'Test group name', 'Test description');
+insert into group_ (group_id, unit_type_id, profile_id, group_name, description)
+values (1, 1, 1, 'Test group name', 'Test description');
+
+insert into group_ (group_id, unit_type_id, profile_id, parent_group_id, group_name, description)
+values (2, 1, 1, 1, 'Test group name', 'Test description');
 
 insert group_param(id, group_id, unit_type_param_id, operator, data_type)
 values (1, 1, 1, '=', 'TEXT');
 
 insert into job(job_id, job_name, job_type, description, group_id, unconfirmed_timeout, stop_rules, status, completed_no_failure, completed_had_failure, confirmed_failed, unconfirmed_failed)
-values (1, 'Test job name', 'CONFIG|REGULAR', 'Test description', 1, 0, 'Test stop rules', 'Test status', 0, 0, 0, 0);
+values (1, 'Test job name', 'CONFIG|REGULAR', 'Test description', 1, 60, 'u100', 'READY', 0, 0, 0, 0);
 
 insert job_param(job_id, unit_type_param_id, value)
 values (1, 1, 'Test value');

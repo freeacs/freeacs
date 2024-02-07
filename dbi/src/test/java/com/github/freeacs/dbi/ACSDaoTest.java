@@ -2,7 +2,6 @@ package com.github.freeacs.dbi;
 
 import com.github.freeacs.common.cache.InMemoryACSCacheManager;
 import com.hazelcast.core.HazelcastInstance;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -49,8 +48,7 @@ public class ACSDaoTest extends BaseDBITest {
     }
 
     @Test
-    @Disabled("Work in progress")
-    public void testGetprofile() {
+    public void testGetProfile() {
         // Given:
         ACSDao acs = new ACSDao(dataSource, new InMemoryACSCacheManager());
 
@@ -80,7 +78,6 @@ public class ACSDaoTest extends BaseDBITest {
     }
 
     @Test
-    @Disabled("Work in progress")
     public void testGetGroup() {
         // Given:
         ACSDao acs = new ACSDao(dataSource, new InMemoryACSCacheManager());
@@ -88,11 +85,16 @@ public class ACSDaoTest extends BaseDBITest {
         // When:
         Group result1 = acs.getCachedGroup(1);
         Group result2 = acs.getCachedGroup(1);
+        Group result3 = acs.getCachedGroup(2);
+        Group result4 = acs.getCachedGroup(2);
 
         // Then:
         assertNotNull(result1);
         assertNotNull(result2);
         assertSame(result1, result2);
+        assertNotNull(result3);
+        assertNotNull(result4);
+        assertSame(result3, result4);
     }
 
     @Test
@@ -111,7 +113,6 @@ public class ACSDaoTest extends BaseDBITest {
     }
 
     @Test
-    @Disabled("Work in progress")
     public void testGetJob() {
         // Given:
         ACSDao acs = new ACSDao(dataSource, new InMemoryACSCacheManager());
