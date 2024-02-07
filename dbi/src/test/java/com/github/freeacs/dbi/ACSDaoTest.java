@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ACSDaoTest extends BaseDBITest {
 
@@ -27,8 +26,11 @@ public class ACSDaoTest extends BaseDBITest {
         Unittype result2 = acs.getCachedUnittypeByUnitTypeId(1);
 
         // Then:
-        assertNotNull(result1);
-        assertNotNull(result2);
+        assertEquals(result1.getId(), 1);
+        assertEquals(result1.getName(), "Test unit type");
+        assertEquals(result1.getVendor(), "Test vendor name");
+        assertEquals(result1.getDescription(), "Test description");
+        assertEquals(result1.getProtocol(), Unittype.ProvisioningProtocol.TR069);
         assertSame(result1, result2);
     }
 
@@ -42,8 +44,9 @@ public class ACSDaoTest extends BaseDBITest {
         List<UnittypeParameter> result2 = acs.getCachedUnittypeParameters(1);
 
         // Then:
-        assertNotNull(result1);
-        assertNotNull(result2);
+        assertEquals(result1.size(), 1);
+        assertEquals(result1.get(0).getName(), "Test param name");
+        assertEquals(result1.get(0).getFlag().getFlag(), "RW");
         assertSame(result1, result2);
     }
 
@@ -57,8 +60,9 @@ public class ACSDaoTest extends BaseDBITest {
         Profile result2 = acs.getCachedProfile(1);
 
         // Then:
-        assertNotNull(result1);
-        assertNotNull(result2);
+        assertEquals(result1.getId(), 1);
+        assertEquals(result1.getName(), "Test profile name");
+        assertEquals(result1.getUnittype().getId(), 1);
         assertSame(result1, result2);
     }
 
@@ -72,8 +76,9 @@ public class ACSDaoTest extends BaseDBITest {
         List<ProfileParameter> result2 = acs.getCachedProfileParameters(1);
 
         // Then:
-        assertNotNull(result1);
-        assertNotNull(result2);
+        assertEquals(result1.size(), 1);
+        assertEquals(result1.get(0).getUnittypeParameter().getId(), 1);
+        assertEquals(result1.get(0).getValue(), "Test value");
         assertSame(result1, result2);
     }
 

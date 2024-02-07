@@ -14,10 +14,10 @@ insert profile_param(profile_id, unit_type_param_id, value)
 values (1, 1, 'Test value');
 
 insert into group_ (group_id, unit_type_id, profile_id, group_name, description)
-values (1, 1, 1, 'Test group name', 'Test description');
+values (1, 1, 1, 'Test group name 1', 'Test description 1');
 
 insert into group_ (group_id, unit_type_id, profile_id, parent_group_id, group_name, description)
-values (2, 1, 1, 1, 'Test group name', 'Test description');
+values (2, 1, 1, 1, 'Test group name 2', 'Test description 2');
 
 insert group_param(id, group_id, unit_type_param_id, operator, data_type)
 values (1, 1, 1, '=', 'TEXT');
