@@ -211,9 +211,11 @@ public class ACSDao {
             return cache;
         }
         Group group = getGroup(groupId);
-        acsCacheManager.put("group-byId-%s".formatted(groupId), group);
-        for(Group parentGrouop = group.getParent(); parentGrouop != null; parentGrouop = parentGrouop.getParent()) {
-            acsCacheManager.put("group-byId-%s".formatted(parentGrouop.getId()), parentGrouop);
+        if (group != null) {
+            acsCacheManager.put("group-byId-%s".formatted(groupId), group);
+            for(Group parentGrouop = group.getParent(); parentGrouop != null; parentGrouop = parentGrouop.getParent()) {
+                acsCacheManager.put("group-byId-%s".formatted(parentGrouop.getId()), parentGrouop);
+            }
         }
         return group;
     }
