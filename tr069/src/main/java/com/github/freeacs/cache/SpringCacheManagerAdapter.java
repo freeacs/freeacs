@@ -31,12 +31,15 @@ public class SpringCacheManagerAdapter implements ACSCacheManager {
     }
 
     @Override
-    public <T> List<T> getList(String key) {
+    public <T> List<T> getList(String key, Class<T> type) {
         Cache cache = cacheManager.getCache("defaultCache"); // Adjust the cache name as needed
         if (cache == null) return null;
         Cache.ValueWrapper wrapper = cache.get(key);
         if (wrapper == null) return null;
         Object value = wrapper.get();
+        if (value != null && !((List<?>)value).isEmpty() && !type.isAssignableFrom(((List<?>)value).get(0).getClass())) {
+            throw new ClassCastException("The value in the cache is not of the expected type");
+        }
         //noinspection unchecked
         return (List<T>) value;
     }

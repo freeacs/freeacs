@@ -114,7 +114,7 @@ public class ACSDao {
 
 
     public List<UnittypeParameter> getCachedUnittypeParameters(Integer unitTypeId) {
-        List<UnittypeParameter> cache = acsCacheManager.getList("unittype-byId-%d-params".formatted(unitTypeId));
+        List<UnittypeParameter> cache = acsCacheManager.getList("unittype-byId-%d-params".formatted(unitTypeId), UnittypeParameter.class);
         if (cache != null) {
             return cache;
         }
@@ -134,7 +134,7 @@ public class ACSDao {
     }
 
     public List<ProfileParameter> getCachedProfileParameters(Integer profileId) {
-        List<ProfileParameter> cache = acsCacheManager.getList("profile-byId-%d-params".formatted(profileId));
+        List<ProfileParameter> cache = acsCacheManager.getList("profile-byId-%d-params".formatted(profileId), ProfileParameter.class);
         if (cache != null) {
             return cache;
         }
@@ -154,7 +154,7 @@ public class ACSDao {
     }
 
     public List<GroupParameter> getCachedGroupParameters(Integer groupId) {
-        List<GroupParameter> cache = acsCacheManager.getList("group-byId-%d-params".formatted(groupId));
+        List<GroupParameter> cache = acsCacheManager.getList("group-byId-%d-params".formatted(groupId), GroupParameter.class);
         if (cache != null) {
             return cache;
         }
@@ -174,7 +174,7 @@ public class ACSDao {
     }
 
     public List<JobParameter> getCachedJobParameters(Integer jobId) {
-        List<JobParameter> cache = acsCacheManager.getList("job-byId-%d-params".formatted(jobId));
+        List<JobParameter> cache = acsCacheManager.getList("job-byId-%d-params".formatted(jobId), JobParameter.class);
         if (cache != null) {
             return cache;
         }

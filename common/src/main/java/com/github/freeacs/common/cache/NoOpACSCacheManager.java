@@ -9,7 +9,7 @@ public class NoOpACSCacheManager implements ACSCacheManager {
     }
 
     @Override
-    public <T> List<T> getList(String key) {
+    public <T> List<T> getList(String key, Class<T> type) {
         return null;
     }
 
