@@ -114,15 +114,6 @@ public class Unittype implements Comparable<Unittype> {
     this.profiles = profiles;
   }
 
-  @Override
-  public String toString() {
-    String retStr = "[" + name + "] [" + vendor + "] [" + description + "] ";
-    retStr += getProfiles().getProfiles().length + " profiles, ";
-    retStr += getUnittypeParameters().getUnittypeParameters().length + " unittype parameters";
-    retStr += " (" + super.toString() + ")";
-    return retStr;
-  }
-
   public UnittypeParameters getUnittypeParameters() {
     if (unittypeParameters == null) {
       Map<Integer, UnittypeParameter> idMap = new HashMap<>();

@@ -6,8 +6,10 @@ import com.github.freeacs.dbi.sql.DynamicStatementWrapper;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
@@ -84,7 +86,8 @@ public class ACSDao {
     """;
 
     private static final String GET_GROUP_BY_ID = """
-        SELECT
+        WITH RECURSIVE ancestry AS (
+          SELECT
             group_id,
             unit_type_id,
             group_name,
@@ -92,8 +95,21 @@ public class ACSDao {
             parent_group_id,
             profile_id,
             count
-        FROM group_
-        WHERE group_id = ?
+          FROM group_
+          WHERE group_id = ?
+          UNION ALL
+          SELECT
+            i.group_id,
+            i.unit_type_id,
+            i.group_name,
+            i.description,
+            i.parent_group_id,
+            i.profile_id,
+            i.count
+          FROM group_ i
+          JOIN ancestry a ON i.group_id = a.parent_group_id
+        )
+        SELECT * FROM ancestry;
     """;
 
     public static String GET_JOB_BY_ID = """
@@ -322,25 +338,9 @@ public class ACSDao {
         try(var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
             var statement = new DynamicStatementWrapper(connection, GET_GROUP_BY_ID, groupId);
             var resultSet = statement.getPreparedStatement().executeQuery()) {
+            var groupCache = new HashMap<Integer, Group>();
             if (resultSet.next()) {
-                var unitTypeId = resultSet.getInt("unit_type_id");
-                var unitType = getCachedUnittypeByUnitTypeId(unitTypeId);
-                var group = new Group(resultSet.getInt("group_id"));
-                group.setName(resultSet.getString("group_name"));
-                group.setDescription(resultSet.getString("description"));
-                group.setUnittype(unitType);
-                var parentGroupId = resultSet.getInt("parent_group_id");
-                if (parentGroupId != 0) {
-                    var parentGroup = getCachedGroup(parentGroupId);
-                    group.setParent(parentGroup);
-                }
-                var profileId = resultSet.getInt("profile_id");
-                if (profileId != 0) {
-                    var profile = getCachedProfile(profileId);
-                    group.setProfile(profile);
-                }
-                group.setCount(resultSet.getInt("count"));
-                return group;
+                return parseGroup(resultSet, groupCache);
             } else {
                 log.warn("No group found with id {}", groupId);
                 return null;
@@ -348,6 +348,32 @@ public class ACSDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private Group parseGroup(ResultSet resultSet, HashMap<Integer, Group> groupCache) throws SQLException {
+        var unitTypeId = resultSet.getInt("unit_type_id");
+        var unitType = getCachedUnittypeByUnitTypeId(unitTypeId);
+        var group = new Group(resultSet.getInt("group_id"));
+        group.setName(resultSet.getString("group_name"));
+        group.setDescription(resultSet.getString("description"));
+        group.setUnittype(unitType);
+        var parentGroupId = resultSet.getInt("parent_group_id");
+        if (parentGroupId != 0) {
+            var parentGroup = getCachedGroup(parentGroupId);
+            group.setParent(parentGroup);
+        }
+        var profileId = resultSet.getInt("profile_id");
+        if (profileId != 0) {
+            var profile = getCachedProfile(profileId);
+            group.setProfile(profile);
+        }
+        group.setCount(resultSet.getInt("count"));
+        groupCache.put(group.getId(), group);
+        if (resultSet.next()) {
+            var parentGroup = parseGroup(resultSet, groupCache);
+            group.setParent(parentGroup);
+        }
+        return group;
     }
 
     private Profile getProfile(int profileId) {
