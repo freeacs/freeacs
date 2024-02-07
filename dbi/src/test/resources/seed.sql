@@ -27,3 +27,15 @@ values (1, 'Test job name', 'CONFIG|REGULAR', 'Test description', 1, 60, 'u100',
 
 insert job_param(job_id, unit_type_param_id, value)
 values (1, 1, 'Test value');
+
+-- to test recursive queries in mysql
+WITH RECURSIVE ancestry AS (
+  SELECT group_id, group_name, parent_group_id, description
+  FROM group_
+  WHERE group_id = 2
+  UNION ALL
+  SELECT i.group_id, i.group_name, i.parent_group_id, i.description
+  FROM group_ i
+  JOIN ancestry a ON i.group_id = a.parent_group_id
+)
+SELECT * FROM ancestry;
