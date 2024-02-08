@@ -1,5 +1,6 @@
 package com.github.freeacs.dbi;
 
+import com.github.freeacs.dbi.exceptions.AcsException;
 import com.github.freeacs.dbi.sql.AutoCommitResettingConnectionWrapper;
 import com.github.freeacs.dbi.sql.DynamicStatementWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -180,7 +181,7 @@ public class ACSDao {
                 return null;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new AcsException("Failed to fetch unittype by id", e);
         }
     }
 
@@ -212,7 +213,7 @@ public class ACSDao {
                 return null;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new AcsException("Failed to fetch unittype by name", e);
         }
     }
 
@@ -231,7 +232,7 @@ public class ACSDao {
             }
             return unittypeParameters;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new AcsException("Failed to fetch unittype parameters by unittype id", e);
         }
     }
 
@@ -257,7 +258,7 @@ public class ACSDao {
                 return null;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new AcsException("Failed to fetch group by id", e);
         }
     }
 
@@ -297,7 +298,7 @@ public class ACSDao {
                 return null;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new AcsException("Failed to fetch profile by id", e);
         }
     }
 
@@ -348,7 +349,7 @@ public class ACSDao {
                 return null;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new AcsException("Failed to fetch job by id", e);
         }
     }
 
@@ -382,7 +383,7 @@ public class ACSDao {
             }
             return groupParameters;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new AcsException("Failed to fetch group parameters by group id", e);
         }
     }
 
@@ -412,7 +413,7 @@ public class ACSDao {
             }
             return profileParameters;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new AcsException("Failed to fetch profile parameters by profile id", e);
         }
     }
 
@@ -442,7 +443,7 @@ public class ACSDao {
             }
             return jobParameters;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new AcsException("Failed to fetch job parameters by job id", e);
         }
     }
 }
