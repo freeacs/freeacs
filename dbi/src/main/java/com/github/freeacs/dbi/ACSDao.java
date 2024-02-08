@@ -37,7 +37,7 @@ public class ACSDao {
         WHERE ut.unit_type_id = ?
     """.formatted(UNITTYPE_COLUMNS);
 
-    private static final String GET_UNITTYPE_BY_NANE = """
+    private static final String GET_UNITTYPE_BY_NAME = """
         SELECT
             %s
         FROM unit_type ut
@@ -177,7 +177,7 @@ public class ACSDao {
                 return null;
             }
         } catch (SQLException e) {
-            throw new AcsException("Failed to fetch unittype by id: " + unitTypeId, e);
+            throw new AcsException("Failed to fetch unittype by id: %s", e, unitTypeId);
         }
     }
 
@@ -198,7 +198,7 @@ public class ACSDao {
             throw new IllegalArgumentException("unitTypeName cannot be null");
         }
         try (var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
-             var statement = new DynamicStatementWrapper(connection, GET_UNITTYPE_BY_NANE, unitTypeName);
+             var statement = new DynamicStatementWrapper(connection, GET_UNITTYPE_BY_NAME, unitTypeName);
              var resultSet = statement.getPreparedStatement().executeQuery()) {
             if (resultSet.next()) {
                 var unittype = parseUnittype(resultSet);
@@ -209,7 +209,7 @@ public class ACSDao {
                 return null;
             }
         } catch (SQLException e) {
-            throw new AcsException("Failed to fetch unittype by name: " + unitTypeName, e);
+            throw new AcsException("Failed to fetch unittype by name: %s", e, unitTypeName);
         }
     }
 
@@ -228,7 +228,7 @@ public class ACSDao {
             }
             return unittypeParameters;
         } catch (SQLException e) {
-            throw new AcsException("Failed to fetch unittype parameters by unittype id: " + unitTypeId, e);
+            throw new AcsException("Failed to fetch unittype parameters by unittype id: %s", e, unitTypeId);
         }
     }
 
@@ -254,7 +254,7 @@ public class ACSDao {
                 return null;
             }
         } catch (SQLException e) {
-            throw new AcsException("Failed to fetch group by id: " + groupId, e);
+            throw new AcsException("Failed to fetch group by id: %s", e, groupId);
         }
     }
 
@@ -294,7 +294,7 @@ public class ACSDao {
                 return null;
             }
         } catch (SQLException e) {
-            throw new AcsException("Failed to fetch profile by id: " + profileId, e);
+            throw new AcsException("Failed to fetch profile by id: %s", e, profileId);
         }
     }
 
@@ -345,7 +345,7 @@ public class ACSDao {
                 return null;
             }
         } catch (SQLException e) {
-            throw new AcsException("Failed to fetch job by id: " + jobId, e);
+            throw new AcsException("Failed to fetch job by id: %s", e, jobId);
         }
     }
 
@@ -373,7 +373,7 @@ public class ACSDao {
             }
             return groupParameters;
         } catch (SQLException e) {
-            throw new AcsException("Failed to fetch group parameters by group id: " + groupId, e);
+            throw new AcsException("Failed to fetch group parameters by group id: %s", e, groupId);
         }
     }
 
@@ -395,7 +395,7 @@ public class ACSDao {
             }
             return profileParameters;
         } catch (SQLException e) {
-            throw new AcsException("Failed to fetch profile parameters by profile id: " + profileId, e);
+            throw new AcsException("Failed to fetch profile parameters by profile id: %s", e, profileId);
         }
     }
 
@@ -418,7 +418,7 @@ public class ACSDao {
             }
             return jobParameters;
         } catch (SQLException e) {
-            throw new AcsException("Failed to fetch job parameters by job id: " + jobId, e);
+            throw new AcsException("Failed to fetch job parameters by job id: %s", e, jobId);
         }
     }
 }
