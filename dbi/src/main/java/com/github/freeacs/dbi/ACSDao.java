@@ -15,67 +15,71 @@ import java.util.List;
 @Slf4j
 public class ACSDao {
 
+    private static final String UNITTYPE_COLUMNS = """
+        ut.unit_type_id,
+        ut.unit_type_name,
+        ut.vendor_name,
+        ut.description as unit_type_description,
+        ut.protocol
+    """;
+
+    private static final String UNITTYPE_PARAM_COLUMNS = """
+        utp.unit_type_param_id,
+        utp.unit_type_id,
+        utp.name,
+        utp.flags
+    """;
+
     private static final String GET_UNITTYPE_BY_ID = """
         SELECT
-            unit_type_id,
-            unit_type_name,
-            vendor_name,
-            description as unit_type_description,
-            protocol
-        FROM unit_type
-        WHERE unit_type_id = ?
-    """;
+            %s
+        FROM unit_type ut
+        WHERE ut.unit_type_id = ?
+    """.formatted(UNITTYPE_COLUMNS);
 
     private static final String GET_UNITTYPE_BY_NANE = """
         SELECT
-            unit_type_id,
-            unit_type_name,
-            vendor_name,
-            description as unit_type_description,
-            protocol
-        FROM unit_type
-        WHERE unit_type_name = ?
-    """;
+            %s
+        FROM unit_type ut
+        WHERE ut.unit_type_name = ?
+    """.formatted(UNITTYPE_COLUMNS);
 
     private static final String GET_UNITTYPE_PARAMETERS_BY_UNITTYPE_ID = """
         SELECT
-            unit_type_param_id,
-            unit_type_id,
-            name,
-            flags
-        FROM unit_type_param
-        WHERE unit_type_id = ?
-    """;
+            %s
+        FROM unit_type_param utp
+        WHERE utp.unit_type_id = ?
+    """.formatted(UNITTYPE_PARAM_COLUMNS);
 
     private static final String GET_PROFILE_PARAMETERS_BY_PROFILE_ID = """
         SELECT
-            ut.unit_type_id,
-            pp.unit_type_param_id,
+            %s,
+            %s,
             pp.value
         FROM profile_param AS pp
         JOIN unit_type_param AS utp ON pp.unit_type_param_id = utp.unit_type_param_id
         JOIN unit_type AS ut ON ut.unit_type_id = utp.unit_type_id
         WHERE pp.profile_id = ?
-    """;
+    """.formatted(UNITTYPE_COLUMNS, UNITTYPE_PARAM_COLUMNS);
 
     private static final String GET_JOB_PARAMETERS_BY_JOB_ID = """
         SELECT
+            %s,
+            %s,
             jp.job_id,
-            ut.unit_type_id,
-            jp.unit_type_param_id,
             jp.value
         FROM job_param AS jp
         JOIN unit_type_param AS utp ON jp.unit_type_param_id = utp.unit_type_param_id
         JOIN unit_type AS ut ON ut.unit_type_id = utp.unit_type_id
         WHERE jp.job_id = ?
-    """;
+    """.formatted(UNITTYPE_COLUMNS, UNITTYPE_PARAM_COLUMNS);
 
     private static final String GET_GROUP_PARAMETERS_BY_GROUP_ID = """
         SELECT
-            ut.unit_type_id,
+            %s,
+            %s,
             gp.id,
             gp.group_id,
-            gp.unit_type_param_id,
             gp.operator,
             gp.data_type,
             gp.value
@@ -83,44 +87,36 @@ public class ACSDao {
         JOIN unit_type_param AS utp ON gp.unit_type_param_id = utp.unit_type_param_id
         JOIN unit_type AS ut ON ut.unit_type_id = utp.unit_type_id
         WHERE gp.group_id = ?
-    """;
+    """.formatted(UNITTYPE_COLUMNS, UNITTYPE_PARAM_COLUMNS);
 
     private static final String GET_GROUP_BY_ID = """
         WITH RECURSIVE ancestry AS (
           SELECT
             g.group_id,
-            g.unit_type_id,
             g.group_name,
             g.description as group_description,
             g.parent_group_id,
             g.profile_id,
             g.count,
-            u.unit_type_name,
-            u.vendor_name,
-            u.description as unit_type_description,
-            u.protocol
+            %s
           FROM group_ g
-          JOIN unit_type u ON g.unit_type_id = u.unit_type_id
+          JOIN unit_type ut ON g.unit_type_id = ut.unit_type_id
           WHERE g.group_id = ?
           UNION ALL
           SELECT
             i.group_id,
-            i.unit_type_id,
             i.group_name,
             i.description as group_description,
             i.parent_group_id,
             i.profile_id,
             i.count,
-            u.unit_type_name,
-            u.vendor_name,
-            u.description as unit_type_description,
-            u.protocol
+            %s
           FROM group_ i
-          JOIN unit_type u ON i.unit_type_id = u.unit_type_id
+          JOIN unit_type ut ON i.unit_type_id = ut.unit_type_id
           JOIN ancestry a ON i.group_id = a.parent_group_id
         )
         SELECT * FROM ancestry;
-    """;
+    """.formatted(UNITTYPE_COLUMNS, UNITTYPE_COLUMNS);
 
     public static String GET_JOB_BY_ID = """
         SELECT
@@ -177,11 +173,11 @@ public class ACSDao {
                 unittype.setId(unitTypeId);
                 return unittype;
             } else {
-                log.warn("No unittype found with id {}", unitTypeId);
+                log.debug("No unittype found with id {}", unitTypeId);
                 return null;
             }
         } catch (SQLException e) {
-            throw new AcsException("Failed to fetch unittype by id", e);
+            throw new AcsException("Failed to fetch unittype by id: " + unitTypeId, e);
         }
     }
 
@@ -209,11 +205,11 @@ public class ACSDao {
                 unittype.setId(resultSet.getInt("unit_type_id"));
                 return unittype;
             } else {
-                log.warn("No unittype found with id {}", unitTypeName);
+                log.debug("No unittype found with id {}", unitTypeName);
                 return null;
             }
         } catch (SQLException e) {
-            throw new AcsException("Failed to fetch unittype by name", e);
+            throw new AcsException("Failed to fetch unittype by name: " + unitTypeName, e);
         }
     }
 
@@ -232,7 +228,7 @@ public class ACSDao {
             }
             return unittypeParameters;
         } catch (SQLException e) {
-            throw new AcsException("Failed to fetch unittype parameters by unittype id", e);
+            throw new AcsException("Failed to fetch unittype parameters by unittype id: " + unitTypeId, e);
         }
     }
 
@@ -254,11 +250,11 @@ public class ACSDao {
             if (resultSet.next()) {
                 return parseGroup(resultSet, new HashMap<>());
             } else {
-                log.warn("No group found with id {}", groupId);
+                log.debug("No group found with id {}", groupId);
                 return null;
             }
         } catch (SQLException e) {
-            throw new AcsException("Failed to fetch group by id", e);
+            throw new AcsException("Failed to fetch group by id: " + groupId, e);
         }
     }
 
@@ -294,11 +290,11 @@ public class ACSDao {
             if (resultSet.next()) {
                 return parseProfile(profileId, resultSet);
             } else {
-                log.warn("No profile found with id {}", profileId);
+                log.debug("No profile found with id {}", profileId);
                 return null;
             }
         } catch (SQLException e) {
-            throw new AcsException("Failed to fetch profile by id", e);
+            throw new AcsException("Failed to fetch profile by id: " + profileId, e);
         }
     }
 
@@ -345,11 +341,11 @@ public class ACSDao {
                 job.setRepeatInterval(resultSet.getInt("repeat_interval"));
                 return job;
             } else {
-                log.warn("No job found with id {}", jobId);
+                log.debug("No job found with id {}", jobId);
                 return null;
             }
         } catch (SQLException e) {
-            throw new AcsException("Failed to fetch job by id", e);
+            throw new AcsException("Failed to fetch job by id: " + jobId, e);
         }
     }
 
@@ -362,28 +358,22 @@ public class ACSDao {
             var statement = new DynamicStatementWrapper(connection, GET_GROUP_PARAMETERS_BY_GROUP_ID, groupId);
             var resultSet = statement.getPreparedStatement().executeQuery()) {
             var groupParameters = new ArrayList<GroupParameter>();
-            var unitTypeParameters = getUnittypeParametersByUnitTypeId(group.getUnittype().getId());
-            UnittypeParameter unit_type_param = null;
             while (resultSet.next()) {
-                if (unit_type_param == null) {
-                    var unit_type_param_id = resultSet.getInt("unit_type_param_id");
-                    unit_type_param = unitTypeParameters
-                            .stream()
-                            .filter(utp -> utp.getUnittype().getId().equals(unit_type_param_id))
-                            .findFirst()
-                            .orElseThrow(() -> new IllegalArgumentException("Unittype parameter with id %s not found".formatted(unit_type_param_id)));
-                }
-                String value = resultSet.getString("value");
-                Parameter.Operator op = Parameter.Operator.getOperator(resultSet.getString("operator"));
-                Parameter.ParameterDataType pdt = Parameter.ParameterDataType.getDataType(resultSet.getString("data_type"));
-                Parameter parameter = new Parameter(unit_type_param, value, op, pdt);
-                GroupParameter groupParameter = new GroupParameter(parameter, group);
+                var unittype = parseUnittype(resultSet);
+                var unittypeParameter = parseUnittypeParameter(resultSet, unittype);
+                var value = resultSet.getString("value");
+                var operator = resultSet.getString("operator");
+                var op = Parameter.Operator.getOperator(operator);
+                var dataType = resultSet.getString("data_type");
+                var pdt = Parameter.ParameterDataType.getDataType(dataType);
+                var parameter = new Parameter(unittypeParameter, value, op, pdt);
+                var groupParameter = new GroupParameter(parameter, group);
                 groupParameter.setId(resultSet.getInt("id"));
                 groupParameters.add(groupParameter);
             }
             return groupParameters;
         } catch (SQLException e) {
-            throw new AcsException("Failed to fetch group parameters by group id", e);
+            throw new AcsException("Failed to fetch group parameters by group id: " + groupId, e);
         }
     }
 
@@ -396,24 +386,16 @@ public class ACSDao {
             var statement = new DynamicStatementWrapper(connection, GET_PROFILE_PARAMETERS_BY_PROFILE_ID, profileId);
             var resultSet = statement.getPreparedStatement().executeQuery()) {
             var profileParameters = new ArrayList<ProfileParameter>();
-            var unitTypeParameters = getUnittypeParametersByUnitTypeId(profile.getUnittype().getId());
-            UnittypeParameter unittypeParameter = null;
             while (resultSet.next()) {
-                if (unittypeParameter == null) {
-                    var unit_type_param_id = resultSet.getInt("unit_type_param_id");
-                    unittypeParameter = unitTypeParameters
-                            .stream()
-                            .filter(utp -> utp.getUnittype().getId().equals(unit_type_param_id))
-                            .findFirst()
-                            .orElseThrow(() -> new IllegalArgumentException("Unittype parameter with id %s not found".formatted(unit_type_param_id)));
-                }
+                var unittype = parseUnittype(resultSet);
+                var unittypeParameter = parseUnittypeParameter(resultSet, unittype);
                 var value = resultSet.getString("value");
                 var profileParameter = new ProfileParameter(profile, unittypeParameter, value);
                 profileParameters.add(profileParameter);
             }
             return profileParameters;
         } catch (SQLException e) {
-            throw new AcsException("Failed to fetch profile parameters by profile id", e);
+            throw new AcsException("Failed to fetch profile parameters by profile id: " + profileId, e);
         }
     }
 
@@ -426,24 +408,17 @@ public class ACSDao {
             var statement = new DynamicStatementWrapper(connection, GET_JOB_PARAMETERS_BY_JOB_ID, jobId);
             var resultSet = statement.getPreparedStatement().executeQuery()) {
             var jobParameters = new ArrayList<JobParameter>();
-            var unitTypeParameters = getUnittypeParametersByUnitTypeId(job.getUnittype().getId());
-            UnittypeParameter unittypeParameter = null;
             while (resultSet.next()) {
-                if (unittypeParameter == null) {
-                    var unit_type_param_id = resultSet.getInt("unit_type_param_id");
-                    unittypeParameter = unitTypeParameters
-                            .stream()
-                            .filter(utp -> utp.getUnittype().getId().equals(unit_type_param_id))
-                            .findFirst()
-                            .orElseThrow(() -> new IllegalArgumentException("Unittype parameter with id %s not found".formatted(unit_type_param_id)));
-                }
-                var param = new Parameter(unittypeParameter, resultSet.getString("value"));
+                var unittype = parseUnittype(resultSet);
+                var unittypeParameter = parseUnittypeParameter(resultSet, unittype);
+                var value = resultSet.getString("value");
+                var param = new Parameter(unittypeParameter, value);
                 var jobParameter = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, param);
                 jobParameters.add(jobParameter);
             }
             return jobParameters;
         } catch (SQLException e) {
-            throw new AcsException("Failed to fetch job parameters by job id", e);
+            throw new AcsException("Failed to fetch job parameters by job id: " + jobId, e);
         }
     }
 }
