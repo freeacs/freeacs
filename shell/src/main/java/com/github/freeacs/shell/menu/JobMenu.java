@@ -4,7 +4,6 @@ import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.JobParameter;
 import com.github.freeacs.dbi.JobStatus;
 import com.github.freeacs.dbi.Parameter;
-import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.UnitJob;
 import com.github.freeacs.dbi.UnitJobs;
 import com.github.freeacs.dbi.Unittype;
@@ -45,17 +44,17 @@ public class JobMenu {
       changeStatus(JobStatus.PAUSED);
       changeStatus(JobStatus.COMPLETED);
     } else if (inputArr[0].startsWith("dela")) {
-      delallparams(inputArr);
+      delallparams();
     } else if (inputArr[0].startsWith("delf")) {
-      delfailedunits(inputArr);
+      delfailedunits();
     } else if (inputArr[0].startsWith("delp")) {
       delparam(inputArr);
     } else if (inputArr[0].startsWith("fini")) {
       changeStatus(JobStatus.COMPLETED);
     } else if (inputArr[0].startsWith("listd")) {
-      listdetails(inputArr, oh);
+      listdetails(oh);
     } else if (inputArr[0].startsWith("listf")) {
-      listfailedunits(inputArr, oh);
+      listfailedunits(oh);
     } else if (inputArr[0].startsWith("listp")) {
       listparams(inputArr, oh);
     } else if (inputArr[0].equals(JobStatus.READY.toString())) {
@@ -72,7 +71,7 @@ public class JobMenu {
     } else if (inputArr[0].toLowerCase().startsWith("star")) {
       changeStatus(JobStatus.STARTED);
     } else if (inputArr[0].startsWith("stat")) {
-      status(inputArr, oh);
+      status(oh);
     } else if ("stop".equals(inputArr[0]) || "pause".equals(inputArr[0])) {
       changeStatus(JobStatus.PAUSED);
     } else if (inputArr[0].equals(JobStatus.PAUSED.toString())) {
@@ -118,15 +117,14 @@ public class JobMenu {
             context
                 .getUnittype()
                 .getJobs()
-                .readJobParameters(
-                    context.getJob(), new Unit(unitId, null, null), session.getAcs());
+                .readJobParameters(context.getJob());
       }
     } else {
       params =
           context
               .getUnittype()
               .getJobs()
-              .readJobParameters(context.getJob(), null, session.getAcs());
+              .readJobParameters(context.getJob());
     }
     for (Entry<String, JobParameter> entry : params.entrySet()) {
       Line line = new Line();
@@ -201,7 +199,7 @@ public class JobMenu {
     session.incCounter();
   }
 
-  private void delfailedunits(String[] inputArr) throws Exception {
+  private void delfailedunits() throws Exception {
     Job job = context.getJob();
     UnitJobs unitJobs = session.getUnitJobs();
     unitJobs.delete(job);
@@ -233,7 +231,7 @@ public class JobMenu {
     session.incCounter();
   }
 
-  private void listfailedunits(String[] inputArr, OutputHandler oh) throws Exception {
+  private void listfailedunits(OutputHandler oh) throws Exception {
     Job job = context.getJob();
     List<UnitJob> unitJobs = session.getUnitJobs().readAllProcessed(job);
     Listing listing = oh.getListing();
@@ -256,7 +254,7 @@ public class JobMenu {
     }
   }
 
-  private void status(String[] inputArr, OutputHandler oh) throws Exception {
+  private void status(OutputHandler oh) throws Exception {
     refresh();
     Job job = context.getJob();
     Listing listing = oh.getListing();
@@ -264,7 +262,7 @@ public class JobMenu {
     listing.addLine(job.getStatus().toString());
   }
 
-  private void listdetails(String[] inputArr, OutputHandler oh) throws Exception {
+  private void listdetails(OutputHandler oh) throws Exception {
     refresh();
     Job job = context.getJob();
     oh.print("                  Id : " + job.getId() + "\n");
@@ -333,7 +331,7 @@ public class JobMenu {
     }
   }
 
-  private void delallparams(String[] inputArr) throws Exception {
+  private void delallparams() throws Exception {
     session.println("[" + session.getCounter() + "] Job parameters were deleted");
     context.getUnittype().getJobs().deleteJobParameters(context.getJob(), session.getAcs());
     session.incCounter();

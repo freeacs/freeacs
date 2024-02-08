@@ -1,7 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.common.cache.InMemoryACSCacheManager;
-import com.hazelcast.core.HazelcastInstance;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -11,19 +9,31 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ACSDaoTest extends BaseDBITest {
 
     @Test
-    public void canUseHazelcast() {
-        HazelcastInstance hazelcastInstance = createHazelcastInstance();
-        hazelcastInstance.getList("test").add("test");
+    public void testGetUnittypeById() {
+        // Given:
+        ACSDao acs = new ACSDao(dataSource);
+
+        // When:
+        Unittype result1 = acs.getUnitTypeById(1);
+        Unittype result2 = acs.getUnitTypeById(1);
+
+        // Then:
+        assertEquals(result1.getId(), 1);
+        assertEquals(result1.getName(), "Test unit type");
+        assertEquals(result1.getVendor(), "Test vendor name");
+        assertEquals(result1.getDescription(), "Test description");
+        assertEquals(result1.getProtocol(), Unittype.ProvisioningProtocol.TR069);
+        assertSame(result1, result2);
     }
 
     @Test
-    public void testGetUnitById() {
+    public void testGetUnittypeByName() {
         // Given:
-        ACSDao acs = new ACSDao(dataSource, new InMemoryACSCacheManager());
+        ACSDao acs = new ACSDao(dataSource);
 
         // When:
-        Unittype result1 = acs.getCachedUnittypeByUnitTypeId(1);
-        Unittype result2 = acs.getCachedUnittypeByUnitTypeId(1);
+        Unittype result1 = acs.getUnitTypeByName("Test unit type");
+        Unittype result2 = acs.getUnitTypeByName("Test unit type");
 
         // Then:
         assertEquals(result1.getId(), 1);
@@ -37,11 +47,11 @@ public class ACSDaoTest extends BaseDBITest {
     @Test
     public void testGetUnitTypeParameters() {
         // Given:
-        ACSDao acs = new ACSDao(dataSource, new InMemoryACSCacheManager());
+        ACSDao acs = new ACSDao(dataSource);
 
         // When:
-        List<UnittypeParameter> result1 = acs.getCachedUnittypeParameters(1);
-        List<UnittypeParameter> result2 = acs.getCachedUnittypeParameters(1);
+        List<UnittypeParameter> result1 = acs.getUnittypeParametersByUnitTypeId(1);
+        List<UnittypeParameter> result2 = acs.getUnittypeParametersByUnitTypeId(1);
 
         // Then:
         assertEquals(result1.size(), 1);
@@ -53,11 +63,11 @@ public class ACSDaoTest extends BaseDBITest {
     @Test
     public void testGetProfile() {
         // Given:
-        ACSDao acs = new ACSDao(dataSource, new InMemoryACSCacheManager());
+        ACSDao acs = new ACSDao(dataSource);
 
         // When:
-        Profile result1 = acs.getCachedProfile(1);
-        Profile result2 = acs.getCachedProfile(1);
+        Profile result1 = acs.getProfileById(1);
+        Profile result2 = acs.getProfileById(1);
 
         // Then:
         assertEquals(result1.getId(), 1);
@@ -69,11 +79,11 @@ public class ACSDaoTest extends BaseDBITest {
     @Test
     public void testGetProfileParameters() {
         // Given:
-        ACSDao acs = new ACSDao(dataSource, new InMemoryACSCacheManager());
+        ACSDao acs = new ACSDao(dataSource);
 
         // When:
-        List<ProfileParameter> result1 = acs.getCachedProfileParameters(1);
-        List<ProfileParameter> result2 = acs.getCachedProfileParameters(1);
+        List<ProfileParameter> result1 = acs.getProfileParametersByProfileId(1);
+        List<ProfileParameter> result2 = acs.getProfileParametersByProfileId(1);
 
         // Then:
         assertEquals(result1.size(), 1);
@@ -85,13 +95,13 @@ public class ACSDaoTest extends BaseDBITest {
     @Test
     public void testGetGroup() {
         // Given:
-        ACSDao acs = new ACSDao(dataSource, new InMemoryACSCacheManager());
+        ACSDao acs = new ACSDao(dataSource);
 
         // When:
-        Group result1 = acs.getCachedGroup(1);
-        Group result2 = acs.getCachedGroup(1);
-        Group result3 = acs.getCachedGroup(2);
-        Group result4 = acs.getCachedGroup(2);
+        Group result1 = acs.getGroupById(1);
+        Group result2 = acs.getGroupById(1);
+        Group result3 = acs.getGroupById(2);
+        Group result4 = acs.getGroupById(2);
 
         // Then:
         assertEquals(result1.getId(), 1);
@@ -114,11 +124,11 @@ public class ACSDaoTest extends BaseDBITest {
     @Test
     public void testGetGroupParameters() {
         // Given:
-        ACSDao acs = new ACSDao(dataSource, new InMemoryACSCacheManager());
+        ACSDao acs = new ACSDao(dataSource);
 
         // When:
-        List<GroupParameter> result1 = acs.getCachedGroupParameters(1);
-        List<GroupParameter> result2 = acs.getCachedGroupParameters(1);
+        List<GroupParameter> result1 = acs.getGroupParametersByGroupId(1);
+        List<GroupParameter> result2 = acs.getGroupParametersByGroupId(1);
 
         // Then:
         assertNotNull(result1);
@@ -129,11 +139,11 @@ public class ACSDaoTest extends BaseDBITest {
     @Test
     public void testGetJob() {
         // Given:
-        ACSDao acs = new ACSDao(dataSource, new InMemoryACSCacheManager());
+        ACSDao acs = new ACSDao(dataSource);
 
         // When:
-        Job result1 = acs.getCachedJob(1);
-        Job result2 = acs.getCachedJob(1);
+        Job result1 = acs.getJobById(1);
+        Job result2 = acs.getJobById(1);
 
         // Then:
         assertNotNull(result1);
@@ -144,11 +154,11 @@ public class ACSDaoTest extends BaseDBITest {
     @Test
     public void testGetJobParameters() {
         // Given:
-        ACSDao acs = new ACSDao(dataSource, new InMemoryACSCacheManager());
+        ACSDao acs = new ACSDao(dataSource);
 
         // When:
-        List<JobParameter> result1 = acs.getCachedJobParameters(1);
-        List<JobParameter> result2 = acs.getCachedJobParameters(1);
+        List<JobParameter> result1 = acs.getJobParametersByJobId(1);
+        List<JobParameter> result2 = acs.getJobParametersByJobId(1);
 
         // Then:
         assertNotNull(result1);

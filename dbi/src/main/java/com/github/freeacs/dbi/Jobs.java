@@ -12,6 +12,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import lombok.Data;
+import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,10 +25,12 @@ import org.slf4j.LoggerFactory;
  *
  * @author Morten
  */
+@Data
 public class Jobs {
   private static final Logger logger = LoggerFactory.getLogger(Jobs.class);
   private Map<Integer, Job> idMap;
-  private Map<String, Job> nameMap;
+  private final Map<String, Job> nameMap;
+  @ToString.Exclude
   private final Unittype unittype;
   private static final Map<String, String> jobParameterRules = new HashMap<>();
 
@@ -68,10 +73,6 @@ public class Jobs {
     for (JobParameter jp : jobParameters) {
       JobFlag.JobType jobType = jp.getJob().getFlags().getType();
       String utpName = jp.getParameter().getUnittypeParameter().getName();
-      //			if (jp.getParameter().getUnittypeParameter().getFlag().isInspection())
-      //				throw new IllegalArgumentException("The unit type parameter " + utpName + " is an
-      // inspection parameter, cannot be set in job");
-      // Special modification for TR069_SCRIPT-parameter:
       if (utpName.contains(SystemParameters.DESIRED_TR069_SCRIPT)) {
         utpName = SystemParameters.DESIRED_TR069_SCRIPT;
       }
@@ -100,7 +101,7 @@ public class Jobs {
       connection = acs.getDataSource().getConnection();
       wasAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
-      for (int i = 0; jobParameters != null && i < jobParameters.size(); i++) {
+      for (int i = 0; i < jobParameters.size(); i++) {
         JobParameter jobParameter = jobParameters.get(i);
         Parameter parameter = jobParameter.getParameter();
         String unitId = jobParameter.getUnitId();
@@ -466,7 +467,7 @@ public class Jobs {
    * Decided to skip unit-specific job parameters. Cause extra work/SQL in TR-069 server, has never
    * been used in 5 years.
    */
-  public Map<String, JobParameter> readJobParameters(Job job, Unit unit, ACS acs) {
+  public Map<String, JobParameter> readJobParameters(Job job) {
     return job.getDefaultParameters();
   }
 
@@ -598,7 +599,7 @@ public class Jobs {
    * since they are updated by an other method (and another agent). It's important to separate the
    * various updates methods since the agents are independent of each other.
    */
-  public int changeFromUI(Job job, ACS acs) throws SQLException {
+  public void changeFromUI(Job job, ACS acs) throws SQLException {
     if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
     }
@@ -666,7 +667,6 @@ public class Jobs {
         msg += " or because the job was recently removed from the system";
         throw new SQLException(msg);
       }
-      return rowsUpdated;
     } finally {
       if (c != null) {
         c.close();
@@ -812,17 +812,5 @@ public class Jobs {
       return idMap.get(jobId);
     }
     return null;
-  }
-
-  public Unittype getUnittype() {
-    return unittype;
-  }
-
-  protected Map<Integer, Job> getIdMap() {
-    return idMap;
-  }
-
-  protected Map<String, Job> getNameMap() {
-    return nameMap;
   }
 }

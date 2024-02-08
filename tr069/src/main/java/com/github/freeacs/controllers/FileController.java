@@ -22,12 +22,10 @@ import static com.github.freeacs.tr069.base.BaseCache.putFirmware;
 public class FileController {
   public static final String CTX_PATH = "/file";
 
-  private final DBI dbi;
   private final ACSDao acsDao;
 
-  public FileController(DBI dbi, ACSDao acsDao) {
-    this.dbi = dbi;
-    this.acsDao = acsDao;
+  public FileController(ACSDao acsDao) {
+      this.acsDao = acsDao;
   }
 
   @GetMapping("${context-path}" + CTX_PATH + "/{fileType}/{firmwareVersion}/{unitTypeName}")
@@ -41,9 +39,8 @@ public class FileController {
     OutputStream out = null;
 
     try {
-      ACS acs = dbi.getAcs();
       File firmware;
-      Unittype unittype = acsDao.getCachedUnittypeByUnitTypeName(unitTypeName);
+      Unittype unittype = acsDao.getUnitTypeByName(unitTypeName);
       if (unittype == null) {
         log.error("Could not find unittype " + unitTypeName + " in xAPS, hence file URL is incorrect");
         res.sendError(HttpServletResponse.SC_NOT_FOUND);
