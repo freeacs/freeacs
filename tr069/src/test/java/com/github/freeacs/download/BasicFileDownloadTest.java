@@ -38,14 +38,6 @@ public class BasicFileDownloadTest extends AbstractDownloadTest {
 
     @Value("${local.server.port}")
     private int port;
-    private URL base;
-    private TestRestTemplate template;
-
-    @BeforeEach
-    public void setUp() throws Exception {
-        this.base = new URL("http://localhost:" + port + "/rest/customers");
-        template = new TestRestTemplate();
-    }
 
     @Test
     public void unauthorizedOnMissingAuthentication() throws Exception {
@@ -62,6 +54,9 @@ public class BasicFileDownloadTest extends AbstractDownloadTest {
         headers.setBasicAuth("test1234", AbstractProvisioningTest.UNIT_PASSWORD);
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<byte[]> response = restTemplate.exchange("http://localhost:" + port + "/tr069/file/SOFTWARE/1.23.1/Test 2", HttpMethod.GET, entity, byte[].class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertArrayEquals(FILE_BYTES, response.getBody());
+        // Run request again to test caching (tested manually)
         response = restTemplate.exchange("http://localhost:" + port + "/tr069/file/SOFTWARE/1.23.1/Test 2", HttpMethod.GET, entity, byte[].class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertArrayEquals(FILE_BYTES, response.getBody());
