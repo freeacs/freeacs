@@ -412,7 +412,7 @@ public class ACSDao {
         try(var connectionWrapper =
                     new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
             var statementWrapper =
-                    new DynamicStatementWrapper(connectionWrapper, GET_FILE_BY_TYPE_AND_VERSION, unittype.getId(), fileType, firmwareVersion);
+                    new DynamicStatementWrapper(connectionWrapper, GET_FILE_BY_TYPE_AND_VERSION, unittype.getId(), fileType.name(), firmwareVersion);
             var resultSet =
                     statementWrapper.getPreparedStatement().executeQuery()) {
             if (resultSet.next()) {
@@ -421,38 +421,15 @@ public class ACSDao {
                 file.setUnittype(unittype);
                 file.setId(resultSet.getInt("id"));
                 file.setName(resultSet.getString("name"));
-                String typeStr = resultSet.getString("type");
-                FileType ft = null;
-                try {
-                    ft = FileType.valueOf(typeStr);
-                } catch (Throwable t) { // Convert from old types
-                    if ("SCRIPT".equals(typeStr)) {
-                        ft = FileType.SHELL_SCRIPT;
-                    }
-                    if ("CONFIG".equals(typeStr)) {
-                        ft = FileType.TR069_SCRIPT;
-                    }
-                }
-                file.setType(ft);
+                file.setType(getFileType(resultSet.getString("type")));
                 file.setDescription(resultSet.getString("description"));
                 file.setVersion(resultSet.getString("version"));
                 file.setTimestamp(resultSet.getTimestamp("timestamp_"));
                 file.setLength(resultSet.getInt("length"));
-                String targetName = null;
-                User owner = null;
                 if (ACSVersionCheck.fileReworkSupported) {
-                    targetName = resultSet.getString("target_name");
-                    String userIdStr = resultSet.getString("owner");
-                    if (userIdStr != null) {
-                        try {
-                            owner = new User().withId(Integer.valueOf(resultSet.getString("owner")));
-                        } catch (NumberFormatException ignored) {
-                            log.warn("Failed to parse owner id {}", userIdStr);
-                        }
-                    }
+                    file.setTargetName(resultSet.getString("target_name"));
+                    file.setOwner(getPlaceHolderUser(resultSet.getString("owner")));
                 }
-                file.setTargetName(targetName);
-                file.setOwner(owner);
                 file.setValidateInput(true);
                 file.setConnectionProperties(dataSource);
                 file.resetContentToNull();
@@ -461,6 +438,32 @@ public class ACSDao {
             log.debug("Found 0 files for unittype {} and firmware version {}", unittype.getName(), firmwareVersion);
             return null;
         }
+    }
+
+    private static FileType getFileType(String typeStr) {
+        FileType ft = null;
+        try {
+            ft = FileType.valueOf(typeStr);
+        } catch (Throwable t) { // Convert from old types
+            if ("SCRIPT".equals(typeStr)) {
+                ft = FileType.SHELL_SCRIPT;
+            }
+            if ("CONFIG".equals(typeStr)) {
+                ft = FileType.TR069_SCRIPT;
+            }
+        }
+        return ft;
+    }
+
+    private static User getPlaceHolderUser(String userIdStr) {
+        if (userIdStr != null) {
+            try {
+                return new User().withId(Integer.valueOf(userIdStr));
+            } catch (NumberFormatException ignored) {
+                log.warn("Failed to parse owner id {}", userIdStr);
+            }
+        }
+        return null;
     }
 
     public byte[] getFileContents(int fileId) throws SQLException {
