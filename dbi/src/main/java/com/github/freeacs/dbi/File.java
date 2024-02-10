@@ -1,13 +1,17 @@
 package com.github.freeacs.dbi;
 
+import lombok.Data;
+import lombok.SneakyThrows;
+
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
+import java.util.Objects;
 import javax.sql.DataSource;
 
+@Data
 public class File {
   private Unittype unittype;
   private Integer id;
@@ -48,53 +52,12 @@ public class File {
     setOwner(owner);
   }
 
-  /* GET methods */
-  /** Code-order: id, unittype, name, type, desc, version, timestamp, targetname, (content) */
-  public Integer getId() {
-    return id;
-  }
-
-  public Unittype getUnittype() {
-    return unittype;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public String getOldName() {
-    return oldName;
-  }
-
-  public FileType getType() {
-    return type;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public String getVersion() {
-    return version;
-  }
-
-  public Date getTimestamp() {
-    return timestamp;
-  }
-
-  public String getTargetName() {
-    return targetName;
-  }
-
   protected byte[] getContentProtected() {
     return content;
   }
 
-  public User getOwner() {
-    return owner;
-  }
-
-  public byte[] getContent() throws SQLException {
+  @SneakyThrows
+  public byte[] getContent() {
     if (content == null) {
       Connection c = null;
       Statement s = null;
@@ -126,16 +89,6 @@ public class File {
     return content;
   }
 
-  public int getLength() {
-    return length;
-  }
-
-  /* SET methods */
-  /** Code-order: id, unittype, name, type, desc, version, timestamp, targetname, (content) */
-  protected void setId(Integer id) {
-    this.id = id;
-  }
-
   public void setUnittype(Unittype unittype) {
     if (unittype == null) {
       throw new IllegalArgumentException("Unittype cannot be null");
@@ -153,10 +106,6 @@ public class File {
     this.name = name;
   }
 
-  protected void setOldName(String oldName) {
-    this.oldName = oldName;
-  }
-
   public void setType(FileType type) {
     if (validateInput && type == null) {
       throw new IllegalArgumentException("File type cannot be null");
@@ -164,16 +113,8 @@ public class File {
     this.type = type;
   }
 
-  public void setDescription(String s) {
-    this.description = s;
-  }
-
   public void setTimestamp(Date created) {
-    if (created != null) {
-      this.timestamp = created;
-    } else {
-      this.timestamp = new Date();
-    }
+    this.timestamp = Objects.requireNonNullElseGet(created, Date::new);
   }
 
   public void setVersion(String version) {
@@ -192,10 +133,6 @@ public class File {
       targetName = name;
     }
     this.targetName = targetName;
-  }
-
-  public void setOwner(User owner) {
-    this.owner = owner;
   }
 
   public void setBytes(byte[] bytes) {
@@ -232,17 +169,8 @@ public class File {
     setTargetName(targetName);
   }
 
-  protected void validateInput(boolean validateInput) {
-    this.validateInput = validateInput;
-  }
-
   /** To avoid storing file content in ACS-object - this must always be used with care! */
   public void resetContentToNull() {
     content = null;
-  }
-
-  @Override
-  public String toString() {
-    return "[" + name + "] [" + type + "] [" + version + "]";
   }
 }

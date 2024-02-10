@@ -49,6 +49,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>com.github.freeacs</groupId>
+      <artifactId>cache</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
       <exclusions>

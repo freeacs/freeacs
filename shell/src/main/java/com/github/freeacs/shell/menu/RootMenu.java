@@ -66,9 +66,7 @@ public class RootMenu {
         }
         uts.reset();
         if (!session.getBatchStorage().getAddChangeUnitParameters().isEmpty()) {
-          xapsU.addOrChangeUnitParameters(
-              session.getBatchStorage().getAddChangeUnitParameters(),
-              session.getContext().getProfile());
+          xapsU.addOrChangeUnitParameters(session.getBatchStorage().getAddChangeUnitParameters());
           session.getBatchStorage().setAddChangeUnitParameters(null);
         }
         if (!session.getBatchStorage().getDeleteUnitParameters().isEmpty()) {

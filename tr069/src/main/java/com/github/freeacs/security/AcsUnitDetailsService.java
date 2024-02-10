@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
@@ -18,12 +16,10 @@ import java.sql.SQLException;
 public class AcsUnitDetailsService implements UserDetailsService {
 
     private final DBI dbi;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public AcsUnitDetailsService(DBI dbi) {
         this.dbi = dbi;
-        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.github.freeacs.dbi;
 
+import lombok.Data;
+
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -10,12 +12,12 @@ import java.util.regex.PatternSyntaxException;
  * <p>- Offer at least an Empty Constructor - should make it easier to make readable add/update code
  * in the DBI-clients - Make a validate() method which should call upon all set-methods (except
  * setId()) - all set-methods shall make input-validation and throw IllegalArgumentException if
- * something is wrong - offer a validateInput(boolean) method and a corresponding
- * validateInput-field. Use this field in all set-methods to skip input-validation if validateInput
+ * something is wrong - offer a setValidateInput(boolean) method and a corresponding
+ * setValidateInput-field. Use this field in all set-methods to skip input-validation if setValidateInput
  * = false (will be used from ACS-object). In those cases were a value should be specified (or it
  * would cause NullPointerException or other things), set a reasonable default-value. In some cases
  * it doesn't make any sense to allow input, for example "name=null", since it will break
- * everything. In that case we will always throw an IllegalArgumentException. The validateInput()
+ * everything. In that case we will always throw an IllegalArgumentException. The setValidateInput()
  * method must be protected and must always be called from DBI upon write to Fusion database - to
  * ensure correct data goes into the database. - contstants enumeration should be represented as a
  * enum. - group all get-methods and set-methods together - the order of the set/get-methods should
@@ -26,6 +28,7 @@ import java.util.regex.PatternSyntaxException;
  *
  * @author Morten
  */
+@Data
 public class SyslogEvent implements Comparable<SyslogEvent> {
   public enum StorePolicy {
     STORE,
@@ -65,7 +68,6 @@ public class SyslogEvent implements Comparable<SyslogEvent> {
       Unittype unittype,
       Integer eventId,
       String name,
-      String desc,
       Group group,
       String expression,
       StorePolicy storePolicy,
@@ -109,51 +111,6 @@ public class SyslogEvent implements Comparable<SyslogEvent> {
     this.validateInput = validateInput;
   }
 
-  /** GET-methods. */
-  public Unittype getUnittype() {
-    return unittype;
-  }
-
-  public Integer getId() {
-    return id;
-  }
-
-  public Integer getEventId() {
-    return eventId;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public Group getGroup() {
-    return group;
-  }
-
-  public String getExpression() {
-    return expression;
-  }
-
-  public Pattern getExpressionPattern() {
-    return expressionPattern;
-  }
-
-  public StorePolicy getStorePolicy() {
-    return storePolicy;
-  }
-
-  public File getScript() {
-    return script;
-  }
-
-  public Integer getDeleteLimit() {
-    return deleteLimit;
-  }
-
   /** SET-methods. */
   public void setUnittype(Unittype unittype) {
     if (validateInput && unittype == null) {
@@ -189,14 +146,6 @@ public class SyslogEvent implements Comparable<SyslogEvent> {
     this.name = name;
   }
 
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-  public void setGroup(Group group) {
-    this.group = group;
-  }
-
   public void setExpression(String expression) {
     if (validateInput && expression == null) {
       throw new IllegalArgumentException("SyslogEvent expression cannot be null");
@@ -228,10 +177,6 @@ public class SyslogEvent implements Comparable<SyslogEvent> {
                 + pse);
       }
     }
-  }
-
-  public void setStorePolicy(StorePolicy storePolicy) {
-    this.storePolicy = storePolicy;
   }
 
   public void setScript(File script) {

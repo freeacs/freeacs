@@ -28,8 +28,7 @@ public class Unittypes {
   /**
    * Only to be used internally (to shape ACS object according to permissions).
    *
-   * @param unittype
-   * @return
+   * @param unittype The unittype to be removed from the ACS object
    */
   protected void removePermission(Unittype unittype) {
     nameMap.remove(unittype.getName());
@@ -141,8 +140,8 @@ public class Unittypes {
    * parameter is removed from the nameMap. Setting the cascade argument = true will also delete all
    * unittype parameters and enumerations for all these parameters.
    *
-   * @param unittype
-   * @throws SQLException
+   * @param unittype The unittype to be deleted
+   * @throws SQLException If something goes wrong
    */
   public int deleteUnittype(Unittype unittype, ACS acs, boolean cascade) throws SQLException {
     if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {

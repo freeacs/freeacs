@@ -17,6 +17,9 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.sql.DataSource;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,14 +64,11 @@ import org.slf4j.LoggerFactory;
  *
  * @author Morten
  */
+@Getter
 public class DBI implements Runnable {
   private final Thread thread;
 
   private boolean running = true;
-
-  public boolean isRunning() {
-    return running;
-  }
 
   public void setRunning(boolean running) {
     this.running = running;
@@ -81,12 +81,9 @@ public class DBI implements Runnable {
     }
   }
 
+  @Getter
   public static class PublishType {
     private final Set<String> messageTypes = new TreeSet<>();
-
-    public Set<String> getMessageTypes() {
-      return messageTypes;
-    }
 
     public int size() {
       return messageTypes.size();
@@ -206,6 +203,7 @@ public class DBI implements Runnable {
   public static String PUBLISH_INBOX_NAME = "publishACSInbox";
 
   private final DataSource dataSource;
+  @Setter
   private int lifetimeSec;
   private final long start = System.currentTimeMillis();
   private boolean finished;
@@ -303,10 +301,7 @@ public class DBI implements Runnable {
   }
 
   private boolean shouldSkipMessage(Message message) {
-    if (isMessageFromSelf(message) || sent.contains(message.getId())) {
-      return true;
-    }
-    return false;
+    return isMessageFromSelf(message) || sent.contains(message.getId());
   }
 
   private boolean isMessageFromSelf(Message message) {
@@ -731,22 +726,6 @@ public class DBI implements Runnable {
       message.setTimestamp(new Date());
       outbox.add(message);
     }
-  }
-
-  public boolean isFinished() {
-    return finished;
-  }
-
-  public void setLifetimeSec(int lifetimeSec) {
-    this.lifetimeSec = lifetimeSec;
-  }
-
-  public DataSource getDataSource() {
-    return dataSource;
-  }
-
-  public Syslog getSyslog() {
-    return syslog;
   }
 
   public ACSUnit getACSUnit() throws SQLException {

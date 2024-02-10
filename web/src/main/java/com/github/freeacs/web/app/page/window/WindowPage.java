@@ -459,13 +459,13 @@ public class WindowPage extends AbstractWebPage {
           unitDownload = new UnitParameter(utp, unit.getId(), getDownload(), p);
           List<UnitParameter> toAdd = new ArrayList<>();
           toAdd.add(unitDownload);
-          acsUnit.addOrChangeUnitParameters(toAdd, p);
+          acsUnit.addOrChangeUnitParameters(toAdd);
           updated = true;
         } else if (download != null) {
           unitDownload.getParameter().setValue(getDownload());
           List<UnitParameter> toAdd = new ArrayList<>();
           toAdd.add(unitDownload);
-          acsUnit.addOrChangeUnitParameters(toAdd, p);
+          acsUnit.addOrChangeUnitParameters(toAdd);
           updated = true;
         }
 
@@ -482,13 +482,13 @@ public class WindowPage extends AbstractWebPage {
           unitRegular = new UnitParameter(utp, unit.getId(), getRegular(), p);
           List<UnitParameter> toAdd = new ArrayList<>();
           toAdd.add(unitRegular);
-          acsUnit.addOrChangeUnitParameters(toAdd, p);
+          acsUnit.addOrChangeUnitParameters(toAdd);
           updated = true;
         } else if (regular != null) {
           unitRegular.getParameter().setValue(getRegular());
           List<UnitParameter> toAdd = new ArrayList<>();
           toAdd.add(unitRegular);
-          acsUnit.addOrChangeUnitParameters(toAdd, p);
+          acsUnit.addOrChangeUnitParameters(toAdd);
           updated = true;
         }
 
@@ -506,13 +506,13 @@ public class WindowPage extends AbstractWebPage {
           unitFrequency = new UnitParameter(utp, unit.getId(), frequency, p);
           List<UnitParameter> toAdd = new ArrayList<>();
           toAdd.add(unitFrequency);
-          acsUnit.addOrChangeUnitParameters(toAdd, p);
+          acsUnit.addOrChangeUnitParameters(toAdd);
           updated = true;
         } else if (frequency != null) {
           unitFrequency.getParameter().setValue(frequency);
           List<UnitParameter> toAdd = new ArrayList<>();
           toAdd.add(unitFrequency);
-          acsUnit.addOrChangeUnitParameters(toAdd, p);
+          acsUnit.addOrChangeUnitParameters(toAdd);
           updated = true;
         }
 
@@ -529,13 +529,13 @@ public class WindowPage extends AbstractWebPage {
           unitSpread = new UnitParameter(utp, unit.getId(), spread, p);
           List<UnitParameter> toAdd = new ArrayList<>();
           toAdd.add(unitSpread);
-          acsUnit.addOrChangeUnitParameters(toAdd, p);
+          acsUnit.addOrChangeUnitParameters(toAdd);
           updated = true;
         } else if (spread != null) {
           unitSpread.getParameter().setValue(spread);
           List<UnitParameter> toAdd = new ArrayList<>();
           toAdd.add(unitSpread);
-          acsUnit.addOrChangeUnitParameters(toAdd, p);
+          acsUnit.addOrChangeUnitParameters(toAdd);
           updated = true;
         }
 

@@ -1,5 +1,8 @@
 package com.github.freeacs.dbi;
 
+import lombok.Data;
+
+@Data
 public class GroupParameter {
   private Integer id;
 
@@ -9,35 +12,6 @@ public class GroupParameter {
 
   public GroupParameter(Parameter parameter, Group group) {
     this.group = group;
-    this.parameter = parameter;
-  }
-
-  @Override
-  public String toString() {
-    return "GP: " + parameter + " [" + group.getName() + "]";
-  }
-
-  protected void setGroup(Group group) {
-    this.group = group;
-  }
-
-  public Group getGroup() {
-    return group;
-  }
-
-  protected void setId(Integer i) {
-    this.id = i;
-  }
-
-  public Integer getId() {
-    return id;
-  }
-
-  public Parameter getParameter() {
-    return parameter;
-  }
-
-  public void setParameter(Parameter parameter) {
     this.parameter = parameter;
   }
 

@@ -1,6 +1,9 @@
 package com.github.freeacs.controllers;
 
-import com.github.freeacs.dbi.*;
+import com.github.freeacs.cache.AcsCache;
+import com.github.freeacs.dbi.File;
+import com.github.freeacs.dbi.FileType;
+import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.tr069.base.DownloadLogic;
 import com.github.freeacs.tr069.methods.decision.GetParameterValues.DownloadLogicTR069;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,21 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.sql.SQLException;
-import java.util.Objects;
-
-import static com.github.freeacs.tr069.base.BaseCache.getFirmware;
-import static com.github.freeacs.tr069.base.BaseCache.putFirmware;
 
 @RestController
 @Slf4j
 public class FileController {
   public static final String CTX_PATH = "/file";
 
-  private final DBI dbi;
+  private final AcsCache acsCache;
 
-  public FileController(DBI dbi) {
-    this.dbi = dbi;
+  public FileController(AcsCache acsCache) {
+      this.acsCache = acsCache;
   }
 
   @GetMapping("${context-path}" + CTX_PATH + "/{fileType}/{firmwareVersion}/{unitTypeName}")
@@ -33,21 +31,19 @@ public class FileController {
                     @PathVariable("firmwareVersion") String firmwareVersion,
                     @PathVariable("unitTypeName") String unitTypeName,
                     HttpServletResponse res) throws IOException {
-    firmwareVersion = firmwareVersion.replaceAll(DownloadLogicTR069.SPACE_SEPARATOR, " ");
+    var version = firmwareVersion.replaceAll(DownloadLogicTR069.SPACE_SEPARATOR, " ");
     unitTypeName = unitTypeName.replaceAll(DownloadLogicTR069.SPACE_SEPARATOR, " ");
     String firmwareName = null;
     OutputStream out = null;
 
     try {
-      ACS acs = dbi.getAcs();
-      File firmware;
-      Unittype unittype = acs.getUnittype(unitTypeName);
+      Unittype unittype = acsCache.getUnitType(unitTypeName);
       if (unittype == null) {
         log.error("Could not find unittype " + unitTypeName + " in xAPS, hence file URL is incorrect");
         res.sendError(HttpServletResponse.SC_NOT_FOUND);
         return;
       }
-      firmware = unittype.getFiles().getByVersionType(firmwareVersion, fileType);
+      File firmware = acsCache.getFile(fileType, unittype, version);
       if (firmware == null) {
         log.error("Could not find " + fileType + " version " + firmwareVersion + " (in unittype " + unittype + ") in xAPS");
         res.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -56,7 +52,7 @@ public class FileController {
       firmwareName = firmware.getName();
       log.debug("Firmware " + firmwareName + " exists, will now retrieve binaries for unittype-name " + unitTypeName);
       out = res.getOutputStream();
-      byte[] firmwareImage = readFirmwareImage(firmware);
+      byte[] firmwareImage = acsCache.getFileContents(firmware.getId());
       if (firmwareImage == null || firmwareImage.length == 0) {
         res.sendError(HttpServletResponse.SC_NOT_FOUND);
         log.error("No binaries found for firmware " + firmwareName + " (in unittype " + unitTypeName + ")");
@@ -77,18 +73,5 @@ public class FileController {
         out.close();
       }
     }
-  }
-
-  private static byte[] readFirmwareImage(File firmwareFresh) throws SQLException {
-    File firmwareCache = getFirmware(firmwareFresh.getName(), firmwareFresh.getUnittype().getName());
-    final File firmwareReturn;
-    if (firmwareCache != null && Objects.equals(firmwareFresh.getId(), firmwareCache.getId())) {
-      firmwareReturn = firmwareCache;
-    } else {
-      firmwareFresh.setBytes(firmwareFresh.getContent());
-      putFirmware(firmwareFresh.getName(), firmwareFresh.getUnittype().getName(), firmwareFresh);
-      firmwareReturn = firmwareFresh;
-    }
-    return firmwareReturn.getContent();
   }
 }

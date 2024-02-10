@@ -2,13 +2,15 @@ package com.github.freeacs.shell;
 
 import com.github.freeacs.dbi.File;
 import com.github.freeacs.shell.util.FileUtil;
+import lombok.*;
+
 import java.io.BufferedReader;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Data
 public class Script {
   public static final int SCRIPT = 0;
   public static final int WHILE = 1;
@@ -72,7 +74,7 @@ public class Script {
         throw new IllegalArgumentException("The script file " + filename + " does not exist");
       }
       this.variables = variables;
-    } catch (SQLException nce) {
+    } catch (Exception nce) {
       throw new IllegalArgumentException(
           "The script file " + filename + " was not found due to database connection problem");
     }
@@ -139,14 +141,6 @@ public class Script {
     return variables.get(name);
   }
 
-  public Map<String, Variable> getVariables() {
-    return variables;
-  }
-
-  public void setVariables(Map<String, Variable> variables) {
-    this.variables = variables;
-  }
-
   public boolean endOfScript() {
     return linePointer >= scriptLines.size();
   }
@@ -175,18 +169,6 @@ public class Script {
     }
   }
 
-  /**
-   * Public String getLastRetrievedScriptLine() { if (linePointer == 0 || linePointer >=
-   * scriptLines.size() - 1) { return null; } else { return scriptLines.get(linePointer - 1); } }
-   */
-  public Context getContext() {
-    return context;
-  }
-
-  public int getLinePointer() {
-    return linePointer;
-  }
-
   public void decLinePointer() {
     linePointer--;
   }
@@ -195,64 +177,8 @@ public class Script {
     linePointer++;
   }
 
-  public int getType() {
-    return type;
-  }
-
   public void reset() {
     linePointer = 0;
   }
 
-  public void setSkipOnNextIfElseWord(boolean skipOnNextIfElseWord) {
-    this.skipOnNextIfElseWord = skipOnNextIfElseWord;
-  }
-
-  public boolean isSkipOnNextIfElseWord() {
-    return skipOnNextIfElseWord;
-  }
-
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    String typeStr = "SCRIPT";
-    if (type == IF) {
-      typeStr = "IF";
-    } else if (type == WHILE) {
-      typeStr = "WHILE";
-    }
-    sb.append("Context: ")
-        .append(context)
-        .append(", Type: ")
-        .append(typeStr)
-        .append(", Size: ")
-        .append(scriptLines.size())
-        .append(", Position: ")
-        .append(linePointer)
-        .append(", Filename: ")
-        .append(filename)
-        .append("\n");
-    for (int i = 0; i < scriptLines.size(); i++) {
-      if (linePointer == i) {
-        sb.append(" ====> ").append(scriptLines.get(i)).append("\n");
-      } else {
-        sb.append("       ").append(scriptLines.get(i)).append("\n");
-      }
-    }
-    return sb.toString();
-  }
-
-  public BufferedReader getWhileInput() {
-    return whileInput;
-  }
-
-  public void setWhileInput(BufferedReader whileInput) {
-    this.whileInput = whileInput;
-  }
-
-  public String getWhilePath() {
-    return whilePath;
-  }
-
-  public void setWhilePath(String whilePath) {
-    this.whilePath = whilePath;
-  }
 }

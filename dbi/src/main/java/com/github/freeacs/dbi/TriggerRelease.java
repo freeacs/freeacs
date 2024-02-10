@@ -1,11 +1,14 @@
 package com.github.freeacs.dbi;
 
+import lombok.*;
+
 import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA. User: Morten Date: 11.01.12 Time: 10:02 To change this template use
  * File | Settings | File Templates.
  */
+@Data
 public class TriggerRelease {
   private Integer id;
   private Trigger trigger;
@@ -40,27 +43,11 @@ public class TriggerRelease {
     setSentTms(sentTms);
   }
 
-  public Integer getId() {
-    return id;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
-  }
-
-  public Trigger getTrigger() {
-    return trigger;
-  }
-
   public void setTrigger(Trigger trigger) {
     if (trigger == null) {
       throw new IllegalArgumentException("TriggerRelease Trigger cannot be null");
     }
     this.trigger = trigger;
-  }
-
-  public Integer getNoEvents() {
-    return noEvents;
   }
 
   public void setNoEvents(int noEvents) {
@@ -70,19 +57,11 @@ public class TriggerRelease {
     this.noEvents = noEvents;
   }
 
-  public Integer getNoEventsPrUnit() {
-    return noEventsPrUnit;
-  }
-
   public void setNoEventsPrUnit(int noEventsPrUnit) {
     if (noEventsPrUnit < 0) {
       throw new IllegalArgumentException("TriggerRelease noEventsPrUnit cannot be < 0");
     }
     this.noEventsPrUnit = noEventsPrUnit;
-  }
-
-  public Integer getNoUnits() {
-    return noUnits;
   }
 
   public void setNoUnits(int noUnits) {
@@ -92,27 +71,11 @@ public class TriggerRelease {
     this.noUnits = noUnits;
   }
 
-  public Date getReleaseTms() {
-    return releaseTms;
-  }
-
   public void setReleaseTms(Date releaseTms) {
     if (releaseTms == null) {
       throw new IllegalArgumentException("TriggerRelease ReleaseTms cannot be null");
     }
     this.releaseTms = releaseTms;
-  }
-
-  public Date getSentTms() {
-    return sentTms;
-  }
-
-  public void setSentTms(Date sentTms) {
-    this.sentTms = sentTms;
-  }
-
-  public Date getFirstEventTms() {
-    return firstEventTms;
   }
 
   public void setFirstEventTms(Date firstEventTms) {

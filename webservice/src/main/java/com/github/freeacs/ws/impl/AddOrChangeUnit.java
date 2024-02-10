@@ -73,7 +73,7 @@ public class AddOrChangeUnit {
       List<UnitParameter> dParams =
           validateDeleteUnitParameters(unitWS, profile.getUnittype(), profile);
       acsUnit.addUnits(unitIds, profile);
-      acsUnit.addOrChangeUnitParameters(acParams, profile);
+      acsUnit.addOrChangeUnitParameters(acParams);
       acsUnit.deleteUnitParameters(dParams);
       AddOrChangeUnitResponse response = new AddOrChangeUnitResponse();
       response.setUnit(unitWS);

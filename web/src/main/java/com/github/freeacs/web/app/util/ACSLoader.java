@@ -24,8 +24,8 @@ public class ACSLoader {
    * Gets the dBI.
    *
    * @param sessionId the session id
-   * @param mainDataSource
-   * @param syslogDataSource
+   * @param mainDataSource the main data source
+   * @param syslogDataSource the syslog data source
    * @return the dBI
    * @throws SQLException the sQL exception the no available connection exception
    */
@@ -58,8 +58,8 @@ public class ACSLoader {
    * Gets the xAPS.
    *
    * @param sessionId the session id
-   * @param mainDataSource
-   * @param syslogDataSource
+   * @param mainDataSource the main data source
+   * @param syslogDataSource the syslog data source
    * @return the xAPS the no available connection exception
    * @throws SQLException the sQL exception
    */
@@ -86,7 +86,7 @@ public class ACSLoader {
    * Gets the identity.
    *
    * @param sessionId the session id
-   * @param dataSource
+   * @param dataSource the data source
    * @return the identity
    * @throws SQLException the sQL exception the no available connection exception
    */
@@ -101,9 +101,9 @@ public class ACSLoader {
   /**
    * Gets the default user.
    *
-   * @param dataSource
+   * @param dataSource the data source
    * @return the default user
-   * @throws SQLException
+   * @throws SQLException the sQL exception the no available connection exception
    */
   private static User getDefaultUser(DataSource dataSource) throws SQLException {
     Users users = new Users(dataSource);
@@ -114,8 +114,8 @@ public class ACSLoader {
    * Gets the xAPS unit.
    *
    * @param sessionId the session id
-   * @param mainDataSource
-   * @param syslogDataSource
+   * @param mainDataSource the main data source
+   * @param syslogDataSource the syslog data source
    * @return the xAPS unit the no available connection exception
    * @throws SQLException the sQL exception
    */

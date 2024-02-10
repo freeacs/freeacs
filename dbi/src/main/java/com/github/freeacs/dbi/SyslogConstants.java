@@ -14,14 +14,12 @@ public class SyslogConstants {
   public static final int SEVERITY_INFO = 6;
   public static final int SEVERITY_DEBUG = 7;
 
-  public static final int FACILITY_SYSLOGCLIENT_TEST = 23;
   public static final int FACILITY_SHELL = 50;
   public static final int FACILITY_WEB = 51;
   public static final int FACILITY_WEBSERVICE = 52;
   public static final int FACILITY_CORE = 53;
   public static final int FACILITY_TR069 = 54;
   public static final int FACILITY_OPP = 55;
-  public static final int FACILITY_SYSLOG_REPORTER = 56;
   public static final int FACILITY_STUN = 57;
   public static final int FACILITY_SPP = 58;
   public static final int FACILITY_TFTP = 59;

@@ -172,7 +172,7 @@ public class ShellJobLogic {
         }
         if (unitParameters.size() > 0) {
             try {
-                dbi.getACSUnit().addOrChangeUnitParameters(unitParameters, sessionData.getProfile());
+                dbi.getACSUnit().addOrChangeUnitParameters(unitParameters);
             } catch (SQLException sqle) {
                 throw new TR069DatabaseException(sqle);
             }
@@ -189,11 +189,11 @@ public class ShellJobLogic {
         sessionData.getProvisioningMessage().setPeriodicInformInterval(Integer.valueOf(nextPII));
         sessionData.getToCPE().addOrChangeParameterValueStruct(PII, nextPII, "xsd:unsignedInt");
         log.debug("-ACS->CPE      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
-        sessionData.getToDB().add(new ParameterValueStruct(PII, "" + nextPII));
+        sessionData.getToDB().add(new ParameterValueStruct(PII, nextPII));
         log.debug("-ACS->ACS      " + PII + " CPE[" + nextPII + "] ACS[" + nextPII + "] Decided by ACS");
         sessionData
                 .getToDB()
-                .add(new ParameterValueStruct(SystemParameters.PERIODIC_INTERVAL, "" + nextPII));
+                .add(new ParameterValueStruct(SystemParameters.PERIODIC_INTERVAL, nextPII));
         log.debug("-ACS->ACS      "
                         + SystemParameters.PERIODIC_INTERVAL
                         + " CPE["

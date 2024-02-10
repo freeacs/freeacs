@@ -43,47 +43,39 @@ public class ProfileParameters {
 
   private void addOrChangeProfileParameterImpl(
       ProfileParameter profileParameter, Profile profile, ACS acs) throws SQLException {
-    Connection c = acs.getDataSource().getConnection();
-    Statement s = null;
     String sql;
-    try {
-      s = c.createStatement();
-      String logMsg = "profile parameter " + profileParameter.getUnittypeParameter().getName();
-      if (profileParameter.getUnittypeParameter().getFlag().isConfidential()) {
-        logMsg += " with confidential value (*****)";
-      } else {
-        logMsg += " with value " + profileParameter.getValue();
-      }
-      if (getById(profileParameter.getUnittypeParameter().getId()) == null) {
-        sql = "INSERT INTO profile_param (profile_id, unit_type_param_id, value) VALUES (";
-        sql += profileParameter.getProfile().getId() + ", ";
-        sql += profileParameter.getUnittypeParameter().getId() + ", ";
-        sql += "'" + profileParameter.getValue() + "')";
-        s.setQueryTimeout(60);
-        s.executeUpdate(sql);
-
-        logger.info("Added " + logMsg);
-        if (acs.getDbi() != null) {
-          acs.getDbi().publishAdd(profileParameter, profile.getUnittype());
+    try (Connection c = acs.getDataSource().getConnection(); Statement s = c.createStatement()) {
+        String logMsg = "profile parameter " + profileParameter.getUnittypeParameter().getName();
+        if (profileParameter.getUnittypeParameter().getFlag().isConfidential()) {
+            logMsg += " with confidential value (*****)";
+        } else {
+            logMsg += " with value " + profileParameter.getValue();
         }
-      } else {
-        sql = "UPDATE profile_param SET ";
-        sql += "VALUE = '" + profileParameter.getValue() + "' ";
-        sql += "WHERE profile_id = " + profileParameter.getProfile().getId() + " AND ";
-        sql += "unit_type_param_id = " + profileParameter.getUnittypeParameter().getId();
-        s.setQueryTimeout(60);
-        s.executeUpdate(sql);
+        if (getById(profileParameter.getUnittypeParameter().getId()) == null) {
+            sql = "INSERT INTO profile_param (profile_id, unit_type_param_id, value) VALUES (";
+            sql += profileParameter.getProfile().getId() + ", ";
+            sql += profileParameter.getUnittypeParameter().getId() + ", ";
+            sql += "'" + profileParameter.getValue() + "')";
+            s.setQueryTimeout(60);
+            s.executeUpdate(sql);
 
-        logger.info("Updated " + logMsg);
-        if (acs.getDbi() != null) {
-          acs.getDbi().publishChange(profileParameter, profile.getUnittype());
+            logger.info("Added " + logMsg);
+            if (acs.getDbi() != null) {
+                acs.getDbi().publishAdd(profileParameter, profile.getUnittype());
+            }
+        } else {
+            sql = "UPDATE profile_param SET ";
+            sql += "VALUE = '" + profileParameter.getValue() + "' ";
+            sql += "WHERE profile_id = " + profileParameter.getProfile().getId() + " AND ";
+            sql += "unit_type_param_id = " + profileParameter.getUnittypeParameter().getId();
+            s.setQueryTimeout(60);
+            s.executeUpdate(sql);
+
+            logger.info("Updated " + logMsg);
+            if (acs.getDbi() != null) {
+                acs.getDbi().publishChange(profileParameter, profile.getUnittype());
+            }
         }
-      }
-    } finally {
-      if (s != null) {
-        s.close();
-      }
-      c.close();
     }
   }
 
@@ -129,8 +121,8 @@ public class ProfileParameters {
    * The first time this method is run, the flag is set. The second time this method is run, the
    * parameter is removed from the name- and id-Map.
    *
-   * @param profileParameter
-   * @throws SQLException
+   * @param profileParameter The profile parameter to be deleted
+   * @throws SQLException if database query fails
    */
   public void deleteProfileParameter(ProfileParameter profileParameter, ACS acs)
       throws SQLException {

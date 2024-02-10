@@ -72,15 +72,12 @@ public class Permissions {
   protected void delete(Permission permission) throws SQLException {
     Connection c = null;
     PreparedStatement ps = null;
-    SQLException sqle = null;
     try {
       c = dataSource.getConnection();
       DynamicStatement ds = new DynamicStatement();
       ds.addSqlAndArguments("DELETE FROM permission_ WHERE id = ?", permission.getId());
       ps = ds.makePreparedStatement(c);
       ps.executeUpdate();
-    } catch (SQLException sqlex) {
-        throw sqlex;
     } finally {
       if (ps != null) {
         ps.close();

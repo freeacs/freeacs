@@ -282,7 +282,7 @@ public class ACS {
         Integer unittypeParamId = resultSet.getInt("unit_type_param_id");
         String name = resultSet.getString("name");
         UnittypeParameterFlag unittypeParameterFlag =
-            new UnittypeParameterFlag(resultSet.getString("flags"), true);
+            new UnittypeParameterFlag(resultSet.getString("flags"));
         UnittypeParameter unittypeParameter =
             new UnittypeParameter(unittype, name, unittypeParameterFlag);
         unittypeParameter.setId(unittypeParamId);
@@ -401,14 +401,14 @@ public class ACS {
         counter++;
         Heartbeat hb = new Heartbeat();
         Unittype unittype = unittypes.getById(resultSet.getInt("unit_type_id"));
-        hb.validateInput(false);
+        hb.setValidateInput(false);
         hb.setUnittype(unittype);
         hb.setId(resultSet.getInt("id"));
         hb.setName(resultSet.getString("name"));
         hb.setGroup(unittype.getGroups().getById(resultSet.getInt("heartbeat_group_id")));
         hb.setExpression(resultSet.getString("heartbeat_expression"));
         hb.setTimeoutHours(resultSet.getInt("heartbeat_timeout_hour"));
-        hb.validateInput(true);
+        hb.setValidateInput(true);
         if (lastUnittype == null || lastUnittype != unittype) {
           nameMap = new MapWrapper<Heartbeat>(strictOrder).getMap();
           idMap = new HashMap<>();
@@ -630,7 +630,7 @@ public class ACS {
       while (resultSet.next()) {
         counter++;
         File file = new File();
-        file.validateInput(false);
+        file.setValidateInput(false);
         Unittype unittype = unittypes.getById(resultSet.getInt("unit_type_id"));
         file.setUnittype(unittype);
         file.setId(resultSet.getInt("id"));
@@ -668,7 +668,7 @@ public class ACS {
         }
         file.setTargetName(targetName);
         file.setOwner(owner);
-        file.validateInput(true);
+        file.setValidateInput(true);
         file.setConnectionProperties(getDataSource());
         file.resetContentToNull();
         if (lastUnittype == null || lastUnittype != unittype) {
@@ -808,11 +808,18 @@ public class ACS {
     }
 
     // Update job parameters
-    sql = "SELECT * FROM job_param ORDER BY job_id ASC";
+    sql = """
+      SELECT ut.unit_type_id, jp.job_id, utp.unit_type_param_id, jp.value
+      FROM job_param jp
+      JOIN unit_type_param utp ON utp.unit_type_param_id = jp.unit_type_param_id
+      JOIN unit_type ut ON utp.unit_type_id = ut.unit_type_id
+      WHERE jp.unit_id = ?
+      ORDER BY jp.job_id ASC
+    """;
     try(AutoCommitResettingConnectionWrapper connectionWrapper =
                 new AutoCommitResettingConnectionWrapper(getDataSource().getConnection(), false);
         DynamicStatementWrapper statementWrapper =
-                new DynamicStatementWrapper(connectionWrapper, sql);
+                new DynamicStatementWrapper(connectionWrapper, sql, Job.ANY_UNIT_IN_GROUP);
         ResultSet resultSet =
                 statementWrapper.getPreparedStatement().executeQuery()) {
       int paramsCounter = 0;

@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,10 +22,12 @@ public class UnittypeParameters {
   private static final Logger logger = LoggerFactory.getLogger(UnittypeParameters.class);
   private final Map<Integer, UnittypeParameter> idMap;
   private final Map<String, UnittypeParameter> nameMap;
-  private final Map<Integer, UnittypeParameter> alwaysMap;
-  private final Map<Integer, UnittypeParameter> displayableMap;
+  @Getter
+  private final Map<Integer, UnittypeParameter> alwaysMap = new HashMap<>();
+  private final Map<Integer, UnittypeParameter> displayableMap = new HashMap<>();
   private Map<String, String> displayableNameMap;
-  private final Map<Integer, UnittypeParameter> searchableMap;
+  @Getter
+  private final Map<Integer, UnittypeParameter> searchableMap = new HashMap<>();
   private final Unittype unittype;
   private Boolean hasDeviceParameters;
 
@@ -34,9 +38,6 @@ public class UnittypeParameters {
     this.idMap = idMap;
     this.nameMap = nameMap;
     this.unittype = unittype;
-    this.alwaysMap = new HashMap<>();
-    this.displayableMap = new HashMap<>();
-    this.searchableMap = new HashMap<>();
     for (Entry<Integer, UnittypeParameter> entry : idMap.entrySet()) {
       if (entry.getValue().getFlag().isAlwaysRead()) {
         alwaysMap.put(entry.getKey(), entry.getValue());
@@ -70,27 +71,6 @@ public class UnittypeParameters {
     return nameMap.get(name);
   }
 
-  public Map<Integer, UnittypeParameter> getSearchableMap() {
-    if (searchableMap != null) {
-      return searchableMap;
-    }
-    return new HashMap<>();
-  }
-
-  public Map<Integer, UnittypeParameter> getDisplayableMap() {
-    if (displayableMap != null) {
-      return displayableMap;
-    }
-    return new HashMap<>();
-  }
-
-  public Map<Integer, UnittypeParameter> getAlwaysMap() {
-    if (alwaysMap != null) {
-      return alwaysMap;
-    }
-    return new HashMap<>();
-  }
-
   public UnittypeParameter[] getUnittypeParameters() {
     UnittypeParameter[] upArr = new UnittypeParameter[nameMap.size()];
     nameMap.values().toArray(upArr);
@@ -115,7 +95,7 @@ public class UnittypeParameters {
       }
     }
     addOrChangeUnittypeParameterImpl(unittypeParameters, unittype, acs);
-    displayableNameMap = null;
+    displayableNameMap = new HashMap<>();
     for (UnittypeParameter unittypeParameter : unittypeParameters) {
       nameMap.put(unittypeParameter.getName(), unittypeParameter);
       idMap.put(unittypeParameter.getId(), unittypeParameter);
@@ -127,10 +107,10 @@ public class UnittypeParameters {
         alwaysMap.put(unittypeParameter.getId(), unittypeParameter);
       }
       if (unittypeParameter.getFlag().isAlwaysRead()
-          && !getAlwaysMap().containsKey(unittypeParameter.getId())) {
+          && !alwaysMap.containsKey(unittypeParameter.getId())) {
         alwaysMap.put(unittypeParameter.getId(), unittypeParameter);
       } else if (!unittypeParameter.getFlag().isAlwaysRead()
-          && getAlwaysMap().containsKey(unittypeParameter.getId())) {
+          && alwaysMap.containsKey(unittypeParameter.getId())) {
         alwaysMap.remove(unittypeParameter.getId());
       }
 
@@ -138,10 +118,10 @@ public class UnittypeParameters {
         displayableMap.put(unittypeParameter.getId(), unittypeParameter);
       }
       if (unittypeParameter.getFlag().isDisplayable()
-          && !getDisplayableMap().containsKey(unittypeParameter.getId())) {
+          && !displayableMap.containsKey(unittypeParameter.getId())) {
         displayableMap.put(unittypeParameter.getId(), unittypeParameter);
       } else if (!unittypeParameter.getFlag().isDisplayable()
-          && getDisplayableMap().containsKey(unittypeParameter.getId())) {
+          && displayableMap.containsKey(unittypeParameter.getId())) {
         displayableMap.remove(unittypeParameter.getId());
       }
 
@@ -149,10 +129,10 @@ public class UnittypeParameters {
         searchableMap.put(unittypeParameter.getId(), unittypeParameter);
       }
       if (unittypeParameter.getFlag().isSearchable()
-          && !getSearchableMap().containsKey(unittypeParameter.getId())) {
+          && !searchableMap.containsKey(unittypeParameter.getId())) {
         searchableMap.put(unittypeParameter.getId(), unittypeParameter);
       } else if (!unittypeParameter.getFlag().isSearchable()
-          && getSearchableMap().containsKey(unittypeParameter.getId())) {
+          && searchableMap.containsKey(unittypeParameter.getId())) {
         searchableMap.remove(unittypeParameter.getId());
       }
     }

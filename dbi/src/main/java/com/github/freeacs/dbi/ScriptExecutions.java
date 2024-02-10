@@ -21,9 +21,9 @@ public class ScriptExecutions {
   /**
    * Used by Syslog/Core server to initiate syslog-event og trigger scripts.
    *
-   * @param scriptFile
-   * @param scriptArgs
-   * @throws SQLException
+   * @param scriptFile  The script to be executed
+   * @param scriptArgs  The arguments to the script
+   * @throws SQLException If something goes wrong
    */
   public void requestExecution(File scriptFile, String scriptArgs, String requestId)
       throws SQLException {
@@ -58,8 +58,8 @@ public class ScriptExecutions {
   /**
    * Used by Core. Update execeutions when they start/failed/finish
    *
-   * @param se
-   * @throws SQLException
+   * @param se  The script execution
+   * @throws SQLException If something goes wrong
    */
   public void updateExecution(ScriptExecution se) throws SQLException {
     Connection connection = null;
@@ -90,9 +90,9 @@ public class ScriptExecutions {
   /**
    * Only to be used from Core (Script Daemon).
    *
-   * @param acs
-   * @return
-   * @throws SQLException
+   * @param acs The ACS object
+   * @return    A list of script executions
+   * @throws SQLException If something goes wrong
    */
   public List<ScriptExecution> getNotStartedExecutions(ACS acs, int poolsize) throws SQLException {
     List<ScriptExecution> scriptExecutionList = new ArrayList<>();
@@ -150,10 +150,10 @@ public class ScriptExecutions {
   /**
    * Meant to be used from Web/Shell to list ongoing executions.
    *
-   * @param unittype
-   * @param requestTmsFrom
-   * @return
-   * @throws SQLException
+   * @param unittype     The unittype
+   * @param requestTmsFrom  The request timestamp from
+   * @return           A list of script executions
+   * @throws SQLException If something goes wrong
    */
   public List<ScriptExecution> getExecutions(
       Unittype unittype, Date requestTmsFrom, String requestId) throws SQLException {
@@ -184,9 +184,6 @@ public class ScriptExecutions {
       ps.setQueryTimeout(60);
       rs = ps.executeQuery();
       return getExecutionList(rs, acs);
-    } catch (SQLException sqle) {
-      sqle.printStackTrace();
-      throw sqle;
     } finally {
       if (rs != null) {
         rs.close();
@@ -240,10 +237,10 @@ public class ScriptExecutions {
    * Used by Web to identify one single ScriptExecution trigger by a trigger-release Used by TR069
    * to check if the script-execution is finished.
    *
-   * @param unittype
-   * @param requestId
-   * @return
-   * @throws SQLException
+   * @param unittype  The unittype
+   * @param requestId The request id
+   * @return      The script execution
+   * @throws SQLException If something goes wrong
    */
   public ScriptExecution getExecution(Unittype unittype, String requestId) throws SQLException {
     if (!ACSVersionCheck.scriptExecutionSupported) {
@@ -286,9 +283,9 @@ public class ScriptExecutions {
   /**
    * Used by Core to delete old executions.
    *
-   * @param upUntil
-   * @return
-   * @throws SQLException
+   * @param upUntil The date to delete until
+   * @return      The number of rows deleted
+   * @throws SQLException If something goes wrong
    */
   public int deleteExecutions(Date upUntil) throws SQLException {
     if (!ACSVersionCheck.scriptExecutionSupported) {

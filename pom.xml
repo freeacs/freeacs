@@ -45,6 +45,7 @@
         <module>tables</module>
         <module>scripts</module>
         <module>distribution</module>
+        <module>cache</module>
     </modules>
 
     <build>

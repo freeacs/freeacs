@@ -76,7 +76,7 @@ public class Profiles {
    * The first time this method is run, the flag is set. The second time this method is run, the
    * parameter is removed from the name- and id-Map.
    *
-   * @throws SQLException
+   * @throws SQLException if database query fails
    */
   public int deleteProfile(Profile profile, ACS acs, boolean cascade) throws SQLException {
     if (!acs.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId())) {
@@ -135,14 +135,6 @@ public class Profiles {
       }
       c.close();
     }
-  }
-
-  protected Map<String, Profile> getNameMap() {
-    return nameMap;
-  }
-
-  protected Map<Integer, Profile> getIdMap() {
-    return idMap;
   }
 
   /** Only to be used internally (to shape ACS object according to permissions). */

@@ -3,6 +3,8 @@ package com.github.freeacs.dbi;
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
 import com.github.freeacs.dbi.JobFlag.JobType;
 import com.github.freeacs.dbi.util.MapWrapper;
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,11 +12,13 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Data
 public class Job {
   private static final Pattern pattern = Pattern.compile("([ucant])(\\d+)/?(\\d*)");
 
   public static String ANY_UNIT_IN_GROUP = "ANY-UNIT-IN-GROUP";
 
+  @Data
   public static class StopRule {
     public static final int ANY_FAILURE_TYPE = 0;
     public static final int CONFIRMED_FAILURE_TYPE = 1;
@@ -72,18 +76,6 @@ public class Job {
       }
     }
 
-    public Integer getNumberMax() {
-      return numberMax;
-    }
-
-    public long getNumberLimit() {
-      return numberLimit;
-    }
-
-    public int getRuleType() {
-      return ruleType;
-    }
-
     @Override
     public String toString() {
       return ruleStr;
@@ -125,6 +117,10 @@ public class Job {
    */
   private long timeoutTms = Long.MAX_VALUE;
 
+  /**
+   * -- GETTER --
+   * Various GET/SET methods of non-persistent, run-time job-related fields.
+   */
   private long maxFailureAny = Integer.MAX_VALUE;
   private long maxFailureConfirmed = Integer.MAX_VALUE;
   private long maxFailureUnconfirmed = Integer.MAX_VALUE;
@@ -180,39 +176,6 @@ public class Job {
     setRepeatInterval(repeatInterval);
   }
 
-  /** GET methods. */
-  public Unittype getUnittype() {
-    return unittype;
-  }
-
-  public Integer getId() {
-    return id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  protected String getOldName() {
-    return oldName;
-  }
-
-  public JobFlag getFlags() {
-    return flags;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public Group getGroup() {
-    return group;
-  }
-
-  public int getUnconfirmedTimeout() {
-    return unconfirmedTimeout;
-  }
-
   public List<StopRule> getStopRules() {
     if (stopRules == null) {
       stopRules = new ArrayList<>();
@@ -222,18 +185,6 @@ public class Job {
 
   public String getStopRulesSerialized() {
     return sRules;
-  }
-
-  public File getFile() {
-    return file;
-  }
-
-  public Job getDependency() {
-    return dependency;
-  }
-
-  public Integer getRepeatCount() {
-    return repeatCount;
   }
 
   public Integer getRepeatInterval() {
@@ -272,10 +223,6 @@ public class Job {
       flags = new JobFlag(JobType.CONFIG, JobServiceWindow.REGULAR);
     }
     this.flags = flags;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
   }
 
   public void setGroup(Group group) {
@@ -390,19 +337,6 @@ public class Job {
     this.repeatInterval = repeatInterval;
   }
 
-  /** MISC Get-Methods for persistent fields set after Job has started. */
-  public int getCompletedHadFailures() {
-    return completedHadFailures;
-  }
-
-  public int getCompletedNoFailures() {
-    return completedNoFailures;
-  }
-
-  public int getConfirmedFailed() {
-    return confirmedFailed;
-  }
-
   public Map<String, JobParameter> getDefaultParameters() {
     if (defaultParameters == null) {
       MapWrapper<JobParameter> mw = new MapWrapper<>(ACS.isStrictOrder());
@@ -411,57 +345,8 @@ public class Job {
     return defaultParameters;
   }
 
-  public Date getEndTimestamp() {
-    return endTimestamp;
-  }
-
-  public Date getStartTimestamp() {
-    return startTimestamp;
-  }
-
-  public JobStatus getStatus() {
-    return status;
-  }
-
-  public int getUnconfirmedFailed() {
-    return unconfirmedFailed;
-  }
-
-  /** MISC Set-Methods for persistent fields set after Job has started. */
-  public void setCompletedHadFailures(int completedHadFailures) {
-    this.completedHadFailures = completedHadFailures;
-  }
-
-  public void setCompletedNoFailures(int completedNoFailures) {
-    this.completedNoFailures = completedNoFailures;
-  }
-
-  public void setConfirmedFailed(int confirmedFailed) {
-    this.confirmedFailed = confirmedFailed;
-  }
-
   protected void setDefaultParameters() {
     this.defaultParameters = null;
-  }
-
-  public void setEndTimestamp(Date endTimestamp) {
-    this.endTimestamp = endTimestamp;
-  }
-
-  public void setNextPII(Long nextPII) {
-    this.nextPII = nextPII;
-  }
-
-  public void setStartTimestamp(Date startTimestamp) {
-    this.startTimestamp = startTimestamp;
-  }
-
-  public void setStatus(JobStatus status) {
-    this.status = status;
-  }
-
-  public void setUnconfirmedFailed(int unconfirmedFailed) {
-    this.unconfirmedFailed = unconfirmedFailed;
   }
 
   /** Job children manipulation and retrieval. */
@@ -499,36 +384,6 @@ public class Job {
       children = new ArrayList<>();
     }
     return children;
-  }
-
-  /** Various GET/SET methods of non-persistent, run-time job-related fields. */
-  public long getMaxFailureAny() {
-    return maxFailureAny;
-  }
-
-  public long getMaxCount() {
-    return maxCount;
-  }
-
-  public long getMaxFailureConfirmed() {
-    return maxFailureConfirmed;
-  }
-
-  public long getMaxFailureUnconfirmed() {
-    return maxFailureUnconfirmed;
-  }
-
-  public Long getNextPII() {
-    return nextPII;
-  }
-
-  public long getTimeoutTms() {
-    return timeoutTms;
-  }
-
-  @Override
-  public String toString() {
-    return name + " (" + id + ") [Status:" + status + "]";
   }
 
   protected void validateInput(boolean validateInput) {

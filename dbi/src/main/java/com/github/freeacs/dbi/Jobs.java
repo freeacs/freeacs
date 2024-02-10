@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +26,7 @@ import org.slf4j.LoggerFactory;
 public class Jobs {
   private static final Logger logger = LoggerFactory.getLogger(Jobs.class);
   private Map<Integer, Job> idMap;
-  private Map<String, Job> nameMap;
+  private final Map<String, Job> nameMap;
   private final Unittype unittype;
   private static final Map<String, String> jobParameterRules = new HashMap<>();
 
@@ -68,10 +69,6 @@ public class Jobs {
     for (JobParameter jp : jobParameters) {
       JobFlag.JobType jobType = jp.getJob().getFlags().getType();
       String utpName = jp.getParameter().getUnittypeParameter().getName();
-      //			if (jp.getParameter().getUnittypeParameter().getFlag().isInspection())
-      //				throw new IllegalArgumentException("The unit type parameter " + utpName + " is an
-      // inspection parameter, cannot be set in job");
-      // Special modification for TR069_SCRIPT-parameter:
       if (utpName.contains(SystemParameters.DESIRED_TR069_SCRIPT)) {
         utpName = SystemParameters.DESIRED_TR069_SCRIPT;
       }
@@ -100,7 +97,7 @@ public class Jobs {
       connection = acs.getDataSource().getConnection();
       wasAutoCommit = connection.getAutoCommit();
       connection.setAutoCommit(false);
-      for (int i = 0; jobParameters != null && i < jobParameters.size(); i++) {
+      for (int i = 0; i < jobParameters.size(); i++) {
         JobParameter jobParameter = jobParameters.get(i);
         Parameter parameter = jobParameter.getParameter();
         String unitId = jobParameter.getUnitId();
@@ -173,33 +170,22 @@ public class Jobs {
     if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
     }
-    Connection connection = null;
-    Statement s = null;
-    String sql;
+      String sql;
     SQLException sqle;
-    try {
-      connection = acs.getDataSource().getConnection();
-      s = connection.createStatement();
-      sql = "DELETE FROM job_param WHERE job_id = " + job.getId();
-      s.setQueryTimeout(60);
-      s.executeUpdate(sql);
-      Job j = getById(job.getId());
-      j.setDefaultParameters();
+    try (Connection connection = acs.getDataSource().getConnection(); Statement s = connection.createStatement()) {
+        sql = "DELETE FROM job_param WHERE job_id = " + job.getId();
+        s.setQueryTimeout(60);
+        s.executeUpdate(sql);
+        Job j = getById(job.getId());
+        j.setDefaultParameters();
 
-      logger.info("Deleted all job parameters for job " + job.getId());
-      if (acs.getDbi() != null) {
-        acs.getDbi().publishChange(job, job.getGroup().getUnittype());
-      }
+        logger.info("Deleted all job parameters for job " + job.getId());
+        if (acs.getDbi() != null) {
+            acs.getDbi().publishChange(job, job.getGroup().getUnittype());
+        }
     } catch (SQLException sqlex) {
-      sqle = sqlex;
-      throw sqle;
-    } finally {
-      if (s != null) {
-        s.close();
-      }
-      if (connection != null) {
-        connection.close();
-      }
+        sqle = sqlex;
+        throw sqle;
     }
   }
 
@@ -369,7 +355,7 @@ public class Jobs {
       DynamicStatement ds = new DynamicStatement();
       ds.setSql("INSERT INTO job (");
       ds.addSqlAndArguments("job_name, ", job.getName());
-      ds.addSqlAndArguments("job_type, ", job.getFlags().toString());
+      ds.addSqlAndArguments("job_type, ", job.getFlags().getFlag());
       ds.addSqlAndArguments("description, ", job.getDescription());
       ds.addSqlAndArguments("group_id, ", job.getGroup().getId());
       ds.addSqlAndArguments("unconfirmed_timeout, ", job.getUnconfirmedTimeout());
@@ -466,7 +452,7 @@ public class Jobs {
    * Decided to skip unit-specific job parameters. Cause extra work/SQL in TR-069 server, has never
    * been used in 5 years.
    */
-  public Map<String, JobParameter> readJobParameters(Job job, Unit unit, ACS acs) {
+  public Map<String, JobParameter> readJobParameters(Job job) {
     return job.getDefaultParameters();
   }
 
@@ -541,136 +527,123 @@ public class Jobs {
     if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
     }
-    Connection c = null;
-    try {
-      c = acs.getDataSource().getConnection();
-      DynamicStatement ds = new DynamicStatement();
-      ds.addSql("UPDATE job SET ");
-      if (job.getStatus() == JobStatus.STARTED && job.getStartTimestamp() == null) {
-        long startTms = System.currentTimeMillis();
-        job.setStartTimestamp(new Date(startTms));
-        ds.addSqlAndArguments("start_timestamp = ?, ", new java.sql.Timestamp(startTms));
-      } else if (job.getStatus() == JobStatus.COMPLETED) {
-        long endTms = System.currentTimeMillis();
-        job.setEndTimestamp(new Date(endTms));
-        ds.addSqlAndArguments("end_timestamp = ?, ", new java.sql.Timestamp(endTms));
-      }
-      ds.addSqlAndArguments("status = ? ", job.getStatus().toString());
-      ds.addSqlAndArguments("WHERE job_id = ? AND ", job.getId());
-      if (job.getStatus() == JobStatus.READY) {
-        ds.addSql(" status = '" + JobStatus.READY + "'");
-      } else if (job.getStatus() == JobStatus.STARTED) {
-        ds.addSql("(status = '" + JobStatus.STARTED + "' OR");
-        ds.addSql(" status = '" + JobStatus.READY + "' OR");
-        ds.addSql(" status = '" + JobStatus.PAUSED + "')");
-      } else if (job.getStatus() == JobStatus.PAUSED) {
-        ds.addSql("(status = '" + JobStatus.STARTED + "' OR");
-        ds.addSql(" status = '" + JobStatus.PAUSED + "')");
-      } else if (job.getStatus() == JobStatus.COMPLETED) {
-        ds.addSql("(status = '" + JobStatus.PAUSED + "' OR");
-        ds.addSql(" status = '" + JobStatus.COMPLETED + "')");
-      }
-      PreparedStatement ps = ds.makePreparedStatement(c);
-      ps.setQueryTimeout(10);
-      int rowsUpdated = ps.executeUpdate();
-      ps.close();
-      if (rowsUpdated > 0) {
-        logger.info("Updated job " + job.getId() + " with status = " + job.getStatus());
-        if (acs.getDbi() != null) {
-          acs.getDbi().publishChange(job, job.getGroup().getUnittype());
+    try (Connection c = acs.getDataSource().getConnection()) {
+        DynamicStatement ds = new DynamicStatement();
+        ds.addSql("UPDATE job SET ");
+        if (job.getStatus() == JobStatus.STARTED && job.getStartTimestamp() == null) {
+            long startTms = System.currentTimeMillis();
+            job.setStartTimestamp(new Date(startTms));
+            ds.addSqlAndArguments("start_timestamp = ?, ", new java.sql.Timestamp(startTms));
+        } else if (job.getStatus() == JobStatus.COMPLETED) {
+            long endTms = System.currentTimeMillis();
+            job.setEndTimestamp(new Date(endTms));
+            ds.addSqlAndArguments("end_timestamp = ?, ", new java.sql.Timestamp(endTms));
         }
-      } else {
-        String msg =
-            "The job was not updated, most likely because the status change was not allowed ";
-        msg += "(but could also happen because the job was deleted).";
-        throw new SQLException(msg);
-      }
-    } finally {
-      if (c != null) {
-        c.close();
-      }
+        ds.addSqlAndArguments("status = ? ", job.getStatus().toString());
+        ds.addSqlAndArguments("WHERE job_id = ? AND ", job.getId());
+        if (job.getStatus() == JobStatus.READY) {
+            ds.addSql(" status = '" + JobStatus.READY + "'");
+        } else if (job.getStatus() == JobStatus.STARTED) {
+            ds.addSql("(status = '" + JobStatus.STARTED + "' OR");
+            ds.addSql(" status = '" + JobStatus.READY + "' OR");
+            ds.addSql(" status = '" + JobStatus.PAUSED + "')");
+        } else if (job.getStatus() == JobStatus.PAUSED) {
+            ds.addSql("(status = '" + JobStatus.STARTED + "' OR");
+            ds.addSql(" status = '" + JobStatus.PAUSED + "')");
+        } else if (job.getStatus() == JobStatus.COMPLETED) {
+            ds.addSql("(status = '" + JobStatus.PAUSED + "' OR");
+            ds.addSql(" status = '" + JobStatus.COMPLETED + "')");
+        }
+        PreparedStatement ps = ds.makePreparedStatement(c);
+        ps.setQueryTimeout(10);
+        int rowsUpdated = ps.executeUpdate();
+        ps.close();
+        if (rowsUpdated > 0) {
+            logger.info("Updated job " + job.getId() + " with status = " + job.getStatus());
+            if (acs.getDbi() != null) {
+                acs.getDbi().publishChange(job, job.getGroup().getUnittype());
+            }
+        } else {
+            String msg =
+                    "The job was not updated, most likely because the status change was not allowed ";
+            msg += "(but could also happen because the job was deleted).";
+            throw new SQLException(msg);
+        }
     }
   }
 
   /**
-   * This method is only to be used by the UI. The update checks to see whether or not the status of
+   * This method is only to be used by the UI. The update checks to see whether the status of
    * the job allows the changes. It will not change the following of the job: - job size - counters
-   * since they are updated by an other method (and another agent). It's important to separate the
+   * since they are updated by another method (and another agent). It's important to separate the
    * various updates methods since the agents are independent of each other.
    */
-  public int changeFromUI(Job job, ACS acs) throws SQLException {
+  public void changeFromUI(Job job, ACS acs) throws SQLException {
     if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
       throw new IllegalArgumentException("Not allowed action for this user");
     }
     job.validate();
-    Connection c = null;
-    try {
-      c = acs.getDataSource().getConnection();
-      if (isDependencyLoop(job, job.getDependency())) {
-        throw new IllegalArgumentException(
-            "Job "
-                + job.getId()
-                + " cannot depend upon job "
-                + job.getDependency().getId()
-                + " since that creates a loop");
-      }
-      DynamicStatement ds = new DynamicStatement();
-      ds.addSql("UPDATE job SET ");
-      ds.addSqlAndArguments("description = ?, ", job.getDescription());
-      ds.addSqlAndArguments("stop_rules = ?, ", job.getStopRulesSerialized());
-      if (job.getDependency() != null) {
-        ds.addSqlAndArguments("job_id_dependency = ?, ", job.getDependency().getId());
-      } else {
-        ds.addSqlAndArguments("job_id_dependency = ?, ", new NullInteger());
-      }
-      if (job.getFile() != null) {
-        ds.addSqlAndArguments("firmware_id = ?, ", job.getFile().getId());
-      }
-
-      if (job.getStatus() == JobStatus.STARTED && job.getStartTimestamp() == null) {
-        long startTms = System.currentTimeMillis();
-        job.setStartTimestamp(new Date(startTms));
-        ds.addSqlAndArguments("start_timestamp = ?, ", new java.sql.Timestamp(startTms));
-      } else if (job.getStatus() == JobStatus.COMPLETED) {
-        long endTms = System.currentTimeMillis();
-        job.setEndTimestamp(new Date(endTms));
-        ds.addSqlAndArguments("end_timestamp = ?, ", new java.sql.Timestamp(endTms));
-      }
-      if (job.getRepeatCount() != null) {
-        ds.addSqlAndArguments("repeat_count = ?, ", job.getRepeatCount());
-      } else {
-        ds.addSqlAndArguments("repeat_count = ?, ", new NullInteger());
-      }
-      if (job.getRepeatInterval() != null) {
-        ds.addSqlAndArguments("repeat_interval = ?, ", job.getRepeatInterval());
-      } else {
-        ds.addSqlAndArguments("repeat_interval = ?, ", new NullInteger());
-      }
-      ds.addSqlAndArguments("unconfirmed_timeout = ? ", job.getUnconfirmedTimeout());
-      ds.addSqlAndArguments("WHERE job_id = ? AND ", job.getId());
-      ds.addSql(" status <> '" + JobStatus.COMPLETED + "'");
-
-      PreparedStatement ps = ds.makePreparedStatement(c);
-      ps.setQueryTimeout(10);
-      int rowsUpdated = ps.executeUpdate();
-      ps.close();
-      if (rowsUpdated > 0) {
-        updateMandatoryJobParameters(job, acs);
-        logger.info("Updated job " + job.getId() + " with type/description/status/rules");
-        if (acs.getDbi() != null) {
-          acs.getDbi().publishChange(job, job.getGroup().getUnittype());
+    try (Connection c = acs.getDataSource().getConnection()) {
+        if (isDependencyLoop(job, job.getDependency())) {
+            throw new IllegalArgumentException(
+                    "Job "
+                            + job.getId()
+                            + " cannot depend upon job "
+                            + job.getDependency().getId()
+                            + " since that creates a loop");
         }
-      } else {
-        String msg =
-            "The job was not updated, most likely because status was " + JobStatus.COMPLETED;
-        msg += " or because the job was recently removed from the system";
-        throw new SQLException(msg);
-      }
-      return rowsUpdated;
-    } finally {
-      if (c != null) {
-        c.close();
-      }
+        DynamicStatement ds = new DynamicStatement();
+        ds.addSql("UPDATE job SET ");
+        ds.addSqlAndArguments("description = ?, ", job.getDescription());
+        ds.addSqlAndArguments("stop_rules = ?, ", job.getStopRulesSerialized());
+        if (job.getDependency() != null) {
+            ds.addSqlAndArguments("job_id_dependency = ?, ", job.getDependency().getId());
+        } else {
+            ds.addSqlAndArguments("job_id_dependency = ?, ", new NullInteger());
+        }
+        if (job.getFile() != null) {
+            ds.addSqlAndArguments("firmware_id = ?, ", job.getFile().getId());
+        }
+
+        if (job.getStatus() == JobStatus.STARTED && job.getStartTimestamp() == null) {
+            long startTms = System.currentTimeMillis();
+            job.setStartTimestamp(new Date(startTms));
+            ds.addSqlAndArguments("start_timestamp = ?, ", new java.sql.Timestamp(startTms));
+        } else if (job.getStatus() == JobStatus.COMPLETED) {
+            long endTms = System.currentTimeMillis();
+            job.setEndTimestamp(new Date(endTms));
+            ds.addSqlAndArguments("end_timestamp = ?, ", new java.sql.Timestamp(endTms));
+        }
+        if (job.getRepeatCount() != null) {
+            ds.addSqlAndArguments("repeat_count = ?, ", job.getRepeatCount());
+        } else {
+            ds.addSqlAndArguments("repeat_count = ?, ", new NullInteger());
+        }
+        if (job.getRepeatInterval() != null) {
+            ds.addSqlAndArguments("repeat_interval = ?, ", job.getRepeatInterval());
+        } else {
+            ds.addSqlAndArguments("repeat_interval = ?, ", new NullInteger());
+        }
+        ds.addSqlAndArguments("unconfirmed_timeout = ? ", job.getUnconfirmedTimeout());
+        ds.addSqlAndArguments("WHERE job_id = ? AND ", job.getId());
+        ds.addSql(" status <> '" + JobStatus.COMPLETED + "'");
+
+        PreparedStatement ps = ds.makePreparedStatement(c);
+        ps.setQueryTimeout(10);
+        int rowsUpdated = ps.executeUpdate();
+        ps.close();
+        if (rowsUpdated > 0) {
+            updateMandatoryJobParameters(job, acs);
+            logger.info("Updated job " + job.getId() + " with type/description/status/rules");
+            if (acs.getDbi() != null) {
+                acs.getDbi().publishChange(job, job.getGroup().getUnittype());
+            }
+        } else {
+            String msg =
+                    "The job was not updated, most likely because status was " + JobStatus.COMPLETED;
+            msg += " or because the job was recently removed from the system";
+            throw new SQLException(msg);
+        }
     }
   }
 
@@ -763,13 +736,13 @@ public class Jobs {
         newJob.getDefaultParameters().put(utp.getName(), jp);
       }
       if (newJob != null) {
-        unittype.getJobs().getIdMap().put(newJob.getId(), newJob);
-        unittype.getJobs().getNameMap().put(newJob.getName(), newJob);
+        unittype.getJobs().idMap.put(newJob.getId(), newJob);
+        unittype.getJobs().nameMap.put(newJob.getName(), newJob);
       } else {
         for (Unittype ut : acs.getUnittypes().getUnittypes()) {
-          Job j = ut.getJobs().getIdMap().remove(jobId);
+          Job j = ut.getJobs().idMap.remove(jobId);
           if (j != null) {
-            ut.getJobs().getNameMap().remove(j.getName());
+            ut.getJobs().nameMap.remove(j.getName());
           }
         }
       }
@@ -812,17 +785,5 @@ public class Jobs {
       return idMap.get(jobId);
     }
     return null;
-  }
-
-  public Unittype getUnittype() {
-    return unittype;
-  }
-
-  protected Map<Integer, Job> getIdMap() {
-    return idMap;
-  }
-
-  protected Map<String, Job> getNameMap() {
-    return nameMap;
   }
 }

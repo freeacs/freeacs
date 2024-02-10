@@ -1,5 +1,8 @@
 package com.github.freeacs.dbi;
 
+import lombok.Data;
+
+@Data
 public class Heartbeat {
   public static String MISSING_HEARTBEAT_ID = "Heartbeat missing";
   public static int MAX_TIMEOUT_HOURS = 48;
@@ -32,39 +35,11 @@ public class Heartbeat {
     setTimeoutHours(timeoutHours);
   }
 
-  public Unittype getUnittype() {
-    return unittype;
-  }
-
-  public Integer getId() {
-    return id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public Group getGroup() {
-    return group;
-  }
-
-  public String getExpression() {
-    return expression;
-  }
-
-  public int getTimeoutHours() {
-    return timeoutHours;
-  }
-
   public void setUnittype(Unittype unittype) {
     if (unittype == null) {
       throw new IllegalArgumentException("Heartbeat unittype cannot be null");
     }
     this.unittype = unittype;
-  }
-
-  protected void setId(Integer id) {
-    this.id = id;
   }
 
   public void setName(String name) {
@@ -97,17 +72,5 @@ public class Heartbeat {
       timeoutHours = 1;
     }
     this.timeoutHours = timeoutHours;
-  }
-
-  public String toString() {
-    if (id != null) {
-      return name + "[" + id + "]";
-    } else {
-      return name + "[N/A]";
-    }
-  }
-
-  public void validateInput(boolean validateInput) {
-    this.validateInput = validateInput;
   }
 }

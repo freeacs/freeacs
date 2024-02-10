@@ -57,7 +57,7 @@ public class UnitPage extends AbstractWebPage {
   private static final Logger logger = LoggerFactory.getLogger(UnitPage.class);
   private static final Logger accessLogger = LoggerFactory.getLogger("Access");
   private static final DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-  private static final Pattern paramPattern = Pattern.compile("(\\$\\{([^\\}]+)\\})");
+  private static final Pattern paramPattern = Pattern.compile("(\\$\\{([^}]+)})");
 
   private ACS acs;
   private ACSUnit acsUnit;
@@ -173,7 +173,7 @@ public class UnitPage extends AbstractWebPage {
     }
 
     if (upDeleteList.size() > 0) acsUnit.deleteUnitParameters(upDeleteList);
-    if (upUpdateList.size() > 0) acsUnit.addOrChangeUnitParameters(upUpdateList, profile);
+    if (upUpdateList.size() > 0) acsUnit.addOrChangeUnitParameters(upUpdateList);
   }
 
   /**
@@ -313,7 +313,7 @@ public class UnitPage extends AbstractWebPage {
     if (mode != null) {
       /* Initiate the kick and Wait for changes... */
       unit.toWriteQueue(SystemParameters.PROVISIONING_MODE, mode.toString());
-      acsUnit.addOrChangeUnitParameters(unit.flushWriteQueue(), unit.getProfile());
+      acsUnit.addOrChangeUnitParameters(unit.flushWriteQueue());
       publishInspectionMode(unit, sessionId);
       waitForStunServer(root, mode, unit);
     }

@@ -1,15 +1,12 @@
 package com.github.freeacs.dbi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import com.github.freeacs.common.util.AbstractMySqlIntegrationTest;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class ACSUnitTest extends BaseDBITest {
@@ -40,7 +37,7 @@ public class ACSUnitTest extends BaseDBITest {
 
     // Then:
     unit = acsUnit.getUnitById(unitId);
-    assertNull(unit);
+    Assertions.assertNull(unit);
   }
 
   @Test
@@ -60,9 +57,9 @@ public class ACSUnitTest extends BaseDBITest {
 
     // Then:
     Unit unit = acsUnit.getUnitById(unitId);
-    assertNotNull(unit);
-    assertEquals(unitTypeName, unit.getUnittype().getName());
-    assertEquals(profileName, unit.getProfile().getName());
+    Assertions.assertNotNull(unit);
+    Assertions.assertEquals(unitTypeName, unit.getUnittype().getName());
+    Assertions.assertEquals(profileName, unit.getProfile().getName());
   }
 
   @Test
@@ -83,9 +80,9 @@ public class ACSUnitTest extends BaseDBITest {
 
     // Then:
     Unit unit = acsUnit.getUnitById(unitId);
-    assertNotNull(unit);
-    assertEquals(unitTypeName, unit.getUnittype().getName());
-    assertEquals(newProfile, unit.getProfile().getName());
+    Assertions.assertNotNull(unit);
+    Assertions.assertEquals(unitTypeName, unit.getUnittype().getName());
+    Assertions.assertEquals(newProfile, unit.getProfile().getName());
   }
 
   @Test
@@ -114,12 +111,12 @@ public class ACSUnitTest extends BaseDBITest {
         Arrays.asList(
             new UnitParameter(utpSecret, unitId, secretValue, unit.getProfile()),
             new UnitParameter(utpComment, unitId, commentValue, unit.getProfile()));
-    acsUnit.addOrChangeUnitParameters(params, unit.getProfile());
+    acsUnit.addOrChangeUnitParameters(params);
 
     // Then:
     unit = acsUnit.getUnitById(unitId);
-    assertEquals(2, unit.getUnitParameters().size());
-    assertEquals(commentValue, unit.getUnitParameters().get(commentParam).getValue());
-    assertEquals(secretValue, unit.getUnitParameters().get(secretParam).getValue());
+    Assertions.assertEquals(2, unit.getUnitParameters().size());
+    Assertions.assertEquals(commentValue, unit.getUnitParameters().get(commentParam).getValue());
+    Assertions.assertEquals(secretValue, unit.getUnitParameters().get(secretParam).getValue());
   }
 }

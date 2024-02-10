@@ -1,7 +1,10 @@
 package com.github.freeacs.dbi;
 
+import lombok.Data;
+
 import java.util.Date;
 
+@Data
 public class Message {
   /**
    * Public static final String MTYPE_REQ = "REQUEST"; public static final String MTYPE_RES =
@@ -60,96 +63,5 @@ public class Message {
     this.messageType = messageType;
     this.receiver = receiver;
     this.objectType = objectType;
-  }
-
-  public Integer getSender() {
-    return sender;
-  }
-
-  public void setSender(Integer sender) {
-    this.sender = sender;
-  }
-
-  public Integer getReceiver() {
-    return receiver;
-  }
-
-  public void setReceiver(Integer receiver) {
-    this.receiver = receiver;
-  }
-
-  public String getMessageType() {
-    return messageType;
-  }
-
-  public void setMessageType(String messageType) {
-    this.messageType = messageType;
-  }
-
-  public String getObjectType() {
-    return objectType;
-  }
-
-  public void setObjectType(String objectType) {
-    this.objectType = objectType;
-  }
-
-  public String getContent() {
-    return content;
-  }
-
-  public void setContent(String content) {
-    this.content = content;
-  }
-
-  public Date getTimestamp() {
-    return timestamp;
-  }
-
-  public void setTimestamp(Date timestamp) {
-    this.timestamp = timestamp;
-  }
-
-  public int getId() {
-    return id;
-  }
-
-  public void setId(int id) {
-    this.id = id;
-  }
-
-  public String getObjectId() {
-    return objectId;
-  }
-
-  public void setObjectId(String objectId) {
-    this.objectId = objectId;
-  }
-
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("MTYPE: ").append(messageType);
-    sb.append(", OTYPE: ").append(objectType);
-    sb.append(", FROM: ").append(SyslogConstants.getFacilityName(sender));
-    if (receiver != null) {
-      sb.append(", TO: ").append(SyslogConstants.getFacilityName(receiver));
-    } else {
-      sb.append(", TO: ALL");
-    }
-    if (objectId != null) {
-      sb.append(", OBJECTID: ").append(objectId);
-    }
-    if (content != null) {
-      sb.append(", CONTENT: ").append(content);
-    }
-    return sb.toString();
-  }
-
-  public boolean isProcessed() {
-    return processed;
-  }
-
-  public void setProcessed(boolean processed) {
-    this.processed = processed;
   }
 }

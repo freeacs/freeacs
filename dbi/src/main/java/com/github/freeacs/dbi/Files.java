@@ -110,7 +110,7 @@ public class Files {
    * parameter is removed from the nameMap. Setting the cascade argument = true will also delete all
    * unittype parameters and enumerations for all these parameters.
    *
-   * @throws SQLException
+   * @throws SQLException if something goes wrong
    */
   public void deleteFile(File file, ACS acs) throws SQLException {
     if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {

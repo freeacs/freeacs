@@ -221,7 +221,9 @@ CREATE TABLE filestore
   FOREIGN KEY (owner)
     REFERENCES user_ (id)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION
+    ON UPDATE NO ACTION,
+  UNIQUE (unit_type_id, name),
+  UNIQUE (unit_type_id, type, version)
 );
 
 DROP TABLE IF EXISTS syslog_event;

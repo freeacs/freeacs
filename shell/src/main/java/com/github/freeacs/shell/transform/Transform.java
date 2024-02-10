@@ -64,20 +64,8 @@ public class Transform {
                 new UnitParameter(newUtp, newUnit.getId(), entry.getValue().getValue(), profile));
           }
         }
-        //				else {
-        //					String newParamName = entry.getKey().replaceFirst("Device.",
-        // "InternetGatewayDevice.");
-        //					UnittypeParameter newUtp =
-        // newUnittype.getUnittypeParameters().getByName(newParamName);
-        //					if (newUtp == null)
-        //						System.out.println("Couldn't find " + entry.getKey() + " in new Unittype - the
-        // parameter is removed entirely");
-        //					else
-        //						newUnitParams.add(new UnitParameter(newUtp, newUnit.getId(),
-        // entry.getValue().getValue(), profile));
-        //				}
       }
-      acsUnit.addOrChangeUnitParameters(newUnitParams, profile);
+      acsUnit.addOrChangeUnitParameters(newUnitParams);
     }
   }
 }
