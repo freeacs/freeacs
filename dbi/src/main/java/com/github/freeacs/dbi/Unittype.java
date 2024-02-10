@@ -3,7 +3,10 @@ package com.github.freeacs.dbi;
 import com.github.freeacs.common.util.NumberComparator;
 import com.github.freeacs.dbi.util.MapWrapper;
 import com.github.freeacs.dbi.util.SystemParameters;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,6 +17,9 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 @Data
+@With
+@NoArgsConstructor
+@AllArgsConstructor
 public class Unittype implements Comparable<Unittype> {
   public enum ProvisioningProtocol {
     TR069,

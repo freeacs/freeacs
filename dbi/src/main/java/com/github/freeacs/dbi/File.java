@@ -1,7 +1,9 @@
 package com.github.freeacs.dbi;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.SneakyThrows;
+import lombok.With;
 
 import java.sql.Blob;
 import java.sql.Connection;
@@ -12,6 +14,8 @@ import java.util.Objects;
 import javax.sql.DataSource;
 
 @Data
+@With
+@AllArgsConstructor
 public class File {
   private Unittype unittype;
   private Integer id;
@@ -140,7 +144,7 @@ public class File {
     this.length = bytes.length;
   }
 
-  protected void setLength(int length) {
+  public void setLength(int length) {
     if (length < 0) {
       length = 0;
     }

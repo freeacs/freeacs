@@ -3,7 +3,6 @@ package com.github.freeacs.dbi;
 import com.github.freeacs.dbi.exceptions.AcsException;
 import com.github.freeacs.dbi.sql.AutoCommitResettingConnectionWrapper;
 import com.github.freeacs.dbi.sql.DynamicStatementWrapper;
-import com.github.freeacs.dbi.sql.StatementWithTimeoutWrapper;
 import com.github.freeacs.dbi.util.ACSVersionCheck;
 import lombok.extern.slf4j.Slf4j;
 
@@ -132,6 +131,27 @@ public class ACSDao {
             UNITTYPE_COLUMNS,
             PROFILE_COLUMNS
     );
+
+    public static final String GET_FILE_CONTENT_BY_ID = """
+        SELECT content
+        FROM filestore
+        WHERE id = ?
+    """;
+
+    public static final String GET_FILE_BY_TYPE_AND_VERSION = """
+        SELECT
+          unit_type_id,
+          id,
+          name,
+          type,
+          description,
+          version,
+          timestamp_,
+          length(content) as length%s
+        FROM filestore
+        WHERE unit_type_id = ? AND type = ? AND version = ?
+        ORDER BY unit_type_id ASC
+    """.formatted(ACSVersionCheck.fileReworkSupported ? ", target_name, owner " : "");
 
     public static String GET_JOB_BY_ID = """
         SELECT
@@ -388,55 +408,28 @@ public class ACSDao {
         }
     }
 
-    // TODO add method to read one specific file
     public File getFileByUnitTypeIdAndFileTypeAndVersion(Unittype unittype, FileType fileType, String firmwareVersion) throws SQLException {
-        String sql = """
-          SELECT
-            unit_type_id,
-            id,
-            name,
-            type,
-            description,
-            version,
-            timestamp_,
-            length(content) as length%s
-          FROM filestore
-          WHERE unit_type_id = %d AND type = '%s' AND version = '%s'
-          ORDER BY unit_type_id ASC
-        """.formatted(ACSVersionCheck.fileReworkSupported ? ", target_name, owner " : "", unittype.getId(), fileType, firmwareVersion);
-        try(AutoCommitResettingConnectionWrapper connectionWrapper =
+        try(var connectionWrapper =
                     new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
-            StatementWithTimeoutWrapper statementWrapper =
-                    new StatementWithTimeoutWrapper(connectionWrapper, 60);
-            ResultSet resultSet =
-                    statementWrapper.getStatement().executeQuery(sql)) {
+            var statementWrapper =
+                    new DynamicStatementWrapper(connectionWrapper, GET_FILE_BY_TYPE_AND_VERSION, unittype.getId(), fileType.name(), firmwareVersion);
+            var resultSet =
+                    statementWrapper.getPreparedStatement().executeQuery()) {
             if (resultSet.next()) {
                 File file = new File();
                 file.setValidateInput(false);
                 file.setUnittype(unittype);
                 file.setId(resultSet.getInt("id"));
                 file.setName(resultSet.getString("name"));
-                String typeStr = resultSet.getString("type");
-                FileType ft = null;
-                try {
-                    ft = FileType.valueOf(typeStr);
-                } catch (Throwable t) { // Convert from old types
-                    if ("SCRIPT".equals(typeStr)) {
-                        ft = FileType.SHELL_SCRIPT;
-                    }
-                    if ("CONFIG".equals(typeStr)) {
-                        ft = FileType.TR069_SCRIPT;
-                    }
-                }
-                file.setType(ft);
+                file.setType(getFileType(resultSet.getString("type")));
                 file.setDescription(resultSet.getString("description"));
                 file.setVersion(resultSet.getString("version"));
                 file.setTimestamp(resultSet.getTimestamp("timestamp_"));
                 file.setLength(resultSet.getInt("length"));
-                // FIXME
-                file.setTargetName(null);
-                // FIXME
-                file.setOwner(null);
+                if (ACSVersionCheck.fileReworkSupported) {
+                    file.setTargetName(resultSet.getString("target_name"));
+                    file.setOwner(getPlaceHolderUser(resultSet.getString("owner")));
+                }
                 file.setValidateInput(true);
                 file.setConnectionProperties(dataSource);
                 file.resetContentToNull();
@@ -447,16 +440,41 @@ public class ACSDao {
         }
     }
 
+    private static FileType getFileType(String typeStr) {
+        FileType ft = null;
+        try {
+            ft = FileType.valueOf(typeStr);
+        } catch (Throwable t) { // Convert from old types
+            if ("SCRIPT".equals(typeStr)) {
+                ft = FileType.SHELL_SCRIPT;
+            }
+            if ("CONFIG".equals(typeStr)) {
+                ft = FileType.TR069_SCRIPT;
+            }
+        }
+        return ft;
+    }
+
+    private static User getPlaceHolderUser(String userIdStr) {
+        if (userIdStr != null) {
+            try {
+                return new User().withId(Integer.valueOf(userIdStr));
+            } catch (NumberFormatException ignored) {
+                log.warn("Failed to parse owner id {}", userIdStr);
+            }
+        }
+        return null;
+    }
+
     public byte[] getFileContents(int fileId) throws SQLException {
         if (fileId == 0) {
             throw new IllegalArgumentException("fileId cannot be null");
         }
-        var sql = "SELECT content FROM filestore WHERE id = '" + fileId + "'";
-        try(AutoCommitResettingConnectionWrapper connectionWrapper =
+        try(var connectionWrapper =
                     new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
-            StatementWithTimeoutWrapper statementWrapper =
-                    new StatementWithTimeoutWrapper(connectionWrapper, 60);
-            ResultSet resultSet = statementWrapper.getStatement().executeQuery(sql)) {
+            var statementWrapper =
+                    new DynamicStatementWrapper(connectionWrapper, GET_FILE_CONTENT_BY_ID, fileId);
+            var resultSet = statementWrapper.getPreparedStatement().executeQuery()) {
 
             if (resultSet.next()) {
                 Blob blob = resultSet.getBlob("content");
