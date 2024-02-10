@@ -1,11 +1,17 @@
 package com.github.freeacs.dbi;
 
 import com.github.freeacs.dbi.crypto.Crypto;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 
 import java.sql.SQLException;
 
 @Data
+@With
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
   private Integer id;
   private String username;

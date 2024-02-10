@@ -3,7 +3,6 @@ package com.github.freeacs.dbi;
 import com.github.freeacs.dbi.exceptions.AcsException;
 import com.github.freeacs.dbi.sql.AutoCommitResettingConnectionWrapper;
 import com.github.freeacs.dbi.sql.DynamicStatementWrapper;
-import com.github.freeacs.dbi.sql.StatementWithTimeoutWrapper;
 import com.github.freeacs.dbi.util.ACSVersionCheck;
 import lombok.extern.slf4j.Slf4j;
 
@@ -132,6 +131,27 @@ public class ACSDao {
             UNITTYPE_COLUMNS,
             PROFILE_COLUMNS
     );
+
+    public static final String GET_FILE_CONTENT_BY_ID = """
+        SELECT content
+        FROM filestore
+        WHERE id = ?
+    """;
+
+    public static final String GET_FILE_BY_TYPE_AND_VERSION = """
+        SELECT
+          unit_type_id,
+          id,
+          name,
+          type,
+          description,
+          version,
+          timestamp_,
+          length(content) as length%s
+        FROM filestore
+        WHERE unit_type_id = ? AND type = ? AND version = ?
+        ORDER BY unit_type_id ASC
+    """.formatted(ACSVersionCheck.fileReworkSupported ? ", target_name, owner " : "");
 
     public static String GET_JOB_BY_ID = """
         SELECT
@@ -388,28 +408,13 @@ public class ACSDao {
         }
     }
 
-    // TODO add method to read one specific file
     public File getFileByUnitTypeIdAndFileTypeAndVersion(Unittype unittype, FileType fileType, String firmwareVersion) throws SQLException {
-        String sql = """
-          SELECT
-            unit_type_id,
-            id,
-            name,
-            type,
-            description,
-            version,
-            timestamp_,
-            length(content) as length%s
-          FROM filestore
-          WHERE unit_type_id = %d AND type = '%s' AND version = '%s'
-          ORDER BY unit_type_id ASC
-        """.formatted(ACSVersionCheck.fileReworkSupported ? ", target_name, owner " : "", unittype.getId(), fileType, firmwareVersion);
-        try(AutoCommitResettingConnectionWrapper connectionWrapper =
+        try(var connectionWrapper =
                     new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
-            StatementWithTimeoutWrapper statementWrapper =
-                    new StatementWithTimeoutWrapper(connectionWrapper, 60);
-            ResultSet resultSet =
-                    statementWrapper.getStatement().executeQuery(sql)) {
+            var statementWrapper =
+                    new DynamicStatementWrapper(connectionWrapper, GET_FILE_BY_TYPE_AND_VERSION, unittype.getId(), fileType, firmwareVersion);
+            var resultSet =
+                    statementWrapper.getPreparedStatement().executeQuery()) {
             if (resultSet.next()) {
                 File file = new File();
                 file.setValidateInput(false);
@@ -433,10 +438,21 @@ public class ACSDao {
                 file.setVersion(resultSet.getString("version"));
                 file.setTimestamp(resultSet.getTimestamp("timestamp_"));
                 file.setLength(resultSet.getInt("length"));
-                // FIXME
-                file.setTargetName(null);
-                // FIXME
-                file.setOwner(null);
+                String targetName = null;
+                User owner = null;
+                if (ACSVersionCheck.fileReworkSupported) {
+                    targetName = resultSet.getString("target_name");
+                    String userIdStr = resultSet.getString("owner");
+                    if (userIdStr != null) {
+                        try {
+                            owner = new User().withId(Integer.valueOf(resultSet.getString("owner")));
+                        } catch (NumberFormatException ignored) {
+                            log.warn("Failed to parse owner id {}", userIdStr);
+                        }
+                    }
+                }
+                file.setTargetName(targetName);
+                file.setOwner(owner);
                 file.setValidateInput(true);
                 file.setConnectionProperties(dataSource);
                 file.resetContentToNull();
@@ -451,12 +467,11 @@ public class ACSDao {
         if (fileId == 0) {
             throw new IllegalArgumentException("fileId cannot be null");
         }
-        var sql = "SELECT content FROM filestore WHERE id = '" + fileId + "'";
-        try(AutoCommitResettingConnectionWrapper connectionWrapper =
+        try(var connectionWrapper =
                     new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
-            StatementWithTimeoutWrapper statementWrapper =
-                    new StatementWithTimeoutWrapper(connectionWrapper, 60);
-            ResultSet resultSet = statementWrapper.getStatement().executeQuery(sql)) {
+            var statementWrapper =
+                    new DynamicStatementWrapper(connectionWrapper, GET_FILE_CONTENT_BY_ID, fileId);
+            var resultSet = statementWrapper.getPreparedStatement().executeQuery()) {
 
             if (resultSet.next()) {
                 Blob blob = resultSet.getBlob("content");

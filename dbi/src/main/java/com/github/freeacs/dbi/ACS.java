@@ -533,8 +533,7 @@ public class ACS {
         String description = resultSet.getString("description");
         String parentIdStr = resultSet.getString("parent_group_id");
         String profileIdStr = resultSet.getString("profile_id");
-        int count;
-        count = resultSet.getInt("count");
+        Integer count = resultSet.getInt("count");
 
         // Make maps
         if (lastUnittype == null || lastUnittype != unittype) {
