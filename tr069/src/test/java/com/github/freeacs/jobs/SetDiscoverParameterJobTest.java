@@ -102,13 +102,14 @@ public class SetDiscoverParameterJobTest implements AbstractMySqlIntegrationTest
         acsUnit.addOrChangeUnitParameter(acsUnit.getUnitById(UNIT_ID), SystemParameters.JOB_CURRENT, job.getId().toString());
     }
 
+    // Run every second, this is run in parallel to the test
+    // making sure that the job is executed
     @Scheduled(cron = "* * * ? * *")
     public void setDiscoverParameterViaScript() throws Exception {
-        // We initialize the ScriptExecutor task from the core module
         Config config = ConfigFactory.empty()
                 .withValue("shellscript.poolsize", ConfigValueFactory.fromAnyRef(1))
                 .withValue("syslog.severity.0.limit", ConfigValueFactory.fromAnyRef(90));
-        // This comes from the core module, and is imported with scope test in maven dependencies
+
         ScriptExecutor scriptExecutorTask = new ScriptExecutor("ScriptExecutor", dbi, new Properties(config));
         scriptExecutorTask.setThisLaunchTms(System.currentTimeMillis());
         scriptExecutorTask.runImpl();
