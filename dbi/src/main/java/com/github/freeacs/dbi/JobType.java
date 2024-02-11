@@ -31,7 +31,7 @@ public enum JobType {
         JobType jt = null;
         try {
             jt = valueOf(typeStr);
-        } catch (Throwable t) { // Convert from old jobtype
+        } catch (IllegalArgumentException t) { // Convert from old jobtype
             if ("SCRIPT".equals(typeStr)) {
                 jt = TR069_SCRIPT;
             }
