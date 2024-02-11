@@ -10,7 +10,6 @@ import com.github.freeacs.dbi.SyslogFilter;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.Users;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,9 +22,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Getter
+@Setter
 public class ReportGenerator {
   private static final Logger logger = LoggerFactory.getLogger(ReportGenerator.class);
 
@@ -137,7 +141,6 @@ public class ReportGenerator {
     Connection connection = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    SQLException sqle = null;
     List<String> swVersionList = new ArrayList<>();
     try {
       connection = mainDataSource.getConnection();
@@ -166,8 +169,6 @@ public class ReportGenerator {
         swVersionList.add(rs.getString("software_version"));
       }
       return swVersionList;
-    } catch (SQLException sqlex) {
-        throw sqlex;
     } finally {
       if (rs != null) {
         rs.close();
@@ -186,16 +187,15 @@ public class ReportGenerator {
    * to perform reporting. If the old timestamp is more than 2 days ago, then default to maximum 2
    * days ago. If the old timestamp is null, default to 2 days ago.
    *
-   * @param periodType
-   * @param tablename
-   * @return
-   * @throws SQLException
+   * @param periodType the period type
+   * @param tablename the table name
+   * @return the date
+   * @throws SQLException the sql exception
    */
   public Date startReportFromTms(PeriodType periodType, String tablename) throws SQLException {
     Connection connection = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    SQLException sqle = null;
     try {
       long now = System.currentTimeMillis();
       long twoDaysAgo = now - 2L * 86400L * 1000L;
@@ -222,8 +222,6 @@ public class ReportGenerator {
       }
       // if no data exists, start from two days ago
       return converter.convert(new Date(twoDaysAgo), periodType);
-    } catch (SQLException sqlex) {
-        throw sqlex;
     } finally {
       if (rs != null) {
         rs.close();
@@ -248,11 +246,10 @@ public class ReportGenerator {
 
   public Report<RecordUnit> generateUnitReport(
       PeriodType periodType, Date start, Date end, List<Unittype> uts, List<Profile> prs)
-      throws SQLException, IOException {
+      throws SQLException {
     Connection connection = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    SQLException sqle = null;
     try {
       Report<RecordUnit> report = new Report<>(RecordUnit.class, periodType);
       connection = mainDataSource.getConnection();
@@ -289,8 +286,6 @@ public class ReportGenerator {
               + report.getMap().size()
               + " entries");
       return report;
-    } catch (SQLException sqlex) {
-        throw sqlex;
     } finally {
       if (rs != null) {
         rs.close();
@@ -306,11 +301,10 @@ public class ReportGenerator {
 
   public Report<RecordJob> generateJobReport(
       PeriodType periodType, Date start, Date end, List<Unittype> uts)
-      throws SQLException, IOException {
+      throws SQLException {
     Connection connection = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
-    SQLException sqle = null;
     try {
       Report<RecordJob> report = new Report<>(RecordJob.class, periodType);
       connection = mainDataSource.getConnection();
@@ -348,8 +342,6 @@ public class ReportGenerator {
               + report.getMap().size()
               + " entries");
       return report;
-    } catch (SQLException sqlex) {
-        throw sqlex;
     } finally {
       if (rs != null) {
         rs.close();
@@ -383,69 +375,5 @@ public class ReportGenerator {
     msg += start + " - " + end + ")";
 
     logger.info(msg);
-  }
-
-  public PeriodType getPeriodType() {
-    return periodType;
-  }
-
-  public void setPeriodType(PeriodType periodType) {
-    this.periodType = periodType;
-  }
-
-  public Date getStart() {
-    return start;
-  }
-
-  public void setStart(Date start) {
-    this.start = start;
-  }
-
-  public Date getEnd() {
-    return end;
-  }
-
-  public void setEnd(Date end) {
-    this.end = end;
-  }
-
-  public List<Unittype> getUnittypes() {
-    return unittypes;
-  }
-
-  public void setUnittypes(List<Unittype> unittypes) {
-    this.unittypes = unittypes;
-  }
-
-  public List<Profile> getProfiles() {
-    return profiles;
-  }
-
-  public void setProfiles(List<Profile> profiles) {
-    this.profiles = profiles;
-  }
-
-  public Group getGroup() {
-    return group;
-  }
-
-  public void setGroup(Group group) {
-    this.group = group;
-  }
-
-  public String getSwVersion() {
-    return swVersion;
-  }
-
-  public void setSwVersion(String swVersion) {
-    this.swVersion = swVersion;
-  }
-
-  public SyslogFilter getSyslogFilter() {
-    return syslogFilter;
-  }
-
-  public void setSyslogFilter(SyslogFilter syslogFilter) {
-    this.syslogFilter = syslogFilter;
   }
 }

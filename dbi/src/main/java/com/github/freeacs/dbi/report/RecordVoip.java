@@ -1,7 +1,12 @@
 package com.github.freeacs.dbi.report;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.util.Date;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class RecordVoip extends Record<RecordVoip> {
   private static final KeyFactory keyFactory =
       new KeyFactory("Unittype", "Profile", "SoftwareVersion", "Line");
@@ -56,26 +61,6 @@ public class RecordVoip extends Record<RecordVoip> {
         keyFactory.makeKey(tms, periodType, unittypeName, profileName, softwareVersion, line);
   }
 
-  public Key getKey() {
-    return key;
-  }
-
-  public Date getTms() {
-    return tms;
-  }
-
-  public PeriodType getPeriodType() {
-    return periodType;
-  }
-
-  public String getUnittypeName() {
-    return unittypeName;
-  }
-
-  public String getProfileName() {
-    return profileName;
-  }
-
   public Average getMosAvg() {
     if (callLengthTotal.get() == 0) {
       return new Average(100);
@@ -83,9 +68,6 @@ public class RecordVoip extends Record<RecordVoip> {
     return mosAvg;
   }
 
-  public void setMosAvg(Average mosAvg) {
-    this.mosAvg = mosAvg;
-  }
 
   /**
    * Public Counter getMos12Count() { return mos12Count; }
@@ -111,10 +93,6 @@ public class RecordVoip extends Record<RecordVoip> {
     return jitterAvg;
   }
 
-  public void setJitterAvg(Average jitterAvg) {
-    this.jitterAvg = jitterAvg;
-  }
-
   /**
    * Public Counter getJitterAbove200msCount() { return jitterAbove200msCount; } public void
    * setJitterAbove200msCount(Counter jitterAbove200msCount) { this.jitterAbove200msCount =
@@ -127,10 +105,6 @@ public class RecordVoip extends Record<RecordVoip> {
     return percentLossAvg;
   }
 
-  public void setPercentLossAvg(Average percentLossAvg) {
-    this.percentLossAvg = percentLossAvg;
-  }
-
   /**
    * Public Counter getPercentLossAbove10Count() { return percentLossAbove10Count; } public void
    * setPercentLossAbove10Count(Counter percentLossAbove10Count) { this.percentLossAbove10Count =
@@ -141,55 +115,6 @@ public class RecordVoip extends Record<RecordVoip> {
       return new Average(60 * 1000);
     }
     return callLengthAvg;
-  }
-
-  public void setCallLengthAvg(Average callLengthAvg) {
-    this.callLengthAvg = callLengthAvg;
-  }
-
-  public Counter getCallLengthTotal() {
-    return callLengthTotal;
-  }
-
-  public void setCallLengthTotal(Counter callLengthTotal) {
-    this.callLengthTotal = callLengthTotal;
-  }
-
-  public Counter getIncomingCallCount() {
-    return incomingCallCount;
-  }
-
-  public void setIncomingCallCount(Counter incomingCallCount) {
-    this.incomingCallCount = incomingCallCount;
-  }
-
-  /**
-   * Public Counter getSipRegisterFailedCount() { return sipRegisterFailedCount; } public void
-   * setSipRegisterFailedCount(Counter sipRegisterFailedCount) { this.sipRegisterFailedCount =
-   * sipRegisterFailedCount; }
-   */
-  public Counter getOutgoingCallCount() {
-    return outgoingCallCount;
-  }
-
-  public void setOutgoingCallCount(Counter outgoingCallCount) {
-    this.outgoingCallCount = outgoingCallCount;
-  }
-
-  public Counter getOutgoingCallFailedCount() {
-    return outgoingCallFailedCount;
-  }
-
-  public void setOutgoingCallFailedCount(Counter outgoingCallFailedCount) {
-    this.outgoingCallFailedCount = outgoingCallFailedCount;
-  }
-
-  public Counter getAbortedCallCount() {
-    return abortedCallCount;
-  }
-
-  public void setAbortedCallCount(Counter abortedCallCount) {
-    this.abortedCallCount = abortedCallCount;
   }
 
   /**
@@ -280,29 +205,5 @@ public class RecordVoip extends Record<RecordVoip> {
 
   public KeyFactory getKeyFactory() {
     return keyFactory;
-  }
-
-  public String getLine() {
-    return line;
-  }
-
-  public String getSoftwareVersion() {
-    return softwareVersion;
-  }
-
-  public Average getJitterMax() {
-    return jitterMax;
-  }
-
-  public void setJitterMax(Average jitterMax) {
-    this.jitterMax = jitterMax;
-  }
-
-  public Counter getNoSipServiceTime() {
-    return noSipServiceTime;
-  }
-
-  public void setNoSipServiceTime(Counter noSipServiceTime) {
-    this.noSipServiceTime = noSipServiceTime;
   }
 }

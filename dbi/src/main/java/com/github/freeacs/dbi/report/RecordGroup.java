@@ -1,7 +1,12 @@
 package com.github.freeacs.dbi.report;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.util.Date;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class RecordGroup extends Record<RecordGroup> {
   private static final KeyFactory keyFactory = new KeyFactory("Unittype", "Group");
   private Key key;
@@ -12,42 +17,12 @@ public class RecordGroup extends Record<RecordGroup> {
   private String groupName;
   private Counter unitCount = new Counter();
 
-  protected RecordGroup() {}
-
   public RecordGroup(Date tms, PeriodType periodType, String unittypeName, String groupName) {
     this.tms = tms;
     this.periodType = periodType;
     this.unittypeName = unittypeName;
     this.groupName = groupName;
     this.key = keyFactory.makeKey(tms, periodType, unittypeName, groupName);
-  }
-
-  public Key getKey() {
-    return key;
-  }
-
-  public Date getTms() {
-    return tms;
-  }
-
-  public PeriodType getPeriodType() {
-    return periodType;
-  }
-
-  public String getUnittypeName() {
-    return unittypeName;
-  }
-
-  public String getGroupName() {
-    return groupName;
-  }
-
-  public Counter getUnitCount() {
-    return unitCount;
-  }
-
-  public void setUnitCount(Counter unitCount) {
-    this.unitCount = unitCount;
   }
 
   @Override

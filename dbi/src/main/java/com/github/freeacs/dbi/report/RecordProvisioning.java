@@ -1,7 +1,12 @@
 package com.github.freeacs.dbi.report;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.util.Date;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class RecordProvisioning extends Record<RecordProvisioning> {
   private static final KeyFactory keyFactory =
       new KeyFactory("Unittype", "Profile", "SoftwareVersion", "Output");
@@ -39,26 +44,6 @@ public class RecordProvisioning extends Record<RecordProvisioning> {
         keyFactory.makeKey(tms, periodType, unittypeName, profileName, softwareVersion, output);
   }
 
-  public Key getKey() {
-    return key;
-  }
-
-  public Date getTms() {
-    return tms;
-  }
-
-  public PeriodType getPeriodType() {
-    return periodType;
-  }
-
-  public String getUnittypeName() {
-    return unittypeName;
-  }
-
-  public String getProfileName() {
-    return profileName;
-  }
-
   @Override
   public RecordProvisioning clone() {
     RecordProvisioning clone =
@@ -80,80 +65,7 @@ public class RecordProvisioning extends Record<RecordProvisioning> {
     getSessionLengthAvg().add(record.getSessionLengthAvg());
   }
 
-  public Average getProvisioningQuality() {
-    Average quality = new Average(1);
-    quality.add(0, getProvisioningErrorCount().get());
-    // a missing heartbeat/provsioning weighs 1/4 of an actual ERROR
-    quality.add(0, getProvisioningMissingCount().get() / 4);
-    // a rescheduled provisioning is considered OK, but weighs 1/4 of an OK
-    quality.add(100, getProvisioningRescheduledCount().get() / 4);
-    quality.add(100, getProvisioningOkCount().get());
-    return quality;
-  }
-
   public KeyFactory getKeyFactory() {
     return keyFactory;
-  }
-
-  public Average getSessionLengthAvg() {
-    return sessionLengthAvg;
-  }
-
-  public void setSessionLengthAvg(Average sessionLengthAvg) {
-    this.sessionLengthAvg = sessionLengthAvg;
-  }
-
-  public String getSoftwareVersion() {
-    return softwareVersion;
-  }
-
-  public String getOutput() {
-    return output;
-  }
-
-  public String toString() {
-    return getKey()
-        + ": "
-        + getProvisioningOkCount().get()
-        + ", "
-        + getProvisioningRescheduledCount().get()
-        + ", "
-        + ", "
-        + getProvisioningErrorCount().get()
-        + ", "
-        + getProvisioningMissingCount().get()
-        + getSessionLengthAvg().get();
-  }
-
-  public Counter getProvisioningOkCount() {
-    return provisioningOkCount;
-  }
-
-  public void setProvisioningOkCount(Counter provisioningOkCount) {
-    this.provisioningOkCount = provisioningOkCount;
-  }
-
-  public Counter getProvisioningRescheduledCount() {
-    return provisioningRescheduledCount;
-  }
-
-  public void setProvisioningRescheduledCount(Counter provisioningRescheduledCount) {
-    this.provisioningRescheduledCount = provisioningRescheduledCount;
-  }
-
-  public Counter getProvisioningErrorCount() {
-    return provisioningErrorCount;
-  }
-
-  public void setProvisioningErrorCount(Counter provisioningErrorCount) {
-    this.provisioningErrorCount = provisioningErrorCount;
-  }
-
-  public Counter getProvisioningMissingCount() {
-    return provisioningMissingCount;
-  }
-
-  public void setProvisioningMissingCount(Counter provisioningMissingCount) {
-    this.provisioningMissingCount = provisioningMissingCount;
   }
 }

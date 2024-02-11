@@ -1,7 +1,10 @@
 package com.github.freeacs.dbi.report;
 
+import lombok.Getter;
+
 import java.util.Date;
 
+@Getter
 public class KeyFactory {
   private final String[] keyNames;
 
@@ -22,7 +25,4 @@ public class KeyFactory {
     }
   }
 
-  public String[] getKeyNames() {
-    return keyNames;
-  }
 }

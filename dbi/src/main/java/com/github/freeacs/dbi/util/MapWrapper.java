@@ -1,10 +1,13 @@
 package com.github.freeacs.dbi.util;
 
 import com.github.freeacs.common.util.NaturalComparator;
+import lombok.Getter;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+@Getter
 public class MapWrapper<V> {
   private final Map<String, V> map;
 
@@ -16,7 +19,4 @@ public class MapWrapper<V> {
     }
   }
 
-  public Map<String, V> getMap() {
-    return map;
-  }
 }

@@ -226,9 +226,9 @@ public class SystemParameters {
    *
    * <p>If the unittype parameter does not exist, it will be created
    *
-   * @param targetName
-   * @return
-   * @throws SQLException
+   * @param targetName The name of the script
+   * @return The UnittypeParameter object
+   * @throws SQLException If something goes wrong
    */
   public static UnittypeParameter getTR069ScriptParameter(
       String targetName, TR069ScriptType type, ACS acs, Unittype unittype) throws SQLException {
@@ -249,9 +249,9 @@ public class SystemParameters {
    * <p>The allows you to retrieve three different TR069Script-parameters: Version, TargetFileName
    * and URL
    *
-   * @param name
-   * @param type
-   * @return
+   * @param name The name of the script
+   * @param type  The type of the script
+   * @return The name of the System-parameter
    */
   public static String getTR069ScriptParameterName(String name, TR069ScriptType type) {
     if (name == null) {

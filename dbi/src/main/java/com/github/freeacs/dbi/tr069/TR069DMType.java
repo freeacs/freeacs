@@ -1,5 +1,8 @@
 package com.github.freeacs.dbi.tr069;
 
+import lombok.Getter;
+
+@Getter
 public enum TR069DMType {
   BOOLEAN(0, 1, "xsd:boolean"),
   DATETIME(0, 0, "xsd:dateTime"),
@@ -35,16 +38,4 @@ public enum TR069DMType {
     this.xsdType = xsdType;
   }
 
-  /** Private TR069DMType(int min, int max, String xsdType) { this.min = min; this.max = max; } */
-  public long getMin() {
-    return min;
-  }
-
-  public long getMax() {
-    return max;
-  }
-
-  public String getXsdType() {
-    return xsdType;
-  }
 }

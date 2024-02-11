@@ -1,7 +1,12 @@
 package com.github.freeacs.dbi.report;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.util.Date;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class RecordJob extends Record<RecordJob> {
   private static final KeyFactory keyFactory = new KeyFactory("Unittype", "Job", "Group");
   private Key key;
@@ -26,58 +31,6 @@ public class RecordJob extends Record<RecordJob> {
     this.jobName = jobName;
     this.groupName = groupName;
     this.key = keyFactory.makeKey(tms, periodType, unittypeName, jobName, groupName);
-  }
-
-  public Key getKey() {
-    return key;
-  }
-
-  public Date getTms() {
-    return tms;
-  }
-
-  public PeriodType getPeriodType() {
-    return periodType;
-  }
-
-  public String getUnittypeName() {
-    return unittypeName;
-  }
-
-  public String getGroupName() {
-    return groupName;
-  }
-
-  public Counter getGroupSize() {
-    return groupSize;
-  }
-
-  public void setGroupSize(Counter groupSize) {
-    this.groupSize = groupSize;
-  }
-
-  public Counter getCompleted() {
-    return completed;
-  }
-
-  public void setCompleted(Counter completed) {
-    this.completed = completed;
-  }
-
-  public Counter getConfirmedFailed() {
-    return confirmedFailed;
-  }
-
-  public void setConfirmedFailed(Counter confirmedFailed) {
-    this.confirmedFailed = confirmedFailed;
-  }
-
-  public Counter getUnconfirmedFailed() {
-    return unconfirmedFailed;
-  }
-
-  public void setUnconfirmedFailed(Counter unconfirmedFailed) {
-    this.unconfirmedFailed = unconfirmedFailed;
   }
 
   @Override

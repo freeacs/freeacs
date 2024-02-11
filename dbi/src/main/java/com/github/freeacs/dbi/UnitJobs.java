@@ -88,17 +88,17 @@ public class UnitJobs {
       if (pp != null) {
         pp.close();
       }
-      pp =
-          c.prepareStatement(
-              "UPDATE unit_job SET status = ?, start_timestamp = ?, processed = 0 WHERE unit_id = ? and job_id = ?");
-      pp.setString(1, UnitJobStatus.STARTED);
-      pp.setTimestamp(2, new Timestamp(uj.getStartTimestamp().getTime()));
-      pp.setString(3, uj.getUnitId());
-      pp.setInt(4, uj.getJobId());
-      pp.setQueryTimeout(60);
-      int rowsUpdated = pp.executeUpdate();
-      if (rowsUpdated == 0) {
-        throw sqlex;
+      if (c != null) {
+        pp = c.prepareStatement("UPDATE unit_job SET status = ?, start_timestamp = ?, processed = 0 WHERE unit_id = ? and job_id = ?");
+        pp.setString(1, UnitJobStatus.STARTED);
+        pp.setTimestamp(2, new Timestamp(uj.getStartTimestamp().getTime()));
+        pp.setString(3, uj.getUnitId());
+        pp.setInt(4, uj.getJobId());
+        pp.setQueryTimeout(60);
+        int rowsUpdated = pp.executeUpdate();
+        if (rowsUpdated == 0) {
+          throw sqlex;
+        }
       }
     } finally {
       if (pp != null) {
@@ -243,49 +243,25 @@ public class UnitJobs {
 
   /** 2.4 */
   public int countAndDeleteCompletedNoFailure(Job job) throws SQLException {
-    Connection c = null;
-    PreparedStatement pp = null;
-    try {
-      c = connectionProperties.getConnection();
-      pp =
-          c.prepareStatement(
-              "DELETE FROM unit_job WHERE processed = 1 AND job_id = ? AND status = '"
-                  + UnitJobStatus.COMPLETED_OK
-                  + "' AND confirmed = 0 AND unconfirmed = 0");
-      pp.setInt(1, job.getId());
-      pp.setQueryTimeout(60);
-      return pp.executeUpdate();
-    } finally {
-      if (pp != null) {
-        pp.close();
-      }
-      if (c != null) {
-        c.close();
-      }
+    try (Connection c = connectionProperties.getConnection(); PreparedStatement pp = c.prepareStatement(
+            "DELETE FROM unit_job WHERE processed = 1 AND job_id = ? AND status = '"
+                    + UnitJobStatus.COMPLETED_OK
+                    + "' AND confirmed = 0 AND unconfirmed = 0")) {
+        pp.setInt(1, job.getId());
+        pp.setQueryTimeout(60);
+        return pp.executeUpdate();
     }
   }
 
   /** 2.4 modified - due to introduction of STOPPED state for unit-jobs */
   public int countAndDeleteStoppedNoFailure(Job job) throws SQLException {
-    Connection c = null;
-    PreparedStatement pp = null;
-    try {
-      c = connectionProperties.getConnection();
-      pp =
-          c.prepareStatement(
-              "DELETE FROM unit_job WHERE processed = 1 AND job_id = ? AND status = '"
-                  + UnitJobStatus.STOPPED
-                  + "' AND confirmed = 0 AND unconfirmed = 0");
-      pp.setInt(1, job.getId());
-      pp.setQueryTimeout(60);
-      return pp.executeUpdate();
-    } finally {
-      if (pp != null) {
-        pp.close();
-      }
-      if (c != null) {
-        c.close();
-      }
+    try (Connection c = connectionProperties.getConnection(); PreparedStatement pp = c.prepareStatement(
+            "DELETE FROM unit_job WHERE processed = 1 AND job_id = ? AND status = '"
+                    + UnitJobStatus.STOPPED
+                    + "' AND confirmed = 0 AND unconfirmed = 0")) {
+        pp.setInt(1, job.getId());
+        pp.setQueryTimeout(60);
+        return pp.executeUpdate();
     }
   }
 
@@ -440,30 +416,30 @@ public class UnitJobs {
       if (pp != null) {
         pp.close();
       }
-      pp =
-          c.prepareStatement(
-              "UPDATE unit_job SET status = ?, start_timestamp = ?, end_timestamp = ?, processed = 0, unconfirmed = ?, confirmed = ? WHERE unit_id = ? and job_id = ?");
-      pp.setString(1, uj.getStatus());
-      if (uj.getStartTimestamp() != null) {
-        pp.setTimestamp(2, new Timestamp(uj.getStartTimestamp().getTime()));
-      } else {
-        pp.setTimestamp(2, null);
+      if (c != null) {
+        pp = c.prepareStatement("UPDATE unit_job SET status = ?, start_timestamp = ?, end_timestamp = ?, processed = 0, unconfirmed = ?, confirmed = ? WHERE unit_id = ? and job_id = ?");
+        pp.setString(1, uj.getStatus());
+        if (uj.getStartTimestamp() != null) {
+          pp.setTimestamp(2, new Timestamp(uj.getStartTimestamp().getTime()));
+        } else {
+          pp.setTimestamp(2, null);
+        }
+        if (uj.getEndTimestamp() != null) {
+          pp.setTimestamp(3, new Timestamp(uj.getEndTimestamp().getTime()));
+        } else {
+          pp.setTimestamp(3, null);
+        }
+        pp.setInt(4, uj.getUnconfirmedFailed());
+        pp.setInt(5, uj.getConfirmedFailed());
+        pp.setString(6, uj.getUnitId());
+        pp.setInt(7, uj.getJobId());
+        pp.setQueryTimeout(60);
+        int rowsUpdated = pp.executeUpdate();
+        if (rowsUpdated == 0) {
+          throw sqlex;
+        }
+        logger.info("Updated UnitJob for unit " + uj.getUnitId() + " on job " + uj.getJobId());
       }
-      if (uj.getEndTimestamp() != null) {
-        pp.setTimestamp(3, new Timestamp(uj.getEndTimestamp().getTime()));
-      } else {
-        pp.setTimestamp(3, null);
-      }
-      pp.setInt(4, uj.getUnconfirmedFailed());
-      pp.setInt(5, uj.getConfirmedFailed());
-      pp.setString(6, uj.getUnitId());
-      pp.setInt(7, uj.getJobId());
-      pp.setQueryTimeout(60);
-      int rowsUpdated = pp.executeUpdate();
-      if (rowsUpdated == 0) {
-        throw sqlex;
-      }
-      logger.info("Updated UnitJob for unit " + uj.getUnitId() + " on job " + uj.getJobId());
     } finally {
       if (pp != null) {
         pp.close();

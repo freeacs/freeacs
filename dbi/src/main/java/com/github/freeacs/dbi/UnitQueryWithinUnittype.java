@@ -118,15 +118,15 @@ public class UnitQueryWithinUnittype {
     try {
       long fixedValue = Long.parseLong(fixedOp);
       long varValue = Long.parseLong(varOp);
-      switch (op) {
-        case EQ: return fixedValue == varValue;
-        case NE: return fixedValue != varValue;
-        case LT: return fixedValue < varValue;
-        case LE: return fixedValue <= varValue;
-        case GT: return fixedValue > varValue;
-        case GE: return fixedValue >= varValue;
-        default: return false;
-      }
+        return switch (op) {
+            case EQ -> fixedValue == varValue;
+            case NE -> fixedValue != varValue;
+            case LT -> fixedValue < varValue;
+            case LE -> fixedValue <= varValue;
+            case GT -> fixedValue > varValue;
+            case GE -> fixedValue >= varValue;
+            default -> false;
+        };
     } catch (NumberFormatException e) {
       logger.debug("Could not parse number: " + e.getMessage());
       return false;
@@ -140,13 +140,13 @@ public class UnitQueryWithinUnittype {
       return op == Parameter.Operator.EQ ? match : !match;
     } else {
       int comparison = fixedOp.compareToIgnoreCase(varOp);
-      switch (op) {
-        case LT: return comparison < 0;
-        case LE: return comparison <= 0;
-        case GT: return comparison > 0;
-        case GE: return comparison >= 0;
-        default: return false;
-      }
+        return switch (op) {
+            case LT -> comparison < 0;
+            case LE -> comparison <= 0;
+            case GT -> comparison > 0;
+            case GE -> comparison >= 0;
+            default -> false;
+        };
     }
   }
 
@@ -509,28 +509,17 @@ public class UnitQueryWithinUnittype {
 
   private int getUnitCount(List<Parameter> parameters, Profile p) throws SQLException {
     DynamicStatement ds = computeSQL(parameters, p, true);
-    ResultSet rs = null;
-    PreparedStatement pp = null;
-    try {
-      pp = ds.makePreparedStatement(connection);
-      rs = pp.executeQuery();
-      if (logger.isDebugEnabled()) {
-        logger.debug(ds.getDebugMessage());
-      }
-      if (rs.next()) {
-        return rs.getInt(1);
-      }
-      return 0;
+    try (PreparedStatement pp = ds.makePreparedStatement(connection); ResultSet rs = pp.executeQuery()) {
+        if (logger.isDebugEnabled()) {
+            logger.debug(ds.getDebugMessage());
+        }
+        if (rs.next()) {
+            return rs.getInt(1);
+        }
+        return 0;
     } catch (SQLException sqle) {
-      logger.error("The sql that failed:" + ds.getSqlQuestionMarksSubstituted());
-      throw sqle;
-    } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (pp != null) {
-        pp.close();
-      }
+        logger.error("The sql that failed:" + ds.getSqlQuestionMarksSubstituted());
+        throw sqle;
     }
   }
 

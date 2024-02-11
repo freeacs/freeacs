@@ -1,7 +1,10 @@
 package com.github.freeacs.dbi.report;
 
+import lombok.Getter;
+
 public class Counter {
   private long counter;
+  @Getter
   private final long dividend;
 
   public Counter() {
@@ -10,10 +13,6 @@ public class Counter {
 
   public Counter(long dividend) {
     this.dividend = dividend;
-  }
-
-  public long getDividend() {
-    return dividend;
   }
 
   public void inc() {

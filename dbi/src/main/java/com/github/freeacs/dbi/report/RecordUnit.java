@@ -1,7 +1,12 @@
 package com.github.freeacs.dbi.report;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.util.Date;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class RecordUnit extends Record<RecordUnit> {
   private static final KeyFactory keyFactory =
       new KeyFactory("Unittype", "Profile", "SoftwareVersion", "Status");
@@ -15,8 +20,6 @@ public class RecordUnit extends Record<RecordUnit> {
   private String status;
 
   private Counter unitCount = new Counter();
-
-  protected RecordUnit() {}
 
   public RecordUnit(
       Date tms,
@@ -35,38 +38,6 @@ public class RecordUnit extends Record<RecordUnit> {
         keyFactory.makeKey(tms, periodType, unittypeName, profileName, softwareVersion, status);
   }
 
-  public Key getKey() {
-    return key;
-  }
-
-  public Date getTms() {
-    return tms;
-  }
-
-  public PeriodType getPeriodType() {
-    return periodType;
-  }
-
-  public String getUnittypeName() {
-    return unittypeName;
-  }
-
-  public String getProfileName() {
-    return profileName;
-  }
-
-  public String getSoftwareVersion() {
-    return softwareVersion;
-  }
-
-  public Counter getUnitCount() {
-    return unitCount;
-  }
-
-  public void setUnitCount(Counter unitCount) {
-    this.unitCount = unitCount;
-  }
-
   @Override
   public void add(RecordUnit record) {
     getUnitCount().add(record.getUnitCount());
@@ -82,9 +53,5 @@ public class RecordUnit extends Record<RecordUnit> {
 
   public KeyFactory getKeyFactory() {
     return keyFactory;
-  }
-
-  public String getStatus() {
-    return status;
   }
 }

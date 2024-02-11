@@ -45,12 +45,12 @@ public class Chart<R extends Record> {
 
   private static final Logger logger = LoggerFactory.getLogger(Chart.class);
 
-  private final long NINTY_DAYS = 90L * 24L * 3600L * 1000L;
-  private final long TWO_DAYS = 2L * 24L * 3600L * 1000L;
-  private final long TWO_MINUTES = 2L * 60L * 1000L;
+  private static final long NINTY_DAYS = 90L * 24L * 3600L * 1000L;
+  private static final long TWO_DAYS = 2L * 24L * 3600L * 1000L;
+  private static final long TWO_MINUTES = 2L * 60L * 1000L;
 
   /** Set to true to use showMap-logic, set to false to use hideMap-logic. */
-  private final String strategy = STRATEGY_HIDE_SELECTED;
+  private static final String strategy = STRATEGY_HIDE_SELECTED;
   /** The map which contains all the sets. */
   private final Map<String, Set<String>> setMap = new HashMap<>();
 

@@ -383,7 +383,7 @@ public class ReportSyslogGenerator extends ReportGenerator {
     return allUnittypesSpecified;
   }
 
-  private DynamicStatement addUnittypeOrProfileCriteria(
+  private void addUnittypeOrProfileCriteria(
       DynamicStatement ds, List<Unittype> unittypes, List<Profile> profiles) {
     User user = id.getUser();
     if (profiles != null && !profiles.isEmpty()) {
@@ -391,7 +391,7 @@ public class ReportSyslogGenerator extends ReportGenerator {
       boolean allUnittypesSpecified =
           allUnittypesSpecified(profiles, unittypesWithSomeProfilesSpecified);
       if (user.isAdmin() && allUnittypesSpecified) {
-        return ds;
+        return;
       } // no criteria added -> quicker search,  will search for all unittypes/profiles
       ds.addSql("(");
       for (int i = 0; i < profiles.size(); i++) {
@@ -433,6 +433,5 @@ public class ReportSyslogGenerator extends ReportGenerator {
         ds.addSql(") AND ");
       }
     }
-    return ds;
   }
 }

@@ -161,7 +161,7 @@ public class SyslogEvent implements Comparable<SyslogEvent> {
       this.expression = expression;
       this.expressionPattern = Pattern.compile(expressionPatternStr);
     } catch (PatternSyntaxException pse) {
-      if (expressionPatternStr.equals(expression)) {
+      if (expressionPatternStr != null && expressionPatternStr.equals(expression)) {
         throw new IllegalArgumentException(
             "SyslogEvent expression "
                 + expression

@@ -3,9 +3,12 @@ package com.github.freeacs.dbi.report;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Getter
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class Report<R extends Record> {
   private static final Logger logger = LoggerFactory.getLogger(Report.class);
@@ -24,14 +27,6 @@ public class Report<R extends Record> {
 
   public void setRecord(Key key, R record) {
     map.put(key, record);
-  }
-
-  public Class<R> getRecordClass() {
-    return recordClass;
-  }
-
-  public Map<Key, R> getMap() {
-    return map;
   }
 
   public String toString() {
@@ -65,10 +60,6 @@ public class Report<R extends Record> {
     }
     logger.info("Have aggregated report into " + aggregatedMap.size() + " records");
     return aggregatedMap;
-  }
-
-  public PeriodType getPeriodType() {
-    return periodType;
   }
 
   public KeyFactory getKeyFactory() {

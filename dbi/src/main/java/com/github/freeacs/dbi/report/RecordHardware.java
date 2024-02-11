@@ -1,7 +1,12 @@
 package com.github.freeacs.dbi.report;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.util.Date;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class RecordHardware extends Record<RecordHardware> {
   public static KeyFactory keyFactory = new KeyFactory("Unittype", "Profile", "SoftwareVersion");
   private Key key;
@@ -55,26 +60,6 @@ public class RecordHardware extends Record<RecordHardware> {
     }
     this.softwareVersion = softwareVersion;
     this.key = keyFactory.makeKey(tms, periodType, unittypeName, profileName, softwareVersion);
-  }
-
-  public Key getKey() {
-    return key;
-  }
-
-  public Date getTms() {
-    return tms;
-  }
-
-  public PeriodType getPeriodType() {
-    return periodType;
-  }
-
-  public String getUnittypeName() {
-    return unittypeName;
-  }
-
-  public String getProfileName() {
-    return profileName;
   }
 
   public RecordHardware clone() {
@@ -133,193 +118,5 @@ public class RecordHardware extends Record<RecordHardware> {
 
   public KeyFactory getKeyFactory() {
     return keyFactory;
-  }
-
-  public Counter getBootCount() {
-    return bootCount;
-  }
-
-  public void setBootCount(Counter bootCount) {
-    this.bootCount = bootCount;
-  }
-
-  public Counter getBootWatchdogCount() {
-    return bootWatchdogCount;
-  }
-
-  public void setBootWatchdogCount(Counter bootWatchdogCount) {
-    this.bootWatchdogCount = bootWatchdogCount;
-  }
-
-  public Counter getBootMiscCount() {
-    return bootMiscCount;
-  }
-
-  public void setBootMiscCount(Counter bootMiscCount) {
-    this.bootMiscCount = bootMiscCount;
-  }
-
-  public Counter getBootPowerCount() {
-    return bootPowerCount;
-  }
-
-  public void setBootPowerCount(Counter bootPowerCount) {
-    this.bootPowerCount = bootPowerCount;
-  }
-
-  public Counter getBootResetCount() {
-    return bootResetCount;
-  }
-
-  public void setBootResetCount(Counter bootResetCount) {
-    this.bootResetCount = bootResetCount;
-  }
-
-  public Counter getBootProvCount() {
-    return bootProvCount;
-  }
-
-  public void setBootProvCount(Counter bootProvCount) {
-    this.bootProvCount = bootProvCount;
-  }
-
-  public Counter getBootProvSwCount() {
-    return bootProvSwCount;
-  }
-
-  public void setBootProvSwCount(Counter bootProvSwCount) {
-    this.bootProvSwCount = bootProvSwCount;
-  }
-
-  public Counter getBootProvConfCount() {
-    return bootProvConfCount;
-  }
-
-  public void setBootProvConfCount(Counter bootProvConfCount) {
-    this.bootProvConfCount = bootProvConfCount;
-  }
-
-  public Counter getBootProvBootCount() {
-    return bootProvBootCount;
-  }
-
-  public void setBootProvBootCount(Counter bootProvBootCount) {
-    this.bootProvBootCount = bootProvBootCount;
-  }
-
-  public Counter getBootUserCount() {
-    return bootUserCount;
-  }
-
-  public void setBootUserCount(Counter bootUserCount) {
-    this.bootUserCount = bootUserCount;
-  }
-
-  public Average getMemoryHeapDdrPoolAvg() {
-    return memoryHeapDdrPoolAvg;
-  }
-
-  public void setMemoryHeapDdrPoolAvg(Average memoryHeapDdrPoolAvg) {
-    this.memoryHeapDdrPoolAvg = memoryHeapDdrPoolAvg;
-  }
-
-  public Average getMemoryHeapDdrCurrentAvg() {
-    return memoryHeapDdrCurrentAvg;
-  }
-
-  public void setMemoryHeapDdrCurrentAvg(Average memoryHeapDdrCurrentAvg) {
-    this.memoryHeapDdrCurrentAvg = memoryHeapDdrCurrentAvg;
-  }
-
-  public Average getMemoryHeapDdrLowAvg() {
-    return memoryHeapDdrLowAvg;
-  }
-
-  public void setMemoryHeapDdrLowAvg(Average memoryHeapDdrLowAvg) {
-    this.memoryHeapDdrLowAvg = memoryHeapDdrLowAvg;
-  }
-
-  public Average getMemoryHeapOcmPoolAvg() {
-    return memoryHeapOcmPoolAvg;
-  }
-
-  public void setMemoryHeapOcmPoolAvg(Average memoryHeapOcmPoolAvg) {
-    this.memoryHeapOcmPoolAvg = memoryHeapOcmPoolAvg;
-  }
-
-  public Average getMemoryHeapOcmCurrentAvg() {
-    return memoryHeapOcmCurrentAvg;
-  }
-
-  public void setMemoryHeapOcmCurrentAvg(Average memoryHeapOcmCurrentAvg) {
-    this.memoryHeapOcmCurrentAvg = memoryHeapOcmCurrentAvg;
-  }
-
-  public Average getMemoryHeapOcmLowAvg() {
-    return memoryHeapOcmLowAvg;
-  }
-
-  public void setMemoryHeapOcmLowAvg(Average memoryHeapOcmLowAvg) {
-    this.memoryHeapOcmLowAvg = memoryHeapOcmLowAvg;
-  }
-
-  public Average getMemoryNpDdrPoolAvg() {
-    return memoryNpDdrPoolAvg;
-  }
-
-  public void setMemoryNpDdrPoolAvg(Average memoryNpDdrPoolAvg) {
-    this.memoryNpDdrPoolAvg = memoryNpDdrPoolAvg;
-  }
-
-  public Average getMemoryNpDdrCurrentAvg() {
-    return memoryNpDdrCurrentAvg;
-  }
-
-  public void setMemoryNpDdrCurrentAvg(Average memoryNpDdrCurrentAvg) {
-    this.memoryNpDdrCurrentAvg = memoryNpDdrCurrentAvg;
-  }
-
-  public Average getMemoryNpDdrLowAvg() {
-    return memoryNpDdrLowAvg;
-  }
-
-  public void setMemoryNpDdrLowAvg(Average memoryNpDdrLowAvg) {
-    this.memoryNpDdrLowAvg = memoryNpDdrLowAvg;
-  }
-
-  public Average getMemoryNpOcmPoolAvg() {
-    return memoryNpOcmPoolAvg;
-  }
-
-  public void setMemoryNpOcmPoolAvg(Average memoryNpOcmPoolAvg) {
-    this.memoryNpOcmPoolAvg = memoryNpOcmPoolAvg;
-  }
-
-  public Average getMemoryNpOcmCurrentAvg() {
-    return memoryNpOcmCurrentAvg;
-  }
-
-  public void setMemoryNpOcmCurrentAvg(Average memoryNpOcmCurrentAvg) {
-    this.memoryNpOcmCurrentAvg = memoryNpOcmCurrentAvg;
-  }
-
-  public Average getMemoryNpOcmLowAvg() {
-    return memoryNpOcmLowAvg;
-  }
-
-  public void setMemoryNpOcmLowAvg(Average memoryNpOcmLowAvg) {
-    this.memoryNpOcmLowAvg = memoryNpOcmLowAvg;
-  }
-
-  public String getSoftwareVersion() {
-    return softwareVersion;
-  }
-
-  public Average getCpeUptimeAvg() {
-    return cpeUptimeAvg;
-  }
-
-  public void setCpeUptimeAvg(Average uptime) {
-    this.cpeUptimeAvg = uptime;
   }
 }
