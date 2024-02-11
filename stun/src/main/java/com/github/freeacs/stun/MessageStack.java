@@ -1,6 +1,7 @@
 package com.github.freeacs.stun;
 
 import java.net.DatagramPacket;
+import java.util.EmptyStackException;
 import java.util.Stack;
 
 public class MessageStack {
@@ -8,12 +9,8 @@ public class MessageStack {
 
   public static DatagramPacket pop() {
     try {
-      if (stack != null) {
-        return stack.pop();
-      } else {
-        return null;
-      }
-    } catch (Exception ese) {
+      return stack.pop();
+    } catch (EmptyStackException ese) {
       return null;
     }
   }

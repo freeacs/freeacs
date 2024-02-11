@@ -12,6 +12,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthScope;
@@ -28,26 +31,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Kick {
+  @Data
+  @AllArgsConstructor
   public static class KickResponse {
     private final boolean kicked;
     private String message;
-
-    public KickResponse(boolean kicked, String message) {
-      this.kicked = kicked;
-      this.message = message;
-    }
-
-    public boolean isKicked() {
-      return kicked;
-    }
-
-    public String getMessage() {
-      return message;
-    }
-
-    public void setMessage(String message) {
-      this.message = message;
-    }
   }
 
   private static final Kick kickSingleton = new Kick();

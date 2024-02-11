@@ -1,8 +1,11 @@
 package com.github.freeacs.stun;
 
+import lombok.Getter;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Getter
 public class JobHistoryEntry {
   private static final Pattern jobHistoryPattern = Pattern.compile("^(\\d+)(:(\\d+):(\\d+))?$");
 
@@ -23,15 +26,4 @@ public class JobHistoryEntry {
     }
   }
 
-  public Integer getJobId() {
-    return jobId;
-  }
-
-  public Integer getRepeatedCount() {
-    return repeatedCount;
-  }
-
-  public Long getLastRunTms() {
-    return lastRunTms;
-  }
 }

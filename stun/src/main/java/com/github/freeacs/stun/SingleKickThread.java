@@ -18,6 +18,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
+
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +60,7 @@ public class SingleKickThread implements Runnable {
    * The standard way of detecting change, a message is sent from Shell, Web or WS directly to this
    * module.
    *
-   * @throws SQLException
+   * @throws SQLException if any.
    */
   private void updateUnitWatchBasedOnMessages() throws SQLException {
     for (Message m : inbox.getUnreadMessages()) {
@@ -94,7 +96,7 @@ public class SingleKickThread implements Runnable {
    * in the unit_param_session table. If so, and they're not already on the unitWatch-list, they're
    * units which are "stranded" and it must be cleaned up (after a 15m wait).
    *
-   * @throws SQLException
+   * @throws SQLException if any.
    */
   private void updateUnitWatchBasedOnSessionParams() throws SQLException {
     List<String> unitIds = acsUnit.getUnitIdsFromSessionUnitParameters();
@@ -115,7 +117,7 @@ public class SingleKickThread implements Runnable {
    * mode set to INSPECTION or EXTRACTION. If so, and they're not already on the unitWatch-list,
    * they're units which are "stranded" and it must be cleaned up (after a 15m wait).
    *
-   * @throws SQLException
+   * @throws SQLException if any.
    */
   private void updateUnitWatchBasedOnProvisioningMode() throws SQLException {
     Map<String, Unit> units = acsUnit.getUnits(ProvisioningMode.READALL.toString(), null, null);
@@ -252,24 +254,9 @@ public class SingleKickThread implements Runnable {
     }
   }
 
+  @Data
   public static class InspectionState {
     private long tmsOfLastChange;
     private boolean kicked;
-
-    public long getTmsOfLastChange() {
-      return tmsOfLastChange;
-    }
-
-    public void setTmsOfLastChange(long tmsOfLastChange) {
-      this.tmsOfLastChange = tmsOfLastChange;
-    }
-
-    public boolean isKicked() {
-      return kicked;
-    }
-
-    public void setKicked(boolean kicked) {
-      this.kicked = kicked;
-    }
   }
 }

@@ -1,7 +1,9 @@
 package com.github.freeacs.stun;
 
 import com.typesafe.config.Config;
+import lombok.Data;
 
+@Data
 public class Properties {
   private final boolean expectPortForwarding;
   private final boolean runWithStun;
@@ -37,49 +39,5 @@ public class Properties {
       return (T) obj;
     }
     return defaultValue;
-  }
-
-  public boolean isExpectPortForwarding() {
-    return expectPortForwarding;
-  }
-
-  public boolean isRunWithStun() {
-    return runWithStun;
-  }
-
-  public String getSecondaryIp() {
-    return secondaryIp;
-  }
-
-  public String getPrimaryIp() {
-    return primaryIp;
-  }
-
-  public Integer getSecondaryPort() {
-    return secondaryPort;
-  }
-
-  public Integer getPrimaryPort() {
-    return primaryPort;
-  }
-
-  public Integer getKickInterval() {
-    return kickInterval;
-  }
-
-  public boolean isCheckPublicIp() {
-    return checkPublicIp;
-  }
-
-  public Integer getKickRescan() {
-    return kickRescan;
-  }
-
-  public Config getEnvironment() {
-    return environment;
-  }
-
-  public String getContextPath() {
-    return contextPath;
   }
 }
