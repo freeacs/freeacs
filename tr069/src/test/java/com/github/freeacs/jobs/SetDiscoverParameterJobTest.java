@@ -68,21 +68,7 @@ public class SetDiscoverParameterJobTest implements AbstractMySqlIntegrationTest
     @Autowired
     private DBI dbi;
 
-    // This comes from the core module, and is imported with scope test in maven dependencies
-    private ScriptExecutor scriptExecutorTask;
-
-    @Scheduled(cron = "* * * ? * *")
-    public void scheduleScriptExecution() {
-        scriptExecutorTask.setThisLaunchTms(System.currentTimeMillis());
-        scriptExecutorTask.run();
-    }
-
     private void init() throws SQLException, IOException {
-        // We initialize the ScriptExecutor task from the core module
-        Config config = ConfigFactory.empty()
-                .withValue("shellscript.poolsize", ConfigValueFactory.fromAnyRef(1))
-                .withValue("syslog.severity.0.limit", ConfigValueFactory.fromAnyRef(90));
-        scriptExecutorTask = new ScriptExecutor("ScriptExecutor", dbi, new Properties(config));
         // Create necessary state
         AbstractProvisioningTest.addUnitsToProvision(dbi, UNIT_TYPE_NAME, UNIT_ID);
         Unittype unittype = dbi.getAcs().getUnittype(UNIT_TYPE_NAME);
@@ -105,7 +91,7 @@ public class SetDiscoverParameterJobTest implements AbstractMySqlIntegrationTest
         job.setStopRules("n1");
         job.setUnittype(unittype);
         job.setGroup(group);
-        job.setFlags(new JobFlag(JobFlag.JobType.SHELL, JobFlag.JobServiceWindow.DISRUPTIVE));
+        job.setFlags(new JobFlag(JobType.SHELL, JobFlag.JobServiceWindow.DISRUPTIVE));
         job.setFile(file);
         job.setUnconfirmedTimeout(60);
         job.setRepeatCount(1);
@@ -114,6 +100,18 @@ public class SetDiscoverParameterJobTest implements AbstractMySqlIntegrationTest
         unittype.getJobs().changeStatus(job, dbi.getAcs());
         ACSUnit acsUnit = dbi.getACSUnit();
         acsUnit.addOrChangeUnitParameter(acsUnit.getUnitById(UNIT_ID), SystemParameters.JOB_CURRENT, job.getId().toString());
+    }
+
+    @Scheduled(cron = "* * * ? * *")
+    public void setDiscoverParameterViaScript() throws Exception {
+        // We initialize the ScriptExecutor task from the core module
+        Config config = ConfigFactory.empty()
+                .withValue("shellscript.poolsize", ConfigValueFactory.fromAnyRef(1))
+                .withValue("syslog.severity.0.limit", ConfigValueFactory.fromAnyRef(90));
+        // This comes from the core module, and is imported with scope test in maven dependencies
+        ScriptExecutor scriptExecutorTask = new ScriptExecutor("ScriptExecutor", dbi, new Properties(config));
+        scriptExecutorTask.setThisLaunchTms(System.currentTimeMillis());
+        scriptExecutorTask.runImpl();
     }
 
     @Test

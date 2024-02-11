@@ -1,5 +1,8 @@
 package com.github.freeacs.dbi.report;
 
+import lombok.Data;
+
+@Data
 public class Average {
   private Counter weightedCounter = new Counter();
   private Counter totalWeight = new Counter();
@@ -7,14 +10,6 @@ public class Average {
 
   public Average() {
     this(1);
-  }
-
-  private Counter getWeightedCounter() {
-    return weightedCounter;
-  }
-
-  private Counter getTotalWeight() {
-    return totalWeight;
   }
 
   public Average(long dividend) {
@@ -29,7 +24,7 @@ public class Average {
     if (str != null) {
       try {
         add(Long.parseLong(str), 1);
-      } catch (NumberFormatException nfe) {
+      } catch (NumberFormatException ignored) {
       }
     }
   }
@@ -58,22 +53,10 @@ public class Average {
     return String.valueOf(get());
   }
 
-  public long getDividend() {
-    return dividend;
-  }
-
   public Average clone() {
     Average clone = new Average(dividend);
-    clone.setWeightedCounter(getWeightedCounter().clone());
-    clone.setTotalWeight(getTotalWeight().clone());
+    clone.setWeightedCounter(weightedCounter.clone());
+    clone.setTotalWeight(totalWeight.clone());
     return clone;
-  }
-
-  private void setWeightedCounter(Counter weightedCounter) {
-    this.weightedCounter = weightedCounter;
-  }
-
-  private void setTotalWeight(Counter totalWeight) {
-    this.totalWeight = totalWeight;
   }
 }

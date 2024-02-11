@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import lombok.Getter;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
 import org.jfree.chart.JFreeChart;
@@ -33,24 +35,15 @@ import org.slf4j.LoggerFactory;
 
 @SuppressWarnings({"rawtypes"})
 public class Chart<R extends Record> {
+  private static final Logger logger = LoggerFactory.getLogger(Chart.class);
 
   public static final String SET_TYPE_ALL = "ALL";
-  public static final String SET_TYPE_SHOW = "SHOW";
   public static final String SET_TYPE_HIDE = "HIDE";
-
-  /** Add to set to show in strategy mode STRATEGY_HIDE_SELECTED. */
-  public static final String STRATEGY_HIDE_SELECTED = "HIDE";
-  /** Add to set to show in strategy mode STRATEGY_SHOW_SELECTED. */
-  public static final String STRATEGY_SHOW_SELECTED = "SHOW";
-
-  private static final Logger logger = LoggerFactory.getLogger(Chart.class);
 
   private static final long NINTY_DAYS = 90L * 24L * 3600L * 1000L;
   private static final long TWO_DAYS = 2L * 24L * 3600L * 1000L;
   private static final long TWO_MINUTES = 2L * 60L * 1000L;
 
-  /** Set to true to use showMap-logic, set to false to use hideMap-logic. */
-  private static final String strategy = STRATEGY_HIDE_SELECTED;
   /** The map which contains all the sets. */
   private final Map<String, Set<String>> setMap = new HashMap<>();
 
@@ -58,6 +51,7 @@ public class Chart<R extends Record> {
   private final PeriodType periodType;
   private final String method;
   private final String[] keyNames;
+  @Getter
   private JFreeChart chart;
   private final Map<Key, R> recordMap;
   private final String title;
@@ -79,43 +73,25 @@ public class Chart<R extends Record> {
   /**
    * Use the SET_TYPE-constants.
    *
-   * @param setType
-   * @return
+   * @param setType - the type of set to get
+   * @return the set
    */
-  @SuppressWarnings("unchecked")
   public Set<String> getSet(String setType) {
     StringBuilder mapKey = new StringBuilder(setType + method);
     for (String keyName : keyNames) {
       mapKey.append(keyName);
     }
-    Set set = setMap.get(mapKey.toString());
-    if (set == null) {
-      set = new HashSet<>();
-      setMap.put(mapKey.toString(), set);
-    }
-    return set;
+    return setMap.computeIfAbsent(mapKey.toString(), k -> new HashSet<>());
   }
 
-  @SuppressWarnings("unchecked")
   private boolean show(String keyStr) {
     boolean show = true;
-    if (keyStr.startsWith("Total")) {
-      show = true;
-    } else {
-      Set allSet = getSet(SET_TYPE_ALL);
+    if (!keyStr.startsWith("Total")) {
+      Set<String> allSet = getSet(SET_TYPE_ALL);
       allSet.add(keyStr);
-      if (strategy == null || STRATEGY_HIDE_SELECTED.equals(strategy)) {
-        show = true;
-        Set hideSet = getSet(SET_TYPE_HIDE);
-        if (hideSet.contains(keyStr)) {
-          show = false;
-        }
-      } else if (STRATEGY_SHOW_SELECTED.equals(strategy)) {
+      Set<String> hideSet = getSet(SET_TYPE_HIDE);
+      if (hideSet.contains(keyStr)) {
         show = false;
-        Set showSet = getSet(SET_TYPE_SHOW);
-        if (showSet.contains(keyStr)) {
-          show = true;
-        }
       }
     }
     return show;
@@ -123,8 +99,7 @@ public class Chart<R extends Record> {
 
   private Map<String, TimeSeries> makeTimeSeriesMap(
       String method, Map<Key, R> recordMap, String... keyNames) throws Exception {
-    logger.debug(
-        "Will create a time series map using a record map with " + recordMap.size() + " entries");
+    logger.debug("Will create a time series map using a record map with " + recordMap.size() + " entries");
     Map<String, TimeSeries> timeSeriesMap = new HashMap<>();
     for (Entry<Key, R> entry : recordMap.entrySet()) {
       Key key = entry.getKey();
@@ -137,11 +112,7 @@ public class Chart<R extends Record> {
       Record record = entry.getValue();
       String keyStr = key.getKeyStringFallbackOnMethodName(false, method, keyNames);
       if (show(keyStr)) {
-        TimeSeries timeseries = timeSeriesMap.get(keyStr);
-        if (timeseries == null) {
-          timeseries = new TimeSeries(keyStr);
-          timeSeriesMap.put(keyStr, timeseries);
-        }
+        TimeSeries timeseries = timeSeriesMap.computeIfAbsent(keyStr, TimeSeries::new);
         Method m = report.getRecordClass().getMethod("get" + method, (Class[]) null); // Fix
         Object obj = m.invoke(record, (Object[]) null);
         if (obj != null) {
@@ -181,8 +152,8 @@ public class Chart<R extends Record> {
    * @param max - the maximum number on the left range axis (must be set if min is set)
    * @param method2 - the method to run out of Record, and populates a bar series (right range axis)
    * @param highLightIndex - the index to highlight
-   * @return
-   * @throws Exception
+   * @return   - the chart
+   * @throws Exception - if something goes wrong
    */
   public JFreeChart makeTimeChart(Double min, Double max, String method2, Integer highLightIndex)
       throws Exception {
@@ -265,7 +236,4 @@ public class Chart<R extends Record> {
     return chart;
   }
 
-  public JFreeChart getChart() {
-    return chart;
-  }
 }

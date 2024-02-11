@@ -7,8 +7,8 @@ import com.github.freeacs.dbi.Group;
 import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.JobFlag;
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
-import com.github.freeacs.dbi.JobFlag.JobType;
 import com.github.freeacs.dbi.JobParameter;
+import com.github.freeacs.dbi.JobType;
 import com.github.freeacs.dbi.Jobs;
 import com.github.freeacs.dbi.Parameter;
 import com.github.freeacs.dbi.UnitJobs;
@@ -239,7 +239,7 @@ public class JobPage extends AbstractWebPage {
     } else if (inputData.getStatusSubmit().getString() != null) {
       job = unittype.getJobs().getByName(SessionCache.getSessionData(sessionId).getJobname());
       job.setStatus(
-          jobStatusMethods.getJobStatusFromAcronym(inputData.getStatusSubmit().getString()));
+          JobStatusMethods.getJobStatusFromAcronym(inputData.getStatusSubmit().getString()));
       xapsJobs.changeStatus(job, acs);
       return job;
     }
