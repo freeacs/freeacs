@@ -71,13 +71,12 @@ public class UnitJobs {
 
   /** 1.1 and 1.2 */
   public boolean start(UnitJob uj) throws SQLException {
-    Connection c = null;
-    PreparedStatement pp = null;
-    try {
-      c = connectionProperties.getConnection();
-      pp =
-          c.prepareStatement(
-              "INSERT INTO unit_job (job_id, unit_id, status, start_timestamp, processed, confirmed, unconfirmed) VALUES (?, ?, ?, ?, 0, 0, 0)");
+    var insertSql = """
+      INSERT INTO unit_job (job_id, unit_id, status, start_timestamp, processed, confirmed, unconfirmed)
+      VALUES (?, ?, ?, ?, 0, 0, 0)
+    """;
+    try(var connection = connectionProperties.getConnection();
+        var pp = connection.prepareStatement(insertSql)) {
       pp.setInt(1, uj.getJobId());
       pp.setString(2, uj.getUnitId());
       pp.setString(3, UnitJobStatus.STARTED);
@@ -85,11 +84,12 @@ public class UnitJobs {
       pp.setQueryTimeout(60);
       pp.execute();
     } catch (SQLException sqlex) {
-      if (pp != null) {
-        pp.close();
-      }
-      if (c != null) {
-        pp = c.prepareStatement("UPDATE unit_job SET status = ?, start_timestamp = ?, processed = 0 WHERE unit_id = ? and job_id = ?");
+      var updateSql = """
+        UPDATE unit_job SET status = ?, start_timestamp = ?, processed = 0
+        WHERE unit_id = ? and job_id = ?
+      """;
+      try(var connection = connectionProperties.getConnection();
+          var pp = connection.prepareStatement(updateSql)) {
         pp.setString(1, UnitJobStatus.STARTED);
         pp.setTimestamp(2, new Timestamp(uj.getStartTimestamp().getTime()));
         pp.setString(3, uj.getUnitId());
@@ -99,13 +99,6 @@ public class UnitJobs {
         if (rowsUpdated == 0) {
           throw sqlex;
         }
-      }
-    } finally {
-      if (pp != null) {
-        pp.close();
-      }
-      if (c != null) {
-        c.close();
       }
     }
     return true;
@@ -387,13 +380,12 @@ public class UnitJobs {
    * database to another (perhaps after an upgrade of the database itself).
    */
   public void addOrChange(UnitJob uj) throws SQLException {
-    Connection c = null;
-    PreparedStatement pp = null;
-    try {
-      c = connectionProperties.getConnection();
-      pp =
-          c.prepareStatement(
-              "INSERT INTO unit_job (job_id, unit_id, status, start_timestamp, end_timestamp, processed, unconfirmed, confirmed) VALUES (?, ?, ?, ?, ?, 0, ?, ?)");
+    var insertSql = """
+      INSERT INTO unit_job (job_id, unit_id, status, start_timestamp, end_timestamp, processed, unconfirmed, confirmed)
+      VALUES (?, ?, ?, ?, ?, 0, ?, ?)
+    """;
+    try(var connection = connectionProperties.getConnection();
+        var pp = connection.prepareStatement(insertSql)) {
       pp.setInt(1, uj.getJobId());
       pp.setString(2, uj.getUnitId());
       pp.setString(3, uj.getStatus());
@@ -413,11 +405,11 @@ public class UnitJobs {
       pp.execute();
       logger.info("Inserted new UnitJob for unit " + uj.getUnitId() + " on job " + uj.getJobId());
     } catch (SQLException sqlex) {
-      if (pp != null) {
-        pp.close();
-      }
-      if (c != null) {
-        pp = c.prepareStatement("UPDATE unit_job SET status = ?, start_timestamp = ?, end_timestamp = ?, processed = 0, unconfirmed = ?, confirmed = ? WHERE unit_id = ? and job_id = ?");
+      var updateSql = """
+        UPDATE unit_job SET status = ?, start_timestamp = ?, end_timestamp = ?, processed = 0, unconfirmed = ?, confirmed = ?
+        WHERE unit_id = ? and job_id = ?
+      """;
+      try (var connection = connectionProperties.getConnection(); var pp = connection.prepareStatement(updateSql)) {
         pp.setString(1, uj.getStatus());
         if (uj.getStartTimestamp() != null) {
           pp.setTimestamp(2, new Timestamp(uj.getStartTimestamp().getTime()));
@@ -439,13 +431,6 @@ public class UnitJobs {
           throw sqlex;
         }
         logger.info("Updated UnitJob for unit " + uj.getUnitId() + " on job " + uj.getJobId());
-      }
-    } finally {
-      if (pp != null) {
-        pp.close();
-      }
-      if (c != null) {
-        c.close();
       }
     }
   }
