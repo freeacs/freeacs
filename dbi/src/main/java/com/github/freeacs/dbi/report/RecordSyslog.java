@@ -1,7 +1,12 @@
 package com.github.freeacs.dbi.report;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.util.Date;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class RecordSyslog extends Record<RecordSyslog> {
   private static final KeyFactory keyFactory =
       new KeyFactory("Unittype", "Profile", "Severity", "EventId", "Facility");
@@ -38,18 +43,6 @@ public class RecordSyslog extends Record<RecordSyslog> {
         keyFactory.makeKey(tms, periodType, unittypeName, profileName, severity, eventId, facility);
   }
 
-  public Counter getMessageCount() {
-    return messageCount;
-  }
-
-  public void setMessageCount(Counter messageCount) {
-    this.messageCount = messageCount;
-  }
-
-  public Key getKey() {
-    return key;
-  }
-
   @Override
   public void add(RecordSyslog record) {
     getMessageCount().add(record.getMessageCount());
@@ -63,37 +56,7 @@ public class RecordSyslog extends Record<RecordSyslog> {
     return clone;
   }
 
-  @Override
-  public PeriodType getPeriodType() {
-    return periodType;
-  }
-
-  @Override
-  public Date getTms() {
-    return tms;
-  }
-
   public KeyFactory getKeyFactory() {
     return keyFactory;
-  }
-
-  public String getUnittypeName() {
-    return unittypeName;
-  }
-
-  public String getProfileName() {
-    return profileName;
-  }
-
-  public String getSeverity() {
-    return severity;
-  }
-
-  public String getEventId() {
-    return eventId;
-  }
-
-  public String getFacility() {
-    return facility;
   }
 }

@@ -12,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+import static com.github.freeacs.dbi.util.NumberUtils.parseStringId;
+
 @Slf4j
 public class ACSDao {
 
@@ -421,14 +423,16 @@ public class ACSDao {
                 file.setUnittype(unittype);
                 file.setId(resultSet.getInt("id"));
                 file.setName(resultSet.getString("name"));
-                file.setType(getFileType(resultSet.getString("type")));
+                file.setType(FileType.fromString(resultSet.getString("type")));
                 file.setDescription(resultSet.getString("description"));
                 file.setVersion(resultSet.getString("version"));
                 file.setTimestamp(resultSet.getTimestamp("timestamp_"));
                 file.setLength(resultSet.getInt("length"));
                 if (ACSVersionCheck.fileReworkSupported) {
                     file.setTargetName(resultSet.getString("target_name"));
-                    file.setOwner(getPlaceHolderUser(resultSet.getString("owner")));
+                    parseStringId(resultSet.getString("owner"))
+                            .map(id -> new User().withId(id))
+                            .ifPresent(file::setOwner);
                 }
                 file.setValidateInput(true);
                 file.setConnectionProperties(dataSource);
@@ -438,32 +442,6 @@ public class ACSDao {
             log.debug("Found 0 files for unittype {} and firmware version {}", unittype.getName(), firmwareVersion);
             return null;
         }
-    }
-
-    private static FileType getFileType(String typeStr) {
-        FileType ft = null;
-        try {
-            ft = FileType.valueOf(typeStr);
-        } catch (Throwable t) { // Convert from old types
-            if ("SCRIPT".equals(typeStr)) {
-                ft = FileType.SHELL_SCRIPT;
-            }
-            if ("CONFIG".equals(typeStr)) {
-                ft = FileType.TR069_SCRIPT;
-            }
-        }
-        return ft;
-    }
-
-    private static User getPlaceHolderUser(String userIdStr) {
-        if (userIdStr != null) {
-            try {
-                return new User().withId(Integer.valueOf(userIdStr));
-            } catch (NumberFormatException ignored) {
-                log.warn("Failed to parse owner id {}", userIdStr);
-            }
-        }
-        return null;
     }
 
     public byte[] getFileContents(int fileId) throws SQLException {

@@ -231,7 +231,7 @@ public class ReportProvisioningGenerator extends ReportGenerator {
             record.getProvisioningErrorCount().add(1);
             break;
         }
-        record.getSessionLengthAvg().add(Integer.valueOf(m.group(3)));
+        record.getSessionLengthAvg().add(Integer.parseInt(m.group(3)));
         report.setRecord(key, record);
       } else if (entry.getContent().startsWith("ProvMsg: Expected provisioning")) {
         recordTmp =

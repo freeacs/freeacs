@@ -1,7 +1,12 @@
 package com.github.freeacs.dbi.report;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.util.Date;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class RecordHardwareTR extends Record<RecordHardwareTR> {
   public static KeyFactory keyFactory = new KeyFactory("Unittype", "Profile", "SoftwareVersion");
   private final Key key;
@@ -37,26 +42,6 @@ public class RecordHardwareTR extends Record<RecordHardwareTR> {
     this.key = keyFactory.makeKey(tms, periodType, unittypeName, profileName, softwareVersion);
   }
 
-  public Key getKey() {
-    return key;
-  }
-
-  public Date getTms() {
-    return tms;
-  }
-
-  public PeriodType getPeriodType() {
-    return periodType;
-  }
-
-  public String getUnittypeName() {
-    return unittypeName;
-  }
-
-  public String getProfileName() {
-    return profileName;
-  }
-
   public RecordHardwareTR clone() {
     RecordHardwareTR clone =
         new RecordHardwareTR(tms, periodType, unittypeName, profileName, softwareVersion);
@@ -82,65 +67,5 @@ public class RecordHardwareTR extends Record<RecordHardwareTR> {
 
   public KeyFactory getKeyFactory() {
     return keyFactory;
-  }
-
-  public String getSoftwareVersion() {
-    return softwareVersion;
-  }
-
-  public Average getCpeUptimeAvg() {
-    return cpeUptimeAvg;
-  }
-
-  public void setCpeUptimeAvg(Average uptime) {
-    this.cpeUptimeAvg = uptime;
-  }
-
-  public Average getMemoryTotalAvg() {
-    return memoryTotalAvg;
-  }
-
-  public void setMemoryTotalAvg(Average memoryTotalAvg) {
-    this.memoryTotalAvg = memoryTotalAvg;
-  }
-
-  public Average getMemoryFreeAvg() {
-    return memoryFreeAvg;
-  }
-
-  public void setMemoryFreeAvg(Average memoryFreeAvg) {
-    this.memoryFreeAvg = memoryFreeAvg;
-  }
-
-  public Average getCpuUsageAvg() {
-    return cpuUsageAvg;
-  }
-
-  public void setCpuUsageAvg(Average cpuUsageAvg) {
-    this.cpuUsageAvg = cpuUsageAvg;
-  }
-
-  public Average getProcessCountAvg() {
-    return processCountAvg;
-  }
-
-  public void setProcessCountAvg(Average processCountAvg) {
-    this.processCountAvg = processCountAvg;
-  }
-
-  public Average getTemperatureNowAvg() {
-    return temperatureNowAvg;
-  }
-
-  public void setTemperatureNowAvg(Average temperatureNowAvg) {
-    this.temperatureNowAvg = temperatureNowAvg;
-  }
-
-  public Average getTemperatureMaxAvg() {
-    return temperatureMaxAvg;
-  }
-
-  public void setTemperatureMaxAvg(Average temperatureMaxAvg) {
-    this.temperatureMaxAvg = temperatureMaxAvg;
   }
 }

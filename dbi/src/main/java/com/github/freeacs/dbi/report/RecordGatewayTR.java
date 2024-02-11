@@ -1,7 +1,12 @@
 package com.github.freeacs.dbi.report;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.util.Date;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class RecordGatewayTR extends Record<RecordGatewayTR> {
   public static KeyFactory keyFactory = new KeyFactory("Unittype", "Profile", "SoftwareVersion");
   private final Key key;
@@ -36,26 +41,6 @@ public class RecordGatewayTR extends Record<RecordGatewayTR> {
     this.key = keyFactory.makeKey(tms, periodType, unittypeName, profileName, softwareVersion);
   }
 
-  public Key getKey() {
-    return key;
-  }
-
-  public Date getTms() {
-    return tms;
-  }
-
-  public PeriodType getPeriodType() {
-    return periodType;
-  }
-
-  public String getUnittypeName() {
-    return unittypeName;
-  }
-
-  public String getProfileName() {
-    return profileName;
-  }
-
   public RecordGatewayTR clone() {
     RecordGatewayTR clone =
         new RecordGatewayTR(tms, periodType, unittypeName, profileName, softwareVersion);
@@ -79,57 +64,5 @@ public class RecordGatewayTR extends Record<RecordGatewayTR> {
 
   public KeyFactory getKeyFactory() {
     return keyFactory;
-  }
-
-  public String getSoftwareVersion() {
-    return softwareVersion;
-  }
-
-  public Average getWanUptimeAvg() {
-    return wanUptimeAvg;
-  }
-
-  public void setWanUptimeAvg(Average wanUptimeAvg) {
-    this.wanUptimeAvg = wanUptimeAvg;
-  }
-
-  public Average getPingSuccessCountAvg() {
-    return pingSuccessCountAvg;
-  }
-
-  public void setPingSuccessCountAvg(Average pingSuccessCountAvg) {
-    this.pingSuccessCountAvg = pingSuccessCountAvg;
-  }
-
-  public Average getPingFailureCountAvg() {
-    return pingFailureCountAvg;
-  }
-
-  public void setPingFailureCountAvg(Average pingFailureCountAvg) {
-    this.pingFailureCountAvg = pingFailureCountAvg;
-  }
-
-  public Average getDownloadSpeedAvg() {
-    return downloadSpeedAvg;
-  }
-
-  public void setDownloadSpeedAvg(Average downloadSpeedAvg) {
-    this.downloadSpeedAvg = downloadSpeedAvg;
-  }
-
-  public Average getUploadSpeedAvg() {
-    return uploadSpeedAvg;
-  }
-
-  public void setUploadSpeedAvg(Average uploadSpeedAvg) {
-    this.uploadSpeedAvg = uploadSpeedAvg;
-  }
-
-  public Average getPingResponseTimeAvg() {
-    return pingResponseTimeAvg;
-  }
-
-  public void setPingResponseTimeAvg(Average pingResponseTimeAvg) {
-    this.pingResponseTimeAvg = pingResponseTimeAvg;
   }
 }

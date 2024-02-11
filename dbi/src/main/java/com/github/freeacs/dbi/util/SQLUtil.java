@@ -31,8 +31,7 @@ public class SQLUtil {
    *
    * <p>f_o -> %f_o% (LIKE) ^f_o$ -> f_o (LIKE - due to _)
    *
-   * @param regex
-   * @return
+   * @return the SQL criteria
    */
   public static DynamicStatement input2SQLCriteria(
       DynamicStatement ds, String criteriaName, String criteria) {

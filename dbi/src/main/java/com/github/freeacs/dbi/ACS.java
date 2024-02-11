@@ -635,18 +635,7 @@ public class ACS {
         file.setId(resultSet.getInt("id"));
         file.setName(resultSet.getString("name"));
         String typeStr = resultSet.getString("type");
-        FileType ft = null;
-        try {
-          ft = FileType.valueOf(typeStr);
-        } catch (Throwable t) { // Convert from old types
-          if ("SCRIPT".equals(typeStr)) {
-            ft = FileType.SHELL_SCRIPT;
-          }
-          if ("CONFIG".equals(typeStr)) {
-            ft = FileType.TR069_SCRIPT;
-          }
-        }
-        file.setType(ft);
+        file.setType(FileType.fromString(typeStr));
         file.setDescription(resultSet.getString("description"));
         file.setVersion(resultSet.getString("version"));
         file.setTimestamp(resultSet.getTimestamp("timestamp_"));

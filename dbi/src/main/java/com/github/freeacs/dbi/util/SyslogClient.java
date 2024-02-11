@@ -11,6 +11,8 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -139,11 +141,7 @@ public class SyslogClient {
     String tmsStr = sdf.format(date);
     StringBuilder sb = new StringBuilder();
     sb.append("<").append(PRI).append(">").append(tmsStr).append(" ");
-    if (ipAddress != null) {
-      sb.append(ipAddress);
-    } else {
-      sb.append("server");
-    }
+    sb.append(Objects.requireNonNullElse(ipAddress, "server"));
     sb.append(" UNITID [").append(unitId).append("]: ").append(content);
     return sb.toString();
   }

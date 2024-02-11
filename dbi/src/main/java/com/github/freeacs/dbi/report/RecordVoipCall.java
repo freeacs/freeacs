@@ -1,7 +1,12 @@
 package com.github.freeacs.dbi.report;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.util.Date;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class RecordVoipCall extends Record<RecordVoipCall> {
   private static final KeyFactory keyFactory =
       new KeyFactory("Unittype", "Profile", "SoftwareVersion", "Channel");
@@ -36,38 +41,6 @@ public class RecordVoipCall extends Record<RecordVoipCall> {
         keyFactory.makeKey(tms, periodType, unittypeName, profileName, softwareVersion, channel);
   }
 
-  public Key getKey() {
-    return key;
-  }
-
-  public Date getTms() {
-    return tms;
-  }
-
-  public PeriodType getPeriodType() {
-    return periodType;
-  }
-
-  public String getUnittypeName() {
-    return unittypeName;
-  }
-
-  public String getProfileName() {
-    return profileName;
-  }
-
-  public String getSoftwareVersion() {
-    return softwareVersion;
-  }
-
-  public Counter getUnitCount() {
-    return unitCount;
-  }
-
-  public void setUnitCount(Counter unitCount) {
-    this.unitCount = unitCount;
-  }
-
   @Override
   public void add(RecordVoipCall record) {
     getUnitCount().add(record.getUnitCount());
@@ -91,13 +64,5 @@ public class RecordVoipCall extends Record<RecordVoipCall> {
       return new Average(100);
     }
     return mosAvg;
-  }
-
-  public void setMosAvg(Average mosAvg) {
-    this.mosAvg = mosAvg;
-  }
-
-  public String getChannel() {
-    return channel;
   }
 }

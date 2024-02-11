@@ -5,12 +5,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,23 +19,6 @@ class UnitQueryCrossUnittype {
   private final Connection connection;
   private final ACS acs;
 
-  public UnitQueryCrossUnittype(
-      Connection c, ACS acs, List<Unittype> unittypes, List<Profile> profiles) {
-    this.connection = c;
-    this.acs = acs;
-    if (unittypes != null) {
-      this.unittypes = unittypes;
-    } else {
-      this.unittypes = new ArrayList<>();
-    }
-    if (profiles != null) {
-      this.profiles = profiles;
-    } else {
-      this.profiles = new ArrayList<>();
-    }
-    prepareUnittypesAndProfiles();
-  }
-
   public UnitQueryCrossUnittype(Connection c, ACS acs, Unittype unittype, List<Profile> profiles) {
     this.connection = c;
     this.acs = acs;
@@ -47,11 +26,7 @@ class UnitQueryCrossUnittype {
     if (unittype != null) {
       unittypes.add(unittype);
     }
-    if (profiles != null) {
-      this.profiles = profiles;
-    } else {
-      this.profiles = new ArrayList<>();
-    }
+    this.profiles = Objects.requireNonNullElseGet(profiles, ArrayList::new);
     prepareUnittypesAndProfiles();
   }
 

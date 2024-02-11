@@ -29,11 +29,11 @@ public class ReportHardwareGenerator extends ReportGenerator {
    */
   private static final Pattern memPattern =
       Pattern.compile(
-          "[^\\d]*(\\d+)\\/(\\d+)\\/(\\d+)[^\\d]*(\\d*)\\/(\\d+)\\/(\\d+)[^\\d]*(\\d*)\\/(\\d+)\\/(\\d+)[^\\d]*(\\d*)\\/(\\d+)\\/(\\d+).*");
+          "[^\\d]*(\\d+)/(\\d+)/(\\d+)[^\\d]*(\\d*)/(\\d+)/(\\d+)[^\\d]*(\\d*)/(\\d+)/(\\d+)[^\\d]*(\\d*)/(\\d+)/(\\d+).*");
   /** Uptime: [memPattern], Uptime 170:25:40 */
   private static final Pattern uptimePattern = Pattern.compile("Uptime (\\d+):(\\d+):(\\d+)");
   /** Reboot-content: Reboot reason [0x0002] */
-  private static final Pattern rebootPattern = Pattern.compile(".*Reboot reason \\[.+\\](.+)");
+  private static final Pattern rebootPattern = Pattern.compile(".*Reboot reason \\[.+](.+)");
 
   public ReportHardwareGenerator(
       DataSource mainDataSource, ACS acs, String logPrefix, Identity id) {
