@@ -10,7 +10,7 @@ import com.github.freeacs.dbi.Heartbeats;
 import com.github.freeacs.dbi.Job;
 import com.github.freeacs.dbi.JobFlag;
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
-import com.github.freeacs.dbi.JobFlag.JobType;
+import com.github.freeacs.dbi.JobType;
 import com.github.freeacs.dbi.Parameter;
 import com.github.freeacs.dbi.Profile;
 import com.github.freeacs.dbi.ScriptExecution;

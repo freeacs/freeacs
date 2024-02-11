@@ -31,32 +31,28 @@ public class Jobs {
   private static final Map<String, String> jobParameterRules = new HashMap<>();
 
   static {
-    jobParameterRules.put(JobFlag.JobType.RESTART + SystemParameters.RESTART, "Allowed");
-    jobParameterRules.put(JobFlag.JobType.RESTART + "REST_OF_PARAMETERS", "Forbidden");
-    jobParameterRules.put(JobFlag.JobType.RESET + SystemParameters.RESET, "Allowed");
-    jobParameterRules.put(JobFlag.JobType.RESET + "REST_OF_PARAMETERS", "Forbidden");
-    jobParameterRules.put(
-        JobFlag.JobType.SOFTWARE + SystemParameters.DESIRED_SOFTWARE_VERSION, "Allowed");
-    jobParameterRules.put(JobFlag.JobType.SOFTWARE + SystemParameters.SOFTWARE_URL, "Allowed");
-    jobParameterRules.put(JobFlag.JobType.SOFTWARE + "REST_OF_PARAMETERS", "Forbidden");
-    jobParameterRules.put(
-        JobFlag.JobType.TR069_SCRIPT + SystemParameters.DESIRED_TR069_SCRIPT, "Allowed");
-    jobParameterRules.put(JobFlag.JobType.TR069_SCRIPT + "REST_OF_PARAMETERS", "Forbidden");
-    jobParameterRules.put(JobFlag.JobType.CONFIG + SystemParameters.RESET, "Forbidden");
-    jobParameterRules.put(JobFlag.JobType.CONFIG + SystemParameters.RESTART, "Forbidden");
-    jobParameterRules.put(
-        JobFlag.JobType.CONFIG + SystemParameters.DESIRED_SOFTWARE_VERSION, "Forbidden");
-    jobParameterRules.put(JobFlag.JobType.CONFIG + SystemParameters.SOFTWARE_URL, "Forbidden");
-    jobParameterRules.put(
-        JobFlag.JobType.CONFIG + SystemParameters.DESIRED_TR069_SCRIPT, "Forbidden");
-    jobParameterRules.put(JobFlag.JobType.CONFIG + SystemParameters.JOB_CURRENT, "Forbidden");
-    jobParameterRules.put(JobFlag.JobType.CONFIG + SystemParameters.JOB_CURRENT_KEY, "Forbidden");
-    jobParameterRules.put(JobFlag.JobType.CONFIG + SystemParameters.JOB_HISTORY, "Forbidden");
-    jobParameterRules.put(JobFlag.JobType.CONFIG + SystemParameters.JOB_DISRUPTIVE, "Forbidden");
-    jobParameterRules.put(JobFlag.JobType.CONFIG + "REST_OF_PARAMETERS", "Allowed");
-    jobParameterRules.put(JobFlag.JobType.KICK + "REST_OF_PARAMETERS", "Forbidden");
-    jobParameterRules.put(JobFlag.JobType.TELNET + "REST_OF_PARAMETERS", "Forbidden");
-    jobParameterRules.put(JobFlag.JobType.SHELL + "REST_OF_PARAMETERS", "Forbidden");
+    jobParameterRules.put(JobType.RESTART + SystemParameters.RESTART, "Allowed");
+    jobParameterRules.put(JobType.RESTART + "REST_OF_PARAMETERS", "Forbidden");
+    jobParameterRules.put(JobType.RESET + SystemParameters.RESET, "Allowed");
+    jobParameterRules.put(JobType.RESET + "REST_OF_PARAMETERS", "Forbidden");
+    jobParameterRules.put(JobType.SOFTWARE + SystemParameters.DESIRED_SOFTWARE_VERSION, "Allowed");
+    jobParameterRules.put(JobType.SOFTWARE + SystemParameters.SOFTWARE_URL, "Allowed");
+    jobParameterRules.put(JobType.SOFTWARE + "REST_OF_PARAMETERS", "Forbidden");
+    jobParameterRules.put(JobType.TR069_SCRIPT + SystemParameters.DESIRED_TR069_SCRIPT, "Allowed");
+    jobParameterRules.put(JobType.TR069_SCRIPT + "REST_OF_PARAMETERS", "Forbidden");
+    jobParameterRules.put(JobType.CONFIG + SystemParameters.RESET, "Forbidden");
+    jobParameterRules.put(JobType.CONFIG + SystemParameters.RESTART, "Forbidden");
+    jobParameterRules.put(JobType.CONFIG + SystemParameters.DESIRED_SOFTWARE_VERSION, "Forbidden");
+    jobParameterRules.put(JobType.CONFIG + SystemParameters.SOFTWARE_URL, "Forbidden");
+    jobParameterRules.put(JobType.CONFIG + SystemParameters.DESIRED_TR069_SCRIPT, "Forbidden");
+    jobParameterRules.put(JobType.CONFIG + SystemParameters.JOB_CURRENT, "Forbidden");
+    jobParameterRules.put(JobType.CONFIG + SystemParameters.JOB_CURRENT_KEY, "Forbidden");
+    jobParameterRules.put(JobType.CONFIG + SystemParameters.JOB_HISTORY, "Forbidden");
+    jobParameterRules.put(JobType.CONFIG + SystemParameters.JOB_DISRUPTIVE, "Forbidden");
+    jobParameterRules.put(JobType.CONFIG + "REST_OF_PARAMETERS", "Allowed");
+    jobParameterRules.put(JobType.KICK + "REST_OF_PARAMETERS", "Forbidden");
+    jobParameterRules.put(JobType.TELNET + "REST_OF_PARAMETERS", "Forbidden");
+    jobParameterRules.put(JobType.SHELL + "REST_OF_PARAMETERS", "Forbidden");
   }
 
   public Jobs(Map<Integer, Job> idMap, Map<String, Job> nameMap, Unittype unittype) {
@@ -67,7 +63,7 @@ public class Jobs {
 
   private void checkParameters(List<JobParameter> jobParameters) {
     for (JobParameter jp : jobParameters) {
-      JobFlag.JobType jobType = jp.getJob().getFlags().getType();
+      JobType jobType = jp.getJob().getFlags().getType();
       String utpName = jp.getParameter().getUnittypeParameter().getName();
       if (utpName.contains(SystemParameters.DESIRED_TR069_SCRIPT)) {
         utpName = SystemParameters.DESIRED_TR069_SCRIPT;
@@ -117,7 +113,9 @@ public class Jobs {
           pp.executeUpdate();
           pp.close();
         } catch (SQLException sqlex) {
-          pp.close();
+          if (pp != null) {
+            pp.close();
+          }
           action = "Updated";
           sql =
               "UPDATE job_param SET value = ? WHERE job_id = ? AND unit_id = ? AND unit_type_param_id = ?";
@@ -410,7 +408,7 @@ public class Jobs {
   }
 
   private void updateMandatoryJobParameters(Job job, ACS acs) throws SQLException {
-    if (job.getFlags().getType() == JobFlag.JobType.SOFTWARE) {
+    if (job.getFlags().getType() == JobType.SOFTWARE) {
       Parameter param =
           new Parameter(
               unittype.getUnittypeParameters().getByName(SystemParameters.DESIRED_SOFTWARE_VERSION),
@@ -419,7 +417,7 @@ public class Jobs {
       List<JobParameter> jobParameters = new ArrayList<>();
       jobParameters.add(jp);
       addOrChangeJobParameters(jobParameters, acs);
-    } else if (job.getFlags().getType() == JobFlag.JobType.TR069_SCRIPT) {
+    } else if (job.getFlags().getType() == JobType.TR069_SCRIPT) {
       UnittypeParameter jobUtp =
           SystemParameters.getTR069ScriptParameter(
               job.getFile().getTargetName(),
@@ -431,14 +429,14 @@ public class Jobs {
       List<JobParameter> jobParameters = new ArrayList<>();
       jobParameters.add(jp);
       addOrChangeJobParameters(jobParameters, acs);
-    } else if (job.getFlags().getType() == JobFlag.JobType.RESTART) {
+    } else if (job.getFlags().getType() == JobType.RESTART) {
       Parameter param =
           new Parameter(unittype.getUnittypeParameters().getByName(SystemParameters.RESTART), "1");
       JobParameter jp = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, param);
       List<JobParameter> jobParameters = new ArrayList<>();
       jobParameters.add(jp);
       addOrChangeJobParameters(jobParameters, acs);
-    } else if (job.getFlags().getType() == JobFlag.JobType.RESET) {
+    } else if (job.getFlags().getType() == JobType.RESET) {
       Parameter param =
           new Parameter(unittype.getUnittypeParameters().getByName(SystemParameters.RESET), "1");
       JobParameter jp = new JobParameter(job, Job.ANY_UNIT_IN_GROUP, param);

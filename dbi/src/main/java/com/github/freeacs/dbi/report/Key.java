@@ -1,16 +1,19 @@
 package com.github.freeacs.dbi.report;
 
+import lombok.Getter;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Getter
 public class Key implements Comparable<Key> {
-  public static SimpleDateFormat MONTH_FORMAT = new SimpleDateFormat("yyyyMM");
-  public static SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("yyyyMMdd");
-  public static SimpleDateFormat HOUR_FORMAT = new SimpleDateFormat("yyyyMMddHH");
-  public static SimpleDateFormat MINUTE_FORMAT = new SimpleDateFormat("yyyyMMddHHmm");
-  public static SimpleDateFormat SECOND_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss");
+  public static final SimpleDateFormat MONTH_FORMAT = new SimpleDateFormat("yyyyMM");
+  public static final SimpleDateFormat DAY_FORMAT = new SimpleDateFormat("yyyyMMdd");
+  public static final SimpleDateFormat HOUR_FORMAT = new SimpleDateFormat("yyyyMMddHH");
+  public static final SimpleDateFormat MINUTE_FORMAT = new SimpleDateFormat("yyyyMMddHHmm");
+  public static final SimpleDateFormat SECOND_FORMAT = new SimpleDateFormat("yyyyMMddHHmmss");
 
   private final Date tms;
   private final PeriodType periodType;
@@ -190,17 +193,5 @@ public class Key implements Comparable<Key> {
       }
     }
     return new Key(tms, periodType, transformedKeys);
-  }
-
-  public Date getTms() {
-    return tms;
-  }
-
-  public PeriodType getPeriodType() {
-    return periodType;
-  }
-
-  public List<KeyElement> getAdditionalKeys() {
-    return additionalKeys;
   }
 }

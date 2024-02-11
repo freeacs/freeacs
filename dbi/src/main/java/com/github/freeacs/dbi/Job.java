@@ -1,7 +1,6 @@
 package com.github.freeacs.dbi;
 
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
-import com.github.freeacs.dbi.JobFlag.JobType;
 import com.github.freeacs.dbi.util.MapWrapper;
 import lombok.Data;
 

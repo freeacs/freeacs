@@ -15,6 +15,24 @@
   <description>A simple tr069.</description>
 
   <dependencies>
+    <!-- start:doc: only used to test the integration of Core script execution -->
+    <dependency>
+      <groupId>org.graalvm.js</groupId>
+      <artifactId>js</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.graalvm.js</groupId>
+      <artifactId>js-scriptengine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.freeacs</groupId>
+      <artifactId>core</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- end:doc -->
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
@@ -157,12 +175,6 @@
     <dependency>
       <groupId>com.typesafe</groupId>
       <artifactId>config</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>com.github.freeacs</groupId>
-        <artifactId>core</artifactId>
-        <version>${project.version}</version>
-        <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents.client5</groupId>

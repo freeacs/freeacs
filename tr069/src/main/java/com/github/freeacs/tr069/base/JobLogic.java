@@ -2,7 +2,6 @@ package com.github.freeacs.tr069.base;
 
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
-import com.github.freeacs.dbi.JobFlag.JobType;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemParameters;
 import lombok.extern.slf4j.Slf4j;

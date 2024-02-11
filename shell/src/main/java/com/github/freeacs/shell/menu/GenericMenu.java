@@ -28,11 +28,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -43,7 +39,7 @@ public class GenericMenu {
   private final Session session;
 
   private static final ScriptEngine scriptEngine =
-      new ScriptEngineManager().getEngineByName("JavaScript");
+      new ScriptEngineManager().getEngineByName("Graal.js");
 
   public GenericMenu(Session session) {
     this.session = session;

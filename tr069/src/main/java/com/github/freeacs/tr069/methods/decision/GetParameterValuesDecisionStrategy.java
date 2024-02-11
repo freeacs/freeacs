@@ -181,27 +181,27 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
             throws TR069Exception {
         SessionData sessionData = reqRes.getSessionData();
         sessionData.getProvisioningMessage().setJobId(job.getId());
-        JobFlag.JobType type = job.getFlags().getType();
-        if (type == JobFlag.JobType.RESET) {
+        JobType type = job.getFlags().getType();
+        if (type == JobType.RESET) {
             sessionData.getProvisioningMessage().setProvOutput(ProvisioningMessage.ProvOutput.RESET);
             reqRes.getResponseData().setMethod(ProvisioningMethod.FactoryReset.name());
-        } else if (type == JobFlag.JobType.RESTART) {
+        } else if (type == JobType.RESTART) {
             sessionData.getProvisioningMessage().setProvOutput(ProvisioningMessage.ProvOutput.REBOOT);
             reqRes.getResponseData().setMethod(ProvisioningMethod.Reboot.name());
-        } else if (type == JobFlag.JobType.SOFTWARE) {
+        } else if (type == JobType.SOFTWARE) {
             sessionData.getProvisioningMessage().setProvOutput(ProvisioningMessage.ProvOutput.SOFTWARE);
             if (!DownloadLogicTR069.isSoftwareDownloadSetup(reqRes, job, publicUrl)) {
                 throw new RuntimeException("Not possible to setup a Software Download job");
             }
             reqRes.getResponseData().setMethod(ProvisioningMethod.Download.name());
-        } else if (type == JobFlag.JobType.TR069_SCRIPT) {
+        } else if (type == JobType.TR069_SCRIPT) {
             sessionData.getProvisioningMessage().setProvOutput(ProvisioningMessage.ProvOutput.SCRIPT);
             if (!DownloadLogicTR069.isScriptDownloadSetup(reqRes, job, publicUrl)) {
                 throw new RuntimeException("Not possible to setup a Script Download job");
             }
             reqRes.getResponseData().setMethod(ProvisioningMethod.Download.name());
         } else {
-            if (type == JobFlag.JobType.SHELL) {
+            if (type == JobType.SHELL) {
                 sessionData.getProvisioningMessage().setProvOutput(ProvisioningMessage.ProvOutput.SHELL);
                 ShellJobLogic.execute(sessionData, dbi, job, unitJob, isDiscoveryMode, scriptExecutions);
             } else { // type == JobType.CONFIG
