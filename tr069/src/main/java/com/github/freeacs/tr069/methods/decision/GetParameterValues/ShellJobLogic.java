@@ -1,5 +1,6 @@
 package com.github.freeacs.tr069.methods.decision.GetParameterValues;
 
+import com.github.freeacs.cache.AcsCache;
 import com.github.freeacs.common.util.Cache;
 import com.github.freeacs.common.util.CacheValue;
 import com.github.freeacs.dbi.*;
@@ -35,7 +36,7 @@ public class ShellJobLogic {
      */
     private static final Cache monitorCache = new Cache();
 
-    public static void execute(SessionData sessionData, DBI dbi, Job job, UnitJob uj, boolean discovery, ScriptExecutions execs)
+    public static void execute(SessionData sessionData, DBI dbi, AcsCache acsCache, Job job, UnitJob uj, boolean discovery, ScriptExecutions execs)
             throws TR069Exception {
         String unitId = sessionData.getUnitId();
         CacheValue cv = monitorCache.get(unitId);
@@ -45,11 +46,11 @@ public class ShellJobLogic {
         }
         synchronized (cv.getObject()) {
             // read parameters from device and save it to the unit
-            ShellJobLogic.importReadOnlyParameters(sessionData, dbi);
+            ShellJobLogic.importReadOnlyParameters(sessionData, dbi, acsCache);
             // execute changes using the shell-script, all changes are written to database
             ShellJobLogic.executeShellScript(sessionData, job, uj, discovery, execs);
             // read the changes from the database and send to CPE
-            ShellJobLogic.prepareSPV(sessionData, dbi);
+            ShellJobLogic.prepareSPV(sessionData, dbi, acsCache);
         }
     }
 
@@ -114,11 +115,11 @@ public class ShellJobLogic {
      * Read unit parameters from database, to see if any changes have occurred (during the shell
      * script execution). If ReadWrite parameters differ from CPE, then send them to the CPE.
      */
-    private static void toCPE(SessionData sessionData, DBI dbi) throws TR069DatabaseException {
+    private static void toCPE(SessionData sessionData, DBI dbi, AcsCache acsCache) throws TR069DatabaseException {
         UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
         Unit unit;
         try {
-            unit = dbi.getACSUnit().getUnitById(sessionData.getUnitId());
+            unit = acsCache.getUnitById(sessionData.getUnitId());
         } catch (SQLException e) {
             throw new TR069DatabaseException(e);
         }
@@ -146,7 +147,7 @@ public class ShellJobLogic {
      * In order for the shell script to run with the correct parameters, we must read them from the
      * device and write it to the database, before the script starts.
      */
-    private static void importReadOnlyParameters(SessionData sessionData, DBI dbi)
+    private static void importReadOnlyParameters(SessionData sessionData, DBI dbi, AcsCache acsCache)
             throws TR069DatabaseException {
         List<UnitParameter> unitParameters = new ArrayList<>();
         UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
@@ -168,19 +169,18 @@ public class ShellJobLogic {
                 unitParameters.add(
                         new UnitParameter(
                                 utp, sessionData.getUnitId(), pvsCPE.getValue(), sessionData.getProfile()));
-            //				toDB.add(pvsCPE);
         }
         if (unitParameters.size() > 0) {
             try {
-                dbi.getACSUnit().addOrChangeUnitParameters(unitParameters);
+                acsCache.addOrChangeUnitParameters(unitParameters);
             } catch (SQLException sqle) {
                 throw new TR069DatabaseException(sqle);
             }
         }
     }
 
-    private static void prepareSPV(SessionData sessionData, DBI dbi) throws TR069DatabaseException {
-        toCPE(sessionData, dbi);
+    private static void prepareSPV(SessionData sessionData, DBI dbi, AcsCache acsCache) throws TR069DatabaseException {
+        toCPE(sessionData, dbi, acsCache);
         List<ParameterValueStruct> toDB = new ArrayList<>();
         sessionData.setToDB(toDB);
         CPEParameters cpeParams = sessionData.getCpeParameters();

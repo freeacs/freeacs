@@ -6,6 +6,7 @@ import com.github.freeacs.dbi.DynamicStatement;
 import com.github.freeacs.dbi.Group;
 import com.github.freeacs.dbi.Identity;
 import com.github.freeacs.dbi.Profile;
+import com.github.freeacs.dbi.Syslog;
 import com.github.freeacs.dbi.SyslogFilter;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.Unittype;
@@ -235,10 +236,10 @@ public class ReportGenerator {
     }
   }
 
-  public Map<String, Unit> getUnitsInGroup(Group group) throws SQLException {
+  public Map<String, Unit> getUnitsInGroup(Group group, Syslog syslog) throws SQLException {
     Map<String, Unit> unitsInGroup = new HashMap<>();
     if (group != null) {
-      ACSUnit acsUnit = new ACSUnit(mainDataSource, acs, acs.getSyslog());
+      ACSUnit acsUnit = new ACSUnit(mainDataSource, acs, syslog);
       unitsInGroup = acsUnit.getUnits(group);
     }
     return unitsInGroup;

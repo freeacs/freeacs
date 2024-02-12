@@ -1,10 +1,7 @@
 package com.github.freeacs.core.task;
 
 import com.github.freeacs.core.Properties;
-import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.dbi.ScriptExecution;
-import com.github.freeacs.dbi.ScriptExecutions;
-import com.github.freeacs.dbi.Users;
+import com.github.freeacs.dbi.*;
 import com.github.freeacs.shell.ACSShellDaemon;
 import com.github.freeacs.shell.Processor;
 import com.github.freeacs.shell.Session;
@@ -102,8 +99,8 @@ public class ScriptExecutor extends DBIShare {
     }
   }
 
-  public ScriptExecutor(String taskName, DBI dbi, Properties properties) {
-    super(taskName, dbi);
+  public ScriptExecutor(String taskName, DBI dbi, Syslog syslog, Properties properties) {
+    super(taskName, dbi, syslog);
     this.properties = properties;
   }
 

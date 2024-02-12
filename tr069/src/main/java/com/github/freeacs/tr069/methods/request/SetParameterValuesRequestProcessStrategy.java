@@ -1,6 +1,7 @@
 package com.github.freeacs.tr069.methods.request;
 
 import com.github.freeacs.dbi.DBI;
+import com.github.freeacs.dbi.Syslog;
 import com.github.freeacs.dbi.SyslogConstants;
 import com.github.freeacs.dbi.util.SyslogClient;
 import com.github.freeacs.tr069.SessionData;
@@ -14,10 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SetParameterValuesRequestProcessStrategy implements RequestProcessStrategy {
 
-    private final DBI dbi;
+    private final Syslog syslog;
 
-    SetParameterValuesRequestProcessStrategy(DBI dbi) {
-        this.dbi = dbi;
+    SetParameterValuesRequestProcessStrategy(Syslog syslog) {
+        this.syslog = syslog;
     }
 
     @SuppressWarnings("Duplicates")
@@ -33,7 +34,7 @@ public class SetParameterValuesRequestProcessStrategy implements RequestProcessS
         ParameterList paramList = sessionData.getToCPE();
         for (ParameterValueStruct pvs : paramList.getParameterValueList()) {
             log.debug(pvs.getName() + " : " + pvs.getValue());
-            String user = dbi.getSyslog().getIdentity().getUser().getUsername();
+            String user = syslog.getIdentity().getUser().getUsername();
             SyslogClient.notice(
                     sessionData.getUnitId(),
                     "ProvMsg: Written to CPE: " + pvs.getName() + " = " + pvs.getValue(),

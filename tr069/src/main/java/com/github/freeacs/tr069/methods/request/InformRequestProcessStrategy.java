@@ -1,5 +1,6 @@
 package com.github.freeacs.tr069.methods.request;
 
+import com.github.freeacs.cache.AcsCache;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.util.SystemParameters;
@@ -31,10 +32,12 @@ import java.util.TreeSet;
 public class InformRequestProcessStrategy implements RequestProcessStrategy {
     private final DBI dbi;
     private final Properties properties;
+    private final AcsCache acsCache;
 
-    InformRequestProcessStrategy(Properties properties, DBI dbi) {
+    InformRequestProcessStrategy(Properties properties, DBI dbi, AcsCache acsCache) {
         this.properties = properties;
         this.dbi = dbi;
+        this.acsCache = acsCache;
     }
 
     @SuppressWarnings("Duplicates")
@@ -58,7 +61,7 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
             sessionData.setSerialNumber(deviceIdStruct.getSerialNumber());
             parseEvents(parser, sessionData);
             parseParameters(sessionData, parser);
-            DBIActions.updateParametersFromDB(sessionData, isDiscoveryMode, dbi); // Unit-object is read and populated in SessionData
+            DBIActions.updateParametersFromDB(sessionData, isDiscoveryMode, dbi, acsCache); // Unit-object is read and populated in SessionData
             logPeriodicInformTiming(sessionData);
             ScheduledKickTask.removeUnit(unitId);
             if (isDiscoveryMode && sessionData.isFirstConnect()) {
@@ -72,16 +75,16 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
                     unitTypeName += hardwareVersion;
                 }
 
-                DBIActions.writeUnittypeProfileUnit(sessionData, unitTypeName, unitId, dbi);
+                DBIActions.writeUnittypeProfileUnit(sessionData, unitTypeName, unitId, dbi, acsCache);
 
                 sessionData.setFromDB(null);
                 sessionData.setAcsParameters(null);
-                DBIActions.updateParametersFromDB(sessionData, true, dbi);
+                DBIActions.updateParametersFromDB(sessionData, true, dbi, acsCache);
                 log.debug("Unittype, profile and unit is created, since discovery mode is enabled and this is the first connect");
             }
             sessionData.getCommandKey().setServerKey(reqRes);
             sessionData.getParameterKey().setServerKey(reqRes);
-            boolean jobOk = JobLogic.checkJobOK(sessionData, dbi, isDiscoveryMode);
+            boolean jobOk = JobLogic.checkJobOK(sessionData, dbi, acsCache, isDiscoveryMode);
             sessionData.setJobUnderExecution(!jobOk);
         } catch (SQLException e) {
             throw new TR069DatabaseException(e);

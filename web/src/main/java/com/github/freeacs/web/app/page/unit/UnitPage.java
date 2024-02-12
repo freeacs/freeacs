@@ -793,14 +793,14 @@ public class UnitPage extends AbstractWebPage {
     root.put("desiredsoftware", desiredSoftwareVersion);
     root.put("currentsoftware", currentSoftwareVersion);
 
-    Syslog syslog = acs.getSyslog();
+    Syslog syslog = new Syslog(syslogDataSource, null);
     Date twodaysago = new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 2);
     SyslogFilter filter = new SyslogFilter();
     filter.setUnitId("^" + unit.getId() + "$");
     filter.setMessage("^ProvMsg: PP:");
     filter.setCollectorTmsStart(twodaysago);
     filter.setMaxRows(20);
-    List<SyslogEntry> syslogEntries = syslog.read(filter, acs);
+    List<SyslogEntry> syslogEntries = syslog.read(filter);
     List<HistoryElement> history = new ArrayList<>();
     for (SyslogEntry entry : syslogEntries) {
       try {
@@ -818,9 +818,7 @@ public class UnitPage extends AbstractWebPage {
     root.put("confidentialsrestricted", confidentialsRestricted);
     if (inputData.getShowConfidential().getBoolean()) {
       accessLogger.info(
-          "User \""
-              + acs.getUser()
-              + "\" accessed confidential "
+          "User accessed confidential "
               + "params on unit \""
               + unit.getId()
               + "\"");

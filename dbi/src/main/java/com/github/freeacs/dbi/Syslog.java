@@ -373,7 +373,7 @@ public class Syslog {
     }
   }
 
-  public List<SyslogEntry> read(SyslogFilter filter, ACS acs) throws SQLException {
+  public List<SyslogEntry> read(SyslogFilter filter) throws SQLException {
     Connection c = getDataSource().getConnection();
     PreparedStatement pp = null;
     ResultSet rs = null;

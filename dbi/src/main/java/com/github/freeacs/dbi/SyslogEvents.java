@@ -120,9 +120,6 @@ public class SyslogEvents {
   }
 
   public void addOrChangeSyslogEvent(SyslogEvent syslogEvent, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     syslogEvent.validate();
     addOrChangeSyslogEventImpl(syslogEvent, acs);
     idMap.put(syslogEvent.getId(), syslogEvent);
@@ -169,9 +166,6 @@ public class SyslogEvents {
    * @throws SQLException   If something goes wrong
    */
   public void deleteSyslogEvent(SyslogEvent syslogEvent, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     if (syslogEvent.getEventId() < 1000) {
       throw new IllegalArgumentException(
           "Cannot delete syslog events with id 0-999, they are restricted to ACS");

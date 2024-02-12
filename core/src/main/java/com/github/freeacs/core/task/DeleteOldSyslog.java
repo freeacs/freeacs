@@ -1,10 +1,8 @@
 package com.github.freeacs.core.task;
 
 import com.github.freeacs.core.Properties;
-import com.github.freeacs.dbi.ACS;
-import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.dbi.SyslogEvent;
-import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.*;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,8 +16,8 @@ public class DeleteOldSyslog extends DBIShare {
 
   private static final Logger logger = LoggerFactory.getLogger(DeleteOldSyslog.class);
 
-  public DeleteOldSyslog(String taskName, DBI dbi, Properties properties) {
-    super(taskName, dbi);
+  public DeleteOldSyslog(String taskName, DBI dbi, Syslog syslog, Properties properties) {
+    super(taskName, dbi, syslog);
     this.properties = properties;
   }
 

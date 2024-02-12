@@ -26,11 +26,13 @@ public class ActiveDeviceDetection extends TaskDefaultImpl {
   private final DataSource xapsCp;
   private final DBI dbi;
   private final TimestampMap activeDevicesLogged = new TimestampMap();
+  private final Syslog syslog;
 
-  public ActiveDeviceDetection(DataSource xapsCp, DBI dbi, String taskName) {
+  public ActiveDeviceDetection(DataSource xapsCp, DBI dbi, Syslog syslog, String taskName) {
     super(taskName);
     this.xapsCp = xapsCp;
     this.dbi = dbi;
+    this.syslog = syslog;
   }
 
   private void logActiveDevices(TimestampMap activeDevices, TimestampMap sentSyslogMap)
@@ -48,7 +50,7 @@ public class ActiveDeviceDetection extends TaskDefaultImpl {
     int unitsToProcess = activeDevices.size() / 60;
     long fiveMinAgo = getThisLaunchTms() - 5 * 60000;
     long oneHourAgo = getThisLaunchTms() - 60 * 60000;
-    ACSUnit acsUnit = new ACSUnit(xapsCp, dbi.getAcs(), dbi.getSyslog());
+    ACSUnit acsUnit = new ACSUnit(xapsCp, dbi.getAcs(), syslog);
 
     // this will force units which haven't been processed the last hour to
     // be processed again.
@@ -107,15 +109,14 @@ public class ActiveDeviceDetection extends TaskDefaultImpl {
     Map<String, Long> tooOldMap = activeDevices.removeOldSync(tooOldTms);
     for (Entry<String, Long> entry : tooOldMap.entrySet()) {
       String address = entry.getKey();
-      ACSUnit acsUnit = new ACSUnit(xapsCp, dbi.getAcs(), dbi.getSyslog());
+      ACSUnit acsUnit = new ACSUnit(xapsCp, dbi.getAcs(), syslog);
       Unit unit = acsUnit.getUnitByValue(address, null, null);
       if (unit != null) {
-        Syslog syslog = dbi.getSyslog();
         SyslogFilter sf = new SyslogFilter();
         sf.setCollectorTmsStart(new Date(tooOldTms)); // look for syslog newer than 1 hour
         sf.setUnitId(unit.getId());
         boolean active = false;
-        List<SyslogEntry> entries = syslog.read(sf, dbi.getAcs());
+        List<SyslogEntry> entries = syslog.read(sf);
         for (SyslogEntry sentry : entries) {
           String c = sentry.getContent();
           if (sentry.getFacility() < SyslogConstants.FACILITY_SHELL
@@ -147,7 +148,7 @@ public class ActiveDeviceDetection extends TaskDefaultImpl {
                   + " since "
                   + new Date(tooOldTms)
                   + " - but device has been active since then",
-              dbi.getSyslog());
+              syslog);
         } else {
           logger.info(
               "ActiveDeviceDection: No STUN request from "

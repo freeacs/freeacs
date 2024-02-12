@@ -36,9 +36,6 @@ public class Profiles {
   }
 
   public void addOrChangeProfile(Profile profile, ACS acs) throws SQLException {
-    if (!acs.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     addOrChangeProfileImpl(profile, acs);
     nameMap.put(profile.getName(), profile);
     idMap.put(profile.getId(), profile);
@@ -79,9 +76,6 @@ public class Profiles {
    * @throws SQLException if database query fails
    */
   public int deleteProfile(Profile profile, ACS acs, boolean cascade) throws SQLException {
-    if (!acs.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     if (cascade) {
       ProfileParameters pParams = profile.getProfileParameters();
       ProfileParameter[] pParamsArr = pParams.getProfileParameters();
@@ -137,9 +131,4 @@ public class Profiles {
     }
   }
 
-  /** Only to be used internally (to shape ACS object according to permissions). */
-  protected void removePermission(Profile profile) {
-    nameMap.remove(profile.getName());
-    idMap.remove(profile.getId());
-  }
 }

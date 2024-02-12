@@ -1,5 +1,6 @@
 package com.github.freeacs.tr069.methods.request;
 
+import com.github.freeacs.cache.AcsCache;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.UnittypeParameter;
@@ -24,10 +25,12 @@ public class GetParameterNamesProcessStrategy implements RequestProcessStrategy 
     private final DBI dbi;
 
     private final Properties properties;
+    private final AcsCache acsCache;
 
-    GetParameterNamesProcessStrategy(Properties properties, DBI dbi) {
+    GetParameterNamesProcessStrategy(Properties properties, DBI dbi, AcsCache acsCache) {
         this.properties = properties;
         this.dbi = dbi;
+        this.acsCache = acsCache;
     }
 
     @SuppressWarnings("Duplicates")
@@ -81,7 +84,7 @@ public class GetParameterNamesProcessStrategy implements RequestProcessStrategy 
             log.debug("Unittype parameters (" + pisList.size() + ") is written to DB, will now reload unit");
             sessionData.setFromDB(null);
             sessionData.setAcsParameters(null);
-            DBIActions.updateParametersFromDB(sessionData, properties.isDiscoveryMode(), dbi);
+            DBIActions.updateParametersFromDB(sessionData, properties.isDiscoveryMode(), dbi, acsCache);
         } catch (Throwable t) {
             throw new TR069Exception("Processing GPNRes failed", TR069ExceptionShortMessage.MISC, t);
         }

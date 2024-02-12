@@ -68,6 +68,9 @@ public class SetDiscoverParameterJobTest implements AbstractMySqlIntegrationTest
     @Autowired
     private DBI dbi;
 
+    @Autowired
+    private Syslog syslog;
+
     private void init() throws SQLException, IOException {
         // Create necessary state
         AbstractProvisioningTest.addUnitsToProvision(dbi, UNIT_TYPE_NAME, UNIT_ID);
@@ -110,7 +113,7 @@ public class SetDiscoverParameterJobTest implements AbstractMySqlIntegrationTest
                 .withValue("shellscript.poolsize", ConfigValueFactory.fromAnyRef(1))
                 .withValue("syslog.severity.0.limit", ConfigValueFactory.fromAnyRef(90));
 
-        ScriptExecutor scriptExecutorTask = new ScriptExecutor("ScriptExecutor", dbi, new Properties(config));
+        ScriptExecutor scriptExecutorTask = new ScriptExecutor("ScriptExecutor", dbi, syslog, new Properties(config));
         scriptExecutorTask.setThisLaunchTms(System.currentTimeMillis());
         scriptExecutorTask.runImpl();
     }

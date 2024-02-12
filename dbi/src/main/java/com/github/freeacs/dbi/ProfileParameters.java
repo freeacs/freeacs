@@ -81,12 +81,6 @@ public class ProfileParameters {
 
   public void addOrChangeProfileParameter(ProfileParameter profileParameter, ACS acs)
       throws SQLException {
-    if (!acs.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
-    //		if (profileParameter.getUnittypeParameter().getFlag().isInspection())
-    //			throw new IllegalArgumentException("The unit type parameter is an inspection parameter -
-    // cannot be set on a profile");
     addOrChangeProfileParameterImpl(profileParameter, profile, acs);
     nameMap.put(profileParameter.getUnittypeParameter().getName(), profileParameter);
     idMap.put(profileParameter.getUnittypeParameter().getId(), profileParameter);
@@ -126,9 +120,6 @@ public class ProfileParameters {
    */
   public void deleteProfileParameter(ProfileParameter profileParameter, ACS acs)
       throws SQLException {
-    if (!acs.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     deleteProfileParameterImpl(profileParameter, profile, acs);
     nameMap.remove(profileParameter.getUnittypeParameter().getName());
     idMap.remove(profileParameter.getId());

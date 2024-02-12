@@ -49,33 +49,24 @@ public class ACS {
   private static boolean strictOrder = true;
 
   private final DataSource dataSource;
+  private final Users users;
 
   private Unittypes unittypes;
 
   private DBI dbi;
 
-  protected Syslog syslog;
-
   private ScriptExecutions scriptExecutions;
 
-  public ACS(DataSource dataSource, Syslog syslog) throws SQLException {
+  public ACS(DataSource dataSource) throws SQLException {
     long start = System.currentTimeMillis();
     this.dataSource = dataSource;
-    this.syslog = syslog;
+    this.users = new Users(dataSource);
     /* Checks all necessary tables to see which version they're in */
     ACSVersionCheck.versionCheck(dataSource);
     this.unittypes = read();
     if (logger.isDebugEnabled()) {
       logger.debug("Read ACS object in " + (System.currentTimeMillis() - start) + " ms.");
     }
-  }
-
-  public User getUser() {
-    return syslog.getIdentity().getUser();
-  }
-
-  public Users getUsers() {
-    return getUser().getUsers();
   }
 
   public ScriptExecutions getScriptExecutions() {
@@ -86,10 +77,7 @@ public class ACS {
   }
 
   /**
-   * The permissions will be applied in this method, and all unittypes/profile filtered through the
-   * method. 0. If admin permission, return all objects (including certificates 1. If no unittype
-   * permission or profile permissions for a unittype, remove unittype 2. If no unittype permission,
-   * but profile permission exists, remove some objects from unittype and return profile
+   * Read all unittypes
    *
    * @return the Unittypes object
    * @throws SQLException if something goes wrong
@@ -97,26 +85,6 @@ public class ACS {
   public Unittypes read() throws SQLException {
     unittypes = readAsAdmin();
     logger.debug("Updated ACS object, read " + unittypes.getUnittypes().length + " unittypes");
-    User user = syslog.getIdentity().getUser();
-    if (user.isAdmin()) {
-      return unittypes;
-    }
-    for (Unittype unittype : unittypes.getUnittypes()) {
-      boolean isUnittypeAdmin = user.isUnittypeAdmin(unittype.getId());
-      if (!isUnittypeAdmin) {
-        for (Profile profile : unittype.getProfiles().getProfiles()) {
-          if (user.isProfileAdmin(
-              unittype.getId(), profile.getId())) { // remove objects not related to profile
-            unittype.removeObjects(profile);
-          } else { // remove the whole profile
-            unittype.getProfiles().removePermission(profile);
-          }
-        }
-        if (unittype.getProfiles().getProfiles().length == 0) { // remove the whole unittype
-          unittypes.removePermission(unittype);
-        }
-      }
-    }
     return unittypes;
   }
 
@@ -647,8 +615,7 @@ public class ACS {
           String userIdStr = resultSet.getString("owner");
           if (userIdStr != null) {
             try {
-              owner =
-                  unittype.getAcs().getUser().getUsers().getUnprotected(Integer.valueOf(userIdStr));
+              owner = users.getUnprotected(Integer.valueOf(userIdStr));
             } catch (NumberFormatException ignored) {
               // ignore
             }

@@ -1,15 +1,13 @@
 package com.github.freeacs.cache;
 
-import com.github.freeacs.dbi.ACSDao;
-import com.github.freeacs.dbi.File;
-import com.github.freeacs.dbi.FileType;
-import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
+import java.util.List;
 
 @Component
 public class AcsCache {
@@ -40,4 +38,24 @@ public class AcsCache {
 
     @CacheEvict(value = "file-bytes", allEntries = true)
     public void clearFileBytesCache() {}
+
+    public void addOrChangeQueuedUnitParameters(Unit unit) throws SQLException {
+
+    }
+
+    public Unit getUnitById(String username) throws SQLException {
+        return null;
+    }
+
+    public void addOrChangeUnitParameters(List<UnitParameter> upList) throws SQLException {
+
+    }
+
+    public void addUnits(List<String> unitIds, Profile pr) throws SQLException {
+
+    }
+
+    public void addOrChangeSessionUnitParameters(List<UnitParameter> unitSessionParameters, Profile profile) throws SQLException {
+
+    }
 }

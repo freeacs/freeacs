@@ -163,8 +163,8 @@ public class JobRuleEnforcer extends DBIOwner {
   private UnitJobs unitJobs;
   private final Map<Integer, JobControl> jobControlMap = new HashMap<>();
 
-  public JobRuleEnforcer(String taskName, DBI dbi, Properties properties) {
-    super(taskName, dbi);
+  public JobRuleEnforcer(String taskName, DBI dbi, Syslog syslog, Properties properties) {
+    super(taskName, dbi, syslog);
     this.properties = properties;
   }
 

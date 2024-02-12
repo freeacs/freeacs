@@ -14,8 +14,8 @@ import com.github.freeacs.web.app.input.InputSelectionFactory;
 import com.github.freeacs.web.app.input.ParameterParser;
 import com.github.freeacs.web.app.page.AbstractWebPage;
 import com.github.freeacs.web.app.util.ACSLoader;
+import com.github.freeacs.web.app.util.SessionCache;
 import com.github.freeacs.web.app.util.WebConstants;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -23,6 +23,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import javax.sql.DataSource;
+
+import com.github.freeacs.web.security.WebUser;
 import org.apache.commons.fileupload.FileItem;
 
 /**
@@ -79,9 +81,6 @@ public class FilePage extends AbstractWebPage {
    * @param req the req
    * @throws IllegalArgumentException the illegal argument exception
    * @throws SecurityException the security exception
-   * @throws IllegalAccessException the illegal access exception
-   * @throws InvocationTargetException the invocation target exception
-   * @throws NoSuchMethodException the no such method exception
    */
   private void actionParse(ParameterParser req) {
     if (!"Clear".equals(formsubmit)) {
@@ -116,7 +115,7 @@ public class FilePage extends AbstractWebPage {
    *
    * @throws Exception the exception
    */
-  private void actionAddChangeDelete() throws Exception {
+  private void actionAddChangeDelete(WebUser user) throws Exception {
     if (formsubmit != null) {
       Files files = unittype.getFiles();
       if ("Upload file".equals(formsubmit)) {
@@ -137,7 +136,7 @@ public class FilePage extends AbstractWebPage {
                   versionNumber,
                   softwaredate,
                   targetName,
-                  acs.getUser());
+                  user);
           if (bytes != null && bytes.length > 0) {
             file.setBytes(bytes);
           } else if (fileTypeEnum != FileType.SOFTWARE && content != null) {
@@ -232,7 +231,7 @@ public class FilePage extends AbstractWebPage {
     if (unittype != null) {
       actionParse(params);
 
-      actionAddChangeDelete();
+      actionAddChangeDelete(SessionCache.getSessionData(params.getSession().getId()).getUser());
 
       FileType selectedFileType = null;
       if (id != null) {

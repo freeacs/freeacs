@@ -1,26 +1,10 @@
 package com.github.freeacs.stun;
 
 import com.github.freeacs.common.util.Sleep;
-import com.github.freeacs.dbi.ACS;
-import com.github.freeacs.dbi.ACSUnit;
-import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.dbi.Group;
-import com.github.freeacs.dbi.Inbox;
-import com.github.freeacs.dbi.Job;
-import com.github.freeacs.dbi.JobStatus;
-import com.github.freeacs.dbi.Message;
-import com.github.freeacs.dbi.Parameter;
+import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.Parameter.Operator;
 import com.github.freeacs.dbi.Parameter.ParameterDataType;
-import com.github.freeacs.dbi.Profile;
-import com.github.freeacs.dbi.Unit;
-import com.github.freeacs.dbi.UnitJob;
-import com.github.freeacs.dbi.UnitJobs;
-import com.github.freeacs.dbi.UnitParameter;
-import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
-import com.github.freeacs.dbi.UnittypeParameter;
-import com.github.freeacs.dbi.Unittypes;
 import com.github.freeacs.dbi.util.SystemParameters;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -40,6 +24,7 @@ public class JobKickThread implements Runnable {
   private final Properties properties;
   private final DBI dbi;
   private final DataSource xapsCp;
+  private final Syslog syslog;
   /** Key: jobId Value: Set of unitId */
   private Map<Integer, Set<String>> jobKickMap;
   /** Key: jobId Value: Tms of last refresh */
@@ -47,9 +32,10 @@ public class JobKickThread implements Runnable {
   /** This inbox listens for changes on job (from other modules in xAPS). */
   private final Inbox jobChangeInbox = new Inbox();
 
-  public JobKickThread(DataSource xapsCp, DBI dbi, Properties properties) {
+  public JobKickThread(DataSource xapsCp, DBI dbi, Syslog syslog, Properties properties) {
     this.xapsCp = xapsCp;
     this.dbi = dbi;
+    this.syslog = syslog;
     this.properties = properties;
     jobChangeInbox.addFilter(new Message(null, Message.MTYPE_PUB_CHG, null, Message.OTYPE_JOB));
     dbi.registerInbox("jobChangeInbox", jobChangeInbox);
@@ -59,7 +45,7 @@ public class JobKickThread implements Runnable {
       throws SQLException {
     Group group = job.getGroup();
     long now = jobRefreshMap.get(job.getId());
-    ACSUnit acsUnit = new ACSUnit(xapsCp, acs, acs.getSyslog());
+    ACSUnit acsUnit = new ACSUnit(xapsCp, acs, syslog);
     Map<String, Unit> unitsInGroup = acsUnit.getUnits(group);
     log.info(
         "Found "
@@ -219,7 +205,7 @@ public class JobKickThread implements Runnable {
             return;
           }
           kickSleep.sleep();
-          ACSUnit acsUnit = new ACSUnit(xapsCp, acs, acs.getSyslog());
+          ACSUnit acsUnit = new ACSUnit(xapsCp, acs, syslog);
           Unit unit = acsUnit.getUnitById(unitId);
           if (unit != null) {
             startUnitJob(unit, jobId, acs);
@@ -255,7 +241,7 @@ public class JobKickThread implements Runnable {
   }
 
   private void startUnitJob(Unit u, Integer jobId, ACS acs) throws SQLException {
-    ACSUnit acsUnit = new ACSUnit(xapsCp, acs, acs.getSyslog());
+    ACSUnit acsUnit = new ACSUnit(xapsCp, acs, syslog);
     Unittype unittype = u.getUnittype();
     UnittypeParameter currentUtp =
         unittype.getUnittypeParameters().getByName(SystemParameters.JOB_CURRENT);

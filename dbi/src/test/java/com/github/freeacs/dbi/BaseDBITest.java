@@ -16,7 +16,7 @@ public abstract class BaseDBITest implements AbstractMySqlIntegrationTest {
     User admin = users.getUnprotected("admin");
     Identity identity = new Identity(SyslogConstants.EVENT_DEFAULT, "test", admin);
     syslog = new Syslog(dataSource, identity);
-    acs = new ACS(dataSource, syslog);
+    acs = new ACS(dataSource);
   }
 }
 

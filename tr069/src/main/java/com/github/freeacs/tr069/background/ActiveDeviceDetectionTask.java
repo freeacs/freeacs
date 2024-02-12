@@ -12,13 +12,12 @@ import java.util.Map.Entry;
 public class ActiveDeviceDetectionTask extends TaskDefaultImpl {
   private static final Logger logger = LoggerFactory.getLogger(ActiveDeviceDetectionTask.class);
 
-  private final DBI dbi;
-
   public static Map<String, Long> activeDevicesMap = new HashMap<>();
+  private final Syslog syslog;
 
-  public ActiveDeviceDetectionTask(String taskName, DBI dbi) {
+  public ActiveDeviceDetectionTask(String taskName, Syslog syslog) {
     super(taskName);
-    this.dbi = dbi;
+    this.syslog = syslog;
   }
 
   public static synchronized void addActiveDevice(String unitId, Long nextInformMs) {
@@ -37,12 +36,11 @@ public class ActiveDeviceDetectionTask extends TaskDefaultImpl {
         "ActiveDeviceDetectionTask: Have found " + inactiveUnits.size() + " inactive devices");
     for (Entry<String, Long> entry : inactiveUnits.entrySet()) {
       String unitId = entry.getKey();
-      Syslog syslog = dbi.getSyslog();
       SyslogFilter sf = new SyslogFilter();
       sf.setCollectorTmsStart(new Date(anHourAgo)); // look for syslog newer than 1 hour
       sf.setUnitId(unitId);
       boolean active = false;
-      List<SyslogEntry> entries = syslog.read(sf, dbi.getAcs());
+      List<SyslogEntry> entries = syslog.read(sf);
       for (SyslogEntry sentry : entries) {
         if (sentry.getFacility() < SyslogConstants.FACILITY_SHELL
             && !sentry.getContent().contains(Heartbeat.MISSING_HEARTBEAT_ID)) {
@@ -65,7 +63,7 @@ public class ActiveDeviceDetectionTask extends TaskDefaultImpl {
                 + " (as expected) or since, but device has been active since "
                 + new Date(anHourAgo)
                 + ". TR-069 client may have stopped",
-            dbi.getSyslog());
+            syslog);
         logger.info(
             "ActivceDeviceDetection: Unit "
                 + entry.getKey()

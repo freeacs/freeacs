@@ -126,7 +126,6 @@ public class GroupParameters {
 
   public void addOrChangeGroupParameter(GroupParameter groupParameter, ACS acs)
       throws SQLException {
-    Groups.checkPermission(group, acs);
     if (groupParameter.getId() == null) {
       // The group parameter may still already exist. This situation may occur if
       // listparamsforexport is invoked by shell
@@ -181,7 +180,6 @@ public class GroupParameters {
    * @throws SQLException if something goes wrong
    */
   public void deleteGroupParameter(GroupParameter groupParameter, ACS acs) throws SQLException {
-    Groups.checkPermission(group, acs);
     deleteGroupParameterImpl(groupParameter, group, acs);
     nameMap.remove(groupParameter.getName());
     idMap.remove(groupParameter.getId());

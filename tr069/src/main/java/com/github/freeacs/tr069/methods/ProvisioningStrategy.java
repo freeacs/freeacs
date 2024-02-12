@@ -1,6 +1,8 @@
 package com.github.freeacs.tr069.methods;
 
+import com.github.freeacs.cache.AcsCache;
 import com.github.freeacs.dbi.DBI;
+import com.github.freeacs.dbi.Syslog;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.base.Log;
 import com.github.freeacs.tr069.http.HTTPRequestResponseData;
@@ -19,18 +21,22 @@ public abstract class ProvisioningStrategy {
 
     public abstract void process(HTTPRequestResponseData reqRes) throws Exception;
 
-    public static ProvisioningStrategy getStrategy(Properties properties, DBI dbi) {
-        return new NormalProvisioningStrategy(properties, dbi);
+    public static ProvisioningStrategy getStrategy(Properties properties, DBI dbi, Syslog syslog, AcsCache acsCache) {
+        return new NormalProvisioningStrategy(properties, dbi, acsCache, syslog);
     }
 
     private static class NormalProvisioningStrategy extends ProvisioningStrategy {
 
         private final Properties properties;
         private final DBI dbi;
+        private final Syslog syslog;
+        private final AcsCache acsCache;
 
-        private NormalProvisioningStrategy(Properties properties, DBI dbi) {
+        private NormalProvisioningStrategy(Properties properties, DBI dbi, AcsCache acsCache, Syslog syslog) {
             this.properties = properties;
             this.dbi = dbi;
+            this.syslog = syslog;
+            this.acsCache = acsCache;
         }
 
         @Override
@@ -42,13 +48,13 @@ public abstract class ProvisioningStrategy {
 
             // 1. process the request
             logWillProcessRequest(reqRes);
-            RequestProcessStrategy.getStrategy(xml.getCwmpMethod(), properties, dbi).process(reqRes);
+            RequestProcessStrategy.getStrategy(xml.getCwmpMethod(), properties, dbi, acsCache, syslog).process(reqRes);
             if (Log.isConversationLogEnabled()) {
                 logConversationRequest(reqRes);
             }
 
             // 2. decide what to do next
-            DecisionStrategy.getStrategy(xml.getCwmpMethod(), properties, dbi).makeDecision(reqRes);
+            DecisionStrategy.getStrategy(xml.getCwmpMethod(), properties, dbi, acsCache).makeDecision(reqRes);
 
             // 3. Create and set response
             ProvisioningMethod responseMethod = getResponseMethod(reqRes);
@@ -86,18 +92,6 @@ public abstract class ProvisioningStrategy {
         private void logConversationResponse(HTTPRequestResponseData reqRes, String responseStr) {
             String unitId = Optional.ofNullable(reqRes.getSessionData().getUnitId()).orElse("Unknown");
             Log.conversation(reqRes.getSessionData(), "=============== FROM ACS TO ( " + unitId + " ) ============\n" + responseStr + "\n");
-        }
-
-        /**
-         * The request method will never change, so this method is just here to wrap the operation
-         * of converting null method to Empty
-         */
-        private ProvisioningMethod getRequestMethod(HTTPRequestResponseData reqRes) {
-            try {
-                return ProvisioningMethod.valueOf(reqRes.getRequestData().getMethod());
-            } catch (Exception e) {
-                return ProvisioningMethod.Empty;
-            }
         }
 
         /**

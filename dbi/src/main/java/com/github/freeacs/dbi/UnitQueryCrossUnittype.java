@@ -19,7 +19,7 @@ class UnitQueryCrossUnittype {
   private final Connection connection;
   private final ACS acs;
 
-  public UnitQueryCrossUnittype(Connection c, ACS acs, Unittype unittype, List<Profile> profiles) {
+  public UnitQueryCrossUnittype(Connection c, ACS acs, Syslog syslog, Unittype unittype, List<Profile> profiles) {
     this.connection = c;
     this.acs = acs;
     this.unittypes = new ArrayList<>();
@@ -27,10 +27,10 @@ class UnitQueryCrossUnittype {
       unittypes.add(unittype);
     }
     this.profiles = Objects.requireNonNullElseGet(profiles, ArrayList::new);
-    prepareUnittypesAndProfiles();
+    prepareUnittypesAndProfiles(syslog);
   }
 
-  public UnitQueryCrossUnittype(Connection c, ACS acs, Unittype unittype, Profile profile) {
+  public UnitQueryCrossUnittype(Connection c, ACS acs, Syslog syslog, Unittype unittype, Profile profile) {
     this.connection = c;
     this.acs = acs;
     this.unittypes = new ArrayList<>();
@@ -41,7 +41,7 @@ class UnitQueryCrossUnittype {
     if (profile != null) {
       profiles.add(profile);
     }
-    prepareUnittypesAndProfiles();
+    prepareUnittypesAndProfiles(syslog);
   }
 
   /**
@@ -57,8 +57,8 @@ class UnitQueryCrossUnittype {
    * <p>1) The list of unittypes/profiles coming into this method contains only allowed
    * unittypes/profiles.
    */
-  private void prepareUnittypesAndProfiles() {
-    User user = acs.getSyslog().getIdentity().getUser();
+  private void prepareUnittypesAndProfiles(Syslog syslog) {
+    User user = syslog.getIdentity().getUser();
 
     if (!profiles.isEmpty()) {
       // Making a map of the number of profiles in the input, listed pr unittype

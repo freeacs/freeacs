@@ -1,5 +1,6 @@
 package com.github.freeacs.tr069.base;
 
+import com.github.freeacs.cache.AcsCache;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
 import com.github.freeacs.dbi.util.ProvisioningMode;
@@ -19,7 +20,7 @@ import java.util.Map.Entry;
  */
 @Slf4j
 public class JobLogic {
-  public static boolean checkJobOK(SessionDataI sessionData, DBI dbi, boolean isDiscoveryMode) {
+  public static boolean checkJobOK(SessionDataI sessionData, DBI dbi, AcsCache acsCache, boolean isDiscoveryMode) {
     try {
       String jobId = sessionData.getAcsParameters().getValue(SystemParameters.JOB_CURRENT);
       if (jobId != null && !jobId.trim().isEmpty()) {
@@ -29,7 +30,7 @@ public class JobLogic {
           log.warn("Current job " + jobId + " does no longer exist, cannot be verified");
           return false;
         }
-        UnitJob uj = new UnitJob(sessionData, dbi, job, false);
+        UnitJob uj = new UnitJob(sessionData, dbi, acsCache, job, false);
         if (!JobStatus.STARTED.equals(job.getStatus())) {
           log.warn("Current job is not STARTED, UnitJob must be STOPPED");
           uj.stop(UnitJobStatus.STOPPED, isDiscoveryMode);
@@ -84,16 +85,11 @@ public class JobLogic {
     }
   }
 
-  public static UnitJob checkNewJob(SessionDataI sessionData, DBI dbi, int downloadLimit) {
+  public static UnitJob checkNewJob(SessionDataI sessionData, DBI dbi, AcsCache acsCache, int downloadLimit) {
     if (sessionData.getUnit().getProvisioningMode() == ProvisioningMode.REGULAR) {
       Job job = getJob(sessionData, downloadLimit);
       if (job != null) {
-        UnitJob uj;
-        if (job.getFlags().getType() == JobType.SHELL) {
-          uj = new UnitJob(sessionData, dbi, job, true);
-        } else {
-          uj = new UnitJob(sessionData, dbi, job, false);
-        }
+        UnitJob uj = new UnitJob(sessionData, dbi, acsCache, job, job.getFlags().getType() == JobType.SHELL);
         uj.start();
         sessionData.setJob(job);
         sessionData.getPIIDecision().setCurrentJob(job);

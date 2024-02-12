@@ -81,9 +81,6 @@ public class Jobs {
 
   public void addOrChangeJobParameters(List<JobParameter> jobParameters, ACS acs)
       throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     Connection connection = null;
     PreparedStatement pp = null;
     String sql;
@@ -165,10 +162,7 @@ public class Jobs {
   }
 
   public void deleteJobParameters(Job job, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
-      String sql;
+    String sql;
     SQLException sqle;
     try (Connection connection = acs.getDataSource().getConnection(); Statement s = connection.createStatement()) {
         sql = "DELETE FROM job_param WHERE job_id = " + job.getId();
@@ -188,9 +182,6 @@ public class Jobs {
   }
 
   public int deleteJobParameters(List<JobParameter> jobParameters, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     Connection connection = null;
     Statement s = null;
     String sql;
@@ -269,9 +260,6 @@ public class Jobs {
   }
 
   public void delete(Job job, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     deleteJobParameters(job, acs);
     Connection c = null;
     PreparedStatement pp = null;
@@ -338,9 +326,6 @@ public class Jobs {
   }
 
   public void add(Job job, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     job.setStatus(JobStatus.READY);
     job.validate();
     Connection c = null;
@@ -522,9 +507,6 @@ public class Jobs {
   }
 
   public void changeStatus(Job job, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     try (Connection c = acs.getDataSource().getConnection()) {
         DynamicStatement ds = new DynamicStatement();
         ds.addSql("UPDATE job SET ");
@@ -577,9 +559,6 @@ public class Jobs {
    * various updates methods since the agents are independent of each other.
    */
   public void changeFromUI(Job job, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     job.validate();
     try (Connection c = acs.getDataSource().getConnection()) {
         if (isDependencyLoop(job, job.getDependency())) {

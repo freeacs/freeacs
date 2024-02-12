@@ -1,5 +1,6 @@
 package com.github.freeacs.tr069.methods.decision;
 
+import com.github.freeacs.cache.AcsCache;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.tr069.TR069DMParameter;
 import com.github.freeacs.dbi.tr069.TR069DMParameterMap;
@@ -32,10 +33,12 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
     private final Properties properties;
     private final DBI dbi;
     private final ScriptExecutions scriptExecutions;
+    private final AcsCache acsCache;
 
-    GetParameterValuesDecisionStrategy(Properties properties, DBI dbi) {
+    GetParameterValuesDecisionStrategy(Properties properties, DBI dbi, AcsCache acsCache) {
         this.properties = properties;
         this.dbi = dbi;
+        this.acsCache = acsCache;
         this.scriptExecutions = new ScriptExecutions(dbi.getDataSource());
     }
 
@@ -161,7 +164,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
             // group-matching in job-search
             // will not affect the comparison in populateToCollections()
             updateUnitParameters(sessionData);
-            uj = JobLogic.checkNewJob(sessionData, dbi, concurrentDownloadLimit); // may find a new job
+            uj = JobLogic.checkNewJob(sessionData, dbi, acsCache, concurrentDownloadLimit); // may find a new job
         }
         Job job = sessionData.getJob();
         if (job != null) { // No job is present - process according to
@@ -203,7 +206,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         } else {
             if (type == JobType.SHELL) {
                 sessionData.getProvisioningMessage().setProvOutput(ProvisioningMessage.ProvOutput.SHELL);
-                ShellJobLogic.execute(sessionData, dbi, job, unitJob, isDiscoveryMode, scriptExecutions);
+                ShellJobLogic.execute(sessionData, dbi, acsCache, job, unitJob, isDiscoveryMode, scriptExecutions);
             } else { // type == JobType.CONFIG
                 // The service-window is unimportant for next PII calculation, will
                 // be set to 31 no matter what, since a job is "in the process".
@@ -582,7 +585,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
             toDB.add(pvsCPE);
         }
         sessionData.setToDB(toDB);
-        DBIActions.writeUnitSessionParams(sessionData, dbi);
+        DBIActions.writeUnitSessionParams(sessionData, dbi, acsCache);
         log.debug(toDB.size() + " params written to ACS session storage");
         reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());
         sessionData.getProvisioningMessage().setProvOutput(ProvisioningMessage.ProvOutput.EMPTY);

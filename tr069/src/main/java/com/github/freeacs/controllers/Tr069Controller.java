@@ -1,6 +1,8 @@
 package com.github.freeacs.controllers;
 
+import com.github.freeacs.cache.AcsCache;
 import com.github.freeacs.dbi.DBI;
+import com.github.freeacs.dbi.Syslog;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.security.AcsUnit;
 import com.github.freeacs.tr069.Properties;
@@ -43,12 +45,16 @@ public class Tr069Controller {
     @Value("${context-path}")
     private String contextPath;
 
+    private final Syslog syslog;
+    private final AcsCache acsCache;
     private final DBI dbi;
     private final Properties properties;
 
-    public Tr069Controller(DBI dbi, Properties properties) {
+    public Tr069Controller(DBI dbi, Syslog syslog, AcsCache acsCache, Properties properties) {
         this.properties = properties;
         this.dbi = dbi;
+        this.syslog = syslog;
+        this.acsCache = acsCache;
     }
 
     /**
@@ -89,10 +95,10 @@ public class Tr069Controller {
                 String username = ((AcsUnit) authentication.getPrincipal()).getUsername();
                 SessionData sessionData = requestResponseData.getSessionData();
                 sessionData.setUnitId(username);
-                sessionData.setUnit(dbi.getACSUnit().getUnitById(username));
+                sessionData.setUnit(acsCache.getUnitById(username));
             }
 
-            ProvisioningStrategy.getStrategy(properties, dbi).process(requestResponseData);
+            ProvisioningStrategy.getStrategy(properties, dbi, syslog, acsCache).process(requestResponseData);
 
             return ResponseEntity
                     .status("Empty".equals(requestResponseData.getResponseData().getMethod())
@@ -138,7 +144,7 @@ public class Tr069Controller {
     @Scheduled(cron = "0 0/5 * * * *")
     private void scheduleActiveDeviceDetectionTask() {
         final ActiveDeviceDetectionTask activeDeviceDetectionTask =
-                new ActiveDeviceDetectionTask("ActiveDeviceDetection TR069", dbi);
+                new ActiveDeviceDetectionTask("ActiveDeviceDetection TR069", syslog);
         activeDeviceDetectionTask.setThisLaunchTms(System.currentTimeMillis());
         activeDeviceDetectionTask.run();
     }
@@ -146,8 +152,7 @@ public class Tr069Controller {
     // every 1 second
     @Scheduled(cron = "* * * ? * *")
     private void scheduleKickTask() {
-        final ScheduledKickTask scheduledKickTask =
-                new ScheduledKickTask("ScheduledKick", dbi);
+        final ScheduledKickTask scheduledKickTask = new ScheduledKickTask("ScheduledKick", dbi, acsCache);
         scheduledKickTask.setThisLaunchTms(System.currentTimeMillis());
         scheduledKickTask.run();
     }
@@ -165,7 +170,7 @@ public class Tr069Controller {
         try {
             Unit unit = reqRes.getSessionData().getUnit();
             if (unit != null) {
-                dbi.getACSUnit().addOrChangeQueuedUnitParameters(unit);
+                acsCache.addOrChangeQueuedUnitParameters(unit);
             }
         } catch (Throwable t) {
             log.error("An error occured when writing queued unit parameters to Fusion. May affect provisioning", t);

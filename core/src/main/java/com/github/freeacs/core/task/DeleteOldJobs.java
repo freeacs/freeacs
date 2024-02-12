@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 public class DeleteOldJobs extends DBIOwner {
   private final Properties properties;
 
-  public DeleteOldJobs(String taskName, DBI dbi, Properties properties) {
-    super(taskName, dbi);
+  public DeleteOldJobs(String taskName, DBI dbi, Syslog syslog, Properties properties) {
+    super(taskName, dbi, syslog);
     this.properties = properties;
   }
 

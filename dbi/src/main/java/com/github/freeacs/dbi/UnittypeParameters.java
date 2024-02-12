@@ -84,9 +84,6 @@ public class UnittypeParameters {
 
   public void addOrChangeUnittypeParameters(List<UnittypeParameter> unittypeParameters, ACS acs)
       throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     for (UnittypeParameter unittypeParameter : unittypeParameters) {
       if (unittypeParameter.getName().contains(",")
           || unittypeParameter.getName().contains("\"")
@@ -165,9 +162,6 @@ public class UnittypeParameters {
 
   public void addOrChangeUnittypeParameter(UnittypeParameter unittypeParameter, ACS acs)
       throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     List<UnittypeParameter> unittypeParameters = new ArrayList<>();
     unittypeParameters.add(unittypeParameter);
     addOrChangeUnittypeParameters(unittypeParameters, acs);
@@ -225,9 +219,6 @@ public class UnittypeParameters {
    */
   public void deleteUnittypeParameter(UnittypeParameter unittypeParameter, ACS acs)
       throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     List<UnittypeParameter> unittypeParameters = new ArrayList<>();
     unittypeParameters.add(unittypeParameter);
     deleteUnittypeParameters(unittypeParameters, acs);
@@ -235,9 +226,6 @@ public class UnittypeParameters {
 
   public void deleteUnittypeParameters(List<UnittypeParameter> unittypeParameters, ACS acs)
       throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     deleteUnittypeParameterImpl(unittypeParameters, unittype, acs);
     for (UnittypeParameter unittypeParameter : unittypeParameters) {
       resetHasDeviceParameters();

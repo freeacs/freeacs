@@ -1,5 +1,6 @@
 package com.github.freeacs.tr069.base;
 
+import com.github.freeacs.cache.AcsCache;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
 import com.github.freeacs.dbi.util.SystemParameters;
@@ -17,6 +18,7 @@ import java.util.Objects;
 public class UnitJob {
   private final DBI dbi;
   private final SessionDataI sessionData;
+  private final AcsCache acsCache;
   private Job job;
 
   /**
@@ -33,11 +35,12 @@ public class UnitJob {
    */
   private final boolean serverSideJob;
 
-  public UnitJob(SessionDataI sessionData, DBI dbi, Job job, boolean serverSideJob) {
+  public UnitJob(SessionDataI sessionData, DBI dbi, AcsCache acsCache, Job job, boolean serverSideJob) {
     this.sessionData = sessionData;
     this.job = job;
     this.serverSideJob = serverSideJob;
     this.dbi = dbi;
+    this.acsCache = acsCache;
   }
 
   private UnitParameter makeUnitParameter(String name, String value) {
@@ -158,14 +161,13 @@ public class UnitJob {
             dbi);
         sessionData.getPIIDecision().setCurrentJobStatus(unitJobStatus);
         // Write directly to database, no queuing, since the all data are flushed in next step (most likely)
-        ACSUnit acsUnit = dbi.getACSUnit();
-        acsUnit.addOrChangeUnitParameters(upList);
+        acsCache.addOrChangeUnitParameters(upList);
         if (!serverSideJob) {
           sessionData.setFromDB(null);
           sessionData.setAcsParameters(null);
           sessionData.setJobParams(null);
           log.debug("Unit-information will be reloaded to reflect changes in profile/unit parameters");
-          DBIActions.updateParametersFromDB((SessionData) sessionData, isDiscoveryMode, dbi);
+          DBIActions.updateParametersFromDB((SessionData) sessionData, isDiscoveryMode, dbi, acsCache);
         }
       } catch (SQLException sqle) {
         log.error("UnitJob update failed", sqle);

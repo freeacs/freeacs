@@ -12,11 +12,8 @@ import com.github.freeacs.core.task.ReportGenerator;
 import com.github.freeacs.core.task.ScriptExecutor;
 import com.github.freeacs.core.task.TriggerReleaser;
 import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.dbi.Identity;
 import com.github.freeacs.dbi.Syslog;
 import com.github.freeacs.dbi.SyslogConstants;
-import com.github.freeacs.dbi.User;
-import com.github.freeacs.dbi.Users;
 import com.github.freeacs.dbi.util.ACSVersionCheck;
 import java.sql.SQLException;
 import javax.sql.DataSource;
@@ -29,12 +26,17 @@ public class CoreServlet {
   private final DataSource mainDataSource;
   private final Properties properties;
   private final ExecutorWrapper executorWrapper;
+  private final Syslog syslog;
 
   public CoreServlet(
-      DataSource mainDataSource, Properties properties, ExecutorWrapper executorWrapper) {
+          DataSource mainDataSource,
+          Syslog syslog,
+          Properties properties,
+          ExecutorWrapper executorWrapper) {
     this.mainDataSource = mainDataSource;
     this.properties = properties;
     this.executorWrapper = executorWrapper;
+    this.syslog = syslog;
   }
 
   public void destroy() {
@@ -55,16 +57,12 @@ public class CoreServlet {
   }
 
   private DBI getDbi() throws SQLException {
-    final Users users = new Users(mainDataSource);
-    final User adminUser = users.getUnprotected(Users.USER_ADMIN);
-    final Identity id = new Identity(SyslogConstants.FACILITY_CORE, "latest", adminUser);
-    final Syslog syslog = new Syslog(mainDataSource, id);
-    return DBI.createAndInitialize(Integer.MAX_VALUE, mainDataSource, syslog);
+    return DBI.createAndInitialize(Integer.MAX_VALUE, mainDataSource, SyslogConstants.FACILITY_CORE);
   }
 
   private void bootLightTasks(DBI dbi) {
     // Run at 0530 every night - light task
-    final DeleteOldJobs deleteOldJobsTask = new DeleteOldJobs("DeleteOldJobs", dbi, properties);
+    final DeleteOldJobs deleteOldJobsTask = new DeleteOldJobs("DeleteOldJobs", dbi, syslog, properties);
     executorWrapper.scheduleCron(
         "0 30 5 ? * * *",
         (tms) ->
@@ -75,7 +73,7 @@ public class CoreServlet {
 
     // Run every second - light task
     final JobRuleEnforcer jobRuleEnforcerTaks =
-        new JobRuleEnforcer("JobRuleEnforcer", dbi, properties);
+        new JobRuleEnforcer("JobRuleEnforcer", dbi, syslog, properties);
     executorWrapper.scheduleCron(
         "* * * * * ? *",
         (tms) ->
@@ -86,7 +84,7 @@ public class CoreServlet {
 
     if (ACSVersionCheck.triggerSupported) {
       // Run at 30(sec) every minute - light task
-      final TriggerReleaser triggerReleaserTask = new TriggerReleaser("TriggerReleaser", dbi);
+      final TriggerReleaser triggerReleaserTask = new TriggerReleaser("TriggerReleaser", dbi, syslog);
       executorWrapper.scheduleCron(
           "30 * * ? * * *",
           (tms) ->
@@ -98,7 +96,7 @@ public class CoreServlet {
     if (ACSVersionCheck.scriptExecutionSupported) {
       // Run every second - light task
       final ScriptExecutor scriptExecutorTask =
-          new ScriptExecutor("ScriptExecutor", dbi, properties);
+          new ScriptExecutor("ScriptExecutor", dbi, syslog, properties);
       executorWrapper.scheduleCron(
           "* * * * * ? *",
           (tms) ->
@@ -108,7 +106,7 @@ public class CoreServlet {
               });
       // Run at 45 every hour - light task
       final DeleteOldScripts deleteOldScriptsTask =
-          new DeleteOldScripts("DeleteOldScripts", dbi, properties);
+          new DeleteOldScripts("DeleteOldScripts", dbi, syslog, properties);
       executorWrapper.scheduleCron(
           "0 45 * ? * * *",
           (tms) ->
@@ -120,7 +118,7 @@ public class CoreServlet {
     if (ACSVersionCheck.heartbeatSupported) {
       // Run every 5 minute - moderate task
       final HeartbeatDetection heartbeatDetectionTask =
-          new HeartbeatDetection("HeartbeatDetection", dbi);
+          new HeartbeatDetection("HeartbeatDetection", dbi, syslog);
       executorWrapper.scheduleCron(
           "0 0/5 * ? * * *",
           (tms) ->
@@ -134,7 +132,7 @@ public class CoreServlet {
   private void bootHeavyTasks(DBI dbi) {
     // Run at 00 every hour - heavy task
     final ReportGenerator reportGeneratorHourlyTask =
-        new ReportGenerator("ReportGeneratorHourly", ScheduleType.HOURLY, dbi, properties);
+        new ReportGenerator("ReportGeneratorHourly", ScheduleType.HOURLY, dbi, syslog, properties);
     executorWrapper.scheduleCron(
         "0 0 * ? * * *",
         (tms) ->
@@ -145,7 +143,7 @@ public class CoreServlet {
 
     // Run at 0015 every night - very heavy task
     final ReportGenerator reportGeneratorDailyTask =
-        new ReportGenerator("ReportGeneratorDaily", ScheduleType.DAILY, dbi, properties);
+        new ReportGenerator("ReportGeneratorDaily", ScheduleType.DAILY, dbi, syslog, properties);
     executorWrapper.scheduleCron(
         "0 15 0 ? * * *",
         (tms) ->
@@ -156,7 +154,7 @@ public class CoreServlet {
 
     // Run at 0500 every night - very heavy task
     final DeleteOldSyslog deleteOldSyslogTask =
-        new DeleteOldSyslog("DeleteOldSyslogEntries", dbi, properties);
+        new DeleteOldSyslog("DeleteOldSyslogEntries", dbi, syslog, properties);
     executorWrapper.scheduleCron(
         "0 0 5 ? * * *",
         (tms) ->

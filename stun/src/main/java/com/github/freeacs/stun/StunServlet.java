@@ -19,7 +19,7 @@ public class StunServlet {
   public static StunServer server;
 
   private static final Logger logger = LoggerFactory.getLogger(StunServlet.class);
-
+  private static Syslog syslog;
   private final DataSource mainDs;
   private final Properties properties;
   private final ExecutorWrapper executorWrapper;
@@ -43,8 +43,8 @@ public class StunServlet {
     Users users = new Users(mainDs);
     User user = users.getUnprotected(Users.USER_ADMIN);
     Identity id = new Identity(SyslogConstants.FACILITY_STUN, "latest", user);
-    Syslog syslog = new Syslog(mainDs, id);
-    return DBI.createAndInitialize(Integer.MAX_VALUE, mainDs, syslog);
+    syslog = new Syslog(mainDs, id);
+    return DBI.createAndInitialize(Integer.MAX_VALUE, mainDs, SyslogConstants.FACILITY_STUN);
   }
 
   private synchronized void trigger() {
@@ -67,7 +67,7 @@ public class StunServlet {
       }
 
       ActiveDeviceDetection activeDeviceDetection =
-          new ActiveDeviceDetection(mainDs, dbi, "ActiveDeviceDetection");
+          new ActiveDeviceDetection(mainDs, dbi, syslog, "ActiveDeviceDetection");
       executorWrapper.scheduleCron(
           "15 * * ? * * *",
           (tms) ->
@@ -76,11 +76,11 @@ public class StunServlet {
                 activeDeviceDetection.run();
               });
 
-      Thread singleKickThread = new Thread(new SingleKickThread(mainDs, dbi, properties));
+      Thread singleKickThread = new Thread(new SingleKickThread(mainDs, dbi, syslog, properties));
       singleKickThread.setName("Scheduler STUN");
       singleKickThread.start();
 
-      Thread jobKickThread = new Thread(new JobKickThread(mainDs, dbi, properties));
+      Thread jobKickThread = new Thread(new JobKickThread(mainDs, dbi, syslog, properties));
       jobKickThread.setName("STUN Job Kick Thread");
       jobKickThread.start();
 
