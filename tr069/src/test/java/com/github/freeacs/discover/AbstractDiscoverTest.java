@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static com.github.freeacs.common.util.FileSlurper.getFileAsString;
 import static com.github.freeacs.utils.Matchers.hasNoSpace;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ContextConfiguration(initializers = AutoDiscoverTest.DataSourceInitializer.class)
@@ -66,6 +67,7 @@ public class AbstractDiscoverTest implements AbstractMySqlIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/xml"))
                 .andExpect(header().string("SOAPAction", ""))
+                .andDo(print())
                 .andExpect(xpath("/*[local-name() = 'Envelope']" +
                         "/*[local-name() = 'Body']" +
                         "/*[local-name() = 'GetParameterValues']" +

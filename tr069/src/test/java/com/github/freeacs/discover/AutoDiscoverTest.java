@@ -13,6 +13,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Arrays;
+
 import static com.github.freeacs.provisioning.AbstractProvisioningTest.UNIT_ID_AUTO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -42,6 +44,7 @@ public class AutoDiscoverTest extends AbstractDiscoverTest {
         assertEquals("FakeProductClass", unit.getUnittype().getName());
         assertEquals("Default", unit.getProfile().getName());
         String discoverValue = unit.getUnitParameters().get(SystemParameters.SECRET).getValue();
+        System.out.println(Arrays.toString(unit.getUnitParameters().values().toArray()));
         // Secret parameter is added, but populated with blank value
         assertEquals("", discoverValue);
     }

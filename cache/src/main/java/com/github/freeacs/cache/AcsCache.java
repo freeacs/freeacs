@@ -1,7 +1,6 @@
 package com.github.freeacs.cache;
 
 import com.github.freeacs.dbi.*;
-import com.github.freeacs.dbi.util.ACSVersionCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -34,6 +33,21 @@ public class AcsCache {
         return acsDao.getUnitTypeById(unitTypeId);
     }
 
+    @Cacheable(value = "unit-types")
+    public List<Unittype> getUnitTypes() {
+        return acsDao.getUnitTypes();
+    }
+
+    @Cacheable(value = "unit-type-parameter", key = "{#unitTypeParamId}")
+    public UnittypeParameter getUnitTypeParamById(Integer unitTypeParamId) {
+        return acsDao.getUnittypeParameterByUnitTypeParameId(unitTypeParamId);
+    }
+
+    @Cacheable(value = "profiles", key = "{#profileId}")
+    public Profile getProfileById(Integer profileId) {
+        return acsDao.getProfileById(profileId);
+    }
+
     @CacheEvict(value = "unit-types", allEntries = true)
     public void clearUnitTypesCache() {}
 
@@ -50,7 +64,7 @@ public class AcsCache {
     }
 
     public Unit getUnitById(String unitId) throws SQLException {
-        return acsDao.getUnitById(unitId, this::getUnitTypeById);
+        return acsDao.getUnitById(unitId, this::getUnitTypeById, this::getUnitTypes, this::getUnitTypeParamById, this::getProfileById);
     }
 
     public void addOrChangeUnitParameters(List<UnitParameter> upList) throws SQLException {

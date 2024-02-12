@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static com.github.freeacs.dbi.util.NumberUtils.parseStringId;
 
@@ -37,6 +38,12 @@ public class ACSDao {
         p.profile_name
     """;
 
+    private static final String GET_UNITTYPES = """
+        SELECT
+            %s
+        FROM unit_type ut
+    """.formatted(UNITTYPE_COLUMNS);
+
     private static final String GET_UNITTYPE_BY_ID = """
         SELECT
             %s
@@ -56,6 +63,13 @@ public class ACSDao {
             %s
         FROM unit_type_param utp
         WHERE utp.unit_type_id = ?
+    """.formatted(UNITTYPE_PARAM_COLUMNS);
+
+    private static final String GET_UNITTYPE_PARAMETER_BY_UNITTYPE_PARAM_ID = """
+        SELECT
+            %s
+        FROM unit_type_param utp
+        WHERE utp.unit_type_param_id = ?
     """.formatted(UNITTYPE_PARAM_COLUMNS);
 
     private static final String GET_PROFILE_PARAMETERS_BY_PROFILE_ID = """
@@ -205,7 +219,29 @@ public class ACSDao {
         this.syslog = syslog;
     }
 
+    public List<Unittype> getUnitTypes() {
+        try (var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+             var statement = new DynamicStatementWrapper(connection, GET_UNITTYPES);
+             var resultSet = statement.getPreparedStatement().executeQuery()) {
+            var unittypes = new ArrayList<Unittype>();
+            while (resultSet.next()) {
+                var unittype = parseUnittype(resultSet);
+                var unittypeParametersList = getUnittypeParametersByUnitTypeId(unittype.getId());
+                var unittypeParameters = new UnittypeParameters(unittypeParametersList, unittype);
+                unittype.setUnittypeParameters(unittypeParameters);
+                unittypes.add(unittype);
+            }
+            return unittypes;
+        } catch (SQLException e) {
+            throw new AcsException("Failed to fetch unit types", e);
+        }
+    }
+
     public Unittype getUnitTypeById(int unitTypeId) {
+        return getUnitTypeById(unitTypeId, true);
+    }
+
+    public Unittype getUnitTypeById(int unitTypeId, boolean includeParameters) {
         if (unitTypeId == 0) {
             throw new IllegalArgumentException("unitTypeId cannot be null");
         }
@@ -213,17 +249,28 @@ public class ACSDao {
              var statement = new DynamicStatementWrapper(connection, GET_UNITTYPE_BY_ID, unitTypeId);
              var resultSet = statement.getPreparedStatement().executeQuery()) {
             if (resultSet.next()) {
-                return parseUnittype(resultSet);
+                var unittype = parseUnittype(resultSet);
+                if (includeParameters) {
+                    var unittypeParametersList = getUnittypeParametersByUnitTypeId(unittype.getId());
+                    var unittypeParameters = new UnittypeParameters(unittypeParametersList, unittype);
+                    unittype.setUnittypeParameters(unittypeParameters);
+                }
+                return unittype;
             } else {
                 log.debug("No unittype found with id {}", unitTypeId);
                 return null;
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new AcsException("Failed to fetch unittype by id: %s", e, unitTypeId);
         }
     }
 
     public Unittype getUnitTypeByName(String unitTypeName) {
+        return getUnitTypeByName(unitTypeName, true);
+    }
+
+    public Unittype getUnitTypeByName(String unitTypeName, boolean includeParameters) {
         if (unitTypeName == null) {
             throw new IllegalArgumentException("unitTypeName cannot be null");
         }
@@ -231,7 +278,13 @@ public class ACSDao {
              var statement = new DynamicStatementWrapper(connection, GET_UNITTYPE_BY_NAME, unitTypeName);
              var resultSet = statement.getPreparedStatement().executeQuery()) {
             if (resultSet.next()) {
-                return parseUnittype(resultSet);
+                var unittype = parseUnittype(resultSet);
+                if (includeParameters) {
+                    var unittypeParametersList = getUnittypeParametersByUnitTypeId(unittype.getId());
+                    var unittypeParameters = new UnittypeParameters(unittypeParametersList, unittype);
+                    unittype.setUnittypeParameters(unittypeParameters);
+                }
+                return unittype;
             } else {
                 log.debug("No unittype found with id {}", unitTypeName);
                 return null;
@@ -245,7 +298,7 @@ public class ACSDao {
         if (unitTypeId == 0) {
             throw new IllegalArgumentException("unitTypeId cannot be null");
         }
-        var unittype = getUnitTypeById(unitTypeId);
+        var unittype = getUnitTypeById(unitTypeId, false);
         try (var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
              var statement = new DynamicStatementWrapper(connection, GET_UNITTYPE_PARAMETERS_BY_UNITTYPE_ID, unitTypeId);
              var resultSet = statement.getPreparedStatement().executeQuery()) {
@@ -259,6 +312,23 @@ public class ACSDao {
             throw new AcsException("Failed to fetch unittype parameters by unittype id: %s", e, unitTypeId);
         }
     }
+
+    public UnittypeParameter getUnittypeParameterByUnitTypeParameId(int unitTypeParamId) {
+        if (unitTypeParamId == 0) {
+            throw new IllegalArgumentException("unitTypeParamId cannot be null");
+        }
+        try (var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+             var statement = new DynamicStatementWrapper(connection, GET_UNITTYPE_PARAMETER_BY_UNITTYPE_PARAM_ID, unitTypeParamId);
+             var resultSet = statement.getPreparedStatement().executeQuery()) {
+            if (resultSet.next()) {
+                return parseUnittypeParameter(resultSet, null);
+            }
+            return null;
+        } catch (SQLException e) {
+            throw new AcsException("Failed to fetch unittype parameters by unittype param id: %s", e, unitTypeParamId);
+        }
+    }
+
 
     public Group getGroupById(int groupId) {
         if (groupId == 0) {
@@ -277,8 +347,12 @@ public class ACSDao {
             throw new AcsException("Failed to fetch group by id: %s", e, groupId);
         }
     }
-
+    
     public Profile getProfileById(int profileId) {
+        return getProfileById(profileId, true);
+    }
+
+    public Profile getProfileById(int profileId, boolean includeParameters) {
         if (profileId == 0) {
             throw new IllegalArgumentException("profileId cannot be null");
         }
@@ -286,7 +360,13 @@ public class ACSDao {
             var statement = new DynamicStatementWrapper(connection, GET_PROFILE_BY_ID, profileId);
             var resultSet = statement.getPreparedStatement().executeQuery()) {
             if (resultSet.next()) {
-                return parseProfile(resultSet);
+                var profile = parseProfile(resultSet);
+                if (includeParameters) {
+                    var profileParametersList = getProfileParametersByProfileId(profile.getId());
+                    var profileParameters = new ProfileParameters(profileParametersList, profile);
+                    profile.setProfileParameters(profileParameters);
+                }
+                return profile;
             } else {
                 log.debug("No profile found with id {}", profileId);
                 return null;
@@ -371,7 +451,7 @@ public class ACSDao {
         if (profileId == 0) {
             throw new IllegalArgumentException("profileId cannot be null");
         }
-        var profile = getProfileById(profileId);
+        var profile = getProfileById(profileId, false);
         try(var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
             var statement = new DynamicStatementWrapper(connection, GET_PROFILE_PARAMETERS_BY_PROFILE_ID, profileId);
             var resultSet = statement.getPreparedStatement().executeQuery()) {
@@ -481,7 +561,10 @@ public class ACSDao {
     private static UnittypeParameter parseUnittypeParameter(ResultSet resultSet, Unittype unittype) throws SQLException {
         var name = resultSet.getString("name");
         var param = new UnittypeParameterFlag(resultSet.getString("flags"));
-        var unitTypeParam = new UnittypeParameter(unittype, name, param);
+        var unitTypeParam = new UnittypeParameter();
+        unitTypeParam.setUnittype(unittype);
+        unitTypeParam.setName(name);
+        unitTypeParam.setFlag(param);
         unitTypeParam.setId(resultSet.getInt("unit_type_param_id"));
         return unitTypeParam;
     }
@@ -672,7 +755,7 @@ public class ACSDao {
     }
 
     public Unit getUnitById(String unitId, Unittype unittype, Profile profile) throws SQLException {
-        return getUnitById(unitId, unittype, profile, this::getUnitTypeById);
+        return getUnitById(unitId, unittype, profile, this::getUnitTypeById, this::getUnitTypes, this::getUnittypeParameterByUnitTypeParameId, this::getProfileById);
     }
 
     /**
@@ -680,7 +763,14 @@ public class ACSDao {
      * @param profile - may be null
      * @return a unit object will all unit parameters found
      */
-    public Unit getUnitById(String unitId, Unittype unittype, Profile profile, Function<Integer, Unittype> getUnittypeFunction) throws SQLException {
+    public Unit getUnitById(
+            String unitId,
+            Unittype unittype,
+            Profile profile,
+            Function<Integer, Unittype> getUnittypeFunction,
+            Supplier<List<Unittype>> getUnittypesFunction,
+            Function<Integer, UnittypeParameter> getUnittypeParameterFunction,
+            Function<Integer, Profile> getProfileFunction) throws SQLException {
         Connection connection = null;
         boolean wasAutoCommit = false;
         try {
@@ -688,8 +778,8 @@ public class ACSDao {
             wasAutoCommit = connection.getAutoCommit();
             connection.setAutoCommit(false);
             // Passing null for acs since we are not using functions that require it
-            UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, null, syslog, unittype, profile);
-            Unit u = uqcu.getUnitById(unitId, getUnittypeFunction);
+            UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, null, syslog, unittype, profile, getUnittypeFunction, getUnittypesFunction, getUnittypeParameterFunction, getProfileFunction);
+            Unit u = uqcu.getUnitById(unitId);
             if (u != null && ACSVersionCheck.unitParamSessionSupported && u.isSessionMode()) {
                 return uqcu.addSessionParameters(u);
             } else {
@@ -707,7 +797,12 @@ public class ACSDao {
         return getUnitById(unitId, null, null);
     }
 
-    public Unit getUnitById(String unitId, Function<Integer, Unittype> getUnittypeFunction) throws SQLException {
-        return getUnitById(unitId, null, null, getUnittypeFunction);
+    public Unit getUnitById(
+            String unitId,
+            Function<Integer, Unittype> getUnittypeFunction,
+            Supplier<List<Unittype>> getUnittypesFunction,
+            Function<Integer, UnittypeParameter> getUnittypeParamFunction,
+            Function<Integer, Profile> getProfileFunction) throws SQLException {
+        return getUnitById(unitId, null, null, getUnittypeFunction, getUnittypesFunction, getUnittypeParamFunction, getProfileFunction);
     }
 }

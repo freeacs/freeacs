@@ -31,6 +31,17 @@ public class UnittypeParameters {
   private final Unittype unittype;
   private Boolean hasDeviceParameters;
 
+  public UnittypeParameters(List<UnittypeParameter> unittypeParameters, Unittype unittype) {
+    this.unittype = unittype;
+    idMap = new HashMap<>();
+    nameMap = new HashMap<>();
+    for (UnittypeParameter unittypeParameter : unittypeParameters) {
+      idMap.put(unittypeParameter.getId(), unittypeParameter);
+      nameMap.put(unittypeParameter.getName(), unittypeParameter);
+      updateInternalMaps(unittypeParameter);
+    }
+  }
+
   public UnittypeParameters(
       Map<Integer, UnittypeParameter> idMap,
       Map<String, UnittypeParameter> nameMap,
@@ -265,7 +276,7 @@ public class UnittypeParameters {
             unittypeParameter.setId(gk.getInt(1));
           }
 
-          logger.info("Added unittype parameter " + unittypeParameter.getName());
+          logger.info("Added unittype parameter " + unittypeParameter.getName() + " with id " + unittypeParameter.getId());
         } else {
           ds.addSql("UPDATE unit_type_param SET ");
           ds.addSqlAndArguments("flags = ?, ", unittypeParameter.getFlag().getFlag());

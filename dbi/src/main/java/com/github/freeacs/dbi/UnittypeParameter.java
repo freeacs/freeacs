@@ -1,8 +1,10 @@
 package com.github.freeacs.dbi;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class UnittypeParameter {
   private Integer id;
 
@@ -14,7 +16,7 @@ public class UnittypeParameter {
 
   private UnittypeParameterValues values;
 
-  private final Unittype unittype;
+  private Unittype unittype;
 
   public UnittypeParameter(Unittype unittype, String name, UnittypeParameterFlag flag) {
     if (unittype == null) {
