@@ -1,6 +1,7 @@
 package com.github.freeacs.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.freeacs.cache.HazelcastConfig;
 import com.github.freeacs.common.hikari.HikariDataSourceHelper;
 import com.github.freeacs.common.jetty.JettyFactory;
 import com.github.freeacs.common.util.Sleep;
@@ -18,6 +19,8 @@ import com.github.freeacs.web.routes.MainRoute;
 import com.github.freeacs.web.routes.MenuRoute;
 import com.github.freeacs.web.routes.UnitDashboardRoute;
 import com.github.freeacs.web.routes.UnittypeParametersRoute;
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.zaxxer.hikari.HikariDataSource;
@@ -68,6 +71,7 @@ public class App {
     DataSource mainDs = HikariDataSourceHelper.dataSource(config.getConfig("main"));
     Configuration configuration = Freemarker.initFreemarker();
     ObjectMapper objectMapper = new ObjectMapper();
+    HazelcastInstance hazelcastInstance = HazelcastConfig.getHazelcastInstance();
     routes(mainDs, properties, configuration, objectMapper);
     Runtime.getRuntime()
         .addShutdownHook(

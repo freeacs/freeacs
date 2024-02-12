@@ -215,7 +215,7 @@ public class JobKickThread implements Runnable {
       while (iterator.hasNext()) {
         String unitId = iterator.next();
         try {
-          if (newJobStartedOrRunningJobStopped(job)) {
+          if (job != null && newJobStartedOrRunningJobStopped(job)) {
             return;
           }
           kickSleep.sleep();

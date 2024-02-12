@@ -149,11 +149,11 @@ public class ACSDao {
           description,
           version,
           timestamp_,
-          length(content) as length%s
+          length(content) as length{}
         FROM filestore
         WHERE unit_type_id = ? AND type = ? AND version = ?
         ORDER BY unit_type_id ASC
-    """.formatted(ACSVersionCheck.fileReworkSupported ? ", target_name, owner " : "");
+    """;
 
     public static String GET_JOB_BY_ID = """
         SELECT
@@ -411,10 +411,11 @@ public class ACSDao {
     }
 
     public File getFileByUnitTypeIdAndFileTypeAndVersion(Unittype unittype, FileType fileType, String firmwareVersion) throws SQLException {
+        String sql = GET_FILE_BY_TYPE_AND_VERSION.replace("{}", ACSVersionCheck.fileReworkSupported ? ", target_name, owner " : "");
         try(var connectionWrapper =
                     new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
             var statementWrapper =
-                    new DynamicStatementWrapper(connectionWrapper, GET_FILE_BY_TYPE_AND_VERSION, unittype.getId(), fileType.name(), firmwareVersion);
+                    new DynamicStatementWrapper(connectionWrapper, sql, unittype.getId(), fileType.name(), firmwareVersion);
             var resultSet =
                     statementWrapper.getPreparedStatement().executeQuery()) {
             if (resultSet.next()) {

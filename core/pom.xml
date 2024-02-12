@@ -16,6 +16,21 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.github.freeacs</groupId>
+      <artifactId>cache</artifactId>
+      <version>${project.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.hazelcast</groupId>
+          <artifactId>hazelcast-spring</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-cache</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>org.graalvm.js</groupId>
       <artifactId>js</artifactId>
     </dependency>

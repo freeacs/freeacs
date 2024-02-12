@@ -22,15 +22,12 @@ import org.slf4j.LoggerFactory;
 public class AddOrChangeUnit {
   private static final Logger logger = LoggerFactory.getLogger(AddOrChangeUnit.class);
 
-  private ACSFactory acsWS;
-  private ACSUnit acsUnit;
-
   public AddOrChangeUnitResponse addOrChangeUnit(
       AddOrChangeUnitRequest aocur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
     try {
-      acsWS = ACSWSFactory.getXAPSWS(aocur.getLogin(), xapsDs, syslogDs);
+      ACSFactory acsWS = ACSWSFactory.getXAPSWS(aocur.getLogin(), xapsDs, syslogDs);
       ACS acs = acsWS.getAcs();
-      acsUnit = acsWS.getXAPSUnit(acs);
+      ACSUnit acsUnit = acsWS.getXAPSUnit(acs);
 
       /*
        * We need to support these use cases
@@ -65,7 +62,7 @@ public class AddOrChangeUnit {
       Profile profile =
           acsWS.getProfileFromXAPS(
               unitWS.getUnittype().getValue().getName(), unitWS.getProfile().getValue().getName());
-      String unitId = validateUnitId(unitWS, profile.getUnittype(), profile);
+      String unitId = validateUnitId(unitWS, profile.getUnittype(), profile, acsWS, acsUnit);
       List<String> unitIds = new ArrayList<>();
       unitIds.add(unitId);
       List<UnitParameter> acParams =
@@ -87,7 +84,7 @@ public class AddOrChangeUnit {
     }
   }
 
-  private String validateUnitId(Unit unitWS, Unittype unittype, Profile profile)
+  private String validateUnitId(Unit unitWS, Unittype unittype, Profile profile, ACSFactory acsWS, ACSUnit acsUnit)
       throws SQLException, RemoteException {
     if (unitWS.getUnitId() == null) {
       if (unitWS.getSerialNumber() != null) {

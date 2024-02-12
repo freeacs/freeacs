@@ -23,7 +23,7 @@
         <appender-ref ref="FILE" />
     </appender>
     <logger name="com.github.freeacs" level="WARN" />
-    <root level="WARN">
+    <root level="INFO">
         <appender-ref ref="ASYNC_FILE"/>
         <appender-ref ref="ASYNC_STDOUT" />
     </root>
