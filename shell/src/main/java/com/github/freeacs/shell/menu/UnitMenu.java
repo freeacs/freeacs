@@ -105,7 +105,7 @@ public class UnitMenu {
       unitParameterList.add(unitParameter);
       session
           .getAcsUnit()
-          .addOrChangeSessionUnitParameters(unitParameterList, context.getProfile());
+          .addOrChangeSessionUnitParameters(unitParameterList);
       context.println(
           "["
               + session.getCounter()

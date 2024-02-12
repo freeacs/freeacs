@@ -125,7 +125,7 @@ public abstract class DBIActions {
                 }
             }
             if (!unitSessionParameters.isEmpty()) {
-                acsCache.addOrChangeSessionUnitParameters(unitSessionParameters, profile);
+                acsCache.addOrChangeSessionUnitParameters(unitSessionParameters);
             }
         } catch (SQLException sqle) {
             throw new TR069DatabaseException(

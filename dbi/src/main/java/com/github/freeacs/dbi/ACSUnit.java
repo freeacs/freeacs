@@ -270,7 +270,6 @@ public class ACSUnit {
   private void addOrChangeUnitParameters(
       List<UnitParameter> unitParameters, boolean session) throws SQLException {
     Connection connection = null;
-    PreparedStatement pp = null;
     String sql;
     boolean updateFirst = true;
     String tableName = "unit_param";
@@ -359,12 +358,11 @@ public class ACSUnit {
       }
       connection.commit();
     } catch (SQLException sqle) {
-      connection.rollback();
+      if (connection != null) {
+        connection.rollback();
+      }
       throw sqle;
     } finally {
-      if (pp != null) {
-        pp.close();
-      }
       if (connection != null) {
         connection.setAutoCommit(wasAutoCommit);
         connection.close();
@@ -406,7 +404,7 @@ public class ACSUnit {
     addOrChangeUnitParameters(ups);
   }
 
-  public void addOrChangeSessionUnitParameters(List<UnitParameter> unitParameters, Profile prof)
+  public void addOrChangeSessionUnitParameters(List<UnitParameter> unitParameters)
       throws SQLException {
     if (ACSVersionCheck.unitParamSessionSupported) {
       addOrChangeUnitParameters(unitParameters, true);

@@ -4,13 +4,13 @@ import com.github.freeacs.dbi.exceptions.AcsException;
 import com.github.freeacs.dbi.sql.AutoCommitResettingConnectionWrapper;
 import com.github.freeacs.dbi.sql.DynamicStatementWrapper;
 import com.github.freeacs.dbi.util.ACSVersionCheck;
+import com.github.freeacs.dbi.util.SyslogClient;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
-import java.sql.Blob;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
+import java.util.function.Function;
 
 import static com.github.freeacs.dbi.util.NumberUtils.parseStringId;
 
@@ -198,9 +198,11 @@ public class ACSDao {
 
 
     private final DataSource dataSource;
+    private final Syslog syslog;
 
-    public ACSDao(DataSource dataSource) {
+    public ACSDao(DataSource dataSource, Syslog syslog) {
         this.dataSource = dataSource;
+        this.syslog = syslog;
     }
 
     public Unittype getUnitTypeById(int unitTypeId) {
@@ -512,5 +514,200 @@ public class ACSDao {
             group.setParent(parentGroup);
         }
         return group;
+    }
+
+    public void addOrChangeUnitParameters(List<UnitParameter> unitSessionParameters) throws SQLException {
+        addOrChangeUnitParameters(unitSessionParameters, false);
+    }
+
+    public void addOrChangeSessionUnitParameters(List<UnitParameter> unitSessionParameters) throws SQLException {
+        if (ACSVersionCheck.unitParamSessionSupported) {
+            addOrChangeUnitParameters(unitSessionParameters, true);
+        }
+    }
+
+    private void addOrChangeUnitParameters(List<UnitParameter> unitParameters, boolean session) throws SQLException {
+        String tableName = session ? "unit_param_session" : "unit_param";
+        try(var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false, true)) {
+            try {
+                for (int i = 0; unitParameters != null && i < unitParameters.size(); i++) {
+                    UnitParameter unitParameter = unitParameters.get(i);
+                    String unitId = unitParameter.getUnitId();
+                    Parameter parameter = unitParameter.getParameter();
+                    if (parameter.getValue() != null && parameter.getValue().length() > 512) {
+                        parameter.setValue(parameter.getValue().substring(0, 509) + "...");
+                    }
+                    String value = parameter.getValue(); // will be "" if value was null
+                    String utpName = parameter.getUnittypeParameter().getName();
+                    String action = "Added";
+                    String sql = "INSERT INTO " + tableName + " (value, unit_id, unit_type_param_id) VALUES (?, ?, ?)";
+                    try {
+                        executeSql(sql, connection.getConnection(), parameter.getUnittypeParameter(), value, unitId);
+                    } catch (SQLException insertEx) {
+                        sql = "UPDATE " + tableName + " SET value = ? WHERE unit_id = ? AND unit_type_param_id = ?";
+                        int rowsupdated = executeSql(sql, connection.getConnection(), parameter.getUnittypeParameter(), value, unitId);
+                        if (rowsupdated == 0) {
+                            throw insertEx;
+                        }
+                        action = "Updated";
+                    }
+                    String msg;
+                    if (tableName.contains("session")) {
+                        msg = action + " temporary unit parameter " + utpName;
+                    } else {
+                        msg = action + " unit parameter " + utpName;
+                    }
+                    if (parameter.getUnittypeParameter().getFlag().isConfidential()) {
+                        msg += " with confidental value (*****)";
+                    } else {
+                        msg += " with value " + parameter.getValue();
+                    }
+                    SyslogClient.info(unitId, msg, syslog);
+                    log.info(msg);
+                    if (i > 0 && i % 100 == 0) {
+                        connection.getConnection().commit();
+                    }
+                }
+                connection.getConnection().commit();
+            } catch (SQLException sqle) {
+                connection.getConnection().rollback();
+                throw sqle;
+            }
+        }
+    }
+
+    private int executeSql(
+            String sql, Connection c, UnittypeParameter unittypeParameter, String value, String unitId)
+            throws SQLException {
+        PreparedStatement pp = c.prepareStatement(sql);
+        pp.setString(1, value);
+        pp.setString(2, unitId);
+        pp.setInt(3, unittypeParameter.getId());
+        pp.setQueryTimeout(60);
+        int rowsupdated = pp.executeUpdate();
+        pp.close();
+        return rowsupdated;
+    }
+
+    /**
+     * This list will be INSERTed into the UNIT-table, and connected to the given profile (and thereby
+     * to the correct unittype).
+     *
+     * <p>The function cannot change the profile or unittype for an already existing unitid. For
+     * changing the profile, use the moveUnit()-function, for changing the unittype you would have to
+     * delete all units from the current unittype, and add them to the new one. The reason for this is
+     * that you should make a new set of unittype-parameters as well when you do that.
+     */
+    public void addUnits(List<String> unitIds, Profile profile) throws SQLException {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        boolean wasAutoCommit = false;
+        try {
+            connection = dataSource.getConnection();
+            wasAutoCommit = connection.getAutoCommit();
+            connection.setAutoCommit(false);
+            Unittype unittype = profile.getUnittype();
+            for (int i = 0; unitIds != null && i < unitIds.size(); i++) {
+                String unitId = unitIds.get(i);
+                DynamicStatement ds = new DynamicStatement();
+                ds.addSql("INSERT INTO unit (unit_id, unit_type_id, profile_id) VALUES (?,?,?)");
+                ds.addArguments(unitId, unittype.getId(), profile.getId());
+                try {
+                    ps = ds.makePreparedStatement(connection);
+                    ps.setQueryTimeout(60);
+                    ps.executeUpdate();
+                    SyslogClient.info(unitId, "Added unit", syslog);
+                    log.info("Added unit " + unitId);
+                } catch (SQLException ex) {
+                    ds = new DynamicStatement();
+                    ds.addSql("UPDATE unit SET profile_id = ? WHERE unit_id = ? AND unit_type_id = ?");
+                    ds.addArguments(profile.getId(), unitId, unittype.getId());
+                    ps = ds.makePreparedStatement(connection);
+                    ps.setQueryTimeout(60);
+                    int rowsUpdated = ps.executeUpdate();
+                    if (rowsUpdated == 0) {
+                        throw ex;
+                    }
+                    if (rowsUpdated > 0) {
+                        SyslogClient.info(unitId, "Moved unit to profile " + profile.getName(), syslog);
+                        log.info("Moved unit " + unitId + " to profile " + profile.getName());
+                    }
+                }
+                if (i > 0 && i % 100 == 0) {
+                    connection.commit();
+                }
+            }
+            connection.commit();
+        } catch (SQLException sqle) {
+            if (connection != null) {
+                connection.rollback();
+            }
+            throw sqle;
+        } finally {
+            if (ps != null) {
+                ps.close();
+            }
+            if (connection != null) {
+                connection.setAutoCommit(wasAutoCommit);
+                connection.close();
+            }
+        }
+    }
+
+    public void addOrChangeQueuedUnitParameters(Unit unit) throws SQLException {
+        List<UnitParameter> queuedParameters = unit.flushWriteQueue();
+        // TODO necessary to check if the value is the same as the one already stored in the DB?
+        Iterator<UnitParameter> iterator = queuedParameters.iterator();
+        while (iterator.hasNext()) {
+            UnitParameter queuedUp = iterator.next();
+            UnitParameter storedUp =
+                    unit.getUnitParameters().get(queuedUp.getParameter().getUnittypeParameter().getName());
+            if (storedUp != null
+                    && storedUp.getValue() != null
+                    && storedUp.getValue().equals(queuedUp.getValue())) {
+                iterator.remove(); // don't write the queued Unit Parameter if it has the same value as already stored
+            }
+        }
+        addOrChangeUnitParameters(queuedParameters);
+    }
+
+    public Unit getUnitById(String unitId, Unittype unittype, Profile profile) throws SQLException {
+        return getUnitById(unitId, unittype, profile, this::getUnitTypeById);
+    }
+
+    /**
+     * @param unittype - may be null
+     * @param profile - may be null
+     * @return a unit object will all unit parameters found
+     */
+    public Unit getUnitById(String unitId, Unittype unittype, Profile profile, Function<Integer, Unittype> getUnittypeFunction) throws SQLException {
+        Connection connection = null;
+        boolean wasAutoCommit = false;
+        try {
+            connection = dataSource.getConnection();
+            wasAutoCommit = connection.getAutoCommit();
+            connection.setAutoCommit(false);
+            // Passing null for acs since we are not using functions that require it
+            UnitQueryCrossUnittype uqcu = new UnitQueryCrossUnittype(connection, null, syslog, unittype, profile);
+            Unit u = uqcu.getUnitById(unitId, getUnittypeFunction);
+            if (u != null && ACSVersionCheck.unitParamSessionSupported && u.isSessionMode()) {
+                return uqcu.addSessionParameters(u);
+            } else {
+                return u;
+            }
+        } finally {
+            if (connection != null) {
+                connection.setAutoCommit(wasAutoCommit);
+                connection.close();
+            }
+        }
+    }
+
+    public Unit getUnitById(String unitId) throws SQLException {
+        return getUnitById(unitId, null, null);
+    }
+
+    public Unit getUnitById(String unitId, Function<Integer, Unittype> getUnittypeFunction) throws SQLException {
+        return getUnitById(unitId, null, null, getUnittypeFunction);
     }
 }

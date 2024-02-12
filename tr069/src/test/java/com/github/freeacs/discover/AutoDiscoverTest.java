@@ -4,6 +4,7 @@ import com.github.freeacs.Main;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.util.SystemParameters;
+import com.github.freeacs.provisioning.AbstractProvisioningTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -36,7 +37,7 @@ public class AutoDiscoverTest extends AbstractDiscoverTest {
     @Test
     public void unitAndUnittypeIsDiscovered() throws Exception {
         discoverUnit();
-        ACSUnit acsUnit = dbi.getACSUnit();
+        ACSUnit acsUnit = AbstractProvisioningTest.getAcsUnit(dbi);
         Unit unit = acsUnit.getUnitById(UNIT_ID_AUTO);
         assertEquals("FakeProductClass", unit.getUnittype().getName());
         assertEquals("Default", unit.getProfile().getName());

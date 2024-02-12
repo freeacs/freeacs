@@ -84,7 +84,8 @@ public class SetDiscoverParameterJobTest implements AbstractMySqlIntegrationTest
         file.setType(FileType.SHELL_SCRIPT);
         file.setVersion("1.0");
         file.setUnittype(unittype);
-        file.setOwner(dbi.getAcs().getUser());
+        Users user = new Users(dbi.getDataSource());
+        file.setOwner(user.getUnprotected(Users.USER_ADMIN));
         file.setTimestamp(Date.valueOf(LocalDate.now()));
         file.setName("Shell script");
         unittype.getFiles().addOrChangeFile(file, dbi.getAcs());
@@ -101,7 +102,7 @@ public class SetDiscoverParameterJobTest implements AbstractMySqlIntegrationTest
         unittype.getJobs().add(job, dbi.getAcs());
         job.setStatus(JobStatus.STARTED);
         unittype.getJobs().changeStatus(job, dbi.getAcs());
-        ACSUnit acsUnit = dbi.getACSUnit();
+        ACSUnit acsUnit = AbstractProvisioningTest.getAcsUnit(dbi);
         acsUnit.addOrChangeUnitParameter(acsUnit.getUnitById(UNIT_ID), SystemParameters.JOB_CURRENT, job.getId().toString());
     }
 
@@ -122,7 +123,7 @@ public class SetDiscoverParameterJobTest implements AbstractMySqlIntegrationTest
     public void setDiscoverParameterViaJob() throws Exception {
         init();
         provisionUnit(httpBasic(UNIT_ID, UNIT_PASSWORD));
-        ACSUnit acsUnit = dbi.getACSUnit();
+        ACSUnit acsUnit = AbstractProvisioningTest.getAcsUnit(dbi);
         String discoverValue = acsUnit.getUnitById(UNIT_ID).getUnitParameters().get(SystemParameters.DISCOVER).getValue();
         assertEquals("valueToExpectInTest", discoverValue);
     }

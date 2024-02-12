@@ -2,6 +2,7 @@ package com.github.freeacs.dbi;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.NonNull;
 
 import java.util.regex.Pattern;
 
