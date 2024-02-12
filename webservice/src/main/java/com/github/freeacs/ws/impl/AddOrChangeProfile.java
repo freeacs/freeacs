@@ -21,9 +21,7 @@ import org.slf4j.LoggerFactory;
 public class AddOrChangeProfile {
   private static final org.slf4j.Logger logger = LoggerFactory.getLogger(AddOrChangeProfile.class);
 
-  private ACS acs;
-
-  private void addOrChangeProfileImpl(Profile profileXAPS, AddOrChangeProfileRequest gur)
+  private void addOrChangeProfileImpl(Profile profileXAPS, AddOrChangeProfileRequest gur, ACS acs)
       throws SQLException, RemoteException {
     ParameterList parameterList = gur.getProfile().getParameters().getValue();
     List<ProfileParameter> acPpList = new ArrayList<>();
@@ -77,7 +75,7 @@ public class AddOrChangeProfile {
       throws RemoteException {
     try {
       ACSFactory acsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
-      acs = acsWS.getAcs();
+      ACS acs = acsWS.getAcs();
       if (gur.getUnittype() == null || gur.getProfile() == null) {
         throw ACSFactory.error(logger, "No unittype or profile specified");
       }
@@ -97,7 +95,7 @@ public class AddOrChangeProfile {
         if (isAllowedToMakeProfile) {
           com.github.freeacs.ws.xml.Profile pWS = gur.getProfile();
           profileXAPS = new Profile(pWS.getName(), unittype);
-          addOrChangeProfileImpl(profileXAPS, gur);
+          addOrChangeProfileImpl(profileXAPS, gur, acs);
         } else {
           throw ACSFactory.error(
               logger,
@@ -107,7 +105,7 @@ public class AddOrChangeProfile {
         }
       } else { // change an existing one
         profileXAPS = acsWS.getProfileFromXAPS(unittype.getName(), gur.getProfile().getName());
-        addOrChangeProfileImpl(profileXAPS, gur);
+        addOrChangeProfileImpl(profileXAPS, gur, acs);
       }
       AddOrChangeProfileResponse response = new AddOrChangeProfileResponse();
       response.setProfile(ConvertACS2WS.convert(profileXAPS));

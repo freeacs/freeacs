@@ -16,18 +16,16 @@ import org.slf4j.LoggerFactory;
 public class DeleteUnit {
   private static final Logger logger = LoggerFactory.getLogger(DeleteUnit.class);
 
-  private ACSFactory acsWS;
-
   public DeleteUnitResponse deleteUnit(
       DeleteUnitRequest dur, DataSource xapsDs, DataSource syslogDs) throws RemoteException {
     try {
-      acsWS = ACSWSFactory.getXAPSWS(dur.getLogin(), xapsDs, syslogDs);
+      ACSFactory acsWS = ACSWSFactory.getXAPSWS(dur.getLogin(), xapsDs, syslogDs);
       ACS acs = acsWS.getAcs();
       ACSUnit acsUnit = acsWS.getXAPSUnit(acs);
       if (dur.getUnit() == null) {
         throw ACSFactory.error(logger, "No unit object is specified");
       }
-      com.github.freeacs.dbi.Unit unitXAPS = validateUnitId(dur.getUnit(), acsUnit);
+      com.github.freeacs.dbi.Unit unitXAPS = validateUnitId(dur.getUnit(), acsUnit, acsWS);
       if (unitXAPS == null) {
         return getDeleteUnitResponse(false);
       } else {
@@ -51,7 +49,7 @@ public class DeleteUnit {
     return response;
   }
 
-  private com.github.freeacs.dbi.Unit validateUnitId(Unit unitWS, ACSUnit acsUnit)
+  private com.github.freeacs.dbi.Unit validateUnitId(Unit unitWS, ACSUnit acsUnit, ACSFactory acsWS)
       throws SQLException, RemoteException {
     com.github.freeacs.dbi.Unit unitXAPS = null;
     if (unitWS.getUnitId() == null) {

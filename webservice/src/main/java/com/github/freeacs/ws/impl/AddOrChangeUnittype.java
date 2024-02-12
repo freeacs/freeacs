@@ -21,15 +21,10 @@ import org.slf4j.LoggerFactory;
 public class AddOrChangeUnittype {
   private static final Logger logger = LoggerFactory.getLogger(AddOrChangeUnittype.class);
 
-  private ACS acs;
-  private ACSFactory acsWS;
-
-  private void addOrChangeUnittypeImpl(Unittype unittypeXAPS, AddOrChangeUnittypeRequest gur)
+  private void addOrChangeUnittypeImpl(Unittype unittypeXAPS, AddOrChangeUnittypeRequest gur, ACS acs)
       throws SQLException, RemoteException {
     unittypeXAPS.setDescription(gur.getUnittype().getDescription().getValue());
-    //		unittypeXAPS.setMatcherId(gur.getUnittype().getMatcherId());
-    unittypeXAPS.setProtocol(
-        ProvisioningProtocol.toEnum(gur.getUnittype().getProtocol().getValue()));
+    unittypeXAPS.setProtocol(ProvisioningProtocol.toEnum(gur.getUnittype().getProtocol().getValue()));
     unittypeXAPS.setVendor(gur.getUnittype().getVendor().getValue());
     ParameterList parameterList = gur.getUnittype().getParameters().getValue();
     List<UnittypeParameter> acUtpList = new ArrayList<>();
@@ -65,16 +60,11 @@ public class AddOrChangeUnittype {
         }
       }
     }
-    //		System.out.println("AOC: Unitypes object: " + xapsWS.getXAPS().getUnittypes());
-    acsWS.getAcs().getUnittypes().addOrChangeUnittype(unittypeXAPS, acs);
+    acs.getUnittypes().addOrChangeUnittype(unittypeXAPS, acs);
     for (UnittypeParameter utp : dUtpList) {
-      //			System.out.println("D: Unittype: " + unittypeXAPS + ", UTP:" + utp.getName() + ", " +
-      // utp.getFlag().getFlag());
       unittypeXAPS.getUnittypeParameters().deleteUnittypeParameter(utp, acs);
     }
     for (UnittypeParameter utp : acUtpList) {
-      //			System.out.println("AOC: Unittype: " + unittypeXAPS + ", UTP:" + utp.getName() + ", " +
-      // utp.getFlag().getFlag());
       unittypeXAPS.getUnittypeParameters().addOrChangeUnittypeParameter(utp, acs);
     }
   }
@@ -83,8 +73,8 @@ public class AddOrChangeUnittype {
       AddOrChangeUnittypeRequest gur, DataSource xapsDs, DataSource syslogDs)
       throws RemoteException {
     try {
-      acsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
-      acs = acsWS.getAcs();
+      ACSFactory acsWS = ACSWSFactory.getXAPSWS(gur.getLogin(), xapsDs, syslogDs);
+      ACS acs = acsWS.getAcs();
       User user = acsWS.getId().getUser();
       if (gur.getUnittype() == null || gur.getUnittype().getName() == null) {
         throw ACSFactory.error(logger, "No unittype name specified");
@@ -101,7 +91,7 @@ public class AddOrChangeUnittype {
                   uWS.getVendor().getValue(),
                   uWS.getDescription().getValue(),
                   ProvisioningProtocol.toEnum(uWS.getProtocol().getValue()));
-          addOrChangeUnittypeImpl(unittypeXAPS, gur);
+          addOrChangeUnittypeImpl(unittypeXAPS, gur, acs);
         } else {
           throw ACSFactory.error(
               logger,
@@ -111,7 +101,7 @@ public class AddOrChangeUnittype {
         }
       } else { // change an existing one
         unittypeXAPS = acsWS.getUnittypeFromXAPS(gur.getUnittype().getName());
-        addOrChangeUnittypeImpl(unittypeXAPS, gur);
+        addOrChangeUnittypeImpl(unittypeXAPS, gur, acs);
       }
       AddOrChangeUnittypeResponse response = new AddOrChangeUnittypeResponse();
       response.setUnittype(ConvertACS2WS.convert(unittypeXAPS));
