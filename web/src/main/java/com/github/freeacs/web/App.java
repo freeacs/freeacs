@@ -1,6 +1,7 @@
 package com.github.freeacs.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.freeacs.cache.HazelcastConfig;
 import com.github.freeacs.common.hikari.HikariDataSourceHelper;
 import com.github.freeacs.common.jetty.JettyFactory;
 import com.github.freeacs.common.util.Sleep;
@@ -70,7 +71,7 @@ public class App {
     DataSource mainDs = HikariDataSourceHelper.dataSource(config.getConfig("main"));
     Configuration configuration = Freemarker.initFreemarker();
     ObjectMapper objectMapper = new ObjectMapper();
-    HazelcastInstance hazelcastInstance = Hazelcast.newHazelcastInstance();
+    HazelcastInstance hazelcastInstance = HazelcastConfig.getHazelcastInstance();
     routes(mainDs, properties, configuration, objectMapper);
     Runtime.getRuntime()
         .addShutdownHook(
