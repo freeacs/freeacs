@@ -417,9 +417,10 @@ public class ACSDao {
         var groupId = resultSet.getInt("group_id");
         if (groupId != 0) {
             job.setGroup(parseGroup(resultSet, new HashMap<>()));
+            // a group is always associated with a unittype
+            job.setUnittype(parseUnittype(resultSet));
         }
         job.setFlags(new JobFlag(resultSet.getString("job_type")));
-        job.setUnittype(parseUnittype(resultSet));
         job.setUnconfirmedTimeout(resultSet.getInt("unconfirmed_timeout"));
         job.setStopRules(resultSet.getString("stop_rules"));
         job.setStatus(JobStatus.valueOf(resultSet.getString("status")));
