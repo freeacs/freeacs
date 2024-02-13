@@ -46,9 +46,9 @@ public class ShellJobLogic {
         }
         synchronized (cv.getObject()) {
             // read parameters from device and save it to the unit
-            ShellJobLogic.importReadOnlyParameters(sessionData, dbi, acsCache);
+            ShellJobLogic.importReadOnlyParameters(sessionData, acsCache);
             // execute changes using the shell-script, all changes are written to database
-            ShellJobLogic.executeShellScript(sessionData, job, uj, discovery, execs);
+            ShellJobLogic.executeShellScript(sessionData, acsCache, job, uj, discovery, execs);
             // read the changes from the database and send to CPE
             ShellJobLogic.prepareSPV(sessionData, dbi, acsCache);
         }
@@ -63,7 +63,7 @@ public class ShellJobLogic {
      * Wait for the script to be executed. If shell daemon returns error - should result in Job
      * verification fail (not sure how)
      */
-    private static void executeShellScript(SessionData sessionData, Job job, UnitJob uj, boolean discovery, ScriptExecutions execs)
+    private static void executeShellScript(SessionData sessionData, AcsCache acsCache, Job job, UnitJob uj, boolean discovery, ScriptExecutions execs)
             throws TR069Exception {
         String scriptArgs =
                 "\"-uut:"
@@ -84,12 +84,11 @@ public class ShellJobLogic {
         long timeWaitFactor = 4;
         while (true) {
             try {
-                long timeWait =
-                        timeWaitFactor * timeWaitFactor * timeWaitFactor; // will wait longer and longer
+                long timeWait = timeWaitFactor * timeWaitFactor * timeWaitFactor; // will wait longer and longer
                 Thread.sleep(timeWait);
                 timeWaited += timeWait;
                 timeWaitFactor += 2;
-                ScriptExecution se = execs.getExecution(sessionData.getUnittype(), requestId);
+                ScriptExecution se = execs.getExecution(sessionData.getUnittype(), requestId, acsCache::getUnitTypeById);
                 if (se.getExitStatus() != null) {
                     if (se.getExitStatus()) { // ERROR OCCURRED
                         log.error(se.getErrorMessage());
@@ -147,7 +146,7 @@ public class ShellJobLogic {
      * In order for the shell script to run with the correct parameters, we must read them from the
      * device and write it to the database, before the script starts.
      */
-    private static void importReadOnlyParameters(SessionData sessionData, DBI dbi, AcsCache acsCache)
+    private static void importReadOnlyParameters(SessionData sessionData, AcsCache acsCache)
             throws TR069DatabaseException {
         List<UnitParameter> unitParameters = new ArrayList<>();
         UnittypeParameters utps = sessionData.getUnittype().getUnittypeParameters();
@@ -164,13 +163,12 @@ public class ShellJobLogic {
                 unitParameters.add(
                         new UnitParameter(
                                 utp, sessionData.getUnitId(), pvsCPE.getValue(), sessionData.getProfile()));
-                //				toDB.add(pvsCPE);
             else if (pvsDB != null && pvsDB.getValue() != null)
                 unitParameters.add(
                         new UnitParameter(
                                 utp, sessionData.getUnitId(), pvsCPE.getValue(), sessionData.getProfile()));
         }
-        if (unitParameters.size() > 0) {
+        if (!unitParameters.isEmpty()) {
             try {
                 acsCache.addOrChangeUnitParameters(unitParameters);
             } catch (SQLException sqle) {

@@ -154,7 +154,7 @@ public class ACSDao {
         WHERE id = ?
     """;
 
-    public static final String GET_FILE_BY_TYPE_AND_VERSION = """
+    public static final String GET_FILES = """
         SELECT
           unit_type_id,
           id,
@@ -165,28 +165,43 @@ public class ACSDao {
           timestamp_,
           length(content) as length{}
         FROM filestore
-        WHERE unit_type_id = ? AND type = ? AND version = ?
-        ORDER BY unit_type_id ASC
     """;
 
-    public static String GET_JOB_BY_ID = """
+    public static final String GET_FILE_BY_ID = """
+        %s
+        WHERE id = ?
+    """.formatted(GET_FILES);
+
+    public static final String GET_FILE_BY_TYPE_AND_VERSION = """
+        %s
+        WHERE unit_type_id = ? AND type = ? AND version = ?
+        ORDER BY unit_type_id ASC
+    """.formatted(GET_FILES);
+
+    private static final Object JOB_COLUMNS = """
+        j.job_id,
+        j.job_name,
+        j.job_type,
+        j.description,
+        j.group_id,
+        j.unconfirmed_timeout,
+        j.stop_rules,
+        j.status,
+        j.completed_no_failure,
+        j.completed_had_failure,
+        j.confirmed_failed,
+        j.unconfirmed_failed,
+        j.start_timestamp,
+        j.end_timestamp,
+        j.firmware_id,
+        j.job_id_dependency,
+        j.repeat_count,
+        j.repeat_interval
+    """;
+
+    public static String GET_JOBS = """
         SELECT
-            j.job_id,
-            j.job_name,
-            j.description,
-            j.group_id,
-            j.unconfirmed_timeout,
-            j.stop_rules,
-            j.status,
-            j.completed_no_failure,
-            j.completed_had_failure,
-            j.confirmed_failed,
-            j.unconfirmed_failed,
-            j.start_timestamp,
-            j.end_timestamp,
-            j.job_id_dependency,
-            j.repeat_count,
-            j.repeat_interval,
+            %s,
             %s,
             %s,
             %s
@@ -194,8 +209,8 @@ public class ACSDao {
         LEFT JOIN group_ g ON j.group_id = g.group_id
         LEFT JOIN unit_type ut ON g.unit_type_id = ut.unit_type_id
         LEFT JOIN profile p ON g.profile_id = p.profile_id
-        WHERE j.job_id = ?
     """.formatted(
+            JOB_COLUMNS,
             GROUP_COLUMNS_TEMPLATE.replaceAll("\\{}", "g"),
             UNITTYPE_COLUMNS,
             PROFILE_COLUMNS
@@ -381,35 +396,10 @@ public class ACSDao {
             throw new IllegalArgumentException("jobId cannot be null");
         }
         try(var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
-            var statement = new DynamicStatementWrapper(connection, GET_JOB_BY_ID, jobId);
+            var statement = new DynamicStatementWrapper(connection, GET_JOBS + " WHERE j.job_id = ?", jobId);
             var resultSet = statement.getPreparedStatement().executeQuery()) {
             if (resultSet.next()) {
-                var job = new Job();
-                job.setName(resultSet.getString("job_name"));
-                job.setId(resultSet.getInt("job_id"));
-                job.setDescription(resultSet.getString("description"));
-                var groupId = resultSet.getInt("group_id");
-                if (groupId != 0) {
-                    job.setGroup(parseGroup(resultSet, new HashMap<>()));
-                }
-                job.setUnittype(parseUnittype(resultSet));
-                job.setUnconfirmedTimeout(resultSet.getInt("unconfirmed_timeout"));
-                job.setStopRules(resultSet.getString("stop_rules"));
-                job.setStatus(JobStatus.valueOf(resultSet.getString("status")));
-                job.setCompletedNoFailures(resultSet.getInt("completed_no_failure"));
-                job.setCompletedHadFailures(resultSet.getInt("completed_had_failure"));
-                job.setConfirmedFailed(resultSet.getInt("confirmed_failed"));
-                job.setUnconfirmedFailed(resultSet.getInt("unconfirmed_failed"));
-                job.setStartTimestamp(resultSet.getTimestamp("start_timestamp"));
-                job.setEndTimestamp(resultSet.getTimestamp("end_timestamp"));
-                var jobIdDependency = resultSet.getInt("job_id_dependency");
-                if (jobIdDependency != 0) {
-                    var jobDependency = getJobById(jobIdDependency);
-                    job.setDependency(jobDependency);
-                }
-                job.setRepeatCount(resultSet.getInt("repeat_count"));
-                job.setRepeatInterval(resultSet.getInt("repeat_interval"));
-                return job;
+                return parseJob(resultSet);
             } else {
                 log.debug("No job found with id {}", jobId);
                 return null;
@@ -417,6 +407,37 @@ public class ACSDao {
         } catch (SQLException e) {
             throw new AcsException("Failed to fetch job by id: %s", e, jobId);
         }
+    }
+
+    private Job parseJob(ResultSet resultSet) throws SQLException {
+        var job = new Job();
+        job.setName(resultSet.getString("job_name"));
+        job.setId(resultSet.getInt("job_id"));
+        job.setDescription(resultSet.getString("description"));
+        var groupId = resultSet.getInt("group_id");
+        if (groupId != 0) {
+            job.setGroup(parseGroup(resultSet, new HashMap<>()));
+        }
+        job.setFlags(new JobFlag(resultSet.getString("job_type")));
+        job.setUnittype(parseUnittype(resultSet));
+        job.setUnconfirmedTimeout(resultSet.getInt("unconfirmed_timeout"));
+        job.setStopRules(resultSet.getString("stop_rules"));
+        job.setStatus(JobStatus.valueOf(resultSet.getString("status")));
+        job.setCompletedNoFailures(resultSet.getInt("completed_no_failure"));
+        job.setCompletedHadFailures(resultSet.getInt("completed_had_failure"));
+        job.setConfirmedFailed(resultSet.getInt("confirmed_failed"));
+        job.setUnconfirmedFailed(resultSet.getInt("unconfirmed_failed"));
+        job.setStartTimestamp(resultSet.getTimestamp("start_timestamp"));
+        job.setEndTimestamp(resultSet.getTimestamp("end_timestamp"));
+        var jobIdDependency = resultSet.getInt("job_id_dependency");
+        if (jobIdDependency != 0) {
+            var jobDependency = getJobById(jobIdDependency);
+            job.setDependency(jobDependency);
+        }
+        job.setFile(getFileById(resultSet.getInt("firmware_id")));
+        job.setRepeatCount(resultSet.getInt("repeat_count"));
+        job.setRepeatInterval(resultSet.getInt("repeat_interval"));
+        return job;
     }
 
     public List<GroupParameter> getGroupParametersByGroupId(int groupId) {
@@ -493,38 +514,68 @@ public class ACSDao {
     }
 
     public File getFileByUnitTypeIdAndFileTypeAndVersion(Unittype unittype, FileType fileType, String firmwareVersion) throws SQLException {
-        String sql = GET_FILE_BY_TYPE_AND_VERSION.replace("{}", ACSVersionCheck.fileReworkSupported ? ", target_name, owner " : "");
-        try(var connectionWrapper =
-                    new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
-            var statementWrapper =
-                    new DynamicStatementWrapper(connectionWrapper, sql, unittype.getId(), fileType.name(), firmwareVersion);
-            var resultSet =
-                    statementWrapper.getPreparedStatement().executeQuery()) {
+        if (unittype == null) {
+            throw new IllegalArgumentException("unittype cannot be null");
+        }
+        if (fileType == null) {
+            throw new IllegalArgumentException("fileType cannot be null");
+        }
+        if (firmwareVersion == null) {
+            throw new IllegalArgumentException("firmwareVersion cannot be null");
+        }
+        var sql = GET_FILE_BY_TYPE_AND_VERSION.replace("{}", ACSVersionCheck.fileReworkSupported ? ", target_name, owner " : "");
+        try(var connectionWrapper = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+            var statementWrapper = new DynamicStatementWrapper(connectionWrapper, sql, unittype.getId(), fileType.name(), firmwareVersion);
+            var resultSet = statementWrapper.getPreparedStatement().executeQuery()) {
             if (resultSet.next()) {
-                File file = new File();
-                file.setValidateInput(false);
-                file.setUnittype(unittype);
-                file.setId(resultSet.getInt("id"));
-                file.setName(resultSet.getString("name"));
-                file.setType(FileType.fromString(resultSet.getString("type")));
-                file.setDescription(resultSet.getString("description"));
-                file.setVersion(resultSet.getString("version"));
-                file.setTimestamp(resultSet.getTimestamp("timestamp_"));
-                file.setLength(resultSet.getInt("length"));
-                if (ACSVersionCheck.fileReworkSupported) {
-                    file.setTargetName(resultSet.getString("target_name"));
-                    parseStringId(resultSet.getString("owner"))
-                            .map(id -> new User().withId(id))
-                            .ifPresent(file::setOwner);
-                }
-                file.setValidateInput(true);
-                file.setConnectionProperties(dataSource);
-                file.resetContentToNull();
-                return file;
+                return parseFile(unittype, resultSet);
             }
             log.debug("Found 0 files for unittype {} and firmware version {}", unittype.getName(), firmwareVersion);
             return null;
         }
+    }
+
+    public File getFileById(int fileId) throws SQLException {
+        if (fileId == 0) {
+            throw new IllegalArgumentException("fileId cannot be null");
+        }
+        var sql = GET_FILE_BY_ID.replace("{}", ACSVersionCheck.fileReworkSupported ? ", target_name, owner " : "");
+        try(var connectionWrapper = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+            var statementWrapper = new DynamicStatementWrapper(connectionWrapper, sql, fileId);
+            var resultSet = statementWrapper.getPreparedStatement().executeQuery()) {
+            if (resultSet.next()) {
+                return parseFile(null, resultSet);
+            }
+            log.debug("No file found with id {}", fileId);
+            return null;
+        }
+    }
+
+    private File parseFile(Unittype unittype, ResultSet resultSet) throws SQLException {
+        File file = new File();
+        file.setValidateInput(false);
+        if (unittype != null) {
+            file.setUnittype(unittype);
+        } else {
+            file.setUnittype(getUnitTypeById(resultSet.getInt("unit_type_id")));
+        }
+        file.setId(resultSet.getInt("id"));
+        file.setName(resultSet.getString("name"));
+        file.setType(FileType.fromString(resultSet.getString("type")));
+        file.setDescription(resultSet.getString("description"));
+        file.setVersion(resultSet.getString("version"));
+        file.setTimestamp(resultSet.getTimestamp("timestamp_"));
+        file.setLength(resultSet.getInt("length"));
+        if (ACSVersionCheck.fileReworkSupported) {
+            file.setTargetName(resultSet.getString("target_name"));
+            parseStringId(resultSet.getString("owner"))
+                    .map(id -> new User().withId(id))
+                    .ifPresent(file::setOwner);
+        }
+        file.setValidateInput(true);
+        file.setConnectionProperties(dataSource);
+        file.resetContentToNull();
+        return file;
     }
 
     public byte[] getFileContents(int fileId) throws SQLException {
@@ -804,5 +855,22 @@ public class ACSDao {
             Function<Integer, UnittypeParameter> getUnittypeParamFunction,
             Function<Integer, Profile> getProfileFunction) throws SQLException {
         return getUnitById(unitId, null, null, getUnittypeFunction, getUnittypesFunction, getUnittypeParamFunction, getProfileFunction);
+    }
+
+    public List<Job> getJobsByUnitTypeId(Integer unitTypeId) {
+        if (unitTypeId == 0) {
+            throw new IllegalArgumentException("unitTypeId cannot be null");
+        }
+        try(var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+            var statement = new DynamicStatementWrapper(connection, GET_JOBS + " WHERE ut.unit_type_id = ?", unitTypeId);
+            var resultSet = statement.getPreparedStatement().executeQuery()) {
+            var jobs = new ArrayList<Job>();
+            while (resultSet.next()) {
+                jobs.add(parseJob(resultSet));
+            }
+            return jobs;
+        } catch (SQLException e) {
+            throw new AcsException("Failed to fetch jobs by unit type id: %s", e, unitTypeId);
+        }
     }
 }

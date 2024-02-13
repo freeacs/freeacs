@@ -569,8 +569,6 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
                         + " mode, "
                         + sessionData.getValuesFromCPE().size()
                         + " params from CPE may be copied to ACS session storage");
-        //		log.info(GetParameterValuesDecisionStrategyExtraction.class, "Provisioning in EXTRACTION mode, " +
-        // sessionData.getFromCPE().size() + " params from CPE may be copied to ACS session storage");
         for (int i = 0; i < sessionData.getValuesFromCPE().size(); i++) {
             ParameterValueStruct pvsCPE = sessionData.getValuesFromCPE().get(i);
             UnittypeParameter utp = utps.getByName(pvsCPE.getName());

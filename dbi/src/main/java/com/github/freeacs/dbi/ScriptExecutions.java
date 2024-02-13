@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 import javax.sql.DataSource;
 
 public class ScriptExecutions {
@@ -109,7 +110,7 @@ public class ScriptExecutions {
       ps = ds.makePreparedStatement(connection);
       ps.setQueryTimeout(60);
       rs = ps.executeQuery();
-      return getExecutionList(rs, acs);
+      return getExecutionList(rs, acs::getUnittype);
     } finally {
       if (rs != null) {
         rs.close();
@@ -123,7 +124,7 @@ public class ScriptExecutions {
     }
   }
 
-  private List<ScriptExecution> getExecutionList(ResultSet rs, ACS acs) throws SQLException {
+  private List<ScriptExecution> getExecutionList(ResultSet rs, Function<Integer, Unittype> getUnittypeFunction) throws SQLException {
     List<ScriptExecution> scriptExecutionList = new ArrayList<>();
     while (rs.next()) {
       ScriptExecution se = new ScriptExecution();
@@ -131,7 +132,7 @@ public class ScriptExecutions {
       se.setRequestTms(rs.getTimestamp("request_timestamp"));
       se.setRequestId(rs.getString("request_id"));
       se.setId(rs.getInt("id"));
-      Unittype unittype = acs.getUnittype(rs.getInt("unit_type_id"));
+      Unittype unittype = getUnittypeFunction.apply(rs.getInt("unit_type_id"));
       if (unittype != null) {
         se.setUnittype(unittype);
         se.setScriptFile(unittype.getFiles().getById(rs.getInt("filestore_id")));
@@ -183,7 +184,7 @@ public class ScriptExecutions {
       ps = ds.makePreparedStatement(connection);
       ps.setQueryTimeout(60);
       rs = ps.executeQuery();
-      return getExecutionList(rs, acs);
+      return getExecutionList(rs, acs::getUnittype);
     } finally {
       if (rs != null) {
         rs.close();
@@ -214,7 +215,7 @@ public class ScriptExecutions {
       ps = ds.makePreparedStatement(connection);
       ps.setQueryTimeout(60);
       rs = ps.executeQuery();
-      List<ScriptExecution> list = getExecutionList(rs, acs);
+      List<ScriptExecution> list = getExecutionList(rs, acs::getUnittype);
       if (!list.isEmpty()) {
         return list.get(0);
       } else {
@@ -242,11 +243,10 @@ public class ScriptExecutions {
    * @return      The script execution
    * @throws SQLException If something goes wrong
    */
-  public ScriptExecution getExecution(Unittype unittype, String requestId) throws SQLException {
+  public ScriptExecution getExecution(Unittype unittype, String requestId, Function<Integer, Unittype> getUnittypeFunction) throws SQLException {
     if (!ACSVersionCheck.scriptExecutionSupported) {
       return null;
     }
-    ACS acs = unittype.getAcs();
     Connection connection = null;
     PreparedStatement ps = null;
     ResultSet rs = null;
@@ -261,7 +261,7 @@ public class ScriptExecutions {
       ps = ds.makePreparedStatement(connection);
       ps.setQueryTimeout(60);
       rs = ps.executeQuery();
-      List<ScriptExecution> list = getExecutionList(rs, acs);
+      List<ScriptExecution> list = getExecutionList(rs, getUnittypeFunction);
       if (!list.isEmpty()) {
         return list.get(0);
       } else {

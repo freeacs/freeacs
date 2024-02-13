@@ -116,7 +116,7 @@ public class SetDiscoverParameterJobTest implements AbstractMySqlIntegrationTest
 
         ScriptExecutor scriptExecutorTask = new ScriptExecutor("ScriptExecutor", dbi, syslog, new Properties(config));
         scriptExecutorTask.setThisLaunchTms(System.currentTimeMillis());
-        scriptExecutorTask.runImpl();
+        scriptExecutorTask.run();
     }
 
     @Test

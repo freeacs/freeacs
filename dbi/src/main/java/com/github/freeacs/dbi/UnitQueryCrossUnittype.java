@@ -162,14 +162,13 @@ class UnitQueryCrossUnittype {
     }
   }
 
-  public static Map<String, Unit> getUnitsImpl(
+  private Map<String, Unit> getUnitsImpl(
           Map<String, Unit> units,
           String searchStr,
           Integer limit,
           Connection connection,
           List<Unittype> unittypes,
-          List<Profile> profiles,
-          Function<Integer, Unittype> getUnittypeFunction
+          List<Profile> profiles
   ) throws SQLException {
     DynamicStatement ds = computeSQL(searchStr, unittypes, profiles);
     ResultSet rs = null;
@@ -385,11 +384,6 @@ class UnitQueryCrossUnittype {
 
   private void addUnitParameter(Unit unit, Profile pr, String uid, int unittypeParameterId, String value) {
     UnittypeParameter unittypeParameter = getUnittypeParameterFunction.apply(unittypeParameterId);
-    // FIXME : This is a workaround for a bug in the system
-    if (unittypeParameter == null) {
-      logger.info("Unittype parameter with id {} not found in unittype {}, cannot add to unit {}", unittypeParameterId, unit.getUnittype().getName(), uid);
-      return;
-    }
     UnitParameter uParam = new UnitParameter(unittypeParameter, uid, value, pr);
     unit.getUnitParameters().put(unittypeParameter.getName(), uParam);
   }
@@ -552,13 +546,13 @@ class UnitQueryCrossUnittype {
         if (!uid.equals(unit.getId())) {
           break;
         } // could happen for unitParamValue-search
-        int unittypeParameterIdStr = rs.getInt("unit_type_param_id");
+        int unittypeParameterId = rs.getInt("unit_type_param_id");
         String value = rs.getString("value");
         if (value == null) {
           value = "";
         }
-        if (ut != null && unittypeParameterIdStr != 0) {
-          addUnitParameter(unit, pr, uid, unittypeParameterIdStr, value);
+        if (ut != null && unittypeParameterId != 0) {
+          addUnitParameter(unit, pr, uid, unittypeParameterId, value);
         }
         unit.setParamsAvailable(true);
       }
@@ -583,6 +577,6 @@ class UnitQueryCrossUnittype {
     } else {
       units = new HashMap<>();
     }
-    return getUnitsImpl(units, searchStr, limit, connection, unittypes, profiles, acs::getUnittype);
+    return getUnitsImpl(units, searchStr, limit, connection, unittypes, profiles);
   }
 }

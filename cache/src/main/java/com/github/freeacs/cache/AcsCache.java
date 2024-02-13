@@ -79,4 +79,12 @@ public class AcsCache {
     public void addOrChangeSessionUnitParameters(List<UnitParameter> unitSessionParameters) throws SQLException {
         acsDao.addOrChangeSessionUnitParameters(unitSessionParameters);
     }
+
+    public Job getJobById(Integer jobId) {
+        return acsDao.getJobById(jobId);
+    }
+
+    public List<Job> getJobsByUnitTypeId(Integer unitTypeId) {
+        return acsDao.getJobsByUnitTypeId(unitTypeId);
+    }
 }

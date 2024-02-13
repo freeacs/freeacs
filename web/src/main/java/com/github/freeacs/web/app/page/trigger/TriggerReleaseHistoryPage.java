@@ -142,8 +142,7 @@ public class TriggerReleaseHistoryPage extends AbstractWebPage {
         }
         if (rt.getTrigger().getScript() != null && rt.getReleasedTms() != null) {
           ScriptExecutions scriptExecutions = new ScriptExecutions(xapsDataSource);
-          ScriptExecution exec =
-              scriptExecutions.getExecution(unittype, "TRIGGER:" + rt.getReleaseId());
+          ScriptExecution exec = scriptExecutions.getExecution(unittype, "TRIGGER:" + rt.getReleaseId(), acs::getUnittype);
           rt.setScriptExecution(exec);
         }
         rt.setNoEvents(tr.getNoEvents());
