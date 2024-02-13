@@ -434,7 +434,10 @@ public class ACSDao {
             var jobDependency = getJobById(jobIdDependency);
             job.setDependency(jobDependency);
         }
-        job.setFile(getFileById(resultSet.getInt("firmware_id")));
+        var firmwareId = resultSet.getInt("firmware_id");
+        if (firmwareId != 0) {
+            job.setFile(getFileById(resultSet.getInt("firmware_id")));
+        }
         job.setRepeatCount(resultSet.getInt("repeat_count"));
         job.setRepeatInterval(resultSet.getInt("repeat_interval"));
         return job;
