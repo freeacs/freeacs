@@ -71,7 +71,6 @@ public class AbstractDiscoverTest implements AbstractMySqlIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/xml"))
                 .andExpect(header().string("SOAPAction", ""))
-                .andDo(print())
                 .andExpect(xpath("/*[local-name() = 'Envelope']" +
                         "/*[local-name() = 'Body']" +
                         "/*[local-name() = 'GetParameterValues']" +
