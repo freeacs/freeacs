@@ -170,7 +170,7 @@ public class ShellJobLogic {
         }
         if (!unitParameters.isEmpty()) {
             try {
-                acsCache.addOrChangeUnitParameters(unitParameters);
+                acsCache.addOrChangeUnitParameters(sessionData.getUnitId(), unitParameters);
             } catch (SQLException sqle) {
                 throw new TR069DatabaseException(sqle);
             }

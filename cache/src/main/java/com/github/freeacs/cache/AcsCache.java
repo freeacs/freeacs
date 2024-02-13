@@ -59,31 +59,36 @@ public class AcsCache {
     @CacheEvict(value = "file-bytes", allEntries = true)
     public void clearFileBytesCache() {}
 
+    @CacheEvict(value = "units", key = "{#unit.getId()}")
     public void addOrChangeQueuedUnitParameters(Unit unit) throws SQLException {
         acsDao.addOrChangeQueuedUnitParameters(unit);
     }
 
+    @Cacheable(value = "units", key = "{#unitId}")
     public Unit getUnitById(String unitId) throws SQLException {
         return acsDao.getUnitById(unitId, this::getUnitTypeById, this::getUnitTypes, this::getUnitTypeParamById, this::getProfileById);
     }
 
-    public void addOrChangeUnitParameters(List<UnitParameter> upList) throws SQLException {
+    @CacheEvict(value = "units", key = "{#unitId}")
+    public void addOrChangeUnitParameters(String unitId, List<UnitParameter> upList) throws SQLException {
         acsDao.addOrChangeUnitParameters(upList);
-
     }
 
     public void addUnits(List<String> unitIds, Profile pr) throws SQLException {
         acsDao.addUnits(unitIds, pr);
     }
 
-    public void addOrChangeSessionUnitParameters(List<UnitParameter> unitSessionParameters) throws SQLException {
+    @CacheEvict(value = "units", key = "{#unitId}")
+    public void addOrChangeSessionUnitParameters(String unitId, List<UnitParameter> unitSessionParameters) throws SQLException {
         acsDao.addOrChangeSessionUnitParameters(unitSessionParameters);
     }
 
+    @Cacheable(value = "jobs", key = "{#jobId}")
     public Job getJobById(Integer jobId) {
         return acsDao.getJobById(jobId);
     }
 
+    @Cacheable(value = "jobs", key = "{#unitTypeId}")
     public List<Job> getJobsByUnitTypeId(Integer unitTypeId) {
         return acsDao.getJobsByUnitTypeId(unitTypeId);
     }

@@ -84,7 +84,7 @@ public class GetParameterNamesProcessStrategy implements RequestProcessStrategy 
             log.debug("Unittype parameters (" + pisList.size() + ") is written to DB, will now reload unit");
             sessionData.setFromDB(null);
             sessionData.setAcsParameters(null);
-            DBIActions.updateParametersFromDB(sessionData, properties.isDiscoveryMode(), dbi, acsCache);
+            DBIActions.updateParametersFromDB(sessionData, properties.isDiscoveryMode(), acsCache);
         } catch (Throwable t) {
             throw new TR069Exception("Processing GPNRes failed", TR069ExceptionShortMessage.MISC, t);
         }

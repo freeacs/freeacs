@@ -121,7 +121,7 @@ public class UnitJob {
           upList.add(jobUp);
           upList.forEach(sessionData.getUnit()::toWriteQueue);
         }
-        DBIActions.startUnitJob(unitId, job.getId(), dbi);
+        DBIActions.startUnitJob(unitId, job.getId(), dbi.getDataSource());
         if (!serverSideJob) {
           updateSessionWithJobParams();
           updateSessionWithJobCurrent();
@@ -154,20 +154,16 @@ public class UnitJob {
       Integer jobId = jobInfo.getJobId();
       try {
         List<UnitParameter> upList = getUnitParameters(unitJobStatus);
-        DBIActions.stopUnitJob(
-            sessionData.getUnitId(),
-            jobId,
-            unitJobStatus,
-            dbi);
+        DBIActions.stopUnitJob(sessionData.getUnitId(), jobId, unitJobStatus, dbi.getDataSource());
         sessionData.getPIIDecision().setCurrentJobStatus(unitJobStatus);
         // Write directly to database, no queuing, since the all data are flushed in next step (most likely)
-        acsCache.addOrChangeUnitParameters(upList);
+        acsCache.addOrChangeUnitParameters(sessionData.getUnitId(), upList);
         if (!serverSideJob) {
           sessionData.setFromDB(null);
           sessionData.setAcsParameters(null);
           sessionData.setJobParams(null);
           log.debug("Unit-information will be reloaded to reflect changes in profile/unit parameters");
-          DBIActions.updateParametersFromDB((SessionData) sessionData, isDiscoveryMode, dbi, acsCache);
+          DBIActions.updateParametersFromDB((SessionData) sessionData, isDiscoveryMode, acsCache);
         }
       } catch (SQLException sqle) {
         log.error("UnitJob update failed", sqle);

@@ -2,9 +2,6 @@ package com.github.freeacs.dbi;
 
 import lombok.Data;
 import lombok.Getter;
-import lombok.NonNull;
-
-import java.util.regex.Pattern;
 
 @Data
 public class Parameter {
@@ -146,7 +143,6 @@ public class Parameter {
 
   private UnittypeParameter unittypeParameter;
   private String value;
-  private Pattern pattern;
   private Integer groupParameterId;
   private Operator op;
   private ParameterDataType type;

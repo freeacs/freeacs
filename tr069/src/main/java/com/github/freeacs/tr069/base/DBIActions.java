@@ -11,6 +11,7 @@ import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -21,10 +22,10 @@ import java.util.*;
 @Slf4j
 public abstract class DBIActions {
 
-    static void startUnitJob(String unitId, Integer jobId, DBI dbi) throws SQLException {
+    static void startUnitJob(String unitId, Integer jobId, DataSource dataSource) throws SQLException {
         String action = "startUnitJob";
         try {
-            UnitJobs unitJobs = new UnitJobs(dbi.getDataSource());
+            UnitJobs unitJobs = new UnitJobs(dataSource);
             com.github.freeacs.dbi.UnitJob uj = new com.github.freeacs.dbi.UnitJob(unitId, jobId);
             uj.setStartTimestamp(new Date());
             boolean updated = unitJobs.start(uj);
@@ -39,11 +40,11 @@ public abstract class DBIActions {
         }
     }
 
-    static void stopUnitJob(String unitId, Integer jobId, String unitJobStatus, DBI dbi)
+    static void stopUnitJob(String unitId, Integer jobId, String unitJobStatus, DataSource dataSource)
             throws SQLException {
         String action = "stopUnitJob";
         try {
-            UnitJobs unitJobs = new UnitJobs(dbi.getDataSource());
+            UnitJobs unitJobs = new UnitJobs(dataSource);
             com.github.freeacs.dbi.UnitJob uj = new UnitJob(unitId, jobId);
             uj.setEndTimestamp(new Date());
             uj.setStatus(unitJobStatus);
@@ -93,7 +94,7 @@ public abstract class DBIActions {
             UnittypeParameter secretUtp = ut.getUnittypeParameters().getByName(SystemParameters.SECRET);
             UnitParameter up = new UnitParameter(secretUtp, unitId, sessionData.getSecret(), pr);
             unitParameters.add(up);
-            acsCache.addOrChangeUnitParameters(unitParameters);
+            acsCache.addOrChangeUnitParameters(unitId, unitParameters);
             Unit unit = readUnit(sessionData.getUnitId(), acsCache);
             sessionData.setUnit(unit);
             log.debug("Have created a unit:" + unitId + " with the obtained secret");
@@ -107,7 +108,7 @@ public abstract class DBIActions {
         }
     }
 
-    public static void writeUnitSessionParams(SessionData sessionData, DBI dbi, AcsCache acsCache) throws TR069DatabaseException {
+    public static void writeUnitSessionParams(SessionData sessionData, AcsCache acsCache) throws TR069DatabaseException {
         try {
             List<ParameterValueStruct> parameterValuesToDB = sessionData.getToDB();
             Unittype unittype = sessionData.getUnittype();
@@ -125,7 +126,7 @@ public abstract class DBIActions {
                 }
             }
             if (!unitSessionParameters.isEmpty()) {
-                acsCache.addOrChangeSessionUnitParameters(unitSessionParameters);
+                acsCache.addOrChangeSessionUnitParameters(sessionData.getUnitId(), unitSessionParameters);
             }
         } catch (SQLException sqle) {
             throw new TR069DatabaseException(
@@ -150,7 +151,7 @@ public abstract class DBIActions {
         unitParameters.forEach(unit::toWriteQueue);
     }
 
-    public static void updateParametersFromDB(SessionData sessionData, boolean isDiscoveryMode, DBI dbi, AcsCache acsCache) throws SQLException {
+    public static void updateParametersFromDB(SessionData sessionData, boolean isDiscoveryMode, AcsCache acsCache) throws SQLException {
         if (sessionData.getFromDB() != null) {
             return;
         }

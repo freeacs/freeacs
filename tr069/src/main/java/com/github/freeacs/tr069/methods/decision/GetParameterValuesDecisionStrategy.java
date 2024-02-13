@@ -583,7 +583,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
             toDB.add(pvsCPE);
         }
         sessionData.setToDB(toDB);
-        DBIActions.writeUnitSessionParams(sessionData, dbi, acsCache);
+        DBIActions.writeUnitSessionParams(sessionData, acsCache);
         log.debug(toDB.size() + " params written to ACS session storage");
         reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());
         sessionData.getProvisioningMessage().setProvOutput(ProvisioningMessage.ProvOutput.EMPTY);
