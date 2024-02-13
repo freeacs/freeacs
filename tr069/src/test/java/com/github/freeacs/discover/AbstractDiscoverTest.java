@@ -2,6 +2,7 @@ package com.github.freeacs.discover;
 
 import com.github.freeacs.common.util.AbstractMySqlIntegrationTest;
 import com.github.freeacs.dbi.DBI;
+import com.github.freeacs.dbi.Syslog;
 import com.github.freeacs.utils.MysqlDataSourceInitializer;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class AbstractDiscoverTest implements AbstractMySqlIntegrationTest {
 
     @Autowired
     protected DBI dbi;
+
+    @Autowired
+    protected Syslog syslog;
 
     public void discoverUnit() throws Exception {
         MockHttpSession session = new MockHttpSession();

@@ -1,10 +1,9 @@
 package com.github.freeacs.discover;
 
 import com.github.freeacs.Main;
-import com.github.freeacs.dbi.ACSUnit;
+import com.github.freeacs.dbi.ACSDao;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.util.SystemParameters;
-import com.github.freeacs.provisioning.AbstractProvisioningTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -12,8 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.util.Arrays;
 
 import static com.github.freeacs.provisioning.AbstractProvisioningTest.UNIT_ID_AUTO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,12 +36,11 @@ public class AutoDiscoverTest extends AbstractDiscoverTest {
     @Test
     public void unitAndUnittypeIsDiscovered() throws Exception {
         discoverUnit();
-        ACSUnit acsUnit = AbstractProvisioningTest.getAcsUnit(dbi);
-        Unit unit = acsUnit.getUnitById(UNIT_ID_AUTO);
+        ACSDao acsDao = new ACSDao(dbi.getDataSource(), syslog);
+        Unit unit = acsDao.getUnitById(UNIT_ID_AUTO);
         assertEquals("FakeProductClass", unit.getUnittype().getName());
         assertEquals("Default", unit.getProfile().getName());
         String discoverValue = unit.getUnitParameters().get(SystemParameters.SECRET).getValue();
-        System.out.println(Arrays.toString(unit.getUnitParameters().values().toArray()));
         // Secret parameter is added, but populated with blank value
         assertEquals("", discoverValue);
     }
