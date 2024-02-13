@@ -384,6 +384,11 @@ class UnitQueryCrossUnittype {
 
   private void addUnitParameter(Unit unit, Profile pr, String uid, int unittypeParameterId, String value) {
     UnittypeParameter unittypeParameter = getUnittypeParameterFunction.apply(unittypeParameterId);
+    // FIXME : This is a workaround for the fact that the unittypeParameter is not found, and not a solution
+    if (unittypeParameter == null) {
+      logger.warn("UnittypeParameter with id {} not found in unittype {}", unittypeParameterId, unit.getUnittype().getName());
+      return;
+    }
     UnitParameter uParam = new UnitParameter(unittypeParameter, uid, value, pr);
     unit.getUnitParameters().put(unittypeParameter.getName(), uParam);
   }
