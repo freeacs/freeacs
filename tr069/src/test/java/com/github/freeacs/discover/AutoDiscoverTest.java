@@ -1,7 +1,6 @@
 package com.github.freeacs.discover;
 
 import com.github.freeacs.Main;
-import com.github.freeacs.dbi.ACSDao;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.dbi.util.SystemParameters;
 import org.junit.jupiter.api.Test;
@@ -36,8 +35,7 @@ public class AutoDiscoverTest extends AbstractDiscoverTest {
     @Test
     public void unitAndUnittypeIsDiscovered() throws Exception {
         discoverUnit();
-        ACSDao acsDao = new ACSDao(dbi.getDataSource(), syslog);
-        Unit unit = acsDao.getUnitById(UNIT_ID_AUTO);
+        Unit unit = acsCache.getUnitById(UNIT_ID_AUTO);
         assertEquals("FakeProductClass", unit.getUnittype().getName());
         assertEquals("Default", unit.getProfile().getName());
         String discoverValue = unit.getUnitParameters().get(SystemParameters.SECRET).getValue();

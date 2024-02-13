@@ -1,5 +1,6 @@
 package com.github.freeacs.discover;
 
+import com.github.freeacs.cache.AcsCache;
 import com.github.freeacs.common.util.AbstractMySqlIntegrationTest;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Syslog;
@@ -15,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import static com.github.freeacs.common.util.FileSlurper.getFileAsString;
 import static com.github.freeacs.utils.Matchers.hasNoSpace;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ContextConfiguration(initializers = AutoDiscoverTest.DataSourceInitializer.class)
@@ -36,6 +36,9 @@ public class AbstractDiscoverTest implements AbstractMySqlIntegrationTest {
 
     @Autowired
     protected Syslog syslog;
+
+    @Autowired
+    protected AcsCache acsCache;
 
     public void discoverUnit() throws Exception {
         MockHttpSession session = new MockHttpSession();
