@@ -98,6 +98,7 @@ public class AcsCache {
         return acsDao.getJobsByUnitTypeId(unitTypeId);
     }
 
+    @CacheEvict(value = "unit-types", key = "{#ut.getId()}", condition="#ut.getId()!=null")
     public void addOrChangeUnittype(Unittype ut) {
         acsDao.addOrChangeUnittype(ut);
     }
