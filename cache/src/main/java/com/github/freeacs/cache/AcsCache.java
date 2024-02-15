@@ -30,7 +30,7 @@ public class AcsCache {
 
     @Cacheable(value = "unit-types", key = "{#unitTypeId}")
     public Unittype getUnitTypeById(Integer unitTypeId) {
-        return acsDao.getUnitTypeById(unitTypeId);
+        return acsDao.getUnitTypeById(unitTypeId, true);
     }
 
     @Cacheable(value = "unit-types")
@@ -43,9 +43,14 @@ public class AcsCache {
         return acsDao.getUnittypeParameterByUnitTypeParameId(unitTypeParamId);
     }
 
+    @Cacheable(value = "unit-type-parameter", key = "{#unitTypeParamId}")
+    public UnittypeParameter getUnitTypeParamByName(Integer unitTypeId, String unitTypeParamName) {
+        return acsDao.getUnittypeParameterByUnitTypeParameName(unitTypeId, unitTypeParamName);
+    }
+
     @Cacheable(value = "profiles", key = "{#profileId}")
     public Profile getProfileById(Integer profileId) {
-        return acsDao.getProfileById(profileId);
+        return acsDao.getProfileById(profileId, true);
     }
 
     @CacheEvict(value = "unit-types", allEntries = true)
@@ -91,5 +96,9 @@ public class AcsCache {
     @Cacheable(value = "jobs", key = "{#unitTypeId}")
     public List<Job> getJobsByUnitTypeId(Integer unitTypeId) {
         return acsDao.getJobsByUnitTypeId(unitTypeId);
+    }
+
+    public void addOrChangeUnittype(Unittype ut) {
+        acsDao.addOrChangeUnittype(ut);
     }
 }

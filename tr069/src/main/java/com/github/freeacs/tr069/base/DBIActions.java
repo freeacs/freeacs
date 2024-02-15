@@ -66,11 +66,11 @@ public abstract class DBIActions {
             unittypeName = getUnittypeName(unitId);
         }
         try {
-            Unittype ut = dbi.getAcs().getUnittype(unittypeName);
+            Unittype ut = acsCache.getUnitType(unittypeName);
             if (ut == null) {
                 sessionData.setUnittypeCreated(false);
                 ut = new Unittype(unittypeName, unittypeName, "Auto-generated", Unittype.ProvisioningProtocol.TR069);
-                dbi.getAcs().getUnittypes().addOrChangeUnittype(ut, dbi.getAcs());
+                acsCache.addOrChangeUnittype(ut);
                 log.debug("Have created a unittype with the name " + unittypeName + " in discovery mode");
             } else {
                 sessionData.setUnittypeCreated(true);
@@ -91,7 +91,7 @@ public abstract class DBIActions {
             unitIds.add(unitId);
             acsCache.addUnits(unitIds, pr);
             List<UnitParameter> unitParameters = new ArrayList<>();
-            UnittypeParameter secretUtp = ut.getUnittypeParameters().getByName(SystemParameters.SECRET);
+            UnittypeParameter secretUtp = acsCache.getUnitTypeParamByName(ut.getId(), SystemParameters.SECRET);
             UnitParameter up = new UnitParameter(secretUtp, unitId, sessionData.getSecret(), pr);
             unitParameters.add(up);
             acsCache.addOrChangeUnitParameters(unitId, unitParameters);
@@ -111,11 +111,10 @@ public abstract class DBIActions {
     public static void writeUnitSessionParams(SessionData sessionData, AcsCache acsCache) throws TR069DatabaseException {
         try {
             List<ParameterValueStruct> parameterValuesToDB = sessionData.getToDB();
-            Unittype unittype = sessionData.getUnittype();
             Profile profile = sessionData.getProfile();
             List<UnitParameter> unitSessionParameters = new ArrayList<>();
             for (ParameterValueStruct pvs : parameterValuesToDB) {
-                UnittypeParameter utp = unittype.getUnittypeParameters().getByName(pvs.getName());
+                UnittypeParameter utp = acsCache.getUnitTypeParamByName(sessionData.getUnit().getUnittype().getId(), pvs.getName());
                 if (utp != null) {
                     UnitParameter up = new UnitParameter(utp, sessionData.getUnitId(), pvs.getValue(), profile);
                     if (utp.getName().startsWith("Device.") || utp.getName().startsWith("InternetGatewayDevice.")) {
@@ -134,14 +133,13 @@ public abstract class DBIActions {
         }
     }
 
-    public static void writeUnitParams(SessionData sessionData) {
+    public static void writeUnitParams(SessionData sessionData, AcsCache acsCache) {
         List<ParameterValueStruct> parameterValuesToDB = sessionData.getToDB();
         List<UnitParameter> unitParameters = new ArrayList<>();
-        Unittype unittype = sessionData.getUnittype();
         Profile profile = sessionData.getProfile();
         Unit unit = sessionData.getUnit();
         for (ParameterValueStruct pvs : parameterValuesToDB) {
-            UnittypeParameter utp = unittype.getUnittypeParameters().getByName(pvs.getName());
+            UnittypeParameter utp = acsCache.getUnitTypeParamByName(unit.getUnittype().getId(), pvs.getName());
             if (utp != null) {
                 unitParameters.add(new UnitParameter(utp, sessionData.getUnitId(), pvs.getValue(), profile));
             } else {
@@ -176,7 +174,7 @@ public abstract class DBIActions {
             int systemParamCounter = 0;
             while (i.hasNext()) {
                 String utpName = i.next();
-                UnittypeParameter utp = sessionData.getUnittype().getUnittypeParameters().getByName(utpName);
+                UnittypeParameter utp = acsCache.getUnitTypeParamByName(sessionData.getUnit().getUnittype().getId(), utpName);
                 if (utp != null && utp.getFlag().isSystem()) {
                     systemParamCounter++;
                     sessionData.getAcsParameters().putPvs(utpName, sessionData.getFromDB().get(utpName));

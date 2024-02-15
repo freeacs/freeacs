@@ -13,10 +13,6 @@ public class AutoCommitResettingConnectionWrapper implements AutoCloseable {
     private final boolean originalAutoCommit;
     private final boolean commitOnClose;
 
-    public AutoCommitResettingConnectionWrapper(Connection connection, boolean autoCommit) throws SQLException {
-        this(connection, autoCommit, false);
-    }
-
     public AutoCommitResettingConnectionWrapper(Connection connection, boolean autoCommit, boolean commitOnClose)
             throws SQLException, IllegalArgumentException {
         if (connection == null) {

@@ -37,7 +37,7 @@ public class ShellJobLogic {
     private static final Cache monitorCache = new Cache();
 
     public static void execute(SessionData sessionData, DBI dbi, AcsCache acsCache, Job job, UnitJob uj, boolean discovery, ScriptExecutions execs)
-            throws TR069Exception {
+            throws TR069Exception, SQLException {
         String unitId = sessionData.getUnitId();
         CacheValue cv = monitorCache.get(unitId);
         if (cv == null) {
@@ -177,7 +177,7 @@ public class ShellJobLogic {
         }
     }
 
-    private static void prepareSPV(SessionData sessionData, DBI dbi, AcsCache acsCache) throws TR069DatabaseException {
+    private static void prepareSPV(SessionData sessionData, DBI dbi, AcsCache acsCache) throws TR069DatabaseException, SQLException {
         toCPE(sessionData, dbi, acsCache);
         List<ParameterValueStruct> toDB = new ArrayList<>();
         sessionData.setToDB(toDB);
@@ -199,6 +199,6 @@ public class ShellJobLogic {
                         + "] ACS["
                         + nextPII
                         + "] Decided by ACS");
-        DBIActions.writeUnitParams(sessionData);
+        DBIActions.writeUnitParams(sessionData, acsCache);
     }
 }

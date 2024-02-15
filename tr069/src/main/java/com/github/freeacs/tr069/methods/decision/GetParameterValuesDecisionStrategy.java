@@ -24,6 +24,7 @@ import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import lombok.extern.slf4j.Slf4j;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +98,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
     @SuppressWarnings("Duplicates")
     private void normalPriorityProvisioning(HTTPRequestResponseData reqRes,
                                             String publicUrl,
-                                            int concurrentDownloadLimit) {
+                                            int concurrentDownloadLimit) throws SQLException {
         ServiceWindow serviceWindow;
         SessionData sessionData = reqRes.getSessionData();
         String reset = sessionData.getAcsParameters().getValue(SystemParameters.RESET);
@@ -155,7 +156,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
                                  boolean isDiscoveryMode,
                                  String publicUrl,
                                  int concurrentDownloadLimit)
-            throws TR069Exception {
+            throws TR069Exception, SQLException {
         SessionData sessionData = reqRes.getSessionData();
 
         UnitJob uj = null;
@@ -181,7 +182,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
                                  UnitJob unitJob,
                                  boolean isDiscoveryMode,
                                  String publicUrl)
-            throws TR069Exception {
+            throws TR069Exception, SQLException {
         SessionData sessionData = reqRes.getSessionData();
         sessionData.getProvisioningMessage().setJobId(job.getId());
         JobType type = job.getFlags().getType();
@@ -237,7 +238,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
     }
 
     @SuppressWarnings("Duplicates")
-    private void prepareSPVLimited(HTTPRequestResponseData reqRes) {
+    private void prepareSPVLimited(HTTPRequestResponseData reqRes) throws SQLException {
         SessionData sessionData = reqRes.getSessionData();
         sessionData.setProvisioningAllowed(false);
         sessionData.getProvisioningMessage().setProvStatus(ProvisioningMessage.ProvStatus.DELAYED);
@@ -266,11 +267,11 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
                         + "] ACS["
                         + nextPII
                         + "] Decided by ACS");
-        DBIActions.writeUnitParams(sessionData);
+        DBIActions.writeUnitParams(sessionData, acsCache);
     }
 
     @SuppressWarnings("Duplicates")
-    private void prepareSPVForConfigJob(SessionData sessionData) throws TR069Exception {
+    private void prepareSPVForConfigJob(SessionData sessionData) throws TR069Exception, SQLException {
         // populate to collections from job-params
         // impl.
         ParameterList toCPE = new ParameterList();
@@ -337,11 +338,11 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
                             + nextPII
                             + "] Decided by ACS");
         }
-        DBIActions.writeUnitParams(sessionData);
+        DBIActions.writeUnitParams(sessionData, acsCache);
     }
 
     @SuppressWarnings("Duplicates")
-    private void prepareSPV(SessionData sessionData) {
+    private void prepareSPV(SessionData sessionData) throws SQLException {
         populateToCollections(sessionData);
         CPEParameters cpeParams = sessionData.getCpeParameters();
         String PII = cpeParams.PERIODIC_INFORM_INTERVAL;
@@ -381,7 +382,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
                             + nextPII
                             + "] Decided by ACS");
         }
-        DBIActions.writeUnitParams(sessionData);
+        DBIActions.writeUnitParams(sessionData, acsCache);
     }
 
     /**

@@ -3,8 +3,11 @@ package com.github.freeacs.dbi;
 import com.github.freeacs.dbi.exceptions.AcsException;
 import com.github.freeacs.dbi.sql.AutoCommitResettingConnectionWrapper;
 import com.github.freeacs.dbi.sql.DynamicStatementWrapper;
+import com.github.freeacs.dbi.sql.ReadConnectionWrapper;
+import com.github.freeacs.dbi.sql.WriteConnectionWrapper;
 import com.github.freeacs.dbi.util.ACSVersionCheck;
 import com.github.freeacs.dbi.util.SyslogClient;
+import com.github.freeacs.dbi.util.SystemParameters;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
@@ -70,6 +73,13 @@ public class ACSDao {
             %s
         FROM unit_type_param utp
         WHERE utp.unit_type_param_id = ?
+    """.formatted(UNITTYPE_PARAM_COLUMNS);
+
+    private static final String GET_UNITTYPE_PARAMETER_BY_UNITTYPE_PARAM_NAME = """
+        SELECT
+            %s
+        FROM unit_type_param utp
+        WHERE utp.unit_type_id = ? AND utp.name = ?
     """.formatted(UNITTYPE_PARAM_COLUMNS);
 
     private static final String GET_PROFILE_PARAMETERS_BY_PROFILE_ID = """
@@ -235,7 +245,7 @@ public class ACSDao {
     }
 
     public List<Unittype> getUnitTypes() {
-        try (var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+        try (var connection = new ReadConnectionWrapper(dataSource.getConnection());
              var statement = new DynamicStatementWrapper(connection, GET_UNITTYPES);
              var resultSet = statement.getPreparedStatement().executeQuery()) {
             var unittypes = new ArrayList<Unittype>();
@@ -260,7 +270,7 @@ public class ACSDao {
         if (unitTypeId == 0) {
             throw new IllegalArgumentException("unitTypeId cannot be null");
         }
-        try (var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+        try (var connection = new ReadConnectionWrapper(dataSource.getConnection());
              var statement = new DynamicStatementWrapper(connection, GET_UNITTYPE_BY_ID, unitTypeId);
              var resultSet = statement.getPreparedStatement().executeQuery()) {
             if (resultSet.next()) {
@@ -276,7 +286,6 @@ public class ACSDao {
                 return null;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new AcsException("Failed to fetch unittype by id: %s", e, unitTypeId);
         }
     }
@@ -289,7 +298,7 @@ public class ACSDao {
         if (unitTypeName == null) {
             throw new IllegalArgumentException("unitTypeName cannot be null");
         }
-        try (var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+        try (var connection = new ReadConnectionWrapper(dataSource.getConnection());
              var statement = new DynamicStatementWrapper(connection, GET_UNITTYPE_BY_NAME, unitTypeName);
              var resultSet = statement.getPreparedStatement().executeQuery()) {
             if (resultSet.next()) {
@@ -314,7 +323,7 @@ public class ACSDao {
             throw new IllegalArgumentException("unitTypeId cannot be null");
         }
         var unittype = getUnitTypeById(unitTypeId, false);
-        try (var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+        try (var connection = new ReadConnectionWrapper(dataSource.getConnection());
              var statement = new DynamicStatementWrapper(connection, GET_UNITTYPE_PARAMETERS_BY_UNITTYPE_ID, unitTypeId);
              var resultSet = statement.getPreparedStatement().executeQuery()) {
             var unittypeParameters = new ArrayList<UnittypeParameter>();
@@ -332,7 +341,7 @@ public class ACSDao {
         if (unitTypeParamId == 0) {
             throw new IllegalArgumentException("unitTypeParamId cannot be null");
         }
-        try (var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+        try (var connection = new ReadConnectionWrapper(dataSource.getConnection());
              var statement = new DynamicStatementWrapper(connection, GET_UNITTYPE_PARAMETER_BY_UNITTYPE_PARAM_ID, unitTypeParamId);
              var resultSet = statement.getPreparedStatement().executeQuery()) {
             if (resultSet.next()) {
@@ -344,12 +353,28 @@ public class ACSDao {
         }
     }
 
+    public UnittypeParameter getUnittypeParameterByUnitTypeParameName(Integer unitTypeId, String unitTypeParamName) {
+        if (unitTypeParamName == null) {
+            throw new IllegalArgumentException("unitTypeParamName cannot be null");
+        }
+        try (var connection = new ReadConnectionWrapper(dataSource.getConnection());
+             var statement = new DynamicStatementWrapper(connection, GET_UNITTYPE_PARAMETER_BY_UNITTYPE_PARAM_NAME, unitTypeId, unitTypeParamName);
+             var resultSet = statement.getPreparedStatement().executeQuery()) {
+            if (resultSet.next()) {
+                return parseUnittypeParameter(resultSet, null);
+            }
+            return null;
+        } catch (SQLException e) {
+            throw new AcsException("Failed to fetch unittype parameters by unittype param name: %s", e, unitTypeParamName);
+        }
+    }
+
 
     public Group getGroupById(int groupId) {
         if (groupId == 0) {
             throw new IllegalArgumentException("groupId cannot be null");
         }
-        try(var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+        try(var connection = new ReadConnectionWrapper(dataSource.getConnection());
             var statement = new DynamicStatementWrapper(connection, GET_GROUP_BY_ID, groupId);
             var resultSet = statement.getPreparedStatement().executeQuery()) {
             if (resultSet.next()) {
@@ -371,7 +396,7 @@ public class ACSDao {
         if (profileId == 0) {
             throw new IllegalArgumentException("profileId cannot be null");
         }
-        try(var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+        try(var connection = new ReadConnectionWrapper(dataSource.getConnection());
             var statement = new DynamicStatementWrapper(connection, GET_PROFILE_BY_ID, profileId);
             var resultSet = statement.getPreparedStatement().executeQuery()) {
             if (resultSet.next()) {
@@ -395,7 +420,7 @@ public class ACSDao {
         if (jobId == 0) {
             throw new IllegalArgumentException("jobId cannot be null");
         }
-        try(var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+        try(var connection = new ReadConnectionWrapper(dataSource.getConnection());
             var statement = new DynamicStatementWrapper(connection, GET_JOBS + " WHERE j.job_id = ?", jobId);
             var resultSet = statement.getPreparedStatement().executeQuery()) {
             if (resultSet.next()) {
@@ -449,7 +474,7 @@ public class ACSDao {
             throw new IllegalArgumentException("groupId cannot be null");
         }
         var group = getGroupById(groupId);
-        try(var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+        try(var connection = new ReadConnectionWrapper(dataSource.getConnection());
             var statement = new DynamicStatementWrapper(connection, GET_GROUP_PARAMETERS_BY_GROUP_ID, groupId);
             var resultSet = statement.getPreparedStatement().executeQuery()) {
             var groupParameters = new ArrayList<GroupParameter>();
@@ -477,7 +502,7 @@ public class ACSDao {
             throw new IllegalArgumentException("profileId cannot be null");
         }
         var profile = getProfileById(profileId, false);
-        try(var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+        try(var connection = new ReadConnectionWrapper(dataSource.getConnection());
             var statement = new DynamicStatementWrapper(connection, GET_PROFILE_PARAMETERS_BY_PROFILE_ID, profileId);
             var resultSet = statement.getPreparedStatement().executeQuery()) {
             var profileParameters = new ArrayList<ProfileParameter>();
@@ -499,7 +524,7 @@ public class ACSDao {
             throw new IllegalArgumentException("jobId cannot be null");
         }
         var job = getJobById(jobId);
-        try(var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+        try(var connection = new ReadConnectionWrapper(dataSource.getConnection());
             var statement = new DynamicStatementWrapper(connection, GET_JOB_PARAMETERS_BY_JOB_ID, jobId);
             var resultSet = statement.getPreparedStatement().executeQuery()) {
             var jobParameters = new ArrayList<JobParameter>();
@@ -528,7 +553,7 @@ public class ACSDao {
             throw new IllegalArgumentException("firmwareVersion cannot be null");
         }
         var sql = GET_FILE_BY_TYPE_AND_VERSION.replace("{}", ACSVersionCheck.fileReworkSupported ? ", target_name, owner " : "");
-        try(var connectionWrapper = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+        try(var connectionWrapper = new ReadConnectionWrapper(dataSource.getConnection());
             var statementWrapper = new DynamicStatementWrapper(connectionWrapper, sql, unittype.getId(), fileType.name(), firmwareVersion);
             var resultSet = statementWrapper.getPreparedStatement().executeQuery()) {
             if (resultSet.next()) {
@@ -544,7 +569,7 @@ public class ACSDao {
             throw new IllegalArgumentException("fileId cannot be null");
         }
         var sql = GET_FILE_BY_ID.replace("{}", ACSVersionCheck.fileReworkSupported ? ", target_name, owner " : "");
-        try(var connectionWrapper = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+        try(var connectionWrapper = new ReadConnectionWrapper(dataSource.getConnection());
             var statementWrapper = new DynamicStatementWrapper(connectionWrapper, sql, fileId);
             var resultSet = statementWrapper.getPreparedStatement().executeQuery()) {
             if (resultSet.next()) {
@@ -587,7 +612,7 @@ public class ACSDao {
             throw new IllegalArgumentException("fileId cannot be null");
         }
         try(var connectionWrapper =
-                    new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+                    new ReadConnectionWrapper(dataSource.getConnection());
             var statementWrapper =
                     new DynamicStatementWrapper(connectionWrapper, GET_FILE_CONTENT_BY_ID, fileId);
             var resultSet = statementWrapper.getPreparedStatement().executeQuery()) {
@@ -809,10 +834,6 @@ public class ACSDao {
         addOrChangeUnitParameters(queuedParameters);
     }
 
-    public Unit getUnitById(String unitId, Unittype unittype, Profile profile) throws SQLException {
-        return getUnitById(unitId, unittype, profile, this::getUnitTypeById, this::getUnitTypes, this::getUnittypeParameterByUnitTypeParameId, this::getProfileById);
-    }
-
     /**
      * @param unittype - may be null
      * @param profile - may be null
@@ -852,6 +873,10 @@ public class ACSDao {
         return getUnitById(unitId, null, null);
     }
 
+    public Unit getUnitById(String unitId, Unittype unittype, Profile profile) throws SQLException {
+        return getUnitById(unitId, unittype, profile, (unitTypeId) -> this.getUnitTypeById(unitTypeId, true), this::getUnitTypes, this::getUnittypeParameterByUnitTypeParameId, (profileId) -> this.getProfileById(profileId, true));
+    }
+
     public Unit getUnitById(
             String unitId,
             Function<Integer, Unittype> getUnittypeFunction,
@@ -865,7 +890,7 @@ public class ACSDao {
         if (unitTypeId == 0) {
             throw new IllegalArgumentException("unitTypeId cannot be null");
         }
-        try(var connection = new AutoCommitResettingConnectionWrapper(dataSource.getConnection(), false);
+        try(var connection = new ReadConnectionWrapper(dataSource.getConnection());
             var statement = new DynamicStatementWrapper(connection, GET_JOBS + " WHERE ut.unit_type_id = ?", unitTypeId);
             var resultSet = statement.getPreparedStatement().executeQuery()) {
             var jobs = new ArrayList<Job>();
@@ -875,6 +900,88 @@ public class ACSDao {
             return jobs;
         } catch (SQLException e) {
             throw new AcsException("Failed to fetch jobs by unit type id: %s", e, unitTypeId);
+        }
+    }
+
+    public void addOrChangeUnittype(Unittype ut) {
+        if (ut.getId() == null) {
+            addUnittype(ut);
+        } else {
+            changeUnittype(ut);
+        }
+    }
+
+    private void changeUnittype(Unittype ut) {
+        try(var connection = new WriteConnectionWrapper(dataSource.getConnection());
+            var statement = new DynamicStatementWrapper(connection, "UPDATE unit_type SET unit_type_name = ?, vendor_name = ?, description = ?, protocol = ? WHERE unit_type_id = ?", ut.getName(), ut.getVendor(), ut.getDescription(), ut.getProtocol().name(), ut.getId());
+            var resultSet = statement.getPreparedStatement().executeQuery()) {
+            if (!resultSet.next()) {
+                throw new AcsException("Failed to change unit type: %s. It does not exist.", ut);
+            }
+        } catch (SQLException e) {
+            throw new AcsException("Failed to change unit type: %s", e, ut);
+        }
+    }
+
+    private void addUnittype(Unittype ut) {
+        try(var connection = new WriteConnectionWrapper(dataSource.getConnection());
+            var statement = new DynamicStatementWrapper(connection, "INSERT INTO unit_type (unit_type_name, vendor_name, description, protocol) VALUES (?,?,?,?)", ut.getName(), ut.getVendor(), ut.getDescription(), ut.getProtocol().name());
+            var resultSet = statement.getPreparedStatement().executeQuery()) {
+            if (resultSet.next()) {
+                ResultSet gk = statement.getPreparedStatement().getGeneratedKeys();
+                if (gk.next()) {
+                    ut.setId(gk.getInt(1));
+                }
+            }
+        } catch (SQLException e) {
+            throw new AcsException("Failed to add unit type: %s", e, ut);
+        }
+    }
+
+    public int ensureValidSystemParameters(Unittype ut) {
+        int changedParams = 0;
+        List<UnittypeParameter> utpList = new ArrayList<>();
+        for (Map.Entry<String, UnittypeParameterFlag> entry :
+                SystemParameters.commonParameters.entrySet()) {
+            UnittypeParameter utp = getUnittypeParameterByUnitTypeParameName(ut.getId(), entry.getKey());
+            UnittypeParameterFlag newFlag = entry.getValue();
+            if (utp == null) {
+                utpList.add(new UnittypeParameter(ut, entry.getKey(), entry.getValue()));
+                changedParams++;
+            } else if (!utp.getFlag().isSystem()) {
+                utp.setFlag(newFlag);
+                utpList.add(utp);
+                changedParams++;
+            }
+        }
+        addOrChangeUnittypeParameters(ut, utpList);
+        return changedParams;
+    }
+
+    public void addOrChangeUnittypeParameters(Unittype ut, List<UnittypeParameter> utpList) {
+        try (var connection = new WriteConnectionWrapper(dataSource.getConnection())) {
+            for (UnittypeParameter utp : utpList) {
+                if (utp.getId() == null) {
+                    // Perform insert operation
+                    try (var statement = new DynamicStatementWrapper(connection, "INSERT INTO unit_type_param (unit_type_id, name, flags) VALUES (?, ?, ?)", ut.getId(), utp.getName(), utp.getFlag().toString());
+                         var resultSet = statement.getPreparedStatement().executeQuery()) {
+                        if (!resultSet.next()) {
+                            throw new AcsException("Failed to insert unit type parameter: %", utp.getName());
+                        }
+                    }
+                } else {
+                    // Perform update operation
+                    try (var statement = new DynamicStatementWrapper(connection, "UPDATE unit_type_param SET flags = ? WHERE unit_type_id = ? AND name = ?", utp.getFlag().toString(), ut.getId(), utp.getName());
+                         var resultSet = statement.getPreparedStatement().executeQuery()) {
+                        if (!resultSet.next()) {
+                            throw new AcsException("Failed to update unit type parameter: %s", utp.getName());
+                        }
+                    }
+                }
+            }
+            connection.getConnection().commit();
+        } catch (SQLException e) {
+            throw new AcsException("Failed to add or change unit type parameters: " + utpList, e);
         }
     }
 }
