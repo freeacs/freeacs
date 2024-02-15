@@ -1,5 +1,6 @@
 package com.github.freeacs.tr069.background;
 
+import com.github.freeacs.cache.AcsCache;
 import com.github.freeacs.common.scheduler.TaskDefaultImpl;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.DBI;
@@ -34,13 +35,15 @@ public class ScheduledKickTask extends TaskDefaultImpl {
 
   private static final Logger logger = LoggerFactory.getLogger(ScheduledKickTask.class);
   private final DBI dbi;
+  private final AcsCache acsCache;
   private static final Object syncMonitor = new Object();
 
   private static final List<UnitKick> kickList = new ArrayList<>();
 
-  public ScheduledKickTask(String taskName, DBI dbi) {
+  public ScheduledKickTask(String taskName, DBI dbi, AcsCache acsCache) {
     super(taskName);
     this.dbi = dbi;
+    this.acsCache = acsCache;
   }
 
   @Override
@@ -62,8 +65,7 @@ public class ScheduledKickTask extends TaskDefaultImpl {
           continue;
         }
         Unit unit = uk.getUnit();
-        ACSUnit acsUnit = dbi.getACSUnit();
-        acsUnit.addOrChangeQueuedUnitParameters(unit);
+        acsCache.addOrChangeQueuedUnitParameters(unit);
         dbi.publishKick(unit, SyslogConstants.FACILITY_STUN);
         uk.setNextTms(now + 30000);
         uk.setKickCount(uk.getKickCount() + 1);

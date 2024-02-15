@@ -50,19 +50,7 @@ public class Groups {
     return "Contains " + nameMap.size() + " groups";
   }
 
-  protected static void checkPermission(Group group, ACS acs) {
-    if (group.getTopParent().getProfile() == null) {
-      if (!acs.getUser().isUnittypeAdmin(group.getUnittype().getId())) {
-        throw new IllegalArgumentException("Not allowed action for this user");
-      }
-    } else if (!acs.getUser()
-        .isProfileAdmin(group.getUnittype().getId(), group.getTopParent().getProfile().getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
-  }
-
   public void addOrChangeGroup(Group group, ACS acs) throws SQLException {
-    checkPermission(group, acs);
     addOrChangeGroupImpl(group, acs);
     group.setUnittype(unittype);
     nameMap.put(group.getName(), group);
@@ -97,29 +85,20 @@ public class Groups {
       Set<Integer> groupParamIdSet = new HashSet<>();
       while (rs.next()) {
         Integer unittypeParamId = rs.getInt("unit_type_param_id");
+        logger.info("refreshGroupParameter: Group: " + group + ", unittypeParamId: " + unittypeParamId);
         logger.info(
-            "refreshGroupParameter: Group: " + group + ", unittypeParamId: " + unittypeParamId);
-        if (group != null) {
-          logger.info("refreshGroupParameter: Group.getUnittype(): " + group.getUnittype());
-        }
-        if (group.getUnittype() != null) {
-          logger.info(
-              "refreshGroupParameter: Group.getUnittype().getUnittypeParameters(): "
-                  + group.getUnittype().getUnittypeParameters());
-        }
+            "refreshGroupParameter: Group.getUnittype().getUnittypeParameters(): "  + group.getUnittype().getUnittypeParameters());
         if (group.getUnittype().getUnittypeParameters() != null) {
           logger.info(
               "refreshGroupParameter: Group.getUnittype().getUnittypeParameters().getById(utpId): "
                   + group.getUnittype().getUnittypeParameters().getById(unittypeParamId));
         }
-        UnittypeParameter utp =
-            group.getUnittype().getUnittypeParameters().getById(unittypeParamId);
+        UnittypeParameter utp = group.getUnittype().getUnittypeParameters().getById(unittypeParamId);
         String value = rs.getString("value");
         Integer groupParamId;
         groupParamId = rs.getInt("id");
         Parameter.Operator op = Parameter.Operator.getOperator(rs.getString("operator"));
-        Parameter.ParameterDataType pdt =
-            Parameter.ParameterDataType.getDataType(rs.getString("data_type"));
+        Parameter.ParameterDataType pdt = Parameter.ParameterDataType.getDataType(rs.getString("data_type"));
         groupParamIdSet.add(groupParamId);
         Parameter parameter = new Parameter(utp, value, op, pdt);
         GroupParameter groupParameter = new GroupParameter(parameter, group);
@@ -167,8 +146,8 @@ public class Groups {
         }
         group.setName(rs.getString("group_name"));
         group.setDescription(rs.getString("description"));
-        Integer parentGroupId = rs.getInt("parent_group_id");
-        if (parentGroupId != null) {
+        int parentGroupId = rs.getInt("parent_group_id");
+        if (parentGroupId != 0) {
           group.setParent(unittype.getGroups().getById(parentGroupId));
         } else {
           group.setParent(null);
@@ -242,7 +221,6 @@ public class Groups {
    * @throws SQLException if database query fails
    */
   public void deleteGroup(Group group, ACS acs) throws SQLException {
-    checkPermission(group, acs);
     for (GroupParameter gp : group.getGroupParameters().getGroupParameters()) {
       group.getGroupParameters().deleteGroupParameter(gp, acs);
     }

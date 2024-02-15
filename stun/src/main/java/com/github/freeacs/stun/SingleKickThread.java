@@ -1,11 +1,7 @@
 package com.github.freeacs.stun;
 
 import com.github.freeacs.common.util.Sleep;
-import com.github.freeacs.dbi.ACSUnit;
-import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.dbi.Inbox;
-import com.github.freeacs.dbi.Message;
-import com.github.freeacs.dbi.Unit;
+import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.util.ProvisioningMode;
 import com.github.freeacs.dbi.util.SystemConstants;
@@ -42,6 +38,7 @@ public class SingleKickThread implements Runnable {
   private final DBI dbi;
   private final DataSource xapsCp;
   private final Properties properties;
+  private final Syslog syslog;
 
   private ACSUnit acsUnit;
 
@@ -49,10 +46,11 @@ public class SingleKickThread implements Runnable {
   private final Inbox inbox = new Inbox();
   private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
-  public SingleKickThread(DataSource xapsCp, DBI dbi, Properties properties) {
+  public SingleKickThread(DataSource xapsCp, DBI dbi, Syslog syslog, Properties properties) {
     this.xapsCp = xapsCp;
     this.dbi = dbi;
     this.properties = properties;
+    this.syslog = syslog;
   }
 
   /* METHODS FOR DETECTING UNITS WHICH SHOULD BE KICKED */
@@ -163,7 +161,7 @@ public class SingleKickThread implements Runnable {
       try {
         unitId = iterator.next();
         InspectionState lastIS = unitWatch.get(unitId);
-        acsUnit = new ACSUnit(xapsCp, dbi.getAcs(), dbi.getSyslog()); // make sure xAPS object is updated
+        acsUnit = new ACSUnit(xapsCp, dbi.getAcs(), syslog); // make sure xAPS object is updated
         unit = acsUnit.getUnitById(unitId);
         long timeSinceLastChange = System.currentTimeMillis() - lastIS.getTmsOfLastChange();
         if (timeSinceLastChange > 15 * 60 * 1000) {
@@ -225,7 +223,7 @@ public class SingleKickThread implements Runnable {
     try {
       inbox.addFilter(new Message(null, Message.MTYPE_PUB_IM, null, Message.OTYPE_UNIT));
       dbi.registerInbox("KickRunnable", inbox);
-      this.acsUnit = new ACSUnit(xapsCp, dbi.getAcs(), dbi.getSyslog());
+      this.acsUnit = new ACSUnit(xapsCp, dbi.getAcs(), syslog);
       Sleep sleep = new Sleep(1000, 1000, true);
       long lastUpdateCheck = 0;
       do {

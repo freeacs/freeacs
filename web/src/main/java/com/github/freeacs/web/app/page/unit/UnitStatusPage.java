@@ -758,8 +758,7 @@ public class UnitStatusPage extends AbstractWebPage {
     filter.setCollectorTmsEnd(end);
     filter.setUnitId("^" + unit.getId() + "$");
     long isCallOngoingMs = System.nanoTime();
-    List<SyslogEntry> mosEntry =
-        syslog.read(filter, ACSLoader.getXAPS(sessionId, this.mainDataSource, mainDataSource));
+    List<SyslogEntry> mosEntry = syslog.read(filter);
     logTimeElapsed(
         isCallOngoingMs,
         "Retrieved last MOS report from Syslog. Result size: " + mosEntry.size(),

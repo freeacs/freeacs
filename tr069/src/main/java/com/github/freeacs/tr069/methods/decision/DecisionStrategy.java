@@ -1,5 +1,6 @@
 package com.github.freeacs.tr069.methods.decision;
 
+import com.github.freeacs.cache.AcsCache;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.http.HTTPRequestResponseData;
@@ -15,19 +16,20 @@ public interface DecisionStrategy {
 
     static DecisionStrategy getStrategy(ProvisioningMethod provisioningMethod,
                                         Properties properties,
-                                        DBI dbi) {
+                                        DBI dbi,
+                                        AcsCache acsCache) {
         return switch (provisioningMethod) {
-            case Empty -> emStrategy(properties, dbi);
+            case Empty -> emStrategy(properties, dbi, acsCache);
             case Inform -> informStrategy();
             case GetParameterNames -> getParameterNamesStrategy();
-            case GetParameterValues -> getParameterValuesStrategy(properties, dbi);
-            case SetParameterValues -> setParameterValuesStrategy(properties, dbi);
+            case GetParameterValues -> getParameterValuesStrategy(properties, dbi, acsCache);
+            case SetParameterValues -> setParameterValuesStrategy(properties, dbi, acsCache);
             case TransferComplete -> transferCompleteStrategy();
             case AutonomousTransferComplete -> autonomousTransferCompleteStrategy();
             case GetRPCMethods -> getRPCMethodsStrategy();
             default -> {
                 log.debug("The methodName " + provisioningMethod + " has no decision strategy. Using empty strategy.");
-                yield emStrategy(properties, dbi);
+                yield emStrategy(properties, dbi, acsCache);
             }
         };
     }
@@ -52,15 +54,15 @@ public interface DecisionStrategy {
         return new GetParameterNamesDecisionStrategy();
     }
 
-    static DecisionStrategy emStrategy(Properties properties, DBI dbi) {
-        return new EmptyDecisionStrategy(properties, dbi);
+    static DecisionStrategy emStrategy(Properties properties, DBI dbi, AcsCache acsCache) {
+        return new EmptyDecisionStrategy(properties, dbi, acsCache);
     }
 
-    static DecisionStrategy getParameterValuesStrategy(Properties properties, DBI dbi) {
-        return new GetParameterValuesDecisionStrategy(properties, dbi);
+    static DecisionStrategy getParameterValuesStrategy(Properties properties, DBI dbi, AcsCache acsCache) {
+        return new GetParameterValuesDecisionStrategy(properties, dbi, acsCache);
     }
 
-    static DecisionStrategy setParameterValuesStrategy(Properties properties, DBI dbi) {
-        return new SetParameterValuesDecisionStrategy(properties, dbi);
+    static DecisionStrategy setParameterValuesStrategy(Properties properties, DBI dbi, AcsCache acsCache) {
+        return new SetParameterValuesDecisionStrategy(properties, dbi, acsCache);
     }
 }

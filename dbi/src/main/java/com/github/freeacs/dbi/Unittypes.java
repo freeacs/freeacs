@@ -25,16 +25,6 @@ public class Unittypes {
     return nameMap.get(name);
   }
 
-  /**
-   * Only to be used internally (to shape ACS object according to permissions).
-   *
-   * @param unittype The unittype to be removed from the ACS object
-   */
-  protected void removePermission(Unittype unittype) {
-    nameMap.remove(unittype.getName());
-    idMap.remove(unittype.getId());
-  }
-
   public Unittype getById(Integer id) {
     return idMap.get(id);
   }
@@ -93,10 +83,6 @@ public class Unittypes {
   }
 
   public void addOrChangeUnittype(Unittype unittype, ACS acs) throws SQLException {
-    if ((unittype.getId() == null && !acs.getUser().isAdmin())
-        || !acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     addOrChangeUnittypeImpl(unittype, acs);
     unittype.setAcs(acs);
     nameMap.put(unittype.getName(), unittype);
@@ -144,9 +130,6 @@ public class Unittypes {
    * @throws SQLException If something goes wrong
    */
   public int deleteUnittype(Unittype unittype, ACS acs, boolean cascade) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     if (cascade) {
       UnittypeParameters utParams = unittype.getUnittypeParameters();
       UnittypeParameter[] utParamsArr = utParams.getUnittypeParameters();

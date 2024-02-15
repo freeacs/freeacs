@@ -1,17 +1,7 @@
 package com.github.freeacs.core.task;
 
-import com.github.freeacs.dbi.ACS;
-import com.github.freeacs.dbi.DBI;
-import com.github.freeacs.dbi.File;
-import com.github.freeacs.dbi.FileType;
-import com.github.freeacs.dbi.Files;
-import com.github.freeacs.dbi.ScriptExecutions;
-import com.github.freeacs.dbi.SyslogConstants;
-import com.github.freeacs.dbi.Trigger;
-import com.github.freeacs.dbi.TriggerComparator;
-import com.github.freeacs.dbi.TriggerRelease;
-import com.github.freeacs.dbi.Triggers;
-import com.github.freeacs.dbi.Unittype;
+import com.github.freeacs.dbi.*;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -27,8 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TriggerReleaser extends DBIShare {
-  public TriggerReleaser(String taskName, DBI dbi) {
-    super(taskName, dbi);
+  public TriggerReleaser(String taskName, DBI dbi, Syslog syslog) {
+    super(taskName, dbi, syslog);
   }
 
   private static final Logger logger = LoggerFactory.getLogger(TriggerReleaser.class);
@@ -343,7 +333,7 @@ public class TriggerReleaser extends DBIShare {
               String.valueOf(trigger.getId()),
               now,
               null,
-              acs.getUser());
+              getSyslog().getIdentity().getUser());
     }
     f.setDescription(desc);
     f.setBytes(triggerUnitsFileByteArr);

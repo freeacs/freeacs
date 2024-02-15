@@ -622,9 +622,9 @@ public class GenericMenu {
         }
       }
     }
-    Syslog syslog = session.getDbi().getSyslog();
+    Syslog syslog = new Syslog(session.getAcs().getDataSource(), null);
     String[] listOptions = listOptionStr.split(",");
-    List<SyslogEntry> entries = syslog.read(sf, session.getAcs());
+    List<SyslogEntry> entries = syslog.read(sf);
     Listing listing = oh.getListing();
     Line headingLine = new Line();
     for (String listOption : listOptions) {

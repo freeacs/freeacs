@@ -119,7 +119,7 @@ public class ReportSyslogGenerator extends ReportGenerator {
         javaFormat += "dd";
       }
       SimpleDateFormat tmsFormatter = new SimpleDateFormat(javaFormat);
-      Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
+      Map<String, Unit> unitsInGroup = getUnitsInGroup(group, new Syslog(mainDataSource, id));
       DynamicStatement ds = new DynamicStatement();
       ds.addSql(
           "SELECT date_format(collector_timestamp, '"
@@ -243,7 +243,7 @@ public class ReportSyslogGenerator extends ReportGenerator {
 
       int entries = 0;
       if (group != null) {
-        Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
+        Map<String, Unit> unitsInGroup = getUnitsInGroup(group, new Syslog(mainDataSource, id));
         DynamicStatement ds = new DynamicStatement();
         ds.addSql(
             "SELECT date_format(collector_timestamp, '"

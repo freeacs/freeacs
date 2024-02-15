@@ -1,5 +1,6 @@
 package com.github.freeacs.tr069.base;
 
+import com.github.freeacs.cache.AcsCache;
 import com.github.freeacs.dbi.UnitJob;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.util.SystemParameters;
@@ -10,6 +11,7 @@ import com.github.freeacs.tr069.exception.TR069ExceptionShortMessage;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -20,10 +22,10 @@ import java.util.*;
 @Slf4j
 public abstract class DBIActions {
 
-    static void startUnitJob(String unitId, Integer jobId, DBI dbi) throws SQLException {
+    static void startUnitJob(String unitId, Integer jobId, DataSource dataSource) throws SQLException {
         String action = "startUnitJob";
         try {
-            UnitJobs unitJobs = new UnitJobs(dbi.getDataSource());
+            UnitJobs unitJobs = new UnitJobs(dataSource);
             com.github.freeacs.dbi.UnitJob uj = new com.github.freeacs.dbi.UnitJob(unitId, jobId);
             uj.setStartTimestamp(new Date());
             boolean updated = unitJobs.start(uj);
@@ -38,11 +40,11 @@ public abstract class DBIActions {
         }
     }
 
-    static void stopUnitJob(String unitId, Integer jobId, String unitJobStatus, DBI dbi)
+    static void stopUnitJob(String unitId, Integer jobId, String unitJobStatus, DataSource dataSource)
             throws SQLException {
         String action = "stopUnitJob";
         try {
-            UnitJobs unitJobs = new UnitJobs(dbi.getDataSource());
+            UnitJobs unitJobs = new UnitJobs(dataSource);
             com.github.freeacs.dbi.UnitJob uj = new UnitJob(unitId, jobId);
             uj.setEndTimestamp(new Date());
             uj.setStatus(unitJobStatus);
@@ -57,18 +59,18 @@ public abstract class DBIActions {
         }
     }
 
-    public static void writeUnittypeProfileUnit(SessionData sessionData, String unittypeName, String unitId, DBI dbi)
+    public static void writeUnittypeProfileUnit(SessionData sessionData, String unittypeName, String unitId, DBI dbi, AcsCache acsCache)
             throws TR069Exception {
         // If no product class is specified in the inform:
         if (unittypeName == null || unittypeName.trim().isEmpty()) {
             unittypeName = getUnittypeName(unitId);
         }
         try {
-            Unittype ut = dbi.getAcs().getUnittype(unittypeName);
+            Unittype ut = acsCache.getUnitType(unittypeName);
             if (ut == null) {
                 sessionData.setUnittypeCreated(false);
                 ut = new Unittype(unittypeName, unittypeName, "Auto-generated", Unittype.ProvisioningProtocol.TR069);
-                dbi.getAcs().getUnittypes().addOrChangeUnittype(ut, dbi.getAcs());
+                acsCache.addOrChangeUnittype(ut);
                 log.debug("Have created a unittype with the name " + unittypeName + " in discovery mode");
             } else {
                 sessionData.setUnittypeCreated(true);
@@ -85,16 +87,15 @@ public abstract class DBIActions {
             sessionData.setUnittype(ut);
             sessionData.setProfile(pr);
 
-            ACSUnit acsUnit = dbi.getACSUnit();
             List<String> unitIds = new ArrayList<>();
             unitIds.add(unitId);
-            acsUnit.addUnits(unitIds, pr);
+            acsCache.addUnits(unitIds, pr);
             List<UnitParameter> unitParameters = new ArrayList<>();
-            UnittypeParameter secretUtp = ut.getUnittypeParameters().getByName(SystemParameters.SECRET);
+            UnittypeParameter secretUtp = acsCache.getUnitTypeParamByName(ut.getId(), SystemParameters.SECRET);
             UnitParameter up = new UnitParameter(secretUtp, unitId, sessionData.getSecret(), pr);
             unitParameters.add(up);
-            acsUnit.addOrChangeUnitParameters(unitParameters);
-            Unit unit = readUnit(sessionData.getUnitId(), dbi);
+            acsCache.addOrChangeUnitParameters(unitId, unitParameters);
+            Unit unit = readUnit(sessionData.getUnitId(), acsCache);
             sessionData.setUnit(unit);
             log.debug("Have created a unit:" + unitId + " with the obtained secret");
         } catch (Throwable t) {
@@ -107,14 +108,13 @@ public abstract class DBIActions {
         }
     }
 
-    public static void writeUnitSessionParams(SessionData sessionData, DBI dbi) throws TR069DatabaseException {
+    public static void writeUnitSessionParams(SessionData sessionData, AcsCache acsCache) throws TR069DatabaseException {
         try {
             List<ParameterValueStruct> parameterValuesToDB = sessionData.getToDB();
-            Unittype unittype = sessionData.getUnittype();
             Profile profile = sessionData.getProfile();
             List<UnitParameter> unitSessionParameters = new ArrayList<>();
             for (ParameterValueStruct pvs : parameterValuesToDB) {
-                UnittypeParameter utp = unittype.getUnittypeParameters().getByName(pvs.getName());
+                UnittypeParameter utp = acsCache.getUnitTypeParamByName(sessionData.getUnit().getUnittype().getId(), pvs.getName());
                 if (utp != null) {
                     UnitParameter up = new UnitParameter(utp, sessionData.getUnitId(), pvs.getValue(), profile);
                     if (utp.getName().startsWith("Device.") || utp.getName().startsWith("InternetGatewayDevice.")) {
@@ -125,8 +125,7 @@ public abstract class DBIActions {
                 }
             }
             if (!unitSessionParameters.isEmpty()) {
-                ACSUnit acsUnit = dbi.getACSUnit();
-                acsUnit.addOrChangeSessionUnitParameters(unitSessionParameters, profile);
+                acsCache.addOrChangeSessionUnitParameters(sessionData.getUnitId(), unitSessionParameters);
             }
         } catch (SQLException sqle) {
             throw new TR069DatabaseException(
@@ -134,14 +133,13 @@ public abstract class DBIActions {
         }
     }
 
-    public static void writeUnitParams(SessionData sessionData) {
+    public static void writeUnitParams(SessionData sessionData, AcsCache acsCache) {
         List<ParameterValueStruct> parameterValuesToDB = sessionData.getToDB();
         List<UnitParameter> unitParameters = new ArrayList<>();
-        Unittype unittype = sessionData.getUnittype();
         Profile profile = sessionData.getProfile();
         Unit unit = sessionData.getUnit();
         for (ParameterValueStruct pvs : parameterValuesToDB) {
-            UnittypeParameter utp = unittype.getUnittypeParameters().getByName(pvs.getName());
+            UnittypeParameter utp = acsCache.getUnitTypeParamByName(unit.getUnittype().getId(), pvs.getName());
             if (utp != null) {
                 unitParameters.add(new UnitParameter(utp, sessionData.getUnitId(), pvs.getValue(), profile));
             } else {
@@ -151,13 +149,13 @@ public abstract class DBIActions {
         unitParameters.forEach(unit::toWriteQueue);
     }
 
-    public static void updateParametersFromDB(SessionData sessionData, boolean isDiscoveryMode, DBI dbi) throws SQLException {
+    public static void updateParametersFromDB(SessionData sessionData, boolean isDiscoveryMode, AcsCache acsCache) throws SQLException {
         if (sessionData.getFromDB() != null) {
             return;
         }
 
         log.debug("Will load unit data");
-        addUnitDataToSession(sessionData, dbi);
+        addUnitDataToSession(sessionData, acsCache);
 
         if (sessionData.getFromDB().isEmpty()) {
             if (isDiscoveryMode) {
@@ -176,7 +174,7 @@ public abstract class DBIActions {
             int systemParamCounter = 0;
             while (i.hasNext()) {
                 String utpName = i.next();
-                UnittypeParameter utp = sessionData.getUnittype().getUnittypeParameters().getByName(utpName);
+                UnittypeParameter utp = acsCache.getUnitTypeParamByName(sessionData.getUnit().getUnittype().getId(), utpName);
                 if (utp != null && utp.getFlag().isSystem()) {
                     systemParamCounter++;
                     sessionData.getAcsParameters().putPvs(utpName, sessionData.getFromDB().get(utpName));
@@ -191,8 +189,8 @@ public abstract class DBIActions {
         }
     }
 
-    private static void addUnitDataToSession(SessionData sessionData, DBI dbi) throws SQLException {
-        Unit unit = readUnit(sessionData.getUnitId(), dbi);
+    private static void addUnitDataToSession(SessionData sessionData, AcsCache acsCache) throws SQLException {
+        Unit unit = readUnit(sessionData.getUnitId(), acsCache);
         Map<String, ParameterValueStruct> valueMap = new TreeMap<>();
         if (unit != null) {
             sessionData.setUnit(unit);
@@ -247,11 +245,10 @@ public abstract class DBIActions {
         }
     }
 
-    private static Unit readUnit(String unitId, DBI dbi) throws SQLException {
+    private static Unit readUnit(String unitId, AcsCache acsCache) throws SQLException {
         Unit unit;
         try {
-            ACSUnit acsUnit = dbi.getACSUnit();
-            unit = acsUnit.getUnitById(unitId);
+            unit = acsCache.getUnitById(unitId);
             if (unit != null) {
                 log.debug("Found unit "
                                 + unit.getId()

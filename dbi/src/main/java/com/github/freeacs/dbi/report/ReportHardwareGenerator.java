@@ -144,8 +144,8 @@ public class ReportHardwareGenerator extends ReportGenerator {
     filter.setCollectorTmsStart(start);
     filter.setCollectorTmsEnd(end);
     filter.setFacilityVersion(swVersion);
-    Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
-    List<SyslogEntry> entries = syslog.read(filter, acs);
+    Map<String, Unit> unitsInGroup = getUnitsInGroup(group, syslog);
+    List<SyslogEntry> entries = syslog.read(filter);
     Map<String, Report<RecordHardware>> unitReportMap = new HashMap<>();
     for (SyslogEntry entry : entries) {
       String unitId = entry.getUnitId();
@@ -224,8 +224,8 @@ public class ReportHardwareGenerator extends ReportGenerator {
     filter.setCollectorTmsStart(start);
     filter.setCollectorTmsEnd(end);
     filter.setFacilityVersion(swVersion);
-    Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
-    List<SyslogEntry> entries = syslog.read(filter, acs);
+    Map<String, Unit> unitsInGroup = getUnitsInGroup(group, syslog);
+    List<SyslogEntry> entries = syslog.read(filter);
     for (SyslogEntry entry : entries) {
       if (group != null && unitsInGroup.get(entry.getUnitId()) == null) {
         continue;

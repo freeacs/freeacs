@@ -1,7 +1,5 @@
 package com.github.freeacs.dbi;
 
-import com.github.freeacs.dbi.util.ACSVersionCheck;
-
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -36,7 +34,6 @@ public class Users {
   private Map<String, User> nameMap = new TreeMap<>();
 
   public Users(DataSource dataSource) throws SQLException {
-    ACSVersionCheck.versionCheck(dataSource);
     this.dataSource = dataSource;
     readAllUsers();
   }
@@ -174,19 +171,15 @@ public class Users {
             addOrChange.getSecret(),
             addOrChange.getFullname(),
             addOrChange.getAccess());
-        if (ACSVersionCheck.adminSupported) {
-          int adminInt = 0;
-          if (addOrChange.isAdmin()) {
-            if (requestedBy.isAdmin()) {
-              adminInt = 1;
-            } else {
-              throw new IllegalArgumentException("Not allowed to create an admin user");
-            }
+        int adminInt = 0;
+        if (addOrChange.isAdmin()) {
+          if (requestedBy.isAdmin()) {
+            adminInt = 1;
+          } else {
+            throw new IllegalArgumentException("Not allowed to create an admin user");
           }
-          ds.addSqlAndArguments(", is_admin) VALUES (?,?,?,?,?)", adminInt);
-        } else {
-          ds.addSql(") VALUES (?,?,?,?)");
         }
+        ds.addSqlAndArguments(", is_admin) VALUES (?,?,?,?,?)", adminInt);
         ps = ds.makePreparedStatement(c, "id");
         ps.executeUpdate();
         ResultSet gk = ps.getGeneratedKeys();
@@ -209,13 +202,7 @@ public class Users {
             addOrChange.getSecret());
         ds.addSqlAndArguments(
             "fullname = ?, accesslist = ?", addOrChange.getFullname(), addOrChange.getAccess());
-        if (ACSVersionCheck.adminSupported) {
-          int adminInt = 0;
-          if (addOrChange.isAdmin()) {
-            adminInt = 1;
-          }
-          ds.addSqlAndArguments(", is_admin = ?", adminInt);
-        }
+        ds.addSqlAndArguments(", is_admin = ?", addOrChange.isAdmin() ? 1 : 0);
         ds.addSqlAndArguments(" WHERE id = ?", addOrChange.getId());
         ps = ds.makePreparedStatement(c);
         int rowsUpdated = ps.executeUpdate();
@@ -309,12 +296,7 @@ public class Users {
             String secret = rs.getString("secret");
             String fullname = rs.getString("fullname");
             String access = rs.getString("accesslist");
-            Boolean isAdmin = null;
-            if (username.equals(USER_ADMIN)) {
-                isAdmin = true;
-            } else if (ACSVersionCheck.adminSupported) {
-                isAdmin = rs.getInt("is_admin") == 1;
-            }
+            Boolean isAdmin = username.equals(USER_ADMIN) || rs.getInt("is_admin") == 1;
             User user = new User(username, fullname, access, isAdmin, this);
             user.setSecretHashed(secret);
             user.setId(id);

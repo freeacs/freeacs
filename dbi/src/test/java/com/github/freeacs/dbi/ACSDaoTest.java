@@ -11,7 +11,7 @@ public class ACSDaoTest extends BaseDBITest {
     @Test
     public void testGetUnittypeById() {
         // Given:
-        ACSDao acs = new ACSDao(dataSource);
+        ACSDao acs = new ACSDao(dataSource, syslog);
 
         // When:
         Unittype result1 = acs.getUnitTypeById(1);
@@ -33,7 +33,7 @@ public class ACSDaoTest extends BaseDBITest {
     @Test
     public void testGetUnittypeByName() {
         // Given:
-        ACSDao acs = new ACSDao(dataSource);
+        ACSDao acs = new ACSDao(dataSource, syslog);
 
         // When:
         Unittype result1 = acs.getUnitTypeByName("Test unit type");
@@ -55,7 +55,7 @@ public class ACSDaoTest extends BaseDBITest {
     @Test
     public void testGetUnitTypeParameters() {
         // Given:
-        ACSDao acs = new ACSDao(dataSource);
+        ACSDao acs = new ACSDao(dataSource, syslog);
 
         // When:
         List<UnittypeParameter> result1 = acs.getUnittypeParametersByUnitTypeId(1);
@@ -75,7 +75,7 @@ public class ACSDaoTest extends BaseDBITest {
     @Test
     public void testGetProfile() {
         // Given:
-        ACSDao acs = new ACSDao(dataSource);
+        ACSDao acs = new ACSDao(dataSource, syslog);
 
         // When:
         Profile result1 = acs.getProfileById(1);
@@ -93,7 +93,7 @@ public class ACSDaoTest extends BaseDBITest {
     @Test
     public void testGetProfileParameters() {
         // Given:
-        ACSDao acs = new ACSDao(dataSource);
+        ACSDao acs = new ACSDao(dataSource, syslog);
 
         // When:
         List<ProfileParameter> result1 = acs.getProfileParametersByProfileId(1);
@@ -111,7 +111,7 @@ public class ACSDaoTest extends BaseDBITest {
     @Test
     public void testGetGroup() {
         // Given:
-        ACSDao acs = new ACSDao(dataSource);
+        ACSDao acs = new ACSDao(dataSource, syslog);
 
         // When:
         Group result1 = acs.getGroupById(1);
@@ -149,7 +149,7 @@ public class ACSDaoTest extends BaseDBITest {
     @Test
     public void testGetGroupParameters() {
         // Given:
-        ACSDao acs = new ACSDao(dataSource);
+        ACSDao acs = new ACSDao(dataSource, syslog);
 
         // When:
         List<GroupParameter> result1 = acs.getGroupParametersByGroupId(1);
@@ -169,7 +169,7 @@ public class ACSDaoTest extends BaseDBITest {
     @Test
     public void testGetJob() {
         // Given:
-        ACSDao acs = new ACSDao(dataSource);
+        ACSDao acs = new ACSDao(dataSource, syslog);
 
         // When:
         Job result1 = acs.getJobById(1);
@@ -188,7 +188,7 @@ public class ACSDaoTest extends BaseDBITest {
     @Test
     public void testGetJobParameters() {
         // Given:
-        ACSDao acs = new ACSDao(dataSource);
+        ACSDao acs = new ACSDao(dataSource, syslog);
 
         // When:
         List<JobParameter> result1 = acs.getJobParametersByJobId(1);

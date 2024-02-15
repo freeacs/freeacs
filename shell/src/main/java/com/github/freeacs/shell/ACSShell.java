@@ -114,7 +114,7 @@ public class ACSShell {
     Identity id =
         new Identity(SyslogConstants.FACILITY_SHELL, version, session.getVerifiedFusionUser());
     Syslog syslog = new Syslog(session.getSysProps(), id);
-    DBI dbi = DBI.createAndInitialize(Integer.MAX_VALUE, session.getXapsProps(), syslog);
+    DBI dbi = DBI.createAndInitialize(Integer.MAX_VALUE, session.getXapsProps(), syslog.getIdentity().getFacility());
     session.setDbi(dbi);
     session.setAcs(dbi.getAcs());
     ACSUnit xapsU = new ACSUnit(session.getXapsProps(), session.getAcs(), syslog);

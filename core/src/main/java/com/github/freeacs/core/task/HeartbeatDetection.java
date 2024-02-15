@@ -38,8 +38,8 @@ public class HeartbeatDetection extends DBIShare {
   private final Cache sentMessages = new Cache();
   private static final Logger logger = LoggerFactory.getLogger(HeartbeatDetection.class);
 
-  public HeartbeatDetection(String taskName, DBI dbi) {
-    super(taskName, dbi);
+  public HeartbeatDetection(String taskName, DBI dbi, Syslog syslog) {
+    super(taskName, dbi, syslog);
   }
 
   @Override
@@ -136,7 +136,7 @@ public class HeartbeatDetection extends DBIShare {
             int counter = 0;
             Map<String, Unit> unitsInGroupMap = null;
             if (heartbeat.getGroup() != null) {
-              ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, acs.getSyslog());
+              ACSUnit acsUnit = new ACSUnit(acs.getDataSource(), acs, getSyslog());
               unitsInGroupMap = acsUnit.getUnits(heartbeat.getGroup());
             }
             while (rs.next()) {

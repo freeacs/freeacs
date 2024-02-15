@@ -1,5 +1,6 @@
 package com.github.freeacs.tr069.base;
 
+import com.github.freeacs.cache.AcsCache;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
 import com.github.freeacs.dbi.util.ProvisioningMode;
@@ -19,17 +20,17 @@ import java.util.Map.Entry;
  */
 @Slf4j
 public class JobLogic {
-  public static boolean checkJobOK(SessionDataI sessionData, DBI dbi, boolean isDiscoveryMode) {
+  public static boolean checkJobOK(SessionDataI sessionData, DBI dbi, AcsCache acsCache, boolean isDiscoveryMode) {
     try {
       String jobId = sessionData.getAcsParameters().getValue(SystemParameters.JOB_CURRENT);
       if (jobId != null && !jobId.trim().isEmpty()) {
         log.debug("Verification stage entered for job " + jobId);
-        Job job = sessionData.getUnittype().getJobs().getById(Integer.valueOf(jobId));
+        Job job = acsCache.getJobById(Integer.valueOf(jobId));
         if (job == null) {
           log.warn("Current job " + jobId + " does no longer exist, cannot be verified");
           return false;
         }
-        UnitJob uj = new UnitJob(sessionData, dbi, job, false);
+        UnitJob uj = new UnitJob(sessionData, dbi, acsCache, job, false);
         if (!JobStatus.STARTED.equals(job.getStatus())) {
           log.warn("Current job is not STARTED, UnitJob must be STOPPED");
           uj.stop(UnitJobStatus.STOPPED, isDiscoveryMode);
@@ -84,16 +85,11 @@ public class JobLogic {
     }
   }
 
-  public static UnitJob checkNewJob(SessionDataI sessionData, DBI dbi, int downloadLimit) {
+  public static UnitJob checkNewJob(SessionDataI sessionData, DBI dbi, AcsCache acsCache, int downloadLimit) {
     if (sessionData.getUnit().getProvisioningMode() == ProvisioningMode.REGULAR) {
-      Job job = getJob(sessionData, downloadLimit);
+      Job job = getJob(sessionData, downloadLimit, acsCache);
       if (job != null) {
-        UnitJob uj;
-        if (job.getFlags().getType() == JobType.SHELL) {
-          uj = new UnitJob(sessionData, dbi, job, true);
-        } else {
-          uj = new UnitJob(sessionData, dbi, job, false);
-        }
+        UnitJob uj = new UnitJob(sessionData, dbi, acsCache, job, job.getFlags().getType() == JobType.SHELL);
         uj.start();
         sessionData.setJob(job);
         sessionData.getPIIDecision().setCurrentJob(job);
@@ -107,11 +103,10 @@ public class JobLogic {
    * The method filters through all kinds of factors to find which Job (if any) should be the next
    * to run.
    */
-  private static Job getJob(SessionDataI sessionData, int downloadLimit) {
+  private static Job getJob(SessionDataI sessionData, int downloadLimit, AcsCache acsCache) {
     Unit unit = sessionData.getUnit();
-    Jobs jobs = sessionData.getUnittype().getJobs();
     String message = "";
-    Job[] allJobs = jobs.getJobs();
+    Job[] allJobs = acsCache.getJobsByUnitTypeId(unit.getUnittype().getId()).toArray(new Job[0]);
     sessionData.getPIIDecision().setAllJobs(allJobs);
     Job chosenJob = null;
     try {
@@ -127,7 +122,7 @@ public class JobLogic {
         return null;
       }
 
-      Map<Integer, JobHistoryEntry> jobHistory = getJobHistory(unit, jobs);
+      Map<Integer, JobHistoryEntry> jobHistory = getJobHistory(unit, acsCache);
 
       possibleJobs = filterOnJobDependency(possibleJobs, jobHistory);
       message += "Dependencies:" + possibleJobs.size() + ", ";
@@ -248,16 +243,11 @@ public class JobLogic {
         Long lastRunTms = (jhEntry == null) ? null : jhEntry.getLastRunTms();
         long NRT = serviceWindow.calculateNextRepeatableTms(lastRunTms, job.getRepeatInterval());
         long nextPII = convertToPII(serviceWindow, NRT);
-        job.setNextPII(
-            nextPII); // important for PIIDecision, must be removed in PIIDecision (must not leak
-        // over to another thread/session)
+        // important for PIIDecision, must be removed in PIIDecision (must not leak over to another thread/session)
+        job.setNextPII(nextPII);
         if (nextPII > PIIDecision.MINIMUM_PII) {
           i.remove();
-          log.debug("FilterOnRunTime removed job "
-                  + job.getId()
-                  + " since it was scheduled to run in "
-                  + nextPII
-                  + " seconds");
+          log.debug("FilterOnRunTime removed job {} since it was scheduled to run in {} seconds", job.getId(), nextPII);
         } else if (NRT < lowestNRT) {
           lowestNRT = NRT;
           nextRepeatableJob = job;
@@ -265,18 +255,11 @@ public class JobLogic {
       } else if (!inDisruptiveJobChain && !serviceWindow.isWithin()) {
         i.remove();
         long nextPII = serviceWindow.calculateStdPII();
-        log.debug("FilterOnRunTime removed job "
-                + entry.getValue().getId()
-                + " since it was outside SW and scheduled to run in "
-                + nextPII
-                + " seconds");
-        job.setNextPII(
-            nextPII); // important for PIIDecision, must be removed in PIIDecision (must not leak
-        // over to another thread/session)
+        log.debug("FilterOnRunTime removed job {} since it was outside SW and scheduled to run in {} seconds", entry.getValue().getId(), nextPII);
+        // important for PIIDecision, must be removed in PIIDecision (must not leak over to another thread/session)
+        job.setNextPII(nextPII);
       } else {
-        log.debug("FilterOnRunTime kept job "
-                + entry.getValue().getId()
-                + " since it was inside SW or in a disruptive job chain, and not repeatable");
+        log.debug("FilterOnRunTime kept job {} since it was inside SW or in a disruptive job chain, and not repeatable", entry.getValue().getId());
       }
     }
 
@@ -356,7 +339,7 @@ public class JobLogic {
     return possibleJobs;
   }
 
-  private static Map<Integer, JobHistoryEntry> getJobHistory(Unit unit, Jobs jobs) {
+  private static Map<Integer, JobHistoryEntry> getJobHistory(Unit unit, AcsCache acsCache) {
     Map<Integer, JobHistoryEntry> jobHistoryMap = new HashMap<>();
     String utpJobHistory = SystemParameters.JOB_HISTORY;
     UnitParameter jobHistoryUp = unit.getUnitParameters().get(utpJobHistory);
@@ -369,7 +352,7 @@ public class JobLogic {
         try {
           JobHistoryEntry jhEntry = new JobHistoryEntry(str);
           // A job in the history is deleted from the database, we'll ignore that one
-          if (jobs.getById(jhEntry.getJobId()) == null) {
+          if (acsCache.getJobById(jhEntry.getJobId()) == null) {
             continue;
           }
           jobHistoryMap.put(jhEntry.getJobId(), jhEntry);

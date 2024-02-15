@@ -113,7 +113,7 @@ public class Syslog2DB implements Runnable {
           logger.warn(
               "Syslog server runs in simulation mode, collector timestamp will be populated with device timestamp *if* they differ from 1 Jan 00:00:00");
         }
-        dbi = DBI.createAndInitialize(Integer.MAX_VALUE, xapsCp, syslog);
+        dbi = DBI.createAndInitialize(Integer.MAX_VALUE, xapsCp, syslog.getIdentity().getFacility());
       } catch (Throwable t) {
         logger.error("Syslog2DB Thread could not start due to failure in initialization", t);
       }

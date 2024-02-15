@@ -141,8 +141,8 @@ public class ReportVoipGenerator extends ReportGenerator {
     filter.setCollectorTmsStart(start);
     filter.setCollectorTmsEnd(end);
     filter.setFacilityVersion(swVersion);
-    Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
-    List<SyslogEntry> entries = syslog.read(filter, acs);
+    Map<String, Unit> unitsInGroup = getUnitsInGroup(group, syslog);
+    List<SyslogEntry> entries = syslog.read(filter);
     Map<String, Report<RecordVoip>> unitReportMap = new HashMap<>();
     for (SyslogEntry entry : entries) {
       if (entry.getUnittypeName() == null
@@ -219,8 +219,8 @@ public class ReportVoipGenerator extends ReportGenerator {
     filter.setCollectorTmsStart(start);
     filter.setCollectorTmsEnd(end);
     filter.setFacilityVersion(swVersion);
-    Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
-    List<SyslogEntry> entries = syslog.read(filter, acs);
+    Map<String, Unit> unitsInGroup = getUnitsInGroup(group, syslog);
+    List<SyslogEntry> entries = syslog.read(filter);
     for (SyslogEntry entry : entries) {
       if (entry.getUnittypeName() == null
           || entry.getProfileName() == null

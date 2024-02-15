@@ -44,7 +44,8 @@ public abstract class AbstractDownloadTest implements AbstractMySqlIntegrationTe
     protected void addTestfile(String unitTypeName, String unitId) throws SQLException {
         AbstractProvisioningTest.addUnitsToProvision(dbi, unitTypeName, unitId);
         Unittype unittype = dbi.getAcs().getUnittype(unitTypeName);
-        User admin = dbi.getAcs().getUser();
+        Users users = new Users(dbi.getDataSource());
+        User admin = users.getUnprotected(Users.USER_ADMIN);
         Files files = unittype.getFiles();
         File file = new File();
         file.setBytes(FILE_BYTES);

@@ -17,14 +17,16 @@ public abstract class DBIShare implements Task {
   private final DBI dbi;
 
   private final String taskName;
+  private final Syslog syslog;
   private long launchTms;
   private boolean running;
 
   private Throwable throwable;
 
-  public DBIShare(String taskName, DBI dbi) {
+  public DBIShare(String taskName, DBI dbi, Syslog syslog) {
     this.taskName = taskName;
     this.dbi = dbi;
+    this.syslog = syslog;
   }
 
   protected ACS getLatestACS() {
@@ -40,7 +42,7 @@ public abstract class DBIShare implements Task {
   }
 
   protected Syslog getSyslog() {
-    return dbi.getSyslog();
+    return syslog;
   }
 
   public void run() {

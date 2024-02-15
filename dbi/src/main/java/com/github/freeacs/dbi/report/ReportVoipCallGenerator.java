@@ -49,7 +49,7 @@ public class ReportVoipCallGenerator extends ReportGenerator {
       unitId = "^" + unitId + "$";
     }
     List<SyslogEntry> entries = readSyslog(start, end, uts, prs, unitId, line);
-    Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
+    Map<String, Unit> unitsInGroup = getUnitsInGroup(group, new Syslog(mainDataSource, id));
     for (SyslogEntry entry : entries) {
       if (group != null && unitsInGroup.get(entry.getUnitId()) == null) {
         continue;
@@ -76,7 +76,7 @@ public class ReportVoipCallGenerator extends ReportGenerator {
       Group group)
       throws SQLException {
     logInfo("VoipCallReport", null, uts, prs, start, end);
-    Map<String, Unit> unitsInGroup = getUnitsInGroup(group);
+    Map<String, Unit> unitsInGroup = getUnitsInGroup(group, new Syslog(mainDataSource, id));
     List<SyslogEntry> entries = readSyslog(start, end, uts, prs, null, null);
     Map<String, Report<RecordVoipCall>> unitReportMap = new HashMap<>();
     for (SyslogEntry entry : entries) {
@@ -129,7 +129,7 @@ public class ReportVoipCallGenerator extends ReportGenerator {
     filter.setCollectorTmsStart(start);
     filter.setCollectorTmsEnd(end);
     filter.setFacilityVersion(swVersion);
-    return syslog.read(filter, acs);
+    return syslog.read(filter);
   }
 
   private void addToReport(

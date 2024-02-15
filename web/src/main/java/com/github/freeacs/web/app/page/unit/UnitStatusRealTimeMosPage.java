@@ -186,16 +186,14 @@ public class UnitStatusRealTimeMosPage extends AbstractWebPage {
    */
   public static Date getLastQoSTimestamp(
       String sessionId, Unit unit, Date start, String line, ACS acs) throws SQLException {
-    Syslog syslog =
-        new Syslog(
-            acs.getSyslog().getDataSource(), ACSLoader.getIdentity(sessionId, acs.getDataSource()));
+    Syslog syslog = new Syslog(acs.getDataSource(), ACSLoader.getIdentity(sessionId, acs.getDataSource()));
     SyslogFilter filter = new SyslogFilter();
     filter.setMaxRows(1);
     String keyToFind = "QoS report for channel " + (line != null ? line : "");
     filter.setMessage("^" + keyToFind);
     filter.setCollectorTmsStart(start);
     filter.setUnitId("^" + unit.getId() + "$");
-    List<SyslogEntry> qosEntry = syslog.read(filter, acs);
+    List<SyslogEntry> qosEntry = syslog.read(filter);
     if (!qosEntry.isEmpty()) {
       return qosEntry.get(0).getCollectorTimestamp();
     }

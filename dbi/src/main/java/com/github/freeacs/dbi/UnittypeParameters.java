@@ -31,6 +31,17 @@ public class UnittypeParameters {
   private final Unittype unittype;
   private Boolean hasDeviceParameters;
 
+  public UnittypeParameters(List<UnittypeParameter> unittypeParameters, Unittype unittype) {
+    this.unittype = unittype;
+    idMap = new HashMap<>();
+    nameMap = new HashMap<>();
+    for (UnittypeParameter unittypeParameter : unittypeParameters) {
+      idMap.put(unittypeParameter.getId(), unittypeParameter);
+      nameMap.put(unittypeParameter.getName(), unittypeParameter);
+      updateInternalMaps(unittypeParameter);
+    }
+  }
+
   public UnittypeParameters(
       Map<Integer, UnittypeParameter> idMap,
       Map<String, UnittypeParameter> nameMap,
@@ -84,9 +95,6 @@ public class UnittypeParameters {
 
   public void addOrChangeUnittypeParameters(List<UnittypeParameter> unittypeParameters, ACS acs)
       throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     for (UnittypeParameter unittypeParameter : unittypeParameters) {
       if (unittypeParameter.getName().contains(",")
           || unittypeParameter.getName().contains("\"")
@@ -165,9 +173,6 @@ public class UnittypeParameters {
 
   public void addOrChangeUnittypeParameter(UnittypeParameter unittypeParameter, ACS acs)
       throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     List<UnittypeParameter> unittypeParameters = new ArrayList<>();
     unittypeParameters.add(unittypeParameter);
     addOrChangeUnittypeParameters(unittypeParameters, acs);
@@ -225,9 +230,6 @@ public class UnittypeParameters {
    */
   public void deleteUnittypeParameter(UnittypeParameter unittypeParameter, ACS acs)
       throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     List<UnittypeParameter> unittypeParameters = new ArrayList<>();
     unittypeParameters.add(unittypeParameter);
     deleteUnittypeParameters(unittypeParameters, acs);
@@ -235,9 +237,6 @@ public class UnittypeParameters {
 
   public void deleteUnittypeParameters(List<UnittypeParameter> unittypeParameters, ACS acs)
       throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     deleteUnittypeParameterImpl(unittypeParameters, unittype, acs);
     for (UnittypeParameter unittypeParameter : unittypeParameters) {
       resetHasDeviceParameters();
@@ -277,7 +276,7 @@ public class UnittypeParameters {
             unittypeParameter.setId(gk.getInt(1));
           }
 
-          logger.info("Added unittype parameter " + unittypeParameter.getName());
+          logger.info("Added unittype parameter " + unittypeParameter.getName() + " with id " + unittypeParameter.getId());
         } else {
           ds.addSql("UPDATE unit_type_param SET ");
           ds.addSqlAndArguments("flags = ?, ", unittypeParameter.getFlag().getFlag());

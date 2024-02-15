@@ -136,8 +136,7 @@ public class TriggerReleasePage extends AbstractWebPage {
         }
         if (trigger.getScript() != null && rt.getReleasedTms() != null) {
           ScriptExecutions scriptExecutions = new ScriptExecutions(xapsDataSource);
-          ScriptExecution exec =
-              scriptExecutions.getExecution(unittype, "TRIGGER:" + rt.getReleaseId());
+          ScriptExecution exec = scriptExecutions.getExecution(unittype, "TRIGGER:" + rt.getReleaseId(), acs::getUnittype);
           rt.setScriptExecution(exec);
         }
         // A very cumbersome and rather ugly way to do it:

@@ -427,7 +427,7 @@ public class UnittypeMenu {
       desc = args[7];
     }
 
-    User loggedInUser = session.getAcs().getUser();
+    User loggedInUser = session.getVerifiedFusionUser();
     owner = loggedInUser;
     if (loggedInUser.isAdmin() && ownerName != null) {
       owner = session.getAcs().getUsers().getUnprotected(ownerName);

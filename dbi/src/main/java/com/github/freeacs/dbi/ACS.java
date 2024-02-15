@@ -3,6 +3,7 @@ package com.github.freeacs.dbi;
 import com.github.freeacs.common.util.NumberComparator;
 import com.github.freeacs.dbi.sql.AutoCommitResettingConnectionWrapper;
 import com.github.freeacs.dbi.sql.DynamicStatementWrapper;
+import com.github.freeacs.dbi.sql.ReadConnectionWrapper;
 import com.github.freeacs.dbi.sql.StatementWithTimeoutWrapper;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.util.ACSVersionCheck;
@@ -49,33 +50,24 @@ public class ACS {
   private static boolean strictOrder = true;
 
   private final DataSource dataSource;
+  private final Users users;
 
   private Unittypes unittypes;
 
   private DBI dbi;
 
-  protected Syslog syslog;
-
   private ScriptExecutions scriptExecutions;
 
-  public ACS(DataSource dataSource, Syslog syslog) throws SQLException {
+  public ACS(DataSource dataSource) throws SQLException {
     long start = System.currentTimeMillis();
     this.dataSource = dataSource;
-    this.syslog = syslog;
+    this.users = new Users(dataSource);
     /* Checks all necessary tables to see which version they're in */
     ACSVersionCheck.versionCheck(dataSource);
     this.unittypes = read();
     if (logger.isDebugEnabled()) {
       logger.debug("Read ACS object in " + (System.currentTimeMillis() - start) + " ms.");
     }
-  }
-
-  public User getUser() {
-    return syslog.getIdentity().getUser();
-  }
-
-  public Users getUsers() {
-    return getUser().getUsers();
   }
 
   public ScriptExecutions getScriptExecutions() {
@@ -86,10 +78,7 @@ public class ACS {
   }
 
   /**
-   * The permissions will be applied in this method, and all unittypes/profile filtered through the
-   * method. 0. If admin permission, return all objects (including certificates 1. If no unittype
-   * permission or profile permissions for a unittype, remove unittype 2. If no unittype permission,
-   * but profile permission exists, remove some objects from unittype and return profile
+   * Read all unittypes
    *
    * @return the Unittypes object
    * @throws SQLException if something goes wrong
@@ -97,26 +86,6 @@ public class ACS {
   public Unittypes read() throws SQLException {
     unittypes = readAsAdmin();
     logger.debug("Updated ACS object, read " + unittypes.getUnittypes().length + " unittypes");
-    User user = syslog.getIdentity().getUser();
-    if (user.isAdmin()) {
-      return unittypes;
-    }
-    for (Unittype unittype : unittypes.getUnittypes()) {
-      boolean isUnittypeAdmin = user.isUnittypeAdmin(unittype.getId());
-      if (!isUnittypeAdmin) {
-        for (Profile profile : unittype.getProfiles().getProfiles()) {
-          if (user.isProfileAdmin(
-              unittype.getId(), profile.getId())) { // remove objects not related to profile
-            unittype.removeObjects(profile);
-          } else { // remove the whole profile
-            unittype.getProfiles().removePermission(profile);
-          }
-        }
-        if (unittype.getProfiles().getProfiles().length == 0) { // remove the whole unittype
-          unittypes.removePermission(unittype);
-        }
-      }
-    }
     return unittypes;
   }
 
@@ -151,7 +120,7 @@ public class ACS {
       WHERE gp.unit_type_param_id = utp.unit_type_param_id AND utp.unit_type_id = ut.unit_type_id ORDER BY ut.unit_type_name ASC
     """;
     try(AutoCommitResettingConnectionWrapper connectionWrapper =
-                new AutoCommitResettingConnectionWrapper(getDataSource().getConnection(), false);
+                new ReadConnectionWrapper(dataSource.getConnection());
         StatementWithTimeoutWrapper statementWrapper =
                 new StatementWithTimeoutWrapper(connectionWrapper, 60);
         ResultSet resultSet = statementWrapper.getStatement().executeQuery(sql)) {
@@ -187,7 +156,7 @@ public class ACS {
       ORDER BY utp.unit_type_id ASC, pm.profile_id ASC
     """;
     try(AutoCommitResettingConnectionWrapper connectionWrapper =
-                new AutoCommitResettingConnectionWrapper(getDataSource().getConnection(), false);
+                new ReadConnectionWrapper(getDataSource().getConnection());
         StatementWithTimeoutWrapper statementWrapper =
                 new StatementWithTimeoutWrapper(connectionWrapper, 60);
         ResultSet resultSet = statementWrapper.getStatement().executeQuery(sql)) {
@@ -230,7 +199,7 @@ public class ACS {
         ORDER BY utp.unit_type_id ASC, utpv.unit_type_param_id, utpv.priority ASC
     """;
     try(AutoCommitResettingConnectionWrapper connectionWrapper =
-                new AutoCommitResettingConnectionWrapper(getDataSource().getConnection(), false);
+                new ReadConnectionWrapper(dataSource.getConnection());
         StatementWithTimeoutWrapper statementWrapper =
                 new StatementWithTimeoutWrapper(connectionWrapper, 60);
         ResultSet resultSet = statementWrapper.getStatement().executeQuery(sql)) {
@@ -268,7 +237,7 @@ public class ACS {
       FROM unit_type_param ORDER BY unit_type_id ASC
     """;
     try(AutoCommitResettingConnectionWrapper connectionWrapper =
-                new AutoCommitResettingConnectionWrapper(getDataSource().getConnection(), false);
+                new ReadConnectionWrapper(dataSource.getConnection());
         StatementWithTimeoutWrapper statementWrapper =
                 new StatementWithTimeoutWrapper(connectionWrapper, 60);
         ResultSet resultSet = statementWrapper.getStatement().executeQuery(sql)) {
@@ -313,7 +282,7 @@ public class ACS {
             ? "SELECT * FROM syslog_event ORDER BY unit_type_id ASC"
             : "SELECT * FROM syslog_event ORDER BY unit_type_name ASC";
     try(AutoCommitResettingConnectionWrapper connectionWrapper =
-                new AutoCommitResettingConnectionWrapper(getDataSource().getConnection(), false);
+                new ReadConnectionWrapper(dataSource.getConnection());
         StatementWithTimeoutWrapper statementWrapper =
                 new StatementWithTimeoutWrapper(connectionWrapper, 60);
         ResultSet resultSet = statementWrapper.getStatement().executeQuery(sql)) {
@@ -388,7 +357,7 @@ public class ACS {
 
   private void readHeartbeats(Unittypes unittypes) throws SQLException {
     try(AutoCommitResettingConnectionWrapper connectionWrapper =
-                new AutoCommitResettingConnectionWrapper(getDataSource().getConnection(), false);
+                new ReadConnectionWrapper(dataSource.getConnection());
         DynamicStatementWrapper statementWrapper =
                 new DynamicStatementWrapper(connectionWrapper,"SELECT * FROM heartbeat ORDER BY unit_type_id ASC");
         ResultSet resultSet =
@@ -427,7 +396,7 @@ public class ACS {
   private void readTriggers(Unittypes unittypes) throws SQLException {
     String sql = "SELECT * FROM trigger_ ORDER BY unit_type_id ASC";
     try(AutoCommitResettingConnectionWrapper connectionWrapper =
-                new AutoCommitResettingConnectionWrapper(getDataSource().getConnection(), false);
+                new ReadConnectionWrapper(dataSource.getConnection());
         DynamicStatementWrapper statementWrapper =
                 new DynamicStatementWrapper(connectionWrapper, sql);
         ResultSet resultSet =
@@ -514,7 +483,7 @@ public class ACS {
   private void readGroups(Unittypes unittypes) throws SQLException {
     String sql = "SELECT * FROM group_ ORDER BY unit_type_id ASC";
     try(AutoCommitResettingConnectionWrapper connectionWrapper =
-                new AutoCommitResettingConnectionWrapper(getDataSource().getConnection(), false);
+                new ReadConnectionWrapper(dataSource.getConnection());
         StatementWithTimeoutWrapper statementWrapper =
                 new StatementWithTimeoutWrapper(connectionWrapper, 60);
         ResultSet resultSet =
@@ -575,7 +544,7 @@ public class ACS {
   private void readProfiles(Unittypes unittypes) throws SQLException {
     String sql = "SELECT unit_type_id, profile_id, profile_name FROM profile ORDER BY unit_type_id ASC";
     try(AutoCommitResettingConnectionWrapper connectionWrapper =
-                new AutoCommitResettingConnectionWrapper(getDataSource().getConnection(), false);
+                new ReadConnectionWrapper(dataSource.getConnection());
         StatementWithTimeoutWrapper statementWrapper =
                 new StatementWithTimeoutWrapper(connectionWrapper, 60);
         ResultSet resultSet =
@@ -616,7 +585,7 @@ public class ACS {
       FROM filestore ORDER BY unit_type_id ASC
     """.formatted(ACSVersionCheck.fileReworkSupported ? ", target_name, owner " : "");
     try(AutoCommitResettingConnectionWrapper connectionWrapper =
-                new AutoCommitResettingConnectionWrapper(getDataSource().getConnection(), false);
+                new ReadConnectionWrapper(dataSource.getConnection());
         StatementWithTimeoutWrapper statementWrapper =
                 new StatementWithTimeoutWrapper(connectionWrapper, 60);
         ResultSet resultSet =
@@ -647,8 +616,7 @@ public class ACS {
           String userIdStr = resultSet.getString("owner");
           if (userIdStr != null) {
             try {
-              owner =
-                  unittype.getAcs().getUser().getUsers().getUnprotected(Integer.valueOf(userIdStr));
+              owner = users.getUnprotected(Integer.valueOf(userIdStr));
             } catch (NumberFormatException ignored) {
               // ignore
             }
@@ -679,7 +647,7 @@ public class ACS {
   private Unittypes readUnittypes() throws SQLException {
     String sql = "SELECT * FROM unit_type";
     try(AutoCommitResettingConnectionWrapper connectionWrapper =
-                new AutoCommitResettingConnectionWrapper(getDataSource().getConnection(), false);
+                new ReadConnectionWrapper(dataSource.getConnection());
         StatementWithTimeoutWrapper statementWrapper =
                 new StatementWithTimeoutWrapper(connectionWrapper, 60);
         ResultSet resultSet =
@@ -710,7 +678,7 @@ public class ACS {
   private void readJobs(Unittypes unittypes) throws SQLException {
     String sql = "SELECT * FROM job j, group_ g WHERE j.group_id = g.group_id ORDER BY g.unit_type_id ASC, j.job_id_dependency ASC";
     try(AutoCommitResettingConnectionWrapper connectionWrapper =
-                new AutoCommitResettingConnectionWrapper(getDataSource().getConnection(), false);
+                new ReadConnectionWrapper(dataSource.getConnection());
         StatementWithTimeoutWrapper statementWrapper =
                 new StatementWithTimeoutWrapper(connectionWrapper, 60);
         ResultSet resultSet =
@@ -805,7 +773,7 @@ public class ACS {
       ORDER BY jp.job_id ASC
     """;
     try(AutoCommitResettingConnectionWrapper connectionWrapper =
-                new AutoCommitResettingConnectionWrapper(getDataSource().getConnection(), false);
+                new ReadConnectionWrapper(dataSource.getConnection());
         DynamicStatementWrapper statementWrapper =
                 new DynamicStatementWrapper(connectionWrapper, sql, Job.ANY_UNIT_IN_GROUP);
         ResultSet resultSet =

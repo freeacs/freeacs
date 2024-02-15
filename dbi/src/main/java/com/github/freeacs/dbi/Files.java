@@ -66,9 +66,6 @@ public class Files {
   }
 
   public void addOrChangeFile(File file, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     file.setConnectionProperties(acs.getDataSource()); // just in
     // case...
     file.validate();
@@ -113,9 +110,6 @@ public class Files {
    * @throws SQLException if something goes wrong
    */
   public void deleteFile(File file, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     deleteFileImpl(unittype, file, acs);
     nameMap.remove(file.getName());
     idMap.remove(file.getId());
@@ -126,13 +120,6 @@ public class Files {
     Connection c = acs.getDataSource().getConnection();
     PreparedStatement s = null;
     String sql;
-    // The file owner is set automatically to the logged-in user upon
-    // add/change of file.
-    // If logged-in user isAdmin, will skip this override, and will allow
-    // any user specified in the file object.
-    if (!unittype.getAcs().getUser().isAdmin() && unittype.getAcs().getUser().getId() != null) {
-      file.setOwner(unittype.getAcs().getUser());
-    }
     if (file.getId() == null) {
       try {
         DynamicStatement ds = new DynamicStatement();

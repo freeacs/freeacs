@@ -312,9 +312,6 @@ public class Triggers {
   }
 
   public void addOrChangeTrigger(Trigger trigger, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     trigger.validate();
     addOrChangeTriggerImpl(trigger, acs);
     nameMap.put(trigger.getName(), trigger);
@@ -374,10 +371,7 @@ public class Triggers {
       throw new IllegalArgumentException(
           "This trigger is a composite trigger with \"child\" triggers. Remove child triggers before deleting this trigger");
     }
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
-    int rowsDeleted = deleteTriggerImpl(trigger, acs);
+    deleteTriggerImpl(trigger, acs);
     nameMap.remove(trigger.getName());
     idMap.remove(trigger.getId());
     if (trigger.getParent() != null) {

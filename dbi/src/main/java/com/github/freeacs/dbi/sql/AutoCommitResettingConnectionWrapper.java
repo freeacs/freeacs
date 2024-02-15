@@ -11,19 +11,24 @@ import java.sql.SQLException;
 public class AutoCommitResettingConnectionWrapper implements AutoCloseable {
     private final Connection connection;
     private final boolean originalAutoCommit;
+    private final boolean commitOnClose;
 
-    public AutoCommitResettingConnectionWrapper(Connection connection, boolean autoCommit)
+    public AutoCommitResettingConnectionWrapper(Connection connection, boolean autoCommit, boolean commitOnClose)
             throws SQLException, IllegalArgumentException {
         if (connection == null) {
             throw new IllegalArgumentException("Connection cannot be null");
         }
         this.connection = connection;
         this.originalAutoCommit = connection.getAutoCommit();
+        this.commitOnClose = commitOnClose;
         connection.setAutoCommit(autoCommit);
     }
 
     @Override
     public void close() throws SQLException {
+        if (commitOnClose) {
+            connection.commit();
+        }
         try {
             connection.setAutoCommit(originalAutoCommit);
         } catch (SQLException e) {

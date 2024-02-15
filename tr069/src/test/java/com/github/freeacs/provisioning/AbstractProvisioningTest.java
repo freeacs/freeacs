@@ -3,6 +3,8 @@ package com.github.freeacs.provisioning;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.utils.RestTemplateConfig;
+import lombok.NonNull;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
@@ -54,15 +56,14 @@ public abstract class AbstractProvisioningTest {
     public static void addUnitsToProvision(DBI dbi, String unitTypeName, String unitId) throws SQLException {
         Unittype unittype = addUnittype(dbi, unitTypeName);
 
-        ACSUnit acsUnit = dbi.getACSUnit();
-
+        ACSUnit acsUnit = getAcsUnit(dbi);
         acsUnit.addUnits(Collections.singletonList(unitId), unittype.getProfiles().getByName(PROFILE_NAME));
         Unit unit = acsUnit.getUnitById(unitId);
         acsUnit.addOrChangeUnitParameter(unit, SystemParameters.SECRET, UNIT_PASSWORD);
     }
 
     public static Unittype addUnittype(DBI dbi, String unitTypeName) throws SQLException {
-        ACSUnit acsUnit = dbi.getACSUnit();
+        ACSUnit acsUnit = getAcsUnit(dbi);
         Unittypes unittypes = dbi.getAcs().getUnittypes();
         Unittype unittype = unittypes.getByName(unitTypeName);
         if (unittype != null) {
@@ -144,5 +145,11 @@ public abstract class AbstractProvisioningTest {
     protected void assertSessionInvalidated(ResponseEntity<String> response) {
         assertEquals(204, response.getStatusCode().value());
         assertNull(response.getBody());
+    }
+
+    @NonNull
+    public static ACSUnit getAcsUnit(DBI dbi) throws SQLException {
+        Syslog syslog = new Syslog(dbi.getDataSource(), new Identity(1, "latest", dbi.getAcs().getUsers().getUnprotected(Users.USER_ADMIN)));
+        return new ACSUnit(dbi.getDataSource(), dbi.getAcs(), syslog);
     }
 }

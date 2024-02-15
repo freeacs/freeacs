@@ -5,14 +5,16 @@ import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.ScriptExecutions;
 import java.sql.SQLException;
 import java.util.Calendar;
+
+import com.github.freeacs.dbi.Syslog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DeleteOldScripts extends DBIShare {
   private final Properties properties;
 
-  public DeleteOldScripts(String taskName, DBI dbi, Properties properties) {
-    super(taskName, dbi);
+  public DeleteOldScripts(String taskName, DBI dbi, Syslog syslog, Properties properties) {
+    super(taskName, dbi, syslog);
     this.properties = properties;
   }
 

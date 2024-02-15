@@ -3,7 +3,10 @@ package com.github.freeacs.dbi;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +15,12 @@ public class ProfileParameters {
   private final Map<String, ProfileParameter> nameMap;
   private final Map<Integer, ProfileParameter> idMap;
   private final Profile profile;
+
+  public ProfileParameters(List<ProfileParameter> profileParameters, Profile profile) {
+    this.profile = profile;
+    this.nameMap = profileParameters.stream().collect(Collectors.toMap(p -> p.getUnittypeParameter().getName(), p -> p));
+    this.idMap = profileParameters.stream().collect(Collectors.toMap(p -> p.getUnittypeParameter().getId(), p -> p));
+  }
 
   public ProfileParameters(
       Map<Integer, ProfileParameter> idMap,
@@ -81,12 +90,6 @@ public class ProfileParameters {
 
   public void addOrChangeProfileParameter(ProfileParameter profileParameter, ACS acs)
       throws SQLException {
-    if (!acs.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
-    //		if (profileParameter.getUnittypeParameter().getFlag().isInspection())
-    //			throw new IllegalArgumentException("The unit type parameter is an inspection parameter -
-    // cannot be set on a profile");
     addOrChangeProfileParameterImpl(profileParameter, profile, acs);
     nameMap.put(profileParameter.getUnittypeParameter().getName(), profileParameter);
     idMap.put(profileParameter.getUnittypeParameter().getId(), profileParameter);
@@ -126,9 +129,6 @@ public class ProfileParameters {
    */
   public void deleteProfileParameter(ProfileParameter profileParameter, ACS acs)
       throws SQLException {
-    if (!acs.getUser().isProfileAdmin(profile.getUnittype().getId(), profile.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     deleteProfileParameterImpl(profileParameter, profile, acs);
     nameMap.remove(profileParameter.getUnittypeParameter().getName());
     idMap.remove(profileParameter.getId());

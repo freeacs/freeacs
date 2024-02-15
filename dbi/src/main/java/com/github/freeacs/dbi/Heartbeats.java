@@ -78,9 +78,6 @@ public class Heartbeats {
   }
 
   public void addOrChangeHeartbeat(Heartbeat heartbeat, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     heartbeat.setValidateInput(true);
     heartbeat.validate();
     addOrChangeHeartbeatImpl(heartbeat, acs);
@@ -117,9 +114,6 @@ public class Heartbeats {
    * @throws SQLException
    */
   public void deleteHeartbeat(Heartbeat heartbeat, ACS acs) throws SQLException {
-    if (!acs.getUser().isUnittypeAdmin(unittype.getId())) {
-      throw new IllegalArgumentException("Not allowed action for this user");
-    }
     deleteHeartbeatImpl(heartbeat, acs);
     idMap.remove(heartbeat.getId());
     nameMap.remove(heartbeat.getName());

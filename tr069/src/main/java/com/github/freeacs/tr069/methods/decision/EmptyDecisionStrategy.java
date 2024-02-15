@@ -1,5 +1,6 @@
 package com.github.freeacs.tr069.methods.decision;
 
+import com.github.freeacs.cache.AcsCache;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.util.SystemParameters;
 import com.github.freeacs.dbi.util.TimestampWrapper;
@@ -22,10 +23,12 @@ import java.util.List;
 public class EmptyDecisionStrategy implements DecisionStrategy {
     private final DBI dbi;
     private final Properties properties;
+    private final AcsCache acsCache;
 
-    EmptyDecisionStrategy(Properties properties, DBI dbi) {
+    EmptyDecisionStrategy(Properties properties, DBI dbi, AcsCache acsCache) {
         this.properties = properties;
         this.dbi = dbi;
+        this.acsCache = acsCache;
     }
 
     @Override
@@ -119,9 +122,9 @@ public class EmptyDecisionStrategy implements DecisionStrategy {
             }
         }
         sessionData.setToDB(toDB);
-        DBIActions.writeUnitParams(sessionData); // queue-parameters - will be written at end-of-session
+        DBIActions.writeUnitParams(sessionData, acsCache); // queue-parameters - will be written at end-of-session
         if (!queue) { // execute changes immediately - since otherwise these parameters will be lost (in the event of GPNRes.process())
-            dbi.getACSUnit().addOrChangeQueuedUnitParameters(sessionData.getUnit());
+            acsCache.addOrChangeQueuedUnitParameters(sessionData.getUnit());
         }
         sessionData.setToDB(null);
     }

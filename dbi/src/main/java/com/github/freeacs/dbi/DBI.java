@@ -67,6 +67,7 @@ import org.slf4j.LoggerFactory;
 @Getter
 public class DBI implements Runnable {
   private final Thread thread;
+  private final int facility;
 
   private boolean running = true;
 
@@ -212,25 +213,24 @@ public class DBI implements Runnable {
   private final Map<Integer, UnittypePublish> publishUnittypes = new HashMap<>();
   private final List<Message> outbox = new ArrayList<>();
   private final Set<Integer> sent = new TreeSet<>();
-  private final Syslog syslog;
   private final Random random = new Random(System.nanoTime());
   private final int dbiId;
   private final Map<String, Inbox> inboxes = new HashMap<>();
   private int lastReadId = -1;
   private final Inbox publishInbox = new Inbox();
 
-  private DBI(int lifetimeSec, DataSource dataSource, Syslog syslog) throws SQLException {
+  private DBI(int lifetimeSec, DataSource dataSource, int facility) throws SQLException {
+    this.facility = facility;
     this.dataSource = dataSource;
     this.lifetimeSec = lifetimeSec;
-    this.syslog = syslog;
-    this.acs = new ACS(dataSource, syslog);
+    this.acs = new ACS(dataSource);
     this.dbiId = new Random().nextInt(1000000);
     acs.setDbi(this);
     this.thread = createDBIThread();
   }
 
-  public static DBI createAndInitialize(int lifetimeSec, DataSource dataSource, Syslog syslog) throws SQLException {
-    DBI dbi = new DBI(lifetimeSec, dataSource, syslog);
+  public static DBI createAndInitialize(int lifetimeSec, DataSource dataSource, int facility) throws SQLException {
+    DBI dbi = new DBI(lifetimeSec, dataSource, facility);
     dbi.initialize();
     return dbi;
   }
@@ -239,12 +239,12 @@ public class DBI implements Runnable {
     processMessagesFromDatabase();
     setupPublishInbox();
     thread.start();
-    logger.debug("DBI is loaded for user " + (syslog != null ? syslog.getIdentity().getUser().getFullname() : "unknown"));
+    logger.debug("DBI is loaded");
   }
 
   private Thread createDBIThread() {
     Thread thread = new Thread(this);
-    String threadName = (syslog != null) ? "DBI for " + syslog.getIdentity().getFacilityName() : "DBI";
+    String threadName = "DBI";
     thread.setName(threadName);
     thread.setDaemon(true);
     return thread;
@@ -456,7 +456,7 @@ public class DBI implements Runnable {
     for (Entry<Integer, UnittypePublish> entry : publishUnittypes.entrySet()) {
       UnittypePublish up = entry.getValue();
       up.addUnittypePublish();
-      List<Message> messages = up.getMessages(syslog.getIdentity().getFacility());
+      List<Message> messages = up.getMessages(facility);
       outbox.addAll(messages);
     }
   }
@@ -722,13 +722,9 @@ public class DBI implements Runnable {
       message.setObjectType(objectType);
       message.setObjectId(objectId);
       message.setReceiver(receiver);
-      message.setSender(syslog.getIdentity().getFacility());
+      message.setSender(facility);
       message.setTimestamp(new Date());
       outbox.add(message);
     }
-  }
-
-  public ACSUnit getACSUnit() throws SQLException {
-    return new ACSUnit(dataSource, acs, syslog);
   }
 }

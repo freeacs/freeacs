@@ -452,8 +452,7 @@ public class UnitStatusInfo {
             + currentUnit.getId()
             + "$"); // The unit object can never become NULL since this is checked in UnitStatusPage
     // very early.
-    List<SyslogEntry> entries =
-        syslog.read(filter, ACSLoader.getXAPS(sessionId, mainDataSource, syslogDataSource));
+    List<SyslogEntry> entries = syslog.read(filter);
     if (entries != null) {
       Date lastFailed = null;
       Date lastRegged = null;

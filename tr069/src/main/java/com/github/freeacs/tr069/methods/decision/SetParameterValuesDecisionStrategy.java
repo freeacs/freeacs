@@ -1,5 +1,6 @@
 package com.github.freeacs.tr069.methods.decision;
 
+import com.github.freeacs.cache.AcsCache;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.UnitJobStatus;
 import com.github.freeacs.dbi.util.ProvisioningMode;
@@ -14,10 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 public class SetParameterValuesDecisionStrategy implements DecisionStrategy {
     private final Properties properties;
     private final DBI dbi;
+    private final AcsCache acsCache;
 
-    SetParameterValuesDecisionStrategy(Properties properties, DBI dbi) {
+    SetParameterValuesDecisionStrategy(Properties properties, DBI dbi, AcsCache acsCache) {
         this.properties = properties;
         this.dbi = dbi;
+        this.acsCache = acsCache;
     }
 
     @SuppressWarnings("Duplicates")
@@ -28,7 +31,7 @@ public class SetParameterValuesDecisionStrategy implements DecisionStrategy {
                 && properties.isParameterkeyQuirk(sessionData)
                 && sessionData.isProvisioningAllowed()) {
             log.debug("UnitJob is COMPLETED without verification stage, since CPE does not support ParameterKey");
-            UnitJob uj = new UnitJob(sessionData, dbi, sessionData.getJob(), false);
+            UnitJob uj = new UnitJob(sessionData, dbi, acsCache, sessionData.getJob(), false);
             uj.stop(UnitJobStatus.COMPLETED_OK, properties.isDiscoveryMode());
         }
         reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());

@@ -1,5 +1,6 @@
 package com.github.freeacs.security;
 
+import com.github.freeacs.cache.AcsCache;
 import com.github.freeacs.dbi.ACSUnit;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Unit;
@@ -15,18 +16,17 @@ import java.sql.SQLException;
 @Component
 public class AcsUnitDetailsService implements UserDetailsService {
 
-    private final DBI dbi;
+    private final AcsCache acsCache;
 
     @Autowired
-    public AcsUnitDetailsService(DBI dbi) {
-        this.dbi = dbi;
+    public AcsUnitDetailsService(AcsCache acsCache) {
+        this.acsCache = acsCache;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
-            ACSUnit acsUnit = dbi.getACSUnit();
-            Unit unit = acsUnit.getUnitById(username);
+            Unit unit = acsCache.getUnitById(username);
             if (unit != null) {
                 String secret = unit.getUnitParameters().get(SystemParameters.SECRET).getValue();
                 if (secret == null) {

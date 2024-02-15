@@ -39,7 +39,7 @@ public class ACSFactory {
 
   public ACSUnit getXAPSUnit(ACS acs) throws RemoteException {
     try {
-      return new ACSUnit(xapsDataSource, acs, acs.getSyslog());
+      return new ACSUnit(xapsDataSource, acs, new Syslog(syslogDataSource, id));
     } catch (Throwable t) {
       String msg = "An exception occured while retrieving XAPSUnit object";
       logger.error(msg, t);
@@ -55,11 +55,7 @@ public class ACSFactory {
         if (user == null) {
           throw error("The user " + login.getUsername() + " is unknown");
         }
-
-        id = new Identity(SyslogConstants.FACILITY_WEBSERVICE, "2.0.1-SNAPSHOT", user);
-        //	private Unittypes allowedUnittypes;
-        Syslog syslog = new Syslog(syslogDataSource, id);
-        DBI dbi = DBI.createAndInitialize(lifetimeSec + 30, xapsDataSource, syslog);
+        DBI dbi = DBI.createAndInitialize(lifetimeSec + 30, xapsDataSource, SyslogConstants.FACILITY_WEBSERVICE);
         acs = dbi.getAcs();
         if (!login.getPassword().getValue().equals(user.getSecret())
             && !user.isCorrectSecret(login.getPassword().getValue())) {

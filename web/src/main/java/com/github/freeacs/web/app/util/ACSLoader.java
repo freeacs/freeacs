@@ -36,8 +36,7 @@ public class ACSLoader {
       int sessionTimeoutSecs = getSessionTimeout() * 60;
       if (dbi == null || dbi.isFinished()) {
         Identity ident = getIdentity(sessionId, mainDataSource);
-        Syslog syslog = new Syslog(syslogDataSource, ident);
-        dbi = DBI.createAndInitialize(sessionTimeoutSecs, mainDataSource, syslog);
+        dbi = DBI.createAndInitialize(sessionTimeoutSecs, mainDataSource, ident.getFacility());
         SessionCache.putDBI(sessionId, dbi, sessionTimeoutSecs);
       }
       Monitor.setLastDBILogin(null);

@@ -20,13 +20,15 @@ public abstract class DBIOwner implements Task {
   private final DBI dbi;
 
   private final String taskName;
+  private final Syslog syslog;
   private boolean running;
 
   private Throwable throwable;
 
-  DBIOwner(String taskName, DBI dbi) {
+  DBIOwner(String taskName, DBI dbi, Syslog syslog) {
     this.taskName = taskName;
     this.dbi = dbi;
+    this.syslog = syslog;
   }
 
   ACS getLatestACS() {
@@ -34,7 +36,7 @@ public abstract class DBIOwner implements Task {
   }
 
   Identity getIdentity() {
-    return dbi.getSyslog().getIdentity();
+    return syslog.getIdentity();
   }
 
   DataSource getDataSource() {
@@ -42,7 +44,7 @@ public abstract class DBIOwner implements Task {
   }
 
   protected Syslog getSyslog() {
-    return dbi.getSyslog();
+    return syslog;
   }
 
   public void run() {

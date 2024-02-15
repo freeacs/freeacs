@@ -1,5 +1,6 @@
 package com.github.freeacs.tr069.methods.decision;
 
+import com.github.freeacs.cache.AcsCache;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.tr069.TR069DMParameter;
 import com.github.freeacs.dbi.tr069.TR069DMParameterMap;
@@ -23,6 +24,7 @@ import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import lombok.extern.slf4j.Slf4j;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,10 +34,12 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
     private final Properties properties;
     private final DBI dbi;
     private final ScriptExecutions scriptExecutions;
+    private final AcsCache acsCache;
 
-    GetParameterValuesDecisionStrategy(Properties properties, DBI dbi) {
+    GetParameterValuesDecisionStrategy(Properties properties, DBI dbi, AcsCache acsCache) {
         this.properties = properties;
         this.dbi = dbi;
+        this.acsCache = acsCache;
         this.scriptExecutions = new ScriptExecutions(dbi.getDataSource());
     }
 
@@ -94,7 +98,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
     @SuppressWarnings("Duplicates")
     private void normalPriorityProvisioning(HTTPRequestResponseData reqRes,
                                             String publicUrl,
-                                            int concurrentDownloadLimit) {
+                                            int concurrentDownloadLimit) throws SQLException {
         ServiceWindow serviceWindow;
         SessionData sessionData = reqRes.getSessionData();
         String reset = sessionData.getAcsParameters().getValue(SystemParameters.RESET);
@@ -152,7 +156,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
                                  boolean isDiscoveryMode,
                                  String publicUrl,
                                  int concurrentDownloadLimit)
-            throws TR069Exception {
+            throws TR069Exception, SQLException {
         SessionData sessionData = reqRes.getSessionData();
 
         UnitJob uj = null;
@@ -161,7 +165,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
             // group-matching in job-search
             // will not affect the comparison in populateToCollections()
             updateUnitParameters(sessionData);
-            uj = JobLogic.checkNewJob(sessionData, dbi, concurrentDownloadLimit); // may find a new job
+            uj = JobLogic.checkNewJob(sessionData, dbi, acsCache, concurrentDownloadLimit); // may find a new job
         }
         Job job = sessionData.getJob();
         if (job != null) { // No job is present - process according to
@@ -178,7 +182,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
                                  UnitJob unitJob,
                                  boolean isDiscoveryMode,
                                  String publicUrl)
-            throws TR069Exception {
+            throws TR069Exception, SQLException {
         SessionData sessionData = reqRes.getSessionData();
         sessionData.getProvisioningMessage().setJobId(job.getId());
         JobType type = job.getFlags().getType();
@@ -203,7 +207,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
         } else {
             if (type == JobType.SHELL) {
                 sessionData.getProvisioningMessage().setProvOutput(ProvisioningMessage.ProvOutput.SHELL);
-                ShellJobLogic.execute(sessionData, dbi, job, unitJob, isDiscoveryMode, scriptExecutions);
+                ShellJobLogic.execute(sessionData, dbi, acsCache, job, unitJob, isDiscoveryMode, scriptExecutions);
             } else { // type == JobType.CONFIG
                 // The service-window is unimportant for next PII calculation, will
                 // be set to 31 no matter what, since a job is "in the process".
@@ -234,7 +238,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
     }
 
     @SuppressWarnings("Duplicates")
-    private void prepareSPVLimited(HTTPRequestResponseData reqRes) {
+    private void prepareSPVLimited(HTTPRequestResponseData reqRes) throws SQLException {
         SessionData sessionData = reqRes.getSessionData();
         sessionData.setProvisioningAllowed(false);
         sessionData.getProvisioningMessage().setProvStatus(ProvisioningMessage.ProvStatus.DELAYED);
@@ -263,11 +267,11 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
                         + "] ACS["
                         + nextPII
                         + "] Decided by ACS");
-        DBIActions.writeUnitParams(sessionData);
+        DBIActions.writeUnitParams(sessionData, acsCache);
     }
 
     @SuppressWarnings("Duplicates")
-    private void prepareSPVForConfigJob(SessionData sessionData) throws TR069Exception {
+    private void prepareSPVForConfigJob(SessionData sessionData) throws TR069Exception, SQLException {
         // populate to collections from job-params
         // impl.
         ParameterList toCPE = new ParameterList();
@@ -334,11 +338,11 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
                             + nextPII
                             + "] Decided by ACS");
         }
-        DBIActions.writeUnitParams(sessionData);
+        DBIActions.writeUnitParams(sessionData, acsCache);
     }
 
     @SuppressWarnings("Duplicates")
-    private void prepareSPV(SessionData sessionData) {
+    private void prepareSPV(SessionData sessionData) throws SQLException {
         populateToCollections(sessionData);
         CPEParameters cpeParams = sessionData.getCpeParameters();
         String PII = cpeParams.PERIODIC_INFORM_INTERVAL;
@@ -378,7 +382,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
                             + nextPII
                             + "] Decided by ACS");
         }
-        DBIActions.writeUnitParams(sessionData);
+        DBIActions.writeUnitParams(sessionData, acsCache);
     }
 
     /**
@@ -566,8 +570,6 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
                         + " mode, "
                         + sessionData.getValuesFromCPE().size()
                         + " params from CPE may be copied to ACS session storage");
-        //		log.info(GetParameterValuesDecisionStrategyExtraction.class, "Provisioning in EXTRACTION mode, " +
-        // sessionData.getFromCPE().size() + " params from CPE may be copied to ACS session storage");
         for (int i = 0; i < sessionData.getValuesFromCPE().size(); i++) {
             ParameterValueStruct pvsCPE = sessionData.getValuesFromCPE().get(i);
             UnittypeParameter utp = utps.getByName(pvsCPE.getName());
@@ -582,7 +584,7 @@ public class GetParameterValuesDecisionStrategy implements DecisionStrategy {
             toDB.add(pvsCPE);
         }
         sessionData.setToDB(toDB);
-        DBIActions.writeUnitSessionParams(sessionData, dbi);
+        DBIActions.writeUnitSessionParams(sessionData, acsCache);
         log.debug(toDB.size() + " params written to ACS session storage");
         reqRes.getResponseData().setMethod(ProvisioningMethod.Empty.name());
         sessionData.getProvisioningMessage().setProvOutput(ProvisioningMessage.ProvOutput.EMPTY);

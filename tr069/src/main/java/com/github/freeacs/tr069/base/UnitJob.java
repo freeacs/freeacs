@@ -1,5 +1,6 @@
 package com.github.freeacs.tr069.base;
 
+import com.github.freeacs.cache.AcsCache;
 import com.github.freeacs.dbi.*;
 import com.github.freeacs.dbi.JobFlag.JobServiceWindow;
 import com.github.freeacs.dbi.util.SystemParameters;
@@ -17,6 +18,7 @@ import java.util.Objects;
 public class UnitJob {
   private final DBI dbi;
   private final SessionDataI sessionData;
+  private final AcsCache acsCache;
   private Job job;
 
   /**
@@ -33,11 +35,12 @@ public class UnitJob {
    */
   private final boolean serverSideJob;
 
-  public UnitJob(SessionDataI sessionData, DBI dbi, Job job, boolean serverSideJob) {
+  public UnitJob(SessionDataI sessionData, DBI dbi, AcsCache acsCache, Job job, boolean serverSideJob) {
     this.sessionData = sessionData;
     this.job = job;
     this.serverSideJob = serverSideJob;
     this.dbi = dbi;
+    this.acsCache = acsCache;
   }
 
   private UnitParameter makeUnitParameter(String name, String value) {
@@ -118,7 +121,7 @@ public class UnitJob {
           upList.add(jobUp);
           upList.forEach(sessionData.getUnit()::toWriteQueue);
         }
-        DBIActions.startUnitJob(unitId, job.getId(), dbi);
+        DBIActions.startUnitJob(unitId, job.getId(), dbi.getDataSource());
         if (!serverSideJob) {
           updateSessionWithJobParams();
           updateSessionWithJobCurrent();
@@ -151,21 +154,16 @@ public class UnitJob {
       Integer jobId = jobInfo.getJobId();
       try {
         List<UnitParameter> upList = getUnitParameters(unitJobStatus);
-        DBIActions.stopUnitJob(
-            sessionData.getUnitId(),
-            jobId,
-            unitJobStatus,
-            dbi);
+        DBIActions.stopUnitJob(sessionData.getUnitId(), jobId, unitJobStatus, dbi.getDataSource());
         sessionData.getPIIDecision().setCurrentJobStatus(unitJobStatus);
         // Write directly to database, no queuing, since the all data are flushed in next step (most likely)
-        ACSUnit acsUnit = dbi.getACSUnit();
-        acsUnit.addOrChangeUnitParameters(upList);
+        acsCache.addOrChangeUnitParameters(sessionData.getUnitId(), upList);
         if (!serverSideJob) {
           sessionData.setFromDB(null);
           sessionData.setAcsParameters(null);
           sessionData.setJobParams(null);
           log.debug("Unit-information will be reloaded to reflect changes in profile/unit parameters");
-          DBIActions.updateParametersFromDB((SessionData) sessionData, isDiscoveryMode, dbi);
+          DBIActions.updateParametersFromDB((SessionData) sessionData, isDiscoveryMode, acsCache);
         }
       } catch (SQLException sqle) {
         log.error("UnitJob update failed", sqle);
