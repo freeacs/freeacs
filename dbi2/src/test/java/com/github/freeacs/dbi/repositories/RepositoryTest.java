@@ -6,6 +6,8 @@ import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class RepositoryTest implements AbstractMySqlIntegrationTest  {
 
     private static Jdbi jdbi;
@@ -18,22 +20,32 @@ public class RepositoryTest implements AbstractMySqlIntegrationTest  {
 
     @Test
     public void canListUnits() {
-        jdbi.onDemand(UnitRepository.class).listUnits().forEach(System.out::println);
+        var result = jdbi.onDemand(UnitRepository.class).listUnits();
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
     }
 
     @Test
     public void canListUsers() {
-        jdbi.onDemand(UserRepository.class).listUsers().forEach(System.out::println);
+        var result = jdbi.onDemand(UserRepository.class).listUsers();
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("admin", result.get(0).getUsername());
+        assertTrue(result.get(0).getAdmin());
     }
 
     @Test
     public void canListUnitTypes() {
-        jdbi.onDemand(UnitTypeRepository.class).listUnitTypes().forEach(System.out::println);
+        var result = jdbi.onDemand(UnitTypeRepository.class).listUnitTypes();
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
     }
 
     @Test
     public void canListProfiles() {
-        jdbi.onDemand(ProfileRepository.class).listProfiles().forEach(System.out::println);
+        var result = jdbi.onDemand(ProfileRepository.class).listProfiles();
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
     }
 
 }
