@@ -3,7 +3,10 @@ package com.github.freeacs.dbi.repositories;
 import com.github.freeacs.dbi.domain.Profile;
 import com.github.freeacs.dbi.domain.UnitType;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
+import org.jdbi.v3.sqlobject.customizer.BindBean;
+import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
+import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 import java.util.List;
 
@@ -25,4 +28,11 @@ public interface ProfileRepository {
     @RegisterBeanMapper(value = Profile.class, prefix = "p")
     @RegisterBeanMapper(value = UnitType.class, prefix = "ut")
     List<Profile> listProfiles();
+
+    @SqlUpdate("""
+        INSERT INTO profile (profile_name, unit_type_id)
+        VALUES (:name, :unitType.id)
+    """)
+    @GetGeneratedKeys
+    Integer insertProfile(@BindBean Profile profile);
 }

@@ -2,7 +2,10 @@ package com.github.freeacs.dbi.repositories;
 
 import com.github.freeacs.dbi.domain.UnitType;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
+import org.jdbi.v3.sqlobject.customizer.BindBean;
+import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
+import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 import java.util.List;
 
@@ -21,4 +24,11 @@ public interface UnitTypeRepository {
     """)
     @RegisterBeanMapper(value = UnitType.class, prefix = "ut")
     List<UnitType> listUnitTypes();
+
+    @SqlUpdate("""
+        INSERT INTO unit_type (unit_type_name, vendor_name, description, protocol)
+        VALUES (:name, :vendor, :description, :protocol)
+    """)
+    @GetGeneratedKeys
+    Integer insertUnitType(@BindBean UnitType unitType);
 }

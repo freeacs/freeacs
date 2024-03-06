@@ -4,10 +4,11 @@ import com.github.freeacs.dbi.domain.Profile;
 import com.github.freeacs.dbi.domain.Unit;
 import com.github.freeacs.dbi.domain.UnitType;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
+import org.jdbi.v3.sqlobject.customizer.BindBean;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
+import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 public interface UnitRepository {
 
@@ -31,4 +32,10 @@ public interface UnitRepository {
     @RegisterBeanMapper(value = Profile.class, prefix = "p")
     @RegisterBeanMapper(value = UnitType.class, prefix = "ut")
     List<Unit> listUnits();
+
+    @SqlUpdate("""
+        INSERT INTO unit (unit_id, unit_type_id, profile_id)
+        VALUES (:id, :profile.unitType.id, :profile.id)
+    """)
+    int insertUnit(@BindBean Unit unit);
 }
