@@ -5,15 +5,26 @@ import lombok.Data;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The UnitTypeParameterFlag class represents the flag of a unittype parameter. The flag is a
+ * combination of the following characters: R, W, S, D, C, A, B, X. The flag is used to determine
+ * the access rights of the parameter.
+ */
 @Data
 public class UnitTypeParameterFlag {
   private String flag;
 
+  /**
+   * Constructor for the UnitTypeParameterFlag class.
+   *
+   * @param flag the flag to set
+   * @throws IllegalArgumentException if the flag is null or empty or bad format
+   */
   public UnitTypeParameterFlag(String flag) {
-    this.flag = flag;
+    this.setFlag(flag);
   }
 
-  public void setFlag(String fl) {
+  private void setFlag(String fl) {
     String flag = fl;
     if (flag == null || flag.trim().isEmpty()) {
       throw new IllegalArgumentException(

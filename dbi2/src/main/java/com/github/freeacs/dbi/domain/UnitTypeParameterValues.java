@@ -33,6 +33,9 @@ public class UnitTypeParameterValues {
   }
 
   public boolean match(String str) {
+    if (str == null) {
+      return false;
+    }
     if (type.equals(REGEXP)) {
       Matcher mathcer = pattern.matcher(str);
       return mathcer.matches();
