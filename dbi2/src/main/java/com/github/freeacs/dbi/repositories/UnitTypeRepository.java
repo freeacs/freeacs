@@ -10,15 +10,15 @@ public interface UnitTypeRepository {
 
     @SqlQuery("""
         SELECT
-            ut.id as ut_id,
-            ut.name as ut_name,
-            ut.vendor as ut_vendor,
+            ut.unit_type_id as ut_id,
+            ut.unit_type_name as ut_name,
+            ut.vendor_name as ut_vendor,
             ut.description as ut_description,
             ut.protocol as ut_protocol
         FROM
             unit_type ut
-        ORDER BY ut.id ASC
+        ORDER BY ut.unit_type_id ASC
     """)
-    @RegisterBeanMapper(UnitType.class)
+    @RegisterBeanMapper(value = UnitType.class, prefix = "ut")
     List<UnitType> listUnitTypes();
 }

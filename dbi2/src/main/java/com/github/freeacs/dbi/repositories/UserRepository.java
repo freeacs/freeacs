@@ -12,14 +12,14 @@ public interface UserRepository {
         SELECT
             u.id as u_id,
             u.username as u_username,
-            u.hashed_secret as u_hashed_secret,
-            u.full_name as u_full_name,
-            u.access as u_access,
-            u.admin as u_admin
+            u.secret as u_hashed_secret,
+            u.fullname as u_full_name,
+            u.accesslist as u_access,
+            u.is_admin as u_admin
         FROM
-            user u
+            user_ u
         ORDER BY u.id ASC
     """)
-    @RegisterBeanMapper(User.class)
+    @RegisterBeanMapper(value = User.class, prefix = "u")
     List<User> listUsers();
 }
