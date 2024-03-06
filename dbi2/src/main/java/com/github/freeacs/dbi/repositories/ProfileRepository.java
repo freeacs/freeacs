@@ -35,4 +35,16 @@ public interface ProfileRepository {
     """)
     @GetGeneratedKeys
     Integer insertProfile(@BindBean Profile profile);
+
+    @SqlUpdate("""
+        UPDATE profile
+        SET profile_name = :name
+        WHERE profile_id = :id
+    """)
+    int updateProfile(@BindBean Profile profile);
+
+    @SqlUpdate("""
+        DELETE FROM profile WHERE profile_id = :id
+    """)
+    int deleteProfile(Integer id);
 }

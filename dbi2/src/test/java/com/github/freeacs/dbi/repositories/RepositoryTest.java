@@ -23,15 +23,19 @@ public class RepositoryTest implements AbstractMySqlIntegrationTest  {
     }
 
     @Test
-    public void canListUnits() {
-        var unitRepository = jdbi.onDemand(UnitRepository.class);
-        var result = unitRepository.listUnits();
+    public void canCreateListAndDeleteUnits() {
+        var result = jdbi.onDemand(UnitRepository.class).listUnits();
         assertNotNull(result);
         assertTrue(result.isEmpty());
         var unitType = createUnitType();
+        assertEquals(1, jdbi.onDemand(UnitTypeRepository.class).updateUnitType(unitType.withName("New unitType name")));
         var profile = createProfile(unitType);
+        assertEquals(1, jdbi.onDemand(ProfileRepository.class).updateProfile(profile.withName("New profile name")));
         var insertedUnits = createUnit(profile);
         assertEquals(1, insertedUnits);
+        assertEquals(1, jdbi.onDemand(UnitRepository.class).deleteUnit("1234"));
+        assertEquals(1, jdbi.onDemand(ProfileRepository.class).deleteProfile(profile.getId()));
+        assertEquals(1, jdbi.onDemand(UnitTypeRepository.class).deleteUnitType(unitType.getId()));
     }
 
     private static int createUnit(Profile profile) {
@@ -66,14 +70,14 @@ public class RepositoryTest implements AbstractMySqlIntegrationTest  {
     public void canListUnitTypes() {
         var result = jdbi.onDemand(UnitTypeRepository.class).listUnitTypes();
         assertNotNull(result);
-        assertFalse(result.isEmpty());
+        assertTrue(result.isEmpty());
     }
 
     @Test
     public void canListProfiles() {
         var result = jdbi.onDemand(ProfileRepository.class).listProfiles();
         assertNotNull(result);
-        assertFalse(result.isEmpty());
+        assertTrue(result.isEmpty());
     }
 
 }

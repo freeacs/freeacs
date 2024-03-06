@@ -38,4 +38,9 @@ public interface UnitRepository {
         VALUES (:id, :profile.unitType.id, :profile.id)
     """)
     int insertUnit(@BindBean Unit unit);
+
+    @SqlUpdate("""
+        DELETE FROM unit WHERE unit_id = :id
+    """)
+    int deleteUnit(String id);
 }

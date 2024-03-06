@@ -3,6 +3,7 @@ package com.github.freeacs.dbi.repositories;
 import com.github.freeacs.dbi.domain.User;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
+import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
 import java.util.List;
 
@@ -22,4 +23,9 @@ public interface UserRepository {
     """)
     @RegisterBeanMapper(value = User.class, prefix = "u")
     List<User> listUsers();
+
+    @SqlUpdate("""
+        DELETE FROM user_ WHERE id = :id
+    """)
+    int deleteUser(Integer id);
 }

@@ -31,4 +31,19 @@ public interface UnitTypeRepository {
     """)
     @GetGeneratedKeys
     Integer insertUnitType(@BindBean UnitType unitType);
+
+    @SqlUpdate("""
+        UPDATE unit_type
+        SET unit_type_name = :name,
+            vendor_name = :vendor,
+            description = :description,
+            protocol = :protocol
+        WHERE unit_type_id = :id
+    """)
+    int updateUnitType(@BindBean UnitType unitType);
+
+    @SqlUpdate("""
+        DELETE FROM unit_type WHERE unit_type_id = :id
+    """)
+    int deleteUnitType(Integer id);
 }
