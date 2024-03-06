@@ -28,14 +28,9 @@ public enum JobType {
     }
 
     public static JobType fromString(String typeStr) {
-        JobType jt = null;
-        try {
-            jt = valueOf(typeStr);
-        } catch (IllegalArgumentException t) { // Convert from old jobtype
-            if ("SCRIPT".equals(typeStr)) {
-                jt = TR069_SCRIPT;
-            }
+        if ("SCRIPT".equals(typeStr)) {
+            return TR069_SCRIPT;
         }
-        return jt;
+        return valueOf(typeStr.toUpperCase());
     }
 }
