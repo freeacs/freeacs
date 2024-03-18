@@ -123,7 +123,7 @@
             <dependency>
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
-                <version>42.7.1</version>
+                <version>42.7.2</version>
             </dependency>
             <dependency>
                 <groupId>org.mariadb.jdbc</groupId>
@@ -173,7 +173,7 @@
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-core</artifactId>
-                <version>6.2.1</version>
+                <version>6.2.3</version>
             </dependency>
             <dependency>
                 <groupId>com.mashape.unirest</groupId>
