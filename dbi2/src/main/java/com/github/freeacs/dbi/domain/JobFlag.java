@@ -1,13 +1,9 @@
-package com.github.freeacs.dbi;
+package com.github.freeacs.dbi.domain;
 
 import lombok.Data;
 
 @Data
 public class JobFlag {
-  public enum JobServiceWindow {
-    DISRUPTIVE,
-    REGULAR
-  }
 
   private JobType type;
   private final JobServiceWindow serviceWindow;
