@@ -12,6 +12,6 @@ import org.jdbi.v3.core.mapper.Nested;
 @AllArgsConstructor
 public class Unit {
     private String id;
-    @Nested
-    private Profile profile;
+    private Integer unitTypeId;
+    private Integer profileId;
 }

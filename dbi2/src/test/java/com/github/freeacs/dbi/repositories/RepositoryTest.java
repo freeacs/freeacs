@@ -6,6 +6,8 @@ import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RepositoryTest implements AbstractMySqlIntegrationTest  {
@@ -67,10 +69,23 @@ public class RepositoryTest implements AbstractMySqlIntegrationTest  {
     }
 
     @Test
+    public void canCreateAndDeleteUser() {
+        var user = testDataFactory.createUser();
+        assertNotNull(user);
+        assertNotNull(user.getId());
+        assertEquals("testuser", user.getUsername());
+        assertEquals("secretfoobar", user.getHashedSecret());
+        assertEquals("Test User", user.getFullName());
+        assertEquals("", user.getAccess());
+        assertFalse(user.getAdmin());
+        int deleted = jdbi.onDemand(UserRepository.class).deleteUser(user.getId());
+        assertEquals(1, deleted);
+    }
+
+    @Test
     public void canListUnitTypes() {
         var result = jdbi.onDemand(UnitTypeRepository.class).listUnitTypes();
         assertNotNull(result);
-        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -80,4 +95,16 @@ public class RepositoryTest implements AbstractMySqlIntegrationTest  {
         assertTrue(result.isEmpty());
     }
 
+    @Test
+    public void  canListUnitTypeParameters() {
+        var unitType = testDataFactory.createUnitType("test-" + UUID.randomUUID());
+        var unitTypeParam = testDataFactory.createUnitTypeParameter(unitType.getId());
+        var result = jdbi.onDemand(UnitTypeParameterRepository.class).getUnitTypeParameters(unitType.getId());
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        var unitTypeParameter = result.get(0);
+        assertEquals(unitTypeParam.getId(), unitTypeParameter.getId());
+        assertEquals(unitType.getId(), unitTypeParameter.getUnitTypeId());
+        assertEquals("test", unitTypeParameter.getName());
+    }
 }

@@ -2,6 +2,8 @@ package com.github.freeacs.dbi.repositories;
 
 import com.github.freeacs.dbi.domain.User;
 import org.jdbi.v3.sqlobject.config.RegisterBeanMapper;
+import org.jdbi.v3.sqlobject.customizer.BindBean;
+import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 
@@ -23,6 +25,13 @@ public interface UserRepository {
     """)
     @RegisterBeanMapper(value = User.class, prefix = "u")
     List<User> listUsers();
+
+    @SqlUpdate("""
+        INSERT INTO user_ (username, secret, fullname, accesslist, is_admin)
+        VALUES (:username, :hashedSecret, :fullName, :access, :admin)
+    """)
+    @GetGeneratedKeys
+    Integer insertUser(@BindBean User user);
 
     @SqlUpdate("""
         DELETE FROM user_ WHERE id = :id

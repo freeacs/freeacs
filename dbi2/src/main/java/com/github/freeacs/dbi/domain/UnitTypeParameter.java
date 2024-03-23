@@ -1,18 +1,17 @@
 package com.github.freeacs.dbi.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.With;
+import lombok.*;
+import org.jdbi.v3.core.mapper.Nested;
+import org.jdbi.v3.core.mapper.reflect.ColumnName;
 
 @Data
 @With
 @NoArgsConstructor
 @AllArgsConstructor
 public class UnitTypeParameter {
+    @ColumnName("unit_type_param_id")
     private Integer id;
     private String name;
-    private UnitTypeParameterFlag flag;
-    private UnitTypeParameterValues values;
-    private UnitType unittype;
+    private String flags;
+    private Integer unitTypeId;
 }

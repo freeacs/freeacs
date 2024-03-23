@@ -35,7 +35,7 @@ public interface UnitRepository {
 
     @SqlUpdate("""
         INSERT INTO unit (unit_id, unit_type_id, profile_id)
-        VALUES (:id, :profile.unitType.id, :profile.id)
+        VALUES (:id, :unitTypeId, :profileId)
     """)
     int insertUnit(@BindBean Unit unit);
 
