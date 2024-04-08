@@ -11,11 +11,8 @@ import org.jdbi.v3.core.mapper.reflect.ColumnName;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UnitType {
-    @ColumnName("unit_type_id")
     private Integer id;
-    @ColumnName("unit_type_name")
     private String name;
-    @ColumnName("vendor_name")
     private String vendor;
     private String description;
     private UnitTypeProvisioningProtocol protocol;

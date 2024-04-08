@@ -96,6 +96,16 @@ public class RepositoryTest implements AbstractMySqlIntegrationTest  {
     }
 
     @Test
+    public void canRetrieveProfileWithUnitType() {
+        var unitType = testDataFactory.createUnitType("Test 99");
+        var profile = testDataFactory.createProfile(unitType);
+        var result = jdbi.onDemand(ProfileRepository.class).getProfile(profile.getId());
+        assertEquals(profile.getId(), result.getId());
+        assertEquals(profile.getName(), result.getName());
+        assertEquals(unitType.getId(), result.getUnitType().getId());
+    }
+
+    @Test
     public void  canListUnitTypeParameters() {
         var unitType = testDataFactory.createUnitType("test-" + UUID.randomUUID());
         var unitTypeParam = testDataFactory.createUnitTypeParameter(unitType.getId());

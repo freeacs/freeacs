@@ -15,6 +15,7 @@ public interface ProfileRepository {
         SELECT
             p.profile_id as p_id,
             p.profile_name as p_name,
+            p.unit_type_id as p_unit_type_id,
             ut.unit_type_id as ut_id,
             ut.unit_type_name as ut_name,
             ut.vendor_name as ut_vendor,
@@ -28,6 +29,25 @@ public interface ProfileRepository {
     @RegisterBeanMapper(value = Profile.class, prefix = "p")
     @RegisterBeanMapper(value = UnitType.class, prefix = "ut")
     List<Profile> listProfiles();
+
+    @SqlQuery("""
+        SELECT
+            p.profile_id as p_id,
+            p.profile_name as p_name,
+            p.unit_type_id as p_unit_type_id,
+            ut.unit_type_id as ut_id,
+            ut.unit_type_name as ut_name,
+            ut.vendor_name as ut_vendor,
+            ut.description as ut_description,
+            ut.protocol as ut_protocol
+        FROM
+            profile p
+        INNER JOIN unit_type ut ON p.unit_type_id = ut.unit_type_id
+        WHERE p.profile_id = :id
+    """)
+    @RegisterBeanMapper(value = Profile.class, prefix = "p")
+    @RegisterBeanMapper(value = UnitType.class, prefix = "ut")
+    Profile getProfile(Integer id);
 
     @SqlUpdate("""
         INSERT INTO profile (profile_name, unit_type_id)
