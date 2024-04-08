@@ -23,7 +23,7 @@ public class JobFlag {
     serviceWindow = jobServiceWindow;
   }
 
-public String getFlag() {
+  public String getFlag() {
     return type.name() + "|" + serviceWindow.name();
   }
 }
